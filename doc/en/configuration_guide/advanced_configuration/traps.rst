@@ -297,8 +297,8 @@ For each rule, define the settings:
 * If the **Reschedule associated services** box is checked the next check on the service, which should be ‘active’, should be reprogrammed as soon as possible after reception of the trap.
 * If the **Execute special command** box is checked the command defined in Special command is executed.
 
-Very advanced configuration of the traps
-----------------------------------------
+Very advanced configuration of the traps - Routing
+--------------------------------------------------
 
 The **Advanced** tab serves to configure the behavior of the handling process of the SNMP traps on its reception of the latter.
 
@@ -339,6 +339,32 @@ The result will have the form:  Interface GigabitEthernet0/1 ( NAS Server ) link
 *       The **Execution interval** field expressed in seconds is used to define the maximum waiting time between two processing operations of an event.
 *       The **Execution Type** field is used to enable the Execution interval by defining the conditions by Root OID, by the Root OID and host combination or, to disable this restriction, None.
 *       The **Execution Method** field is used to define if on reception of multiple same events (Root OID). The execution is either **Sequential** or **Parallel**.
+
+Very advanced configuration of the traps - Custom code
+------------------------------------------------------
+
+The field **custom code** allows to run custom Perl processing.
+To enable this feature, you must set **secure_mode** to 0 in
+**/etc/centreon/centreontrapd.pm** file as: ::
+
+    our %centreontrapd_config = (
+       ...
+       secure_mode => 0,
+       ....
+    );
+    
+    1;
+
+For example, to decode the 4 argument from hexadecimal, the custom code will be: ::
+
+    if ($self->{trap_data}->{entvar}->[3] =~ /[[:xdigit:]]+/) {
+        my $hexa_value = $self->{trap_data}->{entvar}->[3];
+        $hexa_value =~ s/ //g;
+        $self->{trap_data}->{entvar}->[3] = pack('H*', $hexa_value);
+    }
+
+.. note::
+    Beware the argument table starts at 0 for argument 1 of the SNMP trap.
 
 *********
 Variables

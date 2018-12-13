@@ -323,8 +323,8 @@ Pour chaque règle, définir les paramètres :
 * Si la case **Reprogrammer les services associés** est cochée alors le prochain contrôle du service, qui doit être 'actif', sera reprogrammé au plus tôt après la réception du trap.
 * Si la case **Exécuter une commande spéciale** est cochée alors la commande définie dans **Commande spéciale** est exécutée.
 
-Configuration très avancée des traps
-------------------------------------
+Configuration très avancée des traps - Le routage
+-------------------------------------------------
 
 L'onglet **Avancé** permet de configurer le comportement d'exécution du processus de traitement des traps SNMP lors de la réception de ce dernier.
 
@@ -363,6 +363,33 @@ Le résultat sera de la forme : Interface GigabitEthernet0/1 ( SERVEUR NAS ) lin
 *   Le champ **Intervalle d'exécution** exprimé en secondes, permet de définir le temps minimum d'attente entre deux traitements d'un évènement.
 *   Le champ **Type d'exécution** permet d'activer l'**Intervalle d'exécution** en définissant les conditions **Par OID racine**, **Par la combinaison OID racine et hôte** ou de désactiver cette restriction **Aucune**.
 *   Le champ **Méthode d'exécution** permet de définir si lors de la réception de plusieurs mêmes évènements (OID racine). L'exécution est soit **Séquentielle**, soit **Parallèle**.
+
+Configuration très avancée des traps - Le code personnalisé
+-----------------------------------------------------------
+
+Le paramètre **code personnalisé** permet d'ajouter un traitement Perl personnalisé.
+Pour l'activer, il est nécessaire de modifier la variable **secure_mode** à 0 dans le 
+fichier **/etc/centreon/centreontrapd.pm** tel que : ::
+
+    our %centreontrapd_config = (
+       ...
+       secure_mode => 0,
+       ....
+    );
+    
+    1;
+
+Par exemple, pour décoder le 4ème argument dont la valeur est en hexadécimal, le
+code personnalisé sera : ::
+
+    if ($self->{trap_data}->{entvar}->[3] =~ /[[:xdigit:]]+/) {
+        my $hexa_value = $self->{trap_data}->{entvar}->[3];
+        $hexa_value =~ s/ //g;
+        $self->{trap_data}->{entvar}->[3] = pack('H*', $hexa_value);
+    }
+
+.. note::
+    Attention le tableau des arguments démarre à 0 pour l'argument 1 du trap SNMP.
 
 *************
 Les variables
