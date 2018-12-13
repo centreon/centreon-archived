@@ -30,16 +30,10 @@ Les traps peuvent ensuite être reliés à des services passifs via l'onglet **R
 Architecture
 ************
 
-Avec Centreon 2.5.x, la gestion des traps SNMP a été revue en profondeur par rapport aux versions précédentes : 
-
-*   les processus 'snmptt' et 'centtraphandler' ont été fusionnés au sein d'un unique processus 'centreontrapd'.
-*   le processus 'snmptthandler' est remplacé par le processus 'centreontrapdforward'.
-*   les satellites peuvent disposer de leur propre définition de Trap SNMP au sein d'une base dédiée SQLite supprimant ainsi l'accès au serveur MySQL Centreon.
-
 Traitement d'un trap par le serveur central
 ===========================================
 
-Voici le processus de traitement d'un trap SNMP avec Centreon 2.5.x :
+Voici le processus de traitement d'un trap SNMP :
 
 #. snmptrapd est le service permettant de récupérer les traps SNMP envoyés par les équipements (par défaut il écoute sur le port **UDP 162**).
 #. Une fois le trap SNMP reçu, il est envoyé au script 'centreontrapdforward' qui va écrire les informations reçues dans un dossier tampon (par défaut : **/var/spool/centreontrapd/**).
@@ -54,7 +48,8 @@ Traitement d'un trap par un serveur satellite
 
 Afin de garder une copie de la configuration des traps SNMP sur chaque serveur satellite, une base de données SQLite est chargée de garder en cache les informations de traps contenues dans la base de données MySQL. 
 Cette base de données SQLite est automatiquement générée par le serveur Central. 
-Voici le processus de traitement d'un trap SNMP avec Centreon 2.5.x :
+
+Voici le processus de traitement d'un trap SNMP :
 
 #. snmptrapd est le service permettant de récupérer les traps SNMP envoyées par les équipements (par défaut il écoute sur le port **UDP 162**).
 #. Une fois le trap SNMP reçu, il est envoyé au script 'centreontrapdforward' qui va écrire les informations reçues dans un dossier tampon (par défaut : **/var/spool/centreontrapd/**).
