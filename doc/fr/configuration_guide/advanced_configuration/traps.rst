@@ -188,44 +188,34 @@ Voici un exemple de configuration possible du fichier **/etc/centreon/centreontr
 Configuration de la connexion à la base de données
 --------------------------------------------------
 
-.. note::
-    Sur un collecteur distant (satellite), la configuration de l'accès à la base de données
-    est à réaliser dans le fichier **/etc/centreon/centreontrapd.pm**.
+Sur un serveur Centreon central, éditer le fichier **/etc/centreon/conf.pm** : ::
 
-Il est possible de configurer le fichier **/etc/centreon/conf.pm** de deux manières :
+    $centreon_config = {
+        VarLib => "/var/lib/centreon",
+        CentreonDir => "/usr/share/centreon/",
+        "centreon_db" => "centreon",
+        "centstorage_db" => "centreon_storage",
+        "db_host" => "localhost:3306",
+        "db_user" => "centreon",
+        "db_passwd" => "centreon"
+    };
+    
+    1;
 
-* Conserver la connexion au serveur de base de données MySQL (nécessaire pour le serveur central et possible pour les serveurs satellites). Contenu du fichier :
+Sur un collecteur, éditer le fichier **/etc/centreon/centreontrapd.pm** : ::
 
-::
-
-	$centreon_config = {
-	VarLib => "/var/lib/centreon",
-	CentreonDir => "/usr/share/centreon/",
-	"centreon_db" => "centreon",
-	"centstorage_db" => "centreon_storage",
-	"db_host" => "localhost:3306",
-	"db_user" => "centreon",
-	"db_passwd" => "centreon"
-	};
-
-	1;
-
-* Connecter centreontrapd à la base de données SQLite locale. Contenu du fichier :
-
-::
-
-	$centreon_config = {
-	VarLib => "/var/lib/centreon",
-	CentreonDir => "/usr/share/centreon/",
-	"centreon_db" => "dbname=/etc/snmp/centreon_traps/centreontrapd.sdb",
-	"centstorage_db" => "dbname=/etc/snmp/centreon_traps/centreontrapd.sdb",
-	"db_host" => "",
-	"db_user" => "",
-	"db_passwd" => "",
-	"db_type" => 'SQLite',
-	};
-
-	1;
+    our %centreontrapd_config = (
+        ...
+        "centreon_db" => "dbname=/etc/snmp/centreon_traps/centreontrapd.sdb",
+        "centstorage_db" => "dbname=/etc/snmp/centreon_traps/centreontrapd.sdb",
+        "db_host" => "",
+        "db_user" => "",
+        "db_passwd" => "",
+        "db_type" => 'SQLite',
+        ...
+    );
+    
+    1;
 
 **********************
 Configuration Centreon
