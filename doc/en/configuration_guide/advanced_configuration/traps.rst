@@ -55,6 +55,14 @@ Here is the processing of an SNMP:
 
 .. note:: the Centcore process is responsible, as for the export of configuration of the supervision, to copy the SQLite base on the remote collector.
 
+Order of achievement of actions by the centreontrapd process
+============================================================
+
+The order of achievement of actions by the centreontrapd process is:
+
+.. image :: /images/user/configuration/10advanced_configuration/SNMP_Traps_management_general_view.png
+    :align: center
+
 *************************
 Configuration of services
 *************************
