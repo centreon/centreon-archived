@@ -50,8 +50,7 @@ Run the following command: ::
     # yum install centos-release-scl
 
 Upgrading the Centreon repository
-==================================
-
+=================================
 
 Run the following commands: ::
 
@@ -69,7 +68,7 @@ Upgrade all the components with the following command: ::
     Accept new GPG keys from the repositories as needed.
 
 Additional actions
-=====================
+==================
 
 The PHP timezone should be set. Run the command: ::
 
@@ -143,15 +142,15 @@ Upgrade all the components with the following command: ::
     Accept new GPG keys from the repositories as needed.
 
 Additional actions
-=====================
+==================
 
 Restart the services by executing the following commands: ::
 
     # systemctl restart cbd
     # systemctl restart centengine
 
-**************************************
+*************************************
 Upgrading the Centreon Poller Display
-**************************************
+*************************************
 
 Refer to the :ref:`migration procedure for Poller Display <migratefrompollerdisplay>`.

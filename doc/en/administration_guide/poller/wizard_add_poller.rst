@@ -1,6 +1,6 @@
-**************************************
+************************************
 Configuring a new poller in Centreon
-**************************************
+************************************
 
 As of Centreon version 18.10, a new wizard has been added for defining a new poller on the
 Centreon platform.

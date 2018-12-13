@@ -24,9 +24,9 @@ server. Otherwise, refer to the :ref:`migration procedure <migrate_to_1810>`.
 .. note::
     If you use the Centreon EMS modules, you must update these repositories. Be sure to contact Centreon support and request new licenses.
 
-**********************************************************************
+********************************************************************
 Migrating a server from the Centreon Poller Display to Remote Server
-**********************************************************************
+********************************************************************
 
 1. Go to the **Administration > Extensions > Modules** menu and uninstall the
    **Centreon Poller Display** module.

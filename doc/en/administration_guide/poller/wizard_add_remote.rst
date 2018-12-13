@@ -1,6 +1,6 @@
-*******************************************
+****************************************
 Configuring a new Centreon Remote Server
-*******************************************
+****************************************
 
 As of Centreon version 18.10, a wizard is now available for defining a new Centreon Remote Server.
 
@@ -29,7 +29,7 @@ the form:
     :align: center
 
 .. note::
-    The **Database user name** and **Database password** are the credentials defined
+    The **Database username** and **Database password** are the credentials defined
     during the installation of the Remote Server.
 
 Click on **Next**.

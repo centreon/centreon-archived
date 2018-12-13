@@ -1,6 +1,6 @@
 To start the monitoring engine:
 
-1. From your web interface, go to **Configuration** ==> **Pollers**.
+1. From your web interface, go to **Configuration > Pollers**.
 2. Keep the default options and click on **Export configuration**.
 3. Select **Central** poller from the box input **Pollers**.
 4. Uncheck **Generate Configuration Files** and **Run monitoring engine debug (-v)**.
@@ -70,7 +70,7 @@ The modules are now installed.
 .. image:: /_static/images/installation/install_imp_2.png
    :align: center
 
-Now proceed to **Configuration -> Plugin packs -> Manager**.
+Now proceed to **Configuration > Plugin packs > Manager**.
 Ten free Plugin Packs are provided to get you started. Five additional Packs are
 available once you register, and over 150 more if you subscribe to the IMP
 offer (for more information: `our website <https://www.centreon.com>`_).

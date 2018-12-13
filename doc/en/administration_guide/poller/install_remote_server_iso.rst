@@ -1,6 +1,6 @@
-=======================
+======================
 Using Centreon el7 ISO
-=======================
+======================
 
 .. include:: ../../installation/common/install_iso.rst
 

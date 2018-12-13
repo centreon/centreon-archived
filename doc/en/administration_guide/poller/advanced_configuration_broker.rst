@@ -1,21 +1,21 @@
 .. _advance_conf_broker:
 
-==============================
+=============================
 Advanced poller configuration
-==============================
+=============================
 
-----------------------------------
+--------------------------------
 Centreon Broker and the firewall
-----------------------------------
+--------------------------------
 
 In certain cases you may not be able to initialize the Centreon Broker data flow from the
-poller (or Centreon Remote Server) to the Central Server or the Remote Server.
+poller (or the Remote Server) to the Central Server or the Remote Server.
 
 Centreon has, however, developed a solution for initializing the flow from the Centreon
 Central Server, or from the Remote Server, to the poller.
 
-Go to the **Configuration > Pollers > Broker configuration** menu and click on **Centreon Broker SQL** configuration 
-on the Centreon Central Server or Remote Server.
+Go to the **Configuration > Pollers > Broker configuration** menu and click on
+**Centreon Broker SQL** configuration on the Centreon Central Server or Remote Server.
 
 Go to the **Input** tab panel and add a new **TCP - IPv4** entry.
 
@@ -51,8 +51,7 @@ First generate a Certificate Authority (CA) certificate with OpenSSL. *ca.key*
 will be the private key (stored securely), while *ca.crt* will be the
 public certificate for authenticating incoming connections::
 
-	$> openssl req -x509 -newkey rsa:2048 -nodes -keyout ca.key -out ca.crt -days 365
-
+    $> openssl req -x509 -newkey rsa:2048 -nodes -keyout ca.key -out ca.crt -days 365
 
 Now generate the certificates using the CA key::
 
@@ -60,7 +59,6 @@ Now generate the certificates using the CA key::
 	$> openssl req -new -newkey rsa:2048 -nodes -keyout poller.key -out poller.csr -days 365
 	$> openssl x509 -req -in central.csr -CA ca.crt -CAkey ca.key -CAcreateserial -out central.crt -days 365 -sha256
 	$> openssl x509 -req -in poller.csr -CA ca.crt -CAkey ca.key -CAcreateserial -out poller.crt -days 365 -sha256
-
 
 Put *central.key*, *central.crt* and *ca.crt* on the Centreon central server
 (e.g., in **/etc/centreon-broker**) and *poller.key*, *poller.crt* and
@@ -97,7 +95,7 @@ Centreontrapd Configuration
 Poller
 ######
 
-You must edit the Centreontrapd configuration files to be able to use the local SQLite database. 
+You must edit the Centreontrapd configuration file to be able to use the local SQLite database. 
 Refer to the chapter: :ref:`configuration_advanced_snmptrapds`).
 
 Remote Server
@@ -105,17 +103,19 @@ Remote Server
 
 Configuring the Centreontrapd process is the same as on the Centreon Central Server.
 
-------------------------------------------
+-----------------------------------------
 Advanced configuration of Centreon Broker
-------------------------------------------
+-----------------------------------------
 
 This section will help you understand how Centreon Broker works and how
-it should be configured according to Centreon's best practices. The various options used by Centreon Broker are described.
+it should be configured according to Centreon's best practices. The various
+options used by Centreon Broker are described.
 
 Overview
 ########
 
-The Centreon Broker's core is a simple multiplexing engine that takes *input* events and sends them to various *outputs*. Inputs are typically other
+The Centreon Broker's core is a simple multiplexing engine that takes *input*
+events and sends them to various *outputs*. Inputs are typically other
 Centreon Broker instances received via TCP/IP, while outputs can be a
 SQL database, other brokers, a BI/BAM engine, Centreon Map, etc.
 
@@ -156,7 +156,7 @@ and forwards them to the standalone Centreon Broker instance.
 A poller generally has only one Centreon Broker instance configured as a Centreon Engine module.
 
 Broker general configuration page
-###################################
+#################################
 
 This section lists all the general options associated with a Centreon Broker instance.
 

@@ -94,7 +94,7 @@ Run the commands::
    # systemctl restart mysql
 
 Setting the PHP time zone
---------------------------
+-------------------------
 
 You are required to set the PHP time zone. Run the command::
 

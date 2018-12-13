@@ -1,6 +1,6 @@
-====================
+===================
 Installing a poller
-====================
+===================
 
 Select one of the following installation methods:
 

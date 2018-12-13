@@ -1,8 +1,8 @@
 .. _upgrade_from_sources:
 
-============================
+===========================
 Upgrading from source files
-============================
+===========================
 
 To upgrade Centreon from source files, :ref:`download <downloads>` the latest version of Centreon.
 
@@ -65,7 +65,7 @@ go back to [Step 01] and install the prerequisites::
   You seem to have an existing Centreon.
 
 Choosing the main components
-------------------------------
+----------------------------
 
 Load the previous installation parameters::
 
@@ -98,7 +98,7 @@ Answer **y** for the components you wish to upgrade::
   Convert variables for upgrade:
 
 Upgrading the Centreon Web interface
---------------------------------------
+------------------------------------
 
 Certain new information is required. Specify the path to the binaries for Centreon Web::
 
@@ -313,7 +313,7 @@ Replace your sudoers file, if necessary. For increased security, you can backup 
   Convert variables for upgrade:
 
 Upgrading Centreon Storage
-----------------------------
+--------------------------
 
 Fill in the required information..
 
@@ -448,9 +448,9 @@ This completes the upgrade::
 
 .. _upgrade_web:
 
-*************************
+***********************
 Installing from the web
-*************************
+***********************
 
 During the web installation, follow these steps:
 
@@ -461,7 +461,7 @@ Presentation
    :align: center
 
 Check the dependencies
------------------------
+----------------------
 
 This step checks the dependencies on php modules:
 
@@ -475,7 +475,7 @@ Release notes
    :align: center
 
 Upgrading the database
------------------------
+----------------------
 
 This step upgrades the database model and data, version by version:
 
