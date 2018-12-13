@@ -171,14 +171,9 @@ Here is an example of possible configuration of the file **/etc/centreon/centreo
 Configuration of the connection to the database
 -----------------------------------------------
 
-.. note::
-    On a poller, the database access should be configure in **/etc/centreon/centreontrapd.pm** file.
+On Centreon Central server, edit the **/etc/centreon/conf.pm** file: ::
 
-It is possible of configure the file **/etc/centreon/conf.pm** in two ways:
-
-* Retain the connection to the MySQL server database (necessary for the central server and possible for the satellite servers). Content of the file::
-
-        $centreon_config = {
+    $centreon_config = {
         VarLib => "/var/lib/centreon",
         CentreonDir => "/usr/share/centreon/",
         "centreon_db" => "centreon",
@@ -186,25 +181,24 @@ It is possible of configure the file **/etc/centreon/conf.pm** in two ways:
         "db_host" => "localhost:3306",
         "db_user" => "centreon",
         "db_passwd" => "centreon"
-        };
+    };
+    
+    1;
 
-        1;
+On a poller, edit the **/etc/centreon/centreontrapd.pm** file: ::
 
-* Connect centreontrapd to the local SQLite database. Contents of the file::
-
-        $centreon_config = {
-        VarLib => "/var/lib/centreon",
-        CentreonDir => "/usr/share/centreon/",
+    our %centreontrapd_config = (
+        ...
         "centreon_db" => "dbname=/etc/snmp/centreon_traps/centreontrapd.sdb",
         "centstorage_db" => "dbname=/etc/snmp/centreon_traps/centreontrapd.sdb",
         "db_host" => "",
         "db_user" => "",
         "db_passwd" => "",
         "db_type" => 'SQLite',
-        };
-
-        1;
-
+        ...
+    );
+    
+    1;
 
 **********************
 Centreon configuration
