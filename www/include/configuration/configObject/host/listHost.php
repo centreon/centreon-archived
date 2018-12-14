@@ -97,6 +97,7 @@ if (isset($_POST["hostgroup"])) {
     $hostgroup = 0;
 }
 
+
 if (isset($_POST["template"])) {
     $template = $_POST["template"];
 } elseif (isset($_GET["template"])) {
@@ -115,6 +116,12 @@ if (isset($_POST["status"])) {
     $status = -1;
 }
 
+// Security fix
+$hostgroup = (int) $hostgroup;
+$poller = (int) $poller;
+$template = (int) $template;
+$status = (int) $status;
+
 /*
  * set object history
  */
@@ -125,14 +132,14 @@ $centreon->template = $template;
 /*
  * Status Filter
  */
-$statusFilter = "<option value=''".(($status == -1) ? " selected" : "")."> </option>";
-$statusFilter .= "<option value='1'".(($status == 1) ? " selected" : "").">"._("Enabled")."</option>";
-$statusFilter .= "<option value='0'".(($status == 0 && $status != '') ? " selected" : "").">"._("Disabled")."</option>";
+$statusFilter = "<option value='-1'".(($status === -1) ? " selected" : "")."> </option>";
+$statusFilter .= "<option value='1'".(($status === 1) ? " selected" : "").">"._("Enabled")."</option>";
+$statusFilter .= "<option value='0'".(($status === 0) ? " selected" : "").">"._("Disabled")."</option>";
 
 $sqlFilterCase = "";
-if ($status == 1) {
+if ($status === 1) {
     $sqlFilterCase = " AND host_activate = '1' ";
-} elseif ($status == 0 && $status != "") {
+} elseif ($status === 0) {
     $sqlFilterCase = " AND host_activate = '0' ";
 }
 
@@ -227,35 +234,47 @@ if (!$centreon->user->admin) {
 
 if ($hostgroup) {
     if ($poller) {
-        $DBRESULT = $pearDB->query("SELECT SQL_CALC_FOUND_ROWS DISTINCT h.host_id, h.host_name, host_alias, host_address, host_activate, host_template_model_htm_id
-                                FROM host h, ns_host_relation, hostgroup_relation hr $templateFROM $aclFrom
-                                WHERE $SearchTool $templateWHERE host_register = '1'
-                                AND h.host_id = ns_host_relation.host_host_id
-                                AND ns_host_relation.nagios_server_id = '$poller'
-                                AND h.host_id = hr.host_host_id
-                                AND hr.hostgroup_hg_id = '$hostgroup' $sqlFilterCase $aclCond
-                                ORDER BY h.host_name LIMIT ".$num * $limit.", ".$limit);
+        $DBRESULT = $pearDB->query(
+            "SELECT SQL_CALC_FOUND_ROWS DISTINCT h.host_id, h.host_name,
+            host_alias, host_address, host_activate, host_template_model_htm_id
+            FROM host h, ns_host_relation, hostgroup_relation hr $templateFROM $aclFrom
+            WHERE $SearchTool $templateWHERE host_register = '1'
+            AND h.host_id = ns_host_relation.host_host_id
+            AND ns_host_relation.nagios_server_id = '$poller'
+            AND h.host_id = hr.host_host_id
+            AND hr.hostgroup_hg_id = '$hostgroup' $sqlFilterCase $aclCond
+            ORDER BY h.host_name LIMIT " . $num * $limit . ", " . $limit
+        );
     } else {
-         $DBRESULT = $pearDB->query("SELECT SQL_CALC_FOUND_ROWS DISTINCT h.host_id, h.host_name, host_alias, host_address, host_activate, host_template_model_htm_id
-                                FROM host h, hostgroup_relation hr $templateFROM $aclFrom
-                                WHERE $SearchTool $templateWHERE host_register = '1'
-                                AND h.host_id = hr.host_host_id
-                                AND hr.hostgroup_hg_id = '$hostgroup' $sqlFilterCase $aclCond
-                                ORDER BY h.host_name LIMIT ".$num * $limit.", ".$limit);
+        $DBRESULT = $pearDB->query(
+            "SELECT SQL_CALC_FOUND_ROWS DISTINCT h.host_id, h.host_name, 
+            host_alias, host_address, host_activate, host_template_model_htm_id
+            FROM host h, hostgroup_relation hr $templateFROM $aclFrom
+            WHERE $SearchTool $templateWHERE host_register = '1'
+            AND h.host_id = hr.host_host_id
+            AND hr.hostgroup_hg_id = '$hostgroup' $sqlFilterCase $aclCond
+            ORDER BY h.host_name LIMIT " . $num * $limit . ", " . $limit
+        );
     }
 } else {
     if ($poller) {
-        $DBRESULT = $pearDB->query("SELECT SQL_CALC_FOUND_ROWS DISTINCT h.host_id, h.host_name, host_alias, host_address, host_activate, host_template_model_htm_id
-                                FROM host h, ns_host_relation $templateFROM $aclFrom
-                                WHERE $SearchTool $templateWHERE host_register = '1'
-                                AND h.host_id = ns_host_relation.host_host_id
-                                AND ns_host_relation.nagios_server_id = '$poller' $sqlFilterCase $aclCond
-                                ORDER BY h.host_name LIMIT ".$num * $limit.", ".$limit);
+        $DBRESULT = $pearDB->query(
+            "SELECT SQL_CALC_FOUND_ROWS DISTINCT h.host_id, h.host_name, 
+            host_alias, host_address, host_activate, host_template_model_htm_id
+            FROM host h, ns_host_relation $templateFROM $aclFrom
+            WHERE $SearchTool $templateWHERE host_register = '1'
+            AND h.host_id = ns_host_relation.host_host_id
+            AND ns_host_relation.nagios_server_id = '$poller' $sqlFilterCase $aclCond
+            ORDER BY h.host_name LIMIT " . $num * $limit . ", " . $limit
+        );
     } else {
-        $DBRESULT = $pearDB->query("SELECT SQL_CALC_FOUND_ROWS DISTINCT h.host_id, h.host_name, host_alias, host_address, host_activate, host_template_model_htm_id
-                                FROM host h $templateFROM $aclFrom
-                                WHERE $SearchTool $templateWHERE host_register = '1' $sqlFilterCase $aclCond
-                                ORDER BY h.host_name LIMIT ".$num * $limit.", ".$limit);
+        $DBRESULT = $pearDB->query(
+            "SELECT SQL_CALC_FOUND_ROWS DISTINCT h.host_id, h.host_name,
+            host_alias, host_address, host_activate, host_template_model_htm_id
+            FROM host h $templateFROM $aclFrom
+            WHERE $SearchTool $templateWHERE host_register = '1' $sqlFilterCase $aclCond
+            ORDER BY h.host_name LIMIT " . $num * $limit . ", " . $limit
+        );
     }
 }
 
@@ -368,15 +387,15 @@ foreach (array('o1', 'o2') as $option) {
                         this.form.elements['$option'].selectedIndex == 6){" .
                 "   setO(this.form.elements['$option'].value); submit();} " .
                 "this.form.elements['$option'].selectedIndex = 0");
-    $form->addElement('select', $option, null, array(null  =>  _("More actions..."), 
-                                                    "m"  =>  _("Duplicate"), 
-                                                    "d"  =>  _("Delete"), 
-                                                    "mc"  =>  _("Massive Change"), 
-                                                    "ms"  =>  _("Enable"), 
-                                                    "mu"  =>  _("Disable"), 
+    $form->addElement('select', $option, null, array(null  =>  _("More actions..."),
+                                                    "m"  =>  _("Duplicate"),
+                                                    "d"  =>  _("Delete"),
+                                                    "mc"  =>  _("Massive Change"),
+                                                    "ms"  =>  _("Enable"),
+                                                    "mu"  =>  _("Disable"),
                                                     "dp"  =>  _("Deploy Service")), $attrs1);
     $o1 = $form->getElement($option);
-    $o1->setValue(null);    
+    $o1->setValue(null);
 }
 
 $tpl->assign('limit', $limit);

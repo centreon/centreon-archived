@@ -262,6 +262,48 @@ function disableHostInDB($host_id = null, $host_arr = array())
     }
 }
 
+/**
+ * Retrieve the smallest suffix available for this hostname from database
+ *
+ * @global CentreonDB $pearDB
+ * @param string $hostName Hostname to process
+ * @param string $separator Character used to separate the hostname and suffix
+ * @return int The smallest suffix available for this hostname
+ * @throws Exception
+ */
+function getFirstAvailableSuffixId($hostName, $separator = '_')
+{
+    global $pearDB;
+
+    // Retrieves all numeric suffixes used for this hostname
+    $hostName = CentreonDB::escape($hostName);
+    $query = "SELECT CAST(SUBSTRING_INDEX(host_name,'_',-1) AS INT) AS suffix "
+        . "FROM host WHERE host_name REGEXP '^" . $hostName. $separator . "[0-9]+$' "
+        . "ORDER BY suffix";
+    $results = $pearDB->query($query);
+
+    $availableSuffix = array();
+    while ($result = $results->fetchRow()) {
+        $suffix = (int) $result['suffix'];
+        if (!in_array($suffix, $availableSuffix)) {
+            $availableSuffix[] = $suffix;
+        }
+    }
+
+    // Get the biggest suffix found
+    $biggestSuffix = $availableSuffix[count($availableSuffix) - 1];
+
+    // Get the smaller suffix available
+    $smallestSuffixAvailable = 1;
+    for ($suffix = 1; $suffix <= $biggestSuffix + 1; $suffix++) {
+        if (!in_array($suffix, $availableSuffix)) {
+            $smallestSuffixAvailable = $suffix;
+            break; // We found it, we can go out
+        }
+    }
+    return $smallestSuffixAvailable;
+}
+
 function deleteHostInDB($hosts = array())
 {
     global $pearDB, $centreon;
@@ -307,8 +349,12 @@ function multipleHostInDB($hosts = array(), $nbrDup = array())
         for ($i = 1; $i <= $nbrDup[$key]; $i++) {
             $val = null;
             foreach ($row as $key2 => $value2) {
-                $key2 == "host_name" ? ($host_name = $value2 = $value2 . "_" . $i) : null;
-                $val ? $val .= ($value2 != null ? (", '" . CentreonDB::escape($value2) . "'") : ", NULL") : $val .= ($value2 != null ? ("'" . CentreonDB::escape($value2) . "'") : "NULL");
+                $key2 == "host_name"
+                    ? ($host_name = $value2 = $value2 . "_" . getFirstAvailableSuffixId($value2))
+                    : null;
+                $val
+                    ? $val .= ($value2 != null ? (", '" . CentreonDB::escape($value2) . "'") : ", NULL")
+                    : $val .= ($value2 != null ? ("'" . CentreonDB::escape($value2) . "'") : "NULL");
                 if ($key2 != "host_id") {
                     $fields[$key2] = $value2;
                 }
@@ -1998,7 +2044,8 @@ function updateHostHostGroup($host_id, $ret = array())
         return;
     }
 
-    /* Special Case, delete relation between host/service, when service is linked 
+    /*
+     * Special Case, delete relation between host/service, when service is linked
      * to hostgroup in escalation, dependencies.
      * Get initial Hostgroup list to make a diff after deletion
      */
