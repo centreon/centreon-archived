@@ -36,11 +36,14 @@ class CentreonRemoteServer implements CentreonClapiServiceInterface
      *
      * @param string $ip ip address of the central server
      */
-    public function enableRemote(string $ip)
+    public function enableRemote(string $string_ip)
     {
-        if (!filter_var($ip, FILTER_VALIDATE_IP)) {
-            echo "Incorrect IP parameter, please pass `-v IP` of the master server\n";
-            return null;
+        $ipList = explode(',', $string_ip);
+        foreach ($ipList as $ip)
+            if (!filter_var($ip, FILTER_VALIDATE_IP)) {
+                printf("Incorrect IP parameter: '%s', please pass `-v IP` of the master server\n", $ip);
+                return null;
+            }
         }
 
         echo "Starting Centreon Remote enable process: \n";
@@ -54,7 +57,7 @@ class CentreonRemoteServer implements CentreonClapiServiceInterface
         echo "Done\n";
 
         echo "\n Authorizing Master...";
-        $this->getDi()['centreon.db-manager']->getRepository(InformationsRepository::class)->authorizeMaster($ip);
+        $this->getDi()['centreon.db-manager']->getRepository(InformationsRepository::class)->authorizeMaster($string_ip);
         echo "Done\n";
 
         echo "\n Set 'remote' instance type...";
@@ -65,7 +68,17 @@ class CentreonRemoteServer implements CentreonClapiServiceInterface
 
         echo "\n Notifying Master...";
         $result = $this->getDi()['centreon.notifymaster']->pingMaster($ip);
-        echo (!empty($result['status']) && $result['status'] == 'success') ? 'Success' : 'Fail' . "\n";
+        $result = "";
+        foreach ($ipList as $ip) {
+            $result = $this->getDi()['centreon.notifymaster']->pingMaster($ip);
+            if (!empty($result['status']) && $result['status'] == 'success') {
+                echo "Success\n";
+                continue;
+            }
+        }
+        if (empty($result['status']) || $result['status'] != 'success') {
+            printf("Fail: %s\n", $result['details']);
+        }
 
         echo "Centreon Remote enabling finished.\n";
     }
