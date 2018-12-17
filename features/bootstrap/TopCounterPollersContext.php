@@ -10,6 +10,13 @@ class TopCounterPollersContext extends CentreonContext
     public function iClickOnThePollersIconAndIClickOnTheConfigurationButton()
     {
         $this->visit('/', false);
+        $this->spin(
+            function ($context) {
+                return $context->getSession()->getPage()->has('css', '.iconmoon.icon-poller');
+            },
+            'Home not load.',
+            5
+        );
         $this->assertFind('css', '.iconmoon.icon-poller')->click();
         $this->spin(
             function ($context) {
@@ -27,6 +34,7 @@ class TopCounterPollersContext extends CentreonContext
      */
     public function iSeeTheListOfPollersConfiguration()
     {
+        self::$lastUri = 'p=60901';
         $this->spin(
             function ($context) {
                 $context->switchToIframe();
