@@ -61,7 +61,7 @@ suivants : ::
     # rsync -avz /etc/centreon root@IP_New_Centreon:/etc
     # rsync -avz /etc/centreon-broker root@IP_New_Centreon:/etc
     # rsync -avz /var/log/centreon-engine/archives/ root@IP_New_Centreon:/var/log/centreon-engine
-    # rsync -avz --exclude centcore/ logs/ /var/lib/centreon root@IP_New_Centreon:/var/lib
+    # rsync -avz --exclude centcore/ --exclude log/ /var/lib/centreon root@IP_New_Centreon:/var/lib
     # rsync -avz /var/spool/centreon/.ssh root@IP_New_Centreon:/var/spool/centreon
 
 .. note::
@@ -72,9 +72,13 @@ exécutez les commandes suivantes :
 
 #. Arrêtez le processus **mysqld** sur les deux serveurs (ancien et nouveau) : ::
 
-    # service mysql stop
+    # systemctl stop mysqld
 
-#. Synchronisation les données : ::
+#. Sur le nouveau serveur, supprimer le contenu du répertoire /var/lib/mysql/ : ::
+
+    # rm -Rf /var/lib/mysql/*
+
+#. Sur l'ancien serveur, lancer la synchronisation des données : ::
 
     # rsync -avz /var/lib/mysql/ root@IP_New_Centreon:/var/lib/mysql/
 
