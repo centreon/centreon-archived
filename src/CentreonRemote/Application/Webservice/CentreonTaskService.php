@@ -206,6 +206,7 @@ class CentreonTaskService extends CentreonWebServiceAbstract
          */
         $authorizedMaster = $this->getDi()['centreon.db-manager']->getRepository(InformationsRepository::class)
             ->getOneByKey('authorizedMaster');
+        $authorizedMasterTab = explode(',', $authorizedMaster->getValue());
 
         // if client is behind proxy or firewall, source ip can be updated
         // then, we try to get HTTP_X_FORWARDED_FOR
@@ -215,9 +216,9 @@ class CentreonTaskService extends CentreonWebServiceAbstract
             $originIp = $_SERVER['REMOTE_ADDR'];
         }
 
-        if ($originIp !== $authorizedMaster->getValue()) {
+        if (!in_array($_SERVER['REMOTE_ADDR'], $authorizedMasterTab)) {
             throw new \RestUnauthorizedException($originIp . ' is not authorized on this remote server');
-        }
+        } 
 
         $parentId = $this->arguments['parent_id'];
         $params = isset($this->arguments['params']) ? $this->arguments['params'] : '';
