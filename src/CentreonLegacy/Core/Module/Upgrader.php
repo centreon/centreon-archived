@@ -171,7 +171,7 @@ class Upgrader extends Module
     {
         $installed = false;
 
-        $sqlFile = $path . '/sql/install.sql';
+        $sqlFile = $path . '/sql/upgrade.sql';
         if ($conf[$this->moduleName]["sql_files"] && $this->dependencyInjector['filesystem']->exists($sqlFile)) {
             $this->utils->executeSqlFile($sqlFile);
             $installed = true;
@@ -191,7 +191,7 @@ class Upgrader extends Module
     {
         $installed = false;
 
-        $phpFile = $path . '/php/install';
+        $phpFile = $path . '/php/upgrade';
         $phpFile = $pre ? $phpFile . '.pre.php' : $phpFile . '.php';
 
         if ($conf[$this->moduleName]['php_files'] && $this->dependencyInjector['filesystem']->exists($phpFile)) {
