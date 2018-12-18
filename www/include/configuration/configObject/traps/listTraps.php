@@ -145,7 +145,7 @@ OPTIONS;
         "RowMenu_desc" => CentreonUtils::escapeAll(substr($trap["traps_oid"], 0, 40)),
         "RowMenu_status" => $tabStatus[$trap["traps_status"]],
         "RowMenu_args" => CentreonUtils::escapeAll($trap["traps_args"]),
-        "RowMenu_manufacturer" => $manufacturer["alias"],
+        "RowMenu_manufacturer" => CentreonUtils::escapeAll($manufacturer["alias"]),
         "RowMenu_options" => $moptions
     );
 }
