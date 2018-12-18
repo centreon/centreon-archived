@@ -281,7 +281,8 @@ class CentreonTraps
                 if (!is_null($queryValues)) {
                     $this->db->query('INSERT INTO traps VALUES (' . $queryValues . ')');
                     $resultMax = $this->db->query("SELECT MAX(traps_id) AS trapsId FROM traps");
-                    $newTrapId = (int) $resultMax->fetchRow()['trapsId'];
+                    $trapInfo = $resultMax->fetchRow();
+                    $newTrapId = (int) $trapInfo['trapsId'];
                     $this->db->query(
                         'INSERT INTO traps_service_relation (traps_id, service_id) 
                           (SELECT ' . $newTrapId . ', service_id 
@@ -616,7 +617,8 @@ class CentreonTraps
         $this->db->query($rq);
 
         $res = $this->db->query("SELECT MAX(traps_id) as trap_id FROM traps");
-        $traps_id = (int) $res->fetchRow()['trap_id'];
+        $trapInfo = $res->fetchRow();
+        $traps_id = (int) $trapInfo['trap_id'];
 
         $this->setMatchingOptions($traps_id, $ret);
         $this->setServiceRelations($traps_id);
