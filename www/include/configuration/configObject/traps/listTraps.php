@@ -142,7 +142,7 @@ OPTIONS;
         "RowMenu_select" => $selectedElements->toHtml(),
         "RowMenu_name" => CentreonUtils::escapeAll($trap["traps_name"]),
         "RowMenu_link" => "?p=" . $p . "&o=c&traps_id=" . $trap['traps_id'],
-        "RowMenu_desc" => substr($trap["traps_oid"], 0, 40),
+        "RowMenu_desc" => CentreonUtils::escapeAll(substr($trap["traps_oid"], 0, 40)),
         "RowMenu_status" => $tabStatus[$trap["traps_status"]],
         "RowMenu_args" => CentreonUtils::escapeAll($trap["traps_args"]),
         "RowMenu_manufacturer" => $manufacturer["alias"],
