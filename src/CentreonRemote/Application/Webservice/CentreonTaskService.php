@@ -218,7 +218,7 @@ class CentreonTaskService extends CentreonWebServiceAbstract
 
         if (!in_array($_SERVER['REMOTE_ADDR'], $authorizedMasterTab)) {
             throw new \RestUnauthorizedException($originIp . ' is not authorized on this remote server');
-        
+        } 
 
         $parentId = $this->arguments['parent_id'];
         $params = isset($this->arguments['params']) ? $this->arguments['params'] : '';
