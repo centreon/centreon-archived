@@ -54,6 +54,7 @@
             "www/lib/HTML/QuickForm/advmultiselect.php",
             "www/lib/HTML/QuickForm/tags.php",
             "www/lib/HTML/QuickForm/customcheckbox.php",
+            "www/lib/HTML/QuickForm/selectoptgroup.php",
             "www/class/centreon-clapi/centreonACL.class.php"
         ]
     }
