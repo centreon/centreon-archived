@@ -57,7 +57,7 @@ Connect to your old Centreon server and synchronize following directories::
     # rsync -avz /etc/centreon root@IP_New_Centreon:/etc
     # rsync -avz /etc/centreon-broker root@IP_New_Centreon:/etc
     # rsync -avz /var/log/centreon-engine/archives/ root@IP_New_Centreon:/var/log/centreon-engine
-    # rsync -avz --exclude centcore/ --exclude logs/ /var/lib/centreon root@IP_New_Centreon:/var/lib
+    # rsync -avz --exclude centcore/ --exclude log/ /var/lib/centreon root@IP_New_Centreon:/var/lib
     # rsync -avz /var/spool/centreon/.ssh root@IP_New_Centreon:/var/spool/centreon
 
 .. note::
