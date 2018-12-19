@@ -95,7 +95,7 @@ To connect your Centreon platform to Centreon user portal, please follow instruc
 1. Go to Centreon user portal and create your account
 -----------------------------------------------------
 
-Go on Centreon web site on `subscription IMP page <https://www.centreon.com/imp-subscribe/>`_.
+Go on Centreon web site on `subscription IMP page <https://store.centreon.com/>`_.
 Click on "Try it" on the first column of the comparative table of offers.
 
 .. image:: /_static/images/configuration/website/create_account_03.png
