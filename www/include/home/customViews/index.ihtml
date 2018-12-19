@@ -256,7 +256,7 @@
 (function($) {
   $.fn.purgeFrame = function() {
     var deferred;
-    if(this.contentDocument){
+    if (this.contentDocument) {
       $(this.contentDocument).unbind();    
       $(this.contentDocument).find('*').unbind();
     }
