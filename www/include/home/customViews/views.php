@@ -183,7 +183,7 @@ try {
             <?php 
                 $i = 0;
                 foreach ($widgets as $widgetId => $widget) { ?>
-                    createFrame('<?php echo $widget['url']; ?>?widgetId=' +<?php echo $widgetId;?> +'&customViewId=' + viewId,$('#widget_cont_<?php echo $widgetId;?>'),"widget_" + viewId + "_<?php echo $widgetId;?>", <?php echo $i;?>);
+                    createFrame('<?php echo $widget['url']; ?>?widgetId=' + <?php echo $widgetId;?> + '&customViewId=' + viewId,$('#widget_cont_<?php echo $widgetId;?>'),"widget_" + viewId + "_<?php echo $widgetId;?>", <?php echo $i;?>);
             <?php $i++; } ?>
         }
 
