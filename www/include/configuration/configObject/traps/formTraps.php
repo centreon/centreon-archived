@@ -185,10 +185,10 @@ $form->addElement(
     'traps_status',
     _("Default Status"),
     array(
-        0=>_("Ok"),
-        1=>_("Warning"),
-        2=>_("Critical"),
-        3=>_("Unknown")
+        0 => _("Ok"),
+        1 => _("Warning"),
+        2 => _("Critical"),
+        3 => _("Unknown")
     ),
     array('id' => 'trapStatus')
 );
@@ -357,9 +357,9 @@ $form->addElement(
     'traps_advanced_treatment_default',
     _("Advanced matching behavior"),
     array(
-        0=>_("If no match, submit default status"),
-        1=>_("If no match, disable submit"),
-        2=>_("If match, disable submit")
+        0 => _("If no match, submit default status"),
+        1 => _("If no match, disable submit"),
+        2 => _("If match, disable submit")
     ),
     array('id' => 'traps_advanced_treatment')
 );
@@ -429,7 +429,9 @@ if ($o == TRAP_WATCH) {
             "button",
             "change",
             _("Modify"),
-            array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&traps_id=".$traps_id."'")
+            array(
+                "onClick" => "javascript:window.location.href='?p=" . $p . "&o=c&traps_id=" . $traps_id . "'"
+            )
         );
     }
     $form->setDefaults($trap);

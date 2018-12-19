@@ -102,27 +102,23 @@ if ($ret['topology_page'] != "" && $p != $ret['topology_page']) {
 
 switch ($o) {
     case TRAP_ADD:
-        require_once($path."formTraps.php");
-        break;
     case TRAP_WATCH:
-        require_once($path."formTraps.php");
-        break;
     case TRAP_MODIFY:
-        require_once($path."formTraps.php");
+        require_once($path . "formTraps.php");
         break;
     case TRAP_DUPLICATE:
         if (!in_array(false, $select) && !in_array(false, $dupNbr)) {
             $trapObj->duplicate($select, $dupNbr);
         }
-        require_once($path."listTraps.php");
+        require_once($path . "listTraps.php");
         break;
     case TRAP_DELETE:
         if (!in_array(false, $select)) {
             $trapObj->delete($select);
         }
-        require_once($path."listTraps.php");
+        require_once($path . "listTraps.php");
         break;
     default:
-        require_once($path."listTraps.php");
+        require_once($path . "listTraps.php");
         break;
 }
