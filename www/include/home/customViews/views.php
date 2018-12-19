@@ -38,7 +38,6 @@ require_once _CENTREON_PATH_ . 'www/class/centreon.class.php';
 require_once _CENTREON_PATH_ . 'www/class/centreonSession.class.php';
 require_once _CENTREON_PATH_ . 'www/class/centreonCustomView.class.php';
 require_once _CENTREON_PATH_ . 'www/class/centreonWidget.class.php';
-require_once _CENTREON_PATH_ . 'www/class/centreonDB.class.php';
 require_once _CENTREON_PATH_ . 'bootstrap.php';
 
 session_start();
@@ -115,7 +114,7 @@ try {
     var viewId = "<?php echo $viewId;?>";
     var deleteWdgtMessage = "<?php echo _("Deleting this widget might impact users with whom you are sharing this view. Are you sure you want to do it?");?>";
     var deleteViewMessage = "<?php echo _("Deleting this view might impact other users. Are you sure you want to do it?");?>";
-    var setDefaultMessage = "<?php echo _("Set this view as your default view?");?>";    
+    var setDefaultMessage = "<?php echo _("Set this view as your default view?");?>";
     var permission = <?php echo ($permission === true) ? 1 : 0; ?>;
     var ownership = <?php echo ($ownership === true) ? 1 : 0; ?>;
     var wrenchSpan = '<span class="ui-icon ui-icon-wrench"></span>';
@@ -188,11 +187,11 @@ try {
         }
 
         jQuery(".ui-icon-wrench").each(function(index, element) {
-                                        var tmp = jQuery(element).parents('.portlet').attr('name')
-                                        var widgetIndex = tmp.split("portlet_");
-                                        var widgetId = widgetIndex[1];
-                                        initColorbox(jQuery(element), "./main.php?p=10303&min=1&view_id="+viewId+"&widget_id="+widgetId, "70%", "70%");
-                                   });
+            var tmp = jQuery(element).parents('.portlet').attr('name');
+            var widgetIndex = tmp.split("portlet_");
+            var widgetId = widgetIndex[1];
+            initColorbox(jQuery(element), "./main.php?p=10303&min=1&view_id="+viewId+"&widget_id="+widgetId, "70%", "70%");
+        });
 
         jQuery(".ui-icon-refresh").each(function (index, element) {
             var tmp = jQuery(element).parents('.portlet').attr('name');
@@ -237,13 +236,13 @@ try {
     }
 
     function createFrame(url, parent,name, idx) {
-                var $frame = $('<iframe/>')
-                .attr('src', url)
-                .attr('name',name)
-                .attr('width','100%');
+        var $frame = $('<iframe/>')
+        .attr('src', url)
+        .attr('name',name)
+        .attr('width','100%');
 
-                parent.append($frame);
-                window.iframes.push($frame);
+        parent.append($frame);
+        window.iframes.push($frame);
     }
 
     /**

@@ -875,13 +875,13 @@ jQuery(function () {
             if (tabLoops > 10 && $(event.target).tabs('option', 'active') == defaultPosition) {
                 if (window.parent) {
                   window.parent.location.reload();
-                }else{
+                } else {
                   window.location.reload();
                 } 
             }
           },
           activate: function( event, ui ) {
-            for(var i=0;i<window.iframes.length;i++){
+            for(var i=0;i<window.iframes.length;i++) {
 	            window.iframes[i].purgeFrame()
             }
             window.iframes = [];
