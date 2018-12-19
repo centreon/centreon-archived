@@ -302,10 +302,13 @@ function insertVirtualMetric($formData)
         error_log("[" . date("d/m/Y H:s") ."] VIRTUAL METRIC : $rq \n", 3, $debug_path . "/rrdtool.log");
     }
     $pearDB->query($rq);
+
     $DBRESULT = $pearDB->query(
         'SELECT MAX(vmetric_id) AS vmetric_id FROM virtual_metrics'
     );
-    return (int) $DBRESULT->fetchRow()['vmetric_id'];
+    $result = $DBRESULT->fetchRow();
+
+    return (int) $result['vmetric_id'];
 }
 
 /**
