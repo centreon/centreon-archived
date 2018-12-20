@@ -33,7 +33,6 @@ class ServiceProvider implements AutoloadServiceProviderInterface
         $pimple['centreon.webservice']->add(Webservice\CentreonConfigurationRemote::class);
         $pimple['centreon.webservice']->add(Webservice\CentreonConfigurationTopology::class);
         $pimple['centreon.webservice']->add(Webservice\CentreonTaskService::class);
-        $pimple['centreon.webservice']->add(Webservice\CentreonModulesWebservice::class);
         $pimple['centreon.webservice']->add(WebService\CentreonAclWebservice::class);
 
         $pimple['centreon.clapi']->add(Clapi\CentreonRemoteServer::class);
