@@ -78,19 +78,35 @@ class CentreonModuleWebservice extends CentreonWebServiceAbstract
         $request = $this->query();
 
         $search = isset($request['search']) && $request['search'] ? $request['search'] : null;
-        $installed = isset($request['installed']) ? (bool) $request['installed'] : null;
-        $updated = isset($request['updated']) ? (bool) $request['updated'] : null;
+        $installed = isset($request['installed']) ? $request['installed'] : null;
+        $updated = isset($request['updated']) ? $request['updated'] : null;
         $typeList = isset($request['types']) ? (array) $request['types'] : null;
+
+        if ($installed && strtolower($installed) === 'true') {
+            $installed = true;
+        } elseif ($installed && strtolower($installed) === 'false') {
+            $installed = false;
+        } elseif ($installed) {
+            $installed = null;
+        }
+
+        if ($updated && strtolower($updated) === 'true') {
+            $updated = true;
+        } elseif ($updated && strtolower($updated) === 'false') {
+            $updated = false;
+        } elseif ($updated) {
+            $updated = null;
+        }
 
         $list = $this->getDi()['centreon.module']
             ->getList($search, $installed, $updated, $typeList);
-        
+
         //(new \ArrayObject($list))->getIterator()
-        
+
         $result = new Bulk($list, null, null, null, ModuleEntity::class);
 
         $response = new Response($result);
-        
+
         return $response;
     }
 
