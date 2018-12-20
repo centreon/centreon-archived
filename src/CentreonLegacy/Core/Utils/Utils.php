@@ -117,6 +117,11 @@ class Utils
             throw new \Exception('Cannot execute php file "' . $fileName . '" : File does not exist.');
         }
 
+        // init parameters to be compatible with old module upgrade scripts
+        $pearDB = $this->dependencyInjector['configuration_db'];
+        $pearDBStorage = $this->dependencyInjector['realtime_db'];
+        $centreon_path = $this->dependencyInjector['configuration']->get('centreon_path');
+
         require_once $fileName;
     }
 
