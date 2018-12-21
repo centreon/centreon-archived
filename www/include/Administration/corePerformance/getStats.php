@@ -79,7 +79,7 @@ foreach ($_GET as $key => $get) {
 
 function escape_command($command)
 {
-    return preg_replace("/[\\\$|`]/", "", $command);
+    return preg_replace("/[\\\\$|`]/", "", $command);
 }
 
     require_once realpath(dirname(__FILE__) . "/../../../../config/centreon.config.php");
@@ -230,6 +230,7 @@ if (!$session->rowCount()) {
     /*
  * get all template infos
  */
+    //TODO: use a whitelist for $_GET["key"], it's too dangerous to use as is
     $command_line .= " --interlaced --imgformat PNG --width=400 --height=150 --title='".$title[$_GET["key"]]."' --vertical-label='".$_GET["key"]."' --slope-mode  --rigid --alt-autoscale-max ";
 
     /*
