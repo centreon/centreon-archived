@@ -46,9 +46,8 @@ class CentreonImageManager extends centreonFileManager
     protected $legalSize;
 
     /**
-     * centreonImageUploader constructor.
-     * @param $rawFile
-     * @param $basePath
+     * @param string $rawFile
+     * @param string $basePath
      * @param string $destinationDir
      * @param string $comment
      */
@@ -60,8 +59,11 @@ class CentreonImageManager extends centreonFileManager
     }
 
     /**
-     * @param bool $insert
-     * @return array
+     * Upload one or more images
+     *
+     * @param bool $insert Indicates if we're inserting the upload into database
+     * @return int|false Returns the new ids of all images uploaded otherwise false
+     * @throws Exception
      */
     public function upload($insert = true)
     {
@@ -82,20 +84,27 @@ class CentreonImageManager extends centreonFileManager
     }
 
     /**
-     * @param $imgId
-     * @param $imgName
-     * @return bool
+     * Update an image
+     *
+     * @param int $imgId Id of the image to update
+     * @param string $imgName New name
+     * @return bool Returns true on success
+     * @throws Exception
      */
     public function update($imgId, $imgName)
     {
-        if (!$imgId || empty($imgName)) {
+        if (!is_int($imgId) || empty($imgName)) {
             return false;
         }
 
         global $pearDB;
-        $query = "SELECT dir_id, dir_alias, img_path, img_comment FROM view_img, view_img_dir, view_img_dir_relation " .
-            "WHERE img_id = '" . $imgId . "' AND img_id = img_img_id AND dir_dir_parent_id = dir_id";
-        $dbResult = $pearDB->query($query);
+
+        $dbResult = $pearDB->query(
+            'SELECT dir_id, dir_alias, img_path, img_comment '
+            . 'FROM view_img, view_img_dir, view_img_dir_relation '
+            . 'WHERE img_id = ' . $imgId . ' AND img_id = img_img_id '
+            . 'AND dir_dir_parent_id = dir_id'
+        );
 
         if (!$dbResult) {
             return false;
@@ -118,7 +127,8 @@ class CentreonImageManager extends centreonFileManager
         //check directory
         if (!($dirId = $this->checkDirectoryExistence())) {
             $dirId = $this->insertDirectory();
-        } elseif ($img_info['dir_alias'] != $this->destinationDir) {
+        }
+        if ($img_info['dir_alias'] != $this->destinationDir) {
             $old = $this->mediaPath . $img_info['dir_alias'] . '/' . $img_info["img_path"];
             $new = $this->mediaPath . $this->destinationDir . '/' . $img_info["img_path"];
             $this->moveImage($old, $new);
@@ -133,6 +143,8 @@ class CentreonImageManager extends centreonFileManager
     }
 
     /**
+     * Delete an image on disc
+     *
      * @param $fullPath
      */
     protected function deleteImg($fullPath)
@@ -141,42 +153,57 @@ class CentreonImageManager extends centreonFileManager
     }
 
     /**
-     * @return int
+     * Check if a directory given as parameter exists and return his id
+     *
+     * @global CentreonDB $pearDB DB connector
+     * @return int|false Returns the directory if found otherwise false
+     * @throws Exception
      */
     protected function checkDirectoryExistence()
     {
         global $pearDB;
-        $dirId = 0;
         $dbResult = $pearDB->query(
-            "SELECT dir_name, dir_id FROM view_img_dir WHERE dir_name = '" . $this->destinationDir . "'"
+            "SELECT dir_name, dir_id FROM view_img_dir WHERE dir_name = '"
+            . CentreonDB::escape($this->destinationDir) . "'"
         );
         if ($dbResult->numRows() >= 1) {
             $dir = $dbResult->fetchRow();
-            $dirId = $dir["dir_id"];
+            return (int) $dir["dir_id"];
         }
-        return $dirId;
+        return false;
     }
 
     /**
-     * @return mixed
+     * Create a new empty directory
+     *
+     * @global CentreonDB $pearDB DB connector
+     * @return int Returns the new directory id
+     * @throws Exception
      */
     protected function insertDirectory()
     {
         global $pearDB;
+
         touch($this->destinationPath . "/index.html");
-        $query = "INSERT INTO view_img_dir " .
-            "(dir_name, dir_alias) " .
-            "VALUES " .
-            "('" . $this->destinationDir . "', '" . $this->destinationDir . "')";
-        $pearDB->query($query);
-        $dbResult = $pearDB->query("SELECT MAX(dir_id) FROM view_img_dir");
+        $pearDB->query(
+            'INSERT INTO view_img_dir (dir_name, dir_alias) VALUES '
+            . "('" . CentreonDB::escape($this->destinationDir)
+            . "', '" . CentreonDB::escape($this->destinationDir) . "')"
+        );
+        $dbResult = $pearDB->query(
+            'SELECT MAX(dir_id) AS image_id FROM view_img_dir'
+        );
         $dirId = $dbResult->fetchRow();
         $dbResult->free();
-        return ($dirId["MAX(dir_id)"]);
+        return (int) $dirId['image_id'];
     }
 
     /**
-     * @param $dirId
+     * Update a directory
+     *
+     * @param int $dirId Id of the directory to update
+     * @global CentreonDB $pearDB DB connector
+     * @throws Exception
      */
     protected function updateDirectory($dirId)
     {
@@ -187,40 +214,50 @@ class CentreonImageManager extends centreonFileManager
     }
 
     /**
-     * @return mixed
+     * Insert an image into database
+     *
+     * @global CentreonDB $pearDB DB connector
+     * @return int|false Returns the new id otherwise false
+     * @throws Exception
      */
     protected function insertImg()
     {
         global $pearDB;
-        if (!($dirId = $this->checkDirectoryExistence())) {
-            $dirId = $this->insertDirectory();
-        }
-        $query = "INSERT INTO view_img " .
-            "(img_name, img_path, img_comment) " .
-            "VALUES " .
-            "('" . $this->fileName . "', '" . $this->newFile . "', '" . $pearDB->escape($this->comment) . "')";
-        $pearDB->query($query);
 
-        $res = $pearDB->query("SELECT MAX(img_id) FROM view_img");
-        $imgId = $res->fetchRow();
-        $imgId = $imgId["MAX(img_id)"];
+        if (($dirId = $this->checkDirectoryExistence()) === false) {
+            if(($dirId = $this->insertDirectory()) === false) {
+                return false;
+            }
+        }
 
         $pearDB->query(
-            "INSERT INTO view_img_dir_relation (dir_dir_parent_id, img_img_id) " .
-            "VALUES ('" . $dirId . "', '" . $imgId . "')"
+            'INSERT INTO view_img '
+            . '(img_name, img_path, img_comment) VALUES '
+            . "('" . $this->fileName . "', '" . $this->newFile . "', '"
+            . CentreonDB::escape($this->comment) . "')"
+        );
+
+        $res = $pearDB->query("SELECT MAX(img_id) AS image_id FROM view_img");
+        $imgId = $res->fetchRow();
+        $imgId = (int) $imgId['image_id'];
+
+        $pearDB->query(
+            'INSERT INTO view_img_dir_relation (dir_dir_parent_id, img_img_id) '
+            . 'VALUES (' . $dirId . ', ' . $imgId . ')'
         );
         $res->free();
-        return ($imgId);
+        return $imgId;
     }
 
     /**
-     * @param $old
-     * @param $new
+     * Move an image
+     *
+     * @param string $old Old absolute path of image
+     * @param string $new New absolute path of image
      */
     protected function moveImage($old, $new)
     {
         copy($old, $new);
         $this->deleteImg($old);
     }
-
 }

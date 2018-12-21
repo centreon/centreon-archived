@@ -44,19 +44,21 @@ $selected = array();
 /*
  * Change Directory
  */
-if ($o == "cd" && $dir_id) {
-    $DBRESULT = $pearDB->query("SELECT * FROM view_img_dir WHERE dir_id = '".$dir_id."' LIMIT 1");
-    $dir = array_map("myDecode", $DBRESULT->fetchRow());
+if ($o == IMAGE_MODIFY_DIRECTORY && is_int($dir_id)) {
+    $DBRESULT = $pearDB->query(
+        'SELECT * FROM view_img_dir WHERE dir_id = ' . $dir_id . ' LIMIT 1'
+    );
+    $dir = $DBRESULT->fetchRow();
     # Set Child elements
     $DBRESULT = $pearDB->query(
-        "SELECT DISTINCT img_img_id FROM view_img_dir_relation "
-        . "WHERE dir_dir_parent_id = '" . $dir_id . "'"
+        'SELECT DISTINCT img_img_id FROM view_img_dir_relation '
+        . 'WHERE dir_dir_parent_id = ' . $dir_id
     );
     for ($i = 0; $imgs = $DBRESULT->fetchRow(); $i++) {
         $dir["dir_imgs"][$i] = $imgs["img_img_id"];
     }
     $DBRESULT->free();
-} elseif ($o == "m") {
+} elseif ($o == IMAGE_MOVE) {
     $selected = array();
     if (isset($select) && $select) {
         $list = $select;
@@ -64,7 +66,7 @@ if ($o == "cd" && $dir_id) {
         $list = $dir_imgs;
     }
 
-    foreach ($list as $selector => $status) {
+    foreach (array_keys($list) as $selector) {
         $ids = explode('-', $selector);
         if (count($ids)!=2) {
             continue;
@@ -81,20 +83,31 @@ $imgs = array();
 $rq = "SELECT `img_id`,`dir_alias`,`img_name` FROM view_img ";
 $rq .= " JOIN view_img_dir_relation ON img_img_id = img_id ";
 $rq .= " JOIN view_img_dir ON dir_id = dir_dir_parent_id ";
-if ($o == "m" && count($selected) > 0) {
+if ($o == IMAGE_MOVE && count($selected) > 0) {
     $rq .= " WHERE `img_id` IN (".implode(",", $selected).") ";
 }
 $rq .= " ORDER BY dir_alias, img_name";
 $DBRESULT = $pearDB->query($rq);
 while ($img = $DBRESULT->fetchRow()) {
-    $imgs[$img["img_id"]] = $img["dir_alias"]."/".$img["img_name"];
+    $imgs[$img["img_id"]] = htmlentities(
+        $img["dir_alias"]."/".$img["img_name"],
+        ENT_QUOTES,
+        'utf-8'
+    );
+
 }
 $DBRESULT->free();
 
 $directories = array();
-$DBRESULT = $pearDB->query("SELECT dir_id, dir_name, dir_comment FROM view_img_dir ORDER BY dir_name");
+$DBRESULT = $pearDB->query(
+    'SELECT dir_id, dir_name, dir_comment FROM view_img_dir ORDER BY dir_name'
+);
 while ($row = $DBRESULT->fetchRow()) {
-    $directories[$row["dir_id"]] = $row["dir_name"];
+    $directories[$row["dir_id"]] = htmlentities(
+        $row["dir_name"],
+        ENT_QUOTES,
+        'utf-8'
+    );
 }
 
 
@@ -110,12 +123,12 @@ $attrsTextarea    = array("rows"=>"5", "cols"=>"40");
 ## Form begin
 #
 $form = new HTML_QuickForm('Form', 'post', "?p=".$p);
-if ($o == "cd") {
+if ($o == IMAGE_MODIFY_DIRECTORY) {
     $form->addElement('header', 'title', _("Modify directory"));
     $form->addElement('autocomplete', 'dir_name', _("Directory name"), $directories);
     $form->addElement('textarea', 'dir_comment', _("Comments"), $attrsTextarea);
     $form->setDefaults($dir);
-} elseif ($o == "m") {
+} elseif ($o == IMAGE_MOVE) {
     $form->addElement('header', 'title', _("Move files to directory"));
     $form->addElement('autocomplete', 'dir_name', _("Destination directory"), $directories);
     $form->addElement('select', 'dir_imgs', _("Images"), $imgs, $attrsSelect);
@@ -136,7 +149,7 @@ $redirect->setValue($o);
 ## Form Rules
 #
 $form->applyFilter('__ALL__', 'myTrim');
-if ($o == "cd" && $dir_id) {
+if ($o == IMAGE_MODIFY_DIRECTORY && is_int($dir_id)) {
     $form->addRule('dir_name', _("Compulsory Name"), 'required');
 //	    $form->addRule('dir_alias', _("Compulsory Alias"), 'required');
     $form->setRequiredNote(_("Required Field"));
@@ -156,7 +169,7 @@ foreach ($help as $key => $text) {
 $tpl->assign("helptext", $helptext);
 
 # move files to a directory
-if ($o == "m") {
+if ($o == IMAGE_MOVE) {
     $subM = $form->addElement('submit', 'submitM', _("Apply"));
     $res = $form->addElement(
         "button",
@@ -165,7 +178,7 @@ if ($o == "m") {
         array("onClick" => "javascript:window.location.href='?p=" . $p . "'")
     );
 } # Modify a directory
-elseif ($o == "cd") {
+elseif ($o == IMAGE_MODIFY_DIRECTORY) {
     if (isset($dir['dir_imgs'])) {
         $confirm = implode(',', $dir['dir_imgs']);
     } else {
@@ -183,31 +196,24 @@ elseif ($o == "cd") {
 
 $valid = false;
 if ($form->validate()) {
-    $dir_id = $form->getSubmitValue('dir_id');
     /* move images */
     if ($form->getSubmitValue("submitM")) {
         $dir_name = $form->getSubmitValue('dir_name');
         $imgs = $form->getSubmitValue('dir_imgs');
         moveMultImg($imgs, $dir_name);
+        $valid = true;
     /* modify dir */
     } elseif ($form->getSubmitValue("submitC")) {
         $dirName = $form->getSubmitValue('dir_name');
         $dirCmnt = $form->getSubmitValue('dir_comment');
+        $dir_id = (int) $form->getSubmitValue('dir_id');
         updateDirectory($dir_id, $dirName, $dirCmnt);
+        $valid = true;
     }
-    $o = null;
-    /* $form->addElement( */
-    /*     "button", */
-    /*     "change", */
-    /*     _("Modify"), */
-    /*     array( */
-    /*         "onClick" => "javascript:window.location.href='?p=" . $p . "&o=c&dir_id=" . $dirObj->getValue() . "'" */
-    /*     ) */
-    /* ); */
-    $form->freeze();
-    $valid = true;
 }
 if ($valid) {
+    $o = null;
+    $form->freeze();
     require_once($path."listImg.php");
 } else {
     #Apply a template definition

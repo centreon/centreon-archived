@@ -47,23 +47,25 @@ if (!isset($centreon)) {
  * Database retrieve information
  */
 $img = array("img_path" => null);
-if ($o == "ci" || $o == "w") {
-    $res = $pearDB->query("SELECT * FROM view_img WHERE img_id = '" . $img_id . "' LIMIT 1");
+if (($o == IMAGE_MODIFY || $o == IMAGE_WATCH) && is_int($img_id)) {
+    $res = $pearDB->query(
+        'SELECT * FROM view_img WHERE img_id = ' . $img_id . ' LIMIT 1'
+    );
     # Set base value
     $img = array_map("myDecode", $res->fetchRow());
 
     # Set Directories
-    $q = "SELECT dir_id, dir_name, dir_alias, img_path FROM view_img";
-    $q .= "  JOIN view_img_dir_relation ON img_id = view_img_dir_relation.img_img_id";
-    $q .= "  JOIN view_img_dir ON dir_id = dir_dir_parent_id";
-    $q .= "  WHERE img_id = '" . $img_id . "' LIMIT 1";
-    $DBRESULT = $pearDB->query($q);
-    $dir = $DBRESULT->fetchRow();
+    $result = $pearDB->query(
+        'SELECT dir_id, dir_name, dir_alias, img_path FROM view_img '
+        . 'JOIN view_img_dir_relation ON img_id = view_img_dir_relation.img_img_id '
+        . 'JOIN view_img_dir ON dir_id = dir_dir_parent_id '
+        . 'WHERE img_id = ' . $img_id . ' LIMIT 1'
+    );
+    $dir = $result->fetchRow();
     $img_path = "./img/media/" . $dir["dir_alias"] . "/" . $dir["img_path"];
     $img["directories"] = $dir["dir_name"];
-    $DBRESULT->free();
+    $result->free();
 }
-
 
 /*
  * Get Directories
@@ -84,7 +86,7 @@ $attrsTextarea = array("rows" => "5", "cols" => "80");
  * Form begin
  */
 $form = new HTML_QuickForm('Form', 'post', "?p=" . $p);
-if ($o == "a") {
+if ($o == IMAGE_ADD) {
     $form->addElement('header', 'title', _("Add Image(s)"));
     $form->addElement(
         'autocomplete',
@@ -102,7 +104,7 @@ if ($o == "a") {
     );
     $form->addElement('file', 'filename', _("Image or archive"));
     $subA = $form->addElement('submit', 'submitA', _("Save"), array("class" => "btc bt_success"));
-} elseif ($o == "ci") {
+} elseif ($o == IMAGE_MODIFY) {
     $form->addElement('header', 'title', _("Modify Image"));
     $form->addElement('text', 'img_name', _("Image Name"), $attrsText);
     $form->addElement(
@@ -124,7 +126,7 @@ if ($o == "a") {
     $subC = $form->addElement('submit', 'submitC', _("Save"), array("class" => "btc bt_success"));
     $form->setDefaults($img);
     $form->addRule('img_name', _("Compulsory image name"), 'required');
-} elseif ($o == "w") {
+} elseif ($o == IMAGE_WATCH) {
     $form->addElement('header', 'title', _("View Image"));
     $form->addElement('text', 'img_name', _("Image Name"), $attrsText);
     $form->addElement('text', 'img_path', $img_path, null);
@@ -173,7 +175,7 @@ $form->setRequiredNote(_("Required Field"));
 /*
  * watch/view
  */
-if ($o == "w") {
+if ($o == IMAGE_WATCH) {
     $form->freeze();
 }
 
@@ -203,9 +205,10 @@ $tpl->assign("helptext", $helptext);
 
 $valid = false;
 if ($form->validate()) {
-    $imgId = $form->getElement('img_id')->getValue();
+    $imgId = (int) $form->getElement('img_id')->getValue();
     $imgPath = $form->getElement('directories')->getValue();
     $imgComment = $form->getElement('img_comment')->getValue();
+
     $oImageUploader = new CentreonImageManager($_FILES, './img/media/', $imgPath, $imgComment);
     if ($form->getSubmitValue("submitA")) {
         $valid = $oImageUploader->upload();
