@@ -1,13 +1,13 @@
-import React, {Component} from "react";
+import React, { Component } from "react";
 import config from "./config";
 import Header from "./components/header";
-import {Switch} from "react-router-dom";
-import {ConnectedRouter} from "react-router-redux";
-import {history} from "./store";
+import { Switch } from "react-router-dom";
+import { ConnectedRouter } from "react-router-redux";
+import { history } from "./store";
 import ClassicRoute from "./components/router/classicRoute";
 import ReactRoute from './components/router/reactRoute';
 
-import {classicRoutes, reactRoutes} from "./route-maps";
+import { classicRoutes, reactRoutes } from "./route-maps";
 import NavigationComponent from "./components/navigation";
 import Footer from "./components/footer";
 import Fullscreen from 'react-fullscreen-crossbrowser';
@@ -33,22 +33,32 @@ class App extends Component {
     return (parsedArguments.min === "1")
   }
 
+  // enable fullscreen
   goFull = () => {
-    const { search, hash } = history.location
-    window['fullscreenParams'] = (search.split('?')[1] || '') + (hash || '')
+    // set fullscreen url parameters
+    // this will be used to init iframe src
+    window['fullscreenSearch'] = window.location.search
+    window['fullscreenHash'] = window.location.hash
+
+    // enable fullscreen after 200ms
     setTimeout(() => {
       this.setState({ isFullscreenEnabled: true });
     }, 200)
   }
 
+  // disable fullscreen
   removeFullscreenParams = () => {
-    if (history.location.pathname == '/centreon/main.php') {
+    if (history.location.pathname == '/_CENTREON_PATH_PLACEHOLDER_/main.php') {
       history.push({
-        pathname: '/centreon/main.php',
-        search: window['fullscreenParams']
+        pathname: '/_CENTREON_PATH_PLACEHOLDER_/main.php',
+        search: window['fullscreenSearch'],
+        hash: window['fullscreenHash']
       })
     }
-    delete window['fullscreenParams'];
+
+    // remove fullscreen parameters to keep normal routing
+    delete window['fullscreenSearch'];
+    delete window['fullscreenHash'];
   }
 
   // get allowed routes

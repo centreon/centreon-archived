@@ -72,9 +72,8 @@ class ModuleRoute extends Component {
     const { history } = this.props,
           { search, hash } = history.location;
     let params;
-    if (window['fullscreenParams']) {
-      params = '?';
-      params += window['fullscreenParams'] || ''; 
+    if (window['fullscreenSearch']) {
+      params = window['fullscreenSearch'] + window['fullscreenHash']
     } else {
       params = (search || '') + (hash || '');
     }
