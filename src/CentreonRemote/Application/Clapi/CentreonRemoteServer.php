@@ -39,7 +39,7 @@ class CentreonRemoteServer implements CentreonClapiServiceInterface
     public function enableRemote(string $string_ip)
     {
         $ipList = explode(',', $string_ip);
-        foreach ($ipList as $ip)
+        foreach ($ipList as $ip) {
             if (!filter_var($ip, FILTER_VALIDATE_IP)) {
                 printf("Incorrect IP parameter: '%s', please pass `-v IP` of the master server\n", $ip);
                 return null;
@@ -56,17 +56,17 @@ class CentreonRemoteServer implements CentreonClapiServiceInterface
         $this->getDi()['centreon.db-manager']->getRepository(InformationsRepository::class)->toggleRemote('yes');
         echo "Done\n";
 
-        echo "\n Authorizing Master...";
+        echo "Authorizing Master...";
         $this->getDi()['centreon.db-manager']->getRepository(InformationsRepository::class)->authorizeMaster($string_ip);
         echo "Done\n";
 
-        echo "\n Set 'remote' instance type...";
+        echo "Set 'remote' instance type...";
         system(
             "sed -i -r 's/(\\\$instance_mode?\s+=?\s+\")([a-z]+)(\";)/\\1remote\\3/' " . _CENTREON_ETC_ . "/conf.pm"
         );
         echo "Done\n";
 
-        echo "\n Notifying Master...";
+        echo "Notifying Master...";
         $result = $this->getDi()['centreon.notifymaster']->pingMaster($ip);
         $result = "";
         foreach ($ipList as $ip) {
