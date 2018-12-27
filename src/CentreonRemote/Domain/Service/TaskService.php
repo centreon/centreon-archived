@@ -104,27 +104,14 @@ class TaskService
 
         switch ($type) {
             case Task::TYPE_EXPORT:
-                $newTask->setType(Task::TYPE_EXPORT);
-                $result = $this->getDbManager()->getAdapter('configuration_db')
-                    ->insert('task', $newTask->toArray())
-                ;
-
-                $cmd = new Command();
-                $cmd->setCommandLine(Command::COMMAND_START_IMPEX_WORKER);
-                $cmdWritten = $this->getCmdService()->sendCommand($cmd);
-                break;
-
             case Task::TYPE_IMPORT:
-                $newTask->setType(Task::TYPE_IMPORT);
-                $result = $this->getDbManager()->getAdapter('configuration_db')
-                    ->insert('task', $newTask->toArray())
-                ;
+                $newTask->setType($type);
+                $result = $this->getDbManager()->getAdapter('configuration_db')->insert('task', $newTask->toArray());
 
                 $cmd = new Command();
                 $cmd->setCommandLine(Command::COMMAND_START_IMPEX_WORKER);
                 $cmdWritten = $this->getCmdService()->sendCommand($cmd);
                 break;
-
             default:
                 return false;
         }
@@ -139,7 +126,8 @@ class TaskService
      */
     public function getStatus(string $taskId)
     {
-        $task = $this->getDbManager()->getAdapter('configuration_db')->getRepository(TaskRepository::class)->findOneById($taskId);
+        $task = $this->getDbManager()->getAdapter('configuration_db')->getRepository(TaskRepository::class)
+            ->findOneById($taskId);
         return $task ? $task->getStatus() : null;
     }
 
