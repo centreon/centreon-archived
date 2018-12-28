@@ -72,7 +72,7 @@
 			{/php}
 		</tr>
 	</table>
-<input type='hidden' name='o' id='o' value='42'>
-<input type='hidden' id='limit' name='limit' value='{$limit}'>	
+<input type='hidden' name='o' id='o'>
+<input type='hidden' id='limit' name='limit' value='{$limit}'>
 {$form.hidden}
 </form>
