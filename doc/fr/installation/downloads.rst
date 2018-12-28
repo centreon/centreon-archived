@@ -9,7 +9,7 @@ disponibles sous 4 formats :
 
 * ISO Linux basée sur la distribution CentOS v7 (recommandé)
 * Paquets RPM pour la distribution CentOS v7 (recommandé)
-* Machines virtuelles; basées sur les distributions CentOS v7, au format OVA
+* Machines virtuelles; basées sur les distributions CentOS v7, aux formats OVA (VMware) et OVF (VirtualBox et autres).
 * Archives contenant les sources
 
 Les paquets RPM sont le meilleur format pour obtenir nos logiciels.

@@ -129,7 +129,7 @@ Suivez les étapes décrites ci-dessous :
 La création de ce compte est gratuite et ne prend que quelques minutes.
 
 Allez sur le site web de Centreon et rendez-vous sur la page de souscription à
-`Centreon IMP <https://www.centreon.com/imp-subscribe/>`_. Cliquez
+`Centreon IMP <https://store.centreon.com/>`_. Cliquez
 sur "Try it" dans la première colonne du tableau comparatif des offres.
 
 .. image:: /_static/images/configuration/website/create_account_03.png
@@ -253,7 +253,7 @@ Bien sûr, le tarif est plus attractif pour les durées d’engagements les plus
 longues.
 
 Pour souscrire, rendez-vous sur notre site et sélectionnez `une souscription 
-<https://www.centreon.com/imp-subscribe/>`_ 
+<https://store.centreon.com/>`_ 
 
 Après l’achat de votre souscription Centreon IMP, vous allez activer votre
 compte Centreon IMP dans Centreon. Pour cela, cliquez sur le bouton **Link**.
