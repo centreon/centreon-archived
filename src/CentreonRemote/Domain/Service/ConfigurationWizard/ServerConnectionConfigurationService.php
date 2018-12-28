@@ -103,7 +103,7 @@ abstract class ServerConnectionConfigurationService
 
         $this->insertConfigCentreonBroker($serverID);
 
-        if ($this->shouldInsertBamBrokers && !$this->isRemote()) {
+        if ($this->shouldInsertBamBrokers && $this->isRemote()) {
             $this->insertBamBrokers();
         }
 
