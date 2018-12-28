@@ -44,12 +44,16 @@ if (!isset($oreon)) {
  * Database retrieve information
  */
 $vmetric = array();
-if ($o == "a" && isset($_POST['vmetric_id']) && $_POST['vmetric_id'] != '') {
-    $vmetric_id = $_POST['vmetric_id'];
-    $o = "c";
+if ($o == VIRTUAL_METRIC_ADD && isset($_POST['vmetric_id']) && $_POST['vmetric_id'] != '') {
+    $vmetric_id = (int) $_POST['vmetric_id'];
+    $o = VIRTUAL_METRIC_MODIFY;
 }
-if (($o == "c" || $o == "w") && $vmetric_id) {
-    $p_qy = $pearDB->query("SELECT *, hidden vhidden FROM virtual_metrics WHERE vmetric_id = '".$vmetric_id."' LIMIT 1");
+if (($o == VIRTUAL_METRIC_MODIFY || $o == VIRTUAL_METRIC_WATCH) && $vmetric_id) {
+    $p_qy = $pearDB->query(
+        'SELECT *, hidden vhidden FROM virtual_metrics '
+        . 'WHERE vmetric_id = ' . $vmetric_id . ' LIMIT 1'
+    );
+
     // Set base value
     $vmetric = array_map("myDecode", $p_qy->fetchRow());
     $p_qy->free();
@@ -62,7 +66,7 @@ if (($o == "c" || $o == "w") && $vmetric_id) {
 $indds = array(""=> sprintf("%s%s", _("Host list"), "&nbsp;&nbsp;&nbsp;"));
 $mx_l = strlen($indds[""]);
 
-$dbindd = $pearDBO->query("SELECT DISTINCT host_id, host_name FROM index_data;");
+$dbindd = $pearDBO->query("SELECT DISTINCT host_id, host_name FROM index_data");
 if (PEAR::isError($dbindd)) {
     print "DB Error : ".$dbindd->getDebugInfo()."<br />";
 }
@@ -99,11 +103,11 @@ $attrServices = array(
  * Form begin
  */
 $form = new HTML_QuickForm('Form', 'post', "?p=".$p);
-if ($o == "a") {
+if ($o == VIRTUAL_METRIC_ADD) {
     $form->addElement('header', 'ftitle', _("Add a Virtual Metric"));
-} elseif ($o == "c") {
+} elseif ($o == VIRTUAL_METRIC_MODIFY) {
     $form->addElement('header', 'ftitle', _("Modify a Virtual Metric"));
-} elseif ($o == "w") {
+} elseif ($o == VIRTUAL_METRIC_WATCH) {
     $form->addElement('header', 'ftitle', _("View a Virtual Metric"));
 }
 
@@ -161,23 +165,23 @@ $form->setRequiredNote("<font style='color: red;'>*</font>". _(" Required fields
 $tpl = new Smarty();
 $tpl = initSmartyTpl($path, $tpl);
 
-if ($o == "w") {
+if ($o == VIRTUAL_METRIC_WATCH) {
     // Just watch
     $form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&vmetric_id=".$vmetric_id."'"));
     $form->setDefaults($vmetric);
     $form->freeze();
-} elseif ($o == "c") {
+} elseif ($o == VIRTUAL_METRIC_MODIFY) {
     // Modify
     $subC = $form->addElement('submit', 'submitC', _("Save"), array("class" => "btc bt_success"));
     $res = $form->addElement('reset', 'reset', _("Reset"), array("onClick"=>"javascript:resetLists(".$vmetric["host_id"].",".$vmetric["index_id"].");", "class" => "btc bt_default"));
     $form->setDefaults($vmetric);
-} elseif ($o == "a") {
+} elseif ($o == VIRTUAL_METRIC_ADD) {
     // Add
     $subA = $form->addElement('submit', 'submitA', _("Save"), array("class" => "btc bt_success"));
     $res = $form->addElement('reset', 'reset', _("Reset"), array("onClick"=>"javascript:resetLists(0,0)", "class" => "btc bt_default"));
 }
 
-if ($o == "c" || $o == "a") {
+if ($o == VIRTUAL_METRIC_MODIFY || $o == VIRTUAL_METRIC_ADD) {
 ?>
     <script type='text/javascript'>
         function insertValueQuery() {
@@ -233,23 +237,26 @@ $tpl->assign("helptext", $helptext);
 $valid = false;
 if ($form->validate()) {
     $vmetricObj = $form->getElement('vmetric_id');
-    if ($o == "a") {
-        $vmetric_id = insertVirtualMetricInDB();
+    if ($o == VIRTUAL_METRIC_ADD) {
+        $vmetric_id = insertVirtualMetric($form->getSubmitValues());
         $vmetricObj->setValue($vmetric_id);
         try {
             enableVirtualMetricInDB($vmetric_id);
         } catch (Exception $e) {
             $error = $e->getMessage();
         }
-    } elseif ($o == "c") {
+    } elseif ($o == VIRTUAL_METRIC_MODIFY) {
         try {
-            updateVirtualMetricInDB($vmetricObj->getValue());
+            updateVirtualMetric(
+                (int) $vmetricObj->getValue(),
+                $form->getSubmitValues()
+            );
         } catch (Exception $e) {
             $error = $e->getMessage();
         }
     }
     if (!isset($error)) {
-        $o = "w";
+        $o = VIRTUAL_METRIC_WATCH;
         $form->addElement(
             "button",
             "change",
@@ -278,9 +285,9 @@ if ($valid) {
 }
 $vdef=1; /* Display VDEF too */
 include_once("./include/views/graphs/common/makeJS_formMetricsList.php");
-if ($o == "c" || $o == "w") {
+if ($o == VIRTUAL_METRIC_MODIFY || $o == VIRTUAL_METRIC_WATCH) {
     isset($_POST["host_id"]) && $_POST["host_id"] != null ? $host_service_id=$_POST["host_id"]: $host_service_id=$vmetric["host_id"];
-} elseif ($o == "a") {
+} elseif ($o == VIRTUAL_METRIC_ADD) {
     isset($_POST["host_id"]) && $_POST["host_id"] != null ? $host_service_id=$_POST["host_id"]: $host_service_id=0;
 }
 ?>
