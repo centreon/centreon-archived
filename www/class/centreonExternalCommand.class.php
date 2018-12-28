@@ -32,7 +32,13 @@
  * For more information : contact@centreon.com
  *
  */
-require_once realpath(dirname(__FILE__) . "/../../config/centreon.config.php");
+
+// file centreon.config.php may not exist in test environment
+$configFile = realpath(dirname(__FILE__) . "/../../config/centreon.config.php");
+if ($configFile !== false) {
+    require_once $configFile;
+}
+
 require_once _CENTREON_PATH_ . "/www/class/centreonDB.class.php";
 require_once realpath(dirname(__FILE__) . "/centreonDBInstance.class.php");
 require_once _CENTREON_PATH_ . "/www/include/common/common-Func.php";
