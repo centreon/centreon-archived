@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright 2005-2015 Centreon
+ * Copyright 2005-2018 Centreon
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -40,495 +40,420 @@ if (!isset($oreon)) {
     exit();
 }
 
+define('MEDIA_DIR', './img/media/');
+
+/**
+ * Replace the characters space, / and \ by _
+ *
+ * @param string $filename Filename to filter
+ * @return string Filtered filename
+ */
 function sanitizeFilename($filename)
 {
-    $cleanstr = htmlentities($filename, ENT_QUOTES, "UTF-8");
-    $cleanstr = str_replace(" ", "_", $cleanstr);
-    $cleanstr = str_replace("/", "_", $cleanstr);
-    $cleanstr = str_replace("\\", "_", $cleanstr);
-    return $cleanstr;
+    return str_replace(
+        array(' ', '/', '\\'),
+        "_",
+        $filename
+    );
 }
 
+/**
+ * Replace the characters #, / and \ by _
+ *
+ * @param string $path Path to filter
+ * @return string Filtered path
+ */
 function sanitizePath($path)
 {
-    $cleanstr = htmlentities($path, ENT_QUOTES, "UTF-8");
-    $cleanstr = str_replace("/", "_", $cleanstr);
-    $cleanstr = str_replace("\\", "_", $cleanstr);
-    return $cleanstr;
+    return str_replace(
+        array('#', '/', '\\'),
+        "_",
+        $path
+    );
 }
 
-
+/**
+ * Extract the content of ZIP file
+ *
+ * @param string $zipfile ZIP file to extract
+ * @param string $path Path where the files will be extracted
+ * @uses ZipArchive
+ * @return bool Return true if the extraction has been done
+ */
 function extractDir($zipfile, $path)
 {
-    if (file_exists($zipfile)) {
-        $files = array();
-        $zip = new ZipArchive;
+    if (class_exists('ZipArchive')
+        && file_exists($zipfile)
+        && !is_null($path)
+    ) {
+        $zip = new ZipArchive();
         if ($zip->open($zipfile) === true) {
             if ($zip->extractTo($path) === true) {
+                $zip->close();
                 return true;
             } else {
+                $zip->close();
                 return false;
             }
-            $zip->close();
-        } else {
-            return false;
         }
-    } else {
-        return false;
     }
+    return false;
 }
 
-
+/**
+ * Indicates if the file is a valid image
+ *
+ * @param string $filename File name of the image to check
+ * @return bool Returns true if the file is a valid image
+ */
 function isValidImage($filename)
 {
-    if (!$filename) {
+    if (is_null($filename)) {
         return false;
     }
     $imginfo = getimagesize($filename);
 
-    if (isset($imginfo) && false !== $imginfo) {
-        return true;
-    } else {
-        return is_gd2($filename);
-    }
-    return false;
+    return ($imginfo !== false)
+        ? true
+        : is_gd2($filename);
 }
 
+/**
+ * Indicates if the file is an image in GD2 format.
+ * Uses the GD extension.
+ *
+ * @param string $filename File name of the image to check
+ * @return bool Returns true if the file is in GD2 format
+ */
 function is_gd2($filename)
 {
+    if (is_null($filename)) {
+        return false;
+    }
     if (getimagesize($filename) !== false) {
         return false;
     }
     $gd_res = imagecreatefromgd2($filename);
-    if ($gd_res) {
-        imagedestroy($gd_res);
-        return true;
+    if ($gd_res !== false) {
+        return imagedestroy($gd_res);
     }
     return false;
 }
 
-function handleUpload($HTMLfile, $dir_alias, $img_comment = "")
-{
-    if (!$HTMLfile || !$dir_alias) {
-        return false;
-    }
-    $fileinfo = $HTMLfile->getValue();
-    if (!isset($fileinfo["name"]) | !isset($fileinfo["type"])) {
-        return false;
-    }
-
-    $uploaddir = "../filesUpload/images/";
-
-    $HTMLfile->moveUploadedFile($uploaddir);
-
-    switch ($fileinfo["type"]) {
-        // known archive types
-        case "application/zip":
-        case "application/x-zip":
-        case "application/x-tar":
-        case "application/x-gzip":
-        case "application/x-bzip":
-        case "application/x-zip-compressed":
-            $filelist = CentreonMedia::getFilesFromArchive($uploaddir.$fileinfo["name"]);
-            if ($filelist!==false) {
-                foreach ($filelist as $file) {
-                    if (is_dir($uploaddir.$file)) {
-                        continue;
-                    } // skip directories in list
-                    if (!isValidImage($uploaddir.$file)) {
-                        return false;
-                    }
-                    if (is_gd2($uploaddir.$file)) {
-                        $im = imagecreatefromgd2($uploaddir.$file);
-                        if (preg_match('/gd2$/', $file)) {
-                            $png_file = preg_replace('/gd2$/', 'png', $file);
-                        } else {
-                            $png_file = $file . '.png';
-                        }
-                        imagepng($im, $uploaddir.$png_file);
-                        imagedestroy($im);
-                        $img_ids[] = insertImg($uploaddir, $png_file, $dir_alias, $png_file, $img_comment);
-                    }
-                    $img_ids[] = insertImg($uploaddir, $file, $dir_alias, $file, $img_comment);
-                }
-                unlink($uploaddir.$fileinfo["name"]);
-                return $img_ids;
-            }
-            return false;
-            break;
-        default:
-            if (isValidImage($uploaddir.$fileinfo["name"])) {
-                if (is_gd2($uploaddir.$fileinfo["name"])) {
-                    $im = imagecreatefromgd2($uploaddir.$fileinfo["name"]);
-                    if (preg_match('/gd2$/', $fileinfo["name"])) {
-                        $png_file = preg_replace('/gd2$/', 'png', $fileinfo["name"]);
-                    } else {
-                        $png_file = $fileinfo["name"] . '.png';
-                    }
-                    imagepng($im, $uploaddir.$png_file);
-                    imagedestroy($im);
-                    $img_ids[] = insertImg($uploaddir, $png_file, $dir_alias, $png_file, $img_comment);
-                }
-                $img_ids[] = insertImg($uploaddir, $fileinfo["name"], $dir_alias, $fileinfo["name"], $img_comment);
-                return $img_ids;
-            } else {
-                return false;
-            }
-    }
-}
-
-function insertImg($src_dir, $src_file, $dst_dir, $dst_file, $img_comment = "")
-{
-    global $pearDB;
-    $mediadir = "./img/media/";
-
-    if (!($dir_id = testDirectoryExistence($dst_dir))) {
-        $dir_id = insertDirectory($dst_dir);
-    }
-
-    $dst_file = sanitizeFilename($dst_file);
-    $dst  = $mediadir.$dst_dir."/".$dst_file;
-    if (is_file($dst)) {
-        return false;
-    } // file exists
-    if (!rename($src_dir.$src_file, $dst)) {
-        return false;
-    } // access denied, path error
-
-    $img_parts = explode(".", $dst_file);
-    $img_name = $img_parts[0];
-    $rq = "INSERT INTO view_img ";
-    $rq .= "(img_name, img_path, img_comment) ";
-    $rq .= "VALUES ";
-    $rq .= "('" . htmlentities($img_name, ENT_QUOTES, "UTF-8") . "', '"
-        . htmlentities($dst_file, ENT_QUOTES, "UTF-8") . "', '"
-        . htmlentities($img_comment, ENT_QUOTES, "UTF-8") . "')";
-    $pearDB->query($rq);
-    $res = $pearDB->query("SELECT MAX(img_id) FROM view_img");
-    $img_id = $res->fetchRow();
-    $img_id = $img_id["MAX(img_id)"];
-    $res = $pearDB->query(
-        "INSERT INTO view_img_dir_relation (dir_dir_parent_id, img_img_id) "
-        . "VALUES ('" . $dir_id . "', '" . $img_id . "')"
-    );
-//		$res->free();
-
-    return ($img_id);
-}
-
+/**
+ * Delete multiple images
+ *
+ * @param array $images
+ * @throws Exception
+ */
 function deleteMultImg($images = array())
 {
-    foreach ($images as $selector => $val) {
+    foreach (array_keys($images) as $selector) {
         $id = explode('-', $selector);
-        if (count($id)!=2) {
+        if (count($id) !== 2) {
             continue;
         }
-        deleteImg($id[1]);
+        deleteImg((int) $id[1]);
     }
 }
 
+/**
+ * Delete an image
+ *
+ * @param int $img_id Image id to remove
+ * @global CentreonDB $pearDB DB connector
+ * @throws Exception
+ */
 function deleteImg($img_id)
 {
-    if (!isset($img_id)) {
+    if (!is_int($img_id)) {
         return;
     }
 
     global $pearDB;
 
-    $mediadir = "./img/media/";
-
-    $rq = "SELECT dir_alias, img_path FROM view_img, view_img_dir, view_img_dir_relation ";
-    $rq .= " WHERE img_id = '".$img_id."' AND img_id = img_img_id AND dir_dir_parent_id = dir_id";
-    $DBRESULT = $pearDB->query($rq);
+    $DBRESULT = $pearDB->query(
+        'SELECT dir_alias, img_path '
+        . 'FROM view_img, view_img_dir, view_img_dir_relation '
+        . 'WHERE img_id = ' . $img_id
+        . ' AND img_id = img_img_id AND dir_dir_parent_id = dir_id'
+    );
     while ($img_path = $DBRESULT->fetchRow()) {
-        $fullpath = $mediadir.$img_path["dir_alias"]."/".$img_path["img_path"];
+        $fullpath = MEDIA_DIR . $img_path["dir_alias"] . "/" . $img_path["img_path"];
         if (is_file($fullpath)) {
             unlink($fullpath);
         }
-        $pearDB->query("DELETE FROM view_img WHERE img_id = '".$img_id."'");
-        $pearDB->query("DELETE FROM view_img_dir_relation WHERE img_img_id = '".$img_id."'");
+        $pearDB->query('DELETE FROM view_img WHERE img_id = ' . $img_id);
+        $pearDB->query('DELETE FROM view_img_dir_relation WHERE img_img_id = ' . $img_id);
     }
     $DBRESULT->free();
 }
 
-function updateImg($img_id, $HTMLfile, $dir_alias, $img_name, $img_comment)
+/**
+ * Move multiple images
+ *
+ * @param int[] $images List of directories ids to move
+ * @param string $destinationDirectoryAlias Destination directory alias
+ * @throws Exception
+ */
+function moveMultImg($images, $destinationDirectoryAlias)
 {
-    if (!$img_id) {
-        return false;
-    }
-    global $pearDB;
-    $mediadir = "./img/media/";
-    $uploaddir = "../filesUpload/images/";
-    /*
-     * 1. upload new file
-     * 2. rename to new name
-     * 3. move to new directory (if not 1.)
-     * 4. update comment
-     */
-    $rq = "SELECT dir_id, dir_alias, img_path, img_comment FROM view_img, view_img_dir, view_img_dir_relation ";
-    $rq .= " WHERE img_id = '".$img_id."' AND img_id = img_img_id AND dir_dir_parent_id = dir_id";
-    $DBRESULT = $pearDB->query($rq);
-    if (!$DBRESULT) {
-        return false;
-    }
-    $img_info = $DBRESULT->fetchRow();
-
-    if ($dir_alias) {
-        $dir_alias = sanitizePath($dir_alias);
-    } else {
-        $dir_alias = $img_info["dir_alias"];
-    }
-    /* insert new file */
-    if ($HTMLfile && $HTMLfile->isUploadedFile()) {
-        $fileinfo = $HTMLfile->getValue();
-        if (!isset($fileinfo["name"])) {
-            return false;
-        }
-        if (isValidImage($uploaddir.$fileinfo["name"])) {
-            $HTMLfile->moveUploadedFile($uploaddir);
-        } else {
-            return false;
-        }
-        deleteImg($img_id);
-        $img_id = insertImg($uploaddir, $fileinfo["name"], $dir_alias, $img_info["img_path"], $img_info["img_comment"]);
-    }
-    /* rename AND not moved*/
-    if ($img_name && $dir_alias == $img_info["dir_alias"]) {
-        $img_ext = pathinfo($img_info["img_path"], PATHINFO_EXTENSION);
-        $filename= $img_name.".".$img_ext;
-        $oldname = $mediadir.$img_info["dir_alias"]."/".$img_info["img_path"];
-        $newname = $mediadir.$img_info["dir_alias"]."/".$filename;
-        if (rename($oldname, $newname)) {
-            $img_info["img_path"] = $filename;
-            $DBRESULT = $pearDB->query(
-                "UPDATE view_img SET img_name = '" . $img_name
-                . "', img_path = '" . $filename . "' WHERE img_id = '"
-                . $img_id . "'"
-            );
-        }
-    }
-    /* move to new dir - only processed if no file was uploaded */
-    if (!$HTMLfile->isUploadedFile() && $dir_alias != $img_info["dir_alias"]) {
-        if (!($dir_id = testDirectoryExistence($dir_alias))) {
-            $dir_id = insertDirectory($dir_alias);
-        }
-        $oldpath = $mediadir.$img_info["dir_alias"]."/".$img_info["img_path"];
-        $newpath = $mediadir.$dir_alias."/".$img_info["img_path"];
-        if (rename($oldpath, $newpath)) {
-            $DBRESULT = $pearDB->query(
-                "UPDATE view_img_dir_relation SET dir_dir_parent_id = '"
-                . $dir_id . "' WHERE img_img_id = '" . $img_id . "'"
-            );
-        }
-    }
-    if ($img_comment) {
-        $DBRESULT = $pearDB->query(
-            "UPDATE view_img SET img_comment = '"
-            . htmlentities($img_comment, ENT_QUOTES, "UTF-8")
-            . "' WHERE img_id = '" . $img_id . "'"
-        );
-    }
-}
-
-function moveMultImg($images, $dirName)
-{
-    if (count($images)>0) {
+    if (count($images) > 0) {
         foreach ($images as $id) {
-            moveImg($id, $dirName);
+            moveImg((int) $id, $destinationDirectoryAlias);
         }
     }
 }
 
-function moveImg($img_id, $dir_alias)
+/**
+ * Move an image
+ *
+ * @param int $imageId Id of the image to move
+ * @param string $destinationDirectoryAlias Destination directory alias
+ * @global CentreonDB $pearDB DB connector
+ * @throws Exception
+ */
+function moveImg($imageId, $destinationDirectoryAlias)
 {
-    if (!$img_id) {
+    if (!is_int($imageId)) {
         return;
     }
     global $pearDB;
-    $mediadir = "./img/media/";
-    $rq = "SELECT dir_id, dir_alias, img_path, img_comment FROM view_img, view_img_dir, view_img_dir_relation ";
-    $rq .= " WHERE img_id = '".$img_id."' AND img_id = img_img_id AND dir_dir_parent_id = dir_id";
-    $DBRESULT = $pearDB->query($rq);
+
+    $DBRESULT = $pearDB->query(
+        'SELECT dir_id, dir_alias, img_path, img_comment '
+        . 'FROM view_img, view_img_dir, view_img_dir_relation '
+        . 'WHERE img_id = ' . $imageId . ' AND img_id = img_img_id '
+        . 'AND dir_dir_parent_id = dir_id'
+    );
     if (!$DBRESULT) {
         return;
     }
     $img_info = $DBRESULT->fetchRow();
 
-    if ($dir_alias) {
-        $dir_alias = sanitizePath($dir_alias);
+    if ($destinationDirectoryAlias) {
+        $destinationDirectoryAlias = sanitizePath($destinationDirectoryAlias);
     } else {
-        $dir_alias = $img_info["dir_alias"];
+        $destinationDirectoryAlias = $img_info["dir_alias"];
     }
-    if ($dir_alias != $img_info["dir_alias"]) {
-        if (!testDirectoryExistence($dir_alias)) {
-            $dir_id = insertDirectory($dir_alias);
+    if ($destinationDirectoryAlias !== $img_info["dir_alias"]) {
+        if (!testDirectoryExistence($destinationDirectoryAlias)) {
+            $dir_id = insertDirectory($destinationDirectoryAlias);
         } else {
-            $rq = "SELECT dir_id FROM view_img_dir WHERE dir_alias = '".$dir_alias."'";
-            $DBRESULT = $pearDB->query($rq);
+            $DBRESULT = $pearDB->query(
+                "SELECT dir_id FROM view_img_dir WHERE dir_alias = '"
+                . CentreonDB::escape($destinationDirectoryAlias) . "'"
+            );
             if (!$DBRESULT) {
                 return;
             }
             $dir_info = $DBRESULT->fetchRow();
-            $dir_id = $dir_info["dir_id"];
+            $dir_id = (int) $dir_info["dir_id"];
         }
-        $oldpath = $mediadir.$img_info["dir_alias"]."/".$img_info["img_path"];
-        $newpath = $mediadir.$dir_alias."/".$img_info["img_path"];
+        $oldpath = MEDIA_DIR . $img_info["dir_alias"] . "/" . $img_info["img_path"];
+        $newpath = MEDIA_DIR . $destinationDirectoryAlias . "/" . $img_info["img_path"];
         if (rename($oldpath, $newpath)) {
-            $DBRESULT = $pearDB->query(
-                "UPDATE view_img_dir_relation "
-                . "SET dir_dir_parent_id = '" . $dir_id
-                . "' WHERE img_img_id = '" . $img_id . "'"
+             $pearDB->query(
+                'UPDATE view_img_dir_relation '
+                . 'SET dir_dir_parent_id = ' . $dir_id
+                . ' WHERE img_img_id = ' . $imageId
             );
         }
     }
 }
 
-function testDirectoryCallback($name)
-{
-    return testDirectoryExistence($name)==0;
-}
-
+/**
+ * Check if the directory exists in the database
+ *
+ * @param string $name Directory name
+ * @global CentreonDB $pearDB DB connector
+ * @return int|false Returns id of the directory if it was found otherwise false
+ * @throws Exception
+ */
 function testDirectoryExistence($name)
 {
     global $pearDB;
-    $dir_id = 0;
     $DBRESULT = $pearDB->query(
         "SELECT dir_name, dir_id FROM view_img_dir WHERE dir_name = '"
-        . htmlentities($name, ENT_QUOTES, "UTF-8") . "'"
+        . CentreonDB::escape($name) . "'"
     );
     if ($DBRESULT->numRows() >= 1) {
         $dir = $DBRESULT->fetchRow();
-        $dir_id = $dir["dir_id"];
+        return (int) $dir["dir_id"];
     }
-    return $dir_id;
+    return false;
 }
 
-function testDirectoryIsEmpty($dir_id)
-{
-    if (!$dir_id) {
-        return true;
-    }
-    global $pearDB;
-
-    $rq = "SELECT img_img_id FROM view_img_dir_relation WHERE dir_dir_parent_id = '".$dir_id."'";
-    $DBRESULT = $pearDB->query($rq);
-    $empty = true;
-    if ($DBRESULT && $DBRESULT->numRows() >= 1) {
-        $empty = false;
-    }
-    $DBRESULT->free();
-    return $empty;
-}
-
+/**
+ * Insert the directory in database
+ *
+ * @param string $dir_alias Alias of the directory
+ * @param string $dir_comment Comment of the directory
+ * @global CentreonDB $pearDB DB connector
+ * @return int|false Returns the new directory id otherwise false
+ * @throws Exception
+ */
 function insertDirectory($dir_alias, $dir_comment = "")
 {
     global $pearDB;
-    $mediadir = "./img/media/";
+
     $dir_alias = sanitizePath($dir_alias);
-    @mkdir($mediadir.$dir_alias);
-    if (is_dir($mediadir.$dir_alias)) {
-        touch($mediadir.$dir_alias."/index.html");
-        $rq = "INSERT INTO view_img_dir ";
-        // NF: do we need alias and name?
-        $rq .= "(dir_name, dir_alias, dir_comment) ";
-        $rq .= "VALUES ";
-        $dir_alias_safe = htmlentities($dir_alias, ENT_QUOTES, "UTF-8");
-        $rq .= "('".$dir_alias_safe."', '".$dir_alias_safe."', '".htmlentities($dir_comment, ENT_QUOTES, "UTF-8")."')";
-        $DBRESULT = $pearDB->query($rq);
-        $DBRESULT = $pearDB->query("SELECT MAX(dir_id) FROM view_img_dir");
-        $dir_id = $DBRESULT->fetchRow();
-        $DBRESULT->free();
-        return ($dir_id["MAX(dir_id)"]);
+    @mkdir(MEDIA_DIR . $dir_alias);
+    if (is_dir(MEDIA_DIR . $dir_alias)) {
+        touch(MEDIA_DIR . $dir_alias . "/index.html");
+        $dir_alias_safe = CentreonDB::escape($dir_alias);
+
+        $rq = 'INSERT INTO view_img_dir (dir_name, dir_alias, dir_comment) '
+            . 'VALUES '
+            . "('" . $dir_alias_safe . "', '" . $dir_alias_safe . "', '"
+            . CentreonDB::escape($dir_comment)."')";
+        $pearDB->query($rq);
+        $result = $pearDB->query('SELECT MAX(dir_id) AS max_id FROM view_img_dir');
+        $maxDirectoryId = $result->fetchRow();
+        $result->free();
+        return (int) $maxDirectoryId["max_id"];
     } else {
-        return "";
+        return false;
     }
 }
 
-function deleteMultDirectory($dirs = array())
+/**
+ * Delete a list of directories
+ *
+ * @param int[] $dirs List of directory id to delete
+ * @throws Exception
+ */
+function deleteMultDirectory($dirs)
 {
-    foreach ($dirs as $selector => $val) {
+    if (!is_array($dirs)) {
+        return;
+    }
+    foreach (array_keys($dirs) as $selector) {
         $id = explode('-', $selector);
-        if (count($id)!=1) {
+        if (count($id) != 1) {
             continue;
         }
-        deleteDirectory($id[0]);
+        deleteDirectory((int) $id[0]);
     }
 }
 
-function deleteDirectory($dirid)
+/**
+ * Delete a directory by its id
+ *
+ * @param int $directoryId Directory id to delete
+ * @global CentreonDB $pearDB DB connector
+ * @throws Exception
+ */
+function deleteDirectory($directoryId)
 {
     global $pearDB;
-    $mediadir = "./img/media/";
+
+    if (!is_int($directoryId)) {
+        return;
+    }
+
     /*
      * Purge images of the directory
      */
-    $rq = "SELECT img_img_id FROM view_img_dir_relation WHERE dir_dir_parent_id = '".$dirid."'";
-    $DBRESULT = $pearDB->query($rq);
-    while ($img = $DBRESULT->fetchRow()) {
-        deleteImg($img["img_img_id"]);
+    $result = $pearDB->query(
+        'SELECT img_img_id FROM view_img_dir_relation '
+        . 'WHERE dir_dir_parent_id = ' . $directoryId
+    );
+    while ($image = $result->fetchRow()) {
+        deleteImg($image["img_img_id"]);
     }
     /*
      * Delete directory
      */
-    $rq = "SELECT dir_alias FROM view_img_dir WHERE dir_id = '".$dirid."'";
-    $DBRESULT = $pearDB->query($rq);
-    $dir_alias = $DBRESULT->fetchRow();
-    $fileTab = scandir($mediadir . $dir_alias["dir_alias"]);
+    $result = $pearDB->query(
+        'SELECT dir_alias FROM view_img_dir WHERE dir_id = ' . $directoryId
+    );
+    $directoryAlias = $result->fetchRow();
+    /**
+     * Deletes all files in the directory before
+     */
+    $fileTab = scandir(MEDIA_DIR . $directoryAlias["dir_alias"]);
     foreach ($fileTab as $fileName) {
-        if (is_file($mediadir . $dir_alias["dir_alias"] . "/" . $fileName)) {
-            unlink($mediadir . $dir_alias["dir_alias"] . "/" . $fileName);
+        if (is_file(MEDIA_DIR . $directoryAlias["dir_alias"] . "/" . $fileName)) {
+            unlink(MEDIA_DIR . $directoryAlias["dir_alias"] . "/" . $fileName);
         }
     }
-    rmdir($mediadir.$dir_alias["dir_alias"]);
-    if (!is_dir($mediadir.$dir_alias["dir_alias"])) {
-        $DBRESULT = $pearDB->query("DELETE FROM view_img_dir WHERE dir_id = '".$dirid."'");
+
+    if (rmdir(MEDIA_DIR . $directoryAlias["dir_alias"])
+        && !is_dir(MEDIA_DIR . $directoryAlias["dir_alias"])) {
+        $pearDB->query(
+            'DELETE FROM view_img_dir WHERE dir_id = ' . $directoryId
+        );
     }
 }
 
-function updateDirectory($dir_id, $dir_alias, $dir_comment = "")
+/**
+ * Updates one directory
+ *
+ * @param int $directoryId Id of the directory to update
+ * @param string $newAlias New alias of the directory
+ * @param string $newComment New comment of the directory
+ * @global CentreonDB $pearDB DB connector
+ * @throws Exception
+ */
+function updateDirectory($directoryId, $newAlias, $newComment = "")
 {
-    if (!$dir_id) {
+    if (!is_int($directoryId)) {
         return;
     }
 
     global $pearDB;
 
-    $mediadir = "./img/media/";
-    $rq = "SELECT dir_alias FROM view_img_dir WHERE dir_id = '".$dir_id."'";
-    $DBRESULT = $pearDB->query($rq);
-    $old_dir = $DBRESULT->fetchRow();
-    $dir_alias = sanitizePath($dir_alias);
-    if (!is_dir($mediadir.$old_dir["dir_alias"])) {
-        mkdir($mediadir.$dir_alias);
+    $result = $pearDB->query(
+        'SELECT dir_alias FROM view_img_dir WHERE dir_id = ' . $directoryId
+    );
+    $currentDirectory = $result->fetchRow();
+    $newAlias = sanitizePath($newAlias);
+    if (!is_dir(MEDIA_DIR . $currentDirectory["dir_alias"])) {
+        mkdir(MEDIA_DIR . $newAlias);
     } else {
-        rename($mediadir.$old_dir["dir_alias"], $mediadir.$dir_alias);
+        rename(
+            MEDIA_DIR . $currentDirectory["dir_alias"],
+            MEDIA_DIR . $newAlias
+        );
     }
 
-    if (is_dir($mediadir.$dir_alias)) {
-        $rq = "UPDATE view_img_dir ";
-        $rq .= "SET      dir_name = '".htmlentities($dir_alias, ENT_QUOTES, "UTF-8")."', " .
-            "dir_alias = '".$dir_alias."', " .
-            "dir_comment = '".htmlentities($dir_comment, ENT_QUOTES, "UTF-8")."' " .
-            "WHERE dir_id = '".$dir_id."'";
-        $DBRESULT = $pearDB->query($rq);
+    if (is_dir(MEDIA_DIR . $newAlias)) {
+        if (!file_exists(MEDIA_DIR . $newAlias . "/index.html")) {
+            touch(MEDIA_DIR . $newAlias . "/index.html");
+        }
+        $pearDB->query(
+            "UPDATE view_img_dir "
+            . "SET dir_name = '" . CentreonDB::escape($newAlias) . "', "
+            . "dir_alias = '" . CentreonDB::escape($newAlias) . "', "
+            . "dir_comment = '" . CentreonDB::escape($newComment) . "' "
+            . 'WHERE dir_id = ' . $directoryId
+        );
     }
 }
 
-function getListDirectory($filter = null)
+/**
+ * Returns a list a directories according to the given filter
+ *
+ * @param string $directoryNameFilter Directory name to search
+ * @return array List of directories indexed by their id. array(id => directoryName, ...)
+ * @throws Exception
+ */
+function getListDirectory($directoryNameFilter = null)
 {
     global $pearDB;
 
-    $query = "SELECT dir_id, dir_name " .
-        "FROM view_img_dir ";
-    if (!is_null($filter) && strlen($filter) > 0) {
-        $query .= "WHERE dir_name LIKE '" . $filter . "%' ";
+    $query = "SELECT dir_id, dir_name "
+        . "FROM view_img_dir ";
+    if (!is_null($directoryNameFilter) && strlen($directoryNameFilter) > 0) {
+        $query .= "WHERE dir_name LIKE '" . CentreonDB::escape($directoryNameFilter) . "%' ";
     }
     $query .= "ORDER BY dir_name";
-    $list_dir = array();
+    $directories = array();
     $dbresult = $pearDB->query($query);
     while ($row = $dbresult->fetchRow(DB_FETCHMODE_ASSOC)) {
-        $list_dir[$row['dir_id']] = $row['dir_name'];
+        $directories[$row['dir_id']] = htmlentities($row['dir_name']);
     }
     $dbresult->free();
-    return $list_dir;
+    return $directories;
 }
