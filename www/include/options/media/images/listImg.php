@@ -45,7 +45,7 @@ if (isset($_POST['searchM']) && $_POST['searchM']) {
     $search = $_POST['searchM'];
     $res = $pearDB->query(
         "SELECT COUNT(*) FROM view_img, view_img_dir, view_img_dir_relation "
-        . "WHERE (img_name LIKE '%" .CentreonDB::escape($search) . "%' "
+        . "WHERE (img_name LIKE '%" . CentreonDB::escape($search) . "%' "
         . "OR dir_name LIKE '%" . CentreonDB::escape($search) . "%') "
         . "AND img_img_id = img_id AND dir_dir_parent_id = dir_id"
     );
@@ -220,7 +220,7 @@ $tpl->assign('limit', $limit);
 $tpl->assign('p', $p);
 $tpl->assign('session_id', session_id());
 $tpl->assign('syncDir', _("Synchronize Media Directory"));
-$tpl->assign('searchM', $search);
+$tpl->assign('searchM', htmlentities($search));
 
 $renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 $form->accept($renderer);

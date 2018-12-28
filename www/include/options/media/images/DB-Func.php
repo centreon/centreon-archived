@@ -452,7 +452,7 @@ function getListDirectory($directoryNameFilter = null)
     $directories = array();
     $dbresult = $pearDB->query($query);
     while ($row = $dbresult->fetchRow(DB_FETCHMODE_ASSOC)) {
-        $directories[$row['dir_id']] = $row['dir_name'];
+        $directories[$row['dir_id']] = htmlentities($row['dir_name']);
     }
     $dbresult->free();
     return $directories;
