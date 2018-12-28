@@ -286,6 +286,18 @@ class CentreonAuthLDAP
                     return false;
                 }
                 $this->contactInfos['contact_ldap_dn'] = $userDn;
+                
+                /*
+                 * try to update user groups from AD
+                 */
+                try {
+                    include_once(realpath(dirname(__FILE__) .  '/centreonContactgroup.class.php'));
+                    $cgs = new CentreonContactgroup($this->pearDB);
+                    $cgs->syncWithLdap();
+                } catch (\Exception $e) {
+                    $this->CentreonLog->insertLog(3, 'Error in updating ldap groups');
+                }
+
                 return true;
             } else {
                 /*
