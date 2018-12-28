@@ -7,7 +7,7 @@ use Symfony\Component\Yaml\Yaml;
 class ExportParserYaml implements ExportParserInterface
 {
 
-    public static function parse(string $filename, callable $macros = null): array
+    public function parse(string $filename, callable $macros = null): array
     {
         if (!file_exists($filename)) {
             return [];
@@ -24,7 +24,7 @@ class ExportParserYaml implements ExportParserInterface
         return $value;
     }
 
-    public static function dump(array $input, string $filename): void
+    public function dump(array $input, string $filename): void
     {
         if (!$input) {
             return;

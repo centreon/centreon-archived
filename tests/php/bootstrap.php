@@ -15,8 +15,8 @@
  * limitations under the License.
  */
 
-define('_CENTREON_PATH_', realpath('/tmp/'));
-define('_CENTREON_ETC_', realpath('/tmp/'));
+define('_CENTREON_PATH_', realpath(__DIR__.'/../../') . '/');
+define('_CENTREON_ETC_', realpath(__DIR__.'/../../') . '/');
 // Disable warnings for PEAR.
 error_reporting(E_ALL & ~E_STRICT);
 
