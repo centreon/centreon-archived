@@ -52,7 +52,7 @@ function searchUserName($user_name)
         if ($str != "") {
             $str .= ", ";
         }
-        $str .= "'" . $row['contact_id'] . "'";
+        $str .= "'" . (int) $row['contact_id'] . "'";
     }
     if ($str == "") {
         $str = "''";
@@ -85,7 +85,9 @@ $pearDBO = new CentreonDB("centstorage");
 $contactList = array();
 $DBRES = $pearDB->query("SELECT contact_id, contact_name, contact_alias FROM contact");
 while ($row = $DBRES->fetchRow()) {
-    $contactList[$row["contact_id"]] = $row["contact_name"] . " (".$row["contact_alias"].")";
+    $contactList[$row["contact_id"]] = CentreonUtils::escapeSecure(
+        $row["contact_name"] . " (" . $row["contact_alias"] . ")"
+    );
 }
 
 if (isset($_POST["searchO"])) {
@@ -188,10 +190,13 @@ if (!is_null($otype)) {
         } else {
             $query .= " AND ";
         }
-        $query .= " object_type = '".$objects_type_tab[$otype]."' ";
+        $query .= " object_type = '" . $pearDB->escape($objects_type_tab[$otype]) . "' ";
     }
 }
-$query .= " ORDER BY action_log_date DESC LIMIT ".$num * $limit.", ".$limit;
+
+$query .= " ORDER BY action_log_date DESC LIMIT "
+    . (int) ($num * $limit) . ", " . (int) $limit;
+
 $DBRESULT = $pearDBO->query($query);
 
 /* Get rows number */
@@ -201,7 +206,9 @@ include("./include/common/checkPagination.php");
 $elemArray = array();
 while ($res = $DBRESULT->fetchRow()) {
     if ($res['object_id']) {
-        $objectName = str_replace(array('#S#', '#BS#'), array("/", "\\"), $res["object_name"]);
+        $objectName = CentreonUtils::escapeSecure(
+            str_replace(array('#S#', '#BS#'), array("/", "\\"), $res["object_name"])
+        );
 
         if ($res['object_type'] == "service") {
             $tmp = $centreon->CentreonLogAction->getHostId($res['object_id']);
@@ -210,22 +217,30 @@ while ($res = $DBRESULT->fetchRow()) {
                     $tmp2 = $centreon->CentreonLogAction->getHostId($res['object_id']);
                     $tabHost = split(',', $tmp2["h"]);
                     if (count($tabHost) == 1) {
-                        $host_name = $centreon->CentreonLogAction->getHostName($tmp2["h"]);
+                        $host_name = CentreonUtils::escapeSecure(
+                            $centreon->CentreonLogAction->getHostName($tmp2["h"])
+                        );
                     } elseif (count($tabHost) > 1) {
                         $hosts = array();
                         foreach ($tabHost as $key => $value) {
-                            $hosts[] = $centreon->CentreonLogAction->getHostName($value);
+                            $hosts[] = CentreonUtils::escapeSecure(
+                                $centreon->CentreonLogAction->getHostName($value)
+                            );
                         }
                     }
                 } elseif (isset($tmp['hg'])) {
                     $tmp2 = $centreon->CentreonLogAction->getHostId($res['object_id']);
                     $tabHost = split(',', $tmp2["hg"]);
                     if (count($tabHost) == 1) {
-                        $hg_name = $centreon->CentreonLogAction->getHostGroupName($tmp2["hg"]);
+                        $hg_name = CentreonUtils::escapeSecure(
+                            $centreon->CentreonLogAction->getHostGroupName($tmp2["hg"])
+                        );
                     } elseif (count($tabHost) > 1) {
                         $hostgroups = array();
                         foreach ($tabHost as $key => $value) {
-                            $hostgroups[] = $centreon->CentreonLogAction->getHostGroupName($value);
+                            $hostgroups[] = CentreonUtils::escapeSecure(
+                                $centreon->CentreonLogAction->getHostGroupName($value)
+                            );
                         }
                     }
                 }
@@ -236,7 +251,7 @@ while ($res = $DBRESULT->fetchRow()) {
             if (isset($host_name) && $host_name != '') {
                 $elemArray[] = array(
                     "date" => date('Y/m/d H:i:s', $res['action_log_date']),
-                    "type" => $res['object_type'],
+                    "type" => CentreonUtils::escapeSecure($res['object_type']),
                     "object_name" => $objectName,
                     "action_log_id" => $res['action_log_id'],
                     "object_id" => $res['object_id'],
@@ -249,7 +264,7 @@ while ($res = $DBRESULT->fetchRow()) {
             } elseif (isset($hosts) && count($hosts) != 1) {
                 $elemArray[] = array(
                     "date" => date('Y/m/d H:i:s', $res['action_log_date']),
-                    "type" => $res['object_type'],
+                    "type" => CentreonUtils::escapeSecure($res['object_type']),
                     "object_name" => $objectName,
                     "action_log_id" => $res['action_log_id'],
                     "object_id" => $res['object_id'],
@@ -262,7 +277,7 @@ while ($res = $DBRESULT->fetchRow()) {
             } elseif (isset($hg_name) && $hg_name != '') {
                 $elemArray[] = array(
                     "date" => date('Y/m/d H:i:s', $res['action_log_date']),
-                    "type" => $res['object_type'],
+                    "type" => CentreonUtils::escapeSecure($res['object_type']),
                     "object_name" => $objectName,
                     "action_log_id" => $res['action_log_id'],
                     "object_id" => $res['object_id'],
@@ -275,7 +290,7 @@ while ($res = $DBRESULT->fetchRow()) {
             } elseif (isset($hostgroups) && count($hostgroups) != 1) {
                 $elemArray[] = array(
                     "date" => date('Y/m/d H:i:s', $res['action_log_date']),
-                    "type" => $res['object_type'],
+                    "type" => CentreonUtils::escapeSecure($res['object_type']),
                     "object_name" => $objectName,
                     "action_log_id" => $res['action_log_id'],
                     "object_id" => $res['object_id'],
@@ -316,10 +331,10 @@ $tpl->assign('form', $renderer->toArray());
 $tpl->assign('search_object_str', _("Object"));
 $tpl->assign('search_user_str', _("User"));
 $tpl->assign('Search', _('Search'));
-$tpl->assign('searchO', htmlentities($searchO));
-$tpl->assign('searchU', htmlentities($searchU));
+$tpl->assign('searchO', CentreonUtils::escapeSecure($searchO));
+$tpl->assign('searchU', CentreonUtils::escapeSecure($searchU));
 $tpl->assign('obj_str', _("Object Type"));
-$tpl->assign('type_id', $otype);
+$tpl->assign('type_id', urlencode($otype));
 
 $tpl->assign('event_type', _("Event Type"));
 $tpl->assign('time', _("Time"));

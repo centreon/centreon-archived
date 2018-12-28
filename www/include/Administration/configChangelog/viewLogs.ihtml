@@ -11,16 +11,16 @@
             <td></td>
         </tr>
         <tr>
-            <td><input type='text' name='searchO' value="{$searchO}" /></td>
-            <td><input type='text' name='searchU' value="{$searchU}" /></td>
+            <td><input type='text' name='searchO' value="{$searchO|escape}" /></td>
+            <td><input type='text' name='searchU' value="{$searchU|escape}" /></td>
             <td><select name='otype'>{$obj_type}</select></td>
-            <td><input type='submit' class="btc bt_success" name='SearchB' value='{$Search}' /></td>
+            <td><input type='submit' class="btc bt_success" name='SearchB' value='{$Search|escape}' /></td>
         </tr>
     </tbody>
 </table>
 <table class="ToolbarTable table">
     <tr class="ToolbarTR">
-        <td style='width:30%;'><input name="p" value="{$p}" type="hidden">&nbsp;</td>
+        <td style='width:30%;'><input name="p" value="{$p|escape}" type="hidden">&nbsp;</td>
         {php}
            include('./include/common/pagination.php');
         {/php}
@@ -47,11 +47,11 @@
         <td class='ListColCenter'>{$elem.type}</td>
         <td class='ListColLeft'>
         {if $elem.host != ''}
-            <a href="./main.php?p={$p}&object_type={$elem.type}&object_id={$elem.object_id}&searchU={$searchU}&searchO={$searchO}&otype={$type_id}">{$elem.host} / {$elem.object_name}</a>
+            <a href="./main.php?p={$p}&object_type={$elem.type}&object_id={$elem.object_id}&searchU={$searchU|urlencode}&searchO={$searchO|urlencode}&otype={$type_id}">{$elem.host} / {$elem.object_name}</a>
         {elseif $elem.hostgroup != ''}
-            <a href="./main.php?p={$p}&object_type={$elem.type}&object_id={$elem.object_id}&searchU={$searchU}&searchO={$searchO}&otype={$type_id}">{$elem.hostgroup} / {$elem.object_name}</a>
+            <a href="./main.php?p={$p}&object_type={$elem.type}&object_id={$elem.object_id}&searchU={$searchU|urlencode}&searchO={$searchO|urlencode}&otype={$type_id}">{$elem.hostgroup} / {$elem.object_name}</a>
         {elseif $elem.hosts}
-            <a href="./main.php?p={$p}&object_type={$elem.type}&object_id={$elem.object_id}&searchU={$searchU}&searchO={$searchO}&otype={$type_id}">
+            <a href="./main.php?p={$p}&object_type={$elem.type}&object_id={$elem.object_id}&searchU={$searchU|urlencode}&searchO={$searchO|urlencode}&otype={$type_id}">
             (
             {assign var=flag value=0}
             {foreach key=key2 item=item2 from=$elem.hosts}
@@ -61,7 +61,7 @@
             {/foreach}
             ) {$elem.object_name}</a>
         {elseif $elem.hostgroups}
-            <a href="./main.php?p={$p}&object_type={$elem.type}&object_id={$elem.object_id}&searchU={$searchU}&searchO={$searchO}&otype={$type_id}">
+            <a href="./main.php?p={$p}&object_type={$elem.type}&object_id={$elem.object_id}&searchU={$searchU|urlencode}&searchO={$searchO|urlencode}&otype={$type_id}">
             (
             {assign var=flag value=0}
             {foreach key=key2 item=item2 from=$elem.hostgroups}
@@ -71,7 +71,7 @@
             {/foreach}
             ) {$elem.object_name}</a>
         {else}
-            <a href="./main.php?p={$p}&object_type={$elem.type}&object_id={$elem.object_id}&searchU={$searchU}&searchO={$searchO}&otype={$type_id}">{$elem.object_name}</a>
+            <a href="./main.php?p={$p}&object_type={$elem.type}&object_id={$elem.object_id}&searchU={$searchU|urlencode}&searchO={$searchO|urlencode}&otype={$type_id|urlencode}">{$elem.object_name}</a>
         {/if}
         </td>
         <td class='ListColCenter'>{$elem.author}</td>
