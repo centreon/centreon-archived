@@ -51,7 +51,7 @@ class ServiceProvider implements AutoloadServiceProviderInterface
                 $pimple['centreon.db-manager'],
                 new CentcoreCommandService()
             );
-            $service->setCentreonRestHttp(new \CentreonRestHttp);
+            $service->setCentreonRestHttp($pimple['rest_http']);
             return $service;
         };
 
@@ -249,7 +249,7 @@ class ServiceProvider implements AutoloadServiceProviderInterface
             return $service;
         });
     }
-    
+
     public static function order() : int {
         return 20;
     }

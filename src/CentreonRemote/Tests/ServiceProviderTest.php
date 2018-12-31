@@ -10,6 +10,7 @@ use CentreonRemote\Domain;
 use CentreonRemote\Infrastructure\Service;
 use CentreonRemote\Domain\Exporter;
 use CentreonACL;
+use CentreonRestHttp;
 
 /**
  * @group CentreonRemote
@@ -27,24 +28,28 @@ class ServiceProviderTest extends TestCase
         $this->container = new Container;
         $this->container['centreon.acl'] = $this->getMockBuilder(CentreonACL::class)
             ->disableOriginalConstructor()
-            ->getMock()
-        ;
+            ->getMock();
 
         $this->container['realtime_db'] = $this->container['configuration_db'] = new Mock\CentreonDB;
         $this->container['configuration_db']->addResultSet("SELECT * FROM informations WHERE `key` = :key LIMIT 1", []);
-        
-        $locator = new ServiceLocator($this->container, [
-            'realtime_db',
-            'configuration_db',
-        ]);
+
+        $this->container['rest_http'] = $this->getMockBuilder(CentreonRestHttp::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $locator = new ServiceLocator($this->container, ['realtime_db', 'configuration_db']);
         $this->container['centreon.db-manager'] = new \Centreon\Infrastructure\Service\CentreonDBManagerService($locator);
         $this->container['centreon.webservice'] = $this->container['centreon.clapi'] = new class {
+            public function add($class)
+            {
 
-                public function add($class)
-                {
-                    
-                }
-            };
+            }
+        };
+
+        $this->container['centreon.broker_repository'] =
+            new \Centreon\Domain\Repository\CfgCentreonBrokerRepository($this->container['configuration_db']);
+        $this->container['centreon.broker_configuration_service'] =
+            new \Centreon\Domain\Service\BrokerConfigurationService();
 
         $this->provider->register($this->container);
     }
@@ -73,9 +78,9 @@ class ServiceProviderTest extends TestCase
         // check list of services
         foreach ($checkList as $serviceName => $className) {
             $this->assertTrue($this->container->offsetExists($serviceName));
-            
+
             $service = $this->container->offsetGet($serviceName);
-            
+
             $this->assertInstanceOf($className, $service);
         }
     }
@@ -97,7 +102,7 @@ class ServiceProviderTest extends TestCase
             Exporter\TimePeriodExporter::class,
             Exporter\TrapExporter::class,
         ];
-        
+
         $exporter = $this->container['centreon_remote.exporter'];
 
         // check list of exporters
@@ -106,10 +111,10 @@ class ServiceProviderTest extends TestCase
 
             $this->assertTrue($exporter->has($name));
             $data = $exporter->get($className::getName());
-            
+
             $this->assertEquals($name, $data['name']);
             $this->assertEquals($className, $data['classname']);
-            
+
             $object = $data['factory']($this->container);
 
             $this->assertInstanceOf($className, $object);

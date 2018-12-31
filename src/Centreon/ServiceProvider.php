@@ -69,7 +69,7 @@ class ServiceProvider implements AutoloadServiceProviderInterface
         };
 
         $pimple['centreon.config'] = function(Container $container) : CentcoreConfigService {
-            $service = new CentcoreConfigService($container);
+            $service = new CentcoreConfigService();
 
             return $service;
         };
