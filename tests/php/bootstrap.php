@@ -27,7 +27,7 @@ foreach ($mockedPathConstants as $mockedPathConstant) {
 $mockedVarConstants = ['hostCentreon', 'hostCentstorage', 'user', 'password', 'db', 'dbcstg', 'port'];
 foreach ($mockedVarConstants as $mockedVarConstant) {
     if (!defined($mockedVarConstant)) {
-        define($mockedVarConstant, realpath(__DIR__ . '/../../') . '/');
+        define($mockedVarConstant, '');
     }
 }
 
