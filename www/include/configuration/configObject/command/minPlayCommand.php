@@ -137,7 +137,7 @@ if ($error_msg != "") {
         if (preg_match("/\.\./", $command)) {
             $msg = _("Directory traversal detected");
         } else {
-            $msg = exec($command, $stdout, $status);
+            $msg = exec(escapeshellcmd($command), $stdout, $status);
             $msg = join("<br/>", $stdout);
             if ($status == 1) {
                 $status = _("WARNING");
