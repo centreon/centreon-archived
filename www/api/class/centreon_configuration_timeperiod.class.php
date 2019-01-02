@@ -116,7 +116,7 @@ class CentreonConfigurationTimeperiod extends CentreonConfigurationObjects
 
         return [
             'items' => $timePeriodList,
-            'total' => $stmt->rowCount(),
+            'total' => (int) $this->pearDB->numberRows()
         ];
     }
 }

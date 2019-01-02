@@ -83,7 +83,7 @@ class CentreonMonitoringMetric extends CentreonConfigurationObjects
         }
         return array(
             'items' => $metricList,
-            'total' => $stmt->rowCount()
+            'total' => (int) $this->pearDBMonitoring->numberRows()
         );
     }
 
