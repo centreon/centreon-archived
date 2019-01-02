@@ -35,7 +35,7 @@ class LanguageSelectionContext extends CentreonContext
         $this->visit('main.php?p=50104&o=c');
         $enLang = $this->assertFind('css', 'select[name="contact_lang"] > option[value = "en_US.UTF-8"]');
 
-        if(is_array($enLang) || $enLang->getText() !== 'en_US') {
+        if (is_array($enLang) || $enLang->getText() !== 'en_US') {
             throw new \Exception('en_US option not properly worded or duplicate');
         }
     }
