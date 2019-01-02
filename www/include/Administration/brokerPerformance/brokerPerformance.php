@@ -265,6 +265,12 @@ try {
         $statsfile = $row['cache_directory'] . '/' . $row['config_name'] . '-stats.json';
         if ($defaultPoller != $selectedPoller) {
             $statsfile = _CENTREON_VARLIB_ . '/broker-stats/broker-stats-' . $selectedPoller . '.dat';
+
+            /* security: verify that the file is in the correct path */
+            $statsfile = realpath($statsfile);
+            if (substr($statsfile, 0, strlen(_CENTREON_VARLIB_)) !== _CENTREON_VARLIB_ ) {
+                $statsfile = "";
+            }
         }
         if (!file_exists($statsfile) || !is_readable($statsfile)) {
             $perf_err[$row['config_name']] = _('Cannot open statistics file');
