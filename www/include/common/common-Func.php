@@ -1817,7 +1817,7 @@ function getLangs()
             closedir($handle);
         }
     }
-    if (!array_key_exists('en_US.UTF-8', $langs)){
+    if (!array_key_exists('en_US.UTF-8', $langs)) {
         $langs["en_US.UTF-8"] = "en_US";
     }
 
