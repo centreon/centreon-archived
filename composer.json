@@ -11,7 +11,7 @@
     ],
     "repositories": [
         { "packagist.org": false },
-        { "type": "composer", "url": "http://satis.centreon.com" }
+        { "type": "composer", "url": "http://ci.int.centreon.com" }
     ],
     "config": {
         "secure-http": false
