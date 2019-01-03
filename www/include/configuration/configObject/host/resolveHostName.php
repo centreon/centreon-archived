@@ -57,9 +57,6 @@ if (isset($sid)) {
 /**
  * Resolving host name
  */
-$hostName = str_replace(
-    array('<', '>'),
-    array('&lt;', '&gt;'),
-    $_GET['hostName']
-);
+$hostName = $_GET['hostName'];
+
 echo gethostbyname($hostName);
