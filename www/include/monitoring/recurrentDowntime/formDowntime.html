@@ -235,20 +235,30 @@ function validPeriods()
 }
 </script>
         {/literal}
+
 <div id="msg_err" style="color: red; text-align: center; font-weight: bold; margin: 4px; {if !$msg_err }display: none;{/if}">{$msg_err}</div>
+
+{if $form.msgacl }
+<div style="color: red; text-align: center; font-weight: bold; margin: 4px" >
+    {t}You can't edit this downtime because you don't have access to all of its resources{/t}
+</div>
+{/if}
+
 <form {$form.attributes}>
     <div class="headerTabContainer">
     <ul id="mainnav">
         <li class="a" id='c1'><a href="#" onclick="javascript:montre('1');">{$sort1}</a></li>
         <li class="b" id='c2'><a href="#" onclick="javascript:montre('2');">{$sort2}</a></li>
     </ul>
-    <div id="validFormTop">
-        {if $o == "a" || $o == "c" || $o == "mc"}
-        <p class="oreonbutton">{$form.submitC.html}{$form.submitMC.html}{$form.submitA.html}&nbsp;&nbsp;&nbsp;{$form.reset.html}</p>
-        {else if $o == "w"}
-        <p class="oreonbutton">{$form.change.html}</p>
+        {if !$form.msgacl }
+            <div id="validFormTop">
+            {if $o == "a" || $o == "c" || $o == "mc"}
+            <p class="oreonbutton">{$form.submitC.html}{$form.submitMC.html}{$form.submitA.html}&nbsp;&nbsp;&nbsp;{$form.reset.html}</p>
+            {else if $o == "w"}
+            <p class="oreonbutton">{$form.change.html}</p>
+            {/if}
+            </div>
         {/if}
-    </div>
     </div>
     <div id="tab1" class="tab">
     <table class="formTable table">
@@ -276,13 +286,22 @@ function validPeriods()
                 <table>
                     {if $period_err }<tr><td colspan="2" style="color: red;">{$period_err}</td></tr>{/if}
                     <tr>
-                        <td class="FormRowValue">{if $o != "w"}<div style="cursor: pointer; color : #009fdf;"><img src="./img/icons/circle-plus.png" class="ico-14" style="vertical-align: middle;" onclick="addPeriods()" /> <a href="#" onclick="javascript:addPeriods()" style="color: #4ccaff; text-decoration: none;">{$add}</a></div>{/if}</td>
+                        {if !$form.msgacl }
+                        <td class="FormRowValue">
+                            {if $o != "w"}
+                            <div style="cursor: pointer; color : #009fdf;">
+                                <img src="./img/icons/circle-plus.png" class="ico-14" style="vertical-align: middle;" onclick="addPeriods()" />
+                                <a href="#" onclick="javascript:addPeriods()" style="color: #4ccaff; text-decoration: none;">{$add}</a>
+                            </div>
+                            {/if}
+                        </td>
+                        {/if}
                     </tr>
                     <tr>
                         <td>
                             <div id="tabs_periods">
                                 <ul id="ul_tabs">
-                                    {if $o == "w"}
+                                    {if $o == "w" || $form.msgacl }
                                     {foreach item=period from=$periods_tab}
                                     {assign var='nbperiod' value='1'}
                                     {if $period.month_cycle == 'none'}
@@ -360,13 +379,15 @@ function validPeriods()
         {/if}
     </table>
     </div>
-    <div id="validForm">
-    {if $o == "a" || $o == "c" || $o == "mc"}
-    <p class="oreonbutton">{$form.submitC.html}{$form.submitMC.html}{$form.submitA.html}&nbsp;&nbsp;&nbsp;{$form.reset.html}</p>
-    {else if $o == "w"}
-    <p class="oreonbutton">{$form.change.html}</p>
+    {if !$form.msgacl }
+        <div id="validForm">
+        {if $o == "a" || $o == "c" || $o == "mc"}
+        <p class="oreonbutton">{$form.submitC.html}{$form.submitMC.html}{$form.submitA.html}&nbsp;&nbsp;&nbsp;{$form.reset.html}</p>
+        {else if $o == "w"}
+        <p class="oreonbutton">{$form.change.html}</p>
+        {/if}
+        </div>
     {/if}
-    </div>
     {$form.hidden}
 </form>
 {$helptext}

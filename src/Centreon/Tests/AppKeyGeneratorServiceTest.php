@@ -11,19 +11,19 @@ class AppKeyGeneratorServiceTest extends TestCase
 
     public function testGenerateKey()
     {
-        $service = $this->getMockBuilder(AppKeyGeneratorService::class)->getMock();
+        $service = new AppKeyGeneratorService;
         $key = $service->generateKey();
 
         /**
          *  string generated is an md5
          */
-        $this->assertStringMatchesFormat(self::MD5_REGEX, $key);
+        $this->assertRegExp(self::MD5_REGEX, $key);
 
         /**
          * second string different and matches format
          */
         $key2 = $service->generateKey();
-        $this->assertStringMatchesFormat(self::MD5_REGEX, $key2);
+        $this->assertRegExp(self::MD5_REGEX, $key2);
         $this->assertNotSame($key,$key2);
     }
 }

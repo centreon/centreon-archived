@@ -1,13 +1,13 @@
-import React, {Component} from "react";
+import React, { Component } from "react";
 import config from "./config";
 import Header from "./components/header";
-import {Switch} from "react-router-dom";
-import {ConnectedRouter} from "react-router-redux";
-import {history} from "./store";
+import { Switch } from "react-router-dom";
+import { ConnectedRouter } from "react-router-redux";
+import { history } from "./store";
 import ClassicRoute from "./components/router/classicRoute";
 import ReactRoute from './components/router/reactRoute';
 
-import {classicRoutes, reactRoutes} from "./route-maps";
+import { classicRoutes, reactRoutes } from "./route-maps";
 import NavigationComponent from "./components/navigation";
 import Footer from "./components/footer";
 import Fullscreen from 'react-fullscreen-crossbrowser';
@@ -33,8 +33,32 @@ class App extends Component {
     return (parsedArguments.min === "1")
   }
 
+  // enable fullscreen
   goFull = () => {
-    this.setState({ isFullscreenEnabled: true });
+    // set fullscreen url parameters
+    // this will be used to init iframe src
+    window['fullscreenSearch'] = window.location.search
+    window['fullscreenHash'] = window.location.hash
+
+    // enable fullscreen after 200ms
+    setTimeout(() => {
+      this.setState({ isFullscreenEnabled: true });
+    }, 200)
+  }
+
+  // disable fullscreen
+  removeFullscreenParams = () => {
+    if (history.location.pathname == '/_CENTREON_PATH_PLACEHOLDER_/main.php') {
+      history.push({
+        pathname: '/_CENTREON_PATH_PLACEHOLDER_/main.php',
+        search: window['fullscreenSearch'],
+        hash: window['fullscreenHash']
+      })
+    }
+
+    // remove fullscreen parameters to keep normal routing
+    delete window['fullscreenSearch'];
+    delete window['fullscreenHash'];
   }
 
   // get allowed routes
@@ -99,6 +123,7 @@ class App extends Component {
             <div id="fullscreen-wrapper">
               <Fullscreen
                 enabled={this.state.isFullscreenEnabled}
+                onClose={this.removeFullscreenParams}
                 onChange={isFullscreenEnabled => this.setState({isFullscreenEnabled})}>
                 <div className="full-screenable-node">
                   <div className="main-content">

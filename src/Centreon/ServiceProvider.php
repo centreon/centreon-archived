@@ -46,7 +46,7 @@ class ServiceProvider implements AutoloadServiceProviderInterface
         };
 
         $pimple['centreon.user'] = function(Container $container): \CentreonUser {
-            if (session_status() == PHP_SESSION_NONE) {
+            if (php_sapi_name() !== 'cli' && session_status() == PHP_SESSION_NONE) {
                 session_start();
             }
 

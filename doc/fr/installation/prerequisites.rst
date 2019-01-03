@@ -35,13 +35,13 @@ SGBD
 
 **Centreon vous recommande d'utiliser MariaDB** plutôt que le moteur MySQL.
 
-+----------+-----------+
-| Logiciel | Version   |
-+==========+===========+
-| MariaDB  | >= 10.1.x |
-+----------+-----------+
-| MySQL    | >= 5.6.x  |
-+----------+-----------+
++----------+------------+
+| Logiciel | Version    |
++==========+============+
+| MariaDB  | >= 10.1.29 |
++----------+------------+
+| MySQL    | >= 5.6.16  |
++----------+------------+
 
 Dépendances logicielles
 =======================

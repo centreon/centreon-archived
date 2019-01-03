@@ -30,7 +30,7 @@ L'architecture distribuée avec Remote Server consiste à avoir trois types d'en
 
 * Le serveur central qui centralise les informations de supervision et permet de configurer la supervision
 * Un ou plusieurs collecteurs qui sont chargés de la supervision des équipements
-* Un ou plusieurs Remote Server pour afficher et opérer sur un sous ensemble des données collectées
+* Un ou plusieurs Remote Server pour afficher et opérer sur un sous-ensemble des données collectées
 
 Les serveurs centraux regroupent les éléments suivants :
 
@@ -39,9 +39,9 @@ Les serveurs centraux regroupent les éléments suivants :
 * Le broker
 * Les bases de données (MySQL + RRD)
 
-Le Remote Server regroupent les éléments suivants :
+Le Remote Server regroupe les éléments suivants :
 
-* L'interface web de Centreon (présentation et opération d'un sous ensemble des données)
+* L'interface web de Centreon (présentation et opération d'un sous-ensemble des données)
 * Le moteur de supervision
 * Le broker
 * Les bases de données (MySQL + RRD)

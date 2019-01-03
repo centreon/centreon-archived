@@ -39,23 +39,40 @@ class Configuration
 {
     /**
      *
-     * @var array
+     * @var array the global configuration
      */
     protected $configuration;
 
     /**
-     *
-     * @param array $configuration
+     * @var string the centreon path
      */
-    public function __construct($configuration) {
+    protected $centreonPath;
+
+    /**
+     *
+     * @param array $configuration the global configuration (mainly database)
+     * @param string $centreonPath the centreon directory path
+     */
+    public function __construct(array $configuration, string $centreonPath)
+    {
         $this->configuration = $configuration;
+        $this->centreonPath = $centreonPath;
     }
 
-    public function get($key)
+    /**
+     * Get configuration parameter by key
+     *
+     * @param string $key the key parameter to get
+     * @return string the parameter value
+     */
+    public function get(string $key)
     {
         $value = null;
 
-        if (isset($this->configuration[$key])) {
+        // specific case for centreon path which is not stored in $conf_centreon
+        if ($key === 'centreon_path') {
+            $value = $this->centreonPath;
+        } elseif (isset($this->configuration[$key])) {
             $value = $this->configuration[$key];
         }
 

@@ -49,8 +49,8 @@ if (file_exists(_CENTREON_ETC_ . '/centreon.conf.php')) {
     }
 
     if (isset($dependencyInjector)) {
-        $dependencyInjector['configuration'] = function ($c) use ($conf_centreon) {
-            return new CentreonLegacy\Core\Configuration\Configuration($conf_centreon);
+        $dependencyInjector['configuration'] = function ($c) use ($conf_centreon, $centreon_path) {
+            return new CentreonLegacy\Core\Configuration\Configuration($conf_centreon, $centreon_path);
         };
     }
 }

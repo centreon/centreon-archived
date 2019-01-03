@@ -61,9 +61,13 @@ Run the following command: ::
 Updating the Centreon solution
 ==============================
 
+Clean yum cache: ::
+
+    # yum clean all
+
 Upgrade all components: ::
 
-    # yum update centreon*
+    # yum update centreon\*
 
 .. note::
     Accept new GPG keys from repositories as needed.
