@@ -655,8 +655,11 @@ class CentreonCustomView
         $queryValue = array();
 
         if ($this->checkPermission($params['custom_view_id'])) {
-            // share with users
+            //////////////////////
+            // share with users //
+            //////////////////////
             $sharedUsers = array();
+            $alwaysSharedUsers = array();
             $params['lockedUsers'] = isset($params['lockedUsers']) ? $params['lockedUsers'] : array();
             foreach ($params['lockedUsers'] as $lockedUser) {
                 if ($lockedUser != $centreon->user->user_id) {
@@ -670,6 +673,7 @@ class CentreonCustomView
                 }
             }
 
+            // select user already share
             $query = 'SELECT user_id ' .
                 'FROM custom_view_user_relation ' .
                 'WHERE custom_view_id = :viewId ' .
@@ -687,6 +691,7 @@ class CentreonCustomView
                 $oldSharedUsers[$row['user_id']] = 1;
             }
 
+            // check if the view is share at a new user
             foreach ($sharedUsers as $sharedUserId => $locked) {
                 if (isset($oldSharedUsers[$sharedUserId])) {
                     $query = 'UPDATE custom_view_user_relation ' .
@@ -715,12 +720,14 @@ class CentreonCustomView
                         throw new \Exception("An error occured");
                     }
                 }
+                $alwaysSharedUsers[] = $sharedUserId;
                 $this->copyPreferences($params['custom_view_id'], $sharedUserId);
             }
 
             $queryValue[] = (int)$params['custom_view_id'];
             $userIdKey = '';
 
+            //delete entry for unshared user
             if (!empty($oldSharedUsers)) {
                 foreach ($oldSharedUsers as $k => $v) {
                     $userIdKey .= '?,';
@@ -730,6 +737,19 @@ class CentreonCustomView
             } else {
                 $userIdKey .= '""';
             }
+
+            // delete widget preferences
+            $query = 'DELETE FROM widget_preferences ' .
+                'WHERE widget_view_id = (SELECT wv.widget_view_id FROM widget_views wv ' .
+                'WHERE wv.custom_view_id = ? ) ' .
+                'AND user_id IN (' . $userIdKey . ') ';
+            $stmt = $this->db->prepare($query);
+            $dbResult = $stmt->execute($queryValue);
+            if (!$dbResult) {
+                throw new \Exception("An error occured");
+            }
+
+            // delete view / user relation
             $query = 'DELETE FROM custom_view_user_relation ' .
                 'WHERE custom_view_id = ? ' .
                 'AND user_id IN (' . $userIdKey . ') ';
@@ -739,7 +759,9 @@ class CentreonCustomView
                 throw new \Exception("An error occured");
             }
 
-            // share with user groups
+            ////////////////////////////
+            // share with user groups //
+            ////////////////////////////
             $sharedUsergroups = array();
             $params['lockedUsergroups'] = isset($params['lockedUsergroups']) ? $params['lockedUsergroups'] : array();
             foreach ($params['lockedUsergroups'] as $lockedUsergroup) {
@@ -800,18 +822,61 @@ class CentreonCustomView
             }
 
             $queryValue2 = array();
+            $queryValue3 = array();
             $queryValue2[] = (int)$params['custom_view_id'];
             $userGroupIdKey = '';
+
             if (!empty($oldSharedUsergroups)) {
                 foreach ($oldSharedUsergroups as $k => $v) {
                     $userGroupIdKey .= '?,';
                     $queryValue2[] = (int)$k;
+                    $queryValue3[] = (int)$k;
                 }
                 $userGroupIdKey = rtrim($userGroupIdKey, ',');
             } else {
                 $userGroupIdKey .= '""';
             }
 
+            // select users of old usergroups
+            $query = 'SELECT contact_contact_id FROM contactgroup_contact_relation ' .
+                'WHERE contactgroup_cg_id IN (' . $userGroupIdKey . ') ';
+            $stmt = $this->db->prepare($query);
+            $dbResult = $stmt->execute($queryValue3);
+            if (!$dbResult) {
+                throw new \Exception("An error occured");
+            }
+
+            $queryValueWidgetPref = array();
+            $tmpValueWidgetPref = array();
+            $queryValueWidgetPref[] = (int)$params['custom_view_id'];
+            $oldSharedUserOfUsergroups = '';
+            while ($row = $stmt->fetch()) {
+                $tmpValueWidgetPref[] = (int)$row['contact_contact_id'] ;
+            }
+            $oldUserOfUsergroups = array_diff($tmpValueWidgetPref, $alwaysSharedUsers);
+
+            foreach ($oldUserOfUsergroups as $user){
+                $oldSharedUserOfUsergroups .= '?,';
+                $queryValueWidgetPref[] = $user;
+            }
+
+            // check if
+            if($oldSharedUserOfUsergroups !== '') {
+                $oldSharedUserOfUsergroups = rtrim($oldSharedUserOfUsergroups, ',');
+                // delete widget preferences
+                $query = 'DELETE FROM widget_preferences ' .
+                    'WHERE widget_view_id = (SELECT wv.widget_view_id FROM widget_views wv ' .
+                    'WHERE wv.custom_view_id = ? ) ' .
+                    'AND user_id IN (' . $oldSharedUserOfUsergroups . ') ';
+
+                $stmt = $this->db->prepare($query);
+                $dbResult = $stmt->execute($queryValueWidgetPref);
+                if (!$dbResult) {
+                    throw new \Exception("An error occured");
+                }
+            }
+
+            // delete view / usergroup relation
             $query = 'DELETE FROM custom_view_user_relation ' .
                 'WHERE custom_view_id = ? ' .
                 'AND usergroup_id IN (' . $userGroupIdKey . ') ';
