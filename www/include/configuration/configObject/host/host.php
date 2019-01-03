@@ -51,16 +51,22 @@ $host_id = filter_var(
     FILTER_VALIDATE_INT
 );
 
-// If one data is not correctly typed in array, it will be set to false
+// select can be an array of integer or a string of integers separated by comma
 $select = filter_var_array(
     call_user_func(function () {
+        $tmp = null;
         if (isset($_GET["select"])) {
-            return $_GET["select"];
+            $tmp = $_GET["select"];
         } elseif (isset($_POST["select"])) {
-            return $_POST["select"];
-        } else {
-            return array();
+            $tmp = $_POST["select"];
         }
+
+        // when the data is sent from the form, the format is "1,2,5"
+        // so we need to split it by comma, and validate that each element is an integer
+        if (!is_array($tmp)) {
+            $tmp = array_filter(explode(',', $tmp));
+        }
+        return $tmp;
     }),
     FILTER_VALIDATE_INT
 );
