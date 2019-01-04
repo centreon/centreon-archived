@@ -4,7 +4,17 @@ namespace CentreonRemote\Application\Webservice;
 use Pimple\Container;
 
 /**
- * @SWG\Info(title="Centreon Remote Server API", version="0.1")
+ * @OA\Server(
+ *      url="{protocol}://{host}/centreon/api",
+ *      variables={
+ *          "protocol": {"enum": {"http", "https"}, "default": "http"},
+ *          "host": {"default": "centreon-dev"},
+ *      }
+ * )
+ * @OA\Info(
+ *      title="Centreon Server API",
+ *      version="0.1"
+ * )
  */
 abstract class CentreonWebServiceAbstract extends \CentreonWebService
 {

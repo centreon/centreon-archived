@@ -10,61 +10,87 @@ class CentreonModuleWebservice extends CentreonWebServiceAbstract
 {
 
     /**
-     * @SWG\Get(
-     *   path="/centreon/api/internal.php",
-     *   operationId="list",
-     *   @SWG\Parameter(
+     * @OA\Get(
+     *   path="/internal.php?object=centreon_module&action=list",
+     *   summary="Get list of modules and widgets",
+     *   tags={"centreon_module"},
+     *   @OA\Parameter(
      *       in="query",
      *       name="object",
-     *       type="string",
+     *       @OA\Schema(
+     *          type="string",
+     *          enum={"centreon_module"},
+     *          default="centreon_module"
+     *       ),
      *       description="the name of the API object class",
-     *       required=true,
-     *       enum="centreon_task_service",
+     *       required=true
      *   ),
-     *   @SWG\Parameter(
+     *   @OA\Parameter(
      *       in="query",
      *       name="action",
-     *       type="string",
+     *       @OA\Schema(
+     *          type="string",
+     *          enum={"list"},
+     *          default="list"
+     *       ),
      *       description="the name of the action in the API class",
-     *       required=true,
-     *       enum="list",
+     *       required=true
      *   ),
-     *   @SWG\Parameter(
+     *   @OA\Parameter(
      *       in="query",
      *       name="search",
-     *       type="string",
+     *       @OA\Schema(
+     *          type="string"
+     *       ),
      *       description="filter the result by name and keywords",
-     *       required=false,
-     *       enum="list",
+     *       required=false
      *   ),
-     *   @SWG\Parameter(
+     *   @OA\Parameter(
      *       in="query",
      *       name="installed",
-     *       type="boolean",
+     *       @OA\Schema(
+     *          type="boolean"
+     *       ),
      *       description="filter the result by installed or non-installed modules",
-     *       required=false,
-     *       enum="list",
+     *       required=false
      *   ),
-     *   @SWG\Parameter(
+     *   @OA\Parameter(
      *       in="query",
      *       name="updated",
-     *       type="boolean",
+     *       @OA\Schema(
+     *          type="boolean"
+     *       ),
      *       description="filter the result by updated or non-installed modules",
-     *       required=false,
-     *       enum="list",
+     *       required=false
      *   ),
-     *   @SWG\Parameter(
+     *   @OA\Parameter(
      *       in="query",
      *       name="types",
-     *       type="array",
+     *       @OA\Schema(
+     *          type="array",
+     *          items={"type": "string", "enum": {"module", "widget"}}
+     *       ),
      *       description="filter the result by type",
-     *       required=false,
-     *       enum="list",
+     *       required=false
      *   ),
-     *   @SWG\Response(
-     *     response=200,
-     *     description="JSON"
+     *   @OA\Response(
+     *      response="200",
+     *      description="OK",
+     *       @OA\MediaType(
+     *          mediaType="application/json",
+     *          @OA\Schema(ref="#/components/schemas/Listing")
+     *     )
      *   )
+     * )
+     * @OA\Schema(
+     *   schema="BulkListingModuleEntity",
+     *   allOf={
+     *     @OA\Schema(
+     *          @OA\Property(property="entities", type="array", items={"$ref": "#/components/schemas/ModuleEntity"}),
+     *          @OA\Property(property="pagination", ref="#/components/schemas/Pagination")
+     *     ),
+     *     @OA\Property(property="status", type="boolean"),
+     *   }
      * )
      *
      * Get list of modules and
@@ -111,27 +137,40 @@ class CentreonModuleWebservice extends CentreonWebServiceAbstract
     }
 
     /**
-     * @SWG\Post(
-     *   path="/centreon/api/external.php",
-     *   @SWG\Parameter(
+     * @OA\Post(
+     *   path="/external.php?object=centreon_module&action=getBamModuleInfo",
+     *   summary="Get list of modules and widgets",
+     *   tags={"centreon_module"},
+     *   @OA\Parameter(
      *       in="query",
      *       name="object",
      *       description="the name of the API object class",
      *       required=true,
-     *       type="string",
-     *       enum="centreon_modules_webservice"
+     *       @OA\Schema(
+     *          type="string",
+     *          enum={"centreon_modules_webservice"}
+     *       )
      *   ),
-     *   @SWG\Parameter(
+     *   @OA\Parameter(
      *       in="query",
      *       name="action",
      *       description="the name of the action in the API class",
      *       required=true,
-     *       type="string",
-     *       enum="getBamModuleInfo"
-     *   )
-     *   @SWG\Response(
-     *     response=200,
-     *     description="JSON with BAM module info"
+     *       @OA\Schema(
+     *          type="string",
+     *          enum={"getBamModuleInfo"}
+     *       )
+     *   ),
+     *   @OA\Response(
+     *      response="200",
+     *      description="JSON with BAM module info",
+     *      @OA\MediaType(
+     *          mediaType="application/json",
+     *          @OA\Schema(
+     *              @OA\Property(property="enabled", type="boolean"),
+     *              @OA\Property(property="status", type="boolean"),
+     *          )
+     *      )
      *   )
      * )
      *
