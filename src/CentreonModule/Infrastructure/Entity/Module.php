@@ -47,6 +47,11 @@ class Module implements SourceDataInterface
     private $keywords;
 
     /**
+     * @var string
+     */
+    private $license;
+
+    /**
      * @var bool
      */
     private $isInstalled = false;
@@ -134,6 +139,16 @@ class Module implements SourceDataInterface
     public function setKeywords(string $keywords)
     {
         $this->keywords = $keywords;
+    }
+
+    public function getLicense(): ?string
+    {
+        return $this->license;
+    }
+
+    public function setLicense(string $license)
+    {
+        $this->license = $license;
     }
 
     public function isInstalled(): bool

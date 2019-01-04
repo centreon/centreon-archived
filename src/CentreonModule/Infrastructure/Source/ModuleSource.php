@@ -12,11 +12,17 @@ class ModuleSource extends SourceAbstract
     const TYPE = 'module';
     const PATH = _CENTREON_PATH_ . 'www/modules/';
     const CONFIG_FILE = 'conf.php';
+    const LICENSE_FILE = 'license/merethis_lic.zl';
 
     /**
      * @var array
      */
-    private $info;
+    protected $info;
+
+    /**
+     * @var \CentreonLegacy\Core\Module\License
+     */
+    protected $license;
 
     /**
      * Construct
@@ -25,6 +31,8 @@ class ModuleSource extends SourceAbstract
      */
     public function __construct(ContainerInterface $services)
     {
+        $this->license = $services->get('centreon.legacy.license');
+
         parent::__construct($services);
 
         $this->info = $this->db
@@ -64,6 +72,7 @@ class ModuleSource extends SourceAbstract
         require $configFile;
 
         $info = current($module_conf);
+        $licenseFile = dirname($configFile) . '/' . static::LICENSE_FILE;
 
         $entity = new Module;
         $entity->setId(basename(dirname($configFile)));
@@ -73,6 +82,7 @@ class ModuleSource extends SourceAbstract
         $entity->setAuthor($info['author']);
         $entity->setVersion($info['mod_release']);
         $entity->setKeywords($entity->getId());
+        $entity->setLicense($this->license->getLicenseExpiration($licenseFile));
 
         if (array_key_exists($entity->getId(), $this->info)) {
             $entity->setVersionCurrent($this->info[$entity->getId()]);
