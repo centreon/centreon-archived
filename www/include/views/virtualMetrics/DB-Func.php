@@ -85,7 +85,7 @@ function getAvailableSuffixIds($virtualMetricName, $numberOf, $indexId, $separat
     /**
      * Search for available suffixes taking into account those found in the database
      */
-    $nextAvailableSuffixes = [];
+    $nextAvailableSuffixes = array();
     $counter = 1;
     while (count($nextAvailableSuffixes) < $numberOf) {
         if (!in_array($counter, $notAvailableSuffixes)) {
