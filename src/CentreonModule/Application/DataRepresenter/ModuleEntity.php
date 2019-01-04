@@ -63,7 +63,7 @@ class ModuleEntity implements JsonSerializable
                 'available' => $this->entity->getVersion(),
                 'outdated' => !$this->entity->isUpdated(),
             ],
-            'license:' => null,
+            'license' => $this->entity->getLicense(),
         ];
     }
 }

@@ -127,8 +127,6 @@ class CentreonModuleWebservice extends CentreonWebServiceAbstract
         $list = $this->getDi()['centreon.module']
             ->getList($search, $installed, $updated, $typeList);
 
-        //(new \ArrayObject($list))->getIterator()
-
         $result = new Bulk($list, null, null, null, ModuleEntity::class);
 
         $response = new Response($result);
