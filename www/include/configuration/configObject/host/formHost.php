@@ -1170,7 +1170,6 @@ if ($form->validate() && $from_list_menu == false) {
     } elseif ($form->getSubmitValue("submitC")) {
         updateHostInDB($hostObj->getValue());
     } elseif ($form->getSubmitValue("submitMC")) {
-        $select = explode(",", $select);
         foreach ($select as $key => $value) {
             if ($value) {
                 updateHostInDB($value, true);

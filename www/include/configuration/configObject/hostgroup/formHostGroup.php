@@ -289,7 +289,7 @@ if ($o == "w") {
     $rq = "SELECT DISTINCT h.host_id FROM hostgroup_relation hgr, host h  " .
         " WHERE hostgroup_hg_id = '" . $hg_id . "' AND h.host_id = hgr.host_host_id AND h.host_register = '1' ";
     $db = $pearDB->query($rq);
-    while ($row = $db->fetch()) {
+    while ($row = $db->fetchRow()) {
         $hostArray[] = $row['host_id'];
     }
     $result = array_diff($hostArray, $accessHost);
