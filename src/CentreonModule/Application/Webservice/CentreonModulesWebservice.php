@@ -72,12 +72,9 @@ class CentreonModulesWebservice extends CentreonWebServiceAbstract
      *   @OA\Response(
      *      response="200",
      *      description="JSON with BAM module info",
-     *      @OA\MediaType(
-     *          mediaType="application/json",
-     *          @OA\Schema(
-     *              @OA\Property(property="enabled", type="boolean"),
-     *              @OA\Property(property="status", type="boolean"),
-     *          )
+     *      @OA\JsonContent(
+     *          @OA\Property(property="enabled", type="boolean"),
+     *          @OA\Property(property="status", type="boolean")
      *      )
      *   )
      * )
