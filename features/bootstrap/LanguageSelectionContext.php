@@ -23,7 +23,7 @@ class LanguageSelectionContext extends CentreonContext
      */
     public function selectTheLanguageDropdown()
     {
-        $this->visit('main.php?p=50104&o=c');
+        $this->currentPage = new ParametersMyAccountPage($this);
         $this->assertFind('css', 'select[name="contact_lang"]');
     }
 
@@ -32,7 +32,7 @@ class LanguageSelectionContext extends CentreonContext
      */
     public function iCanSeeProperDropdownListItems()
     {
-        $this->visit('main.php?p=50104&o=c');
+        $this->currentPage = new ParametersMyAccountPage($this);
         $enLang = $this->assertFind('css', 'select[name="contact_lang"] > option[value = "en_US.UTF-8"]');
 
         if (is_array($enLang) || $enLang->getText() !== 'en_US') {
