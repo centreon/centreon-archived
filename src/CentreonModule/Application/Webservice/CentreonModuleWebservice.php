@@ -6,6 +6,9 @@ use Centreon\Application\DataRepresenter\Bulk;
 use Centreon\Application\DataRepresenter\Response;
 use CentreonModule\Application\DataRepresenter\ModuleEntity;
 
+/**
+ * @OA\Tag(name="centreon_module", description="")
+ */
 class CentreonModuleWebservice extends CentreonWebServiceAbstract
 {
 
@@ -78,19 +81,19 @@ class CentreonModuleWebservice extends CentreonWebServiceAbstract
      *      description="OK",
      *       @OA\MediaType(
      *          mediaType="application/json",
-     *          @OA\Schema(ref="#/components/schemas/Listing")
-     *     )
+     *          @OA\Schema(
+     *              @OA\Property(property="module",
+     *                  @OA\Property(property="entities", type="array", @OA\Items(ref="#/components/schemas/ModuleEntity")),
+     *                  @OA\Property(property="pagination", ref="#/components/schemas/Pagination")
+     *              ),
+     *              @OA\Property(property="widget", type="object",
+     *                  @OA\Property(property="entities", type="array", @OA\Items(ref="#/components/schemas/ModuleEntity")),
+     *                  @OA\Property(property="pagination", ref="#/components/schemas/Pagination")
+     *              ),
+     *              @OA\Property(property="status", type="boolean")
+     *          )
+     *      )
      *   )
-     * )
-     * @OA\Schema(
-     *   schema="BulkListingModuleEntity",
-     *   allOf={
-     *     @OA\Schema(
-     *          @OA\Property(property="entities", type="array", items={"$ref": "#/components/schemas/ModuleEntity"}),
-     *          @OA\Property(property="pagination", ref="#/components/schemas/Pagination")
-     *     ),
-     *     @OA\Property(property="status", type="boolean"),
-     *   }
      * )
      *
      * Get list of modules and
@@ -139,6 +142,42 @@ class CentreonModuleWebservice extends CentreonWebServiceAbstract
      *   path="/external.php?object=centreon_module&action=getBamModuleInfo",
      *   summary="Get list of modules and widgets",
      *   tags={"centreon_module"},
+     *   @OA\Parameter(
+     *       in="query",
+     *       name="object",
+     *       description="the name of the API object class",
+     *       required=true,
+     *       @OA\Schema(
+     *          type="string",
+     *          enum={"centreon_modules_webservice"}
+     *       )
+     *   ),
+     *   @OA\Parameter(
+     *       in="query",
+     *       name="action",
+     *       description="the name of the action in the API class",
+     *       required=true,
+     *       @OA\Schema(
+     *          type="string",
+     *          enum={"getBamModuleInfo"}
+     *       )
+     *   ),
+     *   @OA\Response(
+     *      response="200",
+     *      description="JSON with BAM module info",
+     *      @OA\MediaType(
+     *          mediaType="application/json",
+     *          @OA\Schema(
+     *              @OA\Property(property="enabled", type="boolean"),
+     *              @OA\Property(property="status", type="boolean"),
+     *          )
+     *      )
+     *   )
+     * )
+     * @OA\Post(
+     *   path="/external.php?object=centreon_modules_webservice&action=getBamModuleInfo",
+     *   summary="Get list of modules and widgets",
+     *   tags={"centreon_modules_webservice"},
      *   @OA\Parameter(
      *       in="query",
      *       name="object",
