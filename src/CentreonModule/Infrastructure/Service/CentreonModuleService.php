@@ -14,9 +14,6 @@ class CentreonModuleService
      */
     public function __construct(ContainerInterface $services)
     {
-        $this->db = $services->get('centreon.db-manager');
-        $this->finder = $services->get('finder');
-
         $this->sources = [
             Source\ModuleSource::TYPE => new Source\ModuleSource($services),
             Source\WidgetSource::TYPE => new Source\WidgetSource($services),
