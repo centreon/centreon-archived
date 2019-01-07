@@ -872,7 +872,7 @@ jQuery(function () {
           active: defaultPosition,
           beforeLoad: function( event, ui ) {
             // prevent memory overflow
-            if (tabLoops > 10 && $(event.target).tabs('option', 'active') == defaultPosition) {
+            if (tabLoops > 10 && jQuery(event.target).tabs('option', 'active') == defaultPosition) {
                 if (window.parent) {
                   window.parent.location.reload();
                 } else {
