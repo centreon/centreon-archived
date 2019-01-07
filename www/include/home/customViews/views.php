@@ -38,7 +38,7 @@ require_once _CENTREON_PATH_ . 'www/class/centreon.class.php';
 require_once _CENTREON_PATH_ . 'www/class/centreonSession.class.php';
 require_once _CENTREON_PATH_ . 'www/class/centreonCustomView.class.php';
 require_once _CENTREON_PATH_ . 'www/class/centreonWidget.class.php';
-require_once _CENTREON_PATH_ . 'www/class/centreonDB.class';
+require_once _CENTREON_PATH_ . 'www/class/centreonDB.class.php';
 
 session_start();
 session_write_close();
