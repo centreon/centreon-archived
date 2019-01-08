@@ -233,7 +233,10 @@ sub exportBackup() {
     if ($scp_enabled == '1' &&
 		(!defined($scp_host) || $scp_host ne '') &&
 		(!defined($scp_directory) || $scp_directory ne '') &&
-		(!defined($scp_user) || $scp_user ne '')) {
+		(!defined($scp_user) || $scp_user ne '')
+	) {
+
+		# Export database backups
 		if ($BACKUP_DATABASE_CENTREON == '1' || $BACKUP_DATABASE_CENTREON_STORAGE == '1') {
 	    	chdir($TEMP_DB_DIR);
 	    	`scp *.gz $scp_user\@$scp_host:$scp_directory/`;
@@ -242,7 +245,10 @@ sub exportBackup() {
             } else {
                 print "All files were copied with success using SCP on ".$scp_user."@".$scp_host.":".$scp_directory."\n";
             }
-		} elsif ($BACKUP_CONFIGURATION_FILES == '1') {
+		}
+
+        # Export configuration files backup
+		if ($BACKUP_CONFIGURATION_FILES == '1') {
 			chdir($TEMP_CENTRAL_DIR);
 			`scp *.gz $scp_user\@$scp_host:$scp_directory/`;
             if ($? ne 0) {
