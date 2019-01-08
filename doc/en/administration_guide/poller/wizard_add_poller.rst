@@ -41,7 +41,9 @@ Remote Server in the list. Then click **Apply**:
 .. note::
     If you want to change the sense of the flow between the Centreon Server (or
     the Remote Server and the Poller, check the **Advanced: reverse Centreon
-    Broker communication flow** checkbox.
+    Broker communication flow** checkbox. In this case, it will be necessary to
+    export the configuration of the collector as well as the server to which it
+    will be attached.
 
 Wait a few seconds, the wizard will configure your new server.
 
