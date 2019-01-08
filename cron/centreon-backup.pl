@@ -234,23 +234,23 @@ sub exportBackup() {
 		(!defined($scp_host) || $scp_host ne '') &&
 		(!defined($scp_directory) || $scp_directory ne '') &&
 		(!defined($scp_user) || $scp_user ne '')
-	) {
+    ) {
 
-		# Export database backups
-		if ($BACKUP_DATABASE_CENTREON == '1' || $BACKUP_DATABASE_CENTREON_STORAGE == '1') {
-	    	chdir($TEMP_DB_DIR);
-	    	`scp *.gz $scp_user\@$scp_host:$scp_directory/`;
+        # Export database backups
+        if ($BACKUP_DATABASE_CENTREON == '1' || $BACKUP_DATABASE_CENTREON_STORAGE == '1') {
+            chdir($TEMP_DB_DIR);
+            `scp *.gz $scp_user\@$scp_host:$scp_directory/`;
             if ($? ne 0) {
                 print STDERR "Error when trying to export files of " . $TEMP_DB_DIR . "\n";
             } else {
                 print "All files were copied with success using SCP on ".$scp_user."@".$scp_host.":".$scp_directory."\n";
             }
-		}
+        }
 
         # Export configuration files backup
-		if ($BACKUP_CONFIGURATION_FILES == '1') {
-			chdir($TEMP_CENTRAL_DIR);
-			`scp *.gz $scp_user\@$scp_host:$scp_directory/`;
+        if ($BACKUP_CONFIGURATION_FILES == '1') {
+            chdir($TEMP_CENTRAL_DIR);
+            `scp *.gz $scp_user\@$scp_host:$scp_directory/`;
             if ($? ne 0) {
                 print STDERR "Error when trying to export files of " . $TEMP_CENTRAL_DIR . "\n";
             } else {
