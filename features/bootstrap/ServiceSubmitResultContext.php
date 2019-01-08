@@ -69,13 +69,17 @@ class ServiceSubmitResultContext extends CentreonContext
     public function theValuesAreSetAsWantedInMonitoringStatusDetailsPage()
     {
         $this->page = new MonitoringServicesPage($this);
-        $result = $this->page->getPropertyFromAHostAndService(
-            $this->hostname,
-            $this->hostservice,
-            'status_information'
+        $this->spin(
+            function () {
+                $result = $this->page->getPropertyFromAHostAndService(
+                    $this->hostname,
+                    $this->hostservice,
+                    'status_information'
+                );
+                return $result == $this->checkoutput;
+            },
+            'The result submitted is not set as wanted',
+            10
         );
-        if ($result != $this->checkoutput) {
-            throw new Exception('The result submitted is not set as wanted');
-        }
     }
 }
