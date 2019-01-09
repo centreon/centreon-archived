@@ -191,7 +191,7 @@ class CentreonModuleWebservice extends CentreonWebServiceAbstract
     /**
      * @OA\Get(
      *   path="/internal.php?object=centreon_module&action=details",
-     *   summary="Get details of modules and widgets",
+     *   description="Get details of modules and widgets",
      *   tags={"centreon_module"},
      *   @OA\Parameter(
      *       in="query",
