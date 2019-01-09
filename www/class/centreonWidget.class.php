@@ -471,7 +471,7 @@ class CentreonWidget
         }
         return array(
             'items' => $widgets,
-            'total' => $stmt->rowCount()
+            'total' => (int) $this->db->numberRows()
         );
     }
 

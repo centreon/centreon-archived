@@ -90,7 +90,7 @@ class CentreonConfigurationTimezone extends CentreonConfigurationObjects
         }
         return array(
             'items' => $timezoneList,
-            'total' => $stmt->rowCount()
+            'total' => (int) $this->pearDB->numberRows()
         );
     }
 }

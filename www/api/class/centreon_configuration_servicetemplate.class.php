@@ -122,7 +122,7 @@ class CentreonConfigurationServicetemplate extends CentreonConfigurationService
         }
         return array(
             'items' => $serviceList,
-            'total' => $stmt->rowCount()
+            'total' => (int) $this->pearDB->numberRows()
         );
     }
 
@@ -168,7 +168,7 @@ class CentreonConfigurationServicetemplate extends CentreonConfigurationService
         }
         return array(
             'items' => $serviceList,
-            'total' => $stmt->rowCount()
+            'total' => (int) $this->pearDB->numberRows()
         );
     }
 }

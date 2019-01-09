@@ -103,7 +103,7 @@ class CentreonConfigurationServicegroup extends CentreonConfigurationObjects
         }
         return array(
             'items' => $serviceList,
-            'total' => $stmt->rowCount()
+            'total' => (int) $this->pearDB->numberRows()
         );
     }
 
@@ -182,7 +182,7 @@ class CentreonConfigurationServicegroup extends CentreonConfigurationObjects
         }
         return array(
             'items' => $serviceList,
-            'total' => $stmt->rowCount()
+            'total' => (int) $this->pearDB->numberRows()
         );
     }
 }

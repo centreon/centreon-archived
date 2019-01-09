@@ -129,7 +129,7 @@ class CentreonConfigurationPoller extends CentreonConfigurationObjects
         }
         return array(
             'items' => $pollerList,
-            'total' => $stmt->rowCount()
+            'total' => (int) $this->pearDB->numberRows()
         );
     }
 }
