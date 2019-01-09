@@ -62,6 +62,7 @@ class ServiceProvider implements AutoloadServiceProviderInterface
                 'centreon.db-manager',
                 'finder',
                 'centreon.legacy.license',
+                'configuration',
             ];
 
             $locator = new ServiceLocator($container, $services);
