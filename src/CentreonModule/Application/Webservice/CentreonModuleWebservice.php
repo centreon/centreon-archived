@@ -40,6 +40,7 @@ use CentreonRemote\Application\Webservice\CentreonWebServiceAbstract;
 use Centreon\Application\DataRepresenter\Bulk;
 use Centreon\Application\DataRepresenter\Response;
 use CentreonModule\Application\DataRepresenter\ModuleEntity;
+use CentreonModule\Application\DataRepresenter\ModuleDetailEntity;
 
 /**
  * @OA\Tag(name="centreon_module", description="Resource for authorized access")
@@ -145,7 +146,7 @@ class CentreonModuleWebservice extends CentreonWebServiceAbstract
      *   )
      * )
      *
-     * Get list of modules and
+     * Get list of modules and widgets
      *
      * @throws \RestBadRequestException
      * @return []
@@ -180,6 +181,91 @@ class CentreonModuleWebservice extends CentreonWebServiceAbstract
             ->getList($search, $installed, $updated, $typeList);
 
         $result = new Bulk($list, null, null, null, ModuleEntity::class);
+
+        $response = new Response($result);
+
+        return $response;
+    }
+
+    /**
+     * @OA\Get(
+     *   path="/internal.php?object=centreon_module&action=details",
+     *   summary="Get details of modules and widgets",
+     *   tags={"centreon_module"},
+     *   @OA\Parameter(
+     *       in="query",
+     *       name="object",
+     *       @OA\Schema(
+     *          type="string",
+     *          enum={"centreon_module"},
+     *          default="centreon_module"
+     *       ),
+     *       description="the name of the API object class",
+     *       required=true
+     *   ),
+     *   @OA\Parameter(
+     *       in="query",
+     *       name="action",
+     *       @OA\Schema(
+     *          type="string",
+     *          enum={"details"},
+     *          default="details"
+     *       ),
+     *       description="the name of the action in the API class",
+     *       required=true
+     *   ),
+     *   @OA\Parameter(
+     *       in="query",
+     *       name="id",
+     *       @OA\Schema(
+     *          type="string"
+     *       ),
+     *       description="ID of a module or a widget",
+     *       required=true
+     *   ),
+     *   @OA\Parameter(
+     *       in="query",
+     *       name="type",
+     *       @OA\Schema(
+     *          type="string",
+     *          enum={
+     *              "module",
+     *              "widget"
+     *          }
+     *       ),
+     *       description="type of object",
+     *       required=true
+     *   ),
+     *   @OA\Response(
+     *      response="200",
+     *      description="OK",
+     *       @OA\MediaType(
+     *          mediaType="application/json",
+     *          @OA\Schema(
+     *              @OA\Property(property="module", ref="#/components/schemas/ModuleDetailEntity"),
+     *              @OA\Property(property="status", type="boolean")
+     *          )
+     *      )
+     *   )
+     * )
+     *
+     * Get details of module/widget
+     *
+     * @throws \RestBadRequestException
+     * @return []
+     */
+    public function getDetails()
+    {
+        // extract post payload
+        $request = $this->query();
+
+        $id = isset($request['id']) && $request['id'] ? $request['id'] : null;
+        $type = isset($request['type']) ? $request['type'] : null;
+
+        $detail = $this->getDi()['centreon.module']
+            ->getDetail($id, $type);
+
+        $result = new ModuleDetailEntity($detail);
 
         $response = new Response($result);
 
