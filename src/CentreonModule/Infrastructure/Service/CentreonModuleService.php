@@ -38,6 +38,7 @@ namespace CentreonModule\Infrastructure\Service;
 
 use Psr\Container\ContainerInterface;
 use CentreonModule\Infrastructure\Source;
+use CentreonModule\Infrastructure\Entity\Module;
 
 class CentreonModuleService
 {
@@ -57,7 +58,7 @@ class CentreonModuleService
         $this->initSources($services);
     }
 
-    public function getList(string $search = null, bool $installed = null, bool $updated = null, array $typeList = null)
+    public function getList(string $search = null, bool $installed = null, bool $updated = null, array $typeList = null) : array
     {
         $result = [];
 
@@ -78,6 +79,17 @@ class CentreonModuleService
         foreach ($sources as $type => $source) {
             $result[$type] = $source->getList($search, $installed, $updated);
         }
+
+        return $result;
+    }
+
+    public function getDetail(string $id, string $type): ?Module
+    {
+        if (!array_key_exists($type, $this->sources)) {
+            return null;
+        }
+
+        $result = $this->sources[$type]->getDetail($id);
 
         return $result;
     }

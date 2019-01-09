@@ -54,6 +54,11 @@ abstract class SourceAbstract implements SourceInterface
     protected $finder;
 
     /**
+     * @var string
+     */
+    protected $path;
+
+    /**
      * Construct
      *
      * @param \Psr\Container\ContainerInterface $services
@@ -62,6 +67,9 @@ abstract class SourceAbstract implements SourceInterface
     {
         $this->db = $services->get('centreon.db-manager');
         $this->finder = $services->get('finder');
+        $this->path = $services->get('configuration')
+            ->get('centreon_path')
+        ;
     }
 
     public function isEligible(
@@ -92,5 +100,14 @@ abstract class SourceAbstract implements SourceInterface
         }
 
         return $result;
+    }
+
+    /**
+     * @codeCoverageIgnore
+     * @return string
+     */
+    protected function getPath(): string
+    {
+        return $this->path . static::PATH;
     }
 }

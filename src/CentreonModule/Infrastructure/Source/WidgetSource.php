@@ -45,7 +45,7 @@ class WidgetSource extends SourceAbstract
 {
 
     const TYPE = 'widget';
-    const PATH = _CENTREON_PATH_ . 'www/widgets/';
+    const PATH = 'www/widgets/';
     const CONFIG_FILE = 'configs.xml';
 
     /**
@@ -68,7 +68,7 @@ class WidgetSource extends SourceAbstract
         ;
     }
 
-    public function getList(string $search = null, bool $installed = null, bool $updated = null)
+    public function getList(string $search = null, bool $installed = null, bool $updated = null) : array
     {
         $files = $this->finder
             ->files()
@@ -92,6 +92,25 @@ class WidgetSource extends SourceAbstract
         return $result;
     }
 
+    public function getDetail(string $id): ?Module
+    {
+        $files = $this->finder
+            ->files()
+            ->name(static::CONFIG_FILE)
+            ->depth('== 0')
+            ->sortByName()
+            ->in($this->path . static::PATH . $id)
+        ;
+
+        $result = null;
+
+        foreach ($files as $file) {
+            $result = $this->createEntityFromConfig($file->getPathName());
+        }
+
+        return $result;
+    }
+
     public function createEntityFromConfig(string $configFile): Module
     {
         $xml = simplexml_load_file($configFile);
@@ -101,9 +120,18 @@ class WidgetSource extends SourceAbstract
         $entity->setPath(dirname($configFile));
         $entity->setType(static::TYPE);
         $entity->setName($xml->title->__toString());
+        $entity->setDescription($xml->description->__toString());
         $entity->setAuthor($xml->author->__toString());
         $entity->setVersion($xml->version->__toString());
         $entity->setKeywords($xml->keywords->__toString());
+
+        if ($xml->screenshot->__toString()) {
+            $entity->addImage($xml->screenshot->__toString());
+        }
+
+        if ($xml->thumbnail->__toString()) {
+            $entity->addImage($xml->thumbnail->__toString());
+        }
 
         if (array_key_exists($entity->getId(), $this->info)) {
             $entity->setVersionCurrent($this->info[$entity->getId()]);
@@ -114,14 +142,5 @@ class WidgetSource extends SourceAbstract
         }
 
         return $entity;
-    }
-
-    /**
-     * @codeCoverageIgnore
-     * @return string
-     */
-    protected function getPath(): string
-    {
-        return static::PATH;
     }
 }
