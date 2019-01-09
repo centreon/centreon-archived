@@ -242,7 +242,7 @@ class CentreonModuleWebservice extends CentreonWebServiceAbstract
      *       @OA\MediaType(
      *          mediaType="application/json",
      *          @OA\Schema(
-     *              @OA\Property(property="module", ref="#/components/schemas/ModuleDetailEntity"),
+     *              @OA\Property(property="result", ref="#/components/schemas/ModuleDetailEntity"),
      *              @OA\Property(property="status", type="boolean")
      *          )
      *      )
