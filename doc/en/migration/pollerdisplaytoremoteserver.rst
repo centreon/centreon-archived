@@ -13,7 +13,7 @@ If the module **centreon-poller-display-central-1.6.x** is installed:
 1. Go to **Administration > Extensions > Modules** menu and uninstall the
    **centreon-poller-display-central**
 
-2. Remote the associated package: ::
+2. Remove the associated package: ::
 
     # yum remove centreon-poller-display-central
 
