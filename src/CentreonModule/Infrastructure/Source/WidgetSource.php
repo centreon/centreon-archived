@@ -40,7 +40,7 @@ class WidgetSource extends SourceAbstract
             ->name(static::CONFIG_FILE)
             ->depth('== 1')
             ->sortByName()
-            ->in(static::PATH);
+            ->in($this->_getPath());
 
         $result = [];
 
@@ -81,5 +81,14 @@ class WidgetSource extends SourceAbstract
         }
 
         return $entity;
+    }
+
+    /**
+     * @codeCoverageIgnore
+     * @return string
+     */
+    protected function _getPath(): string
+    {
+        return static::PATH;
     }
 }
