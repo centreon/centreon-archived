@@ -8,22 +8,24 @@ class CentreonModuleService
 {
 
     /**
+     * @var array
+     */
+    protected $sources = [];
+
+    /**
      * Construct
      * 
      * @param \Psr\Container\ContainerInterface $services
      */
     public function __construct(ContainerInterface $services)
     {
-        $this->sources = [
-            Source\ModuleSource::TYPE => new Source\ModuleSource($services),
-            Source\WidgetSource::TYPE => new Source\WidgetSource($services),
-        ];
+        $this->_initSources($services);
     }
 
     public function getList(string $search = null, bool $installed = null, bool $updated = null, array $typeList = null)
     {
         $result = [];
-        
+
         if ($typeList !== null && $typeList) {
             $sources = [];
 
@@ -43,5 +45,18 @@ class CentreonModuleService
         }
 
         return $result;
+    }
+
+    /**
+     * Init list of sources
+     *
+     * @param ContainerInterface $services
+     */
+    protected function _initSources(ContainerInterface $services)
+    {
+        $this->sources = [
+            Source\ModuleSource::TYPE => new Source\ModuleSource($services),
+            Source\WidgetSource::TYPE => new Source\WidgetSource($services),
+        ];
     }
 }

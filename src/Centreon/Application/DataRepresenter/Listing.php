@@ -35,6 +35,11 @@ class Listing implements JsonSerializable
     private $limit;
 
     /**
+     * @var int
+     */
+    private $total;
+
+    /**
      * @var string
      */
     private $entityClass;
@@ -44,12 +49,17 @@ class Listing implements JsonSerializable
      * 
      * @param \CentreonModule\Infrastructure\Entity\Module $entity
      * @param string $entityClass Entity JSON wrap class
+     * @param int $total
+     * @param int $offset
+     * @param int $limit
+     * @param string $entityClass
      */
-    public function __construct($entities, int $offset = null, int $limit = null, string $entityClass = null)
+    public function __construct($entities, int $total = null, int $offset = null, int $limit = null, string $entityClass = null)
     {
         $this->entities = $entities ?? [];
+        $this->total = $total ? $total : count($this->entities);
         $this->offset = $offset;
-        $this->limit = $limit;
+        $this->limit = $limit !== null ? $limit : $this->total;
         $this->entityClass = $entityClass ?? Entity::class;
     }
 
@@ -60,12 +70,11 @@ class Listing implements JsonSerializable
      */
     public function jsonSerialize()
     {
-        $total = count($this->entities);
         $result = [
             'pagination' => [
-                'total' => $total,
+                'total' => $this->total,
                 'offset' => $this->offset !== null ? $this->offset : 0,
-                'limit' => $this->limit !== null ? $this->limit : $total,
+                'limit' => $this->limit,
             ],
             'entities' => [],
         ];

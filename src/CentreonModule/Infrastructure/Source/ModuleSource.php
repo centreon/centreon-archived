@@ -48,7 +48,7 @@ class ModuleSource extends SourceAbstract
             ->name(static::CONFIG_FILE)
             ->depth('== 1')
             ->sortByName()
-            ->in(static::PATH);
+            ->in($this->_getPath());
 
         $result = [];
 
@@ -69,10 +69,11 @@ class ModuleSource extends SourceAbstract
     public function createEntityFromConfig(string $configFile): Module
     {
         $module_conf = [];
-        require $configFile;
+
+        $module_conf = $this->_getModuleConf($configFile);
 
         $info = current($module_conf);
-        $licenseFile = dirname($configFile) . '/' . static::LICENSE_FILE;
+        $licenseFile = $this->_getLicenseFile($configFile);
 
         $entity = new Module;
         $entity->setId(basename(dirname($configFile)));
@@ -94,5 +95,34 @@ class ModuleSource extends SourceAbstract
         }
 
         return $entity;
+    }
+
+    /**
+     * @codeCoverageIgnore
+     * @return string
+     */
+    protected function _getPath(): string
+    {
+        return static::PATH;
+    }
+
+    /**
+     * @codeCoverageIgnore
+     * @return array
+     */
+    protected function _getModuleConf(string $configFile): array
+    {
+        $module_conf = [];
+
+        require $configFile;
+
+        return $module_conf;
+    }
+
+    protected function _getLicenseFile(string $configFile): string
+    {
+        $result = dirname($configFile) . '/' . static::LICENSE_FILE;
+
+        return $result;
     }
 }
