@@ -77,9 +77,9 @@ if ($result === false) {
     $isRemote = false;
 } else {
     $isRemote = array_map("myDecode", $result);
-    $DBRESULT->closeCursor();
     $isRemote = ($isRemote['value'] === 'yes') ? true : false;
 }
+$DBRESULT->closeCursor();
 
 $cct = array();
 if (($o == "c" || $o == "w") && $contact_id) {
