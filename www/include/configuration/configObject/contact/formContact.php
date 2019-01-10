@@ -76,7 +76,7 @@ $result = $DBRESULT->fetchRow();
 if ($result === false) {
     $isRemote = false;
 } else {
-    $isRemote = array_map("myDecode", $DBRESULT->fetchRow());
+    $isRemote = array_map("myDecode", $result);
     $DBRESULT->closeCursor();
     $isRemote = ($isRemote['value'] === 'yes') ? true : false;
 }
