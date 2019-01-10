@@ -146,7 +146,7 @@ class Module implements SourceDataInterface
         return $this->license;
     }
 
-    public function setLicense(string $license)
+    public function setLicense(string $license = null)
     {
         $this->license = $license;
     }

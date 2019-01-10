@@ -38,7 +38,7 @@ abstract class SourceAbstract implements SourceInterface
         } elseif ($updated !== null && $entity->isUpdated() !== $updated) {
             return false;
         }
-        
+
         return true;
     }
 }

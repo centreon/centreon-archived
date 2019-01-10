@@ -24,7 +24,7 @@
         "phing/phing": "^2.16",
         "behat/mink-extension": "^2.2",
         "behat/mink-selenium2-driver": "^1.3",
-        "centreon/centreon-test-lib": "dev-master",
+        "centreon/centreon-test-lib": "dev-MON-3235-modules-api",
         "adlawson/vfs": "^0.12.1"
     },
     "require": {

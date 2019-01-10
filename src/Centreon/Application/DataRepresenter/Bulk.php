@@ -62,7 +62,7 @@ class Bulk implements JsonSerializable
         $result = [];
 
         foreach ($this->lists as $name => $entities) {
-            $result[$name] = new $this->listingClass($entities, $this->offset, $this->limit, $this->entityClass);
+            $result[$name] = new $this->listingClass($entities, null, $this->offset, $this->limit, $this->entityClass);
         }
 
         return $result;
