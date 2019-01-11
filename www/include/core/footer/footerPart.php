@@ -277,9 +277,14 @@ function validateFeature(name, version, enabled) {
       window.parent.dispatchEvent(event);
     }
 
-    jQuery(document).ready(function(){
-        // inform the parent about iframe URL
-        parentHrefUpdate(location.href);
+    // send event when url changed
+    jQuery(document).ready(function() {
+      parentHrefUpdate(location.href);
+    });
+
+    // send event when hash changed
+    jQuery(window).bind('hashchange', function() {
+      parentHrefUpdate(location.href);
     });
 
     jQuery('body').delegate(

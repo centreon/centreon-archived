@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="http://schema.phpunit.de/4.1/phpunit.xsd"
+         backupGlobals="false"
+         colors="true"
+         bootstrap="bootstrap.php"
+         failOnRisky="true"
+         failOnWarning="true"
+>
+    <php>
+        <ini name="error_reporting" value="30719" /><!-- E_ALL & ~E_STRICT -->
+        <ini name="intl.default_locale" value="en" />
+        <ini name="intl.error_level" value="0" />
+        <ini name="memory_limit" value="-1" />
+        <const name="_CENTREON_PATH_" value="./"/>
+        <const name="_CENTREON_ETC_" value="./"/>
+    </php>
+
+    <testsuites>
+        <testsuite name="Symfony Test Suite">
+            <directory>./src/Centreon/Tests/</directory>
+            <directory>./src/CentreonRemote/Tests/</directory>
+            <directory>./src/CentreonModule/Tests/</directory>
+        </testsuite>
+    </testsuites>
+
+    <groups>
+        <exclude>
+            <group>benchmark</group>
+            <group>intl-data</group>
+        </exclude>
+    </groups>
+
+    <filter>
+        <whitelist>
+            <directory>./src/</directory>
+            <exclude>
+                <directory>./src/CentreonLegacy</directory>
+                <directory>./src/*/Tests</directory>
+                <directory>./src/Centreon/Domain/Entity</directory>
+                <directory>./src/CentreonRemote/Domain/Resources</directory>
+                <directory>./src/CentreonModule/Infrastructure/Entity</directory>
+            </exclude>
+        </whitelist>
+    </filter>
+
+    <logging>
+        <log type="coverage-html" target="./coverage-report"
+             lowUpperBound="50" highLowerBound="80" />
+    </logging>
+</phpunit>

@@ -836,7 +836,7 @@ class CentreonHost
                 }
                 $arr[$index]['macroInput_#index#'] = $val;
                 $arr[$index]['macroValue_#index#'] = $_REQUEST['macroValue'][$key];
-                $arr[$index]['macroPassword_#index#'] = isset($_REQUEST['is_password'][$key]) ? 1 : null;
+                $arr[$index]['macroPassword_#index#'] = isset($_REQUEST['macroPassword'][$key]) ? 1 : null;
                 $arr[$index]['macroDescription_#index#'] = isset($_REQUEST['description'][$key]) ?
                     $_REQUEST['description'][$key] : null;
                 $arr[$index]['macroDescription'] = isset($_REQUEST['description'][$key]) ?

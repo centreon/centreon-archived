@@ -56,6 +56,7 @@
             <td class="ListColHeaderCenter">{$headerMenu_type}</td>
             <td class="ListColHeaderCenter">{$headerMenu_is_running}</td>
             <td class="ListColHeaderCenter">{$headerMenu_hasChanged}<font color='red' style='padding-left:3px;'>*</font></td>
+            <td class="ListColHeaderCenter">{$headerMenu_pid}</td>
             <td class="ListColHeaderCenter">{$headerMenu_uptime}</td>
             <td class="ListColHeaderCenter">{$headerMenu_lastUpdateTime}</td>
             <td class="ListColHeaderCenter">{$headerMenu_version}</td>
@@ -80,6 +81,7 @@
                     {$elemArr[elem].RowMenu_hasChanged}
                 </span>
             </td>
+            <td class="ListColCenter">{$elemArr[elem].RowMenu_pid}</td>
             <!-- using a class to format the timestamp -->
             <td class="ListColCenter">{$elemArr[elem].RowMenu_uptime}</td>
             <td class="ListColCenter isTimestamp"{if $elemArr[elem].RowMenu_statusVal == 1} style='background-color:#{if $elemArr[elem].RowMenu_lastUpdateTimeFlag}F7D507;{/if}'{/if}>{$elemArr[elem].RowMenu_lastUpdateTime}</td>

@@ -21,6 +21,6 @@ return function ($name, $ip) {
         'ssh_private_key'            => null,
         'init_script_centreontrapd'  => 'centreontrapd',
         'snmp_trapd_path_conf'       => '/etc/snmp/centreon_traps/',
-        'centreonbroker_logs_path'   => '/var/log/centreon-broker/watchdog.log',
+        'centreonbroker_logs_path'   => '/var/log/centreon-broker/',
     ];
 };

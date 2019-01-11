@@ -57,7 +57,7 @@ if (!$centreon->user->admin && $server_id && count($serverResult)) {
  */
 $nagios = array();
 $serverType = "poller";
-if (($o == "c" || $o == "w") && $server_id) {
+if (($o == SERVER_MODIFY || $o == SERVER_WATCH) && $server_id) {
     $DBRESULT = $pearDB->query("SELECT * FROM `nagios_server` WHERE `id` = '$server_id' LIMIT 1");
     $cfg_server = array_map("myDecode", $DBRESULT->fetchRow());
     $DBRESULT->closeCursor();
@@ -120,11 +120,11 @@ $attrPoller1 = array_merge(
  * Form begin
  */
 $form = new HTML_QuickFormCustom('Form', 'post', "?p=" . $p);
-if ($o == "a") {
+if ($o == SERVER_ADD) {
     $form->addElement('header', 'title', _("Add a poller"));
-} elseif ($o == "c") {
+} elseif ($o == SERVER_MODIFY) {
     $form->addElement('header', 'title', _("Modify a poller Configuration"));
-} elseif ($o == "w") {
+} elseif ($o == SERVER_WATCH) {
     $form->addElement('header', 'title', _("View a poller Configuration"));
 }
 
@@ -207,7 +207,7 @@ $form->addElement('text', 'snmp_trapd_path_conf', _('Directory of light database
 /*
  * Set Default Values
  */
-if (isset($_GET["o"]) && $_GET["o"] == 'a') {
+if (isset($_GET["o"]) && $_GET["o"] == SERVER_ADD) {
     $monitoring_engines = array(
         "nagios_bin" => "/usr/sbin/centengine",
         "nagiostats_bin" => "/usr/sbin/centenginestats",
@@ -261,7 +261,7 @@ $form->setRequiredNote("<font style='color: red;'>*</font>&nbsp;" . _("Required 
 $tpl = new Smarty();
 $tpl = initSmartyTpl($path, $tpl);
 
-if ($o == "w") {
+if ($o == SERVER_WATCH) {
     /*
      * Just watch a nagios information
      */
@@ -275,14 +275,14 @@ if ($o == "w") {
     }
     $form->setDefaults($nagios);
     $form->freeze();
-} elseif ($o == "c") {
+} elseif ($o == SERVER_MODIFY) {
     /*
      * Modify a nagios information
      */
     $subC = $form->addElement('submit', 'submitC', _("Save"), array("class" => "btc bt_success"));
     $res = $form->addElement('reset', 'reset', _("Reset"), array("class" => "btc bt_default"));
     $form->setDefaults($nagios);
-} elseif ($o == "a") {
+} elseif ($o == SERVER_ADD) {
     /*
      * Add a nagios information
      */
@@ -294,9 +294,12 @@ $valid = false;
 if ($form->validate()) {
     $nagiosObj = $form->getElement('id');
     if ($form->getSubmitValue("submitA")) {
-        insertServerInDB();
+        insertServerInDB($form->getSubmitValues());
     } elseif ($form->getSubmitValue("submitC")) {
-        updateServerInDB($nagiosObj->getValue());
+        updateServer(
+            (int) $nagiosObj->getValue(),
+            $form->getSubmitValues()
+        );
     }
     $o = null;
     $valid = true;

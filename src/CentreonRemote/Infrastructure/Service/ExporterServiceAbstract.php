@@ -124,7 +124,7 @@ abstract class ExporterServiceAbstract implements ExporterServiceInterface
             };
         }
 
-        $result = $this->commitment->getParser()::parse($filename, $macros);
+        $result = $this->commitment->getParser()->parse($filename, $macros);
 
         return $result;
     }
@@ -138,7 +138,7 @@ abstract class ExporterServiceAbstract implements ExporterServiceInterface
 
     protected function _dump(array $input, string $filename): void
     {
-        $this->commitment->getParser()::dump($input, $filename);
+        $this->commitment->getParser()->dump($input, $filename);
 
         $this->manifest->addFile($filename);
     }

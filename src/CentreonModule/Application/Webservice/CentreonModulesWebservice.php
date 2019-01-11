@@ -1,47 +1,54 @@
 <?php
+namespace CentreonModule\Application\Webservice;
 
-namespace CentreonRemote\Application\Webservice;
+use CentreonRemote\Application\Webservice\CentreonWebServiceAbstract;
 
+/**
+ * @OA\Tag(name="centreon_modules_webservice", description="Resource for external public access")
+ */
 class CentreonModulesWebservice extends CentreonWebServiceAbstract
 {
 
     /**
-     * Name of web service object
-     * 
-     * @return string
-     */
-    public static function getName(): string
-    {
-        return 'centreon_modules_webservice';
-    }
-
-    /**
-     * @SWG\Post(
-     *   path="/centreon/api/external.php",
-     *   @SWG\Parameter(
+     * @OA\Post(
+     *   path="/external.php?object=centreon_modules_webservice&action=getBamModuleInfo",
+     *   summary="Get list of modules and widgets",
+     *   tags={"centreon_modules_webservice"},
+     *   @OA\Parameter(
      *       in="query",
      *       name="object",
      *       description="the name of the API object class",
      *       required=true,
-     *       type="string",
-     *       enum="centreon_modules_webservice"
+     *       @OA\Schema(
+     *          type="string",
+     *          enum={"centreon_modules_webservice"}
+     *       )
      *   ),
-     *   @SWG\Parameter(
+     *   @OA\Parameter(
      *       in="query",
      *       name="action",
      *       description="the name of the action in the API class",
      *       required=true,
-     *       type="string",
-     *       enum="getBamModuleInfo"
-     *   )
-     *   @SWG\Response(
-     *     response=200,
-     *     description="JSON with BAM module info"
+     *       @OA\Schema(
+     *          type="string",
+     *          enum={"getBamModuleInfo"}
+     *       )
+     *   ),
+     *   @OA\Response(
+     *      response="200",
+     *      description="JSON with BAM module info",
+     *      @OA\MediaType(
+     *          mediaType="application/json",
+     *          @OA\Schema(
+     *              @OA\Property(property="enabled", type="boolean"),
+     *              @OA\Property(property="status", type="boolean"),
+     *          )
+     *      )
      *   )
      * )
      *
      * Get info for BAM module
-     * 
+     *
      * @return array
      */
     public function postGetBamModuleInfo(): array
@@ -74,5 +81,15 @@ class CentreonModulesWebservice extends CentreonWebServiceAbstract
     public function authorize($action, $user, $isInternal = false)
     {
         return true;
+    }
+
+    /**
+     * Name of web service object
+     * 
+     * @return string
+     */
+    public static function getName(): string
+    {
+        return 'centreon_modules_webservice';
     }
 }

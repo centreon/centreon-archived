@@ -21,3 +21,4 @@ www/include/core/menu/templates/*.js
 www/include/core/menu/templates/*.tpl
 !filesGeneration/export/.keep
 filesGeneration/export/*
+coverage-report/
