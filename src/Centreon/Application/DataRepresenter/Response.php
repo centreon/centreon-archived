@@ -1,4 +1,5 @@
 <?php
+
 namespace Centreon\Application\DataRepresenter;
 
 use JsonSerializable;

@@ -1,4 +1,5 @@
 <?php
+
 namespace CentreonModule\Tests\Infrastructure\Source;
 
 use PHPUnit\Framework\TestCase;
@@ -66,7 +67,7 @@ class WidgetSourceTest extends TestCase
 
         $this->source = $this->getMockBuilder(WidgetSource::class)
             ->setMethods([
-                '_getPath',
+                'getPath',
             ])
             ->setConstructorArgs([
                 $this->containerWrap,
@@ -74,8 +75,8 @@ class WidgetSourceTest extends TestCase
             ->getMock()
         ;
         $this->source
-            ->method('_getPath')
-            ->will($this->returnCallback(function() {
+            ->method('getPath')
+            ->will($this->returnCallback(function () {
                     $result = 'vfs://widgets';
 
                     return $result;

@@ -19,7 +19,7 @@ class CentreonModuleService
      */
     public function __construct(ContainerInterface $services)
     {
-        $this->_initSources($services);
+        $this->initSources($services);
     }
 
     public function getList(string $search = null, bool $installed = null, bool $updated = null, array $typeList = null)
@@ -52,7 +52,7 @@ class CentreonModuleService
      *
      * @param ContainerInterface $services
      */
-    protected function _initSources(ContainerInterface $services)
+    protected function initSources(ContainerInterface $services)
     {
         $this->sources = [
             Source\ModuleSource::TYPE => new Source\ModuleSource($services),

@@ -20,7 +20,7 @@ abstract class SourceAbstract implements SourceInterface
 
     /**
      * Construct
-     * 
+     *
      * @param \Psr\Container\ContainerInterface $services
      */
     public function __construct(ContainerInterface $services)
@@ -29,7 +29,12 @@ abstract class SourceAbstract implements SourceInterface
         $this->finder = $services->get('finder');
     }
 
-    public function isEligible(Module $entity, string $search = null, bool $installed = null, bool $updated = null): bool
+    public function isEligible(
+            Module $entity,
+            string $search = null,
+            bool $installed = null,
+            bool $updated = null
+    ): bool
     {
         if ($search !== null && stripos($entity->getKeywords() . $entity->getName(), $search) === false) {
             return false;

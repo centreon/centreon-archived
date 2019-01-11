@@ -1,13 +1,11 @@
 <?php
+
 namespace Centreon\Application\DataRepresenter;
 
 use JsonSerializable;
 use Centreon\Application\DataRepresenter\Listing;
 use Centreon\Application\DataRepresenter\Entity;
 
-/**
- * 
- */
 class Bulk implements JsonSerializable
 {
 
