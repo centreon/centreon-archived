@@ -7,10 +7,10 @@ class ExtensionsRoute extends Component {
   state = {
     widgetsActive: true,
     modulesActive: true,
-    filters: {
-      search: null,
-
-    }
+    not_installed: true,
+    installed: true,
+    updated: true,
+    search: ""
   }
 
   componentDidMount = () => {
@@ -19,8 +19,12 @@ class ExtensionsRoute extends Component {
 
   onChange = (value, key) => {
     const { filters } = this.state;
-    console.log(value, key)
+    let additionalValues = {};
+    if (typeof this.state[key] != 'undefined') {
+      additionalValues[key] = value;
+    }
     this.setState({
+      ...additionalValues,
       filters: {
         ...filters,
         [key]: value
@@ -29,7 +33,26 @@ class ExtensionsRoute extends Component {
   }
 
   clearFilters = () => {
-    console.log('here')
+    this.setState({
+      widgetsActive: true,
+      modulesActive: true,
+      not_installed: true,
+      installed: true,
+      updated: true,
+      search: ""
+    })
+  }
+
+  uploadLicence = () => {
+    //TO DO: Pop up
+  }
+
+  installAll = () => {
+    //TO DO: Call API for install
+  }
+
+  updateAll = () => {
+    //TO DO: Call API for update
   }
 
   getData = () => {
@@ -40,14 +63,14 @@ class ExtensionsRoute extends Component {
   render = () => {
 
     const { remoteData } = this.props;
-    const { modulesActive, widgetsActive } = this.state;
-
+    const { modulesActive, widgetsActive, not_installed, installed, updated, search } = this.state;
 
     return (
       <div>
         <Centreon.TopFilters
           fullText={{
             label: "Search:",
+            value: search,
             filterKey: 'search'
           }}
           onChange={this.onChange.bind(this)}
@@ -57,19 +80,19 @@ class ExtensionsRoute extends Component {
                 customClass: "container__col-md-4 container__col-xs-4",
                 switcherTitle: "Status:",
                 switcherStatus: "Not installed",
-                defaultValue: false,
+                value: not_installed,
                 filterKey: 'not_installed'
               },
               {
                 customClass: "container__col-md-4 container__col-xs-4",
                 switcherStatus: "Installed",
-                defaultValue: false,
+                value: installed,
                 filterKey: 'installed'
               },
               {
                 customClass: "container__col-md-4 container__col-xs-4",
                 switcherStatus: "Update",
-                defaultValue: false,
+                value: updated,
                 filterKey: 'updated'
               }
             ],
@@ -78,14 +101,14 @@ class ExtensionsRoute extends Component {
                 customClass: "container__col-sm-3 container__col-xs-4",
                 switcherTitle: "Type:",
                 switcherStatus: "Module",
-                defaultValue: false,
-                filterKey: 'type_module'
+                value: modulesActive,
+                filterKey: 'modulesActive'
               },
               {
                 customClass: "container__col-sm-3 container__col-xs-4",
                 switcherStatus: "Widget",
-                defaultValue: false,
-                filterKey: 'type_widget'
+                value: widgetsActive,
+                filterKey: 'widgetsActive'
               },
               {
                 button: true,
@@ -98,9 +121,9 @@ class ExtensionsRoute extends Component {
           ]}
         />
         <Centreon.Wrapper>
-          <Centreon.Button label={"Update all"} buttonType="regular" customClass="mr-2" color="orange" />
-          <Centreon.Button label={"Install all"} buttonType="regular" customClass="mr-2" color="green" />
-          <Centreon.Button label={"Upload licence"} buttonType="regular" color="blue" />
+          <Centreon.Button label={"Update all"} buttonType="regular" customClass="mr-2" color="orange" onClick={this.updateAll.bind(this)} />
+          <Centreon.Button label={"Install all"} buttonType="regular" customClass="mr-2" color="green" onClick={this.installAll.bind(this)} />
+          <Centreon.Button label={"Upload licence"} buttonType="regular" color="blue" onClick={this.uploadLicence.bind(this)} />
         </Centreon.Wrapper>
         {
           remoteData.extensions ? (
