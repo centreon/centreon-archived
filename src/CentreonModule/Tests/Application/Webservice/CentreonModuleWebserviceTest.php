@@ -78,7 +78,7 @@ class CentreonModuleWebserviceTest extends TestCase
                             $module,
                         ],
                     ];
-                }))
+            }))
         ;
 
         $this->webservice = $this->createPartialMock(CentreonModuleWebservice::class, [
@@ -97,12 +97,12 @@ class CentreonModuleWebserviceTest extends TestCase
         $filters = [];
         $this->webservice
             ->method('query')
-            ->will($this->returnCallback(function() use (&$filters) {
+            ->will($this->returnCallback(function () use (&$filters) {
                     return $filters;
-                }))
+            }))
         ;
 
-        $executeTest = function($controlJsonFile) {
+        $executeTest = function ($controlJsonFile) {
             // get controlled response from file
             $path = __DIR__ . '/../../Resource/Fixture/';
             $controlJson = file_get_contents($path . $controlJsonFile);
@@ -156,7 +156,7 @@ class CentreonModuleWebserviceTest extends TestCase
                 ->method('hasAccessRestApiConfiguration')
                 ->will($this->returnCallback(function () {
                         return true;
-                    }))
+                }))
             ;
 
             $result = $this->webservice->authorize(null, $user);

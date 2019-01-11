@@ -70,7 +70,7 @@ class Bulk implements JsonSerializable
 
     /**
      * Construct
-     * 
+     *
      * @param array $lists
      * @param string $listingClass
      * @param string $entityClass
@@ -81,8 +81,7 @@ class Bulk implements JsonSerializable
         int $limit = null,
         string $listingClass = null,
         string $entityClass = null
-    )
-    {
+    ) {
         $this->lists = $lists;
         $this->offset = $offset;
         $this->limit = $limit;
