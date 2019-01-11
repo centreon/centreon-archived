@@ -1,4 +1,5 @@
 <?php
+
 namespace CentreonModule\Tests\Application\DataRepresenter;
 
 use PHPUnit\Framework\TestCase;

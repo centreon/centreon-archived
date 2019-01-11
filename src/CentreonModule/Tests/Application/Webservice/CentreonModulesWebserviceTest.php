@@ -8,12 +8,12 @@ use Centreon\Test\Mock\CentreonDB;
 use Symfony\Component\Finder\Finder;
 use CentreonModule\Application\Webservice\CentreonModulesWebservice;
 
-class CentreonModulesWebserviceTest extends TestCase {
+class CentreonModulesWebserviceTest extends TestCase
+{
 
     public static $sqlQueriesWitoutData = [
         'SELECT * FROM modules_informations ' => [],
     ];
-
     public static $sqlQueries = [
         'SELECT * FROM modules_informations ' => [
             [
@@ -33,7 +33,8 @@ class CentreonModulesWebserviceTest extends TestCase {
         ],
     ];
 
-    protected function setUp() {
+    protected function setUp()
+    {
         $this->webservice = $this->createPartialMock(CentreonModulesWebservice::class, [
             'loadDb',
             'loadArguments',
@@ -41,7 +42,8 @@ class CentreonModulesWebserviceTest extends TestCase {
         ]);
     }
 
-    public function testPostGetBamModuleInfo() {
+    public function testPostGetBamModuleInfo()
+    {
         // dependencies
         $container = new Container;
         $container['finder'] = new Finder;
@@ -70,13 +72,14 @@ class CentreonModulesWebserviceTest extends TestCase {
         $this->assertTrue($result['enabled']);
     }
 
-    public function testAuthorize() {
+    public function testAuthorize()
+    {
         $result = $this->webservice->authorize(null, null);
         $this->assertTrue($result);
     }
 
-    public function testGetName() {
+    public function testGetName()
+    {
         $this->assertEquals('centreon_modules_webservice', CentreonModulesWebservice::getName());
     }
-
 }

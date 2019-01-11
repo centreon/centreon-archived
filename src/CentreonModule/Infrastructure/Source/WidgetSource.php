@@ -20,7 +20,7 @@ class WidgetSource extends SourceAbstract
 
     /**
      * Construct
-     * 
+     *
      * @param \Psr\Container\ContainerInterface $services
      */
     public function __construct(ContainerInterface $services)
@@ -40,12 +40,11 @@ class WidgetSource extends SourceAbstract
             ->name(static::CONFIG_FILE)
             ->depth('== 1')
             ->sortByName()
-            ->in($this->_getPath());
+            ->in($this->getPath());
 
         $result = [];
 
         foreach ($files as $file) {
-
             $entity = $this->createEntityFromConfig($file->getPathName());
 
             if (!$this->isEligible($entity, $search, $installed, $updated)) {
@@ -87,7 +86,7 @@ class WidgetSource extends SourceAbstract
      * @codeCoverageIgnore
      * @return string
      */
-    protected function _getPath(): string
+    protected function getPath(): string
     {
         return static::PATH;
     }

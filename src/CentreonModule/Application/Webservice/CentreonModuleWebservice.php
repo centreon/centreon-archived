@@ -83,12 +83,26 @@ class CentreonModuleWebservice extends CentreonWebServiceAbstract
      *          mediaType="application/json",
      *          @OA\Schema(
      *              @OA\Property(property="module",
-     *                  @OA\Property(property="entities", type="array", @OA\Items(ref="#/components/schemas/ModuleEntity")),
-     *                  @OA\Property(property="pagination", ref="#/components/schemas/Pagination")
+     *                  @OA\Property(
+     *                      property="entities",
+     *                      type="array",
+     *                      @OA\Items(ref="#/components/schemas/ModuleEntity")
+     *                  ),
+     *                  @OA\Property(
+     *                      property="pagination",
+     *                      ref="#/components/schemas/Pagination"
+     *                  )
      *              ),
      *              @OA\Property(property="widget", type="object",
-     *                  @OA\Property(property="entities", type="array", @OA\Items(ref="#/components/schemas/ModuleEntity")),
-     *                  @OA\Property(property="pagination", ref="#/components/schemas/Pagination")
+     *                  @OA\Property(
+     *                      property="entities",
+     *                      type="array",
+     *                      @OA\Items(ref="#/components/schemas/ModuleEntity")
+     *                  ),
+     *                  @OA\Property(
+     *                      property="pagination",
+     *                      ref="#/components/schemas/Pagination"
+     *                  )
      *              ),
      *              @OA\Property(property="status", type="boolean")
      *          )
@@ -157,7 +171,7 @@ class CentreonModuleWebservice extends CentreonWebServiceAbstract
 
     /**
      * Name of web service object
-     * 
+     *
      * @return string
      */
     public static function getName(): string

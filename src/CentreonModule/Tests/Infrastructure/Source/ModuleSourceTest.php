@@ -1,4 +1,5 @@
 <?php
+
 namespace CentreonModule\Tests\Infrastructure\Source;
 
 use PHPUnit\Framework\TestCase;
@@ -67,14 +68,14 @@ class ModuleSourceTest extends TestCase
         foreach (static::$sqlQueryVsData as $query => $data) {
             $container['centreon.db-manager']->addResultSet($query, $data);
         }
-        
+
         $this->containerWrap = new ContainerWrap($container);
 
         $this->source = $this->getMockBuilder(ModuleSource::class)
             ->setMethods([
-                '_getPath',
-                '_getModuleConf',
-                '_getLicenseFile',
+                'getPath',
+                'getModuleConf',
+                'getLicenseFile',
             ])
             ->setConstructorArgs([
                 $this->containerWrap,
@@ -82,16 +83,16 @@ class ModuleSourceTest extends TestCase
             ->getMock()
         ;
         $this->source
-            ->method('_getPath')
-            ->will($this->returnCallback(function() {
+            ->method('getPath')
+            ->will($this->returnCallback(function () {
                     $result = 'vfs://modules';
 
                     return $result;
                 }))
         ;
         $this->source
-            ->method('_getModuleConf')
-            ->will($this->returnCallback(function() {
+            ->method('getModuleConf')
+            ->will($this->returnCallback(function () {
                     $result = [
                         ModuleSourceTest::$moduleName => ModuleSourceTest::$moduleInfo,
                     ];
@@ -100,8 +101,8 @@ class ModuleSourceTest extends TestCase
                 }))
         ;
         $this->source
-            ->method('_getLicenseFile')
-            ->will($this->returnCallback(function() {
+            ->method('getLicenseFile')
+            ->will($this->returnCallback(function () {
                     $result = 'vfs://modules/' .
                         ModuleSourceTest::$moduleName . '/' .
                         ModuleSource::LICENSE_FILE
@@ -142,19 +143,19 @@ class ModuleSourceTest extends TestCase
         $this->assertEquals(true, $result->isInstalled());
         $this->assertEquals(true, $result->isUpdated());
     }
-    
+
 //    public function testGetModuleConf()
 //    {
 //        $moduleSource = new ModuleSource($this->containerWrap);
-//        $result = $this->invokeMethod($moduleSource, '_getModuleConf', [static::getConfFilePath()]);
+//        $result = $this->invokeMethod($moduleSource, 'getModuleConf', [static::getConfFilePath()]);
 //        //'php://filter/read=string.rot13/resource=' . 
 //    }
-    
+
     public function testGetLicenseFile()
     {
         $moduleSource = new ModuleSource($this->containerWrap);
-        $result = $this->invokeMethod($moduleSource, '_getLicenseFile', [static::getLicenseFilePath()]);
-        
+        $result = $this->invokeMethod($moduleSource, 'getLicenseFile', [static::getLicenseFilePath()]);
+
         $this->assertTrue(strpos($result, ModuleSource::LICENSE_FILE) > -1);
     }
 

@@ -10,5 +10,10 @@ interface SourceInterface
 
     public function createEntityFromConfig(string $configFile): Module;
 
-    public function isEligible(Module $entity, string $search = null, bool $installed = null, bool $updated = null): bool;
+    public function isEligible(
+            Module $entity,
+            string $search = null,
+            bool $installed = null,
+            bool $updated = null
+    ): bool;
 }

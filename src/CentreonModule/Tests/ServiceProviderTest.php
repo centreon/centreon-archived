@@ -1,4 +1,5 @@
 <?php
+
 namespace CentreonModule\Tests;
 
 use PHPUnit\Framework\TestCase;
