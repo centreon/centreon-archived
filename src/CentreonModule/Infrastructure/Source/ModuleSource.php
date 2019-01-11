@@ -26,7 +26,7 @@ class ModuleSource extends SourceAbstract
 
     /**
      * Construct
-     * 
+     *
      * @param \Psr\Container\ContainerInterface $services
      */
     public function __construct(ContainerInterface $services)
@@ -48,12 +48,11 @@ class ModuleSource extends SourceAbstract
             ->name(static::CONFIG_FILE)
             ->depth('== 1')
             ->sortByName()
-            ->in($this->_getPath());
+            ->in($this->getPath());
 
         $result = [];
 
         foreach ($files as $file) {
-
             $entity = $this->createEntityFromConfig($file->getPathName());
 
             if (!$this->isEligible($entity, $search, $installed, $updated)) {
@@ -70,10 +69,10 @@ class ModuleSource extends SourceAbstract
     {
         $module_conf = [];
 
-        $module_conf = $this->_getModuleConf($configFile);
+        $module_conf = $this->getModuleConf($configFile);
 
         $info = current($module_conf);
-        $licenseFile = $this->_getLicenseFile($configFile);
+        $licenseFile = $this->getLicenseFile($configFile);
 
         $entity = new Module;
         $entity->setId(basename(dirname($configFile)));
@@ -101,7 +100,7 @@ class ModuleSource extends SourceAbstract
      * @codeCoverageIgnore
      * @return string
      */
-    protected function _getPath(): string
+    protected function getPath(): string
     {
         return static::PATH;
     }
@@ -110,7 +109,7 @@ class ModuleSource extends SourceAbstract
      * @codeCoverageIgnore
      * @return array
      */
-    protected function _getModuleConf(string $configFile): array
+    protected function getModuleConf(string $configFile): array
     {
         $module_conf = [];
 
@@ -119,7 +118,7 @@ class ModuleSource extends SourceAbstract
         return $module_conf;
     }
 
-    protected function _getLicenseFile(string $configFile): string
+    protected function getLicenseFile(string $configFile): string
     {
         $result = dirname($configFile) . '/' . static::LICENSE_FILE;
 

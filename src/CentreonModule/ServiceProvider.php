@@ -1,4 +1,5 @@
 <?php
+
 namespace CentreonModule;
 
 use Pimple\Container;
@@ -12,7 +13,7 @@ class ServiceProvider implements AutoloadServiceProviderInterface
 
     /**
      * Register services
-     * 
+     *
      * @param \Pimple\Container $pimple
      */
     public function register(Container $pimple): void
@@ -22,7 +23,7 @@ class ServiceProvider implements AutoloadServiceProviderInterface
         // alias of CentreonModuleWebservice need for back compatibility and it's deprecated for using
         $pimple['centreon.webservice']->add(Webservice\CentreonModulesWebservice::class);
 
-        $pimple['centreon.module'] = function(Container $container): Service\CentreonModuleService {
+        $pimple['centreon.module'] = function (Container $container): Service\CentreonModuleService {
             $services = [
                 'centreon.db-manager',
                 'finder',

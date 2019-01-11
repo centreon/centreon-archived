@@ -8,6 +8,7 @@ use CentreonModule\Infrastructure\Source\SourceAbstract;
 
 class SourceAbstractTest extends TestCase
 {
+
     protected function setUp()
     {
         $this->source = $this->getMockBuilder(SourceAbstract::class)

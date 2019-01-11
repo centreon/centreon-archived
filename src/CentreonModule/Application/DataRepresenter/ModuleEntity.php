@@ -14,7 +14,7 @@ class ModuleEntity implements JsonSerializable
 
     /**
      * Construct
-     * 
+     *
      * @param \CentreonModule\Infrastructure\Entity\Module $entity
      */
     public function __construct(Module $entity)
