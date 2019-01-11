@@ -56,7 +56,7 @@ class Response implements JsonSerializable
 
     /**
      * Construct
-     * 
+     *
      * @param mixed $result
      * @param bool $status
      */

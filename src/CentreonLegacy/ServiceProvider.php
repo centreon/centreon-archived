@@ -45,12 +45,12 @@ class ServiceProvider implements AutoloadServiceProviderInterface
 
     /**
      * Register CentreonLegacy services
-     * 
+     *
      * @param \Pimple\Container $pimple
      */
     public function register(Container $pimple): void
     {
-        $pimple['centreon.legacy.license'] = function(Container $container): License {
+        $pimple['centreon.legacy.license'] = function (Container $container): License {
             $service = new License($container);
 
             return $service;
