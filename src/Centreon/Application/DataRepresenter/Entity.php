@@ -48,7 +48,7 @@ class Entity implements JsonSerializable
 
     /**
      * Construct
-     * 
+     *
      * @param mixed $entity
      */
     public function __construct($entity)

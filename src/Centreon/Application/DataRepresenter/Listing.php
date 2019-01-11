@@ -81,7 +81,7 @@ class Listing implements JsonSerializable
 
     /**
      * Construct
-     * 
+     *
      * @param \CentreonModule\Infrastructure\Entity\Module $entity
      * @param string $entityClass Entity JSON wrap class
      * @param int $total
@@ -89,7 +89,13 @@ class Listing implements JsonSerializable
      * @param int $limit
      * @param string $entityClass
      */
-    public function __construct($entities, int $total = null, int $offset = null, int $limit = null, string $entityClass = null)
+    public function __construct(
+        $entities,
+        int $total = null,
+        int $offset = null,
+        int $limit = null,
+        string $entityClass = null
+    )
     {
         $this->entities = $entities ?? [];
         $this->total = $total ? $total : count($this->entities);
