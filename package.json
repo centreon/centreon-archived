@@ -23,6 +23,7 @@
     "webpack-cli": "^3.0.8"
   },
   "dependencies": {
+    "@centreon/react-components": "file:./react-components",
     "axios": "^0.18.0",
     "class-name": "^0.1.3",
     "cross-env": "^5.2.0",
@@ -45,6 +46,7 @@
     "redux": "^4.0.0",
     "redux-form": "^7.4.2",
     "redux-logger": "^3.0.6",
+    "redux-saga": "^0.16.2",
     "redux-thunk": "^2.3.0"
   },
   "jest": {
