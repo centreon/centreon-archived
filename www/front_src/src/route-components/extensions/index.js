@@ -29,7 +29,7 @@ class ExtensionsRoute extends Component {
         ...filters,
         [key]: value
       }
-    })
+    }, this.getData)
   }
 
   clearFilters = () => {
@@ -39,8 +39,9 @@ class ExtensionsRoute extends Component {
       not_installed: true,
       installed: true,
       updated: true,
+      nothingShown:false,
       search: ""
-    })
+    }, this.getData)
   }
 
   uploadLicence = () => {
@@ -55,15 +56,46 @@ class ExtensionsRoute extends Component {
     //TO DO: Call API for update
   }
 
+  getParsedGETParamsForExtensions = (callback) => {
+    const { installed, not_installed, updated, search } = this.state;
+    let params = '';
+    let nothingShown = false;
+    if(search){
+      params += '&search='+search
+    }
+    if(installed && not_installed && updated){
+      callback(params, nothingShown);
+    }else{
+      if(!updated){
+        params += '&updated=false'
+      }
+      if(installed && !not_installed){
+        params += "&installed=true"
+      }else if(!installed && not_installed){
+        params += "&installed=false"
+      }else if(!installed && !not_installed){
+        nothingShown = true
+      }
+      callback(params, nothingShown);
+    }
+  }
+
   getData = () => {
     const { getAxiosData } = this.props;
-    getAxiosData({ url: `./api/internal.php?object=centreon_module&action=list`, propKey: 'extensions' })
+    this.getParsedGETParamsForExtensions((params, nothingShown)=>{
+      this.setState({
+        nothingShown
+      })
+      if(!nothingShown){
+        getAxiosData({ url: `./api/internal.php?object=centreon_module&action=list${params}`, propKey: 'extensions' })
+      }
+    })
   }
 
   render = () => {
 
     const { remoteData } = this.props;
-    const { modulesActive, widgetsActive, not_installed, installed, updated, search } = this.state;
+    const { modulesActive, widgetsActive, not_installed, installed, updated, search, nothingShown } = this.state;
 
     return (
       <div>
@@ -126,7 +158,7 @@ class ExtensionsRoute extends Component {
           <Centreon.Button label={"Upload licence"} buttonType="regular" color="blue" onClick={this.uploadLicence.bind(this)} />
         </Centreon.Wrapper>
         {
-          remoteData.extensions ? (
+          remoteData.extensions && !nothingShown ? (
             <React.Fragment>
               {
                 remoteData.extensions.result.module && modulesActive ? (
