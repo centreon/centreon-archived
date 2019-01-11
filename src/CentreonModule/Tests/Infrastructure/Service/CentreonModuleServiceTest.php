@@ -79,9 +79,9 @@ class CentreonModuleServiceTest extends TestCase
 
             $sources[$type]
                 ->method('getList')
-                ->will($this->returnCallback(function() use ($type) {
+                ->will($this->returnCallback(function () use ($type) {
                         return $type;
-                    }))
+                }))
             ;
         }
 
