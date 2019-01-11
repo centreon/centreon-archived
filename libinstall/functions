@@ -47,7 +47,7 @@ SETCOLOR_NORMAL="\\033[0;39m"
 ## @Globals	LOG_FILE
 #----
 function echo_info() {
-    echo -e "${1}${MOVE_TO_COL}${SETCOLOR_INFO}${2}${SETCOLOR_NORMAL}" 
+    echo -e "${1}${MOVE_TO_COL}${SETCOLOR_INFO}${2}${SETCOLOR_NORMAL}"
     echo -e "$1 : $2" >> $LOG_FILE
 }
 
@@ -56,7 +56,7 @@ function echo_info() {
 ## @param	string to trim
 ## @return	string
 #----
-function trim() {    
+function trim() {
     echo "$1" | sed 's/^[ \t]*\(.*\)[ \t]*$/\1/'
 }
 
@@ -69,7 +69,7 @@ function trim() {
 ## @Globals	LOG_FILE
 #----
 function echo_success() {
-    echo -e "${1}${MOVE_TO_COL}${SETCOLOR_SUCCESS}${2}${SETCOLOR_NORMAL}" 
+    echo -e "${1}${MOVE_TO_COL}${SETCOLOR_SUCCESS}${2}${SETCOLOR_NORMAL}"
     echo -e "$1 : $2" >> $LOG_FILE
 }
 
@@ -280,7 +280,7 @@ function answer_with_testdir() {
 }
 
 #----
-## print a message, create directory with answer 
+## print a message, create directory with answer
 ## Loop if not a valid directory (slash...)
 ## @param	message
 ## @param	default value (use "NO_DEFAULT" if not default value)
@@ -305,7 +305,7 @@ function answer_with_createdir() {
 		if [ -z "${res#/}" -o "$yes" = "$res" -o "$no" = "$res" ] ; then
 			echo_passed  "$(gettext "You select slash...")"
 			res="not_define"
-		else 
+		else
 			first=1
 			[ -d "$res" ] && break 
 			yes_no_default "$(gettext "Do you want me to create this directory ?") [$res]"
@@ -368,8 +368,8 @@ function answer_with_createfile() {
 }
 
 #----
-## print a message, test if file exists 
-## Loop if not a valid file 
+## print a message, test if file exists
+## Loop if not a valid file
 ## @param	message
 ## @param	default value (use "NO_DEFAULT" if not default value)
 ## @param	global variable to set a result
@@ -382,12 +382,12 @@ function answer_with_testfile() {
 	local res="not_define"
 	local first=0
 	while [ ! -f "$res" ] ; do
-		[ $first -eq 1 ] && echo_passed "$(gettext "$res is not a valid file.")" "$critical" 
+		[ $first -eq 1 ] && echo_passed "$(gettext "$res is not a valid file.")" "$critical"
 		echo -e "\n$message"
 		[ "$default" != "NO_DEFAULT" ] && echo -e "$(gettext "default to") [$default]"
 		echo -en "> "
 		read res
-		if [ -z "$res" ] ; then 
+		if [ -z "$res" ] ; then
 			[ "$default" != "NO_DEFAULT" ] && res=$default
 		fi
 		first=1
@@ -1307,9 +1307,12 @@ __EOT__
 	fi
 }
 
-function check_php_fpm_directory()
-{
-	if [ -z "$DIR_PHP_FPM_CONF" ] ; then 
+#----
+## Check PHP FPM configuration directory
+## @Globals	DIR_PHP_FPM_CONF
+#----
+function check_php_fpm_directory() {
+	if [ -z "$DIR_PHP_FPM_CONF" ] ; then
 		if [ -d /etc/php/7.1/fpm/pool.d ]; then
 			DIR_PHP_FPM_CONF="/etc/php/7.1/fpm/pool.d"
 		elif [ -d /etc/opt/rh/rh-php71/php-fpm.d ] ; then
@@ -1326,6 +1329,10 @@ function check_php_fpm_directory()
 	return 0
 }
 
+#----
+## Configure PHP FPM
+## @Globals	silent_install, DIR_PHP_FPM_CONF, PHP_FPM_RELOAD
+#----
 function configure_php_fpm() {
     echo -e "\n$line"
 	echo -e "\t$(gettext "Configure PHP FPM service")"
@@ -1375,6 +1382,10 @@ function configure_php_fpm() {
 	fi
 }
 
+#----
+## Create configuration file of PHP FPM
+## @Globals	INSTALL_DIR_CENTREON
+#----
 function prepare_php_fpm_config() {
 	local directory="$1"
 
@@ -1409,6 +1420,9 @@ __EOT__
     fi
 }
 
+#----
+## Reload PHP FPM service
+#----
 function reload_service_php_fpm() {
     local service_reloaded=0
 	log "INFO" "$(gettext "Reloading PHP FPM...")"
@@ -1484,9 +1498,9 @@ CENTREON   ALL = NOPASSWD: $SERVICE_BINARY cbd reload
 ## END: CENTREON SUDO
 __EOT__
 
-	if [ -e $directory/centreon.sudo ] ; then 
+	if [ -e $directory/centreon.sudo ] ; then
 		return 0
-	else 
+	else
 		log "INFO" "$(gettext "Problem when I generate a sudo configuration")"
 		return 1
 	fi
@@ -1512,8 +1526,8 @@ function is_suspect_conf_sudo() {
 }
 
 #----
-## Configure Sudo on system 
-## Need a directory to store a config 
+## Configure Sudo on system
+## Need a directory to store a config
 ## Call <@function prepare_sudo_config>
 ## @param	Directory to store a Sudo config (generate)
 ## @Globals	SUDO_FILE, line
@@ -1553,7 +1567,7 @@ function configureSUDO() {
 			yes_no_default "$(gettext "Do you want me to reconfigure your sudo ? (WARNING) ")"
 			no_force_sudo="$?"
 		fi
-		if [ $no_force_sudo -eq 0 ] ; then 
+		if [ $no_force_sudo -eq 0 ] ; then
 			clean_sudo $SUDO_FILE 0
 			${CAT} $dir_conf/centreon.sudo >> $SUDO_FILE
 			echo_success "$(gettext "Configuring Sudo")" "$ok"
@@ -1569,7 +1583,7 @@ function configureSUDO() {
 ## Create a config file for Web post install
 ## @Globals	line, INSTALL_DIR_CENTREON, CENTREON_ETC,
 ## @Globals	MONITORINGENGINE_BINARY, MONITORINGENGINE_INIT_SCRIPT
-## @Globals	BIN_RRDTOOL, WEB_USER, WEB_GROUP, 
+## @Globals	BIN_RRDTOOL, WEB_USER, WEB_GROUP,
 ## @Globals	CENTREON_USER, BIN_MAIL
 #----
 function createConfFile() {
@@ -1578,24 +1592,24 @@ function createConfFile() {
 	echo -e "$line"
 
 	INSTALL_DIR_CENTREON_CONF="$INSTALL_DIR_CENTREON/www/install/install.conf.php"
-	# Reinit file if exist	
+	# Reinit file if exist
 	touch $INSTALL_DIR_CENTREON_CONF
 	${CAT} << __EOT__ > $INSTALL_DIR_CENTREON_CONF
 <?php
-/* 
- * Centreon is developped with GPL Licence 2.0 : 
- * http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt 
- * Developped by : Julien Mathis - Romain Le Merlus  
- *  
- * The Software is provided to you AS IS and WITH ALL FAULTS. 
- * Centreon makes no representation and gives no warranty whatsoever, 
- * whether express or implied, and without limitation, with regard to the quality, 
- * any particular or intended purpose of the Software found on the Centreon web site. 
- * In no event will Centreon be liable for any direct, indirect, punitive, special, 
- * incidental or consequential damages however they may arise and even if Centreon has 
- * been previously advised of the possibility of such damages. 
- *  
- * For information : contact@centreon.com 
+/*
+ * Centreon is developped with GPL Licence 2.0 :
+ * http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt
+ * Developped by : Julien Mathis - Romain Le Merlus
+ *
+ * The Software is provided to you AS IS and WITH ALL FAULTS.
+ * Centreon makes no representation and gives no warranty whatsoever,
+ * whether express or implied, and without limitation, with regard to the quality,
+ * any particular or intended purpose of the Software found on the Centreon web site.
+ * In no event will Centreon be liable for any direct, indirect, punitive, special,
+ * incidental or consequential damages however they may arise and even if Centreon has
+ * been previously advised of the possibility of such damages.
+ *
+ * For information : contact@centreon.com
  */
 
 \$conf_centreon['centreon_dir'] = "$INSTALL_DIR_CENTREON/";
@@ -1630,7 +1644,6 @@ __EOT__
 	log "INFO" "$(gettext "Change right on") : $INSTALL_DIR_CENTREON_CONF"
 	${CHOWN} $WEB_USER:$WEB_GROUP $INSTALL_DIR_CENTREON_CONF >> $LOG_FILE 2>&1
 	echo_success "Create $INSTALL_DIR_CENTREON_CONF" "OK"
-	
 }
 
 #----
@@ -1803,7 +1816,7 @@ function createCentPluginsForTrapdInstallConf() {
 #----
 function check_httpd_directory()
 {
-	if [ -z "$DIR_APACHE" -o -z "$DIR_APACHE_CONF" ] ; then 
+	if [ -z "$DIR_APACHE" -o -z "$DIR_APACHE_CONF" ] ; then
 		if [ -d /etc/apache/conf ]; then
 			DIR_APACHE="/etc/apache/conf"
 			DIR_APACHE_CONF="/etc/apache/conf.d"
@@ -1839,7 +1852,7 @@ function check_httpd_directory()
 			# add for freeBSD 7 with apache2.2
 			DIR_APACHE="/usr/local/etc/apache22"
 			DIR_APACHE_CONF="/usr/local/etc/apache22/Includes"
-		else 
+		else
 			echo_passed "$(gettext "Apache config directoty not found")" "$critical"
 			answer_with_testdir "$(gettext "Where is your Apache etc directory")" "NO_DEFAULT" "DIR_APACHE"
 			answer_with_testdir "$(gettext "Where is your Apache conf.d directory")" "NO_DEFAULT" "DIR_APACHE_CONF"
@@ -1852,7 +1865,7 @@ function check_httpd_directory()
 	log "INFO" "DIR_APACHE: $DIR_APACHE"
 	log "INFO" "DIR_APACHE_CONF: $DIR_APACHE_CONF"
 
-	if [ -z "$APACHE_CONF" ] ; then 
+	if [ -z "$APACHE_CONF" ] ; then
 		if [ -e $DIR_APACHE/apache2.conf ] ; then
 			APACHE_CONF="apache2.conf"
 		elif [ -e $DIR_APACHE/apache.conf ] ; then
@@ -1881,31 +1894,31 @@ function check_user_apache()
 	# init WEB_USER if not define
 	WEB_USER="$WEB_USER"
 
-	if [ -n "$WEB_USER" ] ; then 
+	if [ -n "$WEB_USER" ] ; then
 		echo_info "$(gettext "Finding Apache user") :" "$WEB_USER"
 		return 0
 	fi
 	local found=0
-	if [ -e /etc/apache2/envvars ] ; then 
+	if [ -e /etc/apache2/envvars ] ; then
 		log "INFO" "$(gettext "Use envvars file for apache user")"
 		# for Debian system (lenny)
 		WEB_USER=`${CAT} /etc/apache2/envvars |${GREP} "USER" | cut -d= -f2`
-		if [ -z "$WEB_USER" ] ; then 
+		if [ -z "$WEB_USER" ] ; then
 			found=0
-		else 
+		else
 			found=1
 		fi
 	elif [ -e /etc/apache2/uid.conf ] ; then
 		log "INFO" "$(gettext "Use uid.conf file for apache user")"
 		# for SuSe system
 		WEB_USER=`${CAT} /etc/apache2/uid.conf |${GREP} -e "^User" | cut -d" " -f2`
-		if [ -z "$WEB_USER" ] ; then 
+		if [ -z "$WEB_USER" ] ; then
 			found=0
-		else 
+		else
 			found=1
 		fi
-	fi 
-	if [ "$found" -eq 0 ] ; then 
+	fi
+	if [ "$found" -eq 0 ] ; then
 		WEB_USER=`${CAT} $DIR_APACHE/$APACHE_CONF | ${GREP} -e "^User" | cut -d" " -f2`
 		if [ -z "$WEB_USER"  ] ; then
 			local WEB_USER_TEMP=""
@@ -1935,7 +1948,7 @@ function check_group_apache()
 	# init WEB_GROUP if not define
 	WEB_GROUP="$WEB_GROUP"
 
-	if [ -n "$WEB_GROUP" ] ; then 
+	if [ -n "$WEB_GROUP" ] ; then
 		echo_info "$(gettext "Finding Apache group") :" "$WEB_GROUP"
 		return 0
 	fi
@@ -1943,21 +1956,21 @@ function check_group_apache()
 	if [ -e /etc/apache2/envvars ] ; then
 		# for debian system
 		WEB_GROUP=`${CAT} /etc/apache2/envvars |${GREP} "GROUP" |cut -d= -f2`
-		if [ -z "$WEB_GROUP" ] ; then 
+		if [ -z "$WEB_GROUP" ] ; then
 			found=0
-		else 
+		else
 			found=1
 		fi
 	elif [ -e /etc/apache2/uid.conf ] ; then
 		# for SuSe system
 		WEB_GROUP=`${CAT} /etc/apache2/uid.conf |${GREP} -e "^Group" | cut -d" " -f2`
-		if [ -z "$WEB_GROUP" ] ; then 
+		if [ -z "$WEB_GROUP" ] ; then
 			found=0
-		else 
+		else
 			found=1
 		fi
 	fi
-	if [ "$found" -eq 0 ] ; then 
+	if [ "$found" -eq 0 ] ; then
 		WEB_GROUP=`${CAT} $DIR_APACHE/$APACHE_CONF | ${GREP} -e "^Group" | cut -d" " -f2`
 		if [  -z "$WEB_GROUP"  ] ; then
 			local WEB_GROUP_TMP=""
@@ -2147,7 +2160,7 @@ function install_init_service() {
 		return 1
 	fi
 	return 0
-} 
+}
 
 #----
 ## Define OS
@@ -2171,7 +2184,7 @@ function find_OS() {
 		fi
 		if [ "$lsb_release" = "Debian" ] || \
 			[ "$lsb_release" = "Ubuntu" ] || \
-			[ -e "/etc/debian_version" ] ; then 
+			[ -e "/etc/debian_version" ] ; then
 			dist_found="DEBIAN"
 			log "INFO" "$(gettext "GNU/Linux Debian Distribution")"
 		elif [ "$lsb_release" = "SUSE LINUX" ] || \
@@ -2213,7 +2226,7 @@ function find_OS() {
 #----
 ## use this function to clean and exit centreon install
 ## This function use <@function purge_centreon_tmp_dir> function.
-## TODO: Need to add fonctionnality 
+## TODO: Need to add fonctionnality
 ##      - delete install file
 ##      - restore inital rigth
 ##      - ...
@@ -2223,7 +2236,7 @@ function clean_and_exit() {
   if [ $trap_sig -eq 0 ] ; then
     echo -e "$(gettext "\nTrap interrupt, Centreon'll exit now and clean install")"
     yes_no_default "$(gettext "Do you really want to quit Centreon install process ? ")" "$no"
-    if [ $? -eq 1 ] ; then 
+    if [ $? -eq 1 ] ; then
       echo "$(gettext "Continue...")"
       return 1
     fi
@@ -2275,7 +2288,7 @@ function purge_centreon_tmp_dir() {
 		else
 			rc=0
 		fi
-		if [ $rc -eq 0 ] ; then 
+		if [ $rc -eq 0 ] ; then
 			local tmp_base_dir=`dirname $TMP_DIR`
 			local tmp_dir=`basename $TMP_DIR`
 			find $tmp_base_dir -name "$tmp_dir*" -type d \
@@ -2290,7 +2303,7 @@ function purge_centreon_tmp_dir() {
 
 #----
 ## Clean sudoers file
-## Generate a file without Centreon config. Need to have a BEGIN and END flags 
+## Generate a file without Centreon config. Need to have a BEGIN and END flags
 ## file. After that, rewrite sudo file with clean file.
 ## @param	sudo file
 ## @param	0/1 to active a question to clean sudo (not by default)
@@ -2304,9 +2317,9 @@ function clean_sudo() {
     local sudo_clean="/tmp/sudo.clean"
   else
 	  local sudo_clean="$TMP_DIR/sudo.clean"
-  fi  
-  
-  if ! grep "CENTREON SUDO" $sudo_old &>/dev/null ; then 
+  fi
+
+  if ! grep "CENTREON SUDO" $sudo_old &>/dev/null ; then
     return 1
   fi
 
@@ -2317,11 +2330,11 @@ function clean_sudo() {
 	{ if (flag == 0) { print $0; } next; }' > $sudo_clean
 
 	log "INFO" "$(gettext "New sudo file generate in:") $sudo_clean"
-	if [ "$validate" -eq 1 ] ; then 
+	if [ "$validate" -eq 1 ] ; then
 		yes_no_default "$(gettext "Do you want me to clean your sudo files ? (clean centreon config)")"
 		RC="$?"
 	fi
-	if [ "$RC" -eq 0 -o "$validate" -eq 0 ] ; then 
+	if [ "$RC" -eq 0 -o "$validate" -eq 0 ] ; then
 		${CAT} $sudo_clean > $sudo_old 2>$LOG_FILE
 		return 0
 	fi
@@ -2345,7 +2358,7 @@ function find_macros_in_dir() {
 	local var_ref="$5"
 	local file_out_tmp=""
 	file_out_tmp=$(mktemp $TMP_DIR/file_out_tmp.XXXXXX)
-	
+
 	for mac in ${macro//,/ } ; do
 		log "INFO" "$(gettext "Search file for macro") : $mac"
 		( cd $src_dir ;
