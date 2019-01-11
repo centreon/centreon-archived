@@ -75,7 +75,13 @@ class Bulk implements JsonSerializable
      * @param string $listingClass
      * @param string $entityClass
      */
-    public function __construct(array $lists, int $offset = null, int $limit = null, string $listingClass = null, string $entityClass = null)
+    public function __construct(
+        array $lists,
+        int $offset = null,
+        int $limit = null,
+        string $listingClass = null,
+        string $entityClass = null
+    )
     {
         $this->lists = $lists;
         $this->offset = $offset;
@@ -94,7 +100,13 @@ class Bulk implements JsonSerializable
         $result = [];
 
         foreach ($this->lists as $name => $entities) {
-            $result[$name] = new $this->listingClass($entities, null, $this->offset, $this->limit, $this->entityClass);
+            $result[$name] = new $this->listingClass(
+                $entities,
+                null,
+                $this->offset,
+                $this->limit,
+                $this->entityClass
+            );
         }
 
         return $result;

@@ -41,12 +41,11 @@ use Pimple\Container;
 use Pimple\Psr11\ServiceLocator;
 use CentreonModule\ServiceProvider;
 use Centreon\Test\Mock;
-use CentreonModule\Domain;
 use CentreonModule\Infrastructure\Service;
-use CentreonModule\Domain\Exporter;
 use Symfony\Component\Finder\Finder;
 use CentreonLegacy\Core\Module\License;
 use CentreonModule\Application\Webservice;
+use Centreon\Infrastructure\Service\CentreonDBManagerService;
 
 /**
  * @group CentreonModule
@@ -81,7 +80,7 @@ class ServiceProviderTest extends TestCase
             'realtime_db',
             'configuration_db',
         ]);
-        $this->container['centreon.db-manager'] = new \Centreon\Infrastructure\Service\CentreonDBManagerService($locator);
+        $this->container['centreon.db-manager'] = new CentreonDBManagerService($locator);
         $this->container['centreon.webservice'] = new class {
 
             protected $services = [];
