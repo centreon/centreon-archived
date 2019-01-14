@@ -47,7 +47,7 @@ class CentreonModulesWebservice extends CentreonWebServiceAbstract
     /**
      * @OA\Post(
      *   path="/external.php?object=centreon_modules_webservice&action=getBamModuleInfo",
-     *   summary="Get list of modules and widgets",
+     *   description="Get list of modules and widgets",
      *   tags={"centreon_modules_webservice"},
      *   @OA\Parameter(
      *       in="query",

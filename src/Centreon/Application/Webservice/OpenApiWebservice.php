@@ -5,6 +5,7 @@ use CentreonRemote\Application\Webservice\CentreonWebServiceAbstract;
 
 /**
  * @OA\Tag(name="openapi", description="Generate an OpenAPI documentation")
+ * @codeCoverageIgnore
  */
 class OpenApiWebservice extends CentreonWebServiceAbstract
 {
