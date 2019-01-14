@@ -109,9 +109,8 @@ class WidgetSource extends SourceAbstract
             $entity->setVersionCurrent($this->info[$entity->getId()]);
             $entity->setInstalled(true);
 
-            if ($this->info[$entity->getId()] != $entity->getVersion()) {
-                $entity->setUpdated(true);
-            }
+            $isUpdated = $this->isUpdated($this->info[$entity->getId()], $entity->getVersion());
+            $entity->setUpdated($isUpdated);
         }
 
         return $entity;

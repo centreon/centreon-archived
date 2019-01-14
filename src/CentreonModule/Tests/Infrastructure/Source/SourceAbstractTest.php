@@ -74,4 +74,10 @@ class SourceAbstractTest extends TestCase
         $this->assertFalse($this->source->isEligible($entity, null, null, true));
         $this->assertTrue($this->source->isEligible($entity, null, null, false));
     }
+
+    public function testIsUpdated()
+    {
+        $this->assertTrue($this->source->isUpdated('1.0.0', '1.0.0'));
+        $this->assertFalse($this->source->isUpdated('1.0.1', '1.0.0'));
+    }
 }

@@ -64,6 +64,11 @@ class ModuleEntityTestTest extends TestCase
         $entity->setVersion($data['version']);
         $entity->setLicense($data['license']);
 
+        $outdated = $entity->isInstalled() && !$entity->isUpdated() ?
+            true :
+            false
+        ;
+
         $controlResult = [
             'id' => $entity->getId(),
             'type' => $entity->getType(),
@@ -72,7 +77,8 @@ class ModuleEntityTestTest extends TestCase
             'version' => [
                 'current' => $entity->getVersionCurrent(),
                 'available' => $entity->getVersion(),
-                'outdated' => !$entity->isUpdated(),
+                'outdated' => $outdated,
+                'installed' => $entity->isInstalled(),
             ],
             'license' => $entity->getLicense(),
         ];
