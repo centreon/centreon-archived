@@ -84,26 +84,26 @@ class CentreonModuleWebserviceTest extends TestCase
         $container['centreon.module']
             ->method('getDetail')
             ->will($this->returnCallback(function () {
-                    $funcArgs = func_get_args();
+                $funcArgs = func_get_args();
 
-                    // prepare filters
-                    $funcArgs[0] = $funcArgs[0] === null ? '-' : $funcArgs[0];
-                    $funcArgs[1] = $funcArgs[1] === null ? '-' : $funcArgs[1];
+                // prepare filters
+                $funcArgs[0] = $funcArgs[0] === null ? '-' : $funcArgs[0];
+                $funcArgs[1] = $funcArgs[1] === null ? '-' : $funcArgs[1];
 
-                    if ($funcArgs[0] === 'missing-module') {
-                        return null;
-                    }
+                if ($funcArgs[0] === 'missing-module') {
+                    return null;
+                }
 
-                    $name = implode(',', $funcArgs);
+                $name = implode(',', $funcArgs);
 
-                    $module = new Module;
-                    $module->setId(ModuleSourceTest::$moduleName);
-                    $module->setName($name);
-                    $module->setAuthor('');
-                    $module->setVersion('');
-                    $module->setType(ModuleSource::TYPE);
+                $module = new Module;
+                $module->setId(ModuleSourceTest::$moduleName);
+                $module->setName($name);
+                $module->setAuthor('');
+                $module->setVersion('');
+                $module->setType(ModuleSource::TYPE);
 
-                    return $module;
+                return $module;
             }))
         ;
 
