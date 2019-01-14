@@ -74,27 +74,40 @@ class ModuleDetailEntityTest extends TestCase
         $entity->setLastUpdate($data['last_update']);
         $entity->setReleaseNote($data['release_note']);
 
-        $controlResult = [
-            'id' => $entity->getId(),
-            'type' => $entity->getType(),
-            'title' => $entity->getName(),
-            'description' => $entity->getDescription(),
-            'label' => $entity->getAuthor(),
-            'version' => [
-                'current' => $entity->getVersionCurrent(),
-                'available' => $entity->getVersion(),
-                'outdated' => !$entity->isUpdated(),
-            ],
-            'license' => $entity->getLicense(),
-            'images' => $entity->getImages(),
-            'stability' => $entity->getStability(),
-            'last_update' => $entity->getLastUpdate(),
-            'release_note' => $entity->getReleaseNote(),
-        ];
+        $check = function () use ($entity) {
+            $outdated = $entity->isInstalled() && !$entity->isUpdated() ?
+                true :
+                false
+            ;
 
-        $dataRepresenter = new ModuleDetailEntity($entity);
-        $result = $dataRepresenter->jsonSerialize();
+            $controlResult = [
+                'id' => $entity->getId(),
+                'type' => $entity->getType(),
+                'title' => $entity->getName(),
+                'description' => $entity->getDescription(),
+                'label' => $entity->getAuthor(),
+                'version' => [
+                    'current' => $entity->getVersionCurrent(),
+                    'available' => $entity->getVersion(),
+                    'outdated' => $outdated,
+                    'installed' => $entity->isInstalled(),
+                ],
+                'license' => $entity->getLicense(),
+                'images' => $entity->getImages(),
+                'stability' => $entity->getStability(),
+                'last_update' => $entity->getLastUpdate(),
+                'release_note' => $entity->getReleaseNote(),
+            ];
 
-        $this->assertEquals($result, $controlResult);
+            $dataRepresenter = new ModuleDetailEntity($entity);
+            $result = $dataRepresenter->jsonSerialize();
+
+            $this->assertEquals($result, $controlResult);
+        };
+
+        $check();
+
+        $entity->setInstalled(true);
+        $check();
     }
 }
