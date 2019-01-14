@@ -80,4 +80,17 @@ abstract class SourceAbstract implements SourceInterface
 
         return true;
     }
+
+    public function isUpdated($installedVersion, $codeVersion): bool
+    {
+        $result = false;
+        $installedVersion = trim(strtolower($installedVersion));
+        $codeVersion = trim(strtolower($codeVersion));
+
+        if ($installedVersion == $codeVersion) {
+            $result = true;
+        }
+
+        return $result;
+    }
 }
