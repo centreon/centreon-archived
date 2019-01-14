@@ -62,10 +62,6 @@ class FactoryTest extends \PHPUnit_Framework_TestCase
             ->method('buildPath')
             ->willReturn('/');
 
-        $this->utils->expects($this->any())
-            ->method('xmlToArray')
-            ->willReturn($configuration);
-
         $filesystem = $this->getMockBuilder('\Symfony\Component\Filesystem\Filesystem')
             ->disableOriginalConstructor()
             ->setMethods(array('exists'))

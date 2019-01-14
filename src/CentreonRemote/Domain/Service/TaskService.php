@@ -20,12 +20,17 @@ class TaskService
     /**
      * @var CentreonDBManagerService
      */
-    private $dbman;
+    private $dbManager;
 
     /**
      * @var CentcoreCommandService
      */
     private $cmdService;
+
+    /**
+     * @var \CentreonRestHttp
+     */
+    private $centreonRestHttp;
 
     /**
      * @return CentcoreCommandService
@@ -54,26 +59,37 @@ class TaskService
     /**
      * @return CentreonDBManagerService
      */
-    public function getDbman(): CentreonDBManagerService
+    public function getDbManager(): CentreonDBManagerService
     {
-        return $this->dbman;
+        return $this->dbManager;
+    }
+
+    /**
+     * @return \CentreonRestHttp
+     */
+    public function setCentreonRestHttp(\CentreonRestHttp $centreonRestHttp): void
+    {
+        $this->centreonRestHttp = $centreonRestHttp;
     }
 
     /**
      * TaskService constructor
      * @param KeyGeneratorInterface $generator
-     * @param CentreonDBManagerService $dbman
+     * @param CentreonDBManagerService $dbManager
      */
-    public function __construct(KeyGeneratorInterface $generator, CentreonDBManagerService $dbman, CentcoreCommandService $cmdService)
-    {
+    public function __construct(
+        KeyGeneratorInterface $generator,
+        CentreonDBManagerService $dbManager,
+        CentcoreCommandService $cmdService
+    ) {
         $this->gen = $generator;
-        $this->dbman = $dbman;
+        $this->dbManager = $dbManager;
         $this->cmdService = $cmdService;
     }
 
     /**
      * Adds a new task
-     * 
+     *
      * @param string $type
      * @param array $params
      * @param int $parentId
@@ -88,27 +104,14 @@ class TaskService
 
         switch ($type) {
             case Task::TYPE_EXPORT:
-                $newTask->setType(Task::TYPE_EXPORT);
-                $result = $this->getDbman()->getAdapter('configuration_db')
-                    ->insert('task', $newTask->toArray())
-                ;
-
-                $cmd = new Command();
-                $cmd->setCommandLine(Command::COMMAND_START_IMPEX_WORKER);
-                $cmdWritten = $this->getCmdService()->sendCommand($cmd);
-                break;
-
             case Task::TYPE_IMPORT:
-                $newTask->setType(Task::TYPE_IMPORT);
-                $result = $this->getDbman()->getAdapter('configuration_db')
-                    ->insert('task', $newTask->toArray())
-                ;
+                $newTask->setType($type);
+                $result = $this->getDbManager()->getAdapter('configuration_db')->insert('task', $newTask->toArray());
 
                 $cmd = new Command();
                 $cmd->setCommandLine(Command::COMMAND_START_IMPEX_WORKER);
                 $cmdWritten = $this->getCmdService()->sendCommand($cmd);
                 break;
-
             default:
                 return false;
         }
@@ -123,18 +126,41 @@ class TaskService
      */
     public function getStatus(string $taskId)
     {
-        $task = $this->getDbman()->getAdapter('configuration_db')->getRepository(TaskRepository::class)->findOneById($taskId);
+        $task = $this->getDbManager()->getAdapter('configuration_db')->getRepository(TaskRepository::class)
+            ->findOneById($taskId);
         return $task ? $task->getStatus() : null;
     }
 
     /**
-     * Get Existing Task status by parent
-     * @param int $parentId
+     * Get remote existing task status by parent id
+     *
+     * @param int $parentId the parent task id on remote server
+     * @param string $serverIp the ip address of the remote server
+     * @param string $centreonFolder the folder of centreon on remote server
+     * @return null
+     */
+    public function getRemoteStatusByParent(int $parentId, string $serverIp, string $centreonFolder)
+    {
+        $result = $this->centreonRestHttp->call(
+            'http://' . $serverIp . '/' . $centreonFolder
+                . '/api/external.php?object=centreon_task_service&action=getTaskStatusByParent',
+            'POST',
+            ['parent_id' => $parentId]
+        );
+
+        return isset($result['status']) ? $result['status'] : null;
+    }
+
+    /**
+     * Get existing task status by parent id
+     *
+     * @param int $parentId the parent task id on remote server
      * @return null
      */
     public function getStatusByParent(int $parentId)
     {
-        $task = $this->getDbman()->getAdapter('configuration_db')->getRepository(TaskRepository::class)->findOneByParentId($parentId);
+        $task = $this->getDbManager()->getAdapter('configuration_db')->getRepository(TaskRepository::class)
+            ->findOneByParentId($parentId);
         return $task ? $task->getStatus() : null;
     }
 
@@ -148,13 +174,13 @@ class TaskService
      */
     public function updateStatus(string $taskId, string $status)
     {
-        $task = $this->getDbman()->getAdapter('configuration_db')->getRepository(TaskRepository::class)->findOneById($taskId);
+        $task = $this->getDbManager()->getAdapter('configuration_db')->getRepository(TaskRepository::class)->findOneById($taskId);
         if (!in_array($status,$task->getStatuses()))
         {
             return false;
         }
 
-        $result = $this->getDbman()->getAdapter('configuration_db')->getRepository(TaskRepository::class)->updateStatus($status, $taskId);
+        $result = $this->getDbManager()->getAdapter('configuration_db')->getRepository(TaskRepository::class)->updateStatus($status, $taskId);
         return $result;
     }
 }

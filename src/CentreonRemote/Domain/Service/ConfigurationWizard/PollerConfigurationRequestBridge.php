@@ -16,26 +16,15 @@ class PollerConfigurationRequestBridge
     /** @var PollerServer[] */
     private $pollers = [];
 
-    /** @var PollerServer */
-    private $remoteServer;
-
-    private $serverID;
-
 
     public function __construct(Container $di)
     {
         $this->dbAdapter = $di['centreon.db-manager']->getAdapter('configuration_db');
     }
 
-
-    public function setServerID($serverID)
-    {
-        $this->serverID = $serverID;
-    }
-
     public function hasPollersForUpdating(): bool
     {
-        return !empty($this->pollers) && $this->remoteServer;
+        return !empty($this->pollers);
     }
 
     /**
@@ -46,28 +35,31 @@ class PollerConfigurationRequestBridge
         return $this->pollers;
     }
 
-    public function getRemoteServerForConfiguration(): ?PollerServer
+    /**
+     * Set linked pollers regarding wizard type (poller/remote server)
+     */
+    public function collectDataFromRequest(): void
     {
-        return $this->remoteServer;
-    }
+        $isRemoteServerWizard = (new ServerWizardIdentity)->requestConfigurationIsRemote();
 
-    public function collectDataFromRequest()
-    {
-        $isRemoteConnection = (new ServerWizardIdentity)->requestConfigurationIsRemote();
-
-        if ($isRemoteConnection) {
-            $pollers = $_POST['linked_pollers'] ?? ''; // Poller ids are coming form the request
-            $pollers = (array) $pollers;
-            $this->pollers = $this->getPollersToLink($pollers);
-            $this->remoteServer = $this->getRemoteForConfiguration($this->serverID); // The server id is of the new remote
-        } else {
-            $remoteID = $_POST['linked_remote'] ?? ''; // Remote id is coming from the request
-            $this->remoteServer = $this->getRemoteForConfiguration($remoteID);
-            $this->pollers = $this->getPollersToLink([$this->serverID]); // The server id is of the new poller
+        if ($isRemoteServerWizard) { // configure remote server
+            // pollers linked to the remote server
+            $linkedPollers = isset($_POST['linked_pollers']) ? (array) $_POST['linked_pollers'] : [];
+        } else { // configure poller
+            // if the poller is linked to a remote server
+            $linkedPollers = isset($_POST['linked_remote']) ? [$_POST['linked_remote']] : [];
         }
+
+        $this->pollers = $this->getPollersToLink($linkedPollers); // set and instantiate linked pollers
     }
 
-    private function getPollersToLink(array $pollers)
+    /**
+     * Get pollers to link a set of poller information
+     *
+     * @param array $pollers the pollers to get list of poller objects
+     * @return PollerServer[] the pollers to link
+     */
+    private function getPollersToLink(array $pollers): array
     {
         if (empty($pollers)) {
             return [];
@@ -87,51 +79,45 @@ class PollerConfigurationRequestBridge
 
         $idBindString = str_repeat('?,', count($pollerIDs));
         $idBindString = rtrim($idBindString, ',');
-        $queryPollers = "SELECT id, ns_ip_address as ip FROM nagios_server WHERE id IN({$idBindString})";
+        $queryPollers = "SELECT id, name, ns_ip_address as ip FROM nagios_server WHERE id IN ({$idBindString})";
 
-        try {
-            $this->dbAdapter->query($queryPollers, $pollerIDs);
-            $results = $this->dbAdapter->results();
-            $data = [];
+        $this->dbAdapter->query($queryPollers, $pollerIDs);
+        $results = $this->dbAdapter->results();
+        $data = [];
 
-            foreach ($results as $result) {
-                $poller = new PollerServer;
-                $poller->setId($result->id);
-                $poller->setIp($result->ip);
+        foreach ($results as $result) {
+            $poller = new PollerServer;
+            $poller->setId($result->id);
+            $poller->setName($result->name);
+            $poller->setIp($result->ip);
 
-                $data[] = $poller;
-            }
-
-            return $data;
-        } catch (\Exception $e) {
-            error_log($e->getMessage());
+            $data[] = $poller;
         }
 
-        return [];
+        return $data;
     }
 
-    private function getRemoteForConfiguration($remoteID)
+    /**
+     * Get poller information from poller id
+     *
+     * @param int $pollerId the poller id to get
+     * @return null|PollerServer
+     */
+    public function getPollerFromId(int $pollerId): ?PollerServer
     {
-        $queryPollers = 'SELECT id, ns_ip_address as ip FROM nagios_server WHERE id=?';
+        $query = 'SELECT id, name, ns_ip_address as ip FROM nagios_server WHERE id = ?';
 
-        if (empty($remoteID)) {
-            return null;
-        }
+        $this->dbAdapter->query($query, [$pollerId]);
+        $results = $this->dbAdapter->results();
 
-        try {
-            $this->dbAdapter->query($queryPollers, [$remoteID]);
-            $results = $this->dbAdapter->results();
+        if (count($results)) {
+            $remoteData = reset($results);
+            $remoteServer = new PollerServer;
+            $remoteServer->setId($remoteData->id);
+            $remoteServer->setName($remoteData->name);
+            $remoteServer->setIp($remoteData->ip);
 
-            if (count($results)) {
-                $remoteData = reset($results);
-                $remoteServer = new PollerServer;
-                $remoteServer->setId($remoteData->id);
-                $remoteServer->setIp($remoteData->ip);
-
-                return $remoteServer;
-            }
-        } catch (\Exception $e) {
-            error_log($e->getMessage());
+            return $remoteServer;
         }
 
         return null;
