@@ -64,28 +64,35 @@ class ModuleEntityTestTest extends TestCase
         $entity->setVersion($data['version']);
         $entity->setLicense($data['license']);
 
-        $outdated = $entity->isInstalled() && !$entity->isUpdated() ?
-            true :
-            false
-        ;
+        $check = function () use ($entity) {
+            $outdated = $entity->isInstalled() && !$entity->isUpdated() ?
+                true :
+                false
+            ;
 
-        $controlResult = [
-            'id' => $entity->getId(),
-            'type' => $entity->getType(),
-            'description' => $entity->getName(),
-            'label' => $entity->getAuthor(),
-            'version' => [
-                'current' => $entity->getVersionCurrent(),
-                'available' => $entity->getVersion(),
-                'outdated' => $outdated,
-                'installed' => $entity->isInstalled(),
-            ],
-            'license' => $entity->getLicense(),
-        ];
+            $controlResult = [
+                'id' => $entity->getId(),
+                'type' => $entity->getType(),
+                'description' => $entity->getName(),
+                'label' => $entity->getAuthor(),
+                'version' => [
+                    'current' => $entity->getVersionCurrent(),
+                    'available' => $entity->getVersion(),
+                    'outdated' => $outdated,
+                    'installed' => $entity->isInstalled(),
+                ],
+                'license' => $entity->getLicense(),
+            ];
 
-        $dataRepresenter = new ModuleEntity($entity);
-        $result = $dataRepresenter->jsonSerialize();
+            $dataRepresenter = new ModuleEntity($entity);
+            $result = $dataRepresenter->jsonSerialize();
 
-        $this->assertEquals($result, $controlResult);
+            $this->assertEquals($result, $controlResult);
+        };
+
+        $check();
+
+        $entity->setInstalled(true);
+        $check();
     }
 }
