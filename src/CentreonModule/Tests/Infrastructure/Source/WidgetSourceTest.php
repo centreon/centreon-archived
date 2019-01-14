@@ -137,13 +137,13 @@ class WidgetSourceTest extends TestCase
 
     public function testGetDetail()
     {
-        (function (){
+        (function () {
             $result = $this->source->getDetail('missing-widget');
 
             $this->assertNull($result);
         })();
 
-        (function (){
+        (function () {
             $result = $this->source->getDetail(static::$widgetName);
 
             $this->assertInstanceOf(Module::class, $result);
