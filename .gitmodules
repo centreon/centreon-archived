@@ -1,4 +1,4 @@
-[submodule "centreon-react-components"]
-	path = centreon-react-components
+[submodule "react-components"]
+	path = react-components
 	url = https://github.com/centreon/centreon-react-components
 	branch = dev
