@@ -167,13 +167,13 @@ class ModuleSourceTest extends TestCase
 
     public function testGetDetail()
     {
-        (function (){
+        (function () {
             $result = $this->source->getDetail('missing-module');
 
             $this->assertNull($result);
         })();
 
-        (function (){
+        (function () {
             $result = $this->source->getDetail(static::$moduleName);
 
             $this->assertInstanceOf(Module::class, $result);
