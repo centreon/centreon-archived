@@ -34,7 +34,8 @@ class ModuleDetailEntity implements JsonSerializable
      *       @OA\Property(property="version", type="object",
      *          @OA\Property(property="current", type="string"),
      *          @OA\Property(property="available", type="string"),
-     *          @OA\Property(property="outdated", type="boolean")
+     *          @OA\Property(property="outdated", type="boolean"),
+     *          @OA\Property(property="installed", type="boolean")
      *       ),
      *       @OA\Property(property="license", type="string"),
      *       @OA\Property(property="images", type="array", items={"string"}),
@@ -48,6 +49,11 @@ class ModuleDetailEntity implements JsonSerializable
      */
     public function jsonSerialize()
     {
+        $outdated = $this->entity->isInstalled() && !$this->entity->isUpdated() ?
+            true :
+            false
+        ;
+
         return [
             'id' => $this->entity->getId(),
             'type' => $this->entity->getType(),
@@ -58,7 +64,8 @@ class ModuleDetailEntity implements JsonSerializable
             'version' => [
                 'current' => $this->entity->getVersionCurrent(),
                 'available' => $this->entity->getVersion(),
-                'outdated' => !$this->entity->isUpdated(),
+                'outdated' => $outdated,
+                'installed' => $this->entity->isInstalled(),
             ],
             'license' => $this->entity->getLicense(),
             'images' => $this->entity->getImages(),
