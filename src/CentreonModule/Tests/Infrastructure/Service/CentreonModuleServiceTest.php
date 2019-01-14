@@ -45,6 +45,8 @@ use CentreonModule\Infrastructure\Service\CentreonModuleService;
 use CentreonModule\Infrastructure\Source;
 use CentreonModule\Tests\Infrastructure\Source\ModuleSourceTest;
 use CentreonModule\Tests\Infrastructure\Source\WidgetSourceTest;
+use CentreonModule\Infrastructure\Entity\Module;
+use CentreonLegacy\Core\Configuration\Configuration;
 
 class CentreonModuleServiceTest extends TestCase
 {
@@ -73,6 +75,7 @@ class CentreonModuleServiceTest extends TestCase
                 ->disableOriginalConstructor()
                 ->setMethods([
                     'getList',
+                    'getDetail',
                 ])
                 ->getMock()
             ;
@@ -80,7 +83,20 @@ class CentreonModuleServiceTest extends TestCase
             $sources[$type]
                 ->method('getList')
                 ->will($this->returnCallback(function () use ($type) {
-                        return $type;
+                    return [$type];
+                }))
+            ;
+            $sources[$type]
+                ->method('getDetail')
+                ->will($this->returnCallback(function () use ($type) {
+                    $entity = new Module();
+                    $entity->setType($type);
+                    $entity->setName($type);
+                    $entity->setKeywords('test,module,lorem');
+                    $entity->setInstalled(true);
+                    $entity->setUpdated(false);
+
+                    return $entity;
                 }))
             ;
         }
@@ -113,6 +129,22 @@ class CentreonModuleServiceTest extends TestCase
         })();
     }
 
+    public function testGetDetails()
+    {
+        (function () {
+            $result = $this->service->getDetail('test-module', Source\ModuleSource::TYPE);
+
+            $this->assertInstanceOf(Module::class, $result);
+            $this->assertEquals(Source\ModuleSource::TYPE, $result->getType());
+        })();
+
+        (function () {
+            $result = $this->service->getDetail('test-module', 'missing-type');
+
+            $this->assertEquals(null, $result);
+        })();
+    }
+
     /**
      * @covers \CentreonModule\Infrastructure\Service\CentreonModuleService::initSources
      */
@@ -121,6 +153,7 @@ class CentreonModuleServiceTest extends TestCase
         $container = new Container;
         $container['finder'] = null;
         $container['centreon.legacy.license'] = null;
+        $container['configuration'] = $this->createMock(Configuration::class);
         $container['centreon.db-manager'] = new Mock\CentreonDBManagerService;
 
         // Data sets

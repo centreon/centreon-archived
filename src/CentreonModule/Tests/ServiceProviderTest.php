@@ -46,6 +46,7 @@ use Symfony\Component\Finder\Finder;
 use CentreonLegacy\Core\Module\License;
 use CentreonModule\Application\Webservice;
 use Centreon\Infrastructure\Service\CentreonDBManagerService;
+use CentreonLegacy\Core\Configuration\Configuration;
 
 /**
  * @group CentreonModule
@@ -69,6 +70,7 @@ class ServiceProviderTest extends TestCase
             ->disableOriginalConstructor()
             ->getMock()
         ;
+        $this->container['configuration'] = $this->createMock(Configuration::class);
 
         $this->container['realtime_db'] = $this->container['configuration_db'] = new Mock\CentreonDB;
         $this->container['configuration_db']

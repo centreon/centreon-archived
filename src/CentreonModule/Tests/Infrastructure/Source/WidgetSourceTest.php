@@ -45,9 +45,9 @@ use Vfs\Node\Directory;
 use Vfs\Node\File;
 use Centreon\Test\Mock;
 use Centreon\Test\Traits\TestCaseExtensionTrait;
-use CentreonLegacy\Core\Module\License;
 use CentreonModule\Infrastructure\Source\WidgetSource;
 use CentreonModule\Infrastructure\Entity\Module;
+use CentreonLegacy\Core\Configuration\Configuration;
 
 class WidgetSourceTest extends TestCase
 {
@@ -90,6 +90,7 @@ class WidgetSourceTest extends TestCase
         // provide services
         $container = new Container;
         $container['finder'] = new Finder;
+        $container['configuration'] = $this->createMock(Configuration::class);
 
         // DB service
         $container['centreon.db-manager'] = new Mock\CentreonDBManagerService;
@@ -111,7 +112,7 @@ class WidgetSourceTest extends TestCase
         $this->source
             ->method('getPath')
             ->will($this->returnCallback(function () {
-                    $result = 'vfs://widgets';
+                    $result = 'vfs://widgets/';
 
                     return $result;
             }))
@@ -132,6 +133,21 @@ class WidgetSourceTest extends TestCase
 
         $result2 = $this->source->getList('missing-widget');
         $this->assertEquals([], $result2);
+    }
+
+    public function testGetDetail()
+    {
+        (function (){
+            $result = $this->source->getDetail('missing-widget');
+
+            $this->assertNull($result);
+        })();
+
+        (function (){
+            $result = $this->source->getDetail(static::$widgetName);
+
+            $this->assertInstanceOf(Module::class, $result);
+        })();
     }
 
     public function testCreateEntityFromConfig()
