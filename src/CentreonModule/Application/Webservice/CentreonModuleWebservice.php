@@ -265,9 +265,15 @@ class CentreonModuleWebservice extends CentreonWebServiceAbstract
         $detail = $this->getDi()['centreon.module']
             ->getDetail($id, $type);
 
-        $result = new ModuleDetailEntity($detail);
+        $result = null;
+        $status = false;
 
-        $response = new Response($result);
+        if ($detail !== null) {
+            $result = new ModuleDetailEntity($detail);
+            $status = true;
+        }
+
+        $response = new Response($result, $status);
 
         return $response;
     }

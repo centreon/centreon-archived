@@ -53,6 +53,7 @@ class CentreonModuleWebserviceTest extends TestCase
         $container = new Container;
         $container['centreon.module'] = $this->createMock(CentreonModuleService::class, [
             'getList',
+            'getDetail',
         ]);
         $container['centreon.module']
             ->method('getList')
@@ -78,6 +79,31 @@ class CentreonModuleWebserviceTest extends TestCase
                             $module,
                         ],
                     ];
+            }))
+        ;
+        $container['centreon.module']
+            ->method('getDetail')
+            ->will($this->returnCallback(function () {
+                    $funcArgs = func_get_args();
+
+                    // prepare filters
+                    $funcArgs[0] = $funcArgs[0] === null ? '-' : $funcArgs[0];
+                    $funcArgs[1] = $funcArgs[1] === null ? '-' : $funcArgs[1];
+
+                    if ($funcArgs[0] === 'missing-module') {
+                        return null;
+                    }
+
+                    $name = implode(',', $funcArgs);
+
+                    $module = new Module;
+                    $module->setId(ModuleSourceTest::$moduleName);
+                    $module->setName($name);
+                    $module->setAuthor('');
+                    $module->setVersion('');
+                    $module->setType(ModuleSource::TYPE);
+
+                    return $module;
             }))
         ;
 
@@ -115,27 +141,61 @@ class CentreonModuleWebserviceTest extends TestCase
         };
 
         // without applied filters
-        $executeTest('response-1.json');
+        $executeTest('response-list-1.json');
 
         // with search, installed, updated, and selected type filter
         $filters['search'] = 'test';
         $filters['installed'] = 'true';
         $filters['updated'] = 'true';
         $filters['types'] = [ModuleSource::TYPE];
-        $executeTest('response-2.json');
+        $executeTest('response-list-2.json');
 
         // with not installed, not updated and not selected type filter
         unset($filters['search']);
         $filters['installed'] = 'false';
         $filters['updated'] = 'false';
         $filters['types'] = [];
-        $executeTest('response-3.json');
+        $executeTest('response-list-3.json');
 
         // with wrong values of installed and updated filters
         unset($filters['types']);
         $filters['installed'] = 'ture';
         $filters['updated'] = 'folse';
-        $executeTest('response-4.json');
+        $executeTest('response-list-4.json');
+    }
+
+    public function testGetDetails()
+    {
+        $filters = [];
+        $this->webservice
+            ->method('query')
+            ->will($this->returnCallback(function () use (&$filters) {
+                    return $filters;
+            }))
+        ;
+
+        $executeTest = function ($controlJsonFile) {
+            // get controlled response from file
+            $path = __DIR__ . '/../../Resource/Fixture/';
+            $controlJson = file_get_contents($path . $controlJsonFile);
+
+            $result = $this->webservice->getDetails();
+            $this->assertInstanceOf(\JsonSerializable::class, $result);
+
+            $json = json_encode($result);
+//            var_dump($json);exit;
+            $this->assertEquals($controlJson, $json);
+        };
+
+        // find module by id and type
+        $filters['id'] = ModuleSourceTest::$moduleName;
+        $filters['type'] = ModuleSource::TYPE;
+        $executeTest('response-details-1.json');
+
+        // try to find missing module applied filters
+        $filters['id'] = 'missing-module';
+        $filters['type'] = ModuleSource::TYPE;
+        $executeTest('response-details-2.json');
     }
 
     public function testAuthorize()

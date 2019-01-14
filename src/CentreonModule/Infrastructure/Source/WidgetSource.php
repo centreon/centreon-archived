@@ -94,15 +94,20 @@ class WidgetSource extends SourceAbstract
 
     public function getDetail(string $id): ?Module
     {
+        $result = null;
+        $path = $this->getPath() . $id;
+
+        if (file_exists($path) === false) {
+            return $result;
+        }
+
         $files = $this->finder
             ->files()
             ->name(static::CONFIG_FILE)
             ->depth('== 0')
             ->sortByName()
-            ->in($this->path . static::PATH . $id)
+            ->in($path)
         ;
-
-        $result = null;
 
         foreach ($files as $file) {
             $result = $this->createEntityFromConfig($file->getPathName());
