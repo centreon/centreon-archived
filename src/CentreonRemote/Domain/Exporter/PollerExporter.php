@@ -29,7 +29,7 @@ class PollerExporter extends ExporterServiceAbstract
         $db->getRepository(Repository\NagiosServerRepository::class)->truncate();
         $db->getRepository(Repository\PollerCommandRelationsRepository::class)->truncate();
         $db->getRepository(Repository\CfgResourceRepository::class)->truncate();
-        $db->getRepository(Repository\CfgCentreonBorkerRepository::class)->truncate();
+        $db->getRepository(Repository\CfgCentreonBrokerRepository::class)->truncate();
     }
 
     /**
@@ -47,7 +47,7 @@ class PollerExporter extends ExporterServiceAbstract
             $nagiosServer = $this->db
                 ->getRepository(Repository\NagiosServerRepository::class)
                 ->export($pollerIds);
-            $nagiosServer = $overwritePollerService->setNagiosServer($nagiosServer);
+            $nagiosServer = $overwritePollerService->getNagiosServer($nagiosServer);
             $this->_dump($nagiosServer, $this->getFile(static::EXPORT_FILE_NAGIOS_SERVER));
         })();
 
@@ -55,7 +55,7 @@ class PollerExporter extends ExporterServiceAbstract
             $cfgResource = $this->db
                 ->getRepository(Repository\CfgResourceRepository::class)
                 ->export($pollerIds);
-            $cfgResource = $overwritePollerService->setCfgResource($cfgResource);
+            $cfgResource = $overwritePollerService->getCfgResource($cfgResource);
             $this->_dump($cfgResource, $this->getFile(static::EXPORT_FILE_CFG_RESOURCE));
         })();
 
@@ -79,7 +79,7 @@ class PollerExporter extends ExporterServiceAbstract
             $cfgNagios = $this->db
                 ->getRepository(Repository\CfgNagiosRepository::class)
                 ->export($pollerIds);
-            $cfgNagios = $overwritePollerService->setCfgNagios($cfgNagios);
+            $cfgNagios = $overwritePollerService->getCfgNagios($cfgNagios);
             $this->_dump($cfgNagios, $this->getFile(static::EXPORT_FILE_CFG_NAGIOS));
         })();
 
@@ -87,23 +87,23 @@ class PollerExporter extends ExporterServiceAbstract
             $cfgNagiosBrokerModule = $this->db
                 ->getRepository(Repository\CfgNagiosBrokerModuleRepository::class)
                 ->export($pollerIds);
-            $cfgNagiosBrokerModule = $overwritePollerService->setCfgNagiosBroker($cfgNagiosBrokerModule);
+            $cfgNagiosBrokerModule = $overwritePollerService->getCfgNagiosBroker($cfgNagiosBrokerModule);
             $this->_dump($cfgNagiosBrokerModule, $this->getFile(static::EXPORT_FILE_CFG_NAGIOS_BROKER_MODULE));
         })();
 
         (function() use ($pollerIds, $overwritePollerService) {
             $cfgCentreonBroker = $this->db
-                ->getRepository(Repository\CfgCentreonBorkerRepository::class)
+                ->getRepository(Repository\CfgCentreonBrokerRepository::class)
                 ->export($pollerIds);
-            $cfgCentreonBroker = $overwritePollerService->setCfgCentreonBroker($cfgCentreonBroker);
+            $cfgCentreonBroker = $overwritePollerService->getCfgCentreonBroker($cfgCentreonBroker);
             $this->_dump($cfgCentreonBroker, $this->getFile(static::EXPORT_FILE_CFG_CENTREONBROKER));
         })();
 
         (function() use ($pollerIds, $overwritePollerService) {
             $cfgCentreonBrokerInfo = $this->db
-                ->getRepository(Repository\CfgCentreonBorkerInfoRepository::class)
+                ->getRepository(Repository\CfgCentreonBrokerInfoRepository::class)
                 ->export($pollerIds);
-            $cfgCentreonBrokerInfo = $overwritePollerService->setCfgCentreonBrokerInfo($cfgCentreonBrokerInfo);
+            $cfgCentreonBrokerInfo = $overwritePollerService->getCfgCentreonBrokerInfo($cfgCentreonBrokerInfo);
             $this->_dump($cfgCentreonBrokerInfo, $this->getFile(static::EXPORT_FILE_CFG_CENTREONBROKER_INFO));
         })();
 

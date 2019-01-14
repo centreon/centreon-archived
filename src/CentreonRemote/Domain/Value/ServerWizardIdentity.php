@@ -4,20 +4,39 @@ namespace CentreonRemote\Domain\Value;
 
 use Curl\Curl;
 
+/**
+ * Check wizard type
+ */
 class ServerWizardIdentity
 {
-
-    public function requestConfigurationIsRemote()
+    /**
+     * check wizard type (remote server / poller)
+     *
+     * @return bool true if it is remote server wizard
+     */
+    public function requestConfigurationIsRemote(): bool
     {
         return isset($_POST['server_type']) && $_POST['server_type'] == 'remote';
     }
 
-    public function requestConfigurationIsPoller()
+    /**
+     * check wizard type (remote server / poller)
+     *
+     * @return bool true if it is poller wizard
+     */
+    public function requestConfigurationIsPoller(): bool
     {
         return !static::requestConfigurationIsRemote();
     }
 
-    public function fetchIfServerInstalledBam($ip, $centreonPath)
+    /**
+     * check if bam is installed on remote server
+     *
+     * @param string $ip ip address of the remote server
+     * @param string $centreonPath centreon web path on remote server
+     * @return bool if bam is installed on remote server
+     */
+    public function checkBamOnRemoteServer(string $ip, string $centreonPath): bool
     {
         $centreonPath = trim($centreonPath, '/');
         $url = "{$ip}/{$centreonPath}/api/external.php?object=centreon_modules_webservice&action=getBamModuleInfo";

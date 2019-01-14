@@ -26,7 +26,7 @@ class ServiceProviderTest extends TestCase
         $this->container = new Container;
         $this->container['realtime_db'] = $this->container['configuration_db'] = new Mock\CentreonDB;
 //        $this->container['configuration_db']->addResultSet("SELECT * FROM informations WHERE `key` = :key LIMIT 1", []);
-        
+
         $this->provider->register($this->container);
     }
 
@@ -49,9 +49,9 @@ class ServiceProviderTest extends TestCase
         // check list of services
         foreach ($checkList as $serviceName => $className) {
             $this->assertTrue($this->container->offsetExists($serviceName));
-            
+
             $service = $this->container->offsetGet($serviceName);
-            
+
             $this->assertInstanceOf($className, $service);
         }
     }
@@ -62,7 +62,7 @@ class ServiceProviderTest extends TestCase
     public function testUserService()
     {
         $this->assertTrue($this->container->offsetExists('centreon.user'));
-        
+
         (new Mock\Centreon())->generateSession();
 
         $service = $this->container->offsetGet('centreon.user');

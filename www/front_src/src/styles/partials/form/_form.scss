@@ -46,6 +46,7 @@
     }
   }
   &-error-message {
+    font-size: 12px;
     color: #d0021b;
     display: block;
     text-align: center;
@@ -78,12 +79,12 @@
   }
   &-title {
     font-size: 12px;
-    font-family: $primary-font-medium;
+    font-family: $primary-font-light;
     color: $lightblue-centreon-primary;
   }
   &-text {
-    font-size: 10px;
-    font-family: $primary-font-light;
+    font-size: 12px;
+    font-family: $primary-font-regular;
     color: #242f3a;
     margin: 20px 0;
   }

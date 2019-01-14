@@ -15,8 +15,22 @@
  * limitations under the License.
  */
 
-define('_CENTREON_PATH_', realpath(__DIR__.'/../../') . '/');
-define('_CENTREON_ETC_', realpath(__DIR__.'/../../') . '/');
+// mock path constants to redirect to base centreon directory
+$mockedPathConstants = ['_CENTREON_PATH_', '_CENTREON_ETC_', '_CENTREON_LOG_'];
+foreach ($mockedPathConstants as $mockedPathConstant) {
+    if (!defined($mockedPathConstant)) {
+        define($mockedPathConstant, realpath(__DIR__ . '/../../') . '/');
+    }
+}
+
+// mock variable constants to redirect to base centreon directory
+$mockedVarConstants = ['hostCentreon', 'hostCentstorage', 'user', 'password', 'db', 'dbcstg', 'port'];
+foreach ($mockedVarConstants as $mockedVarConstant) {
+    if (!defined($mockedVarConstant)) {
+        define($mockedVarConstant, '');
+    }
+}
+
 // Disable warnings for PEAR.
 error_reporting(E_ALL & ~E_STRICT);
 

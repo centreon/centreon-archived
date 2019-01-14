@@ -78,6 +78,11 @@ $dependencyInjector['realtime_db'] = function ($c) {
     return new \CentreonDB('centstorage');
 };
 
+// Define Centreon Rest Http Client
+$dependencyInjector['rest_http'] = function ($c) {
+    return new \CentreonRestHttp();
+};
+
 // Define filesystem
 $dependencyInjector['filesystem'] = function ($c) {
     return new \Symfony\Component\Filesystem\Filesystem();
