@@ -174,8 +174,8 @@ class ModuleSourceTest extends TestCase
         $this->assertEquals(static::$moduleInfo['rname'], $result->getName());
         $this->assertEquals(static::$moduleInfo['author'], $result->getAuthor());
         $this->assertEquals(static::$moduleInfo['mod_release'], $result->getVersion());
-        $this->assertEquals(true, $result->isInstalled());
-        $this->assertEquals(true, $result->isUpdated());
+        $this->assertTrue($result->isInstalled());
+        $this->assertFalse($result->isUpdated());
     }
 
 //    public function testGetModuleConf()

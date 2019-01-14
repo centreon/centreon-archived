@@ -146,8 +146,8 @@ class WidgetSourceTest extends TestCase
         $this->assertEquals(static::$widgetInfo['author'], $result->getAuthor());
         $this->assertEquals(static::$widgetInfo['version'], $result->getVersion());
         $this->assertEquals(static::$widgetInfo['keywords'], $result->getKeywords());
-        $this->assertEquals(true, $result->isInstalled());
-        $this->assertEquals(true, $result->isUpdated());
+        $this->assertTrue($result->isInstalled());
+        $this->assertFalse($result->isUpdated());
     }
 
     public static function getConfFilePath(): string
