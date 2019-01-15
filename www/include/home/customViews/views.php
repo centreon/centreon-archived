@@ -154,8 +154,8 @@ try {
                         event: 'dblclick'
                     }
                 );
-                var wrenchSpan = '<span class="ui-icon ui-icon-wrench"></span>';
-                var trashSpan = '<span class="ui-icon ui-icon-trash"></span>';
+                wrenchSpan = '<span class="ui-icon ui-icon-wrench"></span>';
+                trashSpan = '<span class="ui-icon ui-icon-trash"></span>';
             }
 
             if (!ownership) {
