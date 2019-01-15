@@ -27,6 +27,8 @@ class ServiceProvider implements AutoloadServiceProviderInterface
             return $service;
         };
 
+        $pimple['centreon.webservice']->add(Application\Webservice\TopologyWebservice::class);
+
         $pimple['centreon.clapi'] = function(Container $container): CentreonClapiService {
             $service = new CentreonClapiService;
 

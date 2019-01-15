@@ -347,3 +347,7 @@ default:
     topcounterpoller:
       paths: [ %paths.base%/features/TopCounterPollers.feature ]
       contexts: [ TopCounterPollersContext ]
+
+    topologyapi:
+      paths: [ %paths.base%/features/TopologyAPI.feature ]
+      contexts: [ TopologyAPIContext ]
