@@ -17,7 +17,7 @@ class CfgNagiosBrokerModule
      */
     public static function getConfiguration (int $configID, string $pollerName): array
     {
-        $pollerName = strtolower(str_replace(' ', '_', $pollerName));
+        $pollerName = strtolower(str_replace(' ', '-', $pollerName));
 
         return [
             [
