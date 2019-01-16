@@ -1,4 +1,5 @@
-/* Portuguese initialisation for the jQuery UI date picker plugin. */
+/* Brazilian initialisation for the jQuery UI date picker plugin. */
+/* Written by Leonildo Costa Silva (leocsilva@gmail.com). */
 ( function( factory ) {
 	if ( typeof define === "function" && define.amd ) {
 
@@ -10,11 +11,11 @@
 		factory( jQuery.datepicker );
 	}
 }( function( datepicker ) {
-
-datepicker.regional.pt = {
+//To facilitate the library's integration into Centreon, we slightly modified its regional parameter.
+datepicker.regional[ "pt_BR" ] = {
 	closeText: "Fechar",
-	prevText: "Anterior",
-	nextText: "Seguinte",
+	prevText: "&#x3C;Anterior",
+	nextText: "Próximo&#x3E;",
 	currentText: "Hoje",
 	monthNames: [ "Janeiro","Fevereiro","Março","Abril","Maio","Junho",
 	"Julho","Agosto","Setembro","Outubro","Novembro","Dezembro" ],
@@ -31,14 +32,14 @@ datepicker.regional.pt = {
 	],
 	dayNamesShort: [ "Dom","Seg","Ter","Qua","Qui","Sex","Sáb" ],
 	dayNamesMin: [ "Dom","Seg","Ter","Qua","Qui","Sex","Sáb" ],
-	weekHeader: "Sem",
+	weekHeader: "Sm",
 	dateFormat: "dd/mm/yy",
-	firstDay: 1,
+	firstDay: 0,
 	isRTL: false,
 	showMonthAfterYear: false,
 	yearSuffix: "" };
-datepicker.setDefaults( datepicker.regional.pt );
+datepicker.setDefaults( datepicker.regional[ "pt_BR" ] );
 
-return datepicker.regional.pt;
+return datepicker.regional[ "pt_BR" ];
 
 } ) );

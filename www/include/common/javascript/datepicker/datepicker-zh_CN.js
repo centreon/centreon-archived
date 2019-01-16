@@ -11,8 +11,8 @@
 		factory( jQuery.datepicker );
 	}
 }( function( datepicker ) {
-
-datepicker.regional.zh = {
+//To facilitate the library's integration into Centreon, we slightly modified its regional parameter.
+datepicker.regional[ "zh_CN" ] = {
 	closeText: "关闭",
 	prevText: "&#x3C;上月",
 	nextText: "下月&#x3E;",
@@ -30,8 +30,8 @@ datepicker.regional.zh = {
 	isRTL: false,
 	showMonthAfterYear: true,
 	yearSuffix: "年" };
-datepicker.setDefaults( datepicker.regional.zh );
+datepicker.setDefaults( datepicker.regional[ "zh_CN" ] );
 
-return datepicker.regional.zh;
+return datepicker.regional[ "zh_CN" ];
 
 } ) );
