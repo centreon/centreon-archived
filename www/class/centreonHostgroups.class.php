@@ -293,6 +293,10 @@ class CentreonHostgroups
         global $centreon;
         $items = array();
 
+        if (empty($values)) {
+            return $items;
+        }
+
         // get list of authorized hostgroups
         if (!$centreon->user->access->admin) {
             $hgAcl = $centreon->user->access->getHostGroupAclConf(
@@ -317,25 +321,20 @@ class CentreonHostgroups
         // get list of selected hostgroups
         $listValues = '';
         $queryValues = array();
-        if (!empty($values)) {
-            foreach ($values as $k => $v) {
-                //As it happens that $v could be like "X,Y" when two hostgroups are selected, we added a second foreach
-                $multiValues = explode(',', $v);
-                foreach ($multiValues as $item) {
-                    $listValues .= ':hgId_' . $item . ', ';
-                    $queryValues['hgId_' . $item] = (int)$item;
-                }
-            }
-            $listValues = rtrim($listValues, ', ');
-        }
-        $query = 'SELECT hg_id, hg_name FROM hostgroup ' .
-            'WHERE hg_id IN (' . $listValues . ') ORDER BY hg_name ';
 
-        $stmt = $this->DB->prepare($query);
-        if (!empty($queryValues)) {
-            foreach ($queryValues as $key => $id) {
-                $stmt->bindValue(':' . $key, $id, PDO::PARAM_INT);
+        foreach ($values as $k => $v) {
+            //As it happens that $v could be like "X,Y" when two hostgroups are selected, we added a second foreach
+            $multiValues = explode(',', $v);
+            foreach ($multiValues as $item) {
+                $listValues .= ':hgId_' . $item . ', ';
+                $queryValues['hgId_' . $item] = (int)$item;
             }
+        }
+        $listValues = rtrim($listValues, ', ');
+        $query = 'SELECT hg_id, hg_name FROM hostgroup WHERE hg_id IN (' . $listValues . ') ORDER BY hg_name ';
+        $stmt = $this->DB->prepare($query);
+        foreach ($queryValues as $key => $id) {
+            $stmt->bindValue(':' . $key, $id, PDO::PARAM_INT);
         }
         $stmt->execute();
 
@@ -352,7 +351,6 @@ class CentreonHostgroups
                 'hide' => $hide
             );
         }
-
         return $items;
     }
 
