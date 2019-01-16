@@ -14,7 +14,7 @@ class TopologyWebservice extends CentreonWebServiceAbstract
      */
     public static function getName(): string
     {
-        return 'centreon_topology_webservice';
+        return 'centreon_topology';
     }
 
     /**
