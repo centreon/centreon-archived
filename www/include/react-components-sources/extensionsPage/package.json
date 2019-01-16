@@ -18,7 +18,7 @@
     "webpack-cli": "^3.0.8"
   },
   "dependencies": {
-    "@centreon/react-components": "latest",
+    "@centreon/react-components": "18.10.0-alpha.8",
     "cross-env": "^5.2.0",
     "numeral": "^2.0.6",
     "react": "^16.4.2",
