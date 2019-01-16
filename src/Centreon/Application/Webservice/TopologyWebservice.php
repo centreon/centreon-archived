@@ -28,7 +28,7 @@ class TopologyWebservice extends CentreonWebServiceAbstract
      *       @OA\Schema(
      *          type="string",
      *          enum={"centreon_topology_webservice"},
-     *          default="centreon_topology_webservice"
+     *          default="centreon_topology"
      *       ),
      *       description="the name of the API object class",
      *       required=true
