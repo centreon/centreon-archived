@@ -146,6 +146,11 @@ default:
       contexts:
       - ModuleContext
 
+    module_api:
+      paths: [ %paths.base%/features/ModuleApi.feature ]
+      contexts:
+      - ModuleApiContext
+
     widget:
       paths: [ %paths.base%/features/Widget.feature ]
       contexts:
