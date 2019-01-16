@@ -19,7 +19,7 @@ class TopologyWebservice extends CentreonWebServiceAbstract
 
     /**
      * @OA\Get(
-     *   path="/internal.php?object=centreon_topology_webservice&action=getTopologyByPage",
+     *   path="/internal.php?object=centreon_topology&action=getTopologyByPage",
      *   description="Get topology object by page id",
      *   tags={"centreon_topology"},
      *   @OA\Parameter(
