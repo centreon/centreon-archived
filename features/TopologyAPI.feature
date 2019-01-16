@@ -9,7 +9,7 @@ Feature: Get topology data
     And I have a running instance of Centreon API
 
   Scenario: Healthcheck
-    When I make a GET request to "/api/index.php?object=centreon_topology_webservice&action=getTopologyByPage&topology_page=1"
+    When I make a GET request to "/api/index.php?object=centreon_topology&action=getTopologyByPage&topology_page=1"
     Then the response code should be 200
     And the response has a "topology_id" property
     And the response has a "topology_name" property
