@@ -1,18 +1,26 @@
 import React, { Component } from "react";
 import Loader from "../../components/loader";
+import axios from '../../axios';
+import {DynamicComponentBundle} from '@centreon/react-components';
 
 class ModuleRoute extends Component {
+
+  state = {
+    contentHeight: 0,
+    loading: true,
+    initialized:false,
+    is_react:false,
+    topology_name:'',
+    topology_url:''
+  }
+
   constructor(props) {
     super(props);
-
     this.mainContainer = null;
     this.resizeTimeout = null;
-
-    this.state = {
-      contentHeight: 0,
-      loading: true
-    }
   }
+
+  topologyApi = null;
 
   handleResize = () => {
     // wait size is the same during 200ms to handle it
@@ -37,8 +45,46 @@ class ModuleRoute extends Component {
     window.history.pushState(null, null, href);
   }
 
+  getQueryStringParams = (query,callback) => {
+    let result = query
+        ? (/^[?#]/.test(query) ? query.slice(1) : query)
+            .split('&')
+            .reduce((params, param) => {
+                    let [key, value] = param.split('=');
+                    params[key] = value ? decodeURIComponent(value.replace(/\+/g, ' ')) : '';
+                    return params;
+                }, {}
+            )
+        : {};
+        callback(result);
+  };
+
   componentDidMount() {
+    const { history } = this.props,
+    { search } = history.location;
+    if(search.length > 0){
+      this.getQueryStringParams(search,({p}) => {
+        this.topologyApi = axios(`internal.php?object=centreon_topology&action=getTopologyByPage&topology_page=${p}`);
+        this.topologyApi.get().then(({data})=> {
+          const { is_react,topology_url, topology_name } = data;
+          this.setState({
+            is_react:(is_react == '1'),
+            topology_url,
+            topology_name,
+            initialized:true,
+            loading:false
+          })
+        })
+      } )
+      
+    }else{
+      this.setState({
+        initialized:true,
+        loading:false
+      })
+    }
     this.mainContainer = window.parent.document.getElementById('fullscreen-wrapper');
+  
 
     // add a listener on global page size
     window.parent.addEventListener(
@@ -68,7 +114,7 @@ class ModuleRoute extends Component {
   }
 
   render() {
-    const { contentHeight, loading } = this.state;
+    const { contentHeight, loading, topology_name, is_react, initialized, topology_url } = this.state;
     const { history } = this.props,
           { search, hash } = history.location;
     let params;
@@ -84,16 +130,30 @@ class ModuleRoute extends Component {
             <Loader />
           </span>
         }
-        <iframe
-          id="main-content"
-          title="Main Content"
-          frameBorder="0"
-          onLoad={this.handleResize}
-          scrolling="yes"
-          className={loading ? "hidden" : ""}
-          style={{ width: "100%", height: `${contentHeight}px` }}
-          src={`/_CENTREON_PATH_PLACEHOLDER_/main.get.php${params}`}
-        />
+        {
+          initialized ? (
+            <React.Fragment>
+              {
+                !is_react ? ( 
+                <iframe
+                  id="main-content"
+                  title="Main Content"
+                  frameBorder="0"
+                  onLoad={this.handleResize}
+                  scrolling="yes"
+                  className={loading ? "hidden" : ""}
+                  style={{ width: "100%", height: `${contentHeight}px` }}
+                  src={`/_CENTREON_PATH_PLACEHOLDER_/main.get.php${params}`}
+                />
+              ) : 
+                (
+                <DynamicComponentBundle componentName={topology_name} topologyUrl={topology_url}/>
+              )
+              }
+            </React.Fragment>
+          ) : null
+        }
+        
       </>
     );
   }
