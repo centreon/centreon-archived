@@ -109,7 +109,7 @@ try {
 
     # Sync contactgroups to ldap
     $cgObj = new CentreonContactgroup($pearDB);
-    $cgObj->syncWithLdap();
+    $cgObj->syncWithLdapConfigGen();
 
     # Generate configuration
     if ($pollers == '0') {

@@ -201,6 +201,85 @@ class CentreonContactgroup
         $this->db->query($queryCacheLdap);
         return $row['cg_id'];
     }
+    
+    /**
+     * Synchronize with LDAP groups at config generation
+     *
+     * @return array | array of error messages
+     */
+    public function syncWithLdapConfigGen()
+    {
+        $query = "SELECT cg.cg_id, cg.cg_name, cg.cg_ldap_dn, cg.ar_id FROM contactgroup as cg, auth_ressource as ar 
+            WHERE cg.cg_type = 'ldap' AND cg.ar_id = ar.ar_id AND ar.ar_enable = '1'
+                AND (
+                    EXISTS(SELECT 1 FROM contactgroup_host_relation chr WHERE chr.contactgroup_cg_id = cg.cg_id LIMIT 1) OR
+                    EXISTS(SELECT 1 FROM contactgroup_service_relation csr WHERE csr.contactgroup_cg_id = cg.cg_id LIMIT 1) OR
+                    EXISTS(SELECT 1 FROM contactgroup_hostgroup_relation chr WHERE chr.contactgroup_cg_id = cg.cg_id LIMIT 1) OR
+                    EXISTS(SELECT 1 FROM contactgroup_servicegroup_relation csr WHERE csr.contactgroup_cg_id = cg.cg_id LIMIT 1) OR
+                    EXISTS(SELECT 1 FROM escalation_contactgroup_relation ecr WHERE ecr.contactgroup_cg_id = cg.cg_id LIMIT 1)
+                ) ORDER BY cg.ar_id";
+        $msg = array();
+        $ldapServerConnError = array();
+
+        $cgres = $this->db->query($query);
+        $ar_id = -1;
+        $ldapConn = null;
+        while ($cgrow = $cgres->fetchRow()) {
+            if (isset($ldapServerConnError[$cgrow['ar_id']])) {
+                continue;
+            }
+            if ($ar_id != $cgrow['ar_id']) {
+                $ar_id = $cgrow['ar_id'];
+                if (!is_null($ldapConn)) {
+                    $ldapConn->close();
+                }
+                $ldapConn = new CentreonLDAP($this->db, null, $cgrow['ar_id']);
+                $connectionResult = $ldapConn->connect();
+                if ($connectionResult == false) {
+                    $ldapServerConnError[$cgrow['ar_id']] = 1;
+                    $msg[] = "Unable to connect to LDAP server.";
+                    continue;
+                }
+            }
+
+            $members = $ldapConn->listUserForGroup($cgrow['cg_ldap_dn']);
+
+            /*
+             * Refresh Users Groups.
+             */
+            $queryDeleteRelation = "DELETE FROM contactgroup_contact_relation
+                WHERE contactgroup_cg_id = " . $cgrow['cg_id'];
+            $this->db->query($queryDeleteRelation);
+
+            $contact = '';
+            foreach ($members as $member) {
+                $contact .= $this->db->quote($member) . ',';
+            }
+            $contact = rtrim($contact, ",");
+
+            $queryContact = "SELECT contact_id FROM contact
+                WHERE contact_ldap_dn IN (" . $contact . ")";
+            try {
+                $resContact = $this->db->query($queryContact);
+            } catch (\PDOException $e) {
+                $msg[] = "Error in getting contact id form members.";
+                continue;
+            }
+            while ($rowContact = $resContact->fetch()) {
+                $queryAddRelation = "INSERT INTO contactgroup_contact_relation
+                    (contactgroup_cg_id, contact_contact_id)
+                    VALUES (" . $cgrow['cg_id'] . ", " . $rowContact['contact_id'] . ")";
+                try {
+                    $this->db->query($queryAddRelation);
+                } catch (\PDOException $e) {
+                    $msg[] = "Error insert relation between contactgroup " . $cgrow['cg_id'] .
+                        " and contact " . $rowContact['contact_id'];
+                }
+            }
+        }
+
+        return $msg;
+    }
 
     /**
      * Synchronize with LDAP groups
