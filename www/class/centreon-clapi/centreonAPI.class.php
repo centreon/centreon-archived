@@ -517,41 +517,41 @@ class CentreonAPI
         $DBRESULT = $this->DB->query("SELECT *
                  FROM contact
                  WHERE contact_alias = '" . $this->login . "'
-                 AND contact_activate = '1'
-                 AND contact_oreon = '1'");
+                 AND contact_activate = '1'");
+
         if ($DBRESULT->rowCount()) {
             $row = $DBRESULT->fetchRow();
 
-            if ($row['contact_admin'] == 1) {
-                $algo = $this->dependencyInjector['utils']->detectPassPattern($row['contact_passwd']);
-                if (!$algo) {
-                    if ($useSha1) {
-                        $row['contact_passwd'] = 'sha1__' . $row['contact_passwd'];
-                    } else {
-                        $row['contact_passwd'] = 'md5__' . $row['contact_passwd'];
-                    }
+            if ($row['contact_admin'] == 0) {
+                print "You don't have permissions for CLAPI.\n";
+                exit(1);
+            }
+
+            $algo = $this->dependencyInjector['utils']->detectPassPattern($row['contact_passwd']);
+            if (!$algo) {
+                if ($useSha1) {
+                    $row['contact_passwd'] = 'sha1__' . $row['contact_passwd'];
+                } else {
+                    $row['contact_passwd'] = 'md5__' . $row['contact_passwd'];
                 }
-                if ($row['contact_passwd'] == $pass) {
+            }
+            if ($row['contact_passwd'] == $pass) {
+                \CentreonClapi\CentreonUtils::setUserId($row['contact_id']);
+                return 1;
+            } elseif ($row['contact_auth_type'] == 'ldap') {
+                $CentreonLog = new \CentreonUserLog(-1, $this->DB);
+                $centreonAuth = new \CentreonAuthLDAP(
+                    $this->DB,
+                    $CentreonLog,
+                    $this->login,
+                    $this->password,
+                    $row,
+                    $row['ar_id']
+                );
+                if ($centreonAuth->checkPassword() == 1) {
                     \CentreonClapi\CentreonUtils::setUserId($row['contact_id']);
                     return 1;
-                } elseif ($row['contact_auth_type'] == 'ldap') {
-                    $CentreonLog = new \CentreonUserLog(-1, $this->DB);
-                    $centreonAuth = new \CentreonAuthLDAP(
-                        $this->DB,
-                        $CentreonLog,
-                        $this->login,
-                        $this->password,
-                        $row,
-                        $row['ar_id']
-                    );
-                    if ($centreonAuth->checkPassword() == 1) {
-                        \CentreonClapi\CentreonUtils::setUserId($row['contact_id']);
-                        return 1;
-                    }
                 }
-            } else {
-                print "Centreon CLAPI is for admin users only.\n";
-                exit(1);
             }
         }
         print "Invalid credentials.\n";
