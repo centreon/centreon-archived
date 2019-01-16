@@ -8,6 +8,7 @@
     "build:clean": "rm -rf www/static && rm -rf www/template",
     "build:sass": "node-sass -r --output-style compressed ./www/front_src/src -o ./www/front_src/src",
     "build:app:windows": "cd ./www/front_src && cross-env PUBLIC_URL=\"/_CENTREON_PATH_PLACEHOLDER_/\" webpack --mode production",
+    "build:app": "cd ./www/front_src && PUBLIC_URL=\"/_CENTREON_PATH_PLACEHOLDER_/\" webpack --mode production",
     "build:post": "mv ./www/static ./www/template",
     "watch:sass": "node-sass -r --output-style compressed ./www/front_src/src -o ./www/front_src/src && npm run build:sass && npm run build:sass -- -w"
   },
@@ -23,7 +24,7 @@
     "webpack-cli": "^3.0.8"
   },
   "dependencies": {
-    "@centreon/react-components": "file:./react-components",
+    "@centreon/react-components": "latest",
     "axios": "^0.18.0",
     "class-name": "^0.1.3",
     "cross-env": "^5.2.0",
