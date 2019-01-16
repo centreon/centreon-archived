@@ -88,13 +88,6 @@ class HostMenu extends Component {
 
     return (
       <div class={"wrap-right-hosts" + (toggled ? " submenu-active" : "")}>
-        <span class="wrap-right-icon" onClick={this.toggle.bind(this)}>
-          <span class="iconmoon icon-hosts">
-            {data.pending > 0 ? <span class="custom-icon" /> : null}
-          </span>
-          <span class="wrap-right-icon__name"><Translate value="Hosts"/></span>
-        </span>
-
         <Link to={config.urlBase + "main.php?p=20202&o=h_down&search="} class={"wrap-middle-icon round round-small "+ (data.down.unhandled > 0 ? "red" : "red-bordered")}>
           <span class="number">
             <span id="count-host-down">{numeral(data.down.unhandled).format("0a")}</span>
@@ -111,6 +104,12 @@ class HostMenu extends Component {
           </span>
         </Link>
         <div ref={host => this.host = host}>
+          <span class="wrap-right-icon hosts" onClick={this.toggle.bind(this)}>
+            <span class="iconmoon icon-hosts">
+              {data.pending > 0 ? <span class="custom-icon" /> : null}
+            </span>
+            <span class="wrap-right-icon__name"><Translate value="Hosts"/></span>
+          </span>
           <span class="toggle-submenu-arrow" onClick={this.toggle.bind(this)} >{this.props.children}</span>
           <div class="submenu host">
             <div class="submenu-inner">
