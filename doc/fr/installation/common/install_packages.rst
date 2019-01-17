@@ -75,6 +75,7 @@ Installer MySQL sur un serveur dédié
 Exécutez les commandes : ::
 
     # yum install centreon-database
+    # systemctl daemon-reload
     # systemctl restart mysql
 
 .. note::
