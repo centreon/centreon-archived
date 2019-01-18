@@ -143,7 +143,9 @@ if (typeof String.prototype.trim !== 'function') {
 jQuery('body').delegate(
   '#forAjax a .graph-volant',
   'mouseenter',
-  function(e) { func_displayIMG(e); }
+  function(e) { func_displayIMG(e, function() {
+    });
+  }
 );
 jQuery('body').delegate(
   '#forAjax a .graph-volant',
@@ -885,7 +887,7 @@ function set_page(page) {
 
 // Popin images
 
-var func_displayIMG = function(event) {
+var func_displayIMG = function(event, callback) {
     var self = event.currentTarget;
     var windowHeight = jQuery(window).height();
 
@@ -894,19 +896,32 @@ var func_displayIMG = function(event) {
         .getBoundingClientRect()
         .top;
 
-    //is the popup out the displayed screen ? Graphs are 224 pixels height
-    if ((positionY + 224) >= windowHeight) {
-        positionY = windowHeight - 224;
-    }
     jQuery('.img_volante').css('top', positionY);
     jQuery('.img_volante').css('left', event.pageX + 15);
     jQuery('.img_volante').show();
-
     var chartElem = jQuery('<div></div>')
         .addClass('chart')
         .data('graphType', 'service')
         .data('graphId', jQuery(self).attr('id').replace('-', '_'))
         .appendTo(jQuery('.img_volante'));
+
+    // Add event resize, as we can't get the popin size until it is loaded
+    var oldHeight = 0;
+    var interval = setInterval(function () {
+        if (oldHeight == chartElem.height()) {
+            clearInterval(interval);
+            callback();
+        } else {
+            oldHeight = chartElem.height();
+            //is the popup out the displayed screen ?
+            if ((positionY + oldHeight) >= windowHeight) {
+                positionY = windowHeight - oldHeight;
+                //setting the new popin position
+                jQuery('.img_volante').css('top', positionY);
+                jQuery('.img_volante').show();
+            }
+      }
+    }, 500);
     jQuery(chartElem).centreonGraph({height: 200, interval: '24h'});
 };
 
