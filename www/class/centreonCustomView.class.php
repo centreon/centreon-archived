@@ -737,7 +737,7 @@ class CentreonCustomView
 
             // delete widget preferences for old user
             $query = 'DELETE FROM widget_preferences ' .
-                'WHERE widget_view_id = (SELECT wv.widget_view_id FROM widget_views wv ' .
+                'WHERE widget_view_id IN (SELECT wv.widget_view_id FROM widget_views wv ' .
                 'WHERE wv.custom_view_id = ? ) ' .
                 'AND user_id IN (' . $userIdKey . ') ';
             $stmt = $this->db->prepare($query);
