@@ -17,18 +17,12 @@
 ##
 
 [Unit]
-Description=Centreon Core
-PartOf=centreon.service
-After=centreon.service
-After=network-online.target
-After=network.service
-ReloadPropagatedFrom=centreon.service
+Description=One Service to rule them all.
 
 [Service]
-ExecStart=@CENTCORE_BINDIR@/centcore
-Type=simple
-User=centreon
-PIDFile=/var/run/centreon/centcore.pid
+Type=oneshot
+ExecStart=/bin/true
+RemainAfterExit=yes
 
 [Install]
-WantedBy=centreon.service
+WantedBy=multi-user.target
