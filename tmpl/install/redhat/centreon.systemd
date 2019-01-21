@@ -22,6 +22,7 @@ Description=One Service to rule them all.
 [Service]
 Type=oneshot
 ExecStart=/bin/true
+ExecReload=/bin/true
 RemainAfterExit=yes
 
 [Install]
