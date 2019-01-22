@@ -176,10 +176,14 @@ sub kill {
 }
 
 # Connection initializer
-sub connect() {
-    my $self = shift;
+sub connect {
+    my ($self, %options) = @_;
+
     my $logger = $self->{logger};
     my $status = 0;
+
+    my $connect_options = {};
+    $connect_options = $options{connect_options} if (defined($options{connect_options}) && ref($options{connect_options}) eq "HASH");
 
     while (1) {
         $self->{port} = 3306 if (!defined($self->{port}) && $self->{type} eq 'mysql');
@@ -189,7 +193,7 @@ sub connect() {
                     .":".$self->{db},
                 $self->{user},
                 $self->{password},
-                { "RaiseError" => 0, "PrintError" => 0, "AutoCommit" => 1 }
+                { "RaiseError" => 0, "PrintError" => 0, "AutoCommit" => 1, %{$connect_options} }
             );
         } else {
             $self->{instance} = DBI->connect(
@@ -199,7 +203,7 @@ sub connect() {
                     .":".$self->{port},
                 $self->{user},
                 $self->{password},
-                { "RaiseError" => 0, "PrintError" => 0, "AutoCommit" => 1 }
+                { "RaiseError" => 0, "PrintError" => 0, "AutoCommit" => 1, %{$connect_options} }
             );
         }
         if (defined($self->{instance})) {
