@@ -1,7 +1,7 @@
 <?php
 /*
- * Copyright 2005-2015 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2019 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -143,7 +143,9 @@ if (typeof String.prototype.trim !== 'function') {
 jQuery('body').delegate(
   '#forAjax a .graph-volant',
   'mouseenter',
-  function(e) { func_displayIMG(e); }
+  function(e) { func_displayIMG(e, function() {
+    });
+  }
 );
 jQuery('body').delegate(
   '#forAjax a .graph-volant',
@@ -523,7 +525,8 @@ function getVar (nomVariable) {
         nomVariable = nomVariable + "=";
         var taille = nomVariable.length;
         if (infos.indexOf(nomVariable)!=-1)
-        variable = infos.substring(infos.indexOf(nomVariable)+taille,infos.length).substring(0,infos.substring(infos.indexOf(nomVariable)+taille,infos.length).indexOf("&"))
+        variable = infos.substring(infos.indexOf(nomVariable)+taille,infos.length)
+            .substring(0,infos.substring(infos.indexOf(nomVariable)+taille,infos.length).indexOf("&"))
     }
     return variable;
 }
@@ -847,7 +850,7 @@ function set_limit(limit)   {
     xhrM.setRequestHeader('Content-Type','application/x-www-form-urlencoded');
     _var = "sid=<?php echo $sid; ?>&limit="+limit+"&url=<?php echo $url; ?>";
     xhrM.send(_var);
-        jQuery('input[name=limit]').val(limit);
+    jQuery('input[name=limit]').val(limit);
 }
 
 function set_search(search) {
@@ -884,18 +887,41 @@ function set_page(page) {
 
 // Popin images
 
-var func_displayIMG = function(event) {
+var func_displayIMG = function(event, callback) {
     var self = event.currentTarget;
+    var windowHeight = jQuery(window).height();
 
-    jQuery('.img_volante').css('left', event.pageX + 20);
-    jQuery('.img_volante').css('top', (jQuery(window).height() / 2) - (jQuery('.img_volante').height() / 2));
+    //getting the absolute cursor position, when scrolling in the iFrame
+    var positionY = self
+        .getBoundingClientRect()
+        .top;
+
+    jQuery('.img_volante').css('top', positionY);
+    jQuery('.img_volante').css('left', event.pageX + 15);
     jQuery('.img_volante').show();
-        
     var chartElem = jQuery('<div></div>')
         .addClass('chart')
         .data('graphType', 'service')
         .data('graphId', jQuery(self).attr('id').replace('-', '_'))
         .appendTo(jQuery('.img_volante'));
+
+    // Add event resize, as we can't get the popin size until it is loaded
+    var oldHeight = 0;
+    var interval = setInterval(function () {
+        if (oldHeight == chartElem.height()) {
+            clearInterval(interval);
+            callback();
+        } else {
+            oldHeight = chartElem.height();
+            //is the popup out the displayed screen ?
+            if ((positionY + oldHeight) >= windowHeight) {
+                positionY = windowHeight - oldHeight;
+                //setting the new popin position
+                jQuery('.img_volante').css('top', positionY);
+                jQuery('.img_volante').show();
+            }
+      }
+    }, 500);
     jQuery(chartElem).centreonGraph({height: 200, interval: '24h'});
 };
 
@@ -910,20 +936,41 @@ var popup_counter = {};
 var func_popupXsltCallback = function(trans_obj) {
     var target_element = trans_obj.getTargetElement();
     if (popup_counter[target_element] == 0) {
-            return ;
+        return ;
     }
 
     jQuery('.popup_volante .container-load').empty();
 <?php   if ($centreon->user->get_js_effects() > 0) { ?>
-    jQuery('.popup_volante').stop(true, true).animate({width: jQuery('#' + target_element).width(), height: jQuery('#' + target_element).height(),
-                         top: (jQuery(window).height() / 2) - (jQuery('#' + target_element).height() / 2)}, 25);
+    jQuery('.popup_volante').stop(true, true).animate(
+    {
+        width: jQuery('#' + target_element).width(),
+        height: jQuery('#' + target_element).height(),
+        top: (jQuery(window).height() / 2) - (jQuery('#' + target_element).height() / 2)
+    }, 25);
     jQuery('#' + target_element).stop(true, true).fadeIn(1000);
 <?php } else { ?>
+
     jQuery('.popup_volante').css('left', jQuery('#' + target_element).attr('left'));
-    jQuery('.popup_volante').css('top', (jQuery(window).height() / 2) - (jQuery('#' + target_element).height() / 2));
+
+    //item's Id from where the popin was called
+    var eventCalledFrom = target_element.substr(24); //removing "popup-container-display-"
+
+    var windowHeight = jQuery(window).height();
+    var popupHeight = jQuery('#' + target_element).height();
+
+    //getting the absolute cursor position, when scrolling in the iFrame
+    var positionY = document
+        .querySelector('#' + eventCalledFrom)
+        .getBoundingClientRect()
+        .top;
+
+    //is the popup out the displayed screen ?
+    if ((positionY + popupHeight) >= windowHeight) {
+        positionY =  windowHeight - popupHeight;
+    }
+    jQuery('.popup_volante').css('top', positionY);
     jQuery('#' + target_element).show();
 <?php } ?>
-
     formatDateMoment();
 };
 
@@ -933,25 +980,25 @@ var func_displayPOPUP = function(event) {
         elementId = $(self).attr('id');
 
     if ($('#popup-container-display-' + elementId).length == 0) {
-            popup_counter['popup-container-display-' + elementId] = 1;
-            jQuery('.popup_volante').append('<div id="popup-container-display-' + elementId + '" style="display: none"></div>');
+        popup_counter['popup-container-display-' + elementId] = 1;
+        jQuery('.popup_volante').
+            append('<div id="popup-container-display-' + elementId + '" style="display: none"></div>');
     } else {
-            popup_counter['popup-container-display-' + elementId] += 1;
+        popup_counter['popup-container-display-' + elementId] += 1;
     }
     jQuery('.popup_volante .container-load').html('<img src="img/misc/ajax-loader.gif" />');
     jQuery('.popup_volante').css('left', position.left + $('#' + elementId).width() + 10);
-    jQuery('.popup_volante').css('top', ($(window).height() / 2) - ($('.img_volante').height() / 2));
     jQuery('.popup_volante').show();
 
     var elements = elementId.split('-');
     var proc_popup = new Transformation();
     proc_popup.setCallback(func_popupXsltCallback);
     if (elements[0] == "host") {
-            proc_popup.setXml(_addrXMLSpanHost+"?"+'&host_id=' + elements[1]);
-            proc_popup.setXslt(_addrXSLSpanhost);
+        proc_popup.setXml(_addrXMLSpanHost+"?"+'&host_id=' + elements[1]);
+        proc_popup.setXslt(_addrXSLSpanhost);
     } else {
-            proc_popup.setXml(_addrXMLSpanSvc+"?"+'&svc_id=' + elements[1] + '_' + elements[2]);
-            proc_popup.setXslt(_addrXSLSpanSvc);
+        proc_popup.setXml(_addrXMLSpanSvc+"?"+'&svc_id=' + elements[1] + '_' + elements[2]);
+        proc_popup.setXslt(_addrXSLSpanSvc);
     }
     proc_popup.transform('popup-container-display-' + elementId);
 };
@@ -967,21 +1014,22 @@ var func_hidePOPUP = function(event) {
     jQuery('.popup_volante').css('height', 'auto');
 };
 
-/* Use 'id' attribute to get element */
-/* Use 'name' attribute to get xml/xsl infos */
+// Use 'id' attribute to get element
+// Use 'name' attribute to get xml/xsl infos
 var func_displayGenericInfo = function(event) {
     var self = event.currentTarget,
         position = jQuery('#' + $(self).attr('id')).offset(),
         $self = $(self);
 
     if (jQuery('#popup-container-display-' + $self.attr('id')).length == 0) {
-            popup_counter['popup-container-display-' + $self.attr('id')] = 1;
-            jQuery('.popup_volante').append('<div id="popup-container-display-' + $self.attr('id') + '" style="display: none"></div>');
+        popup_counter['popup-container-display-' + $self.attr('id')] = 1;
+        jQuery('.popup_volante').
+            append('<div id="popup-container-display-' + $self.attr('id') + '" style="display: none"></div>');
     } else {
-            popup_counter['popup-container-display-' + $self.attr('id')] += 1;
+        popup_counter['popup-container-display-' + $self.attr('id')] += 1;
     }
     jQuery('.popup_volante .container-load').html('<img src="img/misc/ajax-loader.gif" />');
-    jQuery('.popup_volante').css('left', position.left + jQuery('#' + $self.attr('id')).width() + 10);
+    jQuery('.popup_volante').css('left', position.left + jQuery('#' + $self.attr('id')).width() + 3);
     jQuery('.popup_volante').css('top', (jQuery(window).height() / 2) - (jQuery('.img_volante').height() / 2));
     jQuery('.popup_volante').show();
 
@@ -994,7 +1042,6 @@ var func_displayGenericInfo = function(event) {
 };
 
 // Monitoring Refresh management Options
-
 function monitoring_play()  {
     document.getElementById('JS_monitoring_play').style.display = 'none';
     document.getElementById('JS_monitoring_pause').style.display = 'block';
@@ -1018,7 +1065,7 @@ function monitoring_pause() {
 }
 
 function monitoring_refresh()   {
-        _tmp_on = _on;
+    _tmp_on = _on;
     _time_live = _time_reload;
     _on = 1;
 
