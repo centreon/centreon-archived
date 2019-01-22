@@ -64,6 +64,8 @@ use strict;
 use warnings;
 use Sys::Syslog qw(:standard :macros);
 use IO::Handle;
+use utf8;
+binmode STDOUT, ':utf8';
 
 my %severities = (1 => LOG_INFO,
                   2 => LOG_ERR,
