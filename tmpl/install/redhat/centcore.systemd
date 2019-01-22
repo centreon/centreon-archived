@@ -1,5 +1,5 @@
 ##
-## Copyright 2019 Centreon
+## Copyright 2015,2019 Centreon
 ##
 ## Licensed under the Apache License, Version 2.0 (the "License");
 ## you may not use this file except in compliance with the License.
@@ -20,15 +20,12 @@
 Description=Centreon Core
 PartOf=centreon.service
 After=centreon.service
-After=network-online.target
-After=network.service
 ReloadPropagatedFrom=centreon.service
 
 [Service]
 ExecStart=@CENTCORE_BINDIR@/centcore
 Type=simple
 User=centreon
-PIDFile=/var/run/centreon/centcore.pid
 
 [Install]
 WantedBy=centreon.service
