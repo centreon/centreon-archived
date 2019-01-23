@@ -260,21 +260,6 @@ $extImg = return_image_list(1);
 $extImgStatusmap = array();
 $extImgStatusmap = return_image_list(2);
 
-/*
- *  Host multiple templates relations stored in DB
- */
-$mTp = array();
-$k = 0;
-$DBRESULT = $pearDB->query("SELECT host_tpl_id 
-                            FROM host_template_relation 
-                            WHERE host_host_id = '" . $host_id . "' 
-                            ORDER BY `order`");
-while ($multiTp = $DBRESULT->fetchRow()) {
-    $mTp[$k] = $multiTp["host_tpl_id"];
-    $k++;
-}
-$DBRESULT->closeCursor();
-
 #
 # End of "database-retrieved" information
 ##########################################################
@@ -323,7 +308,7 @@ $attrHosts = array(
     'multiple' => true,
     'linkedObject' => 'centreonHost'
 );
-$hostTplRoute = './include/common/webServices/rest/internal.php?object=centreon_configuration_hosttemplates'
+$hostTplRoute = './include/common/webServices/rest/internal.php?object=centreon_configuration_hosttemplate&action=list'
     . '&action=list';
 $attrHostTpls = array(
     'datasourceOrigin' => 'ajax',
@@ -445,55 +430,14 @@ $form->addElement(
 );
 $form->addElement('static', 'tplText', _("Using a Template allows you to have multi-level Template connection"));
 
-$cloneSetMacro = array();
-$cloneSetMacro[] = $form->addElement(
-    'text',
-    'macroInput[#index#]',
-    _('Name'),
-    array(
-        'id' => 'macroInput_#index#',
-        'size' => 25
-    )
+$tplDeRoute = './include/common/webServices/rest/internal.php?object=centreon_configuration_hosttemplate'
+    . '&action=defaultValues&target=host&field=host_id&id=' . $host_id;
+$attrHostTpls1 = array_merge(
+    $attrHostTpls,
+    array('defaultDatasetRoute' => $tplDeRoute)
 );
-$cloneSetMacro[] = $form->addElement(
-    'text',
-    'macroValue[#index#]',
-    _('Value'),
-    array(
-        'id' => 'macroValue_#index#',
-        'size' => 25
-    )
-);
-$cloneSetMacro[] = $form->addElement(
-    'checkbox',
-    'macroPassword[#index#]',
-    _('Password'),
-    null,
-    array(
-        'id' => 'macroPassword_#index#',
-        'onClick' => 'javascript:change_macro_input_type(this, false)'
-    )
-);
+$form->addElement('select2', 'tpSelect', _("Templates"), array(), $attrHostTpls1);
 
-$cloneSetMacro[] = $form->addElement(
-    'hidden',
-    'macroFrom[#index#]',
-    'direct',
-    array('id' => 'macroFrom_#index#')
-);
-
-
-$cloneSetTemplate = array();
-$cloneSetTemplate[] = $form->addElement(
-    'select',
-    'tpSelect[#index#]',
-    _("Template"),
-    (array(null => null) + $hostObj->getList(false, true)),
-    array(
-        "id" => "tpSelect_#index#",
-        "type" => "select-one"
-    )
-);
 
 $dupSvTpl[] = $form->createElement('radio', 'dupSvTplAssoc', null, _("Yes"), '1');
 $dupSvTpl[] = $form->createElement('radio', 'dupSvTplAssoc', null, _("No"), '0');
@@ -1250,10 +1194,8 @@ if ($valid) {
     $tpl->assign('custom_macro_label', _('Custom macros'));
     $tpl->assign('template_inheritance', _('Template inheritance'));
     $tpl->assign('command_inheritance', _('Command inheritance'));
-    $tpl->assign('cloneSetMacro', $cloneSetMacro);
-    $tpl->assign('cloneSetTemplate', $cloneSetTemplate);
     $tpl->assign('centreon_path', $centreon->optGen['oreon_path']);
-    $tpl->assign("k", $k);
+    //$tpl->assign("k", $k);
     $tpl->assign("tpl", 0);
     $tpl->display("formHost.ihtml");
     ?>

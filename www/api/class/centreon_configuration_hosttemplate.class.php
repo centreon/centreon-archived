@@ -56,6 +56,36 @@ class CentreonConfigurationHosttemplate extends CentreonConfigurationObjects
      * @return array
      * @throws RestBadRequestException
      */
+    public function getDefaultValues()
+    {
+        if (isset($this->arguments['id']) && !empty($this->arguments['id'])) {
+            $id = $this->arguments['id'];
+        } else {
+            throw new RestBadRequestException("Bad parameters id");
+        }
+
+        $result = [];
+        $query = 'SELECT htr.host_tpl_id AS id, h.host_name
+                  FROM host_template_relation htr
+                  JOIN host h ON htr.host_tpl_id = h.host_id
+                  WHERE htr.host_host_id = :host_id
+                  ORDER BY htr.`order`';
+        $stmt = $this->pearDB->prepare($query);
+        $stmt->bindParam(':host_id', $id);
+        $stmt->execute();
+        while ($data = $stmt->fetch()) {
+            $result[] = [
+                'id' => htmlentities($data['id']),
+                'text' => $data['host_name']
+            ];
+        }
+        return $result;
+    }
+
+    /**
+     * @return array
+     * @throws RestBadRequestException
+     */
     public function getList()
     {
         $queryValues = array();
