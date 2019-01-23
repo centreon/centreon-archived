@@ -45,7 +45,7 @@ class ModuleSource extends SourceAbstract
 {
 
     const TYPE = 'module';
-    const PATH = _CENTREON_PATH_ . 'www/modules/';
+    const PATH = 'www/modules/';
     const CONFIG_FILE = 'conf.php';
     const LICENSE_FILE = 'license/merethis_lic.zl';
 
@@ -76,7 +76,7 @@ class ModuleSource extends SourceAbstract
         ;
     }
 
-    public function getList(string $search = null, bool $installed = null, bool $updated = null)
+    public function getList(string $search = null, bool $installed = null, bool $updated = null) : array
     {
         $files = $this->finder
             ->files()
@@ -100,6 +100,30 @@ class ModuleSource extends SourceAbstract
         return $result;
     }
 
+    public function getDetail(string $id): ?Module
+    {
+        $result = null;
+        $path = $this->getPath() . $id;
+
+        if (file_exists($path) === false) {
+            return $result;
+        }
+
+        $files = $this->finder
+            ->files()
+            ->name(static::CONFIG_FILE)
+            ->depth('== 0')
+            ->sortByName()
+            ->in($path)
+        ;
+
+        foreach ($files as $file) {
+            $result = $this->createEntityFromConfig($file->getPathName());
+        }
+
+        return $result;
+    }
+
     public function createEntityFromConfig(string $configFile): Module
     {
         $module_conf = [];
@@ -116,6 +140,7 @@ class ModuleSource extends SourceAbstract
         $entity->setName($info['rname']);
         $entity->setAuthor($info['author']);
         $entity->setVersion($info['mod_release']);
+        $entity->setDescription($info['infos']);
         $entity->setKeywords($entity->getId());
         $entity->setLicense($this->license->getLicenseExpiration($licenseFile));
 
@@ -128,15 +153,6 @@ class ModuleSource extends SourceAbstract
         }
 
         return $entity;
-    }
-
-    /**
-     * @codeCoverageIgnore
-     * @return string
-     */
-    protected function getPath(): string
-    {
-        return static::PATH;
     }
 
     /**

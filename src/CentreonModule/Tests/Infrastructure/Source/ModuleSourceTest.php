@@ -48,6 +48,7 @@ use Centreon\Test\Traits\TestCaseExtensionTrait;
 use CentreonLegacy\Core\Module\License;
 use CentreonModule\Infrastructure\Source\ModuleSource;
 use CentreonModule\Infrastructure\Entity\Module;
+use CentreonLegacy\Core\Configuration\Configuration;
 
 class ModuleSourceTest extends TestCase
 {
@@ -92,6 +93,7 @@ class ModuleSourceTest extends TestCase
         // provide services
         $container = new Container;
         $container['finder'] = new Finder;
+        $container['configuration'] = $this->createMock(Configuration::class);
         $container['centreon.legacy.license'] = $this->getMockBuilder(License::class)
             ->disableOriginalConstructor()
             ->getMock()
@@ -119,7 +121,7 @@ class ModuleSourceTest extends TestCase
         $this->source
             ->method('getPath')
             ->will($this->returnCallback(function () {
-                    $result = 'vfs://modules';
+                    $result = 'vfs://modules/';
 
                     return $result;
             }))
@@ -161,6 +163,21 @@ class ModuleSourceTest extends TestCase
 
         $result2 = $this->source->getList('missing-module');
         $this->assertEquals([], $result2);
+    }
+
+    public function testGetDetail()
+    {
+        (function () {
+            $result = $this->source->getDetail('missing-module');
+
+            $this->assertNull($result);
+        })();
+
+        (function () {
+            $result = $this->source->getDetail(static::$moduleName);
+
+            $this->assertInstanceOf(Module::class, $result);
+        })();
     }
 
     public function testCreateEntityFromConfig()
