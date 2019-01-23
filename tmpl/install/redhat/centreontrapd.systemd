@@ -24,6 +24,7 @@ ReloadPropagatedFrom=centreon.service
 
 [Service]
 ExecStart=@CENTREONTRAPD_BINDIR@/centreontrapd
+ExecReload=/bin/kill -HUP $MAINPID
 Type=simple
 User=centreon
 
