@@ -41,11 +41,7 @@
     },
     "autoload": {
         "psr-4": {
-            "CentreonLegacy\\": "src/CentreonLegacy/",
-            "CentreonModule\\": "src/CentreonModule/",
-            "CentreonRemote\\": "src/CentreonRemote/",
-            "CentreonBam\\": "src/CentreonBam/",
-            "Centreon\\": "src/Centreon/"
+            "": "src/"
         },
         "classmap": ["www/class/"],
         "files" : [

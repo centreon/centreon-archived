@@ -4,6 +4,7 @@ namespace Centreon;
 use Pimple\Container;
 use Pimple\Psr11\ServiceLocator;
 use Centreon\Infrastructure\Provider\AutoloadServiceProviderInterface;
+use Centreon\Infrastructure\Service;
 use Centreon\Infrastructure\Service\CentreonWebserviceService;
 use Centreon\Infrastructure\Service\CentreonClapiService;
 use Centreon\Infrastructure\Service\CentcoreConfigService;
@@ -99,6 +100,15 @@ class ServiceProvider implements AutoloadServiceProviderInterface
         $pimple['centreon.broker_configuration_service'] = function(Container $container): BrokerConfigurationService {
             $service = new BrokerConfigurationService($container['configuration_db']);
             $service->setBrokerInfoRepository($container['centreon.broker_info_repository']);
+
+            return $service;
+        };
+
+        $pimple['upload.manager'] = function (Container $pimple): Service\UploadFileService {
+            $services = [];
+
+            $locator = new ServiceLocator($pimple, $services);
+            $service = new Service\UploadFileService($locator, $_FILES);
 
             return $service;
         };
