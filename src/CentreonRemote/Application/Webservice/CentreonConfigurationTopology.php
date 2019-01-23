@@ -2,6 +2,9 @@
 
 namespace CentreonRemote\Application\Webservice;
 
+/**
+ * @OA\Tag(name="centreon_configuration_topology", description="")
+ */
 class CentreonConfigurationTopology extends CentreonWebServiceAbstract
 {
 
@@ -16,35 +19,53 @@ class CentreonConfigurationTopology extends CentreonWebServiceAbstract
     }
 
     /**
-     * @SWG\Post(
-     *   path="/centreon/api/internal.php",
-     *   operationId="getTopologyData",
-     *   @SWG\Parameter(
+     * @OA\Post(
+     *   path="/internal.php?object=centreon_configuration_topology&action=getTopologyData",
+     *   description="Get data for topology_id",
+     *   tags={"centreon_configuration_topology"},
+     *   security={{"Session": {}}},
+     *   @OA\Parameter(
      *       in="query",
      *       name="object",
-     *       type="string",
+     *       @OA\Schema(
+     *          type="string",
+     *          enum={"centreon_configuration_topology"},
+     *          default="centreon_configuration_topology"
+     *       ),
      *       description="the name of the API object class",
-     *       required=true,
-     *       enum="centreon_configuration_topology",
+     *       required=true
      *   ),
-     *   @SWG\Parameter(
+     *   @OA\Parameter(
      *       in="query",
      *       name="action",
-     *       type="string",
+     *       @OA\Schema(
+     *          type="string",
+     *          enum={"getTopologyData"},
+     *          default="getTopologyData"
+     *       ),
      *       description="the name of the action in the API class",
-     *       required=true,
-     *       enum="getTopologyData",
+     *       required=true
      *   ),
-     *   @SWG\Parameter(
-     *       in="formData",
-     *       name="topology_id",
-     *       description="the ID of the topology page",
+     *   @OA\RequestBody(
      *       required=true,
-     *       type="string",
+     *       @OA\JsonContent(
+     *          required={
+     *              "topology_id"
+     *          },
+     *          @OA\Property(
+     *              property="topology_id",
+     *              type="string",
+     *              description="the ID of the topology page"
+     *          )
+     *       )
      *   ),
-     *   @SWG\Response(
-     *     response=200,
-     *     description="JSON with topology data"
+     *   @OA\Response(
+     *       response=200,
+     *       description="JSON with topology data",
+     *       @OA\JsonContent(
+     *          @OA\Property(property="url", type="string"),
+     *          @OA\Property(property="is_react", type="boolean")
+     *       )
      *   )
      * )
      *

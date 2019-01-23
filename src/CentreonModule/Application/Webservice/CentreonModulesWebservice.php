@@ -47,7 +47,7 @@ class CentreonModulesWebservice extends CentreonWebServiceAbstract
     /**
      * @OA\Post(
      *   path="/external.php?object=centreon_modules_webservice&action=getBamModuleInfo",
-     *   summary="Get list of modules and widgets",
+     *   description="Get list of modules and widgets",
      *   tags={"centreon_modules_webservice"},
      *   @OA\Parameter(
      *       in="query",
@@ -72,12 +72,9 @@ class CentreonModulesWebservice extends CentreonWebServiceAbstract
      *   @OA\Response(
      *      response="200",
      *      description="JSON with BAM module info",
-     *      @OA\MediaType(
-     *          mediaType="application/json",
-     *          @OA\Schema(
-     *              @OA\Property(property="enabled", type="boolean"),
-     *              @OA\Property(property="status", type="boolean"),
-     *          )
+     *      @OA\JsonContent(
+     *          @OA\Property(property="enabled", type="boolean"),
+     *          @OA\Property(property="status", type="boolean")
      *      )
      *   )
      * )
