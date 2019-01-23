@@ -59,6 +59,16 @@ class Module implements SourceDataInterface
     /**
      * @var string
      */
+    private $description;
+
+    /**
+     * @var array
+     */
+    private $images = [];
+
+    /**
+     * @var string
+     */
     private $author;
 
     /**
@@ -79,12 +89,27 @@ class Module implements SourceDataInterface
     /**
      * @var string
      */
+    private $stability = 'stable';
+
+    /**
+     * @var string
+     */
     private $keywords;
 
     /**
      * @var string
      */
     private $license;
+
+    /**
+     * @var string
+     */
+    protected $lastUpdate;
+
+    /**
+     * @var string
+     */
+    protected $releaseNote;
 
     /**
      * @var bool
@@ -124,6 +149,26 @@ class Module implements SourceDataInterface
     public function setName(string $name)
     {
         $this->name = $name;
+    }
+
+    public function getDescription(): ?string
+    {
+        return $this->description;
+    }
+
+    public function setDescription(string $description)
+    {
+        $this->description = $description;
+    }
+
+    public function getImages(): array
+    {
+        return $this->images;
+    }
+
+    public function addImage(string $image)
+    {
+        $this->images[] = $image;
     }
 
     public function getAuthor(): string
@@ -166,6 +211,16 @@ class Module implements SourceDataInterface
         $this->path = $path;
     }
 
+    public function getStability(): string
+    {
+        return $this->stability;
+    }
+
+    public function setStability(string $stability)
+    {
+        $this->stability = $stability;
+    }
+
     public function getKeywords(): string
     {
         return $this->keywords;
@@ -184,6 +239,26 @@ class Module implements SourceDataInterface
     public function setLicense(string $license = null)
     {
         $this->license = $license;
+    }
+
+    public function getLastUpdate(): ?string
+    {
+        return $this->lastUpdate;
+    }
+
+    public function setLastUpdate(string $lastUpdate)
+    {
+        $this->lastUpdate = $lastUpdate;
+    }
+
+    public function getReleaseNote(): ?string
+    {
+        return $this->releaseNote;
+    }
+
+    public function setReleaseNote(string $releaseNote)
+    {
+        $this->releaseNote = $releaseNote;
     }
 
     public function isInstalled(): bool

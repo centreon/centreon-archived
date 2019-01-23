@@ -38,9 +38,9 @@ namespace CentreonModule\Tests\Application\DataRepresenter;
 
 use PHPUnit\Framework\TestCase;
 use CentreonModule\Infrastructure\Entity\Module;
-use CentreonModule\Application\DataRepresenter\ModuleEntity;
+use CentreonModule\Application\DataRepresenter\ModuleDetailEntity;
 
-class ModuleEntityTest extends TestCase
+class ModuleDetailEntityTest extends TestCase
 {
 
     public function testJsonSerialize()
@@ -49,20 +49,30 @@ class ModuleEntityTest extends TestCase
             'id' => '1',
             'type' => 'module',
             'name' => 'Test Module',
+            'description' => 'Test Module description',
             'author' => 'John Doe',
             'versionCurrent' => '1.0.0',
             'version' => '1.0.1',
             'license' => '11/20',
+            'image' => 'media/screanshot.png',
+            'stability' => 'beta',
+            'last_update' => '2000-01-01',
+            'release_note' => 'http://localhost/',
         ];
 
         $entity = new Module;
         $entity->setId($data['id']);
         $entity->setType($data['type']);
         $entity->setName($data['name']);
+        $entity->setDescription($data['name']);
         $entity->setAuthor($data['author']);
         $entity->setVersionCurrent($data['versionCurrent']);
         $entity->setVersion($data['version']);
         $entity->setLicense($data['license']);
+        $entity->addImage($data['image']);
+        $entity->setStability($data['stability']);
+        $entity->setLastUpdate($data['last_update']);
+        $entity->setReleaseNote($data['release_note']);
 
         $check = function () use ($entity) {
             $outdated = $entity->isInstalled() && !$entity->isUpdated() ?
@@ -73,7 +83,8 @@ class ModuleEntityTest extends TestCase
             $controlResult = [
                 'id' => $entity->getId(),
                 'type' => $entity->getType(),
-                'description' => $entity->getName(),
+                'title' => $entity->getName(),
+                'description' => $entity->getDescription(),
                 'label' => $entity->getAuthor(),
                 'version' => [
                     'current' => $entity->getVersionCurrent(),
@@ -82,9 +93,13 @@ class ModuleEntityTest extends TestCase
                     'installed' => $entity->isInstalled(),
                 ],
                 'license' => $entity->getLicense(),
+                'images' => $entity->getImages(),
+                'stability' => $entity->getStability(),
+                'last_update' => $entity->getLastUpdate(),
+                'release_note' => $entity->getReleaseNote(),
             ];
 
-            $dataRepresenter = new ModuleEntity($entity);
+            $dataRepresenter = new ModuleDetailEntity($entity);
             $result = $dataRepresenter->jsonSerialize();
 
             $this->assertEquals($result, $controlResult);

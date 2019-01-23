@@ -41,7 +41,9 @@ use CentreonModule\Infrastructure\Entity\Module;
 interface SourceInterface
 {
 
-    public function getList(string $search = null, bool $installed = null, bool $updated = null);
+    public function getList(string $search = null, bool $installed = null, bool $updated = null) : array;
+
+    public function getDetail(string $id): ?Module;
 
     public function createEntityFromConfig(string $configFile): Module;
 
