@@ -92,11 +92,14 @@ class ExtensionsRoute extends Component {
     })
   }
 
+  toggleExtensionsDetails = (id) => {
+    console.log(id)
+  }
+
   render = () => {
 
     const { remoteData } = this.props;
     const { modulesActive, widgetsActive, not_installed, installed, updated, search, nothingShown } = this.state;
-
     return (
       <div>
         <Centreon.TopFilters
@@ -162,12 +165,12 @@ class ExtensionsRoute extends Component {
             <React.Fragment>
               {
                 remoteData.extensions.result.module && modulesActive ? (
-                  <Centreon.ExtensionsHolder title="Modules" entities={remoteData.extensions.result.module.entities} />
+                  <Centreon.ExtensionsHolder onCardClicked={this.toggleExtensionsDetails} titleIcon={"object"} title="Modules" entities={remoteData.extensions.result.module.entities} />
                 ) : null
               }
               {
                 remoteData.extensions.result.widget && widgetsActive ? (
-                  <Centreon.ExtensionsHolder title="Widgets" entities={remoteData.extensions.result.widget.entities} />
+                  <Centreon.ExtensionsHolder onCardClicked={this.toggleExtensionsDetails} titleIcon={"puzzle"} title="Widgets" entities={remoteData.extensions.result.widget.entities} />
                 ) : null
               }
             </React.Fragment>
