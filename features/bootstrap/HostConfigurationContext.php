@@ -401,4 +401,37 @@ class HostConfigurationContext extends CentreonContext
             5
         );
     }
+
+    /**
+     * @When I open the new host page
+     */
+    public function loadAddPage()
+    {
+        $this->currentPage = new HostConfigurationListingPage($this);
+        $this->currentPage->loadAddPage();
+
+    }
+
+    /**
+     * @Then A select box allow to search a unique template and to select it
+     */
+    public function checkForTemplates()
+    {
+        /* Add search to select2 */
+        $inputField = $this->assertFind('css', 'select#tpSelect');
+
+        /* Open the select2 */
+        $choice = $inputField->getParent()->find('css', '.select2-selection');
+        if (!$choice) {
+            throw new \Exception('No select2 choice found');
+        }
+        $choice->press();
+        $mythis = $this;
+        $this->spin(
+            function ($context) use ($mythis) {
+                $mythis->assertFind('css', '.templateCell .select2-container--open li.select2-results__option');
+            }
+        );
+    }
+
 }
