@@ -1,14 +1,14 @@
 {
   "main.js": "./static/js/main.c091f43c.chunk.js",
-  "Manager.js": "./static/js/Manager.058903d7.chunk.js",
+  "Manager.js": "./static/js/Manager.e33cf936.chunk.js",
   "static/js/2.87412b66.chunk.js": "./static/js/2.87412b66.chunk.js",
-  "static/css/3.cc32b95c.chunk.css": "./static/css/3.cc32b95c.chunk.css",
-  "static/js/3.6eac2a54.chunk.js": "./static/js/3.6eac2a54.chunk.js",
-  "runtime~main.js": "./static/js/runtime~main.d0d495a1.js",
-  "static/media/icon-header.scss": "./static/media/icomoon.aa630dd4.svg",
+  "static/css/3.78533060.chunk.css": "./static/css/3.78533060.chunk.css",
+  "static/js/3.eb3230d8.chunk.js": "./static/js/3.eb3230d8.chunk.js",
+  "runtime~main.js": "./static/js/runtime~main.b9688c5a.js",
+  "static/media/icon-header.scss": "./static/media/icomoon.50c46195.eot",
   "static/media/custom-title.scss": "./static/media/roboto-light-webfont.8b96281f.woff",
-  "static/css/3.cc32b95c.chunk.css.map": "./static/css/3.cc32b95c.chunk.css.map",
+  "static/css/3.78533060.chunk.css.map": "./static/css/3.78533060.chunk.css.map",
   "index.html": "./index.html",
-  "precache-manifest.fd7c37b5f91a7d2fd605899a0c056cf0.js": "./precache-manifest.fd7c37b5f91a7d2fd605899a0c056cf0.js",
+  "precache-manifest.01bc4ccb6a36172eb4ba7e367dfd03fe.js": "./precache-manifest.01bc4ccb6a36172eb4ba7e367dfd03fe.js",
   "service-worker.js": "./service-worker.js"
 }
