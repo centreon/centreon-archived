@@ -282,7 +282,7 @@ class CentreonModuleWebservice extends CentreonWebServiceAbstract
     }
 
     /**
-     * @OA\Get(
+     * @OA\Post(
      *   path="/internal.php?object=centreon_module&action=install",
      *   summary="Install module or widget",
      *   tags={"centreon_module"},
@@ -345,7 +345,7 @@ class CentreonModuleWebservice extends CentreonWebServiceAbstract
      * @throws \RestBadRequestException
      * @return []
      */
-    public function getInstall()
+    public function postInstall()
     {
         // extract post payload
         $request = $this->query();
@@ -374,7 +374,7 @@ class CentreonModuleWebservice extends CentreonWebServiceAbstract
     }
 
     /**
-     * @OA\Get(
+     * @OA\Post(
      *   path="/internal.php?object=centreon_module&action=update",
      *   summary="Update module or widget",
      *   tags={"centreon_module"},
@@ -437,7 +437,7 @@ class CentreonModuleWebservice extends CentreonWebServiceAbstract
      * @throws \RestBadRequestException
      * @return []
      */
-    public function getUpdate()
+    public function postUpdate()
     {
         // extract post payload
         $request = $this->query();
