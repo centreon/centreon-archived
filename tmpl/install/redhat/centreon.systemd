@@ -1,5 +1,5 @@
 ##
-## Copyright 2015,2019 Centreon
+## Copyright 2019 Centreon
 ##
 ## Licensed under the Apache License, Version 2.0 (the "License");
 ## you may not use this file except in compliance with the License.
@@ -17,16 +17,13 @@
 ##
 
 [Unit]
-Description=Centreon Core
-PartOf=centreon.service
-After=centreon.service
-ReloadPropagatedFrom=centreon.service
+Description=One Service to rule them all.
 
 [Service]
-ExecStart=@CENTCORE_BINDIR@/centcore
-ExecReload=/bin/kill -HUP $MAINPID
-Type=simple
-User=centreon
+Type=oneshot
+ExecStart=/bin/true
+ExecReload=/bin/true
+RemainAfterExit=yes
 
 [Install]
-WantedBy=centreon.service
+WantedBy=multi-user.target
