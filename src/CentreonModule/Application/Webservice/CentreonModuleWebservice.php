@@ -529,7 +529,7 @@ class CentreonModuleWebservice extends CentreonWebServiceAbstract
      * @throws \RestBadRequestException
      * @return []
      */
-    public function getRemove()
+    public function deleteRemove()
     {
         // extract post payload
         $request = $this->query();
