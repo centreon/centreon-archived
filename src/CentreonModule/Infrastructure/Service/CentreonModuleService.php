@@ -98,6 +98,28 @@ class CentreonModuleService
         return $result;
     }
 
+    public function install(string $id, string $type): ?Module
+    {
+        if (!array_key_exists($type, $this->sources)) {
+            return null;
+        }
+
+        $result = $this->sources[$type]->install($id);
+
+        return $result;
+    }
+
+    public function update(string $id, string $type): ?Module
+    {
+        if (!array_key_exists($type, $this->sources)) {
+            return null;
+        }
+
+        $result = $this->sources[$type]->update($id);
+
+        return $result;
+    }
+
     /**
      * Init list of sources
      *

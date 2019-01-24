@@ -34,29 +34,59 @@
  *
  */
 
-namespace CentreonModule\Infrastructure\Source;
+namespace CentreonModule\Application\DataRepresenter;
 
+use JsonSerializable;
 use CentreonModule\Infrastructure\Entity\Module;
 
-interface SourceInterface
+class UpdateAction implements JsonSerializable
 {
 
-    public function initInfo();
+    /**
+     * @var \CentreonModule\Infrastructure\Entity\Module
+     */
+    private $entity;
 
-    public function getList(string $search = null, bool $installed = null, bool $updated = null) : array;
+    /**
+     * @var string
+     */
+    private $message;
 
-    public function getDetail(string $id): ?Module;
+    /**
+     * Construct
+     *
+     * @param \CentreonModule\Infrastructure\Entity\Module $entity
+     * @param bool $status
+     * @param string $message
+     */
+    public function __construct(Module $entity = null, string $message = null)
+    {
+        $this->entity = $entity;
+        $this->message = $message;
+    }
 
-    public function install(string $id): ?Module;
+    /**
+     * @OA\Schema(
+     *   schema="UpdateAction",
+     *       @OA\Property(property="entity", ref="#/components/schemas/ModuleEntity"),
+     *       @OA\Property(property="message", type="string")
+     * )
+     *
+     * JSON serialization of entity
+     *
+     * @return array
+     */
+    public function jsonSerialize()
+    {
+        $entity = null;
 
-    public function update(string $id): ?Module;
+        if ($this->entity) {
+            $entity = new ModuleEntity($this->entity);
+        }
 
-    public function createEntityFromConfig(string $configFile): Module;
-
-    public function isEligible(
-        Module $entity,
-        string $search = null,
-        bool $installed = null,
-        bool $updated = null
-    ): bool;
+        return [
+            'entity' => $entity,
+            'message' => $this->message,
+        ];
+    }
 }

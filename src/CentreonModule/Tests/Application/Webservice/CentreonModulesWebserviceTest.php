@@ -76,30 +76,62 @@ class CentreonModulesWebserviceTest extends TestCase
         ]);
     }
 
-    public function testPostGetBamModuleInfo()
+    /**
+     * @covers \CentreonModule\Application\Webservice\CentreonModulesWebservice::postGetBamModuleInfo
+     */
+    public function testPostGetBamModuleInfoWithoutModule()
     {
         // dependencies
         $container = new Container;
-        $container['finder'] = new Finder;
-        $container['configuration_db'] = new CentreonDB;
+        $container[\CentreonLegacy\ServiceProvider::CENTREON_LEGACY_MODULE_INFORMATION] = $this
+            ->getMockBuilder(\CentreonLegacy\Core\Module\Information::class)
+            ->disableOriginalConstructor()
+            ->setMethods([
+                'getList',
+            ])
+            ->getMock();
+        
+        $container[\CentreonLegacy\ServiceProvider::CENTREON_LEGACY_MODULE_INFORMATION]
+            ->method('getList')
+            ->will($this->returnCallback(function () {
+                return [
+                    'centreon-bam-server' => [
+                        'is_installed' => false,
+                    ],
+                ];
+            }));
 
-        // load dependencies
         $this->webservice->setDi($container);
-
-        foreach (static::$sqlQueriesWitoutData as $query => $data) {
-            $container['configuration_db']->addResultSet($query, []);
-        }
 
         $result = $this->webservice->postGetBamModuleInfo();
         $this->assertArrayHasKey('enabled', $result);
         $this->assertFalse($result['enabled']);
+    }
 
-        // reset
-        $container['configuration_db']->resetResultSet();
+    /**
+     * @covers \CentreonModule\Application\Webservice\CentreonModulesWebservice::postGetBamModuleInfo
+     */
+    public function testPostGetBamModuleInfoWithModule()
+    {
+        $container = new Container;
+        $container[\CentreonLegacy\ServiceProvider::CENTREON_LEGACY_MODULE_INFORMATION] = $this
+            ->getMockBuilder(\CentreonLegacy\Core\Module\Information::class)
+            ->disableOriginalConstructor()
+            ->setMethods([
+                'getList',
+            ])
+            ->getMock();
+        $container[\CentreonLegacy\ServiceProvider::CENTREON_LEGACY_MODULE_INFORMATION]
+            ->method('getList')
+            ->will($this->returnCallback(function () {
+                return [
+                    'centreon-bam-server' => [
+                        'is_installed' => true,
+                    ],
+                ];
+            }));
 
-        foreach (static::$sqlQueries as $query => $data) {
-            $container['configuration_db']->addResultSet($query, $data);
-        }
+        $this->webservice->setDi($container);
 
         $result = $this->webservice->postGetBamModuleInfo();
         $this->assertArrayHasKey('enabled', $result);

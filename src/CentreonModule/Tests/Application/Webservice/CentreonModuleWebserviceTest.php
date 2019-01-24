@@ -43,6 +43,7 @@ use CentreonModule\Infrastructure\Service\CentreonModuleService;
 use CentreonModule\Infrastructure\Source\ModuleSource;
 use CentreonModule\Infrastructure\Entity\Module;
 use CentreonModule\Tests\Infrastructure\Source\ModuleSourceTest;
+use CentreonModule\ServiceProvider;
 
 class CentreonModuleWebserviceTest extends TestCase
 {
@@ -51,11 +52,11 @@ class CentreonModuleWebserviceTest extends TestCase
     {
         // dependencies
         $container = new Container;
-        $container['centreon.module'] = $this->createMock(CentreonModuleService::class, [
+        $container[ServiceProvider::CENTREON_MODULE] = $this->createMock(CentreonModuleService::class, [
             'getList',
             'getDetail',
         ]);
-        $container['centreon.module']
+        $container[ServiceProvider::CENTREON_MODULE]
             ->method('getList')
             ->will($this->returnCallback(function () {
                     $funcArgs = func_get_args();
@@ -81,7 +82,7 @@ class CentreonModuleWebserviceTest extends TestCase
                     ];
             }))
         ;
-        $container['centreon.module']
+        $container[ServiceProvider::CENTREON_MODULE]
             ->method('getDetail')
             ->will($this->returnCallback(function () {
                 $funcArgs = func_get_args();

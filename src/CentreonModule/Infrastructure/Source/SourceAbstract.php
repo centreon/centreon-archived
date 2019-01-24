@@ -65,11 +65,29 @@ abstract class SourceAbstract implements SourceInterface
      */
     public function __construct(ContainerInterface $services)
     {
-        $this->db = $services->get('centreon.db-manager');
+        $this->db = $services->get(\Centreon\ServiceProvider::CENTREON_DB_MANAGER);
         $this->finder = $services->get('finder');
         $this->path = $services->get('configuration')
             ->get('centreon_path')
         ;
+    }
+
+    public function install(string $id): ?Module
+    {
+        ($this->installer)($id)->install();
+
+        $this->initInfo();
+
+        return $this->getDetail($id);
+    }
+
+    public function update(string $id): ?Module
+    {
+        ($this->upgrader)($id)->upgrade();
+
+        $this->initInfo();
+
+        return $this->getDetail($id);
     }
 
     public function isEligible(

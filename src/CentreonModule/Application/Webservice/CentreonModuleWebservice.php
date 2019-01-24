@@ -41,6 +41,8 @@ use Centreon\Application\DataRepresenter\Bulk;
 use Centreon\Application\DataRepresenter\Response;
 use CentreonModule\Application\DataRepresenter\ModuleEntity;
 use CentreonModule\Application\DataRepresenter\ModuleDetailEntity;
+use CentreonModule\Application\DataRepresenter\UpdateAction;
+use CentreonModule\ServiceProvider;
 
 /**
  * @OA\Tag(name="centreon_module", description="Resource for authorized access")
@@ -178,7 +180,7 @@ class CentreonModuleWebservice extends CentreonWebServiceAbstract
             $updated = null;
         }
 
-        $list = $this->getDi()['centreon.module']
+        $list = $this->getDi()[ServiceProvider::CENTREON_MODULE]
             ->getList($search, $installed, $updated, $typeList);
 
         $result = new Bulk($list, null, null, null, ModuleEntity::class);
@@ -263,7 +265,7 @@ class CentreonModuleWebservice extends CentreonWebServiceAbstract
         $id = isset($request['id']) && $request['id'] ? $request['id'] : null;
         $type = isset($request['type']) ? $request['type'] : null;
 
-        $detail = $this->getDi()['centreon.module']
+        $detail = $this->getDi()[ServiceProvider::CENTREON_MODULE]
             ->getDetail($id, $type);
 
         $result = null;
@@ -271,6 +273,190 @@ class CentreonModuleWebservice extends CentreonWebServiceAbstract
 
         if ($detail !== null) {
             $result = new ModuleDetailEntity($detail);
+            $status = true;
+        }
+
+        $response = new Response($result, $status);
+
+        return $response;
+    }
+
+    /**
+     * @OA\Get(
+     *   path="/internal.php?object=centreon_module&action=install",
+     *   summary="Install module or widget",
+     *   tags={"centreon_module"},
+     *   @OA\Parameter(
+     *       in="query",
+     *       name="object",
+     *       @OA\Schema(
+     *          type="string",
+     *          enum={"centreon_module"},
+     *          default="centreon_module"
+     *       ),
+     *       description="the name of the API object class",
+     *       required=true
+     *   ),
+     *   @OA\Parameter(
+     *       in="query",
+     *       name="action",
+     *       @OA\Schema(
+     *          type="string",
+     *          enum={"install"},
+     *          default="install"
+     *       ),
+     *       description="the name of the action in the API class",
+     *       required=true
+     *   ),
+     *   @OA\Parameter(
+     *       in="query",
+     *       name="id",
+     *       @OA\Schema(
+     *          type="string"
+     *       ),
+     *       description="ID of a module or a widget",
+     *       required=true
+     *   ),
+     *   @OA\Parameter(
+     *       in="query",
+     *       name="type",
+     *       @OA\Schema(
+     *          type="string",
+     *          enum={
+     *              "module",
+     *              "widget"
+     *          }
+     *       ),
+     *       description="type of object",
+     *       required=true
+     *   ),
+     *   @OA\Response(
+     *       response="200",
+     *       description="OK",
+     *       @OA\JsonContent(
+     *          @OA\Property(property="result", ref="#/components/schemas/UpdateAction"),
+     *          @OA\Property(property="status", type="boolean")
+     *       )
+     *   )
+     * )
+     *
+     * Install module or widget
+     *
+     * @throws \RestBadRequestException
+     * @return []
+     */
+    public function getInstall()
+    {
+        // extract post payload
+        $request = $this->query();
+
+        $id = isset($request['id']) && $request['id'] ? $request['id'] : null;
+        $type = isset($request['type']) ? $request['type'] : null;
+
+        $status = false;
+        $result = null;
+
+        try {
+            $entity = $this->getDi()[ServiceProvider::CENTREON_MODULE]
+                ->install($id, $type);
+        } catch (\Exception $e) {
+            $result = new UpdateAction(null, $e->getMessage());
+        }
+
+        if ($entity !== null) {
+            $result = new UpdateAction($entity);
+            $status = true;
+        }
+
+        $response = new Response($result, $status);
+
+        return $response;
+    }
+
+    /**
+     * @OA\Get(
+     *   path="/internal.php?object=centreon_module&action=install",
+     *   summary="Update module or widget",
+     *   tags={"centreon_module"},
+     *   @OA\Parameter(
+     *       in="query",
+     *       name="object",
+     *       @OA\Schema(
+     *          type="string",
+     *          enum={"centreon_module"},
+     *          default="centreon_module"
+     *       ),
+     *       description="the name of the API object class",
+     *       required=true
+     *   ),
+     *   @OA\Parameter(
+     *       in="query",
+     *       name="action",
+     *       @OA\Schema(
+     *          type="string",
+     *          enum={"update"},
+     *          default="update"
+     *       ),
+     *       description="the name of the action in the API class",
+     *       required=true
+     *   ),
+     *   @OA\Parameter(
+     *       in="query",
+     *       name="id",
+     *       @OA\Schema(
+     *          type="string"
+     *       ),
+     *       description="ID of a module or a widget",
+     *       required=true
+     *   ),
+     *   @OA\Parameter(
+     *       in="query",
+     *       name="type",
+     *       @OA\Schema(
+     *          type="string",
+     *          enum={
+     *              "module",
+     *              "widget"
+     *          }
+     *       ),
+     *       description="type of object",
+     *       required=true
+     *   ),
+     *   @OA\Response(
+     *       response="200",
+     *       description="OK",
+     *       @OA\JsonContent(
+     *          @OA\Property(property="result", ref="#/components/schemas/UpdateAction"),
+     *          @OA\Property(property="status", type="boolean")
+     *       )
+     *   )
+     * )
+     *
+     * Update module or widget
+     *
+     * @throws \RestBadRequestException
+     * @return []
+     */
+    public function getUpdate()
+    {
+        // extract post payload
+        $request = $this->query();
+
+        $id = isset($request['id']) && $request['id'] ? $request['id'] : null;
+        $type = isset($request['type']) ? $request['type'] : null;
+
+        $status = false;
+        $result = null;
+
+        try {
+            $entity = $this->getDi()[ServiceProvider::CENTREON_MODULE]
+                ->update($id, $type);
+        } catch (\Exception $e) {
+            $result = new UpdateAction(null, $e->getMessage());
+        }
+
+        if ($entity !== null) {
+            $result = new UpdateAction($entity);
             $status = true;
         }
 

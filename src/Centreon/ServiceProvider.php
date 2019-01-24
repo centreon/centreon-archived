@@ -17,6 +17,8 @@ use CentreonClapi\CentreonACL;
 
 class ServiceProvider implements AutoloadServiceProviderInterface
 {
+    const CENTREON_WEBSERVICE = 'centreon.webservice';
+    const CENTREON_DB_MANAGER = 'centreon.db-manager';
 
     /**
      * Register Centreon services
@@ -25,16 +27,16 @@ class ServiceProvider implements AutoloadServiceProviderInterface
      */
     public function register(Container $pimple): void
     {
-        $pimple['centreon.webservice'] = function(Container $container): CentreonWebserviceService {
+        $pimple[static::CENTREON_WEBSERVICE] = function(Container $container): CentreonWebserviceService {
             $service = new CentreonWebserviceService;
 
             return $service;
         };
 
-        $pimple['centreon.webservice']->add(Application\Webservice\TopologyWebservice::class);
+        $pimple[static::CENTREON_WEBSERVICE]->add(Application\Webservice\TopologyWebservice::class);
 
         if (defined('OpenApi\UNDEFINED') !== false) {
-            $pimple['centreon.webservice']->add(\Centreon\Application\Webservice\OpenApiWebservice::class);
+            $pimple[static::CENTREON_WEBSERVICE]->add(\Centreon\Application\Webservice\OpenApiWebservice::class);
         }
 
         $pimple['centreon.clapi'] = function(Container $container): CentreonClapiService {
@@ -43,7 +45,7 @@ class ServiceProvider implements AutoloadServiceProviderInterface
             return $service;
         };
 
-        $pimple['centreon.db-manager'] = function(Container $container): CentreonDBManagerService {
+        $pimple[static::CENTREON_DB_MANAGER] = function(Container $container): CentreonDBManagerService {
             $services = [
                 'realtime_db',
                 'configuration_db',

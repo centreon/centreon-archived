@@ -85,10 +85,7 @@ class CentreonModulesWebservice extends CentreonWebServiceAbstract
      */
     public function postGetBamModuleInfo(): array
     {
-        $factory = new \CentreonLegacy\Core\Utils\Factory($this->getDi());
-        $utils = $factory->newUtils();
-        $moduleFactory = new \CentreonLegacy\Core\Module\Factory($this->getDi(), $utils);
-        $moduleInfoObj = $moduleFactory->newInformation();
+        $moduleInfoObj = $this->getDi()[\CentreonLegacy\ServiceProvider::CENTREON_LEGACY_MODULE_INFORMATION];
         $modules = $moduleInfoObj->getList();
 
         if (array_key_exists('centreon-bam-server', $modules) &&

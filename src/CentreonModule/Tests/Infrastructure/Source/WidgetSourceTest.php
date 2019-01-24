@@ -48,11 +48,13 @@ use Centreon\Test\Traits\TestCaseExtensionTrait;
 use CentreonModule\Infrastructure\Source\WidgetSource;
 use CentreonModule\Infrastructure\Entity\Module;
 use CentreonLegacy\Core\Configuration\Configuration;
+use CentreonModule\Tests\Resource\Traits\SourceDependencyTrait;
 
 class WidgetSourceTest extends TestCase
 {
 
-    use TestCaseExtensionTrait;
+    use TestCaseExtensionTrait,
+        SourceDependencyTrait;
 
     public static $widgetName = 'test-widget';
     public static $widgetInfo = [
@@ -93,19 +95,21 @@ class WidgetSourceTest extends TestCase
         $container['configuration'] = $this->createMock(Configuration::class);
 
         // DB service
-        $container['centreon.db-manager'] = new Mock\CentreonDBManagerService;
+        $container[\Centreon\ServiceProvider::CENTREON_DB_MANAGER] = new Mock\CentreonDBManagerService;
         foreach (static::$sqlQueryVsData as $query => $data) {
-            $container['centreon.db-manager']->addResultSet($query, $data);
+            $container[\Centreon\ServiceProvider::CENTREON_DB_MANAGER]->addResultSet($query, $data);
         }
 
-        $this->containerWrap = new ContainerWrap($container);
+        $this->setUpSourceDependency($container);
+
+        $containerWrap = new ContainerWrap($container);
 
         $this->source = $this->getMockBuilder(WidgetSource::class)
             ->setMethods([
                 'getPath',
             ])
             ->setConstructorArgs([
-                $this->containerWrap,
+                $containerWrap,
             ])
             ->getMock()
         ;
@@ -115,7 +119,7 @@ class WidgetSourceTest extends TestCase
                     $result = 'vfs://widgets/';
 
                     return $result;
-            }))
+                }))
         ;
     }
 
