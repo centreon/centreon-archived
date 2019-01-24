@@ -59,4 +59,22 @@ class ModulesInformationsRepository extends ServiceEntityRepository
 
         return $result;
     }
+
+    /**
+     * Get id by name
+     */
+    public function findIdByName($name): ?int
+    {
+        $sql = "SELECT `id` FROM `modules_informations` WHERE `name` = :name LIMIT 0, 1";
+
+        $stmt = $this->db->prepare($sql);
+        $stmt->bindValue('name', $name);
+        $stmt->execute();
+
+        while ($row = $stmt->fetch()) {
+            return intval($row['id']);
+        }
+
+        return null;
+    }
 }

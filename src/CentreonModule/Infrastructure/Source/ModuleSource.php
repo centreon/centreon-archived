@@ -79,6 +79,7 @@ class ModuleSource extends SourceAbstract
     {
         $this->installer = $services->get(ServiceProviderLegacy::CENTREON_LEGACY_MODULE_INSTALLER);
         $this->upgrader = $services->get(ServiceProviderLegacy::CENTREON_LEGACY_MODULE_UPGRADER);
+        $this->remover = $services->get(ServiceProviderLegacy::CENTREON_LEGACY_MODULE_REMOVER);
         $this->license = $services->get(ServiceProviderLegacy::CENTREON_LEGACY_MODULE_LICENSE);
 
         parent::__construct($services);
@@ -90,6 +91,16 @@ class ModuleSource extends SourceAbstract
             ->getRepository(ModulesInformationsRepository::class)
             ->getAllModuleVsVersion()
         ;
+    }
+
+    public function remove(string $id)
+    {
+        $recordId = $this->db
+            ->getRepository(ModulesInformationsRepository::class)
+            ->findIdByName($id)
+        ;
+
+        ($this->remover)($id, $recordId)->remove();
     }
 
     public function getList(string $search = null, bool $installed = null, bool $updated = null) : array

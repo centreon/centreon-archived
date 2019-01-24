@@ -68,8 +68,10 @@ class ServiceProvider implements AutoloadServiceProviderInterface
                 \CentreonLegacy\ServiceProvider::CENTREON_LEGACY_MODULE_LICENSE,
                 \CentreonLegacy\ServiceProvider::CENTREON_LEGACY_MODULE_INSTALLER,
                 \CentreonLegacy\ServiceProvider::CENTREON_LEGACY_MODULE_UPGRADER,
+                \CentreonLegacy\ServiceProvider::CENTREON_LEGACY_MODULE_REMOVER,
                 \CentreonLegacy\ServiceProvider::CENTREON_LEGACY_WIDGET_INSTALLER,
                 \CentreonLegacy\ServiceProvider::CENTREON_LEGACY_WIDGET_UPGRADER,
+                \CentreonLegacy\ServiceProvider::CENTREON_LEGACY_WIDGET_REMOVER,
             ];
 
             $locator = new ServiceLocator($container, $services);

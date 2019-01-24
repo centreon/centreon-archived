@@ -120,6 +120,17 @@ class CentreonModuleService
         return $result;
     }
 
+    public function remove(string $id, string $type)
+    {
+        if (!array_key_exists($type, $this->sources)) {
+            return null;
+        }
+
+        $result = $this->sources[$type]->remove($id);
+
+        return $result;
+    }
+
     /**
      * Init list of sources
      *

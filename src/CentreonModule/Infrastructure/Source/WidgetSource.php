@@ -73,6 +73,7 @@ class WidgetSource extends SourceAbstract
     {
         $this->installer = $services->get(ServiceProviderLegacy::CENTREON_LEGACY_WIDGET_INSTALLER);
         $this->upgrader = $services->get(ServiceProviderLegacy::CENTREON_LEGACY_WIDGET_UPGRADER);
+        $this->remover = $services->get(ServiceProviderLegacy::CENTREON_LEGACY_WIDGET_REMOVER);
 
         parent::__construct($services);
 

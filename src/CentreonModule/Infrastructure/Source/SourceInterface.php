@@ -51,6 +51,8 @@ interface SourceInterface
 
     public function update(string $id): ?Module;
 
+    public function remove(string $id);
+
     public function createEntityFromConfig(string $configFile): Module;
 
     public function isEligible(

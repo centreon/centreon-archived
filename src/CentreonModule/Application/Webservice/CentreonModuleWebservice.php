@@ -466,6 +466,95 @@ class CentreonModuleWebservice extends CentreonWebServiceAbstract
     }
 
     /**
+     * @OA\Delete(
+     *   path="/internal.php?object=centreon_module&action=remove",
+     *   summary="Remove module or widget",
+     *   tags={"centreon_module"},
+     *   @OA\Parameter(
+     *       in="query",
+     *       name="object",
+     *       @OA\Schema(
+     *          type="string",
+     *          enum={"centreon_module"},
+     *          default="centreon_module"
+     *       ),
+     *       description="the name of the API object class",
+     *       required=true
+     *   ),
+     *   @OA\Parameter(
+     *       in="query",
+     *       name="action",
+     *       @OA\Schema(
+     *          type="string",
+     *          enum={"remove"},
+     *          default="remove"
+     *       ),
+     *       description="the name of the action in the API class",
+     *       required=true
+     *   ),
+     *   @OA\Parameter(
+     *       in="query",
+     *       name="id",
+     *       @OA\Schema(
+     *          type="string"
+     *       ),
+     *       description="ID of a module or a widget",
+     *       required=true
+     *   ),
+     *   @OA\Parameter(
+     *       in="query",
+     *       name="type",
+     *       @OA\Schema(
+     *          type="string",
+     *          enum={
+     *              "module",
+     *              "widget"
+     *          }
+     *       ),
+     *       description="type of object",
+     *       required=true
+     *   ),
+     *   @OA\Response(
+     *       response="200",
+     *       description="OK",
+     *       @OA\JsonContent(
+     *          @OA\Property(property="result", type="string"),
+     *          @OA\Property(property="status", type="boolean")
+     *       )
+     *   )
+     * )
+     *
+     * Remove module or widget
+     *
+     * @throws \RestBadRequestException
+     * @return []
+     */
+    public function getRemove()
+    {
+        // extract post payload
+        $request = $this->query();
+
+        $id = isset($request['id']) && $request['id'] ? $request['id'] : null;
+        $type = isset($request['type']) ? $request['type'] : null;
+
+        $status = false;
+        $result = null;
+
+        try {
+            $this->getDi()[ServiceProvider::CENTREON_MODULE]
+                ->remove($id, $type);
+
+            $status = true;
+        } catch (\Exception $e) {
+            $result = $e->getMessage();
+        }
+
+        $response = new Response($result, $status);
+
+        return $response;
+    }
+
+    /**
      * Authorize to access to the action
      *
      * @param string $action The action name

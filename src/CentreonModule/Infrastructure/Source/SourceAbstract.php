@@ -90,6 +90,11 @@ abstract class SourceAbstract implements SourceInterface
         return $this->getDetail($id);
     }
 
+    public function remove(string $id)
+    {
+        ($this->remover)($id, $recordId)->remove();
+    }
+
     public function isEligible(
         Module $entity,
         string $search = null,
