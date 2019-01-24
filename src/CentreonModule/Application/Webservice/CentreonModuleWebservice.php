@@ -375,7 +375,7 @@ class CentreonModuleWebservice extends CentreonWebServiceAbstract
 
     /**
      * @OA\Get(
-     *   path="/internal.php?object=centreon_module&action=install",
+     *   path="/internal.php?object=centreon_module&action=update",
      *   summary="Update module or widget",
      *   tags={"centreon_module"},
      *   @OA\Parameter(
