@@ -47,11 +47,13 @@ use CentreonModule\Tests\Infrastructure\Source\ModuleSourceTest;
 use CentreonModule\Tests\Infrastructure\Source\WidgetSourceTest;
 use CentreonModule\Infrastructure\Entity\Module;
 use CentreonLegacy\Core\Configuration\Configuration;
+use CentreonModule\Tests\Resource\Traits\SourceDependencyTrait;
 
 class CentreonModuleServiceTest extends TestCase
 {
 
-    use TestCaseExtensionTrait;
+    use TestCaseExtensionTrait,
+        SourceDependencyTrait;
 
     protected function setUp()
     {
@@ -152,15 +154,16 @@ class CentreonModuleServiceTest extends TestCase
     {
         $container = new Container;
         $container['finder'] = null;
-        $container['centreon.legacy.license'] = null;
         $container['configuration'] = $this->createMock(Configuration::class);
-        $container['centreon.db-manager'] = new Mock\CentreonDBManagerService;
+        $container[\Centreon\ServiceProvider::CENTREON_DB_MANAGER] = new Mock\CentreonDBManagerService;
 
         // Data sets
         $queries = array_merge(ModuleSourceTest::$sqlQueryVsData, WidgetSourceTest::$sqlQueryVsData);
         foreach ($queries as $key => $result) {
-            $container['centreon.db-manager']->addResultSet($key, $result);
+            $container[\Centreon\ServiceProvider::CENTREON_DB_MANAGER]->addResultSet($key, $result);
         }
+
+        $this->setUpSourceDependency($container);
 
         $service = new CentreonModuleService(new ContainerWrap($container));
 

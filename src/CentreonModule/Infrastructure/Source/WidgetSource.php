@@ -40,6 +40,7 @@ use Psr\Container\ContainerInterface;
 use CentreonModule\Infrastructure\Entity\Module;
 use CentreonModule\Domain\Repository\WidgetModelsRepository;
 use CentreonModule\Infrastructure\Source\SourceAbstract;
+use CentreonLegacy\ServiceProvider as ServiceProviderLegacy;
 
 class WidgetSource extends SourceAbstract
 {
@@ -54,14 +55,32 @@ class WidgetSource extends SourceAbstract
     private $info;
 
     /**
+     * @var \CentreonLegacy\Core\Widget\Installer
+     */
+    protected $installer;
+
+    /**
+     * @var \CentreonLegacy\Core\Widget\Upgrader
+     */
+    protected $upgrader;
+
+    /**
      * Construct
      *
      * @param \Psr\Container\ContainerInterface $services
      */
     public function __construct(ContainerInterface $services)
     {
+        $this->installer = $services->get(ServiceProviderLegacy::CENTREON_LEGACY_WIDGET_INSTALLER);
+        $this->upgrader = $services->get(ServiceProviderLegacy::CENTREON_LEGACY_WIDGET_UPGRADER);
+        $this->remover = $services->get(ServiceProviderLegacy::CENTREON_LEGACY_WIDGET_REMOVER);
+
         parent::__construct($services);
 
+    }
+
+    public function initInfo()
+    {
         $this->info = $this->db
             ->getRepository(WidgetModelsRepository::class)
             ->getAllWidgetVsVersion()
@@ -136,6 +155,11 @@ class WidgetSource extends SourceAbstract
 
         if ($xml->thumbnail->__toString()) {
             $entity->addImage($xml->thumbnail->__toString());
+        }
+
+        // load information about installed modules/widgets
+        if ($this->info === null) {
+            $this->initInfo();
         }
 
         if (array_key_exists($entity->getId(), $this->info)) {

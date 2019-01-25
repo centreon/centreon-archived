@@ -38,9 +38,9 @@ class ServiceProviderTest extends TestCase
         $services = $this->container->keys();
 
         $checkList = [
-            'centreon.webservice' => Service\CentreonWebserviceService::class,
+            \Centreon\ServiceProvider::CENTREON_WEBSERVICE => Service\CentreonWebserviceService::class,
             'centreon.clapi' => Service\CentreonClapiService::class,
-            'centreon.db-manager' => Service\CentreonDBManagerService::class,
+            \Centreon\ServiceProvider::CENTREON_DB_MANAGER => Service\CentreonDBManagerService::class,
             'centreon.keygen' => Domain\Service\AppKeyGeneratorService::class,
             'centreon.acl' => CentreonACL::class,
             'centreon.config' => Service\CentcoreConfigService::class,

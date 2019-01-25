@@ -38,7 +38,7 @@ abstract class ExporterServiceAbstract implements ExporterServiceInterface
      */
     public function __construct(ContainerInterface $services)
     {
-        $this->db = $services->get('centreon.db-manager');
+        $this->db = $services->get(\Centreon\ServiceProvider::CENTREON_DB_MANAGER);
 
         if ($services->has('centreon.config')) {
             $this->config = $services->get('centreon.config');

@@ -40,6 +40,7 @@ use Psr\Container\ContainerInterface;
 use CentreonModule\Infrastructure\Entity\Module;
 use CentreonModule\Domain\Repository\ModulesInformationsRepository;
 use CentreonModule\Infrastructure\Source\SourceAbstract;
+use CentreonLegacy\ServiceProvider as ServiceProviderLegacy;
 
 class ModuleSource extends SourceAbstract
 {
@@ -55,6 +56,16 @@ class ModuleSource extends SourceAbstract
     protected $info;
 
     /**
+     * @var \CentreonLegacy\Core\Module\Installer
+     */
+    protected $installer;
+
+    /**
+     * @var \CentreonLegacy\Core\Module\Upgrader
+     */
+    protected $upgrader;
+
+    /**
      * @var \CentreonLegacy\Core\Module\License
      */
     protected $license;
@@ -66,14 +77,30 @@ class ModuleSource extends SourceAbstract
      */
     public function __construct(ContainerInterface $services)
     {
-        $this->license = $services->get('centreon.legacy.license');
+        $this->installer = $services->get(ServiceProviderLegacy::CENTREON_LEGACY_MODULE_INSTALLER);
+        $this->upgrader = $services->get(ServiceProviderLegacy::CENTREON_LEGACY_MODULE_UPGRADER);
+        $this->remover = $services->get(ServiceProviderLegacy::CENTREON_LEGACY_MODULE_REMOVER);
+        $this->license = $services->get(ServiceProviderLegacy::CENTREON_LEGACY_MODULE_LICENSE);
 
         parent::__construct($services);
+    }
 
+    public function initInfo()
+    {
         $this->info = $this->db
             ->getRepository(ModulesInformationsRepository::class)
             ->getAllModuleVsVersion()
         ;
+    }
+
+    public function remove(string $id)
+    {
+        $recordId = $this->db
+            ->getRepository(ModulesInformationsRepository::class)
+            ->findIdByName($id)
+        ;
+
+        ($this->remover)($id, $recordId)->remove();
     }
 
     public function getList(string $search = null, bool $installed = null, bool $updated = null) : array
@@ -143,6 +170,11 @@ class ModuleSource extends SourceAbstract
         $entity->setDescription($info['infos']);
         $entity->setKeywords($entity->getId());
         $entity->setLicense($this->license->getLicenseExpiration($licenseFile));
+
+        // load information about installed modules/widgets
+        if ($this->info === null) {
+            $this->initInfo();
+        }
 
         if (array_key_exists($entity->getId(), $this->info)) {
             $entity->setVersionCurrent($this->info[$entity->getId()]);

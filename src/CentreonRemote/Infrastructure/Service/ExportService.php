@@ -50,7 +50,7 @@ class ExportService
         $this->exporter = $services->get('centreon_remote.exporter');
         $this->cache = $services->get('centreon_remote.exporter.cache');
         $this->acl = $services->get('centreon.acl');
-        $this->db = $services->get('centreon.db-manager');
+        $this->db = $services->get(\Centreon\ServiceProvider::CENTREON_DB_MANAGER);
 
         $version = $this->db
             ->getRepository(Repository\InformationsRepository::class)

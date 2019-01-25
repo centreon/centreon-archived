@@ -45,15 +45,16 @@ use Vfs\Node\Directory;
 use Vfs\Node\File;
 use Centreon\Test\Mock;
 use Centreon\Test\Traits\TestCaseExtensionTrait;
-use CentreonLegacy\Core\Module\License;
 use CentreonModule\Infrastructure\Source\ModuleSource;
 use CentreonModule\Infrastructure\Entity\Module;
 use CentreonLegacy\Core\Configuration\Configuration;
+use CentreonModule\Tests\Resource\Traits\SourceDependencyTrait;
 
 class ModuleSourceTest extends TestCase
 {
 
-    use TestCaseExtensionTrait;
+    use TestCaseExtensionTrait,
+        SourceDependencyTrait;
 
     public static $moduleName = 'test-module';
     public static $moduleInfo = [
@@ -94,16 +95,14 @@ class ModuleSourceTest extends TestCase
         $container = new Container;
         $container['finder'] = new Finder;
         $container['configuration'] = $this->createMock(Configuration::class);
-        $container['centreon.legacy.license'] = $this->getMockBuilder(License::class)
-            ->disableOriginalConstructor()
-            ->getMock()
-        ;
 
         // DB service
-        $container['centreon.db-manager'] = new Mock\CentreonDBManagerService;
+        $container[\Centreon\ServiceProvider::CENTREON_DB_MANAGER] = new Mock\CentreonDBManagerService;
         foreach (static::$sqlQueryVsData as $query => $data) {
-            $container['centreon.db-manager']->addResultSet($query, $data);
+            $container[\Centreon\ServiceProvider::CENTREON_DB_MANAGER]->addResultSet($query, $data);
         }
+
+        $this->setUpSourceDependency($container);
 
         $this->containerWrap = new ContainerWrap($container);
 

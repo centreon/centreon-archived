@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright 2005-2017 Centreon
+ * Copyright 2005-2019 Centreon
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -35,9 +35,14 @@
 
 namespace CentreonLegacy\Core\Widget;
 
+use Psr\Container\ContainerInterface;
+use CentreonLegacy\Core\Utils\Utils;
+use CentreonLegacy\Core\Widget\Information;
+use CentreonLegacy\ServiceProvider;
+
 class Widget
 {
-        /**
+    /**
      *
      * @var \CentreonLegacy\Core\Module\Information
      */
@@ -65,25 +70,26 @@ class Widget
      *
      * @var Pimple\Container
      */
-    protected $dependencyInjector;
+    protected $services;
     
     /**
+     * Construct
      *
-     * @param \Pimple\Container $dependencyInjector
+     * @param \Psr\Container\ContainerInterface $services
      * @param \CentreonLegacy\Core\Widget\Information $informationObj
      * @param string $widgetName
      * @param \CentreonLegacy\Core\Utils\Utils $utils
      */
     public function __construct(
-        \Pimple\Container $dependencyInjector,
-        \CentreonLegacy\Core\Widget\Information $informationObj,
+        ContainerInterface $services,
+        Information $informationObj = null,
         $widgetName,
-        \CentreonLegacy\Core\Utils\Utils $utils
+        Utils $utils = null
     ) {
-        $this->dependencyInjector = $dependencyInjector;
-        $this->informationObj = $informationObj;
+        $this->services = $services;
+        $this->informationObj = $informationObj ?? $services->get(ServiceProvider::CENTREON_LEGACY_WIDGET_INFORMATION);
         $this->widgetName = $widgetName;
-        $this->utils = $utils;
+        $this->utils = $utils ?? $services->get(ServiceProvider::CENTREON_LEGACY_UTILS);
         $this->widgetConfiguration = $this->informationObj->getConfiguration($this->widgetName);
     }
     

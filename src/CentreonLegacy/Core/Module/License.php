@@ -35,21 +35,24 @@
 
 namespace CentreonLegacy\Core\Module;
 
+use Psr\Container\ContainerInterface;
+
 class License extends Module
 {
+
     /**
-     *
-     * @var \Pimple\Container
+     * @var \Psr\Container\ContainerInterface
      */
-    protected $dependencyInjector;
-    
+    protected $services;
+
     /**
+     * Construct
      *
-     * @param \Pimple\Container $dependencyInjector
+     * @param \Psr\Container\ContainerInterface
      */
-    public function __construct(\Pimple\Container $dependencyInjector)
+    public function __construct( ContainerInterface $services )
     {
-        $this->dependencyInjector = $dependencyInjector;
+        $this->services = $services;
     }
 
     /**
