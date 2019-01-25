@@ -35,26 +35,12 @@
 
 namespace CentreonLegacy\Core\Module;
 
+use Psr\Container\ContainerInterface;
+use CentreonLegacy\Core\Module\Information;
+use CentreonLegacy\Core\Utils\Utils;
+
 class Installer extends Module
-{
-    /**
-     *
-     * @param \Pimple\Container $dependencyInjector
-     * @param \CentreonLegacy\Core\Module\Information $informationObj
-     * @param string $moduleName
-     * @param \CentreonLegacy\Core\Utils\Utils $utils
-     * @param int $moduleId
-     */
-    public function __construct(
-        \Pimple\Container $dependencyInjector,
-        Information $informationObj,
-        $moduleName,
-        \CentreonLegacy\Core\Utils\Utils $utils,
-        $moduleId = null
-    ) {
-        parent::__construct($dependencyInjector, $informationObj, $moduleName, $utils, $moduleId);
-    }
-    
+{   
     /**
      *
      * @return int
@@ -77,7 +63,7 @@ class Installer extends Module
     {
         $configurationFile = $this->getModulePath($this->moduleName) . '/conf.php';
 
-        if (!$this->dependencyInjector['filesystem']->exists($configurationFile)) {
+        if (!$this->services->get('filesystem')->exists($configurationFile)) {
             throw new \Exception('Module configuration file not found.');
         }
 
@@ -86,7 +72,7 @@ class Installer extends Module
             '`sql_files`, `php_files`, `svc_tools`, `host_tools`)' .
             'VALUES ( :name , :rname , :mod_release , :is_removeable , :infos , :author , :lang_files , ' .
             ':sql_files , :php_files , :svc_tools , :host_tools )';
-        $sth = $this->dependencyInjector['configuration_db']->prepare($query);
+        $sth = $this->services->get('configuration_db')->prepare($query);
         
         $sth->bindParam(':name', $this->moduleConfiguration['name'], \PDO::PARAM_STR);
         $sth->bindParam(':rname', $this->moduleConfiguration['rname'], \PDO::PARAM_STR);
@@ -103,7 +89,7 @@ class Installer extends Module
         $sth->execute();
 
         $queryMax = 'SELECT MAX(id) as id FROM modules_informations';
-        $result = $this->dependencyInjector['configuration_db']->query($queryMax);
+        $result = $this->services->get('configuration_db')->query($queryMax);
         $lastId = 0;
         if ($row = $result->fetchRow()) {
             $lastId = $row['id'];
@@ -121,7 +107,7 @@ class Installer extends Module
         $installed = false;
 
         $sqlFile = $this->getModulePath($this->moduleName) . '/sql/install.sql';
-        if ($this->moduleConfiguration["sql_files"] && $this->dependencyInjector['filesystem']->exists($sqlFile)) {
+        if ($this->moduleConfiguration["sql_files"] && $this->services->get('filesystem')->exists($sqlFile)) {
             $this->utils->executeSqlFile($sqlFile);
             $installed = true;
         }
@@ -138,7 +124,7 @@ class Installer extends Module
         $installed = false;
 
         $phpFile = $this->getModulePath($this->moduleName) . '/php/install.php';
-        if ($this->moduleConfiguration["php_files"] && $this->dependencyInjector['filesystem']->exists($phpFile)) {
+        if ($this->moduleConfiguration["php_files"] && $this->services->get('filesystem')->exists($phpFile)) {
             $this->utils->executePhpFile($phpFile);
             $installed = true;
         }

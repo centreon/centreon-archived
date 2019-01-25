@@ -63,7 +63,7 @@ class CentreonAclWebservice extends CentreonWebServiceAbstract
         if (empty($user)){
             return [];
         }
-        return $this->getDi()['centreon.db-manager']->getRepository(TopologyRepository::class)->getReactTopologiesPerUserWithAcl($user);
+        return $this->getDi()[\Centreon\ServiceProvider::CENTREON_DB_MANAGER]->getRepository(TopologyRepository::class)->getReactTopologiesPerUserWithAcl($user);
     }
 
 }

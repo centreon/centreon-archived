@@ -363,7 +363,7 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
      */
     private function addServerToListOfRemotes($serverIP, $centreonPath)
     {
-        $dbAdapter = $this->getDi()['centreon.db-manager']->getAdapter('configuration_db');
+        $dbAdapter = $this->getDi()[\Centreon\ServiceProvider::CENTREON_DB_MANAGER]->getAdapter('configuration_db');
         $date = date('Y-m-d H:i:s');
 
         $sql = 'SELECT * FROM `remote_servers` WHERE `ip` = ?';
@@ -394,7 +394,7 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
      */
     private function setCentreonInstanceAsCentral()
     {
-        $dbAdapter = $this->getDi()['centreon.db-manager']->getAdapter('configuration_db');
+        $dbAdapter = $this->getDi()[\Centreon\ServiceProvider::CENTREON_DB_MANAGER]->getAdapter('configuration_db');
 
         $sql = "SELECT * FROM `informations` WHERE `key` = 'isCentral'";
         $dbAdapter->query($sql);

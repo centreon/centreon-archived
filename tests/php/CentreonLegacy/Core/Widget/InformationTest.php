@@ -17,7 +17,8 @@
 
 namespace CentreonLegacy\Core\Widget;
 
-use \Centreon\Test\Mock\CentreonDB;
+use Pimple\Psr11\Container;
+use Centreon\Test\Mock\CentreonDB;
 use Centreon\Test\Mock\DependencyInjector\ServiceContainer;
 use Centreon\Test\Mock\DependencyInjector\ConfigurationDBProvider;
 use Centreon\Test\Mock\DependencyInjector\FilesystemProvider;
@@ -96,7 +97,7 @@ class InformationTest extends \PHPUnit_Framework_TestCase
             ->method('xmlIntoArray')
             ->willReturn($this->configuration);
 
-        $information = new Information($this->container, $this->utils);
+        $information = new Information(new Container($this->container), $this->utils);
         $configuration = $information->getConfiguration('my-widget');
 
         $this->assertEquals($configuration, $expectedResult);
@@ -125,7 +126,7 @@ class InformationTest extends \PHPUnit_Framework_TestCase
 
         $this->container->registerProvider(new ConfigurationDBProvider($this->db));
 
-        $information = new Information($this->container, $this->utils);
+        $information = new Information(new Container($this->container), $this->utils);
         $types = $information->getTypes();
 
         $this->assertEquals($types, $expectedResult);
@@ -145,7 +146,7 @@ class InformationTest extends \PHPUnit_Framework_TestCase
 
         $this->container->registerProvider(new ConfigurationDBProvider($this->db));
 
-        $information = new Information($this->container, $this->utils);
+        $information = new Information(new Container($this->container), $this->utils);
         $id = $information->getParameterIdByName('MyWidget');
 
         $this->assertEquals($id, 1);
@@ -189,7 +190,7 @@ class InformationTest extends \PHPUnit_Framework_TestCase
 
         $this->container->registerProvider(new ConfigurationDBProvider($this->db));
 
-        $information = new Information($this->container, $this->utils);
+        $information = new Information(new Container($this->container), $this->utils);
         $parameters = $information->getParameters(1);
 
         $this->assertEquals($parameters, $expectedResult);
@@ -209,7 +210,7 @@ class InformationTest extends \PHPUnit_Framework_TestCase
 
         $this->container->registerProvider(new ConfigurationDBProvider($this->db));
 
-        $information = new Information($this->container, $this->utils);
+        $information = new Information(new Container($this->container), $this->utils);
         $id = $information->getIdByName('MyWidget');
 
         $this->assertEquals($id, 1);
@@ -258,7 +259,7 @@ class InformationTest extends \PHPUnit_Framework_TestCase
             ->method('xmlIntoArray')
             ->willReturn($this->configuration);
 
-        $information = new Information($this->container, $this->utils);
+        $information = new Information(new Container($this->container), $this->utils);
         $list = $information->getAvailableList();
 
         $this->assertEquals($list, $expectedResult);
@@ -338,7 +339,7 @@ class InformationTest extends \PHPUnit_Framework_TestCase
             ->method('xmlIntoArray')
             ->willReturn($this->configuration);
 
-        $information = new Information($this->container, $this->utils);
+        $information = new Information(new Container($this->container), $this->utils);
         $list = $information->getList();
 
         $this->assertEquals($list, $expectedResult);

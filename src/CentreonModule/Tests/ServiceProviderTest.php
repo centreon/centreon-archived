@@ -43,10 +43,10 @@ use CentreonModule\ServiceProvider;
 use Centreon\Test\Mock;
 use CentreonModule\Infrastructure\Service;
 use Symfony\Component\Finder\Finder;
-use CentreonLegacy\Core\Module\License;
 use CentreonModule\Application\Webservice;
 use Centreon\Infrastructure\Service\CentreonDBManagerService;
 use CentreonLegacy\Core\Configuration\Configuration;
+use CentreonModule\Tests\Resource\Traits\SourceDependencyTrait;
 
 /**
  * @group CentreonModule
@@ -54,6 +54,7 @@ use CentreonLegacy\Core\Configuration\Configuration;
  */
 class ServiceProviderTest extends TestCase
 {
+    use SourceDependencyTrait;
 
     protected $container;
     protected $provider;
@@ -66,10 +67,9 @@ class ServiceProviderTest extends TestCase
             ->disableOriginalConstructor()
             ->getMock()
         ;
-        $this->container['centreon.legacy.license'] = $this->getMockBuilder(License::class)
-            ->disableOriginalConstructor()
-            ->getMock()
-        ;
+
+        $this->setUpSourceDependency($this->container);
+
         $this->container['configuration'] = $this->createMock(Configuration::class);
 
         $this->container['realtime_db'] = $this->container['configuration_db'] = new Mock\CentreonDB;
@@ -82,8 +82,8 @@ class ServiceProviderTest extends TestCase
             'realtime_db',
             'configuration_db',
         ]);
-        $this->container['centreon.db-manager'] = new CentreonDBManagerService($locator);
-        $this->container['centreon.webservice'] = new class {
+        $this->container[\Centreon\ServiceProvider::CENTREON_DB_MANAGER] = new CentreonDBManagerService($locator);
+        $this->container[\Centreon\ServiceProvider::CENTREON_WEBSERVICE] = new class {
 
             protected $services = [];
 
@@ -107,7 +107,7 @@ class ServiceProviderTest extends TestCase
     public function testCheckServicesByList()
     {
         $checkList = [
-            'centreon.module' => Service\CentreonModuleService::class,
+            ServiceProvider::CENTREON_MODULE => Service\CentreonModuleService::class,
         ];
 
         $checkListWebservices = [
@@ -125,7 +125,7 @@ class ServiceProviderTest extends TestCase
         }
 
         // check webservices
-        $webservices = $this->container['centreon.webservice']->getServices();
+        $webservices = $this->container[\Centreon\ServiceProvider::CENTREON_WEBSERVICE]->getServices();
         foreach ($checkListWebservices as $webservice) {
             $this->assertArrayHasKey($webservice, $webservices);
         }
