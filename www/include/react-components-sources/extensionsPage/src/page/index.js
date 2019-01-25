@@ -67,6 +67,8 @@ class ExtensionsRoute extends Component {
     }
     if (installed && not_installed && updated) {
       callback(params, nothingShown);
+    } else if (!installed && !not_installed && !updated) {
+      callback(params, nothingShown);
     } else {
       if (!updated) {
         params += '&updated=true'
