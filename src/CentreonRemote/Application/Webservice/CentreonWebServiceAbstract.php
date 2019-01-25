@@ -65,7 +65,7 @@ abstract class CentreonWebServiceAbstract extends \CentreonWebService
 
     public function query(): array
     {
-        $request = $_GET;
+        $request = $_GET ?? [];
 
         return $request;
     }

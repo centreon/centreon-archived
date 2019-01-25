@@ -44,6 +44,7 @@ use CentreonModule\Infrastructure\Service;
 
 class ServiceProvider implements AutoloadServiceProviderInterface
 {
+    const CENTREON_MODULE = 'centreon.module';
 
     /**
      * Register services
@@ -52,17 +53,25 @@ class ServiceProvider implements AutoloadServiceProviderInterface
      */
     public function register(Container $pimple): void
     {
-        $pimple['centreon.webservice']->add(Webservice\CentreonModuleWebservice::class);
+        $pimple[\Centreon\ServiceProvider::CENTREON_WEBSERVICE]
+            ->add(Webservice\CentreonModuleWebservice::class);
 
         // alias of CentreonModuleWebservice need for back compatibility and it's deprecated for using
-        $pimple['centreon.webservice']->add(Webservice\CentreonModulesWebservice::class);
+        $pimple[\Centreon\ServiceProvider::CENTREON_WEBSERVICE]
+            ->add(Webservice\CentreonModulesWebservice::class);
 
-        $pimple['centreon.module'] = function (Container $container): Service\CentreonModuleService {
+        $pimple[static::CENTREON_MODULE] = function (Container $container): Service\CentreonModuleService {
             $services = [
-                'centreon.db-manager',
                 'finder',
-                'centreon.legacy.license',
                 'configuration',
+                \Centreon\ServiceProvider::CENTREON_DB_MANAGER,
+                \CentreonLegacy\ServiceProvider::CENTREON_LEGACY_MODULE_LICENSE,
+                \CentreonLegacy\ServiceProvider::CENTREON_LEGACY_MODULE_INSTALLER,
+                \CentreonLegacy\ServiceProvider::CENTREON_LEGACY_MODULE_UPGRADER,
+                \CentreonLegacy\ServiceProvider::CENTREON_LEGACY_MODULE_REMOVER,
+                \CentreonLegacy\ServiceProvider::CENTREON_LEGACY_WIDGET_INSTALLER,
+                \CentreonLegacy\ServiceProvider::CENTREON_LEGACY_WIDGET_UPGRADER,
+                \CentreonLegacy\ServiceProvider::CENTREON_LEGACY_WIDGET_REMOVER,
             ];
 
             $locator = new ServiceLocator($container, $services);

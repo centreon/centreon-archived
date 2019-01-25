@@ -35,28 +35,27 @@
 
 namespace CentreonLegacy\Core\Module;
 
+use CentreonLegacy\ServiceProvider;
+
+/**
+ * @deprecated since version 18.10.4
+ */
 class Factory
 {
     /**
      *
-     * @var Pimple\Container
+     * @var \Pimple\Container
      */
     protected $dependencyInjector;
-    
-    /**
-     *
-     * @var CentreonLegacy\Core\Utils\Factory
-     */
-    protected $utils;
 
     /**
      *
      * @param \Pimple\Container $dependencyInjector
+     * @param mixed $utils
      */
-    public function __construct(\Pimple\Container $dependencyInjector, $utils)
+    public function __construct(\Pimple\Container $dependencyInjector, $utils = null)
     {
         $this->dependencyInjector = $dependencyInjector;
-        $this->utils = $utils;
     }
 
     /**
@@ -65,8 +64,7 @@ class Factory
      */
     public function newInformation()
     {
-        $licenseObj = $this->newLicense();
-        return new Information($this->dependencyInjector, $licenseObj, $this->utils);
+        return $this->dependencyInjector[ServiceProvider::CENTREON_LEGACY_MODULE_INFORMATION];
     }
 
     /**
@@ -76,8 +74,7 @@ class Factory
      */
     public function newInstaller($moduleName)
     {
-        $informationObj = $this->newInformation();
-        return new Installer($this->dependencyInjector, $informationObj, $moduleName, $this->utils);
+        return $this->dependencyInjector[ServiceProvider::CENTREON_LEGACY_MODULE_INSTALLER]($moduleName);
     }
 
     /**
@@ -88,8 +85,7 @@ class Factory
      */
     public function newUpgrader($moduleName, $moduleId)
     {
-        $informationObj = $this->newInformation();
-        return new Upgrader($this->dependencyInjector, $informationObj, $moduleName, $this->utils, $moduleId);
+        return $this->dependencyInjector[ServiceProvider::CENTREON_LEGACY_MODULE_UPGRADER]($moduleName, $moduleId);
     }
 
     /**
@@ -100,8 +96,7 @@ class Factory
      */
     public function newRemover($moduleName, $moduleId)
     {
-        $informationObj = $this->newInformation();
-        return new Remover($this->dependencyInjector, $informationObj, $moduleName, $this->utils, $moduleId);
+        return $this->dependencyInjector[ServiceProvider::CENTREON_LEGACY_MODULE_REMOVER]($moduleName, $moduleId);
     }
 
     /**
@@ -110,6 +105,6 @@ class Factory
      */
     public function newLicense()
     {
-        return new License($this->dependencyInjector);
+        return $this->dependencyInjector[ServiceProvider::CENTREON_LEGACY_MODULE_LICENSE];
     }
 }

@@ -37,11 +37,27 @@
 namespace CentreonLegacy;
 
 use Pimple\Container;
+use Pimple\Psr11\ServiceLocator;
+use Pimple\Psr11\Container as ContainerWrap;
 use CentreonLegacy\Core\Module\License;
 use Centreon\Infrastructure\Provider\AutoloadServiceProviderInterface;
+use CentreonLegacy\Core\Module;
+use CentreonLegacy\Core\Widget;
+use CentreonLegacy\Core\Utils;
 
 class ServiceProvider implements AutoloadServiceProviderInterface
 {
+    const CENTREON_LEGACY_UTILS = 'centreon.legacy.utils';
+    const CENTREON_LEGACY_MODULE_INFORMATION = 'centreon.legacy.module.information';
+    const CENTREON_LEGACY_MODULE_INSTALLER = 'centreon.legacy.module.installer';
+    const CENTREON_LEGACY_MODULE_UPGRADER = 'centreon.legacy.module.upgrader';
+    const CENTREON_LEGACY_MODULE_REMOVER = 'centreon.legacy.module.remover';
+    const CENTREON_LEGACY_MODULE_LICENSE = 'centreon.legacy.module.license';
+    const CENTREON_LEGACY_LICENSE = 'centreon.legacy.license';
+    const CENTREON_LEGACY_WIDGET_INFORMATION = 'centreon.legacy.widget.information';
+    const CENTREON_LEGACY_WIDGET_INSTALLER = 'centreon.legacy.widget.installer';
+    const CENTREON_LEGACY_WIDGET_UPGRADER = 'centreon.legacy.widget.upgrader';
+    const CENTREON_LEGACY_WIDGET_REMOVER = 'centreon.legacy.widget.remover';
 
     /**
      * Register CentreonLegacy services
@@ -50,11 +66,161 @@ class ServiceProvider implements AutoloadServiceProviderInterface
      */
     public function register(Container $pimple): void
     {
-        $pimple['centreon.legacy.license'] = function (Container $container): License {
-            $service = new License($container);
+        $pimple[static::CENTREON_LEGACY_UTILS] = function (Container $container): Utils\Utils {
+            $services = [
+                'realtime_db',
+                'configuration_db',
+                'configuration',
+            ];
+
+            $locator = new ServiceLocator($container, $services);
+            $service = new Utils\Utils($locator);
 
             return $service;
         };
+
+        $this->registerModule($pimple);
+        $this->registerWidget($pimple);
+    }
+
+    protected function registerModule(Container $pimple)
+    {
+        $pimple[static::CENTREON_LEGACY_MODULE_INFORMATION] = function (Container $container): Module\Information {
+            $services = [
+                'finder',
+                'filesystem',
+                'configuration_db',
+                ServiceProvider::CENTREON_LEGACY_UTILS,
+                ServiceProvider::CENTREON_LEGACY_MODULE_LICENSE,
+            ];
+
+            $locator = new ServiceLocator($container, $services);
+            $service = new Module\Information($locator);
+
+            return $service;
+        };
+
+        $pimple[static::CENTREON_LEGACY_MODULE_INSTALLER] = $pimple->factory(function (Container $container) {
+            $services = [
+                'filesystem',
+                'configuration_db',
+                ServiceProvider::CENTREON_LEGACY_UTILS,
+                ServiceProvider::CENTREON_LEGACY_MODULE_INFORMATION,
+            ];
+
+            $locator = new ServiceLocator($container, $services);
+            $service = function($moduleName) use ($locator): Module\Installer {
+                return new Module\Installer($locator, null, $moduleName);
+            };
+
+            return $service;
+        });
+
+        $pimple[static::CENTREON_LEGACY_MODULE_UPGRADER] = $pimple->factory(function (Container $container) {
+            $services = [
+                'finder',
+                'filesystem',
+                'configuration_db',
+                ServiceProvider::CENTREON_LEGACY_UTILS,
+                ServiceProvider::CENTREON_LEGACY_MODULE_INFORMATION,
+            ];
+
+            $locator = new ServiceLocator($container, $services);
+            $service = function($moduleName, $moduleId) use ($locator): Module\Upgrader {
+                return new Module\Upgrader($locator, null, $moduleName, null, $moduleId);
+            };
+
+            return $service;
+        });
+
+        $pimple[static::CENTREON_LEGACY_MODULE_REMOVER] = $pimple->factory(function (Container $container) {
+            $services = [
+                'filesystem',
+                'configuration_db',
+                ServiceProvider::CENTREON_LEGACY_UTILS,
+                ServiceProvider::CENTREON_LEGACY_MODULE_INFORMATION,
+            ];
+
+            $locator = new ServiceLocator($container, $services);
+            $service = function($moduleName, $moduleId) use ($locator): Module\Remover {
+                return new Module\Remover($locator, null, $moduleName, null, $moduleId);
+            };
+
+            return $service;
+        });
+
+        $pimple[static::CENTREON_LEGACY_MODULE_LICENSE] = $pimple->factory(function (Container $container) {
+            $service = new Module\License(new ContainerWrap(new Container));
+
+            return $service;
+        });
+
+        // alias to centreon.legacy.module.license service
+        $pimple[static::CENTREON_LEGACY_LICENSE] = function (Container $container): License {
+            return $container[ServiceProvider::CENTREON_LEGACY_MODULE_];
+        };
+    }
+
+    protected function registerWidget(Container $pimple)
+    {
+        $pimple[static::CENTREON_LEGACY_WIDGET_INFORMATION] = function (Container $container): Widget\Information {
+            $services = [
+                'finder',
+                'filesystem',
+                'configuration_db',
+                ServiceProvider::CENTREON_LEGACY_UTILS,
+            ];
+
+            $locator = new ServiceLocator($container, $services);
+            $service = new Widget\Information($locator);
+
+            return $service;
+        };
+
+        $pimple[static::CENTREON_LEGACY_WIDGET_INSTALLER] = $pimple->factory(function (Container $container) {
+            $services = [
+                'configuration_db',
+                ServiceProvider::CENTREON_LEGACY_UTILS,
+                ServiceProvider::CENTREON_LEGACY_WIDGET_INFORMATION,
+            ];
+
+            $locator = new ServiceLocator($container, $services);
+            $service = function($widgetDirectory) use ($locator): Widget\Installer {
+                return new Widget\Installer($locator, null, $widgetDirectory, null);
+            };
+
+            return $service;
+        });
+
+        $pimple[static::CENTREON_LEGACY_WIDGET_UPGRADER] = $pimple->factory(function (Container $container) {
+            $services = [
+                'configuration_db',
+                ServiceProvider::CENTREON_LEGACY_UTILS,
+                ServiceProvider::CENTREON_LEGACY_WIDGET_INFORMATION,
+            ];
+
+            $locator = new ServiceLocator($container, $services);
+            $service = function($widgetDirectory) use ($locator): Widget\Upgrader {
+                return new Widget\Upgrader($locator, null, $widgetDirectory, null);
+            };
+
+            return $service;
+        });
+
+        $pimple[static::CENTREON_LEGACY_WIDGET_REMOVER] = $pimple->factory(function (Container $container) {
+            $services = [
+                'configuration_db',
+                ServiceProvider::CENTREON_LEGACY_UTILS,
+                ServiceProvider::CENTREON_LEGACY_WIDGET_INFORMATION,
+            ];
+
+            $locator = new ServiceLocator($container, $services);
+            $service = function($widgetDirectory) use ($locator): Widget\Remover {
+                return new Widget\Remover($locator, null, $widgetDirectory, null);
+            };
+
+            return $service;
+        });
     }
 
     public static function order(): int
