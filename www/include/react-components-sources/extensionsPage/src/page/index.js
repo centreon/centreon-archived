@@ -7,6 +7,8 @@ class ExtensionsRoute extends Component {
   state = {
     widgetsActive: true,
     modulesActive: true,
+    modalDetailsActive: false,
+    modalDetailsLoading: false,
     not_installed: true,
     installed: true,
     updated: true,
@@ -39,7 +41,7 @@ class ExtensionsRoute extends Component {
       not_installed: true,
       installed: true,
       updated: true,
-      nothingShown:false,
+      nothingShown: false,
       search: ""
     }, this.getData)
   }
@@ -60,21 +62,19 @@ class ExtensionsRoute extends Component {
     const { installed, not_installed, updated, search } = this.state;
     let params = '';
     let nothingShown = false;
-    if(search){
-      params += '&search='+search
+    if (search) {
+      params += '&search=' + search
     }
-    if(installed && not_installed && updated){
+    if (installed && not_installed && updated) {
       callback(params, nothingShown);
-    }else{
-      if(!updated){
-        params += '&updated=false'
+    } else {
+      if (!updated) {
+        params += '&updated=true'
       }
-      if(installed && !not_installed){
+      if (!installed && not_installed) {
         params += "&installed=true"
-      }else if(!installed && not_installed){
+      } else if (installed && !not_installed) {
         params += "&installed=false"
-      }else if(!installed && !not_installed){
-        nothingShown = true
       }
       callback(params, nothingShown);
     }
@@ -82,24 +82,53 @@ class ExtensionsRoute extends Component {
 
   getData = () => {
     const { getAxiosData } = this.props;
-    this.getParsedGETParamsForExtensions((params, nothingShown)=>{
+    this.getParsedGETParamsForExtensions((params, nothingShown) => {
       this.setState({
         nothingShown
       })
-      if(!nothingShown){
+      if (!nothingShown) {
         getAxiosData({ url: `./api/internal.php?object=centreon_module&action=list${params}`, propKey: 'extensions' })
       }
     })
   }
 
-  toggleExtensionsDetails = (id) => {
-    console.log(id)
+  hideExtensionDetails = () => {
+    this.setState({
+      modalDetailsActive: false,
+      modalDetailsLoading: false
+    })
+  }
+
+  UNSAFE_componentWillReceiveProps = (nextProps) => {
+    const { modalDetailsLoading } = this.state;
+    if (nextProps.remoteData.extensionDetails && modalDetailsLoading) {
+      this.setState({
+        modalDetailsLoading: false
+      })
+    }
+  }
+
+  activateExtensionsDetails = (id) => {
+    const { getAxiosData } = this.props;
+    this.setState({
+      modalDetailsActive: true,
+      modalDetailsLoading: true
+    }, () => {
+      getAxiosData({
+        url: `./api/internal.php?object=centreon_module&action=details&type=module&id=${id}`, propKey: 'extensionDetails'
+      })
+    })
+
+  }
+
+  versionClicked = (id) => {
+
   }
 
   render = () => {
 
     const { remoteData } = this.props;
-    const { modulesActive, widgetsActive, not_installed, installed, updated, search, nothingShown } = this.state;
+    const { modulesActive, widgetsActive, not_installed, installed, updated, search, nothingShown, modalDetailsActive, modalDetailsLoading } = this.state;
     return (
       <div>
         <Centreon.TopFilters
@@ -126,7 +155,7 @@ class ExtensionsRoute extends Component {
               },
               {
                 customClass: "container__col-md-4 container__col-xs-4",
-                switcherStatus: "Update",
+                switcherStatus: "Outdated",
                 value: updated,
                 filterKey: 'updated'
               }
@@ -164,16 +193,26 @@ class ExtensionsRoute extends Component {
           remoteData.extensions && !nothingShown ? (
             <React.Fragment>
               {
-                remoteData.extensions.result.module && modulesActive ? (
-                  <Centreon.ExtensionsHolder onCardClicked={this.toggleExtensionsDetails} titleIcon={"object"} title="Modules" entities={remoteData.extensions.result.module.entities} />
+                remoteData.extensions.result.module && (!modulesActive || (modulesActive && widgetsActive)) ? (
+                  <Centreon.ExtensionsHolder onCardClicked={this.activateExtensionsDetails} titleIcon={"object"} title="Modules" entities={remoteData.extensions.result.module.entities} />
                 ) : null
               }
               {
-                remoteData.extensions.result.widget && widgetsActive ? (
-                  <Centreon.ExtensionsHolder onCardClicked={this.toggleExtensionsDetails} titleIcon={"puzzle"} title="Widgets" entities={remoteData.extensions.result.widget.entities} />
+                remoteData.extensions.result.widget && (!widgetsActive || (modulesActive && widgetsActive)) ? (
+                  <Centreon.ExtensionsHolder onCardClicked={this.activateExtensionsDetails} titleIcon={"puzzle"} title="Widgets" entities={remoteData.extensions.result.widget.entities} />
                 ) : null
               }
             </React.Fragment>
+          ) : null
+        }
+
+        {
+          remoteData.extensionDetails && modalDetailsActive && !modalDetailsLoading ? (
+            <Centreon.ExtensionDetailsPopup
+              onCloseClicked={this.hideExtensionDetails.bind(this)}
+              onVersionClicked={this.versionClicked}
+              modalDetails={remoteData.extensionDetails.result}
+            />
           ) : null
         }
 
