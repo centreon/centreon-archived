@@ -67,25 +67,83 @@ Then execute::
 
   $ pear upgrade-all
 
-Debian jessie / Ubuntu 14.04
-============================
+Debian Stretch / Ubuntu 18.04
+=============================
 
+Add the php 7.1 repository :
+For Debian Stretch :
+
+  ::
+
+    $ apt-get install apt-transport-https lsb-release ca-certificates
+    $ wget -O /etc/apt/trusted.gpg.d/php.gpg https://packages.sury.org/php/apt.gpg
+    $ echo "deb https://packages.sury.org/php/ $(lsb_release -sc) main" >> /etc/apt/sources.list.d/php.list
+    $ apt-get update
+
+For Ubuntu 18.04 :
 .. note::
-   Debian and Ubuntu latest version not yet supported.
+It is necessary to add sudo in front of the following commands
+  ::
 
-Install the following prerequisites::
+    $ apt-get install software-properties-common
+    $ add-apt-repository ppa:ondrej/php
+    $ apt update
 
-  $ apt-get install sudo tofrodos bsd-mailx lsb-release mysql-server libmysqlclient18 libdatetime-perl \
-      apache2 apache2-mpm-prefork php5 php5-mysql php-pear php5-intl php5-ldap php5-snmp php5-gd php5-sqlite \
-      rrdtool librrds-perl libconfig-inifiles-perl libcrypt-des-perl libdigest-hmac-perl \
-      libdigest-sha-perl libgd-perl snmp snmpd libnet-snmp-perl libsnmp-perl nagios-plugins
+Install the following prerequisites
+
+  ::
+
+    $ apt-get install php7.1 php7.1-opcache libapache2-mod-php7.1 php7.1-mysql php7.1-curl php7.1-json \
+        php7.1-gd php7.1-mcrypt php7.1-intl php7.1-mbstring php7.1-xml php7.1-zip php7.1-fpm php7.1-readline \
+        php7.1-sqlite3 php-pear sudo tofrodos bsd-mailx lsb-release mariadb-server libconfig-inifiles-perl \
+        libcrypt-des-perl libdigest-hmac-perl libdigest-sha-perl libgd-perl php7.1-ldap php7.1-snmp php-db php-date
+
+Activate the modules :
+
+  ::
+
+    $ a2enmod proxy_fcgi setenvif proxy rewrite
+    $ a2enconf php7.1-fpm
+    $ a2dismod php7.1
+    $ systemctl restart apache2 php7.1-fpm
+
+Additional commands are necessary to configure the environment correctly:
+
+  ::
+
+    $ groupadd -g 6000 centreon
+    $ useradd -u 6000 -g centreon -m -r -d /var/lib/centreon -c "Centreon Admin" -s /bin/bash centreon
 
 To finish, you should install SNMP MIBs. Because of a license problem the MIB files are not available by default in Debian. To add them, change the /etc/apt/sources.list file and add the *non-free* category.
 
-To Debian, then execute the following commands::
+Execute the following commands::
 
-  $ apt-get update
-  $ apt-get install snmp-mibs-downloader
+  ::
+
+    $ apt-get update
+    $ apt-get install snmp-mibs-downloader
+
+Then modify the SNMP configuration file */etc/default/snmpd*
+By adding :
+
+  ::
+
+    export MIBDIRS=/usr/share/snmp/mibs
+    export MIBS=ALL
+
+And commenting :
+
+  ::
+
+    #mibs ALL
+
+Restart SNMP service :
+
+  ::
+
+    $ service snmpd restart
+    $ service snmptrapd restart
+
 
 Suse
 ====
@@ -119,7 +177,7 @@ Save the file and restart Apache:
 
  ::
 
-  /etc/init.d/apache2 restart
+  $ /etc/init.d/apache2 restart
 
 ******************
 Monitoring engine
@@ -154,15 +212,19 @@ Shell Installation
 
 Extract the Centreon archive::
 
-  tar zxf centreon-web-18.10.x.tar.gz
+  ::
+
+    $ tar zxf centreon-web-18.10.x.tar.gz
 
 Change directory::
 
-  cd centreon-web-18.10.x
+  ::
+    $ cd centreon-web-18.10.x
 
 Run the installation script::
 
-  ./install.sh -i
+  ::
+    $ ./install.sh -i
 
 .. note::
 
@@ -187,7 +249,7 @@ If the Prerequisites installation step has been run successfully you should have
   #                         Centreon (www.centreon.com)                         #
   #                          Thanks for using Centreon                          #
   #                                                                             #
-  #                                    v2.8.0                                   #
+  #                                    v18.10.0                                 #
   #                                                                             #
   #                              infos@centreon.com                             #
   #                                                                             #
@@ -214,7 +276,7 @@ If the Prerequisites installation step has been run successfully you should have
 License agreement
 -----------------
 
-::
+  ::
 
     This General Public License does not permit incorporating your program into
     proprietary programs.  If your program is a subroutine library, you may
@@ -231,89 +293,117 @@ Main components
 
 Answer [y] to all the questions.
 
-::
+  ::
 
   ------------------------------------------------------------------------
   	    Please choose what you want to install
   ------------------------------------------------------------------------
 
-  Do you want to install Centreon Nagios Plugins ?
+  Do you want to install : Centreon Web Front
+  [y/n], default to [n]:
+  > y
+
+  Do you want to install : Centreon Centcore
+  [y/n], default to [n]:
+  > y
+
+  Do you want to install : Centreon Nagios Plugins
+  [y/n], default to [n]:
+  > y
+
+  Do you want to install : CentreonTrapd process
   [y/n], default to [n]:
   > y
 
 
-  Definition of installation paths
-  --------------------------------
+Definition of installation paths
+--------------------------------
 
-::
+  ::
 
   ------------------------------------------------------------------------
-          Starting Centreon Web Installation
+          Start CentWeb Installation
   ------------------------------------------------------------------------
+
+  Do you want me to remove the centreon temporary working space to continue installation ?
+  [y/n], default to [y]:
+  > y
 
   Where is your Centreon directory ?
-  default to [/usr/local/share/centreon]
-  >
+  default to [/usr/local/centreon]
+  > /usr/share/centreon
 
-::
+  ::
 
-  Do you want me to create this directory ? [/usr/local/share/centreon]
+  Do you want me to create this directory ? [/usr/share/centreon]
   [y/n], default to [n]:
   > y
-  Path /usr/local/share/centreon                             OK
+  Path /usr/share/centreon                                   OK
 
   Where is your Centreon log directory ?
-  default to [/var/log/centreon]
-  >
+  default to [/usr/local/centreon/log]
+  > /var/log/centreon
 
   Do you want me to create this directory ? [/var/log/centreon]
   [y/n], default to [n]:
   > y
   Path /var/log/centreon                                     OK
 
-::
+  ::
 
-  Where is your Centreon configuration directory ?
-  default to [/usr/local/etc/centreon]
+  Where is your Centreon etc directory ?
+  default to [/etc/centreon]
   >
 
-  Do you want me to create this directory ? [/usr/local/etc/centreon]
+  Do you want me to create this directory ? [/etc/centreon]
   [y/n], default to [n]:
   > y
-  Path /usr/local/etc/centreon                               OK
-
-  Where is your Centreon binaries directory ?
-  default to [/usr/local/bin]
-  >
+  Path /etc/centreon                                         OK
 
   Where is your Centreon variable state information directory ?
   default to [/var/lib/centreon]
   >
-  Path /var/lib/centreon/                                    OK
 
   Do you want me to create this directory ? [/var/lib/centreon]
   [y/n], default to [n]:
   > y
   Path /var/lib/centreon                                     OK
 
-::
+  Where is rrdtool
+  default to [/usr/bin/rrdtool]
+  > /opt/rrdtool-broker/bin/rrdtool
+  /opt/rrdtool-broker/bin/rrdtool                            OK
 
-  /usr/bin/rrdtool                                           OK
+  ::
+
   /usr/bin/mail                                              OK
+
+  Where is your php binary ?
+  default to [/usr/bin/php]
+  >
   /usr/bin/php                                               OK
-  /usr/share/php                                             OK
+
+  Where is PEAR [PEAR.php]
+  default to [/usr/share/pear/PEAR.php]
+  >
+  Path to /usr/share/php/PEAR.php                            OK
   /usr/bin/perl                                              OK
-  Finding Apache user :                                      apache
-  Finding Apache group :                                     apache
+  Composer dependencies are installed                        OK
+  Frontend application is built                              OK
+  Enable Apache configuration                                OK
+  Conf centreon already enabled
+  Finding Apache user :                                      www-data
+  Finding Apache group :                                     www-data
+
 
 
 Centreon user and group
 -----------------------
 
-The Centreon applications group: this group is used for the access
-rights between the various Centreon components.
+Le groupe d'applications **centreon** est utilisé pour les droits d'accès
+entre les différents logiciels de la suite Centreon::
 
-::
+  ::
 
   What is the Centreon group ? [centreon]
   default to [centreon]
@@ -331,9 +421,9 @@ This is the user used to run the monitoring engine (Centreon Engine). If you fol
 `Centreon Engine official installation procedure <https://documentation.centreon.com/docs/centreon-engine/en/latest/installation/index.html#using-sources>`_
 the user will likely be *centreon-engine*.
 
- ::
+  ::
 
-  What is your Centreon Engine user ?
+  What is the Monitoring engine user ? [centreon-engine]
   default to [centreon-engine]
   >
 
@@ -341,9 +431,9 @@ This is the user used to run the stream broker (Centreon Broker). If you followe
 `Centreon Broker official installation procedure <https://documentation.centreon.com/docs/centreon-broker/en/3.0/installation/index.html#using-sources>`_
 the user will likely be *centreon-broker*.
 
- ::
+  ::
 
-  What is your Centreon Broker user ?
+  What is your Centreon Broker user ? [centreon-broker]
   default to [centreon-broker]
   >
 
@@ -351,9 +441,9 @@ the user will likely be *centreon-broker*.
 Monitoring logs directory
 -------------------------
 
- ::
+  ::
 
-  What is your Centreon Engine log directory ?
+  What is the Monitoring engine log directory ?[/var/log/centreon-engine]
   default to [/var/log/centreon-engine]
   >
 
@@ -361,59 +451,48 @@ Monitoring logs directory
 Plugin path
 -----------
 
-::
+  ::
 
   Where is your monitoring plugins (libexec) directory ?
   default to [/usr/lib/nagios/plugins]
   >
   Path /usr/lib/nagios/plugins                               OK
-  Add group centreon to user apache                          OK
+  Add group centreon to user www-data                        OK
   Add group centreon to user centreon-engine                 OK
-  Add group centreon-engine to user apache                   OK
+  Add group centreon-engine to user www-data                 OK
   Add group centreon-engine to user centreon                 OK
+  Add group www-data to user centreon                        OK
 
 
 Sudo configuration
 ------------------
 
-::
+  ::
 
   ------------------------------------------------------------------------
   	  Configure Sudo
   ------------------------------------------------------------------------
 
   Where is sudo configuration file ?
-  default to [/etc/sudoers]
+  default to [/etc/sudoers.d/centreon]
   >
-  /etc/sudoers                                               OK
+  /etc/sudoers.d/centreon                                    OK
 
-  What is your Centreon Engine startup command (init.d, service, ...) ?
-  default to [service centengine]
-  >
-
-  Are you sure ? [service centengine]
-  [y/n], default to [n]:
-  > y
-
-  Where is your Centreon Engine binary ?
+  What is the Monitoring engine binary ? [/usr/sbin/centengine]
   default to [/usr/sbin/centengine]
   >
 
-  Where is your Centreon Engine configuration directory ?
+  Where is the Monitoring engine configuration directory ? [/etc/centreon-engine]
   default to [/etc/centreon-engine]
   >
 
-  Where is your Centreon Broker configuration directory ?
+  Where is the configuration directory for broker module ? [/etc/centreon-broker]
   default to [/etc/centreon-broker]
   >
 
-  What is your Centreon Broker startup command (init.d, service, ...) ?
-  default to [service cbd]
+  Where is your service command binary ?
+  default to [/usr/sbin/service]
   >
-
-  Are you sure ? [service cbd]
-  [y/n], default to [n]:
-  > y
 
   Do you want me to reconfigure your sudo ? (WARNING)
   [y/n], default to [n]:
@@ -421,52 +500,84 @@ Sudo configuration
   Configuring Sudo                                           OK
 
 
+
 Apache configuration
 --------------------
 
-::
+  ::
 
   ------------------------------------------------------------------------
     	  Configure Apache server
   ------------------------------------------------------------------------
 
-  Do you want to add Centreon Apache sub configuration file ?
+  Finding Apache Centreon configuration file
+  '/etc/apache2/conf-available/centreon.conf' :              OK
+
+  Do you want to update Centreon Apache sub configuration file ?
   [y/n], default to [n]:
   > y
-  Create '/etc/httpd/conf.d/centreon.conf'                   OK
+  Backup Centreon Apache configuration completed
+  Create '/etc/apache2/conf-available/centreon.conf'         OK
   Configuring Apache                                         OK
 
   Do you want to reload your Apache ?
   [y/n], default to [n]:
   > y
   Reloading Apache service                                   OK
+
+
+PHP FPM configuration
+---------------------
+
+  ::
+
+  ------------------------------------------------------------------------
+    	  Configure PHP FPM service
+  ------------------------------------------------------------------------
+
+  Finding PHP FPM Centreon configuration file
+  'etc/php/7.1/fpm/pool.d/centreon.conf' :                   OK
+
+  Do you want to update Centreon PHP FPM sub configuration file ?
+  [y/n], default to [n]:
+  > y
+  Backup Centreon PHP FPM configuration completed
+  Create 'etc/php/7.1/fpm/pool.d/centreon.conf'              OK
+  Configuring PHP FPM                                        OK
+
+  Do you want to reload PHP FPM service ?
+  [y/n], default to [n]:
+  > y
+  Reloading PHP FPM service                                  OK
+
   Preparing Centreon temporary files
   Change right on /var/log/centreon                          OK
-  Change right on /usr/local/etc/centreon                    OK
+  Change right on /etc/centreon                              OK
   Change macros for insertBaseConf.sql                       OK
   Change macros for sql update files                         OK
   Change macros for php files                                OK
   Change macros for php config file                          OK
   Change macros for perl binary                              OK
   Change right on /etc/centreon-engine                       OK
+  Add group centreon-broker to user www-data                 OK
+  Add group centreon-broker to user centreon-engine          OK
+  Add group centreon to user centreon-broker                 OK
   Change right on /etc/centreon-broker                       OK
-  Add group centreon to user apache                          OK
-  Add group centreon to user centreon-engine                 OK
-  Add group centreon to user centreon                        OK
   Copy CentWeb in system directory                           OK
   Install CentWeb (web front of centreon)                    OK
-  Change right for install directory
   Change right for install directory                         OK
   Install libraries                                          OK
   Write right to Smarty Cache                                OK
-  Copying libinstall                                         OK
   Change macros for centreon.cron                            OK
   Install Centreon cron.d file                               OK
   Change macros for centAcl.php                              OK
   Change macros for downtimeManager.php                      OK
+  Change macros for centreon-backup.pl                       OK
   Install cron directory                                     OK
   Change right for eventReportBuilder                        OK
   Change right for dashboardBuilder                          OK
+  Change right for centreon-backup.pl                        OK
+  Change right for centreon-backup-mysql.pl                  OK
   Change macros for centreon.logrotate                       OK
   Install Centreon logrotate.d file                          OK
   Prepare centFillTrapDB                                     OK
@@ -494,31 +605,22 @@ Apache configuration
 Pear module installation
 ------------------------
 
-::
+  ::
 
   ------------------------------------------------------------------------
   Pear Modules
   ------------------------------------------------------------------------
   Check PEAR modules
-  PEAR                            1.4.9       1.10.1         OK
+  PEAR                            1.4.9       1.10.6         OK
   DB                              1.7.6       1.9.2          OK
-  DB_DataObject                   1.8.4       1.11.5         OK
-  DB_DataObject_FormBuilder       1.0.0RC4    1.0.2          OK
-  MDB2                            2.0.0       2.4.1          OK
   Date                            1.4.6       1.4.7          OK
-  Archive_Tar                     1.1         1.3.11         OK
-  Auth_SASL                       1.0.1       1.0.6          OK
-  Console_Getopt                  1.2         1.3.1          OK
-  Validate                        0.6.2       0.8.5          OK
-  Log                             1.9.11      1.12.9         OK
-  Archive_Zip                     0.1.2       0.1.2          OK
   All PEAR modules                                           OK
 
 
 Configuration file installation
 -------------------------------
 
-::
+  ::
 
   ------------------------------------------------------------------------
   		  Centreon Post Install
@@ -530,13 +632,13 @@ Configuration file installation
 Performance data component (Centstorage) installation
 -----------------------------------------------------
 
-::
+  ::
 
   ------------------------------------------------------------------------
   	  Starting CentStorage Installation
   ------------------------------------------------------------------------
 
-  Where is your Centreon Run Dir directory ?
+  Where is your Centreon Run Dir directory?
   default to [/var/run/centreon]
   >
 
@@ -544,6 +646,11 @@ Performance data component (Centstorage) installation
   [y/n], default to [n]:
   > y
   Path /var/run/centreon                                     OK
+
+  Where is your CentStorage binary directory ?
+  default to [/usr/share/centreon/bin]
+  >
+  Path /usr/share/centreon/bin                               OK
 
   Where is your CentStorage RRD directory ?
   default to [/var/lib/centreon]
@@ -559,19 +666,25 @@ Performance data component (Centstorage) installation
   Install nagiosPerfTrace                                    OK
   Change macros for centstorage.cron                         OK
   Install CentStorage cron                                   OK
-  Change macros for centstorage.logrotate                    OK
-  Install Centreon Storage logrotate.d file                  OK
-  Create /usr/local/etc/centreon/instCentStorage.conf        OK
+  Create /etc/centreon/instCentStorage.conf                  OK
 
 
 Poller communication subsystem (Centcore) installation
 ------------------------------------------------------
 
-::
+  ::
 
   ------------------------------------------------------------------------
   	  Starting CentCore Installation
   ------------------------------------------------------------------------
+  Where is your Centreon binary directory
+  default to [/usr/share/centreon/bin]
+  >
+
+  Do you want me to create this directory ? [/usr/share/centreon/bin]
+  [y/n], default to [n]:
+  > y
+  Path /usr/share/centreon/bin                               OK
   Preparing Centreon temporary files
   /tmp/centreon-setup exists, it will be moved...
   Copy CentCore in binary directory                          OK
@@ -580,46 +693,80 @@ Poller communication subsystem (Centcore) installation
   Change macros for centcore.logrotate                       OK
   Install Centreon Core logrotate.d file                     OK
   Replace CentCore init script Macro                         OK
-  Replace CentCore sysconfig script Macro                    OK
+  Replace CentCore default script Macro                      OK
 
   Do you want me to install CentCore init script ?
   [y/n], default to [n]:
   > y
   CentCore init script installed                             OK
-  CentCore sysconfig script installed                        OK
+  CentCore default script installed                          OK
 
   Do you want me to install CentCore run level ?
   [y/n], default to [n]:
   > y
   CentCore Perl lib installed                                OK
-  Create /usr/local/etc/centreon/instCentCore.conf           OK
+  Create /etc/centreon/instCentCore.conf                     OK
+
+
+Plugin installation
+-------------------
+
+  ::
+
+  ------------------------------------------------------------------------
+  	  Starting Centreon Plugins Installation
+  ------------------------------------------------------------------------
+  Path /var/lib/centreon/centplugins                         OK
+  Path                                                       OK
+  Path                                                       OK
+
+  Where is your CentPlugins lib directory
+  default to [/var/lib/centreon/centplugins]
+  >
+
+  Do you want me to create this directory ? [/var/lib/centreon/centplugins]
+  [y/n], default to [n]:
+  > y
+  Path /var/lib/centreon/centplugins                         OK
+  Create /etc/centreon/instCentPlugins.conf                  OK
 
 
 Centreon SNMP trap management installation
 ------------------------------------------
 
-::
+  ::
 
   ------------------------------------------------------------------------
    	  Starting CentreonTrapD Installation
   ------------------------------------------------------------------------
 
+  Do you want me to remove the centreon temporary working space to continue installation ?
+  [y/n], default to [y]:
+  > y
+  Path                                                       OK
+  Path                                                       OK
+
   Where is your SNMP configuration directory ?
   default to [/etc/snmp]
   >
   /etc/snmp                                                  OK
-  Finding Apache user : apache
+
+  Where is your CentreonTrapd binaries directory ?
+  default to [/usr/local/centreon/bin]
+  > /usr/share/centreon/bin
+  /usr/share/centreon/bin                                    OK
+
+  Finding Apache user :                                      www-data
   Preparing Centreon temporary files
-  /tmp/centreon-setup exists, it will be moved...
   Change macros for snmptrapd.conf                           OK
   Replace CentreonTrapd init script Macro                    OK
-  Replace CentreonTrapd sysconfig script Macro               OK
+  Replace CentreonTrapd default script Macro                 OK
 
   Do you want me to install CentreonTrapd init script ?
   [y/n], default to [n]:
   > y
   CentreonTrapd init script installed                        OK
-  CentreonTrapd sysconfig script installed                   OK
+  CentreonTrapd default script installed                     OK
 
   Do you want me to install CentreonTrapd run level ?
   [y/n], default to [n]:
@@ -630,39 +777,13 @@ Centreon SNMP trap management installation
   Install : centreontrapd                                    OK
   Change macros for centreontrapd.logrotate                  OK
   Install Centreon Trapd logrotate.d file                    OK
-  Create /usr/local/etc/centreon/instCentPlugins.conf        OK
-
-
-Plugin installation
--------------------
-
-::
-
-  ------------------------------------------------------------------------
-  	  Starting Centreon Plugins Installation
-  ------------------------------------------------------------------------
-
-  Where is your CentPlugins lib directory
-  default to [/var/lib/centreon/centplugins]
-  >
-
-  Do you want me to create this directory ? [/var/lib/centreon/centplugins]
-  [y/n], default to [n]:
-  > y
-  Path /var/lib/centreon/centplugins                         OK
-  Preparing Centreon temporary files
-  /tmp/centreon-setup exists, it will be moved...
-  Change macros for CentPlugins                              OK
-  Installing the plugins                                     OK
-  Change right on centreon.conf                              OK
-  CentPlugins is installed
-  Create /usr/local/etc/centreon/instCentPlugins.conf        OK
+  Create /etc/centreon/instCentPlugins.conf                  OK
 
 
 End
 ---
 
-::
+  ::
 
   ###############################################################################
   #                                                                             #
@@ -692,13 +813,32 @@ Once composer is installed, go to the centreon directory (usually /usr/share/cen
     composer install --no-dev --optimize-autoloader
 
 
+Macro modifications
+------------------
+
+Macros may not have been properly replaced. Run the following commands to correct their values :
+
+  ::
+
+    $ sed -i -e 's/_CENTREON_PATH_PLACEHOLDER_/centreon/g' /usr/share/centreon/www/index.html
+    $ sed -i -e 's/@PHP_BIN@/\/usr\/bin\/php/g' /usr/share/centreon/bin/centreon
+    $ sed -i -e 's/@PHP_BIN@/\/usr\/bin\/php/g' /usr/share/centreon/bin/export-mysql-indexes
+    $ sed -i -e 's/@PHP_BIN@/\/usr\/bin\/php/g' /usr/share/centreon/bin/generateSqlLite
+    $ sed -i -e 's/@PHP_BIN@/\/usr\/bin\/php/g' /usr/share/centreon/bin/import-mysql-indexes
+
 Javascript dependencies installation
 ------------------------------------
 
 First, you need to install javascript runtime **nodejs**.
 Installation instructions are available `here <https://nodejs.org/en/download/package-manager/>`.
 
-Once nodejs is installed, go to the centreon directory (usually /usr/share/centreon/) and run the following commands :
+Once nodejs is installed, copy the JSON files to the installation folder :
+
+  ::
+
+    $ cp /usr/local/src/centreon-web-18.10.2/package* /usr/share/centreon/
+
+Then go to the centreon directory (usually /usr/share/centreon/) and run the following commands :
 
  ::
 

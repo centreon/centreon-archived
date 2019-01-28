@@ -9,6 +9,12 @@
             "email": "kduret@centreon.com"
         }
     ],
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/centreon/centreon-test-lib"
+        }
+    ],
     "config": {
         "secure-http": false
     },
