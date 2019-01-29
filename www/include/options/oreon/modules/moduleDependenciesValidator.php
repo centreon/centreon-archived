@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2005-2015 Centreon
+ * Copyright 2005-2019 Centreon
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -37,51 +37,29 @@
 require_once realpath(dirname(__FILE__) . "/../../../../../config/centreon.config.php");
 require_once _CENTREON_PATH_ . '/bootstrap.php';
 
-/* Modules access */
-$modulesPath = _CENTREON_PATH_ . 'www/modules/';
+CentreonSession::start(1);
 
-$response = array();
-$message = array();
+if (isset($_SESSION["centreon"])) {
+    $centreon = $_SESSION["centreon"];
+}
 
-$modules = scandir($modulesPath);
-foreach ($modules as $module) {
-    $filename = $module;
-    if (preg_match('/^(?!\.)/', $module) && is_dir($modulesPath . $module)) {
-        $response[$module] = array();
-        $checklistDir = $modulesPath . $module . '/checklist/';
-        $warning = false;
-        $critical = false;
+$response = [];
 
-        if (file_exists($checklistDir . 'requirements.php')) {
-            require_once $checklistDir . 'requirements.php';
-            // Necessary to implement the expiration date column in list modules page
-            if (!empty($licenseExpiration)) {
-                $response[$module]['licenseExpiration'] = $licenseExpiration;
-            }
-            if ($critical || $warning) {
-                if ($critical) {
-                    $response[$module]['status'] = 'critical';
-                } elseif ($warning) {
-                    $response[$module]['status'] = 'warning';
-                }
+if (false !== isset($centreon) && false !== is_object($centreon) && $centreon->user->access->page(507, true)) {
+    /* Modules access */
+    $modulesPath = $dependencyInjector[\CentreonLegacy\ServiceProvider::CONFIGURATION]->getModulePath();
+    $healthcheck = $dependencyInjector[\CentreonLegacy\ServiceProvider::CENTREON_LEGACY_MODULE_HEALTHCHECK];
 
-                foreach ($message as $errorMessage) {
-                    $response[$module]['message'] = array(
-                        'ErrorMessage' => $errorMessage['ErrorMessage'],
-                        'Solution' => $errorMessage['Solution']
-                    );
-                }
-            } else {
-                $response[$module]['status'] = 'ok';
-                if (isset($customAction) && is_array($customAction)) {
-                    $response[$module]['customAction'] = $customAction['action'];
-                    $response[$module]['customActionName'] = $customAction['name'];
-                }
-            }
-        } else {
-            $response[$module]['status'] = 'notfound';
+    $modules = scandir($modulesPath);
+    foreach ($modules as $module) {
+        $result = $healthcheck->checkOld($module);
+
+        if ($result !== null) {
+            $response[$module] = $result;
         }
     }
+} else {
+    $response = (object) $response;
 }
 
 header('Content-Type: application/json');

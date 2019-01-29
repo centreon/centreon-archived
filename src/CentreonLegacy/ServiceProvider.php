@@ -47,8 +47,10 @@ use CentreonLegacy\Core\Utils;
 
 class ServiceProvider implements AutoloadServiceProviderInterface
 {
+
     const CONFIGURATION = 'configuration';
     const CENTREON_LEGACY_UTILS = 'centreon.legacy.utils';
+    const CENTREON_LEGACY_MODULE_HEALTHCHECK = 'centreon.legacy.module.healthcheck';
     const CENTREON_LEGACY_MODULE_INFORMATION = 'centreon.legacy.module.information';
     const CENTREON_LEGACY_MODULE_INSTALLER = 'centreon.legacy.module.installer';
     const CENTREON_LEGACY_MODULE_UPGRADER = 'centreon.legacy.module.upgrader';
@@ -65,7 +67,7 @@ class ServiceProvider implements AutoloadServiceProviderInterface
      *
      * @param \Pimple\Container $pimple
      */
-    public function register(Container $pimple): void
+    public function register( Container $pimple ): void
     {
         $pimple[static::CENTREON_LEGACY_UTILS] = function (Container $container): Utils\Utils {
             $services = [
@@ -95,6 +97,17 @@ class ServiceProvider implements AutoloadServiceProviderInterface
 
     protected function registerModule( Container $pimple )
     {
+        $pimple[static::CENTREON_LEGACY_MODULE_HEALTHCHECK] = function (Container $container): Module\Healthcheck {
+            $services = [
+                'configuration',
+            ];
+
+            $locator = new ServiceLocator($container, $services);
+            $service = new Module\Healthcheck($locator);
+
+            return $service;
+        };
+
         $pimple[static::CENTREON_LEGACY_MODULE_INFORMATION] = function (Container $container): Module\Information {
             $services = [
                 'finder',
@@ -171,7 +184,7 @@ class ServiceProvider implements AutoloadServiceProviderInterface
         };
     }
 
-    protected function registerWidget(Container $pimple)
+    protected function registerWidget( Container $pimple )
     {
         $pimple[static::CENTREON_LEGACY_WIDGET_INFORMATION] = function (Container $container): Widget\Information {
             $services = [
