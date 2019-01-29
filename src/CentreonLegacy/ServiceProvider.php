@@ -47,6 +47,7 @@ use CentreonLegacy\Core\Utils;
 
 class ServiceProvider implements AutoloadServiceProviderInterface
 {
+    const CONFIGURATION = 'configuration';
     const CENTREON_LEGACY_UTILS = 'centreon.legacy.utils';
     const CENTREON_LEGACY_MODULE_INFORMATION = 'centreon.legacy.module.information';
     const CENTREON_LEGACY_MODULE_INSTALLER = 'centreon.legacy.module.installer';
@@ -79,11 +80,20 @@ class ServiceProvider implements AutoloadServiceProviderInterface
             return $service;
         };
 
+        $this->registerConfiguration($pimple);
         $this->registerModule($pimple);
         $this->registerWidget($pimple);
     }
 
-    protected function registerModule(Container $pimple)
+    protected function registerConfiguration( Container $pimple )
+    {
+        $pimple[static::CONFIGURATION] = function ($c) {
+            global $conf_centreon, $centreon_path;
+            return new Core\Configuration\Configuration($conf_centreon, $centreon_path);
+        };
+    }
+
+    protected function registerModule( Container $pimple )
     {
         $pimple[static::CENTREON_LEGACY_MODULE_INFORMATION] = function (Container $container): Module\Information {
             $services = [
