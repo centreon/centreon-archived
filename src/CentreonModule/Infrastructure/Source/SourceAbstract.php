@@ -37,6 +37,7 @@
 namespace CentreonModule\Infrastructure\Source;
 
 use Psr\Container\ContainerInterface;
+use CentreonLegacy\Core\Configuration\Configuration;
 use CentreonModule\Infrastructure\Entity\Module;
 use CentreonModule\Infrastructure\Source\SourceInterface;
 
@@ -68,7 +69,7 @@ abstract class SourceAbstract implements SourceInterface
         $this->db = $services->get(\Centreon\ServiceProvider::CENTREON_DB_MANAGER);
         $this->finder = $services->get('finder');
         $this->path = $services->get('configuration')
-            ->get('centreon_path')
+            ->get(Configuration::CENTREON_PATH)
         ;
     }
 
