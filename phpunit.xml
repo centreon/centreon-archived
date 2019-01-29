@@ -19,6 +19,7 @@
 
     <testsuites>
         <testsuite name="Symfony Test Suite">
+            <directory>./tests/php/CentreonLegacy</directory>
             <directory>./src/Centreon/Tests/</directory>
             <directory>./src/CentreonRemote/Tests/</directory>
             <directory>./src/CentreonModule/Tests/</directory>
@@ -36,7 +37,6 @@
         <whitelist>
             <directory>./src/</directory>
             <exclude>
-                <directory>./src/CentreonLegacy</directory>
                 <directory>./src/*/Tests</directory>
                 <directory>./src/Centreon/Domain/Entity</directory>
                 <directory>./src/CentreonRemote/Domain/Resources</directory>
