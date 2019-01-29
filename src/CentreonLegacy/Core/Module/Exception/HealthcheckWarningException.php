@@ -1,5 +1,5 @@
 <?php
-/*
+/**
  * Copyright 2005-2019 Centreon
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
@@ -33,38 +33,11 @@
  *
  */
 
-/* Load conf */
-require_once realpath(dirname(__FILE__) . "/../../../../../config/centreon.config.php");
-require_once _CENTREON_PATH_ . '/bootstrap.php';
+namespace CentreonLegacy\Core\Module\Exception;
 
-CentreonSession::start(1);
+use RuntimeException;
 
-if (isset($_SESSION["centreon"])) {
-    $centreon = $_SESSION["centreon"];
+
+class HealthcheckWarningException extends RuntimeException
+{
 }
-
-$response = [];
-
-if (false !== isset($centreon) && false !== is_object($centreon) && $centreon->user->access->page(507, true)) {
-    /* Modules access */
-    $modulesPath = $dependencyInjector[\CentreonLegacy\ServiceProvider::CONFIGURATION]->getModulePath();
-    $healthcheck = $dependencyInjector[\CentreonLegacy\ServiceProvider::CENTREON_LEGACY_MODULE_HEALTHCHECK];
-
-    $modules = scandir($modulesPath);
-    foreach ($modules as $module) {
-        if (!preg_match('/^(?!\.)/', $module)) {
-            continue;
-        }
-
-        $result = $healthcheck->checkPrepareResponse($module);
-
-        if ($result !== null) {
-            $response[$module] = $result;
-        }
-    }
-} else {
-    $response = (object) $response;
-}
-
-header('Content-Type: application/json');
-echo json_encode($response);

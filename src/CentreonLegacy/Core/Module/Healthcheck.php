@@ -37,6 +37,8 @@ namespace CentreonLegacy\Core\Module;
 
 use Psr\Container\ContainerInterface;
 use CentreonLegacy\ServiceProvider;
+use DateTime;
+use CentreonLegacy\Core\Module\Exception;
 
 class Healthcheck
 {
@@ -45,6 +47,21 @@ class Healthcheck
      * @var string
      */
     protected $modulePath;
+
+    /**
+     * @var array
+     */
+    protected $messages;
+
+    /**
+     * @var array
+     */
+    protected $customAction;
+
+    /**
+     * @var \DateTime
+     */
+    protected $licenseExpiration;
 
     /**
      * Construct
@@ -58,51 +75,153 @@ class Healthcheck
         ;
     }
 
-    public function checkOld( $module ): ?array
+    public function check( $module ): ?bool
     {
-        if (!preg_match('/^(?!\.)/', $module) || !is_dir($this->modulePath . $module)) {
-            return null;
+        // reset messages stack
+        $this->reset();
+
+        if (!preg_match('/^(?!\.)/', $module)) {
+            throw new Exception\HealthcheckNotFoundException('Incorrect module name');
+        } elseif (!is_dir($this->modulePath . $module)) {
+            throw new Exception\HealthcheckNotFoundException('Module did not exist');
         }
 
-        $response = [];
         $checklistDir = $this->modulePath . $module . '/checklist/';
         $warning = false;
         $critical = false;
 
         if (file_exists($checklistDir . 'requirements.php')) {
             $message = [];
+            $licenseExpiration = null;
+            $customAction = null;
 
             require_once $checklistDir . 'requirements.php';
 
             // Necessary to implement the expiration date column in list modules page
             if (!empty($licenseExpiration)) {
-                $response['licenseExpiration'] = $licenseExpiration;
+                $this->licenseExpiration = new DateTime(date(DateTime::W3C, $licenseExpiration));
             }
-            if ($critical || $warning) {
-                if ($critical) {
-                    $response['status'] = 'critical';
-                } elseif ($warning) {
-                    $response['status'] = 'warning';
-                }
 
-                foreach ($message as $errorMessage) {
-                    $response['message'] = [
-                        'ErrorMessage' => $errorMessage['ErrorMessage'],
-                        'Solution' => $errorMessage['Solution'],
-                    ];
-                }
-            } else {
-                $response['status'] = 'ok';
-                if (isset($customAction) && is_array($customAction)) {
-                    $response['customAction'] = $customAction['action'];
-                    $response['customActionName'] = $customAction['name'];
-                }
+            if (!$critical && !$warning) {
+                $this->setCustomAction($customAction);
+
+                return true;
             }
-        } else {
-            return null;
-            $response['status'] = 'notfound';
+
+            $this->setMessages($message);
+
+            if ($critical) {
+                throw new Exception\HealthcheckCriticalException();
+            } elseif ($warning) {
+                throw new Exception\HealthcheckWarningException();
+            }
         }
 
-        return $response;
+        throw new Exception\HealthcheckNotFoundException('The module\'s requirements did not exist');
+    }
+
+    /**
+     * Made the check method compatible with moduleDependenciesValidator
+     *
+     * @param string $module
+     * @return array|null
+     */
+    public function checkPrepareResponse( $module ): ?array
+    {
+        $result = null;
+
+        try {
+            $this->check($module);
+
+            $result = [
+                'status' => 'ok',
+            ];
+
+            if ($this->getCustomAction()) {
+                $result = array_merge($result, $this->getCustomAction());
+            }
+        } catch (Exception\HealthcheckCriticalException $ex) {
+            $result = [
+                'status' => 'critical',
+            ];
+
+            if ($this->getMessages()) {
+                $result = array_merge($result, [
+                    'message' => $this->getMessages(),
+                ]);
+            }
+        } catch (Exception\HealthcheckWarningException $ex) {
+            $result = [
+                'status' => 'warning',
+            ];
+
+            if ($this->getMessages()) {
+                $result = array_merge($result, [
+                    'message' => $this->getMessages(),
+                ]);
+            }
+        } catch (Exception\HealthcheckNotFoundException $ex) {
+            $result = [
+                'status' => 'notfound',
+            ];
+        } catch (\Exception $ex) {
+            var_dump($ex);
+            exit;
+            $result = [
+                'status' => 'critical',
+                'message' => [
+                    'ErrorMessage' => $ex->getMessage(),
+                    'Solution' => '',
+                ],
+            ];
+        }
+
+        if ($this->getLicenseExpiration()) {
+            $result['licenseExpiration'] = $this->getLicenseExpiration()->getTimestamp();
+        }
+
+        return $result;
+    }
+
+    public function reset()
+    {
+        $this->messages = null;
+        $this->customAction = null;
+        $this->licenseExpiration = null;
+    }
+
+    public function getMessages(): ?array
+    {
+        return $this->messages;
+    }
+
+    public function getCustomAction(): ?array
+    {
+        return $this->customAction;
+    }
+
+    public function getLicenseExpiration(): ?DateTime
+    {
+        return $this->licenseExpiration;
+    }
+
+    protected function setMessages( array $message )
+    {
+        foreach ($message as $errorMessage) {
+            $this->messages = [
+                'ErrorMessage' => $errorMessage['ErrorMessage'],
+                'Solution' => $errorMessage['Solution'],
+            ];
+        }
+    }
+
+    protected function setCustomAction( array $customAction = null )
+    {
+        if ($customAction !== null) {
+            $this->customAction = [
+                'customAction' => $customAction['action'],
+                'customActionName' => $customAction['name'],
+            ];
+        }
     }
 }
