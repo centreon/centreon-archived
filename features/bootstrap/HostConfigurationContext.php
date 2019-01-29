@@ -35,10 +35,7 @@ class HostConfigurationContext extends CentreonContext
 
     protected $hostCategory1 = array(
         'name' => 'hostCategoryName1',
-        'alias' => 'hostCategoryAlias1',
-        'severity' => 1,
-        'severity_level' => 2,
-        'severity_icon' => '       centreon (png)'
+        'alias' => 'hostCategoryAlias1'
     );
 
     protected $hostCategory2 = array(
@@ -63,9 +60,6 @@ class HostConfigurationContext extends CentreonContext
         'snmp_community' => 'hostSnmpCommunity',
         'snmp_version' => '1',
         'location' => 'America/Caracas',
-        'templates' => array(
-            'generic-host'
-        ),
         'check_command' => 'check_http',
         'command_arguments' => 'hostCommandArgument',
         'check_period' => 'workhours',
@@ -407,9 +401,7 @@ class HostConfigurationContext extends CentreonContext
      */
     public function loadAddPage()
     {
-        $this->currentPage = new HostConfigurationListingPage($this);
-        $this->currentPage->loadAddPage();
-
+        $this->currentPage = new HostConfigurationPage($this);
     }
 
     /**
@@ -425,11 +417,11 @@ class HostConfigurationContext extends CentreonContext
         if (!$choice) {
             throw new \Exception('No select2 choice found');
         }
-        $choice->press();
         $mythis = $this;
         $this->spin(
             function ($context) use ($mythis) {
-                $mythis->assertFind('css', '.templateCell .select2-container--open li.select2-results__option');
+                $context->assertFind('css', '#parallelTemplate .select2-container')->click();
+                $context->assertFind('css', '#select2-tpSelect-results > li');
             }
         );
     }
