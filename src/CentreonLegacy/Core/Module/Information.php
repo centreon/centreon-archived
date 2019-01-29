@@ -41,12 +41,12 @@ class Information
      * @var \CentreonLegacy\Core\Module\License
      */
     protected $licenseObj;
-    
+
     /**
      * @var \Pimple\Container
      */
     protected $dependencyInjector;
-    
+
     /**
      * @var \CentreonLegacy\Core\Utils\Utils
      */
