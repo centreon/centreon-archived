@@ -12,7 +12,12 @@ class ExtensionsRoute extends Component {
     not_installed: true,
     installed: true,
     updated: true,
-    search: ""
+    search: "",
+    deleteToggled: false,
+    deletingEntity: false,
+    uploadToggled: false,
+    extensionsUpdatingStatus: {},
+    extensionsInstallingStatus: {}
   }
 
   componentDidMount = () => {
@@ -50,12 +55,95 @@ class ExtensionsRoute extends Component {
     //TO DO: Pop up
   }
 
-  installAll = () => {
-    //TO DO: Call API for install
+  toggleLicenceUpload = () => {
+    const { uploadToggled } = this.state;
+    this.setState({
+      uploadToggled: !uploadToggled
+    })
   }
 
-  updateAll = () => {
-    //TO DO: Call API for update
+  getEntitiesByKeyAndVersionParam = (param, equals, key, callback) => {
+    const { remoteData } = this.props;
+    const { extensions } = remoteData;
+    let resArray = [];
+    if (extensions) {
+      const { status, result } = extensions;
+      if (status) {
+        for (let i = 0; i < result[key].entities.length; i++) {
+          let entity = result[key].entities[i];
+          if (entity.version[param] == equals) {
+            resArray.push(entity.id)
+          }
+        }
+      }
+    }
+    callback(resArray);
+  }
+
+
+  getAllEntitiesByVersionParam = (param, equals, callback) => {
+    this.getEntitiesByKeyAndVersionParam(param, equals, 'module',
+      moduleIds => {
+        this.getEntitiesByKeyAndVersionParam(param, equals, 'widget',
+          widgetIds => {
+            callback([...moduleIds, ...widgetIds]);
+          })
+      })
+  }
+
+  runActionOnAllEntities = (entityVersionType, equals, statusesKey) => {
+    this.getAllEntitiesByVersionParam(
+      entityVersionType,
+      equals,
+      (ids) => {
+        this.setStatusesByIds(ids, statusesKey,
+          () => {
+           //TO DO: CallApiForAllIds
+          }
+        )
+      }
+    )
+  }
+
+  setStatusesByIds = (ids, statusesKey, callback) => {
+    let statuses = this.state[statusesKey];
+    for (let id of ids) {
+      statuses = {
+        ...statuses,
+        [id]: true
+      }
+    }
+    this.setState({
+      [statusesKey]: statuses
+    }, callback)
+  }
+
+  installById = (id) => {
+    this.setStatusesByIds([id], 'extensionsInstallingStatus',
+      () => {
+      //TO DO: CallApiForId
+      }
+    )
+  }
+
+  updateById = (id) => {
+    this.setStatusesByIds([id], 'extensionsUpdatingStatus',
+      () => {
+       //TO DO: CallApiForId
+      }
+    )
+  }
+
+  deleteById = (id) => {
+    //TO DO: CallApiForId
+  }
+
+  toggleDeleteModal = (entity) => {
+    const { deleteToggled } = this.state;
+    this.setState({
+      deletingEntity: entity ? entity : false,
+      deleteToggled: !deleteToggled
+    })
   }
 
   getParsedGETParamsForExtensions = (callback) => {
@@ -71,7 +159,7 @@ class ExtensionsRoute extends Component {
       callback(params, nothingShown);
     } else {
       if (!updated) {
-        params += '&updated=true'
+        params += '&updated=false'
       }
       if (!installed && not_installed) {
         params += "&installed=true"
@@ -130,7 +218,20 @@ class ExtensionsRoute extends Component {
   render = () => {
 
     const { remoteData } = this.props;
-    const { modulesActive, widgetsActive, not_installed, installed, updated, search, nothingShown, modalDetailsActive, modalDetailsLoading } = this.state;
+    const { modulesActive,
+      deleteToggled,
+      uploadToggled,
+      widgetsActive,
+      not_installed,
+      installed,
+      updated,
+      search,
+      nothingShown,
+      modalDetailsActive,
+      modalDetailsLoading,
+      extensionsUpdatingStatus,
+      extensionsInstallingStatus,
+      deletingEntity } = this.state;
     return (
       <div>
         <Centreon.TopFilters
@@ -187,21 +288,61 @@ class ExtensionsRoute extends Component {
           ]}
         />
         <Centreon.Wrapper>
-          <Centreon.Button label={"Update all"} buttonType="regular" customClass="mr-2" color="orange" onClick={this.updateAll.bind(this)} />
-          <Centreon.Button label={"Install all"} buttonType="regular" customClass="mr-2" color="green" onClick={this.installAll.bind(this)} />
-          <Centreon.Button label={"Upload licence"} buttonType="regular" color="blue" onClick={this.uploadLicence.bind(this)} />
+          <Centreon.Button
+            label={"Update all"}
+            buttonType="regular"
+            customClass="mr-2"
+            color="orange"
+            onClick={this.runActionOnAllEntities.bind(
+              this,
+              'outdated',
+              true,
+              'extensionsUpdatingStatus')} />
+          <Centreon.Button
+            label={"Install all"}
+            buttonType="regular"
+            customClass="mr-2"
+            color="green"
+            onClick={this.runActionOnAllEntities.bind(
+              this,
+              'installed',
+              false,
+              'extensionsInstallingStatus')} />
+          <Centreon.Button
+            label={"Upload licence"}
+            buttonType="regular"
+            color="blue"
+            onClick={this.uploadLicence.bind(this)} />
         </Centreon.Wrapper>
         {
           remoteData.extensions && !nothingShown ? (
             <React.Fragment>
               {
                 remoteData.extensions.result.module && (!modulesActive || (modulesActive && widgetsActive)) ? (
-                  <Centreon.ExtensionsHolder onCardClicked={this.activateExtensionsDetails} titleIcon={"object"} title="Modules" entities={remoteData.extensions.result.module.entities} />
+                  <Centreon.ExtensionsHolder
+                    onCardClicked={this.activateExtensionsDetails}
+                    onDelete={this.toggleDeleteModal}
+                    onInstall={this.installById}
+                    onUpdate={this.updateById}
+                    titleIcon={"object"}
+                    title="Modules"
+                    updating={extensionsUpdatingStatus}
+                    installing={extensionsInstallingStatus}
+                    entities={remoteData.extensions.result.module.entities} />
                 ) : null
               }
               {
                 remoteData.extensions.result.widget && (!widgetsActive || (modulesActive && widgetsActive)) ? (
-                  <Centreon.ExtensionsHolder onCardClicked={this.activateExtensionsDetails} titleIcon={"puzzle"} title="Widgets" entities={remoteData.extensions.result.widget.entities} />
+                  <Centreon.ExtensionsHolder
+                    onCardClicked={this.activateExtensionsDetails}
+                    onDelete={this.toggleDeleteModal}
+                    onInstall={this.installById}
+                    onUpdate={this.updateById}
+                    titleIcon={"puzzle"}
+                    title="Widgets"
+                    updating={extensionsUpdatingStatus}
+                    installing={extensionsInstallingStatus}
+                    entities={remoteData.extensions.result.widget.entities} />
                 ) : null
               }
             </React.Fragment>
@@ -216,6 +357,18 @@ class ExtensionsRoute extends Component {
               modalDetails={remoteData.extensionDetails.result}
             />
           ) : null
+        }
+
+        {
+          uploadToggled ? null : null
+        }
+
+        {
+          deleteToggled ? <Centreon.ExtensionDeletePopup
+            deletingEntity={deletingEntity}
+            onConfirm={this.deleteById}
+            onCancel={this.toggleDeleteModal}
+          /> : null
         }
 
       </div>
