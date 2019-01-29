@@ -7,6 +7,19 @@ Feature: HostConfiguration
         Given I am logged in a Centreon server
         And an host is configured
 
+    @critical
+    Scenario: Edit the name of an host
+        When I change the properties of a host
+        Then its properties are updated
+
+    Scenario: Duplicate one existing host
+        When I duplicate a host
+        Then a new host is created with identical properties
+
+    Scenario: Delete one existing host
+        When I delete the host
+        Then the host is not visible anymore
+
     Scenario: Check for template select2
         When I open the new host page
         Then A select box allow to search a unique template and to select it
