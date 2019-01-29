@@ -110,7 +110,6 @@ class ModuleSourceTest extends TestCase
             ->setMethods([
                 'getPath',
                 'getModuleConf',
-                'getLicenseFile',
             ])
             ->setConstructorArgs([
                 $this->containerWrap,
@@ -131,17 +130,6 @@ class ModuleSourceTest extends TestCase
                     $result = [
                         ModuleSourceTest::$moduleName => ModuleSourceTest::$moduleInfo,
                     ];
-
-                    return $result;
-            }))
-        ;
-        $this->source
-            ->method('getLicenseFile')
-            ->will($this->returnCallback(function () {
-                    $result = 'vfs://modules/' .
-                        ModuleSourceTest::$moduleName . '/' .
-                        ModuleSource::LICENSE_FILE
-                    ;
 
                     return $result;
             }))
@@ -201,22 +189,9 @@ class ModuleSourceTest extends TestCase
 //        //'php://filter/read=string.rot13/resource=' . 
 //    }
 
-    public function testGetLicenseFile()
-    {
-        $moduleSource = new ModuleSource($this->containerWrap);
-        $result = $this->invokeMethod($moduleSource, 'getLicenseFile', [static::getLicenseFilePath()]);
-
-        $this->assertTrue(strpos($result, ModuleSource::LICENSE_FILE) > -1);
-    }
-
     public static function getConfFilePath(): string
     {
         return 'vfs://modules/' . static::$moduleName . '/' . ModuleSource::CONFIG_FILE;
-    }
-
-    public static function getLicenseFilePath(): string
-    {
-        return 'vfs://modules/' . static::$moduleName . '/' . ModuleSource::LICENSE_FILE;
     }
 
     public static function buildConfContent(): string
