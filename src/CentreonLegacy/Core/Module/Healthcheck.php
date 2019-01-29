@@ -81,9 +81,9 @@ class Healthcheck
         $this->reset();
 
         if (!preg_match('/^(?!\.)/', $module)) {
-            throw new Exception\HealthcheckNotFoundException('Incorrect module name');
+            throw new Exception\HealthcheckNotFoundException("Incorrect module name {$module}");
         } elseif (!is_dir($this->modulePath . $module)) {
-            throw new Exception\HealthcheckNotFoundException('Module did not exist');
+            throw new Exception\HealthcheckNotFoundException("Module did not exist {$this->modulePath} {$module}");
         }
 
         $checklistDir = $this->modulePath . $module . '/checklist/';

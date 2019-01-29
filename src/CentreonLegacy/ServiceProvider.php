@@ -173,7 +173,12 @@ class ServiceProvider implements AutoloadServiceProviderInterface
         });
 
         $pimple[static::CENTREON_LEGACY_MODULE_LICENSE] = $pimple->factory(function (Container $container) {
-            $service = new Module\License(new ContainerWrap(new Container));
+            $services = [
+                ServiceProvider::CENTREON_LEGACY_MODULE_HEALTHCHECK,
+            ];
+
+            $locator = new ServiceLocator($container, $services);
+            $service = new Module\License($locator);
 
             return $service;
         });

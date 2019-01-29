@@ -158,7 +158,6 @@ class ModuleSource extends SourceAbstract
         $module_conf = $this->getModuleConf($configFile);
 
         $info = current($module_conf);
-        $licenseFile = $this->getLicenseFile($configFile);
 
         $entity = new Module;
         $entity->setId(basename(dirname($configFile)));
@@ -169,7 +168,7 @@ class ModuleSource extends SourceAbstract
         $entity->setVersion($info['mod_release']);
         $entity->setDescription($info['infos']);
         $entity->setKeywords($entity->getId());
-        $entity->setLicense($this->license->getLicenseExpiration($licenseFile));
+        $entity->setLicense($this->license->getLicenseExpiration($entity->getId()));
 
         // load information about installed modules/widgets
         if ($this->info === null) {
@@ -198,12 +197,5 @@ class ModuleSource extends SourceAbstract
         require $configFile;
 
         return $module_conf;
-    }
-
-    protected function getLicenseFile(string $configFile): string
-    {
-        $result = dirname($configFile) . '/' . static::LICENSE_FILE;
-
-        return $result;
     }
 }

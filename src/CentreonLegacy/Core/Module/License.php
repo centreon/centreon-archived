@@ -36,6 +36,7 @@
 namespace CentreonLegacy\Core\Module;
 
 use Psr\Container\ContainerInterface;
+use CentreonLegacy\ServiceProvider;
 
 class License extends Module
 {
@@ -79,8 +80,20 @@ class License extends Module
      *
      * @return false|string
      */
-    public function getLicenseExpiration($licenseFile)
+    public function getLicenseExpiration( $module )
     {
+        $healthcheck = $this->services->get(ServiceProvider::CENTREON_LEGACY_MODULE_HEALTHCHECK);
+
+        try {
+            $healthcheck->check($module);
+        } catch (\Exception $ex) { }
+
+        if ($healthcheck->getLicenseExpiration()) {
+            return $healthcheck->getLicenseExpiration()
+                    ->format('F d, Y')
+            ;
+        }
+
         return _("N/A");
     }
 }
