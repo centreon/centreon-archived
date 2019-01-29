@@ -945,7 +945,7 @@ if ($valid) {
     $tpl->assign("add_mtp_label", _("Add a template"));
     $tpl->assign("seconds", _("seconds"));
     $tpl->assign("tpl", 1);
-    $tpl->display("formHost.ihtml");
+    $tpl->display("formHostTemplate.ihtml");
 
     ?>
     <script type="text/javascript">
