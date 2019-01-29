@@ -105,7 +105,7 @@ abstract class SourceAbstract implements SourceInterface
             return false;
         } elseif ($installed !== null && $entity->isInstalled() !== $installed) {
             return false;
-        } elseif ($updated !== null && $entity->isUpdated() !== $updated) {
+        } elseif ($updated !== null && ($entity->isInstalled() !== true || $entity->isUpdated() !== $updated)) {
             return false;
         }
 
