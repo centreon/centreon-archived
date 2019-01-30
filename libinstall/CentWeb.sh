@@ -16,12 +16,14 @@ echo -e "\n$line"
 echo -e "\t$(gettext "Start CentWeb Installation")"
 echo -e "$line"
 
-###### check space ton tmp dir
+###### check space of tmp dir
 check_tmp_disk_space
-if [ "$silent_install" -eq 1 ] ; then
-  [ "$?" -eq 1 ] && purge_centreon_tmp_dir "silent"
-else
-  [ "$?" -eq 1 ] && purge_centreon_tmp_dir
+if [ "$?" -eq 1 ] ; then
+  if [ "$silent_install" -eq 1 ] ; then
+    purge_centreon_tmp_dir "silent"
+  else
+    purge_centreon_tmp_dir
+  fi
 fi
 
 ###### Require
@@ -128,10 +130,6 @@ $INSTALL_DIR/cinstall $cinstall_opts \
     -u "$CENTREON_USER" -g "$CENTREON_GROUP" -d 775 \
     "$CENTREON_ETC" >> "$LOG_FILE" 2>&1
 check_result $? "$(gettext "Change right on") $CENTREON_ETC"
-
-## Generate translation
-mkdir -p $TMP_DIR/src/www/locale/en_US.UTF-8/LC_MESSAGES
-$PHP_BIN $TMP_DIR/src/bin/centreon-translations.php en $TMP_DIR/src/lang/fr/LC_MESSAGES/messages.po $TMP_DIR/src/www/locale/en_US.UTF-8/LC_MESSAGES/messages.ser
 
 ## Copy Web Front Source in final
 log "INFO" "$(gettext "Copy CentWeb and GPL_LIB in temporary final directory")"

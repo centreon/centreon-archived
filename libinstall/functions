@@ -216,7 +216,7 @@ function yes_no_default() {
 		read res
 		[ -z "$res" ] && res="$default"
 	done
-	if [ "$res" = "$yes" ] ; then 
+	if [ "$res" = "$yes" ] ; then
 		return 0
 	else 
 		return 1
@@ -232,12 +232,12 @@ function answer() {
 	local var_ref=$3
 	local res=""
 	local first=0
-	while [ ! -z "$res" ] ; do
+	while [ '!' -z "$res" ] ; do
 		echo -e "\n$message"
 		[ "$default" != "NO_DEFAULT" ] && echo -e "$(gettext "default to [$default]")"
 		echo -en "> "
 		read res
-		if [ -z "$res" ] ; then 
+		if [ -z "$res" ] ; then
 			[ "$default" != "NO_DEFAULT" ] && res=$default
 		fi
 	done
@@ -307,7 +307,7 @@ function answer_with_createdir() {
 			res="not_define"
 		else
 			first=1
-			[ -d "$res" ] && break 
+			[ -d "$res" ] && break
 			yes_no_default "$(gettext "Do you want me to create this directory ?") [$res]"
 			if [ $? -eq 0 ] ; then
 				mkdir -p $res
@@ -529,7 +529,7 @@ function testfile_clean() {
 	if [ ! -e "$file" ] ; then
 		eval $var=""
 		return 1
-	else 
+	else
 		return 0
 	fi
 }
@@ -968,11 +968,11 @@ function locate_sudo() {
 #----
 function locate_rrdtool() {
 	testfile_clean "$BIN_RRDTOOL" "BIN_RRDTOOL"
-	if [ -z "$BIN_RRDTOOL" ] ; then 
+	if [ -z "$BIN_RRDTOOL" ] ; then
 		pathfind_ret "rrdtool" "BIN_RRDTOOL"
-		if [ "$?" -ne 0 ] ; then 
+		if [ "$?" -ne 0 ] ; then
 			answer_with_testfile "$(gettext "Where is rrdtool")" "$DEFAULT_BIN_RRDTOOL" "BIN_RRDTOOL"
-		else 
+		else
 			BIN_RRDTOOL="$BIN_RRDTOOL/rrdtool"
 		fi
 		echo_success "$BIN_RRDTOOL" "$ok"
@@ -989,11 +989,11 @@ function locate_rrdtool() {
 #----
 function locate_perl() {
 	testfile_clean "$BIN_PERL" "BIN_PERL"
-	if [ -z "$BIN_PERL" ] ; then 
+	if [ -z "$BIN_PERL" ] ; then
 		pathfind_ret "perl" "BIN_PERL"
-		if [ "$?" -ne 0 ] ; then 
+		if [ "$?" -ne 0 ] ; then
 			answer_with_testfile "$(gettext "Where is perl")" "$DEFAULT_BIN_PERL" "BIN_PERL"
-		else 
+		else
 			BIN_PERL="$BIN_PERL/perl"
 		fi
 		echo_success "$BIN_PERL" "$ok"
@@ -1010,11 +1010,11 @@ function locate_perl() {
 #----
 function locate_mail() {
 	testfile_clean "$BIN_MAIL" "BIN_MAIL"
-	if [ -z "$BIN_MAIL" ] ; then 
+	if [ -z "$BIN_MAIL" ] ; then
 		pathfind_ret "mail" "BIN_MAIL"
-		if [ "$?" -ne 0 ] ; then 
+		if [ "$?" -ne 0 ] ; then
 			answer_with_testfile "$(gettext "Where is mail binary")" "$DEFAULT_BIN_MAIL" "BIN_MAIL"
-		else 
+		else
 			BIN_MAIL="$BIN_MAIL/mail"
 		fi
 		echo_success "$BIN_MAIL" "$ok"
@@ -1180,24 +1180,24 @@ function configureApache() {
 	# Generate a apache config in directory
 	prepare_apache_config "$dir_conf"
 
-	if [ "$silent_install" -ne 1 ] ; then 
+	if [ "$silent_install" -ne 1 ] ; then
 		if [ -e $DIR_APACHE_CONF/centreon.conf ] ; then
 			echo "$(gettext "Finding Apache Centreon configuration file")"
 			echo_success "'$DIR_APACHE_CONF/centreon.conf' :" "$ok"
 			yes_no_default "$(gettext "Do you want to update Centreon Apache sub configuration file ?")"
-                        if [ "$?" -eq 0 ] ; then 
+                        if [ "$?" -eq 0 ] ; then
                             write_config="1"
                             cp -f $DIR_APACHE_CONF/centreon.conf $DIR_APACHE_CONF/centreon.conf-bak >> $LOG_FILE 2>&1
                             echo_info "$(gettext "Backup Centreon Apache configuration completed")"
                         fi
-		else 
+		else
 			yes_no_default "$(gettext "Do you want to add Centreon Apache sub configuration file ?")"
 			[ "$?" -eq 0 ] && write_config="1"
 		fi
-	else 
+	else
 		write_config="1"
     	fi
-	if [ "$write_config" -eq 1 ] ; then 
+	if [ "$write_config" -eq 1 ] ; then
                 if [ "$upgrade" -eq 1 ] ; then
                     cp -f $dir_conf/centreon.apache.conf $DIR_APACHE_CONF/centreon.conf.new >> $LOG_FILE 2>&1
                 else
@@ -1205,9 +1205,9 @@ function configureApache() {
                 fi
 		echo_success "$(gettext "Create") '$DIR_APACHE_CONF/centreon.conf'" "$ok"
 		echo_success "$(gettext "Configuring Apache")" "$ok"
-		# After finishing the configuration -> 
+		# After finishing the configuration ->
 		# reload apache ! (if admin wants :p)
-		if [ "${APACHE_RELOAD:-0}" -eq 0 ] ; then 
+		if [ "${APACHE_RELOAD:-0}" -eq 0 ] ; then
 			yes_no_default "$(gettext "Do you want to reload your Apache ?")"
 			[ $? -eq 0 ] && reload_service_apache
 		elif [ "${APACHE_RELOAD:-0}" -eq 1 ] ; then
@@ -1537,7 +1537,7 @@ function configureSUDO() {
 	echo -e "\n$line"
 	echo -e "\t$(gettext "Configure Sudo")"
 	echo -e "$line"
-    local no_force_sudo="0"
+	local no_force_sudo="0"
 	local dir_conf="$1"
 	# Generate a sudo config in directory
 	prepare_sudo_config "$dir_conf"
@@ -1545,7 +1545,7 @@ function configureSUDO() {
 	# Try to detect old configuration
 	sudo=`${GREP} -e "CENTREON SUDO" $SUDO_FILE > /dev/null 2>&1 ; echo $?`
 	if [ $sudo -eq 1 ]; then
-    	echo_info "$(gettext "Your sudo is not configured")"
+	    echo_info "$(gettext "Your sudo is not configured")"
 
 		if [ "${FORCE_SUDO_CONF:-0}" -eq 1 ] ; then
 			no_force_sudo="0"
