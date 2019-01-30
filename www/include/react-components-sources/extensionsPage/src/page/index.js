@@ -340,6 +340,7 @@ class ExtensionsRoute extends Component {
   render = () => {
 
     const { remoteData } = this.props;
+    const { extensions } = remoteData;
     const { modulesActive,
       deleteToggled,
       uploadToggled,
@@ -437,13 +438,13 @@ class ExtensionsRoute extends Component {
             label={"Upload licence"}
             buttonType="regular"
             color="blue"
-            onClick={this.uploadLicence.bind(this)} />
+            onClick={this.toggleLicenceUpload.bind(this)} />
         </Centreon.Wrapper>
         {
-          remoteData.extensions && !nothingShown ? (
+          extensions && !nothingShown ? (
             <React.Fragment>
               {
-                remoteData.extensions.result.module && (!modulesActive || (modulesActive && widgetsActive)) ? (
+                extensions.result.module && (!modulesActive || (modulesActive && widgetsActive)) ? (
                   <Centreon.ExtensionsHolder
                     onCardClicked={this.activateExtensionsDetails}
                     onDelete={this.toggleDeleteModal}
@@ -454,11 +455,11 @@ class ExtensionsRoute extends Component {
                     type={'module'}
                     updating={extensionsUpdatingStatus}
                     installing={extensionsInstallingStatus}
-                    entities={remoteData.extensions.result.module.entities} />
+                    entities={extensions.result.module.entities} />
                 ) : null
               }
               {
-                remoteData.extensions.result.widget && (!widgetsActive || (modulesActive && widgetsActive)) ? (
+                extensions.result.widget && (!widgetsActive || (modulesActive && widgetsActive)) ? (
                   <Centreon.ExtensionsHolder
                     onCardClicked={this.activateExtensionsDetails}
                     onDelete={this.toggleDeleteModal}
@@ -469,7 +470,7 @@ class ExtensionsRoute extends Component {
                     type={'widget'}
                     updating={extensionsUpdatingStatus}
                     installing={extensionsInstallingStatus}
-                    entities={remoteData.extensions.result.widget.entities} />
+                    entities={extensions.result.widget.entities} />
                 ) : null
               }
             </React.Fragment>
@@ -487,7 +488,11 @@ class ExtensionsRoute extends Component {
         }
 
         {
-          uploadToggled ? null : null
+          uploadToggled ? 
+          <Centreon.FileUpload
+            onClose={this.toggleLicenceUpload.bind(this)}
+          /> : 
+          null
         }
 
         {
