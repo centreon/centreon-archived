@@ -1,5 +1,5 @@
+import * as Centreon from '@centreon/react-components';
 import React, { Component } from "react";
-import * as Centreon from '@centreon/react-components'
 import { connect } from 'react-redux';
 
 class ExtensionsRoute extends Component {
@@ -17,7 +17,8 @@ class ExtensionsRoute extends Component {
     deletingEntity: false,
     uploadToggled: false,
     extensionsUpdatingStatus: {},
-    extensionsInstallingStatus: {}
+    extensionsInstallingStatus: {},
+    extensionDetails: false
   }
 
   componentDidMount = () => {
@@ -72,7 +73,12 @@ class ExtensionsRoute extends Component {
         for (let i = 0; i < result[key].entities.length; i++) {
           let entity = result[key].entities[i];
           if (entity.version[param] == equals) {
-            resArray.push(entity.id)
+            resArray.push(
+              {
+                id: entity.id,
+                type: key
+              }
+            )
           }
         }
       }
@@ -98,7 +104,11 @@ class ExtensionsRoute extends Component {
       (ids) => {
         this.setStatusesByIds(ids, statusesKey,
           () => {
-           //TO DO: CallApiForAllIds
+            if(entityVersionType === 'outdated'){
+              this.updateOneByOne(ids);
+            }else if(entityVersionType === 'installed'){
+              this.installOneByOne(ids);
+            }
           }
         )
       }
@@ -107,7 +117,7 @@ class ExtensionsRoute extends Component {
 
   setStatusesByIds = (ids, statusesKey, callback) => {
     let statuses = this.state[statusesKey];
-    for (let id of ids) {
+    for (let { id } of ids) {
       statuses = {
         ...statuses,
         [id]: true
@@ -118,30 +128,133 @@ class ExtensionsRoute extends Component {
     }, callback)
   }
 
-  installById = (id) => {
-    this.setStatusesByIds([id], 'extensionsInstallingStatus',
+  updateOneByOne = ids => {
+    if (ids.length > 0) {
+      const updatingEntity = ids.shift();
+      this.updateById(updatingEntity.id, updatingEntity.type,
+        () => {
+          this.updateOneByOne(ids)
+        }
+      )
+    }
+  }
+
+  installOneByOne = ids => {
+    if (ids.length > 0) {
+      const installingEntity = ids.shift();
+      this.installById(installingEntity.id, installingEntity.type,
+        () => {
+          this.installOneByOne(ids)
+        }
+      )
+    }
+  }
+
+  installById = (id, type, callback) => {
+    this.setStatusesByIds([{ id }], 'extensionsInstallingStatus',
       () => {
-      //TO DO: CallApiForId
+        const { xhr } = this.props;
+        xhr({
+          requestType: 'POST',
+          url: `./api/internal.php?object=centreon_module&action=install&id=${id}&type=${type}`,
+        }).then(() => {
+          this.getData(() => {
+            this.setState({
+              extensionsInstallingStatus: {
+                ...this.state.extensionsInstallingStatus,
+                [id]: false
+              }
+            }, () => {
+              if (callback && typeof callback === 'function') {
+                callback()
+              }
+            })
+          });
+        }).catch(
+          err => {
+            this.setState({
+              extensionsInstallingStatus: {
+                ...this.state.extensionsInstallingStatus,
+                [id]: false
+              }
+            }, () => {
+              if (callback && typeof callback === 'function') {
+                callback()
+              }
+            })
+            throw err;
+          }
+        );
       }
     )
   }
 
-  updateById = (id) => {
-    this.setStatusesByIds([id], 'extensionsUpdatingStatus',
+  updateById = (id, type, callback) => {
+    this.setStatusesByIds([{ id }], 'extensionsUpdatingStatus',
       () => {
-       //TO DO: CallApiForId
+        const { xhr } = this.props;
+        xhr({
+          requestType: 'POST',
+          url: `./api/internal.php?object=centreon_module&action=update&id=${id}&type=${type}`,
+        }).then(() => {
+          this.getData(() => {
+            this.setState({
+              extensionsUpdatingStatus: {
+                ...this.state.extensionsUpdatingStatus,
+                [id]: false
+              }
+            }, () => {
+              if (callback && typeof callback === 'function') {
+                callback()
+              }
+            })
+          });
+        }).catch(
+          err => {
+            this.setState({
+              extensionsUpdatingStatus: {
+                ...this.state.extensionsUpdatingStatus,
+                [id]: false
+              }
+            }, () => {
+              if (callback && typeof callback === 'function') {
+                callback()
+              }
+            })
+            throw err;
+          }
+        );
       }
     )
   }
 
-  deleteById = (id) => {
-    //TO DO: CallApiForId
+  deleteById = (id, type) => {
+    const { xhr } = this.props;
+    this.setState({
+      deleteToggled: false,
+      deletingEntity: false,
+    }, () => {
+      xhr({
+        requestType: 'DELETE',
+        url: './api/internal.php?object=centreon_module&action=remove',
+        data: {
+          params: {
+            id,
+            type
+          }
+        }
+      }).then(this.getData).catch(
+        err => {
+          throw err
+        }
+      )
+    });
   }
 
-  toggleDeleteModal = (entity) => {
+  toggleDeleteModal = (entity, type) => {
     const { deleteToggled } = this.state;
     this.setState({
-      deletingEntity: entity ? entity : false,
+      deletingEntity: entity ? { ...entity, type } : false,
       deleteToggled: !deleteToggled
     })
   }
@@ -170,14 +283,24 @@ class ExtensionsRoute extends Component {
     }
   }
 
-  getData = () => {
-    const { getAxiosData } = this.props;
+  getData = (callback) => {
+    const { xhr } = this.props;
     this.getParsedGETParamsForExtensions((params, nothingShown) => {
       this.setState({
         nothingShown
       })
       if (!nothingShown) {
-        getAxiosData({ url: `./api/internal.php?object=centreon_module&action=list${params}`, propKey: 'extensions' })
+        xhr({
+          requestType: 'GET',
+          url: `./api/internal.php?object=centreon_module&action=list${params}`,
+          propKey: 'extensions'
+        }).then(() => {
+          if (callback && typeof callback === 'function') {
+            callback();
+          }
+        }).catch((err) => {
+          throw err;
+        })
       }
     })
   }
@@ -189,23 +312,22 @@ class ExtensionsRoute extends Component {
     })
   }
 
-  UNSAFE_componentWillReceiveProps = (nextProps) => {
-    const { modalDetailsLoading } = this.state;
-    if (nextProps.remoteData.extensionDetails && modalDetailsLoading) {
-      this.setState({
-        modalDetailsLoading: false
-      })
-    }
-  }
-
   activateExtensionsDetails = (id) => {
-    const { getAxiosData } = this.props;
+    const { xhr } = this.props;
     this.setState({
       modalDetailsActive: true,
       modalDetailsLoading: true
     }, () => {
-      getAxiosData({
-        url: `./api/internal.php?object=centreon_module&action=details&type=module&id=${id}`, propKey: 'extensionDetails'
+      xhr({
+        requestType: 'GET',
+        url: `./api/internal.php?object=centreon_module&action=details&type=module&id=${id}`
+      }).then(({ result }) => {
+        this.setState({
+          extensionDetails: result,
+          modalDetailsLoading: false
+        })
+      }).catch((err) => {
+        throw err;
       })
     })
 
@@ -231,7 +353,8 @@ class ExtensionsRoute extends Component {
       modalDetailsLoading,
       extensionsUpdatingStatus,
       extensionsInstallingStatus,
-      deletingEntity } = this.state;
+      deletingEntity,
+      extensionDetails } = this.state;
     return (
       <div>
         <Centreon.TopFilters
@@ -297,7 +420,8 @@ class ExtensionsRoute extends Component {
               this,
               'outdated',
               true,
-              'extensionsUpdatingStatus')} />
+              'extensionsUpdatingStatus')}
+          />
           <Centreon.Button
             label={"Install all"}
             buttonType="regular"
@@ -307,7 +431,8 @@ class ExtensionsRoute extends Component {
               this,
               'installed',
               false,
-              'extensionsInstallingStatus')} />
+              'extensionsInstallingStatus')}
+          />
           <Centreon.Button
             label={"Upload licence"}
             buttonType="regular"
@@ -326,6 +451,7 @@ class ExtensionsRoute extends Component {
                     onUpdate={this.updateById}
                     titleIcon={"object"}
                     title="Modules"
+                    type={'module'}
                     updating={extensionsUpdatingStatus}
                     installing={extensionsInstallingStatus}
                     entities={remoteData.extensions.result.module.entities} />
@@ -340,6 +466,7 @@ class ExtensionsRoute extends Component {
                     onUpdate={this.updateById}
                     titleIcon={"puzzle"}
                     title="Widgets"
+                    type={'widget'}
                     updating={extensionsUpdatingStatus}
                     installing={extensionsInstallingStatus}
                     entities={remoteData.extensions.result.widget.entities} />
@@ -350,11 +477,11 @@ class ExtensionsRoute extends Component {
         }
 
         {
-          remoteData.extensionDetails && modalDetailsActive && !modalDetailsLoading ? (
+          extensionDetails && modalDetailsActive && !modalDetailsLoading ? (
             <Centreon.ExtensionDetailsPopup
               onCloseClicked={this.hideExtensionDetails.bind(this)}
               onVersionClicked={this.versionClicked}
-              modalDetails={remoteData.extensionDetails.result}
+              modalDetails={extensionDetails}
             />
           ) : null
         }
@@ -382,14 +509,12 @@ const mapStateToProps = ({ remoteData }) => ({
 })
 
 
-const mapDispatchToProps = {
-  getAxiosData: (data) => {
-    return {
-      type: '@axios/GET_DATA',
-      ...data
-    }
+const mapDispatchToProps = dispatch => ({
+  xhr: (data) => {
+    const { requestType } = data;
+    return Centreon.Axios(data, dispatch, requestType)
   }
-};
+});
 
 
 export default connect(mapStateToProps, mapDispatchToProps)(ExtensionsRoute);
