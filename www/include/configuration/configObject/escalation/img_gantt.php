@@ -66,11 +66,13 @@ if (isset($_GET["service_id"]) && $_GET["service_id"] != null) {
         . "min(esc.first_notification) nb_firstmin_service, "
         . "max(esc.first_notification) nb_firstmax_service "
         . "FROM escalation_service_relation ehr, escalation esc "
-        . "WHERE ehr.service_service_id = ".$_GET["service_id"]." "
+        . "WHERE ehr.service_service_id = ? "
         . "AND ehr.escalation_esc_id = esc.esc_id "
         . "ORDER BY esc.first_notification";
-    $res_max = $pearDB->query($max_notif);
+    $stmt = $pearDB->prepare($max_notif);
+    $res_max = $pearDB->execute($stmt, array($_GET["service_id"]));
     $nb_max = $res_max->fetchRow();
+
     $nb_max["nb_firstmin_service"] != null
         ? $min_notif = $nb_max["nb_firstmin_service"]
         : $min_notif = 1;
@@ -90,10 +92,11 @@ if (isset($_GET["service_id"]) && $_GET["service_id"] != null) {
     $cmd = "SELECT esc.esc_id, esc.esc_name, esc.first_notification, ".
         "esc.last_notification, esc.notification_interval, esc.esc_comment ".
         "FROM escalation_service_relation ehr, escalation esc ".
-        "WHERE ehr.service_service_id = ".$_GET["service_id"]." ".
+        "WHERE ehr.service_service_id = ? ".
         "AND ehr.escalation_esc_id = esc.esc_id ".
         "ORDER BY esc.first_notification desc ";
-    $res_esc_svc = $pearDB->query($cmd);
+    $stmt = $pearDB->prepare($cmd);
+    $res_esc_svc = $pearDB->execute($stmt, array($_GET["service_id"]));
     $nb_esc = $res_esc_svc->numRows();
     $nb_esc_default = $nb_esc;
     $nb_esc != null ? $nb_esc = $nb_esc : $nb_esc = 1;
@@ -109,24 +112,27 @@ if (isset($_GET["service_id"]) && $_GET["service_id"] != null) {
         "AND ecr.escalation_esc_id = esc.esc_id ".
         "AND ecr.contactgroup_cg_id = cg.cg_id ".
         "ORDER BY esc.first_notification desc ";
-    $nb_svc = $pearDB->query($cmd);
+    $stmt = $pearDB->prepare($cmd);
+    $nb_svc = $pearDB->execute($stmt, array($_GET["service_id"]));
     $nb_esc_tot = $nb_svc->numRows();
     $nb_esc_tot != null ? $nb_esc_tot = $nb_esc_tot : $nb_esc_tot = 1;
 
     # retrieve all contactgroup correspond to service
     $cg_host = "SELECT cg.cg_name ".
     "FROM contactgroup cg, contactgroup_service_relation csr ".
-    "WHERE csr.service_service_id = ".$_GET["service_id"]." ".
+    "WHERE csr.service_service_id = ? ".
     "AND csr.contactgroup_cg_id = cg.cg_id";
-    $res_cg_service = $pearDB->query($cg_host);
+    $stmt = $pearDB->prepare($cg_host);
+    $res_cg_service = $pearDB->execute($stmt, array($_GET["service_id"]));
     $max_contact_service = $res_cg_service->numRows();
 
     # retrieve max length contactgroup of service
     $cg_svc_length = "SELECT max(length(cg.cg_name)) max_length ".
     "FROM contactgroup cg, contactgroup_service_relation csr ".
-    "WHERE csr.service_service_id = ".$_GET["service_id"]." ".
+    "WHERE csr.service_service_id = ? ".
     "AND csr.contactgroup_cg_id = cg.cg_id";
-    $res_svc_max = $pearDB->query($cg_svc_length);
+    $stmt = $pearDB->prepare($cg_svc_length);
+    $res_svc_max = $pearDB->execute($stmt, array($_GET["service_id"]));
     $cg_contactgroup_svc_max = $res_svc_max->fetchRow();
     $max_contact_length = $cg_contactgroup_svc_max["max_length"];
 } elseif (isset($_GET["host_id"]) && $_GET["host_id"] != null) {
@@ -136,10 +142,11 @@ if (isset($_GET["service_id"]) && $_GET["service_id"] != null) {
         "min(esc.first_notification) nb_firstmin_host ,".
         "max(esc.first_notification) nb_firstmax_host ".
         "FROM escalation_host_relation ehr, escalation esc ".
-        "WHERE ehr.host_host_id = ".$_GET["host_id"]." ".
+        "WHERE ehr.host_host_id = ? ".
         "AND ehr.escalation_esc_id = esc.esc_id ".
         "ORDER BY esc.first_notification";
-    $res_max = $pearDB->query($max_notif);
+    $stmt = $pearDB->prepare($max_notif);
+    $res_max = $pearDB->execute($stmt, array($_GET["host_id"]));
     $nb_max = $res_max->fetchRow();
     $nb_max["nb_firstmax_host"] != null
         ? $max_min_notif = $nb_max["nb_firstmax_host"]
@@ -160,10 +167,11 @@ if (isset($_GET["service_id"]) && $_GET["service_id"] != null) {
     $cmd = "SELECT esc.esc_id, esc.esc_name, esc.first_notification, ".
         "esc.last_notification, esc.notification_interval, esc.esc_comment ".
         "FROM escalation_host_relation ehr, escalation esc ".
-        "WHERE ehr.host_host_id = ".$_GET["host_id"]." ".
+        "WHERE ehr.host_host_id = ? ".
         "AND ehr.escalation_esc_id = esc.esc_id ".
         "ORDER BY esc.first_notification desc ";
-    $res_esc_host = $pearDB->query($cmd);
+    $stmt = $pearDB->prepare($cmd);
+    $res_esc_host = $pearDB->execute($stmt, array($_GET["host_id"]));
     $nb_esc = $res_esc_host->numRows();
     $nb_esc_default = $nb_esc;
     $nb_esc != null ? $nb_esc = $nb_esc : $nb_esc = 1;
@@ -174,29 +182,32 @@ if (isset($_GET["service_id"]) && $_GET["service_id"] != null) {
         "esc.notification_interval, esc.esc_comment ".
         "FROM escalation_host_relation ehr, escalation esc, ".
         "contactgroup cg, escalation_contactgroup_relation ecr ".
-        "WHERE ehr.host_host_id = ".$_GET["host_id"]." ".
+        "WHERE ehr.host_host_id = ? ".
         "AND ehr.escalation_esc_id = esc.esc_id ".
         "AND ecr.escalation_esc_id = esc.esc_id ".
         "AND ecr.contactgroup_cg_id = cg.cg_id ".
         "ORDER BY esc.first_notification desc ";
-    $nb_host = $pearDB->query($cmd);
+    $stmt = $pearDB->prepare($cmd);
+    $nb_host = $pearDB->execute($stmt, array($_GET["host_id"]));
     $nb_esc_tot = $nb_host->numRows();
     $nb_esc_tot != null ? $nb_esc_tot = $nb_esc_tot : $nb_esc_tot = 1;
 
     # retrieve all contactgroup correspond to host
     $cg_host = "SELECT cg.cg_name ".
     "FROM contactgroup cg, contactgroup_host_relation chr ".
-    "WHERE chr.host_host_id = ".$_GET["host_id"]." ".
+    "WHERE chr.host_host_id = ? ".
     "AND chr.contactgroup_cg_id = cg.cg_id";
-    $res_cg_host = $pearDB->query($cg_host);
+    $stmt = $pearDB->prepare($cg_host);
+    $res_cg_host = $pearDB->execute($stmt, array($_GET["host_id"]));
     $max_contact_service = $res_cg_host->numRows();
 
     # retrieve the max length contactgroup
     $cg_max_length = "SELECT max(length(cg.cg_name)) max_length ".
     "FROM contactgroup cg, contactgroup_host_relation chr ".
-    "WHERE chr.host_host_id = ".$_GET["host_id"]." ".
+    "WHERE chr.host_host_id = ? ".
     "AND chr.contactgroup_cg_id = cg.cg_id";
-    $res_length_contact = $pearDB->query($cg_max_length);
+    $stmt = $pearDB->prepare($cg_max_length);
+    $res_length_contact = $pearDB->execute($stmt, array($_GET["host_id"]));
     $cg_contactgroup_host_max = $res_length_contact->fetchRow();
     $max_contact_length = $cg_contactgroup_host_max["max_length"];
 } elseif (isset($_GET["hostgroup_id"]) && $_GET["hostgroup_id"] != null) {
@@ -206,10 +217,11 @@ if (isset($_GET["service_id"]) && $_GET["service_id"] != null) {
         "min(esc.first_notification) nb_firstmin_hostgroup, ".
         "max(esc.first_notification) nb_firstmax_hostgroup ".
         "FROM escalation_hostgroup_relation ehr, escalation esc ".
-        "WHERE ehr.hostgroup_hg_id = ".$_GET["hostgroup_id"]." ".
+        "WHERE ehr.hostgroup_hg_id = ? ".
         "AND ehr.escalation_esc_id = esc.esc_id ".
         "ORDER BY esc.first_notification";
-    $res_max = $pearDB->query($max_notif);
+    $stmt = $pearDB->prepare($cg_max_length);
+    $res_max = $pearDB->execute($stmt, array($_GET["hostgroup_id"]));
     $nb_max = $res_max->fetchRow();
     $nb_max["nb_firstmin_hostgroup"] != null
         ? $min_notif = $nb_max["nb_firstmin_hostgroup"]
@@ -230,10 +242,11 @@ if (isset($_GET["service_id"]) && $_GET["service_id"] != null) {
     $cmd = "SELECT esc.esc_id, esc.esc_name, esc.first_notification, ".
         "esc.last_notification, esc.notification_interval, esc.esc_comment ".
         "FROM escalation_hostgroup_relation ehr, escalation esc ".
-        "WHERE ehr.hostgroup_hg_id = ".$_GET["hostgroup_id"]." ".
+        "WHERE ehr.hostgroup_hg_id = ? ".
         "AND ehr.escalation_esc_id = esc.esc_id ".
         "ORDER BY esc.first_notification desc ";
-    $res_esc_hostgroup = $pearDB->query($cmd);
+    $stmt = $pearDB->prepare($cmd);
+    $res_esc_hostgroup = $pearDB->execute($stmt, array($_GET["hostgroup_id"]));
     $nb_esc = $res_esc_hostgroup->numRows();
     $nb_esc_default = $nb_esc;
     $nb_esc != null ? $nb_esc = $nb_esc : $nb_esc = 1;
@@ -244,29 +257,32 @@ if (isset($_GET["service_id"]) && $_GET["service_id"] != null) {
         "esc.notification_interval, esc.esc_comment ".
         "FROM escalation_hostgroup_relation ehr, escalation esc, ".
         "contactgroup cg, escalation_contactgroup_relation ecr ".
-        "WHERE ehr.hostgroup_hg_id = ".$_GET["hostgroup_id"]." ".
+        "WHERE ehr.hostgroup_hg_id = ? ".
         "AND ehr.escalation_esc_id = esc.esc_id ".
         "AND ecr.escalation_esc_id = esc.esc_id ".
         "AND ecr.contactgroup_cg_id = cg.cg_id ".
         "ORDER BY esc.first_notification desc ";
-    $nb_hostgroup = $pearDB->query($cmd);
+    $stmt = $pearDB->prepare($cmd);
+    $nb_hostgroup = $pearDB->execute($stmt, array($_GET["hostgroup_id"]));
     $nb_esc_tot = $nb_hostgroup->numRows();
     $nb_esc_tot != null ? $nb_esc_tot = $nb_esc_tot : $nb_esc_tot = 1;
 
     # retrieve all contactgroup correspond to hostgroup
     $cg_host = "SELECT cg.cg_name ".
     "FROM contactgroup cg, contactgroup_hostgroup_relation chr ".
-    "WHERE chr.hostgroup_hg_id = ".$_GET["hostgroup_id"]." ".
+    "WHERE chr.hostgroup_hg_id = ? ".
     "AND chr.contactgroup_cg_id = cg.cg_id";
-    $res_cg_hostgroup = $pearDB->query($cg_host);
+    $stmt = $pearDB->prepare($cg_host);
+    $res_cg_hostgroup = $pearDB->execute($stmt, array($_GET["hostgroup_id"]));
     $max_contact_service = $res_cg_hostgroup->numRows();
 
     # retrieve max length contactgroup of hostgroup
     $cg_svc_length = "SELECT max(length(cg.cg_name)) max_length ".
     "FROM contactgroup cg, contactgroup_hostgroup_relation chr ".
-    "WHERE chr.hostgroup_hg_id = ".$_GET["hostgroup_id"]." ".
+    "WHERE chr.hostgroup_hg_id = ? ".
     "AND chr.contactgroup_cg_id = cg.cg_id";
-    $res_svc_max = $pearDB->query($cg_svc_length);
+    $stmt = $pearDB->prepare($cg_svc_length);
+    $res_svc_max = $pearDB->execute($stmt, array($_GET["hostgroup_id"]));
     $cg_contactgroup_svc_max = $res_svc_max->fetchRow();
     $max_contact_length = $cg_contactgroup_svc_max["max_length"];
 }
@@ -421,9 +437,10 @@ if (isset($_GET["service_id"]) && $_GET["service_id"] != null) {
         # retrieve contactgroup associated with the escalation service
         $cmd_contactgroup = "SELECT cg.cg_name ".
             "FROM contactgroup cg, escalation_contactgroup_relation ecr ".
-            "WHERE ecr.escalation_esc_id = ".$esc_svc_data["esc_id"]." ".
+            "WHERE ecr.escalation_esc_id = ? ".
             "AND ecr.contactgroup_cg_id = cg.cg_id";
-        $res_cg = $pearDB->query($cmd_contactgroup);
+        $stmt = $pearDB->prepare($cmd_contactgroup);
+        $res_cg = $pearDB->execute($stmt, array($esc_svc_data["esc_id"]));
         $max_contact = $res_cg->numRows();
         $pas_tmp =
             ($max_contact * 20 > $pas_graduation_y
@@ -553,9 +570,10 @@ if (isset($_GET["service_id"]) && $_GET["service_id"] != null) {
         # retrieve contactgroup associated with the escalation host
         $cmd_contactgroup = "SELECT cg.cg_name ".
         "FROM contactgroup cg, escalation_contactgroup_relation ecr ".
-        "WHERE ecr.escalation_esc_id = ".$esc_host_data["esc_id"]." ".
+        "WHERE ecr.escalation_esc_id = ? ".
         "AND ecr.contactgroup_cg_id = cg.cg_id";
-        $res_cg = $pearDB->query($cmd_contactgroup);
+        $stmt = $pearDB->prepare($cmd_contactgroup);
+        $res_cg = $pearDB->execute($stmt, array($esc_host_data["esc_id"]));
         $max_contact = $res_cg->numRows();
         $pas_tmp =
             ($max_contact * 20 > $pas_graduation_y
@@ -645,7 +663,8 @@ if (isset($_GET["service_id"]) && $_GET["service_id"] != null) {
             "FROM contactgroup cg, escalation_contactgroup_relation ecr ".
             "WHERE ecr.escalation_esc_id = ".$esc_hostgroup_data["esc_id"]." ".
             "AND ecr.contactgroup_cg_id = cg.cg_id";
-        $res_cg = $pearDB->query($cmd_contactgroup);
+        $stmt = $pearDB->prepare($cmd_contactgroup);
+        $res_cg = $pearDB->execute($stmt, array($esc_hostgroup_data["esc_id"]));
         $max_contact = $res_cg->numRows();
         $pas_tmp =
             ($max_contact * 20 > $pas_graduation_y
