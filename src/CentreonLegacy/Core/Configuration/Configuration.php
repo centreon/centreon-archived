@@ -38,6 +38,9 @@ namespace CentreonLegacy\Core\Configuration;
 use CentreonModule\Infrastructure\Source\ModuleSource;
 use CentreonModule\Infrastructure\Source\WidgetSource;
 
+/**
+ * Service provide configuration data
+ */
 class Configuration
 {
     const CENTREON_PATH = 'centreon_path';

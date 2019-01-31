@@ -40,6 +40,9 @@ use CentreonLegacy\ServiceProvider;
 use DateTime;
 use CentreonLegacy\Core\Module\Exception;
 
+/**
+ * Check module requirements and health
+ */
 class Healthcheck
 {
 
@@ -75,6 +78,15 @@ class Healthcheck
         ;
     }
 
+    /**
+     * Check module requirements and health
+     *
+     * @param string $module
+     * @return bool|null
+     * @throws Exception\HealthcheckNotFoundException
+     * @throws Exception\HealthcheckCriticalException
+     * @throws Exception\HealthcheckWarningException
+     */
     public function check( $module ): ?bool
     {
         // reset messages stack
@@ -183,6 +195,9 @@ class Healthcheck
         return $result;
     }
 
+    /**
+     * Reset collected data after check
+     */
     public function reset()
     {
         $this->messages = null;

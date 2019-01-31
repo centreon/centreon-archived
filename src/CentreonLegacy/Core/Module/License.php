@@ -38,6 +38,9 @@ namespace CentreonLegacy\Core\Module;
 use Psr\Container\ContainerInterface;
 use CentreonLegacy\ServiceProvider;
 
+/**
+ * License service provide information about module licenses
+ */
 class License extends Module
 {
 
@@ -78,7 +81,8 @@ class License extends Module
     /**
      * Get license expiration date
      *
-     * @return false|string
+     * @param string $module
+     * @return string
      */
     public function getLicenseExpiration( $module )
     {
@@ -89,9 +93,7 @@ class License extends Module
         } catch (\Exception $ex) { }
 
         if ($healthcheck->getLicenseExpiration()) {
-            return $healthcheck->getLicenseExpiration()
-                    ->format('F d, Y')
-            ;
+            return $healthcheck->getLicenseExpiration()->format('F d, Y');
         }
 
         return _("N/A");
