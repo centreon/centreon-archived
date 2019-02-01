@@ -35,8 +35,11 @@ class HostConfigurationContext extends CentreonContext
 
     protected $hostCategory1 = array(
         'name' => 'hostCategoryName1',
-        'alias' => 'hostCategoryAlias1'
-    );
+        'alias' => 'hostCategoryAlias1',
+        'severity' => 1,
+        'severity_level' => 2,
+        'severity_icon' => '       centreon (png)',
+   );
 
     protected $hostCategory2 = array(
         'name' => 'hostCategoryName2',
@@ -60,6 +63,9 @@ class HostConfigurationContext extends CentreonContext
         'snmp_community' => 'hostSnmpCommunity',
         'snmp_version' => '1',
         'location' => 'America/Caracas',
+        'templates' => [
+            'generic-host'
+        ],
         'check_command' => 'check_http',
         'command_arguments' => 'hostCommandArgument',
         'check_period' => 'workhours',
@@ -409,14 +415,6 @@ class HostConfigurationContext extends CentreonContext
      */
     public function checkForTemplates()
     {
-        /* Add search to select2 */
-        $inputField = $this->assertFind('css', 'select#tpSelect');
-
-        /* Open the select2 */
-        $choice = $inputField->getParent()->find('css', '.select2-selection');
-        if (!$choice) {
-            throw new \Exception('No select2 choice found');
-        }
         $mythis = $this;
         $this->spin(
             function ($context) use ($mythis) {
