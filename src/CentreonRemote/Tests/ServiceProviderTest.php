@@ -39,14 +39,16 @@ class ServiceProviderTest extends TestCase
 
         $locator = new ServiceLocator($this->container, ['realtime_db', 'configuration_db']);
         $this->container[\Centreon\ServiceProvider::CENTREON_DB_MANAGER] = new \Centreon\Infrastructure\Service\CentreonDBManagerService($locator);
-        $this->container[\Centreon\ServiceProvider::CENTREON_WEBSERVICE] = $this->container['centreon.clapi'] = new class {
-            public function add($class)
-            {
+        $this->container[\Centreon\ServiceProvider::CENTREON_WEBSERVICE] = $this
+            ->container[\Centreon\ServiceProvider::CENTREON_CLAPI] = new class {
 
-            }
-        };
+                public function add($class)
+                {
+                    
+                }
+            };
 
-        $this->container['centreon.broker_repository'] =
+        $this->container[\Centreon\ServiceProvider::CENTREON_BROKER_REPOSITORY] =
             new \Centreon\Domain\Repository\CfgCentreonBrokerRepository($this->container['configuration_db']);
         $this->container['centreon.broker_configuration_service'] =
             new \Centreon\Domain\Service\BrokerConfigurationService();
