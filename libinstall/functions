@@ -1234,6 +1234,11 @@ function reload_service_apache() {
 	    local count_service=$(/bin/systemctl list-units | grep httpd | wc -l)
 	    if [ "$count_service" -gt "0" ] ; then
 	        service="httpd"
+        else
+            count_service=$(/bin/systemctl list-units | grep apache2 | wc -l)
+            if [ "$count_service" -gt "0" ] ; then
+                service="apache2"
+            fi
 	    fi
 	elif [ -x /etc/init.d/apache2 ] ; then
 		service="apache2"
@@ -1362,6 +1367,7 @@ function configure_php_fpm() {
     fi
 
 	if [ "$write_config" -eq 1 ] ; then
+	    dir_test_create "$CENTREON_VARLIB/sessions"
         if [ "$upgrade" -eq 1 ] ; then
             cp -f $dir_conf/centreon.php-fpm.conf $DIR_PHP_FPM_CONF/centreon.conf.new >> $LOG_FILE 2>&1
         else
@@ -1404,11 +1410,10 @@ pm.max_children = 30
 pm.process_idle_timeout = 10s
 pm.max_requests = 500
 rlimit_files = 4096
-php_admin_value[error_log] = /var/opt/rh/rh-php71/log/php-fpm/centreon-error.log
+php_admin_value[error_log] = $CENTREON_LOG/centreon-error.log
 php_admin_flag[log_errors] = on
 php_value[session.save_handler] = files
-php_value[session.save_path]    = /var/opt/rh/rh-php71/lib/php/session
-php_value[soap.wsdl_cache_dir]  = /var/opt/rh/rh-php71/lib/php/wsdlcache
+php_value[session.save_path]    = $CENTREON_VARLIB/sessions
 
 __EOT__
 

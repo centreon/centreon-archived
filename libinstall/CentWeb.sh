@@ -346,14 +346,14 @@ $INSTALL_DIR/cinstall $cinstall \
     $INSTALL_DIR_CENTREON/www >> "$LOG_FILE" 2>&1
 
 $INSTALL_DIR/cinstall $cinstall_opts \
-    -u "$CENTREON_USER" -g "$CENTREON_GROUP" -d 775 -m 775 \
+    -u "$CENTREON_USER" -g "$CENTREON_GROUP" -d 755 -m 644 \
     -p $TMP_DIR/final/www \
     $TMP_DIR/final/www/* $INSTALL_DIR_CENTREON/www/ >> "$LOG_FILE" 2>&1
 check_result $? "$(gettext "Install CentWeb (web front of centreon)")"
 
 cp -f $TMP_DIR/final/www/.htaccess $INSTALL_DIR_CENTREON/www/ >> "$LOG_FILE" 2>&1
 $CHOWN $WEB_USER:$WEB_GROUP $INSTALL_DIR_CENTREON/www/.htaccess
-$CHMOD 775 $INSTALL_DIR_CENTREON/www/.htaccess
+$CHMOD 644 $INSTALL_DIR_CENTREON/www/.htaccess
 
 cp -Rf $TMP_DIR/final/src $INSTALL_DIR_CENTREON/ >> "$LOG_FILE" 2>&1
 $CHOWN -R $WEB_USER:$WEB_GROUP $INSTALL_DIR_CENTREON/src
@@ -427,7 +427,7 @@ chmod -R g+rwxs $CENTREON_GENDIR/installDir
 log "INFO" "$(gettext "Copying GPL_LIB")"
 $INSTALL_DIR/cinstall $cinstall_opts \
     -u "$CENTREON_USER" -g "$CENTREON_GROUP" -d 755 -m 644 \
-    $TMP_DIR/final/GPL_LIB $INSTALL_DIR_CENTREON/GPL_LIB >> "$LOG_FILE" 2>&1
+    $TMP_DIR/final/GPL_LIB/* $INSTALL_DIR_CENTREON/GPL_LIB/ >> "$LOG_FILE" 2>&1
 check_result $? "$(gettext "Install libraries")"
 
 log "INFO" "$(gettext "Add right for Smarty cache and compile")"
@@ -485,7 +485,7 @@ cp -f $TMP_DIR/work/cron/centreon-backup.pl \
 log "INFO" "$(gettext "Install cron directory")"
 $INSTALL_DIR/cinstall $cinstall_opts \
     -u "$CENTREON_USER" -g "$CENTREON_GROUP" -d 755 -m 644 \
-    $TMP_DIR/final/cron $INSTALL_DIR_CENTREON/cron >> "$LOG_FILE" 2>&1
+    $TMP_DIR/final/cron/* $INSTALL_DIR_CENTREON/cron/ >> "$LOG_FILE" 2>&1
 check_result $? "$(gettext "Install cron directory")"
 
 log "INFO" "$(gettext "Change right for eventReportBuilder")"

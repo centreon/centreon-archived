@@ -325,20 +325,12 @@ Definition of installation paths
           Start CentWeb Installation
   ------------------------------------------------------------------------
 
-  Do you want me to remove the centreon temporary working space to continue installation ?
-  [y/n], default to [y]:
-  > y
-
   Where is your Centreon directory ?
   default to [/usr/local/centreon]
   > /usr/share/centreon
+  Path /usr/share/centreon                                   OK
 
   ::
-
-  Do you want me to create this directory ? [/usr/share/centreon]
-  [y/n], default to [n]:
-  > y
-  Path /usr/share/centreon                                   OK
 
   Where is your Centreon log directory ?
   default to [/usr/local/centreon/log]
@@ -385,8 +377,8 @@ Definition of installation paths
 
   Where is PEAR [PEAR.php]
   default to [/usr/share/pear/PEAR.php]
-  >
-  Path to /usr/share/php/PEAR.php                            OK
+  > /usr/share/php/PEAR.php
+  Path /usr/share/php/PEAR.php                               OK
   /usr/bin/perl                                              OK
   Composer dependencies are installed                        OK
   Frontend application is built                              OK
@@ -446,17 +438,8 @@ Monitoring logs directory
   What is the Monitoring engine log directory ?[/var/log/centreon-engine]
   default to [/var/log/centreon-engine]
   >
-
-
-Plugin path
------------
-
-  ::
-
-  Where is your monitoring plugins (libexec) directory ?
-  default to [/usr/lib/nagios/plugins]
-  >
-  Path /usr/lib/nagios/plugins                               OK
+  Path                                                       OK
+  Path                                                       OK
   Add group centreon to user www-data                        OK
   Add group centreon to user centreon-engine                 OK
   Add group centreon-engine to user www-data                 OK
@@ -476,6 +459,10 @@ Sudo configuration
   Where is sudo configuration file ?
   default to [/etc/sudoers.d/centreon]
   >
+
+  Do you want me to create this file ? [/etc/sudoers.d/centreon]
+  [y/n], default to [n]:
+  >  y
   /etc/sudoers.d/centreon                                    OK
 
   What is the Monitoring engine binary ? [/usr/sbin/centengine]
@@ -493,8 +480,9 @@ Sudo configuration
   Where is your service command binary ?
   default to [/usr/sbin/service]
   >
+  Your sudo is not configured
 
-  Do you want me to reconfigure your sudo ? (WARNING)
+  Do you want me to configure your sudo ? (WARNING)
   [y/n], default to [n]:
   >  y
   Configuring Sudo                                           OK
@@ -510,13 +498,9 @@ Apache configuration
     	  Configure Apache server
   ------------------------------------------------------------------------
 
-  Finding Apache Centreon configuration file
-  '/etc/apache2/conf-available/centreon.conf' :              OK
-
-  Do you want to update Centreon Apache sub configuration file ?
+  Do you want to add Centreon Apache sub configuration file ?
   [y/n], default to [n]:
   > y
-  Backup Centreon Apache configuration completed
   Create '/etc/apache2/conf-available/centreon.conf'         OK
   Configuring Apache                                         OK
 
@@ -535,13 +519,10 @@ PHP FPM configuration
     	  Configure PHP FPM service
   ------------------------------------------------------------------------
 
-  Finding PHP FPM Centreon configuration file
-  'etc/php/7.1/fpm/pool.d/centreon.conf' :                   OK
-
-  Do you want to update Centreon PHP FPM sub configuration file ?
+  Do you want to add Centreon PHP FPM sub configuration file ?
   [y/n], default to [n]:
   > y
-  Backup Centreon PHP FPM configuration completed
+  Creating directory /var/lib/centroen/sessions              OK
   Create 'etc/php/7.1/fpm/pool.d/centreon.conf'              OK
   Configuring PHP FPM                                        OK
 
@@ -549,7 +530,6 @@ PHP FPM configuration
   [y/n], default to [n]:
   > y
   Reloading PHP FPM service                                  OK
-
   Preparing Centreon temporary files
   Change right on /var/log/centreon                          OK
   Change right on /etc/centreon                              OK
@@ -611,7 +591,7 @@ Pear module installation
   Pear Modules
   ------------------------------------------------------------------------
   Check PEAR modules
-  PEAR                            1.4.9       1.10.6         OK
+  PEAR                            1.4.9       1.10.8         OK
   DB                              1.7.6       1.9.2          OK
   Date                            1.4.6       1.4.7          OK
   All PEAR modules                                           OK
@@ -680,10 +660,6 @@ Poller communication subsystem (Centcore) installation
   Where is your Centreon binary directory
   default to [/usr/share/centreon/bin]
   >
-
-  Do you want me to create this directory ? [/usr/share/centreon/bin]
-  [y/n], default to [n]:
-  > y
   Path /usr/share/centreon/bin                               OK
   Preparing Centreon temporary files
   /tmp/centreon-setup exists, it will be moved...
@@ -716,7 +692,6 @@ Plugin installation
   ------------------------------------------------------------------------
   	  Starting Centreon Plugins Installation
   ------------------------------------------------------------------------
-  Path /var/lib/centreon/centplugins                         OK
   Path                                                       OK
   Path                                                       OK
 
@@ -740,9 +715,6 @@ Centreon SNMP trap management installation
    	  Starting CentreonTrapD Installation
   ------------------------------------------------------------------------
 
-  Do you want me to remove the centreon temporary working space to continue installation ?
-  [y/n], default to [y]:
-  > y
   Path                                                       OK
   Path                                                       OK
 
