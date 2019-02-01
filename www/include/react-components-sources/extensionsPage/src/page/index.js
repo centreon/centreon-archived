@@ -20,7 +20,8 @@ class ExtensionsRoute extends Component {
     extensionDetails: false,
     uploadingProgress: 0,
     uploadingFinished: false,
-    uploadingStarted: false
+    uploadingStarted: false,
+    licenseUploadStatus: false
   };
 
   componentDidMount = () => {
@@ -60,9 +61,12 @@ class ExtensionsRoute extends Component {
     );
   };
 
-  toggleLicenceUpload = () => {
+  togglelicenseUpload = () => {
     const { uploadToggled } = this.state;
     this.setState({
+      uploadingStarted: false,
+      uploadingFinished: false,
+      licenseUploadStatus: false,
       uploadToggled: !uploadToggled
     });
   };
@@ -309,12 +313,29 @@ class ExtensionsRoute extends Component {
   versionClicked = id => {};
 
   uploadFiles = files => {
-    console.log(files);
+    const { xhr } = this.props;
+    this.setState(
+      {
+        uploadingStarted: true
+      },
+      () => {
+        xhr({
+          requestType: "UPLOAD",
+          url: "./api/internal.php?object=centreon_license&action=file",
+          files: files
+        }).then(res => {
+          this.setState({
+            licenseUploadStatus: res,
+            uploadingFinished: true
+          });
+        });
+      }
+    );
   };
 
   render = () => {
     const { remoteData } = this.props;
-    const { extensions } = remoteData;
+    const { extensions, fileUploadProgress } = remoteData;
     const {
       modulesActive,
       deleteToggled,
@@ -331,7 +352,7 @@ class ExtensionsRoute extends Component {
       extensionsInstallingStatus,
       deletingEntity,
       extensionDetails,
-      uploadingProgress,
+      licenseUploadStatus,
       uploadingFinished,
       uploadingStarted
     } = this.state;
@@ -416,10 +437,10 @@ class ExtensionsRoute extends Component {
             )}
           />
           <Centreon.Button
-            label={"Upload licence"}
+            label={"Upload license"}
             buttonType="regular"
             color="blue"
-            onClick={this.toggleLicenceUpload.bind(this)}
+            onClick={this.togglelicenseUpload.bind(this)}
           />
         </Centreon.Wrapper>
         {extensions && !nothingShown ? (
@@ -467,11 +488,12 @@ class ExtensionsRoute extends Component {
 
         {uploadToggled ? (
           <Centreon.FileUpload
-            uploadingProgress={uploadingProgress}
+            uploadingProgress={fileUploadProgress}
+            uploadStatus={licenseUploadStatus}
             finished={uploadingFinished}
             uploading={uploadingStarted}
             onApply={this.uploadFiles}
-            onClose={this.toggleLicenceUpload.bind(this)}
+            onClose={this.togglelicenseUpload.bind(this)}
           />
         ) : null}
 
