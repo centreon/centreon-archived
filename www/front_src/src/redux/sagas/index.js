@@ -8,6 +8,7 @@ const rootSaga = function* rootSaga(){
         fork(axiosSagas.postAxiosData),
         fork(axiosSagas.putAxiosData),
         fork(axiosSagas.deleteAxiosData),
+        fork(axiosSagas.uploadAxiosData)
     ])
 }
 
