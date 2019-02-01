@@ -93,7 +93,7 @@ abstract class SourceAbstract implements SourceInterface
 
     public function remove(string $id)
     {
-        ($this->remover)($id, $recordId)->remove();
+        ($this->remover)($id)->remove();
     }
 
     public function isEligible(

@@ -57,6 +57,7 @@ class ModuleSourceTest extends TestCase
         SourceDependencyTrait;
 
     public static $moduleName = 'test-module';
+    public static $moduleNameMissing = 'missing-module';
     public static $moduleInfo = [
         'rname' => 'Curabitur congue porta neque',
         'name' => 'test-module',
@@ -73,6 +74,11 @@ class ModuleSourceTest extends TestCase
             [
                 'id' => 'test-module',
                 'version' => 'x.y.z',
+            ],
+        ],
+        "SELECT `id` FROM `modules_informations` WHERE `name` = :name LIMIT 0, 1" => [
+            [
+                'id' => '1',
             ],
         ],
     ];
@@ -122,7 +128,7 @@ class ModuleSourceTest extends TestCase
                     $result = 'vfs://modules/';
 
                     return $result;
-            }))
+                }))
         ;
         $this->source
             ->method('getModuleConf')
@@ -132,7 +138,7 @@ class ModuleSourceTest extends TestCase
                     ];
 
                     return $result;
-            }))
+                }))
         ;
     }
 
@@ -148,14 +154,14 @@ class ModuleSourceTest extends TestCase
 
         $this->assertTrue(is_array($result));
 
-        $result2 = $this->source->getList('missing-module');
+        $result2 = $this->source->getList(static::$moduleNameMissing);
         $this->assertEquals([], $result2);
     }
 
     public function testGetDetail()
     {
         (function () {
-            $result = $this->source->getDetail('missing-module');
+            $result = $this->source->getDetail(static::$moduleNameMissing);
 
             $this->assertNull($result);
         })();
@@ -165,6 +171,26 @@ class ModuleSourceTest extends TestCase
 
             $this->assertInstanceOf(Module::class, $result);
         })();
+    }
+
+    public function testRemove()
+    {
+        try {
+            $this->source->remove(static::$moduleNameMissing);
+        } catch (\Exception $ex) {
+            $this->assertEquals(static::$moduleNameMissing, $ex->getMessage());
+            $this->assertEquals(1, $ex->getCode()); // check moduleId
+        }
+
+        $this->source->remove(static::$moduleName);
+    }
+
+    public function testInitInfo()
+    {
+        $this->source->initInfo();
+        $this->assertAttributeEquals([
+            'test-module' => 'x.y.z',
+            ], 'info', $this->source);
     }
 
     public function testCreateEntityFromConfig()

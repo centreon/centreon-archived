@@ -78,6 +78,9 @@ class CentreonModuleServiceTest extends TestCase
                 ->setMethods([
                     'getList',
                     'getDetail',
+                    'install',
+                    'update',
+                    'remove',
                 ])
                 ->getMock()
             ;
@@ -85,21 +88,57 @@ class CentreonModuleServiceTest extends TestCase
             $sources[$type]
                 ->method('getList')
                 ->will($this->returnCallback(function () use ($type) {
-                    return [$type];
-                }))
+                        return [$type];
+                    }))
             ;
             $sources[$type]
                 ->method('getDetail')
                 ->will($this->returnCallback(function () use ($type) {
-                    $entity = new Module();
-                    $entity->setType($type);
-                    $entity->setName($type);
-                    $entity->setKeywords('test,module,lorem');
-                    $entity->setInstalled(true);
-                    $entity->setUpdated(false);
+                        $entity = new Module();
+                        $entity->setType($type);
+                        $entity->setName($type);
+                        $entity->setKeywords('test,module,lorem');
+                        $entity->setInstalled(true);
+                        $entity->setUpdated(false);
 
-                    return $entity;
-                }))
+                        return $entity;
+                    }))
+            ;
+            $sources[$type]
+                ->method('install')
+                ->will($this->returnCallback(function ($id) use ($type) {
+                        $entity = new Module();
+                        $entity->setId($id);
+                        $entity->setType($type);
+                        $entity->setName($type);
+                        $entity->setKeywords('test,module,lorem');
+                        $entity->setInstalled(true);
+                        $entity->setUpdated(false);
+
+                        return $entity;
+                    }))
+            ;
+            $sources[$type]
+                ->method('update')
+                ->will($this->returnCallback(function ($id) use ($type) {
+                        $entity = new Module();
+                        $entity->setId($id);
+                        $entity->setType($type);
+                        $entity->setName($type);
+                        $entity->setKeywords('test,module,lorem');
+                        $entity->setInstalled(true);
+                        $entity->setUpdated(false);
+
+                        return $entity;
+                    }))
+            ;
+            $sources[$type]
+                ->method('remove')
+                ->will($this->returnCallback(function ($id) use ($type) {
+                        if ($id === ModuleSourceTest::$moduleName) {
+                            throw new \Exception('Removed');
+                        }
+                    }))
             ;
         }
 
@@ -145,6 +184,68 @@ class CentreonModuleServiceTest extends TestCase
 
             $this->assertEquals(null, $result);
         })();
+    }
+
+    public function testInstall()
+    {
+        $result = $this->service->install(ModuleSourceTest::$moduleName, Source\ModuleSource::TYPE);
+
+        $this->assertInstanceOf(Module::class, $result);
+    }
+
+    /**
+     * @covers \CentreonModule\Infrastructure\Service\CentreonModuleService::install
+     */
+    public function testInstallMissingType()
+    {
+        $result = $this->service->install(ModuleSourceTest::$moduleName, 'missing-type');
+
+        $this->assertNull($result);
+    }
+
+    public function testUpdate()
+    {
+        $result = $this->service->update(ModuleSourceTest::$moduleName, Source\ModuleSource::TYPE);
+
+        $this->assertInstanceOf(Module::class, $result);
+    }
+
+    /**
+     * @covers \CentreonModule\Infrastructure\Service\CentreonModuleService::update
+     */
+    public function testUpdateMissingType()
+    {
+        $result = $this->service->update(ModuleSourceTest::$moduleName, 'missing-type');
+
+        $this->assertNull($result);
+    }
+
+    public function testRemove()
+    {
+        (function () {
+            $result = null;
+
+            try {
+                $result = $this->service->remove(ModuleSourceTest::$moduleName, Source\ModuleSource::TYPE);
+            } catch (\Exception $ex) {
+                $result = $ex->getMessage();
+            }
+
+            $this->assertEquals('Removed', $result);
+        })();
+
+        $result = $this->service->remove(ModuleSourceTest::$moduleNameMissing, Source\ModuleSource::TYPE);
+        $this->assertTrue($result);
+    }
+
+    /**
+     * @covers \CentreonModule\Infrastructure\Service\CentreonModuleService::remove
+     */
+    public function testRemoveMissingType()
+    {
+        $result = $this->service->remove(ModuleSourceTest::$moduleName, 'missing-type');
+
+        $this->assertNull($result);
     }
 
     /**
