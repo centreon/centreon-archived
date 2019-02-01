@@ -35,16 +35,11 @@ class HostConfigurationContext extends CentreonContext
 
     protected $hostCategory1 = array(
         'name' => 'hostCategoryName1',
-<<<<<<< HEAD
         'alias' => 'hostCategoryAlias1',
         'severity' => 1,
         'severity_level' => 2,
         'severity_icon' => '       centreon (png)',
    );
-=======
-        'alias' => 'hostCategoryAlias1'
-    );
->>>>>>> update template and status
 
     protected $hostCategory2 = array(
         'name' => 'hostCategoryName2',
@@ -411,17 +406,6 @@ class HostConfigurationContext extends CentreonContext
      */
     public function checkForTemplates()
     {
-<<<<<<< HEAD
-=======
-        /* Add search to select2 */
-        $inputField = $this->assertFind('css', 'select#tpSelect');
-
-        /* Open the select2 */
-        $choice = $inputField->getParent()->find('css', '.select2-selection');
-        if (!$choice) {
-            throw new \Exception('No select2 choice found');
-        }
->>>>>>> update template and status
         $mythis = $this;
         $this->spin(
             function ($context) use ($mythis) {
