@@ -71,7 +71,7 @@ class Healthcheck
      *
      * @param \Psr\Container\ContainerInterface $services
      */
-    public function __construct( ContainerInterface $services )
+    public function __construct(ContainerInterface $services)
     {
         $this->modulePath = $services->get(ServiceProvider::CONFIGURATION)
             ->getModulePath()
@@ -87,7 +87,7 @@ class Healthcheck
      * @throws Exception\HealthcheckCriticalException
      * @throws Exception\HealthcheckWarningException
      */
-    public function check( $module ): ?bool
+    public function check($module): ?bool
     {
         // reset messages stack
         $this->reset();
@@ -107,7 +107,7 @@ class Healthcheck
             $licenseExpiration = null;
             $customAction = null;
 
-            require_once $checklistDir . 'requirements.php';
+            $this->getRequirements($checklistDir, $message, $customAction, $warning, $critical, $licenseExpiration);
 
             // Necessary to implement the expiration date column in list modules page
             if (!empty($licenseExpiration)) {
@@ -133,12 +133,25 @@ class Healthcheck
     }
 
     /**
+     * @codeCoverageIgnore
+     * @param array $message
+     * @param array $customAction
+     * @param bool $warning
+     * @param bool $critical
+     * @param int $licenseExpiration
+     */
+    protected function getRequirements($checklistDir, &$message, &$customAction, &$warning, &$critical, &$licenseExpiration)
+    {
+        require_once $checklistDir . 'requirements.php';
+    }
+
+    /**
      * Made the check method compatible with moduleDependenciesValidator
      *
      * @param string $module
      * @return array|null
      */
-    public function checkPrepareResponse( $module ): ?array
+    public function checkPrepareResponse($module): ?array
     {
         $result = null;
 
@@ -177,8 +190,6 @@ class Healthcheck
                 'status' => 'notfound',
             ];
         } catch (\Exception $ex) {
-            var_dump($ex);
-            exit;
             $result = [
                 'status' => 'critical',
                 'message' => [
@@ -220,9 +231,9 @@ class Healthcheck
         return $this->licenseExpiration;
     }
 
-    protected function setMessages( array $message )
+    protected function setMessages(array $messages)
     {
-        foreach ($message as $errorMessage) {
+        foreach ($messages as $errorMessage) {
             $this->messages = [
                 'ErrorMessage' => $errorMessage['ErrorMessage'],
                 'Solution' => $errorMessage['Solution'],
@@ -230,7 +241,7 @@ class Healthcheck
         }
     }
 
-    protected function setCustomAction( array $customAction = null )
+    protected function setCustomAction(array $customAction = null)
     {
         if ($customAction !== null) {
             $this->customAction = [

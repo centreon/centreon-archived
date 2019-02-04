@@ -38,7 +38,6 @@ namespace CentreonLegacy;
 
 use Pimple\Container;
 use Pimple\Psr11\ServiceLocator;
-use Pimple\Psr11\Container as ContainerWrap;
 use CentreonLegacy\Core\Module\License;
 use Centreon\Infrastructure\Provider\AutoloadServiceProviderInterface;
 use CentreonLegacy\Core\Module;
@@ -185,7 +184,7 @@ class ServiceProvider implements AutoloadServiceProviderInterface
 
         // alias to centreon.legacy.module.license service
         $pimple[static::CENTREON_LEGACY_LICENSE] = function (Container $container): License {
-            return $container[ServiceProvider::CENTREON_LEGACY_MODULE_];
+            return $container[ServiceProvider::CENTREON_LEGACY_MODULE_LICENSE];
         };
     }
 
