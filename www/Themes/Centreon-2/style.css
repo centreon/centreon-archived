@@ -2634,3 +2634,10 @@ ul.module_list {
   height: 100%;
   margin-bottom: 20px;
 }
+
+/* Inline checkbox */
+.checkbox-inline {
+  display: inline-block;
+  white-space: nowrap;
+  margin-right: 10px;
+}

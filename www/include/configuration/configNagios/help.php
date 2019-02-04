@@ -913,6 +913,18 @@ $help["use_check_result_path"] = dgettext(
     "help",
     "This option enable or disable compatibility mode to use check result path."
 );
+$help["enable_macros_filter"] = dgettext(
+    "help",
+    "This option enable the filtering of macros sent to Centreon Broker. The list of macros is defined below."
+);
+$help["macros_filter"] = dgettext(
+    "help",
+    "Only the macros listed will be send to Centreon Broker if the Enable macros filter is enable."
+);
+$help["event_broker_to_log"] = dgettext(
+    "help",
+    "The list of Centreon Engine log send to Centreon Broker to store into the database."
+);
 
 /*
  * unsupported in centreon
