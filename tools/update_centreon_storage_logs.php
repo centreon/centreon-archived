@@ -296,7 +296,7 @@ TEXT;
     }
     $currentStep++;
 
-    // We create the new logs table and rename older
+    // We create the new logs table and rename the older
     $logs("We create the new logs table and rename the older");
     $db->query("CREATE TABLE logs_new LIKE logs");
     $currentStep++;
