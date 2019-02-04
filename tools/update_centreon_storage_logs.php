@@ -76,7 +76,7 @@ function askYesOrNoQuestion(string $question): bool
 }
 
 /**
- * Ask question. THe echo of keyboard can be disabled
+ * Ask question. The echo of keyboard can be disabled
  *
  * @param string $question Question to ask
  * @param bool $hidden Disable echo of keyboard
