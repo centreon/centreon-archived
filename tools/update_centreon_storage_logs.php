@@ -224,7 +224,7 @@ try {
     if (defined('port')) {
         $dbPort = port;
     } else {
-        $port = askQuestion("Please enter the port of the Centreon database : ");
+        $port = askQuestion("Please enter the port of the Centreon database: ");
         if (! is_numeric($port)) {
             throw new Exception("The port given ($port) is not valid");
         }
@@ -243,7 +243,6 @@ try {
         $dbPassword = askQuestion("Please enter the root password of database: ", true);
     }
 
-    // This query is used to test access to the database
     try {
         $dsn = sprintf(
             "mysql:dbname=centreon_storage;host=%s;port=%d",
@@ -274,9 +273,6 @@ try {
 
     // We will process partitions that are not empty
     $partitions = getNotEmptyPartitions($db);
-    if (empty($partitions)) {
-        throw new Exception("No partitions found for the centreon_storage.logs table");
-    }
 
     if (! isset($shouldDeleteOldData)) {
         // We ask to user if he want to keep old data otherwise we will delete the old logs table
@@ -333,7 +329,7 @@ TEXT;
         $logs("Broker was not started at the beginning of this script, we do not start it");
     }
 
-    // Now we can copy old data to the new logs table
+    // Now we can copy old data to the new logs table only for partitions that are now empty
     foreach ($partitions as $partitionName => $nbrRows) {
         $currentStep = 1;
 
