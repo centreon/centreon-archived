@@ -538,8 +538,7 @@ INSERT INTO `cb_field` (`cb_field_id`, `fieldname`, `displayname`, `description`
 (69, 'storage_db_type', 'Storage DB type', 'Target DBMS.', 'select', NULL),
 (70, 'passive', 'Correlation passive', 'The passive mode is for the secondary Centreon Broker.', 'radio', NULL),
 (74, 'path', 'Path', 'Path of the lua script.', 'text', NULL),
-(75, 'connections_count', 'Connections count', 'Number of opened connection to the database.', 'int', NULL),
-(76, 'enable_command_cache', 'Enable command cache', 'Cache the executed command for better insert performance. Warning: This options use more memory.', 'radio', NULL);
+(75, 'connections_count', 'Connections count', 'Number of opened connection to the database.', 'int', NULL);
 
 INSERT INTO `cb_fieldgroup` (`cb_fieldgroup_id`, `groupname`, `displayname`, `multiple`, `group_parent_id`) VALUES
 (1, 'filters', '', 0, NULL),
@@ -591,8 +590,7 @@ INSERT INTO `cb_list` (`cb_list_id`, `cb_field_id`, `default_value`) VALUES
 (10, 62, 'false'),
 (1, 63, 'yes'),
 (1, 70, 'no'),
-(11, 73, 'string'),
-(1, 76, 'no');
+(11, 73, 'string');
 
 --
 -- Contenu de la table `cb_list_values`
@@ -811,8 +809,7 @@ INSERT INTO `cb_type_field_relation` (`cb_type_id`, `cb_field_id`, `is_required`
 (33, 72, 0, 3),
 (33, 71, 0, 4),
 (14, 75, 1, 18),
-(16, 75, 1, 20),
-(16, 76, 1, 21);
+(16, 75, 1, 20);
 
 --
 -- Contenu de la table `cb_type_field_relation`
