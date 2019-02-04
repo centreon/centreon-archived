@@ -278,7 +278,7 @@ try {
         // We ask to user if he want to keep old data otherwise we will delete the old logs table
         $explanation = <<<TEXT
 Before starting, we inform you that we will create a new centreon_storage.logs table and rename the older.
-Next, we will copy data from the older table to new one\n\n
+Then, we will copy the data from the older table to the new one\n\n
 TEXT;
         printf($explanation);
 
