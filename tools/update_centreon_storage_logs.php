@@ -198,12 +198,12 @@ try {
     if (defined('hostCentstorage')) {
         $dbHost = hostCentstorage;
     } else {
-        $dbHost = askQuestion("Please enter the host or IP address of the Centreon database : ");
+        $dbHost = askQuestion("Please enter the host or IP address of the Centreon database: ");
     }
 
     if (! isset($dbPassword)) {
         // We need a root access
-        $dbPassword = askQuestion("Please enter the root password of database : ", true);
+        $dbPassword = askQuestion("Please enter the root password of database: ", true);
     }
 
     // This query is used to test access to the database
@@ -238,7 +238,7 @@ try {
     // We will process partitions that are not empty
     $partitions = getNotEmptyPartitions($db);
     if (empty($partitions)) {
-        throw new Exception("No partitions found for centreon_storage.logs");
+        throw new Exception("No partitions found for the centreon_storage.logs table");
     }
 
     if (! isset($shouldDeleteOldData)) {
@@ -252,10 +252,9 @@ TEXT;
         $shouldDeleteOldData =
             !askYesOrNoQuestion("Do you want to keep the old logs table ?");
     }
-    // We stop Broker if it's started
+    // For consistency consideration, we stop broker before creating the new table
     if ($isBrokerAlreadyStarted) {
-        // Before creating the new table we stop Broker for more security
-        $logs("Before creating the new table we stop Broker for more security");
+        $logs("For consistency consideration, we stop broker before creating the new table");
         if (stopBroker() !== 0) {
             throw new Exception("Error stopping Broker");
         }
@@ -274,8 +273,8 @@ TEXT;
     $db->query("ALTER TABLE logs_new DROP COLUMN log_id");
     $currentStep++;
 
-    // We finish by rename the current table 'logs' to 'logs_old'
-    $logs("We finish by rename the current table 'logs' to 'logs_old'");
+    // Finally we rename the current table 'logs' to 'logs_old'
+    $logs("Finally we rename the current table 'logs' to 'logs_old'");
     $db->query("ALTER TABLE logs RENAME TO logs_old");
     $currentStep++;
 
