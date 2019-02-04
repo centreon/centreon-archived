@@ -47,22 +47,22 @@ class Healthcheck
 {
 
     /**
-     * @var string
+     * @var string Path to the module
      */
     protected $modulePath;
 
     /**
-     * @var array
+     * @var array Collect error messages after check
      */
     protected $messages;
 
     /**
-     * @var array
+     * @var array Collect a custom action after check
      */
     protected $customAction;
 
     /**
-     * @var \DateTime
+     * @var \DateTime Collect date and time of a license expiration
      */
     protected $licenseExpiration;
 
@@ -133,7 +133,10 @@ class Healthcheck
     }
 
     /**
+     * Load a file with requirements
+     *
      * @codeCoverageIgnore
+     * @param string $checklistDir
      * @param array $message
      * @param array $customAction
      * @param bool $warning

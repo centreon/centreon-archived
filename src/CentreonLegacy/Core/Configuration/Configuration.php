@@ -46,7 +46,6 @@ class Configuration
     const CENTREON_PATH = 'centreon_path';
 
     /**
-     *
      * @var array the global configuration
      */
     protected $configuration;
