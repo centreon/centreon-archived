@@ -1,6 +1,14 @@
 import axios from "axios";
 import * as actions from "../actions/axiosActions";
-import { put, takeLatest,takeEvery,all, fork, take, call } from "redux-saga/effects";
+import {
+  put,
+  takeLatest,
+  takeEvery,
+  all,
+  fork,
+  take,
+  call
+} from "redux-saga/effects";
 import { eventChannel, END } from "redux-saga";
 
 export function* getAxiosData() {
@@ -21,6 +29,19 @@ export function* deleteAxiosData() {
 
 export function* uploadAxiosData() {
   yield takeEvery(actions.UPLOAD_DATA, uploadRequest);
+}
+
+export function* resetUploadProgress() {
+  yield takeEvery(actions.RESET_UPLOAD_PROGRESS_DATA, resetProgress);
+}
+
+function* resetProgress(action) {
+  try {
+    yield put({ type: actions.FILE_UPLOAD_PROGRESS, data: { reset: true } });
+    action.resolve();
+  } catch (err) {
+    action.reject(err);
+  }
 }
 
 function upload({ files, url }, onProgress) {
@@ -67,47 +88,45 @@ function* watchOnProgress(channel) {
   }
 }
 
-function* uploadRequest(action){
+function* uploadRequest(action) {
   try {
     let data = {
-      status:false,
-      result:{
-        errors:[],
-        successed:[]
+      status: false,
+      result: {
+        errors: [],
+        successed: []
       }
     };
-    const responses = yield all(action.files.map((file, idx)=> call(uploadSource, {...action, files:[file], fileIndex:idx})));
-    
-    for(let response of responses){
-      if(response.result.errors){
+    const responses = yield all(
+      action.files.map((file, idx) =>
+        call(uploadSource, { ...action, files: [file], fileIndex: idx })
+      )
+    );
+
+    for (let response of responses) {
+      if (response.result.errors) {
         data = {
-          status:true,
-          result:{
+          status: true,
+          result: {
             ...data.result,
-            errors:[
-              ...data.result.errors,
-              ...response.result.errors
-            ]
+            errors: [...data.result.errors, ...response.result.errors]
           }
-        }
+        };
       }
-      if(response.result.successed){
+      if (response.result.successed) {
         data = {
-          status:true,
-          result:{
+          status: true,
+          result: {
             ...data.result,
-            successed:[
-              ...data.result.successed,
-              ...response.result.successed
-            ]
+            successed: [...data.result.successed, ...response.result.successed]
           }
-        }
+        };
       }
     }
     action.resolve(data);
-  }catch (err){
+  } catch (err) {
     action.reject(err);
-  } 
+  }
 }
 
 function* uploadSource(action) {

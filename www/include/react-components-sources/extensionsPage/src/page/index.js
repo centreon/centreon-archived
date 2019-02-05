@@ -312,6 +312,15 @@ class ExtensionsRoute extends Component {
 
   versionClicked = id => {};
 
+  resetUploadProgress = () => {
+    const { xhr } = this.props;
+    xhr({ requestType: "RESET_UPLOAD_PROGRESS" }).then(() => {
+      this.setState({
+        uploadingStarted: false
+      });
+    });
+  };
+
   uploadFiles = files => {
     const { xhr } = this.props;
     this.setState(
@@ -324,10 +333,15 @@ class ExtensionsRoute extends Component {
           url: "./api/internal.php?object=centreon_license&action=file",
           files: files
         }).then(res => {
-          this.setState({
-            licenseUploadStatus: res,
-            uploadingFinished: true
-          });
+          this.setState(
+            {
+              licenseUploadStatus: res,
+              uploadingFinished: true
+            },
+            () => {
+              this.resetUploadProgress();
+            }
+          );
         });
       }
     );
