@@ -236,7 +236,9 @@ $INIT_SCRIPT start
 ###
 output_log "Mount LVM snapshot"
 mkdir -p "$SNAPSHOT_MOUNT"
-mount /dev/$vg_name/dbbackup "$SNAPSHOT_MOUNT"
+TYPEFS_BACKUP=$(df -T "$datadir" | tail -1 | awk -F' ' '{print $(NF-5)}')
+[ "$TYPEFS_BACKUP"  = "xfs" ] && MNTOPTIONS="-o nouuid"
+mount $MNTOPTIONS /dev/$vg_name/dbbackup "$SNAPSHOT_MOUNT"
 if [ $? -eq 0 ]; then
     output_log "Device mounted successfully"
 else
