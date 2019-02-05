@@ -4,7 +4,7 @@ stage('Source') {
     dir('centreon-web') {
       checkout scm
     }
-    sh './centreon-build/jobs/web/18.10/mon-web-source.sh'
+    sh './centreon-build/jobs/web/19.04/mon-web-source.sh'
     source = readProperties file: 'source.properties'
     env.VERSION = "${source.VERSION}"
     env.RELEASE = "${source.RELEASE}"
@@ -24,7 +24,7 @@ try {
     parallel 'centos7': {
       node {
         sh 'setup_centreon_build.sh'
-        sh './centreon-build/jobs/web/18.10/mon-web-unittest.sh centos7'
+        sh './centreon-build/jobs/web/19.04/mon-web-unittest.sh centos7'
         junit 'ut.xml,jest-test-results.xml'
         if (currentBuild.result == 'UNSTABLE')
           currentBuild.result = 'FAILURE'
@@ -42,7 +42,7 @@ try {
         ])
         if (env.BRANCH_NAME == 'master') {
           withSonarQubeEnv('SonarQube') {
-            sh './centreon-build/jobs/web/18.10/mon-web-analysis.sh'
+            sh './centreon-build/jobs/web/19.04/mon-web-analysis.sh'
           }
         }
       }
@@ -50,7 +50,7 @@ try {
 //    'debian9': {
 //      node {
 //        sh 'setup_centreon_build.sh'
-//        sh './centreon-build/jobs/web/18.10/mon-web-unittest.sh debian9'
+//        sh './centreon-build/jobs/web/19.04/mon-web-unittest.sh debian9'
 //        junit 'ut.xml'
 //        if (currentBuild.result == 'UNSTABLE')
 //          currentBuild.result = 'FAILURE'
@@ -65,13 +65,13 @@ try {
     parallel 'centos7': {
       node {
         sh 'setup_centreon_build.sh'
-        sh './centreon-build/jobs/web/18.10/mon-web-package.sh centos7'
+        sh './centreon-build/jobs/web/19.04/mon-web-package.sh centos7'
       }
 //    },
 //    'debian9': {
 //      node {
 //        sh 'setup_centreon_build.sh'
-//        sh './centreon-build/jobs/web/18.10/mon-web-package.sh debian9'
+//        sh './centreon-build/jobs/web/19.04/mon-web-package.sh debian9'
 //      }
     }
     if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
@@ -83,7 +83,7 @@ try {
     parallel 'centos7': {
       node {
         sh 'setup_centreon_build.sh'
-        sh './centreon-build/jobs/web/18.10/mon-web-bundle.sh centos7'
+        sh './centreon-build/jobs/web/19.04/mon-web-bundle.sh centos7'
       }
     }
     if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
@@ -95,7 +95,7 @@ try {
     parallel 'centos7': {
       node {
         sh 'setup_centreon_build.sh'
-        sh './centreon-build/jobs/web/18.10/mon-web-acceptance.sh centos7 @critical'
+        sh './centreon-build/jobs/web/19.04/mon-web-acceptance.sh centos7 @critical'
         junit 'xunit-reports/**/*.xml'
         if (currentBuild.result == 'UNSTABLE')
           currentBuild.result = 'FAILURE'
@@ -112,7 +112,7 @@ try {
       parallel 'centos7': {
         node {
           sh 'setup_centreon_build.sh'
-          sh './centreon-build/jobs/web/18.10/mon-web-acceptance.sh centos7 ~@critical'
+          sh './centreon-build/jobs/web/19.04/mon-web-acceptance.sh centos7 ~@critical'
           junit 'xunit-reports/**/*.xml'
           if (currentBuild.result == 'UNSTABLE')
             currentBuild.result = 'FAILURE'
@@ -127,7 +127,7 @@ try {
     stage('Delivery') {
       node {
         sh 'setup_centreon_build.sh'
-        sh './centreon-build/jobs/web/18.10/mon-web-delivery.sh'
+        sh './centreon-build/jobs/web/19.04/mon-web-delivery.sh'
       }
       if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
         error('Delivery stage failure.');
