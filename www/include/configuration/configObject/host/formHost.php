@@ -432,11 +432,46 @@ $form->addElement('static', 'tplText', _("Using a Template allows you to have mu
 
 $tplDeRoute = './include/common/webServices/rest/internal.php?object=centreon_configuration_hosttemplate'
     . '&action=defaultValues&target=host&field=host_id&id=' . $host_id;
-$attrHostTpls1 = array_merge(
-    $attrHostTpls,
-    array('defaultDatasetRoute' => $tplDeRoute)
-);
+$attrHostTpls1 = array_merge($attrHostTpls, array('defaultDatasetRoute' => $tplDeRoute));
 $form->addElement('select2', 'tpSelect', _("Templates"), array(), $attrHostTpls1);
+
+$cloneSetMacro = array();
+$cloneSetMacro[] = $form->addElement(
+    'text',
+    'macroInput[#index#]',
+    _('Name'),
+    array(
+        'id' => 'macroInput_#index#',
+        'size' => 25
+    )
+);
+$cloneSetMacro[] = $form->addElement(
+    'text',
+    'macroValue[#index#]',
+    _('Value'),
+    array(
+        'id' => 'macroValue_#index#',
+        'size' => 25
+    )
+);
+$cloneSetMacro[] = $form->addElement(
+    'checkbox',
+    'macroPassword[#index#]',
+    _('Password'),
+    null,
+    array(
+        'id' => 'macroPassword_#index#',
+        'onClick' => 'javascript:change_macro_input_type(this, false)'
+    )
+);
+
+$cloneSetMacro[] = $form->addElement(
+    'hidden',
+    'macroFrom[#index#]',
+    'direct',
+    array('id' => 'macroFrom_#index#')
+);
+
 
 
 $dupSvTpl[] = $form->createElement('radio', 'dupSvTplAssoc', null, _("Yes"), '1');
@@ -1194,6 +1229,7 @@ if ($valid) {
     $tpl->assign('custom_macro_label', _('Custom macros'));
     $tpl->assign('template_inheritance', _('Template inheritance'));
     $tpl->assign('command_inheritance', _('Command inheritance'));
+    $tpl->assign('cloneSetMacro', $cloneSetMacro);
     $tpl->assign('centreon_path', $centreon->optGen['oreon_path']);
     //$tpl->assign("k", $k);
     $tpl->assign("tpl", 0);

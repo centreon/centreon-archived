@@ -63,9 +63,6 @@ class HostConfigurationContext extends CentreonContext
         'snmp_community' => 'hostSnmpCommunity',
         'snmp_version' => '1',
         'location' => 'America/Caracas',
-        'templates' => array(
-            'generic-host'
-        ),
         'check_command' => 'check_http',
         'command_arguments' => 'hostCommandArgument',
         'check_period' => 'workhours',
@@ -129,9 +126,6 @@ class HostConfigurationContext extends CentreonContext
         'snmp_community' => 'hostSnmpCommunity',
         'snmp_version' => '1',
         'location' => 'America/Caracas',
-        'templates' => array(
-            'generic-host'
-        ),
         'check_command' => 'check_http',
         'command_arguments' => 'hostCommandArgument',
         'check_period' => 'workhours',
@@ -198,9 +192,6 @@ class HostConfigurationContext extends CentreonContext
             'HOSTMACROCHANGED' => 5
         ),
         'location' => 'Europe/Paris',
-        'templates' => array(
-            'hostTemplateName'
-        ),
         'check_command' => 'check_https',
         'command_arguments' => 'hostCommandArgumentChanged',
         'check_period' => 'none',
