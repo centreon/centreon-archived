@@ -19,10 +19,3 @@ Feature: HostConfiguration
     Scenario: Delete one existing host
         When I delete the host
         Then the host is not visible anymore
-<<<<<<< HEAD
-=======
-
-    Scenario: Check for template select2
-        When I open the new host page
-        Then A select box allow to search a unique template and to select it
->>>>>>> update template and status
