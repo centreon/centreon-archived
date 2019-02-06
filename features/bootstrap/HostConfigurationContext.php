@@ -63,9 +63,9 @@ class HostConfigurationContext extends CentreonContext
         'snmp_community' => 'hostSnmpCommunity',
         'snmp_version' => '1',
         'location' => 'America/Caracas',
-        'templates' => [
+        'templates' => array(
             'generic-host'
-        ],
+        ),
         'check_command' => 'check_http',
         'command_arguments' => 'hostCommandArgument',
         'check_period' => 'workhours',
