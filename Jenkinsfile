@@ -40,7 +40,7 @@ try {
           useDeltaValues: true,
           failedNewAll: '0'
         ])
-        if (env.BRANCH_NAME == 'master') {
+        if (env.BRANCH_NAME == '18.10.x') {
           withSonarQubeEnv('SonarQube') {
             sh './centreon-build/jobs/web/18.10/mon-web-analysis.sh'
           }
@@ -107,7 +107,7 @@ try {
     }
   }
 
-  if (env.BRANCH_NAME == 'master') {
+  if (env.BRANCH_NAME == '18.10.x') {
     stage('Acceptance tests') {
       parallel 'centos7': {
         node {
@@ -133,16 +133,16 @@ try {
         error('Delivery stage failure.');
       }
     }
-    build job: 'centreon-autodiscovery/master', wait: false
-    build job: 'centreon-awie/master', wait: false
-    build job: 'centreon-export/master', wait: false
-    build job: 'centreon-license-manager/master', wait: false
-    build job: 'centreon-pp-manager/master', wait: false
+    build job: 'centreon-autodiscovery/18.10.x', wait: false
+    build job: 'centreon-awie/18.10.x', wait: false
+    build job: 'centreon-export/18.10.x', wait: false
+    build job: 'centreon-license-manager/18.10.x', wait: false
+    build job: 'centreon-pp-manager/18.10.x', wait: false
     build job: 'centreon-bam/master', wait: false
     build job: 'centreon-bi-server/master', wait: false
   }
 } catch(e) {
-  if (env.BRANCH_NAME == 'master') {
+  if (env.BRANCH_NAME == '18.10.x') {
     slackSend channel: "#monitoring-metrology",
         color: "#F30031",
         message: "*FAILURE*: `CENTREON WEB` <${env.BUILD_URL}|build #${env.BUILD_NUMBER}> on branch ${env.BRANCH_NAME}\n" +
