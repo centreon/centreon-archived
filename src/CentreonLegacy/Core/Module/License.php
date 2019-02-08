@@ -36,7 +36,11 @@
 namespace CentreonLegacy\Core\Module;
 
 use Psr\Container\ContainerInterface;
+use CentreonLegacy\ServiceProvider;
 
+/**
+ * License service provide information about module licenses
+ */
 class License extends Module
 {
 
@@ -50,7 +54,7 @@ class License extends Module
      *
      * @param \Psr\Container\ContainerInterface
      */
-    public function __construct( ContainerInterface $services )
+    public function __construct(ContainerInterface $services)
     {
         $this->services = $services;
     }
@@ -58,6 +62,7 @@ class License extends Module
     /**
      * Parsing a license file
      *
+     * @param type $licenseFile
      * @return array
      */
     private function parseLicenseFile($licenseFile)
@@ -77,10 +82,23 @@ class License extends Module
     /**
      * Get license expiration date
      *
-     * @return false|string
+     * @param string $module
+     * @return string
      */
-    public function getLicenseExpiration($licenseFile)
+    public function getLicenseExpiration($module)
     {
+        $healthcheck = $this->services->get(ServiceProvider::CENTREON_LEGACY_MODULE_HEALTHCHECK);
+
+        try {
+            $healthcheck->check($module);
+        } catch (\Exception $ex) {
+            
+        }
+
+        if ($healthcheck->getLicenseExpiration()) {
+            return $healthcheck->getLicenseExpiration()->format('F d, Y');
+        }
+
         return _("N/A");
     }
 }

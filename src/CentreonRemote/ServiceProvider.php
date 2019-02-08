@@ -35,8 +35,8 @@ class ServiceProvider implements AutoloadServiceProviderInterface
         $pimple[\Centreon\ServiceProvider::CENTREON_WEBSERVICE]->add(Webservice\CentreonTaskService::class);
         $pimple[\Centreon\ServiceProvider::CENTREON_WEBSERVICE]->add(WebService\CentreonAclWebservice::class);
 
-        $pimple['centreon.clapi']->add(Clapi\CentreonRemoteServer::class);
-        $pimple['centreon.clapi']->add(Clapi\CentreonWorker::class);
+        $pimple[\Centreon\ServiceProvider::CENTREON_CLAPI]->add(Clapi\CentreonRemoteServer::class);
+        $pimple[\Centreon\ServiceProvider::CENTREON_CLAPI]->add(Clapi\CentreonWorker::class);
 
         $pimple['centreon.notifymaster'] = function (Container $pimple): NotifyMasterService {
             $service = new NotifyMasterService($pimple[\Centreon\ServiceProvider::CENTREON_DB_MANAGER]);
@@ -75,7 +75,7 @@ class ServiceProvider implements AutoloadServiceProviderInterface
             $service = new PollerConnectionConfigurationService(
                 $pimple[\Centreon\ServiceProvider::CENTREON_DB_MANAGER]->getAdapter('configuration_db')
             );
-            $service->setBrokerRepository($pimple['centreon.broker_repository']);
+            $service->setBrokerRepository($pimple[\Centreon\ServiceProvider::CENTREON_BROKER_REPOSITORY]);
             $service->setBrokerConfigurationService($pimple['centreon.broker_configuration_service']);
             return $service;
         };
@@ -84,7 +84,7 @@ class ServiceProvider implements AutoloadServiceProviderInterface
             $service = new LinkedPollerConfigurationService(
                 $pimple[\Centreon\ServiceProvider::CENTREON_DB_MANAGER]->getAdapter('configuration_db')
             );
-            $service->setBrokerRepository($pimple['centreon.broker_repository']);
+            $service->setBrokerRepository($pimple[\Centreon\ServiceProvider::CENTREON_BROKER_REPOSITORY]);
             $service->setBrokerConfigurationService($pimple['centreon.broker_configuration_service']);
             $service->setPollerInteractionService($pimple['centreon_remote.poller_interaction_service']);
             $service->setTaskService($pimple['centreon.taskservice']);

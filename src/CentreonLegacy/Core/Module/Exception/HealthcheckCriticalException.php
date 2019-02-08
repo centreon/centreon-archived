@@ -1,5 +1,5 @@
 <?php
-/*
+/**
  * Copyright 2005-2019 Centreon
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
@@ -31,15 +31,13 @@
  *
  * For more information : contact@centreon.com
  *
- *
  */
 
-namespace CentreonLicense\Infrastructure\Service;
+namespace CentreonLegacy\Core\Module\Exception;
 
-class FileManagerService
+use RuntimeException;
+
+
+class HealthcheckCriticalException extends RuntimeException
 {
-    public function __construct()
-    {
-        ;
-    }
 }

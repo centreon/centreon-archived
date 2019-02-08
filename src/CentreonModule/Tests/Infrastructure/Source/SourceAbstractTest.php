@@ -38,17 +38,157 @@ namespace CentreonModule\Tests\Infrastructure\Source;
 
 use PHPUnit\Framework\TestCase;
 use CentreonModule\Infrastructure\Entity\Module;
+use CentreonModule\Infrastructure\Source\ModuleSource;
 use CentreonModule\Infrastructure\Source\SourceAbstract;
+use CentreonModule\Tests\Infrastructure\Source\ModuleSourceTest;
 
 class SourceAbstractTest extends TestCase
 {
+
+    const RESULT_SUCCESS = 'OK';
 
     protected function setUp()
     {
         $this->source = $this->getMockBuilder(SourceAbstract::class)
             ->disableOriginalConstructor()
+            ->setMethods([
+                'initInfo',
+                'getDetail',
+            ])
             ->getMockForAbstractClass()
         ;
+
+        $this->source
+            ->method('initInfo')
+            ->will($this->returnCallback(function () {
+                    $this->assertTrue(true);
+                }))
+        ;
+
+        $this->source
+            ->method('getDetail')
+            ->will($this->returnCallback(function () {
+                    $entity = new Module();
+                    $entity->setType(ModuleSource::TYPE);
+                    $entity->setName(ModuleSource::TYPE);
+                    $entity->setKeywords('test,module,lorem');
+                    $entity->setInstalled(true);
+                    $entity->setUpdated(false);
+
+                    return $entity;
+                }))
+        ;
+
+        $this->source->installer = function ($id) {
+            $mock = new class {
+
+                public $id;
+
+                public function install()
+                {
+                    if ($this->id === ModuleSourceTest::$moduleName) {
+                        throw new \Exception(SourceAbstractTest::RESULT_SUCCESS, 1);
+                    }
+                }
+            };
+
+            $mock->id = $id;
+
+            return $mock;
+        };
+
+        $this->source->upgrader = function ($id) {
+            $mock = new class {
+
+                public $id;
+
+                public function upgrade()
+                {
+                    if ($this->id === ModuleSourceTest::$moduleName) {
+                        throw new \Exception(SourceAbstractTest::RESULT_SUCCESS, 2);
+                    }
+                }
+            };
+
+            $mock->id = $id;
+
+            return $mock;
+        };
+
+        $this->source->remover = function ($id) {
+            $mock = new class {
+
+                public $id;
+
+                public function remove()
+                {
+                    if ($this->id === ModuleSourceTest::$moduleName) {
+                        throw new \Exception(SourceAbstractTest::RESULT_SUCCESS, 3);
+                    }
+                }
+            };
+
+            $mock->id = $id;
+
+            return $mock;
+        };
+    }
+
+    public function testInstall()
+    {
+        (function () {
+            $result = null;
+
+            try {
+                $result = $this->source->install(ModuleSourceTest::$moduleName);
+            } catch (\Exception $ex) {
+                $result = $ex->getMessage();
+            }
+
+            $this->assertEquals(static::RESULT_SUCCESS, $result);
+        })();
+
+        (function () {
+            $result = $this->source->install(ModuleSourceTest::$moduleNameMissing);
+        })();
+    }
+
+    public function testUpdate()
+    {
+        (function () {
+            $result = null;
+
+            try {
+                $this->source->update(ModuleSourceTest::$moduleName);
+            } catch (\Exception $ex) {
+                $result = $ex->getMessage();
+            }
+
+            $this->assertEquals(static::RESULT_SUCCESS, $result);
+        })();
+
+        (function () {
+            $result = $this->source->update(ModuleSourceTest::$moduleNameMissing);
+        })();
+    }
+
+    public function testRemove()
+    {
+        (function () {
+            $result = null;
+
+            try {
+                $this->source->remove(ModuleSourceTest::$moduleName);
+            } catch (\Exception $ex) {
+                $result = $ex->getMessage();
+            }
+
+            $this->assertEquals(static::RESULT_SUCCESS, $result);
+        })();
+
+        (function () {
+            $result = $this->source->remove(ModuleSourceTest::$moduleNameMissing);
+        })();
     }
 
     public function testIsEligible()

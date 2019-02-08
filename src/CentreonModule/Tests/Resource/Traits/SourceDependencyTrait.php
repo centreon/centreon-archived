@@ -40,6 +40,7 @@ use Pimple\Container;
 use CentreonLegacy\Core\Module;
 use CentreonLegacy\Core\Widget;
 use CentreonLegacy\ServiceProvider;
+use CentreonModule\Tests\Infrastructure\Source\ModuleSourceTest;
 
 /**
  * @group CentreonModule
@@ -59,48 +60,63 @@ trait SourceDependencyTrait
         $container[ServiceProvider::CENTREON_LEGACY_MODULE_INSTALLER] = function (Container $container) {
             return function ($moduleName) {
                 return $this->getMockBuilder(Module\Installer::class)
-                    ->disableOriginalConstructor()
-                    ->getMock();
+                        ->disableOriginalConstructor()
+                        ->getMock();
             };
         };
 
         $container[ServiceProvider::CENTREON_LEGACY_MODULE_UPGRADER] = function (Container $container) {
             return function ($moduleName, $moduleId) {
                 return $this->getMockBuilder(Module\Upgrader::class)
-                    ->disableOriginalConstructor()
-                    ->getMock();
+                        ->disableOriginalConstructor()
+                        ->getMock();
             };
         };
 
         $container[ServiceProvider::CENTREON_LEGACY_MODULE_REMOVER] = function (Container $container) {
             return function ($moduleName, $moduleId) {
-                return $this->getMockBuilder(Module\Remover::class)
+                $service = $this->getMockBuilder(Module\Remover::class)
                     ->disableOriginalConstructor()
+                    ->setMethods([
+                        'remove',
+                    ])
                     ->getMock();
+
+                // mock remove to dump moduleName and moduleId
+                $service
+                    ->method('remove')
+                    ->will($this->returnCallback(function () use ($moduleName, $moduleId) {
+                            if ($moduleName !== ModuleSourceTest::$moduleName) {
+                                throw new \Exception($moduleName, (int) $moduleId);
+                            }
+                        }))
+                ;
+
+                return $service;
             };
         };
 
         $container[ServiceProvider::CENTREON_LEGACY_WIDGET_INSTALLER] = function (Container $container) {
             return function ($widgetDirectory) {
                 return $this->getMockBuilder(Widget\Installer::class)
-                    ->disableOriginalConstructor()
-                    ->getMock();
+                        ->disableOriginalConstructor()
+                        ->getMock();
             };
         };
 
         $container[ServiceProvider::CENTREON_LEGACY_WIDGET_UPGRADER] = function (Container $container) {
             return function ($widgetDirectory) {
                 return $this->getMockBuilder(Widget\Upgrader::class)
-                    ->disableOriginalConstructor()
-                    ->getMock();
+                        ->disableOriginalConstructor()
+                        ->getMock();
             };
         };
 
         $container[ServiceProvider::CENTREON_LEGACY_WIDGET_REMOVER] = function (Container $container) {
             return function ($widgetDirectory) {
                 return $this->getMockBuilder(Widget\Remover::class)
-                    ->disableOriginalConstructor()
-                    ->getMock();
+                        ->disableOriginalConstructor()
+                        ->getMock();
             };
         };
     }

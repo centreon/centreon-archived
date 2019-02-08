@@ -38,12 +38,17 @@ class ServiceProviderTest extends TestCase
         $services = $this->container->keys();
 
         $checkList = [
-            \Centreon\ServiceProvider::CENTREON_WEBSERVICE => Service\CentreonWebserviceService::class,
-            'centreon.clapi' => Service\CentreonClapiService::class,
-            \Centreon\ServiceProvider::CENTREON_DB_MANAGER => Service\CentreonDBManagerService::class,
+            ServiceProvider::CENTREON_WEBSERVICE => Service\CentreonWebserviceService::class,
+            ServiceProvider::CENTREON_CLAPI => Service\CentreonClapiService::class,
+            ServiceProvider::CENTREON_DB_MANAGER => Service\CentreonDBManagerService::class,
+            ServiceProvider::UPLOAD_MANGER => Service\UploadFileService::class,
             'centreon.keygen' => Domain\Service\AppKeyGeneratorService::class,
             'centreon.acl' => CentreonACL::class,
             'centreon.config' => Service\CentcoreConfigService::class,
+            ServiceProvider::CENTREON_BROKER_CONFIGURATION_SERVICE => Domain\Service\BrokerConfigurationService::class,
+            // @todo must be exclude form DI
+            ServiceProvider::CENTREON_BROKER_REPOSITORY => Domain\Repository\CfgCentreonBrokerRepository::class,
+            ServiceProvider::CENTREON_BROKER_INFO_REPOSITORY => Domain\Repository\CfgCentreonBrokerInfoRepository::class,
         ];
 
         // check list of services

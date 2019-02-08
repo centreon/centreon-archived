@@ -1,6 +1,6 @@
 <?php
-/**
- * Copyright 2005-2017 Centreon
+/*
+ * Copyright 2005-2019 Centreon
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -31,68 +31,47 @@
  *
  * For more information : contact@centreon.com
  *
+ *
  */
 
-namespace CentreonLegacy\Core\Configuration;
+namespace Centreon\Tests\Application\Webservice;
 
-use CentreonModule\Infrastructure\Source\ModuleSource;
-use CentreonModule\Infrastructure\Source\WidgetSource;
+use PHPUnit\Framework\TestCase;
+//use Pimple\Container;
+use Centreon\Application\Webservice\OpenApiWebservice;
 
-/**
- * Service provide configuration data
- */
-class Configuration
+class OpenApiWebservice2Test extends TestCase
 {
-    const CENTREON_PATH = 'centreon_path';
+
+//    public function setUp()
+//    {
+//        // dependencies
+//        $container = new Container;
+//
+//        $this->webservice = $this->createPartialMock(OpenApiWebservice::class, [
+//            'loadDb',
+//            'loadArguments',
+//            'loadToken',
+//        ]);
+//
+//        // load dependencies
+//        $this->webservice->setDi($container);
+//    }
+//
+//    /**
+//     * @covers \Centreon\Application\Webservice\OpenApiWebservice::authorize
+//     */
+//    public function testAuthorize()
+//    {
+//        $result = $this->webservice->authorize(null, null);
+//        $this->assertTrue($result);
+//    }
 
     /**
-     * @var array the global configuration
+     * @ covers \Centreon\Application\Webservice\OpenApiWebservice::getName
      */
-    protected $configuration;
-
-    /**
-     * @var string the centreon path
-     */
-    protected $centreonPath;
-
-    /**
-     *
-     * @param array $configuration the global configuration (mainly database)
-     * @param string $centreonPath the centreon directory path
-     */
-    public function __construct(array $configuration, string $centreonPath)
+    public function testGetName()
     {
-        $this->configuration = $configuration;
-        $this->centreonPath = $centreonPath;
-    }
-
-    /**
-     * Get configuration parameter by key
-     *
-     * @param string $key the key parameter to get
-     * @return string the parameter value
-     */
-    public function get(string $key)
-    {
-        $value = null;
-
-        // specific case for centreon path which is not stored in $conf_centreon
-        if ($key === static::CENTREON_PATH) {
-            $value = $this->centreonPath;
-        } elseif (isset($this->configuration[$key])) {
-            $value = $this->configuration[$key];
-        }
-
-        return $value;
-    }
-
-    public function getModulePath() : string
-    {
-        return $this->centreonPath . ModuleSource::PATH;
-    }
-
-    public function getWidgetPath() : string
-    {
-        return $this->centreonPath . WidgetSource::PATH;
+        $this->assertEquals('openapi', OpenApiWebservice::getName());
     }
 }

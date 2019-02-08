@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright 2005-2017 Centreon
+ * Copyright 2005-2019 Centreon
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -33,66 +33,11 @@
  *
  */
 
-namespace CentreonLegacy\Core\Configuration;
+namespace CentreonLegacy\Core\Module\Exception;
 
-use CentreonModule\Infrastructure\Source\ModuleSource;
-use CentreonModule\Infrastructure\Source\WidgetSource;
+use RuntimeException;
 
-/**
- * Service provide configuration data
- */
-class Configuration
+
+class HealthcheckNotFoundException extends RuntimeException
 {
-    const CENTREON_PATH = 'centreon_path';
-
-    /**
-     * @var array the global configuration
-     */
-    protected $configuration;
-
-    /**
-     * @var string the centreon path
-     */
-    protected $centreonPath;
-
-    /**
-     *
-     * @param array $configuration the global configuration (mainly database)
-     * @param string $centreonPath the centreon directory path
-     */
-    public function __construct(array $configuration, string $centreonPath)
-    {
-        $this->configuration = $configuration;
-        $this->centreonPath = $centreonPath;
-    }
-
-    /**
-     * Get configuration parameter by key
-     *
-     * @param string $key the key parameter to get
-     * @return string the parameter value
-     */
-    public function get(string $key)
-    {
-        $value = null;
-
-        // specific case for centreon path which is not stored in $conf_centreon
-        if ($key === static::CENTREON_PATH) {
-            $value = $this->centreonPath;
-        } elseif (isset($this->configuration[$key])) {
-            $value = $this->configuration[$key];
-        }
-
-        return $value;
-    }
-
-    public function getModulePath() : string
-    {
-        return $this->centreonPath . ModuleSource::PATH;
-    }
-
-    public function getWidgetPath() : string
-    {
-        return $this->centreonPath . WidgetSource::PATH;
-    }
 }

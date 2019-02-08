@@ -47,12 +47,6 @@ if (file_exists(_CENTREON_ETC_ . '/centreon.conf.php')) {
     if (!defined('port')) {
         define('port', $conf_centreon['port']);
     }
-
-    if (isset($dependencyInjector)) {
-        $dependencyInjector['configuration'] = function ($c) use ($conf_centreon, $centreon_path) {
-            return new CentreonLegacy\Core\Configuration\Configuration($conf_centreon, $centreon_path);
-        };
-    }
 }
 
 $classdir = _CENTREON_PATH_ . '/www/class';
