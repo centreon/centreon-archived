@@ -53,7 +53,7 @@ $isMigrationRecovery = false;
 if ($argc > 1) {
     foreach ($argv as $parameter) {
         if (substr($parameter, 0, 11) === '--password=') {
-            [, $dbPassword] = explode('=', $parameter);
+            list(, $dbPassword) = explode('=', $parameter);
         } elseif ($parameter === '--no-keep') {
             $shouldDeleteOldData = true;
         } elseif ($parameter === '--keep') {
@@ -75,7 +75,7 @@ if ($argc > 1) {
  * @param bool $trueByDefault
  * @return bool Return TRUE if response is y or Y otherwise FALSE
  */
-function askYesOrNoQuestion(string $question, bool $trueByDefault = true): bool
+function askYesOrNoQuestion($question, $trueByDefault = true)
 {
     $defaultResponse = $trueByDefault ? 'Y' : 'N';
     printf("%s [%s] ", $question, $defaultResponse);
@@ -93,7 +93,7 @@ function askYesOrNoQuestion(string $question, bool $trueByDefault = true): bool
  * @param bool $hidden Set to TRUE to disable the echo of keyboard
  * @return string Return the response
  */
-function askQuestion(string $question, bool $hidden = false): string
+function askQuestion($question, $hidden = false)
 {
     if ($hidden) {
         system("stty -echo");
@@ -115,7 +115,8 @@ function askQuestion(string $question, bool $hidden = false): string
  * @param string $message Message to show
  * @param bool $showStep Set to true if you want showing steps
  */
-$logs = function (string $message, bool $showStep = true) use (&$currentStep, &$partitionName): void {
+$logs = function ($message, $showStep = true) use (&$currentStep, &$partitionName)
+{
     if ($showStep && $currentStep) {
         if (! empty($partitionName)) {
             printf(
@@ -143,7 +144,7 @@ $logs = function (string $message, bool $showStep = true) use (&$currentStep, &$
  *
  * @param string $message Message to show
  */
-function mySysLog(string $message): void
+function mySysLog($message)
 {
     global $logs;
     $logs($message, false);
@@ -154,7 +155,7 @@ function mySysLog(string $message): void
  *
  * @return int Return status of the Broker stop
  */
-function stopBroker(): int
+function stopBroker()
 {
     exec('systemctl stop cbd', $output, $status);
     return empty($output) ? $status : -1;
@@ -165,7 +166,7 @@ function stopBroker(): int
  *
  * @return int Return status of the Broker start
  */
-function startBroker(): int
+function startBroker()
 {
     exec('systemctl start cbd', $output, $status);
 
@@ -187,16 +188,16 @@ function isBrokerRunning()
  * Get all partitions that are not empty
  *
  * @param \PDO $db
- * @return array Return an array of type [partition_name => numberOfRecords,...]
+ * @return array Return a list of partition name [0 => partition1, 1 => partition2, ...)
  */
-function getNotEmptyPartitions(\PDO $db, bool $isMigrationRecovery = false)
+function getNotEmptyPartitions($db, $isMigrationRecovery = false)
 {
     $tableName = $isMigrationRecovery ? 'logs_old' : 'logs';
     $result = $db->query(
         "SELECT PARTITION_NAME FROM INFORMATION_SCHEMA.PARTITIONS "
         . "WHERE TABLE_NAME='{$tableName}'"
     );
-    $partitions = [];
+    $partitions = array();
     while (($row = $result->fetch(\PDO::FETCH_ASSOC))) {
         $partitions[] = $row['PARTITION_NAME'];
     }
@@ -209,7 +210,8 @@ function getNotEmptyPartitions(\PDO $db, bool $isMigrationRecovery = false)
                 SELECT ctime FROM $tableName PARTITION ($partition) LIMIT 0,1
             ) AS s"
         );
-        $isEmptyPartition = $countResult->fetchAll(\PDO::FETCH_ASSOC)[0]['is_empty'] === '0';
+        $result = $countResult->fetchAll(\PDO::FETCH_ASSOC);
+        $isEmptyPartition = $result[0]['is_empty'] === '0';
 
         if ($isEmptyPartition) {
             unset($partitions[$partition]);
@@ -310,13 +312,14 @@ try {
          * First we check if this update is necessary by checking if the log_id
          * column is present
          */
-        $result = $db->query(
+        $statement = $db->query(
             "SELECT COUNT(*) AS is_present
             FROM information_schema.COLUMNS
             WHERE TABLE_SCHEMA = 'centreon_storage'
             AND TABLE_NAME = 'logs' AND COLUMN_NAME = 'log_id'"
         );
-        $shouldBeContinue = ($result->fetchAll(\PDO::FETCH_ASSOC))[0]['is_present'] == '1';
+        $result = $statement->fetchAll(\PDO::FETCH_ASSOC);
+        $shouldBeContinue = $result[0]['is_present'] == '1';
 
         if (! $shouldBeContinue) {
             throw new Exception("The current log table does not have the log_id column");
