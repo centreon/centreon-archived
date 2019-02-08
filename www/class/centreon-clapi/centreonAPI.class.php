@@ -233,6 +233,13 @@ class CentreonAPI
             'export' => false
         );
 
+        /* RtAcknowledgement */
+        $this->relationObject["RTACKNOWLEDGEMENT"] = array(
+            'module' => 'core',
+            'class' => 'RtAcknowledgement',
+            'export' => false
+        );
+
         /* Templates */
         $this->relationObject["HTPL"] = array(
             'module' => 'core',
