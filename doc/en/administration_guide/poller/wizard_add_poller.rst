@@ -50,5 +50,4 @@ The Poller is now configured:
 .. image:: /images/poller/wizard_add_poller_5.png
     :align: center
 
-Go to the :ref:`Simplified configuration of Centreon with IMP<impconfiguration>`
-chapter to configure your first monitoring.
+Go to the :ref:`Quick Start<quickstart>` chapter to configure your first monitoring.

@@ -85,5 +85,4 @@ si vous souscrivez à l'offre IMP (plus d'informations sur
 .. image:: /_static/images/installation/install_imp_3.png
    :align: center
 
-Vous pouvez continuer à configurer votre supervision en utilisant
-Centreon IMP en suivant :ref:`ce guide <impconfiguration>`.
+Rendez-vous au chapitre :ref:`Démarrage rapide<quickstart>` pour mettre en place votre première supervision.
