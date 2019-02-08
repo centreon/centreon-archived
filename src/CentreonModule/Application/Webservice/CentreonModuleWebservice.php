@@ -350,11 +350,12 @@ class CentreonModuleWebservice extends CentreonWebServiceAbstract
         // extract post payload
         $request = $this->query();
 
-        $id = isset($request['id']) && $request['id'] ? $request['id'] : null;
-        $type = isset($request['type']) ? $request['type'] : null;
+        $id = isset($request['id']) && $request['id'] ? $request['id'] : '';
+        $type = isset($request['type']) ? $request['type'] : '';
 
         $status = false;
         $result = null;
+        $entity = null;
 
         try {
             $entity = $this->getDi()[ServiceProvider::CENTREON_MODULE]
@@ -442,11 +443,12 @@ class CentreonModuleWebservice extends CentreonWebServiceAbstract
         // extract post payload
         $request = $this->query();
 
-        $id = isset($request['id']) && $request['id'] ? $request['id'] : null;
-        $type = isset($request['type']) ? $request['type'] : null;
+        $id = isset($request['id']) && $request['id'] ? $request['id'] : '';
+        $type = isset($request['type']) ? $request['type'] : '';
 
         $status = false;
         $result = null;
+        $entity = null;
 
         try {
             $entity = $this->getDi()[ServiceProvider::CENTREON_MODULE]
@@ -534,8 +536,8 @@ class CentreonModuleWebservice extends CentreonWebServiceAbstract
         // extract post payload
         $request = $this->query();
 
-        $id = isset($request['id']) && $request['id'] ? $request['id'] : null;
-        $type = isset($request['type']) ? $request['type'] : null;
+        $id = isset($request['id']) && $request['id'] ? $request['id'] : '';
+        $type = isset($request['type']) ? $request['type'] : '';
 
         $status = false;
         $result = null;

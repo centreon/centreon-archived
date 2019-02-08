@@ -63,7 +63,8 @@ class CentreonModuleService
         bool $installed = null,
         bool $updated = null,
         array $typeList = null
-    ) : array {
+    ): array
+    {
         $result = [];
 
         if ($typeList !== null && $typeList) {
@@ -120,15 +121,15 @@ class CentreonModuleService
         return $result;
     }
 
-    public function remove(string $id, string $type)
+    public function remove(string $id, string $type): ?bool
     {
         if (!array_key_exists($type, $this->sources)) {
             return null;
         }
 
-        $result = $this->sources[$type]->remove($id);
+        $this->sources[$type]->remove($id);
 
-        return $result;
+        return true;
     }
 
     /**

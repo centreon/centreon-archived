@@ -55,6 +55,9 @@ class CentreonModuleWebserviceTest extends TestCase
         $container[ServiceProvider::CENTREON_MODULE] = $this->createMock(CentreonModuleService::class, [
             'getList',
             'getDetail',
+            'install',
+            'update',
+            'remove',
         ]);
         $container[ServiceProvider::CENTREON_MODULE]
             ->method('getList')
@@ -80,32 +83,100 @@ class CentreonModuleWebserviceTest extends TestCase
                             $module,
                         ],
                     ];
-            }))
+                }))
         ;
         $container[ServiceProvider::CENTREON_MODULE]
             ->method('getDetail')
             ->will($this->returnCallback(function () {
-                $funcArgs = func_get_args();
+                    $funcArgs = func_get_args();
 
-                // prepare filters
-                $funcArgs[0] = $funcArgs[0] === null ? '-' : $funcArgs[0];
-                $funcArgs[1] = $funcArgs[1] === null ? '-' : $funcArgs[1];
+                    // prepare filters
+                    $funcArgs[0] = $funcArgs[0] === null ? '-' : $funcArgs[0];
+                    $funcArgs[1] = $funcArgs[1] === null ? '-' : $funcArgs[1];
 
-                if ($funcArgs[0] === 'missing-module') {
-                    return null;
-                }
+                    if ($funcArgs[0] === ModuleSourceTest::$moduleNameMissing) {
+                        return null;
+                    }
 
-                $name = implode(',', $funcArgs);
+                    $name = implode(',', $funcArgs);
 
-                $module = new Module;
-                $module->setId(ModuleSourceTest::$moduleName);
-                $module->setName($name);
-                $module->setAuthor('');
-                $module->setVersion('');
-                $module->setType(ModuleSource::TYPE);
+                    $module = new Module;
+                    $module->setId(ModuleSourceTest::$moduleName);
+                    $module->setName($name);
+                    $module->setAuthor('');
+                    $module->setVersion('');
+                    $module->setType(ModuleSource::TYPE);
 
-                return $module;
-            }))
+                    return $module;
+                }))
+        ;
+        $container[ServiceProvider::CENTREON_MODULE]
+            ->method('install')
+            ->will($this->returnCallback(function () {
+                    $funcArgs = func_get_args();
+
+                    if ($funcArgs[0] === '' && $funcArgs[1] === '') {
+                        throw new \Exception('');
+                    }
+
+                    // prepare filters
+                    $funcArgs[0] = $funcArgs[0] === '' ? '-' : $funcArgs[0];
+                    $funcArgs[1] = $funcArgs[1] === '' ? '-' : $funcArgs[1];
+
+                    if ($funcArgs[0] === ModuleSourceTest::$moduleNameMissing) {
+                        return null;
+                    }
+
+                    $name = implode(',', $funcArgs);
+
+                    $module = new Module;
+                    $module->setId(ModuleSourceTest::$moduleName);
+                    $module->setName($name);
+                    $module->setAuthor('');
+                    $module->setVersion('');
+                    $module->setType(ModuleSource::TYPE);
+
+                    return $module;
+                }))
+        ;
+        $container[ServiceProvider::CENTREON_MODULE]
+            ->method('update')
+            ->will($this->returnCallback(function () {
+                    $funcArgs = func_get_args();
+
+                    if ($funcArgs[0] === '' && $funcArgs[1] === '') {
+                        throw new \Exception('');
+                    }
+
+                    // prepare filters
+                    $funcArgs[0] = $funcArgs[0] === '' ? '-' : $funcArgs[0];
+                    $funcArgs[1] = $funcArgs[1] === '' ? '-' : $funcArgs[1];
+
+                    if ($funcArgs[0] === ModuleSourceTest::$moduleNameMissing) {
+                        return null;
+                    }
+
+                    $name = implode(',', $funcArgs);
+
+                    $module = new Module;
+                    $module->setId(ModuleSourceTest::$moduleName);
+                    $module->setName($name);
+                    $module->setAuthor('');
+                    $module->setVersion('');
+                    $module->setType(ModuleSource::TYPE);
+
+                    return $module;
+                }))
+        ;
+        $container[ServiceProvider::CENTREON_MODULE]
+            ->method('remove')
+            ->will($this->returnCallback(function () {
+                    $funcArgs = func_get_args();
+
+                    if ($funcArgs[0] === '' && $funcArgs[1] === '') {
+                        throw new \Exception('');
+                    }
+                }))
         ;
 
         $this->webservice = $this->createPartialMock(CentreonModuleWebservice::class, [
@@ -121,82 +192,116 @@ class CentreonModuleWebserviceTest extends TestCase
 
     public function testGetList()
     {
+        $method = 'getList';
         $filters = [];
         $this->webservice
             ->method('query')
             ->will($this->returnCallback(function () use (&$filters) {
                     return $filters;
-            }))
+                }))
         ;
 
-        $executeTest = function ($controlJsonFile) {
-            // get controlled response from file
-            $path = __DIR__ . '/../../Resource/Fixture/';
-            $controlJson = file_get_contents($path . $controlJsonFile);
-
-            $result = $this->webservice->getList();
-            $this->assertInstanceOf(\JsonSerializable::class, $result);
-
-            $json = json_encode($result);
-            $this->assertEquals($controlJson, $json);
-        };
-
         // without applied filters
-        $executeTest('response-list-1.json');
+        $this->executeTest($method, 'response-list-1.json');
 
         // with search, installed, updated, and selected type filter
         $filters['search'] = 'test';
         $filters['installed'] = 'true';
         $filters['updated'] = 'true';
         $filters['types'] = [ModuleSource::TYPE];
-        $executeTest('response-list-2.json');
+        $this->executeTest($method, 'response-list-2.json');
 
         // with not installed, not updated and not selected type filter
         unset($filters['search']);
         $filters['installed'] = 'false';
         $filters['updated'] = 'false';
         $filters['types'] = [];
-        $executeTest('response-list-3.json');
+        $this->executeTest($method, 'response-list-3.json');
 
         // with wrong values of installed and updated filters
         unset($filters['types']);
         $filters['installed'] = 'ture';
         $filters['updated'] = 'folse';
-        $executeTest('response-list-4.json');
+        $this->executeTest($method, 'response-list-4.json');
     }
 
     public function testGetDetails()
     {
+        $method = 'getDetails';
         $filters = [];
         $this->webservice
             ->method('query')
             ->will($this->returnCallback(function () use (&$filters) {
                     return $filters;
-            }))
+                }))
         ;
-
-        $executeTest = function ($controlJsonFile) {
-            // get controlled response from file
-            $path = __DIR__ . '/../../Resource/Fixture/';
-            $controlJson = file_get_contents($path . $controlJsonFile);
-
-            $result = $this->webservice->getDetails();
-            $this->assertInstanceOf(\JsonSerializable::class, $result);
-
-            $json = json_encode($result);
-//            var_dump($json);exit;
-            $this->assertEquals($controlJson, $json);
-        };
 
         // find module by id and type
         $filters['id'] = ModuleSourceTest::$moduleName;
         $filters['type'] = ModuleSource::TYPE;
-        $executeTest('response-details-1.json');
+        $this->executeTest($method, 'response-details-1.json');
 
         // try to find missing module applied filters
-        $filters['id'] = 'missing-module';
+        $filters['id'] = ModuleSourceTest::$moduleNameMissing;
         $filters['type'] = ModuleSource::TYPE;
-        $executeTest('response-details-2.json');
+        $this->executeTest($method, 'response-details-2.json');
+    }
+
+    public function testPostInstall()
+    {
+        $method = 'postInstall';
+        $filters = [];
+        $this->webservice
+            ->method('query')
+            ->will($this->returnCallback(function () use (&$filters) {
+                    return $filters;
+                }))
+        ;
+
+        $this->executeTest($method, 'response-install-1.json');
+
+        // find module by id and type
+        $filters['id'] = ModuleSourceTest::$moduleName;
+        $filters['type'] = ModuleSource::TYPE;
+        $this->executeTest($method, 'response-install-2.json');
+    }
+
+    public function testPostUpdate()
+    {
+        $method = 'postUpdate';
+        $filters = [];
+        $this->webservice
+            ->method('query')
+            ->will($this->returnCallback(function () use (&$filters) {
+                    return $filters;
+                }))
+        ;
+
+        $this->executeTest($method, 'response-update-1.json');
+
+        // find module by id and type
+        $filters['id'] = ModuleSourceTest::$moduleName;
+        $filters['type'] = ModuleSource::TYPE;
+        $this->executeTest($method, 'response-update-2.json');
+    }
+
+    public function testPostRemove()
+    {
+        $method = 'deleteRemove';
+        $filters = [];
+        $this->webservice
+            ->method('query')
+            ->will($this->returnCallback(function () use (&$filters) {
+                    return $filters;
+                }))
+        ;
+
+        $this->executeTest($method, 'response-remove-1.json');
+
+        // find module by id and type
+        $filters['id'] = ModuleSourceTest::$moduleName;
+        $filters['type'] = ModuleSource::TYPE;
+        $this->executeTest($method, 'response-remove-2.json');
     }
 
     public function testAuthorize()
@@ -217,7 +322,7 @@ class CentreonModuleWebserviceTest extends TestCase
                 ->method('hasAccessRestApiConfiguration')
                 ->will($this->returnCallback(function () {
                         return true;
-                }))
+                    }))
             ;
 
             $result = $this->webservice->authorize(null, $user);
@@ -228,5 +333,24 @@ class CentreonModuleWebserviceTest extends TestCase
     public function testGetName()
     {
         $this->assertEquals('centreon_module', CentreonModuleWebservice::getName());
+    }
+
+    /**
+     * Compare response with control value
+     *
+     * @param string $method
+     * @param string $controlJsonFile
+     */
+    protected function executeTest($method, $controlJsonFile)
+    {
+        // get controlled response from file
+        $path = __DIR__ . '/../../Resource/Fixture/';
+        $controlJson = file_get_contents($path . $controlJsonFile);
+
+        $result = $this->webservice->{$method}();
+        $this->assertInstanceOf(\JsonSerializable::class, $result);
+
+        $json = json_encode($result);
+        $this->assertEquals($controlJson, $json);
     }
 }
