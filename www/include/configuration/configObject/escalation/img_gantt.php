@@ -107,7 +107,7 @@ if (isset($_GET["service_id"]) && $_GET["service_id"] != null) {
         "esc.notification_interval, esc.esc_comment ".
         "FROM escalation_service_relation ehr, escalation esc, ".
         "contactgroup cg, escalation_contactgroup_relation ecr ".
-        "WHERE ehr.service_service_id = ".$_GET["service_id"]." ".
+        "WHERE ehr.service_service_id = ? ".
         "AND ehr.escalation_esc_id = esc.esc_id ".
         "AND ecr.escalation_esc_id = esc.esc_id ".
         "AND ecr.contactgroup_cg_id = cg.cg_id ".
@@ -661,7 +661,7 @@ if (isset($_GET["service_id"]) && $_GET["service_id"] != null) {
         # retrieve contactgroup associated with the escalation hostgroup
         $cmd_contactgroup = "SELECT cg.cg_name ".
             "FROM contactgroup cg, escalation_contactgroup_relation ecr ".
-            "WHERE ecr.escalation_esc_id = ".$esc_hostgroup_data["esc_id"]." ".
+            "WHERE ecr.escalation_esc_id = ? ".
             "AND ecr.contactgroup_cg_id = cg.cg_id";
         $stmt = $pearDB->prepare($cmd_contactgroup);
         $res_cg = $pearDB->execute($stmt, array($esc_hostgroup_data["esc_id"]));
