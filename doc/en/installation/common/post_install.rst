@@ -76,7 +76,5 @@ available once you register and over 150 more if you subscribe to the IMP
 offer (for more information: `our website <https://www.centreon.com>`_).
 
 .. image:: /_static/images/installation/install_imp_3.png
-   :align: center
 
-You can continue to configure your monitoring system with Centreon IMP by
-following the instructions in :ref:`this guide <impconfiguration>`.
+Go to the :ref:`Quick Start<quickstart>` chapter to configure your first monitoring.:align: center
