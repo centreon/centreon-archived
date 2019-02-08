@@ -308,8 +308,7 @@ $attrHosts = array(
     'multiple' => true,
     'linkedObject' => 'centreonHost'
 );
-$hostTplRoute = './include/common/webServices/rest/internal.php?object=centreon_configuration_hosttemplate&action=list'
-    . '&action=list';
+$hostTplRoute = './include/common/webServices/rest/internal.php?object=centreon_configuration_hosttemplate&action=list';
 $attrHostTpls = array(
     'datasourceOrigin' => 'ajax',
     'availableDatasetRoute' => $hostTplRoute,
@@ -430,10 +429,12 @@ $form->addElement(
 );
 $form->addElement('static', 'tplText', _("Using a Template allows you to have multi-level Template connection"));
 
-$tplDeRoute = './include/common/webServices/rest/internal.php?object=centreon_configuration_hosttemplate'
+$tplHostTemplateRoute = './include/common/webServices/rest/internal.php?object=centreon_configuration_hosttemplate'
     . '&action=defaultValues&target=host&field=host_id&id=' . $host_id;
-$attrHostTpls1 = array_merge($attrHostTpls, array('defaultDatasetRoute' => $tplDeRoute));
-$form->addElement('select2', 'tpSelect', _("Templates"), array(), $attrHostTpls1);
+$attrHostTemplates = array_merge($attrHostTpls, [
+        'defaultDatasetRoute' => $tplHostTemplateRoute
+]);
+$form->addElement('select2', 'tpSelect', _("Templates"), array(), $attrHostTemplates);
 
 $cloneSetMacro = array();
 $cloneSetMacro[] = $form->addElement(
@@ -1231,7 +1232,6 @@ if ($valid) {
     $tpl->assign('command_inheritance', _('Command inheritance'));
     $tpl->assign('cloneSetMacro', $cloneSetMacro);
     $tpl->assign('centreon_path', $centreon->optGen['oreon_path']);
-    //$tpl->assign("k", $k);
     $tpl->assign("tpl", 0);
     $tpl->display("formHost.ihtml");
     ?>

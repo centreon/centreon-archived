@@ -71,7 +71,7 @@ class CentreonConfigurationHosttemplate extends CentreonConfigurationObjects
                   WHERE htr.host_host_id = :host_id
                   ORDER BY htr.`order`';
         $stmt = $this->pearDB->prepare($query);
-        $stmt->bindParam(':host_id', $id);
+        $stmt->bindValue(':host_id', $id, PDO::PARAM_INT);
         $stmt->execute();
         while ($data = $stmt->fetch()) {
             $result[] = [
