@@ -22,6 +22,18 @@ if (!class_exists('gnupg')) {
     class gnupg
     {
 
+        const SIG_MODE_CLEAR = null;
+
+        public function import($keydata = null): array
+        {
+            return [];
+        }
+
+        public function setsignmode(int $signmode = null): bool
+        {
+            return true;
+        }
+
         public function verify($licensedata, $status, &$plaintext)
         {
             return true;

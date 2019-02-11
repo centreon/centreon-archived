@@ -16,7 +16,6 @@
  */
 
 require_once _CENTREON_PATH_ . "/www/class/centreonDB.class.php";
-//require_once _CENTREON_PATH_ . '/www/api/exceptions.php';
 require_once _CENTREON_PATH_ . "/www/class/centreonLog.class.php";
 
 /**
