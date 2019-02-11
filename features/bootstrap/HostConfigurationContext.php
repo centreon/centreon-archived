@@ -393,26 +393,4 @@ class HostConfigurationContext extends CentreonContext
         );
     }
 
-    /**
-     * @When I open the new host page
-     */
-    public function loadAddPage()
-    {
-        $this->currentPage = new HostConfigurationPage($this);
-    }
-
-    /**
-     * @Then A select box allow to search a unique template and to select it
-     */
-    public function checkForTemplates()
-    {
-        $mythis = $this;
-        $this->spin(
-            function ($context) use ($mythis) {
-                $context->assertFind('css', '#parallelTemplate .select2-container')->click();
-                $context->assertFind('css', '#select2-tpSelect-results > li');
-            }
-        );
-    }
-
 }
