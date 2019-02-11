@@ -221,6 +221,30 @@ function getNotEmptyPartitions($db, $isMigrationRecovery = false)
     return $partitions;
 }
 
+/**
+ * Indicates whether we are in compatible mode.
+ * The compatible mode should be used when the partition selection option is
+ * not available. The compatible mode only applies to old database engines whose
+ * versions are less than MariaDb 10 or MySQL 5.6
+ *
+ * @param PDO $db
+ * @return bool Return TRUE if in compatible mode
+ */
+function isInCompatibleMode(\PDO $db)
+{
+    $statement = $db->query("SELECT VERSION() AS version");
+    $result = $statement->fetchAll(\PDO::FETCH_ASSOC);
+    list($version, $dbType) = explode('-', $result[0]['version']);
+    list($majorVersion, $minorVersion, $revision) = explode('.', $version);
+    if ($dbType === 'MariaDB' && $majorVersion >= 10) {
+        return false;
+    } elseif ($dbType === 'standard' && $majorVersion >= 5 && $minorVersion >= 6) {
+        return false;
+    } else {
+        return true;
+    }
+}
+
 $loadDataInfileQuery = <<<'QUERY'
 LOAD DATA INFILE '{{DATA_FILE}}'
 INTO TABLE logs 
@@ -378,6 +402,8 @@ try {
         }
     }
 
+    $isInCompatibleMode = isInCompatibleMode($db);
+
     $globalStep = $currentStep;
     $partitionOfTheDay = (new DateTime())->format('\pYmd');
 
@@ -397,7 +423,25 @@ try {
         if (! $fp = fopen($pathPartition, 'w')) {
             throw new Exception("Error creating the temporary csv file $pathPartition");
         }
-        $result = $db->query("SELECT * FROM logs_old PARTITION ($partitionName)");
+
+        if ($isInCompatibleMode) {
+            $date = new DateTime();
+            $date->setDate(
+                (int) substr($partitionName, 1, 4),
+                (int) substr($partitionName, 5, 2),
+                (int) substr($partitionName, 7, 2)
+            );
+            $date->setTime(0, 0, 0);
+            $end = (int) $date->format('U');
+
+            $date->setTime(-24, 0 , 0);
+            $start = (int) $date->format('U');
+
+            $result = $db->query("SELECT * FROM logs_old WHERE ctime >= $start AND ctime < $end");
+        } else {
+            $result = $db->query("SELECT * FROM logs_old PARTITION ($partitionName)");
+        }
+
         $nbrRecors = 0;
         while ($row = $result->fetch(\PDO::FETCH_ASSOC)) {
             unset($row['log_id']);
