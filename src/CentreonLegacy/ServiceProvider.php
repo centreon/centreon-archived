@@ -48,6 +48,7 @@ class ServiceProvider implements AutoloadServiceProviderInterface
 {
 
     const CONFIGURATION = 'configuration';
+    const CENTREON_REST_HTTP = 'centreon.rest.http';
     const CENTREON_LEGACY_UTILS = 'centreon.legacy.utils';
     const CENTREON_LEGACY_MODULE_HEALTHCHECK = 'centreon.legacy.module.healthcheck';
     const CENTREON_LEGACY_MODULE_INFORMATION = 'centreon.legacy.module.information';
@@ -82,15 +83,25 @@ class ServiceProvider implements AutoloadServiceProviderInterface
         };
 
         $this->registerConfiguration($pimple);
+        $this->registerRestHttp($pimple);
         $this->registerModule($pimple);
         $this->registerWidget($pimple);
     }
 
-    protected function registerConfiguration( Container $pimple )
+    protected function registerConfiguration(Container $pimple)
     {
-        $pimple[static::CONFIGURATION] = function ($c) {
+        $pimple[static::CONFIGURATION] = function (Container $container): Core\Configuration\Configuration {
             global $conf_centreon, $centreon_path;
             return new Core\Configuration\Configuration($conf_centreon, $centreon_path);
+        };
+    }
+
+    protected function registerRestHttp(Container $pimple)
+    {
+        $pimple[static::CENTREON_REST_HTTP] = function (Container $container) {
+            return function($contentType = 'application/json', $logFile = null) {
+                return new \CentreonRestHttp($contentType, $logFile);
+            };
         };
     }
 

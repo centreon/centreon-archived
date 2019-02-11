@@ -16,7 +16,7 @@
  */
 
 require_once _CENTREON_PATH_ . "/www/class/centreonDB.class.php";
-require_once _CENTREON_PATH_ . '/www/api/exceptions.php';
+//require_once _CENTREON_PATH_ . '/www/api/exceptions.php';
 require_once _CENTREON_PATH_ . "/www/class/centreonLog.class.php";
 
 /**
@@ -58,7 +58,7 @@ class CentreonRestHttp
         $this->getProxy();
         $this->contentType = $contentType;
         if (!is_null($logFile)) {
-            $this->logObj = new CentreonLog(array(4 => $logFile));
+            $this->logObj = new \CentreonLog(array(4 => $logFile));
         }
     }
 
@@ -211,7 +211,7 @@ class CentreonRestHttp
      */
     private function getProxy()
     {
-        $db = new CentreonDB();
+        $db = new \CentreonDB();
         $query = 'SELECT `key`, `value` '
             . 'FROM `options` '
             . 'WHERE `key` IN ( '
