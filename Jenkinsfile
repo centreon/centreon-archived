@@ -107,23 +107,23 @@ try {
     }
   }
 
-  if (env.BRANCH_NAME == 'master') {
-    stage('Acceptance tests') {
-      parallel 'centos7': {
-        node {
-          sh 'setup_centreon_build.sh'
-          sh './centreon-build/jobs/web/18.10/mon-web-acceptance.sh centos7 ~@critical'
-          junit 'xunit-reports/**/*.xml'
-          if (currentBuild.result == 'UNSTABLE')
-            currentBuild.result = 'FAILURE'
-          archiveArtifacts allowEmptyArchive: true, artifacts: 'acceptance-logs/*.txt, acceptance-logs/*.png'
-        }
-      }
-      if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
-        error('Critical tests stage failure.');
+  stage('Acceptance tests') {
+    parallel 'centos7': {
+      node {
+        sh 'setup_centreon_build.sh'
+        sh './centreon-build/jobs/web/18.10/mon-web-acceptance.sh centos7 ~@critical'
+        junit 'xunit-reports/**/*.xml'
+        if (currentBuild.result == 'UNSTABLE')
+          currentBuild.result = 'FAILURE'
+        archiveArtifacts allowEmptyArchive: true, artifacts: 'acceptance-logs/*.txt, acceptance-logs/*.png'
       }
     }
+    if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
+      error('Critical tests stage failure.');
+    }
+  }
 
+  if (env.BRANCH_NAME == 'master') {
     stage('Delivery') {
       node {
         sh 'setup_centreon_build.sh'
