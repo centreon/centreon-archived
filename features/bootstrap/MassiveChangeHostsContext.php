@@ -198,9 +198,6 @@ class MassiveChangeHostsContext extends CentreonContext
         'snmp_version' => '2c',
         'monitored_from' => 'Central',
         'location' => 'Europe/Paris',
-        'templates' => array(
-            'generic-host'
-        ),
         'service_linked_to_template' => 0,
         'check_command' => 'check_http',
         'command_arguments' => 'hostCommandArgument',
