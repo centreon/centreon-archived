@@ -291,14 +291,12 @@ function validateFeature(name, version, enabled) {
       'a',
       'click',
       function(e) {
+        console.log(typeof isMobile);
         var href = jQuery(this).attr('href');
-        var isHandled = jQuery(this).is('[onload]') ||
-                jQuery(this).is('[onclick]') ||
-                (href.match(/^javascript:/) !== null)
-        ;
+        var isOnLoad = jQuery(this).is('[onload]');
 
         // if it's a relative path, we can use the default redirection
-        if (!href.match(/^\.\/(?!main(?:\.get)?\.php)/) && isHandled === false) {
+        if (!href.match(/^\.\/(?!main(?:\.get)?\.php)/) && isOnLoad === false) {
           e.preventDefault();
 
           // Manage centreon links
@@ -311,7 +309,10 @@ function validateFeature(name, version, enabled) {
               window.open(href);
             // If it's an internal link, we remove header to avoid inception
             } else {
-              href = href.replace('main.php', 'main.get.php');
+              //
+              if(typeof isMobile === 'undefined' || isMobile !== true) {
+                  href = href.replace('main.php', 'main.get.php');
+              }
               window.location.href = href;
             }
 

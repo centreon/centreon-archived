@@ -50,6 +50,8 @@ print "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
     <meta name="Generator" content="Centreon - Copyright (C) 2005 - 2017 Open Source Matters. All rights reserved."/>
     <meta name="robots" content="index, nofollow"/>
 
+    <link href="./mobile/css/menu1.css" rel="stylesheet" type="text/css"/>
+
     <link href="./include/common/javascript/jquery/plugins/jpaginator/jPaginator.css" rel="stylesheet" type="text/css"/>
     <link href="./Themes/Centreon-2/style.css" rel="stylesheet" type="text/css"/>
     <link href="./Themes/Centreon-2/centreon-loading.css" rel="stylesheet" type="text/css"/>
@@ -202,7 +204,12 @@ print "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
     <script src="./include/common/javascript/xslt.js" type="text/javascript"></script>
 </head>
 <body>
+
+
 <?php if (!isset($_REQUEST['iframe']) || (isset($_REQUEST['iframe']) && $_REQUEST['iframe'] != 1)) { ?>
     <script type="text/javascript" src="./lib/wz_tooltip/wz_tooltip.js"></script>
 <?php } ?>
 <div style="display:none" id="header"></div>
+
+
+<?php if($isMobile) require('mobile/menu1.php'); ?>

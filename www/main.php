@@ -33,6 +33,8 @@
  *
  */
 
+use CentreonLegacy\Core\Menu\Menu;
+
 // Set logging options
 if (defined("E_DEPRECATED")) {
     ini_set("error_reporting", E_ALL & ~E_NOTICE & ~E_STRICT & ~E_DEPRECATED);
@@ -92,6 +94,18 @@ $num = $inputs["num"];
 include_once("./include/common/common-Func.php");
 include_once("./include/core/header/header.php");
 
-require_once _CENTREON_PATH_ . "/bootstrap.php";
+$userAgent = $_SERVER['HTTP_USER_AGENT'];
+$isMobile = strpos($userAgent, 'Mobil') !== false;
 
-include('./index.html');
+require_once _CENTREON_PATH_ . "/bootstrap.php";
+if ($isMobile) {
+    $db = $dependencyInjector['configuration_db'];
+    $menu = new Menu($db, $_SESSION['centreon']->user);
+    $treeMenu = $menu->getMenu();
+    require_once 'main.get.php';
+?>
+    <script type="text/javascript" src="./mobile/js/menu1.js"></script>
+<?php
+} else {
+    include('./index.html');
+}
