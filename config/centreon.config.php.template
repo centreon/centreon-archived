@@ -50,3 +50,7 @@ if (file_exists(_CENTREON_ETC_ . '/centreon.conf.php')) {
 }
 
 $classdir = _CENTREON_PATH_ . '/www/class';
+
+if (!isset($centreon_path) || !$centreon_path) {
+    $centreon_path = _CENTREON_PATH_;
+}
