@@ -1,9 +1,8 @@
 {
-  "variables": [],
   "info": {
+    "_postman_id": "23437391-2dfb-4aed-85e3-185e06e154bb",
     "name": "Centreon Web Rest API realtime",
-    "_postman_id": "fd65edd2-237b-e7c0-1623-430a15d0b0b7",
-    "schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "item": [
     {
@@ -150,13 +149,13 @@
               "urlencoded": [
                 {
                   "key": "username",
-                  "type": "text",
-                  "value": "{{api_user}}"
+                  "value": "{{api_user}}",
+                  "type": "text"
                 },
                 {
                   "key": "password",
-                  "type": "text",
-                  "value": "{{api_password}}"
+                  "value": "{{api_password}}",
+                  "type": "text"
                 }
               ]
             },
@@ -173,7 +172,6 @@
               ],
               "query": [
                 {
-                  "equals": true,
                   "key": "action",
                   "value": "authenticate"
                 }
@@ -232,12 +230,10 @@
                   ],
                   "query": [
                     {
-                      "equals": true,
                       "key": "action",
                       "value": "action"
                     },
                     {
-                      "equals": true,
                       "key": "object",
                       "value": "centreon_clapi"
                     }
@@ -629,7 +625,6 @@
         },
         {
           "name": "11-Commands",
-          "description": "Tests all commands to manage commands.",
           "item": [
             {
               "name": "Add command",
@@ -673,12 +668,10 @@
                   ],
                   "query": [
                     {
-                      "equals": true,
                       "key": "action",
                       "value": "action"
                     },
                     {
-                      "equals": true,
                       "key": "object",
                       "value": "centreon_clapi"
                     }
@@ -688,11 +681,11 @@
               "response": []
             }
           ],
+          "description": "Tests all commands to manage commands.",
           "_postman_isSubFolder": true
         },
         {
           "name": "21-Contacts",
-          "description": "Tests all commands to manage contact.",
           "item": [
             {
               "name": "Add contact",
@@ -736,12 +729,10 @@
                   ],
                   "query": [
                     {
-                      "equals": true,
                       "key": "action",
                       "value": "action"
                     },
                     {
-                      "equals": true,
                       "key": "object",
                       "value": "centreon_clapi"
                     }
@@ -792,12 +783,10 @@
                   ],
                   "query": [
                     {
-                      "equals": true,
                       "key": "action",
                       "value": "action"
                     },
                     {
-                      "equals": true,
                       "key": "object",
                       "value": "centreon_clapi"
                     }
@@ -848,12 +837,10 @@
                   ],
                   "query": [
                     {
-                      "equals": true,
                       "key": "action",
                       "value": "action"
                     },
                     {
-                      "equals": true,
                       "key": "object",
                       "value": "centreon_clapi"
                     }
@@ -904,12 +891,10 @@
                   ],
                   "query": [
                     {
-                      "equals": true,
                       "key": "action",
                       "value": "action"
                     },
                     {
-                      "equals": true,
                       "key": "object",
                       "value": "centreon_clapi"
                     }
@@ -960,12 +945,10 @@
                   ],
                   "query": [
                     {
-                      "equals": true,
                       "key": "action",
                       "value": "action"
                     },
                     {
-                      "equals": true,
                       "key": "object",
                       "value": "centreon_clapi"
                     }
@@ -1083,11 +1066,11 @@
               "response": []
             }
           ],
+          "description": "Tests all commands to manage contact.",
           "_postman_isSubFolder": true
         },
         {
           "name": "22-Contactgroups",
-          "description": "Tests all commands to manage contact groups.",
           "item": [
             {
               "name": "Add contact group",
@@ -1131,12 +1114,10 @@
                   ],
                   "query": [
                     {
-                      "equals": true,
                       "key": "action",
                       "value": "action"
                     },
                     {
-                      "equals": true,
                       "key": "object",
                       "value": "centreon_clapi"
                     }
@@ -1187,12 +1168,10 @@
                   ],
                   "query": [
                     {
-                      "equals": true,
                       "key": "action",
                       "value": "action"
                     },
                     {
-                      "equals": true,
                       "key": "object",
                       "value": "centreon_clapi"
                     }
@@ -1202,11 +1181,11 @@
               "response": []
             }
           ],
+          "description": "Tests all commands to manage contact groups.",
           "_postman_isSubFolder": true
         },
         {
           "name": "23-Hostgroups",
-          "description": "Tests all commands to manage host groups.",
           "item": [
             {
               "name": "Add hostgroup",
@@ -1250,12 +1229,10 @@
                   ],
                   "query": [
                     {
-                      "equals": true,
                       "key": "action",
                       "value": "action"
                     },
                     {
-                      "equals": true,
                       "key": "object",
                       "value": "centreon_clapi"
                     }
@@ -1265,11 +1242,11 @@
               "response": []
             }
           ],
+          "description": "Tests all commands to manage host groups.",
           "_postman_isSubFolder": true
         },
         {
           "name": "24-Hosts_Categories",
-          "description": "Tests all commands to manage host categories.",
           "item": [
             {
               "name": "Add host category",
@@ -1380,11 +1357,11 @@
               "response": []
             }
           ],
+          "description": "Tests all commands to manage host categories.",
           "_postman_isSubFolder": true
         },
         {
           "name": "25-Services_Categories",
-          "description": "Tests all commands to manage service categories.",
           "item": [
             {
               "name": "Add service category",
@@ -1428,12 +1405,10 @@
                   ],
                   "query": [
                     {
-                      "equals": true,
                       "key": "action",
                       "value": "action"
                     },
                     {
-                      "equals": true,
                       "key": "object",
                       "value": "centreon_clapi"
                     }
@@ -1484,12 +1459,10 @@
                   ],
                   "query": [
                     {
-                      "equals": true,
                       "key": "action",
                       "value": "action"
                     },
                     {
-                      "equals": true,
                       "key": "object",
                       "value": "centreon_clapi"
                     }
@@ -1499,11 +1472,11 @@
               "response": []
             }
           ],
+          "description": "Tests all commands to manage service categories.",
           "_postman_isSubFolder": true
         },
         {
           "name": "26-Servicegroups",
-          "description": "Tests all commands to manage service groups.",
           "item": [
             {
               "name": "Add service group",
@@ -1547,12 +1520,10 @@
                   ],
                   "query": [
                     {
-                      "equals": true,
                       "key": "action",
                       "value": "action"
                     },
                     {
-                      "equals": true,
                       "key": "object",
                       "value": "centreon_clapi"
                     }
@@ -1562,6 +1533,7 @@
               "response": []
             }
           ],
+          "description": "Tests all commands to manage service groups.",
           "_postman_isSubFolder": true
         },
         {
@@ -1609,12 +1581,10 @@
                   ],
                   "query": [
                     {
-                      "equals": true,
                       "key": "action",
                       "value": "action"
                     },
                     {
-                      "equals": true,
                       "key": "object",
                       "value": "centreon_clapi"
                     }
@@ -1665,12 +1635,10 @@
                   ],
                   "query": [
                     {
-                      "equals": true,
                       "key": "action",
                       "value": "action"
                     },
                     {
-                      "equals": true,
                       "key": "object",
                       "value": "centreon_clapi"
                     }
@@ -1721,12 +1689,10 @@
                   ],
                   "query": [
                     {
-                      "equals": true,
                       "key": "action",
                       "value": "action"
                     },
                     {
-                      "equals": true,
                       "key": "object",
                       "value": "centreon_clapi"
                     }
@@ -1777,12 +1743,10 @@
                   ],
                   "query": [
                     {
-                      "equals": true,
                       "key": "action",
                       "value": "action"
                     },
                     {
-                      "equals": true,
                       "key": "object",
                       "value": "centreon_clapi"
                     }
@@ -1833,12 +1797,10 @@
                   ],
                   "query": [
                     {
-                      "equals": true,
                       "key": "action",
                       "value": "action"
                     },
                     {
-                      "equals": true,
                       "key": "object",
                       "value": "centreon_clapi"
                     }
@@ -1889,12 +1851,10 @@
                   ],
                   "query": [
                     {
-                      "equals": true,
                       "key": "action",
                       "value": "action"
                     },
                     {
-                      "equals": true,
                       "key": "object",
                       "value": "centreon_clapi"
                     }
@@ -1945,12 +1905,10 @@
                   ],
                   "query": [
                     {
-                      "equals": true,
                       "key": "action",
                       "value": "action"
                     },
                     {
-                      "equals": true,
                       "key": "object",
                       "value": "centreon_clapi"
                     }
@@ -2001,12 +1959,10 @@
                   ],
                   "query": [
                     {
-                      "equals": true,
                       "key": "action",
                       "value": "action"
                     },
                     {
-                      "equals": true,
                       "key": "object",
                       "value": "centreon_clapi"
                     }
@@ -2057,12 +2013,10 @@
                   ],
                   "query": [
                     {
-                      "equals": true,
                       "key": "action",
                       "value": "action"
                     },
                     {
-                      "equals": true,
                       "key": "object",
                       "value": "centreon_clapi"
                     }
@@ -2076,7 +2030,6 @@
         },
         {
           "name": "31-Hosts",
-          "description": "Tests all commands to manage hosts",
           "item": [
             {
               "name": "Add host",
@@ -2120,12 +2073,10 @@
                   ],
                   "query": [
                     {
-                      "equals": true,
                       "key": "action",
                       "value": "action"
                     },
                     {
-                      "equals": true,
                       "key": "object",
                       "value": "centreon_clapi"
                     }
@@ -2176,12 +2127,10 @@
                   ],
                   "query": [
                     {
-                      "equals": true,
                       "key": "action",
                       "value": "action"
                     },
                     {
-                      "equals": true,
                       "key": "object",
                       "value": "centreon_clapi"
                     }
@@ -2232,12 +2181,10 @@
                   ],
                   "query": [
                     {
-                      "equals": true,
                       "key": "action",
                       "value": "action"
                     },
                     {
-                      "equals": true,
                       "key": "object",
                       "value": "centreon_clapi"
                     }
@@ -2342,12 +2289,10 @@
                   ],
                   "query": [
                     {
-                      "equals": true,
                       "key": "action",
                       "value": "action"
                     },
                     {
-                      "equals": true,
                       "key": "object",
                       "value": "centreon_clapi"
                     }
@@ -2398,12 +2343,10 @@
                   ],
                   "query": [
                     {
-                      "equals": true,
                       "key": "action",
                       "value": "action"
                     },
                     {
-                      "equals": true,
                       "key": "object",
                       "value": "centreon_clapi"
                     }
@@ -2454,12 +2397,10 @@
                   ],
                   "query": [
                     {
-                      "equals": true,
                       "key": "action",
                       "value": "action"
                     },
                     {
-                      "equals": true,
                       "key": "object",
                       "value": "centreon_clapi"
                     }
@@ -2510,12 +2451,10 @@
                   ],
                   "query": [
                     {
-                      "equals": true,
                       "key": "action",
                       "value": "action"
                     },
                     {
-                      "equals": true,
                       "key": "object",
                       "value": "centreon_clapi"
                     }
@@ -2566,12 +2505,120 @@
                   ],
                   "query": [
                     {
-                      "equals": true,
                       "key": "action",
                       "value": "action"
                     },
                     {
-                      "equals": true,
+                      "key": "object",
+                      "value": "centreon_clapi"
+                    }
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "add host ack",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "id": "f3ee00c0-a0b5-4789-abbe-8064884869c1",
+                    "exec": [
+                      "tests[\"Status code is 200\"] = responseCode.code === 200;"
+                    ],
+                    "type": "text/javascript"
+                  }
+                }
+              ],
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "centreon-auth-token",
+                    "value": "{{token}}"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"action\": \"add\",\n  \"object\": \"host\",\n  \"values\": \"ack_host;ack_host;0.0.0.0;{{htpl_name}};central;\"\n}"
+                },
+                "url": {
+                  "raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
+                  "protocol": "http",
+                  "host": [
+                    "{{url}}"
+                  ],
+                  "path": [
+                    "centreon",
+                    "api",
+                    "index.php"
+                  ],
+                  "query": [
+                    {
+                      "key": "action",
+                      "value": "action"
+                    },
+                    {
+                      "key": "object",
+                      "value": "centreon_clapi"
+                    }
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Setparam passif host",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "id": "6d650ea5-2b6a-41c6-acdc-66dae41befdf",
+                    "exec": [
+                      "tests[\"Status code is 200\"] = responseCode.code === 200;"
+                    ],
+                    "type": "text/javascript"
+                  }
+                }
+              ],
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "centreon-auth-token",
+                    "value": "{{token}}"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"action\":\"setparam\",\n  \"object\":\"host\",\n  \"values\": \"ack_host;passive_checks_enabled;1\"\n}"
+                },
+                "url": {
+                  "raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
+                  "protocol": "http",
+                  "host": [
+                    "{{url}}"
+                  ],
+                  "path": [
+                    "centreon",
+                    "api",
+                    "index.php"
+                  ],
+                  "query": [
+                    {
+                      "key": "action",
+                      "value": "action"
+                    },
+                    {
                       "key": "object",
                       "value": "centreon_clapi"
                     }
@@ -2581,11 +2628,11 @@
               "response": []
             }
           ],
+          "description": "Tests all commands to manage hosts",
           "_postman_isSubFolder": true
         },
         {
           "name": "40-Services_Templates",
-          "description": "Tests all commands to manage service templates.",
           "item": [
             {
               "name": "Add service template",
@@ -2629,12 +2676,10 @@
                   ],
                   "query": [
                     {
-                      "equals": true,
                       "key": "action",
                       "value": "action"
                     },
                     {
-                      "equals": true,
                       "key": "object",
                       "value": "centreon_clapi"
                     }
@@ -2685,12 +2730,10 @@
                   ],
                   "query": [
                     {
-                      "equals": true,
                       "key": "action",
                       "value": "action"
                     },
                     {
-                      "equals": true,
                       "key": "object",
                       "value": "centreon_clapi"
                     }
@@ -2741,12 +2784,10 @@
                   ],
                   "query": [
                     {
-                      "equals": true,
                       "key": "action",
                       "value": "action"
                     },
                     {
-                      "equals": true,
                       "key": "object",
                       "value": "centreon_clapi"
                     }
@@ -2851,12 +2892,10 @@
                   ],
                   "query": [
                     {
-                      "equals": true,
                       "key": "action",
                       "value": "action"
                     },
                     {
-                      "equals": true,
                       "key": "object",
                       "value": "centreon_clapi"
                     }
@@ -2907,12 +2946,10 @@
                   ],
                   "query": [
                     {
-                      "equals": true,
                       "key": "action",
                       "value": "action"
                     },
                     {
-                      "equals": true,
                       "key": "object",
                       "value": "centreon_clapi"
                     }
@@ -2963,12 +3000,10 @@
                   ],
                   "query": [
                     {
-                      "equals": true,
                       "key": "action",
                       "value": "action"
                     },
                     {
-                      "equals": true,
                       "key": "object",
                       "value": "centreon_clapi"
                     }
@@ -2978,11 +3013,11 @@
               "response": []
             }
           ],
+          "description": "Tests all commands to manage service templates.",
           "_postman_isSubFolder": true
         },
         {
           "name": "41-Services",
-          "description": "Tests all commands to manage services.",
           "item": [
             {
               "name": "Add service",
@@ -3026,12 +3061,10 @@
                   ],
                   "query": [
                     {
-                      "equals": true,
                       "key": "action",
                       "value": "action"
                     },
                     {
-                      "equals": true,
                       "key": "object",
                       "value": "centreon_clapi"
                     }
@@ -3082,12 +3115,10 @@
                   ],
                   "query": [
                     {
-                      "equals": true,
                       "key": "action",
                       "value": "action"
                     },
                     {
-                      "equals": true,
                       "key": "object",
                       "value": "centreon_clapi"
                     }
@@ -3138,12 +3169,10 @@
                   ],
                   "query": [
                     {
-                      "equals": true,
                       "key": "action",
                       "value": "action"
                     },
                     {
-                      "equals": true,
                       "key": "object",
                       "value": "centreon_clapi"
                     }
@@ -3194,12 +3223,10 @@
                   ],
                   "query": [
                     {
-                      "equals": true,
                       "key": "action",
                       "value": "action"
                     },
                     {
-                      "equals": true,
                       "key": "object",
                       "value": "centreon_clapi"
                     }
@@ -3250,12 +3277,10 @@
                   ],
                   "query": [
                     {
-                      "equals": true,
                       "key": "action",
                       "value": "action"
                     },
                     {
-                      "equals": true,
                       "key": "object",
                       "value": "centreon_clapi"
                     }
@@ -3306,12 +3331,230 @@
                   ],
                   "query": [
                     {
-                      "equals": true,
                       "key": "action",
                       "value": "action"
                     },
                     {
-                      "equals": true,
+                      "key": "object",
+                      "value": "centreon_clapi"
+                    }
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "add service ack",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "id": "4b48e66d-4ef8-4790-9485-f38834c44b43",
+                    "exec": [
+                      "tests[\"Status code is 200\"] = responseCode.code === 200;"
+                    ],
+                    "type": "text/javascript"
+                  }
+                }
+              ],
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "centreon-auth-token",
+                    "value": "{{token}}"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"action\": \"add\",\n  \"object\": \"service\",\n  \"values\": \"ack_host;ack_service;{{stpl_description}}\"\n}"
+                },
+                "url": {
+                  "raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
+                  "protocol": "http",
+                  "host": [
+                    "{{url}}"
+                  ],
+                  "path": [
+                    "centreon",
+                    "api",
+                    "index.php"
+                  ],
+                  "query": [
+                    {
+                      "key": "action",
+                      "value": "action"
+                    },
+                    {
+                      "key": "object",
+                      "value": "centreon_clapi"
+                    }
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Setparam passive service",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "id": "e9dd0ce3-1f18-4398-9905-91dbb1e5deb8",
+                    "exec": [
+                      "tests[\"Status code is 200\"] = responseCode.code === 200;"
+                    ],
+                    "type": "text/javascript"
+                  }
+                }
+              ],
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "centreon-auth-token",
+                    "value": "{{token}}"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"action\": \"setparam\",\n  \"object\": \"service\",\n  \"values\": \"ack_host;ack_service;passive_checks_enabled;1\"\n}"
+                },
+                "url": {
+                  "raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
+                  "protocol": "http",
+                  "host": [
+                    "{{url}}"
+                  ],
+                  "path": [
+                    "centreon",
+                    "api",
+                    "index.php"
+                  ],
+                  "query": [
+                    {
+                      "key": "action",
+                      "value": "action"
+                    },
+                    {
+                      "key": "object",
+                      "value": "centreon_clapi"
+                    }
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Setparam active service",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "id": "e9dd0ce3-1f18-4398-9905-91dbb1e5deb8",
+                    "exec": [
+                      "tests[\"Status code is 200\"] = responseCode.code === 200;"
+                    ],
+                    "type": "text/javascript"
+                  }
+                }
+              ],
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "centreon-auth-token",
+                    "value": "{{token}}"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"action\": \"setparam\",\n  \"object\": \"service\",\n  \"values\": \"ack_host;ack_service;active_checks_enabled;0\"\n}"
+                },
+                "url": {
+                  "raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
+                  "protocol": "http",
+                  "host": [
+                    "{{url}}"
+                  ],
+                  "path": [
+                    "centreon",
+                    "api",
+                    "index.php"
+                  ],
+                  "query": [
+                    {
+                      "key": "action",
+                      "value": "action"
+                    },
+                    {
+                      "key": "object",
+                      "value": "centreon_clapi"
+                    }
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Setparam check_command",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "id": "305f6bd3-0d62-4973-b79e-09058f034f88",
+                    "exec": [
+                      "tests[\"Status code is 200\"] = responseCode.code === 200;"
+                    ],
+                    "type": "text/javascript"
+                  }
+                }
+              ],
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "centreon-auth-token",
+                    "value": "{{token}}"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"action\": \"setparam\",\n  \"object\": \"service\",\n  \"values\": \"ack_host;ack_service;check_command;{{command_name}}\"\n}"
+                },
+                "url": {
+                  "raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
+                  "protocol": "http",
+                  "host": [
+                    "{{url}}"
+                  ],
+                  "path": [
+                    "centreon",
+                    "api",
+                    "index.php"
+                  ],
+                  "query": [
+                    {
+                      "key": "action",
+                      "value": "action"
+                    },
+                    {
                       "key": "object",
                       "value": "centreon_clapi"
                     }
@@ -3321,6 +3564,7 @@
               "response": []
             }
           ],
+          "description": "Tests all commands to manage services.",
           "_postman_isSubFolder": true
         },
         {
@@ -3377,12 +3621,10 @@
                   ],
                   "query": [
                     {
-                      "equals": true,
                       "key": "action",
                       "value": "action"
                     },
                     {
-                      "equals": true,
                       "key": "object",
                       "value": "centreon_clapi"
                     }
@@ -3445,12 +3687,10 @@
                   ],
                   "query": [
                     {
-                      "equals": true,
                       "key": "action",
                       "value": "list"
                     },
                     {
-                      "equals": true,
                       "key": "object",
                       "value": "centreon_realtime_hosts"
                     }
@@ -3508,17 +3748,14 @@
                   ],
                   "query": [
                     {
-                      "equals": true,
                       "key": "action",
                       "value": "list"
                     },
                     {
-                      "equals": true,
                       "key": "object",
                       "value": "centreon_realtime_hosts"
                     },
                     {
-                      "equals": true,
                       "key": "limit",
                       "value": "{{my_limit}}"
                     }
@@ -3570,22 +3807,18 @@
                   ],
                   "query": [
                     {
-                      "equals": true,
                       "key": "action",
                       "value": "list"
                     },
                     {
-                      "equals": true,
                       "key": "object",
                       "value": "centreon_realtime_hosts"
                     },
                     {
-                      "equals": true,
                       "key": "limit",
                       "value": "2"
                     },
                     {
-                      "equals": true,
                       "key": "fields",
                       "value": "name"
                     }
@@ -3637,22 +3870,18 @@
                   ],
                   "query": [
                     {
-                      "equals": true,
                       "key": "action",
                       "value": "list"
                     },
                     {
-                      "equals": true,
                       "key": "object",
                       "value": "centreon_realtime_hosts"
                     },
                     {
-                      "equals": true,
                       "key": "limit",
                       "value": "2"
                     },
                     {
-                      "equals": true,
                       "key": "fields",
                       "value": "id,name,alias,address,state,state_type,output,max_check_attempts,check_attempt,last_check,next_check,last_state_change,last_hard_state_change,acknowledged,instance,instance_id,criticality,passive_checks,active_checks,notify,action_url,notes_url,notes,icon_image,icon_image_alt,scheduled_downtime_depth,flapping"
                     }
@@ -3710,17 +3939,14 @@
                   ],
                   "query": [
                     {
-                      "equals": true,
                       "key": "action",
                       "value": "list"
                     },
                     {
-                      "equals": true,
                       "key": "object",
                       "value": "centreon_realtime_hosts"
                     },
                     {
-                      "equals": true,
                       "key": "viewType",
                       "value": "all,unhandled,problems"
                     }
@@ -3772,17 +3998,14 @@
                   ],
                   "query": [
                     {
-                      "equals": true,
                       "key": "action",
                       "value": "list"
                     },
                     {
-                      "equals": true,
                       "key": "object",
                       "value": "centreon_realtime_hosts"
                     },
                     {
-                      "equals": true,
                       "key": "viewType",
                       "value": "all"
                     }
@@ -3835,17 +4058,14 @@
                   ],
                   "query": [
                     {
-                      "equals": true,
                       "key": "action",
                       "value": "list"
                     },
                     {
-                      "equals": true,
                       "key": "object",
                       "value": "centreon_realtime_hosts"
                     },
                     {
-                      "equals": true,
                       "key": "viewType",
                       "value": "unhandled"
                     }
@@ -3898,17 +4118,14 @@
                   ],
                   "query": [
                     {
-                      "equals": true,
                       "key": "action",
                       "value": "list"
                     },
                     {
-                      "equals": true,
                       "key": "object",
                       "value": "centreon_realtime_hosts"
                     },
                     {
-                      "equals": true,
                       "key": "viewType",
                       "value": "problems"
                     }
@@ -3960,22 +4177,18 @@
                   ],
                   "query": [
                     {
-                      "equals": true,
                       "key": "action",
                       "value": "list"
                     },
                     {
-                      "equals": true,
                       "key": "object",
                       "value": "centreon_realtime_hosts"
                     },
                     {
-                      "equals": true,
                       "key": "limit",
                       "value": "{{my_limit}}"
                     },
                     {
-                      "equals": true,
                       "key": "viewType",
                       "value": "all,unhandled,problems"
                     }
@@ -4027,22 +4240,18 @@
                   ],
                   "query": [
                     {
-                      "equals": true,
                       "key": "action",
                       "value": "list"
                     },
                     {
-                      "equals": true,
                       "key": "object",
                       "value": "centreon_realtime_hosts"
                     },
                     {
-                      "equals": true,
                       "key": "limit",
                       "value": "{{my_limit}}"
                     },
                     {
-                      "equals": true,
                       "key": "viewType",
                       "value": "all"
                     }
@@ -4095,22 +4304,18 @@
                   ],
                   "query": [
                     {
-                      "equals": true,
                       "key": "action",
                       "value": "list"
                     },
                     {
-                      "equals": true,
                       "key": "object",
                       "value": "centreon_realtime_hosts"
                     },
                     {
-                      "equals": true,
                       "key": "limit",
                       "value": "{{my_limit}}"
                     },
                     {
-                      "equals": true,
                       "key": "viewType",
                       "value": "unhandled"
                     }
@@ -4163,22 +4368,18 @@
                   ],
                   "query": [
                     {
-                      "equals": true,
                       "key": "action",
                       "value": "list"
                     },
                     {
-                      "equals": true,
                       "key": "object",
                       "value": "centreon_realtime_hosts"
                     },
                     {
-                      "equals": true,
                       "key": "limit",
                       "value": "{{my_limit}}"
                     },
                     {
-                      "equals": true,
                       "key": "viewType",
                       "value": "problems"
                     }
@@ -4237,22 +4438,18 @@
                   ],
                   "query": [
                     {
-                      "equals": true,
                       "key": "action",
                       "value": "list"
                     },
                     {
-                      "equals": true,
                       "key": "object",
                       "value": "centreon_realtime_hosts"
                     },
                     {
-                      "equals": true,
                       "key": "status",
                       "value": "up"
                     },
                     {
-                      "equals": true,
                       "key": "fields",
                       "value": "name, state"
                     }
@@ -4305,22 +4502,18 @@
                   ],
                   "query": [
                     {
-                      "equals": true,
                       "key": "action",
                       "value": "list"
                     },
                     {
-                      "equals": true,
                       "key": "object",
                       "value": "centreon_realtime_hosts"
                     },
                     {
-                      "equals": true,
                       "key": "status",
                       "value": "down"
                     },
                     {
-                      "equals": true,
                       "key": "fields",
                       "value": "name, state"
                     }
@@ -4373,22 +4566,18 @@
                   ],
                   "query": [
                     {
-                      "equals": true,
                       "key": "action",
                       "value": "list"
                     },
                     {
-                      "equals": true,
                       "key": "object",
                       "value": "centreon_realtime_hosts"
                     },
                     {
-                      "equals": true,
                       "key": "status",
                       "value": "unreachable"
                     },
                     {
-                      "equals": true,
                       "key": "fields",
                       "value": "name, state"
                     }
@@ -4441,22 +4630,18 @@
                   ],
                   "query": [
                     {
-                      "equals": true,
                       "key": "action",
                       "value": "list"
                     },
                     {
-                      "equals": true,
                       "key": "object",
                       "value": "centreon_realtime_hosts"
                     },
                     {
-                      "equals": true,
                       "key": "status",
                       "value": "pending"
                     },
                     {
-                      "equals": true,
                       "key": "fields",
                       "value": "name, state"
                     }
@@ -4508,27 +4693,22 @@
                   ],
                   "query": [
                     {
-                      "equals": true,
                       "key": "action",
                       "value": "list"
                     },
                     {
-                      "equals": true,
                       "key": "object",
                       "value": "centreon_realtime_hosts"
                     },
                     {
-                      "equals": true,
                       "key": "limit",
                       "value": "{{my_limit}}"
                     },
                     {
-                      "equals": true,
                       "key": "status",
                       "value": "all"
                     },
                     {
-                      "equals": true,
                       "key": "fields",
                       "value": "name, state"
                     }
@@ -4586,17 +4766,14 @@
                   ],
                   "query": [
                     {
-                      "equals": true,
                       "key": "action",
                       "value": "list"
                     },
                     {
-                      "equals": true,
                       "key": "object",
                       "value": "centreon_realtime_hosts"
                     },
                     {
-                      "equals": true,
                       "key": "search",
                       "value": "{{host_name}}"
                     }
@@ -4649,22 +4826,18 @@
                   ],
                   "query": [
                     {
-                      "equals": true,
                       "key": "action",
                       "value": "list"
                     },
                     {
-                      "equals": true,
                       "key": "object",
                       "value": "centreon_realtime_hosts"
                     },
                     {
-                      "equals": true,
                       "key": "search",
                       "value": "{{host_name}}"
                     },
                     {
-                      "equals": true,
                       "key": "status",
                       "value": "up"
                     }
@@ -4717,22 +4890,18 @@
                   ],
                   "query": [
                     {
-                      "equals": true,
                       "key": "action",
                       "value": "list"
                     },
                     {
-                      "equals": true,
                       "key": "object",
                       "value": "centreon_realtime_hosts"
                     },
                     {
-                      "equals": true,
                       "key": "search",
                       "value": "{{host_name}}"
                     },
                     {
-                      "equals": true,
                       "key": "status",
                       "value": "down"
                     }
@@ -4785,22 +4954,18 @@
                   ],
                   "query": [
                     {
-                      "equals": true,
                       "key": "action",
                       "value": "list"
                     },
                     {
-                      "equals": true,
                       "key": "object",
                       "value": "centreon_realtime_hosts"
                     },
                     {
-                      "equals": true,
                       "key": "search",
                       "value": "{{host_name}}"
                     },
                     {
-                      "equals": true,
                       "key": "status",
                       "value": "pending"
                     }
@@ -4853,22 +5018,18 @@
                   ],
                   "query": [
                     {
-                      "equals": true,
                       "key": "action",
                       "value": "list"
                     },
                     {
-                      "equals": true,
                       "key": "object",
                       "value": "centreon_realtime_hosts"
                     },
                     {
-                      "equals": true,
                       "key": "search",
                       "value": "{{host_name}}"
                     },
                     {
-                      "equals": true,
                       "key": "status",
                       "value": "unreachable"
                     }
@@ -4920,22 +5081,18 @@
                   ],
                   "query": [
                     {
-                      "equals": true,
                       "key": "action",
                       "value": "list"
                     },
                     {
-                      "equals": true,
                       "key": "object",
                       "value": "centreon_realtime_hosts"
                     },
                     {
-                      "equals": true,
                       "key": "search",
                       "value": "{{host_name}}"
                     },
                     {
-                      "equals": true,
                       "key": "fields",
                       "value": "id"
                     }
@@ -4987,22 +5144,18 @@
                   ],
                   "query": [
                     {
-                      "equals": true,
                       "key": "action",
                       "value": "list"
                     },
                     {
-                      "equals": true,
                       "key": "object",
                       "value": "centreon_realtime_hosts"
                     },
                     {
-                      "equals": true,
                       "key": "search",
                       "value": "{{host_name}}"
                     },
                     {
-                      "equals": true,
                       "key": "fields",
                       "value": "id,name,alias,address,state,state_type,output,max_check_attempts,check_attempt,last_check,next_check,last_state_change,last_hard_state_change,acknowledged,instance,instance_id,criticality,passive_checks,active_checks,notify,action_url,notes_url,notes,icon_image,icon_image_alt,scheduled_downtime_depth,flapping"
                     }
@@ -5065,12 +5218,10 @@
                   ],
                   "query": [
                     {
-                      "equals": true,
                       "key": "action",
                       "value": "list"
                     },
                     {
-                      "equals": true,
                       "key": "object",
                       "value": "centreon_realtime_services"
                     }
@@ -5128,17 +5279,14 @@
                   ],
                   "query": [
                     {
-                      "equals": true,
                       "key": "action",
                       "value": "list"
                     },
                     {
-                      "equals": true,
                       "key": "object",
                       "value": "centreon_realtime_services"
                     },
                     {
-                      "equals": true,
                       "key": "searchHost",
                       "value": "{{host_name}}"
                     }
@@ -5190,22 +5338,18 @@
                   ],
                   "query": [
                     {
-                      "equals": true,
                       "key": "action",
                       "value": "list"
                     },
                     {
-                      "equals": true,
                       "key": "object",
                       "value": "centreon_realtime_services"
                     },
                     {
-                      "equals": true,
                       "key": "searchHost",
                       "value": "{{host_name}}"
                     },
                     {
-                      "equals": true,
                       "key": "searchService",
                       "value": "{{service_description}}"
                     }
@@ -5257,22 +5401,18 @@
                   ],
                   "query": [
                     {
-                      "equals": true,
                       "key": "action",
                       "value": "list"
                     },
                     {
-                      "equals": true,
                       "key": "object",
                       "value": "centreon_realtime_services"
                     },
                     {
-                      "equals": true,
                       "key": "searchHost",
                       "value": "{{host_name}}"
                     },
                     {
-                      "equals": true,
                       "key": "searchService",
                       "value": "{{service_description}}"
                     }
@@ -5330,17 +5470,14 @@
                   ],
                   "query": [
                     {
-                      "equals": true,
                       "key": "action",
                       "value": "list"
                     },
                     {
-                      "equals": true,
                       "key": "object",
                       "value": "centreon_realtime_services"
                     },
                     {
-                      "equals": true,
                       "key": "limit",
                       "value": "{{my_limit}}"
                     }
@@ -5392,22 +5529,18 @@
                   ],
                   "query": [
                     {
-                      "equals": true,
                       "key": "action",
                       "value": "list"
                     },
                     {
-                      "equals": true,
                       "key": "object",
                       "value": "centreon_realtime_services"
                     },
                     {
-                      "equals": true,
                       "key": "limit",
                       "value": "{{my_limit}}"
                     },
                     {
-                      "equals": true,
                       "key": "fields",
                       "value": "id"
                     }
@@ -5502,22 +5635,18 @@
                   ],
                   "query": [
                     {
-                      "equals": true,
                       "key": "action",
                       "value": "list"
                     },
                     {
-                      "equals": true,
                       "key": "object",
                       "value": "centreon_realtime_services"
                     },
                     {
-                      "equals": true,
                       "key": "limit",
                       "value": "{{my_limit}}"
                     },
                     {
-                      "equals": true,
                       "key": "fields",
                       "value": "host_id,host_name,host_alias,host_address,host_state,host_state_type,host_output,host_last_check,host_next_check,host_acknowledged,instance,instance_id,host_action_url,host_notes_url,host_icon_image,description,state,state_type,id,output,perfdata,current_attempt,last_update,last_state_change,last_hard_state_change,last_check,next_check,max_check_attempts,notes,notes_url,action_url,icon_image,display_name,notify,acknowledged,passive_checks,active_checks,event_handler_enabled,flapping,scheduled_downtime_depth,flap_detection,criticality"
                     }
@@ -5576,17 +5705,14 @@
                   ],
                   "query": [
                     {
-                      "equals": true,
                       "key": "action",
                       "value": "list"
                     },
                     {
-                      "equals": true,
                       "key": "object",
                       "value": "centreon_realtime_services"
                     },
                     {
-                      "equals": true,
                       "key": "viewType",
                       "value": "problems"
                     }
@@ -5639,17 +5765,14 @@
                   ],
                   "query": [
                     {
-                      "equals": true,
                       "key": "action",
                       "value": "list"
                     },
                     {
-                      "equals": true,
                       "key": "object",
                       "value": "centreon_realtime_services"
                     },
                     {
-                      "equals": true,
                       "key": "viewType",
                       "value": "unhandled_critical"
                     }
@@ -5719,12 +5842,10 @@
               ],
               "query": [
                 {
-                  "equals": true,
                   "key": "action",
                   "value": "action"
                 },
                 {
-                  "equals": true,
                   "key": "object",
                   "value": "centreon_clapi"
                 }
@@ -5795,12 +5916,10 @@
               ],
               "query": [
                 {
-                  "equals": true,
                   "key": "action",
                   "value": "action"
                 },
                 {
-                  "equals": true,
                   "key": "object",
                   "value": "centreon_clapi"
                 }
@@ -5870,12 +5989,10 @@
               ],
               "query": [
                 {
-                  "equals": true,
                   "key": "action",
                   "value": "action"
                 },
                 {
-                  "equals": true,
                   "key": "object",
                   "value": "centreon_clapi"
                 }
@@ -5945,12 +6062,10 @@
               ],
               "query": [
                 {
-                  "equals": true,
                   "key": "action",
                   "value": "action"
                 },
                 {
-                  "equals": true,
                   "key": "object",
                   "value": "centreon_clapi"
                 }
@@ -6030,13 +6145,11 @@
               "query": [
                 {
                   "key": "action",
-                  "value": "action",
-                  "equals": true
+                  "value": "action"
                 },
                 {
                   "key": "object",
-                  "value": "centreon_clapi",
-                  "equals": true
+                  "value": "centreon_clapi"
                 }
               ]
             }
@@ -6116,13 +6229,11 @@
               "query": [
                 {
                   "key": "action",
-                  "value": "action",
-                  "equals": true
+                  "value": "action"
                 },
                 {
                   "key": "object",
-                  "value": "centreon_clapi",
-                  "equals": true
+                  "value": "centreon_clapi"
                 }
               ]
             }
@@ -6204,13 +6315,11 @@
               "query": [
                 {
                   "key": "action",
-                  "value": "action",
-                  "equals": true
+                  "value": "action"
                 },
                 {
                   "key": "object",
-                  "value": "centreon_clapi",
-                  "equals": true
+                  "value": "centreon_clapi"
                 }
               ]
             }
@@ -6263,18 +6372,614 @@
               "query": [
                 {
                   "key": "action",
-                  "value": "action",
-                  "equals": true
+                  "value": "action"
                 },
                 {
                   "key": "object",
-                  "value": "centreon_clapi",
-                  "equals": true
+                  "value": "centreon_clapi"
                 }
               ]
             }
           },
           "response": []
+        }
+      ]
+    },
+    {
+      "name": "60-Acknowledgement",
+      "item": [
+        {
+          "name": "Submit host down",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "id": "6d650ea5-2b6a-41c6-acdc-66dae41befdf",
+                "exec": [
+                  "tests[\"Status code is 200\"] = responseCode.code === 200;"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "centreon-auth-token",
+                "value": "{{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n\t\"results\" : {\n\t\t\"ack\": {\n\t\t\t\"host\":\"ack_host\",\n\t\t\t\"status\":\"1\",\n\t\t\t\"output\": \"down\",\n\t\t\t\"updatetime\": \"1528884076\"\n\t\t}\n\t}\n}"
+            },
+            "url": {
+              "raw": "http://{{url}}/centreon/api/index.php?action=submit&object=centreon_submit_results",
+              "protocol": "http",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "centreon",
+                "api",
+                "index.php"
+              ],
+              "query": [
+                {
+                  "key": "action",
+                  "value": "submit"
+                },
+                {
+                  "key": "object",
+                  "value": "centreon_submit_results"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Submit service down",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "id": "6d650ea5-2b6a-41c6-acdc-66dae41befdf",
+                "exec": [
+                  "tests[\"Status code is 200\"] = responseCode.code === 200;"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "centreon-auth-token",
+                "value": "{{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n\t\"results\" : {\n\t\t\"ack\": {\n\t\t\t\"host\":\"ack_host\",\n\t\t\t\"service\":\"ack_service\",\n\t\t\t\"status\":\"1\",\n\t\t\t\"output\": \"down\",\n\t\t\t\"updatetime\": \"1528884076\"\n\t\t}\n\t}\n}"
+            },
+            "url": {
+              "raw": "http://{{url}}/centreon/api/index.php?action=submit&object=centreon_submit_results",
+              "protocol": "http",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "centreon",
+                "api",
+                "index.php"
+              ],
+              "query": [
+                {
+                  "key": "action",
+                  "value": "submit"
+                },
+                {
+                  "key": "object",
+                  "value": "centreon_submit_results"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Addhost",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "id": "65b7552d-40e3-4319-b092-05e2570ff1a5",
+                "exec": [
+                  "tests[\"Status code is 200\"] = responseCode.code === 200;"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "centreon-auth-token",
+                "value": "{{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"action\": \"add\",\n  \"object\": \"rtacknowledgement\",\n  \"values\": \"HOST;ack_host;my comments;1;0;1\"\n}"
+            },
+            "url": {
+              "raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
+              "protocol": "http",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "centreon",
+                "api",
+                "index.php"
+              ],
+              "query": [
+                {
+                  "key": "action",
+                  "value": "action"
+                },
+                {
+                  "key": "object",
+                  "value": "centreon_clapi"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Addservice",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "id": "231967f9-39a6-4a89-8a6c-c60745b6507e",
+                "exec": [
+                  "tests[\"Status code is 200\"] = responseCode.code === 200;"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "centreon-auth-token",
+                "value": "{{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"action\": \"add\",\n  \"object\": \"rtacknowledgement\",\n  \"values\": \"SVC;ack_host,ack_service;my comments;1;0;1\"\n}"
+            },
+            "url": {
+              "raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
+              "protocol": "http",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "centreon",
+                "api",
+                "index.php"
+              ],
+              "query": [
+                {
+                  "key": "action",
+                  "value": "action"
+                },
+                {
+                  "key": "object",
+                  "value": "centreon_clapi"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "List acknowledgement",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "id": "b7ca0ef2-cb1b-4ce0-835a-9517ec006d8f",
+                "exec": [
+                  "tests[\"Status code is 200\"] = responseCode.code === 200;",
+                  "",
+                  "var contentType = postman.getResponseHeader(\"Content-Type\");",
+                  "tests[\"Content-Type is application/json\"] = contentType === \"application/json;charset=utf-8\";",
+                  "",
+                  "var jsonData = JSON.parse(responseBody);",
+                  "var result= jsonData.result;",
+                  "",
+                  "var schema = {",
+                  "    \"$schema\": \"http://json-schema.org/draft-04/schema#\",",
+                  "    \"type\": \"array\",",
+                  "    \"items\": {",
+                  "        \"type\": \"object\",",
+                  "        \"properties\": {",
+                  "            \"hosts\": { \"type\": \"string\" },",
+                  "            \"services\": { \"type\": \"string\" }",
+                  "        },",
+                  "        \"additionalProperties\": false,",
+                  "        \"required \": [\"hosts \"]",
+                  "    }",
+                  "};",
+                  "",
+                  "tests[\"Validate schema\"] = tv4.validate(result, schema);",
+                  "",
+                  "try {",
+                  "    tests[\"Body contains list of downtimes\"] = result;",
+                  "    var i = 0;",
+                  "    while (i < result.length) {",
+                  "        if (postman.getEnvironmentVariable(\"downtime_name\") == result[i].name){",
+                  "            tests[\"Body contains added downtime_name\"] = postman.getEnvironmentVariable(\"downtime_name\") == result[i].name;",
+                  "            tests[\"Body contains added downtime_description\"] = postman.getEnvironmentVariable(\"downtime_description\") == result[i].description;",
+                  "            break;",
+                  "        }",
+                  "        i++;",
+                  "    }",
+                  "    if (i == engineData.length)",
+                  "        tests[\"enine_name was found\"] = false;",
+                  "}",
+                  "catch (e) {}",
+                  ""
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "centreon-auth-token",
+                "value": "{{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"action\": \"show\",\n  \"object\": \"RTACKNOWLEDGEMENT\"\n}"
+            },
+            "url": {
+              "raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
+              "protocol": "http",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "centreon",
+                "api",
+                "index.php"
+              ],
+              "query": [
+                {
+                  "key": "action",
+                  "value": "action"
+                },
+                {
+                  "key": "object",
+                  "value": "centreon_clapi"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "List host",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "id": "b7ca0ef2-cb1b-4ce0-835a-9517ec006d8f",
+                "exec": [
+                  "tests[\"Status code is 200\"] = responseCode.code === 200;",
+                  "",
+                  "var contentType = postman.getResponseHeader(\"Content-Type\");",
+                  "tests[\"Content-Type is application/json\"] = contentType === \"application/json;charset=utf-8\";",
+                  "",
+                  "var jsonData = JSON.parse(responseBody);",
+                  "var result= jsonData.result;",
+                  "",
+                  "var schema = {",
+                  "    \"$schema\": \"http://json-schema.org/draft-04/schema#\",",
+                  "    \"type\": \"array\",",
+                  "    \"items\": {",
+                  "        \"type\": \"object\",",
+                  "        \"properties\": {",
+                  "            \"id\": { \"type\": \"string\" },",
+                  "            \"host_name\": { \"type\": \"string\" },",
+                  "            \"entry_time\": { \"type\": \"string\" },",
+                  "            \"author\": { \"type\": \"string\" },",
+                  "            \"comment_data\": { \"type\": \"string\" },",
+                  "            \"sticky\": { \"type\": \"string\" },",
+                  "            \"notify_contacts\": { \"type\": \"string\" },",
+                  "            \"persistent_comment\": { \"type\": \"string\" }",
+                  "        },",
+                  "        \"additionalProperties\": false,",
+                  "        \"required \": [\"id \", \"host_name \", \"entry_time\", \"author\", \"comment_data\", \"sticky\", \"notify_contacts\", \"persistent_comment\"]",
+                  "    }",
+                  "};",
+                  "",
+                  "tests[\"Validate schema\"] = tv4.validate(result, schema);",
+                  "",
+                  "try {",
+                  "    tests[\"Body contains list of downtimes\"] = result;",
+                  "    var i = 0;",
+                  "    while (i < result.length) {",
+                  "        if (postman.getEnvironmentVariable(\"downtime_name\") == result[i].name){",
+                  "            tests[\"Body contains added downtime_name\"] = postman.getEnvironmentVariable(\"downtime_name\") == result[i].name;",
+                  "            tests[\"Body contains added downtime_description\"] = postman.getEnvironmentVariable(\"downtime_description\") == result[i].description;",
+                  "            break;",
+                  "        }",
+                  "        i++;",
+                  "    }",
+                  "    if (i == engineData.length)",
+                  "        tests[\"enine_name was found\"] = false;",
+                  "}",
+                  "catch (e) {}",
+                  ""
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "centreon-auth-token",
+                "value": "{{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"action\": \"show\",\n  \"object\": \"rtacknowledgement\",\n  \"values\": \"HOST\"\n}"
+            },
+            "url": {
+              "raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
+              "protocol": "http",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "centreon",
+                "api",
+                "index.php"
+              ],
+              "query": [
+                {
+                  "key": "action",
+                  "value": "action"
+                },
+                {
+                  "key": "object",
+                  "value": "centreon_clapi"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "List service",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "id": "b7ca0ef2-cb1b-4ce0-835a-9517ec006d8f",
+                "exec": [
+                  "tests[\"Status code is 200\"] = responseCode.code === 200;",
+                  "",
+                  "var contentType = postman.getResponseHeader(\"Content-Type\");",
+                  "tests[\"Content-Type is application/json\"] = contentType === \"application/json;charset=utf-8\";",
+                  "",
+                  "var jsonData = JSON.parse(responseBody);",
+                  "var result= jsonData.result;",
+                  "",
+                  "var schema = {",
+                  "    \"$schema\": \"http://json-schema.org/draft-04/schema#\",",
+                  "    \"type\": \"array\",",
+                  "    \"items\": {",
+                  "        \"type\": \"object\",",
+                  "        \"properties\": {",
+                  "            \"id\": { \"type\": \"string\" },",
+                  "            \"host_name\": { \"type\": \"string\" },",
+                  "            \"service_name\": { \"type\": \"string\" },",
+                  "            \"entry_time\": { \"type\": \"string\" },",
+                  "            \"author\": { \"type\": \"string\" },",
+                  "            \"comment_data\": { \"type\": \"string\" },",
+                  "            \"sticky\": { \"type\": \"string\" },",
+                  "            \"notify_contacts\": { \"type\": \"string\" },",
+                  "            \"persistent_comment\": { \"type\": \"string\" }",
+                  "        },",
+                  "        \"additionalProperties\": false,",
+                  "        \"required \": [\"id \", \"host_name \", \"service_name\", \"entry_time\", \"author\", \"comment_data\", \"sticky\", \"notify_contacts\", \"persistent_comment\"]",
+                  "    }",
+                  "};",
+                  "",
+                  "tests[\"Validate schema\"] = tv4.validate(result, schema);",
+                  "",
+                  "try {",
+                  "    tests[\"Body contains list of downtimes\"] = result;",
+                  "    var i = 0;",
+                  "    while (i < result.length) {",
+                  "        if (postman.getEnvironmentVariable(\"downtime_name\") == result[i].name){",
+                  "            tests[\"Body contains added downtime_name\"] = postman.getEnvironmentVariable(\"downtime_name\") == result[i].name;",
+                  "            tests[\"Body contains added downtime_description\"] = postman.getEnvironmentVariable(\"downtime_description\") == result[i].description;",
+                  "            break;",
+                  "        }",
+                  "        i++;",
+                  "    }",
+                  "    if (i == engineData.length)",
+                  "        tests[\"enine_name was found\"] = false;",
+                  "}",
+                  "catch (e) {}",
+                  ""
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "centreon-auth-token",
+                "value": "{{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"action\": \"show\",\n  \"object\": \"rtacknowledgement\",\n  \"values\": \"SVC\"\n}"
+            },
+            "url": {
+              "raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
+              "protocol": "http",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "centreon",
+                "api",
+                "index.php"
+              ],
+              "query": [
+                {
+                  "key": "action",
+                  "value": "action"
+                },
+                {
+                  "key": "object",
+                  "value": "centreon_clapi"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Cancel",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "id": "fc9cb2ef-eaa0-4eb2-af68-af682c1bc004",
+                "exec": [
+                  "tests[\"Status code is 200\"] = responseCode.code === 200;"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "centreon-auth-token",
+                "value": "{{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"action\": \"cancel\",\n  \"object\": \"rtacknowledgement\",\n  \"values\": \"ack_host,ack_service\"\n}"
+            },
+            "url": {
+              "raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
+              "protocol": "http",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "centreon",
+                "api",
+                "index.php"
+              ],
+              "query": [
+                {
+                  "key": "action",
+                  "value": "action"
+                },
+                {
+                  "key": "object",
+                  "value": "centreon_clapi"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ],
+      "description": "Tests all commands to manage acknowledgement.",
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "id": "5361d46e-6312-4e29-a991-4edc94cd4425",
+            "type": "text/javascript",
+            "exec": [
+              ""
+            ]
+          }
+        },
+        {
+          "listen": "test",
+          "script": {
+            "id": "ea8d41af-e291-4bc7-97be-742bfab32eaf",
+            "type": "text/javascript",
+            "exec": [
+              ""
+            ]
+          }
         }
       ]
     }
