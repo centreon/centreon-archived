@@ -133,15 +133,14 @@ Cancel a real time acknowledgement
 ----------------------------------
 
 In order to cancel a real time acknowledgement, use the **CANCEL** action::
-To get the value of the id, use the **SHOW** action::
 
-  [root@centreon ~]# ./centreon -u admin -p centreon -o RTACKNOWLEDGEMENT -a CANCEL -v "6|42"
+  [root@centreon ~]# ./centreon -u admin -p centreon -o RTACKNOWLEDGEMENT -a CANCEL -v "central,ping"
 
 The required parameters are the following :
 
 ========= ============================================
 Order     Description
 ========= ============================================
-1         Id of acknowledgement
+1         Name of acknowledged resource(s)
 
 ========= ============================================

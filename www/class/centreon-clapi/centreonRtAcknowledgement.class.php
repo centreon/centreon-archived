@@ -190,17 +190,17 @@ class CentreonRtAcknowledgement extends CentreonObject
             //all host
             if (count($this->aHosts) !== 0) {
                 foreach ($this->aHosts as $host) {
-                    $list .= $host['name'] . ";;\n";
+                    $list .= $host['name'] . ";\n";
                 }
             }
 
             //all service
             if (count($this->aServices) !== 0) {
                 foreach ($this->aServices as $service) {
-                    $list .= $service['name'] . ';' . $service['description'] . "; \n";
+                    $list .= $service['name'] . ';' . $service['description'] . " \n";
                 }
             }
-            echo "hosts;services;\n";
+            echo "hosts;services\n";
             echo $list;
         }
     }
@@ -479,24 +479,25 @@ class CentreonRtAcknowledgement extends CentreonObject
         $unknownAcknowledgement = array();
 
         foreach ($listAcknowledgement as $acknowledgement) {
-            if (!is_numeric($acknowledgement)) {
-                $unknownAcknowledgement[] = $acknowledgement;
+            list($hostName, $serviceName) = explode(',', $acknowledgement);
+
+            if ($serviceName) {
+                $serviceId = $this->serviceObject->getObjectId($serviceName);
+                if ($this->object->svcIsAcknowledged($serviceId)) {
+                    $this->externalCmdObj->deleteAcknowledgement(
+                        'SVC',
+                        array($hostName . ';' . $serviceName => 'on')
+                    );
+                } else {
+                    $unknownAcknowledgement[] = $acknowledgement;
+                }
             } else {
-                $infoAcknowledgement = $this->object->getCurrentAcknowledgement($acknowledgement);
-                if ($infoAcknowledgement) {
-                    $hostName = $this->hostObject->getHostName($infoAcknowledgement['host_id']);
-                    if (is_null($infoAcknowledgement['service_id'])) {
-                        $this->externalCmdObj->deleteAcknowledgement(
-                            'HOST',
-                            array($hostName => 'on')
-                        );
-                    } else {
-                        $serviceName = $this->serviceObject->getObjectName($infoAcknowledgement['service_id']);
-                        $this->externalCmdObj->deleteAcknowledgement(
-                            'SVC',
-                            array($hostName . ';' . $serviceName => 'on')
-                        );
-                    }
+                $hostId = $this->hostObject->getHostID($hostName);
+                if ($this->object->hostIsAcknowledged($hostId)) {
+                    $this->externalCmdObj->deleteAcknowledgement(
+                        'HOST',
+                        array($hostName => 'on')
+                    );
                 } else {
                     $unknownAcknowledgement[] = $acknowledgement;
                 }
@@ -505,7 +506,7 @@ class CentreonRtAcknowledgement extends CentreonObject
 
         if (count($unknownAcknowledgement)) {
             throw new CentreonClapiException(
-                self::OBJECT_NOT_FOUND . ' ACKNOWLEDGEMENT ID : ' . implode('|', $unknownAcknowledgement)
+                self::OBJECT_NOT_FOUND . ' OR not acknowledged : ' . implode('|', $unknownAcknowledgement)
             );
         }
     }

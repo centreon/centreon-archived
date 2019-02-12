@@ -102,12 +102,30 @@ class Centreon_Object_RtAcknowledgement extends Centreon_ObjectRt
     }
 
     /**
-     * @param $id
-     * @return array
+     * @param $serviceId
+     * @return bool
      */
-    public function getCurrentAcknowledgement($id)
+    public function svcIsAcknowledged($serviceId)
     {
-        $query = "SELECT * FROM acknowledgements WHERE ISNULL(deletion_time) AND acknowledgement_id = " . $id;
-        return $this->getResult($query, array(), 'fetch');
+        $query = "SELECT acknowledged FROM services WHERE service_id = " . $serviceId;
+        if ($this->getResult($query, array(), 'fetch')['acknowledged'] == 1) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * @param $hostId
+     * @return bool
+     */
+    public function hostIsAcknowledged($hostId)
+    {
+        $query = "SELECT acknowledged FROM hosts WHERE host_id = " . $hostId;
+        if ($this->getResult($query, array(), 'fetch')['acknowledged'] == 1) {
+            return true;
+        } else {
+            return false;
+        }
     }
 }
