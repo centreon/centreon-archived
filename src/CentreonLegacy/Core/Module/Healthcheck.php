@@ -145,6 +145,7 @@ class Healthcheck
      */
     protected function getRequirements($checklistDir, &$message, &$customAction, &$warning, &$critical, &$licenseExpiration)
     {
+        global $centreon_path;
         require_once $checklistDir . 'requirements.php';
     }
 
