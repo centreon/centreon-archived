@@ -47,6 +47,7 @@ class ModuleSource extends SourceAbstract
 
     const TYPE = 'module';
     const PATH = 'www/modules/';
+    const PATH_WEB = 'modules/';
     const CONFIG_FILE = 'conf.php';
     const LICENSE_FILE = 'license/merethis_lic.zl';
 
@@ -169,6 +170,28 @@ class ModuleSource extends SourceAbstract
         $entity->setDescription($info['infos']);
         $entity->setKeywords($entity->getId());
         $entity->setLicense($this->license->getLicenseExpiration($entity->getId()));
+
+        if (array_key_exists('stability', $info) && $info['stability']) {
+            $entity->setStability($info['stability']);
+        }
+
+        if (array_key_exists('last_update', $info) && $info['last_update']) {
+            $entity->setLastUpdate($info['last_update']);
+        }
+
+        if (array_key_exists('release_note', $info) && $info['release_note']) {
+            $entity->setReleaseNote($info['release_note']);
+        }
+
+        if (array_key_exists('images', $info) && $info['images']) {
+            if (is_string($info['images'])) {
+                $info['images'] = [$info['images']];
+            }
+
+            foreach ($info['images'] as $image) {
+                $entity->addImage(static::PATH_WEB . $entity->getId() . '/'. $image);
+            }
+        }
 
         // load information about installed modules/widgets
         if ($this->info === null) {

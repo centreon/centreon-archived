@@ -68,6 +68,10 @@ class ModuleSourceTest extends TestCase
         'lang_files' => '0',
         'sql_files' => '1',
         'php_files' => '0',
+        'stability' => 'alpha',
+        'last_update' => '2001-01-01',
+        'release_note' => 'http://localhost',
+        'images' => 'images/image1.png',
     ];
     public static $sqlQueryVsData = [
         "SELECT `name` AS `id`, `mod_release` AS `version` FROM `modules_informations`" => [
@@ -197,6 +201,9 @@ class ModuleSourceTest extends TestCase
     {
         $configFile = static::getConfFilePath();
         $result = $this->source->createEntityFromConfig($configFile);
+        $images = [
+            ModuleSource::PATH_WEB . $result->getId() . '/' . static::$moduleInfo['images'],
+        ];
 
         $this->assertInstanceOf(Module::class, $result);
         $this->assertEquals(static::$moduleName, $result->getId());
@@ -204,6 +211,10 @@ class ModuleSourceTest extends TestCase
         $this->assertEquals(static::$moduleInfo['rname'], $result->getName());
         $this->assertEquals(static::$moduleInfo['author'], $result->getAuthor());
         $this->assertEquals(static::$moduleInfo['mod_release'], $result->getVersion());
+        $this->assertEquals($images, $result->getImages());
+        $this->assertEquals(static::$moduleInfo['stability'], $result->getStability());
+        $this->assertEquals(static::$moduleInfo['last_update'], $result->getLastUpdate());
+        $this->assertEquals(static::$moduleInfo['release_note'], $result->getReleaseNote());
         $this->assertTrue($result->isInstalled());
         $this->assertFalse($result->isUpdated());
     }
@@ -226,7 +237,12 @@ class ModuleSourceTest extends TestCase
         $moduleName = static::$moduleName;
 
         foreach (static::$moduleInfo as $key => $data) {
-            $result .= "\n\$module_conf['{$moduleName}']['{$key}'] = '{$data}'";
+            if (is_string($data)) {
+                $result .= "\n\$module_conf['{$moduleName}']['{$key}'] = '{$data}'";
+            } elseif (is_array($data)) {
+                $data = implode("','", $data);
+                $result .= "\n\$module_conf['{$moduleName}']['{$key}'] = ['{$data}']";
+            }
         }
 
         return $result;
