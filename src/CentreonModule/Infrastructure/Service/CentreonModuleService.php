@@ -82,7 +82,9 @@ class CentreonModuleService
         }
 
         foreach ($sources as $type => $source) {
-            $result[$type] = $source->getList($search, $installed, $updated);
+            $list = $source->getList($search, $installed, $updated);
+
+            $result[$type] = $this->sortList($list);
         }
 
         return $result;
@@ -143,5 +145,51 @@ class CentreonModuleService
             Source\ModuleSource::TYPE => new Source\ModuleSource($services),
             Source\WidgetSource::TYPE => new Source\WidgetSource($services),
         ];
+    }
+
+    /**
+     * Sort list by:
+     *
+     * - To update (then by name)
+     * - To install (then by name)
+     * - Installed (then by name)
+     *
+     * @param \CentreonModule\Infrastructure\Entity\Module[] $list
+     */
+    protected function sortList(array $list)
+    {
+        usort($list, function ($a, $b) {
+            $aVal = $a->getName();
+            $bVal = $b->getName();
+
+            if ($aVal === $bVal) {
+                return 0;
+            }
+
+            return ($aVal < $bVal) ? -1 : 1;
+        });
+        usort($list, function ($a, $b) {
+            $sortByName = function ($a, $b) {
+                $aVal = $a->isInstalled();
+                $bVal = $b->isInstalled();
+
+                if ($aVal === $bVal) {
+                    return 0;
+                }
+
+                return ($aVal < $bVal) ? -1 : 1;
+            };
+
+            $aVal = $a->isInstalled() && !$a->isUpdated();
+            $bVal = $b->isInstalled() && !$b->isUpdated();
+
+            if ($aVal === $bVal) {
+                return $sortByName($a, $b);
+            }
+
+            return ($aVal === true) ? -1 : 1;
+        });
+
+        return $list;
     }
 }
