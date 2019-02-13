@@ -159,12 +159,10 @@ function* axiosRequest(action) {
       if (propKey) {
         yield put({ type: actions.SET_AXIOS_DATA, data, propKey: propKey });
       }
-      if (data.status) {
+      if (data) {
         action.resolve(data);
       } else {
-        action.reject(
-          `${action.requestType} Request returned false status with no results!`
-        );
+        action.reject("No data in response");
       }
     }
   } catch (err) {
