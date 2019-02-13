@@ -1,6 +1,6 @@
 {
   "info": {
-    "_postman_id": "23437391-2dfb-4aed-85e3-185e06e154bb",
+    "_postman_id": "1892a533-5030-4199-a191-861c2569f8f4",
     "name": "Centreon Web Rest API realtime",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
@@ -3576,7 +3576,7 @@
                 {
                   "listen": "test",
                   "script": {
-                    "type": "text/javascript",
+                    "id": "0c2e928b-1180-42a2-af87-9cd81b858f27",
                     "exec": [
                       "tests[\"Status code is 200\"] = responseCode.code === 200;",
                       "",
@@ -3588,7 +3588,8 @@
                       "}",
                       "",
                       "wait(2000);"
-                    ]
+                    ],
+                    "type": "text/javascript"
                   }
                 }
               ],
@@ -6506,7 +6507,16 @@
               "script": {
                 "id": "65b7552d-40e3-4319-b092-05e2570ff1a5",
                 "exec": [
-                  "tests[\"Status code is 200\"] = responseCode.code === 200;"
+                  "tests[\"Status code is 200\"] = responseCode.code === 200;",
+                  "",
+                  "function wait(millis) {",
+                  "  var date = new Date();",
+                  "  var curDate = null;",
+                  "  do { curDate = new Date(); }",
+                  "  while(curDate-date < millis);",
+                  "}",
+                  "",
+                  "wait(5000);"
                 ],
                 "type": "text/javascript"
               }
@@ -6561,7 +6571,16 @@
               "script": {
                 "id": "231967f9-39a6-4a89-8a6c-c60745b6507e",
                 "exec": [
-                  "tests[\"Status code is 200\"] = responseCode.code === 200;"
+                  "tests[\"Status code is 200\"] = responseCode.code === 200;",
+                  "",
+                  "function wait(millis) {",
+                  "  var date = new Date();",
+                  "  var curDate = null;",
+                  "  do { curDate = new Date(); }",
+                  "  while(curDate-date < millis);",
+                  "}",
+                  "",
+                  "wait(5000);"
                 ],
                 "type": "text/javascript"
               }
@@ -6655,7 +6674,7 @@
                   "        tests[\"enine_name was found\"] = false;",
                   "}",
                   "catch (e) {}",
-                  ""
+                  " "
                 ],
                 "type": "text/javascript"
               }
@@ -6755,6 +6774,8 @@
                   "        tests[\"enine_name was found\"] = false;",
                   "}",
                   "catch (e) {}",
+                  "",
+                  " ",
                   ""
                 ],
                 "type": "text/javascript"
@@ -6856,6 +6877,8 @@
                   "        tests[\"enine_name was found\"] = false;",
                   "}",
                   "catch (e) {}",
+                  "",
+                  " ",
                   ""
                 ],
                 "type": "text/javascript"
