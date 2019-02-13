@@ -276,4 +276,76 @@ class CentreonModuleServiceTest extends TestCase
         $this->assertInstanceOf(Source\ModuleSource::class, $sources[Source\ModuleSource::TYPE]);
         $this->assertInstanceOf(Source\WidgetSource::class, $sources[Source\WidgetSource::TYPE]);
     }
+
+    public function testSortList()
+    {
+        $service = $this->createMock(CentreonModuleService::class);
+
+        $value = [
+            'B-1-0',
+            'C-1-0',
+            'D-0-0',
+            'F-0-0',
+            'A-1-1',
+            'B-1-1',
+        ];
+        $list = [
+            (function () {
+                    $entity = new Module;
+                    $entity->setName('B');
+                    $entity->setInstalled(true);
+                    $entity->setUpdated(true);
+
+                    return $entity;
+                })(),
+            (function () {
+                    $entity = new Module;
+                    $entity->setName('A');
+                    $entity->setInstalled(true);
+                    $entity->setUpdated(true);
+
+                    return $entity;
+                })(),
+            (function () {
+                    $entity = new Module;
+                    $entity->setName('B');
+                    $entity->setInstalled(true);
+                    $entity->setUpdated(false);
+
+                    return $entity;
+                })(),
+            (function () {
+                    $entity = new Module;
+                    $entity->setName('C');
+                    $entity->setInstalled(true);
+                    $entity->setUpdated(false);
+
+                    return $entity;
+                })(),
+            (function () {
+                    $entity = new Module;
+                    $entity->setName('D');
+                    $entity->setInstalled(false);
+                    $entity->setUpdated(false);
+
+                    return $entity;
+                })(),
+            (function () {
+                    $entity = new Module;
+                    $entity->setName('F');
+                    $entity->setInstalled(false);
+                    $entity->setUpdated(false);
+
+                    return $entity;
+                })(),
+        ];
+        $list = $this->invokeMethod($service, 'sortList', [$list]);
+
+        $result = [];
+        foreach ($list as $entity) {
+            $result[] = $entity->getName() . '-' . (int) $entity->isInstalled() . '-' . (int) $entity->isUpdated();
+        }
+
+        $this->assertEquals($value, $result);
+    }
 }
