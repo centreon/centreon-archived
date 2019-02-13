@@ -36,7 +36,6 @@ class HostCategoryConfigurationContext extends CentreonContext
         'name' => 'hostCategoryName',
         'alias' => 'hostCategoryAlias',
         'hosts' => 'host1Name',
-        'host_templates' => 'hostTemplate1Name',
         'severity' => 0,
         'enabled' => 1,
         'comments' => 'hostCategoryComment'
@@ -46,7 +45,6 @@ class HostCategoryConfigurationContext extends CentreonContext
         'name' => 'hostCategoryName_1',
         'alias' => 'hostCategoryAlias',
         'hosts' => 'host1Name',
-        'host_templates' => 'hostTemplate1Name',
         'severity' => 0,
         'enabled' => 1,
         'comments' => 'hostCategoryComment'
@@ -56,7 +54,6 @@ class HostCategoryConfigurationContext extends CentreonContext
         'name' => 'hostCategoryNameChanged',
         'alias' => 'hostCategoryAliasChanged',
         'hosts' => 'host2Name',
-        'host_templates' => 'hostTemplate2Name',
         'severity' => 1,
         'severity_level' => 3,
         'severity_icon' => '       centreon (png)',
