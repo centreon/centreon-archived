@@ -65,3 +65,8 @@ ALTER TABLE `modules_informations` DROP COLUMN `php_files`;
 -- Change IP field from varchar(16) to varchar(255)
 --
 ALTER TABLE `remote_servers` MODIFY COLUMN `ip` VARCHAR(255) NOT NULL;
+
+--
+-- Improve chart performance
+--
+TRUNCATE TABLE ods_view_details;
