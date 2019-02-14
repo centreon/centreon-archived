@@ -71,6 +71,7 @@ class CentreonGraphStatus
 
         /* Build command line */
         $commandLine .= " xport ";
+        $commandLine .= " --showtime";
         $commandLine .= " --start " . $this->startTime;
         $commandLine .= " --end " . $this->endTime;
         $commandLine .= " --maxrows " . $rows;
