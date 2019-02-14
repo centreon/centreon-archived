@@ -189,7 +189,19 @@ class ExtensionsRoute extends Component {
   };
 
   installById = (id, type, callback) => {
-    this.runAction("extensionsInstallingStatus", "install", id, type, callback);
+    const { modalDetailsActive } = this.state;
+    if (modalDetailsActive) {
+      this.setState(
+        {
+          modalDetailsLoading: true
+        },
+      );
+      this.runAction("extensionsInstallingStatus", "install", id, type, () => {
+        this.getExtensionDetails(id);
+      });
+    }else{
+      this.runAction("extensionsInstallingStatus", "install", id, type, callback);
+    }
   };
 
   updateById = (id, type, callback) => {
@@ -286,28 +298,32 @@ class ExtensionsRoute extends Component {
   };
 
   activateExtensionsDetails = id => {
-    const { xhr } = this.props;
     this.setState(
       {
         modalDetailsActive: true,
         modalDetailsLoading: true
       },
       () => {
-        xhr({
-          requestType: "GET",
-          url: `./api/internal.php?object=centreon_module&action=details&type=module&id=${id}`
-        })
-          .then(({ result }) => {
-            this.setState({
-              extensionDetails: result,
-              modalDetailsLoading: false
-            });
-          })
-          .catch(err => {
-            throw err;
-          });
+        this.getExtensionDetails(id);
       }
     );
+  };
+
+  getExtensionDetails = id => {
+    const { xhr } = this.props;
+    xhr({
+      requestType: "GET",
+      url: `./api/internal.php?object=centreon_module&action=details&type=module&id=${id}`
+    })
+      .then(({ result }) => {
+        this.setState({
+          extensionDetails: result,
+          modalDetailsLoading: false
+        });
+      })
+      .catch(err => {
+        throw err;
+      });
   };
 
   versionClicked = id => {};
@@ -492,10 +508,12 @@ class ExtensionsRoute extends Component {
           </React.Fragment>
         ) : null}
 
-        {extensionDetails && modalDetailsActive && !modalDetailsLoading ? (
+        {extensionDetails && modalDetailsActive ? (
           <Centreon.ExtensionDetailsPopup
+            loading={modalDetailsLoading}
             onCloseClicked={this.hideExtensionDetails.bind(this)}
             onVersionClicked={this.versionClicked}
+            onInstallClicked={this.installById}
             modalDetails={extensionDetails}
           />
         ) : null}
