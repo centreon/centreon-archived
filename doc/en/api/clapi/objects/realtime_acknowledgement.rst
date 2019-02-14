@@ -84,22 +84,22 @@ If you want to associate a host to a real time acknowledgement, use the **ADD** 
 
 The required parameters are the following :
 
-========= ====================================================================================
+========= ===============================================================================================
 Order     Description
-========= ====================================================================================
+========= ===============================================================================================
 1         Value you want to associate
 
 2         Name of the host (Name of the service)
 
 3         Short description of the real time acknowledgement
 
-4         Acknowledgement maintained in case of a change of status (Sticky)
+4         Acknowledgement maintained in case of a change of status (Sticky use 0 or 1)
 
-5         Notification send to the contacts linked to the object (Notify)
+5         Notification send to the contacts linked to the object (Notify use 0 or 1)
 
-6         Maintained th acknowledgement in the case of a restart of the scheduler (Persistent)
+6         Maintained th acknowledgement in the case of a restart of the scheduler (Persistent use 0 or 1)
 
-========= ====================================================================================
+========= ===============================================================================================
 
 
 Real time Acknowledgement for : addservice
@@ -111,22 +111,21 @@ If you want to associate a service or service group to a real time acknowledgeme
 
 The required parameters are the following :
 
-========= ====================================================================================
+========= ===============================================================================================
 Order     Description
-========= ====================================================================================
+========= ===============================================================================================
 1         Value you want to associate
 
 2         Name of the host , name of the service
 
 3         Short description of the real time acknowledgement
 
-4         Acknowledgement maintained in case of a change of status (Sticky)
+4         Acknowledgement maintained in case of a change of status (Sticky use 0 or 1)
 
-5         Notification send to the contacts linked to the object (Notify)
+5         Notification send to the contacts linked to the object (Notify use 0 or 1)
 
-6         Maintained th acknowledgement in the case of a restart of the scheduler (Persistent)
-
-========= ====================================================================================
+6         Maintained th acknowledgement in the case of a restart of the scheduler (Persistent use 0 or 1)
+========= ===============================================================================================
 
 
 Cancel a real time acknowledgement
