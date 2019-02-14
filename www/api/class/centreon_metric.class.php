@@ -34,6 +34,7 @@
  */
 
 require_once _CENTREON_PATH_ . "/www/class/centreonDB.class.php";
+require_once _CENTREON_PATH_ . "/www/class/centreonGraphNg.class.php";
 require_once _CENTREON_PATH_ . "/www/class/centreonGraphService.class.php";
 require_once _CENTREON_PATH_ . "/www/class/centreonGraphPoller.class.php";
 require_once _CENTREON_PATH_ . "/www/class/centreonGraphStatus.class.php";
@@ -51,7 +52,10 @@ class CentreonMetric extends CentreonWebService
     );
 
     /**
-     * CentreonMetric constructor.
+     * Constructor
+     *
+     * @param CentreonDB $db
+     * @return void
      */
     public function __construct()
     {
@@ -60,8 +64,9 @@ class CentreonMetric extends CentreonWebService
     }
 
     /**
+     * Get metric list
+     *
      * @return array
-     * @throws Exception
      */
     public function getList()
     {
@@ -95,7 +100,6 @@ class CentreonMetric extends CentreonWebService
 
     /**
      * @return array
-     * @throws RestBadRequestException
      */
     protected function getListByService()
     {
@@ -162,8 +166,14 @@ class CentreonMetric extends CentreonWebService
         $ids = explode(',', $this->arguments['ids']);
         $result = array();
 
-        foreach ($ids as $id) {
-            $result[] = $this->serviceDatas($id);
+        if (isset($this->arguments['type']) && $this->arguments['type'] == 'ng') {
+            foreach ($ids as $id) {
+                $result[] = $this->serviceDatasNg($id);
+            }
+        } else {
+            foreach ($ids as $id) {
+                $result[] = $this->serviceDatas($id);
+            }
         }
 
         return $result;
@@ -184,20 +194,25 @@ class CentreonMetric extends CentreonWebService
         $ids = explode(',', $this->arguments['ids']);
         $result = array();
 
-        foreach ($ids as $id) {
-            list($hostId, $serviceId, $metricId) = explode('_', $id);
-            $result[] = $this->serviceDatas($hostId . '_' . $serviceId, $metricId);
+        if (isset($this->arguments['type']) && $this->arguments['type'] == 'ng') {
+            foreach ($ids as $id) {
+                list($hostId, $serviceId, $metricId) = explode('_', $id);
+                $result[] = $this->serviceDatasNg($hostId . '_' . $serviceId, $metricId);
+            }
+        } else {
+            foreach ($ids as $id) {
+                list($hostId, $serviceId, $metricId) = explode('_', $id);
+                $result[] = $this->serviceDatas($hostId . '_' . $serviceId, $metricId);
+            }
         }
 
         return $result;
     }
 
     /**
+     * Get the status for a service
+     *
      * @return array
-     * @throws Exception
-     * @throws RestBadRequestException
-     * @throws RestForbiddenException
-     * @throws RestNotFoundException
      */
     public function getStatusByService()
     {
@@ -328,14 +343,93 @@ class CentreonMetric extends CentreonWebService
         return $result;
     }
 
+    protected function serviceDatasNg($id, $metric = null)
+    {
+        global $centreon;
+
+        $userId = $centreon->user->user_id;
+        $isAdmin = $centreon->user->admin;
+
+        /* Get ACL if user is not admin */
+        if (!$isAdmin) {
+            $acl = new CentreonACL($userId, $isAdmin);
+            $aclGroups = $acl->getAccessGroupsString();
+        }
+
+        if (false === isset($this->arguments['start']) ||
+            false === is_numeric($this->arguments['start']) ||
+            false === isset($this->arguments['end']) ||
+            false === is_numeric($this->arguments['end'])
+        ) {
+            throw new RestBadRequestException("Bad parameters");
+        }
+
+        $start = $this->arguments['start'];
+        $end = $this->arguments['end'];
+
+        list($hostId, $serviceId) = explode('_', $id);
+        if (false === is_numeric($hostId) ||
+            false === is_numeric($serviceId)
+        ) {
+            throw new RestBadRequestException("Bad parameters");
+        }
+
+        /* Check ACL is not admin */
+        if (!$isAdmin) {
+            $query = 'SELECT service_id ' .
+                'FROM centreon_acl ' .
+                'WHERE host_id = :hostId ' .
+                'AND service_id = :serviceId ' .
+                'AND group_id IN (' . $aclGroups . ')';
+
+            $stmt = $this->pearDBMonitoring->prepare($query);
+            $stmt->bindParam(':hostId', $hostId, PDO::PARAM_INT);
+            $stmt->bindParam(':serviceId', $serviceId, PDO::PARAM_INT);
+            $dbResult = $stmt->execute();
+            if (!$dbResult) {
+                throw new \Exception("An error occured");
+            }
+            if (0 == $stmt->rowCount()) {
+                throw new RestForbiddenException("Access denied");
+            }
+        }
+
+        /* Prepare graph */
+        try {
+            $graph = new CentreonGraphNg($userId);
+            if (is_null($metric)) {
+                $graph->addServiceMetrics($hostId, $serviceId);
+            } else {
+                $graph->addMetric($metric);
+            }
+        } catch (Exception $e) {
+            throw new RestNotFoundException("Graph not found");
+        }
+        
+        $result = $graph->getGraph($this->arguments['start'], $this->arguments['end']);
+
+        /* Get extra information (downtime/acknowledgment) */
+        $result['acknowledge'] = array();
+        $result['downtime'] = array();
+        $query = 'SELECT `value` FROM `options` WHERE `key` = "display_downtime_chart"';
+
+        $res = $this->pearDB->query($query);
+        
+        $row = $res->fetch();
+        if (false === is_null($row) && $row['value'] === '1') {
+            $result['acknowledge'] = $this->getAcknowlegePeriods($hostId, $serviceId, $start, $end);
+            $result['downtime'] = $this->getDowntimePeriods($hostId, $serviceId, $start, $end);
+        }
+
+        return $result;
+    }
+
     /**
-     * @param $id
-     * @param null $metric
+     * Get data for a service can be filtered by metric
+     *
+     * @param string $id The service id like hostId_serviceId
+     * @param int $metric The metric id
      * @return array
-     * @throws Exception
-     * @throws RestBadRequestException
-     * @throws RestForbiddenException
-     * @throws RestNotFoundException
      */
     protected function serviceDatas($id, $metric = null)
     {
@@ -416,9 +510,7 @@ class CentreonMetric extends CentreonWebService
         $graph->setTemplate();
         $graph->initCurveList();
         $graph->createLegend();
-
         $serviceData = $graph->getData($rows);
-
 
         /* Replace NaN */
         for ($i = 0; $i < count($serviceData); $i++) {
@@ -523,47 +615,16 @@ class CentreonMetric extends CentreonWebService
         try {
             $graphPollerObject = new CentreonGraphPoller(
                 $this->pearDB,
-                $this->pearDBMonitoring,
-                $id,
-                $userId,
-                $start,
-                $end
+                $this->pearDBMonitoring
             );
-            $graphPollerObject->setGraphName($graphName);
+            $graphPollerObject->setPoller($id, $graphName);
         } catch (\Exception $e) {
             throw new RestNotFoundException("Graph not found");
         }
-        $pollerDatas = $graphPollerObject->getData($rows);
+        
+        $result = $graphPollerObject->getGraph($start, $end);
 
-        for ($i = 0; $i < count($pollerDatas); $i++) {
-            if (isset($pollerDatas[$i]['data'])) {
-                $times = array_keys($pollerDatas[$i]['data']);
-                $values = array_map(
-                    array($this, "convertNaN"),
-                    array_values($pollerDatas[$i]['data'])
-                );
-            }
-            $pollerDatas[$i]['data'] = $values;
-            $pollerDatas[$i]['label'] = $pollerDatas[$i]['legend'];
-            unset($pollerDatas[$i]['legend']);
-            $pollerDatas[$i]['type'] = $pollerDatas[$i]['graph_type'];
-            unset($pollerDatas[$i]['graph_type']);
-        }
-
-        return array(
-            array(
-                'data' => $pollerDatas,
-                'times' => $times,
-                'size' => $rows,
-                'acknowledge' => array(),
-                'downtime' => array(),
-                'limits' => array(
-                    'min' => null,
-                    'max' => null
-                ),
-                'legends' => $graphPollerObject->getLegends()
-            )
-        );
+        return array($result);
     }
 
 
