@@ -224,7 +224,7 @@ class CentreonContactgroup
         $cgres = $this->db->query($query);
         $ar_id = -1;
         $ldapConn = null;
-        while ($cgrow = $cgres->fetchRow()) {
+        while ($cgrow = $cgres->fetch()) {
             if (isset($ldapServerConnError[$cgrow['ar_id']])) {
                 continue;
             }
