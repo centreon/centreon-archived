@@ -178,6 +178,13 @@ $attrCommands = array(
     'multiple' => false,
     'linkedObject' => 'centreonCommand'
 );
+$hostTplRoute = './include/common/webServices/rest/internal.php?object=centreon_configuration_hosttemplate&action=list';
+$attrHostTpls = array(
+    'datasourceOrigin' => 'ajax',
+    'availableDatasetRoute' => $hostTplRoute,
+    'multiple' => true,
+    'linkedObject' => 'centreonHosttemplates'
+);
 
 /*
  * For a shitty reason, Quickform set checkbox with stal[o] name
@@ -275,17 +282,13 @@ $cloneSetMacro[] = $form->addElement(
     )
 );
 
-$cloneSetTemplate = array();
-$cloneSetTemplate[] = $form->addElement(
-    'select',
-    'tpSelect[#index#]',
-    _("Template"),
-    (array(null => null) + $hostObj->getList(false, true)),
-    array(
-        "id" => "tpSelect_#index#",
-        "type" => "select-one"
-    )
-);
+$tplHostTemplateRoute = './include/common/webServices/rest/internal.php?object=centreon_configuration_hosttemplate'
+    . '&action=defaultValues&target=host&field=host_id&id=' . $host_id;
+$attrHostTemplates = array_merge($attrHostTpls, [
+    'defaultDatasetRoute' => $tplHostTemplateRoute
+]);
+$form->addElement('select2', 'tpSelect', _("Templates"), array(), $attrHostTemplates);
+
 $cloneSetMacro[] = $form->addElement(
     'hidden',
     'macroFrom[#index#]',
@@ -935,7 +938,6 @@ if ($valid) {
     $tpl->assign('template_inheritance', _('Template inheritance'));
     $tpl->assign('command_inheritance', _('Command inheritance'));
     $tpl->assign('cloneSetMacro', $cloneSetMacro);
-    $tpl->assign('cloneSetTemplate', $cloneSetTemplate);
     $tpl->assign('centreon_path', $centreon->optGen['oreon_path']);
     $tpl->assign("Freshness_Control_options", _("Freshness Control options"));
     $tpl->assign("Flapping_Options", _("Flapping options"));
