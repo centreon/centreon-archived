@@ -1,7 +1,7 @@
 <?php
 /*
- * Copyright 2005-2015 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2019 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -352,7 +352,7 @@ if (!$is_admin && !$haveAccess) {
          * Get comments for hosts
          */
         $tabCommentHosts = array();
-        $rq2 = " SELECT FROM_UNIXTIME(cmt.entry_time) as comment_time, cmt.comment_id, cmt.author AS author_name,
+        $rq2 = " SELECT cmt.entry_time as comment_time, cmt.comment_id, cmt.author AS author_name,
          cmt.data AS comment_data, cmt.persistent AS is_persistent, h.name AS host_name " .
             " FROM comments cmt, hosts h " .
             " WHERE cmt.host_id = '" . $host_id . "' 
