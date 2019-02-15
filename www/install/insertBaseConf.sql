@@ -113,7 +113,7 @@ INSERT INTO `options` (`key`, `value`) VALUES
 ('snmpttconvertmib_path_bin','@centreon_dir@/bin/snmpttconvertmib'),
 ('perl_library_path','/usr/local/lib'),
 ('rrdtool_path_bin','@rrdtool_dir@'),
-('rrdtool_version','1.2'),
+('rrdtool_version','1.4.8'),
 ('debug_path','@centreon_log@/'),
 ('debug_auth','0'),
 ('debug_nagios_import','0'),
