@@ -250,8 +250,6 @@ class centreonGraphPoller
         $this->rrdOptions[$name] = $value;
     }
     
-    
-    
     private function log($message)
     {
         if ($this->generalOpt['debug_rrdtool'] && 
@@ -321,11 +319,6 @@ class centreonGraphPoller
     private function getJsonStream()
     {
         $commandLine = "";
-
-        /*
-         * Send header
-         */
-
         $commandLine = " graph - ";
 
         foreach ($this->rrdOptions as $key => $value) {

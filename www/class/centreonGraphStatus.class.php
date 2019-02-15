@@ -62,20 +62,23 @@ class CentreonGraphStatus
      * @param integer $rows The number of points returned (Default: 200)
      * @param array
      */
-    public function getData($rows = 200)
+    public function getData()
     {
-        /* Flush RRDCached for have the last values */
-        $this->flushRrdCached($this->index);
+        $this->setRRDOption("imgformat", "JSONTIME");
+        $this->setRRDOption("start", $this->startTime);
+        $this->setRRDOption("end", $this->endTime);
         
-        $commandLine = "";
-
-        /* Build command line */
-        $commandLine .= " xport ";
-        $commandLine .= " --showtime";
-        $commandLine .= " --start " . $this->startTime;
-        $commandLine .= " --end " . $this->endTime;
-        $commandLine .= " --maxrows " . $rows;
-
+        $path = $this->statusPath . '/' . $this->index . '.rrd';
+        if (false === file_exists($path)) {
+            throw new RuntimeException();
+        }
+        
+        $this->addArgument("DEF:v1=" . $path . ":value:AVERAGE");
+        $this->addArgument("VDEF:v1Average=v1,AVERAGE");
+        $this->addArgument("LINE1:v1#0000ff:v1");
+        
+        $jsonData = $this->getJsonStream();
+                
         $metrics = array(
             'critical' => array(),
             'warning' => array(),
@@ -83,92 +86,42 @@ class CentreonGraphStatus
             'unknown' => array()
         );
         
-        $path = $this->statusPath . '/' . $this->index . '.rrd';
-        if (false === file_exists($path)) {
-            throw new RuntimeException();
-        }
-        $commandLine .= " DEF:v1=" . $path . ":value:AVERAGE";
-        $commandLine .= " XPORT:v1:status";
-
-        $descriptorspec = array(
-            0 => array('pipe', 'r'),
-            1 => array('pipe', 'w'),
-            2 => array('pipe', 'a'),
-        );
-
-        $process = proc_open($this->generalOpt["rrdtool_path_bin"] . " - ", $descriptorspec, $pipes, null, null);
-        if (false === is_resource($process)) {
-            throw new RuntimeException();
-        }
-        fwrite($pipes[0], $commandLine);
-        fclose($pipes[0]);
-
-        do {
-            $status = proc_get_status($process);
-        } while ($status['running']);
-
-        $str = stream_get_contents($pipes[1]);
-
-        /* Remove text of the end of the stream */
-        $str = preg_replace("/<\/xport>(.*)$/s", "</xport>", $str);
-
-        $exitCode = $status['exitcode'];
-
-        proc_close($process);
-
-        if ($exitCode != 0) {
-            throw new RuntimeException();
-        }
-
-        /* Transform XML to values */
-        $xml = simplexml_load_string($str);
-        if (false === $xml) {
-            throw new RuntimeException();
-        }
-        $rows = $xml->xpath("//xport/data/row");
         $lastStatus = null;
         $interval = array();
-        foreach ($rows as $row) {
-            $time = null;
-            $i = 0;
-            foreach ($row->children() as $info) {
-                if (is_null($time)) {
-                    $time = (string)$info;
-                } else {
-                    $currentStatus;
-                    $value = floatval((string)$info);
-                    if ((string)$info === 'NaN') {
-                        $currentStatus = 'unknown';
-                    } elseif ($value < 75) {
-                        $currentStatus = 'critical';
-                    } elseif ($value == 100) {
-                        $currentStatus = 'ok';
-                    } elseif ($value > 74) {
-                        $currentStatus = 'warning';
-                    } else {
-                        $currentStatus = 'unknown';
-                    }
-                    if (is_null($lastStatus)) {
-                        $interval = array(
-                            'start' => $time,
-                            'end' => null
-                        );
-                        $lastStatus = $currentStatus;
-                    } elseif ($lastStatus !== $currentStatus) {
-                        $interval['end'] = $time;
-                        $metrics[$lastStatus][] = $interval;
-                        $lastStatus = $currentStatus;
-                        $interval = array(
-                            'start' => $time,
-                            'end' => null
-                        );
-                    }
-                }
+        foreach ($jsonData['data'] as $row) {
+            $time = (string)$row[0];
+            $value = $row[1];
+            if (is_null($value)) {
+                $currentStatus = 'unknown';
+            } elseif ($value < 75) {
+                $currentStatus = 'critical';
+            } elseif ($value == 100) {
+                $currentStatus = 'ok';
+            } elseif ($value > 74) {
+                $currentStatus = 'warning';
+            } else {
+                $currentStatus = 'unknown';
+            }
+            if (is_null($lastStatus)) {
+                $interval = array(
+                    'start' => $time,
+                    'end' => null
+                );
+                $lastStatus = $currentStatus;
+            } elseif ($lastStatus !== $currentStatus) {
+                $interval['end'] = $time;
+                $metrics[$lastStatus][] = $interval;
+                $lastStatus = $currentStatus;
+                $interval = array(
+                    'start' => $time,
+                    'end' => null
+                );
             }
         }
+        
         $interval['end'] = $time;
         $metrics[$lastStatus][] = $interval;
-
+        
         return $metrics;
     }
     
@@ -181,7 +134,7 @@ class CentreonGraphStatus
     public function flushRrdCached($indexData)
     {
         if (false === isset($this->generalOpt['rrdcached_enabled']) ||
-           $this->generalOpt['rrdcached_enabled'] == 0) {
+            $this->generalOpt['rrdcached_enabled'] == 0) {
             return true;
         }
         
@@ -220,14 +173,13 @@ class CentreonGraphStatus
         /*
          * Run flushs
          */
-        foreach ($metricsId as $metricId) {
-            $fullpath = realpath($this->statusPath . $this->index . '.rrd');
-            $cmd = 'FLUSH ' . $fullpath;
-            if (false === fputs($sock, $cmd . "\n")) {
-                @fclose($sock);
-                return false;
-            }
+        $fullpath = realpath($this->statusPath . $indexData . '.rrd');
+        $cmd = 'FLUSH ' . $fullpath;
+        if (false === fputs($sock, $cmd . "\n")) {
+            @fclose($sock);
+            return false;
         }
+
         /*
          * Execute commands
          */
@@ -255,14 +207,14 @@ class CentreonGraphStatus
     protected function getOptions()
     {
         $result = array();
-        $query = 'SELECT `key`, `value` FROM options
-            WHERE `key` IN ("rrdtool_path_bin", "rrdcached_enabled")';
+        $query = "SELECT `key`, `value` FROM options
+            WHERE `key` IN ('rrdtool_path_bin', 'rrdcached_enabled', 'debug_rrdtool', 'debug_path')";
         try {
             $res = $this->pearDB->query($query);
         } catch (\PDOException $e) {
             throw new RuntimeException();
         }
-        while ($row = $res->fetchRow()) {
+        while ($row = $res->fetch()) {
             $result[$row['key']] = $row['value'];
         }
         return $result;
@@ -277,7 +229,7 @@ class CentreonGraphStatus
     {
         $query = 'SELECT RRDdatabase_status_path FROM config';
         $res = $this->pearDBMonitoring->query($query);
-        $row = $res->fetchRow();
+        $row = $res->fetch();
         if ($row === null) {
             throw new RuntimeException('Missing status directory configuration');
         }
@@ -303,5 +255,78 @@ class CentreonGraphStatus
             throw new OutOfRangeException();
         }
         return $row['id'];
+    }
+    
+    protected function addArgument($arg)
+    {
+        $this->arguments[] = $arg;
+    }
+    
+    protected function setRRDOption($name, $value = null)
+    {
+        if (strpos($value, " ")!==false) {
+            $value = "'".$value."'";
+        }
+        $this->rrdOptions[$name] = $value;
+    }
+    
+    private function log($message)
+    {
+        if ($this->generalOpt['debug_rrdtool'] && 
+            is_writable($this->generalOpt['debug_path'])) {
+            error_log("[" . date("d/m/Y H:i") ."] RDDTOOL : ".$message." \n", 3,
+                      $this->generalOpt['debug_path'] . "rrdtool.log");
+        }
+    }
+    
+    private function getJsonStream()
+    {
+        $this->flushRrdcached($this->index);
+        
+        $commandLine = "";
+        $commandLine = " graph - ";
+
+        foreach ($this->rrdOptions as $key => $value) {
+            $commandLine .= "--" . $key;
+            if (isset($value)) {
+                if (preg_match('/\'/', $value)) {
+                    $value = "'" . preg_replace('/\'/', ' ', $value) . "'";
+                }
+                $commandLine .= "=" . $value;
+            }
+            $commandLine .= " ";
+        }
+
+        foreach ($this->arguments as $arg) {
+            $commandLine .= " " . $arg . " ";
+        }
+        $commandLine = preg_replace("/(\\\$|`)/", "", $commandLine);
+        $this->log($commandLine);
+
+        if (is_writable($this->generalOpt['debug_path'])) {
+            $stderr = array('file', $this->generalOpt['debug_path'] . '/rrdtool.log', 'a');
+        } else {
+            $stderr = array('pipe', 'a');
+        }
+        $descriptorspec = array(
+                            0 => array("pipe", "r"),  // stdin est un pipe processus va lire
+                            1 => array("pipe", "w"),  // stdout est un pipe processus va ecrire
+                            2 => $stderr // stderr est un fichier
+                        );
+
+        $process = proc_open($this->generalOpt['rrdtool_path_bin']. " - ", $descriptorspec, $pipes, null, null);
+
+        if (is_resource($process)) {
+            fwrite($pipes[0], $commandLine);
+            fclose($pipes[0]);
+
+            $str = stream_get_contents($pipes[1]);
+            $returnValue = proc_close($process);
+
+            $str = preg_replace("/OK u:.*$/", "", $str);
+            $rrdData = json_decode($str, true);
+        }
+                
+        return $rrdData;
     }
 }
