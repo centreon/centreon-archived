@@ -46,6 +46,12 @@ require_once realpath(dirname(__FILE__) . '/../centreonDB.class.php');
 require_once realpath(dirname(__FILE__) . '/../centreonUser.class.php');
 require_once realpath(dirname(__FILE__) . '/../centreonGMT.class.php');
 
+/**
+ * Manage Acknowledgement with clapi
+ *
+ * Class CentreonRtAcknowledgement
+ * @package CentreonClapi
+ */
 class CentreonRtAcknowledgement extends CentreonObject
 {
     /**
@@ -125,9 +131,9 @@ class CentreonRtAcknowledgement extends CentreonObject
             throw new CentreonClapiException(self::MISSINGPARAMETER);
         }
 
-        // Check if sticky is 0,1 or 2
-        if (!preg_match('/^(0|1|2)$/', $sticky)) {
-            throw new CentreonClapiException('Bad sticky parameter (0,1 or 2)');
+        // Check if sticky is 0 or 2
+        if (!preg_match('/^(0|2)$/', $sticky)) {
+            throw new CentreonClapiException('Bad sticky parameter (0 or 2)');
         }
 
         // Check if notify is 0 or 1
@@ -353,6 +359,8 @@ class CentreonRtAcknowledgement extends CentreonObject
     }
 
     /**
+     * redirect on SVC or HOST
+     *
      * @param null $parameters
      * @return mixed|void
      * @throws CentreonClapiException
