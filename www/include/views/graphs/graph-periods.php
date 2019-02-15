@@ -72,8 +72,8 @@ $svcName = '';
 $query = 'SELECT h.name, s.description FROM hosts h, services s WHERE h.host_id = ' . CentreonDB::escape($hostId) .
     ' AND s.service_id = ' . CentreonDB::escape($svcId) . ' AND h.host_id = s.host_id';
 $res = $pearDBO->query($query);
-if (false === PEAR::isError($res)) {
-    $row = $res->fetchRow();
+if ($res) {
+    $row = $res->fetch();
     $svcName = $row['name'] . ' - ' . $row['description'];
 }
 
