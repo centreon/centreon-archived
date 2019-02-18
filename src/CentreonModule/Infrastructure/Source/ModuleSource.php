@@ -104,6 +104,20 @@ class ModuleSource extends SourceAbstract
         ($this->remover)($id, $recordId)->remove();
     }
 
+    public function update(string $id): ?Module
+    {
+        $recordId = $this->db
+            ->getRepository(ModulesInformationsRepository::class)
+            ->findIdByName($id)
+        ;
+
+        ($this->upgrader)($id, $recordId)->upgrade();
+
+        $this->initInfo();
+
+        return $this->getDetail($id);
+    }
+
     public function getList(string $search = null, bool $installed = null, bool $updated = null) : array
     {
         $files = $this->finder
