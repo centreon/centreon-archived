@@ -1741,7 +1741,7 @@ class CentreonGraph
     private function log($message)
     {
         if ($this->generalOpt['debug_rrdtool'] && is_writable($this->generalOpt['debug_path'])) {
-            error_log(
+            error_r
                 "[" . date("d/m/Y H:i") . "] RDDTOOL : " . $message . " \n",
                 3,
                 $this->generalOpt["debug_path"] . "rrdtool.log"
