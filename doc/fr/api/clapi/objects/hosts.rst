@@ -313,15 +313,14 @@ In order to set the instance from which a host will be monitored, use the **SETI
 
   [root@centreon ~]# ./centreon -u admin -p centreon -o HOST -a setinstance -v "Centreon-Server;Poller 1"
 
-
-Getinstance
+Showinstance
 -----------
 
-To determine the instance from which a host will be monitored, use the **GETINSTANCE** action::
+To determine the instance from which a host will be monitored, use the **SHOWINSTANCE** action::
 
-  [root@centreon ~]# ./centreon -u admin -p centreon -o HOST -a getinstance -v "Centreon-Server" 
+  [root@centreon ~]# ./centreon -u admin -p centreon -o HOST -a showinstance -v "Centreon-Server"
+  id;name
   2;Poller 1
-
 
 Getmacro
 --------
