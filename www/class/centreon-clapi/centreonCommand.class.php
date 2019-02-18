@@ -55,7 +55,7 @@ class CentreonCommand extends CentreonObject
     const UNKNOWN_CMD_TYPE = "Unknown command type";
 
     public $aTypeCommand = array(
-        'host'    => array(
+        'host' => array(
             'key' => '$_HOST',
             'preg' => '/\$_HOST(\w+)\$/'
         ),
@@ -138,8 +138,8 @@ class CentreonCommand extends CentreonObject
         }
         $addParams['command_type'] =
             is_numeric($params[self::ORDER_TYPE])
-            ? $params[self::ORDER_TYPE]
-            : $this->typeConversion[$params[self::ORDER_TYPE]];
+                ? $params[self::ORDER_TYPE]
+                : $this->typeConversion[$params[self::ORDER_TYPE]];
         $addParams['command_line'] = $params[self::ORDER_COMMAND];
         $this->params = array_merge($this->params, $addParams);
         $this->checkParameters();
@@ -194,12 +194,14 @@ class CentreonCommand extends CentreonObject
      * @param string $objUniqueName
      * @throws CentreonClapiException
      */
-    public function getargumentdesc($objUniqueName) {
+    public function getargumentdesc($objUniqueName)
+    {
         if ($objUniqueName != "" && ($objectId = $this->getObjectId($objUniqueName)) != 0) {
             $sql = "SELECT macro_name, macro_description FROM command_arg_description WHERE cmd_id = ?";
             $res = $this->db->query($sql, array($objectId));
-            
-            foreach($res as $param) {
+
+            echo "name" . $this->delim . "description" . "\n";
+            foreach ($res as $param) {
                 echo $param['macro_name'] . $this->delim . $param['macro_description'] . "\n";
             }
         } else {
@@ -282,9 +284,9 @@ class CentreonCommand extends CentreonObject
             $filters
         );
         foreach ($elements as $element) {
-            $addStr = $this->action.$this->delim."ADD";
+            $addStr = $this->action . $this->delim . "ADD";
             foreach ($this->insertParams as $param) {
-                $addStr .= $this->delim.$element[$param];
+                $addStr .= $this->delim . $element[$param];
             }
             $addStr .= "\n";
             echo $addStr;
@@ -364,7 +366,7 @@ class CentreonCommand extends CentreonObject
         if ($sType == "service") {
             $inputName = "svc";
         }
-        $macroToFilter = array("SNMPVERSION","SNMPCOMMUNITY");
+        $macroToFilter = array("SNMPVERSION", "SNMPCOMMUNITY");
 
         if (empty($iIdCommand) || !array_key_exists($sType, $this->aTypeCommand)) {
             return array();
@@ -376,7 +378,7 @@ class CentreonCommand extends CentreonObject
             FROM command
             WHERE command_type = 2
             AND command_id = ?
-            AND command_line like '%".$this->aTypeCommand[$sType]['key']."%'
+            AND command_line like '%" . $this->aTypeCommand[$sType]['key'] . "%'
             ORDER BY command_name";
 
         $res = $this->db->query($sql, array($iIdCommand));
@@ -392,8 +394,8 @@ class CentreonCommand extends CentreonObject
                         $sDesc = isset($aDescription[$sName]['description'])
                             ? $aDescription[$sName]['description']
                             : "";
-                        $arr[$i][$inputName.'_macro_name'] = $sName;
-                        $arr[$i][$inputName.'_macro_value'] = "";
+                        $arr[$i][$inputName . '_macro_name'] = $sName;
+                        $arr[$i][$inputName . '_macro_value'] = "";
                         $arr[$i]['is_password'] = null;
                         $arr[$i]['macroDescription'] = $sDesc;
                         $i++;
@@ -417,14 +419,14 @@ class CentreonCommand extends CentreonObject
     public function getMacroDescription($iIdCmd)
     {
         $aReturn = array();
-        $sSql = "SELECT * FROM `on_demand_macro_command` WHERE `command_command_id` = ".intval($iIdCmd);
+        $sSql = "SELECT * FROM `on_demand_macro_command` WHERE `command_command_id` = " . intval($iIdCmd);
 
         $DBRESULT = $this->db->query($sSql);
         while ($row = $DBRESULT->fetch()) {
-            $arr['id']   = $row['command_macro_id'];
+            $arr['id'] = $row['command_macro_id'];
             $arr['name'] = $row['command_macro_name'];
             $arr['description'] = $row['command_macro_desciption'];
-            $arr['type']        = $row['command_macro_type'];
+            $arr['type'] = $row['command_macro_type'];
 
             $aReturn[$row['command_macro_name']] = $arr;
         }
@@ -447,7 +449,9 @@ class CentreonCommand extends CentreonObject
         $res = $this->db->query($sql, array($command_id));
 
         $args_desc = array();
-        while ($row = $res->fetch()) $args_desc[] = $row['macro_name'] . ':' . trim($row['macro_description']);
+        while ($row = $res->fetch()) {
+            $args_desc[] = $row['macro_name'] . ':' . trim($row['macro_description']);
+        }
         unset($res);
         return $args_desc;
     }

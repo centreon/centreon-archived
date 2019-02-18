@@ -101,6 +101,7 @@ Getargumentdescr
 To retrieve the argument descriptions for a command, use the **getargumentdescr** command:
 
   [root@centreon ~]# ./centreon -u admin -p centreon -o CMD -a getargumentdesc -v 'test-cmd'
+  name;description
   ARG0;First Argument
   ARG1;Second Argument
 
