@@ -318,6 +318,40 @@ class CentreonHost extends CentreonObject
             . "AND service_id NOT IN (SELECT service_service_id FROM host_service_relation)"
         );
     }
+    
+    /**
+     * List instance (poller) for host
+     *
+     * @param string $parameters
+     * @throws CentreonClapiException
+     */
+    public function getinstance ($parameters)
+    {
+        $params = explode($this->delim, $parameters);
+        if ($parameters == '') {
+            throw new CentreonClapiException(self::MISSINGPARAMETER);
+        }
+        if (($hostId = $this->getObjectId($params[self::ORDER_UNIQUENAME])) != 0) {
+            $relObj = new \Centreon_Object_Relation_Instance_Host();
+            $fields = array('id', 'name');
+            $elems = $relObj->getMergedParameters(
+                $fields,
+                array(),
+                -1,
+                0,
+                "host_name",
+                "ASC",
+                array('host_id' => $hostId),
+                'AND'
+            );
+            
+            foreach ($elems as $elem) {
+                echo $elem['id'] . $this->delim . $elem['name'] . "\n";
+            }
+        } else {
+            throw new CentreonClapiException(self::OBJECT_NOT_FOUND . ":" . $params[self::ORDER_UNIQUENAME]);
+        }
+    }
 
     /**
      * Tie host to instance (poller)
