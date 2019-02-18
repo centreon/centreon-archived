@@ -93,16 +93,52 @@ class ExtensionsRoute extends Component {
   };
 
   getAllEntitiesByVersionParam = (param, equals, callback) => {
-    this.getEntitiesByKeyAndVersionParam(param, equals, "module", moduleIds => {
+    const { modulesActive, widgetsActive } = this.state;
+    if (
+      (!modulesActive && !widgetsActive) ||
+      (modulesActive && widgetsActive)
+    ) {
+      this.getEntitiesByKeyAndVersionParam(
+        param,
+        equals,
+        "module",
+        moduleIds => {
+          this.getEntitiesByKeyAndVersionParam(
+            param,
+            equals,
+            "widget",
+            widgetIds => {
+              if (callback) {
+                callback([...moduleIds, ...widgetIds]);
+              }
+            }
+          );
+        }
+      );
+    } else if (widgetsActive) {
+      this.getEntitiesByKeyAndVersionParam(
+        param,
+        equals,
+        "module",
+        moduleIds => {
+          if (callback) {
+            callback([...moduleIds]);
+          }
+        }
+      );
+    } else if (modulesActive) {
+      // inverted because of inverse logic for switchers on/off false/true
       this.getEntitiesByKeyAndVersionParam(
         param,
         equals,
         "widget",
         widgetIds => {
-          callback([...moduleIds, ...widgetIds]);
+          if (callback) {
+            callback([...widgetIds]);
+          }
         }
       );
-    });
+    }
   };
 
   runActionOnAllEntities = (entityVersionType, equals, statusesKey) => {
@@ -189,7 +225,23 @@ class ExtensionsRoute extends Component {
   };
 
   installById = (id, type, callback) => {
-    this.runAction("extensionsInstallingStatus", "install", id, type, callback);
+    const { modalDetailsActive } = this.state;
+    if (modalDetailsActive) {
+      this.setState({
+        modalDetailsLoading: true
+      });
+      this.runAction("extensionsInstallingStatus", "install", id, type, () => {
+        this.getExtensionDetails(id);
+      });
+    } else {
+      this.runAction(
+        "extensionsInstallingStatus",
+        "install",
+        id,
+        type,
+        callback
+      );
+    }
   };
 
   updateById = (id, type, callback) => {
@@ -286,28 +338,32 @@ class ExtensionsRoute extends Component {
   };
 
   activateExtensionsDetails = id => {
-    const { xhr } = this.props;
     this.setState(
       {
         modalDetailsActive: true,
         modalDetailsLoading: true
       },
       () => {
-        xhr({
-          requestType: "GET",
-          url: `./api/internal.php?object=centreon_module&action=details&type=module&id=${id}`
-        })
-          .then(({ result }) => {
-            this.setState({
-              extensionDetails: result,
-              modalDetailsLoading: false
-            });
-          })
-          .catch(err => {
-            throw err;
-          });
+        this.getExtensionDetails(id);
       }
     );
+  };
+
+  getExtensionDetails = id => {
+    const { xhr } = this.props;
+    xhr({
+      requestType: "GET",
+      url: `./api/internal.php?object=centreon_module&action=details&type=module&id=${id}`
+    })
+      .then(({ result }) => {
+        this.setState({
+          extensionDetails: result,
+          modalDetailsLoading: false
+        });
+      })
+      .catch(err => {
+        throw err;
+      });
   };
 
   versionClicked = id => {};
@@ -427,10 +483,23 @@ class ExtensionsRoute extends Component {
         />
         <Centreon.Wrapper>
           <Centreon.Button
-            label={"Update all"}
+            label={`${
+              installed &&
+              not_installed &&
+              updated &&
+              search.length === 0 &&
+              ((modulesActive && widgetsActive) ||
+                (!modulesActive && !widgetsActive))
+                ? "Update all"
+                : "Update selection"
+            }`}
             buttonType="regular"
             customClass="mr-2"
             color="orange"
+            // disabled={this.getAllEntitiesByVersionParam("outdated", true).length === 0}
+            style={{
+              opacity: (false ? '0.33' : '1')
+            }}
             onClick={this.runActionOnAllEntities.bind(
               this,
               "outdated",
@@ -439,8 +508,21 @@ class ExtensionsRoute extends Component {
             )}
           />
           <Centreon.Button
-            label={"Install all"}
+            label={`${
+              installed &&
+              not_installed &&
+              updated &&
+              search.length === 0 &&
+              ((modulesActive && widgetsActive) ||
+                (!modulesActive && !widgetsActive))
+                ? "Install all"
+                : "Install selection"
+            }`}
             buttonType="regular"
+            // disabled={this.getAllEntitiesByVersionParam("installed", false).length === 0}
+            style={{
+              opacity: (false ? '0.33' : '1')
+            }}
             customClass="mr-2"
             color="green"
             onClick={this.runActionOnAllEntities.bind(
@@ -492,10 +574,12 @@ class ExtensionsRoute extends Component {
           </React.Fragment>
         ) : null}
 
-        {extensionDetails && modalDetailsActive && !modalDetailsLoading ? (
+        {extensionDetails && modalDetailsActive ? (
           <Centreon.ExtensionDetailsPopup
+            loading={modalDetailsLoading}
             onCloseClicked={this.hideExtensionDetails.bind(this)}
             onVersionClicked={this.versionClicked}
+            onInstallClicked={this.installById}
             modalDetails={extensionDetails}
           />
         ) : null}
