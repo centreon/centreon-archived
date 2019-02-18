@@ -83,6 +83,13 @@ class MetricUtils
         return true;
     }
  
+    /**
+     * Function to do a topological sort on a directed acyclic graph
+     *
+     * @param array $data of nodes listing 
+     * @param array $dependency of nodes link between them. 
+     * @return array of nodes listing sorted
+     */
     public function topologicalSort($data, $dependency)
     {
         $order = array();
@@ -414,7 +421,7 @@ class CentreonGraphNg
             'metric' => $vmetric['vmetric_name'],
             'metric_legend' => $vmetric['vmetric_name'],
             'unit' => $vmetric['unit_name'],
-            'hidden' => isset($vmetric['hidden']) && $vmetric['hidden'] == 1 ? 1 : 0,
+            'hidden' => isset($vmetric['hidden']) && $vmetric['hidden'] === 1 ? 1 : 0,
             'warn' => $vmetric['warn'],
             'crit' => $vmetric['crit'],
             'def_type' => $vmetric['def_type'] == 1 ? 'VDEF' : 'CDEF',
@@ -428,8 +435,8 @@ class CentreonGraphNg
         
         $this->cacheAllMetrics['v:' . $vmetric['vmetric_name']] = $vmetric['vmetric_id'];
         
-        if ($this->vmetrics[$vmetric['vmetric_id']]['hidden'] == 0) {
-            # Not cleaning. Should have is own metric_id for ods_view_details
+        if ($this->vmetrics[$vmetric['vmetric_id']]['hidden'] === 0) {
+            # Not cleaning. Should have its own metric_id for ods_view_details
             $vmetric['metric_name'] = $vmetric['vmetric_name'];
             $vmetric['metric_id'] = $vmetric['vmetric_id'];
             $dsData = $this->getCurveDsConfig($vmetric);
@@ -443,12 +450,15 @@ class CentreonGraphNg
     public function addServiceMetrics($hostId, $serviceId)
     {        
         $indexId = null;
-        $stmt = $this->dbCs->prepare("SELECT m.index_id, host_id, service_id, metric_id, metric_name, unit_name, min, max, warn, warn_low, crit, crit_low
-                                       FROM metrics AS m, index_data AS i
-                                       WHERE i.host_id = :host_id
-                                       AND i.service_id = :service_id
-                                       AND i.id = m.index_id 
-                                       AND m.hidden = '0'");
+        $stmt = $this->dbCs->prepare("SELECT 
+                m.index_id, host_id, service_id, metric_id, metric_name, 
+                unit_name, min, max, warn, warn_low, crit, crit_low
+            FROM metrics AS m, index_data AS i
+            WHERE i.host_id = :host_id
+                AND i.service_id = :service_id
+                AND i.id = m.index_id 
+                AND m.hidden = '0'"
+        );
         $stmt->bindParam(':host_id', $hostId, PDO::PARAM_INT);
         $stmt->bindParam(':service_id', $serviceId, PDO::PARAM_INT);
         $stmt->execute();
@@ -633,7 +643,7 @@ class CentreonGraphNg
     public function createLegend()
     {
         foreach ($this->metrics as $metricId => $tm) {
-            if ($tm['hidden'] == 1) {
+            if ($tm['hidden'] === 1) {
                 continue;
             }
             $arg = "LINE1:v" . $metricId . "#0000ff:v" . $metricId;
@@ -688,7 +698,11 @@ class CentreonGraphNg
     {
         $serviceId = $this->indexData["service_id"];
 
-        $stmt = $this->db->prepare("SELECT esi.graph_id, service_template_model_stm_id FROM service LEFT JOIN extended_service_information esi ON esi.service_service_id = service_id WHERE service_id = :service_id");
+        $stmt = $this->db->prepare("SELECT
+                esi.graph_id, service_template_model_stm_id FROM service 
+            LEFT JOIN extended_service_information esi 
+                ON esi.service_service_id = service_id
+                WHERE service_id = :service_id");
         $tab = array();
         while (1) {
             $stmt->bindParam(':service_id', $serviceId, PDO::PARAM_INT);
@@ -890,13 +904,13 @@ class CentreonGraphNg
             'metrics' => array(),
         );
         foreach ($this->metrics as $metric) {
-            if ($metric['hidden'] == 1) {
+            if ($metric['hidden'] === 1) {
                 continue;
             }
             $this->graphData['metrics'][] = $metric;
         }
         foreach ($this->vmetricsOrder as $vmetricId) {
-            if ($this->vmetrics[$vmetricId]['hidden'] == 1) {
+            if ($this->vmetrics[$vmetricId]['hidden'] === 1) {
                 continue;
             }
             
