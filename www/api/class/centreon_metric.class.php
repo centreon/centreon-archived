@@ -67,6 +67,7 @@ class CentreonMetric extends CentreonWebService
      * Get metric list
      *
      * @return array
+     * @throws Exception
      */
     public function getList()
     {
@@ -100,6 +101,7 @@ class CentreonMetric extends CentreonWebService
 
     /**
      * @return array
+     * @throws RestBadRequestException
      */
     protected function getListByService()
     {
@@ -213,6 +215,9 @@ class CentreonMetric extends CentreonWebService
      * Get the status for a service
      *
      * @return array
+     * @throws RestBadRequestException
+     * @throws RestForbiddenException
+     * @throws RestNotFoundException
      */
     public function getStatusByService()
     {
@@ -430,6 +435,10 @@ class CentreonMetric extends CentreonWebService
      * @param string $id The service id like hostId_serviceId
      * @param int $metric The metric id
      * @return array
+     * @throws Exception
+     * @throws RestBadRequestException
+     * @throws RestForbiddenException
+     * @throws RestNotFoundException
      */
     protected function serviceDatas($id, $metric = null)
     {
