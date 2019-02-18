@@ -879,9 +879,9 @@ class CentreonGraphNg
             $stderr = array('pipe', 'a');
         }
         $descriptorspec = array(
-                            0 => array("pipe", "r"),  // stdin est un pipe processus va lire
-                            1 => array("pipe", "w"),  // stdout est un pipe processus va ecrire
-                            2 => $stderr // stderr est un fichier
+                            0 => array("pipe", "r"),  // stdin is pipe for reading
+                            1 => array("pipe", "w"),  // stdout is pipe for writing
+                            2 => $stderr // stderr is a file
                         );
 
         $process = proc_open($this->generalOpt['rrdtool_path_bin']['value'] . " - ", $descriptorspec, $pipes, null, null);
