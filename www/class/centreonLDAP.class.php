@@ -1124,6 +1124,7 @@ class CentreonLdapAdmin
      * Get the template information
      *
      * @param int $id The template id, if 0 get the template
+     * @return array $list
      */
     public function getTemplate($id = 0)
     {
@@ -1229,7 +1230,7 @@ class CentreonLdapAdmin
     }
 
     /**
-     * Delete ldap configuraition
+     * Delete ldap configuration
      *
      * @param  array $configList
      * @return void
