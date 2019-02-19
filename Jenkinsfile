@@ -56,7 +56,7 @@ try {
           useDeltaValues: true,
           failedNewAll: '0'
         ])
-        if (env.BUILD == 'REFERENCE') {
+        if ((env.BUILD == 'RELEASE') || (env.BUILD == 'REFERENCE')) {
           withSonarQubeEnv('SonarQube') {
             sh "./centreon-build/jobs/web/${serie}/mon-web-analysis.sh"
           }
