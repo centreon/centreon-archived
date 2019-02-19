@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2005-2015 Centreon
+ * Copyright 2005-2019 Centreon
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -221,12 +221,30 @@ $attrAclgroups = array(
 );
 
 $form = new HTML_QuickFormCustom('Form', 'post', "?p=" . $p);
+
+/**
+ * @var $moduleFormManager \Centreon\Domain\Service\ModuleFormManager
+ */
+$moduleFormManager = $dependencyInjector['centreon.module_form_manager'];
+$moduleFormManager->init();
+$moduleFormManager->setForm('form-contact', $form);
+
 if ($o == "a") {
     $form->addElement('header', 'title', _("Add a User"));
 } elseif ($o == "c") {
     $form->addElement('header', 'title', _("Modify a User"));
+    $moduleFormManager->trigger(
+        'form-contact',
+        \Centreon\Domain\Entity\ModuleForm::EVENT_READ,
+        ['contact_id' => $contact_id]
+    );
 } elseif ($o == "w") {
     $form->addElement('header', 'title', _("View a User"));
+    $moduleFormManager->trigger(
+        'form-contact',
+        \Centreon\Domain\Entity\ModuleForm::EVENT_READ,
+        ['contact_id' => $contact_id]
+    );
 } elseif ($o == "mc") {
     $form->addElement('header', 'title', _("Massive Change"));
 }
@@ -701,7 +719,6 @@ foreach ($help as $key => $text) {
     $helptext .= '<span style="display:none" id="help:' . $key . '">' . $text . '</span>' . "\n";
 }
 $tpl->assign("helptext", $helptext);
-
 if ($o == "w") {
     # Just watch a contact information
     if ($centreon->user->access->page($p) != 2) {
@@ -737,17 +754,38 @@ if ($centreon->optGen['ldap_auth_enable'] == 1 && $cct['contact_auth_type'] == '
 }
 
 $valid = false;
+
+// Apply the form modifier defined by one of the modules
+$moduleFormManager->applyFormModifiers('form-contact');
+
 if ($form->validate() && $from_list_menu == false) {
     $cctObj = $form->getElement('contact_id');
     if ($form->getSubmitValue("submitA")) {
-        $cctObj->setValue(insertContactInDB());
+        $newContactId = insertContactInDB();
+        $cctObj->setValue($contactId);
+        $moduleFormManager->trigger(
+            'form-contact',
+            \Centreon\Domain\Entity\ModuleForm::EVENT_ADD,
+            ['contact_id' => $newContactId]
+        );
     } elseif ($form->getSubmitValue("submitC")) {
         updateContactInDB($cctObj->getValue());
+        // We modify
+        $moduleFormManager->trigger(
+            'form-contact',
+            \Centreon\Domain\Entity\ModuleForm::EVENT_UPDATE,
+            ['contact_id' => $contact_id]
+        );
     } elseif ($form->getSubmitValue("submitMC")) {
         $select = explode(",", $select);
-        foreach ($select as $key => $value) {
-            if ($value) {
-                updateContactInDB($value, true);
+        foreach ($select as $key => $contactId) {
+            if ($contactId) {
+                updateContactInDB($contactId, true);
+                $moduleFormManager->trigger(
+                    'form-contact',
+                    \Centreon\Domain\Entity\ModuleForm::EVENT_UPDATE,
+                    ['contact_id' => $contactId]
+                );
             }
         }
     }
@@ -774,7 +812,9 @@ if ($valid) {
         $tpl->assign('ldap', $centreon->optGen['ldap_auth_enable']);
     }
     $tpl->assign('auth_type', $contactAuthType);
+
     if ($isRemote == false) {
+        $tpl->assign('modules_template', $moduleFormManager->getModulesTemplates('form-contact'));
         $tpl->display("formContact.ihtml");
     } else {
         $tpl->display("formContactLight.ihtml");
