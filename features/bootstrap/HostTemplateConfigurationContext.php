@@ -24,7 +24,7 @@ class HostTemplateConfigurationContext extends CentreonContext
             'name' => $this->hostName,
             'alias' => $this->hostName,
             'address' => 'localhost',
-            'templates' => array('generic-host')
+            //'templates' => array('generic-host')
         ));
         $this->page->save();
     }
@@ -38,7 +38,7 @@ class HostTemplateConfigurationContext extends CentreonContext
         $this->page->setProperties(array(
             'name' => $this->hostName,
             'alias' => $this->hostName,
-            'templates' => array('generic-host')
+            //'templates' => array('generic-host')
         ));
         $this->page->save();
     }
@@ -67,27 +67,7 @@ class HostTemplateConfigurationContext extends CentreonContext
      */
     public function iCanConfigureDirectlyItsParentTemplate()
     {
-        // Click on template edition link (will open new window).
-        $this->assertFind('css', 'ul#template img[src*="edit_mode.png"]')->click();
-        //[att^=str] :- attribute value starting with str
-
-        $this->spin(
-            function ($context) {
-                $windows = $context->getSession()->getWindowNames();
-                return count($windows) > 1;
-            },
-            'Host template configuration window is not opened.',
-            10
-        );
-        $windows = $this->getSession()->getWindowNames();
-        $this->getSession()->switchToWindow($windows[1]);
-
-        // Check properties of the host template.
-        self::$lastUri = 'p=60103&o=c&host_id=2&min=1';
-        $this->page = new HostTemplateConfigurationPage($this, false);
-        $properties = $this->page->getProperties();
-        if ($properties['name'] != 'generic-host') {
-            throw new \Exception('Wrong host template configuration page.');
-        }
+        // Click on template edition select2
+        $this->assertFind('css', '#tpSelect ~ .select2-container')->click();
     }
 }
