@@ -55,6 +55,7 @@ class CentreonMetric extends CentreonWebService
      * Constructor
      *
      * @param CentreonDB $db
+     *
      * @return void
      */
     public function __construct()
@@ -67,6 +68,7 @@ class CentreonMetric extends CentreonWebService
      * Get metric list
      *
      * @return array
+     *
      * @throws Exception
      */
     public function getList()
@@ -101,6 +103,7 @@ class CentreonMetric extends CentreonWebService
 
     /**
      * @return array
+     *
      * @throws RestBadRequestException
      */
     protected function getListByService()
@@ -184,7 +187,7 @@ class CentreonMetric extends CentreonWebService
     /**
      * Get metrics datas for a metric
      *
-     * @return array
+     * @return mixed
      */
     public function getMetricsDataByMetric()
     {
@@ -214,7 +217,8 @@ class CentreonMetric extends CentreonWebService
     /**
      * Get the status for a service
      *
-     * @return array
+     * @return mixed
+     *
      * @throws RestBadRequestException
      * @throws RestForbiddenException
      * @throws RestNotFoundException
@@ -348,6 +352,19 @@ class CentreonMetric extends CentreonWebService
         return $result;
     }
 
+    /**
+     * Get data for a service can be filtered by metric (new backend)
+     *
+     * @param string $id     The service id like hostId_serviceId
+     * @param int    $metric The metric id
+     *
+     * @return array
+     *
+     * @throws Exception
+     * @throws RestBadRequestException
+     * @throws RestForbiddenException
+     * @throws RestNotFoundException
+     */
     protected function serviceDatasNg($id, $metric = null)
     {
         global $centreon;
@@ -432,9 +449,11 @@ class CentreonMetric extends CentreonWebService
     /**
      * Get data for a service can be filtered by metric
      *
-     * @param string $id The service id like hostId_serviceId
-     * @param int $metric The metric id
+     * @param string $id     The service id like hostId_serviceId
+     * @param int    $metric The metric id
+     *
      * @return array
+     *
      * @throws Exception
      * @throws RestBadRequestException
      * @throws RestForbiddenException
@@ -573,6 +592,7 @@ class CentreonMetric extends CentreonWebService
      * Get metrics Data by poller
      *
      * @return array
+     *
      * @throws Exception
      * @throws RestBadRequestException
      * @throws RestForbiddenException
@@ -640,7 +660,8 @@ class CentreonMetric extends CentreonWebService
     /**
      * Function for test is a value is NaN
      *
-     * @param mixed $element The element to test
+     * @param  mixed $element The element to test
+     *
      * @return mixed null if NaN else the element
      */
     protected function convertNaN($element)
@@ -679,10 +700,11 @@ class CentreonMetric extends CentreonWebService
     }
 
     /**
-     * @param $hostId
-     * @param $serviceId
-     * @param $start
-     * @param $end
+     * @param int $hostId
+     * @param int $serviceId
+     * @param int $start
+     * @param int $end
+     *
      * @return array
      */
     protected function getDowntimePeriods($hostId, $serviceId, $start, $end)
@@ -704,10 +726,11 @@ class CentreonMetric extends CentreonWebService
     }
 
     /**
-     * @param $query
-     * @param $start
-     * @param $end
-     * @param $queryValues
+     * @param string $query
+     * @param int    $start
+     * @param int    $end
+     * @param mixed  $queryValues
+     *
      * @return array
      */
     protected function executeQueryPeriods($query, $start, $end, $queryValues)
@@ -747,9 +770,10 @@ class CentreonMetric extends CentreonWebService
     /**
      * Authorize to access to the action
      *
-     * @param string $action The action name
-     * @param array $user The current user
+     * @param string  $action     The action name
+     * @param array   $user       The current user
      * @param boolean $isInternal If the api is call in internal
+     *
      * @return boolean If the user has access to the action
      */
     public function authorize($action, $user, $isInternal = false)

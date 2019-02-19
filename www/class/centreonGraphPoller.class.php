@@ -111,9 +111,6 @@ class centreonGraphPoller
      *
      * @param \CentreonDB $db
      * @param \CentreonDB $dbMonitoring
-     * @param type $pollerId
-     * @param type $start
-     * @param type $end
      */
     public function __construct($db, $dbMonitoring)
     {
@@ -123,7 +120,15 @@ class centreonGraphPoller
         $this->initGraphOptions();
         $this->initRrd();
     }
-    
+
+    /**
+     * Set poller graph
+     *
+     * @param int    $pollerId
+     * @param string $graphName
+     *
+     * @return void
+     */
     public function setPoller($pollerId, $graphName)
     {
         $this->graphName = $graphName;
@@ -139,7 +144,9 @@ class centreonGraphPoller
     }
 
     /**
+     * Init graph titles
      *
+     * @return void
      */
     private function initGraphOptions()
     {
@@ -201,20 +208,22 @@ class centreonGraphPoller
     }
 
     /**
-     * Set rrdtool options
+     * Get rrdtool options
+     *
+     * @return void
      */
     private function initRrd()
     {
         $DBRESULT = $this->db->query("SELECT * FROM `options`");
 
         $this->generalOpt = array();
-        while ($option = $DBRESULT->fetchRow()) {
+        while ($option = $DBRESULT->fetch()) {
             $this->generalOpt[$option["key"]] = $option["value"];
         }
         $DBRESULT->closeCursor();
 
         $DBRESULT2 = $this->dbMonitoring->query("SELECT RRDdatabase_nagios_stats_path FROM config");
-        $nagiosStats = $DBRESULT2->fetchRow();
+        $nagiosStats = $DBRESULT2->fetch();
         $this->nagiosStatsPath = $nagiosStats['RRDdatabase_nagios_stats_path'];
         $DBRESULT2->closeCursor();
     }
@@ -236,12 +245,27 @@ class centreonGraphPoller
     {
         $this->graphName = $graphName;
     }
-    
+
+    /**
+     * Add argument rrdtool
+     *
+     * @param string $arg
+     *
+     * @return void
+     */
     public function addArgument($arg)
     {
         $this->arguments[] = $arg;
     }
-    
+
+    /**
+     * Add argument rrdtool
+     *
+     * @param string $name the key
+     * @param string $value
+     *
+     * @return void
+     */
     public function setRRDOption($name, $value = null)
     {
         if (strpos($value, " ")!==false) {
@@ -249,13 +273,23 @@ class centreonGraphPoller
         }
         $this->rrdOptions[$name] = $value;
     }
-    
+
+    /**
+     * Log message
+     *
+     * @param string $message
+     *
+     * @return void
+     */
     private function log($message)
     {
-        if ($this->generalOpt['debug_rrdtool'] && 
+        if ($this->generalOpt['debug_rrdtool'] &&
             is_writable($this->generalOpt['debug_path'])) {
-            error_log("[" . date("d/m/Y H:i") ."] RDDTOOL : ".$message." \n", 3,
-                      $this->generalOpt['debug_path'] . "rrdtool.log");
+            error_log(
+                "[" . date("d/m/Y H:i") ."] RDDTOOL : ".$message." \n",
+                3,
+                $this->generalOpt['debug_path'] . "rrdtool.log"
+            );
         }
     }
 
@@ -305,9 +339,12 @@ class centreonGraphPoller
     }
 
     /**
+     * Get graph result
      *
      * @param int $rows
+     *
      * @return array
+     *
      * @throws RuntimeException
      */
     public function getGraph($start, $end)
@@ -315,7 +352,12 @@ class centreonGraphPoller
         $this->buildCommandLine($start, $end);
         return $this->getJsonStream();
     }
-    
+
+    /**
+     * Get rrdtool result
+     *
+     * @return mixed
+     */
     private function getJsonStream()
     {
         $commandLine = "";
@@ -372,7 +414,14 @@ class centreonGraphPoller
         $this->formatByMetrics($rrdData);
         return $this->graphData;
     }
-    
+
+    /**
+     * Parse rrdtool result
+     *
+     * @param mixed $rrdData
+     *
+     * @return void
+     */
     private function formatByMetrics($rrdData)
     {
         $this->graphData['times'] = array();
