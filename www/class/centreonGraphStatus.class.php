@@ -43,7 +43,7 @@ class CentreonGraphStatus
      *
      * @param int $index The index data id
      * @param int $start The start time
-     * @param int $end The end time
+     * @param int $end   The end time
      */
     public function __construct($index, $start, $end)
     {
@@ -59,8 +59,8 @@ class CentreonGraphStatus
     /**
      * Get the metrics
      *
-     * @param integer $rows The number of points returned (Default: 200)
-     * @param array
+     * @param int   $rows The number of points returned (Default: 200)
+     * @param mixed
      */
     public function getData()
     {
@@ -129,6 +129,7 @@ class CentreonGraphStatus
      * Flush status rrdfile from cache
      *
      * @param int $indexData The index data id
+     *
      * @return bool
      */
     public function flushRrdCached($indexData)
@@ -137,10 +138,7 @@ class CentreonGraphStatus
             $this->generalOpt['rrdcached_enabled'] == 0) {
             return true;
         }
-        
-        /*
-         * Connect to rrdcached
-         */
+
         $errno = 0;
         $errstr = '';
         if (isset($this->general_opt['rrdcached_port'])
@@ -156,12 +154,9 @@ class CentreonGraphStatus
             return false;
         }
         if (false === $sock) {
-            // @todo log the error
             return false;
         }
-        /*
-         * Run batch mode
-         */
+
         if (false === fputs($sock, "BATCH\n")) {
             @fclose($sock);
             return false;
@@ -170,9 +165,7 @@ class CentreonGraphStatus
             @fclose($sock);
             return false;
         }
-        /*
-         * Run flushs
-         */
+
         $fullpath = realpath($this->statusPath . $indexData . '.rrd');
         $cmd = 'FLUSH ' . $fullpath;
         if (false === fputs($sock, $cmd . "\n")) {
@@ -180,9 +173,6 @@ class CentreonGraphStatus
             return false;
         }
 
-        /*
-         * Execute commands
-         */
         if (false === fputs($sock, ".\n")) {
             @fclose($sock);
             return false;
@@ -191,9 +181,7 @@ class CentreonGraphStatus
             @fclose($sock);
             return false;
         }
-        /*
-         * Send close
-         */
+
         fputs($sock, "QUIT\n");
         @fclose($sock);
         return true;
@@ -239,9 +227,10 @@ class CentreonGraphStatus
     /**
      * Get the index data id for a service
      *
-     * @param int $hostId The host id
-     * @param int $serviceId The service id
+     * @param int        $hostId The host id
+     * @param int        $serviceId The service id
      * @param CentreonDB $dbc The database connection to centreon_storage
+     *
      * @return int
      */
     public static function getIndexId($hostId, $serviceId, $dbc)
@@ -256,12 +245,27 @@ class CentreonGraphStatus
         }
         return $row['id'];
     }
-    
+
+    /**
+     * Add argument rrdtool
+     *
+     * @param string $arg
+     *
+     * @return void
+     */
     protected function addArgument($arg)
     {
         $this->arguments[] = $arg;
     }
-    
+
+    /**
+     * Add argument rrdtool
+     *
+     * @param string $name the key
+     * @param string $value
+     *
+     * @return void
+     */
     protected function setRRDOption($name, $value = null)
     {
         if (strpos($value, " ")!==false) {
@@ -269,16 +273,31 @@ class CentreonGraphStatus
         }
         $this->rrdOptions[$name] = $value;
     }
-    
+
+    /**
+     * Log message
+     *
+     * @param string $message
+     *
+     * @return void
+     */
     private function log($message)
     {
-        if ($this->generalOpt['debug_rrdtool'] && 
+        if ($this->generalOpt['debug_rrdtool'] &&
             is_writable($this->generalOpt['debug_path'])) {
-            error_log("[" . date("d/m/Y H:i") ."] RDDTOOL : ".$message." \n", 3,
-                      $this->generalOpt['debug_path'] . "rrdtool.log");
+            error_log(
+                "[" . date("d/m/Y H:i") ."] RDDTOOL : ".$message." \n",
+                3,
+                $this->generalOpt['debug_path'] . "rrdtool.log"
+            );
         }
     }
-    
+
+    /**
+     * Get rrdtool result
+     *
+     * @return mixed
+     */
     private function getJsonStream()
     {
         $this->flushRrdcached($this->index);
@@ -309,9 +328,9 @@ class CentreonGraphStatus
             $stderr = array('pipe', 'a');
         }
         $descriptorspec = array(
-                            0 => array("pipe", "r"),  // stdin is pipe for reading
-                            1 => array("pipe", "w"),  // stdout is pipe for writing
-                            2 => $stderr // stderr is a file
+                            0 => array("pipe", "r"),
+                            1 => array("pipe", "w"),
+                            2 => $stderr
                         );
 
         $process = proc_open($this->generalOpt['rrdtool_path_bin']. " - ", $descriptorspec, $pipes, null, null);
