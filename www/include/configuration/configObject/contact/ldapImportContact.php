@@ -63,12 +63,6 @@ $form->addElement('header', 'ldap_search_result_output', _("Result"));
 $link = "LdapSearch()";
 $form->addElement("button", "ldap_search_button", _("Search"), array("class" => "btc bt_success", "onClick" => $link));
 
-$tab = array();
-$tab[] = $form->createElement('radio', 'action', null, _("List"), '1');
-$tab[] = $form->createElement('radio', 'action', null, _("Form"), '0');
-$form->addGroup($tab, 'action', _("Post Validation"), '&nbsp;');
-$form->setDefaults(array('action' => '1'));
-
 $form->addElement('hidden', 'contact_id');
 $redirect = $form->addElement('hidden', 'o');
 $redirect->setValue($o);
@@ -129,9 +123,8 @@ if ($form->validate()) {
     $valid = true;
 }
 
-$action = $form->getSubmitValue("action");
 
-if ($valid && isset($action["action"]) && $action["action"]) {
+if ($valid) {
     require_once($path . "listContact.php");
 } else {
     /*
