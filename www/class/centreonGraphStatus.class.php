@@ -66,25 +66,25 @@ class CentreonGraphStatus
         $this->setRRDOption("imgformat", "JSONTIME");
         $this->setRRDOption("start", $this->startTime);
         $this->setRRDOption("end", $this->endTime);
-        
+
         $path = $this->statusPath . '/' . $this->index . '.rrd';
         if (false === file_exists($path)) {
             throw new RuntimeException();
         }
-        
+
         $this->addArgument("DEF:v1=" . $path . ":value:AVERAGE");
         $this->addArgument("VDEF:v1Average=v1,AVERAGE");
         $this->addArgument("LINE1:v1#0000ff:v1");
-        
+
         $jsonData = $this->getJsonStream();
-                
+
         $metrics = array(
             'critical' => array(),
             'warning' => array(),
             'ok' => array(),
             'unknown' => array()
         );
-        
+
         $lastStatus = null;
         $interval = array();
         foreach ($jsonData['data'] as $row) {
@@ -117,10 +117,10 @@ class CentreonGraphStatus
                 );
             }
         }
-        
+
         $interval['end'] = $time;
         $metrics[$lastStatus][] = $interval;
-        
+
         return $metrics;
     }
     
@@ -134,20 +134,23 @@ class CentreonGraphStatus
     public function flushRrdCached($indexData)
     {
         if (false === isset($this->generalOpt['rrdcached_enabled']) ||
-            $this->generalOpt['rrdcached_enabled'] == 0) {
+            $this->generalOpt['rrdcached_enabled'] == 0
+        ) {
             return true;
         }
 
         $errno = 0;
         $errstr = '';
         if (isset($this->general_opt['rrdcached_port'])
-            && trim($this->general_opt['rrdcached_port']) != '') {
+            && trim($this->general_opt['rrdcached_port']) != ''
+        ) {
             $sock = @fsockopen('127.0.0.1', trim($this->general_opt['rrdcached_port']), $errno, $errstr);
             if ($sock === false) {
                 return false;
             }
         } elseif (isset($this->general_opt['rrdcached_unix_path'])
-            && trim($this->general_opt['rrdcached_unix_path']) != '') {
+            && trim($this->general_opt['rrdcached_unix_path']) != ''
+        ) {
             $sock = @fsockopen('unix://' . trim($this->general_opt['rrdcached_unix_path']), $errno, $errstr);
         } else {
             return false;
@@ -185,7 +188,7 @@ class CentreonGraphStatus
         @fclose($sock);
         return true;
     }
-    
+
     /**
      * Get general options
      *
@@ -234,10 +237,9 @@ class CentreonGraphStatus
      */
     public static function getIndexId($hostId, $serviceId, $dbc)
     {
-        $query = "SELECT id FROM index_data
-            WHERE host_id = " . $hostId . " AND service_id = " . $serviceId;
+        $query = "SELECT id FROM index_data WHERE host_id = " . $hostId . " AND service_id = " . $serviceId;
         $res = $dbc->query($query);
-        $row = $res->fetchRow();
+        $row = $res->fetch();
 
         if (false == $row) {
             throw new OutOfRangeException();
@@ -300,7 +302,7 @@ class CentreonGraphStatus
     private function getJsonStream()
     {
         $this->flushRrdcached($this->index);
-        
+
         $commandLine = "";
         $commandLine = " graph - ";
 
@@ -344,7 +346,7 @@ class CentreonGraphStatus
             $str = preg_replace("/OK u:.*$/", "", $str);
             $rrdData = json_decode($str, true);
         }
-                
+
         return $rrdData;
     }
 }

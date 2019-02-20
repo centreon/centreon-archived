@@ -1,7 +1,7 @@
 <?php
 /*
- * Copyright 2005-2015 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2019 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -193,14 +193,14 @@ class CentreonGraph
         $this->checkcurve = false;
 
         $DBRESULT = $this->DBC->query("SELECT RRDdatabase_path, RRDdatabase_status_path FROM config LIMIT 1");
-        $config = $DBRESULT->fetchRow();
+        $config = $DBRESULT->fetch();
         $this->dbPath = $config["RRDdatabase_path"];
         $this->dbStatusPath = $config['RRDdatabase_status_path'];
         unset($config);
         $DBRESULT->closeCursor();
 
         $DBRESULT = $this->DB->query("SELECT * FROM options");
-        while ($opt = $DBRESULT->fetchRow()) {
+        while ($opt = $DBRESULT->fetch()) {
             $this->generalOpt[$opt['key']] = $opt['value'];
         }
         $DBRESULT->closeCursor();
@@ -213,7 +213,7 @@ class CentreonGraph
                                           AND `contact_id` = '" . $this->user_id . "'");
             $metrics_cache = array();
             if ($DBRESULT->rowCount()) {
-                while ($tmp_metrics = $DBRESULT->fetchRow()) {
+                while ($tmp_metrics = $DBRESULT->fetch()) {
                     $metrics_cache[$tmp_metrics['metric_id']] = 1;
                 }
             }
@@ -225,7 +225,7 @@ class CentreonGraph
                                            ORDER BY `metric_name`");
             $count = 0;
             $odsm = array();
-            while ($milist = $DBRESULT->fetchRow()) {
+            while ($milist = $DBRESULT->fetch()) {
                 $odsm[$milist["metric_id"]] = 1;
                 $count++;
             }
@@ -240,7 +240,7 @@ class CentreonGraph
                                           AND ( `hidden` = '0' OR `hidden` IS NULL )
                                           AND vmetric_activate = '1'
                                           ORDER BY 'metric_name'");
-            while ($milist = $DBRESULT->fetchRow()) {
+            while ($milist = $DBRESULT->fetch()) {
                 $vmilist = "v" . $milist["metric_id"];
                 $odsm[$vmilist] = 1;
             }
@@ -310,7 +310,7 @@ class CentreonGraph
         }
         $res = $this->DBC->query($query);
         if ($res->rowCount()) {
-            $row = $res->fetchRow();
+            $row = $res->fetch();
             $maxlimit = $row['maxlimit'];
             if ($maxlimit != 0) {
                 $maxlimit = $maxlimit + ((self::OVER_MAX_LIMIT_PCT / $maxlimit) * 100);
@@ -482,7 +482,7 @@ class CentreonGraph
                     AND m.hidden = '0'
                     ORDER BY m.metric_name"
             );
-            while ($rmetric = $DBRESULT->fetchRow()) {
+            while ($rmetric = $DBRESULT->fetch()) {
                 $this->mlist[$rmetric["metric_id"]] = $this->mpointer[0]++;
                 $this->rmetrics[] = $rmetric;
             }
@@ -495,7 +495,7 @@ class CentreonGraph
                                           FROM virtual_metrics
                                           WHERE " . $l_vselector . "
                                           ORDER BY vmetric_name");
-            while ($vmetric = $DBRESULT->fetchRow()) {
+            while ($vmetric = $DBRESULT->fetch()) {
                 $this->manageVMetric($vmetric["vmetric_id"], null, null);
             }
             $DBRESULT->closeCursor();
@@ -597,7 +597,7 @@ class CentreonGraph
                                 WHERE default_tpl1 = '1' LIMIT 1"
                         );
                         if ($DBRESULT3->rowCount()) {
-                            foreach ($DBRESULT3->fetchRow() as $key => $ds_val) {
+                            foreach ($DBRESULT3->fetch() as $key => $ds_val) {
                                 $ds[$key] = $ds_val;
                             }
                         }
@@ -1085,7 +1085,7 @@ class CentreonGraph
             $command_id = getMyServiceField($this->indexData["service_id"], "command_command_id");
             $DBRESULT = $this->DB->query("SELECT graph_id FROM command WHERE `command_id` = '" . $command_id . "'");
             if ($DBRESULT->rowCount()) {
-                $data = $DBRESULT->fetchRow();
+                $data = $DBRESULT->fetch();
                 if ($data["graph_id"] != 0) {
                     $this->templateId = $data["graph_id"];
                     unset($data);
@@ -1097,7 +1097,7 @@ class CentreonGraph
         }
         $DBRESULT = $this->DB->query("SELECT graph_id FROM giv_graphs_template WHERE default_tpl1 = '1' LIMIT 1");
         if ($DBRESULT->rowCount()) {
-            $data = $DBRESULT->fetchRow();
+            $data = $DBRESULT->fetch();
             $this->templateId = $data["graph_id"];
             unset($data);
             $DBRESULT->closeCursor();
@@ -1131,7 +1131,7 @@ class CentreonGraph
                         FROM meta_service
                         WHERE `meta_name` = '" . $this->indexData["service_description"] . "'"
                 );
-                $meta = $DBRESULT_meta->fetchRow();
+                $meta = $DBRESULT_meta->fetch();
                 $this->templateId = $meta["graph_id"];
                 unset($meta);
             }
@@ -1143,7 +1143,7 @@ class CentreonGraph
                 FROM giv_graphs_template
                 WHERE graph_id = '" . $this->templateId . "' LIMIT 1"
         );
-        $this->templateInformations = $DBRESULT->fetchRow();
+        $this->templateInformations = $DBRESULT->fetch();
         $DBRESULT->closeCursor();
     }
 
@@ -1163,7 +1163,7 @@ class CentreonGraph
                     LEFT JOIN extended_service_information esi ON esi.service_service_id = service_id
                     WHERE service_id = '" . $service_id . "' LIMIT 1"
             );
-            $row = $DBRESULT->fetchRow();
+            $row = $DBRESULT->fetch();
             if ($row["graph_id"]) {
                 $this->graphID = $row["graph_id"];
                 return $this->graphID;
@@ -1197,7 +1197,7 @@ class CentreonGraph
         if (!$DBRESULT->rowCount()) {
             $this->indexData = 0;
         } else {
-            $this->indexData = $DBRESULT->fetchRow();
+            $this->indexData = $DBRESULT->fetch();
             /*
              * Check Meta Service description
              */
@@ -1205,7 +1205,7 @@ class CentreonGraph
                 $DBRESULT_meta = $this->DB->query(
                     "SELECT meta_name FROM meta_service WHERE `meta_id` = '" . $matches[1] . "'"
                 );
-                $meta = $DBRESULT_meta->fetchRow();
+                $meta = $DBRESULT_meta->fetch();
                 $this->indexData["service_description"] = $meta["meta_name"];
                 unset($meta);
                 $DBRESULT_meta->closeCursor();
@@ -1500,7 +1500,7 @@ class CentreonGraph
             $this->colorCache = array();
             
             $DBRESULT = $this->DB->query("SELECT metric_id, rnd_color FROM `ods_view_details` WHERE `index_id` = " . $this->index);
-            while (($row = $DBRESULT->fetchRow())) {
+            while (($row = $DBRESULT->fetch())) {
                 $this->colorCache[$row['metric_id']] = $row['rnd_color']; 
             }
         }
@@ -1656,7 +1656,7 @@ class CentreonGraph
          * There is only one metric_id
          */
         if ($lPqy->rowCount() == 1) {
-            $lVmetric = $lPqy->fetchRow();
+            $lVmetric = $lPqy->fetch();
             $lPqy->closeCursor();
             if (!isset($this->mlist["v" . $lVmetric["metric_id"]])) {
                 if (is_null($vId)) {
@@ -1668,7 +1668,7 @@ class CentreonGraph
                 $l_poqy = $this->DBC->query(
                     "SELECT host_id, service_id FROM index_data WHERE id = '" . $lVmetric["index_id"] . "'"
                 );
-                $l_indd = $l_poqy->fetchRow();
+                $l_indd = $l_poqy->fetch();
                 $l_poqy->closeCursor();
                 /* Check for real or virtual metric(s) in the RPN function */
                 $l_mlist = preg_split("/\,/", $lVmetric["rpn_function"]);
@@ -1741,7 +1741,7 @@ class CentreonGraph
     private function log($message)
     {
         if ($this->generalOpt['debug_rrdtool'] && is_writable($this->generalOpt['debug_path'])) {
-            error_r
+            error_r(
                 "[" . date("d/m/Y H:i") . "] RDDTOOL : " . $message . " \n",
                 3,
                 $this->generalOpt["debug_path"] . "rrdtool.log"
@@ -1854,7 +1854,7 @@ class CentreonGraph
                 AND service_id = " . $this->DBC->escape($serviceId);
         $res = $this->DBC->query($sql);
         if ($res->rowCount()) {
-            $row = $res->fetchRow();
+            $row = $res->fetch();
             return $row['id'];
         }
         return 0;
