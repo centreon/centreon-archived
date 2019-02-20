@@ -59,8 +59,7 @@ class CentreonGraphStatus
     /**
      * Get the metrics
      *
-     * @param int   $rows The number of points returned (Default: 200)
-     * @param mixed
+     * @return mixed
      */
     public function getData()
     {

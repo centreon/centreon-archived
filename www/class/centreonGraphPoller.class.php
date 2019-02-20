@@ -294,8 +294,13 @@ class centreonGraphPoller
     }
 
     /**
+     * Add arguments for rrdtool command line
      *
-     * @param int $rows
+     * @param int $start
+     * @param int $end
+     *
+     * @return void
+     *
      * @throws RuntimeException
      */
     public function buildCommandLine($start, $end)
@@ -341,7 +346,8 @@ class centreonGraphPoller
     /**
      * Get graph result
      *
-     * @param int $rows
+     * @param int $start
+     * @param int $end
      *
      * @return array
      *

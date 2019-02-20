@@ -461,7 +461,8 @@ class CentreonGraphNg
 
         $this->metrics[$metric['metric_id']]['legend'] = $this->getLegend($this->metrics[$metric["metric_id"]]);
 
-        $this->metrics[$metric['metric_id']]["stack"] = (isset($dsData["ds_stack"]) && $dsData["ds_stack"] ? $dsData["ds_stack"] : 0);
+        $this->metrics[$metric['metric_id']]["stack"] = 
+            (isset($dsData["ds_stack"]) && $dsData["ds_stack"] ? $dsData["ds_stack"] : 0);
         
         $this->metrics[$metric["metric_id"]]["warn"] = $metric["warn"];
         $this->metrics[$metric["metric_id"]]["warn_low"] = $metric["warn_low"];
@@ -474,7 +475,8 @@ class CentreonGraphNg
             $this->metrics[$metric["metric_id"]]["ds_color_area_crit"] = $this->generalOpt["color_critical"]['value'];
         }
         
-        $this->metrics[$metric["metric_id"]]["ds_order"] = (isset($dsData["ds_order"]) && $dsData["ds_order"] ? $dsData["ds_order"] : 0);
+        $this->metrics[$metric["metric_id"]]["ds_order"] = 
+            (isset($dsData["ds_order"]) && $dsData["ds_order"] ? $dsData["ds_order"] : 0);
         
         $this->metrics[$metric['metric_id']]['hidden'] = is_null($hidden) ? 0 : $hidden;
     }
