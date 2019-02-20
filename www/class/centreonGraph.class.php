@@ -1492,7 +1492,7 @@ class CentreonGraph
     /**
      *
      * Enter description here ...
-     * @param unknown_type $l_mid
+     * @param int $metricId
      */
     public function getOVDColor($metricId)
     {
