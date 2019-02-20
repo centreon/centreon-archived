@@ -70,3 +70,4 @@ ALTER TABLE `remote_servers` MODIFY COLUMN `ip` VARCHAR(255) NOT NULL;
 -- Improve chart performance
 --
 TRUNCATE TABLE ods_view_details;
+ALTER TABLE ods_view_details MODIFY metric_id int(11);
