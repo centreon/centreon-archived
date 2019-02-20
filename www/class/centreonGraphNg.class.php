@@ -82,7 +82,7 @@ class MetricUtils
      *
      * @return bool
      */
-    private function processToposort($pointer, &$dependency, &$order, &$preProcessing)
+    private function processTopoSort($pointer, &$dependency, &$order, &$preProcessing)
     {
         if (isset($preProcessing[$pointer])) {
             return false;
@@ -92,7 +92,7 @@ class MetricUtils
      
         foreach ($dependency[$pointer] as $i => $v) {
             if (isset($dependency[$v])) {
-                if (!$this->processToposort($v, $dependency, $order, $preProcessing)) {
+                if (!$this->processTopoSort($v, $dependency, $order, $preProcessing)) {
                     return false;
                 }
             }
@@ -119,7 +119,7 @@ class MetricUtils
         $order = array_diff_key($data, $dependency);
         $data = array_diff_key($data, $order);
         foreach ($data as $i => $v) {
-            if (!$this->processToposort($i, $dependency, $order, $preProcessing)) {
+            if (!$this->processTopoSort($i, $dependency, $order, $preProcessing)) {
                 return false;
             }
         }
@@ -326,12 +326,15 @@ class CentreonGraphNg
             if (isset($metric['host_id']) && isset($metric['service_id']) &&
                 ($dsVal['host_id'] == $metric['host_id'] || $dsVal['host_id'] == '') &&
                 ($dsVal['service_id'] == $metric['service_id'] || $dsVal['service_id'] == '') &&
-                preg_match($metricPattern, $metric['metric_name'])) {
+                preg_match($metricPattern, $metric['metric_name'])
+            ) {
                 $dsDataAssociated = $dsVal;
                 break;
             }
 
-            if (is_null($dsDataRegular) && preg_match('/^' . preg_quote($dsVal['ds_name'], '/') . '$/i', $metric['metric_name'])) {
+            if (is_null($dsDataRegular) && 
+                preg_match('/^' . preg_quote($dsVal['ds_name'], '/') . '$/i', $metric['metric_name'])
+            ) {
                 $dsDataRegular = $dsVal;
             }
         }
@@ -344,7 +347,11 @@ class CentreonGraphNg
 
         if (is_null($dsData)) {
             if (is_null($this->dsDefault)) {
-                $stmt = $this->db->prepare("SELECT ds_min, ds_max, ds_minmax_int, ds_last, ds_average, ds_total, ds_tickness, ds_color_line_mode, ds_color_line FROM giv_components_template WHERE default_tpl1 = '1'");
+                $stmt = $this->db->prepare(
+                    "SELECT ds_min, ds_max, ds_minmax_int, ds_last, ds_average, ds_total, 
+                        ds_tickness, ds_color_line_mode, ds_color_line 
+                     FROM giv_components_template WHERE default_tpl1 = '1'"
+                );
                 $stmt->execute();
                 $this->dsDefault = $stmt->fetch(PDO::FETCH_ASSOC);
             }
@@ -523,8 +530,10 @@ class CentreonGraphNg
             $dsData = $this->getCurveDsConfig($vmetric);
             $this->vmetrics[$vmetric['vmetric_id']]['ds_data'] = $dsData;
             
-            $this->vmetrics[$vmetric['vmetric_id']]['legend'] = $this->getLegend($this->vmetrics[$vmetric["vmetric_id"]]);
-            $this->vmetrics[$vmetric['vmetric_id']]['ds_order'] = (isset($dsData["ds_order"]) && $dsData["ds_order"] ? $dsData["ds_order"] : 0);
+            $this->vmetrics[$vmetric['vmetric_id']]['legend'] = 
+                $this->getLegend($this->vmetrics[$vmetric["vmetric_id"]]);
+            $this->vmetrics[$vmetric['vmetric_id']]['ds_order'] = 
+                (isset($dsData["ds_order"]) && $dsData["ds_order"] ? $dsData["ds_order"] : 0);
         }
     }
     
@@ -584,11 +593,13 @@ class CentreonGraphNg
     public function addMetric($metricId, $isVirtual = 0)
     {
         if ($isVirtual == 0) {
-            $stmt = $this->dbCs->prepare("SELECT m.index_id, host_id, service_id, metric_id, metric_name, unit_name, min, max, warn, warn_low, crit, crit_low
-                                          FROM metrics AS m, index_data AS i
-                                            WHERE m.metric_id = :metric_id
-                                            AND m.hidden = '0'
-                                            AND m.index_id = i.id");
+            $stmt = $this->dbCs->prepare(
+                "SELECT m.index_id, host_id, service_id, metric_id, metric_name, unit_name, min, max, warn, warn_low, crit, crit_low
+                 FROM metrics AS m, index_data AS i
+                 WHERE m.metric_id = :metric_id
+                    AND m.hidden = '0'
+                    AND m.index_id = i.id"
+            );
             $stmt->bindParam(':metric_id', $metricId, PDO::PARAM_INT);
             $stmt->execute();
             $metric = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -602,11 +613,12 @@ class CentreonGraphNg
             return ;
         }
         
-        $stmt = $this->db->prepare("SELECT *
-                                    FROM virtual_metrics
-                                    WHERE vmetric_id = :vmetric_id
-                                    AND vmetric_activate = '1'
-                                    ");
+        $stmt = $this->db->prepare(
+            "SELECT *
+             FROM virtual_metrics
+             WHERE vmetric_id = :vmetric_id
+                AND vmetric_activate = '1'"
+        );
         $stmt->bindParam(':vmetric_id', $metricId, PDO::PARAM_INT);
         $stmt->execute();
         $vmetric = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -1327,11 +1339,14 @@ class CentreonGraphNg
      */
     private function getRealMetricsByIndexId($indexId)
     {
-        $stmt = $this->dbCs->prepare("SELECT m.index_id, host_id, service_id, metric_id, metric_name, unit_name, min, max, warn, warn_low, crit, crit_low
-                                       FROM metrics AS m, index_data AS i
-                                       WHERE i.id = :index_id
-                                       AND i.id = m.index_id 
-                                       AND m.hidden = '0'");
+        $stmt = $this->dbCs->prepare(
+            "SELECT m.index_id, host_id, service_id, metric_id, metric_name, 
+                unit_name, min, max, warn, warn_low, crit, crit_low
+             FROM metrics AS m, index_data AS i
+             WHERE i.id = :index_id
+                AND i.id = m.index_id 
+                AND m.hidden = '0'"
+        );
         $stmt->bindParam(':index_id', $indexId, PDO::PARAM_INT);
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -1346,11 +1361,12 @@ class CentreonGraphNg
      */
     private function getVirtualMetricsByIndexId($indexId)
     {
-        $stmt = $this->db->prepare("SELECT *
-                                    FROM virtual_metrics
-                                    WHERE index_id = :index_id
-                                    AND vmetric_activate = '1'
-                                    ");
+        $stmt = $this->db->prepare(
+            "SELECT *
+             FROM virtual_metrics
+             WHERE index_id = :index_id
+                AND vmetric_activate = '1'"
+        );
         $stmt->bindParam(':index_id', $indexId, PDO::PARAM_INT);
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
