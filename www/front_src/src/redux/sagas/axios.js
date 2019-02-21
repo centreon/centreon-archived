@@ -12,19 +12,19 @@ import {
 import { eventChannel, END } from "redux-saga";
 
 export function* getAxiosData() {
-  yield takeLatest(actions.GET_DATA, axiosRequest);
+  yield takeEvery(actions.GET_DATA, axiosRequest);
 }
 
 export function* postAxiosData() {
-  yield takeLatest(actions.POST_DATA, axiosRequest);
+  yield takeEvery(actions.POST_DATA, axiosRequest);
 }
 
 export function* putAxiosData() {
-  yield takeLatest(actions.PUT_DATA, axiosRequest);
+  yield takeEvery(actions.PUT_DATA, axiosRequest);
 }
 
 export function* deleteAxiosData() {
-  yield takeLatest(actions.DELETE_DATA, axiosRequest);
+  yield takeEvery(actions.DELETE_DATA, axiosRequest);
 }
 
 export function* uploadAxiosData() {
@@ -155,7 +155,7 @@ function* axiosRequest(action) {
       const data = yield res.data;
 
       const { propKey } = action;
-
+      
       if (propKey) {
         yield put({ type: actions.SET_AXIOS_DATA, data, propKey: propKey });
       }
