@@ -253,15 +253,34 @@ class ExtensionsRoute extends Component {
   };
 
   updateById = (id, type, callback) => {
-      this.runAction("extensionsUpdatingStatus", "update", id, type, callback ? callback : this.reloadNavigation);
+    const { modalDetailsActive } = this.state;
+    if (modalDetailsActive) {
+      this.setState({
+        modalDetailsLoading: true
+      });
+      this.runAction("extensionsUpdatingStatus", "update", id, type, () => {
+        this.getExtensionDetails(id);
+        this.reloadNavigation();
+      });
+    } else {
+      this.runAction(
+        "extensionsUpdatingStatus",
+        "update",
+        id,
+        type,
+        callback ? callback : this.reloadNavigation
+      );
+    }
   };
 
   deleteById = (id, type) => {
     const { xhr } = this.props;
+    const { modalDetailsActive } = this.state;
     this.setState(
       {
         deleteToggled: false,
-        deletingEntity: false
+        deletingEntity: false,
+        modalDetailsLoading: modalDetailsActive
       },
       () => {
         xhr({
@@ -277,6 +296,9 @@ class ExtensionsRoute extends Component {
           .then(() => {
             this.getData();
             this.reloadNavigation();
+            if (modalDetailsActive) {
+              this.getExtensionDetails(id);
+            }
           })
           .catch(err => {
             throw err;
@@ -505,7 +527,7 @@ class ExtensionsRoute extends Component {
                 : "Update selection"
             }`}
             buttonType="regular"
-            customClass={`mr-2 ${false ? 'opacity-1-3' : ''}`}
+            customClass={`mr-2 ${false ? "opacity-1-3" : ""}`}
             color="orange"
             style={{
               opacity: false ? "0.33" : "1"
@@ -529,7 +551,7 @@ class ExtensionsRoute extends Component {
                 : "Install selection"
             }`}
             buttonType="regular"
-            customClass={`mr-2 ${false ? 'opacity-1-3' : ''}`}
+            customClass={`mr-2 ${false ? "opacity-1-3" : ""}`}
             color="green"
             onClick={this.runActionOnAllEntities.bind(
               this,
@@ -624,12 +646,11 @@ const mapDispatchToProps = dispatch => ({
     const { requestType } = data;
     return Centreon.Axios(data, dispatch, requestType);
   },
-  reloadNavigation: () =>{
+  reloadNavigation: () => {
     dispatch({
       type: "GET_NAVIGATION_DATA"
-    })
+    });
   }
-    
 });
 
 export default connect(
