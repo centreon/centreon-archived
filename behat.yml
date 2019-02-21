@@ -356,3 +356,7 @@ default:
     topologyapi:
       paths: [ %paths.base%/features/TopologyAPI.feature ]
       contexts: [ TopologyAPIContext ]
+
+    centreon_module_api:
+      paths: [ %paths.base%/features/CentreonModuleAPI.feature ]
+      contexts: [ CentreonModuleAPIContext ]
