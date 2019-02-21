@@ -63,6 +63,7 @@ sub new {
     $self->{service} = "service";
     $self->{timeout} = 5;
     $self->{cmd_timeout} = 5;
+    $self->{illegal_characters} = "";
 
     $self->{ssh} .= " -o ConnectTimeout=$self->{timeout} -o StrictHostKeyChecking=yes -o PreferredAuthentications=publickey -o ServerAliveInterval=10 -o ServerAliveCountMax=3 -o Compression=yes ";
     $self->{rsync} .= " --timeout=$self->{timeout} ";
@@ -421,6 +422,21 @@ sub checkSSHPort($) {
     return $port;
 }
 
+######################################################
+## Remove illegal characters from an external command.
+## Param : command line
+#
+sub removeIllegalCharacters($) {
+    my $self = shift;
+    my ($cmdLine) = @_;
+
+    return $cmdLine if (!defined($self->{illegal_characters}) || $self->{illegal_characters} eq '');
+
+    $cmdLine =~ s/[\Q$self->{illegal_characters}\E]//g;
+
+    return $cmdLine;
+}
+
 ################################################
 ## Send an external command on a remote server.
 ## Param : id_remote_server, external command
@@ -459,7 +475,7 @@ sub sendExternalCommand($$){
                         $cmd_line = "";
                         $count = 0;
                     } else {
-                        $cmd_line .= $cmd1."\n";
+                        $cmd_line .= $self->removeIllegalCharacters($cmd1) . "\n";
                     }
                     $count++;
                 }
@@ -493,7 +509,7 @@ sub sendExternalCommand($$){
             my @splittedCommands = split(/\n/, $cmd);
             my $countCommands = @splittedCommands;
             foreach my $cmd1 (@splittedCommands) {
-                $cmd_line .= $cmd1 . "\n";
+                $cmd_line .= $self->removeIllegalCharacters($cmd1) . "\n";
                 $count++;
                 $totalCount++;
 
@@ -1070,14 +1086,16 @@ sub parseRequest($){
 sub checkProfile() {
     my $self = shift;
     
-    my $request = "SELECT * FROM options WHERE `key` IN ('enable_perfdata_sync', 'enable_logs_sync', 'centcore_cmd_timeout', 'enable_broker_stats')";
+    my $request = "SELECT * FROM options "
+        . "WHERE `key` IN ('enable_perfdata_sync', 'enable_logs_sync', "
+        . "'centcore_cmd_timeout', 'enable_broker_stats', 'centcore_illegal_characters')";
     my ($status, $sth) =  $self->{centreon_dbc}->query($request);
     return -1 if ($status == -1);
     while ((my $data = $sth->fetchrow_hashref())) {
         if (defined($data->{key}) && $data->{key} ne "" && defined($data->{value}) && $data->{value} ne "") {
             if ($data->{key} eq "enable_perfdata_sync") {
                 $self->{perfdataSync} = $data->{value};
-            } 
+            }
             if ($data->{key} eq "enable_logs_sync") {
                 $self->{logSync} = $data->{value};
             }
@@ -1086,6 +1104,9 @@ sub checkProfile() {
             }
             if ($data->{key} eq "enable_broker_stats") {
                 $self->{enable_broker_stats} = $data->{value};
+            }
+            if ($data->{key} eq "centcore_illegal_characters") {
+                $self->{illegal_characters} = $data->{value};
             }
         }
     }
