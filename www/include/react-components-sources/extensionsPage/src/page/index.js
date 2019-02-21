@@ -505,9 +505,8 @@ class ExtensionsRoute extends Component {
                 : "Update selection"
             }`}
             buttonType="regular"
-            customClass="mr-2"
+            customClass={`mr-2 ${false ? 'opacity-1-3' : ''}`}
             color="orange"
-            // disabled={this.getAllEntitiesByVersionParam("outdated", true).length === 0}
             style={{
               opacity: false ? "0.33" : "1"
             }}
@@ -530,11 +529,7 @@ class ExtensionsRoute extends Component {
                 : "Install selection"
             }`}
             buttonType="regular"
-            // disabled={this.getAllEntitiesByVersionParam("installed", false).length === 0}
-            style={{
-              opacity: false ? "0.33" : "1"
-            }}
-            customClass="mr-2"
+            customClass={`mr-2 ${false ? 'opacity-1-3' : ''}`}
             color="green"
             onClick={this.runActionOnAllEntities.bind(
               this,
@@ -591,6 +586,8 @@ class ExtensionsRoute extends Component {
             onCloseClicked={this.hideExtensionDetails.bind(this)}
             onVersionClicked={this.versionClicked}
             onInstallClicked={this.installById}
+            onDeleteClicked={this.deleteById}
+            onUpdateClicked={this.updateById}
             modalDetails={extensionDetails}
           />
         ) : null}
