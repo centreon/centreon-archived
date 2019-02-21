@@ -153,6 +153,11 @@ class ExtensionsRoute extends Component {
     });
   };
 
+  reloadNavigation = () => {
+    const { reloadNavigation } = this.props;
+    reloadNavigation();
+  };
+
   setStatusesByIds = (ids, statusesKey, callback) => {
     let statuses = this.state[statusesKey];
     for (let { id } of ids) {
@@ -174,6 +179,7 @@ class ExtensionsRoute extends Component {
       const updatingEntity = ids.shift();
       this.updateById(updatingEntity.id, updatingEntity.type, () => {
         this.updateOneByOne(ids);
+        this.reloadNavigation();
       });
     }
   };
@@ -183,6 +189,7 @@ class ExtensionsRoute extends Component {
       const installingEntity = ids.shift();
       this.installById(installingEntity.id, installingEntity.type, () => {
         this.installOneByOne(ids);
+        this.reloadNavigation();
       });
     }
   };
@@ -232,6 +239,7 @@ class ExtensionsRoute extends Component {
       });
       this.runAction("extensionsInstallingStatus", "install", id, type, () => {
         this.getExtensionDetails(id);
+        this.reloadNavigation();
       });
     } else {
       this.runAction(
@@ -239,13 +247,13 @@ class ExtensionsRoute extends Component {
         "install",
         id,
         type,
-        callback
+        callback ? callback : this.reloadNavigation
       );
     }
   };
 
   updateById = (id, type, callback) => {
-    this.runAction("extensionsUpdatingStatus", "update", id, type, callback);
+      this.runAction("extensionsUpdatingStatus", "update", id, type, callback ? callback : this.reloadNavigation);
   };
 
   deleteById = (id, type) => {
@@ -266,7 +274,10 @@ class ExtensionsRoute extends Component {
             }
           }
         })
-          .then(this.getData)
+          .then(() => {
+            this.getData();
+            this.reloadNavigation();
+          })
           .catch(err => {
             throw err;
           });
@@ -498,7 +509,7 @@ class ExtensionsRoute extends Component {
             color="orange"
             // disabled={this.getAllEntitiesByVersionParam("outdated", true).length === 0}
             style={{
-              opacity: (false ? '0.33' : '1')
+              opacity: false ? "0.33" : "1"
             }}
             onClick={this.runActionOnAllEntities.bind(
               this,
@@ -521,7 +532,7 @@ class ExtensionsRoute extends Component {
             buttonType="regular"
             // disabled={this.getAllEntitiesByVersionParam("installed", false).length === 0}
             style={{
-              opacity: (false ? '0.33' : '1')
+              opacity: false ? "0.33" : "1"
             }}
             customClass="mr-2"
             color="green"
@@ -615,7 +626,13 @@ const mapDispatchToProps = dispatch => ({
   xhr: data => {
     const { requestType } = data;
     return Centreon.Axios(data, dispatch, requestType);
+  },
+  reloadNavigation: () =>{
+    dispatch({
+      type: "GET_NAVIGATION_DATA"
+    })
   }
+    
 });
 
 export default connect(
