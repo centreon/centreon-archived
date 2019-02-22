@@ -80,10 +80,13 @@ $contents .= sprintf(
 );
 
 $next = '';
-if ($handle = opendir('../sql/centreon')) {
+if ($handle = opendir('../php')) {
     while (false !== ($file = readdir($handle))) {
-        if (preg_match('/Update-DB-' . preg_quote($current) . '_to_([a-zA-Z0-9\-\.]+)\.sql/', $file, $matches)) {
-            $next = $matches[1];
+        if (preg_match('/Update-([a-zA-Z0-9\-\.]+)\.php/', $file, $matches)) {
+            if ((version_compare($current, $matches[1]) < 0) &&
+                (empty($next) || (version_compare($matches[1], $next) < 0))) {
+                $next = $matches[1];
+            }
         }
     }
     closedir($handle);
