@@ -105,6 +105,12 @@ $res = $pearDB->prepare("UPDATE `informations` SET `value` = ? WHERE `key` = 've
 $res->execute(array($next));
 $current = $next;
 
+/*
+** To find the next version that we should update to, we will look in
+** the www/install/php directory where all PHP update scripts are
+** stored. We will extract the target version from the filename and find
+** the closest version to the current version.
+*/
 $next = '';
 if ($handle = opendir('../../php')) {
     while (false !== ($file = readdir($handle))) {
