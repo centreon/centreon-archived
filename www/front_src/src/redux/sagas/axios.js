@@ -2,7 +2,6 @@ import axios from "axios";
 import * as actions from "../actions/axiosActions";
 import {
   put,
-  takeLatest,
   takeEvery,
   all,
   fork,
@@ -155,7 +154,6 @@ function* axiosRequest(action) {
       const data = yield res.data;
 
       const { propKey } = action;
-      
       if (propKey) {
         yield put({ type: actions.SET_AXIOS_DATA, data, propKey: propKey });
       }
