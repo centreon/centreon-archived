@@ -4,7 +4,6 @@ Centreon's Code of Conduct must be respected when opening any issue. (https://gi
 
 If you want to ask a question feel free to use on of those ressources
 slack: https://centreon.github.io/register-slack
-forum: https://forum.centreon.com/
 
 If you are reporting a new issue, make sure that we do not have any duplicates already open. You 
 can ensure this by searching the issue list for this repository. If there is a duplicate, please 
