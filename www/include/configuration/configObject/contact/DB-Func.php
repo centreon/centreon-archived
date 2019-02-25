@@ -1125,9 +1125,8 @@ function insertLdapContactInDB($tmpContacts = array())
         $contact_id = $row['contact_id'];
 
         if (!isset($ldapInstances[$arId])) {
-            $ldapInstances[$arId] = new CentreonLDAP($pearDB, null, $arId);
+            $ldap = new CentreonLDAP($pearDB, null, $arId);
             $ldapAdmin = new CentreonLDAPAdmin($pearDB);
-            $ldap = $ldapInstances[$arId];
             $opt = $ldapAdmin->getGeneralOptions($arId);
             if (isset($opt['ldap_contact_tmpl']) && $opt['ldap_contact_tmpl']) {
                 $contactTemplates[$arId] = $opt['ldap_contact_tmpl'];
@@ -1155,15 +1154,20 @@ function insertLdapContactInDB($tmpContacts = array())
             } catch (\PDOException $e) {
                 return false;
             }
-            /*
-             * Insert the relation between contact and contact group
-             */
+
+            // Insert the relation between contact and contactgroups
             while ($row = $res->fetch()) {
                 $query = "INSERT INTO contactgroup_contact_relation (contactgroup_cg_id, contact_contact_id) " .
                     "VALUES (" . $row['cg_id'] . ", " . (int) $contact_id . ")";
                 $pearDB->query($query);
             }
         }
+
+        //Insert a relation between LDAP's default contactgroup and the contact
+        $ldap->addUserToLdapDefautCg(
+            $arId,
+            $contact_id
+        );
     }
     return true;
 }
