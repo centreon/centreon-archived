@@ -26,7 +26,6 @@ Any people that wants to contribute and participate in developping the project m
 
 > **Advise**: Opening an issue on the project to ask a question is not recommended. Please refer to the following available ressources, you'll get an answer from a Centreon team or community member.
 
-* [Official Centreon forum](http://forum.centreon.com/)
 * [Official Centreon Slack](https://centreon.github.io/register-slack)
 
 <h2> How can I contribute </h2>
