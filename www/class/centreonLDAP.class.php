@@ -1,7 +1,7 @@
 <?php
 /**
- * Copyright 2005-2015 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2019 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -818,6 +818,58 @@ class CentreonLDAP
             return !empty($dnArray) ? $dnArray[0] : false;
         }
         return false;
+    }
+
+    /**
+     * Set a relation between the LDAP's default contactgroup and the user
+     *
+     * @param int $arId : The Id of the chosen LDAP, from which we'll find the default contactgroup
+     * @param int $contactId : The Id of the contact to be added
+     *
+     * @return bool : return true to the parent if everything goes well. Needed for the method calling it
+     */
+    public function addUserToLdapDefautCg(int $arId = null, int $contactId = null)
+    {
+        $ldapCg = null;
+        try {
+            // searching the default contactgroup chosen in the ldap configuration
+            $resLdap = $this->db->prepare("SELECT ari_value FROM auth_ressource_info " .
+                "WHERE ari_name LIKE 'ldap_default_cg' AND ar_id = :arId");
+            $resLdap->bindValue(':arId', $arId, PDO::PARAM_INT);
+            $resLdap->execute();
+            while ($result = $resLdap->fetch()) {
+                $ldapCg = $result['ari_value'];
+            }
+            unset($resLdap);
+            if (null === $ldapCg) {
+                //no default contactgroup was set in the LDAP parameters
+                return true;
+            }
+
+            // checking if the user isn't already linked to this contactgroup
+            $resCgExist = $this->db->prepare("SELECT COUNT(*) AS `exist` FROM contactgroup_contact_relation " .
+                "WHERE contact_contact_id = :contactId AND contactgroup_cg_id = :ldapCg");
+            $resCgExist->bindValue(':contactId', $contactId, PDO::PARAM_INT);
+            $resCgExist->bindValue(':ldapCg', $ldapCg, PDO::PARAM_INT);
+            $resCgExist->execute();
+            $row = $resCgExist->fetch();
+            if ($row['exist'] != 0) {
+                //user already linked to this contactgroup
+                return true;
+            }
+            unset($resCgExist);
+
+            // inserting the user to the chosen default contactgroup
+            $resCg = $this->db->prepare("INSERT INTO contactgroup_contact_relation " .
+                "(contactgroup_cg_id, contact_contact_id) VALUES (:ldapCg, :contactId)");
+            $resCg->bindValue(':ldapCg', $ldapCg, PDO::PARAM_INT);
+            $resCg->bindValue(':contactId', $contactId, PDO::PARAM_INT);
+            $resCg->execute();
+            unset($resCg);
+        } catch (\PDOException $e) {
+            return false;
+        }
+        return true;
     }
 }
 
