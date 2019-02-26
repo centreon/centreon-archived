@@ -267,7 +267,11 @@ if (PEAR::isError($res)) {
         if ($defaultPoller != $selectedPoller) {
             $statsfile = _CENTREON_VARLIB_ . '/broker-stats/broker-stats-' . $selectedPoller . '.dat';
         }
-        if (!file_exists($statsfile) || !is_readable($statsfile)) {
+
+        /**
+         * check if file exists, is readable and inside proper folder
+         */
+        if (!file_exists($statsfile) || !is_readable($statsfile) || (substr(realpath($statsfile), 0, strlen(_CENTREON_VARLIB_)) !== _CENTREON_VARLIB_ )) {
             $perf_err[$row['config_name']] = _('Cannot open statistics file');
         } else {
             $perf_info[$row['config_name']] = parseStatsFile($statsfile);
