@@ -92,7 +92,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' &&
     }
 
     /* Insert Token in API webservice session table */
-    $token = base64_encode(uniqid('', true));
+    $token = base64_encode(random_bytes(32));
     $res = $pearDB->prepare("INSERT INTO ws_token (contact_id, token, generate_date) VALUES (?, ?, NOW())");
     $res->execute(array($auth->userInfos['contact_id'], $token));
 
