@@ -140,6 +140,7 @@ Pour ajouter un nouvel annuaire :
 * Le champ **Taille limite de la recherche LDAP** permet de limiter la taille de la recherche des utilisateurs
 * Le champ **Temps maximum d'exécution de la recherche LDAP** permet de définir le temps maximum de la recherche LDAP
 * Le champ **Modèle de contact** définit le modèle de contact qui sera lié pour tous les utilisateurs importés depuis cet annuaire LDAP
+* Le champ optionnel **Groupe de contacts par défaut** permet d'ajouter à un groupe de contact les contacts importés
 * Le champ **Utiliser le service DNS** indique s'il faut utiliser le serveur DNS pour résoudre l'adresse IP de l'annuaire LDAP
 * Le champ **LDAP servers** permet d'ajouter un ou plusieurs annuaires LDAP vers lequel Centreon va se connecter.
 
