@@ -144,7 +144,7 @@ function* uploadSource(action) {
 function* axiosRequest(action) {
   try {
     if (!action.requestType) {
-      throw "Request type is required!";
+      throw new Error("Request type is required!");
     } else {
       const res = yield axios[action.requestType.toLowerCase()](
         action.url,
@@ -164,6 +164,7 @@ function* axiosRequest(action) {
       }
     }
   } catch (err) {
+    console.log(action)
     action.reject(err);
   }
 }
