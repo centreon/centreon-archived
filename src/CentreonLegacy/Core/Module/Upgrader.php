@@ -38,17 +38,25 @@ namespace CentreonLegacy\Core\Module;
 class Upgrader extends Module
 {
     /**
+     * Upgrade the module by default to the latest version
      *
-     * @return boolean
+     * @param bool $onlyWithNextVersion Upgrade only with the next version
+     * @return int
      */
-    public function upgrade()
+    public function upgrade($onlyWithNextVersion = false)
     {
         $this->upgradeModuleConfiguration();
 
         $moduleInstalledInformation = $this->informationObj->getInstalledInformation($this->moduleName);
+        $configuration = null;
+        $versions = [];
 
         $upgradesPath = $this->getModulePath($this->moduleName) . '/UPGRADE/';
-        $upgrades = $this->services->get('finder')->directories()->depth('== 0')->in($upgradesPath);
+        $upgrades = $this->services->get('finder')
+            ->directories()
+            ->depth('== 0')
+            ->in($upgradesPath);
+
         foreach ($upgrades as $upgrade) {
             $upgradeName = $upgrade->getBasename();
             $upgradePath = $upgradesPath . $upgradeName;
@@ -59,22 +67,47 @@ class Upgrader extends Module
 
             $configuration = $this->utils->requireConfiguration(
                 $upgradePath . '/conf.php',
-                    'upgrade'
+                'upgrade'
             );
 
-            if ($moduleInstalledInformation["mod_release"] != $configuration[$this->moduleName]["release_from"]) {
-                continue;
+            $compare = version_compare($configuration[$this->moduleName]["release_from"], $moduleInstalledInformation["mod_release"]);
+            if ($compare >= 0) {
+                $versions[$configuration[$this->moduleName]["release_to"]] = [
+                    'upgradePath' => $upgradePath,
+                    'configuration' => $configuration,
+                ];
             }
+        }
 
-            $this->upgradeVersion($configuration[$this->moduleName]["release_to"]);
-            $moduleInstalledInformation["mod_release"] = $configuration[$this->moduleName]["release_to"];
+        usort($versions, function($a, $b) {
+            return version_compare(
+                $a['configuration'][$this->moduleName]['release_to'],
+                $b['configuration'][$this->moduleName]['release_to']
+            );
+        });
 
-            $this->upgradePhpFiles($configuration, $upgradePath, true);
-            $this->upgradeSqlFiles($configuration, $upgradePath);
-            $this->upgradePhpFiles($configuration, $upgradePath, false);
+        foreach ($versions as $data) {
+            $this->upgradeProcess($moduleInstalledInformation, $data['configuration'], $data['upgradePath']);
         }
 
         return $this->moduleId;
+    }
+
+    /**
+     * Execute the upgrade process of specific version
+     *
+     * @param array $moduleInstalledInformation
+     * @param array $configuration
+     * @param string $upgradePath
+     */
+    private function upgradeProcess(array &$moduleInstalledInformation, array $configuration, string $upgradePath)
+    {
+        $this->upgradeVersion($configuration[$this->moduleName]["release_to"]);
+        $moduleInstalledInformation["mod_release"] = $configuration[$this->moduleName]["release_to"];
+
+        $this->upgradePhpFiles($configuration, $upgradePath, true);
+        $this->upgradeSqlFiles($configuration, $upgradePath);
+        $this->upgradePhpFiles($configuration, $upgradePath, false);
     }
 
     /**
