@@ -103,7 +103,11 @@ while (preg_match("/@DOLLAR@ARG([0-9]+)@DOLLAR@/", $resource_def, $matches) and 
         }
         if (preg_match("/@DOLLAR@HOSTADDRESS@DOLLAR@/", $resource_def, $matches)) {
             if (isset($_GET["command_hostaddress"])) {
-                $resource_def = str_replace("@DOLLAR@HOSTADDRESS@DOLLAR@", $_GET["command_hostaddress"], $resource_def);
+                $resource_def = str_replace(
+                    "@DOLLAR@HOSTADDRESS@DOLLAR@",
+                    $_GET["command_hostaddress"],
+                    $resource_def
+                );
             } else {
                 $error_msg .= "\$HOSTADDRESS\$";
             }
