@@ -41,6 +41,9 @@
         "curl/curl" : "^1.5"
     },
     "autoload": {
+        "exclude-from-classmap": [
+            "src/*/Tests/"
+        ],
         "psr-4": {
             "": "src/"
         },
