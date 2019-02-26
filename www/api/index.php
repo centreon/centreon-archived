@@ -88,7 +88,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' &&
     }
 
     /* Insert Token in API webservice session table */
-    $token = base64_encode(random_bytes(32));
+
+    /**
+     * generate cryptographically secure token
+     */
+    require_once dirname(__FILE__) . '/class/hashGenerator.class.php';
+    $tokenHash = CryptGenerator::genBytes(32);
+    $token = base64_encode($tokenHash);
     $res = $pearDB->prepare("INSERT INTO ws_token (contact_id, token, generate_date) VALUES (?, ?, NOW())");
     $pearDB->execute($res, array($auth->userInfos['contact_id'], $token));
 
