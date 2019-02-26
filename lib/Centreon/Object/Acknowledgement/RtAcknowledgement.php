@@ -57,14 +57,14 @@ class Centreon_Object_RtAcknowledgement extends Centreon_ObjectRt
             $hostFilter = "AND h.name IN ('" . implode("','", $hostList) . "') ";
         }
 
-        $query = "SELECT a.acknowledgement_id, h.name, a.entry_time, a.author, " .
+        $query = "SELECT DISTINCT a.acknowledgement_id, h.name, MAX(a.entry_time) as entry_time, a.author, " .
             "a.comment_data, a.sticky, a.notify_contacts, a.persistent_comment " .
             "FROM acknowledgements a, hosts h " .
             "WHERE a.host_id = h.host_id " .
             "AND h.acknowledged = 1 " .
             "AND service_id IS NULL " .
             $hostFilter .
-            "ORDER BY a.entry_time, h.name";
+            " GROUP BY h.name ORDER BY a.entry_time, h.name";
 
         return $this->getResult($query);
     }
@@ -88,7 +88,7 @@ class Centreon_Object_RtAcknowledgement extends Centreon_ObjectRt
             $serviceFilter .= implode(' AND ', $filterTab) . ') ';
         }
 
-        $query = "SELECT a.acknowledgement_id, h.name, s.description, a.entry_time, a.author, " .
+        $query = "SELECT a.acknowledgement_id, h.name, s.description, MAX(a.entry_time) as entry_time, a.author, " .
             "a.comment_data , a.sticky, a.notify_contacts, a.persistent_comment " .
             "FROM acknowledgements a, hosts h, services s " .
             "WHERE a.service_id = s.service_id " .
@@ -96,7 +96,7 @@ class Centreon_Object_RtAcknowledgement extends Centreon_ObjectRt
             "AND s.host_id = h.host_id " .
             "AND s.acknowledged = 1 " .
             $serviceFilter .
-            "ORDER BY a.entry_time, h.name, s.description";
+            " GROUP BY h.name, s.description ORDER BY a.entry_time, h.name, s.description";
 
         return $this->getResult($query);
     }

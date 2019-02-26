@@ -132,8 +132,8 @@ class CentreonRtAcknowledgement extends CentreonObject
         }
 
         // Check if sticky is 0 or 2
-        if (!preg_match('/^(0|2)$/', $sticky)) {
-            throw new CentreonClapiException('Bad sticky parameter (0 or 2)');
+        if (!preg_match('/^(0|1|2)$/', $sticky)) {
+            throw new CentreonClapiException('Bad sticky parameter (0 or 1/2)');
         }
 
         // Check if notify is 0 or 1
@@ -266,6 +266,11 @@ class CentreonRtAcknowledgement extends CentreonObject
                     $hostAcknowledgement['entry_time'],
                     $this->GMTObject->getMyGMT()
                 );
+
+                if ($hostAcknowledgement['sticky'] !== 0) {
+                    $hostAcknowledgement['sticky'] = 2;
+                }
+
                 echo implode($this->delim, array_values($hostAcknowledgement)) . "\n";
             }
         }
@@ -344,6 +349,10 @@ class CentreonRtAcknowledgement extends CentreonObject
                     $serviceAcknowledgement['entry_time'],
                     $this->GMTObject->getMyGMT()
                 );
+
+                if ($serviceAcknowledgement['sticky'] !== 0) {
+                    $serviceAcknowledgement['sticky'] = 2;
+                }
 
                 echo implode($this->delim, array_values($serviceAcknowledgement)) . "\n";
             }
