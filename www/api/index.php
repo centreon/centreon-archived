@@ -92,7 +92,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' &&
     /**
      * generate cryptographically secure token
      */
-    require_once dirname(__FILE__) . '/class/hashGenerator.class.php';
+    require_once dirname(__FILE__) . '/class/cryptGenerator.class.php';
     $tokenHash = CryptGenerator::genBytes(32);
     $token = base64_encode($tokenHash);
     $res = $pearDB->prepare("INSERT INTO ws_token (contact_id, token, generate_date) VALUES (?, ?, NOW())");
