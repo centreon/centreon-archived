@@ -3,7 +3,9 @@ Centreon Web 18.10.4
 ####################
 
 Enhancements
-============
+------------
 
-Bug Fixes
-=========
+* [LDAP] Adding an optionnal default contactgroup field for imported new contacts (PR/#7220)
+
+Bug fixes
+---------
