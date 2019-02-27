@@ -3,7 +3,7 @@
   "version": "18.10.0",
   "description": "centreon web package",
   "scripts": {
-    "build": "npm run build:clean && npm run build:sass && npm run build:app && npm run build:post",
+    "build": "npm run build:clean && npm run build:app && npm run build:post",
     "build:clean": "rm -rf www/static && rm -rf www/template",
     "build:sass": "node-sass -r --output-style compressed ./www/front_src/src -o ./www/front_src/src",
     "build:app": "cd ./www/front_src && PUBLIC_URL=\"/_CENTREON_PATH_PLACEHOLDER_/\" webpack --mode production",
@@ -12,13 +12,17 @@
   },
   "devDependencies": {
     "@babel/core": "^7.0.0",
+    "@babel/plugin-syntax-dynamic-import": "^7.2.0",
     "@babel/polyfill": "^7.0.0",
-    "@babel/preset-env": "^7.0.0",
+    "@babel/preset-env": "^7.3.4",
     "@babel/preset-react": "^7.0.0",
     "babel-loader": "^8.0.0",
+    "babel-plugin-transform-dynamic-import": "^2.1.0",
+    "extract-text-webpack-plugin": "^3.0.2",
     "html-webpack-plugin": "^3.2.0",
     "node-sass": "^4.9.3",
-    "webpack": "^4.12.0",
+    "postcss-loader": "^3.0.0",
+    "webpack": "^4.29.5",
     "webpack-cli": "^3.0.8"
   },
   "dependencies": {
