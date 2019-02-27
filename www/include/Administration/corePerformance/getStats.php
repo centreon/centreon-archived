@@ -37,16 +37,16 @@
  */
 
 
-    /*
-	 * Filter get parameters
-	 *
-	 * <code>
-	 * $_GET["o"] = filter_get($_GET["o"]);
-	 * </code>
-	 *
-	 * @param{TAB}string{TAB}$str{TAB}a get string
-	 * @return{TAB}string{TAB}return get string
-	 */
+/*
+ * Filter get parameters
+ *
+ * <code>
+ * $_GET["o"] = filter_get($_GET["o"]);
+ * </code>
+ *
+ * @param{TAB}string{TAB}$str{TAB}a get string
+ * @return{TAB}string{TAB}return get string
+ */
 
 function filter_get($str)
 {
@@ -66,45 +66,45 @@ foreach ($_GET as $key => $get) {
     }
 }
 
-    /*
-	 * escape special char for commands
-	 *
-	 * <code>
-	 * $string = escape_command($string);
-	 * </code>
-	 *
-	 * @param{TAB}string{TAB}$command{TAB}command line
-	 * @return{TAB}string{TAB}command line
-	 */
+/*
+ * escape special char for commands
+ *
+ * <code>
+ * $string = escape_command($string);
+ * </code>
+ *
+ * @param{TAB}string{TAB}$command{TAB}command line
+ * @return{TAB}string{TAB}command line
+ */
 
 function escape_command($command)
 {
-    return preg_replace("/[\\\$|`]/", "", $command);
+    return preg_replace("/[\\\\$|`]/", "", $command);
 }
 
-    require_once realpath(dirname(__FILE__) . "/../../../../config/centreon.config.php");
-    require_once _CENTREON_PATH_."/www/class/centreonGMT.class.php";
-    require_once _CENTREON_PATH_."/www/class/centreonDB.class.php";
+require_once realpath(dirname(__FILE__) . "/../../../../config/centreon.config.php");
+require_once _CENTREON_PATH_."/www/class/centreonGMT.class.php";
+require_once _CENTREON_PATH_."/www/class/centreonDB.class.php";
 
-    /*
-	 * Connect DB
-	 */
-    $pearDB = new CentreonDB();
-    $pearDBO = new CentreonDB("centstorage");
+/*
+ * Connect DB
+ */
+$pearDB = new CentreonDB();
+$pearDBO = new CentreonDB("centstorage");
 
-    /*
-	 * Init GMT Class
-	 */
-    $CentreonGMT = new CentreonGMT($pearDB);
+/*
+ * Init GMT Class
+ */
+$CentreonGMT = new CentreonGMT($pearDB);
 
-    /*
-	 * Check Session activity
-	 */
-    session_start();
-    session_write_close();
+/*
+ * Check Session activity
+ */
+session_start();
+session_write_close();
 
-    $sid = session_id();
-    $session = $pearDB->query("SELECT * FROM `session` WHERE session_id = '".$pearDB->escape($sid)."'");
+$sid = session_id();
+$session = $pearDB->query("SELECT * FROM `session` WHERE session_id = '".$pearDB->escape($sid)."'");
 if (!$session->rowCount()) {
     ;
 } else {
@@ -126,37 +126,37 @@ if (!$session->rowCount()) {
     $DBRESULT->closeCursor();
 
     $title   = array(
-            "active_host_check" => _("Host Check Execution Time"),
-            "active_host_last" => _("Hosts Actively Checked"),
-            "host_latency" => _("Host check latency"),
-            "active_service_check" => _("Service Check Execution Time"),
-            "active_service_last" => _("Services Actively Checked"),
-            "service_latency" => _("Service check latency"),
-            "cmd_buffer" => _("Commands in buffer"),
-            "host_states" => _("Host status"),
-            "service_states" => _("Service status"));
+        "active_host_check" => _("Host Check Execution Time"),
+        "active_host_last" => _("Hosts Actively Checked"),
+        "host_latency" => _("Host check latency"),
+        "active_service_check" => _("Service Check Execution Time"),
+        "active_service_last" => _("Services Actively Checked"),
+        "service_latency" => _("Service check latency"),
+        "cmd_buffer" => _("Commands in buffer"),
+        "host_states" => _("Host status"),
+        "service_states" => _("Service status"));
 
     $options = array(
-            "active_host_check" => "nagios_active_host_execution.rrd",
-            "active_host_last" => "nagios_active_host_last.rrd",
-            "host_latency" => "nagios_active_host_latency.rrd",
-            "active_service_check" => "nagios_active_service_execution.rrd",
-            "active_service_last" => "nagios_active_service_last.rrd",
-            "service_latency" => "nagios_active_service_latency.rrd",
-            "cmd_buffer" => "nagios_cmd_buffer.rrd",
-            "host_states" => "nagios_hosts_states.rrd",
-            "service_states" => "nagios_services_states.rrd");
+        "active_host_check" => "nagios_active_host_execution.rrd",
+        "active_host_last" => "nagios_active_host_last.rrd",
+        "host_latency" => "nagios_active_host_latency.rrd",
+        "active_service_check" => "nagios_active_service_execution.rrd",
+        "active_service_last" => "nagios_active_service_last.rrd",
+        "service_latency" => "nagios_active_service_latency.rrd",
+        "cmd_buffer" => "nagios_cmd_buffer.rrd",
+        "host_states" => "nagios_hosts_states.rrd",
+        "service_states" => "nagios_services_states.rrd");
 
     $differentStats = array(
-            "nagios_active_host_execution.rrd" => array("Min", "Max", "Average"),
-            "nagios_active_host_last.rrd" => array("Last_Min", "Last_5_Min", "Last_15_Min", "Last_Hour"),
-            "nagios_active_host_latency.rrd" => array("Min", "Max", "Average"),
-            "nagios_active_service_execution.rrd" => array("Min", "Max", "Average"),
-            "nagios_active_service_last.rrd" => array("Last_Min", "Last_5_Min", "Last_15_Min", "Last_Hour"),
-            "nagios_active_service_latency.rrd" => array("Min", "Max", "Average"),
-            "nagios_cmd_buffer.rrd" => array("In_Use", "Max_Used", "Total_Available"),
-            "nagios_hosts_states.rrd" => array("Up", "Down", "Unreach"),
-            "nagios_services_states.rrd" => array("Ok", "Warn", "Crit", "Unk"));
+        "nagios_active_host_execution.rrd" => array("Min", "Max", "Average"),
+        "nagios_active_host_last.rrd" => array("Last_Min", "Last_5_Min", "Last_15_Min", "Last_Hour"),
+        "nagios_active_host_latency.rrd" => array("Min", "Max", "Average"),
+        "nagios_active_service_execution.rrd" => array("Min", "Max", "Average"),
+        "nagios_active_service_last.rrd" => array("Last_Min", "Last_5_Min", "Last_15_Min", "Last_Hour"),
+        "nagios_active_service_latency.rrd" => array("Min", "Max", "Average"),
+        "nagios_cmd_buffer.rrd" => array("In_Use", "Max_Used", "Total_Available"),
+        "nagios_hosts_states.rrd" => array("Up", "Down", "Unreach"),
+        "nagios_services_states.rrd" => array("Ok", "Warn", "Crit", "Unk"));
 
     /*
  * Verify if start and end date
@@ -190,12 +190,15 @@ if (!$session->rowCount()) {
             case "lastyear":
                 $start = time() - (60*60*24*30*12);
                 break;
+            default:
+                $start = time() - (60*60*24); // Same as if GET parameter is not set
+                break;
         }
     }
 
     /*
- * Get end values
- */
+     * Get end values
+     */
     if (!isset($_GET["end"])) {
         $end = time();
     } else {
@@ -225,37 +228,44 @@ if (!$session->rowCount()) {
         }
     }
 
-      $command_line .= " --color BACK#FFFFFF --color FRAME#FFFFFF --color SHADEA#e7e7e8 --color SHADEB#e7e7e8 ";
+    $command_line .= " --color BACK#FFFFFF --color FRAME#FFFFFF --color SHADEA#e7e7e8 --color SHADEB#e7e7e8 ";
 
     /*
- * get all template infos
- */
-    $command_line .= " --interlaced --imgformat PNG --width=400 --height=150 --title='".$title[$_GET["key"]]."' --vertical-label='".$_GET["key"]."' --slope-mode  --rigid --alt-autoscale-max ";
+     * get all template infos
+     */
+    if (isset($_GET['key']) && isset($title[$_GET['key']])) {
+        $command_line .= " --interlaced --imgformat PNG --width=400 --height=150 --title='" . $title[$_GET["key"]] . "' --vertical-label='" . $_GET["key"] . "' --slope-mode  --rigid --alt-autoscale-max ";
+    }
 
     /*
- * Init DS template For each curv
- */
+     * Init DS template For each curv
+     */
 
     $colors = array("Min"=>"#88b917", "Max"=>"#e00b3d", "Average"=>"#00bfb3",
-                "Last_Min"=>"#00bfb3", "Last_5_Min"=>"#88b917", "Last_15_Min"=>"#ff9a13",
-                "Last_Hour"=>"#F91D05", "Up"=>"#88b917", "Down"=>"#e00b3d",
-                "Unreach"=>"#818285", "Ok"=>"#88b917", "Warn"=>"#ff9a13",
-                "Crit"=>"#F91D05", "Unk"=>"#bcbdc0", "In_Use"=>"#88b917",
-                "Max_Used"=>"#F91D05", "Total_Available"=>"#00bfb3");
-    $metrics = $differentStats[$options[$_GET["key"]]];
+        "Last_Min"=>"#00bfb3", "Last_5_Min"=>"#88b917", "Last_15_Min"=>"#ff9a13",
+        "Last_Hour"=>"#F91D05", "Up"=>"#88b917", "Down"=>"#e00b3d",
+        "Unreach"=>"#818285", "Ok"=>"#88b917", "Warn"=>"#ff9a13",
+        "Crit"=>"#F91D05", "Unk"=>"#bcbdc0", "In_Use"=>"#88b917",
+        "Max_Used"=>"#F91D05", "Total_Available"=>"#00bfb3");
+    $metrics = [];
+    if (isset($_GET['key']) && isset($options[$_GET['key']])) {
+        $metrics = $differentStats[$options[$_GET["key"]]];
+    }
     $DBRESULT = $pearDBO->query("SELECT RRDdatabase_nagios_stats_path FROM config");
     $nagios_stats = $DBRESULT->fetchRow();
     $nagios_stats_path = $nagios_stats['RRDdatabase_nagios_stats_path'];
 
     $cpt = 1;
     foreach ($metrics as $key => $value) {
-        $command_line .= " DEF:v".$cpt."=".$nagios_stats_path."perfmon-".$_GET["ns_id"]."/".$options[$_GET["key"]].":".$value.":AVERAGE ";
-        $cpt++;
+        if (isset($_GET["ns_id"]) && isset($options[$_GET["key"]])) {
+            $command_line .= " DEF:v" . $cpt . "=" . $nagios_stats_path . "perfmon-" . $_GET["ns_id"] . "/" . $options[$_GET["key"]] . ":" . $value . ":AVERAGE ";
+            $cpt++;
+        }
     }
 
     /*
- * Add comment start and end time inf graph footer.
- */
+     * Add comment start and end time inf graph footer.
+     */
 
     $rrd_time  = addslashes($CentreonGMT->getDate("Y\/m\/d G:i", $start, $gmt));
     $rrd_time = str_replace(":", "\:", $rrd_time);
@@ -264,35 +274,33 @@ if (!$session->rowCount()) {
     $command_line .= " COMMENT:\" From $rrd_time to $rrd_time2 \\c\" ";
 
     /*
- * Create Legende
- */
+     * Create Legende
+     */
     $cpt = 1;
     foreach ($metrics as $key => $tm) {
-        $command_line .= " LINE1:v".$cpt.$colors[$tm].":\"".$tm."\"";
-        $command_line .= " GPRINT:v". ($cpt) .":LAST:\"\:%7.2lf%s\l\"";
-        $cpt++;
+        if (isset($colors[$tm])) {
+            $command_line .= " LINE1:v" . $cpt . $colors[$tm] . ":\"" . $tm . "\"";
+            $command_line .= " GPRINT:v" . ($cpt) . ":LAST:\"\:%7.2lf%s\l\"";
+            $cpt++;
+        }
     }
 
-    $command_line = "$rrdtoolPath ".$command_line." 2>&1";
+    $command_line = "$rrdtoolPath " . $command_line . " 2>&1";
 
     /*
- * Add Timezone for current user.
- */
+     * Add Timezone for current user.
+     */
 
     $timezone = $CentreonGMT->getMyTimezone();
     $timezone = trim($timezone);
     if (empty($timezone)) {
         $timezone = date_default_timezone_get();
     }
-      
+
     $command_line = "export TZ='".$timezone."' ; ".$command_line;
 
     $command_line = escape_command("$command_line");
 
-    /*
- * Debug
- */
-    //print $command_line;
     $fp = popen($command_line, 'r');
     if (isset($fp) && $fp) {
         $str ='';
