@@ -6,11 +6,12 @@ module.exports = {
   context: __dirname,
   entry: [
     "@babel/polyfill",
-    "./src/App.scss",
-    "./src/index.js"
+    "./www/front_src/src/App.scss",
+    "./www/front_src/src/index.js"
   ],
   output: {
-    path: __dirname + "/..",
+    path: __dirname + "/www",
+    publicPath: './',
     filename: 'static/js/[name].[chunkhash:8].js',
     chunkFilename: 'static/js/[name].[chunkhash:8].chunk.js',
     libraryTarget: 'umd',
@@ -22,7 +23,7 @@ module.exports = {
   },
   plugins: [
     new HtmlWebpackPlugin({
-      template: './index.html',
+      template: './www/front_src/index.html',
       filename: 'index.html',
     }),
     new MiniCssExtractPlugin({
@@ -57,14 +58,16 @@ module.exports = {
           },
         ],
       },
+      /*
       {
         test: [/\.bmp$/, /\.gif$/, /\.jpe?g$/, /\.png$/, /\.svg$/],
-        loader: require.resolve('url-loader'),
+        loader: 'url-loader',
         options: {
           limit: 10000,
           name: 'static/img/[name].[hash:8].[ext]',
         },
       },
+      */
       {
         test: /\/fonts\//,
         loader: 'file-loader',

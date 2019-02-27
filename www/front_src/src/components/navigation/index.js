@@ -116,6 +116,7 @@ class NavigationComponent extends Component {
   goToPage = (route, topLevelIndex) => {
     const { history } = this.props;
     this.activateTopLevelMenu(topLevelIndex);
+    console.log(route)
     history.push(route);
   };
 

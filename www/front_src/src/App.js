@@ -48,9 +48,9 @@ class App extends Component {
 
   // disable fullscreen
   removeFullscreenParams = () => {
-    if (history.location.pathname == '/_CENTREON_PATH_PLACEHOLDER_/main.php') {
+    if (history.location.pathname == './main.php') {
       history.push({
-        pathname: '/_CENTREON_PATH_PLACEHOLDER_/main.php',
+        pathname: './main.php',
         search: window['fullscreenSearch'],
         hash: window['fullscreenHash']
       })
@@ -94,7 +94,7 @@ class App extends Component {
       <ReactRoute
         history={history}
         path={path}
-        component={acls.includes(`/${path.split('/_CENTREON_PATH_PLACEHOLDER_/')[1]}`) ? comp : NotAllowedPage}
+        component={acls.includes(`/${path.split('./')[1]}`) ? comp : NotAllowedPage}
         {...rest}
       />
     ))
@@ -102,6 +102,12 @@ class App extends Component {
 
   render() {
     const {aclsLoaded} = this.state;
+    console.log(aclsLoaded)
+    console.log(history)
+    classicRoutes.map(({path, comp, ...rest}, i) => {
+      console.log(path)
+    });
+
     const min = this.getMinArgument();
 
     let reactRouter = '';
