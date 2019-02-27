@@ -272,7 +272,7 @@ var _criticality_id = 0;
                 if ((keyz == _selectedElem[keyz]) && typeof(document.getElementById(decodeURIComponent(keyz)) != 'undefined') &&
                     document.getElementById(decodeURIComponent(keyz))) {
                     if (document.getElementById(decodeURIComponent(keyz)).checked) {
-                        _getVar += '&select[' + encodeURIComponent(keyz) + ']=1';
+                        _getVar += '&select[' + keyz + ']=1';
                     }
                 }
             }
