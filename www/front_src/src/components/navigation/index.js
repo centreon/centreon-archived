@@ -11,11 +11,7 @@ import routeMap from "../../route-maps/route-map";
 import { Translate } from 'react-redux-i18n';
 import { setNavigation } from "../../redux/actions/navigationActions";
 import { connect } from "react-redux";
-
-import Tooltip from "../tooltip";
-import { reactRoutes } from "../../route-maps";
-
-
+import { updateTooltip } from '../../redux/actions/tooltipActions';
 
 class NavigationComponent extends Component {
   navService = axios("internal.php?object=centreon_menu&action=menu");
@@ -27,10 +23,7 @@ class NavigationComponent extends Component {
     active: false,
     initiallyCollapsed: false,
     selectedMenu: {},
-    menuItems: [],
-    isMouseInside: false,
-    leftPosition: "0",
-    topPosition: "0"
+    menuItems: []
   };
 
   UNSAFE_componentWillMount = () => {
@@ -126,195 +119,168 @@ class NavigationComponent extends Component {
     history.push(route);
   };
 
-  //show information tooltip  when hover on folded in menu elements
-  mouseEnter = (e) => {
-    this.setState({
-      isMouseInside: true
+  // hide tooltip for the first-level folded menu items
+  mouseLeftTheMenu = event => {
+    const { updateTooltip } = this.props;
+    updateTooltip({
+      toggled: false
     });
-  }
+  };
 
-  //hide information tooltip  when hover on folded in menu elements
-  mouseLeave = () => {
-    this.setState({
-      isMouseInside: false,
+  // show tooltip for the first-level folded menu items by setting toggled to true
+  // updating the x, y properties of tooltip in order to display it on client cursor position
+  // show related label by setting label to label
+  mouseIsMovingOverTheMenu = (label, {  clientY }) => {
+    const { updateTooltip } = this.props;
+    updateTooltip({
+      toggled: true,
+      x: 50,
+      y: clientY,
+      label
     });
-  }
-  //TODO : trying to show information tooltip on the mouse coords
-  mouseMove = (e) => {
+  };
 
-    let { leftPosition, topPosition } = this.state;
-
-    this.setState({
-      leftPosition:e.screenX,
-      topPosition:e.screenY
-    });
-
-    console.log('coords x :' + leftPosition + ' coords y :' +  topPosition)
-  }
 
   render() {
     const { active, menuItems } = this.state;
-    let { leftPosition, topPosition } = this.state;
     const pageId = this.props.history.location.search.split("p=")[1];
 
     return (
-      <React.Fragment>
-        <nav class={"sidebar" + (active ? " active" : "")} id="sidebar">
-          <div class="sidebar-inner">
-            <div class="sidebar-logo" onClick={this.toggleNavigation}>
-              <span>
-                <img
-                  class="sidebar-logo-image"
-                  src={logo}
-                  width="254"
-                  height="57"
-                  alt=""
-                />
-              </span>
-            </div>
-            <div class="sidebar-logo-mini" onClick={this.toggleNavigation}>
-              <span>
-                <img
-                  class="sidebar-logo-mini-image"
-                  src={miniLogo}
-                  width="23"
-                  height="21"
-                  alt=""
-                />
-              </span>
-            </div>
-            <ul class="menu menu-items list-unstyled components">
-              {Object.entries(menuItems).map(([levelOneKey, levelOneProps]) => (
-                levelOneProps.label ? (<li class={"menu-item" + (levelOneProps.active ? " active" : "")}>
-                  <span
-                    onDoubleClick={() => {this.handleDoubleClick(levelOneKey, levelOneProps)}}
-                    onClick={() => {this.collapseLevelTwo(levelOneKey)}}
-                    onMouseEnter={this.mouseEnter}
-                    onMouseLeave={this.mouseLeave}
-                    onMouseMove={this.mouseMove}
-                    style={{ cursor: "pointer" }}
-                    class="menu-item-link dropdown-toggle"
-                    id={"menu" + levelOneKey}
-                  >
-                    <span class={`iconmoon icon-${levelOneProps.menu_id.toLowerCase()}`}>
-                      <span class={"menu-item-name"}><Translate value={levelOneProps.label}/></span>
-                    </span>
-                  </span>
-                  <ul
-                    class="collapse collapsed-items list-unstyled"
-                    style={{ display: (levelOneProps.toggled && active) ? "block" : "none" }}
-                  >
-                    {Object.entries(levelOneProps.children).map(([levelTwoKey, levelTwoProps]) => {
-                      const urlOptions = levelTwoKey.slice(1) +
-                        (levelTwoProps.options !== null ? levelTwoProps.options : '')
-                      if (levelTwoProps.label) {
-                        return (
-                          <li
-                            class={
-                              "collapsed-item" + (levelTwoProps.collapsed || (pageId == urlOptions) ? " active" : "")
-                            }
-                          >
-                            {Object.keys(levelTwoProps.children).length > 0 ? (
-                              <span
-                                style={{ cursor: "pointer" }}
-                                onClick={() => {this.collapseLevelThree(levelOneKey, levelTwoKey)}}
-                                class="collapsed-level-item-link"
-                              >
-                                <Translate value={levelTwoProps.hasOwnProperty('label') ? levelTwoProps.label : ''}/>
-                              </span>
-                            ) : (
-                                <Link
-                                  onClick={() => {
-                                    this.goToPage(
-                                      routeMap.module + "?p=" + urlOptions,
-                                      levelOneKey
-                                    )
-                                  }}
-                                  className={`collapsed-level-item-link img-none ${(pageId == urlOptions) ? "active" : ""}`}
-                                  to={routeMap.module + "?p=" + urlOptions}
-                                >
-                                  <Translate value={levelTwoProps.label}/>
-                                </Link>
-                              )}
-
-                            <ul class="collapse-level collapsed-level-items first-level list-unstyled">
-                              {Object.entries(levelTwoProps.children).map(([levelThreeKey, levelThreeProps]) => {
-                                return (
-                                  <React.Fragment>
-                                    {Object.keys(levelTwoProps.children).length > 1 &&
-                                      <span class="collapsed-level-title">
-                                        <Translate value={levelThreeKey}/>
-                                      </span>
-                                    }
-                                    {Object.entries(levelThreeProps).map(([levelFourKey, levelFourProps]) => {
-                                      const urlOptions = levelFourKey.slice(1) +
-                                        (levelFourProps.options !== null ? levelFourProps.options : '')
-                                      if (levelFourProps.label) {
-                                        return (
-                                          <li
-                                            class={"collapsed-level-item" + (pageId == urlOptions ? " active" : "")}
-                                          >
-                                            <Link
-                                              onClick={() => {
-                                                this.goToPage(
-                                                  routeMap.module + "?p=" + urlOptions,
-                                                  levelOneKey
-                                                )
-                                              }}
-                                              className="collapsed-level-item-link"
-                                              to={routeMap.module + "?p=" + urlOptions}
-                                            >
-                                              <Translate value={levelFourProps.label}/>
-                                            </Link>
-                                          </li>
-                                        );
-                                      } else {
-                                        return null
-                                      }
-                                    }
-                                    )}
-                                  </React.Fragment>
-                                )
-                              })}
-                            </ul>
-                          </li>
-                        );
-                      } else {
-                        return null
-                      }
-                    })}
-                  </ul>
-                </li>) : null
-              ))}
-            </ul>
-            <div class="toggle-sidebar-wrap">
-              <span
-                class="toggle-sidebar-icon"
-                onClick={() => {this.toggleNavigation()}}
+      <nav class={"sidebar" + (active ? " active" : "")} id="sidebar">
+        <div class="sidebar-inner">
+          <div class="sidebar-logo" onClick={this.toggleNavigation}>
+            <span>
+              <img
+                class="sidebar-logo-image"
+                src={logo}
+                width="254"
+                height="57"
+                alt=""
               />
-            </div>
+            </span>
           </div>
-        </nav>
+          <div class="sidebar-logo-mini" onClick={this.toggleNavigation}>
+            <span>
+              <img
+                class="sidebar-logo-mini-image"
+                src={miniLogo}
+                width="23"
+                height="21"
+                alt=""
+              />
+            </span>
+          </div>
+          <ul class="menu menu-items list-unstyled components"
+            onMouseLeave={this.mouseLeftTheMenu}
+          >
+            {Object.entries(menuItems).map(([levelOneKey, levelOneProps]) => (
+              levelOneProps.label ? (<li onMouseOver={this.mouseIsMovingOverTheMenu.bind(this, levelOneProps.label)} class={"menu-item" + (levelOneProps.active ? " active" : "")}>
+                <span
+                  onDoubleClick={() => {this.handleDoubleClick(levelOneKey, levelOneProps)}}
+                  onClick={() => {this.collapseLevelTwo(levelOneKey)}}
+                  style={{ cursor: "pointer" }}
+                  class="menu-item-link dropdown-toggle"
+                  id={"menu" + levelOneKey}
+                >
+                  <span class={`iconmoon icon-${levelOneProps.menu_id.toLowerCase()}`}>
+                    <span class={"menu-item-name"}><Translate value={levelOneProps.label}/></span>
+                  </span>
+                </span>
+                <ul
+                  class="collapse collapsed-items list-unstyled"
+                  style={{ display: (levelOneProps.toggled && active) ? "block" : "none" }}
+                >
+                  {Object.entries(levelOneProps.children).map(([levelTwoKey, levelTwoProps]) => {
+                    const urlOptions = levelTwoKey.slice(1) +
+                      (levelTwoProps.options !== null ? levelTwoProps.options : '')
+                    if (levelTwoProps.label) {
+                      return (
+                        <li
+                          class={
+                            "collapsed-item" + (levelTwoProps.collapsed || (pageId == urlOptions) ? " active" : "")
+                          }
+                        >
+                          {Object.keys(levelTwoProps.children).length > 0 ? (
+                            <span
+                              style={{ cursor: "pointer" }}
+                              onClick={() => {this.collapseLevelThree(levelOneKey, levelTwoKey)}}
+                              class="collapsed-level-item-link"
+                            >
+                              <Translate value={levelTwoProps.hasOwnProperty('label') ? levelTwoProps.label : ''}/>
+                            </span>
+                          ) : (
+                              <Link
+                                onClick={() => {
+                                  this.goToPage(
+                                    routeMap.module + "?p=" + urlOptions,
+                                    levelOneKey
+                                  )
+                                }}
+                                className={`collapsed-level-item-link img-none ${(pageId == urlOptions) ? "active" : ""}`}
+                                to={routeMap.module + "?p=" + urlOptions}
+                              >
+                                <Translate value={levelTwoProps.label}/>
+                              </Link>
+                            )}
 
-        {this.state.isMouseInside ?
-          <Tooltip
-            type="right"
-            text="tooltip right"
-            style={{ left: `${leftPosition}px`, top: `${topPosition}px` }}
-          />
-        : null}
-
-        {/* TODO : want to map the 1st menu entries and put right text in related tooltip on each menu element
-        {this.state.isMouseInside ?
-          {Object.entries(menuItems).map((levelOneProps) => (
-            <Tooltip
-              type="right"
-              text={{levelOneProps.label}}
-              style={{ left: `${leftPosition}px`, top: `${topPosition}px` }}
+                          <ul class="collapse-level collapsed-level-items first-level list-unstyled">
+                            {Object.entries(levelTwoProps.children).map(([levelThreeKey, levelThreeProps]) => {
+                              return (
+                                <React.Fragment>
+                                  {Object.keys(levelTwoProps.children).length > 1 &&
+                                    <span class="collapsed-level-title">
+                                      <Translate value={levelThreeKey}/>
+                                    </span>
+                                  }
+                                  {Object.entries(levelThreeProps).map(([levelFourKey, levelFourProps]) => {
+                                    const urlOptions = levelFourKey.slice(1) +
+                                      (levelFourProps.options !== null ? levelFourProps.options : '')
+                                    if (levelFourProps.label) {
+                                      return (
+                                        <li
+                                          class={"collapsed-level-item" + (pageId == urlOptions ? " active" : "")}
+                                        >
+                                          <Link
+                                            onClick={() => {
+                                              this.goToPage(
+                                                routeMap.module + "?p=" + urlOptions,
+                                                levelOneKey
+                                              )
+                                            }}
+                                            className="collapsed-level-item-link"
+                                            to={routeMap.module + "?p=" + urlOptions}
+                                          >
+                                            <Translate value={levelFourProps.label}/>
+                                          </Link>
+                                        </li>
+                                      );
+                                    } else {
+                                      return null
+                                    }
+                                  }
+                                  )}
+                                </React.Fragment>
+                              )
+                            })}
+                          </ul>
+                        </li>
+                      );
+                    } else {
+                      return null
+                    }
+                  })}
+                </ul>
+              </li>) : null
+            ))}
+          </ul>
+          <div class="toggle-sidebar-wrap">
+            <span
+              class="toggle-sidebar-icon"
+              onClick={() => {this.toggleNavigation()}}
             />
-          ))}
-        : null} */}
-      </React.Fragment>
+          </div>
+        </div>
+      </nav>
     );
   }
 }
@@ -322,7 +288,8 @@ class NavigationComponent extends Component {
 const mapStateToProps = () => {}
 
 const mapDispatchToProps = {
-  setNavigation
+  setNavigation,
+  updateTooltip
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(withRouter(NavigationComponent));

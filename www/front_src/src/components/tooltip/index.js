@@ -1,33 +1,24 @@
-//import React, { Component } from 'react';
 import React from 'react';
+import {connect} from "react-redux";
 
-//class Tooltip extends Component {
-const Tooltip  = (props) => {
-    let template = null;
+const Tooltip = ({x, y, label, toggled}) => (
+    <div className={`tooltip ${toggled ? ' ' : 'hidden'}`}
+        style={
+            {
+                top:y,
+                left:x
+            }
+        }
+    >{label}</div>
+)
 
-    switch(props.type){
-        case 'right':
-            template = (
-                <div
-                    className="tooltip right"
-                >
-                    {props.text}
-                </div>
-            );
-            break;
-        case 'bottom':
-            template = (
-                <div
-                    className="tooltip bottom"
-                >
-                    {props.text}
-                </div>
-            )
-            break;
-        default:
-            template = null
+const mapStateToProps = ({tooltip}) => (
+    {
+        x:tooltip.x,
+        y:tooltip.y,
+        label:tooltip.label,
+        toggled:tooltip.toggled
     }
-    return template;
-}
+)
 
-export default Tooltip;
+export default connect(mapStateToProps, null)(Tooltip)
