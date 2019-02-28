@@ -13,7 +13,7 @@
   text-align: center;
   background: #e0e0e0;
   transition: all 0.2s;
-  border-right: 1px solid rgba(209, 210, 212, 1);
+  border-right: 1px solid $grey-medium;
   z-index: 2;
   .sidebar-logo {
     display: none;
