@@ -4,7 +4,7 @@ Exchanging SSH Keys
 
 Communication between a central server and a poller server is done through SSH.
 
-You need to exchange the SSH keys between the servers.
+You need to exchange SSH keys between the servers.
 
 If you do not have any private SSH keys on the central server for the
 **centreon** user: ::

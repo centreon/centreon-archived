@@ -13,7 +13,7 @@ Once the installation is complete, you must integrate this remote poller into th
 #. Duplicate the central server and edit it.
 #. Change the following settings, and save:
 
-*	Change the name of the **Poller Name**.
+*	Change the name of **Poller Name**.
 *	Enter the IP address of the poller in the **IP Address** field.
 *	Enable the poller by clicking on **Enabled** in the **Status** field.
 
@@ -29,7 +29,7 @@ Once the installation is complete, you must integrate this remote poller into th
 
   * Modify **Configuration Name**.
   * Check that **Linked poller** is the previously created poller.
-  * Change if necessary the **Timezone / Location**.
+  * Change if necessary **Timezone / Location**.
 
 .. image:: /images/user/configuration/10advanced_configuration/07addengine.png
    :align: center
@@ -65,8 +65,8 @@ You must generate a configuration file for Centreon Broker:
 
   * Add a new **TCP - IPv4** output.
   * Set the **Name**.
-  * Set the distant TCP port, by default **5669**.
-  * Set the IP address of the Centreon central server (**Host to connect to**).
+  * Set the distant TCP port, by default to **5669**.
+  * Set the IP address of the Central server (**Host to connect to**).
 
 .. image:: /images/user/configuration/10advanced_configuration/07_Addbroker_output.png
    :align: center

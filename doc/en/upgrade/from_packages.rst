@@ -43,7 +43,7 @@ repository supported by Redhat.
 
 .. note::
     *Software collections* are required in order to install PHP 7 and the associated
-    libs (Centreon requirement).
+    libraries (Centreon requirement).
 
 Run the following command: ::
 

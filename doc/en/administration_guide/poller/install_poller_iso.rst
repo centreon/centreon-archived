@@ -6,7 +6,7 @@ Using Centreon el7 ISO
 Installation
 ************
 
-This process is identical to the one used for installing the Centreon Central Server
+This process is identical to the one used for installing the Central Server
 from a Centreon ISO file.
 
 .. note::
