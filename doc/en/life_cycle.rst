@@ -4,14 +4,14 @@
 Lifecycle Products Policy
 =========================
 
-Starting with Centreon 18.10, Centreon will publish new releases of the
+Starting with Centreon version 18.10, Centreon will publish new releases of the
 Centreon solution at a regular cadence, enabling the community, businesses and developers
 to plan their roadmaps with the guarantee of upstream access to the latest open source
 capabilities.
 
-*************************
-Version numbers are YY.MM
-*************************
+****************************
+Version number format: YY.MM
+****************************
 
 Releases of Centreon are named according to the year and the month of delivery. For
 example, Centreon 18.10 was released in October 2018. All modules and components
