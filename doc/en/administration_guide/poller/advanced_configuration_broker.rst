@@ -15,7 +15,7 @@ Centreon has, however, developed a solution for initializing the flow from the C
 Central Server, or from the Remote Server, to the poller.
 
 Go to the **Configuration > Pollers > Broker configuration** menu and click on
-**Centreon Broker SQL** configuration on the Centreon Central Server or Remote Server.
+**Centreon Broker SQL** configuration on the Central Server or Remote Server.
 
 Go to the **Input** tab panel and add a new **TCP - IPv4** entry.
 
@@ -37,7 +37,7 @@ On the **Output** tab panel modify the **Output 1 - IPv4** form:
 .. image:: /_static/images/configuration/one_peer_conf_2.png
     :align: center
 
-Click **Save** and generate the configuration of the servers affected.
+Click **Save** and generate the configuration of the affected servers.
 
 -----------------------------------
 Centreon Broker flow authentication
@@ -101,7 +101,7 @@ Refer to the chapter: :ref:`configuration_advanced_snmptrapds`).
 Remote Server
 #############
 
-Configuring the Centreontrapd process is the same as on the Centreon Central Server.
+Configuring the Centreontrapd process is the same as on the Central Server.
 
 -----------------------------------------
 Advanced configuration of Centreon Broker
@@ -114,9 +114,9 @@ options used by Centreon Broker are described.
 Overview
 ########
 
-The Centreon Broker's core is a simple multiplexing engine that takes *input*
+The Centreon Broker's core is a simple multiplexing engine that takes *inputs*
 events and sends them to various *outputs*. Inputs are typically other
-Centreon Broker instances received via TCP/IP, while outputs can be a
+Centreon Broker instances received via TCP/IP, while outputs can be an
 SQL database, other brokers, a BI/BAM engine, Centreon Map, etc.
 
 Each input or output has a *type* that describes what it does plus several
@@ -124,7 +124,7 @@ parameters, some mandatory and others optional. Additionally,
 an output can have a *failover* that will start when the output is
 in an error state in order to ensure data retention.
 
-An important distinction should be make between a standalone Centreon Broker and
+An important distinction should be made between a standalone Centreon Broker and
 a Centreon Broker installed as a Centreon Engine module. Both have the
 same capabilities and support the same inputs and outputs. The
 difference is that the Centreon Broker configured as a module is
@@ -185,7 +185,7 @@ Write timestamp
 Write thread id
   If activated, each log entry is preceded by the ID of the thread being
   executed at that instant.
-  This is only used for advanced debugging purpose. Best practice is *No*.
+  This is only used for advanced debugging purposes. Best practice is *No*.
 
 Advanced Options:
 
@@ -222,7 +222,7 @@ Name
   The name of the input. Must be unique.
 Serialization protocol
   The protocol that was used to serialize the data.
-  Can be either *BBDO* or *NDO*. NDO is an legacy textual protocol with inferior
+  Can be either *BBDO* or *NDO*. NDO is a legacy textual protocol with inferior
   performance, data density and security. BBDO
   is a next-generation binary protocol that is effective and secure. NDO is
   deprecated. It should never be used for a new software installation.
@@ -234,8 +234,8 @@ Compression
 Filter category
   The categories of events accepted by this input.
   If empty, no restriction on events accepted. If filled, only events
-  of the given type will be processed. Input that accept data from
-  the Centreon Engine Broker module should be set to accept only *Neb* events.
+  of the given type will be processed. Inputs that accept data from
+  the Centreon Engine Broker module should be set to only accept *Neb* events.
 Connection Port
   The port that will be used for the connection. Mandatory.
 Host to connect to
@@ -284,11 +284,11 @@ Type
      *stdout* or *cout* or into the standard error output if named
      *stderr* or *cerr*.
   3. *Syslog*: This logger will write into the syslog as provided by the system, prefixed by *centreonbroker*.
-  4. *Monitoring*: This logger will write to the Centreon Engine log. It should only be activated if the Centreon Broker instance is loaded by the Centreon Engine at start-up.
+  4. *Monitoring*: This logger will write in the Centreon Engine log. It should only be activated if the Centreon Broker instance is loaded by the Centreon Engine at start-up.
 
 Name
   The name of this logger. This name must be the path of a file if the
-  logger has the type *file* or *stdout*, *cout*, *stderr* or *cerr*,
+  logger has the type *file* and either *stdout*, *cout*, *stderr* or *cerr*,
   if the logger has the type *standard*. This option is mandatory.
 Configuration messages
   Should configuration messages be logged?
@@ -315,13 +315,13 @@ Logging level
 Additionally, the *File* type has the following parameter:
 
 Max file size
-  The maximum size of log file in bytes.
+  The maximum size of a log file in bytes.
   When the file has reached its limit, the old data will be overwritten
   in a round-robin fashion.
 
 A broker will usually have at least one *file* logger which will log
 configuration and error messages. Others can be configured freely.
-A maximal logger (every category to *Yes* and logging level to *Very detailed*)
+A maximal logger (every category set to *Yes* and logging level set to *Very detailed*)
 is valuable to debug some issues, but be warned that it will quickly generate
 a very large amount of data.
 
@@ -334,7 +334,7 @@ Centreon Broker instance. Centreon Broker can have as many outputs as needed.
 For each output, the parameters are:
 
 Type
-  There is a several types of outputs managed by the Centreon Broker:
+  There are several types of outputs managed by the Centreon Broker:
 
   1. *TCP - IPV4* and *TCP - IPV6*: This output forwards data to another
      server, another Centreon Broker or Centreon Map.
@@ -353,8 +353,8 @@ Failover
   suddenly disconnecting, etc.
   By default, each output has an automatic failover that will
   always store data in retention files and replay it when the primary
-  output recovers from its error state. This is desirable in 99% of the
-  case. Alternatively, you can specify another output that will act
+  output recovers from its error state. This is desirable 99% of the
+  time. Alternatively, you can specify another output that will act
   as a failover if needed.
 Retry interval
   When the output is in an error state, this parameter
@@ -386,7 +386,7 @@ An RRD output consumes data from a storage output, a *dumper writer* output cons
 data from a *dumper reader*, and a *BAM reporting* output consumes data
 from a *BAM monitoring* output.
 
-Centreon Web needs at least an active output *SQL* to activate its real-time
+Centreon Web needs at least an active output *SQL* ouput to activate its real-time
 monitoring capabilities. The storage and RRD outputs are needed
 to activate Centreon Web metric plotting. The BAM monitoring output
 is needed for real-time BAM data and the BAM reporting output for
@@ -398,7 +398,7 @@ long as they are connected to each other.
 
 **Important**: Centreon Web 2.x features two databases, the configuration
 database and the real-time database. Those are respectively called *centreon*
-and *centreon-storage*. Different outputs expect different database
+and *centreon-storage*. Different outputs expect may different databases
 in their configuration.
 
 ==============  =================
@@ -430,7 +430,7 @@ Serialization protocol
   deprecated. It should never be used for new installations.
   Best practice is *BBDO*.
 Enable negotiation
-  Enable negotiation. If *yes*, this output will try
+  If *yes*, this output will try
   to negotiate encryption and compression with the remote endpoint.
 Connection Port
   Port used for the connection. Mandatory.
@@ -450,9 +450,6 @@ Public certificate
   The public certificate used for the encryption.
 Trusted CA's certificate
   The trusted CA certificate used for the encryption.
-Enable negotiation
-  If set to *yes*, this input will try
-  to negotiate encryption and compression with the remote endpoint.
 One peer retention mode
   By default, a listening input will accept any
   number of incoming connections. In *one peer retention* mode only one
@@ -482,7 +479,7 @@ output. Most file outputs will be used as failovers.
 
 Serialization protocol
   The protocol that was used to serialize the data.
-  Can be either *BBDO* or *NDO*. NDO is an legacy textual protocol with inferior
+  Can be either *BBDO* or *NDO*. NDO is a legacy textual protocol with inferior
   performance, data density and security. BBDO
   is a next-generation binary protocol that is effective and secure. NDO is
   deprecated. It should never be used for new installations.
@@ -538,8 +535,8 @@ queries and is very performance intensive. If Centreon Broker is slow, try adjus
 the *maximum queries per transaction* parameter to optimize processing speed.
 
 This output can be tasked to rebuild RRD data from a database of stored
-metric data. This is usually a slow, costly process, through you can simultaneously
-process new metric data as a reduced speed.
+metric data. This is usually a slow, costly process, though you can simultaneously
+process new metric data at a reduced speed.
 
 *Storage*-type outputs have the following parameters:
 
@@ -644,7 +641,7 @@ Path
 Filter category
   The categories of events accepted by this output. If empty, no restriction on events is accepted.
   If specified, only events of the given type will be processed. Outputs that accept data from
-  Centreon Engine's Broker module should be set to accept only *Neb* events.
+  Centreon Engine's Broker module should be set to only accept *Neb* events.
 
 *Lua parameter*
 
@@ -661,7 +658,7 @@ Dumper reader/writer
 A *dumper reader/writer* pair is used to synchronize part of a database
 between two instances of Centreon Broker. In the future we will provide an
 extensive synchronization mechanism, but today this system is mainly used to
-synchronize BA for the BAM Poller Display mechanism.
+synchronize BAs for the BAM Poller Display mechanism.
 
 The BAM Poller Display configuration documentation explains how to properly
 configure these outputs.

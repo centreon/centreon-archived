@@ -17,7 +17,7 @@ Select **Add a Centreon Poller** and click on **Next**:
 .. image:: /images/poller/wizard_add_poller_1.png
     :align: center
 
-Type in the name, the IP address of the poller and IP address of the Centreon
+Type in the name, the IP address of the poller and IP address of the
 Central Server. Click on **Next**:
 
 .. image:: /images/poller/wizard_add_poller_2.png
@@ -25,10 +25,10 @@ Central Server. Click on **Next**:
 
 .. note::
     The IP address of the poller is the IP address or the FQDN used to access this
-    poller from the Centreon Central Server.
+    poller from the Central Server.
     
-    The IP address of the Centreon Central Server is the IP address or the FQDN
-    used to access the Centreon Central Server from the poller.
+    The IP address of the Central Server is the IP address or the FQDN
+    used to access the Central Server from the poller.
 
 If you want to link the poller to the Centreon Server, click on **Apply**:
 
