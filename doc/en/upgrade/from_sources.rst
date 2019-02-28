@@ -1,21 +1,20 @@
 .. _upgrade_from_sources:
 
-============
-From sources
-============
+===========================
+Upgrading from source files
+===========================
 
-In order to upgrade Centreon from sources, :ref:`download <downloads>` the
-latest Centreon package.
+To upgrade Centreon from source files, :ref:`download <downloads>` the latest version of Centreon.
 
-******************
-Shell installation
-******************
+********************
+Installing the shell
+********************
 
 Extract the package::
 
   $ tar xvfz centreon-web-2.8.x.tar.gz
 
-Change the directory::
+Change directories::
 
   $ cd centreon-web-2.8.x
 
@@ -23,12 +22,12 @@ Run the upgrade script::
 
   $ ./install -u /etc/centreon
 
-Where /etc/centreon is to be replaced by configuration directory.
+The directory **/etc/centreon** represents any desired configuration directory.
 
-Prerequisites check
--------------------
+Prerequisites
+-------------
 
-If [Step 01] is successful, you should not have any problem here. Otherwise,
+If [Step 01] is successful, you are ready to proceed. Otherwise,
 go back to [Step 01] and install the prerequisites::
 
   ###############################################################################
@@ -65,8 +64,8 @@ go back to [Step 01] and install the prerequisites::
   Finding configuration file in: /etc/centreon               OK
   You seem to have an existing Centreon.
 
-Main components
----------------
+Choosing the main components
+----------------------------
 
 Load the previous installation parameters::
 
@@ -79,7 +78,7 @@ Load the previous installation parameters::
   /etc/centreon/instCentStorage.conf
   /etc/centreon/instCentWeb.conf
 
-Answer y to components you want to upgrade::
+Answer **y** for the components you wish to upgrade::
 
   Do you want to install : Centreon Web Front
   [y/n], default to [n]:
@@ -98,12 +97,10 @@ Answer y to components you want to upgrade::
   > y
   Convert variables for upgrade:
 
-Upgrade Centreon Web Front
---------------------------
+Upgrading the Centreon Web interface
+------------------------------------
 
-New information is required.
-
-The path to binaries for Centreon Web::
+Certain new information is required. Specify the path to the binaries for Centreon Web::
 
   ------------------------------------------------------------------------
   	Start CentWeb Installation
@@ -114,7 +111,7 @@ The path to binaries for Centreon Web::
   >
   Path /usr/local/centreon/bin                               OK
 
-The path for extra data for Centreon Web::
+Specify the path for the additional data used by Centreon Web::
 
   Where is your Centreon data information directory
   default to [/usr/local/centreon/data]
@@ -128,8 +125,7 @@ The path for extra data for Centreon Web::
   Finding Apache user :                                      www-data
   Finding Apache group :                                     www-data
 
-The group of Centreon applications : This group is used for access rights
-between monitoring applications::
+Define the Centreon applications group. It is used for access rights between Centreon monitoring applications::
 
   What is the Centreon group ? [centreon]
   default to [centreon]
@@ -139,7 +135,7 @@ between monitoring applications::
   [y/n], default to [n]:
   > y
 
-The user of Centreon applications::
+Specify the user for Centreon applications::
 
   What is the Centreon user ? [centreon]
   default to [centreon]
@@ -149,34 +145,32 @@ The user of Centreon applications::
   [y/n], default to [n]:
   > y
 
-The user of broker module.
-
-This user is used for adding rights to Centreon on the configuration and logs
-directories. If left empty, it will use the Monitoring Engine user instead.
+Specify the user for the Broker module. The role of this user is to grant permission to access the configuration and log
+directories on Centreon. If no user is specified, the monitoring engine user account will apply:
 
 For example:
 
-* Centreon Broker : *centreon-broker*
-* ndo2db : *nagios*
+* Centreon Broker: *centreon-broker*
+* ndo2db: *nagios*
 
 ::
 
   What is the Broker user ? (optional)
   >
 
-The path to monitoring engine log directory.
+Specify the path to the monitoring engine log directory.
 
 For example:
 
-* Centreon Engine : */var/log/centreon-engine*
-* Nagios : */var/log/nagios*
+* Centreon Engine: */var/log/centreon-engine*
+* Nagios: */var/log/nagios*
 
 ::
 
   What is the Monitoring engine log directory ?
   > /var/log/nagios
 
-The path to monitoring plugins::
+Specify the path to the monitoring plugins::
 
   Where is your monitoring plugins (libexec) directory ?
   default to [/usr/lib/nagios/plugins]
@@ -194,33 +188,33 @@ The path to monitoring plugins::
   	Configure Sudo
   ------------------------------------------------------------------------
 
-The path to Monitoring engine init script.
+Specify the path to the monitoring engine init script:
 
-For example :
+For example:
 
-* Centreon Engine : */etc/init.d/centengine*
-* Nagios : */etc/init.d/nagios*
+* Centreon Engine: */etc/init.d/centengine*
+* Nagios: */etc/init.d/nagios*
 
 ::
 
   What is the Monitoring engine init.d script ?
   > /etc/init.d/nagios
 
-The path to broker module configuration directory.
+Specify the path to the Centreon broker module configuration directory:
 
-For example :
+For example:
 
-* Centreon Broker : */etc/centreon-broker*
-* NDO : */etc/nagios*
+* Centreon Broker: */etc/centreon-broker*
+* NDO: */etc/nagios*
 
 ::
 
   Where is the configuration directory for broker module ?
   > /etc/nagios
 
-The path to broker daemon init script.
+Specify the path to the Centreon Broker daemon init script:
 
-For example :
+For example:
 
 * Centreon Broker : *cbd*
 
@@ -230,8 +224,7 @@ For example :
   > cbd
   Your sudo has been configured previously
 
-Replace or not your sudoers file.
-For more security, you can backup the file **/etc/sudoers**.
+Replace your sudoers file, if necessary. For increased security, you can backup the **/etc/sudoers** file:
 
 ::
 
@@ -319,10 +312,10 @@ For more security, you can backup the file **/etc/sudoers**.
   Create /etc/centreon/instCentWeb.conf                      OK
   Convert variables for upgrade:
 
-Upgrade Centreon Storage
-------------------------
+Upgrading Centreon Storage
+--------------------------
 
-New information is required.
+Fill in the required information..
 
 ::
 
@@ -371,10 +364,10 @@ New information is required.
   Create /etc/centreon/instCentStorage.conf                  OK
   Convert variables for upgrade:
 
-Upgrade Centreon Core
----------------------
+Upgrading Centreon Core
+-----------------------
 
-New information is required.
+Fill in the required information..
 
 ::
 
@@ -406,10 +399,10 @@ New information is required.
   Create /etc/centreon/instCentCore.conf                     OK
   Convert variables for upgrade:
 
-Upgrade Centreon Plugins
-------------------------
+Upgrading Centreon Plugins
+--------------------------
 
-New information is required.
+Fill in the required information..
 
 ::
 
@@ -437,7 +430,7 @@ New information is required.
   Generate SNMPTT configuration                              OK
   Create /etc/centreon/instCentPlugins.conf                  OK
 
-The end of upgrade::
+This completes the upgrade::
 
   ###############################################################################
   #                                                                             #
@@ -455,11 +448,11 @@ The end of upgrade::
 
 .. _upgrade_web:
 
-****************
-Web installation
-****************
+***********************
+Installing from the web
+***********************
 
-During the web installation, follow these steps.
+During the web installation, follow these steps:
 
 Presentation
 ------------
@@ -467,10 +460,10 @@ Presentation
 .. image:: /_static/images/upgrade/step01.png
    :align: center
 
-Check dependencies
-------------------
+Check the dependencies
+----------------------
 
-This step checks the dependencies on php modules.
+This step checks the dependencies on php modules:
 
 .. image:: /_static/images/upgrade/step02.png
    :align: center
@@ -481,16 +474,16 @@ Release notes
 .. image:: /_static/images/upgrade/step03.png
    :align: center
 
-Upgrade the database
---------------------
+Upgrading the database
+----------------------
 
-This step upgrades database model and data, version by version.
+This step upgrades the database model and data, version by version:
 
 .. image:: /_static/images/upgrade/step04.png
    :align: center
 
-Finish
-------
+Completion
+----------
 
 .. image:: /_static/images/upgrade/step05.png
    :align: center
