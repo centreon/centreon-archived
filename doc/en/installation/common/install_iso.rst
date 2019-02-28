@@ -15,7 +15,7 @@ Start up with **Install CentOS 7**:
 Step 2: Choosing a language
 ============================
 
-Choose the language for the installation process then click on **Done**:
+Choose the language for the installation process and click on **Done**:
 
 .. image :: /images/user/02_select_install_lang.png
    :align: center
@@ -30,7 +30,7 @@ Click on the **Installation Type** menu:
    :align: center
    :scale: 65%
 
-You can choose different options:
+You have different options to choose from:
 
 .. image :: /images/user/04_form_type_install.png
    :align: center
@@ -38,9 +38,9 @@ You can choose different options:
 
 |
 
- * **Central with database**: Install Centreon (web interface and database), monitoring engine and broker.
- * **Central without database**: Install Centreon (web interface only), monitoring engine and broker.
- * **Poller**: Install poller (monitoring engine and broker only).
+ * **Central with database**: Install Centreon (web interface and database), monitoring engine and Broker.
+ * **Central without database**: Install Centreon (web interface only), monitoring engine and Broker.
+ * **Poller**: Install poller (monitoring engine and Broker only).
  * **Database**: Install database server (use with **Central server without database** option).
 
 Step 4: System configuration
@@ -55,13 +55,13 @@ Click on the **Installation Destination** menu:
    :align: center
    :scale: 65%
 
-Select the hard disk drive and the **I will configure partitioning** option, then click on **Done**:
+Select the hard disk drive and the **I will configure partitioning** option. Then click on **Done**:
 
 .. image :: /images/user/06_select_disk.png
    :align: center
    :scale: 65%
 
-Using the **+** button create, your own partitioning file system following the instructions in :ref:`documentation prerequisites<diskspace>`, then click on **Done**:
+Using the **+** button, create your own partitioning file system following the instructions in :ref:`documentation prerequisites<diskspace>`. Then click on **Done**:
 
 .. image :: /images/user/07_partitioning_filesystem.png
    :align: center
@@ -82,7 +82,7 @@ Click on the **Network & Hostname** menu:
    :align: center
    :scale: 65%
 
-Enable all network interfaces and define hostname, then click on **Done**:
+Enable all network interfaces and define the hostname. Then click on **Done**:
 
 .. image :: /images/user/10_network_hostname.png
    :align: center
@@ -97,13 +97,13 @@ Click on the **Date & Time** menu:
    :align: center
    :scale: 65%
 
-Select timezone, then click on the configuration button:
+Select time zone, and then click on the configuration button:
 
 .. image :: /images/user/12_select_timzeone.png
    :align: center
    :scale: 65%
 
-To enable or add a NTP server, click on **OK**, then on **Done**:
+To enable or add a NTP server, click on **OK** and then on **Done**:
 
 .. image :: /images/user/13_enable_ntp.png
    :align: center
@@ -124,13 +124,13 @@ Click on **Root Password**:
    :align: center
    :scale: 65%
 
-Define and confirm **root** user password. Click on **Done**:
+Define and confirm the **root** user password. Click on **Done**:
 
 .. image :: /images/user/16_define_root_password.png
    :align: center
    :scale: 65%
 
-Wait for installation process to finish:
+Wait for the installation process to finish:
 
 .. image :: /images/user/17_wait_install.png
    :align: center
@@ -146,7 +146,7 @@ When the installation is complete, click on **Reboot**:
 Updating the system packages
 -----------------------------
 
-Connect to your server using a terminal and execute the command:
+Connect to your server using a terminal, and execute the command:
   ::
 
   # yum update
