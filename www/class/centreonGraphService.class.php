@@ -81,6 +81,7 @@ class CentreonGraphService extends CentreonGraph
 
         /* Build command line */
         $commandLine .= " xport ";
+        $commandLine .= " --showtime";
         $commandLine .= " --start " . $this->RRDoptions['start'];
         $commandLine .= " --end " . $this->RRDoptions['end'];
         $commandLine .= " --maxrows " . $rows;

@@ -2566,56 +2566,6 @@ ul.module_list {
     color: #88b917;
 }
 
-/* Tour plugin */
-#tourbus-leg-0-0 {
-    left: calc(50% - 200px)!important;
-    position: absolute;
-}
-
-#tourbus-leg-0-1,
-#tourbus-leg-0-2,
-#tourbus-leg-0-3,
-#tourbus-leg-0-4,
-#tourbus-leg-0-5 {
-    position: absolute;
-    top: 107px;
-}
-
-#tourbus-leg-0-6,
-#tourbus-leg-0-7,
-#tourbus-leg-0-8,
-#tourbus-leg-0-9 {
-    position: absolute;
-    top: 145px;
-}
-
-.tourbus-content {
-    margin-bottom: 10px;
-}
-
-.tourbus-action {
-  display: flex;
-  flex-direction: row;
-  justify-content: flex-end;
-}
-
-.tourbus-overlay {
-  display: none;
-  background: #666;
-  opacity: 0.5;
-  z-index: 9997;
-  min-height: 100%;
-  height: 100%;
-  position: fixed;
-  top: 0; right: 0; bottom: 0; left: 0;
-}
-.tourbus-highlight {
-  background: white;
-  position: relative;
-  box-shadow: inset 0 0 2px rgba( 0, 0, 0, 0.2 );
-  z-index: 9998;
-}
-
 /* Generation page */
 .consoleSteps {
   width: 15%;
