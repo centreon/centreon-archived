@@ -445,7 +445,7 @@ sub sendExternalCommand($$){
     my $self = shift;
     # Init Parameters
     my ($id, $cmd) = @_;
-    my ($lerror, $stdout, $cmd2, $cmd_line);
+    my ($lerror, $return_code, $stdout, $cmd2, $cmd_line);
 
     # Get server informations
     my $server_info = $self->getServerConfig($id);
@@ -467,7 +467,7 @@ sub sendExternalCommand($$){
                     if ($count >= 200) {
                         $cmd2 = "$self->{echo} \"".$cmd_line."\" >> ".$command_file;
                         $self->{logger}->writeLogInfo("External command on Central Server: ($id) : \"".$cmd_line."\"");
-                        ($lerror, $stdout) = centreon::common::misc::backtick(
+                        ($lerror, $stdout, $return_code) = centreon::common::misc::backtick(
                             command => $cmd2,
                             logger => $self->{logger},
                             timeout => $self->{cmd_timeout}
@@ -482,7 +482,7 @@ sub sendExternalCommand($$){
                 if ($count gt 0) {
                     $cmd2 = "$self->{echo} \"".$cmd_line."\" >> ".$command_file;
                     $self->{logger}->writeLogInfo("External command on Central Server: ($id) : \"".$cmd_line."\"");
-                    ($lerror, $stdout) = centreon::common::misc::backtick(
+                    ($lerror, $stdout, $return_code) = centreon::common::misc::backtick(
                         command => $cmd2,
                         logger => $self->{logger},
                         timeout => $self->{cmd_timeout}
@@ -490,7 +490,7 @@ sub sendExternalCommand($$){
                     $cmd_line = "";
                     $count = 0;
                 }
-                if ($lerror == -1) {
+                if ($lerror != 0 || (defined($return_code)  && $return_code != 0)) {
                     $self->{logger}->writeLogError(
                         "Could not write into pipe file " . $command_file . " on poller " . $id
                     );
@@ -530,12 +530,12 @@ sub sendExternalCommand($$){
                             "External command : ".$server_info->{ns_ip_address}." ($id) : \"".$cmd_line."\""
                         );
                     }
-                    ($lerror, $stdout) = centreon::common::misc::backtick(
+                    ($lerror, $stdout, $return_code) = centreon::common::misc::backtick(
                         command => $cmd2,
                         logger => $self->{logger},
                         timeout => $self->{cmd_timeout}
                     );
-                    if ($lerror == -1) {
+                    if ($lerror != 0 || (defined($return_code)  && $return_code != 0)) {
                         $self->{logger}->writeLogError("Could not write into pipe file " . $command_file . " on poller " . $id);
                     }
                     $cmd_line = "";
@@ -610,7 +610,7 @@ sub sendConfigFile($){
     my $self = shift;
     # Init Values
     my $id = $_[0];
-    my ($lerror, $stdout, $cmd);
+    my ($lerror, $return_code, $stdout, $cmd);
 
     my $cfg_dir = $self->getNagiosConfigurationField($id, "cfg_dir");
     my $server_info = $self->getServerConfig($id);
@@ -648,13 +648,17 @@ sub sendConfigFile($){
         $cmd = "$self->{scp} -P $port $origin $dest 2>&1";
     }
 
-    ($lerror, $stdout) = centreon::common::misc::backtick(
+    ($lerror, $stdout, $return_code) = centreon::common::misc::backtick(
         command => $cmd,
         logger => $self->{logger},
         timeout => 300
     );
+    
+    if ($lerror != 0 || (defined($return_code)  && $return_code != 0)) {
+        $self->{logger}->writeLogError('Send Centreon Engine config files problems');
+    }
 
-    if (defined($stdout) && $stdout){
+    if (defined($stdout) && $stdout) {
         $self->{logger}->writeLogInfo("Result : $stdout");
     }
 
@@ -690,7 +694,7 @@ sub sendConfigFile($){
                     $dest = $server_info->{ns_ip_address}.":$cfg_dir";
                     $cmd = "$self->{scp} -P $port $origin $dest 2>&1";
                 }
-                ($lerror, $stdout) = centreon::common::misc::backtick(
+                ($lerror, $stdout, $return_code) = centreon::common::misc::backtick(
                     command => $cmd,
                     logger => $self->{logger},
                     timeout => 300
@@ -701,11 +705,15 @@ sub sendConfigFile($){
                     'on poller "' . $server_info->{name} . '" (' . $server_info->{id} . ')'
                 );
                 $cmd = "cp $origin $cfg_dir 2>&1";
-                ($lerror, $stdout) = centreon::common::misc::backtick(
+                ($lerror, $stdout, $return_code) = centreon::common::misc::backtick(
                     command => $cmd,
                     logger => $self->{logger},
                     timeout => 60
                 );
+            }
+                            
+            if ($lerror != 0 || (defined($return_code)  && $return_code != 0)) {
+                $self->{logger}->writeLogError('Send Centreon Broker config files problems');
             }
             if (defined($stdout) && $stdout) {
                 $self->{logger}->writeLogInfo("Result : $stdout");
@@ -721,7 +729,7 @@ sub sendConfigFile($){
         );
         $cmd = "$self->{ssh} -p $port " . $remote_server->{'ns_ip_address'}  . " "
             . "'echo \"SENDCFGFILE:" . $id . "\" > $self->{cmdDir}/" . time() . "-sendcmd'";
-        ($lerror, $stdout) = centreon::common::misc::backtick(
+        ($lerror, $stdout, $return_code) = centreon::common::misc::backtick(
             command => $cmd,
             logger => $self->{logger},
             timeout => 300
@@ -740,7 +748,7 @@ sub sendExportFile($){
     if (!$id || !$taskId){
         return undef;
     }
-    my ($lerror, $stdout, $cmd);
+    my ($lerror, $return_code, $stdout, $cmd);
 
     my $cfg_dir = $self->getNagiosConfigurationField($id, "cfg_dir");
     my $server_info = $self->getServerConfig($id);
@@ -768,11 +776,14 @@ sub sendExportFile($){
     $self->{logger}->writeLogInfo('Export files on poller "' . $server_info->{name} . '" (' . $id . ')');
 
     $cmd = "$self->{rsync} -ra --port=$port $origin $dest 2>&1";
-    ($lerror, $stdout) = centreon::common::misc::backtick(
+    ($lerror, $stdout, $return_code) = centreon::common::misc::backtick(
         command => $cmd,
         logger => $self->{logger},
         timeout => 300
     );
+    if ($lerror != 0 || (defined($return_code)  && $return_code != 0)) {
+        $self->{logger}->writeLogError('Export files on poller "' . $server_info->{name} . '" (' . $id . ')');
+    }
     if (defined($stdout) && $stdout){
         $self->{logger}->writeLogInfo("Result : $stdout");
     }
