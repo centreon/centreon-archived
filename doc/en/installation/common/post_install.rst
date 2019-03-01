@@ -76,5 +76,8 @@ available once you register, and over 150 more if you subscribe to the IMP
 offer (for more information: `our website <https://www.centreon.com>`_).
 
 .. image:: /_static/images/installation/install_imp_3.png
+   :align: center
 
-Go to the :ref:`Quick Start<quickstart>` chapter to configure your first monitoring.:align: center
+Configure :ref:`the proxy<impproxy>` to allow the Centreon server to access the
+internet, and then go to the :ref:`quick start<quickstart>` chapter to configure
+your first monitoring.
