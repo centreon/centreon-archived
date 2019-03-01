@@ -71,6 +71,10 @@ The following table describes the software dependencies:
 Select the architecture type
 ****************************
 
+.. note::
+    Centreon offers a :download:`workbook</files/Centreon_platform_sizing.xlsx>`
+    to calculate the size of your platform.
+
 The table below describes requirements for installing Centreon:
 
 +----------------------+-----------------------------+--------------------------+----------------+---------------+
@@ -102,6 +106,10 @@ The table below describes requirements for installing Centreon:
 *****************
 Define disk space
 *****************
+
+.. note::
+    Centreon offers a :download:`workbook</files/Centreon_platform_sizing.xlsx>`
+    to calculate the size of your platform.
 
 The space used to store collected performance data depends on several criteria:
 
