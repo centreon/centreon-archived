@@ -85,4 +85,7 @@ si vous souscrivez à l'offre IMP (plus d'informations sur
 .. image:: /_static/images/installation/install_imp_3.png
    :align: center
 
-Rendez-vous au chapitre :ref:`Démarrage rapide<quickstart>` pour mettre en place votre première supervision.
+Configurez :ref:`le proxy<impproxy>` pour connecter votre serveur
+Centreon à internet, puis rendez-vous au chapitre
+:ref:`démarrage rapide<quickstart>` pour mettre en place votre première
+supervision.
