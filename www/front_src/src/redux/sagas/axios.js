@@ -166,7 +166,6 @@ function* axiosRequest(action) {
       }
     }
   } catch (err) {
-    console.log(action)
     action.reject(err);
   }
 }

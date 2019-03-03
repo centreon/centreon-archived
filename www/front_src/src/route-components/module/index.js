@@ -68,7 +68,6 @@ class ModuleRoute extends Component {
   }
 
   render() {
-    console.log('module')
     const { contentHeight, loading } = this.state;
     const { history } = this.props,
           { search, hash } = history.location;
@@ -78,7 +77,6 @@ class ModuleRoute extends Component {
     } else {
       params = (search || '') + (hash || '');
     }
-    console.log(params)
     return (
       <>
         {loading &&

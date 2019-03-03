@@ -1,6 +1,8 @@
 const HtmlWebpackPlugin = require("html-webpack-plugin")
 const TerserPlugin = require('terser-webpack-plugin');
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
+const safePostCssParser = require('postcss-safe-parser');
 
 module.exports = {
   context: __dirname,
@@ -11,7 +13,7 @@ module.exports = {
   ],
   output: {
     path: __dirname + "/www",
-    publicPath: './',
+    publicPath: '/centreon/',
     filename: 'static/js/[name].[chunkhash:8].js',
     chunkFilename: 'static/js/[name].[chunkhash:8].chunk.js',
     libraryTarget: 'umd',
@@ -19,7 +21,68 @@ module.exports = {
     umdNamedDefine: true,
   },
   optimization: {
-    minimizer: [new TerserPlugin()],
+    minimizer: [
+      new TerserPlugin({
+        terserOptions: {
+          parse: {
+            // we want terser to parse ecma 8 code. However, we don't want it
+            // to apply any minfication steps that turns valid ecma 5 code
+            // into invalid ecma 5 code. This is why the 'compress' and 'output'
+            // sections only apply transformations that are ecma 5 safe
+            // https://github.com/facebook/create-react-app/pull/4234
+            ecma: 8,
+          },
+          compress: {
+            ecma: 5,
+            warnings: false,
+            // Disabled because of an issue with Uglify breaking seemingly valid code:
+            // https://github.com/facebook/create-react-app/issues/2376
+            // Pending further investigation:
+            // https://github.com/mishoo/UglifyJS2/issues/2011
+            comparisons: false,
+          },
+          mangle: {
+            safari10: true,
+          },
+          output: {
+            ecma: 5,
+            comments: false,
+            // Turned on because emoji and regex is not minified properly using default
+            // https://github.com/facebook/create-react-app/issues/2488
+            ascii_only: true,
+          },
+        },
+        // Use multi-process parallel running to improve the build speed
+        // Default number of concurrent runs: os.cpus().length - 1
+        parallel: true,
+        // Enable file caching
+        cache: true,
+        sourceMap: true,
+      }),
+      new OptimizeCSSAssetsPlugin({
+        cssProcessorOptions: {
+          parser: safePostCssParser,
+          map: {
+            // `inline: false` forces the sourcemap to be output into a
+            // separate file
+            inline: false,
+            // `annotation: true` appends the sourceMappingURL to the end of
+            // the css file, helping the browser find the sourcemap
+            annotation: true,
+          },
+        },
+      }),
+    ],
+    // Automatically split vendor and commons
+    // https://twitter.com/wSokra/status/969633336732905474
+    // https://medium.com/webpack/webpack-4-code-splitting-chunk-graph-and-the-splitchunks-optimization-be739a861366
+    splitChunks: {
+      chunks: 'all',
+      //name: false,
+    },
+    // Keep the runtime chunk seperated to enable long term caching
+    // https://twitter.com/wSokra/status/969679223278505985
+    runtimeChunk: true,
   },
   plugins: [
     new HtmlWebpackPlugin({
@@ -36,7 +99,7 @@ module.exports = {
       { parser: { system: false } },
       {
         test: /\.js$/,
-        exclude: /(node_modules)/,
+        exclude: /node_modules/,
         use: {
           loader: 'babel-loader',
           options: {
@@ -58,6 +121,24 @@ module.exports = {
           },
         ],
       },
+      {
+        test: /fonts\/.+\.(woff(2)?|ttf|eot|svg)(\?v=\d+\.\d+\.\d+)?$/,
+        use: [{
+            loader: 'file-loader',
+            options: {
+              name: '[name].[ext]',
+              outputPath: 'static/fonts/'
+            }
+        }]
+      },
+      {
+        test: /img\/.+\.(png|jpg|jpeg|gif|svg)$/,
+        loader: 'file-loader',
+        options: {
+          name: '[name].[ext]',
+          outputPath: 'static/img/'
+        },
+      },
       /*
       {
         test: [/\.bmp$/, /\.gif$/, /\.jpe?g$/, /\.png$/, /\.svg$/],
@@ -69,23 +150,28 @@ module.exports = {
       },
       */
       {
-        test: /\/fonts\//,
-        loader: 'file-loader',
-        exclude: [/\.(js|jsx)$/, /\.(c|sa|sc)ss$/, /\.html$/, /\.json$/],
-        options: {
-          publicPath: '../../',
-          name: 'static/fonts/[name].[hash:8].[ext]',
-        },
+        test: require.resolve('react'),
+        use: [{
+          loader: 'expose-loader',
+          options: 'React'
+        }]
       },
       {
-        test: /\/img\//,
-        loader: 'file-loader',
-        exclude: [/\.(js|jsx)$/, /\.(c|sa|sc)ss$/, /\.html$/, /\.json$/],
-        options: {
-          publicPath: '../../',
-          name: 'static/img/[name].[hash:8].[ext]',
-        },
+        test: /react\-redux(\.min)?\.js/,
+        use: [{
+          loader: 'expose-loader',
+          options: 'ReactRedux'
+        }]
       },
+      /*
+      {
+        test: /MyConnect\.js$/,
+        use: [{
+          loader: 'expose-loader',
+          options: 'ReactRedux'
+        }]
+      },
+      */
     ]
   },
 };

@@ -94,7 +94,7 @@ class App extends Component {
       <ReactRoute
         history={history}
         path={path}
-        component={acls.includes(`/${path.split('./')[1]}`) ? comp : NotAllowedPage}
+        component={acls.includes(path) ? comp : NotAllowedPage}
         {...rest}
       />
     ))
@@ -102,11 +102,6 @@ class App extends Component {
 
   render() {
     const {aclsLoaded} = this.state;
-    console.log(aclsLoaded)
-    console.log(history)
-    classicRoutes.map(({path, comp, ...rest}, i) => {
-      console.log(path)
-    });
 
     const min = this.getMinArgument();
 
