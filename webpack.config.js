@@ -163,6 +163,7 @@ module.exports = {
           options: 'ReactRedux'
         }]
       },
+      /*
       {
         test: /axios\/index\.js$/,
         use: [{
@@ -170,6 +171,7 @@ module.exports = {
           options: 'CentreonAxios'
         }]
       },
+      */
     ]
   },
 };
