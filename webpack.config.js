@@ -133,13 +133,14 @@ module.exports = {
       },
       {
         test: /img\/.+\.(png|jpg|jpeg|gif|svg)$/,
-        loader: 'file-loader',
-        options: {
-          name: '[name].[ext]',
-          outputPath: 'static/img/'
-        },
+        use: [{
+          loader: 'file-loader',
+          options: {
+            name: '[name].[ext]',
+            outputPath: 'static/img/'
+          },
+        }]
       },
-      /*
       {
         test: [/\.bmp$/, /\.gif$/, /\.jpe?g$/, /\.png$/, /\.svg$/],
         loader: 'url-loader',
@@ -148,7 +149,6 @@ module.exports = {
           name: 'static/img/[name].[hash:8].[ext]',
         },
       },
-      */
       {
         test: require.resolve('react'),
         use: [{
@@ -157,21 +157,19 @@ module.exports = {
         }]
       },
       {
-        test: /react\-redux(\.min)?\.js/,
+        test: /ReactRedux\.js$/,
         use: [{
           loader: 'expose-loader',
           options: 'ReactRedux'
         }]
       },
-      /*
       {
-        test: /MyConnect\.js$/,
+        test: /axios\/index\.js$/,
         use: [{
           loader: 'expose-loader',
-          options: 'ReactRedux'
+          options: 'CentreonAxios'
         }]
       },
-      */
     ]
   },
 };

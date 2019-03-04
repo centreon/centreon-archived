@@ -20,12 +20,10 @@ class TopHeader extends Component {
     super(props);
 
     const rootUrl = window.location.pathname.split('/')[1];
-    /*
     const LoadableComponent = React.lazy(
       () => dynamicImport('/' + rootUrl + '/modules/centreon-bam-server/hooks/hook.js')
     );
-    */
-   const LoadableComponent = null;
+
     this.state = {
       LoadableComponent: LoadableComponent
     };
@@ -51,11 +49,6 @@ class TopHeader extends Component {
   render() {
     const {LoadableComponent} = this.state;
 
-    /*
-    <Suspense fallback="Loading...">
-              <LoadableComponent/>
-            </Suspense>
-            */
     return (
       <header class="header">
         <div class="header-icons">
@@ -63,7 +56,9 @@ class TopHeader extends Component {
             <PollerMenu />
           </div>
           <div class="wrap wrap-right">
-          
+            <Suspense fallback="Loading...">
+              <LoadableComponent/>
+            </Suspense>
             <HostMenu />
             <ServiceStatusMenu />
             <UserMenu />
