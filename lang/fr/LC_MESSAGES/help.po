@@ -384,6 +384,10 @@ msgstr ""
 "configuration du module Centreon Broker. Si l’option est désactivée, alors les "
 "données de statistiques ne seront pas visibles dans le menu dédié."
 
+#: centreon-web/www/include/Administration/parameters/centcore/help.php:26
+msgid "Illegal characters in external commands. Those characters will be removed before being interpreted by Centcore."
+msgstr "Caractères illégaux dans les commandes externes. Ces caractères seront supprimés avant d'être interprétés par Centcore."
+
 #: centreon-web/www/include/Administration/parameters/ldap/help.php:7
 msgid "Name of configuration"
 msgstr "Nom de la configuration"
