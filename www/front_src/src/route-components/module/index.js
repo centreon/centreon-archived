@@ -35,7 +35,14 @@ class ModuleRoute extends Component {
 
   handleHref = event => {
     let href = event.detail.href;
+    // update route
     window.history.pushState(null, null, href);
+  }
+
+  // handle disconnect event sent by iframe
+  handleDisconnect = event => {
+    // update current url to redirect to login page
+    window.location.href = event.detail.href;
   }
 
   componentDidMount() {
@@ -53,6 +60,13 @@ class ModuleRoute extends Component {
       this.handleHref,
       false
     );
+
+    // add event listener to check if iframe is redirected to login page
+    window.addEventListener(
+      "react.href.disconnect",
+      this.handleDisconnect,
+      false
+    );
   };
 
   componentWillUnmount() {
@@ -65,6 +79,11 @@ class ModuleRoute extends Component {
     window.parent.removeEventListener(
       "react.href.update",
       this.handleHref
+    );
+
+    window.parent.removeEventListener(
+      "react.href.disconnect",
+      this.handleDisconnect
     );
   }
 
