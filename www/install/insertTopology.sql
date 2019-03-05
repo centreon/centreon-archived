@@ -197,12 +197,9 @@ INSERT INTO `topology` (topology_name, topology_url, readonly, is_react) VALUES 
 UNLOCK TABLES;
 
 INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES (1,2,NULL,'./include/common/javascript/ajaxMonitoring.js','initM');
-INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES (2,2020301,NULL,'./include/common/javascript/ajaxMonitoring.js','initM');
-INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES (3,2020302,NULL,'./include/common/javascript/ajaxMonitoring.js','initM');
 INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES (4,20204,NULL,'./include/common/javascript/ajaxMonitoring.js','initM');
 INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES (11,20209,NULL,'./include/common/javascript/ajaxMonitoring.js','initM');
 INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES (18,20212,NULL,'./include/common/javascript/ajaxMonitoring.js','initM');
-INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES (25,201,NULL,'./include/common/javascript/ajaxMonitoring.js','initM');
 INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES (27,202,NULL,'./include/common/javascript/ajaxMonitoring.js',NULL);
 INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES (40,3,NULL,'./include/common/javascript/Timeline/src/main/webapp/api/timeline-api.js','initTimeline');
 INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES (41,307,NULL,'./include/common/javascript/Timeline/src/main/webapp/api/timeline-api.js','initTimeline');
@@ -212,7 +209,6 @@ INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VAL
 INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES (48,20404,'c','./include/common/javascript/color_picker_mb.js',NULL);
 INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES (52,20405,'a','./include/common/javascript/color_picker_mb.js',NULL);
 INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES (53,20405,'c','./include/common/javascript/color_picker_mb.js',NULL);
-INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES (61,5010103,NULL,'./include/common/javascript/color_picker_mb.js',NULL);
 INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES (65,602,'a','./include/common/javascript/commandGetArgs/cmdGetExample.js',NULL);
 INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES (66,602,'c','./include/common/javascript/commandGetArgs/cmdGetExample.js',NULL);
 INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES (67,602,'mc','./include/common/javascript/commandGetArgs/cmdGetExample.js',NULL);
@@ -242,8 +238,6 @@ INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VAL
 INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES (208,61701,NULL,'./include/common/javascript/jquery/plugins/sheepit/jquery.sheepItPlugin.min.js',NULL);
 INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES (209,61701,NULL,'./include/common/javascript/centreon/doClone.js',NULL);
 INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES (210,61701,NULL,'./include/common/javascript/centreon/serviceFilterByHost.js',NULL);
-INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES (211,5010105,NULL,'./include/common/javascript/jquery/plugins/sheepit/jquery.sheepItPlugin.min.js',NULL);
-INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES (212,5010105,NULL,'./include/common/javascript/centreon/doClone.js',NULL);
 INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES (213,60101,NULL,'./include/common/javascript/jquery/plugins/sheepit/jquery.sheepItPlugin.min.js',NULL);
 INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES (214,60101,NULL,'./include/common/javascript/centreon/doClone.js',NULL);
 INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES (215,60103,NULL,'./include/common/javascript/jquery/plugins/sheepit/jquery.sheepItPlugin.min.js',NULL);
@@ -272,10 +266,6 @@ INSERT INTO `topology_JS` (`id_page`, `o`, `PathName_js`, `Init`) VALUES (202,NU
 INSERT INTO `topology_JS` (`id_page`, `o`, `PathName_js`, `Init`) VALUES (20201,NULL,'./include/common/javascript/jquery/plugins/noty/jquery.noty.js',NULL);
 INSERT INTO `topology_JS` (`id_page`, `o`, `PathName_js`, `Init`) VALUES (20201,NULL,'./include/common/javascript/jquery/plugins/noty/themes/default.js',NULL);
 INSERT INTO `topology_JS` (`id_page`, `o`, `PathName_js`, `Init`) VALUES (20201,NULL,'./include/common/javascript/jquery/plugins/noty/layouts/bottomRight.js',NULL);
-
-INSERT INTO `topology_JS` (`id_page`, `o`, `PathName_js`, `Init`) VALUES (201,NULL,'./include/common/javascript/jquery/plugins/noty/jquery.noty.js',NULL);
-INSERT INTO `topology_JS` (`id_page`, `o`, `PathName_js`, `Init`) VALUES (201,NULL,'./include/common/javascript/jquery/plugins/noty/themes/default.js',NULL);
-INSERT INTO `topology_JS` (`id_page`, `o`, `PathName_js`, `Init`) VALUES (201,NULL,'./include/common/javascript/jquery/plugins/noty/layouts/bottomRight.js',NULL);
 
 INSERT INTO topology_JS (id_page, PathName_js, Init) VALUES (20203, './include/common/javascript/ajaxMonitoring.js', 'initM');
 
