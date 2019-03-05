@@ -301,6 +301,13 @@ function updateCentcoreConfigData($db, $form, $centreon)
         "centcore_cmd_timeout",
         isset($ret["centcore_cmd_timeout"]) && $ret['centcore_cmd_timeout'] ? $ret['centcore_cmd_timeout'] : 0
     );
+    updateOption(
+        $db,
+        "centcore_illegal_characters",
+        isset($ret["centcore_illegal_characters"]) && $ret['centcore_illegal_characters']
+            ? $ret['centcore_illegal_characters']
+            : ""
+    );
     $centreon->initOptGen($db);
 }
 

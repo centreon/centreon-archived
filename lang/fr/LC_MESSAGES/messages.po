@@ -4295,6 +4295,10 @@ msgstr ""
 msgid "Timeout value for Centcore commands"
 msgstr "Temps maximum d'exécution des commandes centcore"
 
+#: centreon-web/www/include/Administration/parameters/centcore/centcore.php:62
+msgid "Illegal characters for Centcore commands"
+msgstr "Caractères illégaux pour les commandes Centcore"
+
 #: centreon-web/www/include/Administration/parameters/api/api.php:77
 #: centreon-web/www/include/options/accessLists/groupsACL/formGroupConfig.php:175
 #: centreon-web/www/include/configuration/configObject/host/formHost.php:729
