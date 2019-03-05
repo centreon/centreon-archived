@@ -342,6 +342,41 @@ class CentreonHost extends CentreonObject
     }
 
     /**
+     * List instance (poller) for host
+     *
+     * @param string $parameters
+     * @throws CentreonClapiException
+     */
+    public function showinstance($parameters)
+    {
+        $params = explode($this->delim, $parameters);
+        if ($parameters == '') {
+            throw new CentreonClapiException(self::MISSINGPARAMETER);
+        }
+        if (($hostId = $this->getObjectId($params[self::ORDER_UNIQUENAME])) != 0) {
+            $relObj = new \Centreon_Object_Relation_Instance_Host();
+            $fields = array('id', 'name');
+            $elements = $relObj->getMergedParameters(
+                $fields,
+                array(),
+                -1,
+                0,
+                "host_name",
+                "ASC",
+                array('host_id' => $hostId),
+                'AND'
+            );
+
+            echo 'id' . $this->delim . 'name' . "\n";
+            foreach ($elements as $elem) {
+                echo $elem['id'] . $this->delim . $elem['name'] . "\n";
+            }
+        } else {
+            throw new CentreonClapiException(self::OBJECT_NOT_FOUND . ":" . $params[self::ORDER_UNIQUENAME]);
+        }
+    }
+
+    /**
      * Tie host to instance (poller)
      *
      * @param string $parameters
