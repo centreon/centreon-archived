@@ -85,7 +85,7 @@ const SelectField = ({
 };
 
 SelectField.displayName = "SelectField";
-SelectField.PropTypes = {
+SelectField.propTypes = {
   options: PropTypes.array,
   defaultOption: PropTypes.oneOfType([PropTypes.array, PropTypes.bool]),
   error: PropTypes.element

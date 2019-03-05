@@ -78,6 +78,9 @@ class App extends Component {
           if (error.response.status == 401) {
             // redirect to login page
             window.location.href = config.urlBase + 'index.php?disconnect=1'
+          } else {
+            // keepalive must be done cause it may failed due to temporary unavailability
+            this.keepAlive();
           }
         })
     }, 15000)

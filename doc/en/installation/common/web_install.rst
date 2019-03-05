@@ -33,18 +33,18 @@ Provide the information on the admin user, then click on **Next**.
    :align: center
    :scale: 85%
 
-By default, the ‘localhost’ server is defined and the root password is empty. If you use a remote database server, change these entries.
-In this case, you only need to define a password for the user accessing the Centreon databases, i.e., ‘Centreon’. Click on **Next**.
+By default, the *localhost* server is defined and the root password is empty. If you use a remote database server, change these entries.
+In this case, you only need to define a password for the user accessing the Centreon databases, i.e., *Centreon*. Click on **Next**.
 
 .. image :: /images/user/adbinfo.png
    :align: center
    :scale: 85%
 
 .. note::
-    If the **Add innodb_file_per_table=1 in my.cnf file under the [mysqld] section and restart MySQL Server.**
+    If the **"Add innodb_file_per_table=1 in my.cnf file under the [mysqld] section and restart MySQL Server."**
     error message appears, perform the following operations:
     
-    1. Log in to the ‘root’ user on your server.
+    1. Log in to the *root* user on your server.
     
     2. Modify this file::
     
@@ -55,7 +55,7 @@ In this case, you only need to define a password for the user accessing the Cent
         [mysqld]
         innodb_file_per_table=1
     
-    4. Restart mysql service::
+    4. Restart the mysql service::
 
         # systemctl restart mysql
     
@@ -67,7 +67,7 @@ The Centreon setup wizard configures the databases. Click on **Next**.
    :align: center
    :scale: 85%
 
-At this point, you will be able to install the Centreon server modules.
+You will now be able to install the Centreon server modules.
 
 Click on **Install**.
 
@@ -82,7 +82,7 @@ Once installation is complete, click on **Next**.
    :scale: 85%
 
 At this point, an advertisement informs you of the latest Centreon news and products. 
-If your platform is connected to the internet, you will receive the up-to-date information.
+If your platform is connected to the internet, the information you receive will be up to date.
 If you are not online, only information on the current version will be displayed.
 
 .. image :: /images/user/aendinstall.png
@@ -99,10 +99,10 @@ You can now log in.
 
 You can change the default language of the web interface:
 
-#. Click on your profile on the top right of the banner
-#. Click on **Edit profile**
-#. Select your language in the **Language* field
-#. Click on **Save**
+#. Click on your profile on the top right of the banner.
+#. Click on **Edit profile**.
+#. Select your language in the **Language** field.
+#. Click on **Save**.
 
 .. image :: /images/user/alanguage.png
    :align: center

@@ -396,7 +396,7 @@ a {
       font-size: 0.8rem;
       background-color: $white-color;
       display: block;
-      padding: 3px 10px 3px 47px;
+      padding: 3px 10px 3px 56px;
       border-bottom: 1px solid #f7f7f7;
       text-align: left;
     }
@@ -438,7 +438,7 @@ a {
       .collapsed-level-item {
         background-color: $white-color;
         .collapsed-level-item-link {
-          padding: 8px 10px 8px 47px;
+          padding: 8px 10px 8px 56px;
         }
       }
     }
@@ -470,7 +470,7 @@ a {
     }
     .sidebar-header h3, .CTAs {
       display: none;
-    }
+    }s
     .sidebar-header strong {
       display: block;
     }

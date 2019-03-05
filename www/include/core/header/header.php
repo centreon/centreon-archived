@@ -71,6 +71,8 @@ require_once SMARTY_DIR . "Smarty.class.php";
 $pearDB = new CentreonDB();
 $pearDBO = new CentreonDB("centstorage");
 
+$centreonSession = new CentreonSession();
+
 ini_set("session.gc_maxlifetime", "31536000");
 
 CentreonSession::start();
@@ -87,6 +89,11 @@ $time_limit = time() - ($session_expire["value"] * 60);
 
 $DBRESULT = $pearDB->query("DELETE FROM `session` WHERE `last_reload` < '" . $time_limit . "'");
 
+// drop session if session has been deleted due to expiration
+if (!$centreonSession->checkSession(session_id(), $pearDB)) {
+    CentreonSession::stop();
+}
+
 
 $args = "&redirect='";
 $a = 0;
@@ -99,9 +106,8 @@ foreach ($_GET as $key => $value) {
 }
 $args .= "'";
 
-/*
- * Check autologin here
- */
+// check centreon session
+// if session is not valid and autologin token is not given, then redirect to login page
 if (!isset($_SESSION["centreon"])) {
     if (!isset($_GET['autologin'])) {
         $args = "&redirect='";
