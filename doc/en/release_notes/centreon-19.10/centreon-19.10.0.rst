@@ -39,3 +39,8 @@ Technical
 * [Database] Add default value to acl_groups.acl_group_changed table (PR/#7542)
 * Remove wizard graph tour in performance view (PR/#7676)
 * Update to rh-php72 (PR/#7542)
+
+Known issue
+-----------
+
+* [logs] Fix the limitation of max value for the primary key of the centreon_storage.logs table (:ref:`update_centreon_storage_logs`)
