@@ -1,7 +1,7 @@
 {
   "info": {
-    "_postman_id": "5882d474-6c79-41b4-8fd8-2b1e1e999702",
-    "name": "Centreon Web Rest API",
+    "_postman_id": "a0f59ed8-0da0-4aa8-b270-774fcaa83146",
+    "name": "Centreon Web Rest API copy",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "item": [
@@ -24980,6 +24980,84 @@
             "body": {
               "mode": "raw",
               "raw": "{\n  \"action\":\"setinstance\",\n  \"object\":\"host\",\n  \"values\": \"{{host_name}};{{instance_name}}\"\n}"
+            },
+            "url": {
+              "raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
+              "protocol": "http",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "centreon",
+                "api",
+                "index.php"
+              ],
+              "query": [
+                {
+                  "key": "action",
+                  "value": "action"
+                },
+                {
+                  "key": "object",
+                  "value": "centreon_clapi"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Showinstance",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "id": "d98aa955-00be-475b-88cd-b6eb878571f3",
+                "exec": [
+                  "tests[\"Status code is 200\"] = responseCode.code === 200;",
+                  "",
+                  "var contentType = postman.getResponseHeader(\"Content-Type\");",
+                  "tests[\"Content-Type is application/json\"] = contentType === \"application/json\";",
+                  "",
+                  "var jsonData = JSON.parse(responseBody);",
+                  "var result= jsonData.result;",
+                  "",
+                  "var schema = {",
+                  "    \"$schema\": \"http://json-schema.org/draft-04/schema#\",",
+                  "    \"type\": \"array\",",
+                  "    \"items\": {",
+                  "        \"type\": \"object\",",
+                  "        \"properties\": {",
+                  "            \"id\": { \"type\": \"string\" },",
+                  "            \"name\": { \"type\": \"string\" }",
+                  "        },",
+                  "        \"additionalProperties\": false,",
+                  "        \"required \": [\"id\", \"name\"]",
+                  "    }",
+                  "};",
+                  "",
+                  "tests[\"Validate schema\"] = tv4.validate(result, schema);",
+                  ""
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "centreon-auth-token",
+                "value": "{{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"action\":\"showinstance\",\n  \"object\":\"host\",\n  \"values\": \"{{host_name}}\"\n}"
             },
             "url": {
               "raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
