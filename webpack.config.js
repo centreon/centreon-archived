@@ -13,7 +13,7 @@ module.exports = {
   ],
   output: {
     path: __dirname + "/www",
-    publicPath: '/centreon/',
+    publicPath: '/_CENTREON_PATH_PLACEHOLDER_/',
     filename: 'static/js/[name].[chunkhash:8].js',
     chunkFilename: 'static/js/[name].[chunkhash:8].chunk.js',
     libraryTarget: 'umd',
@@ -86,7 +86,7 @@ module.exports = {
   },
   plugins: [
     new HtmlWebpackPlugin({
-      template: './www/front_src/index.html',
+      template: './www/front_src/public/index.html',
       filename: 'index.html',
     }),
     new MiniCssExtractPlugin({
@@ -132,22 +132,14 @@ module.exports = {
         }]
       },
       {
-        test: /img\/.+\.(png|jpg|jpeg|gif|svg)$/,
+        test: /img\/.+\.(bmp|png|jpg|jpeg|gif|svg)$/,
         use: [{
-          loader: 'file-loader',
+          loader: 'url-loader',
           options: {
-            name: '[name].[ext]',
-            outputPath: 'static/img/'
+            limit: 10000,
+            name: 'static/img/[name].[hash:8].[ext]',
           },
         }]
-      },
-      {
-        test: [/\.bmp$/, /\.gif$/, /\.jpe?g$/, /\.png$/, /\.svg$/],
-        loader: 'url-loader',
-        options: {
-          limit: 10000,
-          name: 'static/img/[name].[hash:8].[ext]',
-        },
       },
       {
         test: require.resolve('react'),
@@ -163,15 +155,6 @@ module.exports = {
           options: 'ReactRedux'
         }]
       },
-      /*
-      {
-        test: /axios\/index\.js$/,
-        use: [{
-          loader: 'expose-loader',
-          options: 'CentreonAxios'
-        }]
-      },
-      */
     ]
   },
 };

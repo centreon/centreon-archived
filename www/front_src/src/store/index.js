@@ -12,7 +12,7 @@ const createHistory =
     ? require("history/createBrowserHistory").default
     : () => {};
 
-export const history = createHistory({basename: window.location.pathname.split('/')[1]});
+export const history = createHistory({basename: "/_CENTREON_PATH_PLACEHOLDER_/"});
 
 const createAppStore = (options, initialState = {}) => {
   const middlewares = [routerMiddleware(history), thunk, sagaMiddleware];

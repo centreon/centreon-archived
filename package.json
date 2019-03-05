@@ -2,11 +2,11 @@
   "name": "centreon",
   "version": "18.10.0",
   "description": "centreon web package",
-  "homepage": "./",
   "scripts": {
-    "build": "npm run build:clean && npm run build:app",
-    "build:clean": "rm -rf www/static",
-    "build:app": "webpack --mode production"
+    "build": "npm run build:clean && npm run build:app && npm run build:post",
+    "build:clean": "rm -rf www/static && rm -rf www/template",
+    "build:app": "webpack --mode production",
+    "build:post": "mv ./www/static ./www/template && chown -R apache:apache ./www/index.html ./www/template"
   },
   "devDependencies": {
     "@babel/core": "^7.0.0",

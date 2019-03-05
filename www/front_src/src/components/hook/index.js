@@ -13,12 +13,11 @@ class Hook extends Component {
     centreonAxios("internal.php?object=centreon_frontend_hook&action=hooks&path=" + encodeURIComponent(path))
       .get()
       .then(({ data }) => {
-        const rootUrl = window.location.pathname.split('/')[1];
         let LoadableComponents = [];
         for (const path of data) {
           LoadableComponents.push(
             React.lazy(
-              () => dynamicImport('/' + rootUrl + path)
+              () => dynamicImport('/_CENTREON_PATH_PLACEHOLDER_' + path)
             )
           );
         }
