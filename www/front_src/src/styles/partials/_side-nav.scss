@@ -13,6 +13,8 @@
   text-align: center;
   background: #e0e0e0;
   transition: all 0.2s;
+  border-right: 1px solid $grey-medium;
+  z-index: 2;
   .sidebar-logo {
     display: none;
   }
@@ -468,7 +470,7 @@ a {
     }
     .sidebar-header h3, .CTAs {
       display: none;
-    }
+    }s
     .sidebar-header strong {
       display: block;
     }
