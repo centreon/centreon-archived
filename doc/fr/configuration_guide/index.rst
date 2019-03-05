@@ -18,7 +18,6 @@ Pensez à mettre en place une stratégie de globalisation de la configuration af
    groups
    category
    models
-   imp/index
    advanced_configuration/index
    process_description/index
    deploy

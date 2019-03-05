@@ -88,12 +88,6 @@ class ServiceStatusMenu extends Component {
 
     return (
       <div  class={"wrap-right-services" + (toggled ? " submenu-active" : "")}>
-        <span class="wrap-right-icon" onClick={this.toggle.bind(this)}>
-          <span class="iconmoon icon-services">
-            {data.pending > 0 ? <span class="custom-icon" /> : null}
-          </span>
-          <span class="wrap-right-icon__name">Services</span>
-        </span>
         <Link to={config.urlBase + "main.php?p=20201&o=svc_critical&search="} class={"wrap-middle-icon round round-small " + (data.critical.unhandled > 0 ? "red" : "red-bordered")} >
           <span class="number">
             <span id="count-svc-critical">{numeral(data.critical.unhandled).format("0a")}</span>
@@ -115,6 +109,12 @@ class ServiceStatusMenu extends Component {
           </span>
         </Link>
         <div ref={service => this.service = service}>
+          <span class="wrap-right-icon" onClick={this.toggle.bind(this)}>
+            <span class="iconmoon icon-services">
+              {data.pending > 0 ? <span class="custom-icon" /> : null}
+            </span>
+            <span class="wrap-right-icon__name">Services</span>
+          </span>
           <span ref={this.setWrapperRef} class="toggle-submenu-arrow" onClick={this.toggle.bind(this)} >{this.props.children}</span>
           <div class="submenu services">
             <div class="submenu-inner">
@@ -199,7 +199,6 @@ class ServiceStatusMenu extends Component {
     );
   }
 }
-
 
 const mapStateToProps = ({ navigation, intervals }) => ({
   navigationData: navigation,

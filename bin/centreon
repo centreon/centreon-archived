@@ -99,9 +99,6 @@ require_once _CENTREON_ETC_ . "/centreon.conf.php";
 require_once _CLAPI_CLASS_ . "/centreonAPI.class.php";
 require_once _CLAPI_CLASS_ . "/centreonUtils.class.php";
 
-error_reporting(0);
-ini_set("display_errors", "Off");
-
 $dbConfig['host'] = $conf_centreon['hostCentreon'];
 $dbConfig['username'] = $conf_centreon['user'];
 $dbConfig['password'] = $conf_centreon['password'];

@@ -2,7 +2,7 @@
 -- Insert version
 --
 
-INSERT INTO `informations` (`key` ,`value`) VALUES ('version', '18.10.2');
+INSERT INTO `informations` (`key` ,`value`) VALUES ('version', '19.04.0');
 
 --
 -- Contenu de la table `contact`
@@ -139,7 +139,8 @@ INSERT INTO `options` (`key`, `value`) VALUES
 ('nagios_path_img','@centreon_dir@/www/img/media/'),
 ('selectPaginationSize', 60),
 ('display_downtime_chart','0'),
-('display_comment_chart','0');
+('display_comment_chart','0'),
+('centcore_illegal_characters', '`');
 
 --
 -- Contenu de la table `giv_components_template`

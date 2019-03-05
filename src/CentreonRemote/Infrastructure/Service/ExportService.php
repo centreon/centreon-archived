@@ -42,7 +42,7 @@ class ExportService
 
     /**
      * Construct
-     * 
+     *
      * @param \Psr\Container\ContainerInterface $services
      */
     public function __construct(ContainerInterface $services)
@@ -94,9 +94,7 @@ class ExportService
             $exporter->setCache($this->cache);
             $exporter->export();
 
-            $hasInterface = (new ReflectionClass($exporter))
-                ->implementsInterface($interface)
-            ;
+            $hasInterface = (new ReflectionClass($exporter))->implementsInterface($interface);
 
             if ($hasInterface) {
                 $partials[] = $exporter;
@@ -117,7 +115,7 @@ class ExportService
 
     /**
      * Import
-     * 
+     *
      * @throws \Exception
      * @param \CentreonRemote\Infrastructure\Export\ExportCommitment $commitment
      */
@@ -150,7 +148,7 @@ class ExportService
         // cleanup ACL removed data
         $this->_refreshAcl();
 
-        // backup expot directory
+        // remove export directory
         system('rm -rf ' . escapeshellarg($exportPath));
     }
 

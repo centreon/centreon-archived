@@ -82,7 +82,6 @@ class CentreonLang
                 $this->lang = $centreon->user->lang;
             }
         }
-        
         $this->path = $centreon_path;
         $this->setCharsetList();
     }
@@ -124,8 +123,9 @@ class CentreonLang
     }
 
     /**
+     * Used to get the language set in the browser
      *
-     * @return type
+     * @return string
      */
     private function getBrowserDefaultLanguage()
     {
@@ -137,14 +137,15 @@ class CentreonLang
         } else {
             $currentLocale .= $this->parseHttpAcceptHeader();
         }
-        
+
         return $this->getFullLocale($currentLocale);
     }
 
     /**
+     * Used to convert the browser language's from a short string to a string
      *
-     * @param type $shortLocale
-     * @return string
+     * @param string $shortLocale
+     * @return string $fullLocale
      */
     private function getFullLocale($shortLocale)
     {

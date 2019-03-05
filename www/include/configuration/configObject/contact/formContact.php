@@ -72,9 +72,14 @@ $initialValues = array();
  * Check if this server is a Remote Server to hide some part of form
  */
 $DBRESULT = $pearDB->query("SELECT i.value FROM informations i WHERE i.key = 'isRemote'");
-$isRemote = array_map("myDecode", $DBRESULT->fetchRow());
+$result = $DBRESULT->fetchRow();
+if ($result === false) {
+    $isRemote = false;
+} else {
+    $isRemote = array_map("myDecode", $result);
+    $isRemote = ($isRemote['value'] === 'yes') ? true : false;
+}
 $DBRESULT->closeCursor();
-$isRemote = ($isRemote['value'] === 'yes') ? true : false;
 
 $cct = array();
 if (($o == "c" || $o == "w") && $contact_id) {

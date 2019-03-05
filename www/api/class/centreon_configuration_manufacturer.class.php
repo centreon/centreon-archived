@@ -89,7 +89,7 @@ class CentreonConfigurationManufacturer extends CentreonConfigurationObjects
 
         return array(
             'items' => $manufacturerList,
-            'total' => $stmt->rowCount()
+            'total' => (int) $this->pearDB->numberRows()
         );
     }
 }

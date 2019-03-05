@@ -22,7 +22,7 @@ trait ServiceContainerTrait
     public function get($id): string
     {
         if ($this->has($id) === false) {
-            throw new NotFoundException;
+            throw new NotFoundException('Not found exporter with name: ' . $id);
         }
 
         $result = $this->objects[strtolower($id)];

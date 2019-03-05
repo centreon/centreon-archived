@@ -68,6 +68,9 @@ class InformationsRepository extends ServiceEntityRepository
      */
     public function authorizeMaster(string $ip): void
     {
+        $sql = "DELETE FROM `informations` WHERE `key` = 'authorizedMaster'";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute();
         $sql = "INSERT INTO `informations` (`key`, `value`) VALUES ('authorizedMaster', :ip)";
         $stmt = $this->db->prepare($sql);
         $stmt->bindParam(':ip', $ip, PDO::PARAM_STR);

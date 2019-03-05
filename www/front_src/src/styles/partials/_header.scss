@@ -8,6 +8,12 @@
   .wrap {
     &-left {
       &-icon {
+        &.pollers {
+          cursor: pointer;
+          position: absolute !important;
+          left: 20px;
+          top: 6px;
+        }
         &:first-child {
           margin-right: 11px;
         }
@@ -39,7 +45,7 @@
       &-pollers {
         position: relative;
         box-sizing: border-box;
-        padding: 6px 21px 6px 20px;
+        padding: 10px 21px 11px 63px;
         display: flex;
         flex-wrap: wrap;
         align-items: center;
@@ -154,8 +160,7 @@
      &-services,
      &-user {
        position: relative;
-       padding: 6px 10px 6px;
-       padding-right: 22px;
+       padding: 6px 22px 6px 61px;
        display: flex;
        flex-wrap: wrap;
        align-items: center;
@@ -180,6 +185,7 @@
        padding: 6px 22px 6px 35px;
        .iconmoon {
          &.icon-user {
+           cursor: pointer;
           &:before {
             font-size: 2rem;
           }
@@ -187,10 +193,17 @@
        }
      }
      &-icon {
+       cursor: pointer;
+       position: absolute !important;
+       left: 10px;
+       top: 8px;
       &:first-child {
         text-align: center;
         position: relative;
         margin-right: 10px;
+      }
+      &.hosts {
+        left: 23px;
       }
       &__name {
       display: block;

@@ -1805,19 +1805,22 @@ function getLangs()
 {
     $langs = array('browser' => _("Detection by browser"));
     $chemintotal = "./locale/";
-    $default = "en_US";
 
-    $langs["en_US"] = "en_US";
     if (is_dir($chemintotal)) {
         if ($handle = opendir($chemintotal)) {
             while ($file = readdir($handle)) {
                 if (is_dir("$chemintotal/$file") && strcmp($file, ".") && strcmp($file, "..")) {
-                    $langs[$file] = $file;
+                    $langTitle = str_replace('.UTF-8', '', $file);
+                    $langs[$file] = $langTitle;
                 }
             }
             closedir($handle);
         }
     }
+    if (!array_key_exists('en_US.UTF-8', $langs)) {
+        $langs["en_US.UTF-8"] = "en_US";
+    }
+
     return $langs;
 }
 
