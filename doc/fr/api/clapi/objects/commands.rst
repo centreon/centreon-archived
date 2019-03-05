@@ -94,3 +94,22 @@ comment     Comments regarding the command
 .. note::
   You need to generate your configuration file and restart monitoring engine in order to apply changes.
 
+
+Getargumentdescr
+----------------
+
+To retrieve the argument descriptions for a command, use the **getargumentdescr** command:
+
+  [root@centreon ~]# ./centreon -u admin -p centreon -o CMD -a getargumentdesc -v 'test-cmd'
+  name;description
+  ARG0;First Argument
+  ARG1;Second Argument
+
+
+Setargumentdescr
+----------------
+
+If you want to change all arguments descriptions for a command, use the **setargumentdescr** command::
+
+  [root@centreon ~]# ./centreon -u admin -p centreon -o CMD -a setargumentdescr -v 'check_centreon_ping;ARG1:count;ARG2:warning;ARG3:critical'
+
