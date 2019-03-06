@@ -1,5 +1,6 @@
 <header class="nav-top">
     <span class="hamburger material-icons" id="ham">menu</span>
+    <div class="logo"></div>
 </header>
 <nav class="nav-drill">
     <ul class="nav-items nav-level-1">
@@ -23,7 +24,7 @@
         <?php endforeach; ?>
         <li class="nav-item">
             <a class="nav-link" href="index.php?disconnect=1">
-                Logout
+                <?= gettext('Logout') ?>
             </a>
         </li>
     </ul>

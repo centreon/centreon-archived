@@ -103,9 +103,6 @@ if ($isMobile) {
     $menu = new Menu($db, $_SESSION['centreon']->user);
     $treeMenu = $menu->getMenu();
     require_once 'main.get.php';
-?>
-    <script type="text/javascript" src="./mobile/js/menu1.js"></script>
-<?php
 } else {
     include('./index.html');
 }

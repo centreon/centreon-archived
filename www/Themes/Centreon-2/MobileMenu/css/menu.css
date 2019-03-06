@@ -1,12 +1,10 @@
-@import "https://fonts.googleapis.com/css?family=Fira+Sans:300,400";
-@import "https://fonts.googleapis.com/icon?family=Material+Icons";
 * {
 	box-sizing: border-box;
 }
 
 body {
 	background-color: #0072ce;
-	font-family: "Fira Sans", Arial, sans-serif;
+	font-family: 'Open Sans', Arial, sans-serif;
 	font-size: 16px;
 	line-height: 1.875em;
 }
@@ -35,26 +33,35 @@ a {
 	width: 100%;
 	height: 50px;
 	background-color: #0072ce;
+}
+
+.nav-top .logo {
+	display: flex;
+	position: fixed;
+	z-index: 102;
+	right:20px;
+	width: 150px;
+	height: 50px;
 	background-image: url("/centreon/img/centreon_white.png");
-	background-position: 15px;
+	background-position: 98% center;
 	background-repeat: no-repeat;
 	background-size: 150px;
 }
 .nav-top .hamburger {
-	margin-left: auto;
+	margin-left: 0px;
 	color: #fff;
 	cursor: pointer;
 }
 
 .nav-drill {
 	margin-top: 50px;
-	-webkit-transform: translateX(100%);
-	transform: translateX(100%);
+	-webkit-transform: translateX(0%);
+	transform: translateX(0%);
 }
 
 .nav-is-toggled .nav-drill {
-	-webkit-transform: translateX(0);
-	transform: translateX(0);
+	-webkit-transform: translateX(100%);
+	transform: translateX(100%);
 }
 .nav-is-toggled::after {
 	opacity: 1;
@@ -66,7 +73,7 @@ a {
 	position: fixed;
 	z-index: 100;
 	top: 0;
-	right: 0;
+	left: -250px;
 	width: 250px;
 	height: 100vh;
 	background-color: #fff;

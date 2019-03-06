@@ -291,7 +291,6 @@ function validateFeature(name, version, enabled) {
       'a',
       'click',
       function(e) {
-        console.log(typeof isMobile);
         var href = jQuery(this).attr('href');
         var isOnLoad = jQuery(this).is('[onload]');
 
@@ -309,7 +308,7 @@ function validateFeature(name, version, enabled) {
               window.open(href);
             // If it's an internal link, we remove header to avoid inception
             } else {
-              //
+              // isMobile is declare in the menu.js
               if(typeof isMobile === 'undefined' || isMobile !== true) {
                   href = href.replace('main.php', 'main.get.php');
               }
