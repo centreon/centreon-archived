@@ -181,7 +181,6 @@ a {
             background: $turquoise-centreon-primary;
             color: $white-color;
           }
-          
         }
         &:hover {
           .collapsed-level-item-link {
@@ -395,7 +394,7 @@ a {
       font-size: 0.8rem;
       background-color: $white-color;
       display: block;
-      padding: 3px 10px 3px 47px;
+      padding: 3px 10px 3px 56px;
       border-bottom: 1px solid #f7f7f7;
       text-align: left;
     }
@@ -437,11 +436,7 @@ a {
       .collapsed-level-item {
         background-color: $white-color;
         .collapsed-level-item-link {
-          padding: 8px 10px 8px 47px;
-          // &:hover {
-          //   color: $white-color;
-          //   background-color: #0a78a5;
-          // }
+          padding: 8px 10px 8px 56px;
         }
       }
     }
