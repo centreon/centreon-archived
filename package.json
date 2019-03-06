@@ -27,8 +27,6 @@
     "postcss-safe-parser": "^4.0.1",
     "resolve-url-loader": "^3.0.1",
     "sass-loader": "^7.1.0",
-    "style-loader": "^0.23.1",
-    "systemjs-plugin-css": "^0.1.37",
     "terser-webpack-plugin": "^1.2.3",
     "url-loader": "^1.1.2",
     "webpack": "^4.29.5",
@@ -59,7 +57,8 @@
     "redux-logger": "^3.0.6",
     "redux-saga": "^0.16.2",
     "redux-thunk": "^2.3.0",
-    "systemjs": "^3.0.0"
+    "systemjs": "^3.0.0",
+    "systemjs-plugin-css": "^0.1.37"
   },
   "jest": {
     "testResultsProcessor": "jest-junit",
