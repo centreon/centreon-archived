@@ -61,7 +61,7 @@ class ExportManifest
             return;
         }
 
-        $filepath = $this->_removePath($file);
+        $filepath = $this->removePath($file);
 
         if ($filepath === null) {
             return;
@@ -79,13 +79,13 @@ class ExportManifest
 
     public function validate()
     {
-        $file = $this->_getFile();
+        $file = $this->getFile();
 
         if (!file_exists($file)) {
             throw new Exception(sprintf('Manifest file %s not found', $file), static::ERR_CODE_MANIFEST_NOT_FOUND);
         }
 
-        $this->data = $this->commitment->getParser()::parse($file);
+        $this->data = $this->commitment->getParser()->parse($file);
         $checkManifestKeys = function(array $data) : array {
             $keys = ['version', 'datetime', 'remote-poller', 'pollers', 'meta', 'exporters', 'exports'];
             $missingKeys = [];
@@ -124,7 +124,7 @@ class ExportManifest
 
         // check for missing, modified and external files
         foreach ($finder as $file) {
-            $filepath = $this->_removePath($file->getPathName());
+            $filepath = $this->removePath($file->getPathName());
 
             // skip manifest
             if ($filepath === '/' . static::EXPORT_FILE) {
@@ -173,10 +173,10 @@ class ExportManifest
             'exports' => $this->files,
         ];
 
-        $this->commitment->getParser()::dump($data, $this->_getFile());
+        $this->commitment->getParser()->dump($data, $this->getFile());
     }
 
-    private function _removePath(string $file): ?string
+    public function removePath(string $file): ?string
     {
         $filepath = explode($this->commitment->getPath(), $file);
 
@@ -187,7 +187,7 @@ class ExportManifest
         return $filepath[1];
     }
 
-    private function _getFile(): string
+    public function getFile(): string
     {
         $file = $this->commitment->getPath() . '/' . static::EXPORT_FILE;
 

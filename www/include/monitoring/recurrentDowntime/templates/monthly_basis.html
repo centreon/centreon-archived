@@ -65,5 +65,13 @@ jQuery(function() {
 
         jQuery(".timepicker").timepicker();
 });
+
+
+    $(document).ready(function () {
+        var validButton = $('#validForm');
+        if (!validButton.length) {
+            $("#tabs_periods :input").prop("disabled", true);
+        }
+    });
 </script>
 {/literal}

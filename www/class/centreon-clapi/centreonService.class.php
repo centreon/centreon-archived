@@ -1039,6 +1039,7 @@ class CentreonService extends CentreonObject
                     );
                     if ($matches[1] == "set") {
                         $relobj->delete(null, $serviceId);
+                        $existingRelationIds = array();
                     }
                     foreach ($relationTable as $relationId) {
                         if ($matches[1] == "del") {

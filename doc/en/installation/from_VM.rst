@@ -1,64 +1,72 @@
 .. _install_from_vm:
 
-========
-Using VM
-========
+============================
+Using virtual machines (VMs)
+============================
 
-You can download in Centreon web site, VM already installed.
+Two preconfigured virtual machines are available on the 
+`Centreon download <https://download.centreon.com/>`_ web site.
 
-These VMs are in OVF format and have been tested for VMWare infrastructure. The following procedure have been done for VSphere Client in 5.1 version and VirtualBox 5.1
+These virtual machines are available in OVA (VMware) and OVF (VirtualBox) format.
 
-Import
-------
+***********************
+Centreon Central server
+***********************
 
-The first step is to import the OVF File. To do that go in **File > Deploy OVF Template** and choose your file.
-You can then follow different menus. Choices you made are linked to your VMWare configuration so it's difficult to be more specific.
-Just be noticed that best practice are to used **Thin Provision** to keep some spaces in disk.
+Importing
+=========
 
-Connection
-----------
+The first step is to import the OVF File. Go to **File > Deploy OVF Template** and select a file.
+Because the menu selections are actually linked to your specific VMWare configuration, we are unable to provide more information.
+Be advised that best practice is to use **Thin Provision** to save as much free space as possible on the disk.
 
-The server has default password.
+Connecting
+==========
 
-To connect to the web UI use : **admin/centreon**. You can also connect to the server using SSH with the account : **root/centreon**
+The server has a default password.
+
+To connect to the web UI use: **admin/centreon**.
+
+You can also connect to the server via SSH using the account: **root/centreon**.
+The **root** password of the DBMS is not initialized.
 
 .. note::
+    For security reasons, we highly recommend for you to change these passwords after installation.
 
-    For security reasons, we highly recommend you to change this passwords after installation.
+On your first connecting, a message describes the operations to be performed.
+Run these, **especially operations 4 and 5**.
 
+.. note::
+    To remove this message, delete the **/etc/profile.d/centreon.sh** file.
+
+******
 Poller
-------
+******
 
-Using Poller VM is nearly the same as central. You just have to exchange SSH keys and configure it on web interface.
+Deploying the Poller from a virtual machine is almost the same as from the central server. You have to exchange SSH
+keys and configure the Poller through the web interface.
 
-Exchange SSH keys
-=================
+Exchanging SSH keys
+===================
 
-The communication between a central server and a poller server is done by SSH.
+The communication between the central server and a poller server is done via SSH.
 
-You should exchange the SSH keys between the servers.
+You must exchange the SSH keys between the servers.
 
-If you don’t have any private SSH keys on the central server for the Centreon user: ::
+If you don’t have any private SSH keys on the central server for the
+**centreon** user: ::
 
     # su - centreon
     $ ssh-keygen -t rsa
 
-Copy this key on the new server: ::
+Copy this key to the new server: ::
 
     # su - centreon
     $ ssh-copy-id -i .ssh/id_rsa.pub centreon@IP_POLLER
 
-The password of the centreon user is **centreon**. It can be easily changed using **passwd** command.
+The password of the **centreon** user is *centreon*. It can be easily changed using the **passwd** command.
 
-On Web interface
-================
+On the Web interface
+====================
 
-#. In **Configuration > Poller > Pollers**, Activate Poller Template and replace IP_POLLER by the poller IP address.
-#. In **Configuration > Poller > Engine configuration**, Activate Poller-template
-#. In **Configuration > Poller > Broker configuration**, Activate Poller-template-module and in **Output** tab, replace IP_CENTRAL by the central IP address.
-
-Then you can configure and add resources on your poller. The poller is operational !
-
-.. warning::
-
-    When you export your configuration for the first time, you have to choose "restart" option.
+.. include:: ../administration_guide/poller/wizard_add_poller.rst

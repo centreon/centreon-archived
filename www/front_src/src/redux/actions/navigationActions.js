@@ -1,4 +1,5 @@
 export const SET_NAVIGATION_DATA = "SET_NAVIGATION_DATA";
+export const GET_NAVIGATION_DATA = "GET_NAVIGATION_DATA";
 
 export const setNavigation = data => {
 

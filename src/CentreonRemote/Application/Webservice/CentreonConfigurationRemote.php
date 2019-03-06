@@ -14,7 +14,7 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
 
     /**
      * Name of web service object
-     * 
+     *
      * @return string
      */
     public static function getName(): string
@@ -49,7 +49,7 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
      * )
      *
      * Get remotes servers waitlist
-     * 
+     *
      * @return array
      */
     public function postGetWaitList(): array
@@ -88,6 +88,7 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
      * Get list with connected remotes
      *
      * @return array
+     * @example ['id' => 'poller id', 'ip' => 'poller ip address', 'name' => 'poller name']
      */
     public function postGetRemotesList(): array
     {
@@ -204,83 +205,105 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
      *
      * Link centreon remote server
      *
-     * @return string
+     * @return array
+     * @example ['error' => true, 'message' => 'error message']
+     * @example ['success' => true, 'task_id' => 'task id']
      *
      * @throws \RestBadRequestException
      */
-    public function postLinkCentreonRemoteServer()
+    public function postLinkCentreonRemoteServer(): array
     {
+        // retrieve post values to be used in other classes
         $_POST = json_decode(file_get_contents('php://input'), true);
-        $openBrokerFlow = isset($_POST['open_broker_flow']);
+
+        $openBrokerFlow = isset($this->arguments['open_broker_flow']) && $this->arguments['open_broker_flow'] === true;
+        $centreonPath = $this->arguments['centreon_folder'] ?? '/centreon/';
         $serverWizardIdentity = new ServerWizardIdentity;
         $isRemoteConnection = $serverWizardIdentity->requestConfigurationIsRemote();
-        $serverHasBamInstalled = false;
         $configurationServiceName = $isRemoteConnection ?
             'centreon_remote.remote_connection_service' :
             'centreon_remote.poller_connection_service';
 
+        // validate form fields
         WizardConfigurationRequestValidator::validate();
 
         /** @var $pollerConfigurationService LinkedPollerConfigurationService */
-        /** @var $pollerConfigurationBridge PollerConfigurationRequestBridge */
-        /** @var $serverConfigurationService ServerConnectionConfigurationService */
         $pollerConfigurationService = $this->getDi()['centreon_remote.poller_config_service'];
+        /** @var $serverConfigurationService ServerConnectionConfigurationService */
         $serverConfigurationService = $this->getDi()[$configurationServiceName];
+        /** @var $pollerConfigurationBridge PollerConfigurationRequestBridge */
         $pollerConfigurationBridge = $this->getDi()['centreon_remote.poller_config_bridge'];
 
-        $serverIP = $_POST['server_ip'];
-        $serverName = substr($_POST['server_name'], 0, 40);
+        $serverIP = $this->arguments['server_ip'];
+        $serverName = substr($this->arguments['server_name'], 0, 40);
 
-        $serverConfigurationService->setCentralIp($_POST['centreon_central_ip']);
+        $serverConfigurationService->setCentralIp($this->arguments['centreon_central_ip']);
         $serverConfigurationService->setServerIp($serverIP);
         $serverConfigurationService->setName($serverName);
-        $serverConfigurationService->setOpenBrokerFlow($openBrokerFlow);
+        $serverConfigurationService->setOnePeerRetention($openBrokerFlow);
 
+        $pollerConfigurationService->setOnePeerRetention($openBrokerFlow);
+
+        // set linked pollers
+        $pollerConfigurationBridge->collectDataFromRequest();
+
+        // if it's a remote server, set database connection information and check if bam is installed
         if ($isRemoteConnection) {
-            $serverConfigurationService->setDbUser($_POST['db_user']);
-            $serverConfigurationService->setDbPassword($_POST['db_password']);
-            $serverHasBamInstalled = $serverWizardIdentity->fetchIfServerInstalledBam($serverIP, $_POST['centreon_folder']);
-        }
-
-        // Add configuration of the new server in the database
-        try {
-            if ($serverHasBamInstalled) {
+            $serverConfigurationService->setDbUser($this->arguments['db_user']);
+            $serverConfigurationService->setDbPassword($this->arguments['db_password']);
+            if ($serverWizardIdentity->checkBamOnRemoteServer($serverIP, $centreonPath)) {
                 $serverConfigurationService->shouldInsertBamBrokers();
             }
+        }
 
-            $serverID = $serverConfigurationService->insert();
-        } catch(\Exception $e) {
+        // Add configuration of the new server in the database (poller, engine, broker...)
+        try {
+            // If server not linked to a poller, then it is linked to central server
+            if (!$pollerConfigurationBridge->hasPollersForUpdating()) {
+                $serverConfigurationService->isLinkedToCentralServer();
+            }
+
+            $serverId = $serverConfigurationService->insert();
+        } catch (\Exception $e) {
             return ['error' => true, 'message' => $e->getMessage()];
         }
 
-        $pollerConfigurationBridge->setServerID($serverID);
-        $pollerConfigurationBridge->collectDataFromRequest();
         $taskId = null;
 
-        // If you want to link pollers to a remote
-        if ($pollerConfigurationBridge->hasPollersForUpdating()) {
-            $remoteServer = $pollerConfigurationBridge->getRemoteServerForConfiguration();
-            $pollerServers = $pollerConfigurationBridge->getLinkedPollersSelectedForUpdate();
-            $pollerConfigurationService->setOpenBrokerFlow($openBrokerFlow);
-            $pollerConfigurationService->setPollersConfigurationWithServer($pollerServers, $remoteServer);
-
-            /**
-             * Create Export Task
-             */
-            $params = [];
-            foreach ($pollerServers as $poller){
-                $params['pollers'][] = $poller->getId();
-            }
-            $params['server'] = $remoteServer->getId();
-            $params['remote_ip'] = $remoteServer->getIp();
-            $params['centreon_path'] = $_POST['centreon_folder'] ?? '/centreon/';
-            $taskId = $this->createExportTask($params);
-        }
-
+        // if it is remote server wizard, create an export task and link pollers to it if needed
         if ($isRemoteConnection) {
-            $centreonPath = $_POST['centreon_folder'] ?? '/centreon/';
+            $remoteServer = $pollerConfigurationBridge->getPollerFromId($serverId);
+
+            // set basic parameters to export task
+            $params = [
+                'server' => $remoteServer->getId(),
+                'remote_ip' => $remoteServer->getIp(),
+                'centreon_path' => $centreonPath,
+                'pollers' => []
+            ];
+
+            // If you want to link pollers to a remote
+            if ($pollerConfigurationBridge->hasPollersForUpdating()) {
+                $pollers = $pollerConfigurationBridge->getLinkedPollersSelectedForUpdate();
+                $pollerConfigurationService->linkPollersToParentPoller($pollers, $remoteServer);
+
+                foreach ($pollers as $poller) {
+                    $params['pollers'][] = $poller->getId();
+                }
+            }
+
+            // Create export task
+            $taskId = $this->createExportTask($params);
+
+            // add server to the list of remote servers in database (table remote_servers)
             $this->addServerToListOfRemotes($serverIP, $centreonPath);
             $this->setCentreonInstanceAsCentral();
+
+        // if it is poller wizard and poller is linked to another poller/remote server (instead of central)
+        } elseif ($pollerConfigurationBridge->hasPollersForUpdating()) {
+            $pollers = [$pollerConfigurationBridge->getPollerFromId($serverId)];
+            $parentPoller = $pollerConfigurationBridge->getLinkedPollersSelectedForUpdate()[0];
+            $pollerConfigurationService->linkPollersToParentPoller($pollers, $parentPoller);
         }
 
         return ['success' => true, 'task_id' => $taskId];

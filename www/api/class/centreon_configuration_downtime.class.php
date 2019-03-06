@@ -95,7 +95,7 @@ class CentreonConfigurationDowntime extends CentreonConfigurationObjects
         }
         return array(
             'items' => $downtimeList,
-            'total' => $stmt->rowCount()
+            'total' => (int) $this->pearDB->numberRows()
         );
     }
 }

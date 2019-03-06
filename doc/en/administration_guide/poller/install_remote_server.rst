@@ -1,45 +1,12 @@
-=======================
-Install a Remote Server
-=======================
+==========================
+Installing a Remote Server
+==========================
 
-------------
-Installation
-------------
+Installing a Remote Server is similar to installing a Centreon.
+Select the method:
 
-The installation of a Remote Server is quite similar to install a Centreon
-Central server.
+.. toctree::
+   :maxdepth: 1
 
-Using Centreon ISO
-------------------
-
-Follow the :ref:`Using Centreon ISO el7<installisoel7>` documentation to install a Centreon
-Central server. 
-
-Using Centreon packages
------------------------
-
-Follow the :ref:`Using packages<install_from_packages>` documentation to install a Centreon
-Central Server.
-
----------------------------
-Enable Remote Server option
----------------------------
-
-Connect to your **Remoter Server** and execute following command::
-
-    # /usr/share/centreon/bin/centreon -u admin -p centreon -a enableRemote -o CentreonRemoteServer -v @IP_CENTREON_CENTRAL
-
-.. note::
-    Replace **@IP_CENTREON_CENTRAL** by the IP of the Centreon server seen by the poller
-
-This command will enable **Remote Server** mode::
-
-    Starting Centreon Remote enable process:
-
-      Limiting Menu Access...Success
-      Limiting Actions...Done
-
-      Notifying Master...Success
-      Centreon Remote enabling finished.
-
-Go to :ref:`SSH Key Exchange chapter to continu<sskkeypoller>`.
+   install_remote_server_iso
+   install_remote_server_packages

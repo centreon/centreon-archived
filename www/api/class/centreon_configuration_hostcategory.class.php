@@ -138,7 +138,7 @@ class CentreonConfigurationHostcategory extends CentreonConfigurationObjects
 
         return array(
             'items' => $hostCategoryList,
-            'total' => $stmt->rowCount()
+            'total' => (int) $this->pearDB->numberRows()
         );
     }
 }

@@ -35,13 +35,13 @@ SGBD
 
 **Centreon vous recommande d'utiliser MariaDB** plutôt que le moteur MySQL.
 
-+----------+-----------+
-| Logiciel | Version   |
-+==========+===========+
-| MariaDB  | >= 10.1.x |
-+----------+-----------+
-| MySQL    | >= 5.6.x  |
-+----------+-----------+
++----------+------------+
+| Logiciel | Version    |
++==========+============+
+| MariaDB  | >= 10.1.29 |
++----------+------------+
+| MySQL    | >= 5.6.16  |
++----------+------------+
 
 Dépendances logicielles
 =======================
@@ -72,6 +72,10 @@ Le tableau suivant décrit les dépendances logicielles :
 Sélectionner votre architecture
 *******************************
 
+.. note::
+    Centreon propose un :download:`classeur </files/Centreon_platform_sizing.xlsx>`
+    permettant de calculer le dimensionnement de votre plate-forme.
+
 Le tableau suivant présente les prérequis pour une installation de Centreon :
 
 +----------------------+-------------------------+----------------------------+----------------+---------------+
@@ -91,8 +95,6 @@ Le tableau suivant présente les prérequis pour une installation de Centreon :
 +----------------------+-------------------------+----------------------------+----------------+---------------+
 |          ...         |           ...           |             ...            |      ...       |      ...      |
 +----------------------+-------------------------+----------------------------+----------------+---------------+
-|     84000 - 91000    |       8400 - 9100       | 1 central + 13 collecteurs |  4 vCPU / 8 GB | 4 vCPU / 4 GB |
-+----------------------+-------------------------+----------------------------+----------------+---------------+
 
 .. note::
     Un collecteur peut superviser en moyenne 7000 services actifs.
@@ -110,6 +112,10 @@ de votre système. Pour voir ce qu'il est possible de faire avec centreon à ce 
 Définition de l'espace disque
 *****************************
 
+.. note::
+    Centreon propose un :download:`classeur </files/Centreon_platform_sizing.xlsx>`
+    permettant de calculer le dimensionnement de votre plate-forme.
+
 L'espace disque utilisé pour supporter les données issues de la collecte dépend
 de plusieurs critères :
 
@@ -123,21 +129,23 @@ Le tableau suivant propose une idée de la volumétrie de votre plate-forme :
 * La période de rétention programmée est de 6 mois
 * Deux courbes sont présentes par graphique de performance
 
-+------------------------+----------------+-------------------+
-|  Nombre de services    | /var/lib/mysql | /var/lib/centreon |
-+========================+================+===================+
-|        < 500           |     10 GB      |      2.5 GB       |
-+------------------------+----------------+-------------------+
-|       500 - 2000       |     42 GB      |       10 GB       |
-+------------------------+----------------+-------------------+
-|      2000 - 10000      |    126 GB      |       30 GB       |
-+------------------------+----------------+-------------------+
-|      10000 - 20000     |    252 GB      |       60 GB       |
-+------------------------+----------------+-------------------+
-|      20000 - 50000     |    660 GB      |      150 GB       |
-+------------------------+----------------+-------------------+
-|     50000 - 100000     |    1.4 TB      |      600 GB       |
-+------------------------+----------------+-------------------+
++--------------------+------------------------+---------------------------+
+| Nombre de services | /var/lib/mysql (in GB) | /var/lib/centreon (in GB) |
++====================+========================+===========================+
+| 500                | 10                     | 2.5                       |
++--------------------+------------------------+---------------------------+
+| 2000               | 42                     | 10                        |
++--------------------+------------------------+---------------------------+
+| 10 000             | 93                     | 27                        |
++--------------------+------------------------+---------------------------+
+| 20 000             | 186                    | 54                        |
++--------------------+------------------------+---------------------------+
+| 50 000             | 465                    | 135                       |
++--------------------+------------------------+---------------------------+
+| 100 000            | 930                    | 270                       |
++--------------------+------------------------+---------------------------+
+| ...                | ...                    | ...                       |
++--------------------+------------------------+---------------------------+
 
 *************************
 Définition des partitions

@@ -28,12 +28,11 @@ class AutologinContext extends CentreonContext
     {
         $this->currentPage = new CurrentUserConfigurationPage($this);
         $this->currentPage->setProperties([
+            'default' => 'Monitoring > Status Details > Hosts',
             'autologin_key' => 'toto'
         ]);
         $this->currentPage->save();
         $this->iAmLoggedOut();
-        
-        
     }
 
     /**
@@ -41,12 +40,12 @@ class AutologinContext extends CentreonContext
      */
     public function theUserArrivesOnTheConfiguredPageForItsAccount()
     {
-        $this->visit('main.php?autologin=1&useralias=admin&token=toto');
-
-        $page = $this->getSession()->getPage();
+        $this->visit('main.php?autologin=1&useralias=admin&token=toto', false);
+        self::$lastUri = 'p=20202';
+        $this->switchToIframe();
         $this->spin(
-            function ($context) use ($page) {
-                return $page->has('css', 'a[href="main.get.php?p=1"]');
+            function ($context) {
+                return $context->getSession()->getPage()->has('css', 'a[href="main.php?p=20202"]');
             }
         );
     }
@@ -56,12 +55,12 @@ class AutologinContext extends CentreonContext
      */
     public function theUserEntersATopologyAndArrivesAtTheLinkedPage()
     {
-        $this->visit('main.php?p=60101&autologin=1&useralias=admin&token=toto');
-
-        $page = $this->getSession()->getPage();
+        $this->visit('main.php?p=60101&autologin=1&useralias=admin&token=toto', false);
+        self::$lastUri = 'p=60101';
+        $this->switchToIframe();
         $this->spin(
-            function ($context) use ($page) {
-                return $page->has('css', 'a[href="main.get.php?p=60101"]');
+            function ($context) {
+                return $context->getSession()->getPage()->has('css', 'a[href="main.php?p=60101"]');
             }
         );
     }

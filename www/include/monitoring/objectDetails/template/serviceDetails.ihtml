@@ -620,7 +620,7 @@
     <tr class={cycle values="list_two, list_one"}>
         <td class="ListColLeft ColPopup" width="120">{$tcs.host_name}</td>
         <td class="ListColLeft ColPopup" width="120">{$tcs.service_description}</td>
-        <td class="ListColRight" width="150" style="white-space:nowrap;">{$tcs.entry_time}</td>
+        <td class="ListColRight isTimestamp" width="150" style="white-space:nowrap;">{$tcs.entry_time}</td>
         <td class="ListColCenter" width="100">{$tcs.author_name}</td>
         <td class="ListColNoWrap containsURI">{$tcs.comment_data}</td>
         <td class="ListColCenter" width="50">{$tcs.is_persistent}</td>

@@ -4,7 +4,7 @@
 Distributed architecture
 ========================
 
-The Centreon distributed architectures are describe into the architecture chapter:
+The Centreon distributed architecture is described in the **Architecture** chapter:
 
 * :ref:`Distributed architecture<archi_poller>`
 * :ref:`Distributed architecture with Remote server<archi_remoteserver>`
@@ -16,7 +16,5 @@ The Centreon distributed architectures are describe into the architecture chapte
 
    install_poller
    install_remote_server
-   ssh_key
-   wizard_add_poller
    pollersstats
    advanced_configuration_broker

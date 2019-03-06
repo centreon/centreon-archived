@@ -51,6 +51,7 @@ class InformationTest extends \PHPUnit_Framework_TestCase
             'screenshot' => '',
             'thumbnail' => './widgets/host-monitoring/resources/centreon-logo.png',
             'url' => './widgets/host-monitoring/index.php',
+            'directory' => 'my-widget',
             'preferences' => array(
                 'preference' => array(
                     array(
@@ -96,7 +97,7 @@ class InformationTest extends \PHPUnit_Framework_TestCase
             ->willReturn($this->configuration);
 
         $information = new Information($this->container, $this->utils);
-        $configuration = $information->getConfiguration('MyWidget');
+        $configuration = $information->getConfiguration('my-widget');
 
         $this->assertEquals($configuration, $expectedResult);
     }

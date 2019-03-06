@@ -3,8 +3,8 @@
 namespace CentreonRemote\Domain\Service;
 
 use Centreon\Domain\Repository\InformationsRepository;
+use Centreon\Infrastructure\Service\CentreonDBManagerService;
 use Curl\Curl;
-use Pimple\Container;
 
 class NotifyMasterService
 {
@@ -26,16 +26,31 @@ class NotifyMasterService
     const FAIL = 'fail';
 
     /**
-     * @var Container
+     * @var CentreonDBManagerService
      */
-    private $di;
+    private $dbManager;
+
+    /**
+     * @var Curl
+     */
+    private $curl;
+
+    /**
+     * @return Curl
+     */
+    public function setCurl(Curl $curl): void
+    {
+        $this->curl = $curl;
+    }
 
     /**
      * NotifyMasterService constructor.
+     *
+     * @param CentreonDBManagerService $dbManager
      */
-    public function __construct(Container $di)
+    public function __construct(CentreonDBManagerService $dbManager)
     {
-        $this->di = $di;
+        $this->dbManager = $dbManager;
     }
 
     /**
@@ -54,7 +69,7 @@ class NotifyMasterService
         }
 
         $url = "{$ip}/centreon/api/external.php?object=centreon_remote_server&action=addToWaitList";
-        $repository = $this->getDi()['centreon.db-manager']->getRepository(InformationsRepository::class);
+        $repository = $this->dbManager->getRepository(InformationsRepository::class);
         $applicationKey = $repository->getOneByKey('appKey');
         $version = $repository->getOneByKey('version');
 
@@ -70,8 +85,7 @@ class NotifyMasterService
                 'app_key' => $applicationKey->getValue(),
                 'version' => $version->getValue(),
             ];
-            $curl = new Curl();
-            $curl->post($url, $curlData);
+            $this->curl->post($url, $curlData);
 
             if ($curl->error) {
                 switch ($curl->error_code) {
@@ -102,10 +116,5 @@ class NotifyMasterService
         }
 
         return ['status' => self::SUCCESS];
-    }
-
-    private function getDi(): Container
-    {
-        return $this->di;
     }
 }

@@ -73,13 +73,13 @@ try {
 
             // install all available widgets
             foreach ($widgetInfoObj->getInstallableList() as $widgetName => $widgetData) {
-                $widgetInstaller = $factory->newInstaller($widgetName);
+                $widgetInstaller = $factory->newInstaller($widgetData['directory']);
                 $widgetInstaller->install();
             }
 
             // upgrade all available widgets
             foreach ($widgetInfoObj->getUpgradeableList() as $widgetName => $widgetData) {
-                $widgetUpgrader = $factory->newUpgrader($widgetName);
+                $widgetUpgrader = $factory->newUpgrader($widgetData['directory']);
                 $widgetUpgrader->upgrade();
             }
 
@@ -96,7 +96,7 @@ try {
             $widgetsToUpgrade = $widgetInfoObj->getUpgradeableList();
 
             foreach ($widgetsToUpgrade as $widgetName => $widgetData) {
-                $widgetUpgrader = $factory->newUpgrader($widgetName);
+                $widgetUpgrader = $factory->newUpgrader($widgetData['directory']);
                 $widgetUpgrader->upgrade();
             }
             break;

@@ -69,7 +69,8 @@ class Broker extends AbstractObjectXML
         id,
         name,
         centreonbroker_module_path,
-        centreonbroker_cfg_path
+        centreonbroker_cfg_path,
+        centreonbroker_logs_path
     ';
     protected $exclude_parameters = array(
         'blockId'
@@ -235,9 +236,15 @@ class Broker extends AbstractObjectXML
             $this->generateFile($object, true, 'centreonBroker');
             $this->writeFile($this->backend_instance->getPath());
         }
+
+        // Manage path of cbd watchdog log
+        $watchdogLogsPath = trim($this->engine['broker_logs_path']) === '' ?
+            '/var/log/centreon-broker/watchdog.log' :
+            trim($this->engine['broker_logs_path']) . '/watchdog.log';
         $watchdog[] = array(
-            'log' => '/var/log/centreon-broker/watchdog.log'
+            'log' => $watchdogLogsPath
         );
+
         $this->generate_filename = 'watchdog.xml';
         $this->generateFile($watchdog, true, 'centreonbroker');
         $this->writeFile($this->backend_instance->getPath());
@@ -260,6 +267,7 @@ class Broker extends AbstractObjectXML
             $this->engine['name'] = $row['name'];
             $this->engine['broker_modules_path'] = $row['centreonbroker_module_path'];
             $this->engine['broker_cfg_path'] = $row['centreonbroker_cfg_path'];
+            $this->engine['broker_logs_path'] = $row['centreonbroker_logs_path'];
         } catch (Exception $e) {
             throw new Exception('Exception received : ' . $e->getMessage() . "\n");
         }

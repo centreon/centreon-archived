@@ -1,11 +1,11 @@
 .. _upgradecentreon1810:
 
-#########################
-Migrate to Centreon 18.10
-#########################
+###########################
+Migrating to Centreon 18.10
+###########################
 
-This chapter presents the procedure for migrating from a supervision platform
-to Centreon 18.10:
+This chapter presents the procedure for migrating from any monitoring platform
+to Centreon version 18.10:
 
 .. toctree::
    :maxdepth: 1

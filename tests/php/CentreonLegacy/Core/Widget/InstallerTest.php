@@ -47,6 +47,7 @@ class InstallerTest extends \PHPUnit_Framework_TestCase
             'screenshot' => '',
             'thumbnail' => './widgets/host-monitoring/resources/centreon-logo.png',
             'url' => './widgets/host-monitoring/index.php',
+            'directory' => 'my-widget',
             'preferences' => array(
                 'preference' => array(
                     array(

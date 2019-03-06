@@ -69,6 +69,8 @@ class HostTemplateConfigurationContext extends CentreonContext
     {
         // Click on template edition link (will open new window).
         $this->assertFind('css', 'ul#template img[src*="edit_mode.png"]')->click();
+        //[att^=str] :- attribute value starting with str
+
         $this->spin(
             function ($context) {
                 $windows = $context->getSession()->getWindowNames();
@@ -81,6 +83,7 @@ class HostTemplateConfigurationContext extends CentreonContext
         $this->getSession()->switchToWindow($windows[1]);
 
         // Check properties of the host template.
+        self::$lastUri = 'p=60103&o=c&host_id=2&min=1';
         $this->page = new HostTemplateConfigurationPage($this, false);
         $properties = $this->page->getProperties();
         if ($properties['name'] != 'generic-host') {
