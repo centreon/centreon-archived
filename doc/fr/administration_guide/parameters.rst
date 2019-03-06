@@ -181,28 +181,26 @@ Puis redémarrez le serveur Apache :
 
   service httpd restart
 
-
 *******
 RRDTool
 *******
 
-Cette partie permet de configurer le moteur de génération des graphiques RRDTool ainsi que les tailles des polices utilisées pour la présentation de ces derniers.
-
-#. Rendez-vous dans le menu **Administration > Paramétres**
-#. Dans le menu de gauche, cliquez sur **RRDTool**
-#. Cliquez sur **RRDTool**
+Cette partie permet de configurer le moteur de génération des graphiques RRDTool.
+Rendez-vous dans le menu **Administration > Paramétres > RRDTool**
 
 .. image :: /images/guide_exploitation/errdtool.png
    :align: center
 
 * Le champ **Chemin complet de l'exécutable RRDTOOL** définit le chemin vers l'exécutable RRDTool
-* Les champs appartenant aux catégories **Propriétés du titre**, **Propriétés de l'unité**, **Propriétés des axes**, **Propriétés de la légende**, **Propriété du filigrane** permettent de définir la police ainsi que la taille de la police pour la propriété sélectionnée
-* Le champ **Activer RRDCached** permet d'activer le processus RRDcached (Ne fonctionne qu'avec le broker Centreon Broker)
-* Le champ **Port TCP** définit le port sur lequel écoute RRDcached (ne pas activer la connexion TCP)
+* Le champ **Version de RRDTool** permet de connaître la version de RRDTool
+* Le champ **Activer RRDCached** permet d'activer le processus RRDcached
+* Le champ **Port TCP** définit le port sur lequel écoute RRDcached
 * Le champ **Chemin d'accès au socket Unix** définit le chemin vers le socket Unix
 
 .. warning::
-    N'activez RRDCacheD que si votre plate-forme de supervision rencontre de trop nombreux accès disques concernant l'écriture des données dans les fichiers RRD.
+    N'activez RRDCacheD que si votre plate-forme de supervision rencontre de trop
+    nombreux accès disques concernant l'écriture des données dans les fichiers RRD.
+    Ne choississez qu'une option (TCP ou socket Unix).
 
 ********
 Debogage
