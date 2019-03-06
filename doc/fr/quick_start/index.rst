@@ -1,3 +1,5 @@
+.. _quickstart:
+
 ################
 Démarrage rapide
 ################
