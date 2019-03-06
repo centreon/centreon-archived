@@ -167,15 +167,6 @@ class App extends Component {
 
 const mapStateToProps = () => {}
 
-/*
-const mapDispatchToProps = (dispatch) => {
-  return {
-    updateExternalComponents: () => {
-      return dispatch(setExternalComponents())
-    }
-  }
-}
-*/
 const mapDispatchToProps = {
   setExternalComponents
 };

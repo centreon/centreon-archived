@@ -10,6 +10,7 @@ class Hook extends Component {
     LoadableComponents: []
   };
 
+  // get hooks from redux and convert these in react components
   getLoadableComponents = () => {
     const { hooks, path } = this.props;
 
