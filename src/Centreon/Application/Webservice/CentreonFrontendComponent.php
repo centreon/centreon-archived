@@ -35,9 +35,8 @@
 namespace Centreon\Application\Webservice;
 
 use CentreonRemote\Application\Webservice\CentreonWebServiceAbstract;
-use Pimple\Container;
 
-class CentreonFrontendHook extends CentreonWebServiceAbstract
+class CentreonFrontendComponent extends CentreonWebServiceAbstract
 {
     /**
      * Name of web service object
@@ -46,27 +45,64 @@ class CentreonFrontendHook extends CentreonWebServiceAbstract
      */
     public static function getName(): string
     {
-        return 'centreon_frontend_hook';
+        return 'centreon_frontend_component';
     }
 
-    public function getHooks()
+    /**
+     * @SWG\Post(
+     *   path="/centreon/api/internal.php",
+     *   operationId="getComponents",
+     *   @SWG\Parameter(
+     *       in="query",
+     *       name="object",
+     *       type="string",
+     *       description="the name of the API object class",
+     *       required=true,
+     *       enum="centreon_configuration_remote",
+     *   ),
+     *   @SWG\Parameter(
+     *       in="query",
+     *       name="action",
+     *       type="string",
+     *       description="the name of the action in the API class",
+     *       required=true,
+     *       enum="components",
+     *   ),
+     *   @SWG\Response(
+     *     response=200,
+     *     description="JSON with the external react components (pages, hooks)"
+     *   )
+     * )
+     *
+     * Get list with remote components
+     *
+     * @return array
+     * @example [
+     *            ['pages' => [
+     *              '/my/module/route' => [
+     *                'js' => '<my_module_path>/static/pages/my/module/route/index.js',
+     *                'css' => '<my_module_path>/static/pages/my/module/route/index.css'
+     *              ]
+     *            ]],
+     *            ['hooks' => [
+     *              '/header/topCounter' => [
+     *                [
+     *                  'js' => '<my_module_path>/static/hooks/header/topCounter/index.js',
+     *                  'css' => '<my_module_path>/static/hooks/header/topCounter/index.css'
+     *                ]
+     *              ]
+     *            ]]
+     *          ]
+     */
+    public function getComponents(): array
     {
-        $utilsFactory = new \CentreonLegacy\Core\Utils\Factory($this->di);
-        $utils = $utilsFactory->newUtils();
-        $moduleFactory = new \CentreonLegacy\Core\Module\Factory($this->di, $utils);
-        $module = $moduleFactory->newInformation();
-        $installedModules = $module->getInstalledList();
+        $pages = $this->getDi()['centreon.frontend_component_service']->getPages();
+        $hooks = $this->getDi()['centreon.frontend_component_service']->getHooks();
 
-        $hooks = [];
-        foreach (array_keys($installedModules) as $installedModule) {
-            $relativePath = __DIR__ . '/../../../../www/';
-            $hook = 'modules/' . $installedModule . '/static/hooks/' . $this->arguments['path'] . '/index.js';
-            if (file_exists($relativePath . $hook)) {
-                $hooks[] = '/' . $hook;
-            }
-        }
-
-        return $hooks;
+        return [
+            'pages' => $pages,
+            'hooks' => $hooks
+        ];
     }
 
     /**

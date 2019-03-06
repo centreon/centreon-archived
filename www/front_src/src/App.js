@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import config from "./config";
 import Header from "./components/header";
 import { Switch } from "react-router-dom";
+import { connect } from "react-redux";
 import { ConnectedRouter } from "react-router-redux";
 import { history } from "./store";
 import ClassicRoute from "./components/router/classicRoute";
@@ -14,6 +15,8 @@ import Fullscreen from 'react-fullscreen-crossbrowser';
 import queryString from 'query-string';
 import axios from './axios';
 import NotAllowedPage from './route-components/notAllowedPage';
+
+import { setExternalComponents } from "./redux/actions/externalComponentsActions";
 
 class App extends Component {
 
@@ -68,6 +71,18 @@ class App extends Component {
       .then(({data}) => this.setState({acls: data, aclsLoaded: true}))
   }
 
+  // get external components (pages, hooks...)
+  getExternalComponents = () => {
+    const { setExternalComponents } = this.props;
+
+    axios("internal.php?object=centreon_frontend_component&action=components")
+      .get()
+      .then(({ data }) => {
+        // store external components in redux
+        setExternalComponents(data);
+    });
+  }
+
   // keep alive (redirect to login page if session is expired)
   keepAlive = () => {
     this.keepAliveTimeout = setTimeout(() => {
@@ -83,8 +98,9 @@ class App extends Component {
     }, 15000)
   }
 
-  UNSAFE_componentWillMount = () => {
+  componentDidMount() {
     this.getAcl();
+    this.getExternalComponents();
     this.keepAlive();
   }
 
@@ -149,4 +165,19 @@ class App extends Component {
   }
 }
 
-export default App;
+const mapStateToProps = () => {}
+
+/*
+const mapDispatchToProps = (dispatch) => {
+  return {
+    updateExternalComponents: () => {
+      return dispatch(setExternalComponents())
+    }
+  }
+}
+*/
+const mapDispatchToProps = {
+  setExternalComponents
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(App);
