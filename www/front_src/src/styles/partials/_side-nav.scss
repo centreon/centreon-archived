@@ -13,6 +13,7 @@
   text-align: center;
   background: #e0e0e0;
   transition: all 0.2s;
+  z-index: 2;
   .sidebar-logo {
     display: none;
   }
@@ -181,7 +182,6 @@ a {
             background: $turquoise-centreon-primary;
             color: $white-color;
           }
-          
         }
         &:hover {
           .collapsed-level-item-link {
@@ -438,10 +438,6 @@ a {
         background-color: $white-color;
         .collapsed-level-item-link {
           padding: 8px 10px 8px 47px;
-          // &:hover {
-          //   color: $white-color;
-          //   background-color: #0a78a5;
-          // }
         }
       }
     }
