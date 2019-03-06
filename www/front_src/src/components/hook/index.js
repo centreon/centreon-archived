@@ -3,6 +3,7 @@ import { connect } from "react-redux";
 import { dynamicImport } from "../../utils/dynamicImport";
 import centreonAxios from "../../axios";
 
+// class to dynamically import component from modules
 class Hook extends Component {
 
   state = {
@@ -16,11 +17,9 @@ class Hook extends Component {
     for (const [hook, parameters] of Object.entries(hooks)) {
       if (hook === path) {
         for (const parameter of parameters) {
-          console.log(parameters)
           LoadableComponents.push(
             React.lazy(
               () => dynamicImport(parameter)
-              //() => dynamicImport('/_CENTREON_PATH_PLACEHOLDER_' + path)
             )
           );
         }
@@ -32,9 +31,7 @@ class Hook extends Component {
 
   render() {
     const { path, hooks, ...props } = this.props;
-    console.log(hooks)
     const LoadableComponents = this.getLoadableComponents();
-    //const { LoadableComponents } = this.state;
 
     return (
       <Suspense fallback="">

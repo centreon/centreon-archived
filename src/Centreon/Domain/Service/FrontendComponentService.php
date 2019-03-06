@@ -34,7 +34,15 @@ class FrontendComponentService
         return $this->di;
     }
 
-    private function getDirContents($dir, &$results = [], $regex = '/.*/')
+    /**
+     * Get directory files grouped by directory matching regex
+     *
+     * @param string $dir the directory to explore
+     * @param array $results the found files
+     * @param string $regex the regex to match
+     * @return void
+     */
+    private function getDirContents(string $dir, array &$results = [], string $regex = '/.*/'): array
     {
         $files = [];
         if (is_dir($dir)) {
@@ -42,9 +50,9 @@ class FrontendComponentService
         }
 
         foreach ($files as $key => $value) {
-            //$path = realpath($dir . DIRECTORY_SEPARATOR . $value);
             $path = $dir . DIRECTORY_SEPARATOR . $value;
             if (!is_dir($path) && preg_match($regex, $path)) {
+                // group files by directory
                 $results[dirname($path)][] = basename($path);
             } else if ($value != "." && $value != "..") {
                 $this->getDirContents($path, $results, $regex);
@@ -72,15 +80,17 @@ class FrontendComponentService
         // search in each installed modules if there are hooks
         $hooks = [];
         foreach (array_keys($installedModules) as $installedModule) {
-            //$relativePath = __DIR__ . '/../../../../www/';
-            //$hook = 'modules/' . $installedModule . '/static/hooks/' . $this->arguments['path'] . '/index.js';
             $modulePath = __DIR__ . '/../../../../www/modules/' . $installedModule . '/static/hooks';
             $files = [];
             $this->getDirContents($modulePath, $files, '/\.(js|css)$/');
             foreach ($files as $path => $hookFiles) {
                 if (preg_match('/\/static\/hooks(\/.+)$/', $path, $hookMatches)) {
+                    // parse hook name by removing beginning of the path
                     $hookName = $hookMatches[1];
+                    // set relative path
                     $hookPath = str_replace(__DIR__ . '/../../../../www', '', $path);
+
+                    // add hook parameters (js and css files)
                     $hookParameters = [];
                     foreach ($hookFiles as $hookFile) {
                         if (preg_match('/\.js$/', $hookFile)) {
@@ -89,19 +99,12 @@ class FrontendComponentService
                             $hookParameters['css'] = $hookPath . '/' . $hookFile;
                         }
                     }
+
                     if (!empty($hookParameters)) {
                         $hooks[$hookName][] = $hookParameters;
                     }
                 }
             }
-
-            /*
-            $relativePath = __DIR__ . '/../../../../www/';
-            $hook = 'modules/' . $installedModule . '/static/hooks/' . $this->arguments['path'] . '/index.js';
-            if (file_exists($relativePath . $hook)) {
-                $hooks[] = '/' . $hook;
-            }
-            */
         }
 
         return $hooks;
