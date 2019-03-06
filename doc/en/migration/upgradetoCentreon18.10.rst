@@ -62,8 +62,37 @@ Connect to your old Centreon server and synchronize following directories::
 .. note::
     Replace **IP_New_Centreon** by the IP or the new Centreon server.
 
-If your DBMS is installed on the same server as the Centreon central server, run the
-following commands:
+.. warning::
+    In case of migration from CES 3.4.x, Centreon-web 2.8.x under CentOS 6 with MariaDB 5.X, do not sync folders /var/lib/mysql with RSYNC toward Centreon 18.10 / MariaDB 10.1.
+    
+    #. Dump source databases
+        # mysqldump -u root -p centreon > /tmp/export/centreon.sql
+        # mysqldump -u root -p centreon_storage > /tmp/export/centreon_storage.sql
+      
+    #. Stop source MariaDB server
+        # service mysql stop
+    
+    #. Export the dumps to the new Centreon 18.10 database server (make sure you have enough space for large databases dumps)
+        # rsync -avz /tmp/centreon.sql root@IP_New_Centreon:/tmp/
+        # rsync -avz /tmp/centreon_storage.sql root@IP_New_Centreon:/tmp/
+        
+    #. On the Centreon 18.10 database server, drop the original databases and re create them
+        # mysql -u root -p
+        # drop database centreon;
+        # drop database centreon_storage;
+        # create database centreon;
+        # create database centreon_storage;
+        
+    #. Import the previously transfered dumps
+        # mysql -u root centreon -p </tmp/centreon.sql
+        # mysql -u root centreon_storage -p </tmp/centreon_storage.sql
+        
+    #. Upgrade the tables
+        # mysql_upgrade
+        
+    #. Keep going with the migration
+    
+    If your DBMS is installed on the same server as the Centreon central server, execute the following commands:
 
 #. Stop **mysqld** on both Centreon servers: ::
 
@@ -97,6 +126,22 @@ installation. The main directories to synchronize are:
 .. note::
     To run the plugins, you must first install the required dependencies.
 
+.. note::
+    If you still have distant centreon-engine 1.8.1 pollers that you want to postpone the upgrade to v18.10, be aware that centreon-web 18.10 resource $USER1$ actually points to /usr/lib64/nagios/plugins
+    
+    To do on the 1.8.1 pollers to mitigate the issue :
+    
+    # mv /usr/lib64/nagios/plugins/* /usr/lib/nagios/plugins/
+    # rmdir /usr/lib64/nagios/plugins/
+    # ln -s -t /usr/lib64/nagios/ /usr/lib/nagios/plugins/
+    
+    You now have a symbolic link as :
+    # ls -alt /usr/lib64/nagios/
+    lrwxrwxrwx   1 root root      24  1 nov.  17:59 plugins -> /usr/lib/nagios/plugins/
+    -rwxr-xr-x   1 root root 1711288  6 avril  2018 cbmod.so
+    
+    You can now push poller configuration from Centreon 18.10 whether the distant poller is centreon-engine 18.10 or 1.8.1
+    
 Upgrading Centreon
 ==================
 
@@ -107,6 +152,9 @@ the **/usr/share/centreon/www/install** directory: ::
     # cd /usr/share/centreon/installDir/
     # mv install-18.10.0-YYYYMMDD_HHMMSS/ ../www/install/
 
+.. note::
+    If you use the same IP address or same DNS name between old Centreon webserver and the new one, do a full cache cleanup of your browser to avoid JS issues
+ 
 Go to http://[New_Centreon_IP]/centreon URL and perform the
 upgrade.
 
