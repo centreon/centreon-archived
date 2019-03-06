@@ -125,6 +125,13 @@ module.exports = {
         }]
       },
       {
+        test: /ReactRouterDom\.js/,
+        use: [{
+          loader: 'expose-loader',
+          options: 'ReactRouterDom'
+        }]
+      },
+      {
         test: /ReactRedux\.js$/,
         use: [{
           loader: 'expose-loader',
