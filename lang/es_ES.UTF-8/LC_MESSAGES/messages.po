@@ -12989,7 +12989,7 @@ msgid "Display Finished Downtimes"
 msgstr "Mostrar los tiempos de apagado finalizados"
 
 #: centreon-web/www/include/monitoring/downtime/listDowntime.php:262
-msgid "Display Downtime Cycle"
+msgid "Display Recurring Downtimes"
 msgstr "Mostrar tiempos de parada cíclicos"
 
 #: centreon-web/www/include/monitoring/downtime/AddDowntime.php:172

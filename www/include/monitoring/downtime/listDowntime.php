@@ -283,7 +283,7 @@ $tpl->assign("user", _("Users"));
 $tpl->assign('Hostgroup', _("Hostgroup"));
 $tpl->assign('Search', _("Search"));
 $tpl->assign("ViewAll", _("Display Finished Downtimes"));
-$tpl->assign("ViewDowntimeCycle", _("Display Downtime Cycle"));
+$tpl->assign("ViewDowntimeCycle", _("Display Recurring Downtimes"));
 $tpl->assign("Author", _("Author"));
 $tpl->assign("search_output", $search_output);
 $tpl->assign('search_host', $host_name);
