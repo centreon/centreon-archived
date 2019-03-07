@@ -1,8 +1,8 @@
 <?php
 
 /*
- * Copyright 2005-2015 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2019 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -95,26 +95,39 @@ $ldapUseDns[] = $form->createElement(
 );
 $form->addGroup($ldapUseDns, 'ldap_srv_dns', _("Use service DNS"), '&nbsp;');
 
-$ldapDnsUseSsl[] = $form->createElement('radio', 'ldap_dns_use_ssl', null, _("Yes"), '1');
-$ldapDnsUseSsl[] = $form->createElement('radio', 'ldap_dns_use_ssl', null, _("No"), '0');
-$form->addGroup($ldapDnsUseSsl, 'ldap_dns_use_ssl', _("Use SSL connection"), '&nbsp;');
-$ldapDnsUseTls[] = $form->createElement('radio', 'ldap_dns_use_tls', null, _("Yes"), '1');
-$ldapDnsUseTls[] = $form->createElement('radio', 'ldap_dns_use_tls', null, _("No"), '0');
-$form->addGroup($ldapDnsUseTls, 'ldap_dns_use_tls', _("Use TLS connection"), '&nbsp;');
 $form->addElement('text', 'ldap_dns_use_domain', _("Alternative domain for ldap"), $attrsText);
 
 $form->addElement('text', 'ldap_search_limit', _('LDAP search size limit'), $attrsText2);
 $form->addElement('text', 'ldap_search_timeout', _('LDAP search timeout'), $attrsText2);
 
+// list of contact template available
 $query = "SELECT contact_id, contact_name FROM contact WHERE contact_register = '0'";
 $res = $pearDB->query($query);
-$tmplList = array();
-while ($row = $res->fetchRow()) {
-    $tmplList[$row['contact_id']] = $row['contact_name'];
+$LdapContactTplList = array();
+while ($row = $res->fetch()) {
+    $LdapContactTplList[$row['contact_id']] = $row['contact_name'];
 }
 $res->closeCursor();
+$form->addElement(
+    'select',
+    'ldap_contact_tmpl',
+    _('Contact template'),
+    $LdapContactTplList,
+    array('id' => 'ldap_contact_tmpl')
+);
 
-$form->addElement('select', 'ldap_contact_tmpl', _('Contact template'), $tmplList, array('id' => 'ldap_contact_tmpl'));
+// Default contactgroup for imported contact
+$cgAvRoute = './include/common/webServices/rest/internal.php?object=centreon_configuration_contactgroup&action=list';
+$cgDeRoute = './include/common/webServices/rest/internal.php?object=centreon_configuration_contactgroup'
+    . '&action=defaultValues&target=contact&field=ldap_default_cg&id=' . $arId;
+$attrContactGroup = array(
+    'datasourceOrigin' => 'ajax',
+    'availableDatasetRoute' => $cgAvRoute,
+    'defaultDatasetRoute' => $cgDeRoute,
+    'multiple' => false,
+    'linkedObject' => 'centreonContactgroup'
+);
+$form->addElement('select2', 'ldap_default_cg', _('Default contactgroup'), array(), $attrContactGroup);
 
 $form->addElement('header', 'ldapinfo', _("LDAP Information"));
 
@@ -169,6 +182,7 @@ $defaultOpt = array('ldap_auth_enable' => '0',
     'ldap_dns_use_ssl' => '0',
     'ldap_dns_use_tls' => '0',
     'ldap_contact_tmpl' => '0',
+    'ldap_default_cg' => '0',
     'ldap_search_limit' => '60',
     'ldap_search_timeout' => '60');
 $gopt = array();
@@ -178,7 +192,7 @@ if ($arId) {
     $res = $pearDB->query("SELECT `ar_name`, `ar_description`, `ar_enable`
                             FROM `auth_ressource`
                             WHERE ar_id = " . $pearDB->escape($arId));
-    while ($row = $res->fetchRow()) {
+    while ($row = $res->fetch()) {
         $gopt['ar_name'] = $row['ar_name'];
         $gopt['ar_description'] = $row['ar_description'];
         $gopt['ldap_auth_enable'] = $row['ar_enable'];
@@ -247,9 +261,9 @@ $DBRESULT = $form->addElement('reset', 'reset', _("Reset"), array("class" => "bt
 
 $nbOfInitialRows = 0;
 if ($arId) {
-    $query = "SELECT count(*) as nb FROM auth_ressource_host WHERE auth_ressource_id = " . $pearDB->escape($arId);
+    $query = "SELECT COUNT(*) as nb FROM auth_ressource_host WHERE auth_ressource_id = " . $pearDB->escape($arId);
     $res = $pearDB->query($query);
-    $row = $res->fetchRow();
+    $row = $res->fetch();
     $nbOfInitialRows = $row['nb'];
 }
 
@@ -260,7 +274,7 @@ if ($arId) {
               WHERE auth_ressource_id = " . $pearDB->escape($arId);
     $res = $pearDB->query($query);
     if ($res->rowCount()) {
-        $row = $res->fetchRow();
+        $row = $res->fetch();
         $maxHostId = $row['cnt'];
     }
 }
@@ -274,9 +288,9 @@ if ($form->validate()) {
     $values = $form->getSubmitValues();
 
     /*
-     * Test is filter string is validate
+     * Test if filter string is valid
      */
-    if (false === CentreonLDAP::validateFilterPattern($values['user_filter'])) {
+    if (!CentreonLDAP::validateFilterPattern($values['user_filter'])) {
         $filterValid = false;
     }
 
@@ -291,6 +305,10 @@ if ($form->validate()) {
     if ($filterValid && $allHostsOk) {
         if (!isset($values['ldap_contact_tmpl'])) {
             $values['ldap_contact_tmpl'] = "";
+        }
+
+        if (!isset($values['ldap_contact_tmpl'])) {
+            $values['ldap_default_cg'] = "";
         }
 
         $arId = $ldapAdmin->setGeneralOptions($values['ar_id'], $values);

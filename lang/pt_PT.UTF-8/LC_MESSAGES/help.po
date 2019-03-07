@@ -276,8 +276,10 @@ msgstr ""
 "A configuração do servidor LDAP deve ser válida e o utilizador deve corresponder aos critérios de pesquisa definidos."
 
 #: centreon-web/www/include/Administration/parameters/ldap/help.php:14
-msgid "The contact template for auto imported user.<br/>This template is applied for Monitoring Engine contact configuration and ACLs"
-msgstr "O modelo de contacto para utilizadors automáticos importados. <br/> Este modelo é aplicado para configurar os contactos do agendador e para as ACLs."
+msgid "The contact template for auto imported user.<br/>This template is applied for "
+"Monitoring Engine contact configuration and ACLs."
+msgstr "O modelo de contacto para utilizadors automáticos importados. <br/>"
+"Este modelo é aplicado para configurar os contactos do agendador e para as ACLs."
 
 #: centreon-web/www/include/Administration/parameters/ldap/help.php:17
 msgid "Use the DNS service for get LDAP host"

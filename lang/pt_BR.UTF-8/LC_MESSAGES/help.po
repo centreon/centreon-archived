@@ -838,7 +838,7 @@ msgstr ""
 #: /home/lgcosta/devel/centreon/centreon/www/include/Administration/parameters/ldap/help.php:14
 msgid ""
 "The contact template for auto imported user.<br/>This template is applied "
-"for Monitoring Engine contact configuration and ACLs"
+"for Monitoring Engine contact configuration and ACLs."
 msgstr ""
 "O modelo de contato para usuários automáticos importados. <br/> Este modelo "
 "é aplicado para configurar os contatos do agendador e para as ACLs."
