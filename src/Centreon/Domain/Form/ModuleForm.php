@@ -34,18 +34,21 @@
  *
  */
 
-namespace Centreon\Domain\Entity;
+namespace Centreon\Domain\Form;
+
+use Centreon\Domain\Entity\Listener;
 
 /**
- * This class a module form
- * @package Centreon\Domain\Entity
+ * Class ModuleForm
+ *
+ * @package Centreon\Domain\Form
  */
 class ModuleForm
 {
     public const EVENT_ADD    = 1;
     public const EVENT_UPDATE = 2;
-    public const EVENT_DELETE = 3;
-    public const EVENT_READ   = 4;
+    public const EVENT_DELETE = 4;
+    public const EVENT_READ   = 8;
 
     /**
      * @var Listener[] List of all listeners defined for this module form.

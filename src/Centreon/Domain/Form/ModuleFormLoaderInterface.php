@@ -34,57 +34,17 @@
  *
  */
 
-namespace Centreon\Domain\Entity;
+namespace Centreon\Domain\Form;
 
 /**
- * Class ModuleFormLoader
- * @package Centreon\Domain\Entity
+ * Interface ModuleFormLoaderInterface
+ *
+ * @package Centreon\Domain\Form
  */
-class ModuleFormLoader implements ModuleFormLoaderInterface
+interface ModuleFormLoaderInterface
 {
     /**
-     * @var string Path of the modules
+     * Initialize the module form loader that will initialized all modules forms.
      */
-    private $pathModules;
-
-    /**
-     * @var string Name of the modules form configuration file
-     */
-    private $filename;
-
-    /**
-     * ModuleFormLoader constructor.
-     *
-     * @param string $pathModules Path of the modules
-     * @param string $filename Name of the modules form configuration file
-     */
-    public function __construct(string $pathModules, string $filename)
-    {
-        $this->pathModules = $pathModules;
-        $this->filename = $filename;
-    }
-
-    /**
-     * Initialize the module form loader that will initialized all module forms
-     * by loading the configuration files.
-     *
-     * @throws \Exception
-     */
-    public function load():void
-    {
-        if (! is_dir($this->pathModules)) {
-            throw new \Exception("The modules path does not exist");
-        }
-        $modules = scandir($this->pathModules);
-
-        foreach ($modules as $module) {
-            $fileToInclude = $this->pathModules . '/' . $module . '/' . $this->filename;
-            if (preg_match('/^(?!\.)/', $module)
-                && is_dir($this->pathModules . '/' . $module)
-                && file_exists($fileToInclude)
-            ) {
-                require_once($fileToInclude);
-            }
-        }
-    }
+    public function load():void;
 }
