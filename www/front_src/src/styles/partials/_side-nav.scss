@@ -32,6 +32,7 @@
     width: 148px;
     -webkit-box-shadow: 0 0 5px 0 #BFBFBF;
     box-shadow: 0 0 5px 0 #BFBFBF;
+    animation: appear 0.5s ease;
   }
   .toggle-sidebar-wrap {
     width: 45px;
@@ -70,6 +71,7 @@
     }
     .menu-item-name {
       display: inline-block;
+      animation: appear 0.5s ease;
     }
     .collapsed-items {
       display: block;
@@ -166,6 +168,7 @@ a {
     -webkit-box-shadow: 0 0 5px 0 #BFBFBF;
     box-shadow: 0 0 5px 0 #BFBFBF;
   }
+
   &-items {
     &.components {
       border-top: 1px solid $white-color;
@@ -480,7 +483,6 @@ a {
     > .collapsed-level-item-link {
       background: url("./img/icons/aside-menu-arrows.png") no-repeat;
       background-position: 26px 10px;
-      
       &.img-none {
         background: none;
         background-color: #f7f7f7;
@@ -495,6 +497,7 @@ a {
         background-color: $white-color;
         .collapsed-level-item-link {
           padding: 8px 20px;
+          width: 90px;
         }
       }
     }
@@ -534,5 +537,14 @@ a {
   }
   #sidebarCollapse span {
     display: none;
+  }
+}
+
+@keyframes appear {
+  0% {
+    opacity: 0;
+  }
+  90% {
+    opacity: 1;
   }
 }

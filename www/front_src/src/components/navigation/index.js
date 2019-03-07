@@ -124,7 +124,10 @@ class NavigationComponent extends Component {
     const pageId = this.props.history.location.search.split("p=")[1];
 
     return (
-      <nav class={"sidebar" + (active ? " active" : "")} id="sidebar">
+      <nav
+        class={"sidebar" + (active ? " active" : "")}
+        id="sidebar"
+      >
         <div class="sidebar-inner">
           <div class="sidebar-logo" onClick={this.toggleNavigation}>
             <span>
@@ -221,7 +224,8 @@ class NavigationComponent extends Component {
                                               this.goToPage(
                                                 routeMap.module + "?p=" + urlOptions,
                                                 levelOneKey
-                                              )
+                                              );
+                                              this.toggleNavigation();
                                             }}
                                             className="collapsed-level-item-link"
                                             to={routeMap.module + "?p=" + urlOptions}
