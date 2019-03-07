@@ -78,7 +78,7 @@ foreach ($inputArguments as $argumentName => $argumentValue) {
     }
 }
 
-if(is_null($p)) {
+if (is_null($p)) {
     $p = $inputs["p"];
 }
 $o = $inputs["o"];

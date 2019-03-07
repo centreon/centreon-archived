@@ -1,4 +1,3 @@
-
 var isMobile = true;
 
 $(document).ready(function() {

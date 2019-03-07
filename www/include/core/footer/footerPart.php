@@ -311,8 +311,8 @@ function validateFeature(name, version, enabled) {
               window.open(href);
             // If it's an internal link, we remove header to avoid inception
             } else {
-              // isMobile is declare in the menu.js
-              if(typeof isMobile === 'undefined' || isMobile !== true) {
+              // isMobile is declared in the menu.js file
+              if (typeof isMobile === 'undefined' || isMobile !== true) {
                   href = href.replace('main.php', 'main.get.php');
               }
               window.location.href = href;
