@@ -36,8 +36,8 @@
 
 namespace Centreon\Domain\Service;
 
-use Centreon\Domain\Entity\ModuleForm;
-use Centreon\Domain\Entity\ModuleFormLoaderInterface;
+use Centreon\Domain\Form\ModuleForm;
+use Centreon\Domain\Form\ModuleFormLoaderInterface;
 
 /**
  * This class is used to manage the forms created by the modules.
@@ -186,7 +186,10 @@ class ModuleFormManager
         foreach($this->moduleForms[$context] as $moduleForm) {
             $listeners = $moduleForm->getListeners($event);
             foreach ($listeners as $listener) {
-                call_user_func_array($listener->getAction(), array($this->form, $args));
+                call_user_func_array(
+                    $listener->getAction(),
+                    array($event, $this->form, $args)
+                );
             }
         }
     }
