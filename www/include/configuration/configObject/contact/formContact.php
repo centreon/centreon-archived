@@ -235,14 +235,14 @@ if ($o == "a") {
     $form->addElement('header', 'title', _("Modify a User"));
     $moduleFormManager->trigger(
         'form-contact',
-        \Centreon\Domain\Entity\ModuleForm::EVENT_READ,
+        \Centreon\Domain\Form\ModuleForm::EVENT_READ,
         ['contact_id' => $contact_id]
     );
 } elseif ($o == "w") {
     $form->addElement('header', 'title', _("View a User"));
     $moduleFormManager->trigger(
         'form-contact',
-        \Centreon\Domain\Entity\ModuleForm::EVENT_READ,
+        \Centreon\Domain\Form\ModuleForm::EVENT_READ,
         ['contact_id' => $contact_id]
     );
 } elseif ($o == "mc") {
@@ -765,7 +765,7 @@ if ($form->validate() && $from_list_menu == false) {
         $cctObj->setValue($contactId);
         $moduleFormManager->trigger(
             'form-contact',
-            \Centreon\Domain\Entity\ModuleForm::EVENT_ADD,
+            \Centreon\Domain\Form\ModuleForm::EVENT_ADD,
             ['contact_id' => $newContactId]
         );
     } elseif ($form->getSubmitValue("submitC")) {
@@ -773,7 +773,7 @@ if ($form->validate() && $from_list_menu == false) {
         // We modify
         $moduleFormManager->trigger(
             'form-contact',
-            \Centreon\Domain\Entity\ModuleForm::EVENT_UPDATE,
+            \Centreon\Domain\Form\ModuleForm::EVENT_UPDATE,
             ['contact_id' => $contact_id]
         );
     } elseif ($form->getSubmitValue("submitMC")) {
@@ -783,7 +783,7 @@ if ($form->validate() && $from_list_menu == false) {
                 updateContactInDB($contactId, true);
                 $moduleFormManager->trigger(
                     'form-contact',
-                    \Centreon\Domain\Entity\ModuleForm::EVENT_UPDATE,
+                    \Centreon\Domain\Form\ModuleForm::EVENT_UPDATE,
                     ['contact_id' => $contactId]
                 );
             }
