@@ -2116,9 +2116,14 @@ msgid "Contact"
 msgstr "Contact"
 
 #: centreon-web/www/install/smarty_translate.php:624
-#: centreon-web/www/include/Administration/parameters/ldap/form.php:117
+#: centreon-web/www/include/Administration/parameters/ldap/form.php:111
 msgid "Contact template"
 msgstr "Modèle de contact"
+
+#: centreon-web/www/install/smarty_translate.php:672
+#: centreon-web/www/include/Administration/parameters/ldap/form.php:125
+msgid "Default contact group"
+msgstr "Groupe de contacts par défaut"
 
 #: centreon-web/www/install/smarty_translate.php:633
 msgid "Escalation"
