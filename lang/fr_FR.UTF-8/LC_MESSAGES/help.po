@@ -414,10 +414,18 @@ msgstr ""
 #: centreon-web/www/include/Administration/parameters/ldap/help.php:14
 msgid ""
 "The contact template for auto imported user.<br/>This template is applied for "
-"Monitoring Engine contact configuration and ACLs"
+"Monitoring Engine contact configuration and ACLs."
 msgstr ""
 "Le modèle de contact pour les utilisateurs auto importés.<br/>Ce modèle est "
 "appliqué pour la configuration des contacts de l'ordonnanceur et pour les ACLs."
+
+#: centreon-web/www/include/Administration/parameters/ldap/help.php:14
+msgid ""
+"Default contact group applied to new users.<br/>All imported users will join "
+"this contactgroup."
+msgstr ""
+"Groupe de contact par défaut.<br/>Tous les nouveaux utilisateurs rejoindront "
+"ce groupe de contact."
 
 #: centreon-web/www/include/Administration/parameters/ldap/help.php:17
 msgid "Use the DNS service for get LDAP host"

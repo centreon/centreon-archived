@@ -667,3 +667,6 @@ _(" + Add a new entry");
 
 /* /tmp/centreon-2.7.x/www//include/common/templates/cloneMacro.ihtml */
 _("Nothing here, use the \"Add\" button");
+
+/* /www/include/common/Administration/parameters/ldap/form.ihtml*/
+_('Default contact group');
