@@ -86,7 +86,7 @@ class FrontendComponentService
             if (!is_dir($path) && preg_match($regex, $path)) {
                 // group files by directory
                 $results[dirname($path)][] = basename($path);
-            } else if ($value != "." && $value != "..") {
+            } elseif ($value != "." && $value != "..") {
                 $this->getDirContents($path, $results, $regex);
             }
         }
