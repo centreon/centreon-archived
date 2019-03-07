@@ -68,6 +68,10 @@ if ($ret['topology_page'] != "" && $p != $ret['topology_page']) {
 
 $acl = $oreon->user->access;
 $allowedAclGroups = $acl->getAccessGroups();
+/**
+ * @var $moduleFormManager \Centreon\Domain\Service\ModuleFormManager
+ */
+$moduleFormManager = $dependencyInjector['centreon.module_form_manager'];
 
 switch ($o) {
     case "li":
@@ -102,10 +106,28 @@ switch ($o) {
         require_once($path . "listContact.php");
         break;
     case "m":
-        multipleContactInDB(isset($select) ? $select : array(), $dupNbr);
+        $newContactIds = multipleContactInDB(isset($select) ? $select : array(), $dupNbr);
+
+        // We notify we have made an update
+        if (! empty($newContactIds)) {
+            $moduleFormManager->init();
+            $moduleFormManager->trigger(
+                'form-contact',
+                \Centreon\Domain\Form\ModuleForm::EVENT_UPDATE,
+                ['contact_ids' => $newContactIds]
+            );
+        }
+
         require_once($path . "listContact.php");
         break; #Duplicate n contacts
     case "d":
+        // Processing before deleting contacts
+        $moduleFormManager->init();
+        $moduleFormManager->trigger(
+            'form-contact',
+            \Centreon\Domain\Form\ModuleForm::EVENT_DELETE,
+            ['contact_ids' => array_keys($select)]
+        );
         deleteContactInDB(isset($select) ? $select : array());
         require_once($path . "listContact.php");
         break; #Delete n contacts
