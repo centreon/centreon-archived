@@ -19,7 +19,6 @@ CENTREON_BINDIR="/usr/share/centreon/bin"
 CENTSTORAGE_BINDIR="/usr/share/centreon/bin"
 CENTCORE_BINDIR="/usr/share/centreon/bin"
 CENTREONTRAPD_BINDIR="/usr/share/centreon/bin"
-CENTREON_DATADIR="/usr/share/centreon/data"
 MONITORINGENGINE_BINARY="/usr/sbin/centengine"
 MONITORINGENGINE_INIT_SCRIPT="centengine"
 MONITORINGENGINE_ETC="/etc/centreon-engine"
@@ -33,6 +32,8 @@ SNMP_ETC="/etc/snmp"
 PEAR_PATH="/usr/share/pear"
 SERVICE_BINARY="/usr/sbin/service"
 
+PHP_BIN="/usr/bin/php"
+
 # Install script behavior.
 PROCESS_CENTREON_WWW=1
 PROCESS_CENTSTORAGE=1
@@ -41,6 +42,7 @@ PROCESS_CENTREON_PLUGINS=1
 PROCESS_CENTREON_SNMP_TRAPS=1
 FORCE_SUDO_CONF=1
 APACHE_RELOAD=1
+PHP_FPM_RELOAD=1
 PEAR_AUTOINST=1
 CENTCORE_INSTALL_INIT=1
 CENTCORE_INSTALL_RUNLVL=1
