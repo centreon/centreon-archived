@@ -1,8 +1,8 @@
-================
-Install a poller
-================
+===================
+Installing a poller
+===================
 
-Select your installation method:
+Select one of the following installation methods:
 
 .. toctree::
    :maxdepth: 1

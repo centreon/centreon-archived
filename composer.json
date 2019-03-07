@@ -9,10 +9,6 @@
             "email": "kduret@centreon.com"
         }
     ],
-    "repositories": [
-        { "packagist.org": false },
-        { "type": "composer", "url": "http://ci.int.centreon.com" }
-    ],
     "config": {
         "secure-http": false
     },

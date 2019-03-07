@@ -487,10 +487,11 @@ $cloneSetTemplate = array();
 $cloneSetTemplate[] = $form->addElement(
     'select',
     'tpSelect[#index#]',
-    _("Template"),
+    '',
     (array(null => null) + $hostObj->getList(false, true)),
     array(
         "id" => "tpSelect_#index#",
+        "class" => "select2",
         "type" => "select-one"
     )
 );
@@ -1250,6 +1251,7 @@ if ($valid) {
     $tpl->assign('custom_macro_label', _('Custom macros'));
     $tpl->assign('template_inheritance', _('Template inheritance'));
     $tpl->assign('command_inheritance', _('Command inheritance'));
+    $tpl->assign('select_template', _('Select a template'));
     $tpl->assign('cloneSetMacro', $cloneSetMacro);
     $tpl->assign('cloneSetTemplate', $cloneSetTemplate);
     $tpl->assign('centreon_path', $centreon->optGen['oreon_path']);

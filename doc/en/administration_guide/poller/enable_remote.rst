@@ -1,6 +1,6 @@
-***************************
-Enable Remote Server option
-***************************
+*********************************
+Enabling the Remote Server option
+*********************************
 
 Connect to your **Remoter Server** and execute following command::
 

@@ -10,3 +10,4 @@ Enhancements
 
 Bug fixes
 ---------
+fix(secu): Authenticated RCE in minPlayCommand.php (PR/#7232)
