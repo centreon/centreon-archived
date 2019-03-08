@@ -78,6 +78,9 @@ class CentreonTopCounter extends CentreonWebService
         parent::__construct();
         $this->pearDBMonitoring = new CentreonDB('centstorage');
 
+        // get refresh interval from database
+        $this->initRefreshInterval();
+
         $this->checkAccess();
     }
 
