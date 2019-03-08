@@ -49,7 +49,7 @@ class CentreonFrontendComponent extends CentreonWebServiceAbstract
     }
 
     /**
-     * @SWG\Post(
+     * @SWG\Get(
      *   path="/centreon/api/internal.php",
      *   operationId="getComponents",
      *   @SWG\Parameter(
