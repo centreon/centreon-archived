@@ -28,7 +28,7 @@ effet, le processus **cbd** du Remote Server doit être démarré avant les
 processus **centengine** de chaque collecteur (y compris du Remote Server lui-
 même).
 
-Redémarrez le processus **cbd** sur le Remote Server: ::
+Redémarrez le processus **cbd** sur le Remote Server : ::
 
     # systemctl restart cbd
 
@@ -71,7 +71,7 @@ Symptôme
 
 Depuis les sous-menus du menu **Monitoring > Status Details**, lorsque je clique
 sur une ressource (hôte ou service), une page blanche s'affiche avec le message
-d'erreur suivant:
+d'erreur suivant :
 
 *The related host no longer exists in Centreon configuration. Please reload the configuration.*
 
@@ -80,13 +80,13 @@ Cause
 
 Une erreur est survenue durant le processus de synchronisation de la configuration
 entre le serveur Centreon central et le Remote Server. Ce problème peut avoir
-plusieurs origines:
+plusieurs origines :
 
 L'extraction des données réalisée par le serveur Centreon central a échoué
 **************************************************************************
 
 Vous pouvez vérifier cela en exécutant la commande suivante sur le
-serveur Centreon central: ::
+serveur Centreon central : ::
 
     # MariaDB [centreon]> SELECT * FROM task WHERE id = (SELECT MAX(id) FROM task WHERE params LIKE 'a:1:{s:6:"params";a:%:{s:6:"server";s:%:"<poller_id>"%');
     +-----+--------+-----------+-----------+-----------------------------------------------------------------------------------------------------------------------------------------------------------+---------------------+
@@ -348,7 +348,7 @@ Central.
 
 Purgez la table des tâches d'import : ::
 
-# mysql -u centreon -p<password> centreon -e "DELETE FROM task WHERE status NOT IN ("completed");"
+    # mysql -u centreon -p<password> centreon -e "DELETE FROM task WHERE status NOT IN ("completed");"
 
 Puis régénérez la configuration du Remote Server depuis le serveur Centreon
 central.
