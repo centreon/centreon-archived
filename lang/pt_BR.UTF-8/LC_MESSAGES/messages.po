@@ -3845,11 +3845,11 @@ msgid "View downtimes of hosts"
 msgstr "Visualizar manutenções de hosts"
 
 #: /home/lgcosta/devel/centreon/centreon/www/include/monitoring/downtime/listDowntime.php:285
-msgid "Display Finished Downtime"
+msgid "Display Finished Downtimes"
 msgstr "Exibir Manutenção Finalizada"
 
 #: /home/lgcosta/devel/centreon/centreon/www/include/monitoring/downtime/listDowntime.php:286
-msgid "Display Downtime Cycle"
+msgid "Display Recurring Downtimes"
 msgstr "Exibir Ciclo de Manutenções"
 
 #: /home/lgcosta/devel/centreon/centreon/www/include/monitoring/acknowlegement/xml/broker/makeXMLForAck.php:83
