@@ -12,6 +12,7 @@
         </tr>
         <tr>
           <td><input type="text" name="searchHT" value="{$searchHT}"></td>
+          <td class="checkbox"><input type='checkbox' name='displayLocked' {$displayLockedChecked}/> <h4>{$displayLocked}</h4></td>
           <td><input type='submit' value='{t}Search{/t}' class="btc bt_success"/></td>
         </tr>
       </tbody>
