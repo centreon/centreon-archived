@@ -47,20 +47,42 @@ $mediaObj = new CentreonMedia($pearDB);
 include("./include/common/autoNumLimit.php");
 
 $o = "";
-
 $search = null;
+$displayLocked = 0;
+
 if (isset($_POST['searchST'])) {
+    $centreon->historySearch[$url] = array();
     $search = $_POST['searchST'];
     $search = str_replace('/', "#S#", $search);
     $search = str_replace('\\', "#BS#", $search);
-    $centreon->historySearch[$url] = $search;
+    $centreon->historySearch[$url]["searchST"] = $search;
+    isset($_POST["displayLocked"]) ? $displayLocked = 1 : $displayLocked = 0;
+    $centreon->historySearch[$url]["displayLocked"] = $displayLocked;
 } elseif (isset($_GET['searchST'])) {
+    $centreon->historySearch[$url] = array();
     $search = $_GET['searchST'];
     $search = str_replace('/', "#S#", $search);
     $search = str_replace('\\', "#BS#", $search);
-    $centreon->historySearch[$url] = $search;
-} elseif (isset($centreon->historySearch[$url])) {
-    $search = $centreon->historySearch[$url];
+    $centreon->historySearch[$url]["searchST"] = $search;
+    isset($_GET["displayLocked"]) ? $displayLocked = 1 : $displayLocked = 0;
+    $centreon->historySearch[$url]["displayLocked"] = $displayLocked;
+} else {
+    if (isset($centreon->historySearch[$url]['searchST'])) {
+        $search = $centreon->historySearch[$url]['searchST'];
+    }
+    if (isset($centreon->historySearch[$url]['displayLocked'])) {
+        $displayLocked = $centreon->historySearch[$url]['displayLocked'];
+    }
+}
+
+/*
+ * Locked Filter
+ */
+$displayLockedChecked = "";
+$sqlFilter = "AND sv.service_locked = '0'";
+if ($displayLocked == 1) {
+    $displayLockedChecked = "checked";
+    $sqlFilter = "";
 }
 
 //Service Template Model list
@@ -68,11 +90,12 @@ if ($search) {
     $query = "SELECT SQL_CALC_FOUND_ROWS sv.service_id, sv.service_description, sv.service_alias, " .
         "sv.service_activate, sv.service_template_model_stm_id FROM service sv WHERE (sv.service_description LIKE '%" .
         htmlentities($search, ENT_QUOTES, "UTF-8") . "%' OR sv.service_alias LIKE '%" .
-        htmlentities($search, ENT_QUOTES, "UTF-8") . "%') AND sv.service_register = '0' " .
+        htmlentities($search, ENT_QUOTES, "UTF-8") . "%') AND sv.service_register = '0' " . $sqlFilter . " " .
         "ORDER BY service_description LIMIT " . $num * $limit . ", " . $limit;
 } else {
     $query = "SELECT SQL_CALC_FOUND_ROWS sv.service_id, sv.service_description, sv.service_alias, " .
-        "sv.service_activate, sv.service_template_model_stm_id FROM service sv WHERE sv.service_register = '0' " .
+        "sv.service_activate, sv.service_template_model_stm_id FROM service sv " .
+        "WHERE sv.service_register = '0' " . $sqlFilter . " " .
         "ORDER BY service_description LIMIT " . $num * $limit . ", " . $limit;
 }
 $DBRESULT = $pearDB->query($query);
@@ -304,6 +327,8 @@ $o2->setSelected(null);
 
 $tpl->assign('limit', $limit);
 $tpl->assign('searchST', $search);
+$tpl->assign("displayLockedChecked", $displayLockedChecked);
+$tpl->assign('displayLocked', _("Display locked"));
 
 /*
  * Apply a template definition
