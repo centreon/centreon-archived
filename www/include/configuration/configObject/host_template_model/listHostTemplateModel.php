@@ -58,21 +58,44 @@ while ($ehi = $DBRESULT->fetchRow()) {
 $DBRESULT->closeCursor();
 
 $search = null;
+$displayLocked = 0;
+
 if (isset($_POST['searchHT'])) {
+    $centreon->historySearch[$url] = array();
     $search = $_POST['searchHT'];
-    $centreon->historySearch[$url] = $search;
+    $centreon->historySearch[$url]['searchHT'] = $search;
+    isset($_POST["displayLocked"]) ? $displayLocked = 1 : $displayLocked = 0;
+    $centreon->historySearch[$url]["displayLocked"] = $displayLocked;
 } elseif (isset($_GET['searchHT'])) {
+    $centreon->historySearch[$url] = array();
     $search = $_GET['searchHT'];
-    $centreon->historySearch[$url] = $search;
-} elseif (isset($centreon->historySearch[$url])) {
-    $search = $centreon->historySearch[$url];
+    $centreon->historySearch[$url]['searchHT'] = $search;
+    isset($_GET["displayLocked"]) ? $displayLocked = 1 : $displayLocked = 0;
+    $centreon->historySearch[$url]["displayLocked"] = $displayLocked;
+} else {
+    if (isset($centreon->historySearch[$url]['searchHT'])) {
+        $search = $centreon->historySearch[$url]['searchHT'];
+    }
+    if (isset($centreon->historySearch[$url]['displayLocked'])) {
+        $displayLocked = $centreon->historySearch[$url]['displayLocked'];
+    }
+}
+
+/*
+ * Locked Filter
+ */
+$displayLockedChecked = "";
+$sqlFilter = "AND host_locked = '0'";
+if ($displayLocked == 1) {
+    $displayLockedChecked = "checked";
+    $sqlFilter = "";
 }
 
 /*
  * Host Template list
  */
 $rq = "SELECT SQL_CALC_FOUND_ROWS host_id, host_name, host_alias, host_activate, host_template_model_htm_id FROM host" .
-    " WHERE host_register = '0' ";
+    " WHERE host_register = '0' " . $sqlFilter . " ";
 if ($search) {
     $rq .= "AND (host_name LIKE '%" . CentreonDB::escape($search) . "%' OR host_alias LIKE '%" .
         CentreonDB::escape($search) . "%')";
@@ -244,9 +267,11 @@ foreach (array('o1', 'o2') as $option) {
 }
 
 $tpl->assign('limit', $limit);
+$tpl->assign('searchHT', $search);
+$tpl->assign("displayLockedChecked", $displayLockedChecked);
+$tpl->assign('displayLocked', _("Display locked"));
 
 $renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 $form->accept($renderer);
 $tpl->assign('form', $renderer->toArray());
-$tpl->assign('searchHT', $search);
 $tpl->display("listHostTemplateModel.ihtml");
