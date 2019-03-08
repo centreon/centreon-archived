@@ -13380,11 +13380,11 @@ msgid "View downtimes of hosts"
 msgstr "Visualiser les temps d'arrêt des hôtes"
 
 #: centreon-web/www/include/monitoring/downtime/listDowntime.php:261
-msgid "Display Finished Downtime"
+msgid "Display Finished Downtimes"
 msgstr "Afficher les temps d'arrêt terminés"
 
 #: centreon-web/www/include/monitoring/downtime/listDowntime.php:262
-msgid "Display Downtime Cycle"
+msgid "Display Recurring Downtimes"
 msgstr "Afficher les temps d'arrêt cycliques"
 
 #: centreon-web/www/include/monitoring/downtime/AddDowntime.php:172
