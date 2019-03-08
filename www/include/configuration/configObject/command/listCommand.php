@@ -38,7 +38,7 @@ if (!isset($centreon)) {
 }
 
 include_once("./class/centreonUtils.class.php");
-include_once "./include/common/autoNumLimit.php";
+include("./include/common/autoNumLimit.php");
 
 if ($type) {
     $type_str = " `command_type` = $type";
@@ -47,23 +47,46 @@ if ($type) {
 }
 
 $search = null;
+$displayLocked = 0;
+
 if (isset($_POST['searchC'])) {
+    $centreon->historySearch[$url] = array();
     $search = $_POST['searchC'];
-    $centreon->historySearch[$url] = $search;
+    $centreon->historySearch[$url]['searchC'] = $search;
     if ($type_str) {
         $type_str = " AND " . $type_str;
     }
-} elseif (isset($_GET['search'])) {
-    $search = $_GET['search'];
-    $centreon->historySearch[$url] = $search;
+    isset($_POST["displayLocked"]) ? $displayLocked = 1 : $displayLocked = 0;
+    $centreon->historySearch[$url]["displayLocked"] = $displayLocked;
+} elseif (isset($_GET['searchC'])) {
+    $centreon->historySearch[$url] = array();
+    $search = $_GET['searchC'];
+    $centreon->historySearch[$url]['searchC'] = $search;
     if ($type_str) {
         $type_str = " AND " . $type_str;
     }
-} elseif (isset($centreon->historySearch[$url])) {
-    $search = $centreon->historySearch[$url];
+    isset($_GET["displayLocked"]) ? $displayLocked = 1 : $displayLocked = 0;
+    $centreon->historySearch[$url]["displayLocked"] = $displayLocked;
+} else {
+    if (isset($centreon->historySearch[$url]['searchC'])) {
+        $search = $centreon->historySearch[$url]['searchC'];
+    }
     if ($type_str) {
         $type_str = " AND " . $type_str;
     }
+    if (isset($centreon->historySearch[$url]['displayLocked'])) {
+        $displayLocked = $centreon->historySearch[$url]['displayLocked'];
+    }
+}
+
+/*
+ * Locked Filter
+ */
+$displayLockedChecked = "";
+$sqlFilter = "AND command_locked = '0'";
+if ($displayLocked == 1) {
+    $displayLockedChecked = "checked";
+    $sqlFilter = "";
 }
 
 $search = tidySearchKey($search, $advanced_search);
@@ -72,11 +95,11 @@ $search = tidySearchKey($search, $advanced_search);
 if (isset($search) && $search) {
     $rq = "SELECT SQL_CALC_FOUND_ROWS `command_id`, `command_name`, `command_line`, `command_type`, " .
         "`command_activate` FROM `command` WHERE `command_name` LIKE '%" . htmlentities($search, ENT_QUOTES, "UTF-8") .
-        "%' $type_str ORDER BY `command_name` LIMIT " . $num * $limit . ", " . $limit;
+        "%' " . $type_str . " " . $sqlFilter . " ORDER BY `command_name` LIMIT " . $num * $limit . ", " . $limit;
 } elseif ($type) {
     $rq = "SELECT SQL_CALC_FOUND_ROWS `command_id`, `command_name`, `command_line`, `command_type`, " .
-        "`command_activate` FROM `command` WHERE `command_type` = '" . $type .
-        "' ORDER BY command_name LIMIT " . $num * $limit . ", " . $limit;
+        "`command_activate` FROM `command` WHERE `command_type` = '" . $type . "' " . $sqlFilter .
+        " ORDER BY command_name LIMIT " . $num * $limit . ", " . $limit;
 } else {
     $rq = "SELECT SQL_CALC_FOUND_ROWS `command_id`, `command_name`, `command_line`, `command_type`, " .
         "`command_activate` FROM `command` ORDER BY `command_name` LIMIT " . $num * $limit . ", " . $limit;
@@ -224,11 +247,13 @@ foreach (array('o1', 'o2') as $option) {
 /*
  * Apply a template definition
  */
-$renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
-$form->accept($renderer);
-$tpl->assign('form', $renderer->toArray());
 $tpl->assign('limit', $limit);
 $tpl->assign('type', $type);
 $tpl->assign('searchC', $search);
+$tpl->assign("displayLockedChecked", $displayLockedChecked);
+$tpl->assign('displayLocked', _("Display locked"));
 
+$renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
+$form->accept($renderer);
+$tpl->assign('form', $renderer->toArray());
 $tpl->display("listCommand.ihtml");
