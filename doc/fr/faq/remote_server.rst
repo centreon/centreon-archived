@@ -28,7 +28,11 @@ effet, le processus **cbd** du Remote Server doit être démarré avant les
 processus **centengine** de chaque collecteur (y compris du Remote Server lui-
 même).
 
+<<<<<<< HEAD
 Redémarrez le processus **cbd** sur le Remote Server : ::
+=======
+Redémarrez le processus **cbd** sur le Remote Server: ::
+>>>>>>> 2906ff0d87511773bc4c728a312a2ca749bc7245
 
     # systemctl restart cbd
 
@@ -71,7 +75,11 @@ Symptôme
 
 Depuis les sous-menus du menu **Monitoring > Status Details**, lorsque je clique
 sur une ressource (hôte ou service), une page blanche s'affiche avec le message
+<<<<<<< HEAD
 d'erreur suivant :
+=======
+d'erreur suivant:
+>>>>>>> 2906ff0d87511773bc4c728a312a2ca749bc7245
 
 *The related host no longer exists in Centreon configuration. Please reload the configuration.*
 
@@ -80,13 +88,21 @@ Cause
 
 Une erreur est survenue durant le processus de synchronisation de la configuration
 entre le serveur Centreon central et le Remote Server. Ce problème peut avoir
+<<<<<<< HEAD
 plusieurs origines :
+=======
+plusieurs origines:
+>>>>>>> 2906ff0d87511773bc4c728a312a2ca749bc7245
 
 L'extraction des données réalisée par le serveur Centreon central a échoué
 **************************************************************************
 
 Vous pouvez vérifier cela en exécutant la commande suivante sur le
+<<<<<<< HEAD
 serveur Centreon central : ::
+=======
+serveur Centreon central: ::
+>>>>>>> 2906ff0d87511773bc4c728a312a2ca749bc7245
 
     # MariaDB [centreon]> SELECT * FROM task WHERE id = (SELECT MAX(id) FROM task WHERE params LIKE 'a:1:{s:6:"params";a:%:{s:6:"server";s:%:"<poller_id>"%');
     +-----+--------+-----------+-----------+-----------------------------------------------------------------------------------------------------------------------------------------------------------+---------------------+
@@ -163,12 +179,12 @@ central.
 
 2. Le processus d’extraction est arrêté car le temps maximal d’exécution est atteint
 
-Cela est visible en contrôlant le fichier **/var/log/centreon/worker.log** du
-serveur Centreon Central s’arrête à la ligne : ::
+Cela est visible en contrôlant que le fichier **/var/log/centreon/worker.log**
+du serveur Centreon Central s’arrête à la ligne : ::
 
     [2018:11:08 01:54:05] Checking for pending export tasks
 
-Ou le fichier **/var/log/centreon/centcore.log** du serveur Centreon Central
+Ou que le fichier **/var/log/centreon/centcore.log** du serveur Centreon Central
 contient : ::
 
     2018-11-08 13:54:10 - Receiving die: Timeout by signal ALARM
@@ -343,12 +359,20 @@ Vérifiez que le répertoire **/etc/centreon** contient les fichiers suivants :
 * instCentPlugins.conf
 * instCentWeb.conf
 
+<<<<<<< HEAD
 et que ces fichiers ne sont pas vides, sinon copiez les depuis le serveur Centreon
+=======
+et que ces fichiers ne sont pas vide, sinon copiez les depuis le serveur Centreon
+>>>>>>> 2906ff0d87511773bc4c728a312a2ca749bc7245
 Central.
 
 Purgez la table des tâches d'import : ::
 
+<<<<<<< HEAD
     # mysql -u centreon -p<password> centreon -e "DELETE FROM task WHERE status NOT IN ("completed");"
+=======
+# mysql -u centreon -p<password> centreon -e "DELETE FROM task WHERE status NOT IN ("completed");"
+>>>>>>> 2906ff0d87511773bc4c728a312a2ca749bc7245
 
 Puis régénérez la configuration du Remote Server depuis le serveur Centreon
 central.
