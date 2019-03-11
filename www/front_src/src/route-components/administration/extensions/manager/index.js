@@ -1,9 +1,25 @@
-import * as Centreon from "@centreon/react-components";
 import React, { Component } from "react";
-import { connect } from "react-redux";
+import {
+  TopFilters,
+  Wrapper,
+  Button,
+  ExtensionsHolder,
+  ExtensionDetailsPopup,
+  FileUpload,
+  ExtensionDeletePopup
+} from "@centreon/react-components";
+
+import axios from "../../../../axios";
+import { setNavigation } from "../../../../redux/actions/navigationActions";
 
 class ExtensionsRoute extends Component {
   state = {
+    extensions: {
+      result: {
+        module: {entities: []},
+        widget: {entities: []}
+      }
+    },
     widgetsActive: true,
     modulesActive: true,
     modalDetailsActive: false,
@@ -72,8 +88,7 @@ class ExtensionsRoute extends Component {
   };
 
   getEntitiesByKeyAndVersionParam = (param, equals, key, callback) => {
-    const { remoteData } = this.props;
-    const { extensions } = remoteData;
+    const { extensions } = this.state;
     let resArray = [];
     if (extensions) {
       const { status, result } = extensions;
@@ -212,11 +227,9 @@ class ExtensionsRoute extends Component {
 
   runAction = (loadingKey, action, id, type, callback) => {
     this.setStatusesByIds([{ id }], loadingKey, () => {
-      const { xhr } = this.props;
-      xhr({
-        requestType: "POST",
-        url: `./api/internal.php?object=centreon_module&action=${action}&id=${id}&type=${type}`
-      })
+      //const { xhr } = this.props;
+      axios(`internal.php?object=centreon_module&action=${action}&id=${id}&type=${type}`)
+        .post()
         .then(() => {
           this.getData(() => {
             this.setStatusByKey(loadingKey, id, callback);
@@ -232,6 +245,7 @@ class ExtensionsRoute extends Component {
   };
 
   installById = (id, type, callback) => {
+    console.log('install ' + id);
     const { modalDetailsActive } = this.state;
     if (modalDetailsActive) {
       this.setState({
@@ -274,7 +288,7 @@ class ExtensionsRoute extends Component {
   };
 
   deleteById = (id, type) => {
-    const { xhr } = this.props;
+    console.log("delete " + id);
     const { modalDetailsActive } = this.state;
     this.setState(
       {
@@ -283,25 +297,19 @@ class ExtensionsRoute extends Component {
         modalDetailsLoading: modalDetailsActive
       },
       () => {
-        xhr({
-          requestType: "DELETE",
-          url: "./api/internal.php?object=centreon_module&action=remove",
-          data: {
+        axios("internal.php?object=centreon_module&action=remove")
+          .delete("", {
             params: {
               id,
               type
             }
-          }
-        })
+          })
           .then(() => {
             this.getData();
             this.reloadNavigation();
             if (modalDetailsActive) {
               this.getExtensionDetails(id);
             }
-          })
-          .catch(err => {
-            throw err;
           });
       }
     );
@@ -340,24 +348,21 @@ class ExtensionsRoute extends Component {
   };
 
   getData = callback => {
-    const { xhr } = this.props;
     this.getParsedGETParamsForExtensions((params, nothingShown) => {
       this.setState({
         nothingShown
       });
       if (!nothingShown) {
-        xhr({
-          requestType: "GET",
-          url: `./api/internal.php?object=centreon_module&action=list${params}`,
-          propKey: "extensions"
-        })
-          .then(() => {
-            if (callback && typeof callback === "function") {
-              callback();
-            }
-          })
-          .catch(err => {
-            throw err;
+        axios(`internal.php?object=centreon_module&action=list${params}`)
+          .get()
+          .then(({ data }) => {
+            this.setState({
+              extensions: data
+            },() => {
+              if (callback && typeof callback === "function") {
+                callback();
+              }
+            });
           });
       }
     });
@@ -383,62 +388,56 @@ class ExtensionsRoute extends Component {
   };
 
   getExtensionDetails = id => {
-    const { xhr } = this.props;
-    xhr({
-      requestType: "GET",
-      url: `./api/internal.php?object=centreon_module&action=details&type=module&id=${id}`
-    })
-      .then(({ result }) => {
+    axios(`internal.php?object=centreon_module&action=details&type=module&id=${id}`)
+      .get()
+      .then(({ data }) => {
         this.setState({
-          extensionDetails: result,
+          extensionDetails: data.result,
           modalDetailsLoading: false
         });
-      })
-      .catch(err => {
-        throw err;
       });
   };
 
   versionClicked = id => {};
 
   resetUploadProgress = () => {
+    /*
     const { xhr } = this.props;
     xhr({ requestType: "RESET_UPLOAD_PROGRESS" }).then(() => {
       this.setState({
         uploadingStarted: false
       });
     });
+    */
   };
 
   uploadFiles = files => {
-    const { xhr } = this.props;
     this.setState(
       {
         uploadingStarted: true
       },
       () => {
-        xhr({
-          requestType: "UPLOAD",
-          url: "./api/internal.php?object=centreon_license&action=file",
-          files: files
-        }).then(res => {
-          this.setState(
-            {
-              licenseUploadStatus: res,
-              uploadingFinished: true
-            },
-            () => {
-              this.resetUploadProgress();
-            }
-          );
-        });
+        axios("internal.php?object=centreon_license&action=file")
+          .put("", {
+            files: files
+          })
+          .then(({ data }) => {
+            this.setState(
+              {
+                licenseUploadStatus: data,
+                uploadingFinished: true
+              },
+              () => {
+                this.resetUploadProgress();
+              }
+            );
+          });
       }
     );
   };
 
   render = () => {
-    const { remoteData } = this.props;
-    const { extensions, fileUploadProgress } = remoteData;
+    const { extensions, fileUploadProgress } = this.state;
     const {
       modulesActive,
       deleteToggled,
@@ -461,7 +460,7 @@ class ExtensionsRoute extends Component {
     } = this.state;
     return (
       <div>
-        <Centreon.TopFilters
+        <TopFilters
           fullText={{
             label: "Search:",
             value: search,
@@ -514,8 +513,8 @@ class ExtensionsRoute extends Component {
             ]
           ]}
         />
-        <Centreon.Wrapper>
-          <Centreon.Button
+        <Wrapper>
+          <Button
             label={`${
               installed &&
               not_installed &&
@@ -539,7 +538,7 @@ class ExtensionsRoute extends Component {
               "extensionsUpdatingStatus"
             )}
           />
-          <Centreon.Button
+          <Button
             label={`${
               installed &&
               not_installed &&
@@ -560,18 +559,18 @@ class ExtensionsRoute extends Component {
               "extensionsInstallingStatus"
             )}
           />
-          <Centreon.Button
+          <Button
             label={"Upload license"}
             buttonType="regular"
             color="blue"
             onClick={this.togglelicenseUpload.bind(this)}
           />
-        </Centreon.Wrapper>
+        </Wrapper>
         {extensions && !nothingShown ? (
-          <React.Fragment>
+          <>
             {extensions.result.module &&
             (!modulesActive || (modulesActive && widgetsActive)) ? (
-              <Centreon.ExtensionsHolder
+              <ExtensionsHolder
                 onCardClicked={this.activateExtensionsDetails}
                 onDelete={this.toggleDeleteModal}
                 onInstall={this.installById}
@@ -586,7 +585,7 @@ class ExtensionsRoute extends Component {
             ) : null}
             {extensions.result.widget &&
             (!widgetsActive || (modulesActive && widgetsActive)) ? (
-              <Centreon.ExtensionsHolder
+              <ExtensionsHolder
                 onCardClicked={this.activateExtensionsDetails}
                 onDelete={this.toggleDeleteModal}
                 onInstall={this.installById}
@@ -599,11 +598,11 @@ class ExtensionsRoute extends Component {
                 entities={extensions.result.widget.entities}
               />
             ) : null}
-          </React.Fragment>
+          </>
         ) : null}
 
         {extensionDetails && modalDetailsActive ? (
-          <Centreon.ExtensionDetailsPopup
+          <ExtensionDetailsPopup
             loading={modalDetailsLoading}
             onCloseClicked={this.hideExtensionDetails.bind(this)}
             onVersionClicked={this.versionClicked}
@@ -615,7 +614,7 @@ class ExtensionsRoute extends Component {
         ) : null}
 
         {uploadToggled ? (
-          <Centreon.FileUpload
+          <FileUpload
             uploadingProgress={fileUploadProgress}
             uploadStatus={licenseUploadStatus}
             finished={uploadingFinished}
@@ -626,7 +625,7 @@ class ExtensionsRoute extends Component {
         ) : null}
 
         {deleteToggled ? (
-          <Centreon.ExtensionDeletePopup
+          <ExtensionDeletePopup
             deletingEntity={deletingEntity}
             onConfirm={this.deleteById}
             onCancel={this.toggleDeleteModal}
@@ -637,23 +636,6 @@ class ExtensionsRoute extends Component {
   };
 }
 
-const mapStateToProps = ({ remoteData }) => ({
-  remoteData
-});
 
-const mapDispatchToProps = dispatch => ({
-  xhr: data => {
-    const { requestType } = data;
-    return Centreon.Axios(data, dispatch, requestType);
-  },
-  reloadNavigation: () => {
-    dispatch({
-      type: "GET_NAVIGATION_DATA"
-    });
-  }
-});
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(ExtensionsRoute);
+export default ExtensionsRoute;

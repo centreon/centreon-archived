@@ -9,6 +9,7 @@ const routeMap = {
   pollerStep2: "/_CENTREON_PATH_PLACEHOLDER_/poller-wizard/6",
   pollerStep3: "/_CENTREON_PATH_PLACEHOLDER_/poller-wizard/7",
   pollerList: "/_CENTREON_PATH_PLACEHOLDER_/main.php?p=60901",
+  extensionsManagerPage: "/_CENTREON_PATH_PLACEHOLDER_/administration/extensions/manager",
   notAllowedPage: "/_CENTREON_PATH_PLACEHOLDER_/not-allowed",
 };
 

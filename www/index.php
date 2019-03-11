@@ -92,7 +92,7 @@ if (file_exists("./install/setup.php")) {
  */
 
 $staticExists = glob('static/css/*.css');
-$newPath = explode('index.php', $_SERVER['REQUEST_URI'])[0];
+$newPath = trim(explode('index.php', $_SERVER['REQUEST_URI'])[0], "/");
 
 if (!$staticExists) {
     shell_exec('rm -rf ' . __DIR__ . '/static ');
@@ -103,7 +103,7 @@ if (!$staticExists) {
     $allFiles = array_merge($allCssFiles, $allJsFiles, $indexFile);
     foreach ($allFiles as $file){
         $fc = file_get_contents($file);
-        $newCont = str_replace('/_CENTREON_PATH_PLACEHOLDER_/', $newPath, $fc);
+        $newCont = str_replace('_CENTREON_PATH_PLACEHOLDER_', $newPath, $fc);
         file_put_contents($file, $newCont);
     }
 } else {
@@ -118,7 +118,7 @@ if (!$staticExists) {
         $allFiles = array_merge($allCssFiles, $allJsFiles, $indexFile);
         foreach ($allFiles as $file){
             $fc = file_get_contents($file);
-            $newCont = str_replace('/_CENTREON_PATH_PLACEHOLDER_/', $newPath, $fc);
+            $newCont = str_replace('_CENTREON_PATH_PLACEHOLDER_', $newPath, $fc);
             file_put_contents($file, $newCont);
         }
     }
