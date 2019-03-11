@@ -33,11 +33,10 @@
  *
  */
 
-require_once realpath(dirname(__FILE__) . "/../../../../../../config/centreon.config.php");
+require_once realpath(__DIR__ . "/../../../../../../config/centreon.config.php");
 require_once realpath(__DIR__ . "/../../../../../../bootstrap.php");
 
 include_once _CENTREON_PATH_ . "www/class/centreonUtils.class.php";
-
 include_once _CENTREON_PATH_ . "www/class/centreonXMLBGRequest.class.php";
 include_once _CENTREON_PATH_ . "www/include/monitoring/status/Common/common-Func.php";
 include_once _CENTREON_PATH_ . "www/include/common/common-Func.php";
@@ -48,10 +47,7 @@ CentreonSession::start(1);
 $obj = new CentreonXMLBGRequest($dependencyInjector, session_id(), 1, 1, 0, 1);
 $svcObj = new CentreonService($obj->DB);
 
-
-if (isset($obj->session_id) && CentreonSession::checkSession($obj->session_id, $obj->DB)) {
-    ;
-} else {
+if (!isset($obj->session_id) && !CentreonSession::checkSession($obj->session_id, $obj->DB)) {
     print "Bad Session ID";
     exit();
 }
@@ -73,13 +69,14 @@ $hg = $obj->checkArgument("hg", $_GET, "");
 $num = $obj->checkArgument("num", $_GET, 0);
 $limit = $obj->checkArgument("limit", $_GET, 20);
 $instance = $obj->checkArgument("instance", $_GET, $obj->defaultPoller);
-$hostgroups = $obj->checkArgument("hostgroups", $_GET, $obj->defaultHostgroups);
+$hostgroup = $obj->checkArgument("hg_search", $_GET, "");
 $search = $obj->checkArgument("search", $_GET, "");
 $sort_type = $obj->checkArgument("sort_type", $_GET, "host_name");
 $order = $obj->checkArgument("order", $_GET, "ASC");
 $dateFormat = $obj->checkArgument("date_time_format_status", $_GET, "Y/m/d H:i:s");
 $grouplistStr = $obj->access->getAccessGroupsString();
 
+$queryValues = array();
 //Get Host status
 $rq1 = "SELECT SQL_CALC_FOUND_ROWS DISTINCT hg.name AS alias, h.host_id id, h.name AS host_name, hgm.hostgroup_id, " .
     "h.state hs, h.icon_image " .
@@ -97,7 +94,10 @@ if (!$obj->is_admin) {
         $obj->access->queryBuilder("AND", "hg.name", $obj->access->getHostGroupsString("NAME"));
 }
 if ($instance != -1) {
-    $rq1 .= " AND h.instance_id = " . $instance;
+    $rq1 .= " AND h.instance_id = :instance ";
+    $queryValues[':instance'] = [
+        PDO::PARAM_INT => (int)$instance
+    ];
 }
 if ($o == "svcgrid_pb" || $o == "svcOVHG_pb") {
     $rq1 .= " AND h.host_id IN (" .
@@ -115,21 +115,42 @@ if ($o == "svcOVHG_ack_1") {
         "WHERE s.acknowledged = 1 AND s.state != 0 AND s.state != 4 AND s.enabled = 1)";
 }
 if ($search != "") {
-    $rq1 .= " AND h.name LIKE '%" . $search . "%' ";
+    $rq1 .= " AND h.name LIKE :search";
+    $queryValues[':search'] = [
+        PDO::PARAM_STR => "%" . $search . "%"
+    ];
 }
-if ($hostgroups) {
-    $rq1 .= " AND hg.hostgroup_id IN (" . $hostgroups . ")";
+if ($hostgroup !== "") {
+    $rq1 .= " AND hg.name LIKE :hgName";
+    $queryValues[':hgName'] = [
+        PDO::PARAM_STR => $hostgroup
+    ];
 }
-$rq1 .= " AND h.enabled = 1 ";
-$rq1 .= " ORDER BY $sort_type, hg.name $order, host_name ASC ";
-$rq1 .= " LIMIT " . ($num * $limit) . "," . $limit;
+$rq1 .= " AND h.enabled = 1 ORDER BY :sort_type, host_name ";
+("ASC" != $order) ? $rq1 .= "DESC" : $rq1 .= "ASC";
+$rq1 .= " LIMIT :numLimit, :limit";
+$queryValues[':sort_type'] = [
+    PDO::PARAM_STR => $sort_type
+];
+$queryValues[':numLimit'] = [
+    PDO::PARAM_INT => (int)($num * $limit)
+];
+$queryValues[':limit'] = [
+    PDO::PARAM_INT => (int)$limit
+];
+
+$DBRESULT = $obj->DBC->prepare($rq1);
+foreach ($queryValues as $bindId => $bindData) {
+    foreach ($bindData as $bindType => $bindValue) {
+        $DBRESULT->bindValue($bindId, $bindValue, $bindType);
+    }
+}
+$DBRESULT->execute();
 
 $tabH = array();
 $tabHG = array();
 $tab_finalH = array();
-
-$DBRESULT = $obj->DBC->query($rq1);
-$numRows = $obj->DBC->rowCount();
+$numRows = $DBRESULT->rowCount();
 while ($ndo = $DBRESULT->fetch()) {
     if (!isset($tab_finalH[$ndo["alias"]])) {
         $tab_finalH[$ndo["alias"]] = array($ndo["host_name"] => array());
@@ -141,6 +162,9 @@ while ($ndo = $DBRESULT->fetch()) {
     $tabHG[$ndo["alias"]] = $ndo["hostgroup_id"];
 }
 $DBRESULT->closeCursor();
+
+// Resetting $queryValues
+$queryValues = array();
 
 // Get Services status
 $rq1 = "SELECT DISTINCT s.service_id, h.name as host_name, s.description, s.state svcs, " .
@@ -166,16 +190,30 @@ if ($o == "svcgrid_ack_0" || $o == "svcOVHG_ack_0") {
     $rq1 .= " AND s.acknowledged = 0";
 }
 if ($search != "") {
-    $rq1 .= " AND h.name LIKE '%" . $search . "%'";
+    $rq1 .= " AND h.name LIKE :search";
+    $queryValues[":search"] = [
+        PDO::PARAM_STR => "%" . $search . "%"
+    ];
 }
 if ($instance != -1) {
-    $rq1 .= " AND h.instance_id = " . $instance;
+    $rq1 .= " AND h.instance_id = :instance ";
+    $queryValues[":instance"] = [
+        PDO::PARAM_INT => $instance
+    ];
 }
 $rq1 .= " ORDER BY tri ASC, s.description ASC";
 
 $tabService = array();
 $tabHost = array();
-$DBRESULT = $obj->DBC->query($rq1);
+
+$DBRESULT = $obj->DBC->prepare($rq1);
+foreach ($queryValues as $bindId => $bindData) {
+    foreach ($bindData as $bindType => $bindValue) {
+        $DBRESULT->bindValue($bindId, $bindValue, $bindType);
+    }
+}
+$DBRESULT->execute();
+
 while ($ndo = $DBRESULT->fetch()) {
     if (!isset($tabService[$ndo["host_name"]])) {
         $tabService[$ndo["host_name"]] = array();
