@@ -129,8 +129,6 @@
   }
   &-inner {
     position: relative;
-    // overflow-y: auto;
-    // overflow-x: hidden;
     max-height: 100vh;
   }
 }
@@ -527,9 +525,10 @@ a {
     &.active {
       margin-left: 0;
     }
-    .sidebar-header h3, .CTAs {
+    .sidebar-header h3,
+    .CTAs {
       display: none;
-    }s
+    }
     .sidebar-header strong {
       display: block;
     }
