@@ -26,7 +26,7 @@ class NavigationComponent extends Component {
     menuItems: []
   };
 
-  UNSAFE_componentWillMount = () => {
+  componentDidMount = () => {
     const { setNavigation } = this.props
 
     this.navService.get().then(({ data }) => {
@@ -112,6 +112,43 @@ class NavigationComponent extends Component {
     });
   };
 
+  // check if current tab is active
+  isActive = (pageId, urlParams) => {
+    let isActive = false;
+    if (urlParams.url.match(/main\.php/)) { // legacy url
+      isActive = pageId == urlParams.urlOptions;
+    } else { // react route
+      isActive = pageId == urlParams.url;
+    }
+
+    return isActive;
+  };
+
+  // get page id
+  // legacy routes ==> get topology page
+  // react routes ==> get path (eg: /administration/extensions/manager)
+  getPageId = () => {
+    const { pathname, search } = this.props.history.location;
+    let pageId = '';
+    if (search.match(/p=/)) { // legacy url
+      pageId = search.split("p=")[1];
+    } else { // react route
+      pageId = pathname;
+    }
+    return pageId;
+  }
+
+  // get url parameters from navigation entry
+  // eg: {url: '/administration/extensions/manager', urlOptions: ''}
+  // eg: {url: 'main.php?p=570101&o=c', urlOptions: '&o=c'}
+  getUrlFromEntry = (entryKey, entryProps) => {
+    const urlOptions = entryKey.slice(1) + (entryProps.options !== null ? entryProps.options : '');
+    const url = entryProps.is_react == '1'
+      ? "/_CENTREON_PATH_PLACEHOLDER_" + entryProps.url
+      : routeMap.module + "?p=" + urlOptions;
+    return { url, urlOptions };
+  }
+
   // navigate to the page
   goToPage = (route, topLevelIndex) => {
     const { history } = this.props;
@@ -121,7 +158,7 @@ class NavigationComponent extends Component {
 
   render() {
     const { active, menuItems } = this.state;
-    const pageId = this.props.history.location.search.split("p=")[1];
+    const pageId = this.getPageId();
 
     return (
       <nav class={"sidebar" + (active ? " active" : "")} id="sidebar">
@@ -167,13 +204,16 @@ class NavigationComponent extends Component {
                   style={{ display: (levelOneProps.toggled && active) ? "block" : "none" }}
                 >
                   {Object.entries(levelOneProps.children).map(([levelTwoKey, levelTwoProps]) => {
-                    const urlOptions = levelTwoKey.slice(1) +
-                      (levelTwoProps.options !== null ? levelTwoProps.options : '')
+                    const levelTwoUrl = this.getUrlFromEntry(levelTwoKey, levelTwoProps);
                     if (levelTwoProps.label) {
                       return (
                         <li
                           class={
-                            "collapsed-item" + (levelTwoProps.collapsed || (pageId == urlOptions) ? " active" : "")
+                            "collapsed-item" +
+                            (levelTwoProps.collapsed || (this.isActive(pageId, levelTwoUrl))
+                              ? " active"
+                              : ""
+                            )
                           }
                         >
                           {Object.keys(levelTwoProps.children).length > 0 ? (
@@ -186,14 +226,9 @@ class NavigationComponent extends Component {
                             </span>
                           ) : (
                               <Link
-                                onClick={() => {
-                                  this.goToPage(
-                                    routeMap.module + "?p=" + urlOptions,
-                                    levelOneKey
-                                  )
-                                }}
-                                className={`collapsed-level-item-link img-none ${(pageId == urlOptions) ? "active" : ""}`}
-                                to={routeMap.module + "?p=" + urlOptions}
+                                onClick={() => {this.goToPage(levelTwoUrl.url, levelOneKey)}}
+                                className={`collapsed-level-item-link img-none ${(this.isActive(pageId, levelTwoUrl)) ? "active" : ""}`}
+                                to={levelTwoUrl.url}
                               >
                                 <Translate value={levelTwoProps.label}/>
                               </Link>
@@ -202,29 +237,23 @@ class NavigationComponent extends Component {
                           <ul class="collapse-level collapsed-level-items first-level list-unstyled">
                             {Object.entries(levelTwoProps.children).map(([levelThreeKey, levelThreeProps]) => {
                               return (
-                                <React.Fragment>
+                                <>
                                   {Object.keys(levelTwoProps.children).length > 1 &&
                                     <span class="collapsed-level-title">
                                       <Translate value={levelThreeKey}/>
                                     </span>
                                   }
                                   {Object.entries(levelThreeProps).map(([levelFourKey, levelFourProps]) => {
-                                    const urlOptions = levelFourKey.slice(1) +
-                                      (levelFourProps.options !== null ? levelFourProps.options : '')
+                                    const levelFourUrl = this.getUrlFromEntry(levelFourKey, levelFourProps);
                                     if (levelFourProps.label) {
                                       return (
                                         <li
-                                          class={"collapsed-level-item" + (pageId == urlOptions ? " active" : "")}
+                                          class={"collapsed-level-item" + (this.isActive(pageId, levelFourUrl) ? " active" : "")}
                                         >
                                           <Link
-                                            onClick={() => {
-                                              this.goToPage(
-                                                routeMap.module + "?p=" + urlOptions,
-                                                levelOneKey
-                                              )
-                                            }}
+                                            onClick={() => {this.goToPage(levelFourUrl.url, levelOneKey)}}
                                             className="collapsed-level-item-link"
-                                            to={routeMap.module + "?p=" + urlOptions}
+                                            to={levelFourUrl.url}
                                           >
                                             <Translate value={levelFourProps.label}/>
                                           </Link>
@@ -235,7 +264,7 @@ class NavigationComponent extends Component {
                                     }
                                   }
                                   )}
-                                </React.Fragment>
+                                </>
                               )
                             })}
                           </ul>
@@ -252,7 +281,7 @@ class NavigationComponent extends Component {
           <div class="toggle-sidebar-wrap">
             <span
               class="toggle-sidebar-icon"
-              onClick={() => {this.toggleNavigation()}}
+              onClick={this.toggleNavigation}
             />
           </div>
         </div>
