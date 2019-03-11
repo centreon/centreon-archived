@@ -305,7 +305,7 @@ class CentreonWebService
             // Initialize the language translator
             $dependencyInjector['translator'];
 
-            // Use the web service if it is initialize or initialize it
+            // Use the web service if has been initialized or initialize it
             if(isset($dependencyInjector[$webService['class']])) {
                 $wsObj = $dependencyInjector[$webService['class']];
             } else {
