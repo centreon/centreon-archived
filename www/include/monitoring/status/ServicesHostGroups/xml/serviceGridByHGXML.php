@@ -1,7 +1,7 @@
 <?php
 /*
- * Copyright 2005-2015 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2019 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -33,7 +33,6 @@
  *
  */
 
-
 require_once realpath(dirname(__FILE__) . "/../../../../../../config/centreon.config.php");
 require_once realpath(__DIR__ . "/../../../../../../bootstrap.php");
 
@@ -44,9 +43,7 @@ include_once _CENTREON_PATH_ . "www/include/monitoring/status/Common/common-Func
 include_once _CENTREON_PATH_ . "www/include/common/common-Func.php";
 include_once _CENTREON_PATH_ . "www/class/centreonService.class.php";
 
-/*
- * Create XML Request Objects
- */
+// Create XML Request Objects
 CentreonSession::start(1);
 $obj = new CentreonXMLBGRequest($dependencyInjector, session_id(), 1, 1, 0, 1);
 $svcObj = new CentreonService($obj->DB);
@@ -62,19 +59,14 @@ if (isset($obj->session_id) && CentreonSession::checkSession($obj->session_id, $
 $statusService = isset($statusService) ? $statusService : null;
 $statusFilter = isset($statusFilter) ? $statusFilter : null;
 
-/* Store in session the last type of call */
+// Store in session the last type of call
 $_SESSION['monitoring_serviceByHg_status'] = $statusService;
 $_SESSION['monitoring_serviceByHg_status_filter'] = $statusFilter;
 
-
-/*
- * Set Default Poller
- */
+// Set Default Poller
 $obj->getDefaultFilters();
 
-/* **************************************************
- * Check Arguments From GET tab
- */
+// Check Arguments From GET tab
 $o = $obj->checkArgument("o", $_GET, "h");
 $p = $obj->checkArgument("p", $_GET, "2");
 $hg = $obj->checkArgument("hg", $_GET, "");
@@ -88,20 +80,17 @@ $order = $obj->checkArgument("order", $_GET, "ASC");
 $dateFormat = $obj->checkArgument("date_time_format_status", $_GET, "Y/m/d H:i:s");
 $grouplistStr = $obj->access->getAccessGroupsString();
 
-/** **************************************
- * Get Host status
- *
- */
-$rq1 = " SELECT SQL_CALC_FOUND_ROWS DISTINCT hg.name AS alias, h.host_id id, h.name as host_name, hgm.hostgroup_id, " .
+//Get Host status
+$rq1 = "SELECT SQL_CALC_FOUND_ROWS DISTINCT hg.name AS alias, h.host_id id, h.name AS host_name, hgm.hostgroup_id, " .
     "h.state hs, h.icon_image " .
-    " FROM hostgroups hg, hosts_hostgroups hgm, hosts h ";
+    "FROM hostgroups hg, hosts_hostgroups hgm, hosts h ";
 if (!$obj->is_admin) {
     $rq1 .= ", centreon_acl ";
 }
-$rq1 .= " WHERE h.host_id = hgm.host_id" .
-    " AND hgm.hostgroup_id = hg.hostgroup_id" .
-    " AND h.enabled = '1' " .
-    " AND h.name not like '_Module_%'";
+$rq1 .= "WHERE h.host_id = hgm.host_id " .
+    "AND hgm.hostgroup_id = hg.hostgroup_id " .
+    "AND h.enabled = '1' " .
+    "AND h.name NOT LIKE '_Module_%' ";
 if (!$obj->is_admin) {
     $rq1 .= $obj->access->queryBuilder("AND", "h.host_id", "centreon_acl.host_id") .
         $obj->access->queryBuilder("AND", "group_id", $grouplistStr) . " " .
@@ -112,21 +101,21 @@ if ($instance != -1) {
 }
 if ($o == "svcgrid_pb" || $o == "svcOVHG_pb") {
     $rq1 .= " AND h.host_id IN (" .
-        " SELECT s.host_id FROM services s " .
-        " WHERE s.state != 0 AND s.state != 4 AND s.enabled = 1)";
+        "SELECT s.host_id FROM services s " .
+        "WHERE s.state != 0 AND s.state != 4 AND s.enabled = 1)";
 }
 if ($o == "svcOVHG_ack_0") {
     $rq1 .= " AND h.host_id IN (" .
-        " SELECT s.host_id FROM services s " .
-        " WHERE s.acknowledged = 0 AND s.state != 0 AND s.state != 4 AND s.enabled = 1)";
+        "SELECT s.host_id FROM services s " .
+        "WHERE s.acknowledged = 0 AND s.state != 0 AND s.state != 4 AND s.enabled = 1)";
 }
 if ($o == "svcOVHG_ack_1") {
     $rq1 .= " AND h.host_id IN (" .
-        " SELECT s.host_id FROM services s " .
-        " WHERE s.acknowledged = 1 AND s.state != 0 AND s.state != 4 AND s.enabled = 1)";
+        "SELECT s.host_id FROM services s " .
+        "WHERE s.acknowledged = 1 AND s.state != 0 AND s.state != 4 AND s.enabled = 1)";
 }
 if ($search != "") {
-    $rq1 .= " AND h.name like '%" . $search . "%' ";
+    $rq1 .= " AND h.name LIKE '%" . $search . "%' ";
 }
 if ($hostgroups) {
     $rq1 .= " AND hg.hostgroup_id IN (" . $hostgroups . ")";
@@ -140,8 +129,8 @@ $tabHG = array();
 $tab_finalH = array();
 
 $DBRESULT = $obj->DBC->query($rq1);
-$numRows = $obj->DBC->numberRows();
-while ($ndo = $DBRESULT->fetchRow()) {
+$numRows = $obj->DBC->rowCount();
+while ($ndo = $DBRESULT->fetch()) {
     if (!isset($tab_finalH[$ndo["alias"]])) {
         $tab_finalH[$ndo["alias"]] = array($ndo["host_name"] => array());
     }
@@ -153,46 +142,41 @@ while ($ndo = $DBRESULT->fetchRow()) {
 }
 $DBRESULT->closeCursor();
 
-
-/** **************************************
- * Get Services status
- *
- */
-$rq1 = " SELECT DISTINCT s.service_id, h.name as host_name, s.description, s.state svcs,"
-    . " (case s.state when 0 then 3 when 2 then 0 when 3 then 2 else s.state END) as tri " .
-    " FROM services s, hosts h ";
+// Get Services status
+$rq1 = "SELECT DISTINCT s.service_id, h.name as host_name, s.description, s.state svcs, " .
+    "(CASE s.state WHEN 0 THEN 3 WHEN 2 THEN 0 WHEN 3 THEN 2 ELSE s.state END) AS tri " .
+    "FROM services s, hosts h ";
 if (!$obj->is_admin) {
     $rq1 .= ", centreon_acl ";
 }
-$rq1 .= " WHERE h.host_id = s.host_id " .
-    " AND h.name NOT LIKE '_Module_%' " .
-    " AND h.enabled = '1' " .
-    " AND s.enabled = '1' ";
+$rq1 .= "WHERE h.host_id = s.host_id " .
+    "AND h.name NOT LIKE '_Module_%' " .
+    "AND h.enabled = '1' " .
+    "AND s.enabled = '1' ";
 $rq1 .= $obj->access->queryBuilder("AND", "h.host_id", "centreon_acl.host_id") .
     $obj->access->queryBuilder("AND", "s.service_id", "centreon_acl.service_id") .
     $obj->access->queryBuilder("AND", "group_id", $grouplistStr);
 if ($o == "svcgrid_pb" || $o == "svcOVHG_pb" || $o == "svcgrid_ack_0" || $o == "svcOVHG_ack_0") {
-    $rq1 .= " AND s.state != 0 AND s.state != 4 ";
+    $rq1 .= " AND s.state != 0 AND s.state != 4";
 }
 if ($o == "svcgrid_ack_1" || $o == "svcOVHG_ack_1") {
-    $rq1 .= "AND s.acknowledged = 1";
+    $rq1 .= " AND s.acknowledged = 1";
 }
 if ($o == "svcgrid_ack_0" || $o == "svcOVHG_ack_0") {
-    $rq1 .= "AND s.acknowledged = 0";
+    $rq1 .= " AND s.acknowledged = 0";
 }
 if ($search != "") {
-    $rq1 .= " AND h.name like '%" . $search . "%' ";
+    $rq1 .= " AND h.name LIKE '%" . $search . "%'";
 }
 if ($instance != -1) {
     $rq1 .= " AND h.instance_id = " . $instance;
 }
-//$rq1 .= " ORDER BY s.description";
-$rq1 .= " order by tri asc, s.description asc";
+$rq1 .= " ORDER BY tri ASC, s.description ASC";
 
 $tabService = array();
 $tabHost = array();
 $DBRESULT = $obj->DBC->query($rq1);
-while ($ndo = $DBRESULT->fetchRow()) {
+while ($ndo = $DBRESULT->fetch()) {
     if (!isset($tabService[$ndo["host_name"]])) {
         $tabService[$ndo["host_name"]] = array();
     }
@@ -204,9 +188,7 @@ while ($ndo = $DBRESULT->fetchRow()) {
 }
 $DBRESULT->closeCursor();
 
-/*
- * Begin XML Generation
- */
+// Begin XML Generation
 $obj->XML = new CentreonXML();
 $obj->XML->startElement("reponse");
 $obj->XML->startElement("i");
@@ -268,12 +250,8 @@ if (isset($tab_finalH)) {
 }
 $obj->XML->endElement();
 
-/*
- * Send Header
- */
+// Send Header
 $obj->header();
 
-/*
- * Send XML
- */
+// Send XML
 $obj->XML->output();
