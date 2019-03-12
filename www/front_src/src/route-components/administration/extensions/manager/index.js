@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { connect } from "react-redux";
 import {
   TopFilters,
   Wrapper,
@@ -10,7 +11,7 @@ import {
 } from "@centreon/react-components";
 
 import axios from "../../../../axios";
-import { setNavigation } from "../../../../redux/actions/navigationActions";
+import { fetchNavigationData } from "../../../../redux/actions/navigationActions";
 
 class ExtensionsRoute extends Component {
   state = {
@@ -71,7 +72,8 @@ class ExtensionsRoute extends Component {
         installed: true,
         updated: true,
         nothingShown: false,
-        search: ""
+        search: "",
+        fileUploadProgress: []
       },
       this.getData
     );
@@ -245,14 +247,13 @@ class ExtensionsRoute extends Component {
   };
 
   installById = (id, type, callback) => {
-    console.log('install ' + id);
     const { modalDetailsActive } = this.state;
     if (modalDetailsActive) {
       this.setState({
         modalDetailsLoading: true
       });
       this.runAction("extensionsInstallingStatus", "install", id, type, () => {
-        this.getExtensionDetails(id);
+        this.getExtensionDetails(id, type);
         this.reloadNavigation();
       });
     } else {
@@ -273,7 +274,7 @@ class ExtensionsRoute extends Component {
         modalDetailsLoading: true
       });
       this.runAction("extensionsUpdatingStatus", "update", id, type, () => {
-        this.getExtensionDetails(id);
+        this.getExtensionDetails(id, type);
         this.reloadNavigation();
       });
     } else {
@@ -288,7 +289,6 @@ class ExtensionsRoute extends Component {
   };
 
   deleteById = (id, type) => {
-    console.log("delete " + id);
     const { modalDetailsActive } = this.state;
     this.setState(
       {
@@ -308,7 +308,7 @@ class ExtensionsRoute extends Component {
             this.getData();
             this.reloadNavigation();
             if (modalDetailsActive) {
-              this.getExtensionDetails(id);
+              this.getExtensionDetails(id, type);
             }
           });
       }
@@ -375,20 +375,20 @@ class ExtensionsRoute extends Component {
     });
   };
 
-  activateExtensionsDetails = id => {
+  activateExtensionsDetails = (id, type) => {
     this.setState(
       {
         modalDetailsActive: true,
         modalDetailsLoading: true
       },
       () => {
-        this.getExtensionDetails(id);
+        this.getExtensionDetails(id, type);
       }
     );
   };
 
-  getExtensionDetails = id => {
-    axios(`internal.php?object=centreon_module&action=details&type=module&id=${id}`)
+  getExtensionDetails = (id, type) => {
+    axios(`internal.php?object=centreon_module&action=details&type=${type}&id=${id}`)
       .get()
       .then(({ data }) => {
         this.setState({
@@ -400,45 +400,38 @@ class ExtensionsRoute extends Component {
 
   versionClicked = id => {};
 
-  resetUploadProgress = () => {
-    /*
-    const { xhr } = this.props;
-    xhr({ requestType: "RESET_UPLOAD_PROGRESS" }).then(() => {
-      this.setState({
-        uploadingStarted: false
-      });
-    });
-    */
-  };
-
   uploadFiles = files => {
+    const data = new FormData();
+    for (const file of files) {
+      data.append("file[]", file);
+    }
+
+    const config = {
+      headers: {
+        "Content-Type": "multipart/form-data"
+      }
+    };
+
     this.setState(
       {
         uploadingStarted: true
       },
       () => {
         axios("internal.php?object=centreon_license&action=file")
-          .put("", {
-            files: files
-          })
+          .post("", data, config)
           .then(({ data }) => {
-            this.setState(
-              {
-                licenseUploadStatus: data,
-                uploadingFinished: true
-              },
-              () => {
-                this.resetUploadProgress();
-              }
-            );
+            this.setState({
+              licenseUploadStatus: data,
+              uploadingFinished: true
+            });
           });
       }
     );
   };
 
-  render = () => {
-    const { extensions, fileUploadProgress } = this.state;
+  render() {
     const {
+      extensions,
       modulesActive,
       deleteToggled,
       uploadToggled,
@@ -456,7 +449,8 @@ class ExtensionsRoute extends Component {
       extensionDetails,
       licenseUploadStatus,
       uploadingFinished,
-      uploadingStarted
+      uploadingStarted,
+      fileUploadProgress
     } = this.state;
     return (
       <div>
@@ -636,6 +630,12 @@ class ExtensionsRoute extends Component {
   };
 }
 
+const mapDispatchToProps = dispatch => {
+  return {
+    reloadNavigation: () => {
+      dispatch(fetchNavigationData());
+    }
+  };
+};
 
-
-export default ExtensionsRoute;
+export default connect(null, mapDispatchToProps)(ExtensionsRoute);

@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { connect } from "react-redux";
 
 import logo from "../../img/centreon.png";
 import miniLogo from "../../img/centreon-logo-mini.svg";
@@ -9,9 +10,7 @@ import axios from "../../axios";
 import routeMap from "../../route-maps/route-map";
 
 import { Translate } from 'react-redux-i18n';
-import { setNavigation } from "../../redux/actions/navigationActions";
-import { connect } from "react-redux";
-
+import { fetchNavigationData } from "../../redux/actions/navigationActions";
 
 class NavigationComponent extends Component {
   navService = axios("internal.php?object=centreon_menu&action=menu");
@@ -27,6 +26,9 @@ class NavigationComponent extends Component {
   };
 
   componentDidMount = () => {
+    const { fetchNavigationData } = this.props;
+    fetchNavigationData();
+    /*
     const { setNavigation } = this.props
 
     this.navService.get().then(({ data }) => {
@@ -40,6 +42,7 @@ class NavigationComponent extends Component {
         selectedMenu: Object.values(data)[0]
       });
     })
+    */
   };
 
   // toggle between icons menu and details menu
@@ -66,7 +69,7 @@ class NavigationComponent extends Component {
   collapseLevelTwo = index => {
     this.clickTimeout = setTimeout(() => {
       if (!this.doubleClicked) {
-        let { menuItems } = this.state;
+        let { menuItems } = this.props;
 
         Object.keys(menuItems).forEach(key => {
           menuItems[key].toggled = key === index ?
@@ -84,7 +87,7 @@ class NavigationComponent extends Component {
 
   // display/hide level 3
   collapseLevelThree = (levelOneKey, levelTwoKey) => {
-    let { menuItems } = this.state;
+    let { menuItems } = this.props;
 
     Object.keys(menuItems[levelOneKey].children).forEach(subKey => {
       if (subKey === levelTwoKey) {
@@ -101,7 +104,7 @@ class NavigationComponent extends Component {
 
   // activate level 1 (display colored menu)
   activateTopLevelMenu = index => {
-    let { menuItems } = this.state;
+    let { menuItems } = this.props;
 
     Object.keys(menuItems).forEach(key => {
       menuItems[key].active = (key === index);
@@ -157,7 +160,8 @@ class NavigationComponent extends Component {
   };
 
   render() {
-    const { active, menuItems } = this.state;
+    const { menuItems } = this.props;
+    const { active } = this.state;
     const pageId = this.getPageId();
 
     return (
@@ -196,7 +200,9 @@ class NavigationComponent extends Component {
                   id={"menu" + levelOneKey}
                 >
                   <span class={`iconmoon icon-${levelOneProps.menu_id.toLowerCase()}`}>
-                    <span class={"menu-item-name"}><Translate value={levelOneProps.label}/></span>
+                    <span class={"menu-item-name"}>
+                      <Translate value={levelOneProps.label}/>
+                    </span>
                   </span>
                 </span>
                 <ul
@@ -290,10 +296,17 @@ class NavigationComponent extends Component {
   }
 }
 
-const mapStateToProps = () => {}
+const mapStateToProps = ({ navigation }) => ({
+  entries: navigation.entries,
+  menuItems: navigation.menuItems
+});
 
-const mapDispatchToProps = {
-  setNavigation
+const mapDispatchToProps = dispatch => {
+  return {
+    fetchNavigationData: () => {
+      dispatch(fetchNavigationData());
+    }
+  };
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(withRouter(NavigationComponent));

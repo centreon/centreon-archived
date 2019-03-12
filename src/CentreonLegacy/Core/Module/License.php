@@ -91,9 +91,7 @@ class License extends Module
 
         try {
             $healthcheck->check($module);
-        } catch (\Exception $ex) {
-            
-        }
+        } catch (\Exception $ex) {}
 
         if ($healthcheck->getLicenseExpiration()) {
             return $healthcheck->getLicenseExpiration()->format('F d, Y');

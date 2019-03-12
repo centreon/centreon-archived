@@ -149,14 +149,6 @@ class WidgetSource extends SourceAbstract
         $entity->setVersion($xml->version->__toString());
         $entity->setKeywords($xml->keywords->__toString());
 
-        if ($xml->screenshot->__toString()) {
-            $entity->addImage($xml->screenshot->__toString());
-        }
-
-        if ($xml->thumbnail->__toString()) {
-            $entity->addImage($xml->thumbnail->__toString());
-        }
-
         // load information about installed modules/widgets
         if ($this->info === null) {
             $this->initInfo();
