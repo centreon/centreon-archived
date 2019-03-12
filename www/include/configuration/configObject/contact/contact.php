@@ -1,7 +1,6 @@
 <?php
-
 /*
- * Copyright 2005-2015 Centreon
+ * Copyright 2005-2019 Centreon
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -33,6 +32,9 @@
  * For more information : contact@centreon.com
  *
  */
+
+use Centreon\Infrastructure\Event\EventDispatcher;
+use Centreon\Infrastructure\Event\EventHandler;
 
 if (!isset($centreon)) {
     exit();
@@ -68,10 +70,55 @@ if ($ret['topology_page'] != "" && $p != $ret['topology_page']) {
 
 $acl = $oreon->user->access;
 $allowedAclGroups = $acl->getAccessGroups();
+
 /**
- * @var $moduleFormManager \Centreon\Domain\Service\ModuleFormManager
+ * @var $eventDispatcher EventDispatcher
  */
-$moduleFormManager = $dependencyInjector['centreon.module_form_manager'];
+$eventDispatcher = $dependencyInjector['centreon.event_dispatcher'];
+
+if(! is_null($eventDispatcher->getDispatcherLoader())) {
+    $eventDispatcher->getDispatcherLoader()->load();
+}
+
+$duplicateEventHandler = new EventHandler();
+$duplicateEventHandler->setProcessing(
+    function (array $arguments) {
+        if (isset($arguments['contact_ids'], $arguments['numbers'])) {
+            $newContactIds = multipleContactInDB(
+                $arguments['contact_ids'],
+                $arguments['numbers']
+            );
+            // We store the result for possible future use
+            return ['new_contact_ids' => $newContactIds];
+        }
+    }
+);
+$eventDispatcher->addEventHandler(
+    'contact.form',
+    EventDispatcher::EVENT_DUPLICATE,
+    $duplicateEventHandler
+);
+
+/*
+ * We define a event to delete a list of contacts
+ */
+$deleteEventHandler = new EventHandler();
+$deleteEventHandler->setProcessing(
+    function ($arguments) {
+        if (isset($arguments['contact_ids'])) {
+            deleteContactInDB($arguments['contact_ids']);
+        }
+    }
+);
+/*
+ * We add the delete event in the context named 'contact.form' for and event type
+ * EventDispatcher::EVENT_DELETE
+ */
+$eventDispatcher->addEventHandler(
+    'contact.form',
+    EventDispatcher::EVENT_DELETE,
+    $deleteEventHandler
+);
 
 switch ($o) {
     case "li":
@@ -106,29 +153,25 @@ switch ($o) {
         require_once($path . "listContact.php");
         break;
     case "m":
-        $newContactIds = multipleContactInDB(isset($select) ? $select : array(), $dupNbr);
-
-        // We notify we have made an update
-        if (! empty($newContactIds)) {
-            $moduleFormManager->init();
-            $moduleFormManager->trigger(
-                'form-contact',
-                \Centreon\Domain\Form\ModuleForm::EVENT_UPDATE,
-                ['contact_ids' => $newContactIds]
-            );
-        }
+        // We notify that we have made a duplicate
+        $eventDispatcher->notify(
+            'contact.form',
+            EventDispatcher::EVENT_DUPLICATE,
+            [
+                'contact_ids' => $select,
+                'numbers' => $dupNbr
+            ]
+        );
 
         require_once($path . "listContact.php");
         break; #Duplicate n contacts
     case "d":
-        // Processing before deleting contacts
-        $moduleFormManager->init();
-        $moduleFormManager->trigger(
-            'form-contact',
-            \Centreon\Domain\Form\ModuleForm::EVENT_DELETE,
-            ['contact_ids' => array_keys($select)]
+        // We notify that we have made a delete
+        $eventDispatcher->notify(
+            'contact.form',
+            EventDispatcher::EVENT_DELETE,
+            ['contact_ids' => $select]
         );
-        deleteContactInDB(isset($select) ? $select : array());
         require_once($path . "listContact.php");
         break; #Delete n contacts
     case "dn":

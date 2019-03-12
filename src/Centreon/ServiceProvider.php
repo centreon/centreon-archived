@@ -36,8 +36,8 @@
 
 namespace Centreon;
 
-use Centreon\Domain\Form\ModuleFormLoader;
-use Centreon\Domain\Service\ModuleFormManager;
+use Centreon\Infrastructure\Event\EventDispatcher;
+use Centreon\Domain\Entity\FileLoader;
 use Pimple\Container;
 use Pimple\Psr11\ServiceLocator;
 use Centreon\Infrastructure\Provider\AutoloadServiceProviderInterface;
