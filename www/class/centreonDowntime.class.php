@@ -1,7 +1,7 @@
 <?php
 /**
- * Copyright 2005-2015 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2019 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -43,7 +43,13 @@
 class CentreonDowntime
 {
     protected $db;
+
+    //$safe is the key to be bound
     protected $search = '';
+
+    //$safeSearch is the value to bind in the prepared statement
+    protected $safeSearch = '';
+
     protected $nbRows = null;
     protected $localCommands;
     protected $localCmdFile = '';
@@ -84,45 +90,54 @@ class CentreonDowntime
             . 'FROM downtime_period ';
 
         $res = $this->db->query($query);
-        while ($row = $res->fetchRow()) {
+        while ($row = $res->fetch()) {
             $this->periods[$row['dt_id']][] = $row;
         }
     }
 
     /**
-     * Set the string for filter the display
+     * Set the string to filter the results
      *
-     * The string search is set for filter
-     * In SQL, the the string is "%$search%"
+     * The string search is set to filter
+     * In SQL, the string is "%$search%"
      *
      * @param string $search The string for filter
      */
-    public function setSearch($search = '')
+    public function setSearch(string $search = '')
     {
+        $this->safeSearch = '';
         if ('' !== $search) {
-            $this->search = " dt_name LIKE '%" . htmlentities($search, ENT_QUOTES, "UTF-8") . "%'";
+            $this->safeSearch = htmlentities($search, ENT_QUOTES, "UTF-8");
+            $this->search = "dt_name LIKE :search";
         }
     }
 
     /**
-     * Get the number of rows for display, with applied search filter
+     * Get the number of rows to display, when a search filter is applied
      *
      * @return int The number of rows
      */
     public function getNbRows()
     {
         /* Get the number of rows if getList is call before*/
-        if (false === is_null($this->nbRows)) {
+        if (!is_null($this->nbRows)) {
             return $this->nbRows;
         }
         /* Get the number of rows with a COUNT(*) */
-        $query = "SELECT COUNT(*) FROM downtime WHERE " . $this->search;
+        $query = "SELECT COUNT(*) FROM downtime";
+        if ($this->search) {
+            $query .= " WHERE " . $this->search;
+        }
         try {
-            $res = $this->db->query($query);
+            $res = $this->db->prepare($query);
+            if ($this->search) {
+                $res->bindValue(':search', '%' . $this->safeSearch . '%', \PDO::PARAM_STR);
+            }
+            $res->execute();
         } catch (\PDOException $e) {
             return 0;
         }
-        $row = $res->fetchRow();
+        $row = $res->fetch();
         $res->closeCursor();
         return $row["COUNT(*)"];
     }
@@ -149,29 +164,31 @@ class CentreonDowntime
     public function getList($num, $limit, $type = null)
     {
         if ($type == "h") {
-            $query = "SELECT SQL_CALC_FOUND_ROWS downtime.dt_id, dt_name, dt_description, dt_activate FROM downtime
-                WHERE (downtime.dt_id IN(SELECT dt_id FROM downtime_host_relation)
-                    OR downtime.dt_id IN (SELECT dt_id FROM downtime_hostgroup_relation)) " .
+            $query = "SELECT SQL_CALC_FOUND_ROWS downtime.dt_id, dt_name, dt_description, dt_activate FROM downtime " .
+                "WHERE (downtime.dt_id IN(SELECT dt_id FROM downtime_host_relation) " .
+                "OR downtime.dt_id IN (SELECT dt_id FROM downtime_hostgroup_relation)) " .
                 ($this->search == '' ? "" : " AND ") . $this->search .
                 " ORDER BY dt_name LIMIT " . $num * $limit . ", " . $limit;
         } elseif ($type == "s") {
-            $query = "SELECT SQL_CALC_FOUND_ROWS downtime.dt_id, dt_name, dt_description, dt_activate FROM downtime
-                WHERE (downtime.dt_id IN (SELECT dt_id FROM downtime_service_relation)
-                    OR downtime.dt_id IN (SELECT dt_id FROM downtime_servicegroup_relation)) " .
+            $query = "SELECT SQL_CALC_FOUND_ROWS downtime.dt_id, dt_name, dt_description, dt_activate FROM downtime " .
+                "WHERE (downtime.dt_id IN (SELECT dt_id FROM downtime_service_relation) " .
+                "OR downtime.dt_id IN (SELECT dt_id FROM downtime_servicegroup_relation)) " .
                 ($this->search == '' ? "" : " AND ") . $this->search .
                 " ORDER BY dt_name LIMIT " . $num * $limit . ", " . $limit;
         } else {
-            $query = "SELECT SQL_CALC_FOUND_ROWS downtime.dt_id, dt_name, dt_description, dt_activate
-                FROM downtime " . ($this->search == '' ? "" : "WHERE ") . $this->search .
+            $query = "SELECT SQL_CALC_FOUND_ROWS downtime.dt_id, dt_name, dt_description, dt_activate FROM downtime " .
+                ($this->search == '' ? "" : "WHERE " . $this->search ) .
                 " ORDER BY dt_name LIMIT " . $num * $limit . ", " . $limit;
         }
         try {
-            $res = $this->db->query($query);
+            $res = $this->db->prepare($query);
+            $res->bindValue(':search', '%' . $this->safeSearch . '%', \PDO::PARAM_STR);
+            $res->execute();
         } catch (\PDOException $e) {
             return array();
         }
         $list = array();
-        while ($row = $res->fetchRow()) {
+        while ($row = $res->fetch()) {
             $list[] = $row;
         }
         $res->closeCursor();
@@ -229,13 +246,15 @@ class CentreonDowntime
      */
     public function getInfos($id)
     {
-        $query = "SELECT dt_name, dt_description, dt_activate FROM downtime WHERE dt_id=" . $id;
+        $query = "SELECT dt_name, dt_description, dt_activate FROM downtime WHERE dt_id = :id";
         try {
-            $res = $this->db->query($query);
+            $res = $this->db->prepare($query);
+            $res->bindValue(':id', $id, PDO::PARAM_INT);
+            $res->execute();
         } catch (\PDOException $e) {
             return array('name' => '', 'description' => '', 'activate' => '');
         }
-        $row = $res->fetchRow();
+        $row = $res->fetch();
         return array(
             'name' => $row['dt_name'],
             'description' => $row['dt_description'],
@@ -270,21 +289,23 @@ class CentreonDowntime
         foreach (array_keys($list) as $type) {
             switch ($type) {
                 case 'host':
-                    $query = "SELECT host_host_id as obj_id FROM downtime_host_relation WHERE dt_id = ";
+                    $query = "SELECT host_host_id as obj_id FROM downtime_host_relation WHERE dt_id = :id";
                     break;
                 case 'hostgrp':
-                    $query = "SELECT hg_hg_id as obj_id FROM downtime_hostgroup_relation WHERE dt_id = ";
+                    $query = "SELECT hg_hg_id as obj_id FROM downtime_hostgroup_relation WHERE dt_id = :id";
                     break;
                 case 'svc':
-                    $query = "SELECT CONCAT(host_host_id, CONCAT('-', service_service_id)) as obj_id
-                        FROM downtime_service_relation WHERE dt_id = ";
+                    $query = "SELECT CONCAT(host_host_id, CONCAT('-', service_service_id)) as obj_id " .
+                        "FROM downtime_service_relation WHERE dt_id = :id";
                     break;
                 case 'svcgrp':
-                    $query = "SELECT sg_sg_id as obj_id FROM downtime_servicegroup_relation WHERE dt_id = ";
+                    $query = "SELECT sg_sg_id as obj_id FROM downtime_servicegroup_relation WHERE dt_id = :id";
                     break;
             }
-            $res = $this->db->query($query . $id);
-            while ($row = $res->fetchRow()) {
+            $res = $this->db->prepare($query);
+            $res->bindValue(':id', $id, PDO::PARAM_INT);
+            $res->execute();
+            while ($row = $res->fetch()) {
                 $list[$type][] = $row['obj_id'];
             }
             $res->closeCursor();
@@ -307,7 +328,7 @@ class CentreonDowntime
 
         try {
             $res = $this->db->query($query);
-            while ($row = $res->fetchRow()) {
+            while ($row = $res->fetch()) {
                 $hostDowntimes[] = $row;
             }
         } catch (\PDOException $e) {
@@ -350,11 +371,11 @@ class CentreonDowntime
 
         try {
             $res = $this->db->query($query);
-            while ($row = $res->fetchRow()) {
+            while ($row = $res->fetch()) {
                 $serviceDowntimes[] = $row;
             }
         } catch (\PDOException $e) {
-            // Nothind to do
+            // Nothing to do
         }
 
         return $serviceDowntimes;
@@ -377,11 +398,11 @@ class CentreonDowntime
 
         try {
             $res = $this->db->query($query);
-            while ($row = $res->fetchRow()) {
+            while ($row = $res->fetch()) {
                 $hostgroupDowntimes[] = $row;
             }
         } catch (\PDOException $e) {
-            // Nothind to do
+            // Nothing to do
         }
 
         return $hostgroupDowntimes;
@@ -421,7 +442,7 @@ class CentreonDowntime
 
         try {
             $res = $this->db->query($query);
-            while ($row = $res->fetchRow()) {
+            while ($row = $res->fetch()) {
                 $servicegroupDowntimes[] = $row;
             }
         } catch (\PDOException $e) {
@@ -479,7 +500,7 @@ class CentreonDowntime
                 } catch (\PDOException $e) {
                     return;
                 }
-                $row = $res->fetchRow();
+                $row = $res->fetch();
                 $dt_name = $row['dt_name'];
                 $dt_desc = $row['dt_description'];
                 $dt_activate = $row['dt_activate'];
@@ -488,7 +509,7 @@ class CentreonDowntime
                     /* Find the index for duplicate name */
                     $query = "SELECT COUNT(*) as nb FROM downtime WHERE dt_name = '" . $dt_name . "_" . $index . "'";
                     $res = $this->db->query($query);
-                    $row = $res->fetchRow();
+                    $row = $res->fetch();
                     if ($row["nb"] == 0) {
                         /* Insert the new downtime */
                         $rq = "INSERT INTO downtime (dt_name, dt_description, dt_activate)
@@ -501,7 +522,7 @@ class CentreonDowntime
                         /* Get the new downtime id */
                         $query = "SELECT dt_id FROM downtime WHERE dt_name = '" . $dt_name . "_" . $index . "'";
                         $res = $this->db->query($query);
-                        $row = $res->fetchRow();
+                        $row = $res->fetch();
                         $res->closeCursor();
                         $id_new = $row['dt_id'];
                         /* Copy the periods for new downtime */
@@ -511,7 +532,7 @@ class CentreonDowntime
                             SELECT " . $id_new . ", dtp_start_time, dtp_end_time, dtp_day_of_week, dtp_month_cycle,
                             dtp_day_of_month, dtp_fixed, dtp_duration, dtp_activate
                             FROM downtime_period WHERE dt_id = " . $id;
-                        $res = $this->db->query($query);
+                        $this->db->query($query);
 
                         /*
                          * Duplicate Relations for hosts
@@ -531,7 +552,7 @@ class CentreonDowntime
                         $this->db->query("INSERT INTO downtime_service_relation
                             (dt_id, host_host_id, service_service_id)
                             SELECT $id_new, host_host_id, service_service_id
-                                FROM downtime_service_relation WHERE dt_id = '$id'");
+                            FROM downtime_service_relation WHERE dt_id = '$id'");
 
                         /*
                          * Duplicate Relations for servicegroups
@@ -578,7 +599,7 @@ class CentreonDowntime
         if ($error || $res->rowCount() == 0) {
             return false;
         }
-        $row = $res->fetchRow();
+        $row = $res->fetch();
         return $row['dt_id'];
     }
 
@@ -685,7 +706,7 @@ class CentreonDowntime
                     $infos['duration'] . ")";
                 break;
         }
-        $res = $this->db->query($query);
+        $this->db->query($query);
     }
 
     /**

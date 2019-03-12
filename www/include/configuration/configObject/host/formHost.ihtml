@@ -524,6 +524,21 @@ jQuery(function() {
 });
 
 function setListener(elem){
+    elem.centreonSelect2({
+        multiple: false,
+        select2: {
+            allowClear: false,
+            placeholder: "{/literal}{$select_template}{literal}"
+        }
+    });
+    var id = elem.attr('id').replace('tpSelect_', '');
+    if (!isNaN(id) && typeof(jQuery("#clone-values-template").data('clone-values-template')[id]) != 'undefined') {
+        var selected = jQuery("#clone-values-template").data('clone-values-template')[id]['tpSelect_#index#'];
+        if (!isNaN(selected)) {
+            elem.val(selected).trigger('change');
+        }
+    }
+
     elem.on('change',function(event,data){
         if(typeof data != "undefined" && typeof data.origin !=undefined 
             && data.origin == "select2defaultinit"){

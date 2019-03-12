@@ -2,7 +2,9 @@
 Configuration
 *************
 
-Centreon Partitioning utilise des fichiers de configuration XML. Les fichiers des tables Centreon sont fournis.
+Centreon Partitioning utilise des fichiers de configuration XML. Les fichiers
+des tables Centreon sont fournis (voir dans le répertoire 
+**/usr/share/centreon/config/partition.d/**).
 
 Exemple avec partitioning-data_bin.xml
 ======================================
