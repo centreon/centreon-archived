@@ -34,17 +34,9 @@
  *
  */
 
-namespace Centreon\Domain\Form;
+namespace Centreon\Infrastructure\Event;
 
-/**
- * Interface ModuleFormLoaderInterface
- *
- * @package Centreon\Domain\Form
- */
-interface ModuleFormLoaderInterface
+interface DispatcherLoaderInterface
 {
-    /**
-     * Initialize the module form loader that will initialized all modules forms.
-     */
-    public function load():void;
+    public function load(): void;
 }

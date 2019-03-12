@@ -34,30 +34,32 @@
  *
  */
 
-namespace Centreon\Domain\Form;
+namespace Centreon\Domain\Entity;
+
+use Centreon\Infrastructure\Event\DispatcherLoaderInterface;
 
 /**
- * Class ModuleFormLoader
+ * This class is used to find and include a specific php file in a tree.
  *
- * @package Centreon\Domain\Form
+ * @package Centreon\Domain\Entity
  */
-class ModuleFormLoader implements ModuleFormLoaderInterface
+class FileLoader implements DispatcherLoaderInterface
 {
     /**
-     * @var string Path of the modules
+     * @var string Path where we will try to find php files
      */
     private $pathModules;
 
     /**
-     * @var string Name of the modules form configuration file
+     * @var string Name of the php file to find in path
      */
     private $filename;
 
     /**
-     * ModuleFormLoader constructor.
+     * FileLoader constructor.
      *
-     * @param string $pathModules Path of the modules
-     * @param string $filename Name of the modules form configuration file
+     * @param string $pathModules Path where we will try to find php files
+     * @param string $filename Name of the php file to find in path
      */
     public function __construct(string $pathModules, string $filename)
     {
@@ -66,15 +68,14 @@ class ModuleFormLoader implements ModuleFormLoaderInterface
     }
 
     /**
-     * Initialize the module form loader that will initialized all module forms
-     * by loading the configuration files.
+     * Include all php file found.
      *
      * @throws \Exception
      */
     public function load():void
     {
         if (! is_dir($this->pathModules)) {
-            throw new \Exception("The modules path does not exist");
+            throw new \Exception("The path does not exist");
         }
         $modules = scandir($this->pathModules);
 

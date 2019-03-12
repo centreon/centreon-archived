@@ -36,8 +36,8 @@
 
 namespace Centreon;
 
-use Centreon\Domain\Form\ModuleFormLoader;
-use Centreon\Domain\Service\ModuleFormManager;
+use Centreon\Infrastructure\Event\EventDispatcher;
+use Centreon\Domain\Entity\FileLoader;
 use Pimple\Container;
 use Pimple\Psr11\ServiceLocator;
 use Centreon\Application\Webservice;
@@ -148,14 +148,15 @@ class ServiceProvider implements AutoloadServiceProviderInterface
             return $service;
         };
 
-        $pimple['centreon.module_form_manager'] = function (Container $container) {
-            $moduleFormManager = new ModuleFormManager(
-                new ModuleFormLoader(
+        $pimple['centreon.event_dispatcher'] = function (Container $container) {
+            $eventDispatcher = new EventDispatcher();
+            $eventDispatcher->setDispatcherLoader(
+                new FileLoader(
                     _CENTREON_PATH_ . '/www/modules/',
                     'custom-module-form.php'
                 )
             );
-            return $moduleFormManager;
+            return $eventDispatcher;
         };
     }
 
