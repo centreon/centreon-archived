@@ -8,12 +8,15 @@ const initialState = {
 }
 
 const tooltipReducer = (state = initialState, action) => {
-  if (action.type === actions.UPDATE_TOOLTIP) {
-    const {data} = action;
-    return {...state, ...data};
-  } else {
-    return state;
-  }
+  const {data} = action;
+  switch(action.type){
+    case actions.UPDATE_TOOLTIP:
+      return {
+        ...state, ...data
+      };
+    default:
+      return state
+    }
 }
 
 export default tooltipReducer;

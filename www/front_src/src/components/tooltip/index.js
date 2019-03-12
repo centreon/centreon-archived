@@ -1,5 +1,6 @@
 import React from 'react';
 import {connect} from "react-redux";
+import { Translate } from 'react-redux-i18n';
 
 const Tooltip = ({x, y, label, toggled}) => (
   <div className={`tooltip ${toggled ? ' ' : 'hidden'}`}
@@ -9,7 +10,7 @@ const Tooltip = ({x, y, label, toggled}) => (
         left:x
       }
     }
-  >{label}</div>
+  ><Translate value={label}/></div>
 )
 
 /*
