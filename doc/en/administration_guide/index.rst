@@ -12,6 +12,7 @@ Administration
    extensions
    media
    parameters
+   data_retention
    logs
    backup
    partitioning
