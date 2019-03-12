@@ -33,6 +33,8 @@
  *
  */
 
+use Centreon\Infrastructure\Event\EventDispatcher;
+
 if (!isset($centreon)) {
     exit();
 }
@@ -221,32 +223,64 @@ $attrAclgroups = array(
 );
 
 $form = new HTML_QuickFormCustom('Form', 'post', "?p=" . $p);
+/**
+ * Smarty template Init
+ */
+$tpl = new Smarty();
+$tpl = initSmartyTpl($path, $tpl);
 
 /**
  * @var $moduleFormManager \Centreon\Domain\Service\ModuleFormManager
  */
-$moduleFormManager = $dependencyInjector['centreon.module_form_manager'];
-$moduleFormManager->init();
-$moduleFormManager->setForm('form-contact', $form);
 
 if ($o == "a") {
     $form->addElement('header', 'title', _("Add a User"));
+
+    $eventDispatcher->notify(
+        'contact.form',
+        EventDispatcher::EVENT_DISPLAY,
+        [
+            'form' => $form,
+            'tpl' =>$tpl,
+            'contact_id' => $contact_id
+        ]
+    );
 } elseif ($o == "c") {
     $form->addElement('header', 'title', _("Modify a User"));
-    $moduleFormManager->trigger(
-        'form-contact',
-        \Centreon\Domain\Form\ModuleForm::EVENT_READ,
-        ['contact_id' => $contact_id]
+
+    $eventDispatcher->notify(
+        'contact.form',
+        EventDispatcher::EVENT_READ,
+        [
+            'form' => $form,
+            'tpl' =>$tpl,
+            'contact_id' => $contact_id
+        ]
     );
 } elseif ($o == "w") {
     $form->addElement('header', 'title', _("View a User"));
-    $moduleFormManager->trigger(
-        'form-contact',
-        \Centreon\Domain\Form\ModuleForm::EVENT_READ,
-        ['contact_id' => $contact_id]
+
+    $eventDispatcher->notify(
+        'contact.form',
+        EventDispatcher::EVENT_READ,
+        [
+            'form' => $form,
+            'tpl' =>$tpl,
+            'contact_id' => $contact_id
+        ]
     );
 } elseif ($o == "mc") {
     $form->addElement('header', 'title', _("Massive Change"));
+
+    $eventDispatcher->notify(
+        'contact.form',
+        EventDispatcher::EVENT_DISPLAY,
+        [
+            'form' => $form,
+            'tpl' =>$tpl,
+            'contact_id' => $contact_id
+        ]
+    );
 }
 
 /**
@@ -698,13 +732,6 @@ if ($o != "mc") {
 }
 $form->setRequiredNote("<font style='color: red;'>*</font>&nbsp;" . _("Required fields"));
 
-
-/**
- * Smarty template Init
- */
-$tpl = new Smarty();
-$tpl = initSmartyTpl($path, $tpl);
-
 $tpl->assign(
     "helpattr",
     'TITLE, "' . _("Help") . '", CLOSEBTN, true, FIX, [this, 0, 5], BGCOLOR, "#ffff99", BORDERCOLOR, '
@@ -755,36 +782,44 @@ if ($centreon->optGen['ldap_auth_enable'] == 1 && $cct['contact_auth_type'] == '
 
 $valid = false;
 
-// Apply the form modifier defined by one of the modules
-$moduleFormManager->applyFormModifiers('form-contact');
-
 if ($form->validate() && $from_list_menu == false) {
     $cctObj = $form->getElement('contact_id');
     if ($form->getSubmitValue("submitA")) {
         $newContactId = insertContactInDB();
         $cctObj->setValue($contactId);
-        $moduleFormManager->trigger(
-            'form-contact',
-            \Centreon\Domain\Form\ModuleForm::EVENT_ADD,
-            ['contact_id' => $newContactId]
+
+        $eventDispatcher->notify(
+            'contact.form',
+            EventDispatcher::EVENT_ADD,
+            [
+                'form' => $form,
+                'contact_id' => $newContactId
+            ]
         );
     } elseif ($form->getSubmitValue("submitC")) {
         updateContactInDB($cctObj->getValue());
-        // We modify
-        $moduleFormManager->trigger(
-            'form-contact',
-            \Centreon\Domain\Form\ModuleForm::EVENT_UPDATE,
-            ['contact_id' => $contact_id]
+
+        $eventDispatcher->notify(
+            'contact.form',
+            EventDispatcher::EVENT_UPDATE,
+            [
+                'form' => $form,
+                'contact_id' => $contact_id
+            ]
         );
     } elseif ($form->getSubmitValue("submitMC")) {
         $select = explode(",", $select);
         foreach ($select as $key => $contactId) {
             if ($contactId) {
                 updateContactInDB($contactId, true);
-                $moduleFormManager->trigger(
-                    'form-contact',
-                    \Centreon\Domain\Form\ModuleForm::EVENT_UPDATE,
-                    ['contact_id' => $contactId]
+
+                $eventDispatcher->notify(
+                    'contact.form',
+                    EventDispatcher::EVENT_UPDATE,
+                    [
+                        'form' => $form,
+                        'contact_id' => $contactId
+                    ]
                 );
             }
         }
@@ -814,7 +849,6 @@ if ($valid) {
     $tpl->assign('auth_type', $contactAuthType);
 
     if ($isRemote == false) {
-        $tpl->assign('modules_template', $moduleFormManager->getModulesTemplates('form-contact'));
         $tpl->display("formContact.ihtml");
     } else {
         $tpl->display("formContactLight.ihtml");
