@@ -40,9 +40,6 @@ Any **relevant details** of the configuration to perform the test should be adde
 - [ ] I have commented my code, especially **hard-to-understand areas** of the PR.
 - [ ] I have made corresponding changes to the **documentation**.
 - [ ] I have **rebased** my development branch on the base branch (master, maintenance).
-- [ ] I have updated the **release note** in dedicated temporary section **\***
-
-**\*** updating the release note results in adding the **pull request id** and **description** at the end of the file. **Product Managers** will rework it for the release. Release notes can be found [here](https://github.com/centreon/centreon/tree/master/doc/en/release_notes).
 
 <h5> Centreon team only </h5>
 
