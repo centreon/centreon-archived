@@ -14,5 +14,5 @@ Guide d'administration
    parameters
    logs
    backup
-   partitioning/index
+   partitioning
    customuri
