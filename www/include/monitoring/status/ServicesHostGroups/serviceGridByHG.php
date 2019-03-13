@@ -104,7 +104,7 @@ $tpl->assign('hgStr', _('Hostgroup'));
 $form = new HTML_QuickFormCustom('select_form', 'GET', "?p=" . $p);
 
 //adding hostgroup's select2 list
-$hostgroupsRoute = './include/common/webServices/rest/internal.php?object=centreon_configuration_hostgroup&action=list';
+$hostgroupsRoute = './api/internal.php?object=centreon_configuration_hostgroup&action=list';
 $attrHostGroup = array(
     'datasourceOrigin' => 'ajax',
     'availableDatasetRoute' => $hostgroupsRoute,
