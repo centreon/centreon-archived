@@ -124,7 +124,7 @@ class Information
      * Get list of installed modules
      * @return array
      */
-    private function getInstalledList()
+    public function getInstalledList()
     {
         $query = 'SELECT * ' .
             'FROM modules_informations ';

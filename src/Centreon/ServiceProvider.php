@@ -3,11 +3,13 @@ namespace Centreon;
 
 use Pimple\Container;
 use Pimple\Psr11\ServiceLocator;
+use Centreon\Application\Webservice;
 use Centreon\Infrastructure\Provider\AutoloadServiceProviderInterface;
 use Centreon\Infrastructure\Service\CentreonWebserviceService;
 use Centreon\Infrastructure\Service\CentreonClapiService;
 use Centreon\Infrastructure\Service\CentcoreConfigService;
 use Centreon\Infrastructure\Service\CentreonDBManagerService;
+use Centreon\Domain\Service\FrontendComponentService;
 use Centreon\Domain\Service\AppKeyGeneratorService;
 use Centreon\Domain\Service\BrokerConfigurationService;
 use Centreon\Domain\Repository\CfgCentreonBrokerRepository;
@@ -27,6 +29,14 @@ class ServiceProvider implements AutoloadServiceProviderInterface
         $pimple['centreon.webservice'] = function(Container $container): CentreonWebserviceService {
             $service = new CentreonWebserviceService;
 
+            return $service;
+        };
+
+        // add webservice to get frontend hooks and pages installed by modules and widgets
+        $pimple['centreon.webservice']->add(Webservice\CentreonFrontendComponent::class);
+
+        $pimple['centreon.frontend_component_service'] = function (Container $pimple): FrontendComponentService {
+            $service = new FrontendComponentService($pimple);
             return $service;
         };
 

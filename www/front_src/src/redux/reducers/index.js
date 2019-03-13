@@ -6,6 +6,7 @@ import pollerWizardReducer from "./pollerWizardReducer";
 import navigationReducer from "./navigationReducer";
 import refreshReducer from "./refreshReducer";
 import axiosReducer from "./axiosReducer";
+import externalComponentsReducer from "./externalComponentsReducer";
 
 export default combineReducers({
   form: formReducer,
@@ -13,5 +14,6 @@ export default combineReducers({
   i18n: i18nReducer,
   navigation: navigationReducer,
   intervals: refreshReducer,
-  remoteData: axiosReducer
+  remoteData: axiosReducer,
+  externalComponents: externalComponentsReducer
 });

@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import config from "./config";
 import Header from "./components/header";
 import { Switch } from "react-router-dom";
+import { connect } from "react-redux";
 import { ConnectedRouter } from "react-router-redux";
 import { history } from "./store";
 import ClassicRoute from "./components/router/classicRoute";
@@ -14,6 +15,8 @@ import Fullscreen from 'react-fullscreen-crossbrowser';
 import queryString from 'query-string';
 import axios from './axios';
 import NotAllowedPage from './route-components/notAllowedPage';
+
+import { setExternalComponents } from "./redux/actions/externalComponentsActions";
 
 class App extends Component {
 
@@ -48,9 +51,9 @@ class App extends Component {
 
   // disable fullscreen
   removeFullscreenParams = () => {
-    if (history.location.pathname == '/_CENTREON_PATH_PLACEHOLDER_/main.php') {
+    if (history.location.pathname == './main.php') {
       history.push({
-        pathname: '/_CENTREON_PATH_PLACEHOLDER_/main.php',
+        pathname: './main.php',
         search: window['fullscreenSearch'],
         hash: window['fullscreenHash']
       })
@@ -66,6 +69,18 @@ class App extends Component {
     axios("internal.php?object=centreon_acl_webservice&action=getCurrentAcl")
       .get()
       .then(({data}) => this.setState({acls: data, aclsLoaded: true}))
+  }
+
+  // get external components (pages, hooks...)
+  getExternalComponents = () => {
+    const { setExternalComponents } = this.props;
+
+    axios("internal.php?object=centreon_frontend_component&action=components")
+      .get()
+      .then(({ data }) => {
+        // store external components in redux
+        setExternalComponents(data);
+    });
   }
 
   // keep alive (redirect to login page if session is expired)
@@ -86,8 +101,9 @@ class App extends Component {
     }, 15000)
   }
 
-  UNSAFE_componentWillMount = () => {
+  componentDidMount() {
     this.getAcl();
+    this.getExternalComponents();
     this.keepAlive();
   }
 
@@ -97,7 +113,7 @@ class App extends Component {
       <ReactRoute
         history={history}
         path={path}
-        component={acls.includes(`/${path.split('/_CENTREON_PATH_PLACEHOLDER_/')[1]}`) ? comp : NotAllowedPage}
+        component={acls.includes(path) ? comp : NotAllowedPage}
         {...rest}
       />
     ))
@@ -105,6 +121,7 @@ class App extends Component {
 
   render() {
     const {aclsLoaded} = this.state;
+
     const min = this.getMinArgument();
 
     let reactRouter = '';
@@ -151,4 +168,10 @@ class App extends Component {
   }
 }
 
-export default App;
+const mapStateToProps = () => {}
+
+const mapDispatchToProps = {
+  setExternalComponents
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(App);
