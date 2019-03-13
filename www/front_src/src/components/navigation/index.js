@@ -78,8 +78,8 @@ class NavigationComponent extends Component {
           menuItems
         });
       }
-      this.doubleClicked = false
-    }, 200);
+      this.doubleClicked = false;
+    }, 100);
   };
 
   // display/hide level 3
@@ -155,17 +155,17 @@ class NavigationComponent extends Component {
             {Object.entries(menuItems).map(([levelOneKey, levelOneProps]) => (
               levelOneProps.label ? (<li className={"menu-item" + (levelOneProps.active ? " active" : "")}>
                 <span
-                  onDoubleClick={() => {this.handleDoubleClick(levelOneKey, levelOneProps)}}
                   onClick={() => {this.collapseLevelTwo(levelOneKey)}}
+                  onDoubleClick={() => {this.handleDoubleClick(levelOneKey, levelOneProps)}}
+
                   style={{ cursor: "pointer" }}
                   className="menu-item-link dropdown-toggle"
                   id={"menu" + levelOneKey}
                 >
                   <span className={`iconmoon icon-${levelOneProps.menu_id.toLowerCase()}`}>
-                    
                   </span>
                 </span>
-                <ul    
+                <ul
                   className={`collapse collapsed-items list-unstyled`}
                   style={{ display: (levelOneProps.toggled && active) ? "block" : "none" }}
                 >

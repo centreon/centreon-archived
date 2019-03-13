@@ -29,47 +29,42 @@
 
 .icon-home {
   background: url("./img/icons/home.svg") no-repeat center center;
-  color: rgba(0, 159, 152, 1);
 }
-.icon-home:hover {
+.icon-home:hover,
+.menu-item.active .icon-home {
   background: url("./img/icons/home-hover.svg") no-repeat center center;
-  color: $white-color;
 }
 
 .icon-monitoring {
   background: url("./img/icons/monitoring.svg") no-repeat center center;
-  color: rgba(136, 189, 35, 1);
 }
-.icon-monitoring:hover {
+.icon-monitoring:hover,
+.menu-item.active .icon-monitoring {
   background: url("./img/icons/monitoring-hover.svg") no-repeat center center;
-  color: $white-color;
 }
 
 .icon-reporting {
   background: url("./img/icons/reporting.svg") no-repeat center center;
-  color: rgba(255, 162, 0, 1);
 }
-.icon-reporting:hover {
+.icon-reporting:hover,
+.menu-item.active .icon-reporting {
   background: url("./img/icons/reporting-hover.svg") no-repeat center center;
-  color: $white-color;
 }
 
 .icon-configuration {
   background: url("./img/icons/settings.svg") no-repeat center center;
-  color: rgba(0, 159, 233, 1);
 }
-.icon-configuration:hover {
+.icon-configuration:hover,
+.menu-item.active .icon-configuration {
   background: url("./img/icons/settings-hover.svg") no-repeat center center;
-  color: $white-color;
 }
 
 .icon-administration {
   background: url("./img/icons/administration.svg") no-repeat center center;
-  color: rgba(43, 45,132, 1);
 }
-.icon-administration:hover {
+.icon-administration:hover,
+.menu-item.active .icon-administration {
   background: url("./img/icons/administration-hover.svg") no-repeat center center;
-  color: $white-color;
 }
 
 .icon-poller:before {
