@@ -10,7 +10,9 @@ const Tooltip = ({x, y, label, toggled}) => (
         left:x
       }
     }
-  ><Translate value={label}/></div>
+  >
+    <Translate value={label}/>
+  </div>
 )
 
 /*
