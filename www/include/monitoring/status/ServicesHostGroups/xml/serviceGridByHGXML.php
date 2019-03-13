@@ -90,7 +90,7 @@ if (!$obj->is_admin) {
         . $obj->access->queryBuilder("AND", "hg.name", $obj->access->getHostGroupsString("NAME"));
 }
 if ($instance != -1) {
-    $rq1 .=     " AND h.instance_id = ".$instance;
+    $rq1 .=     " AND h.instance_id = ". (int)$instance;
 }
 if ($o == "svcgrid_pb" || $o == "svcOVHG_pb") {
     $rq1 .= " AND h.host_id IN (" .
@@ -108,14 +108,14 @@ if ($o == "svcOVHG_ack_1") {
                 " WHERE s.acknowledged = 1 AND s.state != 0 AND s.state != 4 AND s.enabled = 1)";
 }
 if ($search != "") {
-    $rq1 .= " AND h.name like '%" . $search . "%' ";
+    $rq1 .= " AND h.name like '%" . CentreonDB::escape($search) . "%' ";
 }
 if ($hostgroups) {
     $rq1 .= " AND hg.hostgroup_id IN (" . $hostgroups . ")";
 }
 $rq1 .= " AND h.enabled = 1 ";
-$rq1 .= " ORDER BY $sort_type, hg.name $order, host_name ASC ";
-$rq1 .= " LIMIT ".($num * $limit).",".$limit;
+$rq1 .= " ORDER BY " . CentreonDB::escape($sort_type) . ", hg.name " . CentreonDB::escape($order) . ", host_name ASC ";
+$rq1 .= " LIMIT " . (int)($num * $limit) . ", " . (int)$limit;
 
 $tabH = array();
 $tabHG = array();
@@ -159,10 +159,10 @@ if ($o == "svcgrid_ack_0" || $o == "svcOVHG_ack_0") {
     $rq1 .= "AND s.acknowledged = 0";
 }
 if ($search != "") {
-    $rq1 .= " AND h.name like '%" . $search . "%' ";
+    $rq1 .= " AND h.name like '%" . CentreonDB::escape($search) . "%' ";
 }
 if ($instance != -1) {
-    $rq1 .= " AND h.instance_id = ".$instance;
+    $rq1 .= " AND h.instance_id = " . (int)$instance;
 }
 $rq1 .= " ORDER BY tri ASC, s.description ASC";
 

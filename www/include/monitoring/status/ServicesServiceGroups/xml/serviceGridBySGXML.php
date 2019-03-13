@@ -103,13 +103,13 @@ $query .= $obj->access->queryBuilder("AND", "sg.servicegroup_id", $obj->access->
 
 // Servicegroup search
 if ($sgSearch != "") {
-    $query .= "AND sg.name = '" . $sgSearch . "' ";
+    $query .= "AND sg.name = '" . CentreonDB::escape($sgSearch) . "' ";
 }
 
 // Host search
 $h_search = '';
 if ($hSearch != "") {
-    $h_search .= "AND h.name like '%" . $hSearch . "%' ";
+    $h_search .= "AND h.name like '%" . CentreonDB::escape($hSearch) . "%' ";
 }
 $query .= $h_search;
 
@@ -118,11 +118,11 @@ $query .= $s_search;
 
 // Poller search
 if ($instance != -1) {
-    $query .= " AND h.instance_id = " . $instance . " ";
+    $query .= " AND h.instance_id = " . (int)$instance . " ";
 }
 
-$query .= "ORDER BY sg.name " . $order . " "
-    . "LIMIT " . ($num * $limit) . "," . $limit;
+$query .= "ORDER BY sg.name " . CentreonDB::escape($order) . " "
+    . "LIMIT " . (int)($num * $limit) . "," . (int)$limit;
 
 $DBRESULT = $obj->DBC->query($query);
 

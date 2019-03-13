@@ -1,8 +1,8 @@
 <?php
 
 /*
- * Copyright 2005-2015 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2019 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -34,36 +34,26 @@
  *
  */
 
-require_once realpath(dirname(__FILE__) . "/../../../../../../config/centreon.config.php");
-
+require_once realpath(__DIR__ . "/../../../../../../config/centreon.config.php");
 include_once _CENTREON_PATH_ . "www/class/centreonUtils.class.php";
-
 include_once _CENTREON_PATH_ . "www/class/centreonXMLBGRequest.class.php";
 include_once _CENTREON_PATH_ . "www/include/monitoring/status/Common/common-Func.php";
 include_once _CENTREON_PATH_ . "www/include/common/common-Func.php";
 
-/*
- * Create XML Request Objects
- */
+// Create XML Request Objects
 CentreonSession::start(1);
 $obj = new CentreonXMLBGRequest(session_id(), 1, 1, 0, 1);
 
 
-if (isset($obj->session_id) && CentreonSession::checkSession($obj->session_id, $obj->DB)) {
-    ;
-} else {
+if (!isset($obj->session_id) || !CentreonSession::checkSession($obj->session_id, $obj->DB)) {
     print "Bad Session ID";
     exit();
 }
 
-/*
- * Set Default Poller
- */
+// Set Default Poller
 $obj->getDefaultFilters();
 
-/***************************************************
- * Check Arguments From GET tab
- */
+// Check Arguments From GET tab
 $o = $obj->checkArgument("o", $_GET, "h");
 $p = $obj->checkArgument("p", $_GET, "2");
 $hg = $obj->checkArgument("hg", $_GET, "");
@@ -78,52 +68,48 @@ $dateFormat = $obj->checkArgument("date_time_format_status", $_GET, "Y/m/d H:i:s
 $grouplistStr = $obj->access->getAccessGroupsString();
 
 
-/****************************************
- * Get Host status
- *
- */
-$rq1 = "SELECT SQL_CALC_FOUND_ROWS DISTINCT h.name as host_name, hg.name as hgname, hgm.hostgroup_id, h.host_id, h.state, h.icon_image "
-        . "FROM hostgroups hg, hosts_hostgroups hgm, hosts h ";
+// Get Host status
+$rq1 = "SELECT SQL_CALC_FOUND_ROWS DISTINCT h.name AS host_name, hg.name AS hgname, hgm.hostgroup_id, h.host_id, " .
+    "h.state, h.icon_image FROM hostgroups hg, hosts_hostgroups hgm, hosts h ";
 
 if (!$obj->is_admin) {
     $rq1 .= ", centreon_acl ";
 }
-
 $rq1 .= "WHERE h.host_id = hgm.host_id "
-        . "AND hgm.hostgroup_id = hg.hostgroup_id "
-        . "AND h.enabled = '1' "
-        . "AND h.name not like '_Module_%' ";
+    . "AND hgm.hostgroup_id = hg.hostgroup_id "
+    . "AND h.enabled = '1' "
+    . "AND h.name not like '_Module_%' ";
 
 if (!$obj->is_admin) {
     $rq1 .= $obj->access->queryBuilder("AND", "h.host_id", "centreon_acl.host_id") . " "
-            . $obj->access->queryBuilder("AND", "group_id", $grouplistStr) . " "
-            . $obj->access->queryBuilder("AND", "hg.hostgroup_id", $obj->access->getHostGroupsString("ID")) . " ";
+        . $obj->access->queryBuilder("AND", "group_id", $grouplistStr) . " "
+        . $obj->access->queryBuilder("AND", "hg.hostgroup_id", $obj->access->getHostGroupsString("ID")) . " ";
 }
 
 if ($instance != -1) {
-    $rq1 .= "AND h.instance_id = " . $instance . " ";
+    $rq1 .= "AND h.instance_id = " . (int)$instance . " ";
 }
 
 if ($o == "svcgridHG_pb" || $o == "svcSumHG_pb") {
     $rq1 .= " AND h.host_id IN ( "
-            . "SELECT s.host_id FROM services s "
-            . "WHERE s.state != 0 AND s.state != 4 AND s.enabled = 1) ";
+        . "SELECT s.host_id FROM services s "
+        . "WHERE s.state != 0 AND s.state != 4 AND s.enabled = 1) ";
 }
 
 if ($o == "svcSumHG_ack_0") {
     $rq1 .= "AND h.host_id IN ( "
-            . "SELECT s.host_id FROM services s "
-            . "WHERE s.acknowledged = 0 AND s.state != 0 AND s.state != 4 AND s.enabled = 1) ";
+        . "SELECT s.host_id FROM services s "
+        . "WHERE s.acknowledged = 0 AND s.state != 0 AND s.state != 4 AND s.enabled = 1) ";
 }
 
 if ($o == "svcSumHG_ack_1") {
     $rq1 .= "AND h.host_id IN ( "
-            . "SELECT s.host_id FROM services s "
-            . "WHERE s.acknowledged = 1 AND s.state != 0 AND s.state != 4 AND s.enabled = 1) ";
+        . "SELECT s.host_id FROM services s "
+        . "WHERE s.acknowledged = 1 AND s.state != 0 AND s.state != 4 AND s.enabled = 1) ";
 }
 
 if ($search != "") {
-    $rq1 .= "AND h.name like '%" . $search . "%' ";
+    $rq1 .= "AND h.name like '%" . CentreonDB::escape($search) . "%' ";
 }
 
 if ($hostgroups) {
@@ -131,8 +117,8 @@ if ($hostgroups) {
 }
 
 $rq1 .= "AND h.enabled = 1 "
-        . "ORDER BY " . $sort_type . ", h.name " . $order . " "
-        . "LIMIT " . ($num * $limit) . "," . $limit . " ";
+    . "ORDER BY " . CentreonDB::escape($sort_type) . ", h.name " . CentreonDB::escape($order) . " "
+    . "LIMIT " . (int)($num * $limit) . "," . (int)$limit . " ";
 
 $obj->XML = new CentreonXML();
 $obj->XML->startElement("reponse");
@@ -161,12 +147,42 @@ while ($ndo = $DBRESULT->fetchRow()) {
         $tab_final[$ndo["hgname"]][$ndo["host_name"]] = array("0" => 0, "1" => 0, "2" => 0, "3" => 0, "4" => 0);
     }
     if ($o != "svcSum_pb" && $o != "svcSum_ack_1" && $o != "svcSum_ack_0") {
-        $tab_final[$ndo["hgname"]][$ndo["host_name"]][0] = $obj->monObj->getServiceStatusCount($ndo["host_name"], $obj, $o, 0, $obj);
+        $tab_final[$ndo["hgname"]][$ndo["host_name"]][0] = $obj->monObj->getServiceStatusCount(
+            $ndo["host_name"],
+            $obj,
+            $o,
+            0,
+            $obj
+        );
     }
-    $tab_final[$ndo["hgname"]][$ndo["host_name"]][1] = 0 + $obj->monObj->getServiceStatusCount($ndo["host_name"], $obj, $o, 1, $obj);
-    $tab_final[$ndo["hgname"]][$ndo["host_name"]][2] = 0 + $obj->monObj->getServiceStatusCount($ndo["host_name"], $obj, $o, 2, $obj);
-    $tab_final[$ndo["hgname"]][$ndo["host_name"]][3] = 0 + $obj->monObj->getServiceStatusCount($ndo["host_name"], $obj, $o, 3, $obj);
-    $tab_final[$ndo["hgname"]][$ndo["host_name"]][4] = 0 + $obj->monObj->getServiceStatusCount($ndo["host_name"], $obj, $o, 4, $obj);
+    $tab_final[$ndo["hgname"]][$ndo["host_name"]][1] = 0 + $obj->monObj->getServiceStatusCount(
+        $ndo["host_name"],
+        $obj,
+        $o,
+        1,
+        $obj
+        );
+    $tab_final[$ndo["hgname"]][$ndo["host_name"]][2] = 0 + $obj->monObj->getServiceStatusCount(
+        $ndo["host_name"],
+        $obj,
+        $o,
+        2,
+        $obj
+        );
+    $tab_final[$ndo["hgname"]][$ndo["host_name"]][3] = 0 + $obj->monObj->getServiceStatusCount(
+        $ndo["host_name"],
+        $obj,
+        $o,
+        3,
+        $obj
+        );
+    $tab_final[$ndo["hgname"]][$ndo["host_name"]][4] = 0 + $obj->monObj->getServiceStatusCount(
+        $ndo["host_name"],
+        $obj,
+        $o,
+        4,
+        $obj
+        );
     $tab_final[$ndo["hgname"]][$ndo["host_name"]]["cs"] = $ndo["state"];
     $tab_final[$ndo["hgname"]][$ndo["host_name"]]["hid"] = $ndo["host_id"];
     $tab_final[$ndo["hgname"]][$ndo["host_name"]]["icon"] = $ndo["icon_image"];
