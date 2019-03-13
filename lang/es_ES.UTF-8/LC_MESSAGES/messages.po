@@ -12985,11 +12985,11 @@ msgid "View downtimes of hosts"
 msgstr "Visualiza los tiempos de parada de los hosts."
 
 #: centreon-web/www/include/monitoring/downtime/listDowntime.php:261
-msgid "Display Finished Downtime"
+msgid "Display Finished Downtimes"
 msgstr "Mostrar los tiempos de apagado finalizados"
 
 #: centreon-web/www/include/monitoring/downtime/listDowntime.php:262
-msgid "Display Downtime Cycle"
+msgid "Display Recurring Downtimes"
 msgstr "Mostrar tiempos de parada cíclicos"
 
 #: centreon-web/www/include/monitoring/downtime/AddDowntime.php:172

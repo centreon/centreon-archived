@@ -5,7 +5,7 @@ export function* loadNavigationData() {
   yield takeEvery(actions.GET_NAVIGATION_DATA, loadNavigation);
 }
 
-function* loadNavigation() {
+function loadNavigation() {
   try {
     var event = window.parent.document.createEvent("Event");
     event.initEvent(

@@ -384,6 +384,10 @@ msgstr ""
 "configuration du module Centreon Broker. Si l’option est désactivée, alors les "
 "données de statistiques ne seront pas visibles dans le menu dédié."
 
+#: centreon-web/www/include/Administration/parameters/centcore/help.php:26
+msgid "Illegal characters in external commands. Those characters will be removed before being interpreted by Centcore."
+msgstr "Caractères illégaux dans les commandes externes. Ces caractères seront supprimés avant d'être interprétés par Centcore."
+
 #: centreon-web/www/include/Administration/parameters/ldap/help.php:7
 msgid "Name of configuration"
 msgstr "Nom de la configuration"
@@ -410,10 +414,18 @@ msgstr ""
 #: centreon-web/www/include/Administration/parameters/ldap/help.php:14
 msgid ""
 "The contact template for auto imported user.<br/>This template is applied for "
-"Monitoring Engine contact configuration and ACLs"
+"Monitoring Engine contact configuration and ACLs."
 msgstr ""
 "Le modèle de contact pour les utilisateurs auto importés.<br/>Ce modèle est "
 "appliqué pour la configuration des contacts de l'ordonnanceur et pour les ACLs."
+
+#: centreon-web/www/include/Administration/parameters/ldap/help.php:14
+msgid ""
+"Default contact group applied to new users.<br/>All imported users will join "
+"this contactgroup."
+msgstr ""
+"Groupe de contact par défaut.<br/>Tous les nouveaux utilisateurs rejoindront "
+"ce groupe de contact."
 
 #: centreon-web/www/include/Administration/parameters/ldap/help.php:17
 msgid "Use the DNS service for get LDAP host"

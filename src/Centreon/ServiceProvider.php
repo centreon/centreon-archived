@@ -3,12 +3,14 @@ namespace Centreon;
 
 use Pimple\Container;
 use Pimple\Psr11\ServiceLocator;
+use Centreon\Application\Webservice;
 use Centreon\Infrastructure\Provider\AutoloadServiceProviderInterface;
 use Centreon\Infrastructure\Service;
 use Centreon\Infrastructure\Service\CentreonWebserviceService;
 use Centreon\Infrastructure\Service\CentreonClapiService;
 use Centreon\Infrastructure\Service\CentcoreConfigService;
 use Centreon\Infrastructure\Service\CentreonDBManagerService;
+use Centreon\Domain\Service\FrontendComponentService;
 use Centreon\Domain\Service\AppKeyGeneratorService;
 use Centreon\Domain\Service\BrokerConfigurationService;
 use Centreon\Domain\Repository\CfgCentreonBrokerRepository;
@@ -20,6 +22,7 @@ class ServiceProvider implements AutoloadServiceProviderInterface
     const CENTREON_WEBSERVICE = 'centreon.webservice';
     const CENTREON_DB_MANAGER = 'centreon.db-manager';
     const CENTREON_CLAPI = 'centreon.clapi';
+    const CENTREON_FRONTEND_COMPONENT_SERVICE = 'centreon.frontend_component_service';
     const CENTREON_BROKER_REPOSITORY = 'centreon.broker_repository';
     const CENTREON_BROKER_INFO_REPOSITORY = 'centreon.broker_info_repository';
     const CENTREON_BROKER_CONFIGURATION_SERVICE = 'centreon.broker_configuration_service';
@@ -43,6 +46,14 @@ class ServiceProvider implements AutoloadServiceProviderInterface
         if (defined('OpenApi\UNDEFINED') !== false) {
             $pimple[static::CENTREON_WEBSERVICE]->add(\Centreon\Application\Webservice\OpenApiWebservice::class);
         }
+
+        // add webservice to get frontend hooks and pages installed by modules and widgets
+        $pimple[static::CENTREON_WEBSERVICE]->add(Webservice\CentreonFrontendComponent::class);
+
+        $pimple[static::CENTREON_FRONTEND_COMPONENT_SERVICE] = function (Container $pimple): FrontendComponentService {
+            $service = new FrontendComponentService($pimple);
+            return $service;
+        };
 
         $pimple[static::CENTREON_CLAPI] = function(Container $container): CentreonClapiService {
             $service = new CentreonClapiService;

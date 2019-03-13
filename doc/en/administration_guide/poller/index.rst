@@ -4,7 +4,7 @@
 Distributed architecture
 ========================
 
-The Centreon distributed architectures are describe into the architecture chapter:
+The Centreon distributed architecture is described in the **Architecture** chapter:
 
 * :ref:`Distributed architecture<archi_poller>`
 * :ref:`Distributed architecture with Remote server<archi_remoteserver>`
