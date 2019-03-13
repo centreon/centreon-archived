@@ -33,7 +33,6 @@
  *
  */
 
-
 require_once realpath(__DIR__ . "/../../../../../../config/centreon.config.php");
 include_once _CENTREON_PATH_ . "www/class/centreonUtils.class.php";
 include_once _CENTREON_PATH_ . "www/class/centreonXMLBGRequest.class.php";
@@ -46,33 +45,27 @@ CentreonSession::start(1);
 $obj = new CentreonXMLBGRequest(session_id(), 1, 1, 0, 1);
 $svcObj = new CentreonService($obj->DB);
 
-if (isset($obj->session_id) && CentreonSession::checkSession($obj->session_id, $obj->DB)) {
-    ;
-} else {
-        print "Bad Session ID";
-        exit();
+if (!isset($obj->session_id) || !CentreonSession::checkSession($obj->session_id, $obj->DB)) {
+    print "Bad Session ID";
+    exit();
 }
-
-// Store in session the last type of call
-$_SESSION['monitoring_serviceByHg_status'] = $statusService;
-$_SESSION['monitoring_serviceByHg_status_filter'] = $statusFilter;
 
 // Set Default Poller
 $obj->getDefaultFilters();
 
 // Check Arguments From GET tab
-$o      = $obj->checkArgument("o", $_GET, "h");
-$p      = $obj->checkArgument("p", $_GET, "2");
-$hg         = $obj->checkArgument("hg", $_GET, "");
-$num        = $obj->checkArgument("num", $_GET, 0);
-$limit      = $obj->checkArgument("limit", $_GET, 20);
-$instance   = $obj->checkArgument("instance", $_GET, $obj->defaultPoller);
+$o = $obj->checkArgument("o", $_GET, "h");
+$p = $obj->checkArgument("p", $_GET, "2");
+$hg = $obj->checkArgument("hg", $_GET, "");
+$num = $obj->checkArgument("num", $_GET, 0);
+$limit = $obj->checkArgument("limit", $_GET, 20);
+$instance = $obj->checkArgument("instance", $_GET, $obj->defaultPoller);
 $hostgroups = $obj->checkArgument("hostgroups", $_GET, $obj->defaultHostgroups);
-$search     = $obj->checkArgument("search", $_GET, "");
-$sort_type  = $obj->checkArgument("sort_type", $_GET, "host_name");
-$order      = $obj->checkArgument("order", $_GET, "ASC");
-$dateFormat     = $obj->checkArgument("date_time_format_status", $_GET, "Y/m/d H:i:s");
-$grouplistStr   = $obj->access->getAccessGroupsString();
+$search = $obj->checkArgument("search", $_GET, "");
+$sort_type = $obj->checkArgument("sort_type", $_GET, "host_name");
+$order = $obj->checkArgument("order", $_GET, "ASC");
+$dateFormat = $obj->checkArgument("date_time_format_status", $_GET, "Y/m/d H:i:s");
+$grouplistStr = $obj->access->getAccessGroupsString();
 
 // Get Host status
 $rq1 =  " SELECT SQL_CALC_FOUND_ROWS DISTINCT hg.name AS alias, h.host_id id, h.name as host_name, hgm.hostgroup_id, "
@@ -94,18 +87,18 @@ if ($instance != -1) {
 }
 if ($o == "svcgrid_pb" || $o == "svcOVHG_pb") {
     $rq1 .= " AND h.host_id IN (" .
-            " SELECT s.host_id FROM services s " .
-            " WHERE s.state != 0 AND s.state != 4 AND s.enabled = 1)";
+        " SELECT s.host_id FROM services s " .
+        " WHERE s.state != 0 AND s.state != 4 AND s.enabled = 1)";
 }
 if ($o == "svcOVHG_ack_0") {
     $rq1 .=     " AND h.host_id IN (" .
-                " SELECT s.host_id FROM services s " .
-                " WHERE s.acknowledged = 0 AND s.state != 0 AND s.state != 4 AND s.enabled = 1)";
+        " SELECT s.host_id FROM services s " .
+        " WHERE s.acknowledged = 0 AND s.state != 0 AND s.state != 4 AND s.enabled = 1)";
 }
 if ($o == "svcOVHG_ack_1") {
     $rq1 .=     " AND h.host_id IN (" .
-                " SELECT s.host_id FROM services s " .
-                " WHERE s.acknowledged = 1 AND s.state != 0 AND s.state != 4 AND s.enabled = 1)";
+        " SELECT s.host_id FROM services s " .
+        " WHERE s.acknowledged = 1 AND s.state != 0 AND s.state != 4 AND s.enabled = 1)";
 }
 if ($search != "") {
     $rq1 .= " AND h.name like '%" . CentreonDB::escape($search) . "%' ";
@@ -143,9 +136,9 @@ if (!$obj->is_admin) {
     $rq1 .= ", centreon_acl ";
 }
 $rq1 .=  " WHERE h.host_id = s.host_id ".
-         " AND h.name NOT LIKE '_Module_%' ".
-         " AND h.enabled = '1' " .
-         " AND s.enabled = '1' ";
+    " AND h.name NOT LIKE '_Module_%' ".
+    " AND h.enabled = '1' " .
+    " AND s.enabled = '1' ";
 $rq1 .= $obj->access->queryBuilder("AND", "h.host_id", "centreon_acl.host_id") .
     $obj->access->queryBuilder("AND", "s.service_id", "centreon_acl.service_id") .
     $obj->access->queryBuilder("AND", "group_id", $grouplistStr);
