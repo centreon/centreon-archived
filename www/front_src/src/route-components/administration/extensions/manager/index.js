@@ -8,6 +8,7 @@ import {
   ExtensionDetailsPopup,
   ExtensionDeletePopup
 } from "@centreon/react-components";
+import Hook from "../../../../components/hook";
 
 import axios from "../../../../axios";
 import { fetchNavigationData } from "../../../../redux/actions/navigationActions";
@@ -502,6 +503,9 @@ class ExtensionsRoute extends Component {
               false,
               "extensionsInstallingStatus"
             )}
+          />
+          <Hook
+            path="/administration/extensions/manager/button"
           />
         </Wrapper>
         {extensions && !nothingShown ? (
