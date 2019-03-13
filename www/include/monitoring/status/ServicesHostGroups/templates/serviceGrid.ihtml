@@ -74,10 +74,8 @@
 </form>
 <script>
     {literal}
-    console.log("here");
     //reloading the page after selecting a hg in the select2 field
     jQuery('#hostgroups_selected').on('change', function(e) {
-        console.log("hg changed");
         monitoring_refresh();
     });
     {/literal}
