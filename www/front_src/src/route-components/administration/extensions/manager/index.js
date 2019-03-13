@@ -6,7 +6,6 @@ import {
   Button,
   ExtensionsHolder,
   ExtensionDetailsPopup,
-  FileUpload,
   ExtensionDeletePopup
 } from "@centreon/react-components";
 
@@ -31,14 +30,9 @@ class ExtensionsRoute extends Component {
     search: "",
     deleteToggled: false,
     deletingEntity: false,
-    uploadToggled: false,
     extensionsUpdatingStatus: {},
     extensionsInstallingStatus: {},
     extensionDetails: false,
-    uploadingProgress: 0,
-    uploadingFinished: false,
-    uploadingStarted: false,
-    licenseUploadStatus: false
   };
 
   componentDidMount = () => {
@@ -73,20 +67,9 @@ class ExtensionsRoute extends Component {
         updated: true,
         nothingShown: false,
         search: "",
-        fileUploadProgress: []
       },
       this.getData
     );
-  };
-
-  togglelicenseUpload = () => {
-    const { uploadToggled } = this.state;
-    this.setState({
-      uploadingStarted: false,
-      uploadingFinished: false,
-      licenseUploadStatus: false,
-      uploadToggled: !uploadToggled
-    });
   };
 
   getEntitiesByKeyAndVersionParam = (param, equals, key, callback) => {
@@ -400,41 +383,11 @@ class ExtensionsRoute extends Component {
 
   versionClicked = id => {};
 
-  uploadFiles = files => {
-    const data = new FormData();
-    for (const file of files) {
-      data.append("file[]", file);
-    }
-
-    const config = {
-      headers: {
-        "Content-Type": "multipart/form-data"
-      }
-    };
-
-    this.setState(
-      {
-        uploadingStarted: true
-      },
-      () => {
-        axios("internal.php?object=centreon_license&action=file")
-          .post("", data, config)
-          .then(({ data }) => {
-            this.setState({
-              licenseUploadStatus: data,
-              uploadingFinished: true
-            });
-          });
-      }
-    );
-  };
-
   render() {
     const {
       extensions,
       modulesActive,
       deleteToggled,
-      uploadToggled,
       widgetsActive,
       not_installed,
       installed,
@@ -447,11 +400,8 @@ class ExtensionsRoute extends Component {
       extensionsInstallingStatus,
       deletingEntity,
       extensionDetails,
-      licenseUploadStatus,
-      uploadingFinished,
-      uploadingStarted,
-      fileUploadProgress
     } = this.state;
+
     return (
       <div>
         <TopFilters
@@ -553,12 +503,6 @@ class ExtensionsRoute extends Component {
               "extensionsInstallingStatus"
             )}
           />
-          <Button
-            label={"Upload license"}
-            buttonType="regular"
-            color="blue"
-            onClick={this.togglelicenseUpload.bind(this)}
-          />
         </Wrapper>
         {extensions && !nothingShown ? (
           <>
@@ -604,17 +548,6 @@ class ExtensionsRoute extends Component {
             onDeleteClicked={this.deleteById}
             onUpdateClicked={this.updateById}
             modalDetails={extensionDetails}
-          />
-        ) : null}
-
-        {uploadToggled ? (
-          <FileUpload
-            uploadingProgress={fileUploadProgress}
-            uploadStatus={licenseUploadStatus}
-            finished={uploadingFinished}
-            uploading={uploadingStarted}
-            onApply={this.uploadFiles}
-            onClose={this.togglelicenseUpload.bind(this)}
           />
         ) : null}
 
