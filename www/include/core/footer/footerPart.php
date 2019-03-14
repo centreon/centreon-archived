@@ -293,8 +293,8 @@ function validateFeature(name, version, enabled) {
       function(e) {
         var href = jQuery(this).attr('href');
         var isHandled = jQuery(this).is('[onload]') ||
-                jQuery(this).is('[onclick]') ||
-                (href.match(/^javascript:/) !== null)
+          jQuery(this).is('[onclick]') ||
+          (href.match(/^javascript:/) !== null)
         ;
 
         // if it's a relative path, we can use the default redirection
@@ -311,7 +311,10 @@ function validateFeature(name, version, enabled) {
               window.open(href);
             // If it's an internal link, we remove header to avoid inception
             } else {
-              href = href.replace('main.php', 'main.get.php');
+              // isMobile is declared in the menu.js file
+              if (typeof isMobile === 'undefined' || isMobile !== true) {
+                  href = href.replace('main.php', 'main.get.php');
+              }
               window.location.href = href;
             }
 
