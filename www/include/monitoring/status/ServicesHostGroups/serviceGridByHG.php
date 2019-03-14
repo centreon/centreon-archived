@@ -71,7 +71,7 @@ $rows = 10;
 
 include_once("./include/monitoring/status/Common/default_poller.php");
 include_once("./include/monitoring/status/Common/default_hostgroups.php");
-include_once($hg_path."serviceGridByHGJS.php");
+include_once($hg_path . "serviceGridByHGJS.php");
 
 // Smarty template Init
 $tpl = new Smarty();
