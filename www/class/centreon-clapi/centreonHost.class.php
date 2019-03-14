@@ -354,7 +354,7 @@ class CentreonHost extends CentreonObject
             throw new CentreonClapiException(self::MISSINGPARAMETER);
         }
         if (($hostId = $this->getObjectId($params[self::ORDER_UNIQUENAME])) != 0) {
-            $relObj = new \Centreon_Object_Relation_Instance_Host();
+            $relObj = new \Centreon_Object_Relation_Instance_Host($this->dependencyInjector);
             $fields = array('id', 'name');
             $elements = $relObj->getMergedParameters(
                 $fields,
