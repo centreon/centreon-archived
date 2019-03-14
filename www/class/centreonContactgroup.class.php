@@ -255,23 +255,24 @@ class CentreonContactgroup
             }
             $contact = rtrim($contact, ",");
 
-            $queryContact = "SELECT contact_id FROM contact " .
-                " WHERE contact_ldap_dn IN (" . $contact . ")";
-            try {
-                $resContact = $this->db->query($queryContact);
-            } catch (\PDOException $e) {
-                $msg[] = "Error in getting contact id form members.";
-                continue;
-            }
-            while ($rowContact = $resContact->fetch()) {
-                $queryAddRelation = "INSERT INTO contactgroup_contact_relation " .
-                    "(contactgroup_cg_id, contact_contact_id) " .
-                    "VALUES (" . $cgRow['cg_id'] . ", " . $rowContact['contact_id'] . ")";
+            if ($contact !== '') {
+                $queryContact = "SELECT contact_id FROM contact WHERE contact_ldap_dn IN (" . $contact . ")";
                 try {
-                    $this->db->query($queryAddRelation);
+                    $resContact = $this->db->query($queryContact);
                 } catch (\PDOException $e) {
-                    $msg[] = "Error insert relation between contactgroup " . $cgRow['cg_id'] .
-                        " and contact " . $rowContact['contact_id'];
+                    $msg[] = "Error in getting contact id form members.";
+                    continue;
+                }
+                while ($rowContact = $resContact->fetch()) {
+                    $queryAddRelation = "INSERT INTO contactgroup_contact_relation " .
+                        "(contactgroup_cg_id, contact_contact_id) " .
+                        "VALUES (" . $cgRow['cg_id'] . ", " . $rowContact['contact_id'] . ")";
+                    try {
+                        $this->db->query($queryAddRelation);
+                    } catch (\PDOException $e) {
+                        $msg[] = "Error insert relation between contactgroup " . $cgRow['cg_id'] .
+                            " and contact " . $rowContact['contact_id'];
+                    }
                 }
             }
         }
@@ -355,22 +356,24 @@ class CentreonContactgroup
                     }
                     $contact = rtrim($contact, ",");
 
-                    $queryContact = "SELECT contact_id FROM contact WHERE contact_ldap_dn IN (" . $contact . ")";
-                    try {
-                        $resContact = $this->db->query($queryContact);
-                    } catch (\PDOException $e) {
-                        $msg[] = "Error in getting contact id from members.";
-                        continue;
-                    }
-                    while ($rowContact = $resContact->fetch()) {
-                        $queryAddRelation = "INSERT INTO contactgroup_contact_relation " .
-                            "(contactgroup_cg_id, contact_contact_id) " .
-                            "VALUES (" . $row['cg_id'] . ", " . $rowContact['contact_id'] . ")";
+                    if($contact !== '') {
+                        $queryContact = "SELECT contact_id FROM contact WHERE contact_ldap_dn IN (" . $contact . ")";
                         try {
-                            $this->db->query($queryAddRelation);
+                            $resContact = $this->db->query($queryContact);
                         } catch (\PDOException $e) {
-                            $msg[] = "Error insert relation between contactgroup " . $row['cg_id'] .
-                                " and contact " . $rowContact['contact_id'];
+                            $msg[] = "Error in getting contact id from members.";
+                            continue;
+                        }
+                        while ($rowContact = $resContact->fetch()) {
+                            $queryAddRelation = "INSERT INTO contactgroup_contact_relation " .
+                                "(contactgroup_cg_id, contact_contact_id) " .
+                                "VALUES (" . $row['cg_id'] . ", " . $rowContact['contact_id'] . ")";
+                            try {
+                                $this->db->query($queryAddRelation);
+                            } catch (\PDOException $e) {
+                                $msg[] = "Error insert relation between contactgroup " . $row['cg_id'] .
+                                    " and contact " . $rowContact['contact_id'];
+                            }
                         }
                     }
                 }
