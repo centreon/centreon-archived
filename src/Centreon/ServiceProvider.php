@@ -57,6 +57,7 @@ class ServiceProvider implements AutoloadServiceProviderInterface
     const CENTREON_WEBSERVICE = 'centreon.webservice';
     const CENTREON_DB_MANAGER = 'centreon.db-manager';
     const CENTREON_CLAPI = 'centreon.clapi';
+    const CENTREON_PAGINATION = 'centreon.pagination';
     const CENTREON_BROKER_REPOSITORY = 'centreon.broker_repository';
     const CENTREON_BROKER_INFO_REPOSITORY = 'centreon.broker_info_repository';
     const CENTREON_BROKER_CONFIGURATION_SERVICE = 'centreon.broker_configuration_service';
@@ -95,6 +96,17 @@ class ServiceProvider implements AutoloadServiceProviderInterface
 
             $locator = new ServiceLocator($container, $services);
             $service = new CentreonDBManagerService($locator);
+
+            return $service;
+        };
+
+        $pimple[static::CENTREON_PAGINATION] = function(Container $container): Service\CentreonPaginationService {
+            $service = new Service\CentreonPaginationService(
+                new ServiceLocator(
+                    $container,
+                    Service\CentreonPaginationService::dependencies()
+                )
+            );
 
             return $service;
         };
