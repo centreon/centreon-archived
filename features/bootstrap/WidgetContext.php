@@ -56,9 +56,6 @@ class WidgetContext extends CentreonContext
      */
     public function theWidgetIsInstalled()
     {
-        //wait the widget is installed
-        sleep(2);
-
         // initialize page to manage iframe selection
         $this->page = new WidgetListingPage($this);
 
@@ -76,9 +73,6 @@ class WidgetContext extends CentreonContext
      */
     public function theWidgetIsRemoved()
     {
-        //wait the iframe
-        sleep(2);
-
         $this->spin(
             function ($context) {
                 $context->getSession()->getDriver()->switchToIFrame("main-content");
