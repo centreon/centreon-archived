@@ -64,7 +64,7 @@ class Entity implements JsonSerializable
      */
     public function jsonSerialize()
     {
-        return $this->dismount($this->entity);
+        return (is_array($this->entity)) ? $this->entity : $this->dismount($this->entity);
     }
 
     /**
