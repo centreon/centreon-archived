@@ -13,7 +13,6 @@ Feature: Generate poller configuration
         Then I am redirected to generate page
         And the pollers are already selected
 
-    @critical
     Scenario: Generate poller configuration
         Given a Centreon platform with multiple pollers
         And multiple pollers are selected

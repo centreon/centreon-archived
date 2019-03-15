@@ -7,7 +7,6 @@ Feature: ServiceGroupConfiguration
         Given I am logged in a Centreon server
         And a service group is configured
 
-    @critical
     Scenario: Change the properties of a service group
         When I change the properties of a service group
         Then the properties are updated

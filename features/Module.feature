@@ -8,7 +8,6 @@ Feature: Module
     Background:
         Given I am logged in a Centreon server
 
-    @critical
     Scenario: Module installation
         Given a module is ready to install
         When I install the module
