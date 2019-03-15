@@ -28,21 +28,6 @@ class NavigationComponent extends Component {
   componentDidMount = () => {
     const { fetchNavigationData } = this.props;
     fetchNavigationData();
-    /*
-    const { setNavigation } = this.props
-
-    this.navService.get().then(({ data }) => {
-
-      // store allowed topologies in redux (useful to get acl information in other components)
-      setNavigation(data);
-
-      // provide data in the state (render menu)
-      this.setState({
-        menuItems: data,
-        selectedMenu: Object.values(data)[0]
-      });
-    })
-    */
   };
 
   // toggle between icons menu and details menu
@@ -147,7 +132,7 @@ class NavigationComponent extends Component {
   getUrlFromEntry = (entryKey, entryProps) => {
     const urlOptions = entryKey.slice(1) + (entryProps.options !== null ? entryProps.options : '');
     const url = entryProps.is_react == '1'
-      ? "/_CENTREON_PATH_PLACEHOLDER_" + entryProps.url
+      ? entryProps.url
       : routeMap.module + "?p=" + urlOptions;
     return { url, urlOptions };
   }

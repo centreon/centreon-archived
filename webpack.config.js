@@ -108,6 +108,17 @@ module.exports = {
         }]
       },
       {
+        //test: /Slider\/.+\.(bmp|png|jpg|jpeg|gif|svg)$/,
+        test: /@centreon\/react\-components\/.+\.(bmp|png|jpg|jpeg|gif|svg)$/,
+        use: [{
+          loader: 'url-loader',
+          options: {
+            limit: 10000,
+            name: 'static/img/[name].[hash:8].[ext]',
+          },
+        }]
+      },
+      {
         test: /img\/.+\.(bmp|png|jpg|jpeg|gif|svg)$/,
         use: [{
           loader: 'url-loader',

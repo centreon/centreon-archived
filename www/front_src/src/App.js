@@ -16,7 +16,7 @@ import queryString from 'query-string';
 import axios from './axios';
 import NotAllowedPage from './route-components/notAllowedPage';
 
-import { setExternalComponents } from "./redux/actions/externalComponentsActions";
+import { fetchExternalComponents } from "./redux/actions/externalComponentsActions";
 
 class App extends Component {
 
@@ -73,14 +73,9 @@ class App extends Component {
 
   // get external components (pages, hooks...)
   getExternalComponents = () => {
-    const { setExternalComponents } = this.props;
-
-    axios("internal.php?object=centreon_frontend_component&action=components")
-      .get()
-      .then(({ data }) => {
-        // store external components in redux
-        setExternalComponents(data);
-    });
+    const { fetchExternalComponents } = this.props;
+    // store external components in redux
+    fetchExternalComponents();
   }
 
   // keep alive (redirect to login page if session is expired)
@@ -170,8 +165,12 @@ class App extends Component {
 
 const mapStateToProps = () => {}
 
-const mapDispatchToProps = {
-  setExternalComponents
+const mapDispatchToProps = dispatch => {
+  return {
+    fetchExternalComponents: () => {
+      dispatch(fetchExternalComponents());
+    }
+  };
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(App);

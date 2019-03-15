@@ -12,6 +12,7 @@ import Hook from "../../../../components/hook";
 
 import axios from "../../../../axios";
 import { fetchNavigationData } from "../../../../redux/actions/navigationActions";
+import { fetchExternalComponents } from "../../../../redux/actions/externalComponentsActions";
 
 class ExtensionsRoute extends Component {
   state = {
@@ -154,9 +155,16 @@ class ExtensionsRoute extends Component {
     });
   };
 
+  // reload menu entries on extensions actions (install/update/delete)
   reloadNavigation = () => {
     const { reloadNavigation } = this.props;
     reloadNavigation();
+  };
+
+  // reload external hooks and pages on extensions actions (install/update/delete)
+  reloadExternalComponents = () => {
+    const { reloadExternalComponents } = this.props;
+    reloadExternalComponents();
   };
 
   setStatusesByIds = (ids, statusesKey, callback) => {
@@ -180,7 +188,6 @@ class ExtensionsRoute extends Component {
       const updatingEntity = ids.shift();
       this.updateById(updatingEntity.id, updatingEntity.type, () => {
         this.updateOneByOne(ids);
-        this.reloadNavigation();
       });
     }
   };
@@ -190,7 +197,6 @@ class ExtensionsRoute extends Component {
       const installingEntity = ids.shift();
       this.installById(installingEntity.id, installingEntity.type, () => {
         this.installOneByOne(ids);
-        this.reloadNavigation();
       });
     }
   };
@@ -213,17 +219,20 @@ class ExtensionsRoute extends Component {
 
   runAction = (loadingKey, action, id, type, callback) => {
     this.setStatusesByIds([{ id }], loadingKey, () => {
-      //const { xhr } = this.props;
       axios(`internal.php?object=centreon_module&action=${action}&id=${id}&type=${type}`)
         .post()
         .then(() => {
           this.getData(() => {
             this.setStatusByKey(loadingKey, id, callback);
+            this.reloadNavigation();
+            this.reloadExternalComponents();
           });
         })
         .catch(err => {
           this.getData(() => {
             this.setStatusByKey(loadingKey, id, callback);
+            this.reloadNavigation();
+            this.reloadExternalComponents();
           });
           throw err;
         });
@@ -238,7 +247,6 @@ class ExtensionsRoute extends Component {
       });
       this.runAction("extensionsInstallingStatus", "install", id, type, () => {
         this.getExtensionDetails(id, type);
-        this.reloadNavigation();
       });
     } else {
       this.runAction(
@@ -246,7 +254,7 @@ class ExtensionsRoute extends Component {
         "install",
         id,
         type,
-        callback ? callback : this.reloadNavigation
+        callback
       );
     }
   };
@@ -259,7 +267,6 @@ class ExtensionsRoute extends Component {
       });
       this.runAction("extensionsUpdatingStatus", "update", id, type, () => {
         this.getExtensionDetails(id, type);
-        this.reloadNavigation();
       });
     } else {
       this.runAction(
@@ -267,7 +274,7 @@ class ExtensionsRoute extends Component {
         "update",
         id,
         type,
-        callback ? callback : this.reloadNavigation
+        callback
       );
     }
   };
@@ -291,6 +298,7 @@ class ExtensionsRoute extends Component {
           .then(() => {
             this.getData();
             this.reloadNavigation();
+            this.reloadExternalComponents();
             if (modalDetailsActive) {
               this.getExtensionDetails(id, type);
             }
@@ -571,7 +579,10 @@ const mapDispatchToProps = dispatch => {
   return {
     reloadNavigation: () => {
       dispatch(fetchNavigationData());
-    }
+    },
+    reloadExternalComponents: () => {
+      dispatch(fetchExternalComponents());
+    },
   };
 };
 
