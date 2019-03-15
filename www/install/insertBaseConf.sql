@@ -140,6 +140,7 @@ INSERT INTO `options` (`key`, `value`) VALUES
 ('selectPaginationSize', 60),
 ('display_downtime_chart','0'),
 ('display_comment_chart','0'),
+('centcore_cmd_timeout', '60'),
 ('centcore_illegal_characters', '`');
 
 --

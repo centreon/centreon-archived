@@ -299,7 +299,7 @@ function updateCentcoreConfigData($db, $form, $centreon)
     updateOption(
         $db,
         "centcore_cmd_timeout",
-        isset($ret["centcore_cmd_timeout"]) && $ret['centcore_cmd_timeout'] ? $ret['centcore_cmd_timeout'] : 0
+        isset($ret["centcore_cmd_timeout"]) && $ret['centcore_cmd_timeout'] ? $ret['centcore_cmd_timeout'] : 60
     );
     updateOption(
         $db,
