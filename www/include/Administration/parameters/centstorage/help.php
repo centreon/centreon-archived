@@ -49,6 +49,22 @@ $help['tip_reporting_retention'] = dgettext(
 );
 
 /**
+ * Partitioning retention options
+ */
+$help['tip_partitioning_retention'] = dgettext(
+    'help',
+    'Retention time for partitioned tables (data_bin, logs, log_archive_host, log_archive_service), by default 365 days.'
+);
+$help['tip_partitioning_retention_forward'] = dgettext(
+    'help',
+    'number of partitions created in advance to prevent issues, by default 10 days.'
+);
+$help['tip_partitioning_backup_directory'] = dgettext(
+    'help',
+    'Backup directory to store partition, by default /var/cache/centreon/backup.'
+);
+
+/**
  * Audit Logs
  */
 
