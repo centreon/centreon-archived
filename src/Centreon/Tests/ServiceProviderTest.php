@@ -42,6 +42,7 @@ class ServiceProviderTest extends TestCase
             ServiceProvider::CENTREON_CLAPI => Service\CentreonClapiService::class,
             ServiceProvider::CENTREON_DB_MANAGER => Service\CentreonDBManagerService::class,
             ServiceProvider::UPLOAD_MANGER => Service\UploadFileService::class,
+            ServiceProvider::CENTREON_PAGINATION => Service\CentreonPaginationService::class,
             'centreon.keygen' => Domain\Service\AppKeyGeneratorService::class,
             'centreon.acl' => CentreonACL::class,
             'centreon.config' => Service\CentcoreConfigService::class,
