@@ -106,6 +106,7 @@ This part can be used set the operation of the CentCore process.
 
 * **Enable Broker Statistics Collection** field enables the retrieval of statistics from the Centreon Broker by CentCore. This can be a blocking option because the reading of the pipe can be a blocking action
 * **Timeout value for Centcore commands** field can be used to define a timeout for local commands and commands via SSH process.
+* **Illegal characters for Centcore commands** field allows to define characters which will be removed from commands forwarded by the process..
 
 .. _ldapconfiguration:
 
