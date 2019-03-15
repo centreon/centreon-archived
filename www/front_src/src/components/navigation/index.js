@@ -119,7 +119,7 @@ class NavigationComponent extends Component {
 
     return (
       <nav
-        className={"sidebar" + (active ? " active" : "")}
+        className={`sidebar${active ? " active" : ""}`}
         id="sidebar"
       >
         <div
@@ -153,11 +153,11 @@ class NavigationComponent extends Component {
                 <li
                   onMouseOver={this.openNavigation}
                   onMouseOut={this.closeNavigation}
-                  className={"menu-item" + (levelOneProps.active ? " active" : "")}
+                  className={`menu-item ${levelOneProps.active ? " active" : ""}`}
                 >
                 <span
                   className="menu-item-link dropdown-toggle"
-                  id={"menu" + levelOneKey}
+                  id={`menu${levelOneKey}`}
                 >
                   <span className={`iconmoon icon-${levelOneProps.menu_id.toLowerCase()}`}>
                   </span>
@@ -173,14 +173,16 @@ class NavigationComponent extends Component {
                       return (
                         <li
                           className={
-                            "collapsed-item" + (levelTwoProps.collapsed || (pageId == urlOptions) ? " active" : "")
+                            `collapsed-item ${levelTwoProps.collapsed || (pageId == urlOptions) ? " active" : ""}`
                           }
                         >
                           {Object.keys(levelTwoProps.children).length > 0 ? (
                             <span
                               className="collapsed-level-item-link"
                             >
-                              <Translate value={levelTwoProps.hasOwnProperty('label') ? levelTwoProps.label : ''}/>
+                              <Translate
+                                value={levelTwoProps.hasOwnProperty('label') ? levelTwoProps.label : ''}
+                              />
                             </span>
                           ) : (
                               <Link
@@ -197,7 +199,9 @@ class NavigationComponent extends Component {
                               </Link>
                             )}
 
-                          <ul className="collapse-level collapsed-level-items first-level list-unstyled">
+                          <ul
+                            className="collapse-level collapsed-level-items first-level list-unstyled"
+                          >
                             {Object.entries(levelTwoProps.children).map(([levelThreeKey, levelThreeProps]) => {
                               return (
                                 <React.Fragment>
@@ -211,7 +215,7 @@ class NavigationComponent extends Component {
                                     if (levelFourProps.label) {
                                       return (
                                         <li
-                                          className={"collapsed-level-item" + (pageId == urlOptions ? " active" : "")}
+                                          className={`collapsed-level-item ${pageId == urlOptions ? " active" : ""}`}
                                         >
                                           <Link
                                             onClick={() => {
