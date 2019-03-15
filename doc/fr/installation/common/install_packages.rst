@@ -135,6 +135,7 @@ Lancer les commandes suivantes sur le serveur Central : ::
     # systemctl enable centreontrapd
     # systemctl enable cbd
     # systemctl enable centengine
+    # systemctl enable centreon
 
 .. note::
     Si la base de données MySQL est sur un serveur dédié, lancer la commande
