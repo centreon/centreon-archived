@@ -37,6 +37,7 @@
 namespace Centreon\Application\DataRepresenter;
 
 use JsonSerializable;
+use ReflectionClass;
 
 class Entity implements JsonSerializable
 {
@@ -58,11 +59,27 @@ class Entity implements JsonSerializable
 
     /**
      * JSON serialization of entity
-     *
+     * @throws \ReflectionException
      * @return array
      */
     public function jsonSerialize()
     {
-        return (array) $this->entity;
+        return $this->dismount($this->entity);
+    }
+
+    /**
+     * @param $object
+     * @return array
+     * @throws \ReflectionException
+     */
+    public function dismount($object) {
+        $reflectionClass = new ReflectionClass(get_class($object));
+        $array = array();
+        foreach ($reflectionClass->getProperties() as $property) {
+            $property->setAccessible(true);
+            $array[$property->getName()] = $property->getValue($object);
+            $property->setAccessible(false);
+        }
+        return $array;
     }
 }
