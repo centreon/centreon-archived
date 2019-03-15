@@ -1,7 +1,7 @@
 {
   "info": {
-    "_postman_id": "a0f59ed8-0da0-4aa8-b270-774fcaa83146",
-    "name": "Centreon Web Rest API copy",
+    "_postman_id": "ca236206-2e5b-4f62-8f39-f5e4bc83889a",
+    "name": "Centreon Web Rest API",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "item": [
@@ -1014,14 +1014,14 @@
             {
               "listen": "test",
               "script": {
-                "type": "text/javascript",
+                "id": "e14c0905-a615-4b2a-8d10-d6e67a24d0b6",
                 "exec": [
                   "tests[\"Status code is 200\"] = responseCode.code === 200;",
                   "",
                   "var contentType = postman.getResponseHeader(\"Content-Type\");",
                   "",
                   "tests[\"Content-Type is present\"] = contentType !== null;",
-                  "tests[\"Content-Type is application/json\"] = contentType === \"application/json\";",
+                  "tests[\"Content-Type is application/json\"] = contentType === \"application/json;charset=utf-8\";",
                   "",
                   "var jsonData = JSON.parse(responseBody);",
                   "var hostData = jsonData.result;",
@@ -1050,7 +1050,8 @@
                   "",
                   "tests[\"Configured host present\"] = hostPresent === true;",
                   "tests[\"No _Module host present\"] = hostMetaPresent === false;"
-                ]
+                ],
+                "type": "text/javascript"
               }
             }
           ],
@@ -14264,7 +14265,7 @@
                   "tests[\"Status code is 200\"] = responseCode.code === 200;",
                   "",
                   "var contentType = postman.getResponseHeader(\"Content-Type\");",
-                  "tests[\"Content-Type is application/json\"] = contentType === \"application/json\";",
+                  "tests[\"Content-Type is application/json\"] = contentType === \"application/json;charset=utf-8\";",
                   "",
                   "var jsonData = JSON.parse(responseBody);",
                   "var result= jsonData.result;",
