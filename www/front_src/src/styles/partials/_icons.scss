@@ -25,48 +25,48 @@
 }
 
 
-.icon-home:before {
-  content: "\e904";
+.icon-home {
+  background: url("../../img/icons/home.svg") no-repeat center center;
   color: rgba(0, 159, 152, 1);
 }
-.icon-home:hover:before {
-  content: "\e904";
+.icon-home:hover {
+  background: url("../../img/icons/home-hover.svg") no-repeat center center;
   color: $white-color;
 }
 
-.icon-monitoring:before {
-  content: "\e907";
+.icon-monitoring {
+  background: url("../../img/icons/monitoring.svg") no-repeat center center;
   color: rgba(136, 189, 35, 1);
 }
-.icon-monitoring:hover:before {
-  content: "\e907";
+.icon-monitoring:hover {
+  background: url("../../img/icons/monitoring-hover.svg") no-repeat center center;
   color: $white-color;
 }
 
-.icon-reporting:before {
-  content: "\e909";
+.icon-reporting {
+  background: url("../../img/icons/reporting.svg") no-repeat center center;
   color: rgba(255, 162, 0, 1);
 }
-.icon-reporting:hover:before {
-  content: "\e909";
+.icon-reporting:hover {
+  background: url("../../img/icons/reporting-hover.svg") no-repeat center center;
   color: $white-color;
 }
 
-.icon-configuration:before {
-  content: "\e902";
+.icon-configuration {
+  background: url("../../img/icons/settings.svg") no-repeat center center;
   color: rgba(0, 159, 233, 1);
 }
-.icon-configuration:hover:before {
-  content: "\e902";
+.icon-configuration:hover {
+  background: url("../../img/icons/settings-hover.svg") no-repeat center center;
   color: $white-color;
 }
 
-.icon-administration:before {
-  content: "\e900";
+.icon-administration {
+  background: url("../../img/icons/administration.svg") no-repeat center center;
   color: rgba(43, 45,132, 1);
 }
-.icon-administration:hover:before {
-  content: "\e900";
+.icon-administration:hover {
+  background: url("../../img/icons/administration-hover.svg") no-repeat center center;
   color: $white-color;
 }
 
