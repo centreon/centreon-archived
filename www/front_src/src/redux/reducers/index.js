@@ -7,6 +7,7 @@ import navigationReducer from "./navigationReducer";
 import refreshReducer from "./refreshReducer";
 import axiosReducer from "./axiosReducer";
 import externalComponentsReducer from "./externalComponentsReducer";
+import tooltipReducer from './tooltipReducer';
 
 export default combineReducers({
   form: formReducer,
@@ -15,5 +16,6 @@ export default combineReducers({
   navigation: navigationReducer,
   intervals: refreshReducer,
   remoteData: axiosReducer,
-  externalComponents: externalComponentsReducer
+  externalComponents: externalComponentsReducer,
+  tooltip: tooltipReducer
 });
