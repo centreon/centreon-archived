@@ -14,6 +14,10 @@ if you installed from sources. Before upgrading Centreon, remember to make a bac
     If you try to migrate a platform using **Centreon Poller Display 1.6.x**,
     refer to :ref:`migration procedure <migratefrompollerdisplay>`.
 
+.. warning::
+   The upgrade process can start only from versions **2.4.0** and later. If you have
+   an earlier version, please update to an intermediate version like *2.8.x* first.
+
 .. toctree::
     :maxdepth: 2
 

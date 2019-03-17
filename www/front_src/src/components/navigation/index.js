@@ -11,6 +11,7 @@ import routeMap from "../../route-maps/route-map";
 
 import { Translate } from 'react-redux-i18n';
 import { fetchNavigationData } from "../../redux/actions/navigationActions";
+import { updateTooltip } from '../../redux/actions/tooltipActions';
 
 class NavigationComponent extends Component {
   navService = axios("internal.php?object=centreon_menu&action=menu");
@@ -144,6 +145,27 @@ class NavigationComponent extends Component {
     history.push(route);
   };
 
+  // hide tooltip for the first-level folded menu items
+  mouseLeftTheMenu = event => {
+    const { updateTooltip } = this.props;
+    updateTooltip({
+      toggled: false
+    });
+  };
+
+  // show tooltip for the first-level folded menu items by setting toggled to true
+  // updating the x, y properties of tooltip in order to display it on client cursor position
+  // show related label by setting label to label
+  mouseIsMovingOverTheMenu = (label, {  clientY }) => {
+    const { updateTooltip } = this.props;
+    updateTooltip({
+      toggled: true,
+      x: 50,
+      y: clientY,
+      label
+    });
+  };
+
   render() {
     const { menuItems } = this.props;
     const { active } = this.state;
@@ -174,9 +196,16 @@ class NavigationComponent extends Component {
               />
             </span>
           </div>
-          <ul class="menu menu-items list-unstyled components">
+          <ul
+            class="menu menu-items list-unstyled components"
+            onMouseLeave={this.mouseLeftTheMenu}
+          >
             {Object.entries(menuItems).map(([levelOneKey, levelOneProps]) => (
-              levelOneProps.label ? (<li class={"menu-item" + (levelOneProps.active ? " active" : "")}>
+              levelOneProps.label ? (
+                <li
+                  onMouseOver={this.mouseIsMovingOverTheMenu.bind(this, levelOneProps.label)}
+                  class={"menu-item" + (levelOneProps.active ? " active" : "")}
+                >
                 <span
                   onDoubleClick={() => {this.handleDoubleClick(levelOneKey, levelOneProps)}}
                   onClick={() => {this.collapseLevelTwo(levelOneKey)}}
@@ -290,6 +319,9 @@ const mapDispatchToProps = dispatch => {
   return {
     fetchNavigationData: () => {
       dispatch(fetchNavigationData());
+    },
+    updateTooltip: () => {
+      dispatch(updateTooltip());
     }
   };
 };
