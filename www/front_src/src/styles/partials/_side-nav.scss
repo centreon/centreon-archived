@@ -134,7 +134,7 @@
 
 a {
   &.download {
-    background: $white-color;
+    background-color: $white-color;
     color: #7386D5;
   }
   &.article {
@@ -171,22 +171,22 @@ a {
     &:first-child {
       &.active {
         > span {
-          background: $turquoise-centreon-primary;
+          background-color: $turquoise-centreon-primary;
         }
       }
       > span:hover {
-        background: $turquoise-centreon-darken;
+        background-color: $turquoise-centreon-darken;
       }
       .collapsed-level-item {
         &.active {
           .collapsed-level-item-link {
-            background: $turquoise-centreon-primary;
+            background-color: $turquoise-centreon-primary;
             color: $white-color;
           }
         }
         &:hover {
           .collapsed-level-item-link {
-            background: $turquoise-centreon-darken;
+            background-color: $turquoise-centreon-darken;
             color: $white-color;
           }
         }
@@ -194,12 +194,12 @@ a {
       .collapsed-item {
         &.active {
           .collapsed-level-item-link.active {
-            background: $turquoise-centreon-primary;
+            background-color: $turquoise-centreon-primary;
             color: $white-color;
           }
         }
         > .collapsed-level-item-link:hover {
-            background: $turquoise-centreon-darken;
+            background-color: $turquoise-centreon-darken;
             color: $white-color;
         }
       }
@@ -208,22 +208,22 @@ a {
     &:nth-child(2) {
       &.active {
         > span {
-          background: $lime-centreon-primary;
+          background-color: $lime-centreon-primary;
         }
       }
       > span:hover {
-        background: $lime-centreon-darken;
+        background-color: $lime-centreon-darken;
       }
       .collapsed-level-item {
         &.active {
           .collapsed-level-item-link {
-            background: $lime-centreon-primary;
+            background-color: $lime-centreon-primary;
             color: $white-color;
           }
         }
         &:hover {
           .collapsed-level-item-link {
-            background: $lime-centreon-darken;
+            background-color: $lime-centreon-darken;
             color: $white-color;
           }
         }
@@ -231,12 +231,12 @@ a {
       .collapsed-item {
         &.active {
           .collapsed-level-item-link.active {
-            background: $lime-centreon-primary;
+            background-color: $lime-centreon-primary;
             color: $white-color;
           }
         }
         > .collapsed-level-item-link:hover{
-            background: $lime-centreon-darken;
+            background-color: $lime-centreon-darken;
             color: $white-color;
         }
       }
@@ -245,22 +245,22 @@ a {
     &:nth-child(3) {
       &.active {
         > span {
-          background: $orange-centreon-primary;
+          background-color: $orange-centreon-primary;
         }
       }
       > span:hover {
-        background: $orange-centreon-darken;
+        background-color: $orange-centreon-darken;
       }
       .collapsed-level-item {
         &.active {
           .collapsed-level-item-link {
-            background: $orange-centreon-primary;
+            background-color: $orange-centreon-primary;
             color: $white-color;
           }
         }
         &:hover {
           .collapsed-level-item-link {
-            background: $orange-centreon-darken;
+            background-color: $orange-centreon-darken;
             color: $white-color;
           }
         }
@@ -268,12 +268,12 @@ a {
       .collapsed-item {
         &.active {
           .collapsed-level-item-link.active {
-            background: $orange-centreon-primary;
+            background-color: $orange-centreon-primary;
             color: $white-color;
           }
         }
         > .collapsed-level-item-link:hover{
-            background: $orange-centreon-darken;
+            background-color: $orange-centreon-darken;
             color: $white-color;
         }
       }
@@ -282,22 +282,22 @@ a {
     &:nth-child(4) {
       &.active {
         > span {
-          background: $lightblue-centreon-primary;
+          background-color: $lightblue-centreon-primary;
         }
       }
       > span:hover {
-        background: $lightblue-centreon-darken;
+        background-color: $lightblue-centreon-darken;
       }
       .collapsed-level-item {
         &.active {
           .collapsed-level-item-link {
-            background: $lightblue-centreon-primary;
+            background-color: $lightblue-centreon-primary;
             color: $white-color;
           }
         }
         &:hover {
           .collapsed-level-item-link {
-            background: $lightblue-centreon-darken;
+            background-color: $lightblue-centreon-darken;
             color: $white-color;
           }
         }
@@ -305,12 +305,12 @@ a {
       .collapsed-item {
         &.active {
           .collapsed-level-item-link.active {
-            background: $lightblue-centreon-primary;
+            background-color: $lightblue-centreon-primary;
             color: $white-color;
           }
         }
         > .collapsed-level-item-link:hover{
-            background: $lightblue-centreon-darken;
+            background-color: $lightblue-centreon-darken;
             color: $white-color;
         }
       }
@@ -319,22 +319,22 @@ a {
     &:nth-child(5) {
       &.active {
         > span {
-          background: $darkblue-centreon-primary;
+          background-color: $darkblue-centreon-primary;
         }
       }
       > span:hover {
-        background: $darkblue-centreon-darken;
+        background-color: $darkblue-centreon-darken;
       }
       .collapsed-level-item {
         &.active {
           .collapsed-level-item-link {
-            background: $darkblue-centreon-primary;
+            background-color: $darkblue-centreon-primary;
             color: $white-color;
           }
         }
         &:hover {
           .collapsed-level-item-link {
-            background: $darkblue-centreon-darken;
+            background-color: $darkblue-centreon-darken;
             color: $white-color;
           }
         }
@@ -342,12 +342,12 @@ a {
       .collapsed-item {
         &.active {
           .collapsed-level-item-link.active {
-            background: $darkblue-centreon-primary;
+            background-color: $darkblue-centreon-primary;
             color: $white-color;
           }
         }
         > .collapsed-level-item-link:hover{
-            background: $darkblue-centreon-darken;
+            background-color: $darkblue-centreon-darken;
             color: $white-color;
         }
       }
@@ -425,6 +425,10 @@ a {
       background: url("../../img/icons/aside-menu-arrows.png") no-repeat;
       background-position: 26px 10px;
       background-color: #f7f7f7;
+      &:hover {
+        background: url("../../img/icons/aside-menu-arrows.png") no-repeat;
+        background-position: 30px 10px;
+      }
       &.img-none {
         background: none;
         background-color: #f7f7f7;
