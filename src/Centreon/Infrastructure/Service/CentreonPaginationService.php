@@ -122,7 +122,7 @@ class CentreonPaginationService
     {
         if ($limit !== null && $limit > static::LIMIT_MAX) {
             throw new RuntimeException(sprintf('Max value of limit has to be %d instead %d', static::LIMIT_MAX, $limit));
-        } elseif ($limit !== null && $limit > 1) {
+        } elseif ($limit !== null && $limit < 1) {
             throw new RuntimeException(sprintf('Minimum value of limit has to be 1 instead %d', $limit));
         }
 
