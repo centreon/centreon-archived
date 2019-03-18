@@ -4,7 +4,7 @@ Pour démarrer l'ordonnanceur de supervision :
 2. Laissez les options par défaut, et cliquez sur **Exporter la configuration**
 3. Sélectionnez le collecteur **Central** dans la liste de sélection
 4. Décochez **Générer les fichiers de configuration** et **Lancer le débogage du moteur de supervision (-v)**
-5. Cochez **Déplacer les fichiers générés** ainsi que **Redémarrer l'ordonnanceur**
+5. Cochez **Déplacer les fichiers générés** ainsi que **Redémarrer l'ordonnanceur** en sélectionnant l'option **Redémarrer**
 6. Cliquez à nouveau sur **Exporter**
 7. Connectez-vous avec l'utilisateur 'root' sur votre serveur
 8. Démarrez le composant Centreon Broker ::
@@ -33,6 +33,7 @@ Lancer les commandes suivantes sur le serveur Central : ::
     # systemctl enable centreontrapd
     # systemctl enable cbd
     # systemctl enable centengine
+    # systemctl enable centreon
 
 L'interface web de Centreon est composée de plusieurs menus, chaque menu a une fonction bien précise :
 

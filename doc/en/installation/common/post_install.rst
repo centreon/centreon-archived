@@ -32,6 +32,7 @@ on the central server: ::
     # systemctl enable centreontrapd
     # systemctl enable cbd
     # systemctl enable centengine
+    # systemctl enable centreon
 
 The Centreon web interface contains several menus, each with a specific function:
 

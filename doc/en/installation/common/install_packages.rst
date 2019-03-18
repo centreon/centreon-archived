@@ -130,6 +130,7 @@ To make services start automatically during system bootup, run these commands on
     # systemctl enable centreontrapd
     # systemctl enable cbd
     # systemctl enable centengine
+    # systemctl enable centreon
 
 .. note::
     If the MySQL database is on a dedicated server, execute the MySQL enable command on the database server.
