@@ -73,9 +73,18 @@ class WidgetContext extends CentreonContext
      */
     public function theWidgetIsRemoved()
     {
+        // Wait for iFrame.
         $this->spin(
             function ($context) {
-                $context->getSession()->getDriver()->switchToIFrame("main-content");
+	        return $context->getSession()->getPage()->has('css', '#main-content');
+            },
+            'iFrame (#main-content) did not appear.'
+        );
+        $this->getSession()->getDriver()->switchToIFrame('main-content');
+
+        // Wait for widget deletion.
+        $this->spin(
+            function ($context) {
                 $widget = $context->page->getEntry($context->widgetName);
                 return !$widget['actions']['remove'];
             },
