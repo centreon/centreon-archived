@@ -58,7 +58,7 @@ class CentreonPaginationService
     /**
      * @var mixed
      */
-    protected $fitlers;
+    protected $filters;
 
     /**
      * @var int
@@ -105,11 +105,11 @@ class CentreonPaginationService
     /**
      * Set pagination filters
      *
-     * @param mixed $fitlers
+     * @param mixed $filters
      */
-    public function setFilters($fitlers)
+    public function setFilters($filters)
     {
-        $this->fitlers = $fitlers;
+        $this->filters = $filters;
     }
 
     /**
@@ -137,7 +137,7 @@ class CentreonPaginationService
      */
     public function setOffset(int $offset = null)
     {
-        if ($offset !== null && $offset > 1) {
+        if ($offset !== null && $offset < 1) {
             throw new RuntimeException(sprintf('Minimum value of offset has to be 1 instead %d', $offset));
         }
 
@@ -191,7 +191,7 @@ class CentreonPaginationService
     {
         $entities = $this->db
             ->getRepository($this->repository)
-            ->getPaginationList($this->fitlers, $this->limit, $this->offset);
+            ->getPaginationList($this->filters, $this->limit, $this->offset);
 
         $total = $this->db
             ->getRepository($this->repository)
