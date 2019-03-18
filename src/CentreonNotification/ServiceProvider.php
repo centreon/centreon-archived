@@ -44,7 +44,7 @@ class ServiceProvider implements AutoloadServiceProviderInterface
 {
 
     /**
-     * Register CentreonLegacy services
+     * Register CentreonNotification services
      *
      * @param \Pimple\Container $pimple
      */
