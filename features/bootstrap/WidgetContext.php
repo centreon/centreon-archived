@@ -10,7 +10,7 @@ class WidgetContext extends CentreonContext
 {
     protected $page;
     private $type = ExtensionsPage::WIDGET_TYPE;
-    private $widgetName = 'Host Monitoring';
+    private $widgetName = 'host-monitoring';
 
     /**
      * @Given a widget is ready to install
