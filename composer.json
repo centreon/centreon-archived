@@ -20,7 +20,7 @@
         "phing/phing": "^2.16",
         "behat/mink-extension": "^2.2",
         "behat/mink-selenium2-driver": "^1.3",
-        "centreon/centreon-test-lib": "dev-MON-3235-modules-api",
+        "centreon/centreon-test-lib": "dev-MON-3196-new-ext-manager",
         "adlawson/vfs": "^0.12.1",
         "zircote/swagger-php": "^3.0"
     },
