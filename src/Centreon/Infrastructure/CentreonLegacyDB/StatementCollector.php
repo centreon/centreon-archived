@@ -51,21 +51,21 @@ class StatementCollector
      *
      * @var array
      */
-    protected $columns;
+    protected $columns = [];
 
     /**
      * Collection of values
      *
      * @var array
      */
-    protected $values;
+    protected $values = [];
 
     /**
      * Collection of parameters
      *
      * @var array
      */
-    protected $params;
+    protected $params = [];
 
     /**
      * Add a column
