@@ -62,6 +62,7 @@ class ServiceProvider implements AutoloadServiceProviderInterface
     const CENTREON_BROKER_INFO_REPOSITORY = 'centreon.broker_info_repository';
     const CENTREON_BROKER_CONFIGURATION_SERVICE = 'centreon.broker_configuration_service';
     const UPLOAD_MANGER = 'upload.manager';
+    const CENTREON_EVENT_DISPATCHER = 'centreon.event_dispatcher';
 
     /**
      * Register Centreon services
@@ -173,6 +174,17 @@ class ServiceProvider implements AutoloadServiceProviderInterface
             $service = new Service\UploadFileService($locator, $_FILES);
 
             return $service;
+        };
+
+        $pimple[static::CENTREON_EVENT_DISPATCHER] = function (Container $container) {
+            $eventDispatcher = new EventDispatcher();
+            $eventDispatcher->setDispatcherLoader(
+                new FileLoader(
+                    _CENTREON_PATH_ . '/www/modules/',
+                    'custom-module-form.php'
+                )
+            );
+            return $eventDispatcher;
         };
     }
 
