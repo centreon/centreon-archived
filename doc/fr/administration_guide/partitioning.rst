@@ -11,7 +11,7 @@ Présentation
 Certaines tables de la base de données 'centreon_storage' sont partitionnées
 afin :
 
-* D'optimisation le temps d'exécution de nombreuses requêtes.
+* D'optimiser le temps d'exécution de nombreuses requêtes.
 * D'optimiser la purge des données.
 * De minimiser la reconstruction des tables en erreur lors d'un crash du SGBD.
 
@@ -85,9 +85,9 @@ Le paramétrage est le suivant :
 Fonctionnement
 ==============
 
-Le partitionnement utilise des fichier XML, présent dans le répertoire 
+Le partitionnement utilise des fichiers XML, présents dans le répertoire 
 **/usr/share/centreon/config/partition.d/** pour créer les partitions
-nécéssaires.
+nécessaires.
 
 Chaque jour, un script lancé par un cron réalise la création des tables
 manquantes ou celles en avance : ::
@@ -126,7 +126,7 @@ La ligne de commande exécute la procédure suivante :
 
 Des vérifications doivent être faites avant :
 
-* L’espace disponible sur le volume sur lequel se trouvent les bases MySQL doit être suffisant pour contenir deux fois la taille des tables traitées (Indexes + données).
+* L’espace disponible sur le volume sur lequel se trouvent les bases MySQL doit être suffisant pour contenir deux fois la taille des tables traitées (Index + données).
 * Les tables ne doivent pas contenir de données dans le futur (le temps est un facteur clé pour la mise en place du partitionnement).
 * La mémoire sur le serveur MySQL doit être suffisante.
 
@@ -149,7 +149,7 @@ Supervision du fonctionnement du partitionnement
 ================================================
 
 Le Plugin Pack **Centreon Database** permet de contrôler que le nombre de
-partitions créé en avances est suffisant. Il est recommandé d'installer et
+partitions créées en avances est suffisant. Il est recommandé d'installer et
 de déployer ce dernier.
 
 Il est également possible de visualiser les tables partitionnées et la
