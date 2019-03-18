@@ -12,6 +12,7 @@ import { Translate } from 'react-redux-i18n';
 import { setNavigation } from "../../redux/actions/navigationActions";
 import { connect } from "react-redux";
 
+import { updateTooltip } from '../../redux/actions/tooltipActions';
 
 class NavigationComponent extends Component {
   navService = axios("internal.php?object=centreon_menu&action=menu");
@@ -111,6 +112,27 @@ class NavigationComponent extends Component {
     const { history } = this.props;
     this.activateTopLevelMenu(topLevelIndex);
     history.push(route);
+  };
+
+  // hide tooltip for the first-level folded menu items
+  mouseLeftTheMenu = event => {
+    const { updateTooltip } = this.props;
+    updateTooltip({
+      toggled: false
+    });
+  };
+
+  // show tooltip for the first-level folded menu items by setting toggled to true
+  // updating the x, y properties of tooltip in order to display it on client cursor position
+  // show related label by setting label to label
+  mouseIsMovingOverTheMenu = (label, {  clientY }) => {
+    const { updateTooltip } = this.props;
+    updateTooltip({
+      toggled: true,
+      x: 50,
+      y: clientY,
+      label
+    });
   };
 
   render() {
@@ -260,7 +282,8 @@ class NavigationComponent extends Component {
 const mapStateToProps = () => {}
 
 const mapDispatchToProps = {
-  setNavigation
+  setNavigation,
+  updateTooltip
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(withRouter(NavigationComponent));

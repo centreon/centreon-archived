@@ -10,6 +10,7 @@ import ReactRoute from './components/router/reactRoute';
 
 import { classicRoutes, reactRoutes } from "./route-maps";
 import NavigationComponent from "./components/navigation";
+import Tooltip from "./components/tooltip";
 import Footer from "./components/footer";
 import Fullscreen from 'react-fullscreen-crossbrowser';
 import queryString from 'query-string';
@@ -136,6 +137,7 @@ class App extends Component {
           {!min && // do not display menu if min=1
             <NavigationComponent/>
           }
+          <Tooltip/>
           <div id="content">
             {!min && // do not display header if min=1
               <Header/>
