@@ -59,6 +59,7 @@ class CentreonEscalationWebservice extends CentreonWebServiceAbstract
      *   path="/external.php?object=centreon_escalation&action=list",
      *   description="Get list of escalations",
      *   tags={"centreon_escalation"},
+     *   security={{"Session": {}}},
      *   @OA\Parameter(
      *       in="query",
      *       name="object",

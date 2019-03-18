@@ -77,16 +77,17 @@ class EscalationRepository extends ServiceEntityRepository implements Pagination
             }
         }
 
+        $sql .= ' ORDER BY `esc_name` ASC';
+
         if ($limit !== null) {
             $sql .= ' LIMIT :limit';
             $collector->addValue(':limit', $limit, PDO::PARAM_INT);
-        }
-        if ($limit !== null) {
-            $sql .= ' OFFSET :offset';
-            $collector->addValue(':offset', $offset, PDO::PARAM_INT);
-        }
 
-        $sql .= ' ORDER BY `esc_name` ASC';
+            if ($offset !== null) {
+                $sql .= ' OFFSET :offset';
+                $collector->addValue(':offset', $offset, PDO::PARAM_INT);
+            }
+        }
 
         $stmt = $this->db->prepare($sql);
         $collector->bind($stmt);

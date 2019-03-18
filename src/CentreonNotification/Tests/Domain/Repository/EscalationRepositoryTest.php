@@ -57,7 +57,7 @@ class EscalationRepositoryTest extends TestCase
         $this->datasets = [
             [
                 'query' => "SELECT SQL_CALC_FOUND_ROWS `esc_id` AS `id`, `esc_name` AS `name` "
-                . "FROM `escalation` ORDER BY `esc_name` ASC",
+                . "FROM `" . Escalation::TABLE . "` ORDER BY `esc_name` ASC",
                 'data' => [
                     [
                         'id' => '1',
@@ -66,9 +66,9 @@ class EscalationRepositoryTest extends TestCase
                 ],
             ],
             [
-                'query' => "SELECT SQL_CALC_FOUND_ROWS `esc_id` AS `id`, `esc_name` AS `name` FROM `escalation` "
+                'query' => "SELECT SQL_CALC_FOUND_ROWS `esc_id` AS `id`, `esc_name` AS `name` FROM `" . Escalation::TABLE . "` "
                 . "WHERE `esc_name` LIKE :search AND `esc_id` IN (:id0) "
-                . "LIMIT :limit OFFSET :offset ORDER BY `esc_name` ASC",
+                . "ORDER BY `esc_name` ASC LIMIT :limit OFFSET :offset",
                 'data' => [
                     [
                         'id' => '1',
