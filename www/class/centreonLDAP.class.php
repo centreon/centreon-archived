@@ -841,7 +841,7 @@ class CentreonLDAP
                 $ldapCg = $result['ari_value'];
             }
             unset($resLdap);
-            if (null === $ldapCg) {
+            if (!$ldapCg) {
                 //no default contactgroup was set in the LDAP parameters
                 return true;
             }
