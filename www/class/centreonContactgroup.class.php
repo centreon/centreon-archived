@@ -223,7 +223,7 @@ class CentreonContactgroup
             "EXISTS(SELECT 1 FROM escalation_contactgroup_relation ecr WHERE ecr.contactgroup_cg_id = cg.cg_id LIMIT 1)"
             . ") ORDER BY cg.ar_id");
 
-        // $currentLdapId : the LDAP configuration which should never be set to 0
+        // $currentLdapId : the chosen LDAP configuration which should never stay to 0 if the LDAP is found
         $currentLdapId = 0;
         $ldapConn = null;
         while ($cgRow = $cgRes->fetch()) {
