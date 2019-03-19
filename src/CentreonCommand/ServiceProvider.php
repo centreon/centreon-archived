@@ -50,7 +50,7 @@ class ServiceProvider implements AutoloadServiceProviderInterface
      */
     public function register(Container $pimple): void
     {
-        // register Excalaton webservice
+        // register Command webservice
         $pimple[\Centreon\ServiceProvider::CENTREON_WEBSERVICE]
             ->add(Webservice\CentreonCommandWebservice::class);
     }
