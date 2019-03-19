@@ -1,7 +1,7 @@
 <?php
 /*
  * Copyright 2005-2019 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -62,11 +62,6 @@ class ContactGroupEntity implements JsonSerializable
      *   schema="ContactGroup",
      *       @OA\Property(property="cg_id", type="integer"),
      *       @OA\Property(property="cg_name", type="string"),
-     *       @OA\Property(property="cg_alias", type="string"),
-     *       @OA\Property(property="cg_comment", type="string"),
-     *       @OA\Property(property="cg_type", type="string"),
-     *       @OA\Property(property="cg_ldap_dn", type="string"),
-     *       @OA\Property(property="ar_id", type="integer"),
      *       @OA\Property(property="cg_activate", type="string", enum={"0","1"})
      * )
      *
