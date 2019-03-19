@@ -192,7 +192,7 @@ INSERT INTO `topology` (topology_name, topology_url, readonly, is_react) VALUES 
 INSERT INTO `topology` (topology_name, topology_url, readonly, is_react) VALUES ('Poller Wizard Final Step', '/poller-wizard/7', '0', '1');
 
 -- Insert Extensions Manager entry
-INSERT INTO `topology` (`topology_name`, `topology_url`, `readonly`, `is_react`, `topology_parent`, `topology_page`, `topology_group`) VALUES ('Manager', '/administration/extensions/manager', '0', '1', 507, 50709, 1);
+INSERT INTO `topology` (`topology_name`, `topology_url`, `readonly`, `is_react`, `topology_parent`, `topology_page`, `topology_group`) VALUES ('Manager', '/administration/extensions/manager', '1', '1', 507, 50709, 1);
 
 /*!40000 ALTER TABLE `topology` ENABLE KEYS */;
 UNLOCK TABLES;
