@@ -34,52 +34,53 @@
  *
  */
 
-namespace Centreon\Application\DataRepresenter;
+namespace CentreonCommand\Tests;
 
-use JsonSerializable;
-use ReflectionClass;
+use PHPUnit\Framework\TestCase;
+use Pimple\Container;
+use CentreonCommand\ServiceProvider;
+use Centreon\Tests\Resource\Traits\WebserviceTrait;
+use CentreonCommand\Application\Webservice;
 
-class Entity implements JsonSerializable
+/**
+ * @group CentreonCommand
+ * @group ServiceProvider
+ */
+class ServiceProviderTest extends TestCase
 {
 
-    /**
-     * @var mixed
-     */
-    private $entity;
+    use WebserviceTrait;
 
-    /**
-     * Construct
-     *
-     * @param mixed $entity
-     */
-    public function __construct($entity)
+    protected $container;
+    protected $provider;
+
+    protected function setUp()
     {
-        $this->entity = $entity;
+        $this->provider = new ServiceProvider();
+        $this->container = new Container;
+
+        $this->setUpWebservice($this->container);
+
+        $this->provider->register($this->container);
     }
 
     /**
-     * JSON serialization of entity
-     * @throws \ReflectionException
-     * @return array
+     * @covers \CentreonCommand\ServiceProvider::register
      */
-    public function jsonSerialize()
+    public function testWebservices()
     {
-        return is_object($this->entity) ? $this->dismount($this->entity) : (array) $this->entity;
+        $checkList = [
+            Webservice\CentreonCommandWebservice::class,
+        ];
+
+        $this->checkWebservices($checkList);
     }
 
     /**
-     * @param $object
-     * @return array
-     * @throws \ReflectionException
+     * @covers \CentreonCommand\ServiceProvider::order
      */
-    public function dismount($object) {
-        $reflectionClass = new ReflectionClass(get_class($object));
-        $array = array();
-        foreach ($reflectionClass->getProperties() as $property) {
-            $property->setAccessible(true);
-            $array[$property->getName()] = $property->getValue($object);
-            $property->setAccessible(false);
-        }
-        return $array;
+    public function testOrder()
+    {
+        $this->assertEquals(51, $this->provider::order());
     }
 }

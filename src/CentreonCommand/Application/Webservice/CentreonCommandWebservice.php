@@ -34,19 +34,19 @@
  *
  */
 
-namespace CentreonNotification\Application\Webservice;
+namespace CentreonCommand\Application\Webservice;
 
 use CentreonRemote\Application\Webservice\CentreonWebServiceAbstract;
-use CentreonNotification\Application\DataRepresenter;
-use CentreonNotification\Domain\Repository;
+use CentreonCommand\Application\DataRepresenter;
+use CentreonCommand\Domain\Repository;
 use Pimple\Container;
 use Pimple\Psr11\ServiceLocator;
 use Centreon\ServiceProvider;
 
 /**
- * @OA\Tag(name="centreon_escalation", description="Resource for authorized access")
+ * @OA\Tag(name="centreon_command", description="Resource for authorized access")
  */
-class CentreonEscalationWebservice extends CentreonWebServiceAbstract
+class CentreonCommandWebservice extends CentreonWebServiceAbstract
 {
 
     /**
@@ -56,16 +56,16 @@ class CentreonEscalationWebservice extends CentreonWebServiceAbstract
 
     /**
      * @OA\Get(
-     *   path="/external.php?object=centreon_escalation&action=list",
-     *   description="Get list of escalations",
-     *   tags={"centreon_escalation"},
+     *   path="/external.php?object=centreon_command&action=list",
+     *   description="Get list of commands",
+     *   tags={"centreon_command"},
      *   security={{"Session": {}}},
      *   @OA\Parameter(
      *       in="query",
      *       name="object",
      *       @OA\Schema(
      *          type="string",
-     *          enum={"centreon_escalation"},
+     *          enum={"centreon_command"},
      *       ),
      *       description="the name of the API object class",
      *       required=true
@@ -119,7 +119,7 @@ class CentreonEscalationWebservice extends CentreonWebServiceAbstract
      *          @OA\Property(
      *              property="entities",
      *              type="array",
-     *              @OA\Items(ref="#/components/schemas/EscalationEntity")
+     *              @OA\Items(ref="#/components/schemas/CommandEntity")
      *          ),
      *          @OA\Property(
      *              property="pagination",
@@ -129,7 +129,7 @@ class CentreonEscalationWebservice extends CentreonWebServiceAbstract
      *   )
      * )
      *
-     * Get list of escalations
+     * Get list of commands
      *
      * @throws \RestBadRequestException
      * @return \Centreon\Application\DataRepresenter\Response
@@ -152,8 +152,8 @@ class CentreonEscalationWebservice extends CentreonWebServiceAbstract
         }
 
         $pagination = $this->services->get(ServiceProvider::CENTREON_PAGINATION);
-        $pagination->setRepository(Repository\EscalationRepository::class);
-        $pagination->setDataRepresenter(DataRepresenter\EscalationEntity::class);
+        $pagination->setRepository(Repository\CommandRepository::class);
+        $pagination->setDataRepresenter(DataRepresenter\CommandEntity::class);
         $pagination->setFilters($filters);
         $pagination->setLimit($limit);
         $pagination->setOffset($offset);
@@ -200,6 +200,6 @@ class CentreonEscalationWebservice extends CentreonWebServiceAbstract
      */
     public static function getName(): string
     {
-        return 'centreon_escalation';
+        return 'centreon_command';
     }
 }

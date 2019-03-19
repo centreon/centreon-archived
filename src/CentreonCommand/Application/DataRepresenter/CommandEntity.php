@@ -34,52 +34,45 @@
  *
  */
 
-namespace Centreon\Application\DataRepresenter;
+namespace CentreonCommand\Application\DataRepresenter;
 
 use JsonSerializable;
-use ReflectionClass;
+use CentreonCommand\Domain\Entity\Command;
 
-class Entity implements JsonSerializable
+class CommandEntity implements JsonSerializable
 {
 
     /**
-     * @var mixed
+     * @var \CentreonCommand\Infrastructure\Entity\Command
      */
     private $entity;
 
     /**
      * Construct
      *
-     * @param mixed $entity
+     * @param \CentreonCommand\Infrastructure\Entity\Command $entity
      */
-    public function __construct($entity)
+    public function __construct(Command $entity)
     {
         $this->entity = $entity;
     }
 
     /**
+     * @OA\Schema(
+     *   schema="CommandEntity",
+     *       @OA\Property(property="id", type="integer"),
+     *       @OA\Property(property="name", type="string")
+     * )
+     *
      * JSON serialization of entity
-     * @throws \ReflectionException
+     *
      * @return array
      */
     public function jsonSerialize()
     {
-        return is_object($this->entity) ? $this->dismount($this->entity) : (array) $this->entity;
-    }
-
-    /**
-     * @param $object
-     * @return array
-     * @throws \ReflectionException
-     */
-    public function dismount($object) {
-        $reflectionClass = new ReflectionClass(get_class($object));
-        $array = array();
-        foreach ($reflectionClass->getProperties() as $property) {
-            $property->setAccessible(true);
-            $array[$property->getName()] = $property->getValue($object);
-            $property->setAccessible(false);
-        }
-        return $array;
+        return [
+            'id' => $this->entity->getId(),
+            'name' => $this->entity->getName(),
+        ];
     }
 }

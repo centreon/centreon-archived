@@ -34,18 +34,18 @@
  *
  */
 
-namespace CentreonNotification\Tests\Domain\Repository;
+namespace CentreonCommand\Tests\Domain\Repository;
 
 use PHPUnit\Framework\TestCase;
 use Centreon\Test\Mock\CentreonDB;
-use CentreonNotification\Domain\Entity\Escalation;
-use CentreonNotification\Domain\Repository\EscalationRepository;
+use CentreonCommand\Domain\Entity\Command;
+use CentreonCommand\Domain\Repository\CommandRepository;
 
 /**
- * @group CentreonNotification
+ * @group CentreonCommand
  * @group ORM-repository
  */
-class EscalationRepositoryTest extends TestCase
+class CommandRepositoryTest extends TestCase
 {
 
     protected $datasets = [];
@@ -56,8 +56,9 @@ class EscalationRepositoryTest extends TestCase
         $db = new CentreonDB;
         $this->datasets = [
             [
-                'query' => "SELECT SQL_CALC_FOUND_ROWS `esc_id` AS `id`, `esc_name` AS `name` "
-                . "FROM `" . Escalation::TABLE . "` ORDER BY `esc_name` ASC",
+                'query' => "SELECT SQL_CALC_FOUND_ROWS `command_id` AS `id`, `command_name` AS `name` "
+                . "FROM `" . Command::TABLE . "` WHERE `command_activate` = :active "
+                . "ORDER BY `command_name` ASC",
                 'data' => [
                     [
                         'id' => '1',
@@ -66,9 +67,10 @@ class EscalationRepositoryTest extends TestCase
                 ],
             ],
             [
-                'query' => "SELECT SQL_CALC_FOUND_ROWS `esc_id` AS `id`, `esc_name` AS `name` FROM `" . Escalation::TABLE . "` "
-                . "WHERE `esc_name` LIKE :search AND `esc_id` IN (:id0) "
-                . "ORDER BY `esc_name` ASC LIMIT :limit OFFSET :offset",
+                'query' => "SELECT SQL_CALC_FOUND_ROWS `command_id` AS `id`, `command_name` AS `name` "
+                . "FROM `" . Command::TABLE . "` WHERE `command_activate` = :active "
+                . "AND `command_name` LIKE :search AND `command_id` IN (:id0) "
+                . "ORDER BY `command_name` ASC LIMIT :limit OFFSET :offset",
                 'data' => [
                     [
                         'id' => '1',
@@ -91,18 +93,18 @@ class EscalationRepositoryTest extends TestCase
             unset($dataset);
         }
 
-        $this->repository = new EscalationRepository($db);
+        $this->repository = new CommandRepository($db);
     }
 
     /**
-     * @covers \CentreonNotification\Domain\Repository\EscalationRepository::getPaginationList
+     * @covers \CentreonCommand\Domain\Repository\CommandRepository::getPaginationList
      */
     public function testGetPaginationList()
     {
         $result = $this->repository->getPaginationList();
         $data = $this->datasets[0]['data'][0];
 
-        $entity = new Escalation();
+        $entity = new Command();
         $entity->setId($data['id']);
         $entity->setName($data['name']);
 
@@ -110,7 +112,7 @@ class EscalationRepositoryTest extends TestCase
     }
 
     /**
-     * @covers \CentreonNotification\Domain\Repository\EscalationRepository::getPaginationList
+     * @covers \CentreonCommand\Domain\Repository\CommandRepository::getPaginationList
      */
     public function testGetPaginationListWithArguments()
     {
@@ -124,7 +126,7 @@ class EscalationRepositoryTest extends TestCase
         $result = $this->repository->getPaginationList($filters, $limit, $offset);
         $data = $this->datasets[1]['data'][0];
 
-        $entity = new Escalation();
+        $entity = new Command();
         $entity->setId($data['id']);
         $entity->setName($data['name']);
 
@@ -132,7 +134,7 @@ class EscalationRepositoryTest extends TestCase
     }
 
     /**
-     * @covers \CentreonNotification\Domain\Repository\EscalationRepository::getPaginationListTotal
+     * @covers \CentreonCommand\Domain\Repository\CommandRepository::getPaginationListTotal
      */
     public function testGetPaginationListTotal()
     {

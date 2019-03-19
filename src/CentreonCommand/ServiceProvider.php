@@ -34,52 +34,29 @@
  *
  */
 
-namespace Centreon\Application\DataRepresenter;
+namespace CentreonCommand;
 
-use JsonSerializable;
-use ReflectionClass;
+use Pimple\Container;
+use Centreon\Infrastructure\Provider\AutoloadServiceProviderInterface;
+use CentreonCommand\Application\Webservice;
 
-class Entity implements JsonSerializable
+class ServiceProvider implements AutoloadServiceProviderInterface
 {
 
     /**
-     * @var mixed
-     */
-    private $entity;
-
-    /**
-     * Construct
+     * Register CentreonCommand services
      *
-     * @param mixed $entity
+     * @param \Pimple\Container $pimple
      */
-    public function __construct($entity)
+    public function register(Container $pimple): void
     {
-        $this->entity = $entity;
+        // register Excalaton webservice
+        $pimple[\Centreon\ServiceProvider::CENTREON_WEBSERVICE]
+            ->add(Webservice\CentreonCommandWebservice::class);
     }
 
-    /**
-     * JSON serialization of entity
-     * @throws \ReflectionException
-     * @return array
-     */
-    public function jsonSerialize()
+    public static function order(): int
     {
-        return is_object($this->entity) ? $this->dismount($this->entity) : (array) $this->entity;
-    }
-
-    /**
-     * @param $object
-     * @return array
-     * @throws \ReflectionException
-     */
-    public function dismount($object) {
-        $reflectionClass = new ReflectionClass(get_class($object));
-        $array = array();
-        foreach ($reflectionClass->getProperties() as $property) {
-            $property->setAccessible(true);
-            $array[$property->getName()] = $property->getValue($object);
-            $property->setAccessible(false);
-        }
-        return $array;
+        return 51;
     }
 }

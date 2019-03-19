@@ -34,52 +34,33 @@
  *
  */
 
-namespace Centreon\Application\DataRepresenter;
+namespace CentreonCommand\Tests\Application\DataRepresenter;
 
-use JsonSerializable;
-use ReflectionClass;
+use PHPUnit\Framework\TestCase;
+use CentreonCommand\Domain\Entity\Command;
+use CentreonCommand\Application\DataRepresenter\CommandEntity;
 
-class Entity implements JsonSerializable
+/**
+ * @group CentreonCommand
+ * @group DataRepresenter
+ */
+class CommandEntityTest extends TestCase
 {
 
-    /**
-     * @var mixed
-     */
-    private $entity;
-
-    /**
-     * Construct
-     *
-     * @param mixed $entity
-     */
-    public function __construct($entity)
+    public function testJsonSerialize()
     {
-        $this->entity = $entity;
-    }
+        $entity = new Command;
+        $entity->setId(121);
+        $entity->setName('...');
 
-    /**
-     * JSON serialization of entity
-     * @throws \ReflectionException
-     * @return array
-     */
-    public function jsonSerialize()
-    {
-        return is_object($this->entity) ? $this->dismount($this->entity) : (array) $this->entity;
-    }
+        $value = [
+            'id' => $entity->getId(),
+            'name' => $entity->getName(),
+        ];
 
-    /**
-     * @param $object
-     * @return array
-     * @throws \ReflectionException
-     */
-    public function dismount($object) {
-        $reflectionClass = new ReflectionClass(get_class($object));
-        $array = array();
-        foreach ($reflectionClass->getProperties() as $property) {
-            $property->setAccessible(true);
-            $array[$property->getName()] = $property->getValue($object);
-            $property->setAccessible(false);
-        }
-        return $array;
+        $dataRepresenter = new CommandEntity($entity);
+        $result = $dataRepresenter->jsonSerialize();
+
+        $this->assertEquals($value, $result);
     }
 }

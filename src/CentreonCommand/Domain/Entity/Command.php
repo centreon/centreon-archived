@@ -34,52 +34,45 @@
  *
  */
 
-namespace Centreon\Application\DataRepresenter;
+namespace CentreonCommand\Domain\Entity;
 
-use JsonSerializable;
-use ReflectionClass;
-
-class Entity implements JsonSerializable
+/**
+ * Command entity
+ *
+ * @codeCoverageIgnore
+ */
+class Command
 {
 
-    /**
-     * @var mixed
-     */
-    private $entity;
+    const TABLE = 'command';
 
     /**
-     * Construct
-     *
-     * @param mixed $entity
+     * @var int an identification of entity
      */
-    public function __construct($entity)
+    private $id;
+
+    /**
+     * @var string
+     */
+    private $name;
+
+    public function setId(int $id): void
     {
-        $this->entity = $entity;
+        $this->id = $id;
     }
 
-    /**
-     * JSON serialization of entity
-     * @throws \ReflectionException
-     * @return array
-     */
-    public function jsonSerialize()
+    public function getId(): string
     {
-        return is_object($this->entity) ? $this->dismount($this->entity) : (array) $this->entity;
+        return $this->id;
     }
 
-    /**
-     * @param $object
-     * @return array
-     * @throws \ReflectionException
-     */
-    public function dismount($object) {
-        $reflectionClass = new ReflectionClass(get_class($object));
-        $array = array();
-        foreach ($reflectionClass->getProperties() as $property) {
-            $property->setAccessible(true);
-            $array[$property->getName()] = $property->getValue($object);
-            $property->setAccessible(false);
-        }
-        return $array;
+    public function setName(string $name): void
+    {
+        $this->name = $name;
+    }
+
+    public function getName(): string
+    {
+        return $this->name;
     }
 }

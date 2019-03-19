@@ -34,15 +34,15 @@
  *
  */
 
-namespace CentreonNotification\Domain\Repository;
+namespace CentreonCommand\Domain\Repository;
 
 use Centreon\Infrastructure\CentreonLegacyDB\ServiceEntityRepository;
 use Centreon\Infrastructure\CentreonLegacyDB\Interfaces\PaginationRepositoryInterface;
 use PDO;
-use CentreonNotification\Domain\Entity\Escalation;
+use CentreonCommand\Domain\Entity\Command;
 use Centreon\Infrastructure\CentreonLegacyDB\StatementCollector;
 
-class EscalationRepository extends ServiceEntityRepository implements PaginationRepositoryInterface
+class CommandRepository extends ServiceEntityRepository implements PaginationRepositoryInterface
 {
 
     /**
@@ -50,16 +50,17 @@ class EscalationRepository extends ServiceEntityRepository implements Pagination
      */
     public function getPaginationList($filters = null, int $limit = null, int $offset = null): array
     {
-        $sql = 'SELECT SQL_CALC_FOUND_ROWS `esc_id` AS `id`, `esc_name` AS `name` FROM `' . Escalation::TABLE . '`';
+        $sql = 'SELECT SQL_CALC_FOUND_ROWS `command_id` AS `id`, `command_name` AS `name` FROM `' . Command::TABLE . '`';
 
         $collector = new StatementCollector;
 
-        $isWhere = false;
+        $sql .= ' WHERE `command_activate` = :active';
+        $collector->addValue(':active', true, PDO::PARAM_STR);
+
         if ($filters !== null) {
             if (array_key_exists('search', $filters) && $filters['search']) {
-                $sql .= ' WHERE `esc_name` LIKE :search';
+                $sql .= ' AND `command_name` LIKE :search';
                 $collector->addValue(':search', "%{$filters['search']}%");
-                $isWhere = true;
             }
 
             if (array_key_exists('ids', $filters) && is_array($filters['ids'])) {
@@ -72,12 +73,11 @@ class EscalationRepository extends ServiceEntityRepository implements Pagination
                     unset($x, $id);
                 }
 
-                $sql .= $isWhere ? ' AND' : ' WHERE';
-                $sql .= ' `esc_id` IN (' . implode(',', $idsListKey) . ')';
+                $sql .= ' AND `command_id` IN (' . implode(',', $idsListKey) . ')';
             }
         }
 
-        $sql .= ' ORDER BY `esc_name` ASC';
+        $sql .= ' ORDER BY `command_name` ASC';
 
         if ($limit !== null) {
             $sql .= ' LIMIT :limit';
@@ -93,7 +93,7 @@ class EscalationRepository extends ServiceEntityRepository implements Pagination
         $collector->bind($stmt);
 
         $stmt->execute();
-        $stmt->setFetchMode(PDO::FETCH_CLASS, Escalation::class);
+        $stmt->setFetchMode(PDO::FETCH_CLASS, Command::class);
         $result = $stmt->fetchAll();
 
         return $result;
