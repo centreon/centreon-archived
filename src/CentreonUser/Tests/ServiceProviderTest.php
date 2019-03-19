@@ -34,29 +34,53 @@
  *
  */
 
-namespace CentreonCommand;
+namespace CentreonUser\Tests;
 
+use PHPUnit\Framework\TestCase;
 use Pimple\Container;
-use Centreon\Infrastructure\Provider\AutoloadServiceProviderInterface;
-use CentreonCommand\Application\Webservice;
+use CentreonUser\ServiceProvider;
+use Centreon\Tests\Resource\Traits\WebserviceTrait;
+use CentreonUser\Application\Webservice;
 
-class ServiceProvider implements AutoloadServiceProviderInterface
+/**
+ * @group CentreonUser
+ * @group ServiceProvider
+ */
+class ServiceProviderTest extends TestCase
 {
 
-    /**
-     * Register CentreonCommand services
-     *
-     * @param \Pimple\Container $pimple
-     */
-    public function register(Container $pimple): void
+    use WebserviceTrait;
+
+    protected $container;
+    protected $provider;
+
+    protected function setUp()
     {
-        // register Command webservice
-        $pimple[\Centreon\ServiceProvider::CENTREON_WEBSERVICE]
-            ->add(Webservice\CentreonCommandWebservice::class);
+        $this->provider = new ServiceProvider();
+        $this->container = new Container;
+
+        $this->setUpWebservice($this->container);
+
+        $this->provider->register($this->container);
     }
 
-    public static function order(): int
+    /**
+     * @covers \CentreonUser\ServiceProvider::register
+     */
+    public function testWebservices()
     {
-        return 51;
+        $checkList = [
+            Webservice\CentreonTimeperiodWebservice::class,
+        ];
+
+        $this->checkWebservices($checkList);
+    }
+
+    /**
+     * @covers \CentreonUser\ServiceProvider::order
+     */
+    public function testOrder()
+    {
+        $this->assertEquals(51, $this->provider::order());
     }
 }

@@ -34,29 +34,35 @@
  *
  */
 
-namespace CentreonCommand;
+namespace CentreonUser\Tests\Application\DataRepresenter;
 
-use Pimple\Container;
-use Centreon\Infrastructure\Provider\AutoloadServiceProviderInterface;
-use CentreonCommand\Application\Webservice;
+use PHPUnit\Framework\TestCase;
+use CentreonUser\Domain\Entity\Timeperiod;
+use CentreonUser\Application\DataRepresenter\TimeperiodEntity;
 
-class ServiceProvider implements AutoloadServiceProviderInterface
+/**
+ * @group CentreonUser
+ * @group DataRepresenter
+ */
+class TimeperiodEntityTest extends TestCase
 {
 
-    /**
-     * Register CentreonCommand services
-     *
-     * @param \Pimple\Container $pimple
-     */
-    public function register(Container $pimple): void
+    public function testJsonSerialize()
     {
-        // register Command webservice
-        $pimple[\Centreon\ServiceProvider::CENTREON_WEBSERVICE]
-            ->add(Webservice\CentreonCommandWebservice::class);
-    }
+        $entity = new Timeperiod;
+        $entity->setId(121);
+        $entity->setName('...');
+        $entity->setAlias('###');
 
-    public static function order(): int
-    {
-        return 51;
+        $value = [
+            'id' => $entity->getId(),
+            'name' => $entity->getName(),
+            'alias' => $entity->getAlias(),
+        ];
+
+        $dataRepresenter = new TimeperiodEntity($entity);
+        $result = $dataRepresenter->jsonSerialize();
+
+        $this->assertEquals($value, $result);
     }
 }

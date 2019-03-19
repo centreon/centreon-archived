@@ -34,29 +34,47 @@
  *
  */
 
-namespace CentreonCommand;
+namespace CentreonUser\Application\DataRepresenter;
 
-use Pimple\Container;
-use Centreon\Infrastructure\Provider\AutoloadServiceProviderInterface;
-use CentreonCommand\Application\Webservice;
+use JsonSerializable;
+use CentreonUser\Domain\Entity\Timeperiod;
 
-class ServiceProvider implements AutoloadServiceProviderInterface
+class TimeperiodEntity implements JsonSerializable
 {
 
     /**
-     * Register CentreonCommand services
-     *
-     * @param \Pimple\Container $pimple
+     * @var \CentreonUser\Infrastructure\Entity\Timeperiod
      */
-    public function register(Container $pimple): void
+    private $entity;
+
+    /**
+     * Construct
+     *
+     * @param \CentreonUser\Infrastructure\Entity\Timeperiod $entity
+     */
+    public function __construct(Timeperiod $entity)
     {
-        // register Command webservice
-        $pimple[\Centreon\ServiceProvider::CENTREON_WEBSERVICE]
-            ->add(Webservice\CentreonCommandWebservice::class);
+        $this->entity = $entity;
     }
 
-    public static function order(): int
+    /**
+     * @OA\Schema(
+     *   schema="TimeperiodEntity",
+     *       @OA\Property(property="id", type="integer"),
+     *       @OA\Property(property="name", type="string"),
+     *       @OA\Property(property="alias", type="string")
+     * )
+     *
+     * JSON serialization of entity
+     *
+     * @return array
+     */
+    public function jsonSerialize()
     {
-        return 51;
+        return [
+            'id' => $this->entity->getId(),
+            'name' => $this->entity->getName(),
+            'alias' => $this->entity->getAlias(),
+        ];
     }
 }

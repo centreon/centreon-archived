@@ -34,25 +34,25 @@
  *
  */
 
-namespace CentreonCommand;
+namespace CentreonUser;
 
 use Pimple\Container;
 use Centreon\Infrastructure\Provider\AutoloadServiceProviderInterface;
-use CentreonCommand\Application\Webservice;
+use CentreonUser\Application\Webservice;
 
 class ServiceProvider implements AutoloadServiceProviderInterface
 {
 
     /**
-     * Register CentreonCommand services
+     * Register CentreonUser services
      *
      * @param \Pimple\Container $pimple
      */
     public function register(Container $pimple): void
     {
-        // register Command webservice
+        // register Timeperiod webservice
         $pimple[\Centreon\ServiceProvider::CENTREON_WEBSERVICE]
-            ->add(Webservice\CentreonCommandWebservice::class);
+            ->add(Webservice\CentreonTimeperiodWebservice::class);
     }
 
     public static function order(): int

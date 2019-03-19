@@ -34,29 +34,60 @@
  *
  */
 
-namespace CentreonCommand;
+namespace CentreonUser\Domain\Entity;
 
-use Pimple\Container;
-use Centreon\Infrastructure\Provider\AutoloadServiceProviderInterface;
-use CentreonCommand\Application\Webservice;
-
-class ServiceProvider implements AutoloadServiceProviderInterface
+/**
+ * Timeperiod entity
+ *
+ * @codeCoverageIgnore
+ */
+class Timeperiod
 {
 
+    const TABLE = 'timeperiod';
+
     /**
-     * Register CentreonCommand services
-     *
-     * @param \Pimple\Container $pimple
+     * @var int an identification of entity
      */
-    public function register(Container $pimple): void
+    private $id;
+
+    /**
+     * @var string
+     */
+    private $name;
+
+    /**
+     * @var string
+     */
+    private $alias;
+
+    public function setId(int $id): void
     {
-        // register Command webservice
-        $pimple[\Centreon\ServiceProvider::CENTREON_WEBSERVICE]
-            ->add(Webservice\CentreonCommandWebservice::class);
+        $this->id = $id;
     }
 
-    public static function order(): int
+    public function getId(): string
     {
-        return 51;
+        return $this->id;
+    }
+
+    public function setName(string $name): void
+    {
+        $this->name = $name;
+    }
+
+    public function getName(): string
+    {
+        return $this->name;
+    }
+
+    public function setAlias(string $alias): void
+    {
+        $this->alias = $alias;
+    }
+
+    public function getAlias(): string
+    {
+        return $this->alias;
     }
 }
