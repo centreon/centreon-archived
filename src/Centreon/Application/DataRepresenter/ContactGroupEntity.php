@@ -1,7 +1,7 @@
 <?php
 /*
  * Copyright 2005-2019 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -37,92 +37,44 @@
 namespace Centreon\Application\DataRepresenter;
 
 use JsonSerializable;
-use Centreon\Application\DataRepresenter\Entity;
+use Centreon\Domain\Entity\ContactGroup;
 
-/**
- * @OA\Schema(
- *   schema="Pagination",
- *   allOf={
- *     @OA\Schema(
- *       @OA\Property(property="total", type="integer"),
- *       @OA\Property(property="offset", type="integer"),
- *       @OA\Property(property="limit", type="integer")
- *     )
- *   }
- * )
- */
-class Listing implements JsonSerializable
+class ContactGroupEntity implements JsonSerializable
 {
 
     /**
-     * @var array
+     * @var ContactGroup
      */
-    private $entities;
-
-    /**
-     * @var int
-     */
-    private $offset;
-
-    /**
-     * @var int
-     */
-    private $limit;
-
-    /**
-     * @var int
-     */
-    private $total;
-
-    /**
-     * @var string
-     */
-    private $entityClass;
+    private $entity;
 
     /**
      * Construct
      *
-     * @param mixed $entities
-     * @param string $entityClass Entity JSON wrap class
-     * @param int $total
-     * @param int $offset
-     * @param int $limit
-     * @param string $entityClass
+     * @param ContactGroup $entity
      */
-    public function __construct(
-        $entities,
-        int $total = null,
-        int $offset = null,
-        int $limit = null,
-        string $entityClass = null
-    ) {
-        $this->entities = $entities ?? [];
-        $this->total = $total ? $total : count($this->entities);
-        $this->offset = $offset;
-        $this->limit = $limit !== null ? $limit : $this->total;
-        $this->entityClass = $entityClass ?? Entity::class;
+    public function __construct(ContactGroup $entity)
+    {
+        $this->entity = $entity;
     }
 
     /**
-     * JSON serialization of list
+     * @OA\Schema(
+     *   schema="ContactGroup",
+     *       @OA\Property(property="cg_id", type="integer"),
+     *       @OA\Property(property="cg_name", type="string"),
+     *       @OA\Property(property="cg_activate", type="string", enum={"0","1"})
+     * )
+     *
+     * JSON serialization of entity
      *
      * @return array
      */
     public function jsonSerialize()
     {
-        $result = [
-            'pagination' => [
-                'total' => $this->total,
-                'offset' => $this->offset !== null ? $this->offset : 0,
-                'limit' => $this->limit,
-            ],
-            'entities' => [],
+        return [
+            'cg_id' => $this->entity->getCgId(),
+            'cg_name' => $this->entity->getCgName(),
+            'cg_activate' => $this->entity->getCgActivate()
         ];
-
-        foreach ($this->entities as $entity) {
-            $result['entities'][] = new $this->entityClass($entity);
-        }
-
-        return $result;
     }
 }

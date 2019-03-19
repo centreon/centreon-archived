@@ -36,6 +36,7 @@
 
 namespace Centreon;
 
+use Centreon\Application\Webservice\ContactGroupsWebservice;
 use Centreon\Infrastructure\Event\EventDispatcher;
 use Centreon\Domain\Entity\FileLoader;
 use Pimple\Container;
@@ -78,6 +79,8 @@ class ServiceProvider implements AutoloadServiceProviderInterface
         };
 
         $pimple[static::CENTREON_WEBSERVICE]->add(Application\Webservice\TopologyWebservice::class);
+        $pimple[static::CENTREON_WEBSERVICE]->add(Application\Webservice\ContactGroupsWebservice::class);
+        $pimple[static::CENTREON_WEBSERVICE]->add(Application\Webservice\ImagesWebservice::class);
 
         if (defined('OpenApi\UNDEFINED') !== false) {
             $pimple[static::CENTREON_WEBSERVICE]->add(\Centreon\Application\Webservice\OpenApiWebservice::class);
