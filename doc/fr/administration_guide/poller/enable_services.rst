@@ -25,3 +25,4 @@ Lancer les commandes suivantes : ::
     # systemctl enable centreontrapd
     # systemctl enable cbd
     # systemctl enable centengine
+    # systemctl enable centreon

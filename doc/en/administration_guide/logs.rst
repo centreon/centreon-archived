@@ -7,7 +7,7 @@ Principle
 *********
 
 By default, Centreon retains all user actions concerning changes to configuration in a log.
-To access this data, go into the menu: **Administration** ==> **Logs**.
+To access this data, go into the menu: **Administration > Logs**.
 
 .. image:: /images/guide_exploitation/fsearchlogs.png
    :align: center
@@ -69,3 +69,13 @@ The table below defines the columns of the changes table:
 |                      | - Before: Indicates the previous value                    |
 |                      | - After: Indicates the new value                          |
 +----------------------+-----------------------------------------------------------+
+
+=============
+Configuration
+=============
+
+To enable user audit logs, go to **Administration > Parameters > Options** and
+check the **Enable/Disable audit logs** option:
+
+.. image:: /images/guide_exploitation/logs_audit_enable.png
+    :align: center
