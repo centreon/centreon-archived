@@ -974,8 +974,9 @@ class CentreonGraph
                     if (isset($tm["warn"]) && !empty($tm["warn"]) && $tm["warn"] != 0) {
                         $this->addArgument(
                             "HRULE:" . $tm["warn"] . $tm["ds_color_area_warn"] . ":Warning  \: " .
-                            $this->humanReadable($tm["warn"], $tm["unit"]) . "\\l "
+                            $this->humanReadable($tm["warn"], $tm["unit"])
                         );
+                        $this->addArgument("COMMENT:\\l");
                     }
                     if (isset($tm["crit"]) && !empty($tm["crit"]) && $tm["crit"] != 0) {
                         $this->addArgument(
