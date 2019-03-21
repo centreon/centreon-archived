@@ -156,7 +156,7 @@ class HTML_QuickFormCustom extends HTML_QuickForm
      * @param    boolean    $force         Force the rule to be applied, even if the target form element does not exist
      * @throws   HTML_QuickForm_Error
      */
-    public function addRule($element, $message, $type, $format=null, $validation='server', $reset = false, $force = false)
+    public function addRule($element, $message, $type, $format = null, $validation = 'server', $reset = false, $force = false)
     {
         if (!$force) {
             if (!is_array($element) && !$this->elementExists($element)) {
@@ -227,9 +227,10 @@ class HTML_QuickFormCustom extends HTML_QuickForm
                         $this->_submitValues[$elName] = $this->_recursiveFilter($filter, $value);
                     } else {
                         $idx  = "['" . str_replace(
-                                array('\\', '\'', ']', '['), array('\\\\', '\\\'', '', "']['"),
-                                $elName
-                            ) . "']";
+                            array('\\', '\'', ']', '['),
+                            array('\\\\', '\\\'', '', "']['"),
+                            $elName
+                        ) . "']";
                         eval("\$this->_submitValues{$idx} = \$this->_recursiveFilter(\$filter, \$value);");
                     }
                 }
@@ -243,7 +244,7 @@ class HTML_QuickFormCustom extends HTML_QuickForm
     private function loadCustomElementsInGlobal()
     {
         // Add custom radio element type which will load our own radio HTML class
-        if ( !isset($GLOBALS['HTML_QUICKFORM_ELEMENT_TYPES']['radio_custom']) ) {
+        if (!isset($GLOBALS['HTML_QUICKFORM_ELEMENT_TYPES']['radio_custom'])) {
             $GLOBALS['HTML_QUICKFORM_ELEMENT_TYPES']['radio_custom'] = 'HTML_QuickForm_radio_Custom';
         }
     }

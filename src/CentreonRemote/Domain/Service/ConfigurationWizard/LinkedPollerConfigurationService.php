@@ -116,7 +116,6 @@ class LinkedPollerConfigurationService
         $this->triggerExportForOldRemotes($pollerIds);
 
         foreach ($pollers as $poller) {
-
             // If one peer retention is enabled, add input on remote server to get data from poller
             if ($this->onePeerRetention) {
                 $this->setBrokerInputOfRemoteServer($remote->getId(), $poller);

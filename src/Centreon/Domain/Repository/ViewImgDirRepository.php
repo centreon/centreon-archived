@@ -8,7 +8,7 @@ class ViewImgDirRepository extends ServiceEntityRepository
 
     /**
      * Export
-     * 
+     *
      * @param array $imgList
      * @return array
      */

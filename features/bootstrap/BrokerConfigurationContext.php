@@ -66,5 +66,4 @@ class BrokerConfigurationContext extends CentreonContext
         $this->currentPage = new BrokerConfigurationListingPage($this);
         $this->currentPage->getEntry($this->initialProperties['name']);
     }
-
 }

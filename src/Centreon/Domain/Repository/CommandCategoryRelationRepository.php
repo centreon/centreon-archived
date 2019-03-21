@@ -8,7 +8,7 @@ class CommandCategoryRelationRepository extends ServiceEntityRepository
 
     /**
      * Export
-     * 
+     *
      * @param int[] $pollerIds
      * @return array
      */
@@ -112,7 +112,7 @@ SQL;
 
     /**
      * Export
-     * 
+     *
      * @param int[] $list
      * @return array
      */

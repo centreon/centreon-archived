@@ -250,7 +250,7 @@ class CentreonSubmitResults extends CentreonWebService
                         }
 
                         /* Validate is the host and service exists in poller */
-                        if (!isset($this->pollerHosts['name'][$data['host']]) ) {
+                        if (!isset($this->pollerHosts['name'][$data['host']])) {
                             throw new RestNotFoundException('The host is not present.');
                         }
                         if (isset($data['service']) && $data['service'] !== '' &&

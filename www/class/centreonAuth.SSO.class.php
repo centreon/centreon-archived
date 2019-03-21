@@ -90,7 +90,6 @@ class CentreonAuthSSO extends CentreonAuth
             global $msg_error;
             $msg_error = "Invalid User. SSO Protection (user=" . $this->sso_username . ")";
         }
-
     }
 
     protected function checkSsoClient()
@@ -113,7 +112,6 @@ class CentreonAuthSSO extends CentreonAuth
                     return 1;
                 }
             }
-
         } else {
             # Only SSO (no login from local users)
             return 1;

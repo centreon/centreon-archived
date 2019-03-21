@@ -364,7 +364,6 @@ class CentreonGMT
     public function getMyGTMFromUser($userId, $DB = null)
     {
         if (!empty($userId)) {
-
             try {
                 $DBRESULT = CentreonDBInstance::getConfInstance()->query("SELECT `contact_location` FROM `contact` " .
                     "WHERE `contact`.`contact_id` = " . $userId . " LIMIT 1");
@@ -374,7 +373,6 @@ class CentreonGMT
             } catch (\PDOException $e) {
                 $this->myGMT = 0;
             }
-
         } else {
             $this->myGMT = 0;
         }

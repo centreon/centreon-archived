@@ -342,7 +342,6 @@ function insertTimeperiod($ret = array(), $exceptions = null)
                 $fields[$my_tab[$exInput]] = $my_tab[$exValue];
                 $already_stored[strtolower($my_tab[$exInput])] = 1;
             }
-
         }
     }
 

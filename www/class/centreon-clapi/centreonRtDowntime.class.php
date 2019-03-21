@@ -194,7 +194,6 @@ class CentreonRtDowntime extends CentreonObject
             $method = 'show' . ucfirst($parsedParameters['type']);
             $this->$method($parsedParameters['resource']);
         } else {
-
             $this->dHosts = $this->object->getHostDowntimes();
             $this->dServices = $this->object->getSvcDowntimes();
 
@@ -421,7 +420,6 @@ class CentreonRtDowntime extends CentreonObject
                 self::OBJECT_NOT_FOUND . ' : Service : ' . implode('|', $unknownService) . "\n"
             );
         }
-
     }
 
     /**

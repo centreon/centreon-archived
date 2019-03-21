@@ -35,7 +35,7 @@ class TrapExporter extends ExporterServiceAbstract
         $this->createPath();
         $pollerIds = $this->commitment->getPollers();
 
-        $serviceTemplateChain = $this->_getIf('service.chain', function() use ($pollerIds) {
+        $serviceTemplateChain = $this->_getIf('service.chain', function () use ($pollerIds) {
             return $this->db
                     ->getRepository(Repository\ServiceRepository::class)
                     ->getChainByPoller($pollerIds)
@@ -43,7 +43,7 @@ class TrapExporter extends ExporterServiceAbstract
         });
 
         // Extract data
-        (function() use ($pollerIds, $serviceTemplateChain) {
+        (function () use ($pollerIds, $serviceTemplateChain) {
             $traps = $this->db
                 ->getRepository(Repository\TrapRepository::class)
                 ->export($pollerIds, $serviceTemplateChain)
@@ -51,7 +51,7 @@ class TrapExporter extends ExporterServiceAbstract
             $this->_dump($traps, $this->getFile(static::EXPORT_FILE_TRAP));
         })();
 
-        (function() use ($pollerIds, $serviceTemplateChain) {
+        (function () use ($pollerIds, $serviceTemplateChain) {
             $vendors = $this->db
                 ->getRepository(Repository\TrapVendorRepository::class)
                 ->export($pollerIds, $serviceTemplateChain)
@@ -59,7 +59,7 @@ class TrapExporter extends ExporterServiceAbstract
             $this->_dump($vendors, $this->getFile(static::EXPORT_FILE_VENDOR));
         })();
 
-        (function() use ($pollerIds, $serviceTemplateChain) {
+        (function () use ($pollerIds, $serviceTemplateChain) {
             $serviceRelation = $this->db
                 ->getRepository(Repository\TrapServiceRelationRepository::class)
                 ->export($pollerIds, $serviceTemplateChain)
@@ -67,7 +67,7 @@ class TrapExporter extends ExporterServiceAbstract
             $this->_dump($serviceRelation, $this->getFile(static::EXPORT_FILE_SERVICE_RELATION));
         })();
 
-        (function() use ($pollerIds, $serviceTemplateChain) {
+        (function () use ($pollerIds, $serviceTemplateChain) {
             $groups = $this->db
                 ->getRepository(Repository\TrapGroupRepository::class)
                 ->export($pollerIds, $serviceTemplateChain)
@@ -75,7 +75,7 @@ class TrapExporter extends ExporterServiceAbstract
             $this->_dump($groups, $this->getFile(static::EXPORT_FILE_GROUP));
         })();
 
-        (function() use ($pollerIds, $serviceTemplateChain) {
+        (function () use ($pollerIds, $serviceTemplateChain) {
             $groupRelation = $this->db
                 ->getRepository(Repository\TrapGroupRelationRepository::class)
                 ->export($pollerIds, $serviceTemplateChain)
@@ -83,7 +83,7 @@ class TrapExporter extends ExporterServiceAbstract
             $this->_dump($groupRelation, $this->getFile(static::EXPORT_FILE_GROUP_RELATION));
         })();
 
-        (function() use ($pollerIds, $serviceTemplateChain) {
+        (function () use ($pollerIds, $serviceTemplateChain) {
             $matchingProps = $this->db
                 ->getRepository(Repository\TrapMatchingPropsRepository::class)
                 ->export($pollerIds, $serviceTemplateChain)
@@ -91,7 +91,7 @@ class TrapExporter extends ExporterServiceAbstract
             $this->_dump($matchingProps, $this->getFile(static::EXPORT_FILE_MATCHING_PROP));
         })();
 
-        (function() use ($pollerIds, $serviceTemplateChain) {
+        (function () use ($pollerIds, $serviceTemplateChain) {
             $preexec = $this->db
                 ->getRepository(Repository\TrapPreexecRepository::class)
                 ->export($pollerIds, $serviceTemplateChain)
@@ -122,7 +122,7 @@ class TrapExporter extends ExporterServiceAbstract
         $this->cleanup();
 
         // insert traps
-        (function() use ($db) {
+        (function () use ($db) {
             $exportPathFile = $this->getFile(static::EXPORT_FILE_TRAP);
             $result = $this->_parse($exportPathFile);
 
@@ -132,7 +132,7 @@ class TrapExporter extends ExporterServiceAbstract
         })();
 
         // insert vendors
-        (function() use ($db) {
+        (function () use ($db) {
             $exportPathFile = $this->getFile(static::EXPORT_FILE_VENDOR);
             $result = $this->_parse($exportPathFile);
 
@@ -142,7 +142,7 @@ class TrapExporter extends ExporterServiceAbstract
         })();
 
         // insert service relation
-        (function() use ($db) {
+        (function () use ($db) {
             $exportPathFile = $this->getFile(static::EXPORT_FILE_SERVICE_RELATION);
             $result = $this->_parse($exportPathFile);
 
@@ -152,7 +152,7 @@ class TrapExporter extends ExporterServiceAbstract
         })();
 
         // insert groups
-        (function() use ($db) {
+        (function () use ($db) {
             $exportPathFile = $this->getFile(static::EXPORT_FILE_GROUP);
             $result = $this->_parse($exportPathFile);
 
@@ -162,7 +162,7 @@ class TrapExporter extends ExporterServiceAbstract
         })();
 
         // insert group relation
-        (function() use ($db) {
+        (function () use ($db) {
             $exportPathFile = $this->getFile(static::EXPORT_FILE_GROUP_RELATION);
             $result = $this->_parse($exportPathFile);
 
@@ -172,7 +172,7 @@ class TrapExporter extends ExporterServiceAbstract
         })();
 
         // insert properties
-        (function() use ($db) {
+        (function () use ($db) {
             $exportPathFile = $this->getFile(static::EXPORT_FILE_MATCHING_PROP);
             $result = $this->_parse($exportPathFile);
 
@@ -182,7 +182,7 @@ class TrapExporter extends ExporterServiceAbstract
         })();
 
         // insert pre-executed commands
-        (function() use ($db) {
+        (function () use ($db) {
             $exportPathFile = $this->getFile(static::EXPORT_FILE_PREEXEC);
             $result = $this->_parse($exportPathFile);
 

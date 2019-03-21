@@ -30,16 +30,16 @@
  */
 class Slug implements ArrayAccess
 {
-  protected $original = null;
-  protected $slug = null;
-  protected $options = array(
+    protected $original = null;
+    protected $slug = null;
+    protected $options = array(
     'to_lower'        => true,
     'max_length'      => null,
     'prefix'          => null,
     'postfix'         => null,
     'seperator_char'  => '-'
-  );
-  protected $char_map = array(
+    );
+    protected $char_map = array(
     'Š'=>'S',
     'š'=>'s',
     'Ð'=>'Dj',
@@ -110,7 +110,7 @@ class Slug implements ArrayAccess
     'ƒ'=>'f',
     'Ŕ'=>'R',
     'ŕ'=>'r'
-  );
+    );
   /**
    * Constructor.
    *
@@ -126,146 +126,134 @@ class Slug implements ArrayAccess
    * @param array  $options     An array of options
    * @param array  $char_map    a char-map-array that is used for the strtr() PHP-function in the slug generation process
    */
-  public function __construct($original, $options = array(), $char_map = null)
-  {
-    $this->original = $original;
-    $this->options = array_merge($this->options, $options);
-    if (null !== $char_map)
+    public function __construct($original, $options = array(), $char_map = null)
     {
-      $this->char_map = $char_map;
+        $this->original = $original;
+        $this->options = array_merge($this->options, $options);
+        if (null !== $char_map) {
+            $this->char_map = $char_map;
+        }
     }
-  }
   /**
    * Generate the slug.
    */
-  public function generateSlug()
-  {
-    $str = $this->original;
-    if ($this['to_lower'])
+    public function generateSlug()
     {
-      $str = mb_strtolower($str, 'UTF-8');
+        $str = $this->original;
+        if ($this['to_lower']) {
+            $str = mb_strtolower($str, 'UTF-8');
+        }
+        // replace the chars in $this->char_map
+        $str = strtr($str, $this->char_map);
+        // ensure that there are only valid characters in the url (A-Z a-z 0-9, seperator_char)
+        $str = preg_replace('/[^A-Za-z0-9]/', $this['seperator_char'], $str);
+        // trim the seperator char at the end and teh beginning
+        $str = trim($str, $this['seperator_char']);
+        // remove duplicate seperator chars
+        $str = preg_replace('/['.preg_quote($this['seperator_char']).']+/', $this['seperator_char'], $str);
+        if ($this['max_length']) {
+            $str = $this->shortenSlug($str, $this['max_length']-mb_strlen($this['prefix'], 'UTF-8')-mb_strlen($this['postfix'], 'UTF-8'));
+        }
+        // Add prefix & postfix
+        $this->slug = $this['prefix'].$str.$this['postfix'];
     }
-    // replace the chars in $this->char_map
-    $str = strtr($str , $this->char_map);
-    // ensure that there are only valid characters in the url (A-Z a-z 0-9, seperator_char)
-    $str = preg_replace('/[^A-Za-z0-9]/', $this['seperator_char'], $str);
-    // trim the seperator char at the end and teh beginning
-    $str = trim($str, $this['seperator_char']);
-    // remove duplicate seperator chars
-    $str = preg_replace('/['.preg_quote($this['seperator_char']).']+/', $this['seperator_char'], $str);
-    if ($this['max_length'])
-    {
-      $str = $this->shortenSlug($str, $this['max_length']-mb_strlen($this['prefix'], 'UTF-8')-mb_strlen($this['postfix'], 'UTF-8'));
-    }
-    // Add prefix & postfix
-    $this->slug = $this['prefix'].$str.$this['postfix'];
-  }
   /**
    * Shorten the slug.
    */
-  protected function shortenSlug($slug, $maxLen)
-  {
-    // $maxLen must be greater than 1
-    if ($maxLen < 1)
+    protected function shortenSlug($slug, $maxLen)
     {
-      return $slug;
+        // $maxLen must be greater than 1
+        if ($maxLen < 1) {
+            return $slug;
+        }
+        // check whether there is work to do
+        if (strlen($slug) < $maxLen) {
+            return $slug;
+        }
+        // cut to $maxLen
+        $cutted_slug = trim(substr($slug, 0, $maxLen), $this['seperator_char']);
+        // cut to the last position of '-' in cutted string
+        $beautified_slug = trim(preg_replace('/[^'.preg_quote($this['seperator_char']).']*$/', '', $cutted_slug), $this['seperator_char']);
+        // only return the beautified string when it is long enough
+        if (strlen($beautified_slug) < ($maxLen/2)) {
+            return $cutted_slug;
+        } else {
+            return $beautified_slug;
+        }
     }
-    // check whether there is work to do
-    if (strlen($slug) < $maxLen)
-    {
-      return $slug;
-    }
-    // cut to $maxLen
-    $cutted_slug = trim(substr($slug, 0, $maxLen), $this['seperator_char']);
-    // cut to the last position of '-' in cutted string
-    $beautified_slug = trim(preg_replace('/[^'.preg_quote($this['seperator_char']).']*$/', '', $cutted_slug), $this['seperator_char']);
-    // only return the beautified string when it is long enough
-    if (strlen($beautified_slug) < ($maxLen/2))
-    {
-      return $cutted_slug;
-    }
-    else
-    {
-      return $beautified_slug;
-    }
-  }
   /**
    * Returns the slug-string
    *
    * @return string the slug
    * @see generateSlug()
    */
-  public function getSlug()
-  {
-    if (null === $this->slug)
+    public function getSlug()
     {
-      $this->generateSlug();
+        if (null === $this->slug) {
+            $this->generateSlug();
+        }
+        return $this->slug;
     }
-    return $this->slug;
-  }
   /**
    * Returns the slug-string
    *
    * @return string the slug
    * @see getSlug()
    */
-  public function __toString()
-  {
-    return $this->getSlug();
-  }
+    public function __toString()
+    {
+        return $this->getSlug();
+    }
   /**
    * Sets a char-map-array that is used for the strtr() PHP-function in the slug generation process
    *
    * @param string $char_map The option name
    */
-  public function setCharMap($char_map)
-  {
-    $this->char_map = $char_map;
-  }
+    public function setCharMap($char_map)
+    {
+        $this->char_map = $char_map;
+    }
   /**
    * Sets the option associated with the offset (implements the ArrayAccess interface).
    *
    * @param string $offset The option name
    * @param string $value The option value
    */
-  public function offsetSet($offset, $value)
-  {
-    if (is_null($offset))
+    public function offsetSet($offset, $value)
     {
-      $this->options[] = $value;
+        if (is_null($offset)) {
+            $this->options[] = $value;
+        } else {
+            $this->options[$offset] = $value;
+        }
     }
-    else
-    {
-      $this->options[$offset] = $value;
-    }
-  }
   /**
    * Returns true if the option exists (implements the ArrayAccess interface).
    *
    * @param  string $name The name of option
    * @return Boolean true if the option exists, false otherwise
    */
-  public function offsetExists($offset)
-  {
-    return isset($this->options[$offset]);
-  }
+    public function offsetExists($offset)
+    {
+        return isset($this->options[$offset]);
+    }
   /**
    * Unsets the option associated with the offset (implements the ArrayAccess interface).
    *
    * @param string $offset The option name
    */
-  public function offsetUnset($offset)
-  {
-    $this->options[$offset] = null;
-  }
+    public function offsetUnset($offset)
+    {
+        $this->options[$offset] = null;
+    }
   /**
    * Returns an option (implements the ArrayAccess interface).
    *
    * @param  string $name The offset of the option to get
    * @return mixed The option if exists, null otherwise
    */
-  public function offsetGet($offset)
-  {
-    return isset($this->options[$offset]) ? $this->options[$offset] : null;
-  }
+    public function offsetGet($offset)
+    {
+        return isset($this->options[$offset]) ? $this->options[$offset] : null;
+    }
 }

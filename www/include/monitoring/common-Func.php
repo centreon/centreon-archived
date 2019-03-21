@@ -137,7 +137,7 @@ function get_notified_infos_for_host($hostId)
         $stack = array_merge($hostsTpl, $stack);
     }
 
-    if (version_compare(phpversion(), '5.4.0') >= 0){
+    if (version_compare(phpversion(), '5.4.0') >= 0) {
         asort($results['contacts'], SORT_NATURAL | SORT_FLAG_CASE);
         asort($results['contactGroups'], SORT_NATURAL | SORT_FLAG_CASE);
     } else {
@@ -196,15 +196,13 @@ function get_notified_infos_for_service($serviceId, $hostId)
             "service_template_model_stm_id FROM service WHERE service_id = " . $serviceId;
         $DBRESULT = $pearDB->query($query);
         $contactAdd = $DBRESULT->fetchRow();
-        if (
-            !isset($contactAdd['service_template_model_stm_id']) ||
+        if (!isset($contactAdd['service_template_model_stm_id']) ||
             is_null($contactAdd['service_template_model_stm_id'])
             || $contactAdd['service_template_model_stm_id'] == ''
         ) {
             break;
         }
-        if (
-            !is_null($contactAdd['service_use_only_contacts_from_host']) &&
+        if (!is_null($contactAdd['service_use_only_contacts_from_host']) &&
             $contactAdd['service_use_only_contacts_from_host'] == 1
         ) {
             $useOnlyContactsFromHost = 1;
@@ -246,7 +244,7 @@ function get_notified_infos_for_service($serviceId, $hostId)
         return get_notified_infos_for_host($hostId);
     }
 
-    if (version_compare(phpversion(), '5.4.0') >= 0){
+    if (version_compare(phpversion(), '5.4.0') >= 0) {
         asort($results['contacts'], SORT_NATURAL | SORT_FLAG_CASE);
         asort($results['contactGroups'], SORT_NATURAL | SORT_FLAG_CASE);
     } else {

@@ -255,7 +255,6 @@ function multipleContactInDB($contacts = array(), $nbrDup = array())
                 $DBRESULT = $pearDB->query("SELECT MAX(contact_id) FROM contact");
                 $maxId = $DBRESULT->fetch();
                 if (isset($maxId["MAX(contact_id)"])) {
-
                     /*
                      * ACL update
                      */

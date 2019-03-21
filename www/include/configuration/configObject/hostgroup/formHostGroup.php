@@ -232,7 +232,6 @@ if ($o == "w") {
         $form->addElement('text', 'msgacl', _("error"), 'error');
         $form->freeze();
     }
-
 } elseif ($o == "a") {
     /*
      * Add a HostGroup information

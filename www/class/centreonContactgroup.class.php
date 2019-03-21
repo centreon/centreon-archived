@@ -317,13 +317,13 @@ class CentreonContactgroup
                 // insert groups from ldap into centreon
                 $registeredGroupsFromDB = $res->fetchAll();
                 $registeredGroups = [];
-                foreach ($registeredGroupsFromDB as $registeredGroupFromDB){
+                foreach ($registeredGroupsFromDB as $registeredGroupFromDB) {
                     $registeredGroups[] = $registeredGroupFromDB['cg_name'];
                 }
                 $ldapGroups = $ldapConn->listOfGroups();
                 $toInsertGroups = array_diff($ldapGroups, $registeredGroups);
 
-                foreach ($toInsertGroups as $toInsertGroup){
+                foreach ($toInsertGroups as $toInsertGroup) {
                     $this->insertLdapGroup('[' . $ldapRow['ar_id'] . ']' . $toInsertGroup);
                 }
 
@@ -370,7 +370,7 @@ class CentreonContactgroup
                     }
                     $contact = rtrim($contact, ",");
 
-                    if($contact !== '') {
+                    if ($contact !== '') {
                         $queryContact = "SELECT contact_id FROM contact WHERE contact_ldap_dn IN (" . $contact . ")";
                         try {
                             $resContact = $this->db->query($queryContact);

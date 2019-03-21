@@ -178,7 +178,6 @@ class CentreonDowntime extends CentreonObject
         foreach ($elements as $tab) {
             echo implode($this->delim, $tab) . $filterList . "\n";
         }
-
     }
 
     /**

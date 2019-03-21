@@ -333,7 +333,6 @@ class DowntimeDSTContext extends CentreonContext
                     $output,
                     $matches
                 )) {
-
                     $startTimestamp = (int)end($matches[1]);
                     $endTimestamp = (int)end($matches[2]);
 

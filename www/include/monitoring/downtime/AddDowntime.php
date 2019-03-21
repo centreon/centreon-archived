@@ -260,7 +260,8 @@ if (!$centreon->user->access->checkAction("host_schedule_downtime")
     $form->addElement(
         'text',
         'timezone_warning',
-        _(" The timezone used is configured on your user settings"));
+        _(" The timezone used is configured on your user settings")
+    );
 
     /* adding hidden fields to get the result of datepicker in an unlocalized format */
     $form->addElement(
@@ -315,7 +316,7 @@ if (!$centreon->user->access->checkAction("host_schedule_downtime")
 
     $data = array();
     $gmt = $centreonGMT->getMyGMT();
-    if(!$gmt) {
+    if (!$gmt) {
         $gmt = date_default_timezone_get();
     }
     $data["start_time"] = $centreonGMT->getDate("G:i", time(), $gmt);
@@ -424,7 +425,6 @@ if (!$centreon->user->access->checkAction("host_schedule_downtime")
                     $host_or_centreon_time
                 );
             }
-
         } elseif ($values['downtimeType']['downtimeType'] == 0 &&
             isset($_POST['hostgroup_id']) &&
             is_array($_POST['hostgroup_id'])
@@ -525,7 +525,7 @@ if (!$centreon->user->access->checkAction("host_schedule_downtime")
                 }
             }
         }
-        require_once ("listDowntime.php");
+        require_once("listDowntime.php");
     } else {
         /*
          * Smarty template Init

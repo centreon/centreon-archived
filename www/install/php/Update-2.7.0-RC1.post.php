@@ -36,7 +36,6 @@
 
 # Make broker configuration easier
 if (isset($pearDB)) {
-
     # Fill retention path
     $query1 = "SELECT config_id
         FROM cfg_centreonbroker";

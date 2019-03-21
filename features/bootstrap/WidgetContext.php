@@ -76,7 +76,7 @@ class WidgetContext extends CentreonContext
         // Wait for iFrame.
         $this->spin(
             function ($context) {
-	        return $context->getSession()->getPage()->has('css', '#main-content');
+                return $context->getSession()->getPage()->has('css', '#main-content');
             },
             'iFrame (#main-content) did not appear.'
         );

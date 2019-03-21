@@ -79,7 +79,6 @@ class CentreonTag
         $stmt->execute();
 
         while ($row = $stmt->fetch()) {
-
             $items[] = array(
                 'id' => $row['tags_id'],
                 'text' => $row['tags_name']

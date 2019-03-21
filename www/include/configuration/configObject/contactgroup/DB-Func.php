@@ -138,7 +138,6 @@ function multipleContactGroupInDB($contactGroups = array(), $nbrDup = array())
                 $maxId = $DBRESULT->fetchRow();
 
                 if (isset($maxId["MAX(cg_id)"])) {
-
                     $query = "SELECT DISTINCT `acl_group_id` FROM `acl_group_contactgroups_relations` " .
                         "WHERE `cg_cg_id` = " . (int)$key;
                     $dbResult = $pearDB->query($query);

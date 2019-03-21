@@ -124,7 +124,6 @@ function multipleServiceDependencyInDB($dependencies = array(), $nbrDup = array(
                 $DBRESULT = $pearDB->query("SELECT MAX(dep_id) FROM dependency");
                 $maxId = $DBRESULT->fetchRow();
                 if (isset($maxId["MAX(dep_id)"])) {
-
                     $query = "SELECT * FROM dependency_hostChild_relation WHERE dependency_dep_id = '" . $key . "'";
                     $dbResult = $pearDB->query($query);
                     $fields["dep_hostPar"] = "";

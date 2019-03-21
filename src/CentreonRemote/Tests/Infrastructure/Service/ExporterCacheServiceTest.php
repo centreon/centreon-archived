@@ -23,7 +23,7 @@ class ExporterCacheServiceTest extends TestCase
      */
     public function testGetIf()
     {
-        $callable = function() {
+        $callable = function () {
             return 'val1a';
         };
 

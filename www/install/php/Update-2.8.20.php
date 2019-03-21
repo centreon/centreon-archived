@@ -38,7 +38,7 @@
 if (isset($pearDB)) {
     $res = $pearDB->query("SELECT `name` FROM `nagios_server` WHERE `is_default` = 1");
 
-    if( $res->rowCount() == 0) {
+    if ($res->rowCount() == 0) {
         $res = $pearDB->query("UPDATE `nagios_server` SET `is_default` = 1 WHERE `localhost` = '1'");
     }
 }

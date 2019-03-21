@@ -8,7 +8,7 @@ class TimePeriodExceptionRepository extends ServiceEntityRepository
 
     /**
      * Export
-     * 
+     *
      * @param array $timeperiodList
      * @return array
      */

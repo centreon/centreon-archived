@@ -109,7 +109,7 @@ class CentreonXML
      */
     protected function is_utf8($string)
     {
-        if(mb_detect_encoding($string, "UTF-8", true) == "UTF-8") {
+        if (mb_detect_encoding($string, "UTF-8", true) == "UTF-8") {
             return 1;
         }
         return 0;

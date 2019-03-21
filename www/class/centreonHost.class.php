@@ -1867,7 +1867,9 @@ class CentreonHost
                     $centreon->CentreonLogAction->insertLog(
                         "service",
                         $svcId,
-                        CentreonDB::escape($service['service_alias']), "a", $fields
+                        CentreonDB::escape($service['service_alias']),
+                        "a",
+                        $fields
                     );
                     $this->insertRelHostService($hostId, $svcId);
                 }

@@ -9,9 +9,9 @@ class ServiceRepository extends ServiceEntityRepository
 
     /**
      * Export
-     * 
+     *
      * @todo restriction by poller
-     * 
+     *
      * @param int[] $pollerIds
      * @param array $templateChainList
      * @return array
@@ -87,7 +87,7 @@ SQL;
 
     /**
      * Get a chain of the related objects
-     * 
+     *
      * @param int[] $pollerIds
      * @param int[] $ba
      * @return array

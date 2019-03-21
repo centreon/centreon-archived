@@ -43,7 +43,7 @@ class PollerExporter extends ExporterServiceAbstract
         $overwritePollerService = new PollerDefaultsOverwriteService;
         $overwritePollerService->setPollerID($this->commitment->getRemote());
 
-        (function() use ($pollerIds, $overwritePollerService) {
+        (function () use ($pollerIds, $overwritePollerService) {
             $nagiosServer = $this->db
                 ->getRepository(Repository\NagiosServerRepository::class)
                 ->export($pollerIds);
@@ -51,7 +51,7 @@ class PollerExporter extends ExporterServiceAbstract
             $this->_dump($nagiosServer, $this->getFile(static::EXPORT_FILE_NAGIOS_SERVER));
         })();
 
-        (function() use ($pollerIds, $overwritePollerService) {
+        (function () use ($pollerIds, $overwritePollerService) {
             $cfgResource = $this->db
                 ->getRepository(Repository\CfgResourceRepository::class)
                 ->export($pollerIds);
@@ -59,7 +59,7 @@ class PollerExporter extends ExporterServiceAbstract
             $this->_dump($cfgResource, $this->getFile(static::EXPORT_FILE_CFG_RESOURCE));
         })();
 
-        (function() use ($pollerIds) {
+        (function () use ($pollerIds) {
             $data = $this->db
                 ->getRepository(Repository\CfgResourceInstanceRelationsRepository::class)
                 ->export($pollerIds)
@@ -67,7 +67,7 @@ class PollerExporter extends ExporterServiceAbstract
             $this->_dump($data, $this->getFile(static::EXPORT_FILE_CFG_RESOURCE_INSTANCE_RELATION));
         })();
 
-        (function() use ($pollerIds) {
+        (function () use ($pollerIds) {
             $pollerCommand = $this->db
                 ->getRepository(Repository\PollerCommandRelationsRepository::class)
                 ->export($pollerIds)
@@ -75,7 +75,7 @@ class PollerExporter extends ExporterServiceAbstract
             $this->_dump($pollerCommand, $this->getFile(static::EXPORT_FILE_POLLER_COMMAND));
         })();
 
-        (function() use ($pollerIds, $overwritePollerService) {
+        (function () use ($pollerIds, $overwritePollerService) {
             $cfgNagios = $this->db
                 ->getRepository(Repository\CfgNagiosRepository::class)
                 ->export($pollerIds);
@@ -83,7 +83,7 @@ class PollerExporter extends ExporterServiceAbstract
             $this->_dump($cfgNagios, $this->getFile(static::EXPORT_FILE_CFG_NAGIOS));
         })();
 
-        (function() use ($pollerIds, $overwritePollerService) {
+        (function () use ($pollerIds, $overwritePollerService) {
             $cfgNagiosBrokerModule = $this->db
                 ->getRepository(Repository\CfgNagiosBrokerModuleRepository::class)
                 ->export($pollerIds);
@@ -91,7 +91,7 @@ class PollerExporter extends ExporterServiceAbstract
             $this->_dump($cfgNagiosBrokerModule, $this->getFile(static::EXPORT_FILE_CFG_NAGIOS_BROKER_MODULE));
         })();
 
-        (function() use ($pollerIds, $overwritePollerService) {
+        (function () use ($pollerIds, $overwritePollerService) {
             $cfgCentreonBroker = $this->db
                 ->getRepository(Repository\CfgCentreonBrokerRepository::class)
                 ->export($pollerIds);
@@ -99,7 +99,7 @@ class PollerExporter extends ExporterServiceAbstract
             $this->_dump($cfgCentreonBroker, $this->getFile(static::EXPORT_FILE_CFG_CENTREONBROKER));
         })();
 
-        (function() use ($pollerIds, $overwritePollerService) {
+        (function () use ($pollerIds, $overwritePollerService) {
             $cfgCentreonBrokerInfo = $this->db
                 ->getRepository(Repository\CfgCentreonBrokerInfoRepository::class)
                 ->export($pollerIds);
@@ -107,7 +107,7 @@ class PollerExporter extends ExporterServiceAbstract
             $this->_dump($cfgCentreonBrokerInfo, $this->getFile(static::EXPORT_FILE_CFG_CENTREONBROKER_INFO));
         })();
 
-        (function() use ($pollerIds) {
+        (function () use ($pollerIds) {
             $timezone = $this->db
                 ->getRepository(Repository\TimezoneRepository::class)
                 ->export($pollerIds)
@@ -138,7 +138,7 @@ class PollerExporter extends ExporterServiceAbstract
         $this->cleanup();
 
         // insert nagios server
-        (function() use ($db) {
+        (function () use ($db) {
             $exportPathFile = $this->getFile(static::EXPORT_FILE_NAGIOS_SERVER);
             $result = $this->_parse($exportPathFile);
 
@@ -148,7 +148,7 @@ class PollerExporter extends ExporterServiceAbstract
         })();
 
         // insert cfg resource
-        (function() use ($db) {
+        (function () use ($db) {
             $exportPathFile = $this->getFile(static::EXPORT_FILE_CFG_RESOURCE);
             $result = $this->_parse($exportPathFile);
 
@@ -159,7 +159,7 @@ class PollerExporter extends ExporterServiceAbstract
         })();
 
         // insert cfg resource
-        (function() use ($db) {
+        (function () use ($db) {
             $exportPathFile = $this->getFile(static::EXPORT_FILE_CFG_RESOURCE_INSTANCE_RELATION);
             $result = $this->_parse($exportPathFile);
 
@@ -169,7 +169,7 @@ class PollerExporter extends ExporterServiceAbstract
         })();
 
         // insert poller commands
-        (function() use ($db) {
+        (function () use ($db) {
             $exportPathFile = $this->getFile(static::EXPORT_FILE_POLLER_COMMAND);
             $result = $this->_parse($exportPathFile);
 
@@ -179,7 +179,7 @@ class PollerExporter extends ExporterServiceAbstract
         })();
 
         // insert cfg nagios
-        (function() use ($db) {
+        (function () use ($db) {
             $exportPathFile = $this->getFile(static::EXPORT_FILE_CFG_NAGIOS);
             $result = $this->_parse($exportPathFile);
 
@@ -189,7 +189,7 @@ class PollerExporter extends ExporterServiceAbstract
         })();
 
         // insert cfg broker module
-        (function() use ($db) {
+        (function () use ($db) {
             $exportPathFile = $this->getFile(static::EXPORT_FILE_CFG_NAGIOS_BROKER_MODULE);
             $result = $this->_parse($exportPathFile);
 
@@ -199,7 +199,7 @@ class PollerExporter extends ExporterServiceAbstract
         })();
 
         // insert cfg broker
-        (function() use ($db) {
+        (function () use ($db) {
             $exportPathFile = $this->getFile(static::EXPORT_FILE_CFG_CENTREONBROKER);
             $result = $this->_parse($exportPathFile);
 
@@ -209,7 +209,7 @@ class PollerExporter extends ExporterServiceAbstract
         })();
 
         // insert cfg broker info
-        (function() use ($db) {
+        (function () use ($db) {
             $exportPathFile = $this->getFile(static::EXPORT_FILE_CFG_CENTREONBROKER_INFO);
             $result = $this->_parse($exportPathFile);
 
@@ -219,7 +219,7 @@ class PollerExporter extends ExporterServiceAbstract
         })();
 
         // insert timezone if missing
-        (function() use ($db) {
+        (function () use ($db) {
             $exportPathFile = $this->getFile(static::EXPORT_FILE_TIMEZONE);
             $result = $this->_parse($exportPathFile);
 

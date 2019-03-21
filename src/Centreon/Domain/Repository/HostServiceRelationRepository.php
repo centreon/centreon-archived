@@ -8,13 +8,13 @@ class HostServiceRelationRepository extends ServiceEntityRepository
 
     /**
      * Export
-     * 
+     *
      * @todo restriction by poller
-     * 
+     *
      * @param int[] $pollerIds
      * @return array
      */
-    public function export(array $pollerIds,  array $ba = null): array
+    public function export(array $pollerIds, array $ba = null): array
     {
         // prevent SQL exception
         if (!$pollerIds) {

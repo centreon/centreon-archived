@@ -76,8 +76,6 @@ class CentreonService
         }
 
         $this->instanceObj = new CentreonInstance($db);
-
-
     }
 
     /**
@@ -1223,7 +1221,6 @@ class CentreonService
                 default:
                     break;
             }
-
         }
     }
 

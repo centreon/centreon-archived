@@ -49,15 +49,15 @@ $historySearchService = CentreonUtils::escapeSecure(
     ($centreon->historySearchService[$url] ?? '')
 );
 
-if(!isset($search_host) || empty($search_host)) {
+if (!isset($search_host) || empty($search_host)) {
     $search_host = $searchHistory;
 }
 
-if(!isset($search_sg) || empty($search_sg)) {
+if (!isset($search_sg) || empty($search_sg)) {
     $search_sg = $searchHistory;
 }
 
-if(!isset($search_output) || empty($search_output)) {
+if (!isset($search_output) || empty($search_output)) {
     $search_output = CentreonUtils::escapeSecure(
         ($centreon->historySearchOutput[$url] ?? '')
     );
@@ -350,25 +350,25 @@ if (!$centreon->user->access->admin) {
                                         WHERE hg.hostgroup_id = hhg.hostgroup_id 
                                         AND hg.name NOT LIKE 'meta\_%' 
                                      ORDER BY hg.name");
-while ($hostgroups = $DBRESULT->fetchRow()) {
-    if ($centreon->user->access->admin || ($centreon->user->access->admin == 0 && isset($hgBrk[$hostgroups["name"]]))) {
-        if (!isset($tabHG)) {
-            $tabHG = array();
+        while ($hostgroups = $DBRESULT->fetchRow()) {
+            if ($centreon->user->access->admin || ($centreon->user->access->admin == 0 && isset($hgBrk[$hostgroups["name"]]))) {
+                if (!isset($tabHG)) {
+                    $tabHG = array();
+                }
+                if (!isset($tabHG[$hostgroups["name"]])) {
+                    $tabHG[$hostgroups["name"]] = "";
+                } else {
+                    $tabHG[$hostgroups["name"]] .= ",";
+                }
+                $tabHG[$hostgroups["name"]] .= $hostgroups["hostgroup_id"];
+            }
         }
-        if (!isset($tabHG[$hostgroups["name"]])) {
-            $tabHG[$hostgroups["name"]] = "";
-        } else {
-            $tabHG[$hostgroups["name"]] .= ",";
-        }
-        $tabHG[$hostgroups["name"]] .= $hostgroups["hostgroup_id"];
-    }
-}
 
-if (isset($tabHG)) {
-    foreach ($tabHG as $name => $id) {
-        ?>
-        var m = document.createElement('option');
-            m.value= "<?php echo $id; ?>";
+        if (isset($tabHG)) {
+            foreach ($tabHG as $name => $id) {
+                ?>
+                var m = document.createElement('option');
+                    m.value= "<?php echo $id; ?>";
             _select.appendChild(m);
             var n = document.createTextNode("<?php echo $name; ?>   ");
             m.appendChild(n);
@@ -376,8 +376,8 @@ if (isset($tabHG)) {
             select_index["<?php echo $id; ?>"] = i;
             i++;
                 <?php
-    }
-}
+            }
+        }
 ?>
         if (typeof(_default_hg) != "undefined") {
             _select.selectedIndex = select_index[_default_hg];

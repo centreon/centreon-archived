@@ -67,7 +67,7 @@ class CentreonClapi extends CentreonWebService implements CentreonWebServiceDiIn
 
     /**
      * Post
-     * 
+     *
      * @global \Centreon $centreon
      * @global array $conf_centreon
      * @return array

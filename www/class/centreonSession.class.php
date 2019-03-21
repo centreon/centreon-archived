@@ -44,7 +44,6 @@ class CentreonSession
 	 */
     public function __construct()
     {
-
     }
 
     public static function start($flag = 0)
@@ -87,7 +86,7 @@ class CentreonSession
 
     /**
      * Check user session status
-     * 
+     *
      * @param string $sessionId
      * @param \CentreonDB $pearDB
      * @return int
