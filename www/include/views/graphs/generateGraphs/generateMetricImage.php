@@ -101,8 +101,6 @@ if (isset($_GET["metric"])) {
 $obj->setRRDOption("start", $obj->checkArgument("start", $_GET, time() - (60*60*48)));
 $obj->setRRDOption("end", $obj->checkArgument("end", $_GET, time()));
 
-//$obj->GMT->getMyGMTFromSession($obj->session_id, $pearDB);
-
 /**
  * Template Management
  */
