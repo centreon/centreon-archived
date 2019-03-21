@@ -71,9 +71,6 @@ if (isset($_GET['index'])) {
     $query = 'SELECT id FROM index_data
         WHERE host_id = ' . $hostId . ' AND service_id = ' . $svcId;
     $res = $pearDBO->query($query);
-    if (PEAR::isError($res)) {
-        CentreonGraph::displayError();
-    }
     $row = $res->fetchRow();
     if (!$row) {
         CentreonGraph::displayError();
