@@ -33,7 +33,7 @@
  *
  *
  */
-namespace CentreonNotification\Tests\Domain\Repository;
+namespace Centreon\Tests\Domain\Repository;
 
 use Centreon\Domain\Entity\ContactGroup;
 use Centreon\Domain\Repository\ContactGroupRepository;

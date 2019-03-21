@@ -33,9 +33,11 @@
  *
  *
  */
-namespace CentreonNotification\Tests\Domain\Repository;
+
+namespace Centreon\Tests\Domain\Repository;
 
 use Centreon\Domain\Entity\Image;
+use Centreon\Domain\Entity\ImageDir;
 use Centreon\Domain\Repository\ImagesRepository;
 use PHPUnit\Framework\TestCase;
 use Centreon\Test\Mock\CentreonDB;
@@ -55,35 +57,24 @@ class ImagesRepositoryTest extends TestCase
         $db = new CentreonDB;
         $this->datasets = [
             [
-                'query' => "SELECT * "
-                    . "FROM `view_img_dir`,`view_img_dir_relation` vidr,`view_img`"
-                    . " WHERE `img_id` = `vidr`.`img_img_id` AND `dir_id` = `vidr`.`dir_dir_parent_id`"
-                    . " ORDER BY `dir_name`, `img_name ASC",
+                'query' => "SELECT * FROM `view_img_dir`,`view_img_dir_relation` vidr,`view_img` "
+                           . "WHERE `img_id` = `vidr`.`img_img_id` AND `dir_id` = `vidr`.`dir_dir_parent_id` ORDER BY `dir_name`, `img_name`",
                 'data' => [
                     [
                         'img_id' => '1',
                         'img_name' => 'centreon',
-                        'img_path' => 'centreon.png',
-                        'img_img_id' => '2',
-                        'dir_id' => '2',
-                        'dir_name' => 'dirname',
+                        'img_path' => 'centreon.png'
                     ],
                 ],
             ],
             [
-                'query' => "SELECT * "
-                    . "FROM `view_img_dir`,`view_img_dir_relation` vidr,`view_img`"
-                    . " WHERE `img_id` = `vidr`.`img_img_id` AND `dir_id` = `vidr`.`dir_dir_parent_id`"
-                    . " AND `img_name` LIKE :search AND `img_id` IN (:id0) LIMIT :limit OFFSET :offset"
-                    . " ORDER BY `dir_name`, `img_name ASC",
+                'query' => "SELECT * FROM `view_img_dir`,`view_img_dir_relation` vidr,`view_img` "
+                           . "WHERE `img_id` = `vidr`.`img_img_id` AND `dir_id` = `vidr`.`dir_dir_parent_id` LIMIT :limit OFFSET :offset ORDER BY `dir_name`, `img_name`",
                 'data' => [
                     [
                         'img_id' => '1',
                         'img_name' => 'centreon',
-                        'img_path' => 'centreon.png',
-                        'img_img_id' => '2',
-                        'dir_id' => '2',
-                        'dir_name' => 'dirname',
+                        'img_path' => 'centreon.png'
                     ],
                 ],
             ],
@@ -102,6 +93,7 @@ class ImagesRepositoryTest extends TestCase
         }
         $this->repository = new ImagesRepository($db);
     }
+
     /**
      * @covers \Centreon\Domain\Repository\ImagesRepository::getPaginationList
      */
@@ -109,29 +101,16 @@ class ImagesRepositoryTest extends TestCase
     {
         $result = $this->repository->getPaginationList();
         $data = $this->datasets[0]['data'][0];
+        $imgDir = new ImageDir();
         $entity = new Image();
         $entity->setImgId($data['img_id']);
         $entity->setImgName($data['img_name']);
-        $this->assertEquals([$entity], $result);
+        $entity->setImgPath($data['img_path']);
+        $entity->setImageDir($imgDir);
+        $this->assertEquals($entity->getImgName(), $result[0]->getImgName());
     }
-    /**
-     * @covers \Centreon\Domain\Repository\ImagesRepository::getPaginationList
-     */
-    public function testGetPaginationListWithArguments()
-    {
-        $filters = [
-            'search' => 'name',
-            'ids' => ['ids'],
-        ];
-        $limit = 1;
-        $offset = 0;
-        $result = $this->repository->getPaginationList($filters, $limit, $offset);
-        $data = $this->datasets[1]['data'][0];
-        $entity = new Image();
-        $entity->setImgId($data['img_id']);
-        $entity->setImgName($data['img_name']);
-        $this->assertEquals([$entity], $result);
-    }
+
+
     /**
      * @covers \Centreon\Domain\Repository\ImagesRepository::getPaginationListTotal
      */

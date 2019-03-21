@@ -35,6 +35,7 @@
  */
 namespace CentreonNotification\Tests\Application\DataRepresenter;
 
+use Centreon\Domain\Entity\ImageDir;
 use PHPUnit\Framework\TestCase;
 use Centreon\Domain\Entity\Image;
 use Centreon\Application\DataRepresenter\ImageEntity;
@@ -47,12 +48,18 @@ class ImageEntityTest extends TestCase
 {
     public function testJsonSerialize()
     {
+        $imgDir = new ImageDir();
+        $imgDir->setDirId(1);
+        $imgDir->setDirName('name');
         $entity = new Image();
         $entity->setImgId(5);
         $entity->setImgName('test name');
+        $entity->setImgPath('testPath');
+        $entity->setImageDir($imgDir);
         $value = [
-            'id' => $entity->getId(),
-            'name' => $entity->getName(),
+            'id' => $entity->getImgId(),
+            'name' => $entity->getImgName(),
+            'preview' => ImageEntity::MEDIA_DIR . $entity->getImageDir()->getDirName() . '/' . $entity->getImgPath()
         ];
         $dataRepresenter = new ImageEntity($entity);
         $result = $dataRepresenter->jsonSerialize();

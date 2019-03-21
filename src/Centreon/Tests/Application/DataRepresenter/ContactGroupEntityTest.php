@@ -50,9 +50,11 @@ class ContactGroupEntityTest extends TestCase
         $entity = new ContactGroup();
         $entity->setCgId(150);
         $entity->setCgName('test name');
+        $entity->setCgActivate('true');
         $value = [
-            'id' => $entity->getId(),
-            'name' => $entity->getName(),
+            'id' => $entity->getCgId(),
+            'name' => $entity->getCgName(),
+            'activate'=> $entity->getCgActivate()
         ];
         $dataRepresenter = new ContactGroupEntity($entity);
         $result = $dataRepresenter->jsonSerialize();
