@@ -79,7 +79,7 @@ Change rights on directory::
 
 Restart Apache::
 
-    $ sudo service httpd restart
+    $ sudo systemctl restart httpd24-httpd
 
 Connect to your Centreon web interface, edit your profil and select new language:
 

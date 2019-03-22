@@ -228,23 +228,25 @@ Utilisateurs et groupes
 
 Description des logiciels et utilisateurs liés :
 
-+-----------------+----------------+-----------------+-----------------------+
-| Logiciel        | Service        | Utilisateur     | Commentaire           |
-+=================+================+=================+=======================+
-| Apache          | httpd          | apache          | démarrage automatique |
-+-----------------+----------------+-----------------+-----------------------+
-| MySQL (MariaDB) | mysqld (mysql) | mysql           | démarrage automatique |
-+-----------------+----------------+-----------------+-----------------------+
-| Centreon        | centcore       | centreon        | démarrage automatique |
-+-----------------+----------------+-----------------+-----------------------+
-| Centreon        | centreontrapd  | centreon        | démarrage automatique |
-+-----------------+----------------+-----------------+-----------------------+
-| Centreon Broker | cbwd           | centreon-broker | démarrage automatique |
-+-----------------+----------------+-----------------+-----------------------+
-| Centreon Broker | cbd            | centreon-broker | démarrage automatique |
-+-----------------+----------------+-----------------+-----------------------+
-| Centreon Engine | centengine     | centreon-engine | démarrage automatique |
-+-----------------+----------------+-----------------+-----------------------+
++-----------------+------------------+-----------------+-----------------------+
+| Logiciel        | Service          | Utilisateur     | Commentaire           |
++=================+==================+=================+=======================+
+| Apache          | httpd24-httpd    | apache          | démarrage automatique |
++-----------------+------------------+-----------------+-----------------------+
+| PHP-FPM         | rh-php71-php-fpm | apache          | démarrage automatique |
++-----------------+------------------+-----------------+-----------------------+
+| MySQL (MariaDB) | mysqld (mysql)   | mysql           | démarrage automatique |
++-----------------+------------------+-----------------+-----------------------+
+| Centreon        | centcore         | centreon        | démarrage automatique |
++-----------------+------------------+-----------------+-----------------------+
+| Centreon        | centreontrapd    | centreon        | démarrage automatique |
++-----------------+------------------+-----------------+-----------------------+
+| Centreon Broker | cbwd             | centreon-broker | démarrage automatique |
++-----------------+------------------+-----------------+-----------------------+
+| Centreon Broker | cbd              | centreon-broker | démarrage automatique |
++-----------------+------------------+-----------------+-----------------------+
+| Centreon Engine | centengine       | centreon-engine | démarrage automatique |
++-----------------+------------------+-----------------+-----------------------+
 
 Description des logiciels optionnels et utilisateurs liés :
 

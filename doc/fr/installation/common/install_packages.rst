@@ -39,7 +39,7 @@ Dépôt Centreon
 --------------
 
 Afin d'installer les logiciels Centreon à partir des dépôts, vous devez au
-préalable installer le fichier lié au dépôt. Exécutez la commande suivante. 
+préalable installer le fichier lié au dépôt. Exécutez la commande suivante.
 
 Installation : ::
 
@@ -127,7 +127,7 @@ Activer le lancement automatique de services au démarrage.
 
 Lancer les commandes suivantes sur le serveur Central : ::
 
-    # systemctl enable httpd
+    # systemctl enable httpd24-httpd
     # systemctl enable snmpd
     # systemctl enable snmptrapd
     # systemctl enable rh-php71-php-fpm
@@ -148,7 +148,7 @@ Avant de démarrer la configuration via l'interface web les commandes suivantes
 doivent être exécutées : ::
 
     # systemctl start rh-php71-php-fpm
-    # systemctl start httpd
+    # systemctl start httpd24-httpd
     # systemctl start mysqld
     # systemctl start cbd
     # systemctl start snmpd

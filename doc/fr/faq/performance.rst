@@ -10,7 +10,7 @@ Ce chapitre est un guide pour optimiser Centreon
 Bases de données
 ****************
 
-Le serveur de base de données est l'un des éléments centraux de Centreon. 
+Le serveur de base de données est l'un des éléments centraux de Centreon.
 Sa performance a un impact direct sur l'utilisateur de l'interface web.
 Centreon utilise deux ou trois bases de données en fonction de votre broker:
 
@@ -20,8 +20,8 @@ Centreon utilise deux ou trois bases de données en fonction de votre broker:
 Index
 =====
 
-Les bases de données utilisent des index pour accélérer les requêtes. Dans le 
-cas où des index sont manquants les requêtes sont plus longues à être exécutées. 
+Les bases de données utilisent des index pour accélérer les requêtes. Dans le
+cas où des index sont manquants les requêtes sont plus longues à être exécutées.
 
 .. _synchronizing-indexes:
 
@@ -58,7 +58,7 @@ L'option ``-s`` ou ``--sync`` doit être utilisée pour mettre à jour la base d
 Si vous avez besoin de définir l'utilisateur et le mot de passe, utiliser respectivement
 les options ``-u`` et ``-p``.
 
-Optimisations InnoDB 
+Optimisations InnoDB
 ====================
 
 Cette section n'est pas encore documentée.
@@ -66,7 +66,7 @@ Cette section n'est pas encore documentée.
 Schema des Bases de données
 ===========================
 
-Le schema de la base de données Centreon peut être consulté ici : 
+Le schema de la base de données Centreon peut être consulté ici :
 
 .. image:: ../database/centreon.png
 
@@ -81,7 +81,7 @@ RRDCacheD
 
 RRDCacheD est un processus qui permet de limiter les E/S disque lors de la mise à jour des graphiques
 de performance et/ou des graphiques de statut (fichiers RRDs).
-Pour cela, le processus RRDCacheD est appelé par le module Centreon Broker et mutualise les écritures 
+Pour cela, le processus RRDCacheD est appelé par le module Centreon Broker et mutualise les écritures
 sur disque plutôt que d'enregistrer une à une les données issues de la collecte.
 
 Installation
@@ -107,7 +107,7 @@ Options générales
 Concernant les autres options importantes :
 
 +--------+-----------------------------------------------------------------------------------+
-| Option | Description                                                                       |   
+| Option | Description                                                                       |
 +========+===================================================================================+
 | -w     | Les données sont écrites sur le disques toutes les x secondes (ici 3600s donc 1h) |
 +--------+-----------------------------------------------------------------------------------+
@@ -135,7 +135,7 @@ Créer les groupes en exécutant les commandes suivantes ::
 
 Redémarrer le processus Apache pour prendre en compte les modifications ::
 
-    # /etc/init.d/httpd restart
+    # systemctl restart httpd24-httpd
 
 Démarrer le processus RRDCacheD ::
 
@@ -159,7 +159,7 @@ Interface web Centreon
 ======================
 
 La mise en place de rrdcached fait que les graphiques ne sont plus mis à jours en temps réel.
-Il est donc possible de voir un petit blanc sur la droite de certains graphiques. 
+Il est donc possible de voir un petit blanc sur la droite de certains graphiques.
 Cela veut dire que les données sont encore dans le cache du processus, cela est normal !
 
 .. warning::

@@ -16,7 +16,8 @@ en utilisant :ref:`les paquets fournis par Centreon <install_from_packages>`.
 
 Les environnements CentOS et RHEL ne possèdent pas en standard sur
 dépôts l'intégralité des dépendances nécessaires à l'installation
-de Centreon. Vous devez ajouter le dépôt *RPM Forge*
+de Centreon. Vous devez ajouter les dépôts *RPM Forge* et
+*Software Collections*.
 
 Système el7 :
 
@@ -40,6 +41,7 @@ Puis exécutez les commandes suivantes :
 
     $ rpm --import RPM-GPG-KEY.dag.txt
     $ rpm -Uvh rpmforge-release-0.5.3-1.el7.rf.x86_64.rpm
+    $ yum install centos-release-scl
 
 Vous pouvez maintenant installer les dépendances nécessaires :
 
@@ -47,12 +49,13 @@ Vous pouvez maintenant installer les dépendances nécessaires :
 
     $ yum update
     $ yum upgrade
-    $ yum install httpd gd fontconfig-devel libjpeg-devel libpng-devel gd-devel perl-GD perl-DateTime \
-        openssl-devel perl-DBD-MySQL mysql-server mysql-devel php php-mysql php-gd php-ldap php-xml php-mbstring \
+    $ yum install httpd24-httpd gd fontconfig-devel libjpeg-devel libpng-devel gd-devel perl-GD perl-DateTime \
+        openssl-devel perl-DBD-MySQL mysql-server mysql-devel rh-php71-php rh-php71-php-mysql rh-php71-php-gd \
+        rh-php71-php-ldap rh-php71-php-xml rh-php71-php-mbstring rh-php71-php-snmp \
         perl-Config-IniFiles perl-DBI perl-DBD-MySQL rrdtool perl-rrdtool perl-Crypt-DES perl-Digest-SHA1 \
-        perl-Digest-HMAC net-snmp-utils perl-Socket6 perl-IO-Socket-INET6 net-snmp net-snmp-libs php-snmp \
+        perl-Digest-HMAC net-snmp-utils perl-Socket6 perl-IO-Socket-INET6 net-snmp net-snmp-libs \
         dmidecode lm_sensors perl-Net-SNMP net-snmp-perl fping cpp gcc gcc-c++ libstdc++ glib2-devel \
-        php-pear nagios-plugins
+        rh-php71-php-pear nagios-plugins
 
 Des commandes additionnelles sont nécessaires pour configurer correctement l'environnement :
 

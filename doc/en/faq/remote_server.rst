@@ -142,7 +142,7 @@ Solving data extraction problems
          Docs: man:systemd-sysv-generator(8)
        CGroup: /system.slice/centcore.service
                └─32385 /usr/bin/perl /usr/share/centreon/bin/centcore --logfile=/var/log/centreon/centcore.log --severity=error --config=/etc/centreon/conf.pm
-    
+
     Warning: Journal has been rotated since unit was started. Log output is incomplete or unavailable.
 
 If it is not running,
@@ -167,10 +167,10 @@ Or if the **/var/log/centreon/centcore.log** file on the central Centreon server
 includes: ::
 
     2018-11-08 13:54:10 - Receiving die: Timeout by signal ALARM
-    
+
     2018-11-08 13:54:10 - Dont die...
     2018-11-08 13:54:10 - Receiving die: Timeout by signal ALARM
-    
+
     2018-11-08 13:54:10 - Dont die...
     2018-11-08 13:54:10 - Timeout by signal ALARM
 
@@ -250,24 +250,20 @@ You should receive an authentication token or a **Bad credentials** message.
 Check the Apache process (httpd) is up and running on the Remote Server
 by running this command on the Remote Server: ::
 
-    # systemctl status httpd
-    ● httpd.service - The Apache HTTP Server
-       Loaded: loaded (/usr/lib/systemd/system/httpd.service; enabled; vendor preset: disabled)
-       Active: active (running) since mer. 2018-11-14 15:01:52 GMT; 5min ago
-         Docs: man:httpd(8)
-          man:apachectl(8)
-      Process: 18653 ExecStop=/bin/kill -WINCH ${MAINPID} (code=exited, status=0/SUCCESS)
-      Process: 9241 ExecReload=/usr/sbin/httpd $OPTIONS -k graceful (code=exited, status=0/SUCCESS)
-     Main PID: 19836 (httpd)
-       Status: "Total requests: 5; Current requests/sec: 0; Current traffic:   0 B/sec"
-       CGroup: /system.slice/httpd.service
-               ├─19836 /usr/sbin/httpd -DFOREGROUND
-               ├─19838 /usr/sbin/httpd -DFOREGROUND
+    # systemctl status httpd24-httpd
+    ● httpd24-httpd.service - The Apache HTTP Server
+       Loaded: loaded (/usr/lib/systemd/system/httpd24-httpd.service; enabled; vendor preset: disabled)
+       Active: active (running) since ven. 2019-03-22 14:29:06 CET; 2min 0s ago
+     Main PID: 3735 (httpd)
+       Status: "Total requests: 0; Idle/Busy workers 100/0;Requests/sec: 0; Bytes served/sec:   0 B/sec"
+       CGroup: /system.slice/httpd24-httpd.service
+               ├─3735 /opt/rh/httpd24/root/usr/sbin/httpd -DFOREGROUND
+               ├─3736 /opt/rh/httpd24/root/usr/sbin/httpd -DFOREGROUND
                ...
 
 If it is not running, restart the **httpd** process: ::
 
-    # systemctl restart httpd
+    # systemctl restart httpd24-httpd
 
 Check that the Remote Server parameters are complete and valid
 with this command on the Central Server: ::
@@ -310,7 +306,7 @@ Then generate the Remote Server configuration from the central Centreon server.
          Docs: man:systemd-sysv-generator(8)
        CGroup: /system.slice/centcore.service
                └─32385 /usr/bin/perl /usr/share/centreon/bin/centcore --logfile=/var/log/centreon/centcore.log --severity=error --config=/etc/centreon/conf.pm
-    
+
     Warning: Journal has been rotated since unit was started. Log output is incomplete or unavailable.
 
 If it is not running:
@@ -349,10 +345,10 @@ Or if the **/var/log/centreon/centcore.log** file on the central Centreon server
 includes: ::
 
     2018-11-08 13:54:10 - Receiving die: Timeout by signal ALARM
-    
+
     2018-11-08 13:54:10 - Dont die...
     2018-11-08 13:54:10 - Receiving die: Timeout by signal ALARM
-    
+
     2018-11-08 13:54:10 - Dont die...
     2018-11-08 13:54:10 - Timeout by signal ALARM
 
@@ -407,7 +403,7 @@ Then generate the Remote Server configuration from the central Centreon server.
          Docs: man:systemd-sysv-generator(8)
        CGroup: /system.slice/centcore.service
                └─32385 /usr/bin/perl /usr/share/centreon/bin/centcore --logfile=/var/log/centreon/centcore.log --severity=error --config=/etc/centreon/conf.pm
-    
+
     Warning: Journal has been rotated since unit was started. Log output is incomplete or unavailable.
 
 If it is not running:
