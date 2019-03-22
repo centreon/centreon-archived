@@ -218,7 +218,8 @@ class CentreonContactgroup
             . " OR " .
             "EXISTS(SELECT 1 FROM contactgroup_hostgroup_relation chr WHERE chr.contactgroup_cg_id = cg.cg_id LIMIT 1)"
             . " OR " .
-            "EXISTS(SELECT 1 FROM contactgroup_servicegroup_relation csr WHERE csr.contactgroup_cg_id = cg.cg_id LIMIT 1)"
+            "EXISTS(SELECT 1 FROM contactgroup_servicegroup_relation csr " .
+            "WHERE csr.contactgroup_cg_id = cg.cg_id LIMIT 1)"
             . " OR " .
             "EXISTS(SELECT 1 FROM escalation_contactgroup_relation ecr WHERE ecr.contactgroup_cg_id = cg.cg_id LIMIT 1)"
             . ") ORDER BY cg.ar_id");
