@@ -22,7 +22,14 @@ DELETE FROM topology WHERE topology_name = "CSS" AND topology_parent = 501 AND t
 -- removing unfriendly title from Logs menu
 DELETE FROM topology WHERE topology_name = "Visualisation" AND topology_parent = 508 AND topology_page = 50801;
 
+-- Update topology of service grid
+UPDATE topology SET topology_url_opt = '&o=svcOV_pb' WHERE topology_page = 20204;
 
+-- Update topology of service by host group
+UPDATE topology SET topology_url_opt = '&o=svcOVHG_pb' WHERE topology_page = 20209;
+
+-- Update topology of service by service group
+UPDATE topology SET topology_url_opt = '&o=svcOVSG_pb' WHERE topology_page = 20212;
 
 
 
