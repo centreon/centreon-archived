@@ -52,4 +52,18 @@ class CentreonDBManagerService
 
         return $manager;
     }
+
+    public function persist(object $entity)
+    {
+        $manager = $this->manager[$this->defaultManager]
+            ->persist($entity);
+
+        return $manager;
+    }
+
+    public function flush()
+    {
+        $this->manager[$this->defaultManager]
+            ->flush($entity);
+    }
 }

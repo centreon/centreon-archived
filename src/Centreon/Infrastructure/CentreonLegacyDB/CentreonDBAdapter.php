@@ -43,6 +43,18 @@ class CentreonDBAdapter
         return $repositoryInstance;
     }
 
+    public function persist(object $entity)
+    {
+        // @todo ...
+
+        return $this;
+    }
+
+    public function flush()
+    {
+        // @todo ...
+    }
+
     public function getCentreonDBInstance(): CentreonDB
     {
         return $this->db;
