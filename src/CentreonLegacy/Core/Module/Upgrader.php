@@ -47,12 +47,15 @@ class Upgrader extends Module
 
         $moduleInstalledInformation = $this->informationObj->getInstalledInformation($this->moduleName);
 
-        $upgradesPath = $this->getModulePath($this->moduleName) . '/UPGRADE/';
+        // Process all directories within the /upgrade/ path.
+        // Entry name should be a version.
+        $upgradesPath = $this->getModulePath($this->moduleName) . '/upgrade/';
         $upgrades = $this->services->get('finder')->directories()->depth('== 0')->in($upgradesPath);
+        usort($upgrades, 'version_compare');
         foreach ($upgrades as $upgrade) {
             $upgradeName = $upgrade->getBasename();
             $upgradePath = $upgradesPath . $upgradeName;
-            if (!preg_match('/^' . $this->moduleName . '-(\d+\.\d+\.\d+)/', $upgradeName, $matches) ||
+            if (!preg_match('/^(\d+\.\d+\.\d+)/', $upgradeName, $matches) ||
                 !$this->services->get('filesystem')->exists($upgradePath . '/conf.php')) {
                 continue;
             }
@@ -62,12 +65,12 @@ class Upgrader extends Module
                 'upgrade'
             );
 
-            if ($moduleInstalledInformation["mod_release"] != $configuration[$this->moduleName]["release_from"]) {
+            if (version_compare($moduleInstalledInformation["mod_release"], $upgradeName) >= 0) {
                 continue;
             }
 
-            $this->upgradeVersion($configuration[$this->moduleName]["release_to"]);
-            $moduleInstalledInformation["mod_release"] = $configuration[$this->moduleName]["release_to"];
+            $this->upgradeVersion($upgradeName);
+            $moduleInstalledInformation["mod_release"] = $upgradeName;
 
             $this->upgradePhpFiles($configuration, $upgradePath, true);
             $this->upgradeSqlFiles($configuration, $upgradePath);
