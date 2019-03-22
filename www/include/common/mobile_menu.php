@@ -5,12 +5,8 @@
 <nav class="nav-drill">
     <ul class="nav-items nav-level-1">
         <?php foreach ($treeMenu as $index => $subMenu) : ?>
-        <li class="nav-item <?php if (!empty($subMenu['children'])) :
-?>nav-expand<?php
-                            endif; ?>">
-            <a class="nav-link <?php if (!empty($subMenu['children'])) :
-?>nav-expand-link<?php
-                               endif; ?>" href="#">
+        <li class="nav-item <?php if (!empty($subMenu['children'])) : ?>nav-expand<?php endif; ?>">
+            <a class="nav-link <?php if (!empty($subMenu['children'])) : ?>nav-expand-link<?php endif; ?>" href="#">
                 <?= $subMenu['label'] ?>
             </a>
             <?php if (!empty($subMenu['children'])) : ?>

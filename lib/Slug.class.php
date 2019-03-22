@@ -19,113 +19,114 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
- *
  */
+
 /**
  * Create a slug for URLs
  *
  * Note that this Class is made for UTF-8-Strings
  *
- * @author      Fabian Graßl <fg@jusmeum.de>
+ * @author Fabian Graßl <fg@jusmeum.de>
  */
 class Slug implements ArrayAccess
 {
     protected $original = null;
     protected $slug = null;
     protected $options = array(
-    'to_lower'        => true,
-    'max_length'      => null,
-    'prefix'          => null,
-    'postfix'         => null,
-    'seperator_char'  => '-'
+        'to_lower'        => true,
+        'max_length'      => null,
+        'prefix'          => null,
+        'postfix'         => null,
+        'seperator_char'  => '-'
     );
     protected $char_map = array(
-    'Š'=>'S',
-    'š'=>'s',
-    'Ð'=>'Dj',
-    'Ž'=>'Z',
-    'ž'=>'z',
-    'À'=>'A',
-    'Á'=>'A',
-    'Â'=>'A',
-    'Ã'=>'A',
-    'Ä'=>'Ae',
-    'Å'=>'A',
-    'Æ'=>'A',
-    'Ç'=>'C',
-    'È'=>'E',
-    'É'=>'E',
-    'Ê'=>'E',
-    'Ë'=>'E',
-    'Ì'=>'I',
-    'Í'=>'I',
-    'Î'=>'I',
-    'Ï'=>'I',
-    'Ñ'=>'N',
-    'Ò'=>'O',
-    'Ó'=>'O',
-    'Ô'=>'O',
-    'Õ'=>'O',
-    'Ö'=>'Oe',
-    'Ø'=>'O',
-    'Ü'=>'Ue',
-    'Ù'=>'U',
-    'Ú'=>'U',
-    'Û'=>'U',
-    'Ý'=>'Y',
-    'Þ'=>'B',
-    'ß'=>'ss',
-    'à'=>'a',
-    'á'=>'a',
-    'â'=>'a',
-    'ã'=>'a',
-    'ä'=>'ae',
-    'å'=>'a',
-    'æ'=>'a',
-    'ç'=>'c',
-    'è'=>'e',
-    'é'=>'e',
-    'ê'=>'e',
-    'ë'=>'e',
-    'ì'=>'i',
-    'í'=>'i',
-    'î'=>'i',
-    'ï'=>'i',
-    'ð'=>'o',
-    'ñ'=>'n',
-    'ò'=>'o',
-    'ó'=>'o',
-    'ô'=>'o',
-    'õ'=>'o',
-    'ö'=>'oe',
-    'ø'=>'o',
-    'ü'=>'ue',
-    'ù'=>'u',
-    'ú'=>'u',
-    'û'=>'u',
-    'ý'=>'y',
-    'ý'=>'y',
-    'þ'=>'b',
-    'ÿ'=>'y',
-    'ƒ'=>'f',
-    'Ŕ'=>'R',
-    'ŕ'=>'r'
+        'Š'=>'S',
+        'š'=>'s',
+        'Ð'=>'Dj',
+        'Ž'=>'Z',
+        'ž'=>'z',
+        'À'=>'A',
+        'Á'=>'A',
+        'Â'=>'A',
+        'Ã'=>'A',
+        'Ä'=>'Ae',
+        'Å'=>'A',
+        'Æ'=>'A',
+        'Ç'=>'C',
+        'È'=>'E',
+        'É'=>'E',
+        'Ê'=>'E',
+        'Ë'=>'E',
+        'Ì'=>'I',
+        'Í'=>'I',
+        'Î'=>'I',
+        'Ï'=>'I',
+        'Ñ'=>'N',
+        'Ò'=>'O',
+        'Ó'=>'O',
+        'Ô'=>'O',
+        'Õ'=>'O',
+        'Ö'=>'Oe',
+        'Ø'=>'O',
+        'Ü'=>'Ue',
+        'Ù'=>'U',
+        'Ú'=>'U',
+        'Û'=>'U',
+        'Ý'=>'Y',
+        'Þ'=>'B',
+        'ß'=>'ss',
+        'à'=>'a',
+        'á'=>'a',
+        'â'=>'a',
+        'ã'=>'a',
+        'ä'=>'ae',
+        'å'=>'a',
+        'æ'=>'a',
+        'ç'=>'c',
+        'è'=>'e',
+        'é'=>'e',
+        'ê'=>'e',
+        'ë'=>'e',
+        'ì'=>'i',
+        'í'=>'i',
+        'î'=>'i',
+        'ï'=>'i',
+        'ð'=>'o',
+        'ñ'=>'n',
+        'ò'=>'o',
+        'ó'=>'o',
+        'ô'=>'o',
+        'õ'=>'o',
+        'ö'=>'oe',
+        'ø'=>'o',
+        'ü'=>'ue',
+        'ù'=>'u',
+        'ú'=>'u',
+        'û'=>'u',
+        'ý'=>'y',
+        'ý'=>'y',
+        'þ'=>'b',
+        'ÿ'=>'y',
+        'ƒ'=>'f',
+        'Ŕ'=>'R',
+        'ŕ'=>'r'
     );
-  /**
-   * Constructor.
-   *
-   * Available options:
-   *
-   *  * to_lower:       Whether the slug should be lowercase (true by default)
-   *  * max_length:     NULL for no maximum lenght or maximum lenght of the returned slug (NULL by default)
-   *  * prefix:         prefix for the slug
-   *  * postfix:        postfix for the slug
-   *  * seperator_char: word seperator char for the slug (default -)
-   *
-   * @param string $original    An array of field default values
-   * @param array  $options     An array of options
-   * @param array  $char_map    a char-map-array that is used for the strtr() PHP-function in the slug generation process
-   */
+
+    /**
+     * Constructor.
+     *
+     * Available options:
+     *
+     *  * to_lower:       Whether the slug should be lowercase (true by default)
+     *  * max_length:     NULL for no maximum lenght or maximum lenght of the returned slug (NULL by default)
+     *  * prefix:         prefix for the slug
+     *  * postfix:        postfix for the slug
+     *  * seperator_char: word seperator char for the slug (default -)
+     *
+     * @param string $original An array of field default values
+     * @param array  $options  An array of options
+     * @param array  $char_map a char-map-array that is used for the strtr() PHP-function in the slug generation process
+     */
     public function __construct($original, $options = array(), $char_map = null)
     {
         $this->original = $original;
@@ -134,9 +135,10 @@ class Slug implements ArrayAccess
             $this->char_map = $char_map;
         }
     }
-  /**
-   * Generate the slug.
-   */
+
+    /**
+     * Generate the slug.
+     */
     public function generateSlug()
     {
         $str = $this->original;
@@ -157,9 +159,10 @@ class Slug implements ArrayAccess
         // Add prefix & postfix
         $this->slug = $this['prefix'].$str.$this['postfix'];
     }
-  /**
-   * Shorten the slug.
-   */
+
+    /**
+     * Shorten the slug.
+     */
     protected function shortenSlug($slug, $maxLen)
     {
         // $maxLen must be greater than 1
@@ -181,12 +184,13 @@ class Slug implements ArrayAccess
             return $beautified_slug;
         }
     }
-  /**
-   * Returns the slug-string
-   *
-   * @return string the slug
-   * @see generateSlug()
-   */
+
+    /**
+     * Returns the slug-string
+     *
+     * @return string the slug
+     * @see    generateSlug()
+     */
     public function getSlug()
     {
         if (null === $this->slug) {
@@ -194,31 +198,34 @@ class Slug implements ArrayAccess
         }
         return $this->slug;
     }
-  /**
-   * Returns the slug-string
-   *
-   * @return string the slug
-   * @see getSlug()
-   */
+
+    /**
+     * Returns the slug-string
+     *
+     * @return string the slug
+     * @see    getSlug()
+     */
     public function __toString()
     {
         return $this->getSlug();
     }
-  /**
-   * Sets a char-map-array that is used for the strtr() PHP-function in the slug generation process
-   *
-   * @param string $char_map The option name
-   */
+
+    /**
+     * Sets a char-map-array that is used for the strtr() PHP-function in the slug generation process
+     *
+     * @param string $char_map The option name
+     */
     public function setCharMap($char_map)
     {
         $this->char_map = $char_map;
     }
-  /**
-   * Sets the option associated with the offset (implements the ArrayAccess interface).
-   *
-   * @param string $offset The option name
-   * @param string $value The option value
-   */
+
+    /**
+     * Sets the option associated with the offset (implements the ArrayAccess interface).
+     *
+     * @param string $offset The option name
+     * @param string $value  The option value
+     */
     public function offsetSet($offset, $value)
     {
         if (is_null($offset)) {
@@ -227,31 +234,34 @@ class Slug implements ArrayAccess
             $this->options[$offset] = $value;
         }
     }
-  /**
-   * Returns true if the option exists (implements the ArrayAccess interface).
-   *
-   * @param  string $name The name of option
-   * @return Boolean true if the option exists, false otherwise
-   */
+
+    /**
+     * Returns true if the option exists (implements the ArrayAccess interface).
+     *
+     * @param  string $name The name of option
+     * @return Boolean true if the option exists, false otherwise
+     */
     public function offsetExists($offset)
     {
         return isset($this->options[$offset]);
     }
-  /**
-   * Unsets the option associated with the offset (implements the ArrayAccess interface).
-   *
-   * @param string $offset The option name
-   */
+
+    /**
+     * Unsets the option associated with the offset (implements the ArrayAccess interface).
+     *
+     * @param string $offset The option name
+     */
     public function offsetUnset($offset)
     {
         $this->options[$offset] = null;
     }
-  /**
-   * Returns an option (implements the ArrayAccess interface).
-   *
-   * @param  string $name The offset of the option to get
-   * @return mixed The option if exists, null otherwise
-   */
+
+    /**
+     * Returns an option (implements the ArrayAccess interface).
+     *
+     * @param  string $name The offset of the option to get
+     * @return mixed The option if exists, null otherwise
+     */
     public function offsetGet($offset)
     {
         return isset($this->options[$offset]) ? $this->options[$offset] : null;

@@ -134,7 +134,7 @@ document.onmousemove = position;
 /* Reset trim function in order to be compatible with IE */
 if (typeof String.prototype.trim !== 'function') {
     String.prototype.trim = function() {
-        return this.replace(/^\s+|\s+$/g, ''); 
+        return this.replace(/^\s+|\s+$/g, '');
     }
 }
 
@@ -192,7 +192,7 @@ function resetSelectedCheckboxes()
             }
         }
     });
-        
+
     $('input[type="checkbox"]').each(function(index) {
         var id = $(this).attr('id');
         if (typeof(_selectedElem) != "undefined" && _selectedElem[encodeURIComponent(id)]) {
@@ -275,13 +275,13 @@ function construct_selecteList_ndo_instance(id){
     /** *************************************
      * Get instance listing
      */
-    
+
 if ($centreon->user->admin || !count($pollerArray)) {
     $instanceQuery = "SELECT instance_id, name FROM `instances` WHERE running = 1 AND deleted = 0 ORDER BY name";
 } else {
-    $instanceQuery = "SELECT instance_id, name 
+    $instanceQuery = "SELECT instance_id, name
                       FROM `instances` WHERE running = 1 AND deleted = 0
-                      AND name IN (". $centreon->user->access->getPollerString('NAME') .") 
+                      AND name IN (". $centreon->user->access->getPollerString('NAME') .")
                       ORDER BY name";
 }
     $DBRESULT = $pearDBO->query($instanceQuery);
@@ -345,39 +345,42 @@ if (!$centreon->user->access->admin) {
     unset($data);
 }
 
-        $DBRESULT = $pearDBO->query("SELECT DISTINCT hg.name, hg.hostgroup_id 
-                                        FROM hostgroups hg, hosts_hostgroups hhg 
-                                        WHERE hg.hostgroup_id = hhg.hostgroup_id 
-                                        AND hg.name NOT LIKE 'meta\_%' 
-                                     ORDER BY hg.name");
-        while ($hostgroups = $DBRESULT->fetchRow()) {
-            if ($centreon->user->access->admin || ($centreon->user->access->admin == 0 && isset($hgBrk[$hostgroups["name"]]))) {
-                if (!isset($tabHG)) {
-                    $tabHG = array();
-                }
-                if (!isset($tabHG[$hostgroups["name"]])) {
-                    $tabHG[$hostgroups["name"]] = "";
-                } else {
-                    $tabHG[$hostgroups["name"]] .= ",";
-                }
-                $tabHG[$hostgroups["name"]] .= $hostgroups["hostgroup_id"];
-            }
+$DBRESULT = $pearDBO->query(
+    "SELECT DISTINCT hg.name, hg.hostgroup_id " .
+    "FROM hostgroups hg, hosts_hostgroups hhg " .
+    "WHERE hg.hostgroup_id = hhg.hostgroup_id " .
+    "AND hg.name NOT LIKE 'meta\_%' " .
+    "ORDER BY hg.name"
+);
+while ($hostgroups = $DBRESULT->fetchRow()) {
+    if ($centreon->user->access->admin ||
+        ($centreon->user->access->admin == 0 && isset($hgBrk[$hostgroups["name"]]))) {
+        if (!isset($tabHG)) {
+            $tabHG = array();
         }
+        if (!isset($tabHG[$hostgroups["name"]])) {
+            $tabHG[$hostgroups["name"]] = "";
+        } else {
+            $tabHG[$hostgroups["name"]] .= ",";
+        }
+        $tabHG[$hostgroups["name"]] .= $hostgroups["hostgroup_id"];
+    }
+}
 
-        if (isset($tabHG)) {
-            foreach ($tabHG as $name => $id) {
-                ?>
-                var m = document.createElement('option');
-                    m.value= "<?php echo $id; ?>";
+if (isset($tabHG)) {
+    foreach ($tabHG as $name => $id) {
+?>
+        var m = document.createElement('option');
+            m.value= "<?php echo $id; ?>";
             _select.appendChild(m);
             var n = document.createTextNode("<?php echo $name; ?>   ");
             m.appendChild(n);
             _select.appendChild(m);
             select_index["<?php echo $id; ?>"] = i;
             i++;
-                <?php
-            }
-        }
+<?php
+    }
+}
 ?>
         if (typeof(_default_hg) != "undefined") {
             _select.selectedIndex = select_index[_default_hg];

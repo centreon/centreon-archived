@@ -123,7 +123,6 @@ class CentreonConfigurationService extends CentreonConfigurationObjects
             $sTypeList = array('s', 'm', 'all');
             if (in_array(strtolower($this->arguments['s']), $sTypeList)) {
                 $s = $this->arguments['s'];
-                ;
             } else {
                 throw new \RestBadRequestException('Error, bad service type');
             }

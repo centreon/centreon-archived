@@ -83,8 +83,8 @@ class ExportManifestTest extends TestCase
         $this->manifest
             ->method('removePath')
             ->will($this->returnCallback(function () {
-                    $args = func_get_args();
-                    $file = $args[0];
+                $args = func_get_args();
+                $file = $args[0];
 
                 if (!file_exists($file)) {
                     return null;
