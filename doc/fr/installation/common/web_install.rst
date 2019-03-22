@@ -2,6 +2,11 @@
 Configuration
 *************
 
+.. note::
+    Pour obtenir l'adresse IP de votre serveur, exécutez la commande : ::
+    
+        # ip addr
+
 Connectez-vous à l'interface web via http://[ADRESSE_IP_DE_VOTRE_SERVEUR]/centreon.
 L'assistant de configuration de Centreon s'affiche, cliquez sur **Next**.
 

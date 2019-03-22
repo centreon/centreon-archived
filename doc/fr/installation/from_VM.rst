@@ -9,6 +9,10 @@ Deux machines virtuelles pré-configurées sont disponibles sur le site de
 
 Ces machines virtuelles sont disponibles au format OVA (VMware) et OVF (VirtualBox).
 
+.. note::
+    Les OVA/OVF peuvent ne pas contenir de configuration de carte réseau. Il
+    sera nécessaire d'ajouter une carte réseau avant de démarrer le serveur.
+
 ************************
 Serveur Centreon central
 ************************
@@ -34,7 +38,7 @@ Le mot de passe de de l'utilisateur **root** de la base de données n'est pas in
     de passe aprés l'installation
 
 A la première connexion, un message indique les opérations à réaliser. Suivez
-celles-ci, **spécialement les opérations 4 et 5**.
+celles-ci, **les opérations 4 et 5 sont obligatoires**.
 
 .. note::
     Pour supprimer ce message, supprimez le fichier **/etc/profile.d/centreon.sh**.
@@ -60,6 +64,12 @@ l’utilisateur ‘centreon’ ::
 
     # su - centreon
     $ ssh-keygen -t rsa
+
+.. note::
+    Appuyez sur la touche *entrée* quand il vous sera demandé de saisir un
+    fichier pour enregistrer la clé. Laissez le mot de passe vide si vous le
+    souhaitez. Cependant, ce n'est pas recommandé. Vous recevrez une empreinte
+    digitale de clé et une image randomart.
 
 Vous devez copier cette clé sur le nouveau serveur : ::
 
