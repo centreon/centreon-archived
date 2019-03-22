@@ -12,8 +12,9 @@ from a Centreon ISO file.
 .. note::
     Refer to the documentation: :ref:`installation<installisoel7>`
 
-In response to the question **Which server type would you like to install?** choose the
-option **Poller server**.
+Instead of choosing **Central with database**, you will select **Poller** and
+click **Done**. Please see the sizing guidelines for the poller server located
+`here <https://documentation.centreon.com/docs/centreon/en/latest/installation/prerequisites.html>`_. 
 
 .. image:: /images/user/configuration/10advanced_configuration/07installpoller.png
     :align: center

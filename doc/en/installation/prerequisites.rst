@@ -68,7 +68,7 @@ The following table describes the software dependencies:
 +----------+------------------+
 
 ****************************
-Select the architecture type
+Centreon Server Requirements
 ****************************
 
 .. note::
