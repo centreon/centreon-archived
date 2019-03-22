@@ -130,7 +130,7 @@ Launching services during system bootup
 
 To make services start automatically during system bootup, run these commands on the central server::
 
-    # systemctl enable httpd
+    # systemctl enable httpd24-httpd
     # systemctl enable snmpd
     # systemctl enable snmptrapd
     # systemctl enable rh-php71-php-fpm
@@ -152,7 +152,7 @@ Concluding the installation
 Before starting the web installation process, you will need to execute the following commands::
 
     # systemctl start rh-php71-php-fpm
-    # systemctl start httpd
+    # systemctl start httpd24-httpd
     # systemctl start mysqld
     # systemctl start cbd
     # systemctl start snmpd

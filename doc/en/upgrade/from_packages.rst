@@ -13,7 +13,7 @@ This chapter describes how to upgrade your platform to version Centreon 18.10.
 .. warning::
     This procedure only applies to Centreon platforms installed from Centreon 3.4
     packages on **Red Hat / CentOS version 7** distributions.
-    
+
     If this is not the case, refer to the procedure in :ref:`migration<upgradecentreon1810>`.
 
 To upgrade your Centreon MAP server, refer to the `related documentation
@@ -85,7 +85,7 @@ Restart the services by running the following commands: ::
 
     # systemctl enable rh-php71-php-fpm
     # systemctl start rh-php71-php-fpm
-    # systemctl restart httpd
+    # systemctl restart httpd24-httpd
     # systemctl restart cbd
     # systemctl restart centengine
 

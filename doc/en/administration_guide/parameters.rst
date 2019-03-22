@@ -64,7 +64,7 @@ Define needed information:
 .. image:: /_static/images/adminstration/proxy_configuration.png
     :align: center
 
-Once you defined settings, test your configuration by clicking on the 
+Once you defined settings, test your configuration by clicking on the
 **Text Proxy Configuration** button. If your configuration is correct,
 a message will indicate success:
 
@@ -89,7 +89,7 @@ This part covers the general options of the real time monitoring interface.
 * **Start script for broker daemon** field contains the path to the init script of the broker
 * **Directory + Mailer Binary** field contains the path to the executable file for sending  e-mails
 * **Maximum number of hosts to show** and **Maximum number of services to show** lists contain the maximum number of hosts or services to be displayed in the overall view (menu: **Home > Home**)
-* **Page refresh interval** field defines the data refreshment interval in the overall view 
+* **Page refresh interval** field defines the data refreshment interval in the overall view
 * The boxes in the **Default acknowledgment settings** and **Default downtime settings** categories define the options by default that will be checked or not during definition of an acknowledgment or of a downtime
 
 
@@ -172,7 +172,7 @@ Then restart Apache :
 
 ::
 
-  service httpd restart
+  systemctl restart httpd24-httpd
 
 *******
 RRDTool

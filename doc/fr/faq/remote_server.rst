@@ -32,7 +32,7 @@ Redémarrez le processus **cbd** sur le Remote Server : ::
 
     # systemctl restart cbd
 
-Redémarrez le moteur de supervision sur chaque collecteur (y compris du Remote 
+Redémarrez le moteur de supervision sur chaque collecteur (y compris du Remote
 Server lui-même) : ::
 
     # systemctl restart centengine
@@ -146,7 +146,7 @@ Résolution des problèmes d'extraction des données
          Docs: man:systemd-sysv-generator(8)
        CGroup: /system.slice/centcore.service
                └─32385 /usr/bin/perl /usr/share/centreon/bin/centcore --logfile=/var/log/centreon/centcore.log --severity=error --config=/etc/centreon/conf.pm
-    
+
     Warning: Journal has been rotated since unit was started. Log output is incomplete or unavailable.
 
 Si tel n'est pas le cas,
@@ -172,10 +172,10 @@ Ou que le fichier **/var/log/centreon/centcore.log** du serveur Centreon Central
 contient : ::
 
     2018-11-08 13:54:10 - Receiving die: Timeout by signal ALARM
-    
+
     2018-11-08 13:54:10 - Dont die...
     2018-11-08 13:54:10 - Receiving die: Timeout by signal ALARM
-    
+
     2018-11-08 13:54:10 - Dont die...
     2018-11-08 13:54:10 - Timeout by signal ALARM
 
@@ -258,23 +258,19 @@ Vérifiez que le processus Apache (httpd) est en cours d'exécution sur le Remot
 Server en exécutant la commande suivante sur le Remote Server : ::
 
     # systemctl status httpd
-    ● httpd.service - The Apache HTTP Server
-       Loaded: loaded (/usr/lib/systemd/system/httpd.service; enabled; vendor preset: disabled)
-       Active: active (running) since mer. 2018-11-14 15:01:52 GMT; 5min ago
-         Docs: man:httpd(8)
-          man:apachectl(8)
-      Process: 18653 ExecStop=/bin/kill -WINCH ${MAINPID} (code=exited, status=0/SUCCESS)
-      Process: 9241 ExecReload=/usr/sbin/httpd $OPTIONS -k graceful (code=exited, status=0/SUCCESS)
-     Main PID: 19836 (httpd)
-       Status: "Total requests: 5; Current requests/sec: 0; Current traffic:   0 B/sec"
-       CGroup: /system.slice/httpd.service
-               ├─19836 /usr/sbin/httpd -DFOREGROUND
-               ├─19838 /usr/sbin/httpd -DFOREGROUND
+    ● httpd24-httpd.service - The Apache HTTP Server
+       Loaded: loaded (/usr/lib/systemd/system/httpd24-httpd.service; enabled; vendor preset: disabled)
+       Active: active (running) since ven. 2019-03-22 14:29:06 CET; 2min 0s ago
+     Main PID: 3735 (httpd)
+       Status: "Total requests: 0; Idle/Busy workers 100/0;Requests/sec: 0; Bytes served/sec:   0 B/sec"
+       CGroup: /system.slice/httpd24-httpd.service
+               ├─3735 /opt/rh/httpd24/root/usr/sbin/httpd -DFOREGROUND
+               ├─3736 /opt/rh/httpd24/root/usr/sbin/httpd -DFOREGROUND
                ...
 
 si tel n'est pas le cas, redémarrez le processus **httpd** via la commande : ::
 
-    # systemctl restart httpd
+    # systemctl restart httpd24-httpd
 
 Vérifiez que les paramètres du Remote Server sont complets et corrects en
 exécutant la requête suivant sur le serveur Centreon Central : ::
@@ -320,7 +316,7 @@ Puis régénérez la configuration du Remote Server depuis le serveur Centreon c
          Docs: man:systemd-sysv-generator(8)
        CGroup: /system.slice/centcore.service
                └─32385 /usr/bin/perl /usr/share/centreon/bin/centcore --logfile=/var/log/centreon/centcore.log --severity=error --config=/etc/centreon/conf.pm
-    
+
     Warning: Journal has been rotated since unit was started. Log output is incomplete or unavailable.
 
 Si tel n'est pas le cas :
@@ -364,13 +360,13 @@ Remote Server s'arrête à la ligne : ::
 Ou le fichier **/var/log/centreon/centcore.log** du Remote Server contient : ::
 
     2018-11-08 13:54:10 - Receiving die: Timeout by signal ALARM
-    
+
     2018-11-08 13:54:10 - Dont die...
     2018-11-08 13:54:10 - Receiving die: Timeout by signal ALARM
-    
+
     2018-11-08 13:54:10 - Dont die...
     2018-11-08 13:54:10 - Timeout by signal ALARM
-    
+
     2018-11-08 13:54:10 - Killing child process [3926] ...
     2018-11-08 13:54:10 - Killed
 
@@ -427,7 +423,7 @@ central.
          Docs: man:systemd-sysv-generator(8)
        CGroup: /system.slice/centcore.service
                └─32385 /usr/bin/perl /usr/share/centreon/bin/centcore --logfile=/var/log/centreon/centcore.log --severity=error --config=/etc/centreon/conf.pm
-    
+
     Warning: Journal has been rotated since unit was started. Log output is incomplete or unavailable.
 
 Si tel n'est pas le cas :

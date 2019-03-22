@@ -43,7 +43,7 @@ La fenêtre suivante s'affiche :
 * Le champ **Adresses des clients SSO de confiance** indique quelles sont les adresses IP/DNS des clients de confiance pour le SSO (correspond à l'adresse du reverse proxy). Chaque client de confiance est séparé par une virgule.
 * Le champ **Adresses des clients de bloqués** indique quelles sont les adresses IP/DNS des clients qui seront refusés.
 * Le champ **Entête HTTP SSO** indique la variable de l'en-tête qui sera utilisée comme login/pseudo.
-* Le champ **Chaine de recherche (pattern) pour l'authentification (login)** indique l'expression rationnelle (pattern) de recherche pour l'utilisateur. 
+* Le champ **Chaine de recherche (pattern) pour l'authentification (login)** indique l'expression rationnelle (pattern) de recherche pour l'utilisateur.
 * Le champ **Chaine de remplacement (pattern) pour l'authentification (login)** indique la chaine de remplacement.
 * Le champ **Timezone par défaut de l'hôte** permet de définit un timezone par défaut pour application du décalage horaire
 * Le champ **Adresse mail de contact du support (de la plate-forme de supervision)** indique l'adresse email de support **Centre des services du client** pour la plate-forme Centreon. Cette adresse mail sera affichée en bas de page sur le lien **Centre des services**
@@ -179,7 +179,7 @@ Puis redémarrez le serveur Apache :
 
 ::
 
-  service httpd restart
+  systemctl restart httpd24-httpd
 
 *******
 RRDTool
