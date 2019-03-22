@@ -65,11 +65,7 @@ class CentreonRemoteServer extends CentreonWebServiceAbstract
         $ip = $_SERVER['REMOTE_ADDR'] ?? null;
 
         if (!$ip) {
-            throw new \RestBadRequestException('Can not access your IP address.');
-        }
-
-        if (!filter_var($ip, FILTER_VALIDATE_IP)) {
-            throw new \RestBadRequestException('IP is not valid.');
+            throw new \RestBadRequestException('Can not access your address.');
         }
 
         if (!isset($_POST['app_key']) || !$_POST['app_key']) {
@@ -85,7 +81,7 @@ class CentreonRemoteServer extends CentreonWebServiceAbstract
         $result = $statement->fetch();
 
         if ((bool) $result['count']) {
-            throw new \RestConflictException('IP already in wait list.');
+            throw new \RestConflictException('Address already in wait list.');
         }
 
         $createdAt = date('Y-m-d H:i:s');
