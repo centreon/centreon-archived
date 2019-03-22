@@ -61,8 +61,8 @@ class ImageEntity implements JsonSerializable
     /**
      * @OA\Schema(
      *   schema="ImageEntity",
-     *       @OA\Property(property="img_id", type="integer"),
-     *       @OA\Property(property="img_name", type="string"),
+     *       @OA\Property(property="id", type="integer"),
+     *       @OA\Property(property="name", type="string"),
      *       @OA\Property(property="preview", type="string"),
      * )
      *
@@ -73,8 +73,8 @@ class ImageEntity implements JsonSerializable
     public function jsonSerialize()
     {
         return [
-            'img_id' => $this->entity->getImgId(),
-            'img_name' => $this->entity->getImgName(),
+            'id' => $this->entity->getImgId(),
+            'name' => $this->entity->getImgName(),
             'preview' =>  self::MEDIA_DIR . $this->entity->getImageDir()->getDirName() . '/' . $this->entity->getImgPath()
         ];
     }

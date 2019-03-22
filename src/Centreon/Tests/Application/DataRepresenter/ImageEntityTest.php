@@ -33,48 +33,36 @@
  *
  *
  */
+namespace CentreonNotification\Tests\Application\DataRepresenter;
 
-namespace Centreon\Application\DataRepresenter;
+use Centreon\Domain\Entity\ImageDir;
+use PHPUnit\Framework\TestCase;
+use Centreon\Domain\Entity\Image;
+use Centreon\Application\DataRepresenter\ImageEntity;
 
-use JsonSerializable;
-use Centreon\Domain\Entity\ContactGroup;
-
-class ContactGroupEntity implements JsonSerializable
+/**
+ * @group Centreon
+ * @group DataRepresenter
+ */
+class ImageEntityTest extends TestCase
 {
-
-    /**
-     * @var ContactGroup
-     */
-    private $entity;
-
-    /**
-     * Construct
-     *
-     * @param ContactGroup $entity
-     */
-    public function __construct(ContactGroup $entity)
+    public function testJsonSerialize()
     {
-        $this->entity = $entity;
-    }
-
-    /**
-     * @OA\Schema(
-     *   schema="ContactGroup",
-     *       @OA\Property(property="id", type="integer"),
-     *       @OA\Property(property="name", type="string"),
-     *       @OA\Property(property="activate", type="string", enum={"0","1"})
-     * )
-     *
-     * JSON serialization of entity
-     *
-     * @return array
-     */
-    public function jsonSerialize()
-    {
-        return [
-            'id' => $this->entity->getCgId(),
-            'name' => $this->entity->getCgName(),
-            'activate' => $this->entity->getCgActivate()
+        $imgDir = new ImageDir();
+        $imgDir->setDirId(1);
+        $imgDir->setDirName('name');
+        $entity = new Image();
+        $entity->setImgId(5);
+        $entity->setImgName('test name');
+        $entity->setImgPath('testPath');
+        $entity->setImageDir($imgDir);
+        $value = [
+            'id' => $entity->getImgId(),
+            'name' => $entity->getImgName(),
+            'preview' => ImageEntity::MEDIA_DIR . $entity->getImageDir()->getDirName() . '/' . $entity->getImgPath()
         ];
+        $dataRepresenter = new ImageEntity($entity);
+        $result = $dataRepresenter->jsonSerialize();
+        $this->assertEquals($value, $result);
     }
 }

@@ -17,7 +17,6 @@ class ImagesRepository extends ServiceEntityRepository implements PaginationRepo
     public function getPaginationList($filters = null, int $limit = null, int $offset = null): array
     {
         $collector = new StatementCollector;
-
         $sql = 'SELECT * FROM `' . ImageDir::TABLE . '`,`' . ImageDir::JOIN_TABLE . '` vidr,`' . Image::TABLE . '` WHERE `img_id` = `vidr`.`img_img_id` AND `dir_id` = `vidr`.`dir_dir_parent_id`';
 
         $isWhere = true;
