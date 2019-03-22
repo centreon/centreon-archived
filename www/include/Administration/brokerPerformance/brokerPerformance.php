@@ -50,7 +50,10 @@ function createArrayStats($arryFromJson)
         $io[_('State')]['value'] = $arryFromJson['state'];
         if ($arryFromJson['state'] == "disconnected") {
             $io[_('State')]['class'] = "badge service_critical";
-        } elseif ($arryFromJson['state'] == "listening" || $arryFromJson['state'] == "connected" || $arryFromJson['state'] == "connecting") {
+        } elseif ($arryFromJson['state'] == "listening"
+            || $arryFromJson['state'] == "connected"
+            || $arryFromJson['state'] == "connecting"
+        ) {
             $io[_('State')]['class'] = "badge service_ok";
         } elseif ($arryFromJson['state'] == "sleeping" || $arryFromJson['state'] == "blocked") {
             $io[_('State')]['class'] = "badge service_warning";
@@ -66,24 +69,41 @@ function createArrayStats($arryFromJson)
     }
 
     if (isset($arryFromJson['last_connection_attempt']) && $arryFromJson['last_connection_attempt'] != -1) {
-        $io[_('Last connection attempt')] = array('value' => $arryFromJson['last_connection_attempt'], 'isTimestamp' => true);
+        $io[_('Last connection attempt')] = array(
+            'value' => $arryFromJson['last_connection_attempt'],
+            'isTimestamp' => true
+        );
     }
 
     if (isset($arryFromJson['last_connection_success']) && $arryFromJson['last_connection_success'] != -1) {
-        $io[_('Last connection success')] = array('value' => $arryFromJson['last_connection_success'], 'isTimestamp' => true);
-        ;
+        $io[_('Last connection success')] = array(
+            'value' => $arryFromJson['last_connection_success'],
+            'isTimestamp' => true
+        );
     }
 
     if (isset($arryFromJson['one_peer_retention_mode'])) {
-        $io[_('One peer retention mode')] = array('value' => $arryFromJson['one_peer_retention_mode'], 'isTimestamp' => false);
+        $io[_('One peer retention mode')] = array(
+            'value' => $arryFromJson['one_peer_retention_mode'],
+            'isTimestamp' => false
+        );
     }
 
     if (isset($arryFromJson['event_processing_speed'])) {
-        $io[_('Event processing speed')] = array('value' => sprintf("%.2f events/s", $arryFromJson['event_processing_speed']), 'isTimestamp' => false);
+        $io[_('Event processing speed')] = array(
+            'value' => sprintf("%.2f events/s", $arryFromJson['event_processing_speed']),
+            'isTimestamp' => false
+        );
     }
 
-    if (isset($arryFromJson['queue file']) && isset($arryFromJson['queue file enabled']) && $arryFromJson['queue file enabled'] != "no") {
-        $io[_('Queue file')] = array('value' => $arryFromJson['queue file'], 'isTimestamp' => false);
+    if (isset($arryFromJson['queue file'])
+        && isset($arryFromJson['queue file enabled'])
+        && $arryFromJson['queue file enabled'] != "no"
+    ) {
+        $io[_('Queue file')] = array(
+            'value' => $arryFromJson['queue file'],
+            'isTimestamp' => false
+        );
     }
 
     if (isset($arryFromJson['queue file enabled'])) {
@@ -100,17 +120,29 @@ function createArrayStats($arryFromJson)
 
     if (isset($arryFromJson['read_filters']) && $arryFromJson['read_filters']) {
         if ($arryFromJson['read_filters'] != 'all') {
-            $io[_('Input accepted events type')] = array('value' => substr($arryFromJson['read_filters'], 22), 'isTimestamp' => false);
+            $io[_('Input accepted events type')] = array(
+                'value' => substr($arryFromJson['read_filters'], 22),
+                'isTimestamp' => false
+            );
         } else {
-            $io[_('Input accepted events type')] = array('value' => $arryFromJson['read_filters'], 'isTimestamp' => false);
+            $io[_('Input accepted events type')] = array(
+                'value' => $arryFromJson['read_filters'],
+                'isTimestamp' => false
+            );
         }
     }
 
     if (isset($arryFromJson['write_filters']) && $arryFromJson['write_filters']) {
         if ($arryFromJson['write_filters'] != 'all') {
-            $io[_('Output accepted events type')] = array('value' => substr($arryFromJson['write_filters'], 2), 'isTimestamp' => false);
+            $io[_('Output accepted events type')] = array(
+                'value' => substr($arryFromJson['write_filters'], 2),
+                'isTimestamp' => false
+            );
         } else {
-            $io[_('Output accepted events type')] = array('value' => $arryFromJson['write_filters'], 'isTimestamp' => false);
+            $io[_('Output accepted events type')] = array(
+                'value' => $arryFromJson['write_filters'],
+                'isTimestamp' => false
+            );
         }
     }
 
@@ -136,7 +168,9 @@ function parseStatsFile($statfile)
                 $matches[1] = "external-commands";
             }
 
-            if ((preg_match('/.*external commands.*/', $key) && $json_stats[$key]['state'] != "disconnected") || (!preg_match('/.*external commands.*/', $key))) {
+            if ((preg_match('/.*external commands.*/', $key) && $json_stats[$key]['state'] != "disconnected")
+                || (!preg_match('/.*external commands.*/', $key))
+            ) {
                 $keySepByDash = explode('-', $key);
                 $keySepBySpace = explode(' ', $key);
                 $result['io'][$matches[1]] = createArrayStats($json_stats[$key]);
@@ -148,7 +182,10 @@ function parseStatsFile($statfile)
                 /* force type of io  */
                 if (preg_match('/.*external commands.*/', $key)) {
                     $result['io'][$matches[1]]['type'] = 'input';
-                } elseif (preg_match('/.*(central-broker-master-sql|centreon-broker-master-rrd|central-broker-master-perfdata).*/', $key)) {
+                } elseif (preg_match(
+                    '/.*(central-broker-master-sql|centreon-broker-master-rrd|central-broker-master-perfdata).*/',
+                    $key)
+                ) {
                     $result['io'][$matches[1]]['type'] = 'output';
                 } elseif (preg_match('/.*(centreon-bam-monitoring|centreon-bam-reporting).*/', $key)) {
                     $result['io'][$matches[1]]['type'] = 'output';
@@ -211,7 +248,9 @@ $DBRESULT->closeCursor();
 /*
  * Get poller ID
  */
-isset($_POST['pollers']) && $_POST['pollers'] != "" ? $selectedPoller = $_POST['pollers'] : $selectedPoller = $defaultPoller;
+isset($_POST['pollers']) && $_POST['pollers'] != ""
+    ? $selectedPoller = $_POST['pollers']
+    : $selectedPoller = $defaultPoller;
 if (!isset($selectedPoller)) {
     $tmpKeys = array_keys($pollerList);
     $selectedPoller = $tmpKeys[0];
@@ -267,7 +306,14 @@ try {
         if ($defaultPoller != $selectedPoller) {
             $statsfile = _CENTREON_CACHEDIR_ . '/broker-stats/' . $selectedPoller . '/' . $row['config_name'] . '.json';
         }
-        if (!file_exists($statsfile) || !is_readable($statsfile)) {
+
+        /**
+         * check if file exists, is readable and inside proper folder
+         */
+        if (!file_exists($statsfile)
+            || !is_readable($statsfile)
+            || (substr(realpath($statsfile), 0, strlen(_CENTREON_VARLIB_)) !== _CENTREON_VARLIB_ )
+        ) {
             $perf_err[$row['config_name']] = _('Cannot open statistics file');
         } else {
             $perf_info[$row['config_name']] = parseStatsFile($statsfile);
