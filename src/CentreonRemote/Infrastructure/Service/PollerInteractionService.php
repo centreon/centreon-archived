@@ -51,7 +51,7 @@ class PollerInteractionService
                 $configGenerateObject->reset();
                 $configGenerateObject->configPollerFromId($pollerID, $username);
             }
-        } catch(\Exception $e) {
+        } catch (\Exception $e) {
             throw new \Exception('There was an error generating the configuration for a poller.');
         }
     }

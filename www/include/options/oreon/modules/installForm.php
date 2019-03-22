@@ -65,7 +65,7 @@ if (isset($_GET['action']) && $_GET['action'] == 'install_upgrade_all') {
     foreach ($installableModules as $installableModule) {
         $moduleInstaller = $moduleFactory->newInstaller($installableModule['name']);
 
-        if ( !$moduleInstaller->install() ) {
+        if (!$moduleInstaller->install()) {
             break;
         }
     }
@@ -73,7 +73,7 @@ if (isset($_GET['action']) && $_GET['action'] == 'install_upgrade_all') {
     foreach ($upgradableModules as $upgradableModule) {
         $moduleUpgrader = $moduleFactory->newUpgrader($upgradableModule['name'], $upgradableModule['id']);
 
-        if ( !$moduleUpgrader->upgrade() ) {
+        if (!$moduleUpgrader->upgrade()) {
             break;
         }
     }

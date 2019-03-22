@@ -8,7 +8,7 @@ class GivGraphTemplateRepository extends ServiceEntityRepository
 
     /**
      * Export
-     * 
+     *
      * @param int[] $pollerIds
      * @param array $hostTemplateChain
      * @param array $serviceTemplateChain
@@ -80,7 +80,7 @@ SQL;
 
     /**
      * Export list
-     * 
+     *
      * @param int[] $list
      * @return array
      */

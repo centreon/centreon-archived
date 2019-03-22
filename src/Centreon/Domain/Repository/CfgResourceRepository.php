@@ -8,7 +8,7 @@ class CfgResourceRepository extends ServiceEntityRepository
 
     /**
      * Export cfg resources
-     * 
+     *
      * @param int[] $pollerIds
      * @return array
      */

@@ -42,7 +42,6 @@ class ServiceProviderTest extends TestCase
         $this->container['centreon.webservice'] = $this->container['centreon.clapi'] = new class {
             public function add($class)
             {
-
             }
         };
 

@@ -7,7 +7,7 @@ class CentreonRemoteServer extends CentreonWebServiceAbstract
 
     /**
      * Name of web service object
-     * 
+     *
      * @return string
      */
     public static function getName(): string
@@ -55,7 +55,7 @@ class CentreonRemoteServer extends CentreonWebServiceAbstract
      * )
      *
      * Add remote Centreon instance in waiting list
-     * 
+     *
      * @return string
      * @throws \RestBadRequestException
      * @throws \RestConflictException
@@ -97,7 +97,7 @@ class CentreonRemoteServer extends CentreonWebServiceAbstract
 
         try {
             $insert->execute($bindings);
-        } catch(\Exception $e) {
+        } catch (\Exception $e) {
             throw new \RestBadRequestException('There was an error saving the data.');
         }
 

@@ -8,7 +8,7 @@ class NagiosServerRepository extends ServiceEntityRepository
 
     /**
      * Export poller's Nagios data
-     * 
+     *
      * @param int[] $pollerIds
      * @return array
      */

@@ -154,7 +154,6 @@ class CentreonWorker implements CentreonClapiServiceInterface
                 'POST',
                 ['parent_id' => $task->getId()]
             );
-
         } catch (\Exception $e) {
             echo "Error while creating parent task on $url\n";
             echo $e->getMessage() . "\n";

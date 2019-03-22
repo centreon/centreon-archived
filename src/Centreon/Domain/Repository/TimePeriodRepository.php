@@ -9,7 +9,7 @@ class TimePeriodRepository extends ServiceEntityRepository
 
     /**
      * Export
-     * 
+     *
      * @param int[] $timeperiodList
      * @return array
      */
@@ -54,7 +54,7 @@ SQL;
 
     /**
      * Get a chain of the related objects
-     * 
+     *
      * @param int[] $pollerIds
      * @param int[] $hostTemplateChain
      * @param int[] $serviceTemplateChain

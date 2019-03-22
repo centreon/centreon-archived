@@ -82,7 +82,7 @@ class procedures
     {
          $pages = $this->api->getAllPages();
         //replace space
-        foreach ($pages as $page){
+        foreach ($pages as $page) {
             $page = str_replace(' ', '_', $page);
             $this->procList[$page] = '';
         }

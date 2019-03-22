@@ -45,5 +45,4 @@ class Informations
     {
         $this->value = $value;
     }
-
 }

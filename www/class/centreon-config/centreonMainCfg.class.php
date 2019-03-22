@@ -47,7 +47,6 @@ class CentreonMainCfg
         $this->DB = new CentreonDB();
         $this->setBrokerOptions();
         $this->setEngineOptions();
-
     }
 
     private function setBrokerOptions()

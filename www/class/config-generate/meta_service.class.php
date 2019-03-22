@@ -139,7 +139,6 @@ class MetaService extends AbstractObject
         }
 
         return $service_id;
-
     }
 
     private function buildCacheMetaServices()

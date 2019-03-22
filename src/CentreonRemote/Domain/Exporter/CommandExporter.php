@@ -35,7 +35,7 @@ class CommandExporter extends ExporterServiceAbstract implements ExporterService
         $this->createPath();
         $pollerIds = $this->commitment->getPollers();
 
-        (function() use ($pollerIds) {
+        (function () use ($pollerIds) {
             $command = $this->db
                 ->getRepository(Repository\CommandRepository::class)
                 ->export($pollerIds)
@@ -43,7 +43,7 @@ class CommandExporter extends ExporterServiceAbstract implements ExporterService
             $this->_dump($command, $this->getFile(static::EXPORT_FILE_COMMAND));
         })();
 
-        (function() use ($pollerIds) {
+        (function () use ($pollerIds) {
             $commandArg = $this->db
                 ->getRepository(Repository\CommandArgDescriptionRepository::class)
                 ->export($pollerIds)
@@ -51,7 +51,7 @@ class CommandExporter extends ExporterServiceAbstract implements ExporterService
             $this->_dump($commandArg, $this->getFile(static::EXPORT_FILE_COMMAND_ARG));
         })();
 
-        (function() use ($pollerIds) {
+        (function () use ($pollerIds) {
             $commandMacro = $this->db
                 ->getRepository(Repository\OnDemandMacroCommandRepository::class)
                 ->export($pollerIds)
@@ -59,7 +59,7 @@ class CommandExporter extends ExporterServiceAbstract implements ExporterService
             $this->_dump($commandMacro, $this->getFile(static::EXPORT_FILE_COMMAND_MACRO));
         })();
 
-        (function() use ($pollerIds) {
+        (function () use ($pollerIds) {
             $connector = $this->db
                 ->getRepository(Repository\ConnectorRepository::class)
                 ->export($pollerIds)
@@ -67,7 +67,7 @@ class CommandExporter extends ExporterServiceAbstract implements ExporterService
             $this->_dump($connector, $this->getFile(static::EXPORT_FILE_CONNECTOR));
         })();
 
-        (function() use ($pollerIds) {
+        (function () use ($pollerIds) {
             $category = $this->db
                 ->getRepository(Repository\CommandCategoryRepository::class)
                 ->export($pollerIds)
@@ -75,7 +75,7 @@ class CommandExporter extends ExporterServiceAbstract implements ExporterService
             $this->_dump($category, $this->getFile(static::EXPORT_FILE_CATEGORY));
         })();
 
-        (function() use ($pollerIds) {
+        (function () use ($pollerIds) {
             $categoryRelation = $this->db
                 ->getRepository(Repository\CommandCategoryRelationRepository::class)
                 ->export($pollerIds)
@@ -92,7 +92,7 @@ class CommandExporter extends ExporterServiceAbstract implements ExporterService
             return;
         }
 
-        (function() use ($commandList) {
+        (function () use ($commandList) {
             $data = $this->db
                 ->getRepository(Repository\CommandRepository::class)
                 ->exportList($commandList)
@@ -100,7 +100,7 @@ class CommandExporter extends ExporterServiceAbstract implements ExporterService
             $this->_mergeDump($data, $this->getFile(static::EXPORT_FILE_COMMAND), 'command_id');
         })();
 
-        (function() use ($commandList) {
+        (function () use ($commandList) {
             $data = $this->db
                 ->getRepository(Repository\CommandArgDescriptionRepository::class)
                 ->exportList($commandList)
@@ -108,7 +108,7 @@ class CommandExporter extends ExporterServiceAbstract implements ExporterService
             $this->_mergeDump($data, $this->getFile(static::EXPORT_FILE_COMMAND_ARG), 'cmd_id');
         })();
 
-        (function() use ($commandList) {
+        (function () use ($commandList) {
             $data = $this->db
                 ->getRepository(Repository\OnDemandMacroCommandRepository::class)
                 ->exportList($commandList)
@@ -116,7 +116,7 @@ class CommandExporter extends ExporterServiceAbstract implements ExporterService
             $this->_mergeDump($data, $this->getFile(static::EXPORT_FILE_COMMAND_MACRO), 'command_macro_id');
         })();
 
-        (function() use ($commandList) {
+        (function () use ($commandList) {
             $data = $this->db
                 ->getRepository(Repository\ConnectorRepository::class)
                 ->exportList($commandList)
@@ -124,7 +124,7 @@ class CommandExporter extends ExporterServiceAbstract implements ExporterService
             $this->_mergeDump($data, $this->getFile(static::EXPORT_FILE_CONNECTOR), 'id');
         })();
 
-        (function() use ($commandList) {
+        (function () use ($commandList) {
             $data = $this->db
                 ->getRepository(Repository\CommandCategoryRepository::class)
                 ->exportList($commandList)
@@ -132,7 +132,7 @@ class CommandExporter extends ExporterServiceAbstract implements ExporterService
             $this->_mergeDump($data, $this->getFile(static::EXPORT_FILE_CATEGORY), 'cmd_category_id');
         })();
 
-        (function() use ($commandList) {
+        (function () use ($commandList) {
             $data = $this->db
                 ->getRepository(Repository\CommandCategoryRelationRepository::class)
                 ->exportList($commandList)
@@ -163,7 +163,7 @@ class CommandExporter extends ExporterServiceAbstract implements ExporterService
         $this->cleanup();
 
         // insert command
-        (function() use ($db) {
+        (function () use ($db) {
             $exportPathFile = $this->getFile(static::EXPORT_FILE_COMMAND);
             $result = $this->_parse($exportPathFile);
 
@@ -173,7 +173,7 @@ class CommandExporter extends ExporterServiceAbstract implements ExporterService
         })();
 
         // insert command argument
-        (function() use ($db) {
+        (function () use ($db) {
             $exportPathFile = $this->getFile(static::EXPORT_FILE_COMMAND_ARG);
             $result = $this->_parse($exportPathFile);
 
@@ -183,7 +183,7 @@ class CommandExporter extends ExporterServiceAbstract implements ExporterService
         })();
 
         // insert command macro
-        (function() use ($db) {
+        (function () use ($db) {
             $exportPathFile = $this->getFile(static::EXPORT_FILE_COMMAND_MACRO);
             $result = $this->_parse($exportPathFile);
 
@@ -193,7 +193,7 @@ class CommandExporter extends ExporterServiceAbstract implements ExporterService
         })();
 
         // insert connector
-        (function() use ($db) {
+        (function () use ($db) {
             $exportPathFile = $this->getFile(static::EXPORT_FILE_CONNECTOR);
             $result = $this->_parse($exportPathFile);
 
@@ -203,7 +203,7 @@ class CommandExporter extends ExporterServiceAbstract implements ExporterService
         })();
 
         // insert category
-        (function() use ($db) {
+        (function () use ($db) {
             $exportPathFile = $this->getFile(static::EXPORT_FILE_CATEGORY);
             $result = $this->_parse($exportPathFile);
 
@@ -213,7 +213,7 @@ class CommandExporter extends ExporterServiceAbstract implements ExporterService
         })();
 
         // insert category relation
-        (function() use ($db) {
+        (function () use ($db) {
             $exportPathFile = $this->getFile(static::EXPORT_FILE_CATEGORY_RELATION);
             $result = $this->_parse($exportPathFile);
 

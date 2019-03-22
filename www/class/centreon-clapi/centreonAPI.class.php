@@ -364,7 +364,6 @@ class CentreonAPI
         $dependencyInjector = null
     ) {
         if (is_null(self::$instance)) {
-
             if (is_null($dependencyInjector)) {
                 $dependencyInjector = loadDependencyInjector();
             }
@@ -722,7 +721,6 @@ class CentreonAPI
                 print "Method not implemented into Centreon API.\n";
                 return 1;
             }
-
         } else {
             if (method_exists($this, $action)) {
                 $this->return_code = $this->$action();
@@ -830,7 +828,7 @@ class CentreonAPI
 
     /**
      * Export All configuration
-     * 
+     *
      * @param $withoutClose disable using of PHP exit function (default: false)
      */
     public function export($withoutClose = false)
@@ -1103,7 +1101,6 @@ class CentreonAPI
                 if (isset($oObjet[$key]['class'])
                     && $oObjet[$key]['export'] === true
                     && !in_array($key, $this->aExport)) {
-
                     $objName = '';
                     if (isset($oObjet[$key]['namespace'])) {
                         $objName = '\\' . $oObjet[$key]['namespace'];
@@ -1124,7 +1121,6 @@ class CentreonAPI
                             $this->aExport[] = $key;
                             array_pop($aObject);
                         } else {
-
                             $aObject = array_merge($oObjet, $aObject);
                         }
                     } else {

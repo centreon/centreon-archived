@@ -106,7 +106,6 @@ class procedures_Proxy
             return $row["service_id"];
         }
         $result->closeCursor();
-
     }
 
     /**

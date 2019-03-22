@@ -2,10 +2,8 @@
 
 namespace CentreonRemote\Domain\Service;
 
-use CentreonRemote\Domain\Resources\DefaultConfig\ {
-    CfgNagiosBrokerModule,
-    CfgCentreonBrokerInfo
-};
+use CentreonRemote\Domain\Resources\DefaultConfig\CfgNagiosBrokerModule;
+use CentreonRemote\Domain\Resources\DefaultConfig\CfgCentreonBrokerInfo;
 
 class PollerDefaultsOverwriteService
 {

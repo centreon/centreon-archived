@@ -78,7 +78,6 @@ abstract class CentreonSeverityAbstract extends CentreonObject
                 $uniqueLabel,
                 $updateParams
             );
-
         } else {
             throw new CentreonClapiException(self::OBJECT_NOT_FOUND . ":" . $params[self::ORDER_UNIQUENAME]);
         }

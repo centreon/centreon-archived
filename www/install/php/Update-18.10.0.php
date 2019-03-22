@@ -37,7 +37,7 @@
 /*
  * Generate random key for application key
  */
-$uniqueKey = md5(uniqid(rand(), TRUE));
+$uniqueKey = md5(uniqid(rand(), true));
 $query = "INSERT INTO `informations` (`key`,`value`) VALUES ('appKey', '$uniqueKey')";
 $pearDB->query($query);
 $query = "INSERT INTO `informations` (`key`,`value`) VALUES ('isRemote', 'no')";
@@ -87,8 +87,7 @@ while ($aclTopology = $aclTopologies->fetch()) {
     // get missing parent topology relations
     $aclToInsert = [];
     foreach ($topologies as $topologyPage => $topologyParameters) {
-        if (
-            isset($topologyParameters['topology_parent']) &&
+        if (isset($topologyParameters['topology_parent']) &&
             !isset($topologies[$topologyParameters['topology_parent']]) &&
             !in_array($topologyParameters['topology_parent'], $aclToInsert)
         ) {

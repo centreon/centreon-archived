@@ -9,7 +9,7 @@ class HostRepository extends ServiceEntityRepository
 
     /**
      * Export hosts
-     * 
+     *
      * @param int[] $pollerIds
      * @param array $templateChainList
      * @return array

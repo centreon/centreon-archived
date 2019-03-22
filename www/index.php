@@ -101,7 +101,7 @@ if (!$staticExists) {
     $allJsFiles = glob('static/js/*');
     $indexFile = glob('index.html');
     $allFiles = array_merge($allCssFiles, $allJsFiles, $indexFile);
-    foreach ($allFiles as $file){
+    foreach ($allFiles as $file) {
         $fc = file_get_contents($file);
         $newCont = str_replace('_CENTREON_PATH_PLACEHOLDER_', $newPath, $fc);
         file_put_contents($file, $newCont);
@@ -116,7 +116,7 @@ if (!$staticExists) {
         $allJsFiles = glob('static/js/*');
         $indexFile = glob('index.html');
         $allFiles = array_merge($allCssFiles, $allJsFiles, $indexFile);
-        foreach ($allFiles as $file){
+        foreach ($allFiles as $file) {
             $fc = file_get_contents($file);
             $newCont = str_replace('_CENTREON_PATH_PLACEHOLDER_', $newPath, $fc);
             file_put_contents($file, $newCont);

@@ -26,7 +26,7 @@ class ServiceProvider implements AutoloadServiceProviderInterface
      */
     public function register(Container $pimple): void
     {
-        $pimple['centreon.webservice'] = function(Container $container): CentreonWebserviceService {
+        $pimple['centreon.webservice'] = function (Container $container): CentreonWebserviceService {
             $service = new CentreonWebserviceService;
 
             return $service;
@@ -40,13 +40,13 @@ class ServiceProvider implements AutoloadServiceProviderInterface
             return $service;
         };
 
-        $pimple['centreon.clapi'] = function(Container $container): CentreonClapiService {
+        $pimple['centreon.clapi'] = function (Container $container): CentreonClapiService {
             $service = new CentreonClapiService;
 
             return $service;
         };
 
-        $pimple['centreon.db-manager'] = function(Container $container): CentreonDBManagerService {
+        $pimple['centreon.db-manager'] = function (Container $container): CentreonDBManagerService {
             $services = [
                 'realtime_db',
                 'configuration_db',
@@ -58,7 +58,7 @@ class ServiceProvider implements AutoloadServiceProviderInterface
             return $service;
         };
 
-        $pimple['centreon.user'] = function(Container $container): \CentreonUser {
+        $pimple['centreon.user'] = function (Container $container): \CentreonUser {
             if (php_sapi_name() !== 'cli' && session_status() == PHP_SESSION_NONE) {
                 session_start();
             }
@@ -66,19 +66,19 @@ class ServiceProvider implements AutoloadServiceProviderInterface
             return $_SESSION['centreon']->user;
         };
 
-        $pimple['centreon.keygen'] = function(Container $container) : AppKeyGeneratorService {
+        $pimple['centreon.keygen'] = function (Container $container) : AppKeyGeneratorService {
             $service = new AppKeyGeneratorService();
 
             return $service;
         };
 
-        $pimple['centreon.acl'] = function(Container $container) : CentreonACL {
+        $pimple['centreon.acl'] = function (Container $container) : CentreonACL {
             $service = new CentreonACL($container);
 
             return $service;
         };
 
-        $pimple['centreon.config'] = function(Container $container) : CentcoreConfigService {
+        $pimple['centreon.config'] = function (Container $container) : CentcoreConfigService {
             $service = new CentcoreConfigService();
 
             return $service;
@@ -88,13 +88,13 @@ class ServiceProvider implements AutoloadServiceProviderInterface
          * Repositories
          */
 
-        $pimple['centreon.broker_repository'] = function(Container $container): CfgCentreonBrokerRepository {
+        $pimple['centreon.broker_repository'] = function (Container $container): CfgCentreonBrokerRepository {
             $service = new CfgCentreonBrokerRepository($container['configuration_db']);
 
             return $service;
         };
 
-        $pimple['centreon.broker_info_repository'] = function(Container $container): CfgCentreonBrokerInfoRepository {
+        $pimple['centreon.broker_info_repository'] = function (Container $container): CfgCentreonBrokerInfoRepository {
             $service = new CfgCentreonBrokerInfoRepository($container['configuration_db']);
 
             return $service;
@@ -104,7 +104,7 @@ class ServiceProvider implements AutoloadServiceProviderInterface
          * Services
          */
 
-        $pimple['centreon.broker_configuration_service'] = function(Container $container): BrokerConfigurationService {
+        $pimple['centreon.broker_configuration_service'] = function (Container $container): BrokerConfigurationService {
             $service = new BrokerConfigurationService($container['configuration_db']);
             $service->setBrokerInfoRepository($container['centreon.broker_info_repository']);
 
@@ -112,7 +112,8 @@ class ServiceProvider implements AutoloadServiceProviderInterface
         };
     }
 
-    public static function order() : int {
+    public static function order() : int
+    {
         return 1;
     }
 }

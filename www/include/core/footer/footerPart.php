@@ -251,7 +251,7 @@ function validateFeature(name, version, enabled) {
                 open: true
             })
         <?php
-        }
+}
         ?>
     
     // send an event to parent for change in iframe URL

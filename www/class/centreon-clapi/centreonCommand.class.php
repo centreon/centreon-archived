@@ -222,7 +222,6 @@ class CentreonCommand extends CentreonObject
         }
         $objUniqueName = array_shift($data);
         if (($objectId = $this->getObjectId($objUniqueName)) != 0) {
-
             $sql = "DELETE FROM command_arg_description WHERE cmd_id = ?";
             $this->db->query($sql, array($objectId));
 

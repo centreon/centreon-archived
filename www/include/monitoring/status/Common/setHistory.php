@@ -47,7 +47,6 @@ if (!CentreonSession::checkSession(session_id(), $DB)) {
     print "Bad Session ID";
     exit();
 } else {
-
     $centreon = $_SESSION['centreon'];
 
     if (isset($_POST["limit"]) && isset($_POST["url"])) {

@@ -8,7 +8,7 @@ class HostGroupRepository extends ServiceEntityRepository
 
     /**
      * Export host's groups
-     * 
+     *
      * @param int[] $pollerIds
      * @param array $templateChainList
      * @return array

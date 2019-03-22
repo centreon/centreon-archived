@@ -97,7 +97,7 @@ if (isset($_GET['chartId'])) {
     $pearDBO->execute($res, array($hostId, $serviceId));
     if ($res->rowCount()) {
         $row = $res->fetch();
-        $index = $row['id'];     
+        $index = $row['id'];
     } else {
         die('Resource not found');
     }

@@ -364,7 +364,6 @@ class CentreonRtAcknowledgement extends CentreonObject
                 self::OBJECT_NOT_FOUND . ' : Service : ' . implode('|', $unknownService) . "\n"
             );
         }
-
     }
 
     /**

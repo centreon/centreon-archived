@@ -109,7 +109,7 @@ class CentreonAdministrationModule extends CentreonWebService implements Centreo
 
     /**
      * Get module ID if has been installed
-     * 
+     *
      * @param string $moduleName
      * @return string|null
      */

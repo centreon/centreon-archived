@@ -74,7 +74,7 @@ class NotifyMasterService
         $applicationKey = $repository->getOneByKey('appKey');
         $version = $repository->getOneByKey('version');
 
-        if (empty($applicationKey)){
+        if (empty($applicationKey)) {
             return [
                 'status' => self::FAIL,
                 'details' => self::NO_APP_KEY

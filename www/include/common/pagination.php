@@ -140,14 +140,14 @@ if (isset($_REQUEST['hostgroups'])) {
 /* Start Fix for performance management under administration - parameters */
 if (isset($_REQUEST['searchS'])) {
     $url_var .= '&searchS=' . $_REQUEST['searchS'];
-    if (isset($_POST['num'])){
+    if (isset($_POST['num'])) {
         $num = 0;
     }
 }
 
 if (isset($_REQUEST['searchH'])) {
     $url_var .= '&searchH=' . $_REQUEST['searchH'];
-    if (isset($_POST['num'])){
+    if (isset($_POST['num'])) {
         $num = 0;
     }
 }
@@ -179,7 +179,6 @@ for ($i2 = 0, $iend = $num; ($iend < ($rows / $limit - 1)) && ($i2 < (5 + $i)); 
 
 if ($rows != 0) {
     for ($i = $istart; $i <= $iend; $i++) {
-
         $urlPage = "main.php?p=" . $p . "&num=$i&limit=" . $limit . "&poller=" . $poller .
             "&template=$template&search=" . $search . "&type=" . $type . "&o=" . $o . $url_var;
         $pageArr[$i] = array(

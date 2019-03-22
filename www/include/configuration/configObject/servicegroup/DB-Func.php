@@ -291,7 +291,7 @@ function updateServiceGroupServices($sg_id, $ret = array(), $increment = false)
 
     /* service templates */
     $retTmp = isset($ret["sg_tServices"]) ? $ret["sg_tServices"] : $form->getSubmitValue("sg_tServices");
-    if ($retTmp) { 
+    if ($retTmp) {
         for ($i = 0; $i < count($retTmp); $i++) {
             if (isset($retTmp[$i]) && $retTmp[$i]) {
                 $t = preg_split("/\-/", $retTmp[$i]);

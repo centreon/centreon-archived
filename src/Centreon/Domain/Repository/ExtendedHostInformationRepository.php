@@ -8,7 +8,7 @@ class ExtendedHostInformationRepository extends ServiceEntityRepository
 
     /**
      * Export host's macros
-     * 
+     *
      * @param int[] $pollerIds
      * @param array $templateChainList
      * @return array

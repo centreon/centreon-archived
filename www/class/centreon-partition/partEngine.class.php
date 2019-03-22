@@ -494,7 +494,7 @@ class PartEngine
      * list all partitions for a table
      * @param MysqlTable $table
      */
-    public function listParts($table, $db, $throwException = TRUE)
+    public function listParts($table, $db, $throwException = true)
     {
         $tableName = $table->getSchema().".".$table->getName();
         if (!$table->exists()) {
@@ -651,7 +651,7 @@ class PartEngine
      */
     private function hasMaxValuePartition($db, $table)
     {
-        # Check if pmax partition exists 
+        # Check if pmax partition exists
         $request = "SELECT 1 FROM INFORMATION_SCHEMA.PARTITIONS ";
         $request .= "WHERE TABLE_NAME='" . $table->getName() . "' ";
         $request .= "AND TABLE_SCHEMA='" . $table->getSchema() . "' ";

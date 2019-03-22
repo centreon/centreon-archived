@@ -359,7 +359,7 @@ class HTML_QuickForm_selectoptgroup extends HTML_QuickForm_select
     public function setFixedDatas()
     {
         $datas = 'data: ';
-        $datas .= json_encode($this->realOptionsArray,1);
+        $datas .= json_encode($this->realOptionsArray, 1);
         return $datas;
     }
 

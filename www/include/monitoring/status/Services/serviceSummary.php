@@ -175,7 +175,6 @@ foreach (array('o1', 'o2') as $option) {
     $form->setDefaults(array($option => null));
     $o1 = $form->getElement($option);
     $o1->setValue(null);
-
 }
 
 $tpl->assign('limit', $limit);

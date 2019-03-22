@@ -7,7 +7,7 @@ class CentreonModulesWebservice extends CentreonWebServiceAbstract
 
     /**
      * Name of web service object
-     * 
+     *
      * @return string
      */
     public static function getName(): string
@@ -41,7 +41,7 @@ class CentreonModulesWebservice extends CentreonWebServiceAbstract
      * )
      *
      * Get info for BAM module
-     * 
+     *
      * @return array
      */
     public function postGetBamModuleInfo(): array
@@ -52,8 +52,7 @@ class CentreonModulesWebservice extends CentreonWebServiceAbstract
         $moduleInfoObj = $moduleFactory->newInformation();
         $modules = $moduleInfoObj->getList();
 
-        if (
-            array_key_exists('centreon-bam-server', $modules) &&
+        if (array_key_exists('centreon-bam-server', $modules) &&
             $modules['centreon-bam-server']['is_installed']
         ) {
             return ['enabled' => true];

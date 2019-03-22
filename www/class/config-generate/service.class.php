@@ -102,7 +102,6 @@ class Service extends AbstractService
     private function getServiceFromId($service_id)
     {
         if (is_null($this->stmt_service)) {
-
             $query = "SELECT $this->attributes_select FROM service " .
                 "LEFT JOIN extended_service_information ON extended_service_information.service_service_id = " .
                 "service.service_id WHERE service_id = :service_id AND service_activate = '1'";

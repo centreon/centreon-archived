@@ -30,14 +30,14 @@ class GraphExporter extends ExporterServiceAbstract implements ExporterServicePa
         $this->createPath();
         $pollerIds = $this->commitment->getPollers();
 
-        $hostTemplateChain = $this->_getIf('host.tpl.relation.chain', function() use ($pollerIds) {
+        $hostTemplateChain = $this->_getIf('host.tpl.relation.chain', function () use ($pollerIds) {
             return $this->db
                     ->getRepository(Repository\HostTemplateRelationRepository::class)
                     ->getChainByPoller($pollerIds)
             ;
         });
 
-        $serviceTemplateChain = $this->_getIf('service.chain', function() use ($pollerIds) {
+        $serviceTemplateChain = $this->_getIf('service.chain', function () use ($pollerIds) {
             return $this->db
                     ->getRepository(Repository\ServiceRepository::class)
                     ->getChainByPoller($pollerIds)
@@ -92,7 +92,7 @@ class GraphExporter extends ExporterServiceAbstract implements ExporterServicePa
         $this->cleanup();
 
         // insert graphs
-        (function() use ($db) {
+        (function () use ($db) {
             $exportPathFile = $this->getFile(static::EXPORT_FILE_GRAPH);
             $result = $this->_parse($exportPathFile);
 

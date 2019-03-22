@@ -39,20 +39,20 @@ class TopologyRepository extends ServiceEntityRepository
      */
     public function getReactTopologiesPerUserWithAcl($user)
     {
-        if (empty($user)){
+        if (empty($user)) {
             return [];
         }
         $topologyUrls = [];
-        if ($user->admin){
+        if ($user->admin) {
             $sql = "SELECT topology_url FROM `topology` WHERE is_react = '1'";
             $stmt = $this->db->prepare($sql);
             $stmt->execute();
             $topologyUrlsFromDB = $stmt->fetchAll();
-            foreach ($topologyUrlsFromDB as $topologyUrl){
+            foreach ($topologyUrlsFromDB as $topologyUrl) {
                 $topologyUrls[] = $topologyUrl['topology_url'];
             }
         } else {
-            if (count($user->access->getAccessGroups()) > 0){
+            if (count($user->access->getAccessGroups()) > 0) {
                 $query = "SELECT DISTINCT acl_group_topology_relations.acl_topology_id "
                     . "FROM acl_group_topology_relations, acl_topology, acl_topology_relations "
                     . "WHERE acl_topology_relations.acl_topo_id = acl_topology.acl_topo_id "

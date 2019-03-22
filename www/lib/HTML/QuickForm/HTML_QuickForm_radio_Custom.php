@@ -22,9 +22,10 @@ class HTML_QuickForm_radio_Custom extends HTML_QuickForm_radio
             return $values[$elementName];
         } elseif (strpos($elementName, '[')) {
             $myVar = "['" . str_replace(
-                    array('\\', '\'', ']', '['), array('\\\\', '\\\'', '', "']['"),
-                    $elementName
-                ) . "']";
+                array('\\', '\'', ']', '['),
+                array('\\\\', '\\\'', '', "']['"),
+                $elementName
+            ) . "']";
 
             /* patch for centreon */
             if (preg_match('/\[(.+)\]$/', $elementName, $matches)) {

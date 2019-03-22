@@ -47,7 +47,8 @@ class Information
      *
      * @param \Pimple\Container $dependencyInjector
      */
-    public function __construct(\Pimple\Container $dependencyInjector) {
+    public function __construct(\Pimple\Container $dependencyInjector)
+    {
         $this->dependencyInjector = $dependencyInjector;
     }
 

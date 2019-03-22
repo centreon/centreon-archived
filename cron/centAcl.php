@@ -170,7 +170,6 @@ try {
             "AND (all_hosts IS NOT NULL OR all_hostgroups IS NOT NULL OR all_servicegroups IS NOT NULL)";
     $res = $pearDB->query($query);
     while ($row = $res->fetch()) {
-
         // manage acl_resources.changed flag
         $aclResourcesUpdated = false;
 
@@ -460,7 +459,6 @@ try {
          */
         $cpt = 0;
         foreach ($tabGroups as $acl_group_id) {
-
             /*
              * Delete old data for this group
              */

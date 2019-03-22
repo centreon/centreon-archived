@@ -51,7 +51,7 @@ if ($licenseModuleName !== $moduleName) {
 } else {
     // Directory for put license files
     $licensePath = '/etc/centreon/license.d/';
-    $destination = $licensePath . $licenseModuleName . $extensionFileLicense;;
+    $destination = $licensePath . $licenseModuleName . $extensionFileLicense;
 
     if (move_uploaded_file($licenseFileInfos['tmp_name'], $destination)) {
         chmod($destination, 0444);

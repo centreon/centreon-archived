@@ -33,14 +33,14 @@ class TimePeriodExporter extends ExporterServiceAbstract implements ExporterServ
         $this->createPath();
         $pollerIds = $this->commitment->getPollers();
 
-        $hostTemplateChain = $this->_getIf('host.tpl.relation.chain', function() use ($pollerIds) {
+        $hostTemplateChain = $this->_getIf('host.tpl.relation.chain', function () use ($pollerIds) {
             return $this->db
                     ->getRepository(Repository\HostTemplateRelationRepository::class)
                     ->getChainByPoller($pollerIds)
             ;
         });
 
-        $serviceTemplateChain = $this->_getIf('service.chain', function() use ($pollerIds) {
+        $serviceTemplateChain = $this->_getIf('service.chain', function () use ($pollerIds) {
             return $this->db
                     ->getRepository(Repository\ServiceRepository::class)
                     ->getChainByPoller($pollerIds)
@@ -53,7 +53,7 @@ class TimePeriodExporter extends ExporterServiceAbstract implements ExporterServ
         ;
 
         // Extract data
-        (function() use ($timeperiodList) {
+        (function () use ($timeperiodList) {
             $timePeriods = $this->db
                 ->getRepository(Repository\TimePeriodRepository::class)
                 ->export($timeperiodList)
@@ -61,7 +61,7 @@ class TimePeriodExporter extends ExporterServiceAbstract implements ExporterServ
             $this->_dump($timePeriods, $this->getFile(static::EXPORT_FILE_TIMEPERIOD));
         })();
 
-        (function() use ($timeperiodList) {
+        (function () use ($timeperiodList) {
             $timePeriodExceptions = $this->db
                 ->getRepository(Repository\TimePeriodExceptionRepository::class)
                 ->export($timeperiodList)
@@ -69,7 +69,7 @@ class TimePeriodExporter extends ExporterServiceAbstract implements ExporterServ
             $this->_dump($timePeriodExceptions, $this->getFile(static::EXPORT_FILE_EXCEPTION));
         })();
 
-        (function() use ($timeperiodList) {
+        (function () use ($timeperiodList) {
             $timePeriodIncludes = $this->db
                 ->getRepository(Repository\TimePeriodIncludeRelationRepository::class)
                 ->export($timeperiodList)
@@ -77,7 +77,7 @@ class TimePeriodExporter extends ExporterServiceAbstract implements ExporterServ
             $this->_dump($timePeriodIncludes, $this->getFile(static::EXPORT_FILE_INCLUDE));
         })();
 
-        (function() use ($timeperiodList) {
+        (function () use ($timeperiodList) {
             $timePeriodExcludes = $this->db
                 ->getRepository(Repository\TimePeriodExcludeRelationRepository::class)
                 ->export($timeperiodList)
@@ -95,7 +95,7 @@ class TimePeriodExporter extends ExporterServiceAbstract implements ExporterServ
         }
 
         // Extract data
-        (function() use ($timeperiodList) {
+        (function () use ($timeperiodList) {
             $timePeriods = $this->db
                 ->getRepository(Repository\TimePeriodRepository::class)
                 ->export($timeperiodList)
@@ -103,7 +103,7 @@ class TimePeriodExporter extends ExporterServiceAbstract implements ExporterServ
             $this->_mergeDump($timePeriods, $this->getFile(static::EXPORT_FILE_TIMEPERIOD), 'tp_id');
         })();
 
-        (function() use ($timeperiodList) {
+        (function () use ($timeperiodList) {
             $timePeriodExceptions = $this->db
                 ->getRepository(Repository\TimePeriodExceptionRepository::class)
                 ->export($timeperiodList)
@@ -111,7 +111,7 @@ class TimePeriodExporter extends ExporterServiceAbstract implements ExporterServ
             $this->_mergeDump($timePeriodExceptions, $this->getFile(static::EXPORT_FILE_EXCEPTION), 'exception_id');
         })();
 
-        (function() use ($timeperiodList) {
+        (function () use ($timeperiodList) {
             $timePeriodIncludes = $this->db
                 ->getRepository(Repository\TimePeriodIncludeRelationRepository::class)
                 ->export($timeperiodList)
@@ -119,7 +119,7 @@ class TimePeriodExporter extends ExporterServiceAbstract implements ExporterServ
             $this->_mergeDump($timePeriodIncludes, $this->getFile(static::EXPORT_FILE_INCLUDE), 'include_id');
         })();
 
-        (function() use ($timeperiodList) {
+        (function () use ($timeperiodList) {
             $timePeriodExcludes = $this->db
                 ->getRepository(Repository\TimePeriodExcludeRelationRepository::class)
                 ->export($timeperiodList)
@@ -150,7 +150,7 @@ class TimePeriodExporter extends ExporterServiceAbstract implements ExporterServ
         $this->cleanup();
 
         // insert time periods
-        (function() use ($db) {
+        (function () use ($db) {
             $exportPathFile = $this->getFile(static::EXPORT_FILE_TIMEPERIOD);
             $result = $this->_parse($exportPathFile);
 
@@ -160,7 +160,7 @@ class TimePeriodExporter extends ExporterServiceAbstract implements ExporterServ
         })();
 
         // insert exceptions
-        (function() use ($db) {
+        (function () use ($db) {
             $exportPathFile = $this->getFile(static::EXPORT_FILE_EXCEPTION);
             $result = $this->_parse($exportPathFile);
 
@@ -170,7 +170,7 @@ class TimePeriodExporter extends ExporterServiceAbstract implements ExporterServ
         })();
 
         // insert include rules
-        (function() use ($db) {
+        (function () use ($db) {
             $exportPathFile = $this->getFile(static::EXPORT_FILE_INCLUDE);
             $result = $this->_parse($exportPathFile);
 
@@ -180,7 +180,7 @@ class TimePeriodExporter extends ExporterServiceAbstract implements ExporterServ
         })();
 
         // insert exclude rules
-        (function() use ($db) {
+        (function () use ($db) {
             $exportPathFile = $this->getFile(static::EXPORT_FILE_EXCLUDE);
             $result = $this->_parse($exportPathFile);
 
