@@ -37,9 +37,9 @@ if (!isset($centreon)) {
     exit();
 }
 
-include_once("./class/centreonUtils.class.php");
+require_once "./class/centreonUtils.class.php";
 
-include("./include/common/autoNumLimit.php");
+include "./include/common/autoNumLimit.php";
 
 // Init Host Method
 $host_method = new CentreonHost($pearDB);

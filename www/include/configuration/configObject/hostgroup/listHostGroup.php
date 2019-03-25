@@ -37,9 +37,9 @@ if (!isset($centreon)) {
     exit();
 }
 
-include_once("./class/centreonUtils.class.php");
+require_once "./class/centreonUtils.class.php";
 
-include("./include/common/autoNumLimit.php");
+require_once "./include/common/autoNumLimit.php";
 
 /*
  * Object init
@@ -80,13 +80,11 @@ if ($search) {
 $tpl = new Smarty();
 $tpl = initSmartyTpl($path, $tpl);
 
-/* Access level */
+// Access level
 ($centreon->user->access->page($p) == 1) ? $lvl_access = 'w' : $lvl_access = 'r';
 $tpl->assign('mode_access', $lvl_access);
 
-/*
- * start header menu
- */
+// start header menu
 $tpl->assign("headerMenu_name", _("Name"));
 $tpl->assign("headerMenu_desc", _("Alias"));
 $tpl->assign("headerMenu_status", _("Status"));
@@ -94,33 +92,25 @@ $tpl->assign("headerMenu_hostAct", _("Enabled Hosts"));
 $tpl->assign("headerMenu_hostDeact", _("Disabled Hosts"));
 $tpl->assign("headerMenu_options", _("Options"));
 
-/*
- * Hostgroup list
- */
-$rq = "SELECT SQL_CALC_FOUND_ROWS hg_id, hg_name, hg_alias, hg_activate, hg_icon_image
-           FROM hostgroup
-           WHERE {$searchFilterQuery} hg_id NOT IN (SELECT hg_child_id FROM hostgroup_hg_relation) " .
+// Hostgroup list
+$rq = "SELECT SQL_CALC_FOUND_ROWS hg_id, hg_name, hg_alias, hg_activate, hg_icon_image " .
+    "FROM hostgroup " .
+    "WHERE {$searchFilterQuery} hg_id NOT IN (SELECT hg_child_id FROM hostgroup_hg_relation) " .
     $acl->queryBuilder('AND', 'hg_id', $hgString) .
     " ORDER BY hg_name LIMIT " . $num * $limit . ", " . $limit;
 $DBRESULT = $pearDB->query($rq, $mainQueryParameters);
 
-/*
- * Pagination
- */
+// Pagination
 $rows = $pearDB->query("SELECT FOUND_ROWS()")->fetchColumn();
-include("./include/common/checkPagination.php");
+require_once "./include/common/checkPagination.php";
 
 $search = tidySearchKey($search, $advanced_search);
 
 $form = new HTML_QuickFormCustom('select_form', 'POST', "?p=" . $p);
-/*
- * Different style between each lines
- */
+// Different style between each lines
 $style = "one";
 
-/*
- * Fill a tab with a multidimensional Array we put in $tpl
- */
+// Fill a tab with a multidimensional Array we put in $tpl
 $elemArr = array();
 for ($i = 0; $hg = $DBRESULT->fetch(); $i++) {
     $selectedElements = $form->addElement('checkbox', "select[" . $hg['hg_id'] . "]");
@@ -193,16 +183,13 @@ for ($i = 0; $hg = $DBRESULT->fetch(); $i++) {
         "RowMenu_hostDeact" => $nbrhostDeact,
         "RowMenu_options" => $moptions
     );
-    /*
-     * Switch color line
-     */
+
+    // Switch color line
     $style != "two" ? $style = "two" : $style = "one";
 }
 $tpl->assign("elemArr", $elemArr);
 
-/*
- * Different messages we put in the template
- */
+// Different messages put in the template
 $tpl->assign(
     'msg',
     array(
@@ -253,9 +240,7 @@ foreach (array('o1', 'o2') as $option) {
 $tpl->assign('searchHg', $search);
 $tpl->assign('limit', $limit);
 
-/*
- * Apply a template definition
- */
+// Apply a template definition
 $renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 $form->accept($renderer);
 $tpl->assign('form', $renderer->toArray());

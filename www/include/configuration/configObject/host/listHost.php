@@ -78,11 +78,11 @@ $template = filter_var(
 
 // $status values :  1 = enabled,  0 = disabled,  -1 = both
 $status = filter_var(
-    $_POST["status"] ?? $centreon->historySearch[$url]["status"] ?? -1,
+    $_POST["status"] ?? -1,
     FILTER_VALIDATE_INT
 );
 
-if (isset($_POST['searchH']) || isset($_GET['searchB'])) {
+if (isset($_POST['searchH']) || isset($_GET)) {
     //saving chosen filters values
     $centreon->historySearch[$url] = array();
     $centreon->historySearch[$url]["searchH"] = $search;
@@ -141,16 +141,12 @@ if ($template) {
     $templateFROM = '';
     $templateWHERE = '';
 }
-/*
- * Smarty template Init
- */
+
+// Smarty template Init
 $tpl = new Smarty();
 $tpl = initSmartyTpl($path, $tpl);
 
-/* Access level */
-$lvl_access = ($centreon->user->access->page($p) == 1)
-    ? 'w'
-    : 'r';
+$lvl_access = ($centreon->user->access->page($p) == 1) ? 'w' : 'r';
 
 $tpl->assign('mode_access', $lvl_access);
 
@@ -183,23 +179,16 @@ $DBRESULT = $pearDB->query(
     'SELECT nhr.host_host_id, nhr.nagios_server_id FROM ns_host_relation nhr'
 );
 while ($relation = $DBRESULT->fetchRow()) {
-    $tab_relation[$relation['host_host_id']] =
-        $nagios_server[$relation['nagios_server_id']];
-
+    $tab_relation[$relation['host_host_id']] = $nagios_server[$relation['nagios_server_id']];
     $tab_relation_id[$relation['host_host_id']] = $relation['nagios_server_id'];
 }
 $DBRESULT->closeCursor();
 
-// Init Formulary
-
+// Init Form
 $form = new HTML_QuickFormCustom('select_form', 'POST', "?p={$p}");
 
 // Different style between each lines
 $style = 'one';
-
-/*
- Fill a tab with a multidimensional Array we put in $tpl
- */
 
 /*
  * Select hosts
@@ -268,6 +257,7 @@ include './include/common/checkPagination.php';
 
 $search = tidySearchKey($search, $advanced_search);
 
+// Fill a tab with a multidimensional Array we put in $tpl
 $elemArr = array();
 $search = str_replace('\_', "_", $search);
 for ($i = 0; $host = $DBRESULT->fetch(); $i++) {
