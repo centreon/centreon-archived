@@ -106,9 +106,9 @@ La timezone par défaut de PHP doit être configurée. Executer la commande suiv
 .. note::
     Changez **Europe/Paris** par votre fuseau horaire.
 
-Après avoir réalisé la modification, redémarrez le service Apache : ::
+Après avoir réalisé la modification, redémarrez le service PHP-FPM : ::
 
-    # systemctl restart httpd
+    # systemctl restart rh-php71-php-fpm
 
 Pare-feu
 --------

@@ -104,9 +104,9 @@ You are required to set the PHP time zone. Run the command::
 .. note::
     Change **Europe/Paris** to your time zone.
 
-After saving the file, please do not forget to restart the Apache server::
+After saving the file, please do not forget to restart the PHP-FPM server::
 
-    # systemctl restart httpd
+    # systemctl restart rh-php71-php-fpm
 
 Configuring/disabling the firewall
 ----------------------------------
