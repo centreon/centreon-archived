@@ -138,6 +138,13 @@ module.exports = {
           options: 'ReactRedux'
         }]
       },
+      {
+        test: /ReduxForm\.js/,
+        use: [{
+          loader: 'expose-loader',
+          options: 'ReduxForm'
+        }]
+      },
     ]
   },
 };
