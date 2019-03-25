@@ -1,7 +1,7 @@
 <?php
 /*
- * Copyright 2005-2015 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2019 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -41,19 +41,13 @@ include_once('./class/centreonUtils.class.php');
 require_once('./include/common/autoNumLimit.php');
 require_once(_CENTREON_PATH_ . '/www/class/centreonHost.class.php');
 
-/*
- * Init Host Method
- */
+// Init Host Method
 $host_method = new CentreonHost($pearDB);
 
-/*
- * Object init
- */
+// Object init
 $mediaObj = new CentreonMedia($pearDB);
 
-/*
- * Get Extended informations
- */
+// Get Extended informations
 $ehiCache = array();
 $DBRESULT = $pearDB->query('SELECT ehi_icon_image, host_host_id FROM extended_host_information');
 
@@ -63,72 +57,55 @@ while ($ehi = $DBRESULT->fetch()) {
 
 $DBRESULT->closeCursor();
 $mainQueryParameters = [];
-$search = null;
-$poller = 0;
-$hostgroup = 0;
-$template = 0;
-$status = -1;
 
-if (isset($_POST['SearchB'])) {
+//initializing filters values
+$search = filter_var(
+    $_POST["searchH"] ?? $_GET["searchB"] ?? null,
+    FILTER_SANITIZE_STRING
+);
+$poller = filter_var(
+    $_POST["poller"] ?? $_GET["poller"] ?? 0,
+    FILTER_VALIDATE_INT
+);
+$hostgroup = filter_var(
+    $_POST["hostgroup"] ?? $_GET["hostgroup"] ?? 0,
+    FILTER_VALIDATE_INT
+);
+$template = filter_var(
+    $_POST["template"] ?? $_GET["template"] ?? 0,
+    FILTER_VALIDATE_INT
+);
+
+// $status values :  1 = enabled,  0 = disabled,  -1 = both
+$status = filter_var(
+    $_POST["status"] ?? $centreon->historySearch[$url]["status"] ?? -1,
+    FILTER_VALIDATE_INT
+);
+
+if (isset($_POST['searchH']) || $_GET['searchB']) {
+    //saving chosen filters values
     $num = 0;
     $centreon->historySearch[$url] = array();
-    $search = $_POST["searchH"];
     $centreon->historySearch[$url]["searchH"] = $search;
-    $poller = $_POST["poller"];
     $centreon->historySearch[$url]["poller"] = $poller;
-    $hostgroup = $_POST["hostgroup"];
     $centreon->historySearch[$url]["hostgroup"] = $hostgroup;
-    $template = $_POST["template"];
     $centreon->historySearch[$url]["template"] = $template;
-    $status = $_POST["status"];
-    $centreon->historySearch[$url]["status"] = $status;
-} elseif (isset($_GET['SearchB'])) {
-    $centreon->historySearch[$url] = array();
-    $search = $_GET['searchH'];
-    $centreon->historySearch[$url]['searchH'] = $search;
-    $poller = $_GET["poller"];
-    $centreon->historySearch[$url]["poller"] = $poller;
-    $hostgroup = $_GET["hostgroup"];
-    $centreon->historySearch[$url]["hostgroup"] = $hostgroup;
-    $template = $_GET["template"];
-    $centreon->historySearch[$url]["template"] = $template;
-    $status = $_GET["status"];
     $centreon->historySearch[$url]["status"] = $status;
 } else {
-    if (isset($centreon->historySearch[$url]['searchH'])) {
-        $search = $centreon->historySearch[$url]['searchH'];
-    }
-    if (isset($centreon->historySearch[$url]["poller"])) {
-        $poller = $centreon->historySearch[$url]["poller"];
-    }
-    if (isset($centreon->historySearch[$url]["hostgroup"])) {
-        $hostgroup = $centreon->historySearch[$url]["hostgroup"];
-    }
-    if (isset($centreon->historySearch[$url]["template"])) {
-        $template = $centreon->historySearch[$url]["template"];
-    }
-    if (isset($centreon->historySearch[$url]["status"])) {
-        $status = $centreon->historySearch[$url]["status"];
-    }
+    //restoring saved values
+    $search = $centreon->historySearch[$url]['searchH'] ?? null;
+    $poller = (int)$centreon->historySearch[$url]["poller"] ?? 0;
+    $hostgroup = (int)$centreon->historySearch[$url]["hostgroup"] ?? 0;
+    $template = (int)$centreon->historySearch[$url]["template"] ?? 0;
 }
 
-// Security fix
-$hostgroup = (int)$hostgroup;
-$poller = (int)$poller;
-$template = (int)$template;
-$status = (int)(($status != '') ? $status : -1);
-
-/*
- * set object history
- */
+// set object history
 $centreon->poller = $poller;
 $centreon->hostgroup = $hostgroup;
 $centreon->template = $template;
 
-/*
- * Status Filter
- */
-$statusFilter = "<option value=''" .
+// Status Filter
+$statusFilter = "<option value='-1'" .
     (($status == -1) ? " selected" : "") . "> </option>";
 
 $statusFilter .= "<option value='1'" .
@@ -190,9 +167,7 @@ $tpl->assign("headerMenu_parent", _("Templates"));
 $tpl->assign("headerMenu_status", _("Status"));
 $tpl->assign("headerMenu_options", _("Options"));
 
-/*
- * Host list
- */
+// Host list
 $nagios_server = array();
 $DBRESULT = $pearDB->query('SELECT ns.name, ns.id FROM nagios_server ns ' .
     ($aclPollerString != "''" ? $acl->queryBuilder('WHERE', 'ns.id', $aclPollerString) : '') .
@@ -212,25 +187,20 @@ $DBRESULT = $pearDB->query(
 while ($relation = $DBRESULT->fetchRow()) {
     $tab_relation[$relation['host_host_id']] =
         $nagios_server[$relation['nagios_server_id']];
-    
+
     $tab_relation_id[$relation['host_host_id']] = $relation['nagios_server_id'];
 }
 $DBRESULT->closeCursor();
 
-/*
- * Init Formulary
- */
+// Init Formulary
 
 $form = new HTML_QuickFormCustom('select_form', 'POST', "?p={$p}");
 
-/*
- * Different style between each lines
- */
-
+// Different style between each lines
 $style = 'one';
 
 /*
- * Fill a tab with a mutlidimensionnal Array we put in $tpl
+ Fill a tab with a multidimensional Array we put in $tpl
  */
 
 /*
@@ -302,12 +272,15 @@ $search = tidySearchKey($search, $advanced_search);
 
 $elemArr = array();
 $search = str_replace('\_', "_", $search);
-for ($i = 0; $host = $DBRESULT->fetchRow(); $i++) {
-    if (!isset($poller) ||
-        $poller == 0 ||
-        ($poller != 0 && $poller == $tab_relation_id[$host["host_id"]])
+for ($i = 0; $host = $DBRESULT->fetch(); $i++) {
+    if (!isset($poller)
+        || $poller == 0
+        || ($poller != 0 && $poller == $tab_relation_id[$host["host_id"]])
     ) {
-        $selectedElements = $form->addElement('checkbox', "select[" . $host['host_id'] . "]");
+        $selectedElements = $form->addElement(
+            'checkbox',
+            "select[" . $host['host_id'] . "]"
+        );
 
         if ($host["host_activate"]) {
             $moptions = "<a href='main.php?p=$p&host_id={$host['host_id']}"
@@ -331,15 +304,11 @@ for ($i = 0; $host = $DBRESULT->fetchRow(); $i++) {
             $host["host_name"] = getMyHostField($host['host_id'], "host_name");
         }
 
-        /*
-         * TPL List
-         */
+        // TPL List
         $tplArr = array();
         $tplStr = "";
 
-        /*
-         * Create Template topology
-         */
+        // Create Template topology
         $tplArr = getMyHostMultipleTemplateModels($host['host_id']);
         if (count($tplArr)) {
             $firstTpl = 1;
@@ -353,12 +322,10 @@ for ($i = 0; $host = $DBRESULT->fetchRow(); $i++) {
             }
         }
 
-        /*
-         * Check icon
-         */
+        // Check icon
         $host_icone = "./img/icons/host.png";
-        if (isset($ehiCache[$host["host_id"]]) &&
-            $ehiCache[$host["host_id"]]
+        if (isset($ehiCache[$host["host_id"]])
+            && $ehiCache[$host["host_id"]]
         ) {
             $host_icone = "./img/media/" . $mediaObj->getFilename($ehiCache[$host["host_id"]]);
         } else {
@@ -375,9 +342,7 @@ for ($i = 0; $host = $DBRESULT->fetchRow(); $i++) {
             }
         }
 
-        /*
-         * Create Array Data for template list
-         */
+        // Create Array Data for template list
         $elemArr[$i] = array(
             "MenuClass" => "list_" . $style,
             "RowMenu_select" => $selectedElements->toHtml(),
@@ -403,9 +368,7 @@ for ($i = 0; $host = $DBRESULT->fetchRow(); $i++) {
 }
 $tpl->assign("elemArr", $elemArr);
 
-/*
- * Different messages we put in the template
- */
+// Different messages we put in the template
 $tpl->assign(
     'msg',
     array(
@@ -415,15 +378,13 @@ $tpl->assign(
     )
 );
 
-/*
- * Toolbar select
- */
+// Toolbar select
 ?>
-    <script type="text/javascript">
-        function setO(_i) {
-            document.forms['form'].elements['o'].value = _i;
-        }
-    </SCRIPT>
+<script type="text/javascript">
+    function setO(_i) {
+        document.forms['form'].elements['o'].value = _i;
+    }
+</script>
 <?php
 foreach (array('o1', 'o2') as $option) {
     $attrs1 = array(
@@ -475,9 +436,7 @@ $tpl->assign(
     )
 );
 
-/*
- * create Poller Select
- */
+// create Poller Select
 $options = "<option value='0'>" . _("All Pollers") . "</option>";
 foreach ($nagios_server as $key => $name) {
     $options .= "<option value='$key' "
