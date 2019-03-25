@@ -330,7 +330,7 @@ class ServiceTemplateConfigurationContext extends CentreonContext
                     return count($this->tableau) == 0;
                 },
                 "Some properties are not being updated : ",
-                5
+                10
             );
         } catch (\Exception $e) {
             $this->tableau = array_unique($this->tableau);
@@ -375,7 +375,7 @@ class ServiceTemplateConfigurationContext extends CentreonContext
                     return count($this->tableau) == 0;
                 },
                 "Some properties are not being updated : ",
-                5
+                10
             );
         } catch (\Exception $e) {
             $this->tableau = array_unique($this->tableau);
@@ -388,11 +388,21 @@ class ServiceTemplateConfigurationContext extends CentreonContext
      */
     public function iDeleteAServiceTemplate()
     {
-        $this->currentPage = new ServiceTemplateConfigurationListingPage($this);
-        $object = $this->currentPage->getEntry($this->initialProperties['description']);
-        $this->assertFind('css', 'input[type="checkbox"][name="select[' . $object['id'] . ']"]')->check();
-        $this->setConfirmBox(true);
-        $this->selectInList('select[name="o1"]', 'Delete');
+        try {
+            $this->spin(
+                function ($context) {
+                    $this->currentPage = new ServiceTemplateConfigurationListingPage($this);
+                    $object = $this->currentPage->getEntry($this->initialProperties['description']);
+                    $this->assertFind('css', 'input[type="checkbox"][name="select[' . $object['id'] . ']"]')->check();
+                    $this->setConfirmBox(true);
+                    $this->selectInList('select[name="o1"]', 'Delete');
+                },
+                "Couldn't delete the service template",
+                10
+            );
+        } catch (\Exception $e) {
+            throw  new \Exception("Couldn't delete the service template : " . $this->initialProperties['name']);
+        }
     }
 
     /**
@@ -411,7 +421,7 @@ class ServiceTemplateConfigurationContext extends CentreonContext
                 return $bool;
             },
             "The service is not being deleted.",
-            5
+            10
         );
     }
 }
