@@ -388,21 +388,11 @@ class ServiceTemplateConfigurationContext extends CentreonContext
      */
     public function iDeleteAServiceTemplate()
     {
-        try {
-            $this->spin(
-                function ($context) {
-                    $this->currentPage = new ServiceTemplateConfigurationListingPage($this);
-                    $object = $this->currentPage->getEntry($this->initialProperties['description']);
-                    $this->assertFind('css', 'input[type="checkbox"][name="select[' . $object['id'] . ']"]')->check();
-                    $this->setConfirmBox(true);
-                    $this->selectInList('select[name="o1"]', 'Delete');
-                },
-                "Couldn't delete the service template",
-                10
-            );
-        } catch (\Exception $e) {
-            throw  new \Exception("Couldn't delete the service template : " . $this->initialProperties['name']);
-        }
+        $this->currentPage = new ServiceTemplateConfigurationListingPage($this);
+        $object = $this->currentPage->getEntry($this->initialProperties['description']);
+        $this->assertFind('css', 'input[type="checkbox"][name="select[' . $object['id'] . ']"]')->check();
+        $this->setConfirmBox(true);
+        $this->selectInList('select[name="o1"]', 'Delete');
     }
 
     /**
