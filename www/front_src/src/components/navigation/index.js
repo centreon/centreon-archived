@@ -178,7 +178,7 @@ class NavigationComponent extends Component {
               levelOneProps.label ? (
                 <li
                   onMouseOver={this.mouseIsMovingOverTheMenu.bind(this, levelOneProps.label)}
-                  class={"menu-item" + (levelOneProps.active ? " active" : "")}
+                  className={`menu-item ${(levelOneProps.toggled && active) ? "active" : "to-hover" }`}
                 >
                 <span
                   onDoubleClick={() => {this.handleDoubleClick(levelOneKey, levelOneProps)}}
@@ -192,7 +192,7 @@ class NavigationComponent extends Component {
                   </span>
                 </span>
                 <ul
-                  class="collapse collapsed-items list-unstyled"
+                  className={`collapse collapsed-items list-unstyled ${(levelOneProps.toggled && active) ? "active" : " " }`}
                   style={{ display: (levelOneProps.toggled && active) ? "block" : "none" }}
                 >
                   {Object.entries(levelOneProps.children).map(([levelTwoKey, levelTwoProps]) => {
