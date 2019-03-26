@@ -1,7 +1,7 @@
 <?php
 /*
- * Copyright 2005-2015 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2019 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -35,7 +35,7 @@
 
 ini_set("display_errors", "Off");
 
-require_once realpath(dirname(__FILE__) . "/../../../../../../config/centreon.config.php");
+require_once realpath(__DIR__ . "/../../../../../../config/centreon.config.php");
 require_once realpath(__DIR__ . "/../../../../../../bootstrap.php");
 
 include_once _CENTREON_PATH_ . "www/class/centreonUtils.class.php";
@@ -45,27 +45,20 @@ include_once _CENTREON_PATH_ . "www/include/monitoring/status/Common/common-Func
 include_once _CENTREON_PATH_ . "www/include/common/common-Func.php";
 include_once _CENTREON_PATH_ . "www/class/centreonService.class.php";
 
-/*
- * Create XML Request Objects
- */
-CentreonSession::start();
+// Create XML Request Objects
+ CentreonSession::start();
 $obj = new CentreonXMLBGRequest($dependencyInjector, session_id(), 1, 1, 0, 1);
 $svcObj = new CentreonService($obj->DB);
-
 
 if (!isset($obj->session_id) || !CentreonSession::checkSession($obj->session_id, $obj->DB)) {
     print "Bad Session ID";
     exit();
 }
 
-/*
- * Set Default Poller
- */
+// Set Default Poller
 $obj->getDefaultFilters();
 
-/* **************************************************
- * Check Arguments From GET tab
- */
+// Check Arguments From GET tab
 $o = $obj->checkArgument("o", $_GET, "h");
 $p = $obj->checkArgument("p", $_GET, "2");
 $nc = $obj->checkArgument("nc", $_GET, "0");
@@ -78,31 +71,27 @@ $sgSearch = $obj->checkArgument("sg_search", $_GET, "");
 $sort_type = $obj->checkArgument("sort_type", $_GET, "host_name");
 $order = $obj->checkArgument("order", $_GET, "ASC");
 $dateFormat = $obj->checkArgument("date_time_format_status", $_GET, "Y/m/d H:i:s");
+$queryValues = array();
 
-/*
- * Backup poller selection
- */
+// Backup poller selection
 $obj->setInstanceHistory($instance);
-
 
 $_SESSION['monitoring_service_groups'] = $sgSearch;
 
-/** **********************************************
- * Prepare pagination
- */
-
+// Prepare pagination
 $s_search = "";
-/* Display service problems */
+
+// Display service problems
 if ($o == "svcgridSG_pb" || $o == "svcOVSG_pb") {
     $s_search .= " AND s.state != 0 AND s.state != 4 ";
 }
 
-/* Display acknowledged services */
+// Display acknowledged services
 if ($o == "svcgridSG_ack_1" || $o == "svcOVSG_ack_1") {
     $s_search .= " AND s.acknowledged = '1' ";
 }
 
-/* Display not acknowledged services */
+// Display not acknowledged services
 if ($o == "svcgridSG_ack_0" || $o == "svcOVSG_ack_0") {
     $s_search .= " AND s.state != 0 AND s.state != 4 AND s.acknowledged = 0 ";
 }
@@ -128,36 +117,56 @@ if (!$obj->is_admin) {
         . $obj->access->queryBuilder("AND", "sg.servicegroup_id", $obj->access->getServiceGroupsString("ID")) . " ";
 }
 
-/* Servicegroup search */
+// Servicegroup search
 if ($sgSearch != "") {
-    $query .= "AND sg.name = '" . $sgSearch . "' ";
+    $query .= "AND sg.name = :sgSearch ";
+    $queryValues[':sgSearch'] = [
+        PDO::PARAM_STR => $sgSearch
+    ];
 }
 
-/* Host search */
+// Host search
 $h_search = '';
 if ($hSearch != "") {
-    $h_search .= "AND h.name like '%" . $hSearch . "%' ";
+    $h_search .= "AND h.name like :hSearch ";
+    $queryValues[':hSearch'] = [
+        PDO::PARAM_STR => "%" . $hSearch . "%"
+    ];
 }
 $query .= $h_search;
 
-/* Service search */
+// Service search
 $query .= $s_search;
 
-/* Poller search */
+// Poller search
 if ($instance != -1) {
-    $query .= " AND h.instance_id = " . $instance . " ";
+    $query .= " AND h.instance_id = :instance ";
+    $queryValues[':instance'] = [
+        PDO::PARAM_INT => $instance
+    ];
 }
+$query .= "ORDER BY sg.name :order "
+    . "LIMIT :numLimit, :limit";
+$queryValues[':order'] = [
+    PDO::PARAM_INT => $instance
+];
+$queryValues[':numLimit'] = [
+    PDO::PARAM_INT => (int) ($num * $limit)
+];
+$queryValues[':limit'] = [
+    PDO::PARAM_INT => (int) $limit
+];
 
-$query .= "ORDER BY sg.name " . $order . " "
-    . "LIMIT " . ($num * $limit) . "," . $limit;
+$DBRESULT = $obj->DBC->prepare($query);
+foreach ($queryValues as $bindId => $bindData) {
+    foreach ($bindData as $bindType => $bindValue) {
+        $DBRESULT->bindValue($bindId, $bindValue, $bindType);
+    }
+}
+$DBRESULT->execute();
+$numRows = $DBRESULT->rowCount();
 
-$DBRESULT = $obj->DBC->query($query);
-
-$numRows = $obj->DBC->numberRows();
-
-/** ***************************************************
- * Create XML Flow
- */
+// Create XML Flow
 $obj->XML = new CentreonXML();
 $obj->XML->startElement("reponse");
 $obj->XML->startElement("i");
@@ -170,7 +179,7 @@ $obj->XML->writeElement("p", $p);
 $obj->XML->writeElement("s", "1");
 $obj->XML->endElement();
 
-/* Construct query for servigroups search */
+// Construct query for servicegroups search
 $aTab = array();
 $sg_search = "";
 $aTab = array();
@@ -273,7 +282,6 @@ foreach ($aTab as $key => $element) {
     $obj->XML->startElement("sg");
     $obj->XML->writeElement("sgn", $element['sgn']);
     $obj->XML->writeElement("o", $element['o']);
-
     foreach ($element['host'] as $host) {
         $obj->XML->startElement("h");
         $obj->XML->writeAttribute("class", $obj->getNextLineClass());
@@ -299,15 +307,10 @@ foreach ($aTab as $key => $element) {
     $obj->XML->endElement();
 }
 
-
 $obj->XML->endElement();
 
-/*
- * Send Header
- */
+// Send Header
 $obj->header();
 
-/*
- * Send XML
- */
+// Send XML
 $obj->XML->output();
