@@ -12,7 +12,6 @@ import { Translate } from 'react-redux-i18n';
 import { setNavigation } from "../../redux/actions/navigationActions";
 import { connect } from "react-redux";
 
-import { updateTooltip } from '../../redux/actions/tooltipActions';
 
 class NavigationComponent extends Component {
   navService = axios("internal.php?object=centreon_menu&action=menu");
@@ -120,26 +119,6 @@ class NavigationComponent extends Component {
     history.push(route);
   };
 
-  // hide tooltip for the first-level folded menu items
-  mouseLeftTheMenu = event => {
-    const { updateTooltip } = this.props;
-    updateTooltip({
-      toggled: false
-    });
-  };
-
-  // show tooltip for the first-level folded menu items by setting toggled to true
-  // updating the x, y properties of tooltip in order to display it on client cursor position
-  // show related label by setting label to label
-  mouseIsMovingOverTheMenu = (label, {  clientY }) => {
-    const { updateTooltip } = this.props;
-    updateTooltip({
-      toggled: true,
-      x: 50,
-      y: clientY,
-      label
-    });
-  };
 
   render() {
     const { active, menuItems } = this.state;
@@ -177,7 +156,6 @@ class NavigationComponent extends Component {
             {Object.entries(menuItems).map(([levelOneKey, levelOneProps]) => (
               levelOneProps.label ? (
                 <li
-                  onMouseOver={this.mouseIsMovingOverTheMenu.bind(this, levelOneProps.label)}
                   className={`menu-item ${(levelOneProps.toggled && active) ? "active" : "to-hover" }`}
                 >
                 <span
@@ -234,7 +212,6 @@ class NavigationComponent extends Component {
                                 <React.Fragment>
                                   {Object.keys(levelTwoProps.children).length > 1 &&
                                     <span class="collapsed-level-title">
-                                      <Translate value={levelThreeKey}/>
                                     </span>
                                   }
                                   {Object.entries(levelThreeProps).map(([levelFourKey, levelFourProps]) => {
@@ -293,8 +270,7 @@ class NavigationComponent extends Component {
 const mapStateToProps = () => {}
 
 const mapDispatchToProps = {
-  setNavigation,
-  updateTooltip
+  setNavigation
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(withRouter(NavigationComponent));

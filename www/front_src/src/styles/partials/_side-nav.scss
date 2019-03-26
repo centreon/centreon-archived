@@ -60,8 +60,9 @@
             >ul {
               display: block!important;
               position: absolute;
-              margin-top: -36px;
+              margin-top: -40px;
               left: 120px;
+              width: 120px;
             }
           }
         }
@@ -71,6 +72,7 @@
             position: absolute;
             top: 0px;
             left: 45px;
+            width: 120px;
           }
         }
       }
@@ -88,8 +90,8 @@
       &-item {
         &.to-hover:hover {
           >ul.list-unstyled {
-
             left: 160px;
+            width: 120px;
           }
         }
       }
@@ -488,21 +490,20 @@ a {
         font-size: 0.8rem;
         color: rgb(36,47,59);
         font-family: $primary-font-regular;
-        padding: 10px 10px 11px 47px;
+        padding: 10px 10px 11px 28px;
         display: block;
         letter-spacing: -0.4px;
         cursor: pointer;
       }
     }
     &-title {
-      color: $lightblue-centreon-primary;
-      font-family: $primary-font-regular;
-      font-size: 0.8rem;
-      background-color: $white-color;
+      height: 1px;
+      background-color: $lightblue-centreon-primary;
       display: block;
-      padding: 3px 10px 3px 56px;
-      border-bottom: 1px solid #f7f7f7;
-      text-align: left;
+      margin:0;
+      &:first-child {
+        display: none;
+      }
     }
   }
   .collapsed-item {
@@ -517,7 +518,7 @@ a {
         display: block;
       }
       > .collapsed-level-item-link {
-        background-position: 26px -94px;
+        background-position: 13px -94px;
       }
     }
     &.active {
@@ -527,7 +528,7 @@ a {
     }
     > .collapsed-level-item-link {
       background: url("../../img/icons/aside-menu-arrows.png") no-repeat;
-      background-position: 26px 10px;
+      background-position: 12px 10px;
       background-color: #f7f7f7;
       &.img-none {
         background: none;
@@ -542,7 +543,7 @@ a {
       .collapsed-level-item {
         background-color: $white-color;
         .collapsed-level-item-link {
-          padding: 8px 10px 8px 56px;
+          padding: 10px 10px 10px 14px;
         }
       }
     }
