@@ -525,13 +525,13 @@ $tpl->display("service.ihtml");
     });
 
     function preInit() {
-        _keyPrefix = '<?php echo $keyPrefix; ?>';
-        _sid = '<?php echo $sid ?>';
-        _tm = <?php echo $tM ?>;
-        _o = '<?php echo $o; ?>';
-        _defaultStatusFilter = '<?php echo $defaultStatusFilter; ?>';
-        _sDefaultOrder = '<?php echo $sDefaultOrder; ?>';
-        sSetOrderInMemory = '<?php echo $sSetOrderInMemory; ?>';
+        _keyPrefix = '<?= $keyPrefix; ?>';
+        _sid = '<?= $sid ?>';
+        _tm = <?= $tM ?>;
+        _o = '<?= $o; ?>';
+        _defaultStatusFilter = '<?= $defaultStatusFilter; ?>';
+        _sDefaultOrder = '<?= $sDefaultOrder; ?>';
+        sSetOrderInMemory = '<?= $sSetOrderInMemory; ?>';
 
         if (_sDefaultOrder == "0") {
             if (_o == 'svc') {
@@ -556,7 +556,7 @@ $tpl->display("service.ihtml");
                 jQuery("#statusService option[value='svc_unhandled']").prop('selected', true);
                 jQuery("#statusFilter option[value='']").prop('selected', true);
             }
-            if(_defaultStatusFilter != '') {
+            if (_defaultStatusFilter != '') {
                 jQuery("#statusFilter option[value='"+_defaultStatusFilter+"']").prop('selected', true);
             }
         }
