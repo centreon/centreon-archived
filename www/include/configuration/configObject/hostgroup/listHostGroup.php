@@ -37,9 +37,9 @@ if (!isset($centreon)) {
     exit();
 }
 
-require_once "./class/centreonUtils.class.php";
+include_once("./class/centreonUtils.class.php");
 
-require_once "./include/common/autoNumLimit.php";
+include("./include/common/autoNumLimit.php");
 
 /*
  * Object init
@@ -53,15 +53,20 @@ $searchFilterQuery = null;
 $mainQueryParameters = [];
 $search = null;
 
-if (isset($_POST['searchHg'])) {
+
+$search = filter_var(
+    $_POST['searchHg'] ?? $_GET['searchHg'] ?? null,
+    FILTER_SANITIZE_STRING
+);
+
+if (isset($_POST['searchHg']) || isset($_GET['searchHg'])) {
+    //saving chosen filters values
     $num = 0;
-    $search = $_POST['searchHg'];
-    $centreon->historySearch[$url] = $search;
-} elseif (isset($_GET['searchHg'])) {
-    $search = $_GET['searchHg'];
-    $centreon->historySearch[$url] = $search;
-} elseif (isset($centreon->historySearch[$url])) {
-    $search = $centreon->historySearch[$url];
+    $centreon->historySearch[$url] = array();
+    $centreon->historySearch[$url]['searchHg'] = $search;
+} else {
+    //restoring saved values
+    $search = $centreon->historySearch[$url]['searchHg'] ?? null;
 }
 
 if ($search) {
@@ -75,11 +80,13 @@ if ($search) {
 $tpl = new Smarty();
 $tpl = initSmartyTpl($path, $tpl);
 
-// Access level
+/* Access level */
 ($centreon->user->access->page($p) == 1) ? $lvl_access = 'w' : $lvl_access = 'r';
 $tpl->assign('mode_access', $lvl_access);
 
-// start header menu
+/*
+ * start header menu
+ */
 $tpl->assign("headerMenu_name", _("Name"));
 $tpl->assign("headerMenu_desc", _("Alias"));
 $tpl->assign("headerMenu_status", _("Status"));
@@ -87,41 +94,49 @@ $tpl->assign("headerMenu_hostAct", _("Enabled Hosts"));
 $tpl->assign("headerMenu_hostDeact", _("Disabled Hosts"));
 $tpl->assign("headerMenu_options", _("Options"));
 
-// Hostgroup list
-$rq = "SELECT SQL_CALC_FOUND_ROWS hg_id, hg_name, hg_alias, hg_activate, hg_icon_image " .
-    "FROM hostgroup " .
-    "WHERE {$searchFilterQuery} hg_id NOT IN (SELECT hg_child_id FROM hostgroup_hg_relation) " .
+/*
+ * Hostgroup list
+ */
+$rq = "SELECT SQL_CALC_FOUND_ROWS hg_id, hg_name, hg_alias, hg_activate, hg_icon_image
+           FROM hostgroup
+           WHERE {$searchFilterQuery} hg_id NOT IN (SELECT hg_child_id FROM hostgroup_hg_relation) " .
     $acl->queryBuilder('AND', 'hg_id', $hgString) .
     " ORDER BY hg_name LIMIT " . $num * $limit . ", " . $limit;
 $DBRESULT = $pearDB->query($rq, $mainQueryParameters);
 
-// Pagination
+/*
+ * Pagination
+ */
 $rows = $pearDB->query("SELECT FOUND_ROWS()")->fetchColumn();
-require_once "./include/common/checkPagination.php";
+include("./include/common/checkPagination.php");
 
 $search = tidySearchKey($search, $advanced_search);
 
 $form = new HTML_QuickFormCustom('select_form', 'POST', "?p=" . $p);
-// Different style between each lines
+/*
+ * Different style between each lines
+ */
 $style = "one";
 
-// Fill a tab with a multidimensional Array we put in $tpl
+/*
+ * Fill a tab with a multidimensional Array we put in $tpl
+ */
 $elemArr = array();
 for ($i = 0; $hg = $DBRESULT->fetch(); $i++) {
     $selectedElements = $form->addElement('checkbox', "select[" . $hg['hg_id'] . "]");
-    $mOptions = "";
+    $moptions = "";
     if ($hg["hg_activate"]) {
-        $mOptions .= "<a href='main.php?p=" . $p . "&hg_id=" . $hg['hg_id'] . "&o=u&limit=" . $limit
+        $moptions .= "<a href='main.php?p=" . $p . "&hg_id=" . $hg['hg_id'] . "&o=u&limit=" . $limit
             . "&num=" . $num . "&search=" . $search
             . "'><img src='img/icons/disabled.png' class='ico-14 margin_right' border='0' alt='"
             . _("Disabled") . "'></a>";
     } else {
-        $mOptions .= "<a href='main.php?p=" . $p . "&hg_id=" . $hg['hg_id'] . "&o=s&limit=" . $limit
+        $moptions .= "<a href='main.php?p=" . $p . "&hg_id=" . $hg['hg_id'] . "&o=s&limit=" . $limit
             . "&num=" . $num . "&search=" . $search
             . "'><img src='img/icons/enabled.png' class='ico-14 margin_right' border='0' alt='"
             . _("Enabled") . "'></a>";
     }
-    $mOptions .= "<input onKeypress=\"if(event.keyCode > 31 && (event.keyCode < 45 || event.keyCode > 57))"
+    $moptions .= "<input onKeypress=\"if(event.keyCode > 31 && (event.keyCode < 45 || event.keyCode > 57))"
         . " event.returnValue = false; if(event.which > 31 && (event.which < 45 || event.which > 57)) return false;"
         . "\" maxlength=\"3\" size=\"3\" value='1' style=\"margin-bottom:0px;\""
         . " name='dupNbr[" . $hg['hg_id'] . "]'></input>";
@@ -129,10 +144,10 @@ for ($i = 0; $hg = $DBRESULT->fetch(); $i++) {
     /*
      * Check Nbr of Host / hg
      */
-    $nbrHostAct = array();
-    $nbrHostDeact = array();
-    $nbrHostgroupAct = array();
-    $nbrHostgroupDeact = array();
+    $nbrhostAct = array();
+    $nbrhostDeact = array();
+    $nbrhostgroupAct = array();
+    $nbrhostgroupDeact = array();
 
     $aclFrom = "";
     $aclCond = "";
@@ -140,24 +155,23 @@ for ($i = 0; $hg = $DBRESULT->fetch(); $i++) {
         $aclFrom = ", $aclDbName.centreon_acl acl ";
         $aclCond = " AND h.host_id = acl.host_id AND acl.group_id IN (" . $acl->getAccessGroupsString() . ") ";
     }
-    $DBRESULT2 = $pearDB->query(
-        "SELECT h.host_id, h.host_activate " .
-        "FROM hostgroup_relation hgr, host h " . $aclFrom . 
-        "WHERE hostgroup_hg_id = '" . $hg['hg_id'] . "' " . 
-        "AND h.host_id = hgr.host_host_id " .
-        "AND h.host_register = '1' " . $aclCond
-    );
-    $nbrHostActArr = array();
-    $nbrHostDeactArr = array();
+    $rq = "SELECT h.host_id, h.host_activate
+               FROM hostgroup_relation hgr, host h $aclFrom
+               WHERE hostgroup_hg_id = '" . $hg['hg_id'] . "'
+               AND h.host_id = hgr.host_host_id
+               AND h.host_register = '1' $aclCond";
+    $DBRESULT2 = $pearDB->query($rq);
+    $nbrhostActArr = array();
+    $nbrhostDeactArr = array();
     while ($row = $DBRESULT2->fetch()) {
         if ($row['host_activate']) {
-            $nbrHostActArr[$row['host_id']] = true;
+            $nbrhostActArr[$row['host_id']] = true;
         } else {
-            $nbrHostDeactArr[$row['host_id']] = true;
+            $nbrhostDeactArr[$row['host_id']] = true;
         }
     }
-    $nbrHostAct = count($nbrHostActArr);
-    $nbrHostDeact = count($nbrHostDeactArr);
+    $nbrhostAct = count($nbrhostActArr);
+    $nbrhostDeact = count($nbrhostDeactArr);
 
     if ($hg['hg_icon_image'] != "") {
         $hgIcone = "./img/media/" . $mediaObj->getFilename($hg['hg_icon_image']);
@@ -174,18 +188,21 @@ for ($i = 0; $hg = $DBRESULT->fetch(); $i++) {
             : CentreonUtils::escapeSecure(html_entity_decode($hg["hg_alias"]))),
         "RowMenu_status" => $hg["hg_activate"] ? _("Enabled") : _("Disabled"),
         "RowMenu_badge" => $hg["hg_activate"] ? "service_ok" : "service_critical",
-        "RowMenu_hostAct" => $nbrHostAct,
+        "RowMenu_hostAct" => $nbrhostAct,
         "RowMenu_icone" => $hgIcone,
-        "RowMenu_hostDeact" => $nbrHostDeact,
-        "RowMenu_options" => $mOptions
+        "RowMenu_hostDeact" => $nbrhostDeact,
+        "RowMenu_options" => $moptions
     );
-
-    // Switch color line
+    /*
+     * Switch color line
+     */
     $style != "two" ? $style = "two" : $style = "one";
 }
 $tpl->assign("elemArr", $elemArr);
 
-// Different messages put in the template
+/*
+ * Different messages we put in the template
+ */
 $tpl->assign(
     'msg',
     array(
@@ -236,7 +253,9 @@ foreach (array('o1', 'o2') as $option) {
 $tpl->assign('searchHg', $search);
 $tpl->assign('limit', $limit);
 
-// Apply a template definition
+/*
+ * Apply a template definition
+ */
 $renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 $form->accept($renderer);
 $tpl->assign('form', $renderer->toArray());
