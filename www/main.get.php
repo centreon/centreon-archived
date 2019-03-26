@@ -1,7 +1,7 @@
 <?php
 /*
- * Copyright 2005-2015 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2019 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -89,8 +89,8 @@ $num = $inputs["num"];
 /*
  * Include all func
  */
-include_once("./include/common/common-Func.php");
-include_once("./include/core/header/header.php");
+include_once "./include/common/common-Func.php";
+include_once "./include/core/header/header.php";
 
 require_once _CENTREON_PATH_ . "/bootstrap.php";
 
@@ -269,43 +269,31 @@ $inputPost = filter_input_array(
 if (isset($url) && $url) {
     foreach ($inputArguments as $argumentName => $argumentFlag) {
         switch ($argumentName) {
-            case 'limit':
-                if (!is_null($inputGet[$argumentName])) {
-                    $centreon->historyLimit[$url] = $inputGet[$argumentName];
-                } elseif (!is_null($inputPost[$argumentName])) {
-                    $centreon->historyLimit[$url] = $inputPost[$argumentName];
-                } else {
-                    $centreon->historyLimit[$url] = 30;
-                }
-                break;
-            case 'num':
-                if (!is_null($inputGet[$argumentName])) {
-                    $centreon->historyPage[$url] = $inputGet[$argumentName];
-                } elseif (!is_null($inputPost[$argumentName])) {
-                    $centreon->historyPage[$url] = $inputPost[$argumentName];
-                } else {
-                    $centreon->historyPage[$url] = 0;
-                }
-                break;
-            default:
-                continue;
-                break;
+        case 'limit':
+            if (!is_null($inputGet[$argumentName])) {
+                $centreon->historyLimit[$url] = $inputGet[$argumentName];
+            } elseif (!is_null($inputPost[$argumentName])) {
+                $centreon->historyLimit[$url] = $inputPost[$argumentName];
+            } else {
+                $centreon->historyLimit[$url] = 30;
+            }
+            break;
+
+        default:
+            continue;
+            break;
         }
 
     }
 }
 
-/*
- * Display Footer
- */
+// Display Footer
 if (!$min) {
     print "\t\t\t</td>\t\t</tr>\t</table>\n</div>";
 }
 ?>
     </section>
 <?php
-/*
- * Include Footer 
- */
+// Include Footer
 include_once "./include/core/footer/footerPart.php";
 

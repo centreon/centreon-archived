@@ -42,16 +42,28 @@ if (!isset($centreon)) {
 global $num, $limit, $search, $url, $pearDB, $search_type_service, $search_type_host,
        $host_name, $hostgroup, $rows, $p, $gopt, $pagination, $poller, $template, $search_output, $search_service;
 
-$type = isset($_REQUEST["type"]) ? $_REQUEST["type"] : null;
-isset($_GET["o"]) ? $o = $_GET["o"] : $o = null;
+$type = $_REQUEST["type"] ?? null;
+$o = $_GET["o"] ?? $o = null;
 
-if (isset($_GET["num"])) {
-    $num = $_GET["num"];
-} elseif (!isset($_GET["num"]) && isset($centreon->historyPage[$url]) && $centreon->historyPage[$url]) {
-    $num = $centreon->historyPage[$url];
-} else {
+// splitting the path ($url) to keep only the current page's filename
+$page = (explode('/', $url));
+$currentPage = end($page);
+
+if (isset($centreon->historyLastPage) && $centreon->historyLastPage !== $currentPage) {
     $num = 0;
+} elseif (isset($_REQUEST['num'])) {
+    $num = filter_var(
+        $_GET['num'] ?? $_POST['num'] ?? 0,
+        FILTER_VALIDATE_INT
+    );
+} else {
+    $num = $centreon->historyPage[$url] ?? 0;
 }
+
+//saving current pagination filter value
+$centreon->historyPage[$url] = $num;
+//saving current page's file name
+$centreon->historyLastPage = $currentPage;
 
 $num = addslashes($num);
 
@@ -181,7 +193,7 @@ if ($rows != 0) {
     for ($i = $istart; $i <= $iend; $i++) {
 
         $urlPage = "main.php?p=" . $p . "&num=$i&limit=" . $limit . "&poller=" . $poller .
-            "&template=$template&search=" . $search . "&type=" . $type . "&o=" . $o . $url_var;
+            "&template=" . $template . "&search=" . $search . "&type=" . $type . "&o=" . $o . $url_var;
         $pageArr[$i] = array(
             "url_page" => $urlPage,
             "label_page" => "<b>" . ($i + 1) . "</b>",
@@ -203,7 +215,7 @@ if ($rows != 0) {
         $tpl->assign(
             'pagePrev',
             ("main.php?p=" . $p . "&num=$prev&limit=" . $limit . "&poller=" . $poller .
-                "&template=$template&search=" . $search . "&type=" . $type . "&o=" . $o . $url_var)
+                "&template=" . $template . "&search=" . $search . "&type=" . $type . "&o=" . $o . $url_var)
         );
     }
 
@@ -211,7 +223,7 @@ if ($rows != 0) {
         $tpl->assign(
             'pageNext',
             ("main.php?p=" . $p . "&num=$next&limit=" . $limit . "&poller=" . $poller .
-                "&template=$template&search=" . $search . "&type=" . $type . "&o=" . $o . $url_var)
+                "&template=" . $template . "&search=" . $search . "&type=" . $type . "&o=" . $o . $url_var)
         );
     }
 
@@ -226,14 +238,14 @@ if ($rows != 0) {
         $tpl->assign(
             'firstPage',
             ("main.php?p=" . $p . "&num=0&limit=" . $limit . "&poller=" . $poller .
-                "&template=$template&search=" . $search . "&type=" . $type . "&o=" . $o . $url_var)
+                "&template=" . $template . "&search=" . $search . "&type=" . $type . "&o=" . $o . $url_var)
         );
     }
     if ($page_max > 5 && $num != ($pageNumber - 1)) {
         $tpl->assign(
             'lastPage',
             ("main.php?p=" . $p . "&num=" . ($pageNumber - 1) . "&limit=" . $limit .
-                "&template=$template&poller=" . $poller . "&search=" . $search .
+                "&template=" . $template . "&poller=" . $poller . "&search=" . $search .
                 "&type=" . $type . "&o=" . $o . $url_var)
         );
     }
