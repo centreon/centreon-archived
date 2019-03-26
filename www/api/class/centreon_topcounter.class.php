@@ -191,6 +191,10 @@ class CentreonTopCounter extends CentreonWebService
      */
     public function getUser()
     {
+        $enableAutoLogin = false;
+        $enableAutoLoginShortcut = false;
+        $autoLoginKey = null;
+
         if (!isset($_SESSION['centreon'])) {
             throw new \RestUnauthorizedException('Session does not exists.');
         }
@@ -204,8 +208,8 @@ class CentreonTopCounter extends CentreonWebService
             $this->soundNotificationsEnabled = true;
         }
 
-        /* Get autologinkey */
-        $query = 'SELECT contact_autologin_key FROM contact WHERE contact_id = ' . (int)$user->user_id;
+        /* Is the autologin feature enabled ? */
+        $query = 'SELECT value FROM options WHERE options.key = "enable_autologin"';
 
         try {
             $res = $this->pearDB->query($query);
@@ -213,10 +217,44 @@ class CentreonTopCounter extends CentreonWebService
             throw new \RestInternalServerErrorException('Error getting the user.');
         }
 
-        if ($res->rowCount() === 0) {
-            throw new \RestUnauthorizedException('User does not exists.');
+        if ($row = $res->fetch()) {
+            $enableAutoLogin = $row['value'] == '1' ? true : false;
         }
-        $row = $res->fetch();
+
+	    /* Do we need to display the autologin shortcut ? */
+        $query = 'SELECT value FROM options WHERE options.key = "display_autologin_shortcut"';
+
+        try {
+            $res = $this->pearDB->query($query);
+        } catch (\Exception $e) {
+            throw new \RestInternalServerErrorException('Error getting the user.');
+        }
+
+        if ($row = $res->fetch()) {
+            $enableAutoLoginShortcut = $row['value'] == '1' ? true : false;
+        }
+
+        /* If the autologin feature is enabled then fetch the autologin key
+         * And display the shortcut if the option is enabled
+         */
+        if ($enableAutoLogin && $enableAutoLoginShortcut) {
+            /* Get autologinkey */
+            $query = 'SELECT contact_autologin_key FROM contact WHERE contact_id = ' . (int)$user->user_id;
+
+            try {
+                $res = $this->pearDB->query($query);
+            } catch (\Exception $e) {
+                throw new \RestInternalServerErrorException('Error getting the user.');
+            }
+
+            if ($res->rowCount() === 0) {
+                throw new \RestUnauthorizedException('User does not exists.');
+            }
+
+            if ($row = $res->fetch()) {
+                $autoLoginKey = $row['contact_autologin_key'];
+            }
+        }
 
         return array(
             'userId' => $user->user_id,
@@ -225,7 +263,7 @@ class CentreonTopCounter extends CentreonWebService
             'locale' => $locale,
             'timezone' => $user->gmt,
             'hasAccessToProfile' => $this->hasAccessToProfile,
-            'autologinkey' => $row['contact_autologin_key'],
+            'autologinkey' => $autoLoginKey,
             'soundNotificationsEnabled' => $this->soundNotificationsEnabled
         );
     }
