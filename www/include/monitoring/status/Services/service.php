@@ -418,6 +418,7 @@ if ((!isset($_GET['o']) || empty($_GET['o'])) && isset($_SESSION['monitoring_ser
     $form->setDefaults(array('statusFilter' => $_SESSION['monitoring_service_status_filter']));
     $sDefaultOrder = "1";
 }
+$defaultStatusFilter = isset($_GET['statusFilter']) ? $_GET['statusFilter'] : '';
 
 $form->addElement(
     'select',
@@ -528,6 +529,7 @@ $tpl->display("service.ihtml");
         _sid = '<?php echo $sid ?>';
         _tm = <?php echo $tM ?>;
         _o = '<?php echo $o; ?>';
+        _defaultStatusFilter = '<?php echo $defaultStatusFilter; ?>';
         _sDefaultOrder = '<?php echo $sDefaultOrder; ?>';
         sSetOrderInMemory = '<?php echo $sSetOrderInMemory; ?>';
 
@@ -553,6 +555,9 @@ $tpl->display("service.ihtml");
             } else {
                 jQuery("#statusService option[value='svc_unhandled']").prop('selected', true);
                 jQuery("#statusFilter option[value='']").prop('selected', true);
+            }
+            if(_defaultStatusFilter != '') {
+                jQuery("#statusFilter option[value='"+_defaultStatusFilter+"']").prop('selected', true);
             }
         }
         filterStatus(document.getElementById('statusFilter').value, 1);
