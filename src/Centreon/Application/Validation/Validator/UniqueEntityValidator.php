@@ -2,6 +2,7 @@
 
 namespace Centreon\Application\Validation\Validator;
 
+use Centreon\Application\Validation\CentreonValidatorInterface;
 use Centreon\Application\Validation\Constraints\UniqueEntity;
 use Centreon\Infrastructure\Service\CentreonDBManagerService;
 use Centreon\ServiceProvider;
@@ -11,7 +12,7 @@ use Symfony\Component\Validator\ConstraintValidator;
 use Symfony\Component\Validator\Exception\ConstraintDefinitionException;
 use Symfony\Component\Validator\Exception\UnexpectedTypeException;
 
-class UniqueEntityValidator extends ConstraintValidator
+class UniqueEntityValidator extends ConstraintValidator implements CentreonValidatorInterface
 {
     /**
      * Construct

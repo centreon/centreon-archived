@@ -39,6 +39,7 @@ namespace CentreonBam\Application\Validation;
 use Centreon\Infrastructure\Service\CentreonDBManagerService;
 use Centreon\ServiceProvider;
 use Psr\Container\ContainerInterface;
+use Pimple\Psr11\ServiceLocator;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidatorFactoryInterface;
 use Symfony\Component\Validator\ConstraintValidatorInterface;
@@ -49,6 +50,8 @@ class CentreonValidatorFactory implements ConstraintValidatorFactoryInterface
      * @var ContainerInterface
      */
     protected $container;
+
+    protected $validators = [];
 
     /**
      * Construct
@@ -70,20 +73,13 @@ class CentreonValidatorFactory implements ConstraintValidatorFactoryInterface
     {
         $className = $constraint->validatedBy();
 
-        /*
-         * @todo
-         */
-//        new ServiceLocator(
-//            $container,
-//            Service\CentreonPaginationService::dependencies()
-//        )
+        if (!isset($this->validators[$className])) {
+            $this->validators[$className] = new $className(new ServiceLocator(
+                    $this->container,
+                    $className::dependencies()
+                ));
+        }
 
-//        if (!isset($this->validators[$className])) {
-//            $this->validators[$className] = 'validator.expression' === $className
-//                ? new ExpressionValidator()
-//                : new $className();
-//        }
-//
-//        return $this->validators[$className];
+        return $this->validators[$className];
     }
 }
