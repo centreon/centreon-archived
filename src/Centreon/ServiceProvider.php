@@ -39,6 +39,8 @@ namespace Centreon;
 use Centreon\Application\Webservice\ContactGroupsWebservice;
 use Centreon\Infrastructure\Event\EventDispatcher;
 use Centreon\Domain\Entity\FileLoader;
+use Centreon\Test\Mock\Centreon;
+use CentreonBam\Application\Validation\CentreonValidatorFactory;
 use Pimple\Container;
 use Pimple\Psr11\ServiceLocator;
 use Centreon\Infrastructure\Provider\AutoloadServiceProviderInterface;
@@ -64,6 +66,7 @@ class ServiceProvider implements AutoloadServiceProviderInterface
     const CENTREON_BROKER_CONFIGURATION_SERVICE = 'centreon.broker_configuration_service';
     const UPLOAD_MANGER = 'upload.manager';
     const CENTREON_EVENT_DISPATCHER = 'centreon.event_dispatcher';
+    const CENTREON_VALIDATOR_FACTORY = 'centreon.validator_factory';
 
     /**
      * Register Centreon services
@@ -188,6 +191,12 @@ class ServiceProvider implements AutoloadServiceProviderInterface
                 )
             );
             return $eventDispatcher;
+        };
+
+        $pimple[static::CENTREON_VALIDATOR_FACTORY] = function(Container $container): CentreonValidatorFactory {
+            $service = new CentreonValidatorFactory($container);
+
+            return $service;
         };
     }
 
