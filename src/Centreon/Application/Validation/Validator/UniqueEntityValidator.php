@@ -2,7 +2,6 @@
 
 namespace Centreon\Application\Validation\Validator;
 
-use Centreon\Application\Validation\CentreonValidatorInterface;
 use Centreon\Application\Validation\Constraints\UniqueEntity;
 use Centreon\Infrastructure\Service\CentreonDBManagerService;
 use Centreon\ServiceProvider;
@@ -12,7 +11,7 @@ use Symfony\Component\Validator\ConstraintValidator;
 use Symfony\Component\Validator\Exception\ConstraintDefinitionException;
 use Symfony\Component\Validator\Exception\UnexpectedTypeException;
 
-class UniqueEntityValidator extends ConstraintValidator implements CentreonValidatorInterface
+class UniqueEntityValidator extends ConstraintValidator
 {
     /**
      * Construct
@@ -50,50 +49,33 @@ class UniqueEntityValidator extends ConstraintValidator implements CentreonValid
             return;
         }
 
-//        if ($constraint->em) {
-//            $em = $this->registry->getManager($constraint->em);
-//            if (!$em) {
-//                throw new ConstraintDefinitionException(sprintf('Object manager "%s" does not exist.', $constraint->em));
-//            }
-//        } else {
-//            $em = $this->registry->getManagerForClass(\get_class($entity));
-//            if (!$em) {
-//                throw new ConstraintDefinitionException(sprintf('Unable to find the object manager associated with an entity of class "%s".', \get_class($entity)));
-//            }
-//        }
-//        $class = $em->getClassMetadata(\get_class($entity));
-//        /* @var $class \Doctrine\Common\Persistence\Mapping\ClassMetadata */
-//        $criteria = [];
-//        $hasNullValue = false;
-//        foreach ($fields as $fieldName) {
-//            if (!$class->hasField($fieldName) && !$class->hasAssociation($fieldName)) {
-//                throw new ConstraintDefinitionException(sprintf('The field "%s" is not mapped by Doctrine, so it cannot be validated for uniqueness.', $fieldName));
-//            }
-//            $fieldValue = $class->reflFields[$fieldName]->getValue($entity);
-//            if (null === $fieldValue) {
-//                $hasNullValue = true;
-//            }
-//            if ($constraint->ignoreNull && null === $fieldValue) {
-//                continue;
-//            }
-//            $criteria[$fieldName] = $fieldValue;
-//            if (null !== $criteria[$fieldName] && $class->hasAssociation($fieldName)) {
-//                /* Ensure the Proxy is initialized before using reflection to
-//                 * read its identifiers. This is necessary because the wrapped
-//                 * getter methods in the Proxy are being bypassed.
-//                 */
-//                $em->initializeObject($criteria[$fieldName]);
-//            }
-//        }
-//        // validation doesn't fail if one of the fields is null and if null values should be ignored
-//        if ($hasNullValue && $constraint->ignoreNull) {
-//            return;
-//        }
-//        // skip validation if there are no criteria (this can happen when the
-//        // "ignoreNull" option is enabled and fields to be checked are null
-//        if (empty($criteria)) {
-//            return;
-//        }
+        $class = $this->db->getClassMetadata(\get_class($entity));
+
+        $criteria = [];
+        $hasNullValue = false;
+        foreach ($fields as $fieldName) {
+            $fieldValue = $class->reflFields[$fieldName]->getValue($entity);
+            if (null === $fieldValue) {
+                $hasNullValue = true;
+            }
+            if ($constraint->ignoreNull && null === $fieldValue) {
+                continue;
+            }
+            $criteria[$fieldName] = $fieldValue;
+        }
+        // validation doesn't fail if one of the fields is null and if null values should be ignored
+        if ($hasNullValue && $constraint->ignoreNull) {
+            return;
+        }
+
+        // skip validation if there are no criteria (this can happen when the
+        // "ignoreNull" option is enabled and fields to be checked are null
+        if (empty($criteria)) {
+            return;
+        }
+
+        //@todo complete when Metadata is available
+
 //        if (null !== $constraint->entityClass) {
 //            /* Retrieve repository from given entity name.
 //             * We ensure the retrieved repository can handle the entity
