@@ -103,9 +103,16 @@ abstract class CentreonWebServiceAbstract extends \CentreonWebService
         return $request;
     }
 
-    public function payload(): array
+    public function payloadRaw(): string
     {
         $content = file_get_contents('php://input');
+
+        return $content;
+    }
+
+    public function payload(): array
+    {
+        $content = $this->payloadRaw();
 
         if ($content) {
             $request = json_decode($content, true);
