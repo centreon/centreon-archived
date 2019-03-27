@@ -331,6 +331,9 @@ class CentreonGraph
         } elseif ($metrics != "") {
             $this->metricsEnabled = array($metrics);
         }
+        if (is_array($this->metricsEnabled) && (count($this->metricsEnabled) == 1)) {
+            $this->onecurve = true;
+        }
     }
 
     /**
