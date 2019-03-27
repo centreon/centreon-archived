@@ -40,7 +40,7 @@ use Centreon\Application\Webservice\ContactGroupsWebservice;
 use Centreon\Infrastructure\Event\EventDispatcher;
 use Centreon\Domain\Entity\FileLoader;
 use Centreon\Test\Mock\Centreon;
-use CentreonBam\Application\Validation\CentreonValidatorFactory;
+use Centreon\Application\Validation\CentreonValidatorFactory;
 use Pimple\Container;
 use Pimple\Psr11\ServiceLocator;
 use Centreon\Infrastructure\Provider\AutoloadServiceProviderInterface;

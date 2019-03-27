@@ -34,7 +34,7 @@
  *
  */
 
-namespace CentreonBam\Application\Validation;
+namespace Centreon\Application\Validation;
 
 use Centreon\Infrastructure\Service\CentreonDBManagerService;
 use Centreon\ServiceProvider;
@@ -42,7 +42,7 @@ use Psr\Container\ContainerInterface;
 use Pimple\Psr11\ServiceLocator;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidatorFactoryInterface;
-use Symfony\Component\Validator\ConstraintValidatorInterface;
+use Pimple\Container;
 
 class CentreonValidatorFactory implements ConstraintValidatorFactoryInterface
 {
@@ -56,9 +56,9 @@ class CentreonValidatorFactory implements ConstraintValidatorFactoryInterface
     /**
      * Construct
      *
-     * @param \Psr\Container\ContainerInterface $container
+     * @param \Pimple\Container $container
      */
-    public function __construct(ContainerInterface $container)
+    public function __construct(Container $container)
     {
         $this->container = $container;
     }
