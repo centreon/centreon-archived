@@ -47,10 +47,10 @@ abstract class ServiceEntityRepository
         $listAdd = [];
         $listRemove = [];
 
-        $rows = (function () use ($id) {
-                $sql = "SELECT `{$columnB}` FROM `{$tableName}` WHERE `{$columnA}` = :{$columnA} LIMIT 0, 2000";
+        $rows = (function () use ($id, $tableName, $columnA, $columnB) {
+                $sql = "SELECT `{$columnB}` FROM `{$tableName}` WHERE `{$columnA}` = :{$columnA} LIMIT 0, 5000";
                 $stmt = $this->db->prepare($sql);
-                $stmt->bindValue(':{$columnA}', $id, \PDO::PARAM_INT);
+                $stmt->bindValue(":{$columnA}", $id, \PDO::PARAM_INT);
                 $stmt->execute();
                 $rows = $stmt->fetchAll();
 
@@ -59,25 +59,26 @@ abstract class ServiceEntityRepository
 
         // to remove
         foreach ($rows as $row) {
-            if (!in_array($row[$columnB], $list)) {
-                $listRemove[] = $row[$columnB];
+            $pollerId = $row[$columnB];
+            if (!in_array($pollerId, $list)) {
+                $listRemove[] = $pollerId;
             }
 
-            $listExists[] = $row[$columnB];
-            unset($row);
+            $listExists[] = $pollerId;
+            unset($row, $pollerId);
         }
 
         // to add
         foreach ($list as $pollerId) {
             if (!in_array($pollerId, $listExists)) {
-                $listAdd[] = $row[$columnB];
+                $listAdd[] = $pollerId;
             }
             unset($pollerId);
         }
 
         // removing
         foreach ($listRemove as $pollerId) {
-            (function () use ($id, $pollerId) {
+            (function () use ($id, $pollerId, $tableName, $columnA, $columnB) {
                 $sql = "DELETE FROM `{$tableName}` WHERE `{$columnA}` = :{$columnA} AND `{$columnB}` = :{$columnB}";
                 $stmt = $this->db->prepare($sql);
                 $stmt->bindValue(":{$columnA}", $id, \PDO::PARAM_INT);
@@ -89,8 +90,8 @@ abstract class ServiceEntityRepository
 
         // adding
         foreach ($listAdd as $pollerId) {
-            (function () use ($id, $pollerId) {
-                $sql = "INSERT INTO `{$tableName}` (`baId`, `$columnB`)  VALUES (:{$columnA}, :$columnB)";
+            (function () use ($id, $pollerId, $tableName, $columnA, $columnB) {
+                $sql = "INSERT INTO `{$tableName}` (`{$columnA}`, `{$columnB}`)  VALUES (:{$columnA}, :$columnB)";
                 $stmt = $this->db->prepare($sql);
                 $stmt->bindValue(":{$columnA}", $id, \PDO::PARAM_INT);
                 $stmt->bindValue(":{$columnB}", $pollerId, \PDO::PARAM_INT);
