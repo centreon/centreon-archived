@@ -49,6 +49,7 @@
       transition: all .2s;
     }
   }
+
   &.mini {
     .menu {
       &-item {
@@ -61,7 +62,7 @@
                 >ul {
                   display: block!important;
                   position: absolute;
-                  margin-top: -40px;
+                  margin-top: -38px;
                   left: 155px;
                 }
               }
@@ -74,6 +75,9 @@
               top: 0px;
               left: 45px;
             }
+            .active {
+              display: block!important;
+            }
           }
           .collapse .collapsed-item.active .first-level {
             display: none;
@@ -84,9 +88,9 @@
   }
 
   .menu {
-      .list-unstyled {
-        width: 155px;
-      }
+    .list-unstyled {
+      width: 155px;
+    }
     &-item {
       position: relative;
       .list-unstyled {
@@ -98,7 +102,7 @@
             >ul {
               display: block!important;
               position: absolute;
-              margin-top: -40px;
+              margin-top: -38px;
               left: 155px;
             }
           }
@@ -244,6 +248,7 @@ a {
       padding-bottom: 30px;
     }
   }
+  
   &-item {
     &-link {
       border-bottom: 1px solid $white-color;
@@ -509,9 +514,9 @@ a {
         text-align: left;
         text-decoration: none;
         font-size: 0.8rem;
-        color: rgb(36,47,59);
+        color: $centreon-graphit;
         font-family: $primary-font-regular;
-        padding: 10px 10px 11px 28px;
+        padding: 8px 10px 9px 28px;
         display: block;
         letter-spacing: -0.4px;
         cursor: pointer;
