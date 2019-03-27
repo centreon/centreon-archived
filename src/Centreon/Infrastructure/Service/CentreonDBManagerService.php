@@ -1,4 +1,5 @@
 <?php
+
 namespace Centreon\Infrastructure\Service;
 
 use Psr\Container\ContainerInterface;
@@ -29,8 +30,8 @@ class CentreonDBManagerService
     public function __construct(ContainerInterface $services)
     {
         $this->manager = [
-            'configuration_db' => new CentreonDBAdapter($services->get('configuration_db')),
-            'realtime_db' => new CentreonDBAdapter($services->get('realtime_db')),
+            'configuration_db' => new CentreonDBAdapter($services->get('configuration_db'), $this),
+            'realtime_db' => new CentreonDBAdapter($services->get('realtime_db'), $this),
         ];
 
         $this->defaultManager = 'configuration_db';
@@ -51,19 +52,5 @@ class CentreonDBManagerService
             ->getRepository($repository);
 
         return $manager;
-    }
-
-    public function persist(object $entity)
-    {
-        $manager = $this->manager[$this->defaultManager]
-            ->persist($entity);
-
-        return $manager;
-    }
-
-    public function flush()
-    {
-        $this->manager[$this->defaultManager]
-            ->flush($entity);
     }
 }

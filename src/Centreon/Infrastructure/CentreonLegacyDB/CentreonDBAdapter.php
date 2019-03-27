@@ -3,6 +3,7 @@
 namespace Centreon\Infrastructure\CentreonLegacyDB;
 
 use Centreon\Infrastructure\Service\Exception\NotFoundException;
+use Centreon\Infrastructure\Service\CentreonDBManagerService;
 use ReflectionClass;
 use CentreonDB;
 
@@ -12,6 +13,10 @@ class CentreonDBAdapter
     /** @var \CentreonDB */
     private $db;
 
+    /**
+     * @var \Centreon\Infrastructure\Service\CentreonDBManagerService
+     */
+    protected $manager;
     private $count = 0;
     private $error = false;
     private $errorInfo = '';
@@ -22,10 +27,12 @@ class CentreonDBAdapter
      * Construct
      * 
      * @param \CentreonDB $db
+     * @param \Centreon\Infrastructure\Service\CentreonDBManagerService $manager
      */
-    public function __construct(CentreonDB $db)
+    public function __construct(CentreonDB $db, CentreonDBManagerService $manager = null)
     {
         $this->db = $db;
+        $this->manager = $manager;
     }
 
     public function getRepository($repository): ServiceEntityRepository
@@ -41,18 +48,6 @@ class CentreonDBAdapter
         $repositoryInstance = new $repository($this->db);
 
         return $repositoryInstance;
-    }
-
-    public function persist(object $entity)
-    {
-        // @todo ...
-
-        return $this;
-    }
-
-    public function flush()
-    {
-        // @todo ...
     }
 
     public function getCentreonDBInstance(): CentreonDB
@@ -75,11 +70,11 @@ class CentreonDBAdapter
 
         $this->query = $this->db->prepare($query);
 
-        if (!$this->query){
+        if (!$this->query) {
             throw new \Exception('Error at preparing the query.');
         }
 
-        if (is_array($params) && !empty($params)){
+        if (is_array($params) && !empty($params)) {
             $x = 1;
 
             foreach ($params as $param) {
@@ -99,7 +94,7 @@ class CentreonDBAdapter
                 $this->error = true;
                 $this->errorInfo = $this->query->errorInfo();
             }
-        } catch(\Exception $e) {
+        } catch (\Exception $e) {
             throw new \Exception('Query failed. ' . $e->getMessage());
         }
 
@@ -119,7 +114,7 @@ class CentreonDBAdapter
         if (!$fields) {
             throw new \Exception("The argument `fields` can't be empty");
         }
-        
+
         $keys = [];
         $keyVars = [];
 
@@ -141,7 +136,7 @@ class CentreonDBAdapter
 
         try {
             $stmt->execute();
-        } catch(\Exception $e) {
+        } catch (\Exception $e) {
             throw new \Exception('Query failed. ' . $e->getMessage());
         }
 
@@ -163,31 +158,28 @@ class CentreonDBAdapter
         $keys = [];
         $keyValues = [];
 
-        foreach($fields as $key=>$value)
-        {
-            array_push($keys, $key.'= :'.$key);
+        foreach ($fields as $key => $value) {
+            array_push($keys, $key . '= :' . $key);
             array_push($keyValues, array($key, $value));
         }
 
-        $sql = "UPDATE {$table} SET " . implode(', ',$keys) ." WHERE id = :id";
+        $sql = "UPDATE {$table} SET " . implode(', ', $keys) . " WHERE id = :id";
 
         $qq = $this->db->prepare($sql);
-        $qq->bindParam(':id',$id);
+        $qq->bindParam(':id', $id);
 
-        foreach ($keyValues as $key => $value)
-        {
-            $qq->bindParam(':'.$key, $value);
+        foreach ($keyValues as $key => $value) {
+            $qq->bindParam(':' . $key, $value);
         }
 
         try {
             $result = $qq->execute();
-        } catch(\Exception $e) {
+        } catch (\Exception $e) {
             throw new \Exception('Query failed. ' . $e->getMessage());
         }
 
         return $result;
     }
-
 
     public function results()
     {
