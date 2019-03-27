@@ -220,8 +220,7 @@ class NavigationComponent extends Component {
                                     if (levelFourProps.label) {
                                       return (
                                         <li
-                                        onClick={() => {this.collapseLevelThree(levelOneKey, levelTwoKey)}}
-                                        // onClick={() => {this.collapseLevelTwo( levelTwoKey, levelThreeKey)}}
+                                          onClick={() => {this.collapseLevelTwo( levelTwoKey, levelThreeKey)}}
                                           className={"collapsed-level-item" + (pageId == urlOptions ? " active" : "")}
                                         >
                                           <Link

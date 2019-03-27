@@ -11,7 +11,7 @@
   min-width: 45px;
   max-width: 45px;
   text-align: center;
-  background: #e0e0e0;
+  background: $grey-clear;
   transition: all 0.2s;
   border-right: 1px solid $grey-medium;
   z-index: 2;
@@ -55,13 +55,15 @@
         position: relative;
         &.active{
           >ul.list-unstyled {
-            .collapsed-item:hover {
-              >ul {
-                display: block!important;
-                position: absolute;
-                margin-top: -40px;
-                left: 120px;
-                width: 120px;
+            .collapsed-item {
+              // width: 155px;
+              &:hover {
+                >ul {
+                  display: block!important;
+                  position: absolute;
+                  margin-top: -40px;
+                  left: 155px;
+                }
               }
             }
           }
@@ -71,7 +73,6 @@
               position: absolute;
               top: 0px;
               left: 45px;
-              width: 120px;
             }
           }
           .collapse .collapsed-item.active .first-level {
@@ -83,8 +84,14 @@
   }
 
   .menu {
+      .list-unstyled {
+        width: 155px;
+      }
     &-item {
       position: relative;
+      .list-unstyled {
+        border: 1px solid $grey-clear;
+      }
       &.to-hover {
         >ul.list-unstyled {
           .collapsed-item:hover {
@@ -92,19 +99,16 @@
               display: block!important;
               position: absolute;
               margin-top: -40px;
-              left: 120px;
-              width: 120px;
+              left: 155px;
             }
           }
         }
-      
         &:hover {
           >ul.list-unstyled {
             display: block!important;
             position: absolute;
             top: 0px;
             left: 45px;
-            width: 120px;
           }
         }
         .collapse .collapsed-item.active .first-level {
@@ -115,9 +119,6 @@
   }
 
 
-
-
-
   &.active {
     min-width: 160px;
     max-width: 160px;
@@ -126,15 +127,24 @@
         &.to-hover:hover {
           >ul.list-unstyled {
             left: 160px;
-            width: 120px;
           }
         }
         &.active {
           .collapsed-items.list-unstyled {
             display: block!important;
           }
+          .list-unstyled,
+          .list-unstyled.active {
+            border-top: 0px solid transparent;
+            border-bottom: 0px solid transparent;
+            border-right: 0px solid transparent;
+            .list-unstyled {
+              border-left: 0px solid transparent;
+            }
+          }
         }
       }
+
     }
     .sidebar-logo {
       display: block;
@@ -201,8 +211,6 @@
   }
   &-inner {
     position: relative;
-    // overflow-y: auto;
-    // overflow-x: hidden;
     max-height: 100vh;
   }
 }
@@ -243,7 +251,6 @@ a {
       text-decoration: none;
       display: block;
       position: relative;
-   
       &:hover {
         color: $white-color;
       }
@@ -251,32 +258,6 @@ a {
         margin-right: 10px;
       }
     }
-    // &:first-child {
-    //   ul.list-unstyled {
-    //     top: 51px
-    //   }
-
-    // }
-    // &:nth-child(2){
-    //   ul.list-unstyled {
-    //     top: 91px
-    //   }
-    // }
-    // &:nth-child(3){
-    //   ul.list-unstyled {
-    //     top: 130px
-    //   }
-    // }
-    // &:nth-child(4){
-    //   ul.list-unstyled {
-    //     top: 169px;
-    //   }
-    // }
-    // &:nth-child(5){
-    //   ul.list-unstyled {
-    //     top: 208px
-    //   }
-    // }
     >ul.list-unstyled  {
       display: none;
     }
@@ -522,9 +503,9 @@ a {
 .collapse {
   .collapsed-level {
     &-item {
-      background-color: #f7f6f6;
+      background-color: $grey-clear;
       &-link {
-        border-bottom: 1px solid #f7f7f7;
+        border-bottom: 1px solid $grey-classic;
         text-align: left;
         text-decoration: none;
         font-size: 0.8rem;
@@ -569,10 +550,10 @@ a {
     > .collapsed-level-item-link {
       background: url("../../img/icons/aside-menu-arrows.png") no-repeat;
       background-position: 12px 10px;
-      background-color: #f7f7f7;
+      background-color: $grey-classic;
       &.img-none {
         background: none;
-        background-color: #f7f7f7;
+        background-color: $grey-classic;
       }
     }
   }
