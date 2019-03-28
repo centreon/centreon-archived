@@ -536,7 +536,7 @@ $tpl->display("service.ihtml");
         sSetOrderInMemory = '<?= $sSetOrderInMemory; ?>';
 
         if (_defaultStatusService !== '') {
-            jQuery("#statusService option[value='"+_defaultStatusService+"']").prop('selected', true);
+            jQuery("#statusService option[value='" + _defaultStatusService + "']").prop('selected', true);
         }
 
         if (_sDefaultOrder == "0") {
