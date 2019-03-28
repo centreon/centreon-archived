@@ -63,7 +63,7 @@ $dbPass = $parameters['db_password'];
 $host = "localhost";
 // if database server is not on localhost...
 if ($parameters['address'] != "127.0.0.1" && $parameters['address'] != "localhost") {
-    $host = $_SERVER['SERVER_ADDR'];
+    $host = explode(" ", $link->getAttribute(PDO::ATTR_CONNECTION_STATUS))[0];
 }
 $query = "GRANT ALL PRIVILEGES ON `%s`.* TO `" . $dbUser . "`@`" . $host .
     "` IDENTIFIED BY '" . $dbPass . "' WITH GRANT OPTION";
