@@ -1,7 +1,7 @@
 <?php
 /*
- * Copyright 2005-2015 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2019 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -37,9 +37,9 @@ if (!isset($centreon)) {
     exit();
 }
 
-include_once("./class/centreonUtils.class.php");
+include_once "./class/centreonUtils.class.php";
 
-include("./include/common/autoNumLimit.php");
+include "./include/common/autoNumLimit.php";
 
 $search = null;
 
@@ -58,18 +58,17 @@ if ($search) {
         "WHERE (sg_name LIKE '%" . htmlentities($search, ENT_QUOTES, "UTF-8") .
         "%' OR sg_alias LIKE '%" . htmlentities($search, ENT_QUOTES, "UTF-8") . "%') " .
         $acl->queryBuilder('AND', 'sg_id', $sgString) .
-        " ORDER BY sg_name
-           LIMIT " . $num * $limit . ", " . $limit;
+        " ORDER BY sg_name LIMIT " . $num * $limit . ", " . $limit;
 } else {
     $rq = "SELECT SQL_CALC_FOUND_ROWS sg_id, sg_name, sg_alias, sg_activate FROM servicegroup " .
         $acl->queryBuilder('WHERE', 'sg_id', $sgString) .
         " ORDER BY sg_name LIMIT " . $num * $limit . ", " . $limit;
 }
 
-$DBRESULT = $pearDB->query($rq);
+$dbResult = $pearDB->query($rq);
 $rows = $pearDB->query("SELECT FOUND_ROWS()")->fetchColumn();
 
-include("./include/common/checkPagination.php");
+include "./include/common/checkPagination.php";
 
 /*
  * Smarty template Init
@@ -77,8 +76,10 @@ include("./include/common/checkPagination.php");
 $tpl = new Smarty();
 $tpl = initSmartyTpl($path, $tpl);
 
-/* Access level */
-($centreon->user->access->page($p) == 1) ? $lvl_access = 'w' : $lvl_access = 'r';
+// Access level
+$lvl_access = ($centreon->user->access->page($p) == 1)
+    ? 'w'
+    : 'r';
 $tpl->assign('mode_access', $lvl_access);
 
 $tpl->assign("headerMenu_name", _("Name"));
@@ -89,22 +90,18 @@ $tpl->assign("headerMenu_options", _("Options"));
 $search = tidySearchKey($search, $advanced_search);
 
 $form = new HTML_QuickFormCustom('select_form', 'POST', "?p=" . $p);
-/*
- * Different style between each lines
- */
+// Different style between each lines
 $style = "one";
 
-/*
- * Fill a tab with a mutlidimensionnal Array we put in $tpl
- */
+// Fill a tab with a multidimensional Array we put in $tpl
 $elemArr = array();
-for ($i = 0; $sg = $DBRESULT->fetchRow(); $i++) {
+for ($i = 0; $sg = $dbResult->fetch(); $i++) {
     $selectedElements = $form->addElement('checkbox', "select[" . $sg['sg_id'] . "]");
     $moptions = "";
     if ($sg["sg_activate"]) {
         $moptions .= "<a href='main.php?p=" . $p . "&sg_id=" . $sg['sg_id'] . "&o=u&limit=" . $limit .
-            "&num=" . $num . "&search=" . $search . "'><img src='img/icons/disabled.png' class='ico-14 margin_right' " .
-            "border='0' alt='" . _("Disabled") . "'></a>";
+            "&num=" . $num . "&search=" . $search . "'><img src='img/icons/disabled.png' class='ico-14 margin_right' "
+            . "border='0' alt='" . _("Disabled") . "'></a>";
     } else {
         $moptions .= "<a href='main.php?p=" . $p . "&sg_id=" . $sg['sg_id'] . "&o=s&limit=" . $limit .
             "&num=" . $num . "&search=" . $search . "'><img src='img/icons/enabled.png' class='ico-14 margin_right' " .
@@ -133,18 +130,20 @@ $tpl->assign("elemArr", $elemArr);
  */
 $tpl->assign(
     'msg',
-    array("addL" => "main.php?p=" . $p . "&o=a", "addT" => _("Add"), "delConfirm" => _("Do you confirm the deletion ?"))
+    array(
+        "addL" => "main.php?p=" . $p . "&o=a",
+        "addT" => _("Add"),
+        "delConfirm" => _("Do you confirm the deletion ?")
+    )
 );
 
-/*
- * Toolbar select
- */
+// Toolbar select
 ?>
-    <script type="text/javascript">
-        function setO(_i) {
-            document.forms['form'].elements['o'].value = _i;
-        }
-    </SCRIPT>
+<script type="text/javascript">
+    function setO(_i) {
+        document.forms['form'].elements['o'].value = _i;
+    }
+</script>
 <?php
 $attrs1 = array(
     'onchange' => "javascript: " .
@@ -199,9 +198,7 @@ $o2->setValue(null);
 $tpl->assign('limit', $limit);
 $tpl->assign('searchSG', $search);
 
-/*
- * Apply a template definition
- */
+// Apply a template definition
 $renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 $form->accept($renderer);
 $tpl->assign('form', $renderer->toArray());
