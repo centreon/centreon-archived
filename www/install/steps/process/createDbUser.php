@@ -64,7 +64,7 @@ $host = "localhost";
 // if database server is not on localhost...
 if ($parameters['address'] != "127.0.0.1" && $parameters['address'] != "localhost") {
     $getIpQuery = $link->prepare(
-        'SELECT host FROM information_schema.processlist WHERE ID=connection_id()'
+        'SELECT host FROM information_schema.processlist WHERE ID = connection_id()'
     );
     $getIpQuery->execute();
     // The result example (172.17.0.1:38216), use the explode function to remove port
