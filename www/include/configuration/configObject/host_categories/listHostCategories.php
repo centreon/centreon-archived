@@ -37,14 +37,13 @@ if (!isset($centreon)) {
     exit();
 }
 
-require_once "./class/centreonUtils.class.php";
-include "./include/common/autoNumLimit.php";
+include_once("./class/centreonUtils.class.php");
+include("./include/common/autoNumLimit.php");
 
 /*
  * Search
  */
 
-$search = "";
 $SearchTool = null;
 $search = null;
 if (isset($_POST['searchH'])) {
@@ -76,7 +75,7 @@ $DBRESULT = $pearDB->query($query);
 $search = tidySearchKey($search, $advanced_search);
 $rows = $pearDB->query("SELECT FOUND_ROWS()")->fetchColumn();
 
-include_once "./include/common/checkPagination.php";
+include("./include/common/checkPagination.php");
 
 // Smarty template Init
 $tpl = new Smarty();
@@ -132,13 +131,12 @@ for ($i = 0; $hc = $DBRESULT->fetch(); $i++) {
         $aclFrom = ", $aclDbName.centreon_acl acl ";
         $aclCond = " AND h.host_id = acl.host_id AND acl.group_id IN (" . $acl->getAccessGroupsString() . ") ";
     }
-    $DBRESULT2 = $pearDB->query(
-        "SELECT h.host_id, h.host_activate " .
-        "FROM hostcategories_relation hcr, host h " . $aclFrom . 
-        " WHERE hostcategories_hc_id = '" . $hc['hc_id'] . "'" .
-        " AND h.host_id = hcr.host_host_id " . $aclCond .
-        " AND h.host_register = '1' "
-    );
+    $rq = "SELECT h.host_id, h.host_activate
+           FROM hostcategories_relation hcr, host h $aclFrom
+           WHERE hostcategories_hc_id = '" . $hc['hc_id'] . "'
+           AND h.host_id = hcr.host_host_id $aclCond
+           AND h.host_register = '1' ";
+    $DBRESULT2 = $pearDB->query($rq);
     $nbrhostActArr = array();
     $nbrhostDeactArr = array();
     while ($row = $DBRESULT2->fetch()) {
@@ -172,11 +170,7 @@ $tpl->assign("elemArr", $elemArr);
 // Different messages we put in the template
 $tpl->assign(
     'msg',
-    array(
-        "addL" => "main.php?p=" . $p . "&o=a",
-        "addT" => _("Add"),
-        "delConfirm" => _("Do you confirm the deletion ?")
-    )
+    array("addL" => "main.php?p=" . $p . "&o=a", "addT" => _("Add"), "delConfirm" => _("Do you confirm the deletion ?"))
 );
 
 ?>
@@ -204,19 +198,13 @@ foreach (array('o1', 'o2') as $option) {
             "   setO(this.form.elements['" . $option . "'].value); submit();} " .
             "this.form.elements['" . $option . "'].selectedIndex = 0"
     );
-    $form->addElement(
-        'select',
-        $option,
-        null,
-        array(
-            null => _("More actions..."),
-            "m" => _("Duplicate"),
-            "d" => _("Delete"),
-            "ms" => _("Enable"),
-            "mu" => _("Disable")
-        ),
-        $attrs1
-    );
+    $form->addElement('select', $option, null, array(
+        null => _("More actions..."),
+        "m" => _("Duplicate"),
+        "d" => _("Delete"),
+        "ms" => _("Enable"),
+        "mu" => _("Disable")
+    ), $attrs1);
     $form->setDefaults(array($option => null));
     $o1 = $form->getElement($option);
     $o1->setValue(null);
