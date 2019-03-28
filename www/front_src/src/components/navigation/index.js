@@ -219,11 +219,8 @@ class NavigationComponent extends Component {
                                       return (
                                         <li
                                           onClick={() => {
-                                            active ?
-                                              //this.collapseLevelTwo( levelTwoKey, levelThreeKey)
-                                              this.collapseLevelThree( levelTwoKey, levelThreeKey)
-                                            : null
-                                            }}
+                                            this.collapseLevelThree(levelOneKey, levelTwoKey)
+                                          }}
                                           className={`collapsed-level-item ${pageId == urlOptions ? " active" : ""}`}
                                         >
                                           <Link

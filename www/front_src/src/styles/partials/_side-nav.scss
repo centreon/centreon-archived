@@ -57,7 +57,6 @@
         &.active{
           >ul.list-unstyled {
             .collapsed-item {
-              // width: 155px;
               &:hover {
                 >ul {
                   display: block!important;
@@ -248,7 +247,6 @@ a {
       padding-bottom: 30px;
     }
   }
-  
   &-item {
     &-link {
       border-bottom: 1px solid $white-color;
@@ -524,13 +522,29 @@ a {
       }
     }
     &-title {
-      height: 1px;
-      background-color: $lightblue-centreon-primary;
+      height: 18px;
+      background-color: $white-color;
       display: block;
+      position: relative;
       margin:0;
-      &:first-child {
-        display: none;
+      &:before {
+        content: ' ';
+        height: 1px;
+        width: 100%;
+        background-color: $lightblue-centreon-primary;
+        position: absolute;
+        display: block;
+        top: 8px;
       }
+      span {
+        font-family: $primary-font-regular;
+        padding: 0px 5px;
+        color: $lightblue-centreon-primary;
+        background: $white-color;
+        font-variant: all-petite-caps;
+        font-size: 0.8rem;
+        position: relative;
+    }
     }
   }
   .collapsed-item {
