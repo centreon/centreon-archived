@@ -37,9 +37,9 @@ if (!isset($centreon)) {
     exit();
 }
 
-require_once "./class/centreonUtils.class.php";
+include_once("./class/centreonUtils.class.php");
 
-include "./include/common/autoNumLimit.php";
+include("./include/common/autoNumLimit.php");
 
 // Init Host Method
 $host_method = new CentreonHost($pearDB);
@@ -53,12 +53,12 @@ while ($ehi = $DBRESULT->fetch()) {
 }
 $DBRESULT->closeCursor();
 
-$search = null;
-if (isset($_POST['searchHT'])) {
-    $search = $_POST['searchHT'];
-    $centreon->historySearch[$url] = $search;
-} elseif (isset($_GET['searchHT'])) {
-    $search = $_GET['searchHT'];
+$search = filter_var(
+    $_POST['searchHT'] ?? $_GET['searchHT'] ?? null,
+    FILTER_SANITIZE_STRING
+);
+
+if (isset($_POST['searchHT']) || isset($_GET['searchHT'])) {
     $centreon->historySearch[$url] = $search;
 } elseif (isset($centreon->historySearch[$url])) {
     $search = $centreon->historySearch[$url];
