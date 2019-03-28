@@ -38,20 +38,38 @@ class CentreonRemoteServer implements CentreonClapiServiceInterface
      */
     public function enableRemote(string $string_ip)
     {
+        /* Check if user wants to disable SS certificate validation */
+        $noCheckCertificate = false;
+        if (preg_match('/(.*);1$/', $string_ip, $matches)) {
+            $string_ip = $matches[1];
+            $noCheckCertificate = true;
+        }
+
+        /* Extract host from URI */
+        $aIPMaster = array();
+        $pattern_extract_host = '/^[a-z][a-z0-9+\-.]*:\/\/([a-z0-9\-._~%!$&\'()*+,;=]+@)?([a-z0-9\-._~%]+|\[[a-z0-9\-._~%!$&\'()*+,;=:]+\])/';
         $ipList = explode(',', $string_ip);
+        foreach ($ipList as $ip) {
+            if (preg_match($pattern_extract_host, $ip, $matches)) {
+                $ip = $matches[2];
+            }
+            $aIPMaster[] = $ip;
+        }
 
         echo "Starting Centreon Remote enable process: \n";
 
         echo "Limiting Menu Access...";
         $result = $this->getDi()['centreon.db-manager']->getRepository(TopologyRepository::class)->disableMenus();
-        echo ($result) ? 'Success' . "\n" : 'Fail' . "\n";
+        echo (($result) ? 'Success' . "\n" : 'Fail') . "\n";
 
         echo "Limiting Actions...";
         $this->getDi()['centreon.db-manager']->getRepository(InformationsRepository::class)->toggleRemote('yes');
         echo "Done\n";
 
         echo "Authorizing Master...";
-        $this->getDi()['centreon.db-manager']->getRepository(InformationsRepository::class)->authorizeMaster($string_ip);
+        $this->getDi()['centreon.db-manager']->getRepository(InformationsRepository::class)->authorizeMaster(
+            implode(',',$aIPMaster)
+        );
         echo "Done\n";
 
         echo "Set 'remote' instance type...";
@@ -63,10 +81,10 @@ class CentreonRemoteServer implements CentreonClapiServiceInterface
         echo "Notifying Master...";
         $result = "";
         foreach ($ipList as $ip) {
-            $result = $this->getDi()['centreon.notifymaster']->pingMaster($ip);
+            $result = $this->getDi()['centreon.notifymaster']->pingMaster($ip, $noCheckCertificate);
             if (!empty($result['status']) && $result['status'] == 'success') {
                 echo "Success\n";
-                continue;
+                break;
             }
         }
         if (empty($result['status']) || $result['status'] != 'success') {
