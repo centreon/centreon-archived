@@ -11,7 +11,7 @@ class UniqueEntity extends Constraint
     const NOT_UNIQUE_ERROR = '23bd9dbf-6b9b-41cd-a99e-4844bcf3077c';
     public $validatorClass = UniqueEntityValidator::class;
     public $message = 'This value is already used.';
-    public $entityClass = null;
+    public $repository = null;
     public $repositoryMethod = 'findOneBy';
     public $fields = [];
     public $errorPath = null;

@@ -10,6 +10,7 @@ use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
 use Symfony\Component\Validator\Exception\ConstraintDefinitionException;
 use Symfony\Component\Validator\Exception\UnexpectedTypeException;
+use Symfony\Component\Validator\Constraints\NotBlankValidator;
 
 class UniqueEntityValidator extends ConstraintValidator
 {
@@ -29,49 +30,35 @@ class UniqueEntityValidator extends ConstraintValidator
     }
 
     /**
-     * @param object     $entity
-     * @param Constraint $constraint
-     *
-     * @throws UnexpectedTypeException
-     * @throws ConstraintDefinitionException
+     * {@inheritdoc}
      */
-    public function validate($entity, Constraint $constraint)
+    public function validate($value, Constraint $constraint)
     {
         if (!$constraint instanceof UniqueEntity) {
             throw new UnexpectedTypeException($constraint, __NAMESPACE__.'\UniqueEntity');
-        }
-        if (!\is_array($constraint->fields) && !\is_string($constraint->fields)) {
+        } elseif (!\is_array($constraint->fields) && !\is_string($constraint->fields)) {
             throw new UnexpectedTypeException($constraint->fields, 'array');
-        }
-        if (null !== $constraint->errorPath && !\is_string($constraint->errorPath)) {
+        } elseif (null !== $constraint->errorPath && !\is_string($constraint->errorPath)) {
             throw new UnexpectedTypeException($constraint->errorPath, 'string or null');
         }
 
         //define fields to check
         $fields = (array) $constraint->fields;
+        $method = $constraint->repositoryMethod;
 
         if (0 === \count($fields)) {
             throw new ConstraintDefinitionException('At least one field has to be specified.');
-        }
-        if (null === $entity) {
-            return;
-        }
-
-        $repositoryName = $entity->getRepositoryName();
-
-        $criteria = [];
-
-        // skip validation if there are no criteria
-        if (empty($criteria)) {
+        } elseif (null === $value) {
             return;
         }
 
         $unique = true;
 
         foreach ($fields as $field){
-            $result = $this->db->getRepository($repositoryName)
-                ->findOneBy([$field => $entity->toArray()[$field]]);
-            if (!empty($result)){
+            $result = $this->db->getRepository($constraint->repository)
+                ->$method([$field => $value]);
+
+            if ($result){
                 $unique = false;
             }
         }
@@ -80,11 +67,8 @@ class UniqueEntityValidator extends ConstraintValidator
             return;
         }
 
-        $errorPath = null !== $constraint->errorPath ? $constraint->errorPath : $fields[0];
-        $invalidValue = isset($criteria[$errorPath]) ? $criteria[$errorPath] : $criteria[$fields[0]];
         $this->context->buildViolation($constraint->message)
-            ->atPath($errorPath)
-            ->setInvalidValue($invalidValue)
+            ->setInvalidValue($value)
             ->setCode(UniqueEntity::NOT_UNIQUE_ERROR)
             ->setCause($result)
             ->addViolation();
