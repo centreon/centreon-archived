@@ -101,7 +101,9 @@ class NotifyMasterService
                         $details = self::TIMEOUT;
                         break;
                     default:
-                        $details = self::UNKNOWN_ERROR;
+                        $details = ($this->getCurl()->http_status_code) ?
+                            'HTTP code: ' . $this->getCurl()->http_status_code :
+                            self::UNKNOWN_ERROR;
                         break;
                 }
 
