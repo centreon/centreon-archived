@@ -1,7 +1,7 @@
 <?php
 /*
- * Copyright 2005-2015 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2019 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -40,9 +40,9 @@ if (!isset($oreon)) {
     exit();
 }
 
-include("./include/common/autoNumLimit.php");
+include "./include/common/autoNumLimit.php";
 
-$SearchTool = '';
+$searchTool = '';
 $search = null;
 
 if (isset($_POST['searchSC'])) {
@@ -56,13 +56,13 @@ if (isset($_POST['searchSC'])) {
 }
 
 if ($search) {
-    $SearchTool .= "WHERE (sc_name LIKE '%" . htmlentities($search, ENT_QUOTES, "UTF-8") .
+    $searchTool .= "WHERE (sc_name LIKE '%" . htmlentities($search, ENT_QUOTES, "UTF-8") .
         "%' OR sc_description LIKE '%" . htmlentities($search, ENT_QUOTES, "UTF-8") . "%')";
 }
 
 $aclCond = "";
 if (!$oreon->user->admin && $scString != "''") {
-    if (is_null($SearchTool)) {
+    if (is_null($searchTool)) {
         $clause = " WHERE ";
     } else {
         $clause = " AND ";
@@ -73,21 +73,19 @@ if (!$oreon->user->admin && $scString != "''") {
 /*
  * Services Categories Lists
  */
-$query = "SELECT SQL_CALC_FOUND_ROWS * FROM service_categories $SearchTool $aclCond " .
+$query = "SELECT SQL_CALC_FOUND_ROWS * FROM service_categories $searchTool $aclCond " .
     "ORDER BY sc_name LIMIT " . $num * $limit . ", " . $limit;
-$DBRESULT = $pearDB->query($query);
+$dbResult = $pearDB->query($query);
 
 $rows = $pearDB->query("SELECT FOUND_ROWS()")->fetchColumn();
-include("./include/common/checkPagination.php");
+include "./include/common/checkPagination.php";
 
-/*
- * Smarty template Init
- */
+// Smarty template Init
 $tpl = new Smarty();
 $tpl = initSmartyTpl($path, $tpl);
 
-/* Access level */
-($centreon->user->access->page($p) == 1) ? $lvl_access = 'w' : $lvl_access = 'r';
+// Access level
+$lvl_access = ($centreon->user->access->page($p) == 1) ? 'w' : 'r';
 $tpl->assign('mode_access', $lvl_access);
 
 /*
@@ -104,31 +102,28 @@ $search = tidySearchKey($search, $advanced_search);
 
 $form = new HTML_QuickFormCustom('select_form', 'POST', "?p=" . $p);
 
-/*
- * Different style between each lines
- */
+// Different style between each lines
 $style = "one";
 
-/*
- * Fill a tab with a mutlidimensionnal Array we put in $tpl
- */
+// Fill a tab with a multidimensional Array we put in $tpl
 $elemArr = array();
-for ($i = 0; $sc = $DBRESULT->fetchRow(); $i++) {
+for ($i = 0; $sc = $dbResult->fetch(); $i++) {
     $moptions = "";
-    $query = "SELECT COUNT(*) FROM `service_categories_relation` WHERE `sc_id` = '" . $sc['sc_id'] . "'";
-    $DBRESULT2 = $pearDB->query($query);
-    $nb_svc = $DBRESULT2->fetchRow();
+    $dbResult2 = $pearDB->query(
+        "SELECT COUNT(*) FROM `service_categories_relation` WHERE `sc_id` = '" . $sc['sc_id'] . "'"
+    );
+    $nb_svc = $dbResult2->fetch();
 
     $selectedElements = $form->addElement('checkbox', "select[" . $sc['sc_id'] . "]");
 
     if ($sc["sc_activate"]) {
         $moptions .= "<a href='main.php?p=" . $p . "&sc_id=" . $sc['sc_id'] . "&o=u&limit=" . $limit .
-            "&num=" . $num . "&search=" . $search . "'><img src='img/icons/disabled.png' class='ico-14 margin_right' " .
-            "border='0' alt='" . _("Disabled") . "'></a>&nbsp;&nbsp;";
+            "&num=" . $num . "&search=" . $search . "'><img src='img/icons/disabled.png' class='ico-14 margin_right' "
+            . "border='0' alt='" . _("Disabled") . "'></a>&nbsp;&nbsp;";
     } else {
         $moptions .= "<a href='main.php?p=" . $p . "&sc_id=" . $sc['sc_id'] . "&o=s&limit=" . $limit .
-            "&num=" . $num . "&search=" . $search . "'><img src='img/icons/enabled.png' class='ico-14 margin_right' " .
-            "border='0' alt='" . _("Enabled") . "'></a>&nbsp;&nbsp;";
+            "&num=" . $num . "&search=" . $search . "'><img src='img/icons/enabled.png' class='ico-14 margin_right' "
+            . "border='0' alt='" . _("Enabled") . "'></a>&nbsp;&nbsp;";
     }
     $moptions .= "&nbsp;";
     $moptions .= "<input onKeypress=\"if(event.keyCode > 31 && (event.keyCode < 45 || event.keyCode > 57)) " .
@@ -152,17 +147,15 @@ for ($i = 0; $sc = $DBRESULT->fetchRow(); $i++) {
 }
 $tpl->assign("elemArr", $elemArr);
 
-/*
- * Different messages we put in the template
- */
+// Different messages we put in the template
 $tpl->assign('msg', array("addL" => "main.php?p=" . $p . "&o=a", "addT" => _("Add")));
 
 ?>
-    <script type="text/javascript">
-        function setO(_i) {
-            document.forms['form'].elements['o'].value = _i;
-        }
-    </script>
+<script type="text/javascript">
+    function setO(_i) {
+        document.forms['form'].elements['o'].value = _i;
+    }
+</script>
 <?php
 $attrs1 = array(
     'onchange' => "javascript: " .
@@ -180,14 +173,20 @@ $attrs1 = array(
         " 	setO(this.form.elements['o1'].value); submit();} " .
         "this.form.elements['o1'].selectedIndex = 0"
 );
-$form->addElement('select', 'o1', null, array(
-    null => _("More actions..."),
-    "m" => _("Duplicate"),
-    "d" => _("Delete"),
-    "mc" => _("Massive Change"),
-    "ms" => _("Enable"),
-    "mu" => _("Disable")
-), $attrs1);
+$form->addElement(
+    'select',
+    'o1',
+    null,
+    array(
+        null => _("More actions..."),
+        "m" => _("Duplicate"),
+        "d" => _("Delete"),
+        "mc" => _("Massive Change"),
+        "ms" => _("Enable"),
+        "mu" => _("Disable")
+    ),
+    $attrs1
+);
 $form->setDefaults(array('o1' => null));
 
 $attrs2 = array(
@@ -206,14 +205,20 @@ $attrs2 = array(
         " 	setO(this.form.elements['o2'].value); submit();} " .
         "this.form.elements['o2'].selectedIndex = 0"
 );
-$form->addElement('select', 'o2', null, array(
-    null => _("More actions"),
-    "m" => _("Duplicate"),
-    "d" => _("Delete"),
-    "mc" => _("Massive Change"),
-    "ms" => _("Enable"),
-    "mu" => _("Disable")
-), $attrs2);
+$form->addElement(
+    'select',
+    'o2',
+    null,
+    array(
+        null => _("More actions"),
+        "m" => _("Duplicate"),
+        "d" => _("Delete"),
+        "mc" => _("Massive Change"),
+        "ms" => _("Enable"),
+        "mu" => _("Disable")
+    ),
+    $attrs2
+);
 $form->setDefaults(array('o2' => null));
 
 $o1 = $form->getElement('o1');
@@ -227,9 +232,7 @@ $o2->setSelected(null);
 $tpl->assign('limit', $limit);
 $tpl->assign('searchSC', $search);
 
-/*
- * Apply a template definition
- */
+// Apply a template definition
 $renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 $form->accept($renderer);
 $tpl->assign('form', $renderer->toArray());
