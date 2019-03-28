@@ -556,7 +556,7 @@ $tpl->display("service.ihtml");
                 jQuery("#statusFilter option[value='']").prop('selected', true);
             }
             if (_defaultStatusFilter != '') {
-                jQuery("#statusFilter option[value='"+_defaultStatusFilter+"']").prop('selected', true);
+                jQuery("#statusFilter option[value='" + _defaultStatusFilter + "']").prop('selected', true);
             }
         }
         filterStatus(document.getElementById('statusFilter').value, 1);
