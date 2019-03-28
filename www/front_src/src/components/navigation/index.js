@@ -209,6 +209,7 @@ class NavigationComponent extends Component {
                                 <React.Fragment>
                                   {Object.keys(levelTwoProps.children).length > 1 &&
                                     <span class="collapsed-level-title">
+                                      <Translate value={levelThreeKey}/>
                                     </span>
                                   }
                                   {Object.entries(levelThreeProps).map(([levelFourKey, levelFourProps]) => {
