@@ -1,13 +1,14 @@
-#generic developement files
+#generic development files
 www/index.html
 composer.lock
 
 #backend development and project files
 .idea/
+vendor/
 nbproject/
 GPL_LIB/SmartyCache/*
 
-#front developement files
+#front development files
 node_modules/
 www/static
 www/asset-manifest.json
@@ -33,7 +34,6 @@ config/centreon.config.php
 
 #continuous integration and testing files
 *-dev.yml
-vendor/
 coverage-report/
 centreon-build/
 secret
