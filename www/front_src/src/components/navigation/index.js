@@ -125,7 +125,7 @@ class NavigationComponent extends Component {
     const pageId = this.props.history.location.search.split("p=")[1];
 
     return (
-      <nav class={"sidebar" + (active ? " active" : " mini")} id="sidebar">
+      <nav class={`sidebar ${active ? " active" : " mini"}`} id="sidebar">
         <div class="sidebar-inner">
           <div class="sidebar-logo" onClick={this.toggleNavigation}>
             <span>
@@ -160,8 +160,6 @@ class NavigationComponent extends Component {
                 >
                 <span
                   onDoubleClick={() => {this.handleDirectClick(levelOneKey, levelOneProps)}}
-                  onClick={() => {this.collapseLevelTwo(levelOneKey)}}
-                  style={{ cursor: "pointer" }}
                   class="menu-item-link dropdown-toggle"
                   id={"menu" + levelOneKey}
                 >
@@ -185,7 +183,6 @@ class NavigationComponent extends Component {
                         >
                           {Object.keys(levelTwoProps.children).length > 0 ? (
                             <span
-                              style={{ cursor: "pointer" }}
                               onClick={() => {this.collapseLevelThree(levelOneKey, levelTwoKey)}}
                               class="collapsed-level-item-link"
                             >
@@ -222,10 +219,11 @@ class NavigationComponent extends Component {
                                         <li
                                           onClick={() => {
                                             active ?
-                                              this.collapseLevelTwo( levelTwoKey, levelThreeKey)
+                                              //this.collapseLevelTwo( levelTwoKey, levelThreeKey)
+                                              this.collapseLevelThree( levelTwoKey, levelThreeKey)
                                             : null
                                             }}
-                                          className={"collapsed-level-item" + (pageId == urlOptions ? " active" : "")}
+                                          className={`collapsed-level-item ${pageId == urlOptions ? " active" : ""}`}
                                         >
                                           <Link
                                             onClick={() => {
