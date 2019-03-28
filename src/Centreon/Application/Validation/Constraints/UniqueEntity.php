@@ -12,17 +12,18 @@ class UniqueEntity extends Constraint
     public $validatorClass = UniqueEntityValidator::class;
     public $message = 'This value is already used.';
     public $entityClass = null;
-    public $repositoryMethod = 'findBy';
+    public $repositoryMethod = 'findOneBy';
     public $fields = [];
     public $errorPath = null;
     public $ignoreNull = true;
+
 
     /**
      * {@inheritdoc}
      */
     public function getTargets()
     {
-        return self::CLASS_CONSTRAINT;
+        return self::PROPERTY_CONSTRAINT;
     }
 
     /**

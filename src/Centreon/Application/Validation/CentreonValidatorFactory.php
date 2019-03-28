@@ -76,7 +76,7 @@ class CentreonValidatorFactory implements ConstraintValidatorFactoryInterface
         if (!isset($this->validators[$className])) {
             $this->validators[$className] = new $className(new ServiceLocator(
                     $this->container,
-                    $className::dependencies()
+                    method_exists($className, 'dependencies') ? $className::dependencies() : []
                 ));
         }
 
