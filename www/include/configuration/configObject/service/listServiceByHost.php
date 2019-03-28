@@ -39,8 +39,8 @@ if (!isset($centreon)) {
 
 require_once "./class/centreonUtils.class.php";
 
-$hostgroupsFilter = isset($hostgroupsFilter) ? $hostgroupsFilter : null;
-$statusHostFilter = isset($statusHostFilter) ? $statusHostFilter : null;
+$hostgroupsFilter = $hostgroupsFilter ?? null;
+$statusHostFilter = $statusHostFilter ?? null;
 
 /*
  * Object init
@@ -49,74 +49,62 @@ $mediaObj = new CentreonMedia($pearDB);
 
 // Get Extended informations
 $ehiCache = array();
-$DbResult = $pearDB->query("SELECT ehi_icon_image, host_host_id FROM extended_host_information");
-while ($ehi = $DbResult->fetch()) {
+$dbResult = $pearDB->query("SELECT ehi_icon_image, host_host_id FROM extended_host_information");
+while ($ehi = $dbResult->fetch()) {
     $ehiCache[$ehi["host_host_id"]] = $ehi["ehi_icon_image"];
 }
-$DbResult->closeCursor();
+$dbResult->closeCursor();
 
-$template = null;
 $hostgroups = null;
-$hostStatus = 0;
-$status = -1;
-$searchH = null;
-$searchH_SQL = '';
-$searchS = null;
-$searchS_SQL = '';
 
-if (isset($_POST["status"])) {
-    $status = $_POST["status"];
-} elseif (isset($_GET["status"])) {
-    $status = $_GET["status"];
-}
+$status = filter_var(
+    $_POST["status"] ?? $_GET["status"] ?? -1,
+    FILTER_VALIDATE_INT
+);
 
-if (isset($_POST['Search'])) {
+$template = filter_var(
+    $_POST['template'] ?? $_GET['template'] ?? null,
+    FILTER_SANITIZE_STRING
+);
+
+$searchH = filter_var(
+    $_POST['searchH'] ?? $_GET['searchH'] ?? null,
+    FILTER_SANITIZE_STRING
+);
+
+$searchS = filter_var(
+    $_POST['searchS'] ?? $_GET['searchS'] ?? null,
+    FILTER_SANITIZE_STRING
+);
+
+if (isset($_POST['Search']) || isset($_GET['Search'])) {
+    //initializing filters values
+    $num = 0;
     $centreon->historySearch[$url] = array();
-    $template = $_POST["template"];
     $centreon->historySearch[$url]["template"] = $template;
-    $status = $_POST["status"];
     $centreon->historySearch[$url]["status"] = $status;
-    $searchH = $_POST["searchH"];
     $centreon->historySearch[$url]["searchH"] = $searchH;
-    $searchS = $_POST["searchS"];
     $centreon->historySearch[$url]["searchS"] = $searchS;
-    isset($_POST["statusHostFilter"]) ? $hostStatus = 1 : $hostStatus = 0;
-    $centreon->historySearch[$url]["hostStatus"] = $hostStatus;
-} elseif (isset($_GET['Search'])) {
-    $centreon->historySearch[$url] = array();
-    $template = $_GET['template'];
-    $centreon->historySearch[$url]['template'] = $template;
-    $status = $_GET["status"];
-    $centreon->historySearch[$url]["status"] = $status;
-    $searchH = $_GET["searchH"];
-    $centreon->historySearch[$url]["searchH"] = $searchH;
-    $searchS = $_GET["searchS"];
-    $centreon->historySearch[$url]["searchS"] = $searchS;
-    isset($_POST["statusHostFilter"]) ? $hostStatus = 1 : $hostStatus = 0;
+    $hostStatus = isset($_POST["statusHostFilter"]) ? 1 : 0;
     $centreon->historySearch[$url]["hostStatus"] = $hostStatus;
 } else {
-    if (isset($centreon->historySearch[$url]['template'])) {
-        $template = $centreon->historySearch[$url]['template'];
-    }
-    if (isset($centreon->historySearch[$url]["status"])) {
-        $status = $centreon->historySearch[$url]["status"];
-    }
-    if (isset($centreon->historySearch[$url]["searchH"])) {
-        $searchH = $centreon->historySearch[$url]["searchH"];
-    }
-    if (isset($centreon->historySearch[$url]["searchS"])) {
-        $searchS = $centreon->historySearch[$url]["searchS"];
-    }
-    if (isset($centreon->historySearch[$url]["hostStatus"])) {
-        $hostStatus = $centreon->historySearch[$url]["hostStatus"];
-    }
+    //restoring saved values
+    $num = $centreon->historyPage[$url];
+    $template = $centreon->historySearch[$url]['template'] ?? null;
+    $status = $centreon->historySearch[$url]["status"] ?? -1;
+    $searchH = $centreon->historySearch[$url]["searchH"] ?? null;
+    $searchS = $centreon->historySearch[$url]["searchS"] ?? null;
+    $hostStatus = $centreon->historySearch[$url]["hostStatus"] ?? 0;
 }
 
+$searchH_SQL = '';
 if ($searchH) {
     $searchH_SQL .= "AND (host.host_name LIKE '%" . $pearDB->escape($searchH) .
         "%' OR host_alias LIKE '%" . $pearDB->escape($searchH) . "%' OR host_address LIKE '%" .
         $pearDB->escape($searchH) . "%')";
 }
+
+$searchS_SQL = '';
 if ($searchS) {
     $searchS_SQL .= "AND (sv.service_alias LIKE '%" . $pearDB->escape($searchS) .
         "%' OR sv.service_description LIKE '%" . $pearDB->escape($searchS) . "%')";
@@ -130,24 +118,25 @@ if ($hostStatus == 1) {
     $sqlFilterCase2 = "";
 }
 
-
 // Get Service Template List
 $tplService = array();
 $templateFilter = "<option value='0'></option>";
-$DbResult = $pearDB->query(
+$dbResult = $pearDB->query(
     "SELECT service_id, service_description, service_alias FROM service " .
     "WHERE service_register = '0' AND service_activate = '1' ORDER BY service_description"
 );
-while ($tpl = $DbResult->fetch()) {
+while ($tpl = $dbResult->fetch()) {
     $tplService[$tpl["service_id"]] = $tpl["service_alias"];
     $templateFilter .= "<option value='" . $tpl["service_id"] . "'" .
         (($tpl["service_id"] == $template) ? " selected" : "") . ">" . $tpl["service_description"] . "</option>";
 }
-$DbResult->closeCursor();
+$dbResult->closeCursor();
 
 // Status Filter
-$statusFilter = "<option value=''" . (($status == -1) ? " selected" : "") . "> </option>";
-$statusFilter .= "<option value='1'" . (($status == 1) ? " selected" : "") . ">" . _("Enabled") . "</option>";
+$statusFilter = "<option value=''" .
+    (($status == -1) ? " selected" : "") . "> </option>";
+$statusFilter .= "<option value='1'" .
+    (($status == 1) ? " selected" : "") . ">" . _("Enabled") . "</option>";
 $statusFilter .= "<option value='0'" .
     (($status == 0 && $status != '') ? " selected" : "") . ">" . _("Disabled") . "</option>";
 
@@ -221,8 +210,10 @@ $rq_body = $queryFieldsToSelect .
     $queryWhereClause .
     " ORDER BY host.host_name, service_description";
 
-$query = 'SELECT SQL_CALC_FOUND_ROWS ' . $distinct . $rq_body . ' LIMIT ' . $num * $limit . ', ' . $limit;
-$DbResult = $pearDB->query($query);
+$dbResult = $pearDB->query(
+    'SELECT SQL_CALC_FOUND_ROWS ' . $distinct . $rq_body .
+    ' LIMIT ' . $num * $limit . ', ' . $limit
+);
 
 $totalRowsQuery = 'SELECT COUNT(*) as count ' . $queryTablesToFetch . $queryWhereClause;
 $rowsCountStatement = $pearDB->query($totalRowsQuery);
@@ -230,8 +221,8 @@ $totalRowsResult = $rowsCountStatement->fetch();
 
 $rows = $totalRowsResult['count'];
 
-if (!($DbResult->rowCount())) {
-    $DbResult = $pearDB->query(
+if (!($dbResult->rowCount())) {
+    $dbResult = $pearDB->query(
         "SELECT " . $distinct . $rq_body . " LIMIT " . (floor($rows / $limit) * $limit) . ", " . $limit
     );
 }
@@ -248,14 +239,14 @@ $fgHost = array("value" => null, "print" => null);
 
 $interval_length = $centreon->optGen['interval_length'];
 
-for ($i = 0; $service = $DbResult->fetch(); $i++) {
+for ($i = 0; $service = $dbResult->fetch(); $i++) {
     //Get Number of Hosts linked to this one.
-    $DbResult2 = $pearDB->query(
+    $dbResult2 = $pearDB->query(
         "SELECT COUNT(*) FROM host_service_relation WHERE service_service_id = '" . $service["service_id"] . "'"
     );
-    $data = $DbResult2->fetch();
+    $data = $dbResult2->fetch();
     $service["nbr"] = $data["COUNT(*)"];
-    $DbResult2->closeCursor();
+    $dbResult2->closeCursor();
     unset($data);
 
     /**
