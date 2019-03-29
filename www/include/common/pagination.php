@@ -46,8 +46,7 @@ $type = $_REQUEST["type"] ?? null;
 $o = $_GET["o"] ?? $o = null;
 
 // splitting the path ($url) to keep only the current page's filename
-$page = (explode('/', $url));
-$currentPage = end($page);
+$currentPage = (explode('/', $url));
 
 if (isset($centreon->historyLastPage) && $centreon->historyLastPage !== $currentPage) {
     $num = 0;
