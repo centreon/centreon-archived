@@ -79,9 +79,11 @@ $pollers = explode(',', $_POST['poller']);
 // Add task to export files if there is a remote
 $idBindString = str_repeat('?,', count($pollers));
 $idBindString = rtrim($idBindString, ',');
-$queryRemotes = "SELECT ns.id, ns.ns_ip_address as ip, rs.centreon_path FROM nagios_server as ns
-    JOIN remote_servers as rs ON rs.ip = ns.ns_ip_address
-    WHERE ns.id IN({$idBindString})";
+$queryRemotes = "SELECT ns.id, ns.ns_ip_address AS ip,
+    rs.centreon_path, rs.http_method, rs.http_port, rs.no_check_certificate
+    FROM nagios_server AS ns
+    JOIN remote_servers AS rs ON rs.ip = ns.ns_ip_address
+    WHERE ns.id IN ({$idBindString})";
 
 $remotesStatement = $pearDB->query($queryRemotes, $pollers);
 $remotesResults = $remotesStatement->fetchAll(PDO::FETCH_ASSOC);
@@ -93,10 +95,13 @@ if (!empty($remotesResults)) {
         $linkedResults = $linkedStatement->fetchAll(PDO::FETCH_ASSOC);
 
         $exportParams = [
-            'server'        => $remote['id'],
-            'remote_ip'     => $remote['ip'],
-            'centreon_path' => $remote['centreon_path'],
-            'pollers' => []
+            'server'               => $remote['id'],
+            'remote_ip'            => $remote['ip'],
+            'centreon_path'        => $remote['centreon_path'],
+            'http_method'          => $remote['http_method'],
+            'http_port'            => $remode['http_port'] ?: null,
+            'no_check_certificate' => $remote['no_check_certificate'],
+            'pollers'              => []
         ];
 
         if (!empty($linkedResults)) {
