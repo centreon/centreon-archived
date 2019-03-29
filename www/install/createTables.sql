@@ -2379,7 +2379,10 @@ CREATE TABLE IF NOT EXISTS `remote_servers` (
   `is_connected` TINYINT(1) NOT NULL DEFAULT 0,
   `created_at` TIMESTAMP NOT NULL,
   `connected_at` TIMESTAMP NULL,
-  `centreon_path` VARCHAR(255) NULL
+  `centreon_path` VARCHAR(255) NULL,
+  `http_method` enum('http','https') NOT NULL DEFAULT 'http',
+  `http_port` int(11) DEFAULT NULL,
+  `no_check_certificate` enum('0','1') NOT NULL DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
