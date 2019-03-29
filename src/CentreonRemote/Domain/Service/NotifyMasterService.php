@@ -89,7 +89,6 @@ class NotifyMasterService
 
             if ($noCheckCertificate) {
                 $this->getCurl()->setOpt(CURLOPT_SSL_VERIFYPEER, false);
-                $this->getCurl()->setOpt(CURLOPT_SSL_VERIFYPEER, false);
             }
 
             $this->getCurl()->post($url, $curlData);
