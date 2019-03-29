@@ -42,6 +42,7 @@ class RepositoryCallbackValidator extends CallbackValidator
         $repo = $this->db->getRepository($constraint->repository);
         $fieldAccessor = $constraint->fieldAccessor;
         $value = $object->$fieldAccessor();
+        $field = $constraint->fields;
 
         if (!\is_callable($constraint->repository, $method)) {
             throw new ConstraintDefinitionException(
@@ -50,7 +51,14 @@ class RepositoryCallbackValidator extends CallbackValidator
         } elseif (null == $object || empty($object->$fieldAccessor())){
             throw new ConstraintDefinitionException('Object to validate or additional poller id is empty');
         } else {
-            return $repo->$method($value);
+            if (!$repo->$method($object)){
+                $this->context->buildViolation($constraint->message)
+                    ->atPath($field)
+                    ->setInvalidValue($value)
+                    ->setCode(RepositoryCallback::NOT_VALID_REPO_CALLBACK)
+                    ->setCause('Not Satisfying method:'.$method)
+                    ->addViolation();
+            }
         }
     }
 
