@@ -82,7 +82,7 @@ class CentreonRestHttp
      * @param bool $throwContent
      * @return array The result content
      */
-    public function call($url, $method = 'GET', $data = null, $headers = array(), $throwContent = false)
+    public function call($url, $method = 'GET', $data = null, $headers = array(), $throwContent = false, $noCheckCertificate = 0)
     {
         /* Add content type to headers */
         $headers[] = 'Content-type: ' . $this->contentType;
@@ -95,6 +95,10 @@ class CentreonRestHttp
         curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 30);
         curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
+        if ($noCheckCertificate) {
+            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        }
 
         if (!is_null($this->proxy)) {
             curl_setopt($ch, CURLOPT_PROXY, $this->proxy);
