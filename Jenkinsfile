@@ -109,17 +109,19 @@ try {
   }
 
   stage('Acceptance tests') {
-    def parallelSteps = featureFiles.collectEntries {
-      [ "${it}": {
+    def parallelSteps = [:]
+    for (x in featureFiles) {
+      def feature = x
+      parallelSteps[feature] = {
         node {
           sh 'setup_centreon_build.sh'
-          sh "./centreon-build/jobs/web/${serie}/mon-web-acceptance.sh centos7 features/${it}"
+          sh "./centreon-build/jobs/web/${serie}/mon-web-acceptance.sh centos7 features/${feature}"
           junit 'xunit-reports/**/*.xml'
           if (currentBuild.result == 'UNSTABLE')
             currentBuild.result = 'FAILURE'
           archiveArtifacts allowEmptyArchive: true, artifacts: 'acceptance-logs/*.txt, acceptance-logs/*.png, acceptance-logs/*.flv'
         }
-      }]
+      }
     }
     parallel parallelSteps
     if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
