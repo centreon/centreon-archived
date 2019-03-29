@@ -222,13 +222,7 @@ class ServiceProvider implements AutoloadServiceProviderInterface
         };
 
         $pimple[static::CENTREON_VALIDATOR_TRANSLATOR] = function(Container $container): Validation\CentreonValidatorTranslator {
-            $services = [
-                'translator',
-            ];
-            $formatter = new Symfony\Component\Translation\Formatter\MessageFormatter();
-
-            $locator = new ServiceLocator($container, $services);
-            return new Validation\CentreonValidatorTranslator($locator);
+            return new Validation\CentreonValidatorTranslator;
         };
 
         $pimple[static::VALIDATOR_EXPRESSION] = function(): Constraints\ExpressionValidator {

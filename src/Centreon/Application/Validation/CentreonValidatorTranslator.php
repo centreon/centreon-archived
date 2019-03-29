@@ -52,31 +52,17 @@ class CentreonValidatorTranslator implements TranslatorInterface, DeprecatedTran
 {
 
     /**
-     * @var \Psr\Container\ContainerInterface 
-     */
-    protected $services;
-
-    /**
-     * Construct
-     *
-     * @param \Psr\Container\ContainerInterface $services
-     */
-    public function __construct(ContainerInterface $services)
-    {
-        $this->services = $services;
-    }
-
-    /**
      * {@inheritdoc}
      */
     public function trans($id, array $parameters = array(), $domain = null, $locale = null)
     {
-//        return sprintf(_($id), $parameters);
-//        var_dump($id);
-//        var_dump($parameters);
-//        exit;
-        // ...
-        return $id;
+        $message = gettext($id);
+
+        foreach ($parameters as $key => $val) {
+            $message = str_replace($val, $val, $message);
+        }
+
+        return $message;
     }
 
     /**
@@ -86,7 +72,7 @@ class CentreonValidatorTranslator implements TranslatorInterface, DeprecatedTran
      */
     public function transChoice($id, $number, array $parameters = [], $domain = null, $locale = null)
     {
-        
+        // ...
     }
 
     /**
