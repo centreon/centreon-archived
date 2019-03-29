@@ -92,7 +92,7 @@ if (isset($_POST['Search'])) {
     $centreon->historySearch[$url]["status"] = $status;
     $searchH = $_GET["searchH"];
     $centreon->historySearch[$url]["searchH"] = $searchH;
-    $searchS = $_GET["searchS"] ?? '';
+    $searchS = $_GET["searchS"] ?? null;
     $centreon->historySearch[$url]["searchS"] = $searchS;
     isset($_POST["statusHostFilter"]) ? $hostStatus = 1 : $hostStatus = 0;
     $centreon->historySearch[$url]["hostStatus"] = $hostStatus;
