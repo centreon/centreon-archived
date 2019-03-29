@@ -22,7 +22,7 @@ DELETE FROM topology WHERE topology_name = "CSS" AND topology_parent = 501 AND t
 -- removing unfriendly title from Logs menu
 DELETE FROM topology WHERE topology_name = "Visualisation" AND topology_parent = 508 AND topology_page = 50801;
 
-
-
-
-
+-- Add HTTPS connexion to Remote Server
+ALTER TABLE remote_servers ADD COLUMN `http_method` enum('http','https') NOT NULL DEFAULT 'http';
+ALTER TABLE remote_servers ADD COLUMN `http_port` int(11) NULL DEFAULT NULL;
+ALTER TABLE remote_servers ADD COLUMN `no_check_certificate` enum('0','1') NOT NULL DEFAULT '1';
