@@ -597,6 +597,8 @@ function updateServer(int $id, $data): void
     $rq .= "WHERE id = '" . $id . "'";
     $pearDB->query($rq);
 
+    updateRemoteServerInformation($data);
+
     if (isset($_REQUEST['pollercmd'])) {
         $instanceObj = new CentreonInstance($pearDB);
         $instanceObj->setCommands($id, $_REQUEST['pollercmd']);
@@ -605,6 +607,31 @@ function updateServer(int $id, $data): void
     /* Prepare value for changelog */
     $fields = CentreonLogAction::prepareChanges($data);
     $centreon->CentreonLogAction->insertLog("poller", $id, CentreonDB::escape($data["name"]), "c", $fields);
+}
+
+/**
+ * Update Remote Server informations
+ *
+ * @param array $data
+ *
+ */
+function updateRemoteServerInformation(array $data)
+{
+    global $pearDB, $centreon;
+
+    $req = "SELECT * FROM `remote_servers` WHERE ip = '" . $data["ns_ip_address"]  . "'";
+    $result = $pearDB->query($req);
+
+    if ($result->rowCount()) {
+        $rq = "UPDATE `remote_servers` SET ";
+        $rq .= "http_method = '" . $data["http_method"] . "', ";
+        isset($data["http_port"]) && $data["http_port"] != null
+            ? $rq .= "http_port = '" . $data["http_port"]  . "', "
+            : $rq .= "http_port = NULL, ";
+        $rq .= "no_check_certificate = '" . $data["no_check_certificate"]["no_check_certificate"] . "'";
+        $pearDB->query($rq);
+    }
+    $result->closeCursor();
 }
 
 /**
