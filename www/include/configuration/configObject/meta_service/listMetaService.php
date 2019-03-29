@@ -41,15 +41,18 @@ include_once "./class/centreonUtils.class.php";
 
 include "./include/common/autoNumLimit.php";
 
-$search = null;
-if (isset($_POST['searchMS'])) {
-    $search = $_POST['searchMS'];
-    $centreon->historySearch[$url] = $search;
-} elseif (isset($_GET['searchMS'])) {
-    $search = $_GET['searchMS'];
-    $centreon->historySearch[$url] = $search;
-} elseif (isset($centreon->historySearch[$url])) {
-    $search = $centreon->historySearch[$url];
+$search = filter_var(
+    $_POST['searchMS'] ?? $_GET['searchMS'] ?? null,
+    FILTER_SANITIZE_STRING
+);
+
+if (isset($_POST['searchMS']) || isset($_GET['searchMS'])) {
+    //initializing filters values
+    $centreon->historySearch[$url] = array();
+    $centreon->historySearch[$url]["searchMS"] = $search;
+} else {
+    //restoring saved values
+    $search = $centreon->historySearch[$url]["searchMS"] ?? null;
 }
 
 /*
@@ -57,7 +60,7 @@ if (isset($_POST['searchMS'])) {
  */
 $rq = "SELECT SQL_CALC_FOUND_ROWS * FROM meta_service ";
 if ($search) {
-    $rq .= "WHERE meta_name LIKE '%" . htmlentities($search, ENT_QUOTES, "UTF-8") . "%' " .
+    $rq .= "WHERE meta_name LIKE '%" . $search . "%' " .
         $acl->queryBuilder("AND", "meta_id", $metaStr);
 } else {
     $rq .= $acl->queryBuilder("WHERE", "meta_id", $metaStr);
@@ -96,7 +99,7 @@ $calcType = array("AVE" => _("Average"), "SOM" => _("Sum"), "MIN" => _("Min"), "
  */
 if ($search) {
     $rq = "SELECT * FROM meta_service " .
-        "WHERE meta_name LIKE '%" . htmlentities($search, ENT_QUOTES, "UTF-8") . "%' " .
+        "WHERE meta_name LIKE '%" . $search . "%' " .
         $acl->queryBuilder("AND", "meta_id", $metaStr) .
         " ORDER BY meta_name LIMIT " . $num * $limit . ", " . $limit;
 } else {
