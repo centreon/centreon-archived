@@ -144,15 +144,20 @@ class CentreonWorker implements CentreonClapiServiceInterface
         $params = unserialize($task->getParams())['params'];
         $centreonPath = trim($params['centreon_path'], '/');
         $centreonPath = $centreonPath ? $centreonPath : '/centreon';
-        $url = "{$params['remote_ip']}/{$centreonPath}/api/external.php?"
-            . "object=centreon_task_service&action=AddImportTaskWithParent";
+        $url = $params['http_method'] ? $params['http_method'] . "://" : "";
+        $url .= $params['remote_ip'];
+        $url .= $params['http_port'] ? ":" . $params['http_port'] : "";
+        $url .= "/{$centreonPath}/api/external.php?object=centreon_task_service&action=AddImportTaskWithParent";
 
         try {
             $curl = new \CentreonRestHttp;
             $res = $curl->call(
                 $url,
                 'POST',
-                ['parent_id' => $task->getId()]
+                ['parent_id' => $task->getId()],
+                null,
+                false,
+                $params['no_check_certificate']
             );
         } catch (\Exception $e) {
             echo "Error while creating parent task on $url\n";
