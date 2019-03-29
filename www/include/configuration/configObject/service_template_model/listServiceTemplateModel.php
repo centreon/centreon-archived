@@ -48,33 +48,33 @@ include "./include/common/autoNumLimit.php";
 
 $o = "";
 
+$search = filter_var(
+    $_POST['searchST'] ?? $_GET['searchST'] ?? null,
+    FILTER_SANITIZE_STRING
+);
 
-
-$search = null;
-if (isset($_POST['searchST'])) {
-    $search = $_POST['searchST'];
-    $search = str_replace('/', "#S#", $search);
-    $search = str_replace('\\', "#BS#", $search);
-    $centreon->historySearch[$url] = $search;
-} elseif (isset($_GET['searchST'])) {
-    $search = $_GET['searchST'];
-    $search = str_replace('/', "#S#", $search);
-    $search = str_replace('\\', "#BS#", $search);
-    $centreon->historySearch[$url] = $search;
-} elseif (isset($centreon->historySearch[$url])) {
-    $search = $centreon->historySearch[$url];
+if (isset($_POST['searchST']) || isset($_GET['searchST'])) {
+    //initializing filters values
+    $centreon->historySearch[$url] = array();
+    $centreon->historySearch[$url]["searchST"] = $search;
+} else {
+    //restoring saved values
+    $search = $centreon->historySearch[$url]["searchST"] ?? null;
 }
 
 //Service Template Model list
 if ($search) {
     $query = "SELECT SQL_CALC_FOUND_ROWS sv.service_id, sv.service_description, sv.service_alias, " .
-        "sv.service_activate, sv.service_template_model_stm_id FROM service sv WHERE (sv.service_description LIKE '%" .
-        htmlentities($search, ENT_QUOTES, "UTF-8") . "%' OR sv.service_alias LIKE '%" .
-        htmlentities($search, ENT_QUOTES, "UTF-8") . "%') AND sv.service_register = '0' " .
+        "sv.service_activate, sv.service_template_model_stm_id " .
+        "FROM service sv " .
+        "WHERE (sv.service_description LIKE '%" . $search . "%' OR sv.service_alias LIKE '%" . $search . "%') " .
+        "AND sv.service_register = '0' " .
         "ORDER BY service_description LIMIT " . $num * $limit . ", " . $limit;
 } else {
     $query = "SELECT SQL_CALC_FOUND_ROWS sv.service_id, sv.service_description, sv.service_alias, " .
-        "sv.service_activate, sv.service_template_model_stm_id FROM service sv WHERE sv.service_register = '0' " .
+        "sv.service_activate, sv.service_template_model_stm_id " .
+        "FROM service sv " .
+        "WHERE sv.service_register = '0' " .
         "ORDER BY service_description LIMIT " . $num * $limit . ", " . $limit;
 }
 $dbResult = $pearDB->query($query);
