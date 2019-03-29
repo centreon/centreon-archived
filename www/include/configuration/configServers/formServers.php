@@ -72,6 +72,13 @@ if (($o == SERVER_MODIFY || $o == SERVER_WATCH) && $server_id) {
     } elseif (in_array($cfg_server['ns_ip_address'], $remotesServerIPs)) {
         $serverType = "remote";
     }
+
+    if ($serverType == "remote") {
+        $DBRESULT = $pearDB->query("SELECT http_method, http_port, no_check_certificate " .
+            "FROM `remote_servers` WHERE `ip` = '" . $cfg_server['ns_ip_address'] . "' LIMIT 1");
+        $cfg_server = array_merge($cfg_server, array_map("myDecode", $DBRESULT->fetchRow()));
+        $DBRESULT->closeCursor();
+    }
 }
 
 /*
@@ -136,6 +143,23 @@ $form->addElement('header', 'SSH_Informations', _("SSH Information"));
 $form->addElement('header', 'Nagios_Informations', _("Monitoring Engine Information"));
 $form->addElement('header', 'Misc', _("Miscelleneous"));
 $form->addElement('header', 'Centreontrapd', _("Centreon Trap Collector"));
+
+/*
+ * form for Remote Server
+ */
+if (strcmp($serverType, 'remote') ==  0) {
+    $form->addElement('header', 'Remote_Configuration', _("Remote Server Configuration"));
+    $aMethod = array(
+        'http' => 'http',
+        'https' => 'https'
+    );
+    $form->addElement('select', 'http_method', _("HTTP Method"), $aMethod);
+    $form->addElement('text', 'http_port', _("HTTP Port"), $attrsText3);
+    $Tab = array();
+    $Tab[] = $form->createElement('radio', 'no_check_certificate', null, _("Yes"), '1');
+    $Tab[] = $form->createElement('radio', 'no_check_certificate', null, _("No"), '0');
+    $form->addGroup($Tab, 'no_check_certificate', _("Do not check SSL certificate validation"), '&nbsp;');
+}
 
 /*
  * Poller Configuration basic information
