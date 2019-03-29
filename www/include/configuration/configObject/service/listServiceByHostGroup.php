@@ -41,44 +41,40 @@ include_once "./class/centreonUtils.class.php";
 
 $mediaObj = new CentreonMedia($pearDB);
 
-$searchHG = null;
-$searchS = null;
-$template = null;
-$status = -1;
+$searchHG = filter_var(
+    $_POST['hostgroups'] ?? $_GET['hostgroups'] ?? null,
+    FILTER_SANITIZE_STRING
+);
 
-if (isset($_POST['Search'])) {
+$searchS = filter_var(
+    $_POST['searchS'] ?? $_GET['searchS'] ?? null,
+    FILTER_SANITIZE_STRING
+);
+
+$template = filter_var(
+    $_POST['template'] ?? $_GET['template'] ?? null,
+    FILTER_SANITIZE_STRING
+);
+
+$status = filter_var(
+    $_POST["status"] ?? $_GET["status"] ?? -1,
+    FILTER_VALIDATE_INT
+);
+
+if (isset($_POST['Search']) || isset($_GET ['Search'])) {
+    //initializing filters values
+    $num = 0;
     $centreon->historySearch[$url] = array();
-    $searchHG = $_POST['hostgroups'];
     $centreon->historySearch[$url]["hostgroups"] = $searchHG;
-    $searchS = $_POST["searchS"];
     $centreon->historySearch[$url]["searchS"] = $searchS;
-    $template = $_POST["template"];
     $centreon->historySearch[$url]["template"] = $template;
-    $status = $_POST["status"];
-    $centreon->historySearch[$url]["status"] = $status;
-} elseif (isset($_GET['Search'])) {
-    $centreon->historySearch[$url] = array();
-    $searchHG = $_GET['hostgroups'];
-    $centreon->historySearch[$url]['hostgroups'] = $searchHG;
-    $searchS = $_GET["searchS"];
-    $centreon->historySearch[$url]["searchS"] = $searchS;
-    $template = $_GET["template"];
-    $centreon->historySearch[$url]["template"] = $template;
-    $status = $_GET["status"];
     $centreon->historySearch[$url]["status"] = $status;
 } else {
-    if (isset($centreon->historySearch[$url]['hostgroups'])) {
-        $searchHG = $centreon->historySearch[$url]['hostgroups'];
-    }
-    if (isset($centreon->historySearch[$url]["searchS"])) {
-        $searchS = $centreon->historySearch[$url]["searchS"];
-    }
-    if (isset($centreon->historySearch[$url]["template"])) {
-        $template = $centreon->historySearch[$url]["template"];
-    }
-    if (isset($centreon->historySearch[$url]["status"])) {
-        $status = $centreon->historySearch[$url]["status"];
-    }
+    //restoring saved values
+    $searchHG = $centreon->historySearch[$url]['hostgroups'] ?? null;
+    $searchS = $centreon->historySearch[$url]["searchS"] ?? null;
+    $template = $centreon->historySearch[$url]["template"] ?? null;
+    $status = $centreon->historySearch[$url]["status"] ?? -1;
 }
 
 /*
@@ -231,7 +227,7 @@ if ($searchS || $searchHG) {
         "WHERE sv.service_register = '1' $sqlFilterCase AND sv.service_id IN (" . ($tmp ? $tmp : 'NULL') .
         ") AND hsr.hostgroup_hg_id IN (" . ($tmp2 ? $tmp2 : 'NULL') . ") " .
         ((isset($template) && $template) ? " AND service_template_model_stm_id = '$template' " : "") .
-        " AND hsr.service_service_id = sv.service_id AND hg.hg_id = hsr.hostgroup_hg_id $aclCond " .
+        " AND hsr.service_service_id = sv.service_id AND hg.hg_id = hsr.hostgroup_hg_id " . $aclCond .
         "ORDER BY hg.hg_name, sv.service_description LIMIT " . $num * $limit . ", " . $limit;
 } else {
     $query = "SELECT $distinct @nbr:=(SELECT COUNT(*) FROM host_service_relation " .
@@ -240,7 +236,7 @@ if ($searchS || $searchHG) {
         "FROM service sv, hostgroup hg, host_service_relation hsr $aclfrom " .
         "WHERE sv.service_register = '1' $sqlFilterCase " .
         ((isset($template) && $template) ? " AND service_template_model_stm_id = '$template' " : "") .
-        " AND hsr.service_service_id = sv.service_id AND hg.hg_id = hsr.hostgroup_hg_id $aclCond " .
+        " AND hsr.service_service_id = sv.service_id AND hg.hg_id = hsr.hostgroup_hg_id " . $aclCond .
         "ORDER BY hg.hg_name, sv.service_description LIMIT " . $num * $limit . ", " . $limit;
 }
 $dbResult = $pearDB->query($query);
