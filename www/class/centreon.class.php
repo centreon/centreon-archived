@@ -57,14 +57,21 @@ class Centreon
     public $status_graph_service;
     public $status_graph_host;
 
-    // array : saved user's pagination filter value
+    /*
+     * @var array : saved user's pagination filter value
+     */
     public $historyPage;
 
-    // string : saved last page's file name
+    /*
+     * @var string : saved last page's file name
+     */
     public $historyLastPage;
 
-    // array : saved user's filters
+    /*
+     * @var array : saved user's filters
+     */
     public $historySearch;
+
     public $historySearchService;
     public $historySearchOutput;
     public $historyLimit;
