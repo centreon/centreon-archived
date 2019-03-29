@@ -5,6 +5,7 @@ import styles from '../../../styles/partials/form/_form.scss';
 import InputField from "../../form-fields/InputField";
 import SelectField from "../../form-fields/SelectField";
 import RadioField from "../../form-fields/PreselectedRadioField";
+import CheckboxField from "../../form-fields/CheckboxField";
 import { Translate, I18n } from 'react-redux-i18n';
 
 import {
@@ -112,6 +113,11 @@ class RemoteServerFormStepOne extends Component {
                   placeholder="/centreon/"
                   label={I18n.t("Centreon Web Folder on Remote") + ":"}
                 />
+                <Field
+                  name="no_check_certificate"
+                  component={CheckboxField}
+                  label={I18n.t("Do not check SSL certificate validation")}
+                />
               </div>
             ) : null}
 
@@ -175,6 +181,11 @@ class RemoteServerFormStepOne extends Component {
                   type="text"
                   placeholder="/centreon/"
                   label={I18n.t("Centreon Web Folder on Remote") + ":"}
+                />
+                <Field
+                  name="no_check_certificate"
+                  component={CheckboxField}
+                  label={I18n.t("Do not check SSL certificate validation")}
                 />
               </div>
             ) : null}

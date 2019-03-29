@@ -247,6 +247,7 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
 
         $openBrokerFlow = isset($this->arguments['open_broker_flow']) && $this->arguments['open_broker_flow'] === true;
         $centreonPath = $this->arguments['centreon_folder'] ?? '/centreon/';
+        $noCheckCertificate = isset($this->arguments['no_check_certificate']) && $this->arguments['no_check_certificate'] === true;
         $serverWizardIdentity = new ServerWizardIdentity;
         $isRemoteConnection = $serverWizardIdentity->requestConfigurationIsRemote();
         $configurationServiceName = $isRemoteConnection ?
@@ -263,15 +264,15 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
         /** @var $pollerConfigurationBridge PollerConfigurationRequestBridge */
         $pollerConfigurationBridge = $this->getDi()['centreon_remote.poller_config_bridge'];
 
-        $serverIP = $this->arguments['server_ip'];
+        $httpMethod = parse_url($this->arguments['server_ip'], PHP_URL_SCHEME) ?: 'http';
+        $httpPort = parse_url($this->arguments['server_ip'], PHP_URL_PORT) ?: '';
+        $serverIP = parse_url($this->arguments['server_ip'], PHP_URL_HOST);
         $serverName = substr($this->arguments['server_name'], 0, 40);
 
         $serverConfigurationService->setCentralIp($this->arguments['centreon_central_ip']);
         $serverConfigurationService->setServerIp($serverIP);
         $serverConfigurationService->setName($serverName);
         $serverConfigurationService->setOnePeerRetention($openBrokerFlow);
-
-        $pollerConfigurationService->setOnePeerRetention($openBrokerFlow);
 
         // set linked pollers
         $pollerConfigurationBridge->collectDataFromRequest();
@@ -305,10 +306,13 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
 
             // set basic parameters to export task
             $params = [
-                'server' => $remoteServer->getId(),
-                'remote_ip' => $remoteServer->getIp(),
-                'centreon_path' => $centreonPath,
-                'pollers' => []
+                'server'               => $remoteServer->getId(),
+                'remote_ip'            => $remoteServer->getIp(),
+                'centreon_path'        => $centreonPath,
+                'http_method'          => $httpMethod,
+                'http_port'            => $httpPort,
+                'no_check_certificate' => $noCheckCertificate,
+                'pollers'              => []
             ];
 
             // If you want to link pollers to a remote
@@ -325,7 +329,7 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
             $taskId = $this->createExportTask($params);
 
             // add server to the list of remote servers in database (table remote_servers)
-            $this->addServerToListOfRemotes($serverIP, $centreonPath);
+            $this->addServerToListOfRemotes($serverIP, $centreonPath, $httpMethod, $httpPort, $noCheckCertificate);
             $this->setCentreonInstanceAsCentral();
 
         // if it is poller wizard and poller is linked to another poller/remote server (instead of central)
@@ -361,7 +365,7 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
      *
      * @param $serverIP
      */
-    private function addServerToListOfRemotes($serverIP, $centreonPath)
+    private function addServerToListOfRemotes($serverIP, $centreonPath, $httpMethod, $httpPort, $noCheckCertificate)
     {
         $dbAdapter = $this->getDi()[\Centreon\ServiceProvider::CENTREON_DB_MANAGER]->getAdapter('configuration_db');
         $date = date('Y-m-d H:i:s');
@@ -371,9 +375,10 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
         $hasIpInTable = (bool) $dbAdapter->count();
 
         if ($hasIpInTable) {
-            $sql = 'UPDATE `remote_servers` SET `is_connected` = ?, `connected_at` = ?, `centreon_path` = ? ' .
+            $sql = 'UPDATE `remote_servers` SET `is_connected` = ?, `connected_at` = ?, `centreon_path` = ?, ' .
+                'http_method = ?, http_port = ?, no_check_certificate = ?' .
                 'WHERE `ip` = ?';
-            $data = ['1', $date, $centreonPath, $serverIP];
+            $data = ['1', $date, $centreonPath, $httpPort, $noCheckCertificate, $serverIP];
             $dbAdapter->query($sql, $data);
         } else {
             $data = [
