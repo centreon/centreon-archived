@@ -189,6 +189,18 @@ class ModuleSourceTest extends TestCase
         $this->source->remove(static::$moduleName);
     }
 
+    public function testUpdate()
+    {
+        try {
+            $this->source->update(static::$moduleNameMissing);
+        } catch (\Exception $ex) {
+            $this->assertEquals(static::$moduleNameMissing, $ex->getMessage());
+            $this->assertEquals(1, $ex->getCode()); // check moduleId
+        }
+
+        $this->source->update(static::$moduleName);
+    }
+
     public function testInitInfo()
     {
         $this->source->initInfo();

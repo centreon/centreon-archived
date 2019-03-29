@@ -149,6 +149,32 @@ class WidgetSource extends SourceAbstract
         $entity->setVersion($xml->version->__toString());
         $entity->setKeywords($xml->keywords->__toString());
 
+        if ($xml->stability) {
+            $entity->setStability($xml->stability->__toString());
+        }
+
+        if ($xml->last_update) {
+            $entity->setLastUpdate($xml->last_update->__toString());
+        }
+
+        if ($xml->release_note) {
+            $entity->setReleaseNote($xml->release_note->__toString());
+        }
+
+        if ($xml->screenshot) {
+            foreach ($xml->screenshot as $image) {
+                $entity->addImage($image->__toString());
+            }
+            unset($image);
+        }
+
+        if ($xml->screenshots) {
+            foreach ($xml->screenshots as $image) {
+                $entity->addImage($image->screenshot['src']->__toString());
+            }
+            unset($image);
+        }
+
         // load information about installed modules/widgets
         if ($this->info === null) {
             $this->initInfo();

@@ -65,7 +65,13 @@ class WidgetSourceTest extends TestCase
         'description' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent id ante neque.',
         'version' => 'x.y.q',
         'keywords' => 'lorem,ipsum,dolor',
-        'screenshot' => './resources/screenshot.png',
+        'stability' => 'release candidate',
+        'last_update' => '2011-11-11',
+        'release_note' => 'https://github.com/centreon/centreon-dummy/releases',
+        'screenshot1' => './resources/screenshot1.png',
+        'screenshot2' => './resources/screenshot2.png',
+        'screenshot3' => './resources/screenshot3.png',
+        'screenshot4' => './resources/screenshot4.png',
         'thumbnail' => './resources/thumbnail.png',
         'url' => './widgets/test-widget/index.php',
     ];
@@ -195,7 +201,14 @@ class WidgetSourceTest extends TestCase
     <description>{$widgetInfo['description']}</description>
     <version>{$widgetInfo['version']}</version>
     <keywords>{$widgetInfo['keywords']}</keywords>
-    <screenshot>{$widgetInfo['screenshot']}</screenshot>
+    <stability>{$widgetInfo['stability']}</stability>
+    <last_update>{$widgetInfo['last_update']}</last_update>
+    <release_note>{$widgetInfo['release_note']}</release_note>
+    <screenshot>{$widgetInfo['screenshot1']}</screenshot>
+    <screenshot>{$widgetInfo['screenshot2']}</screenshot>
+    <screenshots>
+        <screenshot src="{$widgetInfo['screenshot4']}"/>
+    </screenshots>
     <thumbnail>{$widgetInfo['thumbnail']}</thumbnail>
     <url>{$widgetInfo['url']}</url>
 </configs>
