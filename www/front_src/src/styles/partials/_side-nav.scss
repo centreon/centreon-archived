@@ -59,6 +59,8 @@
             .collapsed-item {
               &:hover {
                 >ul {
+                  transition-delay : 0.5s;
+                  transition: display 0.5s linear;
                   display: block!important;
                   position: absolute;
                   margin-top: -38px;
@@ -69,16 +71,22 @@
           }
           &:hover {
             >ul.list-unstyled {
+              transition-delay : 0.5s;
+              transition: display 0.5s linear;
               display: block!important;
               position: absolute;
               top: 0px;
               left: 45px;
             }
             .active {
+              transition-delay : 0.5s;
+              transition: display 0.5s linear;
               display: block!important;
             }
           }
           .collapse .collapsed-item.active .first-level {
+            transition-delay : 0.5s;
+            transition: display 0.5s linear;
             display: none;
           }
         }

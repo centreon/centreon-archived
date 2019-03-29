@@ -63,23 +63,36 @@ class NavigationComponent extends Component {
   }
 
   // display/hide level 2
-  collapseLevelTwo = index => {
-    this.clickTimeout = setTimeout(() => {
-      if (!this.doubleClicked) {
-        let { menuItems } = this.state;
+  activeLevelTwo = (levelOneKey, levelTwoKey) => {
+    let { menuItems } = this.state;
 
-        Object.keys(menuItems).forEach(key => {
-          menuItems[key].toggled = key === index ?
-            !menuItems[index].toggled : false;
-        });
-
-        this.setState({
-          active: true,
-          menuItems
-        });
+    Object.keys(menuItems[levelOneKey].children).forEach(subKey => {
+      if (subKey === levelTwoKey) {
+        menuItems[levelOneKey].children[subKey]["collapsed"] = true;
+      } else {
+        menuItems[levelOneKey].children[subKey]["collapsed"] = false;
       }
-      this.doubleClicked = false
-    }, 200);
+    });
+
+    this.setState({
+      menuItems
+    });
+  };
+
+  activeLevelThree = (levelOneKey, levelTwoKey) => {
+    let { menuItems } = this.state;
+
+    Object.keys(menuItems[levelOneKey].children).forEach(subKey => {
+      if (subKey === levelTwoKey) {
+        menuItems[levelOneKey].children[subKey]["collapsed"] = true;
+      } else {
+        menuItems[levelOneKey].children[subKey]["collapsed"] = false;
+      }
+    });
+
+    this.setState({
+      menuItems
+    });
   };
 
   // display/hide level 3
@@ -219,7 +232,9 @@ class NavigationComponent extends Component {
                                       return (
                                         <li
                                           onClick={() => {
-                                            this.collapseLevelThree(levelOneKey, levelTwoKey)
+                                            active ?
+                                            this.activeLevelTwo(levelOneKey, levelTwoKey)
+                                            : this.activeLevelThree(levelOneKey, levelTwoKey)
                                           }}
                                           className={`collapsed-level-item ${pageId == urlOptions ? " active" : ""}`}
                                         >
