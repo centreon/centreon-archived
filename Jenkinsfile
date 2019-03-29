@@ -32,6 +32,7 @@ stage('Source') {
       reportName: 'Centreon Build Artifacts',
       reportTitles: ''
     ])
+    def featureFiles = sh(script: 'ls -1 centreon-web/features/*.feature', returnStdout: true).split()
   }
 }
 
@@ -107,39 +108,26 @@ try {
     }
   }
 
-  stage('Critical tests') {
-    parallel 'centos7': {
-      node {
-        sh 'setup_centreon_build.sh'
-        sh "./centreon-build/jobs/web/${serie}/mon-web-acceptance.sh centos7 @critical"
-        junit 'xunit-reports/**/*.xml'
-        if (currentBuild.result == 'UNSTABLE')
-          currentBuild.result = 'FAILURE'
-        archiveArtifacts allowEmptyArchive: true, artifacts: 'acceptance-logs/*.txt, acceptance-logs/*.png, acceptance-logs/*.flv'
-      }
+  stage('Acceptance tests') {
+    def parallelSteps = featureFiles.collectEntries {
+      [ "${it}": {
+        node {
+          sh 'setup_centreon_build.sh'
+          sh "./centreon-build/jobs/web/${serie}/mon-web-acceptance.sh centos7 features/${it}"
+          junit 'xunit-reports/**/*.xml'
+          if (currentBuild.result == 'UNSTABLE')
+            currentBuild.result = 'FAILURE'
+          archiveArtifacts allowEmptyArchive: true, artifacts: 'acceptance-logs/*.txt, acceptance-logs/*.png, acceptance-logs/*.flv'
+        }
+      }]
     }
+    parallel parallelSteps
     if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
       error('Critical tests stage failure.');
     }
   }
 
   if ((env.BUILD == 'RELEASE') || (env.BUILD == 'REFERENCE')) {
-    stage('Acceptance tests') {
-      parallel 'centos7': {
-        node {
-          sh 'setup_centreon_build.sh'
-          sh "./centreon-build/jobs/web/${serie}/mon-web-acceptance.sh centos7 ~@critical"
-          junit 'xunit-reports/**/*.xml'
-          if (currentBuild.result == 'UNSTABLE')
-            currentBuild.result = 'FAILURE'
-          archiveArtifacts allowEmptyArchive: true, artifacts: 'acceptance-logs/*.txt, acceptance-logs/*.png, acceptance-logs/*.flv'
-        }
-      }
-      if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
-        error('Critical tests stage failure.');
-      }
-    }
-
     stage('Delivery') {
       node {
         sh 'setup_centreon_build.sh'
