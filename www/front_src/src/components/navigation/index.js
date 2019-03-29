@@ -62,24 +62,8 @@ class NavigationComponent extends Component {
     )
   }
 
-  // display/hide level 2
-  activeLevelTwo = (levelOneKey, levelTwoKey) => {
-    let { menuItems } = this.state;
-
-    Object.keys(menuItems[levelOneKey].children).forEach(subKey => {
-      if (subKey === levelTwoKey) {
-        menuItems[levelOneKey].children[subKey]["collapsed"] = true;
-      } else {
-        menuItems[levelOneKey].children[subKey]["collapsed"] = false;
-      }
-    });
-
-    this.setState({
-      menuItems
-    });
-  };
-
-  activeLevelThree = (levelOneKey, levelTwoKey) => {
+  // active clicked level
+  activeCurrentLevel = (levelOneKey, levelTwoKey) => {
     let { menuItems } = this.state;
 
     Object.keys(menuItems[levelOneKey].children).forEach(subKey => {
@@ -232,9 +216,7 @@ class NavigationComponent extends Component {
                                       return (
                                         <li
                                           onClick={() => {
-                                            active ?
-                                            this.activeLevelTwo(levelOneKey, levelTwoKey)
-                                            : this.activeLevelThree(levelOneKey, levelTwoKey)
+                                            this.activeCurrentLevel(levelOneKey, levelTwoKey)
                                           }}
                                           className={`collapsed-level-item ${pageId == urlOptions ? " active" : ""}`}
                                         >
