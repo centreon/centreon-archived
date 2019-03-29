@@ -10,6 +10,7 @@ if (env.BRANCH_NAME.startsWith('release-')) {
 } else {
   env.BUILD = 'CI'
 }
+def featureFiles = []
 
 /*
 ** Pipeline code.
@@ -32,7 +33,7 @@ stage('Source') {
       reportName: 'Centreon Build Artifacts',
       reportTitles: ''
     ])
-    def featureFiles = sh(script: 'ls -1 centreon-web/features/*.feature', returnStdout: true).split()
+    featureFiles = sh(script: 'ls -1 centreon-web/features/*.feature', returnStdout: true).split()
   }
 }
 
