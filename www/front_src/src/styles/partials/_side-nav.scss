@@ -63,7 +63,7 @@
                   transition: display 0.5s linear;
                   display: block!important;
                   position: absolute;
-                  margin-top: -38px;
+                  margin-top: -34px;
                   left: 155px;
                   -webkit-box-shadow: 0 0 3px 1px rgba(36,47,59,0.1);
                   box-shadow: 0 0 3px 1px rgba(36,47,59,0.1);
@@ -113,7 +113,7 @@
             >ul {
               display: block!important;
               position: absolute;
-              margin-top: -38px;
+              margin-top: -34px;
               left: 155px;
               -webkit-box-shadow: 0 0 3px 1px rgba(36,47,59,0.1);
               box-shadow: 0 0 3px 1px rgba(36,47,59,0.1);
@@ -528,7 +528,7 @@ a {
         border-bottom: 1px solid $grey-classic;
         text-align: left;
         text-decoration: none;
-        font-size: 0.8rem;
+        font-size: 0.7rem;
         color: $centreon-graphit;
         font-family: $primary-font-regular;
         padding: 8px 10px 9px 28px;
