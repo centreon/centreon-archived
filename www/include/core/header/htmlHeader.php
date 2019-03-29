@@ -125,7 +125,7 @@ print "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
     if (isset($_GET["search"])) {
         $searchStr .= "search_host=" . htmlentities($_GET["search"], ENT_QUOTES, "UTF-8");
     }
-    if (isset($centreon->historySearch[$url]) && !isset($_GET["Search"])) {
+    if (isset($centreon->historySearch[$url]) && !isset($_GET["search"])) {
         $searchStr .= "search_host=" . (
                 is_array($centreon->historySearch[$url]) && isset($centreon->historySearch[$url]['searchH']) ?
                     $centreon->historySearch[$url]['searchH'] :
