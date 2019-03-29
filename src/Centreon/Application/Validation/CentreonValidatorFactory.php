@@ -36,9 +36,6 @@
 
 namespace Centreon\Application\Validation;
 
-use Centreon\Infrastructure\Service\CentreonDBManagerService;
-use Centreon\ServiceProvider;
-use Psr\Container\ContainerInterface;
 use Pimple\Psr11\ServiceLocator;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidatorFactoryInterface;
@@ -46,11 +43,15 @@ use Pimple\Container;
 
 class CentreonValidatorFactory implements ConstraintValidatorFactoryInterface
 {
+
     /**
-     * @var ContainerInterface
+     * @var \Pimple\Container
      */
     protected $container;
 
+    /**
+     * @var array
+     */
     protected $validators = [];
 
     /**
@@ -64,20 +65,25 @@ class CentreonValidatorFactory implements ConstraintValidatorFactoryInterface
     }
 
     /**
-     * Given a Constraint, this returns the ConstraintValidatorInterface
-     * object that should be used to verify its validity.
-     *
-     * @return ConstraintValidatorInterface
+     * {@inheritdoc}
      */
     public function getInstance(Constraint $constraint)
     {
         $className = $constraint->validatedBy();
 
         if (!isset($this->validators[$className])) {
-            $this->validators[$className] = new $className(new ServiceLocator(
-                    $this->container,
-                    method_exists($className, 'dependencies') ? $className::dependencies() : []
+            if (class_exists($className)) {
+                // validator as a class with dependencies
+                $this->validators[$className] = new $className(new ServiceLocator(
+                        $this->container,
+                        method_exists($className, 'dependencies') ? $className::dependencies() : []
                 ));
+            } elseif (in_array($className, $this->container->keys())) {
+                // validator as a service
+                $this->validators[$className] = $this->container[$className];
+            } else {
+                throw new \RuntimeException(sprintf('The validator "%s" not found', $className));
+            }
         }
 
         return $this->validators[$className];

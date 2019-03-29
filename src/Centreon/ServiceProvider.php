@@ -36,10 +36,8 @@
 
 namespace Centreon;
 
-use Centreon\Application\Webservice\ContactGroupsWebservice;
 use Centreon\Infrastructure\Event\EventDispatcher;
 use Centreon\Domain\Entity\FileLoader;
-use Centreon\Test\Mock\Centreon;
 use Centreon\Application\Validation\CentreonValidatorFactory;
 use Pimple\Container;
 use Pimple\Psr11\ServiceLocator;
@@ -54,6 +52,8 @@ use Centreon\Domain\Service\BrokerConfigurationService;
 use Centreon\Domain\Repository\CfgCentreonBrokerRepository;
 use Centreon\Domain\Repository\CfgCentreonBrokerInfoRepository;
 use CentreonClapi\CentreonACL;
+use Symfony\Component\Validator\Constraints;
+
 
 class ServiceProvider implements AutoloadServiceProviderInterface
 {
@@ -67,6 +67,7 @@ class ServiceProvider implements AutoloadServiceProviderInterface
     const UPLOAD_MANGER = 'upload.manager';
     const CENTREON_EVENT_DISPATCHER = 'centreon.event_dispatcher';
     const CENTREON_VALIDATOR_FACTORY = 'centreon.validator_factory';
+    const VALIDATOR_EXPRESSION = 'validator.expression';
 
     /**
      * Register Centreon services
@@ -197,6 +198,10 @@ class ServiceProvider implements AutoloadServiceProviderInterface
             $service = new CentreonValidatorFactory($container);
 
             return $service;
+        };
+
+        $pimple[static::VALIDATOR_EXPRESSION] = function(): Constraints\ExpressionValidator {
+            return new Constraints\ExpressionValidator();
         };
     }
 

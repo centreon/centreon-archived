@@ -38,7 +38,8 @@
         "symfony/serializer": "^4.2",
         "symfony/validator": "^4.2",
         "symfony/property-access": "^4.2",
-        "symfony/property-info": "^4.2"
+        "symfony/property-info": "^4.2",
+        "symfony/expression-language": "^4.2"
     },
     "autoload": {
         "psr-4": {
