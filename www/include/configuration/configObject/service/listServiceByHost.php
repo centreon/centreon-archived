@@ -88,7 +88,7 @@ if (isset($_POST['Search'])) {
     $centreon->historySearch[$url] = array();
     $template = $_GET['template'] ?? '';
     $centreon->historySearch[$url]['template'] = $template;
-    $status = $_GET["status"] ?? '';
+    $status = $_GET["status"] ?? -1;
     $centreon->historySearch[$url]["status"] = $status;
     $searchH = $_GET["searchH"];
     $centreon->historySearch[$url]["searchH"] = $searchH;
