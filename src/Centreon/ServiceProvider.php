@@ -38,7 +38,6 @@ namespace Centreon;
 
 use Centreon\Infrastructure\Event\EventDispatcher;
 use Centreon\Domain\Entity\FileLoader;
-use Centreon\Application\Validation\CentreonValidatorFactory;
 use Pimple\Container;
 use Pimple\Psr11\ServiceLocator;
 use Centreon\Infrastructure\Provider\AutoloadServiceProviderInterface;
@@ -52,6 +51,8 @@ use Centreon\Domain\Service\BrokerConfigurationService;
 use Centreon\Domain\Repository\CfgCentreonBrokerRepository;
 use Centreon\Domain\Repository\CfgCentreonBrokerInfoRepository;
 use CentreonClapi\CentreonACL;
+use Centreon\Application\Validation;
+use Symfony\Component\Validator;
 use Symfony\Component\Validator\Constraints;
 
 
@@ -67,6 +68,8 @@ class ServiceProvider implements AutoloadServiceProviderInterface
     const UPLOAD_MANGER = 'upload.manager';
     const CENTREON_EVENT_DISPATCHER = 'centreon.event_dispatcher';
     const CENTREON_VALIDATOR_FACTORY = 'centreon.validator_factory';
+    const CENTREON_VALIDATOR_TRANSLATOR = 'centreon.validator_translator';
+    const VALIDATOR = 'validator';
     const VALIDATOR_EXPRESSION = 'validator.expression';
 
     /**
@@ -194,10 +197,38 @@ class ServiceProvider implements AutoloadServiceProviderInterface
             return $eventDispatcher;
         };
 
-        $pimple[static::CENTREON_VALIDATOR_FACTORY] = function(Container $container): CentreonValidatorFactory {
-            $service = new CentreonValidatorFactory($container);
+        $this->registerValidator($pimple);
+    }
+
+    /**
+     * Register services related with validation
+     *
+     * @param \Pimple\Container $pimple
+     */
+    public function registerValidator(Container $pimple): void
+    {
+        $pimple[static::VALIDATOR] = function(Container $container): Validator\Validator\ValidatorInterface {
+            return Validator\Validation::createValidatorBuilder()
+                    ->addMethodMapping('loadValidatorMetadata')
+                    ->setConstraintValidatorFactory($container[ServiceProvider::CENTREON_VALIDATOR_FACTORY])
+                    ->setTranslator($container[ServiceProvider::CENTREON_VALIDATOR_TRANSLATOR])
+                    ->getValidator();
+        };
+
+        $pimple[static::CENTREON_VALIDATOR_FACTORY] = function(Container $container): Validation\CentreonValidatorFactory {
+            $service = new Validation\CentreonValidatorFactory($container);
 
             return $service;
+        };
+
+        $pimple[static::CENTREON_VALIDATOR_TRANSLATOR] = function(Container $container): Validation\CentreonValidatorTranslator {
+            $services = [
+                'translator',
+            ];
+            $formatter = new Symfony\Component\Translation\Formatter\MessageFormatter();
+
+            $locator = new ServiceLocator($container, $services);
+            return new Validation\CentreonValidatorTranslator($locator);
         };
 
         $pimple[static::VALIDATOR_EXPRESSION] = function(): Constraints\ExpressionValidator {

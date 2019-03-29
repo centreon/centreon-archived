@@ -36,56 +36,76 @@
 
 namespace Centreon\Application\Validation;
 
-use Pimple\Psr11\ServiceLocator;
-use Symfony\Component\Validator\Constraint;
-use Symfony\Component\Validator\ConstraintValidatorFactoryInterface;
-use Pimple\Container;
+use Psr\Container\ContainerInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
+use Symfony\Component\Translation\TranslatorInterface as DeprecatedTranslatorInterface;
 
-class CentreonValidatorFactory implements ConstraintValidatorFactoryInterface
+/**
+ * The interface Symfony\Component\Translation\TranslatorInterface will be deprecated
+ * since Symfony 4.2 (use Symfony\Contracts\Translation\TranslatorInterface instead)
+ * and will be removed on version 5.0
+ *
+ * @todo remove implementation of Symfony\Component\Translation\TranslatorInterface interface
+ * @todo remove transChoice, setLocale, and getLocale methods
+ */
+class CentreonValidatorTranslator implements TranslatorInterface, DeprecatedTranslatorInterface
 {
 
     /**
-     * @var \Pimple\Container
+     * @var \Psr\Container\ContainerInterface 
      */
-    protected $container;
-
-    /**
-     * @var array
-     */
-    protected $validators = [];
+    protected $services;
 
     /**
      * Construct
      *
-     * @param \Pimple\Container $container
+     * @param \Psr\Container\ContainerInterface $services
      */
-    public function __construct(Container $container)
+    public function __construct(ContainerInterface $services)
     {
-        $this->container = $container;
+        $this->services = $services;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function getInstance(Constraint $constraint)
+    public function trans($id, array $parameters = array(), $domain = null, $locale = null)
     {
-        $className = $constraint->validatedBy();
+//        return sprintf(_($id), $parameters);
+//        var_dump($id);
+//        var_dump($parameters);
+//        exit;
+        // ...
+        return $id;
+    }
 
-        if (!isset($this->validators[$className])) {
-            if (class_exists($className)) {
-                // validator as a class with dependencies
-                $this->validators[$className] = new $className(new ServiceLocator(
-                        $this->container,
-                        method_exists($className, 'dependencies') ? $className::dependencies() : []
-                ));
-            } elseif (in_array($className, $this->container->keys())) {
-                // validator as a service
-                $this->validators[$className] = $this->container[$className];
-            } else {
-                throw new \RuntimeException(sprintf('The validator "%s" not found', $className));
-            }
-        }
+    /**
+     * Remove when upgrading to 5.0 version of symfony/validator package
+     *
+     * {@inheritdoc}
+     */
+    public function transChoice($id, $number, array $parameters = [], $domain = null, $locale = null)
+    {
+        
+    }
 
-        return $this->validators[$className];
+    /**
+     * Remove when upgrading to 5.0 version of symfony/validator package
+     *
+     * {@inheritdoc}
+     */
+    public function setLocale($locale)
+    {
+        // ...
+    }
+
+    /**
+     * Remove when upgrading to 5.0 version of symfony/validator package
+     *
+     * {@inheritdoc}
+     */
+    public function getLocale()
+    {
+        // ...
     }
 }
