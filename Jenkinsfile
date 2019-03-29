@@ -33,7 +33,7 @@ stage('Source') {
       reportName: 'Centreon Build Artifacts',
       reportTitles: ''
     ])
-    featureFiles = sh(script: 'ls -1 centreon-web/features/*.feature', returnStdout: true).split()
+    featureFiles = sh(script: 'ls -1 centreon-web/features | grep .feature', returnStdout: true).split()
   }
 }
 
