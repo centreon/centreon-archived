@@ -118,9 +118,9 @@ try {
       parallelSteps[feature] = {
         node {
           sh 'setup_centreon_build.sh'
-          sh "./centreon-build/jobs/web/${serie}/mon-web-acceptance.sh centos7 features/${feature}"
+          def acceptanceStatus = sh(script: "./centreon-build/jobs/web/${serie}/mon-web-acceptance.sh centos7 features/${feature}", returnStatus: true)
           junit 'xunit-reports/**/*.xml'
-          if (currentBuild.result == 'UNSTABLE')
+          if ((currentBuild.result == 'UNSTABLE') || (acceptanceStatus != 0))
             currentBuild.result = 'FAILURE'
           archiveArtifacts allowEmptyArchive: true, artifacts: 'acceptance-logs/*.txt, acceptance-logs/*.png, acceptance-logs/*.flv'
         }
