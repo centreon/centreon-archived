@@ -42,22 +42,24 @@ if (!isset($oreon)) {
 
 include "./include/common/autoNumLimit.php";
 
-$searchTool = '';
-$search = null;
+$search = filter_var(
+    $_POST['searchSC'] ?? $_GET['searchSC'] ?? null,
+    FILTER_SANITIZE_STRING
+);
 
-if (isset($_POST['searchSC'])) {
-    $search = $_POST['searchSC'];
-    $centreon->historySearch[$url] = $search;
-} elseif (isset($_GET['searchSC'])) {
-    $search = $_GET['searchSC'];
-    $centreon->historySearch[$url] = $search;
-} elseif (isset($centreon->historySearch[$url])) {
-    $search = $centreon->historySearch[$url];
+if (isset($_POST['searchSC']) || isset($_GET['searchSC'])) {
+    //initializing filters values
+    $centreon->historySearch[$url] = array();
+    $centreon->historySearch[$url]["searchSC"] = $search;
+} else {
+    //restoring saved values
+    $search = $centreon->historySearch[$url]["searchSC"] ?? null;
 }
 
+$searchTool = '';
 if ($search) {
-    $searchTool .= "WHERE (sc_name LIKE '%" . htmlentities($search, ENT_QUOTES, "UTF-8") .
-        "%' OR sc_description LIKE '%" . htmlentities($search, ENT_QUOTES, "UTF-8") . "%')";
+    $searchTool .= "WHERE (sc_name LIKE '%" . $search . "%' ".
+    "OR sc_description LIKE '%" . $search . "%') ";
 }
 
 $aclCond = "";
@@ -73,11 +75,12 @@ if (!$oreon->user->admin && $scString != "''") {
 /*
  * Services Categories Lists
  */
-$query = "SELECT SQL_CALC_FOUND_ROWS * FROM service_categories $searchTool $aclCond " .
-    "ORDER BY sc_name LIMIT " . $num * $limit . ", " . $limit;
-$dbResult = $pearDB->query($query);
-
+$dbResult = $pearDB->query(
+    "SELECT SQL_CALC_FOUND_ROWS * FROM service_categories " . $searchTool . $aclCond .
+    "ORDER BY sc_name LIMIT " . $num * $limit . ", " . $limit
+);
 $rows = $pearDB->query("SELECT FOUND_ROWS()")->fetchColumn();
+
 include "./include/common/checkPagination.php";
 
 // Smarty template Init
