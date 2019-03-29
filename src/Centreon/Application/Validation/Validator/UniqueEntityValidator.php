@@ -14,6 +14,7 @@ use Symfony\Component\Validator\Constraints\NotBlankValidator;
 
 class UniqueEntityValidator extends ConstraintValidator
 {
+
     /**
      * @var CentreonDBManagerService;
      */
@@ -32,10 +33,10 @@ class UniqueEntityValidator extends ConstraintValidator
     /**
      * {@inheritdoc}
      */
-    public function validate($value, Constraint $constraint)
+    public function validate($entity, Constraint $constraint)
     {
         if (!$constraint instanceof UniqueEntity) {
-            throw new UnexpectedTypeException($constraint, __NAMESPACE__.'\UniqueEntity');
+            throw new UnexpectedTypeException($constraint, __NAMESPACE__ . '\UniqueEntity');
         } elseif (!\is_array($constraint->fields) && !\is_string($constraint->fields)) {
             throw new UnexpectedTypeException($constraint->fields, 'array');
         } elseif (null !== $constraint->errorPath && !\is_string($constraint->errorPath)) {
@@ -44,34 +45,40 @@ class UniqueEntityValidator extends ConstraintValidator
 
         //define fields to check
         $fields = (array) $constraint->fields;
-        $method = $constraint->repositoryMethod;
+        $methodRepository = $constraint->repositoryMethod;
+        $methodIdGetter = $constraint->entityIdentificatorMethod;
 
         if (0 === \count($fields)) {
             throw new ConstraintDefinitionException('At least one field has to be specified.');
-        } elseif (null === $value) {
+        } elseif (null === $entity) {
             return;
         }
 
         $unique = true;
 
-        foreach ($fields as $field){
-            $result = $this->db->getRepository($constraint->repository)
-                ->$method([$field => $value]);
+        foreach ($fields as $field) {
+            $methodValueGetter = 'get'. ucfirst($field);
+            $value = $entity->$methodValueGetter();
 
-            if ($result){
+            $result = $this->db->getRepository($constraint->repository)
+                ->$methodRepository([$field => $value]);
+
+            if ($result && $result->$methodIdGetter() !== $entity->$methodIdGetter()) {
+
+                $this->context->buildViolation($constraint->message)
+                    ->atPath($field)
+                    ->setInvalidValue($value)
+                    ->setCode(UniqueEntity::NOT_UNIQUE_ERROR)
+                    ->setCause($result)
+                    ->addViolation();
+
                 $unique = false;
             }
         }
 
-        if ($unique){
+        if ($unique) {
             return;
         }
-
-        $this->context->buildViolation($constraint->message)
-            ->setInvalidValue($value)
-            ->setCode(UniqueEntity::NOT_UNIQUE_ERROR)
-            ->setCause($result)
-            ->addViolation();
     }
 
     /**
