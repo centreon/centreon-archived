@@ -72,29 +72,18 @@ if (isset($_POST["status"])) {
     $status = $_GET["status"];
 }
 
-if (isset($_POST['Search'])) {
-    $centreon->historySearch[$url] = array();
-    $template = $_POST["template"];
-    $centreon->historySearch[$url]["template"] = $template;
-    $status = $_POST["status"];
-    $centreon->historySearch[$url]["status"] = $status;
-    $searchH = $_POST["searchH"];
-    $centreon->historySearch[$url]["searchH"] = $searchH;
-    $searchS = $_POST["searchS"];
-    $centreon->historySearch[$url]["searchS"] = $searchS;
-    isset($_POST["statusHostFilter"]) ? $hostStatus = 1 : $hostStatus = 0;
-    $centreon->historySearch[$url]["hostStatus"] = $hostStatus;
-} elseif (isset($_GET['search'])) {
-    $centreon->historySearch[$url] = array();
-    $template = $_GET['template'] ?? '';
+if (isset($_POST['search']) || isset($_GET['search'])) {
+    $data = isset($_POST['search']) ? $_POST : $_GET;
+    $centreon->historySearch[$url] = [];
+    $template = $data['template'] ?? '';
     $centreon->historySearch[$url]['template'] = $template;
-    $status = $_GET["status"] ?? -1;
+    $status = $data["status"] ?? -1;
     $centreon->historySearch[$url]["status"] = $status;
-    $searchH = $_GET["searchH"];
+    $searchH = $data["searchH"];
     $centreon->historySearch[$url]["searchH"] = $searchH;
-    $searchS = $_GET["searchS"] ?? null;
+    $searchS = $data["searchS"] ?? null;
     $centreon->historySearch[$url]["searchS"] = $searchS;
-    isset($_POST["statusHostFilter"]) ? $hostStatus = 1 : $hostStatus = 0;
+    isset($data["statusHostFilter"]) ? $hostStatus = 1 : $hostStatus = 0;
     $centreon->historySearch[$url]["hostStatus"] = $hostStatus;
 } else {
     if (isset($centreon->historySearch[$url]['template'])) {
