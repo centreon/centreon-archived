@@ -65,6 +65,8 @@
                   position: absolute;
                   margin-top: -38px;
                   left: 155px;
+                  -webkit-box-shadow: 0 0 3px 1px rgba(36,47,59,0.1);
+                  box-shadow: 0 0 3px 1px rgba(36,47,59,0.1);
                 }
               }
             }
@@ -77,6 +79,8 @@
               position: absolute;
               top: 0px;
               left: 45px;
+              -webkit-box-shadow: 0 0 3px 1px rgba(36,47,59,0.1);
+              box-shadow: 0 0 3px 1px rgba(36,47,59,0.1);
             }
             .active {
               transition-delay : 0.5s;
@@ -111,6 +115,8 @@
               position: absolute;
               margin-top: -38px;
               left: 155px;
+              -webkit-box-shadow: 0 0 3px 1px rgba(36,47,59,0.1);
+              box-shadow: 0 0 3px 1px rgba(36,47,59,0.1);
             }
           }
         }
@@ -120,6 +126,8 @@
             position: absolute;
             top: 0px;
             left: 45px;
+            -webkit-box-shadow: 0 0 3px 1px rgba(36,47,59,0.1);
+            box-shadow: 0 0 3px 1px rgba(36,47,59,0.1);
           }
         }
         .collapse .collapsed-item.active .first-level {
