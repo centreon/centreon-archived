@@ -52,26 +52,25 @@ $contactTypeIcone = array(
  * Create Timeperiod Cache
  */
 $tpCache = array("" => "");
-$DBRESULT = $pearDB->query("SELECT tp_name, tp_id FROM timeperiod");
-while ($data = $DBRESULT->fetchRow()) {
+$dbResult = $pearDB->query("SELECT tp_name, tp_id FROM timeperiod");
+while ($data = $dbResult->fetch()) {
     $tpCache[$data["tp_id"]] = $data["tp_name"];
 }
 unset($data);
-$DBRESULT->closeCursor();
+$dbResult->closeCursor();
 
-$clauses = array();
-$search = null;
+$search = filter_var(
+    $_POST['searchCT'] ?? $_GET['searchCT'] ?? null,
+    FILTER_SANITIZE_STRING
+);
 
-if (isset($_POST['searchCT'])) {
-    $search = $_POST['searchCT'];
+if (isset($_POST['searchCT']) || isset($_GET['searchCT'])) {
     $centreon->historySearch[$url] = $search;
-} elseif (isset($_GET['search'])) {
-    $search = $_GET['search'];
-    $centreon->historySearch[$url] = $search;
-} elseif (isset($centreon->historySearch[$url])) {
+} else {
     $search = $centreon->historySearch[$url];
 }
 
+$clauses = array();
 if ($search) {
     $clauses = array('contact_name' => '%' . $search . '%');
 }
