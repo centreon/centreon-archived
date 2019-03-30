@@ -52,14 +52,15 @@ while ($data = $dbResult->fetch()) {
 unset($data);
 $dbResult->closeCursor();
 
+$search = filter_var(
+    $_POST['searchC'] ?? $_GET['search'] ?? null,
+    FILTER_SANITIZE_STRING
+);
+
 $search = null;
-if (isset($_POST['searchC'])) {
-    $search = $_POST['searchC'];
+if (isset($_POST['searchC']) || isset($_GET['search'])) {
     $centreon->historySearch[$url] = $search;
-} elseif (isset($_GET['search'])) {
-    $search = $_GET['search'];
-    $centreon->historySearch[$url] = $search;
-} elseif (isset($centreon->historySearch[$url])) {
+} else {
     $search = $centreon->historySearch[$url];
 }
 
