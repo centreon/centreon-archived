@@ -40,18 +40,19 @@ if (!isset($centreon)) {
 include_once "./include/common/autoNumLimit.php";
 
 $SearchSTR = "";
-$clauses = array();
-$search = null;
+
+$search = filter_var(
+    $_POST['searchCG'] ?? $_GET['search'] ?? null,
+    FILTER_SANITIZE_STRING
+);
+
 if (isset($_POST['searchCG'])) {
-    $search = $_POST['searchCG'];
     $centreon->historySearch[$url] = $search;
-} elseif (isset($_GET['search'])) {
-    $search = $_GET['search'];
-    $centreon->historySearch[$url] = $search;
-} elseif (isset($centreon->historySearch[$url])) {
+} else {
     $search = $centreon->historySearch[$url];
 }
 
+$clauses = array();
 if ($search) {
     $clauses = array(
         'cg_name' => array('LIKE', '%' . $search . '%'),
