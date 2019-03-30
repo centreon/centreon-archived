@@ -1,7 +1,7 @@
 <?php
 /*
- * Copyright 2005-2015 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2019 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -76,7 +76,7 @@ include_once "./include/common/checkPagination.php";
 $tpl = new Smarty();
 $tpl = initSmartyTpl($path, $tpl);
 
-/* Access level */
+// Access level
 ($centreon->user->access->page($p) == 1) ? $lvl_access = 'w' : $lvl_access = 'r';
 $tpl->assign('mode_access', $lvl_access);
 
@@ -96,14 +96,10 @@ $search = tidySearchKey($search, $advanced_search);
 
 $form = new HTML_QuickFormCustom('select_form', 'POST', "?p=" . $p);
 
-/*
- * Different style between each lines
- */
+// Different style between each lines
 $style = "one";
 
-/*
- * Fill a tab with a mutlidimensionnal Array we put in $tpl
- */
+// Fill a tab with a multidimensional Array we put in $tpl
 $elemArr = array();
 foreach ($cgs as $cg) {
     $selectedElements = $form->addElement('checkbox', "select[" . $cg['cg_id'] . "]");
@@ -127,8 +123,8 @@ foreach ($cgs as $cg) {
            FROM `contactgroup_contact_relation` `cgr` 
            WHERE `cgr`.`contactgroup_cg_id` = '" . $cg['cg_id'] . "' " .
         $acl->queryBuilder('AND', 'contact_contact_id', $contactstring);
-    $DBRESULT2 = $pearDB->query($rq);
-    $ctNbr = $DBRESULT2->fetchRow();
+    $dbResult2 = $pearDB->query($rq);
+    $ctNbr = $dbResult2->fetch();
     $elemArr[] = array(
         "MenuClass" => "list_" . $style,
         "RowMenu_select" => $selectedElements->toHtml(),
@@ -144,15 +140,16 @@ foreach ($cgs as $cg) {
 }
 $tpl->assign("elemArr", $elemArr);
 
-/*
- * Different messages we put in the template
- */
-$tpl->assign('msg', array(
-    "addL" => "main.php?p=" . $p . "&o=a",
-    "addT" => _("Add"),
-    "delConfirm" => _("Do you confirm the deletion ?"),
-    "view_notif" => _("View contact group notifications")
-));
+// Different messages we put in the template
+$tpl->assign(
+    'msg',
+    array(
+        "addL" => "main.php?p=" . $p . "&o=a",
+        "addT" => _("Add"),
+        "delConfirm" => _("Do you confirm the deletion ?"),
+        "view_notif" => _("View contact group notifications")
+    )
+);
 
 foreach (array('o1', 'o2') as $option) {
     $attrs1 = array(
@@ -183,16 +180,14 @@ foreach (array('o1', 'o2') as $option) {
     $o1->setSelected(null);
 }
 ?>
-    <script type="text/javascript">
-        function setO(_i) {
-            document.forms['form'].elements['o'].value = _i;
-        }
-    </script>
+<script type="text/javascript">
+    function setO(_i) {
+        document.forms['form'].elements['o'].value = _i;
+    }
+</script>
 <?php
 
-/*
- * Apply a template definition
- */
+// Apply a template definition
 $renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 $form->accept($renderer);
 $tpl->assign('form', $renderer->toArray());

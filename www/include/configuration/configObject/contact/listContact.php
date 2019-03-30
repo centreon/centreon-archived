@@ -1,7 +1,7 @@
 <?php
 /*
- * Copyright 2005-2015 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2019 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -37,22 +37,21 @@ if (!isset($centreon)) {
     exit();
 }
 
-include_once("./class/centreonUtils.class.php");
+include_once "./class/centreonUtils.class.php";
 
-include("./include/common/autoNumLimit.php");
+include "./include/common/autoNumLimit.php";
 
 /*
  * Create Timeperiod Cache
  */
 $tpCache = array("" => "");
-$DBRESULT = $pearDB->query("SELECT tp_name, tp_id FROM timeperiod");
-while ($data = $DBRESULT->fetchRow()) {
+$dbResult = $pearDB->query("SELECT tp_name, tp_id FROM timeperiod");
+while ($data = $dbResult->fetch()) {
     $tpCache[$data["tp_id"]] = $data["tp_name"];
 }
 unset($data);
-$DBRESULT->closeCursor();
+$dbResult->closeCursor();
 
-$clauses = array();
 $search = null;
 if (isset($_POST['searchC'])) {
     $search = $_POST['searchC'];
@@ -64,6 +63,7 @@ if (isset($_POST['searchC'])) {
     $search = $centreon->historySearch[$url];
 }
 
+$clauses = array();
 if ($search) {
     $clauses = array(
         'contact_name' => array('LIKE', '%' . $search . '%'),
@@ -94,21 +94,17 @@ $aclOptions = array(
 $contacts = $acl->getContactAclConf($aclOptions);
 $rows = count($contacts);
 
-include("./include/common/checkPagination.php");
+include "./include/common/checkPagination.php";
 
-/*
- * Smarty template Init
- */
+// Smarty template Init
 $tpl = new Smarty();
 $tpl = initSmartyTpl($path, $tpl);
 
-/* Access level */
+// Access level
 ($centreon->user->access->page($p) == 1) ? $lvl_access = 'w' : $lvl_access = 'r';
 $tpl->assign('mode_access', $lvl_access);
 
-/*
- * start header menu
- */
+// start header menu
 $tpl->assign("headerMenu_name", _("Full Name"));
 $tpl->assign("headerMenu_desc", _("Alias / Login"));
 $tpl->assign("headerMenu_email", _("Email"));
@@ -130,9 +126,7 @@ $search = tidySearchKey($search, $advanced_search);
 
 $form = new HTML_QuickFormCustom('select_form', 'POST', "?p=" . $p);
 
-/*
- * Different style between each lines
- */
+// Different style between each lines
 $style = "one";
 $contactTypeIcone = array(
     1 => "./img/icons/admin.png",
@@ -145,13 +139,17 @@ $contactTypeIconeTitle = array(
     3 => _("This is a contact template.")
 );
 
-/*
- * Fill a tab with a mutlidimensionnal Array we put in $tpl
- */
+// Fill a tab with a multidimensional Array we put in $tpl
 $elemArr = array();
 foreach ($contacts as $contact) {
     if ($centreon->user->get_id() == $contact['contact_id']) {
-        $selectedElements = $form->addElement('checkbox', "select[" . $contact['contact_id'] . "]", '', '', 'disabled');
+        $selectedElements = $form->addElement(
+            'checkbox',
+            "select[" . $contact['contact_id'] . "]",
+            '',
+            '',
+            'disabled'
+        );
     } else {
         $selectedElements = $form->addElement('checkbox', "select[" . $contact['contact_id'] . "]");
     }
@@ -229,38 +227,38 @@ foreach ($contacts as $contact) {
 }
 $tpl->assign("elemArr", $elemArr);
 
-/*
- * Different messages we put in the template
- */
-$tpl->assign('msg', array(
-    "addL" => "main.php?p=" . $p . "&o=a",
-    "addT" => _("Add"),
-    "ldap_importL" => "main.php?p=" . $p . "&o=li",
-    "ldap_importT" => _("LDAP Import"),
-    "view_notif" => _("View contact notifications")
-));
+// Different messages we put in the template
+$tpl->assign(
+    'msg',
+    array(
+        "addL" => "main.php?p=" . $p . "&o=a",
+        "addT" => _("Add"),
+        "ldap_importL" => "main.php?p=" . $p . "&o=li",
+        "ldap_importT" => _("LDAP Import"),
+        "view_notif" => _("View contact notifications")
+    )
+);
 
-# Display import ldap users button if ldap is configured
-$query = "SELECT count(ar_id) as count_ldap "
-    . "FROM auth_ressource ";
-$res = $pearDB->query($query);
-$row = $res->fetchRow();
+// Display import ldap users button if ldap is configured
+$res = $pearDB->query(
+    "SELECT count(ar_id) as count_ldap " .
+    "FROM auth_ressource "
+);
+$row = $res->fetch();
 if ($row['count_ldap'] > 0) {
     $tpl->assign('ldap', '1');
 }
 
-/*
- * Toolbar select
- */
+// Toolbar select
 ?>
-    <script type="text/javascript">
-        function setO(_i) {
-            document.forms['form'].elements['o'].value = _i;
-        }
-    </script>
+<script type="text/javascript">
+    function setO(_i) {
+        document.forms['form'].elements['o'].value = _i;
+    }
+</script>
 <?php
 
-/* Manage options */
+// Manage options
 foreach (array('o1', 'o2') as $option) {
     $attrs1 = array(
         'onchange' => "javascript: " .
@@ -278,14 +276,20 @@ foreach (array('o1', 'o2') as $option) {
             "   setO(this.form.elements['" . $option . "'].value); submit();} " .
             "this.form.elements['" . $option . "'].selectedIndex = 0"
     );
-    $form->addElement('select', $option, null, array(
-        null => _("More actions..."),
-        "m" => _("Duplicate"),
-        "d" => _("Delete"),
-        "mc" => _("Massive Change"),
-        "ms" => _("Enable"),
-        "mu" => _("Disable")
-    ), $attrs1);
+    $form->addElement(
+        'select',
+        $option,
+        null,
+        array(
+            null => _("More actions..."),
+            "m" => _("Duplicate"),
+            "d" => _("Delete"),
+            "mc" => _("Massive Change"),
+            "ms" => _("Enable"),
+            "mu" => _("Disable")
+        ),
+        $attrs1
+    );
     $form->setDefaults(array($option => null));
 
     $o1 = $form->getElement($option);
@@ -296,9 +300,7 @@ foreach (array('o1', 'o2') as $option) {
 $tpl->assign('limit', $limit);
 $tpl->assign('searchC', $search);
 
-/*
- * Apply a template definition
- */
+// Apply a template definition
 $renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 $form->accept($renderer);
 $tpl->assign('form', $renderer->toArray());
