@@ -40,39 +40,26 @@ if (!isset($centreon)) {
 include_once "./class/centreonUtils.class.php";
 include_once "./include/common/autoNumLimit.php";
 
-if ($type) {
-    $type_str = " `command_type` = $type";
+$search = filter_var(
+    $_POST['searchC'] ?? $_GET['search'] ?? null,
+    FILTER_SANITIZE_STRING
+);
+
+if (isset($_POST['searchC']) || $_GET['search']) {
+    $centreon->historySearch[$url] = $search;
 } else {
-    $type_str = "";
+    $search = $centreon->historySearch[$url];
 }
 
-$search = null;
-if (isset($_POST['searchC'])) {
-    $search = $_POST['searchC'];
-    $centreon->historySearch[$url] = $search;
-    if ($type_str) {
-        $type_str = " AND " . $type_str;
-    }
-} elseif (isset($_GET['search'])) {
-    $search = $_GET['search'];
-    $centreon->historySearch[$url] = $search;
-    if ($type_str) {
-        $type_str = " AND " . $type_str;
-    }
-} elseif (isset($centreon->historySearch[$url])) {
-    $search = $centreon->historySearch[$url];
-    if ($type_str) {
-        $type_str = " AND " . $type_str;
-    }
-}
+$type_str = $type ? " AND `command_type` = " . $type : "";
 
 $search = tidySearchKey($search, $advanced_search);
 
 //List of elements - Depends on different criteria
 if (isset($search) && $search) {
     $rq = "SELECT SQL_CALC_FOUND_ROWS `command_id`, `command_name`, `command_line`, `command_type`, " .
-        "`command_activate` FROM `command` WHERE `command_name` LIKE '%" . htmlentities($search, ENT_QUOTES, "UTF-8")
-        . "%' $type_str ORDER BY `command_name` LIMIT " . $num * $limit . ", " . $limit;
+        "`command_activate` FROM `command` WHERE `command_name` LIKE '%" . $search . "%' " .
+        $type_str . " ORDER BY `command_name` LIMIT " . $num * $limit . ", " . $limit;
 } elseif ($type) {
     $rq = "SELECT SQL_CALC_FOUND_ROWS `command_id`, `command_name`, `command_line`, `command_type`, " .
         "`command_activate` FROM `command` WHERE `command_type` = '" . $type .
