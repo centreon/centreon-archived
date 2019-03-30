@@ -141,12 +141,15 @@ foreach ($cgs as $cg) {
 $tpl->assign("elemArr", $elemArr);
 
 // Different messages we put in the template
-$tpl->assign('msg', array(
-    "addL" => "main.php?p=" . $p . "&o=a",
-    "addT" => _("Add"),
-    "delConfirm" => _("Do you confirm the deletion ?"),
-    "view_notif" => _("View contact group notifications")
-));
+$tpl->assign(
+    'msg',
+    array(
+        "addL" => "main.php?p=" . $p . "&o=a",
+        "addT" => _("Add"),
+        "delConfirm" => _("Do you confirm the deletion ?"),
+        "view_notif" => _("View contact group notifications")
+    )
+);
 
 foreach (array('o1', 'o2') as $option) {
     $attrs1 = array(
