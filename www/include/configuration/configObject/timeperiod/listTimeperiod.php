@@ -39,19 +39,17 @@ if (!isset($centreon)) {
 
 include "./include/common/autoNumLimit.php";
 
-$SearchTool = '';
-$search = null;
-
-if (isset($_POST['searchTP'])) {
-    $search = $_POST['searchTP'];
+$search = filter_var(
+    $_POST['searchTP'] ?? $_GET['searchTP'] ?? null,
+    FILTER_SANITIZE_STRING
+);
+if (isset($_POST['searchTP']) || $_GET['searchTP']) {
     $centreon->historySearch[$url] = $search;
-} elseif (isset($_GET['searchTP'])) {
-    $search = $_GET['searchTP'];
-    $centreon->historySearch[$url] = $search;
-} elseif (isset($centreon->historySearch[$url])) {
+} else {
     $search = $centreon->historySearch[$url];
 }
 
+$SearchTool = '';
 if ($search) {
     $SearchTool .= " WHERE tp_name LIKE '%" . htmlentities($search, ENT_QUOTES, "UTF-8") . "%'";
 }
