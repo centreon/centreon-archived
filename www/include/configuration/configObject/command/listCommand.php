@@ -1,7 +1,7 @@
 <?php
 /*
- * Copyright 2005-2018 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2019 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -37,7 +37,7 @@ if (!isset($centreon)) {
     exit();
 }
 
-include_once("./class/centreonUtils.class.php");
+include_once "./class/centreonUtils.class.php";
 include_once "./include/common/autoNumLimit.php";
 
 if ($type) {
@@ -71,8 +71,8 @@ $search = tidySearchKey($search, $advanced_search);
 //List of elements - Depends on different criteria
 if (isset($search) && $search) {
     $rq = "SELECT SQL_CALC_FOUND_ROWS `command_id`, `command_name`, `command_line`, `command_type`, " .
-        "`command_activate` FROM `command` WHERE `command_name` LIKE '%" . htmlentities($search, ENT_QUOTES, "UTF-8") .
-        "%' $type_str ORDER BY `command_name` LIMIT " . $num * $limit . ", " . $limit;
+        "`command_activate` FROM `command` WHERE `command_name` LIKE '%" . htmlentities($search, ENT_QUOTES, "UTF-8")
+        . "%' $type_str ORDER BY `command_name` LIMIT " . $num * $limit . ", " . $limit;
 } elseif ($type) {
     $rq = "SELECT SQL_CALC_FOUND_ROWS `command_id`, `command_name`, `command_line`, `command_type`, " .
         "`command_activate` FROM `command` WHERE `command_type` = '" . $type .
@@ -82,7 +82,7 @@ if (isset($search) && $search) {
         "`command_activate` FROM `command` ORDER BY `command_name` LIMIT " . $num * $limit . ", " . $limit;
 }
 
-$DBRESULT = $pearDB->query($rq);
+$dbResult = $pearDB->query($rq);
 $rows = $pearDB->query("SELECT FOUND_ROWS()")->fetchColumn();
 
 include_once "./include/common/checkPagination.php";
@@ -92,7 +92,7 @@ $tpl = new Smarty();
 $tpl = initSmartyTpl($path, $tpl);
 
 // Access level
-($centreon->user->access->page($p) == 1) ? $lvl_access = 'w' : $lvl_access = 'r';
+$lvl_access = ($centreon->user->access->page($p) == 1) ? 'w' : 'r';
 $tpl->assign('mode_access', $lvl_access);
 
 /*
@@ -107,21 +107,15 @@ $tpl->assign("headerMenu_options", _("Options"));
 
 $form = new HTML_QuickForm('form', 'POST', "?p=" . $p);
 
-/*
- * Different style between each lines
- */
+// Different style between each lines
 $style = "one";
 
-/*
- * Define command Type table
- */
+// Define command Type table
 $commandType = array("1" => _("Notification"), "2" => _("Check"), "3" => _("Miscellaneous"), "4" => _("Discovery"));
 
-/*
- * Fill a tab with a mutlidimensionnal Array we put in $tpl
- */
+// Fill a tab with a multidimensional Array we put in $tpl
 $elemArr = array();
-for ($i = 0; $cmd = $DBRESULT->fetchRow(); $i++) {
+for ($i = 0; $cmd = $dbResult->fetch(); $i++) {
     $selectedElements = $form->addElement('checkbox', "select[" . $cmd['command_id'] . "]");
 
     if ($cmd["command_activate"]) {
@@ -137,17 +131,18 @@ for ($i = 0; $cmd = $DBRESULT->fetchRow(); $i++) {
     if (isset($lockedElements[$cmd['command_id']])) {
         $selectedElements->setAttribute('disabled', 'disabled');
     } else {
-        $moptions .= "&nbsp;<input onKeypress=\"if(event.keyCode > 31 && (event.keyCode < 45 || event.keyCode > 57)) " .
-            "event.returnValue = false; if(event.which > 31 && (event.which < 45 || event.which > 57)) " .
-            "return false;\" maxlength=\"3\" size=\"3\" value='1' style=\"margin-bottom:0px;\" name='dupNbr[" .
-            $cmd['command_id'] . "]' />";
+        $moptions .= "&nbsp;<input onKeypress=\"if(event.keyCode > 31 && (event.keyCode < 45 || event.keyCode > 57)) "
+            . "event.returnValue = false; if(event.which > 31 && (event.which < 45 || event.which > 57)) "
+            . "return false;\" maxlength=\"3\" size=\"3\" value='1' style=\"margin-bottom:0px;\" name='dupNbr["
+            . $cmd['command_id'] . "]' />";
     }
 
     $elemArr[$i] = array(
         "MenuClass" => "list_" . $style,
         "RowMenu_select" => $selectedElements->toHtml(),
         "RowMenu_name" => $cmd["command_name"],
-        "RowMenu_link" => "main.php?p=" . $p . "&o=c&command_id=" . $cmd['command_id'] . "&type=" . $cmd['command_type'],
+        "RowMenu_link" => "main.php?p=" . $p .
+            "&o=c&command_id=" . $cmd['command_id'] . "&type=" . $cmd['command_type'],
         "RowMenu_desc" => CentreonUtils::escapeSecure(substr(myDecodeCommand($cmd["command_line"]), 0, 50)) . "...",
         "RowMenu_type" => $commandType[$cmd["command_type"]],
         "RowMenu_huse" => "<a name='#' title='" . _("Host links (host template links)") . "'>" .
@@ -162,27 +157,26 @@ for ($i = 0; $cmd = $DBRESULT->fetchRow(); $i++) {
 }
 $tpl->assign("elemArr", $elemArr);
 
-/*
- * Different messages we put in the template
- */
+// Different messages we put in the template
 if (isset($_GET['type']) && $_GET['type'] != "") {
     $type = htmlentities($_GET['type'], ENT_QUOTES, "UTF-8");
 } elseif (!isset($_GET['type'])) {
     $type = 2;
 }
 
-$tpl->assign('msg', array(
-    "addL" => "main.php?p=" . $p . "&o=a&type=" . $type,
-    "addT" => _("Add"),
-    "delConfirm" => _("Do you confirm the deletion ?")
-));
+$tpl->assign(
+    'msg',
+    array(
+        "addL" => "main.php?p=" . $p . "&o=a&type=" . $type,
+        "addT" => _("Add"),
+        "delConfirm" => _("Do you confirm the deletion ?")
+    )
+);
 
 $redirectType = $form->addElement('hidden', 'type');
 $redirectType->setValue($type);
 
-/*
- * Toolbar select
- */
+// Toolbar select
 foreach (array('o1', 'o2') as $option) {
     $attrs1 = array(
         'onchange' => "javascript: " .
@@ -201,13 +195,19 @@ foreach (array('o1', 'o2') as $option) {
             "   setO(this.form.elements['$option'].value); submit();} " .
             "this.form.elements['$option'].selectedIndex = 0"
     );
-    $form->addElement('select', $option, null, array(
-        null => _("More actions..."),
-        "m" => _("Duplicate"),
-        "d" => _("Delete"),
-        "me" => _("Enable"),
-        "md" => _("Disable")
-    ), $attrs1);
+    $form->addElement(
+        'select',
+        $option,
+        null,
+        array(
+            null => _("More actions..."),
+            "m" => _("Duplicate"),
+            "d" => _("Delete"),
+            "me" => _("Enable"),
+            "md" => _("Disable")
+        ),
+        $attrs1
+    );
     $form->setDefaults(array($option => null));
     $o1 = $form->getElement($option);
     $o1->setValue(null);
@@ -215,15 +215,14 @@ foreach (array('o1', 'o2') as $option) {
 }
 
 ?>
-    <script type="text/javascript">
-        function setO(_i) {
-            document.forms['form'].elements['o'].value = _i;
-        }
-    </script>
+<script type="text/javascript">
+    function setO(_i) {
+        document.forms['form'].elements['o'].value = _i;
+    }
+</script>
 <?php
-/*
- * Apply a template definition
- */
+
+// Apply a template definition
 $renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 $form->accept($renderer);
 $tpl->assign('form', $renderer->toArray());
