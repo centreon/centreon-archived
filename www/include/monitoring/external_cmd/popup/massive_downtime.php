@@ -139,17 +139,29 @@ if (!$gmt) {
     $gmt = date_default_timezone_get();
 }
 
+$durationScale = array(
+    'd' => 86400,
+    'h' => 3600,
+    'm' => 60,
+    's' => 1,
+);
 $defaultDuration = 3600;
+$defaultScale = 's';
 if (isset($centreon->optGen['monitoring_dwt_duration']) &&
     $centreon->optGen['monitoring_dwt_duration']
 ) {
     $defaultDuration = $centreon->optGen['monitoring_dwt_duration'];
+    if (isset($centreon->optGen['monitoring_dwt_duration_scale']) &&
+        $centreon->optGen['monitoring_dwt_duration_scale']
+    ) {
+        $defaultScale = $centreon->optGen['monitoring_dwt_duration_scale'];
+    }
 }
 
 $form->setDefaults(
     array(
         "start_time" => $centreonGMT->getDate("G:i", time(), $gmt),
-        "end_time" => $centreonGMT->getDate("G:i", time() + $defaultDuration, $gmt)
+        "end_time" => $centreonGMT->getDate("G:i", time() + $defaultDuration * $durationScale[$defaultScale], $gmt)
     )
 );
 
@@ -265,7 +277,7 @@ $form->addElement(
 );
 $form->setDefaults(
     array(
-        "alternativeDateEnd" => $centreonGMT->getDate("Y-m-d", time() + $defaultDuration, $gmt)
+        "alternativeDateEnd" => $centreonGMT->getDate("Y-m-d", time() + $defaultDuration * $durationScale[$defaultScale], $gmt)
     )
 );
 
