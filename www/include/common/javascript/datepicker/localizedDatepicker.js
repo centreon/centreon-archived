@@ -61,8 +61,9 @@ function initDatepicker(className, altFormat, defaultDate, idName, timestampToSe
             // finding all the alternative field
             var altName = jQuery(this).attr("name");
             if (typeof(altName) != "undefined") {
-                var alternativeField = "input[name=alternativeDate" + altName[0].toUpperCase() + altName.slice(1) + "]";
-                var value = $(this) && $(this).val() ? $(this).val() : defaultDate;
+                var alternativeName = "alternativeDate" + altName[0].toUpperCase() + altName.slice(1);
+                var alternativeField = "input[name=" + alternativeName + "]";
+                var value = $('input[name='+alternativeName+']').val() ? new Date($('input[name='+alternativeName+']').val()) : ($(this) && $(this).val() ? $(this).val() : defaultDate);
                 jQuery(this).datepicker({
                     //formatting the hidden fields using a specific format
                     altField: alternativeField,

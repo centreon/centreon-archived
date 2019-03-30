@@ -263,7 +263,11 @@ $form->addElement(
         'class' => 'alternativeDate'
     )
 );
-
+$form->setDefaults(
+    array(
+        "alternativeDateEnd" => $centreonGMT->getDate("Y-m-d", time() + $defaultDuration, $gmt)
+    )
+);
 
 $renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 $renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
