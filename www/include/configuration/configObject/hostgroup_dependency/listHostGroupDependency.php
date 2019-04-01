@@ -41,22 +41,23 @@ include_once "./class/centreonUtils.class.php";
 
 include "./include/common/autoNumLimit.php";
 
-isset($_GET["list"]) ? $list = $_GET["list"] : $list = null;
+$list = $_GET["list"] ?? null;
 
 $aclCond = "";
 if (!$oreon->user->admin) {
     $aclCond = " AND hostgroup_hg_id IN ($hgstring) ";
 }
 
-$search = null;
+$search = filter_var(
+    $_POST['searchHGD'] ?? $_GET['searchHGD'] ?? null,
+    FILTER_SANITIZE_STRING
+);
+
 if (isset($_POST['searchHGD'])) {
-    $search = $_POST['searchHGD'];
-    $centreon->historySearch[$url] = $search;
-} elseif (isset($_GET['searchHGD'])) {
-    $search = $_GET['searchHGD'];
-    $centreon->historySearch[$url] = $search;
-} elseif (isset($centreon->historySearch[$url])) {
-    $search = $centreon->historySearch[$url];
+    $centreon->historySearch[$url] = array();
+    $centreon->historySearch[$url]['searchHGD'] = $search;
+} else {
+    $search = $centreon->historySearch[$url]['searchHGD'] ?? null;
 }
 
 /*
