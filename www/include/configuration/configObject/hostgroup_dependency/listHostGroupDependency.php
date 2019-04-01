@@ -1,7 +1,7 @@
 <?php
 /*
- * Copyright 2005-2015 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2019 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -37,9 +37,9 @@ if (!isset($centreon)) {
     exit();
 }
 
-include_once("./class/centreonUtils.class.php");
+include_once "./class/centreonUtils.class.php";
 
-include("./include/common/autoNumLimit.php");
+include "./include/common/autoNumLimit.php";
 
 isset($_GET["list"]) ? $list = $_GET["list"] : $list = null;
 
@@ -60,7 +60,7 @@ if (isset($_POST['searchHGD'])) {
 }
 
 /*
- * List dependancies
+ * List dependencies
  */
 $rq = "SELECT SQL_CALC_FOUND_ROWS dep_id, dep_name, dep_description FROM dependency dep " .
     "WHERE ((SELECT DISTINCT COUNT(*) FROM dependency_hostgroupParent_relation dhgpr " .
@@ -73,20 +73,18 @@ if ($search) {
 }
 
 $rq .= " ORDER BY dep_name, dep_description LIMIT " . $num * $limit . ", " . $limit;
-$DBRESULT = $pearDB->query($rq);
+$dbResult = $pearDB->query($rq);
 
 $rows = $pearDB->query("SELECT FOUND_ROWS()")->fetchColumn();
 
-include("./include/common/checkPagination.php");
+include "./include/common/checkPagination.php";
 
-/*
- * Smarty template Init
- */
+// Smarty template Init
 $tpl = new Smarty();
 $tpl = initSmartyTpl($path, $tpl);
 
-/* Access level */
-($centreon->user->access->page($p) == 1) ? $lvl_access = 'w' : $lvl_access = 'r';
+// Access level
+$lvl_access = ($centreon->user->access->page($p) == 1) ? 'w' : 'r';
 $tpl->assign('mode_access', $lvl_access);
 
 /*
@@ -100,12 +98,12 @@ $search = tidySearchKey($search, $advanced_search);
 
 $form = new HTML_QuickFormCustom('select_form', 'POST', "?p=" . $p);
 
-#Different style between each lines
+//Different style between each lines
 $style = "one";
 
-#Fill a tab with a mutlidimensionnal Array we put in $tpl
+//Fill a tab with a multidimensional Array we put in $tpl
 $elemArr = array();
-for ($i = 0; $dep = $DBRESULT->fetchRow(); $i++) {
+for ($i = 0; $dep = $dbResult->fetch(); $i++) {
     $moptions = "";
     $selectedElements = $form->addElement('checkbox', "select[" . $dep['dep_id'] . "]");
     $moptions .= "&nbsp;<input onKeypress=\"if(event.keyCode > 31 && (event.keyCode < 45 || event.keyCode > 57))" .
@@ -124,21 +122,23 @@ for ($i = 0; $dep = $DBRESULT->fetchRow(); $i++) {
 }
 $tpl->assign("elemArr", $elemArr);
 
-# Different messages we put in the template
+// Different messages we put in the template
 $tpl->assign(
     'msg',
-    array("addL" => "main.php?p=" . $p . "&o=a", "addT" => _("Add"), "delConfirm" => _("Do you confirm the deletion ?"))
+    array(
+        "addL" => "main.php?p=" . $p . "&o=a",
+        "addT" => _("Add"),
+        "delConfirm" => _("Do you confirm the deletion ?")
+    )
 );
 
-/*
- * Toolbar
- */
+// Toolbar
 ?>
-    <script type="text/javascript">
-        function setO(_i) {
-            document.forms['form'].elements['o'].value = _i;
-        }
-    </SCRIPT>
+<script type="text/javascript">
+    function setO(_i) {
+        document.forms['form'].elements['o'].value = _i;
+    }
+</script>
 <?php
 $attrs1 = array(
     'onchange' => "javascript: " .
@@ -199,9 +199,7 @@ $o2->setSelected(null);
 $tpl->assign('limit', $limit);
 $tpl->assign('searchHGD', $search);
 
-/*
- * Apply a template definition
- */
+// Apply a template definition
 $renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 $form->accept($renderer);
 $tpl->assign('form', $renderer->toArray());
