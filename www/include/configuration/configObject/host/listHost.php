@@ -97,6 +97,7 @@ if (isset($_POST['searchH']) || isset($_GET['searchB'])) {
     $poller = (int)($centreon->historySearch[$url]["poller"] ?? 0);
     $hostgroup = (int)($centreon->historySearch[$url]["hostgroup"] ?? 0);
     $template = (int)($centreon->historySearch[$url]["template"] ?? 0);
+    $status = (int)($centreon->historySearch[$url]["status"]);
 }
 
 // set object history
