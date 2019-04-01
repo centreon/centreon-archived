@@ -1,7 +1,7 @@
 <?php
 /**
- * Copyright 2005-2018 Centreon
-  * Centreon is developed by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2019 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -61,11 +61,11 @@ function hidePasswordInCommand($command_name, $host_id, $service_id)
     $row = $res->fetchRow();
     $command_line_with_macro = $row['command_line'];
 
-    /* Get executed command line */
-    $query_command_name = "SELECT host_id, check_command, command_line " .
-        "FROM services " .
-        "WHERE host_id = '" . $host_id . "' " .
-        "AND service_id = '" . $service_id . "'";
+    /* Get executed command lines */
+    $query_command_name = "SELECT host_id, check_command, command_line "
+        . "FROM services "
+        . "WHERE host_id = '" . $host_id . "' "
+        . "AND service_id = '" . $service_id . "'";
     $res = $pearDBStorage->query($query_command_name);
     $row = $res->fetchRow();
     $executed_check_command = $row['command_line'];
@@ -83,23 +83,37 @@ function hidePasswordInCommand($command_name, $host_id, $service_id)
         . "WHERE is_password = 1 "
         . "AND svc_svc_id IN ('" . implode('\', \'', $arrSvcTplID) . "')";
     $res = $pearDB->query($query_custom_macro_svc);
-    
+
     $arrMacroPassword = array();
     while ($row = $res->fetchRow()) {
-        $arrMacroPassword = array_merge($arrMacroPassword, array($row['svc_macro_name']));
-        $executed_check_command = getOptionName($command_line_with_macro, $executed_check_command, $row['svc_macro_name']);
+        $arrMacroPassword = array_merge (
+            $arrMacroPassword, 
+            array($row['svc_macro_name'])
+        );
+        $executed_check_command = getOptionName(
+            $command_line_with_macro, 
+            $executed_check_command, 
+            $row['svc_macro_name']
+        );
     }
 
     /* Get custom macros from hosts and templates */
     $query_custom_macro_host = "SELECT host_macro_name "
         . "FROM on_demand_macro_host "
         . "WHERE is_password = 1 "
-        . "AND host_host_id IN('" . implode('\', \'', getHostsTemplates($host_id)) . "')";
+        . "AND host_host_id IN ('" . implode('\', \'', getHostsTemplates($host_id)) . "')";
     $res = $pearDB->query($query_custom_macro_host);
-    
+
     while ($row = $res->fetchRow()) {
-        $arrMacroPassword = array_merge($arrMacroPassword, array($row['host_macro_name']));
-        $executed_check_command = getOptionName($command_line_with_macro, $executed_check_command, $row['host_macro_name']);
+        $arrMacroPassword = array_merge(
+            $arrMacroPassword, 
+            array($row['host_macro_name'])
+        );
+        $executed_check_command = getOptionName(
+            $command_line_with_macro, 
+            $executed_check_command, 
+            $row['host_macro_name']
+        );
     }
 
     return $executed_check_command;
@@ -108,7 +122,7 @@ function hidePasswordInCommand($command_name, $host_id, $service_id)
 /**
  * Get the name of the option in the command line corresponding 
  * to the custom macro password type 
- * 
+ *
  * @param string $command_with_macro Configuration command line
  * @param string $executed_command   Executed command line
  * @param string $macro              The custom macro password type
@@ -117,8 +131,7 @@ function hidePasswordInCommand($command_name, $host_id, $service_id)
  */
 function getOptionName($command_with_macro, $executed_command, $macro) {
     $macro = str_replace('$', '\$', $macro);
-    $pattern = "/(\-\-?[a-zA-Z0-9\-\_]+=?)\'?" . $macro . "\'?/";
-
+    $pattern = "/(\-\-?[a-zA-Z0-9\-\_]+=?\W+?)\'?" . $macro . "\'?/";
     if (preg_match($pattern, $command_with_macro, $matches)) {
         for ($i = 1; $i < count($matches); $i++) {
             /* Prepare pattern */
@@ -127,9 +140,8 @@ function getOptionName($command_with_macro, $executed_command, $macro) {
             $pattern = str_replace('-', '\-', $pattern);
             $pattern = str_replace('.', '\.', $pattern);
             $pattern = "/(.*\s)" . $pattern . "\'?([\\x21-\\x7E]+)\'?(\s.*)/";
-
-            /* Replace value of custom macro password type 
-               in executed command line */
+             /* Replace value of custom macro password type 
+                in executed command line */
             $executed_command = preg_replace($pattern, "\$1" . $matches[$i] . "***\$3", $executed_command);
         }
     }
@@ -141,22 +153,24 @@ function getOptionName($command_with_macro, $executed_command, $macro) {
  * Get the list of hosttemplate ID of an host 
  * 
  * @param int $host_id The ID of the host
-
+ * 
  * @return array
  */
-function getHostsTemplates($host_id)
-{
+function getHostsTemplates($host_id) {
     $pearDBCentreon = new CentreonDB();
 
     $query = "SELECT host_tpl_id FROM host_template_relation "
         . "WHERE host_host_id = '" . $host_id . "'";
     $res = $pearDBCentreon->query($query);
-    if ($res->rowCount() == 0) {
+    if ($res->numRows() == 0) {
         return array($host_id);
     } else {
         $arrHostTpl = array();
         while ($row = $res->fetchRow()) {
-            $arrHostTpl = array_merge($arrHostTpl, getHostsTemplates($row['host_tpl_id']));
+            $arrHostTpl = array_merge(
+                $arrHostTpl, 
+                getHostsTemplates($row['host_tpl_id'])
+            );
             $arrHostTpl = array_merge($arrHostTpl, array($host_id));
         }
         return $arrHostTpl;
