@@ -1,5 +1,7 @@
-import React, { Component } from "react";
+import React, { Component, Suspense } from "react";
 import { connect } from "react-redux";
+
+import Hook from "../hook";
 
 import { setRefreshIntervals } from '../../redux/actions/refreshActions';
 
@@ -8,7 +10,7 @@ import UserMenu from "../userMenu";
 import HostMenu from "../hostMenu";
 import ServiceStatusMenu from "../serviceStatusMenu";
 
-import axios from '../../axios'
+import axios from "../../axios";
 
 class TopHeader extends Component {
 
@@ -38,6 +40,9 @@ class TopHeader extends Component {
             <PollerMenu />
           </div>
           <div class="wrap wrap-right">
+            <Hook
+              path="/header/topCounter"
+            />
             <HostMenu />
             <ServiceStatusMenu />
             <UserMenu />

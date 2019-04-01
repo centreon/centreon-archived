@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import { connect } from "react-redux";
 
 import logo from "../../img/centreon.png";
 import miniLogo from "../../img/centreon-logo-mini.svg";
@@ -10,7 +9,10 @@ import axios from "../../axios";
 import routeMap from "../../route-maps/route-map";
 
 import { Translate } from 'react-redux-i18n';
-import { fetchNavigationData } from "../../redux/actions/navigationActions";
+import { setNavigation } from "../../redux/actions/navigationActions";
+import { connect } from "react-redux";
+
+import { updateTooltip } from '../../redux/actions/tooltipActions';
 
 class NavigationComponent extends Component {
   navService = axios("internal.php?object=centreon_menu&action=menu");
@@ -25,10 +27,7 @@ class NavigationComponent extends Component {
     menuItems: []
   };
 
-  componentDidMount = () => {
-    const { fetchNavigationData } = this.props;
-    fetchNavigationData();
-    /*
+  UNSAFE_componentWillMount = () => {
     const { setNavigation } = this.props
 
     this.navService.get().then(({ data }) => {
@@ -42,7 +41,6 @@ class NavigationComponent extends Component {
         selectedMenu: Object.values(data)[0]
       });
     })
-    */
   };
 
   // toggle between icons menu and details menu
@@ -69,7 +67,7 @@ class NavigationComponent extends Component {
   collapseLevelTwo = index => {
     this.clickTimeout = setTimeout(() => {
       if (!this.doubleClicked) {
-        let { menuItems } = this.props;
+        let { menuItems } = this.state;
 
         Object.keys(menuItems).forEach(key => {
           menuItems[key].toggled = key === index ?
@@ -87,7 +85,7 @@ class NavigationComponent extends Component {
 
   // display/hide level 3
   collapseLevelThree = (levelOneKey, levelTwoKey) => {
-    let { menuItems } = this.props;
+    let { menuItems } = this.state;
 
     Object.keys(menuItems[levelOneKey].children).forEach(subKey => {
       if (subKey === levelTwoKey) {
@@ -104,7 +102,7 @@ class NavigationComponent extends Component {
 
   // activate level 1 (display colored menu)
   activateTopLevelMenu = index => {
-    let { menuItems } = this.props;
+    let { menuItems } = this.state;
 
     Object.keys(menuItems).forEach(key => {
       menuItems[key].active = (key === index);
@@ -115,43 +113,6 @@ class NavigationComponent extends Component {
     });
   };
 
-  // check if current tab is active
-  isActive = (pageId, urlParams) => {
-    let isActive = false;
-    if (urlParams.url.match(/main\.php/)) { // legacy url
-      isActive = pageId == urlParams.urlOptions;
-    } else { // react route
-      isActive = pageId == urlParams.url;
-    }
-
-    return isActive;
-  };
-
-  // get page id
-  // legacy routes ==> get topology page
-  // react routes ==> get path (eg: /administration/extensions/manager)
-  getPageId = () => {
-    const { pathname, search } = this.props.history.location;
-    let pageId = '';
-    if (search.match(/p=/)) { // legacy url
-      pageId = search.split("p=")[1];
-    } else { // react route
-      pageId = pathname;
-    }
-    return pageId;
-  }
-
-  // get url parameters from navigation entry
-  // eg: {url: '/administration/extensions/manager', urlOptions: ''}
-  // eg: {url: 'main.php?p=570101&o=c', urlOptions: '&o=c'}
-  getUrlFromEntry = (entryKey, entryProps) => {
-    const urlOptions = entryKey.slice(1) + (entryProps.options !== null ? entryProps.options : '');
-    const url = entryProps.is_react == '1'
-      ? "/_CENTREON_PATH_PLACEHOLDER_" + entryProps.url
-      : routeMap.module + "?p=" + urlOptions;
-    return { url, urlOptions };
-  }
-
   // navigate to the page
   goToPage = (route, topLevelIndex) => {
     const { history } = this.props;
@@ -159,10 +120,30 @@ class NavigationComponent extends Component {
     history.push(route);
   };
 
+  // hide tooltip for the first-level folded menu items
+  mouseLeftTheMenu = event => {
+    const { updateTooltip } = this.props;
+    updateTooltip({
+      toggled: false
+    });
+  };
+
+  // show tooltip for the first-level folded menu items by setting toggled to true
+  // updating the x, y properties of tooltip in order to display it on client cursor position
+  // show related label by setting label to label
+  mouseIsMovingOverTheMenu = (label, {  clientY }) => {
+    const { updateTooltip } = this.props;
+    updateTooltip({
+      toggled: true,
+      x: 50,
+      y: clientY,
+      label
+    });
+  };
+
   render() {
-    const { menuItems } = this.props;
-    const { active } = this.state;
-    const pageId = this.getPageId();
+    const { active, menuItems } = this.state;
+    const pageId = this.props.history.location.search.split("p=")[1];
 
     return (
       <nav class={"sidebar" + (active ? " active" : "")} id="sidebar">
@@ -189,9 +170,16 @@ class NavigationComponent extends Component {
               />
             </span>
           </div>
-          <ul class="menu menu-items list-unstyled components">
+          <ul
+            class="menu menu-items list-unstyled components"
+            onMouseLeave={this.mouseLeftTheMenu}
+          >
             {Object.entries(menuItems).map(([levelOneKey, levelOneProps]) => (
-              levelOneProps.label ? (<li class={"menu-item" + (levelOneProps.active ? " active" : "")}>
+              levelOneProps.label ? (
+                <li
+                  onMouseOver={this.mouseIsMovingOverTheMenu.bind(this, levelOneProps.label)}
+                  class={"menu-item" + (levelOneProps.active ? " active" : "")}
+                >
                 <span
                   onDoubleClick={() => {this.handleDoubleClick(levelOneKey, levelOneProps)}}
                   onClick={() => {this.collapseLevelTwo(levelOneKey)}}
@@ -200,9 +188,7 @@ class NavigationComponent extends Component {
                   id={"menu" + levelOneKey}
                 >
                   <span class={`iconmoon icon-${levelOneProps.menu_id.toLowerCase()}`}>
-                    <span class={"menu-item-name"}>
-                      <Translate value={levelOneProps.label}/>
-                    </span>
+                    <span class={"menu-item-name"}><Translate value={levelOneProps.label}/></span>
                   </span>
                 </span>
                 <ul
@@ -210,16 +196,13 @@ class NavigationComponent extends Component {
                   style={{ display: (levelOneProps.toggled && active) ? "block" : "none" }}
                 >
                   {Object.entries(levelOneProps.children).map(([levelTwoKey, levelTwoProps]) => {
-                    const levelTwoUrl = this.getUrlFromEntry(levelTwoKey, levelTwoProps);
+                    const urlOptions = levelTwoKey.slice(1) +
+                      (levelTwoProps.options !== null ? levelTwoProps.options : '')
                     if (levelTwoProps.label) {
                       return (
                         <li
                           class={
-                            "collapsed-item" +
-                            (levelTwoProps.collapsed || (this.isActive(pageId, levelTwoUrl))
-                              ? " active"
-                              : ""
-                            )
+                            "collapsed-item" + (levelTwoProps.collapsed || (pageId == urlOptions) ? " active" : "")
                           }
                         >
                           {Object.keys(levelTwoProps.children).length > 0 ? (
@@ -232,9 +215,14 @@ class NavigationComponent extends Component {
                             </span>
                           ) : (
                               <Link
-                                onClick={() => {this.goToPage(levelTwoUrl.url, levelOneKey)}}
-                                className={`collapsed-level-item-link img-none ${(this.isActive(pageId, levelTwoUrl)) ? "active" : ""}`}
-                                to={levelTwoUrl.url}
+                                onClick={() => {
+                                  this.goToPage(
+                                    routeMap.module + "?p=" + urlOptions,
+                                    levelOneKey
+                                  )
+                                }}
+                                className={`collapsed-level-item-link img-none ${(pageId == urlOptions) ? "active" : ""}`}
+                                to={routeMap.module + "?p=" + urlOptions}
                               >
                                 <Translate value={levelTwoProps.label}/>
                               </Link>
@@ -243,23 +231,29 @@ class NavigationComponent extends Component {
                           <ul class="collapse-level collapsed-level-items first-level list-unstyled">
                             {Object.entries(levelTwoProps.children).map(([levelThreeKey, levelThreeProps]) => {
                               return (
-                                <>
+                                <React.Fragment>
                                   {Object.keys(levelTwoProps.children).length > 1 &&
                                     <span class="collapsed-level-title">
                                       <Translate value={levelThreeKey}/>
                                     </span>
                                   }
                                   {Object.entries(levelThreeProps).map(([levelFourKey, levelFourProps]) => {
-                                    const levelFourUrl = this.getUrlFromEntry(levelFourKey, levelFourProps);
+                                    const urlOptions = levelFourKey.slice(1) +
+                                      (levelFourProps.options !== null ? levelFourProps.options : '')
                                     if (levelFourProps.label) {
                                       return (
                                         <li
-                                          class={"collapsed-level-item" + (this.isActive(pageId, levelFourUrl) ? " active" : "")}
+                                          class={"collapsed-level-item" + (pageId == urlOptions ? " active" : "")}
                                         >
                                           <Link
-                                            onClick={() => {this.goToPage(levelFourUrl.url, levelOneKey)}}
+                                            onClick={() => {
+                                              this.goToPage(
+                                                routeMap.module + "?p=" + urlOptions,
+                                                levelOneKey
+                                              )
+                                            }}
                                             className="collapsed-level-item-link"
-                                            to={levelFourUrl.url}
+                                            to={routeMap.module + "?p=" + urlOptions}
                                           >
                                             <Translate value={levelFourProps.label}/>
                                           </Link>
@@ -270,7 +264,7 @@ class NavigationComponent extends Component {
                                     }
                                   }
                                   )}
-                                </>
+                                </React.Fragment>
                               )
                             })}
                           </ul>
@@ -287,7 +281,7 @@ class NavigationComponent extends Component {
           <div class="toggle-sidebar-wrap">
             <span
               class="toggle-sidebar-icon"
-              onClick={this.toggleNavigation}
+              onClick={() => {this.toggleNavigation()}}
             />
           </div>
         </div>
@@ -296,17 +290,11 @@ class NavigationComponent extends Component {
   }
 }
 
-const mapStateToProps = ({ navigation }) => ({
-  entries: navigation.entries,
-  menuItems: navigation.menuItems
-});
+const mapStateToProps = () => {}
 
-const mapDispatchToProps = dispatch => {
-  return {
-    fetchNavigationData: () => {
-      dispatch(fetchNavigationData());
-    }
-  };
+const mapDispatchToProps = {
+  setNavigation,
+  updateTooltip
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(withRouter(NavigationComponent));
