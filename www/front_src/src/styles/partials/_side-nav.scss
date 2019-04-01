@@ -65,8 +65,8 @@
                   position: absolute;
                   margin-top: -34px;
                   left: 155px;
-                  -webkit-box-shadow: 0 0 3px 1px rgba(36,47,59,0.1);
-                  box-shadow: 0 0 3px 1px rgba(36,47,59,0.1);
+                  -webkit-box-shadow: 0 0 3px 1px rgba(36,47,59,0.5);
+                  box-shadow: 0 0 3px 1px rgba(36,47,59,0.5);
                 }
               }
             }
@@ -79,8 +79,8 @@
               position: absolute;
               top: 0px;
               left: 45px;
-              -webkit-box-shadow: 0 0 3px 1px rgba(36,47,59,0.1);
-              box-shadow: 0 0 3px 1px rgba(36,47,59,0.1);
+              -webkit-box-shadow: 0 0 3px 1px rgba(36,47,59,0.5);
+              box-shadow: 0 0 3px 1px rgba(36,47,59,0.5);
             }
             .active {
               transition-delay : 0.5s;
@@ -88,10 +88,17 @@
               display: block!important;
             }
           }
-          .collapse .collapsed-item.active .first-level {
-            transition-delay : 0.5s;
-            transition: display 0.5s linear;
-            display: none;
+          .collapse {
+            .collapsed-item {
+              &.active .first-level {
+                transition-delay : 0.5s;
+                transition: display 0.5s linear;
+                display: none;
+              }
+              >.collapsed-level-item-link {
+                background-image: none;
+              }
+            }
           }
         }
       }
@@ -115,8 +122,8 @@
               position: absolute;
               margin-top: -34px;
               left: 155px;
-              -webkit-box-shadow: 0 0 3px 1px rgba(36,47,59,0.1);
-              box-shadow: 0 0 3px 1px rgba(36,47,59,0.1);
+              -webkit-box-shadow: 0 0 3px 1px rgba(36,47,59,0.5);
+              box-shadow: 0 0 3px 1px rgba(36,47,59,0.5);
             }
           }
         }
@@ -126,8 +133,8 @@
             position: absolute;
             top: 0px;
             left: 45px;
-            -webkit-box-shadow: 0 0 3px 1px rgba(36,47,59,0.1);
-            box-shadow: 0 0 3px 1px rgba(36,47,59,0.1);
+            -webkit-box-shadow: 0 0 3px 1px rgba(36,47,59,0.5);
+            box-shadow: 0 0 3px 1px rgba(36,47,59,0.5);
           }
         }
         .collapse .collapsed-item.active .first-level {
