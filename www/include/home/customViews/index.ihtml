@@ -869,6 +869,9 @@ jQuery(function () {
                 window.location.reload();
             }
           },
+          load: function( event, ui ) {
+              toggleEdit(defaultShow);
+          },
           activate: function( event, ui ) {
             tabLoops++;
             columnClass = null;
