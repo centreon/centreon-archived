@@ -99,7 +99,7 @@ if (!empty($remotesResults)) {
             'remote_ip'            => $remote['ip'],
             'centreon_path'        => $remote['centreon_path'],
             'http_method'          => $remote['http_method'],
-            'http_port'            => $remode['http_port'] ?: null,
+            'http_port'            => $remote['http_port'] ?: null,
             'no_check_certificate' => $remote['no_check_certificate'],
             'pollers'              => []
         ];
