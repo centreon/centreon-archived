@@ -39,16 +39,16 @@ if (!isset($centreon)) {
 
 include "./include/common/autoNumLimit.php";
 
-$search = null;
+$search = filter_var(
+    $_POST['searchN'] ?? $_GET['searchN'] ?? null,
+    FILTER_SANITIZE_STRING
+);
 
 if (isset($_POST['searchN'])) {
-    $search = $_POST['searchN'];
-    $centreon->historySearch[$url] = $search;
-} elseif (isset($_GET['searchN'])) {
-    $search = $_GET['searchN'];
-    $centreon->historySearch[$url] = $search;
-} elseif (isset($centreon->historySearch[$url])) {
-    $search = $centreon->historySearch[$url];
+    $centreon->historySearch[$url] = array();
+    $centreon->historySearch[$url]['searchN'] = $search;
+} else {
+    $search = $centreon->historySearch[$url]['searchN'] ?? null;
 }
 
 $SearchTool = '';
