@@ -53,24 +53,8 @@
   &.mini {
     .menu {
       &-item {
-        -webkit-transition: display 1s ease;
-        -moz-transition: display 1s ease;
-        -o-transition: display 1s ease;
-        transition: display 1s ease;
-
         position: relative;
-        -webkit-transition-delay:1s ease ;     
-        -moz-transition-delay:1s ease; 
-        -ms-transition-delay:1s ease;     
-        -o-transition-delay:1s ease;     
         &.active{
-
-          -webkit-transition:  display 1s ease;
-          -moz-transition:  display 1s ease;
-          -o-transition:  display 1s ease;
-          transition:  display 1s ease;
-
-
           >ul.list-unstyled {
             .collapsed-item {
               &:hover {
@@ -81,18 +65,9 @@
                   left: 155px;
                   -webkit-box-shadow: 0 0 3px 1px rgba(36,47,59,0.5);
                   box-shadow: 0 0 3px 1px rgba(36,47,59,0.5);
-
-
-                  -webkit-transition:  display 1s ease;
-                  -moz-transition:  display 1s ease;
-                  -o-transition:  display 1s ease;
-                  transition:  display 1s ease;
-
                   &:empty {
                     display: none!important;
                   }
-
-
                 }
               }
             }
@@ -107,14 +82,6 @@
               left: 45px;
               -webkit-box-shadow: 0 0 3px 1px rgba(36,47,59,0.5);
               box-shadow: 0 0 3px 1px rgba(36,47,59,0.5);
-
-
-              -webkit-transition: display 1s;
-              -moz-transition: display 1s;
-              -o-transition: display 1s;
-              transition: display 1s;
-
-
             }
             .active {
               transition-delay : 0.5s;
@@ -131,15 +98,10 @@
           }
         }
       }
-
-     
-
     }
     .collapse {
       .collapsed-item {
         &.active .first-level {
-          transition-delay : 0.5s;
-          transition: display 0.5s linear;
           display: none;
         }
         >.collapsed-level-item-link {
@@ -160,23 +122,18 @@
       }
       &.to-hover {
         >ul.list-unstyled {
-          .collapsed-item:hover {
-            >ul {
-              display: block!important;
-              position: absolute;
-              margin-top: -34px;
-              left: 155px;
-              -webkit-box-shadow: 0 0 3px 1px rgba(36,47,59,0.5);
-              box-shadow: 0 0 3px 1px rgba(36,47,59,0.5);
-
-
-              -webkit-transition:  display 1s ease;
-              -moz-transition:  display 1s ease;
-              -o-transition:  display 1s ease;
-              transition:  display 1s ease;
-
-              &:empty {
-                display: none!important;
+          .collapsed-item {
+            &:hover {
+              >ul {
+                display: block!important;
+                position: absolute;
+                margin-top: -34px;
+                left: 155px;
+                -webkit-box-shadow: 0 0 3px 1px rgba(36,47,59,0.5);
+                box-shadow: 0 0 3px 1px rgba(36,47,59,0.5);
+                &:empty {
+                  display: none!important;
+                }
               }
             }
           }
@@ -189,13 +146,6 @@
             left: 45px;
             -webkit-box-shadow: 0 0 3px 1px rgba(36,47,59,0.5);
             box-shadow: 0 0 3px 1px rgba(36,47,59,0.5);
-
-
-            -webkit-transition:  display 1s ease;
-            -moz-transition:  display 1s ease;
-            -o-transition:  display 1s ease;
-            transition:  display 1s ease;
-
             &:empty {
               display: none!important;
             }
@@ -222,11 +172,6 @@
         &.active {
           .collapsed-items.list-unstyled {
             display: block!important;
-
-            -webkit-transition:  display 1s ease;
-            -moz-transition:  display 1s ease;
-            -o-transition:  display 1s ease;
-            transition:  display 1s ease;
           }
           .list-unstyled,
           .list-unstyled.active {
@@ -365,11 +310,6 @@ a {
       }
     }
 
-
-
-
-
-
     &.active {
       .collapse {
         .collapsed-item {
@@ -481,6 +421,16 @@ a {
     }
 
     &:nth-child(3) {
+      .collapsed-item {
+        &:after {
+          content: ' ';
+          width: 100%;
+          height: 75px;
+          display: block;
+          position: absolute;
+          bottom: -75px;
+        }
+      }
       &.active {
         > span {
           background: $orange-centreon-primary;
@@ -688,7 +638,6 @@ a {
       .second-level {
         display: block;
       }
-    
     }
 
   }
@@ -696,7 +645,6 @@ a {
 .collapsed-level {
   &-items {
     &.first-level {
-     
       .collapsed-level-item {
         background-color: $white-color;
         .collapsed-level-item-link {
