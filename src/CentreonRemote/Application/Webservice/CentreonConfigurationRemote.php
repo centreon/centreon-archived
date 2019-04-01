@@ -267,7 +267,7 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
 
         $httpMethod = parse_url($this->arguments['server_ip'], PHP_URL_SCHEME) ?: 'http';
         $httpPort = parse_url($this->arguments['server_ip'], PHP_URL_PORT) ?: '';
-        $serverIP = parse_url($this->arguments['server_ip'], PHP_URL_HOST);
+        $serverIP = parse_url($this->arguments['server_ip'], PHP_URL_HOST) ?: $this->arguments['server_ip'];
         $serverName = substr($this->arguments['server_name'], 0, 40);
 
         $serverConfigurationService->setCentralIp($this->arguments['centreon_central_ip']);
@@ -366,7 +366,7 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
      *
      * @param $serverIP
      */
-    private function addServerToListOfRemotes($serverIP, $centreonPath, $httpMethod, $httpPort, $noCheckCertificate)
+    private function addServerToListOfRemotes($serverIP, $centreonPath, $httpMethod = 'http', $httpPort = null, $noCheckCertificate = 0)
     {
         $dbAdapter = $this->getDi()[\Centreon\ServiceProvider::CENTREON_DB_MANAGER]->getAdapter('configuration_db');
         $date = date('Y-m-d H:i:s');
@@ -377,19 +377,22 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
 
         if ($hasIpInTable) {
             $sql = 'UPDATE `remote_servers` SET `is_connected` = ?, `connected_at` = ?, `centreon_path` = ?, ' .
-                'http_method = ?, http_port = ?, no_check_certificate = ?' .
+                'http_method = ?, http_port = ?, no_check_certificate = ? ' .
                 'WHERE `ip` = ?';
-            $data = ['1', $date, $centreonPath, $httpPort, $noCheckCertificate, $serverIP];
+            $data = ['1', $date, $centreonPath, $httpMethod, $httpPort, $noCheckCertificate, $serverIP];
             $dbAdapter->query($sql, $data);
         } else {
             $data = [
-                'ip'            => $serverIP,
-                'app_key'       => '',
-                'version'       => '',
-                'is_connected'  => '1',
-                'created_at'    => $date,
-                'connected_at'  => $date,
-                'centreon_path' => $centreonPath,
+                'ip'                   => $serverIP,
+                'app_key'              => '',
+                'version'              => '',
+                'is_connected'         => '1',
+                'created_at'           => $date,
+                'connected_at'         => $date,
+                'centreon_path'        => $centreonPath,
+                'http_method'          => $httpMethod,
+                'http_port'            => $httpPort ?: null,
+                'no_check_certificate' => $noCheckCertificate ?: 0
             ];
             $dbAdapter->insert('remote_servers', $data);
         }
