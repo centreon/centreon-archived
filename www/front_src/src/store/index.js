@@ -4,15 +4,11 @@ import reducers from "../redux/reducers";
 import thunk from "redux-thunk";
 import createSagaMiddleware from "redux-saga";
 import sagas from "../redux/sagas";
+import { createBrowserHistory } from "history";
 
 const sagaMiddleware = createSagaMiddleware();
 
-const createHistory =
-  typeof document !== undefined
-    ? require("history/createBrowserHistory").default
-    : () => {};
-
-export const history = createHistory({basename: "/_CENTREON_PATH_PLACEHOLDER_/"});
+export const history = createBrowserHistory({basename: "/_CENTREON_PATH_PLACEHOLDER_/"});
 
 const createAppStore = (options, initialState = {}) => {
   const middlewares = [routerMiddleware(history), thunk, sagaMiddleware];
