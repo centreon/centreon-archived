@@ -88,18 +88,19 @@
               display: block!important;
             }
           }
-          .collapse {
-            .collapsed-item {
-              &.active .first-level {
-                transition-delay : 0.5s;
-                transition: display 0.5s linear;
-                display: none;
-              }
-              >.collapsed-level-item-link {
-                background-image: none;
-              }
-            }
-          }
+          
+        }
+      }
+    }
+    .collapse {
+      .collapsed-item {
+        &.active .first-level {
+          transition-delay : 0.5s;
+          transition: display 0.5s linear;
+          display: none;
+        }
+        >.collapsed-level-item-link {
+          background-image: none;
         }
       }
     }
@@ -293,6 +294,25 @@ a {
         display: block!important;
         position: fixed;
         left: 68px;
+      }
+    }
+    &.active {
+      .collapsed-level-item-link {
+        background: url("../../img/icons/aside-menu-arrows.png") no-repeat;
+        background-position: 12px 10px;
+        background-color: $grey-classic;
+        &.img-none {
+          background: none;
+          background-color: $grey-classic;
+        }
+      }
+    }
+    .collapsed-level-item-link {
+      background-image:none;
+      background-color: $grey-classic;
+      &.img-none {
+        background-image:none;
+        background-color: $grey-classic;
       }
     }
 
@@ -589,16 +609,9 @@ a {
       .second-level {
         display: block;
       }
+    
     }
-    > .collapsed-level-item-link {
-      background: url("../../img/icons/aside-menu-arrows.png") no-repeat;
-      background-position: 12px 10px;
-      background-color: $grey-classic;
-      &.img-none {
-        background: none;
-        background-color: $grey-classic;
-      }
-    }
+
   }
 }
 .collapsed-level {
