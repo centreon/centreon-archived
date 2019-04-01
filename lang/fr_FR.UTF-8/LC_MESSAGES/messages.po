@@ -11643,6 +11643,10 @@ msgstr "Répertoire des fichiers de configuration de Centreon Broker"
 msgid "Centreon Broker modules path"
 msgstr "Chemin des modules de Centreon Broker"
 
+#: centreon-web/www/include/configuration/configServers/formServers.php:193
+msgid "Centreon Broker logs path"
+msgstr "Répertoire des logs de Centreon Broker"
+
 #: centreon-web/www/include/configuration/configServers/formServers.php:163
 msgid "Centreon Connector"
 msgstr "Connecteur Centreon"

@@ -7865,9 +7865,9 @@ msgstr "Caminho da configuração do Centreon Broker"
 msgid "Centreon Broker modules path"
 msgstr "Caminho dos modulos do Centreon Broker"
 
-#: /home/lgcosta/devel/centreon/centreon/www/include/configuration/configServers/formServers.php:193
-msgid "Centreon Broker logs"
-msgstr "Registros do Centreon Broker"
+#: centreon-web/www/include/configuration/configServers/formServers.php:193
+msgid "Centreon Broker logs path"
+msgstr "Caminho dos registros de Centreon Broker"
 
 #: /home/lgcosta/devel/centreon/centreon/www/include/configuration/configServers/formServers.php:198
 msgid "Centreon Connector"
