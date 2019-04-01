@@ -41,16 +41,16 @@ include_once "./class/centreonUtils.class.php";
 
 include "./include/common/autoNumLimit.php";
 
-$search = null;
+$search = filter_var(
+    $_POST['searchSG'] ?? $_GET['searchSG'] ?? null,
+    FILTER_SANITIZE_STRING
+);
 
 if (isset($_POST['searchSG'])) {
-    $search = $_POST['searchSG'];
-    $centreon->historySearch[$url] = $search;
-} elseif (isset($_GET['searchSG'])) {
-    $search = $_GET['searchSG'];
-    $centreon->historySearch[$url] = $search;
-} elseif (isset($centreon->historySearch[$url])) {
-    $search = $centreon->historySearch[$url];
+    $centreon->historySearch[$url] = array();
+    $centreon->historySearch[$url]['searchSG'] = $search;
+} else {
+    $search = $centreon->historySearch[$url]['searchSG'] ?? null;
 }
 
 if ($search) {
@@ -58,8 +58,7 @@ if ($search) {
         "WHERE (sg_name LIKE '%" . htmlentities($search, ENT_QUOTES, "UTF-8") .
         "%' OR sg_alias LIKE '%" . htmlentities($search, ENT_QUOTES, "UTF-8") . "%') " .
         $acl->queryBuilder('AND', 'sg_id', $sgString) .
-        " ORDER BY sg_name" .
-        " LIMIT " . $num * $limit . ", " . $limit;
+        " ORDER BY sg_name LIMIT " . $num * $limit . ", " . $limit;
 } else {
     $rq = "SELECT SQL_CALC_FOUND_ROWS sg_id, sg_name, sg_alias, sg_activate FROM servicegroup " .
         $acl->queryBuilder('WHERE', 'sg_id', $sgString) .
@@ -69,7 +68,7 @@ if ($search) {
 $dbResult = $pearDB->query($rq);
 $rows = $pearDB->query("SELECT FOUND_ROWS()")->fetchColumn();
 
-include("./include/common/checkPagination.php");
+include "./include/common/checkPagination.php";
 
 // Smarty template Init
 $tpl = new Smarty();
