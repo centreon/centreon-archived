@@ -200,7 +200,8 @@ class NavigationComponent extends Component {
                               </Link>
                             )}
 
-                          <ul class="collapse-level collapsed-level-items first-level list-unstyled">
+                          <ul className={`collapse-level collapsed-level-items first-level list-unstyled`}>
+                          {this.props.children}
                             {Object.entries(levelTwoProps.children).map(([levelThreeKey, levelThreeProps]) => {
                               return (
                                 <React.Fragment>

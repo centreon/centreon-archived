@@ -53,34 +53,68 @@
   &.mini {
     .menu {
       &-item {
+        -webkit-transition: display 1s ease;
+        -moz-transition: display 1s ease;
+        -o-transition: display 1s ease;
+        transition: display 1s ease;
+
         position: relative;
+        -webkit-transition-delay:1s ease ;     
+        -moz-transition-delay:1s ease; 
+        -ms-transition-delay:1s ease;     
+        -o-transition-delay:1s ease;     
         &.active{
+
+          -webkit-transition:  display 1s ease;
+          -moz-transition:  display 1s ease;
+          -o-transition:  display 1s ease;
+          transition:  display 1s ease;
+
+
           >ul.list-unstyled {
             .collapsed-item {
               &:hover {
                 >ul {
-                  transition-delay : 0.5s;
-                  transition: display 0.5s linear;
                   display: block!important;
                   position: absolute;
                   margin-top: -34px;
                   left: 155px;
                   -webkit-box-shadow: 0 0 3px 1px rgba(36,47,59,0.5);
                   box-shadow: 0 0 3px 1px rgba(36,47,59,0.5);
+
+
+                  -webkit-transition:  display 1s ease;
+                  -moz-transition:  display 1s ease;
+                  -o-transition:  display 1s ease;
+                  transition:  display 1s ease;
+
+                  &:empty {
+                    display: none!important;
+                  }
+
+
                 }
               }
             }
           }
           &:hover {
             >ul.list-unstyled {
-              transition-delay : 0.5s;
-              transition: display 0.5s linear;
+              transition-delay : 01;
+              transition: display 01 linear;
               display: block!important;
               position: absolute;
               top: 0px;
               left: 45px;
               -webkit-box-shadow: 0 0 3px 1px rgba(36,47,59,0.5);
               box-shadow: 0 0 3px 1px rgba(36,47,59,0.5);
+
+
+              -webkit-transition: display 1s;
+              -moz-transition: display 1s;
+              -o-transition: display 1s;
+              transition: display 1s;
+
+
             }
             .active {
               transition-delay : 0.5s;
@@ -134,6 +168,16 @@
               left: 155px;
               -webkit-box-shadow: 0 0 3px 1px rgba(36,47,59,0.5);
               box-shadow: 0 0 3px 1px rgba(36,47,59,0.5);
+
+
+              -webkit-transition:  display 1s ease;
+              -moz-transition:  display 1s ease;
+              -o-transition:  display 1s ease;
+              transition:  display 1s ease;
+
+              &:empty {
+                display: none!important;
+              }
             }
           }
         }
@@ -145,6 +189,16 @@
             left: 45px;
             -webkit-box-shadow: 0 0 3px 1px rgba(36,47,59,0.5);
             box-shadow: 0 0 3px 1px rgba(36,47,59,0.5);
+
+
+            -webkit-transition:  display 1s ease;
+            -moz-transition:  display 1s ease;
+            -o-transition:  display 1s ease;
+            transition:  display 1s ease;
+
+            &:empty {
+              display: none!important;
+            }
           }
         }
         .collapse .collapsed-item.active .first-level {
@@ -168,6 +222,11 @@
         &.active {
           .collapsed-items.list-unstyled {
             display: block!important;
+
+            -webkit-transition:  display 1s ease;
+            -moz-transition:  display 1s ease;
+            -o-transition:  display 1s ease;
+            transition:  display 1s ease;
           }
           .list-unstyled,
           .list-unstyled.active {
@@ -637,6 +696,7 @@ a {
 .collapsed-level {
   &-items {
     &.first-level {
+     
       .collapsed-level-item {
         background-color: $white-color;
         .collapsed-level-item-link {
