@@ -247,7 +247,8 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
 
         $openBrokerFlow = isset($this->arguments['open_broker_flow']) && $this->arguments['open_broker_flow'] === true;
         $centreonPath = $this->arguments['centreon_folder'] ?? '/centreon/';
-        $noCheckCertificate = isset($this->arguments['no_check_certificate']) && $this->arguments['no_check_certificate'] === true;
+        $noCheckCertificate = isset($this->arguments['no_check_certificate'])
+            && $this->arguments['no_check_certificate'] === true;
         $serverWizardIdentity = new ServerWizardIdentity;
         $isRemoteConnection = $serverWizardIdentity->requestConfigurationIsRemote();
         $configurationServiceName = $isRemoteConnection ?
