@@ -30,3 +30,15 @@ $help['pollercmd'] = dgettext(
         . "Make sure to have sufficient rights for the Apache user to run these commands."
 );
 $help['description'] = dgettext("help", "Short description of the poller");
+$help['http_method'] = dgettext(
+    "help",
+    "What kind of method is needed to contact the Remote Server (HTTP/HTTPS)?"
+);
+$help['http_port'] = dgettext(
+    "help",
+    "On which TCP port is listening the Remote Server?"
+);
+$help['no_check_certificate'] = dgettext(
+    "help",
+    "Do not check the validity of the SSL certificate of the Remote Server"
+);
