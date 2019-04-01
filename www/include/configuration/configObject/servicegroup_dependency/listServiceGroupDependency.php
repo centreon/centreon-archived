@@ -41,22 +41,22 @@ include_once "./class/centreonUtils.class.php";
 
 include "./include/common/autoNumLimit.php";
 
-isset($_GET["list"]) ? $list = $_GET["list"] : $list = null;
+$list = $_GET["list"] ?? null;
 
 $aclCond = "";
 if (!$centreon->user->admin) {
     $aclCond = " AND servicegroup_sg_id IN ($sgstring) ";
 }
 
-$search = null;
+$search = filter_var(
+    $_POST['searchSGD'] ?? $_GET['searchSGD'] ?? null,
+    FILTER_SANITIZE_STRING
+);
 if (isset($_POST['searchSGD'])) {
-    $search = $_POST['searchSGD'];
-    $centreon->historySearch[$url] = $search;
-} elseif (isset($_GET['searchSGD'])) {
-    $search = $_GET['searchSGD'];
-    $centreon->historySearch[$url] = $search;
-} elseif (isset($centreon->historySearch[$url])) {
-    $search = $centreon->historySearch[$url];
+    $centreon->historySearch[$url] = array();
+    $centreon->historySearch[$url]['searchSGD'] = $search;
+} else {
+    $search = $centreon->historySearch[$url]['searchSGD'] ?? null;
 }
 
 //Dependencies list
