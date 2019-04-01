@@ -41,17 +41,18 @@ include_once "./class/centreonUtils.class.php";
 
 include "./include/common/autoNumLimit.php";
 
-isset($_GET["list"]) ? $list = $_GET["list"] : $list = null;
-$search = null;
+$list = $_GET["list"] ?? null;
+
+$search = filter_var(
+    $_POST['searchHD'] ?? $_GET['searchHD'] ?? null,
+    FILTER_SANITIZE_STRING
+);
 
 if (isset($_POST['searchHD'])) {
-    $search = $_POST['searchHD'];
-    $centreon->historySearch[$url] = $search;
-} elseif (isset($_GET['searchHD'])) {
-    $search = $_GET['searchHD'];
-    $centreon->historySearch[$url] = $search;
-} elseif (isset($centreon->historySearch[$url])) {
-    $search = $centreon->historySearch[$url];
+    $centreon->historySearch[$url] = array();
+    $centreon->historySearch[$url]['searchHD'] = $search;
+} else {
+    $search = $centreon->historySearch[$url]['searchHD'] ?? null;
 }
 
 $aclFrom = "";
@@ -76,7 +77,7 @@ $dbResult = $pearDB->query($rq);
 
 // Manage pagination
 $rows = $pearDB->query("SELECT FOUND_ROWS()")->fetchColumn();
-include("./include/common/checkPagination.php");
+include "./include/common/checkPagination.php";
 
 // Smarty template Init
 $tpl = new Smarty();
