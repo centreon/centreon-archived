@@ -82,7 +82,7 @@ $status = filter_var(
     FILTER_VALIDATE_INT
 );
 
-if (isset($_POST['searchH']) || $_GET['searchB']) {
+if (isset($_POST['searchH']) || isset($_GET['searchB'])) {
     //saving chosen filters values
     $num = 0;
     $centreon->historySearch[$url] = array();
@@ -94,9 +94,9 @@ if (isset($_POST['searchH']) || $_GET['searchB']) {
 } else {
     //restoring saved values
     $search = $centreon->historySearch[$url]['searchH'] ?? null;
-    $poller = (int)$centreon->historySearch[$url]["poller"] ?? 0;
-    $hostgroup = (int)$centreon->historySearch[$url]["hostgroup"] ?? 0;
-    $template = (int)$centreon->historySearch[$url]["template"] ?? 0;
+    $poller = (int)($centreon->historySearch[$url]["poller"] ?? 0);
+    $hostgroup = (int)($centreon->historySearch[$url]["hostgroup"] ?? 0);
+    $template = (int)($centreon->historySearch[$url]["template"] ?? 0);
 }
 
 // set object history
