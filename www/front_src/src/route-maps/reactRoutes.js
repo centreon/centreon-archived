@@ -6,7 +6,6 @@ import RemoteServerStepOne from "../route-components/remoteServerStep1";
 import RemoteServerStepTwo from "../route-components/remoteServerStep2";
 import RemoteServerStepThree from "../route-components/remoteServerStep3";
 import ServerConfigurationWizard from "../route-components/serverConfigurationWizard";
-import ExtensionsManagerPage from "../route-components/administration/extensions/manager";
 import NotAllowedPage from "../route-components/notAllowedPage";
 
 const reactRoutes = [
@@ -43,11 +42,6 @@ const reactRoutes = [
   {
     path: routeMap.serverConfigurationWizard,
     comp: ServerConfigurationWizard,
-    exact: true
-  },
-  {
-    path: routeMap.extensionsManagerPage,
-    comp: ExtensionsManagerPage,
     exact: true
   },
   {

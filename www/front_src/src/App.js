@@ -2,18 +2,23 @@ import React, { Component } from "react";
 import config from "./config";
 import Header from "./components/header";
 import { Switch } from "react-router-dom";
+import { connect } from "react-redux";
 import { ConnectedRouter } from "react-router-redux";
 import { history } from "./store";
 import ClassicRoute from "./components/router/classicRoute";
 import ReactRoute from './components/router/reactRoute';
+import ExternalRouter from "./components/externalRouter";
 
 import { classicRoutes, reactRoutes } from "./route-maps";
 import NavigationComponent from "./components/navigation";
+import Tooltip from "./components/tooltip";
 import Footer from "./components/footer";
 import Fullscreen from 'react-fullscreen-crossbrowser';
 import queryString from 'query-string';
 import axios from './axios';
 import NotAllowedPage from './route-components/notAllowedPage';
+
+import { setExternalComponents } from "./redux/actions/externalComponentsActions";
 
 class App extends Component {
 
@@ -21,6 +26,7 @@ class App extends Component {
     isFullscreenEnabled: false,
     acls: [],
     aclsLoaded: false,
+    reactRouter: null
   }
 
   keepAliveTimeout = null
@@ -48,9 +54,9 @@ class App extends Component {
 
   // disable fullscreen
   removeFullscreenParams = () => {
-    if (history.location.pathname == '/_CENTREON_PATH_PLACEHOLDER_/main.php') {
+    if (history.location.pathname == './main.php') {
       history.push({
-        pathname: '/_CENTREON_PATH_PLACEHOLDER_/main.php',
+        pathname: './main.php',
         search: window['fullscreenSearch'],
         hash: window['fullscreenHash']
       })
@@ -65,7 +71,24 @@ class App extends Component {
   getAcl = () => {
     axios("internal.php?object=centreon_acl_webservice&action=getCurrentAcl")
       .get()
-      .then(({data}) => this.setState({acls: data, aclsLoaded: true}))
+      .then(({data}) => {
+        this.setState(
+          {acls: data, aclsLoaded: true},
+          () => { this.getReactRoutes(); }
+        );
+      });
+  }
+
+  // get external components (pages, hooks...)
+  getExternalComponents = () => {
+    const { setExternalComponents } = this.props;
+
+    axios("internal.php?object=centreon_frontend_component&action=components")
+      .get()
+      .then(({ data }) => {
+        // store external components in redux
+        setExternalComponents(data);
+    });
   }
 
   // keep alive (redirect to login page if session is expired)
@@ -86,32 +109,29 @@ class App extends Component {
     }, 15000)
   }
 
-  UNSAFE_componentWillMount = () => {
+  componentDidMount() {
     this.getAcl();
+    this.getExternalComponents();
     this.keepAlive();
   }
 
-  linkReactRoutesAndComponents = () => {
-    const {acls} = this.state;
-    return reactRoutes.map(({ path, comp, ...rest }) => (
+  getReactRoutes = () => {
+    const { acls } = this.state;
+    let reactRouter = reactRoutes.map(({ path, comp, ...rest }) => (
       <ReactRoute
         history={history}
         path={path}
-        component={acls.includes(`/${path.split('/_CENTREON_PATH_PLACEHOLDER_/')[1]}`) ? comp : NotAllowedPage}
+        component={acls.includes(path) ? comp : NotAllowedPage}
         {...rest}
       />
-    ))
+    ));
+    this.setState({ reactRouter });
   }
 
   render() {
-    const {aclsLoaded} = this.state;
+    const { reactRouter } = this.state;
+
     const min = this.getMinArgument();
-
-    let reactRouter = '';
-
-    if (aclsLoaded) {
-      reactRouter = this.linkReactRoutesAndComponents();
-    }
 
     return (
       <ConnectedRouter history={history}>
@@ -119,6 +139,7 @@ class App extends Component {
           {!min && // do not display menu if min=1
             <NavigationComponent/>
           }
+          <Tooltip/>
           <div id="content">
             {!min && // do not display header if min=1
               <Header/>
@@ -134,7 +155,8 @@ class App extends Component {
                       {classicRoutes.map(({path, comp, ...rest}, i) => (
                         <ClassicRoute key={i} history={history} path={path} component={comp} {...rest} />
                       ))}
-                      {aclsLoaded && reactRouter}
+                      {reactRouter}
+                      <ExternalRouter/>
                     </Switch>
                   </div>
                 </div>
@@ -151,4 +173,8 @@ class App extends Component {
   }
 }
 
-export default App;
+const mapDispatchToProps = {
+  setExternalComponents
+};
+
+export default connect(null, mapDispatchToProps)(App);

@@ -2,7 +2,6 @@ import React, { Component } from "react";
 import Loader from "../../components/loader";
 
 class ModuleRoute extends Component {
-
   constructor(props) {
     super(props);
 
@@ -112,7 +111,7 @@ class ModuleRoute extends Component {
           scrolling="yes"
           className={loading ? "hidden" : ""}
           style={{ width: "100%", height: `${contentHeight}px` }}
-          src={`/_CENTREON_PATH_PLACEHOLDER_/main.get.php${params}`}
+          src={`./main.get.php${params}`}
         />
       </>
     );
