@@ -43,19 +43,20 @@ include "./include/common/autoNumLimit.php";
 $centreonGMT = new CentreonGMT($pearDB);
 $centreonGMT->getMyGMTFromSession(session_id(), $pearDB);
 
-$LCASearch = '';
-$search = null;
+
+$search = filter_var(
+    $_POST['searchP'] ?? $_GET['searchP'] ?? null,
+    FILTER_SANITIZE_STRING
+);
 
 if (isset($_POST['searchP'])) {
-    $search = $_POST['searchP'];
-    $centreon->historySearch[$url] = $search;
-} elseif (isset($_GET['searchP'])) {
-    $search = $_GET['searchP'];
-    $centreon->historySearch[$url] = $search;
-} elseif (isset($centreon->historySearch[$url])) {
-    $search = $centreon->historySearch[$url];
+    $centreon->historySearch[$url] = array();
+    $centreon->historySearch[$url]['searchP'] = $search;
+} else {
+    $search = $centreon->historySearch[$url]['searchP'] ?? null;
 }
 
+$LCASearch = '';
 if ($search) {
     $LCASearch .= " name LIKE '%" . htmlentities($search, ENT_QUOTES, "UTF-8") . "%'";
 }
