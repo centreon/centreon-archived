@@ -43,15 +43,16 @@ include "./include/common/autoNumLimit.php";
 
 // Search engine
 
-$search = null;
+$search = filter_var(
+    $_POST['searchR'] ?? $_GET['searchR'] ?? null,
+    FILTER_SANITIZE_STRING
+);
+
 if (isset($_POST['searchR'])) {
-    $search = $_POST['searchR'];
-    $centreon->historySearch[$url] = $search;
-} elseif (isset($_GET['searchR'])) {
-    $search = $_GET['searchR'];
-    $centreon->historySearch[$url] = $search;
-} elseif (isset($centreon->historySearch[$url])) {
-    $search = $centreon->historySearch[$url];
+    $centreon->historySearch[$url] = array();
+    $centreon->historySearch[$url]['searchR'] = $search;
+} else {
+    $search = $centreon->historySearch[$url]['searchR'] ?? null;
 }
 
 $SearchTool = '';
