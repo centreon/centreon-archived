@@ -45,14 +45,43 @@ $search = filter_var(
     FILTER_SANITIZE_STRING
 );
 
-if (isset($_POST['searchC']) || $_GET['search']) {
-    $centreon->historySearch[$url] = $search;
+$num = filter_var(
+    $_POST['num'] ?? $_GET['num'] ?? $centreon->historyPage[$url] ?? 0,
+    FILTER_VALIDATE_INT
+);
+
+$type = filter_var(
+    $_POST['type'] ?? $_GET['type'] ?? null,
+    FILTER_VALIDATE_INT
+);
+
+// As the four pages of this menu are generated dynamically from the same ihtml and php files,
+// we need to save $type and to overload the $num value set in the pagination.php file to restore each user's filter.
+$savedType = $centreon->historySearch[$url]['type'] ?? null;
+
+// As pagination.php will already check if the current page was previously loaded or not,
+// we're only checking if the last loaded page have the same $type value (1,2,3 or 4)
+if (isset($type) && $type !== $savedType) {
+    //if so, we reset the pagination and save the current $type
+    $num = $centreon->historyPage[$url] = 0;
+    $centreon->historySearch[$url]['type'] = $type;
 } else {
-    $search = $centreon->historySearch[$url];
+    //saving again the pagination filter
+    $centreon->historyPage[$url] = $num;
+}
+
+if (isset($_POST['searchC'])) {
+    //restoring user's search field value
+    $centreon->historySearch[$url] = array();
+    // the four pages have the same $url, so we need to distinguish each page using its $type,
+    // and to save the four search filters.
+    $centreon->historySearch[$url]['search' . $type] = $search;
+} else {
+    //saving user's search field value
+    $search = $centreon->historySearch[$url]['search' . $type] ?? null;
 }
 
 $type_str = $type ? " AND `command_type` = " . $type : "";
-
 $search = tidySearchKey($search, $advanced_search);
 
 //List of elements - Depends on different criteria
@@ -98,7 +127,12 @@ $form = new HTML_QuickForm('form', 'POST', "?p=" . $p);
 $style = "one";
 
 // Define command Type table
-$commandType = array("1" => _("Notification"), "2" => _("Check"), "3" => _("Miscellaneous"), "4" => _("Discovery"));
+$commandType = array(
+    "1" => _("Notification"),
+    "2" => _("Check"),
+    "3" => _("Miscellaneous"),
+    "4" => _("Discovery")
+);
 
 // Fill a tab with a multidimensional Array we put in $tpl
 $elemArr = array();
