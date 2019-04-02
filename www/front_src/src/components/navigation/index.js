@@ -121,9 +121,10 @@ class NavigationComponent extends Component {
   render() {
     const { active, menuItems } = this.state;
     const pageId = this.props.history.location.search.split("p=")[1];
+    const activated = " active"
 
     return (
-      <nav class={`sidebar ${active ? " active" : " mini"}`} id="sidebar">
+      <nav class={`sidebar ${active ? activated : " mini"}`} id="sidebar">
         <div class="sidebar-inner">
           <div class="sidebar-logo" onClick={this.toggleNavigation}>
             <span>
@@ -154,7 +155,7 @@ class NavigationComponent extends Component {
             {Object.entries(menuItems).map(([levelOneKey, levelOneProps]) => (
               levelOneProps.label ? (
                 <li
-                  className={`menu-item ${(levelOneProps.toggled && active || levelOneProps.active) ? " active" : " to-hover"}`}
+                  className={`menu-item ${(levelOneProps.toggled && active || levelOneProps.active) ? activated : " to-hover"}`}
                 >
                 <span
                   onDoubleClick={() => {this.handleDirectClick(levelOneKey, levelOneProps)}}
@@ -166,7 +167,7 @@ class NavigationComponent extends Component {
                   </span>
                 </span>
                 <ul
-                  className={`collapse collapsed-items list-unstyled ${(levelOneProps.toggled && active) ? "active" : " " }`}
+                  className={`collapse collapsed-items list-unstyled ${(levelOneProps.toggled && active) ? activated : " " }`}
                   style={{ display: (levelOneProps.toggled && active) ? "block" : "none" }}
                 >
                   {Object.entries(levelOneProps.children).map(([levelTwoKey, levelTwoProps]) => {
@@ -176,13 +177,14 @@ class NavigationComponent extends Component {
                       return (
                         <li
                           className={
-                           `collapsed-item ${(levelTwoProps.collapsed || (pageId == urlOptions)) ? " active" : ""}`
+                           `collapsed-item ${(levelTwoProps.collapsed || (pageId == urlOptions)) ? activated : ""}`
                           }
+
                         >
                           {Object.keys(levelTwoProps.children).length > 0 ? (
                             <span
                               onClick={() => {this.collapseLevelThree(levelOneKey, levelTwoKey)}}
-                              className="collapsed-level-item-link"
+                              className={`collapsed-level-item-link`}
                             >
                               <Translate value={levelTwoProps.hasOwnProperty('label') ? levelTwoProps.label : ''}/>
                             </span>
@@ -194,7 +196,7 @@ class NavigationComponent extends Component {
                                     levelOneKey
                                   )
                                 }}
-                                className={`collapsed-level-item-link img-none ${(pageId == urlOptions) ? "active" : ""}`}
+                                className={`collapsed-level-item-link img-none ${(pageId == urlOptions) ? activated : ""}`}
                                 to={routeMap.module + "?p=" + urlOptions}
                               >
                                 <Translate value={levelTwoProps.label}/>
@@ -220,7 +222,7 @@ class NavigationComponent extends Component {
                                           onClick={() => {
                                             this.activeCurrentLevel(levelOneKey, levelTwoKey)
                                           }}
-                                          className={`collapsed-level-item ${pageId == urlOptions ? " active" : ""}`}
+                                          className={`collapsed-level-item ${pageId == urlOptions ? activated : ""}`}
                                         >
                                           <Link
                                             onClick={() => {
