@@ -19,8 +19,6 @@ class NavigationComponent extends Component {
   clickTimeout = null;
   doubleClicked = false;
 
-  actived = 'active'
-
   state = {
     active: false,
     initiallyCollapsed: false,
@@ -168,7 +166,7 @@ class NavigationComponent extends Component {
                   </span>
                 </span>
                 <ul
-                  className={`collapse collapsed-items list-unstyled ${(levelOneProps.toggled && active) ? actived : " " }`}
+                  className={`collapse collapsed-items list-unstyled ${(levelOneProps.toggled && active) ? "active" : " " }`}
                   style={{ display: (levelOneProps.toggled && active) ? "block" : "none" }}
                 >
                   {Object.entries(levelOneProps.children).map(([levelTwoKey, levelTwoProps]) => {
@@ -178,13 +176,13 @@ class NavigationComponent extends Component {
                       return (
                         <li
                           className={
-                           `collapsed-item ${(levelTwoProps.collapsed || (pageId == urlOptions)) ? actived : ""}`
+                           `collapsed-item ${(levelTwoProps.collapsed || (pageId == urlOptions)) ? " active" : ""}`
                           }
                         >
                           {Object.keys(levelTwoProps.children).length > 0 ? (
                             <span
                               onClick={() => {this.collapseLevelThree(levelOneKey, levelTwoKey)}}
-                              className={`collapsed-level-item-link ${this.props.children.target.classList.contains(this.actived) ? "wasactive" : ""}`}
+                              className="collapsed-level-item-link"
                             >
                               <Translate value={levelTwoProps.hasOwnProperty('label') ? levelTwoProps.label : ''}/>
                             </span>
@@ -196,7 +194,7 @@ class NavigationComponent extends Component {
                                     levelOneKey
                                   )
                                 }}
-                                className={`collapsed-level-item-link img-none ${(pageId == urlOptions) ? actived : ""}`}
+                                className={`collapsed-level-item-link img-none ${(pageId == urlOptions) ? "active" : ""}`}
                                 to={routeMap.module + "?p=" + urlOptions}
                               >
                                 <Translate value={levelTwoProps.label}/>
