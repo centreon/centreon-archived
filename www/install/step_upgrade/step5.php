@@ -49,6 +49,12 @@ $res = $db->query("SELECT `value` FROM `options` WHERE `key` = 'send_statistics'
 $stat = $res->fetch();
 $template = getTemplate('templates');
 
+/* If CEIP is disabled and if is major version of Centreon ask again */
+$aVersion = explode ('.', $_SESSION['CURRENT_VERSION']);
+if (($stat === false || (int)$stat['value'] != 1) && (int)$aVersion[2] == 0) {
+    $stat = false;
+}
+
 $title = _('Upgrade finished');
 
 $centreon_path = realpath(dirname(__FILE__) . '/../../../');
