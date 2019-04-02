@@ -40,23 +40,23 @@ if (!isset($centreon)) {
 include_once "./class/centreonUtils.class.php";
 
 include "./include/common/autoNumLimit.php";
+$mnftr_id = null;
 
-$search = null;
+$search = filter_var(
+    $_POST['searchTM'] ?? $_GET['searchTM'] ?? null,
+    FILTER_SANITIZE_STRING
+);
 
 if (isset($_POST['searchTM'])) {
-    $search = $_POST['searchTM'];
-    $centreon->historySearch[$url] = $search;
-} elseif (isset($_GET['searchTM'])) {
-    $search = $_GET['searchTM'];
-    $centreon->historySearch[$url] = $search;
-} elseif (isset($centreon->historySearch[$url])) {
-    $search = $centreon->historySearch[$url];
+    $centreon->historySearch[$url] = array();
+    $centreon->historySearch[$url]['searchTM'] = $search;
+} else {
+    $search = $centreon->historySearch[$url]['searchTM'] ?? null;
 }
 
 $SearchTool = '';
 if ($search) {
-    $SearchTool .= " WHERE (alias LIKE '%" . htmlentities($search, ENT_QUOTES, "UTF-8") .
-        "%') OR (name LIKE '%" . htmlentities($search, ENT_QUOTES, "UTF-8") . "%')";
+    $SearchTool .= " WHERE (alias LIKE '%" . $search . "%') OR (name LIKE '%" . $search . "%')";
 }
 
 // List of elements - Depends on different criteria
@@ -88,7 +88,6 @@ $style = "one";
 
 // Fill a tab with a multidimensional Array we put in $tpl
 $elemArr = array();
-$mnftr = null;
 for ($i = 0; $mnftr = $dbResult->fetch(); $i++) {
     $moptions = "";
     $selectedElements = $form->addElement('checkbox', "select[" . $mnftr['id'] . "]");
