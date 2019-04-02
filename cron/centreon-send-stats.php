@@ -44,6 +44,6 @@ if ($sendStatistics && $isRemote !== 'yes') {
         $returnData = $http->call(CENTREON_STATS_URL, 'POST', $data, array(), true);
         echo "statusCode :" . $returnData['statusCode'] . ',body : ' . $returnData['body'];
     } catch (Exception $e) {
-        echo 'Caught exception: ',  $e->getMessage(), "\n";
+        echo 'Caught exception: ' .  $e->getMessage() . '\n';
     }
 }
