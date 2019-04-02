@@ -641,6 +641,7 @@ a {
       }
       > .collapsed-level-item-link {
         background-position: 13px -94px;
+        
       }
     }
     &.active {
@@ -663,9 +664,7 @@ a {
     }
   }
 }
-.isactive {
-  background-color: red;
-}
+
 /* ---------------------------------------------------
     MEDIAQUERIES
 ----------------------------------------------------- */
