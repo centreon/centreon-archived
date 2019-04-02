@@ -51,7 +51,7 @@ $template = getTemplate('templates');
 
 /* If CEIP is disabled and if is major version of Centreon ask again */
 $aVersion = explode ('.', $_SESSION['CURRENT_VERSION']);
-if (($stat === false || (int)$stat['value'] != 1) && (int)$aVersion[2] == 0) {
+if ((int)$stat['value'] != 1 && (int)$aVersion[2] === 0) {
     $stat = false;
 }
 
