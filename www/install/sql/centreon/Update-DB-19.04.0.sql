@@ -22,7 +22,5 @@ DELETE FROM topology WHERE topology_name = "CSS" AND topology_parent = 501 AND t
 -- removing unfriendly title from Logs menu
 DELETE FROM topology WHERE topology_name = "Visualisation" AND topology_parent = 508 AND topology_page = 50801;
 
-
-
-
-
+-- Remove unused options
+DELETE FROM options WHERE options.key IN ('rrdtool_title_font', 'rrdtool_title_fontsize', 'rrdtool_unit_font', 'rrdtool_unit_fontsize', 'rrdtool_axis_font', 'rrdtool_axis_fontsize', 'rrdtool_watermark_font', 'rrdtool_watermark_fontsize', 'rrdtool_legend_font', 'rrdtool_legend_fontsize');
