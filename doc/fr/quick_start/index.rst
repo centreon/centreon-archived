@@ -1,3 +1,5 @@
+.. _quickstart:
+
 ################
 Démarrage rapide
 ################
@@ -9,6 +11,7 @@ principaux objets contrôlés par Centreon.
     :maxdepth: 1
 
     login
+    basic_plugins
     add_host
     add_services
     add_host_from_template

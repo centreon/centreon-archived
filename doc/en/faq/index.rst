@@ -9,3 +9,4 @@ FAQ
    gdpr_compliance
    administration
    performance
+   remote_server

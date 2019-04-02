@@ -79,7 +79,7 @@
 			x = 0;
 		}
 	
-		// calcul de la couleur � partir des coordonn�es du clic
+		// calcul de la couleur à partir des coordonnées du clic
 		var part_width = document.all ? document.all.colpick_color_img.width/6 : document.getElementById('colpick_color_img').width/6;
 		var im_height = document.all ? document.all.colpick_color_img.height : document.getElementById('colpick_color_img').height;
 		

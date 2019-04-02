@@ -11,7 +11,7 @@ class ExporterCacheService
 
     /**
      * Get info if exists and if not add it using callback function
-     * 
+     *
      * @param string $key
      * @param callable $data
      * @return mixed
@@ -29,7 +29,7 @@ class ExporterCacheService
 
     /**
      * Setter
-     * 
+     *
      * @param string $key
      * @param mixed $data
      */
@@ -40,7 +40,7 @@ class ExporterCacheService
 
     /**
      * Merge
-     * 
+     *
      * @param string $key
      * @param mixed $data
      */
@@ -66,7 +66,7 @@ class ExporterCacheService
 
     /**
      * Getter
-     * 
+     *
      * @param string $key
      * @return mixed
      */

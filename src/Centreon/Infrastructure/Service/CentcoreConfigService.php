@@ -4,11 +4,11 @@ namespace Centreon\Infrastructure\Service;
 class CentcoreConfigService
 {
 
-    CONST CONF_CORE = 'instCentCore.conf';
-    CONST CONF_PLUGINS = 'instCentPlugins.conf';
-    CONST CONF_WEB = 'instCentWeb.conf';
+    const CONF_CORE = 'instCentCore.conf';
+    const CONF_PLUGINS = 'instCentPlugins.conf';
+    const CONF_WEB = 'instCentWeb.conf';
 
-    CONST MACROS_DELIMITER_TEMPLATE = '@%s@';
+    const MACROS_DELIMITER_TEMPLATE = '@%s@';
 
     /**
      * @var array
@@ -17,7 +17,7 @@ class CentcoreConfigService
 
     /**
      * Macros getter
-     * 
+     *
      * @return array
      */
     public function getMacros(): array
@@ -28,20 +28,20 @@ class CentcoreConfigService
 
         return $this->macros;
     }
-    
+
     /**
      * Replace macros with their values
-     * 
+     *
      * @param string $string
      */
     public function replaceMacros(&$string): void
     {
         $macros = $this->getMacros();
-        
+
         foreach ($macros as $key => $val) {
             $key = str_replace("'", "\\'", $key);
             $macro = sprintf(static::MACROS_DELIMITER_TEMPLATE, $key);
-            
+
             $string = str_replace($macro, $val, $string);
         }
     }
@@ -114,7 +114,7 @@ class CentcoreConfigService
          * centreon_plugins
          */
     }
-    
+
     private function _parseIniFile($filename): array
     {
         $reslt = [];
@@ -122,7 +122,6 @@ class CentcoreConfigService
         try {
             $reslt = parse_ini_file($filename);
         } catch (\Exception $ex) {
-            
         }
 
         return $reslt;

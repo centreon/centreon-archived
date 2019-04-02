@@ -78,7 +78,9 @@ foreach ($inputArguments as $argumentName => $argumentValue) {
     }
 }
 
-$p = $inputs["p"];
+if (is_null($p)) {
+    $p = $inputs["p"];
+}
 $o = $inputs["o"];
 $min = $inputs["min"];
 $type = $inputs["type"];
@@ -291,7 +293,6 @@ if (isset($url) && $url) {
                 continue;
                 break;
         }
-
     }
 }
 

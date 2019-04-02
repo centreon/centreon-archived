@@ -1,4 +1,9 @@
 <?php
+
+session_start();
+if (!isset($_SESSION['centreon'])) {
+    exit();
+}
 /*
  * Copyright 2005-2018 Centreon
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
@@ -46,9 +51,10 @@ if ($licenseModuleName !== $moduleName) {
 } else {
     // Directory for put license files
     $licensePath = '/etc/centreon/license.d/';
-    $destination = $licensePath . $licenseFileInfos['name'];
+    $destination = $licensePath . $licenseModuleName . $extensionFileLicense;
 
     if (move_uploaded_file($licenseFileInfos['tmp_name'], $destination)) {
+        chmod($destination, 0444);
         responseUploadJsonFormat("The license has been successfully uploaded");
     } else {
         responseUploadJsonFormat("An error occurred", 404);

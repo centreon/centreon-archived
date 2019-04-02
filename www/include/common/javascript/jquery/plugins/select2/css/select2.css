@@ -1,3 +1,5 @@
+/* Caution in the original lib the ".select2-dropdown" z-index was 1051 but as the popup has a z-index of 1053 and
+ to avoid impacts in the other pages or popups, we modified this z-index to 1065 */
 .select2-container {
   box-sizing: border-box;
   display: inline-block;
@@ -56,7 +58,9 @@
   position: absolute;
   left: -100000px;
   width: 100%;
-  z-index: 1051; }
+  /* caution in the original lib the z-index was 1051 but as the popup has a z-index of 1053 and to avoid
+  impacts in the other pages or popup, we modified this z-index to 1065 */
+  z-index: 1065; }
 
 .select2-results {
   display: block; }

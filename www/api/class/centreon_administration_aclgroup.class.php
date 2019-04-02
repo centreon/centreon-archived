@@ -99,7 +99,7 @@ class CentreonAdministrationAclgroup extends CentreonConfigurationObjects
 
         return array(
             'items' => $aclGroupList,
-            'total' => $stmt->rowCount()
+            'total' => (int) $this->pearDB->numberRows()
         );
     }
 }

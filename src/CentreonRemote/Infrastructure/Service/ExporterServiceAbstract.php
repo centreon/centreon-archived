@@ -33,7 +33,7 @@ abstract class ExporterServiceAbstract implements ExporterServiceInterface
 
     /**
      * Construct
-     * 
+     *
      * @param \Psr\Container\ContainerInterface $services
      */
     public function __construct(ContainerInterface $services)
@@ -67,7 +67,7 @@ abstract class ExporterServiceAbstract implements ExporterServiceInterface
 
     /**
      * Create path for export
-     * 
+     *
      * @param string $exportPath
      * @return string
      */
@@ -86,7 +86,7 @@ abstract class ExporterServiceAbstract implements ExporterServiceInterface
 
     /**
      * Get path of export
-     * 
+     *
      * @param string $exportPath
      * @return string
      */
@@ -99,7 +99,7 @@ abstract class ExporterServiceAbstract implements ExporterServiceInterface
 
     /**
      * Get exported file
-     * 
+     *
      * @param string $filename
      * @return string
      */
@@ -110,7 +110,8 @@ abstract class ExporterServiceAbstract implements ExporterServiceInterface
         return $exportFilepath;
     }
 
-    public static function order(): int {
+    public static function order(): int
+    {
         return 10;
     }
 
@@ -119,12 +120,12 @@ abstract class ExporterServiceAbstract implements ExporterServiceInterface
         $macros = null;
 
         if ($this->config !== null) {
-            $macros = function(&$result) {
+            $macros = function (&$result) {
                 $result !== null ? $this->config->replaceMacros($result) : null;
             };
         }
 
-        $result = $this->commitment->getParser()::parse($filename, $macros);
+        $result = $this->commitment->getParser()->parse($filename, $macros);
 
         return $result;
     }
@@ -138,7 +139,7 @@ abstract class ExporterServiceAbstract implements ExporterServiceInterface
 
     protected function _dump(array $input, string $filename): void
     {
-        $this->commitment->getParser()::dump($input, $filename);
+        $this->commitment->getParser()->dump($input, $filename);
 
         $this->manifest->addFile($filename);
     }

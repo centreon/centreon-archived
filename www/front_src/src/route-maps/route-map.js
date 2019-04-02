@@ -1,15 +1,15 @@
 const routeMap = {
-  home: "/_CENTREON_PATH_PLACEHOLDER_/",
-  module: "/_CENTREON_PATH_PLACEHOLDER_/main.php",
-  serverConfigurationWizard: "/_CENTREON_PATH_PLACEHOLDER_/poller-wizard/1",
-  remoteServerStep1: "/_CENTREON_PATH_PLACEHOLDER_/poller-wizard/2",
-  remoteServerStep2: "/_CENTREON_PATH_PLACEHOLDER_/poller-wizard/3",
-  remoteServerStep3: "/_CENTREON_PATH_PLACEHOLDER_/poller-wizard/4",
-  pollerStep1: "/_CENTREON_PATH_PLACEHOLDER_/poller-wizard/5",
-  pollerStep2: "/_CENTREON_PATH_PLACEHOLDER_/poller-wizard/6",
-  pollerStep3: "/_CENTREON_PATH_PLACEHOLDER_/poller-wizard/7",
-  pollerList: "/_CENTREON_PATH_PLACEHOLDER_/main.php?p=60901",
-  notAllowedPage: "/_CENTREON_PATH_PLACEHOLDER_/not-allowed"
+  home: "/",
+  module: "/main.php",
+  serverConfigurationWizard: "/poller-wizard/1",
+  remoteServerStep1: "/poller-wizard/2",
+  remoteServerStep2: "/poller-wizard/3",
+  remoteServerStep3: "/poller-wizard/4",
+  pollerStep1: "/poller-wizard/5",
+  pollerStep2: "/poller-wizard/6",
+  pollerStep3: "/poller-wizard/7",
+  pollerList: "/main.php?p=60901",
+  notAllowedPage: "/not-allowed"
 };
 
 export default routeMap;

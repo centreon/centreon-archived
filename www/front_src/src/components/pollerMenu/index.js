@@ -136,12 +136,12 @@ class PollerMenu extends Component {
 
     return (
       <div class={"wrap-left-pollers" + (toggled ? " submenu-active" : "")}>
-        <span class="wrap-left-icon" onClick={this.toggle}>
-          <span class="iconmoon icon-poller" />
-          <span class="wrap-left-icon__name"><Translate value="Pollers"/></span>
-        </span>
         {statusIcon}
         <div ref={poller => this.poller = poller}>
+          <span class="wrap-left-icon pollers" onClick={this.toggle}>
+            <span class="iconmoon icon-poller" />
+            <span class="wrap-left-icon__name"><Translate value="Pollers"/></span>
+          </span>
           <span class="toggle-submenu-arrow" onClick={this.toggle} >{this.props.children}</span>
           <div class="submenu pollers">
             <div class="submenu-inner">
@@ -196,7 +196,7 @@ class PollerMenu extends Component {
                       </li>
                     );
                   })
-                  : null}
+                : null}
                 {allowPollerConfiguration && /* display poller configuration button if user is allowed */
                   <a href={config.urlBase + "main.php?p=" + POLLER_CONFIGURATION_TOPOLOGY_PAGE}>
                     <button

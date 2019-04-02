@@ -55,9 +55,9 @@ try {
 /**
  * Upgrade storage sql
  */
-$storageSql = '../../sql/centstorage/Update-CSTG-' . $current . '_to_' . $next . '.sql';
+$storageSql = '../../sql/centstorage/Update-CSTG-' . $next . '.sql';
 if (is_file($storageSql)) {
-    $result = splitQueries($storageSql, ';', $pearDBO, '../../tmp/Update-CSTG-' . $current . '_to_' . $next);
+    $result = splitQueries($storageSql, ';', $pearDBO, '../../tmp/Update-CSTG-' . $next);
     if ("0" != $result) {
         exitUpgradeProcess(1, $current, $next, $result);
     }
@@ -66,7 +66,7 @@ if (is_file($storageSql)) {
 /**
  * Pre upgrade PHP
  */
-$prePhp = '../../php/Update-' . $current . '_to_' . $next . '.php';
+$prePhp = '../../php/Update-' . $next . '.php';
 if (is_file($prePhp)) {
     try {
         include_once $prePhp;
@@ -78,9 +78,9 @@ if (is_file($prePhp)) {
 /**
  * Upgrade configuration sql
  */
-$confSql = '../../sql/centreon/Update-DB-' . $current . '_to_' . $next . '.sql';
+$confSql = '../../sql/centreon/Update-DB-' . $next . '.sql';
 if (is_file($confSql)) {
-    $result = splitQueries($confSql, ';', $pearDB, '../../tmp/Update-DB-' . $current . '_to_' . $next);
+    $result = splitQueries($confSql, ';', $pearDB, '../../tmp/Update-DB-' . $next);
     if ("0" != $result) {
         exitUpgradeProcess(1, $current, $next, $result);
     }
@@ -89,7 +89,7 @@ if (is_file($confSql)) {
 /**
  * Post upgrade PHP
  */
-$postPhp = '../../php/Update-' . $current . '_to_' . $next . '.post.php';
+$postPhp = '../../php/Update-' . $next . '.post.php';
 if (is_file($postPhp)) {
     try {
         include_once $postPhp;
@@ -98,14 +98,27 @@ if (is_file($postPhp)) {
     }
 }
 
-$res = $pearDB->query("SELECT `value` FROM `informations` WHERE `key` = 'version'");
-$row = $res->fetchRow();
-$current = $row['value'];
+/**
+ * Update version in database.
+ */
+$res = $pearDB->prepare("UPDATE `informations` SET `value` = ? WHERE `key` = 'version'");
+$res->execute(array($next));
+$current = $next;
+
+/*
+** To find the next version that we should update to, we will look in
+** the www/install/php directory where all PHP update scripts are
+** stored. We will extract the target version from the filename and find
+** the closest version to the current version.
+*/
 $next = '';
-if ($handle = opendir('../../sql/centreon')) {
+if ($handle = opendir('../../php')) {
     while (false !== ($file = readdir($handle))) {
-        if (preg_match('/Update-DB-' . preg_quote($current) . '_to_([a-zA-Z0-9\-\.]+)\.sql/', $file, $matches)) {
-            $next = $matches[1];
+        if (preg_match('/Update-([a-zA-Z0-9\-\.]+)\.php/', $file, $matches)) {
+            if ((version_compare($current, $matches[1]) < 0) &&
+                (empty($next) || (version_compare($matches[1], $next) < 0))) {
+                $next = $matches[1];
+            }
         }
     }
     closedir($handle);

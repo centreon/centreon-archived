@@ -154,12 +154,13 @@ class CentreonAuth
      */
     protected function checkPassword($password, $token = "", $autoimport = false)
     {
-        if ((strlen($password) == 0 || $password == "") && $token == "") {
+        if ((strlen($password) == 0 || $password === "") && $token === "") {
             $this->passwdOk = 0;
             return;
         }
-        $algo = $this->dependencyInjector['utils']->detectPassPattern($this->userInfos["contact_passwd"]);
-        if (!$algo) {
+        if (isset($this->userInfos["contact_passwd"]) &&
+            !$this->dependencyInjector['utils']->detectPassPattern($this->userInfos["contact_passwd"])
+        ) {
             $this->userInfos["contact_passwd"] = 'md5__' . $this->userInfos["contact_passwd"];
         }
         if ($this->userInfos["contact_auth_type"] == "ldap" && $this->autologin == 0) {
@@ -198,7 +199,7 @@ class CentreonAuth
                 if ($this->passwdOk == -1) {
                     $this->passwdOk = 0;
                     if (isset($this->userInfos["contact_passwd"])
-                        && $this->userInfos["contact_passwd"] == $this->myCrypt($password)) {
+                        && $this->userInfos["contact_passwd"] === $this->myCrypt($password)) {
                         $this->passwdOk = 1;
                         if (isset($this->ldap_store_password[$arId]) && $this->ldap_store_password[$arId]) {
                             $this->pearDB->query("UPDATE `contact`
@@ -223,12 +224,12 @@ class CentreonAuth
         } elseif ($this->userInfos["contact_auth_type"] == ""
             || $this->userInfos["contact_auth_type"] == "local" || $this->autologin) {
             if ($this->autologin && $this->userInfos["contact_autologin_key"]
-                && $this->userInfos["contact_autologin_key"] == $token) {
+                && $this->userInfos["contact_autologin_key"] === $token) {
                 $this->passwdOk = 1;
-            } elseif (!empty($password) && $this->userInfos["contact_passwd"] == $password && $this->autologin) {
+            } elseif (!empty($password) && $this->userInfos["contact_passwd"] === $password && $this->autologin) {
                 $this->passwdOk = 1;
             } elseif (!empty($password)
-                && $this->userInfos["contact_passwd"] == $this->myCrypt($password)
+                && $this->userInfos["contact_passwd"] === $this->myCrypt($password)
                 && $this->autologin == 0) {
                 $this->passwdOk = 1;
             } else {
@@ -241,13 +242,13 @@ class CentreonAuth
          */
         if ($this->passwdOk == 2) {
             if ($this->autologin && $this->userInfos["contact_autologin_key"]
-                && $this->userInfos["contact_autologin_key"] == $token) {
+                && $this->userInfos["contact_autologin_key"] === $token) {
                 $this->passwdOk = 1;
             } elseif (!empty($password) && isset($this->userInfos["contact_passwd"])
-                && $this->userInfos["contact_passwd"] == $password && $this->autologin) {
+                && $this->userInfos["contact_passwd"] === $password && $this->autologin) {
                 $this->passwdOk = 1;
             } elseif (!empty($password) && isset($this->userInfos["contact_passwd"])
-                && $this->userInfos["contact_passwd"] == $this->myCrypt($password) && $this->autologin == 0) {
+                && $this->userInfos["contact_passwd"] === $this->myCrypt($password) && $this->autologin == 0) {
                 $this->passwdOk = 1;
             } else {
                 $this->passwdOk = 0;
@@ -338,7 +339,7 @@ class CentreonAuth
                         $data = $DBRESULT2->fetchRow();
                         $this->userInfos["default_page"] .= $data["topology_url_opt"];
                     }
-                }  
+                }
             }
         } else {
             if ($this->debug) {

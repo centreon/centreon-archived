@@ -52,5 +52,4 @@ Le Remote Server est maintenant configuré :
 .. image:: /images/poller/wizard_add_remote_5.png
     :align: center
 
-Rendez-vous au chapitre :ref:`Configuration simplifiée avec Centreon IMP<impconfiguration>`
-pour mettre en place votre première supervision.
+Rendez-vous au chapitre :ref:`Démarrage rapide<quickstart>` pour mettre en place votre première supervision.

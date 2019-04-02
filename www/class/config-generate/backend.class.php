@@ -33,7 +33,11 @@
  *
  */
 
-require_once realpath(dirname(__FILE__) . "/../../../config/centreon.config.php");
+// file centreon.config.php may not exist in test environment
+$configFile = realpath(dirname(__FILE__) . "/../../../config/centreon.config.php");
+if ($configFile !== false) {
+    require_once $configFile;
+}
 
 define('TMP_DIR_PREFIX', 'tmpdir_');
 define('TMP_DIR_SUFFIX', '.d');

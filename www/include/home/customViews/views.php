@@ -45,7 +45,6 @@ session_start();
 session_write_close();
 
 try {
-
     if (!isset($_SESSION['centreon'])) {
         throw new Exception('No session found');
     }
@@ -146,12 +145,16 @@ try {
                         jQuery('.portlet-content').hide();
                     }
                 });
-                jQuery('.widgetTitle').editable('./include/home/customViews/rename.php',
+                jQuery('.widgetTitle').editable(
+                    './include/home/customViews/rename.php',
                     {
                         id: 'elementId',
                         name: 'newName',
                         event: 'dblclick'
-                    });
+                    }
+                );
+                wrenchSpan = '<span class="ui-icon ui-icon-wrench"></span>';
+                trashSpan = '<span class="ui-icon ui-icon-trash"></span>';
             }
 
             if (!ownership) {

@@ -1,9 +1,9 @@
-=======================
-Install a Remote Server
-=======================
+==========================
+Installing a Remote Server
+==========================
 
-The installation of a Remote Server is quite similar to install a Centreon.
-Select your installation method:
+Installing a Remote Server is similar to installing a Centreon.
+Select the method:
 
 .. toctree::
    :maxdepth: 1

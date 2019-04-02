@@ -42,7 +42,8 @@ le Remote Server dans la liste et cliquez sur **Apply** :
 .. note::
     Si vous souhaitez changer le sens de connexion des données entre le serveur
     Centreon central et le collecteur, cochez la case **Advanced: reverse Centreon
-    Broker communication flow**.
+    Broker communication flow**. Dans ce cas, il sera nécessaire d'exporter la
+    configuration du collecteur ainsi que du serveur auquel il sera rattaché.
 
 Patientez quelques secondes, l'assistant va configurer votre nouveau serveur.
 
@@ -51,5 +52,4 @@ Le collecteur est maintenant configuré :
 .. image:: /images/poller/wizard_add_poller_5.png
     :align: center
 
-Rendez-vous au chapitre :ref:`Configuration simplifiée avec Centreon IMP<impconfiguration>`
-pour mettre en place votre première supervision.
+Rendez-vous au chapitre :ref:`Démarrage rapide<quickstart>` pour mettre en place votre première supervision.

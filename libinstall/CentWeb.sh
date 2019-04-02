@@ -16,9 +16,15 @@ echo -e "\n$line"
 echo -e "\t$(gettext "Start CentWeb Installation")"
 echo -e "$line"
 
-###### check space ton tmp dir
+###### check space of tmp dir
 check_tmp_disk_space
-[ "$?" -eq 1 ] && purge_centreon_tmp_dir
+if [ "$?" -eq 1 ] ; then
+  if [ "$silent_install" -eq 1 ] ; then
+    purge_centreon_tmp_dir "silent"
+  else
+    purge_centreon_tmp_dir
+  fi
+fi
 
 ###### Require
 #################################
@@ -32,7 +38,6 @@ locate_centreon_installdir
 locate_centreon_logdir
 locate_centreon_etcdir
 locate_centreon_bindir
-locate_centreon_datadir
 locate_centreon_generationdir
 locate_centreon_varlib
 
@@ -43,20 +48,28 @@ locate_mail
 locate_cron_d
 locate_logrotate_d
 locate_php_bin
-locate_composer_bin
 locate_pear
 locate_perl
 
 ## Check PHP version
-check_php_version "${PHP_MIN_VERSION}"
+check_php_version
 [ "$?" -eq 1 ] && purge_centreon_tmp_dir && exit 1
-check_php_modules
+
+## Check composer dependencies (if vendor directory exists)
+check_composer_dependencies
+[ "$?" -eq 1 ] && purge_centreon_tmp_dir && exit 1
+
+## Check frontend application (if www/template directory exists)
+check_frontend_application
 [ "$?" -eq 1 ] && purge_centreon_tmp_dir && exit 1
 
 ## Config apache
 check_httpd_directory
 check_user_apache
 check_group_apache
+
+## Config PHP FPM
+check_php_fpm_directory
 
 ## Ask for centreon user
 check_centreon_group
@@ -97,9 +110,7 @@ configureSUDO "$INSTALL_DIR_CENTREON/examples"
 configureApache "$INSTALL_DIR_CENTREON/examples"
 
 ## Ask for fpm-php service
-locate_fpm_php_service
-yes_no_default "$(gettext "Do you want to restart your FPM-PHP service ?")"
-[ $? -eq 0 ] && ${SERVICE_BINARY} "${PHP_FPM_SERVICE}" restart &>/dev/null
+configure_php_fpm "$INSTALL_DIR_CENTREON/examples"
 
 ## Create temps folder and copy all src into
 copyInTempFile 2>>$LOG_FILE
@@ -126,18 +137,26 @@ cp -Rf $TMP_DIR/src/www $TMP_DIR/final
 cp -Rf $TMP_DIR/src/GPL_LIB $TMP_DIR/final
 mkdir -p $TMP_DIR/final/config
 cp -Rf $TMP_DIR/src/config/partition.d $TMP_DIR/final/config/partition.d
-cp -f $TMP_DIR/src/config/centreon.config.php.template $TMP_DIR/final/config/centreon.config.php
+mv $TMP_DIR/src/config/centreon.config.php.template $TMP_DIR/src/config/centreon.config.php
 cp -f $TMP_DIR/src/bootstrap.php $TMP_DIR/final
 cp -f $TMP_DIR/src/composer.json $TMP_DIR/final
 cp -f $TMP_DIR/src/package.json $TMP_DIR/final
+cp -f $TMP_DIR/src/package-lock.json $TMP_DIR/final
 cp -Rf $TMP_DIR/src/src $TMP_DIR/final
 
 ## Prepare and copy composer module
 OLDPATH=$(pwd)
 cd $TMP_DIR/src/
-${BIN_COMPOSER} install --no-dev
+log "INFO" "$(gettext "Copying composer dependencies...")"
+cp -Rf vendor $TMP_DIR/final/
 cd "${OLDPATH}"
-cp -Rf $TMP_DIR/src/vendor $TMP_DIR/final
+
+## Build frontend app
+OLDPATH=$(pwd)
+cd $TMP_DIR/src/
+log "INFO" "$(gettext "Copying frontend application...")"
+cp -Rf www/index.html www/template www/.htaccess $TMP_DIR/final/www/
+cd "${OLDPATH}"
 
 ## Create temporary directory
 mkdir -p $TMP_DIR/work/bin >> $LOG_FILE 2>&1
@@ -224,7 +243,7 @@ done
 check_result $flg_error "$(gettext "Change macros for php files")"
 
 macros="@CENTREON_ETC@,@CENTREON_GENDIR@,@CENTPLUGINSTRAPS_BINDIR@,@CENTREON_LOG@,@CENTREON_VARLIB@,@CENTREONTRAPD_BINDIR@"
-find_macros_in_dir "$macros" "$TMP_DIR/src" "config" "*.php" "file_php_config_temp"
+find_macros_in_dir "$macros" "$TMP_DIR/src" "config" "*.php*" "file_php_config_temp"
 
 log "INFO" "$(gettext "Apply macros")"
 
@@ -332,10 +351,14 @@ $INSTALL_DIR/cinstall $cinstall_opts \
     $TMP_DIR/final/www/* $INSTALL_DIR_CENTREON/www/ >> "$LOG_FILE" 2>&1
 check_result $? "$(gettext "Install CentWeb (web front of centreon)")"
 
+cp -f $TMP_DIR/final/www/.htaccess $INSTALL_DIR_CENTREON/www/ >> "$LOG_FILE" 2>&1
+$CHOWN $WEB_USER:$WEB_GROUP $INSTALL_DIR_CENTREON/www/.htaccess
+$CHMOD 644 $INSTALL_DIR_CENTREON/www/.htaccess
+
 cp -Rf $TMP_DIR/final/src $INSTALL_DIR_CENTREON/ >> "$LOG_FILE" 2>&1
 $CHOWN -R $WEB_USER:$WEB_GROUP $INSTALL_DIR_CENTREON/src
 
-echo_info "$(gettext "Change right for install directory")"
+log "INFO" "$(gettext "Change right for install directory")"
 $CHOWN -R $WEB_USER:$WEB_GROUP $INSTALL_DIR_CENTREON/www/install/
 check_result $? "$(gettext "Change right for install directory")"
 
@@ -361,11 +384,13 @@ $CHOWN $WEB_USER:$WEB_GROUP $INSTALL_DIR_CENTREON/composer.json
 cp -f $TMP_DIR/final/package.json $INSTALL_DIR_CENTREON/package.json >> "$LOG_FILE" 2>&1
 $CHOWN $WEB_USER:$WEB_GROUP $INSTALL_DIR_CENTREON/package.json
 
+cp -f $TMP_DIR/final/package-lock.json $INSTALL_DIR_CENTREON/package-lock.json >> "$LOG_FILE" 2>&1
+$CHOWN $WEB_USER:$WEB_GROUP $INSTALL_DIR_CENTREON/package-lock.json
+
 $INSTALL_DIR/cinstall $cinstall \
         -u "$CENTREON_USER" -g "$CENTREON_GROUP" -d 775 \
         $INSTALL_DIR_CENTREON/config >> "$LOG_FILE" 2>&1
 cp -Rf $TMP_DIR/final/config/* $INSTALL_DIR_CENTREON/config/ >> "$LOG_FILE" 2>&1
-
 $CHOWN -R $WEB_USER:$WEB_GROUP $INSTALL_DIR_CENTREON/config
 
 $INSTALL_DIR/cinstall $cinstall_opts \
@@ -374,10 +399,9 @@ $INSTALL_DIR/cinstall $cinstall_opts \
 $INSTALL_DIR/cinstall $cinstall_opts \
     -u "$CENTREON_USER" -g "$CENTREON_GROUP" -d 775 \
     $CENTREON_GENDIR/filesGeneration/broker >> "$LOG_FILE" 2>&1
-
-# setgid flag
-chmod -R g+rwxs $CENTREON_GENDIR/filesGeneration/
-$CHOWN -R $CENTREON_USER:$CENTREON_GROUP $CENTREON_GENDIR/filesGeneration/export
+$INSTALL_DIR/cinstall $cinstall_opts \
+    -u "$CENTREON_USER" -g "$CENTREON_GROUP" -d 775 \
+    $CENTREON_GENDIR/filesGeneration/export >> "$LOG_FILE" 2>&1
 
 # By default, CentWeb use a filesGeneration directory in install dir.
 # I create a symlink to continue in a same process
@@ -403,18 +427,12 @@ chmod -R g+rwxs $CENTREON_GENDIR/installDir
 log "INFO" "$(gettext "Copying GPL_LIB")"
 $INSTALL_DIR/cinstall $cinstall_opts \
     -u "$CENTREON_USER" -g "$CENTREON_GROUP" -d 755 -m 644 \
-    $TMP_DIR/final/GPL_LIB $INSTALL_DIR_CENTREON/GPL_LIB >> "$LOG_FILE" 2>&1
+    $TMP_DIR/final/GPL_LIB/* $INSTALL_DIR_CENTREON/GPL_LIB/ >> "$LOG_FILE" 2>&1
 check_result $? "$(gettext "Install libraries")"
 
 log "INFO" "$(gettext "Add right for Smarty cache and compile")"
 $CHMOD -R g+w $INSTALL_DIR_CENTREON/GPL_LIB/SmartyCache
 check_result $? "$(gettext "Write right to Smarty Cache")"
-
-log "INFO" "$(gettext "Copying libinstall")"
-$INSTALL_DIR/cinstall $cinstall_opts \
-  -d 755 -m 755 \
-  $TMP_DIR/final/libinstall $INSTALL_DIR_CENTREON/libinstall >> "$LOG_FILE" 2>&1
-check_result $? "$(gettext "Copying libinstall")"
 
 ## Cron stuff
 ## need to add stuff for Unix system... (freeBSD...)
@@ -467,7 +485,7 @@ cp -f $TMP_DIR/work/cron/centreon-backup.pl \
 log "INFO" "$(gettext "Install cron directory")"
 $INSTALL_DIR/cinstall $cinstall_opts \
     -u "$CENTREON_USER" -g "$CENTREON_GROUP" -d 755 -m 644 \
-    $TMP_DIR/final/cron $INSTALL_DIR_CENTREON/cron >> "$LOG_FILE" 2>&1
+    $TMP_DIR/final/cron/* $INSTALL_DIR_CENTREON/cron/ >> "$LOG_FILE" 2>&1
 check_result $? "$(gettext "Install cron directory")"
 
 log "INFO" "$(gettext "Change right for eventReportBuilder")"

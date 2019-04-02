@@ -75,7 +75,7 @@ class CentreonBroker
      */
     protected function execLocalScript($script, $action)
     {
-      shell_exec("sudo service $script $action");
+        shell_exec("sudo service $script $action");
     }
         
     /**

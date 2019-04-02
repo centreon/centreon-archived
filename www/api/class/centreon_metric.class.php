@@ -142,7 +142,7 @@ class CentreonMetric extends CentreonWebService
         }
         return array(
             'items' => $metrics,
-            'total' => $stmt->rowCount()
+            'total' => (int) $this->pearDBMonitoring->numberRows()
         );
     }
 

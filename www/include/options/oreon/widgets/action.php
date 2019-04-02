@@ -70,7 +70,6 @@ try {
             $widgetInstaller->install();
             break;
         case 'install-all':
-
             // install all available widgets
             foreach ($widgetInfoObj->getInstallableList() as $widgetName => $widgetData) {
                 $widgetInstaller = $factory->newInstaller($widgetData['directory']);

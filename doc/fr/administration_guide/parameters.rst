@@ -111,6 +111,7 @@ Cette partie permet de paramétrer le fonctionnement du processus CentCore.
 
 * Le champ **Activer la récupération des statistiques de Centreon Broker** active la récupération des statistiques de Centreon Broker par CentCore. Cette option peut être bloquante car la lecture du tuyau (pipe) peut être une action bloquante
 * Le champ **Temps maximum d'exécution des commandes Centcore** permet de définir un temps de d'exécution maximal des commandes locales et via SSH du processus
+* Le champ **Caractères illégaux pour les commandes Centcore** permet de définir les caractères non autorisés qui seront supprimés des commandes transférées par le processus.
 
 .. _ldapconfiguration:
 
@@ -140,6 +141,7 @@ Pour ajouter un nouvel annuaire :
 * Le champ **Taille limite de la recherche LDAP** permet de limiter la taille de la recherche des utilisateurs
 * Le champ **Temps maximum d'exécution de la recherche LDAP** permet de définir le temps maximum de la recherche LDAP
 * Le champ **Modèle de contact** définit le modèle de contact qui sera lié pour tous les utilisateurs importés depuis cet annuaire LDAP
+* Le champ optionnel **Groupe de contacts par défaut** permet d'ajouter à un groupe de contact les contacts importés
 * Le champ **Utiliser le service DNS** indique s'il faut utiliser le serveur DNS pour résoudre l'adresse IP de l'annuaire LDAP
 * Le champ **LDAP servers** permet d'ajouter un ou plusieurs annuaires LDAP vers lequel Centreon va se connecter.
 

@@ -75,6 +75,7 @@ Installer MySQL sur un serveur dédié
 Exécutez les commandes : ::
 
     # yum install centreon-database
+    # systemctl daemon-reload
     # systemctl restart mysql
 
 .. note::
@@ -105,9 +106,9 @@ La timezone par défaut de PHP doit être configurée. Executer la commande suiv
 .. note::
     Changez **Europe/Paris** par votre fuseau horaire.
 
-Après avoir réalisé la modification, redémarrez le service Apache : ::
+Après avoir réalisé la modification, redémarrez le service PHP-FPM : ::
 
-    # systemctl restart httpd
+    # systemctl restart rh-php71-php-fpm
 
 Pare-feu
 --------
@@ -134,6 +135,7 @@ Lancer les commandes suivantes sur le serveur Central : ::
     # systemctl enable centreontrapd
     # systemctl enable cbd
     # systemctl enable centengine
+    # systemctl enable centreon
 
 .. note::
     Si la base de données MySQL est sur un serveur dédié, lancer la commande

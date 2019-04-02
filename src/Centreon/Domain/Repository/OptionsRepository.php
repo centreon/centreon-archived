@@ -10,7 +10,7 @@ class OptionsRepository extends ServiceEntityRepository
 
     /**
      * Export options
-     * 
+     *
      * @return \Centreon\Domain\Entity\Options[]
      */
     public function export(): array

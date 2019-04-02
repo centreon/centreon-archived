@@ -4,29 +4,48 @@ namespace CentreonRemote\Application\Validator;
 
 use CentreonRemote\Domain\Value\ServerWizardIdentity;
 
+/**
+ * class to validate poller wizard forms
+ */
 class WizardConfigurationRequestValidator
 {
 
-    public static function validate()
+    /**
+     * validate arguments sent from poller/remote server wizard
+     *
+     * @return void
+     */
+    public static function validate(): void
     {
         (new static)->validateServerPostData();
     }
 
-    public function validateServerPostData()
+    /**
+     * validate post arguments
+     *
+     * @return void
+     */
+    public function validateServerPostData(): void
     {
         $isRemoteConnection = (new ServerWizardIdentity)->requestConfigurationIsRemote();
 
         $this->validateServerGeneralFields();
 
+        // if it is a remote server, validate specific fields (like database connection parameterss)
         if ($isRemoteConnection) {
             $this->validateRemoteSpecificFields();
         }
     }
 
-    private function validateServerGeneralFields()
+    /**
+     * validate general form fields which are in poller wizard and remote server wizard
+     *
+     * @return void
+     */
+    private function validateServerGeneralFields(): void
     {
         $missingParameterMessage = "You need to send '%s' in the request.";
-        
+
         if (!isset($_POST['server_name']) || !$_POST['server_name']) {
             throw new \RestBadRequestException(
                 sprintf(_($missingParameterMessage), 'server_name')
@@ -39,26 +58,19 @@ class WizardConfigurationRequestValidator
             );
         }
 
-        if (!filter_var($_POST['server_ip'], FILTER_VALIDATE_IP)) {
-            throw new \RestBadRequestException(
-                sprintf(_('%s is not valid.'), 'server_ip')
-            );
-        }
-
         if (!isset($_POST['centreon_central_ip']) || !$_POST['centreon_central_ip']) {
             throw new \RestBadRequestException(
                 sprintf(_($missingParameterMessage), 'centreon_central_ip')
             );
         }
-
-        if (!filter_var($_POST['centreon_central_ip'], FILTER_VALIDATE_IP)) {
-            throw new \RestBadRequestException(
-                sprintf(_('%s is not valid.'), 'centreon_central_ip')
-            );
-        }
     }
 
-    private function validateRemoteSpecificFields()
+    /**
+     * validate form fields which are specific to remote server wizard
+     *
+     * @return void
+     */
+    private function validateRemoteSpecificFields(): void
     {
         if (!isset($_POST['db_user']) || !$_POST['db_user']) {
             throw new \RestBadRequestException(

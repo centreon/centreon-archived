@@ -106,6 +106,7 @@ This part can be used set the operation of the CentCore process.
 
 * **Enable Broker Statistics Collection** field enables the retrieval of statistics from the Centreon Broker by CentCore. This can be a blocking option because the reading of the pipe can be a blocking action
 * **Timeout value for Centcore commands** field can be used to define a timeout for local commands and commands via SSH process.
+* **Illegal characters for Centcore commands** field allows to define characters which will be removed from commands forwarded by the process..
 
 .. _ldapconfiguration:
 
@@ -126,7 +127,7 @@ To add a new directory:
 * **Configuration name** and **Description** fields define the name and the description of the LDAP server
 * **Enable LDAP authentication** field serves to enable authentication via the LDAP server
 * **Store LDAP password** field can be used to store user passwords in the database, useful to authenticate users in the event of loss of connection with the LDAP
-* **Auto import users** field serves to import the users of the LDAP directory automatically into Centreon. By clicking on **Import users manually**, you can chose the users that you want to import
+* **Auto import users** field used to import the users of the LDAP directory automatically into Centreon. By clicking on **Import users manually**, you can chose the users that you want to import
 
 .. note::
    If the **Auto import users** option is checked, the LDAP settings of any new user who logs into the Centreon interface will automatically be imported into Centreon (name, first name, e-mail address, etc.). ACL profiles will be applied on access (link to :ref:`ACL <acl>`). However, if this option is not checked, only the users imported manually will be able to authenticate.
@@ -134,6 +135,7 @@ To add a new directory:
 * **LDAP search size limit** field can be used to limit the size of user searches
 * **LDAP search timeout** field can be used define the maximum time for the LDAP search
 * **Contact template** field defines the contact template that will be linked to all the users imported from this LDAP directory
+* **Default contactgroup** optional field, which is used to add a new user to a default contactgroup.
 * **Use service DNS** field indicates if it is necessary to use the DNS server to solve the IP address of the LDAP directory
 * **LDAP servers** field can be used to add one or more LDAP directories to which Centreon will connect
 

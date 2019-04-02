@@ -1,37 +1,38 @@
-To start the monitoring engine :
+To start the monitoring engine:
 
-1. On your web interface, go to **Configuration** ==> **Pollers**.
+1. From your web interface, go to **Configuration > Pollers**.
 2. Keep the default options and click on **Export configuration**.
 3. Select **Central** poller from the box input **Pollers**.
 4. Uncheck **Generate Configuration Files** and **Run monitoring engine debug (-v)**.
-5. Check **Move Export Files** and **Restart Monitoring Engine** with option **Restart** selected.
+5. Check **Move Export Files** and **Restart Monitoring Engine** with the **Restart** option selected.
 6. Click on **Export** again.
-7. Log in to the ‘root’ user on your server.
-8. Start Centreon Broker ::
+7. Log on to the *root* user on your server.
+8. Start Centreon Broker: ::
 
      # systemctl start cbd
 
-9. Start Centreon Engine ::
+9. Start Centreon Engine: ::
 
      # systemctl start centengine
 
-10. Start centcore :: 
+10. Start centcore: :: 
 
     # systemctl start centcore
 
-11. Start centreontrapd ::
+11. Start centreontrapd: ::
 
     # systemctl start centreontrapd
 
-Monitoring is now working. You can begin monitoring your IT system!
+Monitoring is now working. You can begin monitoring your IT system.
 
-To make services automatically start during system bootup run these commands
+To automatically start services at system bootup, run these commands
 on the central server: ::
 
     # systemctl enable centcore
     # systemctl enable centreontrapd
     # systemctl enable cbd
     # systemctl enable centengine
+    # systemctl enable centreon
 
 The Centreon web interface contains several menus, each with a specific function:
 
@@ -70,13 +71,14 @@ The modules are now installed.
 .. image:: /_static/images/installation/install_imp_2.png
    :align: center
 
-Now proceed to Configuration -> Plugin packs -> Manager.
-10 free Plugin Packs are provided to get you started. Five additional Packs are
-available once you register and over 150 more if you subscribe to the IMP
+Now proceed to **Configuration > Plugin packs > Manager**.
+Ten free Plugin Packs are provided to get you started. Five additional Packs are
+available once you register, and over 150 more if you subscribe to the IMP
 offer (for more information: `our website <https://www.centreon.com>`_).
 
 .. image:: /_static/images/installation/install_imp_3.png
    :align: center
 
-You can continue to configure your monitoring system with Centreon IMP by
-following the instructions in :ref:`this guide <impconfiguration>`.
+Configure :ref:`the proxy<impproxy>` to allow the Centreon server to access the
+internet, and then go to the :ref:`quick start<quickstart>` chapter to configure
+your first monitoring.

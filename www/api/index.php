@@ -79,7 +79,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' &&
             $reachAPI = 1;
         } else {
             if (isset($data['reach_api']) && $data['reach_api'] == 1) {
-               $reachAPI = 1;
+                $reachAPI = 1;
             } else if (isset($data['reach_api_rt']) && $data['reach_api_rt'] == 1) {
                 $reachAPI = 1;
             }

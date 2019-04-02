@@ -47,7 +47,7 @@
         }).success(function (data) {
             var data = JSON.parse(data);
             if (data.result) {
-                javascript:self.location = "../main.php";
+                javascript:self.location = "../index.php";
             }
         });
     }

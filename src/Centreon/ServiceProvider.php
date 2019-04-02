@@ -3,12 +3,17 @@ namespace Centreon;
 
 use Pimple\Container;
 use Pimple\Psr11\ServiceLocator;
+use Centreon\Application\Webservice;
 use Centreon\Infrastructure\Provider\AutoloadServiceProviderInterface;
 use Centreon\Infrastructure\Service\CentreonWebserviceService;
 use Centreon\Infrastructure\Service\CentreonClapiService;
 use Centreon\Infrastructure\Service\CentcoreConfigService;
 use Centreon\Infrastructure\Service\CentreonDBManagerService;
+use Centreon\Domain\Service\FrontendComponentService;
 use Centreon\Domain\Service\AppKeyGeneratorService;
+use Centreon\Domain\Service\BrokerConfigurationService;
+use Centreon\Domain\Repository\CfgCentreonBrokerRepository;
+use Centreon\Domain\Repository\CfgCentreonBrokerInfoRepository;
 use CentreonClapi\CentreonACL;
 
 class ServiceProvider implements AutoloadServiceProviderInterface
@@ -16,24 +21,32 @@ class ServiceProvider implements AutoloadServiceProviderInterface
 
     /**
      * Register Centreon services
-     * 
+     *
      * @param \Pimple\Container $pimple
      */
     public function register(Container $pimple): void
     {
-        $pimple['centreon.webservice'] = function(Container $container): CentreonWebserviceService {
+        $pimple['centreon.webservice'] = function (Container $container): CentreonWebserviceService {
             $service = new CentreonWebserviceService;
 
             return $service;
         };
 
-        $pimple['centreon.clapi'] = function(Container $container): CentreonClapiService {
+        // add webservice to get frontend hooks and pages installed by modules and widgets
+        $pimple['centreon.webservice']->add(Webservice\CentreonFrontendComponent::class);
+
+        $pimple['centreon.frontend_component_service'] = function (Container $pimple): FrontendComponentService {
+            $service = new FrontendComponentService($pimple);
+            return $service;
+        };
+
+        $pimple['centreon.clapi'] = function (Container $container): CentreonClapiService {
             $service = new CentreonClapiService;
 
             return $service;
         };
 
-        $pimple['centreon.db-manager'] = function(Container $container): CentreonDBManagerService {
+        $pimple['centreon.db-manager'] = function (Container $container): CentreonDBManagerService {
             $services = [
                 'realtime_db',
                 'configuration_db',
@@ -45,34 +58,62 @@ class ServiceProvider implements AutoloadServiceProviderInterface
             return $service;
         };
 
-        $pimple['centreon.user'] = function(Container $container): \CentreonUser {
-            if (session_status() == PHP_SESSION_NONE) {
+        $pimple['centreon.user'] = function (Container $container): \CentreonUser {
+            if (php_sapi_name() !== 'cli' && session_status() == PHP_SESSION_NONE) {
                 session_start();
             }
 
             return $_SESSION['centreon']->user;
         };
 
-        $pimple['centreon.keygen'] = function(Container $container) : AppKeyGeneratorService {
+        $pimple['centreon.keygen'] = function (Container $container) : AppKeyGeneratorService {
             $service = new AppKeyGeneratorService();
 
             return $service;
         };
 
-        $pimple['centreon.acl'] = function(Container $container) : CentreonACL {
+        $pimple['centreon.acl'] = function (Container $container) : CentreonACL {
             $service = new CentreonACL($container);
 
             return $service;
         };
 
-        $pimple['centreon.config'] = function(Container $container) : CentcoreConfigService {
-            $service = new CentcoreConfigService($container);
+        $pimple['centreon.config'] = function (Container $container) : CentcoreConfigService {
+            $service = new CentcoreConfigService();
+
+            return $service;
+        };
+
+        /**
+         * Repositories
+         */
+
+        $pimple['centreon.broker_repository'] = function (Container $container): CfgCentreonBrokerRepository {
+            $service = new CfgCentreonBrokerRepository($container['configuration_db']);
+
+            return $service;
+        };
+
+        $pimple['centreon.broker_info_repository'] = function (Container $container): CfgCentreonBrokerInfoRepository {
+            $service = new CfgCentreonBrokerInfoRepository($container['configuration_db']);
+
+            return $service;
+        };
+
+        /**
+         * Services
+         */
+
+        $pimple['centreon.broker_configuration_service'] = function (Container $container): BrokerConfigurationService {
+            $service = new BrokerConfigurationService($container['configuration_db']);
+            $service->setBrokerInfoRepository($container['centreon.broker_info_repository']);
 
             return $service;
         };
     }
-    
-    public static function order() : int {
+
+    public static function order() : int
+    {
         return 1;
     }
 }

@@ -49,8 +49,8 @@ session_write_close();
 /*
  * DB connexion
  */
-$pearDB    = new CentreonDB();
-$pearDBO    = new CentreonDB("centstorage");
+$pearDB = new CentreonDB();
+$pearDBO = new CentreonDB("centstorage");
 
 $sid = session_id();
 if (!empty($sid) && isset($_SESSION['centreon'])) {
@@ -100,16 +100,18 @@ echo "\n";
 echo _("Status").";"._("Time").";"._("Total Time").";"._("Mean Time")."; "._("Alert")."\n";
 $reportingTimePeriod = getreportingTimePeriod();
 $serviceStats = getLogInDbForOneSVC($host_id, $service_id, $start_date, $end_date, $reportingTimePeriod);
-echo "OK;".$serviceStats["OK_T"]."s;".$serviceStats["OK_TP"]."%;"
-    . $serviceStats["OK_MP"]. "%;".$serviceStats["OK_A"].";\n";
-echo "WARNING;".$serviceStats["WARNING_T"]."s;".$serviceStats["WARNING_TP"]."%;"
-    . $serviceStats["WARNING_MP"]. "%;".$serviceStats["WARNING_A"].";\n";
-echo "CRITICAL;".$serviceStats["CRITICAL_T"]."s;".$serviceStats["CRITICAL_TP"]."%;"
-    . $serviceStats["CRITICAL_MP"]. "%;".$serviceStats["CRITICAL_A"].";\n";
-echo "UNKNOWN;".$serviceStats["UNKNOWN_T"]."s;".$serviceStats["UNKNOWN_TP"]."%;"
-    . $serviceStats["UNKNOWN_MP"]. "%;".$serviceStats["UNKNOWN_A"].";\n";
-echo "UNDETERMINED;".$serviceStats["UNDETERMINED_T"]."s;"
-    . $serviceStats["UNDETERMINED_TP"]."%;;;\n";
+echo "OK;" . $serviceStats["OK_T"] . "s;" . $serviceStats["OK_TP"] . "%;"
+    . $serviceStats["OK_MP"] . "%;" . $serviceStats["OK_A"] . ";\n";
+echo "WARNING;" . $serviceStats["WARNING_T"] . "s;" . $serviceStats["WARNING_TP"] . "%;"
+    . $serviceStats["WARNING_MP"] . "%;" . $serviceStats["WARNING_A"] . ";\n";
+echo "CRITICAL;" . $serviceStats["CRITICAL_T"] . "s;" . $serviceStats["CRITICAL_TP"] . "%;"
+    . $serviceStats["CRITICAL_MP"] . "%;" . $serviceStats["CRITICAL_A"] . ";\n";
+echo "UNKNOWN;" . $serviceStats["UNKNOWN_T"] . "s;" . $serviceStats["UNKNOWN_TP"] . "%;"
+    . $serviceStats["UNKNOWN_MP"] .  "%;" . $serviceStats["UNKNOWN_A"] . ";\n";
+echo _("SCHEDULED DOWNTIME") . ";" . $hostStats["MAINTENANCE_T"] . "s;"
+    . $hostStats["MAINTENANCE_TP"] . "%;;;\n";
+echo "UNDETERMINED;" . $serviceStats["UNDETERMINED_T"] . "s;"
+    . $serviceStats["UNDETERMINED_TP"] . "%;;;\n";
 echo "\n";
 echo "\n";
 
@@ -117,10 +119,10 @@ echo "\n";
  * Getting evolution of service stats in time
  */
 echo _("Day").";"._("Duration").";"
-               ._("OK")." "._("Time")."; "._("OK")."; "._("OK")." Alert;"
-               ._("Warning")." "._("Time")."; "._("Warning").";"._("Warning")." Alert;"
-               ._("Unknown")." "._("Time")."; "._("Unknown").";"._("Unknown")." Alert;"
-               ._("Critical")." "._("Time")."; "._("Critical").";"._("Critical")." Alert;"
+               ._("OK")." (s); "._("OK")." %; "._("OK")." Alert;"
+               ._("Warning")." (s); "._("Warning")." %;"._("Warning")." Alert;"
+               ._("Unknown")." (s); "._("Unknown")." %;"._("Unknown")." Alert;"
+               ._("Critical")." (s); "._("Critical")." %;"._("Critical")." Alert;"
                ._("Day").";\n";
 
 $request = "SELECT  * FROM `log_archive_service` " .

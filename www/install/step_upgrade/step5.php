@@ -110,7 +110,7 @@ if ($moveable) {
                 url: './step_upgrade/process/process_step5.php',
                 data: jQuery('input[name="send_statistics"]').serialize()
             }).success(function () {
-                javascript:self.location = "../main.php"
+                javascript:self.location = "../index.php"
             })
         }
     </script>

@@ -41,12 +41,12 @@ class Information
      * @var \CentreonLegacy\Core\Module\License
      */
     protected $licenseObj;
-    
+
     /**
      * @var \Pimple\Container
      */
     protected $dependencyInjector;
-    
+
     /**
      * @var \CentreonLegacy\Core\Utils\Utils
      */
@@ -124,7 +124,7 @@ class Information
      * Get list of installed modules
      * @return array
      */
-    private function getInstalledList()
+    public function getInstalledList()
     {
         $query = 'SELECT * ' .
             'FROM modules_informations ';

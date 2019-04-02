@@ -6,13 +6,13 @@ Using Centreon el7 ISO
 Installation
 ************
 
-The installation process is identical to a Centreon Central server installed
-from the ISO file of Centreon.
+This process is identical to the one used for installing the Central Server
+from a Centreon ISO file.
 
 .. note::
     Refer to the documentation: :ref:`installation<installisoel7>`
 
-For the question **Which server type would you like to install?** choose the
+In response to the question **Which server type would you like to install?** choose the
 option **Poller server**.
 
 .. image:: /images/user/configuration/10advanced_configuration/07installpoller.png

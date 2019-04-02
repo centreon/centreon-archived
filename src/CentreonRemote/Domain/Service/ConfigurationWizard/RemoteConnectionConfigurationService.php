@@ -2,15 +2,20 @@
 
 namespace CentreonRemote\Domain\Service\ConfigurationWizard;
 
+use CentreonRemote\Domain\Resources\RemoteConfig\CfgCentreonBroker;
+use CentreonRemote\Domain\Resources\RemoteConfig\CfgCentreonBrokerInfo;
+
 class RemoteConnectionConfigurationService extends ServerConnectionConfigurationService
 {
 
-    protected function insertConfigCentreonBroker($serverID)
+    protected function insertConfigCentreonBroker(int $serverID): void
     {
-        $configCentreonBrokerData = $this->getResource('cfg_centreonbroker.php');
-        $configCentreonBrokerData = $configCentreonBrokerData($serverID, $this->name);
-        $configCentreonBrokerInfoData = $this->getResource('cfg_centreonbroker_info.php');
-        $configCentreonBrokerInfoData = $configCentreonBrokerInfoData($this->name, $this->dbUser, $this->dbPassword);
+        $configCentreonBrokerData = CfgCentreonBroker::getConfiguration($serverID, $this->name);
+        $configCentreonBrokerInfoData = CfgCentreonBrokerInfo::getConfiguration(
+            $this->name,
+            $this->dbUser,
+            $this->dbPassword
+        );
 
         $this->brokerID = $this->insertWithAdapter('cfg_centreonbroker', $configCentreonBrokerData['broker']);
         $moduleID = $this->insertWithAdapter('cfg_centreonbroker', $configCentreonBrokerData['module']);

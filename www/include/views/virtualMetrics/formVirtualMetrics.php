@@ -1,7 +1,7 @@
 <?php
 /*
- * Copyright 2005-2015 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2019 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -55,7 +55,7 @@ if (($o == METRIC_MODIFY || $o == METRIC_WATCH)
     $p_qy->closeCursor();
 }
 /*
- * Database retrieve information for differents elements list we need on the page
+ * Database retrieve information and list the different elements we need on the page
  *
  * Existing Data Index List comes from DBO -> Store in $indds Array
  */
@@ -89,9 +89,12 @@ $attrsText2 = array("size" => "10");
 $attrsAdvSelect = array("style" => "width: 200px; height: 100px;");
 $attrsTextarea = array("rows" => "4", "cols" => "60");
 
+
 $availableRoute = './include/common/webServices/rest/internal.php?object=centreon_configuration_service&action=list';
-$defaultRoute = './include/common/webServices/rest/internal.php?object=centreon_configuration_graphvirtualmetric' .
-    '&action=defaultValues&target=graphVirtualMetric&field=host_id&id=' . $vmetricId;
+if ($o !== METRIC_ADD) {
+    $defaultRoute = './include/common/webServices/rest/internal.php?object=centreon_configuration_graphvirtualmetric' .
+        '&action=defaultValues&target=graphVirtualMetric&field=host_id&id=' . $vmetricId;
+}
 $attrServices = array(
     'datasourceOrigin' => 'ajax',
     'availableDatasetRoute' => $availableRoute,
@@ -99,6 +102,7 @@ $attrServices = array(
     'linkedObject' => 'centreonService',
     'multiple' => false
 );
+
 
 /*
  * Form begin

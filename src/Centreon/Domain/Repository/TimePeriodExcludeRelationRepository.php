@@ -8,7 +8,7 @@ class TimePeriodExcludeRelationRepository extends ServiceEntityRepository
 
     /**
      * Export
-     * 
+     *
      * @param array $timeperiodList
      * @return array
      */

@@ -193,7 +193,7 @@ function getMyServiceTPInCache($service_id = null, $cache)
 }
 
 /*
- * Convert Service Sp�cial Char for generation
+ * Convert Service Special Char for generation
  */
 function convertServiceSpecialChar($str)
 {

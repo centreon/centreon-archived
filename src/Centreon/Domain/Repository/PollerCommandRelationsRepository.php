@@ -8,7 +8,7 @@ class PollerCommandRelationsRepository extends ServiceEntityRepository
 
     /**
      * Export
-     * 
+     *
      * @param int[] $pollerIds
      * @return array
      */

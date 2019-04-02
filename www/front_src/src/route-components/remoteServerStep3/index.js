@@ -5,14 +5,13 @@ import routeMap from "../../route-maps/route-map";
 
 import { connect } from "react-redux";
 import axios from "../../axios";
-
-import axiosRemote from "../../axios/remote";
-import {I18n} from "react-redux-i18n";
+import { I18n } from "react-redux-i18n";
 
 class RemoteServerStepThreeRoute extends Component {
   state = {
     generateStatus: null,
-    processingStatus: null
+    processingStatus: null,
+    error : null
   };
 
   links = [
@@ -26,82 +25,157 @@ class RemoteServerStepThreeRoute extends Component {
     { active: true, number: 4 }
   ];
 
-  generationInterval = null;
-  processingInterval = null;
+  generationTimeout = null;
+  remainingGenerationTimeout = 30;
 
-  getExportTask = axios(
-    "internal.php?object=centreon_task_service&action=getTaskStatus"
-  );
+  processingTimeout = null;
+  remainingProcessingTimeout = 30;
 
-  getImportTask = () => {
-      const { pollerData } = this.props;
+  /**
+   * axios call to get task status on central server
+   */
+  getExportTask = () => axios("internal.php?object=centreon_task_service&action=getTaskStatus");
 
-      return axiosRemote(
-          "http://" +  pollerData.server_ip + "/" + pollerData.centreon_folder + "/internal.php?object=centreon_task_service&action=getTaskStatusByParent"
+  /**
+   * axios call to get task status on remote server
+   */
+  getImportTask = () => axios("internal.php?object=centreon_task_service&action=getRemoteTaskStatusByParent");
+
+  componentDidMount = () => {
+    this.setGenerationTimeout();
+  };
+
+  /**
+   * check export files generation step each second (30 tries)
+   */
+  setGenerationTimeout = () => {
+    if (this.remainingGenerationTimeout > 0) {
+      this.remainingGenerationTimeout--;
+      this.generationTimeout = setTimeout(
+        this.refreshGeneration,
+        1000
       );
+    } else {
+      // display timeout error message
+      this.setState(
+        {
+          generateStatus: false,
+          error: 'Export generation timeout'
+        }
+      );
+    }
   };
 
-  UNSAFE_componentWillMount = () => {
-      this._setGenerationInterval();
+  /**
+   * check remote server processing step each second (30 tries)
+   */
+  setProcessingTimeout = () => {
+    if (this.remainingProcessingTimeout > 0) {
+      this.remainingProcessingTimeout--;
+      this.processingTimeout = setTimeout(
+        this.refreshProcession,
+        1000
+      );
+    } else {
+      // display timeout error message
+      this.setState(
+        {
+          processingStatus: false,
+          error: 'Remote server processing timeout'
+        }
+      );
+    }
   };
 
-  _setGenerationInterval = () => {
-      this.generationInterval = setInterval(
-          this.refreshGeneration,
-          1000
-      )
+  /**
+   * check files generation on central server
+   */
+  refreshGeneration = () => {
+    const { taskId } = this.props.pollerData;
+
+    this.getExportTask()
+      .post("", {"task_id": taskId})
+      .then(response => {
+        if (response.data.success !== true) {
+          this.setState(
+            {
+              generateStatus: false,
+              error: JSON.stringify(response.data)
+            }
+          );
+        } else if (response.data.status === 'completed') {
+          // when export files is done, check remote server processing
+          this.setState(
+            { generateStatus: true },
+            () => { this.setProcessingTimeout(); }
+          );
+        } else { // retry if task is not yet completed
+          this.setGenerationTimeout()
+        }
+      })
+      .catch(err => {
+        this.setState(
+          {
+            generateStatus: false,
+            error: JSON.stringify(err.response.data)
+          }
+        );
+      });
   };
 
-  _setProcessingInterval = () => {
-      this.processingInterval = setInterval(
-          this.refreshProcession,
-          1000
-      )
-  };
-
+  /**
+   * check endpoint on remote server to get import status
+   */
   refreshProcession = () => {
-    const {history, pollerData} = this.props;
+    const { history } = this.props;
+    const { server_ip, centreon_folder, taskId } = this.props.pollerData;
 
-      this.getImportTask
-          .post("", {"parent_id":pollerData.task_id})
-          .then(response => {
-              if (response.data.finished === true){
-                  clearInterval(this.processingInterval);
-                  this.setState({
-                      processingStatus:response.data.success
-                  }, () => {
-                      history.push(routeMap.pollerList)
-                  });
-              }
-          })
-          .catch(err => {
-              this.setState({ processingStatus: false });
-          });
+    this.getImportTask()
+      .post(
+        "",
+        {
+          "server_ip": server_ip,
+          "centreon_folder": centreon_folder,
+          "parent_id": taskId
+        }
+      )
+      .then(response => {
+        if (response.data.success !== true) {
+          this.setState(
+            {
+              generateStatus: false,
+              error: JSON.stringify(response.data)
+            }
+          );
+        } else if (response.data.status === 'completed') {
+          // when remote server processing is done, redirect to poller list page with 2 seconds delay
+          this.setState(
+            { processingStatus: true },
+            () => {
+              setTimeout(
+                () => { history.push(routeMap.pollerList) },
+                2000
+              )
+            }
+          );
+        } else { // retry if task is not yet completed
+          this.setProcessingTimeout()
+        }
+      })
+      .catch(err => {
+        this.setState(
+          {
+            processingStatus: false,
+            error: JSON.stringify(err.response.data)
+          }
+        );
+      });
+  };
 
-    };
-
-    refreshGeneration = () => {
-        const {pollerData} = this.props;
-        this.getExportTask
-            .post("", {"task_id":pollerData.taskId})
-            .then(response => {
-                if (response.data.finished == true){
-                    clearInterval(this.generationInterval);
-                    this._setProcessingInterval();
-                    this.setState({
-                        generateStatus:response.data.success
-                    });
-                }
-            })
-            .catch(err => {
-                this.setState({ generateStatus: false });
-            });
-    };
-
-    render() {
+  render() {
     const { links } = this,
           { pollerData } = this.props,
-          { generateStatus, processingStatus } = this.state;
+          { generateStatus, processingStatus, error } = this.state;
     return (
       <div>
         <ProgressBar links={links} />
@@ -110,6 +184,7 @@ class RemoteServerStepThreeRoute extends Component {
           statusGenerating={generateStatus}
           statusProcessing={processingStatus}
           formTitle={I18n.t("Finalizing Setup") + ":"}
+          error={error}
         />
       </div>
     );

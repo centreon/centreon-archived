@@ -1,7 +1,7 @@
 <?php
 /**
- * Copyright 2005-2015 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2019 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -85,7 +85,7 @@ class CentreonLDAP
             "WHERE `ari_name` = 'ldap_srv_dns' " .
             "AND ar_id = " . $this->db->escape($arId)
         );
-        $row = $dbresult->fetchRow();
+        $row = $dbresult->fetch();
         $dbresult->closeCursor();
         if (isset($row['ari_value'])) {
             $use_dns_srv = $row['ari_value'];
@@ -97,7 +97,7 @@ class CentreonLDAP
             WHERE `key` 
             IN ('debug_ldap_import', 'debug_path')"
         );
-        while ($row = $dbresult->fetchRow()) {
+        while ($row = $dbresult->fetch()) {
             if ($row['key'] == 'debug_ldap_import') {
                 if ($row['value'] == 1) {
                     $this->debugImport = true;
@@ -130,7 +130,7 @@ class CentreonLDAP
                 WHERE `ari_name` = 'ldap_dns_use_domain' 
                 AND ar_id = " . $this->db->escape($arId)
             );
-            $row = $dbresult->fetchRow();
+            $row = $dbresult->fetch();
             $dbresult->closeCursor();
             if ($row && trim($row['ari_value']) != '') {
                 $dns_query .= "." . $row['ari_value'];
@@ -153,7 +153,7 @@ class CentreonLDAP
                 WHERE auth_ressource_id = " . $this->db->escape($arId) . "
                 ORDER BY host_order"
             );
-            while ($row = $dbresult->fetchRow()) {
+            while ($row = $dbresult->fetch()) {
                 $ldap = array();
                 $ldap['host'] = $row['host_address'];
                 $ldap['id'] = $arId;
@@ -185,7 +185,7 @@ class CentreonLDAP
 
         $finalLdapHostParameters = array();
 
-        while ($rowLdapHostParameters = $resLdapHostParameters->fetchRow()) {
+        while ($rowLdapHostParameters = $resLdapHostParameters->fetch()) {
             $finalLdapHostParameters = $rowLdapHostParameters;
         }
 
@@ -661,7 +661,7 @@ class CentreonLDAP
         );
         $user = array();
         $group = array();
-        while ($row = $dbresult->fetchRow()) {
+        while ($row = $dbresult->fetch()) {
             switch ($row['ari_name']) {
                 case 'user_filter':
                     $user['filter'] = $row['ari_value'];
@@ -737,7 +737,7 @@ class CentreonLDAP
             FROM auth_ressource_host
             WHERE ldap_host_id = " . CentreonDB::escape($id)
         );
-        $row = $dbresult->fetchRow();
+        $row = $dbresult->fetch();
         return $row;
     }
 
@@ -751,7 +751,7 @@ class CentreonLDAP
         $query = "SELECT `key`, `value` FROM `options` WHERE `key` IN ('ldap_dns_use_ssl', 'ldap_dns_use_tls')";
         $dbresult = $this->db->query($query);
         $infos = array();
-        while ($row = $dbresult->fetchRow()) {
+        while ($row = $dbresult->fetch()) {
             if ($row['key'] == 'ldap_dns_use_ssl') {
                 $infos['use_ssl'] = $row['value'];
             } elseif ($row['key'] == 'ldap_dns_use_tls') {
@@ -778,7 +778,7 @@ class CentreonLDAP
                  AND ar_id = " . CentreonDB::escape($id);
         $dbresult = $this->db->query($query);
         $infos = array();
-        while ($row = $dbresult->fetchRow()) {
+        while ($row = $dbresult->fetch()) {
             $infos[$row['ari_name']] = $row['ari_value'];
         }
         $dbresult->closeCursor();
@@ -819,6 +819,58 @@ class CentreonLDAP
         }
         return false;
     }
+
+    /**
+     * Set a relation between the LDAP's default contactgroup and the user
+     *
+     * @param int $arId : The Id of the chosen LDAP, from which we'll find the default contactgroup
+     * @param int $contactId : The Id of the contact to be added
+     *
+     * @return bool : return true to the parent if everything goes well. Needed for the method calling it
+     */
+    public function addUserToLdapDefautCg(int $arId = null, int $contactId = null)
+    {
+        $ldapCg = null;
+        try {
+            // Searching the default contactgroup chosen in the ldap configuration
+            $resLdap = $this->db->prepare("SELECT ari_value FROM auth_ressource_info " .
+                "WHERE ari_name LIKE 'ldap_default_cg' AND ar_id = :arId");
+            $resLdap->bindValue(':arId', $arId, PDO::PARAM_INT);
+            $resLdap->execute();
+            while ($result = $resLdap->fetch()) {
+                $ldapCg = $result['ari_value'];
+            }
+            unset($resLdap);
+            if (!$ldapCg) {
+                // No default contactgroup was set in the LDAP parameters
+                return true;
+            }
+
+            // Checking if the user isn't already linked to this contactgroup
+            $resCgExist = $this->db->prepare("SELECT COUNT(*) AS `exist` FROM contactgroup_contact_relation " .
+                "WHERE contact_contact_id = :contactId AND contactgroup_cg_id = :ldapCg");
+            $resCgExist->bindValue(':contactId', $contactId, PDO::PARAM_INT);
+            $resCgExist->bindValue(':ldapCg', $ldapCg, PDO::PARAM_INT);
+            $resCgExist->execute();
+            $row = $resCgExist->fetch();
+            unset($resCgExist);
+            if ($row['exist'] != 0) {
+                // User already linked to this contactgroup
+                return true;
+            }
+
+            // Inserting the user to the chosen default contactgroup
+            $resCg = $this->db->prepare("INSERT INTO contactgroup_contact_relation " .
+                "(contactgroup_cg_id, contact_contact_id) VALUES (:ldapDftCg, :contactId)");
+            $resCg->bindValue(':ldapDftCg', $ldapCg, PDO::PARAM_INT);
+            $resCg->bindValue(':contactId', $contactId, PDO::PARAM_INT);
+            $resCg->execute();
+            unset($resCg);
+        } catch (\PDOException $e) {
+            return false;
+        }
+        return true;
+    }
 }
 
 /**
@@ -852,6 +904,7 @@ class CentreonLdapAdmin
             'ldap_search_limit',
             'ldap_search_timeout',
             'ldap_contact_tmpl',
+            'ldap_default_cg',
             'ldap_srv_dns',
             'ldap_dns_use_ssl',
             'ldap_dns_use_tls',
@@ -940,7 +993,7 @@ class CentreonLdapAdmin
                           FROM auth_ressource
                           WHERE ar_name = '" . $this->db->escape($options['ar_name']) . "'";
             $res = $this->db->query($maxArIdSql);
-            $row = $res->fetchRow();
+            $row = $res->fetch();
             $arId = $row['last_id'];
             unset($res);
         } else {
@@ -995,7 +1048,7 @@ class CentreonLdapAdmin
                  FROM `auth_ressource_info`
                  WHERE ar_id = " . $this->db->escape($arId);
         $res = $this->db->query($query);
-        while ($row = $res->fetchRow()) {
+        while ($row = $res->fetch()) {
             $gopt[$row['ari_name']] = $row['ari_value'];
         }
         return $gopt;
@@ -1064,7 +1117,7 @@ class CentreonLdapAdmin
         }
         try {
             $dbresult = $this->db->query("SELECT MAX(ar_id) as id FROM auth_ressource WHERE ar_type = 'ldap_tmpl'");
-            $row = $dbresult->fetchRow();
+            $row = $dbresult->fetch();
         } catch (\PDOException $e) {
             return false;
         }
@@ -1123,6 +1176,7 @@ class CentreonLdapAdmin
      * Get the template information
      *
      * @param int $id The template id, if 0 get the template
+     * @return array $list
      */
     public function getTemplate($id = 0)
     {
@@ -1134,7 +1188,7 @@ class CentreonLdapAdmin
             if ($res->rowCount() == 0) {
                 return array();
             }
-            $row = $res->fetchRow();
+            $row = $res->fetch();
             $id = $row['ar_id'];
         }
         $query = "SELECT ari_name, ari_value
@@ -1142,7 +1196,7 @@ class CentreonLdapAdmin
 			     WHERE ar_id = " . CentreonDB::escape($id);
         $res = $this->db->query($query);
         $list = array();
-        while ($row = $res->fetchRow()) {
+        while ($row = $res->fetch()) {
             $list[$row['ari_name']] = $row['ari_value'];
         }
         return $list;
@@ -1221,14 +1275,14 @@ class CentreonLdapAdmin
         }
         $res = $this->db->query($sql);
         $tab = array();
-        while ($row = $res->fetchRow()) {
+        while ($row = $res->fetch()) {
             $tab[] = $row;
         }
         return $tab;
     }
 
     /**
-     * Delete ldap configuraition
+     * Delete ldap configuration
      *
      * @param  array $configList
      * @return void
@@ -1278,7 +1332,7 @@ class CentreonLdapAdmin
         );
         $arr = array();
         $i = 0;
-        while ($row = $res->fetchRow()) {
+        while ($row = $res->fetch()) {
             $arr[$i]['address_#index#'] = $row['host_address'];
             $arr[$i]['port_#index#'] = $row['host_port'];
             if ($row['use_ssl']) {
@@ -1306,7 +1360,7 @@ class CentreonLdapAdmin
             'WHERE ar_id = ' . $this->db->escape($arId) . ' ' .
             'AND ari_name = "ldap_store_password" '
         );
-        if ($row = $result->fetchRow()) {
+        if ($row = $result->fetch()) {
             if ($row['ari_value'] == '0') {
                 $this->db->query(
                     "UPDATE contact " .

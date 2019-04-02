@@ -301,6 +301,13 @@ function updateCentcoreConfigData($db, $form, $centreon)
         "centcore_cmd_timeout",
         isset($ret["centcore_cmd_timeout"]) && $ret['centcore_cmd_timeout'] ? $ret['centcore_cmd_timeout'] : 0
     );
+    updateOption(
+        $db,
+        "centcore_illegal_characters",
+        isset($ret["centcore_illegal_characters"]) && $ret['centcore_illegal_characters']
+            ? $ret['centcore_illegal_characters']
+            : ""
+    );
     $centreon->initOptGen($db);
 }
 
@@ -638,7 +645,7 @@ function updateGeneralConfigData($gopt_id = null)
     updateOption(
         $pearDB,
         "sso_blacklist_clients",
-        isset($ret["sso_blacklist_clients"]) && $ret["sso_blacklist_clients"] != NULL
+        isset($ret["sso_blacklist_clients"]) && $ret["sso_blacklist_clients"] != null
             ? $pearDB->escape($ret["sso_blacklist_clients"]) : ""
     );
     updateOption(
@@ -650,13 +657,13 @@ function updateGeneralConfigData($gopt_id = null)
     updateOption(
         $pearDB,
         "sso_username_pattern",
-        isset($ret["sso_username_pattern"]) && $ret["sso_username_pattern"] != NULL
+        isset($ret["sso_username_pattern"]) && $ret["sso_username_pattern"] != null
             ? $pearDB->escape($ret["sso_username_pattern"]) : ""
     );
     updateOption(
         $pearDB,
         "sso_username_replace",
-        isset($ret["sso_username_replace"]) && $ret["sso_username_replace"] != NULL
+        isset($ret["sso_username_replace"]) && $ret["sso_username_replace"] != null
             ? $pearDB->escape($ret["sso_username_replace"]) : ""
     );
     updateOption(
@@ -931,7 +938,7 @@ function updateBackupConfigData($db, $form, $centreon)
 function updateKnowledgeBaseData($db, $form, $centreon)
 {
     $ret = $form->getSubmitValues();
-    if (!isset($ret['kb_wiki_certificate'])){
+    if (!isset($ret['kb_wiki_certificate'])) {
         $ret['kb_wiki_certificate'] = 0;
     }
     foreach ($ret as $key => $value) {

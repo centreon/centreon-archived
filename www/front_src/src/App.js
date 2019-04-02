@@ -1,19 +1,23 @@
-import React, {Component} from "react";
+import React, { Component } from "react";
 import config from "./config";
 import Header from "./components/header";
-import {Switch} from "react-router-dom";
-import {ConnectedRouter} from "react-router-redux";
-import {history} from "./store";
+import { Switch } from "react-router-dom";
+import { connect } from "react-redux";
+import { ConnectedRouter } from "react-router-redux";
+import { history } from "./store";
 import ClassicRoute from "./components/router/classicRoute";
 import ReactRoute from './components/router/reactRoute';
 
-import {classicRoutes, reactRoutes} from "./route-maps";
+import { classicRoutes, reactRoutes } from "./route-maps";
 import NavigationComponent from "./components/navigation";
+import Tooltip from "./components/tooltip";
 import Footer from "./components/footer";
 import Fullscreen from 'react-fullscreen-crossbrowser';
 import queryString from 'query-string';
 import axios from './axios';
 import NotAllowedPage from './route-components/notAllowedPage';
+
+import { setExternalComponents } from "./redux/actions/externalComponentsActions";
 
 class App extends Component {
 
@@ -33,22 +37,32 @@ class App extends Component {
     return (parsedArguments.min === "1")
   }
 
+  // enable fullscreen
   goFull = () => {
-    const { search, hash } = history.location
-    window['fullscreenParams'] = (search.split('?')[1] || '') + (hash || '')
+    // set fullscreen url parameters
+    // this will be used to init iframe src
+    window['fullscreenSearch'] = window.location.search
+    window['fullscreenHash'] = window.location.hash
+
+    // enable fullscreen after 200ms
     setTimeout(() => {
       this.setState({ isFullscreenEnabled: true });
     }, 200)
   }
 
+  // disable fullscreen
   removeFullscreenParams = () => {
-    if (history.location.pathname == '/centreon/main.php') {
+    if (history.location.pathname == './main.php') {
       history.push({
-        pathname: '/centreon/main.php',
-        search: window['fullscreenParams']
+        pathname: './main.php',
+        search: window['fullscreenSearch'],
+        hash: window['fullscreenHash']
       })
     }
-    delete window['fullscreenParams'];
+
+    // remove fullscreen parameters to keep normal routing
+    delete window['fullscreenSearch'];
+    delete window['fullscreenHash'];
   }
 
   // get allowed routes
@@ -56,6 +70,18 @@ class App extends Component {
     axios("internal.php?object=centreon_acl_webservice&action=getCurrentAcl")
       .get()
       .then(({data}) => this.setState({acls: data, aclsLoaded: true}))
+  }
+
+  // get external components (pages, hooks...)
+  getExternalComponents = () => {
+    const { setExternalComponents } = this.props;
+
+    axios("internal.php?object=centreon_frontend_component&action=components")
+      .get()
+      .then(({ data }) => {
+        // store external components in redux
+        setExternalComponents(data);
+    });
   }
 
   // keep alive (redirect to login page if session is expired)
@@ -68,13 +94,17 @@ class App extends Component {
           if (error.response.status == 401) {
             // redirect to login page
             window.location.href = config.urlBase + 'index.php?disconnect=1'
+          } else {
+            // keepalive must be done cause it may failed due to temporary unavailability
+            this.keepAlive();
           }
         })
     }, 15000)
   }
 
-  UNSAFE_componentWillMount = () => {
+  componentDidMount() {
     this.getAcl();
+    this.getExternalComponents();
     this.keepAlive();
   }
 
@@ -84,7 +114,7 @@ class App extends Component {
       <ReactRoute
         history={history}
         path={path}
-        component={acls.includes(`/${path.split('/_CENTREON_PATH_PLACEHOLDER_/')[1]}`) ? comp : NotAllowedPage}
+        component={acls.includes(path) ? comp : NotAllowedPage}
         {...rest}
       />
     ))
@@ -92,6 +122,7 @@ class App extends Component {
 
   render() {
     const {aclsLoaded} = this.state;
+
     const min = this.getMinArgument();
 
     let reactRouter = '';
@@ -106,6 +137,7 @@ class App extends Component {
           {!min && // do not display menu if min=1
             <NavigationComponent/>
           }
+          <Tooltip/>
           <div id="content">
             {!min && // do not display header if min=1
               <Header/>
@@ -138,4 +170,10 @@ class App extends Component {
   }
 }
 
-export default App;
+const mapStateToProps = () => {}
+
+const mapDispatchToProps = {
+  setExternalComponents
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(App);

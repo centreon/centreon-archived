@@ -279,18 +279,13 @@ $cloneSetTemplate = array();
 $cloneSetTemplate[] = $form->addElement(
     'select',
     'tpSelect[#index#]',
-    _("Template"),
-    (array(null => null) + $hostObj->getList(false, true)),
+    '',
+    (array(null => null) + $hostObj->getList(false, true, $host_id)),
     array(
         "id" => "tpSelect_#index#",
+        "class" => "select2",
         "type" => "select-one"
     )
-);
-$cloneSetMacro[] = $form->addElement(
-    'hidden',
-    'macroFrom[#index#]',
-    'direct',
-    array('id' => 'macroFrom_#index#')
 );
 
 /*
@@ -943,6 +938,7 @@ if ($valid) {
     $tpl->assign("History_Options", _("History Options"));
     $tpl->assign("Event_Handler", _("Event Handler"));
     $tpl->assign("add_mtp_label", _("Add a template"));
+    $tpl->assign('select_template', _('Select a template'));
     $tpl->assign("seconds", _("seconds"));
     $tpl->assign("tpl", 1);
     $tpl->display("formHost.ihtml");

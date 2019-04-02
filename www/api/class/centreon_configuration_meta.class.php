@@ -104,7 +104,7 @@ class CentreonConfigurationMeta extends CentreonConfigurationObjects
 
         return array(
             'items' => $metaList,
-            'total' => $stmt->rowCount()
+            'total' => (int) $this->pearDB->numberRows()
         );
     }
 }

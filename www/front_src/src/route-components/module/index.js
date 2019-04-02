@@ -34,7 +34,14 @@ class ModuleRoute extends Component {
 
   handleHref = event => {
     let href = event.detail.href;
+    // update route
     window.history.pushState(null, null, href);
+  }
+
+  // handle disconnect event sent by iframe
+  handleDisconnect = event => {
+    // update current url to redirect to login page
+    window.location.href = event.detail.href;
   }
 
   componentDidMount() {
@@ -52,6 +59,13 @@ class ModuleRoute extends Component {
       this.handleHref,
       false
     );
+
+    // add event listener to check if iframe is redirected to login page
+    window.addEventListener(
+      "react.href.disconnect",
+      this.handleDisconnect,
+      false
+    );
   };
 
   componentWillUnmount() {
@@ -65,6 +79,11 @@ class ModuleRoute extends Component {
       "react.href.update",
       this.handleHref
     );
+
+    window.parent.removeEventListener(
+      "react.href.disconnect",
+      this.handleDisconnect
+    );
   }
 
   render() {
@@ -72,9 +91,8 @@ class ModuleRoute extends Component {
     const { history } = this.props,
           { search, hash } = history.location;
     let params;
-    if (window['fullscreenParams']) {
-      params = '?';
-      params += window['fullscreenParams'] || ''; 
+    if (window['fullscreenSearch']) {
+      params = window['fullscreenSearch'] + window['fullscreenHash']
     } else {
       params = (search || '') + (hash || '');
     }
@@ -93,7 +111,7 @@ class ModuleRoute extends Component {
           scrolling="yes"
           className={loading ? "hidden" : ""}
           style={{ width: "100%", height: `${contentHeight}px` }}
-          src={`/_CENTREON_PATH_PLACEHOLDER_/main.get.php${params}`}
+          src={`./main.get.php${params}`}
         />
       </>
     );

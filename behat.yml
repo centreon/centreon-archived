@@ -183,6 +183,11 @@ default:
       paths: [ %paths.base%/features/HostTemplateBasicsOperations.feature ]
       contexts: [ HostTemplateBasicsOperationsContext ]
 
+    language_selection_feature:
+      paths: [ %paths.base%/features/LanguageSelection.feature ]
+      contexts:
+        - LanguageSelectionContext
+
     ldap_configuration:
       paths: [ %paths.base%/features/LdapConfiguration.feature ]
       contexts: [ LdapConfigurationContext ]

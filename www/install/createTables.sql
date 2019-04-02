@@ -733,7 +733,7 @@ CREATE TABLE `contact` (
   `contact_name` varchar(200) DEFAULT NULL,
   `contact_alias` varchar(200) DEFAULT NULL,
   `contact_passwd` varchar(255) DEFAULT NULL,
-  `contact_lang` varchar(255) DEFAULT NULL,
+  `contact_lang` varchar(255) DEFAULT 'browser',
   `contact_host_notification_options` varchar(200) DEFAULT NULL,
   `contact_service_notification_options` varchar(200) DEFAULT NULL,
   `contact_email` varchar(200) DEFAULT NULL,

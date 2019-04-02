@@ -2,7 +2,6 @@ import React, { Component } from "react";
 import PropTypes from 'prop-types';
 import numeral from "numeral";
 import { Link } from "react-router-dom";
-import config from "../../config";
 import {Translate} from 'react-redux-i18n';
 import axios from "../../axios";
 
@@ -88,40 +87,40 @@ class ServiceStatusMenu extends Component {
 
     return (
       <div  class={"wrap-right-services" + (toggled ? " submenu-active" : "")}>
-        <span class="wrap-right-icon" onClick={this.toggle.bind(this)}>
-          <span class="iconmoon icon-services">
-            {data.pending > 0 ? <span class="custom-icon" /> : null}
-          </span>
-          <span class="wrap-right-icon__name">Services</span>
-        </span>
-        <Link to={config.urlBase + "main.php?p=20201&o=svc_critical&search="} class={"wrap-middle-icon round round-small " + (data.critical.unhandled > 0 ? "red" : "red-bordered")} >
+        <Link to={"/main.php?p=20201&o=svc_critical&search="} class={"wrap-middle-icon round round-small " + (data.critical.unhandled > 0 ? "red" : "red-bordered")} >
           <span class="number">
             <span id="count-svc-critical">{numeral(data.critical.unhandled).format("0a")}</span>
           </span>
         </Link>
-        <Link to={config.urlBase + "main.php?p=20201&o=svc_warning&search="} class={"wrap-middle-icon round round-small " + (data.warning.unhandled > 0 ? "orange" : "orange-bordered")}>
+        <Link to={"/main.php?p=20201&o=svc_warning&search="} class={"wrap-middle-icon round round-small " + (data.warning.unhandled > 0 ? "orange" : "orange-bordered")}>
           <span class="number">
             <span id="count-svc-warning">{numeral(data.warning.unhandled).format("0a")}</span>
           </span>
         </Link>
-        <Link to={config.urlBase + "main.php?p=20201&o=svc_unknown&search="} class={"wrap-middle-icon round round-small " + (data.unknown.unhandled > 0 ? "gray-light" : "gray-light-bordered")}>
+        <Link to={"/main.php?p=20201&o=svc_unknown&search="} class={"wrap-middle-icon round round-small " + (data.unknown.unhandled > 0 ? "gray-light" : "gray-light-bordered")}>
           <span class="number">
             <span id="count-svc-unknown">{numeral(data.unknown.unhandled).format("0a")}</span>
           </span>
         </Link>
-        <Link to={config.urlBase + "main.php?p=20201&o=svc_ok&search="} class={"wrap-middle-icon round round-small " + (data.ok > 0 ? "green" : "green-bordered")}>
+        <Link to={"/main.php?p=20201&o=svc_ok&search="} class={"wrap-middle-icon round round-small " + (data.ok > 0 ? "green" : "green-bordered")}>
           <span class="number">
             <span id="count-svc-ok">{numeral(data.ok).format("0a")}</span>
           </span>
         </Link>
         <div ref={service => this.service = service}>
+          <span class="wrap-right-icon" onClick={this.toggle.bind(this)}>
+            <span class="iconmoon icon-services">
+              {data.pending > 0 ? <span class="custom-icon" /> : null}
+            </span>
+            <span class="wrap-right-icon__name">Services</span>
+          </span>
           <span ref={this.setWrapperRef} class="toggle-submenu-arrow" onClick={this.toggle.bind(this)} >{this.props.children}</span>
           <div class="submenu services">
             <div class="submenu-inner">
               <ul class="submenu-items list-unstyled">
                 <li class="submenu-item">
                   <Link
-                    to={config.urlBase + "main.php?p=20201&o=svc&search="}
+                    to={"/main.php?p=20201&o=svc&search="}
                     class="submenu-item-link"
                   >
                     <div onClick={this.toggle}>
@@ -132,7 +131,7 @@ class ServiceStatusMenu extends Component {
                 </li>
                 <li class="submenu-item">
                   <Link
-                    to={config.urlBase + "main.php?p=20201&o=svc_critical&search="}
+                    to={"/main.php?p=20201&o=svc_critical&search="}
                     class="submenu-item-link"
                   >
                     <div onClick={this.toggle}>
@@ -145,7 +144,7 @@ class ServiceStatusMenu extends Component {
                 </li>
                 <li class="submenu-item">
                   <Link
-                    to={config.urlBase + "main.php?p=20201&o=svc_warning&search="}
+                    to={"/main.php?p=20201&o=svc_warning&search="}
                     class="submenu-item-link"
                   >
                     <div onClick={this.toggle}>
@@ -158,7 +157,7 @@ class ServiceStatusMenu extends Component {
                 </li>
                 <li class="submenu-item">
                   <Link
-                    to={config.urlBase + "main.php?p=20201&o=svc_unknown&search="}
+                    to={"/main.php?p=20201&o=svc_unknown&search="}
                     class="submenu-item-link"
                   >
                     <div onClick={this.toggle}>
@@ -171,7 +170,7 @@ class ServiceStatusMenu extends Component {
                 </li>
                 <li class="submenu-item">
                   <Link
-                    to={config.urlBase + "main.php?p=20201&o=svc_ok&search="}
+                    to={"/main.php?p=20201&o=svc_ok&search="}
                     class="submenu-item-link"
                   >
                     <div onClick={this.toggle}>
@@ -182,7 +181,7 @@ class ServiceStatusMenu extends Component {
                 </li>
                 <li class="submenu-item">
                   <Link
-                    to={config.urlBase + "main.php?p=20201&o=svc_pending&search="}
+                    to={"/main.php?p=20201&o=svc_pending&search="}
                     class="submenu-item-link"
                   >
                     <div onClick={this.toggle}>
@@ -199,7 +198,6 @@ class ServiceStatusMenu extends Component {
     );
   }
 }
-
 
 const mapStateToProps = ({ navigation, intervals }) => ({
   navigationData: navigation,

@@ -10,7 +10,7 @@ class InformationsRepository extends ServiceEntityRepository
 
     /**
      * Export options
-     * 
+     *
      * @return \Centreon\Domain\Entity\Informations[]
      */
     public function getAll(): array
@@ -68,9 +68,17 @@ class InformationsRepository extends ServiceEntityRepository
      */
     public function authorizeMaster(string $ip): void
     {
+        $sql = "DELETE FROM `informations` WHERE `key` = 'authorizedMaster'";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute();
+
+        /*
+         * resolve the address down to IP
+         */
+        $ipAddress = gethostbyname($ip);
         $sql = "INSERT INTO `informations` (`key`, `value`) VALUES ('authorizedMaster', :ip)";
         $stmt = $this->db->prepare($sql);
-        $stmt->bindParam(':ip', $ip, PDO::PARAM_STR);
+        $stmt->bindParam(':ip', $ipAddress, PDO::PARAM_STR);
         $stmt->execute();
     }
 }

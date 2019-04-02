@@ -2,6 +2,9 @@
 
 namespace CentreonRemote\Domain\Service;
 
+use CentreonRemote\Domain\Resources\DefaultConfig\CfgNagiosBrokerModule;
+use CentreonRemote\Domain\Resources\DefaultConfig\CfgCentreonBrokerInfo;
+
 class PollerDefaultsOverwriteService
 {
 
@@ -11,19 +14,12 @@ class PollerDefaultsOverwriteService
 
     private $nagiosConfigIDs = [];
 
-    private $resourcesPath = '/Domain/Resources/default_config/';
-
     /**
      * @param null $pollerID
      */
     public function setPollerID($pollerID)
     {
         $this->pollerID = $pollerID;
-    }
-
-    private function getResource($resourceName): array
-    {
-        return require_once dirname(dirname(dirname(__FILE__))) . "{$this->resourcesPath}{$resourceName}";
     }
 
     /**
@@ -41,7 +37,7 @@ class PollerDefaultsOverwriteService
         });
 
         // Get default data for the specified resource
-        $defaultData = $this->getResource($resourceName);
+        $defaultData = $resourceName::getConfiguration();
 
         // Make the data multidimensional array if its not, so it can be merged
         $dataToMerge = is_array($defaultData[key($defaultData)]) ? $defaultData : [$defaultData];
@@ -54,56 +50,104 @@ class PollerDefaultsOverwriteService
         return array_merge($data, $dataToMerge);
     }
 
-    public function setNagiosServer(array $data)
+    /**
+     * Get poller information
+     *
+     * @param array $data the poller data
+     * @return array the complete poller data
+     */
+    public function getNagiosServer(array $data): array
     {
-        return $this->findPollerAndSetResourceData($data, 'id', 'nagios_server.php');
+        return $this->findPollerAndSetResourceData(
+            $data,
+            'id',
+            'CentreonRemote\Domain\Resources\DefaultConfig\NagiosServer'
+        );
     }
 
-    public function setCfgNagios(array $data)
+    /**
+     * Get engine information
+     *
+     * @param array $data the engine data
+     * @return array the complete engine data
+     */
+    public function getCfgNagios(array $data): array
     {
         $configsOfRemote = array_filter($data, function ($pollerData) {
             return $pollerData['nagios_server_id'] == $this->pollerID;
         });
         $this->nagiosConfigIDs = array_column($configsOfRemote, 'nagios_id');
 
-        return $this->findPollerAndSetResourceData($data, 'nagios_server_id', 'cfg_nagios.php');
+        return $this->findPollerAndSetResourceData(
+            $data,
+            'nagios_server_id',
+            'CentreonRemote\Domain\Resources\DefaultConfig\CfgNagios'
+        );
     }
 
-    public function setCfgNagiosBroker(array $data)
+    /**
+     * Get engine broker module information
+     *
+     * @param array $data the engine broker module data
+     * @return array the complete engine broker module data
+     */
+    public function getCfgNagiosBroker(array $data): array
     {
         // Remove nagios config info which is related to the broker module of the remote poller
         $data = array_filter($data, function ($pollerData) {
             return !in_array($pollerData['cfg_nagios_id'], $this->nagiosConfigIDs);
         });
 
-        $defaultData = $this->getResource('cfg_nagios_broker_module.php');
+        $defaultData = CfgNagiosBrokerModule::getConfiguration();
 
         return array_merge($defaultData, $data);
     }
 
-    public function setCfgCentreonBroker(array $data)
+    /**
+     * Get broker information
+     *
+     * @param array $data the broker data
+     * @return array the complete broker data
+     */
+    public function getCfgCentreonBroker(array $data): array
     {
         $configsOfRemote = array_filter($data, function ($pollerData) {
             return $pollerData['ns_nagios_server'] == $this->pollerID;
         });
         $this->brokerConfigIDs = array_column($configsOfRemote, 'config_id');
 
-        return $this->findPollerAndSetResourceData($data, 'ns_nagios_server', 'cfg_centreonbroker.php');
+        return $this->findPollerAndSetResourceData(
+            $data,
+            'ns_nagios_server',
+            'CentreonRemote\Domain\Resources\DefaultConfig\CfgCentreonBroker'
+        );
     }
 
-    public function setCfgCentreonBrokerInfo(array $data)
+    /**
+     * Get broker detailed information
+     *
+     * @param array $data the broker detailed data
+     * @return array the complete broker detailed data
+     */
+    public function getCfgCentreonBrokerInfo(array $data): array
     {
         // Remove broker config info which is related to the broker module of the remote poller
         $data = array_filter($data, function ($pollerData) {
             return !in_array($pollerData['config_id'], $this->brokerConfigIDs);
         });
 
-        $defaultData = $this->getResource('cfg_centreonbroker_info.php');
+        $defaultData = CfgCentreonBrokerInfo::getConfiguration();
 
         return array_merge($defaultData, $data);
     }
 
-    public function setCfgResource(array $data)
+    /**
+     * Get global macro information
+     *
+     * @param array $data the global macro data
+     * @return array the complete global macro data
+     */
+    public function getCfgResource(array $data): array
     {
         // prepare _instance_id for method findPollerAndSetResourceData
         foreach ($data as $key => $val) {
@@ -116,6 +160,10 @@ class PollerDefaultsOverwriteService
             }
         }
 
-        return $this->findPollerAndSetResourceData($data, '_instance_id', 'cfg_resource.php');
+        return $this->findPollerAndSetResourceData(
+            $data,
+            '_instance_id',
+            'CentreonRemote\Domain\Resources\DefaultConfig\CfgResource'
+        );
     }
 }

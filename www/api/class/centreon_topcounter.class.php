@@ -34,7 +34,7 @@
  */
 
 require_once _CENTREON_PATH_ . "/www/class/centreonDB.class.php";
-require_once dirname(__FILE__) . "/webService.class.php";
+require_once __DIR__ . "/webService.class.php";
 
 class CentreonTopCounter extends CentreonWebService
 {
@@ -61,7 +61,10 @@ class CentreonTopCounter extends CentreonWebService
 
     protected $soundNotificationsEnabled = false;
 
-    protected $centreonUser;
+    /**
+     * @var Centreon
+     */
+    protected $centreon;
 
     /**
      * CentreonTopCounter constructor.
@@ -69,20 +72,34 @@ class CentreonTopCounter extends CentreonWebService
      */
     public function __construct()
     {
+        global $centreon;
+        $this->centreon = $centreon;
+
         parent::__construct();
         $this->pearDBMonitoring = new CentreonDB('centstorage');
-        /* Get the refresh time for top counter */
-        $query = 'SELECT `value` FROM options WHERE `key` = "AjaxTimeReloadStatistic"';
 
-        try {
-            $res = $this->pearDB->query($query);
-            if ($res->rowCount() > 0) {
-                $row = $res->fetch();
-                $this->refreshTime = (int)$row['value'];
-            }
-        } catch (\Exception $e) {}
+        // get refresh interval from database
+        $this->initRefreshInterval();
 
         $this->checkAccess();
+    }
+
+    /**
+     * Get refresh interval of top counter
+     *
+     * @return void
+     */
+    private function initRefreshInterval()
+    {
+        $refreshInterval = 15;
+
+        $query = 'SELECT `value` FROM options WHERE `key` = "AjaxTimeReloadStatistic"';
+        $res = $this->pearDB->query($query);
+        if ($row = $res->fetch()) {
+            $refreshInterval = (int)$row['value'];
+        }
+
+        $this->refreshTime = $refreshInterval;
     }
 
     /**
@@ -90,13 +107,8 @@ class CentreonTopCounter extends CentreonWebService
      */
     private function checkAccess()
     {
-        if (!isset($_SESSION['centreon'])) {
-            throw new \RestUnauthorizedException('Session does not exists.');
-        }
-        $this->centreonUser = $_SESSION['centreon']->user;
-
-        if ($this->centreonUser->access->admin == 0) {
-            $tabActionACL = $this->centreonUser->access->getActions();
+        if ($this->centreon->user->access->admin == 0) {
+            $tabActionACL = $this->centreon->user->access->getActions();
             if (isset($tabActionACL["top_counter"])) {
                 $this->hasAccessToTopCounter = true;
             }
@@ -108,7 +120,9 @@ class CentreonTopCounter extends CentreonWebService
             $this->hasAccessToPollers = true;
         }
 
-        if (isset($this->centreonUser->access->topology[50104]) && $this->centreonUser->access->topology[50104] === 1) {
+        if (isset($this->centreon->user->access->topology[50104]) &&
+            $this->centreon->user->access->topology[50104] === 1
+        ) {
             $this->hasAccessToProfile = true;
         }
     }
@@ -120,18 +134,14 @@ class CentreonTopCounter extends CentreonWebService
      */
     public function getClock()
     {
-        if (!isset($_SESSION['centreon'])) {
-            throw new \RestUnauthorizedException('Session does not exists.');
-        }
-        $user = $_SESSION['centreon']->user;
-        $gmt = $_SESSION['centreon']->CentreonGMT;
-
-        $locale = $user->lang === 'browser' ? null : $user->lang;
+        $locale = $this->centreon->user->lang === 'browser'
+            ? null
+            : $this->centreon->user->lang;
 
         return array(
             'time' => time(),
             'locale' => $locale,
-            'timezone' => $gmt->getActiveTimezone($user->gmt)
+            'timezone' => $this->centreon->CentreonGMT->getActiveTimezone($this->centreon->user->gmt)
         );
     }
 
@@ -163,8 +173,6 @@ class CentreonTopCounter extends CentreonWebService
      */
     public function putAutoLoginToken()
     {
-        global $centreon;
-
         $userId = $this->arguments['userId'];
         $autoLoginKey = $this->arguments['token'];
 
@@ -181,7 +189,7 @@ class CentreonTopCounter extends CentreonWebService
         /**
          * Update user object
          */
-        $centreon->user->setToken($autoLoginKey);
+        $this->centreon->user->setToken($autoLoginKey);
     }
 
     /**
@@ -191,12 +199,9 @@ class CentreonTopCounter extends CentreonWebService
      */
     public function getUser()
     {
-        if (!isset($_SESSION['centreon'])) {
-            throw new \RestUnauthorizedException('Session does not exists.');
-        }
-        $user = $_SESSION['centreon']->user;
-
-        $locale = $user->lang === 'browser' ? null : $user->lang;
+        $locale = $this->centreon->user->lang === 'browser'
+            ? null
+            : $this->centreon->user->lang;
 
         if (isset($_SESSION['disable_sound'])) {
             $this->soundNotificationsEnabled = !$_SESSION['disable_sound'];
@@ -205,7 +210,7 @@ class CentreonTopCounter extends CentreonWebService
         }
 
         /* Get autologinkey */
-        $query = 'SELECT contact_autologin_key FROM contact WHERE contact_id = ' . (int)$user->user_id;
+        $query = 'SELECT contact_autologin_key FROM contact WHERE contact_id = ' . (int)$this->centreon->user->user_id;
 
         try {
             $res = $this->pearDB->query($query);
@@ -219,11 +224,11 @@ class CentreonTopCounter extends CentreonWebService
         $row = $res->fetch();
 
         return array(
-            'userId' => $user->user_id,
-            'fullname' => $user->name,
-            'username' => $user->alias,
+            'userId' => $this->centreon->user->user_id,
+            'fullname' => $this->centreon->user->name,
+            'username' => $this->centreon->user->alias,
             'locale' => $locale,
-            'timezone' => $user->gmt,
+            'timezone' => $this->centreon->user->gmt,
             'hasAccessToProfile' => $this->hasAccessToProfile,
             'autologinkey' => $row['contact_autologin_key'],
             'soundNotificationsEnabled' => $this->soundNotificationsEnabled
@@ -528,11 +533,11 @@ class CentreonTopCounter extends CentreonWebService
             AND h.enabled = 1
             AND h.name NOT LIKE "_Module_%"';
 
-        if (!$this->centreonUser->admin) {
+        if (!$this->centreon->user->admin) {
             $query .= ' AND EXISTS (
                 SELECT a.host_id FROM centreon_acl a
                   WHERE a.host_id = h.host_id
-                    AND a.group_id IN (' . $this->centreonUser->access->getAccessGroupsString() . '))';
+                    AND a.group_id IN (' . $this->centreon->user->access->getAccessGroupsString() . '))';
         }
 
         try {
@@ -557,6 +562,7 @@ class CentreonTopCounter extends CentreonWebService
             'total' => $row['up_total'] + $row['pending_total'] + $row['down_total'] + $row['unreachable_total'],
             'refreshTime' => $this->refreshTime
         );
+
         return $result;
     }
 
@@ -590,12 +596,12 @@ class CentreonTopCounter extends CentreonWebService
             AND (h.name NOT LIKE "_Module_%" OR h.name LIKE "_Module_Meta%")
             AND s.enabled = 1
             AND h.host_id = s.host_id';
-        if (!$this->centreonUser->admin) {
+        if (!$this->centreon->user->admin) {
             $query .= ' AND EXISTS (
                 SELECT a.service_id FROM centreon_acl a
                     WHERE a.host_id = h.host_id
                         AND a.service_id = s.service_id
-                        AND a.group_id IN (' . $this->centreonUser->access->getAccessGroupsString() . ')
+                        AND a.group_id IN (' . $this->centreon->user->access->getAccessGroupsString() . ')
             )';
         }
 
@@ -626,6 +632,7 @@ class CentreonTopCounter extends CentreonWebService
                 $row['warning_total'],
             'refreshTime' => $this->refreshTime
         );
+
         return $result;
     }
 
@@ -644,7 +651,7 @@ class CentreonTopCounter extends CentreonWebService
         $row = $res->fetchAll();
 
         $result = [];
-        foreach ($row as $item){
+        foreach ($row as $item) {
             $result[$item['key']] = (intval($item['value']) > 10) ? $item['value'] : 10;
         }
 
@@ -656,17 +663,13 @@ class CentreonTopCounter extends CentreonWebService
      */
     protected function pollersList()
     {
-        if (!isset($_SESSION['centreon'])) {
-            throw new \RestUnauthorizedException('Session does not exists.');
-        }
         /* Get the list of configured pollers */
         $listPoller = array();
         $query = 'SELECT id, name, last_restart FROM nagios_server WHERE ns_activate = "1"';
 
         /* Add ACL */
-        $user = $_SESSION['centreon']->user;
-        $aclPoller = $user->access->getPollerString('id');
-        if (!$user->admin) {
+        $aclPoller = $this->centreon->user->access->getPollerString('id');
+        if (!$this->centreon->user->admin) {
             if ($aclPoller === '') {
                 return array();
             }
@@ -806,5 +809,21 @@ class CentreonTopCounter extends CentreonWebService
             return true;
         }
         return false;
+    }
+
+    /**
+     * Authorize to access to the action
+     *
+     * @param string $action The action name
+     * @param array $user The current user
+     * @param boolean $isInternal If the api is call in internal
+     * @return boolean If the has access to the action
+     */
+    public function authorize($action, $user, $isInternal = false)
+    {
+        if (parent::authorize($action, $user, $isInternal)) {
+            return true;
+        }
+        return $user->hasAccessRestApiConfiguration();
     }
 }

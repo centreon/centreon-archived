@@ -550,7 +550,7 @@ function initM(_time_reload,_sid,_o){
 }
 
 function goM(_time_reload,_sid,_o){
-	// ici je recupere les couples host_name/service affichÃ�Â© sur ma page
+	// ici je recupere les couples host_name/service affichées sur ma page
 	viewDebugInfo('entre dans goM');
 	if(_on)
 	{

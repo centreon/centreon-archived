@@ -39,7 +39,7 @@ interface CentreonWebServiceDiInterface
 {
 
     /**
-     * 
+     *
      * @param \Pimple\Container $dependencyInjector
      */
     public function finalConstruct(Container $dependencyInjector);

@@ -32,7 +32,13 @@
  * For more information : contact@centreon.com
  *
  */
-require_once realpath(dirname(__FILE__) . "/../../config/centreon.config.php");
+
+// file centreon.config.php may not exist in test environment
+$configFile = realpath(dirname(__FILE__) . "/../../config/centreon.config.php");
+if ($configFile !== false) {
+    require_once $configFile;
+}
+
 require_once _CENTREON_PATH_ . "/www/class/centreonDB.class.php";
 require_once realpath(dirname(__FILE__) . "/centreonDBInstance.class.php");
 require_once _CENTREON_PATH_ . "/www/include/common/common-Func.php";
@@ -398,13 +404,34 @@ class CentreonExternalCommand
         $this->write();
     }
 
+    /**
+     *
+     * Delete acknowledgement.
+     * @param string $type (HOST/SVC)
+     * @param array $hosts
+     */
+    public function deleteAcknowledgement($type, $hosts = array())
+    {
+        foreach (array_keys($hosts) as $name) {
+            $res = preg_split("/\;/", $name);
+            $oName = $res[0];
+            $pollerId = $this->getPollerID($oName);
+            if ($type === 'SVC') {
+                $oName .= ';' . $res[1];
+            }
+            $this->setProcessCommand("REMOVE_" . $type . "_ACKNOWLEDGEMENT;" . $oName, $pollerId);
+        }
+        $this->write();
+    }
+
+
     /************
      * Downtime
      ***********/
 
     private function getDowntimeTimestampFromDate($date = 'now', $timezone = '', $start = true)
     {
-        $inputDate = new \DateTime($date.' GMT');
+        $inputDate = new \DateTime($date . ' GMT');
         $dateTime = new \DateTime($date, new \DateTimeZone($timezone));
 
         // Winter to summer dst

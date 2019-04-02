@@ -9,6 +9,7 @@ la commande suivante ::
 
 .. note::
     Remplacez **@IP_CENTREON_CENTRAL** par l'IP du serveur Centreon vu par le collecteur.
+    Vous pouvez définir plusieurs adresse IP en utilisant la virgule comme séparateur.
 
 Cette commande va activer le mode **Remote Server** ::
 

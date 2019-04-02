@@ -103,33 +103,39 @@ echo _("Host").";"._("Begin date")."; "._("End date")."; "._("Duration")."\n";
 echo $host_name."; ".date(_("d/m/Y H:i:s"), $start_date)."; "
     . date(_("d/m/Y H:i:s"), $end_date)."; ".($end_date - $start_date) ."s\n";
 echo "\n";
+echo "\n";
+
 echo _("Status").";"._("Duration").";"._("Total Time").";"._("Mean Time")."; "._("Alert")."\n";
 /*
  * Getting stats on Host
  */
 $reportingTimePeriod = getreportingTimePeriod();
 $hostStats = getLogInDbForHost($id, $start_date, $end_date, $reportingTimePeriod);
-echo _("DOWN").";".$hostStats["DOWN_T"]."s;".$hostStats["DOWN_TP"]."%;"
-    . $hostStats["DOWN_MP"]."%;".$hostStats["DOWN_A"].";\n";
-echo _("UP").";".$hostStats["UP_T"]."s;".$hostStats["UP_TP"]."%;".$hostStats["UP_MP"]."%;".$hostStats["UP_A"].";\n";
-echo _("UNREACHABLE").";".$hostStats["UNREACHABLE_T"]."s;".$hostStats["UNREACHABLE_TP"]."%;"
-    . $hostStats["UNREACHABLE_MP"]."%;".$hostStats["UNREACHABLE_A"].";\n";
-echo _("UNDETERMINED").";".$hostStats["UNDETERMINED_T"]."s;".$hostStats["UNDETERMINED_TP"]."%;\n";
+echo _("DOWN") . ";" . $hostStats["DOWN_T"] . "s;" . $hostStats["DOWN_TP"] . "%;"
+    . $hostStats["DOWN_MP"] . "%;" . $hostStats["DOWN_A"] . ";\n";
+echo _("UP") . ";" . $hostStats["UP_T"] . "s;" . $hostStats["UP_TP"] . "%;" . $hostStats["UP_MP"] . "%;"
+    . $hostStats["UP_A"] . ";\n";
+echo _("UNREACHABLE") . ";" . $hostStats["UNREACHABLE_T"] . "s;" . $hostStats["UNREACHABLE_TP"] . "%;"
+    . $hostStats["UNREACHABLE_MP"] . "%;" . $hostStats["UNREACHABLE_A"] . ";\n";
+echo _("SCHEDULED DOWNTIME") . ";" . $hostStats["MAINTENANCE_T"] . "s;" . $hostStats["MAINTENANCE_TP"] . "%;;;\n";
+echo _("UNDETERMINED") . ";" . $hostStats["UNDETERMINED_T"] . "s;" . $hostStats["UNDETERMINED_TP"] . "%;\n";
+echo "\n";
 echo "\n";
 
-echo _("Service").";"._("OK")."; "._("OK")." Alert;"
-               ._("Warning")."; "._("Warning")." Alert;"
-               ._("Critical")."; "._("Critical")." Alert;"
-               ._("Unknown")."; "._("Unknown")." Alert;"
-               ._("Undetermined").";\n";
+echo _("Service") . ";" . _("OK") . " %; " . _("OK") ." Alert;"
+    . _("Warning") . " %;" . _("Warning") . " Alert;"
+    . _("Critical") . " %;" . _("Critical") . " Alert;"
+    . _("Unknown") . " %;" . _("Unknown") . " Alert;"
+    . _("Scheduled Downtimes") . " %;" . _("Undetermined") . "%;\n";
+
 $hostServicesStats =  getLogInDbForHostSVC($id, $start_date, $end_date, $reportingTimePeriod);
 foreach ($hostServicesStats as $tab) {
     if (isset($tab["DESCRIPTION"]) && $tab["DESCRIPTION"] != "") {
-        echo $tab["DESCRIPTION"]. ";".$tab["OK_TP"]. "%;".$tab["OK_A"]
-        . ";".$tab["WARNING_TP"]. "%;".$tab["WARNING_A"]
-        . ";".$tab["CRITICAL_TP"]. "%;".$tab["CRITICAL_A"]
-        . ";".$tab["UNKNOWN_TP"]. "%;".$tab["UNKNOWN_A"]
-        . ";".$tab["UNDETERMINED_TP"]. "%;;\n";
+        echo $tab["DESCRIPTION"] . ";" . $tab["OK_TP"] . " %;" . $tab["OK_A"] . ";"
+            . $tab["WARNING_TP"] . " %;" . $tab["WARNING_A"] . ";"
+            . $tab["CRITICAL_TP"] . " %;" . $tab["CRITICAL_A"] . ";"
+            . $tab["UNKNOWN_TP"] .  "%;" . $tab["UNKNOWN_A"] . ";"
+            . $tab["MAINTENANCE_TP"] . " %;" . $tab["UNDETERMINED_TP"] . "%;\n";
     }
 }
 
@@ -139,11 +145,11 @@ echo "\n";
 /*
  * Evolution of host availability in time
  */
-echo _("Day").";"._("Duration").";".
-     _("Up")." "._("Time").";"._("Up").";"._("Up")." "._("Alert").";".
-     _("Down")." "._("Time").";"._("Down").";"._("Down")." "._("Alert").";".
-     _("Unreachable")." "._("Time").";"._("Unreachable").";"._("Unreachable")." "._("Alert").
-     _("Day").";\n";
+echo _("Day") . ";" . _("Duration").";"
+    . _("Up") . " (s);" . _("Up")." %;" . _("Up") ." "._("Alert") . ";"
+    . _("Down") . " (s);" . _("Down") . " %;" . _("Down") . " " . _("Alert") . ";"
+    . _("Unreachable") . " (s);" . _("Unreachable") . " %;" . _("Unreachable") . " " . _("Alert")
+    . _("Day") . ";\n";
 $rq = "SELECT  * " .
         "FROM `log_archive_host` " .
         "WHERE `host_id` = '".$id."' " .
@@ -151,15 +157,16 @@ $rq = "SELECT  * " .
         "AND `date_end` <= '".$end_date."' " .
         "ORDER BY `date_start` desc";
 $DBRESULT = $pearDBO->query($rq);
+
 while ($row = $DBRESULT->fetchRow()) {
     $duration = $row["UPTimeScheduled"] + $row["DOWNTimeScheduled"] + $row["UNREACHABLETimeScheduled"];
-        /* Percentage by status */
-        $row["UP_MP"] = round($row["UPTimeScheduled"] * 100 / $duration, 2);
+    /* Percentage by status */
+    $row["UP_MP"] = round($row["UPTimeScheduled"] * 100 / $duration, 2);
     $row["DOWN_MP"] = round($row["DOWNTimeScheduled"] * 100 / $duration, 2);
     $row["UNREACHABLE_MP"] = round($row["UNREACHABLETimeScheduled"] * 100 / $duration, 2);
-    echo $row["date_start"].";".$duration.";".
-            $row["UPTimeScheduled"].";".$row["UP_MP"]."%;".$row["UPnbEvent"].";".
-            $row["DOWNTimeScheduled"].";".$row["DOWN_MP"]."%;".$row["DOWNnbEvent"].";".
-            $row["UNREACHABLETimeScheduled"].";".$row["UNREACHABLE_MP"]."%;".$row["UNREACHABLEnbEvent"].";".
-            date("Y-m-d H:i:s", $row["date_start"]).";\n";
+    echo $row["date_start"] . ";" . $duration . ";" .
+        $row["UPTimeScheduled"] . ";" . $row["UP_MP"] . "%;" . $row["UPnbEvent"] . ";" .
+        $row["DOWNTimeScheduled"] . ";" . $row["DOWN_MP"] . "%;" . $row["DOWNnbEvent"] . ";" .
+        $row["UNREACHABLETimeScheduled"] . ";" . $row["UNREACHABLE_MP"] . "%;" . $row["UNREACHABLEnbEvent"] . ";" .
+        date("Y-m-d H:i:s", $row["date_start"]) . ";\n";
 }

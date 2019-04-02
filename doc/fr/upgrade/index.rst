@@ -16,6 +16,11 @@ réaliser une sauvegarde.
     Display 1.6.x**, référez-vous à la :ref:`procédure de migration suivante
     <migratefrompollerdisplay>`.
 
+.. warning::
+   Le processus de mise à jour ne peut démarrer qu'à partir des versions **2.4.0**
+   et ultérieures. Si vous avez une version précédente, veuillez d'abord mettre à
+   jour vers une version intermédiaire comme la *2.8.x*.
+
 .. toctree::
     :maxdepth: 2
 

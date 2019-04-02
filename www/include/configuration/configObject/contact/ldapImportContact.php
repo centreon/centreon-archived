@@ -1,7 +1,7 @@
 <?php
 /*
- * Copyright 2005-2015 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2019 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -55,23 +55,13 @@ $form->addElement('header', 'title', _("LDAP Import"));
  * Command information
  */
 $form->addElement('header', 'options', _("LDAP Servers"));
-/*
-$form->addElement('text', 'ldap_base_dn', _("LDAP Base DN"), $attrsText);
-$form->addElement('text', 'ldap_search_timeout', _("LDAP search timeout"), $attrsText2);
-$form->addElement('text', 'ldap_search_limit', _("LDAP Search Size Limit"), $attrsText2);
-*/
+
 $form->addElement('text', 'ldap_search_filter', _("Search Filter"), $attrsText);
 $form->addElement('header', 'result', _("Search Result"));
 $form->addElement('header', 'ldap_search_result_output', _("Result"));
 
 $link = "LdapSearch()";
 $form->addElement("button", "ldap_search_button", _("Search"), array("class" => "btc bt_success", "onClick" => $link));
-
-$tab = array();
-$tab[] = $form->createElement('radio', 'action', null, _("List"), '1');
-$tab[] = $form->createElement('radio', 'action', null, _("Form"), '0');
-$form->addGroup($tab, 'action', _("Post Validation"), '&nbsp;');
-$form->setDefaults(array('action' => '1'));
 
 $form->addElement('hidden', 'contact_id');
 $redirect = $form->addElement('hidden', 'o');
@@ -101,7 +91,7 @@ $query = "SELECT ar.ar_id, ar_name, REPLACE(ari_value, '%s', '*') as filter " .
     "ORDER BY ar_name";
 $res = $pearDB->query($query);
 $ldapConfList = "";
-while ($row = $res->fetchRow()) {
+while ($row = $res->fetch()) {
     if ($res->rowCount() == 1) {
         $ldapConfList .= "<input type='checkbox' name='ldapConf[" . $row['ar_id'] . "]'/ checked='true'> " .
             $row['ar_name'];
@@ -116,7 +106,7 @@ while ($row = $res->fetchRow()) {
 
 
 /*
- * Just watch a contact information
+ * List available contacts to choose which one we want to import
  */
 if ($o == "li") {
     $subA = $form->addElement('submit', 'submitA', _("Import"), array("class" => "btc bt_success"));
@@ -133,14 +123,13 @@ if ($form->validate()) {
     $valid = true;
 }
 
-$action = $form->getSubmitValue("action");
 
-if ($valid && isset($action["action"]) && $action["action"]) {
+if ($valid) {
     require_once($path . "listContact.php");
 } else {
     /*
- * Apply a template definition
- */
+     * Apply a template definition
+     */
     $renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
     $form->accept($renderer);
     $tpl->assign('ldapServers', _('Import from LDAP servers'));

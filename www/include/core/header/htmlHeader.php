@@ -43,13 +43,15 @@ print "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
 
 <!DOCTYPE html>
 <html lang="<?php echo $centreon->user->lang; ?>">
-<head>
     <title>Centreon - IT & Network Monitoring</title>
     <link rel="shortcut icon" href="./img/favicon.ico"/>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <meta name="Generator" content="Centreon - Copyright (C) 2005 - 2017 Open Source Matters. All rights reserved."/>
     <meta name="robots" content="index, nofollow"/>
-
+    <?php if ($isMobile) : ?>
+    <link href="./Themes/Centreon-2/MobileMenu/css/material_icons.css" rel="stylesheet" type="text/css"/>
+    <link href="./Themes/Centreon-2/MobileMenu/css/menu.css" rel="stylesheet" type="text/css"/>
+    <?php endif; ?>
     <link href="./include/common/javascript/jquery/plugins/jpaginator/jPaginator.css" rel="stylesheet" type="text/css"/>
     <link href="./Themes/Centreon-2/style.css" rel="stylesheet" type="text/css"/>
     <link href="./Themes/Centreon-2/centreon-loading.css" rel="stylesheet" type="text/css"/>
@@ -117,6 +119,12 @@ print "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
     <script src="./include/views/graphs/javascript/centreon-status-chart.js"></script>
     <script src="./include/common/javascript/moment-with-locales.min.2.21.js"></script>
     <script src="./include/common/javascript/moment-timezone-with-data.min.js"></script>
+    <?php if ($isMobile) : ?>
+    <script type="text/javascript">
+      var text_back = '<?= gettext('Back') ?>'
+    </script>
+    <script src="./Themes/Centreon-2/MobileMenu/js/menu.js"></script>
+    <?php endif; ?>
     <?php
 
     global $search, $search_service;
@@ -202,7 +210,14 @@ print "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
     <script src="./include/common/javascript/xslt.js" type="text/javascript"></script>
 </head>
 <body>
+
 <?php if (!isset($_REQUEST['iframe']) || (isset($_REQUEST['iframe']) && $_REQUEST['iframe'] != 1)) { ?>
     <script type="text/javascript" src="./lib/wz_tooltip/wz_tooltip.js"></script>
 <?php } ?>
 <div style="display:none" id="header"></div>
+
+<?php
+// Showing the mobile menu if it's a mobile browser
+if ($isMobile) {
+    require(_CENTREON_PATH_ . 'www/include/common/mobile_menu.php');
+}

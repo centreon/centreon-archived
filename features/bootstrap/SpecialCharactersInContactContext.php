@@ -30,7 +30,6 @@ class SpecialCharactersInContactContext extends CentreonContext
             'admin' => 0
         ));
         $this->page->save();
-
     }
 
     /**

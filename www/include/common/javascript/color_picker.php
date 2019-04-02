@@ -79,12 +79,12 @@ td  { font-size: 12px; font-family: Verdana, Sans-Serif; text-align:center; back
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <script type="text/javascript">
     
-// D�pos� par Frosty sur www.toutjavascript.com
-// 27/5/2003 - Ajout compatibilit� IE5 sur MacOS
-// 5/6/2003  - Ajout compatibilit� Mozilla
+// Déposé par Frosty sur www.toutjavascript.com
+// 27/5/2003 - Ajout compatibilité IE5 sur MacOS
+// 5/6/2003  - Ajout compatibilité Mozilla
 // 5/9/2005  - Correction d'un bug (clic sur la bordure de la palette principale)
-// 6/9/2005  - Ajout de la possibilit� de s�lectionner une couleur en d�pla�ant la souris
-//             sur les palettes (bouton gauche enfonc�)
+// 6/9/2005  - Ajout de la possibilité de sélectionner une couleur en déplaçant la souris
+//             sur les palettes (bouton gauche enfoncé)
 
 /*****************************************************************
 * Script Color Picker �crit par Frosty (Maxime Pacary) - Mai 2003
@@ -104,13 +104,13 @@ td  { font-size: 12px; font-family: Verdana, Sans-Serif; text-align:center; back
         return strhex.charAt(Math.floor(n/16)) + strhex.charAt(n%16);
     }
     
-    // d�tection d'un clic/mouvement souris sur la "palette" (� gauche)
+    // détection d'un clic/mouvement souris sur la "palette" (� gauche)
     function compute_color(e)
     {
         x = e.offsetX ? e.offsetX : (e.target ? e.clientX-e.target.x : 0);
         y = e.offsetY ? e.offsetY : (e.target ? e.clientY-e.target.y : 0);
         
-        // calcul de la couleur � partir des coordonn�es du clic
+        // calcul de la couleur à partir des coordonnées du clic
         var part_width = document.all ? document.all.color_picker.width/6 : document.getElementById('color_picker').width/6;
         var im_height = document.all ? document.all.color_picker.height : document.getElementById('color_picker').height;
         
@@ -133,10 +133,10 @@ td  { font-size: 12px; font-family: Verdana, Sans-Serif; text-align:center; back
         green = 128+(green-128)*coef;
         blue = 128+(blue-128)*coef;
         
-        // mise � jour de la couleur finale
+        // mise à jour de la couleur finale
         changeFinalColor('#' + dechex(red) + dechex(green) + dechex(blue));
         
-        // mise � jour de la barre de droite en fonction de cette couleur
+        // mise à jour de la barre de droite en fonction de cette couleur
         UpdateGradBarColor(red, green, blue);
         
     }

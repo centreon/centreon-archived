@@ -164,7 +164,7 @@ class CentreonConfigurationHost extends CentreonConfigurationObjects
 
         return array(
             'items' => $hostList,
-            'total' => $stmt->rowCount()
+            'total' => (int) $this->pearDB->numberRows()
         );
     }
 

@@ -1,7 +1,7 @@
 <?php
 /*
- * Copyright 2005-2015 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2019 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -54,9 +54,11 @@ $resource_def = escapeshellcmd($resource_def);
 
 /* Get resources in DB and replace by the value */
 while (preg_match("/@DOLLAR@USER([0-9]+)@DOLLAR@/", $resource_def, $matches) and $error_msg == "") {
-    $query = "SELECT resource_line FROM cfg_resource WHERE resource_name = '\$USER" . $matches[1] . "\$' LIMIT 1";
-    $DBRESULT = $pearDB->query($query);
-    $resource = $DBRESULT->fetchRow();
+    $query = "SELECT resource_line FROM cfg_resource WHERE resource_name = :matches LIMIT 1";
+    $DBRESULT = $pearDB->prepare($query);
+    $DBRESULT->bindValue(':matches', "\$USER" . $matches[1] . "\$", PDO::PARAM_STR);
+    $DBRESULT->execute();
+    $resource = $DBRESULT->fetch();
     if (!isset($resource["resource_line"])) {
         $error_msg .= "\$USER" . $matches[1] . "\$";
     } else {
@@ -84,10 +86,11 @@ while (preg_match("/@DOLLAR@ARG([0-9]+)@DOLLAR@/", $resource_def, $matches) and 
         $resource_def = str_replace("@DOLLAR@ARG" . $match_id . "@DOLLAR@", $args[$match_id], $resource_def);
         $resource_def = str_replace('$', '@DOLLAR@', $resource_def);
         if (preg_match("/@DOLLAR@USER([0-9]+)@DOLLAR@/", $resource_def, $matches)) {
-            $query = "SELECT resource_line FROM cfg_resource " .
-                "WHERE resource_name = '\$USER" . $matches[1] . "\$' LIMIT 1";
-            $DBRESULT = $pearDB->query($query);
-            $resource = $DBRESULT->fetchRow();
+            $query = "SELECT resource_line FROM cfg_resource WHERE resource_name = :matches LIMIT 1";
+            $DBRESULT = $pearDB->prepare($query);
+            $DBRESULT->bindValue(':matches', "\$USER" . $matches[1] . "\$", PDO::PARAM_STR);
+            $DBRESULT->execute();
+            $resource = $DBRESULT->fetch();
             if (!isset($resource["resource_line"])) {
                 $error_msg .= "\$USER" . $match_id . "\$";
             } else {
@@ -100,7 +103,11 @@ while (preg_match("/@DOLLAR@ARG([0-9]+)@DOLLAR@/", $resource_def, $matches) and 
         }
         if (preg_match("/@DOLLAR@HOSTADDRESS@DOLLAR@/", $resource_def, $matches)) {
             if (isset($_GET["command_hostaddress"])) {
-                $resource_def = str_replace("@DOLLAR@HOSTADDRESS@DOLLAR@", $_GET["command_hostaddress"], $resource_def);
+                $resource_def = str_replace(
+                    "@DOLLAR@HOSTADDRESS@DOLLAR@",
+                    $_GET["command_hostaddress"],
+                    $resource_def
+                );
             } else {
                 $error_msg .= "\$HOSTADDRESS\$";
             }
@@ -137,7 +144,7 @@ if ($error_msg != "") {
         if (preg_match("/\.\./", $command)) {
             $msg = _("Directory traversal detected");
         } else {
-            $msg = exec($command, $stdout, $status);
+            $msg = exec(escapeshellcmd($command), $stdout, $status);
             $msg = join("<br/>", $stdout);
             if ($status == 1) {
                 $status = _("WARNING");

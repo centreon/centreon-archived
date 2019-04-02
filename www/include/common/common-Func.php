@@ -1176,7 +1176,6 @@ function getMyServiceID($service_description = null, $host_id = null, $hg_id = n
 
     $service_description = str2db($service_description);
     if ($host_id) {
-
         $query = "SELECT service_id FROM service, host_service_relation hsr " .
             "WHERE hsr.host_host_id = '" . CentreonDB::escape($host_id) . "' AND hsr.service_service_id = service_id " .
             "AND (service_description = '" . $pearDB->escape($service_description) .
@@ -1805,19 +1804,22 @@ function getLangs()
 {
     $langs = array('browser' => _("Detection by browser"));
     $chemintotal = "./locale/";
-    $default = "en_US";
 
-    $langs["en_US"] = "en_US";
     if (is_dir($chemintotal)) {
         if ($handle = opendir($chemintotal)) {
             while ($file = readdir($handle)) {
                 if (is_dir("$chemintotal/$file") && strcmp($file, ".") && strcmp($file, "..")) {
-                    $langs[$file] = $file;
+                    $langTitle = str_replace('.UTF-8', '', $file);
+                    $langs[$file] = $langTitle;
                 }
             }
             closedir($handle);
         }
     }
+    if (!array_key_exists('en_US.UTF-8', $langs)) {
+        $langs["en_US.UTF-8"] = "en_US";
+    }
+
     return $langs;
 }
 

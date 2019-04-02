@@ -251,7 +251,7 @@ function validateFeature(name, version, enabled) {
                 open: true
             })
         <?php
-        }
+}
         ?>
     
     // send an event to parent for change in iframe URL
@@ -277,9 +277,14 @@ function validateFeature(name, version, enabled) {
       window.parent.dispatchEvent(event);
     }
 
-    jQuery(document).ready(function(){
-        // inform the parent about iframe URL
-        parentHrefUpdate(location.href);
+    // send event when url changed
+    jQuery(document).ready(function() {
+      parentHrefUpdate(location.href);
+    });
+
+    // send event when hash changed
+    jQuery(window).bind('hashchange', function() {
+      parentHrefUpdate(location.href);
     });
 
     jQuery('body').delegate(
@@ -287,10 +292,13 @@ function validateFeature(name, version, enabled) {
       'click',
       function(e) {
         var href = jQuery(this).attr('href');
-        var isOnLoad = jQuery(this).is('[onload]');
+        var isHandled = jQuery(this).is('[onload]') ||
+          jQuery(this).is('[onclick]') ||
+          (href.match(/^javascript:/) !== null)
+        ;
 
         // if it's a relative path, we can use the default redirection
-        if (!href.match(/^\.\/(?!main(?:\.get)?\.php)/) && isOnLoad === false) {
+        if (!href.match(/^\.\/(?!main(?:\.get)?\.php)/) && isHandled === false) {
           e.preventDefault();
 
           // Manage centreon links
@@ -303,7 +311,10 @@ function validateFeature(name, version, enabled) {
               window.open(href);
             // If it's an internal link, we remove header to avoid inception
             } else {
-              href = href.replace('main.php', 'main.get.php');
+              // isMobile is declared in the menu.js file
+              if (typeof isMobile === 'undefined' || isMobile !== true) {
+                  href = href.replace('main.php', 'main.get.php');
+              }
               window.location.href = href;
             }
 

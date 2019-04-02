@@ -207,7 +207,7 @@ class CentreonPerformanceService extends CentreonConfigurationObjects
         }
         return array(
             'items' => $serviceList,
-            'total' => $stmt->rowCount()
+            'total' => (int) $this->pearDBMonitoring->numberRows()
         );
     }
 

@@ -50,6 +50,4 @@ class Step7 extends AbstractStep
         $template->assign('parameters', $parameters);
         return $template->fetch('content.tpl');
     }
-
-
 }

@@ -15,7 +15,9 @@ export default ({
         <div className="form-heading">
           <h2 className="form-title">{formTitle}</h2>
         </div>
-        <Loader />
+        {!error && // display loader until tasks are finished or error is displayed
+          <Loader />
+        }
         <p className="form-text">
           <Translate value="Creating Export Task"/>{" "}
           <span

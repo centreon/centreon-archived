@@ -15,7 +15,7 @@
 ## </pre>
 #----
 ###################################################################
-# Centreon is developped with GPL Licence 2.0 
+# Centreon is developed with GPL Licence 2.0
 #
 # GPL License: http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt
 #
@@ -50,7 +50,7 @@
 # -- on upgrade, overwrite existing ? backup ? 
 
 # Define centreon version
-version="18.10.1"
+version="18.10.3"
 
 # Debug
 #set -x

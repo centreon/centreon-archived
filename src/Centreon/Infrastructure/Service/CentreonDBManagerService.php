@@ -23,7 +23,7 @@ class CentreonDBManagerService
 
     /**
      * Construct
-     * 
+     *
      * @param \Psr\Container\ContainerInterface $services
      */
     public function __construct(ContainerInterface $services)

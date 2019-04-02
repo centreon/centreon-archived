@@ -12,7 +12,12 @@ $help['ldap_auto_import'] = dgettext('help', 'Can connect with LDAP without impo
 $help['ldap_contact_tmpl'] = dgettext(
     'help',
     'The contact template for auto imported user.<br/>'
-    . 'This template is applied for Monitoring Engine contact configuration and ACLs'
+    . 'This template is applied for Monitoring Engine contact configuration and ACLs.'
+);
+$help['ldap_default_cg'] = dgettext(
+    'help',
+    'Default contact group applied to new users.<br/>'
+    . 'All imported users will join this contactgroup.'
 );
 $help['ldap_srv_dns'] = dgettext('help', 'Use the DNS service for get LDAP host');
 $help['ldap_srv_dns_ssl'] = dgettext('help', 'Enable SSL connection');

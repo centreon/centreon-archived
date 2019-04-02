@@ -91,18 +91,25 @@ function initDatepicker(className, altFormat, defaultDate, idName, timestampToSe
  */
 function setUserFormat() {
     // Getting the local storage attribute
-    var userLanguage = localStorage.getItem('locale').substring(0, 2);
-    if ("en" != userLanguage &&
-        "undefined" != userLanguage
-    ) {
-        jQuery('<script>')
-            .attr('src', './include/common/javascript/datepicker/datepicker-' + userLanguage + '.js')
-            .appendTo('body');
-        setTimeout(function () {
-            // checking if the localized library was launched
-            if ("undefined" !=  typeof(jQuery.datepicker.regional[userLanguage])) {
-                jQuery.datepicker.setDefaults(jQuery.datepicker.regional[userLanguage]);
+    var userLanguage = localStorage.getItem('locale') ? localStorage.getItem('locale').substring(0, 5) : "en_US";
+    if ("en_US" != userLanguage) {
+        //calling the webservice to check if the file exists
+        $.ajax({
+            url: './api/internal.php?object=centreon_datepicker_i18n&action=datepickerLibrary',
+            type: 'GET',
+            async: false,
+            data: {data: userLanguage},
+            success: function(data) {
+                if (null !== data && data.length > 15) {
+                    //A localized library was found, loading it.
+                    jQuery('<script>')
+                        .attr('src', './include/common/javascript/datepicker/' + data)
+                        .appendTo('body');
+                } else {
+                    console.log ('WARNING : datepicker localized library not found for : "' + userLanguage + '"');
+                    console.log ('Initializing the datepicker for "en_US"');
+                }
             }
-        })
+        });
     }
 }

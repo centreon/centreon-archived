@@ -2,27 +2,15 @@
 {$colorJS}
 <form {$form.attributes}>
 <table class="formTable table">
- 	<tr class="ListHeader">
-      <td class="FormHeader" colspan="2">
-        <h3>| {$optGen_ldap_properties}</h3>
-      </td>
-    </tr>
- 	<tr class="list_lvl_1">
-      <td class="ListColLvl1_name" colspan="2">
-        <h4>{$form.header.ldap}</h4>
-      </td>
-    </tr>
+ 	<tr class="ListHeader"><td class="FormHeader" colspan="2"><h3>| {$optGen_ldap_properties}</h3></td></tr>
+ 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><h4>{$form.header.ldap}</h4></td></tr>
 	<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="ar_name" /><span>{$form.ar_name.label}</span></td><td class="FormRowValue">{$form.ar_name.html}</td></tr>
-        <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="ar_description" /><span>{$form.ar_description.label}</span></td><td class="FormRowValue">{$form.ar_description.html}</td></tr>
-        <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="ldap_auth_enable" /><span>{$form.ldap_auth_enable.label}</span></td><td class="FormRowValue">{$form.ldap_auth_enable.html}</td></tr>
+	<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="ar_description" /><span>{$form.ar_description.label}</span></td><td class="FormRowValue">{$form.ar_description.html}</td></tr>
+	<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="ldap_auth_enable" /><span>{$form.ldap_auth_enable.label}</span></td><td class="FormRowValue">{$form.ldap_auth_enable.html}</td></tr>
 	<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="ldap_store_password" /><span>{$form.ldap_store_password.label}</span></td><td class="FormRowValue">{$form.ldap_store_password.html}</td></tr>
 	<tr class="list_one">
-		<td class="FormRowField">
-			<img class="helpTooltip" name="ldap_auto_import" /><span>{$form.ldap_auto_import.label}</span>
-		</td>
-		<td class="FormRowValue">
-			{$form.ldap_auto_import.html}&nbsp;&nbsp;<input type="button" onClick="javascript:location.href='./main.get.php?p=60301&o=li'" class="btc bt_info" value='{$manualImport}'>
-		</td>
+		<td class="FormRowField"><img class="helpTooltip" name="ldap_auto_import" /><span>{$form.ldap_auto_import.label}</span></td>
+		<td class="FormRowValue">{$form.ldap_auto_import.html}&nbsp;&nbsp;<input type="button" onClick="javascript:location.href='./main.get.php?p=60301&o=li'" class="btc bt_info" value='{$manualImport}'></td>
 	</tr>
 	<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="ldap_search_limit" /><span>{$form.ldap_search_limit.label}</span></td><td class="FormRowValue">{$form.ldap_search_limit.html}</td></tr>
 	<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="ldap_search_timeout" /><span>{$form.ldap_search_timeout.label}</span></td><td class="FormRowValue">{$form.ldap_search_timeout.html}</td></tr>
@@ -30,32 +18,24 @@
 		<img src="img/icones/16x16/gear_information.gif" style="cursor: pointer;" onclick="window.open('main.php?p=60306&min=1&o=w&contact_id=' + getElementById('ldap_contact_tmpl').options[getElementById('ldap_contact_tmpl').selectedIndex].value, '', 'toolbar=no,location=no,directories=no,status=no,scrollbars=yes,resizable=yes,copyhistory=no, width=800, height=600')"/>
 		&nbsp;<img src="img/icones/16x16/gear_new.gif" style="cursor: pointer;" onclick="window.open('main.php?p=60306&min=1&o=c&contact_id=' + getElementById('ldap_contact_tmpl').options[getElementById('ldap_contact_tmpl').selectedIndex].value, '', 'toolbar=no,location=no,directories=no,status=no,scrollbars=yes,resizable=yes,copyhistory=no, width=800, height=600')"/>{/if}
 	</td></tr>
-	<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="ldap_srv_dns" /><span>{$form.ldap_srv_dns.label}</span></td><td class="FormRowValue">{$form.ldap_srv_dns.html}</td></tr>
+	<tr class="list_one">
+		<td class="FormRowField"><img class="helpTooltip" name="ldap_default_cg" /><span>{$form.ldap_default_cg.label}</span></td>
+		<td class="FormRowValue">{$form.ldap_default_cg.html}</td>
+	</tr>
+	<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="ldap_srv_dns" /><span>{$form.ldap_srv_dns.label}</span></td><td class="FormRowValue">{$form.ldap_srv_dns.html}</td></tr>
 	{if $hideDnsOptions != 1} 
-	<tr class="list_two" id="ldap_dns_use_ssl"><td class="FormRowField"><img class="helpTooltip" name="ldap_dns_use_ssl" /><span>{$form.ldap_dns_use_ssl.label}</span></td><td class="FormRowValue">{$form.ldap_dns_use_ssl.html}</td></tr>
-	<tr class="list_one" id="ldap_dns_use_tls"><td class="FormRowField"><img class="helpTooltip" name="ldap_dns_use_tls" /><span>{$form.ldap_dns_use_tls.label}</span></td><td class="FormRowValue">{$form.ldap_dns_use_tls.html}</td></tr>
+	<tr class="list_one" id="ldap_dns_use_ssl"><td class="FormRowField"><img class="helpTooltip" name="ldap_dns_use_ssl" /><span>{$form.ldap_dns_use_ssl.label}</span></td><td class="FormRowValue">{$form.ldap_dns_use_ssl.html}</td></tr>
+	<tr class="list_two" id="ldap_dns_use_tls"><td class="FormRowField"><img class="helpTooltip" name="ldap_dns_use_tls" /><span>{$form.ldap_dns_use_tls.label}</span></td><td class="FormRowValue">{$form.ldap_dns_use_tls.html}</td></tr>
 	{/if} 
-	<tr class="list_two" id="ldap_dns_use_domain"><td class="FormRowField"><img class="helpTooltip" name="ldap_dns_use_domain" /><span>{$form.ldap_dns_use_domain.label}</span></td><td class="FormRowValue">{$form.ldap_dns_use_domain.html}</td></tr>
-        <tr class="list_lvl_1" id='ldap_header_tr'>
-            <td class="ListColLvl1_name" colspan="2">
-              <h4>{$form.header.ldapserver}</h4>
-            </td>
-        </tr>
+	<tr class="list_one" id="ldap_dns_use_domain"><td class="FormRowField"><img class="helpTooltip" name="ldap_dns_use_domain" /><span>{$form.ldap_dns_use_domain.label}</span></td><td class="FormRowValue">{$form.ldap_dns_use_domain.html}</td></tr>
+	<tr class="list_lvl_1" id='ldap_header_tr'><td class="ListColLvl1_name" colspan="2"><h4>{$form.header.ldapserver}</h4></td></tr>
 	{if $o != 'w'}        
 	<tr class='list_two' id='ldap_tr'>
-		<td class='FormRowField'>
-                    <img class="helpTooltip" name="ldapConf" />&nbsp;{$addNewHostLabel}
-		</td>
-                <td class="FormRowValue">
-                    {include file="file:$centreon_path/www/include/common/templates/clone.ihtml" cloneId="ldapservers" cloneSet=$cloneSet}
-                </td>
+		<td class='FormRowField'><img class="helpTooltip" name="ldapConf" />&nbsp;{$addNewHostLabel}</td>
+		<td class="FormRowValue">{include file="file:$centreon_path/www/include/common/templates/clone.ihtml" cloneId="ldapservers" cloneSet=$cloneSet}</td>
 	</tr>
 	{/if}
-	<tr class="list_lvl_1">
-      <td class="ListColLvl1_name" colspan="2">
-        <h4>{$form.header.ldapinfo}</h4>
-      </td>
-    </tr>
+	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><h4>{$form.header.ldapinfo}</h4></td></tr>
 	<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="bind_dn" /><span>{$form.bind_dn.label}</span></td><td class="FormRowValue">{$form.bind_dn.html}</td></tr>
 	<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="bind_pass" /><span>{$form.bind_pass.label}</span></td><td class="FormRowValue">{$form.bind_pass.html}</td></tr>
 	<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="protocol_version" /><span>{$form.protocol_version.label}</span></td><td class="FormRowValue">{$form.protocol_version.html}</td></tr>
