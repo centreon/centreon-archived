@@ -45,10 +45,8 @@ global $num, $limit, $search, $url, $pearDB, $search_type_service, $search_type_
 $type = $_REQUEST["type"] ?? null;
 $o = $_GET["o"] ?? $o = null;
 
-// splitting the path ($url) to keep only the current page's filename
-$currentPage = (explode('/', $url));
-
-if (isset($centreon->historyLastPage) && $centreon->historyLastPage !== $currentPage) {
+// checking if the current page and the last displayed page are the same
+if (isset($centreon->historyLastPage) && $centreon->historyLastPage !== $url) {
     $num = 0;
 } elseif (isset($_REQUEST['num'])) {
     $num = filter_var(
@@ -59,10 +57,9 @@ if (isset($centreon->historyLastPage) && $centreon->historyLastPage !== $current
     $num = $centreon->historyPage[$url] ?? 0;
 }
 
-//saving current pagination filter value
+//saving current pagination filter value and current displayed page
 $centreon->historyPage[$url] = $num;
-//saving current page's file name
-$centreon->historyLastPage = $currentPage;
+$centreon->historyLastPage = $url;
 
 $num = addslashes($num);
 
