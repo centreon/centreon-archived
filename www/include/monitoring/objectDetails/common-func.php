@@ -139,7 +139,7 @@ function getOptionName($command_with_macro, $executed_command, $macro) {
             $pattern = str_replace('/', '\/', $pattern);
             $pattern = str_replace('-', '\-', $pattern);
             $pattern = str_replace('.', '\.', $pattern);
-            $pattern = "/(.*\s)" . $pattern . "\'?([\\x21-\\x7E]+)\'?(\s.*)/";
+            $pattern = "/(.*\s)?" . $pattern . "\'?([\\x21-\\x7E]+)\'?(\s.*)?/";
              /* Replace value of custom macro password type 
                 in executed command line */
             $executed_command = preg_replace($pattern, "\$1" . $matches[$i] . "***\$3", $executed_command);
