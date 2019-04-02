@@ -48,15 +48,16 @@ if (!$centreon->user->admin) {
     $aclCond = " AND meta_service_meta_id IN ($metastr) ";
 }
 
-$search = null;
+$search = filter_var(
+    $_POST['searchMSD'] ?? $_GET['searchMSD'] ?? null,
+    FILTER_SANITIZE_STRING
+);
+
 if (isset($_POST['searchMSD'])) {
-    $search = $_POST['searchMSD'];
-    $centreon->historySearch[$url] = $search;
-} elseif (isset($_GET['searchMSD'])) {
-    $search = $_GET['searchMSD'];
-    $centreon->historySearch[$url] = $search;
-} elseif (isset($centreon->historySearch[$url])) {
-    $search = $centreon->historySearch[$url];
+    $centreon->historySearch[$url] = array();
+    $centreon->historySearch[$url]['searchMSD'] = $search;
+} else {
+    $search = $centreon->historySearch[$url] ?? null;
 }
 
 //Dependency list
@@ -127,7 +128,6 @@ $tpl->assign(
         "delConfirm" => _("Do you confirm the deletion ?")
     )
 );
-
 
 include "./include/common/checkPagination.php";
 
