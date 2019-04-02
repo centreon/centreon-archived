@@ -41,21 +41,21 @@ include "./include/common/autoNumLimit.php";
 
 $mnftr_id = null;
 
-$search = null;
+$search = filter_var(
+    $_POST['searchTM'] ?? $_GET['searchTM'] ?? null,
+    FILTER_SANITIZE_STRING
+);
 
 if (isset($_POST['searchTM'])) {
-    $search = $_POST['searchTM'];
-    $centreon->historySearch[$url] = $search;
-} elseif (isset($_GET['searchTM'])) {
-    $search = $_GET['searchTM'];
-    $centreon->historySearch[$url] = $search;
-} elseif (isset($centreon->historySearch[$url])) {
-    $search = $centreon->historySearch[$url];
+    $centreon->historySearch[$url] = array();
+    $centreon->historySearch[$url]['searchTM'] = $search;
+} else {
+    $search = $centreon->historySearch[$url]['searchTM'] ?? null;
 }
 
 $searchTool = null;
 if ($search) {
-    $searchTool = " WHERE (traps_group_name LIKE '%" . htmlentities($search, ENT_QUOTES, "UTF-8") . "%')";
+    $searchTool = " WHERE (traps_group_name LIKE '%" . $search . "%')";
 }
 
 $dbResult = $pearDB->query(
