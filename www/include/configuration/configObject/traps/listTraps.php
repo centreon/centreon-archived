@@ -48,39 +48,26 @@ $tabStatus = array(
     4 => _("Pending")
 );
 
-$searchT = filter_input(
-    INPUT_POST,
-    'searchT',
+$search = filter_var(
+    $_POST['searchT'] ?? $_GET['searchT'] ?? null,
     FILTER_SANITIZE_STRING
 );
 
-$searchG = filter_input(
-    INPUT_GET,
-    'searchT',
-    FILTER_SANITIZE_STRING
-);
-
-$search = null;
-if (isset($searchT)) {
-    $search = $searchT;
-    $centreon->historySearch[$url] = $search;
-} elseif (isset($searchG)) {
-    $search = $searchG;
-    $centreon->historySearch[$url] = $search;
-} elseif (isset($centreon->historySearch[$url])) {
-    $search = $centreon->historySearch[$url];
+if (isset($_POST['searchT']) || isset($_GET['searchT'])) {
+    $centreon->historySearch[$url]['searchT'] = $search;
+} else {
+    $search = $centreon->historySearch[$url]['searchT'] ?? null;
 }
 
 // List of elements - Depends on different criteria
 if ($search) {
-    $rq = "SELECT SQL_CALC_FOUND_ROWS * FROM traps WHERE traps_oid LIKE '%" .
-        htmlentities($search, ENT_QUOTES, "UTF-8") . "%' OR traps_name LIKE '%" .
-        htmlentities($search, ENT_QUOTES, "UTF-8") . "%' OR manufacturer_id IN (SELECT id FROM traps_vendor " .
-        " WHERE alias LIKE '%" . htmlentities($search, ENT_QUOTES, "UTF-8") . "%' ) " .
-        " ORDER BY manufacturer_id, traps_name LIMIT " . $num * $limit . ", " . $limit;
+    $rq = "SELECT SQL_CALC_FOUND_ROWS * FROM traps " .
+        "WHERE traps_oid LIKE '%" . $search . "%' OR traps_name LIKE '%" . $search . "%' " .
+        "OR manufacturer_id IN (SELECT id FROM traps_vendor WHERE alias LIKE '%" . $search . "%' ) " .
+        "ORDER BY manufacturer_id, traps_name LIMIT " . $num * $limit . ", " . $limit;
 } else {
-    $rq = "SELECT SQL_CALC_FOUND_ROWS * FROM traps ORDER BY manufacturer_id, traps_name LIMIT " .
-        $num * $limit . ", " . $limit;
+    $rq = "SELECT SQL_CALC_FOUND_ROWS * FROM traps " .
+        "ORDER BY manufacturer_id, traps_name LIMIT " . $num * $limit . ", " . $limit;
 }
 
 $dbResult = $pearDB->query($rq);
