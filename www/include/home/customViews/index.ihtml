@@ -671,7 +671,6 @@ function removeUsergroupFromView(usergroup_id) {
 
 jQuery(function () {
   jQuery('#tabs').tabs();
-  toggleEdit(defaultShow);
 
   /* Initialize buttons */
   jQuery('.addView').button({icon: "ui-icon-plus"}).on('click', function () {
