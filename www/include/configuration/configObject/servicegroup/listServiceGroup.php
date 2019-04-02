@@ -72,16 +72,12 @@ $rows = $pearDB->query("SELECT FOUND_ROWS()")->fetchColumn();
 
 include "./include/common/checkPagination.php";
 
-/*
- * Smarty template Init
- */
+// Smarty template Init
 $tpl = new Smarty();
 $tpl = initSmartyTpl($path, $tpl);
 
 // Access level
-$lvl_access = ($centreon->user->access->page($p) == 1)
-    ? 'w'
-    : 'r';
+$lvl_access = ($centreon->user->access->page($p) == 1) ? 'w' : 'r';
 $tpl->assign('mode_access', $lvl_access);
 
 $tpl->assign("headerMenu_name", _("Name"));
@@ -106,8 +102,8 @@ for ($i = 0; $sg = $dbResult->fetch(); $i++) {
             . "border='0' alt='" . _("Disabled") . "'></a>";
     } else {
         $moptions .= "<a href='main.php?p=" . $p . "&sg_id=" . $sg['sg_id'] . "&o=s&limit=" . $limit .
-            "&num=" . $num . "&search=" . $search . "'><img src='img/icons/enabled.png' class='ico-14 margin_right' " .
-            "border='0' alt='" . _("Enabled") . "'></a>";
+            "&num=" . $num . "&search=" . $search . "'><img src='img/icons/enabled.png' class='ico-14 margin_right' "
+            . "border='0' alt='" . _("Enabled") . "'></a>";
     }
     $moptions .= "&nbsp;<input onKeypress=\"if(event.keyCode > 31 && (event.keyCode < 45 || event.keyCode > 57)) " .
         "event.returnValue = false; if(event.which > 31 && (event.which < 45 || event.which > 57)) return false;\" " .
@@ -127,9 +123,7 @@ for ($i = 0; $sg = $dbResult->fetch(); $i++) {
 }
 $tpl->assign("elemArr", $elemArr);
 
-/*
- * Different messages we put in the template
- */
+// Different messages we put in the template
 $tpl->assign(
     'msg',
     array(
