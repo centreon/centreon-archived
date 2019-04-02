@@ -72,15 +72,16 @@ $tpl->assign("headerMenu_options", _("Options"));
  * Centreon Broker config list
  */
 
-$search = null;
+$search = filter_var(
+    $_POST['searchCB'] ?? $_GET['searchCB'] ?? null,
+    FILTER_SANITIZE_STRING
+);
+
 if (isset($_POST['searchCB'])) {
-    $search = $_POST['searchCB'];
-    $centreon->historySearch[$url] = $search;
-} elseif (isset($_GET['search'])) {
-    $search = $_GET['search'];
-    $centreon->historySearch[$url] = $search;
-} elseif (isset($centreon->historySearch[$url])) {
-    $search = $centreon->historySearch[$url];
+    $centreon->historySearch[$url] = array();
+    $centreon->historySearch[$url]['search'] = $search;
+} else {
+    $search = $centreon->historySearch[$url]['search'] ?? null;
 }
 
 $aclCond = "";
@@ -96,7 +97,7 @@ if (!$centreon->user->admin && count($allowedBrokerConf)) {
 if ($search) {
     $rq = "SELECT SQL_CALC_FOUND_ROWS config_id, config_name, ns_nagios_server, config_activate " .
         "FROM cfg_centreonbroker " .
-        "WHERE config_name LIKE '%" . htmlentities($search, ENT_QUOTES, "UTF-8") . "%'" . $aclCond .
+        "WHERE config_name LIKE '%" . $search . "%'" . $aclCond .
         " ORDER BY config_name " .
         "LIMIT " . $num * $limit . ", " . $limit;
 } else {
