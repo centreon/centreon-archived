@@ -45,16 +45,16 @@ include "./include/common/autoNumLimit.php";
  */
 
 $SearchTool = null;
-$search = null;
-if (isset($_POST['searchH'])) {
-    $num = 0;
-    $search = $_POST['searchH'];
-    $centreon->historySearch[$url] = $search;
-} elseif (isset($_GET['searchH'])) {
-    $search = $_GET['searchH'];
-    $centreon->historySearch[$url] = $search;
-} elseif (isset($centreon->historySearch[$url])) {
-    $search = $centreon->historySearch[$url];
+$search = filter_var(
+    $_POST['searchH'] ?? $_GET['searchH'] ?? null,
+    FILTER_SANITIZE_STRING
+);
+
+if (isset($_POST['searchH']) || isset($_GET['searchH'])) {
+    $centreon->historySearch[$url] = array();
+    $centreon->historySearch[$url]['search'] = $search;
+} else {
+    $search = $centreon->historySearch[$url]['search'] ?? null;
 }
 
 if ($search) {

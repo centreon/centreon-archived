@@ -46,13 +46,9 @@ require_once "./include/common/autoNumLimit.php";
  */
 $mediaObj = new CentreonMedia($pearDB);
 
-/*
- * Search
- */
+// Search
 $searchFilterQuery = null;
 $mainQueryParameters = [];
-$search = null;
-
 
 $search = filter_var(
     $_POST['searchHg'] ?? $_GET['searchHg'] ?? null,
@@ -61,12 +57,11 @@ $search = filter_var(
 
 if (isset($_POST['searchHg']) || isset($_GET['searchHg'])) {
     //saving chosen filters values
-    $num = 0;
     $centreon->historySearch[$url] = array();
-    $centreon->historySearch[$url]['searchHg'] = $search;
+    $centreon->historySearch[$url]['search'] = $search;
 } else {
     //restoring saved values
-    $search = $centreon->historySearch[$url]['searchHg'] ?? null;
+    $search = $centreon->historySearch[$url]['search'] ?? null;
 }
 
 if ($search) {
@@ -81,7 +76,7 @@ $tpl = new Smarty();
 $tpl = initSmartyTpl($path, $tpl);
 
 // Access level
-($centreon->user->access->page($p) == 1) ? $lvl_access = 'w' : $lvl_access = 'r';
+$lvl_access = ($centreon->user->access->page($p) == 1) ? 'w' : 'r';
 $tpl->assign('mode_access', $lvl_access);
 
 // start header menu
@@ -98,7 +93,7 @@ $rq = "SELECT SQL_CALC_FOUND_ROWS hg_id, hg_name, hg_alias, hg_activate, hg_icon
     "WHERE {$searchFilterQuery} hg_id NOT IN (SELECT hg_child_id FROM hostgroup_hg_relation) " .
     $acl->queryBuilder('AND', 'hg_id', $hgString) .
     " ORDER BY hg_name LIMIT " . $num * $limit . ", " . $limit;
-$DBRESULT = $pearDB->query($rq, $mainQueryParameters);
+$dbResult = $pearDB->query($rq, $mainQueryParameters);
 
 // Pagination
 $rows = $pearDB->query("SELECT FOUND_ROWS()")->fetchColumn();
@@ -107,12 +102,13 @@ require_once "./include/common/checkPagination.php";
 $search = tidySearchKey($search, $advanced_search);
 
 $form = new HTML_QuickFormCustom('select_form', 'POST', "?p=" . $p);
+
 // Different style between each lines
 $style = "one";
 
 // Fill a tab with a multidimensional Array we put in $tpl
 $elemArr = array();
-for ($i = 0; $hg = $DBRESULT->fetch(); $i++) {
+for ($i = 0; $hg = $dbResult->fetch(); $i++) {
     $selectedElements = $form->addElement('checkbox', "select[" . $hg['hg_id'] . "]");
     $moptions = "";
     if ($hg["hg_activate"]) {
@@ -150,10 +146,10 @@ for ($i = 0; $hg = $DBRESULT->fetch(); $i++) {
                WHERE hostgroup_hg_id = '" . $hg['hg_id'] . "'
                AND h.host_id = hgr.host_host_id
                AND h.host_register = '1' $aclCond";
-    $DBRESULT2 = $pearDB->query($rq);
+    $dbResult2 = $pearDB->query($rq);
     $nbrhostActArr = array();
     $nbrhostDeactArr = array();
-    while ($row = $DBRESULT2->fetch()) {
+    while ($row = $dbResult2->fetch()) {
         if ($row['host_activate']) {
             $nbrhostActArr[$row['host_id']] = true;
         } else {
@@ -224,13 +220,19 @@ foreach (array('o1', 'o2') as $option) {
             . "   setO(this.form.elements['$option'].value); submit();} "
             . "this.form.elements['$option'].selectedIndex = 0"
     );
-    $form->addElement('select', $option, null, array(
-        null => _("More actions..."),
-        "m" => _("Duplicate"),
-        "d" => _("Delete"),
-        "ms" => _("Enable"),
-        "mu" => _("Disable")
-    ), $attrs1);
+    $form->addElement(
+        'select',
+        $option,
+        null,
+        array(
+            null => _("More actions..."),
+            "m" => _("Duplicate"),
+            "d" => _("Delete"),
+            "ms" => _("Enable"),
+            "mu" => _("Disable")
+        ),
+        $attrs1
+    );
     $form->setDefaults(array($option => null));
     $o1 = $form->getElement($option);
     $o1->setValue(null);

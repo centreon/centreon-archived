@@ -55,9 +55,9 @@ $search = filter_var(
 
 if (isset($_POST['searchHGD'])) {
     $centreon->historySearch[$url] = array();
-    $centreon->historySearch[$url]['searchHGD'] = $search;
+    $centreon->historySearch[$url]['search'] = $search;
 } else {
-    $search = $centreon->historySearch[$url]['searchHGD'] ?? null;
+    $search = $centreon->historySearch[$url]['search'] ?? null;
 }
 
 /*

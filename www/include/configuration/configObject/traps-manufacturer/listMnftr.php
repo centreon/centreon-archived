@@ -49,9 +49,9 @@ $search = filter_var(
 
 if (isset($_POST['searchTM'])) {
     $centreon->historySearch[$url] = array();
-    $centreon->historySearch[$url]['searchTM'] = $search;
+    $centreon->historySearch[$url]['search'] = $search;
 } else {
-    $search = $centreon->historySearch[$url]['searchTM'] ?? null;
+    $search = $centreon->historySearch[$url]['search'] ?? null;
 }
 
 $SearchTool = '';

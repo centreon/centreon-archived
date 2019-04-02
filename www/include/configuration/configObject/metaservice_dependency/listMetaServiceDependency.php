@@ -55,9 +55,9 @@ $search = filter_var(
 
 if (isset($_POST['searchMSD'])) {
     $centreon->historySearch[$url] = array();
-    $centreon->historySearch[$url]['searchMSD'] = $search;
+    $centreon->historySearch[$url]['search'] = $search;
 } else {
-    $search = $centreon->historySearch[$url] ?? null;
+    $search = $centreon->historySearch[$url]['search'] ?? null;
 }
 
 //Dependency list

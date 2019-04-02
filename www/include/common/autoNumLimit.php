@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2005-2015 Centreon
+ * Copyright 2005-2019 Centreon
  * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  * 
@@ -41,6 +41,7 @@ $limitNotInRequestParameter = !isset($_POST['limit']) && !isset($_GET['limit']);
 $historyLimitNotDefault = isset($centreon->historyLimit[$url]) && $centreon->historyLimit[$url] !== 30;
 $sessionLimitKey = "results_limit_{$url}";
 
+// Setting the limit filter
 if (isset($_POST['limit']) && $_POST['limit']) {
     $limit = $_POST['limit'];
 } elseif (isset($_GET['limit'])) {
@@ -63,17 +64,22 @@ if (isset($_POST['limit']) && $_POST['limit']) {
 
 $_SESSION[$sessionLimitKey] = $limit;
 
-if (isset($_POST['num']) && $_POST['num']) {
-    $num = $_POST['num'];
-} elseif (isset($_GET['num']) && $_GET['num']) {
-    $num = $_GET['num'];
-} elseif (!isset($_POST['num']) && !isset($_GET['num']) && isset($centreon->historyPage[$url])) {
-    $num = $centreon->historyPage[$url];
-} else {
+// Setting the pagination filter
+if (isset($centreon->historyLastPage) && $centreon->historyLastPage !== $url) {
+    // Checking if the current page and the last displayed page are the same
     $num = 0;
+} elseif (isset($_REQUEST['num'])) {
+    // Checking if a pagination filter has been sent in the http request
+    $num = filter_var(
+        $_GET['num'] ?? $_POST['num'] ?? 0,
+        FILTER_VALIDATE_INT
+    );
+} else {
+    // Resetting the pagination filter
+    $num = $centreon->historyPage[$url] ?? 0;
 }
 
-/* cast limit and num to avoid sql error on prepared statement (PDO::PARAM_INT) */
+// Cast limit and num to avoid sql error on prepared statement (PDO::PARAM_INT)
 $limit = (int)$limit;
 $num = (int)$num;
 

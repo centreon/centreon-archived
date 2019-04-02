@@ -56,10 +56,10 @@ $search = filter_var(
 if (isset($_POST['searchST']) || isset($_GET['searchST'])) {
     //initializing filters values
     $centreon->historySearch[$url] = array();
-    $centreon->historySearch[$url]["searchST"] = $search;
+    $centreon->historySearch[$url]["search"] = $search;
 } else {
     //restoring saved values
-    $search = $centreon->historySearch[$url]["searchST"] ?? null;
+    $search = $centreon->historySearch[$url]["search"] ?? null;
 }
 
 //Service Template Model list

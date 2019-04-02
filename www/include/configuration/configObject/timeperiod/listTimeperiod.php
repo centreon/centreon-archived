@@ -44,9 +44,10 @@ $search = filter_var(
     FILTER_SANITIZE_STRING
 );
 if (isset($_POST['searchTP']) || $_GET['searchTP']) {
-    $centreon->historySearch[$url] = $search;
+    $centreon->historySearch[$url] = array();
+    $centreon->historySearch[$url]['search'] = $search;
 } else {
-    $search = $centreon->historySearch[$url];
+    $search = $centreon->historySearch[$url]['search'] ?? null;
 }
 
 $SearchTool = '';

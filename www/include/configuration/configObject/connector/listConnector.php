@@ -37,6 +37,13 @@ include_once "./class/centreonUtils.class.php";
 
 include_once "./include/common/autoNumLimit.php";
 
+
+// restoring the pagination if we stay on this menu
+$num = 0;
+if ($centreon->historyLastPage === $url && isset($_GET['num'])) {
+    $num = $_GET['num'];
+}
+
 try {
     $connectorsList = $connectorObj->getList(false, (int)$num, (int)$limit);
 

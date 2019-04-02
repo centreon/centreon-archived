@@ -63,16 +63,15 @@ $status = filter_var(
 
 if (isset($_POST['Search']) || isset($_GET ['Search'])) {
     //initializing filters values
-    $num = 0;
     $centreon->historySearch[$url] = array();
     $centreon->historySearch[$url]["hostgroups"] = $searchHG;
-    $centreon->historySearch[$url]["searchS"] = $searchS;
+    $centreon->historySearch[$url]["search"] = $searchS;
     $centreon->historySearch[$url]["template"] = $template;
     $centreon->historySearch[$url]["status"] = $status;
 } else {
     //restoring saved values
     $searchHG = $centreon->historySearch[$url]['hostgroups'] ?? null;
-    $searchS = $centreon->historySearch[$url]["searchS"] ?? null;
+    $searchS = $centreon->historySearch[$url]["search"] ?? null;
     $template = $centreon->historySearch[$url]["template"] ?? null;
     $status = $centreon->historySearch[$url]["status"] ?? -1;
 }
@@ -128,6 +127,9 @@ if (!$centreon->user->admin) {
  * Due to Description maybe in the Template definition, we have to search if the description
  * could match for each service with a Template.
  */
+
+$templateStr = isset($template) && $template ? " AND service_template_model_stm_id = '" . $template . "' " : "";
+
 if ($searchS != "" || $searchHG != "") {
     if ($searchS && !$searchHG) {
         $dbResult = $pearDB->query(
@@ -137,8 +139,8 @@ if ($searchS != "" || $searchHG != "") {
             " WHERE sv.service_register = '1' " . $sqlFilterCase .
             " AND hsr.service_service_id = sv.service_id " . $aclCond .
             " AND hsr.host_host_id IS NULL" .
-            " AND (sv.service_description LIKE '%" . $searchS . "%')" .
-            ((isset($template) && $template) ? " AND service_template_model_stm_id = '" . $template . "' " : ""));
+            " AND (sv.service_description LIKE '%" . $searchS . "%')" . $templateStr
+        );
         while ($service = $dbResult->fetch()) {
             if (!isset($tab_buffer[$service["service_id"]])) {
                 $tmp ? $tmp .= ", " . $service["service_id"] : $tmp = $service["service_id"];
@@ -156,8 +158,8 @@ if ($searchS != "" || $searchHG != "") {
             " AND hsr.service_service_id = sv.service_id " . $aclCond .
             " AND hsr.host_host_id IS NULL " .
             " AND (hg.hg_name LIKE '%" . $searchHG . "%')" .
-            " AND hsr.hostgroup_hg_id = hg.hg_id" .
-            ((isset($template) && $template) ? " AND service_template_model_stm_id = '" . $template . "' " : ""));
+            " AND hsr.hostgroup_hg_id = hg.hg_id" . $templateStr
+        );
         while ($service = $dbResult->fetch()) {
             $tmp ? $tmp .= ", " . $service["service_id"] : $tmp = $service["service_id"];
             $tmp2 ? $tmp2 .= ", " . $service["hostgroup_hg_id"] : $tmp2 = $service["hostgroup_hg_id"];
@@ -173,8 +175,8 @@ if ($searchS != "" || $searchHG != "") {
             " AND hsr.host_host_id IS NULL " .
             " AND hg.hg_name LIKE '%" . $searchHG . "%'" .
             " AND sv.service_description LIKE '%" . $searchS . "%'" .
-            " AND hsr.hostgroup_hg_id = hg.hg_id" .
-            ((isset($template) && $template) ? " AND service_template_model_stm_id = '" . $template ."' " : ""));
+            " AND hsr.hostgroup_hg_id = hg.hg_id" . $templateStr
+        );
         while ($service = $dbResult->fetch()) {
             $tmp ? $tmp .= ", " . $service["service_id"] : $tmp = $service["service_id"];
             $tmp2 ? $tmp2 .= ", " . $service["hostgroup_hg_id"] : $tmp2 = $service["hostgroup_hg_id"];
@@ -184,8 +186,7 @@ if ($searchS != "" || $searchHG != "") {
 } else {
     $dbResult = $pearDB->query(
         "SELECT " . $distinct . " sv.service_description FROM service sv, host_service_relation hsr " . $aclfrom .
-        "WHERE service_register = '1' " . $sqlFilterCase .
-        ((isset($template) && $template) ? " AND service_template_model_stm_id = '" . $template . "' " : " ") .
+        "WHERE service_register = '1' " . $sqlFilterCase . $templateStr .
         " AND hsr.service_service_id = sv.service_id AND hsr.host_host_id IS NULL " . $aclCond
     );
     $rows = $dbResult->rowCount();

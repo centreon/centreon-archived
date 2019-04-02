@@ -49,18 +49,18 @@ $mediaObj = new CentreonMedia($pearDB);
 
 // Get Extended informations
 $ehiCache = array();
-$DBRESULT = $pearDB->query('SELECT ehi_icon_image, host_host_id FROM extended_host_information');
+$dbResult = $pearDB->query('SELECT ehi_icon_image, host_host_id FROM extended_host_information');
 
-while ($ehi = $DBRESULT->fetch()) {
+while ($ehi = $dbResult->fetch()) {
     $ehiCache[$ehi['host_host_id']] = $ehi['ehi_icon_image'];
 }
 
-$DBRESULT->closeCursor();
+$dbResult->closeCursor();
 $mainQueryParameters = [];
 
 //initializing filters values
 $search = filter_var(
-    $_POST["searchH"] ?? $_GET["searchB"] ?? null,
+    $_POST["searchH"] ?? $_GET["search"] ?? null,
     FILTER_SANITIZE_STRING
 );
 $poller = filter_var(
@@ -76,28 +76,30 @@ $template = filter_var(
     FILTER_VALIDATE_INT
 );
 
-// $status values :  1 = enabled,  0 = disabled,  -1 = both
-$status = filter_var(
-    $_POST["status"] ?? -1,
-    FILTER_VALIDATE_INT
-);
+$status = -1;
 
-if (isset($_POST['searchH']) || isset($_GET)) {
+if (isset($_POST['searchH']) || isset($_GET['search'])) {
     //saving chosen filters values
     $centreon->historySearch[$url] = array();
-    $centreon->historySearch[$url]["searchH"] = $search;
+    $centreon->historySearch[$url]["search"] = $search;
     $centreon->historySearch[$url]["poller"] = $poller;
     $centreon->historySearch[$url]["hostgroup"] = $hostgroup;
     $centreon->historySearch[$url]["template"] = $template;
+    $status = $_POST["status"] ?? '';
     $centreon->historySearch[$url]["status"] = $status;
 } else {
     //restoring saved values
-    $search = $centreon->historySearch[$url]['searchH'] ?? null;
-    $poller = (int)$centreon->historySearch[$url]["poller"] ?? 0;
-    $hostgroup = (int)$centreon->historySearch[$url]["hostgroup"] ?? 0;
-    $template = (int)$centreon->historySearch[$url]["template"] ?? 0;
-    $status = (int)$centreon->historySearch[$url]["status"] ?? -1;
+    $search = $centreon->historySearch[$url]['search'] ?? null;
+    $poller = $centreon->historySearch[$url]["poller"] ?? 0;
+    $hostgroup = $centreon->historySearch[$url]["hostgroup"] ?? 0;
+    $template = $centreon->historySearch[$url]["template"] ?? 0;
+    if (isset($centreon->historySearch[$url]["status"])) {
+        $status = $centreon->historySearch[$url]["status"];
+    }
 }
+
+// Security fix
+$status = (int)(($status != '') ? $status : -1);
 
 // set object history
 $centreon->poller = $poller;
@@ -105,7 +107,7 @@ $centreon->hostgroup = $hostgroup;
 $centreon->template = $template;
 
 // Status Filter
-$statusFilter = "<option value='-1'" .
+$statusFilter = "<option value=''" .
     (($status == -1) ? " selected" : "") . "> </option>";
 
 $statusFilter .= "<option value='1'" .
@@ -163,26 +165,28 @@ $tpl->assign("headerMenu_options", _("Options"));
 
 // Host list
 $nagios_server = array();
-$DBRESULT = $pearDB->query('SELECT ns.name, ns.id FROM nagios_server ns ' .
+$dbResult = $pearDB->query(
+    'SELECT ns.name, ns.id FROM nagios_server ns ' .
     ($aclPollerString != "''" ? $acl->queryBuilder('WHERE', 'ns.id', $aclPollerString) : '') .
-    ' ORDER BY ns.name');
+    ' ORDER BY ns.name'
+);
 
-while ($relation = $DBRESULT->fetch()) {
+while ($relation = $dbResult->fetch()) {
     $nagios_server[$relation['id']] = $relation['name'];
 }
-$DBRESULT->closeCursor();
+$dbResult->closeCursor();
 unset($relation);
 
 $tab_relation = array();
 $tab_relation_id = array();
-$DBRESULT = $pearDB->query(
+$dbResult = $pearDB->query(
     'SELECT nhr.host_host_id, nhr.nagios_server_id FROM ns_host_relation nhr'
 );
-while ($relation = $DBRESULT->fetchRow()) {
+while ($relation = $dbResult->fetch()) {
     $tab_relation[$relation['host_host_id']] = $nagios_server[$relation['nagios_server_id']];
     $tab_relation_id[$relation['host_host_id']] = $relation['nagios_server_id'];
 }
-$DBRESULT->closeCursor();
+$dbResult->closeCursor();
 
 // Init Form
 $form = new HTML_QuickFormCustom('select_form', 'POST', "?p={$p}");
@@ -204,7 +208,7 @@ if (!$centreon->user->admin) {
 
 if ($hostgroup) {
     if ($poller) {
-        $DBRESULT = $pearDB->query(
+        $dbResult = $pearDB->query(
             "SELECT SQL_CALC_FOUND_ROWS DISTINCT h.host_id, h.host_name, host_alias,
             host_address, host_activate, host_template_model_htm_id
             FROM host h, ns_host_relation, hostgroup_relation hr $templateFROM $aclFrom
@@ -217,7 +221,7 @@ if ($hostgroup) {
             $mainQueryParameters
         );
     } else {
-        $DBRESULT = $pearDB->query(
+        $dbResult = $pearDB->query(
             "SELECT SQL_CALC_FOUND_ROWS DISTINCT h.host_id, h.host_name, host_alias,
             host_address, host_activate, host_template_model_htm_id
             FROM host h, hostgroup_relation hr $templateFROM $aclFrom
@@ -230,7 +234,7 @@ if ($hostgroup) {
     }
 } else {
     if ($poller) {
-        $DBRESULT = $pearDB->query(
+        $dbResult = $pearDB->query(
             "SELECT SQL_CALC_FOUND_ROWS DISTINCT h.host_id, h.host_name, host_alias,
             host_address, host_activate, host_template_model_htm_id
             FROM host h, ns_host_relation $templateFROM $aclFrom
@@ -241,7 +245,7 @@ if ($hostgroup) {
             $mainQueryParameters
         );
     } else {
-        $DBRESULT = $pearDB->query(
+        $dbResult = $pearDB->query(
             "SELECT SQL_CALC_FOUND_ROWS DISTINCT h.host_id, h.host_name, host_alias,
             host_address, host_activate, host_template_model_htm_id
             FROM host h $templateFROM $aclFrom
@@ -260,7 +264,7 @@ $search = tidySearchKey($search, $advanced_search);
 // Fill a tab with a multidimensional Array we put in $tpl
 $elemArr = array();
 $search = str_replace('\_', "_", $search);
-for ($i = 0; $host = $DBRESULT->fetch(); $i++) {
+for ($i = 0; $host = $dbResult->fetch(); $i++) {
     if (!isset($poller)
         || $poller == 0
         || ($poller != 0 && $poller == $tab_relation_id[$host["host_id"]])
@@ -445,12 +449,12 @@ foreach ($hgs as $hgId => $hgName) {
 $tpl->assign('hostgroup', $options);
 unset($options);
 
-$DBRESULT = $pearDB->query(
+$dbResult = $pearDB->query(
     "SELECT host_id, host_name FROM host WHERE host_register = '0' ORDER BY host_name"
 );
 
 $options = "<option value='0'></options>";
-while ($data = $DBRESULT->fetch()) {
+while ($data = $dbResult->fetch()) {
     $options .= "<option value='" . $data["host_id"] . "' "
         . (($template == $data["host_id"]) ? 'selected' : "")
         . ">" . $data["host_name"] . "</option>";

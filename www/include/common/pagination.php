@@ -45,18 +45,6 @@ global $num, $limit, $search, $url, $pearDB, $search_type_service, $search_type_
 $type = $_REQUEST["type"] ?? null;
 $o = $_GET["o"] ?? $o = null;
 
-// checking if the current page and the last displayed page are the same
-if (isset($centreon->historyLastPage) && $centreon->historyLastPage !== $url) {
-    $num = 0;
-} elseif (isset($_REQUEST['num'])) {
-    $num = filter_var(
-        $_GET['num'] ?? $_POST['num'] ?? 0,
-        FILTER_VALIDATE_INT
-    );
-} else {
-    $num = $centreon->historyPage[$url] ?? 0;
-}
-
 //saving current pagination filter value and current displayed page
 $centreon->historyPage[$url] = $num;
 $centreon->historyLastPage = $url;
@@ -177,18 +165,18 @@ if ($num >= $page_max && $rows) {
 }
 
 $pageArr = array();
-$istart = 0;
-for ($i = 5, $istart = $num; $istart && $i > 0; $i--) {
-    $istart--;
+$iStart = 0;
+for ($i = 5, $iStart = $num; $iStart && $i > 0; $i--) {
+    $iStart--;
 }
-for ($i2 = 0, $iend = $num; ($iend < ($rows / $limit - 1)) && ($i2 < (5 + $i)); $i2++) {
-    $iend++;
+for ($i2 = 0, $iEnd = $num; ($iEnd < ($rows / $limit - 1)) && ($i2 < (5 + $i)); $i2++) {
+    $iEnd++;
 }
 
 if ($rows != 0) {
-    for ($i = $istart; $i <= $iend; $i++) {
+    for ($i = $iStart; $i <= $iEnd; $i++) {
 
-        $urlPage = "main.php?p=" . $p . "&num=$i&limit=" . $limit . "&poller=" . $poller .
+        $urlPage = "main.php?p=" . $p . "&num=" . $i . "&limit=" . $limit . "&poller=" . $poller .
             "&template=" . $template . "&search=" . $search . "&type=" . $type . "&o=" . $o . $url_var;
         $pageArr[$i] = array(
             "url_page" => $urlPage,
@@ -210,7 +198,7 @@ if ($rows != 0) {
     if (($prev = $num - 1) >= 0) {
         $tpl->assign(
             'pagePrev',
-            ("main.php?p=" . $p . "&num=$prev&limit=" . $limit . "&poller=" . $poller .
+            ("main.php?p=" . $p . "&num=" . $prev . "&limit=" . $limit . "&poller=" . $poller .
                 "&template=" . $template . "&search=" . $search . "&type=" . $type . "&o=" . $o . $url_var)
         );
     }
@@ -218,7 +206,7 @@ if ($rows != 0) {
     if (($next = $num + 1) < ($rows / $limit)) {
         $tpl->assign(
             'pageNext',
-            ("main.php?p=" . $p . "&num=$next&limit=" . $limit . "&poller=" . $poller .
+            ("main.php?p=" . $p . "&num=" . $next . "&limit=" . $limit . "&poller=" . $poller .
                 "&template=" . $template . "&search=" . $search . "&type=" . $type . "&o=" . $o . $url_var)
         );
     }
@@ -264,14 +252,14 @@ if ($rows != 0) {
 }
 
 ?>
-    <script type="text/javascript">
-        function setL(_this) {
-            var _l = document.getElementsByName('l');
-            document.forms['form'].elements['limit'].value = _this;
-            _l[0].value = _this;
-            _l[1].value = _this;
-        }
-    </script>
+<script type="text/javascript">
+    function setL(_this) {
+        var _l = document.getElementsByName('l');
+        document.forms['form'].elements['limit'].value = _this;
+        _l[0].value = _this;
+        _l[1].value = _this;
+    }
+</script>
 <?php
 $form = new HTML_QuickFormCustom(
     'select_form',
@@ -287,9 +275,7 @@ $selLim = $form->addElement(
 );
 $selLim->setSelected($limit);
 
-/*
- * Element we need when we reload the page
- */
+// Element we need when we reload the page
 $form->addElement('hidden', 'p');
 $form->addElement('hidden', 'search');
 $form->addElement('hidden', 'num');
@@ -298,9 +284,7 @@ $form->addElement('hidden', 'type');
 $form->addElement('hidden', 'sort_types');
 $form->setDefaults(array("p" => $p, "search" => $search, "num" => $num));
 
-/*
- * Init QuickForm
- */
+// Init QuickForm
 $renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 $form->accept($renderer);
 

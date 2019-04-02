@@ -50,9 +50,9 @@ $search = filter_var(
 
 if (isset($_POST['searchE'])) {
     $centreon->historySearch[$url] = array();
-    $centreon->historySearch[$url]['searchE'] = $search;
+    $centreon->historySearch[$url]['search'] = $search;
 } else {
-    $search = $centreon->historySearch[$url]['searchE'] ?? null;
+    $search = $centreon->historySearch[$url]['search'] ?? null;
 }
 
 $aclFrom = "";

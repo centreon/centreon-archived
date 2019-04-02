@@ -71,13 +71,13 @@ if (isset($type) && $type !== $savedType) {
 }
 
 if (isset($_POST['searchC'])) {
-    //restoring user's search field value
+    //saving user's search field value
     $centreon->historySearch[$url] = array();
     // the four pages have the same $url, so we need to distinguish each page using its $type,
     // and to save the four search filters.
     $centreon->historySearch[$url]['search' . $type] = $search;
 } else {
-    //saving user's search field value
+    //restoring user's search field value
     $search = $centreon->historySearch[$url]['search' . $type] ?? null;
 }
 

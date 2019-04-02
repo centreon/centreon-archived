@@ -54,9 +54,10 @@ $search = filter_var(
 );
 
 if (isset($_POST['searchT']) || isset($_GET['searchT'])) {
-    $centreon->historySearch[$url]['searchT'] = $search;
+    $centreon->historySearch[$url] = array();
+    $centreon->historySearch[$url]['search'] = $search;
 } else {
-    $search = $centreon->historySearch[$url]['searchT'] ?? null;
+    $search = $centreon->historySearch[$url]['search'] ?? null;
 }
 
 // List of elements - Depends on different criteria

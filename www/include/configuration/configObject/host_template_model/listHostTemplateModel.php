@@ -59,9 +59,10 @@ $search = filter_var(
 );
 
 if (isset($_POST['searchHT']) || isset($_GET['searchHT'])) {
-    $centreon->historySearch[$url] = $search;
-} elseif (isset($centreon->historySearch[$url])) {
-    $search = $centreon->historySearch[$url];
+    $centreon->historySearch[$url] = array();
+    $centreon->historySearch[$url]['search'] = $search;
+} else {
+    $search = $centreon->historySearch[$url]['search'] ?? null;
 }
 
 // Host Template list
