@@ -37,9 +37,9 @@ if (!isset($centreon)) {
     exit();
 }
 
-include_once('./class/centreonUtils.class.php');
-require_once('./include/common/autoNumLimit.php');
-require_once(_CENTREON_PATH_ . '/www/class/centreonHost.class.php');
+include_once './class/centreonUtils.class.php';
+require_once './include/common/autoNumLimit.php';
+require_once _CENTREON_PATH_ . '/www/class/centreonHost.class.php';
 
 // Init Host Method
 $host_method = new CentreonHost($pearDB);
@@ -84,7 +84,6 @@ $status = filter_var(
 
 if (isset($_POST['searchH']) || isset($_GET['searchB'])) {
     //saving chosen filters values
-    $num = 0;
     $centreon->historySearch[$url] = array();
     $centreon->historySearch[$url]["searchH"] = $search;
     $centreon->historySearch[$url]["poller"] = $poller;
@@ -94,10 +93,10 @@ if (isset($_POST['searchH']) || isset($_GET['searchB'])) {
 } else {
     //restoring saved values
     $search = $centreon->historySearch[$url]['searchH'] ?? null;
-    $poller = (int)($centreon->historySearch[$url]["poller"] ?? 0);
-    $hostgroup = (int)($centreon->historySearch[$url]["hostgroup"] ?? 0);
-    $template = (int)($centreon->historySearch[$url]["template"] ?? 0);
-    $status = (int)($centreon->historySearch[$url]["status"]);
+    $poller = (int)$centreon->historySearch[$url]["poller"] ?? 0;
+    $hostgroup = (int)$centreon->historySearch[$url]["hostgroup"] ?? 0;
+    $template = (int)$centreon->historySearch[$url]["template"] ?? 0;
+    $status = (int)$centreon->historySearch[$url]["status"] ?? -1;
 }
 
 // set object history
@@ -126,9 +125,7 @@ if ($status == 1) {
  * Search active
  */
 $searchFilterQuery = '';
-if (isset($search) &&
-    !empty($search)
-) {
+if (isset($search) && !empty($search)) {
     $search = str_replace('_', "\_", $search);
     $mainQueryParameters[':search_string'] = "%{$search}%";
     $searchFilterQuery = '(h.host_name LIKE :search_string
@@ -211,8 +208,8 @@ $aclFrom = '';
 $aclCond = '';
 if (!$centreon->user->admin) {
     $aclFrom = ", {$aclDbName}.centreon_acl acl";
-    $aclCond =
-        ' AND h.host_id = acl.host_id AND acl.service_id IS NULL '
+    $aclCond
+        = ' AND h.host_id = acl.host_id AND acl.service_id IS NULL '
         . 'AND acl.group_id IN (' . $acl->getAccessGroupsString() . ') ';
 }
 
@@ -267,7 +264,7 @@ if ($hostgroup) {
 }
 
 $rows = $pearDB->query("SELECT FOUND_ROWS()")->fetchColumn();
-include('./include/common/checkPagination.php');
+include './include/common/checkPagination.php';
 
 $search = tidySearchKey($search, $advanced_search);
 
