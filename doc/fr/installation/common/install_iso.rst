@@ -139,7 +139,7 @@ Saisissez et confirmez le mot de passe de l'utilisateur **root**. Cliquez sur **
    :align: center
    :scale: 65%
 
-Patientez pendant le processus d'installation. vous pouvez également créer de
+Patientez pendant le processus d'installation. Vous pouvez également créer de
 nouveaux utilisateurs si nécessaire :
 
 .. image :: /images/guide_utilisateur/17_wait_install.png

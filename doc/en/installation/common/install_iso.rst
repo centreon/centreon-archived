@@ -39,7 +39,7 @@ You have different options to choose from:
  * **Central with database**: Install Centreon (web interface and database), monitoring engine and Broker.
  * **Central without database**: Install Centreon (web interface only), monitoring engine and Broker.
  * **Poller**: Install poller (monitoring engine and Broker only).
- * **Database**: Install database server (install if you have already installed a **Central server without a database** option).
+ * **Database**: Install database server (if you have already installed a **Central server without a database** option).
 
 After selecting your installation type, click **Done**.
 
@@ -101,7 +101,7 @@ then **Done**:
 
 .. note::
     It is okay that you can't enable the “network time” option in this screen.
-    It will become enabled automatically when you configure it the network and
+    It will become enabled automatically when you configure the network and
     hostname.
 
 Configuring the network

@@ -10,7 +10,7 @@ Two preconfigured virtual machines are available on the
 These virtual machines are available in OVA (VMware) and OVF (VirtualBox) format.
 
 .. note::
-    The OVA/OVF may not have configured a network adapter. If so, you will have
+    The OVA/OVF may not have a network adapter configured. If so, you will have
     to configure a network adapter in your virtual machine before you proceed.
 
 ***********************
@@ -38,7 +38,7 @@ The **root** password of the DBMS is not initialized.
     For security reasons, we highly recommend for you to change these passwords after installation.
 
 On your first login to Centreon CLI, you will see a banner that describes
-additional oerations to be performed. **It is imperitive that you complete the instructions, especially operations 4 and 5.**
+additional oerations to be performed. **It is imperative that you complete the instructions, especially operations 4 and 5.**
 
 .. note::
     To remove this message, delete the **/etc/profile.d/centreon.sh** file.
@@ -71,7 +71,7 @@ Copy this key to the new server: ::
 The password of the **centreon** user is *centreon*. It can be easily changed using the **passwd** command.
 
 .. note::
-    Hit enter when it prompts for a file to save the key to use the default,
+    Hit enter when it prompts for a file to save the key to use the default location,
     or, create one in a specified directory. Leave the passphrase blank if you
     wish. However it is not recommended. You will receive a key fingerprint
     and a randomart image.

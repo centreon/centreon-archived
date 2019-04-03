@@ -13,7 +13,7 @@ If you do not have any private SSH keys on the central server for the
     $ ssh-keygen -t rsa
 
 .. note::
-    Hit enter when it prompts for a file to save the key to use the default,
+    Hit enter when it prompts for a file to save the key to use the default location,
     or, create one in a specified directory. Leave the passphrase blank if you
     wish. However it is not recommended. You will receive a key fingerprint
     and a randomart image.

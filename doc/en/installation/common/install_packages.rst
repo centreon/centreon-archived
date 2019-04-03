@@ -88,7 +88,7 @@ Run the commands::
 Database management system
 --------------------------
 
-We recommend using MariaDB for your database because it is opensource. Ensure
+We recommend using MariaDB for your database because it is open source. Ensure
 the database server is available to complete the installation (locally or no).
 
 It is necessary to modify **LimitNOFILE** limitation. Do not try to set this
@@ -141,7 +141,7 @@ To make services start automatically during system bootup, run these commands on
     # systemctl enable centreon
 
 .. note::
-    If the MySQL/MariaDB database is on a dedicated server, execute thiss command
+    If the MySQL/MariaDB database is on a dedicated server, execute this command
     on the database server: ::
     
         # systemctl enable mysql

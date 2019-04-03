@@ -81,7 +81,7 @@ Connect to your old Centreon server and synchronize following directories::
         # rsync -avz /tmp/centreon.sql root@IP_New_Centreon:/tmp/
         # rsync -avz /tmp/centreon_storage.sql root@IP_New_Centreon:/tmp/
         
-    #. On the Centreon 18.10 database server, drop the original databases and re create them: ::
+    #. On the Centreon 18.10 database server, drop the original databases and create them again: ::
     
         # mysql -u root -p
         # drop database centreon;
@@ -139,7 +139,7 @@ installation. The main directories to synchronize are:
     postpone the upgrade to v18.10, be aware that centreon-web 18.10 resource
     $USER1$ actually points to /usr/lib64/nagios/plugins
     
-    To do on the 1.8.1 pollers to mitigate the issue: ::
+    On the 1.8.1 pollers to mitigate the issue: ::
     
         # mv /usr/lib64/nagios/plugins/* /usr/lib/nagios/plugins/
         # rmdir /usr/lib64/nagios/plugins/
