@@ -7,6 +7,7 @@
   align-items: stretch;
 }
 
+
 .sidebar {
   min-width: 45px;
   max-width: 45px;
@@ -314,6 +315,17 @@
             border-right: 0px solid transparent;
             .list-unstyled {
               border-left: 0px solid transparent;
+            }
+          }
+        }
+        /*manage exception where 4th level menu is active and we want to avoid scroll ipening the 5 th level menu on hover*/
+        &:nth-child(4).active + .menu-item {
+          &:hover>ul.list-unstyled {
+            top: -120px;
+          }
+          >ul.list-unstyled .collapsed-item:first-child:hover {
+            >ul {
+              top: -120px;
             }
           }
         }
@@ -690,6 +702,8 @@ a {
         }
       }
     }
+
+    
 
     &.active > span {
       color: $white-color;
