@@ -23,7 +23,8 @@ After=centreon.service
 ReloadPropagatedFrom=centreon.service
 
 [Service]
-ExecStart=@CENTCORE_BINDIR@/centcore
+EnvironmentFile=/etc/sysconfig/centcore
+ExecStart=@CENTCORE_BINDIR@/centcore $OPTIONS
 ExecReload=/bin/kill -HUP $MAINPID
 Type=simple
 User=centreon

@@ -23,7 +23,8 @@ After=centreon.service
 ReloadPropagatedFrom=centreon.service
 
 [Service]
-ExecStart=@CENTREONTRAPD_BINDIR@/centreontrapd
+EnvironmentFile=/etc/sysconfig/centreontrapd
+ExecStart=@CENTREONTRAPD_BINDIR@/centreontrapd $OPTIONS
 ExecReload=/bin/kill -HUP $MAINPID
 Type=simple
 User=centreon
