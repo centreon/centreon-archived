@@ -47,7 +47,7 @@ $o = $_GET["o"] ?? $o = null;
 
 //saving current pagination filter value and current displayed page
 $centreon->historyPage[$url] = $num;
-$centreon->historyLastPage = $url;
+$centreon->historyLastUrl = $url;
 
 $num = addslashes($num);
 

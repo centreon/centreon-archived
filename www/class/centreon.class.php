@@ -65,7 +65,7 @@ class Centreon
     /*
      * @var string : saved last page's file name
      */
-    public $historyLastPage;
+    public $historyLastUrl;
 
     /*
      * @var array : saved user's filters
@@ -231,7 +231,7 @@ class Centreon
     public function createHistory()
     {
         $this->historyPage = array();
-        $this->historyLastPage = '';
+        $this->historyLastUrl = '';
         $this->historySearch = array();
         $this->historySearchService = array();
         $this->historySearchOutput = array();
