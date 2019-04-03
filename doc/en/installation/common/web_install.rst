@@ -2,6 +2,11 @@
 Configuration
 *************
 
+.. note::
+    To get the IP address of your Centreon server, uses the command:
+    ::
+        # ip addr
+
 Log in to Centreon web interface via the URL: http://[SERVER_IP]/centreon.
 The Centreon setup wizard is displayed. Click on **Next**.
 
