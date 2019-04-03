@@ -486,10 +486,10 @@ $form->setRequiredNote(_("Required field"));
 $tpl = new Smarty();
 $tpl = initSmartyTpl($path, $tpl);
 
-$formDefaults = $acl;
-$formDefaults['all_hosts[all_hosts]'] = $formDefaults['all_hosts'];
-$formDefaults['all_hostgroups[all_hostgroups]'] = $formDefaults['all_hostgroups'];
-$formDefaults['all_servicegroups[all_servicegroups]'] = $formDefaults['all_servicegroups'];
+$formDefaults = $acl ?? [];
+$formDefaults['all_hosts[all_hosts]'] = $formDefaults['all_hosts'] ?? '0';
+$formDefaults['all_hostgroups[all_hostgroups]'] = $formDefaults['all_hostgroups'] ?? '0';
+$formDefaults['all_servicegroups[all_servicegroups]'] = $formDefaults['all_servicegroups'] ?? '0';
 
 if ($o == "w") {
     /*
