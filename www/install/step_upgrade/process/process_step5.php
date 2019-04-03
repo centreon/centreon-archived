@@ -39,7 +39,7 @@ require_once __DIR__ . '/../../../../bootstrap.php';
 $parameters = filter_input_array(INPUT_POST);
 
 if ($parameters) {
-    if ((int)$parameters["send_statistics"] == 1) {
+    if ((int)$parameters["send_statistics"] === 1) {
         $query = "INSERT INTO options (`key`, `value`) VALUES ('send_statistics', '1')";
     } else {
         $query = "INSERT INTO options (`key`, `value`) VALUES ('send_statistics', '0')";
