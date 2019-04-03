@@ -6,7 +6,7 @@ As of Centreon version 18.10, a new wizard has been added for defining a new pol
 Centreon platform.
 
 .. note::
-    You also have the option of adding a new poller manually :ref:`manually<add_manual_poller>`,
+    You also have the option of adding a new poller :ref:`manually<add_manual_poller>`,
     but we recommend using the following procedure.
 
 Go to the **Configuration > Pollers** menu and click on **Add server with wizard**
@@ -44,8 +44,7 @@ Otherwise, if you want to link the poller to an existing Centreon Remote Server,
     export the configuration of the collector as well as the server to which it
     will be attached.
 
-In a few seconds the wizard will configure your new server.
-
+In a few seconds the wizard will configure your new poller.
 
 .. image:: /images/poller/wizard_add_poller_5.png
     :align: center

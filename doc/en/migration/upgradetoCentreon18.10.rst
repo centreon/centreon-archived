@@ -8,8 +8,9 @@ Migrating from a Centreon 3.4 platform
 Prerequisites
 *************
 
-The following precedure only applies to migration from a Centreon 3.4 platform installed on a
-64-bit GNU/Linux distribution. Here are the system requirements:
+The following procedure only applies to migration from a Centreon 3.4 platform
+installed on a 64-bit GNU/Linux distribution other than CentOS or Red Hat 7.
+Here are the system requirements:
 
 +-----------------+---------+
 | Components      | Version |
@@ -31,7 +32,8 @@ Migrating
 *********
 
 .. warning::
-    If your Centreon platform includes a Centreon redundancy system, please contact `Centreon support <https://support.centreon.com>`_.
+    If your Centreon platform includes a Centreon redundancy system, please
+    contact `Centreon support <https://centreon.force.com>`_.
 
 .. warning::
     If you try to migrate a platform using the **Centreon Poller Display 1.6.x**,
@@ -40,9 +42,9 @@ Migrating
 Installing the new server
 =========================
 
-Install your new Centreon central server from the :ref:`ISO<installisoel7>` or from
-:ref:`packages <install_from_packages>`, and complete the installation process by connecting
-to the Centreon Web interface.
+You will need to install a new Centreon central server from the :ref:`ISO<installisoel7>`
+or from :ref:`packages <install_from_packages>`, and complete the installation process
+by connecting to the Centreon Web interface.
 
 .. note::
     It is advisable to set the same password for the *centreon* user during the web
@@ -65,29 +67,35 @@ Connect to your old Centreon server and synchronize following directories::
 .. warning::
     In case of migration from CES 3.4.x, Centreon-web 2.8.x under CentOS 6 with MariaDB 5.X, do not sync folders /var/lib/mysql with RSYNC toward Centreon 18.10 / MariaDB 10.1.
     
-    #. Dump source databases
+    #. Dump source databases: ::
+    
         # mysqldump -u root -p centreon > /tmp/export/centreon.sql
         # mysqldump -u root -p centreon_storage > /tmp/export/centreon_storage.sql
       
-    #. Stop source MariaDB server
-        # service mysql stop
+    #. Stop source MariaDB servers: ::
     
-    #. Export the dumps to the new Centreon 18.10 database server (make sure you have enough space for large databases dumps)
+        # service mysqld stop
+    
+    #. Export the dumps to the new Centreon 18.10 database server (make sure you have enough space for large databases dumps): ::
+    
         # rsync -avz /tmp/centreon.sql root@IP_New_Centreon:/tmp/
         # rsync -avz /tmp/centreon_storage.sql root@IP_New_Centreon:/tmp/
         
-    #. On the Centreon 18.10 database server, drop the original databases and re create them
+    #. On the Centreon 18.10 database server, drop the original databases and create them again: ::
+    
         # mysql -u root -p
         # drop database centreon;
         # drop database centreon_storage;
         # create database centreon;
         # create database centreon_storage;
         
-    #. Import the previously transfered dumps
+    #. Import the previously transfered dumps: ::
+    
         # mysql -u root centreon -p </tmp/centreon.sql
         # mysql -u root centreon_storage -p </tmp/centreon_storage.sql
         
-    #. Upgrade the tables
+    #. Upgrade the tables: ::
+    
         # mysql_upgrade
         
     #. Keep going with the migration
@@ -96,7 +104,7 @@ Connect to your old Centreon server and synchronize following directories::
 
 #. Stop **mysqld** on both Centreon servers: ::
 
-    # systemctl stop mysqld
+    # service mysqld stop
 
 #. On the new server, remove data in /var/lib/mysql/: ::
 
@@ -127,18 +135,21 @@ installation. The main directories to synchronize are:
     To run the plugins, you must first install the required dependencies.
 
 .. note::
-    If you still have distant centreon-engine 1.8.1 pollers that you want to postpone the upgrade to v18.10, be aware that centreon-web 18.10 resource $USER1$ actually points to /usr/lib64/nagios/plugins
+    If you still have distant centreon-engine 1.8.1 pollers that you want to
+    postpone the upgrade to v18.10, be aware that centreon-web 18.10 resource
+    $USER1$ actually points to /usr/lib64/nagios/plugins
     
-    To do on the 1.8.1 pollers to mitigate the issue :
+    On the 1.8.1 pollers to mitigate the issue: ::
     
-    # mv /usr/lib64/nagios/plugins/* /usr/lib/nagios/plugins/
-    # rmdir /usr/lib64/nagios/plugins/
-    # ln -s -t /usr/lib64/nagios/ /usr/lib/nagios/plugins/
+        # mv /usr/lib64/nagios/plugins/* /usr/lib/nagios/plugins/
+        # rmdir /usr/lib64/nagios/plugins/
+        # ln -s -t /usr/lib64/nagios/ /usr/lib/nagios/plugins/
     
-    You now have a symbolic link as :
-    # ls -alt /usr/lib64/nagios/
-    lrwxrwxrwx   1 root root      24  1 nov.  17:59 plugins -> /usr/lib/nagios/plugins/
-    -rwxr-xr-x   1 root root 1711288  6 avril  2018 cbmod.so
+    You now have a symbolic link as: ::
+    
+        # ls -alt /usr/lib64/nagios/
+        lrwxrwxrwx   1 root root      24  1 nov.  17:59 plugins -> /usr/lib/nagios/plugins/
+        -rwxr-xr-x   1 root root 1711288  6 avril  2018 cbmod.so
     
     You can now push poller configuration from Centreon 18.10 whether the distant poller is centreon-engine 18.10 or 1.8.1
     
