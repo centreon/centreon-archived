@@ -2211,10 +2211,13 @@ function reset_search_page($url)
     if (!isset($url)) {
         return;
     }
-    if (isset($_GET['search']) &&
-        isset($centreon->historySearch[$url]) && $_GET['search'] != $centreon->historySearch[$url] &&
-        !isset($_GET['num']) && !isset($_POST['num'])
+    if (isset($_GET['search'])
+        && isset($centreon->historySearch[$url])
+        && $_GET['search'] != $centreon->historySearch[$url]
+        && !isset($_GET['num'])
+        && !isset($_POST['num'])
     ) {
+        echo "RESET\n";
         $_POST['num'] = 0;
         $_GET['num'] = 0;
     }
