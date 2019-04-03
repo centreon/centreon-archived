@@ -305,8 +305,13 @@ class CentreonWebService
             // Initialize the language translator
             $dependencyInjector['translator'];
 
-            $wsObj = new $webService['class'];
-            $wsObj->setDi($dependencyInjector);
+            // Use the web service if has been initialized or initialize it
+            if(isset($dependencyInjector[$webService['class']])) {
+                $wsObj = $dependencyInjector[$webService['class']];
+            } else {
+                $wsObj = new $webService['class'];
+                $wsObj->setDi($dependencyInjector);
+            }
         } else {
             $webService = self::webservicePath($object);
             
