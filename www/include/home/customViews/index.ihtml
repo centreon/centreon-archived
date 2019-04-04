@@ -869,7 +869,7 @@ jQuery(function () {
             }
           },
           load: function( event, ui ) {
-              toggleEdit(defaultShow);
+              toggleEdit(jQuery('.toggleEdit').hasClass('edit'));
           },
           activate: function( event, ui ) {
             tabLoops++;
