@@ -85,8 +85,8 @@ class ExportServiceTest extends TestCase
         ;
 
         // DB service
-        $container['centreon.db-manager'] = new Mock\CentreonDBManagerService;
-        $container['centreon.db-manager']
+        $container[\Centreon\ServiceProvider::CENTREON_DB_MANAGER] = new Mock\CentreonDBManagerService;
+        $container[\Centreon\ServiceProvider::CENTREON_DB_MANAGER]
             ->addResultSet("SELECT * FROM informations WHERE `key` = :key LIMIT 1", [[
                 'key' => 'version',
                 'value' => 'x.y',

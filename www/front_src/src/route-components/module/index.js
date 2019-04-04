@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import Loader from "../../components/loader";
 
 class ModuleRoute extends Component {
+
   constructor(props) {
     super(props);
 

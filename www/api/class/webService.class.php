@@ -67,13 +67,21 @@ class CentreonWebService
      */
     public function __construct()
     {
+        $this->loadDb();
+        $this->loadArguments();
+        $this->loadToken();
+    }
+
+    /**
+     * Load database
+     */
+    protected function loadDb()
+    {
         if (isset($this->pearDB)) {
             $this->pearDB = $this->pearDB;
         } else {
             $this->pearDB = new CentreonDB();
         }
-        $this->loadArguments();
-        $this->loadToken();
     }
 
     /**

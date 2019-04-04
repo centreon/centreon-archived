@@ -35,10 +35,17 @@
 
 namespace CentreonLegacy\Core\Configuration;
 
+use CentreonModule\Infrastructure\Source\ModuleSource;
+use CentreonModule\Infrastructure\Source\WidgetSource;
+
+/**
+ * Service provide configuration data
+ */
 class Configuration
 {
+    const CENTREON_PATH = 'centreon_path';
+
     /**
-     *
      * @var array the global configuration
      */
     protected $configuration;
@@ -70,12 +77,22 @@ class Configuration
         $value = null;
 
         // specific case for centreon path which is not stored in $conf_centreon
-        if ($key === 'centreon_path') {
+        if ($key === static::CENTREON_PATH) {
             $value = $this->centreonPath;
         } elseif (isset($this->configuration[$key])) {
             $value = $this->configuration[$key];
         }
 
         return $value;
+    }
+
+    public function getModulePath() : string
+    {
+        return $this->centreonPath . ModuleSource::PATH;
+    }
+
+    public function getWidgetPath() : string
+    {
+        return $this->centreonPath . WidgetSource::PATH;
     }
 }

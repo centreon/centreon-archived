@@ -35,6 +35,11 @@
 
 namespace CentreonLegacy\Core\Utils;
 
+use CentreonLegacy\ServiceProvider;
+
+/**
+ * @deprecated since version 18.10.4
+ */
 class Factory
 {
     /**
@@ -57,6 +62,6 @@ class Factory
      */
     public function newUtils()
     {
-        return new Utils($this->dependencyInjector);
+        return $this->dependencyInjector[ServiceProvider::CENTREON_LEGACY_UTILS];
     }
 }

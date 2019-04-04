@@ -21,7 +21,8 @@
         "behat/mink-extension": "^2.2",
         "behat/mink-selenium2-driver": "^1.3",
         "centreon/centreon-test-lib": "dev-master",
-        "adlawson/vfs": "^0.12.1"
+        "adlawson/vfs": "^0.12.1",
+        "zircote/swagger-php": "^3.0"
     },
     "require": {
         "php": ">=7.1.3",
@@ -37,14 +38,12 @@
     },
     "autoload": {
         "psr-4": {
-            "CentreonLegacy\\": "src/CentreonLegacy/",
-            "CentreonRemote\\": "src/CentreonRemote/",
-            "CentreonBam\\": "src/CentreonBam/",
-            "Centreon\\": "src/Centreon/"
+            "": "src/"
         },
         "classmap": ["www/class/"],
         "files" : [
             "GPL_LIB/smarty-plugins/block.t.php",
+            "www/api/exceptions.php",
             "www/api/class/webService.class.php",
             "www/lib/HTML/QuickForm/HTML_QuickFormCustom.php",
             "www/lib/HTML/QuickForm/HTML_QuickForm_radio_Custom.php",

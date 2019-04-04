@@ -1,7 +1,7 @@
 <?php
 
 use Centreon\Test\Behat\CentreonContext;
-use Centreon\Test\Behat\Administration\ModuleListingPage;
+use Centreon\Test\Behat\Administration\ExtensionsPage;
 
 /**
  * Features context.
@@ -9,6 +9,7 @@ use Centreon\Test\Behat\Administration\ModuleListingPage;
 class ModuleContext extends CentreonContext
 {
     protected $page;
+    private $type = ExtensionsPage::MODULE_TYPE;
     private $moduleName = 'centreon-license-manager';
 
     /**
@@ -16,8 +17,8 @@ class ModuleContext extends CentreonContext
      */
     public function aModuleIsReadyToInstall()
     {
-        $this->page = new ModuleListingPage($this);
-        $module = $this->page->getEntry($this->moduleName);
+        $this->page = new ExtensionsPage($this);
+        $module = $this->page->getEntry($this->type, $this->moduleName);
         if (!$module['actions']['install']) {
             throw new \Exception('Module ' . $this->moduleName . ' is not ready to install.');
         }
@@ -32,8 +33,8 @@ class ModuleContext extends CentreonContext
         $this->iInstallTheModule();
         $this->theModuleIsInstalled();
 
-        $this->page = new ModuleListingPage($this);
-        $module = $this->page->getEntry($this->moduleName);
+        $this->page = new ExtensionsPage($this);
+        $module = $this->page->getEntry($this->type, $this->moduleName);
         if (!$module['actions']['remove']) {
             throw new \Exception('Module ' . $this->moduleName . ' is not ready to remove.');
         }
@@ -44,7 +45,7 @@ class ModuleContext extends CentreonContext
      */
     public function iInstallTheModule()
     {
-        $this->page->install($this->moduleName);
+        $this->page->install($this->type, $this->moduleName);
     }
 
     /**
@@ -52,7 +53,7 @@ class ModuleContext extends CentreonContext
      */
     public function iRemoveTheModule()
     {
-        $this->page->remove($this->moduleName);
+        $this->page->remove($this->type, $this->moduleName);
     }
 
     /**
@@ -60,13 +61,9 @@ class ModuleContext extends CentreonContext
      */
     public function theModuleIsInstalled()
     {
-        //wait the widget is installed
-        sleep(2);
+        $this->page = new ExtensionsPage($this);
 
-        // initialize page to manage iframe selection
-        $this->page = new ModuleListingPage($this);
-
-        $module = $this->page->getEntry($this->moduleName);
+        $module = $this->page->getEntry($this->type, $this->moduleName);
         if ($module['actions']['install']) {
             throw new \Exception('Module ' . $this->moduleName . ' is not installed.');
         }
@@ -77,8 +74,9 @@ class ModuleContext extends CentreonContext
      */
     public function theModuleIsRemoved()
     {
-        $this->page = new ModuleListingPage($this);
-        $module = $this->page->getEntry($this->moduleName);
+        $this->page = new ExtensionsPage($this);
+
+        $module = $this->page->getEntry($this->type, $this->moduleName);
         if ($module['actions']['remove']) {
             throw new \Exception('Module ' . $this->moduleName . ' is not removed.');
         }
