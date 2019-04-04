@@ -120,4 +120,4 @@ $tpl->assign('form', $renderer->toArray());
 $tpl->assign('o', $o);
 $tpl->assign('valid', $valid);
 
-$tpl->display("formKnowledgeBase.html"); 
+$tpl->display("formKnowledgeBase.html");

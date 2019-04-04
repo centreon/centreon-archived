@@ -27,7 +27,7 @@ class InformationsService
      */
     public function serverIsRemote(): bool
     {
-        $repository = $this->getDi()['centreon.db-manager']->getRepository(InformationsRepository::class);
+        $repository = $this->getDi()[\Centreon\ServiceProvider::CENTREON_DB_MANAGER]->getRepository(InformationsRepository::class);
         $isRemote = $repository->getOneByKey('isRemote');
 
         if (!$isRemote) {
@@ -52,7 +52,7 @@ class InformationsService
      */
     public function serverIsCentral(): bool
     {
-        $repository = $this->getDi()['centreon.db-manager']->getRepository(InformationsRepository::class);
+        $repository = $this->getDi()[\Centreon\ServiceProvider::CENTREON_DB_MANAGER]->getRepository(InformationsRepository::class);
         $isCentral = $repository->getOneByKey('isCentral');
 
         if (!$isCentral) {

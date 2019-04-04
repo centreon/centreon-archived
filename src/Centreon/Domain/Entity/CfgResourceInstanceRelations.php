@@ -6,14 +6,14 @@ class CfgResourceInstanceRelations
 
     /**
      * Relation with cfg_resource.id
-     * 
+     *
      * @var int
      */
     private $resourceId;
 
     /**
      * Relation with nagios_server.id
-     * 
+     *
      * @var int
      */
     private $instanceId;

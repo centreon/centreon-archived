@@ -373,7 +373,6 @@ abstract class CentreonObject
                 );
             }
         }
-
     }
 
     /**

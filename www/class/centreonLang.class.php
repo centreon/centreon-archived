@@ -131,7 +131,7 @@ class CentreonLang
     {
         $currentLocale = '';
         
-        if (version_compare(PHP_VERSION, '5.2.0') >= 0) {
+        if (version_compare(PHP_VERSION, '5.2.0') >= 0 && isset($_SERVER['HTTP_ACCEPT_LANGUAGE'])) {
             $browserLocale = $_SERVER['HTTP_ACCEPT_LANGUAGE'];
             $currentLocale .= Locale::acceptFromHttp($browserLocale);
         } else {

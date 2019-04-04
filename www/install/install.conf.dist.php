@@ -26,4 +26,3 @@ $conf_centreon['centreon_engine_connectors'] = "/usr/lib64/centreon-connector";
 $conf_centreon['centreon_engine_lib'] = "/usr/lib64/centreon-engine";
 $conf_centreon['centreonbroker_cbmod'] = "/usr/lib64/nagios/cbmod.so";
 $conf_centreon['centreon_plugins'] = "/usr/lib/centreon/plugins";
-?>

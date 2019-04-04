@@ -282,7 +282,7 @@ function getLogInDbForHostSVC($host_id, $start_date, $end_date, $reportTimePerio
     $days_of_week = getReportDaysStr($reportTimePeriod);
     $aclCondition = '';
     if (!$centreon->user->admin) {
-        $aclCondition = 'AND EXISTS (SELECT * FROM centreon_acl acl ' . 
+        $aclCondition = 'AND EXISTS (SELECT * FROM centreon_acl acl ' .
             'WHERE las.host_id = acl.host_id AND las.service_id = acl.service_id ' .
             'AND acl.group_id IN (' . $centreon->user->access->getAccessGroupsString() . ') )';
     }
@@ -420,7 +420,7 @@ function getLogInDbForOneSVC($host_id, $service_id, $start_date, $end_date, $rep
     $days_of_week = getReportDaysStr($reportTimePeriod);
     $aclCondition = '';
     if (!$centreon->user->admin) {
-        $aclCondition = 'AND EXISTS (SELECT * FROM centreon_acl acl ' . 
+        $aclCondition = 'AND EXISTS (SELECT * FROM centreon_acl acl ' .
             'WHERE las.host_id = acl.host_id AND las.service_id = acl.service_id ' .
             'AND acl.group_id IN (' . $centreon->user->access->getAccessGroupsString() . ') )';
     }

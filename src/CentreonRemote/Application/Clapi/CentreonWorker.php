@@ -58,7 +58,7 @@ class CentreonWorker implements CentreonClapiServiceInterface
     private function processExportTasks(): void
     {
         $datetime = (new \DateTime())->format("Y-m-d H:i:s");
-        $tasks = $this->getDi()['centreon.db-manager']->getRepository(TaskRepository::class)->findExportTasks() ?? [];
+        $tasks = $this->getDi()[\Centreon\ServiceProvider::CENTREON_DB_MANAGER]->getRepository(TaskRepository::class)->findExportTasks() ?? [];
 
         echo "{$datetime} - Checking for pending export tasks: " . count($tasks) . " task(s) found\n";
 
@@ -102,7 +102,7 @@ class CentreonWorker implements CentreonClapiServiceInterface
     private function processImportTasks(): void
     {
         $datetime = (new \DateTime())->format("Y-m-d H:i:s");
-        $tasks = $this->getDi()['centreon.db-manager']->getRepository(TaskRepository::class)->findImportTasks() ?? [];
+        $tasks = $this->getDi()[\Centreon\ServiceProvider::CENTREON_DB_MANAGER]->getRepository(TaskRepository::class)->findImportTasks() ?? [];
 
         echo "{$datetime} - Checking for pending import tasks: " . count($tasks) . " task(s) found\n";
 
@@ -136,7 +136,7 @@ class CentreonWorker implements CentreonClapiServiceInterface
     public function createRemoteTask(int $taskId): void
     {
         // find task parameters (type, status, params...)
-        $task = $this->getDi()['centreon.db-manager']->getRepository(TaskRepository::class)->findOneById($taskId);
+        $task = $this->getDi()[\Centreon\ServiceProvider::CENTREON_DB_MANAGER]->getRepository(TaskRepository::class)->findOneById($taskId);
 
         /**
          * create import task on remote
@@ -154,7 +154,6 @@ class CentreonWorker implements CentreonClapiServiceInterface
                 'POST',
                 ['parent_id' => $task->getId()]
             );
-
         } catch (\Exception $e) {
             echo "Error while creating parent task on $url\n";
             echo $e->getMessage() . "\n";

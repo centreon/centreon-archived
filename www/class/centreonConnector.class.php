@@ -541,7 +541,6 @@ class CentreonConnector
                 $parameters['externalObject']['name'] = 'command_name';
                 $parameters['externalObject']['comparator'] = 'command_id';
                 break;
-
         }
 
         return $parameters;

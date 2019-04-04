@@ -8,9 +8,9 @@ class ServiceCategoryRelationRepository extends ServiceEntityRepository
 
     /**
      * Export
-     * 
+     *
      * @todo restriction by poller
-     * 
+     *
      * @param int[] $pollerIds
      * @param array $templateChainList
      * @return array

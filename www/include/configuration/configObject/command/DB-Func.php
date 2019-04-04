@@ -483,7 +483,6 @@ function insertMacrosDesc($cmd, $ret)
             }
 
             if (!empty($sName)) {
-
                 $sQueryInsert = "INSERT INTO `on_demand_macro_command` 
                     (`command_command_id`, `command_macro_name`, `command_macro_desciption`, `command_macro_type`) 
                     VALUES (" . intval($cmd) . ", 
@@ -492,7 +491,6 @@ function insertMacrosDesc($cmd, $ret)
                         '" . $arr[$sType] . "')";
                 $pearDB->query($sQueryInsert);
             }
-
         }
     }
 }

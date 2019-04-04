@@ -69,7 +69,6 @@ class VirtualMetricHandleContext extends CentreonContext
         if (key_exists($this->duplicatedVmName, $objects)) {
             if ($objects[$this->duplicatedVmName]['function'] != $objects[$this->vmName]['function']
                 || $objects[$this->duplicatedVmName]['def_type'] != $objects[$this->vmName]['def_type']) {
-
                 throw new \Exception('Some properties of ' . $this->duplicatedVmName . ' virtual Metric have not '
                     . 'been duplicated');
             }

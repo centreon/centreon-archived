@@ -40,6 +40,8 @@ Le cycle de vie d'une version est divisé en 3 phases :
 .. note::
     La gravité et la hiérarchisation des bogues sont la responsabilité de l'équipe Centreon
 
+La première phase commence le cycle de vie de la version.
+
 La deuxième phase d'une version commence lorsque la prochaine version majeure 
 est disponible. Par exemple, la publication de Centreon 19.04 lance la deuxième 
 phase de Centreon 18.10.

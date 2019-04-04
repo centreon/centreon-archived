@@ -147,7 +147,6 @@ class CentreonACLAction extends CentreonObject
             $updateParams = array($params[1] => $params[2]);
             $updateParams['objectId'] = $objectId;
             return $updateParams;
-
         } else {
             throw new CentreonClapiException(self::OBJECT_NOT_FOUND . ":" . $params[self::ORDER_UNIQUENAME]);
         }

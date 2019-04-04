@@ -90,7 +90,7 @@ $dependencyInjector['filesystem'] = function ($c) {
 
 // Utils
 $dependencyInjector['utils'] = function ($c) use ($dependencyInjector) {
-    return new \CentreonLegacy\Core\Utils\Utils($dependencyInjector);
+    return $dependencyInjector[CentreonLegacy\ServiceProvider::CENTREON_LEGACY_UTILS];
 };
 
 // Define finder

@@ -17,11 +17,10 @@
 
 namespace CentreonLegacy\Core\Widget;
 
+use Pimple\Psr11\Container;
 use \Centreon\Test\Mock\CentreonDB;
 use Centreon\Test\Mock\DependencyInjector\ServiceContainer;
 use Centreon\Test\Mock\DependencyInjector\ConfigurationDBProvider;
-use Centreon\Test\Mock\DependencyInjector\FilesystemProvider;
-use Centreon\Test\Mock\DependencyInjector\FinderProvider;
 
 class InstallerTest extends \PHPUnit_Framework_TestCase
 {
@@ -188,7 +187,7 @@ class InstallerTest extends \PHPUnit_Framework_TestCase
             ->method('buildPath')
             ->willReturn('MyWidget');
 
-        $installer = new Installer($this->container, $this->information, 'MyWidget', $this->utils);
+        $installer = new Installer(new Container($this->container), $this->information, 'MyWidget', $this->utils);
         $id = $installer->install();
 
         $this->assertEquals($id, 1);

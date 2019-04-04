@@ -2,10 +2,8 @@
 
 namespace CentreonRemote\Domain\Service\ConfigurationWizard;
 
-use CentreonRemote\Domain\Resources\RemoteConfig\ {
-    CfgCentreonBroker,
-    CfgCentreonBrokerInfo
-};
+use CentreonRemote\Domain\Resources\RemoteConfig\CfgCentreonBroker;
+use CentreonRemote\Domain\Resources\RemoteConfig\CfgCentreonBrokerInfo;
 
 class RemoteConnectionConfigurationService extends ServerConnectionConfigurationService
 {

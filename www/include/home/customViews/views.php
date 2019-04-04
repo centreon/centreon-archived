@@ -45,7 +45,6 @@ session_start();
 session_write_close();
 
 try {
-
     if (!isset($_SESSION['centreon'])) {
         throw new Exception('No session found');
     }

@@ -2,12 +2,15 @@
 
 namespace CentreonRemote\Application\Webservice;
 
+/**
+ * @OA\Tag(name="centreon_remote_server", description="")
+ */
 class CentreonRemoteServer extends CentreonWebServiceAbstract
 {
 
     /**
      * Name of web service object
-     * 
+     *
      * @return string
      */
     public static function getName(): string
@@ -16,46 +19,62 @@ class CentreonRemoteServer extends CentreonWebServiceAbstract
     }
 
     /**
-     * @SWG\Post(
-     *   path="/centreon/api/external.php",
-     *   @SWG\Parameter(
+     * @OA\Post(
+     *   path="/external.php?object=centreon_remote_server&action=addToWaitList",
+     *   description="Add remote Centreon instance in waiting list",
+     *   tags={"centreon_remote_server"},
+     *   @OA\Parameter(
      *       in="query",
      *       name="object",
+     *       @OA\Schema(
+     *          type="string",
+     *          enum={"centreon_remote_server"},
+     *          default="centreon_remote_server"
+     *       ),
      *       description="the name of the API object class",
-     *       required=true,
-     *       type="string",
-     *       enum="centreon_remote_server"
+     *       required=true
      *   ),
-     *   @SWG\Parameter(
+     *   @OA\Parameter(
      *       in="query",
      *       name="action",
+     *       @OA\Schema(
+     *          type="string",
+     *          enum={"addToWaitList"},
+     *          default="addToWaitList"
+     *       ),
      *       description="the name of the action in the API class",
-     *       required=true,
-     *       type="string",
-     *       enum="addToWaitList"
+     *       required=true
      *   ),
-     *   @SWG\Parameter(
-     *       in="formData",
-     *       name="app_key",
-     *       description="the unique app key of the Centreon instance",
+     *   @OA\RequestBody(
      *       required=true,
-     *       type="string",
+     *       @OA\JsonContent(
+     *          required={
+     *              "app_key",
+     *              "version"
+     *          },
+     *          @OA\Property(
+     *              property="app_key",
+     *              type="string",
+     *              description="the unique app key of the Centreon instance"
+     *          ),
+     *          @OA\Property(
+     *              property="version",
+     *              type="string",
+     *              description="the app version Centreon instance"
+     *          )
+     *       )
      *   ),
-     *   @SWG\Parameter(
-     *       in="formData",
-     *       name="version",
-     *       description="the app version Centreon instance",
-     *       required=true,
-     *       type="string",
-     *   ),
-     *   @SWG\Response(
-     *     response=200,
-     *     description="Empty string"
+     *   @OA\Response(
+     *       response=200,
+     *       description="Empty string",
+     *       @OA\JsonContent(
+     *          @OA\Property(type="string")
+     *       )
      *   )
      * )
      *
      * Add remote Centreon instance in waiting list
-     * 
+     *
      * @return string
      * @throws \RestBadRequestException
      * @throws \RestConflictException
@@ -65,11 +84,7 @@ class CentreonRemoteServer extends CentreonWebServiceAbstract
         $ip = $_SERVER['REMOTE_ADDR'] ?? null;
 
         if (!$ip) {
-            throw new \RestBadRequestException('Can not access your IP address.');
-        }
-
-        if (!filter_var($ip, FILTER_VALIDATE_IP)) {
-            throw new \RestBadRequestException('IP is not valid.');
+            throw new \RestBadRequestException('Can not access your address.');
         }
 
         if (!isset($_POST['app_key']) || !$_POST['app_key']) {
@@ -85,7 +100,7 @@ class CentreonRemoteServer extends CentreonWebServiceAbstract
         $result = $statement->fetch();
 
         if ((bool) $result['count']) {
-            throw new \RestConflictException('IP already in wait list.');
+            throw new \RestConflictException('Address already in wait list.');
         }
 
         $createdAt = date('Y-m-d H:i:s');
@@ -101,7 +116,7 @@ class CentreonRemoteServer extends CentreonWebServiceAbstract
 
         try {
             $insert->execute($bindings);
-        } catch(\Exception $e) {
+        } catch (\Exception $e) {
             throw new \RestBadRequestException('There was an error saving the data.');
         }
 

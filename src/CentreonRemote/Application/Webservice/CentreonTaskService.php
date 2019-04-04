@@ -6,6 +6,9 @@ use Centreon\Domain\Entity\Task;
 use Centreon\Domain\Repository\InformationsRepository;
 use Exception;
 
+/**
+ * @OA\Tag(name="centreon_task_service", description="")
+ */
 class CentreonTaskService extends CentreonWebServiceAbstract
 {
 
@@ -20,35 +23,52 @@ class CentreonTaskService extends CentreonWebServiceAbstract
     }
 
     /**
-     * @SWG\Post(
-     *   path="/centreon/api/internal.php",
-     *   operationId="getTaskStatus",
-     *   @SWG\Parameter(
+     * @OA\Post(
+     *   path="/internal.php?object=centreon_task_service&action=getTaskStatus",
+     *   description="Get Status of task",
+     *   tags={"centreon_task_service"},
+     *   @OA\Parameter(
      *       in="query",
      *       name="object",
-     *       type="string",
+     *       @OA\Schema(
+     *          type="string",
+     *          enum={"centreon_task_service"},
+     *          default="centreon_task_service"
+     *       ),
      *       description="the name of the API object class",
-     *       required=true,
-     *       enum="centreon_task_service",
+     *       required=true
      *   ),
-     *   @SWG\Parameter(
+     *   @OA\Parameter(
      *       in="query",
      *       name="action",
-     *       type="string",
+     *       @OA\Schema(
+     *          type="string",
+     *          enum={"getTaskStatus"},
+     *          default="getTaskStatus"
+     *       ),
      *       description="the name of the action in the API class",
-     *       required=true,
-     *       enum="postGetTaskStatus",
+     *       required=true
      *   ),
-     *   @SWG\Parameter(
-     *       in="formData",
-     *       name="task_id",
-     *       type="string",
-     *       description="Id of the task you want to get status of",
+     *   @OA\RequestBody(
      *       required=true,
+     *       @OA\JsonContent(
+     *          required={
+     *              "task_id"
+     *          },
+     *          @OA\Property(
+     *              property="task_id",
+     *              type="string",
+     *              description="Id of the task you want to get status of"
+     *          )
+     *       )
      *   ),
-     *   @SWG\Response(
-     *     response=200,
-     *     description="JSON"
+     *   @OA\Response(
+     *       response=200,
+     *       description="JSON",
+     *       @OA\JsonContent(
+     *          @OA\Property(property="success", type="boolean"),
+     *          @OA\Property(property="status", type="string")
+     *       )
      *   )
      * )
      *
@@ -71,35 +91,52 @@ class CentreonTaskService extends CentreonWebServiceAbstract
     }
 
     /**
-     * @SWG\Post(
-     *   path="/centreon/api/external.php",
-     *   operationId="getTaskStatusByParent",
-     *   @SWG\Parameter(
+     * @OA\Post(
+     *   path="/external.php?object=centreon_task_service&action=getTaskStatusByParent",
+     *   description="Get Status of task by parent",
+     *   tags={"centreon_task_service"},
+     *   @OA\Parameter(
      *       in="query",
      *       name="object",
-     *       type="string",
+     *       @OA\Schema(
+     *          type="string",
+     *          enum={"centreon_task_service"},
+     *          default="centreon_task_service"
+     *       ),
      *       description="the name of the API object class",
-     *       required=true,
-     *       enum="centreon_task_service",
+     *       required=true
      *   ),
-     *   @SWG\Parameter(
+     *   @OA\Parameter(
      *       in="query",
      *       name="action",
-     *       type="string",
+     *       @OA\Schema(
+     *          type="string",
+     *          enum={"getTaskStatusByParent"},
+     *          default="getTaskStatusByParent"
+     *       ),
      *       description="the name of the action in the API class",
-     *       required=true,
-     *       enum="getTaskStatusByParent",
+     *       required=true
      *   ),
-     *   @SWG\Parameter(
-     *       in="formData",
-     *       name="parent_id",
-     *       type="string",
-     *       description="Id of the task you want to get status of",
+     *   @OA\RequestBody(
      *       required=true,
+     *       @OA\JsonContent(
+     *          required={
+     *              "parent_id"
+     *          },
+     *          @OA\Property(
+     *              property="parent_id",
+     *              type="string",
+     *              description="Id of the task you want to get status of"
+     *          )
+     *       )
      *   ),
-     *   @SWG\Response(
-     *     response=200,
-     *     description="JSON"
+     *   @OA\Response(
+     *       response=200,
+     *       description="JSON",
+     *       @OA\JsonContent(
+     *          @OA\Property(property="success", type="boolean"),
+     *          @OA\Property(property="status", type="string")
+     *       )
      *   )
      * )
      *
@@ -149,42 +186,58 @@ class CentreonTaskService extends CentreonWebServiceAbstract
     }
 
     /**
-     * @SWG\Post(
-     *   path="/centreon/api/external.php",
-     *   operationId="addImportTaskWithParent",
-     *   @SWG\Parameter(
+     * @OA\Post(
+     *   path="/external.php?object=centreon_task_service&action=addImportTaskWithParent",
+     *   description="Add new import task with parent ID",
+     *   tags={"centreon_task_service"},
+     *   @OA\Parameter(
      *       in="query",
      *       name="object",
-     *       type="string",
+     *       @OA\Schema(
+     *          type="string",
+     *          enum={"centreon_task_service"},
+     *          default="centreon_task_service"
+     *       ),
      *       description="the name of the API object class",
-     *       required=true,
-     *       enum="centreon_task_service",
+     *       required=true
      *   ),
-     *   @SWG\Parameter(
+     *   @OA\Parameter(
      *       in="query",
      *       name="action",
-     *       type="string",
+     *       @OA\Schema(
+     *          type="string",
+     *          enum={"addImportTaskWithParent"},
+     *          default="addImportTaskWithParent"
+     *       ),
      *       description="the name of the action in the API class",
-     *       required=true,
-     *       enum="getTaskStatusByParent",
+     *       required=true
      *   ),
-     *   @SWG\Parameter(
-     *       in="formData",
-     *       name="parent_id",
-     *       type="string",
-     *       description="the id of the task you want to attach subtask",
+     *   @OA\RequestBody(
      *       required=true,
+     *       @OA\JsonContent(
+     *          required={
+     *              "parent_id",
+     *              "params"
+     *          },
+     *          @OA\Property(
+     *              property="parent_id",
+     *              type="string",
+     *              description="the id of the task you want to attach subtask"
+     *          ),
+     *          @OA\Property(
+     *              property="params",
+     *              type="string",
+     *              description="serialize data for task must contain list of pollers and server address"
+     *          )
+     *       )
      *   ),
-     *   @SWG\Parameter(
-     *       in="formData",
-     *       name="params",
-     *       type="string",
-     *       description="serialize data for task must contain list of pollers and server address",
-     *       required=true,
-     *   ),
-     *   @SWG\Response(
-     *     response=200,
-     *     description="JSON"
+     *   @OA\Response(
+     *       response=200,
+     *       description="JSON",
+     *       @OA\JsonContent(
+     *          @OA\Property(property="success", type="boolean"),
+     *          @OA\Property(property="status", type="string")
+     *       )
      *   )
      * )
      *
@@ -204,7 +257,7 @@ class CentreonTaskService extends CentreonWebServiceAbstract
         /*
          * make sure only authorized master can create task
          */
-        $authorizedMaster = $this->getDi()['centreon.db-manager']->getRepository(InformationsRepository::class)
+        $authorizedMaster = $this->getDi()[\Centreon\ServiceProvider::CENTREON_DB_MANAGER]->getRepository(InformationsRepository::class)
             ->getOneByKey('authorizedMaster');
         $authorizedMasterTab = explode(',', $authorizedMaster->getValue());
 

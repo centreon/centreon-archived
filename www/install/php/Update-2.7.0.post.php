@@ -36,7 +36,6 @@
 
 # Manage timezone
 if (isset($pearDB)) {
-
     $timezone = date_default_timezone_get();
 
     $query1 = "select timezone_id from timezone where timezone_name= '" . $timezone . "'";
@@ -49,5 +48,4 @@ if (isset($pearDB)) {
 
     $query2 = "INSERT INTO `options` (`key`, `value`) VALUES ('gmt','" . $timezoneId . "')";
     $pearDB->query($query2);
-
 }

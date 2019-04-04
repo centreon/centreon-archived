@@ -89,7 +89,6 @@ if (!$is_admin && $host_id) {
 }
 
 if (($is_admin || $flag_acl) && $host_id) {
-
     $form = new HTML_QuickFormCustom('select_form', 'GET', "?p=".$p);
     $form->addElement('header', 'title', _("Command Options"));
 

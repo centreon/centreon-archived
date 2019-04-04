@@ -49,19 +49,19 @@ class ExportManifestTest extends TestCase
             ->getMock()
         ;
         $parser->method('parse')
-            ->will($this->returnCallback(function() {
+            ->will($this->returnCallback(function () {
                     $args = func_get_args();
                     $file = $args[0];
 
                     return [];
-                }))
+            }))
         ;
         $parser->method('dump')
-            ->will($this->returnCallback(function() {
+            ->will($this->returnCallback(function () {
                     $args = func_get_args();
 
                     $this->dumpData[$args[1]] = $args[0];
-                }))
+            }))
         ;
 
         $this->commitment = new ExportCommitment(1, [2, 3], null, $parser);
@@ -82,23 +82,23 @@ class ExportManifestTest extends TestCase
         //->expects($this->any())
         $this->manifest
             ->method('removePath')
-            ->will($this->returnCallback(function() {
-                    $args = func_get_args();
-                    $file = $args[0];
+            ->will($this->returnCallback(function () {
+                $args = func_get_args();
+                $file = $args[0];
 
-                    if (!file_exists($file)) {
-                        return null;
-                    }
+                if (!file_exists($file)) {
+                    return null;
+                }
 
                     return $file;
-                }))
+            }))
         ;
 
         $this->manifest
             ->method('getFile')
-            ->will($this->returnCallback(function() {
+            ->will($this->returnCallback(function () {
                     return __FILE__;
-                }))
+            }))
         ;
     }
 

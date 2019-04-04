@@ -4,11 +4,11 @@ namespace Centreon\Infrastructure\Service;
 class CentcoreConfigService
 {
 
-    CONST CONF_CORE = 'instCentCore.conf';
-    CONST CONF_PLUGINS = 'instCentPlugins.conf';
-    CONST CONF_WEB = 'instCentWeb.conf';
+    const CONF_CORE = 'instCentCore.conf';
+    const CONF_PLUGINS = 'instCentPlugins.conf';
+    const CONF_WEB = 'instCentWeb.conf';
 
-    CONST MACROS_DELIMITER_TEMPLATE = '@%s@';
+    const MACROS_DELIMITER_TEMPLATE = '@%s@';
 
     /**
      * @var array
@@ -122,7 +122,6 @@ class CentcoreConfigService
         try {
             $reslt = parse_ini_file($filename);
         } catch (\Exception $ex) {
-
         }
 
         return $reslt;

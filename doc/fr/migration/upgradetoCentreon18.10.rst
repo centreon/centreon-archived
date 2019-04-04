@@ -9,8 +9,8 @@ Prérequis
 *********
 
 Cette procédure ne s'applique que pour une plate-forme **Centreon 3.4**,
-installé sur une distribution GNU/Linux 64 bits et disposant des prérequis
-suivants :
+installé sur une distribution GNU/Linux 64 bits autre que CentOS ou Red Hat 7 
+et disposant des prérequis suivants :
 
 +-----------------+---------+
 | Composants      | Version |
@@ -34,7 +34,7 @@ Migration
 .. warning::
     En cas de migration d'une plate-forme disposant du système de redondance
     Centreon, il est nécessaire de contacter votre `support Centreon 
-    <https://support.centreon.com>`_.
+    <https://centreon.force.com>`_.
 
 .. warning::
     En cas de migration d'une plate-forme disposant du module **Centreon Poller
@@ -70,40 +70,45 @@ suivants : ::
 .. warning::
     En cas de migration d'une plate-forme CES 3.4.1, Centreon-web 2.8.26 sous CentOS 6 avec MariaDB 5.X, ne pas synchroniser les dossiers /var/lib/mysql avec RSYNC vers la database Centreon 18.10 en MariaDB 10.1.
     
-    #. Faire un dump des bases de données sources
+    #. Faire un dump des bases de données sources : ::
+    
         # mysqldump -u root -p centreon > /tmp/export/centreon.sql
         # mysqldump -u root -p centreon_storage > /tmp/export/centreon_storage.sql
       
-    #. Arreter le serveur MariaDB source
+    #. Arreter le serveur MariaDB source : ::
+    
         # service mysql stop
     
-    #. Transférer les exports vers le nouveau serveur de base de données Centreon 18.10
+    #. Transférer les exports vers le nouveau serveur de base de données Centreon 18.10 : ::
+    
         # rsync -avz /tmp/centreon.sql root@IP_New_Centreon:/tmp/
         # rsync -avz /tmp/centreon_storage.sql root@IP_New_Centreon:/tmp/
         
-    #. Sur le serveur de base de données Centreon 18.10 supprimer les bases de données vierges et les recréer
+    #. Sur le serveur de base de données Centreon 18.10 supprimer les bases de données vierges et les recréer : ::
+    
         # mysql -u root -p
         # drop database centreon;
         # drop database centreon_storage;
         # create database centreon;
         # create database centreon_storage;
         
-    #. Importer les dumps
+    #. Importer les dumps : ::
+    
         # mysql -u root centreon -p </tmp/centreon.sql
         # mysql -u root centreon_storage -p </tmp/centreon_storage.sql
         
-    #. Executer l'upgrade des tables
+    #. Executer l'upgrade des tables : ::
+    
         # mysql_upgrade
         
     #. Reprendre la procédure de migration
     
-
 Si le SGBD MySQL/MariaDB est installé sur même serveur que le serveur Centreon,
 exécutez les commandes suivantes :
 
 #. Arrêtez le processus **mysqld** sur les deux serveurs (ancien et nouveau) : ::
 
-    # systemctl stop mysqld
+    # service mysqld stop
 
 #. Sur le nouveau serveur, supprimer le contenu du répertoire /var/lib/mysql/ : ::
 
@@ -137,16 +142,17 @@ dépend de votre installation. Les principaux répertoires à synchroniser sont 
 .. note::
     Si vous avez des pollers en centreon engine 1.8.1 que vous comptez migrer plus tard en centreon engine 18.10, attention au dossier des plugins nagios. La ressource $USER1$ ce Centreon 18.10 pointe sur /usr/lib64/nagios/plugins
     
-    A éxécuter sur vos collecteurs en centreon-engine 1.8.1 :
+    A éxécuter sur vos collecteurs en centreon-engine 1.8.1 : ::
     
-    # mv /usr/lib64/nagios/plugins/* /usr/lib/nagios/plugins/
-    # rmdir /usr/lib64/nagios/plugins/
-    # ln -s -t /usr/lib64/nagios/ /usr/lib/nagios/plugins/
+        # mv /usr/lib64/nagios/plugins/* /usr/lib/nagios/plugins/
+        # rmdir /usr/lib64/nagios/plugins/
+        # ln -s -t /usr/lib64/nagios/ /usr/lib/nagios/plugins/
     
-    De cette façon un lien symbolique est créé :
-    # ls -alt /usr/lib64/nagios/
-    lrwxrwxrwx   1 root root      24  1 nov.  17:59 plugins -> /usr/lib/nagios/plugins/
-    -rwxr-xr-x   1 root root 1711288  6 avril  2018 cbmod.so
+    De cette façon un lien symbolique est créé : ::
+    
+        # ls -alt /usr/lib64/nagios/
+        lrwxrwxrwx   1 root root      24  1 nov.  17:59 plugins -> /usr/lib/nagios/plugins/
+        -rwxr-xr-x   1 root root 1711288  6 avril  2018 cbmod.so
     
     Et vous permet de pousser les configuration de collecteur depuis Centreon 18.10 indifféremment vers un collecteur en 18.10 ou 1.8.1
 

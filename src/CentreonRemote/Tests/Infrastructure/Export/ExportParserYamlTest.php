@@ -49,7 +49,7 @@ class ExportParserYamlTest extends TestCase
         // add file with macros
         $this->fs->get('/tmp')->add('test2.yml', new File('key: @val@'));
 
-        $result = $this->parser->parse('vfs://tmp/test2.yml', function(&$result){
+        $result = $this->parser->parse('vfs://tmp/test2.yml', function (&$result) {
             $result = str_replace('@val@', 'val', $result);
         });
 

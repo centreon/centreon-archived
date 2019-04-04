@@ -39,7 +39,6 @@ ini_set('display_errors', 'Off');
 require_once dirname(__FILE__) . '/../../bootstrap.php';
 require_once _CENTREON_PATH_ . '/www/class/centreonDB.class.php';
 require_once dirname(__FILE__) . '/class/webService.class.php';
-require_once dirname(__FILE__) . '/exceptions.php';
 
 $pearDB = new CentreonDB;
 

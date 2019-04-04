@@ -10,6 +10,6 @@ class AppKeyGeneratorService implements KeyGeneratorInterface
      */
     public function generateKey(): string
     {
-        return md5(uniqid(rand(), TRUE));
+        return md5(uniqid(rand(), true));
     }
 }

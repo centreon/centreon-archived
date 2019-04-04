@@ -93,7 +93,7 @@ class TaskService
      * @param string $type
      * @param array $params
      * @param int $parentId
-     * @return mixed
+     * @return int|bool
      */
     public function addTask(string $type, array $params, int $parentId = null)
     {
@@ -175,8 +175,7 @@ class TaskService
     public function updateStatus(string $taskId, string $status)
     {
         $task = $this->getDbManager()->getAdapter('configuration_db')->getRepository(TaskRepository::class)->findOneById($taskId);
-        if (!in_array($status,$task->getStatuses()))
-        {
+        if (!in_array($status, $task->getStatuses())) {
             return false;
         }
 

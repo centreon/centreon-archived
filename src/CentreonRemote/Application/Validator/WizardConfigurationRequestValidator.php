@@ -58,21 +58,9 @@ class WizardConfigurationRequestValidator
             );
         }
 
-        if (!filter_var($_POST['server_ip'], FILTER_VALIDATE_IP)) {
-            throw new \RestBadRequestException(
-                sprintf(_('%s is not valid.'), 'server_ip')
-            );
-        }
-
         if (!isset($_POST['centreon_central_ip']) || !$_POST['centreon_central_ip']) {
             throw new \RestBadRequestException(
                 sprintf(_($missingParameterMessage), 'centreon_central_ip')
-            );
-        }
-
-        if (!filter_var($_POST['centreon_central_ip'], FILTER_VALIDATE_IP)) {
-            throw new \RestBadRequestException(
-                sprintf(_('%s is not valid.'), 'centreon_central_ip')
             );
         }
     }

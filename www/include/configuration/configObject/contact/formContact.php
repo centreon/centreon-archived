@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2005-2015 Centreon
+ * Copyright 2005-2019 Centreon
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -32,6 +32,8 @@
  * For more information : contact@centreon.com
  *
  */
+
+use Centreon\Infrastructure\Event\EventDispatcher;
 
 if (!isset($centreon)) {
     exit();
@@ -221,14 +223,64 @@ $attrAclgroups = array(
 );
 
 $form = new HTML_QuickFormCustom('Form', 'post', "?p=" . $p);
+/**
+ * Smarty template Init
+ */
+$tpl = new Smarty();
+$tpl = initSmartyTpl($path, $tpl);
+
+/**
+ * @var $moduleFormManager \Centreon\Domain\Service\ModuleFormManager
+ */
+
 if ($o == "a") {
     $form->addElement('header', 'title', _("Add a User"));
+
+    $eventDispatcher->notify(
+        'contact.form',
+        EventDispatcher::EVENT_DISPLAY,
+        [
+            'form' => $form,
+            'tpl' =>$tpl,
+            'contact_id' => $contact_id
+        ]
+    );
 } elseif ($o == "c") {
     $form->addElement('header', 'title', _("Modify a User"));
+
+    $eventDispatcher->notify(
+        'contact.form',
+        EventDispatcher::EVENT_READ,
+        [
+            'form' => $form,
+            'tpl' =>$tpl,
+            'contact_id' => $contact_id
+        ]
+    );
 } elseif ($o == "w") {
     $form->addElement('header', 'title', _("View a User"));
+
+    $eventDispatcher->notify(
+        'contact.form',
+        EventDispatcher::EVENT_READ,
+        [
+            'form' => $form,
+            'tpl' =>$tpl,
+            'contact_id' => $contact_id
+        ]
+    );
 } elseif ($o == "mc") {
     $form->addElement('header', 'title', _("Massive Change"));
+
+    $eventDispatcher->notify(
+        'contact.form',
+        EventDispatcher::EVENT_DISPLAY,
+        [
+            'form' => $form,
+            'tpl' =>$tpl,
+            'contact_id' => $contact_id
+        ]
+    );
 }
 
 /**
@@ -680,13 +732,6 @@ if ($o != "mc") {
 }
 $form->setRequiredNote("<font style='color: red;'>*</font>&nbsp;" . _("Required fields"));
 
-
-/**
- * Smarty template Init
- */
-$tpl = new Smarty();
-$tpl = initSmartyTpl($path, $tpl);
-
 $tpl->assign(
     "helpattr",
     'TITLE, "' . _("Help") . '", CLOSEBTN, true, FIX, [this, 0, 5], BGCOLOR, "#ffff99", BORDERCOLOR, '
@@ -701,7 +746,6 @@ foreach ($help as $key => $text) {
     $helptext .= '<span style="display:none" id="help:' . $key . '">' . $text . '</span>' . "\n";
 }
 $tpl->assign("helptext", $helptext);
-
 if ($o == "w") {
     # Just watch a contact information
     if ($centreon->user->access->page($p) != 2) {
@@ -737,17 +781,46 @@ if ($centreon->optGen['ldap_auth_enable'] == 1 && $cct['contact_auth_type'] == '
 }
 
 $valid = false;
+
 if ($form->validate() && $from_list_menu == false) {
     $cctObj = $form->getElement('contact_id');
     if ($form->getSubmitValue("submitA")) {
-        $cctObj->setValue(insertContactInDB());
+        $newContactId = insertContactInDB();
+        $cctObj->setValue($contactId);
+
+        $eventDispatcher->notify(
+            'contact.form',
+            EventDispatcher::EVENT_ADD,
+            [
+                'form' => $form,
+                'contact_id' => $newContactId
+            ]
+        );
     } elseif ($form->getSubmitValue("submitC")) {
         updateContactInDB($cctObj->getValue());
+
+        $eventDispatcher->notify(
+            'contact.form',
+            EventDispatcher::EVENT_UPDATE,
+            [
+                'form' => $form,
+                'contact_id' => $contact_id
+            ]
+        );
     } elseif ($form->getSubmitValue("submitMC")) {
         $select = explode(",", $select);
-        foreach ($select as $key => $value) {
-            if ($value) {
-                updateContactInDB($value, true);
+        foreach ($select as $key => $contactId) {
+            if ($contactId) {
+                updateContactInDB($contactId, true);
+
+                $eventDispatcher->notify(
+                    'contact.form',
+                    EventDispatcher::EVENT_UPDATE,
+                    [
+                        'form' => $form,
+                        'contact_id' => $contactId
+                    ]
+                );
             }
         }
     }
@@ -774,6 +847,7 @@ if ($valid) {
         $tpl->assign('ldap', $centreon->optGen['ldap_auth_enable']);
     }
     $tpl->assign('auth_type', $contactAuthType);
+
     if ($isRemote == false) {
         $tpl->display("formContact.ihtml");
     } else {

@@ -16,7 +16,6 @@ class NotifyMasterService
     const CANT_CONNECT = 'Could not connect';
     const TIMEOUT = 'Timeout';
     const UNKNOWN_ERROR = 'Unknown Error';
-    const WRONG_IP = 'Wrong IP';
     const NO_APP_KEY = 'No Application Key found';
 
     /**
@@ -36,11 +35,19 @@ class NotifyMasterService
     private $curl;
 
     /**
-     * @return Curl
+     * @return void
      */
     public function setCurl(Curl $curl): void
     {
         $this->curl = $curl;
+    }
+
+    /**
+     * @return Curl
+     */
+    public function getCurl(): Curl
+    {
+        return $this->curl;
     }
 
     /**
@@ -61,19 +68,13 @@ class NotifyMasterService
      */
     public function pingMaster($ip)
     {
-        if (!filter_var($ip, FILTER_VALIDATE_IP)) {
-            return [
-                'status' => self::FAIL,
-                'details' => self::WRONG_IP
-            ];
-        }
 
         $url = "{$ip}/centreon/api/external.php?object=centreon_remote_server&action=addToWaitList";
         $repository = $this->dbManager->getRepository(InformationsRepository::class);
         $applicationKey = $repository->getOneByKey('appKey');
         $version = $repository->getOneByKey('version');
 
-        if (empty($applicationKey)){
+        if (empty($applicationKey)) {
             return [
                 'status' => self::FAIL,
                 'details' => self::NO_APP_KEY
@@ -85,10 +86,11 @@ class NotifyMasterService
                 'app_key' => $applicationKey->getValue(),
                 'version' => $version->getValue(),
             ];
-            $this->curl->post($url, $curlData);
 
-            if ($curl->error) {
-                switch ($curl->error_code) {
+            $this->getCurl()->post($url, $curlData);
+
+            if ($this->getCurl()->error) {
+                switch ($this->getCurl()->error_code) {
                     case 6:
                         $details = self::CANT_RESOLVE_HOST;
                         break;

@@ -35,12 +35,16 @@
 
 namespace CentreonLegacy\Core\Widget;
 
+use Psr\Container\ContainerInterface;
+use CentreonLegacy\Core\Utils\Utils;
+use CentreonLegacy\ServiceProvider;
+
 class Information
 {
     /**
-     * @var \Pimple\Container
+     * @var \Psr\Container\ContainerInterface
      */
-    protected $dependencyInjector;
+    protected $services;
     
     /**
      * @var \CentreonLegacy\Core\Utils\Utils
@@ -63,14 +67,15 @@ class Information
     protected $hasWidgetsForInstallation = false;
     
     /**
-     *
-     * @param \Pimple\Container $dependencyInjector
+     * Construct
+     * 
+     * @param \Psr\Container\ContainerInterface $services
      * @param \CentreonLegacy\Core\Utils\Utils $utils
      */
-    public function __construct(\Pimple\Container $dependencyInjector, \CentreonLegacy\Core\Utils\Utils $utils)
+    public function __construct(ContainerInterface $services, Utils $utils = null)
     {
-        $this->dependencyInjector = $dependencyInjector;
-        $this->utils = $utils;
+        $this->services = $services;
+        $this->utils = $utils ?? $services->get(ServiceProvider::CENTREON_LEGACY_UTILS);
     }
 
     /**
@@ -82,7 +87,7 @@ class Information
     public function getConfiguration($widgetDirectory)
     {
         $widgetPath = $this->utils->buildPath('/widgets/' . $widgetDirectory);
-        if (!$this->dependencyInjector['filesystem']->exists($widgetPath . '/configs.xml')) {
+        if (!$this->services->get('filesystem')->exists($widgetPath . '/configs.xml')) {
             throw new \Exception('Cannot get configuration file of widget "' . $widgetDirectory . '"');
         }
 
@@ -105,7 +110,7 @@ class Information
         $query = 'SELECT ft_typename, field_type_id ' .
             'FROM widget_parameters_field_type ';
 
-        $result = $this->dependencyInjector['configuration_db']->query($query);
+        $result = $this->services->get('configuration_db')->query($query);
 
         while ($row = $result->fetchRow()) {
             $types[$row['ft_typename']] = array(
@@ -132,7 +137,7 @@ class Information
             $query .= 'AND widget_model_id = :id ';
         }
 
-        $sth = $this->dependencyInjector['configuration_db']->prepare($query);
+        $sth = $this->services->get('configuration_db')->prepare($query);
 
         $sth->bindValue(':name', $name, \PDO::PARAM_STR);
         if (!is_null($widgetModelId)) {
@@ -160,7 +165,7 @@ class Information
             'FROM widget_parameters ' .
             'WHERE widget_model_id = :id ';
 
-        $sth = $this->dependencyInjector['configuration_db']->prepare($query);
+        $sth = $this->services->get('configuration_db')->prepare($query);
         $sth->bindParam(':id', $widgetId, \PDO::PARAM_INT);
         $sth->execute();
 
@@ -183,7 +188,7 @@ class Information
             'FROM widget_models ' .
             'WHERE directory = :directory';
 
-        $sth = $this->dependencyInjector['configuration_db']->prepare($query);
+        $sth = $this->services->get('configuration_db')->prepare($query);
 
         $sth->bindParam(':directory', $name, \PDO::PARAM_STR);
 
@@ -206,7 +211,7 @@ class Information
         $query = 'SELECT * ' .
             'FROM widget_models ';
 
-        $result = $this->dependencyInjector['configuration_db']->query($query);
+        $result = $this->services->get('configuration_db')->query($query);
 
         $widgets = $result->fetchAll();
 
@@ -229,7 +234,7 @@ class Information
         $widgetsConf = array();
 
         $widgetsPath = $this->getWidgetPath();
-        $widgets = $this->dependencyInjector['finder']->directories()->depth('== 0')->in($widgetsPath);
+        $widgets = $this->services->get('finder')->directories()->depth('== 0')->in($widgetsPath);
 
         foreach ($widgets as $widget) {
             $widgetDirectory = $widget->getBasename();
@@ -238,7 +243,7 @@ class Information
             }
 
             $widgetPath = $widgetsPath . $widgetDirectory;
-            if (!$this->dependencyInjector['filesystem']->exists($widgetPath . '/configs.xml')) {
+            if (!$this->services->get('filesystem')->exists($widgetPath . '/configs.xml')) {
                 continue;
             }
 
@@ -306,7 +311,7 @@ class Information
         $query = 'SELECT widget_model_id ' .
             'FROM widget_models ' .
             'WHERE directory = :name';
-        $sth = $this->dependencyInjector['configuration_db']->prepare($query);
+        $sth = $this->services->get('configuration_db')->prepare($query);
 
         $sth->bindParam(':name', $widgetName, \PDO::PARAM_STR);
 

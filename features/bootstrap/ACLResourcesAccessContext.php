@@ -262,7 +262,6 @@ class ACLResourcesAccessContext extends CentreonContext
             $this->tableau = array_unique($this->tableau);
             throw new \Exception("Some properties are not being updated : " . implode(',', $this->tableau));
         }
-
     }
 
     /**

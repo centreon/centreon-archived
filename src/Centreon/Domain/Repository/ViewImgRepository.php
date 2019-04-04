@@ -8,7 +8,7 @@ class ViewImgRepository extends ServiceEntityRepository
 
     /**
      * Export
-     * 
+     *
      * @param array $imgList
      * @return array
      */
@@ -57,7 +57,7 @@ SQL;
 
     /**
      * Get a chain of the related objects
-     * 
+     *
      * @param int[] $pollerIds
      * @param int[] $hostTemplateChain
      * @param int[] $serviceTemplateChain

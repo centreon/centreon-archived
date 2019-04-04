@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { connect } from "react-redux";
 
 import logo from "../../img/centreon.png";
 import miniLogo from "../../img/centreon-logo-mini.svg";
@@ -9,9 +10,7 @@ import axios from "../../axios";
 import routeMap from "../../route-maps/route-map";
 
 import { Translate } from 'react-redux-i18n';
-import { setNavigation } from "../../redux/actions/navigationActions";
-import { connect } from "react-redux";
-
+import { fetchNavigationData } from "../../redux/actions/navigationActions";
 import { updateTooltip } from '../../redux/actions/tooltipActions';
 
 class NavigationComponent extends Component {
@@ -27,20 +26,9 @@ class NavigationComponent extends Component {
     menuItems: []
   };
 
-  UNSAFE_componentWillMount = () => {
-    const { setNavigation } = this.props
-
-    this.navService.get().then(({ data }) => {
-
-      // store allowed topologies in redux (useful to get acl information in other components)
-      setNavigation(data);
-
-      // provide data in the state (render menu)
-      this.setState({
-        menuItems: data,
-        selectedMenu: Object.values(data)[0]
-      });
-    })
+  componentDidMount = () => {
+    const { fetchNavigationData } = this.props;
+    fetchNavigationData();
   };
 
   // toggle between icons menu and details menu
@@ -67,7 +55,7 @@ class NavigationComponent extends Component {
   collapseLevelTwo = index => {
     this.clickTimeout = setTimeout(() => {
       if (!this.doubleClicked) {
-        let { menuItems } = this.state;
+        let { menuItems } = this.props;
 
         Object.keys(menuItems).forEach(key => {
           menuItems[key].toggled = key === index ?
@@ -85,7 +73,7 @@ class NavigationComponent extends Component {
 
   // display/hide level 3
   collapseLevelThree = (levelOneKey, levelTwoKey) => {
-    let { menuItems } = this.state;
+    let { menuItems } = this.props;
 
     Object.keys(menuItems[levelOneKey].children).forEach(subKey => {
       if (subKey === levelTwoKey) {
@@ -102,7 +90,7 @@ class NavigationComponent extends Component {
 
   // activate level 1 (display colored menu)
   activateTopLevelMenu = index => {
-    let { menuItems } = this.state;
+    let { menuItems } = this.props;
 
     Object.keys(menuItems).forEach(key => {
       menuItems[key].active = (key === index);
@@ -112,6 +100,43 @@ class NavigationComponent extends Component {
       menuItems
     });
   };
+
+  // check if current tab is active
+  isActive = (pageId, urlParams) => {
+    let isActive = false;
+    if (urlParams.url.match(/main\.php/)) { // legacy url
+      isActive = pageId == urlParams.urlOptions;
+    } else { // react route
+      isActive = pageId == urlParams.url;
+    }
+
+    return isActive;
+  };
+
+  // get page id
+  // legacy routes ==> get topology page
+  // react routes ==> get path (eg: /administration/extensions/manager)
+  getPageId = () => {
+    const { pathname, search } = this.props.history.location;
+    let pageId = '';
+    if (search.match(/p=/)) { // legacy url
+      pageId = search.split("p=")[1];
+    } else { // react route
+      pageId = pathname;
+    }
+    return pageId;
+  }
+
+  // get url parameters from navigation entry
+  // eg: {url: '/administration/extensions/manager', urlOptions: ''}
+  // eg: {url: 'main.php?p=570101&o=c', urlOptions: '&o=c'}
+  getUrlFromEntry = (entryKey, entryProps) => {
+    const urlOptions = entryKey.slice(1) + (entryProps.options !== null ? entryProps.options : '');
+    const url = entryProps.is_react == '1'
+      ? entryProps.url
+      : routeMap.module + "?p=" + urlOptions;
+    return { url, urlOptions };
+  }
 
   // navigate to the page
   goToPage = (route, topLevelIndex) => {
@@ -142,8 +167,9 @@ class NavigationComponent extends Component {
   };
 
   render() {
-    const { active, menuItems } = this.state;
-    const pageId = this.props.history.location.search.split("p=")[1];
+    const { menuItems } = this.props;
+    const { active } = this.state;
+    const pageId = this.getPageId();
 
     return (
       <nav class={"sidebar" + (active ? " active" : "")} id="sidebar">
@@ -188,7 +214,9 @@ class NavigationComponent extends Component {
                   id={"menu" + levelOneKey}
                 >
                   <span class={`iconmoon icon-${levelOneProps.menu_id.toLowerCase()}`}>
-                    <span class={"menu-item-name"}><Translate value={levelOneProps.label}/></span>
+                    <span class={"menu-item-name"}>
+                      <Translate value={levelOneProps.label}/>
+                    </span>
                   </span>
                 </span>
                 <ul
@@ -196,13 +224,16 @@ class NavigationComponent extends Component {
                   style={{ display: (levelOneProps.toggled && active) ? "block" : "none" }}
                 >
                   {Object.entries(levelOneProps.children).map(([levelTwoKey, levelTwoProps]) => {
-                    const urlOptions = levelTwoKey.slice(1) +
-                      (levelTwoProps.options !== null ? levelTwoProps.options : '')
+                    const levelTwoUrl = this.getUrlFromEntry(levelTwoKey, levelTwoProps);
                     if (levelTwoProps.label) {
                       return (
                         <li
                           class={
-                            "collapsed-item" + (levelTwoProps.collapsed || (pageId == urlOptions) ? " active" : "")
+                            "collapsed-item" +
+                            (levelTwoProps.collapsed || (this.isActive(pageId, levelTwoUrl))
+                              ? " active"
+                              : ""
+                            )
                           }
                         >
                           {Object.keys(levelTwoProps.children).length > 0 ? (
@@ -215,14 +246,9 @@ class NavigationComponent extends Component {
                             </span>
                           ) : (
                               <Link
-                                onClick={() => {
-                                  this.goToPage(
-                                    routeMap.module + "?p=" + urlOptions,
-                                    levelOneKey
-                                  )
-                                }}
-                                className={`collapsed-level-item-link img-none ${(pageId == urlOptions) ? "active" : ""}`}
-                                to={routeMap.module + "?p=" + urlOptions}
+                                onClick={() => {this.goToPage(levelTwoUrl.url, levelOneKey)}}
+                                className={`collapsed-level-item-link img-none ${(this.isActive(pageId, levelTwoUrl)) ? "active" : ""}`}
+                                to={levelTwoUrl.url}
                               >
                                 <Translate value={levelTwoProps.label}/>
                               </Link>
@@ -231,29 +257,23 @@ class NavigationComponent extends Component {
                           <ul class="collapse-level collapsed-level-items first-level list-unstyled">
                             {Object.entries(levelTwoProps.children).map(([levelThreeKey, levelThreeProps]) => {
                               return (
-                                <React.Fragment>
+                                <>
                                   {Object.keys(levelTwoProps.children).length > 1 &&
                                     <span class="collapsed-level-title">
                                       <Translate value={levelThreeKey}/>
                                     </span>
                                   }
                                   {Object.entries(levelThreeProps).map(([levelFourKey, levelFourProps]) => {
-                                    const urlOptions = levelFourKey.slice(1) +
-                                      (levelFourProps.options !== null ? levelFourProps.options : '')
+                                    const levelFourUrl = this.getUrlFromEntry(levelFourKey, levelFourProps);
                                     if (levelFourProps.label) {
                                       return (
                                         <li
-                                          class={"collapsed-level-item" + (pageId == urlOptions ? " active" : "")}
+                                          class={"collapsed-level-item" + (this.isActive(pageId, levelFourUrl) ? " active" : "")}
                                         >
                                           <Link
-                                            onClick={() => {
-                                              this.goToPage(
-                                                routeMap.module + "?p=" + urlOptions,
-                                                levelOneKey
-                                              )
-                                            }}
+                                            onClick={() => {this.goToPage(levelFourUrl.url, levelOneKey)}}
                                             className="collapsed-level-item-link"
-                                            to={routeMap.module + "?p=" + urlOptions}
+                                            to={levelFourUrl.url}
                                           >
                                             <Translate value={levelFourProps.label}/>
                                           </Link>
@@ -264,7 +284,7 @@ class NavigationComponent extends Component {
                                     }
                                   }
                                   )}
-                                </React.Fragment>
+                                </>
                               )
                             })}
                           </ul>
@@ -281,7 +301,7 @@ class NavigationComponent extends Component {
           <div class="toggle-sidebar-wrap">
             <span
               class="toggle-sidebar-icon"
-              onClick={() => {this.toggleNavigation()}}
+              onClick={this.toggleNavigation}
             />
           </div>
         </div>
@@ -290,11 +310,20 @@ class NavigationComponent extends Component {
   }
 }
 
-const mapStateToProps = () => {}
+const mapStateToProps = ({ navigation }) => ({
+  entries: navigation.entries,
+  menuItems: navigation.menuItems
+});
 
-const mapDispatchToProps = {
-  setNavigation,
-  updateTooltip
+const mapDispatchToProps = dispatch => {
+  return {
+    fetchNavigationData: () => {
+      dispatch(fetchNavigationData());
+    },
+    updateTooltip: () => {
+      dispatch(updateTooltip());
+    }
+  };
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(withRouter(NavigationComponent));

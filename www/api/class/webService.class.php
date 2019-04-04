@@ -67,13 +67,21 @@ class CentreonWebService
      */
     public function __construct()
     {
+        $this->loadDb();
+        $this->loadArguments();
+        $this->loadToken();
+    }
+
+    /**
+     * Load database
+     */
+    protected function loadDb()
+    {
         if (isset($this->pearDB)) {
             $this->pearDB = $this->pearDB;
         } else {
             $this->pearDB = new CentreonDB();
         }
-        $this->loadArguments();
-        $this->loadToken();
     }
 
     /**
@@ -305,8 +313,13 @@ class CentreonWebService
             // Initialize the language translator
             $dependencyInjector['translator'];
 
-            $wsObj = new $webService['class'];
-            $wsObj->setDi($dependencyInjector);
+            // Use the web service if has been initialized or initialize it
+            if(isset($dependencyInjector[$webService['class']])) {
+                $wsObj = $dependencyInjector[$webService['class']];
+            } else {
+                $wsObj = new $webService['class'];
+                $wsObj->setDi($dependencyInjector);
+            }
         } else {
             $webService = self::webservicePath($object);
             

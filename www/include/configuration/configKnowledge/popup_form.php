@@ -139,7 +139,6 @@ if (isset($_GET["session_id"]) && $_GET["session_id"] != "") {
         print "<input type='hidden' name='object' value='" . htmlentities($_GET["object"], ENT_QUOTES) . "' />";
         print "<input type='submit' name='create' value='" . _("Create wiki page") . "' />";
         print "</form>";
-
     } elseif ($_GET["type"] == 3) {
         $diff = $proc->getDiff($proc->serviceTplList, 3);
         $svcTplListForAdd = array(null => null);

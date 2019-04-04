@@ -321,15 +321,16 @@ class CentreonAuthLDAP
                     if ($listGroupStr == "") {
                         $listGroupStr = "''";
                     }
-                    $query = "SELECT cg_id FROM contactgroup WHERE cg_name IN (" . $listGroupStr . ")";
-                    $res = $this->pearDB->query($query);
+                    $query2 = "SELECT cg_id FROM contactgroup WHERE cg_name IN (" . $listGroupStr . ")";
+                    $res2 = $this->pearDB->query($query2);
 
-                    // Insert the relation between contact and contactgroups
-                    $query = "INSERT INTO contactgroup_contact_relation (contactgroup_cg_id, contact_contact_id) " .
+                    // Insert the relation between the LDAP's contactgroups and the user
+                    // Moving the prepare statement before the while loop for better performances
+                    $query3 = "INSERT INTO contactgroup_contact_relation (contactgroup_cg_id, contact_contact_id) " .
                         "VALUES (:ldapCg, :contactId)";
-                    $stmt = $this->pearDB->prepare($query);
-                    while ($row = $res->fetch()) {
-                        $stmt->bindValue(':ldapCg', $row['cg_id'], PDO::PARAM_INT);
+                    $stmt = $this->pearDB->prepare($query3);
+                    while ($row2 = $res2->fetch()) {
+                        $stmt->bindValue(':ldapCg', $row2['cg_id'], PDO::PARAM_INT);
                         $stmt->bindValue(':contactId', $this->contactInfos['contact_id'], PDO::PARAM_INT);
                         $stmt->execute();
                     }

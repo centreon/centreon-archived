@@ -16,7 +16,7 @@ abstract class ServiceEntityRepository
 
     /**
      * Construct
-     * 
+     *
      * @param \CentreonDB $db
      */
     public function __construct(CentreonDB $db)

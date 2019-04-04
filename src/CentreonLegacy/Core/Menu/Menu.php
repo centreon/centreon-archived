@@ -61,7 +61,7 @@ class Menu
         $this->db = $db;
         if (!is_null($user)) {
             $this->currentPage = $user->getCurrentPage();
-            if (!$user->is_admin) {
+            if (!$user->access->admin) {
                 $this->acl = ' AND topology_page IN (' . $user->access->getTopologyString() . ') ';
             }
         }
