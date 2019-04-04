@@ -35,18 +35,23 @@
 
 namespace CentreonLegacy\Core\Module;
 
+use Psr\Container\ContainerInterface;
+use CentreonLegacy\Core\Module\License;
+use CentreonLegacy\Core\Utils\Utils;
+use CentreonLegacy\ServiceProvider;
+
 class Information
 {
     /**
      * @var \CentreonLegacy\Core\Module\License
      */
     protected $licenseObj;
-
+    
     /**
-     * @var \Pimple\Container
+     * @var \Psr\Container\ContainerInterface
      */
-    protected $dependencyInjector;
-
+    protected $services;
+    
     /**
      * @var \CentreonLegacy\Core\Utils\Utils
      */
@@ -69,18 +74,18 @@ class Information
 
     /**
      *
-     * @param \Pimple\Container $dependencyInjector
+     * @param \Psr\Container\ContainerInterface $services
      * @param \CentreonLegacy\Core\Module\License $licenseObj
      * @param \CentreonLegacy\Core\Utils\Utils $utils
      */
     public function __construct(
-        \Pimple\Container $dependencyInjector,
-        \CentreonLegacy\Core\Module\License $licenseObj,
-        \CentreonLegacy\Core\Utils\Utils $utils
+        ContainerInterface $services,
+        License $licenseObj = null,
+        Utils $utils = null
     ) {
-        $this->dependencyInjector = $dependencyInjector;
-        $this->licenseObj = $licenseObj;
-        $this->utils = $utils;
+        $this->services = $services;
+        $this->licenseObj = $licenseObj ?? $services->get(ServiceProvider::CENTREON_LEGACY_MODULE_LICENSE);
+        $this->utils = $utils ?? $services->get(ServiceProvider::CENTREON_LEGACY_UTILS);
     }
 
     /**
@@ -106,7 +111,7 @@ class Information
         $query = 'SELECT name ' .
             'FROM modules_informations ' .
             'WHERE id = :id';
-        $sth = $this->dependencyInjector['configuration_db']->prepare($query);
+        $sth = $this->services->get('configuration_db')->prepare($query);
 
         $sth->bindParam(':id', $moduleId, \PDO::PARAM_INT);
 
@@ -129,7 +134,7 @@ class Information
         $query = 'SELECT * ' .
             'FROM modules_informations ';
 
-        $result = $this->dependencyInjector['configuration_db']->query($query);
+        $result = $this->services->get('configuration_db')->query($query);
 
         $modules = $result->fetchAll();
 
@@ -151,7 +156,7 @@ class Information
         $query = 'SELECT * ' .
             'FROM modules_informations ' .
             'WHERE name = :name';
-        $sth = $this->dependencyInjector['configuration_db']->prepare($query);
+        $sth = $this->services->get('configuration_db')->prepare($query);
 
         $sth->bindParam(':name', $moduleName, \PDO::PARAM_STR);
 
@@ -169,13 +174,13 @@ class Information
         $list = array();
 
         $modulesPath = $this->getModulePath();
-        $modules = $this->dependencyInjector['finder']->directories()->depth('== 0')->in($modulesPath);
+        $modules = $this->services->get('finder')->directories()->depth('== 0')->in($modulesPath);
 
         foreach ($modules as $module) {
             $moduleName = $module->getBasename();
             $modulePath = $modulesPath . $moduleName;
 
-            if (!$this->dependencyInjector['filesystem']->exists($modulePath . '/conf.php')) {
+            if (!$this->services->get('filesystem')->exists($modulePath . '/conf.php')) {
                 continue;
             }
 

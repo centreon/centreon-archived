@@ -37,15 +37,18 @@ session_start();
 require_once __DIR__ . '/../../../../bootstrap.php';
 
 $parameters = filter_input_array(INPUT_POST);
-if ((int)$parameters["send_statistics"] == 1) {
-    $query = "INSERT INTO options (`key`, `value`) VALUES ('send_statistics', '1')";
-} else {
-    $query = "INSERT INTO options (`key`, `value`) VALUES ('send_statistics', '0')";
-}
 
-$db = $dependencyInjector['configuration_db'];
-$db->query("DELETE FROM options WHERE `key` = 'send_statistics'");
-$db->query($query);
+if ($parameters) {
+    if ((int)$parameters["send_statistics"] === 1) {
+        $query = "INSERT INTO options (`key`, `value`) VALUES ('send_statistics', '1')";
+    } else {
+        $query = "INSERT INTO options (`key`, `value`) VALUES ('send_statistics', '0')";
+    }
+
+    $db = $dependencyInjector['configuration_db'];
+    $db->query("DELETE FROM options WHERE `key` = 'send_statistics'");
+    $db->query($query);
+}
 
 $name = 'install-' . $_SESSION['CURRENT_VERSION'] . '-' . date('Ymd_His');
 $completeName = $centreon_path . '/installDir/' . $name;

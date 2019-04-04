@@ -9,6 +9,9 @@ use CentreonRemote\Domain\Service\ConfigurationWizard\PollerConfigurationRequest
 use CentreonRemote\Domain\Service\ConfigurationWizard\ServerConnectionConfigurationService;
 use CentreonRemote\Domain\Value\ServerWizardIdentity;
 
+/**
+ * @OA\Tag(name="centreon_configuration_remote", description="")
+ */
 class CentreonConfigurationRemote extends CentreonWebServiceAbstract
 {
 
@@ -23,28 +26,40 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
     }
 
     /**
-     * @SWG\Post(
-     *   path="/centreon/api/internal.php",
-     *   operationId="getWaitList",
-     *   @SWG\Parameter(
+     * @OA\Post(
+     *   path="/internal.php?object=centreon_configuration_remote&action=getWaitList",
+     *   description="Get remotes servers waitlist",
+     *   tags={"centreon_configuration_remote"},
+     *   security={{"Session": {}}},
+     *   @OA\Parameter(
      *       in="query",
      *       name="object",
-     *       type="string",
+     *       @OA\Schema(
+     *          type="string",
+     *          enum={"centreon_configuration_remote"},
+     *          default="centreon_configuration_remote"
+     *       ),
      *       description="the name of the API object class",
-     *       required=true,
-     *       enum="centreon_configuration_remote",
+     *       required=true
      *   ),
-     *   @SWG\Parameter(
+     *   @OA\Parameter(
      *       in="query",
      *       name="action",
-     *       type="string",
+     *       @OA\Schema(
+     *          type="string",
+     *          enum={"getWaitList"},
+     *          default="getWaitList"
+     *       ),
      *       description="the name of the action in the API class",
-     *       required=true,
-     *       enum="getWaitList",
+     *       required=true
      *   ),
-     *   @SWG\Response(
-     *     response=200,
-     *     description="JSON with the IPs inside the waitlist"
+     *   @OA\Response(
+     *       response=200,
+     *       description="JSON with the IPs inside the waitlist",
+     *       @OA\JsonContent(
+     *          @OA\Property(property="ip", type="string"),
+     *          @OA\Property(property="version", type="string")
+     *      )
      *   )
      * )
      *
@@ -60,28 +75,41 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
     }
 
     /**
-     * @SWG\Post(
-     *   path="/centreon/api/internal.php",
-     *   operationId="getRemotesList",
-     *   @SWG\Parameter(
+     * @OA\Post(
+     *   path="/internal.php?object=centreon_configuration_remote&action=getRemotesList",
+     *   description="Get list with connected remotes",
+     *   tags={"centreon_configuration_remote"},
+     *   security={{"Session": {}}},
+     *   @OA\Parameter(
      *       in="query",
      *       name="object",
-     *       type="string",
+     *       @OA\Schema(
+     *          type="string",
+     *          enum={"centreon_configuration_remote"},
+     *          default="centreon_configuration_remote"
+     *       ),
      *       description="the name of the API object class",
-     *       required=true,
-     *       enum="centreon_configuration_remote",
+     *       required=true
      *   ),
-     *   @SWG\Parameter(
+     *   @OA\Parameter(
      *       in="query",
      *       name="action",
-     *       type="string",
+     *       @OA\Schema(
+     *          type="string",
+     *          enum={"getRemotesList"},
+     *          default="getRemotesList"
+     *       ),
      *       description="the name of the action in the API class",
-     *       required=true,
-     *       enum="getRemotesList",
+     *       required=true
      *   ),
-     *   @SWG\Response(
-     *     response=200,
-     *     description="JSON with the IPs of connected remotes"
+     *   @OA\Response(
+     *       response=200,
+     *       description="JSON with the IPs of connected remotes",
+     *       @OA\JsonContent(
+     *          @OA\Property(property="id", type="string"),
+     *          @OA\Property(property="ip", type="string"),
+     *          @OA\Property(property="name", type="string")
+     *       )
      *   )
      * )
      *
@@ -101,105 +129,106 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
     }
 
     /**
-     * @SWG\Post(
-     *   path="/centreon/api/internal.php",
-     *   operationId="linkCentreonRemoteServer",
-     *   @SWG\Parameter(
+     * @OA\Post(
+     *   path="/internal.php?object=centreon_configuration_remote&action=linkCentreonRemoteServer",
+     *   description="Link centreon remote server",
+     *   tags={"centreon_configuration_remote"},
+     *   security={{"Session": {}}},
+     *   @OA\Parameter(
      *       in="query",
      *       name="object",
-     *       type="string",
+     *       @OA\Schema(
+     *          type="string",
+     *          enum={"centreon_configuration_remote"},
+     *          default="centreon_configuration_remote"
+     *       ),
      *       description="the name of the API object class",
-     *       required=true,
-     *       enum="centreon_configuration_remote",
+     *       required=true
      *   ),
-     *   @SWG\Parameter(
+     *   @OA\Parameter(
      *       in="query",
      *       name="action",
-     *       type="string",
+     *       @OA\Schema(
+     *          type="string",
+     *          enum={"linkCentreonRemoteServer"},
+     *          default="linkCentreonRemoteServer"
+     *       ),
      *       description="the name of the action in the API class",
+     *       required=true
+     *   ),
+     *   @OA\RequestBody(
      *       required=true,
-     *       enum="linkCentreonRemoteServer",
+     *       @OA\JsonContent(
+     *          required={
+     *              "manage_broker_configuration",
+     *              "server_ip",
+     *              "centreon_central_ip",
+     *              "server_name"
+     *          },
+     *          @OA\Property(
+     *              property="manage_broker_configuration",
+     *              type="string",
+     *              description="if broker configuration of poller should be managed"
+     *          ),
+     *          @OA\Property(
+     *              property="server_ip",
+     *              type="string",
+     *              description="the remote server ip address"
+     *          ),
+     *          @OA\Property(
+     *              property="centreon_central_ip",
+     *              type="string",
+     *              description="the centreon central ip address"
+     *          ),
+     *          @OA\Property(
+     *              property="server_name",
+     *              type="string",
+     *              description="the remote centreon instance name"
+     *          ),
+     *          @OA\Property(
+     *              property="open_broker_flow",
+     *              type="string",
+     *              description="if the connection should be made with open broker flow"
+     *          ),
+     *          @OA\Property(
+     *              property="db_user",
+     *              type="string",
+     *              description="database username"
+     *          ),
+     *          @OA\Property(
+     *              property="db_password",
+     *              type="string",
+     *              description="database password"
+     *          ),
+     *          @OA\Property(
+     *              property="server_type",
+     *              type="string",
+     *              description="type of server - remote or poller"
+     *          ),
+     *          @OA\Property(
+     *              property="centreon_folder",
+     *              type="string",
+     *              description="path to the centreon web folder on the remote machine"
+     *          ),
+     *          @OA\Property(
+     *              property="linked_pollers",
+     *              type="string",
+     *              description="pollers to link with the new remote"
+     *          ),
+     *          @OA\Property(
+     *              property="linked_remote",
+     *              type="string",
+     *              description="remote to manage the new poller"
+     *          )
+     *       )
      *   ),
-     *   @SWG\Parameter(
-     *       in="formData",
-     *       name="open_broker_flow",
-     *       type="string",
-     *       description="if the connection should be made with open broker flow",
-     *       required=false,
-     *   ),
-     *   @SWG\Parameter(
-     *       in="formData",
-     *       name="manage_broker_configuration",
-     *       type="string",
-     *       description="if broker configuration of poller should be managed",
-     *       required=false,
-     *   ),
-     *   @SWG\Parameter(
-     *       in="formData",
-     *       name="server_ip",
-     *       type="string",
-     *       description="the remote server ip address",
-     *       required=true,
-     *   ),
-     *   @SWG\Parameter(
-     *       in="formData",
-     *       name="centreon_central_ip",
-     *       type="string",
-     *       description="the centreon central ip address",
-     *       required=true,
-     *   ),
-     *   @SWG\Parameter(
-     *       in="formData",
-     *       name="server_name",
-     *       type="string",
-     *       description="the remote centreon instance name",
-     *       required=true,
-     *   ),
-     *   @SWG\Parameter(
-     *       in="formData",
-     *       name="db_user",
-     *       type="string",
-     *       description="database username",
-     *       required=false,
-     *   ),
-     *   @SWG\Parameter(
-     *       in="formData",
-     *       name="db_password",
-     *       type="string",
-     *       description="database password",
-     *       required=false,
-     *   ),
-     *   @SWG\Parameter(
-     *       in="formData",
-     *       name="server_type",
-     *       type="string",
-     *       description="type of server - remote or poller",
-     *       required=false,
-     *   ),
-     *   @SWG\Parameter(
-     *       in="formData",
-     *       name="centreon_folder",
-     *       type="string",
-     *       description="path to the centreon web folder on the remote machine",
-     *       required=false,
-     *   ),
-     *   @SWG\Parameter(
-     *       in="formData",
-     *       name="linked_pollers",
-     *       type="string",
-     *       description="pollers to link with the new remote",
-     *       required=false,
-     *   ),
-     *   @SWG\Parameter(
-     *       in="formData",
-     *       name="linked_remote",
-     *       type="string",
-     *       description="remote to manage the new poller",
-     *       required=false,
-     *   ),
-     *   @SWG\Response(
-     *     response=200,
-     *     description="JSON"
+     *   @OA\Response(
+     *       response=200,
+     *       description="JSON",
+     *       @OA\JsonContent(
+     *          @OA\Property(property="success", type="boolean"),
+     *          @OA\Property(property="task_id", type="integer")
+     *       )
      *   )
      * )
      *
@@ -334,7 +363,7 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
      */
     private function addServerToListOfRemotes($serverIP, $centreonPath)
     {
-        $dbAdapter = $this->getDi()['centreon.db-manager']->getAdapter('configuration_db');
+        $dbAdapter = $this->getDi()[\Centreon\ServiceProvider::CENTREON_DB_MANAGER]->getAdapter('configuration_db');
         $date = date('Y-m-d H:i:s');
 
         $sql = 'SELECT * FROM `remote_servers` WHERE `ip` = ?';
@@ -365,7 +394,7 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
      */
     private function setCentreonInstanceAsCentral()
     {
-        $dbAdapter = $this->getDi()['centreon.db-manager']->getAdapter('configuration_db');
+        $dbAdapter = $this->getDi()[\Centreon\ServiceProvider::CENTREON_DB_MANAGER]->getAdapter('configuration_db');
 
         $sql = "SELECT * FROM `informations` WHERE `key` = 'isCentral'";
         $dbAdapter->query($sql);
@@ -385,8 +414,9 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
 
     /**
      * Create New Task for export
+     *
      * @var $params array
-     * @return bool
+     * @return bool|int
      */
     private function createExportTask($params)
     {

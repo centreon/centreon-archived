@@ -17,11 +17,10 @@
 
 namespace CentreonLegacy\Core\Widget;
 
+use Pimple\Psr11\Container;
 use \Centreon\Test\Mock\CentreonDB;
 use Centreon\Test\Mock\DependencyInjector\ServiceContainer;
 use Centreon\Test\Mock\DependencyInjector\ConfigurationDBProvider;
-use Centreon\Test\Mock\DependencyInjector\FilesystemProvider;
-use Centreon\Test\Mock\DependencyInjector\FinderProvider;
 
 class UpgraderTest extends \PHPUnit_Framework_TestCase
 {
@@ -266,7 +265,7 @@ class UpgraderTest extends \PHPUnit_Framework_TestCase
 
         $this->container->registerProvider(new ConfigurationDBProvider($this->db));
 
-        $installer = new Upgrader($this->container, $this->information, 'MyWidget', $this->utils);
+        $installer = new Upgrader(new Container($this->container), $this->information, 'MyWidget', $this->utils);
         $upgraded = $installer->upgrade();
 
         $this->assertEquals($upgraded, true);

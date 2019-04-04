@@ -1,3 +1,0 @@
-<script>
-    parent.location.href = 'main.php?p={$p}{if isset($o)}&o={$o}{/if}{if isset($name)}&name={$name}{/if}{if isset($msg)}&msg={$msg}{/if}';
-</script>

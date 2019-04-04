@@ -17,7 +17,7 @@ class PollerInteractionService
     public function __construct(Container $di)
     {
         $this->di = $di;
-        $this->db = $di['centreon.db-manager']->getAdapter('configuration_db')->getCentreonDBInstance();
+        $this->db = $di[\Centreon\ServiceProvider::CENTREON_DB_MANAGER]->getAdapter('configuration_db')->getCentreonDBInstance();
     }
 
 

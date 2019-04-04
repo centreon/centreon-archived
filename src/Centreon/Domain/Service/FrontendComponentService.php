@@ -95,19 +95,29 @@ class FrontendComponentService
     }
 
     /**
-     * Get status for centreon instance (is remote or is not remote)
+     * Get list of installed modules
      *
-     * @return array The list of hooks (js and css)
+     * @return array list of installed modules
      */
-    public function getHooks(): array
+    private function getInstalledModules(): array
     {
-        // get installed modules
         // @todo create serviceprovider in CentreonLegacy namespace
         $utilsFactory = new \CentreonLegacy\Core\Utils\Factory($this->di);
         $utils = $utilsFactory->newUtils();
         $moduleFactory = new \CentreonLegacy\Core\Module\Factory($this->di, $utils);
         $module = $moduleFactory->newInformation();
-        $installedModules = $module->getInstalledList();
+
+        return $module->getInstalledList();
+    }
+
+    /**
+     * Get frontend external hooks
+     *
+     * @return array The list of hooks (js and css)
+     */
+    public function getHooks(): array
+    {
+        $installedModules = $this->getInstalledModules();
 
         // search in each installed modules if there are hooks
         $hooks = [];
@@ -143,13 +153,44 @@ class FrontendComponentService
     }
 
     /**
-     * Get status for centreon instance (is master or is not master)
+     * Get frontend external pages
      *
      * @return array The list of pages (routes, js and css)
      */
     public function getPages(): array
     {
-        // @todo get external pages from modules
-        return [];
+        $installedModules = $this->getInstalledModules();
+
+        // search in each installed modules if there are pages
+        $pages = [];
+        foreach (array_keys($installedModules) as $installedModule) {
+            $modulePath = __DIR__ . '/../../../../www/modules/' . $installedModule . '/static/pages';
+            $files = [];
+            $this->getDirContents($modulePath, $files, '/\.(js|css)$/');
+            foreach ($files as $path => $pageFiles) {
+                if (preg_match('/\/static\/pages(\/.+)$/', $path, $pageMatches)) {
+                    // parse page name by removing beginning of the path
+                    $pageName = str_replace('/_', '/:', $pageMatches[1]);
+                    // set relative path
+                    $pagePath = str_replace(__DIR__ . '/../../../../www', '', $path);
+
+                    // add page parameters (js and css files)
+                    $pageParameters = [];
+                    foreach ($pageFiles as $pageFile) {
+                        if (preg_match('/\.js$/', $pageFile)) {
+                            $pageParameters['js'] = $pagePath . '/' . $pageFile;
+                        } elseif (preg_match('/\.css$/', $pageFile)) {
+                            $pageParameters['css'] = $pagePath . '/' . $pageFile;
+                        }
+                    }
+
+                    if (!empty($pageParameters)) {
+                        $pages[$pageName] = $pageParameters;
+                    }
+                }
+            }
+        }
+
+        return $pages;
     }
 }

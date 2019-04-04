@@ -93,7 +93,7 @@ class TaskService
      * @param string $type
      * @param array $params
      * @param int $parentId
-     * @return mixed
+     * @return int|bool
      */
     public function addTask(string $type, array $params, int $parentId = null)
     {

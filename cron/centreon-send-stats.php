@@ -40,6 +40,10 @@ if ($sendStatistics && $isRemote !== 'yes') {
         'timezone' => $timez
     );
 
-    $returnData = $http->call(CENTREON_STATS_URL, 'POST', $data, array(), true);
-    echo "statusCode :" . $returnData['statusCode'] . ',body : ' . $returnData['body'];
+    try {
+        $returnData = $http->call(CENTREON_STATS_URL, 'POST', $data, array(), true);
+        echo "statusCode :" . $returnData['statusCode'] . ',body : ' . $returnData['body'];
+    } catch (Exception $e) {
+        echo 'Caught exception: ' .  $e->getMessage() . '\n';
+    }
 }

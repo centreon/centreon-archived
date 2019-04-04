@@ -63,7 +63,12 @@ $dbPass = $parameters['db_password'];
 $host = "localhost";
 // if database server is not on localhost...
 if ($parameters['address'] != "127.0.0.1" && $parameters['address'] != "localhost") {
-    $host = $_SERVER['SERVER_ADDR'];
+    $getIpQuery = $link->prepare(
+        'SELECT host FROM information_schema.processlist WHERE ID = connection_id()'
+    );
+    $getIpQuery->execute();
+    // The result example (172.17.0.1:38216), use the explode function to remove port
+    $host = explode(":", $getIpQuery->fetchAll(PDO::FETCH_COLUMN)[0])[0];
 }
 $query = "GRANT ALL PRIVILEGES ON `%s`.* TO `" . $dbUser . "`@`" . $host .
     "` IDENTIFIED BY '" . $dbPass . "' WITH GRANT OPTION";

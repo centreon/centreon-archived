@@ -214,16 +214,18 @@ function deleteContactInDB($contacts = array())
 }
 
 /**
+ * Duplicate a list of contact
  *
- * Duplicate contacts
- * @param $contacts
- * @param $nbrDup
+ * @param array $contacts list of contact ids to duplicate
+ * @param array $nbrDup Number of duplication per contact id
+ * @return array List of the new contact ids
  */
 function multipleContactInDB($contacts = array(), $nbrDup = array())
 {
     global $pearDB, $centreon;
-
+    $newContactIds = [];
     foreach ($contacts as $key => $value) {
+        $newContactIds[$key] = [];
         $DBRESULT = $pearDB->query("SELECT * FROM contact WHERE contact_id = '" . intval($key) . "' LIMIT 1");
         $row = $DBRESULT->fetch();
         $row["contact_id"] = '';
@@ -251,10 +253,10 @@ function multipleContactInDB($contacts = array(), $nbrDup = array())
 
             if (testContactExistence($contact_name) && testAliasExistence($contact_alias)) {
                 $val ? $rq = "INSERT INTO contact VALUES (" . $val . ")" : $rq = null;
-                $DBRESULT = $pearDB->query($rq);
-                $DBRESULT = $pearDB->query("SELECT MAX(contact_id) FROM contact");
-                $maxId = $DBRESULT->fetch();
-                if (isset($maxId["MAX(contact_id)"])) {
+                $pearDB->query($rq);
+                $lastId = $pearDB->lastInsertId();
+                if (isset($lastId)) {
+                    $newContactIds[$key][] = $lastId;
                     /*
                      * ACL update
                      */
@@ -264,7 +266,7 @@ function multipleContactInDB($contacts = array(), $nbrDup = array())
                     $fields["contact_aclRelation"] = "";
                     while ($aclRelation = $dbResult->fetch()) {
                         $query = "INSERT INTO acl_group_contacts_relations VALUES ('', '" .
-                            $maxId["MAX(contact_id)"] . "', '" . $aclRelation["acl_group_id"] . "')";
+                            $lastId . "', '" . $aclRelation["acl_group_id"] . "')";
                         $pearDB->query($query);
                         $fields["contact_aclRelation"] .= $aclRelation["acl_group_id"] . ",";
                     }
@@ -279,7 +281,7 @@ function multipleContactInDB($contacts = array(), $nbrDup = array())
                     $fields["contact_hostNotifCmds"] = "";
                     while ($hostCmd = $DBRESULT->fetch()) {
                         $query = "INSERT INTO contact_hostcommands_relation VALUES ('', '" .
-                            $maxId["MAX(contact_id)"] . "', '" . $hostCmd["command_command_id"] . "')";
+                            $lastId . "', '" . $hostCmd["command_command_id"] . "')";
                         $pearDB->query($query);
                         $fields["contact_hostNotifCmds"] .= $hostCmd["command_command_id"] . ",";
                     }
@@ -294,7 +296,7 @@ function multipleContactInDB($contacts = array(), $nbrDup = array())
                     $fields["contact_svNotifCmds"] = "";
                     while ($serviceCmd = $DBRESULT->fetch()) {
                         $query = "INSERT INTO contact_servicecommands_relation VALUES ('', '" .
-                            $maxId["MAX(contact_id)"] . "', '" . $serviceCmd["command_command_id"] . "')";
+                            $lastId . "', '" . $serviceCmd["command_command_id"] . "')";
                         $pearDB->query($query);
                         $fields["contact_svNotifCmds"] .= $serviceCmd["command_command_id"] . ",";
                     }
@@ -309,14 +311,14 @@ function multipleContactInDB($contacts = array(), $nbrDup = array())
                     $fields["contact_cgNotif"] = "";
                     while ($Cg = $DBRESULT->fetch()) {
                         $query = "INSERT INTO contactgroup_contact_relation VALUES ('', '" .
-                            $maxId["MAX(contact_id)"] . "', '" . $Cg["contactgroup_cg_id"] . "')";
+                            $lastId . "', '" . $Cg["contactgroup_cg_id"] . "')";
                         $pearDB->query($query);
                         $fields["contact_cgNotif"] .= $Cg["contactgroup_cg_id"] . ",";
                     }
                     $fields["contact_cgNotif"] = trim($fields["contact_cgNotif"], ",");
                     $centreon->CentreonLogAction->insertLog(
                         "contact",
-                        $maxId["MAX(contact_id)"],
+                        $lastId,
                         $contact_name,
                         "a",
                         $fields
@@ -325,6 +327,8 @@ function multipleContactInDB($contacts = array(), $nbrDup = array())
             }
         }
     }
+
+    return $newContactIds;
 }
 
 /**

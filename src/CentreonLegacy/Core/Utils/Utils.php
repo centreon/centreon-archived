@@ -35,25 +35,31 @@
 
 namespace CentreonLegacy\Core\Utils;
 
+use Psr\Container\ContainerInterface;
+
 class Utils
 {
     /**
-     *
-     * @var Pimple\Container
+     * @var \Psr\Container\ContainerInterface
      */
-    protected $dependencyInjector;
+    protected $services;
 
     /**
+     * Construct
      *
-     * @param \Pimple\Container $dependencyInjector
+     * @param \Psr\Container\ContainerInterface $services
      */
-    public function __construct(\Pimple\Container $dependencyInjector)
+    public function __construct(ContainerInterface $services)
     {
-        $this->dependencyInjector = $dependencyInjector;
+        $this->services = $services;
     }
 
-    /*
+    /**
      * Require configuration file
+     *
+     * @param string $configurationFile
+     * @param string $type
+     * @return array
      */
     public function requireConfiguration($configurationFile, $type = 'install')
     {
@@ -97,7 +103,7 @@ class Utils
                 $str .= $line;
                 if ($pos !== false) {
                     $str = rtrim($this->replaceMacros($str, $customMacros));
-                    $this->dependencyInjector[$dbName]->query($str);
+                    $this->services->get($dbName)->query($str);
                     $str = '';
                 }
             }
@@ -117,9 +123,9 @@ class Utils
         }
 
         // init parameters to be compatible with old module upgrade scripts
-        $pearDB = $this->dependencyInjector['configuration_db'];
-        $pearDBStorage = $this->dependencyInjector['realtime_db'];
-        $centreon_path = $this->dependencyInjector['configuration']->get('centreon_path');
+        $pearDB = $this->services->get('configuration_db');
+        $pearDBStorage = $this->services->get('realtime_db');
+        $centreon_path = $this->services->get('configuration')->get('centreon_path');
 
         require_once $fileName;
     }
@@ -133,8 +139,8 @@ class Utils
     public function replaceMacros($content, $customMacros = array())
     {
         $macros = array(
-            'DB_CENTREON' => $this->dependencyInjector['configuration']->get('db'),
-            'DB_CENTSTORAGE' => $this->dependencyInjector['configuration']->get('dbcstg')
+            'DB_CENTREON' => $this->services->get('configuration')->get('db'),
+            'DB_CENTSTORAGE' => $this->services->get('configuration')->get('dbcstg')
         );
 
         if (count($customMacros)) {

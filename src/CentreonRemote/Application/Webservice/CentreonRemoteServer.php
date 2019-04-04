@@ -2,6 +2,9 @@
 
 namespace CentreonRemote\Application\Webservice;
 
+/**
+ * @OA\Tag(name="centreon_remote_server", description="")
+ */
 class CentreonRemoteServer extends CentreonWebServiceAbstract
 {
 
@@ -16,41 +19,57 @@ class CentreonRemoteServer extends CentreonWebServiceAbstract
     }
 
     /**
-     * @SWG\Post(
-     *   path="/centreon/api/external.php",
-     *   @SWG\Parameter(
+     * @OA\Post(
+     *   path="/external.php?object=centreon_remote_server&action=addToWaitList",
+     *   description="Add remote Centreon instance in waiting list",
+     *   tags={"centreon_remote_server"},
+     *   @OA\Parameter(
      *       in="query",
      *       name="object",
+     *       @OA\Schema(
+     *          type="string",
+     *          enum={"centreon_remote_server"},
+     *          default="centreon_remote_server"
+     *       ),
      *       description="the name of the API object class",
-     *       required=true,
-     *       type="string",
-     *       enum="centreon_remote_server"
+     *       required=true
      *   ),
-     *   @SWG\Parameter(
+     *   @OA\Parameter(
      *       in="query",
      *       name="action",
+     *       @OA\Schema(
+     *          type="string",
+     *          enum={"addToWaitList"},
+     *          default="addToWaitList"
+     *       ),
      *       description="the name of the action in the API class",
-     *       required=true,
-     *       type="string",
-     *       enum="addToWaitList"
+     *       required=true
      *   ),
-     *   @SWG\Parameter(
-     *       in="formData",
-     *       name="app_key",
-     *       description="the unique app key of the Centreon instance",
+     *   @OA\RequestBody(
      *       required=true,
-     *       type="string",
+     *       @OA\JsonContent(
+     *          required={
+     *              "app_key",
+     *              "version"
+     *          },
+     *          @OA\Property(
+     *              property="app_key",
+     *              type="string",
+     *              description="the unique app key of the Centreon instance"
+     *          ),
+     *          @OA\Property(
+     *              property="version",
+     *              type="string",
+     *              description="the app version Centreon instance"
+     *          )
+     *       )
      *   ),
-     *   @SWG\Parameter(
-     *       in="formData",
-     *       name="version",
-     *       description="the app version Centreon instance",
-     *       required=true,
-     *       type="string",
-     *   ),
-     *   @SWG\Response(
-     *     response=200,
-     *     description="Empty string"
+     *   @OA\Response(
+     *       response=200,
+     *       description="Empty string",
+     *       @OA\JsonContent(
+     *          @OA\Property(type="string")
+     *       )
      *   )
      * )
      *

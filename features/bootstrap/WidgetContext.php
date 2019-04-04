@@ -1,7 +1,7 @@
 <?php
 
 use Centreon\Test\Behat\CentreonContext;
-use Centreon\Test\Behat\Administration\WidgetListingPage;
+use Centreon\Test\Behat\Administration\ExtensionsPage;
 
 /**
  * Features context.
@@ -9,7 +9,8 @@ use Centreon\Test\Behat\Administration\WidgetListingPage;
 class WidgetContext extends CentreonContext
 {
     protected $page;
-    private $widgetName = 'Host Monitoring';
+    private $type = ExtensionsPage::WIDGET_TYPE;
+    private $widgetName = 'host-monitoring';
 
     /**
      * @Given a widget is ready to install
@@ -18,8 +19,8 @@ class WidgetContext extends CentreonContext
     {
         $this->container->execute('yum install -y --nogpgcheck centreon-widget-host-monitoring', 'web');
 
-        $this->page = new WidgetListingPage($this);
-        $widget = $this->page->getEntry($this->widgetName);
+        $this->page = new ExtensionsPage($this);
+        $widget = $this->page->getEntry($this->type, $this->widgetName);
         if (!$widget['actions']['install']) {
             throw new \Exception('Widget ' . $this->widgetName . ' is not ready to install.');
         }
@@ -40,7 +41,7 @@ class WidgetContext extends CentreonContext
      */
     public function iInstallTheWidget()
     {
-        $this->page->install($this->widgetName);
+        $this->page->install($this->type, $this->widgetName);
     }
 
     /**
@@ -48,7 +49,7 @@ class WidgetContext extends CentreonContext
      */
     public function iRemoveTheWidget()
     {
-        $this->page->remove($this->widgetName);
+        $this->page->remove($this->type, $this->widgetName);
     }
 
     /**
@@ -56,16 +57,12 @@ class WidgetContext extends CentreonContext
      */
     public function theWidgetIsInstalled()
     {
-        // initialize page to manage iframe selection
-        $this->page = new WidgetListingPage($this);
+        $this->page = new ExtensionsPage($this);
 
-        $this->spin(
-            function ($context) {
-                $widget = $context->page->getEntry($context->widgetName);
-                return !$widget['actions']['install'];
-            },
-            'Widget ' . $this->widgetName . ' is not installed.'
-        );
+        $module = $this->page->getEntry($this->type, $this->widgetName);
+        if ($module['actions']['install']) {
+            throw new \Exception('Widget ' . $this->widgetName . ' is not installed.');
+        }
     }
 
     /**
@@ -73,22 +70,11 @@ class WidgetContext extends CentreonContext
      */
     public function theWidgetIsRemoved()
     {
-        // Wait for iFrame.
-        $this->spin(
-            function ($context) {
-                return $context->getSession()->getPage()->has('css', '#main-content');
-            },
-            'iFrame (#main-content) did not appear.'
-        );
-        $this->getSession()->getDriver()->switchToIFrame('main-content');
+        $this->page = new ExtensionsPage($this);
 
-        // Wait for widget deletion.
-        $this->spin(
-            function ($context) {
-                $widget = $context->page->getEntry($context->widgetName);
-                return !$widget['actions']['remove'];
-            },
-            'Widget ' . $this->widgetName . ' is not removed.'
-        );
+        $widget = $this->page->getEntry($this->type, $this->widgetName);
+        if ($widget['actions']['remove']) {
+            throw new \Exception('Widget ' . $this->widgetName . ' is not removed.');
+        }
     }
 }
