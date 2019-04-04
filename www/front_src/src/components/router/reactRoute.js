@@ -4,6 +4,7 @@ import { Route } from "react-router-dom";
 class ReactRoute extends Component {
   getRoute = renderProps => {
     const { component: Comp } = this.props;
+
     return (
       <Comp
         key={

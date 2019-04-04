@@ -7,6 +7,7 @@ import { ConnectedRouter } from "react-router-redux";
 import { history } from "./store";
 import ClassicRoute from "./components/router/classicRoute";
 import ReactRoute from './components/router/reactRoute';
+import ExternalRouter from "./components/externalRouter";
 
 import { classicRoutes, reactRoutes } from "./route-maps";
 import NavigationComponent from "./components/navigation";
@@ -25,6 +26,7 @@ class App extends Component {
     isFullscreenEnabled: false,
     acls: [],
     aclsLoaded: false,
+    reactRouter: null
   }
 
   keepAliveTimeout = null
@@ -69,7 +71,12 @@ class App extends Component {
   getAcl = () => {
     axios("internal.php?object=centreon_acl_webservice&action=getCurrentAcl")
       .get()
-      .then(({data}) => this.setState({acls: data, aclsLoaded: true}))
+      .then(({data}) => {
+        this.setState(
+          {acls: data, aclsLoaded: true},
+          () => { this.getReactRoutes(); }
+        );
+      });
   }
 
   // get external components (pages, hooks...)
@@ -103,28 +110,23 @@ class App extends Component {
     this.keepAlive();
   }
 
-  linkReactRoutesAndComponents = () => {
-    const {acls} = this.state;
-    return reactRoutes.map(({ path, comp, ...rest }) => (
+  getReactRoutes = () => {
+    const { acls } = this.state;
+    let reactRouter = reactRoutes.map(({ path, comp, ...rest }) => (
       <ReactRoute
         history={history}
         path={path}
         component={acls.includes(path) ? comp : NotAllowedPage}
         {...rest}
       />
-    ))
+    ));
+    this.setState({ reactRouter });
   }
 
   render() {
-    const {aclsLoaded} = this.state;
+    const { reactRouter } = this.state;
 
     const min = this.getMinArgument();
-
-    let reactRouter = '';
-
-    if (aclsLoaded) {
-      reactRouter = this.linkReactRoutesAndComponents();
-    }
 
     return (
       <ConnectedRouter history={history}>
@@ -148,7 +150,8 @@ class App extends Component {
                       {classicRoutes.map(({path, comp, ...rest}, i) => (
                         <ClassicRoute key={i} history={history} path={path} component={comp} {...rest} />
                       ))}
-                      {aclsLoaded && reactRouter}
+                      {reactRouter}
+                      <ExternalRouter/>
                     </Switch>
                   </div>
                 </div>
@@ -165,8 +168,6 @@ class App extends Component {
   }
 }
 
-const mapStateToProps = () => {}
-
 const mapDispatchToProps = dispatch => {
   return {
     fetchExternalComponents: () => {
@@ -175,4 +176,4 @@ const mapDispatchToProps = dispatch => {
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(App);
+export default connect(null, mapDispatchToProps)(App);
