@@ -158,8 +158,9 @@ class CentreonAuth
             $this->passwdOk = 0;
             return;
         }
-        $algo = $this->dependencyInjector['utils']->detectPassPattern($this->userInfos["contact_passwd"]);
-        if (!$algo) {
+        if (isset($this->userInfos["contact_passwd"]) &&
+            !$this->dependencyInjector['utils']->detectPassPattern($this->userInfos["contact_passwd"])
+        ) {
             $this->userInfos["contact_passwd"] = 'md5__' . $this->userInfos["contact_passwd"];
         }
         if ($this->userInfos["contact_auth_type"] == "ldap" && $this->autologin == 0) {
@@ -338,7 +339,7 @@ class CentreonAuth
                         $data = $DBRESULT2->fetchRow();
                         $this->userInfos["default_page"] .= $data["topology_url_opt"];
                     }
-                }  
+                }
             }
         } else {
             if ($this->debug) {

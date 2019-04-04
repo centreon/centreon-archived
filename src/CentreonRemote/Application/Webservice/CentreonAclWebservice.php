@@ -60,10 +60,9 @@ class CentreonAclWebservice extends CentreonWebServiceAbstract
     public function getGetCurrentAcl()
     {
         $user = $_SESSION['centreon']->user;
-        if (empty($user)){
+        if (empty($user)) {
             return [];
         }
         return $this->getDi()[\Centreon\ServiceProvider::CENTREON_DB_MANAGER]->getRepository(TopologyRepository::class)->getReactTopologiesPerUserWithAcl($user);
     }
-
 }

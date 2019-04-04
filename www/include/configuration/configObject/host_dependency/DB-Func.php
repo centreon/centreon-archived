@@ -119,7 +119,6 @@ function multipleHostDependencyInDB($dependencies = array(), $nbrDup = array())
                 $DBRESULT = $pearDB->query("SELECT MAX(dep_id) FROM dependency");
                 $maxId = $DBRESULT->fetchRow();
                 if (isset($maxId["MAX(dep_id)"])) {
-
                     $query = "SELECT service_service_id, host_host_id FROM dependency_serviceChild_relation " .
                         "WHERE dependency_dep_id = " . $key;
                     $DBRESULT = $pearDB->query($query);

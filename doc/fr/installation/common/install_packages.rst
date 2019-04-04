@@ -48,6 +48,11 @@ Installation : ::
 
 Le dépôt est maintenant installé.
 
+.. note::
+    Si le paquet n'est pas installé, exécutez la commande : ::
+    
+        # yum install wget
+
 *******************************
 Installation du serveur central
 *******************************
@@ -104,11 +109,12 @@ La timezone par défaut de PHP doit être configurée. Executer la commande suiv
     # echo "date.timezone = Europe/Paris" > /etc/opt/rh/rh-php71/php.d/php-timezone.ini
 
 .. note::
-    Changez **Europe/Paris** par votre fuseau horaire.
+    Changez **Europe/Paris** par votre fuseau horaire. La liste des fuseaux horaires
+    est disponible `ici <http://php.net/manual/en/timezones.php>`_.
 
-Après avoir réalisé la modification, redémarrez le service Apache : ::
+Après avoir réalisé la modification, redémarrez le service PHP-FPM : ::
 
-    # systemctl restart httpd
+    # systemctl restart rh-php71-php-fpm
 
 Pare-feu
 --------
@@ -135,10 +141,13 @@ Lancer les commandes suivantes sur le serveur Central : ::
     # systemctl enable centreontrapd
     # systemctl enable cbd
     # systemctl enable centengine
+    # systemctl enable centreon
 
 .. note::
     Si la base de données MySQL est sur un serveur dédié, lancer la commande
-    d'activation mysql sur ce dernier.
+    d'activation mysql sur ce dernier : ::
+    
+        # systemctl enable mysql
 
 Terminer l'installation
 -----------------------

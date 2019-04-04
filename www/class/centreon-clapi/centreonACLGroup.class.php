@@ -250,7 +250,6 @@ class CentreonACLGroup extends CentreonObject
                             $updateParams
                         );
                     }
-
                 }
             } else {
                 throw new CentreonClapiException(self::UNKNOWN_METHOD);

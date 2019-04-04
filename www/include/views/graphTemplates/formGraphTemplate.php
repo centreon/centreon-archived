@@ -207,8 +207,8 @@ $tpl->assign("helptext", $helptext);
  */
 
 $tpl->assign(
-        'colorJS',
-        "
+    'colorJS',
+    "
 <script type='text/javascript'>
     function popup_color_picker(t,name)
 	{

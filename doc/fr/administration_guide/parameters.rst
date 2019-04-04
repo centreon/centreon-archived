@@ -111,6 +111,7 @@ Cette partie permet de paramétrer le fonctionnement du processus CentCore.
 
 * Le champ **Activer la récupération des statistiques de Centreon Broker** active la récupération des statistiques de Centreon Broker par CentCore. Cette option peut être bloquante car la lecture du tuyau (pipe) peut être une action bloquante
 * Le champ **Temps maximum d'exécution des commandes Centcore** permet de définir un temps de d'exécution maximal des commandes locales et via SSH du processus
+* Le champ **Caractères illégaux pour les commandes Centcore** permet de définir les caractères non autorisés qui seront supprimés des commandes transférées par le processus.
 
 .. _ldapconfiguration:
 

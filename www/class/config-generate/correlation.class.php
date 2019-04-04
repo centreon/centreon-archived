@@ -276,7 +276,6 @@ class Correlation extends AbstractObjectXML
             $row = $stmt->fetch(PDO::FETCH_ASSOC);
             $this->correlation_file_path = $row['config_value'];
             $this->has_correlation = 1;
-
         }
     }
 

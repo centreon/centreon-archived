@@ -10,16 +10,12 @@ Fixes # (issue)
 
 <h2> Type of change </h2>
 
-Please delete options that are not relevant.
-
 - [ ] Patch fixing an issue (non-breaking change)
 - [ ] New functionality (non-breaking change)
 - [ ] Breaking change (patch or feature) that might cause side effects breaking part of the Software
 - [ ] Updating documentation (missing information, typo...)
 
 <h2> Target serie </h2>
-
-Please delete series that are not relevant.
 
 - [ ] 2.8.x
 - [ ] 18.10.x

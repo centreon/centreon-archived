@@ -21,10 +21,11 @@ of the Centreon software suite use the same versioning.
 Release cadence
 ***************
 
-The Centreon company plans to deliver two releases by year, the first in April
-and the second in October. Between these two major releases, Centreon will continuously
-deliver minor updates including security fixes, bug fixes and
-enhancements.
+Centreon’s action plan is to deliver two major releases per year. The first,
+will occur in April while the second, will be in October. Between these two,
+Centreon will continuously deliver minor updates, patches, security
+vulnerability fixes, bug fixes and enhancements to the software priority/risk
+evaluation that fits into the lifecycle phases.
 
 ********************************
 Maintenance and security updates
@@ -33,11 +34,13 @@ Maintenance and security updates
 The lifecycle of a version is divided into three phases:
 
 #. First phase: Bugs of all severity levels (minor, major, critical, blocker) and security issues are fixed by priority.
-#. Second phases: Major, critical bugs and blockers, or security issues are fixed by priority.
+#. Second phase: Major, critical bugs and blockers, or security issues are fixed by priority.
 #. Third phase: Blockers or security issues are fixed by priority.
 
 .. note::
     The severity and prioritization of bugs are the Centreon team's responsibility.
+
+The first phase begins the lifecycle of the release.
 
 The second phase of a version begins when the next major version is available.
 For example, the release of Centreon 19.04 starts the second phase of Centreon

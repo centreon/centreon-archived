@@ -19,7 +19,7 @@ Perform a quick check of the SELinux status::
 Installing the repository
 *************************
 
-Redhat Software collections repository
+Redhat Software Collections Repository
 --------------------------------------
 
 To install Centreon you will need to set up the official software collections repository supported by Redhat.
@@ -46,13 +46,19 @@ Install the Centreon repository using this command::
 
 The repository is now installed.
 
+.. note::
+    Some may not have the wget package installed. If not perform the following:
+    ::
+    
+        # yum install wget
+
 ************************************
-Installing a Centreon central server
+Installing a Centreon Central Server
 ************************************
 
 This section describes how to install a Centreon central server.
 
-Installing a Centreon central server with database
+Installing a Centreon Central Server with database
 --------------------------------------------------
 
 Run the command::
@@ -60,7 +66,7 @@ Run the command::
     # yum install centreon
     # systemctl restart mysql
 
-Installing a Centreon central server without database
+Installing a Centreon Central Server without database
 -----------------------------------------------------
 
 Run the command::
@@ -82,10 +88,11 @@ Run the commands::
 Database management system
 --------------------------
 
-The MySQL database server should be available to complete the installation (locally or not). MariaDB is recommended.
+We recommend using MariaDB for your database because it is open source. Ensure
+the database server is available to complete the installation (locally or no).
 
-It is necessary to modify **LimitNOFILE** limitation.
-Setting this option in /etc/my.cnf will *not* work.
+It is necessary to modify **LimitNOFILE** limitation. Do not try to set this
+option in **/etc/my.cnf** because it will *not* work.
 
 Run the commands::
 
@@ -102,11 +109,12 @@ You are required to set the PHP time zone. Run the command::
     # echo "date.timezone = Europe/Paris" > /etc/opt/rh/rh-php71/php.d/php-timezone.ini
 
 .. note::
-    Change **Europe/Paris** to your time zone.
+    Change **Europe/Paris** to your time zone. You can find the supported list
+    of time zone `here <http://php.net/manual/en/timezones.php>`_.
 
-After saving the file, please do not forget to restart the Apache server::
+After saving the file, please do not forget to restart the PHP-FPM server::
 
-    # systemctl restart httpd
+    # systemctl restart rh-php71-php-fpm
 
 Configuring/disabling the firewall
 ----------------------------------
@@ -130,9 +138,13 @@ To make services start automatically during system bootup, run these commands on
     # systemctl enable centreontrapd
     # systemctl enable cbd
     # systemctl enable centengine
+    # systemctl enable centreon
 
 .. note::
-    If the MySQL database is on a dedicated server, execute the MySQL enable command on the database server.
+    If the MySQL/MariaDB database is on a dedicated server, execute this command
+    on the database server: ::
+    
+        # systemctl enable mysql
 
 Concluding the installation
 ---------------------------

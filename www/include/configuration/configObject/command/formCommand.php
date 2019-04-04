@@ -90,7 +90,7 @@ if (count($aMacroDescription) > 0) {
             $macro['description'] . "\n";
         $nbRowMacro++;
     }
-} elseif( array_key_exists('command_line', $cmd) ) {
+} elseif (array_key_exists('command_line', $cmd)) {
     $macrosHostDesc = $oCommande->matchObject($command_id, $cmd['command_line'], '1');
     $macrosServiceDesc = $oCommande->matchObject($command_id, $cmd['command_line'], '2');
 

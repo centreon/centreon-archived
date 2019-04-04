@@ -99,7 +99,6 @@ class Utils
         while (!feof($file)) {
             $line = fgets($file);
             if (!preg_match('/^(--|#)/', $line)) {
-
                 $pos = strrpos($line, ";");
                 $str .= $line;
                 if ($pos !== false) {
@@ -210,13 +209,13 @@ class Utils
     {
         $encodePassword = '';
         switch ($algo) {
-            case 'md5' :
+            case 'md5':
                 $encodePassword .= 'md5__' . md5($password);
                 break;
-            case 'sha1' :
+            case 'sha1':
                 $encodePassword .= 'sha1__' . sha1($password);
                 break;
-            default :
+            default:
                 $encodePassword .= 'md5__' . md5($password);
                 break;
         }
@@ -236,5 +235,4 @@ class Utils
             return null;
         }
     }
-
 }

@@ -36,7 +36,7 @@ class ServiceExporter extends ExporterServiceAbstract
         $this->createPath();
         $pollerIds = $this->commitment->getPollers();
 
-        $serviceTemplateChain = $this->_getIf('service.chain', function() use ($pollerIds) {
+        $serviceTemplateChain = $this->_getIf('service.chain', function () use ($pollerIds) {
             $baList = $this->cache->get('ba.list');
 
             return $this->db
@@ -46,7 +46,7 @@ class ServiceExporter extends ExporterServiceAbstract
         });
 
         // Extract data
-        (function() use ($pollerIds) {
+        (function () use ($pollerIds) {
             $baList = $this->cache->get('ba.list');
             $hostRelation = $this->db
                 ->getRepository(Repository\HostServiceRelationRepository::class)
@@ -55,7 +55,7 @@ class ServiceExporter extends ExporterServiceAbstract
             $this->_dump($hostRelation, $this->getFile(static::EXPORT_FILE_HOST_RELATION));
         })();
 
-        (function() use ($pollerIds, $serviceTemplateChain) {
+        (function () use ($pollerIds, $serviceTemplateChain) {
             $services = $this->db
                 ->getRepository(Repository\ServiceRepository::class)
                 ->export($pollerIds, $serviceTemplateChain)
@@ -63,7 +63,7 @@ class ServiceExporter extends ExporterServiceAbstract
             $this->_dump($services, $this->getFile(static::EXPORT_FILE_SERVICE));
         })();
 
-        (function() use ($pollerIds, $serviceTemplateChain) {
+        (function () use ($pollerIds, $serviceTemplateChain) {
             $serviceGroups = $this->db
                 ->getRepository(Repository\ServiceGroupRepository::class)
                 ->export($pollerIds, $serviceTemplateChain)
@@ -71,7 +71,7 @@ class ServiceExporter extends ExporterServiceAbstract
             $this->_dump($serviceGroups, $this->getFile(static::EXPORT_FILE_GROUP));
         })();
 
-        (function() use ($pollerIds, $serviceTemplateChain) {
+        (function () use ($pollerIds, $serviceTemplateChain) {
             $serviceGroupRelation = $this->db
                 ->getRepository(Repository\ServiceGroupRelationRepository::class)
                 ->export($pollerIds, $serviceTemplateChain)
@@ -79,7 +79,7 @@ class ServiceExporter extends ExporterServiceAbstract
             $this->_dump($serviceGroupRelation, $this->getFile(static::EXPORT_FILE_GROUP_RELATION));
         })();
 
-        (function() use ($pollerIds, $serviceTemplateChain) {
+        (function () use ($pollerIds, $serviceTemplateChain) {
             $serviceCategories = $this->db
                 ->getRepository(Repository\ServiceCategoryRepository::class)
                 ->export($pollerIds, $serviceTemplateChain)
@@ -87,7 +87,7 @@ class ServiceExporter extends ExporterServiceAbstract
             $this->_dump($serviceCategories, $this->getFile(static::EXPORT_FILE_CATEGORY));
         })();
 
-        (function() use ($pollerIds, $serviceTemplateChain) {
+        (function () use ($pollerIds, $serviceTemplateChain) {
             $serviceCategoryRelation = $this->db
                 ->getRepository(Repository\ServiceCategoryRelationRepository::class)
                 ->export($pollerIds, $serviceTemplateChain)
@@ -95,7 +95,7 @@ class ServiceExporter extends ExporterServiceAbstract
             $this->_dump($serviceCategoryRelation, $this->getFile(static::EXPORT_FILE_CATEGORY_RELATION));
         })();
 
-        (function() use ($pollerIds, $serviceTemplateChain) {
+        (function () use ($pollerIds, $serviceTemplateChain) {
             $serviceMacros = $this->db
                 ->getRepository(Repository\OnDemandMacroServiceRepository::class)
                 ->export($pollerIds, $serviceTemplateChain)
@@ -103,7 +103,7 @@ class ServiceExporter extends ExporterServiceAbstract
             $this->_dump($serviceMacros, $this->getFile(static::EXPORT_FILE_MACRO));
         })();
 
-        (function() use ($pollerIds, $serviceTemplateChain) {
+        (function () use ($pollerIds, $serviceTemplateChain) {
             $serviceInfo = $this->db
                 ->getRepository(Repository\ExtendedServiceInformationRepository::class)
                 ->export($pollerIds, $serviceTemplateChain)
@@ -134,7 +134,7 @@ class ServiceExporter extends ExporterServiceAbstract
         $this->cleanup();
 
         // insert host relation
-        (function() use ($db) {
+        (function () use ($db) {
             $exportPathFile = $this->getFile(static::EXPORT_FILE_HOST_RELATION);
             $result = $this->_parse($exportPathFile);
 
@@ -144,7 +144,7 @@ class ServiceExporter extends ExporterServiceAbstract
         })();
 
         // insert host relation
-        (function() use ($db) {
+        (function () use ($db) {
             $exportPathFile = $this->getFile(static::EXPORT_FILE_SERVICE);
             $result = $this->_parse($exportPathFile);
 
@@ -154,7 +154,7 @@ class ServiceExporter extends ExporterServiceAbstract
         })();
 
         // insert group
-        (function() use ($db) {
+        (function () use ($db) {
             $exportPathFile = $this->getFile(static::EXPORT_FILE_GROUP);
             $result = $this->_parse($exportPathFile);
 
@@ -164,7 +164,7 @@ class ServiceExporter extends ExporterServiceAbstract
         })();
 
         // insert group relation
-        (function() use ($db) {
+        (function () use ($db) {
             $exportPathFile = $this->getFile(static::EXPORT_FILE_GROUP_RELATION);
             $result = $this->_parse($exportPathFile);
 
@@ -174,7 +174,7 @@ class ServiceExporter extends ExporterServiceAbstract
         })();
 
         // insert category
-        (function() use ($db) {
+        (function () use ($db) {
             $exportPathFile = $this->getFile(static::EXPORT_FILE_CATEGORY);
             $result = $this->_parse($exportPathFile);
 
@@ -184,7 +184,7 @@ class ServiceExporter extends ExporterServiceAbstract
         })();
 
         // insert category relation
-        (function() use ($db) {
+        (function () use ($db) {
             $exportPathFile = $this->getFile(static::EXPORT_FILE_CATEGORY_RELATION);
             $result = $this->_parse($exportPathFile);
 
@@ -194,7 +194,7 @@ class ServiceExporter extends ExporterServiceAbstract
         })();
 
         // insert macro
-        (function() use ($db) {
+        (function () use ($db) {
             $exportPathFile = $this->getFile(static::EXPORT_FILE_MACRO);
             $result = $this->_parse($exportPathFile);
 
@@ -204,7 +204,7 @@ class ServiceExporter extends ExporterServiceAbstract
         })();
 
         // insert info
-        (function() use ($db) {
+        (function () use ($db) {
             $exportPathFile = $this->getFile(static::EXPORT_FILE_INFO);
             $result = $this->_parse($exportPathFile);
 

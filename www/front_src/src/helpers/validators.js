@@ -8,14 +8,12 @@ export const serverNameValidator = serverName =>
 export const serverIpAddressValidator = serverIpAddress => {
     let message = "";
     message = !serverIpAddress || serverIpAddress.length < 1 ? "The field is required" : "";
-    message = (message === "" ? validateIPaddress(serverIpAddress) : message) ;
     return message;
 }
 
 export const centralIpAddressValidator = centralIpAddress => {
     let message = "";
     message = !centralIpAddress || centralIpAddress.length < 1 ? "The field is required" : "";
-    message = (message === "" ? validateIPaddress(centralIpAddress) : message) ;
     return message;
 }
 

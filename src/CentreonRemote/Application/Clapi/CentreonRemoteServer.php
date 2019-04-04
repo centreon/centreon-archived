@@ -39,18 +39,12 @@ class CentreonRemoteServer implements CentreonClapiServiceInterface
     public function enableRemote(string $string_ip)
     {
         $ipList = explode(',', $string_ip);
-        foreach ($ipList as $ip) {
-            if (!filter_var($ip, FILTER_VALIDATE_IP)) {
-                printf("Incorrect IP parameter: '%s', please pass `-v IP` of the master server\n", $ip);
-                return null;
-            }
-        }
 
         echo "Starting Centreon Remote enable process: \n";
 
         echo "Limiting Menu Access...";
         $result = $this->getDi()[\Centreon\ServiceProvider::CENTREON_DB_MANAGER]->getRepository(TopologyRepository::class)->disableMenus();
-        echo ($result) ? 'Success' : 'Fail' . "\n";
+        echo ($result) ? 'Success' . "\n" : 'Fail' . "\n";
 
         echo "Limiting Actions...";
         $this->getDi()[\Centreon\ServiceProvider::CENTREON_DB_MANAGER]->getRepository(InformationsRepository::class)->toggleRemote('yes');
@@ -67,7 +61,6 @@ class CentreonRemoteServer implements CentreonClapiServiceInterface
         echo "Done\n";
 
         echo "Notifying Master...";
-        $result = $this->getDi()['centreon.notifymaster']->pingMaster($ip);
         $result = "";
         foreach ($ipList as $ip) {
             $result = $this->getDi()['centreon.notifymaster']->pingMaster($ip);

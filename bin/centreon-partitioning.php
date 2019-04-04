@@ -76,4 +76,3 @@ try {
 
 echo "[" . date(DATE_RFC822) . "] PARTITIONING COMPLETED\n";
 exit(0);
-

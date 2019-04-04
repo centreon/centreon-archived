@@ -128,7 +128,7 @@ class ServiceProvider implements AutoloadServiceProviderInterface
         //-----------//
         
         // Commands
-        $pimple['centreon_remote.exporter']->add(Domain\Exporter\CommandExporter::class, function() use ($pimple) {
+        $pimple['centreon_remote.exporter']->add(Domain\Exporter\CommandExporter::class, function () use ($pimple) {
             $services = [
                 \Centreon\ServiceProvider::CENTREON_DB_MANAGER,
             ];
@@ -140,7 +140,7 @@ class ServiceProvider implements AutoloadServiceProviderInterface
         });
         
         // Pollers
-        $pimple['centreon_remote.exporter']->add(Domain\Exporter\PollerExporter::class, function() use ($pimple) {
+        $pimple['centreon_remote.exporter']->add(Domain\Exporter\PollerExporter::class, function () use ($pimple) {
             $services = [
                 \Centreon\ServiceProvider::CENTREON_DB_MANAGER,
                 'centreon.config',
@@ -153,7 +153,7 @@ class ServiceProvider implements AutoloadServiceProviderInterface
         });
         
         // Hosts
-        $pimple['centreon_remote.exporter']->add(Domain\Exporter\HostExporter::class, function() use ($pimple) {
+        $pimple['centreon_remote.exporter']->add(Domain\Exporter\HostExporter::class, function () use ($pimple) {
             $services = [
                 \Centreon\ServiceProvider::CENTREON_DB_MANAGER,
             ];
@@ -165,7 +165,7 @@ class ServiceProvider implements AutoloadServiceProviderInterface
         });
         
         // Meta services
-        $pimple['centreon_remote.exporter']->add(Domain\Exporter\MetaServiceExporter::class, function() use ($pimple) {
+        $pimple['centreon_remote.exporter']->add(Domain\Exporter\MetaServiceExporter::class, function () use ($pimple) {
             $services = [
                 \Centreon\ServiceProvider::CENTREON_DB_MANAGER,
             ];
@@ -177,7 +177,7 @@ class ServiceProvider implements AutoloadServiceProviderInterface
         });
         
         // Services
-        $pimple['centreon_remote.exporter']->add(Domain\Exporter\ServiceExporter::class, function() use ($pimple) {
+        $pimple['centreon_remote.exporter']->add(Domain\Exporter\ServiceExporter::class, function () use ($pimple) {
             $services = [
                 \Centreon\ServiceProvider::CENTREON_DB_MANAGER,
             ];
@@ -189,7 +189,7 @@ class ServiceProvider implements AutoloadServiceProviderInterface
         });
         
         // Traps
-        $pimple['centreon_remote.exporter']->add(Domain\Exporter\TrapExporter::class, function() use ($pimple) {
+        $pimple['centreon_remote.exporter']->add(Domain\Exporter\TrapExporter::class, function () use ($pimple) {
             $services = [
                 \Centreon\ServiceProvider::CENTREON_DB_MANAGER,
             ];
@@ -201,7 +201,7 @@ class ServiceProvider implements AutoloadServiceProviderInterface
         });
         
         // Time periods
-        $pimple['centreon_remote.exporter']->add(Domain\Exporter\TimePeriodExporter::class, function() use ($pimple) {
+        $pimple['centreon_remote.exporter']->add(Domain\Exporter\TimePeriodExporter::class, function () use ($pimple) {
             $services = [
                 \Centreon\ServiceProvider::CENTREON_DB_MANAGER,
             ];
@@ -213,7 +213,7 @@ class ServiceProvider implements AutoloadServiceProviderInterface
         });
         
         // Downtimes
-        $pimple['centreon_remote.exporter']->add(Domain\Exporter\DowntimeExporter::class, function() use ($pimple) {
+        $pimple['centreon_remote.exporter']->add(Domain\Exporter\DowntimeExporter::class, function () use ($pimple) {
             $services = [
                 \Centreon\ServiceProvider::CENTREON_DB_MANAGER,
             ];
@@ -225,7 +225,7 @@ class ServiceProvider implements AutoloadServiceProviderInterface
         });
         
         // Graphs
-        $pimple['centreon_remote.exporter']->add(Domain\Exporter\GraphExporter::class, function() use ($pimple) {
+        $pimple['centreon_remote.exporter']->add(Domain\Exporter\GraphExporter::class, function () use ($pimple) {
             $services = [
                 \Centreon\ServiceProvider::CENTREON_DB_MANAGER,
             ];
@@ -237,7 +237,7 @@ class ServiceProvider implements AutoloadServiceProviderInterface
         });
 
         // Media
-        $pimple['centreon_remote.exporter']->add(Domain\Exporter\MediaExporter::class, function() use ($pimple) {
+        $pimple['centreon_remote.exporter']->add(Domain\Exporter\MediaExporter::class, function () use ($pimple) {
             $services = [
                 \Centreon\ServiceProvider::CENTREON_DB_MANAGER,
             ];
@@ -249,7 +249,8 @@ class ServiceProvider implements AutoloadServiceProviderInterface
         });
     }
 
-    public static function order() : int {
+    public static function order() : int
+    {
         return 20;
     }
 }

@@ -59,13 +59,12 @@ if (isset($_SESSION['centreon'])) {
     $stmt->execute(array($sid));
 
     if ($stmt->rowCount()) {
-
         $buffer->writeElement("state", "ok");
     } else {
         $buffer->writeElement("state", "nok");
     }
 } else {
-    $currentTime = date_format('%c',time());
+    $currentTime = date_format('%c', time());
     $buffer->writeElement("state", "nok");
 }
 $buffer->writeElement("time", $currentTime);

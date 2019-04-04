@@ -33,7 +33,7 @@
     "webpack-cli": "^3.0.8"
   },
   "dependencies": {
-    "@centreon/react-components": "0.0.0-MON-3414-extensions-page.1",
+    "@centreon/react-components": "18.10.0-alpha.51",
     "axios": "^0.18.0",
     "class-name": "^0.1.3",
     "dom-serializer": "^0.1.0",

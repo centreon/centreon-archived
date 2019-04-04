@@ -32,17 +32,25 @@ on the central server: ::
     # systemctl enable centreontrapd
     # systemctl enable cbd
     # systemctl enable centengine
+    # systemctl enable centreon
 
 The Centreon web interface contains several menus, each with a specific function:
 
 .. image :: /images/user/amenu.png
    :align: center
 
-* **Home** lets you access the first home screen after logging in. It provides a summary of overall monitoring status.
-* **Monitoring** provides a combined view of the status of all monitored items in real and delayed time using logs and performance graphics.
-* **Reporting** provides an intuitive view (using diagrams) of the evolution of monitoring over a given period.
-* **Configuration** allows you to configure all monitored items and the monitoring infrastructure.
-* **Administration** allows you to configure the Centreon web interface and view the overall status of the servers.
+* **Home** lets you access the first home screen after logging in. It provides
+  a summary of overall monitoring status. Your workspace may be blank for now.
+  Once you configure customizable widgets, you will see data and charts according
+  to your customization.
+* **Monitoring** provides a combined view of the status of all monitored items
+  in real and delayed time using logs and performance graphics.
+* **Reporting** provides an intuitive view (using diagrams) of the evolution of
+  monitoring over a given period.
+* **Configuration** allows you to configure all monitored items and the
+  monitoring infrastructure.
+* **Administration** allows you to configure the Centreon web interface and view
+  the overall status of the servers.
 
 ***************************************
 Quick and easy monitoring configuration
@@ -72,8 +80,8 @@ The modules are now installed.
 
 Now proceed to **Configuration > Plugin packs > Manager**.
 Ten free Plugin Packs are provided to get you started. Five additional Packs are
-available once you register, and over 150 more if you subscribe to the IMP
-offer (for more information: `our website <https://www.centreon.com>`_).
+available once you register, and over 300 more if you subscribe to the IMP
+offer (for more information: `our website <https://www.centreon.com/en/>`_).
 
 .. image:: /_static/images/installation/install_imp_3.png
    :align: center

@@ -38,13 +38,12 @@ class ServiceProviderTest extends TestCase
             ->getMock();
 
         $locator = new ServiceLocator($this->container, ['realtime_db', 'configuration_db']);
-        $this->container[\Centreon\ServiceProvider::CENTREON_DB_MANAGER] = new \Centreon\Infrastructure\Service\CentreonDBManagerService($locator);
-        $this->container[\Centreon\ServiceProvider::CENTREON_WEBSERVICE] = $this
-            ->container[\Centreon\ServiceProvider::CENTREON_CLAPI] = new class {
-
+        $this->container[\Centreon\ServiceProvider::CENTREON_DB_MANAGER] =
+            new \Centreon\Infrastructure\Service\CentreonDBManagerService($locator);
+        $this->container[\Centreon\ServiceProvider::CENTREON_WEBSERVICE] =
+            $this->container[\Centreon\ServiceProvider::CENTREON_CLAPI] = new class {
                 public function add($class)
                 {
-                    
                 }
             };
 

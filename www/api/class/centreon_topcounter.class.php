@@ -651,7 +651,7 @@ class CentreonTopCounter extends CentreonWebService
         $row = $res->fetchAll();
 
         $result = [];
-        foreach ($row as $item){
+        foreach ($row as $item) {
             $result[$item['key']] = (intval($item['value']) > 10) ? $item['value'] : 10;
         }
 

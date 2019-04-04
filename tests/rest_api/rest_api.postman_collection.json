@@ -1,7 +1,7 @@
 {
   "info": {
-    "_postman_id": "a0f59ed8-0da0-4aa8-b270-774fcaa83146",
-    "name": "Centreon Web Rest API copy",
+    "_postman_id": "ca236206-2e5b-4f62-8f39-f5e4bc83889a",
+    "name": "Centreon Web Rest API",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "item": [
@@ -1014,14 +1014,14 @@
             {
               "listen": "test",
               "script": {
-                "type": "text/javascript",
+                "id": "e14c0905-a615-4b2a-8d10-d6e67a24d0b6",
                 "exec": [
                   "tests[\"Status code is 200\"] = responseCode.code === 200;",
                   "",
                   "var contentType = postman.getResponseHeader(\"Content-Type\");",
                   "",
                   "tests[\"Content-Type is present\"] = contentType !== null;",
-                  "tests[\"Content-Type is application/json\"] = contentType === \"application/json\";",
+                  "tests[\"Content-Type is application/json\"] = contentType === \"application/json;charset=utf-8\";",
                   "",
                   "var jsonData = JSON.parse(responseBody);",
                   "var hostData = jsonData.result;",
@@ -1050,7 +1050,8 @@
                   "",
                   "tests[\"Configured host present\"] = hostPresent === true;",
                   "tests[\"No _Module host present\"] = hostMetaPresent === false;"
-                ]
+                ],
+                "type": "text/javascript"
               }
             }
           ],
@@ -14264,7 +14265,7 @@
                   "tests[\"Status code is 200\"] = responseCode.code === 200;",
                   "",
                   "var contentType = postman.getResponseHeader(\"Content-Type\");",
-                  "tests[\"Content-Type is application/json\"] = contentType === \"application/json\";",
+                  "tests[\"Content-Type is application/json\"] = contentType === \"application/json;charset=utf-8\";",
                   "",
                   "var jsonData = JSON.parse(responseBody);",
                   "var result= jsonData.result;",
@@ -25017,7 +25018,7 @@
                   "tests[\"Status code is 200\"] = responseCode.code === 200;",
                   "",
                   "var contentType = postman.getResponseHeader(\"Content-Type\");",
-                  "tests[\"Content-Type is application/json\"] = contentType === \"application/json\";",
+                  "tests[\"Content-Type is application/json\"] = contentType === \"application/json;charset=utf-8\";",
                   "",
                   "var jsonData = JSON.parse(responseBody);",
                   "var result= jsonData.result;",
@@ -41147,12 +41148,12 @@
             {
               "listen": "test",
               "script": {
-                "type": "text/javascript",
+                "id": "9dd93e49-984a-4bd8-9235-438e0335fea4",
                 "exec": [
                   "tests[\"Status code is 200\"] = responseCode.code === 200;",
                   "",
                   "var contentType = postman.getResponseHeader(\"Content-Type\");",
-                  "tests[\"Content-Type is application/json\"] = contentType === \"application/json\";",
+                  "tests[\"Content-Type is application/json\"] = contentType === \"application/json;charset=utf-8\";",
                   "",
                   "var jsonData = JSON.parse(responseBody);",
                   "var result= jsonData.result;",
@@ -41191,7 +41192,8 @@
                   "}",
                   "catch (e) {}",
                   ""
-                ]
+                ],
+                "type": "text/javascript"
               }
             }
           ],
@@ -41242,12 +41244,12 @@
             {
               "listen": "test",
               "script": {
-                "type": "text/javascript",
+                "id": "1e5db65d-8018-4b73-a2ec-f20ce4c66eca",
                 "exec": [
                   "tests[\"Status code is 200\"] = responseCode.code === 200;",
                   "",
                   "var contentType = postman.getResponseHeader(\"Content-Type\");",
-                  "tests[\"Content-Type is application/json\"] = contentType === \"application/json\";",
+                  "tests[\"Content-Type is application/json\"] = contentType === \"application/json;charset=utf-8\";",
                   "",
                   "var jsonData = JSON.parse(responseBody);",
                   "var result= jsonData.result;",
@@ -41290,7 +41292,8 @@
                   "}",
                   "catch (e) {}",
                   ""
-                ]
+                ],
+                "type": "text/javascript"
               }
             }
           ],
@@ -41341,12 +41344,12 @@
             {
               "listen": "test",
               "script": {
-                "type": "text/javascript",
+                "id": "e1be0a8f-3d90-4111-bbfd-b90bc0be15ee",
                 "exec": [
                   "tests[\"Status code is 200\"] = responseCode.code === 200;",
                   "",
                   "var contentType = postman.getResponseHeader(\"Content-Type\");",
-                  "tests[\"Content-Type is application/json\"] = contentType === \"application/json\";",
+                  "tests[\"Content-Type is application/json\"] = contentType === \"application/json;charset=utf-8\";",
                   "",
                   "var jsonData = JSON.parse(responseBody);",
                   "var result= jsonData.result;",
@@ -41386,7 +41389,8 @@
                   "}",
                   "catch (e) {}",
                   ""
-                ]
+                ],
+                "type": "text/javascript"
               }
             }
           ],
@@ -41437,12 +41441,12 @@
             {
               "listen": "test",
               "script": {
-                "type": "text/javascript",
+                "id": "c5920d29-dd72-42c2-ba6d-fadf7ab06da2",
                 "exec": [
                   "tests[\"Status code is 200\"] = responseCode.code === 200;",
                   "",
                   "var contentType = postman.getResponseHeader(\"Content-Type\");",
-                  "tests[\"Content-Type is application/json\"] = contentType === \"application/json\";",
+                  "tests[\"Content-Type is application/json\"] = contentType === \"application/json;charset=utf-8\";",
                   "",
                   "var jsonData = JSON.parse(responseBody);",
                   "var result= jsonData.result;",
@@ -41485,7 +41489,8 @@
                   "}",
                   "catch (e) {}",
                   ""
-                ]
+                ],
+                "type": "text/javascript"
               }
             }
           ],
@@ -41536,12 +41541,12 @@
             {
               "listen": "test",
               "script": {
-                "type": "text/javascript",
+                "id": "1a562f54-f44d-40c5-945a-40f082a82c32",
                 "exec": [
                   "tests[\"Status code is 200\"] = responseCode.code === 200;",
                   "",
                   "var contentType = postman.getResponseHeader(\"Content-Type\");",
-                  "tests[\"Content-Type is application/json\"] = contentType === \"application/json\";",
+                  "tests[\"Content-Type is application/json\"] = contentType === \"application/json;charset=utf-8\";",
                   "",
                   "var jsonData = JSON.parse(responseBody);",
                   "var result= jsonData.result;",
@@ -41581,7 +41586,8 @@
                   "}",
                   "catch (e) {}",
                   ""
-                ]
+                ],
+                "type": "text/javascript"
               }
             }
           ],
@@ -45134,6 +45140,7 @@
     },
     {
       "name": "71-ACL_Menus",
+      "description": "Tests all commands to manage ACL menu.",
       "item": [
         {
           "name": "Setparam alias",
@@ -46496,330 +46503,6 @@
             "body": {
               "mode": "raw",
               "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};1;Home;Custom Views;set default\"\n}"
-            },
-            "url": {
-              "raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
-              "protocol": "http",
-              "host": [
-                "{{url}}"
-              ],
-              "path": [
-                "centreon",
-                "api",
-                "index.php"
-              ],
-              "query": [
-                {
-                  "key": "action",
-                  "value": "action"
-                },
-                {
-                  "key": "object",
-                  "value": "centreon_clapi"
-                }
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "Grantrw poller statistics",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "type": "text/javascript",
-                "exec": [
-                  "tests[\"Status code is 200\"] = responseCode.code === 200;"
-                ]
-              }
-            }
-          ],
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              },
-              {
-                "key": "centreon-auth-token",
-                "value": "{{token}}"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"action\": \"grantrw\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};0;Home;poller statistics\"\n}"
-            },
-            "url": {
-              "raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
-              "protocol": "http",
-              "host": [
-                "{{url}}"
-              ],
-              "path": [
-                "centreon",
-                "api",
-                "index.php"
-              ],
-              "query": [
-                {
-                  "key": "action",
-                  "value": "action"
-                },
-                {
-                  "key": "object",
-                  "value": "centreon_clapi"
-                }
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "Revoke poller statistics",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "type": "text/javascript",
-                "exec": [
-                  "tests[\"Status code is 200\"] = responseCode.code === 200;"
-                ]
-              }
-            }
-          ],
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              },
-              {
-                "key": "centreon-auth-token",
-                "value": "{{token}}"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};1;Home;poller statistics\"\n}"
-            },
-            "url": {
-              "raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
-              "protocol": "http",
-              "host": [
-                "{{url}}"
-              ],
-              "path": [
-                "centreon",
-                "api",
-                "index.php"
-              ],
-              "query": [
-                {
-                  "key": "action",
-                  "value": "action"
-                },
-                {
-                  "key": "object",
-                  "value": "centreon_clapi"
-                }
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "Grantrw broker statistics",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "type": "text/javascript",
-                "exec": [
-                  "tests[\"Status code is 200\"] = responseCode.code === 200;"
-                ]
-              }
-            }
-          ],
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              },
-              {
-                "key": "centreon-auth-token",
-                "value": "{{token}}"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"action\": \"grantrw\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};0;Home;poller statistics;broker statistics\"\n}"
-            },
-            "url": {
-              "raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
-              "protocol": "http",
-              "host": [
-                "{{url}}"
-              ],
-              "path": [
-                "centreon",
-                "api",
-                "index.php"
-              ],
-              "query": [
-                {
-                  "key": "action",
-                  "value": "action"
-                },
-                {
-                  "key": "object",
-                  "value": "centreon_clapi"
-                }
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "Revoke broker statistics",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "type": "text/javascript",
-                "exec": [
-                  "tests[\"Status code is 200\"] = responseCode.code === 200;"
-                ]
-              }
-            }
-          ],
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              },
-              {
-                "key": "centreon-auth-token",
-                "value": "{{token}}"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};1;Home;poller statistics;broker statistics\"\n}"
-            },
-            "url": {
-              "raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
-              "protocol": "http",
-              "host": [
-                "{{url}}"
-              ],
-              "path": [
-                "centreon",
-                "api",
-                "index.php"
-              ],
-              "query": [
-                {
-                  "key": "action",
-                  "value": "action"
-                },
-                {
-                  "key": "object",
-                  "value": "centreon_clapi"
-                }
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "Grantrw graphs (poller)",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "type": "text/javascript",
-                "exec": [
-                  "tests[\"Status code is 200\"] = responseCode.code === 200;"
-                ]
-              }
-            }
-          ],
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              },
-              {
-                "key": "centreon-auth-token",
-                "value": "{{token}}"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"action\": \"grantrw\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};0;Home;poller statistics;graphs\"\n}"
-            },
-            "url": {
-              "raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
-              "protocol": "http",
-              "host": [
-                "{{url}}"
-              ],
-              "path": [
-                "centreon",
-                "api",
-                "index.php"
-              ],
-              "query": [
-                {
-                  "key": "action",
-                  "value": "action"
-                },
-                {
-                  "key": "object",
-                  "value": "centreon_clapi"
-                }
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "Revoke graphs (poller)",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "type": "text/javascript",
-                "exec": [
-                  "tests[\"Status code is 200\"] = responseCode.code === 200;"
-                ]
-              }
-            }
-          ],
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              },
-              {
-                "key": "centreon-auth-token",
-                "value": "{{token}}"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};1;Home;poller statistics;graphs\"\n}"
             },
             "url": {
               "raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
@@ -48385,7 +48068,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"grantrw\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};0;monitoring;performances;metrics\"\n}"
+              "raw": "{\n  \"action\": \"grantrw\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};0;monitoring;performances;virtual metrics\"\n}"
             },
             "url": {
               "raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
@@ -48439,7 +48122,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};1;monitoring;performances;metrics\"\n}"
+              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};1;monitoring;performances;virtual metrics\"\n}"
             },
             "url": {
               "raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
@@ -57809,114 +57492,6 @@
           "response": []
         },
         {
-          "name": "Grantrw CSS",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "type": "text/javascript",
-                "exec": [
-                  "tests[\"Status code is 200\"] = responseCode.code === 200;"
-                ]
-              }
-            }
-          ],
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              },
-              {
-                "key": "centreon-auth-token",
-                "value": "{{token}}"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"action\": \"grantrw\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};0;administration;parameters;CSS\"\n}"
-            },
-            "url": {
-              "raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
-              "protocol": "http",
-              "host": [
-                "{{url}}"
-              ],
-              "path": [
-                "centreon",
-                "api",
-                "index.php"
-              ],
-              "query": [
-                {
-                  "key": "action",
-                  "value": "action"
-                },
-                {
-                  "key": "object",
-                  "value": "centreon_clapi"
-                }
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "Revoke CSS",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "type": "text/javascript",
-                "exec": [
-                  "tests[\"Status code is 200\"] = responseCode.code === 200;"
-                ]
-              }
-            }
-          ],
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              },
-              {
-                "key": "centreon-auth-token",
-                "value": "{{token}}"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};1;administration;parameters;CSS\"\n}"
-            },
-            "url": {
-              "raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
-              "protocol": "http",
-              "host": [
-                "{{url}}"
-              ],
-              "path": [
-                "centreon",
-                "api",
-                "index.php"
-              ],
-              "query": [
-                {
-                  "key": "action",
-                  "value": "action"
-                },
-                {
-                  "key": "object",
-                  "value": "centreon_clapi"
-                }
-              ]
-            }
-          },
-          "response": []
-        },
-        {
           "name": "Grantrw backup",
           "event": [
             {
@@ -59429,114 +59004,6 @@
           "response": []
         },
         {
-          "name": "Grantrw visualisation",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "type": "text/javascript",
-                "exec": [
-                  "tests[\"Status code is 200\"] = responseCode.code === 200;"
-                ]
-              }
-            }
-          ],
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              },
-              {
-                "key": "centreon-auth-token",
-                "value": "{{token}}"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"action\": \"grantrw\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};0;administration;logs;visualisation\"\n}"
-            },
-            "url": {
-              "raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
-              "protocol": "http",
-              "host": [
-                "{{url}}"
-              ],
-              "path": [
-                "centreon",
-                "api",
-                "index.php"
-              ],
-              "query": [
-                {
-                  "key": "action",
-                  "value": "action"
-                },
-                {
-                  "key": "object",
-                  "value": "centreon_clapi"
-                }
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "Revoke visualisation",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "type": "text/javascript",
-                "exec": [
-                  "tests[\"Status code is 200\"] = responseCode.code === 200;"
-                ]
-              }
-            }
-          ],
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              },
-              {
-                "key": "centreon-auth-token",
-                "value": "{{token}}"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};1;administration;logs;visualisation\"\n}"
-            },
-            "url": {
-              "raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
-              "protocol": "http",
-              "host": [
-                "{{url}}"
-              ],
-              "path": [
-                "centreon",
-                "api",
-                "index.php"
-              ],
-              "query": [
-                {
-                  "key": "action",
-                  "value": "action"
-                },
-                {
-                  "key": "object",
-                  "value": "centreon_clapi"
-                }
-              ]
-            }
-          },
-          "response": []
-        },
-        {
           "name": "Grantrw sessions",
           "event": [
             {
@@ -59645,7 +59112,7 @@
           "response": []
         },
         {
-          "name": "Grantrw server status",
+          "name": "Grantrw platform status",
           "event": [
             {
               "listen": "test",
@@ -59671,7 +59138,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"grantrw\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};0;administration;server status\"\n}"
+              "raw": "{\n  \"action\": \"grantrw\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};0;administration;platform status\"\n}"
             },
             "url": {
               "raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
@@ -59699,7 +59166,7 @@
           "response": []
         },
         {
-          "name": "Revoke server status",
+          "name": "Revoke platform status",
           "event": [
             {
               "listen": "test",
@@ -59725,7 +59192,223 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};1;administration;server status\"\n}"
+              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};1;administration;platform status\"\n}"
+            },
+            "url": {
+              "raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
+              "protocol": "http",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "centreon",
+                "api",
+                "index.php"
+              ],
+              "query": [
+                {
+                  "key": "action",
+                  "value": "action"
+                },
+                {
+                  "key": "object",
+                  "value": "centreon_clapi"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Grantrw broker statistics",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "tests[\"Status code is 200\"] = responseCode.code === 200;"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "centreon-auth-token",
+                "value": "{{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"action\": \"grantrw\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};0;administration;platform status;broker statistics\"\n}"
+            },
+            "url": {
+              "raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
+              "protocol": "http",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "centreon",
+                "api",
+                "index.php"
+              ],
+              "query": [
+                {
+                  "key": "action",
+                  "value": "action"
+                },
+                {
+                  "key": "object",
+                  "value": "centreon_clapi"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Revoke broker statistics",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "tests[\"Status code is 200\"] = responseCode.code === 200;"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "centreon-auth-token",
+                "value": "{{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};1;administration;platform status;broker statistics\"\n}"
+            },
+            "url": {
+              "raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
+              "protocol": "http",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "centreon",
+                "api",
+                "index.php"
+              ],
+              "query": [
+                {
+                  "key": "action",
+                  "value": "action"
+                },
+                {
+                  "key": "object",
+                  "value": "centreon_clapi"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Grantrw engine statistics",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "tests[\"Status code is 200\"] = responseCode.code === 200;"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "centreon-auth-token",
+                "value": "{{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"action\": \"grantrw\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};0;administration;platform status;engine statistics\"\n}"
+            },
+            "url": {
+              "raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
+              "protocol": "http",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "centreon",
+                "api",
+                "index.php"
+              ],
+              "query": [
+                {
+                  "key": "action",
+                  "value": "action"
+                },
+                {
+                  "key": "object",
+                  "value": "centreon_clapi"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Revoke engine statistics",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "tests[\"Status code is 200\"] = responseCode.code === 200;"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "centreon-auth-token",
+                "value": "{{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};1;administration;platform status;engine statistics\"\n}"
             },
             "url": {
               "raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
@@ -59779,7 +59462,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"grantrw\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};0;administration;server status;databases\"\n}"
+              "raw": "{\n  \"action\": \"grantrw\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};0;administration;platform status;databases\"\n}"
             },
             "url": {
               "raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
@@ -59833,7 +59516,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};1;administration;server status;databases\"\n}"
+              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};1;administration;platform status;databases\"\n}"
             },
             "url": {
               "raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
@@ -59967,117 +59650,8 @@
             }
           },
           "response": []
-        },
-        {
-          "name": "Grantrw about (about)",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "type": "text/javascript",
-                "exec": [
-                  "tests[\"Status code is 200\"] = responseCode.code === 200;"
-                ]
-              }
-            }
-          ],
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              },
-              {
-                "key": "centreon-auth-token",
-                "value": "{{token}}"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"action\": \"grantrw\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};0;administration;about;about\"\n}"
-            },
-            "url": {
-              "raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
-              "protocol": "http",
-              "host": [
-                "{{url}}"
-              ],
-              "path": [
-                "centreon",
-                "api",
-                "index.php"
-              ],
-              "query": [
-                {
-                  "key": "action",
-                  "value": "action"
-                },
-                {
-                  "key": "object",
-                  "value": "centreon_clapi"
-                }
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "Revoke about (about)",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "type": "text/javascript",
-                "exec": [
-                  "tests[\"Status code is 200\"] = responseCode.code === 200;"
-                ]
-              }
-            }
-          ],
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              },
-              {
-                "key": "centreon-auth-token",
-                "value": "{{token}}"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};1;administration;about;about\"\n}"
-            },
-            "url": {
-              "raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
-              "protocol": "http",
-              "host": [
-                "{{url}}"
-              ],
-              "path": [
-                "centreon",
-                "api",
-                "index.php"
-              ],
-              "query": [
-                {
-                  "key": "action",
-                  "value": "action"
-                },
-                {
-                  "key": "object",
-                  "value": "centreon_clapi"
-                }
-              ]
-            }
-          },
-          "response": []
         }
-      ],
-      "description": "Tests all commands to manage ACL menu."
+      ]
     },
     {
       "name": "72-ACL_Resources",

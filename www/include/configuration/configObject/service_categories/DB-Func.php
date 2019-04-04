@@ -152,7 +152,6 @@ function insertServiceCategorieInDB()
     global $pearDB, $centreon;
 
     if (testServiceCategorieExistence($_POST["sc_name"])) {
-
         $query = "INSERT INTO `service_categories` (`sc_name`, `sc_description`, `level`, `icon_id`, `sc_activate` ) " .
             "VALUES ('" . $pearDB->escape($_POST["sc_name"]) . "', '" .
             $pearDB->escape($_POST["sc_description"]) . "', " .

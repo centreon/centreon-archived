@@ -49,7 +49,7 @@ Run the following command: ::
 
     # yum install centos-release-scl
 
-Upgrading the Centreon repository
+Upgrading the Centreon Repository
 =================================
 
 Run the following commands: ::

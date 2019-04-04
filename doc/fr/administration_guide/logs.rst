@@ -7,7 +7,7 @@ Principe
 ********
 
 Par défaut, Centreon conserve dans un journal toutes les actions utilisateurs concernant la modification de la configuration de la supervision.
-Pour accéder à ces informations, rendez-vous dans le menu **Administration** ==> **Journal d'évènements**.
+Pour accéder à ces informations, rendez-vous dans le menu **Administration > Journal d'évènements**.
 
 .. image :: /images/guide_exploitation/fsearchlogs.png
    :align: center
@@ -33,12 +33,12 @@ Le tableau ci-dessous définit les colonnes du tableau de résultats :
 +----------------------+------------------------------------------------------------------------------------------------------------+
 | Type de modification | Contient le type d'action effectuée. Il existe plusieurs types d'actions possibles :                       |
 |                      |                                                                                                            |
-|                      | - Added : Indique que l'objet a été ajouté                                                                 |
-|                      | - Changed : Indique que l'objet a été modifié                                                              |
-|                      | - Deleted : Indique que l'objet a été supprimé                                                             |
-|                      | - Massive Change : Indique un changement massif de configuration sur des objets                            |
-|                      | - Enabled : Indique que l'objet a été activé                                                               |
-|                      | - Disabled : Indique que l'objet a été désactivé                                                           |
+|                      | - Ajouté : Indique que l'objet a été ajouté                                                                |
+|                      | - Modifié : Indique que l'objet a été modifié                                                              |
+|                      | - Supprimé : Indique que l'objet a été supprimé                                                            |
+|                      | - Changement massif : Indique un changement massif de configuration sur des objets                         |
+|                      | - Activé : Indique que l'objet a été activé                                                                |
+|                      | - Désactivé : Indique que l'objet a été désactivé                                                          |
 +----------------------+------------------------------------------------------------------------------------------------------------+
 | Type                 | Indique le type d'objet concerné                                                                           |
 +----------------------+------------------------------------------------------------------------------------------------------------+
@@ -69,3 +69,14 @@ Le tableau ci-dessous définit les colonnes du tableau des modifications :
 |                      | - Avant : Indique l'ancienne valeur                       |
 |                      | - Après : Indique la nouvelle valeur                      |
 +----------------------+-----------------------------------------------------------+
+
+=============
+Configuration
+=============
+
+Pour activer la journalisation des actions utilisateurs, rendez-vous dans le
+menu **Administration > Paramètres > Options** et cocher la case
+**Activer/Désactiver les journaux d'audit**:
+
+.. image:: /images/guide_exploitation/logs_audit_enable.png
+    :align: center

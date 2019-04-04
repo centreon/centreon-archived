@@ -59,7 +59,7 @@ class Upgrader extends Module
 
             $configuration = $this->utils->requireConfiguration(
                 $upgradePath . '/conf.php',
-                    'upgrade'
+                'upgrade'
             );
 
             if ($moduleInstalledInformation["mod_release"] != $configuration[$this->moduleName]["release_from"]) {

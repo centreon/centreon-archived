@@ -8,7 +8,7 @@ class DowntimeRepository extends ServiceEntityRepository
 
     /**
      * Export
-     * 
+     *
      * @param int[] $pollerIds
      * @param array $hostTemplateChain
      * @param array $serviceTemplateChain

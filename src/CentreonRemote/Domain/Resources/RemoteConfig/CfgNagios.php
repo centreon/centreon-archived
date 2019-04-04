@@ -15,7 +15,7 @@ class CfgNagios
      * @param int $serverID the poller id
      * @return array the configuration template
      */
-    public static function getConfiguration (string $name, int $serverID): array
+    public static function getConfiguration(string $name, int $serverID): array
     {
         return [
             'nagios_name'                                 => $name,

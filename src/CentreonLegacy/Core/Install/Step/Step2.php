@@ -87,5 +87,4 @@ class Step2 extends AbstractStep
 
         return $libs;
     }
-
 }

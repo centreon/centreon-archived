@@ -8,7 +8,7 @@ class MetaServiceRelationRepository extends ServiceEntityRepository
 
     /**
      * Export
-     * 
+     *
      * @param int[] $pollerIds
      * @param array $templateChainList
      * @return array
@@ -66,7 +66,7 @@ SQL;
 
     /**
      * Export
-     * 
+     *
      * @param int[] $list
      * @return array
      */

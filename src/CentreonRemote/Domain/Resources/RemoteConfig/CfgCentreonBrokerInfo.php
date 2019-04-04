@@ -2,19 +2,17 @@
 
 namespace CentreonRemote\Domain\Resources\RemoteConfig;
 
-use CentreonRemote\Domain\Resources\RemoteConfig\BrokerInfo\ {
-    LoggerBroker,
-    LoggerModule,
-    LoggerRrd,
-    InputBroker,
-    InputRrd,
-    OutputPerfdata,
-    OutputRrd,
-    OutputRrdMaster,
-    OutputSqlMaster,
-    OutputForwardMaster,
-    OutputModuleMaster
-};
+use CentreonRemote\Domain\Resources\RemoteConfig\BrokerInfo\LoggerBroker;
+use CentreonRemote\Domain\Resources\RemoteConfig\BrokerInfo\LoggerModule;
+use CentreonRemote\Domain\Resources\RemoteConfig\BrokerInfo\LoggerRrd;
+use CentreonRemote\Domain\Resources\RemoteConfig\BrokerInfo\InputBroker;
+use CentreonRemote\Domain\Resources\RemoteConfig\BrokerInfo\InputRrd;
+use CentreonRemote\Domain\Resources\RemoteConfig\BrokerInfo\OutputPerfdata;
+use CentreonRemote\Domain\Resources\RemoteConfig\BrokerInfo\OutputRrd;
+use CentreonRemote\Domain\Resources\RemoteConfig\BrokerInfo\OutputRrdMaster;
+use CentreonRemote\Domain\Resources\RemoteConfig\BrokerInfo\OutputSqlMaster;
+use CentreonRemote\Domain\Resources\RemoteConfig\BrokerInfo\OutputForwardMaster;
+use CentreonRemote\Domain\Resources\RemoteConfig\BrokerInfo\OutputModuleMaster;
 
 /**
  * Get broker configuration template
@@ -30,7 +28,7 @@ class CfgCentreonBrokerInfo
      * @param string|null $dbPassword the database password
      * @return array the configuration template
      */
-    public static function getConfiguration (string $serverName, $dbUser, $dbPassword): array
+    public static function getConfiguration(string $serverName, $dbUser, $dbPassword): array
     {
         $serverName = strtolower(str_replace(' ', '-', $serverName));
 

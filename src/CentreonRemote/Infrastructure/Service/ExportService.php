@@ -64,7 +64,7 @@ class ExportService
 
     /**
      * Export all that is registered in exporter
-     * 
+     *
      * @todo separate work of exporters
      * @throws \Exception
      * @param \CentreonRemote\Infrastructure\Export\ExportCommitment $commitment

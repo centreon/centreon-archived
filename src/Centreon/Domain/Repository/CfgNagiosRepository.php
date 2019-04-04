@@ -8,7 +8,7 @@ class CfgNagiosRepository extends ServiceEntityRepository
 
     /**
      * Export poller's Nagios configurations
-     * 
+     *
      * @param int[] $pollerIds
      * @return array
      */

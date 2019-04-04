@@ -63,7 +63,7 @@ class ExporterService implements ContainerInterface
 
     private function _sort(): void
     {
-        usort($this->objects, function($a, $b) {
+        usort($this->objects, function ($a, $b) {
             return $a['classname']::order() - $b['classname']::order();
         });
     }

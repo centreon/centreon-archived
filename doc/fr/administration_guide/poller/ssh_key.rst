@@ -12,6 +12,12 @@ l’utilisateur **centreon** : ::
     # su - centreon
     $ ssh-keygen -t rsa
 
+.. note::
+    Appuyez sur la touche *entrée* quand il vous est demandé de saisir un
+    fichier pour enregistrer la clé. Laissez le mot de passe vide si vous le
+    souhaitez. Cependant, ce n'est pas recommandé. Vous obtiendrez une empreinte
+    digitale de clé et une image randomart.
+
 Générez un mot de passe sur le nouveau serveur pour l'utilisateur
 **centreon** : ::
 
@@ -20,4 +26,4 @@ Générez un mot de passe sur le nouveau serveur pour l'utilisateur
 Vous devez copier cette clé sur le nouveau serveur : ::
 
     # su - centreon
-    $ ssh-copy-id -i .ssh/id_rsa.pub centreon@IP_POLLER
+    $ ssh-copy-id -i .ssh/id_rsa.pub centreon@IP_NEW_POLLER

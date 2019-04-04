@@ -16,7 +16,7 @@ class ExporterServiceTest extends TestCase
     protected function setUp()
     {
         $this->exporter = new ExporterService();
-        $this->exporter->add(ServiceExporter::class, function(){
+        $this->exporter->add(ServiceExporter::class, function () {
             return new ServiceExporter(new Container);
         });
     }
@@ -28,11 +28,11 @@ class ExporterServiceTest extends TestCase
      */
     public function testAdd()
     {
-        $this->exporter->add(ExporterService::class, function(){
+        $this->exporter->add(ExporterService::class, function () {
             return new ExporterService(new Container);
         });
 
-        $this->exporter->add(PollerExporter::class, function(){
+        $this->exporter->add(PollerExporter::class, function () {
             return new PollerExporter(new Container);
         });
 

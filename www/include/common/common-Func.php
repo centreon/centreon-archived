@@ -1176,7 +1176,6 @@ function getMyServiceID($service_description = null, $host_id = null, $hg_id = n
 
     $service_description = str2db($service_description);
     if ($host_id) {
-
         $query = "SELECT service_id FROM service, host_service_relation hsr " .
             "WHERE hsr.host_host_id = '" . CentreonDB::escape($host_id) . "' AND hsr.service_service_id = service_id " .
             "AND (service_description = '" . $pearDB->escape($service_description) .
