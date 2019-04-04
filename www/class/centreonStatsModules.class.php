@@ -38,15 +38,9 @@ require_once _CENTREON_PATH_ . "/www/class/centreonDB.class.php";
 class CentreonStatsModules
 {
     /**
-     * @var CentreonDB
-     * @var array InstalledModules
-     * @var array ObjectModules
-     * @var array Statistics
+     * @var \CentreonDB
      */
     private $db;
-    private $installed_modules;
-    private $module_objects;
-    private $data;
 
     /**
      * Constructor
@@ -59,58 +53,63 @@ class CentreonStatsModules
     /**
      * Get list of installed modules
      *
-     * @return array
+     * @return array Return the names of installed modules [['name' => string], ...]
      */
-    public function getInstalledModules()
+    private function getInstalledModules()
     {
-        if (!is_null($this->installed_modules)) {
-            return $this->installed_modules;
-        }
-        $this->installed_modules = array();
+        $installedModules = array();
         $stmt = $this->db->prepare("SELECT name FROM modules_informations");
         $stmt->execute();
         foreach ($stmt->fetchAll(PDO::FETCH_ASSOC) as $value) {
-            $this->installed_modules[] = $value['name'];
+            $installedModules[] = $value['name'];
         }
+
+        return $installedModules;
     }
 
     /**
      * Get statistics module objects
      *
-     * @return array
+     * @param array $installedModules Names of installed modules for which you want 
+     * to retrieve statistics module [['name' => string], ...]
+     *
+     * @return array Return a list of statistics module found
+     * @see    CentreonStatsModules::getInstalledModules()
      */
-    public function getModuleObjects()
+    private function getModuleObjects(array $installedModules)
     {
-        $this->getInstalledModules();
+        $moduleObjects = array();
 
-        foreach ($this->installed_modules as $module) {
+        foreach ($installedModules as $module) {
             if ($files = glob(_CENTREON_PATH_ . 'www/modules/' . $module . '/statistics/*.class.php')) {
                 foreach ($files as $full_file) {
-                    require_once $full_file;
+                    include_once $full_file;
                     $file_name = str_replace('.class.php', '', basename($full_file));
                     if (class_exists(ucfirst($file_name))) {
-                        $this->module_objects[] = ucfirst($file_name);
+                        $moduleObjects[] = ucfirst($file_name);
                     }
                 }
             }
         }
+
+        return $moduleObjects;
     }
 
     /**
      * Get statistics from module
      *
-     * @return array
+     * @return array The statistics of each module
      */
     public function getModulesStatistics()
     {
         $data = array();
-        if (is_null($this->module_objects)) {
-            $this->getModuleObjects();
-        }
+        $moduleObjects = $this->getModuleObjects(
+            $this->getInstalledModules()
+        );
 
-        if (is_array($this->module_objects)) {
-            foreach ($this->module_objects as $module_object) {
-                $oModuleObject = new $module_object();
+        if (is_array($moduleObjects)) {
+            foreach ($moduleObjects as $moduleObject) {
+                $oModuleObject = new $moduleObject();
                 $data[] = $oModuleObject->getStats();
             }
         }

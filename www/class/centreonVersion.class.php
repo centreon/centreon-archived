@@ -150,7 +150,7 @@ class CentreonVersion
     /**
      * get system information
      *
-     * @return array
+     * @return array $data An array composed with the name and version of the OS
      * @throws Exception
      */
     public function getVersionSystem()
@@ -171,7 +171,7 @@ class CentreonVersion
     /**
      * Get all Centreon widgets
      *
-     * @return array
+     * @return array $data Widgets statistics
      */
     public function getWidgetsUsage()
     {
