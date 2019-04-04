@@ -821,9 +821,25 @@ class CentreonAPI
     /**
      * @param $newOption
      */
-    public function setOption($newOption)
+    public function setOption($newOption): void
     {
         $this->options = $newOption;
+    }
+
+    /**
+     * @param $newVariables
+     */
+    public function setVariables($newVariables): void
+    {
+        $this->variables = $newVariables;
+    }
+
+    /**
+     * @param $newPath
+     */
+    public function setCentreonPath($newPath): void
+    {
+        $this->centreon_path = $newPath;
     }
 
     /**
