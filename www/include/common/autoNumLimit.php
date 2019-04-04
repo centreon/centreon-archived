@@ -65,8 +65,10 @@ if (isset($_POST['limit']) && $_POST['limit']) {
 $_SESSION[$sessionLimitKey] = $limit;
 
 // Setting the pagination filter
-if (isset($centreon->historyLastUrl) && $centreon->historyLastUrl !== $url) {
-    // Checking if the current page and the last displayed page are the same
+if (isset($_POST['num']) && isset($_POST['search'])
+    || (isset($centreon->historyLastUrl) && $centreon->historyLastUrl !== $url)
+) {
+    // Checking if the current page and the last displayed page are the same and resetting the filters
     $num = 0;
 } elseif (isset($_REQUEST['num'])) {
     // Checking if a pagination filter has been sent in the http request
@@ -75,9 +77,8 @@ if (isset($centreon->historyLastUrl) && $centreon->historyLastUrl !== $url) {
         FILTER_VALIDATE_INT
     );
 } else {
-    // Resetting the filters
+    // Resetting the pagination filter
     $num = $centreon->historyPage[$url] ?? 0;
-    $centreon->historySearch[$url] = array();
 }
 
 // Cast limit and num to avoid sql error on prepared statement (PDO::PARAM_INT)
