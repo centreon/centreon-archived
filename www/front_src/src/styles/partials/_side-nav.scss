@@ -318,11 +318,11 @@
         /*manage exception where 4th level menu is active and we want to avoid scroll ipening the 5 th level menu on hover*/
         &:nth-child(4).active + .menu-item {
           &:hover>ul.list-unstyled {
-            top: -120px;
+            top: -191px;
           }
           >ul.list-unstyled .collapsed-item:first-child:hover {
             >ul {
-              top: -120px;
+              top: -191px;
             }
           }
         }
