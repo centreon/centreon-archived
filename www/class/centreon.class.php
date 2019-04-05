@@ -1,7 +1,7 @@
 <?php
 /*
- * Copyright 2005-2015 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2019 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -56,8 +56,22 @@ class Centreon
     public $plugins;
     public $status_graph_service;
     public $status_graph_host;
+
+    /*
+     * @var array : saved user's pagination filter value
+     */
     public $historyPage;
+
+    /*
+     * @var string : saved last page's file name
+     */
+    public $historyLastUrl;
+
+    /*
+     * @var array : saved user's filters
+     */
     public $historySearch;
+
     public $historySearchService;
     public $historySearchOutput;
     public $historyLimit;
@@ -217,6 +231,7 @@ class Centreon
     public function createHistory()
     {
         $this->historyPage = array();
+        $this->historyLastUrl = '';
         $this->historySearch = array();
         $this->historySearchService = array();
         $this->historySearchOutput = array();
@@ -234,7 +249,7 @@ class Centreon
     {
         $this->Nagioscfg = array();
         /*
-         * We don't check activate because we can a server without a engine on localhost running 
+         * We don't check activate because we can a server without a engine on localhost running
          * (but we order to get if we have one)
          */
         $DBRESULT = CentreonDBInstance::getConfInstance()->query("SELECT * FROM cfg_nagios, nagios_server
