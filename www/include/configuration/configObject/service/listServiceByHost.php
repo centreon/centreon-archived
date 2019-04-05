@@ -68,7 +68,7 @@ $template = filter_var(
 );
 
 $searchH = filter_var(
-    $_POST['searchH'] ?? $_GET['searchH'] ?? null,
+    $_POST['searchH'] ?? $_GET['search'] ?? null,
     FILTER_SANITIZE_STRING
 );
 
@@ -77,7 +77,7 @@ $searchS = filter_var(
     FILTER_SANITIZE_STRING
 );
 
-if (isset($_POST['Search']) || isset($_GET['Search'])) {
+if (isset($_POST['search']) || isset($_GET['search'])) {
     //initializing filters values
     $centreon->historySearch[$url] = array();
     $centreon->historySearch[$url]["template"] = $template;
