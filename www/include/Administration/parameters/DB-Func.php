@@ -703,66 +703,6 @@ function updateRRDToolConfigData($gopt_id = null)
     );
     updateOption(
         $pearDB,
-        "rrdtool_title_font",
-        isset($ret["rrdtool_title_font"]) && $ret["rrdtool_title_font"] != null
-            ? htmlentities($ret["rrdtool_title_font"], ENT_QUOTES, "UTF-8") : "NULL"
-    );
-    updateOption(
-        $pearDB,
-        "rrdtool_title_fontsize",
-        isset($ret["rrdtool_title_fontsize"]) && $ret["rrdtool_title_fontsize"] != null
-            ? htmlentities($ret["rrdtool_title_fontsize"], ENT_QUOTES, "UTF-8") : "NULL"
-    );
-    updateOption(
-        $pearDB,
-        "rrdtool_unit_font",
-        isset($ret["rrdtool_unit_font"]) && $ret["rrdtool_unit_font"] != null
-            ? htmlentities($ret["rrdtool_unit_font"], ENT_QUOTES, "UTF-8") : "NULL"
-    );
-    updateOption(
-        $pearDB,
-        "rrdtool_unit_fontsize",
-        isset($ret["rrdtool_unit_fontsize"]) && $ret["rrdtool_unit_fontsize"] != null
-            ? htmlentities($ret["rrdtool_unit_fontsize"], ENT_QUOTES, "UTF-8") : "NULL"
-    );
-    updateOption(
-        $pearDB,
-        "rrdtool_axis_font",
-        isset($ret["rrdtool_axis_font"]) && $ret["rrdtool_axis_font"] != null
-            ? htmlentities($ret["rrdtool_axis_font"], ENT_QUOTES, "UTF-8") : "NULL"
-    );
-    updateOption(
-        $pearDB,
-        "rrdtool_axis_fontsize",
-        isset($ret["rrdtool_axis_fontsize"]) && $ret["rrdtool_axis_fontsize"] != null
-            ? htmlentities($ret["rrdtool_axis_fontsize"], ENT_QUOTES, "UTF-8") : "NULL"
-    );
-    updateOption(
-        $pearDB,
-        "rrdtool_watermark_font",
-        isset($ret["rrdtool_watermark_font"]) && $ret["rrdtool_watermark_font"] != null
-            ? htmlentities($ret["rrdtool_watermark_font"], ENT_QUOTES, "UTF-8") : "NULL"
-    );
-    updateOption(
-        $pearDB,
-        "rrdtool_watermark_fontsize",
-        isset($ret["rrdtool_watermark_fontsize"]) && $ret["rrdtool_watermark_fontsize"] != null
-            ? htmlentities($ret["rrdtool_watermark_fontsize"], ENT_QUOTES, "UTF-8") : "NULL"
-    );
-    updateOption(
-        $pearDB,
-        "rrdtool_legend_font",
-        isset($ret["rrdtool_legend_font"]) && $ret["rrdtool_legend_font"] != null
-            ? htmlentities($ret["rrdtool_legend_font"], ENT_QUOTES, "UTF-8") : "NULL"
-    );
-    updateOption(
-        $pearDB,
-        "rrdtool_legend_fontsize",
-        isset($ret["rrdtool_legend_fontsize"]) && $ret["rrdtool_legend_fontsize"] != null
-            ? htmlentities($ret["rrdtool_legend_fontsize"], ENT_QUOTES, "UTF-8") : "NULL"
-    );
-    updateOption(
-        $pearDB,
         "rrdcached_enable",
         isset($ret['rrdcached_enable']['rrdcached_enable']) ? $ret['rrdcached_enable']['rrdcached_enable'] : '0'
     );

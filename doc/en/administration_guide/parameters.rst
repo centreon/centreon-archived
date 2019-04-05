@@ -174,26 +174,26 @@ Then restart Apache :
 
   service httpd restart
 
-
 *******
 RRDTool
 *******
 
-This part can be used to configure the RRDTool graphs generation engine and the sizes of the typefaces used for their presentation.
-
-#. Go into the menu: **Administration > Parameters > RRDTool**
+This part can be used to configure the RRDTool graphs generation engine.
+Go into the **Administration > Parameters > RRDTool** menu.
 
 .. image :: /images/guide_exploitation/errdtool.png
    :align: center
 
 * **Directory + RRDTOOL Binary** field defines the path to the RRDTool executable
-* The fields belonging to the categories **Title Properties**, **Unit Properties**, **Axis Properties**, **Legend Properties** and **Watermark Properties** are used to define the typeface and character size for the property selected
+* **RRDTool Version** allows to know the version of RRDTool
 * **Enable RRDCached** field serves to enable the RRDcached process (only works with the Centreon Broker)
-* **TCP Port** field defines the port on which RRDcached listens (don’t enable the TCP connection)
+* **TCP Port** field defines the port on which RRDcached listens.
 * **UNIX Socket path** field defines the path to the Unix socket
 
 .. warning::
-   Don’t enable RRDCacheD unless your monitoring platform encounters too many disk accesses concerning the writing of data in RRD files.
+   Don’t enable RRDCacheD unless your monitoring platform encounters too many
+   disk accesses concerning the writing of data in RRD files.
+   Select only one option: TCP or Unix socket.
 
 *****
 Debug
