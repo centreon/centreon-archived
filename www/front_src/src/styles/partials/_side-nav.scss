@@ -92,7 +92,7 @@
           .collapse {
             .collapsed-item {
               > .collapsed-level-item-link {
-                background-image: none;
+                // background-image: none;
               }
             }
           }
@@ -126,7 +126,7 @@
           display: none;
         }
         >.collapsed-level-item-link {
-          background-image: none;
+          // background-image: none;
         }
         &:after {
           content: ' ';
@@ -452,21 +452,11 @@ a {
       }
     }
 
-    &.active {
-      .collapse {
-        .collapsed-item {
-          > .collapsed-level-item-link {
-            background-image: url("../../img/icons/aside-menu-arrows.png");
-            background-repeat: no-repeat;
-          }
-        }
-      }
-    }
-
     .collapse {
       .collapsed-item {
         > .collapsed-level-item-link {
-          background-image:none;
+          background-image: url("../../img/icons/aside-menu-arrows.png");
+          background-repeat: no-repeat;
           background-position: 12px 10px;
           background-color: $grey-classic;
           &.img-none {
