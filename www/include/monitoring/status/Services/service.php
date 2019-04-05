@@ -418,6 +418,8 @@ if ((!isset($_GET['o']) || empty($_GET['o'])) && isset($_SESSION['monitoring_ser
     $form->setDefaults(array('statusFilter' => $_SESSION['monitoring_service_status_filter']));
     $sDefaultOrder = "1";
 }
+$defaultStatusFilter = $_GET['statusFilter'] ?? '';
+$defaultStatusService = $_GET['statusService'] ?? '';
 
 $form->addElement(
     'select',
@@ -524,35 +526,37 @@ $tpl->display("service.ihtml");
     });
 
     function preInit() {
-        _keyPrefix = '<?php echo $keyPrefix; ?>';
-        _sid = '<?php echo $sid ?>';
-        _tm = <?php echo $tM ?>;
-        _o = '<?php echo $o; ?>';
-        _sDefaultOrder = '<?php echo $sDefaultOrder; ?>';
-        sSetOrderInMemory = '<?php echo $sSetOrderInMemory; ?>';
+        _keyPrefix = '<?= $keyPrefix; ?>';
+        _sid = '<?= $sid ?>';
+        _tm = <?= $tM ?>;
+        _o = '<?= $o; ?>';
+        _defaultStatusFilter = '<?= $defaultStatusFilter; ?>';
+        _defaultStatusService = '<?= $defaultStatusService; ?>';
+        _sDefaultOrder = '<?= $sDefaultOrder; ?>';
+        sSetOrderInMemory = '<?= $sSetOrderInMemory; ?>';
+
+        if (_defaultStatusService !== '') {
+            jQuery("#statusService option[value='" + _defaultStatusService + "']").prop('selected', true);
+        }
 
         if (_sDefaultOrder == "0") {
             if (_o == 'svc') {
-                jQuery("#statusService option[value='svc']").prop('selected', true);
                 jQuery("#statusFilter option[value='']").prop('selected', true);
             } else if (_o == 'svc_ok') {
-                jQuery("#statusService option[value='svc']").prop('selected', true);
                 jQuery("#statusFilter option[value='ok']").prop('selected', true);
             } else if (_o == 'svc_warning') {
-                jQuery("#statusService option[value='svc']").prop('selected', true);
                 jQuery("#statusFilter option[value='warning']").prop('selected', true);
             } else if (_o == 'svc_critical') {
-                jQuery("#statusService option[value='svc']").prop('selected', true);
                 jQuery("#statusFilter option[value='critical']").prop('selected', true);
             } else if (_o == 'svc_unknown') {
-                jQuery("#statusService option[value='svc']").prop('selected', true);
                 jQuery("#statusFilter option[value='unknown']").prop('selected', true);
             } else if (_o == 'svc_pending') {
-                jQuery("#statusService option[value='svc']").prop('selected', true);
                 jQuery("#statusFilter option[value='pending']").prop('selected', true);
             } else {
-                jQuery("#statusService option[value='svc_unhandled']").prop('selected', true);
                 jQuery("#statusFilter option[value='']").prop('selected', true);
+            }
+            if (_defaultStatusFilter != '') {
+                jQuery("#statusFilter option[value='" + _defaultStatusFilter + "']").prop('selected', true);
             }
         }
         filterStatus(document.getElementById('statusFilter').value, 1);
