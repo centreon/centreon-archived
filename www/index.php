@@ -101,10 +101,8 @@ if (!$staticExists) {
     $allJsFiles = glob('static/js/*');
     $indexFile = glob('index.html');
     $allFiles = array_merge($allCssFiles, $allJsFiles, $indexFile);
-    foreach ($allFiles as $file) {
-        $fc = file_get_contents($file);
-        $newCont = str_replace('_CENTREON_PATH_PLACEHOLDER_', $newPath, $fc);
-        file_put_contents($file, $newCont);
+    foreach ($allFiles as $file){
+        shell_exec('sed -i \'s/_CENTREON_PATH_PLACEHOLDER_/' . $newPath . '/g\' ' . __DIR__ . '/' . $file);
     }
 } else {
     $hashStatic = explode('static/css/main.', $staticExists[0]);
@@ -116,10 +114,8 @@ if (!$staticExists) {
         $allJsFiles = glob('static/js/*');
         $indexFile = glob('index.html');
         $allFiles = array_merge($allCssFiles, $allJsFiles, $indexFile);
-        foreach ($allFiles as $file) {
-            $fc = file_get_contents($file);
-            $newCont = str_replace('_CENTREON_PATH_PLACEHOLDER_', $newPath, $fc);
-            file_put_contents($file, $newCont);
+        foreach ($allFiles as $file){
+            shell_exec('sed -i \'s/_CENTREON_PATH_PLACEHOLDER_/' . $newPath . '/g\' ' . __DIR__ . '/' . $file);
         }
     }
 }
