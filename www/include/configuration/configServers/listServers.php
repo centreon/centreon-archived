@@ -1,7 +1,7 @@
 <?php
 /*
- * Copyright 2005-2016 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2019 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -37,27 +37,26 @@ if (!isset($centreon)) {
     exit();
 }
 
-include("./include/common/autoNumLimit.php");
+include "./include/common/autoNumLimit.php";
 
-/*
- * Init GMT class
- */
+// Init GMT class
 $centreonGMT = new CentreonGMT($pearDB);
 $centreonGMT->getMyGMTFromSession(session_id(), $pearDB);
 
-$LCASearch = '';
-$search = null;
+
+$search = filter_var(
+    $_POST['searchP'] ?? $_GET['searchP'] ?? null,
+    FILTER_SANITIZE_STRING
+);
 
 if (isset($_POST['searchP'])) {
-    $search = $_POST['searchP'];
-    $centreon->historySearch[$url] = $search;
-} elseif (isset($_GET['searchP'])) {
-    $search = $_GET['searchP'];
-    $centreon->historySearch[$url] = $search;
-} elseif (isset($centreon->historySearch[$url])) {
-    $search = $centreon->historySearch[$url];
+    $centreon->historySearch[$url] = array();
+    $centreon->historySearch[$url]['search'] = $search;
+} else {
+    $search = $centreon->historySearch[$url]['search'] ?? null;
 }
 
+$LCASearch = '';
 if ($search) {
     $LCASearch .= " name LIKE '%" . htmlentities($search, ENT_QUOTES, "UTF-8") . "%'";
 }
@@ -89,45 +88,43 @@ $pollerstring = implode(',', array_keys($nagios_servers));
  * Get information info RTM
  */
 $nagiosInfo = array();
-$query = "SELECT start_time AS program_start_time, running AS is_currently_running, pid AS process_id, instance_id, " .
-    "name AS instance_name , last_alive FROM instances WHERE deleted = 0";
-$DBRESULT = $pearDBO->query($query);
-while ($info = $DBRESULT->fetchRow()) {
+$dbResult = $pearDBO->query(
+    "SELECT start_time AS program_start_time, running AS is_currently_running, pid AS process_id, instance_id, " .
+    "name AS instance_name , last_alive FROM instances WHERE deleted = 0"
+);
+while ($info = $dbResult->fetch()) {
     $nagiosInfo[$info["instance_id"]] = $info;
 }
-$DBRESULT->closeCursor();
+$dbResult->closeCursor();
 
 /*
  * Get Scheduler version
  */
-$query = "SELECT DISTINCT instance_id, version AS program_version, engine AS program_name, name AS instance_name " .
-    "FROM instances WHERE deleted = 0 ";
-$DBRESULT = $pearDBO->query($query);
-while ($info = $DBRESULT->fetchRow()) {
+$dbResult = $pearDBO->query(
+    "SELECT DISTINCT instance_id, version AS program_version, engine AS program_name, name AS instance_name " .
+    "FROM instances WHERE deleted = 0 "
+);
+while ($info = $dbResult->fetch()) {
     if (isset($nagiosInfo[$info["instance_id"]])) {
         $nagiosInfo[$info["instance_id"]]["version"] = $info["program_name"] . " " . $info["program_version"];
     }
 }
-$DBRESULT->closeCursor();
+$dbResult->closeCursor();
 
 $query = 'SELECT ip FROM remote_servers';
-$DBRESULT = $pearDB->query($query);
-$remotesServerIPs = $DBRESULT->fetchAll(PDO::FETCH_COLUMN);
-$DBRESULT->closeCursor();
+$dbResult = $pearDB->query($query);
+$remotesServerIPs = $dbResult->fetchAll(PDO::FETCH_COLUMN);
+$dbResult->closeCursor();
 
-/*
- * Smarty template Init
- */
+// Smarty template Init
 $tpl = new Smarty();
 $tpl = initSmartyTpl($path, $tpl);
 
-/* Access level */
+// Access level
 ($centreon->user->access->page($p) == 1) ? $lvl_access = 'w' : $lvl_access = 'r';
 $tpl->assign('mode_access', $lvl_access);
 
-/*
- * start header menu
- */
+// start header menu
 $tpl->assign("headerMenu_name", _("Name"));
 $tpl->assign("headerMenu_ip_address", _("IP Address"));
 $tpl->assign("headerMenu_type", _("Server type"));
@@ -150,19 +147,17 @@ $query = "SELECT SQL_CALC_FOUND_ROWS id, name, ns_activate, ns_ip_address, local
     "FROM `nagios_server` " . $ACLString . " " .
     ($LCASearch != '' ? ($ACLString != "" ? "AND " : "WHERE ") . $LCASearch : "") .
     " ORDER BY name LIMIT " . $num * $limit . ", " . $limit;
-$DBRESULT = $pearDB->query($query);
+$dbResult = $pearDB->query($query);
 
 $rows = $pearDB->query("SELECT FOUND_ROWS()")->fetchColumn();
 
-include("./include/common/checkPagination.php");
+include "./include/common/checkPagination.php";
 
 $form = new HTML_QuickFormCustom('select_form', 'POST', "?p=" . $p);
 
-/*
- * Fill a tab with a mutlidimensionnal Array we put in $tpl
- */
+// Fill a tab with a multidimensional Array we put in $tpl
 $elemArr = array();
-for ($i = 0; $config = $DBRESULT->fetchRow(); $i++) {
+for ($i = 0; $config = $dbResult->fetch(); $i++) {
     $moptions = "";
     $selectedElements = $form->addElement(
         'checkbox',
@@ -173,12 +168,12 @@ for ($i = 0; $config = $DBRESULT->fetchRow(); $i++) {
     );
     if ($config["ns_activate"]) {
         $moptions .= "<a href='main.php?p=" . $p . "&server_id=" . $config['id'] . "&o=u&limit=" . $limit .
-            "&num=" . $num . "&search=" . $search . "'><img src='img/icons/disabled.png' class='ico-14 margin_right' " .
-            "border='0' alt='" . _("Disabled") . "'></a>";
+            "&num=" . $num . "&search=" . $search . "'><img src='img/icons/disabled.png' class='ico-14 margin_right' "
+            . "border='0' alt='" . _("Disabled") . "'></a>";
     } else {
         $moptions .= "<a href='main.php?p=" . $p . "&server_id=" . $config['id'] . "&o=s&limit=" . $limit .
-            "&num=" . $num . "&search=" . $search . "'><img src='img/icons/enabled.png' class='ico-14 margin_right' " .
-            "border='0' alt='" . _("Enabled") . "'></a>";
+            "&num=" . $num . "&search=" . $search . "'><img src='img/icons/enabled.png' class='ico-14 margin_right' "
+            . "border='0' alt='" . _("Enabled") . "'></a>";
     }
     $moptions .= "<input onKeypress=\"if(event.keyCode > 31 && (event.keyCode < 45 || event.keyCode > 57)) " .
         "event.returnValue = false; if(event.which > 31 && (event.which < 45 || event.which > 57)) " .
@@ -190,9 +185,7 @@ for ($i = 0; $config = $DBRESULT->fetchRow(); $i++) {
     }
 
 
-    /*
-    * Manage flag for changes
-    */
+    // Manage flag for changes
     $confChangedMessage = _("N/A");
     $hasChanged = false;
     if ($config["ns_activate"] && isset($nagios_restart[$config['id']])) {
@@ -203,9 +196,7 @@ for ($i = 0; $config = $DBRESULT->fetchRow(); $i++) {
         $confChangedMessage = $hasChanged ? _("Yes") : _("No");
     }
 
-    /*
-     * Manage flag for update time
-     */
+    // Manage flag for update time
     $lastUpdateTimeFlag = 0;
     if (!isset($nagiosInfo[$config["id"]]["last_alive"])) {
         $lastUpdateTimeFlag = 0;
@@ -214,10 +205,11 @@ for ($i = 0; $config = $DBRESULT->fetchRow(); $i++) {
     }
 
     //Get cfg_id
-    $query = "SELECT nagios_id FROM cfg_nagios " .
-        "WHERE nagios_server_id = " . (int) $config["id"] . " AND nagios_activate = '1'";
-    $DBRESULT2 = $pearDB->query($query);
-    $cfg_id = $DBRESULT2->rowCount() ? $DBRESULT2->fetchRow() : -1;
+    $dbResult2 = $pearDB->query(
+        "SELECT nagios_id FROM cfg_nagios " .
+        "WHERE nagios_server_id = " . (int) $config["id"] . " AND nagios_activate = '1'"
+    );
+    $cfg_id = $dbResult2->rowCount() ? $dbResult2->fetch() : -1;
 
     $uptime = '-';
     $isRunning = (isset($nagiosInfo[$config['id']]['is_currently_running']) &&
@@ -295,23 +287,23 @@ $tpl->assign(
         "template, it won't tell you the configuration had changed.")
 );
 
-/*
- * Different messages we put in the template
- */
+// Different messages we put in the template
 $tpl->assign(
     'msg',
-    array("addL" => "main.php?p=" . $p . "&o=a", "addT" => _("Add"), "delConfirm" => _("Do you confirm the deletion ?"))
+    array(
+        "addL" => "main.php?p=" . $p . "&o=a",
+        "addT" => _("Add"),
+        "delConfirm" => _("Do you confirm the deletion ?")
+    )
 );
 
-/*
- * Toolbar select
- */
+// Toolbar select
 ?>
-    <script type="text/javascript">
-        function setO(_i) {
-            document.forms['form'].elements['o'].value = _i;
-        }
-    </script>
+<script type="text/javascript">
+    function setO(_i) {
+        document.forms['form'].elements['o'].value = _i;
+    }
+</script>
 <?php
 
 foreach (array('o1', 'o2') as $option) {
@@ -334,7 +326,12 @@ foreach (array('o1', 'o2') as $option) {
         'select',
         $option,
         null,
-        array(null => _("More actions..."), "m" => _("Duplicate"), "d" => _("Delete"), "i" => _("Update informations")),
+        array(
+            null => _("More actions..."),
+            "m" => _("Duplicate"),
+            "d" => _("Delete"),
+            "i" => _("Update informations")
+        ),
         $attrs
     );
     $form->setDefaults(array($option => null));
@@ -342,7 +339,7 @@ foreach (array('o1', 'o2') as $option) {
     $o1->setValue(null);
 }
 
-# Apply configuration button
+// Apply configuration button
 $form->addElement(
     'button',
     'apply_configuration',
@@ -355,9 +352,7 @@ $tpl->assign('searchP', $search);
 $tpl->assign("can_generate", $can_generate);
 $tpl->assign("is_admin", $is_admin);
 
-/*
- * Apply a template definition
- */
+// Apply a template definition
 $renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 $form->accept($renderer);
 $tpl->assign('form', $renderer->toArray());

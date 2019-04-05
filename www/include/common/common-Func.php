@@ -2211,12 +2211,20 @@ function reset_search_page($url)
     if (!isset($url)) {
         return;
     }
-    if (isset($_GET['search']) &&
-        isset($centreon->historySearch[$url]) && $_GET['search'] != $centreon->historySearch[$url] &&
-        !isset($_GET['num']) && !isset($_POST['num'])
+    if (isset($_GET['search'])
+        && isset($centreon->historySearch[$url])
+        && $_GET['search'] != $centreon->historySearch[$url]
+        && !isset($_GET['num'])
+        && !isset($_POST['num'])
     ) {
         $_POST['num'] = 0;
         $_GET['num'] = 0;
+    } elseif (isset($_GET["search"])
+        && isset($_POST["search"])
+        && $_GET["search"] === $_POST["search"]
+    ) {
+        //if the user change the search filter, we reset the num argument sent in the hybride POST and GET request
+        $_POST['num'] = $_GET['num'] = 0;
     }
 }
 
