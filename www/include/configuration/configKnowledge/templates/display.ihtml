@@ -224,6 +224,9 @@
     <input type='hidden' id='num' name='num' value='0'>
     <input type='hidden' id='orderby' name='orderby' value='{$orderby}'>
     <input type='hidden' id='order' name='order' value='{$order}'>
+    <!--input type='hidden' id='host' name='host' value='{$host}'>
+    <input type='hidden' id='hostgroup' name='hostgroup' value='{$hostgroup}'>
+    <input type='hidden' id='poller' name='poller' value='{$poller}'-->
 </form>
 
 {literal}

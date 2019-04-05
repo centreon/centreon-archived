@@ -1,7 +1,7 @@
 <?php
 /*
- * Copyright 2005-2015 CENTREON
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2019 CENTREON
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -35,19 +35,20 @@
  * SVN : $Id: pagination.php 10473 2010-05-19 21:25:56Z jmathis $
  *
  */
-global $oreon;
+global $centreon;
 
-if (!isset($oreon)) {
+if (!isset($centreon)) {
     exit();
 }
 
 global $bNewChart, $num, $limit, $search, $url, $pearDB, $search_type_service,
        $search_type_host, $host_name, $rows, $p, $gopt, $pagination, $poller, $order, $orderby;
 
-isset($_GET["type"]) ? $type = $_GET["type"] : $stype = null;
-isset($_GET["o"]) ? $o = $_GET["o"] : $o = null;
+$type = $_REQUEST["type"] ?? null;
+$o = $_GET["o"] ?? null;
 
 $searchString = "";
+/*
 if (isset($_REQUEST)) {
     foreach ($_REQUEST as $key => $value) {
         if (preg_match("/^search/", $key)) {
@@ -55,25 +56,31 @@ if (isset($_REQUEST)) {
         }
     }
 }
+*/
 
+/*
 if (isset($_GET["num"])) {
     $num = (int)$_GET["num"];
 } else {
-    if (!isset($_GET["num"]) && isset($oreon->historyPage[$url]) && $oreon->historyPage[$url]) {
-        $num = (int)$oreon->historyPage[$url];
+    if (!isset($_GET["num"]) && isset($centreon->historyPage[$url]) && $centreon->historyPage[$url]) {
+        $num = (int)$centreon->historyPage[$url];
     } else {
         $num = 0;
     }
 }
+*/
+
+$centreon->historyPage[$url] = $num;
+$centreon->historyLastUrl = $url;
 
 $tab_order = array("sort_asc" => "sort_desc", "sort_desc" => "sort_asc");
 
 if (isset($_GET["search_type_service"])) {
     $search_type_service = $_GET["search_type_service"];
-    $oreon->search_type_service = $_GET["search_type_service"];
+    $centreon->search_type_service = $_GET["search_type_service"];
 } else {
-    if (isset($oreon->search_type_service)) {
-        $search_type_service = $oreon->search_type_service;
+    if (isset($centreon->search_type_service)) {
+        $search_type_service = $centreon->search_type_service;
     } else {
         $search_type_service = null;
     }
@@ -81,22 +88,24 @@ if (isset($_GET["search_type_service"])) {
 
 if (isset($_GET["search_type_host"])) {
     $search_type_host = $_GET["search_type_host"];
-    $oreon->search_type_host = $_GET["search_type_host"];
+    $centreon->search_type_host = $_GET["search_type_host"];
 } else {
-    if (isset($oreon->search_type_host)) {
-        $search_type_host = $oreon->search_type_host;
+    if (isset($centreon->search_type_host)) {
+        $search_type_host = $centreon->search_type_host;
     } else {
         $search_type_host = null;
     }
 }
 
-if (!isset($_GET["search_type_host"]) && !isset($oreon->search_type_host) &&
-    !isset($_GET["search_type_service"]) && !isset($oreon->search_type_service)
+if (!isset($_GET["search_type_host"])
+    && !isset($centreon->search_type_host)
+    && !isset($_GET["search_type_service"])
+    && !isset($centreon->search_type_service)
 ) {
     $search_type_host = 1;
-    $oreon->search_type_host = 1;
+    $centreon->search_type_host = 1;
     $search_type_service = 1;
-    $oreon->search_type_service = 1;
+    $centreon->search_type_service = 1;
 }
 
 $url_var = "";
@@ -119,21 +128,22 @@ if ($num >= $page_max && $rows) {
 }
 
 $pageArr = array();
-$istart = 0;
-for ($i = 5, $istart = $num; $istart && $i > 0; $i--) {
-    $istart--;
+$iStart = 0;
+for ($i = 5, $iStart = $num; $iStart && $i > 0; $i--) {
+    $iStart--;
 }
 
-for ($i2 = 0, $iend = $num; ($iend < ($rows / $limit - 1)) && ($i2 < (5 + $i)); $i2++) {
-    $iend++;
+for ($i2 = 0, $iEnd = $num; ($iEnd < ($rows / $limit - 1)) && ($i2 < (5 + $i)); $i2++) {
+    $iEnd++;
 }
 
 
 if ($rows != 0) {
-    for ($i = $istart; $i <= $iend; $i++) {
+    for ($i = $iStart; $i <= $iEnd; $i++) {
         $pageArr[$i] = array(
-            "url_page" => "./main.php?p=" . $p . "&order=" . $order . "&orderby=" . $orderby . "&num=$i&limit=" .
-                $limit . $searchString . "&type=" . $type . "&o=" . $o . $url_var,
+            "url_page" => "./main.php?p=" . $p . "&order=" . $order . "&orderby=" . $orderby .
+                "&num=" . $i . "&limit=" . $limit . "&type=" . $type .
+                "&o=" . $o . " " . $url_var,
             "label_page" => "<b>" . ($i + 1) . "</b>",
             "num" => $i
         );
@@ -153,7 +163,7 @@ if ($rows != 0) {
         $tpl->assign(
             'pagePrev',
             ("./main.php?p=" . $p . "&order=" . $order . "&orderby=" . $orderby . "&num=$prev&limit=" .
-                $limit . $searchString . "&type=" . $type . "&o=" . $o . $url_var)
+                $limit . "&type=" . $type . "&o=" . $o . $url_var)
         );
     }
 
@@ -161,7 +171,7 @@ if ($rows != 0) {
         $tpl->assign(
             'pageNext',
             ("./main.php?p=" . $p . "&order=" . $order . "&orderby=" . $orderby . "&num=$next&limit=" .
-                $limit . $searchString . "&type=" . $type . "&o=" . $o . $url_var)
+                $limit . "&type=" . $type . "&o=" . $o . $url_var)
         );
     }
 
@@ -176,7 +186,7 @@ if ($rows != 0) {
         $tpl->assign(
             'firstPage',
             ("./main.php?p=" . $p . "&order=" . $order . "&orderby=" . $orderby . "&num=0&limit=" .
-                $limit . $searchString . "&type=" . $type . "&o=" . $o . $url_var)
+                $limit . "&type=" . $type . "&o=" . $o . $url_var)
         );
     }
 
@@ -184,7 +194,7 @@ if ($rows != 0) {
         $tpl->assign(
             'lastPage',
             ("./main.php?p=" . $p . "&order=" . $order . "&orderby=" . $orderby . "&num=" . ($pageNumber - 1) .
-                "&limit=" . $limit . $searchString . "&type=" . $type . "&o=" . $o . $url_var)
+                "&limit=" . $limit . "&type=" . $type . "&o=" . $o . $url_var)
         );
     }
 
@@ -207,14 +217,14 @@ if ($rows != 0) {
 }
 
 ?>
-    <script type="text/javascript">
-        function setL(_this) {
-            var _l = document.getElementsByName('l');
-            document.forms['form'].elements['limit'].value = _this;
-            _l[0].value = _this;
-            _l[1].value = _this;
-        }
-    </SCRIPT>
+<script type="text/javascript">
+    function setL(_this) {
+        var _l = document.getElementsByName('l');
+        document.forms['form'].elements['limit'].value = _this;
+        _l[0].value = _this;
+        _l[1].value = _this;
+    }
+</script>
 <?php
 $form = new HTML_QuickFormCustom(
     'select_form',
@@ -247,12 +257,12 @@ $form->setDefaults(array("p" => $p, "search" => $search, "num" => $num));
 $renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 $form->accept($renderer);
 
-isset($_GET["host_name"]) ? $host_name = $_GET["host_name"] : $host_name = null;
-isset($_GET["status"]) ? $status = $_GET["status"] : $status = null;
+$host_name = $_GET["host_name"] ?? null;
+$status = $_GET["status"] ?? null;
 
 $tpl->assign("host_name", $host_name);
 $tpl->assign("status", $status);
-$tpl->assign("limite", $limite);
+$tpl->assign("limite", isset($limite) ? $limite : null);
 $tpl->assign("begin", $num);
 $tpl->assign("end", $limit);
 $tpl->assign("pagin_page", _("Page"));
