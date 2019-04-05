@@ -19,7 +19,7 @@ voluntary and anonymous. Customers who choose to participate agree to share:
 
 * Information such as the operating system version of the Centreon main server of the platform as well as the name and version of the DBMS.
 * Centreon product information such as number of servers and version numbers of components installed on the Centreon main server (modules & widgets).
-* Centreon information such as number of hosts, services, groups of hosts & services.
+* Centreon information such as number of hosts, services, groups of hosts & services, and usage of modules and widgets.
 * The timezone of the Centreon server.
 
 During the installation or upgrade processus, you will be asked to participate in
