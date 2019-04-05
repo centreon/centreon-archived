@@ -242,7 +242,7 @@ class NavigationComponent extends Component {
                                       return (
                                         <li
                                           onClick={() => {
-                                            active ?
+                                            this.state.active ?
                                               this.activeCurrentLevel(levelOneKey, levelTwoKey)
                                             : 
                                               this.collapseLevelThree(levelOneKey, levelTwoKey)

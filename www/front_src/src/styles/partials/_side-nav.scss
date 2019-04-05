@@ -63,8 +63,8 @@
                   position: absolute;
                   margin-top: -38px;
                   left: 155px;
-                  -webkit-box-shadow: 2px 2px 5px 0 rgba(36,47,59,0.5);
-                  box-shadow: 2px 2px 5px 0 rgba(36,47,59,0.5);
+                  -webkit-box-shadow: 3px 3px 3px 0 $centreon-shadow;
+                  box-shadow: 3px 3px 3px 0 $centreon-shadow;
                   &:empty {
                     display: none!important;
                   }
@@ -80,8 +80,8 @@
               position: absolute;
               top: 0px;
               left: 45px;
-              -webkit-box-shadow: 2px 2px 5px 0 rgba(36,47,59,0.5);
-              box-shadow: 2px 2px 5px 0 rgba(36,47,59,0.5);
+              -webkit-box-shadow: 3px 3px 3px 0 $centreon-shadow;
+              box-shadow: 3px 3px 3px 0 $centreon-shadow;
             }
             .active {
               transition-delay : 0.5s;
@@ -193,8 +193,8 @@
                 position: absolute;
                 margin-top: -38px;
                 left: 155px;
-                -webkit-box-shadow: 2px 2px 5px 0 rgba(36,47,59,0.5);
-                box-shadow: 2px 2px 5px 0 rgba(36,47,59,0.5);
+                -webkit-box-shadow: 3px 3px 3px 0 $centreon-shadow;
+                box-shadow: 3px 3px 3px 0 $centreon-shadow;
                 &:empty {
                   display: none!important;
                 }
@@ -208,8 +208,8 @@
             position: absolute;
             top: 0px;
             left: 45px;
-            -webkit-box-shadow: 2px 2px 5px 0 rgba(36,47,59,0.5);
-            box-shadow: 2px 2px 5px 0 rgba(36,47,59,0.5);
+            -webkit-box-shadow: 3px 3px 3px 0 $centreon-shadow;
+            box-shadow: 3px 3px 3px 0 $centreon-shadow;
             &:empty {
               display: none!important;
             }
