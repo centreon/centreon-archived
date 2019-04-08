@@ -19,11 +19,11 @@
  * combined work based on this program. Thus, the terms and conditions of the GNU
  * General Public License cover the whole combination.
  *
- * As a special exception, the copyright holders of this program give MERETHIS
+ * As a special exception, the copyright holders of this program give CENTREON
  * permission to link this program with independent modules to produce an executable,
  * regardless of the license terms of these independent modules, and to copy and
- * distribute the resulting executable under terms of MERETHIS choice, provided that
- * MERETHIS also meet, for each linked independent module, the terms  and conditions
+ * distribute the resulting executable under terms of CENTREON choice, provided that
+ * CENTREON also meet, for each linked independent module, the terms  and conditions
  * of the license of that module. An independent module is a module which is not
  * derived from this program. If you modify this program, you may extend this
  * exception to your version of the program, but you are not obliged to do so. If you
@@ -48,28 +48,8 @@ $type = $_REQUEST["type"] ?? null;
 $o = $_GET["o"] ?? null;
 
 $searchString = "";
-/*
-if (isset($_REQUEST)) {
-    foreach ($_REQUEST as $key => $value) {
-        if (preg_match("/^search/", $key)) {
-            $searchString .= "&$key=$value";
-        }
-    }
-}
-*/
 
-/*
-if (isset($_GET["num"])) {
-    $num = (int)$_GET["num"];
-} else {
-    if (!isset($_GET["num"]) && isset($centreon->historyPage[$url]) && $centreon->historyPage[$url]) {
-        $num = (int)$centreon->historyPage[$url];
-    } else {
-        $num = 0;
-    }
-}
-*/
-
+//saving current pagination filter value and current displayed page
 $centreon->historyPage[$url] = $num;
 $centreon->historyLastUrl = $url;
 
@@ -78,23 +58,19 @@ $tab_order = array("sort_asc" => "sort_desc", "sort_desc" => "sort_asc");
 if (isset($_GET["search_type_service"])) {
     $search_type_service = $_GET["search_type_service"];
     $centreon->search_type_service = $_GET["search_type_service"];
+} elseif (isset($centreon->search_type_service)) {
+    $search_type_service = $centreon->search_type_service;
 } else {
-    if (isset($centreon->search_type_service)) {
-        $search_type_service = $centreon->search_type_service;
-    } else {
-        $search_type_service = null;
-    }
+    $search_type_service = null;
 }
 
 if (isset($_GET["search_type_host"])) {
     $search_type_host = $_GET["search_type_host"];
     $centreon->search_type_host = $_GET["search_type_host"];
+} elseif (isset($centreon->search_type_host)) {
+    $search_type_host = $centreon->search_type_host;
 } else {
-    if (isset($centreon->search_type_host)) {
-        $search_type_host = $centreon->search_type_host;
-    } else {
-        $search_type_host = null;
-    }
+    $search_type_host = null;
 }
 
 if (!isset($_GET["search_type_host"])
@@ -109,8 +85,41 @@ if (!isset($_GET["search_type_host"])
 }
 
 $url_var = "";
-$url_var .= "&search_type_service=" . $search_type_service;
-$url_var .= "&search_type_host=" . $search_type_host;
+
+if (isset($search_type_service)) {
+    $url_var .= "&search_type_service=" . $search_type_service;
+}
+if (isset($search_type_host)) {
+    $url_var .= "&search_type_host=" . $search_type_host;
+}
+
+if (isset($_REQUEST['searchHost']) && $_REQUEST['searchHost']) {
+    $url_var .= "&searchHost=" . $_REQUEST['searchHost'];
+}
+
+if (isset($_REQUEST['searchHostgroup']) && $_REQUEST['searchHostgroup']) {
+    $url_var .= "&searchHostgroup=" . $_REQUEST['searchHostgroup'];
+}
+
+if (isset($_REQUEST['searchPoller']) && $_REQUEST['searchPoller']) {
+    $url_var .= "&searchPoller=" . $_REQUEST['searchPoller'];
+}
+
+if (isset($_REQUEST['searchService']) && $_REQUEST['searchService']) {
+    $url_var .= "&searchService=" . $_REQUEST['searchService'];
+}
+
+if (isset($_REQUEST['searchServicegroup']) && $_REQUEST['searchServicegroup']) {
+    $url_var .= "&searchServicegroup=" . $_REQUEST['searchServicegroup'];
+}
+
+if (isset($_REQUEST['searchHostTemplate']) && $_REQUEST['searchHostTemplate']) {
+    $url_var .= "&searchHostTemplate=" . $_REQUEST['searchHostTemplate'];
+}
+
+if (isset($_REQUEST['searchServiceTemplate']) && $_REQUEST['searchServiceTemplate']) {
+    $url_var .= "&searchServiceTemplate=" . $_REQUEST['searchServiceTemplate'];
+}
 
 if (isset($_GET["sort_types"])) {
     $url_var .= "&sort_types=" . $_GET["sort_types"];
@@ -137,13 +146,13 @@ for ($i2 = 0, $iEnd = $num; ($iEnd < ($rows / $limit - 1)) && ($i2 < (5 + $i)); 
     $iEnd++;
 }
 
-
 if ($rows != 0) {
     for ($i = $iStart; $i <= $iEnd; $i++) {
+        $urlPage = "main.php?p=" . $p . "&order=" . $order . "&orderby=" . $orderby .
+        "&num=" . $i . "&limit=" . $limit . "&type=" . $type .
+        "&o=" . $o . $url_var;
         $pageArr[$i] = array(
-            "url_page" => "./main.php?p=" . $p . "&order=" . $order . "&orderby=" . $orderby .
-                "&num=" . $i . "&limit=" . $limit . "&type=" . $type .
-                "&o=" . $o . " " . $url_var,
+            "url_page" => $urlPage,
             "label_page" => "<b>" . ($i + 1) . "</b>",
             "num" => $i
         );
@@ -162,7 +171,7 @@ if ($rows != 0) {
     if (($prev = $num - 1) >= 0) {
         $tpl->assign(
             'pagePrev',
-            ("./main.php?p=" . $p . "&order=" . $order . "&orderby=" . $orderby . "&num=$prev&limit=" .
+            ("./main.php?p=" . $p . "&order=" . $order . "&orderby=" . $orderby . "&num=" . $prev . "&limit=" .
                 $limit . "&type=" . $type . "&o=" . $o . $url_var)
         );
     }
@@ -170,7 +179,7 @@ if ($rows != 0) {
     if (($next = $num + 1) < ($rows / $limit)) {
         $tpl->assign(
             'pageNext',
-            ("./main.php?p=" . $p . "&order=" . $order . "&orderby=" . $orderby . "&num=$next&limit=" .
+            ("./main.php?p=" . $p . "&order=" . $order . "&orderby=" . $orderby . "&num=" . $next . "&limit=" .
                 $limit . "&type=" . $type . "&o=" . $o . $url_var)
         );
     }
@@ -240,9 +249,7 @@ $selLim = $form->addElement(
 );
 $selLim->setSelected($limit);
 
-/*
- * Element we need when we reload the page
- */
+// Element we need when we reload the page
 $form->addElement('hidden', 'p');
 $form->addElement('hidden', 'search');
 $form->addElement('hidden', 'num');
@@ -251,9 +258,7 @@ $form->addElement('hidden', 'type');
 $form->addElement('hidden', 'sort_types');
 $form->setDefaults(array("p" => $p, "search" => $search, "num" => $num));
 
-/*
- * Init QuickForm
- */
+// Init QuickForm
 $renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 $form->accept($renderer);
 
