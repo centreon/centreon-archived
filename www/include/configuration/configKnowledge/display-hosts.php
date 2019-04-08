@@ -36,7 +36,7 @@
  *
  */
 
-if (!isset($oreon)) {
+if (!isset($centreon)) {
     exit();
 }
 
@@ -46,7 +46,7 @@ require_once $centreon_path . '/bootstrap.php';
 $pearDB = $dependencyInjector['configuration_db'];
 
 if (!isset($limit) || !$limit) {
-    $limit = $oreon->optGen["maxViewConfiguration"];
+    $limit = $centreon->optGen["maxViewConfiguration"];
 }
 
 if (isset($_POST['searchHost'])) {
