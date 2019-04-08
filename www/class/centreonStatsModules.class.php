@@ -70,7 +70,7 @@ class CentreonStatsModules
     /**
      * Get statistics module objects
      *
-     * @param array $installedModules Names of installed modules for which you want 
+     * @param array $installedModules Names of installed modules for which you want
      * to retrieve statistics module [['name' => string], ...]
      *
      * @return array Return a list of statistics module found
