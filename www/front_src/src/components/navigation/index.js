@@ -204,10 +204,8 @@ class NavigationComponent extends Component {
                           className={
                             `collapsed-item
                             ${levelTwoProps.collapsed || (this.isActive(pageId, levelTwoUrl))
-                            ?
-                              activated
-                            :
-                              ""}`
+                            ? activated
+                            : ""}`
                           }
                         >
                           {Object.keys(levelTwoProps.children).length > 0 ? (
@@ -242,10 +240,9 @@ class NavigationComponent extends Component {
                                       return (
                                         <li
                                           onClick={() => {
-                                            this.state.active ?
-                                              this.activeCurrentLevel(levelOneKey, levelTwoKey)
-                                            : 
-                                              this.collapseLevelThree(levelOneKey, levelTwoKey)
+                                            this.state.active
+                                            ? this.activeCurrentLevel(levelOneKey, levelTwoKey)
+                                            : this.collapseLevelThree(levelOneKey, levelTwoKey)
                                           }}
                                           className={`collapsed-level-item ${this.isActive(pageId, levelFourUrl)  ? activated : ""}`}
                                         >
