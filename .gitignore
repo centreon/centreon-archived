@@ -1,6 +1,5 @@
 #generic development files
 www/index.html
-composer.lock
 
 #backend development and project files
 .idea/
