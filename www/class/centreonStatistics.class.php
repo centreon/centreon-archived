@@ -37,6 +37,7 @@ require_once _CENTREON_PATH_ . "/www/class/centreonUUID.class.php";
 require_once _CENTREON_PATH_ . "/www/class/centreonGMT.class.php";
 require_once _CENTREON_PATH_ . "/www/class/centreonVersion.class.php";
 require_once _CENTREON_PATH_ . "/www/class/centreonDB.class.php";
+require_once _CENTREON_PATH_ . "/www/class/centreonStatsModules.class.php";
 
 class CentreonStatistics
 {
@@ -125,5 +126,29 @@ class CentreonStatistics
         return array(
             'timezone' => $timezone
         );
+    }
+
+    /**
+     * Get Additional data
+     *
+     * @return array
+     */
+    public function getAdditionalData()
+    {
+        $centreonVersion = new CentreonVersion($this->dbConfig);
+
+        $data = array(
+            'extension' => array(
+                'widgets' => $centreonVersion->getWidgetsUsage()
+            ),
+        );
+
+        $oModulesStats = new CentreonStatsModules();
+        $modulesData = $oModulesStats->getModulesStatistics();
+        foreach ($modulesData as $moduleData) {
+            $data['extension'] = array_merge($data['extension'], $moduleData);
+        }
+
+        return $data;
     }
 }
