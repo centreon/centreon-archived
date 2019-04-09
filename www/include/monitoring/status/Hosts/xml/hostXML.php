@@ -56,6 +56,7 @@ if (isset($_SESSION['centreon'])) {
 $criticality = new CentreonCriticality($obj->DB);
 $instanceObj = new CentreonInstance($obj->DB);
 $media = new CentreonMedia($obj->DB);
+$centreonDbName = $dependencyInjector['configuration']->get('db');
 
 if (isset($obj->session_id) && CentreonSession::checkSession($obj->session_id, $obj->DB)) {
     ;
@@ -139,7 +140,7 @@ $rq1 = " SELECT SQL_CALC_FOUND_ROWS DISTINCT h.state," .
     " cv.value IS NULL as isnull ";
 $rq1 .= " FROM instances i, ";
 if (!$obj->is_admin) {
-    $rq1 .= " centreon_acl, ";
+    $rq1 .= " " . $centreonDbName . ".acl_resources_host_relations, ";
 }
 if ($hostgroups) {
     $rq1 .= " hosts_hostgroups hhg, hostgroups hg, ";
@@ -165,8 +166,8 @@ if ($criticality_id) {
 }
 
 if (!$obj->is_admin) {
-    $rq1 .= " AND h.host_id = centreon_acl.host_id " .
-        $obj->access->queryBuilder("AND", "centreon_acl.group_id", $obj->grouplistStr);
+    $rq1 .= " AND h.host_id = ".$centreonDbName.".acl_resources_host_relations.host_host_id " .
+        $obj->access->queryBuilder("AND", $centreonDbName.".acl_resources_host_relations.acl_res_id", $obj->grouplistStr);
 }
 if ($search != "") {
     $rq1 .= " AND (h.name LIKE '%" . CentreonDB::escape($search) . "%' OR h.alias LIKE '%" .
