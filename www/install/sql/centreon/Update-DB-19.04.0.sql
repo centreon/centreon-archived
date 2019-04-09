@@ -31,3 +31,9 @@ INSERT INTO `topology` (`topology_name`, `topology_url`, `readonly`, `is_react`,
 -- Remove old Extensions Page menus
 DELETE FROM `topology` WHERE (`topology_page` = '50701');
 DELETE FROM `topology` WHERE (`topology_page` = '50703');
+
+-- Add trap regexp matching
+ALTER TABLE `traps` ADD `traps_mode` ENUM('0', '1') DEFAULT '0' AFTER `traps_oid`;
+
+-- Add trap filter
+ALTER TABLE `traps` MODIFY COLUMN `traps_exec_interval_type` ENUM('0','1','2','3') NULL DEFAULT '0';
