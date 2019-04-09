@@ -30,6 +30,7 @@ if ($sendStatistics && $isRemote !== 'yes') {
     $versions = $oStatistics->getVersion();
     $infos = $oStatistics->getPlatformInfo();
     $timez = $oStatistics->getPlatformTimezone();
+    $additional = $oStatistics->getAdditionalData();
 
     // Construct the object gathering datas
     $data = array(
@@ -37,7 +38,8 @@ if ($sendStatistics && $isRemote !== 'yes') {
         'UUID' => $UUID,
         'versions' => $versions,
         'infos' => $infos,
-        'timezone' => $timez
+        'timezone' => $timez,
+        'additional' => $additional
     );
 
     try {

@@ -144,6 +144,51 @@ class CentreonVersion
             $data['mysql'] = $row['Value'];
         }
 
+        return array_merge($data, $this->getVersionSystem());
+    }
+
+    /**
+     * get system information
+     *
+     * @return array $data An array composed with the name and version of the OS
+     * @throws Exception
+     */
+    public function getVersionSystem()
+    {
+        $data = array();
+
+        // Get OS version
+        if (function_exists("shell_exec") && is_readable("/etc/os-release")) {
+            $os = shell_exec('cat /etc/os-release');
+            if (preg_match_all('/ID=?"(.*)?"/', $os, $matches)) {
+                $data['OS_name'] = $matches[1][0];
+                $data['OS_version'] = $matches[1][1];
+            }
+        }
+        return $data;
+    }
+
+    /**
+     * Get all Centreon widgets
+     *
+     * @return array $data Widgets statistics
+     */
+    public function getWidgetsUsage()
+    {
+        $data = array();
+
+        $query = 'SELECT wm.title AS name, version, COUNT(widget_id) AS count
+            FROM widgets AS w
+            INNER JOIN widget_models AS wm ON (w.widget_model_id = wm.widget_model_id)
+            GROUP BY name';
+        $result = $this->db->query($query);
+        while ($row = $result->fetch()) {
+            $data[] = array(
+                'name' => $row['name'],
+                'version' => $row['version'],
+                'used' => $row['count']
+            );
+        }
         return $data;
     }
 }

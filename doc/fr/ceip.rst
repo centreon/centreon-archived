@@ -21,7 +21,7 @@ choisissent de participer acceptent de partager :
 
 * Informations telles que la version du système d'exploitation du serveur principal Centreon de la plate-forme, ainsi que le nom et la version du SGBD
 * Informations sur les produits Centreon, telles que le nombre de serveurs et le numéro de version des composants installés sur le serveur principal de Centreon (modules et widgets)
-* Informations sur la configuration Centreon tels que le nombre d'hôtes, de services, de groupes d'hôtes et les services
+* Informations sur la configuration Centreon tels que le nombre d'hôtes, de services, de groupes d'hôtes et les services, ainsi que l'usage des modules et widgets
 * Le fuseau horaire du serveur Centreon
 
 Au cours du processus d'installation ou de mise à jour, il vous sera demandé de
