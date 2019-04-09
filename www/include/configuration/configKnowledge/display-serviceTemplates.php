@@ -84,7 +84,7 @@ require_once $centreon_path . "/www/class/centreon-knowledge/procedures.class.ph
 
 // Smarty template Init
 $tpl = new Smarty();
-$tpl = initSmartyTpl($path, $tpl);
+$tpl = initSmartyTpl($modules_path, $tpl);
 
 try {
     $conf = getWikiConfig($pearDB);
@@ -166,11 +166,11 @@ try {
             foreach ($tplArr as $key1 => $value1) {
                 if ($firstTpl) {
                     $tplStr .= "<a href='" . $WikiURL .
-                        " / index . php ? title = Service - Template : $value1' target='_blank'>" . $value1 . "</a>";
+                        "/index.php?title=Service-Template:" . $value1 . "' target='_blank'>" . $value1 . "</a>";
                     $firstTpl = 0;
                 } else {
                     $tplStr .= "&nbsp;|&nbsp;<a href='" . $WikiURL .
-                        " / index . php ? title = Service - Template : $value1' target='_blank'>" . $value1 . "</a>";
+                        "/index.php?title=Service-Template:" . $value1 . "' target='_blank'>" . $value1 . "</a>";
                 }
             }
         }
@@ -184,7 +184,7 @@ try {
         $tpl->assign("templateHostArray", $templateHostArray);
     }
 
-    $WikiVersion = getWikiVersion($WikiURL . ' / api . php');
+    $WikiVersion = getWikiVersion($WikiURL . '/api.php');
     $tpl->assign("WikiVersion", $WikiVersion);
     $tpl->assign("WikiURL", $WikiURL);
     $tpl->assign("content", $diff);
