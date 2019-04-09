@@ -11,7 +11,7 @@
   min-width: 45px;
   max-width: 45px;
   text-align: center;
-  background: #e0e0e0;
+  background: $grey-clear;
   transition: all 0.2s;
   border-right: 1px solid $grey-medium;
   z-index: 2;
@@ -50,9 +50,284 @@
     }
   }
 
+  &.mini {
+    .menu {
+      &-item {
+        position: relative;
+        &.active{
+          >ul.list-unstyled {
+            .collapsed-item {
+              &:hover {
+                >ul {
+                  display: block!important;
+                  position: absolute;
+                  margin-top: -38px;
+                  left: 155px;
+                  -webkit-box-shadow: 3px 3px 3px 0 $centreon-shadow;
+                  box-shadow: 3px 3px 3px 0 $centreon-shadow;
+                  &:empty {
+                    display: none!important;
+                  }
+                }
+              }
+            }
+          }
+          &:hover {
+            >ul.list-unstyled {
+              transition-delay : 01;
+              transition: display 01 linear;
+              display: block!important;
+              position: absolute;
+              top: 0px;
+              left: 45px;
+              -webkit-box-shadow: 3px 3px 3px 0 $centreon-shadow;
+              box-shadow: 3px 3px 3px 0 $centreon-shadow;
+            }
+            .active {
+              transition-delay : 0.5s;
+              transition: display 0.5s linear;
+              display: block!important;
+            }
+          }
+          .collapse {
+            .collapsed-item {
+              > .collapsed-level-item-link {
+                // background-image: none;
+              }
+            }
+          }
+        }
+      }
+    }
+    .collapse {
+      z-index: 998;
+      &:after {
+        content: ' ';
+        height:auto;
+        display: block;
+        position: absolute;
+        top: 0px;
+        bottom: 0px;
+        right: -50px;
+        left: 157px;
+      }
+      &:before {
+        content: ' ';
+        display: block;
+        position: absolute;
+        top: -50px;
+        z-index: 2;
+        right: -50px;
+        height: 50px;
+        left: 0;
+      }
+      .collapsed-item {
+        &.active .first-level {
+          display: none;
+        }
+        >.collapsed-level-item-link {
+          // background-image: none;
+        }
+        &:after {
+          content: ' ';
+          height: 50px;
+          display: block;
+          position: absolute;
+          bottom: -50px;
+          right: -50px;
+          left: 0;
+        }
+        .first-level {
+          z-index: 999;
+          &:after {
+            content: ' ';
+            height:auto;
+            display: block;
+            position: absolute;
+            top: 0px;
+            bottom: 0px;
+            right: -50px;
+            left: 155px;
+          }
+          &:before {
+            content: ' ';
+            display: block;
+            position: absolute;
+            top: -50px;
+            z-index: 2;
+            right: -50px;
+            height: 50px;
+            left: 0;
+          }
+          .collapsed-level-item  {
+            &:after {
+              content: ' ';
+              height: 50px;
+              display: block;
+              position: absolute;
+              bottom: -50px;
+              right: -50px;
+              left: 0;
+            }
+          }
+        }
+      }
+    }
+  }
+
+  .menu {
+    .list-unstyled {
+      width: 155px;
+    }
+    &-item {
+      position: relative;
+      .list-unstyled {
+        border: 1px solid $grey-clear;
+      }
+      &.to-hover {
+        >ul.list-unstyled {
+          .collapsed-item {
+            &:hover {
+              >ul {
+                display: block!important;
+                position: absolute;
+                margin-top: -38px;
+                left: 155px;
+                -webkit-box-shadow: 3px 3px 3px 0 $centreon-shadow;
+                box-shadow: 3px 3px 3px 0 $centreon-shadow;
+                &:empty {
+                  display: none!important;
+                }
+              }
+            }
+          }
+        }
+        &:hover {
+          >ul.list-unstyled {
+            display: block!important;
+            position: absolute;
+            top: 0px;
+            left: 45px;
+            -webkit-box-shadow: 3px 3px 3px 0 $centreon-shadow;
+            box-shadow: 3px 3px 3px 0 $centreon-shadow;
+            &:empty {
+              display: none!important;
+            }
+          }
+        }
+        .collapse .collapsed-item.active .first-level {
+          display: none;
+        }
+        .collapse {
+          z-index: 998;
+          &:after {
+            content: ' ';
+            height:auto;
+            display: block;
+            position: absolute;
+            top: 0px;
+            bottom: 0px;
+            right: -50px;
+            left: 157px;
+          }
+          &:before {
+            content: ' ';
+            display: block;
+            position: absolute;
+            top: -50px;
+            z-index: 2;
+            right: -50px;
+            height: 50px;
+            left: 0;
+          }
+          .collapsed-item {
+            &:after {
+              content: ' ';
+              height: 50px;
+              display: block;
+              position: absolute;
+              bottom: -50px;
+              right: -50px;
+              left: 0;
+            }
+            .first-level {
+              z-index: 999;
+              z-index: 998;
+              &:after {
+                content: ' ';
+                height:auto;
+                display: block;
+                position: absolute;
+                top: 0px;
+                bottom: 0px;
+                right: -50px;
+                left: 155px;
+              }
+              &:before {
+                content: ' ';
+                display: block;
+                position: absolute;
+                top: -50px;
+                z-index: 2;
+                right: -50px;
+                height: 50px;
+                left: 0;
+              }
+              .collapsed-level-item  {
+                &:after {
+                  content: ' ';
+                  height: 50px;
+                  display: block;
+                  position: absolute;
+                  bottom: -50px;
+                  right: -50px;
+                  left: 0;
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
   &.active {
     min-width: 160px;
     max-width: 160px;
+    .menu {
+      &-item {
+        &.to-hover:hover {
+          >ul.list-unstyled {
+            left: 160px;
+          }
+        }
+        &.active {
+          .collapsed-items.list-unstyled {
+            display: block!important;
+          }
+          .list-unstyled,
+          .list-unstyled.active {
+            border-top: 0px solid transparent;
+            border-bottom: 0px solid transparent;
+            border-right: 0px solid transparent;
+            .list-unstyled {
+              border-left: 0px solid transparent;
+            }
+          }
+        }
+        /*manage exception where 4th level menu is active and we want to avoid scroll ipening the 5 th level menu on hover*/
+        &:nth-child(4).active + .menu-item {
+          &:hover>ul.list-unstyled {
+            top: -191px;
+          }
+          >ul.list-unstyled .collapsed-item:first-child:hover {
+            >ul {
+              top: -191px;
+            }
+          }
+        }
+      }
+    }
     .sidebar-logo {
       display: block;
     }
@@ -118,8 +393,6 @@
   }
   &-inner {
     position: relative;
-    overflow-y: auto;
-    overflow-x: hidden;
     max-height: 100vh;
   }
 }
@@ -160,11 +433,37 @@ a {
       text-decoration: none;
       display: block;
       position: relative;
+      cursor: pointer;
       &:hover {
         color: $white-color;
       }
       i {
         margin-right: 10px;
+      }
+    }
+    >ul.list-unstyled  {
+      display: none;
+    }
+    &.to-hover:hover {
+      >ul.list-unstyled {
+        display: block!important;
+        position: fixed;
+        left: 68px;
+      }
+    }
+
+    .collapse {
+      .collapsed-item {
+        > .collapsed-level-item-link {
+          background-image: url("../../img/icons/aside-menu-arrows.png");
+          background-repeat: no-repeat;
+          background-position: 12px 9px;
+          background-color: $grey-classic;
+          &.img-none {
+            background: none;
+            background-color: $grey-classic;
+          }
+        }
       }
     }
 
@@ -204,8 +503,8 @@ a {
           }
         }
         > .collapsed-level-item-link:hover {
-            background: $turquoise-centreon-darken;
-            color: $white-color;
+          background: $turquoise-centreon-darken;
+          color: $white-color;
         }
       }
     }
@@ -253,6 +552,17 @@ a {
     }
 
     &:nth-child(3) {
+      .collapsed-item {
+        &:after {
+          content: ' ';
+          width: 100%;
+          height: 75px;
+          display: block;
+          position: absolute;
+          bottom: -75px;
+          right: -40px;
+        }
+      }
       &.active {
         > span {
           background: $orange-centreon-primary;
@@ -330,8 +640,8 @@ a {
           }
         }
         > .collapsed-level-item-link:hover{
-            background: $lightblue-centreon-darken;
-            color: $white-color;
+          background: $lightblue-centreon-darken;
+          color: $white-color;
         }
       }
     }
@@ -372,8 +682,8 @@ a {
           }
         }
         > .collapsed-level-item-link:hover{
-            background: $darkblue-centreon-darken;
-            color: $white-color;
+          background: $darkblue-centreon-darken;
+          color: $white-color;
         }
       }
     }
@@ -387,6 +697,7 @@ a {
         }
       }
     }
+
     &-name {
       font-family: $primary-font-regular;
       font-size: 0.84rem;
@@ -401,29 +712,46 @@ a {
 .collapse {
   .collapsed-level {
     &-item {
-      background-color: #f7f6f6;
+      background-color: $grey-clear;
       &-link {
-        border-bottom: 1px solid #f7f7f7;
+        border-bottom: 1px solid $grey-classic;
         text-align: left;
         text-decoration: none;
-        font-size: 0.8rem;
-        color: rgb(36,47,59);
+        font-size: 0.7rem;
+        color: $centreon-graphit;
         font-family: $primary-font-regular;
-        padding: 10px 10px 11px 47px;
+        padding: 11px 10px 11px 28px;
         display: block;
         letter-spacing: -0.4px;
         cursor: pointer;
       }
     }
+
     &-title {
-      color: $lightblue-centreon-primary;
-      font-family: $primary-font-regular;
-      font-size: 0.8rem;
+      height: 18px;
       background-color: $white-color;
       display: block;
-      padding: 3px 10px 3px 56px;
-      border-bottom: 1px solid #f7f7f7;
-      text-align: left;
+      position: relative;
+      margin:0;
+      &:before {
+        content: ' ';
+        height: 1px;
+        width: 100%;
+        background-color: $lightblue-centreon-primary;
+        position: absolute;
+        display: block;
+        top: 10px;
+      }
+      span {
+        font-family: $primary-font-regular;
+        padding: 0px 5px;
+        color: $lightblue-centreon-primary;
+        background: $white-color;
+        font-variant: all-petite-caps;
+        font-size: 0.7rem;
+        position: relative;
+        line-height: 18px;
+      }
     }
   }
   .collapsed-item {
@@ -438,21 +766,12 @@ a {
         display: block;
       }
       > .collapsed-level-item-link {
-        background-position: 26px -94px;
+        background-position: 13px -94px;
       }
     }
     &.active {
       .second-level {
         display: block;
-      }
-    }
-    > .collapsed-level-item-link {
-      background: url("../../img/icons/aside-menu-arrows.png") no-repeat;
-      background-position: 26px 10px;
-      background-color: #f7f7f7;
-      &.img-none {
-        background: none;
-        background-color: #f7f7f7;
       }
     }
   }
@@ -463,7 +782,7 @@ a {
       .collapsed-level-item {
         background-color: $white-color;
         .collapsed-level-item-link {
-          padding: 8px 10px 8px 56px;
+          padding: 10px 10px 10px 34px;
         }
       }
     }
@@ -495,7 +814,7 @@ a {
     }
     .sidebar-header h3, .CTAs {
       display: none;
-    }s
+    }
     .sidebar-header strong {
       display: block;
     }

@@ -11,7 +11,6 @@ import routeMap from "../../route-maps/route-map";
 
 import { Translate } from 'react-redux-i18n';
 import { fetchNavigationData } from "../../redux/actions/navigationActions";
-import { updateTooltip } from '../../redux/actions/tooltipActions';
 
 class NavigationComponent extends Component {
   navService = axios("internal.php?object=centreon_menu&action=menu");
@@ -39,8 +38,8 @@ class NavigationComponent extends Component {
     });
   };
 
-  // handle double click on level 1
-  handleDoubleClick = (levelOneKey, levelOneProps) => {
+  // handle direct click on level 1
+  handleDirectClick = (levelOneKey, levelOneProps) => {
     clearTimeout(this.clickTimeout)
     this.doubleClicked = true
     const urlOptions = levelOneKey.slice(1) +
@@ -50,25 +49,22 @@ class NavigationComponent extends Component {
       levelOneKey
     )
   }
+  // active clicked level
+  activeCurrentLevel = (levelOneKey, levelTwoKey) => {
+    let { menuItems } = this.state;
 
-  // display/hide level 2
-  collapseLevelTwo = index => {
-    this.clickTimeout = setTimeout(() => {
-      if (!this.doubleClicked) {
-        let { menuItems } = this.props;
-
-        Object.keys(menuItems).forEach(key => {
-          menuItems[key].toggled = key === index ?
-            !menuItems[index].toggled : false;
-        });
-
-        this.setState({
-          active: true,
-          menuItems
-        });
+    Object.keys(menuItems[levelOneKey].children).forEach(subKey => {
+      menuItems[levelOneKey].children[subKey]["collapsed"] = false;
+      if (subKey === levelTwoKey) {
+        menuItems[levelOneKey].children[subKey]["collapsed"] = true;
+      } else {
+        menuItems[levelOneKey].children[subKey]["collapsed"] = false;
       }
-      this.doubleClicked = false
-    }, 200);
+    });
+
+    this.setState({
+      menuItems
+    });
   };
 
   // display/hide level 3
@@ -145,39 +141,20 @@ class NavigationComponent extends Component {
     history.push(route);
   };
 
-  // hide tooltip for the first-level folded menu items
-  mouseLeftTheMenu = event => {
-    const { updateTooltip } = this.props;
-    updateTooltip({
-      toggled: false
-    });
-  };
-
-  // show tooltip for the first-level folded menu items by setting toggled to true
-  // updating the x, y properties of tooltip in order to display it on client cursor position
-  // show related label by setting label to label
-  mouseIsMovingOverTheMenu = (label, {  clientY }) => {
-    const { updateTooltip } = this.props;
-    updateTooltip({
-      toggled: true,
-      x: 50,
-      y: clientY,
-      label
-    });
-  };
 
   render() {
     const { menuItems } = this.props;
     const { active } = this.state;
     const pageId = this.getPageId();
+    const activated = " active"
 
     return (
-      <nav class={"sidebar" + (active ? " active" : "")} id="sidebar">
-        <div class="sidebar-inner">
-          <div class="sidebar-logo" onClick={this.toggleNavigation}>
+      <nav className={`sidebar ${active ? activated : " mini"}`} id="sidebar">
+        <div className={`sidebar-inner`}>
+          <div className={`sidebar-logo`} onClick={this.toggleNavigation}>
             <span>
               <img
-                class="sidebar-logo-image"
+                className={`sidebar-logo-image`}
                 src={logo}
                 width="254"
                 height="57"
@@ -185,10 +162,10 @@ class NavigationComponent extends Component {
               />
             </span>
           </div>
-          <div class="sidebar-logo-mini" onClick={this.toggleNavigation}>
+          <div className={`sidebar-logo-mini`}  onClick={this.toggleNavigation}>
             <span>
               <img
-                class="sidebar-logo-mini-image"
+                className={`sidebar-logo-mini-image`}
                 src={miniLogo}
                 width="23"
                 height="21"
@@ -197,30 +174,26 @@ class NavigationComponent extends Component {
             </span>
           </div>
           <ul
-            class="menu menu-items list-unstyled components"
-            onMouseLeave={this.mouseLeftTheMenu}
+            className={`menu menu-items list-unstyled components`}
           >
             {Object.entries(menuItems).map(([levelOneKey, levelOneProps]) => (
               levelOneProps.label ? (
                 <li
-                  onMouseOver={this.mouseIsMovingOverTheMenu.bind(this, levelOneProps.label)}
-                  class={"menu-item" + (levelOneProps.active ? " active" : "")}
+                  className={`menu-item ${(levelOneProps.toggled && active || levelOneProps.active) ? activated : " to-hover"}`}
                 >
                 <span
-                  onDoubleClick={() => {this.handleDoubleClick(levelOneKey, levelOneProps)}}
-                  onClick={() => {this.collapseLevelTwo(levelOneKey)}}
-                  style={{ cursor: "pointer" }}
-                  class="menu-item-link dropdown-toggle"
+                  onDoubleClick={() => {this.handleDirectClick(levelOneKey, levelOneProps)}}
+                  className={`menu-item-link dropdown-toggle`}
                   id={"menu" + levelOneKey}
                 >
                   <span class={`iconmoon icon-${levelOneProps.menu_id.toLowerCase()}`}>
-                    <span class={"menu-item-name"}>
+                    <span className={`menu-item-name`}>
                       <Translate value={levelOneProps.label}/>
                     </span>
                   </span>
                 </span>
                 <ul
-                  class="collapse collapsed-items list-unstyled"
+                  className={`collapse collapsed-items list-unstyled ${(levelOneProps.toggled && active) ? activated : " " }`}
                   style={{ display: (levelOneProps.toggled && active) ? "block" : "none" }}
                 >
                   {Object.entries(levelOneProps.children).map(([levelTwoKey, levelTwoProps]) => {
@@ -228,38 +201,36 @@ class NavigationComponent extends Component {
                     if (levelTwoProps.label) {
                       return (
                         <li
-                          class={
-                            "collapsed-item" +
-                            (levelTwoProps.collapsed || (this.isActive(pageId, levelTwoUrl))
-                              ? " active"
-                              : ""
-                            )
+                          className={
+                            `collapsed-item
+                            ${levelTwoProps.collapsed || (this.isActive(pageId, levelTwoUrl))
+                            ? activated
+                            : ""}`
                           }
                         >
                           {Object.keys(levelTwoProps.children).length > 0 ? (
                             <span
-                              style={{ cursor: "pointer" }}
                               onClick={() => {this.collapseLevelThree(levelOneKey, levelTwoKey)}}
-                              class="collapsed-level-item-link"
+                              className={`collapsed-level-item-link`}
                             >
                               <Translate value={levelTwoProps.hasOwnProperty('label') ? levelTwoProps.label : ''}/>
                             </span>
                           ) : (
                               <Link
                                 onClick={() => {this.goToPage(levelTwoUrl.url, levelOneKey)}}
-                                className={`collapsed-level-item-link img-none ${(this.isActive(pageId, levelTwoUrl)) ? "active" : ""}`}
+                                className={`collapsed-level-item-link img-none ${(this.isActive(pageId, levelTwoUrl)) ? activated : ""}`}
                                 to={levelTwoUrl.url}
                               >
                                 <Translate value={levelTwoProps.label}/>
                               </Link>
                             )}
 
-                          <ul class="collapse-level collapsed-level-items first-level list-unstyled">
+                          <ul className={`collapse-level collapsed-level-items first-level list-unstyled`}>
                             {Object.entries(levelTwoProps.children).map(([levelThreeKey, levelThreeProps]) => {
                               return (
                                 <>
                                   {Object.keys(levelTwoProps.children).length > 1 &&
-                                    <span class="collapsed-level-title">
+                                    <span className={`collapsed-level-title`}>
                                       <Translate value={levelThreeKey}/>
                                     </span>
                                   }
@@ -268,11 +239,16 @@ class NavigationComponent extends Component {
                                     if (levelFourProps.label) {
                                       return (
                                         <li
-                                          class={"collapsed-level-item" + (this.isActive(pageId, levelFourUrl) ? " active" : "")}
+                                          onClick={() => {
+                                            this.state.active
+                                            ? this.activeCurrentLevel(levelOneKey, levelTwoKey)
+                                            : this.collapseLevelThree(levelOneKey, levelTwoKey)
+                                          }}
+                                          className={`collapsed-level-item ${this.isActive(pageId, levelFourUrl)  ? activated : ""}`}
                                         >
                                           <Link
                                             onClick={() => {this.goToPage(levelFourUrl.url, levelOneKey)}}
-                                            className="collapsed-level-item-link"
+                                            className={`collapsed-level-item-link`}
                                             to={levelFourUrl.url}
                                           >
                                             <Translate value={levelFourProps.label}/>
@@ -298,9 +274,9 @@ class NavigationComponent extends Component {
               </li>) : null
             ))}
           </ul>
-          <div class="toggle-sidebar-wrap">
+          <div className={`toggle-sidebar-wrap`}>
             <span
-              class="toggle-sidebar-icon"
+              className={`toggle-sidebar-icon`}
               onClick={this.toggleNavigation}
             />
           </div>
