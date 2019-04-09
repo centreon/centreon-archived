@@ -175,9 +175,11 @@ class Broker extends AbstractObjectXML
             foreach ($resultParameters as $key => $value) {
                 // We search the BlockId
                 $blockId = 0;
+                $configGroupdId = null;
                 for ($i = count($value); $i > 0; $i--) {
                     if (isset($value[$i]['config_key']) && $value[$i]['config_key'] == 'blockId') {
                         $blockId = $value[$i]['config_value'];
+                        $configGroupId = $value[$i]['config_group_id'];
                         break;
                     }
                 }
@@ -220,6 +222,16 @@ class Broker extends AbstractObjectXML
                             $subvalue['config_value'];
                     }
                     $flow_count++;
+                }
+                
+                // Check if we need to add values from external
+                foreach ($this->cacheExternalValue as $key2 => $value2) {
+                    if (preg_match('/^(.+)_' . $blockId . '$/', $key2, $matches)) {
+                        if (!isset($object[$configGroupId][$key][$matches[1]])) {
+                            $object[$configGroupId][$key][$matches[1]] =
+                                $this->getInfoDb($value2);
+                        }
+                    }
                 }
             }
 
