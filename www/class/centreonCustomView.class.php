@@ -658,7 +658,7 @@ class CentreonCustomView
     {
         //get all widget parameters from the view that is being added
         if (isset($userId) && $userId) {
-            $query = 'SELECT * FROM widget_views wv LEFT JOIN widget_preferences wp ON wp.widget_view_id=wv.widget_view_id ' .
+            $query = 'SELECT * FROM widget_views wv LEFT JOIN widget_preferences wp ON wp.widget_view_id = wv.widget_view_id ' .
                 'LEFT JOIN custom_view_user_relation cvur ON cvur.custom_view_id=wv.custom_view_id ' .
                 'WHERE cvur.custom_view_id = :viewId and cvur.locked = 0';
             $stmt = $this->db->prepare($query);
