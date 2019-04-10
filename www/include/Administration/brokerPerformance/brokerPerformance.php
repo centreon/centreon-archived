@@ -1,7 +1,7 @@
 <?php
 /*
- * Copyright 2005-2015 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2019 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -40,7 +40,7 @@ if (!isset($centreon)) {
 require_once "./include/monitoring/common-Func.php";
 require_once "./class/centreonDB.class.php";
 require_once "./class/centreonGMT.class.php";
-require_once realpath(dirname(__FILE__) . "/../../../../config/centreon.config.php");
+require_once realpath(__DIR__ . "/../../../../config/centreon.config.php");
 
 function createArrayStats($arryFromJson) {
     $io = array('class' => 'stats_lv1');
@@ -164,9 +164,9 @@ function parseStatsFile($statfile)
     foreach ($json_stats as $key => $value) {
         if (preg_match('/endpoint \(?(.*[^()])\)?/', $key, $matches)) {
 
-                if (preg_match('/.*external commands.*/', $matches[1])) {
-                    $matches[1] = "external-commands";
-                }
+            if (preg_match('/.*external commands.*/', $matches[1])) {
+                $matches[1] = "external-commands";
+            }
 
             if ((preg_match('/.*external commands.*/', $key) && $json_stats[$key]['state'] != "disconnected")
                 || (!preg_match('/.*external commands.*/', $key))
@@ -178,13 +178,13 @@ function parseStatsFile($statfile)
                 $result['io'][$matches[1]]['id'] = end($keySepBySpace);
                 $result['io'][$matches[1]]['id'] = rtrim($result['io'][$matches[1]]['id'], ')');
 
-
                 /* force type of io  */
                 if (preg_match('/.*external commands.*/', $key)) {
                     $result['io'][$matches[1]]['type'] = 'input';
                 } elseif (preg_match(
                     '/.*(central-broker-master-sql|centreon-broker-master-rrd|central-broker-master-perfdata).*/',
-                    $key)
+                    $key
+                )
                 ) {
                     $result['io'][$matches[1]]['type'] = 'output';
                 } elseif (preg_match('/.*(centreon-bam-monitoring|centreon-bam-reporting).*/', $key)) {
@@ -201,7 +201,7 @@ function parseStatsFile($statfile)
 
                 /* manage peers input */
                 if (isset($json_stats[$key]['peers'])) {
-                    $arrayPeers = explode (',', $json_stats[$key]['peers']);
+                    $arrayPeers = explode(',', $json_stats[$key]['peers']);
                     for ($i = 1; $i < count($arrayPeers); $i++) {
                         $peerName = trim($arrayPeers[$i]);
                         $id = str_replace(':', '_', $peerName);
