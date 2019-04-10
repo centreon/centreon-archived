@@ -176,7 +176,7 @@ try {
                     $firstTpl = 0;
                 } else {
                     $tplStr .= "&nbsp;|&nbsp;<a href='" . $WikiURL .
-                        "/index.php?title=Host:" . $value1 ."' target='_blank'>" . $value1 . "</a>";
+                        "/index.php?title=Host:" . $value1 . "' target='_blank'>" . $value1 . "</a>";
                 }
             }
         }

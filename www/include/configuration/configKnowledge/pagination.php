@@ -47,8 +47,6 @@ global $bNewChart, $num, $limit, $search, $url, $pearDB, $search_type_service,
 $type = $_REQUEST["type"] ?? null;
 $o = $_GET["o"] ?? null;
 
-$searchString = "";
-
 //saving current pagination filter value and current displayed page
 $centreon->historyPage[$url] = $num;
 $centreon->historyLastUrl = $url;
