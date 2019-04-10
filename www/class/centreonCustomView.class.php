@@ -658,21 +658,18 @@ class CentreonCustomView
     {
         //get all widget parameters from the view that is being added
         if (isset($userId) && $userId) {
-            $query = 'SELECT * FROM widget_views wv LEFT JOIN widget_preferences wp ON wp.widget_view_id = wv.widget_view_id ' .
+            $stmt = $this->db->prepare('SELECT * FROM widget_views wv LEFT JOIN widget_preferences wp ON wp.widget_view_id = wv.widget_view_id ' .
                 'LEFT JOIN custom_view_user_relation cvur ON cvur.custom_view_id=wv.custom_view_id ' .
-                'WHERE cvur.custom_view_id = :viewId and cvur.locked = 0';
-            $stmt = $this->db->prepare($query);
+                'WHERE cvur.custom_view_id = :viewId and cvur.locked = 0');
             $stmt->bindParam(':viewId', $viewId, PDO::PARAM_INT);
             $dbResult = $stmt->execute();
             if (!$dbResult) {
-                throw new \Exception("An error occured when retreiving user's Id : " . userId . " parameters of the widget's Id : " . $viewId);
+                throw new \Exception("An error occured when retreiving user's Id : " . userId . " parameters of the widgets from the view: Id = " . $viewId);
             }
 
             //add every widget parameters for the current user
             while ($row = $stmt->fetch()) {
-                $query2 = 'INSERT INTO widget_preferences VALUES (:widget_view_id, :parameter_id, :preference_value, :user_id)';
-
-                $stmt2 = $this->db->prepare($query2);
+                $stmt2 = $this->db->prepare('INSERT INTO widget_preferences VALUES (:widget_view_id, :parameter_id, :preference_value, :user_id)');
                 $stmt2->bindParam(':widget_view_id', $row['widget_view_id'], PDO::PARAM_INT);
                 $stmt2->bindParam(':parameter_id', $row['parameter_id'], PDO::PARAM_INT);
                 $stmt2->bindParam(':preference_value', $row['preference_value'], PDO::PARAM_STR);
@@ -680,7 +677,7 @@ class CentreonCustomView
 
                 $dbResult2 = $stmt2->execute();
                 if (!$dbResult2) {
-                    throw new \Exception("An error occured when adding user's Id : " . $userId . " parameters to the widget's Id : " . $viewId);
+                    throw new \Exception("An error occured when adding user's Id : " . $userId . " parameters to the widgets from the view: Id = " . $viewId);
                 }
             }
         }
