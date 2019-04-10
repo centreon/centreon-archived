@@ -268,22 +268,10 @@ $inputPost = filter_input_array(
 
 if (isset($url) && $url) {
     foreach ($inputArguments as $argumentName => $argumentFlag) {
-        switch ($argumentName) {
-        case 'limit':
-            if (!is_null($inputGet[$argumentName])) {
-                $centreon->historyLimit[$url] = $inputGet[$argumentName];
-            } elseif (!is_null($inputPost[$argumentName])) {
-                $centreon->historyLimit[$url] = $inputPost[$argumentName];
-            } else {
-                $centreon->historyLimit[$url] = 30;
-            }
-            break;
-
-        default:
-            continue;
+        if ($argumentName === 'limit') {
+            $centreon->historyLimit[$url] = $inputGet[$argumentName] ?? $inputPost[$argumentName] ?? 30;
             break;
         }
-
     }
 }
 
