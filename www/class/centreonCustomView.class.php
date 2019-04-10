@@ -665,7 +665,7 @@ class CentreonCustomView
             $stmt->bindParam(':viewId', $viewId, PDO::PARAM_INT);
             $dbResult = $stmt->execute();
             if (!$dbResult) {
-                throw new \Exception("An error occured");
+                throw new \Exception("An error occured when retreiving user's Id : " . userId . " parameters of the widget's Id : " . $viewId);
             }
 
             //add every widget parameters for the current user
