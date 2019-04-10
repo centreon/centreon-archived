@@ -4204,31 +4204,35 @@ msgid "Path with modules for Centreon Broker"
 msgstr "Caminho para os Módulos do Broker Centreon"
 
 #: centreon-web/www/include/configuration/configServers/help.php:16
+msgid "Path of the Centreon Broker log file"
+msgstr "Caminho do arquivo de log do Centreon Broker"
+
+#: centreon-web/www/include/configuration/configServers/help.php:17
 msgid "Path with Centreon Connector binaries"
 msgstr "Caminho para os conectores do Centreon"
 
-#: centreon-web/www/include/configuration/configServers/help.php:17
+#: centreon-web/www/include/configuration/configServers/help.php:18
 msgid "Enable or disable poller"
 msgstr "Ativar ou desativar o coletor"
 
-#: centreon-web/www/include/configuration/configServers/help.php:18
+#: centreon-web/www/include/configuration/configServers/help.php:19
 msgid "Centreontrapd init script to restart process on poller."
 msgstr "Script de inicialização do processo Centreontrapd para reiniciá-lo no coletor."
 
-#: centreon-web/www/include/configuration/configServers/help.php:19
+#: centreon-web/www/include/configuration/configServers/help.php:20
 msgid "Light databases will be stored in the specified directory. They are used for synchronizing trap definitions on pollers."
 msgstr ""
 "Bancos de dados reduzidos são salvos em um diretório dedicado. \n"
 "Eles são usados ​​para sincronizar a configuração de traps SNMP para um coletor remoto."
 
-#: centreon-web/www/include/configuration/configServers/help.php:20
+#: centreon-web/www/include/configuration/configServers/help.php:21
 msgid "Those commands can be executed at the end of the file generation generation/restart process. Do not specify macros in the commands, for they will not be replaced. Make sure to have sufficient rights for the Apache user to run these commands."
 msgstr ""
 "Esses comandos são executados no final da geração da configuração de supervisão e após o reinício do mecanismo de coleta. \n"
 "Não especifique macros após este comando porque elas não serão sobrescritas. \n"
 "Verifique se os direitos de execução são suficientes para o utilizador \"apache\"."
 
-#: centreon-web/www/include/configuration/configServers/help.php:21
+#: centreon-web/www/include/configuration/configServers/help.php:22
 msgid "Short description of the poller"
 msgstr "Breve descrição do coletor"
 

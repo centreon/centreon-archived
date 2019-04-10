@@ -29,18 +29,17 @@ class ServiceProvider implements AutoloadServiceProviderInterface
      */
     public function register(Container $pimple): void
     {
-        $pimple['centreon.webservice']->add(Webservice\CentreonRemoteServer::class);
-        $pimple['centreon.webservice']->add(Webservice\CentreonConfigurationRemote::class);
-        $pimple['centreon.webservice']->add(Webservice\CentreonConfigurationTopology::class);
-        $pimple['centreon.webservice']->add(Webservice\CentreonTaskService::class);
-        $pimple['centreon.webservice']->add(Webservice\CentreonModulesWebservice::class);
-        $pimple['centreon.webservice']->add(WebService\CentreonAclWebservice::class);
+        $pimple[\Centreon\ServiceProvider::CENTREON_WEBSERVICE]->add(Webservice\CentreonRemoteServer::class);
+        $pimple[\Centreon\ServiceProvider::CENTREON_WEBSERVICE]->add(Webservice\CentreonConfigurationRemote::class);
+        $pimple[\Centreon\ServiceProvider::CENTREON_WEBSERVICE]->add(Webservice\CentreonConfigurationTopology::class);
+        $pimple[\Centreon\ServiceProvider::CENTREON_WEBSERVICE]->add(Webservice\CentreonTaskService::class);
+        $pimple[\Centreon\ServiceProvider::CENTREON_WEBSERVICE]->add(WebService\CentreonAclWebservice::class);
 
-        $pimple['centreon.clapi']->add(Clapi\CentreonRemoteServer::class);
-        $pimple['centreon.clapi']->add(Clapi\CentreonWorker::class);
+        $pimple[\Centreon\ServiceProvider::CENTREON_CLAPI]->add(Clapi\CentreonRemoteServer::class);
+        $pimple[\Centreon\ServiceProvider::CENTREON_CLAPI]->add(Clapi\CentreonWorker::class);
 
         $pimple['centreon.notifymaster'] = function (Container $pimple): NotifyMasterService {
-            $service = new NotifyMasterService($pimple['centreon.db-manager']);
+            $service = new NotifyMasterService($pimple[\Centreon\ServiceProvider::CENTREON_DB_MANAGER]);
             $service->setCurl(new Curl);
             return $service;
         };
@@ -48,7 +47,7 @@ class ServiceProvider implements AutoloadServiceProviderInterface
         $pimple['centreon.taskservice'] = function (Container $pimple): TaskService {
             $service = new TaskService(
                 new AppKeyGeneratorService(),
-                $pimple['centreon.db-manager'],
+                $pimple[\Centreon\ServiceProvider::CENTREON_DB_MANAGER],
                 new CentcoreCommandService()
             );
             $service->setCentreonRestHttp($pimple['rest_http']);
@@ -67,25 +66,25 @@ class ServiceProvider implements AutoloadServiceProviderInterface
 
         $pimple['centreon_remote.remote_connection_service'] = function (Container $pimple): RemoteConnectionConfigurationService {
             $service = new RemoteConnectionConfigurationService(
-                $pimple['centreon.db-manager']->getAdapter('configuration_db')
+                $pimple[\Centreon\ServiceProvider::CENTREON_DB_MANAGER]->getAdapter('configuration_db')
             );
             return $service;
         };
 
         $pimple['centreon_remote.poller_connection_service'] = function (Container $pimple): PollerConnectionConfigurationService {
             $service = new PollerConnectionConfigurationService(
-                $pimple['centreon.db-manager']->getAdapter('configuration_db')
+                $pimple[\Centreon\ServiceProvider::CENTREON_DB_MANAGER]->getAdapter('configuration_db')
             );
-            $service->setBrokerRepository($pimple['centreon.broker_repository']);
+            $service->setBrokerRepository($pimple[\Centreon\ServiceProvider::CENTREON_BROKER_REPOSITORY]);
             $service->setBrokerConfigurationService($pimple['centreon.broker_configuration_service']);
             return $service;
         };
 
         $pimple['centreon_remote.poller_config_service'] = function (Container $pimple): LinkedPollerConfigurationService {
             $service = new LinkedPollerConfigurationService(
-                $pimple['centreon.db-manager']->getAdapter('configuration_db')
+                $pimple[\Centreon\ServiceProvider::CENTREON_DB_MANAGER]->getAdapter('configuration_db')
             );
-            $service->setBrokerRepository($pimple['centreon.broker_repository']);
+            $service->setBrokerRepository($pimple[\Centreon\ServiceProvider::CENTREON_BROKER_REPOSITORY]);
             $service->setBrokerConfigurationService($pimple['centreon.broker_configuration_service']);
             $service->setPollerInteractionService($pimple['centreon_remote.poller_interaction_service']);
             $service->setTaskService($pimple['centreon.taskservice']);
@@ -101,7 +100,7 @@ class ServiceProvider implements AutoloadServiceProviderInterface
             $services = [
                 'centreon_remote.exporter.cache',
                 'centreon_remote.exporter',
-                'centreon.db-manager',
+                \Centreon\ServiceProvider::CENTREON_DB_MANAGER,
                 'centreon.acl',
             ];
 
@@ -129,9 +128,9 @@ class ServiceProvider implements AutoloadServiceProviderInterface
         //-----------//
         
         // Commands
-        $pimple['centreon_remote.exporter']->add(Domain\Exporter\CommandExporter::class, function() use ($pimple) {
+        $pimple['centreon_remote.exporter']->add(Domain\Exporter\CommandExporter::class, function () use ($pimple) {
             $services = [
-                'centreon.db-manager',
+                \Centreon\ServiceProvider::CENTREON_DB_MANAGER,
             ];
 
             $locator = new ServiceLocator($pimple, $services);
@@ -141,9 +140,9 @@ class ServiceProvider implements AutoloadServiceProviderInterface
         });
         
         // Pollers
-        $pimple['centreon_remote.exporter']->add(Domain\Exporter\PollerExporter::class, function() use ($pimple) {
+        $pimple['centreon_remote.exporter']->add(Domain\Exporter\PollerExporter::class, function () use ($pimple) {
             $services = [
-                'centreon.db-manager',
+                \Centreon\ServiceProvider::CENTREON_DB_MANAGER,
                 'centreon.config',
             ];
 
@@ -154,9 +153,9 @@ class ServiceProvider implements AutoloadServiceProviderInterface
         });
         
         // Hosts
-        $pimple['centreon_remote.exporter']->add(Domain\Exporter\HostExporter::class, function() use ($pimple) {
+        $pimple['centreon_remote.exporter']->add(Domain\Exporter\HostExporter::class, function () use ($pimple) {
             $services = [
-                'centreon.db-manager',
+                \Centreon\ServiceProvider::CENTREON_DB_MANAGER,
             ];
 
             $locator = new ServiceLocator($pimple, $services);
@@ -166,9 +165,9 @@ class ServiceProvider implements AutoloadServiceProviderInterface
         });
         
         // Meta services
-        $pimple['centreon_remote.exporter']->add(Domain\Exporter\MetaServiceExporter::class, function() use ($pimple) {
+        $pimple['centreon_remote.exporter']->add(Domain\Exporter\MetaServiceExporter::class, function () use ($pimple) {
             $services = [
-                'centreon.db-manager',
+                \Centreon\ServiceProvider::CENTREON_DB_MANAGER,
             ];
 
             $locator = new ServiceLocator($pimple, $services);
@@ -178,9 +177,9 @@ class ServiceProvider implements AutoloadServiceProviderInterface
         });
         
         // Services
-        $pimple['centreon_remote.exporter']->add(Domain\Exporter\ServiceExporter::class, function() use ($pimple) {
+        $pimple['centreon_remote.exporter']->add(Domain\Exporter\ServiceExporter::class, function () use ($pimple) {
             $services = [
-                'centreon.db-manager',
+                \Centreon\ServiceProvider::CENTREON_DB_MANAGER,
             ];
 
             $locator = new ServiceLocator($pimple, $services);
@@ -190,9 +189,9 @@ class ServiceProvider implements AutoloadServiceProviderInterface
         });
         
         // Traps
-        $pimple['centreon_remote.exporter']->add(Domain\Exporter\TrapExporter::class, function() use ($pimple) {
+        $pimple['centreon_remote.exporter']->add(Domain\Exporter\TrapExporter::class, function () use ($pimple) {
             $services = [
-                'centreon.db-manager',
+                \Centreon\ServiceProvider::CENTREON_DB_MANAGER,
             ];
 
             $locator = new ServiceLocator($pimple, $services);
@@ -202,9 +201,9 @@ class ServiceProvider implements AutoloadServiceProviderInterface
         });
         
         // Time periods
-        $pimple['centreon_remote.exporter']->add(Domain\Exporter\TimePeriodExporter::class, function() use ($pimple) {
+        $pimple['centreon_remote.exporter']->add(Domain\Exporter\TimePeriodExporter::class, function () use ($pimple) {
             $services = [
-                'centreon.db-manager',
+                \Centreon\ServiceProvider::CENTREON_DB_MANAGER,
             ];
 
             $locator = new ServiceLocator($pimple, $services);
@@ -214,9 +213,9 @@ class ServiceProvider implements AutoloadServiceProviderInterface
         });
         
         // Downtimes
-        $pimple['centreon_remote.exporter']->add(Domain\Exporter\DowntimeExporter::class, function() use ($pimple) {
+        $pimple['centreon_remote.exporter']->add(Domain\Exporter\DowntimeExporter::class, function () use ($pimple) {
             $services = [
-                'centreon.db-manager',
+                \Centreon\ServiceProvider::CENTREON_DB_MANAGER,
             ];
 
             $locator = new ServiceLocator($pimple, $services);
@@ -226,9 +225,9 @@ class ServiceProvider implements AutoloadServiceProviderInterface
         });
         
         // Graphs
-        $pimple['centreon_remote.exporter']->add(Domain\Exporter\GraphExporter::class, function() use ($pimple) {
+        $pimple['centreon_remote.exporter']->add(Domain\Exporter\GraphExporter::class, function () use ($pimple) {
             $services = [
-                'centreon.db-manager',
+                \Centreon\ServiceProvider::CENTREON_DB_MANAGER,
             ];
 
             $locator = new ServiceLocator($pimple, $services);
@@ -238,9 +237,9 @@ class ServiceProvider implements AutoloadServiceProviderInterface
         });
 
         // Media
-        $pimple['centreon_remote.exporter']->add(Domain\Exporter\MediaExporter::class, function() use ($pimple) {
+        $pimple['centreon_remote.exporter']->add(Domain\Exporter\MediaExporter::class, function () use ($pimple) {
             $services = [
-                'centreon.db-manager',
+                \Centreon\ServiceProvider::CENTREON_DB_MANAGER,
             ];
 
             $locator = new ServiceLocator($pimple, $services);
@@ -250,7 +249,8 @@ class ServiceProvider implements AutoloadServiceProviderInterface
         });
     }
 
-    public static function order() : int {
+    public static function order() : int
+    {
         return 20;
     }
 }

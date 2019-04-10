@@ -298,7 +298,6 @@ class CentreonHost extends CentreonObject
         }
         $this->params = array_merge($this->params, $addParams);
         $this->checkParameters();
-
     }
 
     /**

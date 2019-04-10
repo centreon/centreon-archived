@@ -4,8 +4,8 @@ namespace Centreon\Domain\Entity;
 
 class Command
 {
-    CONST COMMAND_START_IMPEX_WORKER = 'STARTWORKER:1';
-    CONST COMMAND_TRANSFER_EXPORT_FILES = 'SENDEXPORTFILE:';
+    const COMMAND_START_IMPEX_WORKER = 'STARTWORKER:1';
+    const COMMAND_TRANSFER_EXPORT_FILES = 'SENDEXPORTFILE:';
 
     /**
      * @var string
@@ -27,5 +27,4 @@ class Command
     {
         $this->commandLine = $commandLine;
     }
-
 }

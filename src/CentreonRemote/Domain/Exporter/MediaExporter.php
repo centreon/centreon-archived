@@ -34,14 +34,14 @@ class MediaExporter extends ExporterServiceAbstract implements ExporterServicePa
         $this->createPath();
         $pollerIds = $this->commitment->getPollers();
 
-        $hostTemplateChain = $this->_getIf('host.tpl.relation.chain', function() use ($pollerIds) {
+        $hostTemplateChain = $this->_getIf('host.tpl.relation.chain', function () use ($pollerIds) {
             return $this->db
                     ->getRepository(Repository\HostTemplateRelationRepository::class)
                     ->getChainByPoller($pollerIds)
             ;
         });
 
-        $serviceTemplateChain = $this->_getIf('service.chain', function() use ($pollerIds) {
+        $serviceTemplateChain = $this->_getIf('service.chain', function () use ($pollerIds) {
             return $this->db
                     ->getRepository(Repository\ServiceRepository::class)
                     ->getChainByPoller($pollerIds)

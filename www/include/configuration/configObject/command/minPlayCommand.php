@@ -56,7 +56,7 @@ $resource_def = escapeshellcmd($resource_def);
 while (preg_match("/@DOLLAR@USER([0-9]+)@DOLLAR@/", $resource_def, $matches) and $error_msg == "") {
     $query = "SELECT resource_line FROM cfg_resource WHERE resource_name = :matches LIMIT 1";
     $DBRESULT = $pearDB->prepare($query);
-    $DBRESULT->bindValue(':matches', "\$USER" . $matches[1] . "\$" , PDO::PARAM_STR);
+    $DBRESULT->bindValue(':matches', "\$USER" . $matches[1] . "\$", PDO::PARAM_STR);
     $DBRESULT->execute();
     $resource = $DBRESULT->fetch();
     if (!isset($resource["resource_line"])) {

@@ -8,9 +8,9 @@ class ExtendedServiceInformationRepository extends ServiceEntityRepository
 
     /**
      * Export host's macros
-     * 
+     *
      * @todo restriction by poller
-     * 
+     *
      * @param int[] $pollerIds
      * @param array $templateChainList
      * @return array

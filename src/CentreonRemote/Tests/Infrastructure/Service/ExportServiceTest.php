@@ -41,12 +41,12 @@ class ExportServiceTest extends TestCase
         ;
 
         $container['centreon_remote.exporter']->method('all')
-            ->will($this->returnCallback(function() {
+            ->will($this->returnCallback(function () {
                     return [
                         [
                             'name' => PollerExporter::getName(),
                             'classname' => PollerExporter::class,
-                            'factory' => function() {
+                            'factory' => function () {
                                 return $this->getMockBuilder(PollerExporter::class)
                                     ->disableOriginalConstructor()
                                     ->getMock()
@@ -56,7 +56,7 @@ class ExportServiceTest extends TestCase
                         [
                             'name' => HostExporter::getName(),
                             'classname' => HostExporter::class,
-                            'factory' => function() {
+                            'factory' => function () {
                                 return $this->getMockBuilder(HostExporter::class)
                                     ->disableOriginalConstructor()
                                     ->getMock()
@@ -64,7 +64,7 @@ class ExportServiceTest extends TestCase
                             },
                         ],
                     ];
-                }))
+            }))
         ;
 
         // Cache
@@ -79,14 +79,14 @@ class ExportServiceTest extends TestCase
         ;
 
         $container['centreon.acl']->method('reload')
-            ->will($this->returnCallback(function() {
+            ->will($this->returnCallback(function () {
                     $this->aclReload = true;
-                }))
+            }))
         ;
 
         // DB service
-        $container['centreon.db-manager'] = new Mock\CentreonDBManagerService;
-        $container['centreon.db-manager']
+        $container[\Centreon\ServiceProvider::CENTREON_DB_MANAGER] = new Mock\CentreonDBManagerService;
+        $container[\Centreon\ServiceProvider::CENTREON_DB_MANAGER]
             ->addResultSet("SELECT * FROM informations WHERE `key` = :key LIMIT 1", [[
                 'key' => 'version',
                 'value' => 'x.y',

@@ -6333,20 +6333,24 @@ msgid "Path with modules for Centreon Broker"
 msgstr "Chemin pour les modules de Centreon Broker"
 
 #: centreon-web/www/include/configuration/configServers/help.php:16
+msgid "Path of the Centreon Broker log file"
+msgstr "Chemin du fichier de log de Centreon Broker"
+
+#: centreon-web/www/include/configuration/configServers/help.php:17
 msgid "Path with Centreon Connector binaries"
 msgstr "Chemin d'accès aux connecteurs Centreon"
 
-#: centreon-web/www/include/configuration/configServers/help.php:17
+#: centreon-web/www/include/configuration/configServers/help.php:18
 msgid "Enable or disable poller"
 msgstr "Activer ou désactiver le collecteur"
 
-#: centreon-web/www/include/configuration/configServers/help.php:18
+#: centreon-web/www/include/configuration/configServers/help.php:19
 msgid "Centreontrapd init script to restart process on poller."
 msgstr ""
 "Script d'initialisation du processus Centreontrapd pour redémarrer celui-ci "
 "sur le collecteur."
 
-#: centreon-web/www/include/configuration/configServers/help.php:19
+#: centreon-web/www/include/configuration/configServers/help.php:20
 msgid ""
 "Light databases will be stored in the specified directory. They are used for "
 "synchronizing trap definitions on pollers."
@@ -6355,7 +6359,7 @@ msgstr ""
 "Elles sont utilisées pour synchroniser la configuration des traps SNMP pour un "
 "collecteur distant."
 
-#: centreon-web/www/include/configuration/configServers/help.php:20
+#: centreon-web/www/include/configuration/configServers/help.php:21
 msgid ""
 "Those commands can be executed at the end of the file generation generation/"
 "restart process. Do not specify macros in the commands, for they will not be "
@@ -6367,7 +6371,7 @@ msgstr ""
 "de macros ans cette commande car elles ne seraient pas remplacées. Vérifier "
 "que les droits d'exécution sont suffisant pour l'utilisateur \"apache\"."
 
-#: centreon-web/www/include/configuration/configServers/help.php:21
+#: centreon-web/www/include/configuration/configServers/help.php:22
 msgid "Short description of the poller"
 msgstr "Brève description du collecteur"
 

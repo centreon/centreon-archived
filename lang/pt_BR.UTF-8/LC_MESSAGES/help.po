@@ -1851,10 +1851,10 @@ msgstr "Caminho para o arquivo de configuração do Centreon Broker"
 
 #: /home/lgcosta/devel/centreon/centreon/www/include/configuration/configServers/help.php:16
 msgid "Path with modules for Centreon Broker"
-msgstr "Caminho para os Módulos do Broker Centreon"
+msgstr "Caminho para os Módulos do Centreon Broker"
 
 #: /home/lgcosta/devel/centreon/centreon/www/include/configuration/configServers/help.php:17
-msgid "Path of the log file for Centreon Broker"
+msgid "Path of the Centreon Broker log file"
 msgstr "Caminho do arquivo de log do Centreon Broker"
 
 #: /home/lgcosta/devel/centreon/centreon/www/include/configuration/configServers/help.php:18

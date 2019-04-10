@@ -1,7 +1,7 @@
 <?php
 /*
- * Copyright 2005-2015 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2019 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -33,11 +33,17 @@
  *
  */
 
-include_once("./class/centreonUtils.class.php");
+include_once "./class/centreonUtils.class.php";
 
 include_once "./include/common/autoNumLimit.php";
 
-// So what we get drunk; So what we don't sleep; We're just having Fun and we d'ont car who sees
+
+// restoring the pagination if we stay on this menu
+$num = 0;
+if ($centreon->historyLastUrl === $url && isset($_GET['num'])) {
+    $num = $_GET['num'];
+}
+
 try {
     $connectorsList = $connectorObj->getList(false, (int)$num, (int)$limit);
 
@@ -48,11 +54,14 @@ try {
 
     $form = new HTML_QuickFormCustom('Form', 'post', "?p=" . $p);
 
-    $tpl->assign('msg', array(
-        "addL" => "main.php?p=" . $p . "&o=a",
-        "addT" => _("Add"),
-        "delConfirm" => _("Do you confirm the deletion ?")
-    ));
+    $tpl->assign(
+        'msg',
+        array(
+            "addL" => "main.php?p=" . $p . "&o=a",
+            "addT" => _("Add"),
+            "delConfirm" => _("Do you confirm the deletion ?")
+        )
+    );
 
     /*
      * Toolbar select
@@ -74,11 +83,17 @@ try {
                 "this.form.elements['" . $option . "'].selectedIndex = 0"
         );
 
-        $form->addElement('select', $option, null, array(
-            null => _("More actions..."),
-            "m" => _("Duplicate"),
-            "d" => _("Delete")
-        ), $attrs1);
+        $form->addElement(
+            'select',
+            $option,
+            null,
+            array(
+                null => _("More actions..."),
+                "m" => _("Duplicate"),
+                "d" => _("Delete")
+            ),
+            $attrs1
+        );
         $form->setDefaults(array($option => null));
         $o1 = $form->getElement($option);
         $o1->setValue(null);

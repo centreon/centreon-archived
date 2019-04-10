@@ -111,7 +111,7 @@ $hostgroupStats = array();
 $hostgroupStats = getLogInDbForHostGroup($id, $start_date, $end_date, $reportingTimePeriod);
 echo _("UP") . ";" . $hostgroupStats["average"]["UP_TP"] . "%;" . $hostgroupStats["average"]["UP_MP"] . "%;"
     . $hostgroupStats["average"]["UP_A"].";\n";
-echo _("DOWN") . ";" . $hostgroupStats["average"]["DOWN_TP"] . "%;" . $hostgroupStats["average"]["DOWN_MP"] . "%;" 
+echo _("DOWN") . ";" . $hostgroupStats["average"]["DOWN_TP"] . "%;" . $hostgroupStats["average"]["DOWN_MP"] . "%;"
     . $hostgroupStats["average"]["DOWN_A"] . ";\n";
 echo _("UNREACHABLE") . ";" . $hostgroupStats["average"]["UNREACHABLE_TP"] . "%;"
     . $hostgroupStats["average"]["UNREACHABLE_MP"] . "%;" . $hostgroupStats["average"]["UNREACHABLE_A"] . ";\n";
@@ -119,14 +119,14 @@ echo _("SCHEDULED DOWNTIME") . ";" . $hostgroupStats["average"]["MAINTENANCE_TP"
 echo _("UNDETERMINED") . ";" . $hostgroupStats["average"]["UNDETERMINED_TP"] . "%;\n";
 echo "\n\n";
 
-echo _("Hosts") . ";" 
+echo _("Hosts") . ";"
     . _("Up") . " %;" . _("Up Mean Time") . " %;" . _("Up") ." " . _("Alert") . ";"
     . _("Down") . " %;" . _("Down Mean Time") . " %;" . _("Down") ." " . _("Alert") . ";"
     . _("Unreachable") . " %;" . _("Unreachable Mean Time") . " %;" . _("Unreachable") ." " . _("Alert") . ";"
     . _("Scheduled Downtimes") . " %;" . _("Undetermined") ." %;\n";
 foreach ($hostgroupStats as $key => $tab) {
     if ($key != "average") {
-        echo $tab["NAME"] . ";" 
+        echo $tab["NAME"] . ";"
             . $tab["UP_TP"] . "%;" . $tab["UP_MP"] . "%;" . $tab["UP_A"] . ";"
             . $tab["DOWN_TP"] . "%;" . $tab["DOWN_MP"] . "%;" . $tab["DOWN_A"] .";"
             . $tab["UNREACHABLE_TP"] . "%;" . $tab["UNREACHABLE_MP"] . "%;" . $tab["UNREACHABLE_A"] . ";"

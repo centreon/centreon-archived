@@ -439,7 +439,6 @@ class CentreonGraph
             foreach ($this->metricsEnabled as $l_id) {
                 if (preg_match("/^v/", $l_id)) {
                     $l_vmEnabled[] = $l_id;
-
                 } else {
                     $l_rmEnabled[] = $l_id;
                 }
@@ -509,7 +508,6 @@ class CentreonGraph
              * Check if RRD database is available.
              */
             if ($this->CheckDBAvailability($metric["metric_id"])) {
-
                 $this->log("found metric " . $metric["metric_id"]);
 
                 /*
@@ -1143,7 +1141,6 @@ class CentreonGraph
         );
         $this->templateInformations = $DBRESULT->fetchRow();
         $DBRESULT->closeCursor();
-
     }
 
     /**

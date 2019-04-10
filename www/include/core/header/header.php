@@ -101,7 +101,9 @@ foreach ($_GET as $key => $value) {
     if ($a) {
         $args .= '&';
     }
-    $args .= "$key=$value";
+    if (is_string($value)) {
+        $args .= "{$key}={$value}";
+    }
     $a++;
 }
 $args .= "'";

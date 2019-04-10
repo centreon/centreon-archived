@@ -9,7 +9,7 @@ class TimezoneRepository extends ServiceEntityRepository
 
     /**
      * Get by ID
-     * 
+     *
      * @param int $id
      * @return array
      */
@@ -37,7 +37,7 @@ SQL;
 
     /**
      * Export
-     * 
+     *
      * @param int[] $pollerIds
      * @return array
      */

@@ -19,7 +19,7 @@ class PollerConfigurationRequestBridge
 
     public function __construct(Container $di)
     {
-        $this->dbAdapter = $di['centreon.db-manager']->getAdapter('configuration_db');
+        $this->dbAdapter = $di[\Centreon\ServiceProvider::CENTREON_DB_MANAGER]->getAdapter('configuration_db');
     }
 
     public function hasPollersForUpdating(): bool

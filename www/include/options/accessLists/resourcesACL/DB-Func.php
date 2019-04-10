@@ -73,7 +73,6 @@ function enableLCAInDB($aclResId = null, $acls = array())
     }
 
     foreach ($acls as $key => $value) {
-
         $query = "UPDATE `acl_groups` SET `acl_group_changed` = '1' " .
             "WHERE acl_group_id IN (SELECT acl_group_id FROM acl_res_group_relations WHERE acl_res_id = '$key')";
         $pearDB->query($query);

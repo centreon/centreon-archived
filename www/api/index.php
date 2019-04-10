@@ -36,7 +36,6 @@
 require_once dirname(__FILE__) . '/../../bootstrap.php';
 require_once _CENTREON_PATH_ . 'www/class/centreon.class.php';
 require_once dirname(__FILE__) . '/class/webService.class.php';
-require_once dirname(__FILE__) . '/exceptions.php';
 require_once dirname(__FILE__) . '/interface/di.interface.php';
 
 error_reporting(-1);
@@ -79,7 +78,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' &&
             $reachAPI = 1;
         } else {
             if (isset($data['reach_api']) && $data['reach_api'] == 1) {
-               $reachAPI = 1;
+                $reachAPI = 1;
             } else if (isset($data['reach_api_rt']) && $data['reach_api_rt'] == 1) {
                 $reachAPI = 1;
             }

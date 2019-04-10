@@ -43,7 +43,7 @@ La fenêtre suivante s'affiche :
 * Le champ **Adresses des clients SSO de confiance** indique quelles sont les adresses IP/DNS des clients de confiance pour le SSO (correspond à l'adresse du reverse proxy). Chaque client de confiance est séparé par une virgule.
 * Le champ **Adresses des clients de bloqués** indique quelles sont les adresses IP/DNS des clients qui seront refusés.
 * Le champ **Entête HTTP SSO** indique la variable de l'en-tête qui sera utilisée comme login/pseudo.
-* Le champ **Chaine de recherche (pattern) pour l'authentification (login)** indique l'expression rationnelle (pattern) de recherche pour l'utilisateur. 
+* Le champ **Chaine de recherche (pattern) pour l'authentification (login)** indique l'expression rationnelle (pattern) de recherche pour l'utilisateur.
 * Le champ **Chaine de remplacement (pattern) pour l'authentification (login)** indique la chaine de remplacement.
 * Le champ **Timezone par défaut de l'hôte** permet de définit un timezone par défaut pour application du décalage horaire
 * Le champ **Adresse mail de contact du support (de la plate-forme de supervision)** indique l'adresse email de support **Centre des services du client** pour la plate-forme Centreon. Cette adresse mail sera affichée en bas de page sur le lien **Centre des services**
@@ -179,30 +179,28 @@ Puis redémarrez le serveur Apache :
 
 ::
 
-  service httpd restart
-
+  systemctl restart httpd24-httpd
 
 *******
 RRDTool
 *******
 
-Cette partie permet de configurer le moteur de génération des graphiques RRDTool ainsi que les tailles des polices utilisées pour la présentation de ces derniers.
-
-#. Rendez-vous dans le menu **Administration > Paramétres**
-#. Dans le menu de gauche, cliquez sur **RRDTool**
-#. Cliquez sur **RRDTool**
+Cette partie permet de configurer le moteur de génération des graphiques RRDTool.
+Rendez-vous dans le menu **Administration > Paramétres > RRDTool**
 
 .. image :: /images/guide_exploitation/errdtool.png
    :align: center
 
 * Le champ **Chemin complet de l'exécutable RRDTOOL** définit le chemin vers l'exécutable RRDTool
-* Les champs appartenant aux catégories **Propriétés du titre**, **Propriétés de l'unité**, **Propriétés des axes**, **Propriétés de la légende**, **Propriété du filigrane** permettent de définir la police ainsi que la taille de la police pour la propriété sélectionnée
-* Le champ **Activer RRDCached** permet d'activer le processus RRDcached (Ne fonctionne qu'avec le broker Centreon Broker)
-* Le champ **Port TCP** définit le port sur lequel écoute RRDcached (ne pas activer la connexion TCP)
+* Le champ **Version de RRDTool** permet de connaître la version de RRDTool
+* Le champ **Activer RRDCached** permet d'activer le processus RRDcached
+* Le champ **Port TCP** définit le port sur lequel écoute RRDcached
 * Le champ **Chemin d'accès au socket Unix** définit le chemin vers le socket Unix
 
 .. warning::
-    N'activez RRDCacheD que si votre plate-forme de supervision rencontre de trop nombreux accès disques concernant l'écriture des données dans les fichiers RRD.
+    N'activez RRDCacheD que si votre plate-forme de supervision rencontre de trop
+    nombreux accès disques concernant l'écriture des données dans les fichiers RRD.
+    Ne choississez qu'une option (TCP ou socket Unix).
 
 ********
 Debogage

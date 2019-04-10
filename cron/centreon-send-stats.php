@@ -30,6 +30,7 @@ if ($sendStatistics && $isRemote !== 'yes') {
     $versions = $oStatistics->getVersion();
     $infos = $oStatistics->getPlatformInfo();
     $timez = $oStatistics->getPlatformTimezone();
+    $additional = $oStatistics->getAdditionalData();
 
     // Construct the object gathering datas
     $data = array(
@@ -37,9 +38,14 @@ if ($sendStatistics && $isRemote !== 'yes') {
         'UUID' => $UUID,
         'versions' => $versions,
         'infos' => $infos,
-        'timezone' => $timez
+        'timezone' => $timez,
+        'additional' => $additional
     );
 
-    $returnData = $http->call(CENTREON_STATS_URL, 'POST', $data, array(), true);
-    echo "statusCode :" . $returnData['statusCode'] . ',body : ' . $returnData['body'];
+    try {
+        $returnData = $http->call(CENTREON_STATS_URL, 'POST', $data, array(), true);
+        echo "statusCode :" . $returnData['statusCode'] . ',body : ' . $returnData['body'];
+    } catch (Exception $e) {
+        echo 'Caught exception: ' .  $e->getMessage() . '\n';
+    }
 }

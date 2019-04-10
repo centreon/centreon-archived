@@ -645,7 +645,7 @@ function updateGeneralConfigData($gopt_id = null)
     updateOption(
         $pearDB,
         "sso_blacklist_clients",
-        isset($ret["sso_blacklist_clients"]) && $ret["sso_blacklist_clients"] != NULL
+        isset($ret["sso_blacklist_clients"]) && $ret["sso_blacklist_clients"] != null
             ? $pearDB->escape($ret["sso_blacklist_clients"]) : ""
     );
     updateOption(
@@ -657,13 +657,13 @@ function updateGeneralConfigData($gopt_id = null)
     updateOption(
         $pearDB,
         "sso_username_pattern",
-        isset($ret["sso_username_pattern"]) && $ret["sso_username_pattern"] != NULL
+        isset($ret["sso_username_pattern"]) && $ret["sso_username_pattern"] != null
             ? $pearDB->escape($ret["sso_username_pattern"]) : ""
     );
     updateOption(
         $pearDB,
         "sso_username_replace",
-        isset($ret["sso_username_replace"]) && $ret["sso_username_replace"] != NULL
+        isset($ret["sso_username_replace"]) && $ret["sso_username_replace"] != null
             ? $pearDB->escape($ret["sso_username_replace"]) : ""
     );
     updateOption(
@@ -700,66 +700,6 @@ function updateRRDToolConfigData($gopt_id = null)
         "rrdtool_version",
         isset($ret["rrdtool_version"]) && $ret["rrdtool_version"] != null
             ? htmlentities($ret["rrdtool_version"], ENT_QUOTES, "UTF-8") : "NULL"
-    );
-    updateOption(
-        $pearDB,
-        "rrdtool_title_font",
-        isset($ret["rrdtool_title_font"]) && $ret["rrdtool_title_font"] != null
-            ? htmlentities($ret["rrdtool_title_font"], ENT_QUOTES, "UTF-8") : "NULL"
-    );
-    updateOption(
-        $pearDB,
-        "rrdtool_title_fontsize",
-        isset($ret["rrdtool_title_fontsize"]) && $ret["rrdtool_title_fontsize"] != null
-            ? htmlentities($ret["rrdtool_title_fontsize"], ENT_QUOTES, "UTF-8") : "NULL"
-    );
-    updateOption(
-        $pearDB,
-        "rrdtool_unit_font",
-        isset($ret["rrdtool_unit_font"]) && $ret["rrdtool_unit_font"] != null
-            ? htmlentities($ret["rrdtool_unit_font"], ENT_QUOTES, "UTF-8") : "NULL"
-    );
-    updateOption(
-        $pearDB,
-        "rrdtool_unit_fontsize",
-        isset($ret["rrdtool_unit_fontsize"]) && $ret["rrdtool_unit_fontsize"] != null
-            ? htmlentities($ret["rrdtool_unit_fontsize"], ENT_QUOTES, "UTF-8") : "NULL"
-    );
-    updateOption(
-        $pearDB,
-        "rrdtool_axis_font",
-        isset($ret["rrdtool_axis_font"]) && $ret["rrdtool_axis_font"] != null
-            ? htmlentities($ret["rrdtool_axis_font"], ENT_QUOTES, "UTF-8") : "NULL"
-    );
-    updateOption(
-        $pearDB,
-        "rrdtool_axis_fontsize",
-        isset($ret["rrdtool_axis_fontsize"]) && $ret["rrdtool_axis_fontsize"] != null
-            ? htmlentities($ret["rrdtool_axis_fontsize"], ENT_QUOTES, "UTF-8") : "NULL"
-    );
-    updateOption(
-        $pearDB,
-        "rrdtool_watermark_font",
-        isset($ret["rrdtool_watermark_font"]) && $ret["rrdtool_watermark_font"] != null
-            ? htmlentities($ret["rrdtool_watermark_font"], ENT_QUOTES, "UTF-8") : "NULL"
-    );
-    updateOption(
-        $pearDB,
-        "rrdtool_watermark_fontsize",
-        isset($ret["rrdtool_watermark_fontsize"]) && $ret["rrdtool_watermark_fontsize"] != null
-            ? htmlentities($ret["rrdtool_watermark_fontsize"], ENT_QUOTES, "UTF-8") : "NULL"
-    );
-    updateOption(
-        $pearDB,
-        "rrdtool_legend_font",
-        isset($ret["rrdtool_legend_font"]) && $ret["rrdtool_legend_font"] != null
-            ? htmlentities($ret["rrdtool_legend_font"], ENT_QUOTES, "UTF-8") : "NULL"
-    );
-    updateOption(
-        $pearDB,
-        "rrdtool_legend_fontsize",
-        isset($ret["rrdtool_legend_fontsize"]) && $ret["rrdtool_legend_fontsize"] != null
-            ? htmlentities($ret["rrdtool_legend_fontsize"], ENT_QUOTES, "UTF-8") : "NULL"
     );
     updateOption(
         $pearDB,
@@ -938,7 +878,7 @@ function updateBackupConfigData($db, $form, $centreon)
 function updateKnowledgeBaseData($db, $form, $centreon)
 {
     $ret = $form->getSubmitValues();
-    if (!isset($ret['kb_wiki_certificate'])){
+    if (!isset($ret['kb_wiki_certificate'])) {
         $ret['kb_wiki_certificate'] = 0;
     }
     foreach ($ret as $key => $value) {

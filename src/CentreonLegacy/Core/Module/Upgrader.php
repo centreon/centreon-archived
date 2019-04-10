@@ -39,24 +39,6 @@ class Upgrader extends Module
 {
     /**
      *
-     * @param \Pimple\Container $dependencyInjector
-     * @param \CentreonLegacy\Core\Module\Information $informationObj
-     * @param string $moduleName
-     * @param \CentreonLegacy\Core\Utils\Utils $utils
-     * @param int $moduleId
-     */
-    public function __construct(
-        \Pimple\Container $dependencyInjector,
-        Information $informationObj,
-        $moduleName,
-        \CentreonLegacy\Core\Utils\Utils $utils,
-        $moduleId = null
-    ) {
-        parent::__construct($dependencyInjector, $informationObj, $moduleName, $utils, $moduleId);
-    }
-
-    /**
-     *
      * @return boolean
      */
     public function upgrade()
@@ -65,27 +47,30 @@ class Upgrader extends Module
 
         $moduleInstalledInformation = $this->informationObj->getInstalledInformation($this->moduleName);
 
-        $upgradesPath = $this->getModulePath($this->moduleName) . '/UPGRADE/';
-        $upgrades = $this->dependencyInjector['finder']->directories()->depth('== 0')->in($upgradesPath);
+        // Process all directories within the /upgrade/ path.
+        // Entry name should be a version.
+        $upgradesPath = $this->getModulePath($this->moduleName) . '/upgrade/';
+        $upgrades = $this->services->get('finder')->directories()->depth('== 0')->in($upgradesPath);
+        usort($upgrades, 'version_compare');
         foreach ($upgrades as $upgrade) {
             $upgradeName = $upgrade->getBasename();
             $upgradePath = $upgradesPath . $upgradeName;
-            if (!preg_match('/^' . $this->moduleName . '-(\d+\.\d+\.\d+)/', $upgradeName, $matches) ||
-                !$this->dependencyInjector['filesystem']->exists($upgradePath . '/conf.php')) {
+            if (!preg_match('/^(\d+\.\d+\.\d+)/', $upgradeName, $matches) ||
+                !$this->services->get('filesystem')->exists($upgradePath . '/conf.php')) {
                 continue;
             }
 
             $configuration = $this->utils->requireConfiguration(
                 $upgradePath . '/conf.php',
-                    'upgrade'
+                'upgrade'
             );
 
-            if ($moduleInstalledInformation["mod_release"] != $configuration[$this->moduleName]["release_from"]) {
+            if (version_compare($moduleInstalledInformation["mod_release"], $upgradeName) >= 0) {
                 continue;
             }
 
-            $this->upgradeVersion($configuration[$this->moduleName]["release_to"]);
-            $moduleInstalledInformation["mod_release"] = $configuration[$this->moduleName]["release_to"];
+            $this->upgradeVersion($upgradeName);
+            $moduleInstalledInformation["mod_release"] = $upgradeName;
 
             $this->upgradePhpFiles($configuration, $upgradePath, true);
             $this->upgradeSqlFiles($configuration, $upgradePath);
@@ -104,7 +89,7 @@ class Upgrader extends Module
     private function upgradeModuleConfiguration()
     {
         $configurationFile = $this->getModulePath($this->moduleName) . '/conf.php';
-        if (!$this->dependencyInjector['filesystem']->exists($configurationFile)) {
+        if (!$this->services->get('filesystem')->exists($configurationFile)) {
             throw new \Exception('Module configuration file not found.');
         }
 
@@ -121,7 +106,7 @@ class Upgrader extends Module
             '`host_tools` = :host_tools ' .
             'WHERE id = :id';
 
-        $sth = $this->dependencyInjector['configuration_db']->prepare($query);
+        $sth = $this->services->get('configuration_db')->prepare($query);
 
         $sth->bindParam(':name', $this->moduleConfiguration['name'], \PDO::PARAM_STR);
         $sth->bindParam(':rname', $this->moduleConfiguration['rname'], \PDO::PARAM_STR);
@@ -151,7 +136,7 @@ class Upgrader extends Module
             '`mod_release` = :mod_release ' .
             'WHERE id = :id';
 
-        $sth = $this->dependencyInjector['configuration_db']->prepare($query);
+        $sth = $this->services->get('configuration_db')->prepare($query);
 
         $sth->bindParam(':mod_release', $version, \PDO::PARAM_STR);
         $sth->bindParam(':id', $this->moduleId, \PDO::PARAM_INT);
@@ -172,7 +157,7 @@ class Upgrader extends Module
         $installed = false;
 
         $sqlFile = $path . '/sql/upgrade.sql';
-        if ($conf[$this->moduleName]["sql_files"] && $this->dependencyInjector['filesystem']->exists($sqlFile)) {
+        if ($conf[$this->moduleName]["sql_files"] && $this->services->get('filesystem')->exists($sqlFile)) {
             $this->utils->executeSqlFile($sqlFile);
             $installed = true;
         }
@@ -194,7 +179,7 @@ class Upgrader extends Module
         $phpFile = $path . '/php/upgrade';
         $phpFile = $pre ? $phpFile . '.pre.php' : $phpFile . '.php';
 
-        if ($conf[$this->moduleName]['php_files'] && $this->dependencyInjector['filesystem']->exists($phpFile)) {
+        if ($conf[$this->moduleName]['php_files'] && $this->services->get('filesystem')->exists($phpFile)) {
             $this->utils->executePhpFile($phpFile);
             $installed = true;
         }

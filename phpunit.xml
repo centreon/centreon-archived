@@ -4,7 +4,7 @@
          xsi:noNamespaceSchemaLocation="http://schema.phpunit.de/4.1/phpunit.xsd"
          backupGlobals="false"
          colors="true"
-         bootstrap="bootstrap.php"
+         bootstrap="tests/php/bootstrap.php"
          failOnRisky="true"
          failOnWarning="true"
 >
@@ -19,8 +19,10 @@
 
     <testsuites>
         <testsuite name="Symfony Test Suite">
+            <directory>./tests/php/*/</directory>
             <directory>./src/Centreon/Tests/</directory>
             <directory>./src/CentreonRemote/Tests/</directory>
+            <directory>./src/CentreonModule/Tests/</directory>
         </testsuite>
     </testsuites>
 
@@ -35,10 +37,10 @@
         <whitelist>
             <directory>./src/</directory>
             <exclude>
-                <directory>./src/CentreonLegacy</directory>
                 <directory>./src/*/Tests</directory>
                 <directory>./src/Centreon/Domain/Entity</directory>
                 <directory>./src/CentreonRemote/Domain/Resources</directory>
+                <directory>./src/CentreonModule/Infrastructure/Entity</directory>
             </exclude>
         </whitelist>
     </filter>

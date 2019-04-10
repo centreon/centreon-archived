@@ -322,7 +322,6 @@ class CentreonDowntimeBroker extends CentreonDowntime
         $endDelay = new DateTime('now +' . $delay . 'seconds');
 
         foreach ($downtimes as $downtime) {
-
             /* Convert HH::mm::ss to HH:mm */
             $downtime['dtp_start_time'] = substr(
                 $downtime['dtp_start_time'],

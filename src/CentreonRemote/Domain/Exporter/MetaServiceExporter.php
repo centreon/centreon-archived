@@ -31,7 +31,7 @@ class MetaServiceExporter extends ExporterServiceAbstract implements ExporterSer
         $this->createPath();
         $pollerIds = $this->commitment->getPollers();
 
-        $hostTemplateChain = $this->_getIf('host.tpl.relation.chain', function() use ($pollerIds) {
+        $hostTemplateChain = $this->_getIf('host.tpl.relation.chain', function () use ($pollerIds) {
             return $this->db
                     ->getRepository(Repository\HostTemplateRelationRepository::class)
                     ->getChainByPoller($pollerIds)
@@ -39,7 +39,7 @@ class MetaServiceExporter extends ExporterServiceAbstract implements ExporterSer
         });
 
         // Extract data
-        (function() use ($pollerIds, $hostTemplateChain) {
+        (function () use ($pollerIds, $hostTemplateChain) {
             $metaServices = $this->db
                 ->getRepository(Repository\MetaServiceRepository::class)
                 ->export($pollerIds, $hostTemplateChain)
@@ -47,7 +47,7 @@ class MetaServiceExporter extends ExporterServiceAbstract implements ExporterSer
             $this->_dump($metaServices, $this->getFile(static::EXPORT_FILE_META));
         })();
 
-        (function() use ($pollerIds, $hostTemplateChain) {
+        (function () use ($pollerIds, $hostTemplateChain) {
             $metaServiceRelation = $this->db
                 ->getRepository(Repository\MetaServiceRelationRepository::class)
                 ->export($pollerIds, $hostTemplateChain)
@@ -65,7 +65,7 @@ class MetaServiceExporter extends ExporterServiceAbstract implements ExporterSer
         }
 
         // Extract data
-        (function() use ($metaList) {
+        (function () use ($metaList) {
             $data = $this->db
                 ->getRepository(Repository\MetaServiceRepository::class)
                 ->exportList($metaList)
@@ -96,7 +96,7 @@ class MetaServiceExporter extends ExporterServiceAbstract implements ExporterSer
         $this->cleanup();
 
         // insert meta services
-        (function() use ($db) {
+        (function () use ($db) {
             $exportPathFile = $this->getFile(static::EXPORT_FILE_META);
             $result = $this->_parse($exportPathFile);
 
@@ -106,7 +106,7 @@ class MetaServiceExporter extends ExporterServiceAbstract implements ExporterSer
         })();
 
         // insert meta service relation
-        (function() use ($db) {
+        (function () use ($db) {
             $exportPathFile = $this->getFile(static::EXPORT_FILE_RELATION);
             $result = $this->_parse($exportPathFile);
 

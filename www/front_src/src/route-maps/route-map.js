@@ -9,6 +9,7 @@ const routeMap = {
   pollerStep2: "/poller-wizard/6",
   pollerStep3: "/poller-wizard/7",
   pollerList: "/main.php?p=60901",
+  extensionsManagerPage: "/administration/extensions/manager",
   notAllowedPage: "/not-allowed"
 };
 

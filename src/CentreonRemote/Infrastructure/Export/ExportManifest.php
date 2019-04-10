@@ -86,7 +86,7 @@ class ExportManifest
         }
 
         $this->data = $this->commitment->getParser()->parse($file);
-        $checkManifestKeys = function(array $data) : array {
+        $checkManifestKeys = function (array $data) : array {
             $keys = ['version', 'datetime', 'remote-poller', 'pollers', 'meta', 'exporters', 'exports'];
             $missingKeys = [];
             

@@ -68,7 +68,7 @@ The following table describes the software dependencies:
 +----------+------------------+
 
 ****************************
-Select the architecture type
+Centreon Server Requirements
 ****************************
 
 .. note::
@@ -222,23 +222,25 @@ Users and groups
 
 Description of software and linked users:
 
-+-----------------+----------------+-----------------+-----------------------+
-| Software        | Service        | User            | Comment               |
-+=================+================+=================+=======================+
-| Apache          | httpd          | apache          | automatic start       |
-+-----------------+----------------+-----------------+-----------------------+
-| MySQL (MariaDB) | mysqld (mysql) | mysql           | automatic start       |
-+-----------------+----------------+-----------------+-----------------------+
-| Centreon        | centcore       | centreon        | automatic start       |
-+-----------------+----------------+-----------------+-----------------------+
-| Centreon        | centreontrapd  | centreon        | automatic start       |
-+-----------------+----------------+-----------------+-----------------------+
-| Centreon Broker | cbwd           | centreon-broker | automatic start       |
-+-----------------+----------------+-----------------+-----------------------+
-| Centreon Broker | cbd            | centreon-broker | automatic start       |
-+-----------------+----------------+-----------------+-----------------------+
-| Centreon Engine | centengine     | centreon-engine | automatic start       |
-+-----------------+----------------+-----------------+-----------------------+
++-----------------+------------------+-----------------+-----------------------+
+| Software        | Service          | User            | Comment               |
++=================+==================+=================+=======================+
+| Apache          | httpd24-httpd    | apache          | automatic start       |
++-----------------+------------------+-----------------+-----------------------+
+| PHP-FPM         | rh-php71-php-fpm | apache          | automatic start       |
++-----------------+------------------+-----------------+-----------------------+
+| MySQL (MariaDB) | mysqld (mysql)   | mysql           | automatic start       |
++-----------------+------------------+-----------------+-----------------------+
+| Centreon        | centcore         | centreon        | automatic start       |
++-----------------+------------------+-----------------+-----------------------+
+| Centreon        | centreontrapd    | centreon        | automatic start       |
++-----------------+------------------+-----------------+-----------------------+
+| Centreon Broker | cbwd             | centreon-broker | automatic start       |
++-----------------+------------------+-----------------+-----------------------+
+| Centreon Broker | cbd              | centreon-broker | automatic start       |
++-----------------+------------------+-----------------+-----------------------+
+| Centreon Engine | centengine       | centreon-engine | automatic start       |
++-----------------+------------------+-----------------+-----------------------+
 
 Description of optional software and linked users:
 

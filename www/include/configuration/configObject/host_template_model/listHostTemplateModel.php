@@ -1,7 +1,7 @@
 <?php
 /*
- * Copyright 2005-2015 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2019 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -37,41 +37,38 @@ if (!isset($centreon)) {
     exit();
 }
 
-include_once("./class/centreonUtils.class.php");
+require_once "./class/centreonUtils.class.php";
 
-include("./include/common/autoNumLimit.php");
+include "./include/common/autoNumLimit.php";
 
-/*
- * Init Host Method
- */
+// Init Host Method
 $host_method = new CentreonHost($pearDB);
 $mediaObj = new CentreonMedia($pearDB);
 
-/*
- * Get Extended informations
- */
+// Get Extended informations
 $ehiCache = array();
 $DBRESULT = $pearDB->query("SELECT ehi_icon_image, host_host_id FROM extended_host_information");
-while ($ehi = $DBRESULT->fetchRow()) {
+while ($ehi = $DBRESULT->fetch()) {
     $ehiCache[$ehi["host_host_id"]] = $ehi["ehi_icon_image"];
 }
 $DBRESULT->closeCursor();
 
-$search = null;
-if (isset($_POST['searchHT'])) {
-    $search = $_POST['searchHT'];
-    $centreon->historySearch[$url] = $search;
-} elseif (isset($_GET['searchHT'])) {
-    $search = $_GET['searchHT'];
-    $centreon->historySearch[$url] = $search;
-} elseif (isset($centreon->historySearch[$url])) {
-    $search = $centreon->historySearch[$url];
+$search = filter_var(
+    $_POST['searchHT'] ?? $_GET['searchHT'] ?? null,
+    FILTER_SANITIZE_STRING
+);
+
+if (isset($_POST['searchHT']) || isset($_GET['searchHT'])) {
+    $centreon->historySearch[$url] = array();
+    $centreon->historySearch[$url]['search'] = $search;
+} else {
+    $search = $centreon->historySearch[$url]['search'] ?? null;
 }
 
-/*
- * Host Template list
- */
-$rq = "SELECT SQL_CALC_FOUND_ROWS host_id, host_name, host_alias, host_activate, host_template_model_htm_id FROM host" .
+// Host Template list
+
+$rq = "SELECT SQL_CALC_FOUND_ROWS host_id, host_name, host_alias, host_activate, host_template_model_htm_id " .
+    "FROM host" .
     " WHERE host_register = '0' ";
 if ($search) {
     $rq .= "AND (host_name LIKE '%" . CentreonDB::escape($search) . "%' OR host_alias LIKE '%" .
@@ -111,9 +108,9 @@ $form = new HTML_QuickFormCustom('select_form', 'POST', "?p=" . $p);
 /* Different style between each lines */
 $style = "one";
 
-/* Fill a tab with a mutlidimensionnal Array we put in $tpl */
+/* Fill a tab with a multidimensional Array we put in $tpl */
 $elemArr = array();
-for ($i = 0; $host = $DBRESULT->fetchRow(); $i++) {
+for ($i = 0; $host = $DBRESULT->fetch(); $i++) {
     $moptions = "";
     $selectedElements = $form->addElement('checkbox', "select[" . $host['host_id'] . "]");
     if (isset($lockedElements[$host['host_id']])) {
@@ -190,15 +187,13 @@ for ($i = 0; $host = $DBRESULT->fetchRow(); $i++) {
 }
 $tpl->assign("elemArr", $elemArr);
 
-/* Different messages we put in the template */
+// Different messages we put in the template
 $tpl->assign(
     'msg',
     array("addL" => "main.php?p=" . $p . "&o=a", "addT" => _("Add"), "delConfirm" => _("Do you confirm the deletion ?"))
 );
 
-#
-## Toolbar select
-#
+// Toolbar select
 ?>
     <script type="text/javascript">
         function setO(_i) {

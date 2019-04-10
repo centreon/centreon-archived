@@ -9,7 +9,7 @@ class HostTemplateRelationRepository extends ServiceEntityRepository
 
     /**
      * Export host's templates relation
-     * 
+     *
      * @param int[] $pollerIds
      * @param array $templateChainList
      * @return array
@@ -34,7 +34,7 @@ GROUP BY t.host_host_id, t.host_tpl_id
 SQL;
         if ($templateChainList) {
             $list = join(',', $templateChainList);
-        $sql .= <<<SQL
+            $sql .= <<<SQL
 
 UNION
 
@@ -65,7 +65,7 @@ SQL;
 
     /**
      * Get a chain of the related objects
-     * 
+     *
      * @param int[] $pollerIds
      * @param int[] $ba
      * @return array

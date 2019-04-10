@@ -4,12 +4,10 @@ namespace CentreonRemote\Domain\Service\ConfigurationWizard;
 
 use Centreon\Infrastructure\CentreonLegacyDB\CentreonDBAdapter;
 
-use CentreonRemote\Domain\Resources\RemoteConfig\ {
-    NagiosServer,
-    CfgNagios,
-    CfgNagiosBrokerModule,
-    BamBrokerCfgInfo
-};
+use CentreonRemote\Domain\Resources\RemoteConfig\NagiosServer;
+use CentreonRemote\Domain\Resources\RemoteConfig\CfgNagios;
+use CentreonRemote\Domain\Resources\RemoteConfig\CfgNagiosBrokerModule;
+use CentreonRemote\Domain\Resources\RemoteConfig\BamBrokerCfgInfo;
 
 abstract class ServerConnectionConfigurationService
 {
@@ -140,8 +138,7 @@ abstract class ServerConnectionConfigurationService
             throw new \Exception('Resources records from `cfg_resource` could not be fetched.');
         }
 
-        if (
-            $results[0]->resource_name != '$USER1$' ||
+        if ($results[0]->resource_name != '$USER1$' ||
             $results[1]->resource_name != '$CENTREONPLUGINS$'
         ) {
             throw new \Exception('Resources records from `cfg_resource` are not as expected.');
@@ -179,7 +176,7 @@ abstract class ServerConnectionConfigurationService
     {
         try {
             $result = $this->getDbAdapter()->insert($table, $data);
-        } catch(\Exception $e) {
+        } catch (\Exception $e) {
             $this->getDbAdapter()->rollBack();
             throw new \Exception("Error inserting remote configuration. Rolling back. Table name: {$table}.");
         }

@@ -8,7 +8,7 @@ class CfgNagiosBrokerModuleRepository extends ServiceEntityRepository
 
     /**
      * Export
-     * 
+     *
      * @param int[] $pollerIds
      * @return array
      */

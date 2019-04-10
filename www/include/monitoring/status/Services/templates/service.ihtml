@@ -1,7 +1,6 @@
 <script type="text/javascript" src="./include/common/javascript/tool.js"></script>
 <form name='form'>
 <input name="p" value="{$p}" type="hidden">
-<input name="o" value="svc" type="hidden">
 <table class="ajaxOption table">
     <tr>
         <th colspan="6"><h5>{$filters}</h5></th>
@@ -45,7 +44,6 @@
     <tr class="ToolbarTR">
         <td>
         <span class="consol_button">{$form.o1.html}</span>
-        <input name="p" value="{$p}" type="hidden">
 
         <div class="Toolbar_TDSelectAction_Top">
             <span class="consol_button">

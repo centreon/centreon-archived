@@ -24,6 +24,6 @@ class AppKeyGeneratorServiceTest extends TestCase
          */
         $key2 = $service->generateKey();
         $this->assertRegExp(self::MD5_REGEX, $key2);
-        $this->assertNotSame($key,$key2);
+        $this->assertNotSame($key, $key2);
     }
 }

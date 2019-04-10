@@ -330,7 +330,7 @@ class ServiceTemplateConfigurationContext extends CentreonContext
                     return count($this->tableau) == 0;
                 },
                 "Some properties are not being updated : ",
-                5
+                10
             );
         } catch (\Exception $e) {
             $this->tableau = array_unique($this->tableau);
@@ -375,7 +375,7 @@ class ServiceTemplateConfigurationContext extends CentreonContext
                     return count($this->tableau) == 0;
                 },
                 "Some properties are not being updated : ",
-                5
+                10
             );
         } catch (\Exception $e) {
             $this->tableau = array_unique($this->tableau);
@@ -411,7 +411,7 @@ class ServiceTemplateConfigurationContext extends CentreonContext
                 return $bool;
             },
             "The service is not being deleted.",
-            5
+            10
         );
     }
 }

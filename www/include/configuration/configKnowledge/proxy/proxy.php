@@ -64,7 +64,7 @@ $pearDB = $dependencyInjector['configuration_db'];
 
 try {
     $conf = getWikiConfig($pearDB);
-} catch (\Exception $e){
+} catch (\Exception $e) {
     echo $e->getMessage();
     exit();
 }

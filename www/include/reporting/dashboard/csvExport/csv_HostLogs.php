@@ -145,7 +145,7 @@ echo "\n";
 /*
  * Evolution of host availability in time
  */
-echo _("Day") . ";" . _("Duration").";" 
+echo _("Day") . ";" . _("Duration").";"
     . _("Up") . " (s);" . _("Up")." %;" . _("Up") ." "._("Alert") . ";"
     . _("Down") . " (s);" . _("Down") . " %;" . _("Down") . " " . _("Alert") . ";"
     . _("Unreachable") . " (s);" . _("Unreachable") . " %;" . _("Unreachable") . " " . _("Alert")

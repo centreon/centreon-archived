@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright 2005-2017 Centreon
+ * Copyright 2005-2019 Centreon
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -35,28 +35,27 @@
 
 namespace CentreonLegacy\Core\Widget;
 
+use CentreonLegacy\ServiceProvider;
+
+/**
+ * @deprecated since version 18.10.4
+ */
 class Factory
 {
     /**
      *
-     * @var Pimple\Container
+     * @var \Pimple\Container
      */
     protected $dependencyInjector;
 
     /**
      *
-     * @var CentreonLegacy\Core\Utils\Factory
-     */
-    protected $utils;
-
-    /**
-     *
      * @param \Pimple\Container $dependencyInjector
+     * @param mixed $utils
      */
-    public function __construct(\Pimple\Container $dependencyInjector, $utils)
+    public function __construct(\Pimple\Container $dependencyInjector, $utils = null)
     {
         $this->dependencyInjector = $dependencyInjector;
-        $this->utils = $utils;
     }
 
     /**
@@ -65,7 +64,7 @@ class Factory
      */
     public function newInformation()
     {
-        return new Information($this->dependencyInjector, $this->utils);
+        return $this->dependencyInjector[ServiceProvider::CENTREON_LEGACY_WIDGET_INFORMATION];
     }
 
     /**
@@ -75,9 +74,7 @@ class Factory
      */
     public function newInstaller($widgetDirectory)
     {
-        $informationObj = $this->newInformation();
-
-        return new Installer($this->dependencyInjector, $informationObj, $widgetDirectory, $this->utils);
+        return $this->dependencyInjector[ServiceProvider::CENTREON_LEGACY_WIDGET_INSTALLER]($widgetDirectory);
     }
 
     /**
@@ -87,9 +84,7 @@ class Factory
      */
     public function newUpgrader($widgetDirectory)
     {
-        $informationObj = $this->newInformation();
-
-        return new Upgrader($this->dependencyInjector, $informationObj, $widgetDirectory, $this->utils);
+        return $this->dependencyInjector[ServiceProvider::CENTREON_LEGACY_WIDGET_UPGRADER]($widgetDirectory);
     }
 
     /**
@@ -99,8 +94,6 @@ class Factory
      */
     public function newRemover($widgetDirectory)
     {
-        $informationObj = $this->newInformation();
-
-        return new Remover($this->dependencyInjector, $informationObj, $widgetDirectory, $this->utils);
+        return $this->dependencyInjector[ServiceProvider::CENTREON_LEGACY_WIDGET_REMOVER]($widgetDirectory);
     }
 }

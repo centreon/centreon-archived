@@ -181,7 +181,6 @@ class ContactConfigurationContext extends CentreonContext
                                 }
                                 if ($value != $object[$key]) {
                                     $this->tableau[] = $key;
-
                                 }
                             }
                             if (($key == 'name' || $key == 'alias') && $value . '_1' != $object[$key]) {

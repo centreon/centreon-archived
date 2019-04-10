@@ -37,7 +37,7 @@ class HostExporter extends ExporterServiceAbstract
         $this->createPath();
         $pollerIds = $this->commitment->getPollers();
 
-        $hostTemplateChain = $this->_getIf('host.tpl.relation.chain', function() use ($pollerIds) {
+        $hostTemplateChain = $this->_getIf('host.tpl.relation.chain', function () use ($pollerIds) {
             $baList = $this->cache->get('ba.list');
 
             return $this->db
@@ -47,7 +47,7 @@ class HostExporter extends ExporterServiceAbstract
         });
 
         // Extract data
-        (function() use ($pollerIds, $hostTemplateChain) {
+        (function () use ($pollerIds, $hostTemplateChain) {
             $hosts = $this->db
                 ->getRepository(Repository\HostRepository::class)
                 ->export($pollerIds, $hostTemplateChain)
@@ -55,7 +55,7 @@ class HostExporter extends ExporterServiceAbstract
             $this->_dump($hosts, $this->getFile(static::EXPORT_FILE_HOST));
         })();
 
-        (function() use ($pollerIds, $hostTemplateChain) {
+        (function () use ($pollerIds, $hostTemplateChain) {
             $hostCategories = $this->db
                 ->getRepository(Repository\HostCategoryRepository::class)
                 ->export($pollerIds, $hostTemplateChain)
@@ -63,7 +63,7 @@ class HostExporter extends ExporterServiceAbstract
             $this->_dump($hostCategories, $this->getFile(static::EXPORT_FILE_CATEGORY));
         })();
 
-        (function() use ($pollerIds, $hostTemplateChain) {
+        (function () use ($pollerIds, $hostTemplateChain) {
             $hostCategoryRelation = $this->db
                 ->getRepository(Repository\HostCategoryRelationRepository::class)
                 ->export($pollerIds, $hostTemplateChain)
@@ -71,7 +71,7 @@ class HostExporter extends ExporterServiceAbstract
             $this->_dump($hostCategoryRelation, $this->getFile(static::EXPORT_FILE_CATEGORY_RELATION));
         })();
 
-        (function() use ($pollerIds, $hostTemplateChain) {
+        (function () use ($pollerIds, $hostTemplateChain) {
             $hostGroups = $this->db
                 ->getRepository(Repository\HostGroupRepository::class)
                 ->export($pollerIds, $hostTemplateChain)
@@ -79,7 +79,7 @@ class HostExporter extends ExporterServiceAbstract
             $this->_dump($hostGroups, $this->getFile(static::EXPORT_FILE_GROUP));
         })();
 
-        (function() use ($pollerIds, $hostTemplateChain) {
+        (function () use ($pollerIds, $hostTemplateChain) {
             $hostGroupRelation = $this->db
                 ->getRepository(Repository\HostGroupRelationRepository::class)
                 ->export($pollerIds, $hostTemplateChain)
@@ -87,7 +87,7 @@ class HostExporter extends ExporterServiceAbstract
             $this->_dump($hostGroupRelation, $this->getFile(static::EXPORT_FILE_GROUP_RELATION));
         })();
 
-        (function() use ($pollerIds, $hostTemplateChain) {
+        (function () use ($pollerIds, $hostTemplateChain) {
             $hostGroupHgRelation = $this->db
                 ->getRepository(Repository\HostGroupHgRelationRepository::class)
                 ->export($pollerIds, $hostTemplateChain)
@@ -95,7 +95,7 @@ class HostExporter extends ExporterServiceAbstract
             $this->_dump($hostGroupHgRelation, $this->getFile(static::EXPORT_FILE_GROUP_HG_RELATION));
         })();
 
-        (function() use ($pollerIds, $hostTemplateChain) {
+        (function () use ($pollerIds, $hostTemplateChain) {
             $hostInfo = $this->db
                 ->getRepository(Repository\ExtendedHostInformationRepository::class)
                 ->export($pollerIds, $hostTemplateChain)
@@ -103,7 +103,7 @@ class HostExporter extends ExporterServiceAbstract
             $this->_dump($hostInfo, $this->getFile(static::EXPORT_FILE_INFO));
         })();
 
-        (function() use ($pollerIds, $hostTemplateChain) {
+        (function () use ($pollerIds, $hostTemplateChain) {
             $hostMacros = $this->db
                 ->getRepository(Repository\OnDemandMacroHostRepository::class)
                 ->export($pollerIds, $hostTemplateChain)
@@ -111,7 +111,7 @@ class HostExporter extends ExporterServiceAbstract
             $this->_dump($hostMacros, $this->getFile(static::EXPORT_FILE_MACRO));
         })();
 
-        (function() use ($pollerIds, $hostTemplateChain) {
+        (function () use ($pollerIds, $hostTemplateChain) {
             $hostTemplates = $this->db
                 ->getRepository(Repository\HostTemplateRelationRepository::class)
                 ->export($pollerIds, $hostTemplateChain)
@@ -142,7 +142,7 @@ class HostExporter extends ExporterServiceAbstract
         $this->cleanup();
 
         // insert host
-        (function() use ($db) {
+        (function () use ($db) {
             $exportPathFile = $this->getFile(static::EXPORT_FILE_HOST);
             $result = $this->_parse($exportPathFile);
 
@@ -161,7 +161,7 @@ class HostExporter extends ExporterServiceAbstract
         })();
 
         // insert groups
-        (function() use ($db) {
+        (function () use ($db) {
             $exportPathFile = $this->getFile(static::EXPORT_FILE_GROUP);
             $result = $this->_parse($exportPathFile);
 
@@ -171,7 +171,7 @@ class HostExporter extends ExporterServiceAbstract
         })();
 
         // insert group relation
-        (function() use ($db) {
+        (function () use ($db) {
             $exportPathFile = $this->getFile(static::EXPORT_FILE_GROUP_RELATION);
             $result = $this->_parse($exportPathFile);
 
@@ -181,7 +181,7 @@ class HostExporter extends ExporterServiceAbstract
         })();
 
         // insert group to group relation
-        (function() use ($db) {
+        (function () use ($db) {
             $exportPathFile = $this->getFile(static::EXPORT_FILE_GROUP_HG_RELATION);
             $result = $this->_parse($exportPathFile);
 
@@ -191,7 +191,7 @@ class HostExporter extends ExporterServiceAbstract
         })();
 
         // insert categories
-        (function() use ($db) {
+        (function () use ($db) {
             $exportPathFile = $this->getFile(static::EXPORT_FILE_CATEGORY);
             $result = $this->_parse($exportPathFile);
 
@@ -201,7 +201,7 @@ class HostExporter extends ExporterServiceAbstract
         })();
 
         // insert categories
-        (function() use ($db) {
+        (function () use ($db) {
             $exportPathFile = $this->getFile(static::EXPORT_FILE_CATEGORY_RELATION);
             $result = $this->_parse($exportPathFile);
 
@@ -211,7 +211,7 @@ class HostExporter extends ExporterServiceAbstract
         })();
 
         // insert info
-        (function() use ($db) {
+        (function () use ($db) {
             $exportPathFile = $this->getFile(static::EXPORT_FILE_INFO);
             $result = $this->_parse($exportPathFile);
 
@@ -221,7 +221,7 @@ class HostExporter extends ExporterServiceAbstract
         })();
 
         // insert macro
-        (function() use ($db) {
+        (function () use ($db) {
             $exportPathFile = $this->getFile(static::EXPORT_FILE_MACRO);
             $result = $this->_parse($exportPathFile);
 
@@ -231,7 +231,7 @@ class HostExporter extends ExporterServiceAbstract
         })();
 
         // insert template
-        (function() use ($db) {
+        (function () use ($db) {
             $exportPathFile = $this->getFile(static::EXPORT_FILE_TEMPLATE);
             $result = $this->_parse($exportPathFile);
 

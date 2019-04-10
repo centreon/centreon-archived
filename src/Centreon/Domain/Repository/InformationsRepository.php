@@ -10,7 +10,7 @@ class InformationsRepository extends ServiceEntityRepository
 
     /**
      * Export options
-     * 
+     *
      * @return \Centreon\Domain\Entity\Informations[]
      */
     public function getAll(): array

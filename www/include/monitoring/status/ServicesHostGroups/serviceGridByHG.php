@@ -1,7 +1,7 @@
 <?php
 /*
- * Copyright 2005-2015 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2019 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -62,13 +62,15 @@ $aTypeAffichageLevel2 = array(
     "ack_0" => _("Not Acknowledged"),
 );
 
-/*
- * Check search value in Host search field
- */
+// Check search value in Host search field
 if (isset($_GET["host_search"])) {
     $centreon->historySearch[$url] = $_GET["host_search"];
 }
 
+// Check search value in Hostgroup list. $_GET["host_group_filter"] return the id of the HG
+if (isset($_GET["hg_search"])) {
+    $centreon->historySearch[$hostgroup] = $_GET["hg_search"];
+}
 
 $tab_class = array("0" => "list_one", "1" => "list_two");
 $rows = 10;
@@ -100,6 +102,23 @@ $tpl->assign('poller_listing', $oreon->user->access->checkAction('poller_listing
 $tpl->assign('hgStr', _('Hostgroup'));
 
 $form = new HTML_QuickFormCustom('select_form', 'GET', "?p=" . $p);
+
+//adding hostgroup's select2 list
+$hostgroupsRoute = './api/internal.php?object=centreon_configuration_hostgroup&action=list';
+$attrHostGroup = array(
+    'datasourceOrigin' => 'ajax',
+    'availableDatasetRoute' => $hostgroupsRoute,
+    'defaultDatasetRoute' => "",
+    'multiple' => false,
+    'linkedObject' => 'centreonHostgroups'
+);
+$form->addElement(
+    'select2',
+    'hg_search',
+    _('Hostgroup List'),
+    array('id' => 'hg_search'),
+    $attrHostGroup
+);
 
 $form->addElement(
     'select',

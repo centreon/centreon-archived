@@ -15,10 +15,10 @@ Centreon 18.10.
     Cette procédure ne s'applique que pour une plate-forme Centreon installée à
     partir des dépôts Centreon 3.4 sur des distributions **Red Hat / CentOS en
     version 7**.
-    
+
     Si cela n'est pas le cas, se référer à la procédure de :ref:`migration<upgradecentreon1810>`.
 
-Pour mettre à jour votre serveur Centreon Map, référez-vous à la `documentation associée 
+Pour mettre à jour votre serveur Centreon Map, référez-vous à la `documentation associée
 <https://documentation.centreon.com/docs/centreon-map-4/en/latest/upgrade/index.html>`_.
 
 Pour mettre à jour votre serveur Centreon MBI, référez-vous à la `documentation associée
@@ -88,7 +88,7 @@ Redémarrez les services en Executer les commandes suivantes : ::
 
     # systemctl enable rh-php71-php-fpm
     # systemctl start rh-php71-php-fpm
-    # systemctl restart httpd
+    # systemctl restart httpd24-httpd
     # systemctl restart cbd
     # systemctl restart centengine
 

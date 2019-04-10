@@ -45,8 +45,6 @@ class SaveSearchSelect2Context extends CentreonContext
             'jQuery("select#command_id").parent().find(".select2-search__field").val("load");'
         );
         $this->getSession()->wait(1000);
-
-
     }
 
     /**

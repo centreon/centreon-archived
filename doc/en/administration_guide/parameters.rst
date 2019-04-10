@@ -64,7 +64,7 @@ Define needed information:
 .. image:: /_static/images/adminstration/proxy_configuration.png
     :align: center
 
-Once you defined settings, test your configuration by clicking on the 
+Once you defined settings, test your configuration by clicking on the
 **Text Proxy Configuration** button. If your configuration is correct,
 a message will indicate success:
 
@@ -89,7 +89,7 @@ This part covers the general options of the real time monitoring interface.
 * **Start script for broker daemon** field contains the path to the init script of the broker
 * **Directory + Mailer Binary** field contains the path to the executable file for sending  e-mails
 * **Maximum number of hosts to show** and **Maximum number of services to show** lists contain the maximum number of hosts or services to be displayed in the overall view (menu: **Home > Home**)
-* **Page refresh interval** field defines the data refreshment interval in the overall view 
+* **Page refresh interval** field defines the data refreshment interval in the overall view
 * The boxes in the **Default acknowledgment settings** and **Default downtime settings** categories define the options by default that will be checked or not during definition of an acknowledgment or of a downtime
 
 
@@ -172,28 +172,28 @@ Then restart Apache :
 
 ::
 
-  service httpd restart
-
+  systemctl restart httpd24-httpd
 
 *******
 RRDTool
 *******
 
-This part can be used to configure the RRDTool graphs generation engine and the sizes of the typefaces used for their presentation.
-
-#. Go into the menu: **Administration > Parameters > RRDTool**
+This part can be used to configure the RRDTool graphs generation engine.
+Go into the **Administration > Parameters > RRDTool** menu.
 
 .. image :: /images/guide_exploitation/errdtool.png
    :align: center
 
 * **Directory + RRDTOOL Binary** field defines the path to the RRDTool executable
-* The fields belonging to the categories **Title Properties**, **Unit Properties**, **Axis Properties**, **Legend Properties** and **Watermark Properties** are used to define the typeface and character size for the property selected
+* **RRDTool Version** allows to know the version of RRDTool
 * **Enable RRDCached** field serves to enable the RRDcached process (only works with the Centreon Broker)
-* **TCP Port** field defines the port on which RRDcached listens (don’t enable the TCP connection)
+* **TCP Port** field defines the port on which RRDcached listens.
 * **UNIX Socket path** field defines the path to the Unix socket
 
 .. warning::
-   Don’t enable RRDCacheD unless your monitoring platform encounters too many disk accesses concerning the writing of data in RRD files.
+   Don’t enable RRDCacheD unless your monitoring platform encounters too many
+   disk accesses concerning the writing of data in RRD files.
+   Select only one option: TCP or Unix socket.
 
 *****
 Debug

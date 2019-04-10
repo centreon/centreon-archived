@@ -132,7 +132,7 @@ Create groups using commands::
 
 Restart Apache process::
 
-    # /etc/init.d/httpd restart
+    # systemctl restart httpd24-httpd
 
 Start RRDCacheD process::
 

@@ -8,7 +8,7 @@ const initialState = {
 
 const externalComponentsReducer = (state = initialState, action) => {
   switch (action.type) {
-    case actions.SET_EXTERNAL_COMPONENTS_DATA:
+    case actions.FETCH_EXTERNAL_COMPONENTS_SUCCESS:
       return {
         ...state,
         pages: action.data.pages,
