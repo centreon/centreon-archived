@@ -680,7 +680,7 @@ class CentreonCustomView
 
                 $dbResult2 = $stmt2->execute();
                 if (!$dbResult2) {
-                    throw new \Exception("An error occured");
+                    throw new \Exception("An error occured when adding user's Id : " . $userId . " parameters to the widget's Id : " . $viewId);
                 }
             }
         }
