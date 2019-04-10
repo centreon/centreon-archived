@@ -952,7 +952,7 @@ sub getInfos($) {
     if (defined($ns_server->{ns_ip_address}) && $ns_server->{ns_ip_address}) {
         # Launch command
         if (defined($ns_server->{localhost}) && $ns_server->{localhost}) {
-            $cmd = "$self->{sudo} " . $ns_server->{nagios_bin};
+            $cmd = $ns_server->{nagios_bin} . ' -V';
             $self->{logger}->writeLogDebug($cmd);
             ($lerror, $stdout) = centreon::common::misc::backtick(
                 command => $cmd,
@@ -960,7 +960,7 @@ sub getInfos($) {
                 timeout => 60
             );
         } else {
-            $cmd = "$self->{ssh} -p $port " . $ns_server->{ns_ip_address} . " " . $ns_server->{nagios_bin};
+            $cmd = "$self->{ssh} -p $port " . $ns_server->{ns_ip_address} . " '$ns_server->{nagios_bin} -V";
             $self->{logger}->writeLogDebug($cmd);
             ($lerror, $stdout) = centreon::common::misc::backtick(
                 command => $cmd,
@@ -968,20 +968,11 @@ sub getInfos($) {
                 timeout => 60
             );
         }
-        my @tab = split("\n", $stdout);
-        foreach my $str (@tab) {
-            if ($str =~ m/(Nagios) Core ([\.0-9]*[a-zA-Z0-9\-\.]+)/) {
-                $self->{logger}->writeLogInfo("Engine: $1");
-                $self->{logger}->writeLogInfo("Version: $2");
-                $self->updateEngineInformation($id, $1, $2);
-                last;
-            }
-            if ($str =~ m/(Centreon Engine) ([\.0-9]*[a-zA-Z0-9\-\.]+)/) {
-                $self->{logger}->writeLogInfo("Engine: $1");
-                $self->{logger}->writeLogInfo("Version: $2");
-                $self->updateEngineInformation($id, $1, $2);
-                last;
-            }
+    
+        if ($stdout =~ /Centreon Engine ([\.0-9]*[a-zA-Z0-9\-\.]+)/ms) {
+            $self->{logger}->writeLogInfo("Engine: Centreon Engine");
+            $self->{logger}->writeLogInfo("Version: $1");
+            $self->updateEngineInformation($id, "Centreon Engine", $1);
         }
     } else {
         $self->{logger}->writeLogError("Cannot get informations for poller $id");

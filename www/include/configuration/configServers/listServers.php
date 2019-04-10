@@ -318,8 +318,6 @@ foreach (array('o1', 'o2') as $option) {
             "else if (this.form.elements['" . $option . "'].selectedIndex == 2 && confirm('" .
             _("Do you confirm the deletion ?") . "')) {" .
             " 	setO(this.form.elements['" . $option . "'].value); submit();} " .
-            "else if (this.form.elements['" . $option . "'].selectedIndex == 3) {" .
-            " 	setO(this.form.elements['" . $option . "'].value); submit();} " .
             ""
     );
     $form->addElement(
@@ -329,8 +327,7 @@ foreach (array('o1', 'o2') as $option) {
         array(
             null => _("More actions..."),
             "m" => _("Duplicate"),
-            "d" => _("Delete"),
-            "i" => _("Update informations")
+            "d" => _("Delete")
         ),
         $attrs
     );
