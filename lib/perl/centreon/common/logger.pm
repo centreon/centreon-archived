@@ -64,6 +64,7 @@ use strict;
 use warnings;
 use Sys::Syslog qw(:standard :macros);
 use IO::Handle;
+use Encode;
 
 my %severities = (
     1 => LOG_INFO,
@@ -208,6 +209,8 @@ sub writeLog {
     if (($self->{severity} & $options{severity}) == 0) {
         return;
     }
+
+    $newmsg = encode('UTF-8', $newmsg);
     if ($self->{log_mode} == 0) {
         print "$newmsg\n";
     } elsif ($self->{log_mode} == 1) {
