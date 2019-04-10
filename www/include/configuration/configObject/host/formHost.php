@@ -971,7 +971,7 @@ $form->addElement('select', 'ehi_statusmap_image', _("Status Map Image"), $extIm
 ));
 $form->addElement('text', 'ehi_2d_coords', _("2d Coords"), $attrsText2);
 $form->addElement('text', 'ehi_3d_coords', _("3d Coords"), $attrsText2);
-$form->addElement('text', 'geo_coords', _("Geo coordinates"), $attrsText2);
+$form->addElement('text', 'geo_coords', _("Geo coordinates"), $attrsText);
 
 if (!$centreon->user->admin && $o == "a") {
     $aclDeRoute = './include/common/webServices/rest/internal.php?object=centreon_administration_aclgroup'
