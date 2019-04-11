@@ -661,14 +661,14 @@ class CentreonCustomView
             $stmt = $this->db->prepare(
                 'SELECT * FROM widget_views wv ' .
                 'LEFT JOIN widget_preferences wp ON wp.widget_view_id = wv.widget_view_id ' .
-                'LEFT JOIN custom_view_user_relation cvur ON cvur.custom_view_id=wv.custom_view_id ' .
-                'WHERE cvur.custom_view_id = :viewId and cvur.locked = 0'
+                'LEFT JOIN custom_view_user_relation cvur ON cvur.custom_view_id = wv.custom_view_id ' .
+                'WHERE cvur.custom_view_id = :view_id AND cvur.is_owner = 1 AND cvur.user_id = wp.user_id'
             );
             $stmt->bindParam(':viewId', $viewId, PDO::PARAM_INT);
             $dbResult = $stmt->execute();
             if (!$dbResult) {
                 throw new \Exception(
-                    "An error occurred when retrieving user's Id : " . userId .
+                    "An error occurred when retrieving user's Id : " . $userId .
                     " parameters of the widgets from the view: Id = " . $viewId
                 );
             }
