@@ -265,10 +265,27 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
         /** @var $pollerConfigurationBridge PollerConfigurationRequestBridge */
         $pollerConfigurationBridge = $this->getDi()['centreon_remote.poller_config_bridge'];
 
-        $httpMethod = parse_url($this->arguments['server_ip'], PHP_URL_SCHEME) ?: 'http';
-        $httpPort = parse_url($this->arguments['server_ip'], PHP_URL_PORT) ?: '';
+        // extract HTTP method and port from form or database if registred
+        $httpMethod = "";
+        $httpPort = "";
         $serverIP = parse_url($this->arguments['server_ip'], PHP_URL_HOST) ?: $this->arguments['server_ip'];
         $serverName = substr($this->arguments['server_name'], 0, 40);
+
+        $dbAdapter = $this->getDi()['centreon.db-manager']->getAdapter('configuration_db');
+        $sql = 'SELECT * FROM `remote_servers` WHERE `ip` = ?';
+        $dbAdapter->query($sql, [$serverIP]);
+        $hasIpInTable = (bool) $dbAdapter->count();
+
+        if (!$hasIpInTable) {
+            $httpMethod = parse_url($this->arguments['server_ip'], PHP_URL_SCHEME) ?: 'http';
+            $httpPort = parse_url($this->arguments['server_ip'], PHP_URL_PORT) ?: '';
+        } else {
+            $result = $dbAdapter->results();
+            $remoteData = reset($result);
+            $httpMethod = $remoteData->http_method;
+            $httpPort = $remoteData->http_port;
+            $noCheckCertificate = $remoteData->no_check_certificate;
+        }
 
         $serverConfigurationService->setCentralIp($this->arguments['centreon_central_ip']);
         $serverConfigurationService->setServerIp($serverIP);
@@ -366,7 +383,7 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
      *
      * @param $serverIP
      */
-    private function addServerToListOfRemotes($serverIP, $centreonPath, $httpMethod = 'http', $httpPort = null, $noCheckCertificate = 0)
+    private function addServerToListOfRemotes($serverIP, $centreonPath, $httpMethod, $httpPort, $noCheckCertificate)
     {
         $dbAdapter = $this->getDi()[\Centreon\ServiceProvider::CENTREON_DB_MANAGER]->getAdapter('configuration_db');
         $date = date('Y-m-d H:i:s');
@@ -376,10 +393,9 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
         $hasIpInTable = (bool) $dbAdapter->count();
 
         if ($hasIpInTable) {
-            $sql = 'UPDATE `remote_servers` SET `is_connected` = ?, `connected_at` = ?, `centreon_path` = ?, ' .
-                'http_method = ?, http_port = ?, no_check_certificate = ? ' .
+            $sql = 'UPDATE `remote_servers` SET `is_connected` = ?, `connected_at` = ?, `centreon_path` = ? ' .
                 'WHERE `ip` = ?';
-            $data = ['1', $date, $centreonPath, $httpMethod, $httpPort, $noCheckCertificate, $serverIP];
+            $data = ['1', $date, $centreonPath, $serverIP];
             $dbAdapter->query($sql, $data);
         } else {
             $data = [
