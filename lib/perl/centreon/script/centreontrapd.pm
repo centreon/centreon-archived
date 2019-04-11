@@ -629,7 +629,7 @@ sub manage_exec {
         if ($self->{trap_data}->{ref_oids}->{ $self->{current_trap_id} }->{traps_exec_interval_type} == 3 &&
             defined($self->{last_time_exec}{host}->{$self->{current_host_id} . ";" . $self->{current_service_id} . ";" . $self->{current_oid}}) &&
             $self->{trap_data}->{trap_date_time_epoch} < ($self->{last_time_exec}{host}->{$self->{current_host_id} . ";" . $self->{current_service_id} . ";" . $self->{current_oid}} + $self->{trap_data}->{ref_oids}->{ $self->{current_trap_id} }->{traps_exec_interval})) {
-            $self->{logger}->writeLogInfo("Skipping trap '" . $self->{current_trap_id} . "' for host ID '" . $self->{current_host_id} . "' and service ID '".$self->{current_service_id}."': time interval");
+            $self->{logger}->writeLogInfo("Skipping trap '" . $self->{current_trap_id} . "' for host ID '" . $self->{current_host_id} . "' and service ID '" . $self->{current_service_id} . "': time interval");
             return 1;
         }
     }
