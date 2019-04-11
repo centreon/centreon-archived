@@ -225,7 +225,8 @@ class LinkedPollerConfigurationService
             $linkedPollersOfRemote = array_column($linkedResults, 'id');
 
             // Get IP of remote
-            $queryRemoteData = "SELECT ns.ns_ip_address as ip, rs.centreon_path FROM nagios_server as ns " .
+            $queryRemoteData = "SELECT ns.ns_ip_address as ip, rs.centreon_path, rs.http_method, rs.http_port, " .
+                " rs.no_check_certificate FROM nagios_server as ns " .
                 " JOIN remote_servers as rs ON rs.ip = ns.ns_ip_address " .
                 " WHERE ns.id = {$remoteID}";
             $remoteDataStatement = $this->db->query($queryRemoteData);
@@ -235,10 +236,13 @@ class LinkedPollerConfigurationService
             $pollerIDsToExport = array_diff($linkedPollersOfRemote, $pollerIDs);
 
             $exportParams = [
-                'server'        => $remoteID,
-                'pollers'       => $pollerIDsToExport,
-                'remote_ip'     => $remoteDataResults[0]['ip'],
-                'centreon_path' => $remoteDataResults[0]['centreon_path'],
+                'server'               => $remoteID,
+                'pollers'              => $pollerIDsToExport,
+                'remote_ip'            => $remoteDataResults[0]['ip'],
+                'centreon_path'        => $remoteDataResults[0]['centreon_path'],
+                'http_method'          => $remoteDataResults[0]['http_method'],
+                'http_port'            => $remoteDataResults[0]['http_port'],
+                'no_check_certificate' => $remoteDataResults[0]['no_check_certificate'],
             ];
             $this->taskService->addTask(Task::TYPE_EXPORT, ['params' => $exportParams]);
         }
