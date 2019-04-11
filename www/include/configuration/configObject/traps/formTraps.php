@@ -81,7 +81,7 @@ if (($o == TRAP_MODIFY || $o == TRAP_WATCH) && is_int($trapsId)) {
 * Preset values of preexec commands
 */
 $cdata->addJsData('clone-values-preexec', htmlspecialchars(
-     json_encode($preexecArray),
+    json_encode($preexecArray),
     ENT_QUOTES
 ));
 $cdata->addJsData('clone-count-preexec', count($preexecArray));
