@@ -99,7 +99,7 @@ if (!$staticExists) {
     $allJsFiles = glob('static/js/*');
     $indexFile = glob('index.html');
     $allFiles = array_merge($allCssFiles, $allJsFiles, $indexFile);
-    foreach ($allFiles as $file){
+    foreach ($allFiles as $file) {
         $fc = file_get_contents($file);
         $newCont = str_replace('/_CENTREON_PATH_PLACEHOLDER_/', $newPath, $fc);
         file_put_contents($file, $newCont);
@@ -107,9 +107,8 @@ if (!$staticExists) {
 } else {
     $hashStatic = explode('static/css/main.', $staticExists[0]);
     $hashTemplate = explode('template/css/main.', glob('template/css/*.css')[0]);
-    if (isset($hashTemplate[1])
-        && isset($hashStatic)
-        && $hashTemplate[1] !== $hashStatic
+    if (!isset($hashTemplate[1])
+        || $hashTemplate[1] !== $hashStatic
     ) {
         shell_exec('rm -rf ' . __DIR__ . '/static ');
         shell_exec('cp -pR ' . __DIR__ . '/template '. __DIR__ . '/static');
@@ -117,7 +116,7 @@ if (!$staticExists) {
         $allJsFiles = glob('static/js/*');
         $indexFile = glob('index.html');
         $allFiles = array_merge($allCssFiles, $allJsFiles, $indexFile);
-        foreach ($allFiles as $file){
+        foreach ($allFiles as $file) {
             $fc = file_get_contents($file);
             $newCont = str_replace('/_CENTREON_PATH_PLACEHOLDER_/', $newPath, $fc);
             file_put_contents($file, $newCont);
