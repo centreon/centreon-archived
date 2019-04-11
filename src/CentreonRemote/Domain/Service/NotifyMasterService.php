@@ -83,8 +83,11 @@ class NotifyMasterService
 
         try {
             $curlData = [
-                'app_key' => $applicationKey->getValue(),
-                'version' => $version->getValue(),
+                'app_key'              => $applicationKey->getValue(),
+                'version'              => $version->getValue(),
+                'http_method'          => $data['remoteHttpMethod'] ?? 'http',
+                'http_port'            => $data['remoteHttpPort'] ?? '',
+                'no_check_certificate' => $data['remoteNoCheckCertificate'] ?? 0,
             ];
 
             if ($noCheckCertificate) {
