@@ -166,8 +166,6 @@ Voici un exemple de configuration possible du fichier **/etc/centreon/centreontr
         date_format => "",
         time_format => "",
         date_time_format => "",
-        # Utiliser le cache d'OID interne de la base de données
-        cache_unknown_traps_enable => 1,
         # Temps en secondes avant de recharger le cache
         cache_unknown_traps_retention => 600,
         # 0 = central, 1 = poller
@@ -281,6 +279,7 @@ Il est également possible de créer manuellement des définitions de trap SNMP 
    :align: center
 
 * Le champ **Nom du Trap** définit le nom du trap.
+* Le champ **Mode** définit comment le champ **OID** est interpreté lors de la réception de ce trap.
 * Le champ **OID** définit l'OID racine à recevoir pour que ce trap soit considéré comme reçu.
 * Le champ **Nom du constructeur** définit le nom du constructeur auquel appartient le trap à sélectionner dans la liste déroulante.
 * Le champ **Message de sortie** contient le message à afficher en cas de réception d'un trap contenant l'OID configuré au-dessus.
