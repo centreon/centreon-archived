@@ -34,6 +34,7 @@
       <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="http_method"> {$form.http_method.label}</td><td class="FormRowValue">{$form.http_method.html}</td></tr>
       <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="http_port"> {$form.http_port.label}</td><td class="FormRowValue">{$form.http_port.html}</td></tr>
       <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="no_check_certificate"> {$form.no_check_certificate.label}</td><td class="FormRowValue">{$form.no_check_certificate.html}</td></tr>
+      <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="no_proxy"> {$form.no_proxy.label}</td><td class="FormRowValue">{$form.no_proxy.html}</td></tr>
     </tr>
     {/if}
 		<tr class="list_lvl_1">

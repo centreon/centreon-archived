@@ -42,3 +42,7 @@ $help['no_check_certificate'] = dgettext(
     "help",
     "Do not check the validity of the SSL certificate of the Remote Server"
 );
+$help['no_proxy'] = dgettext(
+    "help",
+    "Do not use the proxy configured in 'Administration > Parameters > Centreon UI' to connect to the Remote Server."
+);

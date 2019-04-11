@@ -117,6 +117,11 @@ class RemoteServerFormStepOne extends Component {
                   component={CheckboxField}
                   label={I18n.t("Do not check SSL certificate validation")}
                 />
+                <Field
+                  name="no_proxy"
+                  component={CheckboxField}
+                  label={I18n.t("Do not use configured proxy to connect to this server")}
+                />
               </div>
             ) : null}
 
@@ -185,6 +190,11 @@ class RemoteServerFormStepOne extends Component {
                   name="no_check_certificate"
                   component={CheckboxField}
                   label={I18n.t("Do not check SSL certificate validation")}
+                />
+                <Field
+                  name="no_proxy"
+                  component={CheckboxField}
+                  label={I18n.t("Do not use configured proxy to connect to this server")}
                 />
               </div>
             ) : null}

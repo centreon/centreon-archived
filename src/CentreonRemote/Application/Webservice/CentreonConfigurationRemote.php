@@ -220,6 +220,7 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
         $centreonPath = $this->arguments['centreon_folder'] ?? '/centreon/';
         $noCheckCertificate = isset($this->arguments['no_check_certificate'])
             && $this->arguments['no_check_certificate'] === true;
+        $noProxy = isset($this->arguments['no_proxy']) && $this->arguments['no_proxy'] === true;
         $serverWizardIdentity = new ServerWizardIdentity;
         $isRemoteConnection = $serverWizardIdentity->requestConfigurationIsRemote();
         $configurationServiceName = $isRemoteConnection ?
@@ -255,7 +256,6 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
             $remoteData = reset($result);
             $httpMethod = $remoteData->http_method;
             $httpPort = $remoteData->http_port;
-            $noCheckCertificate = $remoteData->no_check_certificate;
         }
 
         $serverConfigurationService->setCentralIp($this->arguments['centreon_central_ip']);
@@ -301,6 +301,7 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
                 'http_method'          => $httpMethod,
                 'http_port'            => $httpPort,
                 'no_check_certificate' => $noCheckCertificate,
+				'no_proxy'             => $noProxy,
                 'pollers'              => []
             ];
 
@@ -318,7 +319,14 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
             $taskId = $this->createExportTask($params);
 
             // add server to the list of remote servers in database (table remote_servers)
-            $this->addServerToListOfRemotes($serverIP, $centreonPath, $httpMethod, $httpPort, $noCheckCertificate);
+            $this->addServerToListOfRemotes(
+                $serverIP,
+                $centreonPath,
+                $httpMethod,
+                $httpPort,
+                $noCheckCertificate,
+                $noProxy
+            );
             $this->setCentreonInstanceAsCentral();
 
         // if it is poller wizard and poller is linked to another poller/remote server (instead of central)
@@ -354,7 +362,7 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
      *
      * @param $serverIP
      */
-    private function addServerToListOfRemotes($serverIP, $centreonPath, $httpMethod, $httpPort, $noCheckCertificate)
+    private function addServerToListOfRemotes($serverIP, $centreonPath, $httpMethod, $httpPort, $noCheckCertificate, $noProxy)
     {
         $dbAdapter = $this->getDi()['centreon.db-manager']->getAdapter('configuration_db');
         $date = date('Y-m-d H:i:s');
@@ -364,9 +372,10 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
         $hasIpInTable = (bool) $dbAdapter->count();
 
         if ($hasIpInTable) {
-            $sql = 'UPDATE `remote_servers` SET `is_connected` = ?, `connected_at` = ?, `centreon_path` = ? ' .
+            $sql = 'UPDATE `remote_servers` SET `is_connected` = ?, `connected_at` = ?, `centreon_path` = ?, ' .
+			    '`no_check_certificate` = ?, `no_proxy` = ? ' .
                 'WHERE `ip` = ?';
-            $data = ['1', $date, $centreonPath, $serverIP];
+            $data = ['1', $date, $centreonPath, $serverIP, ($noCheckCertificate ?: 0), ($noProxy ?: 0)];
             $dbAdapter->query($sql, $data);
         } else {
             $data = [
@@ -379,7 +388,8 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
                 'centreon_path'        => $centreonPath,
                 'http_method'          => $httpMethod,
                 'http_port'            => $httpPort ?: null,
-                'no_check_certificate' => $noCheckCertificate ?: 0
+                'no_check_certificate' => $noCheckCertificate ?: 0,
+				'no_proxy'             => $noProxy ?: 0
             ];
             $dbAdapter->insert('remote_servers', $data);
         }
