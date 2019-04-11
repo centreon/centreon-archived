@@ -141,11 +141,27 @@ class TaskService
      */
     public function getRemoteStatusByParent(int $parentId, string $serverIp, string $centreonFolder)
     {
+        $dbAdapter = $this->getDbManager()->getAdapter('configuration_db');
+        $query = "SELECT * FROM `remote_servers` WHERE `ip` = '" . $serverIp  . "'";
+        $dbAdapter->query($query);
+        $remoteDataResult = $dbAdapter->results();
+
+        $httpMethod         = $remoteDataResult[0]->http_method;
+        $httpPort           = $remoteDataResult[0]->http_port;
+        $noCheckCertificate = $remoteDataResult[0]->no_check_certificate;
+
+        $url = $httpMethod ?? 'http' . '://' . $serverIp .
+            $httpPort ? ':' . $httpPort : '' . '/' . $centreonFolder .
+            '/api/external.php?object=centreon_task_service&action=getTaskStatusByParent';
+
+        return $url;
         $result = $this->centreonRestHttp->call(
-            'http://' . $serverIp . '/' . $centreonFolder
-                . '/api/external.php?object=centreon_task_service&action=getTaskStatusByParent',
+            $url,
             'POST',
-            ['parent_id' => $parentId]
+            ['parent_id' => $parentId],
+            null,
+            false,
+            $noCheckCertificate
         );
 
         return isset($result['status']) ? $result['status'] : null;
