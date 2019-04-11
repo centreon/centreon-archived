@@ -290,7 +290,7 @@ $tpl->assign('search_host', $host_name);
 $tpl->assign("search_service", $search_service);
 $tpl->assign('view_all', $view_all);
 $tpl->assign('view_downtime_cycle', $view_downtime_cycle);
-$tpl->assign('search_author', $search_author);
+$tpl->assign('search_author', $search_author ?? '');
 
 /* Send Form */
 $renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);

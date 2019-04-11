@@ -292,7 +292,8 @@ if (!$centreon->user->access->checkAction("host_schedule_downtime")
         'select',
         'duration_scale',
         _("Scale of time"),
-        array("s" => _("seconds"), "m" => _("minutes"), "h" => _("hours"), "d" => _("days"))
+        array("s" => _("seconds"), "m" => _("minutes"), "h" => _("hours"), "d" => _("days")),
+        array('id' => 'duration_scale')
     );
     $defaultScale = 's';
     if (isset($centreon->optGen['monitoring_dwt_duration_scale']) &&
