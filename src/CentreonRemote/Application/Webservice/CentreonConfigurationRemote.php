@@ -330,7 +330,7 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
                 'http_method'          => $httpMethod,
                 'http_port'            => $httpPort,
                 'no_check_certificate' => $noCheckCertificate,
-				'no_proxy'             => $noProxy,
+                'no_proxy'             => $noProxy,
                 'pollers'              => []
             ];
 
@@ -389,10 +389,21 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
     /**
      * Add server ip in table of remote servers
      *
-     * @param $serverIP
+     * @param string $serverIP the IP of the server
+     * @param string $centreonPath the path to access to Centreon
+     * @param string $httpMethod the method to access to server (HTTP/HTTPS)
+     * @param string $httpPort the port to access to the server
+     * @param boolean $noCheckCertificate to do not check SSL CA
+     * @param boolean $noProxy to do not use configured proxy
      */
-    private function addServerToListOfRemotes($serverIP, $centreonPath, $httpMethod, $httpPort, $noCheckCertificate, $noProxy)
-    {
+    private function addServerToListOfRemotes(
+        $serverIP,
+        $centreonPath,
+        $httpMethod,
+        $httpPort,
+        $noCheckCertificate,
+        $noProxy
+    ) {
         $dbAdapter = $this->getDi()[\Centreon\ServiceProvider::CENTREON_DB_MANAGER]->getAdapter('configuration_db');
         $date = date('Y-m-d H:i:s');
 
@@ -402,7 +413,7 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
 
         if ($hasIpInTable) {
             $sql = 'UPDATE `remote_servers` SET `is_connected` = ?, `connected_at` = ?, `centreon_path` = ?, ' .
-			    '`no_check_certificate` = ?, `no_proxy` = ? ' .
+                '`no_check_certificate` = ?, `no_proxy` = ? ' .
                 'WHERE `ip` = ?';
             $data = ['1', $date, $centreonPath, $serverIP, ($noCheckCertificate ?: 0), ($noProxy ?: 0)];
             $dbAdapter->query($sql, $data);
@@ -418,7 +429,7 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
                 'http_method'          => $httpMethod,
                 'http_port'            => $httpPort ?: null,
                 'no_check_certificate' => $noCheckCertificate ?: 0,
-				'no_proxy'             => $noProxy ?: 0
+                'no_proxy'             => $noProxy ?: 0
             ];
             $dbAdapter->insert('remote_servers', $data);
         }
