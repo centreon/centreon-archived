@@ -149,6 +149,7 @@ class TaskService
         $httpMethod         = $remoteDataResult[0]->http_method;
         $httpPort           = $remoteDataResult[0]->http_port;
         $noCheckCertificate = $remoteDataResult[0]->no_check_certificate;
+        $noProxy            = $remoteDataResult[0]->no_proxy;
 
         $url = $httpMethod ?? 'http' . '://' . $serverIp .
             $httpPort ? ':' . $httpPort : '' . '/' . $centreonFolder .
@@ -161,7 +162,8 @@ class TaskService
             ['parent_id' => $parentId],
             null,
             false,
-            $noCheckCertificate
+            $noCheckCertificate,
+            $noProxy
         );
 
         return isset($result['status']) ? $result['status'] : null;

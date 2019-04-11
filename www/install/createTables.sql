@@ -2382,7 +2382,8 @@ CREATE TABLE IF NOT EXISTS `remote_servers` (
   `centreon_path` VARCHAR(255) NULL,
   `http_method` enum('http','https') NOT NULL DEFAULT 'http',
   `http_port` int(11) DEFAULT NULL,
-  `no_check_certificate` enum('0','1') NOT NULL DEFAULT '0'
+  `no_check_certificate` enum('0','1') NOT NULL DEFAULT '0',
+  `no_proxy` enum('0','1') NOT NULL DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 

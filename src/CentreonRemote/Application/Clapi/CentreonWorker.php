@@ -157,7 +157,8 @@ class CentreonWorker implements CentreonClapiServiceInterface
                 ['parent_id' => $task->getId()],
                 null,
                 false,
-                $params['no_check_certificate']
+                $params['no_check_certificate'],
+                $params['no_proxy']
             );
         } catch (\Exception $e) {
             echo "Error while creating parent task on $url\n";

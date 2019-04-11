@@ -74,7 +74,7 @@ if (($o == SERVER_MODIFY || $o == SERVER_WATCH) && $server_id) {
     }
 
     if ($serverType == "remote") {
-        $DBRESULT = $pearDB->query("SELECT http_method, http_port, no_check_certificate " .
+        $DBRESULT = $pearDB->query("SELECT http_method, http_port, no_check_certificate, no_proxy " .
             "FROM `remote_servers` WHERE `ip` = '" . $cfg_server['ns_ip_address'] . "' LIMIT 1");
         $cfg_server = array_merge($cfg_server, array_map("myDecode", $DBRESULT->fetchRow()));
         $DBRESULT->closeCursor();
@@ -159,6 +159,10 @@ if (strcmp($serverType, 'remote') ==  0) {
     $Tab[] = $form->createElement('radio', 'no_check_certificate', null, _("Yes"), '1');
     $Tab[] = $form->createElement('radio', 'no_check_certificate', null, _("No"), '0');
     $form->addGroup($Tab, 'no_check_certificate', _("Do not check SSL certificate validation"), '&nbsp;');
+    $Tab = array();
+    $Tab[] = $form->createElement('radio', 'no_proxy', null, _("Yes"), '1');
+    $Tab[] = $form->createElement('radio', 'no_proxy', null, _("No"), '0');
+    $form->addGroup($Tab, 'no_proxy', _("Do not use proxy defined in global configuration"), '&nbsp;');
 }
 
 /*
