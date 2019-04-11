@@ -80,9 +80,11 @@ class CentreonRestHttp
      * @param array|null $data The data to send on the request
      * @param array $headers The extra headers without Content-Type
      * @param bool $throwContent
+     * @param bool $noCheckCertificate To disable CURLOPT_SSL_VERIFYPEER
+     * @param bool$noProxy To disable CURLOPT_PROXY
      * @return array The result content
      */
-    public function call($url, $method = 'GET', $data = null, $headers = array(), $throwContent = false, $noCheckCertificate = 0)
+    public function call($url, $method = 'GET', $data = null, $headers = array(), $throwContent = false, $noCheckCertificate = false, $noProxy = false)
     {
         /* Add content type to headers */
         $headers[] = 'Content-type: ' . $this->contentType;
@@ -100,7 +102,7 @@ class CentreonRestHttp
             curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
         }
 
-        if (!is_null($this->proxy)) {
+        if (!$noProxy && !is_null($this->proxy)) {
             curl_setopt($ch, CURLOPT_PROXY, $this->proxy);
             if (!is_null($this->proxyAuthentication)) {
                 curl_setopt($ch, CURLOPT_PROXYAUTH, CURLAUTH_BASIC);
