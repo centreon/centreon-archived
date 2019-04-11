@@ -172,7 +172,7 @@
             var e = new Date();
             e.setTime(d.getTime()+dur);
             $(".datepicker").last().datepicker("setDate", e);
-            $(".timepicker").last().timepicker("setTime", e.getHours()+':'+e.getMinutes());
+            $(".timepicker").last().timepicker("setTime", e.getHours() + ':' + e.getMinutes());
         }
     }
 
