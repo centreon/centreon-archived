@@ -219,6 +219,34 @@ function insertNagiosInDB()
     return ($nagios_id);
 }
 
+/**
+ * Calculate the sum of bitwise for a POST QuickForm array
+ *
+ * The array format
+ *
+ * array[key] => enable
+ *  Key int the bit
+ *  Enable 0|1 if the bit is activate
+ *
+ * if found the bit -1 (all) or 0 (none) activate return the value
+ *
+ * @param array $list The POST QuickForm table
+ * @return int The bitwise
+ */
+function calculateBitwise($list)
+{
+    $bitwise = 0;
+    foreach ($list as $bit => $value) {
+        if ($value == 1) {
+            if ($bit === -1 || $bit === 0) {
+                return $bit;
+            }
+            $bitwise += $bit;
+        }
+    }
+    return $bitwise;
+}
+
 function insertNagios($ret = array(), $brokerTab = array())
 {
     global $form, $pearDB, $centreon;
@@ -274,7 +302,7 @@ function insertNagios($ret = array(), $brokerTab = array())
         . "`admin_email` , `admin_pager` , `nagios_comment` , `nagios_activate`, "
         . "`event_broker_options` , `translate_passive_host_checks`, "
         . "`passive_host_checks_are_soft`, `check_for_orphaned_hosts`, `external_command_buffer_slots`, "
-        . "`cfg_file`, `log_pid`, `use_check_result_path`) ";
+        . "`cfg_file`, `log_pid`, `use_check_result_path`, `enable_macros_filter`, `macros_filter`) ";
     $rq .= "VALUES (";
     $rq .= "NULL, ";
 
@@ -1062,8 +1090,10 @@ function insertNagios($ret = array(), $brokerTab = array())
         $rq .= "'0',";
     }
 
-    if (isset($ret["event_broker_options"]) && $ret["event_broker_options"] != null) {
-        $rq .= "'" . htmlentities($ret["event_broker_options"], ENT_QUOTES, "UTF-8") . "', ";
+    /* Calculate the sum of bitwise */
+    if (isset($ret['event_broker_options']) && $ret['event_broker_options'] != null) {
+        $bitwise = calculateBitwise($ret["event_broker_options"]);
+        $rq .= "'" . $bitwise . "', ";
     } else {
         $rq .= "'-1', ";
     }
@@ -1115,10 +1145,25 @@ function insertNagios($ret = array(), $brokerTab = array())
     if (isset($ret['use_check_result_path']['use_check_result_path'])
         && $ret['use_check_result_path']['use_check_result_path']
     ) {
-        $rq .= "'1')";
+        $rq .= "'1',";
     } else {
-        $rq .= "'0')";
+        $rq .= "'0',";
     }
+
+    if (isset($ret['enable_macros_filter']['enable_macros_filter'])
+        && $ret['enable_macros_filter']['enable_macros_filter']) {
+        $rq .= "'1', ";
+    } else {
+        $rq .= "'0', ";
+    }
+    /* Add whitelist macros to send to Centreon Broker */
+    $macrosFilter = trim(
+        join(
+            ',',
+            array_map(function ($value) { return CentreonDB::escape($value); }, $_REQUEST['macros_filter'])
+        )
+    );
+    $rq .= "'" . $macrosFilter . "')";
 
     $DBRESULT = $pearDB->query($rq);
     $DBRESULT = $pearDB->query("SELECT MAX(nagios_id) FROM cfg_nagios");
@@ -1992,8 +2037,10 @@ function updateNagios($nagios_id = null)
         $rq .= "nagios_comment = NULL, ";
     }
 
+    /* Calculate the sum of bitwise */
     if (isset($ret["event_broker_options"]) && $ret["event_broker_options"] != null) {
-        $rq .= "event_broker_options = '" . htmlentities($ret["event_broker_options"], ENT_QUOTES, "UTF-8") . "',  ";
+        $bitwise = calculateBitwise($ret['event_broker_options']);
+        $rq .= "event_broker_options = '" . $bitwise . "', ";
     } else {
         $rq .= "event_broker_options = '-1', ";
     }
@@ -2096,6 +2143,23 @@ function updateNagios($nagios_id = null)
     } else {
         $rq .= "use_check_result_path = '0', ";
     }
+
+    if (isset($ret['enable_macros_filter']['enable_macros_filter'])
+        && $ret['enable_macros_filter']['enable_macros_filter']
+    ) {
+        $rq .= "enable_macros_filter = '1', ";
+    } else {
+        $rq .= "enable_macros_filter = '0', ";
+    }
+
+    /* Add whitelist macros to send to Centreon Broker */
+    $macrosFilter = trim(
+        join(
+            ',',
+            array_map(function ($value) { return CentreonDB::escape($value); }, $_REQUEST['macros_filter'])
+        )
+    );
+    $rq .= "macros_filter = '" . $macrosFilter . "', ";
 
     $rq .= "nagios_activate = '" . $ret["nagios_activate"]["nagios_activate"] . "' ";
     $rq .= "WHERE nagios_id = '" . $nagios_id . "'";

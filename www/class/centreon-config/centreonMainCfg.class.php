@@ -42,6 +42,39 @@ class CentreonMainCfg
 
     private $DB;
 
+    // List of broker options Centreon Engine
+    // (https://documentation.centreon.com/docs/centreon-engine/en/latest/user/configuration/basics/main_configuration_file_options.html#event-broker-options)
+    const EVENT_BROKER_OPTIONS = [
+        -1 => 'All',
+        0 => 'None',
+        1 => 'Program state',
+        2 => 'Timed events',
+        4 => 'Service checks',
+        8 => 'Host checks',
+        16 => 'Event handlers',
+        32 => 'Logged data',
+        64 => 'Notifications',
+        128 => 'Flapping data',
+        256 => 'Comment data',
+        512 => 'Downtime data',
+        1024 => 'System commands',
+        2048 => 'OCP data unused',
+        4096 => 'Status data',
+        8192 => 'Adaptive data',
+        16384 => 'External command data',
+        32768 => 'Retention data',
+        65536 => 'Acknowledgement data',
+        131072 => 'Statechange data',
+        262144 => 'Reserved18',
+        524288 => 'Reserved19',
+        1048576 => 'Customvariable data',
+        2097152 => 'Group data',
+        4194304 => 'Group member data',
+        8388608 => 'Module data',
+        16777216 => 'Relation data',
+        33554432 => 'Command data'
+    ];
+
     public function __construct()
     {
         $this->DB = new CentreonDB();
@@ -153,7 +186,8 @@ class CentreonMainCfg
             'cfg_file' => 'centengine.cfg',
             'use_check_result_path' => '0',
             'cached_host_check_horizon' => '60',
-            'log_pid' => 1
+            'log_pid' => 1,
+            'enable_macros_filter' => 0
         );
     }
 
@@ -377,5 +411,41 @@ class CentreonMainCfg
         }
         $DBRESULT->closeCursor();
         return $entries;
+    }
+
+    /**
+     * Explode the bitwise event broker options to an array for QuickForm
+     *
+     * @param int $value The value to explode
+     * @return array An array of integer
+     */
+    public function explodeEventBrokerOptions($value)
+    {
+        return $this->explodeBitwise($value, self::EVENT_BROKER_OPTIONS);
+    }
+
+    /**
+     * Explode the bitwise to an array for QuickForm
+     *
+     * @param int $value The value to explode
+     * @param array $sources The list of bit
+     * @return array An array of integer
+     */
+    private function explodeBitwise($value, $sources)
+    {
+        if ($value === -1) {
+            return [-1 => 1];
+        }
+        if ($value === 0) {
+            return [0 => 1];
+        }
+        $listOptions = [];
+        // Explode all bitwise
+        foreach ($sources as $bit => $text) {
+            if ($bit !== -1 && $bit !== 0 && ($value & $bit)) {
+                $listOptions[$bit] = 1;
+            }
+        }
+        return $listOptions;
     }
 }

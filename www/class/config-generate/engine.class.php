@@ -152,7 +152,9 @@ class Engine extends AbstractObject
         enable_predictive_service_dependency_checks,
         use_large_installation_tweaks,
         enable_environment_macros,
-        use_setpgid
+        use_setpgid,
+        enable_macros_filter,
+        macros_filter
     ';
     protected $attributes_write = array(
         'use_timezone',
@@ -229,6 +231,8 @@ class Engine extends AbstractObject
         'service_perfdata_command',
         'host_perfdata_file_processing_command',
         'service_perfdata_file_processing_command',
+        'macros_filter',
+        'enable_macros_filter'
     );
     protected $attributes_default = array(
         'enable_notifications',
@@ -321,7 +325,7 @@ class Engine extends AbstractObject
     private function getBrokerModules()
     {
         if (is_null($this->stmt_broker)) {
-            $this->stmt_broker = $this->backend_instance->db->prepare("SELECT 
+            $this->stmt_broker = $this->backend_instance->db->prepare("SELECT
               broker_module
             FROM cfg_nagios_broker_module
             WHERE cfg_nagios_id = :id
@@ -349,7 +353,7 @@ class Engine extends AbstractObject
     private function generate($poller_id)
     {
         if (is_null($this->stmt_engine)) {
-            $this->stmt_engine = $this->backend_instance->db->prepare("SELECT 
+            $this->stmt_engine = $this->backend_instance->db->prepare("SELECT
               $this->attributes_select
             FROM cfg_nagios
             WHERE nagios_server_id = :poller_id AND nagios_activate = '1'
