@@ -1,4 +1,6 @@
 import React, { Component } from "react";
+import classnames from 'classnames';
+import styles from '../header/header.scss';
 import Clock from "../clock";
 import config from "../../config";
 import {Translate} from 'react-redux-i18n';
@@ -98,20 +100,20 @@ class UserMenu extends Component {
           autolink = conditionnedhref + 'autologin=1&useralias=' + username + '&token=' + autologinkey
 
     return (
-      <div class={"wrap-right-user" + (toggled ? " submenu-active" : "")}>
+      <div className={classnames(styles["wrap-right-user"], {[styles["submenu-active"]]: toggled})}>
         <Clock/>
         <div ref={profile => this.profile = profile}>
-          <span class="iconmoon icon-user" onClick={this.toggle} />
-          <div class={"submenu profile"}>
-            <div class="submenu-inner">
-              <ul class="submenu-items list-unstyled">
-                <li class="submenu-item">
-                  <span class="submenu-item-link">
-                    <span class="submenu-user-name">{fullname}</span>
-                    <span class="submenu-user-type"><Translate value="as"/> {username}</span>
+          <span className={classnames(styles["iconmoon"], styles["icon-user"])} onClick={this.toggle} />
+          <div className={classnames(styles["submenu"], styles["profile"])}>
+            <div className={styles["submenu-inner"]}>
+              <ul className={classnames(styles["submenu-items"], styles["list-unstyled"])}>
+                <li className={styles["submenu-item"]}>
+                  <span className={styles["submenu-item-link"]}>
+                    <span className={styles["submenu-user-name"]}>{fullname}</span>
+                    <span className={styles["submenu-user-type"]}><Translate value="as"/> {username}</span>
                     {allowEditProfile &&
                       <a
-                        class="submenu-user-edit"
+                        className={styles["submenu-user-edit"]}
                         href={config.urlBase + "main.php?p=" + EDIT_PROFILE_TOPOLOGY_PAGE + "&o=c"}
                       >
                         <Translate value="Edit profile"/>
@@ -122,24 +124,26 @@ class UserMenu extends Component {
                 {autologinkey &&
                   <React.Fragment>
                     <button
-                      className={'submenu-user-button'}
+                      className={styles["submenu-user-button"]}
                       onClick={this.onCopy}
                     >
                       <Translate value="Copy autologin link"/>
-                      <span className={"btn-logout-icon icon-copy " + (copied && ["icon-copied"])}></span>
+                      <span className={classnames(styles["btn-logout-icon"], styles["icon-copy"], {[styles["icon-copied"]]: copied})}></span>
                     </button>
                     <textarea
                       id="autologin-input"
-                      className={'hidden-input'}
+                      className={styles["hidden-input"]}
                       ref={node => this.autologinNode = node}
                       value={autolink}
                     />
                   </React.Fragment>
                 }
               </ul>
-              <div class="button-wrap">
+              <div className={styles["button-wrap"]}>
                 <a href={config.urlBase + "index.php?disconnect=1"}>
-                  <button class="btn btn-small logout"><Translate value="Logout"/></button>
+                  <button className={classnames(styles["btn"], styles["btn-small"], styles["logout"])}>
+                    <Translate value="Logout"/>
+                  </button>
                 </a>
               </div>
             </div>

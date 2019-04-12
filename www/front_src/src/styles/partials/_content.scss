@@ -2,7 +2,12 @@
     CONTENT STYLE
 ----------------------------------------------------- */
 
-#content {
+.wrapper {
+  display: flex;
+  align-items: stretch;
+}
+
+.content {
   display: flex;
   flex-direction: column;
   overflow: hidden;
@@ -12,7 +17,7 @@
   position: relative;
 }
 
-#fullscreen-wrapper {
+.fullscreen-wrapper {
   flex-grow: 1;
   overflow: hidden;
 }

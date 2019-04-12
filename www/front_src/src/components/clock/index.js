@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import styles from '../header/header.scss';
 import "moment-timezone";
 import Moment from "moment";
 import axios from "../../axios";
@@ -58,9 +59,9 @@ class Clock extends Component {
     }
 
     return (
-      <div class="wrap-right-timestamp">
-        <span class="wrap-right-date">{data.date}</span>
-        <span class="wrap-right-time">{data.time}</span>
+      <div className={styles["wrap-right-timestamp"]}>
+        <span className={styles["wrap-right-date"]}>{data.date}</span>
+        <span className={styles["wrap-right-time"]}>{data.time}</span>
       </div>
     );
   }

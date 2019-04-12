@@ -33,9 +33,10 @@
     "webpack-cli": "^3.0.8"
   },
   "dependencies": {
-    "@centreon/react-components": "18.10.0-alpha.44",
+    "@centreon/react-components": "next",
     "axios": "^0.18.0",
     "class-name": "^0.1.3",
+    "classnames": "^2.2.6",
     "dom-serializer": "^0.1.0",
     "install": "^0.12.2",
     "loaders.css": "^0.1.2",

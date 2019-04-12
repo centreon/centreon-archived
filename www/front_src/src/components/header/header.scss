@@ -1,3 +1,9 @@
+@import "../../styles/partials/variables";
+@import "../../styles/partials/helpers";
+@import "../../styles/partials/fonts";
+@import "../../styles/partials/icons";
+@import "../button/button";
+
 .header {
   background-color: #232f39;
   box-sizing: border-box;

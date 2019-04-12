@@ -1,4 +1,6 @@
 import React, { Component } from "react";
+import classnames from 'classnames';
+import styles from '../header/header.scss';
 import numeral from "numeral";
 import {Link} from 'react-router-dom';
 import PropTypes from 'prop-types';
@@ -86,89 +88,89 @@ class HostMenu extends Component {
     }
 
     return (
-      <div class={"wrap-right-hosts" + (toggled ? " submenu-active" : "")}>
-        <Link to={"/main.php?p=20202&o=h_down&search="} class={"wrap-middle-icon round round-small "+ (data.down.unhandled > 0 ? "red" : "red-bordered")}>
-          <span class="number">
+      <div className={classnames(styles["wrap-right-hosts"], {[styles["submenu-active"]]: toggled})}>
+        <Link to={"/main.php?p=20202&o=h_down&search="} className={classnames(styles["wrap-middle-icon"], styles["round"], styles["round-small"], {[styles[data.down.unhandled > 0 ? "red" : "red-bordered"]]: true})}>
+          <span className={styles["number"]}>
             <span id="count-host-down">{numeral(data.down.unhandled).format("0a")}</span>
           </span>
         </Link>
-        <Link to={"/main.php?p=20202&o=h_unreachable&search="} class={"wrap-middle-icon round round-small "+ (data.unreachable.unhandled > 0 ? "gray-dark" : "gray-dark-bordered")}>
-          <span class="number">
+        <Link to={"/main.php?p=20202&o=h_unreachable&search="} className={classnames(styles["wrap-middle-icon"], styles["round"], styles["round-small"], {[styles[data.unreachable.unhandled > 0 ? "gray-dark" : "gray-dark-bordered"]]: true})}>
+          <span className={styles["number"]}>
             <span id="count-host-unreachable">{numeral(data.unreachable.unhandled).format("0a")}</span>
           </span>
         </Link>
-        <Link to={"/main.php?p=20202&o=h_up&search="} class={"wrap-middle-icon round round-small "+ (data.ok > 0 ? "green" : "green-bordered")}>
-          <span class="number">
+        <Link to={"/main.php?p=20202&o=h_up&search="} className={classnames(styles["wrap-middle-icon"], styles["round"], styles["round-small"], {[styles[data.ok > 0 ? "green" : "green-bordered"]]: true})}>
+          <span className={styles["number"]}>
             <span id="count-host-up">{numeral(data.ok).format("0a")}</span>
           </span>
         </Link>
         <div ref={host => this.host = host}>
-          <span class="wrap-right-icon hosts" onClick={this.toggle.bind(this)}>
-            <span class="iconmoon icon-hosts">
-              {data.pending > 0 ? <span class="custom-icon" /> : null}
+          <span className={classnames(styles["wrap-right-icon"], styles["hosts"])} onClick={this.toggle.bind(this)}>
+            <span className={classnames(styles["iconmoon"], styles["icon-hosts"])}>
+              {data.pending > 0 ? <span className={styles["custom-icon"]} /> : null}
             </span>
-            <span class="wrap-right-icon__name"><Translate value="Hosts"/></span>
+            <span className={styles["wrap-right-icon__name"]}><Translate value="Hosts"/></span>
           </span>
-          <span class="toggle-submenu-arrow" onClick={this.toggle.bind(this)} >{this.props.children}</span>
-          <div class="submenu host">
-            <div class="submenu-inner">
-              <ul class="submenu-items list-unstyled">
-                <li class="submenu-item">
+          <span className={styles["toggle-submenu-arrow"]} onClick={this.toggle.bind(this)} >{this.props.children}</span>
+          <div className={classnames(styles["submenu"], styles["host"])}>
+            <div className={styles["submenu-inner"]}>
+              <ul className={classnames(styles["submenu-items"], styles["list-unstyled"])}>
+                <li className={styles["submenu-item"]}>
                   <Link
                     to={"/main.php?p=20202&o=h&search="}
-                    class="submenu-item-link"
+                    className={styles["submenu-item-link"]}
                   >
                     <div onClick={this.toggle}>
                       <Translate value="All"/>
-                      <span class="submenu-count">{numeral(data.total).format("0a")}</span>
+                      <span className={styles["submenu-count"]}>{numeral(data.total).format("0a")}</span>
                     </div>
                   </Link>
                 </li>
-                <li class="submenu-item">
+                <li class={styles["submenu-item"]}>
                   <Link
                     to={"/main.php?p=20202&o=h_down&search="}
-                    class="submenu-item-link"
+                    className={styles["submenu-item-link"]}
                   >
                     <div onClick={this.toggle}>
-                      <span class="dot-colored red"><Translate value="Down"/></span>
-                      <span class="submenu-count">
+                      <span className={classnames(styles["dot-colored"], styles["red"])}><Translate value="Down"/></span>
+                      <span className={styles["submenu-count"]}>
                         {numeral(data.down.unhandled).format("0a")}/{numeral(data.down.total).format("0a")}
                       </span>
                     </div>
                   </Link>
                 </li>
-                <li class="submenu-item">
+                <li className={styles["submenu-item"]}>
                   <Link
                     to={"/main.php?p=20202&o=h_unreachable&search="}
-                    class="submenu-item-link"
+                    className={styles["submenu-item-link"]}
                   >
                     <div onClick={this.toggle}>
-                      <span class="dot-colored gray"><Translate value="Unreachable"/></span>
-                      <span class="submenu-count">
+                      <span className={classnames(styles["dot-colored"], styles["gray"])}><Translate value="Unreachable"/></span>
+                      <span className={styles["submenu-count"]}>
                         {numeral(data.unreachable.unhandled).format("0a")}/{numeral(data.unreachable.total).format("0a")}
                       </span>
                     </div>
                   </Link>
                 </li>
-                <li class="submenu-item">
+                <li className={styles["submenu-item"]}>
                   <Link
                     to={"/main.php?p=20202&o=h_up&search="}
-                    class="submenu-item-link"
+                    className={styles["submenu-item-link"]}
                   >
                     <div onClick={this.toggle}>
-                      <span class="dot-colored green"><Translate value="Up"/></span>
-                      <span class="submenu-count">{numeral(data.ok).format("0a")}</span>
+                      <span className={classnames(styles["dot-colored"], styles["green"])}><Translate value="Up"/></span>
+                      <span className={styles["submenu-count"]}>{numeral(data.ok).format("0a")}</span>
                     </div>
                   </Link>
                 </li>
-                <li class="submenu-item">
+                <li className={styles["submenu-item"]}>
                   <Link
                     to={"/main.php?p=20202&o=h_pending&search="}
-                    class="submenu-item-link"
+                    className={styles["submenu-item-link"]}
                   >
                     <div onClick={this.toggle}>
-                      <span class="dot-colored blue"><Translate value="Pending"/></span>
-                      <span class="submenu-count">{numeral(data.pending).format("0a")}</span>
+                      <span className={classnames(styles["dot-colored"], styles["blue"])}><Translate value="Pending"/></span>
+                      <span className={styles["submenu-count"]}>{numeral(data.pending).format("0a")}</span>
                     </div>
                   </Link>
                 </li>

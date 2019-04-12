@@ -20,6 +20,9 @@ import NotAllowedPage from './route-components/notAllowedPage';
 
 import { fetchExternalComponents } from "./redux/actions/externalComponentsActions";
 
+import styles from './App.scss';
+import contentStyles from './styles/partials/_content.scss';
+
 class App extends Component {
 
   state = {
@@ -130,22 +133,22 @@ class App extends Component {
 
     return (
       <ConnectedRouter history={history}>
-        <div class="wrapper">
+        <div className={styles["wrapper"]}>
           {!min && // do not display menu if min=1
             <NavigationComponent/>
           }
           <Tooltip/>
-          <div id="content">
+          <div id="content" className={contentStyles['content']}>
             {!min && // do not display header if min=1
               <Header/>
             }
-            <div id="fullscreen-wrapper">
+            <div id="fullscreen-wrapper" className={contentStyles['fullscreen-wrapper']}>
               <Fullscreen
                 enabled={this.state.isFullscreenEnabled}
                 onClose={this.removeFullscreenParams}
                 onChange={isFullscreenEnabled => this.setState({isFullscreenEnabled})}>
-                <div className="full-screenable-node">
-                  <div className="main-content">
+                <div className={styles["full-screenable-node"]}>
+                  <div className={styles["main-content"]}>
                     <Switch>
                       {classicRoutes.map(({path, comp, ...rest}, i) => (
                         <ClassicRoute key={i} history={history} path={path} component={comp} {...rest} />
@@ -161,7 +164,7 @@ class App extends Component {
               <Footer/>
             }
           </div>
-          <span className="full-screen" onClick={this.goFull}></span>
+          <span className={styles["full-screen"]} onClick={this.goFull}></span>
         </div>
       </ConnectedRouter>
     );
