@@ -501,7 +501,7 @@ class CentreonLDAP
              * we get list of members by group
              */
             $filter = preg_replace('/%s/', $this->getCnFromDn($groupdn), $this->groupSearchInfo['filter']);
-            $result = @ldap_search($this->ds, $this->userSearchInfo['base_search'], $filter);
+            $result = @ldap_search($this->ds, $this->groupSearchInfo['base_search'], $filter);
 
             if (false === $result) {
                 restore_error_handler();
@@ -587,7 +587,7 @@ class CentreonLDAP
         $sr = ldap_search($this->ds, $basedn, $filter, $attr, 0, $searchLimit, $searchTimeout);
         $this->debug("LDAP Search : Error : " . ldap_error($this->ds));
         /* Sort */
-        ldap_sort($this->ds, $sr, "dn");
+        @ldap_sort($this->ds, $sr, "dn");
         $number_returned = ldap_count_entries($this->ds, $sr);
         $this->debug("LDAP Search : " . (isset($number_returned) ? $number_returned : "0") . " entries found");
 
