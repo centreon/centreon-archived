@@ -69,3 +69,7 @@ $help['tip_partitioning_backup_directory'] = dgettext(
  */
 
 $help['tip_audit_log_option'] = dgettext('help', 'Enable/Disable logging of all modifications in Centreon');
+$help['tip_audit_log_retention'] = dgettext(
+    'help',
+    'Duration of retention regarding audit logs stored in databsae. 0 or empty means that no retention will be applied.'
+);

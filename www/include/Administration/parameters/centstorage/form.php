@@ -132,6 +132,7 @@ $form->addElement('text', 'len_storage_comments', _("Retention duration for comm
 $form->addElement('text', 'archive_retention', _("Retention duration for logs"), $attrsText2);
 $form->addElement('text', 'reporting_retention', _("Retention duration for reporting data (Dashboard)"), $attrsText2);
 $form->addElement('checkbox', 'audit_log_option', _("Enable/Disable audit logs"));
+$form->addElement('text', 'audit_log_retention', _("Retention duration for audit logs"), $attrsText2);
 
 // Parameters for Partitioning
 $form->addElement('text', 'partitioning_retention', _("Retention duration for partitioning"), $attrsText2);
