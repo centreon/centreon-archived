@@ -52,12 +52,12 @@ if (isset($_POST['limit']) && $_POST['limit']) {
     $limit = $_SESSION[$sessionLimitKey];
 } else {
     if (($p >= 200 && $p < 300) || ($p >= 20000 && $p < 30000)) {
-        $DBRESULT = $pearDB->query("SELECT * FROM `options` WHERE `key` = 'maxViewMonitoring'");
-        $gopt = $DBRESULT->fetch();
+        $dbResult = $pearDB->query("SELECT * FROM `options` WHERE `key` = 'maxViewMonitoring'");
+        $gopt = $dbResult->fetch();
         $limit = myDecode($gopt['value']);
     } else {
-        $DBRESULT = $pearDB->query("SELECT * FROM `options` WHERE `key` = 'maxViewConfiguration'");
-        $gopt = $DBRESULT->fetch();
+        $dbResult = $pearDB->query("SELECT * FROM `options` WHERE `key` = 'maxViewConfiguration'");
+        $gopt = $dbResult->fetch();
         $limit = myDecode($gopt['value']);
     }
 }
