@@ -1,7 +1,7 @@
 <?php
 /*
- * Copyright 2005-2011 MERETHIS
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2019 CENTREON
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -19,11 +19,11 @@
  * combined work based on this program. Thus, the terms and conditions of the GNU
  * General Public License cover the whole combination.
  *
- * As a special exception, the copyright holders of this program give MERETHIS
+ * As a special exception, the copyright holders of this program give CENTREON
  * permission to link this program with independent modules to produce an executable,
  * regardless of the license terms of these independent modules, and to copy and
- * distribute the resulting executable under terms of MERETHIS choice, provided that
- * MERETHIS also meet, for each linked independent module, the terms  and conditions
+ * distribute the resulting executable under terms of CENTREON choice, provided that
+ * CENTREON also meet, for each linked independent module, the terms  and conditions
  * of the license of that module. An independent module is a module which is not
  * derived from this program. If you modify this program, you may extend this
  * exception to your version of the program, but you are not obliged to do so. If you
@@ -151,11 +151,12 @@ class procedures
      */
     public function getMyHostID($host_name = null)
     {
-        $query = "SELECT host_id FROM host " .
+        $dbResult = $this->centreon_DB->query(
+            "SELECT host_id FROM host " .
             "WHERE host_name = '" . $host_name . "' " .
-            "LIMIT 1 ";
-        $DBRESULT = $this->centreon_DB->query($query);
-        $row = $DBRESULT->fetchRow();
+            "LIMIT 1 "
+        );
+        $row = $dbResult->fetch();
         if ($row["host_id"]) {
             return $row["host_id"];
         }
@@ -171,22 +172,26 @@ class procedures
     {
         $tplArr = array();
 
-        $DBRESULT = $this->centreon_DB->query("SELECT service_description, service_template_model_stm_id
-                                                FROM service
-                                                WHERE service_id = '" . $service_id . "' LIMIT 1");
-        $row = $DBRESULT->fetchRow();
+        $dbResult = $this->centreon_DB->query(
+            "SELECT service_description, service_template_model_stm_id " .
+            "FROM service " .
+            "WHERE service_id = '" . $service_id . "' LIMIT 1"
+        );
+        $row = $dbResult->fetch();
         if (isset($row['service_template_model_stm_id']) && $row['service_template_model_stm_id'] != "") {
-            $DBRESULT->closeCursor();
+            $dbResult->closeCursor();
             $service_id = $row["service_template_model_stm_id"];
             if ($row["service_description"]) {
                 $tplArr[$service_id] = html_entity_decode($row["service_description"], ENT_QUOTES);
             }
             while (1) {
-                $DBRESULT = $this->centreon_DB->query("SELECT service_description, service_template_model_stm_id
-                                                        FROM service
-                                                        WHERE service_id = '" . $service_id . "' LIMIT 1");
-                $row = $DBRESULT->fetchRow();
-                $DBRESULT->closeCursor();
+                $dbResult = $this->centreon_DB->query(
+                    "SELECT service_description, service_template_model_stm_id " .
+                    "FROM service " .
+                    "WHERE service_id = '" . $service_id . "' LIMIT 1"
+                );
+                $row = $dbResult->fetch();
+                $dbResult->closeCursor();
                 if ($row["service_description"]) {
                     $tplArr[$service_id] = html_entity_decode($row["service_description"], ENT_QUOTES);
                 } else {
@@ -215,15 +220,19 @@ class procedures
         }
 
         $tplArr = array();
-        $DBRESULT = $this->centreon_DB->query("SELECT host_tpl_id
-                                              FROM `host_template_relation`
-                                              WHERE host_host_id = '" . $host_id . "'
-                                              ORDER BY `order`");
-        while ($row = $DBRESULT->fetchRow()) {
-            $DBRESULT2 = $this->centreon_DB->query("SELECT host_name
-                                                    FROM host
-                                                    WHERE host_id = '" . $row['host_tpl_id'] . "' LIMIT 1");
-            $hTpl = $DBRESULT2->fetchRow();
+        $dbResult = $this->centreon_DB->query(
+            "SELECT host_tpl_id " .
+            "FROM `host_template_relation` " .
+            "WHERE host_host_id = '" . $host_id . "' " .
+            "ORDER BY `order`"
+        );
+        while ($row = $dbResult->fetch()) {
+            $dbResult2 = $this->centreon_DB->query(
+                "SELECT host_name " .
+                "FROM host " .
+                "WHERE host_id = '" . $row['host_tpl_id'] . "' LIMIT 1"
+            );
+            $hTpl = $dbResult2->fetch();
             $tplArr[$row['host_tpl_id']] = html_entity_decode($hTpl["host_name"], ENT_QUOTES);
         }
         unset($row);
@@ -241,20 +250,22 @@ class procedures
         /*
          * Get Host Informations
          */
-        $DBRESULT = $this->centreon_DB->query("SELECT host_name, host_id, host_register, ehi_icon_image
-                                                FROM host, extended_host_information ehi
-                                                WHERE host.host_id = ehi.host_host_id
-                                                ORDER BY host_name");
-        while ($data = $DBRESULT->fetchRow()) {
+        $dbResult = $this->centreon_DB->query(
+            "SELECT host_name, host_id, host_register, ehi_icon_image " .
+            "FROM host, extended_host_information ehi " .
+            "WHERE host.host_id = ehi.host_host_id " .
+            "ORDER BY host_name"
+        );
+        while ($data = $dbResult->fetch()) {
             if ($data["host_register"] == 1) {
                 $this->hostList[$data["host_name"]] = $data["host_id"];
             } else {
                 $this->hostTplList[$data["host_name"]] = $data["host_id"];
             }
-            $this->hostIconeList["Host_:_" . $data["host_name"]] =
-                "./img/media/" . $this->getImageFilePath($data["ehi_icon_image"]);
+            $this->hostIconeList["Host_:_" . $data["host_name"]]
+                = "./img/media/" . $this->getImageFilePath($data["ehi_icon_image"]);
         }
-        $DBRESULT->closeCursor();
+        $dbResult->closeCursor();
         unset($data);
     }
 
@@ -267,16 +278,22 @@ class procedures
     public function getImageFilePath($image_id)
     {
         if (isset($image_id) && $image_id) {
-            $DBRESULT2 = $this->centreon_DB->query("SELECT img_path, dir_alias
-                                                   FROM view_img vi, view_img_dir vid, view_img_dir_relation vidr
-                                                   WHERE vi.img_id = " . $image_id . "
-                                                   AND vidr.img_img_id = vi.img_id
-                                                   AND vid.dir_id = vidr.dir_dir_parent_id LIMIT 1");
-            $row2 = $DBRESULT2->fetchRow();
-            if (isset($row2["dir_alias"]) && isset($row2["img_path"]) && $row2["dir_alias"] && $row2["img_path"]) {
+            $dbResult2 = $this->centreon_DB->query(
+                "SELECT img_path, dir_alias " .
+                "FROM view_img vi, view_img_dir vid, view_img_dir_relation vidr " .
+                "WHERE vi.img_id = " . $image_id . " " .
+                "AND vidr.img_img_id = vi.img_id " .
+                "AND vid.dir_id = vidr.dir_dir_parent_id LIMIT 1"
+            );
+            $row2 = $dbResult2->fetch();
+            if (isset($row2["dir_alias"])
+                && isset($row2["img_path"])
+                && $row2["dir_alias"]
+                && $row2["img_path"]
+            ) {
                 return $row2["dir_alias"] . "/" . $row2["img_path"];
             }
-            $DBRESULT2->closeCursor();
+            $dbResult2->closeCursor();
             unset($row2);
         } else {
             return "../icones/16x16/server_network.gif";
@@ -290,13 +307,15 @@ class procedures
      */
     public function setServiceInformations()
     {
-        $DBRESULT = $this->centreon_DB->query("SELECT service_description, service_id, service_register
-                                                FROM service WHERE service_register = '0'
-                                                ORDER BY service_description");
-        while ($data = $DBRESULT->fetchRow()) {
+        $dbResult = $this->centreon_DB->query(
+            "SELECT service_description, service_id, service_register " .
+            "FROM service WHERE service_register = '0' " .
+            "ORDER BY service_description"
+        );
+        while ($data = $dbResult->fetch()) {
             $this->serviceTplList["Service_:_" . $data["service_description"]] = $data["service_id"];
         }
-        $DBRESULT->closeCursor();
+        $dbResult->closeCursor();
         unset($data);
     }
 
