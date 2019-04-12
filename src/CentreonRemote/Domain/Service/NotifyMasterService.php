@@ -62,11 +62,13 @@ class NotifyMasterService
 
     /**
      * Ping the master IP requesting to be slave for it.
-     * @param string $ip
+     * @param string $ip The IP address of the master
+     * @param boolean $noCheckCertificate To do not check SLL CA on master
+     * @param array $data The information for the master how to contact the remote
      * @return array
      * @throws \ErrorException
      */
-    public function pingMaster($ip, $noCheckCertificate = false)
+    public function pingMaster($ip, $noCheckCertificate = false, $data)
     {
 
         $url = "{$ip}/centreon/api/external.php?object=centreon_remote_server&action=addToWaitList";
