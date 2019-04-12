@@ -192,7 +192,6 @@ try {
                     $rowData['host_id'] . "', '" . $row['acl_res_id'] . "')";
                 $pearDB->query($insert_query);
             }
-            $res1->closeCursor();
         }
 
         /**
@@ -213,7 +212,6 @@ try {
                     $rowData['hg_id'] . "', '" . $row['acl_res_id'] . "')";
                 $pearDB->query($insert_query);
             }
-            $res1->closeCursor();
         }
 
         /**
@@ -234,14 +232,12 @@ try {
                     $rowData['sg_id'] . "', '" . $row['acl_res_id'] . "')";
                 $pearDB->query($insert_query);
             }
-            $res1->closeCursor();
         }
 
         if ($aclResourcesUpdated) {
             $pearDB->query("UPDATE acl_resources SET changed = '1' WHERE acl_res_id = '" . $row['acl_res_id'] . "'");
         }
     }
-    $res->closeCursor();
 
     /**
      * Check that the ACL resources have changed
@@ -262,7 +258,6 @@ try {
     while ($result = $DBRESULT1->fetch()) {
         $tabGroups[] = $result['acl_group_id'];
     }
-    $DBRESULT1->closeCursor();
     unset($result);
 
     if (count($tabGroups)) {
@@ -280,14 +275,12 @@ try {
             }
             $hostTemplateCache[$row['host_tpl_id']][$row['host_host_id']] = $row['host_host_id'];
         }
-        $res->closeCursor();
 
         $hostCache = array();
         $DBRESULT = $pearDB->query("SELECT host_id, host_name FROM host WHERE host_register IN ('1', '2')");
         while ($h = $DBRESULT->fetch()) {
             $hostCache[$h["host_id"]] = $h["host_name"];
         }
-        $DBRESULT->closeCursor();
         unset($h);
 
         /** ***********************************************
@@ -307,44 +300,41 @@ try {
          * Get all included Hosts
          */
         $hostIncCache = array();
-        $DBRESULT = $pearDB->query("SELECT host_id, host_name, acl_res_id FROM `host`, acl_resources_host_relations" .
+        $DBRESULT = $pearDB->query("SELECT host_id, acl_res_id FROM `host`, acl_resources_host_relations" .
             " WHERE acl_resources_host_relations.host_host_id = host.host_id AND host.host_register = '1'");
         while ($h = $DBRESULT->fetch()) {
             if (!isset($hostIncCache[$h["acl_res_id"]])) {
                 $hostIncCache[$h["acl_res_id"]] = array();
             }
-            $hostIncCache[$h["acl_res_id"]][$h["host_id"]] = $h["host_name"];
+            $hostIncCache[$h["acl_res_id"]][$h["host_id"]] = 1;
         }
-        $DBRESULT->closeCursor();
 
         /** ***********************************************
          * Get all excluded Hosts
          */
         $hostExclCache = array();
         $DBRESULT = $pearDB->query(
-            "SELECT host_id, host_name, acl_res_id FROM `host`, acl_resources_hostex_relations" .
+            "SELECT host_id, acl_res_id FROM `host`, acl_resources_hostex_relations" .
             " WHERE acl_resources_hostex_relations.host_host_id = host.host_id AND host.host_register = '1'"
         );
         while ($h = $DBRESULT->fetch()) {
             if (!isset($hostExclCache[$h["acl_res_id"]])) {
                 $hostExclCache[$h["acl_res_id"]] = array();
             }
-            $hostExclCache[$h["acl_res_id"]][$h["host_id"]] = $h["host_name"];
+            $hostExclCache[$h["acl_res_id"]][$h["host_id"]] = 1;
         }
-        $DBRESULT->closeCursor();
 
         /** ***********************************************
          * Service Cache
          */
         $svcCache = array();
         $DBRESULT = $pearDB->query(
-            "SELECT service_id, service_description FROM `service` " .
+            "SELECT service_id FROM `service` " .
             "WHERE service_register = '1'"
         );
         while ($s = $DBRESULT->fetch()) {
-            $svcCache[$s["service_id"]] = $s["service_description"];
+            $svcCache[$s["service_id"]] = 1;
         }
-        $DBRESULT->closeCursor();
 
         /** ***********************************************
          * Host Host relation
@@ -357,7 +347,6 @@ try {
             }
             $hostHGRelation[$hg["hostgroup_hg_id"]][$hg["host_host_id"]] = $hg["host_host_id"];
         }
-        $DBRESULT->closeCursor();
         unset($hg);
 
         /** ***********************************************
@@ -374,11 +363,11 @@ try {
                 $hsRelation[$sr["host_host_id"]][$sr["service_service_id"]] = 1;
             } else {
                 if (isset($hostHGRelation[$sr["hostgroup_hg_id"]])) {
-                    foreach ($hostHGRelation[$sr["hostgroup_hg_id"]] as $host_id) {
-                        if (!isset($hsRelation[$host_id])) {
-                            $hsRelation[$host_id] = array();
+                    foreach ($hostHGRelation[$sr["hostgroup_hg_id"]] as $hostId) {
+                        if (!isset($hsRelation[$hostId])) {
+                            $hsRelation[$hostId] = array();
                         }
-                        $hsRelation[$host_id][$sr["service_service_id"]] = 1;
+                        $hsRelation[$hostId][$sr["service_service_id"]] = 1;
                     }
                 }
             }
@@ -416,7 +405,6 @@ try {
         while ($row = $res->fetch()) {
             $sgCache[$row['acl_res_id']] = array();
         }
-        $res->closeCursor();
         unset($row);
 
         $query = "SELECT service_service_id, sgr.host_host_id, acl_res_id " .
@@ -430,12 +418,10 @@ try {
                     if (!isset($sgCache[$rId][$row['host_host_id']])) {
                         $sgCache[$rId][$row['host_host_id']] = array();
                     }
-                    $sgCache[$rId][$row['host_host_id']][$svcCache[$row['service_service_id']]] =
-                        $row['service_service_id'];
+                    $sgCache[$rId][$row['host_host_id']][$row['service_service_id']] = 1;
                 }
             }
         }
-        $res->closeCursor();
         unset($row);
 
         $query = "SELECT acl_res_id, hg_id FROM hostgroup, acl_resources_hg_relations " .
@@ -448,7 +434,6 @@ try {
             }
             $hgResCache[$row['acl_res_id']][] = $row['hg_id'];
         }
-        $res->closeCursor();
         unset($row);
 
         // Prepare statement
@@ -458,18 +443,18 @@ try {
          * Begin to build ACL
          */
         $cpt = 0;
-        foreach ($tabGroups as $acl_group_id) {
+        foreach ($tabGroups as $aclGroupId) {
             /*
              * Delete old data for this group
              */
-            $deleteHandler->execute(array($acl_group_id));
+            $deleteHandler->execute(array($aclGroupId));
 
             /** ***********************************************
              * Select
              */
             $DBRESULT2 = $pearDB->query(
                 "SELECT DISTINCT(`acl_resources`.`acl_res_id`) FROM `acl_res_group_relations`, `acl_resources` " .
-                "WHERE `acl_res_group_relations`.`acl_group_id` = '" . $acl_group_id . "' " .
+                "WHERE `acl_res_group_relations`.`acl_group_id` = '" . $aclGroupId . "' " .
                 "AND `acl_res_group_relations`.acl_res_id = `acl_resources`.acl_res_id " .
                 "AND `acl_resources`.acl_res_activate = '1'"
             );
@@ -481,24 +466,24 @@ try {
                 if (!isset($resourceCache[$res2["acl_res_id"]])) {
                     $resourceCache[$res2["acl_res_id"]] = array();
 
-                    $Host = array();
+                    $host = array();
                     /*
                     * Get all Hosts
                     */
                     if (isset($hostIncCache[$res2["acl_res_id"]])) {
-                        foreach ($hostIncCache[$res2["acl_res_id"]] as $host_id => $host_name) {
-                            $Host[$host_id] = $host_name;
+                        foreach (array_keys($hostIncCache[$res2["acl_res_id"]]) as $hostId) {
+                            $host[$hostId] = 1;
                         }
                     }
 
                     if (isset($hgResCache[$res2['acl_res_id']])) {
                         foreach ($hgResCache[$res2['acl_res_id']] as $hgId) {
                             if (isset($hostHGRelation[$hgId])) {
-                                foreach ($hostHGRelation[$hgId] as $host_id) {
-                                    if ($hostCache[$host_id]) {
-                                        $Host[$host_id] = $hostCache[$host_id];
+                                foreach ($hostHGRelation[$hgId] as $hostId) {
+                                    if ($hostCache[$hostId]) {
+                                        $host[$hostId] = 1;
                                     } else {
-                                        print "Host $host_id unknown !\n";
+                                        print "Host $hostId unknown !\n";
                                     }
                                 }
                             }
@@ -506,8 +491,8 @@ try {
                     }
 
                     if (isset($hostExclCache[$res2["acl_res_id"]])) {
-                        foreach ($hostExclCache[$res2["acl_res_id"]] as $host_id => $host_name) {
-                            unset($Host[$host_id]);
+                        foreach (array_keys($hostExclCache[$res2["acl_res_id"]]) as $hostId) {
+                            unset($host[$hostId]);
                         }
                     }
 
@@ -519,7 +504,7 @@ try {
                     /*
                     * get all Service groups
                     */
-                    $sgReq = "SELECT host_name, host_id, service_description, service_id
+                    $sgReq = "SELECT host_id, service_id
                                 FROM `acl_resources_sg_relations`, `servicegroup_relation`, `host`, `service`
                                 WHERE acl_res_id = '" . $res2["acl_res_id"] . "'
                                     AND host.host_id = servicegroup_relation.host_host_id
@@ -527,7 +512,7 @@ try {
                                     AND servicegroup_relation.servicegroup_sg_id = acl_resources_sg_relations.sg_id
                                     AND service_activate = '1'
                             UNION
-                            SELECT host_name, host_id, service_description, service_id FROM `acl_resources_sg_relations`,
+                            SELECT host_id, service_id FROM `acl_resources_sg_relations`,
                             `servicegroup_relation`, `host`, `service`, `hostgroup`, `hostgroup_relation`
                                 WHERE acl_res_id = '" . $res2["acl_res_id"] . "'
                                     AND hostgroup.hg_id = servicegroup_relation.hostgroup_hg_id
@@ -540,36 +525,29 @@ try {
 
                     $sgElem = array();
                     $tmpH = array();
-                    if ($DBRESULT3->rowCount()) {
-                        while ($h = $DBRESULT3->fetch()) {
-                            if (!isset($sgElem[$h["host_name"]])) {
-                                $sgElem[$h["host_name"]] = array();
-                                $tmpH[$h['host_id']] = $h['host_name'];
-                            }
-                            $sgElem[$h["host_name"]][$h["service_description"]] =
-                                $h["host_id"] . "," . $h["service_id"];
+                    while ($h = $DBRESULT3->fetch()) {
+                        if (!isset($sgElem[$h["host_id"]])) {
+                            $sgElem[$h["host_id"]] = array();
+                            $tmpH[$h['host_id']] = 1;
                         }
+                        $sgElem[$h["host_id"]][$h["service_id"]] = 1;
                     }
-                    $DBRESULT3->closeCursor();
 
                     $tmpH = getFilteredHostCategories($tmpH, $res2["acl_res_id"]);
                     $tmpH = getFilteredPollers($tmpH, $res2["acl_res_id"]);
 
-                    foreach ($sgElem as $key => $value) {
-                        if (in_array($key, $tmpH)) {
+                    foreach ($sgElem as $hostId => $value) {
+                        if (isset($tmpH[$hostId])) {
                             if (count($authorizedCategories) == 0) { // no category filter
-                                $resourceCache[$res2["acl_res_id"]][$key] = $value;
+                                $resourceCache[$res2["acl_res_id"]][$hostId] = $value;
                             } else {
-                                // subkey = <service_description>, subvalue = <host_id>,<service_id>
-                                foreach ($value as $subkey => $subvalue) {
-                                    if (preg_match('/\d+,(\d+)/', $subvalue, $matches)) { // get service id
-                                        $linkedServiceCategories = getServiceTemplateCategoryList($matches[1]);
-                                        foreach ($linkedServiceCategories as $linkedServiceCategory) {
-                                            // Check if category linked to service is allowed
-                                            if (in_array($linkedServiceCategory, $authorizedCategories)) {
-                                                $resourceCache[$res2["acl_res_id"]][$key][$subkey] = $subvalue;
-                                                break;
-                                            }
+                                foreach (array_keys($value) as $serviceId) {
+                                    $linkedServiceCategories = getServiceTemplateCategoryList($serviceId);
+                                    foreach ($linkedServiceCategories as $linkedServiceCategory) {
+                                        // Check if category linked to service is allowed
+                                        if (in_array($linkedServiceCategory, $authorizedCategories)) {
+                                            $resourceCache[$res2["acl_res_id"]][$hostId][$serviceId] = 1;
+                                            break;
                                         }
                                     }
                                 }
@@ -581,23 +559,23 @@ try {
                     unset($sgElem);
 
                     // Filter
-                    $Host = getFilteredHostCategories($Host, $res2["acl_res_id"]);
-                    $Host = getFilteredPollers($Host, $res2['acl_res_id']);
+                    $host = getFilteredHostCategories($host, $res2["acl_res_id"]);
+                    $host = getFilteredPollers($host, $res2['acl_res_id']);
 
                     /*
                     * Initialize and first filter
                     */
-                    foreach ($Host as $key => $value) {
-                        $tab = getAuthorizedServicesHost($key, $res2["acl_res_id"], $authorizedCategories);
-                        if (!isset($resourceCache[$res2["acl_res_id"]][$value])) {
-                            $resourceCache[$res2["acl_res_id"]][$value] = array();
+                    foreach (array_keys($host) as $hostId) {
+                        $tab = getAuthorizedServicesHost($hostId, $res2["acl_res_id"], $authorizedCategories);
+                        if (!isset($resourceCache[$res2["acl_res_id"]][$hostId])) {
+                            $resourceCache[$res2["acl_res_id"]][$hostId] = array();
                         }
-                        foreach ($tab as $desc => $id) {
-                            $resourceCache[$res2["acl_res_id"]][$value][$desc] = $key . "," . $id;
+                        foreach (array_keys($tab) as $serviceId) {
+                            $resourceCache[$res2["acl_res_id"]][$hostId][$serviceId] = 1;
                         }
                         unset($tab);
                     }
-                    unset($Host);
+                    unset($host);
 
                     /*
                     * Set meta services
@@ -609,41 +587,28 @@ try {
                 }
 
                 $strBegin = "INSERT INTO centreon_acl (host_id, service_id, group_id) VALUES ";
-                $strEnd = " ON DUPLICATE KEY UPDATE `group_id` = ? ";
+                $strEnd = " ON DUPLICATE KEY UPDATE `group_id` = $aclGroupId ";
 
                 $str = "";
-                $params = [];
                 $i = 0;
-                foreach ($resourceCache[$res2["acl_res_id"]] as $host => $svc_list) {
-                    if ($hostId = array_search($host, $hostCache)) {
+                foreach ($resourceCache[$res2["acl_res_id"]] as $hostId => $svcList) {
+                    if (isset($hostCache[$hostId])) {
                         if ($str != "") {
                             $str .= ", ";
                         }
-                        $str .= " (?, NULL, ?) ";
-                        $params[] = $hostId;
-                        $params[] = $acl_group_id;
+                        $str .= " ($hostId, NULL, $aclGroupId) ";
 
-                        foreach (array_values($svc_list) as $hostServiceId) {
-                            $explodedHostServiceId = explode(",", $hostServiceId);
-
+                        foreach (array_keys($svcList) as $serviceId) {
                             if ($str != "") {
                                 $str .= ', ';
                             }
 
-                            if (isset($explodedHostServiceId[1])) {
-                                $i++;
-                                $str .= " (?, ?, ?) ";
-                                $params[] = $hostId;
-                                $params[] = $explodedHostServiceId[1];
-                                $params[] = $acl_group_id;
-                                if ($i >= 1000) {
-                                    $params[] = $acl_group_id; // argument for $strEnd
-                                    $stmt = $pearDBO->prepare($strBegin . $str . $strEnd);
-                                    $stmt->execute($params); // inject acl by bulk (1000 relations)
-                                    $params = [];
-                                    $str = "";
-                                    $i = 0;
-                                }
+                            $i++;
+                            $str .= " ($hostId, $serviceId, $aclGroupId) ";
+                            if ($i >= 5000) {
+                                $pearDBO->query($strBegin . $str . $strEnd);
+                                $str = "";
+                                $i = 0;
                             }
                         }
                     }
@@ -651,9 +616,7 @@ try {
 
                 // inject remaining acls (bulk of less than 1000 relations)
                 if ($str != "") {
-                    $params[] = $acl_group_id; // argument for $strEnd
-                    $stmt = $pearDBO->prepare($strBegin . $str . $strEnd);
-                    $stmt->execute($params);
+                    $stmt = $pearDBO->query($strBegin . $str . $strEnd);
                     $str = "";
                 }
 
@@ -661,7 +624,6 @@ try {
                 $stmt = $pearDB->prepare("UPDATE `acl_resources` SET `changed` = '0' WHERE acl_res_id = ?");
                 $stmt->execute([$res2["acl_res_id"]]);
             }
-            $DBRESULT2->closeCursor();
 
             if ($debug) {
                 $time_end = microtime_float2();
@@ -673,7 +635,7 @@ try {
 
             // reset flags of acl_groups
             $stmt = $pearDB->prepare("UPDATE acl_groups SET acl_group_changed = '0' WHERE acl_group_id = ?");
-            $stmt->execute([$acl_group_id]);
+            $stmt->execute([$aclGroupId]);
         }
 
         /**
