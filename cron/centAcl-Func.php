@@ -48,7 +48,7 @@ function microtime_float2()
  */
 function getFilteredPollers($host, $res_id)
 {
-    global $pearDB, $hostCache;
+    global $pearDB;
 
     $request = "SELECT COUNT(*) AS count FROM acl_resources_poller_relations WHERE acl_res_id = '" . $res_id . "'";
     $DBRESULT = $pearDB->query($request);
@@ -68,7 +68,7 @@ function getFilteredPollers($host, $res_id)
         $host = array();
         while ($row = $DBRESULT->fetch()) {
             if (isset($hostTmp[$row['host_host_id']])) {
-                $host[$row['host_host_id']] = $hostCache[$row['host_host_id']];
+                $host[$row['host_host_id']] = 1;
             }
         }
     } else {
@@ -114,11 +114,11 @@ function getFilteredHostCategories($host, $res_id)
     while ($linkedHostId = array_pop($linkedHosts)) {
         $treatedHosts[] = $linkedHostId;
         if (isset($host[$linkedHostId])) { // host
-            $filteredHosts[$linkedHostId] = $host[$linkedHostId];
+            $filteredHosts[$linkedHostId] = 1;
         } elseif (isset($hostTemplateCache[$linkedHostId])) { // host template
             foreach ($hostTemplateCache[$linkedHostId] as $hostId) {
                 if (isset($host[$hostId])) {
-                    $filteredHosts[$hostId] = $host[$hostId];
+                    $filteredHosts[$hostId] = 1;
                 }
                 if (isset($hostTemplateCache[$hostId])) {
                     foreach ($hostTemplateCache[$hostId] as $hostId2) {
@@ -205,8 +205,8 @@ function getACLSGForHost($pearDB, $host_id, $resId)
     if (isset($sgCache[$resId])) {
         foreach ($sgCache[$resId] as $hostId => $tab) {
             if ($host_id == $hostId) {
-                foreach ($tab as $svcDesc => $svcId) {
-                    $svc[$svcDesc] = $svcId;
+                foreach (array_keys($tab) as $serviceId) {
+                    $svc[$serviceId] = 1;
                 }
             }
         }
@@ -298,7 +298,7 @@ function hasServiceCategoryFilter($res_id)
 
 function getAuthorizedServicesHost($host_id, $res_id, $authorizedCategories)
 {
-    global $pearDB, $svcCache, $hostCache;
+    global $pearDB;
 
     $tab_svc = getMyHostServicesByName($host_id);
 
@@ -310,11 +310,11 @@ function getAuthorizedServicesHost($host_id, $res_id, $authorizedCategories)
     $tab_services = array();
     if (count($authorizedCategories)) {
         if ($tab_svc) {
-            foreach ($tab_svc as $svc_descr => $svc_id) {
-                $tab = getServiceTemplateCategoryList($svc_id);
+            foreach (array_keys($tab_svc) as $serviceId) {
+                $tab = getServiceTemplateCategoryList($serviceId);
                 foreach ($tab as $t) {
                     if (isset($authorizedCategories[$t])) {
-                        $tab_services[$svc_descr] = $svc_id;
+                        $tab_services[$serviceId] = 1;
                     }
                 }
             }
@@ -322,8 +322,8 @@ function getAuthorizedServicesHost($host_id, $res_id, $authorizedCategories)
     } else {
         $tab_services = $tab_svc;
         if ($svc_SG) {
-            foreach ($svc_SG as $key => $value) {
-                $tab_services[$key] = $value;
+            foreach (array_keys($svc_SG) as $serviceId) {
+                $tab_services[$serviceId] = 1;
             }
         }
     }
@@ -384,9 +384,7 @@ function getMyHostServicesByName($host_id = null)
     if (isset($hsRelation[$host_id])) {
         foreach ($hsRelation[$host_id] as $service_id => $flag) {
             if (isset($svcCache[$service_id])) {
-                $service_description = str_replace('#S#', '/', $svcCache[$service_id]);
-                $service_description = str_replace('#BS#', '\\', $service_description);
-                $hSvs[$service_description] = html_entity_decode($service_id, ENT_QUOTES);
+                $hSvs[$service_id] = 1;
             }
         }
     }
@@ -410,7 +408,7 @@ function getMetaServices($resId, $db, $metaObj)
         $hostId = $metaObj->getRealHostId();
         while ($row = $res->fetch()) {
             $svcId = $metaObj->getRealServiceId($row['meta_id']);
-            $arr['_Module_Meta']['meta_' . $row['meta_id']] = "$hostId,$svcId";
+            $arr[$hostId][$svcId] = 1;
         }
     }
     return $arr;
