@@ -3,7 +3,7 @@ import classnames from 'classnames';
 import styles from '../header/header.scss';
 import Clock from "../clock";
 import config from "../../config";
-import {Translate} from 'react-redux-i18n';
+import { Translate } from 'react-redux-i18n';
 import axios from "../../axios";
 import { connect } from "react-redux";
 
@@ -68,7 +68,7 @@ class UserMenu extends Component {
     window.document.execCommand('copy');
     this.setState({
       copied: true,
-      toggled: false
+      //toggled: false
     });
   };
 
@@ -128,7 +128,14 @@ class UserMenu extends Component {
                       onClick={this.onCopy}
                     >
                       <Translate value="Copy autologin link"/>
-                      <span className={classnames(styles["btn-logout-icon"], styles["icon-copy"], {[styles["icon-copied"]]: copied})}></span>
+                      <span
+                        className={classnames(
+                          styles["btn-logout-icon"],
+                          styles[copied ? "icon-copied" : "icon-copy"],
+                          //styles["icon-copy"],
+                          //{[styles["icon-copied"]]: copied}
+                        )}
+                      />
                     </button>
                     <textarea
                       id="autologin-input"

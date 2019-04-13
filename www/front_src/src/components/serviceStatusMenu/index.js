@@ -139,20 +139,22 @@ class ServiceStatusMenu extends Component {
                     <div onClick={this.toggle}>
                       <span className={classnames(styles["dot-colored"], styles["red"])}><Translate value="Critical services"/>:</span>
                       <span className={styles["submenu-count"]}>
-                      {data.critical.unhandled}/{data.critical.total}
+                        {numeral(data.critical.unhandled).format("0a")}/{numeral(data.critical.total).format("0a")}
                       </span>
                     </div>
                   </Link>
                 </li>
-                <li class={styles["submenu-item"]}>
+                <li className={styles["submenu-item"]}>
                   <Link
                     to={"/main.php?p=20201&o=svc_warning&search="}
                     className={styles["submenu-item-link"]}
                   >
                     <div onClick={this.toggle}>
-                      <span className={classnames(styles["dot-colored"], styles["orange"])}><Translate value="Warning services"/>:</span>
+                      <span className={classnames(styles["dot-colored"], styles["orange"])}>
+                        <Translate value="Warning services"/>:
+                      </span>
                       <span className={styles["submenu-count"]}>
-                        {data.warning.unhandled}/{data.warning.total}
+                        {numeral(data.warning.unhandled).format("0a")}/{numeral(data.warning.total).format("0a")}
                       </span>
                     </div>
                   </Link>
@@ -163,9 +165,11 @@ class ServiceStatusMenu extends Component {
                     className={styles["submenu-item-link"]}
                   >
                     <div onClick={this.toggle}>
-                      <span className={classnames(styles["dot-colored"], styles["gray-light"])}><Translate value="Unknown services"/>:</span>
+                      <span className={classnames(styles["dot-colored"], styles["gray-light"])}>
+                        <Translate value="Unknown services"/>:
+                      </span>
                       <span className={styles["submenu-count"]}>
-                        {data.unknown.unhandled}/{data.unknown.total}
+                        {numeral(data.unknown.unhandled).format("0a")}/{numeral(data.unknown.total).format("0a")}
                       </span>
                     </div>
                   </Link>
@@ -176,8 +180,10 @@ class ServiceStatusMenu extends Component {
                     className={styles["submenu-item-link"]}
                   >
                     <div onClick={this.toggle}>
-                      <span className={classnames(styles["dot-colored"], styles["green"])}><Translate value="Ok services"/>:</span>
-                      <span className={styles["submenu-count"]}>{data.ok}</span>
+                      <span className={classnames(styles["dot-colored"], styles["green"])}>
+                        <Translate value="Ok services"/>:
+                      </span>
+                      <span className={styles["submenu-count"]}>{numeral(data.ok).format("0a")}</span>
                     </div>
                   </Link>
                 </li>
@@ -187,8 +193,10 @@ class ServiceStatusMenu extends Component {
                     className={styles["submenu-item-link"]}
                   >
                     <div onClick={this.toggle}>
-                      <span className={classnames(styles["dot-colored"], styles["blue"])}><Translate value="Pending services"/>:</span>
-                      <span className={styles["submenu-count"]}>{data.pending}</span>
+                      <span className={classnames(styles["dot-colored"], styles["blue"])}>
+                        <Translate value="Pending services"/>:
+                      </span>
+                      <span className={styles["submenu-count"]}>{numeral(data.pending).format("0a")}</span>
                     </div>
                   </Link>
                 </li>

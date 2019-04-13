@@ -35,7 +35,6 @@
   "dependencies": {
     "@centreon/react-components": "next",
     "axios": "^0.18.0",
-    "class-name": "^0.1.3",
     "classnames": "^2.2.6",
     "dom-serializer": "^0.1.0",
     "install": "^0.12.2",

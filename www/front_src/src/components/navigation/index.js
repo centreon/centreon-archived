@@ -189,7 +189,7 @@ class NavigationComponent extends Component {
                   className={classnames(styles["menu-item-link"], styles["dropdown-toggle"])}
                   id={"menu" + levelOneKey}
                 >
-                  <span class={classnames(styles["iconmoon"], styles[`icon-${levelOneProps.menu_id.toLowerCase()}`])}>
+                  <span className={classnames(styles["iconmoon"], styles[`icon-${levelOneProps.menu_id.toLowerCase()}`])}>
                     <span className={styles[`menu-item-name`]}>
                       <Translate value={levelOneProps.label}/>
                     </span>

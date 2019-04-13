@@ -3,8 +3,7 @@ import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import styles from '../header/header.scss';
 import config from "../../config";
-import {Translate} from 'react-redux-i18n';
-import {I18n} from "react-redux-i18n";
+import { Translate, I18n } from 'react-redux-i18n';
 import axios from "../../axios";
 
 import { connect } from "react-redux";
@@ -30,8 +29,8 @@ const getPollerStatusIcon = issues => {
   let latencyClass = getIssueClass(issues, 'latency');
 
   return (
-    <React.Fragment>
-      <span className={`wrap-left-icon round ${databaseClass}`}>
+    <>
+      <span className={classnames(styles["wrap-left-icon"], styles["round"], styles[databaseClass])}>
         <span
           className={classnames(styles["iconmoon"], styles["icon-database"])}
           title={databaseClass === 'green' ?
@@ -49,7 +48,7 @@ const getPollerStatusIcon = issues => {
           }
         />
       </span>
-    </React.Fragment>
+    </>
   );
 };
 
@@ -146,7 +145,7 @@ class PollerMenu extends Component {
           </span>
           <span className={styles["toggle-submenu-arrow"]} onClick={this.toggle} >{this.props.children}</span>
           <div className={classnames(styles["submenu"], styles["pollers"])}>
-            <div className="submenu-inner">
+            <div className={styles["submenu-inner"]}>
               <ul className={classnames(styles["submenu-items"], styles["list-unstyled"])}>
                 <li className={styles["submenu-item"]}>
                   <span className={styles["submenu-item-link"]}>

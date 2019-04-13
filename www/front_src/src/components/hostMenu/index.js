@@ -126,7 +126,7 @@ class HostMenu extends Component {
                     </div>
                   </Link>
                 </li>
-                <li class={styles["submenu-item"]}>
+                <li className={styles["submenu-item"]}>
                   <Link
                     to={"/main.php?p=20202&o=h_down&search="}
                     className={styles["submenu-item-link"]}

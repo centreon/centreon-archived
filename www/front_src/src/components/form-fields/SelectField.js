@@ -1,5 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
+import classnames from 'classnames';
+import styles from '../../styles/partials/form/_form.scss';
 import fieldHoc from "./hoc";
 import { prepareInputProps } from "./utils";
 
@@ -54,11 +56,11 @@ const SelectField = ({
   ];
 
   return (
-    <div className="form-group select" style={styleOverride}>
+    <div className={classnames(styles["form-group"], styles["select"])} style={styleOverride}>
       {label ? (
         <label>
           <span> {label} </span>
-          <span class="label-option optional">
+          <span className={classnames(styles["label-option"], styles["optional"])}>
             {" "}
             {topRightLabel ? topRightLabel : null}{" "}
           </span>
@@ -66,7 +68,7 @@ const SelectField = ({
       ) : null}
 
       <select
-        className="form-control custom-select"
+        className={classnames(styles["form-control"], styles["custom-select"])}
         {...prepareInputProps(rest)}
       >
         {defaultOption !== false ? (
@@ -78,7 +80,7 @@ const SelectField = ({
       </select>
 
       {error && topRightLabel === "Required" ? (
-        <div class="invalid-feedback">{error}</div>
+        <div className={styles["invalid-feedback"]}>{error}</div>
       ) : null}
     </div>
   );
@@ -91,7 +93,7 @@ SelectField.propTypes = {
   error: PropTypes.element
 };
 SelectField.defaultProps = {
-  className: "field",
+  className: styles["field"],
   styleOverride: {},
   defaultOption: false,
   modifiers: [],

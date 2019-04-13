@@ -1,5 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
+import classnames from 'classnames';
+import styles from '../../styles/partials/form/_form.scss';
 import fieldHoc from "./hoc";
 import { prepareInputProps } from "./utils";
 
@@ -14,27 +16,27 @@ const InputField = ({
   ...rest
 }) => {
   return (
-    <div class={"form-group" + (error ? " has-danger" : "")}>
+    <div className={classnames(styles["form-group"], {[styles["has-danger"]]: !!error})}>
       <label>
         <span>{label}</span>
-        <span class="label-option required">
+        <span className={classnames(styles["label-option"], styles["required"])}>
           {topRightLabel ? topRightLabel : null}
         </span>
       </label>
       <input
         type={type}
         placeholder={placeholder}
-        class={"form-control" + (error ? " is-invalid" : "")}
+        className={classnames(styles["form-control"],  {[styles["is-invalid"]]: !!error})}
         {...prepareInputProps(rest)}
       />
-      {error ? <div class="invalid-feedback">{error} </div> : null}
+      {error ? <div className={styles["invalid-feedback"]}>{error} </div> : null}
     </div>
   );
 };
 
 InputField.displayName = "InputField";
 InputField.defaultProps = {
-  className: "form-control",
+  className: styles["form-control"],
   modifiers: [],
   renderMeta: null
 };
