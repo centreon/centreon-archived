@@ -1,7 +1,7 @@
 <?php
 /*
- * Copyright 2005-2009 MERETHIS
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2019 CENTREON
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -19,11 +19,11 @@
  * combined work based on this program. Thus, the terms and conditions of the GNU
  * General Public License cover the whole combination.
  *
- * As a special exception, the copyright holders of this program give MERETHIS
+ * As a special exception, the copyright holders of this program give CENTREON
  * permission to link this program with independent modules to produce an executable,
  * regardless of the license terms of these independent modules, and to copy and
- * distribute the resulting executable under terms of MERETHIS choice, provided that
- * MERETHIS also meet, for each linked independent module, the terms  and conditions
+ * distribute the resulting executable under terms of CENTREON choice, provided that
+ * CENTREON also meet, for each linked independent module, the terms  and conditions
  * of the license of that module. An independent module is a module which is not
  * derived from this program. If you modify this program, you may extend this
  * exception to your version of the program, but you are not obliged to do so. If you
@@ -36,7 +36,7 @@
  *
  */
 
-if (!isset($oreon)) {
+if (!isset($centreon)) {
     exit();
 }
 
@@ -46,7 +46,7 @@ require_once $centreon_path . '/bootstrap.php';
 $pearDB = $dependencyInjector['configuration_db'];
 
 if (!isset($limit) || !$limit) {
-    $limit = $oreon->optGen["maxViewConfiguration"];
+    $limit = $centreon->optGen["maxViewConfiguration"];
 }
 
 if (isset($_POST['num']) && $_POST['num'] == 0) {
@@ -64,7 +64,11 @@ if (isset($_POST['searchServiceTemplate'])) {
 
 $order = "ASC";
 $orderby = "service_description";
-if (isset($_REQUEST['order']) && $_REQUEST['order'] && isset($_REQUEST['orderby']) && $_REQUEST['orderby']) {
+if (isset($_REQUEST['order'])
+    && $_REQUEST['order']
+    && isset($_REQUEST['orderby'])
+    && $_REQUEST['orderby']
+) {
     $order = $_REQUEST['order'];
     $orderby = $_REQUEST['orderby'];
 }
@@ -78,11 +82,9 @@ set_include_path(get_include_path() . PATH_SEPARATOR . $modules_path);
 
 require_once $centreon_path . "/www/class/centreon-knowledge/procedures.class.php";
 
-/*
- * Smarty template Init
- */
+// Smarty template Init
 $tpl = new Smarty();
-$tpl = initSmartyTpl($path, $tpl);
+$tpl = initSmartyTpl($modules_path, $tpl);
 
 try {
     $conf = getWikiConfig($pearDB);
@@ -106,9 +108,7 @@ try {
     $proc->setHostInformations();
     $proc->setServiceInformations();
 
-    /*
-     * Get Services Template Informations
-     */
+    // Get Services Template Informations
     $query = "SELECT SQL_CALC_FOUND_ROWS service_description, service_id " .
         "FROM service " .
         "WHERE service_register = '0' " .
@@ -116,17 +116,17 @@ try {
     if (isset($_REQUEST['searchServiceTemplate']) && $_REQUEST['searchServiceTemplate']) {
         $query .= " AND service_description LIKE '%" . $_REQUEST['searchServiceTemplate'] . "%' ";
     }
-    $query .= "ORDER BY $orderby $order LIMIT " . $num * $limit . ", " . $limit;
-    $DBRESULT = $pearDB->query($query);
+    $query .= "ORDER BY " . $orderby . " " . $order . " LIMIT " . $num * $limit . ", " . $limit;
+    $dbResult = $pearDB->query($query);
     $rows = $pearDB->query("SELECT FOUND_ROWS()")->fetchColumn();
 
     $selection = array();
-    while ($data = $DBRESULT->fetchRow()) {
+    while ($data = $dbResult->fetch()) {
         $data["service_description"] = str_replace("#S#", "/", $data["service_description"]);
         $data["service_description"] = str_replace("#BS#", "\\", $data["service_description"]);
         $selection[$data["service_description"]] = $data["service_id"];
     }
-    $DBRESULT->closeCursor();
+    $dbResult->closeCursor();
     unset($data);
 
     /*
@@ -146,8 +146,8 @@ try {
         }
 
         if (isset($_REQUEST['searchTemplatesWithNoProcedure'])) {
-            if ($diff[$key] == 1 ||
-                $proc->serviceTemplateHasProcedure($key, $tplArr, PROCEDURE_INHERITANCE_MODE) == true
+            if ($diff[$key] == 1
+                || $proc->serviceTemplateHasProcedure($key, $tplArr, PROCEDURE_INHERITANCE_MODE) == true
             ) {
                 $rows--;
                 unset($diff[$key]);
@@ -166,11 +166,11 @@ try {
             foreach ($tplArr as $key1 => $value1) {
                 if ($firstTpl) {
                     $tplStr .= "<a href='" . $WikiURL .
-                        " / index . php ? title = Service - Template : $value1' target='_blank'>" . $value1 . "</a>";
+                        "/index.php?title=Service-Template:" . $value1 . "' target='_blank'>" . $value1 . "</a>";
                     $firstTpl = 0;
                 } else {
                     $tplStr .= "&nbsp;|&nbsp;<a href='" . $WikiURL .
-                        " / index . php ? title = Service - Template : $value1' target='_blank'>" . $value1 . "</a>";
+                        "/index.php?title=Service-Template:" . $value1 . "' target='_blank'>" . $value1 . "</a>";
                 }
             }
         }
@@ -178,13 +178,13 @@ try {
         unset($tplStr);
     }
 
-    include("./include/common/checkPagination.php");
+    include "./include/common/checkPagination.php";
 
     if (isset($templateHostArray)) {
         $tpl->assign("templateHostArray", $templateHostArray);
     }
 
-    $WikiVersion = getWikiVersion($WikiURL . ' / api . php');
+    $WikiVersion = getWikiVersion($WikiURL . '/api.php');
     $tpl->assign("WikiVersion", $WikiVersion);
     $tpl->assign("WikiURL", $WikiURL);
     $tpl->assign("content", $diff);
@@ -196,16 +196,12 @@ try {
      * Send template in order to open
      */
 
-    /*
-     * translations
-     */
+    // translations
     $tpl->assign("status_trans", _("Status"));
     $tpl->assign("actions_trans", _("Actions"));
     $tpl->assign("template_trans", _("Template"));
 
-    /*
-     * Template
-     */
+    // Template
     $tpl->assign("lineTemplate", $line);
     $tpl->assign('limit', $limit);
 
@@ -213,9 +209,7 @@ try {
     $tpl->assign('orderby', $orderby);
     $tpl->assign('defaultOrderby', 'service_description');
 
-    /*
-     * Apply a template definition
-     */
+    // Apply a template definition
 
     $tpl->display($modules_path . "templates/display.ihtml");
 } catch (\Exception $e) {

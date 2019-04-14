@@ -1043,7 +1043,7 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/centreon/centreon-test-lib.git",
-                "reference": "5f0ab37fdc82360e86679b4ffc56a8082aaefd98"
+                "reference": "9f46a38e680fb87ca8c5e66fec3a6c4c1a3873a3"
             },
             "dist": {
                 "type": "zip",

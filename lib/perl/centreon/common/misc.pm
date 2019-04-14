@@ -228,8 +228,6 @@ sub backtick {
     }
     
     if ($pid) {
-        
-       
         eval {
            local $SIG{ALRM} = sub { die "Timeout by signal ALARM\n"; };
            alarm( $arg{timeout} );
@@ -256,7 +254,7 @@ sub backtick {
             if ($arg{wait_exit} == 1) {
                 # We're waiting the exit code                
                 waitpid($pid, 0);
-                $return_code = $?;
+                $return_code = ($? >> 8);
             }
             close KID;
         }
@@ -264,10 +262,11 @@ sub backtick {
         # child
         # set the child process to be a group leader, so that
         # kill -9 will kill it and all its descendents
-        setpgrp( 0, 0 );
+        setpgrp(0, 0);
 
         exec($arg{command});
-        exit(0);
+        # Exec is in error. No such command maybe.
+        exit(127);
     }
 
     return (0, join("\n", @output), $return_code);

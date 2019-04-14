@@ -1,7 +1,7 @@
 <?php
 /*
- * Copyright 2005-2016 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2019 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -134,7 +134,11 @@ print "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
         $searchStr .= "search_host=" . htmlentities($_GET["search"], ENT_QUOTES, "UTF-8");
     }
     if (isset($centreon->historySearch[$url]) && !isset($_GET["search"])) {
-        $searchStr .= "search_host=" . $centreon->historySearch[$url];
+        if (!is_array($centreon->historySearch[$url])) {
+            $searchStr .= "search_host=" . $centreon->historySearch[$url];
+        } elseif (isset($centreon->historySearch[$url]['search'])) {
+            $searchStr .= "search_host=" . $centreon->historySearch[$url]['search'];
+        }
     }
 
     $searchStrSVC = "";
