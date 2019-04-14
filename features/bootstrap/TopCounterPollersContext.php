@@ -12,15 +12,15 @@ class TopCounterPollersContext extends CentreonContext
         $this->visit('/', false);
         $this->spin(
             function ($context) {
-                return $context->getSession()->getPage()->has('css', '[class^="iconmoon"][class^="icon-poller"]');
+                return $context->getSession()->getPage()->has('css', '[class~="iconmoon"][class~="icon-poller"]');
             },
             'Home not load.',
             5
         );
-        $this->assertFind('css', '[class^="iconmoon"][class^="icon-poller"]')->click();
+        $this->assertFind('css', '[class~="iconmoon"][class~="icon-poller"]')->click();
         $this->spin(
             function ($context) {
-                $element = $context->getSession()->getPage()->find('css', '[class^="submenu"][class^="pollers"]');
+                $element = $context->getSession()->getPage()->find('css', '[class~="submenu"][class~="pollers"]');
                 return $element->isVisible();
             },
             'The summary of pollers status is not open',
@@ -28,7 +28,7 @@ class TopCounterPollersContext extends CentreonContext
         );
         $this->assertFind(
             'css',
-            '[class^="submenu"][class^="pollers"] [class^="btn-green"][class^="submenu-top-button"]'
+            '[class~="submenu"][class~="pollers"] [class~="btn-green"][class~="submenu-top-button"]'
         )->click();
     }
 
