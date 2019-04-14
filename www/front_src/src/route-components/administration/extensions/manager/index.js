@@ -479,7 +479,7 @@ class ExtensionsRoute extends Component {
                 : "Update selection"
             }`}
             buttonType="regular"
-            customClass={`mr-2 ${false ? "opacity-1-3" : ""}`}
+            customClass={"mr-2"}
             color="orange"
             style={{
               opacity: false ? "0.33" : "1"
@@ -503,7 +503,7 @@ class ExtensionsRoute extends Component {
                 : "Install selection"
             }`}
             buttonType="regular"
-            customClass={`mr-2 ${false ? "opacity-1-3" : ""}`}
+            customClass={"mr-2"}
             color="green"
             onClick={this.runActionOnAllEntities.bind(
               this,
