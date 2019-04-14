@@ -68,7 +68,6 @@ class UserMenu extends Component {
     window.document.execCommand('copy');
     this.setState({
       copied: true,
-      //toggled: false
     });
   };
 
@@ -132,8 +131,6 @@ class UserMenu extends Component {
                         className={classnames(
                           styles["btn-logout-icon"],
                           styles[copied ? "icon-copied" : "icon-copy"],
-                          //styles["icon-copy"],
-                          //{[styles["icon-copied"]]: copied}
                         )}
                       />
                     </button>
