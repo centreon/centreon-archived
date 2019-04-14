@@ -27,6 +27,7 @@ Feature: Top Counter Service
     When I click on the chip "count-svc-unknown"
     Then I see the list of services filtered by status unknown
 
+  @critical
   Scenario: Open the summary of services status
     When I click on the services icon
     Then I see the summary of services status

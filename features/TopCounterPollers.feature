@@ -6,6 +6,7 @@ Feature: Top Counter Pollers
     Background:
       Given I am logged in a Centreon server
 
+    @critical
     Scenario: Link to pollers configuration
       When I click on the pollers icon and I click on the configuration button
       Then I see the list of pollers configuration

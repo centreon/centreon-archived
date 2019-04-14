@@ -107,13 +107,13 @@ class TopCounterHostsContext extends CentreonContext
             function ($context) {
                 return $context->getSession()->getPage()->has(
                     'css',
-                    '.wrap-right-hosts .icon-hosts'
+                    '[class^="wrap-right-hosts"] [class^="icon-hosts"]'
                 );
             },
             'Home not load.',
             5
         );
-        $this->assertFind('css', '.wrap-right-hosts .icon-hosts')->click();
+        $this->assertFind('css', '[class^="wrap-right-hosts"] [class^="icon-hosts"]')->click();
     }
 
     /**
@@ -123,7 +123,7 @@ class TopCounterHostsContext extends CentreonContext
     {
         $this->spin(
             function ($context) {
-                $element = $context->getSession()->getPage()->find('css', '.submenu.host');
+                $element = $context->getSession()->getPage()->find('css', '[class^="hosts"] [class^="submenu"]');
                 return $element->isVisible();
             },
             'The summary of hosts status is not open',
