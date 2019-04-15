@@ -451,6 +451,12 @@ function updateLdapConfigData($gopt_id = null)
     );
     updateOption(
         $pearDB,
+        "ldap_connect_timeout",
+        isset($ret["ldap_connect_timeout"]) && $ret["ldap_connect_timeout"] != null
+            ? htmlentities($ret["ldap_connect_timeout"], ENT_QUOTES, "UTF-8"): "NULL"
+    );
+    updateOption(
+        $pearDB,
         "ldap_search_timeout",
         isset($ret["ldap_search_timeout"]) && $ret["ldap_search_timeout"] != null
             ? htmlentities($ret["ldap_search_timeout"], ENT_QUOTES, "UTF-8"): "NULL"

@@ -111,6 +111,15 @@ class CentreonLDAP
             $this->debugImport = false;
         }
 
+        $connectTimeout = 5;
+        $tempConnectTimeout = $this->getLdapHostParameters($arId, 'ldap_connect_timeout');
+        if (count($tempConnectTimeout) > 0) {
+            if (isset($tempConnectTimeout['ari_value'])
+                && !empty($tempConnectTimeout['ari_value'])
+            ) {
+                $connectTimeout = $tempConnectTimeout['ari_value'];
+            }
+        }
         $searchTimeout = 5;
         $tempSearchTimeout = $this->getLdapHostParameters($arId, 'ldap_search_timeout');
         if (count($tempSearchTimeout) > 0) {
@@ -140,6 +149,7 @@ class CentreonLDAP
                 $ldap = array();
                 $ldap['host'] = $entry['target'];
                 $ldap['id'] = $arId;
+                $ldap['connect_timeout'] = $connectTimeout;
                 $ldap['search_timeout'] = $searchTimeout;
                 $ldap['info'] = $this->getInfoUseDnsConnect();
                 $ldap['info']['port'] = $entry['port'];
@@ -157,6 +167,7 @@ class CentreonLDAP
                 $ldap = array();
                 $ldap['host'] = $row['host_address'];
                 $ldap['id'] = $arId;
+                $ldap['connect_timeout'] = $connectTimeout;
                 $ldap['search_timeout'] = $searchTimeout;
                 $ldap['info'] = $this->getInfoConnect($row['ldap_host_id']);
                 $ldap['info'] = array_merge($ldap['info'], $this->getBindInfo($arId));
@@ -212,6 +223,7 @@ class CentreonLDAP
             $this->debug("LDAP Connect : trying url : " . $url);
             $this->setErrorHandler();
             $this->ds = ldap_connect($url);
+            ldap_set_option($this->ds, LDAP_OPT_NETWORK_TIMEOUT, $ldap['connect_timeout']);
             ldap_set_option($this->ds, LDAP_OPT_REFERRALS, 0);
             $protocol_version = 3;
             if (isset($ldap['info']['protocol_version'])) {
@@ -901,6 +913,7 @@ class CentreonLdapAdmin
         $tab = array(
             'ldap_store_password',
             'ldap_auto_import',
+            'ldap_connect_timeout',
             'ldap_search_limit',
             'ldap_search_timeout',
             'ldap_contact_tmpl',
