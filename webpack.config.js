@@ -3,7 +3,6 @@ const TerserPlugin = require('terser-webpack-plugin');
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 const safePostCssParser = require('postcss-safe-parser');
-const path = require('path');
 
 module.exports = {
   context: __dirname,
@@ -121,7 +120,7 @@ module.exports = {
         }]
       },
       {
-        test: /@centreon\/react\-components\/.+\.(bmp|png|jpg|jpeg|gif|svg)$/,
+        test: /@centreon\/react\-components\/lib\/.+\.(bmp|png|jpg|jpeg|gif|svg)$/,
         use: [{
           loader: 'url-loader',
           options: {

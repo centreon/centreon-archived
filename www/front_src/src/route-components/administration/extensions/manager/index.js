@@ -26,6 +26,7 @@ class ExtensionsRoute extends Component {
     modulesActive: true,
     modalDetailsActive: false,
     modalDetailsLoading: false,
+    modalDetailsType: "module",
     not_installed: true,
     installed: true,
     updated: true,
@@ -363,7 +364,7 @@ class ExtensionsRoute extends Component {
   hideExtensionDetails = () => {
     this.setState({
       modalDetailsActive: false,
-      modalDetailsLoading: false
+      modalDetailsLoading: false,
     });
   };
 
@@ -371,7 +372,8 @@ class ExtensionsRoute extends Component {
     this.setState(
       {
         modalDetailsActive: true,
-        modalDetailsLoading: true
+        modalDetailsLoading: true,
+        modalDetailsType: type,
       },
       () => {
         this.getExtensionDetails(id, type);
@@ -405,6 +407,7 @@ class ExtensionsRoute extends Component {
       nothingShown,
       modalDetailsActive,
       modalDetailsLoading,
+      modalDetailsType,
       extensionsUpdatingStatus,
       extensionsInstallingStatus,
       deletingEntity,
@@ -553,6 +556,7 @@ class ExtensionsRoute extends Component {
 
         {extensionDetails && modalDetailsActive ? (
           <ExtensionDetailsPopup
+            type={modalDetailsType}
             loading={modalDetailsLoading}
             onCloseClicked={this.hideExtensionDetails.bind(this)}
             onVersionClicked={this.versionClicked}
