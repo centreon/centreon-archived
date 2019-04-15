@@ -7,7 +7,6 @@ Feature: Downtime DST
     Given I am logged in a Centreon server located at "Europe/Paris"
     And a passive service is monitored
 
-
 # summer changing time
 
   Scenario: realtime downtime starting on summer changing time

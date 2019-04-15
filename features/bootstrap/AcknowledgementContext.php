@@ -14,18 +14,20 @@ class AcknowledgementContext extends CentreonContext
     public function aNonOKService()
     {
         $page = new ServiceConfigurationPage($this);
-        $page->setProperties(array(
-            'hosts' => 'Centreon-Server',
-            'description' => 'AcceptanceTestService',
-            'templates' => 'generic-service',
-            'check_command' => 'check_centreon_dummy',
-            'check_period' => '24x7',
-            'max_check_attempts' => 1,
-            'normal_check_interval' => 1,
-            'retry_check_interval' => 1,
-            'active_checks_enabled' => 0,
-            'passive_checks_enabled' => 1
-        ));
+        $page->setProperties(
+            array(
+                'hosts' => 'Centreon-Server',
+                'description' => 'AcceptanceTestService',
+                'templates' => 'generic-service',
+                'check_command' => 'check_centreon_dummy',
+                'check_period' => '24x7',
+                'max_check_attempts' => 1,
+                'normal_check_interval' => 1,
+                'retry_check_interval' => 1,
+                'active_checks_enabled' => 0,
+                'passive_checks_enabled' => 1
+            )
+        );
         $page->save();
         $this->restartAllPollers();
         $this->submitServiceResult(
@@ -42,15 +44,17 @@ class AcknowledgementContext extends CentreonContext
     public function aNonOKMetaService()
     {
         $page = new MetaServiceConfigurationPage($this);
-        $page->setProperties(array(
-            'name' => 'AcceptanceTestMetaService',
-            'warning_level' => 0,
-            'critical_level' => 0,
-            'check_period' => '24x7',
-            'max_check_attempts' => 1,
-            'normal_check_interval' => 1,
-            'retry_check_interval' => 1
-        ));
+        $page->setProperties(
+            array(
+                'name' => 'AcceptanceTestMetaService',
+                'warning_level' => 0,
+                'critical_level' => 0,
+                'check_period' => '24x7',
+                'max_check_attempts' => 1,
+                'normal_check_interval' => 1,
+                'retry_check_interval' => 1
+            )
+        );
         $page->save();
         $this->restartAllPollers();
 

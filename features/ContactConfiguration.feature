@@ -7,7 +7,6 @@ Feature: ContactConfiguration
         Given I am logged in a Centreon server
         And a contact is configured
 
-    @critical
     Scenario: Change the properties of a contact
         When I update contact properties
         Then the contact properties are updated
