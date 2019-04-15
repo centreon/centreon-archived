@@ -1,7 +1,7 @@
 <?php
 /*
- * Copyright 2005-2017 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2019 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -213,6 +213,7 @@ class CentreonMainCfg
      * Insert the broker modules in cfg_nagios
      *
      * @param string $sName
+     * @param ? $source
      * @param int $iId
      */
     public function insertBrokerDefaultDirectives($iId, $source)
@@ -222,8 +223,8 @@ class CentreonMainCfg
         }
 
         $query = "SELECT bk_mod_id FROM `cfg_nagios_broker_module` WHERE cfg_nagios_id = '" . $iId . "'";
-        $DBRESULT = $this->DB->query($query);
-        if ($DBRESULT->rowCount() == 0) {
+        $dbResult = $this->DB->query($query);
+        if ($dbResult->rowCount() == 0) {
             $sQuery = "INSERT INTO cfg_nagios_broker_module (`broker_module`, `cfg_nagios_id`) VALUES ('" .
                 $this->aDefaultBrokerDirective[$source] . "', " . $iId . ")";
             try {
@@ -237,6 +238,7 @@ class CentreonMainCfg
     /**
      * Insert the instance in cfg_nagios
      *
+     * @param int $source The poller id
      * @param string $sName
      * @param int $iId
      */
@@ -249,11 +251,11 @@ class CentreonMainCfg
             return false;
         }
 
-        $res = $this->DB->query("SELECT * FROM cfg_nagios WHERE  nagios_server_id = " . $source . "");
+        $res = $this->DB->query("SELECT * FROM cfg_nagios WHERE  nagios_server_id = " . $source);
         if ($res->rowCount() == 0) {
             $baseValues = $this->aInstanceDefaultValues;
         } else {
-            $baseValues = $res->fetchRow();
+            $baseValues = $res->fetch();
         }
 
         $rq = "INSERT INTO `cfg_nagios` (`nagios_name`, `nagios_server_id`, `log_file`, `cfg_dir`, `temp_file`, " .
@@ -281,8 +283,8 @@ class CentreonMainCfg
             "`enable_predictive_service_dependency_checks`, `passive_host_checks_are_soft`, " .
             "`use_large_installation_tweaks`, `enable_environment_macros`, `use_setpgid`, " .
             "`debug_file`, `debug_level`, `debug_level_opt`, `debug_verbosity`, `max_debug_file_size`, " .
-            "`daemon_dumps_core`, `cfg_file`, `use_check_result_path`) ";
-        $rq .= "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, " .
+            "`daemon_dumps_core`, `cfg_file`, `use_check_result_path`) " .
+            "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, " .
             "?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, " .
             "?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
@@ -398,37 +400,33 @@ class CentreonMainCfg
         }
 
         $res1 = $this->DB->query("SELECT MAX(nagios_id) as last_id FROM `cfg_nagios`");
-        $nagios = $res1->fetchRow();
+        $nagios = $res1->fetch();
         return $nagios["last_id"];
     }
 
-    /* Get Broker Module Entries */
+    /**
+     * Get Broker Module Entries
+     *
+     * @param int $id
+     *
+     * @return array $entries
+     */
     public function getBrokerModules($id)
     {
-        $DBRESULT = $this->DB->query("SELECT * FROM cfg_nagios_broker_module WHERE cfg_nagios_id = " . $id . "");
-        while ($row = $DBRESULT->fetchRow()) {
+        $dbResult = $this->DB->query("SELECT * FROM cfg_nagios_broker_module WHERE cfg_nagios_id = " . $id);
+        while ($row = $dbResult->fetch()) {
             $entries[] = $row;
         }
-        $DBRESULT->closeCursor();
+        $dbResult->closeCursor();
         return $entries;
-    }
-
-    /**
-     * Explode the bitwise event broker options to an array for QuickForm
-     *
-     * @param int $value The value to explode
-     * @return array An array of integer
-     */
-    public function explodeEventBrokerOptions($value)
-    {
-        return $this->explodeBitwise($value, self::EVENT_BROKER_OPTIONS);
     }
 
     /**
      * Explode the bitwise to an array for QuickForm
      *
-     * @param int $value The value to explode
+     * @param int   $value   The value to explode
      * @param array $sources The list of bit
+     *
      * @return array An array of integer
      */
     private function explodeBitwise($value, $sources)
@@ -447,5 +445,17 @@ class CentreonMainCfg
             }
         }
         return $listOptions;
+    }
+
+    /**
+     * Explode the bitwise event broker options to an array for QuickForm
+     *
+     * @param int $value The value to explode
+     *
+     * @return array An array of integer
+     */
+    public function explodeEventBrokerOptions($value)
+    {
+        return $this->explodeBitwise($value, self::EVENT_BROKER_OPTIONS);
     }
 }

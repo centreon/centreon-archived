@@ -1,7 +1,7 @@
 <?php
 /*
- * Copyright 2005-2015 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2019 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -55,10 +55,10 @@ $nagios_d = array();
 $defaultEventBrokerOptions['event_broker_options'][-1] = 1;
 
 if (($o == "c" || $o == "w") && $nagios_id) {
-    $DBRESULT = $pearDB->query("SELECT * FROM cfg_nagios WHERE nagios_id = '" . $nagios_id . "' LIMIT 1");
-    # Set base value
-    $nagios = array_map("myDecode", $DBRESULT->fetchRow());
-    $DBRESULT->closeCursor();
+    $dbResult = $pearDB->query("SELECT * FROM cfg_nagios WHERE nagios_id = '" . $nagios_id . "' LIMIT 1");
+    // Set base value
+    $nagios = array_map("myDecode", $dbResult->fetch());
+    $dbResult->closeCursor();
 
     $tmp = explode(',', $nagios["debug_level_opt"]);
     foreach ($tmp as $key => $value) {
@@ -120,27 +120,29 @@ $cdata->addJsData(
 );
 
 /*
- * Database retrieve information for differents elements list we need on the page
+ * Database retrieve information for different elements list we need on the page
  *
  * Check commands comes from DB -> Store in $checkCmds Array
  *
  */
 $checkCmds = array();
-$DBRESULT = $pearDB->query("SELECT command_id, command_name FROM command ORDER BY command_name");
+$dbResult = $pearDB->query("SELECT command_id, command_name FROM command ORDER BY command_name");
 $checkCmds = array(null => null);
-while ($checkCmd = $DBRESULT->fetchRow()) {
+while ($checkCmd = $dbResult->fetch()) {
     $checkCmds[$checkCmd["command_id"]] = $checkCmd["command_name"];
 }
-$DBRESULT->closeCursor();
+$dbResult->closeCursor();
 
 /*
  * Get all nagios servers
  */
 $nagios_server = array(null => "");
-$result = $oreon->user->access->getPollerAclConf(array(
-    'fields' => array('name', 'id'),
-    'keys' => array('id')
-));
+$result = $oreon->user->access->getPollerAclConf(
+    array(
+        'fields' => array('name', 'id'),
+        'keys' => array('id')
+    )
+);
 foreach ($result as $ns) {
     $nagios_server[$ns["id"]] = $ns["name"];
 }
@@ -150,15 +152,15 @@ foreach ($result as $ns) {
  */
 $nBk = 0;
 $aBk = array();
-$DBRESULT = $pearDB->query(
+$dbResult = $pearDB->query(
     "SELECT bk_mod_id, broker_module FROM cfg_nagios_broker_module WHERE cfg_nagios_id = '"
     . $nagios_id . "'"
 );
-while ($lineBk = $DBRESULT->fetchRow()) {
+while ($lineBk = $dbResult->fetch()) {
     $aBk[$nBk] = $lineBk;
     $nBk++;
 }
-$DBRESULT->closeCursor();
+$dbResult->closeCursor();
 unset($lineBk);
 
 $attrsText = array("size" => "30");
@@ -852,7 +854,7 @@ $form->registerRule('isNum', 'callback', 'isNum');
 
 /* Add validator for macro name format */
 /**
- * Valide the macro name
+ * Validate the macro name
  *
  * @param string $value Not used
  * @return bool If all name are valid
@@ -897,7 +899,7 @@ $tpl = new Smarty();
 $tpl = initSmartyTpl($path, $tpl);
 
 if ($o == "w") {
-    # Just watch a nagios information
+    // Just watch a nagios information
     if ($centreon->user->access->page($p) != 2) {
         $form->addElement(
             "button",
@@ -909,7 +911,7 @@ if ($o == "w") {
     $form->setDefaults($nagios);
     $form->freeze();
 } elseif ($o == "c") {
-    # Modify a nagios information
+    // Modify nagios information
     $subC = $form->addElement('submit', 'submitC', _("Save"), array("class" => "btc bt_success"));
     $res = $form->addElement(
         'reset',
@@ -920,7 +922,7 @@ if ($o == "w") {
 
     $form->setDefaults($nagios);
 } elseif ($o == "a") {
-    # Add a nagios information
+    // Add nagios information
     $subA = $form->addElement('submit', 'submitA', _("Save"), array("class" => "btc bt_success"));
     $res = $form->addElement(
         'reset',
@@ -939,7 +941,7 @@ $tpl->assign(
     . '["","black", "white", "red"], WIDTH, -300, SHADOW, true, TEXTALIGN, "justify"'
 );
 
-# prepare help texts
+// prepare help texts
 $helptext = "";
 include_once("help.php");
 foreach ($help as $key => $text) {
