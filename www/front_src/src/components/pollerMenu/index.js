@@ -5,6 +5,7 @@ import styles from '../header/header.scss';
 import config from "../../config";
 import { Translate, I18n } from 'react-redux-i18n';
 import axios from "../../axios";
+import { Link } from "react-router-dom";
 
 import { connect } from "react-redux";
 
@@ -199,7 +200,7 @@ class PollerMenu extends Component {
                   })
                 : null}
                 {allowPollerConfiguration && /* display poller configuration button if user is allowed */
-                  <a href={config.urlBase + "main.php?p=" + POLLER_CONFIGURATION_TOPOLOGY_PAGE}>
+                  <Link to={"/main.php?p=" + POLLER_CONFIGURATION_TOPOLOGY_PAGE}>
                     <button
                       onClick={this.toggle}
                       className={classnames(
@@ -211,7 +212,7 @@ class PollerMenu extends Component {
                     >
                       <Translate value="Configure pollers"/>
                     </button>
-                  </a>
+                  </Link>
                 }
               </ul>
             </div>
