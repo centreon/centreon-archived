@@ -264,12 +264,12 @@ class CentreonWebService
 
     /**
      * Route the webservice to the good method
-     * @global string _CENTREON_PATH_
-     * @global type $pearDB3
-     *
      * @param \Pimple\Container $dependencyInjector
      * @param CentreonUser $user The current user
      * @param boolean $isInternal If the Rest API call is internal
+     * @global type $pearDB3
+     *
+     * @global string _CENTREON_PATH_
      */
     public static function router(\Pimple\Container $dependencyInjector, $user, $isInternal = false)
     {
@@ -314,7 +314,7 @@ class CentreonWebService
             $dependencyInjector['translator'];
 
             // Use the web service if has been initialized or initialize it
-            if(isset($dependencyInjector[$webService['class']])) {
+            if (isset($dependencyInjector[$webService['class']])) {
                 $wsObj = $dependencyInjector[$webService['class']];
             } else {
                 $wsObj = new $webService['class'];
@@ -322,7 +322,7 @@ class CentreonWebService
             }
         } else {
             $webService = self::webservicePath($object);
-            
+
             /**
              * Either we retrieve an instance of this web service that has been
              * created in the dependency injector, or we create a new one.
