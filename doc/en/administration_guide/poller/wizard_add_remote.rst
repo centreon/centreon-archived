@@ -16,7 +16,14 @@ Select **Add a Centreon Remote Server** and click on **Next**:
 .. image:: /images/poller/wizard_add_remote_1.png
     :align: center
 
-If you define a new server, select the **Manual input** option and fill in the form:
+If you enabled the **Remote Server** option when installing your server,
+select the option **Select a Remote Server**, then select your server and fill in
+the form:
+
+.. image:: /images/poller/wizard_add_remote_2b.png
+    :align: center
+
+Otherwise, select the **Manual input** option and fill in the form:
 
 .. image:: /images/poller/wizard_add_remote_2a.png
     :align: center
@@ -28,9 +35,20 @@ the form:
 .. image:: /images/poller/wizard_add_remote_2b.png
     :align: center
 
-.. note::
-    The **Database username** and **Database password** are the credentials defined
-    during the installation of the Remote Server.
+The **Database username** and **Database password** are the credentials defined
+during the installation of the Remote Server.
+
+The **Server IP address** field is of the following form: 
+[(http/https)://]@IP[:(port)]. If your Remote Server is only available on HTTPS, it
+is mandatory to define the HTTP method and the TCP port is this one is not the
+default one.
+
+The **Do not check SSL certificate validation** option allows to connect
+to the Remote Server using self-signed SSL certificate.
+
+The **Do not use configured proxy tp connect to this server** allows to
+connect to the Remote Server without using the proxy configuration of the
+Centreon Central server.
 
 Click on **Next**.
 

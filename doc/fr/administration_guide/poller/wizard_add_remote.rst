@@ -17,12 +17,6 @@ Sélectionnez **Add a Centreon Remote Server** et cliquez sur **Next** :
 .. image:: /images/poller/wizard_add_remote_1.png
     :align: center
 
-Si vous souhaitez ajouter un nouveau serveur, sélectionnez l'option **Manual input**
-et saisissez les informations demandées.
-
-.. image:: /images/poller/wizard_add_remote_2a.png
-    :align: center
-
 Si vous avez déjà activé l'option **Remote Server** durant l'installation de
 votre serveur, sélectionnez l'option **Select a Remote Server** et sélectionnez
 votre serveur dans la liste puis complétez les informations demandées.
@@ -30,9 +24,25 @@ votre serveur dans la liste puis complétez les informations demandées.
 .. image:: /images/poller/wizard_add_remote_2b.png
     :align: center
 
-.. note::
-    Les champs **Database user** et **Database password** sont les accès aux bases
-    de données Centreon définis durant l'installation de votre Remote Server.
+Sinon , sélectionnez l'option **Create new Remote Server**
+et saisissez les informations demandées.
+
+.. image:: /images/poller/wizard_add_remote_2a.png
+    :align: center
+
+Les champs **Database user** et **Database password** sont les accès aux bases
+de données Centreon définis durant l'installation de votre Remote Server.
+
+Le champ **Server IP address** est de la forme : [(http/https)://]@IP[:(port)].
+Si votre Remote Server est accessible en HTTPS, il est nécessaire de préciser
+la méthode d'accès et le port si celui-ci n'est pas par défaut.
+
+L'option **Do not check SSL certificate validation** permet de contacter le
+Remote Server si celui-ci possède un certificat SSL auto-signé.
+
+L'option **Do not use configured proxy tp connect to this server** permet
+de de contacter le Remote Server en n'utilisant pas la configuration
+du proxy configurée sur le serveur Centreon Central.
 
 Cliquez sur **Next** :
 
