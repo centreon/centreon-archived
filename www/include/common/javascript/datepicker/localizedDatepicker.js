@@ -135,14 +135,3 @@ function updateEndTime() {
         $(".timepicker").last().timepicker("setTime", e.getHours() + ':' + e.getMinutes());
     }
 }
-$(document).ready(function() {
-    $(".datepicker").first().on('change', function (e) {
-        updateEndTime();
-    });
-    $("#duration").on('keypress', function (e) {
-        updateEndTime();
-    });
-    $("#duration_scale").on('change', function (e) {
-        updateEndTime();
-    });
-});
