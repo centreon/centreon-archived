@@ -3,7 +3,8 @@ import * as actions from "../actions/externalComponentsActions";
 // by default, no one external page and hook
 const initialState = {
   pages: [],
-  hooks: []
+  hooks: [],
+  fetched: false,
 };
 
 const externalComponentsReducer = (state = initialState, action) => {
@@ -12,7 +13,8 @@ const externalComponentsReducer = (state = initialState, action) => {
       return {
         ...state,
         pages: action.data.pages,
-        hooks: action.data.hooks
+        hooks: action.data.hooks,
+        fetched: true,
       }
     default:
       return state;

@@ -1,12 +1,19 @@
 import React from 'react';
+import { connect } from 'react-redux';
 import styles from '../../styles/partials/_messages.scss';
 
-const notAllowedPage = () => {
-  return (
-    <div className={styles["message-alert"]}>
-      You are not allowed to see this page
-    </div>
-  );
-};
+const notAllowedPage = ({ fetched }) => (
+  <>
+    {fetched &&
+      <div className={styles["message-alert"]}>
+        You are not allowed to see this page
+      </div>
+    }
+  </>
+);
 
-export default notAllowedPage;
+const mapStateToProps = ({ externalComponents }) => ({
+  fetched: externalComponents.fetched
+});
+
+export default connect(mapStateToProps)(notAllowedPage);

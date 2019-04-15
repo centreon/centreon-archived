@@ -4,6 +4,7 @@ import { Route } from "react-router-dom";
 import { dynamicImport } from "../../utils/dynamicImport";
 import centreonAxios from "../../axios";
 import centreonConfig from "../../config";
+import NotAllowedPage from '../../route-components/notAllowedPage';
 
 // class to dynamically import pages from modules
 class ExternalRouter extends Component {
@@ -38,6 +39,7 @@ class ExternalRouter extends Component {
     return (
       <Suspense fallback="">
         {LoadableComponents}
+        <Route component={NotAllowedPage} />
       </Suspense>
     );
   };
