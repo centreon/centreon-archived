@@ -158,6 +158,9 @@
         $(".datepicker").first().on('change', function (e) {
             updateEndTime();
         });
+        $(".timepicker").first().on('change', function (e) {
+            updateEndTime();
+        });
         $("#duration").on('keypress', function (e) {
             updateEndTime();
         });
