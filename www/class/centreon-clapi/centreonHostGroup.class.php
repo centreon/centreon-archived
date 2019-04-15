@@ -276,9 +276,9 @@ class CentreonHostGroup extends CentreonObject
     }
 
     /**
-     * Export
-     *
-     * @return void
+     * @param null $filterName
+     * @return bool
+     * @throws \Exception
      */
     public function export($filterName = null)
     {
