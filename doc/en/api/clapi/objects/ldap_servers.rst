@@ -113,9 +113,11 @@ ldap_contact_tmpl          Contact template to use on import
 
 ldap_dns_use_domain        Use domain or not (0 or 1)
 
+ldap_connect_timeout       Connection timeout delay (in seconds)
+
 ldap_search_limit          Search size limit
 
-ldap_search_timeout        Timeout delay (in seconds)
+ldap_search_timeout        Search timeout delay (in seconds)
 
 ldap_srv_dns               DNS server (only used when 
                            ldap_dns_use_domain is set to 1)
