@@ -1,9 +1,11 @@
 import React from 'react';
 import {connect} from "react-redux";
 import { Translate } from 'react-redux-i18n';
+import classnames from 'classnames';
+import styles from './tooltip.scss';
 
 const Tooltip = ({x, y, label, toggled}) => (
-  <div className={`tooltip ${toggled ? ' ' : 'hidden'}`}
+  <div className={classnames(styles["tooltip"], {[styles["hidden"]]: !toggled})}
     style={
       {
         top:y,

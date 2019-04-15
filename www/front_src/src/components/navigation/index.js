@@ -1,6 +1,9 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 
+import classnames from 'classnames';
+import styles from './navigation.scss';
+
 import logo from "../../img/centreon.png";
 import miniLogo from "../../img/centreon-logo-mini.svg";
 
@@ -146,15 +149,15 @@ class NavigationComponent extends Component {
     const { menuItems } = this.props;
     const { active } = this.state;
     const pageId = this.getPageId();
-    const activated = " active"
+    const activated = "active"
 
     return (
-      <nav className={`sidebar ${active ? activated : " mini"}`} id="sidebar">
-        <div className={`sidebar-inner`}>
-          <div className={`sidebar-logo`} onClick={this.toggleNavigation}>
+      <nav className={classnames(styles["sidebar"], {[styles[active ? activated : "mini"]]: true})} id="sidebar">
+        <div className={styles[`sidebar-inner`]}>
+          <div className={styles[`sidebar-logo`]} onClick={this.toggleNavigation}>
             <span>
               <img
-                className={`sidebar-logo-image`}
+                className={styles[`sidebar-logo-image`]}
                 src={logo}
                 width="254"
                 height="57"
@@ -162,10 +165,10 @@ class NavigationComponent extends Component {
               />
             </span>
           </div>
-          <div className={`sidebar-logo-mini`}  onClick={this.toggleNavigation}>
+          <div className={styles[`sidebar-logo-mini`]}  onClick={this.toggleNavigation}>
             <span>
               <img
-                className={`sidebar-logo-mini-image`}
+                className={styles[`sidebar-logo-mini-image`]}
                 src={miniLogo}
                 width="23"
                 height="21"
@@ -174,26 +177,26 @@ class NavigationComponent extends Component {
             </span>
           </div>
           <ul
-            className={`menu menu-items list-unstyled components`}
+            className={classnames(styles["menu"], styles["menu-items"], styles["list-unstyled"], styles["components"])}
           >
             {Object.entries(menuItems).map(([levelOneKey, levelOneProps]) => (
               levelOneProps.label ? (
                 <li
-                  className={`menu-item ${(levelOneProps.toggled && active || levelOneProps.active) ? activated : " to-hover"}`}
+                  className={classnames(styles["menu-item"], {[styles[(levelOneProps.toggled && active || levelOneProps.active) ? activated : "to-hover"]]: true})}
                 >
                 <span
                   onDoubleClick={() => {this.handleDirectClick(levelOneKey, levelOneProps)}}
-                  className={`menu-item-link dropdown-toggle`}
+                  className={classnames(styles["menu-item-link"], styles["dropdown-toggle"])}
                   id={"menu" + levelOneKey}
                 >
-                  <span class={`iconmoon icon-${levelOneProps.menu_id.toLowerCase()}`}>
-                    <span className={`menu-item-name`}>
+                  <span className={classnames(styles["iconmoon"], styles[`icon-${levelOneProps.menu_id.toLowerCase()}`])}>
+                    <span className={styles[`menu-item-name`]}>
                       <Translate value={levelOneProps.label}/>
                     </span>
                   </span>
                 </span>
                 <ul
-                  className={`collapse collapsed-items list-unstyled ${(levelOneProps.toggled && active) ? activated : " " }`}
+                  className={classnames(styles["collapse"], styles["collapsed-items"], styles["list-unstyled"], {[styles[activated]]: (levelOneProps.toggled && active)})}
                   style={{ display: (levelOneProps.toggled && active) ? "block" : "none" }}
                 >
                   {Object.entries(levelOneProps.children).map(([levelTwoKey, levelTwoProps]) => {
@@ -201,36 +204,31 @@ class NavigationComponent extends Component {
                     if (levelTwoProps.label) {
                       return (
                         <li
-                          className={
-                            `collapsed-item
-                            ${levelTwoProps.collapsed || (this.isActive(pageId, levelTwoUrl))
-                            ? activated
-                            : ""}`
-                          }
+                          className={classnames(styles["collapsed-item"], {[styles[activated]]: (levelTwoProps.collapsed || (this.isActive(pageId, levelTwoUrl)))})}
                         >
                           {Object.keys(levelTwoProps.children).length > 0 ? (
                             <span
                               onClick={() => {this.collapseLevelThree(levelOneKey, levelTwoKey)}}
-                              className={`collapsed-level-item-link`}
+                              className={styles[`collapsed-level-item-link`]}
                             >
                               <Translate value={levelTwoProps.hasOwnProperty('label') ? levelTwoProps.label : ''}/>
                             </span>
                           ) : (
                               <Link
                                 onClick={() => {this.goToPage(levelTwoUrl.url, levelOneKey)}}
-                                className={`collapsed-level-item-link img-none ${(this.isActive(pageId, levelTwoUrl)) ? activated : ""}`}
+                                className={classnames(styles["collapsed-level-item-link"], styles["img-none"], {[styles[activated]]: this.isActive(pageId, levelTwoUrl)})}
                                 to={levelTwoUrl.url}
                               >
                                 <Translate value={levelTwoProps.label}/>
                               </Link>
                             )}
 
-                          <ul className={`collapse-level collapsed-level-items first-level list-unstyled`}>
+                          <ul className={classnames(styles["collapse-level"], styles["collapsed-level-items"], styles["first-level"], styles["list-unstyled"])}>
                             {Object.entries(levelTwoProps.children).map(([levelThreeKey, levelThreeProps]) => {
                               return (
                                 <>
                                   {Object.keys(levelTwoProps.children).length > 1 &&
-                                    <span className={`collapsed-level-title`}>
+                                    <span className={styles[`collapsed-level-title`]}>
                                       <Translate value={levelThreeKey}/>
                                     </span>
                                   }
@@ -244,11 +242,11 @@ class NavigationComponent extends Component {
                                             ? this.activeCurrentLevel(levelOneKey, levelTwoKey)
                                             : this.collapseLevelThree(levelOneKey, levelTwoKey)
                                           }}
-                                          className={`collapsed-level-item ${this.isActive(pageId, levelFourUrl)  ? activated : ""}`}
+                                          className={classnames(styles["collapsed-level-item"], {[styles[activated]]: this.isActive(pageId, levelFourUrl)})}
                                         >
                                           <Link
                                             onClick={() => {this.goToPage(levelFourUrl.url, levelOneKey)}}
-                                            className={`collapsed-level-item-link`}
+                                            className={styles[`collapsed-level-item-link`]}
                                             to={levelFourUrl.url}
                                           >
                                             <Translate value={levelFourProps.label}/>
@@ -274,9 +272,9 @@ class NavigationComponent extends Component {
               </li>) : null
             ))}
           </ul>
-          <div className={`toggle-sidebar-wrap`}>
+          <div className={styles[`toggle-sidebar-wrap`]}>
             <span
-              className={`toggle-sidebar-icon`}
+              className={styles[`toggle-sidebar-icon`]}
               onClick={this.toggleNavigation}
             />
           </div>

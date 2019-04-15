@@ -13,21 +13,21 @@ class TopCounterProfileMenuContext extends CentreonContext
 
         $this->spin(
             function ($context) {
-                return $context->getSession()->getPage()->has('css', '.iconmoon.icon-user');
+                return $context->getSession()->getPage()->has('css', '[class*="iconmoon"][class*="icon-user"]');
             },
             'Home not load.',
             5
         );
 
-        $this->assertFind('css', '.iconmoon.icon-user')->click();
+        $this->assertFind('css', '[class*="iconmoon"][class*="icon-user"]')->click();
         $this->spin(
             function ($context) {
-                return $context->getSession()->getPage()->has('css', '.submenu-user-edit');
+                return $context->getSession()->getPage()->has('css', '[class*="submenu-user-edit"]');
             },
             'Popin not opened',
             20
         );
-        $this->assertFind('css', '.submenu-user-edit')->click();
+        $this->assertFind('css', '[class*="submenu-user-edit"]')->click();
     }
 
     /**
@@ -54,20 +54,20 @@ class TopCounterProfileMenuContext extends CentreonContext
         $this->visit('/', false);
         $this->spin(
             function ($context) {
-                return $context->getSession()->getPage()->has('css', '.iconmoon.icon-user');
+                return $context->getSession()->getPage()->has('css', '[class*="iconmoon"][class*="icon-user"]');
             },
             'Home not load.',
             5
         );
-        $this->assertFind('css', '.iconmoon.icon-user')->click();
+        $this->assertFind('css', '[class*="iconmoon"][class*="icon-user"]')->click();
         $this->spin(
             function ($context) {
-                return $context->getSession()->getPage()->has('css', '.submenu-user-edit');
+                return $context->getSession()->getPage()->has('css', '[class*="submenu-user-edit"]');
             },
             'Popin not opened',
             20
         );
-        $this->assertFind('css', '.btn.btn-small.logout')->click();
+        $this->assertFind('css', '[class*="btn"][class*="logout"]')->click();
     }
 
     /**

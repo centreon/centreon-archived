@@ -1,4 +1,6 @@
 import React from "react";
+import classnames from 'classnames';
+import styles from '../../styles/partials/form/_form.scss';
 
 const FieldMsg = ({
   className,
@@ -8,7 +10,7 @@ const FieldMsg = ({
   ...restProps
 }) => (
   <FieldMsgTagName
-    className={`field__msg ${className} ${isError ? "field__msg--error" : ""}`}
+    className={classnames(styles["field__msg"], styles[className], {[styles["field__msg--error"]]: !!isError})}
     {...restProps}
   >
     {children}

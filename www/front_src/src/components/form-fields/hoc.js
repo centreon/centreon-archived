@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import className from "class-name";
+import classnames from 'classnames';
+import styles from '../../styles/partials/form/_form.scss';
 import getErrorMsg from "./getErrorMsg";
 import FieldMsg from "./FieldMsg";
 
@@ -73,12 +74,12 @@ const fieldHoc = WrapComponent => {
 
       return (
         <WrapComponent
-          className={className({
-            field: true,
-            "has-danger": meta.invalid && meta.touched,
-            "has-value": this.isInputValue(input.value),
-            "has-focus": isFocused
-          })}
+          className={classnames(
+            styles["field"],
+            {[styles["has-danger"]]: meta.invalid && meta.touched},
+            {[styles["has-value"]]: this.isInputValue(input.value)},
+            {[styles["has-focus"]]: isFocused},
+          )}
           {...input}
           {...rest}
           {...extra}

@@ -2,7 +2,18 @@
     CONTENT STYLE
 ----------------------------------------------------- */
 
-#content {
+.wrapper {
+  display: flex;
+  align-items: stretch;
+}
+
+.main-content {
+  height: 100%;
+  width: 100%;
+  background-color: white;
+}
+
+.content {
   display: flex;
   flex-direction: column;
   overflow: hidden;
@@ -12,7 +23,7 @@
   position: relative;
 }
 
-#fullscreen-wrapper {
+.fullscreen-wrapper {
   flex-grow: 1;
   overflow: hidden;
 }

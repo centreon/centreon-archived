@@ -87,8 +87,20 @@ module.exports = {
         test: /\.(c|sa|sc)ss$/,
         use: [
           MiniCssExtractPlugin.loader,
-          'css-loader',
-          'resolve-url-loader',
+          {
+            loader: "css-loader",
+            options: {
+              modules: true,
+              localIdentName: "[local]__[hash:base64:5]",
+              sourceMap: true
+            }
+          },
+          {
+            loader: 'resolve-url-loader',
+            options: {
+              sourceMap: true,
+            },
+          },
           {
             loader: 'sass-loader',
             options: {
@@ -108,8 +120,7 @@ module.exports = {
         }]
       },
       {
-        //test: /Slider\/.+\.(bmp|png|jpg|jpeg|gif|svg)$/,
-        test: /@centreon\/react\-components\/.+\.(bmp|png|jpg|jpeg|gif|svg)$/,
+        test: /@centreon\/react\-components\/lib\/.+\.(bmp|png|jpg|jpeg|gif|svg)$/,
         use: [{
           loader: 'url-loader',
           options: {

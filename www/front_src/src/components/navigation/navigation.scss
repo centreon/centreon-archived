@@ -2,10 +2,10 @@
     SIDEBAR STYLE
 ----------------------------------------------------- */
 
-.wrapper {
-  display: flex;
-  align-items: stretch;
-}
+@import "../../styles/partials/variables";
+@import "../../styles/partials/helpers";
+@import "../../styles/partials/icons";
+@import "../../styles/partials/fonts";
 
 .sidebar {
   min-width: 45px;
@@ -794,7 +794,7 @@ a {
 ----------------------------------------------------- */
 
 @media (max-width: 768px) {
-  #sidebar {
+  .sidebar {
     min-width: 80px;
     max-width: 80px;
     text-align: center;
@@ -808,7 +808,7 @@ a {
     -ms-transform: translateX(50%);
     transform: translateX(50%);
   }
-  #sidebar {
+  .sidebar {
     &.active {
       margin-left: 0;
     }
@@ -820,7 +820,7 @@ a {
     }
     margin-left: 0;
   }
-  #sidebarCollapse span {
+  .sidebarCollapse span {
     display: none;
   }
 }

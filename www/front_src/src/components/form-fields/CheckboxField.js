@@ -1,5 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
+import classnames from 'classnames';
+import styles from '../../styles/partials/form/_form.scss';
 
 import fieldHoc from "./hoc";
 import { prepareInputProps } from "./utils";
@@ -21,8 +23,8 @@ const CheckboxField = ({
   info,
   ...rest
 }) => (
-  <div class={"form-group" + (error ? " has-danger" : "")}>
-    <div class={"custom-control custom-checkbox orange"}>
+  <div className={classnames(styles["form-group"], {[styles["has-danger"]]: !!error})}>
+    <div className={classnames(styles["custom-control"], styles["custom-checkbox orange"])}>
       <input
         {...prepareInputProps(rest)}
         aria-checked={checked}
@@ -32,18 +34,17 @@ const CheckboxField = ({
           onChange && callbackWithValue(trueValue, falseValue, onChange)
         }
         onBlur={onBlur && callbackWithValue(trueValue, falseValue, onBlur)}
-        className="custom-control-input"
+        className={styles["custom-control-input"]}
         type="checkbox"
       />
-      <label htmlFor={rest.id} class="custom-control-label">
+      <label htmlFor={rest.id} className={styles["custom-control-label"]}>
         {label}
         {info}
       </label>
     </div>
     {error ? (
-      <div class="invalid-feedback">
-        <i class="fas fa-exclamation-triangle" />
-        <div class="field__msg  field__msg--error">{error}</div>{" "}
+      <div className={styles["invalid-feedback"]}>
+        <div className={classnames(styles["field__msg"], styles["field__msg--error"])}>{error}</div>{" "}
       </div>
     ) : null}
   </div>
@@ -60,7 +61,7 @@ CheckboxField.propTypes = {
   error: PropTypes.element
 };
 CheckboxField.defaultProps = {
-  className: "field",
+  className: styles["field"],
   trueValue: true,
   falseValue: false
 };
