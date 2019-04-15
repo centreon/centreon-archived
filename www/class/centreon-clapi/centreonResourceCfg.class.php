@@ -162,7 +162,7 @@ class CentreonResourceCfg extends CentreonObject
     /**
      * @param $resourceId
      */
-    function insertRelations($resourceId)
+    public function insertRelations($resourceId)
     {
         $this->setRelations($resourceId, $this->instanceIds);
     }

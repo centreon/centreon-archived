@@ -412,7 +412,7 @@ class CentreonService extends CentreonObject
     /**
      * @param $serviceId
      */
-    function insertRelations($serviceId)
+    public function insertRelations($serviceId)
     {
         $relObject = new \Centreon_Object_Relation_Host_Service($this->dependencyInjector);
         $relObject->insert($this->hostId, $serviceId);
