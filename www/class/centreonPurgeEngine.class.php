@@ -61,6 +61,8 @@ class CentreonPurgeEngine
             '< __RETENTION__) OR (expire_time < __RETENTION__ AND expire_time <> 0)';
         $this->purgeDowntimesQuery = 'DELETE FROM downtimes WHERE (actual_end_time is not null and actual_end_time ' .
             '< __RETENTION__) OR (deletion_time is not null and deletion_time < __RETENTION__)';
+	$this->purgeAuditLogQuery = 'DELETE FROM log_action WHERE action_log_date < __RETENTION__';
+	'NOT IN (SELECT action_log_id FROM log_action);';
 
         $this->tablesToPurge = array(
             'data_bin' => array(
@@ -99,6 +101,12 @@ class CentreonPurgeEngine
                 'is_partitioned' => false,
                 'custom_query' => $this->purgeDowntimesQuery
             ),
+	    'log_action' => array(
+		'retention_field' => 'audit_log_retention',
+		'retention' => 0,
+		'is_partitioned' => false,
+		'custom_query' => $this->purgeAuditLogQuery,
+	    ),
         );
 
         $this->dbCentstorage = new \CentreonDB('centstorage');
@@ -111,7 +119,7 @@ class CentreonPurgeEngine
     private function readConfig()
     {
         $query = 'SELECT len_storage_mysql,archive_retention,reporting_retention, ' .
-            'len_storage_downtimes, len_storage_comments FROM config';
+            'len_storage_downtimes, len_storage_comments, audit_log_retention FROM config';
         try {
             $DBRESULT = $this->dbCentstorage->query($query);
         } catch (\PDOException $e) {
@@ -173,6 +181,9 @@ class CentreonPurgeEngine
         echo "[" . date(DATE_RFC822) . "] Purging index_data...\n";
         $this->purgeIndexData();
         echo "[" . date(DATE_RFC822) . "] index_data purged\n";
+	echo "[" . date(DATE_RFC822) . "] Purging log_action_modification...\n";
+	$this->purgeLogActionModification();
+	echo "[" . date(DATE_RFC822) . "] log_action_modification purged\n";
     }
 
     /**
@@ -212,11 +223,11 @@ class CentreonPurgeEngine
     private function purgeOldData($table)
     {
         if (isset($this->tablesToPurge[$table]['custom_query'])) {
-            $request = str_replace(
+    	    $request = str_replace(
                 '__RETENTION__',
                 $this->tablesToPurge[$table]['retention'],
                 $this->tablesToPurge[$table]['custom_query']
-            );
+	    );
         } else {
             $request = "DELETE FROM " . $table . " ";
             $request .= "WHERE " . $this->tablesToPurge[$table]['ctime_field'] . " < " .
@@ -248,5 +259,16 @@ class CentreonPurgeEngine
         } catch (\PDOException $e) {
             throw new Exception("Error : Cannot purge index_data, " . $e->getMessage() . "\n");
         }
+    }
+    private function purgeLogActionModification()
+    {
+	$request = "DELETE FROM log_action_modification WHERE action_log_id ".
+        "NOT IN (SELECT action_log_id FROM log_action)";
+
+	try {
+	    $DBRESULT = $this->dbCentstorage->query($request);
+	} catch (\PDOException $e) {
+	    throw new Exception("Error : Cannot purge log_action_modification, " . $e->getMessage() . "\n");
+	}
     }
 }

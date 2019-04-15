@@ -46,7 +46,6 @@ if (isset($_POST["o"]) && $_POST["o"]) {
  */
 $DBRESULT = $pearDBO->query("SELECT * FROM `config` LIMIT 1");
 $gopt = array_map("myDecode", $DBRESULT->fetchRow());
-
 /*
  * Get centstorage state
  */
@@ -82,6 +81,7 @@ $DBRESULT3 = $pearDB->query("SELECT * FROM `options` WHERE `key` LIKE 'partition
 while ($data = $DBRESULT3->fetchRow()) {
     $gopt[$data['key']] = $data['value'];
 }
+
 
 /*
  * Format of text input
@@ -132,6 +132,7 @@ $form->addElement('text', 'len_storage_comments', _("Retention duration for comm
 $form->addElement('text', 'archive_retention', _("Retention duration for logs"), $attrsText2);
 $form->addElement('text', 'reporting_retention', _("Retention duration for reporting data (Dashboard)"), $attrsText2);
 $form->addElement('checkbox', 'audit_log_option', _("Enable/Disable audit logs"));
+$form->addElement('text', 'audit_log_retention', _("Retention duration for audit logs"), $attrsText2);
 
 // Parameters for Partitioning
 $form->addElement('text', 'partitioning_retention', _("Retention duration for partitioning"), $attrsText2);

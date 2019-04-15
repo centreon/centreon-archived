@@ -322,6 +322,23 @@ if ($prepareSelect->execute()) {
                         "hostgroups" => $hostgroups,
                         "badge" => $badge[$tabAction[$res['action_type']]]
                     );
+                } else {
+                    if ( empty($contactList[$res['log_contact_id']]) || $contactList[$res['log_contact_id']] == "" ) {
+                        $author = "looks like a CLAPI action";
+                    } else {
+                        $author = $contactList[$res['log_contact_id']];
+                    }
+                    $elemArray[] = array(
+                        "date" => $res['action_log_date'],
+                        "type" => $res['object_type'],
+                        "object_name" => $objectName,
+                        "action_log_id" => $res['action_log_id'],
+                        "object_id" => $res['object_id'],
+                        "modification_type" => $tabAction[$res['action_type']],
+                        "author" => $author,
+                        "change" => $tabAction[$res['action_type']],
+                        "badge" => $badge[$tabAction[$res['action_type']]]
+                    );
                 }
                 unset($host_name);
                 unset($hg_name);
