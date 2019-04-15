@@ -112,7 +112,7 @@ class UserMenu extends Component {
                     <span class="submenu-user-type"><Translate value="as"/> {username}</span>
                     {allowEditProfile &&
                       <Link
-                        to={"/main.php?p=" + EDIT_PROFILE_TOPOLOGY_PAGE + "&o=c"}
+                        to={config.urlBase + "main.php?p=" + EDIT_PROFILE_TOPOLOGY_PAGE + "&o=c"}
                         class="submenu-user-edit"
                         onClick={this.toggle}
                       >

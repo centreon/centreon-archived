@@ -199,7 +199,7 @@ class PollerMenu extends Component {
                   })
                 : null}
                 {allowPollerConfiguration && /* display poller configuration button if user is allowed */
-                  <Link to={"/main.php?p=" + POLLER_CONFIGURATION_TOPOLOGY_PAGE}>
+                  <Link to={config.urlBase + "main.php?p=" + POLLER_CONFIGURATION_TOPOLOGY_PAGE}>
                     <button
                       onClick={this.toggle}
                       class="btn btn-big btn-green submenu-top-button"
