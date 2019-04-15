@@ -59,7 +59,8 @@ if ($row
     $pearDB->query($query);
 
     // USER1 resource.
-    $query = "UPDATE cfg_resource SET resource_line='/usr/lib64/nagios/plugins' WHERE resource_line='/usr/lib/nagios/plugins'";
+    $query = "UPDATE cfg_resource SET resource_line='/usr/lib64/nagios/plugins' " .
+        "WHERE resource_line='/usr/lib/nagios/plugins'";
     $pearDB->query($query);
 }
 
