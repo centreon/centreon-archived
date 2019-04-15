@@ -63,11 +63,11 @@ class CentreonConfigurationServicecategory extends CentreonConfigurationObjects
         }
 
         /*
-		 * Check for select2 't' argument
-		 * 'a' or empty = category and severitiy
-		 * 'c' = category only
-		 * 's' = severity only
-		 */
+        * Check for select2 't' argument
+        * 'a' or empty = category and severitiy
+        * 'c' = category only
+        * 's' = severity only
+        */
         if (isset($this->arguments['t'])) {
             $selectList = array('a', 'c', 's');
             if (in_array(strtolower($this->arguments['t']), $selectList)) {
@@ -111,7 +111,7 @@ class CentreonConfigurationServicecategory extends CentreonConfigurationObjects
         }
         return array(
             'items' => $serviceList,
-            'total' => (int) $this->pearDB->numberRows()
+            'total' => (int)$this->pearDB->numberRows()
         );
     }
 }

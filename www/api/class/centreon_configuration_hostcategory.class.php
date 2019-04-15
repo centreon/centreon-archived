@@ -76,11 +76,11 @@ class CentreonConfigurationHostcategory extends CentreonConfigurationObjects
             }
         }
         /*
-		 * Check for select2 't' argument
-		 * 'a' or empty = category and severitiy
-		 * 'c' = catagory only
-		 * 's' = severity only
-		 */
+        * Check for select2 't' argument
+        * 'a' or empty = category and severitiy
+        * 'c' = catagory only
+        * 's' = severity only
+        */
         if (isset($this->arguments['t'])) {
             $selectList = array('a', 'c', 's');
             if (in_array(strtolower($this->arguments['t']), $selectList)) {
@@ -138,7 +138,7 @@ class CentreonConfigurationHostcategory extends CentreonConfigurationObjects
 
         return array(
             'items' => $hostCategoryList,
-            'total' => (int) $this->pearDB->numberRows()
+            'total' => (int)$this->pearDB->numberRows()
         );
     }
 }
