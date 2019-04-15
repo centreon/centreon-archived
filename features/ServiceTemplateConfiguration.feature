@@ -7,7 +7,6 @@ Feature: Edit a service template
         Given I am logged in a Centreon server
         And a service template is configured
 
-    @critical
     Scenario: Change the properties of a service template
         When I change the properties of a service template
         Then the properties are updated
