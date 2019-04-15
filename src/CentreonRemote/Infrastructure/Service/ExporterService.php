@@ -1,4 +1,5 @@
 <?php
+
 namespace CentreonRemote\Infrastructure\Service;
 
 use Centreon\Infrastructure\Service\Exception\NotFoundException;

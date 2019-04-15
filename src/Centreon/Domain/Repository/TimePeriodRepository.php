@@ -1,4 +1,5 @@
 <?php
+
 namespace Centreon\Domain\Repository;
 
 use Centreon\Infrastructure\CentreonLegacyDB\ServiceEntityRepository;
@@ -60,8 +61,11 @@ SQL;
      * @param int[] $serviceTemplateChain
      * @return array
      */
-    public function getChainByPoller(array $pollerIds, array $hostTemplateChain = null, array $serviceTemplateChain = null): array
-    {
+    public function getChainByPoller(
+        array $pollerIds,
+        array $hostTemplateChain = null,
+        array $serviceTemplateChain = null
+    ): array {
         // prevent SQL exception
         if (!$pollerIds) {
             return [];
@@ -153,7 +157,7 @@ SQL;
         while ($row = $stmt->fetch()) {
             $isExisting = array_key_exists($row['id'], $result);
             $result[$row['id']] = $row['id'];
-            
+
             if (!$isExisting) {
                 $this->getChainByParant($row['id'], $result);
             }

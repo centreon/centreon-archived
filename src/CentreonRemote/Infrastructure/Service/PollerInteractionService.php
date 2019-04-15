@@ -17,13 +17,15 @@ class PollerInteractionService
     public function __construct(Container $di)
     {
         $this->di = $di;
-        $this->db = $di[\Centreon\ServiceProvider::CENTREON_DB_MANAGER]->getAdapter('configuration_db')->getCentreonDBInstance();
+        $this->db = $di[\Centreon\ServiceProvider::CENTREON_DB_MANAGER]
+            ->getAdapter('configuration_db')
+            ->getCentreonDBInstance();
     }
 
 
     public function generateAndExport($pollers)
     {
-        $pollers = (array) $pollers;
+        $pollers = (array)$pollers;
 
         $this->generateConfiguration($pollers);
         $this->moveConfigurationFiles($pollers);
@@ -69,10 +71,10 @@ class PollerInteractionService
 
         $tabServer = [];
         $tabs = $centreon->user->access->getPollerAclConf([
-            'fields'     => ['name', 'id', 'localhost'],
-            'order'      => ['name'],
+            'fields' => ['name', 'id', 'localhost'],
+            'order' => ['name'],
             'conditions' => ['ns_activate' => '1'],
-            'keys'       => ['id']
+            'keys' => ['id']
         ]);
 
         $brokerObj = new \CentreonConfigCentreonBroker($this->db);
@@ -82,8 +84,8 @@ class PollerInteractionService
         foreach ($tabs as $tab) {
             if (in_array($tab['id'], $pollerIDs)) {
                 $tabServer[$tab['id']] = [
-                    'id'        => $tab['id'],
-                    'name'      => $tab['name'],
+                    'id' => $tab['id'],
+                    'name' => $tab['name'],
                     'localhost' => $tab['localhost']
                 ];
             }
@@ -136,10 +138,10 @@ class PollerInteractionService
         }
 
         $tabs = $centreon->user->access->getPollerAclConf([
-            'fields'     => ['name', 'id', 'localhost', 'init_script'],
-            'order'      => ['name'],
+            'fields' => ['name', 'id', 'localhost', 'init_script'],
+            'order' => ['name'],
             'conditions' => ['ns_activate' => '1'],
-            'keys'       => ['id']
+            'keys' => ['id']
         ]);
 
         $broker = new \CentreonBroker($this->db);
@@ -148,9 +150,9 @@ class PollerInteractionService
         foreach ($tabs as $tab) {
             if (in_array($tab['id'], $pollerIDs)) {
                 $tabServers[$tab['id']] = [
-                    'id'          => $tab['id'],
-                    'name'        => $tab['name'],
-                    'localhost'   => $tab['localhost'],
+                    'id' => $tab['id'],
+                    'name' => $tab['name'],
+                    'localhost' => $tab['localhost'],
                     'init_script' => $tab['init_script']
                 ];
             }

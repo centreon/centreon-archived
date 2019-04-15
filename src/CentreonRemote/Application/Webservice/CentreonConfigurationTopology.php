@@ -79,8 +79,10 @@ class CentreonConfigurationTopology extends CentreonWebServiceAbstract
             throw new \RestBadRequestException('You need to send \'topology_id\' in the request.');
         }
 
-        $topologyID = (int) $_POST['topology_id'];
-        $statement = $this->pearDB->prepare('SELECT `topology_url`, `is_react` FROM `topology` WHERE `topology_id` = :id');
+        $topologyID = (int)$_POST['topology_id'];
+        $statement = $this->pearDB->prepare(
+            'SELECT `topology_url`, `is_react` FROM `topology` WHERE `topology_id` = :id'
+        );
         $statement->execute([':id' => $topologyID]);
         $result = $statement->fetch();
 
@@ -89,8 +91,8 @@ class CentreonConfigurationTopology extends CentreonWebServiceAbstract
         }
 
         return [
-            'url'      => $result['topology_url'],
-            'is_react' => (bool) $result['is_react'],
+            'url' => $result['topology_url'],
+            'is_react' => (bool)$result['is_react'],
         ];
     }
 

@@ -40,7 +40,7 @@ use CentreonLegacy\Core\Module\Information;
 use CentreonLegacy\Core\Utils\Utils;
 
 class Installer extends Module
-{   
+{
     /**
      *
      * @return int
@@ -73,7 +73,7 @@ class Installer extends Module
             'VALUES ( :name , :rname , :mod_release , :is_removeable , :infos , :author , :lang_files , ' .
             ':sql_files , :php_files , :svc_tools , :host_tools )';
         $sth = $this->services->get('configuration_db')->prepare($query);
-        
+
         $sth->bindParam(':name', $this->moduleConfiguration['name'], \PDO::PARAM_STR);
         $sth->bindParam(':rname', $this->moduleConfiguration['rname'], \PDO::PARAM_STR);
         $sth->bindParam(':mod_release', $this->moduleConfiguration['mod_release'], \PDO::PARAM_STR);

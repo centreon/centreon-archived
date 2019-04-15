@@ -75,9 +75,9 @@ class CentreonTaskService extends CentreonWebServiceAbstract
      * Get Status of task
      *
      * @return array
+     * @throws \RestBadRequestException
      * @example ['success' => true, 'status' => 'status of the task']
      *
-     * @throws \RestBadRequestException
      */
     public function postGetTaskStatus(): array
     {
@@ -143,9 +143,9 @@ class CentreonTaskService extends CentreonWebServiceAbstract
      * Get Status of task by parent
      *
      * @return array
+     * @throws \RestBadRequestException
      * @example ['success' => true, 'status' => 'status of the task']
      *
-     * @throws \RestBadRequestException
      */
     public function postGetRemoteTaskStatusByParent(): array
     {
@@ -170,9 +170,9 @@ class CentreonTaskService extends CentreonWebServiceAbstract
      * Find task status by parent id (used on remote server)
      *
      * @return array
+     * @throws \RestBadRequestException
      * @example ['success' => true, 'status' => 'status of the task']
      *
-     * @throws \RestBadRequestException
      */
     public function postGetTaskStatusByParent(): array
     {
@@ -244,9 +244,9 @@ class CentreonTaskService extends CentreonWebServiceAbstract
      * Add new import task with parent ID
      *
      * @return array
+     * @throws \RestBadRequestException
      * @example ['success' => true, 'status' => 'status of the task']
      *
-     * @throws \RestBadRequestException
      */
     public function postAddImportTaskWithParent(): array
     {
@@ -257,7 +257,8 @@ class CentreonTaskService extends CentreonWebServiceAbstract
         /*
          * make sure only authorized master can create task
          */
-        $authorizedMaster = $this->getDi()[\Centreon\ServiceProvider::CENTREON_DB_MANAGER]->getRepository(InformationsRepository::class)
+        $authorizedMaster = $this->getDi()[\Centreon\ServiceProvider::CENTREON_DB_MANAGER]
+            ->getRepository(InformationsRepository::class)
             ->getOneByKey('authorizedMaster');
         $authorizedMasterTab = explode(',', $authorizedMaster->getValue());
 

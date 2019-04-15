@@ -1,4 +1,5 @@
 <?php
+
 namespace CentreonRemote\Tests\Infrastructure\Service;
 
 use PHPUnit\Framework\TestCase;
@@ -37,7 +38,7 @@ class ExporterServiceTest extends TestCase
         });
 
         $this->assertTrue($this->exporter->has(PollerExporter::getName()));
-        
+
         $all = $this->exporter->all();
 
         $this->assertGreaterThan(ServiceExporter::order(), PollerExporter::order());
@@ -69,7 +70,7 @@ class ExporterServiceTest extends TestCase
         $this->assertArrayHasKey('name', $data);
         $this->assertArrayHasKey('classname', $data);
         $this->assertArrayHasKey('factory', $data);
-        
+
         // throw exception
         $this->exporter->get(PollerExporter::getName());
     }

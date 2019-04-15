@@ -24,7 +24,9 @@ class CentreonWebserviceService implements ContainerInterface
         );
 
         if ($hasInterfaces === false) {
-            throw new NotFoundException(sprintf('Object %s must extend %s class or %s class', $object, $centreonClass, $abstractClass));
+            throw new NotFoundException(
+                sprintf('Object %s must extend %s class or %s class', $object, $centreonClass, $abstractClass)
+            );
         }
 
         $name = strtolower($object::getName());

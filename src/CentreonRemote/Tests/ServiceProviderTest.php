@@ -1,4 +1,5 @@
 <?php
+
 namespace CentreonRemote\Tests;
 
 use PHPUnit\Framework\TestCase;
@@ -41,11 +42,12 @@ class ServiceProviderTest extends TestCase
         $this->container[\Centreon\ServiceProvider::CENTREON_DB_MANAGER] =
             new \Centreon\Infrastructure\Service\CentreonDBManagerService($locator);
         $this->container[\Centreon\ServiceProvider::CENTREON_WEBSERVICE] =
-            $this->container[\Centreon\ServiceProvider::CENTREON_CLAPI] = new class {
-                public function add($class)
-                {
-                }
-            };
+        $this->container[\Centreon\ServiceProvider::CENTREON_CLAPI] = new class
+        {
+            public function add($class)
+            {
+            }
+        };
 
         $this->container[\Centreon\ServiceProvider::CENTREON_BROKER_REPOSITORY] =
             new \Centreon\Domain\Repository\CfgCentreonBrokerRepository($this->container['configuration_db']);
@@ -66,11 +68,14 @@ class ServiceProviderTest extends TestCase
             'centreon.notifymaster' => Domain\Service\NotifyMasterService::class,
             'centreon.taskservice' => Domain\Service\TaskService::class,
             'centreon_remote.informations_service' => Domain\Service\InformationsService::class,
-            'centreon_remote.remote_connection_service' => Domain\Service\ConfigurationWizard\RemoteConnectionConfigurationService::class,
-            'centreon_remote.poller_connection_service' => Domain\Service\ConfigurationWizard\PollerConnectionConfigurationService::class,
-            'centreon_remote.poller_config_service' => Domain\Service\ConfigurationWizard\LinkedPollerConfigurationService::class,
-            'centreon_remote.poller_config_bridge' => Domain\Service\ConfigurationWizard\PollerConfigurationRequestBridge::class,
-
+            'centreon_remote.remote_connection_service' =>
+                Domain\Service\ConfigurationWizard\RemoteConnectionConfigurationService::class,
+            'centreon_remote.poller_connection_service' =>
+                Domain\Service\ConfigurationWizard\PollerConnectionConfigurationService::class,
+            'centreon_remote.poller_config_service' =>
+                Domain\Service\ConfigurationWizard\LinkedPollerConfigurationService::class,
+            'centreon_remote.poller_config_bridge' =>
+                Domain\Service\ConfigurationWizard\PollerConfigurationRequestBridge::class,
             'centreon_remote.export' => Service\ExportService::class,
             'centreon_remote.exporter' => Service\ExporterService::class,
             'centreon_remote.exporter.cache' => Service\ExporterCacheService::class,

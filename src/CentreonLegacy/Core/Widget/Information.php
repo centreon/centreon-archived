@@ -45,7 +45,7 @@ class Information
      * @var \Psr\Container\ContainerInterface
      */
     protected $services;
-    
+
     /**
      * @var \CentreonLegacy\Core\Utils\Utils
      */
@@ -65,10 +65,10 @@ class Information
      * @var bool
      */
     protected $hasWidgetsForInstallation = false;
-    
+
     /**
      * Construct
-     * 
+     *
      * @param \Psr\Container\ContainerInterface $services
      * @param \CentreonLegacy\Core\Utils\Utils $utils
      */
@@ -334,7 +334,7 @@ class Information
         }
         return false;
     }
-    
+
     /**
      *
      * @param string $widgetName

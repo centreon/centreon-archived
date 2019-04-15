@@ -1,4 +1,5 @@
 <?php
+
 namespace CentreonRemote\Infrastructure\Export;
 
 use CentreonRemote\Infrastructure\Export\ExportCommitment;
@@ -86,25 +87,35 @@ class ExportManifest
         }
 
         $this->data = $this->commitment->getParser()->parse($file);
-        $checkManifestKeys = function (array $data) : array {
+        $checkManifestKeys = function (array $data): array {
             $keys = ['version', 'datetime', 'remote-poller', 'pollers', 'meta', 'exporters', 'exports'];
             $missingKeys = [];
-            
+
             foreach ($keys as $key) {
                 if (!array_key_exists($key, $data)) {
                     $missingKeys[] = $key;
                 }
             }
-            
+
             return $missingKeys;
         };
 
         if ($missingKeys = $checkManifestKeys($this->data)) {
-            throw new Exception(sprintf("Missing data in a manifest file:\n - %s", join("\n - %s", $missingKeys)), static::ERR_CODE_MANIFEST_WRONG_FORMAT);
+            throw new Exception(
+                sprintf("Missing data in a manifest file:\n - %s", join("\n - %s", $missingKeys)),
+                static::ERR_CODE_MANIFEST_WRONG_FORMAT
+            );
         }
 
         if ($this->data['version'] !== $this->version) {
-            throw new Exception(sprintf('The version of the Central %s and of the Remote %s are incompatible', $this->data['version'], $this->version), static::ERR_CODE_INCOMPATIBLE_VERSIONS);
+            throw new Exception(
+                sprintf(
+                    'The version of the Central %s and of the Remote %s are incompatible',
+                    $this->data['version'],
+                    $this->version
+                ),
+                static::ERR_CODE_INCOMPATIBLE_VERSIONS
+            );
         }
 
         if (!$this->data['exporters']) {
@@ -149,15 +160,24 @@ class ExportManifest
         $missing = array_keys($missing);
 
         if ($missing) {
-            throw new Exception(sprintf("Export contains external files:\n - %s", join("\n - ", $missing)), static::ERR_CODE_MISSING_FILES);
+            throw new Exception(
+                sprintf("Export contains external files:\n - %s", join("\n - ", $missing)),
+                static::ERR_CODE_MISSING_FILES
+            );
         }
 
         if ($modified) {
-            throw new Exception(sprintf("Export files modified:\n - %s", join("\n - ", $modified)), static::ERR_CODE_MODIFIED_FILES);
+            throw new Exception(
+                sprintf("Export files modified:\n - %s", join("\n - ", $modified)),
+                static::ERR_CODE_MODIFIED_FILES
+            );
         }
 
         if ($externals) {
-            throw new Exception(sprintf("Export contains external files:\n - %s", join("\n - ", $externals)), static::ERR_CODE_EXTERNAL_FILES);
+            throw new Exception(
+                sprintf("Export contains external files:\n - %s", join("\n - ", $externals)),
+                static::ERR_CODE_EXTERNAL_FILES
+            );
         }
     }
 

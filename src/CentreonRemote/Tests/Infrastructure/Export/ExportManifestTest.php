@@ -1,4 +1,5 @@
 <?php
+
 namespace CentreonRemote\Tests\Infrastructure\Export;
 
 use PHPUnit\Framework\TestCase;
@@ -46,23 +47,20 @@ class ExportManifestTest extends TestCase
                 'parse',
                 'dump',
             ])
-            ->getMock()
-        ;
+            ->getMock();
         $parser->method('parse')
             ->will($this->returnCallback(function () {
-                    $args = func_get_args();
-                    $file = $args[0];
+                $args = func_get_args();
+                $file = $args[0];
 
-                    return [];
-            }))
-        ;
+                return [];
+            }));
         $parser->method('dump')
             ->will($this->returnCallback(function () {
-                    $args = func_get_args();
+                $args = func_get_args();
 
-                    $this->dumpData[$args[1]] = $args[0];
-            }))
-        ;
+                $this->dumpData[$args[1]] = $args[0];
+            }));
 
         $this->commitment = new ExportCommitment(1, [2, 3], null, $parser);
 
@@ -76,8 +74,7 @@ class ExportManifestTest extends TestCase
                 $this->commitment,
                 $this->version
             ])
-            ->getMock()
-        ;
+            ->getMock();
 
         //->expects($this->any())
         $this->manifest
@@ -90,16 +87,14 @@ class ExportManifestTest extends TestCase
                     return null;
                 }
 
-                    return $file;
-            }))
-        ;
+                return $file;
+            }));
 
         $this->manifest
             ->method('getFile')
             ->will($this->returnCallback(function () {
-                    return __FILE__;
-            }))
-        ;
+                return __FILE__;
+            }));
     }
 
     /**
@@ -143,8 +138,7 @@ class ExportManifestTest extends TestCase
         // chech $this->files
         $this->assertAttributeEquals([
             __FILE__ => md5_file(__FILE__),
-            ], 'files', $this->manifest)
-        ;
+        ], 'files', $this->manifest);
     }
 
     /**
@@ -184,7 +178,7 @@ class ExportManifestTest extends TestCase
                 'exporters' => null,
                 'exports' => null,
             ],
-            ], $this->dumpData);
+        ], $this->dumpData);
     }
 
     /**
@@ -209,8 +203,7 @@ class ExportManifestTest extends TestCase
         $this->assertNull($result);
 
         $result = $manifest->removePath($this->commitment->getPath()
-            . ExportManifest::EXPORT_FILE)
-        ;
+            . ExportManifest::EXPORT_FILE);
 
         $this->assertEquals(ExportManifest::EXPORT_FILE, $result);
     }

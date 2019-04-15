@@ -59,10 +59,10 @@ class UploadFileService
 
     /**
      * Get all files
-     * 
+     *
      * @return array
      */
-    public function getFiles(string $fieldName, array $withExtension = null) : array
+    public function getFiles(string $fieldName, array $withExtension = null): array
     {
         $filesFromRequest = $this->prepare($fieldName);
 
@@ -80,7 +80,7 @@ class UploadFileService
         return $result;
     }
 
-    public function prepare(string $fieldName) : array
+    public function prepare(string $fieldName): array
     {
         $result = [];
 
