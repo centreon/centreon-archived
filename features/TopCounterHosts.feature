@@ -21,7 +21,6 @@ Feature: Top Counter Host
     When I click on the chip "count-host-unreachable"
     Then I see the list of hosts filtered by status unreachable
 
-  @critical
   Scenario: Open the summary of hosts status
     When I click on the hosts icon
     Then I see the summary of hosts status

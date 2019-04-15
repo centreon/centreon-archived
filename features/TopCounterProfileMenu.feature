@@ -10,7 +10,6 @@ Feature: Top Counter Profile Menu
         When I click to edit profile link
         Then I see my profile edit form
 
-    @critical
     Scenario: Logout
         When I click to logout link
         Then I see the login page
