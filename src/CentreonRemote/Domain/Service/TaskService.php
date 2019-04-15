@@ -141,32 +141,34 @@ class TaskService
      */
     public function getRemoteStatusByParent(int $parentId, string $serverIp, string $centreonFolder)
     {
-        $dbAdapter = $this->getDbManager()->getAdapter('configuration_db');
         $query = "SELECT * FROM `remote_servers` WHERE `ip` = '" . $serverIp  . "'";
-        $dbAdapter->query($query);
-        $remoteDataResult = $dbAdapter->results();
 
-        $httpMethod         = $remoteDataResult[0]->http_method;
-        $httpPort           = $remoteDataResult[0]->http_port;
-        $noCheckCertificate = $remoteDataResult[0]->no_check_certificate;
-        $noProxy            = $remoteDataResult[0]->no_proxy;
+        try {
+            $remoteDataResult = $this->getDbManager()->getAdapter('configuration_db')->query($query)->results();
 
-        $url = $httpMethod ?? 'http' . '://' . $serverIp .
-            $httpPort ? ':' . $httpPort : '' . '/' . $centreonFolder .
-            '/api/external.php?object=centreon_task_service&action=getTaskStatusByParent';
+            $httpMethod         = $remoteDataResult[0]->http_method;
+            $httpPort           = $remoteDataResult[0]->http_port;
+            $noCheckCertificate = $remoteDataResult[0]->no_check_certificate;
+            $noProxy            = $remoteDataResult[0]->no_proxy;
 
-        return $url;
-        $result = $this->centreonRestHttp->call(
-            $url,
-            'POST',
-            ['parent_id' => $parentId],
-            null,
-            false,
-            $noCheckCertificate,
-            $noProxy
-        );
+            $url = ($httpMethod ?? 'http') . '://' . $serverIp .
+                ($httpPort ? ':' . $httpPort : '') . '/' . $centreonFolder .
+                '/api/external.php?object=centreon_task_service&action=getTaskStatusByParent';
 
-        return isset($result['status']) ? $result['status'] : null;
+            $result = $this->centreonRestHttp->call(
+                $url,
+                'POST',
+                ['parent_id' => $parentId],
+                null,
+                false,
+                $noCheckCertificate,
+                $noProxy
+            );
+
+            return isset($result['status']) ? $result['status'] : null;
+        } catch (\Exception $e) {
+            return $e->getMessage();
+        }
     }
 
     /**
