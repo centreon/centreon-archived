@@ -68,7 +68,7 @@ class NotifyMasterService
      * @return array
      * @throws \ErrorException
      */
-    public function pingMaster($ip, $noCheckCertificate = false, $data)
+    public function pingMaster($ip, $data, $noCheckCertificate = false)
     {
 
         $url = "{$ip}/centreon/api/external.php?object=centreon_remote_server&action=addToWaitList";
