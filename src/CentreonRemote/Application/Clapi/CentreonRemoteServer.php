@@ -98,8 +98,8 @@ class CentreonRemoteServer implements CentreonClapiServiceInterface
         foreach ($ipList as $ip) {
             $result = $this->getDi()['centreon.notifymaster']->pingMaster(
                 $ip,
-                $noCheckCertificate,
-                $data
+                $data,
+                $noCheckCertificate
             );
             if (!empty($result['status']) && $result['status'] == 'success') {
                 echo "Success\n";
