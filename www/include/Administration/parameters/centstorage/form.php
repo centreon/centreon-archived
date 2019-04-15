@@ -1,7 +1,7 @@
 <?php
 /*
- * Copyright 2005-2015 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2019 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -86,14 +86,14 @@ while ($data = $DBRESULT3->fetchRow()) {
 /*
  * Format of text input
  */
-$attrsText        = array("size"=>"40");
-$attrsText2        = array("size"=>"5");
+$attrsText = array("size" => "40");
+$attrsText2 = array("size" => "5");
 $attrsAdvSelect = null;
 
 /*
  * Form begin
  */
-$form = new HTML_QuickFormCustom('Form', 'post', "?p=".$p);
+$form = new HTML_QuickFormCustom('Form', 'post', "?p=" . $p);
 $form->addElement('header', 'title', _("Modify General Options"));
 
 $form->addElement('hidden', 'gopt_id');
@@ -125,8 +125,18 @@ $form->addElement(
     _("Path to RRDTool Database For Monitoring Engine Statistics"),
     $attrsText
 );
-$form->addElement('text', 'len_storage_rrd', _("Retention duration for performance data in RRDTool databases"), $attrsText2);
-$form->addElement('text', 'len_storage_mysql', _("Retention duration for performance data in MySQL database"), $attrsText2);
+$form->addElement(
+    'text',
+    'len_storage_rrd',
+    _("Retention duration for performance data in RRDTool databases"),
+    $attrsText2
+);
+$form->addElement(
+    'text',
+    'len_storage_mysql',
+    _("Retention duration for performance data in MySQL database"),
+    $attrsText2
+);
 $form->addElement('text', 'len_storage_downtimes', _("Retention duration for downtimes"), $attrsText2);
 $form->addElement('text', 'len_storage_comments', _("Retention duration for comments"), $attrsText2);
 $form->addElement('text', 'archive_retention', _("Retention duration for logs"), $attrsText2);
@@ -143,7 +153,6 @@ $redirect = $form->addElement('hidden', 'o');
 $redirect->setValue($o);
 
 
-
 $form->applyFilter('__ALL__', 'myTrim');
 $form->applyFilter('RRDdatabase_path', 'slash');
 $form->applyFilter('RRDdatabase_status_path', 'slash');
@@ -153,7 +162,7 @@ $form->applyFilter('RRDdatabase_nagios_stats_path', 'slash');
  * Smarty template Init
  */
 $tpl = new Smarty();
-$tpl = initSmartyTpl($path.'centstorage/', $tpl);
+$tpl = initSmartyTpl($path . 'centstorage/', $tpl);
 $form->setDefaults($gopt);
 $centreon->initOptGen($pearDB);
 
@@ -176,14 +185,14 @@ if ($form->validate()) {
 }
 
 if (!$form->validate() && isset($_POST["gopt_id"])) {
-    print("<div class='msg' align='center'>"._("Impossible to validate, one or more field is incorrect")."</div>");
+    print("<div class='msg' align='center'>" . _("Impossible to validate, one or more field is incorrect") . "</div>");
 }
 
 $form->addElement(
     "button",
     "change",
     _("Modify"),
-    array("onClick"=>"javascript:window.location.href='?p=".$p."&o=storage'", 'class' => 'btc bt_info')
+    array("onClick" => "javascript:window.location.href='?p=" . $p . "&o=storage'", 'class' => 'btc bt_info')
 );
 
 /*
@@ -202,7 +211,7 @@ $tpl->assign("ods_log_retention_unit", _("days"));
 $helptext = "";
 include_once("help.php");
 foreach ($help as $key => $text) {
-    $helptext .= '<span style="display:none" id="help:'.$key.'">'.$text.'</span>'."\n";
+    $helptext .= '<span style="display:none" id="help:' . $key . '">' . $text . '</span>' . "\n";
 }
 $tpl->assign("helptext", $helptext);
 

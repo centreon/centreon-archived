@@ -1,5 +1,4 @@
 <?php
-
 /*
  * Copyright 2005-2019 Centreon
  * Centreon is developed by : Julien Mathis and Romain Le Merlus under
@@ -173,7 +172,8 @@ $tpl = initSmartyTpl($path . 'ldap/', $tpl);
 
 $ldapAdmin = new CentreonLdapAdmin($pearDB);
 
-$defaultOpt = array('ldap_auth_enable' => '0',
+$defaultOpt = array(
+    'ldap_auth_enable' => '0',
     'ldap_store_password' => '1',
     'ldap_auto_import' => '0',
     'ldap_srv_dns' => '0',
@@ -184,7 +184,8 @@ $defaultOpt = array('ldap_auth_enable' => '0',
     'ldap_contact_tmpl' => '0',
     'ldap_default_cg' => '0',
     'ldap_search_limit' => '60',
-    'ldap_search_timeout' => '60');
+    'ldap_search_timeout' => '60'
+);
 $gopt = array();
 
 if ($arId) {
@@ -198,26 +199,22 @@ if ($arId) {
         $gopt['ldap_auth_enable'] = $row['ar_enable'];
     }
     unset($res);
-    
-    /*
-     * Preset values of ldap servers
-     */
+
+    //Preset values of ldap servers
     $cdata = CentreonData::getInstance();
     $serversArray = $ldapAdmin->getServersFromResId($arId);
     $cdata->addJsData('clone-values-ldapservers', htmlspecialchars(json_encode($serversArray), ENT_QUOTES));
     $cdata->addJsData('clone-count-ldapservers', count($serversArray));
 }
 
-/*
- * LDAP servers 
- */
+//LDAP servers
 $cloneSet = array();
 $cloneSet[] = $form->addElement(
     'text',
     'address[#index#]',
     _("Host address"),
     array(
-        "size"=>"30",
+        "size" => "30",
         "id" => "address_#index#"
     )
 );
@@ -226,7 +223,7 @@ $cloneSet[] = $form->addElement(
     'port[#index#]',
     _("Port"),
     array(
-        "size"=>"10",
+        "size" => "10",
         "id" => "port_#index#"
     )
 );
@@ -337,7 +334,7 @@ $form->addElement(
     "button",
     "change",
     _("Modify"),
-    array("onClick" => "javascript:window.location.href='?p=" . $p . "&o=ldap&ar_id=" . $arId ."'")
+    array("onClick" => "javascript:window.location.href='?p=" . $p . "&o=ldap&ar_id=" . $arId . "'")
 );
 
 /*

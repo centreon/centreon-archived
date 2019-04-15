@@ -1,7 +1,7 @@
 <?php
 /*
- * Copyright 2005-2015 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2019 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -41,14 +41,10 @@ include("./include/common/autoNumLimit.php");
 require_once './class/centreonDuration.class.php';
 include_once("./include/monitoring/common-Func.php");
 
-/* 
- * Path to the option dir
- */
+//Path to the option dir
 $path = "./include/Administration/performance/";
 
-/*
- * PHP functions
- */
+//PHP functions
 require_once("./include/Administration/parameters/DB-Func.php");
 require_once("./include/common/common-Func.php");
 require_once("./class/centreonDB.class.php");

@@ -1,7 +1,7 @@
 <?php
 /*
- * Copyright 2005-2015 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2019 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -61,14 +61,14 @@ while ($opt = $DBRESULT->fetchRow()) {
 /*
  * Style
  */
-$attrsText        = array("size"=>"40");
-$attrsText2        = array("size"=>"5");
+$attrsText = array("size" => "40");
+$attrsText2 = array("size" => "5");
 $attrsAdvSelect = null;
 
 /*
  * Form begin
  */
-$form = new HTML_QuickFormCustom('Form', 'post', "?p=".$p);
+$form = new HTML_QuickFormCustom('Form', 'post', "?p=" . $p);
 $form->addElement('header', 'title', _("Modify General Options"));
 
 /*
@@ -96,9 +96,9 @@ $GMTList = $CentreonGMT->getGMTList();
 $form->addElement('select', 'gmt', _("Timezone"), $GMTList);
 
 $templates = array();
-if ($handle  = @opendir($oreon->optGen["oreon_path"]."www/Themes/")) {
+if ($handle = @opendir($oreon->optGen["oreon_path"] . "www/Themes/")) {
     while ($file = @readdir($handle)) {
-        if (!is_file($oreon->optGen["oreon_path"]."www/Themes/".$file)
+        if (!is_file($oreon->optGen["oreon_path"] . "www/Themes/" . $file)
             && $file != "."
             && $file != ".."
             && $file != ".svn"
@@ -111,23 +111,25 @@ if ($handle  = @opendir($oreon->optGen["oreon_path"]."www/Themes/")) {
 $form->addElement('select', 'template', _("Display Template"), $templates);
 
 $global_sort_type = array(
-                        "host_name" => _("Hosts"),
-                        "last_state_change" => _("Duration"),
-                        "service_description" => _("Services"),
-                        "current_state" => _("Status"),
-                        "last_check" => _("Last check"),
-                        "output" => _("Output"),
-                        "criticality_id" => _("Criticality"),
-                        "current_attempt" => _("Attempt"),
-                    );
+    "host_name" => _("Hosts"),
+    "last_state_change" => _("Duration"),
+    "service_description" => _("Services"),
+    "current_state" => _("Status"),
+    "last_check" => _("Last check"),
+    "output" => _("Output"),
+    "criticality_id" => _("Criticality"),
+    "current_attempt" => _("Attempt"),
+);
 
-$sort_type = array(    "last_state_change" => _("Duration"),
-                    "host_name" => _("Hosts"),
-                    "service_description" => _("Services"),
-                    "current_state" => _("Status"),
-                    "last_check" => _("Last check"),
-                    "plugin_output" => _("Output"),
-                    "criticality_id" => _("Criticality"));
+$sort_type = array(
+    "last_state_change" => _("Duration"),
+    "host_name" => _("Hosts"),
+    "service_description" => _("Services"),
+    "current_state" => _("Status"),
+    "last_check" => _("Last check"),
+    "plugin_output" => _("Output"),
+    "criticality_id" => _("Criticality")
+);
 
 $form->addElement('select', 'global_sort_type', _("Sort by  "), $global_sort_type);
 $global_sort_order = array("ASC" => _("Ascending"), "DESC" => _("Descending"));
@@ -192,8 +194,9 @@ $sso_enable[] = $form->createElement(
     'yes',
     '&nbsp;',
     '',
-    array("onchange" => "javascript:confirm("
-        . "'Are you sure you want to change this parameter ? Please read the help before.')"
+    array(
+        "onchange" => "javascript:confirm("
+            . "'Are you sure you want to change this parameter ? Please read the help before.')"
     )
 );
 $form->addGroup($sso_enable, 'sso_enable', _("Enable SSO authentication"), '&nbsp;&nbsp;');
@@ -202,14 +205,14 @@ $sso_mode = array();
 $sso_mode[] = $form->createElement('radio', 'sso_mode', null, _("SSO only"), '0');
 $sso_mode[] = $form->createElement('radio', 'sso_mode', null, _("Mixed"), '1');
 $form->addGroup($sso_mode, 'sso_mode', _("SSO mode"), '&nbsp;');
-$form->setDefaults(array('sso_mode'=>'1'));
+$form->setDefaults(array('sso_mode' => '1'));
 
 $form->addElement('text', 'sso_trusted_clients', _('SSO trusted client addresses'), array('size' => 50));
 $form->addElement('text', 'sso_blacklist_clients', _('SSO blacklist client addresses'), array('size' => 50));
 $form->addElement('text', 'sso_username_pattern', _('SSO pattern matching login'), array('size' => 50));
 $form->addElement('text', 'sso_username_replace', _('SSO pattern replace login'), array('size' => 50));
 $form->addElement('text', 'sso_header_username', _('SSO login header'), array('size' => 30));
-$form->setDefaults(array('sso_header_username'=>'HTTP_AUTH_USER'));
+$form->setDefaults(array('sso_header_username' => 'HTTP_AUTH_USER'));
 
 $options3[] = $form->createElement('checkbox', 'yes', '&nbsp;', '');
 $form->addGroup($options3, 'enable_gmt', _("Enable Timezone management"), '&nbsp;&nbsp;');
@@ -234,15 +237,18 @@ $form->registerRule('is_writable_path', 'callback', 'is_writable_path');
 $form->registerRule('is_writable_file', 'callback', 'is_writable_file');
 $form->registerRule('is_writable_file_if_exist', 'callback', 'is_writable_file_if_exist');
 $form->addRule('oreon_path', _("Can't write in directory"), 'is_valid_path');
-// $form->addRule('nagios_path_plugins', _("Can't write in directory"), 'is_writable_path'); - Field is not added so no need for rule
-// $form->addRule('nagios_path_img', _("Can't write in directory"), 'is_writable_path'); - Field is not added so no need for rule
-// $form->addRule('nagios_path', _("The directory isn't valid"), 'is_valid_path'); - Field is not added so no need for rule
+// $form->addRule('nagios_path_plugins', _("Can't write in directory"), 'is_writable_path');
+// - Field is not added so no need for rule
+// $form->addRule('nagios_path_img', _("Can't write in directory"), 'is_writable_path');
+// - Field is not added so no need for rule
+// $form->addRule('nagios_path', _("The directory isn't valid"), 'is_valid_path');
+// - Field is not added so no need for rule
 
 /*
  * Smarty template Init
  */
 $tpl = new Smarty();
-$tpl = initSmartyTpl($path.'general/', $tpl);
+$tpl = initSmartyTpl($path . 'general/', $tpl);
 
 $form->setDefaults($gopt);
 
@@ -267,14 +273,14 @@ if ($form->validate()) {
 }
 
 if (!$form->validate() && isset($_POST["gopt_id"])) {
-    print("<div class='msg' align='center'>"._("Impossible to validate, one or more field is incorrect")."</div>");
+    print("<div class='msg' align='center'>" . _("Impossible to validate, one or more field is incorrect") . "</div>");
 }
 
 $form->addElement(
     "button",
     "change",
     _("Modify"),
-    array("onClick"=>"javascript:window.location.href='?p=".$p."'", 'class' => 'btc bt_info')
+    array("onClick" => "javascript:window.location.href='?p=" . $p . "'", 'class' => 'btc bt_info')
 );
 
 /*
@@ -300,7 +306,7 @@ $tpl->assign('valid', $valid);
 $helptext = "";
 include_once("help.php");
 foreach ($help as $key => $text) {
-    $helptext .= '<span style="display:none" id="help:'.$key.'">'.$text.'</span>'."\n";
+    $helptext .= '<span style="display:none" id="help:' . $key . '">' . $text . '</span>' . "\n";
 }
 $tpl->assign("helptext", $helptext);
 

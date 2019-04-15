@@ -53,7 +53,8 @@ $help['tip_reporting_retention'] = dgettext(
  */
 $help['tip_partitioning_retention'] = dgettext(
     'help',
-    'Retention time for partitioned tables (data_bin, logs, log_archive_host, log_archive_service), by default 365 days.'
+    'Retention time for partitioned tables ' .
+    '(data_bin, logs, log_archive_host, log_archive_service), by default 365 days.'
 );
 $help['tip_partitioning_retention_forward'] = dgettext(
     'help',
