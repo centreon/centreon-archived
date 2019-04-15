@@ -4375,6 +4375,10 @@ msgstr "Utiliser une connexion TLS"
 msgid "Alternative domain for ldap"
 msgstr "Domaine alternatif pour ldap"
 
+#: centreon-web/www/include/Administration/parameters/ldap/form.php
+msgid "LDAP connection timeout"
+msgstr "Temps maximum de connexion au serveur LDAP"
+
 #: centreon-web/www/include/Administration/parameters/ldap/form.php:106
 msgid "LDAP search size limit"
 msgstr "Taille limite de la recherche LDAP"

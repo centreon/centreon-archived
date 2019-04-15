@@ -443,6 +443,10 @@ msgstr "Active la connexion TLS"
 msgid "Set the domain for search the service"
 msgstr "Configure le domaine pour la recherche du service"
 
+#: centreon-web/www/include/Administration/parameters/ldap/help.php
+msgid "Connection timeout"
+msgstr "Durée maximale de la tentative de connexion avant d'être considérée comme un échec."
+
 #: centreon-web/www/include/Administration/parameters/ldap/help.php:21
 msgid "Search size limit"
 msgstr "Limite du nombre d'objets affichés lors de la recherche."
