@@ -113,3 +113,25 @@ function setUserFormat() {
         });
     }
 }
+
+function updateEndTime() {
+    var d = new Date($(".datepicker").first().val() + ' ' +  $(".timepicker").first().val());
+    if ($("#duration").val() != '') {
+        var dur = 0;
+        var duration_scale = $("#duration_scale").val();
+        if (duration_scale == 's') {
+            dur = $("#duration").val();
+        } else if (duration_scale == 'm') {
+            dur = $("#duration").val() * 60;
+        } else if (duration_scale == 'h') {
+            dur = $("#duration").val() * 3600;
+        } else if (duration_scale == 'd') {
+            dur = $("#duration").val() * 86400;
+        }
+        dur *= 1000; // Convert to microseconds
+        var e = new Date();
+        e.setTime(d.getTime() + dur);
+        $(".datepicker").last().datepicker("setDate", e);
+        $(".timepicker").last().timepicker("setTime", e.getHours() + ':' + e.getMinutes());
+    }
+}
