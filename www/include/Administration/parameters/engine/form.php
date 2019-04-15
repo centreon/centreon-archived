@@ -1,7 +1,7 @@
 <?php
 /*
- * Copyright 2005-2015 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2019 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -57,14 +57,14 @@ if (!isset($gopt["nagios_path_img"])) {
 }
 
 
-$attrsText        = array("size"=>"40");
-$attrsText2        = array("size"=>"5");
+$attrsText = array("size" => "40");
+$attrsText2 = array("size" => "5");
 $attrsAdvSelect = null;
 
 /*
  * Form begin
  */
-$form = new HTML_QuickFormCustom('Form', 'post', "?p=".$p);
+$form = new HTML_QuickFormCustom('Form', 'post', "?p=" . $p);
 $form->addElement('header', 'title', _("Modify General Options"));
 
 /*
@@ -108,11 +108,12 @@ $form->addElement('checkbox', 'monitoring_dwt_fixed', _("Fixed"));
 $form->addElement('checkbox', 'monitoring_dwt_svc', _("Set downtimes on services attached to hosts"));
 $form->addElement('text', 'monitoring_dwt_duration', _("Duration"), $attrsText2);
 
-$scaleChoices = array("s" => _("seconds"),
-                      "m" => _("minutes"),
-                      "h" => _("hours"),
-                      "d" => _("days")
-                    );
+$scaleChoices = array(
+    "s" => _("seconds"),
+    "m" => _("minutes"),
+    "h" => _("hours"),
+    "d" => _("days")
+);
 $form->addElement('select', 'monitoring_dwt_duration_scale', _("Scale of time"), $scaleChoices);
 
 $form->addElement('hidden', 'monitoring_engine', "CENGINE");
@@ -133,8 +134,10 @@ $form->registerRule('is_writable_file', 'callback', 'is_writable_file');
 $form->registerRule('is_writable_file_if_exist', 'callback', 'is_writable_file_if_exist');
 $form->registerRule('isNum', 'callback', 'isNum');
 
-// $form->addRule('nagios_path_img', _("The directory isn't valid"), 'is_valid_path_images'); - Field is not added so no need for rule
-// $form->addRule('nagios_path', _("The directory isn't valid"), 'is_valid_path'); - Field is not added so no need for rule
+// $form->addRule('nagios_path_img', _("The directory isn't valid"), 'is_valid_path_images');
+// - Field is not added so no need for rule
+// $form->addRule('nagios_path', _("The directory isn't valid"), 'is_valid_path');
+// - Field is not added so no need for rule
 $form->addRule('nagios_path_plugins', _("The directory isn't valid"), 'is_valid_path');
 $form->addRule('tactical_refresh_interval', _("Refresh interval must be numeric"), 'numeric');
 
@@ -144,7 +147,7 @@ $form->addRule('interval_length', _("This value must be a numerical value."), 'i
  * Smarty template Init
  */
 $tpl = new Smarty();
-$tpl = initSmartyTpl($path."/engine", $tpl);
+$tpl = initSmartyTpl($path . "/engine", $tpl);
 
 if (!isset($gopt["monitoring_engine"])) {
     $gopt["monitoring_engine"] = "CENGINE";
@@ -155,11 +158,11 @@ $form->setDefaults($gopt);
 $subC = $form->addElement('submit', 'submitC', _("Save"), array("class" => "btc bt_success"));
 $DBRESULT = $form->addElement('reset', 'reset', _("Reset"), array("class" => "btc bt_default"));
 
-    // prepare help texts
+// prepare help texts
 $helptext = "";
 include_once("help.php");
 foreach ($help as $key => $text) {
-    $helptext .= '<span style="display:none" id="help:'.$key.'">'.$text.'</span>'."\n";
+    $helptext .= '<span style="display:none" id="help:' . $key . '">' . $text . '</span>' . "\n";
 }
 $tpl->assign("helptext", $helptext);
 
@@ -180,14 +183,14 @@ if ($form->validate()) {
     $form->freeze();
 }
 if (!$form->validate() && isset($_POST["gopt_id"])) {
-    print("<div class='msg' align='center'>"._("impossible to validate, one or more field is incorrect")."</div>");
+    print("<div class='msg' align='center'>" . _("impossible to validate, one or more field is incorrect") . "</div>");
 }
 
 $form->addElement(
     "button",
     "change",
     _("Modify"),
-    array("onClick"=>"javascript:window.location.href='?p=".$p."&o=nagios'", 'class' => 'btc bt_info')
+    array("onClick" => "javascript:window.location.href='?p=" . $p . "&o=nagios'", 'class' => 'btc bt_info')
 );
 
 /*
