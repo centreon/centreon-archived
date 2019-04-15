@@ -1,42 +1,46 @@
 <?php
 /*
-* Copyright 2005-2015 Centreon
-* Centreon is developped by : Julien Mathis and Romain Le Merlus under
-* GPL Licence 2.0.
-*
-* This program is free software; you can redistribute it and/or modify it under
-* the terms of the GNU General Public License as published by the Free Software
-* Foundation ; either version 2 of the License.
-*
-* This program is distributed in the hope that it will be useful, but WITHOUT ANY
-* WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
-* PARTICULAR PURPOSE. See the GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License along with
-* this program; if not, see <http://www.gnu.org/licenses>.
-*
-* Linking this program statically or dynamically with other modules is making a
-* combined work based on this program. Thus, the terms and conditions of the GNU
-* General Public License cover the whole combination.
-*
-* As a special exception, the copyright holders of this program give Centreon
-* permission to link this program with independent modules to produce an executable,
-* regardless of the license terms of these independent modules, and to copy and
-* distribute the resulting executable under terms of Centreon choice, provided that
-* Centreon also meet, for each linked independent module, the terms  and conditions
-* of the license of that module. An independent module is a module which is not
-* derived from this program. If you modify this program, you may extend this
-* exception to your version of the program, but you are not obliged to do so. If you
-* do not wish to do so, delete this exception statement from your version.
-*
-* For more information : contact@centreon.com
-*
-*/
+ * Copyright 2005-2019 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
+ * GPL Licence 2.0.
+ *
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation ; either version 2 of the License.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+ * PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License along with
+ * this program; if not, see <http://www.gnu.org/licenses>.
+ *
+ * Linking this program statically or dynamically with other modules is making a
+ * combined work based on this program. Thus, the terms and conditions of the GNU
+ * General Public License cover the whole combination.
+ *
+ * As a special exception, the copyright holders of this program give Centreon
+ * permission to link this program with independent modules to produce an executable,
+ * regardless of the license terms of these independent modules, and to copy and
+ * distribute the resulting executable under terms of Centreon choice, provided that
+ * Centreon also meet, for each linked independent module, the terms  and conditions
+ * of the license of that module. An independent module is a module which is not
+ * derived from this program. If you modify this program, you may extend this
+ * exception to your version of the program, but you are not obliged to do so. If you
+ * do not wish to do so, delete this exception statement from your version.
+ *
+ * For more information : contact@centreon.com
+ *
+ */
 
 if (!isset($centreon)) {
     exit();
 }
 
+/**
+ * @param null $name
+ * @return bool
+ */
 function testExistence($name = null)
 {
     global $pearDB, $form;
@@ -49,14 +53,10 @@ function testExistence($name = null)
         htmlentities($name, ENT_QUOTES, "UTF-8") . "'";
     $res = $pearDB->query($query);
     $graph = $res->fetchRow();
-    /*
-	 * Modif case
-	 */
+    // Modif case
     if ($res->rowCount() >= 1 && $graph["graph_id"] == $id) {
         return true;
-    } /*
-	 * Duplicate entry
-	 */
+    } // Duplicate entry
     elseif ($res->rowCount() >= 1 && $graph["graph_id"] != $id) {
         return false;
     } else {
@@ -64,6 +64,9 @@ function testExistence($name = null)
     }
 }
 
+/**
+ * @param array $graphs
+ */
 function deleteGraphTemplateInDB($graphs = array())
 {
     global $pearDB;
@@ -74,6 +77,10 @@ function deleteGraphTemplateInDB($graphs = array())
     defaultOreonGraph();
 }
 
+/**
+ * @param array $graphs
+ * @param array $nbrDup
+ */
 function multipleGraphTemplateInDB($graphs = array(), $nbrDup = array())
 {
     foreach ($graphs as $key => $value) {
@@ -98,6 +105,9 @@ function multipleGraphTemplateInDB($graphs = array(), $nbrDup = array())
     }
 }
 
+/**
+ *
+ */
 function defaultOreonGraph()
 {
     global $pearDB;
@@ -110,6 +120,9 @@ function defaultOreonGraph()
     }
 }
 
+/**
+ *
+ */
 function noDefaultOreonGraph()
 {
     global $pearDB;
@@ -117,21 +130,29 @@ function noDefaultOreonGraph()
     $pearDB->query($rq);
 }
 
-
-function updateGraphTemplateInDB($graph_id = null)
+/**
+ * @param null $graphId
+ */
+function updateGraphTemplateInDB($graphId = null)
 {
-    if (!$graph_id) {
+    if (!$graphId) {
         return;
     }
-    updateGraphTemplate($graph_id);
+    updateGraphTemplate($graphId);
 }
 
+/**
+ * @return mixed
+ */
 function insertGraphTemplateInDB()
 {
-    $graph_id = insertGraphTemplate();
-    return ($graph_id);
+    $graphId = insertGraphTemplate();
+    return ($graphId);
 }
 
+/**
+ * @return mixed
+ */
 function insertGraphTemplate()
 {
     global $form;
@@ -185,15 +206,18 @@ function insertGraphTemplate()
     $pearDB->query($rq);
     defaultOreonGraph();
     $res = $pearDB->query("SELECT MAX(graph_id) FROM giv_graphs_template");
-    $graph_id = $res->fetchRow();
-    return ($graph_id["MAX(graph_id)"]);
+    $graphId = $res->fetchRow();
+    return ($graphId["MAX(graph_id)"]);
 }
 
-function updateGraphTemplate($graph_id = null)
+/**
+ * @param null $graphId
+ */
+function updateGraphTemplate($graphId = null)
 {
     global $form, $pearDB;
 
-    if (!$graph_id) {
+    if (!$graphId) {
         return;
     }
     $ret = array();
@@ -246,7 +270,7 @@ function updateGraphTemplate($graph_id = null)
     isset($ret["comment"]) && $ret["comment"] != null
         ? $rq .= "'" . htmlentities($ret["comment"], ENT_QUOTES, "UTF-8") . "' "
         : $rq .= "NULL ";
-    $rq .= "WHERE graph_id = '" . $graph_id . "'";
+    $rq .= "WHERE graph_id = '" . $graphId . "'";
     $pearDB->query($rq);
     defaultOreonGraph();
 }

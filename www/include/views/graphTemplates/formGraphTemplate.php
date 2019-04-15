@@ -1,7 +1,7 @@
 <?php
 /*
- * Copyright 2005-2015 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2019 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -39,16 +39,12 @@ if (!isset($centreon)) {
 $graph = array();
 if (($o == "c" || $o == "w") && $graph_id) {
     $res = $pearDB->query("SELECT * FROM giv_graphs_template WHERE graph_id = '" . $graph_id . "' LIMIT 1");
-    /*
-	 * Set base value
-	 */
+    // Set base value
     $graph = array_map("myDecode", $res->fetchRow());
 }
-#
-## Database retrieve information for differents elements list we need on the page
-#
-# Components comes from DB -> Store in $compos Array
 
+// Database retrieve information for differents elements list we need on the page
+// Components comes from DB -> Store in $compos Array
 $compos = array();
 $res = $pearDB->query("SELECT compo_id, name FROM giv_components_template ORDER BY name");
 while ($compo = $res->fetchRow()) {
@@ -56,9 +52,9 @@ while ($compo = $res->fetchRow()) {
 }
 $res->closeCursor();
 
-#
-# End of "database-retrieved" information
-##########################################################
+// End of "database-retrieved" information
+///////////////////////////////////////////
+
 ##########################################################
 # Var information to format the element
 #
@@ -68,9 +64,7 @@ $attrsText2 = array("size" => "6");
 $attrsAdvSelect = array("style" => "width: 200px; height: 100px;");
 $attrsTextarea = array("rows" => "3", "cols" => "30");
 
-#
-## Form begin
-#
+// Form begin
 $form = new HTML_QuickFormCustom('Form', 'post', "?p=" . $p);
 if ($o == "a") {
     $form->addElement('header', 'ftitle', _("Add a Graph Template"));
@@ -80,9 +74,7 @@ if ($o == "a") {
     $form->addElement('header', 'ftitle', _("View a Graph Template"));
 }
 
-#
-## Basic information
-#
+// Basic information
 $form->addElement('header', 'information', _("General Information"));
 $form->addElement('header', 'color', _("Legend"));
 $form->addElement('text', 'name', _("Template Name"), $attrsText);
@@ -149,9 +141,7 @@ $form->addElement('hidden', 'graph_id');
 $redirect = $form->addElement('hidden', 'o');
 $redirect->setValue($o);
 
-/*
- * Form Rules
- */
+// Form Rules
 $form->applyFilter('__ALL__', 'myTrim');
 $form->addRule('name', _("Compulsory Name"), 'required');
 $form->addRule('vertical_label', _("Required Field"), 'required');
@@ -163,14 +153,11 @@ $form->addRule('name', _("Name is already in use"), 'exist');
 $form->setRequiredNote("<font style='color: red;'>*</font>&nbsp;" . _("Required fields"));
 
 
-/*
- * Smarty template Init
- */
-
+// Smarty template Init
 $tpl = new Smarty();
 $tpl = initSmartyTpl($path, $tpl);
 
-# Just watch
+// Just watch
 if ($o == "w") {
     $form->addElement(
         "button",
@@ -202,10 +189,7 @@ foreach ($help as $key => $text) {
 $tpl->assign("helptext", $helptext);
 
 
-/*
- * Picker Color JS
- */
-
+// Picker Color JS
 $tpl->assign(
     'colorJS',
     "
@@ -223,10 +207,7 @@ $tpl->assign(
 	}
 </script>"
 );
-
-/*
- * End of Picker Color
- */
+// End of Picker Color
 
 $valid = false;
 if ($form->validate()) {

@@ -1,7 +1,7 @@
 <?php
 /*
- * Copyright 2005-2015 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2019 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -37,6 +37,10 @@ if (!isset($centreon)) {
     exit();
 }
 
+/**
+ * @param null $name
+ * @return bool
+ */
 function NameHsrTestExistence($name = null)
 {
     global $pearDB, $pearDBO, $form;
@@ -54,10 +58,10 @@ function NameHsrTestExistence($name = null)
     }
     $DBRESULT = $pearDB->query($sql);
     $compo = $DBRESULT->fetchRow();
-    #Modif case
+    //Modif case
     if ($DBRESULT->rowCount() >= 1 && $compo["compo_id"] == $gsvs["compo_id"]) {
         return true;
-        #Duplicate entry
+        //Duplicate entry
     } elseif ($DBRESULT->rowCount() >= 1 && $compo["compo_id"] != $gsvs["compo_id"]) {
         return false;
     } else {
@@ -65,6 +69,10 @@ function NameHsrTestExistence($name = null)
     }
 }
 
+/**
+ * @param null $name
+ * @return bool
+ */
 function DsHsrTestExistence($name = null)
 {
     global $pearDB, $pearDBO, $form;
@@ -82,10 +90,10 @@ function DsHsrTestExistence($name = null)
     }
     $DBRESULT = $pearDB->query($sql);
     $compo = $DBRESULT->fetchRow();
-    #Modif case
+    //Modif case
     if ($DBRESULT->rowCount() >= 1 && $compo["compo_id"] == $gsvs["compo_id"]) {
         return true;
-    } #Duplicate entry
+    } //Duplicate entry
     elseif ($DBRESULT->rowCount() >= 1 && $compo["compo_id"] != $gsvs["compo_id"]) {
         return false;
     } else {
@@ -93,6 +101,10 @@ function DsHsrTestExistence($name = null)
     }
 }
 
+/**
+ * @param $color
+ * @return bool
+ */
 function checkColorFormat($color)
 {
     if ($color != "" && strncmp($color, '#', 1)) {
@@ -102,31 +114,44 @@ function checkColorFormat($color)
     }
 }
 
+/**
+ * @param array $compos
+ */
 function deleteComponentTemplateInDB($compos = array())
 {
     global $pearDB;
     foreach ($compos as $key => $value) {
-        $DBRESULT = $pearDB->query("DELETE FROM giv_components_template WHERE compo_id = '" . $key . "'");
+        $pearDB->query("DELETE FROM giv_components_template WHERE compo_id = '" . $key . "'");
     }
     defaultOreonGraph();
 }
 
+/**
+ *
+ */
 function defaultOreonGraph()
 {
     global $pearDB;
     $DBRESULT = $pearDB->query("SELECT DISTINCT compo_id FROM giv_components_template WHERE default_tpl1 = '1'");
     if (!$DBRESULT->rowCount()) {
-        $DBRESULT2 = $pearDB->query("UPDATE giv_components_template SET default_tpl1 = '1' LIMIT 1");
+        $pearDB->query("UPDATE giv_components_template SET default_tpl1 = '1' LIMIT 1");
     }
 }
 
+/**
+ *
+ */
 function noDefaultOreonGraph()
 {
     global $pearDB;
     $rq = "UPDATE giv_components_template SET default_tpl1 = '0'";
-    $DBRESULT = $pearDB->query($rq);
+    $pearDB->query($rq);
 }
 
+/**
+ * @param array $compos
+ * @param array $nbrDup
+ */
 function multipleComponentTemplateInDB($compos = array(), $nbrDup = array())
 {
     global $pearDB;
@@ -139,30 +164,41 @@ function multipleComponentTemplateInDB($compos = array(), $nbrDup = array())
             $val = null;
             foreach ($row as $key2 => $value2) {
                 $key2 == "name" ? ($name = $value2 = $value2 . "_" . $i) : null;
-                $val ? $val .= ($value2 != null ? (", '" . $value2 . "'") : ", NULL") : $val .= ($value2 != null ? ("'" . $value2 . "'") : "NULL");
+                $val
+                    ? $val .= ($value2 != null ? (", '" . $value2 . "'") : ", NULL")
+                    : $val .= ($value2 != null ? ("'" . $value2 . "'") : "NULL");
             }
             if (NameHsrTestExistence($name)) {
                 $val ? $rq = "INSERT INTO giv_components_template VALUES (" . $val . ")" : $rq = null;
-                $DBRESULT2 = $pearDB->query($rq);
+                $pearDB->query($rq);
             }
         }
     }
 }
 
-function updateComponentTemplateInDB($compo_id = null)
+/**
+ * @param null $compoId
+ */
+function updateComponentTemplateInDB($compoId = null)
 {
-    if (!$compo_id) {
+    if (!$compoId) {
         return;
     }
-    updateComponentTemplate($compo_id);
+    updateComponentTemplate($compoId);
 }
 
+/**
+ * @return mixed
+ */
 function insertComponentTemplateInDB()
 {
-    $compo_id = insertComponentTemplate();
-    return ($compo_id);
+    $compoId = insertComponentTemplate();
+    return ($compoId);
 }
 
+/**
+ * @return mixed
+ */
 function insertComponentTemplate()
 {
     global $form, $pearDB, $pearDBO;
@@ -265,13 +301,16 @@ function insertComponentTemplate()
     $DBRESULT = $pearDB->query($rq);
     defaultOreonGraph();
     $DBRESULT = $pearDB->query("SELECT MAX(compo_id) FROM giv_components_template");
-    $compo_id = $DBRESULT->fetchRow();
-    return ($compo_id["MAX(compo_id)"]);
+    $compoId = $DBRESULT->fetchRow();
+    return ($compoId["MAX(compo_id)"]);
 }
 
-function updateComponentTemplate($compo_id = null)
+/**
+ * @param null $compoId
+ */
+function updateComponentTemplate($compoId = null)
 {
-    if (!$compo_id) {
+    if (!$compoId) {
         return;
     }
     global $form, $pearDB, $pearDBO;
@@ -320,7 +359,7 @@ function updateComponentTemplate($compo_id = null)
     isset($ret["ds_color_line"]) && $ret["ds_color_line"] != null
         ? $rq .= "'" . $ret["ds_color_line"] . "', "
         : $rq .= "NULL, ";
-    if ($compo_id == 1) {
+    if ($compoId == 1) {
         $ret["ds_color_line_mode"]["ds_color_line_mode"] = '1';
     }
     $rq .= "ds_color_line_mode = " .
@@ -387,7 +426,7 @@ function updateComponentTemplate($compo_id = null)
     isset($ret["comment"]) && $ret["comment"] != null
         ? $rq .= "'" . htmlentities($ret["comment"], ENT_QUOTES, "UTF-8") . "' "
         : $rq .= "NULL ";
-    $rq .= "WHERE compo_id = '" . $compo_id . "'";
+    $rq .= "WHERE compo_id = '" . $compoId . "'";
     $DBRESULT = $pearDB->query($rq);
     defaultOreonGraph();
 }

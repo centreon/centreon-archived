@@ -37,9 +37,7 @@ if (!isset($centreon)) {
     exit();
 }
 
-/*
- * Load 2 general options
- */
+// Load 2 general options
 $l_general_opt = array();
 $DBRESULT = $pearDB->query("SELECT * FROM options WHERE `key` RLIKE '^color_(warn|crit)'");
 while ($opt = $DBRESULT->fetchRow()) {
@@ -50,9 +48,7 @@ $DBRESULT->closeCursor();
 $compo = array();
 if (($o == "c" || $o == "w") && $compo_id) {
     $res = $pearDB->query("SELECT * FROM giv_components_template WHERE compo_id = '" . $compo_id . "' LIMIT 1");
-    /*
-	 * Set base value
-	 */
+    // Set base value
     $tab = $res->fetchRow();
     $compo = array_map("myDecode", $tab);
     unset($compo['host_id']);
@@ -73,9 +69,7 @@ if (($o == "c" || $o == "w") && $compo_id) {
     }
 }
 
-/*
- * Graphs comes from DB -> Store in $graphs Array
- */
+// Graphs comes from DB -> Store in $graphs Array
 $graphs = array();
 $res = $pearDB->query("SELECT graph_id, name FROM giv_graphs_template ORDER BY name");
 while ($graph = $res->fetchRow()) {
@@ -83,9 +77,7 @@ while ($graph = $res->fetchRow()) {
 }
 $res->closeCursor();
 
-/*
- * List of known data sources
- */
+// List of known data sources
 $datasources = array();
 $query = "SELECT `metric_name`, `unit_name` FROM `metrics` GROUP BY `metric_name` ORDER BY `metric_name`";
 $DBRESULT = $pearDBO->query($query);
@@ -98,9 +90,7 @@ while ($row = $DBRESULT->fetchRow()) {
 unset($row);
 $DBRESULT->closeCursor();
 
-/*
- * Define Styles
- */
+// Define Styles
 $attrsText = array("size" => "40");
 $attrsText2 = array("size" => "10");
 $attrsTextarea = array("rows" => "4", "cols" => "60");
@@ -121,9 +111,7 @@ $attrServices = array(
     'multiple' => false
 );
 
-/*
- * Form begin
- */
+// Form begin
 $form = new HTML_QuickFormCustom('Form', 'post', "?p=" . $p);
 if ($o == "a") {
     $form->addElement('header', 'ftitle', _("Add a Data Source Template"));
@@ -133,9 +121,7 @@ if ($o == "a") {
     $form->addElement('header', 'ftitle', _("View a Data Source Template"));
 }
 
-/*
- *  Basic information
- */
+//  Basic information
 $form->addElement('header', 'information', _("General Information"));
 $form->addElement('header', 'options', _("Display Optional Modifier"));
 $form->addElement('header', 'color', _("Colors"));
@@ -211,9 +197,7 @@ $form->addElement(
 );
 $form->addElement('textarea', 'comment', _("Comments"), $attrsTextarea);
 
-/*
- * Components linked with
- */
+// Components linked with
 $form->addElement('header', 'graphs', _("Graph Choice"));
 
 $form->addElement('hidden', 'compo_id');
@@ -235,9 +219,7 @@ function color_line_enabled($values)
     return true;
 }
 
-/*
- * Form Rules
- */
+// Form Rules
 $form->registerRule('existName', 'callback', 'NameHsrTestExistence');
 $form->registerRule('existDs', 'callback', 'DsHsrTestExistence');
 
@@ -265,16 +247,12 @@ $form->addRule('ds_color_area_crit', _("Bad Format: start color by #"), 'checkCo
 
 $form->setRequiredNote("<font style='color: red;'>*</font>&nbsp;" . _("Required fields"));
 
-/*
- * Smarty template Init
- */
+// Smarty template Init
 $tpl = new Smarty();
 $tpl = initSmartyTpl($path, $tpl);
 
 if ($o == "w") {
-    /*
-	 * Just watch
-	 */
+    // Just watch
     $form->addElement(
         "button",
         "change",
@@ -284,9 +262,7 @@ if ($o == "w") {
     $form->setDefaults($compo);
     $form->freeze();
 } elseif ($o == "c") {
-    /*
-	 * Modify
-	 */
+    // Modify
     $subC = $form->addElement('submit', 'submitC', _("Save"), array("class" => "btc bt_success"));
     $res = $form->addElement('reset', 'reset', _("Reset"), array(
         "onClick" => "javascript:resetLists(" . $compo["host_id"] . "," . $compo["index_id"] . ")",
@@ -294,9 +270,7 @@ if ($o == "w") {
     ));
     $form->setDefaults($compo);
 } elseif ($o == "a") {
-    /*
-	 * Add
-	 */
+    // Add
     $subA = $form->addElement('submit', 'submitA', _("Save"), array("class" => "btc bt_success"));
     $res = $form->addElement(
         'reset',
@@ -330,8 +304,7 @@ if ($o == "c" || $o == "a") {
             }
         }
 
-        function popup_color_picker(t,name)
-        {
+        function popup_color_picker(t, name) {
             var width = 400;
             var height = 300;
             window.open('./include/common/javascript/color_picker.php?n=' + t + '&name=' + name,
@@ -377,9 +350,7 @@ $action = $form->getSubmitValue("action");
 if ($valid) {
     require_once("listComponentTemplates.php");
 } else {
-    /*
-	 * Apply a template definition
-	 */
+    // Apply a template definition
     $renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl, true);
     $renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
     $renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');
@@ -388,7 +359,7 @@ if ($valid) {
     $tpl->assign('o', $o);
     $tpl->display("formComponentTemplate.ihtml");
 }
-$vdef = 0; /* don't list VDEF in metrics list */
+$vdef = 0; // don't list VDEF in metrics list
 
 include_once("./include/views/graphs/common/makeJS_formMetricsList.php");
 if ($o == "c" || $o == "w") {
