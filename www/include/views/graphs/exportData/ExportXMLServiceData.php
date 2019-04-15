@@ -1,7 +1,7 @@
 <?php
 /*
- * Copyright 2005-2015 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2019 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -35,13 +35,13 @@
 
 function get_error($str)
 {
-    echo $str."<br />";
+    echo $str . "<br />";
     exit(0);
 }
 
 require_once realpath(dirname(__FILE__) . "/../../../../../config/centreon.config.php");
-include_once(_CENTREON_PATH_."www/class/centreonDB.class.php");
-include_once(_CENTREON_PATH_."www/class/centreonXML.class.php");
+include_once(_CENTREON_PATH_ . "www/class/centreonDB.class.php");
+include_once(_CENTREON_PATH_ . "www/class/centreonXML.class.php");
 
 $pearDB = new CentreonDB();
 $pearDBO = new CentreonDB("centstorage");
@@ -74,14 +74,19 @@ while ($res = $DBRESULT->fetchRow()) {
 
 header("Content-Type: application/xml");
 if (isset($hName) && isset($sName)) {
-    header("Content-disposition: filename=".$hName."_".$sName.".xml");
+    header("Content-disposition: filename=" . $hName . "_" . $sName . ".xml");
 } else {
-    header("Content-disposition: filename=".$index.".xml");
+    header("Content-disposition: filename=" . $index . ".xml");
 }
 
-$DBRESULT = $pearDBO->query("SELECT metric_id FROM metrics, index_data WHERE metrics.index_id = index_data.id AND id = '$index' ORDER BY metric_name");
+$query = "SELECT metric_id FROM metrics, index_data " .
+    "WHERE metrics.index_id = index_data.id AND id = '$index' ORDER BY metric_name";
+$DBRESULT = $pearDBO->query($query);
 while ($index_data = $DBRESULT->fetchRow()) {
-    $DBRESULT2 = $pearDBO->query("SELECT ctime,value FROM data_bin WHERE id_metric = '".$index_data["metric_id"]."' AND ctime >= '".htmlentities($_GET["start"], ENT_QUOTES, "UTF-8")."' AND ctime < '".htmlentities($_GET["end"], ENT_QUOTES, "UTF-8")."'");
+    $query = "SELECT ctime,value FROM data_bin WHERE id_metric = '" . $index_data["metric_id"] .
+        "' AND ctime >= '" . htmlentities($_GET["start"], ENT_QUOTES, "UTF-8") . "' AND ctime < '" .
+        htmlentities($_GET["end"], ENT_QUOTES, "UTF-8") . "'";
+    $DBRESULT2 = $pearDBO->query($query);
     while ($data = $DBRESULT2->fetchRow()) {
         if (!isset($datas[$data["ctime"]])) {
             $datas[$data["ctime"]] = array();

@@ -1,37 +1,37 @@
 <?php
 /*
-* Copyright 2005-2018 Centreon
-* Centreon is developed by : Julien Mathis and Romain Le Merlus under
-* GPL Licence 2.0.
-*
-* This program is free software; you can redistribute it and/or modify it under
-* the terms of the GNU General Public License as published by the Free Software
-* Foundation ; either version 2 of the License.
-*
-* This program is distributed in the hope that it will be useful, but WITHOUT ANY
-* WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
-* PARTICULAR PURPOSE. See the GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License along with
-* this program; if not, see <http://www.gnu.org/licenses>.
-*
-* Linking this program statically or dynamically with other modules is making a
-* combined work based on this program. Thus, the terms and conditions of the GNU
-* General Public License cover the whole combination.
-*
-* As a special exception, the copyright holders of this program give Centreon
-* permission to link this program with independent modules to produce an executable,
-* regardless of the license terms of these independent modules, and to copy and
-* distribute the resulting executable under terms of Centreon choice, provided that
-* Centreon also meet, for each linked independent module, the terms  and conditions
-* of the license of that module. An independent module is a module which is not
-* derived from this program. If you modify this program, you may extend this
-* exception to your version of the program, but you are not obliged to do so. If you
-* do not wish to do so, delete this exception statement from your version.
-*
-* For more information : contact@centreon.com
-*
-*/
+ * Copyright 2005-2019 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
+ * GPL Licence 2.0.
+ *
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation ; either version 2 of the License.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+ * PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License along with
+ * this program; if not, see <http://www.gnu.org/licenses>.
+ *
+ * Linking this program statically or dynamically with other modules is making a
+ * combined work based on this program. Thus, the terms and conditions of the GNU
+ * General Public License cover the whole combination.
+ *
+ * As a special exception, the copyright holders of this program give Centreon
+ * permission to link this program with independent modules to produce an executable,
+ * regardless of the license terms of these independent modules, and to copy and
+ * distribute the resulting executable under terms of Centreon choice, provided that
+ * Centreon also meet, for each linked independent module, the terms  and conditions
+ * of the license of that module. An independent module is a module which is not
+ * derived from this program. If you modify this program, you may extend this
+ * exception to your version of the program, but you are not obliged to do so. If you
+ * do not wish to do so, delete this exception statement from your version.
+ *
+ * For more information : contact@centreon.com
+ *
+ */
 
 if (!isset($centreon)) {
     exit();
@@ -65,21 +65,19 @@ $sDate->setTimezone(new DateTimeZone($sMyTimezone));
 $currentServerMicroTime = $sDate->getTimestamp();
 
 
-/*
- * Path to the configuration dir
- */
+// Path to the configuration dir
 $path = "./include/views/graphs/";
 
-
-/*
- * Smarty template Init
- */
+// Smarty template Init
 $tpl = new Smarty();
 $tpl = initSmartyTpl($path, $tpl);
 
-
 $defaultGraphs = array();
 
+/**
+ * @param $str
+ * @return string
+ */
 function getGetPostValue($str)
 {
     $value = null;
@@ -100,10 +98,7 @@ function getGetPostValue($str)
 $aclObj = new CentreonACL($centreon->user->user_id, $centreon->user->admin);
 $centreonPerformanceServiceGraphObj = new CentreonPerformanceService($pearDBO, $aclObj);
 
-/*
- * Get Arguments
- */
-
+// Get Arguments
 $svc_id = getGetPostValue("svc_id");
 
 $DBRESULT = $pearDB->query("SELECT * FROM options WHERE `key` = 'maxGraphPerformances' LIMIT 1");
@@ -126,12 +121,12 @@ if (isset($svc_id) &&
             $hostId = $serviceParameters['host_id'];
             $graphId = $hostId . '-' . $svc;
             $graphTitle = $fullName;
-        } else if (preg_match('/^(\d+);(\d+)/', $svc, $matches)) {
+        } elseif (preg_match('/^(\d+);(\d+)/', $svc, $matches)) {
             $hostId = $matches[1];
             $serviceId = $matches[2];
             $graphId = $hostId . '-' . $serviceId;
             $graphTitle = $serviceObj->getMonitoringFullName($serviceId, $hostId);
-        } else if (preg_match('/^(.+);(.+)/', $svc, $matches)) {
+        } elseif (preg_match('/^(.+);(.+)/', $svc, $matches)) {
             list($hostname, $serviceDescription) = explode(";", $svc);
             $hostId = getMyHostID($hostname);
             $serviceId = getMyServiceID($serviceDescription, $hostId);
@@ -155,7 +150,7 @@ if (isset($svc_id) &&
     }
 }
 
-/* Get Period if is in url */
+// Get Period if is in url
 $period_start = 'undefined';
 $period_end = 'undefined';
 if (isset($_REQUEST['start']) &&
@@ -170,9 +165,7 @@ if (isset($_REQUEST['end']) &&
     $period_end = $_REQUEST['end'];
 }
 
-/*
- * Form begin
- */
+// Form begin
 $form = new HTML_QuickFormCustom('FormPeriod', 'get', "?p=" . $p);
 $form->addElement(
     'header',
@@ -206,7 +199,7 @@ $sel = $form->addElement(
     _("Graph Period"),
     $periods,
     array(
-        "onchange"=>"changeInterval()"
+        "onchange" => "changeInterval()"
     )
 );
 $form->addElement(
@@ -254,7 +247,7 @@ $form->addElement(
     )
 );
 
-/* adding hidden fields to get the result of datepicker in an unlocalized format */
+// adding hidden fields to get the result of datepicker in an unlocalized format
 $form->addElement(
     'hidden',
     'alternativeDateStartDate',
@@ -279,8 +272,8 @@ $form->addElement(
     'graph',
     _("Apply Period"),
     array(
-        "onclick"=>"apply_period()",
-        "class"=>"btc bt_success"
+        "onclick" => "apply_period()",
+        "class" => "btc bt_success"
     )
 );
 
