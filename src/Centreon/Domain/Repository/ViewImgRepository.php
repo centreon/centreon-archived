@@ -1,4 +1,5 @@
 <?php
+
 namespace Centreon\Domain\Repository;
 
 use Centreon\Infrastructure\CentreonLegacyDB\ServiceEntityRepository;
@@ -15,7 +16,7 @@ class ViewImgRepository extends ServiceEntityRepository
     public function export(array $imgList = null): array
     {
         $list = join(',', $imgList ?? []);
-        
+
         if (!$list) {
             return [];
         }
@@ -63,8 +64,11 @@ SQL;
      * @param int[] $serviceTemplateChain
      * @return array
      */
-    public function getChainByPoller(array $pollerIds, array $hostTemplateChain = null, array $serviceTemplateChain = null): array
-    {
+    public function getChainByPoller(
+        array $pollerIds,
+        array $hostTemplateChain = null,
+        array $serviceTemplateChain = null
+    ): array {
         // prevent SQL exception
         if (!$pollerIds) {
             return [];

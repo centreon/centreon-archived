@@ -1,4 +1,5 @@
 <?php
+
 namespace Centreon\Application\Webservice;
 
 use CentreonRemote\Application\Webservice\CentreonWebServiceAbstract;
@@ -44,8 +45,8 @@ class OpenApiWebservice extends CentreonWebServiceAbstract
      *
      * Generate OpenAPI documentation
      *
-     * @throws \RestBadRequestException
      * @return []
+     * @throws \RestBadRequestException
      */
     public function getGenerate()
     {
@@ -75,7 +76,7 @@ class OpenApiWebservice extends CentreonWebServiceAbstract
 
     /**
      * Name of web service object
-     * 
+     *
      * @return string
      */
     public static function getName(): string

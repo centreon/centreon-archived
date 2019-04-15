@@ -72,7 +72,7 @@ class ServiceProvider implements AutoloadServiceProviderInterface
      */
     public function register(Container $pimple): void
     {
-        $pimple[static::CENTREON_WEBSERVICE] = function(Container $container): CentreonWebserviceService {
+        $pimple[static::CENTREON_WEBSERVICE] = function (Container $container): CentreonWebserviceService {
             $service = new CentreonWebserviceService;
 
             return $service;
@@ -92,13 +92,13 @@ class ServiceProvider implements AutoloadServiceProviderInterface
             return $service;
         };
 
-        $pimple[static::CENTREON_CLAPI] = function(Container $container): CentreonClapiService {
+        $pimple[static::CENTREON_CLAPI] = function (Container $container): CentreonClapiService {
             $service = new CentreonClapiService;
 
             return $service;
         };
 
-        $pimple[static::CENTREON_DB_MANAGER] = function(Container $container): CentreonDBManagerService {
+        $pimple[static::CENTREON_DB_MANAGER] = function (Container $container): CentreonDBManagerService {
             $services = [
                 'realtime_db',
                 'configuration_db',
@@ -118,19 +118,19 @@ class ServiceProvider implements AutoloadServiceProviderInterface
             return $_SESSION['centreon']->user;
         };
 
-        $pimple['centreon.keygen'] = function (Container $container) : AppKeyGeneratorService {
+        $pimple['centreon.keygen'] = function (Container $container): AppKeyGeneratorService {
             $service = new AppKeyGeneratorService();
 
             return $service;
         };
 
-        $pimple['centreon.acl'] = function (Container $container) : CentreonACL {
+        $pimple['centreon.acl'] = function (Container $container): CentreonACL {
             $service = new CentreonACL($container);
 
             return $service;
         };
 
-        $pimple['centreon.config'] = function (Container $container) : CentcoreConfigService {
+        $pimple['centreon.config'] = function (Container $container): CentcoreConfigService {
             $service = new CentcoreConfigService();
 
             return $service;
@@ -140,30 +140,33 @@ class ServiceProvider implements AutoloadServiceProviderInterface
          * Repositories
          */
 
-        // @todo class is available via $service->get('centreon.db-manager')->getRepository(Repository\CfgCentreonBrokerRepository::class)
-        $pimple[static::CENTREON_BROKER_REPOSITORY] = function(Container $container): CfgCentreonBrokerRepository {
+        // @todo class is available via
+        // $service->get('centreon.db-manager')->getRepository(Repository\CfgCentreonBrokerRepository::class)
+        $pimple[static::CENTREON_BROKER_REPOSITORY] = function (Container $container): CfgCentreonBrokerRepository {
             $service = new CfgCentreonBrokerRepository($container['configuration_db']);
 
             return $service;
         };
 
-        // @todo class is available via $service->get('centreon.db-manager')->getRepository(Repository\CfgCentreonBrokerInfoRepository::class)
-        $pimple[static::CENTREON_BROKER_INFO_REPOSITORY] = function(Container $container): CfgCentreonBrokerInfoRepository {
-            $service = new CfgCentreonBrokerInfoRepository($container['configuration_db']);
-
-            return $service;
-        };
+        // @todo class is available via
+        // $service->get('centreon.db-manager')->getRepository(Repository\CfgCentreonBrokerInfoRepository::class)
+        $pimple[static::CENTREON_BROKER_INFO_REPOSITORY] =
+            function (Container $container): CfgCentreonBrokerInfoRepository {
+                $service = new CfgCentreonBrokerInfoRepository($container['configuration_db']);
+                return $service;
+            };
 
         /**
          * Services
          */
 
-        $pimple[static::CENTREON_BROKER_CONFIGURATION_SERVICE] = function(Container $container): BrokerConfigurationService {
-            $service = new BrokerConfigurationService($container['configuration_db']);
-            $service->setBrokerInfoRepository($container[ServiceProvider::CENTREON_BROKER_INFO_REPOSITORY]);
+        $pimple[static::CENTREON_BROKER_CONFIGURATION_SERVICE] =
+            function (Container $container): BrokerConfigurationService {
+                $service = new BrokerConfigurationService($container['configuration_db']);
+                $service->setBrokerInfoRepository($container[ServiceProvider::CENTREON_BROKER_INFO_REPOSITORY]);
 
-            return $service;
-        };
+                return $service;
+            };
 
         $pimple[static::UPLOAD_MANGER] = function (Container $pimple): Service\UploadFileService {
             $services = [];

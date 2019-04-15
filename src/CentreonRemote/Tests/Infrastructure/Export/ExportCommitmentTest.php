@@ -1,4 +1,5 @@
 <?php
+
 namespace CentreonRemote\Tests\Infrastructure\Export;
 
 use PHPUnit\Framework\TestCase;
@@ -25,10 +26,16 @@ class ExportCommitmentTest extends TestCase
     {
         $parser = $this->getMockBuilder(ExportParserYaml::class)
             ->setMethods(['parse', 'dump'])
-            ->getMock()
-        ;
+            ->getMock();
 
-        $this->commitment = new ExportCommitment($this->remote, $this->pollers, $this->meta, $parser, $this->path, $this->exporters);
+        $this->commitment = new ExportCommitment(
+            $this->remote,
+            $this->pollers,
+            $this->meta,
+            $parser,
+            $this->path,
+            $this->exporters
+        );
     }
 
     /**

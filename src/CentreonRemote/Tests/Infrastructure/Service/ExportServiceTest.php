@@ -1,4 +1,5 @@
 <?php
+
 namespace CentreonRemote\Tests\Infrastructure\Service;
 
 use PHPUnit\Framework\TestCase;
@@ -24,7 +25,7 @@ class ExportServiceTest extends TestCase
 {
 
     use TestCaseExtensionTrait;
-    
+
     private $aclReload = false;
 
     protected function setUp()
@@ -37,70 +38,89 @@ class ExportServiceTest extends TestCase
             ->setMethods([
                 'all',
             ])
-            ->getMock()
-        ;
+            ->getMock();
 
         $container['centreon_remote.exporter']->method('all')
             ->will($this->returnCallback(function () {
-                    return [
-                        [
-                            'name' => PollerExporter::getName(),
-                            'classname' => PollerExporter::class,
-                            'factory' => function () {
-                                return $this->getMockBuilder(PollerExporter::class)
-                                    ->disableOriginalConstructor()
-                                    ->getMock()
-                                ;
-                            },
-                        ],
-                        [
-                            'name' => HostExporter::getName(),
-                            'classname' => HostExporter::class,
-                            'factory' => function () {
-                                return $this->getMockBuilder(HostExporter::class)
-                                    ->disableOriginalConstructor()
-                                    ->getMock()
-                                ;
-                            },
-                        ],
-                    ];
-            }))
-        ;
+                return [
+                    [
+                        'name' => PollerExporter::getName(),
+                        'classname' => PollerExporter::class,
+                        'factory' => function () {
+                            return $this->getMockBuilder(PollerExporter::class)
+                                ->disableOriginalConstructor()
+                                ->getMock();
+                        },
+                    ],
+                    [
+                        'name' => HostExporter::getName(),
+                        'classname' => HostExporter::class,
+                        'factory' => function () {
+                            return $this->getMockBuilder(HostExporter::class)
+                                ->disableOriginalConstructor()
+                                ->getMock();
+                        },
+                    ],
+                ];
+            }));
 
         // Cache
         $container['centreon_remote.exporter.cache'] = $this->getMockBuilder(ExporterCacheService::class)
-            ->getMock()
-        ;
-        
+            ->getMock();
+
         // ACL
         $container['centreon.acl'] = $this->getMockBuilder(CentreonACL::class)
             ->disableOriginalConstructor()
-            ->getMock()
-        ;
+            ->getMock();
 
         $container['centreon.acl']->method('reload')
             ->will($this->returnCallback(function () {
-                    $this->aclReload = true;
-            }))
-        ;
+                $this->aclReload = true;
+            }));
 
         // DB service
         $container[\Centreon\ServiceProvider::CENTREON_DB_MANAGER] = new Mock\CentreonDBManagerService;
         $container[\Centreon\ServiceProvider::CENTREON_DB_MANAGER]
-            ->addResultSet("SELECT * FROM informations WHERE `key` = :key LIMIT 1", [[
-                'key' => 'version',
-                'value' => 'x.y',
-            ]])
-            ->addResultSet("DELETE FROM acl_resources_hc_relations WHERE hc_id NOT IN (SELECT t2.hc_id FROM hostcategories AS t2)", [])
-            ->addResultSet("DELETE FROM acl_resources_hg_relations WHERE hg_hg_id NOT IN (SELECT t2.hg_id FROM hostgroup AS t2)", [])
-            ->addResultSet("DELETE FROM acl_resources_hostex_relations WHERE host_host_id NOT IN (SELECT t2.host_id FROM host AS t2)", [])
-            ->addResultSet("DELETE FROM acl_resources_host_relations WHERE host_host_id NOT IN (SELECT t2.host_id FROM host AS t2)", [])
-            ->addResultSet("DELETE FROM acl_resources_meta_relations WHERE meta_id NOT IN (SELECT t2.meta_id FROM meta_service AS t2)", [])
-            ->addResultSet("DELETE FROM acl_resources_poller_relations WHERE poller_id NOT IN (SELECT t2.id FROM nagios_server AS t2)", [])
-            ->addResultSet("DELETE FROM acl_resources_sc_relations WHERE sc_id NOT IN (SELECT t2.sc_id FROM service_categories AS t2)", [])
-            ->addResultSet("DELETE FROM acl_resources_service_relations WHERE service_service_id NOT IN (SELECT t2.service_id FROM service AS t2)", [])
-            ->addResultSet("DELETE FROM acl_resources_sg_relations WHERE sg_id NOT IN (SELECT t2.sg_id FROM servicegroup AS t2)", [])
-        ;
+            ->addResultSet("SELECT * FROM informations WHERE `key` = :key LIMIT 1", [
+                [
+                    'key' => 'version',
+                    'value' => 'x.y',
+                ]
+            ])->addResultSet(
+                "DELETE FROM acl_resources_hc_relations WHERE hc_id NOT IN (SELECT t2.hc_id FROM hostcategories AS t2)",
+                []
+            )->addResultSet(
+                "DELETE FROM acl_resources_hg_relations " .
+                "WHERE hg_hg_id NOT IN (SELECT t2.hg_id FROM hostgroup AS t2)",
+                []
+            )->addResultSet(
+                "DELETE FROM acl_resources_hostex_relations " .
+                "WHERE host_host_id NOT IN (SELECT t2.host_id FROM host AS t2)",
+                []
+            )->addResultSet(
+                "DELETE FROM acl_resources_host_relations " .
+                "WHERE host_host_id NOT IN (SELECT t2.host_id FROM host AS t2)",
+                []
+            )->addResultSet(
+                "DELETE FROM acl_resources_meta_relations " .
+                "WHERE meta_id NOT IN (SELECT t2.meta_id FROM meta_service AS t2)",
+                []
+            )->addResultSet(
+                "DELETE FROM acl_resources_poller_relations " .
+                "WHERE poller_id NOT IN (SELECT t2.id FROM nagios_server AS t2)",
+                []
+            )->addResultSet(
+                "DELETE FROM acl_resources_sc_relations " .
+                "WHERE sc_id NOT IN (SELECT t2.sc_id FROM service_categories AS t2)",
+                []
+            )->addResultSet(
+                "DELETE FROM acl_resources_service_relations " .
+                "WHERE service_service_id NOT IN (SELECT t2.service_id FROM service AS t2)",
+                []
+            )->addResultSet(
+                "DELETE FROM acl_resources_sg_relations WHERE sg_id NOT IN (SELECT t2.sg_id FROM servicegroup AS t2)",
+                []
+            );
 
         // mount VFS
         $this->fs = FileSystem::factory('vfs://');
@@ -125,7 +145,11 @@ class ExportServiceTest extends TestCase
         $this->assertAttributeInstanceOf(ExporterService::class, 'exporter', $this->export);
         $this->assertAttributeInstanceOf(ExporterCacheService::class, 'cache', $this->export);
         $this->assertAttributeInstanceOf(CentreonACL::class, 'acl', $this->export);
-        $this->assertAttributeInstanceOf(\Centreon\Infrastructure\Service\CentreonDBManagerService::class, 'db', $this->export);
+        $this->assertAttributeInstanceOf(
+            \Centreon\Infrastructure\Service\CentreonDBManagerService::class,
+            'db',
+            $this->export
+        );
 
         $this->assertAttributeEquals('x.y', 'version', $this->export);
     }
@@ -187,7 +211,6 @@ YAML;
         ]);
 
         $this->export->import($commitment);
-
         $this->assertFileNotExists("{$path}/manifest.yml");
     }
 
@@ -197,8 +220,6 @@ YAML;
     public function testRefreshAcl()
     {
         $this->invokeMethod($this->export, '_refreshAcl');
-        
-        
         $this->assertTrue($this->aclReload);
     }
 }

@@ -1,4 +1,5 @@
 <?php
+
 namespace CentreonRemote\Tests\Infrastructure\Export;
 
 use PHPUnit\Framework\TestCase;
@@ -45,7 +46,7 @@ class ExportParserYamlTest extends TestCase
         $result = $this->parser->parse('vfs://tmp/test1.yml');
 
         $this->assertEquals(['key' => 'val'], $result);
-        
+
         // add file with macros
         $this->fs->get('/tmp')->add('test2.yml', new File('key: @val@'));
 

@@ -1,4 +1,5 @@
 <?php
+
 namespace CentreonRemote\Infrastructure\Service;
 
 class ExporterCacheService

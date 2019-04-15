@@ -74,8 +74,7 @@ class Healthcheck
     public function __construct(ContainerInterface $services)
     {
         $this->modulePath = $services->get(ServiceProvider::CONFIGURATION)
-            ->getModulePath()
-        ;
+            ->getModulePath();
     }
 
     /**
@@ -143,8 +142,14 @@ class Healthcheck
      * @param bool $critical
      * @param int $licenseExpiration
      */
-    protected function getRequirements($checklistDir, &$message, &$customAction, &$warning, &$critical, &$licenseExpiration)
-    {
+    protected function getRequirements(
+        $checklistDir,
+        &$message,
+        &$customAction,
+        &$warning,
+        &$critical,
+        &$licenseExpiration
+    ) {
         global $centreon_path;
         require_once $checklistDir . 'requirements.php';
     }

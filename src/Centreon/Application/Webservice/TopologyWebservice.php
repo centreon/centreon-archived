@@ -9,7 +9,7 @@ class TopologyWebservice extends CentreonWebServiceAbstract
 
     /**
      * Name of web service object
-     * 
+     *
      * @return string
      */
     public static function getName(): string
@@ -54,8 +54,8 @@ class TopologyWebservice extends CentreonWebServiceAbstract
      *       required=false
      *   ),
      * )
-     * @throws \RestBadRequestException
      * @return array
+     * @throws \RestBadRequestException
      */
     public function getGetTopologyByPage(): array
     {
@@ -63,7 +63,7 @@ class TopologyWebservice extends CentreonWebServiceAbstract
             throw new \RestBadRequestException('You need to send \'topology_page\' in the request.');
         }
 
-        $topologyID = (int) $_GET['topology_page'];
+        $topologyID = (int)$_GET['topology_page'];
         $statement = $this->pearDB->prepare('SELECT * FROM `topology` WHERE `topology_page` = :id');
         $statement->execute([':id' => $topologyID]);
         $result = $statement->fetch();

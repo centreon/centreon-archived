@@ -67,7 +67,7 @@ class ServiceProvider implements AutoloadServiceProviderInterface
      *
      * @param \Pimple\Container $pimple
      */
-    public function register( Container $pimple ): void
+    public function register(Container $pimple): void
     {
         $pimple[static::CENTREON_LEGACY_UTILS] = function (Container $container): Utils\Utils {
             $services = [
@@ -99,13 +99,13 @@ class ServiceProvider implements AutoloadServiceProviderInterface
     protected function registerRestHttp(Container $pimple)
     {
         $pimple[static::CENTREON_REST_HTTP] = function (Container $container) {
-            return function($contentType = 'application/json', $logFile = null) {
+            return function ($contentType = 'application/json', $logFile = null) {
                 return new \CentreonRestHttp($contentType, $logFile);
             };
         };
     }
 
-    protected function registerModule( Container $pimple )
+    protected function registerModule(Container $pimple)
     {
         $pimple[static::CENTREON_LEGACY_MODULE_HEALTHCHECK] = function (Container $container): Module\Healthcheck {
             $services = [
@@ -142,7 +142,7 @@ class ServiceProvider implements AutoloadServiceProviderInterface
             ];
 
             $locator = new ServiceLocator($container, $services);
-            $service = function($moduleName) use ($locator): Module\Installer {
+            $service = function ($moduleName) use ($locator): Module\Installer {
                 return new Module\Installer($locator, null, $moduleName);
             };
 
@@ -159,7 +159,7 @@ class ServiceProvider implements AutoloadServiceProviderInterface
             ];
 
             $locator = new ServiceLocator($container, $services);
-            $service = function($moduleName, $moduleId) use ($locator): Module\Upgrader {
+            $service = function ($moduleName, $moduleId) use ($locator): Module\Upgrader {
                 return new Module\Upgrader($locator, null, $moduleName, null, $moduleId);
             };
 
@@ -175,7 +175,7 @@ class ServiceProvider implements AutoloadServiceProviderInterface
             ];
 
             $locator = new ServiceLocator($container, $services);
-            $service = function($moduleName, $moduleId) use ($locator): Module\Remover {
+            $service = function ($moduleName, $moduleId) use ($locator): Module\Remover {
                 return new Module\Remover($locator, null, $moduleName, null, $moduleId);
             };
 
@@ -199,7 +199,7 @@ class ServiceProvider implements AutoloadServiceProviderInterface
         };
     }
 
-    protected function registerWidget( Container $pimple )
+    protected function registerWidget(Container $pimple)
     {
         $pimple[static::CENTREON_LEGACY_WIDGET_INFORMATION] = function (Container $container): Widget\Information {
             $services = [
@@ -223,7 +223,7 @@ class ServiceProvider implements AutoloadServiceProviderInterface
             ];
 
             $locator = new ServiceLocator($container, $services);
-            $service = function($widgetDirectory) use ($locator): Widget\Installer {
+            $service = function ($widgetDirectory) use ($locator): Widget\Installer {
                 return new Widget\Installer($locator, null, $widgetDirectory, null);
             };
 
@@ -238,7 +238,7 @@ class ServiceProvider implements AutoloadServiceProviderInterface
             ];
 
             $locator = new ServiceLocator($container, $services);
-            $service = function($widgetDirectory) use ($locator): Widget\Upgrader {
+            $service = function ($widgetDirectory) use ($locator): Widget\Upgrader {
                 return new Widget\Upgrader($locator, null, $widgetDirectory, null);
             };
 
@@ -253,7 +253,7 @@ class ServiceProvider implements AutoloadServiceProviderInterface
             ];
 
             $locator = new ServiceLocator($container, $services);
-            $service = function($widgetDirectory) use ($locator): Widget\Remover {
+            $service = function ($widgetDirectory) use ($locator): Widget\Remover {
                 return new Widget\Remover($locator, null, $widgetDirectory, null);
             };
 

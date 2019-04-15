@@ -104,7 +104,7 @@ class LinkedPollerConfigurationService
      * Link a set of pollers to a parent poller by creating broker input/output
      *
      * @param PollerServer[] $pollers
-     * @param PollerServer   $remote
+     * @param PollerServer $remote
      */
     public function linkPollersToParentPoller(array $pollers, PollerServer $remote)
     {
@@ -203,7 +203,8 @@ class LinkedPollerConfigurationService
         // Get from the database only the pollers that are linked to a remote
         $idBindString = str_repeat('?,', count($pollerIDs));
         $idBindString = rtrim($idBindString, ',');
-        $queryPollers = "SELECT id, remote_id FROM nagios_server WHERE id IN({$idBindString}) AND remote_id IS NOT NULL";
+        $queryPollers = "SELECT id, remote_id FROM nagios_server " .
+            "WHERE id IN({$idBindString}) AND remote_id IS NOT NULL";
         $remotesStatement = $this->db->query($queryPollers, $pollerIDs);
         $pollersWithRemote = $remotesStatement->fetchAll(\PDO::FETCH_ASSOC);
         $alreadyExportedRemotes = [];
@@ -235,9 +236,9 @@ class LinkedPollerConfigurationService
             $pollerIDsToExport = array_diff($linkedPollersOfRemote, $pollerIDs);
 
             $exportParams = [
-                'server'        => $remoteID,
-                'pollers'       => $pollerIDsToExport,
-                'remote_ip'     => $remoteDataResults[0]['ip'],
+                'server' => $remoteID,
+                'pollers' => $pollerIDsToExport,
+                'remote_ip' => $remoteDataResults[0]['ip'],
                 'centreon_path' => $remoteDataResults[0]['centreon_path'],
             ];
             $this->taskService->addTask(Task::TYPE_EXPORT, ['params' => $exportParams]);

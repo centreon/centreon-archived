@@ -76,18 +76,16 @@ class WidgetSource extends SourceAbstract
         $this->remover = $services->get(ServiceProviderLegacy::CENTREON_LEGACY_WIDGET_REMOVER);
 
         parent::__construct($services);
-
     }
 
     public function initInfo()
     {
         $this->info = $this->db
             ->getRepository(WidgetModelsRepository::class)
-            ->getAllWidgetVsVersion()
-        ;
+            ->getAllWidgetVsVersion();
     }
 
-    public function getList(string $search = null, bool $installed = null, bool $updated = null) : array
+    public function getList(string $search = null, bool $installed = null, bool $updated = null): array
     {
         $files = $this->finder
             ->files()
@@ -125,8 +123,7 @@ class WidgetSource extends SourceAbstract
             ->name(static::CONFIG_FILE)
             ->depth('== 0')
             ->sortByName()
-            ->in($path)
-        ;
+            ->in($path);
 
         foreach ($files as $file) {
             $result = $this->createEntityFromConfig($file->getPathName());

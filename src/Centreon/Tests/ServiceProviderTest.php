@@ -25,7 +25,7 @@ class ServiceProviderTest extends TestCase
         $this->provider = new ServiceProvider();
         $this->container = new Container;
         $this->container['realtime_db'] = $this->container['configuration_db'] = new Mock\CentreonDB;
-//        $this->container['configuration_db']->addResultSet("SELECT * FROM informations WHERE `key` = :key LIMIT 1", []);
+//      $this->container['configuration_db']->addResultSet("SELECT * FROM informations WHERE `key` = :key LIMIT 1", []);
 
         $this->provider->register($this->container);
     }
@@ -48,7 +48,8 @@ class ServiceProviderTest extends TestCase
             ServiceProvider::CENTREON_BROKER_CONFIGURATION_SERVICE => Domain\Service\BrokerConfigurationService::class,
             // @todo must be exclude form DI
             ServiceProvider::CENTREON_BROKER_REPOSITORY => Domain\Repository\CfgCentreonBrokerRepository::class,
-            ServiceProvider::CENTREON_BROKER_INFO_REPOSITORY => Domain\Repository\CfgCentreonBrokerInfoRepository::class,
+            ServiceProvider::CENTREON_BROKER_INFO_REPOSITORY =>
+                Domain\Repository\CfgCentreonBrokerInfoRepository::class,
         ];
 
         // check list of services

@@ -143,7 +143,7 @@ class TaskService
     {
         $result = $this->centreonRestHttp->call(
             'http://' . $serverIp . '/' . $centreonFolder
-                . '/api/external.php?object=centreon_task_service&action=getTaskStatusByParent',
+            . '/api/external.php?object=centreon_task_service&action=getTaskStatusByParent',
             'POST',
             ['parent_id' => $parentId]
         );
@@ -174,12 +174,18 @@ class TaskService
      */
     public function updateStatus(string $taskId, string $status)
     {
-        $task = $this->getDbManager()->getAdapter('configuration_db')->getRepository(TaskRepository::class)->findOneById($taskId);
+        $task = $this->getDbManager()
+            ->getAdapter('configuration_db')
+            ->getRepository(TaskRepository::class)
+            ->findOneById($taskId);
         if (!in_array($status, $task->getStatuses())) {
             return false;
         }
 
-        $result = $this->getDbManager()->getAdapter('configuration_db')->getRepository(TaskRepository::class)->updateStatus($status, $taskId);
+        $result = $this->getDbManager()
+            ->getAdapter('configuration_db')
+            ->getRepository(TaskRepository::class)
+            ->updateStatus($status, $taskId);
         return $result;
     }
 }

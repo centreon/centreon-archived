@@ -1,4 +1,5 @@
 <?php
+
 namespace Centreon\Infrastructure\Service;
 
 class CentcoreConfigService
@@ -117,13 +118,12 @@ class CentcoreConfigService
 
     private function _parseIniFile($filename): array
     {
-        $reslt = [];
-
+        $result = [];
         try {
-            $reslt = parse_ini_file($filename);
+            $result = parse_ini_file($filename);
         } catch (\Exception $ex) {
         }
 
-        return $reslt;
+        return $result;
     }
 }
