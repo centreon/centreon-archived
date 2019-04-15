@@ -73,6 +73,7 @@ INSERT INTO `options` (`key`, `value`) VALUES
 ('ldap_auto_import', '0'),
 ('ldap_srv_dns', '0'),
 ('ldap_dns_use_domain', ''),
+('ldap_connect_timeout','5'),
 ('ldap_search_timeout','60'),
 ('ldap_search_limit','60'),
 ('ldap_last_acl_update', '0'),
