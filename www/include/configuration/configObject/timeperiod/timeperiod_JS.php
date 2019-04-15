@@ -1,7 +1,7 @@
 <?php
 /*
- * Copyright 2005-2015 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2019 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -36,12 +36,13 @@
 ?>
 <script type="text/javascript" src="./include/common/javascript/jquery/plugins/qtip/jquery-qtip.js"></script>
 <script type="text/javascript" src="./lib/HTML/QuickForm/qfamsHandler-min.js"></script>
-<script type="text/javascript" src="./include/common/javascript/jquery/plugins/centreon/jquery.centreonValidate.js"></script>
+<script type="text/javascript" src="./include/common/javascript/jquery/plugins/centreon/jquery.centreonValidate.js">
+</script>
 <script type="text/javascript">
 
     /*
-     *  This second block is the javascript code for the multi exception creation
-     */
+    *This second block is the javascript code for the multi exception creation
+    */
     function addBlankInput() {
         var tabElem = document.getElementById('exceptionTable');
         var keyElem = document.createElement('input');
@@ -158,8 +159,7 @@
                 if (response) {
                     if (navigator.appName == "Microsoft Internet Explorer") {
                         document.getElementById('trExceptionInput_' + this.id).innerText = "";
-                    }
-                    else {
+                    } else {
                         document.getElementById('trExceptionInput_' + this.id).innerHTML = "";
                     }
                 }
@@ -178,14 +178,14 @@
         }
         document.getElementById('hiddenExInput').value = globalj;
     }
-    
+
     /*
      * Dynamic validation of Time range exceptions fileds
      */
     function purgeHideInput(tab) {
-        jQuery('.tab').each(function(idx, el){
+        jQuery('.tab').each(function (idx, el) {
             if (el.id != tab) {
-                jQuery(el).find(':input').each(function(idx, input){
+                jQuery(el).find(':input').each(function (idx, input) {
                     jQuery(input).qtip('destroy');
                 });
             }
@@ -197,7 +197,9 @@
         jQuery('#Form').centreonValidate('validate');
 
         if (jQuery('#Form').centreonValidate('hasError')) {
-            var activeTab = jQuery('.tab').filter(function(index) { return jQuery(this).css('display') === 'block'; })[0];
+            var activeTab = jQuery('.tab').filter(function (index) {
+                return jQuery(this).css('display') === 'block';
+            })[0];
             purgeHideInput(activeTab.id);
 
             return false;

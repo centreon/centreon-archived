@@ -321,11 +321,11 @@ function updateHostCategoriesHosts($hc_id, $ret = array())
     }
 
     /*
-	 * Special Case, delete relation between host/service, when service
-	 * is linked to hostcategories in escalation, dependencies, osl
-	 *
-	 * Get initial Host list to make a diff after deletion
-	 */
+    * Special Case, delete relation between host/service, when service
+    * is linked to hostcategories in escalation, dependencies, osl
+    *
+    * Get initial Host list to make a diff after deletion
+    */
     $hostsOLD = array();
     $query = "SELECT host_host_id FROM hostcategories_relation WHERE hostcategories_hc_id = '" . $hc_id . "'";
     $DBRESULT = $pearDB->query($query);

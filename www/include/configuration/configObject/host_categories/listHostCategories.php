@@ -133,7 +133,7 @@ for ($i = 0; $hc = $DBRESULT->fetch(); $i++) {
     }
     $DBRESULT2 = $pearDB->query(
         "SELECT h.host_id, h.host_activate " .
-        "FROM hostcategories_relation hcr, host h " . $aclFrom . 
+        "FROM hostcategories_relation hcr, host h " . $aclFrom .
         " WHERE hostcategories_hc_id = '" . $hc['hc_id'] . "'" .
         " AND h.host_id = hcr.host_host_id " . $aclCond .
         " AND h.host_register = '1' "
@@ -179,11 +179,11 @@ $tpl->assign(
 );
 
 ?>
-<script type="text/javascript">
-    function setO(_i) {
-        document.forms['form'].elements['o'].value = _i;
-    }
-</script>
+    <script type="text/javascript">
+        function setO(_i) {
+            document.forms['form'].elements['o'].value = _i;
+        }
+    </script>
 <?php
 foreach (array('o1', 'o2') as $option) {
     $attrs1 = array(

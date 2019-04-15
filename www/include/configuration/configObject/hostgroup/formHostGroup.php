@@ -1,7 +1,7 @@
 <?php
 /*
- * Copyright 2005-2015 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2019 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -49,16 +49,14 @@ if (!$centreon->user->admin) {
 
 $initialValues = array();
 
-/*
- * Database retrieve information for HostGroup
-	 */
+//Database retrieve information for HostGroup
 $hg = array();
 if (($o == "c" || $o == "w") && $hg_id) {
-    $DBRESULT = $pearDB->query("SELECT * FROM hostgroup WHERE hg_id = '" . $hg_id . "' LIMIT 1");
+    $dbResult = $pearDB->query("SELECT * FROM hostgroup WHERE hg_id = '" . $hg_id . "' LIMIT 1");
     /*
      * Set base value
      */
-    $hg = array_map("myDecode", $DBRESULT->fetchRow());
+    $hg = array_map("myDecode", $dbResult->fetchRow());
 }
 
 /*

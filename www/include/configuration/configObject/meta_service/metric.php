@@ -1,7 +1,7 @@
 <?php
 /*
- * Copyright 2005-2015 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2019 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -33,9 +33,7 @@
  *
  */
 
-/* 
- * Database retrieve information
- */
+//Database retrieve information
 require_once("./class/centreonDB.class.php");
 
 $pearDBO = new CentreonDB("centstorage");
@@ -116,9 +114,7 @@ $attrsTextI = array("size" => "3");
 $attrsText = array("size" => "30");
 $attrsTextarea = array("rows" => "5", "cols" => "40");
 
-/*
- * Form begin
- */
+//Form begin
 $form = new HTML_QuickFormCustom('Form', 'post', "?p=" . $p);
 if ($o == "as") {
     $form->addElement('header', 'title', _("Add a Meta Service indicator"));
@@ -126,9 +122,7 @@ if ($o == "as") {
     $form->addElement('header', 'title', _("Modify a Meta Service indicator"));
 }
 
-/* 
- * Indicator basic information
- */
+//Indicator basic information
 $redirect = $form->addElement('hidden', 'o');
 $redirect->setValue($o);
 $formMsrId = $form->addElement('hidden', 'msr_id');
@@ -201,15 +195,11 @@ $action = $form->getSubmitValue("action");
 if ($valid) {
     require_once($path . "listMetric.php");
 } else {
-    /*
-	 * Smarty template Init
-	 */
+    //Smarty template Init
     $tpl = new Smarty();
     $tpl = initSmartyTpl($path, $tpl);
 
-    /*
-	 * Apply a template definition
-	 */
+    //Apply a template definition
     $renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
     $renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
     $renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');

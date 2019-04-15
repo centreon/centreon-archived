@@ -39,9 +39,7 @@ if (!isset($centreon)) {
 
 function getHGParents($hg_id, $parentList, $pearDB)
 {
-    /*
-	 * Get Parent Groups
-	 */
+    //Get Parent Groups
     $DBRESULT = $pearDB->query("SELECT hg_parent_id FROM hostgroup_hg_relation WHERE hg_child_id = '" . $hg_id . "'");
     while ($hgs = $DBRESULT->fetch()) {
         $parentList[$hgs["hg_parent_id"]] = $hgs["hg_parent_id"];
@@ -384,11 +382,11 @@ function updateHostGroupHosts($hg_id, $ret = array(), $increment = false)
     }
 
     /*
-	 * Special Case, delete relation between host/service, when service
-	 * is linked to hostgroup in escalation, dependencies
-	 *
-	 * Get initial Host list to make a diff after deletion
-	 */
+    * Special Case, delete relation between host/service, when service
+    * is linked to hostgroup in escalation, dependencies
+    *
+    * Get initial Host list to make a diff after deletion
+    */
     $hostsOLD = array();
     $DBRESULT = $pearDB->query("SELECT host_host_id FROM hostgroup_relation WHERE hostgroup_hg_id = '" . $hg_id . "'");
     while ($host = $DBRESULT->fetch()) {
@@ -396,9 +394,7 @@ function updateHostGroupHosts($hg_id, $ret = array(), $increment = false)
     }
     $DBRESULT->closeCursor();
 
-    /*
-	 * Get service lists linked to hostgroup
-	 */
+    //Get service lists linked to hostgroup
     $rq = "SELECT service_service_id FROM host_service_relation ";
     $rq .= "WHERE hostgroup_hg_id = '" . $hg_id . "' AND host_host_id IS NULL";
     $DBRESULT = $pearDB->query($rq);
@@ -407,9 +403,7 @@ function updateHostGroupHosts($hg_id, $ret = array(), $increment = false)
         $hgSVS[$sv["service_service_id"]] = $sv["service_service_id"];
     }
 
-    /*
-	 * Update Host HG relations
-	 */
+    //Update Host HG relations
     if ($increment == false) {
         $rq = "DELETE FROM hostgroup_relation ";
         $rq .= "WHERE hostgroup_hg_id = '" . $hg_id . "'";
@@ -438,9 +432,7 @@ function updateHostGroupHosts($hg_id, $ret = array(), $increment = false)
         $DBRESULT = $pearDB->query($rq);
     }
 
-    /*
-	 * Update HG HG relations
-	 */
+    //Update HG HG relations
     if ($increment == false) {
         $pearDB->query("DELETE FROM hostgroup_hg_relation WHERE hg_parent_id = '" . $hg_id . "'");
     }

@@ -1,7 +1,7 @@
 <?php
 /*
- * Copyright 2005-2015 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2019 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -37,7 +37,7 @@ require_once dirname(__FILE__) . "/formConnectorFunction.php";
 try {
     $tpl = new Smarty();
     $tpl = initSmartyTpl($path, $tpl);
-    
+
     $cnt = array();
     if (($o == "c" || $o == "w") && isset($connector_id)) {
         $cnt = $connectorObj->read((int)$connector_id);
@@ -68,7 +68,7 @@ try {
     while ($row = $DBRESULT->fetchRow()) {
         $resource[$row["resource_name"]] = $row["resource_name"];
         if (isset($row["resource_comment"]) && $row["resource_comment"] != "") {
-            $resource[$row["resource_name"]] .= " (".$row["resource_comment"].")";
+            $resource[$row["resource_name"]] .= " (" . $row["resource_comment"] . ")";
         }
     }
     unset($row);
@@ -85,9 +85,12 @@ try {
     unset($row);
     $DBRESULT->closeCursor();
 
-    $availableConnectors_list = return_plugin((isset($oreon->optGen["cengine_path_connectors"]) ? $oreon->optGen["cengine_path_connectors"] : null));
+    $availableConnectors_list =
+        return_plugin(
+            (isset($oreon->optGen["cengine_path_connectors"]) ? $oreon->optGen["cengine_path_connectors"] : null)
+        );
 
-    $form = new HTML_QuickFormCustom('Form', 'post', "?p=".$p);
+    $form = new HTML_QuickFormCustom('Form', 'post', "?p=" . $p);
 
     $form->addElement('header', 'information', _('General information'));
     if ($o == "a") {
@@ -98,17 +101,17 @@ try {
         $form->addElement('header', 'title', _("View a Connector"));
     }
 
-    $attrsText        = array("size"=>"35");
-    $attrsTextarea    = array("rows"=>"9", "cols"=>"65", "id"=>"command_line");
+    $attrsText = array("size" => "35");
+    $attrsTextarea = array("rows" => "9", "cols" => "65", "id" => "command_line");
     $attrsAdvSelect = array("style" => "width: 300px; height: 100px;");
     $attrCommands = array(
         'datasourceOrigin' => 'ajax',
         'multiple' => true,
         'defaultDatasetRoute' => './include/common/webServices/rest/internal.php?'
-        . 'object=centreon_configuration_command&action=defaultValues&target=connector&field=command_id'
-        . (isset($connector_id) ? "&id={$connector_id}" : ''),
+            . 'object=centreon_configuration_command&action=defaultValues&target=connector&field=command_id'
+            . (isset($connector_id) ? "&id={$connector_id}" : ''),
         'availableDatasetRoute' => './include/common/webServices/rest/internal.php?'
-        . 'object=centreon_configuration_command&action=list',
+            . 'object=centreon_configuration_command&action=list',
         'linkedObject' => 'centreonCommand'
     );
 
@@ -141,8 +144,8 @@ try {
                 "change",
                 _("Modify"),
                 array(
-                    "onClick"=>"javascript:window.location.href='?p="
-                        .$p."&o=c&connector_id=".$connector_id."&status=".$status."'"
+                    "onClick" => "javascript:window.location.href='?p="
+                        . $p . "&o=c&connector_id=" . $connector_id . "&status=" . $status . "'"
                 )
             );
         }
@@ -156,12 +159,12 @@ try {
         $subA = $form->addElement('submit', 'submitA', _("Save"), array("class" => "btc bt_success"));
         $res = $form->addElement('reset', 'reset', _("Reset"), array("class" => "btc bt_default"));
     }
-    
+
     $form->addRule('connector_name', _("Name"), 'required');
     $form->addRule('command_line', _("Command Line"), 'required');
     $form->registerRule('exist', 'callback', 'testConnectorExistence');
     $form->addRule('connector_name', _("Name is already in use"), 'exist');
-    $form->setRequiredNote("<font style='color: red;'>*</font>&nbsp;". _("Required fields"));
+    $form->setRequiredNote("<font style='color: red;'>*</font>&nbsp;" . _("Required fields"));
     $form->addElement('hidden', 'connector_id');
     $redirect = $form->addElement('hidden', 'o');
     $redirect->setValue($o);
@@ -177,7 +180,7 @@ try {
         $connectorValues['enabled'] = (int)$tab['connector_status']['connector_status'];
         $connectorValues['command_id'] = isset($tab['command_id']) ? $tab['command_id'] : null;
         $connectorId = $tab['connector_id'];
-        
+
         if ($form->getSubmitValue("submitA")) {
             $connectorId = $cntObj->create($connectorValues, true);
         } elseif ($form->getSubmitValue("submitC")) {
@@ -187,7 +190,7 @@ try {
     }
 
     if ($valid) {
-        require_once($path."listConnector.php");
+        require_once($path . "listConnector.php");
     } else {
         $renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
         $renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
@@ -197,44 +200,40 @@ try {
         $tpl->assign('o', $o);
         $tpl->assign(
             "helpattr",
-            'TITLE, "'._("Help").'", CLOSEBTN, true, FIX, [this, 0, 5], BGCOLOR, "#ffff99", BORDERCOLOR, "orange",'
+            'TITLE, "' . _("Help") . '", CLOSEBTN, true, FIX, [this, 0, 5], BGCOLOR, "#ffff99", BORDERCOLOR, "orange",'
             . 'TITLEFONTCOLOR, "black", TITLEBGCOLOR, "orange", CLOSEBTNCOLORS, ["","black", "white", "red"], WIDTH,'
             . '-300, SHADOW, true, TEXTALIGN, "justify"'
         );
         $helptext = "";
         include_once("help.php");
         foreach ($help as $key => $text) {
-            $helptext .= '<span style="display:none" id="help:'.$key.'">'.$text.'</span>'."\n";
+            $helptext .= '<span style="display:none" id="help:' . $key . '">' . $text . '</span>' . "\n";
         }
         $tpl->assign("helptext", $helptext);
-        
+
         $tpl->display("formConnector.ihtml");
     }
 } catch (Exception $e) {
-    echo "Erreur n°".$e->getCode()." : ".$e->getMessage();
+    echo "Erreur n°" . $e->getCode() . " : " . $e->getMessage();
 }
 
 ?>
 <script type='text/javascript'>
     <!--
-    function insertValueQuery(elem)
-    {
+    function insertValueQuery(elem) {
         var myQuery = document.Form.command_line;
-        if(elem == 1)
+        if (elem == 1)
             var myListBox = document.Form.resource;
         else if (elem == 2)
             var myListBox = document.Form.plugins;
         else if (elem == 3)
             var myListBox = document.Form.macros;
 
-        if (myListBox.options.length > 0)
-        {
+        if (myListBox.options.length > 0) {
             var chaineAj = '';
             var NbSelect = 0;
-            for (var i=0; i<myListBox.options.length; i++)
-            {
-                if (myListBox.options[i].selected)
-                {
+            for (var i = 0; i < myListBox.options.length; i++) {
+                if (myListBox.options[i].selected) {
                     NbSelect++;
                     if (NbSelect > 1)
                         chaineAj += ', ';
@@ -242,16 +241,13 @@ try {
                 }
             }
 
-            if (document.selection)
-            {
+            if (document.selection) {
                 // IE support
                 myQuery.focus();
                 sel = document.selection.createRange();
                 sel.text = chaineAj;
                 document.Form.insert.focus();
-            }
-            else if (document.Form.command_line.selectionStart || document.Form.command_line.selectionStart == '0')
-            {
+            } else if (document.Form.command_line.selectionStart || document.Form.command_line.selectionStart == '0') {
                 // MOZILLA/NETSCAPE support
                 var startPos = document.Form.command_line.selectionStart;
                 var endPos = document.Form.command_line.selectionEnd;
@@ -259,10 +255,10 @@ try {
                 myQuery.value = chaineSql.substring(0, startPos)
                     + chaineAj
                     + chaineSql.substring(endPos, chaineSql.length);
-            }
-            else
+            } else
                 myQuery.value += chaineAj;
         }
     }
+
     //-->
 </script>

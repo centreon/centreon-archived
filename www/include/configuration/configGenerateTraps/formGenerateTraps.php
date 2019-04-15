@@ -1,7 +1,7 @@
 <?php
 /*
- * Copyright 2005-2015 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2019 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -50,10 +50,12 @@ if (defined('_CENTREON_VARLIB_')) {
  *  Get Poller List
  */
 $acl = $centreon->user->access;
-$tab_nagios_server = $acl->getPollerAclConf(array('get_row'    => 'name',
-                                                  'order'      => array('name'),
-                                                  'keys'       => array('id'),
-                                                  'conditions' => array('ns_activate' => 1)));
+$tab_nagios_server = $acl->getPollerAclConf(array(
+    'get_row' => 'name',
+    'order' => array('name'),
+    'keys' => array('id'),
+    'conditions' => array('ns_activate' => 1)
+));
 
 /* Sort the list of poller server */
 $pollersId = isset($_GET['poller']) ? explode(',', $_GET['poller']) : [];
