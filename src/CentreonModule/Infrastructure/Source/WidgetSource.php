@@ -163,14 +163,18 @@ class WidgetSource extends SourceAbstract
 
         if ($xml->screenshot) {
             foreach ($xml->screenshot as $image) {
-                $entity->addImage($image->__toString());
+                if (!empty($image->__toString())) {
+                    $entity->addImage($image->__toString());
+                }
             }
             unset($image);
         }
 
         if ($xml->screenshots) {
             foreach ($xml->screenshots as $image) {
-                $entity->addImage($image->screenshot['src']->__toString());
+                if (!empty($image->screenshot['src']->__toString())) {
+                    $entity->addImage($image->screenshot['src']->__toString());
+                }
             }
             unset($image);
         }
