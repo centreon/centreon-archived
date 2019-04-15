@@ -14748,7 +14748,7 @@ msgid "You can't edit this hostgroup because you don't have access to all its re
 msgstr "Vous ne pouvez pas éditer groupe d'hote car vous n'êtes pas autorisé à accéder à toutes les ressources liées"
 
 msgid "Filter by Host"
-msgstr "Filtrer par les hôtes"
+msgstr "Filtrer par hôtes"
 
 msgid "Filter by Hostgroup"
 msgstr "Filtrer par groupe d'hôtes"
@@ -14757,4 +14757,4 @@ msgid "Filter by Servicegroup"
 msgstr "Filtrer par groupe de services"
 
 msgid "Chart"
-msgstr "Diagramme"
+msgstr "Graphiques"
