@@ -265,7 +265,7 @@ function updateServiceGroup($sg_id, $ret = array())
     $rq .= "WHERE sg_id = '" . $sg_id . "'";
     $pearDB->query($rq);
 
-    /* Prepare value for changelog */
+    /// Prepare value for changelog
     $fields = CentreonLogAction::prepareChanges($ret);
     $centreon->CentreonLogAction->insertLog(
         "servicegroup",
@@ -289,7 +289,7 @@ function updateServiceGroupServices($sg_id, $ret = array(), $increment = false)
         $pearDB->query($rq);
     }
 
-    /* service templates */
+    /// service templates
     $retTmp = isset($ret["sg_tServices"]) ? $ret["sg_tServices"] : $form->getSubmitValue("sg_tServices");
     if ($retTmp) {
         for ($i = 0; $i < count($retTmp); $i++) {
@@ -300,15 +300,15 @@ function updateServiceGroupServices($sg_id, $ret = array(), $increment = false)
                     " AND servicegroup_sg_id = " . $sg_id;
                 $resTest = $pearDB->query($query);
                 if (!$resTest->rowCount()) {
-                    $query = "INSERT INTO servicegroup_relation (host_host_id, service_service_id, servicegroup_sg_id) " .
-                        "VALUES ('" . $t[0] . "', '" . $t[1] . "', '" . $sg_id . "')";
+                    $query = "INSERT INTO servicegroup_relation (host_host_id, service_service_id, " .
+                        "servicegroup_sg_id) VALUES ('" . $t[0] . "', '" . $t[1] . "', '" . $sg_id . "')";
                     $pearDB->query($query);
                 }
             }
         }
     }
 
-    /* regular services */
+    // regular services
     $retTmp = isset($ret["sg_hServices"])
         ? $ret["sg_hServices"]
         : CentreonUtils::mergeWithInitialValues($form, 'sg_hServices');
@@ -327,7 +327,7 @@ function updateServiceGroupServices($sg_id, $ret = array(), $increment = false)
         }
     }
 
-    /* hostgroup services */
+    // hostgroup services
     $retTmp = isset($ret["sg_hgServices"])
         ? $ret["sg_hgServices"]
         : CentreonUtils::mergeWithInitialValues($form, 'sg_hgServices');

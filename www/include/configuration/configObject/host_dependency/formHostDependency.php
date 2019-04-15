@@ -1,7 +1,7 @@
 <?php
 /*
- * Copyright 2005-2015 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2019 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -257,9 +257,7 @@ if ($form->validate()) {
 if ($valid) {
     require_once("listHostDependency.php");
 } else {
-    /*
-	 * Apply a template definition
-	 */
+    //Apply a template definition
     $renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl, true);
     $renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
     $renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');
@@ -280,8 +278,7 @@ if ($valid) {
             if (document.getElementById('hFlapping')) {
                 document.getElementById('hFlapping').checked = false;
             }
-        }
-        else {
+        } else {
             document.getElementById('hNone').checked = false;
         }
     }

@@ -1,7 +1,7 @@
 <?php
 /*
- * Copyright 2005-2015 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2019 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -55,10 +55,10 @@ function testServiceGroupDependencyExistence($name = null)
         htmlentities($name, ENT_QUOTES, "UTF-8") . "'";
     $DBRESULT = $pearDB->query($query);
     $dep = $DBRESULT->fetchRow();
-    #Modif case
+    // Modif case
     if ($DBRESULT->rowCount() >= 1 && $dep["dep_id"] == $id) {
         return true;
-    } #Duplicate entry
+    } // Duplicate entry
     elseif ($DBRESULT->rowCount() >= 1 && $dep["dep_id"] != $id) {
         return false;
     } else {
@@ -216,7 +216,10 @@ function insertServiceGroupDependency($ret = array())
     $fields["dep_name"] = htmlentities($ret["dep_name"], ENT_QUOTES, "UTF-8");
     $fields["dep_description"] = htmlentities($ret["dep_description"], ENT_QUOTES, "UTF-8");
     $fields["inherits_parent"] = $ret["inherits_parent"]["inherits_parent"];
-    $fields["execution_failure_criteria"] = (isset($ret["execution_failure_criteria"]) ? implode(",", array_keys($ret["execution_failure_criteria"])) : '');
+    $fields["execution_failure_criteria"] = (isset($ret["execution_failure_criteria"]) ?
+        implode(",", array_keys($ret["execution_failure_criteria"])) :
+        ''
+    );
     $fields["notification_failure_criteria"] = implode(",", array_keys($ret["notification_failure_criteria"]));
     $fields["dep_comment"] = htmlentities($ret["dep_comment"], ENT_QUOTES, "UTF-8");
     $fields["dep_sgParents"] = "";

@@ -1,7 +1,7 @@
 <?php
 /*
- * Copyright 2005-2015 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2019 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -83,7 +83,7 @@ if (($o == "c" || $o == "w") && $meta_id) {
 require_once("./class/centreonDB.class.php");
 $pearDBO = new CentreonDB("centstorage");
 
-$metrics = array( null => null);
+$metrics = array(null => null);
 $DBRESULT = $pearDBO->query("select DISTINCT metric_name from metrics ORDER BY metric_name");
 while ($metric = $DBRESULT->fetchRow()) {
     $metrics[$metric["metric_name"]] = $metric["metric_name"];
@@ -300,9 +300,7 @@ foreach ($help as $key => $text) {
 $tpl->assign("helptext", $helptext);
 
 if ($o == "w") {
-    /*
-	 * Just watch a host information
-	 */
+    //Just watch a host information
     if (!$min && $centreon->user->access->page($p) != 2) {
         $form->addElement(
             "button",
@@ -314,16 +312,12 @@ if ($o == "w") {
     $form->setDefaults($ms);
     $form->freeze();
 } elseif ($o == "c") {
-    /*
-	 * Modify a service information
-	 */
+    //Modify a service information
     $subC = $form->addElement('submit', 'submitC', _("Save"), array("class" => "btc bt_success"));
     $res = $form->addElement('reset', 'reset', _("Reset"), array("class" => "btc bt_default"));
     $form->setDefaults($ms);
 } elseif ($o == "a") {
-    /*
-	 * Add a service information
-	 */
+    // Add a service information
     $subA = $form->addElement('submit', 'submitA', _("Save"), array("class" => "btc bt_success"));
     $res = $form->addElement('reset', 'reset', _("Reset"), array("class" => "btc bt_default"));
 }
@@ -346,9 +340,7 @@ if ($form->validate()) {
 if ($valid) {
     require_once($path . "listMetaService.php");
 } else {
-    /*
-	 * Apply a template definition
-	 */
+    //Apply a template definition
     $renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl, true);
     $renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
     $renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');

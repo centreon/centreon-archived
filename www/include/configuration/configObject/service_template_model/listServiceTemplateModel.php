@@ -233,11 +233,11 @@ $tpl->assign(
 
 // Toolbar select lgd_more_actions
 ?>
-<script type="text/javascript">
-    function setO(_i) {
-        document.forms['form'].elements['o'].value = _i;
-    }
-</script>
+    <script type="text/javascript">
+        function setO(_i) {
+            document.forms['form'].elements['o'].value = _i;
+        }
+    </script>
 <?php
 $attrs1 = array(
     'onchange' => "javascript: " .
@@ -319,4 +319,3 @@ $renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 $form->accept($renderer);
 $tpl->assign('form', $renderer->toArray());
 $tpl->display("listServiceTemplateModel.ihtml");
-?>

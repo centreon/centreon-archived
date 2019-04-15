@@ -37,31 +37,27 @@ if (!isset($centreon)) {
     exit();
 }
 
-/*
- * Debug Flag
- */
+// Debug Flag
 $debug = 0;
 $max_characters = 20000;
 
-/*
- * Database retrieve information for Manufacturer
- */
+// Database retrieve information for Manufacturer
 
+/**
+ * @param $arg
+ * @return string
+ */
 function myDecodeMib($arg)
 {
     $arg = html_entity_decode($arg, ENT_QUOTES, "UTF-8");
     return ($arg);
 }
 
-/*
- * Init Formulary
- */
+// Init Formulary
 $form = new HTML_QuickFormCustom('Form', 'post', "?p=" . $p);
 $form->addElement('header', 'title', _("Import SNMP traps from MIB file"));
 
-/*
- * Manufacturer information
- */
+// Manufacturer information
 $route = './include/common/webServices/rest/internal.php?object=centreon_configuration_manufacturer&action=list';
 $attrManufacturer = array(
     'datasourceOrigin' => 'ajax',
@@ -72,28 +68,24 @@ $attrManufacturer = array(
 
 /**
  * commented out as deprecated, but kept for reference
-$route = './include/common/webServices/rest/internal.php?object=centreon_configuration_manufacturer' .
-    '&action=defaultValues&target=traps&field=manufacturer_id&id=';
-$attrManufacturer1 = array_merge(
-    $attrManufacturer,
-    array('defaultDatasetRoute' => $route)
-);
-*/
+ * $route = './include/common/webServices/rest/internal.php?object=centreon_configuration_manufacturer' .
+ * '&action=defaultValues&target=traps&field=manufacturer_id&id=';
+ * $attrManufacturer1 = array_merge(
+ * $attrManufacturer,
+ * array('defaultDatasetRoute' => $route)
+ * );
+ */
 $form->addElement('select2', 'mnftr', _("Vendor Name"), array(), $attrManufacturer);
 
 $form->addElement('file', 'filename', _("File (.mib)"));
 
-/*
- * Formulary Rules
- */
+// Formulary Rules
 $form->applyFilter('__ALL__', 'myTrim');
 $form->addRule('mnftr', _("Compulsory Name"), 'required');
 $form->addRule('filename', _("Compulsory Name"), 'required');
 $form->setRequiredNote("<font style='color: red;'>*</font>&nbsp;" . _("Required fields"));
 
-/*
- * Smarty template Init
- */
+// Smarty template Init
 $tpl = new Smarty();
 $tpl = initSmartyTpl($path, $tpl);
 
@@ -104,7 +96,7 @@ $tpl->assign(
     'TITLEFONTCOLOR, "black", TITLEBGCOLOR, "orange", CLOSEBTNCOLORS, ["","black", "white", "red"], WIDTH, -300, ' .
     'SHADOW, true, TEXTALIGN, "justify"'
 );
-# prepare help texts
+// prepare help texts
 $helptext = "";
 include_once("help.php");
 foreach ($help as $key => $text) {
@@ -112,9 +104,7 @@ foreach ($help as $key => $text) {
 }
 $tpl->assign("helptext", $helptext);
 
-/*
- * Just watch a Command information
- */
+// Just watch a Command information
 $subA = $form->addElement('submit', 'submit', _("Import"), array("class" => "btc bt_success"));
 $form->addElement('header', 'status', _("Status"));
 $valid = false;
@@ -126,9 +116,7 @@ if ($form->validate()) {
     $fileObj = $form->getElement('filename');
 
     if ($fileObj->isUploadedFile()) {
-        /*
-		 * Upload File
-		 */
+        // Upload File
         $values = $fileObj->getValue();
         $msg .= str_replace("\n", "<br />", $stdout);
         $msg .= "<br />Moving traps in DataBase...";
@@ -156,9 +144,7 @@ if ($form->validate()) {
     $valid = true;
 }
 
-/*
- * Apply a template definition
- */
+// Apply a template definition
 $renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 $renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
 $renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');

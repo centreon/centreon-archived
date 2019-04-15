@@ -1,7 +1,7 @@
 <?php
 /*
- * Copyright 2005-2015 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2019 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -233,9 +233,8 @@ $attrHosttemplates = array(
  * For a shitty reason, Quickform set checkbox with stal[o] name
  */
 unset($_POST['o']);
-#
-## Form begin
-#
+
+// Form begin
 $form = new HTML_QuickFormCustom('Form', 'post', "?p=" . $p);
 if ($o == "a") {
     $form->addElement('header', 'title', _("Add a Service Template Model"));
@@ -247,9 +246,7 @@ if ($o == "a") {
     $form->addElement('header', 'title', _("Massive Change"));
 }
 
-#
-## Service basic information
-#
+// Service basic information
 $form->addElement('header', 'information', _("General Information"));
 
 if ($o != "mc") {
@@ -283,9 +280,7 @@ $attrHosttemplate1 = array_merge(
 );
 $form->addElement('select2', 'service_hPars', _("Linked to host templates"), array(), $attrHosttemplate1);
 
-#
-## Check information
-#
+// Check information
 $form->addElement('header', 'check', _("Service State"));
 
 $serviceIV[] = $form->createElement('radio', 'service_is_volatile', null, _("Yes"), '1');
@@ -412,9 +407,7 @@ $cloneSetMacro[] = $form->addElement(
  */
 $form->addElement('text', 'service_acknowledgement_timeout', _("Acknowledgement timeout"), $attrsText2);
 
-##
-## Notification informations
-##
+// Notification informations
 $form->addElement('header', 'notification', _("Notification"));
 $serviceNE[] = $form->createElement('radio', 'service_notifications_enabled', null, _("Yes"), '1');
 $serviceNE[] = $form->createElement('radio', 'service_notifications_enabled', null, _("No"), '0');
@@ -432,9 +425,7 @@ if ($o == "mc") {
     $form->setDefaults(array('mc_mod_cgs' => '0'));
 }
 
-/*
- * Additive
- */
+//Additive
 if ($o == "mc") {
     $contactAdditive[] = $form->createElement('radio', 'mc_contact_additive_inheritance', null, _("Yes"), '1');
     $contactAdditive[] = $form->createElement('radio', 'mc_contact_additive_inheritance', null, _("No"), '0');
@@ -467,9 +458,7 @@ if ($o == "mc") {
     $form->addElement('checkbox', 'cg_additive_inheritance', '', _('Contact group additive inheritance'));
 }
 
-/*
- *  Contacts
- */
+// Contacts
 $contactDeRoute = './include/common/webServices/rest/internal.php?object=centreon_configuration_contact'
     . '&action=defaultValues&target=service&field=service_cs&id=' . $service_id;
 $attrContact1 = array_merge(
@@ -478,9 +467,7 @@ $attrContact1 = array_merge(
 );
 $form->addElement('select2', 'service_cs', _("Implied Contacts"), array(), $attrContact1);
 
-/*
- *  Contact groups
- */
+// Contact groups
 $contactGrDeRoute = './include/common/webServices/rest/internal.php?object=centreon_configuration_contactgroup'
     . '&action=defaultValues&target=service&field=service_cgs&id=' . $service_id;
 $attrContactgroup1 = array_merge(
@@ -651,9 +638,7 @@ if ($o != "mc") {
 }
 $form->addElement('textarea', 'service_comment', _("Comments"), $attrsTextarea);
 
-#
-## Sort 2 - Service relations
-#
+// Sort 2 - Service relations
 if ($o == "a") {
     $form->addElement('header', 'title2', _("Add relations"));
 } elseif ($o == "c") {
@@ -691,10 +676,7 @@ if ($o == "mc") {
     $form->setDefaults(array('mc_mod_Pars' => '0'));
 }
 
-##
-## Sort 3 - Data treatment
-##
-
+// Sort 3 - Data treatment
 if ($o == "a") {
     $form->addElement('header', 'title3', _("Add Data Processing"));
 } elseif ($o == "c") {
@@ -767,9 +749,7 @@ if ($o != "mc") {
     $form->setDefaults(array('service_retain_nonstatus_information' => '2'));
 }
 
-#
-## Sort 4 - Extended Infos
-#
+// Sort 4 - Extended Infos
 if ($o == "a") {
     $form->addElement('header', 'title4', _("Add an Extended Info"));
 } elseif ($o == "c") {
@@ -791,9 +771,7 @@ $form->addElement('select', 'esi_icon_image', _("Icon"), $extImg, array(
 ));
 $form->addElement('text', 'esi_icon_image_alt', _("Alt icon"), $attrsText);
 
-/*
- * Criticality 
- */
+// Criticality
 $criticality = new CentreonCriticality($pearDB);
 $critList = $criticality->getList(null, "level", 'ASC', null, null, true);
 $criticalityIds = array(null => null);
@@ -828,9 +806,7 @@ $attrServicecategory1 = array_merge(
 );
 $form->addElement('select2', 'service_categories', _("Categories"), array(), $attrServicecategory1);
 
-/*
- * Sort 5 - Macros - Nagios 3
- */
+// Sort 5 - Macros - Nagios 3
 if ($o == "a") {
     $form->addElement('header', 'title5', _("Add macros"));
 } elseif ($o == "c") {
@@ -892,16 +868,14 @@ $form->addRule("argChecker", _("You must either fill all the arguments or leave 
 
 $form->setRequiredNote("<font style='color: red;'>*</font>&nbsp;" . _("Required fields"));
 
-#
-## End of form definition
-#
+//End of form definition
 
-# Smarty template Init
+// Smarty template Init
 $tpl = new Smarty();
 $tpl = initSmartyTpl($path2, $tpl);
 
 unset($service['service_template_model_stm_id']);
-# Just watch a host information
+// Just watch a host information
 if ($o == "w") {
     if (!$min && $centreon->user->access->page($p) != 2 && !isset($lockedElements[$service_id])) {
         $form->addElement(
@@ -946,7 +920,7 @@ $tpl->assign(
     . ' WIDTH, -300, SHADOW, true, TEXTALIGN, "justify"'
 );
 
-# prepare help texts
+// prepare help texts
 $helptext = "";
 include_once("include/configuration/configObject/service/help.php");
 foreach ($help as $key => $text) {
@@ -983,7 +957,7 @@ if ($form->validate() && $from_list_menu == false) {
 if ($valid) {
     require_once($path . "listServiceTemplateModel.php");
 } else {
-    # Apply a template definition
+    // Apply a template definition
     require_once _CENTREON_PATH_ . 'www/include/configuration/configObject/service/javascript/argumentJs.php';
     $renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl, true);
     $renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');

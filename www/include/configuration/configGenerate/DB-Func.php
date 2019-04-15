@@ -1,7 +1,7 @@
 <?php
 /*
- * Copyright 2005-2015 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2019 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -167,8 +167,12 @@ function getCheckCmdParam($service_id = null, $cache)
     }
 }
 
-/*
+/**
  * Create Service Template Cache
+ *
+ * @param null $service_id
+ * @param $cache
+ * @return mixed|void
  */
 function getMyServiceTPInCache($service_id = null, $cache)
 {
@@ -713,35 +717,34 @@ function verifyIfMustBeGenerated($id, $gbArr, $ret)
 /*
   Function to replace PHP's parse_ini_file() with much fewer restritions, and
   a matching function to write to a .INI file, both of which are binary safe.
-  
+
   Version 1.0
-  
+
   Copyright (C) 2005 Justin Frim <phpcoder@cyberpimp.pimpdomain.com>
-  
+
   Sections can use any character excluding ASCII control characters and ASCII
   DEL.  (You may even use [ and ] characters as literals!)
-  
+
   Keys can use any character excluding ASCII control characters, ASCII DEL,
-  ASCII equals sign (=), and not start with the user-defined comment
-  character.
-  
+  ASCII equals sign (=), and not start with the user-defined comment character.
+
   Values are binary safe (encoded with C-style backslash escape codes) and may
   be enclosed by double-quotes (to retain leading & trailing spaces).
-  
+
   User-defined comment character can be any non-white-space ASCII character
   excluding ASCII opening bracket ([).
-  
+
   readINIfile() is case-insensitive when reading sections and keys, returning
   an array with lower-case keys.
   writeINIfile() writes sections and keys with first character capitalization.
   Invalid characters are converted to ASCII dash / hyphen (-).  Values are
   always enclosed by double-quotes.
-  
+
   writeINIfile() also provides a method to automatically prepend a comment
   header from ASCII text with line breaks, regardless of whether CRLF, LFCR,
   CR, or just LF line break sequences are used!  (All line breaks are
   translated to CRLF)
-  
+
   Modified for Oreon by Christophe Coraboeuf
 */
 

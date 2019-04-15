@@ -1,7 +1,7 @@
 <?php
 /*
- * Copyright 2005-2015 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2019 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -34,24 +34,22 @@
  */
 
 
-#
-## Database retrieve information for Dependency
-#
+// Database retrieve information for Dependency
 $dep = array();
 $initialValues = array();
 if (($o == "c" || $o == "w") && $dep_id) {
     $DBRESULT = $pearDB->query("SELECT * FROM dependency WHERE dep_id = '" . $dep_id . "' LIMIT 1");
 
-    # Set base value
+    // Set base value
     $dep = array_map("myDecode", $DBRESULT->fetchRow());
 
-    # Set Notification Failure Criteria
+    // Set Notification Failure Criteria
     $dep["notification_failure_criteria"] = explode(',', $dep["notification_failure_criteria"]);
     foreach ($dep["notification_failure_criteria"] as $key => $value) {
         $dep["notification_failure_criteria"][trim($value)] = 1;
     }
 
-    # Set Execution Failure Criteria
+    // Set Execution Failure Criteria
     $dep["execution_failure_criteria"] = explode(',', $dep["execution_failure_criteria"]);
     foreach ($dep["execution_failure_criteria"] as $key => $value) {
         $dep["execution_failure_criteria"][trim($value)] = 1;
@@ -65,9 +63,7 @@ if (($o == "c" || $o == "w") && $dep_id) {
  */
 
 
-/*
- * Var information to format the element
- */
+//Var information to format the element
 $attrsText = array("size" => "30");
 $attrsText2 = array("size" => "10");
 $attrsAdvSelect = array("style" => "width: 300px; height: 150px;");
@@ -83,9 +79,7 @@ $attrServicegroups = array(
     'linkedObject' => 'centreonServicegroups'
 );
 
-/*
- * Form begin
- */
+// Form begin
 $form = new HTML_QuickFormCustom('Form', 'post', "?p=" . $p);
 if ($o == "a") {
     $form->addElement('header', 'title', _("Add a Dependency"));
@@ -95,9 +89,7 @@ if ($o == "a") {
     $form->addElement('header', 'title', _("View a Dependency"));
 }
 
-/*
- * Dependency basic information
- */
+// Dependency basic information
 $form->addElement('header', 'information', _("Information"));
 $form->addElement('text', 'dep_name', _("Name"), $attrsText);
 $form->addElement('text', 'dep_description', _("Description"), $attrsText);
@@ -240,15 +232,11 @@ $form->registerRule('exist', 'callback', 'testServiceGroupDependencyExistence');
 $form->addRule('dep_name', _("Name is already in use"), 'exist');
 $form->setRequiredNote("<font style='color: red;'>*</font>&nbsp;" . _("Required fields"));
 
-/*
- * Smarty template Init
- */
+// Smarty template Init
 $tpl = new Smarty();
 $tpl = initSmartyTpl($path, $tpl);
 
-/*
- * Just watch a Dependency information
- */
+// Just watch a Dependency information
 if ($o == "w") {
     if ($centreon->user->access->page($p) != 2) {
         $form->addElement(
@@ -261,12 +249,12 @@ if ($o == "w") {
     $form->setDefaults($dep);
     $form->freeze();
 } elseif ($o == "c") {
-    # Modify a Dependency information
+    // Modify a Dependency information
     $subC = $form->addElement('submit', 'submitC', _("Save"), array("class" => "btc bt_success"));
     $res = $form->addElement('reset', 'reset', _("Reset"), array("class" => "btc bt_default"));
     $form->setDefaults($dep);
 } elseif ($o == "a") {
-    # Add a Dependency information
+    // Add a Dependency information
     $subA = $form->addElement('submit', 'submitA', _("Save"), array("class" => "btc bt_success"));
     $res = $form->addElement('reset', 'reset', _("Reset"), array("class" => "btc bt_default"));
     $form->setDefaults(array('inherits_parent', '0'));
@@ -277,7 +265,7 @@ $tpl->assign(
     '"orange", TITLEFONTCOLOR, "black", TITLEBGCOLOR, "orange", CLOSEBTNCOLORS, ["","black", "white", "red"], ' .
     'WIDTH, -300, SHADOW, true, TEXTALIGN, "justify"'
 );
-# prepare help texts
+// prepare help texts
 $helptext = "";
 include_once("include/configuration/configObject/service_dependency/help.php");
 foreach ($help as $key => $text) {
@@ -300,9 +288,7 @@ if ($form->validate()) {
 if ($valid) {
     require_once("listServiceGroupDependency.php");
 } else {
-    /*
-	 * Apply a template definition
-	 */
+    // Apply a template definition
     $renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl, true);
     $renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
     $renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');

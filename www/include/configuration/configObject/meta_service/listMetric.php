@@ -1,7 +1,7 @@
 <?php
 /*
- * Copyright 2005-2015 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2019 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -110,13 +110,9 @@ if ($in_statement != "") {
         "WHERE m.metric_id IN ($in_statement) " .
         "AND m.index_id=i.id ORDER BY i.host_name, i.service_description, m.metric_name";
     $DBRESULTO = $pearDBO->query($query);
-    /*
-	 * Different style between each lines
-	 */
+    // Different style between each lines
     $style = "one";
-    /*
-	 * Fill a tab with a mutlidimensionnal Array we put in $tpl
-	 */
+    // Fill a tab with a mutlidimensionnal Array we put in $tpl
     $elemArr1 = array();
     $i = 0;
     while ($metric = $DBRESULTO->fetchRow()) {

@@ -1,7 +1,7 @@
 <?php
 /*
- * Copyright 2005-2015 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2019 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -32,9 +32,8 @@
  * For more information : contact@centreon.com
  *
  */
-#
-## Database retrieve information for Dependency
-#
+
+//Database retrieve information for Dependency
 $dep = array();
 $parentServices = array();
 $childServices = array();
@@ -61,7 +60,7 @@ if (($o == "c" || $o == "w") && $dep_id) {
     $DBRESULT->closeCursor();
 }
 
-# Var information to format the element
+// Var information to format the element
 $attrsText = array("size" => "30");
 $attrsText2 = array("size" => "10");
 $attrsAdvSelect = array("style" => "width: 400px; height: 200px;");
@@ -85,7 +84,7 @@ $attrServices = array(
     'linkedObject' => 'centreonService'
 );
 
-# Form begin
+// Form begin
 $form = new HTML_QuickFormCustom('Form', 'post', "?p=" . $p);
 if ($o == "a") {
     $form->addElement('header', 'title', _("Add a Dependency"));
@@ -95,7 +94,7 @@ if ($o == "a") {
     $form->addElement('header', 'title', _("View a Dependency"));
 }
 
-# Dependency basic information
+// Dependency basic information
 $form->addElement('header', 'information', _("Information"));
 $form->addElement('text', 'dep_name', _("Name"), $attrsText);
 $form->addElement('text', 'dep_description', _("Description"), $attrsText);
@@ -226,9 +225,7 @@ $form->addElement('hidden', 'dep_id');
 $redirect = $form->addElement('hidden', 'o');
 $redirect->setValue($o);
 
-/*
- * Form Rules
- */
+// Form Rules
 $form->applyFilter('__ALL__', 'myTrim');
 $form->addRule('dep_name', _("Compulsory Name"), 'required');
 $form->addRule('dep_description', _("Required Field"), 'required');
@@ -240,9 +237,7 @@ $form->addRule('dep_name', _("Name is already in use"), 'exist');
 $form->setRequiredNote("<font style='color: red;'>*</font>&nbsp;" . _("Required fields"));
 
 
-/*
- * Smarty template Init
- */
+// Smarty template Init
 $tpl = new Smarty();
 $tpl = initSmartyTpl($path, $tpl);
 
@@ -302,9 +297,7 @@ if ($form->validate()) {
 if ($valid) {
     require_once("listServiceDependency.php");
 } else {
-    /*
-	 * Apply a template definition
-	 */
+    // Apply a template definition
     $renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl, true);
     $renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
     $renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');

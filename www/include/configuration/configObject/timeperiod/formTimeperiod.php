@@ -1,7 +1,7 @@
 <?php
 /*
- * Copyright 2005-2015 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2019 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -41,9 +41,7 @@ $tp = array();
 if (($o == "c" || $o == "w") && $tp_id) {
     $dbResult = $pearDB->query("SELECT * FROM timeperiod WHERE tp_id = '" . $tp_id . "' LIMIT 1");
 
-    /*
-	 * Set base value
-	 */
+    // Set base value
     $tp = array_map("myDecode", $dbResult->fetchRow());
     $tp["contact_exclude"] = array();
 }
@@ -62,9 +60,7 @@ while ($exceptionTab = $dbResult->fetchRow()) {
 $dbResult->closeCursor();
 
 
-/*
- * Var information to format the element
- */
+// Var information to format the element
 $attrsText = array("size" => "35");
 $attrsTextLong = array("size" => "55", "maxlength" => "200");
 $attrsAdvSelect = array("style" => "width: 300px; height: 130px;");
@@ -72,8 +68,8 @@ $eTemplate = '<table><tr><td><div class="ams">{label_2}</div>{unselected}</td><t
     . '<br />{remove}</td><td><div class="ams">{label_3}</div>{selected}</td></tr></table>';
 
 $timeAvRoute = './include/common/webServices/rest/internal.php?object=centreon_configuration_timeperiod&action=list' .
-    ($tp_id ? "&exclude={$tp_id}" : '') // exclude this timeperiod from list
-;
+    ($tp_id ? "&exclude={$tp_id}" : ''); // exclude this timeperiod from list
+
 $attrTimeperiods = array(
     'datasourceOrigin' => 'ajax',
     'availableDatasetRoute' => $timeAvRoute,
@@ -81,10 +77,14 @@ $attrTimeperiods = array(
     'linkedObject' => 'centreonTimeperiod'
 );
 
-/*
- * Form begin
- */
-$form = new HTML_QuickFormCustom('Form', 'post', "?p=" . $p, '', ['onsubmit' => 'return formValidate()', 'data-centreon-validate' => '']);
+// Form begin
+$form = new HTML_QuickFormCustom(
+    'Form',
+    'post',
+    "?p=" . $p,
+    '',
+    ['onsubmit' => 'return formValidate()', 'data-centreon-validate' => '']
+);
 if ($o == "a") {
     $form->addElement('header', 'title', _("Add a Time Period"));
 } elseif ($o == "c") {
@@ -93,16 +93,12 @@ if ($o == "a") {
     $form->addElement('header', 'title', _("View a Time Period"));
 }
 
-/*
- * Time Period basic information
- */
+// Time Period basic information
 $form->addElement('header', 'information', _("General Information"));
 $form->addElement('text', 'tp_name', _("Time Period Name"), $attrsText);
 $form->addElement('text', 'tp_alias', _("Alias"), $attrsTextLong);
 
-/*
- * Notification informations
- */
+// Notification informations
 $form->addElement('header', 'include', _("Extended Settings"));
 
 $form->addElement('text', 'tp_sunday', _("Sunday"), $attrsTextLong);
@@ -137,9 +133,7 @@ while ($multiTp = $DBRESULT->fetchRow()) {
 
 $DBRESULT->closeCursor();
 
-/*
- * Include javascript for dynamique entries
- */
+// Include javascript for dynamique entries
 require_once "./include/configuration/configObject/timeperiod/timeperiod_JS.php";
 if ($o == "c" || $o == "a" || $o == "mc") {
     print "<script type=\"text/javascript\">";
@@ -149,25 +143,21 @@ if ($o == "c" || $o == "a" || $o == "mc") {
         print "tab[$k] = " . $mTp[$k] . ";";
     }
     for ($k = 0; isset($exception_id[$k]); $k++) { ?>
-            globalExceptionTabId[<?php echo $k;?>] = <?php echo $exception_id[$k];?>;
-            globalExceptionTabName[<?php echo $k;?>] = '<?php echo $exception_days[$k];?>';
-            globalExceptionTabTimerange[<?php echo $k;?>] = '<?php echo $exception_timerange[$k];?>';
-            globalExceptionTabTimeperiodId[<?php echo $k;?>] = <?php echo $exception_timeperiod_id[$k];?>;
+        globalExceptionTabId[<?php echo $k; ?>] = <?php echo $exception_id[$k]; ?>;
+        globalExceptionTabName[<?php echo $k; ?>] = '<?php echo $exception_days[$k]; ?>';
+        globalExceptionTabTimerange[<?php echo $k; ?>] = '<?php echo $exception_timerange[$k]; ?>';
+        globalExceptionTabTimeperiodId[<?php echo $k; ?>] = <?php echo $exception_timeperiod_id[$k]; ?>;
         <?php
     }
     print "</script>";
 }
 
-/*
- * Further informations
- */
+// Further informations
 $form->addElement('hidden', 'tp_id');
 $redirect = $form->addElement('hidden', 'o');
 $redirect->setValue($o);
 
-/*
- * Form Rules
- */
+// Form Rules
 function myReplace()
 {
     global $form;
@@ -175,25 +165,19 @@ function myReplace()
     return (str_replace(" ", "_", $ret["tp_name"]));
 }
 
-/*
- * Set rules
- */
+// Set rules
 $form->applyFilter('__ALL__', 'myTrim');
 $form->applyFilter('tp_name', 'myReplace');
 
 $form->registerRule('exist', 'callback', 'testTPExistence');
 $form->registerRule('format', 'callback', 'checkHours');
 
-/*
- * Name Check
- */
+// Name Check
 $form->addRule('tp_name', _("Compulsory Name"), 'required');
 $form->addRule('tp_name', _("Name is already in use"), 'exist');
 $form->addRule('tp_alias', _("Compulsory Alias"), 'required');
 
-/*
- * Check Hours format
- */
+// Check Hours format
 $form->addRule('tp_sunday', _('Error in hour definition'), 'format');
 $form->addRule('tp_monday', _('Error in hour definition'), 'format');
 $form->addRule('tp_tuesday', _('Error in hour definition'), 'format');
@@ -202,24 +186,18 @@ $form->addRule('tp_thursday', _('Error in hour definition'), 'format');
 $form->addRule('tp_friday', _('Error in hour definition'), 'format');
 $form->addRule('tp_saturday', _('Error in hour definition'), 'format');
 
-/*
- * Check for template loops
- */
+// Check for template loops
 $form->registerRule('templateLoop', 'callback', 'testTemplateLoop');
 $form->addRule('tp_include', _('The selected template has the same time period as a template'), 'templateLoop');
 
 $form->setRequiredNote("<font style='color: red;'>*</font>&nbsp;" . _("Required fields"));
 
-/*
- * Smarty template Init
- */
+// Smarty template Init
 $tpl = new Smarty();
 $tpl = initSmartyTpl($path, $tpl);
 
 if ($o == "w") {
-    /*
-	 * Just watch a Time Period information
-	 */
+    // Just watch a Time Period information
     if ($centreon->user->access->page($p) != 2) {
         $form->addElement(
             "button",
@@ -231,23 +209,17 @@ if ($o == "w") {
     $form->setDefaults($tp);
     $form->freeze();
 } elseif ($o == "c") {
-    /*
-	 * Modify a Time Period information
-	 */
+    // Modify a Time Period information
     $subC = $form->addElement('submit', 'submitC', _("Save"), array("class" => "btc bt_success"));
     $res = $form->addElement('reset', 'reset', _("Reset"), array("class" => "btc bt_default"));
     $form->setDefaults($tp);
 } elseif ($o == "a") {
-    /*
-	 * Add a Time Period information
-	 */
+    /// Add a Time Period information
     $subA = $form->addElement('submit', 'submitA', _("Save"), array("class" => "btc bt_success"));
     $res = $form->addElement('reset', 'reset', _("Reset"), array("class" => "btc bt_default"));
 }
 
-/*
- * Translations
- */
+// Translations
 $tpl->assign("tRDay", _("Days"));
 $tpl->assign("tRHours", _("Time Range"));
 
@@ -258,7 +230,7 @@ $tpl->assign(
     . ' TITLEFONTCOLOR, "black", TITLEBGCOLOR, "orange", CLOSEBTNCOLORS, ["","black", "white", "red"],'
     . ' WIDTH, -300, SHADOW, true, TEXTALIGN, "justify"'
 );
-# prepare help texts
+// prepare help texts
 $helptext = "";
 include_once("help.php");
 foreach ($help as $key => $text) {
@@ -281,9 +253,7 @@ if ($form->validate()) {
 if ($valid) {
     require_once($path . "listTimeperiod.php");
 } else {
-    /*
-	 * Apply a template definition
-	 */
+    // Apply a template definition
     $renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl, true);
     $renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
     $renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');

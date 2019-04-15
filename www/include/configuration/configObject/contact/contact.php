@@ -1,7 +1,7 @@
 <?php
 /*
  * Copyright 2005-2019 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -76,7 +76,7 @@ $allowedAclGroups = $acl->getAccessGroups();
  */
 $eventDispatcher = $dependencyInjector['centreon.event_dispatcher'];
 
-if(! is_null($eventDispatcher->getDispatcherLoader())) {
+if (!is_null($eventDispatcher->getDispatcherLoader())) {
     $eventDispatcher->getDispatcherLoader()->load();
 }
 
@@ -123,23 +123,23 @@ $eventDispatcher->addEventHandler(
 switch ($o) {
     case "li":
         require_once($path . "ldapImportContact.php");
-        break; # LDAP import form	# Wistof
+        break; // LDAP import form # Wistof
     case "mc":
         require_once($path . "formContact.php");
-        break; # Massive Change
+        break; // Massive Change
     case "a":
         require_once($path . "formContact.php");
-        break; #Add a contact
+        break; // Add a contact
     case "w":
         require_once($path . "formContact.php");
-        break; #Watch a contact
+        break; // Watch a contact
     case "c":
         require_once($path . "formContact.php");
-        break; #Modify a contact
+        break; // Modify a contact
     case "s":
         enableContactInDB($contact_id);
         require_once($path . "listContact.php");
-        break; #Activate a contact
+        break; // Activate a contact
     case "ms":
         enableContactInDB(null, isset($select) ? $select : array());
         require_once($path . "listContact.php");
@@ -147,7 +147,7 @@ switch ($o) {
     case "u":
         disableContactInDB($contact_id);
         require_once($path . "listContact.php");
-        break; #Desactivate a contact
+        break; // Desactivate a contact
     case "mu":
         disableContactInDB(null, isset($select) ? $select : array());
         require_once($path . "listContact.php");
@@ -164,7 +164,7 @@ switch ($o) {
         );
 
         require_once($path . "listContact.php");
-        break; #Duplicate n contacts
+        break; // Duplicate n contacts
     case "d":
         // We notify that we have made a delete
         $eventDispatcher->notify(
@@ -173,7 +173,7 @@ switch ($o) {
             ['contact_ids' => $select]
         );
         require_once($path . "listContact.php");
-        break; #Delete n contacts
+        break; // Delete n contacts
     case "dn":
         require_once $path . 'displayNotification.php';
         break;
