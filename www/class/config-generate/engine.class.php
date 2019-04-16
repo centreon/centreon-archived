@@ -270,7 +270,7 @@ class Engine extends AbstractObject
         'enable_predictive_service_dependency_checks',
         'use_large_installation_tweaks',
         'enable_environment_macros',
-        'use_setpgid', # centengine
+        'use_setpgid', // centengine
     );
     protected $attributes_array = array(
         'cfg_file',
