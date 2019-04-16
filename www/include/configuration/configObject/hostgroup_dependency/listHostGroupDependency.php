@@ -54,7 +54,7 @@ $search = filter_var(
 );
 
 if (isset($_POST['searchHGD']) || isset($_GET['searchHGD'])) {
-    //initializing filters values
+    //saving filters values
     $centreon->historySearch[$url] = array();
     $centreon->historySearch[$url]['search'] = $search;
 } else {

@@ -53,7 +53,7 @@ $search = filter_var(
     FILTER_SANITIZE_STRING
 );
 if (isset($_POST['searchSGD']) || isset($_GET['searchSGD'])) {
-    //initializing filters values
+    //saving filters values
     $centreon->historySearch[$url] = array();
     $centreon->historySearch[$url]['search'] = $search;
 } else {
