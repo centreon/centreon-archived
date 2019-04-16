@@ -219,7 +219,6 @@ class Engine extends AbstractObject
         'additional_freshness_latency',
         'debug_file',
         'debug_level',
-        //'debug_level_opt', ????!!
         'debug_verbosity',
         'max_debug_file_size',
         'log_pid', // centengine
