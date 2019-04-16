@@ -183,7 +183,7 @@ class ModuleSource extends SourceAbstract
         $entity->setVersion($info['mod_release']);
         $entity->setDescription($info['infos']);
         $entity->setKeywords($entity->getId());
-        $entity->setLicense($this->license->getLicenseExpiration($entity->getId()));
+        $entity->setLicense($this->processLicense($this->license->getLicenseExpiration($entity->getId()), $info));
 
         if (array_key_exists('stability', $info) && $info['stability']) {
             $entity->setStability($info['stability']);
@@ -234,5 +234,20 @@ class ModuleSource extends SourceAbstract
         require $configFile;
 
         return $module_conf;
+    }
+
+    /**
+     * Process license return correct string based on license required or not
+     * @param string $license
+     * @param array $info
+     * @return string
+     */
+    protected function processLicense(string $license, array $info) : string
+    {
+        if ($license === "N/A"){
+            $license = (!empty($info['require_license']) && $info['require_license'] === true) ? gettext('License Required') : $license;
+        }
+
+        return $license;
     }
 }
