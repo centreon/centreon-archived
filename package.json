@@ -1,6 +1,6 @@
 {
   "name": "centreon",
-  "version": "18.10.0",
+  "version": "19.04.0",
   "description": "centreon web package",
   "scripts": {
     "build": "npm run build:clean && npm run build:app && npm run build:post",
