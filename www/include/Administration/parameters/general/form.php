@@ -241,7 +241,6 @@ $form->addRule('oreon_path', _("Can't write in directory"), 'is_valid_path');
 // - Field is not added so no need for rule
 // $form->addRule('nagios_path_img', _("Can't write in directory"), 'is_writable_path');
 // - Field is not added so no need for rule
-// - Field is not added so no need for rule
 
 /*
  * Smarty template Init
