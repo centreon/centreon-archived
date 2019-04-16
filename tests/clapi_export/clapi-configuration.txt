@@ -622,6 +622,7 @@ ENGINECFG;setparam;Centreon Engine Central;debug_level_opt;0
 ENGINECFG;setparam;Centreon Engine Central;debug_verbosity;2
 ENGINECFG;setparam;Centreon Engine Central;cfg_file;centengine.cfg
 ENGINECFG;setparam;Centreon Engine Central;log_pid;1
+ENGINECFG;setparam;Centreon Engine Central;enable_macros_filter;0
 ENGINECFG;setparam;Centreon Engine Central;broker_module;/usr/lib64/centreon-engine/externalcmd.so|/usr/lib64/nagios/cbmod.so /etc/centreon-broker/central-module.xml
 ENGINECFG;ADD;Centreon Engine Central_1;test_poller;Centreon Engine
 ENGINECFG;setparam;Centreon Engine Central_1;log_file;/var/log/centreon-engine/centengine.log
@@ -705,6 +706,7 @@ ENGINECFG;setparam;Centreon Engine Central_1;debug_level_opt;0
 ENGINECFG;setparam;Centreon Engine Central_1;debug_verbosity;2
 ENGINECFG;setparam;Centreon Engine Central_1;cfg_file;centengine.cfg
 ENGINECFG;setparam;Centreon Engine Central_1;log_pid;1
+ENGINECFG;setparam;Centreon Engine Central_1;enable_macros_filter;0
 ENGINECFG;setparam;Centreon Engine Central_1;broker_module;/usr/lib64/centreon-engine/externalcmd.so|/usr/lib64/nagios/cbmod.so /etc/centreon-broker/central-module.xml
 CONTACTTPL;ADD;contact_template;contact_template;;md5__d41d8cd98f00b204e9800998ecf8427e;0;;;local
 CONTACTTPL;setparam;contact_template;hostnotifopt;n
