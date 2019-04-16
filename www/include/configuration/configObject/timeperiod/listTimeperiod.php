@@ -43,10 +43,12 @@ $search = filter_var(
     $_POST['searchTP'] ?? $_GET['searchTP'] ?? null,
     FILTER_SANITIZE_STRING
 );
-if (isset($_POST['searchTP']) || $_GET['searchTP']) {
+if (isset($_POST['searchTP']) || isset($_GET['searchTP'])) {
+    //initializing filters values
     $centreon->historySearch[$url] = array();
     $centreon->historySearch[$url]['search'] = $search;
 } else {
+    //restoring saved values
     $search = $centreon->historySearch[$url]['search'] ?? null;
 }
 

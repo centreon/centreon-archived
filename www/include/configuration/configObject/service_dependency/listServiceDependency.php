@@ -43,15 +43,18 @@ include("./include/common/autoNumLimit.php");
 
 isset($_GET["list"]) ? $list = $_GET["list"] : $list = null;
 
-$search = null;
-if (isset($_POST['searchSD'])) {
-    $search = $_POST['searchSD'];
-    $centreon->historySearch[$url] = $search;
-} elseif (isset($_GET['searchSD'])) {
-    $search = $_GET['searchSD'];
-    $centreon->historySearch[$url] = $search;
-} elseif (isset($centreon->historySearch[$url])) {
-    $search = $centreon->historySearch[$url];
+$search = filter_var(
+    $_POST['searchSD'] ?? $_GET['searchSD'] ?? null,
+    FILTER_SANITIZE_STRING
+);
+
+if (isset($_POST['searchSD']) || isset($_GET['searchSD'])) {
+    //initializing filters values
+    $centreon->historySearch[$url] = array();
+    $centreon->historySearch[$url]['search'] = $search;
+} else {
+    //restoring saved values
+    $search = $centreon->historySearch[$url]['search'] ?? null;
 }
 
 $aclFrom = "";

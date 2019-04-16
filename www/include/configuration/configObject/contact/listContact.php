@@ -53,13 +53,15 @@ unset($data);
 $dbResult->closeCursor();
 
 $search = filter_var(
-    $_POST['searchC'] ?? $_GET['search'] ?? null,
+    $_POST['searchC'] ?? $_GET['searchC'] ?? null,
     FILTER_SANITIZE_STRING
 );
 if (isset($_POST['searchC']) || isset($_GET['searchC'])) {
+    //initializing filters values
     $centreon->historySearch[$url] = array();
     $centreon->historySearch[$url]['search'] = $search;
 } else {
+    //restoring saved values
     $search = $centreon->historySearch[$url]['search'] ?? null;
 }
 
