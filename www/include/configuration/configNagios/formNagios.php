@@ -882,7 +882,7 @@ $form->addRule('nagios_name', _("Compulsory Name"), 'required');
 $form->addRule('cfg_file', _("Required Field"), 'required');
 $form->addRule('nagios_comment', _("Required Field"), 'required');
 $form->addRule('nagios_name', _("Name is already in use"), 'exist');
-/* Add rule to field for whitelist macro */
+// Add rule to field for whitelist macro
 $form->addRule('macros_filter', _("A macro is malformated."), 'validMacroName');
 
 /*
