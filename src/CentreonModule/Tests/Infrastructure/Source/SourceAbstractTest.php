@@ -55,32 +55,30 @@ class SourceAbstractTest extends TestCase
                 'initInfo',
                 'getDetail',
             ])
-            ->getMockForAbstractClass()
-        ;
+            ->getMockForAbstractClass();
 
         $this->source
             ->method('initInfo')
             ->will($this->returnCallback(function () {
-                    $this->assertTrue(true);
-                }))
-        ;
+                $this->assertTrue(true);
+            }));
 
         $this->source
             ->method('getDetail')
             ->will($this->returnCallback(function () {
-                    $entity = new Module();
-                    $entity->setType(ModuleSource::TYPE);
-                    $entity->setName(ModuleSource::TYPE);
-                    $entity->setKeywords('test,module,lorem');
-                    $entity->setInstalled(true);
-                    $entity->setUpdated(false);
+                $entity = new Module();
+                $entity->setType(ModuleSource::TYPE);
+                $entity->setName(ModuleSource::TYPE);
+                $entity->setKeywords('test,module,lorem');
+                $entity->setInstalled(true);
+                $entity->setUpdated(false);
 
-                    return $entity;
-                }))
-        ;
+                return $entity;
+            }));
 
         $this->source->installer = function ($id) {
-            $mock = new class {
+            $mock = new class
+            {
 
                 public $id;
 
@@ -98,7 +96,8 @@ class SourceAbstractTest extends TestCase
         };
 
         $this->source->upgrader = function ($id) {
-            $mock = new class {
+            $mock = new class
+            {
 
                 public $id;
 
@@ -116,7 +115,8 @@ class SourceAbstractTest extends TestCase
         };
 
         $this->source->remover = function ($id) {
-            $mock = new class {
+            $mock = new class
+            {
 
                 public $id;
 

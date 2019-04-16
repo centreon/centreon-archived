@@ -95,11 +95,9 @@ class ModuleSourceTest extends TestCase
         $this->fs->get('/')->add('modules', new Directory([]));
         $this->fs->get('/modules')->add(static::$moduleName, new Directory([]));
         $this->fs->get('/modules/' . static::$moduleName)
-            ->add(ModuleSource::CONFIG_FILE, new File(static::buildConfContent()))
-        ;
+            ->add(ModuleSource::CONFIG_FILE, new File(static::buildConfContent()));
         $this->fs->get('/modules/' . static::$moduleName)
-            ->add(ModuleSource::LICENSE_FILE, new File(''))
-        ;
+            ->add(ModuleSource::LICENSE_FILE, new File(''));
 
         // provide services
         $container = new Container;
@@ -124,26 +122,23 @@ class ModuleSourceTest extends TestCase
             ->setConstructorArgs([
                 $this->containerWrap,
             ])
-            ->getMock()
-        ;
+            ->getMock();
         $this->source
             ->method('getPath')
             ->will($this->returnCallback(function () {
-                    $result = 'vfs://modules/';
+                $result = 'vfs://modules/';
 
-                    return $result;
-                }))
-        ;
+                return $result;
+            }));
         $this->source
             ->method('getModuleConf')
             ->will($this->returnCallback(function () {
-                    $result = [
-                        ModuleSourceTest::$moduleName => ModuleSourceTest::$moduleInfo,
-                    ];
+                $result = [
+                    ModuleSourceTest::$moduleName => ModuleSourceTest::$moduleInfo,
+                ];
 
-                    return $result;
-                }))
-        ;
+                return $result;
+            }));
     }
 
     public function tearDown()
@@ -206,7 +201,7 @@ class ModuleSourceTest extends TestCase
         $this->source->initInfo();
         $this->assertAttributeEquals([
             'test-module' => 'x.y.z',
-            ], 'info', $this->source);
+        ], 'info', $this->source);
     }
 
     public function testCreateEntityFromConfig()

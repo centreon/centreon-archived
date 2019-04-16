@@ -62,8 +62,7 @@ class CentreonModuleServiceTest extends TestCase
                 'initSources',
             ])
             ->setConstructorArgs([new ContainerWrap(new Container)])
-            ->getMock()
-        ;
+            ->getMock();
 
         $sources = [];
         $sourcesTypes = [
@@ -82,64 +81,58 @@ class CentreonModuleServiceTest extends TestCase
                     'update',
                     'remove',
                 ])
-                ->getMock()
-            ;
+                ->getMock();
 
             $sources[$type]
                 ->method('getList')
                 ->will($this->returnCallback(function () use ($type) {
-                        return [$type];
-                    }))
-            ;
+                    return [$type];
+                }));
             $sources[$type]
                 ->method('getDetail')
                 ->will($this->returnCallback(function () use ($type) {
-                        $entity = new Module();
-                        $entity->setType($type);
-                        $entity->setName($type);
-                        $entity->setKeywords('test,module,lorem');
-                        $entity->setInstalled(true);
-                        $entity->setUpdated(false);
+                    $entity = new Module();
+                    $entity->setType($type);
+                    $entity->setName($type);
+                    $entity->setKeywords('test,module,lorem');
+                    $entity->setInstalled(true);
+                    $entity->setUpdated(false);
 
-                        return $entity;
-                    }))
-            ;
+                    return $entity;
+                }));
             $sources[$type]
                 ->method('install')
                 ->will($this->returnCallback(function ($id) use ($type) {
-                        $entity = new Module();
-                        $entity->setId($id);
-                        $entity->setType($type);
-                        $entity->setName($type);
-                        $entity->setKeywords('test,module,lorem');
-                        $entity->setInstalled(true);
-                        $entity->setUpdated(false);
+                    $entity = new Module();
+                    $entity->setId($id);
+                    $entity->setType($type);
+                    $entity->setName($type);
+                    $entity->setKeywords('test,module,lorem');
+                    $entity->setInstalled(true);
+                    $entity->setUpdated(false);
 
-                        return $entity;
-                    }))
-            ;
+                    return $entity;
+                }));
             $sources[$type]
                 ->method('update')
                 ->will($this->returnCallback(function ($id) use ($type) {
-                        $entity = new Module();
-                        $entity->setId($id);
-                        $entity->setType($type);
-                        $entity->setName($type);
-                        $entity->setKeywords('test,module,lorem');
-                        $entity->setInstalled(true);
-                        $entity->setUpdated(false);
+                    $entity = new Module();
+                    $entity->setId($id);
+                    $entity->setType($type);
+                    $entity->setName($type);
+                    $entity->setKeywords('test,module,lorem');
+                    $entity->setInstalled(true);
+                    $entity->setUpdated(false);
 
-                        return $entity;
-                    }))
-            ;
+                    return $entity;
+                }));
             $sources[$type]
                 ->method('remove')
                 ->will($this->returnCallback(function ($id) use ($type) {
-                        if ($id === ModuleSourceTest::$moduleName) {
-                            throw new \Exception('Removed');
-                        }
-                    }))
-            ;
+                    if ($id === ModuleSourceTest::$moduleName) {
+                        throw new \Exception('Removed');
+                    }
+                }));
         }
 
         // load sources
@@ -291,59 +284,59 @@ class CentreonModuleServiceTest extends TestCase
         ];
         $list = [
             (function () {
-                    $entity = new Module;
-                    $entity->setName('B');
-                    $entity->setInstalled(true);
-                    $entity->setUpdated(true);
+                $entity = new Module;
+                $entity->setName('B');
+                $entity->setInstalled(true);
+                $entity->setUpdated(true);
 
-                    return $entity;
-                })(),
+                return $entity;
+            })(),
             (function () {
-                    $entity = new Module;
-                    $entity->setName('A');
-                    $entity->setInstalled(true);
-                    $entity->setUpdated(true);
+                $entity = new Module;
+                $entity->setName('A');
+                $entity->setInstalled(true);
+                $entity->setUpdated(true);
 
-                    return $entity;
-                })(),
+                return $entity;
+            })(),
             (function () {
-                    $entity = new Module;
-                    $entity->setName('B');
-                    $entity->setInstalled(true);
-                    $entity->setUpdated(false);
+                $entity = new Module;
+                $entity->setName('B');
+                $entity->setInstalled(true);
+                $entity->setUpdated(false);
 
-                    return $entity;
-                })(),
+                return $entity;
+            })(),
             (function () {
-                    $entity = new Module;
-                    $entity->setName('C');
-                    $entity->setInstalled(true);
-                    $entity->setUpdated(false);
+                $entity = new Module;
+                $entity->setName('C');
+                $entity->setInstalled(true);
+                $entity->setUpdated(false);
 
-                    return $entity;
-                })(),
+                return $entity;
+            })(),
             (function () {
-                    $entity = new Module;
-                    $entity->setName('D');
-                    $entity->setInstalled(false);
-                    $entity->setUpdated(false);
+                $entity = new Module;
+                $entity->setName('D');
+                $entity->setInstalled(false);
+                $entity->setUpdated(false);
 
-                    return $entity;
-                })(),
+                return $entity;
+            })(),
             (function () {
-                    $entity = new Module;
-                    $entity->setName('F');
-                    $entity->setInstalled(false);
-                    $entity->setUpdated(false);
+                $entity = new Module;
+                $entity->setName('F');
+                $entity->setInstalled(false);
+                $entity->setUpdated(false);
 
-                    return $entity;
-                })(),
+                return $entity;
+            })(),
         ];
         $list = $this->invokeMethod($service, 'sortList', [$list]);
 
         $result = [];
         foreach ($list as $entity) {
-            $result[] = $entity->getName() . '-' . (int) $entity->isInstalled() . '-' . (int) $entity->isUpdated();
+            $result[] = $entity->getName() . '-' . (int)$entity->isInstalled() . '-' . (int)$entity->isUpdated();
         }
 
         $this->assertEquals($value, $result);

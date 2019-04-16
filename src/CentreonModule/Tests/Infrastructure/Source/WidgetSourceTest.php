@@ -92,8 +92,7 @@ class WidgetSourceTest extends TestCase
         $this->fs->get('/')->add('widgets', new Directory([]));
         $this->fs->get('/widgets')->add(static::$widgetName, new Directory([]));
         $this->fs->get('/widgets/' . static::$widgetName)
-            ->add(WidgetSource::CONFIG_FILE, new File(static::buildConfContent()))
-        ;
+            ->add(WidgetSource::CONFIG_FILE, new File(static::buildConfContent()));
 
         // provide services
         $container = new Container;
@@ -117,16 +116,14 @@ class WidgetSourceTest extends TestCase
             ->setConstructorArgs([
                 $containerWrap,
             ])
-            ->getMock()
-        ;
+            ->getMock();
         $this->source
             ->method('getPath')
             ->will($this->returnCallback(function () {
-                    $result = 'vfs://widgets/';
+                $result = 'vfs://widgets/';
 
-                    return $result;
-                }))
-        ;
+                return $result;
+            }));
     }
 
     public function tearDown()
@@ -181,7 +178,7 @@ class WidgetSourceTest extends TestCase
         $this->source->initInfo();
         $this->assertAttributeEquals([
             'test-widget' => 'x.y.z',
-            ], 'info', $this->source);
+        ], 'info', $this->source);
     }
 
     public static function getConfFilePath(): string

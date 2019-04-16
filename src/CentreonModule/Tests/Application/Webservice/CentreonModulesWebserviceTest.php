@@ -90,7 +90,7 @@ class CentreonModulesWebserviceTest extends TestCase
                 'getList',
             ])
             ->getMock();
-        
+
         $container[\CentreonLegacy\ServiceProvider::CENTREON_LEGACY_MODULE_INFORMATION]
             ->method('getList')
             ->will($this->returnCallback(function () {
