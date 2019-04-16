@@ -657,7 +657,7 @@ class CentreonCustomView
     public function addPublicViewWidgetParams($viewId, $userId)
     {
         //get all widget parameters from the view that is being added
-        if (isset($userId) && !empty($userId)) {
+        if (!empty($userId)) {
             $stmt = $this->db->prepare(
                 'SELECT * FROM widget_views wv ' .
                 'LEFT JOIN widget_preferences wp ON wp.widget_view_id = wv.widget_view_id ' .
