@@ -1,6 +1,6 @@
 import React, { Component, Suspense } from "react";
 import { connect } from "react-redux";
-import { Route } from "react-router-dom";
+import { Switch, Route } from "react-router-dom";
 import { dynamicImport } from "../../utils/dynamicImport";
 import centreonAxios from "../../axios";
 import centreonConfig from "../../config";
@@ -34,12 +34,17 @@ class ExternalRouter extends Component {
   }
 
   render() {
+    const { fetched } = this.props;
     const LoadableComponents = this.getLoadableComponents();
 
     return (
       <Suspense fallback="">
-        {LoadableComponents}
-        <Route component={NotAllowedPage} />
+        <Switch>
+          {LoadableComponents}
+          {fetched &&
+            <Route component={NotAllowedPage} />
+          }
+        </Switch>
       </Suspense>
     );
   };
@@ -47,7 +52,8 @@ class ExternalRouter extends Component {
 }
 
 const mapStateToProps = ({ externalComponents }) => ({
-  pages: externalComponents.pages
+  pages: externalComponents.pages,
+  fetched: externalComponents.fetched,
 });
 
 export default connect(mapStateToProps)(ExternalRouter);
