@@ -92,7 +92,7 @@
           .collapse {
             .collapsed-item {
               > .collapsed-level-item-link {
-                // background-image: none;
+                background-image: none;
               }
             }
           }
@@ -126,7 +126,7 @@
           display: none;
         }
         >.collapsed-level-item-link {
-          // background-image: none;
+          background-image: none;
         }
         &:after {
           content: ' ';
@@ -284,6 +284,9 @@
                   left: 0;
                 }
               }
+            }
+            > .collapsed-level-item-link {
+              background-image: none;
             }
           }
         }
