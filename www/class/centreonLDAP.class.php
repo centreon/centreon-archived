@@ -113,21 +113,18 @@ class CentreonLDAP
 
         $connectTimeout = 5;
         $tempConnectTimeout = $this->getLdapHostParameters($arId, 'ldap_connect_timeout');
-        if (count($tempConnectTimeout) > 0) {
-            if (isset($tempConnectTimeout['ari_value'])
-                && !empty($tempConnectTimeout['ari_value'])
-            ) {
-                $connectTimeout = $tempConnectTimeout['ari_value'];
-            }
+        if (count($tempConnectTimeout) > 0 && isset($tempConnectTimeout['ari_value'])
+            && !empty($tempConnectTimeout['ari_value'])
+        ) {
+            $connectTimeout = $tempConnectTimeout['ari_value'];
         }
+
         $searchTimeout = 5;
         $tempSearchTimeout = $this->getLdapHostParameters($arId, 'ldap_search_timeout');
-        if (count($tempSearchTimeout) > 0) {
-            if (isset($tempSearchTimeout['ari_value'])
-                && !empty($tempSearchTimeout['ari_value'])
-            ) {
-                $searchTimeout = $tempSearchTimeout['ari_value'];
-            }
+        if (count($tempSearchTimeout) > 0 && isset($tempSearchTimeout['ari_value'])
+            && !empty($tempSearchTimeout['ari_value'])
+        ) {
+            $searchTimeout = $tempSearchTimeout['ari_value'];
         }
 
         /* Get the list of server ldap */
