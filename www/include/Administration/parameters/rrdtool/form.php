@@ -95,7 +95,6 @@ $form->addRule(array('rrdcached_port', 'rrdcached_unix_path'), _('Only one optio
 $form->addRule('rrdcached_port', _('The port must be numeric'), 'numeric');
 
 $form->addRule('rrdtool_path_bin', _("Can't execute binary"), 'is_executable_binary');
-// $form->addRule('oreon_rrdbase_path', _("Can't write in directory"), 'is_writable_path');
 // - Field is not added so no need for rule
 
 /*
