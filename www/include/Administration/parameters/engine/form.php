@@ -134,7 +134,6 @@ $form->registerRule('is_writable_file', 'callback', 'is_writable_file');
 $form->registerRule('is_writable_file_if_exist', 'callback', 'is_writable_file_if_exist');
 $form->registerRule('isNum', 'callback', 'isNum');
 
-// $form->addRule('nagios_path_img', _("The directory isn't valid"), 'is_valid_path_images');
 // - Field is not added so no need for rule
 // $form->addRule('nagios_path', _("The directory isn't valid"), 'is_valid_path');
 // - Field is not added so no need for rule
