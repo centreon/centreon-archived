@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
+import styles from "../../../../styles/partials/_content.scss";
 import {
   TopFilters,
   Wrapper,
@@ -424,7 +425,7 @@ class ExtensionsRoute extends Component {
     } = this.state;
 
     return (
-      <div>
+      <div className={styles["content-inner"]}>
         <TopFilters
           fullText={{
             label: "Search:",
