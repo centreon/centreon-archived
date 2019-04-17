@@ -106,7 +106,7 @@ class CentreonConfigurationCommand extends CentreonConfigurationObjects
 
         return array(
             'items' => $commandList,
-            'total' => (int) $stmt->rowCount()
+            'total' => (int)$stmt->rowCount()
         );
     }
 }
