@@ -805,8 +805,8 @@ $help["enable_macros_filter"] = dgettext(
 );
 $help["macros_filter"] = dgettext(
     "help",
-    "This field should be filled only if filtering option is enabled. You can define the list of macros that should be sent " .
-    "to Centreon Broker."
+    "This field should be filled only if filtering option is enabled. You can define the list of macros that " .
+    "should be sent to Centreon Broker."
 );
 $help["broker_module"] = dgettext(
     "help",
