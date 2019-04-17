@@ -246,7 +246,7 @@ class ModuleSource extends SourceAbstract
     {
         if ($license === "N/A"){
             $license = (!empty($info['require_license']) && $info['require_license'] === true)
-                ? gettext('License Required')
+                ? _('License Required')
                 : $license;
         }
 
