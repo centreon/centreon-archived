@@ -1,22 +1,11 @@
 .. _upgrade_from_packages:
 
-===============================
-Mise à jour vers Centreon 18.10
-===============================
+=================================
+Mise à jour depuis Centreon 18.10
+=================================
 
 Ce chapitre décrit la procédure de mise à jour de votre plate-forme vers
-Centreon 18.10.
-
-.. warning::
-    A la fin de cette procédure, les utilisateurs de Centreon EMS devront demander de
-    nouvelles licenses au `Support Centreon <https://centreon.force.com>`_.
-
-.. warning::
-    Cette procédure ne s'applique que pour une plate-forme Centreon installée à
-    partir des dépôts Centreon 3.4 sur des distributions **Red Hat / CentOS en
-    version 7**.
-
-    Si cela n'est pas le cas, se référer à la procédure de :ref:`migration<upgradecentreon1810>`.
+Centreon 19.04.
 
 Pour mettre à jour votre serveur Centreon Map, référez-vous à la `documentation associée
 <https://documentation.centreon.com/docs/centreon-map-4/en/latest/upgrade/index.html>`_.
@@ -41,23 +30,11 @@ Mise à jour du serveur Centreon Central
 Mise à jour des dépôts
 ======================
 
-Afin d’installer les logiciels Centreon, le dépôt Software collections de Red
-Hat doit être activé.
-
-.. note::
-    Le dépôt *Software collections* est nécessaire pour l’installation de PHP 7
-    et les librairies associées.
+Il est nécessaire de mettre à jour le dépôt Centreon.
 
 Exécutez la commande suivante : ::
 
-    # yum install centos-release-scl
-
-Il est maintenant nécessaire de mettre à jour le dépôt Centreon.
-
-Exécutez la commande suivante : ::
-
-    # wget http://yum.centreon.com/standard/18.10/el7/stable/noarch/RPMS/centreon-release-18.10-2.el7.centos.noarch.rpm -O /tmp/centreon-release-18.10-2.el7.centos.noarch.rpm
-    # yum install --nogpgcheck /tmp/centreon-release-18.10-2.el7.centos.noarch.rpm
+    # yum install -y http://yum.centreon.com/standard/19.04/el7/stable/noarch/RPMS/centreon-release-19.04-1.el7.centos.noarch.rpm
 
 Mise à jour de la solution Centreon
 ===================================
@@ -76,21 +53,17 @@ Mettez à jour l'ensemble des composants : ::
 Actions complémentaires
 =======================
 
-Le fuseau horaire par défaut de PHP 7 doit être configurée. Executer la commande
-suivante : ::
+Centreon 19.04 utilise un nouveau paquet pour le serveur Web Apache. Si vous avez
+modifié la configuration, reportez celle-ci dans le répertoire 
+**/opt/rh/httpd24/root/etc/httpd/conf.d/**.
 
-    # echo "date.timezone = Europe/Paris" > /etc/opt/rh/rh-php71/php.d/php-timezone.ini
+Puis réalisez les actions suivantes : ::
 
-.. note::
-    Changez **Europe/Paris** par votre fuseau horaire.
-
-Redémarrez les services en Executer les commandes suivantes : ::
-
-    # systemctl enable rh-php71-php-fpm
-    # systemctl start rh-php71-php-fpm
+    # systemctl disable httpd
+    # systemctl enable httpd24-httpd
     # systemctl restart httpd24-httpd
-    # systemctl restart cbd
-    # systemctl restart centengine
+    # systemctl enable centreon
+    # systemctl restart centreon
 
 Finalisation de la mise à jour
 ==============================
@@ -136,8 +109,7 @@ Installation des dépôts
 
 Exécutez la commande suivante : ::
 
-    # wget http://yum.centreon.com/standard/18.10/el7/stable/noarch/RPMS/centreon-release-18.10-2.el7.centos.noarch.rpm -O /tmp/centreon-release-18.10-2.el7.centos.noarch.rpm
-    # yum install --nogpgcheck /tmp/centreon-release-18.10-2.el7.centos.noarch.rpm
+    # yum install -y http://yum.centreon.com/standard/19.04/el7/stable/noarch/RPMS/centreon-release-19.04-1.el7.centos.noarch.rpm
 
 Mise à jour de la solution Centreon
 ===================================
@@ -154,11 +126,11 @@ Actions complémentaires
 
 Redémarrez le service centengine en exécutant la commande suivante : ::
 
+    # systemctl restart cbd
     # systemctl restart centengine
 
-***************************************
-Mise à jour des serveurs Poller Display
-***************************************
+******************************
+Mise à jour des Remote Servers
+******************************
 
-Référez-vous à la documentation de :ref:`migration d'un serveur Poller Display
-vers Remote Server 18.10 <migratefrompollerdisplay>`.
+Cette procédure est identique à la mise à jour d'un serveur Centreon Central.

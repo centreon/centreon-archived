@@ -8,7 +8,7 @@ Plugin Packs de base
 Pour la première utilisation de notre environnement de surveillance avec
 Centreon, utilisons les Plugin Packs de base fournis gratuitement.
 
-Rendez-vous dans le menu **Configuration > Plugin Packs > Manager**
+Rendez-vous dans le menu **Configuration > Plugin Packs**
 
 Selectionnez le Plugin Pack **base-generic** tel que :
 
