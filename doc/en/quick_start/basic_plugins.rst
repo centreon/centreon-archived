@@ -7,7 +7,7 @@ Basic Plugin Packs
 For the initial use of our monitoring environment with Centreon, let's use the
 basic Plugin Packs provided for free.
 
-Go to the **Configuration > Plugin Packs > Manager** menu.
+Go to the **Configuration > Plugin Packs** menu.
 
 Select the **base-generic** Plugin Pack as shown below
 
