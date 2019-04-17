@@ -104,7 +104,7 @@ class ServiceStatusMenu extends Component {
             <span id="count-svc-unknown">{numeral(data.unknown.unhandled).format("0a")}</span>
           </span>
         </Link>
-        <Link to={"/main.php?p=20201&o=svc_ok&search="} className={classnames(styles["wrap-middle-icon"], styles["round"], styles["round-small"], {[styles[data.ok > 0 ? "green" : "green-bordered"]]: true})}>
+        <Link to={"/main.php?p=20201&o=svc_ok&statusService=svc&search="} className={classnames(styles["wrap-middle-icon"], styles["round"], styles["round-small"], {[styles[data.ok > 0 ? "green" : "green-bordered"]]: true})}>
           <span className={styles["number"]}>
             <span id="count-svc-ok">{numeral(data.ok).format("0a")}</span>
           </span>
