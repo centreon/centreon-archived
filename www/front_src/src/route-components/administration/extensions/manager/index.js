@@ -427,7 +427,7 @@ class ExtensionsRoute extends Component {
       <div>
         <TopFilters
           fullText={{
-            label: "Search:",
+            label: "Search",
             value: search,
             filterKey: "search"
           }}
@@ -436,7 +436,7 @@ class ExtensionsRoute extends Component {
             [
               {
                 customClass: "container__col-md-4 container__col-xs-4",
-                switcherTitle: "Status:",
+                switcherTitle: "Status",
                 switcherStatus: "Not installed",
                 value: not_installed,
                 filterKey: "not_installed"
@@ -457,7 +457,7 @@ class ExtensionsRoute extends Component {
             [
               {
                 customClass: "container__col-sm-3 container__col-xs-4",
-                switcherTitle: "Type:",
+                switcherTitle: "Type",
                 switcherStatus: "Module",
                 value: modulesActive,
                 filterKey: "modulesActive"
