@@ -21,7 +21,7 @@
             </td>
         </tr>
         <tr>
-            <td class='formlabel'>{t}Root user{/t}</td>
+            <td class='formlabel'>{t}Root user (default: root){/t}</td>
             <td class='formvalue'>
                 <input type='text' name='root_user' value='{$parameters.root_user}' />
                 <label class='field_msg'></label>
