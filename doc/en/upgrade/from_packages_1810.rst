@@ -1,20 +1,10 @@
 .. _upgrade_from_packages:
 
-===========================
-Upgrading to Centreon 18.10
-===========================
+=============================
+Upgrading from Centreon 18.10
+=============================
 
-This chapter describes how to upgrade your platform to version Centreon 18.10.
-
-.. warning::
-    Upon completing the upgrade procedure, Centreon EMS users will have to request a new
-    license from `Centreon support <https://centreon.force.com>`_.
-
-.. warning::
-    This procedure only applies to Centreon platforms installed from Centreon 3.4
-    packages on **Red Hat / CentOS version 7** distributions.
-
-    If this is not the case, refer to the procedure in :ref:`migration<upgradecentreon1810>`.
+This chapter describes how to upgrade your platform to version Centreon 19.04.
 
 To upgrade your Centreon MAP server, refer to the `related documentation
 <https://documentation.centreon.com/docs/centreon-map-4/en/latest/upgrade/index.html>`_.
@@ -35,27 +25,12 @@ Be sure that you have fully backed up your environment for the following servers
 Upgrading the Centreon Central Server
 *************************************
 
-Upgrading the repository
-========================
-
-To install Centreon you will need to set up the official software collections
-repository supported by Redhat.
-
-.. note::
-    *Software collections* are required in order to install PHP 7 and the associated
-    libraries (Centreon requirement).
-
-Run the following command: ::
-
-    # yum install centos-release-scl
-
 Upgrading the Centreon Repository
 =================================
 
 Run the following commands: ::
 
-    # wget http://yum.centreon.com/standard/18.10/el7/stable/noarch/RPMS/centreon-release-18.10-2.el7.centos.noarch.rpm -O /tmp/centreon-release-18.10-2.el7.centos.noarch.rpm
-    # yum install --nogpgcheck /tmp/centreon-release-18.10-2.el7.centos.noarch.rpm
+    # yum install -y http://yum.centreon.com/standard/19.04/el7/stable/noarch/RPMS/centreon-release-19.04-1.el7.centos.noarch.rpm
 
 Updating the Centreon solution
 ==============================
@@ -74,20 +49,16 @@ Upgrade all the components with the following command: ::
 Additional actions
 ==================
 
-The PHP timezone should be set. Run the command: ::
+Centeon 19.04 uses a new version of Apache web server. If you made manual
+configuration, please report it to **/opt/rh/httpd24/root/etc/httpd/conf.d/**.
 
-    # echo "date.timezone = Europe/Paris" > /etc/opt/rh/rh-php71/php.d/php-timezone.ini
+Then, run the following commands: ::
 
-.. note::
-    Change **Europe/Paris** to your timezone.
-
-Restart the services by running the following commands: ::
-
-    # systemctl enable rh-php71-php-fpm
-    # systemctl start rh-php71-php-fpm
+    # systemctl disable httpd
+    # systemctl enable httpd24-httpd
     # systemctl restart httpd24-httpd
-    # systemctl restart cbd
-    # systemctl restart centengine
+    # systemctl enable centreon
+    # systemctl restart centreon
 
 Finalizing the upgrade
 ======================
@@ -132,8 +103,7 @@ Upgrading the repository
 
 Run the following command: ::
 
-    # wget http://yum.centreon.com/standard/18.10/el7/stable/noarch/RPMS/centreon-release-18.10-2.el7.centos.noarch.rpm -O /tmp/centreon-release-18.10-2.el7.centos.noarch.rpm
-    # yum install --nogpgcheck /tmp/centreon-release-18.10-2.el7.centos.noarch.rpm
+    # yum install -y http://yum.centreon.com/standard/19.04/el7/stable/noarch/RPMS/centreon-release-19.04-1.el7.centos.noarch.rpm
 
 Upgrading the Centreon solution
 ===============================
@@ -153,8 +123,8 @@ Restart the services by executing the following commands: ::
     # systemctl restart cbd
     # systemctl restart centengine
 
-*************************************
-Upgrading the Centreon Poller Display
-*************************************
+***************************
+Upgrading the Remote Server
+***************************
 
-Refer to the :ref:`migration procedure for Poller Display <migratefrompollerdisplay>`.
+This procedure is the same than to update a Centreon server.

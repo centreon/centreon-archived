@@ -74,7 +74,7 @@ précédentes de CentOS.
 
 Oui, vous pouvez mettre en oeuvre la procédure de migration d’une plateforme
 Centreon depuis CentOS 6 vers CentOS 7.
-:ref:`Référez-vous au chapitre.<upgradecentreon1810>`
+:ref:`Référez-vous au chapitre.<upgradecentreon1904>`
 
 **Quelle est la différence entre une migration et une mise à jour ?**
 
@@ -82,7 +82,7 @@ Si votre plateforme s’appuie déjà sur CentOS 7, une simple mise à jour logi
 suffit à mettre à niveau en 18.10. Si votre plateforme s’appuie encore sur CentOS
 6, une procédure de migration est nécessaire pour mettre à niveau en 18.10. 
 
-:ref:`Référez-vous au chapitre.<upgradecentreon1810>`
+:ref:`Référez-vous au chapitre.<upgradecentreon1904>`
 
 **Où puis-je trouver la procédure de mise à jour d’un serveur Centreon ?**
 
@@ -90,7 +90,7 @@ suffit à mettre à niveau en 18.10. Si votre plateforme s’appuie encore sur C
 
 **Où puis-je trouver la procédure de migration d’un serveur Centreon ?**
 
-:ref:`Référez-vous au chapitre.<upgradecentreon1810>`
+:ref:`Référez-vous au chapitre.<upgradecentreon1904>`
 
 **Lors de la migration de CentOS 6 vers CentOS 7, dois-je migrer les Pollers en
 même temps que le serveur Central ?**
