@@ -159,6 +159,6 @@ class RemoverTest extends \PHPUnit_Framework_TestCase
         $remover = new Remover(new Container($this->container), $this->information, 'MyWidget', $this->utils);
         $removed = $remover->remove();
 
-        $this->assertFalse($removed);
+        $this->assertEquals($removed, true);
     }
 }
