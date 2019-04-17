@@ -245,7 +245,9 @@ class ModuleSource extends SourceAbstract
     protected function processLicense(string $license, array $info) : string
     {
         if ($license === "N/A"){
-            $license = (!empty($info['require_license']) && $info['require_license'] === true) ? gettext('License Required') : $license;
+            $license = (!empty($info['require_license']) && $info['require_license'] === true)
+                ? gettext('License Required')
+                : $license;
         }
 
         return $license;
