@@ -60,7 +60,7 @@ $mainQueryParameters = [];
 
 //initializing filters values
 $search = filter_var(
-    $_POST["searchH"] ?? $_GET["search"] ?? null,
+    $_POST["searchH"] ?? $_GET["searchH"] ?? null,
     FILTER_SANITIZE_STRING
 );
 $poller = filter_var(
@@ -78,7 +78,7 @@ $template = filter_var(
 
 $status = -1;
 
-if (isset($_POST['searchH']) || isset($_GET['search'])) {
+if (isset($_POST['searchH']) || isset($_GET['searchH'])) {
     //saving chosen filters values
     $centreon->historySearch[$url] = array();
     $centreon->historySearch[$url]["search"] = $search;

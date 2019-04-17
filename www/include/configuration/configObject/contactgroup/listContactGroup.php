@@ -42,14 +42,16 @@ include_once "./include/common/autoNumLimit.php";
 $SearchSTR = "";
 
 $search = filter_var(
-    $_POST['searchCG'] ?? $_GET['search'] ?? null,
+    $_POST['searchCG'] ?? $_GET['searchCG'] ?? null,
     FILTER_SANITIZE_STRING
 );
 
-if (isset($_POST['searchCG']) || isset($_GET['search'])) {
+if (isset($_POST['searchCG']) || isset($_GET['searchCG'])) {
+    //saving filters values
     $centreon->historySearch[$url] = array();
     $centreon->historySearch[$url]['search'] = $search;
 } else {
+    //restoring saved values
     $search = $centreon->historySearch[$url]['search'] ?? null;
 }
 
