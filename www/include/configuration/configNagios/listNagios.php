@@ -44,10 +44,12 @@ $search = filter_var(
     FILTER_SANITIZE_STRING
 );
 
-if (isset($_POST['searchN'])) {
+if (isset($_POST['searchN']) || isset($_GET['searchN'])) {
+    //saving filters values
     $centreon->historySearch[$url] = array();
     $centreon->historySearch[$url]['search'] = $search;
 } else {
+    //restoring saved values
     $search = $centreon->historySearch[$url]['search'] ?? null;
 }
 

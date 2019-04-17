@@ -41,7 +41,7 @@ include_once "./class/centreonUtils.class.php";
 include_once "./include/common/autoNumLimit.php";
 
 $search = filter_var(
-    $_POST['searchC'] ?? $_GET['search'] ?? null,
+    $_POST['searchC'] ?? $_GET['searchC'] ?? null,
     FILTER_SANITIZE_STRING
 );
 
@@ -70,7 +70,7 @@ if (isset($type) && $type !== $savedType) {
     $centreon->historyPage[$url] = $num;
 }
 
-if (isset($_POST['searchC'])) {
+if (isset($_POST['searchC']) || isset($_GET['searchC'])) {
     //saving user's search field value
     $centreon->historySearch[$url] = array();
     // the four pages have the same $url, so we need to distinguish each page using its $type,

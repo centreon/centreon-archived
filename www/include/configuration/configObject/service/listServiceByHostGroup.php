@@ -62,7 +62,7 @@ $status = filter_var(
 );
 
 if (isset($_POST['Search']) || isset($_GET ['Search'])) {
-    //initializing filters values
+    //saving filters values
     $centreon->historySearch[$url] = array();
     $centreon->historySearch[$url]["hostgroups"] = $searchHG;
     $centreon->historySearch[$url]["search"] = $searchS;
