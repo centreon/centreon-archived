@@ -11,14 +11,20 @@ Il est possible d'exécuter cette commande en précisant des arguments.
 
 Il existe trois types de commandes :
 
-* Les commandes de **vérification** sont utilisées par les ordonnanceurs afin de vérifier le statut d'un hôte ou d'un service.
+* Les commandes de **vérification** sont utilisées par les ordonnanceurs afin de vérifier le statut d'un hôte ou d'un
+ service.
 * Les commandes de **notification** sont utilisées par les ordonnanceurs pour alerter les contacts (via mail, SMS...).
-* Des commandes **diverses** sont utilisées par les modules complémentaires (pour effectuer certaines actions), par l'ordonnanceur pour le traitement des données...
+* Les commandes de **découverte** sont utilisées par les règles de découverte de services.
+* Des commandes **diverses** sont utilisées par les modules complémentaires (pour effectuer certaines actions), par
+ l'ordonnanceur pour le traitement des données...
 
 Toutes les commandes peuvent être configurées au sein du menu **Configuration > Commandes**.
  
 .. image :: /images/guide_utilisateur/configuration/04commandlist.png
-   :align: center 
+   :align: center
+
+.. note::
+   Par défaut, les commandes verrouillées sont masquées. Cocher la case "Afficher verrouillé" pour les afficher toutes.
 
 ********************
 Ajouter une commande

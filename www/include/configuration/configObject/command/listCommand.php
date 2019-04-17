@@ -71,9 +71,20 @@ if (isset($_POST['searchC']) || isset($_GET['searchC'])) {
     // the four pages have the same $url, so we need to distinguish each page using its $type,
     // and to save the four search filters.
     $centreon->historySearch[$url]['search' . $type] = $search;
+    isset($_POST["displayLocked"]) ? $displayLocked = 1 : $displayLocked = 0;
+    $centreon->historySearch[$url]["displayLocked" . $type] = $displayLocked;
 } else {
     //restoring user's search field value
     $search = $centreon->historySearch[$url]['search' . $type] ?? null;
+    $displayLocked = $centreon->historySearch[$url]["displayLocked" . $type] ?? 0;
+}
+
+// Locked Filter
+$displayLockedChecked = "";
+$sqlFilter = "AND command_locked = '0'";
+if ($displayLocked == 1) {
+    $displayLockedChecked = "checked";
+    $sqlFilter = "";
 }
 
 
@@ -84,11 +95,11 @@ $search = tidySearchKey($search, $advanced_search);
 if (isset($search) && $search) {
     $rq = "SELECT SQL_CALC_FOUND_ROWS `command_id`, `command_name`, `command_line`, `command_type`, " .
         "`command_activate` FROM `command` WHERE `command_name` LIKE '%" . $search . "%' " .
-        $type_str . " ORDER BY `command_name` LIMIT " . $num * $limit . ", " . $limit;
+        $type_str . " " . $sqlFilter . " ORDER BY `command_name` LIMIT " . $num * $limit . ", " . $limit;
 } elseif ($type) {
     $rq = "SELECT SQL_CALC_FOUND_ROWS `command_id`, `command_name`, `command_line`, `command_type`, " .
-        "`command_activate` FROM `command` WHERE `command_type` = '" . $type .
-        "' ORDER BY command_name LIMIT " . $num * $limit . ", " . $limit;
+        "`command_activate` FROM `command` WHERE `command_type` = '" . $type . "' " . $sqlFilter .
+        " ORDER BY command_name LIMIT " . $num * $limit . ", " . $limit;
 } else {
     $rq = "SELECT SQL_CALC_FOUND_ROWS `command_id`, `command_name`, `command_line`, `command_type`, " .
         "`command_activate` FROM `command` ORDER BY `command_name` LIMIT " . $num * $limit . ", " . $limit;
@@ -253,5 +264,7 @@ $tpl->assign('form', $renderer->toArray());
 $tpl->assign('limit', $limit);
 $tpl->assign('type', $type);
 $tpl->assign('searchC', $search);
+$tpl->assign("displayLockedChecked", $displayLockedChecked);
+$tpl->assign('displayLocked', _("Display locked"));
 
 $tpl->display("listCommand.ihtml");

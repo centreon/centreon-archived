@@ -69,6 +69,9 @@ To add a host template:
 .. note::
    Refer to the chapter covering configuration of :ref:`hosts<hostconfiguration>` to configure a template because the form is identical.
 
+.. note::
+   By default, locked host templates are hidden. Check the "Display locked" box to list all templates.
+
 ******************
 Services Templates
 ******************
@@ -92,6 +95,9 @@ To add a Service Template:
 
 .. note::
    Refer to the chapter covering configuration of :ref:`services<serviceconfiguration>` to configure a template because the form is identical.
+
+.. note::
+   By default, locked service templates are hidden. Check the "Display locked" box to list all templates.
 
 *************
 Best practice

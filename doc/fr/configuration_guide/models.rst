@@ -71,6 +71,9 @@ Pour ajouter un modèle d'hôtes :
 .. note::
     Se rapporter au chapitre de configuration des :ref:`hôtes<hostconfiguration>` pour configurer un modèle car le formulaire est identique.
 
+.. note::
+   Par défaut, les modèles d'hôte verrouillés sont masqués. Cocher la case "Afficher verrouillé" pour les afficher tous.
+
 ***********************
 Les modèles de services
 ***********************
@@ -127,6 +130,9 @@ Configuration
 =============
 
 La liaison des modèles de services avec les modèles d'hôtes a lieu dans l'onglet **Relations** des modèles de services ou des modèles d'hôtes.
+
+.. note::
+   Par défaut, les modèles de service verrouillés sont masqués. Cocher la case "Afficher verrouillé" pour les afficher tous.
 
 ***********************
 Les modèles de contacts

@@ -62,16 +62,27 @@ if (isset($_POST['searchHT']) || isset($_GET['searchHT'])) {
     //saving filters values
     $centreon->historySearch[$url] = array();
     $centreon->historySearch[$url]['search'] = $search;
+    isset($_POST["displayLocked"]) ? $displayLocked = 1 : $displayLocked = 0;
+    $centreon->historySearch[$url]["displayLocked"] = $displayLocked;
 } else {
     //restoring saved values
     $search = $centreon->historySearch[$url]['search'] ?? null;
+    $displayLocked = $centreon->historySearch[$url]["displayLocked"] ?? 0;
+}
+
+// Locked Filter
+$displayLockedChecked = "";
+$sqlFilter = "AND host_locked = '0'";
+if ($displayLocked == 1) {
+    $displayLockedChecked = "checked";
+    $sqlFilter = "";
 }
 
 // Host Template list
 
 $rq = "SELECT SQL_CALC_FOUND_ROWS host_id, host_name, host_alias, host_activate, host_template_model_htm_id " .
     "FROM host" .
-    " WHERE host_register = '0' ";
+    " WHERE host_register = '0' " . $sqlFilter . " ";
 if ($search) {
     $rq .= "AND (host_name LIKE '%" . CentreonDB::escape($search) . "%' OR host_alias LIKE '%" .
         CentreonDB::escape($search) . "%')";
@@ -252,4 +263,6 @@ $renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 $form->accept($renderer);
 $tpl->assign('form', $renderer->toArray());
 $tpl->assign('searchHT', $search);
+$tpl->assign("displayLockedChecked", $displayLockedChecked);
+$tpl->assign('displayLocked', _("Display locked"));
 $tpl->display("listHostTemplateModel.ihtml");
