@@ -21,10 +21,6 @@
   height: 100vh;
   transition: all 0.3s;
   position: relative;
-  &-inner {
-    height: calc(100% - 30px);
-    overflow: auto;
-  }
 }
 
 .fullscreen-wrapper {
