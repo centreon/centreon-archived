@@ -119,6 +119,10 @@ Cette partie permet de paramétrer le fonctionnement du processus CentCore.
 LDAP
 ****
 
+.. note::
+    Si vous souhaitez implémenter une authentification SSO, suivez cette
+    :ref:`procédure <sso>`.
+
 Cette partie permet de configurer la connexion au(x) annuaire(s) LDAP.
 
 Pour ajouter un nouvel annuaire :
