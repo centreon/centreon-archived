@@ -11,7 +11,6 @@
   height: 100%;
   width: 100%;
   background-color: white;
-  overflow: auto;
 }
 
 .content {
@@ -25,7 +24,11 @@
 }
 
 .fullscreen-wrapper {
-  flex-grow: 1;
   overflow: hidden;
-  padding-bottom: 30px;
+  flex-grow: 1;
+}
+
+.react-page {
+  overflow: auto;
+  height: calc(100vh - 82px);
 }

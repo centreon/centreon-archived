@@ -5,6 +5,7 @@ import { dynamicImport } from "../../utils/dynamicImport";
 import centreonAxios from "../../axios";
 import centreonConfig from "../../config";
 import NotAllowedPage from '../../route-components/notAllowedPage';
+import styles from "../../styles/partials/_content.scss";
 
 // class to dynamically import pages from modules
 class ExternalRouter extends Component {
@@ -20,11 +21,13 @@ class ExternalRouter extends Component {
           path={path}
           exact="true"
           render={renderProps => (
-            <Page
-              centreonConfig={centreonConfig}
-              centreonAxios={centreonAxios}
-              {...renderProps}
-            />
+            <div className={styles["react-page"]}>
+              <Page
+                centreonConfig={centreonConfig}
+                centreonAxios={centreonAxios}
+                {...renderProps}
+              />
+            </div>
           )}
         />
       );

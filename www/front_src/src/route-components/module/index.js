@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import classnames from 'classnames';
 import styles from '../../components/header/header.scss';
 import loaderStyles from '../../components/loader/loader.scss';
+import contentStyles from '../../styles/partials/_content.scss';
 import Loader from "../../components/loader";
 
 
