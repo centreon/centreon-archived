@@ -24,7 +24,7 @@ Physical dependencies
  
 Physical dependencies consist of taking into account physical links between equipment. This link can only be defined for objects of the “Host” type.
 
-The configuration of a physical dependencies takes place in the **Relations** tab of a configuration sheet of a host (**Configuration ==> Hosts ==> Add**).
+The configuration of a physical dependencies takes place in the **Relations** tab of a configuration sheet of a host (**Configuration > Hosts > Add**).
 
 It is possible of define two settings:
 
@@ -47,7 +47,7 @@ Hosts
 
 To configure a logical dependencies:
 
-1. Go into the menu: **Configuration ==> Notifications**
+1. Go into the menu: **Configuration > Notifications**
 2. In the left menu, under the title: **Dependencies**, click on **Hosts**
 3. Click on **Add**
  
@@ -70,7 +70,7 @@ Services
 
 To add a dependencies at the services level:
 
-1. Go into the menu: **Configuration ==> Notifications**
+1. Go into the menu: **Configuration > Notifications**
 2. In the left menu, under the title: **Dependencies**, click on **Services**
 3. Click on **Add**
  
@@ -94,7 +94,7 @@ Host groups
 
 To add a dependencies at the host groups level:
 
-1. Go into the menu: **Configuration ==> Notifications**
+1. Go into the menu: **Configuration > Notifications**
 2. In the left menu, under the title: **Dependencies**, click on **Host Groups**
 3. Click on **Add**
 
@@ -116,7 +116,7 @@ Service groups
 
 To add a dependencies at the service groups level:
 
-1. Go into the menu: **Configuration ==> Notifications**
+1. Go into the menu: **Configuration > Notifications**
 2. In the left menu, under the title: **Dependencies**, click on **Service Groups**
 3. Click on **Add**
 
@@ -138,7 +138,7 @@ Meta-services
 
 To add a dependencies at the meta-services level:
 
-1. Go into the menu: **Configuration ==> Notifications**
+1. Go into the menu: **Configuration > Notifications**
 2. In the left menu, under the title: **Dependencies**, click on **Meta Services**
 3. Click on **Add**
 

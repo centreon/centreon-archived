@@ -40,9 +40,7 @@ Configuration
 
 To add a meta-service:
 
-1. Go into the menu: **Configuration ==> Services**
-2. In the left menu, click on **Meta Services**
-3. Click on **Add**
+Go into the menu: **Configuration > Services > Meta Services** and click on **Add**
 
 .. image:: /images/user/configuration/10advanced_configuration/02addmetaservice.png
       :align: center
@@ -103,7 +101,7 @@ If you have chosen the option **Service list**, in the screen containing all the
 * The **Service** field serves to choose the service (first list) as well as the metric in this service (second list).
 * The **Status** and **Comment** fields serve to enable / disable or comment on the indicator.
 
-3.      Repeat the operation until you have added all the indicators necessary for the calculation of the meta-service.
+3. Repeat the operation until you have added all the indicators necessary for the calculation of the meta-service.
 
 .. note::
    A meta-service should be considered as a regular service. It is necessary to generate the configuration of the central scheduler, to export it and then restart the scheduler.

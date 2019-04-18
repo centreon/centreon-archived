@@ -16,7 +16,7 @@ On creation/deletion/change of objects via the configuration interface, the chan
 First step
 ==========
 
-#. Go into the menu: **Configuration** ==> **Pollers**
+#. Go into the menu: **Configuration > Pollers**
 #. Choose the pollers which you want to export configuration
 #. Click on **Apply configuration**
 

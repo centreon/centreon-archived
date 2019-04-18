@@ -17,7 +17,7 @@ Time periods apply to two types of actions:
 Configuration
 *************
 
-The configuration of time periods is done in the menu: **Configuration ==> Users ==> Time periods**.
+The configuration of time periods is done in the menu: **Configuration > Users > Time periods**.
 
 Basic options 
 =============

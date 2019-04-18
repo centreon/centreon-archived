@@ -14,7 +14,7 @@ Host categories
 
 To add a category of hosts:
 
-1. Go into the menu: **Configuration ==> Hosts**
+1. Go into the menu: **Configuration > Hosts**
 2. In the left menu, click on **Categories**
 3. Click on **Add**
 
@@ -36,7 +36,7 @@ Categories of services
 
 To add a category of services:
 
-1. Go into the menu: **Configuration ==> Services**
+1. Go into the menu: **Configuration > Services**
 2. In the left menu, click on **Categories**
 3. Click on **Add**
 

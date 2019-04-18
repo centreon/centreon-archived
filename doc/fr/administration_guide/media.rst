@@ -21,7 +21,7 @@ Ajout manuel
 
 Pour ajouter une image dans Centreon :
 
-#. Rendez-vous dans le menu **Administration** ==> **Paramétres**
+#. Rendez-vous dans le menu **Administration > Paramétres**
 #. Dans le menu de gauche, cliquez sur **Images**
 #. Cliquez sur **Ajouter**
 
@@ -41,7 +41,7 @@ Pour synchroniser une ou plusieurs images dans les médias Centreon :
 
 #. Copiez vos images au sein du dossier d'image (les images peuvent être situées dans des dossiers)
 #. Assurez-vous que l'utilisateur qui exécute votre serveur web a les droits en lecture sur ces images
-#. Rendez-vous dans le menu **Administration** ==> **Paramétres**
+#. Rendez-vous dans le menu **Administration > Paramétres**
 #. Dans le menu de gauche, cliquez sur **Médias**
 #. Cliquez sur **Synchroniser le répertoire des images**
 

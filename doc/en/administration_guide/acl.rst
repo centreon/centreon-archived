@@ -34,7 +34,7 @@ Access groups
 
 To add an access group:
 
-#. Go into the menu: **Administration** ==> **ACL**
+#. Go into the menu: **Administration > ACL**
 #. Click on **Add**
 
 .. image :: /images/guide_exploitation/baccess_group.png
@@ -67,7 +67,7 @@ The access filters for the resources serve to limit the viewing of objects (host
 
 To add resources access filter:
 
-#. Go into the menu: **Administration** ==> **ACL**
+#. Go into the menu: **Administration > ACL**
 #. In the left menu, click on **Resources Access**
 #. Click on **Add**
 
@@ -125,16 +125,16 @@ The access filters to the menu serve to limiter the access to various menus of t
 The menus are ranked as follows:
 
 * Level 1 menus (Home, Monitoring, Views, etc.)
-* Level 2 menus (Monitoring ==> Hosts, Monitoring ==> Services, etc.)
-* Level 3 context menus (Monitoring ==> Services ==> By Hosts / Details)
-* Level 4  context menus (Monitoring ==> Services ==> By Hosts / Details ==> Problems)
+* Level 2 menus (Monitoring > Hosts, Monitoring > Services, etc.)
+* Level 3 context menus (Monitoring > Services > By Hosts / Details)
+* Level 4  context menus (Monitoring > Services > By Hosts / Details > Problems)
 
 .. note::
    To access to a level of menu ‘n-1’, the user must have access to the menu of level ‘n’ otherwise he will not be able to view the menu via the interface. If this is not the case the user will have to access directly to the page concerned via a direct link (autologin, etc.).
 
 To add an access filter to the menus:
 
-#. Go into the menu: **Administration** ==> **ACL**
+#. Go into the menu: **Administration > ACL**
 #. In the left menu, click on **Menus Access**
 #. Click on **Add**
 
@@ -148,7 +148,7 @@ To add an access filter to the menus:
 * The **Comments** field gives indications on the filter
 
 .. warning::
-   On the access definition to the **Configuration** ==> **Hosts** and **Configuration** ==> **Service** menus, it is possible to give read only or read / write access to various objects.
+   On the access definition to the **Configuration > Hosts** and **Configuration > Service** menus, it is possible to give read only or read / write access to various objects.
 
 .. note::
    At each addition of a new Centreon module possessing a web interface accessible via a new menu, it should be added in the access groups so that the users can access.
@@ -161,7 +161,7 @@ Filters on actions enable us to limit access to actions that can be effective on
 
 To add an access filter to the actions:
 
-#. Go into the menu: **Administration** ==> **ACL**
+#. Go into the menu: **Administration > ACL**
 #. In the left menu, click on **Actions Access**
 #. Click on **Add**
 
@@ -309,7 +309,7 @@ Reload ACL
 
 It is possible of reload the ACLs manually:
 
-#. Go into the menu: **Administration** ==> **ACL**
+#. Go into the menu: **Administration > ACL**
 #. In the left menu, click on **Reload ACL**
 #. Select the user(s) you want to reload the ACL
 #. In the **More actions** menu, click on **Reload ACL**

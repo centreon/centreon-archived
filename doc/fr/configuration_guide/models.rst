@@ -64,7 +64,7 @@ Configuration
 
 Pour ajouter un modèle d'hôtes :
 
-#. Rendez-vous dans le menu **Configuration** ==> **Hôtes**
+#. Rendez-vous dans le menu **Configuration > Hôtes**
 #. Dans le menu de gauche, cliquez sur **Modèles**
 #. Cliquez sur **Ajouter**
 
@@ -88,7 +88,7 @@ Configuration
 
 Pour ajouter un modèle de services :
 
-#. Rendez-vous dans le menu **Configuration** ==> **Services**
+#. Rendez-vous dans le menu **Configuration > Services**
 #. Dans le menu de gauche, cliquez sur **Modèles**
 #. Cliquez sur **Ajouter**
 
@@ -142,9 +142,9 @@ Configuration
 
 Pour ajouter un modèle de contacts :
 
-#. Rendez-vous dans le menu **Configuration** ==> **Utilisateurs**
+#. Rendez-vous dans le menu **Configuration > Utilisateurs**
 #. Dans le menu de gauche, cliquez sur **Modèles de contacts**
 #. Cliquez sur **Ajouter**
 
 .. note::
-     Se rapporter au chapitre de configuration des :ref:`contacts<contactconfiguration>`. De plus, les modèles de contacts sont utilisés pour l'import automatique de profils via un annuaire :ref:`LDAP<ldapconfiguration>`.
+    Se rapporter au chapitre de configuration des :ref:`contacts<contactconfiguration>`. De plus, les modèles de contacts sont utilisés pour l'import automatique de profils via un annuaire :ref:`LDAP<ldapconfiguration>`.

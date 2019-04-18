@@ -22,7 +22,7 @@ De plus, étant donné que le scénario Sélénium ne peut pas s'exécuter corre
 
 Afin de créer cette dépendance :
 
-#. Rendez-vous dans le menu **Configuration** ==> **Notifications**
+#. Rendez-vous dans le menu **Configuration > Notifications**
 #. Dans le menu de gauche en dessous de **Dépendances**, cliquez sur **Services**
 #. Cliquez sur **Ajouter**
 #. Entrez le nom et la description de la dépendance
@@ -43,7 +43,7 @@ Si jamais, l'hôte A ou l'hôte B a un statut non-OK, alors les services de l'h�
 
 Afin de créer cette dépendance :
 
-#. Rendez-vous dans le menu **Configuration** ==> **Notifications**
+#. Rendez-vous dans le menu **Configuration > Notifications**
 #. Dans le menu de gauche en dessous de **Dépendances**, cliquez sur **Hôtes**
 #. Cliquez sur **Ajouter**
 #. Entrez le nom et la description de la dépendance
@@ -68,7 +68,7 @@ Il est nécessaire de créer un lien de dépendance afin d'empêcher la vérific
 
 Afin de créer cette dépendance :
 
-#. Rendez-vous dans le menu **Configuration** ==> **Notifications**
+#. Rendez-vous dans le menu **Configuration > Notifications**
 #. Dans le menu de gauche en dessous de **Dépendances**, cliquez sur **Groupes de services**
 #. Cliquez sur **Ajouter**
 #. Entrez le nom et la description de la dépendance
