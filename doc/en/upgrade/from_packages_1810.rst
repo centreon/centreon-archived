@@ -55,8 +55,9 @@ configuration, please report it to **/opt/rh/httpd24/root/etc/httpd/conf.d/**.
 Then, run the following commands: ::
 
     # systemctl disable httpd
+    # systemctl stop httpd
     # systemctl enable httpd24-httpd
-    # systemctl restart httpd24-httpd
+    # systemctl start httpd24-httpd
     # systemctl enable centreon
     # systemctl restart centreon
 

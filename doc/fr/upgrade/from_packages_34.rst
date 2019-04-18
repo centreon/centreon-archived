@@ -85,7 +85,10 @@ Redémarrez les services en Executer les commandes suivantes : ::
 
     # systemctl enable rh-php71-php-fpm
     # systemctl start rh-php71-php-fpm
-    # systemctl restart httpd24-httpd
+    # systemctl stop httpd
+    # systemctl disable httpd
+    # systemctl enable httpd24-httpd
+    # systemctl start httpd24-httpd
     # systemctl enable centreon
     # systemctl restart centreon
 

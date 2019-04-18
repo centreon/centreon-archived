@@ -60,8 +60,9 @@ modifié la configuration, reportez celle-ci dans le répertoire
 Puis réalisez les actions suivantes : ::
 
     # systemctl disable httpd
+    # systemctl stop httpd
     # systemctl enable httpd24-httpd
-    # systemctl restart httpd24-httpd
+    # systemctl start httpd24-httpd
     # systemctl enable centreon
     # systemctl restart centreon
 
