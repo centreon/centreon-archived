@@ -48,7 +48,7 @@ print "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <meta name="Generator" content="Centreon - Copyright (C) 2005 - 2017 Open Source Matters. All rights reserved."/>
     <meta name="robots" content="index, nofollow"/>
-    <?php if ($isMobile) : ?>
+    <?php if (isset($isMobile) && $isMobile) : ?>
     <link href="./Themes/Centreon-2/MobileMenu/css/material_icons.css" rel="stylesheet" type="text/css"/>
     <link href="./Themes/Centreon-2/MobileMenu/css/menu.css" rel="stylesheet" type="text/css"/>
     <?php endif; ?>
@@ -119,7 +119,7 @@ print "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
     <script src="./include/views/graphs/javascript/centreon-status-chart.js"></script>
     <script src="./include/common/javascript/moment-with-locales.min.2.21.js"></script>
     <script src="./include/common/javascript/moment-timezone-with-data.min.js"></script>
-    <?php if ($isMobile) : ?>
+    <?php if (isset($isMobile) && $isMobile) : ?>
     <script type="text/javascript">
       var text_back = '<?= gettext('Back') ?>'
     </script>
@@ -222,6 +222,6 @@ print "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
 
 <?php
 // Showing the mobile menu if it's a mobile browser
-if ($isMobile) {
+if (isset($isMobile) && $isMobile) {
     require(_CENTREON_PATH_ . 'www/include/common/mobile_menu.php');
 }
