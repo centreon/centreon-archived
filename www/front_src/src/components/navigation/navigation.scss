@@ -824,3 +824,10 @@ a {
     display: none;
   }
 }
+@media screen and(max-width: 1400px) {
+  li.menu-item:last-child .collapsed-items li.collapsed-item:first-child > ul.collapsed-level-items {
+    max-height: 350px;
+    overflow-x: hidden;
+    overflow-y: auto;
+  }
+}
