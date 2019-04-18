@@ -89,13 +89,6 @@
               display: block!important;
             }
           }
-          .collapse {
-            .collapsed-item {
-              > .collapsed-level-item-link {
-                background-image: none;
-              }
-            }
-          }
         }
       }
     }
@@ -124,9 +117,6 @@
       .collapsed-item {
         &.active .first-level {
           display: none;
-        }
-        >.collapsed-level-item-link {
-          background-image: none;
         }
         &:after {
           content: ' ';
@@ -284,9 +274,6 @@
                   left: 0;
                 }
               }
-            }
-            > .collapsed-level-item-link {
-              background-image: none;
             }
           }
         }
@@ -454,22 +441,6 @@ a {
         left: 68px;
       }
     }
-
-    .collapse {
-      .collapsed-item {
-        > .collapsed-level-item-link {
-          background-image: url("../../img/icons/aside-menu-arrows.png");
-          background-repeat: no-repeat;
-          background-position: 12px 9px;
-          background-color: $grey-classic;
-          &.img-none {
-            background: none;
-            background-color: $grey-classic;
-          }
-        }
-      }
-    }
-
     &:first-child {
       &.active {
         > span {
@@ -768,13 +739,20 @@ a {
       .first-level {
         display: block;
       }
-      > .collapsed-level-item-link {
-        background-position: 13px -94px;
-      }
     }
     &.active {
       .second-level {
         display: block;
+      }
+    }
+    > .collapsed-level-item-link {
+      background-image: url("../../img/icons/aside-menu-arrows.png");
+      background-repeat: no-repeat;
+      background-position: 12px 9px;
+      background-color: $grey-classic;
+      &.img-none {
+        background: none;
+        background-color: $grey-classic;
       }
     }
   }
