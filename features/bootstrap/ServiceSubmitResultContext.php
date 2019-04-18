@@ -60,7 +60,6 @@ class ServiceSubmitResultContext extends CentreonContext
      */
     public function iSubmitSomeResultToThisService()
     {
-
         $this->submitServiceResult($this->hostname, $this->hostservice, 2, $this->checkoutput);
     }
 
