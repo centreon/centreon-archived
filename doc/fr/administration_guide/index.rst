@@ -6,6 +6,7 @@ Guide d'administration
    :maxdepth: 2
    :glob:
 
+   ui_access
    acl
    poller/index
    knowledge_base/index
@@ -16,4 +17,3 @@ Guide d'administration
    logs
    backup
    partitioning
-   customuri
