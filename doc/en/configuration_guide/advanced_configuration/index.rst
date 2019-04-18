@@ -5,7 +5,7 @@ Advanced configuration
 This is the advanced configuration for Centreon.
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 1
 
    macros
    metaservices

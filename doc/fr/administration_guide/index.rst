@@ -3,7 +3,7 @@ Guide d'administration
 ######################
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 1
    :glob:
 
    ui_access
