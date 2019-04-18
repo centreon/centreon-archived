@@ -176,7 +176,7 @@ class ServiceStatusMenu extends Component {
                 </li>
                 <li className={styles["submenu-item"]}>
                   <Link
-                    to={"/main.php?p=20201&o=svc_ok&search="}
+                    to={"/main.php?p=20201&o=svc_ok&statusService=svc&search="}
                     className={styles["submenu-item-link"]}
                   >
                     <div onClick={this.toggle}>
@@ -189,7 +189,7 @@ class ServiceStatusMenu extends Component {
                 </li>
                 <li className={styles["submenu-item"]}>
                   <Link
-                    to={"/main.php?p=20201&o=svc_pending&search="}
+                    to={"/main.php?p=20201&o=svc_pending&statusService=svc&search="}
                     className={styles["submenu-item-link"]}
                   >
                     <div onClick={this.toggle}>

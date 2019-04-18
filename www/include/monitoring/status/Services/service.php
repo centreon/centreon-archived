@@ -419,7 +419,7 @@ if ((!isset($_GET['o']) || empty($_GET['o'])) && isset($_SESSION['monitoring_ser
     $sDefaultOrder = "1";
 }
 $defaultStatusFilter = $_GET['statusFilter'] ?? '';
-$defaultStatusService = $_GET['statusService'] ?? '';
+$defaultStatusService = $_GET['statusService'] ?? 'svc_unhandled';
 
 $form->addElement(
     'select',
