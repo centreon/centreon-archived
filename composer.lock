@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "8ea1bcd9da2099f28e9479f7f9dcebf9",
+    "content-hash": "4a73a9f087240e898532637def1749dd",
     "packages": [
         {
             "name": "curl/curl",
@@ -1038,16 +1038,16 @@
         },
         {
             "name": "centreon/centreon-test-lib",
-            "version": "dev-master",
+            "version": "18.10.x-dev",
             "source": {
                 "type": "git",
                 "url": "https://github.com/centreon/centreon-test-lib.git",
-                "reference": "5a4586c2d82983006d5af5cc7b0a668dffcc8f3f"
+                "reference": "c9703745033fee160cdf726be1538463202d7217"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/centreon/centreon-test-lib/zipball/5a4586c2d82983006d5af5cc7b0a668dffcc8f3f",
-                "reference": "5a4586c2d82983006d5af5cc7b0a668dffcc8f3f",
+                "url": "https://api.github.com/repos/centreon/centreon-test-lib/zipball/c9703745033fee160cdf726be1538463202d7217",
+                "reference": "c9703745033fee160cdf726be1538463202d7217",
                 "shasum": ""
             },
             "require": {
@@ -1083,7 +1083,7 @@
                 "phpunit",
                 "testing"
             ],
-            "time": "2019-04-15T10:09:55+00:00"
+            "time": "2019-04-18T07:49:18+00:00"
         },
         {
             "name": "container-interop/container-interop",
