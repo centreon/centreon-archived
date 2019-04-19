@@ -19,26 +19,35 @@ class ExternalRouter extends Component {
       return LoadableComponents;
     }
 
-    console.log(acl.routes);
-    console.log(pages)
-
     for (const [path, parameter] of Object.entries(pages)) {
-      const Page = React.lazy(() => dynamicImport(parameter));
-      LoadableComponents.push(
-        <Route
-          path={path}
-          exact="true"
-          render={renderProps => (
-            <div className={styles["react-page"]}>
-              <Page
-                centreonConfig={centreonConfig}
-                centreonAxios={centreonAxios}
-                {...renderProps}
-              />
-            </div>
-          )}
-        />
-      );
+
+      // check if each acl route contains external page
+      // eg: a user which have access to /configuration will have access to /configuration/hosts
+      let isAllowed = false;
+      for (const route of acl.routes) {
+        if (path.includes(route)) {
+          isAllowed = true;
+        }
+      }
+
+      if (isAllowed) {
+        const Page = React.lazy(() => dynamicImport(parameter));
+        LoadableComponents.push(
+          <Route
+            path={path}
+            exact="true"
+            render={renderProps => (
+              <div className={styles["react-page"]}>
+                <Page
+                  centreonConfig={centreonConfig}
+                  centreonAxios={centreonAxios}
+                  {...renderProps}
+                />
+              </div>
+            )}
+          />
+        );
+      }
     }
 
     return LoadableComponents;
