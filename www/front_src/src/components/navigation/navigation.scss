@@ -698,6 +698,9 @@ a {
         display: block;
         letter-spacing: -0.4px;
         cursor: pointer;
+        &::first-letter {
+          text-transform: uppercase;
+        }
       }
     }
 
