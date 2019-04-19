@@ -11,26 +11,43 @@ import styles from "../../styles/partials/_content.scss";
 class ExternalRouter extends Component {
 
   getLoadableComponents = () => {
-    const { pages } = this.props;
-
+    const { acl, pages } = this.props;
     let LoadableComponents = [];
+
+    // wait acl to add authorized routes
+    if (!acl.loaded) {
+      return LoadableComponents;
+    }
+
     for (const [path, parameter] of Object.entries(pages)) {
-      const Page = React.lazy(() => dynamicImport(parameter));
-      LoadableComponents.push(
-        <Route
-          path={path}
-          exact="true"
-          render={renderProps => (
-            <div className={styles["react-page"]}>
-              <Page
-                centreonConfig={centreonConfig}
-                centreonAxios={centreonAxios}
-                {...renderProps}
-              />
-            </div>
-          )}
-        />
-      );
+
+      // check if each acl route contains external page
+      // eg: a user which have access to /configuration will have access to /configuration/hosts
+      let isAllowed = false;
+      for (const route of acl.routes) {
+        if (path.includes(route)) {
+          isAllowed = true;
+        }
+      }
+
+      if (isAllowed) {
+        const Page = React.lazy(() => dynamicImport(parameter));
+        LoadableComponents.push(
+          <Route
+            path={path}
+            exact="true"
+            render={renderProps => (
+              <div className={styles["react-page"]}>
+                <Page
+                  centreonConfig={centreonConfig}
+                  centreonAxios={centreonAxios}
+                  {...renderProps}
+                />
+              </div>
+            )}
+          />
+        );
+      }
     }
 
     return LoadableComponents;
@@ -54,7 +71,8 @@ class ExternalRouter extends Component {
 
 }
 
-const mapStateToProps = ({ externalComponents }) => ({
+const mapStateToProps = ({ navigation, externalComponents }) => ({
+  acl: navigation.acl,
   pages: externalComponents.pages,
   fetched: externalComponents.fetched,
 });

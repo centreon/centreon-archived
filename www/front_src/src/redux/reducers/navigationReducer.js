@@ -3,7 +3,11 @@ import * as actions from "../actions/navigationActions";
 // by default, no one menu entry is allowed
 const initialState = {
   entries: [],
-  menuItems: {}
+  menuItems: {},
+  acl: {
+    routes: [],
+    loaded: false,
+  }
 };
 
 const navigationReducer = (state = initialState, action) => {
@@ -18,6 +22,22 @@ const navigationReducer = (state = initialState, action) => {
       return {
         ...state,
         entries: action.navigationData
+      }
+    case actions.FETCH_ACL_ROUTES_SUCCESS:
+      return {
+        ...state,
+        acl: {
+          routes: action.data,
+          loaded: true,
+        }
+      }
+    case actions.FETCH_ACL_ROUTES_FAILURE:
+      return {
+        ...state,
+        acl: {
+          routes: [],
+          loaded: true,
+        }
       }
     default:
       return state;
