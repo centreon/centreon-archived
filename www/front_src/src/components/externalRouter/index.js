@@ -71,7 +71,7 @@ class ExternalRouter extends Component {
 
 }
 
-const mapStateToProps = ({ navigation, externalComponents  }) => ({
+const mapStateToProps = ({ navigation, externalComponents }) => ({
   acl: navigation.acl,
   pages: externalComponents.pages,
   fetched: externalComponents.fetched,
