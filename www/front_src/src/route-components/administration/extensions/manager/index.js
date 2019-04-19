@@ -551,6 +551,10 @@ class ExtensionsRoute extends Component {
                 onDelete={this.toggleDeleteModal}
                 onInstall={this.installById}
                 onUpdate={this.updateById}
+                titleIcon={"puzzle"}
+                titleColor={"blue"}
+                hrTitleColor={"blue"}
+                hrColor={"blue"}
                 title="Widgets"
                 type={"widget"}
                 updating={extensionsUpdatingStatus}
