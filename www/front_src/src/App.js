@@ -78,7 +78,10 @@ class App extends Component {
       .then(({data}) => {
         this.setState(
           {acls: data, aclsLoaded: true},
-          () => { this.getReactRoutes(); }
+          () => {
+            this.getReactRoutes();
+            this.getExternalComponents();
+          }
         );
       });
   }
@@ -86,6 +89,7 @@ class App extends Component {
   // get external components (pages, hooks...)
   getExternalComponents = () => {
     const { fetchExternalComponents } = this.props;
+    const 
     // store external components in redux
     fetchExternalComponents();
   }
@@ -110,7 +114,6 @@ class App extends Component {
 
   componentDidMount() {
     this.getAcl();
-    this.getExternalComponents();
     this.keepAlive();
   }
 
