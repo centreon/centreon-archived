@@ -698,11 +698,13 @@ a {
         display: block;
         letter-spacing: -0.4px;
         cursor: pointer;
+        &::first-letter {
+          text-transform: uppercase;
+        }
       }
     }
 
     &-title {
-      height: 18px;
       background-color: $white-color;
       display: block;
       position: relative;
@@ -715,16 +717,24 @@ a {
         position: absolute;
         display: block;
         top: 10px;
+        left: 0;
+        right: 0;
       }
       span {
         font-family: $primary-font-regular;
-        padding: 0px 5px;
+        padding: 0px 3px;
         color: $lightblue-centreon-primary;
         background: $white-color;
         font-variant: all-petite-caps;
         font-size: 0.7rem;
         position: relative;
-        line-height: 18px;
+        line-height: 15px;
+        max-width: 115px;
+        display: inline-block;
+        padding-bottom: 3px;
+        @media screen and(max-width: 1400px) {
+          max-width: 90px;
+        }
       }
     }
   }
