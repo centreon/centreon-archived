@@ -11,9 +11,17 @@ import styles from "../../styles/partials/_content.scss";
 class ExternalRouter extends Component {
 
   getLoadableComponents = () => {
-    const { pages } = this.props;
-
+    const { acl, pages } = this.props;
     let LoadableComponents = [];
+
+    // wait acl to add authorized routes
+    if (!acl.loaded) {
+      return LoadableComponents;
+    }
+
+    console.log(acl.routes);
+    console.log(pages)
+
     for (const [path, parameter] of Object.entries(pages)) {
       const Page = React.lazy(() => dynamicImport(parameter));
       LoadableComponents.push(
@@ -54,7 +62,8 @@ class ExternalRouter extends Component {
 
 }
 
-const mapStateToProps = ({ externalComponents }) => ({
+const mapStateToProps = ({ navigation, externalComponents  }) => ({
+  acl: navigation.acl,
   pages: externalComponents.pages,
   fetched: externalComponents.fetched,
 });

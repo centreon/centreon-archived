@@ -19,6 +19,7 @@ import axios from './axios';
 import NotAllowedPage from './route-components/notAllowedPage';
 
 import { fetchExternalComponents } from "./redux/actions/externalComponentsActions";
+import { fetchAclRoutes } from "./redux/actions/navigationActions";
 
 import styles from './App.scss';
 import footerStyles from './components/footer/footer.scss';
@@ -28,8 +29,6 @@ class App extends Component {
 
   state = {
     isFullscreenEnabled: false,
-    acls: [],
-    aclsLoaded: false,
     reactRouter: null
   }
 
@@ -73,23 +72,14 @@ class App extends Component {
 
   // get allowed routes
   getAcl = () => {
-    axios("internal.php?object=centreon_acl_webservice&action=getCurrentAcl")
-      .get()
-      .then(({data}) => {
-        this.setState(
-          {acls: data, aclsLoaded: true},
-          () => {
-            this.getReactRoutes();
-            this.getExternalComponents();
-          }
-        );
-      });
+    const { fetchAclRoutes } = this.props;
+    // store acl routes in redux
+    fetchAclRoutes();
   }
 
   // get external components (pages, hooks...)
   getExternalComponents = () => {
     const { fetchExternalComponents } = this.props;
-    const 
     // store external components in redux
     fetchExternalComponents();
   }
@@ -117,13 +107,22 @@ class App extends Component {
     this.keepAlive();
   }
 
+  componentDidUpdate(prevProps) {
+    const prevAcl = prevProps.acl;
+    const { acl } = this.props;
+    if (!prevAcl.loaded && acl.loaded) {
+      this.getReactRoutes();
+      this.getExternalComponents();
+    }
+  }
+
   getReactRoutes = () => {
-    const { acls } = this.state;
+    const { acl } = this.props;
     let reactRouter = reactRoutes.map(({ path, comp, ...rest }) => (
       <ReactRoute
         history={history}
         path={path}
-        component={acls.includes(path) ? comp : NotAllowedPage}
+        component={acl.routes.includes(path) ? comp : NotAllowedPage}
         {...rest}
       />
     ));
@@ -174,12 +173,19 @@ class App extends Component {
   }
 }
 
+const mapStateToProps = ({ navigation }) => ({
+  acl: navigation.acl
+});
+
 const mapDispatchToProps = dispatch => {
   return {
+    fetchAclRoutes: () => {
+      dispatch(fetchAclRoutes());
+    },
     fetchExternalComponents: () => {
       dispatch(fetchExternalComponents());
     }
   };
 };
 
-export default connect(null, mapDispatchToProps)(App);
+export default connect(mapStateToProps, mapDispatchToProps)(App);
