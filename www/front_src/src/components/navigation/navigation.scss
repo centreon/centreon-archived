@@ -702,20 +702,12 @@ a {
     }
 
     &-title {
-      height: 18px;
       background-color: $white-color;
       display: block;
       position: relative;
       margin:0;
-      &:before {
-        content: ' ';
-        height: 1px;
-        width: 100%;
-        background-color: $lightblue-centreon-primary;
-        position: absolute;
-        display: block;
-        top: 10px;
-      }
+      border-top: 1px solid $lightblue-centreon-primary;
+      border-bottom: 1px solid $lightblue-centreon-primary;
       span {
         font-family: $primary-font-regular;
         padding: 0px 5px;
