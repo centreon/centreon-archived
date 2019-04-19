@@ -537,7 +537,6 @@ class ExtensionsRoute extends Component {
                 onDelete={this.toggleDeleteModal}
                 onInstall={this.installById}
                 onUpdate={this.updateById}
-                titleIcon={"object"}
                 title="Modules"
                 type={"module"}
                 updating={extensionsUpdatingStatus}
@@ -552,7 +551,6 @@ class ExtensionsRoute extends Component {
                 onDelete={this.toggleDeleteModal}
                 onInstall={this.installById}
                 onUpdate={this.updateById}
-                titleIcon={"puzzle"}
                 title="Widgets"
                 type={"widget"}
                 updating={extensionsUpdatingStatus}
