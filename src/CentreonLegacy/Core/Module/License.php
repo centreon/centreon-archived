@@ -85,7 +85,7 @@ class License extends Module
      * @param string $module
      * @return string
      */
-    public function getLicenseExpiration($module)
+    public function getLicenseExpiration($module): ?string
     {
         $healthcheck = $this->services->get(ServiceProvider::CENTREON_LEGACY_MODULE_HEALTHCHECK);
 
@@ -93,10 +93,10 @@ class License extends Module
             $healthcheck->check($module);
         } catch (\Exception $ex) {}
 
-        if ($healthcheck->getLicenseExpiration()) {
-            return $healthcheck->getLicenseExpiration()->format('F d, Y');
+        if ($expiration = $healthcheck->getLicenseExpiration()) {
+            return $expiration->format(\DateTime::ISO8601);
         }
 
-        return _("N/A");
+        return null;
     }
 }

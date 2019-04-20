@@ -53,7 +53,10 @@ class UpdateActionTest extends TestCase
             'author' => 'John Doe',
             'versionCurrent' => '1.0.0',
             'version' => '1.0.1',
-            'license' => '11/20',
+            'license' => [
+                'required' => true,
+                'expiration_date' => '11/20',
+            ],
         ];
 
         $this->entity = new Module;
