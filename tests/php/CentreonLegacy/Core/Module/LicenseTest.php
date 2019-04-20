@@ -48,7 +48,7 @@ class LicenseTest extends TestCase
     public function testGetLicenseExpiration()
     {
         $module = 'mod';
-        $value = 'N/A';
+        $value = null;
 
         $result = $this->service->getLicenseExpiration($module);
 
@@ -58,7 +58,7 @@ class LicenseTest extends TestCase
     public function testGetLicenseExpirationWithException()
     {
         $module = 'mod';
-        $value = 'N/A';
+        $value = null;
 
         $this->container[ServiceProvider::CENTREON_LEGACY_MODULE_HEALTHCHECK] = $this
             ->getMockBuilder(Healthcheck::class)
@@ -81,7 +81,7 @@ class LicenseTest extends TestCase
     public function testGetLicenseExpirationWithExpriationDate()
     {
         $module = 'mod';
-        $value = date('F d, Y');
+        $value = date(\DateTime::ISO8601);
 
         $this->container[ServiceProvider::CENTREON_LEGACY_MODULE_HEALTHCHECK] = $this
             ->getMockBuilder(Healthcheck::class)
