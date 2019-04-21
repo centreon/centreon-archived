@@ -1,7 +1,7 @@
 <?php
 /*
- * Copyright 2005-2015 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2019 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -56,7 +56,6 @@ if (isset($_SESSION['centreon'])) {
 $criticality = new CentreonCriticality($obj->DB);
 $instanceObj = new CentreonInstance($obj->DB);
 $media = new CentreonMedia($obj->DB);
-$centreonDbName = $dependencyInjector['configuration']->get('db');
 
 if (isset($obj->session_id) && CentreonSession::checkSession($obj->session_id, $obj->DB)) {
     ;
@@ -140,7 +139,7 @@ $rq1 = " SELECT SQL_CALC_FOUND_ROWS DISTINCT h.state," .
     " cv.value IS NULL as isnull ";
 $rq1 .= " FROM instances i, ";
 if (!$obj->is_admin) {
-    $rq1 .= " " . $centreonDbName . ".acl_resources_host_relations, ";
+    $rq1 .= " centreon_acl, ";
 }
 if ($hostgroups) {
     $rq1 .= " hosts_hostgroups hhg, hostgroups hg, ";
@@ -166,16 +165,13 @@ if ($criticality_id) {
 }
 
 if (!$obj->is_admin) {
-    $rq1 .= " AND h.host_id = ".$centreonDbName.".acl_resources_host_relations.host_host_id " .
-        $obj->access->queryBuilder(
-            "AND",
-            $centreonDbName.".acl_resources_host_relations.acl_res_id",
-            $obj->grouplistStr
-        );
+    $rq1 .= " AND h.host_id = centreon_acl.host_id " .
+        $obj->access->queryBuilder("AND", "centreon_acl.group_id", $obj->grouplistStr);
 }
 if ($search != "") {
-    $rq1 .= " AND (h.name LIKE '%" . CentreonDB::escape($search) . "%' OR h.alias LIKE '%" .
-        CentreonDB::escape($search) . "%' OR h.address LIKE '%" . CentreonDB::escape($search) . "%') ";
+    $rq1 .= " AND (h.name LIKE '%" . CentreonDB::escape($search) . "%' " .
+        "OR h.alias LIKE '%" . CentreonDB::escape($search) . "%' " .
+        "OR h.address LIKE '%" . CentreonDB::escape($search) . "%') ";
 }
 
 if ($statusHost == "h_unhandled") {
@@ -258,7 +254,7 @@ $critRes = $obj->DBC->query(
 );
 $criticalityUsed = 0;
 $critCache = array();
-if ($critRes->rowCount()) {
+if ($obj->DBC->numberRows()) {
     $criticalityUsed = 1;
     while ($critRow = $critRes->fetch()) {
         $critCache[$critRow['host_id']] = $critRow['value'];
