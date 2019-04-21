@@ -238,9 +238,9 @@ class ModuleSource extends SourceAbstract
 
     /**
      * Process license check and return license information
-     * @param int $moduleId the module id (slug)
+     * @param string $moduleId the module id (slug)
      * @param array $info the info of the module from conf.php
-     * @return array the license information
+     * @return array the license information (required, expiration_date)
      */
     protected function processLicense(string $moduleId, array $info) : array
     {
