@@ -78,7 +78,7 @@ class LicenseTest extends TestCase
         $this->assertEquals($result, $value);
     }
 
-    public function testGetLicenseExpirationWithExpriationDate()
+    public function testGetLicenseExpirationWithExpirationDate()
     {
         $module = 'mod';
         $value = date(\DateTime::ISO8601);
