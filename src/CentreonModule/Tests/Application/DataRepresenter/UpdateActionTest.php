@@ -55,7 +55,7 @@ class UpdateActionTest extends TestCase
             'version' => '1.0.1',
             'license' => [
                 'required' => true,
-                'expiration_date' => '11/20',
+                'expiration_date' => '019-04-21T00:25:55-0700',
             ],
         ];
 
