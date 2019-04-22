@@ -5,6 +5,8 @@
 .wrapper {
   display: flex;
   align-items: stretch;
+  height: 100%;
+  overflow: hidden;
 }
 
 .main-content {
