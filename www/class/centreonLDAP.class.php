@@ -79,25 +79,25 @@ class CentreonLDAP
 
         /* Check if use service form DNS */
         $use_dns_srv = 0;
-        $dbresult = $this->db->query(
+        $dbResult = $this->db->query(
             "SELECT `ari_value`  " .
             "FROM `auth_ressource_info` " .
             "WHERE `ari_name` = 'ldap_srv_dns' " .
             "AND ar_id = " . $this->db->escape($arId)
         );
-        $row = $dbresult->fetch();
-        $dbresult->closeCursor();
+        $row = $dbResult->fetch();
+        $dbResult->closeCursor();
         if (isset($row['ari_value'])) {
             $use_dns_srv = $row['ari_value'];
         }
 
-        $dbresult = $this->db->query(
+        $dbResult = $this->db->query(
             "SELECT `key`, `value` 
             FROM `options` 
             WHERE `key` 
             IN ('debug_ldap_import', 'debug_path')"
         );
-        while ($row = $dbresult->fetch()) {
+        while ($row = $dbResult->fetch()) {
             if ($row['key'] == 'debug_ldap_import') {
                 if ($row['value'] == 1) {
                     $this->debugImport = true;
@@ -106,7 +106,7 @@ class CentreonLDAP
                 $this->debugPath = trim($row['value']);
             }
         }
-        $dbresult->closeCursor();
+        $dbResult->closeCursor();
         if ($this->debugPath == '') {
             $this->debugImport = false;
         }
@@ -124,14 +124,14 @@ class CentreonLDAP
         /* Get the list of server ldap */
         if ($use_dns_srv != "0") {
             $dns_query = '_ldap._tcp';
-            $dbresult = $this->db->query(
+            $dbResult = $this->db->query(
                 "SELECT `ari_value` 
                 FROM auth_ressource_info 
                 WHERE `ari_name` = 'ldap_dns_use_domain' 
                 AND ar_id = " . $this->db->escape($arId)
             );
-            $row = $dbresult->fetch();
-            $dbresult->closeCursor();
+            $row = $dbResult->fetch();
+            $dbResult->closeCursor();
             if ($row && trim($row['ari_value']) != '') {
                 $dns_query .= "." . $row['ari_value'];
             }
@@ -147,13 +147,13 @@ class CentreonLDAP
                 $this->ldapHosts[] = $ldap;
             }
         } else {
-            $dbresult = $this->db->query(
+            $dbResult = $this->db->query(
                 "SELECT ldap_host_id, host_address
                 FROM auth_ressource_host
                 WHERE auth_ressource_id = " . $this->db->escape($arId) . "
                 ORDER BY host_order"
             );
-            while ($row = $dbresult->fetch()) {
+            while ($row = $dbResult->fetch()) {
                 $ldap = array();
                 $ldap['host'] = $row['host_address'];
                 $ldap['id'] = $arId;
@@ -162,7 +162,7 @@ class CentreonLDAP
                 $ldap['info'] = array_merge($ldap['info'], $this->getBindInfo($arId));
                 $this->ldapHosts[] = $ldap;
             }
-            $dbresult->closeCursor();
+            $dbResult->closeCursor();
         }
     }
 
@@ -175,13 +175,13 @@ class CentreonLDAP
     public function getLdapHostParameters($arId, $filter = '')
     {
         // ldap_search_timeout
-        $queryLdapHostParemeters = "SELECT * FROM auth_ressource_info WHERE ar_id = " . $this->db->escape($arId);
+        $queryLdapHostParameters = "SELECT * FROM auth_ressource_info WHERE ar_id = " . $this->db->escape($arId);
 
         if (!empty($filter)) {
-            $queryLdapHostParemeters .= " AND `ari_name` = '$filter'";
+            $queryLdapHostParameters .= " AND `ari_name` = '$filter'";
         }
 
-        $resLdapHostParameters = $this->db->query($queryLdapHostParemeters);
+        $resLdapHostParameters = $this->db->query($queryLdapHostParameters);
 
         $finalLdapHostParameters = array();
 
@@ -651,7 +651,7 @@ class CentreonLDAP
         if (is_null($ldapHostId)) {
             $ldapHostId = $this->linkId;
         }
-        $dbresult = $this->db->query(
+        $dbResult = $this->db->query(
             "SELECT ari_name, ari_value
             FROM auth_ressource_info ari
             WHERE ari_name IN
@@ -661,7 +661,7 @@ class CentreonLDAP
         );
         $user = array();
         $group = array();
-        while ($row = $dbresult->fetch()) {
+        while ($row = $dbResult->fetch()) {
             switch ($row['ari_name']) {
                 case 'user_filter':
                     $user['filter'] = $row['ari_value'];
@@ -732,12 +732,12 @@ class CentreonLDAP
      */
     private function getInfoConnect($id)
     {
-        $dbresult = $this->db->query(
+        $dbResult = $this->db->query(
             "SELECT use_ssl, use_tls, host_port as port
             FROM auth_ressource_host
             WHERE ldap_host_id = " . CentreonDB::escape($id)
         );
-        $row = $dbresult->fetch();
+        $row = $dbResult->fetch();
         return $row;
     }
 
@@ -749,16 +749,16 @@ class CentreonLDAP
     private function getInfoUseDnsConnect()
     {
         $query = "SELECT `key`, `value` FROM `options` WHERE `key` IN ('ldap_dns_use_ssl', 'ldap_dns_use_tls')";
-        $dbresult = $this->db->query($query);
+        $dbResult = $this->db->query($query);
         $infos = array();
-        while ($row = $dbresult->fetch()) {
+        while ($row = $dbResult->fetch()) {
             if ($row['key'] == 'ldap_dns_use_ssl') {
                 $infos['use_ssl'] = $row['value'];
             } elseif ($row['key'] == 'ldap_dns_use_tls') {
                 $infos['use_tls'] = $row['value'];
             }
         }
-        $dbresult->closeCursor();
+        $dbResult->closeCursor();
     }
 
     /**
@@ -776,12 +776,12 @@ class CentreonLDAP
                  FROM auth_ressource_info 
                  WHERE ari_name IN ('bind_dn', 'bind_pass', 'protocol_version') 
                  AND ar_id = " . CentreonDB::escape($id);
-        $dbresult = $this->db->query($query);
+        $dbResult = $this->db->query($query);
         $infos = array();
-        while ($row = $dbresult->fetch()) {
+        while ($row = $dbResult->fetch()) {
             $infos[$row['ari_name']] = $row['ari_value'];
         }
-        $dbresult->closeCursor();
+        $dbResult->closeCursor();
         $this->constuctCache[$id] = $infos;
         return $infos;
     }
@@ -1116,8 +1116,8 @@ class CentreonLdapAdmin
             return false;
         }
         try {
-            $dbresult = $this->db->query("SELECT MAX(ar_id) as id FROM auth_ressource WHERE ar_type = 'ldap_tmpl'");
-            $row = $dbresult->fetch();
+            $dbResult = $this->db->query("SELECT MAX(ar_id) as id FROM auth_ressource WHERE ar_type = 'ldap_tmpl'");
+            $row = $dbResult->fetch();
         } catch (\PDOException $e) {
             return false;
         }
