@@ -20,6 +20,11 @@ Enhancements
 * [Menu] Color the open level 2 and 3 menus (PR/#7295)
 * [Remote-server] allow usage of domain names (PR/#7250)
 * [UI] Fix wording of messages related to recurring downtimes (PR/#7261)
+* Standardize how to display menus access
+* Reduce reduce number of title levels displayed in index
+* Create dedicated UI access administration chapter
+* Improve custom uri chapter
+* Move SSO chapter to administration/ldap
 
 Bug fixes
 ---------

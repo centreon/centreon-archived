@@ -3,9 +3,10 @@ Guide d'administration
 ######################
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 1
    :glob:
 
+   ui_access
    acl
    poller/index
    knowledge_base/index
@@ -16,4 +17,3 @@ Guide d'administration
    logs
    backup
    partitioning
-   customuri

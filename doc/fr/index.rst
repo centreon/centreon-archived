@@ -20,7 +20,6 @@ Sommaire :
    migration/index
    ceip
    faq/index
-   howto/index
    developper/index
    api/index
 

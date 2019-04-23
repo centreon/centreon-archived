@@ -21,7 +21,7 @@ the type of architecture that should be set up for your needs.
 Finally, you can install the platform.
 
 .. toctree::
-    :maxdepth: 2
+    :maxdepth: 1
 
     prerequisites
     architecture/index

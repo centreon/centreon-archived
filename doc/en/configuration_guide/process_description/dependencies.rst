@@ -22,7 +22,7 @@ Moreover, considering that the Selenium scenario cannot perform properly, no per
 
 To create this dependency:
 
-#. Go into the menu: **Configuration** ==> **Notifications**
+#. Go into the menu: **Configuration > Notifications**
 #. In the left menu under **Dependencies**, click on **Services**
 #. Click on **Add**
 #. Enter the name and the description of the dependency
@@ -43,7 +43,7 @@ If host A or host B has a Not-OK status the services of host C will automaticall
 
 To create this dependency:
 
-#. Go into the menu: **Configuration** ==> **Notifications**
+#. Go into the menu: **Configuration > Notifications**
 #. In the left menu under **Dependencies**, click on **Hosts**
 #. Click on **Add**
 #. Enter the name and the description of the dependency
@@ -68,7 +68,7 @@ It is necessary to create a dependency link to prevent the check and notificatio
 
 To create this dependency:
 
-#. Go into the menu: **Configuration** ==> **Notifications**
+#. Go into the menu: **Configuration > Notifications**
 #. In the left menu under **Dependencies**, click on **Service Groups**
 #. Click on **Add**
 #. Enter the name and the description of the dependency

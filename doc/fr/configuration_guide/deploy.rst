@@ -14,7 +14,7 @@ Afin de pouvoir appliquer les modifications effectuées, il est nécessaire de s
 Première étape
 ==============
 
-#. Rendez-vous dans le menu **Configuration** ==> **Collecteurs**
+#. Rendez-vous dans le menu **Configuration > Collecteurs**
 #. Choisissez les collecteurs sur lesquels exporter la configuration
 #. Cliquez sur **Appliquez la configuration**
 

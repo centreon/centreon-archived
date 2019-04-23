@@ -20,7 +20,6 @@ Contents:
    migration/index
    ceip
    faq/index
-   howto/index
    developer/index
    api/index
 

@@ -144,7 +144,7 @@ Démarrer le processus RRDCacheD ::
 Configurer le processus dans l'interface web Centreon
 *****************************************************
 
-Se rendre dans le menu **Administration -> Options -> RRDTool**, activer l'utilisation du processus et renseigner l'accès au socket **/var/rrdtool/rrdcached/rrdcached.sock** :
+Se rendre dans le menu **Administration > Options > RRDTool**, activer l'utilisation du processus et renseigner l'accès au socket **/var/rrdtool/rrdcached/rrdcached.sock** :
 
 .. image:: /images/faq/rrdcached_config.png
     :align: center

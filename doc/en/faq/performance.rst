@@ -141,7 +141,7 @@ Start RRDCacheD process::
 Centreon web configuration
 **************************
 
-Go to **Administration -> Options -> RRDTool** menu, enable process and set unix socket path:
+Go to **Administration > Options > RRDTool** menu, enable process and set unix socket path:
 
 .. image:: /images/faq/rrdcached_config.png
     :align: center

@@ -25,7 +25,7 @@ pour vos besoins.
 Enfin, vous pourrez procéder à l'installation de la plate-forme.
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 1
 
    prerequisites
    architecture/index

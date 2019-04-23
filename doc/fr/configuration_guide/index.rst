@@ -7,7 +7,7 @@ Vous trouverez dans ce chapitre toutes les informations nécessaire sà la prise
 Pensez à mettre en place une stratégie de globalisation de la configuration afin de pouvoir faire des actions globales de configurations. Pour cela des mecanismes sont en place dans Centreon pour vous simplifier la vie tels que :ref:`les modèles d'hôtes et de services <hosttemplates>`.
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 1
 
    actions
    hosts

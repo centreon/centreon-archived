@@ -62,7 +62,7 @@ Configuration
 
 To add a host template:
 
-#. Go into the menu: **Configuration** ==> **Hosts**
+#. Go into the menu: **Configuration > Hosts**
 #. In the left menu, click on **Templates**
 #. Click on **Add**
 
@@ -86,7 +86,7 @@ Configuration
 
 To add a Service Template:
 
-#. Go into the menu: **Configuration** ==> **Services**
+#. Go into the menu: **Configuration > Services**
 #. In the left menu, click on **Templates**
 #. Click on **Add**
 
@@ -141,7 +141,7 @@ Configuration
 
 To add a contact template:
 
-1. Go into the menu: **Configuration** ==> **Users**
+1. Go into the menu: **Configuration > Users**
 2. In the left menu, click on **Contact Templates**
 3. Click on **Add**
 

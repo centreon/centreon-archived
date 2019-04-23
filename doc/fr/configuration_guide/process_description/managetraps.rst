@@ -29,7 +29,7 @@ Exemple :
 Dans le fichier de MIB montré ci-dessus, il existe 4 dépendances nécessaires à l'importation de la MIB : SNMPv2-SMI, SNMPv2-TC, SNMPv2-CONF, SNMP-FRAMEWORK-MIB.
 Une fois l'importation terminée, il est nécessaire de modifier la définition du trap afin de modifier le statut par défaut du trap :
 
-#. Rendez-vous dans le menu **Configuration** ==> **Traps SNMP**
+#. Rendez-vous dans le menu **Configuration > Traps SNMP**
 #. Cliquez sur le trap que vous souhaitez modifier.
 
 En fonction du message associé au trap, modifiez le statut par défaut du service. Dans le cas où le statut du service dépend du message reçu, utilisez le mode de correspondance avancé.
@@ -39,7 +39,7 @@ Créer un modèle de service passif
 
 Afin de faciliter la configuration des services utilisant les traps SNMP, il est plus pratique de créer un modèle de service passif. De cette manière, lors de la création d'un service il ne restera plus qu'à faire hériter le service à partir de ce modèle et de lier le trap ou les traps SNMP associés à ce service.
 
-#. Rendez-vous dans le menu **Configuration** ==> **Services**
+#. Rendez-vous dans le menu **Configuration > Services**
 #. Dans le menu de gauche, cliquez sur **Modèles**
 #. Cliquez sur **Ajouter**
 
@@ -372,7 +372,7 @@ Vous pouvez vérifier la bonne configuration de centreontrapd au sein du chapitr
 CentCore
 ========
 
-Dans le cas d'un serveur central, le processus Centcore doit être démarré pour transférer la commande externe à l'ordonnanceur supervisant l'émetteur, vérifiez son état de fonctionnement. Activez le débogage du processus via le menu **Administration ==> Options ==> Débogage** et redémarrez le processus.
+Dans le cas d'un serveur central, le processus Centcore doit être démarré pour transférer la commande externe à l'ordonnanceur supervisant l'émetteur, vérifiez son état de fonctionnement. Activez le débogage du processus via le menu **Administration > Options > Débogage** et redémarrez le processus.
 
 .. note::
     Vous pouvez modifier le niveau de débogage du processus via le fichier **/etc/sysconfig/centcore** en modifiant la sévérité.

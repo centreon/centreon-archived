@@ -70,9 +70,9 @@ Le tableau ci-dessous définit les colonnes du tableau des modifications :
 |                      | - Après : Indique la nouvelle valeur                      |
 +----------------------+-----------------------------------------------------------+
 
-=============
+*************
 Configuration
-=============
+*************
 
 Pour activer la journalisation des actions utilisateurs, rendez-vous dans le
 menu **Administration > Paramètres > Options** et cocher la case
