@@ -272,6 +272,7 @@
                   bottom: -50px;
                   right: -50px;
                   left: 0;
+                  z-index: -1;
                 }
               }
             }
@@ -855,10 +856,12 @@ a {
     display: none;
   }
 }
-li.menu-item:last-child .collapsed-items li.collapsed-item:first-child > ul.collapsed-level-items {
-  max-height: 350px;
-  overflow-x: hidden;
-  overflow-y: auto;
+@media screen and(max-width: 1500px) {
+  li.menu-item:last-child .collapsed-items li.collapsed-item:first-child > ul.collapsed-level-items {
+    max-height: 350px;
+    overflow-y: auto;
+    overflow-x: hidden !important;
+  }
 }
 .sidebar.active .menu-item:nth-child(4).active + .menu-item > ul.list-unstyled .collapsed-item:first-child:hover > ul {
   top: 0;
