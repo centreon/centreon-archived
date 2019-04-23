@@ -186,7 +186,7 @@ if (!empty($searchO) || !empty($searchU) || $otype != 0) {
     
     if (!empty($searchO)) {
         $logQuery .= "object_name LIKE :object_name ";
-        $valuesToBind[':object_name'] = "%$searchO%";
+        $valuesToBind[':object_name'] = "%" . $searchO . "%";
         $hasMultipleSubRequest = true;
     }
     if (!empty($searchU)) {
@@ -218,7 +218,7 @@ $prepareSelect->bindValue(':nbr_element', $limit, \PDO::PARAM_INT);
 
 $rows = 0;
 
-include("./include/common/checkPagination.php");
+include "./include/common/checkPagination.php";
 
 $elemArray = array();
 if ($prepareSelect->execute()) {
