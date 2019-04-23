@@ -56,6 +56,11 @@ Documentation
 * Improve partitioning chapter (PR/#7274)
 * Correct installation chapters - enable systemctl for centreon (PR/#7284)
 * Add FAQ for known issues about Remote Server (PR/#7266)
+* Standardize how to display menus access
+* Reduce reduce number of title levels displayed in index
+* Create dedicated UI access administration chapter
+* Improve custom uri chapter
+* Move SSO chapter to administration/ldap
 
 Security fixes
 --------------
