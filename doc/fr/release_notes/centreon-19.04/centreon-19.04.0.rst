@@ -34,7 +34,6 @@ Bug fixes
 * [Centcore] Enhance centcore log
 * [Centcore] Fix getinfos information
 * [Configuration] change size (6 => 30) of input geo coordinates on host form (PR/#7405)
-* [Install] Add missing update from 2.8.27 to 18.10.0 version (PR/#7434)
 * [Install] Remove non-existing topology_JS entries
 * [Install] Remove obsolete rrdtool configuration and sources (PR/#7195)
 * [Install] use /etc/sysconfig/cent* files to get options for Centcore and Centreontrapd process (PR/#7380)
