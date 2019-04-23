@@ -57,7 +57,7 @@ trait SourceDependencyTrait
             ->disableOriginalConstructor()
             ->getMock();
 
-        $container[ServiceProvider::CENTREON_LEGACY_MODULE_LICENSE]->method('getLicenseExpiration')->willReturn('N/A');
+        $container[ServiceProvider::CENTREON_LEGACY_MODULE_LICENSE]->method('getLicenseExpiration')->willReturn(null);
 
         $container[ServiceProvider::CENTREON_LEGACY_MODULE_INSTALLER] = function (Container $container) {
             return function ($moduleName) {

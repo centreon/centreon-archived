@@ -231,12 +231,12 @@ class Module implements SourceDataInterface
         $this->keywords = $keywords;
     }
 
-    public function getLicense(): ?string
+    public function getLicense(): ?array
     {
         return $this->license;
     }
 
-    public function setLicense(string $license = null)
+    public function setLicense(array $license = null)
     {
         $this->license = $license;
     }
