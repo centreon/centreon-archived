@@ -38,6 +38,7 @@ Bug fixes
 * [Install] Remove obsolete rrdtool configuration and sources (PR/#7195)
 * [Install] use /etc/sysconfig/cent* files to get options for Centcore and Centreontrapd process (PR/#7380)
 * [LDAP] Fix sql errors in the log on authentication (PR/#7278)
+* [LDAP] Optimize ldap sync at config generation (Fix #6949 PR/#7130)
 * [Logs] removing warning in the logs (PR/#7395)
 * [Menu] Fixing an issue with the menu when loaded by mobile browsers (PR/#7256)
 * [Monitoring] Fix hide password in command line (PR/#7079)
