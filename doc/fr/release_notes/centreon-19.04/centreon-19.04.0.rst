@@ -5,8 +5,8 @@ Centreon Web 19.04.0
 New features
 ------------
 
-* The extension management page has been unified. The installation, update and removal of modules and widgets is available via the "Administration> Extensions> Manager" menu. It is now possible to install all extensions at one time or to update all extensions in one click. Moreover a detail page provides access to the description of the extensions.
-* Improved navigation within the menu. It can be used both open and closed to navigate within the Centreon web interface. Closed, only one click is required to access the desired page. Open, it is possible to navigate a menu by opening and closing the submenus or to access another menu in a click.
+* The extension management page has been unified. The installation, update and removal of modules and widgets are available via the "Administration> Extensions> Manager" menu. It is now possible to install all extensions at one time or to update all extensions in one click. Moreover a detail page provides access to the description of the extensions.
+* Improved navigation within the menu. It can be used both open (by clicikng on Centeron logo) and closed to navigate within the Centreon web interface. Closed, only one click is required to access the desired page. Open, it is possible to navigate a menu by opening and closing the submenus or to access another menu in a click.
 
 Enhancements
 ------------
