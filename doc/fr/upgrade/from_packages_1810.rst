@@ -53,9 +53,15 @@ Mettez à jour l'ensemble des composants : ::
 Actions complémentaires
 =======================
 
-Centreon 19.04 utilise un nouveau paquet pour le serveur Web Apache. Si vous avez
-modifié la configuration, reportez celle-ci dans le répertoire 
-**/opt/rh/httpd24/root/etc/httpd/conf.d/**.
+Centreon 19.04 utilise un nouveau paquet pour le serveur Web Apache.
+
+.. note::
+    Si vous avez modifié la configuration, reportez celle-ci dans le répertoire
+    **/opt/rh/httpd24/root/etc/httpd/conf.d/**.
+    
+    Si SSL était activé, installer le paquet suivant : ::
+    
+    # yum install httpd24-mod_ssl
 
 Puis réalisez les actions suivantes : ::
 

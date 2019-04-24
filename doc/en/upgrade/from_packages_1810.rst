@@ -49,8 +49,15 @@ Upgrade all the components with the following command: ::
 Additional actions
 ==================
 
-Centeon 19.04 uses a new version of Apache web server. If you made manual
-configuration, please report it to **/opt/rh/httpd24/root/etc/httpd/conf.d/**.
+Centeon 19.04 uses a new version of Apache web server.
+
+.. note::
+    If you made manual configuration, please report it into
+    **/opt/rh/httpd24/root/etc/httpd/conf.d/**.
+    
+    If SSL mode was enabled, execute command: ::
+    
+    # yum install httpd24-mod_ssl
 
 Then, run the following commands: ::
 
