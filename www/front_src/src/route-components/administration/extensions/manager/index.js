@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
+import { batchActions } from 'redux-batched-actions';
 import {
   TopFilters,
   Wrapper,
@@ -11,7 +12,7 @@ import {
 import Hook from "../../../../components/hook";
 
 import axios from "../../../../axios";
-import { fetchNavigationData } from "../../../../redux/actions/navigationActions";
+import { fetchNavigationData, fetchAclRoutes } from "../../../../redux/actions/navigationActions";
 import { fetchExternalComponents } from "../../../../redux/actions/externalComponentsActions";
 
 class ExtensionsRoute extends Component {
@@ -226,14 +227,12 @@ class ExtensionsRoute extends Component {
           this.getData(() => {
             this.setStatusByKey(loadingKey, id, callback);
             this.reloadNavigation();
-            this.reloadExternalComponents();
           });
         })
         .catch(err => {
           this.getData(() => {
             this.setStatusByKey(loadingKey, id, callback);
             this.reloadNavigation();
-            this.reloadExternalComponents();
           });
           throw err;
         });
@@ -297,12 +296,12 @@ class ExtensionsRoute extends Component {
             }
           })
           .then(() => {
-            this.getData();
-            this.reloadNavigation();
-            this.reloadExternalComponents();
-            if (modalDetailsActive) {
-              this.getExtensionDetails(id, type);
-            }
+            this.getData(() => {
+              this.reloadNavigation();
+              if (modalDetailsActive) {
+                this.getExtensionDetails(id, type);
+              }
+            });
           });
       }
     );
@@ -592,10 +591,8 @@ class ExtensionsRoute extends Component {
 const mapDispatchToProps = dispatch => {
   return {
     reloadNavigation: () => {
-      dispatch(fetchNavigationData());
-    },
-    reloadExternalComponents: () => {
-      dispatch(fetchExternalComponents());
+      // batch actions to avoid useless multiple rendering
+      dispatch(batchActions([fetchNavigationData(), fetchExternalComponents(), fetchAclRoutes()]));
     },
   };
 };
