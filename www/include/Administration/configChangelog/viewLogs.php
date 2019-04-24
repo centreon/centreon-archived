@@ -178,15 +178,15 @@ $tpl->assign("obj_type", $options);
 $logQuery = "SELECT SQL_CALC_FOUND_ROWS object_id, object_type, object_name, "
     . "action_log_date, action_type, log_contact_id, action_log_id "
     . "FROM log_action";
-$query = $logQuery;
+
+$valuesToBind = [];
 if (!empty($searchO) || !empty($searchU) || $otype != 0) {
     $logQuery .= ' WHERE ';
     $hasMultipleSubRequest = false;
     
-    $valuesToBind = [];
     if (!empty($searchO)) {
         $logQuery .= "object_name LIKE :object_name ";
-        $valuesToBind[':object_name'] = "%$searchO%";
+        $valuesToBind[':object_name'] = "%" . $searchO . "%";
         $hasMultipleSubRequest = true;
     }
     if (!empty($searchU)) {
@@ -218,7 +218,7 @@ $prepareSelect->bindValue(':nbr_element', $limit, \PDO::PARAM_INT);
 
 $rows = 0;
 
-include("./include/common/checkPagination.php");
+include "./include/common/checkPagination.php";
 
 $elemArray = array();
 if ($prepareSelect->execute()) {
