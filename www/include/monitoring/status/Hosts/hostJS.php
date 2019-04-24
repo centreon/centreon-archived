@@ -239,7 +239,9 @@ if (isset($_GET["acknowledge"])) {
     }
 
     function goM(_time_reload, _sid, _o) {
-
+        if (_on == 0) {
+            return;
+        }
         _lock = 1;
         var proc = new Transformation();
 
@@ -264,6 +266,9 @@ if (isset($_GET["acknowledge"])) {
         }
 
         _lock = 0;
+        if (_timeoutID) { // Kill next execution if in queue
+            clearTimeout(_timeoutID);
+        }
         _timeoutID = cycleVisibilityChange(function(){goM(_time_reload, _sid, _o)}, _time_reload);
         _time_live = _time_reload;
         _on = 1;

@@ -487,7 +487,5 @@ $tpl->display("host.ihtml");
 
     function statusHosts(value, isInit) {
         _o = value;
-        window.clearTimeout(_timeoutID);
-        initM(_tm, _sid, _o);
     }
 </script>
