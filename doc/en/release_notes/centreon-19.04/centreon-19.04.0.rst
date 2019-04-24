@@ -77,3 +77,8 @@ Technical
 
 * Add mechanism to manage external pages (PR/#7382)
 * Add mechanism to manage notification mechanism of modules (PR/#7378)
+
+Known issue
+-----------
+
+Depending on the size of your screen and which level 3 menu is opened, you may have difficulty to access to another menu. Just close the opened level 3 menu before navigating to another menu.
