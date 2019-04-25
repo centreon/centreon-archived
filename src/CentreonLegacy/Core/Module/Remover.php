@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright 2005-2017 Centreon
+ * Copyright 2005-2019 Centreon
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -84,7 +84,7 @@ class Remover extends Module
         $removed = false;
 
         $sqlFile = $this->getModulePath($this->moduleName) . '/sql/uninstall.sql';
-        if ($this->moduleConfiguration["sql_files"] && $this->services->get('filesystem')->exists($sqlFile)) {
+        if ($this->services->get('filesystem')->exists($sqlFile)) {
             $this->utils->executeSqlFile($sqlFile);
             $removed = true;
         }
@@ -101,7 +101,7 @@ class Remover extends Module
         $removed = false;
 
         $phpFile = $this->getModulePath($this->moduleName) . '/php/uninstall.php';
-        if ($this->moduleConfiguration["php_files"] && $this->services->get('filesystem')->exists($phpFile)) {
+        if ($this->services->get('filesystem')->exists($phpFile)) {
             $this->utils->executePhpFile($phpFile);
             $removed = true;
         }
