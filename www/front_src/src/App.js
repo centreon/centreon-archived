@@ -1,22 +1,19 @@
 import React, { Component } from "react";
 import config from "./config";
 import Header from "./components/header";
-import { Switch } from "react-router-dom";
+import { Switch, Route } from "react-router-dom";
 import { connect } from "react-redux";
 import { ConnectedRouter } from "react-router-redux";
 import { history } from "./store";
-import ClassicRoute from "./components/router/classicRoute";
-import ReactRoute from './components/router/reactRoute';
-import ExternalRouter from "./components/externalRouter";
+import LegacyRouter from "./components/legacyRouter";
+import ReactRouter from "./components/reactRouter";
 
-import { classicRoutes, reactRoutes } from "./route-maps";
 import NavigationComponent from "./components/navigation";
 import Tooltip from "./components/tooltip";
 import Footer from "./components/footer";
 import Fullscreen from 'react-fullscreen-crossbrowser';
 import queryString from 'query-string';
 import axios from './axios';
-import NotAllowedPage from './route-components/notAllowedPage';
 
 import { fetchExternalComponents } from "./redux/actions/externalComponentsActions";
 import { fetchAclRoutes } from "./redux/actions/navigationActions";
@@ -28,8 +25,7 @@ import contentStyles from './styles/partials/_content.scss';
 class App extends Component {
 
   state = {
-    isFullscreenEnabled: false,
-    reactRouter: null
+    isFullscreenEnabled: false
   }
 
   keepAliveTimeout = null
@@ -111,27 +107,11 @@ class App extends Component {
     const prevAcl = prevProps.acl;
     const { acl } = this.props;
     if (!prevAcl.loaded && acl.loaded) {
-      this.getReactRoutes();
       this.getExternalComponents();
     }
   }
 
-  getReactRoutes = () => {
-    const { acl } = this.props;
-    let reactRouter = reactRoutes.map(({ path, comp, ...rest }) => (
-      <ReactRoute
-        history={history}
-        path={path}
-        component={acl.routes.includes(path) ? comp : NotAllowedPage}
-        {...rest}
-      />
-    ));
-    this.setState({ reactRouter });
-  }
-
   render() {
-    const { reactRouter } = this.state;
-
     const min = this.getMinArgument();
 
     return (
@@ -153,11 +133,9 @@ class App extends Component {
               >
                 <div className={styles["main-content"]}>
                   <Switch>
-                    {classicRoutes.map(({path, comp, ...rest}, i) => (
-                      <ClassicRoute key={i} history={history} path={path} component={comp} {...rest} />
-                    ))}
-                    {reactRouter}
-                    <ExternalRouter/>
+                    <Route path="/" exact component={LegacyRouter}/>
+                    <Route path="/main.php" component={LegacyRouter}/>
+                    <Route path="/" component={ReactRouter}/>
                   </Switch>
                 </div>
               </Fullscreen>

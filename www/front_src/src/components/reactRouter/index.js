@@ -1,14 +1,17 @@
 import React, { Component, Suspense } from "react";
 import { connect } from "react-redux";
 import { Switch, Route } from "react-router-dom";
+import { history } from "../../store";
+import { reactRoutes } from "../../route-maps";
+import ReactRoute from '../router/reactRoute';
 import { dynamicImport } from "../../utils/dynamicImport";
 import centreonAxios from "../../axios";
 import centreonConfig from "../../config";
 import NotAllowedPage from '../../route-components/notAllowedPage';
 import styles from "../../styles/partials/_content.scss";
 
-// class to dynamically import pages from modules
-class ExternalRouter extends Component {
+// class to manage internal react pages
+class ReactRouter extends Component {
 
   getLoadableComponents = () => {
     const { acl, pages } = this.props;
@@ -53,22 +56,39 @@ class ExternalRouter extends Component {
     return LoadableComponents;
   }
 
+  shouldComponentUpdate(nextProps) {
+    const { acl, fetched } = this.props;
+    return (JSON.stringify(acl.routes) === JSON.stringify(nextProps.acl.routes)) || (fetched === false && nextProps.fetched === true);
+    //return (acl.loaded === false && nextProps.acl.loaded === true) || (fetched === false && nextProps.fetched === true);
+  }
+
   render() {
-    const { fetched } = this.props;
+    const { acl, fetched } = this.props;
+
+    if (!acl.loaded || !fetched) {
+      return null;
+    }
+
     const LoadableComponents = this.getLoadableComponents();
 
     return (
       <Suspense fallback="">
-        <>
-          {LoadableComponents}
-          {fetched &&
-            <Route component={NotAllowedPage} />
-          }
-        </>
+        {reactRoutes.map(({ path, comp, ...rest }) => (
+          <ReactRoute
+            history={history}
+            path={path}
+            exact="true"
+            component={acl.routes.includes(path) ? comp : NotAllowedPage}
+            {...rest}
+          />
+        ))}
+        {LoadableComponents}
+        {fetched &&
+          <Route component={NotAllowedPage} />
+        }
       </Suspense>
     );
   };
-
 }
 
 const mapStateToProps = ({ navigation, externalComponents }) => ({
@@ -77,4 +97,4 @@ const mapStateToProps = ({ navigation, externalComponents }) => ({
   fetched: externalComponents.fetched,
 });
 
-export default connect(mapStateToProps)(ExternalRouter);
+export default connect(mapStateToProps)(ReactRouter);

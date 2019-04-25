@@ -219,6 +219,7 @@ class ExtensionsRoute extends Component {
     );
   };
 
+  // install/remove extension
   runAction = (loadingKey, action, id, type, callback) => {
     this.setStatusesByIds([{ id }], loadingKey, () => {
       axios(`internal.php?object=centreon_module&action=${action}&id=${id}&type=${type}`)
@@ -296,12 +297,11 @@ class ExtensionsRoute extends Component {
             }
           })
           .then(() => {
-            this.getData(() => {
-              this.reloadNavigation();
-              if (modalDetailsActive) {
-                this.getExtensionDetails(id, type);
-              }
-            });
+            this.getData();
+            this.reloadNavigation();
+            if (modalDetailsActive) {
+              this.getExtensionDetails(id, type);
+            }
           });
       }
     );
