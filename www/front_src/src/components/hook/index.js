@@ -19,11 +19,10 @@ class Hook extends Component {
     for (const [hook, parameters] of Object.entries(hooks)) {
       if (hook === path) {
         for (const parameter of parameters) {
-          LoadableComponents.push(
-            React.lazy(
-              () => dynamicImport(parameter)
-            )
-          );
+          LoadableComponents.push({
+            key: parameter.js,
+            component: React.lazy(() => dynamicImport(parameter))
+          });
         }
       }
     }
@@ -37,8 +36,9 @@ class Hook extends Component {
 
     return (
       <Suspense fallback="">
-        {LoadableComponents.map(LoadableComponent => (
+        {LoadableComponents.map(({ key, component: LoadableComponent}) => (
           <LoadableComponent
+            key={key}
             centreonConfig={centreonConfig}
             centreonAxios={centreonAxios}
             {...props}

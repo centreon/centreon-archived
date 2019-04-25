@@ -56,6 +56,7 @@ class ExternalRouter extends Component {
   render() {
     const { fetched } = this.props;
     const LoadableComponents = this.getLoadableComponents();
+    console.log("render")
 
     return (
       <Suspense fallback="">

@@ -2,11 +2,11 @@ import React, { Component } from "react";
 import config from "./config";
 import Header from "./components/header";
 import { Switch, Route } from "react-router-dom";
-import { connect } from "react-redux";
 import { ConnectedRouter } from "react-router-redux";
 import { history } from "./store";
 import LegacyRouter from "./components/legacyRouter";
 import ReactRouter from "./components/reactRouter";
+import LegacyPage from "./route-components/legacyPage";
 
 import NavigationComponent from "./components/navigation";
 import Tooltip from "./components/tooltip";
@@ -14,9 +14,6 @@ import Footer from "./components/footer";
 import Fullscreen from 'react-fullscreen-crossbrowser';
 import queryString from 'query-string';
 import axios from './axios';
-
-import { fetchExternalComponents } from "./redux/actions/externalComponentsActions";
-import { fetchAclRoutes } from "./redux/actions/navigationActions";
 
 import styles from './App.scss';
 import footerStyles from './components/footer/footer.scss';
@@ -66,20 +63,6 @@ class App extends Component {
     delete window['fullscreenHash'];
   }
 
-  // get allowed routes
-  getAcl = () => {
-    const { fetchAclRoutes } = this.props;
-    // store acl routes in redux
-    fetchAclRoutes();
-  }
-
-  // get external components (pages, hooks...)
-  getExternalComponents = () => {
-    const { fetchExternalComponents } = this.props;
-    // store external components in redux
-    fetchExternalComponents();
-  }
-
   // keep alive (redirect to login page if session is expired)
   keepAlive = () => {
     this.keepAliveTimeout = setTimeout(() => {
@@ -99,16 +82,7 @@ class App extends Component {
   }
 
   componentDidMount() {
-    this.getAcl();
     this.keepAlive();
-  }
-
-  componentDidUpdate(prevProps) {
-    const prevAcl = prevProps.acl;
-    const { acl } = this.props;
-    if (!prevAcl.loaded && acl.loaded) {
-      this.getExternalComponents();
-    }
   }
 
   render() {
@@ -133,8 +107,8 @@ class App extends Component {
               >
                 <div className={styles["main-content"]}>
                   <Switch>
-                    <Route path="/" exact component={LegacyRouter}/>
-                    <Route path="/main.php" component={LegacyRouter}/>
+                    <Route path="/main.php" exact component={LegacyPage}/>
+                    <Route path="/" exact render={() => (<Redirect to="/main.php"/>)}/>
                     <Route path="/" component={ReactRouter}/>
                   </Switch>
                 </div>
@@ -151,19 +125,4 @@ class App extends Component {
   }
 }
 
-const mapStateToProps = ({ navigation }) => ({
-  acl: navigation.acl
-});
-
-const mapDispatchToProps = dispatch => {
-  return {
-    fetchAclRoutes: () => {
-      dispatch(fetchAclRoutes());
-    },
-    fetchExternalComponents: () => {
-      dispatch(fetchExternalComponents());
-    }
-  };
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(App);
+export default App;

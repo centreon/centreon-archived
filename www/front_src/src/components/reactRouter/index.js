@@ -1,9 +1,10 @@
 import React, { Component, Suspense } from "react";
 import { connect } from "react-redux";
 import { Switch, Route } from "react-router-dom";
-import { history } from "../../store";
+import { batchActions } from "redux-batched-actions";
+import { fetchAclRoutes } from "../../redux/actions/navigationActions";
+import { fetchExternalComponents } from "../../redux/actions/externalComponentsActions";
 import { reactRoutes } from "../../route-maps";
-import ReactRoute from '../router/reactRoute';
 import { dynamicImport } from "../../utils/dynamicImport";
 import centreonAxios from "../../axios";
 import centreonConfig from "../../config";
@@ -12,6 +13,14 @@ import styles from "../../styles/partials/_content.scss";
 
 // class to manage internal react pages
 class ReactRouter extends Component {
+
+  componentDidMount() {
+    const { fetchAclRoutesAndExternalComponents } = this.props;
+
+    // 1 - fetch allowed react routes
+    // 2 - fetch external components (pages, hooks...)
+    fetchAclRoutesAndExternalComponents();
+  }
 
   getLoadableComponents = () => {
     const { acl, pages } = this.props;
@@ -56,12 +65,6 @@ class ReactRouter extends Component {
     return LoadableComponents;
   }
 
-  shouldComponentUpdate(nextProps) {
-    const { acl, fetched } = this.props;
-    return (JSON.stringify(acl.routes) === JSON.stringify(nextProps.acl.routes)) || (fetched === false && nextProps.fetched === true);
-    //return (acl.loaded === false && nextProps.acl.loaded === true) || (fetched === false && nextProps.fetched === true);
-  }
-
   render() {
     const { acl, fetched } = this.props;
 
@@ -72,21 +75,23 @@ class ReactRouter extends Component {
     const LoadableComponents = this.getLoadableComponents();
 
     return (
-      <Suspense fallback="">
+      <Switch>
         {reactRoutes.map(({ path, comp, ...rest }) => (
-          <ReactRoute
-            history={history}
+          <Route
+            key={path}
             path={path}
             exact="true"
             component={acl.routes.includes(path) ? comp : NotAllowedPage}
             {...rest}
           />
         ))}
-        {LoadableComponents}
-        {fetched &&
+        <Suspense fallback="">
+          {LoadableComponents}
+        </Suspense>
+        {fetched && // wait external components are fetched to avoid quick display of "not allowed" page
           <Route component={NotAllowedPage} />
         }
-      </Suspense>
+      </Switch>
     );
   };
 }
@@ -97,4 +102,13 @@ const mapStateToProps = ({ navigation, externalComponents }) => ({
   fetched: externalComponents.fetched,
 });
 
-export default connect(mapStateToProps)(ReactRouter);
+const mapDispatchToProps = dispatch => {
+  return {
+    fetchAclRoutesAndExternalComponents: () => {
+      // batch actions to avoid useless multiple rendering
+      dispatch(batchActions([fetchAclRoutes(), fetchExternalComponents()]));
+    }
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(ReactRouter);

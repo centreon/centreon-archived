@@ -9,10 +9,12 @@ import NotAllowedPage from '../../route-components/notAllowedPage';
 // class to manage internal react pages
 class InternalRouter extends Component {
 
+  /*
   shouldComponentUpdate(nextProps) {
     const { acl } = this.props;
     return (acl.loaded === false && nextProps.acl.loaded === true);
   }
+  */
 
   render() {
     const { acl } = this.props;
