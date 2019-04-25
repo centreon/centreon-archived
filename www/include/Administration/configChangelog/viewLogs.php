@@ -207,17 +207,15 @@ if (!empty($searchO) || !empty($searchU) || $otype != 0) {
         $valuesToBind[':object_type'] = $objects_type_tab[$otype];
     }
 }
-$logQuery .= " ORDER BY action_log_date DESC LIMIT :from, :nbr_element";
+$logQuery .= " ORDER BY action_log_date DESC LIMIT :from, :nbrElement";
 $prepareSelect = $pearDBO->prepare($logQuery);
 foreach ($valuesToBind as $label => $value) {
     $prepareSelect->bindValue($label, $value, \PDO::PARAM_STR);
 }
 $prepareSelect->bindValue(':from', $num * $limit, \PDO::PARAM_INT);
-$prepareSelect->bindValue(':nbr_element', $limit, \PDO::PARAM_INT);
+$prepareSelect->bindValue(':nbrElement', $limit, \PDO::PARAM_INT);
 
 $rows = 0;
-
-include "./include/common/checkPagination.php";
 
 $elemArray = array();
 if ($prepareSelect->execute()) {
@@ -342,6 +340,7 @@ if ($prepareSelect->execute()) {
         }
     }
 }
+include "./include/common/checkPagination.php";
 
 
 /*
