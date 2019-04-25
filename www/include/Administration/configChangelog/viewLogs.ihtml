@@ -22,7 +22,7 @@
     <tr class="ToolbarTR">
         <td style='width:30%;'><input name="p" value="{$p}" type="hidden">&nbsp;</td>
         {php}
-           include('./include/common/pagination.php');
+           include './include/common/pagination.php';
         {/php}
     </tr>
 </table>

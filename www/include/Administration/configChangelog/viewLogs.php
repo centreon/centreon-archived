@@ -1,7 +1,7 @@
 <?php
 /*
- * Copyright 2005-2015 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2019 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -37,7 +37,7 @@ if (!isset($centreon)) {
     exit();
 }
 
-require_once("./include/common/autoNumLimit.php");
+require_once "./include/common/autoNumLimit.php";
 
 /**
  * Search a contact by username or alias
@@ -52,12 +52,12 @@ function searchUserName($username)
     
     $contactIds = [];
     $prepareContact = $pearDB->prepare(
-        "SELECT contact_id FROM contact "
-        . "WHERE contact_name LIKE :contact_name "
-        . "OR contact_alias LIKE :contact_alias"
+        "SELECT contact_id FROM contact " .
+        "WHERE contact_name LIKE :contact_name " .
+        "OR contact_alias LIKE :contact_alias"
     );
-    $prepareContact->bindValue(':contact_name', "%$username%", \PDO::PARAM_STR);
-    $prepareContact->bindValue(':contact_alias', "%$username%", \PDO::PARAM_STR);
+    $prepareContact->bindValue(':contact_name', "%" . $username . "%", \PDO::PARAM_STR);
+    $prepareContact->bindValue(':contact_alias', "%" . $username . "%", \PDO::PARAM_STR);
     if ($prepareContact->execute()) {
         while ($contact = $prepareContact->fetch(\PDO::FETCH_ASSOC)) {
             $contactIds[] = (int) $contact['contact_id'];
@@ -75,7 +75,7 @@ $path = "./include/Administration/configChangelog/";
  * PHP functions
  */
 require_once "./include/common/common-Func.php";
-require_once("./class/centreonDB.class.php");
+require_once "./class/centreonDB.class.php";
 
 /*
  * Connect to Centstorage Database
@@ -83,12 +83,11 @@ require_once("./class/centreonDB.class.php");
 $pearDBO = new CentreonDB("centstorage");
 
 $contactList = array();
-$DBRES = $pearDB->query(
+$dbResult = $pearDB->query(
     "SELECT contact_id, contact_name, contact_alias FROM contact"
 );
-while ($row = $DBRES->fetchRow()) {
-    $contactList[$row["contact_id"]] =
-        $row["contact_name"] . " (" . $row["contact_alias"] . ")";
+while ($row = $dbResult->fetch()) {
+    $contactList[$row["contact_id"]] = $row["contact_name"] . " (" . $row["contact_alias"] . ")";
 }
 
 $searchO = null;
