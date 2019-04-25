@@ -58,15 +58,24 @@ use CentreonClapi\CentreonACL;
 
 class ServiceProvider implements AutoloadServiceProviderInterface
 {
+    //webservices
     const CENTREON_WEBSERVICE = 'centreon.webservice';
-    const CENTREON_DB_MANAGER = 'centreon.db-manager';
-    const CENTREON_CLAPI = 'centreon.clapi';
+    const MENU_WEBSERVICE = 'centreon.menu.webservice';
+
+    //services
     const CENTREON_I18N_SERVICE = 'centreon.i18n_service';
     const CENTREON_FRONTEND_COMPONENT_SERVICE = 'centreon.frontend_component_service';
+    const CENTREON_BROKER_CONFIGURATION_SERVICE = 'centreon.broker_configuration_service';
+
+    //repositories
     const CENTREON_BROKER_REPOSITORY = 'centreon.broker_repository';
     const CENTREON_BROKER_INFO_REPOSITORY = 'centreon.broker_info_repository';
-    const CENTREON_BROKER_CONFIGURATION_SERVICE = 'centreon.broker_configuration_service';
+
+    //managers and infrastructure services
+    const CENTREON_DB_MANAGER = 'centreon.db-manager';
+    const CENTREON_CLAPI = 'centreon.clapi';
     const UPLOAD_MANGER = 'upload.manager';
+
 
     /**
      * Register Centreon services
