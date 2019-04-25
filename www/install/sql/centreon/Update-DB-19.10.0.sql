@@ -53,3 +53,10 @@ ALTER TABLE `traps_service_relation` DROP COLUMN `tsr_id`;
 --
 ALTER TABLE `acl_groups` MODIFY COLUMN `acl_group_changed` int(11) NOT NULL DEFAULT 1;
 ALTER TABLE `widget_models` MODIFY COLUMN `description` TEXT NOT NULL;
+
+--
+-- Remove modules *_files flags.
+--
+ALTER TABLE `modules_informations` DROP COLUMN `lang_files`;
+ALTER TABLE `modules_informations` DROP COLUMN `sql_files`;
+ALTER TABLE `modules_informations` DROP COLUMN `php_files`;

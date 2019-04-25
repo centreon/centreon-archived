@@ -65,9 +65,6 @@ class ModuleSourceTest extends TestCase
         'infos' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent id ante neque.',
         'is_removeable' => '1',
         'author' => 'Centreon',
-        'lang_files' => '0',
-        'sql_files' => '1',
-        'php_files' => '0',
         'stability' => 'alpha',
         'last_update' => '2001-01-01',
         'release_note' => 'http://localhost',
@@ -235,7 +232,7 @@ class ModuleSourceTest extends TestCase
 //    {
 //        $moduleSource = new ModuleSource($this->containerWrap);
 //        $result = $this->invokeMethod($moduleSource, 'getModuleConf', [static::getConfFilePath()]);
-//        //'php://filter/read=string.rot13/resource=' . 
+//        //'php://filter/read=string.rot13/resource=' .
 //    }
 
     public static function getConfFilePath(): string
