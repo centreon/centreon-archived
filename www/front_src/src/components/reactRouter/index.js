@@ -46,6 +46,7 @@ class ReactRouter extends Component {
         const Page = React.lazy(() => dynamicImport(parameter));
         LoadableComponents.push(
           <Route
+            key={path}
             path={path}
             exact="true"
             render={renderProps => (
@@ -75,23 +76,23 @@ class ReactRouter extends Component {
     const LoadableComponents = this.getLoadableComponents();
 
     return (
-      <Switch>
-        {reactRoutes.map(({ path, comp, ...rest }) => (
-          <Route
-            key={path}
-            path={path}
-            exact="true"
-            component={acl.routes.includes(path) ? comp : NotAllowedPage}
-            {...rest}
-          />
-        ))}
-        <Suspense fallback="">
+      <Suspense fallback={null}>
+        <Switch>
+          {reactRoutes.map(({ path, comp, ...rest }) => (
+            <Route
+              key={path}
+              path={path}
+              exact="true"
+              component={acl.routes.includes(path) ? comp : NotAllowedPage}
+              {...rest}
+            />
+          ))}
           {LoadableComponents}
-        </Suspense>
-        {fetched && // wait external components are fetched to avoid quick display of "not allowed" page
-          <Route component={NotAllowedPage} />
-        }
-      </Switch>
+          {fetched && // wait external components are fetched to avoid quick display of "not allowed" page
+            <Route component={NotAllowedPage}/>
+          }
+        </Switch>
+      </Suspense>
     );
   };
 }

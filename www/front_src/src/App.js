@@ -4,9 +4,8 @@ import Header from "./components/header";
 import { Switch, Route } from "react-router-dom";
 import { ConnectedRouter } from "react-router-redux";
 import { history } from "./store";
-import LegacyRouter from "./components/legacyRouter";
 import ReactRouter from "./components/reactRouter";
-import LegacyPage from "./route-components/legacyPage";
+import LegacyRoute from "./route-components/legacyRoute";
 
 import NavigationComponent from "./components/navigation";
 import Tooltip from "./components/tooltip";
@@ -107,7 +106,7 @@ class App extends Component {
               >
                 <div className={styles["main-content"]}>
                   <Switch>
-                    <Route path="/main.php" exact component={LegacyPage}/>
+                    <Route path="/main.php" exact component={LegacyRoute}/>
                     <Route path="/" exact render={() => (<Redirect to="/main.php"/>)}/>
                     <Route path="/" component={ReactRouter}/>
                   </Switch>

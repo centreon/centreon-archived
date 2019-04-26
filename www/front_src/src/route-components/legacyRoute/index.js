@@ -4,7 +4,7 @@ import styles from '../../components/header/header.scss';
 import loaderStyles from '../../components/loader/loader.scss';
 import Loader from "../../components/loader";
 
-class LegacyPage extends Component {
+class LegacyRoute extends Component {
 
   constructor(props) {
     super(props);
@@ -122,4 +122,4 @@ class LegacyPage extends Component {
   }
 }
 
-export default LegacyPage;
+export default LegacyRoute;

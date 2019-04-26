@@ -7,43 +7,35 @@ import centreonConfig from "../../config";
 // class to dynamically import component from modules
 class Hook extends Component {
 
-  state = {
-    LoadableComponents: []
-  };
+  getLoadableHooks = () => {
+    const { hooks, path, ...rest } = this.props;
 
-  // get hooks from redux and convert these in react components
-  getLoadableComponents = () => {
-    const { hooks, path } = this.props;
-
-    let LoadableComponents = [];
+    let LoadableHooks = [];
     for (const [hook, parameters] of Object.entries(hooks)) {
       if (hook === path) {
         for (const parameter of parameters) {
-          LoadableComponents.push({
-            key: parameter.js,
-            component: React.lazy(() => dynamicImport(parameter))
-          });
+          const LoadableHook = React.lazy(() => dynamicImport(parameter));
+          LoadableHooks.push(
+            <LoadableHook
+              key={`hook_${parameter.js}`}
+              centreonAxios={centreonAxios}
+              centreonConfig={centreonConfig}
+              {...rest}
+            />
+          );
         }
       }
     }
 
-    return LoadableComponents;
+    return LoadableHooks;
   }
 
   render() {
-    const { path, hooks, ...props } = this.props;
-    const LoadableComponents = this.getLoadableComponents();
+    const LoadableHooks = this.getLoadableHooks();
 
     return (
       <Suspense fallback="">
-        {LoadableComponents.map(({ key, component: LoadableComponent}) => (
-          <LoadableComponent
-            key={key}
-            centreonConfig={centreonConfig}
-            centreonAxios={centreonAxios}
-            {...props}
-          />
-        ))}
+        {LoadableHooks}
       </Suspense>
     );
   };
