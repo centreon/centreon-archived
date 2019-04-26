@@ -156,7 +156,7 @@ class CentreonLogAction
     }
 
     /*
-     *  returns list of modifications
+     *  returns list of host for this service
      */
     public function getHostId($service_id)
     {
