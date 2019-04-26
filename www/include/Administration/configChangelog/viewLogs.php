@@ -330,7 +330,7 @@ if ($prepareSelect->execute()) {
                         "modification_type" => $tabAction[$res['action_type']],
                         "author" => $contactList[$res['log_contact_id']],
                         "change" => $tabAction[$res['action_type']],
-                        "host" => "<i>Linked to a removed resource</i>",
+                        "host" => "<i>Linked resource as changed</i>",
                         "badge" => $badge[$tabAction[$res['action_type']]]
                     );
                 }
