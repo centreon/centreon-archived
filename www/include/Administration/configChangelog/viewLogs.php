@@ -215,9 +215,8 @@ foreach ($valuesToBind as $label => $value) {
 $prepareSelect->bindValue(':from', $num * $limit, \PDO::PARAM_INT);
 $prepareSelect->bindValue(':nbrElement', $limit, \PDO::PARAM_INT);
 
-$rows = 0;
-
 $elemArray = array();
+$rows = 0;
 if ($prepareSelect->execute()) {
     $rows = $pearDBO->query("SELECT FOUND_ROWS()")->fetchColumn();
     while ($res = $prepareSelect->fetch(\PDO::FETCH_ASSOC)) {
@@ -319,6 +318,21 @@ if ($prepareSelect->execute()) {
                         "hostgroups" => $hostgroups,
                         "badge" => $badge[$tabAction[$res['action_type']]]
                     );
+                } else {
+                    // as the relation may have been deleted since the event,
+                    // some relations can't be found for this service, while events have been saved for it in the DB
+                    $elemArray[] = array(
+                        "date" => $res['action_log_date'],
+                        "type" => $res['object_type'],
+                        "object_name" => $objectName,
+                        "action_log_id" => $res['action_log_id'],
+                        "object_id" => $res['object_id'],
+                        "modification_type" => $tabAction[$res['action_type']],
+                        "author" => $contactList[$res['log_contact_id']],
+                        "change" => $tabAction[$res['action_type']],
+                        "host" => "<i>Linked to a removed resource</i>",
+                        "badge" => $badge[$tabAction[$res['action_type']]]
+                    );
                 }
                 unset($host_name);
                 unset($hg_name);
@@ -367,7 +381,6 @@ $tpl->assign('contact', _("Contact"));
  */
 $tpl->assign('limit', $limit);
 $tpl->assign('rows', $rows);
-
 $tpl->assign('p', $p);
 $tpl->assign('elemArray', $elemArray);
 
