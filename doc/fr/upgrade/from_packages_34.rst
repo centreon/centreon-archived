@@ -1,11 +1,9 @@
-.. _upgrade_from_packages:
-
 ===============================
-Mise à jour vers Centreon 18.10
+Mise à jour depuis Centreon 3.4
 ===============================
 
 Ce chapitre décrit la procédure de mise à jour de votre plate-forme vers
-Centreon 18.10.
+Centreon 19.04.
 
 .. warning::
     A la fin de cette procédure, les utilisateurs de Centreon EMS devront demander de
@@ -16,7 +14,7 @@ Centreon 18.10.
     partir des dépôts Centreon 3.4 sur des distributions **Red Hat / CentOS en
     version 7**.
 
-    Si cela n'est pas le cas, se référer à la procédure de :ref:`migration<upgradecentreon1810>`.
+    Si cela n'est pas le cas, se référer à la procédure de :ref:`migration <upgradecentreon1904>`.
 
 Pour mettre à jour votre serveur Centreon Map, référez-vous à la `documentation associée
 <https://documentation.centreon.com/docs/centreon-map-4/en/latest/upgrade/index.html>`_.
@@ -56,8 +54,7 @@ Il est maintenant nécessaire de mettre à jour le dépôt Centreon.
 
 Exécutez la commande suivante : ::
 
-    # wget http://yum.centreon.com/standard/18.10/el7/stable/noarch/RPMS/centreon-release-18.10-2.el7.centos.noarch.rpm -O /tmp/centreon-release-18.10-2.el7.centos.noarch.rpm
-    # yum install --nogpgcheck /tmp/centreon-release-18.10-2.el7.centos.noarch.rpm
+    # yum install -y http://yum.centreon.com/standard/19.04/el7/stable/noarch/RPMS/centreon-release-19.04-1.el7.centos.noarch.rpm
 
 Mise à jour de la solution Centreon
 ===================================
@@ -88,9 +85,12 @@ Redémarrez les services en Executer les commandes suivantes : ::
 
     # systemctl enable rh-php71-php-fpm
     # systemctl start rh-php71-php-fpm
-    # systemctl restart httpd24-httpd
-    # systemctl restart cbd
-    # systemctl restart centengine
+    # systemctl stop httpd
+    # systemctl disable httpd
+    # systemctl enable httpd24-httpd
+    # systemctl start httpd24-httpd
+    # systemctl enable centreon
+    # systemctl restart centreon
 
 Finalisation de la mise à jour
 ==============================
@@ -136,8 +136,7 @@ Installation des dépôts
 
 Exécutez la commande suivante : ::
 
-    # wget http://yum.centreon.com/standard/18.10/el7/stable/noarch/RPMS/centreon-release-18.10-2.el7.centos.noarch.rpm -O /tmp/centreon-release-18.10-2.el7.centos.noarch.rpm
-    # yum install --nogpgcheck /tmp/centreon-release-18.10-2.el7.centos.noarch.rpm
+    # yum install -y http://yum.centreon.com/standard/19.04/el7/stable/noarch/RPMS/centreon-release-19.04-1.el7.centos.noarch.rpm
 
 Mise à jour de la solution Centreon
 ===================================
@@ -161,4 +160,4 @@ Mise à jour des serveurs Poller Display
 ***************************************
 
 Référez-vous à la documentation de :ref:`migration d'un serveur Poller Display
-vers Remote Server 18.10 <migratefrompollerdisplay>`.
+vers Remote Server 19.04 <migratefrompollerdisplay>`.

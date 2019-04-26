@@ -1,5 +1,7 @@
 import React, { Component, Suspense } from "react";
 import { connect } from "react-redux";
+import classnames from 'classnames';
+import styles from './header.scss';
 
 import Hook from "../hook";
 
@@ -34,12 +36,12 @@ class TopHeader extends Component {
 
   render() {
     return (
-      <header class="header">
-        <div class="header-icons">
-          <div class="wrap wrap-left">
+      <header className={styles["header"]}>
+        <div className={styles["header-icons"]}>
+          <div className={classnames(styles["wrap"], styles["wrap-left"])}>
             <PollerMenu />
           </div>
-          <div class="wrap wrap-right">
+          <div className={classnames(styles["wrap"], styles["wrap-right"])}>
             <Hook
               path="/header/topCounter"
             />

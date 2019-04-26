@@ -114,6 +114,10 @@ This part can be used set the operation of the CentCore process.
 LDAP
 ****
 
+.. note::
+    If you want to use SSO for authentication, please read this
+    :ref:`procedure <sso>`. 
+
 This part can be used to configure the connection to LDAP directories.
 
 To add a new directory:

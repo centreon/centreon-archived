@@ -7,7 +7,6 @@ Feature: HostTemplateBasicsOperations
         Given I am logged in a Centreon server
         And a host template is configured
 
-    @critical
     Scenario: I test the modification of a host template properties
         When I change the properties of a host template
         Then the properties are updated

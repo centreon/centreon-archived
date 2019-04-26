@@ -24,5 +24,6 @@ réaliser une sauvegarde.
 .. toctree::
     :maxdepth: 2
 
-    from_packages
+    from_packages_1810
+    from_packages_34
     from_sources

@@ -1,7 +1,7 @@
 <?php
 /*
- * Copyright 2005-2015 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2019 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -33,7 +33,7 @@
  *
  */
 
-require_once realpath(dirname(__FILE__) . "/../../../../../../config/centreon.config.php");
+require_once realpath(__DIR__ . "/../../../../../../config/centreon.config.php");
 require_once realpath(__DIR__ . "/../../../../../../bootstrap.php");
 include_once _CENTREON_PATH_ . "www/class/centreonXMLBGRequest.class.php";
 include_once _CENTREON_PATH_ . "www/class/centreonInstance.class.php";
@@ -169,8 +169,9 @@ if (!$obj->is_admin) {
         $obj->access->queryBuilder("AND", "centreon_acl.group_id", $obj->grouplistStr);
 }
 if ($search != "") {
-    $rq1 .= " AND (h.name LIKE '%" . CentreonDB::escape($search) . "%' OR h.alias LIKE '%" .
-        CentreonDB::escape($search) . "%' OR h.address LIKE '%" . CentreonDB::escape($search) . "%') ";
+    $rq1 .= " AND (h.name LIKE '%" . CentreonDB::escape($search) . "%' " .
+        "OR h.alias LIKE '%" . CentreonDB::escape($search) . "%' " .
+        "OR h.address LIKE '%" . CentreonDB::escape($search) . "%') ";
 }
 
 if ($statusHost == "h_unhandled") {
@@ -193,7 +194,9 @@ if ($statusFilter == "up") {
 }
 
 if ($hostgroups) {
-    $rq1 .= " AND h.host_id = hhg.host_id AND hg.hostgroup_id IN ($hostgroups) AND hhg.hostgroup_id = hg.hostgroup_id";
+    $rq1 .= " AND h.host_id = hhg.host_id " .
+        "AND hg.hostgroup_id IN (" . $hostgroups . ") " .
+        "AND hhg.hostgroup_id = hg.hostgroup_id";
 }
 
 if ($instance != -1 && !empty($instance)) {
@@ -237,21 +240,23 @@ $rq1 .= " LIMIT " . ($num * $limit) . "," . $limit;
 
 $ct = 0;
 $flag = 0;
-$DBRESULT = $obj->DBC->query($rq1);
+$dbResult = $obj->DBC->query($rq1);
 $numRows = $obj->DBC->numberRows();
 
 /**
  * Get criticality ids
  */
-$critRes = $obj->DBC->query("SELECT value, host_id 
-                                     FROM customvariables
-                                     WHERE name = 'CRITICALITY_ID'
-                                     AND service_id IS NULL");
+$critRes = $obj->DBC->query(
+    "SELECT value, host_id " .
+    "FROM customvariables " .
+    "WHERE name = 'CRITICALITY_ID' " .
+    "AND service_id IS NULL"
+);
 $criticalityUsed = 0;
 $critCache = array();
-if ($critRes->rowCount()) {
+if ($obj->DBC->numberRows()) {
     $criticalityUsed = 1;
-    while ($critRow = $critRes->fetchRow()) {
+    while ($critRow = $critRes->fetch()) {
         $critCache[$critRow['host_id']] = $critRow['value'];
     }
 }
@@ -273,7 +278,7 @@ $obj->XML->writeElement("use_criticality", $criticalityUsed);
 $obj->XML->endElement();
 
 $delimInit = 0;
-while ($data = $DBRESULT->fetchRow()) {
+while ($data = $dbResult->fetch()) {
     if ($data["last_state_change"] > 0 && time() > $data["last_state_change"]) {
         $duration = CentreonDuration::toString(time() - $data["last_state_change"]);
     } else {
@@ -440,7 +445,7 @@ while ($data = $DBRESULT->fetchRow()) {
 
     $obj->XML->endElement();
 }
-$DBRESULT->closeCursor();
+$dbResult->closeCursor();
 
 if (!$ct) {
     $obj->XML->writeElement("infos", "none");

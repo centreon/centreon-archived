@@ -1,10 +1,8 @@
-.. _upgrade_from_packages:
-
 ===========================
-Upgrading to Centreon 18.10
+Upgrading from Centreon 3.4
 ===========================
 
-This chapter describes how to upgrade your platform to version Centreon 18.10.
+This chapter describes how to upgrade your platform to version Centreon 19.04.
 
 .. warning::
     Upon completing the upgrade procedure, Centreon EMS users will have to request a new
@@ -14,7 +12,7 @@ This chapter describes how to upgrade your platform to version Centreon 18.10.
     This procedure only applies to Centreon platforms installed from Centreon 3.4
     packages on **Red Hat / CentOS version 7** distributions.
 
-    If this is not the case, refer to the procedure in :ref:`migration<upgradecentreon1810>`.
+    If this is not the case, refer to the procedure in :ref:`migration<upgradecentreon1904>`.
 
 To upgrade your Centreon MAP server, refer to the `related documentation
 <https://documentation.centreon.com/docs/centreon-map-4/en/latest/upgrade/index.html>`_.
@@ -54,8 +52,7 @@ Upgrading the Centreon Repository
 
 Run the following commands: ::
 
-    # wget http://yum.centreon.com/standard/18.10/el7/stable/noarch/RPMS/centreon-release-18.10-2.el7.centos.noarch.rpm -O /tmp/centreon-release-18.10-2.el7.centos.noarch.rpm
-    # yum install --nogpgcheck /tmp/centreon-release-18.10-2.el7.centos.noarch.rpm
+    # yum install -y http://yum.centreon.com/standard/19.04/el7/stable/noarch/RPMS/centreon-release-19.04-1.el7.centos.noarch.rpm
 
 Updating the Centreon solution
 ==============================
@@ -85,9 +82,12 @@ Restart the services by running the following commands: ::
 
     # systemctl enable rh-php71-php-fpm
     # systemctl start rh-php71-php-fpm
-    # systemctl restart httpd24-httpd
-    # systemctl restart cbd
-    # systemctl restart centengine
+    # systemctl stop httpd
+    # systemctl disable httpd
+    # systemctl enable httpd24-httpd
+    # systemctl start httpd24-httpd
+    # systemctl enable centreon
+    # systemctl restart centreon
 
 Finalizing the upgrade
 ======================
@@ -132,8 +132,7 @@ Upgrading the repository
 
 Run the following command: ::
 
-    # wget http://yum.centreon.com/standard/18.10/el7/stable/noarch/RPMS/centreon-release-18.10-2.el7.centos.noarch.rpm -O /tmp/centreon-release-18.10-2.el7.centos.noarch.rpm
-    # yum install --nogpgcheck /tmp/centreon-release-18.10-2.el7.centos.noarch.rpm
+    # yum install -y http://yum.centreon.com/standard/19.04/el7/stable/noarch/RPMS/centreon-release-19.04-1.el7.centos.noarch.rpm
 
 Upgrading the Centreon solution
 ===============================
@@ -157,4 +156,4 @@ Restart the services by executing the following commands: ::
 Upgrading the Centreon Poller Display
 *************************************
 
-Refer to the :ref:`migration procedure for Poller Display <migratefrompollerdisplay>`.
+Refer to the :ref:`migration procedure for Poller Display to Remote Server 19.04 <migratefrompollerdisplay>`.

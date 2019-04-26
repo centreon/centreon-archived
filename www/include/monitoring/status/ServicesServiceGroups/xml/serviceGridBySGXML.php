@@ -145,11 +145,8 @@ if ($instance != -1) {
         PDO::PARAM_INT => $instance
     ];
 }
-$query .= "ORDER BY sg.name :order "
-    . "LIMIT :numLimit, :limit";
-$queryValues[':order'] = [
-    PDO::PARAM_INT => $instance
-];
+$query .= "ORDER BY sg.name " . $order
+    . " LIMIT :numLimit, :limit";
 $queryValues[':numLimit'] = [
     PDO::PARAM_INT => (int) ($num * $limit)
 ];

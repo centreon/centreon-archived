@@ -8,7 +8,6 @@ Feature: REST API
     When REST API are called
     Then they reply as per specifications
 
-  @critical
   Scenario: Realtime REST API tests
     Given a Centreon server with REST API testing data
     When realtime REST API are called

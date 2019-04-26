@@ -114,9 +114,8 @@ class CentreonAuthLDAP
         /* Validate if user exists in this resource */
         } elseif (isset($this->contactInfos['contact_ldap_dn'])
             && $this->contactInfos['contact_ldap_dn'] != ''
-            && $this->ldap->findUserDn(
-                $this->contactInfos['contact_alias']
-            ) !== $this->contactInfos['contact_ldap_dn']) {
+            && $this->ldap->findUserDn($this->contactInfos['contact_alias']) !== $this->contactInfos['contact_ldap_dn']
+        ) {
             return 0;
         }
 
@@ -134,7 +133,7 @@ class CentreonAuthLDAP
 
         /*
          * In some case, we fallback to local Auth
-         * 0 : Bind succesfull => Default case
+         * 0 : Bind successful => Default case
          * 2 : Protocol error
          * -1 : Can't contact LDAP server (php4) => Fallback
          * 51 : Server is busy => Fallback
@@ -269,7 +268,7 @@ class CentreonAuthLDAP
 
                 // try to update user groups from AD
                 try {
-                    include_once(realpath(dirname(__FILE__) .  '/centreonContactgroup.class.php'));
+                    include_once(realpath(__DIR__ .  '/centreonContactgroup.class.php'));
                     $cgs = new CentreonContactgroup($this->pearDB);
                     $cgs->syncWithLdap();
                 } catch (\Exception $e) {

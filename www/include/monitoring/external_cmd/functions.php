@@ -63,7 +63,7 @@ function write_command($cmd, $poller)
     }
     setlocale(LC_CTYPE, 'en_US.UTF-8');
 
-    $str = "echo " . escapeshellarg("EXTERNALCMD:$poller:[" . time() . "]" . $cmd . "\n") . " >> " . $destination;
+    $str = "echo " . escapeshellarg("EXTERNALCMD:$poller:[" . time() . "]" . $cmd) . " >> " . $destination;
     return passthru($str);
 }
 

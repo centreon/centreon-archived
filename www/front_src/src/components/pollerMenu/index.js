@@ -1,9 +1,11 @@
 import React, { Component } from "react";
 import PropTypes from 'prop-types';
+import classnames from 'classnames';
+import styles from '../header/header.scss';
 import config from "../../config";
-import {Translate} from 'react-redux-i18n';
-import {I18n} from "react-redux-i18n";
+import { Translate, I18n } from 'react-redux-i18n';
 import axios from "../../axios";
+import { Link } from "react-router-dom";
 
 import { connect } from "react-redux";
 
@@ -28,26 +30,26 @@ const getPollerStatusIcon = issues => {
   let latencyClass = getIssueClass(issues, 'latency');
 
   return (
-    <React.Fragment>
-      <span class={`wrap-left-icon round ${databaseClass}`}>
+    <>
+      <span className={classnames(styles["wrap-left-icon"], styles["round"], styles[databaseClass])}>
         <span
-          class="iconmoon icon-database"
+          className={classnames(styles["iconmoon"], styles["icon-database"])}
           title={databaseClass === 'green' ?
              I18n.t('OK: all database poller updates are active') :
              I18n.t('Some database poller updates are not active; check your configuration')
           }
         />
       </span>
-      <span class={`wrap-left-icon round ${latencyClass}`}>
+      <span className={classnames(styles["wrap-left-icon"], styles["round"], styles[latencyClass])}>
         <span
-          class="iconmoon icon-clock"
+          className={classnames(styles["iconmoon"], styles["icon-clock"])}
           title={latencyClass == 'green' ?
              I18n.t('OK: no latency detected on your platform') :
              I18n.t('Latency detected, check configuration for better optimization')
           }
         />
       </span>
-    </React.Fragment>
+    </>
   );
 };
 
@@ -135,21 +137,21 @@ class PollerMenu extends Component {
     const statusIcon = getPollerStatusIcon(data.issues);
 
     return (
-      <div class={"wrap-left-pollers" + (toggled ? " submenu-active" : "")}>
+      <div className={classnames(styles["wrap-left-pollers"], {[styles["submenu-active"]]: toggled})}>
         {statusIcon}
         <div ref={poller => this.poller = poller}>
-          <span class="wrap-left-icon pollers" onClick={this.toggle}>
-            <span class="iconmoon icon-poller" />
-            <span class="wrap-left-icon__name"><Translate value="Pollers"/></span>
+          <span className={classnames(styles["wrap-left-icon"], styles["pollers"])} onClick={this.toggle}>
+            <span className={classnames(styles["iconmoon"], styles["icon-poller"])} />
+            <span className={styles["wrap-left-icon__name"]}><Translate value="Pollers"/></span>
           </span>
-          <span class="toggle-submenu-arrow" onClick={this.toggle} >{this.props.children}</span>
-          <div class="submenu pollers">
-            <div class="submenu-inner">
-              <ul class="submenu-items list-unstyled">
-                <li class="submenu-item">
-                  <span class="submenu-item-link">
+          <span className={styles["toggle-submenu-arrow"]} onClick={this.toggle} >{this.props.children}</span>
+          <div className={classnames(styles["submenu"], styles["pollers"])}>
+            <div className={styles["submenu-inner"]}>
+              <ul className={classnames(styles["submenu-items"], styles["list-unstyled"])}>
+                <li className={styles["submenu-item"]}>
+                  <span className={styles["submenu-item-link"]}>
                     <Translate value="All pollers"/>
-                    <span class="submenu-count">{data.total ? data.total : "..."}</span>
+                    <span className={styles["submenu-count"]}>{data.total ? data.total : "..."}</span>
                   </span>
                 </li>
                 {data.issues
@@ -165,10 +167,10 @@ class PollerMenu extends Component {
                     }
 
                     return (
-                      <li class="submenu-top-item">
-                        <span class="submenu-top-item-link">
+                      <li className={styles["submenu-top-item"]}>
+                        <span className={styles["submenu-top-item-link"]}>
                           {message}
-                          <span class="submenu-top-count">
+                          <span className={styles["submenu-top-count"]}>
                             {issue.total ? issue.total : "..."}
                           </span>
                         </span>
@@ -182,10 +184,10 @@ class PollerMenu extends Component {
                               }
                               return (
                                 <span
-                                  class="submenu-top-item-link"
+                                  className={styles["submenu-top-item-link"]}
                                   style={{ padding: "0px 16px 17px" }}
                                 >
-                                  <span class={"dot-colored " + color}>
+                                  <span className={classnames(styles["dot-colored"], styles[color])}>
                                     {poller.name}
                                   </span>
                                 </span>
@@ -198,14 +200,19 @@ class PollerMenu extends Component {
                   })
                 : null}
                 {allowPollerConfiguration && /* display poller configuration button if user is allowed */
-                  <a href={config.urlBase + "main.php?p=" + POLLER_CONFIGURATION_TOPOLOGY_PAGE}>
+                  <Link to={"/main.php?p=" + POLLER_CONFIGURATION_TOPOLOGY_PAGE}>
                     <button
                       onClick={this.toggle}
-                      class="btn btn-big btn-green submenu-top-button"
+                      className={classnames(
+                        styles["btn"],
+                        styles["btn-big"],
+                        styles["btn-green"],
+                        styles["submenu-top-button"]
+                      )}
                     >
                       <Translate value="Configure pollers"/>
                     </button>
-                  </a>
+                  </Link>
                 }
               </ul>
             </div>

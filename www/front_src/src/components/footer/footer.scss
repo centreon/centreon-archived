@@ -1,3 +1,6 @@
+@import "../../styles/partials/variables";
+@import "../../styles/partials/helpers";
+
 .footer {
   position: fixed;
   bottom: 0;
@@ -45,7 +48,7 @@
     }
   }
 }
-.sidebar.active + #content .footer {
+.sidebar.active + .content .footer {
   left: 160px;
 }
 .full-screen {

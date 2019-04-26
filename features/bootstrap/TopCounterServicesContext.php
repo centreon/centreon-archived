@@ -130,13 +130,13 @@ class TopCounterServicesContext extends CentreonContext
             function ($context) {
                 return $context->getSession()->getPage()->has(
                     'css',
-                    '.wrap-right-services .icon-services'
+                    '[class*="wrap-right-services"] [class*="icon-services"]'
                 );
             },
             'Home not load.',
             5
         );
-        $this->assertFind('css', '.wrap-right-services .icon-services')->click();
+        $this->assertFind('css', '[class*="wrap-right-services"] [class*="icon-services"]')->click();
     }
 
     /**
@@ -146,7 +146,7 @@ class TopCounterServicesContext extends CentreonContext
     {
         $this->spin(
             function ($context) {
-                $element = $context->getSession()->getPage()->find('css', '.submenu.services');
+                $element = $context->getSession()->getPage()->find('css', '[class*="services"] [class*="submenu"]');
                 return $element->isVisible();
             },
             'The summary of services status is not open',

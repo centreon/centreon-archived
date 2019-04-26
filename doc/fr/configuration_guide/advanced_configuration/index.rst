@@ -5,7 +5,7 @@ Configuration avancée
 Voici toutes les fonctions de configuration avancées. 
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 1
 
    macros
    metaservices

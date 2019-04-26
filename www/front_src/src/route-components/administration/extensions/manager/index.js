@@ -26,6 +26,7 @@ class ExtensionsRoute extends Component {
     modulesActive: true,
     modalDetailsActive: false,
     modalDetailsLoading: false,
+    modalDetailsType: "module",
     not_installed: true,
     installed: true,
     updated: true,
@@ -363,7 +364,7 @@ class ExtensionsRoute extends Component {
   hideExtensionDetails = () => {
     this.setState({
       modalDetailsActive: false,
-      modalDetailsLoading: false
+      modalDetailsLoading: false,
     });
   };
 
@@ -371,7 +372,8 @@ class ExtensionsRoute extends Component {
     this.setState(
       {
         modalDetailsActive: true,
-        modalDetailsLoading: true
+        modalDetailsLoading: true,
+        modalDetailsType: type,
       },
       () => {
         this.getExtensionDetails(id, type);
@@ -380,11 +382,20 @@ class ExtensionsRoute extends Component {
   };
 
   getExtensionDetails = (id, type) => {
+    const { history } = this.props;
+    const basename = history.createHref({pathname: '/', search: '', hash: ''});
+
     axios(`internal.php?object=centreon_module&action=details&type=${type}&id=${id}`)
       .get()
       .then(({ data }) => {
+        let { result } = data;
+        if (result.images) {
+          result.images = result.images.map(image => {
+            return basename + image;
+          });
+        }
         this.setState({
-          extensionDetails: data.result,
+          extensionDetails: result,
           modalDetailsLoading: false
         });
       });
@@ -405,6 +416,7 @@ class ExtensionsRoute extends Component {
       nothingShown,
       modalDetailsActive,
       modalDetailsLoading,
+      modalDetailsType,
       extensionsUpdatingStatus,
       extensionsInstallingStatus,
       deletingEntity,
@@ -415,7 +427,7 @@ class ExtensionsRoute extends Component {
       <div>
         <TopFilters
           fullText={{
-            label: "Search:",
+            label: "Search",
             value: search,
             filterKey: "search"
           }}
@@ -424,7 +436,7 @@ class ExtensionsRoute extends Component {
             [
               {
                 customClass: "container__col-md-4 container__col-xs-4",
-                switcherTitle: "Status:",
+                switcherTitle: "Status",
                 switcherStatus: "Not installed",
                 value: not_installed,
                 filterKey: "not_installed"
@@ -445,7 +457,7 @@ class ExtensionsRoute extends Component {
             [
               {
                 customClass: "container__col-sm-3 container__col-xs-4",
-                switcherTitle: "Type:",
+                switcherTitle: "Type",
                 switcherStatus: "Module",
                 value: modulesActive,
                 filterKey: "modulesActive"
@@ -479,7 +491,7 @@ class ExtensionsRoute extends Component {
                 : "Update selection"
             }`}
             buttonType="regular"
-            customClass={`mr-2 ${false ? "opacity-1-3" : ""}`}
+            customClass={"mr-2"}
             color="orange"
             style={{
               opacity: false ? "0.33" : "1"
@@ -503,7 +515,7 @@ class ExtensionsRoute extends Component {
                 : "Install selection"
             }`}
             buttonType="regular"
-            customClass={`mr-2 ${false ? "opacity-1-3" : ""}`}
+            customClass={"mr-2"}
             color="green"
             onClick={this.runActionOnAllEntities.bind(
               this,
@@ -525,7 +537,6 @@ class ExtensionsRoute extends Component {
                 onDelete={this.toggleDeleteModal}
                 onInstall={this.installById}
                 onUpdate={this.updateById}
-                titleIcon={"object"}
                 title="Modules"
                 type={"module"}
                 updating={extensionsUpdatingStatus}
@@ -540,7 +551,9 @@ class ExtensionsRoute extends Component {
                 onDelete={this.toggleDeleteModal}
                 onInstall={this.installById}
                 onUpdate={this.updateById}
-                titleIcon={"puzzle"}
+                titleColor={"blue"}
+                hrTitleColor={"blue"}
+                hrColor={"blue"}
                 title="Widgets"
                 type={"widget"}
                 updating={extensionsUpdatingStatus}
@@ -553,6 +566,7 @@ class ExtensionsRoute extends Component {
 
         {extensionDetails && modalDetailsActive ? (
           <ExtensionDetailsPopup
+            type={modalDetailsType}
             loading={modalDetailsLoading}
             onCloseClicked={this.hideExtensionDetails.bind(this)}
             onVersionClicked={this.versionClicked}

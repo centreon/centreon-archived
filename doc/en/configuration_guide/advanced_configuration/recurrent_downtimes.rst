@@ -30,7 +30,7 @@ Configuration
 
 To add a recurrent downtime period:
 
-1. Go into the menu: **Monitoring ==> Downtimes**
+1. Go into the menu: **Monitoring > Downtimes**
 2. In the left menu, click on **Recurrent Downtimes**
 3. Click on **Add**
  

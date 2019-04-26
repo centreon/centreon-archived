@@ -7,7 +7,6 @@ Feature: HostGroupConfiguration
         Given I am logged in a Centreon server
         And an host group is configured
 
-    @critical
     Scenario: Edit the properties of an host group
         When I change the properties of a host group
         Then its properties are updated

@@ -1,6 +1,8 @@
 import React from "react";
+import classnames from 'classnames';
+import styles from '../../styles/partials/form/_form.scss';
 import Loader from "../loader";
-import {Translate} from 'react-redux-i18n';
+import { Translate } from 'react-redux-i18n';
 
 export default ({
   formTitle,
@@ -10,18 +12,18 @@ export default ({
   error
 }) => {
   return (
-    <div className="form-wrapper installation">
-      <div className="form-inner">
-        <div className="form-heading">
-          <h2 className="form-title">{formTitle}</h2>
+    <div className={classnames(styles["form-wrapper"], styles["installation"])}>
+      <div className={styles["form-inner"]}>
+        <div className={styles["form-heading"]}>
+          <h2 className={styles["form-title"]}>{formTitle}</h2>
         </div>
         {!error && // display loader until tasks are finished or error is displayed
           <Loader />
         }
-        <p className="form-text">
+        <p className={styles["form-text"]}>
           <Translate value="Creating Export Task"/>{" "}
           <span
-            className={"form-status" + (statusCreating ? " valid" : " failed")}
+            className={classnames(styles["form-status"], styles[statusCreating ? "valid" : "failed"])}
           >
             {statusCreating != null ? (
               <span>{statusCreating ? "[OK]" : "[FAIL]"}</span>
@@ -30,12 +32,10 @@ export default ({
             )}
           </span>
         </p>
-        <p className="form-text">
+        <p className={styles["form-text"]}>
           <Translate value="Generating Export Files"/>{" "}
           <span
-            className={
-              "form-status" + (statusGenerating ? " valid" : " failed")
-            }
+            className={classnames(styles["form-status"], styles[statusGenerating ? "valid" : "failed"])}
           >
             {statusGenerating != null ? (
               <span>{statusGenerating ? "[OK]" : "[FAIL]"}</span>
@@ -44,12 +44,10 @@ export default ({
             )}
           </span>
         </p>
-        <p className="form-text">
+        <p className={styles["form-text"]}>
           <Translate value="Processing Remote Import/Configuration"/>{" "}
           <span
-            className={
-              "form-status" + (statusProcessing ? " valid" : " failed")
-            }
+            className={classnames(styles["form-status"], styles[statusProcessing ? "valid" : "failed"])}
           >
             {statusProcessing != null ? (
               <span>{statusProcessing ? "[OK]" : "[FAIL]"}</span>
@@ -58,7 +56,7 @@ export default ({
             )}
           </span>
         </p>
-        {error ? <span className="form-error-message">{error}</span> : null}
+        {error ? <span className={styles["form-error-message"]}>{error}</span> : null}
       </div>
     </div>
   );

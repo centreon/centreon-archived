@@ -1,11 +1,15 @@
-.. _upgradecentreon1810:
+.. _upgradecentreon1904:
 
 ###########################
-Migrating to Centreon 18.10
+Migrating to Centreon 19.04
 ###########################
 
 This chapter presents the procedure for migrating from any monitoring platform
-to Centreon version 18.10:
+to Centreon version 19.04:
+
+.. note::
+    To update your Centreon server from 18.10 to 19.04, just follow this
+    :ref:`procedure <upgrade>`.
 
 .. toctree::
    :maxdepth: 1

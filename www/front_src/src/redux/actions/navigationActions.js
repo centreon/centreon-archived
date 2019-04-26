@@ -77,3 +77,44 @@ export const setNavigation = data => {
     navigationData
   }
 };
+
+
+/**
+ * Manage acl routes
+ */
+
+export const FETCH_ACL_ROUTES_BEGIN = "FETCH_ACL_ROUTES_BEGIN";
+export const FETCH_ACL_ROUTES_SUCCESS = "FETCH_ACL_ROUTES_SUCCESS";
+export const FETCH_ACL_ROUTES_FAILURE = "FETCH_ACL_ROUTES_FAILURE";
+
+export const fetchAclRoutes = () => {
+  return async (dispatch) => {
+    // Initiate loading state
+    dispatch(fetchAclRoutesBegin());
+
+    try {
+      // Call the API
+      const { data } = await axios("internal.php?object=centreon_acl_webservice&action=getCurrentAcl").get();
+
+     // Update payload in reducer on success
+     dispatch(fetchAclRoutesSuccess(data));
+    } catch (err) {
+     // Update error in reducer on failure
+     dispatch(fetchAclRoutesFailure(err));
+    }
+  };
+}
+
+const fetchAclRoutesBegin = () => ({
+  type: FETCH_ACL_ROUTES_BEGIN
+});
+
+const fetchAclRoutesSuccess = (data) => ({
+  type: FETCH_ACL_ROUTES_SUCCESS,
+  data
+});
+
+const fetchAclRoutesFailure = error => ({
+  type: FETCH_ACL_ROUTES_FAILURE,
+  error
+});

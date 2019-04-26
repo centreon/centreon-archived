@@ -1,7 +1,7 @@
 <?php
 /*
- * Copyright 2005-2017 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2019 CENTREON
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -19,11 +19,11 @@
  * combined work based on this program. Thus, the terms and conditions of the GNU
  * General Public License cover the whole combination.
  *
- * As a special exception, the copyright holders of this program give Centreon
+ * As a special exception, the copyright holders of this program give CENTREON
  * permission to link this program with independent modules to produce an executable,
  * regardless of the license terms of these independent modules, and to copy and
- * distribute the resulting executable under terms of Centreon choice, provided that
- * Centreon also meet, for each linked independent module, the terms  and conditions
+ * distribute the resulting executable under terms of CENTREON choice, provided that
+ * CENTREON also meet, for each linked independent module, the terms  and conditions
  * of the license of that module. An independent module is a module which is not
  * derived from this program. If you modify this program, you may extend this
  * exception to your version of the program, but you are not obliged to do so. If you
@@ -33,7 +33,7 @@
  *
  */
 
-require_once realpath(dirname(__FILE__) . "/../../../config/centreon.config.php");
+require_once realpath(__DIR__ . "/../../../config/centreon.config.php");
 require_once _CENTREON_PATH_ . "/www/class/centreonDB.class.php";
 
 class Wiki
@@ -58,8 +58,10 @@ class Wiki
 
         $options = array();
 
-        $res = $this->db->query("SELECT * FROM `options` WHERE options.key LIKE 'kb_%'");
-        while ($opt = $res->fetchRow()) {
+        $res = $this->db->query(
+            "SELECT * FROM `options` WHERE options.key LIKE 'kb_%'"
+        );
+        while ($opt = $res->fetch()) {
             $options[$opt["key"]] = html_entity_decode($opt["value"], ENT_QUOTES, "UTF-8");
         }
         $res->closeCursor();

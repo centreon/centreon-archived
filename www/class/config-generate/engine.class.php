@@ -1,7 +1,7 @@
 <?php
 /*
- * Copyright 2005-2015 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2019 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -152,7 +152,9 @@ class Engine extends AbstractObject
         enable_predictive_service_dependency_checks,
         use_large_installation_tweaks,
         enable_environment_macros,
-        use_setpgid
+        use_setpgid,
+        enable_macros_filter,
+        macros_filter
     ';
     protected $attributes_write = array(
         'use_timezone',
@@ -160,7 +162,7 @@ class Engine extends AbstractObject
         'log_file',
         'status_file',
         'check_result_path',
-        'use_check_result_path', //cengine
+        'use_check_result_path', //centengine
         'max_check_result_file_age',
         'status_update_interval',
         'external_command_buffer_slots',
@@ -217,10 +219,9 @@ class Engine extends AbstractObject
         'additional_freshness_latency',
         'debug_file',
         'debug_level',
-        //'debug_level_opt', ????!!
         'debug_verbosity',
         'max_debug_file_size',
-        'log_pid', // cengine
+        'log_pid', // centengine
         'global_host_event_handler',
         'global_service_event_handler',
         'ocsp_command',
@@ -229,6 +230,8 @@ class Engine extends AbstractObject
         'service_perfdata_command',
         'host_perfdata_file_processing_command',
         'service_perfdata_file_processing_command',
+        'macros_filter',
+        'enable_macros_filter'
     );
     protected $attributes_default = array(
         'enable_notifications',
@@ -266,7 +269,7 @@ class Engine extends AbstractObject
         'enable_predictive_service_dependency_checks',
         'use_large_installation_tweaks',
         'enable_environment_macros',
-        'use_setpgid', # cengine
+        'use_setpgid', // centengine
     );
     protected $attributes_array = array(
         'cfg_file',
@@ -321,12 +324,11 @@ class Engine extends AbstractObject
     private function getBrokerModules()
     {
         if (is_null($this->stmt_broker)) {
-            $this->stmt_broker = $this->backend_instance->db->prepare("SELECT 
-              broker_module
-            FROM cfg_nagios_broker_module
-            WHERE cfg_nagios_id = :id
-            ORDER BY bk_mod_id ASC
-            ");
+            $this->stmt_broker = $this->backend_instance->db->prepare(
+                "SELECT broker_module FROM cfg_nagios_broker_module " .
+                "WHERE cfg_nagios_id = :id " .
+                "ORDER BY bk_mod_id ASC"
+            );
         }
         $this->stmt_broker->bindParam(':id', $this->engine['nagios_id'], PDO::PARAM_INT);
         $this->stmt_broker->execute();
@@ -336,11 +338,10 @@ class Engine extends AbstractObject
     private function getIntervalLength()
     {
         if (is_null($this->stmt_interval_length)) {
-            $this->stmt_interval_length = $this->backend_instance->db->prepare("SELECT
-				`value`
-                FROM options
-                WHERE `key` = 'interval_length'
-            ");
+            $this->stmt_interval_length = $this->backend_instance->db->prepare(
+                "SELECT `value` FROM options " .
+                "WHERE `key` = 'interval_length'"
+            );
         }
         $this->stmt_interval_length->execute();
         $this->engine['interval_length'] = $this->stmt_interval_length->fetchAll(PDO::FETCH_COLUMN);
@@ -349,11 +350,10 @@ class Engine extends AbstractObject
     private function generate($poller_id)
     {
         if (is_null($this->stmt_engine)) {
-            $this->stmt_engine = $this->backend_instance->db->prepare("SELECT 
-              $this->attributes_select
-            FROM cfg_nagios
-            WHERE nagios_server_id = :poller_id AND nagios_activate = '1'
-            ");
+            $this->stmt_engine = $this->backend_instance->db->prepare(
+                "SELECT $this->attributes_select FROM cfg_nagios " .
+                "WHERE nagios_server_id = :poller_id AND nagios_activate = '1'"
+            );
         }
         $this->stmt_engine->bindParam(':poller_id', $poller_id, PDO::PARAM_INT);
         $this->stmt_engine->execute();
@@ -361,8 +361,9 @@ class Engine extends AbstractObject
         $result = $this->stmt_engine->fetchAll(PDO::FETCH_ASSOC);
         $this->engine = array_pop($result);
         if (is_null($this->engine)) {
-            throw new Exception("Cannot get engine configuration for poller id (maybe not activate) '" .
-                $poller_id . "'");
+            throw new Exception(
+                "Cannot get engine configuration for poller id (maybe not activate) '" . $poller_id . "'"
+            );
         }
 
         $this->buildCfgFile($poller_id);
@@ -371,7 +372,7 @@ class Engine extends AbstractObject
 
         $object = $this->engine;
 
-        # Decode
+        // Decode
         if (!is_null($object['illegal_macro_output_chars'])) {
             $object['illegal_macro_output_chars'] = html_entity_decode(
                 $object['illegal_macro_output_chars'],
@@ -390,20 +391,20 @@ class Engine extends AbstractObject
         }
 
         $command_instance = Command::getInstance($this->dependencyInjector);
-        $object['global_host_event_handler'] =
-            $command_instance->generateFromCommandId($object['global_host_event_handler_id']);
-        $object['global_service_event_handler'] =
-            $command_instance->generateFromCommandId($object['global_service_event_handler_id']);
+        $object['global_host_event_handler']
+            = $command_instance->generateFromCommandId($object['global_host_event_handler_id']);
+        $object['global_service_event_handler']
+            = $command_instance->generateFromCommandId($object['global_service_event_handler_id']);
         $object['ocsp_command'] = $command_instance->generateFromCommandId($object['ocsp_command_id']);
         $object['ochp_command'] = $command_instance->generateFromCommandId($object['ochp_command_id']);
-        $object['host_perfdata_command'] =
-            $command_instance->generateFromCommandId($object['host_perfdata_command_id']);
-        $object['service_perfdata_command'] =
-            $command_instance->generateFromCommandId($object['service_perfdata_command_id']);
-        $object['host_perfdata_file_processing_command'] =
-            $command_instance->generateFromCommandId($object['host_perfdata_file_processing_command_id']);
-        $object['service_perfdata_file_processing_command'] =
-            $command_instance->generateFromCommandId($object['service_perfdata_file_processing_command_id']);
+        $object['host_perfdata_command']
+            = $command_instance->generateFromCommandId($object['host_perfdata_command_id']);
+        $object['service_perfdata_command']
+            = $command_instance->generateFromCommandId($object['service_perfdata_command_id']);
+        $object['host_perfdata_file_processing_command']
+            = $command_instance->generateFromCommandId($object['host_perfdata_file_processing_command_id']);
+        $object['service_perfdata_file_processing_command']
+            = $command_instance->generateFromCommandId($object['service_perfdata_file_processing_command_id']);
 
         $this->generate_filename = 'centengine.DEBUG';
         $object['cfg_file'] = $this->cfg_file['debug']['cfg_file'];
@@ -412,7 +413,7 @@ class Engine extends AbstractObject
         $this->close_file();
 
         $this->generate_filename = $this->engine['cfg_filename'];
-        # Need to reset to go in another file
+        // Need to reset to go in another file
         $object['cfg_file'] = $this->cfg_file['target']['cfg_file'];
         $object['resource_file'] = $this->cfg_file['target']['resource_file'];
         $this->generateFile($object);

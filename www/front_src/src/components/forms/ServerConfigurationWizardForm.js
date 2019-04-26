@@ -1,6 +1,8 @@
 import React from "react";
+import classnames from 'classnames';
+import styles from '../../styles/partials/form/_form.scss';
 import { Field, reduxForm as connectForm } from "redux-form";
-import {Translate} from 'react-redux-i18n';
+import { Translate } from 'react-redux-i18n';
 
 import RadioGroupFields from "../form-fields/RadioGroupFields";
 
@@ -21,11 +23,11 @@ const ServerConfigurationWizardForm = ({
   onSubmit,
   submitting
 }) => (
-  <div className="form-wrapper small">
-    <div className="form-inner">
-      <div className="form-heading">
-        <h2 className="form-title"><Translate value="Server Configuration Wizard"/></h2>
-        <p className="form-text"><Translate value="Choose a server type"/>:</p>
+  <div className={classnames(styles["form-wrapper"], styles["small"])}>
+    <div className={styles["form-inner"]}>
+      <div className={styles["form-heading"]}>
+        <h2 className={styles["form-title"]}><Translate value="Server Configuration Wizard"/></h2>
+        <p className={styles["form-text"]}><Translate value="Choose a server type"/>:</p>
       </div>
       <form autocomplete="off" onSubmit={handleSubmit(onSubmit)}>
         <Field
@@ -33,12 +35,12 @@ const ServerConfigurationWizardForm = ({
           component={RadioGroupFields}
           options={configurationTypes}
         />
-        <div class="form-buttons">
-          <button className="button" type="submit">
-          <Translate value="Next"/>
+        <div className={styles["form-buttons"]}>
+          <button className={styles["button"]} type="submit">
+            <Translate value="Next"/>
           </button>
         </div>
-        {error ? <div class="error-block">{error.message}</div> : null}
+        {error ? <div className={styles["error-block"]}>{error.message}</div> : null}
       </form>
     </div>
   </div>

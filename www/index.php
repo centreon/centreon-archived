@@ -107,9 +107,8 @@ if (!$staticExists) {
 } else {
     $hashStatic = explode('static/css/main.', $staticExists[0]);
     $hashTemplate = explode('template/css/main.', glob('template/css/*.css')[0]);
-    if (isset($hashTemplate[1])
-        && isset($hashStatic)
-        && $hashTemplate[1] !== $hashStatic
+    if (!isset($hashTemplate[1])
+        || $hashTemplate[1] !== $hashStatic
     ) {
         shell_exec('rm -rf ' . __DIR__ . '/static ');
         shell_exec('cp -pR ' . __DIR__ . '/template '. __DIR__ . '/static');

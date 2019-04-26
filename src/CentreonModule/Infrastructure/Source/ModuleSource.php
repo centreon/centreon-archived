@@ -183,7 +183,7 @@ class ModuleSource extends SourceAbstract
         $entity->setVersion($info['mod_release']);
         $entity->setDescription($info['infos']);
         $entity->setKeywords($entity->getId());
-        $entity->setLicense($this->license->getLicenseExpiration($entity->getId()));
+        $entity->setLicense($this->processLicense($entity->getId(), $info));
 
         if (array_key_exists('stability', $info) && $info['stability']) {
             $entity->setStability($info['stability']);
@@ -234,5 +234,27 @@ class ModuleSource extends SourceAbstract
         require $configFile;
 
         return $module_conf;
+    }
+
+    /**
+     * Process license check and return license information
+     * @param string $moduleId the module id (slug)
+     * @param array $info the info of the module from conf.php
+     * @return array the license information (required, expiration_date)
+     */
+    protected function processLicense(string $moduleId, array $info) : array
+    {
+        $license = [
+            'required' => false
+        ];
+
+        if (!empty($info['require_license']) && $info['require_license'] === true) {
+            $license = [
+                'required' => true,
+                'expiration_date' => $this->license->getLicenseExpiration($moduleId)
+            ];
+        }
+
+        return $license;
     }
 }

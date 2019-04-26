@@ -80,7 +80,6 @@ define('SERVER_DISABLE', 'u');
 define('SERVER_DUPLICATE', 'm');
 define('SERVER_ENABLE', 's');
 define('SERVER_MODIFY', 'c');
-define('SERVER_SEARCH', 'i');
 define('SERVER_WATCH', 'w');
 
 $action = filter_var(
@@ -113,9 +112,6 @@ switch ($o) {
             disableServerInDB($server_id);
         }
         require_once($path . "listServers.php");
-        break;
-    case SERVER_SEARCH: // Search for version of engines Servers
-        require_once($path . "getServersVersions.php");
         break;
     case SERVER_DUPLICATE:
         if (!in_array(false, $select) && !in_array(false, $dupNbr)) {

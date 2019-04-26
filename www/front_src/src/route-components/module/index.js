@@ -1,5 +1,9 @@
 import React, { Component } from "react";
+import classnames from 'classnames';
+import styles from '../../components/header/header.scss';
+import loaderStyles from '../../components/loader/loader.scss';
 import Loader from "../../components/loader";
+
 
 class ModuleRoute extends Component {
 
@@ -100,7 +104,7 @@ class ModuleRoute extends Component {
     return (
       <>
         {loading &&
-          <span className="main-loader">
+          <span className={loaderStyles["main-loader"]}>
             <Loader />
           </span>
         }
@@ -110,7 +114,7 @@ class ModuleRoute extends Component {
           frameBorder="0"
           onLoad={this.handleResize}
           scrolling="yes"
-          className={loading ? "hidden" : ""}
+          className={classnames({[styles["hidden"]]: loading})}
           style={{ width: "100%", height: `${contentHeight}px` }}
           src={`./main.get.php${params}`}
         />

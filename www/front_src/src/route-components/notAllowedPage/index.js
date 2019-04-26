@@ -1,11 +1,10 @@
-import React from "react";
+import React from 'react';
+import styles from '../../styles/partials/_messages.scss';
 
-const notAllowedPage = () => {
-  return (
-    <div class="message-alert">
-      You are not allowed to see this page
-    </div>
-  );
-};
+const notAllowedPage = () =>  (
+  <div className={styles["message-alert"]}>
+    You are not allowed to see this page
+  </div>
+);
 
 export default notAllowedPage;

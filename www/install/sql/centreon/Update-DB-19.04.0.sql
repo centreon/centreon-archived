@@ -32,11 +32,6 @@ INSERT INTO `topology` (`topology_name`, `topology_url`, `readonly`, `is_react`,
 DELETE FROM `topology` WHERE (`topology_page` = '50701');
 DELETE FROM `topology` WHERE (`topology_page` = '50703');
 
--- Update topology of service grid
-UPDATE topology SET topology_url_opt = '&o=svcOV_pb' WHERE topology_page = 20204;
-
--- Update topology of service by host group
-UPDATE topology SET topology_url_opt = '&o=svcOVHG_pb' WHERE topology_page = 20209;
-
--- Update topology of service by service group
-UPDATE topology SET topology_url_opt = '&o=svcOVSG_pb' WHERE topology_page = 20212;
+-- New configuration options for Centreon Engine
+ALTER TABLE `cfg_nagios` ADD COLUMN `enable_macros_filter` ENUM('0', '1') DEFAULT '0';
+ALTER TABLE `cfg_nagios` ADD COLUMN `macros_filter` TEXT DEFAULT '';

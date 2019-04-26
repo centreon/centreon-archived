@@ -1,10 +1,11 @@
 import React, { Component } from "react";
 import { Field, reduxForm as connectForm } from "redux-form";
+import classnames from 'classnames';
+import styles from '../../../styles/partials/form/_form.scss';
 import InputField from "../../form-fields/InputField";
 import SelectField from "../../form-fields/SelectField";
 import RadioField from "../../form-fields/PreselectedRadioField";
-import {Translate} from 'react-redux-i18n';
-import {I18n} from "react-redux-i18n";
+import { Translate, I18n } from 'react-redux-i18n';
 
 import {
   serverNameValidator,
@@ -52,14 +53,14 @@ class RemoteServerFormStepOne extends Component {
     const { error, handleSubmit, onSubmit, waitList } = this.props;
     const { inputTypeManual } = this.state;
     return (
-      <div className="form-wrapper">
-        <div className="form-inner">
-          <div className="form-heading">
-            <h2 className="form-title mb-2"><Translate value="Remote Server Configuration"/></h2>
+      <div className={styles["form-wrapper"]}>
+        <div className={styles["form-inner"]}>
+          <div className={styles["form-heading"]}>
+            <h2 className={classnames(styles["form-title"], styles["mb-2"])}>
+              <Translate value="Remote Server Configuration"/>
+            </h2>
           </div>
           <form autocomplete="off" onSubmit={handleSubmit(onSubmit)}>
-
-
             <Field
               name="inputTypeManual"
               onChange={() => { this.onManualInputChanged(true) }}
@@ -178,14 +179,12 @@ class RemoteServerFormStepOne extends Component {
               </div>
             ) : null}
 
-
-
-            <div class="form-buttons">
-              <button className="button" type="submit">
+            <div className={styles["form-buttons"]}>
+              <button className={styles["button"]} type="submit">
                 <Translate value="Next"/>
               </button>
             </div>
-            {error ? <div class="error-block">{error.message}</div> : null}
+            {error ? <div className={styles["error-block"]}>{error.message}</div> : null}
           </form>
         </div>
       </div>

@@ -1,9 +1,9 @@
 import React, { Component } from "react";
-
 import PropTypes from "prop-types";
+import classnames from 'classnames';
+import styles from '../../styles/partials/form/_form.scss';
 import fieldHoc from "./hoc";
 import { prepareInputProps } from "./utils";
-import Icon from "../icon";
 
 class PasswordInputField extends Component {
   state = {
@@ -33,27 +33,23 @@ class PasswordInputField extends Component {
     const { shown } = this.state;
 
     return (
-      <div class={"form-group" + (error ? " has-danger" : "")}>
+      <div className={classnames(styles["form-group"], {[styles["has-danger"]]: !!error})}>
         <label>
           <span>{label}</span>
-          <span class="label-option required">
+          <span className={classnames(styles["label-option"], styles["required"])}>
             {topRightLabel ? topRightLabel : null}
           </span>
         </label>
-        <div class="input-group">
+        <div className={styles["input-group"]}>
           <input
             type={shown ? "text" : "password"}
             placeholder={placeholder}
-            class={"form-control password" + (error ? " is-invalid" : "")}
+            className={classnames(styles["form-control"], styles["password"], {[styles["is-invalid"]]: !!error})}
             {...prepareInputProps(rest)}
           />
-          <span class="input-group-text" onClick={this.toggleShowPassword}>
-            <Icon face={shown ? "eye" : "eye-slash"} />
-          </span>
         </div>
         {error ? (
-          <div class="invalid-feedback">
-            <Icon face="exclamation-triangle" />
+          <div className={styles["invalid-feedback"]}>
             {error}{" "}
           </div>
         ) : null}
@@ -64,7 +60,7 @@ class PasswordInputField extends Component {
 
 PasswordInputField.displayName = "PasswordInputField";
 PasswordInputField.defaultProps = {
-  className: "form-control",
+  className: styles["form-control"],
   modifiers: [],
   renderMeta: null
 };

@@ -52,7 +52,10 @@ class ModuleEntityTest extends TestCase
             'author' => 'John Doe',
             'versionCurrent' => '1.0.0',
             'version' => '1.0.1',
-            'license' => '11/20',
+            'license' => [
+                'required' => true,
+                'expiration_date' => '2019-04-21T00:25:55-0700',
+            ],
         ];
 
         $entity = new Module;

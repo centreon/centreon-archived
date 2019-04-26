@@ -1,7 +1,7 @@
 <?php
 /*
- * Copyright 2005-2016 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2019 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -48,7 +48,7 @@ print "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <meta name="Generator" content="Centreon - Copyright (C) 2005 - 2017 Open Source Matters. All rights reserved."/>
     <meta name="robots" content="index, nofollow"/>
-    <?php if ($isMobile) : ?>
+    <?php if (isset($isMobile) && $isMobile) : ?>
     <link href="./Themes/Centreon-2/MobileMenu/css/material_icons.css" rel="stylesheet" type="text/css"/>
     <link href="./Themes/Centreon-2/MobileMenu/css/menu.css" rel="stylesheet" type="text/css"/>
     <?php endif; ?>
@@ -119,7 +119,7 @@ print "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
     <script src="./include/views/graphs/javascript/centreon-status-chart.js"></script>
     <script src="./include/common/javascript/moment-with-locales.min.2.21.js"></script>
     <script src="./include/common/javascript/moment-timezone-with-data.min.js"></script>
-    <?php if ($isMobile) : ?>
+    <?php if (isset($isMobile) && $isMobile) : ?>
     <script type="text/javascript">
       var text_back = '<?= gettext('Back') ?>'
     </script>
@@ -134,7 +134,11 @@ print "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
         $searchStr .= "search_host=" . htmlentities($_GET["search"], ENT_QUOTES, "UTF-8");
     }
     if (isset($centreon->historySearch[$url]) && !isset($_GET["search"])) {
-        $searchStr .= "search_host=" . $centreon->historySearch[$url];
+        if (!is_array($centreon->historySearch[$url])) {
+            $searchStr .= "search_host=" . $centreon->historySearch[$url];
+        } elseif (isset($centreon->historySearch[$url]['search'])) {
+            $searchStr .= "search_host=" . $centreon->historySearch[$url]['search'];
+        }
     }
 
     $searchStrSVC = "";
@@ -218,6 +222,6 @@ print "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
 
 <?php
 // Showing the mobile menu if it's a mobile browser
-if ($isMobile) {
+if (isset($isMobile) && $isMobile) {
     require(_CENTREON_PATH_ . 'www/include/common/mobile_menu.php');
 }

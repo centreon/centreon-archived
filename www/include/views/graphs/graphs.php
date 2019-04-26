@@ -37,7 +37,7 @@ if (!isset($centreon)) {
     exit();
 }
 
-require _CENTREON_PATH_ . '/www/class/centreonService.class.php';
+require_once(_CENTREON_PATH_ . '/www/class/centreonService.class.php');
 
 $serviceObj = new CentreonService($pearDB);
 $gmtObj = new CentreonGMT($pearDB);

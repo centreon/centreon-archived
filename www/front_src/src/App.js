@@ -19,13 +19,16 @@ import axios from './axios';
 import NotAllowedPage from './route-components/notAllowedPage';
 
 import { fetchExternalComponents } from "./redux/actions/externalComponentsActions";
+import { fetchAclRoutes } from "./redux/actions/navigationActions";
+
+import styles from './App.scss';
+import footerStyles from './components/footer/footer.scss';
+import contentStyles from './styles/partials/_content.scss';
 
 class App extends Component {
 
   state = {
     isFullscreenEnabled: false,
-    acls: [],
-    aclsLoaded: false,
     reactRouter: null
   }
 
@@ -69,14 +72,9 @@ class App extends Component {
 
   // get allowed routes
   getAcl = () => {
-    axios("internal.php?object=centreon_acl_webservice&action=getCurrentAcl")
-      .get()
-      .then(({data}) => {
-        this.setState(
-          {acls: data, aclsLoaded: true},
-          () => { this.getReactRoutes(); }
-        );
-      });
+    const { fetchAclRoutes } = this.props;
+    // store acl routes in redux
+    fetchAclRoutes();
   }
 
   // get external components (pages, hooks...)
@@ -106,17 +104,25 @@ class App extends Component {
 
   componentDidMount() {
     this.getAcl();
-    this.getExternalComponents();
     this.keepAlive();
   }
 
+  componentDidUpdate(prevProps) {
+    const prevAcl = prevProps.acl;
+    const { acl } = this.props;
+    if (!prevAcl.loaded && acl.loaded) {
+      this.getReactRoutes();
+      this.getExternalComponents();
+    }
+  }
+
   getReactRoutes = () => {
-    const { acls } = this.state;
+    const { acl } = this.props;
     let reactRouter = reactRoutes.map(({ path, comp, ...rest }) => (
       <ReactRoute
         history={history}
         path={path}
-        component={acls.includes(path) ? comp : NotAllowedPage}
+        component={acl.routes.includes(path) ? comp : NotAllowedPage}
         {...rest}
       />
     ));
@@ -130,30 +136,29 @@ class App extends Component {
 
     return (
       <ConnectedRouter history={history}>
-        <div class="wrapper">
+        <div className={styles["wrapper"]}>
           {!min && // do not display menu if min=1
             <NavigationComponent/>
           }
           <Tooltip/>
-          <div id="content">
+          <div id="content" className={contentStyles['content']}>
             {!min && // do not display header if min=1
               <Header/>
             }
-            <div id="fullscreen-wrapper">
+            <div id="fullscreen-wrapper" className={contentStyles['fullscreen-wrapper']}>
               <Fullscreen
                 enabled={this.state.isFullscreenEnabled}
                 onClose={this.removeFullscreenParams}
-                onChange={isFullscreenEnabled => this.setState({isFullscreenEnabled})}>
-                <div className="full-screenable-node">
-                  <div className="main-content">
-                    <Switch>
-                      {classicRoutes.map(({path, comp, ...rest}, i) => (
-                        <ClassicRoute key={i} history={history} path={path} component={comp} {...rest} />
-                      ))}
-                      {reactRouter}
-                      <ExternalRouter/>
-                    </Switch>
-                  </div>
+                onChange={isFullscreenEnabled => this.setState({isFullscreenEnabled})}
+              >
+                <div className={styles["main-content"]}>
+                  <Switch>
+                    {classicRoutes.map(({path, comp, ...rest}, i) => (
+                      <ClassicRoute key={i} history={history} path={path} component={comp} {...rest} />
+                    ))}
+                    {reactRouter}
+                    <ExternalRouter/>
+                  </Switch>
                 </div>
               </Fullscreen>
             </div>
@@ -161,19 +166,26 @@ class App extends Component {
               <Footer/>
             }
           </div>
-          <span className="full-screen" onClick={this.goFull}></span>
+          <span className={footerStyles["full-screen"]} onClick={this.goFull} />
         </div>
       </ConnectedRouter>
     );
   }
 }
 
+const mapStateToProps = ({ navigation }) => ({
+  acl: navigation.acl
+});
+
 const mapDispatchToProps = dispatch => {
   return {
+    fetchAclRoutes: () => {
+      dispatch(fetchAclRoutes());
+    },
     fetchExternalComponents: () => {
       dispatch(fetchExternalComponents());
     }
   };
 };
 
-export default connect(null, mapDispatchToProps)(App);
+export default connect(mapStateToProps, mapDispatchToProps)(App);
