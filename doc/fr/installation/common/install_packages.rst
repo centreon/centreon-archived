@@ -50,7 +50,7 @@ Le dépôt est maintenant installé.
 
 .. note::
     Si le paquet n'est pas installé, exécutez la commande : ::
-    
+
         # yum install wget
 
 *******************************
@@ -85,6 +85,10 @@ Exécutez les commandes : ::
 
 .. note::
     le paquet **centreon-database** installe un serveur de base de données optimisé pour l'utilisation avec Centreon.
+
+.. note::
+    Centreon n'est pas encore **compatible** avec le mode STRICT de SQL. Veuillez vous assurer que le mode soit bien désactivé.
+    Pour plus d'information sur la désactivation du mode vous pouvez consulter la `documentation officielle <https://mariadb.com/kb/en/library/sql-mode/#strict-mode>`_ de MariaDB pour le désactiver
 
 Système de gestion de base de données
 -------------------------------------
