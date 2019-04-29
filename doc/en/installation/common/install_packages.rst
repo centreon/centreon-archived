@@ -88,6 +88,17 @@ Run the commands::
     Centreon does **not** support the SQL STRICT mode yet. Please make sure that it is disabled.
     For more information on how to disable the mode please check the official `MariaDB documentation <https://mariadb.com/kb/en/library/sql-mode/#strict-mode>`_.
 
+Then create a distant **root** account: ::
+
+    MariaDB [(none)]> GRANT ALL PRIVILEGES ON *.* TO 'root'@'IP' IDENTIFIED BY 'PASSWORD' WITH GRANT OPTION;
+
+.. note::
+    Replace **IP** by the IP address of the Centreon server and **PASSWORD** by
+    the **root** password. Once the installation is complete you can delete this
+    account using: ::
+        
+        MariaDB [(none)]> DROP USER 'root'@'IP';
+
 Database management system
 --------------------------
 
