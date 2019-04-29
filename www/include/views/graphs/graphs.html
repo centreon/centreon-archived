@@ -488,14 +488,6 @@ jQuery(function () {
                 jQuery('input[name="alternativeDateEndDate"]').val() + ' ' + jQuery('#EndTime').val(),
                 timezone
             );
-            /*
-            start = moment(
-                jQuery('input[name="alternativeDateStartDate"]').val() + ' ' + jQuery('#StartTime').val()
-            );
-            end = moment(
-                jQuery('input[name="alternativeDateEndDate"]').val() + ' ' + jQuery('#EndTime').val()
-            );
-            */
             duration = moment.duration(end.diff(start));
         } else {
             parseInterval = jQuery('select[name="period"]').val().match(/(\d+)([a-z]+)/i);
