@@ -195,6 +195,9 @@ function displayNav(end) {
 
 jQuery(function () {
     var datepickerFormat; //localized user chosen format
+
+    // get timezone from localstorage
+    // be careful, it seems that it's updated when user logout/login
     var timezone = localStorage.getItem('realTimezone')
         ? localStorage.getItem('realTimezone')
         : moment.tz.guess();
@@ -246,6 +249,9 @@ jQuery(function () {
         var metricId = info[2];
         var start;
         var end;
+
+        // get timezone from localstorage
+        // be careful, it seems that it's updated when user logout/login
         var timezone = localStorage.getItem('realTimezone')
             ? localStorage.getItem('realTimezone')
             : moment.tz.guess();

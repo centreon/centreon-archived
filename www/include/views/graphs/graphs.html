@@ -475,9 +475,13 @@ jQuery(function () {
         var chartId = $a.parents('.graph').data('graphId');
         var start;
         var end;
+
+        // get timezone from localstorage
+        // be careful, it seems that it's updated when user logout/login
         var timezone = localStorage.getItem('realTimezone')
             ? localStorage.getItem('realTimezone')
             : moment.tz.guess();
+
         /* Get the period */
         if (jQuery('select[name="period"]').val() === '') {
             start = moment.tz(

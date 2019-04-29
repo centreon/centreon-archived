@@ -554,31 +554,33 @@
       if (this.settings.timeFormat !== null) {
         timeFormat = this.settings.timeFormat;
       } else {
-        timeFormat = function(date) {
-          date = moment(date).tz(self.timezone);
-          if (date.millisecond()) {
-            return date.format(".SSS");
+          timeFormat = function(date) {
+              // convert to moment object to mange timezone
+              date = moment(date).tz(self.timezone);
+
+              if (date.millisecond()) {
+                  return date.format(".SSS");
+              }
+              if (date.second()) {
+                  return date.format(":ss");
+              }
+              if (date.minute()) {
+                  return date.format("HH:mm");
+              }
+              if (date.hour()) {
+                  return date.format("HH:mm");
+              }
+              if (date.day() && date.date() !== 1) {
+                  return date.format("MM-DD");
+              }
+              if (date.date() !== 1) {
+                  return date.format("MM-DD");
+              }
+              if (date.month()) {
+                  return date.format("YYYY-MM");
+              }
+              return date.format("YYYY");
           }
-          if (date.second()) {
-            return date.format(":ss");
-          }
-          if (date.minute()) {
-            return date.format("HH:mm");
-          }
-          if (date.hour()) {
-            return date.format("HH:mm");
-          }
-          if (date.day() && date.date() !== 1) {
-              return date.format("MM-DD");
-          }
-          if (date.date() !== 1) {
-              return date.format("MM-DD");
-          }
-          if (date.month()) {
-            return date.format("YYYY-MM");
-          }
-          return date.format("YYYY");
-      }
       }
 
       return timeFormat;
