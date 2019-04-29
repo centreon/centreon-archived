@@ -305,6 +305,7 @@ class CentreonAuth
                 } else {
                     $this->CentreonLog->insertLog(1, "Contact '" . $username . "' doesn't match with password");
                     $this->error = _('Your credentials are incorrect.');
+                    error_log("user " . $username . " password mismatch", 4);
                 }
             } else {
                 $this->CentreonLog->insertLog(
@@ -312,6 +313,7 @@ class CentreonAuth
                     "[".$this->source."] Contact '" . $username . "' is not enable for reaching centreon"
                 );
                 $this->error = _('Your credentials are incorrect.');
+                error_log("user " . $username . " not authorized", 4);
             }
         } elseif (count($this->ldap_auto_import)) {
             /*
@@ -346,6 +348,7 @@ class CentreonAuth
                 $this->CentreonLog->insertLog(1, "[".$this->source."] No contact found with this login : '$username'");
             }
             $this->error = _('Your credentials are incorrect.');
+            error_log("user " . $username . " not found", 4);
         }
     }
 
