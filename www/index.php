@@ -88,7 +88,17 @@ if (file_exists("./install/setup.php")) {
 /**
  * Install frontend assets if needed
  */
+$basePath = '/' . trim(explode('index.php', $_SERVER['REQUEST_URI'])[0], "/") . '/';
+$indexHtmlPath = './index.html';
+$indexHtmlContent = file_get_contents($indexHtmlPath);
+$indexHtmlContent = preg_replace(
+    '/(.*<base\shref=").*(">)/',
+    '${1}' . $basePath . '${2}',
+    $indexHtmlContent
+);
+file_put_contents($indexHtmlPath, $indexHtmlContent);
 
+ /*
 $staticExists = glob('static/css/*.css');
 $newPath = trim(explode('index.php', $_SERVER['REQUEST_URI'])[0], "/");
 
@@ -123,6 +133,7 @@ if (!$staticExists) {
         }
     }
 }
+*/
 
 /*
  * Set PHP Session Expiration time

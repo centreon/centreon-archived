@@ -1,8 +1,12 @@
-const HtmlWebpackPlugin = require("html-webpack-plugin")
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+const CleanWebpackPlugin = require('clean-webpack-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
-const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 const safePostCssParser = require('postcss-safe-parser');
+const webpack = require('webpack');
+const path = require('path');
+
 
 module.exports = {
   context: __dirname,
@@ -12,13 +16,23 @@ module.exports = {
     "./www/front_src/src/index.js"
   ],
   output: {
-    path: __dirname + "/www",
-    publicPath: '/_CENTREON_PATH_PLACEHOLDER_/',
-    filename: 'static/js/[name].[chunkhash:8].js',
-    chunkFilename: 'static/js/[name].[chunkhash:8].chunk.js',
+    path: path.resolve(__dirname + "/www"),
+    publicPath: './',
+    filename: 'static/js/[name].[hash:8].js',
+    chunkFilename: 'static/js/[name].[hash:8].chunk.js',
     libraryTarget: 'umd',
     library: '[name]',
     umdNamedDefine: true,
+  },
+  devServer: {
+    contentBase: path.join(__dirname, 'www'),
+    historyApiFallback: true,
+    //compress: true,
+    hot: true,
+    host: '0.0.0.0',
+    port: 8082,
+    publicPath: 'http:/10.30.2.72:8082/',
+    writeToDisk: true
   },
   optimization: {
     minimizer: [
@@ -61,14 +75,19 @@ module.exports = {
     runtimeChunk: true,
   },
   plugins: [
+    new CleanWebpackPlugin({
+      cleanOnceBeforeBuildPatterns: ['static/**/*'],
+    }),
     new HtmlWebpackPlugin({
       template: './www/front_src/public/index.html',
       filename: 'index.html',
     }),
     new MiniCssExtractPlugin({
+      publicPath: './',
       filename: 'static/css/[name].[contenthash:8].css',
       chunkFilename: 'static/css/[name].[contenthash:8].chunk.css',
     }),
+    new webpack.HotModuleReplacementPlugin()
   ],
   module: {
     rules: [
@@ -115,7 +134,8 @@ module.exports = {
             loader: 'file-loader',
             options: {
               name: '[name].[ext]',
-              outputPath: 'static/fonts/'
+              outputPath: './static/fonts/',
+              publicPath: '../../static/fonts/'
             }
         }]
       },
@@ -167,6 +187,21 @@ module.exports = {
           options: 'ReduxForm'
         }]
       },
+      {
+        test: /\.js$/,
+        include: path.join(__dirname, 'www/front_src/src'),
+        use: [
+          {
+            loader: 'babel-loader',
+            options: {
+              babelrc: true
+            }
+          },
+          {
+            loader: 'react-hot-loader/webpack'
+          }
+        ]
+      }
     ]
   },
 };

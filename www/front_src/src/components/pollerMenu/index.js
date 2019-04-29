@@ -2,7 +2,6 @@ import React, { Component } from "react";
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import styles from '../header/header.scss';
-import config from "../../config";
 import { Translate, I18n } from 'react-redux-i18n';
 import axios from "../../axios";
 import { Link } from "react-router-dom";

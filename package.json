@@ -1,12 +1,10 @@
 {
   "name": "centreon",
-  "version": "19.04.0",
+  "version": "19.04.1",
   "description": "centreon web package",
   "scripts": {
-    "build": "npm run build:clean && npm run build:app && npm run build:post",
-    "build:clean": "rm -rf www/static && rm -rf www/template",
-    "build:app": "webpack --mode production",
-    "build:post": "mv ./www/static ./www/template && chown -R apache:apache ./www/index.html ./www/template"
+    "build": "webpack --mode production",
+    "start": "webpack-dev-server"
   },
   "devDependencies": {
     "@babel/core": "^7.0.0",
@@ -29,8 +27,9 @@
     "sass-loader": "^7.1.0",
     "terser-webpack-plugin": "^1.2.3",
     "url-loader": "^1.1.2",
-    "webpack": "^4.29.5",
-    "webpack-cli": "^3.0.8"
+    "webpack": "^4.30.0",
+    "webpack-cli": "^3.0.8",
+    "webpack-dev-server": "^3.3.1"
   },
   "dependencies": {
     "@centreon/react-components": "19.4.0",
@@ -47,6 +46,7 @@
     "react-full-screen": "^0.2.3",
     "react-fullscreen-crossbrowser": "^1.0.9",
     "react-helmet": "^5.2.0",
+    "react-hot-loader": "^4.8.4",
     "react-redux": "^5.0.7",
     "react-redux-i18n": "^1.9.3",
     "react-router-dom": "^4.2.2",

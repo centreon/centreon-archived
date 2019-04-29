@@ -2,7 +2,6 @@ import React, { Component, Suspense } from "react";
 import { connect } from "react-redux";
 import { dynamicImport } from "../../utils/dynamicImport";
 import centreonAxios from "../../axios";
-import centreonConfig from "../../config";
 
 // class to dynamically import component from modules
 class Hook extends Component {
@@ -39,7 +38,6 @@ class Hook extends Component {
       <Suspense fallback="">
         {LoadableComponents.map(LoadableComponent => (
           <LoadableComponent
-            centreonConfig={centreonConfig}
             centreonAxios={centreonAxios}
             {...props}
           />

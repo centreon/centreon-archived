@@ -2,7 +2,6 @@ import React, { Component } from "react";
 import classnames from 'classnames';
 import styles from '../header/header.scss';
 import Clock from "../clock";
-import config from "../../config";
 import { Translate } from 'react-redux-i18n';
 import axios from "../../axios";
 import { connect } from "react-redux";
@@ -146,7 +145,7 @@ class UserMenu extends Component {
                 }
               </ul>
               <div className={styles["button-wrap"]}>
-                <a href={config.urlBase + "index.php?disconnect=1"}>
+                <a href={"index.php?disconnect=1"}>
                   <button className={classnames(styles["btn"], styles["btn-small"], styles["logout"])}>
                     <Translate value="Logout"/>
                   </button>

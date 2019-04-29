@@ -3,7 +3,6 @@ import { connect } from "react-redux";
 import { Switch, Route } from "react-router-dom";
 import { dynamicImport } from "../../utils/dynamicImport";
 import centreonAxios from "../../axios";
-import centreonConfig from "../../config";
 import NotAllowedPage from '../../route-components/notAllowedPage';
 import styles from "../../styles/partials/_content.scss";
 
@@ -39,7 +38,6 @@ class ExternalRouter extends Component {
             render={renderProps => (
               <div className={styles["react-page"]}>
                 <Page
-                  centreonConfig={centreonConfig}
                   centreonAxios={centreonAxios}
                   {...renderProps}
                 />

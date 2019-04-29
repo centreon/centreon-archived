@@ -22,6 +22,7 @@
     "@babel/plugin-proposal-class-properties",
     "@babel/plugin-transform-classes",
     "@babel/plugin-transform-shorthand-properties",
-    "@babel/plugin-transform-regenerator"
+    "@babel/plugin-transform-regenerator",
+    "react-hot-loader/babel"
   ]
 }
