@@ -30,6 +30,12 @@
       });
     }
 
+    // get timezone from localstorage
+    // be careful, it seems that it's updated when user logout/login
+    this.timezone = localStorage.getItem('realTimezone')
+        ? localStorage.getItem('realTimezone')
+        : moment.tz.guess();
+
     this.timeFormat = this.getTimeFormat();
 
     /* Color for status graph */
@@ -202,7 +208,7 @@
         tooltip: {
           format: {
             title: function (x) {
-              return moment(x).format('YYYY-MM-DD HH:mm:ss');
+              return moment(x).tz(self.timezone).format('YYYY-MM-DD HH:mm:ss');
             },
             value: function (value, ratio, id) {
               /* Test if the curve is inversed */
@@ -512,15 +518,15 @@
       if (this.settings.period.startTime === null ||
         this.settings.period.endTime === null) {
 
-        start = moment();
-        end = moment();
+        start = moment().tz(this.timezone);
+        end = moment().tz(this.timezone);
 
         start.subtract(this.interval.number, this.interval.unit);
 
       } else {
-
         myStart = this.settings.period.startTime;
         myEnd = this.settings.period.endTime;
+
         if (typeof(this.settings.period.startTime) === "number") {
           myStart = this.settings.period.startTime * 1000;
         }
@@ -529,8 +535,8 @@
           myEnd = this.settings.period.endTime * 1000;
         }
 
-        start = moment(myStart);
-        end = moment(myEnd);
+        start = moment.tz(myStart, this.timezone);
+        end = moment.tz(myEnd, this.timezone);
       }
 
       return {
@@ -542,20 +548,37 @@
      * Define tick for timeseries
      */
     getTimeFormat: function() {
+      var self = this;
       var timeFormat;
+
       if (this.settings.timeFormat !== null) {
         timeFormat = this.settings.timeFormat;
       } else {
-        timeFormat = d3.time.format.multi([
-          [".%L", function(d) { return d.getMilliseconds(); }],
-          [":%S", function(d) { return d.getSeconds(); }],
-          ["%H:%M", function(d) { return d.getMinutes(); }],
-          ["%H:%M", function(d) { return d.getHours(); }],
-          ["%m-%d", function(d) { return d.getDay() && d.getDate() !== 1; }],
-          ["%m-%d", function(d) { return d.getDate() !== 1; }],
-          ["%Y-%m", function(d) { return d.getMonth(); }],
-          ["%Y", function() { return true; }]
-        ]);
+        timeFormat = function(date) {
+          date = moment(date).tz(self.timezone);
+          if (date.millisecond()) {
+            return date.format(".SSS");
+          }
+          if (date.second()) {
+            return date.format(":ss");
+          }
+          if (date.minute()) {
+            return date.format("HH:mm");
+          }
+          if (date.hour()) {
+            return date.format("HH:mm");
+          }
+          if (date.day() && date.date() !== 1) {
+              return date.format("MM-DD");
+          }
+          if (date.date() !== 1) {
+              return date.format("MM-DD");
+          }
+          if (date.month()) {
+            return date.format("YYYY-MM");
+          }
+          return date.format("YYYY");
+      }
       }
 
       return timeFormat;
