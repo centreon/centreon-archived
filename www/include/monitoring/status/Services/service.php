@@ -583,7 +583,6 @@ $tpl->display("service.ihtml");
     }
 
     function statusServices(value, isInit) {
-        console.log(value, isInit);
         _o = value;
     }
 </script>
