@@ -33,8 +33,8 @@
     // get timezone from localstorage
     // be careful, it seems that it's updated when user logout/login
     this.timezone = localStorage.getItem('realTimezone')
-        ? localStorage.getItem('realTimezone')
-        : moment.tz.guess();
+      ? localStorage.getItem('realTimezone')
+      : moment.tz.guess();
 
     this.timeFormat = this.getTimeFormat();
 
@@ -554,33 +554,33 @@
       if (this.settings.timeFormat !== null) {
         timeFormat = this.settings.timeFormat;
       } else {
-          timeFormat = function(date) {
-              // convert to moment object to manage timezone
-              date = moment(date).tz(self.timezone);
+        timeFormat = function(date) {
+          // convert to moment object to manage timezone
+          date = moment(date).tz(self.timezone);
 
-              if (date.millisecond()) {
-                  return date.format(".SSS");
-              }
-              if (date.second()) {
-                  return date.format(":ss");
-              }
-              if (date.minute()) {
-                  return date.format("HH:mm");
-              }
-              if (date.hour()) {
-                  return date.format("HH:mm");
-              }
-              if (date.day() && date.date() !== 1) {
-                  return date.format("MM-DD");
-              }
-              if (date.date() !== 1) {
-                  return date.format("MM-DD");
-              }
-              if (date.month()) {
-                  return date.format("YYYY-MM");
-              }
-              return date.format("YYYY");
+          if (date.millisecond()) {
+            return date.format(".SSS");
           }
+          if (date.second()) {
+            return date.format(":ss");
+          }
+          if (date.minute()) {
+            return date.format("HH:mm");
+          }
+          if (date.hour()) {
+            return date.format("HH:mm");
+          }
+          if (date.day() && date.date() !== 1) {
+            return date.format("MM-DD");
+          }
+          if (date.date() !== 1) {
+            return date.format("MM-DD");
+          }
+          if (date.month()) {
+            return date.format("YYYY-MM");
+          }
+          return date.format("YYYY");
+        }
       }
 
       return timeFormat;
