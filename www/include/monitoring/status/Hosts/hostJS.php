@@ -1,7 +1,7 @@
 <?php
 /*
- * Copyright 2005-2015 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2019 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -37,16 +37,16 @@ if (!isset($centreon)) {
     exit();
 }
 
-if (!isset($centreon->optGen["AjaxFirstTimeReloadMonitoring"]) ||
-    $centreon->optGen["AjaxFirstTimeReloadMonitoring"] == 0
+if (!isset($centreon->optGen["AjaxFirstTimeReloadMonitoring"])
+    || $centreon->optGen["AjaxFirstTimeReloadMonitoring"] == 0
 ) {
     $tFM = 10;
 } else {
     $tFM = $centreon->optGen["AjaxFirstTimeReloadMonitoring"] * 1000;
 }
 
-if (!isset($centreon->optGen["AjaxFirstTimeReloadStatistic"]) ||
-    $centreon->optGen["AjaxFirstTimeReloadStatistic"] == 0
+if (!isset($centreon->optGen["AjaxFirstTimeReloadStatistic"])
+    || $centreon->optGen["AjaxFirstTimeReloadStatistic"] == 0
 ) {
     $tFS = 10;
 } else {
