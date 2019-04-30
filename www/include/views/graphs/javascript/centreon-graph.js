@@ -555,7 +555,7 @@
         timeFormat = this.settings.timeFormat;
       } else {
           timeFormat = function(date) {
-              // convert to moment object to mange timezone
+              // convert to moment object to manage timezone
               date = moment(date).tz(self.timezone);
 
               if (date.millisecond()) {
