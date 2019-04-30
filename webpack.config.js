@@ -15,7 +15,7 @@ module.exports = {
     "./www/front_src/src/index.js"
   ],
   output: {
-    path: path.resolve(__dirname + "/www"),
+    path: path.resolve(__dirname + '/www'),
     publicPath: './',
     filename: 'static/js/[name].[hash:8].js',
     chunkFilename: 'static/js/[name].[hash:8].chunk.js',
