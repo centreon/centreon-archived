@@ -1,5 +1,6 @@
 import React, { Component, Suspense } from "react";
 import { connect } from "react-redux";
+import { withRouter } from "react-router-dom";
 import { dynamicImport } from "../../utils/dynamicImport";
 import centreonAxios from "../../axios";
 
@@ -12,7 +13,8 @@ class Hook extends Component {
 
   // get hooks from redux and convert these in react components
   getLoadableComponents = () => {
-    const { hooks, path } = this.props;
+    const { history, hooks, path } = this.props;
+    const basename = history.createHref({pathname: '/', search: '', hash: ''});
 
     let LoadableComponents = [];
     for (const [hook, parameters] of Object.entries(hooks)) {
@@ -20,7 +22,7 @@ class Hook extends Component {
         for (const parameter of parameters) {
           LoadableComponents.push(
             React.lazy(
-              () => dynamicImport(parameter)
+              () => dynamicImport(basename, parameter)
             )
           );
         }
@@ -52,4 +54,4 @@ const mapStateToProps = ({ externalComponents }) => ({
   hooks: externalComponents.hooks
 });
 
-export default connect(mapStateToProps)(Hook);
+export default connect(mapStateToProps)(withRouter(Hook));

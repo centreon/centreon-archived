@@ -1,6 +1,6 @@
 import React, { Component, Suspense } from "react";
 import { connect } from "react-redux";
-import { Switch, Route } from "react-router-dom";
+import { Switch, Route, withRouter } from "react-router-dom";
 import { dynamicImport } from "../../utils/dynamicImport";
 import centreonAxios from "../../axios";
 import NotAllowedPage from '../../route-components/notAllowedPage';
@@ -10,7 +10,8 @@ import styles from "../../styles/partials/_content.scss";
 class ExternalRouter extends Component {
 
   getLoadableComponents = () => {
-    const { acl, pages } = this.props;
+    const { history, acl, pages } = this.props;
+    const basename = history.createHref({pathname: '/', search: '', hash: ''});
     let LoadableComponents = [];
 
     // wait acl to add authorized routes
@@ -30,7 +31,7 @@ class ExternalRouter extends Component {
       }
 
       if (isAllowed) {
-        const Page = React.lazy(() => dynamicImport(parameter));
+        const Page = React.lazy(() => dynamicImport(basename, parameter));
         LoadableComponents.push(
           <Route
             path={path}
@@ -75,4 +76,4 @@ const mapStateToProps = ({ navigation, externalComponents }) => ({
   fetched: externalComponents.fetched,
 });
 
-export default connect(mapStateToProps)(ExternalRouter);
+export default connect(mapStateToProps)(withRouter(ExternalRouter));
