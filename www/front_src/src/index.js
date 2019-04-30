@@ -6,11 +6,3 @@ import { Link as ExposedLink } from "./exposed-libs/ReactRouterDom.js"; // we ad
 import * as ReduxForm from "./exposed-libs/ReduxForm.js"; // we add this import to get it in the final bundle
 
 ReactDOM.render(<AppProvider />, document.getElementById("root"));
-
-if (module.hot) {
-  module.hot.accept('./Provider.js', () => {
-    const NextRootContainer = require('./Provider').default;
-    ReactDOM.render(<NextRootContainer />, document.getElementById('root'));
-  })
-}
-
