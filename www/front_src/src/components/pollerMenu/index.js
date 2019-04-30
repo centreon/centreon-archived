@@ -66,7 +66,7 @@ class PollerMenu extends Component {
     intervalApplied: false
   };
 
-  UNSAFE_componentWillMount() {
+  componentDidMount() {
     window.addEventListener('mousedown', this.handleClick, false);
   };
 
@@ -232,6 +232,9 @@ const mapDispatchToProps = {};
 export default connect(mapStateToProps, mapDispatchToProps)(PollerMenu);
 
 PollerMenu.propTypes = {
-  children: PropTypes.element.isRequired,
+  navigationData: PropTypes.object.isRequired,
+  refreshTime: PropTypes.oneOfType([
+    PropTypes.number,
+    PropTypes.bool
+  ]).isRequired,
 };
-

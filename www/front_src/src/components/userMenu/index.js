@@ -21,7 +21,7 @@ class UserMenu extends Component {
     data: null
   };
 
-  UNSAFE_componentWillMount() {
+  componentDidMount() {
     window.addEventListener('mousedown', this.handleClick, false);
     this.getData();
   };
@@ -113,7 +113,7 @@ class UserMenu extends Component {
                     {allowEditProfile &&
                       <Link
                         to={"/main.php?p=" + EDIT_PROFILE_TOPOLOGY_PAGE + "&o=c"}
-                        class={styles["submenu-user-edit"]}
+                        className={styles["submenu-user-edit"]}
                         onClick={this.toggle}
                       >
                         <Translate value="Edit profile"/>

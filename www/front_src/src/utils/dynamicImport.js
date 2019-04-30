@@ -12,7 +12,7 @@ export function dynamicImport(parameters) {
     try {
       // dynamically import css if external component needs one
       if (parameters.css) {
-        await systemCss.fetch({address: '/centreon' + parameters.css});
+        await systemCss.fetch({address: '.' + parameters.css});
       }
 
       // check external component in memory to avoid to reimport it
@@ -20,7 +20,7 @@ export function dynamicImport(parameters) {
       if (typeof(window[vector]) === "object") {
         return resolve(window[vector]);
       } else {
-        const module = await(window.System.import('/centreon' + parameters.js));
+        const module = await(window.System.import('.' + parameters.js));
         window[vector] = module;
         return resolve(window[vector]);
       }
