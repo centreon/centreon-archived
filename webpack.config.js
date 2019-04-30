@@ -4,7 +4,6 @@ const TerserPlugin = require('terser-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 const safePostCssParser = require('postcss-safe-parser');
-const webpack = require('webpack');
 const path = require('path');
 
 
@@ -23,16 +22,6 @@ module.exports = {
     libraryTarget: 'umd',
     library: '[name]',
     umdNamedDefine: true,
-  },
-  devServer: {
-    contentBase: path.join(__dirname, 'www'),
-    historyApiFallback: true,
-    //compress: true,
-    hot: true,
-    host: '0.0.0.0',
-    port: 8082,
-    publicPath: 'http:/10.30.2.72:8082/',
-    writeToDisk: true
   },
   optimization: {
     minimizer: [
@@ -87,7 +76,6 @@ module.exports = {
       filename: 'static/css/[name].[contenthash:8].css',
       chunkFilename: 'static/css/[name].[contenthash:8].chunk.css',
     }),
-    new webpack.HotModuleReplacementPlugin()
   ],
   module: {
     rules: [
@@ -187,21 +175,6 @@ module.exports = {
           options: 'ReduxForm'
         }]
       },
-      {
-        test: /\.js$/,
-        include: path.join(__dirname, 'www/front_src/src'),
-        use: [
-          {
-            loader: 'babel-loader',
-            options: {
-              babelrc: true
-            }
-          },
-          {
-            loader: 'react-hot-loader/webpack'
-          }
-        ]
-      }
     ]
   },
 };
