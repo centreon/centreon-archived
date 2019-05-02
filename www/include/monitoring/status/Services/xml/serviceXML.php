@@ -340,7 +340,7 @@ if ($critRes->rowCount()) {
 
 $isHardStateDurationVisible =
     !($statusService === 'svc'
-        and ($statusFilter === 'ok' || $statusFilter === 'pending')
+        && ($statusFilter === 'ok' || $statusFilter === 'pending')
     );
 
 /* * **************************************************
