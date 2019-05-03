@@ -629,7 +629,7 @@ function updateRemoteServerInformation(array $data)
             ? $rq .= "http_port = '" . $data["http_port"]  . "', "
             : $rq .= "http_port = NULL, ";
         $rq .= "no_check_certificate = '" . $data["no_check_certificate"]["no_check_certificate"] . "', ";
-        $rq .= "no_proxy = '" . $data["no_proxy"]["no_proxy"] . "' ";
+        $rq .= "no_proxy = '" . $data["no_proxy"]["no_proxy"] . "', ";
         $rq .= "ip = '" . $data["ns_ip_address"]  . "'";
         $pearDB->query($rq);
     }
