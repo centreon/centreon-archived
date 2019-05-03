@@ -2126,6 +2126,7 @@ function getListTemplates($pearDB, $svcId, $alreadyProcessed = array())
         $stmt = $pearDB->query($query);
         if ($stmt->rowCount()) {
             $row = $stmt->fetchRow();
+            $svcTmpl[] = $row;
             if ($row['service_template_model_stm_id'] !== null) {
                 $svcTmpl = array_merge(
                     $svcTmpl,
