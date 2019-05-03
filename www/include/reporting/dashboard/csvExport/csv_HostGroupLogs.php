@@ -76,23 +76,29 @@ if (!empty($sid) && isset($_SESSION['centreon'])) {
 $centreon = $oreon;
 
 // Getting hostgroup id
-$id = filter_var(
-    $_GET["hostgroup"] ?? $_POST['hostgroup'] ?? "NULL",
-    FILTER_SANITIZE_STRING
+$hostgroupId = filter_var(
+    $_GET["hostgroup"] ?? $_POST['hostgroup'] ?? null,
+    FILTER_VALIDATE_INT
 );
 
-//checking if the user has ACL rights for this resource
-/*
-if ($admin) {
+// finding the user's allowed hostgroups
+$hgs = $centreon->user->access->getHostGroupAclConf(null, 'broker');
 
+//checking if the user has ACL rights for this resource
+if (!$centreon->user->admin
+    && $hostgroupId !== null
+    && !array_key_exists($hostgroupId, $hgs)
+) {
+    echo '<div align="center" style="color:red">' .
+        '<b>You are not allowed to access this host group</b></div>';
+    exit();
 }
-*/
 
 // Getting time interval to report
 $dates = getPeriodToReport();
 $start_date = htmlentities($_GET['start'], ENT_QUOTES, "UTF-8");
 $end_date = htmlentities($_GET['end'], ENT_QUOTES, "UTF-8");
-$hostgroup_name = getHostgroupNameFromId($id);
+$hostgroup_name = getHostgroupNameFromId($hostgroupId);
 
 // file type setting
 header("Cache-Control: public");
@@ -117,7 +123,7 @@ echo _("Status") . ";"
 // Getting stats on Host
 $reportingTimePeriod = getreportingTimePeriod();
 $hostgroupStats = array();
-$hostgroupStats = getLogInDbForHostGroup($id, $start_date, $end_date, $reportingTimePeriod);
+$hostgroupStats = getLogInDbForHostGroup($hostgroupId, $start_date, $end_date, $reportingTimePeriod);
 
 echo _("UP") . ";"
     . $hostgroupStats["average"]["UP_TP"] . "%;"
@@ -173,7 +179,7 @@ echo "\n";
 $str = "";
 $dbResult = $pearDB->query(
     "SELECT host_host_id FROM `hostgroup_relation` " .
-    "WHERE `hostgroup_hg_id` = '" . $id . "'"
+    "WHERE `hostgroup_hg_id` = '" . $hostgroupId . "'"
 );
 while ($hg = $dbResult->fetch()) {
     if ($str != "") {
