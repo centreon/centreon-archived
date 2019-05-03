@@ -2132,7 +2132,6 @@ function getListTemplates($pearDB, $svcId, $alreadyProcessed = array())
                     $svcTmpl,
                     getListTemplates($pearDB, $row['service_template_model_stm_id'], $alreadyProcessed)
                 );
-                $svcTmpl[] = $row;
             }
         }
         return $svcTmpl;
