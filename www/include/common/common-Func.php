@@ -2122,7 +2122,7 @@ function getListTemplates($pearDB, $svcId, $alreadyProcessed = array())
     } else {
         $alreadyProcessed[] = $svcId;
 
-        $query = "SELECT * FROM service WHERE service_id = " . intval($svcId);
+        $query = "SELECT * FROM service WHERE service_id = " . (int)$svcId;
         $stmt = $pearDB->query($query);
         if ($stmt->rowCount()) {
             $row = $stmt->fetchRow();
