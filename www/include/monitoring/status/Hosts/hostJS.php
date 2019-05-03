@@ -403,7 +403,6 @@ if (isset($_GET["acknowledge"])) {
         }
         xhr_cmd.send(null);
         window.currentPopin.centreonPopin("close");
-        //Modalbox.hide();
         unsetCheckboxes();
     }
 
