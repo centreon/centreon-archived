@@ -1,4 +1,4 @@
-import System from '../../../../node_modules/systemjs/dist/s.js'; // IIFE format so it's imported on window
+import System from '../../../../node_modules/systemjs/dist/system.js'; // IIFE format so it's imported on window
 import systemCss from "systemjs-plugin-css"; // used to import css in <head>
 
 // this function allows to import dynamically js and css using systemjs
@@ -25,7 +25,8 @@ export function dynamicImport(parameters) {
         return resolve(window[vector]);
       }
     } catch (error) {
-      return reject(error);
+      console.error(error)
+      //return reject(error);
     }
   });
 }
