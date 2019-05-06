@@ -3,6 +3,7 @@
 namespace Centreon\Domain\Repository;
 
 use Centreon\Infrastructure\CentreonLegacyDB\ServiceEntityRepository;
+use CentreonUser;
 
 class TopologyRepository extends ServiceEntityRepository
 {
@@ -36,6 +37,7 @@ class TopologyRepository extends ServiceEntityRepository
 
     /**
      * Get Topologies according to ACL for user
+     * @todo refactor this into function below it
      */
     public function getReactTopologiesPerUserWithAcl($user)
     {
@@ -107,5 +109,26 @@ class TopologyRepository extends ServiceEntityRepository
         }
 
         return $topologyUrls ?: [];
+    }
+
+    /**
+     * Get list of topologies per user and filter by react pages if specified
+     * @param CentreonUser $user
+     * @param bool $is_react
+     * @return array
+     */
+    public function getTopologyList(CentreonUser $user, bool $is_react = false): array
+    {
+        $topologies = [];
+        //define admin query
+        //define acl query
+
+        if ($is_react){
+            //query for react
+        } else {
+            //query for rest
+        }
+
+        return $topologies;
     }
 }

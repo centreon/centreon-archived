@@ -75,6 +75,7 @@ class ServiceProvider implements AutoloadServiceProviderInterface
     const CENTREON_DB_MANAGER = 'centreon.db-manager';
     const CENTREON_CLAPI = 'centreon.clapi';
     const UPLOAD_MANGER = 'upload.manager';
+    const CENTREON_USER = 'centreon.user';
 
 
     /**
@@ -137,7 +138,7 @@ class ServiceProvider implements AutoloadServiceProviderInterface
             return $service;
         };
 
-        $pimple['centreon.user'] = function (Container $container): \CentreonUser {
+        $pimple[static::CENTREON_USER] = function (Container $container): \CentreonUser {
             if (php_sapi_name() !== 'cli' && session_status() == PHP_SESSION_NONE) {
                 session_start();
             }
