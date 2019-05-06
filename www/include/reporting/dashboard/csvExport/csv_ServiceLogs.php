@@ -67,17 +67,35 @@ if (!empty($sid) && isset($_SESSION['centreon'])) {
 $centreon = $oreon;
 
 // getting host and service id
-isset($_GET["host"]) ? $host_id =  htmlentities($_GET["host"], ENT_QUOTES, "UTF-8") : $host_id = "NULL";
-isset($_POST["host"]) ? $host_id =  htmlentities($_POST["host"], ENT_QUOTES, "UTF-8") : $host_id;
-isset($_GET["service"]) ? $service_id =  htmlentities($_GET["service"], ENT_QUOTES, "UTF-8") : $service_id = "NULL";
-isset($_POST["service"]) ? $service_id =  htmlentities($_POST["service"], ENT_QUOTES, "UTF-8") : $service_id;
+$hostId = filter_var(
+    $_GET['host'] ?? $_POST['host'] ?? null,
+    FILTER_VALIDATE_INT
+);
+
+$serviceId = filter_var(
+    $_GET['service'] ?? $_POST['service'] ?? null,
+    FILTER_VALIDATE_INT
+);
+
+// finding the user's allowed resources
+$services = $centreon->user->access->getHostServiceAclConf($hostId, 'broker', null);
+
+//checking if the user has ACL rights for this resource
+if (!$centreon->user->admin
+    && $serviceId !== null
+    && (!array_key_exists($serviceId, $services))
+) {
+    echo '<div align="center" style="color:red">' .
+        '<b>You are not allowed to access this service</b></div>';
+    exit();
+}
 
 // Getting time interval to report
 $dates = getPeriodToReport();
 $start_date =  htmlentities($_GET['start'], ENT_QUOTES, "UTF-8");
 $end_date =  htmlentities($_GET['end'], ENT_QUOTES, "UTF-8");
-$host_name = getHostNameFromId($host_id);
-$service_description = getServiceDescriptionFromId($service_id);
+$host_name = getHostNameFromId($hostId);
+$service_description = getServiceDescriptionFromId($serviceId);
 
 // file type setting
 header("Cache-Control: public");
@@ -106,8 +124,8 @@ echo _("Status") . ";"
 
 $reportingTimePeriod = getreportingTimePeriod();
 $serviceStats = getLogInDbForOneSVC(
-    $host_id,
-    $service_id,
+    $hostId,
+    $serviceId,
     $start_date,
     $end_date,
     $reportingTimePeriod
@@ -166,8 +184,8 @@ echo _("Day") . ";"
 
 $dbResult = $pearDBO->query(
     "SELECT  * FROM `log_archive_service` " .
-    "WHERE `host_id` = '" . $host_id . "' " .
-    "AND `service_id` = '" . $service_id . "' " .
+    "WHERE `host_id` = '" . $hostId . "' " .
+    "AND `service_id` = '" . $serviceId . "' " .
     "AND `date_start` >= '" . $start_date . "' " .
     "AND `date_end` <= '" . $end_date . "' " .
     "ORDER BY `date_start` DESC"
