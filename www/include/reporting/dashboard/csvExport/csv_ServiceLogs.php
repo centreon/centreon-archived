@@ -1,7 +1,7 @@
 <?php
 /*
- * Copyright 2005-2016 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2019 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -73,6 +73,18 @@ isset($_GET["host"]) ? $host_id =  htmlentities($_GET["host"], ENT_QUOTES, "UTF-
 isset($_POST["host"]) ? $host_id =  htmlentities($_POST["host"], ENT_QUOTES, "UTF-8") : $host_id;
 isset($_GET["service"]) ? $service_id =  htmlentities($_GET["service"], ENT_QUOTES, "UTF-8") : $service_id = "NULL";
 isset($_POST["service"]) ? $service_id =  htmlentities($_POST["service"], ENT_QUOTES, "UTF-8") : $service_id;
+
+// finding the user's allowed resources
+$services = $centreon->user->access->getHostServiceAclConf($host_id, 'broker', null);
+//checking if the user has ACL rights for this resource
+if (!$centreon->user->admin
+    && $service_id !== null
+    && (!array_key_exists($service_id, $services))
+) {
+    echo '<div align="center" style="color:red">' .
+        '<b>You are not allowed to access this service</b></div>';
+    exit();
+}
 
 /*
  * Getting time interval to report
