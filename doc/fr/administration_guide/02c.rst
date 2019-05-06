@@ -66,7 +66,7 @@ Les widgets permettent de construire de véritables vues personnalisées, abord�
 
 Pour installer un widget :
 
-#. Installez le widget à partir de la documentation associée (le plus souvent dans le répertoire **/usr/share/centreon/www/modules** sur le serveur Central)
+#. Installez le widget à partir de la documentation associée (le plus souvent dans le répertoire **/usr/share/centreon/www/widgets** sur le serveur Central)
 #. Rendez-vous dans le menu **Administration** ==> **Extensions**
 #. Dans le menu de gauche, cliquez sur **Configuration** en dessous de **Widgets**
 #. Cliquez sur l'icône |install| pour lancer l'installation du widget
