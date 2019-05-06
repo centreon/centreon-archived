@@ -53,10 +53,13 @@ $pearDBO = new CentreonDB("centstorage");
 $sid = session_id();
 if (!empty($sid) && isset($_SESSION['centreon'])) {
     $oreon = $_SESSION['centreon'];
-    $res = $pearDB->query(
+    $res = $pearDB->prepare(
         "SELECT user_id FROM session " .
-        "WHERE user_id = '" . $pearDB->escape($oreon->user->user_id) . "'"
+        "WHERE user_id = :id"
     );
+    $res->bindValue(':id', (int)$oreon->user->user_id, PDO::PARAM_INT);
+    $res->execute();
+
     if (!$res->rowCount()) {
         get_error('bad session id');
     }
@@ -92,16 +95,16 @@ if (!$centreon->user->admin
 
 // Getting time interval to report
 $dates = getPeriodToReport();
-$start_date =  htmlentities($_GET['start'], ENT_QUOTES, "UTF-8");
-$end_date =  htmlentities($_GET['end'], ENT_QUOTES, "UTF-8");
-$host_name = getHostNameFromId($hostId);
-$service_description = getServiceDescriptionFromId($serviceId);
+$startDate =  htmlentities($_GET['start'], ENT_QUOTES, "UTF-8");
+$endDate =  htmlentities($_GET['end'], ENT_QUOTES, "UTF-8");
+$hostName = getHostNameFromId($hostId);
+$serviceDescription = getServiceDescriptionFromId($serviceId);
 
 // file type setting
 header("Cache-Control: public");
 header("Pragma: public");
 header("Content-Type: application/octet-stream");
-header("Content-disposition: attachment ; filename=" . $host_name .  "_"  . $service_description . ".csv");
+header("Content-disposition: attachment ; filename=" . $hostName .  "_"  . $serviceDescription . ".csv");
 
 echo _("Host") . ";"
     . _("Service") . ";"
@@ -109,11 +112,11 @@ echo _("Host") . ";"
     . _("End date") . "; "
     . _("Duration") . "\n";
 
-echo $host_name . "; "
-    . $service_description . "; "
-    . date(_("d/m/Y H:i:s"), $start_date) . "; "
-    . date(_("d/m/Y H:i:s"), $end_date) . "; "
-    . ($end_date - $start_date) . "s\n";
+echo $hostName . "; "
+    . $serviceDescription . "; "
+    . date(_("d/m/Y H:i:s"), $startDate) . "; "
+    . date(_("d/m/Y H:i:s"), $endDate) . "; "
+    . ($endDate - $startDate) . "s\n";
 echo "\n";
 
 echo _("Status") . ";"
@@ -126,8 +129,8 @@ $reportingTimePeriod = getreportingTimePeriod();
 $serviceStats = getLogInDbForOneSVC(
     $hostId,
     $serviceId,
-    $start_date,
-    $end_date,
+    $startDate,
+    $endDate,
     $reportingTimePeriod
 );
 
@@ -156,8 +159,8 @@ echo "UNKNOWN;"
     . $serviceStats["UNKNOWN_A"] . ";\n";
 
 echo _("SCHEDULED DOWNTIME") . ";"
-    . $hostStats["MAINTENANCE_T"] . "s;"
-    . $hostStats["MAINTENANCE_TP"] . "%;;;\n";
+    . $serviceStats["MAINTENANCE_T"] . "s;"
+    . $serviceStats["MAINTENANCE_TP"] . "%;;;\n";
 
 echo "UNDETERMINED;"
     . $serviceStats["UNDETERMINED_T"] . "s;"
@@ -182,14 +185,20 @@ echo _("Day") . ";"
     . _("Critical") . " Alert;"
     . _("Day") . ";\n";
 
-$dbResult = $pearDBO->query(
+$dbResult = $pearDBO->prepare(
     "SELECT  * FROM `log_archive_service` " .
-    "WHERE `host_id` = '" . $hostId . "' " .
-    "AND `service_id` = '" . $serviceId . "' " .
-    "AND `date_start` >= '" . $start_date . "' " .
-    "AND `date_end` <= '" . $end_date . "' " .
+    "WHERE `host_id` = :hostId " .
+    "AND `service_id` = :serviceId " .
+    "AND `date_start` >= :startDate " .
+    "AND `date_end` <= :endDate " .
     "ORDER BY `date_start` DESC"
 );
+$dbResult->bindValue(':hostId', $hostId, PDO::PARAM_INT);
+$dbResult->bindValue(':serviceId', $serviceId, PDO::PARAM_INT);
+$dbResult->bindValue(':startDate', $startDate, PDO::PARAM_INT);
+$dbResult->bindValue(':endDate', $endDate, PDO::PARAM_INT);
+$dbResult->execute();
+
 while ($row = $dbResult->fetch()) {
     $duration = $row["date_end"] - $row["date_start"];
     /* Percentage by status */
