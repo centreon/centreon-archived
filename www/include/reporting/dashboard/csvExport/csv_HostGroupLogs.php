@@ -190,7 +190,7 @@ while ($hg = $dbResult->fetch()) {
     if ($str != "") {
         $str .= ", ";
     }
-    $str .= "'" . (int)$hg["host_host_id"] . "'";
+    $str .= "'" . $hg["host_host_id"] . "'";
 }
 if ($str == "") {
     $str = "''";

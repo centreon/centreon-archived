@@ -239,7 +239,7 @@ while ($sg = $dbResult->fetch()) {
     if ($str != "") {
         $str .= ", ";
     }
-    $str .= "'" . (int)$sg["service_service_id"] . "'";
+    $str .= "'" . $sg["service_service_id"] . "'";
 }
 $dbResult->closeCursor();
 if ($str == "") {
