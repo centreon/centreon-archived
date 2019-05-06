@@ -78,14 +78,26 @@ if (!empty($sid) && isset($_SESSION['centreon'])) {
 // getting host id
 $hostId = filter_var(
     $_GET['host'] ?? $_POST['host'] ?? null,
-    FILTER_SANITIZE_STRING
+    FILTER_VALIDATE_INT
 );
+
+$hosts = $centreon->user->access->getHostAclConf(null, 'broker');
+
+//checking if the user has ACL rights for this resource
+if (!$centreon->user->admin
+    && $hostId !== null
+    && !array_key_exists($hostId, $hosts)
+) {
+    echo '<div align="center" style="color:red">' .
+        '<b>You are not allowed to access this host</b></div>';
+    exit();
+}
 
 // Getting time interval to report
 $dates = getPeriodToReport();
 $start_date = htmlentities($_GET['start'], ENT_QUOTES, "UTF-8");
 $end_date = htmlentities($_GET['end'], ENT_QUOTES, "UTF-8");
-$host_name = getHostNameFromId($id);
+$host_name = getHostNameFromId($hostId);
 
 // file type setting
 header("Cache-Control: public");
@@ -114,7 +126,7 @@ echo _("Status") . ";"
 // Getting stats on Host
 $reportingTimePeriod = getreportingTimePeriod();
 $hostStats = getLogInDbForHost(
-    $id,
+    $hostId,
     $start_date,
     $end_date,
     $reportingTimePeriod
@@ -156,7 +168,7 @@ echo _("Service") . ";"
     . _("Scheduled Downtimes") . " %;" . _("Undetermined") . "%;\n";
 
 $hostServicesStats =  getLogInDbForHostSVC(
-    $id,
+    $hostId,
     $start_date,
     $end_date,
     $reportingTimePeriod
@@ -196,7 +208,7 @@ echo _("Day") . ";"
 
 $dbResult = $pearDBO->query(
     "SELECT  * FROM `log_archive_host` " .
-    "WHERE `host_id` = '" . $id . "' " .
+    "WHERE `host_id` = '" . $hostId . "' " .
     "AND `date_start` >= '" . $start_date . "' " .
     "AND `date_end` <= '" . $end_date . "' " .
     "ORDER BY `date_start` desc"
