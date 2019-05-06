@@ -64,10 +64,12 @@ $centreon = $_SESSION["centreon"];
 $sid = session_id();
 if (!empty($sid) && isset($_SESSION['centreon'])) {
     $oreon = $_SESSION['centreon'];
-    $res = $pearDB->query(
+    $res = $pearDB->prepare(
         "SELECT user_id FROM session " .
-        "WHERE user_id = '" . $pearDB->escape($oreon->user->user_id) . "'"
+        "WHERE user_id = :id"
     );
+    $res->bindValue(':id', (int)$oreon->user->user_id, PDO::PARAM_INT);
+    $res->execute();
     if (!$res->rowCount()) {
         get_error('bad session id');
     }
@@ -81,12 +83,12 @@ $hostId = filter_var(
     FILTER_VALIDATE_INT
 );
 
-$hosts = $centreon->user->access->getHostAclConf(null, 'broker');
+$allowedHosts = $centreon->user->access->getHostAclConf(null, 'broker');
 
 //checking if the user has ACL rights for this resource
 if (!$centreon->user->admin
     && $hostId !== null
-    && !array_key_exists($hostId, $hosts)
+    && !array_key_exists($hostId, $allowedHosts)
 ) {
     echo '<div align="center" style="color:red">' .
         '<b>You are not allowed to access this host</b></div>';
@@ -95,25 +97,25 @@ if (!$centreon->user->admin
 
 // Getting time interval to report
 $dates = getPeriodToReport();
-$start_date = htmlentities($_GET['start'], ENT_QUOTES, "UTF-8");
-$end_date = htmlentities($_GET['end'], ENT_QUOTES, "UTF-8");
-$host_name = getHostNameFromId($hostId);
+$startDate = htmlentities($_GET['start'], ENT_QUOTES, "UTF-8");
+$endDate = htmlentities($_GET['end'], ENT_QUOTES, "UTF-8");
+$hostName = getHostNameFromId($hostId);
 
 // file type setting
 header("Cache-Control: public");
 header("Pragma: public");
 header("Content-Type: application/octet-stream");
-header("Content-disposition: filename=".$host_name.".csv");
+header("Content-disposition: filename=" . $hostName . ".csv");
 
 echo _("Host") . ";"
     . _("Begin date") . "; "
     . _("End date") . "; "
     . _("Duration") . "\n";
 
-echo $host_name . "; "
-    . date(_("d/m/Y H:i:s"), $start_date) . "; "
-    . date(_("d/m/Y H:i:s"), $end_date) . "; "
-    . ($end_date - $start_date) . "s\n";
+echo $hostName . "; "
+    . date(_("d/m/Y H:i:s"), $startDate) . "; "
+    . date(_("d/m/Y H:i:s"), $endDate) . "; "
+    . ($endDate - $startDate) . "s\n";
 echo "\n";
 echo "\n";
 
@@ -127,8 +129,8 @@ echo _("Status") . ";"
 $reportingTimePeriod = getreportingTimePeriod();
 $hostStats = getLogInDbForHost(
     $hostId,
-    $start_date,
-    $end_date,
+    $startDate,
+    $endDate,
     $reportingTimePeriod
 );
 
@@ -169,8 +171,8 @@ echo _("Service") . ";"
 
 $hostServicesStats =  getLogInDbForHostSVC(
     $hostId,
-    $start_date,
-    $end_date,
+    $startDate,
+    $endDate,
     $reportingTimePeriod
 );
 
@@ -206,13 +208,17 @@ echo _("Day") . ";"
     . _("Unreachable") . " " . _("Alert")
     . _("Day") . ";\n";
 
-$dbResult = $pearDBO->query(
+$dbResult = $pearDBO->prepare(
     "SELECT  * FROM `log_archive_host` " .
-    "WHERE `host_id` = '" . $hostId . "' " .
-    "AND `date_start` >= '" . $start_date . "' " .
-    "AND `date_end` <= '" . $end_date . "' " .
+    "WHERE `host_id` = :hostId " .
+    "AND `date_start` >= :startDate " .
+    "AND `date_end` <= :endDate " .
     "ORDER BY `date_start` desc"
 );
+$dbResult->bindValue(':hostId', $hostId, PDO::PARAM_INT);
+$dbResult->bindValue(':startDate', $startDate, PDO::PARAM_INT);
+$dbResult->bindValue(':endDate', $endDate, PDO::PARAM_INT);
+$dbResult->execute();
 
 while ($row = $dbResult->fetch()) {
     $duration = $row["UPTimeScheduled"] + $row["DOWNTimeScheduled"] + $row["UNREACHABLETimeScheduled"];

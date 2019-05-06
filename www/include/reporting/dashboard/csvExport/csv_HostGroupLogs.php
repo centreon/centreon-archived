@@ -62,10 +62,12 @@ $sid = session_id();
 
 if (!empty($sid) && isset($_SESSION['centreon'])) {
     $oreon = $_SESSION['centreon'];
-    $res = $pearDB->query(
+    $res = $pearDB->prepare(
         "SELECT user_id FROM session " .
-        "WHERE user_id = '" . $pearDB->escape($oreon->user->user_id) . "'"
+        "WHERE user_id = :id"
     );
+    $res->bindValue(':id', (int)$oreon->user->user_id, PDO::PARAM_INT);
+    $res->execute();
     if (!$res->rowCount()) {
         get_error('bad session id');
     }
@@ -82,12 +84,12 @@ $hostgroupId = filter_var(
 );
 
 // finding the user's allowed hostgroups
-$hgs = $centreon->user->access->getHostGroupAclConf(null, 'broker');
+$allowedHostgroups = $centreon->user->access->getHostGroupAclConf(null, 'broker');
 
 //checking if the user has ACL rights for this resource
 if (!$centreon->user->admin
     && $hostgroupId !== null
-    && !array_key_exists($hostgroupId, $hgs)
+    && !array_key_exists($hostgroupId, $allowedHostgroups)
 ) {
     echo '<div align="center" style="color:red">' .
         '<b>You are not allowed to access this host group</b></div>';
@@ -96,24 +98,24 @@ if (!$centreon->user->admin
 
 // Getting time interval to report
 $dates = getPeriodToReport();
-$start_date = htmlentities($_GET['start'], ENT_QUOTES, "UTF-8");
-$end_date = htmlentities($_GET['end'], ENT_QUOTES, "UTF-8");
-$hostgroup_name = getHostgroupNameFromId($hostgroupId);
+$startDate = htmlentities($_GET['start'], ENT_QUOTES, "UTF-8");
+$endDate = htmlentities($_GET['end'], ENT_QUOTES, "UTF-8");
+$hostgroupName = getHostgroupNameFromId($hostgroupId);
 
 // file type setting
 header("Cache-Control: public");
 header("Pragma: public");
 header("Content-Type: application/octet-stream");
-header("Content-disposition: filename=" . $hostgroup_name . ".csv");
+header("Content-disposition: filename=" . $hostgroupName . ".csv");
 
 echo _("Hostgroup") . ";"
     . _("Begin date") . "; "
     . _("End date") . "; "
     . _("Duration") . "\n";
-echo $hostgroup_name . "; "
-    . date(_("d/m/Y H:i:s"), $start_date) . "; "
-    . date(_("d/m/Y H:i:s"), $end_date) . "; "
-    . ($end_date - $start_date) . "s\n";
+echo $hostgroupName . "; "
+    . date(_("d/m/Y H:i:s"), $startDate) . "; "
+    . date(_("d/m/Y H:i:s"), $endDate) . "; "
+    . ($endDate - $startDate) . "s\n";
 echo "\n";
 echo _("Status") . ";"
     . _("Total Time") . ";"
@@ -123,7 +125,7 @@ echo _("Status") . ";"
 // Getting stats on Host
 $reportingTimePeriod = getreportingTimePeriod();
 $hostgroupStats = array();
-$hostgroupStats = getLogInDbForHostGroup($hostgroupId, $start_date, $end_date, $reportingTimePeriod);
+$hostgroupStats = getLogInDbForHostGroup($hostgroupId, $startDate, $endDate, $reportingTimePeriod);
 
 echo _("UP") . ";"
     . $hostgroupStats["average"]["UP_TP"] . "%;"
@@ -177,15 +179,18 @@ echo "\n";
 
 // getting all hosts from hostgroup
 $str = "";
-$dbResult = $pearDB->query(
+$dbResult = $pearDB->prepare(
     "SELECT host_host_id FROM `hostgroup_relation` " .
-    "WHERE `hostgroup_hg_id` = '" . $hostgroupId . "'"
+    "WHERE `hostgroup_hg_id` = :hostgroupId"
 );
+$dbResult->bindValue(':hostgroupId', $hostgroupId, PDO::PARAM_INT);
+$dbResult->execute();
+
 while ($hg = $dbResult->fetch()) {
     if ($str != "") {
         $str .= ", ";
     }
-    $str .= "'" . $hg["host_host_id"] . "'";
+    $str .= "'" . (int)$hg["host_host_id"] . "'";
 }
 if ($str == "") {
     $str = "''";
@@ -194,17 +199,20 @@ unset($hg);
 unset($dbResult);
 
 // Getting hostgroup stats evolution
-$dbResult = $pearDBO->query(
+$dbResult = $pearDBO->prepare(
     "SELECT `date_start`, `date_end`, sum(`UPnbEvent`) as UPnbEvent, sum(`DOWNnbEvent`) as DOWNnbEvent, "
     . "sum(`UNREACHABLEnbEvent`) as UNREACHABLEnbEvent, "
     . "avg( `UPTimeScheduled` ) as UPTimeScheduled, "
     . "avg( `DOWNTimeScheduled` ) as DOWNTimeScheduled, "
     . "avg( `UNREACHABLETimeScheduled` ) as UNREACHABLETimeScheduled "
     . "FROM `log_archive_host` WHERE `host_id` IN (" . $str . ") "
-    . "AND `date_start` >= '" . $start_date . "' "
-    . "AND `date_end` <= '" . $end_date . "' "
+    . "AND `date_start` >= :startDate "
+    . "AND `date_end` <= :endDate "
     . "GROUP BY `date_end`, `date_start` ORDER BY `date_start` desc"
 );
+$dbResult->bindValue(':startDate', $startDate, PDO::PARAM_INT);
+$dbResult->bindValue(':endDate', $endDate, PDO::PARAM_INT);
+$dbResult->execute();
 
 echo _("Day") . ";"
     . _("Duration") . ";"

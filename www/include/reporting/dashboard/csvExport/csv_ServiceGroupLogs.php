@@ -61,10 +61,12 @@ if (!isset($_SESSION["centreon"])) {
 $sid = session_id();
 if (!empty($sid) && isset($_SESSION['centreon'])) {
     $oreon = $_SESSION['centreon'];
-    $res = $pearDB->query(
+    $res = $pearDB->prepare(
         "SELECT user_id FROM session " .
-        "WHERE user_id = '" . $pearDB->escape($oreon->user->user_id) . "'"
+        "WHERE user_id = :id"
     );
+    $res->bindValue(':id', (int)$oreon->user->user_id, PDO::PARAM_INT);
+    $res->execute();
     if (!$res->rowCount()) {
         get_error('bad session id');
     }
@@ -80,12 +82,12 @@ $servicegroupId = filter_var(
 );
 
 // finding the user's allowed servicegroup
-$sgs = $centreon->user->access->getServiceGroupAclConf(null, 'broker');
+$allowedServicegroup = $centreon->user->access->getServiceGroupAclConf(null, 'broker');
 
 //checking if the user has ACL rights for this resource
 if (!$centreon->user->admin
     && $servicegroupId !== null
-    && !array_key_exists($servicegroupId, $sgs)
+    && !array_key_exists($servicegroupId, $allowedServicegroup)
 ) {
     echo '<div align="center" style="color:red">' .
         '<b>You are not allowed to access this service group</b></div>';
@@ -96,9 +98,9 @@ if (!$centreon->user->admin
  * Getting time interval to report
  */
 $dates = getPeriodToReport();
-$start_date = htmlentities($_GET['start'], ENT_QUOTES, "UTF-8");
-$end_date = htmlentities($_GET['end'], ENT_QUOTES, "UTF-8");
-$servicegroup_name = getServiceGroupNameFromId($servicegroupId);
+$startDate = htmlentities($_GET['start'], ENT_QUOTES, "UTF-8");
+$endDate = htmlentities($_GET['end'], ENT_QUOTES, "UTF-8");
+$servicegroupName = getServiceGroupNameFromId($servicegroupId);
 
 /*
  * file type setting
@@ -106,17 +108,17 @@ $servicegroup_name = getServiceGroupNameFromId($servicegroupId);
 header("Cache-Control: public");
 header("Pragma: public");
 header("Content-Type: application/octet-stream");
-header("Content-disposition: filename=".$servicegroup_name.".csv");
+header("Content-disposition: filename=" . $servicegroupName . ".csv");
 
 echo _("ServiceGroup") . ";"
     . _("Begin date") . "; "
     . _("End date") . "; "
     . _("Duration") . "\n";
 
-echo $servicegroup_name . ";"
-    . date(_("d/m/Y H:i:s"), $start_date) . "; "
-    . date(_("d/m/Y H:i:s"), $end_date) . "; "
-    . ($end_date - $start_date) . "s\n\n";
+echo $servicegroupName . ";"
+    . date(_("d/m/Y H:i:s"), $startDate) . "; "
+    . date(_("d/m/Y H:i:s"), $endDate) . "; "
+    . ($endDate - $startDate) . "s\n\n";
 
 echo "\n";
 
@@ -134,8 +136,8 @@ $reportingTimePeriod = getreportingTimePeriod();
 $stats = array();
 $stats = getLogInDbForServicesGroup(
     $servicegroupId,
-    $start_date,
-    $end_date,
+    $startDate,
+    $endDate,
     $reportingTimePeriod
 );
 
@@ -225,17 +227,19 @@ echo _("Day") . ";"
     . $stringCritical . " " . $stringAlert . ";"
     . _("Day") . "\n";
 
-$dbResult = $pearDB->query(
+$dbResult = $pearDB->prepare(
     "SELECT `service_service_id` FROM `servicegroup_relation` " .
-    "WHERE `servicegroup_sg_id` = '" . $servicegroupId . "'"
+    "WHERE `servicegroup_sg_id` = :servicegroupId"
 );
+$dbResult->bindValue(':servicegroupId', $servicegroupId, PDO::PARAM_INT);
+$dbResult->execute();
 
 $str = "";
 while ($sg = $dbResult->fetch()) {
     if ($str != "") {
         $str .= ", ";
     }
-    $str .= "'" . $sg["service_service_id"] . "'";
+    $str .= "'" . (int)$sg["service_service_id"] . "'";
 }
 $dbResult->closeCursor();
 if ($str == "") {
@@ -244,7 +248,7 @@ if ($str == "") {
 unset($sg);
 unset($dbResult);
 
-$res = $pearDBO->query(
+$res = $pearDBO->prepare(
     "SELECT `date_start`, `date_end`, sum(`OKnbEvent`) as OKnbEvent, "
     . "sum(`CRITICALnbEvent`) as CRITICALnbEvent, "
     . "sum(`WARNINGnbEvent`) as WARNINGnbEvent, "
@@ -254,10 +258,14 @@ $res = $pearDBO->query(
     . "avg( `UNKNOWNTimeScheduled` ) as UNKNOWNTimeScheduled, "
     . "avg( `CRITICALTimeScheduled` ) as CRITICALTimeScheduled "
     . "FROM `log_archive_service` WHERE `service_id` IN (" . $str . ") "
-    . "AND `date_start` >= '" . $start_date . "' "
-    . "AND `date_end` <= '" . $end_date . "' "
+    . "AND `date_start` >= :startDate "
+    . "AND `date_end` <= :endDate "
     . "GROUP BY `date_end`, `date_start` order by `date_start` desc"
 );
+$res->bindValue(':startDate', $startDate, PDO::PARAM_INT);
+$res->bindValue(':endDate', $endDate, PDO::PARAM_INT);
+$res->execute();
+
 $statesTab = array("OK", "WARNING", "CRITICAL", "UNKNOWN");
 while ($row = $res->fetch()) {
     $duration = $row["date_end"] - $row["date_start"];
