@@ -76,9 +76,21 @@ $centreon = $oreon;
 
 $servicegroupId = filter_var(
     $_GET['servicegroup'] ?? $_POST['servicegroup'] ?? null,
-    FILTER_SANITIZE_STRING
+    FILTER_VALIDATE_INT
 );
 
+// finding the user's allowed servicegroup
+$sgs = $centreon->user->access->getServiceGroupAclConf(null, 'broker');
+
+//checking if the user has ACL rights for this resource
+if (!$centreon->user->admin
+    && $servicegroupId !== null
+    && !array_key_exists($servicegroupId, $sgs)
+) {
+    echo '<div align="center" style="color:red">' .
+        '<b>You are not allowed to access this service group</b></div>';
+    exit();
+}
 
 /*
  * Getting time interval to report
