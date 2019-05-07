@@ -81,11 +81,11 @@ isset($_GET["hostgroup"]) ? $id = htmlentities($_GET["hostgroup"], ENT_QUOTES, "
 isset($_POST["hostgroup"]) ? $id = htmlentities($_POST["hostgroup"], ENT_QUOTES, "UTF-8") : $id;
 
 // finding the user's allowed hostgroups
-$hgs = $centreon->user->access->getHostGroupAclConf(null, 'broker');
+$allowedHostgroups = $centreon->user->access->getHostGroupAclConf(null, 'broker');
 //checking if the user has ACL rights for this resource
 if (!$centreon->user->admin
     && $id !== null
-    && !array_key_exists($id, $hgs)
+    && !array_key_exists($id, $allowedHostgroups)
 ) {
     echo '<div align="center" style="color:red">' .
         '<b>You are not allowed to access this host group</b></div>';

@@ -84,11 +84,11 @@ isset($_GET["host"]) ? $id = htmlentities($_GET["host"], ENT_QUOTES, "UTF-8") : 
 isset($_POST["host"]) ? $id = htmlentities($_POST["host"], ENT_QUOTES, "UTF-8") : $id;
 
 // finding the user's allowed hosts
-$hosts = $centreon->user->access->getHostAclConf(null, 'broker');
+$allowedHosts = $centreon->user->access->getHostAclConf(null, 'broker');
 //checking if the user has ACL rights for this resource
 if (!$centreon->user->admin
     && $id !== null
-    && !array_key_exists($id, $hosts)
+    && !array_key_exists($id, $allowedHosts)
 ) {
     echo '<div align="center" style="color:red">' .
         '<b>You are not allowed to access this host</b></div>';

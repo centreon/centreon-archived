@@ -75,11 +75,11 @@ isset($_GET["service"]) ? $service_id =  htmlentities($_GET["service"], ENT_QUOT
 isset($_POST["service"]) ? $service_id =  htmlentities($_POST["service"], ENT_QUOTES, "UTF-8") : $service_id;
 
 // finding the user's allowed resources
-$services = $centreon->user->access->getHostServiceAclConf($host_id, 'broker', null);
+$allowedServices = $centreon->user->access->getHostServiceAclConf($host_id, 'broker', null);
 //checking if the user has ACL rights for this resource
 if (!$centreon->user->admin
     && $service_id !== null
-    && (!array_key_exists($service_id, $services))
+    && (!array_key_exists($service_id, $allowedServices))
 ) {
     echo '<div align="center" style="color:red">' .
         '<b>You are not allowed to access this service</b></div>';

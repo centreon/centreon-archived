@@ -78,11 +78,11 @@ isset($_GET["servicegroup"]) ? $id = htmlentities($_GET["servicegroup"], ENT_QUO
 isset($_POST["servicegroup"]) ? $id = htmlentities($_POST["servicegroup"], ENT_QUOTES, "UTF-8") : $id = $id;
 
 // finding the user's allowed servicegroup
-$sgs = $centreon->user->access->getServiceGroupAclConf(null, 'broker');
+$allowedServicegroups = $centreon->user->access->getServiceGroupAclConf(null, 'broker');
 //checking if the user has ACL rights for this resource
 if (!$centreon->user->admin
     && $id !== null
-    && !array_key_exists($id, $sgs)
+    && !array_key_exists($id, $allowedServicegroups)
 ) {
     echo '<div align="center" style="color:red">' .
         '<b>You are not allowed to access this service group</b></div>';
