@@ -261,7 +261,11 @@ function construct_selecteList_ndo_instance(id){
             xhr = new XMLHttpRequest();
             xhr.open('GET','./include/monitoring/status/Common/updateContactParam.php?uid=<?php echo $centreon->user->user_id; ?>&instance_id='+this.value, true);
             xhr.send(null);
-            xhr.onreadystatechange = function() { monitoring_refresh(); };
+            xhr.onreadystatechange = function() {
+                if (this.readyState === XMLHttpRequest.DONE) {
+                    monitoring_refresh();
+                }
+            };
         };
         var k = document.createElement('option');
         k.value= -1;
@@ -316,7 +320,9 @@ function construct_HostGroupSelectList(id) {
             xhr.open('GET','./include/monitoring/status/Common/updateContactParamHostGroups.php?uid=<?php echo $centreon->user->user_id; ?>&hostgroups='+this.value, true);
             xhr.send(null);
             xhr.onreadystatechange = function() {
-                monitoring_refresh();
+                if (this.readyState === XMLHttpRequest.DONE) {
+                    monitoring_refresh();
+                }
             };
         };
         var k = document.createElement('option');
@@ -402,7 +408,9 @@ function construct_ServiceGroupSelectList(id) {
             xhr.open('GET','./include/monitoring/status/Common/updateContactParamServiceGroups.php?uid=<?php echo $centreon->user->user_id; ?>&servicegroups='+this.value, true);
             xhr.send(null);
             xhr.onreadystatechange = function() {
-                monitoring_refresh();
+                if (this.readyState === XMLHttpRequest.DONE) {
+                    monitoring_refresh();
+                }
             };
         };
         var k = document.createElement('option');
