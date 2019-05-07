@@ -493,13 +493,14 @@ $tpl->display("service.ihtml");
     function updateSelect() {
         var oldStatus = jQuery('#statusFilter').val();
         var opts = document.getElementById('statusFilter').options;
+        var newTypeOrder = null;
         if (jQuery('#statusService').val() == 'svcpb' || jQuery('#statusService').val() == 'svc_unhandled') {
             opts.length = 0;
             opts[opts.length] = new Option("", "");
             opts[opts.length] = new Option(warning, "warning");
             opts[opts.length] = new Option(critical, "critical");
             opts[opts.length] = new Option(unknown, "unknown");
-            change_type_order(tabSortPb['champ']);
+            newTypeOrder = tabSortPb['champ'];
         } else {
             opts.length = 0;
             opts[opts.length] = new Option("", "");
@@ -508,14 +509,17 @@ $tpl->display("service.ihtml");
             opts[opts.length] = new Option(critical, "critical");
             opts[opts.length] = new Option(unknown, "unknown");
             opts[opts.length] = new Option(pending, "pending");
-            change_type_order(tabSortAll['champ']);
+            newTypeOrder = tabSortAll['champ'];
         }
 
+        // We define the statusFilter before calling ajax
         if (jQuery("#statusFilter option[value='" + oldStatus + "']").length > 0) {
             jQuery("#statusFilter option[value='" + oldStatus + "']").prop('selected', true);
         } else {
             jQuery("#statusFilter option[value='']").prop('selected', true);
         }
+
+        change_type_order(newTypeOrder);
     }
 
 
