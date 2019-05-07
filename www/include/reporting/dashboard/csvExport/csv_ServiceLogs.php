@@ -53,14 +53,11 @@ $pearDBO = new CentreonDB("centstorage");
 $sid = session_id();
 if (!empty($sid) && isset($_SESSION['centreon'])) {
     $oreon = $_SESSION['centreon'];
-    $res = $pearDB->prepare(
-        "SELECT user_id FROM session " .
-        "WHERE user_id = :id"
-    );
+    $res = $pearDB->prepare("SELECT COUNT(*) as count FROM session WHERE user_id = :id");
     $res->bindValue(':id', (int)$oreon->user->user_id, PDO::PARAM_INT);
     $res->execute();
-
-    if (!$res->rowCount()) {
+    $row = $res->fetch(\PDO::FETCH_ASSOC);
+    if ($row['count'] < 1) {
         get_error('bad session id');
     }
 } else {
