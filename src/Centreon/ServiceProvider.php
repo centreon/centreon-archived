@@ -97,7 +97,9 @@ class ServiceProvider implements AutoloadServiceProviderInterface
             $pimple['translator']; // bind lang
 
             $service = new I18nService(
-                $pimple[LegacyServiceProvider::CENTREON_LEGACY_MODULE_INFORMATION]
+                $pimple[LegacyServiceProvider::CENTREON_LEGACY_MODULE_INFORMATION],
+                $pimple['finder'],
+                $pimple['filesystem']
             );
 
             return $service;

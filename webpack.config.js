@@ -147,6 +147,13 @@ module.exports = {
         }]
       },
       {
+        test: require.resolve('react-dom'),
+        use: [{
+          loader: 'expose-loader',
+          options: 'ReactDOM'
+        }]
+      },
+      {
         test: /ReactRouterDom\.js/,
         use: [{
           loader: 'expose-loader',

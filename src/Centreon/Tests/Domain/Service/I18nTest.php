@@ -37,116 +37,59 @@
 namespace Centreon\Tests\Domain\Service;
 
 use PHPUnit\Framework\TestCase;
-use Symfony\Component\Finder\Finder;
-use Vfs\FileSystem;
-use Vfs\Node\Directory;
-use Vfs\Node\File;
-use Vfs\VfsStream;
 use Centreon\Test\Mock;
 use Centreon\Domain\Service\I18nService;
 use CentreonLegacy\Core\Module\Information;
+use Symfony\Component\Finder\Finder;
+use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\Finder\SplFileInfo;
 
 class I18nTest extends TestCase
 {
-    private $fs;
-    public static $moduleName = 'test-module';
-    public static $moduleNameMissing = 'missing-module';
-    public static $moduleInfo = [
-        'rname' => 'Curabitur congue porta neque',
-        'name' => 'test-module',
-        'mod_release' => 'x.y.q',
-        'infos' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent id ante neque.',
-        'is_removeable' => '1',
-        'author' => 'Centreon',
-        'lang_files' => '0',
-        'sql_files' => '1',
-        'php_files' => '0',
-        'stability' => 'alpha',
-        'last_update' => '2001-01-01',
-        'release_note' => 'http://localhost',
-        'images' => 'images/image1.png',
+    private $installedList = [
+        'centreon-license-manager' => []
     ];
 
     protected function setUp()
     {
-        $directory = [
-            'json' => [
-                'valid.json' => '{"VALID_KEY":123}',
-                'invalid.json' => '{"test":123'
-            ]
-        ];
-        // setup and cache the virtual file system
-        //$this->file_system = vfsStream::setup('root', 444, $directory);
-        // mount VFS
-        $this->fs = FileSystem::factory('vfs://');
-        
-
-        $this->fs->mount();
-        $this->fs->get('/')->add('modules', new Directory([]));
-        $this->fs->get('/modules')->add(static::$moduleName, new Directory([]));
-        mkdir('vfs://usr/share/centreon/www/locale/en_US.UTF-8/LC_MESSAGES/toto', 0777, true);
-        file_put_contents(
-            'vfs://usr/share/centreon/www/locale/en_US.UTF-8/LC_MESSAGES/toto/messages.ser',
-            'a:2:{s:2:"en";a:1:{s:16:"Discovered Items";s:16:"Discovered Items";}s:2:"fr";a:1:{s:16:"Discovered Items";s:21:"Eléments découverts";}}'
-        );
-
-            /*
-        file_put_contents(
-            'vfs://usr/share/centreon/www/locale/en_US.UTF-8/LC_MESSAGES/messages.ser',
-            'a:2:{s:2:"en";a:1:{s:16:"Discovered Items";s:16:"Discovered Items";}s:2:"fr";a:1:{s:16:"Discovered Items";s:21:"Eléments découverts";}}'
-        );
-        */
-        "/usr/share/centreon/www/locale/en_US.UTF-8/LC_MESSAGES/messages.ser";
-        /*
-        $this->fs->get('/modules/' . static::$moduleName)
-            ->add(ModuleSource::CONFIG_FILE, new File(static::buildConfContent()))
-        ;
-        $this->fs->get('/modules/' . static::$moduleName)
-            ->add(ModuleSource::LICENSE_FILE, new File(''))
-        ;
-        */
         $moduleInformationMock = $this->getMockBuilder(Information::class)
             ->disableOriginalConstructor()
             ->getMock();
+        $moduleInformationMock->method('getInstalledList')->willReturn($this->installedList);
 
-        $this->translation = new I18nService($moduleInformationMock);
 
-            /*
-        $this->source
-            ->method('getPath')
-            ->will($this->returnCallback(function () {
-                    $result = 'vfs://modules/';
+        $splFileInfoMock = $this->getMockBuilder(SplFileInfo::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $splFileInfoMock->method('getContents')->willReturn(
+            'a:2:{s:2:"en";a:1:{s:16:"Discovered Items";s:16:"Discovered Items";}'
+            . 's:2:"fr";a:1:{s:16:"Discovered Items";s:21:"Eléments découverts";}}'
+        );
+        $finderMock = $this->getMockBuilder(Finder::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $path = "/usr/share/centreon/www/locale/fr_FR.UTF-8/LC_MESSAGES/messages.ser";
+        $finderMock->method('name')->willReturn($finderMock);
+        $finderMock->method('in')->willReturn([$splFileInfoMock]);
 
-                    return $result;
-                }))
-        ;
-        $this->source
-            ->method('getModuleConf')
-            ->will($this->returnCallback(function () {
-                    $result = [
-                        I18nTest::$moduleName => I18nTest::$moduleInfo,
-                    ];
+        $filesystemMock = $this->getMockBuilder(Filesystem::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $filesystemMock->method('exists')->willReturn(true);
 
-                    return $result;
-                }))
-        ;
-        */
+        $this->translation = new I18nService($moduleInformationMock, $finderMock, $filesystemMock);
     }
 
     public function tearDown()
     {
-        // unmount VFS
-        $this->fs->unmount();
     }
 
     public function testGetTranslation()
     {
         $result = $this->translation->getTranslation();
 
-        //var_dump(file_get_contents('vfs://usr/share/centreon/www/locale/en_US.UTF-8/LC_MESSAGES/toto/messages.ser'));
         $this->assertTrue(is_array($result));
-
-        //$result2 = $this->source->getList(static::$moduleNameMissing);
-        //$this->assertEquals([], $result2);
+        $this->assertArrayHasKey('en', $result);
+        $this->assertArrayHasKey('fr', $result);
     }
 }

@@ -36,6 +36,8 @@ namespace Centreon\Domain\Service;
 
 use Pimple\Container;
 use CentreonLegacy\Core\Module\Information;
+use Symfony\Component\Finder\Finder;
+use Symfony\Component\Filesystem\Filesystem;
 
 /**
  * Class to manage translation of centreon and its extensions
@@ -53,14 +55,26 @@ class I18nService
     private $lang;
 
     /**
+     * @var Finder
+     */
+    private $finder;
+
+    /**
+     * @var Filesystem
+     */
+    private $filesystem;
+
+    /**
      * I18nService constructor
      *
      * @param Information $modulesInformation To get information from centreon modules
      */
-    public function __construct(Information $modulesInformation)
+    public function __construct(Information $modulesInformation, Finder $finder, Filesystem $filesystem)
     {
         $this->modulesInformation = $modulesInformation;
         $this->initLang();
+        $this->finder = $finder;
+        $this->filesystem = $filesystem;
     }
 
     /**
@@ -99,12 +113,17 @@ class I18nService
     {
         $data = [];
 
-        $translationPath = __DIR__ . "/../../../../www/locale/{$this->lang}/LC_MESSAGES/messages.ser";
+        $translationPath = __DIR__ . "/../../../../www/locale/{$this->lang}/LC_MESSAGES";
+        $translationFile = "messages.ser";
 
-        if (file_exists($translationPath)) {
-            $data = unserialize(
-                file_get_contents($translationPath)
-            );
+        if ($this->filesystem->exists($translationPath . "/" . $translationFile)) {
+            $files = $this->finder
+                ->name($translationFile)
+                ->in($translationPath);
+
+            foreach ($files as $file) {
+                $data = unserialize($file->getContents());
+            }
         }
 
         return $data;
@@ -121,14 +140,19 @@ class I18nService
 
         // loop over each installed modules to get translation
         foreach (array_keys($this->modulesInformation->getInstalledList()) as $module) {
-            $translationPath = 
-                __DIR__ . "/../../../../www/modules/{$module}/locale/{$this->lang}/LC_MESSAGES/messages.ser";
+            $translationPath = __DIR__ . "/../../../../www/modules/{$module}/locale/{$this->lang}/LC_MESSAGES";
+            $translationFile = "messages.ser";
 
-            if (file_exists($translationPath)) {
-                $data = array_merge_recursive(
-                    $data,
-                    unserialize(file_get_contents($translationPath))
-                );
+            if ($this->filesystem->exists($translationPath . "/" . $translationFile)) {
+                $files = $this->finder
+                    ->name($translationFile)
+                    ->in($translationPath);
+
+                foreach ($files as $file) {
+                    $data = array_merge_recursive(
+                        unserialize($file->getContents())
+                    );
+                }
             }
         }
 
