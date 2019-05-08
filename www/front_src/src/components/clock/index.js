@@ -24,7 +24,7 @@ class Clock extends Component {
     data: null
   };
 
-  UNSAFE_componentWillMount() {
+  componentDidMount() {
     this.getData();
   };
 

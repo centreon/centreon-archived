@@ -382,16 +382,13 @@ class ExtensionsRoute extends Component {
   };
 
   getExtensionDetails = (id, type) => {
-    const { history } = this.props;
-    const basename = history.createHref({pathname: '/', search: '', hash: ''});
-
     axios(`internal.php?object=centreon_module&action=details&type=${type}&id=${id}`)
       .get()
       .then(({ data }) => {
         let { result } = data;
         if (result.images) {
           result.images = result.images.map(image => {
-            return basename + image;
+            return `./${image}`;
           });
         }
         this.setState({

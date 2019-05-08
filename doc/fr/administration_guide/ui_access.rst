@@ -17,8 +17,6 @@ Pour mettre à jour l'URI Centreon, vous devez suivre les étapes suivantes:
 
 2. Sur le serveur Centreon :
 
-* Supprimez le répertoire **centreon/www/static**.
-* Remplacez les occurences **/centreon** par **/votre_uri_personnalise** dans **centreon/www/index.html**
 * Remplacez les occurences **/centreon** par **/votre_uri_personnalise** dans **centreon/www/.htaccess**
 * Naviguez vers l'URL Centreon
 
