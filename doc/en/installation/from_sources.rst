@@ -202,7 +202,7 @@ Run the installation script: ::
 
 .. note::
     If centreon sources have been downloaded from github, run those commands: ::
-    
+
         composer install --no-dev --optimize-autoloader
         npm install
         npm run build
@@ -758,7 +758,7 @@ the following commands: ::
 
     npm install
     npm run build
-    npm prune --production
+    rm -rf node_modules
 
 Any operating system
 --------------------

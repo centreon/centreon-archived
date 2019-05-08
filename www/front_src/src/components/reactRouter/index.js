@@ -1,13 +1,12 @@
 import React, { Component, Suspense } from "react";
 import { connect } from "react-redux";
-import { Switch, Route } from "react-router-dom";
+import { Switch, Route, withRouter } from "react-router-dom";
 import { batchActions } from "redux-batched-actions";
 import { fetchAclRoutes } from "../../redux/actions/navigationActions";
 import { fetchExternalComponents } from "../../redux/actions/externalComponentsActions";
 import { reactRoutes } from "../../route-maps";
 import { dynamicImport } from "../../utils/dynamicImport";
 import centreonAxios from "../../axios";
-import centreonConfig from "../../config";
 import NotAllowedPage from '../../route-components/notAllowedPage';
 import styles from "../../styles/partials/_content.scss";
 
@@ -23,7 +22,8 @@ class ReactRouter extends Component {
   }
 
   getLoadableComponents = () => {
-    const { acl, pages } = this.props;
+    const { history, acl, pages } = this.props;
+    const basename = history.createHref({pathname: '/', search: '', hash: ''});
     let LoadableComponents = [];
 
     // wait acl to add authorized routes
@@ -43,7 +43,7 @@ class ReactRouter extends Component {
       }
 
       if (isAllowed) {
-        const Page = React.lazy(() => dynamicImport(parameter));
+        const Page = React.lazy(() => dynamicImport(basename, parameter));
         LoadableComponents.push(
           <Route
             key={path}
@@ -52,7 +52,6 @@ class ReactRouter extends Component {
             render={renderProps => (
               <div className={styles["react-page"]}>
                 <Page
-                  centreonConfig={centreonConfig}
                   centreonAxios={centreonAxios}
                   {...renderProps}
                 />
@@ -112,4 +111,4 @@ const mapDispatchToProps = dispatch => {
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(ReactRouter);
+export default connect(mapStateToProps, mapDispatchToProps)(withRouter(ReactRouter));

@@ -24,7 +24,8 @@ Any people that wants to contribute and participate in developping the project m
 
 <h2> I have a question </h2>
 
-> **Advise**: Opening an issue on the project to ask a question is not recommended. Please refer to the following available ressources, you'll get an answer from a Centreon team or community member.
+> **Advise**: Centreon GitHub is meant for opening issues (code related), feature requests and so on. It is not **meant** for **support**. Please refer to the following available ressources, you'll get an answer from a Centreon team or community member.
+
 
 * [Official Centreon Slack](https://centreon.github.io/register-slack)
 

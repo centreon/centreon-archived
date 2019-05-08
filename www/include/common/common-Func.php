@@ -2121,16 +2121,16 @@ function getListTemplates($pearDB, $svcId, $alreadyProcessed = array())
     } else {
         $alreadyProcessed[] = $svcId;
 
-        $query = "SELECT * FROM service WHERE service_id = " . intval($svcId);
+        $query = "SELECT * FROM service WHERE service_id = " . (int)$svcId;
         $stmt = $pearDB->query($query);
         if ($stmt->rowCount()) {
-            $row = $stmt->fetchRow();
+            $row = $stmt->fetch();
+            $svcTmpl[] = $row;
             if ($row['service_template_model_stm_id'] !== null) {
                 $svcTmpl = array_merge(
                     $svcTmpl,
                     getListTemplates($pearDB, $row['service_template_model_stm_id'], $alreadyProcessed)
                 );
-                $svcTmpl[] = $row;
             }
         }
         return $svcTmpl;

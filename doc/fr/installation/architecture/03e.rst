@@ -32,7 +32,7 @@ L'architecture distribuée avec Remote Server consiste à avoir trois types d'en
 * Un ou plusieurs collecteurs qui sont chargés de la supervision des équipements
 * Un ou plusieurs Remote Server pour afficher et opérer sur un sous-ensemble des données collectées
 
-Les serveurs centraux regroupent les éléments suivants :
+Le serveur central regroupe les éléments suivants :
 
 * L'interface web de Centreon (configuration, présentation et opération)
 * Le moteur de supervision
@@ -84,7 +84,7 @@ Le Remote Server fonctionne normalement :
 * Le service CentCore est chargé d'opérer sur les données collectées
 * Le moteur de supervision supervise le système d'informations
 * Les informations de supervision sont envoyées via cbmod à Centreon Broker SQL
-* Centreon Broker SQL est chargé d'insérer les données de supervision en base de données et de transmettre les données de performances à Centreon Broker RRD localement et vers Centreon Broker SQL du serveur Centreon Central
+* Centreon Broker SQL est chargé d'insérer les données de supervision en base de données et de transmettre les données de performances à Centreon Broker RRD localement. Il est également chargé de transmettre l'ensemble des informations au serveur Centreon Central.
 * Centreon Broker RRD est chargé de générer les fichiers RRD (qui servent à générer les graphiques de performances)
 
 Collecteur
@@ -93,7 +93,7 @@ Collecteur
 Le collecteur fonctionne de la manière suivante :
 
 * Le moteur de supervision supervise le système d'informations
-* Les informations de supervision sont envoyées via cbmod à l'adresse IP virtuel qui factorise les deux serveurs centraux. En fonction du serveur actif, ces informations sont envoyées à un des deux services Centreon Broker SQL. Les informations de supervision sont également envoyées au collecteur même qui les traite en utilisant également Centreon Broker SQL.
+* Les informations de supervision sont envoyées via cbmod au serveur Centreon central.
 
 ************
 Architecture

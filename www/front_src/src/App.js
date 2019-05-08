@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import config from "./config";
 import Header from "./components/header";
 import { Switch, Route } from "react-router-dom";
 import { ConnectedRouter } from "react-router-redux";
@@ -49,9 +48,9 @@ class App extends Component {
 
   // disable fullscreen
   removeFullscreenParams = () => {
-    if (history.location.pathname == './main.php') {
+    if (history.location.pathname == '/main.php') {
       history.push({
-        pathname: './main.php',
+        pathname: '/main.php',
         search: window['fullscreenSearch'],
         hash: window['fullscreenHash']
       })
@@ -71,7 +70,7 @@ class App extends Component {
         .catch(error => {
           if (error.response.status == 401) {
             // redirect to login page
-            window.location.href = config.urlBase + 'index.php?disconnect=1'
+            window.location.href = 'index.php?disconnect=1'
           } else {
             // keepalive must be done cause it may failed due to temporary unavailability
             this.keepAlive();
