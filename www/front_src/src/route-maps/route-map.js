@@ -1,6 +1,4 @@
 const routeMap = {
-  home: "/",
-  module: "/main.php",
   serverConfigurationWizard: "/poller-wizard/1",
   remoteServerStep1: "/poller-wizard/2",
   remoteServerStep2: "/poller-wizard/3",
