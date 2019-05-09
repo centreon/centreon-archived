@@ -84,7 +84,7 @@ for ($i = 0; $DBRESULT->rowCount() && $elem = $DBRESULT->fetchRow(); $i++) {
 
 $rq = "SELECT topology_id, topology_name, topology_page 
         FROM topology 
-        WHERE topology_parent IS NULL AND topology_show = '1' 
+        WHERE topology_parent IS NULL AND topology_show = '1' AND topology_page IS NOT NULL
         ORDER BY topology_order";
 $DBRESULT = $pearDB->query($rq);
 $tab_menu = array();
