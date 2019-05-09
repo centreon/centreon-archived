@@ -27,7 +27,7 @@ export const dynamicImport = (basename, parameters) => {
         return resolve(window[vector]);
       }
     } catch (error) {
-      console.error(error)
+      console.error(error);
     }
   });
 }
