@@ -77,20 +77,9 @@ class CentreonI18n extends CentreonWebServiceAbstract
         try {
             $translation = $this->getDi()['centreon.i18n_service']->getTranslation();
         } catch (\Exception $e) {
-            throw new \Exception($e->getMessage());
             throw new \Exception("Translation files does not exists");
         }
 
         return $translation;
-        /*
-        if (file_exists($this->filesGenerationPath)) {
-            $data = unserialize(
-                file_get_contents($this->filesGenerationPath)
-            );
-            return $data;
-        } else {
-            
-        }
-        */
     }
 }

@@ -34,7 +34,6 @@
  */
 namespace Centreon\Domain\Service;
 
-use Pimple\Container;
 use CentreonLegacy\Core\Module\Information;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Filesystem\Filesystem;
