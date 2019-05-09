@@ -8,7 +8,7 @@ import centreonAxios from "../../axios";
 class Hook extends Component {
 
   getLoadableHooks = () => {
-    const { hooks, path, ...rest } = this.props;
+    const { history, hooks, path, ...rest } = this.props;
     const basename = history.createHref({pathname: '/', search: '', hash: ''});
 
     let LoadableHooks = [];
