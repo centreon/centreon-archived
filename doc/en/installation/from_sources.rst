@@ -14,52 +14,77 @@ CentOS
 Most CentOS users will find easier to install Centreon Web by using
 :ref:`packages provided by Centreon <install_from_packages>`.
 
-CentOS and RHEL environments do not possess as standard on archives all the
-dependencies necessary for the installation of Centreon. You should add the
-*RPM Forge* and *Software Collections* repositories.
+Redhat Software Collections Repository
+--------------------------------------
 
-el7 system: ::
+To install Centreon you will need to set up the official software collections repository supported by Redhat.
 
-    $ wget http://repository.it4i.cz/mirrors/repoforge/redhat/el7/en/x86_64/rpmforge/RPMS/rpmforge-release-0.5.3-1.el7.rf.x86_64.rpm
-    $ wget https://repository.it4i.cz/mirrors/repoforge/RPM-GPG-KEY.dag.txt
+.. note::
+    Software collections are required for installing PHP 7 and associated libraries (Centreon requirement).
 
+Install the software collections repository using this command::
 
-Use your favorite text editor and delete the first line of the RPM-GPG-KEY.dag.txt
-file. The first line should contain: ::
+   # yum install centos-release-scl
 
-    "-----BEGIN PGP PUBLIC KEY BLOCK-----"
-
-Then perform the following commands: ::
-
-    $ rpm --import RPM-GPG-KEY.dag.txt
-    $ rpm -Uvh rpmforge-release-0.5.3-1.el7.rf.x86_64.rpm
-    $ yum install centos-release-scl
+The repository is now installed.
 
 You can now install the necessary prerequisites::
 
     $ yum update
-    $ yum upgrade
-    $ yum install httpd24-httpd gd fontconfig-devel libjpeg-devel libpng-devel gd-devel perl-GD perl-DateTime \
-        openssl-devel perl-DBD-MySQL mysql-server mysql-devel rh-php71-php rh-php71-php-mysql rh-php71-php-gd \
-        rh-php71-php-ldap rh-php71-php-xml rh-php71-php-mbstring rh-php71-php-snmp \
-        perl-Config-IniFiles perl-DBI perl-DBD-MySQL rrdtool perl-rrdtool perl-Crypt-DES perl-Digest-SHA1 \
-        perl-Digest-HMAC net-snmp-utils perl-Socket6 perl-IO-Socket-INET6 net-snmp net-snmp-libs \
-        dmidecode lm_sensors perl-Net-SNMP net-snmp-perl fping cpp gcc gcc-c++ libstdc++ glib2-devel \
-        rh-php71-php-pear nagios-plugins
+    $ yum install -y \
+        rh-php71-php-zip \
+        rh-php71-php-xml \
+        rh-php71-php-fpm \
+        rh-php71-php-process \
+        rh-php71-php-common \
+        rh-php71-php-pdo \
+        rh-php71-php-intl \
+        rh-php71-php-pear \
+        rh-php71-php-json \
+        rh-php71-php-mysqlnd \
+        rh-php71-php-ldap \
+        rh-php71-php-gd \
+        rh-php71-php-cli \
+        rh-php71-php-mbstring \
+        rh-php71-php-snmp \
+        perl-DBD-MySQL \
+        perl-Sys-Syslog \
+        httpd24-httpd \
+        perl-DBI \
+        perl-DBD-MySQL \
+        rrdtool \
+        perl-rrdtool \
+        perl-Crypt-DES \
+        perl-Digest-SHA1 \
+        perl-Digest-HMAC \
+        net-snmp-utils \
+        perl-Socket6 \
+        perl-IO-Socket-INET6 \
+        net-snmp \
+        net-snmp-libs \
+        dmidecode \
+        lm_sensors \
+        net-snmp-perl \
+        fping \
+        cpp \
+        gcc \
+        gcc-c++ \
+        libstdc++ \
+        glib2-devel
 
 Additional commands are necessary to configure the environment correctly: ::
 
     $ usermod -U apache
-    $ pear channel-update pear.php.net
+    $ /opt/rh/rh-php71/root/bin/pear channel-update pear.php.net
 
 If you can’t access the Internet directly but have to pass via a proxy,
 perform the following command: ::
 
-    $ pear config-set http_proxy http://my_proxy.com:port
+    $ /opt/rh/rh-php71/root/bin/pear config-set http_proxy http://my_proxy.com:port
 
 Then execute::
 
-    $ pear upgrade-all
+    $ /opt/rh/rh-php71/root/bin/pear upgrade-all
 
 Debian Stretch / Ubuntu 18.04
 =============================
@@ -67,7 +92,7 @@ Debian Stretch / Ubuntu 18.04
 Add the php 7.1 repository:
 For Debian Stretch: ::
 
-      $ apt-get install apt-transport-https lsb-release ca-certificates
+      $ apt-get install wget apt-transport-https lsb-release ca-certificates
       $ wget -O /etc/apt/trusted.gpg.d/php.gpg https://packages.sury.org/php/apt.gpg
       $ echo "deb https://packages.sury.org/php/ $(lsb_release -sc) main" >> /etc/apt/sources.list.d/php.list
       $ apt-get update
