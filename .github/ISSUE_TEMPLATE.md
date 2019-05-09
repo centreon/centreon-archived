@@ -24,6 +24,8 @@ Please describe your issue in English.
 
 <h3> Prerequisites </h3>
 
+> The opened issue, must be code related. GitHub is not meant for support. Feel free to check the CONTRIBUTING section for more details.
+
 ***Versions***
 
 For the RPM based systems

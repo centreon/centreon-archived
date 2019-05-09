@@ -1,8 +1,11 @@
-const HtmlWebpackPlugin = require("html-webpack-plugin")
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+const CleanWebpackPlugin = require('clean-webpack-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
-const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 const safePostCssParser = require('postcss-safe-parser');
+const path = require('path');
+
 
 module.exports = {
   context: __dirname,
@@ -12,10 +15,10 @@ module.exports = {
     "./www/front_src/src/index.js"
   ],
   output: {
-    path: __dirname + "/www",
-    publicPath: '/_CENTREON_PATH_PLACEHOLDER_/',
-    filename: 'static/js/[name].[chunkhash:8].js',
-    chunkFilename: 'static/js/[name].[chunkhash:8].chunk.js',
+    path: path.resolve(__dirname + '/www'),
+    publicPath: './',
+    filename: 'static/js/[name].[hash:8].js',
+    chunkFilename: 'static/js/[name].[hash:8].chunk.js',
     libraryTarget: 'umd',
     library: '[name]',
     umdNamedDefine: true,
@@ -61,11 +64,15 @@ module.exports = {
     runtimeChunk: true,
   },
   plugins: [
+    new CleanWebpackPlugin({
+      cleanOnceBeforeBuildPatterns: ['static/**/*'],
+    }),
     new HtmlWebpackPlugin({
       template: './www/front_src/public/index.html',
       filename: 'index.html',
     }),
     new MiniCssExtractPlugin({
+      publicPath: './',
       filename: 'static/css/[name].[contenthash:8].css',
       chunkFilename: 'static/css/[name].[contenthash:8].chunk.css',
     }),
@@ -115,7 +122,8 @@ module.exports = {
             loader: 'file-loader',
             options: {
               name: '[name].[ext]',
-              outputPath: 'static/fonts/'
+              outputPath: './static/fonts/',
+              publicPath: '../../static/fonts/'
             }
         }]
       },

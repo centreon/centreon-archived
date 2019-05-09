@@ -207,7 +207,7 @@ Exécutez le script d'installation : ::
 .. note::
     Si les sources de centreon ont été téléchargées depuis github, exécutez
     ces commandes : ::
-    
+
         composer install --no-dev --optimize-autoloader
         npm install
         npm run build
@@ -765,9 +765,9 @@ d'installation : ::
 Puis, rendez vous dans le répertoire centreon (habituellement **/usr/share/centreon/**)
 et exécutez les commandes suivantes : ::
 
-    $ npm install
-    $ npm run build
-    $ npm prune --production
+    npm install
+    npm run build
+    rm -rf node_modules
 
 Pour tous les OS
 ----------------

@@ -23,7 +23,7 @@ class HostMenu extends Component {
     intervalApplied: false
   };
 
-  UNSAFE_componentWillMount() {
+  componentDidMount() {
     window.addEventListener('mousedown', this.handleClick, false);
   };
 
@@ -192,5 +192,8 @@ const mapDispatchToProps = {};
 export default connect(mapStateToProps, mapDispatchToProps)(HostMenu);
 
 HostMenu.propTypes = {
-  children: PropTypes.element.isRequired,
+  refreshTime: PropTypes.oneOfType([
+    PropTypes.number,
+    PropTypes.bool
+  ]).isRequired,
 };
