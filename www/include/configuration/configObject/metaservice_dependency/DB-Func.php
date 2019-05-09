@@ -116,7 +116,7 @@ function multipleMetaServiceDependencyInDB($dependencies = array(), $nbrDup = ar
                     $DBRESULT = $pearDB->query($query);
                     while ($ms = $DBRESULT->fetchRow()) {
                         $query = "INSERT INTO dependency_metaserviceParent_relation " .
-                            "VALUES ('', '" . $maxId["MAX(dep_id)"] . "', '" . $ms["meta_service_meta_id"] . "')";
+                            "VALUES (NULL, '" . $maxId["MAX(dep_id)"] . "', '" . $ms["meta_service_meta_id"] . "')";
                         $pearDB->query($query);
                     }
                     $DBRESULT->closeCursor();
@@ -124,7 +124,7 @@ function multipleMetaServiceDependencyInDB($dependencies = array(), $nbrDup = ar
                         "WHERE dependency_dep_id = '" . $key . "'";
                     $DBRESULT = $pearDB->query($query);
                     while ($ms = $DBRESULT->fetchRow()) {
-                        $query = "INSERT INTO dependency_metaserviceChild_relation VALUES ('', '" .
+                        $query = "INSERT INTO dependency_metaserviceChild_relation VALUES (NULL, '" .
                             $maxId["MAX(dep_id)"] . "', '" . $ms["meta_service_meta_id"] . "')";
                         $pearDB->query($query);
                     }

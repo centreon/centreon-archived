@@ -128,7 +128,7 @@ function multipleServiceDependencyInDB($dependencies = array(), $nbrDup = array(
                     $dbResult = $pearDB->query($query);
                     $fields["dep_hostPar"] = "";
                     while ($host = $dbResult->fetchRow()) {
-                        $query = "INSERT INTO dependency_hostChild_relation VALUES ('', '" . $maxId["MAX(dep_id)"] .
+                        $query = "INSERT INTO dependency_hostChild_relation VALUES (NULL, '" . $maxId["MAX(dep_id)"] .
                             "', '" . $host["host_host_id"] . "')";
                         $pearDB->query($query);
                         $fields["dep_hostPar"] .= $host["host_host_id"] . ",";
@@ -139,7 +139,7 @@ function multipleServiceDependencyInDB($dependencies = array(), $nbrDup = array(
                     $DBRESULT = $pearDB->query($query);
                     $fields["dep_hSvPar"] = "";
                     while ($service = $DBRESULT->fetchRow()) {
-                        $query = "INSERT INTO dependency_serviceParent_relation VALUES ('', '" .
+                        $query = "INSERT INTO dependency_serviceParent_relation VALUES (NULL, '" .
                             $maxId["MAX(dep_id)"] . "', '" . $service["service_service_id"] . "', '" .
                             $service["host_host_id"] . "')";
                         $pearDB->query($query);
@@ -150,7 +150,7 @@ function multipleServiceDependencyInDB($dependencies = array(), $nbrDup = array(
                     $DBRESULT = $pearDB->query($query);
                     $fields["dep_hSvChi"] = "";
                     while ($service = $DBRESULT->fetchRow()) {
-                        $query = "INSERT INTO dependency_serviceChild_relation VALUES ('', '" . $maxId["MAX(dep_id)"] .
+                        $query = "INSERT INTO dependency_serviceChild_relation VALUES (NULL, '" . $maxId["MAX(dep_id)"] .
                             "', '" . $service["service_service_id"] . "', '" . $service["host_host_id"] . "')";
                         $pearDB->query($query);
                         $fields["dep_hSvChi"] .= $service["service_service_id"] . ",";

@@ -186,7 +186,7 @@ function multipleHostGroupInDB($hostGroups = array(), $nbrDup = array())
                     $DBRESULT = $pearDB->query($query);
                     $fields["hg_hosts"] = "";
                     while ($host = $DBRESULT->fetch()) {
-                        $query = "INSERT INTO hostgroup_relation VALUES ('', '" .
+                        $query = "INSERT INTO hostgroup_relation VALUES (NULL, '" .
                             $maxId["MAX(hg_id)"] . "', '" . $host["host_host_id"] . "')";
                         $pearDB->query($query);
                         $fields["hg_hosts"] .= $host["host_host_id"] . ",";
@@ -196,7 +196,7 @@ function multipleHostGroupInDB($hostGroups = array(), $nbrDup = array())
                         "WHERE cghgr.hostgroup_hg_id = '" . $key . "'";
                     $DBRESULT = $pearDB->query($query);
                     while ($cg = $DBRESULT->fetch()) {
-                        $query = "INSERT INTO contactgroup_hostgroup_relation VALUES ('', '" .
+                        $query = "INSERT INTO contactgroup_hostgroup_relation VALUES (NULL, '" .
                             $cg["contactgroup_cg_id"] . "', '" . $maxId["MAX(hg_id)"] . "')";
                         $pearDB->query($query);
                     }
