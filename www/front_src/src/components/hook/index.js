@@ -7,43 +7,36 @@ import centreonAxios from "../../axios";
 // class to dynamically import component from modules
 class Hook extends Component {
 
-  state = {
-    LoadableComponents: []
-  };
-
-  // get hooks from redux and convert these in react components
-  getLoadableComponents = () => {
-    const { history, hooks, path } = this.props;
+  getLoadableHooks = () => {
+    const { history, hooks, path, ...rest } = this.props;
     const basename = history.createHref({pathname: '/', search: '', hash: ''});
 
-    let LoadableComponents = [];
+    let LoadableHooks = [];
     for (const [hook, parameters] of Object.entries(hooks)) {
       if (hook === path) {
         for (const parameter of parameters) {
-          LoadableComponents.push(
-            React.lazy(
-              () => dynamicImport(basename, parameter)
-            )
+          const LoadableHook = React.lazy(() => dynamicImport(basename, parameter));
+          LoadableHooks.push(
+            <LoadableHook
+              key={`hook_${parameter.js}`}
+              centreonAxios={centreonAxios}
+              centreonConfig={centreonConfig}
+              {...rest}
+            />
           );
         }
       }
     }
 
-    return LoadableComponents;
+    return LoadableHooks;
   }
 
   render() {
-    const { path, hooks, ...props } = this.props;
-    const LoadableComponents = this.getLoadableComponents();
+    const LoadableHooks = this.getLoadableHooks();
 
     return (
-      <Suspense fallback="">
-        {LoadableComponents.map(LoadableComponent => (
-          <LoadableComponent
-            centreonAxios={centreonAxios}
-            {...props}
-          />
-        ))}
+      <Suspense fallback={null}>
+        {LoadableHooks}
       </Suspense>
     );
   };
