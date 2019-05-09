@@ -100,7 +100,7 @@ class I18nService
         $centreonTranslation = $this->getCentreonTranslation();
         $extensionsTranslation = $this->getExtensionsTranslation();
 
-        return array_merge_recursive($centreonTranslation, $extensionsTranslation);
+        return array_replace_recursive($centreonTranslation, $extensionsTranslation);
     }
 
     /**
@@ -148,7 +148,7 @@ class I18nService
                     ->in($translationPath);
 
                 foreach ($files as $file) {
-                    $data = array_merge_recursive(
+                    $data = array_replace_recursive(
                         unserialize($file->getContents())
                     );
                 }
