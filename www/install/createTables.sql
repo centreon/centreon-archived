@@ -2192,7 +2192,7 @@ CREATE TABLE `virtual_metrics` (
 CREATE TABLE `widget_models` (
   `widget_model_id` int(11) NOT NULL AUTO_INCREMENT,
   `title` varchar(255) NOT NULL,
-  `description` varchar(255) NOT NULL,
+  `description` TEXT NOT NULL,
   `url` varchar(255) NOT NULL,
   `version` varchar(255) NOT NULL,
   `directory` varchar(255) NOT NULL,
@@ -2400,4 +2400,3 @@ CREATE TABLE IF NOT EXISTS `task` (
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
-
