@@ -2,8 +2,10 @@
 
 namespace Centreon\Domain\Repository;
 
+use Centreon\Domain\Entity\Topology;
 use Centreon\Infrastructure\CentreonLegacyDB\ServiceEntityRepository;
 use CentreonUser;
+use PDO;
 
 class TopologyRepository extends ServiceEntityRepository
 {
@@ -120,15 +122,32 @@ class TopologyRepository extends ServiceEntityRepository
     public function getTopologyList(CentreonUser $user, bool $is_react = false): array
     {
         $topologies = [];
-        //define admin query
-        //define acl query
 
-        if ($is_react){
-            //query for react
+        // SELECT topology_name, topology_page, topology_url, topology_url_opt, topology_group, topology_order, topology_parent, is_react, readonly FROM topology WHERE topology_show = "1" AND topology_page IS NOT NULL ORDER BY topology_parent, topology_group, topology_order, topology_page;
+
+        //base query
+        $query = 'SELECT topology_id, topology_name, topology_page, topology_url, topology_url_opt, '
+            . 'topology_group, topology_order, topology_parent, is_react, readonly '
+            . 'FROM '.Topology::TABLE
+            . ' WHERE topology_show = "1"';
+
+        if ($is_react) {
+            //show react-only items
+            $query .= ' AND is_react = "1"';
         } else {
-            //query for rest
+            $query .= ' AND ((topology_page IS NOT NULL) OR (topology_page IS NULL AND is_react ="0"))';
         }
 
+        if (!$user->access->admin) {
+            $query .= ' AND topology_page IN (' . $user->access->getTopologyString() . ')';
+        }
+
+        $query .= ' ORDER BY topology_parent, topology_group, topology_order, topology_page';
+        $stmt = $this->db->prepare($query);
+        $stmt->execute();
+
+        $stmt->setFetchMode(PDO::FETCH_CLASS, Topology::class);
+        $topologies = $stmt->fetchAll();
         return $topologies;
     }
 }
