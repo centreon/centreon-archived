@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import styles from '../header/header.scss';
-import "moment-timezone";
+import "moment-timezone/builds/moment-timezone-with-data-10-year-range"; // minimize bundle size (905KB -> 33KB)
 import Moment from "moment";
 import axios from "../../axios";
 

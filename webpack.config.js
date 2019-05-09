@@ -6,12 +6,10 @@ const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 const safePostCssParser = require('postcss-safe-parser');
 const path = require('path');
 
-
 module.exports = {
   context: __dirname,
   entry: [
     "@babel/polyfill",
-    //"./www/front_src/src/App.scss",
     "./www/front_src/src/index.js"
   ],
   output: {
