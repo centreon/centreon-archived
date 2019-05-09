@@ -564,12 +564,12 @@ function multipleServiceInDB(
                     if (isset($maxId["MAX(service_id)"])) {
                         // Host duplication case -> Duplicate the Service for the Host we create
                         if ($host) {
-                            $query = "INSERT INTO host_service_relation VALUES ('', NULL, '" . $host . "', NULL, '" .
+                            $query = "INSERT INTO host_service_relation VALUES (NULL, NULL, '" . $host . "', NULL, '" .
                                 $maxId["MAX(service_id)"] . "')";
                             $pearDB->query($query);
                             setHostChangeFlag($pearDB, $host, null);
                         } elseif ($hostgroup) {
-                            $query = "INSERT INTO host_service_relation VALUES ('', '" . $hostgroup .
+                            $query = "INSERT INTO host_service_relation VALUES (NULL, '" . $hostgroup .
                                 "', NULL, NULL, '" . $maxId["MAX(service_id)"] . "')";
                             $pearDB->query($query);
                             setHostChangeFlag($pearDB, null, $hostgroup);
@@ -582,13 +582,13 @@ function multipleServiceInDB(
                             $fields["service_hgPars"] = "";
                             while ($service = $DBRESULT->fetchRow()) {
                                 if ($service["host_host_id"]) {
-                                    $query = "INSERT INTO host_service_relation VALUES ('', NULL, '" .
+                                    $query = "INSERT INTO host_service_relation VALUES (NULL, NULL, '" .
                                         $service["host_host_id"] . "', NULL, '" . $maxId["MAX(service_id)"] . "')";
                                     $pearDB->query($query);
                                     setHostChangeFlag($pearDB, $service['host_host_id'], null);
                                     $fields["service_hPars"] .= $service["host_host_id"] . ",";
                                 } elseif ($service["hostgroup_hg_id"]) {
-                                    $query = "INSERT INTO host_service_relation VALUES ('', '" .
+                                    $query = "INSERT INTO host_service_relation VALUES (NULL, '" .
                                         $service["hostgroup_hg_id"] . "', NULL, NULL, '" .
                                         $maxId["MAX(service_id)"] . "')";
                                     $pearDB->query($query);
@@ -608,7 +608,7 @@ function multipleServiceInDB(
                         $DBRESULT = $pearDB->query($query);
                         $fields["service_cs"] = "";
                         while ($C = $DBRESULT->fetchRow()) {
-                            $query = "INSERT INTO contact_service_relation VALUES ('', '" .
+                            $query = "INSERT INTO contact_service_relation VALUES (NULL, '" .
                                 $maxId["MAX(service_id)"] . "', '" . $C["contact_id"] . "')";
                             $pearDB->query($query);
                             $fields["service_cs"] .= $C["contact_id"] . ",";
@@ -623,7 +623,7 @@ function multipleServiceInDB(
                         $DBRESULT = $pearDB->query($query);
                         $fields["service_cgs"] = "";
                         while ($Cg = $DBRESULT->fetchRow()) {
-                            $query = "INSERT INTO contactgroup_service_relation VALUES ('', '" .
+                            $query = "INSERT INTO contactgroup_service_relation VALUES (NULL, '" .
                                 $Cg["contactgroup_cg_id"] . "', '" . $maxId["MAX(service_id)"] . "')";
                             $pearDB->query($query);
                             $fields["service_cgs"] .= $Cg["contactgroup_cg_id"] . ",";
@@ -667,7 +667,7 @@ function multipleServiceInDB(
                         $dbResult = $pearDB->query($query);
                         $fields["service_traps"] = "";
                         while ($traps = $dbResult->fetchRow()) {
-                            $query = "INSERT INTO traps_service_relation VALUES ('', '" .
+                            $query = "INSERT INTO traps_service_relation VALUES (NULL, '" .
                                 $traps["traps_id"] . "', '" . $maxId["MAX(service_id)"] . "')";
                             $pearDB->query($query);
                             $fields["service_traps"] .= $traps["traps_id"] . ",";

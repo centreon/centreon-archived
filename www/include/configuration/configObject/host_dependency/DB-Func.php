@@ -124,7 +124,7 @@ function multipleHostDependencyInDB($dependencies = array(), $nbrDup = array())
                     $DBRESULT = $pearDB->query($query);
                     $fields["dep_serviceChilds"] = "";
                     while ($service = $DBRESULT->fetchRow()) {
-                        $query = "INSERT INTO dependency_serviceChild_relation VALUES ('', '" .
+                        $query = "INSERT INTO dependency_serviceChild_relation VALUES (NULL, '" .
                             $maxId["MAX(dep_id)"] . "', '" . $service["service_service_id"] . "', '" .
                             $service["host_host_id"] . "')";
                         $pearDB->query($query);
@@ -138,7 +138,7 @@ function multipleHostDependencyInDB($dependencies = array(), $nbrDup = array())
                     $fields["dep_hostParents"] = "";
                     while ($host = $DBRESULT->fetchRow()) {
                         $query = "INSERT INTO dependency_hostParent_relation " .
-                            "VALUES ('', '" . $maxId["MAX(dep_id)"] . "', '" . $host["host_host_id"] . "')";
+                            "VALUES (NULL, '" . $maxId["MAX(dep_id)"] . "', '" . $host["host_host_id"] . "')";
                         $pearDB->query($query);
                         $fields["dep_hostParents"] .= $host["host_host_id"] . ",";
                     }
@@ -150,7 +150,7 @@ function multipleHostDependencyInDB($dependencies = array(), $nbrDup = array())
                     $fields["dep_hostChilds"] = "";
                     while ($host = $DBRESULT->fetchRow()) {
                         $query = "INSERT INTO dependency_hostChild_relation " .
-                            "VALUES ('', '" . $maxId["MAX(dep_id)"] . "', '" . $host["host_host_id"] . "')";
+                            "VALUES (NULL, '" . $maxId["MAX(dep_id)"] . "', '" . $host["host_host_id"] . "')";
                         $pearDB->query($query);
                         $fields["dep_hostChilds"] .= $host["host_host_id"] . ",";
                     }

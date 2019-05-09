@@ -159,7 +159,7 @@ function multipleMetaServiceInDB($metas = array(), $nbrDup = array())
 
                     while ($Cg = $DBRESULT->fetchRow()) {
                         $query = "INSERT INTO meta_contactgroup_relation " .
-                            "VALUES ('', '" . $maxId["MAX(meta_id)"] . "', '" . $Cg["cg_cg_id"] . "')";
+                            "VALUES (NULL, '" . $maxId["MAX(meta_id)"] . "', '" . $Cg["cg_cg_id"] . "')";
                         $pearDB->query($query);
                     }
                     $DBRESULT = $pearDB->query("SELECT * FROM meta_service_relation WHERE meta_id = '" . $key . "'");

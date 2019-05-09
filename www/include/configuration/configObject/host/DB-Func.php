@@ -381,7 +381,7 @@ function multipleHostInDB($hosts = array(), $nbrDup = array())
                     $fields["host_parents"] = "";
                     while ($host = $DBRESULT->fetchRow()) {
                         $DBRESULT1 = $pearDB->query("INSERT INTO host_hostparent_relation 
-                              VALUES ('', '" . $host["host_parent_hp_id"] . "', '" . $maxId["MAX(host_id)"] . "')");
+                              VALUES (NULL, '" . $host["host_parent_hp_id"] . "', '" . $maxId["MAX(host_id)"] . "')");
                         $fields["host_parents"] .= $host["host_parent_hp_id"] . ",";
                     }
                     $fields["host_parents"] = trim($fields["host_parents"], ",");
@@ -420,7 +420,7 @@ function multipleHostInDB($hosts = array(), $nbrDup = array())
                         $mulHostSv = $DBRESULT2->fetchrow();
                         if ($mulHostSv["COUNT(*)"] > 1) {
                             $DBRESULT3 = $pearDB->query("INSERT INTO host_service_relation 
-                VALUES ('', NULL, '" . $maxId["MAX(host_id)"] . "', NULL, '" . $service["service_service_id"] . "')");
+                VALUES (NULL, NULL, '" . $maxId["MAX(host_id)"] . "', NULL, '" . $service["service_service_id"] . "')");
                         } else {
                             $serviceArr[$service["service_service_id"]] = $service["service_service_id"];
                             $serviceNbr[$service["service_service_id"]] = 1;
@@ -436,7 +436,7 @@ function multipleHostInDB($hosts = array(), $nbrDup = array())
                                                     WHERE host_host_id = '" . intval($key) . "'");
                         while ($svs = $DBRESULT->fetchRow()) {
                             $DBRESULT1 = $pearDB->query("INSERT INTO host_service_relation 
-                    VALUES ('', NULL, '" . $maxId["MAX(host_id)"] . "', NULL, '" . $svs["service_service_id"] . "')");
+                    VALUES (NULL, NULL, '" . $maxId["MAX(host_id)"] . "', NULL, '" . $svs["service_service_id"] . "')");
                         }
                     }
 
@@ -449,7 +449,7 @@ function multipleHostInDB($hosts = array(), $nbrDup = array())
                     $fields["host_cgs"] = "";
                     while ($Cg = $DBRESULT->fetchRow()) {
                         $DBRESULT1 = $pearDB->query("INSERT INTO contactgroup_host_relation 
-                                VALUES ('', '" . $maxId["MAX(host_id)"] . "', '" . $Cg["contactgroup_cg_id"] . "')");
+                                VALUES (NULL, '" . $maxId["MAX(host_id)"] . "', '" . $Cg["contactgroup_cg_id"] . "')");
                         $fields["host_cgs"] .= $Cg["contactgroup_cg_id"] . ",";
                     }
                     $fields["host_cgs"] = trim($fields["host_cgs"], ",");
@@ -463,7 +463,7 @@ function multipleHostInDB($hosts = array(), $nbrDup = array())
                     $fields["host_cs"] = "";
                     while ($C = $DBRESULT->fetchRow()) {
                         $DBRESULT1 = $pearDB->query("INSERT INTO contact_host_relation 
-                                        VALUES ('', '" . $maxId["MAX(host_id)"] . "', '" . $C["contact_id"] . "')");
+                                        VALUES (NULL, '" . $maxId["MAX(host_id)"] . "', '" . $C["contact_id"] . "')");
                         $fields["host_cs"] .= $C["contact_id"] . ",";
                     }
                     $fields["host_cs"] = trim($fields["host_cs"], ",");
@@ -476,7 +476,7 @@ function multipleHostInDB($hosts = array(), $nbrDup = array())
                                                 WHERE host_host_id = '" . intval($key) . "'");
                     while ($Hg = $DBRESULT->fetchRow()) {
                         $DBRESULT1 = $pearDB->query("INSERT INTO hostgroup_relation 
-                                    VALUES ('', '" . $Hg["hostgroup_hg_id"] . "', '" . $maxId["MAX(host_id)"] . "')");
+                                    VALUES (NULL, '" . $Hg["hostgroup_hg_id"] . "', '" . $maxId["MAX(host_id)"] . "')");
                     }
 
                     /*
