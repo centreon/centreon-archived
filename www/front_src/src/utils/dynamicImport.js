@@ -3,7 +3,8 @@ import systemCss from "systemjs-plugin-css"; // used to import css in <head>
 
 // this function allows to import dynamically js and css using systemjs
 // it is compatible with IE, Edge, firefox and chrome
-export function dynamicImport(basename, parameters) {
+export const dynamicImport = (basename, parameters) => {
+
   return new Promise(async (resolve, reject) => {
 
     if (!parameters.js) {
@@ -27,7 +28,6 @@ export function dynamicImport(basename, parameters) {
       }
     } catch (error) {
       console.error(error)
-      //return reject(error);
     }
   });
 }
