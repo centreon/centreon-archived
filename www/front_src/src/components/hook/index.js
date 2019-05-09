@@ -20,7 +20,6 @@ class Hook extends Component {
             <LoadableHook
               key={`hook_${parameter.js}`}
               centreonAxios={centreonAxios}
-              centreonConfig={centreonConfig}
               {...rest}
             />
           );
