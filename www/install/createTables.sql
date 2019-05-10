@@ -86,7 +86,7 @@ CREATE TABLE `acl_groups` (
   `acl_group_id` int(11) NOT NULL AUTO_INCREMENT,
   `acl_group_name` varchar(255) DEFAULT NULL,
   `acl_group_alias` varchar(255) DEFAULT NULL,
-  `acl_group_changed` int(11) NOT NULL,
+  `acl_group_changed` int(11) NOT NULL DEFAULT 1,
   `acl_group_activate` enum('0','1','2') DEFAULT NULL,
   PRIMARY KEY (`acl_group_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
