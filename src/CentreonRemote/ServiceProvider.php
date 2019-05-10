@@ -22,6 +22,7 @@ use Curl\Curl;
 
 class ServiceProvider implements AutoloadServiceProviderInterface
 {
+    const CENTREON_REMOTE_EXPORTER = 'centreon_remote.exporter';
 
     /**
      * Register Centron Remote services
@@ -131,9 +132,9 @@ class ServiceProvider implements AutoloadServiceProviderInterface
         //-----------//
         // Exporters
         //-----------//
-        
+
         // Commands
-        $pimple['centreon_remote.exporter']->add(Domain\Exporter\CommandExporter::class, function () use ($pimple) {
+        $pimple[static::CENTREON_REMOTE_EXPORTER]->add(Domain\Exporter\CommandExporter::class, function () use ($pimple) {
             $services = [
                 \Centreon\ServiceProvider::CENTREON_DB_MANAGER,
             ];
