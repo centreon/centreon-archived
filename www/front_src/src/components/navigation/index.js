@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import { Sidebar } from '@centreon/react-components';
+import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { fetchNavigationData } from "../../redux/actions/navigationActions";
 
