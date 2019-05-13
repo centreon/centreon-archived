@@ -20,17 +20,10 @@ If you enabled the **Remote Server** option when installing your server,
 select the option **Select a Remote Server**, then select your server and fill in
 the form:
 
-.. image:: /images/poller/wizard_add_remote_2b.png
-    :align: center
-
-Otherwise, select the **Manual input** option and fill in the form:
-
 .. image:: /images/poller/wizard_add_remote_2a.png
     :align: center
 
-If you enabled the **Remote Server** option when installing your server,
-select the option **Select a Remote Server**, then select your server and fill in
-the form:
+Otherwise, select the **Manual input** option and fill in the form:
 
 .. image:: /images/poller/wizard_add_remote_2b.png
     :align: center
@@ -39,7 +32,7 @@ The **Database username** and **Database password** are the credentials defined
 during the installation of the Remote Server.
 
 The **Server IP address** field is of the following form: 
-[(http/https)://]@IP[:(port)]. If your Remote Server is only available on HTTPS, it
+[(http|https)://]@IP[:(port)]. If your Remote Server is only available on HTTPS, it
 is mandatory to define the HTTP method and the TCP port is this one is not the
 default one.
 
