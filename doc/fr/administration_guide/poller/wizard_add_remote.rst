@@ -57,6 +57,11 @@ L'assistant va configurer votre nouveau serveur :
 .. image:: /images/poller/wizard_add_remote_4.png
     :align: center
 
+Une fois la configuration exportée, redémarrez le processus Centreon Broker
+sur le Remote Server via la commande suivante : ::
+
+    # systemctl restart cbd
+
 Le Remote Server est maintenant configuré :
 
 .. image:: /images/poller/wizard_add_remote_5.png
