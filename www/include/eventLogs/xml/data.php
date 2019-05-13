@@ -149,10 +149,15 @@ $buffer->startElement("root");
 /*
  * Security check
  */
-(isset($inputs["lang"])) ?
-    $lang_ = htmlentities($inputs["lang"], ENT_QUOTES, "UTF-8") : $lang_ = "-1";
-(isset($inputs["id"])) ?
-    $openid = htmlentities($inputs["id"], ENT_QUOTES, "UTF-8") : $openid = "-1";
+
+$lang_ = filter_var(
+    $inputs["lang"] ?? "-1",
+    FILTER_SANITIZE_STRING
+);
+$openid = filter_var(
+    $inputs["id"] ?? "-1",
+    FILTER_SANITIZE_STRING
+);
 $sid = session_id();
 (isset($sid)) ? $sid = $sid : $sid = "-1";
 
