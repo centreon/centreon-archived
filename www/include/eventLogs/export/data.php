@@ -82,8 +82,8 @@ $xml = new SimpleXMLElement($flow);
 if ($engine == "false") {
     echo _("Begin date") . "; "
         . _("End date") . ";\n";
-    echo date(_('m/d/Y (H:i:s)'), intval($xml->infos->start)) . ";"
-        . date(_('m/d/Y (H:i:s)'), intval($xml->infos->end)) . "\n";
+    echo date(_('Y/m/d (H:i:s)'), intval($xml->infos->start)) . ";"
+        . date(_('Y/m/d (H:i:s)'), intval($xml->infos->end)) . "\n";
     echo "\n";
 
     echo _("Type") . ";"
@@ -145,8 +145,8 @@ if ($engine == "false") {
 } else {
     echo _("Begin date") . "; "
         . _("End date") . ";\n";
-    echo date(_('m/d/Y (H:i:s)'), intval($xml->infos->start)) . ";"
-        . date(_('m/d/Y (H:i:s)'), intval($xml->infos->end)) . "\n";
+    echo date(_('Y/m/d (H:i:s)'), intval($xml->infos->start)) . ";"
+        . date(_('Y/m/d (H:i:s)'), intval($xml->infos->end)) . "\n";
     echo "\n";
 
     echo _("Type") . ";"
