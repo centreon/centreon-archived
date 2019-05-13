@@ -3,7 +3,7 @@ import * as actions from "../actions/navigationActions";
 // by default, no one menu entry is allowed
 const initialState = {
   entries: [],
-  menuItems: {},
+  menuItems: [],
   acl: {
     routes: [],
     loaded: false
