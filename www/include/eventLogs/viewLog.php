@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2005-2018 Centreon
+ * Copyright 2005-2019 Centreon
  * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -83,15 +83,10 @@ if (isset($_GET["openid"])) {
     $openid = $_GET["openid"];
 }
 
-if (isset($_GET["id"])) {
-    $id = $_GET["id"];
-} else {
-    $id = 1;
-}
-
-if (isset($_POST["id"])) {
-    $id = $_POST["id"];
-}
+$id = filter_var(
+    $_GET['id'] ?? $_POST['id'] ?? 1,
+    FILTER_VALIDATE_INT
+);
 
 $serviceGrpArray = array();
 $pollerArray = array();
