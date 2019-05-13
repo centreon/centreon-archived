@@ -39,9 +39,9 @@ INSERT INTO `contactgroup` (`cg_id`, `cg_name`, `cg_alias`, `cg_comment`, `cg_ac
 -- Contenu de la table `contactgroup_contact_relation`
 --
 
-INSERT INTO `contactgroup_contact_relation` (`cgr_id`, `contact_contact_id`, `contactgroup_cg_id`) VALUES(76, 17, 3);
-INSERT INTO `contactgroup_contact_relation` (`cgr_id`, `contact_contact_id`, `contactgroup_cg_id`) VALUES(77, 1, 5);
-INSERT INTO `contactgroup_contact_relation` (`cgr_id`, `contact_contact_id`, `contactgroup_cg_id`) VALUES(78, 18, 3);
+INSERT INTO `contactgroup_contact_relation` (`contact_contact_id`, `contactgroup_cg_id`) VALUES(17, 3);
+INSERT INTO `contactgroup_contact_relation` (`contact_contact_id`, `contactgroup_cg_id`) VALUES(1, 5);
+INSERT INTO `contactgroup_contact_relation` (`contact_contact_id`, `contactgroup_cg_id`) VALUES(18, 3);
 
 --
 -- Contenu de la table `service_categories`
