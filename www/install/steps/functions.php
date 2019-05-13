@@ -44,7 +44,7 @@ function getTemplate($dir)
 function myConnect()
 {
     $user = "root";
-    if (isset($_SESSION['root_user']) && $_SESSION['root_user']) {
+    if (!empty($_SESSION['root_user'])) {
         $user = $_SESSION['root_user'];
     }
     $pass = "";
