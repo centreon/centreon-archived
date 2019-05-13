@@ -201,7 +201,6 @@ $notification = isset($inputs["notification"]) ? htmlentities($inputs["notificat
 $alert = isset($inputs["alert"]) ? htmlentities($inputs["alert"]) : "true";
 $oh = isset($inputs["oh"]) ? htmlentities($inputs["oh"]) : "false";
 $error = isset($inputs["error"]) ? htmlentities($inputs["error"]) : "false";
-
 $output = isset($inputs["output"]) ? urldecode($inputs["output"]) : $output = "";
 $search_H = isset($inputs["search_H"]) ? htmlentities($inputs["search_H"]) : "VIDE";
 $search_S = isset($inputs["search_S"]) ? htmlentities($inputs["search_S"]) : "VIDE";
@@ -244,9 +243,11 @@ if ($EndDate != "") {
     $end = mktime($matchesT[1], $matchesT[2], "0", $matchesD[1], $matchesD[2], $matchesD[3]);
 }
 
+// setting the startDate/Time using the user's chosen period
+// and checking if the start date/time was set by the user, to avoid to display/export the whole data since 1/1/1970
 $period = 86400;
-if ($auto_period > 0) {
-    $period = $auto_period;
+if ($auto_period > 0 || $start === 0) {
+    $period = (int)$auto_period;
     $start = time() - ($period);
     $end = time();
 }
@@ -278,7 +279,6 @@ if ($export) {
     }
     $DBRESULT->closeCursor();
 }
-
 
 $logs = array();
 
