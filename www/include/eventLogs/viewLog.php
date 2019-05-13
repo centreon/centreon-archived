@@ -394,7 +394,7 @@ if ($engine == 'false') {
 <script>
 
     /*
-     * Selecting choosen Host, Service, HG and/or SG
+     * Selecting chosen Host, Service, HG and/or SG
      */
     function apply_period() {
         var openid = getArgsForHost();
