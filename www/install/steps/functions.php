@@ -48,7 +48,7 @@ function myConnect()
         $user = $_SESSION['root_user'];
     }
     $pass = "";
-    if (isset($_SESSION['root_password']) && $_SESSION['root_password']) {
+    if (!empty($_SESSION['root_password'])) {
         $pass = $_SESSION['root_password'];
     }
     $host = "localhost";
