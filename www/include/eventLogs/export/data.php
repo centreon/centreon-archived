@@ -130,8 +130,8 @@ if ($engine == "false") {
         _("Contact") . ";" .
         _("Cmd") . "\n";
     foreach ($xml->line as $line) {
-        echo $line->date . ";" .
-            $line->time . ";" .
+        echo date(_('Y/m/d'), intval($line->date)) . ";" .
+            date(_('H:i:s'), intval($line->time)) . ";" .
             $line->host_name . ";" .
             $line->address . ";" .
             $line->service_description . ";" .
@@ -164,9 +164,10 @@ if ($engine == "false") {
         . _("Poller") . ";"
         . _("Output") . "; " . "\n";
     foreach ($xml->line as $line) {
-        echo "\"" . $line->date . "\";\""
-            . $line->time . "\";\""
-            . $line->poller . "\";\""
-            . $line->output . "\";" . "\n";
+        echo "\"" .
+            date(_('Y/m/d'), intval($line->date)) . "\";\"" .
+            date(_('H:i:s'), intval($line->time)) . "\";\"" .
+            $line->poller . "\";\"" .
+            $line->output . "\";" . "\n";
     }
 }
