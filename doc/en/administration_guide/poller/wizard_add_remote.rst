@@ -55,6 +55,12 @@ The wizard will configure your new server:
 .. image:: /images/poller/wizard_add_remote_4.png
     :align: center
 
+
+Once the configuration is exported, restart the Centreon Broker process on the
+Remote Server using the following command: ::
+
+    # systemctl restart cbd
+
 The Remote Server is now configured:
 
 .. image:: /images/poller/wizard_add_remote_5.png
