@@ -17,23 +17,23 @@ Sélectionnez **Add a Centreon Remote Server** et cliquez sur **Next** :
 .. image:: /images/poller/wizard_add_remote_1.png
     :align: center
 
-Si vous avez déjà activé l'option **Remote Server** durant l'installation de
-votre serveur, sélectionnez l'option **Select a Remote Server** et sélectionnez
-votre serveur dans la liste puis complétez les informations demandées.
-
-.. image:: /images/poller/wizard_add_remote_2b.png
-    :align: center
-
-Sinon , sélectionnez l'option **Create new Remote Server**
-et saisissez les informations demandées.
+Si vous avez activé votre serveur en suivant la documentation, sélectionnez
+l'option **Select a Remote Server**. Dans la liste déroulante sélectionnez
+votre serveur, puis saisissez les informations demandées :
 
 .. image:: /images/poller/wizard_add_remote_2a.png
+    :align: center
+
+Sinon, sélectionnez l'option **Create new Remote Server**
+et saisissez les informations demandées.
+
+.. image:: /images/poller/wizard_add_remote_2b.png
     :align: center
 
 Les champs **Database user** et **Database password** sont les accès aux bases
 de données Centreon définis durant l'installation de votre Remote Server.
 
-Le champ **Server IP address** est de la forme : [(http/https)://]@IP[:(port)].
+Le champ **Server IP address** est de la forme : [(http|https)://]@IP[:(port)].
 Si votre Remote Server est accessible en HTTPS, il est nécessaire de préciser
 la méthode d'accès et le port si celui-ci n'est pas par défaut.
 
