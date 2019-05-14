@@ -131,7 +131,7 @@ if ($engine == "false") {
         _("Cmd") . "\n";
     foreach ($xml->line as $line) {
         echo date(_('Y/m/d'), (int)$line->date) . ";" .
-            date(_('H:i:s'), intval($line->time)) . ";" .
+            date(_('H:i:s'), (int)$line->time) . ";" .
             $line->host_name . ";" .
             $line->address . ";" .
             $line->service_description . ";" .
