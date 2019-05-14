@@ -80,7 +80,7 @@ $pollers = explode(',', $_POST['poller']);
 $idBindString = str_repeat('?,', count($pollers));
 $idBindString = rtrim($idBindString, ',');
 $queryRemotes = "SELECT ns.id, ns.ns_ip_address AS ip,
-    rs.centreon_path, rs.http_method, rs.http_port, rs.no_check_certificate
+    rs.centreon_path, rs.http_method, rs.http_port, rs.no_check_certificate, rs.no_proxy
     FROM nagios_server AS ns
     JOIN remote_servers AS rs ON rs.ip = ns.ns_ip_address
     WHERE ns.id IN ({$idBindString})";
@@ -101,6 +101,7 @@ if (!empty($remotesResults)) {
             'http_method'          => $remote['http_method'],
             'http_port'            => $remote['http_port'] ?: null,
             'no_check_certificate' => $remote['no_check_certificate'],
+            'no_proxy'             => $remote['no_proxy'],
             'pollers'              => []
         ];
 
