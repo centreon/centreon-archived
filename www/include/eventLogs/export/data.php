@@ -146,7 +146,7 @@ if ($engine == "false") {
     echo _("Begin date") . "; "
         . _("End date") . ";\n";
     echo date(_('Y/m/d (H:i:s)'), (int)$xml->infos->start) . ";"
-        . date(_('Y/m/d (H:i:s)'), intval($xml->infos->end)) . "\n";
+        . date(_('Y/m/d (H:i:s)'), (int)$xml->infos->end) . "\n";
     echo "\n";
 
     echo _("Type") . ";"
