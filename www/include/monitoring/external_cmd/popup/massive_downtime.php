@@ -162,6 +162,7 @@ if ($defaultScale == 'm') {
 $form->setDefaults(
     array(
         "start_time" => $centreonGMT->getDate("G:i", time(), $gmt),
+        "end" => $centreonGMT->getDate("m/d/Y", time() + $defaultDuration, $gmt),
         "end_time" => $centreonGMT->getDate("G:i", time() + $defaultDuration, $gmt)
     )
 );
