@@ -130,7 +130,7 @@ if ($engine == "false") {
         _("Contact") . ";" .
         _("Cmd") . "\n";
     foreach ($xml->line as $line) {
-        echo date(_('Y/m/d'), intval($line->date)) . ";" .
+        echo date(_('Y/m/d'), (int)$line->date) . ";" .
             date(_('H:i:s'), intval($line->time)) . ";" .
             $line->host_name . ";" .
             $line->address . ";" .
