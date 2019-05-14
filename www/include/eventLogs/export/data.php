@@ -166,7 +166,7 @@ if ($engine == "false") {
     foreach ($xml->line as $line) {
         echo "\"" .
             date(_('Y/m/d'), (int)$line->date) . "\";\"" .
-            date(_('H:i:s'), intval($line->time)) . "\";\"" .
+            date(_('H:i:s'), (int)$line->time) . "\";\"" .
             $line->poller . "\";\"" .
             $line->output . "\";" . "\n";
     }
