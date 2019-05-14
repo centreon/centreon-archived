@@ -126,6 +126,12 @@ class HTML_QuickForm_select2 extends HTML_QuickForm_select
 
     /**
      *
+     * @var boolean
+     */
+    public $_showDisabled;
+
+    /**
+     *
      * @var type
      */
     public $_defaultDatasetOptions;
@@ -160,6 +166,7 @@ class HTML_QuickForm_select2 extends HTML_QuickForm_select
         $this->_defaultDataset = null;
         $this->_defaultDatasetOptions = array();
         $this->_jsCallback = '';
+        $this->_showDisabled = false;
         $this->parseCustomAttributes($attributes);
 
         $this->_pagination = $centreon->optGen['selectPaginationSize'];
@@ -311,6 +318,7 @@ class HTML_QuickForm_select2 extends HTML_QuickForm_select
 
         $ajaxOption = '';
         $defaultData = '';
+        $template = '';
         if ($this->_ajaxSource) {
             $ajaxOption = 'ajax: {
                 url: "' . $this->_availableDatasetRoute . '"
@@ -326,6 +334,18 @@ class HTML_QuickForm_select2 extends HTML_QuickForm_select
             $this->setDefaultFixedDatas();
         }
 
+        if ($this->_showDisabled === true) {
+            $template = "
+                templateResult: function(state){
+                    let template = state.text;
+                     if (state.hasOwnProperty('status') && state.status === false) {
+                        template = jQuery('<span class=\"show-disabled\" disabled=\"". _('disabled') ."\"></span>');
+                        template.text(state.text);
+                    }
+                     return template;
+                },";
+        }
+
         $additionnalJs .= ' ' . $this->_jsCallback;
 
         $javascriptString = '<script>
@@ -333,7 +353,7 @@ class HTML_QuickForm_select2 extends HTML_QuickForm_select
                 var $currentSelect2Object' . $this->getName() .
             ' = jQuery("#' . $this->getName() . '").centreonSelect2({
                     allowClear: ' . $allowClear . ',
-                    pageLimit: ' . $this->_pagination . ',
+                    pageLimit: ' . $this->_pagination . ',' . $template . '
                     select2: {
                         ' . $ajaxOption . '
                         ' . $defaultData . '
