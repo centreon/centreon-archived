@@ -56,7 +56,7 @@ $resource_id = isset($resource_id) ? $resource_id : 0;
 
 if (!$centreon->user->access->checkAction("host_schedule_downtime")
     && !$centreon->user->access->checkAction("service_schedule_downtime")) {
-    require_once(_CENTREON_PATH_ . "www/include/core/errors/alt_error.php");
+    require_once _CENTREON_PATH_ . "www/include/core/errors/alt_error.php";
 } else {
     /*
      * Init
@@ -293,7 +293,8 @@ if (!$centreon->user->access->checkAction("host_schedule_downtime")
         'select',
         'duration_scale',
         _("Scale of time"),
-        array("s" => _("seconds"), "m" => _("minutes"), "h" => _("hours"), "d" => _("days"))
+        array("s" => _("seconds"), "m" => _("minutes"), "h" => _("hours"), "d" => _("days")),
+        array('id' => 'duration_scale')
     );
     $defaultScale = 's';
     if (isset($centreon->optGen['monitoring_dwt_duration_scale']) &&
@@ -319,8 +320,16 @@ if (!$centreon->user->access->checkAction("host_schedule_downtime")
     if (!$gmt) {
         $gmt = date_default_timezone_get();
     }
+    if ($defaultScale == 'm') {
+        $defaultDuration *= 60;
+    } elseif ($defaultScale == 'h') {
+        $defaultDuration *= 3600;
+    } elseif ($defaultScale == 'd') {
+        $defaultDuration *= 86400;
+    }
     $data["start_time"] = $centreonGMT->getDate("G:i", time(), $gmt);
-    $data["end_time"] = $centreonGMT->getDate("G:i", time() + 7200, $gmt);
+    $data["end_time"] = $centreonGMT->getDate("G:i", time() + $defaultDuration, $gmt);
+    $data["end"] = $centreonGMT->getDate("m/d/Y", time() + $defaultDuration, $gmt);
     $data["host_or_hg"] = 1;
     $data["with_services"] = $centreon->optGen['monitoring_dwt_svc'];
 
@@ -525,7 +534,7 @@ if (!$centreon->user->access->checkAction("host_schedule_downtime")
                 }
             }
         }
-        require_once("listDowntime.php");
+        require_once "listDowntime.php";
     } else {
         /*
          * Smarty template Init
