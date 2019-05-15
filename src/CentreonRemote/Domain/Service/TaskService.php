@@ -146,10 +146,10 @@ class TaskService
         try {
             $remoteDataResult = $this->getDbManager()->getAdapter('configuration_db')->query($query)->results();
 
-            $httpMethod         = $remoteDataResult[0]->http_method;
-            $httpPort           = $remoteDataResult[0]->http_port;
+            $httpMethod = $remoteDataResult[0]->http_method;
+            $httpPort = $remoteDataResult[0]->http_port;
             $noCheckCertificate = $remoteDataResult[0]->no_check_certificate;
-            $noProxy            = $remoteDataResult[0]->no_proxy;
+            $noProxy = $remoteDataResult[0]->no_proxy;
 
             $url = ($httpMethod ?? 'http') . '://' . $serverIp .
                 ($httpPort ? ':' . $httpPort : '') . '/' . $centreonFolder .

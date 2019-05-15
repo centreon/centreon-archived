@@ -237,7 +237,7 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
         /** @var $pollerConfigurationBridge PollerConfigurationRequestBridge */
         $pollerConfigurationBridge = $this->getDi()['centreon_remote.poller_config_bridge'];
 
-        // extract HTTP method and port from form or database if registred
+        // extract HTTP method and port from form or database if registered
         $httpMethod = "";
         $httpPort = "";
         $serverIP = parse_url($this->arguments['server_ip'], PHP_URL_HOST) ?: $this->arguments['server_ip'];
@@ -295,14 +295,14 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
 
             // set basic parameters to export task
             $params = [
-                'server'               => $remoteServer->getId(),
-                'remote_ip'            => $remoteServer->getIp(),
-                'centreon_path'        => $centreonPath,
-                'http_method'          => $httpMethod,
-                'http_port'            => $httpPort,
+                'server' => $remoteServer->getId(),
+                'remote_ip' => $remoteServer->getIp(),
+                'centreon_path' => $centreonPath,
+                'http_method' => $httpMethod,
+                'http_port' => $httpPort,
                 'no_check_certificate' => $noCheckCertificate,
-                'no_proxy'             => $noProxy,
-                'pollers'              => []
+                'no_proxy' => $noProxy,
+                'pollers' => []
             ];
 
             // If you want to link pollers to a remote
