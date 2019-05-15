@@ -6464,7 +6464,7 @@ msgstr ""
 "> Centreon > Poller > Post-Restart command)."
 
 msgid ""
-"What kind of method is needed to contact the Remote Server, HTTP or HTTPS?"
+"What kind of method is needed to reach the Remote Server, HTTP or HTTPS?"
 msgstr ""
 "Quel type de méthode est nécessaire pour contacter le Remote Server, HTTP ou HTTPS ?"
 

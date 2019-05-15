@@ -32,7 +32,7 @@ $help['pollercmd'] = dgettext(
 $help['description'] = dgettext("help", "Short description of the poller");
 $help['http_method'] = dgettext(
     "help",
-    "What kind of method is needed to contact the Remote Server, HTTP or HTTPS?"
+    "What kind of method is needed to reach the Remote Server, HTTP or HTTPS?"
 );
 $help['http_port'] = dgettext(
     "help",
