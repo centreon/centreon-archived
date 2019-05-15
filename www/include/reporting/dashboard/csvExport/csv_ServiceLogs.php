@@ -1,7 +1,7 @@
 <?php
 /*
- * Copyright 2005-2016 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2019 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -33,7 +33,7 @@
  *
  */
 
-require_once realpath(dirname(__FILE__) . "/../../../../../config/centreon.config.php");
+require_once realpath(__DIR__ . "/../../../../../config/centreon.config.php");
 require_once _CENTREON_PATH_ . "www/class/centreonDB.class.php";
 include_once _CENTREON_PATH_ . "www/include/common/common-Func.php";
 include_once _CENTREON_PATH_ . "www/include/reporting/dashboard/common-Func.php";
@@ -46,18 +46,18 @@ include_once _CENTREON_PATH_ . "www/include/reporting/dashboard/DB-Func.php";
 session_start();
 session_write_close();
 
-/*
- * DB connexion
- */
-$pearDB    = new CentreonDB();
-$pearDBO    = new CentreonDB("centstorage");
+// DB connexion
+$pearDB = new CentreonDB();
+$pearDBO = new CentreonDB("centstorage");
 
 $sid = session_id();
 if (!empty($sid) && isset($_SESSION['centreon'])) {
     $oreon = $_SESSION['centreon'];
-    $query = "SELECT user_id FROM session WHERE user_id = '".$pearDB->escape($oreon->user->user_id)."'";
-    $res = $pearDB->query($query);
-    if (!$res->rowCount()) {
+    $res = $pearDB->prepare("SELECT COUNT(*) as count FROM session WHERE user_id = :id");
+    $res->bindValue(':id', (int)$oreon->user->user_id, PDO::PARAM_INT);
+    $res->execute();
+    $row = $res->fetch(\PDO::FETCH_ASSOC);
+    if ($row['count'] < 1) {
         get_error('bad session id');
     }
 } else {
@@ -66,71 +66,137 @@ if (!empty($sid) && isset($_SESSION['centreon'])) {
 
 $centreon = $oreon;
 
-/*
- * getting host and service id
- */
-isset($_GET["host"]) ? $host_id =  htmlentities($_GET["host"], ENT_QUOTES, "UTF-8") : $host_id = "NULL";
-isset($_POST["host"]) ? $host_id =  htmlentities($_POST["host"], ENT_QUOTES, "UTF-8") : $host_id;
-isset($_GET["service"]) ? $service_id =  htmlentities($_GET["service"], ENT_QUOTES, "UTF-8") : $service_id = "NULL";
-isset($_POST["service"]) ? $service_id =  htmlentities($_POST["service"], ENT_QUOTES, "UTF-8") : $service_id;
+// getting host and service id
+$hostId = filter_var(
+    $_GET['host'] ?? $_POST['host'] ?? null,
+    FILTER_VALIDATE_INT
+);
 
-/*
- * Getting time interval to report
- */
+$serviceId = filter_var(
+    $_GET['service'] ?? $_POST['service'] ?? null,
+    FILTER_VALIDATE_INT
+);
+
+// finding the user's allowed resources
+$services = $centreon->user->access->getHostServiceAclConf($hostId, 'broker', null);
+
+//checking if the user has ACL rights for this resource
+if (!$centreon->user->admin
+    && $serviceId !== null
+    && (!array_key_exists($serviceId, $services))
+) {
+    echo '<div align="center" style="color:red">' .
+        '<b>You are not allowed to access this service</b></div>';
+    exit();
+}
+
+// Getting time interval to report
 $dates = getPeriodToReport();
-$start_date =  htmlentities($_GET['start'], ENT_QUOTES, "UTF-8");
-$end_date =  htmlentities($_GET['end'], ENT_QUOTES, "UTF-8");
-$host_name = getHostNameFromId($host_id);
-$service_description = getServiceDescriptionFromId($service_id);
+$startDate =  htmlentities($_GET['start'], ENT_QUOTES, "UTF-8");
+$endDate =  htmlentities($_GET['end'], ENT_QUOTES, "UTF-8");
+$hostName = getHostNameFromId($hostId);
+$serviceDescription = getServiceDescriptionFromId($serviceId);
 
-/*
- * file type setting
- */
-
+// file type setting
 header("Cache-Control: public");
 header("Pragma: public");
 header("Content-Type: application/octet-stream");
-header("Content-disposition: attachment ; filename=".$host_name. "_" .$service_description.".csv");
+header("Content-disposition: attachment ; filename=" . $hostName .  "_"  . $serviceDescription . ".csv");
 
-echo _("Host").";"._("Service").";"._("Begin date")."; "._("End date")."; "._("Duration")."\n";
-echo $host_name."; ".$service_description."; ".date(_("d/m/Y H:i:s"), $start_date)."; "
-    . date(_("d/m/Y H:i:s"), $end_date)."; ".($end_date - $start_date)."s\n";
+echo _("Host") . ";"
+    . _("Service") . ";"
+    . _("Begin date") . "; "
+    . _("End date") . "; "
+    . _("Duration") . "\n";
+
+echo $hostName . "; "
+    . $serviceDescription . "; "
+    . date(_("d/m/Y H:i:s"), $startDate) . "; "
+    . date(_("d/m/Y H:i:s"), $endDate) . "; "
+    . ($endDate - $startDate) . "s\n";
 echo "\n";
 
-echo _("Status").";"._("Time").";"._("Total Time").";"._("Mean Time")."; "._("Alert")."\n";
+echo _("Status") . ";"
+    . _("Time") . ";"
+    . _("Total Time") . ";"
+    . _("Mean Time") . "; "
+    . _("Alert") . "\n";
+
 $reportingTimePeriod = getreportingTimePeriod();
-$serviceStats = getLogInDbForOneSVC($host_id, $service_id, $start_date, $end_date, $reportingTimePeriod);
-echo "OK;".$serviceStats["OK_T"]."s;".$serviceStats["OK_TP"]."%;"
-    . $serviceStats["OK_MP"]. "%;".$serviceStats["OK_A"].";\n";
-echo "WARNING;".$serviceStats["WARNING_T"]."s;".$serviceStats["WARNING_TP"]."%;"
-    . $serviceStats["WARNING_MP"]. "%;".$serviceStats["WARNING_A"].";\n";
-echo "CRITICAL;".$serviceStats["CRITICAL_T"]."s;".$serviceStats["CRITICAL_TP"]."%;"
-    . $serviceStats["CRITICAL_MP"]. "%;".$serviceStats["CRITICAL_A"].";\n";
-echo "UNKNOWN;".$serviceStats["UNKNOWN_T"]."s;".$serviceStats["UNKNOWN_TP"]."%;"
-    . $serviceStats["UNKNOWN_MP"]. "%;".$serviceStats["UNKNOWN_A"].";\n";
-echo "UNDETERMINED;".$serviceStats["UNDETERMINED_T"]."s;"
-    . $serviceStats["UNDETERMINED_TP"]."%;;;\n";
+$serviceStats = getLogInDbForOneSVC(
+    $hostId,
+    $serviceId,
+    $startDate,
+    $endDate,
+    $reportingTimePeriod
+);
+
+echo "OK;"
+    . $serviceStats["OK_T"] . "s;"
+    . $serviceStats["OK_TP"] . "%;"
+    . $serviceStats["OK_MP"] . "%;"
+    . $serviceStats["OK_A"] . ";\n";
+
+echo "WARNING;"
+    . $serviceStats["WARNING_T"] . "s;"
+    . $serviceStats["WARNING_TP"] . "%;"
+    . $serviceStats["WARNING_MP"] . "%;"
+    . $serviceStats["WARNING_A"] . ";\n";
+
+echo "CRITICAL;"
+    . $serviceStats["CRITICAL_T"] . "s;"
+    . $serviceStats["CRITICAL_TP"] . "%;"
+    . $serviceStats["CRITICAL_MP"] . "%;"
+    . $serviceStats["CRITICAL_A"] . ";\n";
+
+echo "UNKNOWN;"
+    . $serviceStats["UNKNOWN_T"] . "s;"
+    . $serviceStats["UNKNOWN_TP"] . "%;"
+    . $serviceStats["UNKNOWN_MP"] .  "%;"
+    . $serviceStats["UNKNOWN_A"] . ";\n";
+
+echo _("SCHEDULED DOWNTIME") . ";"
+    . $serviceStats["MAINTENANCE_T"] . "s;"
+    . $serviceStats["MAINTENANCE_TP"] . "%;;;\n";
+
+echo "UNDETERMINED;"
+    . $serviceStats["UNDETERMINED_T"] . "s;"
+    . $serviceStats["UNDETERMINED_TP"] . "%;;;\n";
 echo "\n";
 echo "\n";
 
-/*
- * Getting evolution of service stats in time
- */
-echo _("Day").";"._("Duration").";"
-               ._("OK")." "._("Time")."; "._("OK")."; "._("OK")." Alert;"
-               ._("Warning")." "._("Time")."; "._("Warning").";"._("Warning")." Alert;"
-               ._("Unknown")." "._("Time")."; "._("Unknown").";"._("Unknown")." Alert;"
-               ._("Critical")." "._("Time")."; "._("Critical").";"._("Critical")." Alert;"
-               ._("Day").";\n";
+// Getting evolution of service stats in time
+echo _("Day") . ";"
+    . _("Duration") . ";"
+    . _("OK") . " (s); "
+    . _("OK") . " %; "
+    . _("OK") . " Alert;"
+    . _("Warning") . " (s); "
+    . _("Warning") . " %;"
+    . _("Warning") . " Alert;"
+    . _("Unknown") . " (s); "
+    . _("Unknown") . " %;"
+    . _("Unknown") . " Alert;"
+    . _("Critical") . " (s); "
+    . _("Critical") . " %;"
+    . _("Critical") . " Alert;"
+    . _("Day") . ";\n";
 
-$request = "SELECT  * FROM `log_archive_service` " .
-        "WHERE `host_id` = '".$host_id."' " .
-        "AND `service_id` = '".$service_id."' " .
-        "AND `date_start` >= '".$start_date."' " .
-        "AND `date_end` <= '".$end_date."' " .
-        "ORDER BY `date_start` DESC";
-$DBRESULT = $pearDBO->query($request);
-while ($row = $DBRESULT->fetchRow()) {
+$dbResult = $pearDBO->prepare(
+    "SELECT  * FROM `log_archive_service` " .
+    "WHERE `host_id` = :hostId " .
+    "AND `service_id` = :serviceId " .
+    "AND `date_start` >= :startDate " .
+    "AND `date_end` <= :endDate " .
+    "ORDER BY `date_start` DESC"
+);
+$dbResult->bindValue(':hostId', $hostId, PDO::PARAM_INT);
+$dbResult->bindValue(':serviceId', $serviceId, PDO::PARAM_INT);
+$dbResult->bindValue(':startDate', $startDate, PDO::PARAM_INT);
+$dbResult->bindValue(':endDate', $endDate, PDO::PARAM_INT);
+$dbResult->execute();
+
+while ($row = $dbResult->fetch()) {
     $duration = $row["date_end"] - $row["date_start"];
     /* Percentage by status */
     $duration = $row["OKTimeScheduled"]
@@ -141,11 +207,20 @@ while ($row = $DBRESULT->fetchRow()) {
     $row["WARNING_MP"] = round($row["WARNINGTimeScheduled"] * 100 / $duration, 2);
     $row["UNKNOWN_MP"] = round($row["UNKNOWNTimeScheduled"] * 100 / $duration, 2);
     $row["CRITICAL_MP"] = round($row["CRITICALTimeScheduled"] * 100 / $duration, 2);
-    echo $row["date_start"].";".$duration.";"
-        . $row["OKTimeScheduled"]."s;".$row["OK_MP"]."%;".$row["OKnbEvent"].";"
-        . $row["WARNINGTimeScheduled"]."s;".$row["WARNING_MP"]."%;".$row["WARNINGnbEvent"].";"
-        . $row["UNKNOWNTimeScheduled"]."s;".$row["UNKNOWN_MP"]."%;".$row["UNKNOWNnbEvent"].";"
-        . $row["CRITICALTimeScheduled"]."s;".$row["CRITICAL_MP"]."%;".$row["CRITICALnbEvent"].";"
-        . date("Y-m-d H:i:s", $row["date_start"]).";\n";
+    echo $row["date_start"] . ";"
+        . $duration . ";"
+        . $row["OKTimeScheduled"] . "s;"
+        . $row["OK_MP"] . "%;"
+        . $row["OKnbEvent"] . ";"
+        . $row["WARNINGTimeScheduled"] . "s;"
+        . $row["WARNING_MP"] . "%;"
+        . $row["WARNINGnbEvent"] . ";"
+        . $row["UNKNOWNTimeScheduled"] . "s;"
+        . $row["UNKNOWN_MP"] . "%;"
+        . $row["UNKNOWNnbEvent"] . ";"
+        . $row["CRITICALTimeScheduled"] . "s;"
+        . $row["CRITICAL_MP"] . "%;"
+        . $row["CRITICALnbEvent"] . ";"
+        . date("Y-m-d H:i:s", $row["date_start"]) . ";\n";
 }
-$DBRESULT->closeCursor();
+$dbResult->closeCursor();
