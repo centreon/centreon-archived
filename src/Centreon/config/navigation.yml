@@ -1,0 +1,25 @@
+navigation:
+    home:
+        id: 1
+        color: 2B9E93
+        icon: home
+    monitoring:
+        id: 2
+        color: 85B446
+        icon: monitoring
+    reporting:
+        id: 3
+        color: E4932C
+        icon: reporting
+    administration:
+        id: 4
+        color: 17387B
+        icon: administration
+    configuration:
+        id: 6
+        color: 319ED5
+        icon: configuration
+    default:
+        id: null
+        color: 319ED5
+        icon: ''

@@ -4,6 +4,7 @@ namespace Centreon\Domain\Repository;
 
 use Centreon\Domain\Entity\Topology;
 use Centreon\Infrastructure\CentreonLegacyDB\ServiceEntityRepository;
+use Centreon\Infrastructure\CentreonLegacyDB\StatementCollector;
 use CentreonUser;
 use PDO;
 
@@ -76,7 +77,7 @@ class TopologyRepository extends ServiceEntityRepository
                             . "AND acl_topology_relations.acl_topo_id = '" . $topo_group["acl_topology_id"] . "' ";
                         $DBRESULT2 = $this->db->query($query2);
                         while ($topo_page = $DBRESULT2->fetchRow()) {
-                            $topology[] = (int) $topo_page["topology_topology_id"];
+                            $topology[] = (int)$topo_page["topology_topology_id"];
                             if (!isset($tmp_topo_page[$topo_page['topology_topology_id']])) {
                                 $tmp_topo_page[$topo_page["topology_topology_id"]] = $topo_page["access_right"];
                             } else {
@@ -128,7 +129,7 @@ class TopologyRepository extends ServiceEntityRepository
         //base query
         $query = 'SELECT topology_id, topology_name, topology_page, topology_url, topology_url_opt, '
             . 'topology_group, topology_order, topology_parent, is_react, readonly '
-            . 'FROM '.Topology::TABLE
+            . 'FROM ' . Topology::TABLE
             . ' WHERE topology_show = "1"';
 
         if ($is_react) {
@@ -149,5 +150,47 @@ class TopologyRepository extends ServiceEntityRepository
         $stmt->setFetchMode(PDO::FETCH_CLASS, Topology::class);
         $topologies = $stmt->fetchAll();
         return $topologies;
+    }
+
+    /**
+     * Find Topology entity by criteria
+     *
+     * @param array $params
+     * @return Topology|null
+     */
+    public function findOneBy($params = []): ?Topology
+    {
+        $sql = static::baseSqlQueryForEntity();
+        $collector = new StatementCollector;
+        $isWhere = false;
+        foreach ($params as $column => $value) {
+            $key = ":{$column}Val";
+            $sql .= (!$isWhere ? 'WHERE ' : 'AND ') . "`{$column}` = {$key} ";
+            $collector->addValue($key, $value);
+            $isWhere = true;
+        }
+
+        $stmt = $this->db->prepare($sql);
+        $collector->bind($stmt);
+        $stmt->execute();
+        if (!$stmt->rowCount()) {
+            return null;
+        }
+
+        $stmt->setFetchMode(PDO::FETCH_CLASS, Topology::class);
+        $entity = $stmt->fetch();
+
+        return $entity;
+    }
+
+
+    /**
+     * Part of SQL for extracting of BusinessActivity entity
+     *
+     * @return string
+     */
+    protected static function baseSqlQueryForEntity(): string
+    {
+        return "SELECT * FROM topology ";
     }
 }
