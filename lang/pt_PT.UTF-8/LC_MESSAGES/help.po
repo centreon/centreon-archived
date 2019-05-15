@@ -4292,6 +4292,22 @@ msgstr "Método de atualização de configuração: Reiniciar, Recarregar ou Com
 msgid "Run the commands that are defined in the poller configuration page (Configuration > Centreon > Poller > Post-Restart command)."
 msgstr "Executa o comando definido na configuração do coletor (Configuração> Centreon> Poller> comando Post-Restart)."
 
+msgid ""
+"What kind of method is needed to contact the Remote Server, HTTP or HTTPS?"
+msgstr ""
+
+msgid ""
+"On which TCP port is listening the Remote Server?"
+msgstr ""
+
+msgid ""
+"If checked, it won't check the validity of the SSL certificate of the Remote Server."
+msgstr ""
+
+msgid "If checked, it won't  use the proxy configured in "
+"'Administration > Parameters > Centreon UI' to connect to the Remote Server."
+msgstr ""
+
 #~ msgid "SNMP global community."
 #~ msgstr "Comunidade SNMP global usada por padrão."
 

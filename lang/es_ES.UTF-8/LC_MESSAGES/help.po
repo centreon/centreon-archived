@@ -4296,3 +4296,20 @@ msgstr "Método de recarga de la configuración: reiniciar, recargar o comando e
 #: centreon-web/www/include/configuration/configGenerate/help.php:8
 msgid "Run the commands that are defined in the poller configuration page (Configuration > Centreon > Poller > Post-Restart command)."
 msgstr "Ejecuta el comando definido en la configuración del recopilador (Configuración> Centreon> Poller> Comando posterior al reinicio)."
+
+msgid ""
+"What kind of method is needed to contact the Remote Server, HTTP or HTTPS?"
+msgstr ""
+
+msgid "On which TCP port is listening the Remote Server?"
+msgstr ""
+
+msgid ""
+"If checked, it won't check the validity of the SSL certificate of the Remote Server."
+msgstr ""
+""
+
+msgid "If checked, it won't  use the proxy configured in "
+"'Administration > Parameters > Centreon UI' to connect to the Remote Server."
+msgstr ""
+""
