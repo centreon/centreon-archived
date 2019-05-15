@@ -225,25 +225,24 @@ class LinkedPollerConfigurationService
             $linkedPollersOfRemote = array_column($linkedResults, 'id');
 
             // Get information of remote
-            $queryRemoteData = "SELECT ns.ns_ip_address as ip, rs.centreon_path, rs.http_method, rs.http_port, " .
-                " rs.no_check_certificate, rs.no_proxy FROM nagios_server as ns " .
-                " JOIN remote_servers as rs ON rs.ip = ns.ns_ip_address " .
-                " WHERE ns.id = {$remoteID}";
-            $remoteDataStatement = $this->db->query($queryRemoteData);
+            $remoteDataStatement = $this->db->query("SELECT ns.ns_ip_address as ip, rs.centreon_path,
+                rs.http_method, rs.http_port, rs.no_check_certificate, rs.no_proxy
+                FROM nagios_server as ns JOIN remote_servers as rs ON rs.ip = ns.ns_ip_address
+                WHERE ns.id = {$remoteID}");
             $remoteDataResults = $remoteDataStatement->fetchAll(\PDO::FETCH_ASSOC);
 
             // Exclude the selected pollers which are going to another remote
             $pollerIDsToExport = array_diff($linkedPollersOfRemote, $pollerIDs);
 
             $exportParams = [
-                'server'               => $remoteID,
-                'pollers'              => $pollerIDsToExport,
-                'remote_ip'            => $remoteDataResults[0]['ip'],
-                'centreon_path'        => $remoteDataResults[0]['centreon_path'],
-                'http_method'          => $remoteDataResults[0]['http_method'],
-                'http_port'            => $remoteDataResults[0]['http_port'],
+                'server' => $remoteID,
+                'pollers' => $pollerIDsToExport,
+                'remote_ip' => $remoteDataResults[0]['ip'],
+                'centreon_path' => $remoteDataResults[0]['centreon_path'],
+                'http_method' => $remoteDataResults[0]['http_method'],
+                'http_port' => $remoteDataResults[0]['http_port'],
                 'no_check_certificate' => $remoteDataResults[0]['no_check_certificate'],
-                'no_proxy'             => $remoteDataResults[0]['no_proxy'],
+                'no_proxy' => $remoteDataResults[0]['no_proxy'],
             ];
             $this->taskService->addTask(Task::TYPE_EXPORT, ['params' => $exportParams]);
         }

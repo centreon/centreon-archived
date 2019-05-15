@@ -41,22 +41,22 @@ class CentreonRemoteServer implements CentreonClapiServiceInterface
         /* Set default value */
         $noCheckCertificate = false;
         $data = array(
-            'remoteHttpMethod'         => 'http',
-            'remoteHttpPort'           => null,
+            'remoteHttpMethod' => 'http',
+            'remoteHttpPort' => null,
             'remoteNoCheckCertificate' => false,
         );
 
         /* Check CLAPI */
         $options = explode (';', $string_ip);
 
-        if (count($options) == 5) {
+        if (count($options) === 5) {
             $string_ip = $options[0];
             $noCheckCertificate = $options[1];
             $data['remoteHttpMethod'] = $options[2];
             $data['remoteHttpPort'] = $options[3];
             $data['remoteNoCheckCertificate'] = $options[4];
         } elseif (count($options) > 1) {
-            echo "Argument error number. Check your commmand";
+            echo "5 arguments are needed, please check your arguments.";
             return 1;
         }
 

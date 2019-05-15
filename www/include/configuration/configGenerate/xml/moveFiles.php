@@ -95,14 +95,14 @@ if (!empty($remotesResults)) {
         $linkedResults = $linkedStatement->fetchAll(PDO::FETCH_ASSOC);
 
         $exportParams = [
-            'server'               => $remote['id'],
-            'remote_ip'            => $remote['ip'],
-            'centreon_path'        => $remote['centreon_path'],
-            'http_method'          => $remote['http_method'],
-            'http_port'            => $remote['http_port'] ?: null,
+            'server' => $remote['id'],
+            'remote_ip' => $remote['ip'],
+            'centreon_path' => $remote['centreon_path'],
+            'http_method' => $remote['http_method'],
+            'http_port' => $remote['http_port'] ?: null,
             'no_check_certificate' => $remote['no_check_certificate'],
-            'no_proxy'             => $remote['no_proxy'],
-            'pollers'              => []
+            'no_proxy' => $remote['no_proxy'],
+            'pollers' => []
         ];
 
         if (!empty($linkedResults)) {

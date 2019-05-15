@@ -496,6 +496,33 @@ function addUserRessource(int $serverId): bool
 }
 
 /**
+ * Update Remote Server informations
+ *
+ * @param array $data
+ *
+ */
+function updateRemoteServerInformation(array $data)
+{
+    global $pearDB, $centreon;
+
+    $res = $pearDB->query("SELECT * FROM `remote_servers` WHERE ip = '" . $data["ns_ip_address"]  . "'");
+    $rows = $res->fetch(\PDO::FETCH_ASSOC);
+
+    if ($rows > 1) {
+        $rq = "UPDATE `remote_servers` SET ";
+        $rq .= "http_method = '" . $data["http_method"] . "', ";
+        isset($data["http_port"]) && !empty($data["http_port"])
+            ? $rq .= "http_port = '" . $data["http_port"]  . "', "
+            : $rq .= "http_port = NULL, ";
+        $rq .= "no_check_certificate = '" . $data["no_check_certificate"]["no_check_certificate"] . "', ";
+        $rq .= "no_proxy = '" . $data["no_proxy"]["no_proxy"] . "', ";
+        $rq .= "ip = '" . $data["ns_ip_address"]  . "'";
+        $pearDB->query($rq);
+    }
+    $res->closeCursor();
+}
+
+/**
  * Update a server
  *
  * @param int $id Id of the server
@@ -607,33 +634,6 @@ function updateServer(int $id, $data): void
     /* Prepare value for changelog */
     $fields = CentreonLogAction::prepareChanges($data);
     $centreon->CentreonLogAction->insertLog("poller", $id, CentreonDB::escape($data["name"]), "c", $fields);
-}
-
-/**
- * Update Remote Server informations
- *
- * @param array $data
- *
- */
-function updateRemoteServerInformation(array $data)
-{
-    global $pearDB, $centreon;
-
-    $req = "SELECT * FROM `remote_servers` WHERE ip = '" . $data["ns_ip_address"]  . "'";
-    $result = $pearDB->query($req);
-
-    if ($result->rowCount()) {
-        $rq = "UPDATE `remote_servers` SET ";
-        $rq .= "http_method = '" . $data["http_method"] . "', ";
-        isset($data["http_port"]) && $data["http_port"] != null
-            ? $rq .= "http_port = '" . $data["http_port"]  . "', "
-            : $rq .= "http_port = NULL, ";
-        $rq .= "no_check_certificate = '" . $data["no_check_certificate"]["no_check_certificate"] . "', ";
-        $rq .= "no_proxy = '" . $data["no_proxy"]["no_proxy"] . "', ";
-        $rq .= "ip = '" . $data["ns_ip_address"]  . "'";
-        $pearDB->query($rq);
-    }
-    $result->closeCursor();
 }
 
 /**

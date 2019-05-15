@@ -73,11 +73,11 @@ if (($o == SERVER_MODIFY || $o == SERVER_WATCH) && $server_id) {
         $serverType = "remote";
     }
 
-    if ($serverType == "remote") {
-        $DBRESULT = $pearDB->query("SELECT http_method, http_port, no_check_certificate, no_proxy " .
+    if ($serverType === "remote") {
+        $dbResult = $pearDB->query("SELECT http_method, http_port, no_check_certificate, no_proxy " .
             "FROM `remote_servers` WHERE `ip` = '" . $cfg_server['ns_ip_address'] . "' LIMIT 1");
-        $cfg_server = array_merge($cfg_server, array_map("myDecode", $DBRESULT->fetchRow()));
-        $DBRESULT->closeCursor();
+        $cfg_server = array_merge($cfg_server, array_map("myDecode", $dbResult->fetch()));
+        $dbResult->closeCursor();
     }
 }
 
