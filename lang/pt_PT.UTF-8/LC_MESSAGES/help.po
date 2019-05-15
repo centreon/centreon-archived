@@ -4293,7 +4293,7 @@ msgid "Run the commands that are defined in the poller configuration page (Confi
 msgstr "Executa o comando definido na configuração do coletor (Configuração> Centreon> Poller> comando Post-Restart)."
 
 msgid ""
-"What kind of method is needed to contact the Remote Server, HTTP or HTTPS?"
+"What kind of method is needed to reach the Remote Server, HTTP or HTTPS?"
 msgstr ""
 
 msgid ""
