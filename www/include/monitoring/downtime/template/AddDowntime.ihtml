@@ -125,12 +125,12 @@
         <tr class="list_two">
             <td class="FormRowField">{$form.start.label}</td>
             <td class="FormRowValue">{$form.start.html}&nbsp;{$form.alternativeDateStart.html}&nbsp;{$form.start_time.html}
-                </td>
+            </td>
         </tr>
         <tr class="list_one">
             <td class="FormRowField">{$form.end.label}</td>
             <td class="FormRowValue">{$form.end.html}&nbsp;{$form.alternativeDateEnd.html}&nbsp;{$form.end_time.html}
-                </td>
+            </td>
         </tr>
         <tr class="list_two">
             <td class="FormRowField">{$form.with_services.label}</td>
@@ -153,6 +153,27 @@
 <script type="text/javascript">
 
     initDatepicker("datepicker", "mm/dd/yy", "0");
+
+    $(document).ready(function() {
+        $(".datepicker").first().on('change', function (e) {
+            updateEndTime();
+        });
+        $(".timepicker").first().on('change', function (e) {
+            updateEndTime();
+        });
+        $("#duration").on('keypress', function (e) {
+            updateEndTime();
+        });
+        $("#duration_scale").on('change', function (e) {
+            updateEndTime();
+        });
+        $(".datepicker").last().on('change', function (e) {
+            updateStartTime();
+        });
+        $(".timepicker").last().on('change', function (e) {
+            updateStartTime();
+        });
+    });
 
 </script>
 {/literal}

@@ -113,3 +113,67 @@ function setUserFormat() {
         });
     }
 }
+
+function updateEndTime() {
+    $(".datepicker").first().off('change');
+    $(".timepicker").first().off('change');
+
+    var d = new Date($(".datepicker").first().val() + ' ' +  $(".timepicker").first().val());
+    if ($("#duration").val() != '') {
+        var dur = 0;
+        var duration_scale = $("#duration_scale").val();
+        if (duration_scale == 's') {
+            dur = $("#duration").val();
+        } else if (duration_scale == 'm') {
+            dur = $("#duration").val() * 60;
+        } else if (duration_scale == 'h') {
+            dur = $("#duration").val() * 3600;
+        } else if (duration_scale == 'd') {
+            dur = $("#duration").val() * 86400;
+        }
+        dur *= 1000; // Convert to microseconds
+        var e = new Date();
+        e.setTime(d.getTime() + dur);
+        $(".datepicker").last().datepicker("setDate", e);
+        $(".timepicker").last().timepicker("setTime", e.getHours() + ':' + e.getMinutes());
+
+        $(".datepicker").first().on('change', function (e) {
+            updateEndTime();
+        });
+        $(".timepicker").first().on('change', function (e) {
+            updateEndTime();
+        });
+    }
+}
+
+function updateStartTime() {
+    $(".datepicker").last().off('change');
+    $(".timepicker").last().off('change');
+
+    var d = new Date($(".datepicker").last().val() + ' ' +  $(".timepicker").last().val());
+    if ($("#duration").val() != '') {
+        var dur = 0;
+        var duration_scale = $("#duration_scale").val();
+        if (duration_scale == 's') {
+            dur = $("#duration").val();
+        } else if (duration_scale == 'm') {
+            dur = $("#duration").val() * 60;
+        } else if (duration_scale == 'h') {
+            dur = $("#duration").val() * 3600;
+        } else if (duration_scale == 'd') {
+            dur = $("#duration").val() * 86400;
+        }
+        dur *= 1000; // Convert to microseconds
+        var e = new Date();
+        e.setTime(d.getTime() - dur);
+        $(".datepicker").first().datepicker("setDate", e);
+        $(".timepicker").first().timepicker("setTime", e.getHours() + ':' + e.getMinutes());
+
+        $(".datepicker").last().on('change', function (e) {
+            updateStartTime();
+        });
+        $(".timepicker").last().on('change', function (e) {
+            updateStartTime();
+        });
+    }
+}
