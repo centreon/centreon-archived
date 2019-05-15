@@ -19,7 +19,8 @@ Fixes # (issue)
 
 - [ ] 2.8.x
 - [ ] 18.10.x
-- [ ] 19.04.x (master)
+- [ ] 19.04.x
+- [ ] 19.10.x (master)
 
 <h2> How this pull request can be tested ? </h2>
 
