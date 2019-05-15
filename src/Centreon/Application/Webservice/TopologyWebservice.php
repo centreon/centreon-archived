@@ -5,6 +5,7 @@ namespace Centreon\Application\Webservice;
 use Centreon\Application\DataRepresenter\Response;
 use Centreon\Application\DataRepresenter\Topology\NavigationList;
 use Centreon\Application\DataRepresenter\Topology\ReactAcl;
+use Centreon\Application\DataRepresenter\Topology\ReactAclForActive;
 use Centreon\Domain\Repository\TopologyRepository;
 use Centreon\ServiceProvider;
 use CentreonRemote\Application\Webservice\CentreonWebServiceAbstract;
@@ -121,11 +122,20 @@ class TopologyWebservice extends CentreonWebServiceAbstract
      *   ),
      *   @OA\Parameter(
      *       in="query",
-     *       name="reactonly",
+     *       name="reactOnly",
      *       @OA\Schema(
      *          type="integer"
      *       ),
      *       description="fetch react only list(value 1) or full list",
+     *       required=false
+     *   ),
+     *   @OA\Parameter(
+     *       in="query",
+     *       name="forActive",
+     *       @OA\Schema(
+     *          type="integer"
+     *       ),
+     *       description="represent values for active check",
      *       required=false
      *   )
      * )
@@ -141,13 +151,15 @@ class TopologyWebservice extends CentreonWebServiceAbstract
 
         $isReact = (isset($_GET['reactOnly']) && $_GET['reactOnly'] == 1);
 
+        $forActive = (isset($_GET['forActive']) && $_GET['forActive'] == 1);
+
         $dbResult = $this->getDi()[ServiceProvider::CENTREON_DB_MANAGER]
             ->getRepository(TopologyRepository::class)
             ->getTopologyList($user, $isReact);
 
         if ($isReact) {
             $status = true;
-            $result = new ReactAcl($dbResult);
+            $result = ($forActive) ? new ReactAclForActive($dbResult) : new ReactAcl($dbResult);
         } else {
             $status = true;
             $result = new NavigationList($dbResult);

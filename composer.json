@@ -31,7 +31,7 @@
         "pimple/pimple": "^3.2",
         "symfony/filesystem": "^4.1",
         "symfony/finder": "^4.1",
-        "symfony/yaml": "~3.0",
+        "symfony/yaml": "^4.2",
         "openpsa/quickform": "3.3.*",
         "smarty/smarty": "~2.6",
         "curl/curl" : "^1.5"
