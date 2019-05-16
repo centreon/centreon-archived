@@ -498,8 +498,8 @@ function change_page(page_number) {
 function change_type_order(_type) {
     if (_sort_type != _type){
         _sort_type = _type;
-        monitoring_refresh();
     }
+    monitoring_refresh();
 }
 
 function change_order(_odr) {
