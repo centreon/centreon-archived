@@ -159,10 +159,7 @@
           }
         },
         y: {
-          padding: {bottom: 0, top: 0},
-          tick: {
-            format: this.getAxisTickFormat(this.getBase())
-          }
+          padding: {bottom: 0, top: 0}
         }
       };
       /* Add Y axis range */
@@ -174,11 +171,14 @@
       }
 
       var parsedData = this.buildMetricData(data);
-
       axis = jQuery.extend(true, {}, axis, parsedData.axis);
+      // Of course no-unit series are 1000 based
+      axis.y.tick = {
+        format: this.getAxisTickFormat(axis.y.label ? this.getBase() : 1000)
+      };
       if (axis.hasOwnProperty('y2')) {
         axis.y2.tick = {
-          format: this.getAxisTickFormat(this.getBase())
+          format: this.getAxisTickFormat(axis.y2.label ? this.getBase() : 1000)
         };
       }
 
@@ -213,7 +213,7 @@
             value: function (value, ratio, id) {
               /* Test if the curve is inversed */
               var fct = self.getAxisTickFormat(
-                self.getBase(),
+                self.getBase(id),
                 self.isInversed(id)
               );
               return fct(value);
@@ -338,16 +338,18 @@
         column.unshift(name);
         data.columns.push(column);
         legend = dataRaw.data[i].label;
+        // Remember that unit can be empty
         if (dataRaw.data[i].unit) {
           legend += '(' + dataRaw.data[i].unit + ')';
-          if (units.hasOwnProperty(dataRaw.data[i].unit) === false) {
-            units[dataRaw.data[i].unit] = [];
-          }
-          units[dataRaw.data[i].unit].push(name);
           axis[axesName] = {
             label: dataRaw.data[i].unit
           };
         }
+        // these no-unit series also go to their own axis
+        if (units.hasOwnProperty(dataRaw.data[i].unit) === false) {
+          units[dataRaw.data[i].unit] = [];
+        }
+        units[dataRaw.data[i].unit].push(name);
         data.names[name] = legend;
         data.types[name] = convertType.hasOwnProperty(dataRaw.data[i].type) !== -1 ?
           convertType[dataRaw.data[i].type] : dataRaw.data[i].type;
@@ -731,7 +733,13 @@
      * @param {String} id - The curve id
      * @return {Integer} - 1000 or 1024
      */
-    getBase: function () {
+    getBase: function (id) {
+      // Of course no-unit series are 1000 based
+      for (var e in this.chartData.data) {
+        if((this.chartData.data[e].data[0] === id) && this.chartData.data[e].unit === "") {
+          return 1000;
+        }
+      }
       if (this.chartData.base) {
         return this.chartData.base;
       }
@@ -754,7 +762,7 @@
         if (legends.hasOwnProperty(legend) && self.ids.hasOwnProperty(legend)) {
           curveId = self.ids[legend];
           var fct = self.getAxisTickFormat(
-              self.getBase(),
+              self.getBase(curveId),
               self.isInversed(curveId)
           );
           legendDiv = jQuery('<div>').addClass('chart-legend')
@@ -846,7 +854,7 @@
         }
         var curveId = self.ids[legendName];
         var fct = self.getAxisTickFormat(
-          self.getBase(),
+          self.getBase(curveId),
           self.isInversed(curveId)
         );
         jQuery(el).find('.extra').remove();
