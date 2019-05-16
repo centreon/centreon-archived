@@ -75,20 +75,12 @@ class DowntimeRecurrentContext extends CentreonContext
         $this->endDate = new DateTime('now');
         $this->endDate->add(new DateInterval('PT360M'));
 
-        //check if the downtime is on two days and add time
-        if ($this->startDate->format('d') != $this->endDate->format('d')) {
-            $endDateTest = '23:59';
-        } else {
-            $endDateTest = $this->endDate->format('H:i');
-        }
-
         $this->currentPage = new RecurrentDowntimeConfigurationPage($this);
         $this->currentPage->setProperties(array(
             'name' => 'test_DT',
             'alias' => 'recurrent_DT',
             'days' => array(7, 1, 2, 3, 4, 5, 6),
             'start' => $this->startDate->format('H:i'),
-            'end' => $endDateTest,
             'hostgroup_relation' => $this->hostGroup['name']
         ));
         $this->currentPage->save();
