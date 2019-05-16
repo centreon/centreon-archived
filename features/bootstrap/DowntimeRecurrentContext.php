@@ -81,6 +81,7 @@ class DowntimeRecurrentContext extends CentreonContext
             'alias' => 'recurrent_DT',
             'days' => array(7, 1, 2, 3, 4, 5, 6),
             'start' => $this->startDate->format('H:i'),
+            'end' => $this->endDate->format('H:i'),
             'hostgroup_relation' => $this->hostGroup['name']
         ));
         $this->currentPage->save();
