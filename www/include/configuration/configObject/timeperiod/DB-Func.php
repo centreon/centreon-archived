@@ -130,7 +130,7 @@ function multipleTimeperiodInDB($timeperiods = array(), $nbrDup = array())
         }
 
         $row = $DBRESULT->fetchRow();
-        $row["tp_id"] = '';
+        $row["tp_id"] = null;
         for ($i = 1; $i <= $nbrDup[$key]; $i++) {
             $val = null;
             foreach ($row as $key2 => $value2) {

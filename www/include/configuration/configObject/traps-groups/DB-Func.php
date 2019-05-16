@@ -80,7 +80,7 @@ function multipleTrapGroupInDB($trap_groups = array(), $nbrDup = array())
         $query = "SELECT * FROM traps_group WHERE traps_group_id = '" . $pearDB->escape($key) . "' LIMIT 1";
         $DBRESULT = $pearDB->query($query);
         $row = $DBRESULT->fetchRow();
-        $row["traps_group_id"] = '';
+        $row["traps_group_id"] = null;
 
         for ($i = 1; $i <= $nbrDup[$key]; $i++) {
             $val = null;

@@ -103,7 +103,7 @@ function multipleServiceDependencyInDB($dependencies = array(), $nbrDup = array(
         global $pearDB, $oreon;
         $DBRESULT = $pearDB->query("SELECT * FROM dependency WHERE dep_id = '" . $key . "' LIMIT 1");
         $row = $DBRESULT->fetchRow();
-        $row["dep_id"] = '';
+        $row["dep_id"] = null;
         for ($i = 1; $i <= $nbrDup[$key]; $i++) {
             $val = null;
             foreach ($row as $key2 => $value2) {

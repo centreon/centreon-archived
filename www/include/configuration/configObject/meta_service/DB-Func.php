@@ -126,7 +126,7 @@ function multipleMetaServiceInDB($metas = array(), $nbrDup = array())
         # Get all information about it
         $DBRESULT = $pearDB->query("SELECT * FROM meta_service WHERE meta_id = '" . $key . "' LIMIT 1");
         $row = $DBRESULT->fetchRow();
-        $row["meta_id"] = '';
+        $row["meta_id"] = null;
         # Loop on the number of MetaService we want to duplicate
         for ($i = 1; $i <= $nbrDup[$key]; $i++) {
             $val = null;
@@ -165,7 +165,7 @@ function multipleMetaServiceInDB($metas = array(), $nbrDup = array())
                     $DBRESULT = $pearDB->query("SELECT * FROM meta_service_relation WHERE meta_id = '" . $key . "'");
                     while ($metric = $DBRESULT->fetchRow()) {
                         $val = null;
-                        $metric["msr_id"] = '';
+                        $metric["msr_id"] = null;
                         foreach ($metric as $key2 => $value2) {
                             $key2 == "meta_id" ? $value2 = $maxId["MAX(meta_id)"] : null;
                             $val
@@ -206,7 +206,7 @@ function multipleMetricInDB($metrics = array(), $nbrDup = array())
         # Get all information about it
         $DBRESULT = $pearDB->query("SELECT * FROM meta_service_relation WHERE msr_id = '" . $key . "' LIMIT 1");
         $row = $DBRESULT->fetchRow();
-        $row["msr_id"] = '';
+        $row["msr_id"] = null;
         # Loop on the number of Metric we want to duplicate
         for ($i = 1; $i <= $nbrDup[$key]; $i++) {
             $val = null;

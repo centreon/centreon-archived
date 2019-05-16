@@ -114,7 +114,7 @@ function multipleCommandInDB($commands = array(), $nbrDup = array())
         $DBRESULT = $pearDB->query("SELECT * FROM `command` WHERE `command_id` = '" . intval($key) . "' LIMIT 1");
 
         $row = $DBRESULT->fetchRow();
-        $row["command_id"] = '';
+        $row["command_id"] = null;
 
         for ($i = 1; $i <= $nbrDup[$key]; $i++) {
             $val = null;
@@ -252,7 +252,9 @@ function insertCommand($ret = array())
             '" . $pearDB->escape($ret['enable_shell']) . "', 
             '" . $pearDB->escape($ret["command_example"]) . "', 
             '" . $ret["command_type"]["command_type"] . "', 
-            '" . $ret["graph_id"] . "', 
+            " . (isset($ret["graph_id"]) && !empty($ret["graph_id"])
+            ? "'" . $ret['graph_id'] . "'"
+            : "NULL") . ", 
             " . (isset($ret["connectors"]) && !empty($ret["connectors"])
             ? "'" . $ret['connectors'] . "'"
             : "NULL") . ", 

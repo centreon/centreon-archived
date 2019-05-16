@@ -146,7 +146,7 @@ function multipleHostGroupInDB($hostGroups = array(), $nbrDup = array())
     foreach ($hostGroups as $key => $value) {
         $DBRESULT = $pearDB->query("SELECT * FROM hostgroup WHERE hg_id = '" . $key . "' LIMIT 1");
         $row = $DBRESULT->fetch();
-        $row["hg_id"] = '';
+        $row["hg_id"] = null;
         for ($i = 1; $i <= $nbrDup[$key]; $i++) {
             $val = null;
             $rq = null;

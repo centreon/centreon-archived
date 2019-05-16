@@ -518,7 +518,7 @@ function multipleServiceInDB(
         // Get all information about it
         $DBRESULT = $pearDB->query("SELECT * FROM service WHERE service_id = '" . $key . "' LIMIT 1");
         $row = $DBRESULT->fetchRow();
-        $row["service_id"] = '';
+        $row["service_id"] = null;
 
         // Loop on the number of Service we want to duplicate
         for ($i = 1; $i <= $nbrDup[$key]; $i++) {

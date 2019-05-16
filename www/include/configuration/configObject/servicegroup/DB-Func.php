@@ -107,7 +107,7 @@ function multipleServiceGroupInDB($serviceGroups = array(), $nbrDup = array())
     foreach ($serviceGroups as $key => $value) {
         $DBRESULT = $pearDB->query("SELECT * FROM servicegroup WHERE sg_id = '" . $key . "' LIMIT 1");
         $row = $DBRESULT->fetchRow();
-        $row["sg_id"] = '';
+        $row["sg_id"] = null;
         for ($i = 1; $i <= $nbrDup[$key]; $i++) {
             $val = null;
             $rq = null;

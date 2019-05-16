@@ -162,7 +162,7 @@ function multipleResourceInDB($resourceIds = array(), $nbrDup = array())
         if (is_int($resourceId)) {
             $DBRESULT = $pearDB->query("SELECT * FROM cfg_resource WHERE resource_id = $resourceId LIMIT 1");
             $resourceConfigurations = $DBRESULT->fetchRow();
-            $resourceConfigurations["resource_id"] = '';
+            $resourceConfigurations["resource_id"] = null;
             for ($newIndex = 1; $newIndex <= $nbrDup[$resourceId]; $newIndex++) {
                 $val = null;
                 $resourceName = null;

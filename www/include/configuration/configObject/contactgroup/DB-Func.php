@@ -117,12 +117,14 @@ function multipleContactGroupInDB($contactGroups = array(), $nbrDup = array())
         $DBRESULT = $pearDB->query("SELECT * FROM `contactgroup` WHERE `cg_id` = '" . intval($key) . "' LIMIT 1");
 
         $row = $DBRESULT->fetchRow();
-        $row["cg_id"] = '';
+        $row["cg_id"] = null;
         for ($i = 1; $i <= $nbrDup[$key]; $i++) {
             $val = null;
             foreach ($row as $key2 => $value2) {
                 $key2 == "cg_name" ? ($cg_name = $value2 = $value2 . "_" . $i) : null;
-                $val ? $val .= ", '" . $value2 . "'" : $val .= "'" . $value2 . "'";
+                $val
+                    ? $val .= ($value2 != null ? (", '" . $value2 . "'") : ", NULL")
+                    : $val .= ($value2 != null ? ("'" . $value2 . "'") : "NULL");
                 if ($key2 != "cg_id") {
                     $fields[$key2] = $value2;
                 }

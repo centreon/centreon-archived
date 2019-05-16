@@ -352,7 +352,7 @@ function multipleHostInDB($hosts = array(), $nbrDup = array())
     foreach ($hosts as $key => $value) {
         $DBRESULT = $pearDB->query("SELECT * FROM host WHERE host_id = '" . intval($key) . "' LIMIT 1");
         $row = $DBRESULT->fetchRow();
-        $row["host_id"] = '';
+        $row["host_id"] = null;
         for ($i = 1; $i <= $nbrDup[$key]; $i++) {
             $val = null;
             foreach ($row as $key2 => $value2) {

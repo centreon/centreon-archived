@@ -253,7 +253,7 @@ function duplicateServer(array $server, array $nbrDup): void
             'SELECT * FROM `nagios_server` WHERE id = ' . (int) $serverId . ' LIMIT 1'
         );
         $rowServer = $result->fetchRow();
-        $rowServer["id"] = '';
+        $rowServer["id"] = null;
         $rowServer["ns_activate"] = '0';
         $rowServer["is_default"] = '0';
         $rowServer["localhost"] = '0';

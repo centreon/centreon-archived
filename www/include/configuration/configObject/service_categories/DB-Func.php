@@ -92,7 +92,7 @@ function multipleServiceCategorieInDB($sc = array(), $nbrDup = array())
     foreach ($sc as $key => $value) {
         $DBRESULT = $pearDB->query("SELECT * FROM `service_categories` WHERE `sc_id` = '" . $key . "' LIMIT 1");
         $row = $DBRESULT->fetchRow();
-        $row["sc_id"] = '';
+        $row["sc_id"] = null;
         for ($i = 1; $i <= $nbrDup[$key]; $i++) {
             $val = null;
             foreach ($row as $key2 => $value2) {

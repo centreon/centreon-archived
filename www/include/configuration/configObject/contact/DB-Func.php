@@ -228,7 +228,7 @@ function multipleContactInDB($contacts = array(), $nbrDup = array())
         $newContactIds[$key] = [];
         $DBRESULT = $pearDB->query("SELECT * FROM contact WHERE contact_id = '" . intval($key) . "' LIMIT 1");
         $row = $DBRESULT->fetch();
-        $row["contact_id"] = '';
+        $row["contact_id"] = null;
         for ($i = 1; $i <= $nbrDup[$key]; $i++) {
             $val = null;
             foreach ($row as $key2 => $value2) {

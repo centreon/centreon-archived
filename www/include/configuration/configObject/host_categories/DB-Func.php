@@ -144,7 +144,7 @@ function multipleHostCategoriesInDB($hostcategories = array(), $nbrDup = array()
     foreach ($hostcategories as $key => $value) {
         $DBRESULT = $pearDB->query("SELECT * FROM hostcategories WHERE hc_id = '" . $key . "' LIMIT 1");
         $row = $DBRESULT->fetchRow();
-        $row["hc_id"] = '';
+        $row["hc_id"] = null;
         for ($i = 1; $i <= $nbrDup[$key]; $i++) {
             $val = null;
             $rq = null;

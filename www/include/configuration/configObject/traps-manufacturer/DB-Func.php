@@ -75,7 +75,7 @@ function multipleMnftrInDB($mnftr = array(), $nbrDup = array())
         $query = "SELECT * FROM traps_vendor WHERE id = '" . htmlentities($key, ENT_QUOTES, "UTF-8") . "' LIMIT 1";
         $DBRESULT = $pearDB->query($query);
         $row = $DBRESULT->fetchRow();
-        $row["id"] = '';
+        $row["id"] = null;
         for ($i = 1; $i <= $nbrDup[$key]; $i++) {
             $val = null;
             foreach ($row as $key2 => $value2) {
