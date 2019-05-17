@@ -79,7 +79,7 @@ function enableLCAInDB($aclResId = null, $acls = array())
         $query = "UPDATE `acl_resources` SET acl_res_activate = '1', `changed` = '1' " .
             "WHERE `acl_res_id` = '" . $key . "'";
         $pearDB->query($query);
-        $query = "SELECT acl_res_name FROM `acl_resources` WHERE acl_res_id = '" . intval($key) . "' LIMIT 1";
+        $query = "SELECT acl_res_name FROM `acl_resources` WHERE acl_res_id = '" . (int)$key . "' LIMIT 1";
         $dbResult = $pearDB->query($query);
         $row = $dbResult->fetch();
         $centreon->CentreonLogAction->insertLog("resource access", $key, $row['acl_res_name'], "enable");
@@ -126,7 +126,7 @@ function deleteLCAInDB($acls = array())
     global $pearDB, $centreon;
 
     foreach ($acls as $key => $value) {
-        $query = "SELECT acl_res_name FROM `acl_resources` WHERE acl_res_id = '" . intval($key) . "' LIMIT 1";
+        $query = "SELECT acl_res_name FROM `acl_resources` WHERE acl_res_id = '" . (int)$key . "' LIMIT 1";
         $dbResult = $pearDB->query($query);
         $row = $dbResult->fetch();
         $query = "UPDATE `acl_groups` SET `acl_group_changed` = '1' " .

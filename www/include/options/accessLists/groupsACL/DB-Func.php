@@ -103,7 +103,7 @@ function enableGroupInDB($acl_group_id = null, $groups = array())
 
     foreach ($groups as $key => $value) {
         $pearDB->query("UPDATE acl_groups SET acl_group_activate = '1' WHERE acl_group_id = '" . $key . "'");
-        $query = "SELECT acl_group_name FROM `acl_groups` WHERE acl_group_id = '" . intval($key) . "' LIMIT 1";
+        $query = "SELECT acl_group_name FROM `acl_groups` WHERE acl_group_id = '" . (int)$key . "' LIMIT 1";
         $dbResult = $pearDB->query($query);
         $row = $dbResult->fetch();
         $centreon->CentreonLogAction->insertLog("access group", $key, $row['acl_group_name'], "enable");

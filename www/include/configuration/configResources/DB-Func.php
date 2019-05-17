@@ -53,7 +53,7 @@ function testExistence($name = null, $instanceId = null)
     $id = 0;
     $instanceIds = array();
     if (isset($form)) {
-        $id = (int) $form->getSubmitValue('resource_id');
+        $id = (int) $form->getSubmitValue('resource_id';
         $instanceIds = $form->getSubmitValue('instance_id');
         $instanceIds = filter_var_array(
             $instanceIds,
@@ -63,7 +63,7 @@ function testExistence($name = null, $instanceId = null)
             return true;
         }
     } elseif (!is_null($instanceId) && $instanceId) {
-        $instanceIds = array((int) $instanceId);
+        $instanceIds = array((int) $instanceId;
     }
     if (empty($instanceIds)) {
         return true;
@@ -203,8 +203,8 @@ function updateResourceInDB($resource_id = null)
     if (!$resource_id) {
         return;
     }
-    updateResource((int) $resource_id);
-    insertInstanceRelations((int) $resource_id);
+    updateResource((int) $resource_id;
+    insertInstanceRelations((int) $resource_id;
 }
 
 /**

@@ -105,7 +105,7 @@ function disableActionInDB($acl_action_id = null, $actions = array())
 
     foreach ($actions as $key => $value) {
         $pearDB->query("UPDATE acl_actions SET acl_action_activate = '0' WHERE acl_action_id = '" . $key . "'");
-        $query = "SELECT acl_action_name FROM `acl_actions` WHERE acl_action_id = '" . intval($key) . "' LIMIT 1";
+        $query = "SELECT acl_action_name FROM `acl_actions` WHERE acl_action_id = '" . (int)$key . "' LIMIT 1";
         $dbResult = $pearDB->query($query);
         $row = $dbResult->fetch();
         $centreon->CentreonLogAction->insertLog("action access", $key, $row['acl_action_name'], "disable");
@@ -122,7 +122,7 @@ function deleteActionInDB($actions = array())
     global $pearDB, $centreon;
 
     foreach ($actions as $key => $value) {
-        $query = "SELECT acl_action_name FROM `acl_actions` WHERE acl_action_id = '" . intval($key) . "' LIMIT 1";
+        $query = "SELECT acl_action_name FROM `acl_actions` WHERE acl_action_id = '" . (int)$key . "' LIMIT 1";
         $dbResult = $pearDB->query($query);
         $row = $dbResult->fetch();
         $pearDB->query("DELETE FROM acl_actions WHERE acl_action_id = '" . $key . "'");
