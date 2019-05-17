@@ -68,6 +68,7 @@ abstract class AbstractStep implements StepInterface
         $configuration = array(
             'address' => '',
             'port' => '',
+            'root_user' => 'root',
             'root_password' => '',
             'db_configuration' => 'centreon',
             'db_storage' => 'centreon_storage',
