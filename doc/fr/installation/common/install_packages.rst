@@ -123,7 +123,7 @@ Fuseau horaire PHP
 
 La timezone par défaut de PHP doit être configurée. Executer la commande suivante : ::
 
-    # echo "date.timezone = Europe/Paris" > /etc/opt/rh/rh-php71/php.d/php-timezone.ini
+    # echo "date.timezone = Europe/Paris" > /etc/opt/rh/rh-php72/php.d/php-timezone.ini
 
 .. note::
     Changez **Europe/Paris** par votre fuseau horaire. La liste des fuseaux horaires
@@ -131,7 +131,7 @@ La timezone par défaut de PHP doit être configurée. Executer la commande suiv
 
 Après avoir réalisé la modification, redémarrez le service PHP-FPM : ::
 
-    # systemctl restart rh-php71-php-fpm
+    # systemctl restart rh-php72-php-fpm
 
 Pare-feu
 --------
@@ -153,7 +153,7 @@ Lancer les commandes suivantes sur le serveur Central : ::
     # systemctl enable httpd24-httpd
     # systemctl enable snmpd
     # systemctl enable snmptrapd
-    # systemctl enable rh-php71-php-fpm
+    # systemctl enable rh-php72-php-fpm
     # systemctl enable centcore
     # systemctl enable centreontrapd
     # systemctl enable cbd
@@ -172,7 +172,7 @@ Terminer l'installation
 Avant de démarrer la configuration via l'interface web les commandes suivantes
 doivent être exécutées : ::
 
-    # systemctl start rh-php71-php-fpm
+    # systemctl start rh-php72-php-fpm
     # systemctl start httpd24-httpd
     # systemctl start mysqld
     # systemctl start cbd

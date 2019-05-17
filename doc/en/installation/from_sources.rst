@@ -40,12 +40,12 @@ You can now install the necessary prerequisites::
     $ yum update
     $ yum upgrade
     $ yum install httpd24-httpd gd fontconfig-devel libjpeg-devel libpng-devel gd-devel perl-GD perl-DateTime \
-        openssl-devel perl-DBD-MySQL mysql-server mysql-devel rh-php71-php rh-php71-php-mysql rh-php71-php-gd \
-        rh-php71-php-ldap rh-php71-php-xml rh-php71-php-mbstring rh-php71-php-snmp \
+        openssl-devel perl-DBD-MySQL mysql-server mysql-devel rh-php72-php rh-php72-php-mysql rh-php72-php-gd \
+        rh-php72-php-ldap rh-php72-php-xml rh-php72-php-mbstring rh-php72-php-snmp \
         perl-Config-IniFiles perl-DBI perl-DBD-MySQL rrdtool perl-rrdtool perl-Crypt-DES perl-Digest-SHA1 \
         perl-Digest-HMAC net-snmp-utils perl-Socket6 perl-IO-Socket-INET6 net-snmp net-snmp-libs \
         dmidecode lm_sensors perl-Net-SNMP net-snmp-perl fping cpp gcc gcc-c++ libstdc++ glib2-devel \
-        rh-php71-php-pear nagios-plugins
+        rh-php72-php-pear nagios-plugins
 
 Additional commands are necessary to configure the environment correctly: ::
 
@@ -64,7 +64,7 @@ Then execute::
 Debian Stretch / Ubuntu 18.04
 =============================
 
-Add the php 7.1 repository:
+Add the php 7.2 repository:
 For Debian Stretch: ::
 
       $ apt-get install apt-transport-https lsb-release ca-certificates
@@ -83,17 +83,17 @@ For Ubuntu 18.04:
 
 Install the following prerequisites::
 
-      $ apt-get install php7.1 php7.1-opcache libapache2-mod-php7.1 php7.1-mysql php7.1-curl php7.1-json \
-          php7.1-gd php7.1-mcrypt php7.1-intl php7.1-mbstring php7.1-xml php7.1-zip php7.1-fpm php7.1-readline \
-          php7.1-sqlite3 php-pear sudo tofrodos bsd-mailx lsb-release mariadb-server libconfig-inifiles-perl \
-          libcrypt-des-perl libdigest-hmac-perl libdigest-sha-perl libgd-perl php7.1-ldap php7.1-snmp php-db php-date
+      $ apt-get install php7.2 php7.2-opcache libapache2-mod-php7.2 php7.2-mysql php7.2-curl php7.2-json \
+          php7.2-gd php7.2-mcrypt php7.2-intl php7.2-mbstring php7.2-xml php7.2-zip php7.2-fpm php7.2-readline \
+          php7.2-sqlite3 php-pear sudo tofrodos bsd-mailx lsb-release mariadb-server libconfig-inifiles-perl \
+          libcrypt-des-perl libdigest-hmac-perl libdigest-sha-perl libgd-perl php7.2-ldap php7.2-snmp php-db php-date
 
 Activate the modules: ::
 
     $ a2enmod proxy_fcgi setenvif proxy rewrite
-    $ a2enconf php7.1-fpm
-    $ a2dismod php7.1
-    $ systemctl restart apache2 php7.1-fpm
+    $ a2enconf php7.2-fpm
+    $ a2dismod php7.2
+    $ systemctl restart apache2 php7.2-fpm
 
 Additional commands are necessary to configure the environment correctly: ::
 
@@ -477,7 +477,7 @@ PHP FPM configuration
     [y/n], default to [n]:
     > y
     Creating directory /var/lib/centroen/sessions              OK
-    Create 'etc/php/7.1/fpm/pool.d/centreon.conf'              OK
+    Create 'etc/php/7.2/fpm/pool.d/centreon.conf'              OK
     Configuring PHP FPM                                        OK
 
     Do you want to reload PHP FPM service ?
