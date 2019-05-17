@@ -1,8 +1,8 @@
 <?php
 
 /*
- * Copyright 2005-2015 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2019 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -36,10 +36,7 @@
 
 class CentreonAuth
 {
-    /*
-     * Declare Values
-     */
-
+    // Declare Values
     public $userInfos;
     protected $login;
     protected $password;
@@ -55,23 +52,17 @@ class CentreonAuth
     // Web UI or API
     protected $source;
 
-    /*
-     * Flags
-     */
+    // Flags
     public $passwdOk;
     protected $authType;
     protected $ldap_auto_import;
     protected $ldap_store_password;
     protected $default_page;
 
-    /*
-     * keep log class
-     */
+    // keep log class
     protected $CentreonLog;
 
-    /*
-     * Error Message
-     */
+    // Error Message
     protected $error;
 
     /**
@@ -113,13 +104,14 @@ class CentreonAuth
         $this->default_page = 1;
         $this->source = $source;
 
-        $query = "SELECT ar.ar_id, ari.ari_value, ari.ari_name
-                  FROM auth_ressource_info ari, auth_ressource ar
-                  WHERE ari_name IN ('ldap_auto_import', 'ldap_store_password')
-                  AND ari.ar_id = ar.ar_id
-                  AND ar.ar_enable = '1'";
-        $res = $pearDB->query($query);
-        while ($row = $res->fetchRow()) {
+        $res = $pearDB->query(
+            "SELECT ar.ar_id, ari.ari_value, ari.ari_name " .
+            "FROM auth_ressource_info ari, auth_ressource ar " .
+            "WHERE ari_name IN ('ldap_auto_import', 'ldap_store_password') " .
+            "AND ari.ar_id = ar.ar_id " .
+            "AND ar.ar_enable = '1'"
+        );
+        while ($row = $res->fetch()) {
             if ($row['ari_name'] == 'ldap_auto_import' && $row['ari_value']) {
                 $this->ldap_auto_import[$row['ar_id']] = $row['ari_value'];
             } elseif ($row['ari_name'] == 'ldap_store_password') {
@@ -137,7 +129,7 @@ class CentreonAuth
     protected function getLogFlag()
     {
         $res = $this->pearDB->query("SELECT value FROM options WHERE `key` = 'debug_auth'");
-        $data = $res->fetchRow();
+        $data = $res->fetch();
         if (isset($data["value"])) {
             return $data["value"];
         }
@@ -149,10 +141,10 @@ class CentreonAuth
      *
      * @param string $password
      * @param string $token
-     * @param boolean $autoimport
+     * @param boolean $autoImport
      * @return void
      */
-    protected function checkPassword($password, $token = "", $autoimport = false)
+    protected function checkPassword($password, $token = "", $autoImport = false)
     {
         if ((strlen($password) == 0 || $password === "") && $token === "") {
             $this->passwdOk = 0;
@@ -172,7 +164,7 @@ class CentreonAuth
             $query = "SELECT ar_id FROM auth_ressource WHERE ar_enable = '1'";
             $res = $this->pearDB->query($query);
             $authResources = array();
-            while ($row = $res->fetchRow()) {
+            while ($row = $res->fetch()) {
                 $index = $row['ar_id'];
                 if (isset($this->userInfos['ar_id']) && $this->userInfos['ar_id'] == $row['ar_id']) {
                     $index = 0;
@@ -181,7 +173,7 @@ class CentreonAuth
             }
 
             foreach ($authResources as $arId) {
-                if ($autoimport && !isset($this->ldap_auto_import[$arId])) {
+                if ($autoImport && !isset($this->ldap_auto_import[$arId])) {
                     break;
                 }
                 if ($this->passwdOk == 1) {
@@ -199,38 +191,49 @@ class CentreonAuth
                 if ($this->passwdOk == -1) {
                     $this->passwdOk = 0;
                     if (isset($this->userInfos["contact_passwd"])
-                        && $this->userInfos["contact_passwd"] === $this->myCrypt($password)) {
+                        && $this->userInfos["contact_passwd"] === $this->myCrypt($password)
+                    ) {
                         $this->passwdOk = 1;
                         if (isset($this->ldap_store_password[$arId]) && $this->ldap_store_password[$arId]) {
-                            $this->pearDB->query("UPDATE `contact`
-                            SET `contact_passwd` = '" . $this->myCrypt($this->password) . "'
-                            WHERE `contact_alias` = '" . $this->login . "' AND `contact_register` = '1'");
+                            $this->pearDB->query(
+                                "UPDATE `contact` " .
+                                "SET `contact_passwd` = '" . $this->myCrypt($this->password) . "'" .
+                                "WHERE `contact_alias` = '" . $this->login . "' AND `contact_register` = '1'"
+                            );
                         }
                     }
                 } elseif ($this->passwdOk == 1) {
                     if (isset($this->ldap_store_password[$arId]) && $this->ldap_store_password[$arId]) {
                         if (!isset($this->userInfos["contact_passwd"])) {
-                            $this->pearDB->query("UPDATE `contact`
-                                SET `contact_passwd` = '" . $this->myCrypt($this->password) . "'
-                                WHERE `contact_alias` = '" . $this->login . "' AND `contact_register` = '1'");
+                            $this->pearDB->query(
+                                "UPDATE `contact` " .
+                                "SET `contact_passwd` = '" . $this->myCrypt($this->password) . "'" .
+                                "WHERE `contact_alias` = '" . $this->login . "' AND `contact_register` = '1'"
+                            );
                         } elseif ($this->userInfos["contact_passwd"] != $this->myCrypt($this->password)) {
-                            $this->pearDB->query("UPDATE `contact`
-                                SET `contact_passwd` = '" . $this->myCrypt($this->password) . "'
-                                WHERE `contact_alias` = '" . $this->login . "' AND `contact_register` = '1'");
+                            $this->pearDB->query(
+                                "UPDATE `contact` " .
+                                "SET `contact_passwd` = '" . $this->myCrypt($this->password) . "'" .
+                                "WHERE `contact_alias` = '" . $this->login . "' AND `contact_register` = '1'"
+                            );
                         }
                     }
                 }
             }
         } elseif ($this->userInfos["contact_auth_type"] == ""
-            || $this->userInfos["contact_auth_type"] == "local" || $this->autologin) {
+            || $this->userInfos["contact_auth_type"] == "local"
+            || $this->autologin
+        ) {
             if ($this->autologin && $this->userInfos["contact_autologin_key"]
-                && $this->userInfos["contact_autologin_key"] === $token) {
+                && $this->userInfos["contact_autologin_key"] === $token
+            ) {
                 $this->passwdOk = 1;
             } elseif (!empty($password) && $this->userInfos["contact_passwd"] === $password && $this->autologin) {
                 $this->passwdOk = 1;
             } elseif (!empty($password)
                 && $this->userInfos["contact_passwd"] === $this->myCrypt($password)
-                && $this->autologin == 0) {
+                && $this->autologin == 0
+            ) {
                 $this->passwdOk = 1;
             } else {
                 $this->passwdOk = 0;
@@ -242,13 +245,17 @@ class CentreonAuth
          */
         if ($this->passwdOk == 2) {
             if ($this->autologin && $this->userInfos["contact_autologin_key"]
-                && $this->userInfos["contact_autologin_key"] === $token) {
+                && $this->userInfos["contact_autologin_key"] === $token
+            ) {
                 $this->passwdOk = 1;
             } elseif (!empty($password) && isset($this->userInfos["contact_passwd"])
-                && $this->userInfos["contact_passwd"] === $password && $this->autologin) {
+                && $this->userInfos["contact_passwd"] === $password && $this->autologin
+            ) {
                 $this->passwdOk = 1;
             } elseif (!empty($password) && isset($this->userInfos["contact_passwd"])
-                && $this->userInfos["contact_passwd"] === $this->myCrypt($password) && $this->autologin == 0) {
+                && $this->userInfos["contact_passwd"] === $this->myCrypt($password)
+                && $this->autologin == 0
+            ) {
                 $this->passwdOk = 1;
             } else {
                 $this->passwdOk = 0;
@@ -268,27 +275,34 @@ class CentreonAuth
     {
 
         if ($this->autologin == 0 || ($this->autologin && $token != "")) {
-            $DBRESULT = $this->pearDB->query("SELECT * FROM `contact`
-                WHERE `contact_alias` = '" . $this->pearDB->escape($username, true) . "'
-                    AND `contact_activate` = '1' AND `contact_register` = '1' LIMIT 1");
+            $dbResult = $this->pearDB->query(
+                "SELECT * FROM `contact` " .
+                "WHERE `contact_alias` = '" . $this->pearDB->escape($username, true) . "'" .
+                "AND `contact_activate` = '1' AND `contact_register` = '1' LIMIT 1"
+            );
         } else {
-            $DBRESULT = $this->pearDB->query("SELECT * FROM `contact`
-                WHERE MD5(contact_alias) = '" . $this->pearDB->escape($username, true) . "'
-                    AND `contact_activate` = '1' AND `contact_register` = '1' LIMIT 1");
+            $dbResult = $this->pearDB->query(
+                "SELECT * FROM `contact` " .
+                "WHERE MD5(contact_alias) = '" . $this->pearDB->escape($username, true) . "'" .
+                "AND `contact_activate` = '1' AND `contact_register` = '1' LIMIT 1"
+            );
         }
-        if ($DBRESULT->rowCount()) {
-            $this->userInfos = $DBRESULT->fetchRow();
+        if ($dbResult->rowCount()) {
+            $this->userInfos = $dbResult->fetch();
             if ($this->userInfos["default_page"]) {
-                $DBRESULT2 = $this->pearDB->query("SELECT topology_url_opt FROM topology WHERE topology_page = "
-                    . $this->userInfos["default_page"]);
-                if ($DBRESULT2->numRows()) {
-                    $data = $DBRESULT2->fetchRow();
+                $dbResult2 = $this->pearDB->query(
+                    "SELECT topology_url_opt FROM topology WHERE topology_page = "
+                    . $this->userInfos["default_page"]
+                );
+                if ($dbResult2->numRows()) {
+                    $data = $dbResult2->fetch();
                     $this->userInfos["default_page"] .= $data["topology_url_opt"];
                 }
             }
 
             if ($this->userInfos["contact_oreon"]
-                || ($this->userInfos["contact_oreon"] == 0 && $this->source == 'API')) {
+                || ($this->userInfos["contact_oreon"] == 0 && $this->source == 'API')
+            ) {
                 /*
                  * Check password matching
                  */
@@ -299,11 +313,13 @@ class CentreonAuth
                     $this->CentreonLog->setUID($this->userInfos["contact_id"]);
                     $this->CentreonLog->insertLog(
                         1,
-                        "[".$this->source."] Contact '" . $username . "' logged in - IP : " .
-                        $_SERVER["REMOTE_ADDR"]
+                        "[".$this->source."] Contact '" . $username . "' logged in - IP : " . $_SERVER["REMOTE_ADDR"]
                     );
                 } else {
-                    $this->CentreonLog->insertLog(1, "Contact '" . $username . "' doesn't match with password");
+                    $this->CentreonLog->insertLog(
+                        1,
+                        "Contact '" . $username . "' doesn't match with password"
+                    );
                     $this->error = _('Your credentials are incorrect.');
                 }
             } else {
@@ -325,25 +341,30 @@ class CentreonAuth
             /*
              * Reset userInfos with imported informations
              */
-            $DBRESULT = $this->pearDB->query(
-                "SELECT * FROM `contact`
-                    WHERE `contact_alias` = '" . $this->pearDB->escape($username, true) . "'
-                        AND `contact_activate` = '1' AND `contact_register` = '1' LIMIT 1"
+            $dbResult = $this->pearDB->query(
+                "SELECT * FROM `contact` " .
+                "WHERE `contact_alias` = '" . $this->pearDB->escape($username, true) . "'" .
+                "AND `contact_activate` = '1' AND `contact_register` = '1' LIMIT 1"
             );
-            if ($DBRESULT->rowCount()) {
-                $this->userInfos = $DBRESULT->fetchRow();
+            if ($dbResult->rowCount()) {
+                $this->userInfos = $dbResult->fetch();
                 if ($this->userInfos["default_page"]) {
-                    $DBRESULT2 = $this->pearDB->query("SELECT topology_url_opt FROM topology WHERE topology_page = "
-                        . $this->userInfos["default_page"]);
-                    if ($DBRESULT2->numRows()) {
-                        $data = $DBRESULT2->fetchRow();
+                    $dbResult2 = $this->pearDB->query(
+                        "SELECT topology_url_opt FROM topology WHERE topology_page = "
+                        . $this->userInfos["default_page"]
+                    );
+                    if ($dbResult2->numRows()) {
+                        $data = $dbResult2->fetch();
                         $this->userInfos["default_page"] .= $data["topology_url_opt"];
                     }
                 }
             }
         } else {
             if ($this->debug) {
-                $this->CentreonLog->insertLog(1, "[".$this->source."] No contact found with this login : '$username'");
+                $this->CentreonLog->insertLog(
+                    1,
+                    "[".$this->source."] No contact found with this login : '$username'"
+                );
             }
             $this->error = _('Your credentials are incorrect.');
         }

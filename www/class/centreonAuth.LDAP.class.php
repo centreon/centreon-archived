@@ -222,8 +222,9 @@ class CentreonAuthLDAP
             // Delete parenthesis
             $userDisplay = str_replace(array('(', ')'), '', $userDisplay);
             $userEmail = "'".$this->contactInfos['contact_email']."'";
-            if (isset($userInfos[$this->ldap->getAttrName('user', 'email')]) &&
-                trim($userInfos[$this->ldap->getAttrName('user', 'email')]) != '') {
+            if (isset($userInfos[$this->ldap->getAttrName('user', 'email')])
+                && trim($userInfos[$this->ldap->getAttrName('user', 'email')]) != ''
+            ) {
                 if (is_array($userInfos[$this->ldap->getAttrName('user', 'email')])) {
                     // Get the first if there are multiple entries
                     if ($userInfos[$this->ldap->getAttrName('user', 'email')][0]) {
@@ -234,8 +235,9 @@ class CentreonAuthLDAP
                 }
             }
             $userPager = "'".$this->contactInfos['contact_pager']."'";
-            if (isset($userInfos[$this->ldap->getAttrName('user', 'pager')]) &&
-                trim($userInfos[$this->ldap->getAttrName('user', 'pager')]) != '') {
+            if (isset($userInfos[$this->ldap->getAttrName('user', 'pager')])
+                && trim($userInfos[$this->ldap->getAttrName('user', 'pager')]) != ''
+            ) {
                 if (is_array($userInfos[$this->ldap->getAttrName('user', 'pager')])) {
                     // Get the first if there are multiple entries
                     if ($userInfos[$this->ldap->getAttrName('user', 'pager')][0]) {
@@ -254,7 +256,7 @@ class CentreonAuthLDAP
 					contact_name = '" . $this->pearDB->escape($userDisplay) . "',
 					contact_email = " . $userEmail . ",
 					contact_pager = " . $userPager . ",
-                    ar_id = ".$this->arId."
+                    ar_id = " . $this->arId . "
 					WHERE contact_id = " . $this->contactInfos['contact_id'];
 
                 try {
@@ -325,9 +327,10 @@ class CentreonAuthLDAP
 
                     // Insert the relation between the LDAP's contactgroups and the user
                     // Moving the prepare statement before the while loop for better performances
-                    $query3 = "INSERT INTO contactgroup_contact_relation (contactgroup_cg_id, contact_contact_id) " .
-                        "VALUES (:ldapCg, :contactId)";
-                    $stmt = $this->pearDB->prepare($query3);
+                    $stmt = $this->pearDB->prepare(
+                        "INSERT INTO contactgroup_contact_relation (contactgroup_cg_id, contact_contact_id) " .
+                        "VALUES (:ldapCg, :contactId)"
+                    );
                     while ($row2 = $res2->fetch()) {
                         $stmt->bindValue(':ldapCg', $row2['cg_id'], PDO::PARAM_INT);
                         $stmt->bindValue(':contactId', $this->contactInfos['contact_id'], PDO::PARAM_INT);
