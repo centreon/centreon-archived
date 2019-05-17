@@ -59,7 +59,7 @@ Le tableau suivant décrit les dépendances logicielles :
 +----------+------------------+
 | openssl  | >= 1.0.1k        |
 +----------+------------------+
-| PHP      | 7.1 & 7.2        |
+| PHP      | 7.2              |
 +----------+------------------+
 | Qt       | >= 4.7.4         |
 +----------+------------------+
@@ -233,7 +233,7 @@ Description des logiciels et utilisateurs liés :
 +=================+==================+=================+=======================+
 | Apache          | httpd24-httpd    | apache          | démarrage automatique |
 +-----------------+------------------+-----------------+-----------------------+
-| PHP-FPM         | rh-php71-php-fpm | apache          | démarrage automatique |
+| PHP-FPM         | rh-php72-php-fpm | apache          | démarrage automatique |
 +-----------------+------------------+-----------------+-----------------------+
 | MySQL (MariaDB) | mysqld (mysql)   | mysql           | démarrage automatique |
 +-----------------+------------------+-----------------+-----------------------+

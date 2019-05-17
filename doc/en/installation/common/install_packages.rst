@@ -121,7 +121,7 @@ Setting the PHP time zone
 
 You are required to set the PHP time zone. Run the command::
 
-    # echo "date.timezone = Europe/Paris" > /etc/opt/rh/rh-php71/php.d/php-timezone.ini
+    # echo "date.timezone = Europe/Paris" > /etc/opt/rh/rh-php72/php.d/php-timezone.ini
 
 .. note::
     Change **Europe/Paris** to your time zone. You can find the supported list
@@ -129,7 +129,7 @@ You are required to set the PHP time zone. Run the command::
 
 After saving the file, please do not forget to restart the PHP-FPM server::
 
-    # systemctl restart rh-php71-php-fpm
+    # systemctl restart rh-php72-php-fpm
 
 Configuring/disabling the firewall
 ----------------------------------
@@ -148,7 +148,7 @@ To make services start automatically during system bootup, run these commands on
     # systemctl enable httpd24-httpd
     # systemctl enable snmpd
     # systemctl enable snmptrapd
-    # systemctl enable rh-php71-php-fpm
+    # systemctl enable rh-php72-php-fpm
     # systemctl enable centcore
     # systemctl enable centreontrapd
     # systemctl enable cbd
@@ -166,7 +166,7 @@ Concluding the installation
 
 Before starting the web installation process, you will need to execute the following commands::
 
-    # systemctl start rh-php71-php-fpm
+    # systemctl start rh-php72-php-fpm
     # systemctl start httpd24-httpd
     # systemctl start mysqld
     # systemctl start cbd
