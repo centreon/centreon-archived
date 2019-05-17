@@ -162,7 +162,8 @@ class TopologyWebservice extends CentreonWebServiceAbstract
             $result = ($forActive) ? new ReactAclForActive($dbResult) : new ReactAcl($dbResult);
         } else {
             $status = true;
-            $result = new NavigationList($dbResult);
+            $navConfig = $this->getDi()[ServiceProvider::YML_CONFIG]['navigation'];
+            $result = new NavigationList($dbResult, $navConfig);
         }
 
         return new Response($result, $status);
