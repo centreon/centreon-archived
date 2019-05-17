@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2005-2018 Centreon
+ * Copyright 2005-2019 Centreon
  * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -45,28 +45,39 @@ function microtime_float2()
 
 /**
  * Return host tab after poller filter
+ *
+ * @param array $host
+ * @param integer $res_id
+ * @return array $host
  */
 function getFilteredPollers($host, $res_id)
 {
     global $pearDB, $hostCache;
 
-    $request = "SELECT COUNT(*) AS count FROM acl_resources_poller_relations WHERE acl_res_id = '" . $res_id . "'";
-    $DBRESULT = $pearDB->query($request);
-    $row = $DBRESULT->fetch();
+    $dbResult = $pearDB->prepare(
+        "SELECT COUNT(*) AS count FROM acl_resources_poller_relations WHERE acl_res_id = :resId"
+    );
+    $dbResult->bindValue(':resId', $res_id, \PDO::PARAM_INT);
+    $dbResult->execute();
+
+    $row = $dbResult->fetch();
     $isPollerFilter = $row['count'];
 
     $hostTmp = $host;
-    $request = "SELECT host_host_id " .
-            "FROM acl_resources_poller_relations, acl_resources, ns_host_relation " .
-            "WHERE acl_resources_poller_relations.acl_res_id = acl_resources.acl_res_id " .
-            "AND acl_resources.acl_res_id = '" . $res_id . "' " .
-            "AND ns_host_relation.nagios_server_id = acl_resources_poller_relations.poller_id " .
-            "AND acl_res_activate = '1'";
-    $DBRESULT = $pearDB->query($request);
+    $dbResult = $pearDB->prepare(
+        "SELECT host_host_id " .
+        "FROM acl_resources_poller_relations, acl_resources, ns_host_relation " .
+        "WHERE acl_resources_poller_relations.acl_res_id = acl_resources.acl_res_id " .
+        "AND acl_resources.acl_res_id = :resId " .
+        "AND ns_host_relation.nagios_server_id = acl_resources_poller_relations.poller_id " .
+        "AND acl_res_activate = '1'"
+    );
+    $dbResult->bindValue(':resId', $res_id, \PDO::PARAM_INT);
+    $dbResult->execute();
 
-    if ($DBRESULT->rowCount()) {
+    if ($dbResult->rowCount()) {
         $host = array();
-        while ($row = $DBRESULT->fetch()) {
+        while ($row = $dbResult->fetch()) {
             if (isset($hostTmp[$row['host_host_id']])) {
                 $host[$row['host_host_id']] = $hostCache[$row['host_host_id']];
             }
@@ -84,29 +95,33 @@ function getFilteredPollers($host, $res_id)
  * Return host tab after host categories filter.
  * Add a cache for filtered ACL rights
  * avoiding to recalculate it at each occurrence.
- * $host        array
- * $res_id      int
  *
+ * @param array $host
+ * @param integer $res_id
+ * @return array $filteredHosts
  */
 function getFilteredHostCategories($host, $res_id)
 {
     global $pearDB, $hostTemplateCache;
 
-    $request = "SELECT DISTINCT host_host_id " .
-            "FROM acl_resources_hc_relations, acl_res_group_relations, acl_resources, hostcategories_relation " .
-            "WHERE acl_resources_hc_relations.acl_res_id = acl_resources.acl_res_id " .
-            "AND acl_resources.acl_res_id = '" . $res_id . "' " .
-            "AND hostcategories_relation.hostcategories_hc_id = acl_resources_hc_relations.hc_id " .
-            "AND acl_res_activate = '1'";
-    $DBRESULT = $pearDB->query($request);
+    $dbResult = $pearDB->prepare(
+        "SELECT DISTINCT host_host_id FROM " .
+        "acl_resources_hc_relations, acl_res_group_relations, acl_resources, hostcategories_relation " .
+        "WHERE acl_resources_hc_relations.acl_res_id = acl_resources.acl_res_id " .
+        "AND acl_resources.acl_res_id = :resId " .
+        "AND hostcategories_relation.hostcategories_hc_id = acl_resources_hc_relations.hc_id " .
+        "AND acl_res_activate = '1'"
+    );
+    $dbResult->bindValue(':resId', $res_id, \PDO::PARAM_INT);
+    $dbResult->execute();
 
-    if (!$DBRESULT->rowCount()) {
+    if (!$dbResult->rowCount()) {
         return $host;
     }
 
     $treatedHosts = array();
     $linkedHosts = array();
-    while ($row = $DBRESULT->fetch()) {
+    while ($row = $dbResult->fetch()) {
         $linkedHosts[] = $row['host_host_id'];
     }
 
@@ -134,29 +149,41 @@ function getFilteredHostCategories($host, $res_id)
     return $filteredHosts;
 }
 
-/*
+/**
  * Return enable categories for this resource access
+ *
+ * @param integer $res_id
+ * @return array $tab_categories
  */
 function getAuthorizedCategories($res_id)
 {
     global $pearDB;
 
     $tab_categories = array();
-    $request = "SELECT sc_id " .
-            "FROM acl_resources_sc_relations, acl_resources " .
-            "WHERE acl_resources_sc_relations.acl_res_id = acl_resources.acl_res_id " .
-            "AND acl_resources.acl_res_id = '" . $res_id . "' " .
-            "AND acl_res_activate = '1'";
-    $DBRESULT = $pearDB->query($request);
-    while ($res = $DBRESULT->fetch()) {
+    $dbResult = $pearDB->prepare(
+        "SELECT sc_id FROM acl_resources_sc_relations, acl_resources " .
+        "WHERE acl_resources_sc_relations.acl_res_id = acl_resources.acl_res_id " .
+        "AND acl_resources.acl_res_id = :resId " .
+        "AND acl_res_activate = '1'"
+    );
+    $dbResult->bindValue(':resId', $res_id, \PDO::PARAM_INT);
+    $dbResult->execute();
+
+    while ($res = $dbResult->fetch()) {
         $tab_categories[$res["sc_id"]] = $res["sc_id"];
     }
-    $DBRESULT->closeCursor();
+    $dbResult->closeCursor();
     unset($res);
-    unset($DBRESULT);
+    unset($dbResult);
     return $tab_categories;
 }
 
+/**
+ * Get a service template list for categories
+ *
+ * @param integer $service_id
+ * @return array|void $tabCategory
+ */
 function getServiceTemplateCategoryList($service_id = null)
 {
     global $pearDB, $svcTplCache, $svcCatCache;
@@ -193,6 +220,14 @@ function getServiceTemplateCategoryList($service_id = null)
     }
 }
 
+/**
+ * Get ACLs for host from a servicegroup
+ *
+ * @param $pearDB
+ * @param integer $host_id
+ * @param integer $resId
+ * @return array|void $svc
+ */
 function getACLSGForHost($pearDB, $host_id, $resId)
 {
     global $svcCache, $sgCache;
@@ -229,9 +264,12 @@ function hasPollerFilter($res_id)
         return false;
     }
 
-    $query = 'SELECT COUNT(*) as c FROM acl_resources_poller_relations WHERE acl_res_id = ' . $res_id;
     try {
-        $res = $pearDB->query($query);
+        $res = $pearDB->prepare(
+            'SELECT COUNT(*) as c FROM acl_resources_poller_relations WHERE acl_res_id = :resId'
+        );
+        $res->bindValue(':resId', $res_id, \PDO::PARAM_INT);
+        $res->execute();
     } catch (\PDOException $e) {
         return false;
     }
@@ -256,9 +294,12 @@ function hasHostCategoryFilter($res_id)
         return false;
     }
 
-    $query = 'SELECT COUNT(*) as c FROM acl_resources_hc_relations WHERE acl_res_id = ' . $res_id;
     try {
-        $res = $pearDB->query($query);
+        $res = $pearDB->prepare(
+            'SELECT COUNT(*) as c FROM acl_resources_hc_relations WHERE acl_res_id = :resId'
+        );
+        $res->bindValue(':resId', $res_id, \PDO::PARAM_INT);
+        $res->execute();
     } catch (\PDOException $e) {
         return false;
     }
@@ -283,9 +324,12 @@ function hasServiceCategoryFilter($res_id)
         return false;
     }
 
-    $query = 'SELECT COUNT(*) as c FROM acl_resources_sc_relations WHERE acl_res_id = ' . $res_id;
     try {
-        $res = $pearDB->query($query);
+        $res = $pearDB->prepare(
+            'SELECT COUNT(*) as c FROM acl_resources_sc_relations WHERE acl_res_id = :resId'
+        );
+        $res->bindValue(':resId', $res_id, \PDO::PARAM_INT);
+        $res->execute();
     } catch (\PDOException $e) {
         return false;
     }
@@ -334,35 +378,44 @@ function hostIsAuthorized($host_id, $group_id)
 {
     global $pearDB;
 
-    $query = "SELECT rhr.host_host_id " .
-            "FROM acl_resources_host_relations rhr, acl_resources res, acl_res_group_relations rgr " .
-            "WHERE rhr.acl_res_id = res.acl_res_id " .
-            "AND res.acl_res_id = rgr.acl_res_id " .
-            "AND rgr.acl_group_id = '" . $group_id . "' " .
-            "AND rhr.host_host_id = '" . $host_id . "' " .
-            "AND res.acl_res_activate = '1'";
-    $DBRES = $pearDB->query($query);
-    if ($DBRES->rowCount()) {
+    $dbResult = $pearDB->prepare(
+        "SELECT rhr.host_host_id " .
+        "FROM acl_resources_host_relations rhr, acl_resources res, acl_res_group_relations rgr " .
+        "WHERE rhr.acl_res_id = res.acl_res_id " .
+        "AND res.acl_res_id = rgr.acl_res_id " .
+        "AND rgr.acl_group_id = :groupId " .
+        "AND rhr.host_host_id = :hostId " .
+        "AND res.acl_res_activate = '1'"
+    );
+    $dbResult->bindValue(':groupId', $group_id, \PDO::PARAM_INT);
+    $dbResult->bindValue(':hostId', $host_id, \PDO::PARAM_INT);
+    $dbResult->execute();
+
+    if ($dbResult->rowCount()) {
         return true;
     }
 
-    $query2 = "SELECT hgr.host_host_id FROM " .
-        "hostgroup_relation hgr, acl_resources_hg_relations rhgr, acl_resources res, acl_res_group_relations rgr " .
-        "WHERE rhgr.acl_res_id = res.acl_res_id " .
-        "AND res.acl_res_id = rgr.acl_res_id " .
-        "AND rgr.acl_group_id = '" . $group_id . "' " .
-        "AND hgr.hostgroup_hg_id = rhgr.hg_hg_id " .
-        "AND hgr.host_host_id = '" . $host_id . "' " .
-        "AND res.acl_res_activate = '1' " .
-        "AND hgr.host_host_id NOT IN (SELECT host_host_id FROM acl_resources_hostex_relations " .
-        "WHERE acl_res_id = rhgr.acl_res_id)";
-
     try {
-        $DBRES2 = $pearDB->query($query2);
+        $dbRes2 = $pearDB->prepare(
+            "SELECT hgr.host_host_id FROM " .
+            "hostgroup_relation hgr, acl_resources_hg_relations rhgr, acl_resources res, acl_res_group_relations rgr " .
+            "WHERE rhgr.acl_res_id = res.acl_res_id " .
+            "AND res.acl_res_id = rgr.acl_res_id " .
+            "AND rgr.acl_group_id = :groupId " .
+            "AND hgr.hostgroup_hg_id = rhgr.hg_hg_id " .
+            "AND hgr.host_host_id = :hostId " .
+            "AND res.acl_res_activate = '1' " .
+            "AND hgr.host_host_id NOT IN (SELECT host_host_id FROM acl_resources_hostex_relations " .
+            "WHERE acl_res_id = rhgr.acl_res_id)"
+        );
+        $dbRes2->bindValue(':groupId', $group_id, \PDO::PARAM_INT);
+        $dbRes2->bindValue(':hostId', $host_id, \PDO::PARAM_INT);
+        $dbRes2->execute();
+
     } catch (\PDOException $e) {
         print "DB Error : " . $e->getMessage() . "<br />";
     }
-    if ($DBRES2->rowCount()) {
+    if ($dbRes2->rowCount()) {
         return true;
     }
 

@@ -1,7 +1,7 @@
 <?php
 /*
- * Copyright 2005-2015 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2019 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  * 
  * This program is free software; you can redistribute it and/or modify it under 
@@ -42,9 +42,21 @@ $path = "./include/options/session/";
 require_once "./include/common/common-Func.php";
 require_once "./class/centreonMsg.class.php";
 
-if (isset($_GET["o"]) && $_GET["o"] == "k") {
-    $sid = $_GET['session'];
-    $pearDB->query("DELETE FROM session WHERE session_id = '" . $pearDB->escape($sid) . "'");
+$action = filter_var(
+    $_GET["o"] ?? null,
+    FILTER_SANITIZE_STRING
+);
+
+$userToKickSid = filter_var(
+    $_GET['session'] ?? null, // caution the sessionId to get, is the one of the user we want to logout
+    FILTER_SANITIZE_STRING
+);
+
+// o = k : when clicking on the kick user button
+if ($action === "k") {
+    $stmt = $pearDB->prepare("DELETE FROM session WHERE session_id = :userSessionId");
+    $stmt->bindValue(':userSessionId', $userToKickSid, \PDO::PARAM_STR);
+    $stmt->execute();
     $msg = new CentreonMsg();
     $msg->setTextStyle("bold");
     $msg->setText(_("User kicked"));
@@ -58,10 +70,11 @@ $tpl = new Smarty();
 $tpl = initSmartyTpl($path, $tpl);
 
 $session_data = array();
-$query = "SELECT session.*, contact_name, contact_admin FROM session, contact " .
-    "WHERE contact_id = user_id ORDER BY contact_name, contact_admin";
-$res = $pearDB->query($query);
-for ($cpt = 0; $r = $res->fetchRow(); $cpt++) {
+$res = $pearDB->query(
+    "SELECT session.*, contact_name, contact_admin FROM session, contact " .
+    "WHERE contact_id = user_id ORDER BY contact_name, contact_admin"
+);
+for ($cpt = 0; $r = $res->fetch(); $cpt++) {
     $session_data[$cpt] = array();
     if ($cpt % 2) {
         $session_data[$cpt]["class"] = "list_one";
@@ -75,19 +88,24 @@ for ($cpt = 0; $r = $res->fetchRow(); $cpt++) {
     $session_data[$cpt]["ip_address"] = $r["ip_address"];
     $session_data[$cpt]["last_reload"] = date("H:i:s", $r["last_reload"]);
 
-    $query = "SELECT topology_name, topology_page, topology_url_opt FROM topology WHERE topology_page = '" .
-        $r["current_page"] . "'";
-    $resCP = $pearDB->query($query);
-    $rCP = $resCP->fetchRow();
+    $resCP = $pearDB->prepare(
+        "SELECT topology_name, topology_page, topology_url_opt FROM topology " .
+        "WHERE topology_page = :topologyPage"
+    );
+    $resCP->bindValue(':topologyPage', $r["current_page"], \PDO::PARAM_INT);
+    $resCP->execute();
+    $rCP = $resCP->fetch();
 
+    // getting the actual users position in the IHM
     $session_data[$cpt]["current_page"] = $r["current_page"] . $rCP["topology_url_opt"];
     if ($rCP['topology_name'] != '') {
         $session_data[$cpt]["topology_name"] = _($rCP["topology_name"]);
     } else {
         $session_data[$cpt]["topology_name"] = $rCP["topology_name"];
     }
+    // adding the link to be able to kick the user
     if ($centreon->user->admin) {
-        $session_data[$cpt]["actions"] = "<a href='./main.php?p=$p&o=k&session=" . $r['session_id'] .
+        $session_data[$cpt]["actions"] = "<a href='./main.php?p=" . $p . "&o=k&session=" . $r['session_id'] .
             "'><img src='./img/icons/delete.png' border='0' alt='" . _("Kick User") .
             "' title='" . _("Kick User") . "'></a>";
     } else {
@@ -104,5 +122,4 @@ $tpl->assign("wi_user", _("Users"));
 $tpl->assign("wi_where", _("Position"));
 $tpl->assign("wi_last_req", _("Last request"));
 $tpl->assign("distant_location", _("IP Address"));
-
 $tpl->display("connected_user.ihtml");

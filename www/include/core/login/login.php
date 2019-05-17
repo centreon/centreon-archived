@@ -44,7 +44,7 @@ global $path;
  * Getting Centreon Version
  */
 $DBRESULT = $pearDB->query("SELECT `value` FROM `informations` WHERE `key` = 'version' LIMIT 1");
-$release = $DBRESULT->fetchRow();
+$release = $DBRESULT->fetch();
 
 /**
  * Defining Login Form
@@ -56,7 +56,7 @@ $submitLogin = $form->addElement('submit', 'submitLogin', _("Connect"), array('c
 
 $loginValidate = $form->validate();
 
-require_once(dirname(__FILE__) . "/processLogin.php");
+require_once(__DIR__ . "/processLogin.php");
 
 /**
  * Set login messages (errors)
