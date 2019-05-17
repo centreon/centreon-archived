@@ -245,13 +245,13 @@ function deleteImg($imageId)
 
     $mediadir = "./img/media/";
 
-    $DBRESULT = $pearDB->query(
+    $dbResult = $pearDB->query(
         "SELECT dir_alias, img_path "
         . "FROM view_img, view_img_dir, view_img_dir_relation "
         . "WHERE img_id = $imageId AND img_id = img_img_id "
         . "AND dir_dir_parent_id = dir_id"
     );
-    while ($imagePath = $DBRESULT->fetchRow()) {
+    while ($imagePath = $dbResult->fetch()) {
         $fullpath = $mediadir.$imagePath["dir_alias"]."/".$imagePath["img_path"];
         if (is_file($fullpath)) {
             unlink($fullpath);
@@ -259,7 +259,7 @@ function deleteImg($imageId)
         $pearDB->query("DELETE FROM view_img WHERE img_id = $imageId");
         $pearDB->query("DELETE FROM view_img_dir_relation WHERE img_img_id = $imageId");
     }
-    $DBRESULT->closeCursor();
+    $dbResult->closeCursor();
 }
 
 function updateImg($img_id, $HTMLfile, $dir_alias, $img_name, $img_comment)
@@ -453,12 +453,12 @@ function testDirectoryIsEmpty($dir_id)
     global $pearDB;
 
     $rq = "SELECT img_img_id FROM view_img_dir_relation WHERE dir_dir_parent_id = '".$dir_id."'";
-    $DBRESULT = $pearDB->query($rq);
+    $dbResult = $pearDB->query($rq);
     $empty = true;
-    if ($DBRESULT && $DBRESULT->rowCount() >= 1) {
+    if ($dbResult && $dbResult->rowCount() >= 1) {
         $empty = false;
     }
-    $DBRESULT->closeCursor();
+    $dbResult->closeCursor();
     return $empty;
 }
 
@@ -504,21 +504,21 @@ function deleteDirectory($directoryId)
     /*
      * Purge images of the directory
      */
-    $DBRESULT = $pearDB->query(
+    $dbResult = $pearDB->query(
         "SELECT img_img_id "
         . "FROM view_img_dir_relation "
         . "WHERE dir_dir_parent_id = $directoryId"
     );
-    while ($img = $DBRESULT->fetchRow()) {
+    while ($img = $dbResult->fetch()) {
         deleteImg($img["img_img_id"]);
     }
     /*
      * Delete directory
      */
-    $DBRESULT = $pearDB->query(
+    $dbResult = $pearDB->query(
         "SELECT dir_alias FROM view_img_dir WHERE dir_id = $directoryId"
     );
-    $dirAlias = $DBRESULT->fetchRow();
+    $dirAlias = $dbResult->fetch();
     $filenames = scandir($mediadir . $dirAlias["dir_alias"]);
     foreach ($filenames as $fileName) {
         if (is_file($mediadir . $dirAlias["dir_alias"] . "/" . $fileName)) {
@@ -527,7 +527,7 @@ function deleteDirectory($directoryId)
     }
     rmdir($mediadir.$dirAlias["dir_alias"]);
     if (!is_dir($mediadir.$dirAlias["dir_alias"])) {
-        $DBRESULT = $pearDB->query("DELETE FROM view_img_dir WHERE dir_id = $directoryId");
+        $dbResult = $pearDB->query("DELETE FROM view_img_dir WHERE dir_id = $directoryId");
     }
 }
 
@@ -540,8 +540,8 @@ function updateDirectory($dir_id, $dir_alias, $dir_comment = "")
     global $pearDB;
     $mediadir = "./img/media/";
     $rq = "SELECT dir_alias FROM view_img_dir WHERE dir_id = '".$dir_id."'";
-    $DBRESULT = $pearDB->query($rq);
-    $old_dir = $DBRESULT->fetchRow();
+    $dbResult = $pearDB->query($rq);
+    $old_dir = $dbResult->fetch();
     $dir_alias = sanitizePath($dir_alias);
     if (!is_dir($mediadir.$old_dir["dir_alias"])) {
         mkdir($mediadir.$dir_alias);
@@ -574,7 +574,7 @@ function getListDirectory($filter = null)
     $query .= "ORDER BY dir_name";
     $list_dir = array();
     $dbresult = $pearDB->query($query);
-    while ($row = $dbresult->fetchRow(PDO::FETCH_ASSOC)) {
+    while ($row = $dbresult->fetch(PDO::FETCH_ASSOC)) {
         $list_dir[$row['dir_id']] = CentreonUtils::escapeSecure(
             $row['dir_name'],
             CentreonUtils::ESCAPE_ALL_EXCEPT_LINK

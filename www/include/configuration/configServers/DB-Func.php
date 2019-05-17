@@ -75,7 +75,7 @@ function getAvailableSuffixIds(
 
     $notAvailableSuffixes = array();
 
-    while ($result = $results->fetchRow()) {
+    while ($result = $results->fetch()) {
         $suffix = (int)$result['suffix'];
         if (!in_array($suffix, $notAvailableSuffixes)) {
             $notAvailableSuffixes[] = $suffix;
@@ -114,12 +114,12 @@ function testExistence($name = null): bool
     }
 
     $query = "SELECT name, id FROM `nagios_server` WHERE `name` = '" . htmlentities($name, ENT_QUOTES, "UTF-8") . "'";
-    $DBRESULT = $pearDB->query($query);
-    $row = $DBRESULT->fetchRow();
+    $dbResult = $pearDB->query($query);
+    $row = $dbResult->fetch();
 
-    if ($DBRESULT->rowCount() >= 1 && $row["id"] == $id) {
+    if ($dbResult->rowCount() >= 1 && $row["id"] == $id) {
         return true;
-    } elseif ($DBRESULT->rowCount() >= 1 && $row["id"] != $id) {
+    } elseif ($dbResult->rowCount() >= 1 && $row["id"] != $id) {
         return false;
     } else {
         return true;
@@ -139,14 +139,14 @@ function enableServerInDB(int $id): void
     global $pearDB, $centreon;
 
     $dbResult = $pearDB->query("SELECT name FROM `nagios_server` WHERE `id` = " . $id . " LIMIT 1");
-    $row = $dbResult->fetchRow();
+    $row = $dbResult->fetch();
 
     $pearDB->query("UPDATE `nagios_server` SET `ns_activate` = '1' WHERE id = " . $id);
     $centreon->CentreonLogAction->insertLog("poller", $id, $row['name'], "enable");
 
     $query = 'SELECT MIN(`nagios_id`) AS idEngine FROM cfg_nagios WHERE `nagios_server_id` = ' . $id;
     $dbResult = $pearDB->query($query);
-    $idEngine = $dbResult->fetchRow();
+    $idEngine = $dbResult->fetch();
 
     if ($idEngine['idEngine']) {
         $pearDB->query(
@@ -171,7 +171,7 @@ function disableServerInDB(int $id): void
     global $pearDB, $centreon;
 
     $dbResult = $pearDB->query("SELECT name FROM `nagios_server` WHERE `id` = " . $id . " LIMIT 1");
-    $row = $dbResult->fetchRow();
+    $row = $dbResult->fetch();
 
     $pearDB->query("UPDATE `nagios_server` SET `ns_activate` = '0' WHERE id = " . $id);
 
@@ -202,7 +202,7 @@ function deleteServerInDB(array $serverIds): void
         $result = $pearDB->query(
             "SELECT name FROM `nagios_server` WHERE `id` = " . $serverId . " LIMIT 1"
         );
-        $row = $result->fetchRow();
+        $row = $result->fetch();
 
         $pearDB->query('DELETE FROM `nagios_server` WHERE id = ' . $serverId);
         $pearDBO->query(
@@ -252,7 +252,7 @@ function duplicateServer(array $server, array $nbrDup): void
         $result = $pearDB->query(
             'SELECT * FROM `nagios_server` WHERE id = ' . (int) $serverId . ' LIMIT 1'
         );
-        $rowServer = $result->fetchRow();
+        $rowServer = $result->fetch();
         $rowServer["id"] = null;
         $rowServer["ns_activate"] = '0';
         $rowServer["is_default"] = '0';
@@ -298,7 +298,7 @@ function duplicateServer(array $server, array $nbrDup): void
                 try {
                     $res = $pearDB->query($queryGetId);
                     if ($res->rowCount() > 0) {
-                        $row = $res->fetchRow();
+                        $row = $res->fetch();
                         $iId = $obj->insertServerInCfgNagios($serverId, $row['id'], $serverName);
 
                         if (isset($rowBks)) {
@@ -431,7 +431,7 @@ function insertServer(array $data): int
 
     $pearDB->query($rq);
     $result = $pearDB->query("SELECT MAX(id) as last_id FROM `nagios_server`");
-    $poller = $result->fetchRow();
+    $poller = $result->fetch();
     $result->closeCursor();
 
     if (isset($_REQUEST['pollercmd'])) {
@@ -471,7 +471,7 @@ function addUserRessource(int $serverId): bool
         return false;
     }
     $isInsert = array();
-    while ($resource = $res->fetchRow()) {
+    while ($resource = $res->fetch()) {
         if (!in_array($resource['resource_name'], $isInsert)) {
             $isInsert[] = $resource['resource_name'];
             $query = sprintf(

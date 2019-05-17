@@ -39,14 +39,14 @@ function testExistence($name = null)
 
     $query = "SELECT contact_name, contact_id FROM contact WHERE contact_name = '" .
         htmlentities($name, ENT_QUOTES, "UTF-8") . "'";
-    $DBRESULT = $pearDB->query($query);
-    $contact = $DBRESULT->fetchRow();
+    $dbResult = $pearDB->query($query);
+    $contact = $dbResult->fetch();
     /*
 	 * Modif case
 	 */
-    if ($DBRESULT->rowCount() >= 1 && $contact["contact_id"] == $centreon->user->get_id()) {
+    if ($dbResult->rowCount() >= 1 && $contact["contact_id"] == $centreon->user->get_id()) {
         return true;
-    } elseif ($DBRESULT->rowCount() >= 1 && $contact["contact_id"] != $centreon->user->get_id()) {
+    } elseif ($dbResult->rowCount() >= 1 && $contact["contact_id"] != $centreon->user->get_id()) {
         /*
 		 * Duplicate entry
 		 */
@@ -62,15 +62,15 @@ function testAliasExistence($alias = null)
 
     $query = "SELECT contact_alias, contact_id FROM contact " .
         "WHERE contact_alias = '" . htmlentities($alias, ENT_QUOTES, "UTF-8") . "'";
-    $DBRESULT = $pearDB->query($query);
-    $contact = $DBRESULT->fetchRow();
+    $dbResult = $pearDB->query($query);
+    $contact = $dbResult->fetch();
 
     /*
 	 * Modif case
 	 */
-    if ($DBRESULT->rowCount() >= 1 && $contact["contact_id"] == $centreon->user->get_id()) {
+    if ($dbResult->rowCount() >= 1 && $contact["contact_id"] == $centreon->user->get_id()) {
         return true;
-    } elseif ($DBRESULT->rowCount() >= 1 && $contact["contact_id"] != $centreon->user->get_id()) {
+    } elseif ($dbResult->rowCount() >= 1 && $contact["contact_id"] != $centreon->user->get_id()) {
         /*
 		 * Duplicate entry
 		 */
