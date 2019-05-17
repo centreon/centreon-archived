@@ -124,8 +124,6 @@ class TopologyRepository extends ServiceEntityRepository
     {
         $topologies = [];
 
-        // SELECT topology_name, topology_page, topology_url, topology_url_opt, topology_group, topology_order, topology_parent, is_react, readonly FROM topology WHERE topology_show = "1" AND topology_page IS NOT NULL ORDER BY topology_parent, topology_group, topology_order, topology_page;
-
         //base query
         $query = 'SELECT topology_id, topology_name, topology_page, topology_url, topology_url_opt, '
             . 'topology_group, topology_order, topology_parent, is_react, readonly '

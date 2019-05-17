@@ -47,13 +47,25 @@ class NavigationList implements JsonSerializable
     private $entities;
 
     /**
+     * Configurations from navigation.yml
+     * @var array
+     */
+    private $navConfig;
+
+    /**
      * Construct
      *
      * @param array
      */
-    public function __construct(array $entities)
+    public function __construct(array $entities, array $navConfig = [])
     {
+        $this->navConfig = $navConfig;
         $this->entities = $entities;
+    }
+
+    public function getNavConfig() : array
+    {
+        return $this->navConfig;
     }
 
     /**
@@ -74,66 +86,22 @@ class NavigationList implements JsonSerializable
 
     /**
      * Get navigation items color for page
-     * @todo: move this to be configurational value somewhere
      * @param int $pageId The page id
      * @return string color
      */
-    protected static function getColor($pageId)
+    protected function getColor($pageId)
     {
-        switch ($pageId) {
-            case '1':
-                $color = '2B9E93';
-                break;
-            case '2':
-                $color = '85B446';
-                break;
-            case '3':
-                $color = 'E4932C';
-                break;
-            case '5':
-                $color = '17387B';
-                break;
-            case '6':
-                $color = '319ED5';
-                break;
-            default:
-                $color = '319ED5';
-                break;
-        }
-
-        return $color;
+        return (!empty($this->getNavConfig()[$pageId]['color'])) ? $this->getNavConfig()[$pageId]['color'] : $this->getNavConfig()['default']['color'];
     }
 
     /**
      * Get navigation items icons per page
-     * @todo: move this to be configurational value somewhere
      * @param int $pageId The page id
      * @return string icon name
      */
-    protected static function getIcon($pageId)
+    protected function getIcon($pageId)
     {
-        switch ($pageId) {
-            case '1':
-                $icon = 'home';
-                break;
-            case '2':
-                $icon = 'monitoring';
-                break;
-            case '3':
-                $icon = 'reporting';
-                break;
-            case '5':
-                $icon = 'administration';
-                break;
-            case '6':
-                $icon = 'configuration';
-                break;
-            default:
-                $icon = '';
-                break;
-        }
-
-        return $icon;
+        return (!empty($this->getNavConfig()[$pageId]['icon'])) ? $this->getNavConfig()[$pageId]['icon'] : $this->getNavConfig()['default']['icon'];
     }
 
     /**
