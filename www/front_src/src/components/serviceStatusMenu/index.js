@@ -127,7 +127,7 @@ class ServiceStatusMenu extends Component {
                   >
                     <div onClick={this.toggle}>
                       <span><Translate value="All Services"/>:</span>
-                      <span className={styles["submenu-count"]}>{data.total}</span>
+                      <span className={styles["submenu-count"]}>{numeral(data.total).format()}</span>
                     </div>
                   </Link>
                 </li>
@@ -139,7 +139,7 @@ class ServiceStatusMenu extends Component {
                     <div onClick={this.toggle}>
                       <span className={classnames(styles["dot-colored"], styles["red"])}><Translate value="Critical services"/>:</span>
                       <span className={styles["submenu-count"]}>
-                        {numeral(data.critical.unhandled).format("0a")}/{numeral(data.critical.total).format("0a")}
+                        {numeral(data.critical.unhandled).format()}/{numeral(data.critical.total).format()}
                       </span>
                     </div>
                   </Link>
@@ -154,7 +154,7 @@ class ServiceStatusMenu extends Component {
                         <Translate value="Warning services"/>:
                       </span>
                       <span className={styles["submenu-count"]}>
-                        {numeral(data.warning.unhandled).format("0a")}/{numeral(data.warning.total).format("0a")}
+                        {numeral(data.warning.unhandled).format()}/{numeral(data.warning.total).format()}
                       </span>
                     </div>
                   </Link>
@@ -169,7 +169,7 @@ class ServiceStatusMenu extends Component {
                         <Translate value="Unknown services"/>:
                       </span>
                       <span className={styles["submenu-count"]}>
-                        {numeral(data.unknown.unhandled).format("0a")}/{numeral(data.unknown.total).format("0a")}
+                        {numeral(data.unknown.unhandled).format()}/{numeral(data.unknown.total).format()}
                       </span>
                     </div>
                   </Link>
@@ -183,7 +183,7 @@ class ServiceStatusMenu extends Component {
                       <span className={classnames(styles["dot-colored"], styles["green"])}>
                         <Translate value="Ok services"/>:
                       </span>
-                      <span className={styles["submenu-count"]}>{numeral(data.ok).format("0a")}</span>
+                      <span className={styles["submenu-count"]}>{numeral(data.ok).format()}</span>
                     </div>
                   </Link>
                 </li>
@@ -196,7 +196,7 @@ class ServiceStatusMenu extends Component {
                       <span className={classnames(styles["dot-colored"], styles["blue"])}>
                         <Translate value="Pending services"/>:
                       </span>
-                      <span className={styles["submenu-count"]}>{numeral(data.pending).format("0a")}</span>
+                      <span className={styles["submenu-count"]}>{numeral(data.pending).format()}</span>
                     </div>
                   </Link>
                 </li>

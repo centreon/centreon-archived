@@ -122,7 +122,7 @@ class HostMenu extends Component {
                   >
                     <div onClick={this.toggle}>
                       <Translate value="All"/>
-                      <span className={styles["submenu-count"]}>{numeral(data.total).format("0a")}</span>
+                      <span className={styles["submenu-count"]}>{numeral(data.total).format()}</span>
                     </div>
                   </Link>
                 </li>
@@ -134,7 +134,7 @@ class HostMenu extends Component {
                     <div onClick={this.toggle}>
                       <span className={classnames(styles["dot-colored"], styles["red"])}><Translate value="Down"/></span>
                       <span className={styles["submenu-count"]}>
-                        {numeral(data.down.unhandled).format("0a")}/{numeral(data.down.total).format("0a")}
+                        {numeral(data.down.unhandled).format()}/{numeral(data.down.total).format()}
                       </span>
                     </div>
                   </Link>
@@ -147,7 +147,7 @@ class HostMenu extends Component {
                     <div onClick={this.toggle}>
                       <span className={classnames(styles["dot-colored"], styles["gray"])}><Translate value="Unreachable"/></span>
                       <span className={styles["submenu-count"]}>
-                        {numeral(data.unreachable.unhandled).format("0a")}/{numeral(data.unreachable.total).format("0a")}
+                        {numeral(data.unreachable.unhandled).format()}/{numeral(data.unreachable.total).format()}
                       </span>
                     </div>
                   </Link>
@@ -159,7 +159,7 @@ class HostMenu extends Component {
                   >
                     <div onClick={this.toggle}>
                       <span className={classnames(styles["dot-colored"], styles["green"])}><Translate value="Up"/></span>
-                      <span className={styles["submenu-count"]}>{numeral(data.ok).format("0a")}</span>
+                      <span className={styles["submenu-count"]}>{numeral(data.ok).format()}</span>
                     </div>
                   </Link>
                 </li>
@@ -170,7 +170,7 @@ class HostMenu extends Component {
                   >
                     <div onClick={this.toggle}>
                       <span className={classnames(styles["dot-colored"], styles["blue"])}><Translate value="Pending"/></span>
-                      <span className={styles["submenu-count"]}>{numeral(data.pending).format("0a")}</span>
+                      <span className={styles["submenu-count"]}>{numeral(data.pending).format()}</span>
                     </div>
                   </Link>
                 </li>
