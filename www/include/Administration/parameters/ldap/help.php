@@ -59,3 +59,11 @@ $help['user_email'] = dgettext('help', 'The user email<br/>In Centreon : Email')
 $help['user_pager'] = dgettext('help', 'The user pager<br/>In Centreon : Pager');
 $help['group_name'] = dgettext('help', 'The group name<br/>In Centreon : Contact Group Name');
 $help['group_member'] = dgettext('help', 'The LDAP attribute for relation between group and user');
+$help['ldap_sync_interval'] = dgettext(
+    'help',
+    'The interval, in hours, between two synchronizations of LDAP groups with Centreon ACLs. By default 1 hour.'
+);
+$help['ldap_auto_sync'] = dgettext(
+    'help',
+    "If checked, a user LDAP groups synchronization will be performed on login to apply Centreon ACLs."
+);

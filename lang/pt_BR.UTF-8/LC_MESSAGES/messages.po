@@ -14346,3 +14346,19 @@ msgstr "Desativar o processamento de dados de Performance"
 
 msgid "Process Commands"
 msgstr "Processos de Comandos"
+
+#: centreon-web/www/include/Administration/parameters/ldap/form.php
+#msgid "Default contactgroup"
+#msgstr
+
+#: centreon-web/www/include/Administration/parameters/ldap/form.php
+#msgid "Synchronization Options"
+#msgstr
+
+#: centreon-web/www/include/Administration/parameters/ldap/form.php
+#msgid "LDAP synchronization interval (in hours)"
+#msgstr
+
+#: centreon-web/www/include/Administration/parameters/rrdtool/form.php
+#msgid "Enable LDAP synchronization on login"
+#msgstr

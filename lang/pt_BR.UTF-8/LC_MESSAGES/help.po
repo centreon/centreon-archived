@@ -6695,3 +6695,13 @@ msgstr ""
 #~ msgstr ""
 #~ "Selecione a instância do servidor Nagios para o qual esta configuração está "
 #~ "definida."
+
+#: /www/include/Administration/parameters/ldap/help.po
+msgid "The interval, in hours, between two synchronizations of LDAP groups with Centreon ACLs. By default 1 hour."
+msgstr ""
+""
+
+#: /www/include/Administration/parameters/ldap/help.po
+msgid "If checked, a user LDAP groups synchronization will be performed on login to apply Centreon ACLs."
+msgstr ""
+""

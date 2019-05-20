@@ -5525,6 +5525,22 @@ msgstr "Propriétés de RRDTool"
 msgid "RRDTool Configuration"
 msgstr "Configuration de RRDTool"
 
+#: centreon-web/www/include/Administration/parameters/ldap/form.php
+msgid "Synchronization Options"
+msgstr "Options de Synchronisation"
+
+#: centreon-web/www/include/Administration/parameters/ldap/form.php
+msgid "Default contactgroup"
+msgstr "Groupe de contacts par défaut"
+
+#: centreon-web/www/include/Administration/parameters/ldap/form.php
+msgid "LDAP synchronization interval (in hours)"
+msgstr "Intervale (en heures), entre les synchronisations LDAP"
+
+#: centreon-web/www/include/Administration/parameters/ldap/form.php
+msgid "Enable LDAP synchronization on login"
+msgstr "Synchronisation LDAP lors du login"
+
 #: centreon-web/www/include/Administration/configChangelog/viewLogs.php:127
 #: centreon-web/www/include/Administration/configChangelog/viewLogs.php:134
 msgid "Added"
