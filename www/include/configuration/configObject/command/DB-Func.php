@@ -101,7 +101,7 @@ function deleteCommandInDB($commands = array())
         $query = "SELECT command_name FROM `command` WHERE `command_id` = '" . (int)$key . "' LIMIT 1";
         $dbResult2 = $pearDB->query($query);
         $row = $dbResult2->fetch();
-        $pearDB->query("DELETE FROM `command` WHERE `command_id` = '" . (int)$key . "'";
+        $pearDB->query("DELETE FROM `command` WHERE `command_id` = '" . (int)$key . "'");
         $centreon->CentreonLogAction->insertLog("command", $key, $row['command_name'], "d");
     }
 }
@@ -111,7 +111,7 @@ function multipleCommandInDB($commands = array(), $nbrDup = array())
     global $pearDB, $centreon;
 
     foreach ($commands as $key => $value) {
-        $dbResult = $pearDB->query("SELECT * FROM `command` WHERE `command_id` = '" . (int)$key . "' LIMIT 1";
+        $dbResult = $pearDB->query("SELECT * FROM `command` WHERE `command_id` = '" . (int)$key . "' LIMIT 1");
 
         $row = $dbResult->fetch();
         $row["command_id"] = null;
@@ -334,7 +334,7 @@ function insertArgDesc($cmd_id, $ret = null)
         $ret = $form->getSubmitValues();
     }
 
-    $pearDB->query("DELETE FROM `command_arg_description` WHERE cmd_id = '" . (int)$cmd_id . "'";
+    $pearDB->query("DELETE FROM `command_arg_description` WHERE cmd_id = '" . (int)$cmd_id . "'");
     $query = "INSERT INTO `command_arg_description` (cmd_id, macro_name, macro_description) VALUES ";
     if (isset($ret['listOfArg']) && $ret['listOfArg']) {
         $tab1 = preg_split("/\\n/", $ret['listOfArg']);
