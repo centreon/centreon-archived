@@ -5,6 +5,7 @@ Centreon Web 2.8.28
 Bug Fixes
 =========
 
+* [ACL] Fix ACL CSV export for reporting - PR/#7518
 * [Monitoring] Remove double encoding of host name
 * [Monitoring] Fix hide password in command line - PR/#7079
 * [Charts] missing french translations in the graph page - PR/#7429
