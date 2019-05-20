@@ -35,7 +35,7 @@
 
 
 include "./include/common/autoNumLimit.php";
-require_once dirname(__FILE__) . "/listFunction.php";
+require_once __DIR__ . "/listFunction.php";
 
 $labels = array(
     'name' => _('Name'),
@@ -45,16 +45,17 @@ $labels = array(
     'disabled' => _('Disabled')
 );
 
+$searchLdap = filter_var(
+    $_POST['searchLdap'] ?? $_GET['searchLdap'] ?? null,
+    FILTER_SANITIZE_STRING
+);
+
 $ldapConf = new CentreonLdapAdmin($pearDB);
-$searchLdap = null;
-if (isset($_POST['searchLdap'])) {
-    $searchLdap = $_POST['searchLdap'];
-    $centreon->historySearch[$url] = $searchLdap;
-} elseif (isset($_GET['searchLdap'])) {
-    $searchLdap = $_GET['searchLdap'];
-    $centreon->historySearch[$url] = $searchLdap;
-} elseif (isset($centreon->historySearch[$url])) {
-    $searchLdap = $centreon->historySearch[$url];
+if (isset($_POST['searchLdap']) || isset($_GET['searchLdap'])) {
+    $centreon->historySearch = array();
+    $centreon->historySearch[$url]['searchLdap'] = $searchLdap;
+} else {
+    $searchLdap = $centreon->historySearch[$url]['searchLdap'] ?? null;
 }
 
 $list = $ldapConf->getLdapConfigurationList($searchLdap);
