@@ -523,6 +523,16 @@ msgid "The user name<br/>In Centreon : Full Name"
 msgstr ""
 "Attribut LDAP définissant le nom de l'utilisateur<br/>Par défaut : Full Name"
 
+#: /www/include/Administration/parameters/ldap/help.po
+msgid "The interval, in hours, between two synchronizations of LDAP groups with Centreon ACLs. By default 1 hour."
+msgstr "L’intervalle, en heures, entre deux synchronisations des groupes LDAP avec les ACL Centreon."
+"Par défaut 1 heure."
+
+#: /www/include/Administration/parameters/ldap/help.po
+msgid "If checked, a user LDAP groups synchronization will be performed on login to apply Centreon ACLs."
+msgstr "Si cette case est cochée, une synchronisation des groupes LDAP de l'utilisateur sera effectuée lors de "
+"la connexion pour appliquer les ACL Centreon."
+
 #: centreon-web/www/include/Administration/parameters/ldap/help.php:51
 msgid "The user firstname<br/>In Centreon : givenname"
 msgstr ""
