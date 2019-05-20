@@ -3476,8 +3476,8 @@ msgid ""
 "plugins could trigger a monitoring crash."
 msgstr ""
 "Cette option, seulement compatible avec une version de Centreon Engine >= 1.3, "
-"permet de désolidariser les processus fils du processus principale. Il est "
-"préférable de laisser cette option à la valeur \"Défaut\"."
+"permet de désolidariser les processus fils du processus principal. Il est "
+"préférable de laisser cette option à la valeur \"Défaut\" ('Oui')."
 
 #: centreon-web/www/include/configuration/configNagios/help.php:479
 msgid ""
