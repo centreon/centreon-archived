@@ -5,7 +5,7 @@ import { batchActions } from "redux-batched-actions";
 import { fetchAclRoutes } from "../../redux/actions/navigationActions";
 import { fetchExternalComponents } from "../../redux/actions/externalComponentsActions";
 import { reactRoutes } from "../../route-maps";
-import { dynamicImport } from "../../utils/dynamicImport";
+import { dynamicImport } from "../../helpers/dynamicImport";
 import centreonAxios from "../../axios";
 import NotAllowedPage from '../../route-components/notAllowedPage';
 import styles from "../../styles/partials/_content.scss";

@@ -6,12 +6,10 @@ const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 const safePostCssParser = require('postcss-safe-parser');
 const path = require('path');
 
-
 module.exports = {
   context: __dirname,
   entry: [
     "@babel/polyfill",
-    "./www/front_src/src/App.scss",
     "./www/front_src/src/index.js"
   ],
   output: {
@@ -145,34 +143,6 @@ module.exports = {
             limit: 10000,
             name: 'static/img/[name].[hash:8].[ext]',
           },
-        }]
-      },
-      {
-        test: require.resolve('react'),
-        use: [{
-          loader: 'expose-loader',
-          options: 'React'
-        }]
-      },
-      {
-        test: /ReactRouterDom\.js/,
-        use: [{
-          loader: 'expose-loader',
-          options: 'ReactRouterDom'
-        }]
-      },
-      {
-        test: /ReactRedux\.js$/,
-        use: [{
-          loader: 'expose-loader',
-          options: 'ReactRedux'
-        }]
-      },
-      {
-        test: /ReduxForm\.js/,
-        use: [{
-          loader: 'expose-loader',
-          options: 'ReduxForm'
         }]
       },
     ]

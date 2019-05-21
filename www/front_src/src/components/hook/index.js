@@ -1,7 +1,7 @@
 import React, { Component, Suspense } from "react";
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
-import { dynamicImport } from "../../utils/dynamicImport";
+import { dynamicImport } from "../../helpers/dynamicImport";
 import centreonAxios from "../../axios";
 
 // class to dynamically import component from modules
