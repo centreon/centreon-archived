@@ -339,7 +339,7 @@ class CentreonAuth
             $this->userInfos['contact_pager'] = '';
             $this->checkPassword($password, "", true);
             /*
-             * Reset userInfos with imported informations
+             * Reset userInfos with imported information
              */
             $dbResult = $this->pearDB->query(
                 "SELECT * FROM `contact` " .
