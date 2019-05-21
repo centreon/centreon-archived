@@ -117,7 +117,7 @@ $aclFrom = "";
 $aclCond = "";
 $distinct = "";
 if (!$centreon->user->admin) {
-    $aclFrom = ", $acldbname.centreon_acl acl ";
+    $aclFrom = ", $aclDbName.centreon_acl acl ";
     $aclCond = " AND sv.service_id = acl.service_id
                  AND acl.group_id IN (" . $acl->getAccessGroupsString() . ") ";
     $distinct = " DISTINCT ";
