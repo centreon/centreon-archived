@@ -317,8 +317,6 @@ $request .= " LIMIT " . ($num * $limit) . "," . $limit;
 $sqlError = false;
 try {
     $DBRESULT = $obj->DBC->query($request);
-    var_dump($request);
-    exit;
     $numRows = $obj->DBC->numberRows();
 } catch (\PDOException $e) {
     $sqlError = true;
