@@ -1,0 +1,54 @@
+services:
+    _defaults:
+        autowire: true      # Automatically injects dependencies in your services.
+        autoconfigure: true # Automatically registers your services as commands, event subscribers, et
+
+    Centreon\:
+        resource: '../../src/Centreon/*'
+        exclude: '../../src/Centreon/Tests'
+
+    # controllers are imported separately to make sure services can be injected
+    # as action arguments even if you don't extend any base controller class
+    Centreon\Application\Controller\:
+        resource: '../../src/Centreon/Application/Controller'
+        tags: ['controller.service_arguments']
+
+    # We defined all repositories
+    contact.repository:
+        class: Centreon\Infrastructure\Repository\ContactRepositoryRDB
+        arguments: ['@CentreonDatabaseConnection']
+
+    contact.provider:
+        class: Centreon\ContactProvider
+        arguments: ['@contact.repository']
+
+    Centreon\Application\Controller\LoginController:
+        arguments: ['@security.authentication.service']
+
+    security.authentication.repository:
+        class: Centreon\Infrastructure\Repository\AuthenticationRepositoryRDB
+        arguments: ['@CentreonDatabaseConnection']
+
+    security.authentication.service:
+        class: Centreon\Domain\Service\AuthenticationService
+        arguments:
+            $authenticationRepository: '@security.authentication.repository'
+            $contactRepository: '@contact.repository'
+
+    access_group.repository:
+        class: Centreon\Infrastructure\Repository\AccessGroupRepositoryRDB
+        arguments: ['@CentreonDatabaseConnection']
+
+    monitoring.service.repository:
+        class: Centreon\Infrastructure\Repository\RealTimeServiceRepositoryRDB
+        arguments: ['@CentreonStorageDatabaseConnection']
+
+    monitoring.service:
+        class: Centreon\Domain\Service\MonitoringService
+        arguments:
+            $realTimeServiceRepository: '@monitoring.service.repository'
+            $accessGroupRepository: '@access_group.repository'
+
+    monitoring.controller:
+        class: Centreon\Application\Controller\MonitoringController
+        arguments: ['@monitoring.service']

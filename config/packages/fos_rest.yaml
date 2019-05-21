@@ -1,0 +1,26 @@
+# Read the documentation: https://symfony.com/doc/master/bundles/FOSRestBundle/index.html
+fos_rest:
+    format_listener:
+        rules:
+          - { path: ^/, fallback_format: 'json', priorities: [ 'json' ] }
+    view:
+        view_response_listener: true
+        mime_types:
+            json: ['application/json', 'application/json;version=1.0']
+
+    routing_loader:
+        prefix_methods: true
+        include_format: false
+    param_fetcher_listener: true
+    exception:
+        enabled: true # All exceptions will be serialized to Json
+
+    versioning:
+        enabled: true
+        resolvers:
+            query: true # Query parameter: /users?version=v1
+            custom_header: true # X-Accept-Version header
+    body_converter:
+        enabled: true
+        validate: true
+        validation_errors_argument: violations

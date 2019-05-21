@@ -36,3 +36,12 @@ config/centreon.config.php
 coverage-report/
 centreon-build/
 secret
+
+###> symfony/framework-bundle ###
+/.env.local
+/.env.local.php
+/.env.*.local
+/public/bundles/
+/var/
+/vendor/
+###< symfony/framework-bundle ###

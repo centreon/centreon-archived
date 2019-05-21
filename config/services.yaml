@@ -1,0 +1,66 @@
+# This file is the entry point to configure your own services.
+# Files in the packages/ subdirectory configure your dependencies.
+
+# Put parameters here that don't need to change on each machine where the app is deployed
+# https://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
+
+imports:
+    resource: './Modules/*.yaml'
+
+parameters:
+    locale: en
+
+services:
+    # default configuration for services in *this* file
+    _defaults:
+        autowire: true      # Automatically injects dependencies in your services.
+        autoconfigure: true # Automatically registers your services as commands, event subscribers, et
+
+    CentreonDatabaseConnection:
+        class: Centreon\Infrastructure\DatabaseConnection
+        arguments:
+            $host: "%env(hostCentreon)%"
+            $port: "%env(port)%"
+            $basename: "%env(db)%"
+            $login: "%env(user)%"
+            $password: "%env(password)%"
+
+    CentreonStorageDatabaseConnection:
+        class: Centreon\Infrastructure\DatabaseConnection
+        arguments:
+            $host: "%env(hostCentreon)%"
+            $port: "%env(port)%"
+            $basename: "%env(dbcstg)%"
+            $login: "%env(user)%"
+            $password: "%env(password)%"
+
+
+#
+#    CentreonLegacy\:
+#        resource: '../src/CentreonLegacy/*'
+#        exclude: '../src/CentreonLegacy/Core/Install/Step'
+#
+#    CentreonModule\:
+#        resource: '../src/CentreonModule/*'
+#        exclude: '../src/CentreonModule/Tests'
+#
+#    CentreonRemote\:
+#        resource: '../src/CentreonRemote/*'
+#        exclude: '../src/CentreonRemote/Tests'
+
+
+
+    App\EventSubscriber\:
+        resource: '../src/EventSubscriber/*'
+
+    # mandatory to use 'view_response_listener: true' in the fost rest config failed
+    sensio_framework_extra.view.listener:
+        alias: Sensio\Bundle\FrameworkExtraBundle\EventListener\TemplateListener
+
+    # We defined the contact authenticator
+
+    security.provider.tokenapi:
+        class: App\Security\TokenAPIAuthenticator
+        arguments:
+            $authenticationRepository: '@security.authentication.repository'
+            $contactRepository: '@contact.repository'
