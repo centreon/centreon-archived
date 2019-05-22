@@ -152,11 +152,26 @@ switch ($o) {
         require_once($path . "listContactTemplateModel.php");
         break;
     case "m":
-        multipleContactInDB(isset($select) ? $select : array(), $dupNbr);
+        // We notify that we have made a duplicate
+        $eventDispatcher->notify(
+            $eventContext,
+            EventDispatcher::EVENT_DUPLICATE,
+            [
+                'contact_ids' => isset($select) ? $select : [],
+                'numbers' => $dupNbr
+            ]
+        );
+
         require_once($path . "listContactTemplateModel.php");
         break; // Duplicate n contacts
     case "d":
-        deleteContactInDB(isset($select) ? $select : array());
+        // We notify that we have made a delete
+        $eventDispatcher->notify(
+            $eventContext,
+            EventDispatcher::EVENT_DELETE,
+            ['contact_ids' => isset($select) ? $select : []]
+        );
+
         require_once($path . "listContactTemplateModel.php");
         break; // Delete n contacts
     default:
