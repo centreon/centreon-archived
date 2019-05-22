@@ -1,7 +1,7 @@
 <?php
 /*
- * Copyright 2005-2015 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2019 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -37,17 +37,15 @@ if (!isset($oreon)) {
     exit();
 }
 
-require_once dirname(__FILE__) . "/formFunction.php";
+require_once __DIR__ . "/formFunction.php";
 
-$DBRESULT = $pearDB->query("SELECT * FROM `options`");
-while ($opt = $DBRESULT->fetchRow()) {
+$dbResult = $pearDB->query("SELECT * FROM `options`");
+while ($opt = $dbResult->fetch()) {
     $gopt[$opt["key"]] = myDecode($opt["value"]);
 }
-$DBRESULT->closeCursor();
+$dbResult->closeCursor();
 
-/*
- * Check value for interval_length
- */
+// Check value for interval_length
 if (!isset($gopt["interval_length"])) {
     $gopt["interval_length"] = 60;
 }
@@ -57,33 +55,25 @@ if (!isset($gopt["nagios_path_img"])) {
 }
 
 
-$attrsText        = array("size"=>"40");
-$attrsText2        = array("size"=>"5");
+$attrsText = array("size"=>"40");
+$attrsText2 = array("size"=>"5");
 $attrsAdvSelect = null;
 
-/*
- * Form begin
- */
-$form = new HTML_QuickFormCustom('Form', 'post', "?p=".$p);
+// Form begin
+$form = new HTML_QuickFormCustom('Form', 'post', "?p=" . $p);
 $form->addElement('header', 'title', _("Modify General Options"));
 
-/*
- * Nagios information
- */
+// Nagios information
 $form->addElement('header', 'nagios', _("Monitoring Engine information"));
 $form->addElement('text', 'nagios_path_img', _("Images Directory"), $attrsText);
 $form->addElement('text', 'nagios_path_plugins', _("Plugins Directory"), $attrsText);
 $form->addElement('text', 'interval_length', _("Interval Length"), $attrsText2);
 $form->addElement('text', 'mailer_path_bin', _("Directory + Mailer Binary"), $attrsText);
 
-/*
- * Correlation engine
- */
+// Correlation engine
 $form->addElement('text', 'broker_correlator_script', _("Start script for broker daemon"), $attrsText);
 
-/*
- * Tactical Overview form
- */
+// Tactical Overview form
 $limitArray = array();
 for ($i = 10; $i <= 100; $i += 10) {
     $limitArray[$i] = $i;
@@ -92,27 +82,24 @@ $form->addElement('select', 'tactical_host_limit', _("Maximum number of hosts to
 $form->addElement('select', 'tactical_service_limit', _("Maximum number of services to show"), $limitArray);
 $form->addElement('text', 'tactical_refresh_interval', _("Page refresh interval"), $attrsText2);
 
-/*
- * Acknowledgement form
- */
+// Acknowledgement form
 $form->addElement('checkbox', 'monitoring_ack_sticky', _("Sticky"));
 $form->addElement('checkbox', 'monitoring_ack_notify', _("Notify"));
 $form->addElement('checkbox', 'monitoring_ack_persistent', _("Persistent"));
 $form->addElement('checkbox', 'monitoring_ack_active_checks', _("Force Active Checks"));
 $form->addElement('checkbox', 'monitoring_ack_svc', _("Acknowledge services attached to hosts"));
 
-/*
- * Downtime form
- */
+// Downtime form
 $form->addElement('checkbox', 'monitoring_dwt_fixed', _("Fixed"));
 $form->addElement('checkbox', 'monitoring_dwt_svc', _("Set downtimes on services attached to hosts"));
 $form->addElement('text', 'monitoring_dwt_duration', _("Duration"), $attrsText2);
 
-$scaleChoices = array("s" => _("seconds"),
-                      "m" => _("minutes"),
-                      "h" => _("hours"),
-                      "d" => _("days")
-                    );
+$scaleChoices = array(
+    "s" => _("seconds"),
+    "m" => _("minutes"),
+    "h" => _("hours"),
+    "d" => _("days")
+);
 $form->addElement('select', 'monitoring_dwt_duration_scale', _("Scale of time"), $scaleChoices);
 
 $form->addElement('hidden', 'monitoring_engine', "CENGINE");
@@ -133,8 +120,6 @@ $form->registerRule('is_writable_file', 'callback', 'is_writable_file');
 $form->registerRule('is_writable_file_if_exist', 'callback', 'is_writable_file_if_exist');
 $form->registerRule('isNum', 'callback', 'isNum');
 
-// $form->addRule('nagios_path_img', _("The directory isn't valid"), 'is_valid_path_images'); - Field is not added so no need for rule
-// $form->addRule('nagios_path', _("The directory isn't valid"), 'is_valid_path'); - Field is not added so no need for rule
 $form->addRule('nagios_path_plugins', _("The directory isn't valid"), 'is_valid_path');
 $form->addRule('tactical_refresh_interval', _("Refresh interval must be numeric"), 'numeric');
 
@@ -144,7 +129,7 @@ $form->addRule('interval_length', _("This value must be a numerical value."), 'i
  * Smarty template Init
  */
 $tpl = new Smarty();
-$tpl = initSmartyTpl($path."/engine", $tpl);
+$tpl = initSmartyTpl($path . "/engine", $tpl);
 
 if (!isset($gopt["monitoring_engine"])) {
     $gopt["monitoring_engine"] = "CENGINE";
@@ -153,26 +138,22 @@ if (!isset($gopt["monitoring_engine"])) {
 $form->setDefaults($gopt);
 
 $subC = $form->addElement('submit', 'submitC', _("Save"), array("class" => "btc bt_success"));
-$DBRESULT = $form->addElement('reset', 'reset', _("Reset"), array("class" => "btc bt_default"));
+$dbResult = $form->addElement('reset', 'reset', _("Reset"), array("class" => "btc bt_default"));
 
-    // prepare help texts
+// prepare help texts
 $helptext = "";
 include_once("help.php");
 foreach ($help as $key => $text) {
-    $helptext .= '<span style="display:none" id="help:'.$key.'">'.$text.'</span>'."\n";
+    $helptext .= '<span style="display:none" id="help:' . $key . '">' . $text . '</span>' . "\n";
 }
 $tpl->assign("helptext", $helptext);
 
 $valid = false;
 if ($form->validate()) {
-    /*
-     * Update in DB
-     */
+    // Update in DB
     updateNagiosConfigData($form->getSubmitValue("gopt_id"));
 
-    /*
-     * Update in Oreon Object
-     */
+    // Update in Centreon Object
     $oreon->initOptGen($pearDB);
 
     $o = null;
@@ -180,14 +161,14 @@ if ($form->validate()) {
     $form->freeze();
 }
 if (!$form->validate() && isset($_POST["gopt_id"])) {
-    print("<div class='msg' align='center'>"._("impossible to validate, one or more field is incorrect")."</div>");
+    print("<div class='msg' align='center'>" . _("impossible to validate, one or more field is incorrect") . "</div>");
 }
 
 $form->addElement(
     "button",
     "change",
     _("Modify"),
-    array("onClick"=>"javascript:window.location.href='?p=".$p."&o=nagios'", 'class' => 'btc bt_info')
+    array("onClick"=>"javascript:window.location.href='?p=" . $p . "&o=engine'", 'class' => 'btc bt_info')
 );
 
 /*
