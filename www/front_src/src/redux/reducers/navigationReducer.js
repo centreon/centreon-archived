@@ -6,7 +6,7 @@ const initialState = {
   menuItems: {},
   acl: {
     routes: [],
-    loaded: false,
+    loaded: false
   }
 };
 
@@ -16,29 +16,30 @@ const navigationReducer = (state = initialState, action) => {
       return {
         ...state,
         entries: action.entries,
-        menuItems: action.menuItems
-      }
+        menuItems: action.menuItems,
+        reactRoutes: action.reactRoutes
+      };
     case actions.SET_NAVIGATION_DATA:
       return {
         ...state,
         entries: action.navigationData
-      }
+      };
     case actions.FETCH_ACL_ROUTES_SUCCESS:
       return {
         ...state,
         acl: {
           routes: action.data,
-          loaded: true,
+          loaded: true
         }
-      }
+      };
     case actions.FETCH_ACL_ROUTES_FAILURE:
       return {
         ...state,
         acl: {
           routes: [],
-          loaded: true,
+          loaded: true
         }
-      }
+      };
     default:
       return state;
   }
