@@ -37,8 +37,17 @@ if (!isset($centreon)) {
     exit();
 }
 
-$path = "./include/options/session/";
+/**
+ * Kick a logged user
+ */
+const KICK_USER = "k";
 
+/**
+ *  Manually plan the synchronization of the chosen user on next login
+ */
+const SYNC_USER = "s";
+
+$path = "./include/options/session/";
 require_once "./include/common/common-Func.php";
 require_once "./class/centreonMsg.class.php";
 
@@ -47,20 +56,73 @@ $action = filter_var(
     FILTER_SANITIZE_STRING
 );
 
-$userToKickSid = filter_var(
-    $_GET['session'] ?? null, // caution the sessionId to get, is the one of the user we want to logout
+$selectedUserSid = filter_var(
+    $_GET['session'] ?? null, // the sessionId of the chosen user
     FILTER_SANITIZE_STRING
 );
 
-// o = k : when clicking on the kick user button
-if ($action === "k") {
-    $stmt = $pearDB->prepare("DELETE FROM session WHERE session_id = :userSessionId");
-    $stmt->bindValue(':userSessionId', $userToKickSid, \PDO::PARAM_STR);
-    $stmt->execute();
+$currentPage = filter_var(
+    $_GET['p'] ?? $_POST['p'] ?? 0,
+    FILTER_VALIDATE_INT
+);
+
+if ($selectedUserSid) {
     $msg = new CentreonMsg();
     $msg->setTextStyle("bold");
-    $msg->setText(_("User kicked"));
     $msg->setTimeOut("3");
+
+    switch ($action) {
+        case SYNC_USER:
+            require_once './class/centreonLog.class.php';
+
+            // finding chosen user's data
+            $resUser = $pearDB->prepare(
+                "SELECT `contact_id`, `contact_alias`, `ar_id` FROM contact 
+            LEFT JOIN session ON session.user_id = contact.contact_id 
+            WHERE session.session_id = :userSessionId"
+            );
+            try {
+                $resUser->bindValue(':userSessionId', $selectedUserSid, \PDO::PARAM_STR);
+                $resUser->execute();
+                $currentData = $resUser->fetch();
+
+                // checking if at least one LDAP configuration is still enable
+                $ldapEnable = $pearDB->query(
+                    "SELECT `value` FROM `options` WHERE `key` = 'ldap_auth_enable'"
+                );
+                $row = $ldapEnable->fetch();
+
+                if ($row['value'] !== '1') {
+                    // unable to plan the manual LDAP request of the contact
+                    $msg->setText(_("No LDAP configuration enabled !"));
+                    break;
+                } else {
+                    // requiring a manual synchronization at next login of the contact
+                    $stmtRequiredSync = $pearDB->prepare(
+                        'UPDATE contact
+                    SET `ldap_required_sync` = "1"
+                    WHERE contact_id = :contactId'
+                    );
+                    $stmtRequiredSync->bindValue(':contactId', $currentData['contact_id'], \PDO::PARAM_INT);
+                    $stmtRequiredSync->execute();
+                    $msg->setTextColor("green");
+                    $msg->setText(_("Resync data requested."));
+                    $msg->setText(_(" ")); // adding the space here, to avoid to forgot it in the translation files
+                    /*
+                     * as every SYNC_USER steps were successful, we need to logout the contact
+                     * to synchronize the data at next login or when the centAcl CRON is executed
+                     */
+                }
+            } catch (\PDOException $e) {
+                $msg->setText(_("Error : unable to read or update the contact data in the DB"));
+                break;
+            }
+        case KICK_USER:
+            $stmt = $pearDB->prepare("DELETE FROM session WHERE session_id = :userSessionId");
+            $stmt->bindValue(':userSessionId', $selectedUserSid, \PDO::PARAM_STR);
+            $stmt->execute();
+            $msg->setText(_("User kicked"));
+    }
 }
 
 /*
@@ -71,8 +133,9 @@ $tpl = initSmartyTpl($path, $tpl);
 
 $session_data = array();
 $res = $pearDB->query(
-    "SELECT session.*, contact_name, contact_admin FROM session, contact " .
-    "WHERE contact_id = user_id ORDER BY contact_name, contact_admin"
+    "SELECT session.*, contact_name, contact_admin, contact_auth_type, `ldap_last_sync`
+    FROM session, contact
+    WHERE contact_id = user_id ORDER BY contact_name, contact_admin"
 );
 for ($cpt = 0; $r = $res->fetch(); $cpt++) {
     $session_data[$cpt] = array();
@@ -81,12 +144,12 @@ for ($cpt = 0; $r = $res->fetch(); $cpt++) {
     } else {
         $session_data[$cpt]["class"] = "list_two";
     }
-
     $session_data[$cpt]["user_id"] = $r["user_id"];
     $session_data[$cpt]["user_alias"] = $r["contact_name"];
     $session_data[$cpt]["admin"] = $r["contact_admin"];
     $session_data[$cpt]["ip_address"] = $r["ip_address"];
-    $session_data[$cpt]["last_reload"] = date("H:i:s", $r["last_reload"]);
+    $session_data[$cpt]["last_reload"] = $r["last_reload"];
+    $session_data[$cpt]["ldapContact"] = $r['contact_auth_type'];
 
     $resCP = $pearDB->prepare(
         "SELECT topology_name, topology_page, topology_url_opt FROM topology " .
@@ -103,13 +166,43 @@ for ($cpt = 0; $r = $res->fetch(); $cpt++) {
     } else {
         $session_data[$cpt]["topology_name"] = $rCP["topology_name"];
     }
-    // adding the link to be able to kick the user
+
     if ($centreon->user->admin) {
+        // adding the link to be able to kick the user
         $session_data[$cpt]["actions"] = "<a href='./main.php?p=" . $p . "&o=k&session=" . $r['session_id'] .
             "'><img src='./img/icons/delete.png' border='0' alt='" . _("Kick User") .
             "' title='" . _("Kick User") . "'></a>";
+
+        // checking if the user account is linked to a LDAP
+        if ($r['contact_auth_type'] === "ldap") {
+            // adding the last synchronization time
+            if ((int)$r["ldap_last_sync"] > 0) {
+                $session_data[$cpt]["last_sync"] = (int)$r["ldap_last_sync"];
+            } elseif ($r["ldap_last_sync"] === '0' || $r["ldap_last_sync"] === NULL) {
+                $session_data[$cpt]["last_sync"] = "-";
+            }
+
+            // adding the link to be able to synchronize user's data from the LDAP
+            $session_data[$cpt]["synchronize"] = "<a href='./main.php?p=" . $p . "&o=s&session=" . $r['session_id'] .
+                "'><img src='./img/icons/refresh.png' border='0' alt='" . _("Sync LDAP") .
+                "' title='" . _("Sync LDAP") . "'></a>";
+        } else {
+            // hiding the synchronization option and details
+            $session_data[$cpt]["last_sync"] = "";
+            $session_data[$cpt]["synchronize"] = "";
+        }
+        // adding the column titles
+        $tpl->assign("wi_last_sync", _("Last LDAP sync"));
+        $tpl->assign("wi_syncLdap", _("Refresh LDAP"));
+        $tpl->assign("wi_logoutUser", _("Logout user"));
     } else {
+        // hiding the buttons
         $session_data[$cpt]["actions"] = "";
+        $session_data[$cpt]["synchronize"] = "";
+        // hiding the column titles
+        $tpl->assign("wi_last_sync", _(""));
+        $tpl->assign("wi_syncLdap", _(""));
+        $tpl->assign("wi_logoutUser", _(""));
     }
 }
 
@@ -121,5 +214,12 @@ $tpl->assign("session_data", $session_data);
 $tpl->assign("wi_user", _("Users"));
 $tpl->assign("wi_where", _("Position"));
 $tpl->assign("wi_last_req", _("Last request"));
+
 $tpl->assign("distant_location", _("IP Address"));
 $tpl->display("connected_user.ihtml");
+?>
+
+<script>
+    //formatting the tags containing a class isTimestamp
+    formatDateMoment();
+</script>
