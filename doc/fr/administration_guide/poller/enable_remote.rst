@@ -14,10 +14,10 @@ la commande suivante ::
 .. note::
     * Pour utiliser HTTPS, remplacez **@IP_CENTREON_CENTRAL** par
       **https://@IP_CENTREON_CENTRAL**.
-    * Pour utilsier un autre port TCP, remplacez **@IP_CENTREON_CENTRAL** par
+    * Pour utiliser un autre port TCP, remplacez **@IP_CENTREON_CENTRAL** par
       **@IP_CENTREON_CENTRAL:<port>**.
 
-Pour ne pas contrôler le sertificat SSL sur le serveur Centreon Central,
+Pour ne pas contrôler le certificat SSL sur le serveur Centreon Central,
 mettre à **1** l'option **<not check SSL CA on Central>**, sinon **0**.
 
 L'option **<HTTP method>** permet de définir la méthode de connexion pour
@@ -26,7 +26,7 @@ contacter le Remote Server : HTTP ou HTTPS.
 L'option **<TCP port>** permet de définir sur quel port TCP communiquer avec le
 Remote Server.
 
-Pour ne pas contrôler le sertificat SSL sur le Remote server, mettre à **1**
+Pour ne pas contrôler le certificat SSL sur le Remote server, mettre à **1**
 l'option **<not check SSL CA on Central>**, sinon **0**.
 
 Cette commande va activer le mode **Remote Server** ::
