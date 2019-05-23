@@ -2,12 +2,13 @@ import React, { Component } from "react";
 import { Sidebar } from "@centreon/react-components";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
-import { fetchNavigationData } from "../../redux/actions/navigationActions";
+import { fetchNavigationData, fetchReactRoutesData } from "../../redux/actions/navigationActions";
 
 class Navigation extends Component {
   componentDidMount = () => {
-    const { fetchNavigationData } = this.props;
+    const { fetchNavigationData, fetchReactRoutesData } = this.props;
     fetchNavigationData();
+    fetchReactRoutesData();
   };
 
   goToPage = route => {
@@ -44,6 +45,9 @@ const mapDispatchToProps = dispatch => {
   return {
     fetchNavigationData: () => {
       dispatch(fetchNavigationData());
+    },
+    fetchReactRoutesData: () => {
+      dispatch(fetchReactRoutesData());
     },
     updateTooltip: () => {
       dispatch(updateTooltip());
