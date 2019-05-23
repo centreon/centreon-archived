@@ -116,7 +116,21 @@ $valid = false;
 if ($form->validate()) {
     if (isset($_POST["contact_select"]["select"])) {
         if ($form->getSubmitValue("submitA")) {
-            insertLdapContactInDB($_POST["contact_select"]);
+            // extracting the chosen contacts Id from the POST
+            $selectedUsers = $_POST["contact_select"]['select'];
+            unset($_POST["contact_select"]['select']);
+
+            // removing the useless data sent
+            $arrayToReturn = array();
+            foreach ($_POST["contact_select"] as $key => $subKey) {
+                $arrayToKeep[$key] = array_intersect_key($_POST["contact_select"][$key], $selectedUsers);
+                $arrayToReturn += $arrayToKeep;
+            }
+
+            // restoring the $_POST['select'] array in the filtered results, in case we need it
+            $arrayToReturn += $selectedUsers;
+
+            insertLdapContactInDB($arrayToReturn);
         }
     }
     $form->freeze();
