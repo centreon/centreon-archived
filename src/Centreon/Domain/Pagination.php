@@ -11,7 +11,7 @@
  *
 */
 
-namespace Centreon\Domain\Entity;
+namespace Centreon\Domain;
 
 /**
  * This class can be used to add a paging system.
@@ -42,6 +42,9 @@ class Pagination
     const OPERATOR_GREATER_THAN = '$gt';
     const OPERATOR_GREATER_THAN_OR_EQUAL = '$ge';
     const OPERATOR_LIKE = '$lk';
+    const OPERATOR_NOT_LIKE = '$nk';
+    const OPERATOR_IN = '$in';
+    const OPERATOR_NOT_IN = '$ni';
 
     const AGREGATE_OPERATOR_OR = '$or';
     const AGREGATE_OPERATOR_AND = '$and';
@@ -84,25 +87,21 @@ class Pagination
      * Create an instance of the Pagination class and configure it with the
      * data found in the $ _GET parameters.
      * order_by=desc&limit=10&page=1&sort_by=item_name&search={"item_name": "my_item"}
-     *
-     * @return Pagination
      */
-    public static function fromParameters(array $parameters): self
+    public function init(array $parameters)
     {
-        $pagination = new Pagination();
-
         $limit = $parameters[self::NAME_FOR_LIMIT] ?? self::DEFAULT_LIMIT;
-        $pagination->setLimit((int)$limit);
+        $this->setLimit((int)$limit);
 
         $page = $parameters[self::NAME_FOR_PAGE] ?? self::DEFAULT_PAGE;
-        $pagination->setPage((int)$page);
+        $this->setPage((int)$page);
 
         if (isset($parameters[self::NAME_FOR_ORDER])) {
             $order = in_array(
                 strtoupper($parameters[self::NAME_FOR_ORDER]),
                 [self::DEFAULT_ORDER_ASC, self::DEFAULT_ORDER_DESC]
             ) ? strtoupper($parameters[self::NAME_FOR_ORDER]) : self::DEFAULT_ORDER;
-            $pagination->setOrder($order);
+            $this->setOrder($order);
         }
 
         if (isset($parameters[self::NAME_FOR_SORT])) {
@@ -112,40 +111,13 @@ class Pagination
                 $sortFound,
                 PREG_OFFSET_CAPTURE
             ) ? $parameters[self::NAME_FOR_SORT] : null;
-            $pagination->setSort($sort);
+            $this->setSort($sort);
         }
 
         $search = json_decode($parameters[self::NAME_FOR_SEARCH] ?? '{}');
         if (!empty($search)) {
-            $pagination->setSearch((array)$search);
+            $this->setSearch((array)$search);
         }
-        return $pagination;
-    }
-
-    /**
-     * Separate if possible the name of the column and the search operator.
-     *
-     * Usage:
-     * <code>
-     * list($columnName, $searchOperator) = $this->>separateKeyAndOperator($parameter);
-     * </code>
-     *
-     * @param string $parameter String representing the column name and search operator
-     * @return array Return a array containing the column name and search operator separate
-     * in two array value.
-     */
-    private function separateKeyAndOperator(string $parameter): array
-    {
-        $defaultOperator = self::OPERATOR_EQUAL;
-        if (strpos($parameter, ',') !== false) {
-            list($parameter, $operator) = explode(',', $parameter);
-            if (is_numeric($operator)) {
-                return array($parameter, (int)$operator);
-            } else {
-                return array($parameter, $defaultOperator);
-            }
-        }
-        return array($parameter, $defaultOperator);
     }
 
     /**
@@ -159,7 +131,7 @@ class Pagination
      * @param array $concordanceArray Concordance table between the search column
      * and the real column name in the database. ['id' => 'my_table_id', ...]
      * @return array Array containing the query and data to bind.
-     * @throws \RestInternalServerErrorException
+     * @throws \Exception
      */
     public function createQuery($concordanceArray = []): array
     {
@@ -196,7 +168,7 @@ class Pagination
      * @param array $search Array containing search parameters
      * @param string|null $agregateOperator Agregate operator
      * @return string Return the processed database query
-     * @throws \RestInternalServerErrorException
+     * @throws \Exception
      */
     private function createDatabaseQuery(array $search, string $agregateOperator = null): string
     {
@@ -204,12 +176,14 @@ class Pagination
         foreach ($search as $key => $searchRequests) {
             if ($this->isAgregateOperator($key)) {
                 if (is_array($searchRequests)) {
+                    // Recursive call until to read key/value data
                     $databaseSubQuery = $this->createDatabaseQuery($searchRequests, $key);
                 }
             } else {
-                if (is_int($key) && is_object($searchRequests)) {
+                if (is_int($key) && (is_object($searchRequests) || is_array($searchRequests))) {
                     // It's a list of object to process
                     $searchRequests = (array) $searchRequests;
+                    // Recursive call until to read key/value data
                     $databaseSubQuery = $this->createDatabaseQuery($searchRequests, $agregateOperator);
                 } elseif (!is_int($key)) {
                     // It's a pair on key/value to translate into a database query
@@ -239,7 +213,7 @@ class Pagination
     /**
      * @param string $agregateOperator
      * @return string
-     * @throws \RestInternalServerErrorException
+     * @throws \Exception
      */
     private function translateAgregateOperator(string $agregateOperator): string
     {
@@ -248,7 +222,7 @@ class Pagination
         } elseif ($agregateOperator === self::AGREGATE_OPERATOR_OR) {
             return 'OR';
         }
-        throw new \RestInternalServerErrorException('Bad search operator');
+        throw new \Exception('Bad search operator');
     }
 
     /**
@@ -263,23 +237,54 @@ class Pagination
     ): string {
         if (is_array($valueOrArray)) {
             $searchOperator = key($valueOrArray);
-            $value = $valueOrArray[$searchOperator];
+            $mixedValue = $valueOrArray[$searchOperator];
         } else {
             $searchOperator = self::DEFAULT_SEARCH_OPERATOR;
-            $value = $valueOrArray;
+            $mixedValue = $valueOrArray;
         }
 
-        $type = \PDO::PARAM_STR;
-        if (is_int($value)) {
-            $type = \PDO::PARAM_INT;
-        } elseif (is_bool($value)) {
-            $type = \PDO::PARAM_BOOL;
-        } elseif ($searchOperator === self::OPERATOR_LIKE) {
-            $value = '%' . $value . '%';
+        if ($searchOperator === self::OPERATOR_IN || $searchOperator === self::OPERATOR_NOT_IN) {
+            if (is_array($mixedValue)) {
+                $bindKey = '(';
+                foreach ($mixedValue as $index => $newValue) {
+                    $type = \PDO::PARAM_STR;
+                    if (is_int($newValue)) {
+                        $type = \PDO::PARAM_INT;
+                    } elseif (is_bool($newValue)) {
+                        $type = \PDO::PARAM_BOOL;
+                    }
+                    $currentBindKey = ':value_' . (count($this->databaseRequestValue) + 1);
+                    $this->databaseRequestValue[$currentBindKey] = [$type => $newValue];
+                    if ($index > 0) {
+                        $bindKey .= ',';
+                    }
+                    $bindKey .= $currentBindKey;
+                }
+                $bindKey .= ')';
+            } else {
+                $type = \PDO::PARAM_STR;
+                if (is_int($mixedValue)) {
+                    $type = \PDO::PARAM_INT;
+                } elseif (is_bool($mixedValue)) {
+                    $type = \PDO::PARAM_BOOL;
+                }
+                $bindKey = '(:value_' . (count($this->databaseRequestValue) + 1) . ')';
+                $this->databaseRequestValue[$bindKey] = [$type => $mixedValue];
+            }
+        } elseif ($searchOperator === self::OPERATOR_LIKE || $searchOperator === self::OPERATOR_NOT_LIKE) {
+            $type = \PDO::PARAM_STR;
+            $bindKey = ':value_' . (count($this->databaseRequestValue) + 1);
+            $this->databaseRequestValue[$bindKey] = [$type => $mixedValue];
+        } else {
+            $type = \PDO::PARAM_STR;
+            if (is_int($mixedValue)) {
+                $type = \PDO::PARAM_INT;
+            } elseif (is_bool($mixedValue)) {
+                $type = \PDO::PARAM_BOOL;
+            }
+            $bindKey = ':value_' . (count($this->databaseRequestValue) + 1);
+            $this->databaseRequestValue[$bindKey] = [$type => $mixedValue];
         }
-
-        $bindKey = ':value_' . (count($this->databaseRequestValue) + 1);
-        $this->databaseRequestValue[$bindKey] = [$type => $value];
 
         return sprintf(
             '%s %s %s',
@@ -296,6 +301,8 @@ class Pagination
         switch ($operator) {
             case self::OPERATOR_LIKE:
                 return 'LIKE';
+            case self::OPERATOR_NOT_LIKE:
+                return 'NOT LIKE';
             case self::OPERATOR_LESS_THAN:
                 return '<';
             case self::OPERATOR_LESS_THAN_OR_EQUAL:
@@ -306,34 +313,10 @@ class Pagination
                 return '>=';
             case self::OPERATOR_NOT_EQUAL:
                 return '!=';
-            case self::OPERATOR_EQUAL:
-            default:
-                return '=';
-        }
-    }
-
-    /**
-     * Retrieve the query operator of database based on the search operator.
-     *
-     * @param int $searchOperator Search operator
-     * @return string Query operator to bind the column name and its value.
-     * ( =, !=, <, <=, >, >=, LIKE)
-     */
-    private function getQueryOperator(int $searchOperator): string
-    {
-        switch ($searchOperator) {
-            case self::OPERATOR_NOT_EQUAL:
-                return '!=';
-            case self::OPERATOR_LESS_THAN:
-                return '<';
-            case self::OPERATOR_LESS_THAN_OR_EQUAL:
-                return '<=';
-            case self::OPERATOR_GREATER_THAN:
-                return '>';
-            case self::OPERATOR_GREATER_THAN_OR_EQUAL:
-                return '>=';
-            case self::OPERATOR_LIKE:
-                return 'LIKE';
+            case self::OPERATOR_IN:
+                return 'IN';
+            case self::OPERATOR_NOT_IN:
+                return 'NOT IN';
             case self::OPERATOR_EQUAL:
             default:
                 return '=';
@@ -459,10 +442,7 @@ class Pagination
         return [
             self::NAME_FOR_PAGE => $this->page,
             self::NAME_FOR_LIMIT => $this->limit,
-            self::NAME_FOR_SEARCH =>
-                (!empty($this->search)
-                    ? $this->search
-                    : new \stdClass()),
+            self::NAME_FOR_SEARCH => json_decode(json_encode($this->search), true),
             self::NAME_FOR_SORT => $this->sort,
             self::NAME_FOR_ORDER => $this->order,
             self::NAME_FOR_TOTAL => $this->total
@@ -482,5 +462,37 @@ class Pagination
             self::AGREGATE_OPERATOR_AND
         ];
         return in_array($key, $agregateOperators);
+    }
+
+    /**
+     * Indicate is the parameter has been defined.
+     *
+     * @param string $parameter Parameter to find
+     * @return bool
+     */
+    public function isParameterDefined(string $parameter): bool
+    {
+        return $this->findParameter($parameter, (array)$this->getSearch()) !== null;
+    }
+
+    private function findParameter(string $keyToFind, array $parameters)
+    {
+        foreach ($parameters as $key => $value) {
+            if ($key === $keyToFind) {
+                if (is_object($value)) {
+                    $value = (array)$value;
+                    return $value[key($value)];
+                } else {
+                    return $value;
+                }
+            } else {
+                if (is_array($value) || is_object($value)) {
+                    $value = (array)$value;
+                    if ($this->findParameter($keyToFind, $value) !== null) {
+                        return true;
+                    }
+                }
+            }
+        }
     }
 }
