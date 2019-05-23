@@ -22,7 +22,7 @@ class Navigation extends Component {
   };
 
   render() {
-    const { navigationData, reactRoutes } = this.props;
+    const { navigationData, reactRoutes, history } = this.props;
     return (
       <Sidebar
         navigationData={navigationData}
@@ -30,6 +30,7 @@ class Navigation extends Component {
         onNavigate={(id, { url }) => {
           this.goToPage(url);
         }}
+        externalHistory={history}
         handleDirectClick={this.handleTopLevelClick}
       />
     );
