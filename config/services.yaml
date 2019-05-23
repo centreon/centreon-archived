@@ -4,37 +4,19 @@
 # Put parameters here that don't need to change on each machine where the app is deployed
 # https://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
 
-imports:
-    resource: './Modules/*.yaml'
-
 parameters:
     locale: en
+    database_host: "%env(hostCentreon)%"
+    database_port: "%env(port)%"
+    database_db: "%env(db)%"
+    database_user: "%env(user)%"
+    database_password: "%env(password)%"
 
 services:
     # default configuration for services in *this* file
     _defaults:
         autowire: true      # Automatically injects dependencies in your services.
         autoconfigure: true # Automatically registers your services as commands, event subscribers, et
-
-    CentreonDatabaseConnection:
-        class: Centreon\Infrastructure\DatabaseConnection
-        arguments:
-            $host: "%env(hostCentreon)%"
-            $port: "%env(port)%"
-            $basename: "%env(db)%"
-            $login: "%env(user)%"
-            $password: "%env(password)%"
-
-    CentreonStorageDatabaseConnection:
-        class: Centreon\Infrastructure\DatabaseConnection
-        arguments:
-            $host: "%env(hostCentreon)%"
-            $port: "%env(port)%"
-            $basename: "%env(dbcstg)%"
-            $login: "%env(user)%"
-            $password: "%env(password)%"
-
-
 #
 #    CentreonLegacy\:
 #        resource: '../src/CentreonLegacy/*'
@@ -48,8 +30,6 @@ services:
 #        resource: '../src/CentreonRemote/*'
 #        exclude: '../src/CentreonRemote/Tests'
 
-
-
     App\EventSubscriber\:
         resource: '../src/EventSubscriber/*'
 
@@ -61,6 +41,6 @@ services:
 
     security.provider.tokenapi:
         class: App\Security\TokenAPIAuthenticator
-        arguments:
-            $authenticationRepository: '@security.authentication.repository'
-            $contactRepository: '@contact.repository'
+
+imports:
+    resource: './Modules/*.yaml'

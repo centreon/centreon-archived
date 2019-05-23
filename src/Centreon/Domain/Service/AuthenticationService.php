@@ -5,6 +5,7 @@ namespace Centreon\Domain\Service;
 use Centreon\Domain\Entity\Contact;
 use Centreon\Domain\Repository\Interfaces\AuthenticationRepositoryInterface;
 use Centreon\Domain\Repository\Interfaces\ContactRepositoryInterface;
+use Centreon\Domain\Service\Interfaces\AuthenticationServiceInterface;
 use Centreon\Infrastructure\Service\Exception\NotFoundException;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
 

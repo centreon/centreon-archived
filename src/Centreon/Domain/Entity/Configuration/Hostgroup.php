@@ -1,7 +1,7 @@
 <?php
 
 
-namespace Centreon\Domain\Entity;
+namespace Centreon\Domain\Entity\Configuration;
 
 class Hostgroup
 {

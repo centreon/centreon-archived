@@ -30,6 +30,14 @@ class DatabaseConnection extends \PDO
      */
     private $port;
 
+    /**
+     * DatabaseConnection constructor.
+     * @param string $host
+     * @param string $basename
+     * @param string $login
+     * @param string $password
+     * @param int $port
+     */
     public function __construct(string $host, string $basename, string $login, string $password, int $port = 3306)
     {
         $this->host = $host;

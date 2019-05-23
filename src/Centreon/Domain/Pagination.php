@@ -115,9 +115,7 @@ class Pagination
         }
 
         $search = json_decode($parameters[self::NAME_FOR_SEARCH] ?? '{}');
-        if (!empty($search)) {
-            $this->setSearch((array)$search);
-        }
+        $this->setSearch((array)$search);
     }
 
     /**
@@ -405,12 +403,13 @@ class Pagination
 
     /**
      * @param array $search Array representing fields to search for.
+     * @throws \Exception
      * @see Pagination::$search
-     * &search={"field1": ..., "field2": ...}
      */
     public function setSearch(array $search): void
     {
         $this->search = $search;
+        $this->checkSearchSchema();
     }
 
     /**
@@ -442,7 +441,9 @@ class Pagination
         return [
             self::NAME_FOR_PAGE => $this->page,
             self::NAME_FOR_LIMIT => $this->limit,
-            self::NAME_FOR_SEARCH => json_decode(json_encode($this->search), true),
+            self::NAME_FOR_SEARCH => !empty($this->search)
+                ? json_decode(json_encode($this->search), true)
+                : new \stdClass,
             self::NAME_FOR_SORT => $this->sort,
             self::NAME_FOR_ORDER => $this->order,
             self::NAME_FOR_TOTAL => $this->total
@@ -492,6 +493,31 @@ class Pagination
                         return true;
                     }
                 }
+            }
+        }
+    }
+
+    /**
+     * @throws \Exception
+     */
+    private function checkSearchSchema()
+    {
+        $search = $this->search;
+        $nbrElements = count($search, COUNT_RECURSIVE);
+
+        if ($nbrElements === 1) {
+            if (!isset($search[Pagination::AGREGATE_OPERATOR_AND])
+                || !isset($search[Pagination::AGREGATE_OPERATOR_OR])
+            ) {
+                $newSearch = [Pagination::AGREGATE_OPERATOR_AND => []];
+                $newSearch[Pagination::AGREGATE_OPERATOR_AND][] = $search;
+                $this->search = $newSearch;
+            }
+        } elseif ($nbrElements > 1) {
+            if (!isset($search[Pagination::AGREGATE_OPERATOR_AND])
+                && !isset($search[Pagination::AGREGATE_OPERATOR_OR])
+            ) {
+                throw new \Exception('Bad format of search attribute');
             }
         }
     }

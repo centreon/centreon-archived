@@ -5,7 +5,7 @@ namespace Centreon\Domain\Repository\Interfaces;
 use Centreon\Domain\Entity\AccessGroup;
 use Centreon\Domain\Entity\Host;
 
-interface RealTimeServiceRepositoryInterface
+interface MonitoringServiceRepositoryInterface
 {
     /**
      * Retrieve all real time services.

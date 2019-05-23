@@ -8,7 +8,7 @@ use JMS\Serializer\Annotation\Until;
 
 /**
  * Class HostEntity
- * @package App\Entity
+ * @package Centreon\Domain\Entity
  */
 class Host
 {

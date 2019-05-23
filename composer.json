@@ -46,7 +46,8 @@
         "symfony/security-bundle": "^4.2",
         "symfony/yaml": "4.2.*",
         "symfony/options-resolver": "4.2.*",
-        "symfony/serializer-pack": "^1.0"
+        "symfony/serializer-pack": "^1.0",
+        "symfony/maker-bundle": "^1.11"
     },
     "autoload": {
         "psr-4": {

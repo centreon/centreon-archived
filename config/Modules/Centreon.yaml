@@ -1,11 +1,20 @@
 services:
     _defaults:
         autowire: true      # Automatically injects dependencies in your services.
-        autoconfigure: true # Automatically registers your services as commands, event subscribers, et
+        autoconfigure: true # Automatically registers your services as commands, event subscribers, controller...
 
     Centreon\:
         resource: '../../src/Centreon/*'
         exclude: '../../src/Centreon/Tests'
+
+    Centreon\Infrastructure\DatabaseConnection:
+        class: Centreon\Infrastructure\DatabaseConnection
+        arguments:
+            $host: '%database_host%'
+            $port: '%database_port%'
+            $basename: '%database_db%'
+            $login: '%database_user%'
+            $password: '%database_password%'
 
     # controllers are imported separately to make sure services can be injected
     # as action arguments even if you don't extend any base controller class
@@ -13,42 +22,27 @@ services:
         resource: '../../src/Centreon/Application/Controller'
         tags: ['controller.service_arguments']
 
-    # We defined all repositories
-    contact.repository:
+    Centreon\Domain\Repository\Interfaces\ContactRepositoryInterface:
         class: Centreon\Infrastructure\Repository\ContactRepositoryRDB
-        arguments: ['@CentreonDatabaseConnection']
 
     contact.provider:
         class: Centreon\ContactProvider
-        arguments: ['@contact.repository']
 
-    Centreon\Application\Controller\LoginController:
-        arguments: ['@security.authentication.service']
-
-    security.authentication.repository:
+    Centreon\Domain\Repository\Interfaces\AuthenticationRepositoryInterface:
         class: Centreon\Infrastructure\Repository\AuthenticationRepositoryRDB
-        arguments: ['@CentreonDatabaseConnection']
 
-    security.authentication.service:
+    Centreon\Domain\Service\Interfaces\AuthenticationServiceInterface:
         class: Centreon\Domain\Service\AuthenticationService
-        arguments:
-            $authenticationRepository: '@security.authentication.repository'
-            $contactRepository: '@contact.repository'
 
-    access_group.repository:
-        class: Centreon\Infrastructure\Repository\AccessGroupRepositoryRDB
-        arguments: ['@CentreonDatabaseConnection']
-
-    monitoring.service.repository:
-        class: Centreon\Infrastructure\Repository\RealTimeServiceRepositoryRDB
-        arguments: ['@CentreonStorageDatabaseConnection']
-
-    monitoring.service:
+    Centreon\Domain\Service\Interfaces\MonitoringServiceInterface:
         class: Centreon\Domain\Service\MonitoringService
-        arguments:
-            $realTimeServiceRepository: '@monitoring.service.repository'
-            $accessGroupRepository: '@access_group.repository'
 
-    monitoring.controller:
-        class: Centreon\Application\Controller\MonitoringController
-        arguments: ['@monitoring.service']
+    Centreon\Domain\Repository\Interfaces\AccessGroupRepositoryInterface:
+        class: Centreon\Infrastructure\Repository\AccessGroupRepositoryRDB
+
+    Centreon\Domain\Repository\Interfaces\MonitoringServiceRepositoryInterface:
+        class: Centreon\Infrastructure\Repository\MonitoringServiceRepositoryRDB
+
+    App\EventSubscriber\RequestEventSubscriber:
+        class: App\EventSubscriber\RequestEventSubscriber
+

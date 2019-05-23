@@ -2,7 +2,7 @@
 
 namespace App\EventSubscriber;
 
-use Centreon\Domain\Entity\Pagination;
+use Centreon\Domain\Pagination;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
@@ -65,6 +65,6 @@ class RequestEventSubscriber implements EventSubscriberInterface
     {
         $query = $request->getRequest()->query->all();
 
-        $this->pagination = Pagination::fromParameters($query);
+        $this->pagination->init($query);
     }
 }

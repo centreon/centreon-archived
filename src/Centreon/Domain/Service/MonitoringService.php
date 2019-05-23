@@ -4,15 +4,15 @@ namespace Centreon\Domain\Service;
 
 use Centreon\Domain\Entity\AccessGroup;
 use Centreon\Domain\Entity\Contact;
-use Centreon\Domain\Entity\Pagination;
+use Centreon\Domain\Pagination;
 use Centreon\Domain\Repository\Interfaces\AccessGroupRepositoryInterface;
-use Centreon\Domain\Repository\Interfaces\RealTimeServiceRepositoryInterface;
+use Centreon\Domain\Repository\Interfaces\MonitoringServiceRepositoryInterface;
 use Centreon\Domain\Service\Interfaces\MonitoringServiceInterface;
 
 class MonitoringService implements MonitoringServiceInterface
 {
     /**
-     * @var RealTimeServiceRepositoryInterface
+     * @var MonitoringServiceRepositoryInterface
      */
     private $realTimeServiceRepository;
     /**
@@ -26,12 +26,12 @@ class MonitoringService implements MonitoringServiceInterface
 
     /**
      * MonitoringService constructor.
-     * @param RealTimeServiceRepositoryInterface $realTimeServiceRepository
+     * @param MonitoringServiceRepositoryInterface $realTimeServiceRepository
      * @param AccessGroupRepositoryInterface $accessGroupRepository
      * @param Pagination $pagination Automatically injected by DI
      */
     public function __construct(
-        RealTimeServiceRepositoryInterface $realTimeServiceRepository,
+        MonitoringServiceRepositoryInterface $realTimeServiceRepository,
         AccessGroupRepositoryInterface $accessGroupRepository,
         Pagination $pagination
     ) {

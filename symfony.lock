@@ -52,6 +52,9 @@
             "config/packages/prod/jms_serializer.yaml"
         ]
     },
+    "nikic/php-parser": {
+        "version": "v4.2.1"
+    },
     "phpcollection/phpcollection": {
         "version": "0.5.0"
     },
@@ -124,6 +127,15 @@
     },
     "symfony/inflector": {
         "version": "v4.2.8"
+    },
+    "symfony/maker-bundle": {
+        "version": "1.0",
+        "recipe": {
+            "repo": "github.com/symfony/recipes",
+            "branch": "master",
+            "version": "1.0",
+            "ref": "fadbfe33303a76e25cb63401050439aa9b1a9c7f"
+        }
     },
     "symfony/options-resolver": {
         "version": "v4.2.8"
