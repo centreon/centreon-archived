@@ -4,6 +4,31 @@ export const FETCH_NAVIGATION_BEGIN = "FETCH_NAVIGATION_BEGIN";
 export const FETCH_NAVIGATION_SUCCESS = "FETCH_NAVIGATION_SUCCESS";
 export const FETCH_NAVIGATION_FAILURE = "FETCH_NAVIGATION_FAILURE";
 
+export const FETCH_REACT_ROUTES_BEGIN = "FETCH_REACT_ROUTES_BEGIN";
+export const FETCH_REACT_ROUTES_SUCCESS = "FETCH_REACT_ROUTES_SUCCESS";
+export const FETCH_REACT_ROUTES_FAILURE = "FETCH_REACT_ROUTES_FAILURE";
+
+export const fetchReactRoutesData = () => {
+  return async dispatch => {
+    try {
+      const { data } = await axios(
+        "internal.php?object=centreon_topology&action=menulist&reactOnly=1&forActive=1"
+      ).get();
+
+      dispatch(
+        fetchReactRoutesSuccess(data.result)
+      );
+    } catch (err) {
+      console.error(err);
+    }
+  };
+};
+
+const fetchReactRoutesSuccess = reactRoutes => ({
+  type: FETCH_REACT_ROUTES_SUCCESS,
+  reactRoutes
+});
+
 export const fetchNavigationData = () => {
   return async dispatch => {
     // Initiate loading state
@@ -14,18 +39,9 @@ export const fetchNavigationData = () => {
       const { data } = await axios(
         "internal.php?object=centreon_topology&action=menulist"
       ).get();
-      const reactRoutes = await axios(
-        "internal.php?object=centreon_topology&action=menulist&reactOnly=1&forActive=1"
-      ).get();
 
       // Update payload in reducer on success
-      dispatch(
-        fetchNavigationSuccess(
-          data.result,
-          data.result,
-          reactRoutes.data.result
-        )
-      );
+      dispatch(fetchNavigationSuccess(data.result, data.result));
     } catch (err) {
       // Update error in reducer on failure
       dispatch(fetchNavigationFailure(err));

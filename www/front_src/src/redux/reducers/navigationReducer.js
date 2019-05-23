@@ -16,7 +16,11 @@ const navigationReducer = (state = initialState, action) => {
       return {
         ...state,
         entries: action.entries,
-        menuItems: action.menuItems,
+        menuItems: action.menuItems
+      };
+    case actions.FETCH_REACT_ROUTES_SUCCESS:
+      return {
+        ...state,
         reactRoutes: action.reactRoutes
       };
     case actions.SET_NAVIGATION_DATA:
