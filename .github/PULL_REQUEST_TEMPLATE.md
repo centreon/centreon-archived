@@ -35,7 +35,7 @@ Any **relevant details** of the configuration to perform the test should be adde
 - [ ] I have commented my code, especially new **classes**, **functions** or any **legacy code** modified. (***docblock***)
 - [ ] I have commented my code, especially **hard-to-understand areas** of the PR.
 - [ ] I have made corresponding changes to the **documentation**.
-- [ ] I have **rebased** my development branch on the base branch (master, maintenance).
+- [ ] I have **rebased** my development branch on the base branch (master, maintenance).
 
 #### Centreon team only
 
