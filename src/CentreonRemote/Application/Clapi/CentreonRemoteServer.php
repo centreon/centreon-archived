@@ -49,14 +49,15 @@ class CentreonRemoteServer implements CentreonClapiServiceInterface
         /* Check CLAPI */
         $options = explode (';', $string_ip);
 
-        if (count($options) === 5) {
+        if (count($options) === 6) {
             $string_ip = $options[0];
             $noCheckCertificate = $options[1];
             $data['remoteHttpMethod'] = $options[2];
             $data['remoteHttpPort'] = $options[3];
             $data['remoteNoCheckCertificate'] = $options[4];
+            $noProxy = $options[5];
         } elseif (count($options) > 1) {
-            echo "5 arguments are needed, please check your arguments.";
+            echo "6 arguments are needed, please check your arguments.";
             return 1;
         }
 
@@ -99,7 +100,8 @@ class CentreonRemoteServer implements CentreonClapiServiceInterface
             $result = $this->getDi()['centreon.notifymaster']->pingMaster(
                 $ip,
                 $data,
-                $noCheckCertificate
+                $noCheckCertificate,
+                $noProxy
             );
             if (!empty($result['status']) && $result['status'] == 'success') {
                 echo "Success\n";

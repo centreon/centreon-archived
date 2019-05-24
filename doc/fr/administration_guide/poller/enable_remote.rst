@@ -5,7 +5,7 @@ Activer l'option Remote Server
 Connectez-vous à votre serveur ayant la fonction **Remote Server** et exécutez
 la commande suivante ::
 
-    # /usr/share/centreon/bin/centreon -u admin -p centreon -a enableRemote -o CentreonRemoteServer -v '@IP_CENTREON_CENTRAL;<not check SSL CA on Central>;<HTTP method>;<TCP port>;<not check SSL CA on Remote>'
+    # /usr/share/centreon/bin/centreon -u admin -p centreon -a enableRemote -o CentreonRemoteServer -v '@IP_CENTREON_CENTRAL;<not check SSL CA on Central>;<HTTP method>;<TCP port>;<not check SSL CA on Remote>;<no proxy to call Central>'
 
 .. note::
     Remplacez **@IP_CENTREON_CENTRAL** par l'IP du serveur Centreon vu par le collecteur.
@@ -28,6 +28,9 @@ Remote Server.
 
 Pour ne pas contrôler le sertificat SSL sur le Remote server, mettre à **1**
 l'option **<not check SSL CA on Central>**, sinon **0**.
+
+Pour ne pas utiliser le proxy pour contacter le serveur Centtreon Central,
+mettre à **1** l'option **<no proxy to call Central>**, sinon **0**.
 
 Cette commande va activer le mode **Remote Server** ::
 
