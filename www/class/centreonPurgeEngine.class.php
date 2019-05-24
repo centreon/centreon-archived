@@ -61,7 +61,7 @@ class CentreonPurgeEngine
             '< __RETENTION__) OR (expire_time < __RETENTION__ AND expire_time <> 0)';
         $this->purgeDowntimesQuery = 'DELETE FROM downtimes WHERE (actual_end_time is not null and actual_end_time ' .
             '< __RETENTION__) OR (deletion_time is not null and deletion_time < __RETENTION__)';
-	$this->purgeAuditLogQuery = 'DELETE FROM log_action WHERE action_log_date < __RETENTION__';
+	    $this->purgeAuditLogQuery = 'DELETE FROM log_action WHERE action_log_date < __RETENTION__';
 
         $this->tablesToPurge = array(
             'data_bin' => array(
@@ -180,9 +180,9 @@ class CentreonPurgeEngine
         echo "[" . date(DATE_RFC822) . "] Purging index_data...\n";
         $this->purgeIndexData();
         echo "[" . date(DATE_RFC822) . "] index_data purged\n";
-	echo "[" . date(DATE_RFC822) . "] Purging log_action_modification...\n";
-	$this->purgeLogActionModification();
-	echo "[" . date(DATE_RFC822) . "] log_action_modification purged\n";
+	    echo "[" . date(DATE_RFC822) . "] Purging log_action_modification...\n";
+	    $this->purgeLogActionModification();
+	    echo "[" . date(DATE_RFC822) . "] log_action_modification purged\n";
     }
 
     /**
@@ -226,7 +226,7 @@ class CentreonPurgeEngine
                 '__RETENTION__',
                 $this->tablesToPurge[$table]['retention'],
                 $this->tablesToPurge[$table]['custom_query']
-	    );
+	         );
         } else {
             $request = "DELETE FROM " . $table . " ";
             $request .= "WHERE " . $this->tablesToPurge[$table]['ctime_field'] . " < " .
