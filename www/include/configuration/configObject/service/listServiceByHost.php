@@ -190,7 +190,7 @@ $queryFieldsToSelect = 'esi.esi_icon_image, sv.service_id, sv.service_descriptio
 
 $queryTablesToFetch = 'FROM service sv, host' .
     ((isset($hostgroups) && $hostgroups) ? ', hostgroup_relation hogr, ' : ', ') .
-    ($centreon->user->admin ? '' : $acldbname . '.centreon_acl acl, ') .
+    ($centreon->user->admin ? '' : $aclDbName . '.centreon_acl acl, ') .
     'host_service_relation hsr ' .
     'LEFT JOIN extended_service_information esi ON esi.service_service_id = hsr.service_service_id ';
 
