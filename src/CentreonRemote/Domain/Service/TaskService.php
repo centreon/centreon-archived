@@ -141,15 +141,16 @@ class TaskService
      */
     public function getRemoteStatusByParent(int $parentId, string $serverIp, string $centreonFolder)
     {
-        $query = "SELECT * FROM `remote_servers` WHERE `ip` = '" . $serverIp  . "'";
+        $query = "SELECT params FROM task WHERE id = '" . $parentId  . "'";
 
         try {
             $remoteDataResult = $this->getDbManager()->getAdapter('configuration_db')->query($query)->results();
+            $result = unserialize($remoteDataResult[0]->params);
 
-            $httpMethod = $remoteDataResult[0]->http_method;
-            $httpPort = $remoteDataResult[0]->http_port;
-            $noCheckCertificate = $remoteDataResult[0]->no_check_certificate;
-            $noProxy = $remoteDataResult[0]->no_proxy;
+            $httpMethod = $result['params']['http_method'];
+            $httpPort = $result['params']['http_port'];;
+            $noCheckCertificate = $result['params']['no_check_certificate'];
+            $noProxy = $result['params']['no_proxy'];
 
             $url = ($httpMethod ?? 'http') . '://' . $serverIp .
                 ($httpPort ? ':' . $httpPort : '') . '/' . $centreonFolder .
