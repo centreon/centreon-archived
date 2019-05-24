@@ -4,7 +4,7 @@ Enabling the Remote Server option
 
 Connect to your **Remoter Server** and execute following command::
 
-    # /usr/share/centreon/bin/centreon -u admin -p centreon -a enableRemote -o CentreonRemoteServer -v '@IP_CENTREON_CENTRAL;<not check SSL CA on Central>;<HTTP method>;<TCP port>;<not check SSL CA on Remote>'
+    # /usr/share/centreon/bin/centreon -u admin -p centreon -a enableRemote -o CentreonRemoteServer -v '@IP_CENTREON_CENTRAL;<not check SSL CA on Central>;<HTTP method>;<TCP port>;<not check SSL CA on Remote>;<no proxy to call Central>'
 
 Replace **@IP_CENTREON_CENTRAL** by the IP of the Centreon server seen by the
 poller. You can define multiple IP address using a coma as separator.
@@ -26,6 +26,9 @@ contact the Remote server.
 
 For the **<not check SSL CA on Remote>** option you can put **1** to do not
 check the SS CA on the Remote server if HTTPS is enabled, or put **0**.
+
+For the **<no proxy to call Central>** option you can put **1** to do not
+use HTTP(S) proxy to contact the Centreon Central server.
 
 This command will enable **Remote Server** mode::
 
