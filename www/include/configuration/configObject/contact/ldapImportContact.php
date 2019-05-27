@@ -125,9 +125,13 @@ if ($form->validate()) {
             $arrayToReturn[$key] = array_intersect_key($_POST["contact_select"][$key], $selectedUsers);
         }
 
-        // restoring the $_POST['select'] array in the filtered results, in case we need it
+        // restoring the filtered $_POST['contact_select']['select'] as it's needed in some DB-Func.php functions
         $arrayToReturn['select'] = $selectedUsers;
-        insertLdapContactInDB($arrayToReturn);
+        $_POST['contact_select'] = $arrayToReturn;
+        unset($selectedUsers);
+        unset($arrayToReturn);
+
+        insertLdapContactInDB($_POST["contact_select"]);
     }
     $form->freeze();
     $valid = true;
