@@ -96,8 +96,9 @@ $indexHtmlContent = preg_replace(
     '${1}' . $basePath . '${2}',
     $indexHtmlContent
 );
-if($indexHtmlContent != '')
+if($indexHtmlContent != '') {
     file_put_contents($indexHtmlPath, $indexHtmlContent);
+}
 
 /*
  * Set PHP Session Expiration time
