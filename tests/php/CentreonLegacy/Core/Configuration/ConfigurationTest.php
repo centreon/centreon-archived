@@ -21,6 +21,7 @@ use PHPUnit\Framework\TestCase;
 use CentreonLegacy\Core\Configuration;
 use CentreonModule\Infrastructure\Source\ModuleSource;
 use CentreonModule\Infrastructure\Source\WidgetSource;
+use Symfony\Component\Finder\Finder;
 
 /**
  * @group CentreonLegacy
@@ -37,7 +38,7 @@ class ConfigurationTest extends TestCase
         ];
         $this->centreonPath = 'path';
 
-        $this->service = new Configuration\Configuration($this->configuration, $this->centreonPath);
+        $this->service = new Configuration\Configuration($this->configuration, $this->centreonPath, new Finder());
     }
 
     public function testGet()

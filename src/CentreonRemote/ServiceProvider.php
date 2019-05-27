@@ -17,6 +17,7 @@ use CentreonRemote\Domain\Service\InformationsService;
 use CentreonRemote\Domain\Service\NotifyMasterService;
 use CentreonRemote\Domain\Service\TaskService;
 use CentreonRemote\Infrastructure\Service\PollerInteractionService;
+use Centreon\ServiceProvider as SP;
 use Curl\Curl;
 
 class ServiceProvider implements AutoloadServiceProviderInterface
