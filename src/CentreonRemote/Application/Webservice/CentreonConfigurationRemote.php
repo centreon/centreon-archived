@@ -415,7 +415,7 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
             $sql = 'UPDATE `remote_servers` SET `is_connected` = ?, `connected_at` = ?, `centreon_path` = ?, ' .
                 '`no_check_certificate` = ?, `no_proxy` = ? ' .
                 'WHERE `ip` = ?';
-            $data = ['1', $date, $centreonPath, $serverIP, ($noCheckCertificate ?: 0), ($noProxy ?: 0)];
+            $data = ['1', $date, $centreonPath, ($noCheckCertificate ?: 0), ($noProxy ?: 0), $serverIP];
             $dbAdapter->query($sql, $data);
         } else {
             $data = [
