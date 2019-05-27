@@ -152,9 +152,13 @@ class TaskService
             $noCheckCertificate = $result['params']['no_check_certificate'];
             $noProxy = $result['params']['no_proxy'];
 
-            $url = ($httpMethod ?? 'http') . '://' . $serverIp .
-                ($httpPort ? ':' . $httpPort : '') . '/' . $centreonFolder .
-                '/api/external.php?object=centreon_task_service&action=getTaskStatusByParent';
+            $url = "";
+            if (parse_url($serverIp, PHP_URL_SCHEME)) {
+                $url = $serverIp;
+            } else {
+                $url = ($httpMethod ?? 'http') . '://' . $serverIp . ($httpPort ? ':' . $httpPort : '');
+            }
+            $url .= '/' . $centreonFolder . '/api/external.php?object=centreon_task_service&action=getTaskStatusByParent';
 
             $result = $this->centreonRestHttp->call(
                 $url,
