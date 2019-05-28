@@ -91,6 +91,10 @@ class CentreonHostcategories
         global $centreon;
         $items = array();
 
+        if (empty($values)) {
+            return $items;
+        }
+    
         # get list of authorized host categories
         if (!$centreon->user->access->admin) {
             $hcAcl = $centreon->user->access->getHostCategories();
@@ -98,15 +102,14 @@ class CentreonHostcategories
 
         $listValues = '';
         $queryValues = array();
-        if (!empty($values)) {
-            foreach ($values as $k => $v) {
-                $listValues .= ':hc' . $v . ',';
-                $queryValues['hc' . $v] = (int)$v;
+        foreach ($values as $k => $v) {
+            $multipleValues = explode(',', $v);
+            foreach ($multipleValues as $item) {
+                $listValues .= ':hcId_' . $item . ', ';
+                $queryValues['hcId_' . $item] = (int)$item;
             }
-            $listValues = rtrim($listValues, ',');
-        } else {
-            $listValues .= '""';
         }
+        $listValues = rtrim($listValues, ', ');
 
         # get list of selected host categories
         $query = 'SELECT hc_id, hc_name FROM hostcategories ' .
@@ -114,10 +117,8 @@ class CentreonHostcategories
 
         $stmt = $this->db->prepare($query);
 
-        if (!empty($queryValues)) {
-            foreach ($queryValues as $key => $id) {
-                $stmt->bindValue(':' . $key, $id, PDO::PARAM_INT);
-            }
+        foreach ($queryValues as $key => $id) {
+            $stmt->bindValue(':' . $key, $id, PDO::PARAM_INT);
         }
         $stmt->execute();
 
