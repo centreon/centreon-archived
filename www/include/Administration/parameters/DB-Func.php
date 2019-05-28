@@ -39,7 +39,7 @@ function updateOption($pearDB, $key, $value)
     /*
      * Purge
      */
-    $DBRESULT = $pearDB->query("DELETE FROM `options` WHERE `key` = '$key'");
+    $dbResult = $pearDB->query("DELETE FROM `options` WHERE `key` = '$key'");
     
     /*
      * Add
@@ -47,7 +47,7 @@ function updateOption($pearDB, $key, $value)
     if (!is_null($value) && $value != 'NULL') {
         $value = "'$value'";
     }
-    $DBRESULT = $pearDB->query("INSERT INTO `options` (`key`, `value`) VALUES ('$key', $value)");
+    $dbResult = $pearDB->query("INSERT INTO `options` (`key`, `value`) VALUES ('$key', $value)");
 }
 
 function is_valid_path_images($path)
@@ -786,7 +786,7 @@ function updateODSConfigData()
                 `len_storage_downtimes` = '".$ret["len_storage_downtimes"]."',
                 `len_storage_comments` = '".$ret["len_storage_comments"]."' "
                 . " WHERE `id` = 1 LIMIT 1 ;";
-    $DBRESULT = $pearDBO->query($rq);
+    $dbResult = $pearDBO->query($rq);
 
     updateOption(
         $pearDB,
