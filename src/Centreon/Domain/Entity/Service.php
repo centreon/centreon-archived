@@ -3,92 +3,111 @@
 
 namespace Centreon\Domain\Entity;
 
+use JMS\Serializer\Annotation as Serializer;
+
 class Service
 {
     /**
+     * @Serializer\Groups({"Default", "service_main", "service_full"})
      * @var int Unique index
      */
     private $id;
 
     /**
-     * @var int Host id
-     */
-    private $hostId;
-
-    /**
+     * @Serializer\Groups({"Default", "service_main", "service_full"})
      * @var string
      */
     private $description;
 
     /**
+     * @Serializer\Groups({"Default", "service_main", "service_full"})
      * @var string
      */
     private $displayName;
 
     /**
+     * @Serializer\Groups({"service_main", "service_full"})
      * @var bool
      */
     private $isAcknowledged;
 
     /**
+     * @Serializer\Groups({"service_main", "service_full"})
      * @var int
      */
     private $acknowledgementType;
 
     /**
+     * @Serializer\Groups({"service_main", "service_full"})
      * @var bool
      */
     private $isActiveCheck;
 
     /**
+     * @Serializer\Groups({"service_main", "service_full"})
      * @var int
      */
     private $checkAttempt;
 
     /**
+     * @Serializer\Groups({"service_main", "service_full"})
      * @var int
      */
     private $maxCheckAttempt;
 
     /**
      * @var bool
+     * @Serializer\Groups({"service_full"})
      */
     private $isChecked;
 
     /**
+     * @Serializer\Groups({"service_main", "service_full"})
      * @var int
      */
     private $state;
 
     /**
+     * @Serializer\Groups({"service_main", "service_full"})
      * @var string
      */
     private $output;
 
     /**
      * @var \DateTime
+     * @Serializer\Groups({"service_full"})
      */
     private $lastCheck;
 
     /**
      * @var \DateTime
+     * @Serializer\Groups({"service_full"})
      */
     private $nextCheck;
 
     /**
      * @var \DateTime
+     * @Serializer\Groups({"service_full"})
      */
     private $lastUpdate;
 
     /**
      * @var \DateTime
+     * @Serializer\Groups({"service_full"})
      */
     private $lastStateChange;
 
     /**
      * @var \DateTime
+     * @Serializer\Groups({"service_full"})
      */
     private $lastHardStateChange;
+
+    /**
+     * @Serializer\Groups({"service_main", "service_full"})
+     * @var Host[]
+     */
+    private $hosts = [];
 
     /**
      * @return int
@@ -105,24 +124,6 @@ class Service
     public function setId(int $id): Service
     {
         $this->id = $id;
-        return $this;
-    }
-
-    /**
-     * @return int
-     */
-    public function getHostId(): int
-    {
-        return $this->hostId;
-    }
-
-    /**
-     * @param int $hostId
-     * @return Service
-     */
-    public function setHostId(int $hostId): Service
-    {
-        $this->hostId = $hostId;
         return $this;
     }
 
@@ -174,7 +175,7 @@ class Service
      * @param bool $isAcknowledged
      * @return Service
      */
-    public function setIsAcknowledged(bool $isAcknowledged): Service
+    public function setAcknowledged(bool $isAcknowledged): Service
     {
         $this->isAcknowledged = $isAcknowledged;
         return $this;
@@ -393,6 +394,34 @@ class Service
     public function setLastHardStateChange(\DateTime $lastHardStateChange): Service
     {
         $this->lastHardStateChange = $lastHardStateChange;
+        return $this;
+    }
+
+    /**
+     * @return Host[]
+     */
+    public function getHosts(): array
+    {
+        return $this->hosts;
+    }
+
+    /**
+     * @param Host[] $hosts
+     * @return Service
+     */
+    public function setHosts(array $hosts): Service
+    {
+        $this->hosts = $hosts;
+        return $this;
+    }
+
+    /**
+     * @param Host $host
+     * @return Service
+     */
+    public function addHost(Host $host): Service
+    {
+        $this->hosts[] = $host;
         return $this;
     }
 }

@@ -12,7 +12,7 @@ security:
             stateless: true
             pattern: ^/(?!centreon/apiv2/login).*
             security: true
-            anonymous: false
+            anonymous: true
             guard:
                 authenticators:
                     - security.provider.tokenapi

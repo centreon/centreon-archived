@@ -9,6 +9,7 @@ parameters:
     database_host: "%env(hostCentreon)%"
     database_port: "%env(port)%"
     database_db: "%env(db)%"
+    database_dbstg: "%env(dbcstg)%"
     database_user: "%env(user)%"
     database_password: "%env(password)%"
 

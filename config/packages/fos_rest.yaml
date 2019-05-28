@@ -1,5 +1,8 @@
 # Read the documentation: https://symfony.com/doc/master/bundles/FOSRestBundle/index.html
 fos_rest:
+    serializer:
+        # We force to show the attributes that are null
+        serialize_null: true
     format_listener:
         rules:
           - { path: ^/, fallback_format: 'json', priorities: [ 'json' ] }

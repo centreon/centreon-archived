@@ -2,59 +2,122 @@
 
 namespace Centreon\Domain\Service;
 
-use Centreon\Domain\Entity\AccessGroup;
 use Centreon\Domain\Entity\Contact;
+use Centreon\Domain\Entity\Host;
+use Centreon\Domain\Entity\Service;
 use Centreon\Domain\Pagination;
 use Centreon\Domain\Repository\Interfaces\AccessGroupRepositoryInterface;
-use Centreon\Domain\Repository\Interfaces\MonitoringServiceRepositoryInterface;
+use Centreon\Domain\Repository\Interfaces\MonitoringRepositoryInterface;
 use Centreon\Domain\Service\Interfaces\MonitoringServiceInterface;
 
 class MonitoringService implements MonitoringServiceInterface
 {
     /**
-     * @var MonitoringServiceRepositoryInterface
+     * @var MonitoringRepositoryInterface
      */
-    private $realTimeServiceRepository;
+    private $monitoringRepository;
+
     /**
      * @var AccessGroupRepositoryInterface
      */
     private $accessGroupRepository;
+
     /**
-     * @var Pagination
+     * @var Contact
      */
-    private $pagination;
+    private $contact;
 
     /**
      * MonitoringService constructor.
-     * @param MonitoringServiceRepositoryInterface $realTimeServiceRepository
+     * @param MonitoringRepositoryInterface $monitoringRepository
      * @param AccessGroupRepositoryInterface $accessGroupRepository
-     * @param Pagination $pagination Automatically injected by DI
      */
     public function __construct(
-        MonitoringServiceRepositoryInterface $realTimeServiceRepository,
-        AccessGroupRepositoryInterface $accessGroupRepository,
-        Pagination $pagination
+        MonitoringRepositoryInterface $monitoringRepository,
+        AccessGroupRepositoryInterface $accessGroupRepository
     ) {
-        $this->realTimeServiceRepository = $realTimeServiceRepository;
+        $this->monitoringRepository = $monitoringRepository;
         $this->accessGroupRepository = $accessGroupRepository;
-        $this->pagination = $pagination;
+    }
+
+    /**
+     * @return Service[]|null
+     * @throws \Exception
+     */
+    public function findServices(Pagination $pagination): array
+    {
+        if ($this->contact->isAdmin()) {
+            return $this
+                ->monitoringRepository
+                ->filterByAccessGroups(null)
+                ->findServices($pagination);
+        } elseif (count($accessGroups = $this->accessGroupRepository->findFromContact($this->contact)) > 0) {
+            return $this
+                ->monitoringRepository
+                ->filterByAccessGroups($accessGroups)
+                ->findServices($pagination);
+        }
+        return [];
+    }
+
+    /**
+     * @return Host[]|null
+     * @throws \Exception
+     */
+    public function findHosts(Pagination $pagination): array
+    {
+        if ($this->contact->isAdmin()) {
+            return $this
+                ->monitoringRepository
+                ->filterByAccessGroups(null)
+                ->findHosts($pagination);
+        } elseif (count($accessGroups = $this->accessGroupRepository->findFromContact($this->contact)) > 0) {
+            return $this
+                ->monitoringRepository
+                ->filterByAccessGroups($accessGroups)
+                ->findHosts($pagination);
+        }
+        return [];
     }
 
     /**
      * @param Contact $contact
-     * @return AccessGroup[]|null
+     * @return mixed|void
      */
-    public function findServicesFromContact(Contact $contact): array
+    public function filterByContact(Contact $contact): MonitoringServiceInterface
     {
-        if ($contact->isAdmin()) {
+        $this->contact = $contact;
+        return $this;
+    }
+
+    /**
+     * @param Contact $contact
+     * @param int $contactId
+     * @return Host
+     */
+    public function findOneHost(int $contactId): ?Host
+    {
+        // TODO: Implement findOneHost() method.
+    }
+
+    /**
+     * @param Contact $contact
+     * @param int $serviceId
+     * @return Service
+     */
+    public function findOneService(int $serviceId): ?Service
+    {
+        if ($this->contact->isAdmin()) {
             return $this
-                ->realTimeServiceRepository
-                ->getServices(null);
-        } elseif (count($accessGroups = $this->accessGroupRepository->findFromContact($contact)) > 0) {
+                ->monitoringRepository
+                ->filterByAccessGroups(null)
+                ->findOneService($serviceId);
+        } elseif (count($accessGroups = $this->accessGroupRepository->findFromContact($this->contact)) > 0) {
             return $this
-                ->realTimeServiceRepository
-                ->getServices($accessGroups);
+                ->monitoringRepository
+                ->filterByAccessGroups($accessGroups)
+                ->findOneService($serviceId);
         }
-        return [];
+        return null;
     }
 }

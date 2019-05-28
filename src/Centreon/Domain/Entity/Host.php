@@ -17,31 +17,42 @@ class Host
     public const STATUS_UNREACHABLE = 2;
 
     /**
+     * @Serializer\Groups({"Default", "host_main", "host_full"})
      * @var int Id of host
-     * @Until("1.2.x")
      */
     private $id;
     /**
+     * @Serializer\Groups({"Default", "host_main", "host_full"})
      * @var string Name of host
      */
     private $name;
     /**
+     * @Serializer\Groups({"Default", "host_main", "host_full"})
      * @var string Alias of host
      */
     private $alias;
+
+    /**
+     * @Serializer\Groups({"host_main", "host_full"})
+     * @var string Ip address or domain name
+     */
+    private $address;
+
     /**
      * @var bool Indicates whether this host is enabled or disabled
+     * @Serializer\Groups({"host_main", "host_full"})
      */
     private $isActive;
     /**
      * @var int Status of host
+     * @Serializer\Groups({"host_main", "host_full"})
      */
     private $status;
     /**
      * @var Service[]
-     * @Serializer\Groups({"realtime_services"})
+     * @Serializer\Groups({"host_main", "host_full"})
      */
-    private $services;
+    private $services = [];
 
     /**
      * @return int
@@ -55,7 +66,7 @@ class Host
      * @param int $id
      * @return Host
      */
-    public function setId(int $id): self
+    public function setId(int $id): Host
     {
         $this->id = $id;
         return $this;
@@ -73,7 +84,7 @@ class Host
      * @param string $name
      * @return Host
      */
-    public function setName(string $name): self
+    public function setName(string $name): Host
     {
         $this->name = $name;
         return $this;
@@ -91,7 +102,7 @@ class Host
      * @param string $alias
      * @return Host
      */
-    public function setAlias(string $alias): self
+    public function setAlias(string $alias): Host
     {
         $this->alias = $alias;
         return $this;
@@ -109,9 +120,27 @@ class Host
      * @param bool $isActive
      * @return Host
      */
-    public function setActive(bool $isActive): self
+    public function setActive(bool $isActive): Host
     {
         $this->isActive = $isActive;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getAddress(): string
+    {
+        return $this->address;
+    }
+
+    /**
+     * @param string $address
+     * @return Host
+     */
+    public function setAddress(string $address): Host
+    {
+        $this->address = $address;
         return $this;
     }
 
@@ -127,7 +156,7 @@ class Host
      * @param int $status
      * @return Host
      */
-    public function setStatus(int $status): self
+    public function setStatus(int $status): Host
     {
         $this->status = $status;
         return $this;
@@ -145,7 +174,7 @@ class Host
      * @param Service[] $services
      * @return Host
      */
-    public function setServices(array $services): self
+    public function setServices(array $services): Host
     {
         $this->services = $services;
         return $this;
@@ -155,7 +184,7 @@ class Host
      * @param Service $service
      * @return Host
      */
-    public function addService(Service $service): self
+    public function addService(Service $service): Host
     {
         $this->services[] = $service;
         return $this;

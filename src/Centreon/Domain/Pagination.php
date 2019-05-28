@@ -22,7 +22,6 @@ class Pagination
 {
     private const NAME_FOR_LIMIT = 'limit';
     private const NAME_FOR_PAGE = 'page';
-    private const NAME_FOR_ORDER = 'order_by';
     private const NAME_FOR_SORT = 'sort_by';
     private const NAME_FOR_SEARCH = 'search';
     private const NAME_FOR_TOTAL = 'total';
@@ -60,12 +59,7 @@ class Pagination
     private $page;
 
     /**
-     * @var string Sense of sort (ASC or DESC only)
-     */
-    private $order;
-
-    /**
-     * @var string Field to order
+     * @var array Field to order
      */
     private $sort;
 
@@ -77,7 +71,7 @@ class Pagination
     /**
      * @var int Total of lines founds without limit
      */
-    private $total;
+    private $total = 0;
 
     private $databaseRequestValue = [];
 
@@ -96,22 +90,30 @@ class Pagination
         $page = $parameters[self::NAME_FOR_PAGE] ?? self::DEFAULT_PAGE;
         $this->setPage((int)$page);
 
-        if (isset($parameters[self::NAME_FOR_ORDER])) {
-            $order = in_array(
-                strtoupper($parameters[self::NAME_FOR_ORDER]),
-                [self::DEFAULT_ORDER_ASC, self::DEFAULT_ORDER_DESC]
-            ) ? strtoupper($parameters[self::NAME_FOR_ORDER]) : self::DEFAULT_ORDER;
-            $this->setOrder($order);
-        }
 
-        if (isset($parameters[self::NAME_FOR_SORT])) {
-            $sort = preg_match(
-                '/^([a-zA-Z0-9_-]*)$/i',
-                $parameters[self::NAME_FOR_SORT],
-                $sortFound,
-                PREG_OFFSET_CAPTURE
-            ) ? $parameters[self::NAME_FOR_SORT] : null;
-            $this->setSort($sort);
+        $sort = $parameters[self::NAME_FOR_SORT] ?? '{}';
+        $sortToAnalize = json_decode($sort, true);
+        if (!is_array($sortToAnalize)) {
+            $this->setSort([$parameters[self::NAME_FOR_SORT] => self::DEFAULT_ORDER_ASC]);
+        } else {
+            $authorizedOrders = [
+                self::DEFAULT_ORDER_ASC,
+                self::DEFAULT_ORDER_DESC
+            ];
+            foreach ($sortToAnalize as $name => $order) {
+                $isMatched = preg_match(
+                    '/^([a-zA-Z0-9_.-]*)$/i',
+                    $name,
+                    $sortFound,
+                    PREG_OFFSET_CAPTURE
+                );
+                if (!$isMatched || !in_array(strtoupper($order), $authorizedOrders)) {
+                    unset($sortToAnalize[$name]);
+                } else {
+                    $sortToAnalize[$name] = strtoupper($order);
+                }
+            }
+            $this->setSort($sortToAnalize);
         }
 
         $search = json_decode($parameters[self::NAME_FOR_SEARCH] ?? '{}');
@@ -143,13 +145,23 @@ class Pagination
             $whereQuery = ' WHERE ' . $whereQuery;
         }
 
-        if (array_key_exists($this->getSort(), $concordanceArray)) {
-            $whereQuery .= sprintf(
-                ' ORDER BY %s %s',
-                $concordanceArray[$this->getSort()],
-                $this->getOrder()
-            );
+        $orderQuery = '';
+        foreach ($this->getSort() as $name => $order) {
+            if (array_key_exists($name, $concordanceArray)) {
+                if (!empty($orderQuery)) {
+                    $orderQuery .= ', ';
+                }
+                $orderQuery .= sprintf(
+                    '%s %s',
+                    $concordanceArray[$name],
+                    $order
+                );
+            }
         }
+        if (!empty($orderQuery)) {
+            $orderQuery = ' ORDER BY ' . $orderQuery;
+        }
+        $whereQuery .= $orderQuery;
 
         $whereQuery .= ' LIMIT :from, :limit';
         $this->databaseRequestValue[':from'] = [
@@ -356,27 +368,10 @@ class Pagination
     }
 
     /**
-     * @see Pagination::$order
-     * @return string Sense of sort (ASC or DESC only)
-     */
-    public function getOrder(): string
-    {
-        return $this->order;
-    }
-
-    /**
-     * @param string $order Sense of sort (ASC or DESC only)
-     */
-    public function setOrder(string $order): void
-    {
-        $this->order = $order;
-    }
-
-    /**
      * @see Pagination::$sort
-     * @return string Field to order
+     * @return array Field to order
      */
-    public function getSort(): ?string
+    public function getSort(): ?array
     {
         return $this->sort;
     }
@@ -384,7 +379,7 @@ class Pagination
     /**
      * @param string $sort Field to order
      */
-    public function setSort(?string $sort): void
+    public function setSort(?array $sort): void
     {
         $this->sort = $sort;
     }
@@ -444,8 +439,9 @@ class Pagination
             self::NAME_FOR_SEARCH => !empty($this->search)
                 ? json_decode(json_encode($this->search), true)
                 : new \stdClass,
-            self::NAME_FOR_SORT => $this->sort,
-            self::NAME_FOR_ORDER => $this->order,
+            self::NAME_FOR_SORT => !empty($this->sort)
+                ? json_decode(json_encode($this->sort), true)
+                : new \stdClass,
             self::NAME_FOR_TOTAL => $this->total
         ];
     }

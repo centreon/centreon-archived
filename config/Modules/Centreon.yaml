@@ -40,9 +40,16 @@ services:
     Centreon\Domain\Repository\Interfaces\AccessGroupRepositoryInterface:
         class: Centreon\Infrastructure\Repository\AccessGroupRepositoryRDB
 
-    Centreon\Domain\Repository\Interfaces\MonitoringServiceRepositoryInterface:
-        class: Centreon\Infrastructure\Repository\MonitoringServiceRepositoryRDB
+    Centreon\Domain\Repository\Interfaces\MonitoringRepositoryInterface:
+        alias: 'monitoring.repository'
 
     App\EventSubscriber\RequestEventSubscriber:
         class: App\EventSubscriber\RequestEventSubscriber
 
+    monitoring.repository:
+        class: Centreon\Infrastructure\Repository\MonitoringRepositoryRDB
+        calls:
+            - method: setCentreonDbName
+              arguments: ['%database_db%']
+            - method: setStorageDbName
+              arguments: ['%database_dbstg%']
