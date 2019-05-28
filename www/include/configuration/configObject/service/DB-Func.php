@@ -623,7 +623,7 @@ function multipleServiceInDB(
                         $dbResult = $pearDB->query($query);
                         $fields["service_cgs"] = "";
                         while ($Cg = $dbResult->fetch()) {
-                            $query = "INSERT INTO contactgroup_service_relation VALUES (NULL, '" .
+                            $query = "INSERT INTO contactgroup_service_relation VALUES ('" .
                                 $Cg["contactgroup_cg_id"] . "', '" . $maxId["MAX(service_id)"] . "')";
                             $pearDB->query($query);
                             $fields["service_cgs"] .= $Cg["contactgroup_cg_id"] . ",";

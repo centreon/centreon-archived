@@ -463,7 +463,7 @@ function multipleHostInDB($hosts = array(), $nbrDup = array())
                     $fields["host_cs"] = "";
                     while ($C = $dbResult->fetch()) {
                         $dbResult1 = $pearDB->query("INSERT INTO contact_host_relation 
-                                        VALUES (NULL, '" . $maxId["MAX(host_id)"] . "', '" . $C["contact_id"] . "')");
+                                        VALUES ('" . $maxId["MAX(host_id)"] . "', '" . $C["contact_id"] . "')");
                         $fields["host_cs"] .= $C["contact_id"] . ",";
                     }
                     $fields["host_cs"] = trim($fields["host_cs"], ",");

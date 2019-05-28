@@ -156,7 +156,7 @@ function multipleContactGroupInDB($contactGroups = array(), $nbrDup = array())
                     $fields["cg_contacts"] = "";
                     while ($cct = $dbResult->fetch()) {
                         $query = "INSERT INTO `contactgroup_contact_relation` " .
-                            "VALUES (NULL, '" . $cct["contact_contact_id"] . "', '" . $maxId["MAX(cg_id)"] . "')";
+                            "VALUES ('" . $cct["contact_contact_id"] . "', '" . $maxId["MAX(cg_id)"] . "')";
                         $pearDB->query($query);
                         $fields["cg_contacts"] .= $cct["contact_contact_id"] . ",";
                     }

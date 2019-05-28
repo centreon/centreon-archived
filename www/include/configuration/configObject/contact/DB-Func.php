@@ -295,7 +295,7 @@ function multipleContactInDB($contacts = array(), $nbrDup = array())
                     $dbResult = $pearDB->query($query);
                     $fields["contact_svNotifCmds"] = "";
                     while ($serviceCmd = $dbResult->fetch()) {
-                        $query = "INSERT INTO contact_servicecommands_relation VALUES (NULL, '" .
+                        $query = "INSERT INTO contact_servicecommands_relation VALUES ('" .
                             $lastId . "', '" . $serviceCmd["command_command_id"] . "')";
                         $pearDB->query($query);
                         $fields["contact_svNotifCmds"] .= $serviceCmd["command_command_id"] . ",";
