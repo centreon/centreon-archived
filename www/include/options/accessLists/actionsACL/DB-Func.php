@@ -171,7 +171,7 @@ function multipleActionInDB($actions = array(), $nbrDup = array())
                         " WHERE acl_action_id = '" . $key . "'";
                     $dbResult = $pearDB->query($query);
                     while ($cct = $dbResult->fetch()) {
-                        $query = "INSERT INTO acl_group_actions_relations VALUES (NULL, '" .
+                        $query = "INSERT INTO acl_group_actions_relations VALUES ('" .
                             $maxId["MAX(acl_action_id)"] . "', '" . $cct["acl_group_id"] . "')";
                         $pearDB->query($query);
                     }

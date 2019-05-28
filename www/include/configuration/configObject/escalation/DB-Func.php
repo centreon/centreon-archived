@@ -109,7 +109,7 @@ function multipleEscalationInDB($escalations = array(), $nbrDup = array())
                     while ($cg = $dbResult->fetch()) {
                         $dbResult2 = $pearDB->query(
                             "INSERT INTO escalation_contactgroup_relation "
-                            . "VALUES (NULL, '" . $maxId["MAX(esc_id)"] . "', '"
+                            . "VALUES ('" . $maxId["MAX(esc_id)"] . "', '"
                             . $cg["contactgroup_cg_id"] . "')"
                         );
                         $fields["esc_cgs"] .= $cg["contactgroup_cg_id"] . ",";

@@ -381,7 +381,7 @@ function multipleHostInDB($hosts = array(), $nbrDup = array())
                     $fields["host_parents"] = "";
                     while ($host = $dbResult->fetch()) {
                         $dbResult1 = $pearDB->query("INSERT INTO host_hostparent_relation 
-                              VALUES (NULL, '" . $host["host_parent_hp_id"] . "', '" . $maxId["MAX(host_id)"] . "')");
+                              VALUES ('" . $host["host_parent_hp_id"] . "', '" . $maxId["MAX(host_id)"] . "')");
                         $fields["host_parents"] .= $host["host_parent_hp_id"] . ",";
                     }
                     $fields["host_parents"] = trim($fields["host_parents"], ",");
@@ -449,7 +449,7 @@ function multipleHostInDB($hosts = array(), $nbrDup = array())
                     $fields["host_cgs"] = "";
                     while ($Cg = $dbResult->fetch()) {
                         $dbResult1 = $pearDB->query("INSERT INTO contactgroup_host_relation 
-                                VALUES (NULL, '" . $maxId["MAX(host_id)"] . "', '" . $Cg["contactgroup_cg_id"] . "')");
+                                VALUES ('" . $maxId["MAX(host_id)"] . "', '" . $Cg["contactgroup_cg_id"] . "')");
                         $fields["host_cgs"] .= $Cg["contactgroup_cg_id"] . ",";
                     }
                     $fields["host_cgs"] = trim($fields["host_cgs"], ",");
