@@ -561,9 +561,9 @@ function multipleHostInDB($hosts = array(), $nbrDup = array())
                     /*
                      * Host Categorie Duplication
                      */
-                    $request = "INSERT INTO hostcategories_relation 
-                                SELECT NULL, hostcategories_hc_id, '" . $maxId["MAX(host_id)"] . "' 
-                                FROM hostcategories_relation 
+                    $request = "INSERT INTO hostcategories_relation
+                                SELECT hostcategories_hc_id, '" . $maxId["MAX(host_id)"] . "'
+                                FROM hostcategories_relation
                                 WHERE host_host_id = '" . (int)$key . "'";
                     $dbResult3 = $pearDB->query($request);
 

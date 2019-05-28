@@ -310,7 +310,7 @@ function multipleContactInDB($contacts = array(), $nbrDup = array())
                     $dbResult = $pearDB->query($query);
                     $fields["contact_cgNotif"] = "";
                     while ($Cg = $dbResult->fetch()) {
-                        $query = "INSERT INTO contactgroup_contact_relation VALUES (NULL, '" .
+                        $query = "INSERT INTO contactgroup_contact_relation VALUES ('" .
                             $lastId . "', '" . $Cg["contactgroup_cg_id"] . "')";
                         $pearDB->query($query);
                         $fields["contact_cgNotif"] .= $Cg["contactgroup_cg_id"] . ",";

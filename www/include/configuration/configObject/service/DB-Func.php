@@ -667,7 +667,7 @@ function multipleServiceInDB(
                         $dbResult = $pearDB->query($query);
                         $fields["service_traps"] = "";
                         while ($traps = $dbResult->fetch()) {
-                            $query = "INSERT INTO traps_service_relation VALUES (NULL, '" .
+                            $query = "INSERT INTO traps_service_relation VALUES ('" .
                                 $traps["traps_id"] . "', '" . $maxId["MAX(service_id)"] . "')";
                             $pearDB->query($query);
                             $fields["service_traps"] .= $traps["traps_id"] . ",";
