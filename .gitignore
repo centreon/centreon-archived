@@ -5,3 +5,5 @@ node_modules/
 /vendor/
 composer.lock
 *-dev.yml
+centreon-build/
+secret
