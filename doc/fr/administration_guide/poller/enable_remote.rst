@@ -9,7 +9,7 @@ la commande suivante ::
 
 .. note::
     Remplacez **@IP_CENTREON_CENTRAL** par l'IP du serveur Centreon vu par le collecteur.
-    Vous pouvez définir plusieurs adresse IP en utilisant la virgule comme séparateur.
+    Vous pouvez définir plusieurs adresses IP en utilisant la virgule comme séparateur.
 
 .. note::
     * Pour utiliser HTTPS, remplacez **@IP_CENTREON_CENTRAL** par
@@ -29,7 +29,7 @@ Remote Server.
 Pour ne pas contrôler le certificat SSL sur le Remote server, mettre à **1**
 l'option **<not check SSL CA on Central>**, sinon **0**.
 
-Pour ne pas utiliser le proxy pour contacter le serveur Centtreon Central,
+Pour ne pas utiliser le proxy pour contacter le serveur Centreon Central,
 mettre à **1** l'option **<no proxy to call Central>**, sinon **0**.
 
 Cette commande va activer le mode **Remote Server** ::

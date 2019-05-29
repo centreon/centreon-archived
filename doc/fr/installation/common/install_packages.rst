@@ -121,7 +121,7 @@ fonctionnera PAS: ::
 Fuseau horaire PHP
 ------------------
 
-La timezone par défaut de PHP doit être configurée. Executer la commande suivante : ::
+La timezone par défaut de PHP doit être configurée. Exécuter la commande suivante : ::
 
     # echo "date.timezone = Europe/Paris" > /etc/opt/rh/rh-php71/php.d/php-timezone.ini
 
