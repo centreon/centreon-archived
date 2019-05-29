@@ -6,6 +6,9 @@ Enhancements
 ------------
 
 * [Graphs] Add more curves template for fresh installations (#5819, #7530) + (18.10.5)
+* [Remote Server] Add possibility to use HTTPS or HTTP for communication and to define TCP port (PR/#7536)
+* [Remote Server] Add possibility to verify or not peer SSL certificate (PR/#7536)
+* [Remote Server] Add possibility to use or not configured proxy (PR/#7536)
 
 Bug fixes
 ---------
