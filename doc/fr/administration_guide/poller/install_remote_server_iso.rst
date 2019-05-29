@@ -2,6 +2,10 @@
 A partir de l'ISO Centreon el7
 ==============================
 
+.. note::
+    Lors de cette procédure, il est préférable de sélectionner l'option :
+    **Central with database**.
+
 .. include:: ../../installation/common/install_iso.rst
 
 .. include:: ../../installation/common/web_install.rst

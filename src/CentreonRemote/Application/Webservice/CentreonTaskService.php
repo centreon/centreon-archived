@@ -156,14 +156,18 @@ class CentreonTaskService extends CentreonWebServiceAbstract
             throw new \RestBadRequestException('Missing arguments');
         }
 
-        $result = $this->getDi()['centreon.taskservice']
-            ->getRemoteStatusByParent(
-                $this->arguments['parent_id'],
-                $this->arguments['server_ip'],
-                $this->arguments['centreon_folder']
-            );
+        try {
+            $result = $this->getDi()['centreon.taskservice']
+                ->getRemoteStatusByParent(
+                    $this->arguments['parent_id'],
+                    $this->arguments['server_ip'],
+                    $this->arguments['centreon_folder']
+                );
 
-        return ['success' => true, 'status' => $result];
+            return ['success' => true, 'status' => $result];
+        } catch (\Exception $e) {
+            return ['success' => false, 'status' => $e->getMessage()];
+        }
     }
 
     /**

@@ -5905,6 +5905,22 @@ msgstr ""
 "Essa opção torna o mecanismo do Mecanismo Centreon compatível com módulos de"
 " terceiros, como MKLiveStatus e Mod_Gearman."
 
+msgid ""
+"What kind of method is needed to reach the Remote Server, HTTP or HTTPS?"
+msgstr ""
+
+msgid ""
+"On which TCP port is listening the Remote Server?"
+msgstr ""
+
+msgid ""
+"If checked, it won't check the validity of the SSL certificate of the Remote Server."
+msgstr ""
+
+msgid "If checked, it won't  use the proxy configured in "
+"'Administration > Parameters > Centreon UI' to connect to the Remote Server."
+msgstr ""
+
 #~ msgid "Enable caching"
 #~ msgstr "Ativa Cache"
 
