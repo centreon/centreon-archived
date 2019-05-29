@@ -381,7 +381,7 @@ function multipleHostInDB($hosts = array(), $nbrDup = array())
                     $fields["host_parents"] = "";
                     while ($host = $dbResult->fetch()) {
                         $dbResult1 = $pearDB->query("INSERT INTO host_hostparent_relation 
-                              VALUES (NULL, '" . $host["host_parent_hp_id"] . "', '" . $maxId["MAX(host_id)"] . "')");
+                              VALUES ('" . $host["host_parent_hp_id"] . "', '" . $maxId["MAX(host_id)"] . "')");
                         $fields["host_parents"] .= $host["host_parent_hp_id"] . ",";
                     }
                     $fields["host_parents"] = trim($fields["host_parents"], ",");
@@ -449,7 +449,7 @@ function multipleHostInDB($hosts = array(), $nbrDup = array())
                     $fields["host_cgs"] = "";
                     while ($Cg = $dbResult->fetch()) {
                         $dbResult1 = $pearDB->query("INSERT INTO contactgroup_host_relation 
-                                VALUES (NULL, '" . $maxId["MAX(host_id)"] . "', '" . $Cg["contactgroup_cg_id"] . "')");
+                                VALUES ('" . $maxId["MAX(host_id)"] . "', '" . $Cg["contactgroup_cg_id"] . "')");
                         $fields["host_cgs"] .= $Cg["contactgroup_cg_id"] . ",";
                     }
                     $fields["host_cgs"] = trim($fields["host_cgs"], ",");
@@ -463,7 +463,7 @@ function multipleHostInDB($hosts = array(), $nbrDup = array())
                     $fields["host_cs"] = "";
                     while ($C = $dbResult->fetch()) {
                         $dbResult1 = $pearDB->query("INSERT INTO contact_host_relation 
-                                        VALUES (NULL, '" . $maxId["MAX(host_id)"] . "', '" . $C["contact_id"] . "')");
+                                        VALUES ('" . $maxId["MAX(host_id)"] . "', '" . $C["contact_id"] . "')");
                         $fields["host_cs"] .= $C["contact_id"] . ",";
                     }
                     $fields["host_cs"] = trim($fields["host_cs"], ",");
@@ -561,9 +561,9 @@ function multipleHostInDB($hosts = array(), $nbrDup = array())
                     /*
                      * Host Categorie Duplication
                      */
-                    $request = "INSERT INTO hostcategories_relation 
-                                SELECT NULL, hostcategories_hc_id, '" . $maxId["MAX(host_id)"] . "' 
-                                FROM hostcategories_relation 
+                    $request = "INSERT INTO hostcategories_relation
+                                SELECT hostcategories_hc_id, '" . $maxId["MAX(host_id)"] . "'
+                                FROM hostcategories_relation
                                 WHERE host_host_id = '" . (int)$key . "'";
                     $dbResult3 = $pearDB->query($request);
 
