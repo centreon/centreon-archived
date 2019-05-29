@@ -1,8 +1,7 @@
 {
     "name": "centreon/centreon",
-    "version": "2.7.3",
     "type": "project",
-    "license": "GPL Licence 2.0",
+    "license": "GPL-2.0-only",
     "authors": [
         {
             "name": "Kevin Duret",
