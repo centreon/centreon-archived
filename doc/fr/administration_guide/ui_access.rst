@@ -29,7 +29,7 @@ suivantes :
 
 1. Installez le module SSL pour Apache : ::
 
-    # yum install mod_ssl openssl
+    # yum install httpd24-mod_ssl openssl
 
 2. Installez vos certificats, ou générez des certificats auto-signés :
 
