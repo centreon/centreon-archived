@@ -40,8 +40,21 @@ export const fetchNavigationData = () => {
         "internal.php?object=centreon_topology&action=menulist"
       ).get();
 
+      let pageIds = [];
+      for(let levelOne of data.result){
+        pageIds.push(levelOne.page);
+        for(let levelTwo of levelOne.children){
+          pageIds.push(levelTwo.page);
+          for(let group of levelTwo.groups){
+            for(let levelThree of group.children){
+              pageIds.push(levelThree.page)
+            }
+          }
+        }
+      }
+
       // Update payload in reducer on success
-      dispatch(fetchNavigationSuccess(data.result, data.result));
+      dispatch(fetchNavigationSuccess(pageIds, data.result));
     } catch (err) {
       // Update error in reducer on failure
       dispatch(fetchNavigationFailure(err));
@@ -53,11 +66,10 @@ const fetchNavigationBegin = () => ({
   type: FETCH_NAVIGATION_BEGIN
 });
 
-const fetchNavigationSuccess = (entries, menuItems, reactRoutes) => ({
+const fetchNavigationSuccess = (entries, menuItems) => ({
   type: FETCH_NAVIGATION_SUCCESS,
   entries,
-  menuItems,
-  reactRoutes
+  menuItems
 });
 
 const fetchNavigationFailure = error => ({
