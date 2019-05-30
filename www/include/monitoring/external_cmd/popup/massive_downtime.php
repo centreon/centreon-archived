@@ -139,13 +139,6 @@ if (!$gmt) {
     $gmt = date_default_timezone_get();
 }
 
-$form->setDefaults(
-    array(
-        "start_time" => $centreonGMT->getDate("G:i", time(), $gmt),
-        "end_time" => $centreonGMT->getDate("G:i", time() + 7200, $gmt)
-    )
-);
-
 $form->addElement(
     'text',
     'duration',
@@ -184,6 +177,22 @@ if (isset($centreon->optGen['monitoring_dwt_duration_scale']) && $centreon->optG
     $defaultScale = $centreon->optGen['monitoring_dwt_duration_scale'];
 }
 $form->setDefaults(array('duration_scale' => $defaultScale));
+
+$defaultDurationSeconds = $defaultDuration;
+if ($defaultScale == 'm') {
+    $defaultDurationSeconds *= 60;
+} elseif ($defaultScale == 'h') {
+    $defaultDurationSeconds *= 3600;
+} elseif ($defaultScale == 'd') {
+    $defaultDurationSeconds *= 86400;
+}
+
+$form->setDefaults(
+    array(
+        "start_time" => $centreonGMT->getDate("G:i", time(), $gmt),
+        "end_time" => $centreonGMT->getDate("G:i", time() + $defaultDurationSeconds, $gmt)
+    )
+);
 
 $chckbox[] = $form->addElement(
     'checkbox',
