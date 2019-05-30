@@ -283,10 +283,7 @@ if (!$centreon->user->access->checkAction("host_schedule_downtime")
         )
     );
 
-    $defaultDuration = 3600;
-    if (isset($centreon->optGen['monitoring_dwt_duration']) && $centreon->optGen['monitoring_dwt_duration']) {
-        $defaultDuration = $centreon->optGen['monitoring_dwt_duration'];
-    }
+    $defaultDuration = 7200;
     $form->setDefaults(array('duration' => $defaultDuration));
 
     $form->addElement(
@@ -320,13 +317,7 @@ if (!$centreon->user->access->checkAction("host_schedule_downtime")
     if (!$gmt) {
         $gmt = date_default_timezone_get();
     }
-    if ($defaultScale == 'm') {
-        $defaultDuration *= 60;
-    } elseif ($defaultScale == 'h') {
-        $defaultDuration *= 3600;
-    } elseif ($defaultScale == 'd') {
-        $defaultDuration *= 86400;
-    }
+
     $data["start_time"] = $centreonGMT->getDate("G:i", time(), $gmt);
     $data["end_time"] = $centreonGMT->getDate("G:i", time() + $defaultDuration, $gmt);
     $data["end"] = $centreonGMT->getDate("m/d/Y", time() + $defaultDuration, $gmt);
