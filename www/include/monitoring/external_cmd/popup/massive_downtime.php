@@ -149,12 +149,7 @@ $form->addElement(
         'disabled' => 'true'
     )
 );
-$defaultDuration = 3600;
-if (isset($centreon->optGen['monitoring_dwt_duration']) &&
-    $centreon->optGen['monitoring_dwt_duration']
-) {
-    $defaultDuration = $centreon->optGen['monitoring_dwt_duration'];
-}
+$defaultDuration = 7200;
 $form->setDefaults(array('duration' => $defaultDuration));
 
 $scaleChoices = array(
@@ -172,25 +167,11 @@ $form->addElement(
         'id' => 'duration_scale'
     )
 );
-$defaultScale = 's';
-if (isset($centreon->optGen['monitoring_dwt_duration_scale']) && $centreon->optGen['monitoring_dwt_duration_scale']) {
-    $defaultScale = $centreon->optGen['monitoring_dwt_duration_scale'];
-}
-$form->setDefaults(array('duration_scale' => $defaultScale));
-
-$defaultDurationSeconds = $defaultDuration;
-if ($defaultScale == 'm') {
-    $defaultDurationSeconds *= 60;
-} elseif ($defaultScale == 'h') {
-    $defaultDurationSeconds *= 3600;
-} elseif ($defaultScale == 'd') {
-    $defaultDurationSeconds *= 86400;
-}
-
+$form->setDefaults(array('duration_scale' => 's'));
 $form->setDefaults(
     array(
         "start_time" => $centreonGMT->getDate("G:i", time(), $gmt),
-        "end_time" => $centreonGMT->getDate("G:i", time() + $defaultDurationSeconds, $gmt)
+        "end_time" => $centreonGMT->getDate("G:i", time() + $defaultDuration, $gmt)
     )
 );
 
