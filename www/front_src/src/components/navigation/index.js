@@ -38,7 +38,7 @@ class Navigation extends Component {
 }
 
 const mapStateToProps = ({ navigation }) => ({
-  navigationData: navigation.entries,
+  navigationData: navigation.menuItems,
   reactRoutes: navigation.reactRoutes
 });
 
