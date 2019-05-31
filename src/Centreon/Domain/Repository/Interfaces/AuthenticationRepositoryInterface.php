@@ -3,6 +3,7 @@
 namespace Centreon\Domain\Repository\Interfaces;
 
 use Centreon\Domain\Entity\AuthenticationToken;
+use Centreon\Domain\Entity\Session;
 
 interface AuthenticationRepositoryInterface
 {
@@ -11,6 +12,8 @@ interface AuthenticationRepositoryInterface
     public function addToken(int $contactId, string $token);
 
     public function deleteExpiredTokens():int;
+
+    public function findSession(string $sessionId): ?Session;
 
     /**
      * @param int $contactId

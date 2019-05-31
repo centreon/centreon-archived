@@ -1,10 +1,11 @@
 <?php
+declare(strict_types=1);
 
 namespace Centreon\Domain\Entity;
 
+use Centreon\Domain\Annotation\EntityDescriptor;
 use JMS\Serializer\Annotation as Serializer;
-use JMS\Serializer\Annotation\Since;
-use JMS\Serializer\Annotation\Until;
+use Centreon\Domain\Annotation\EntityDescriptor as Desc;
 
 /**
  * Class HostEntity
@@ -17,37 +18,286 @@ class Host
     public const STATUS_UNREACHABLE = 2;
 
     /**
-     * @Serializer\Groups({"Default", "host_main", "host_full"})
+     * @Serializer\Groups({"Default"})
+     * @Desc(column="host_id", modifier="setId")
      * @var int Id of host
      */
     private $id;
+
     /**
-     * @Serializer\Groups({"Default", "host_main", "host_full"})
+     * @Serializer\Groups({"host_main"})
+     * @var int Poller id
+     */
+    private $instanceId;
+
+    /**
+     * @Serializer\Groups({"Default"})
      * @var string Name of host
      */
     private $name;
+
     /**
-     * @Serializer\Groups({"Default", "host_main", "host_full"})
-     * @var string Alias of host
+     * @Serializer\Groups({"host_main"})
+     * @var bool|null
+     */
+    private $acknowledged;
+
+    /**&
+     * @Serializer\Groups({"host_main"})
+     * @var int|null
+     */
+    private $acknowledgementType;
+
+    /**
+     * @Serializer\Groups({"host_full"})
+     * @var bool|null
+     */
+    private $activeChecks;
+    /**
+     * @Serializer\Groups({"host_main"})
+     * @var string|null Ip address or domain name
+     */
+    private $address;
+    /**
+     * @Serializer\Groups({"Default"})
+     * @var string|null Alias of host
      */
     private $alias;
 
     /**
-     * @Serializer\Groups({"host_main", "host_full"})
-     * @var string Ip address or domain name
+     * @Serializer\Groups({"host_main"})
+     * @var int|null
      */
-    private $address;
+    private $checkAttempt;
 
     /**
-     * @var bool Indicates whether this host is enabled or disabled
-     * @Serializer\Groups({"host_main", "host_full"})
+     * @Serializer\Groups({"host_full"})
+     * @var string|null
      */
-    private $isActive;
+    private $checkCommand;
+
     /**
-     * @var int Status of host
-     * @Serializer\Groups({"host_main", "host_full"})
+     * @Serializer\Groups({"host_full"})
+     * @var double|null
      */
-    private $status;
+    private $checkInterval;
+
+    /**
+     * @Serializer\Groups({"host_full"})
+     * @var string|null
+     */
+    private $checkPeriod;
+
+    /**
+     * @Serializer\Groups({"host_full"})
+     * @var int|null
+     */
+    private $checkType;
+
+    /**
+     * @Serializer\Groups({"host_main"})
+     * @var bool|null
+     */
+    private $checked;
+
+    /**
+     * @Serializer\Groups({"host_main"})
+     * @var string|null
+     */
+    private $displayName;
+
+    /**
+     * @Serializer\Groups({"host_main"})
+     * @var bool
+     */
+    private $enabled;
+
+    /**
+     * @Serializer\Groups({"host_main"})
+     * @var double|null
+     */
+    private $executionTime;
+
+    /**
+     * @Serializer\Groups({"host_main"})
+     * @var string|null
+     */
+    private $iconImage;
+
+    /**
+     * @Serializer\Groups({"host_main"})
+     * @var string|null
+     */
+    private $iconImageAlt;
+
+    /**
+     * @Serializer\Groups({"host_main"})
+     * @var string|null
+     */
+    private $lastCheck;
+
+    /**
+     * @Serializer\Groups({"host_full"})
+     * @var int|null
+     */
+    private $lastHardState;
+
+    /**
+     * @Serializer\Groups({"host_main"})
+     * @var \DateTime|null
+     */
+    private $lastHardStateChange;
+
+    /**
+     * @Serializer\Groups({"host_full"})
+     * @var \DateTime|null
+     */
+    private $lastNotification;
+
+    /**
+     * @Serializer\Groups({"host_main"})
+     * @var \DateTime|null
+     */
+    private $lastStateChange;
+
+    /**
+     * @Serializer\Groups({"host_full"})
+     * @var \DateTime|null
+     */
+    private $lastTimeDown;
+
+    /**
+     * @Serializer\Groups({"host_full"})
+     * @var \DateTime|null
+     */
+    private $lastTimeUnreachable;
+
+    /**
+     * @Serializer\Groups({"host_full"})
+     * @var \DateTime|null
+     */
+    private $lastTimeUp;
+
+    /**
+     * @Serializer\Groups({"host_main"})
+     * @var \DateTime|null
+     */
+    private $lastUpdate;
+
+    /**
+     * @Serializer\Groups({"host_full"})
+     * @var double|null
+     */
+    private $latency;
+
+    /**
+     * @Serializer\Groups({"host_main"})
+     * @var int|null
+     */
+    private $maxCheckAttempts;
+
+    /**
+     * @Serializer\Groups({"host_full"})
+     * @var \DateTime|null
+     */
+    private $nextCheck;
+
+    /**
+     * @Serializer\Groups({"host_full"})
+     * @var int|null
+     */
+    private $nextHostNotification;
+
+    /**
+     * @Serializer\Groups({"host_full"})
+     * @var double|null
+     */
+    private $notificationInterval;
+
+    /**
+     * @Serializer\Groups({"host_full"})
+     * @var \DateTime|null
+     */
+    private $notificationNumber;
+
+    /**
+     * @Serializer\Groups({"host_full"})
+     * @var string|null
+     */
+    private $notificationPeriod;
+
+    /**
+     * @Serializer\Groups({"host_full"})
+     * @var bool|null
+     */
+    private $notify;
+
+    /**
+     * @Serializer\Groups({"host_full"})
+     * @var bool|null
+     */
+    private $notifyOnDown;
+
+    /**
+     * @Serializer\Groups({"host_full"})
+     * @var bool|null
+     */
+    private $notifyOnDowntime;
+
+    /**
+     * @Serializer\Groups({"host_full"})
+     * @var bool|null
+     */
+    private $notifyOnFlapping;
+
+    /**
+     * @Serializer\Groups({"host_full"})
+     * @var bool|null
+     */
+    private $notifyOnRecovery;
+
+    /**
+     * @Serializer\Groups({"host_full"})
+     * @var bool|null
+     */
+    private $notifyOnUnreachable;
+
+    /**
+     * @Serializer\Groups({"host_main"})
+     * @var string|null
+     */
+    private $output;
+
+    /**
+     * @Serializer\Groups({"host_main"})
+     * @var bool|null
+     */
+    private $passiveChecks;
+
+    /**
+     * @Serializer\Groups({"host_main"})
+     * @var int|null
+     */
+    private $state;
+
+    /**
+     * @Serializer\Groups({"host_main"})
+     * @var int|null
+     */
+    private $stateType;
+
+    /**
+     * @Serializer\Groups({"host_full"})
+     * @var string|null
+     */
+    private $timezone;
+
+    /**
+     * @Serializer\Groups({"host_full"})
+     * @var int|null
+     */
+    private $realState;
+
     /**
      * @var Service[]
      * @Serializer\Groups({"host_main", "host_full"})
@@ -73,6 +323,24 @@ class Host
     }
 
     /**
+     * @return int
+     */
+    public function getInstanceId(): int
+    {
+        return $this->instanceId;
+    }
+
+    /**
+     * @param int $instanceId
+     * @return Host
+     */
+    public function setInstanceId(int $instanceId): Host
+    {
+        $this->instanceId = $instanceId;
+        return $this;
+    }
+
+    /**
      * @return string
      */
     public function getName(): string
@@ -91,74 +359,794 @@ class Host
     }
 
     /**
-     * @return string
+     * @return bool|null
      */
-    public function getAlias(): string
+    public function getAcknowledged(): ?bool
     {
-        return $this->alias;
+        return $this->acknowledged;
     }
 
     /**
-     * @param string $alias
+     * @param bool|null $acknowledged
      * @return Host
      */
-    public function setAlias(string $alias): Host
+    public function setAcknowledged(?bool $acknowledged): Host
     {
-        $this->alias = $alias;
+        $this->acknowledged = $acknowledged;
         return $this;
     }
 
     /**
-     * @return bool
+     * @return int|null
      */
-    public function isActive(): bool
+    public function getAcknowledgementType(): ?int
     {
-        return $this->isActive;
+        return $this->acknowledgementType;
     }
 
     /**
-     * @param bool $isActive
+     * @param int|null $acknowledgementType
      * @return Host
      */
-    public function setActive(bool $isActive): Host
+    public function setAcknowledgementType(?int $acknowledgementType): Host
     {
-        $this->isActive = $isActive;
+        $this->acknowledgementType = $acknowledgementType;
         return $this;
     }
 
     /**
-     * @return string
+     * @return bool|null
      */
-    public function getAddress(): string
+    public function getActiveChecks(): ?bool
+    {
+        return $this->activeChecks;
+    }
+
+    /**
+     * @param bool|null $activeChecks
+     * @return Host
+     */
+    public function setActiveChecks(?bool $activeChecks): Host
+    {
+        $this->activeChecks = $activeChecks;
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getAddress(): ?string
     {
         return $this->address;
     }
 
     /**
-     * @param string $address
+     * @param string|null $address
      * @return Host
      */
-    public function setAddress(string $address): Host
+    public function setAddress(?string $address): Host
     {
         $this->address = $address;
         return $this;
     }
 
     /**
-     * @return int
+     * @return string|null
      */
-    public function getStatus(): int
+    public function getAlias(): ?string
     {
-        return $this->status;
+        return $this->alias;
     }
 
     /**
-     * @param int $status
+     * @param string|null $alias
      * @return Host
      */
-    public function setStatus(int $status): Host
+    public function setAlias(?string $alias): Host
     {
-        $this->status = $status;
+        $this->alias = $alias;
+        return $this;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getCheckAttempt(): ?int
+    {
+        return $this->checkAttempt;
+    }
+
+    /**
+     * @param int|null $checkAttempt
+     * @return Host
+     */
+    public function setCheckAttempt(?int $checkAttempt): Host
+    {
+        $this->checkAttempt = $checkAttempt;
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getCheckCommand(): ?string
+    {
+        return $this->checkCommand;
+    }
+
+    /**
+     * @param string|null $checkCommand
+     * @return Host
+     */
+    public function setCheckCommand(?string $checkCommand): Host
+    {
+        $this->checkCommand = $checkCommand;
+        return $this;
+    }
+
+    /**
+     * @return float|null
+     */
+    public function getCheckInterval(): ?float
+    {
+        return $this->checkInterval;
+    }
+
+    /**
+     * @param float|null $checkInterval
+     * @return Host
+     */
+    public function setCheckInterval(?float $checkInterval): Host
+    {
+        $this->checkInterval = $checkInterval;
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getCheckPeriod(): ?string
+    {
+        return $this->checkPeriod;
+    }
+
+    /**
+     * @param string|null $checkPeriod
+     * @return Host
+     */
+    public function setCheckPeriod(?string $checkPeriod): Host
+    {
+        $this->checkPeriod = $checkPeriod;
+        return $this;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getCheckType(): ?int
+    {
+        return $this->checkType;
+    }
+
+    /**
+     * @param int|null $checkType
+     * @return Host
+     */
+    public function setCheckType(?int $checkType): Host
+    {
+        $this->checkType = $checkType;
+        return $this;
+    }
+
+    /**
+     * @return bool|null
+     */
+    public function getChecked(): ?bool
+    {
+        return $this->checked;
+    }
+
+    /**
+     * @param bool|null $checked
+     * @return Host
+     */
+    public function setChecked(?bool $checked): Host
+    {
+        $this->checked = $checked;
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getDisplayName(): ?string
+    {
+        return $this->displayName;
+    }
+
+    /**
+     * @param string|null $displayName
+     * @return Host
+     */
+    public function setDisplayName(?string $displayName): Host
+    {
+        $this->displayName = $displayName;
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isEnabled(): bool
+    {
+        return $this->enabled;
+    }
+
+    /**
+     * @param bool $enabled
+     * @return Host
+     */
+    public function setEnabled(bool $enabled): Host
+    {
+        $this->enabled = $enabled;
+        return $this;
+    }
+
+    /**
+     * @return float|null
+     */
+    public function getExecutionTime(): ?float
+    {
+        return $this->executionTime;
+    }
+
+    /**
+     * @param float|null $executionTime
+     * @return Host
+     */
+    public function setExecutionTime(?float $executionTime): Host
+    {
+        $this->executionTime = $executionTime;
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getIconImage(): ?string
+    {
+        return $this->iconImage;
+    }
+
+    /**
+     * @param string|null $iconImage
+     * @return Host
+     */
+    public function setIconImage(?string $iconImage): Host
+    {
+        $this->iconImage = $iconImage;
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getIconImageAlt(): ?string
+    {
+        return $this->iconImageAlt;
+    }
+
+    /**
+     * @param string|null $iconImageAlt
+     * @return Host
+     */
+    public function setIconImageAlt(?string $iconImageAlt): Host
+    {
+        $this->iconImageAlt = $iconImageAlt;
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getLastCheck(): ?string
+    {
+        return $this->lastCheck;
+    }
+
+    /**
+     * @param string|null $lastCheck
+     * @return Host
+     */
+    public function setLastCheck(?string $lastCheck): Host
+    {
+        $this->lastCheck = $lastCheck;
+        return $this;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getLastHardState(): ?int
+    {
+        return $this->lastHardState;
+    }
+
+    /**
+     * @param int|null $lastHardState
+     * @return Host
+     */
+    public function setLastHardState(?int $lastHardState): Host
+    {
+        $this->lastHardState = $lastHardState;
+        return $this;
+    }
+
+    /**
+     * @return \DateTime|null
+     */
+    public function getLastHardStateChange(): ?\DateTime
+    {
+        return $this->lastHardStateChange;
+    }
+
+    /**
+     * @param \DateTime|null $lastHardStateChange
+     * @return Host
+     */
+    public function setLastHardStateChange(?\DateTime $lastHardStateChange): Host
+    {
+        $this->lastHardStateChange = $lastHardStateChange;
+        return $this;
+    }
+
+    /**
+     * @return \DateTime|null
+     */
+    public function getLastNotification(): ?\DateTime
+    {
+        return $this->lastNotification;
+    }
+
+    /**
+     * @param \DateTime|null $lastNotification
+     * @return Host
+     */
+    public function setLastNotification(?\DateTime $lastNotification): Host
+    {
+        $this->lastNotification = $lastNotification;
+        return $this;
+    }
+
+    /**
+     * @return \DateTime|null
+     */
+    public function getLastStateChange(): ?\DateTime
+    {
+        return $this->lastStateChange;
+    }
+
+    /**
+     * @param \DateTime|null $lastStateChange
+     * @return Host
+     */
+    public function setLastStateChange(?\DateTime $lastStateChange): Host
+    {
+        $this->lastStateChange = $lastStateChange;
+        return $this;
+    }
+
+    /**
+     * @return \DateTime|null
+     */
+    public function getLastTimeDown(): ?\DateTime
+    {
+        return $this->lastTimeDown;
+    }
+
+    /**
+     * @param \DateTime|null $lastTimeDown
+     * @return Host
+     */
+    public function setLastTimeDown(?\DateTime $lastTimeDown): Host
+    {
+        $this->lastTimeDown = $lastTimeDown;
+        return $this;
+    }
+
+    /**
+     * @return \DateTime|null
+     */
+    public function getLastTimeUnreachable(): ?\DateTime
+    {
+        return $this->lastTimeUnreachable;
+    }
+
+    /**
+     * @param \DateTime|null $lastTimeUnreachable
+     * @return Host
+     */
+    public function setLastTimeUnreachable(?\DateTime $lastTimeUnreachable): Host
+    {
+        $this->lastTimeUnreachable = $lastTimeUnreachable;
+        return $this;
+    }
+
+    /**
+     * @return \DateTime|null
+     */
+    public function getLastTimeUp(): ?\DateTime
+    {
+        return $this->lastTimeUp;
+    }
+
+    /**
+     * @param \DateTime|null $lastTimeUp
+     * @return Host
+     */
+    public function setLastTimeUp(?\DateTime $lastTimeUp): Host
+    {
+        $this->lastTimeUp = $lastTimeUp;
+        return $this;
+    }
+
+    /**
+     * @return \DateTime|null
+     */
+    public function getLastUpdate(): ?\DateTime
+    {
+        return $this->lastUpdate;
+    }
+
+    /**
+     * @param \DateTime|null $lastUpdate
+     * @return Host
+     */
+    public function setLastUpdate(?\DateTime $lastUpdate): Host
+    {
+        $this->lastUpdate = $lastUpdate;
+        return $this;
+    }
+
+    /**
+     * @return float|null
+     */
+    public function getLatency(): ?float
+    {
+        return $this->latency;
+    }
+
+    /**
+     * @param float|null $latency
+     * @return Host
+     */
+    public function setLatency(?float $latency): Host
+    {
+        $this->latency = $latency;
+        return $this;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getMaxCheckAttempts(): ?int
+    {
+        return $this->maxCheckAttempts;
+    }
+
+    /**
+     * @param int|null $maxCheckAttempts
+     * @return Host
+     */
+    public function setMaxCheckAttempts(?int $maxCheckAttempts): Host
+    {
+        $this->maxCheckAttempts = $maxCheckAttempts;
+        return $this;
+    }
+
+    /**
+     * @return \DateTime|null
+     */
+    public function getNextCheck(): ?\DateTime
+    {
+        return $this->nextCheck;
+    }
+
+    /**
+     * @param \DateTime|null $nextCheck
+     * @return Host
+     */
+    public function setNextCheck(?\DateTime $nextCheck): Host
+    {
+        $this->nextCheck = $nextCheck;
+        return $this;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getNextHostNotification(): ?int
+    {
+        return $this->nextHostNotification;
+    }
+
+    /**
+     * @param int|null $nextHostNotification
+     * @return Host
+     */
+    public function setNextHostNotification(?int $nextHostNotification): Host
+    {
+        $this->nextHostNotification = $nextHostNotification;
+        return $this;
+    }
+
+    /**
+     * @return float|null
+     */
+    public function getNotificationInterval(): ?float
+    {
+        return $this->notificationInterval;
+    }
+
+    /**
+     * @param float|null $notificationInterval
+     * @return Host
+     */
+    public function setNotificationInterval(?float $notificationInterval): Host
+    {
+        $this->notificationInterval = $notificationInterval;
+        return $this;
+    }
+
+    /**
+     * @return \DateTime|null
+     */
+    public function getNotificationNumber(): ?\DateTime
+    {
+        return $this->notificationNumber;
+    }
+
+    /**
+     * @param \DateTime|null $notificationNumber
+     * @return Host
+     */
+    public function setNotificationNumber(?\DateTime $notificationNumber): Host
+    {
+        $this->notificationNumber = $notificationNumber;
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getNotificationPeriod(): ?string
+    {
+        return $this->notificationPeriod;
+    }
+
+    /**
+     * @param string|null $notificationPeriod
+     * @return Host
+     */
+    public function setNotificationPeriod(?string $notificationPeriod): Host
+    {
+        $this->notificationPeriod = $notificationPeriod;
+        return $this;
+    }
+
+    /**
+     * @return bool|null
+     */
+    public function getNotify(): ?bool
+    {
+        return $this->notify;
+    }
+
+    /**
+     * @param bool|null $notify
+     * @return Host
+     */
+    public function setNotify(?bool $notify): Host
+    {
+        $this->notify = $notify;
+        return $this;
+    }
+
+    /**
+     * @return bool|null
+     */
+    public function getNotifyOnDown(): ?bool
+    {
+        return $this->notifyOnDown;
+    }
+
+    /**
+     * @param bool|null $notifyOnDown
+     * @return Host
+     */
+    public function setNotifyOnDown(?bool $notifyOnDown): Host
+    {
+        $this->notifyOnDown = $notifyOnDown;
+        return $this;
+    }
+
+    /**
+     * @return bool|null
+     */
+    public function getNotifyOnDowntime(): ?bool
+    {
+        return $this->notifyOnDowntime;
+    }
+
+    /**
+     * @param bool|null $notifyOnDowntime
+     * @return Host
+     */
+    public function setNotifyOnDowntime(?bool $notifyOnDowntime): Host
+    {
+        $this->notifyOnDowntime = $notifyOnDowntime;
+        return $this;
+    }
+
+    /**
+     * @return bool|null
+     */
+    public function getNotifyOnFlapping(): ?bool
+    {
+        return $this->notifyOnFlapping;
+    }
+
+    /**
+     * @param bool|null $notifyOnFlapping
+     * @return Host
+     */
+    public function setNotifyOnFlapping(?bool $notifyOnFlapping): Host
+    {
+        $this->notifyOnFlapping = $notifyOnFlapping;
+        return $this;
+    }
+
+    /**
+     * @return bool|null
+     */
+    public function getNotifyOnRecovery(): ?bool
+    {
+        return $this->notifyOnRecovery;
+    }
+
+    /**
+     * @param bool|null $notifyOnRecovery
+     * @return Host
+     */
+    public function setNotifyOnRecovery(?bool $notifyOnRecovery): Host
+    {
+        $this->notifyOnRecovery = $notifyOnRecovery;
+        return $this;
+    }
+
+    /**
+     * @return bool|null
+     */
+    public function getNotifyOnUnreachable(): ?bool
+    {
+        return $this->notifyOnUnreachable;
+    }
+
+    /**
+     * @param bool|null $notifyOnUnreachable
+     * @return Host
+     */
+    public function setNotifyOnUnreachable(?bool $notifyOnUnreachable): Host
+    {
+        $this->notifyOnUnreachable = $notifyOnUnreachable;
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getOutput(): ?string
+    {
+        return $this->output;
+    }
+
+    /**
+     * @param string|null $output
+     * @return Host
+     */
+    public function setOutput(?string $output): Host
+    {
+        $this->output = $output;
+        return $this;
+    }
+
+    /**
+     * @return bool|null
+     */
+    public function getPassiveChecks(): ?bool
+    {
+        return $this->passiveChecks;
+    }
+
+    /**
+     * @param bool|null $passiveChecks
+     * @return Host
+     */
+    public function setPassiveChecks(?bool $passiveChecks): Host
+    {
+        $this->passiveChecks = $passiveChecks;
+        return $this;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getState(): ?int
+    {
+        return $this->state;
+    }
+
+    /**
+     * @param int|null $state
+     * @return Host
+     */
+    public function setState(?int $state): Host
+    {
+        $this->state = $state;
+        return $this;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getStateType(): ?int
+    {
+        return $this->stateType;
+    }
+
+    /**
+     * @param int|null $stateType
+     * @return Host
+     */
+    public function setStateType(?int $stateType): Host
+    {
+        $this->stateType = $stateType;
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getTimezone(): ?string
+    {
+        return $this->timezone;
+    }
+
+    /**
+     * @param string|null $timezone
+     * @return Host
+     */
+    public function setTimezone(?string $timezone): Host
+    {
+        $this->timezone = $timezone;
+        return $this;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getRealState(): ?int
+    {
+        return $this->realState;
+    }
+
+    /**
+     * @param int|null $realState
+     * @return Host
+     */
+    public function setRealState(?int $realState): Host
+    {
+        $this->realState = $realState;
         return $this;
     }
 
@@ -169,6 +1157,7 @@ class Host
     {
         return $this->services;
     }
+
 
     /**
      * @param Service[] $services

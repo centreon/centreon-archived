@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace Centreon\Domain\Service;
 
@@ -51,7 +52,7 @@ class MonitoringService implements MonitoringServiceInterface
                 ->monitoringRepository
                 ->filterByAccessGroups(null)
                 ->findServices($pagination);
-        } elseif (count($accessGroups = $this->accessGroupRepository->findFromContact($this->contact)) > 0) {
+        } elseif (count($accessGroups = $this->accessGroupRepository->findByContact($this->contact)) > 0) {
             return $this
                 ->monitoringRepository
                 ->filterByAccessGroups($accessGroups)
@@ -71,7 +72,7 @@ class MonitoringService implements MonitoringServiceInterface
                 ->monitoringRepository
                 ->filterByAccessGroups(null)
                 ->findHosts($pagination);
-        } elseif (count($accessGroups = $this->accessGroupRepository->findFromContact($this->contact)) > 0) {
+        } elseif (count($accessGroups = $this->accessGroupRepository->findByContact($this->contact)) > 0) {
             return $this
                 ->monitoringRepository
                 ->filterByAccessGroups($accessGroups)
@@ -112,7 +113,7 @@ class MonitoringService implements MonitoringServiceInterface
                 ->monitoringRepository
                 ->filterByAccessGroups(null)
                 ->findOneService($serviceId);
-        } elseif (count($accessGroups = $this->accessGroupRepository->findFromContact($this->contact)) > 0) {
+        } elseif (count($accessGroups = $this->accessGroupRepository->findByContact($this->contact)) > 0) {
             return $this
                 ->monitoringRepository
                 ->filterByAccessGroups($accessGroups)

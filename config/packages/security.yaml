@@ -16,6 +16,8 @@ security:
             guard:
                 authenticators:
                     - security.provider.tokenapi
+                    - security.provider.sessionapi
+                entry_point: security.provider.tokenapi
         login:
             pattern: ^/centreon/apiv2/login$
             security: false

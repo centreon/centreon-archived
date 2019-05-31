@@ -27,11 +27,11 @@ final class ContactRepositoryRDB implements ContactRepositoryInterface
         $prepare = $this->pdo->prepare(
             "SELECT * FROM contact WHERE contact_id = :contact_id"
         );
-        $prepare->bindValue(':contact_id', $contactId, DatabaseConnection::PARAM_INT);
+        $prepare->bindValue(':contact_id', $contactId, \PDO::PARAM_INT);
 
         $contact = null;
         if ($prepare->execute()
-            && ($result = $prepare->fetch(DatabaseConnection::FETCH_ASSOC))
+            && ($result = $prepare->fetch(\PDO::FETCH_ASSOC))
         ) {
             $contact = $this->createContact($result);
         }
@@ -45,16 +45,38 @@ final class ContactRepositoryRDB implements ContactRepositoryInterface
      */
     public function findByName(string $name): ?Contact
     {
-        $prepare = $this->pdo->prepare(
+        $statement = $this->pdo->prepare(
             'SELECT * 
             FROM contact 
             WHERE contact_alias = :username
             LIMIT 1'
         );
-        $prepare->bindValue(':username', $name, DatabaseConnection::PARAM_STR);
-        if ($prepare->execute()
-            && ($result = $prepare->fetch(DatabaseConnection::FETCH_ASSOC))
+        $statement->bindValue(':username', $name, \PDO::PARAM_STR);
+        if ($statement->execute()
+            && ($result = $statement->fetch(\PDO::FETCH_ASSOC))
         ) {
+            $contact = $this->createContact($result);
+            return $contact;
+        } else {
+            return null;
+        }
+    }use ReflectionClass;
+
+
+    public function findBySession(string $sessionId): ?Contact
+    {
+        $statement = $this->pdo->prepare(
+            'SELECT contact.*
+            FROM contact
+            INNER JOIN session
+              on session.user_id = contact.contact_id
+            WHERE session.session_id = :session_id
+            LIMIT 1'
+        );
+        $statement->bindValue(':session_id', $sessionId, \PDO::PARAM_STR);
+        if ($statement->execute()
+            && ($result = $statement->fetch(\PDO::FETCH_ASSOC)))
+        {
             $contact = $this->createContact($result);
             return $contact;
         } else {

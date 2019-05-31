@@ -1,8 +1,9 @@
 <?php
-
+declare(strict_types=1);
 
 namespace Centreon\Application\Controller;
 
+use Centreon\Domain\Annotation\EntityCreator;
 use Centreon\Domain\Entity\Contact;
 use Centreon\Domain\Pagination;
 use Centreon\Domain\Service\Interfaces\MonitoringServiceInterface;
@@ -26,7 +27,7 @@ class MonitoringController extends AbstractFOSRestController
         $this->monitoring = $monitoringService;
     }
 
-    /**
+   /**
      * @IsGranted("ROLE_USER")
      * @Rest\Get("/monitoring/services/{serviceId}")
      * @param int $serviceId
@@ -38,7 +39,7 @@ class MonitoringController extends AbstractFOSRestController
             ->filterByContact($this->getUser())
             ->findOneService($serviceId);
 
-        $context = (new Context())->setGroups(['service_full']);
+        $context = (new Context())->setGroups(['Default','service_full']);
 
         return $this->view($service)->setContext($context);
     }

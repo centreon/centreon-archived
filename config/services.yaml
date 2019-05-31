@@ -43,5 +43,8 @@ services:
     security.provider.tokenapi:
         class: App\Security\TokenAPIAuthenticator
 
+    security.provider.sessionapi:
+        class: App\Security\SessionAPIAuthenticator
+
 imports:
     resource: './Modules/*.yaml'

@@ -3,8 +3,9 @@
 
 namespace Centreon\Infrastructure\Repository;
 
-
 use Centreon\Domain\Entity\AuthenticationToken;
+use Centreon\Domain\Entity\Session;
+use Centreon\Domain\EntityCreator;
 use Centreon\Domain\Repository\Interfaces\AuthenticationRepositoryInterface;
 use Centreon\Infrastructure\DatabaseConnection;
 
@@ -27,7 +28,6 @@ class AuthenticationRepositoryRDB implements AuthenticationRepositoryInterface
     public function isGoodCredentials(string $username, string $password): bool
     {
         global $dependencyInjector;
-        //require _CENTREON_PATH_ . 'www/class/centreonAuth.class.php';
         $pearDB = new \CentreonDB('centreon', 3, true);
         $log = new \CentreonUserLog(0, $pearDB);
         $auth = new \CentreonAuth(
@@ -69,6 +69,26 @@ class AuthenticationRepositoryRDB implements AuthenticationRepositoryInterface
             WHERE generate_date < DATE_SUB(NOW(), INTERVAL 1 HOUR)'
         );
         return $statement->rowCount();
+    }
+
+    public function findSession(string $sessionId): ?Session
+    {
+        $statement = $this->db->prepare(
+            'SELECT *
+            FROM session
+            WHERE session_id = :session_id
+            LIMIT 1'
+        );
+        $statement->bindValue(':session_id', $sessionId, \PDO::PARAM_STR);
+        if ($statement->execute()
+            && $result = $statement->fetch(\PDO::FETCH_ASSOC))
+        {
+            return EntityCreator::createEntityByArray(
+                Session::class,
+                $result
+            );
+        }
+        return null;
     }
 
     public function findToken(string $token): ?AuthenticationToken

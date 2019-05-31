@@ -6,18 +6,18 @@ namespace App\Security;
 use Centreon\Domain\Exception\ContactDisabledException;
 use Centreon\Domain\Repository\Interfaces\AuthenticationRepositoryInterface;
 use Centreon\Domain\Repository\Interfaces\ContactRepositoryInterface;
+use Centreon\Infrastructure\Service\Exception\NotFoundException;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
-use Symfony\Component\Security\Core\Exception\AuthenticationExpiredException;
-use Symfony\Component\Security\Core\Exception\TokenNotFoundException;
+use Symfony\Component\Security\Core\Exception\SessionUnavailableException;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
 use Symfony\Component\Security\Guard\AbstractGuardAuthenticator;
 
-class TokenAPIAuthenticator extends AbstractGuardAuthenticator
+class SessionAPIAuthenticator extends AbstractGuardAuthenticator
 {
 
     /**
@@ -80,7 +80,7 @@ class TokenAPIAuthenticator extends AbstractGuardAuthenticator
      */
     public function supports(Request $request)
     {
-        return $request->headers->has('X-AUTH-TOKEN');
+        return $request->headers->has('Cookie') && $request->cookies->has('PHPSESSID');
     }
 
     /**
@@ -109,7 +109,7 @@ class TokenAPIAuthenticator extends AbstractGuardAuthenticator
     public function getCredentials(Request $request)
     {
         return [
-            'token' => $request->headers->get('X-AUTH-TOKEN'),
+            'session' => $request->cookies->get('PHPSESSID'),
         ];
     }
 
@@ -130,18 +130,18 @@ class TokenAPIAuthenticator extends AbstractGuardAuthenticator
      */
     public function getUser($credentials, UserProviderInterface $userProvider)
     {
-        $apiToken = $credentials['token'];
-        if (null === $apiToken) {
+        $sessionId = $credentials['session'];
+        if (null === $sessionId) {
             return null;
         }
-        $token = $this->authenticationRepository->findToken($apiToken);
-        if ($token === null) {
-            throw new TokenNotFoundException();
+        $session = $this->authenticationRepository->findSession($sessionId);
+        if ($session === null) {
+            throw new NotFoundException('Session not found');
         }
-        if ($token->isValid() === false) {
-            throw new AuthenticationExpiredException();
+        $contact = $this->contactRepository->findBySession($sessionId);
+        if ($contact === null) {
+            throw new SessionUnavailableException();
         }
-        $contact = $this->contactRepository->findById($token->getContactId());
         if ($contact->isActive() === false) {
             throw new ContactDisabledException();
         }

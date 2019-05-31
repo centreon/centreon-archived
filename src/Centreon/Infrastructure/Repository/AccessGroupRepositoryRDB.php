@@ -26,7 +26,7 @@ final class AccessGroupRepositoryRDB implements AccessGroupRepositoryInterface
      * @param Contact $contact
      * @return AccessGroup[]
      */
-    public function findFromContact(Contact $contact): array
+    public function findByContact(Contact $contact): array
     {
         $contactGroups = [];
         if (! is_null($contactId = $contact->getId())) {
