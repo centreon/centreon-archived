@@ -114,24 +114,48 @@ function setUserFormat() {
     }
 }
 
+function turnOnEvents() {
+    $(".datepicker").first().on('change', function (e) {
+        updateEndTime();
+    });
+    $(".timepicker").first().on('change', function (e) {
+        updateEndTime();
+    });
+    $(".datepicker").last().on('change', function (e) {
+        updateStartTime();
+    });
+    $(".timepicker").last().on('change', function (e) {
+        updateStartTime();
+    });
+}
+
+function turnOffEvents() {
+    $(".datepicker").off('change');
+    $(".timepicker").off('change');
+}
+
 function updateEndTime() {
-    var d = new Date($(".datepicker").first().val() + ' ' +  $(".timepicker").first().val());
-    if ($("#duration").val() != '') {
-        var dur = 0;
-        var duration_scale = $("#duration_scale").val();
-        if (duration_scale == 's') {
-            dur = $("#duration").val();
-        } else if (duration_scale == 'm') {
-            dur = $("#duration").val() * 60;
-        } else if (duration_scale == 'h') {
-            dur = $("#duration").val() * 3600;
-        } else if (duration_scale == 'd') {
-            dur = $("#duration").val() * 86400;
-        }
-        dur *= 1000; // Convert to microseconds
+    var start = new Date($(".datepicker").first().val() + ' ' +  $(".timepicker").first().val());
+    var end = new Date($(".datepicker").last().val() + ' ' +  $(".timepicker").last().val());
+    if (start > end) {
+        turnOffEvents();
         var e = new Date();
-        e.setTime(d.getTime() + dur);
+        e.setTime(start.getTime() + 7200000); //microseconds
         $(".datepicker").last().datepicker("setDate", e);
         $(".timepicker").last().timepicker("setTime", e.getHours() + ':' + e.getMinutes());
+        turnOnEvents();
+    }
+}
+
+function updateStartTime() {
+    var start = new Date($(".datepicker").first().val() + ' ' +  $(".timepicker").first().val());
+    var end = new Date($(".datepicker").last().val() + ' ' +  $(".timepicker").last().val());
+    if (start > end) {
+        turnOffEvents();
+        var e = new Date();
+        e.setTime(end.getTime() - 7200000); //microseconds
+        $(".datepicker").first().datepicker("setDate", e);
+        $(".timepicker").first().timepicker("setTime", e.getHours() + ':' + e.getMinutes());
+        turnOnEvents();
     }
 }

@@ -155,18 +155,7 @@
     initDatepicker("datepicker", "mm/dd/yy", "0");
 
     $(document).ready(function() {
-        $(".datepicker").first().on('change', function (e) {
-            updateEndTime();
-        });
-        $(".timepicker").first().on('change', function (e) {
-            updateEndTime();
-        });
-        $("#duration").on('keypress', function (e) {
-            updateEndTime();
-        });
-        $("#duration_scale").on('change', function (e) {
-            updateEndTime();
-        });
+        turnOnEvents();
     });
 
 </script>
