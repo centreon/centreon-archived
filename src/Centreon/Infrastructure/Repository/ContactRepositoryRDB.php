@@ -60,7 +60,7 @@ final class ContactRepositoryRDB implements ContactRepositoryInterface
         } else {
             return null;
         }
-    }use ReflectionClass;
+    }
 
 
     public function findBySession(string $sessionId): ?Contact
