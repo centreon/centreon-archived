@@ -47,7 +47,7 @@ class CentreonRemoteServer implements CentreonClapiServiceInterface
         );
 
         /* Check CLAPI */
-        $options = explode (';', $string_ip);
+        $options = explode(';', $string_ip);
 
         if (count($options) === 6) {
             $string_ip = $options[0];
@@ -75,17 +75,23 @@ class CentreonRemoteServer implements CentreonClapiServiceInterface
         echo "Starting Centreon Remote enable process: \n";
 
         echo "Limiting Menu Access...";
-        $result = $this->getDi()[\Centreon\ServiceProvider::CENTREON_DB_MANAGER]->getRepository(TopologyRepository::class)->disableMenus();
+        $result = $this->getDi()[\Centreon\ServiceProvider::CENTREON_DB_MANAGER]
+            ->getRepository(TopologyRepository::class)
+            ->disableMenus();
         echo (($result) ? 'Success' : 'Fail') . "\n";
 
         echo "Limiting Actions...";
-        $this->getDi()[\Centreon\ServiceProvider::CENTREON_DB_MANAGER]->getRepository(InformationsRepository::class)->toggleRemote('yes');
+        $this->getDi()[\Centreon\ServiceProvider::CENTREON_DB_MANAGER]
+            ->getRepository(InformationsRepository::class)
+            ->toggleRemote('yes');
         echo "Done\n";
 
         echo "Authorizing Master...";
-        $this->getDi()[\Centreon\ServiceProvider::CENTREON_DB_MANAGER]->getRepository(InformationsRepository::class)->authorizeMaster(
-            implode(',',$aIPMaster)
-        );
+        $this->getDi()[\Centreon\ServiceProvider::CENTREON_DB_MANAGER]
+            ->getRepository(InformationsRepository::class)
+            ->authorizeMaster(
+                implode(',',$aIPMaster)
+            );
         echo "Done\n";
 
         echo "Set 'remote' instance type...";
@@ -123,11 +129,15 @@ class CentreonRemoteServer implements CentreonClapiServiceInterface
         echo "Starting Centreon Remote disable process: \n";
 
         echo "Restoring Menu Access...";
-        $result = $this->getDi()[\Centreon\ServiceProvider::CENTREON_DB_MANAGER]->getRepository(TopologyRepository::class)->enableMenus();
+        $result = $this->getDi()[\Centreon\ServiceProvider::CENTREON_DB_MANAGER]
+            ->getRepository(TopologyRepository::class)
+            ->enableMenus();
         echo ($result) ? 'Success' : 'Fail' . "\n";
 
         echo "Restoring Actions...";
-        $this->getDi()[\Centreon\ServiceProvider::CENTREON_DB_MANAGER]->getRepository(InformationsRepository::class)->toggleRemote('no');
+        $this->getDi()[\Centreon\ServiceProvider::CENTREON_DB_MANAGER]
+            ->getRepository(InformationsRepository::class)
+            ->toggleRemote('no');
         echo 'Done'. "\n";
 
         echo "Restore 'central' instance type...";
