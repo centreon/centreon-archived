@@ -84,8 +84,15 @@ class CentreonRestHttp
      * @param bool$noProxy To disable CURLOPT_PROXY
      * @return array The result content
      */
-    public function call($url, $method = 'GET', $data = null, $headers = array(), $throwContent = false, $noCheckCertificate = false, $noProxy = false)
-    {
+    public function call(
+        $url,
+        $method = 'GET',
+        $data = null,
+        $headers = array(),
+        $throwContent = false,
+        $noCheckCertificate = false,
+        $noProxy = false
+    ) {
         /* Add content type to headers */
         $headers[] = 'Content-type: ' . $this->contentType;
         $headers[] = 'Connection: close';

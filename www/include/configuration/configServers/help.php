@@ -44,5 +44,6 @@ $help['no_check_certificate'] = dgettext(
 );
 $help['no_proxy'] = dgettext(
     "help",
-    "If checked, it won't  use the proxy configured in 'Administration > Parameters > Centreon UI' to connect to the Remote Server."
+    "If checked, it won't  use the proxy configured in 'Administration > Parameters > Centreon UI' "
+    . "to connect to the Remote Server."
 );
