@@ -41,7 +41,7 @@ export const fetchNavigationData = () => {
       ).get();
 
       let pageIds = [];
-      for(let levelOne of data){
+      for(let levelOne of data.result){
         pageIds.push(levelOne.page);
         for(let levelTwo of levelOne.children){
           pageIds.push(levelTwo.page);
