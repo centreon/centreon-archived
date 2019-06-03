@@ -51,8 +51,12 @@ function formatDateMoment() {
         if (!isNaN(currentDate)) {
             if (myElement.hasClass("isTime")) {
                 myElement.text(moment(currentDate).tz(userTimezone).format('LTS'));
+            } else if (myElement.hasClass("isShortTime")) {
+                myElement.text(moment(currentDate).tz(userTimezone).format('LT'));
             } else if (myElement.hasClass("isDate")) {
                 myElement.text(moment(currentDate).tz(userTimezone).format('LL'));
+            }else if (myElement.hasClass("isShortDate")) {
+                myElement.text(moment(currentDate).tz(userTimezone).format('LLL'));
             } else {
                 myElement.text(moment(currentDate).tz(userTimezone).format('LL LTS'));
             }
