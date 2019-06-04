@@ -51,7 +51,8 @@ class ServiceProviderTest extends TestCase
             ServiceProvider::CENTREON_BROKER_CONFIGURATION_SERVICE => Domain\Service\BrokerConfigurationService::class,
             // @todo must be exclude form DI
             ServiceProvider::CENTREON_BROKER_REPOSITORY => Domain\Repository\CfgCentreonBrokerRepository::class,
-            ServiceProvider::CENTREON_BROKER_INFO_REPOSITORY => Domain\Repository\CfgCentreonBrokerInfoRepository::class,
+            ServiceProvider::CENTREON_BROKER_INFO_REPOSITORY =>
+                Domain\Repository\CfgCentreonBrokerInfoRepository::class,
             // Validators
             ServiceProvider::VALIDATOR => Validator\Validator\ValidatorInterface::class,
             ServiceProvider::CENTREON_VALIDATOR_FACTORY => Validation\CentreonValidatorFactory::class,
