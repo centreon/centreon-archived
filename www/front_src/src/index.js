@@ -4,8 +4,8 @@ import AppProvider from "./Provider";
 // generate an "external" bundle to embed all needed libraries by external pages and hooks
 (async function() {
     window.React = await import(/* webpackChunkName: "external" */ 'react');
-    window.ReactDOM = await import(/* webpackChunkName: "external" */ 'react-dom');
-    window.ReactRouterDOM = await import(/* webpackChunkName: "external" */ 'react-router-dom');
+    window.ReactDOM = window.ReactDom = await import(/* webpackChunkName: "external" */ 'react-dom');
+    window.ReactRouterDOM = window.ReactRouterDom = await import(/* webpackChunkName: "external" */ 'react-router-dom');
     window.ReactRedux = await import(/* webpackChunkName: "external" */ 'react-redux');
     window.ReduxForm = await import(/* webpackChunkName: "external" */ 'redux-form');
     window.ReactReduxI18n = await import(/* webpackChunkName: "external" */ 'react-redux-i18n');
