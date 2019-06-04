@@ -74,7 +74,7 @@ class CentreonEscalationWebserviceTest extends TestCase
             ->method('query')
             ->will($this->returnCallback(function () use (&$filters) {
                     return $filters;
-            }))
+                }))
         ;
 
         // without applied filters
@@ -106,7 +106,7 @@ class CentreonEscalationWebserviceTest extends TestCase
                 ->method('hasAccessRestApiConfiguration')
                 ->will($this->returnCallback(function () {
                         return true;
-                }))
+                    }))
             ;
 
             $result = $this->webservice->authorize(null, $user);
