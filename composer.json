@@ -34,7 +34,12 @@
         "symfony/yaml": "^4.2",
         "openpsa/quickform": "3.3.*",
         "smarty/smarty": "~2.6",
-        "curl/curl" : "^1.5"
+        "curl/curl" : "^1.5",
+        "symfony/serializer": "^4.2",
+        "symfony/validator": "^4.2",
+        "symfony/property-access": "^4.2",
+        "symfony/property-info": "^4.2",
+        "symfony/expression-language": "^4.2"
     },
     "autoload": {
         "psr-4": {
