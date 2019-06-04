@@ -60,7 +60,7 @@ class EscalationRepository extends ServiceEntityRepository implements Pagination
     /**
      * {@inheritdoc}
      */
-    public function getPaginationList($filters = null, int $limit = null, int $offset = null, $ordering = []): array
+    public function getPaginationList($filters = null, int $limit = null, int $offset = null): array
     {
         $sql = 'SELECT SQL_CALC_FOUND_ROWS `esc_id` AS `id`, `esc_name` AS `name` FROM `' . Escalation::TABLE . '`';
 
