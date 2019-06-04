@@ -60,7 +60,7 @@ class ContactGroupRepository extends ServiceEntityRepository implements Paginati
     /**
      * {@inheritdoc}
      */
-    public function getPaginationList($filters = null, int $limit = null, int $offset = null, $ordering = []): array
+    public function getPaginationList($filters = null, int $limit = null, int $offset = null): array
     {
         $collector = new StatementCollector;
 
