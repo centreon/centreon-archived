@@ -28,7 +28,7 @@ To access to the UI using HTTPS, follow those steps:
 
 1. Install SSL module for Apache: ::
 
-    # yum install mod_ssl openssl
+    # yum install httpd24-mod_ssl openssl
 
 2. Install your certificats or generate self-signed certificates :
 

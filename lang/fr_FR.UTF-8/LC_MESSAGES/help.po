@@ -6463,6 +6463,26 @@ msgstr ""
 "Exécute la commande définie dans la configuration du collecteur (Configuration "
 "> Centreon > Poller > Post-Restart command)."
 
+msgid ""
+"What kind of method is needed to reach the Remote Server, HTTP or HTTPS?"
+msgstr ""
+"Quel type de méthode est nécessaire pour contacter le Remote Server, HTTP ou HTTPS ?"
+
+msgid "On which TCP port is listening the Remote Server?"
+msgstr ""
+"Sur quel port TCP écoute le Remote Server ?"
+
+msgid ""
+"If checked, it won't check the validity of the SSL certificate of the Remote Server."
+msgstr ""
+"Si cette case est cochée, la validité du certificat SSL du Remote Server ne sera pas vérifiée."
+
+msgid "If checked, it won't  use the proxy configured in "
+"'Administration > Parameters > Centreon UI' to connect to the Remote Server."
+msgstr ""
+"Si cette case est cochée, le paramétrage du proxy dans le menu "
+"Administration > Parameters > Centreon UI' ne sera pas utilisée pour se connecter au Remote Server"
+
 #~ msgid "SNMP global community."
 #~ msgstr "Communauté SNMP globale utilisée par défaut."
 

@@ -66,7 +66,7 @@ plupart des services de votre réseau.
 Centreon IMP nécessite les composants techniques Centreon License
 Manager et Centreon Plugin Pack Manager pour fonctionner.
 
-Si vous n'avez pas installé les modules durant l'instalaltion de Centreon,
+Si vous n'avez pas installé les modules durant l'installation de Centreon,
 Rendez-vous au menu **Administration > Extensions > Modules**.
 
 Clicquez sur le bouton **Install/Upgrade all** et validez l'action :
