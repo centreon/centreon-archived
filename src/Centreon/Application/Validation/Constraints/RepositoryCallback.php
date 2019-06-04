@@ -20,7 +20,7 @@ class RepositoryCallback extends Constraint
     ];
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function validatedBy()
     {
@@ -28,11 +28,10 @@ class RepositoryCallback extends Constraint
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function getTargets()
     {
         return self::CLASS_CONSTRAINT;
     }
 }
-
