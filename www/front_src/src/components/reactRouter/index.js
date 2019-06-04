@@ -77,12 +77,24 @@ class ReactRouter extends Component {
     return (
       <Suspense fallback={null}>
         <Switch>
-          {reactRoutes.map(({ path, comp, ...rest }) => (
+          {reactRoutes.map(({ path, comp: Comp, ...rest }) => (
             <Route
               key={path}
               path={path}
               exact="true"
-              component={acl.routes.includes(path) ? comp : NotAllowedPage}
+              render={renderProps => (
+                <div className={styles["react-page"]}>
+                  {acl.routes.includes(path) ? (
+                    <Comp
+                      {...renderProps}
+                    />
+                  ) : (
+                    <NotAllowedPage
+                      {...renderProps}
+                    />
+                  )}
+                </div>
+              )}
               {...rest}
             />
           ))}
