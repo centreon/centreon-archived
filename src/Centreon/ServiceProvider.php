@@ -84,6 +84,8 @@ class ServiceProvider implements AutoloadServiceProviderInterface
     const CENTREON_EVENT_DISPATCHER = 'centreon.event_dispatcher';
     const CENTREON_VALIDATOR_FACTORY = 'centreon.validator_factory';
     const CENTREON_VALIDATOR_TRANSLATOR = 'centreon.validator_translator';
+    const VALIDATOR = 'validator';
+    const VALIDATOR_EXPRESSION = 'validator.expression';
 
     /**
      * Register Centreon services
