@@ -113,7 +113,8 @@ class ContactGroupRepositoryTest extends TestCase
         ];
         $limit = 1;
         $offset = 0;
-        $result = $this->repository->getPaginationList($filters, $limit, $offset, ['field' => 'cg_name', 'order' => 'ASC']);
+        $result = $this->repository
+            ->getPaginationList($filters, $limit, $offset, ['field' => 'cg_name', 'order' => 'ASC']);
         $data = $this->datasets[1]['data'][0];
         $entity = new ContactGroup();
         $entity->setCgId($data['cg_id']);
