@@ -47,4 +47,5 @@ class Contact
 
     const TABLE = 'contact';
     const ENTITY_IDENTIFICATOR_COLUMN = 'contact_id';
+
 }

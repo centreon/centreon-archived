@@ -78,11 +78,6 @@ class CentreonPaginationService
     /**
      * @var string
      */
-    protected $ordering;
-
-    /**
-     * @var string
-     */
     protected $dataRepresenter;
 
     /**
@@ -150,19 +145,6 @@ class CentreonPaginationService
     }
 
     /**
-     * Set pagination order
-     *
-     * @param int $offset
-     * @throws \RuntimeException
-     */
-    public function setOrder($field, $order)
-    {
-        $order = (!empty($order) && ($order == "DESC")) ? $order : 'ASC';
-
-        $this->ordering = ['field' => $field, 'order'=> $order];
-    }
-
-    /**
      * Set repository class
      *
      * @param string $repository
@@ -209,7 +191,7 @@ class CentreonPaginationService
     {
         $entities = $this->db
             ->getRepository($this->repository)
-            ->getPaginationList($this->filters, $this->limit, $this->offset, $this->ordering);
+            ->getPaginationList($this->filters, $this->limit, $this->offset);
 
         $total = $this->db
             ->getRepository($this->repository)
