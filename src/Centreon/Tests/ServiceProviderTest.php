@@ -9,6 +9,9 @@ use Centreon\ServiceProvider;
 use Centreon\Domain;
 use Centreon\Infrastructure\Service;
 use CentreonClapi\CentreonACL;
+use Centreon\Application\Validation;
+use Symfony\Component\Validator;
+use Symfony\Component\Validator\Constraints;
 
 /**
  * @group Centreon
@@ -42,6 +45,7 @@ class ServiceProviderTest extends TestCase
             ServiceProvider::CENTREON_CLAPI => Service\CentreonClapiService::class,
             ServiceProvider::CENTREON_DB_MANAGER => Service\CentreonDBManagerService::class,
             ServiceProvider::UPLOAD_MANGER => Service\UploadFileService::class,
+            ServiceProvider::CENTREON_PAGINATION => Service\CentreonPaginationService::class,
             'centreon.keygen' => Domain\Service\AppKeyGeneratorService::class,
             'centreon.acl' => CentreonACL::class,
             'centreon.config' => Service\CentcoreConfigService::class,
@@ -49,6 +53,11 @@ class ServiceProviderTest extends TestCase
             // @todo must be exclude form DI
             ServiceProvider::CENTREON_BROKER_REPOSITORY => Domain\Repository\CfgCentreonBrokerRepository::class,
             ServiceProvider::CENTREON_BROKER_INFO_REPOSITORY => Domain\Repository\CfgCentreonBrokerInfoRepository::class,
+            // Validators
+            ServiceProvider::VALIDATOR => Validator\Validator\ValidatorInterface::class,
+            ServiceProvider::CENTREON_VALIDATOR_FACTORY => Validation\CentreonValidatorFactory::class,
+            ServiceProvider::CENTREON_VALIDATOR_TRANSLATOR => Validation\CentreonValidatorTranslator::class,
+            ServiceProvider::VALIDATOR_EXPRESSION => Constraints\ExpressionValidator::class,
         ];
 
         // check list of services
