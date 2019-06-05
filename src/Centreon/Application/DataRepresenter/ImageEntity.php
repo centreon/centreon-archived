@@ -75,7 +75,9 @@ class ImageEntity implements JsonSerializable
         return [
             'id' => $this->entity->getImgId(),
             'name' => $this->entity->getImgName(),
-            'preview' =>  self::MEDIA_DIR . $this->entity->getImageDir()->getDirName() . '/' . $this->entity->getImgPath()
+            'preview' =>  self::MEDIA_DIR
+                . $this->entity->getImageDir()->getDirName()
+                . '/' . $this->entity->getImgPath(),
         ];
     }
 }
