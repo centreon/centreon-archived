@@ -94,7 +94,6 @@ class UniqueEntityValidator extends ConstraintValidator
                 ->$methodRepository([$field => $value]);
 
             if ($result && $result->$methodIdGetter() !== $entity->$methodIdGetter()) {
-
                 $this->context->buildViolation($constraint->message)
                     ->atPath($field)
                     ->setInvalidValue($value)
