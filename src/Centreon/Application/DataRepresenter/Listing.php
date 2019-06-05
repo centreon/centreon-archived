@@ -82,7 +82,7 @@ class Listing implements JsonSerializable
     /**
      * Construct
      *
-     * @param \CentreonModule\Infrastructure\Entity\Module $entity
+     * @param mixed $entities
      * @param string $entityClass Entity JSON wrap class
      * @param int $total
      * @param int $offset

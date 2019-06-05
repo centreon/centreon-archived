@@ -35,9 +35,17 @@
 namespace Centreon\Application\Webservice;
 
 use CentreonRemote\Application\Webservice\CentreonWebServiceAbstract;
+use Centreon\ServiceProvider;
+use Pimple\Container;
+use Pimple\Psr11\ServiceLocator;
 
 class CentreonFrontendComponent extends CentreonWebServiceAbstract
 {
+    /**
+     * @var \Psr\Container\ContainerInterface
+     */
+    protected $services;
+
     /**
      * Name of web service object
      *
@@ -96,14 +104,27 @@ class CentreonFrontendComponent extends CentreonWebServiceAbstract
      */
     public function getComponents(): array
     {
-        $pages = $this->getDi()['centreon.frontend_component_service']->getPages();
-        $hooks = $this->getDi()['centreon.frontend_component_service']->getHooks();
+		$service = $this->services->get(ServiceProvider::CENTREON_FRONTEND_COMPONENT_SERVICE);
 
         return [
-            'pages' => $pages,
-            'hooks' => $hooks
+            'pages' => $service->getPages(),
+            'hooks' => $service->getHooks(),
         ];
     }
+
+    /**
+     * Extract services that are in use only
+     *
+     * @param \Pimple\Container $di
+     */
+    public function setDi(Container $di)
+    {
+        $ids = [
+            ServiceProvider::CENTREON_FRONTEND_COMPONENT_SERVICE,
+		];
+
+         $this->services = new ServiceLocator($di, $ids);
+	 }
 
     /**
      * Authorize to access to the action
