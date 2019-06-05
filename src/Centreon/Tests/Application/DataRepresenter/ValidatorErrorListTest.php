@@ -37,29 +37,38 @@
 namespace Centreon\Tests\Application\DataRepresenter;
 
 use PHPUnit\Framework\TestCase;
-use Centreon\Application\DataRepresenter\Bulk;
-use Centreon\Application\DataRepresenter\Listing;
+use Symfony\Component\Validator;
+use Centreon\Application\DataRepresenter\ValidatorErrorList;
 
-class BulkTest extends TestCase
+class ValidatorErrorListTest extends TestCase
 {
-
     public function testJsonSerialize()
     {
-        $lists = [
-            'mocks' => [
-                'First',
-                'Second',
-            ],
-            'drafts' => [],
+        $field = 'input-field';
+        $msg1 = 'error N1';
+        $msg2 = 'error N2';
+
+        // list of violations
+        $errors = [
+            new Validator\ConstraintViolation($msg1, null, [], null, $field, null, null, null, null),
+            new Validator\ConstraintViolation($msg2, null, [], null, $field, null, null, null, null),
         ];
 
-        $dataRepresenter = new Bulk($lists);
-        $result = $dataRepresenter->jsonSerialize();
+        // excpected result
+        $expected = [
+            [
+                'field' => $field,
+                'messages' => $msg1,
+            ],
+            [
+                'field' => $field,
+                'messages' => $msg2,
+            ],
+        ];
 
-        $this->assertArrayHasKey('mocks', $result);
-        $this->assertArrayHasKey('drafts', $result);
+        // load data representer
+        $dataRepresenter = new ValidatorErrorList(new Validator\ConstraintViolationList($errors));
 
-        $this->assertInstanceOf(Listing::class, $result['mocks']);
-        $this->assertInstanceOf(Listing::class, $result['drafts']);
+        $this->assertEquals($expected, $dataRepresenter->jsonSerialize());
     }
 }
