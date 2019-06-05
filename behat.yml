@@ -362,13 +362,13 @@ default:
       contexts: [ CentreonModuleAPIContext ]
 
     contact_groups_api:
-      paths: [ %paths.base%/features/ContactGroupsApi.feature ]
+      paths: [ "%paths.base%/features/ContactGroupsApi.feature" ]
       contexts: [ ContactGroupsApiContext ]
 
     timeperiods_api:
-      paths: [ %paths.base%/features/TimeperiodsApi.feature ]
+      paths: [ "%paths.base%/features/TimeperiodsApi.feature" ]
       contexts: [ TimeperiodsApiContext ]
 
     images_api:
-      paths: [ %paths.base%/features/ImagesApi.feature ]
+      paths: [ "%paths.base%/features/ImagesApi.feature" ]
       contexts: [ ImagesApiContext ]
