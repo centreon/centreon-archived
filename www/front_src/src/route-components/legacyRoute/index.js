@@ -93,7 +93,7 @@ class LegacyRoute extends Component {
 
   render() {
     const { contentHeight, loading } = this.state;
-    const { history: { search, hash } } = this.props;
+    const { history: { location: { search, hash } } } = this.props;
 
     let params;
     if (window['fullscreenSearch']) {
