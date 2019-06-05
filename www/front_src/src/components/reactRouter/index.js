@@ -1,9 +1,6 @@
 import React, { Component, Suspense } from "react";
 import { connect } from "react-redux";
 import { Switch, Route, withRouter } from "react-router-dom";
-import { batchActions } from "redux-batched-actions";
-import { fetchAclRoutes } from "../../redux/actions/navigationActions";
-import { fetchExternalComponents } from "../../redux/actions/externalComponentsActions";
 import { reactRoutes } from "../../route-maps";
 import { dynamicImport } from "../../helpers/dynamicImport";
 import centreonAxios from "../../axios";
@@ -12,14 +9,6 @@ import styles from "../../styles/partials/_content.scss";
 
 // class to manage internal react pages
 class ReactRouter extends Component {
-
-  componentDidMount() {
-    const { fetchAclRoutesAndExternalComponents } = this.props;
-
-    // 1 - fetch allowed react routes
-    // 2 - fetch external components (pages, hooks...)
-    fetchAclRoutesAndExternalComponents();
-  }
 
   getLoadableComponents = () => {
     const { history, acl, pages } = this.props;
@@ -77,12 +66,24 @@ class ReactRouter extends Component {
     return (
       <Suspense fallback={null}>
         <Switch>
-          {reactRoutes.map(({ path, comp, ...rest }) => (
+          {reactRoutes.map(({ path, comp: Comp, ...rest }) => (
             <Route
               key={path}
               path={path}
               exact="true"
-              component={acl.routes.includes(path) ? comp : NotAllowedPage}
+              render={renderProps => (
+                <div className={styles["react-page"]}>
+                  {acl.routes.includes(path) ? (
+                    <Comp
+                      {...renderProps}
+                    />
+                  ) : (
+                    <NotAllowedPage
+                      {...renderProps}
+                    />
+                  )}
+                </div>
+              )}
               {...rest}
             />
           ))}
@@ -102,13 +103,4 @@ const mapStateToProps = ({ navigation, externalComponents }) => ({
   fetched: externalComponents.fetched,
 });
 
-const mapDispatchToProps = dispatch => {
-  return {
-    fetchAclRoutesAndExternalComponents: () => {
-      // batch actions to avoid useless multiple rendering
-      dispatch(batchActions([fetchAclRoutes(), fetchExternalComponents()]));
-    }
-  };
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(withRouter(ReactRouter));
+export default connect(mapStateToProps)(withRouter(ReactRouter));
