@@ -212,7 +212,7 @@ class ServiceProvider implements AutoloadServiceProviderInterface
             return $service;
         };
 
-        $pimple['centreon.event_dispatcher'] = function (Container $container) {
+        $pimple[static::CENTREON_EVENT_DISPATCHER] = function (Container $container) {
             $eventDispatcher = new EventDispatcher();
             $eventDispatcher->setDispatcherLoader(
                 new FileLoader(
