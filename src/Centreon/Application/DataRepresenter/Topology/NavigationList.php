@@ -92,7 +92,9 @@ class NavigationList implements JsonSerializable
      */
     protected function getColor($pageId)
     {
-        return (!empty($this->getNavConfig()[$pageId]['color'])) ? $this->getNavConfig()[$pageId]['color'] : $this->getNavConfig()['default']['color'];
+        return (!empty($this->getNavConfig()[$pageId]['color']))
+            ? $this->getNavConfig()[$pageId]['color']
+            : $this->getNavConfig()['default']['color'];
     }
 
     /**
