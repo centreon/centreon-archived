@@ -38,6 +38,7 @@ class LegacyRoute extends Component {
 
   handleHref = event => {
     let href = event.detail.href;
+
     // update route
     window.history.pushState(null, null, href);
   }
@@ -49,10 +50,10 @@ class LegacyRoute extends Component {
   }
 
   componentDidMount() {
-    this.mainContainer = window.parent.document.getElementById('fullscreen-wrapper');
+    this.mainContainer = window.document.getElementById('fullscreen-wrapper');
 
     // add a listener on global page size
-    window.parent.addEventListener(
+    window.addEventListener(
       "resize",
       this.handleResize
     );
@@ -74,17 +75,17 @@ class LegacyRoute extends Component {
 
   componentWillUnmount() {
     clearTimeout(this.resizeTimeout);
-    window.parent.removeEventListener(
+    window.removeEventListener(
       "resize",
       this.handleResize
     );
 
-    window.parent.removeEventListener(
+    window.removeEventListener(
       "react.href.update",
       this.handleHref
     );
 
-    window.parent.removeEventListener(
+    window.removeEventListener(
       "react.href.disconnect",
       this.handleDisconnect
     );
@@ -92,14 +93,15 @@ class LegacyRoute extends Component {
 
   render() {
     const { contentHeight, loading } = this.state;
-    const { history } = this.props,
-          { search, hash } = history.location;
+    const { history: { search, hash } } = this.props;
+
     let params;
     if (window['fullscreenSearch']) {
       params = window['fullscreenSearch'] + window['fullscreenHash']
     } else {
       params = (search || '') + (hash || '');
     }
+
     return (
       <>
         {loading &&

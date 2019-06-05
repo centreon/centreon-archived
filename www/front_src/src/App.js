@@ -1,15 +1,13 @@
 import React, { Component } from "react";
 import Header from "./components/header";
-import { Switch, Route } from "react-router-dom";
 import { ConnectedRouter } from "react-router-redux";
 import { history } from "./store";
-import ReactRouter from "./components/reactRouter";
-import LegacyRoute from "./route-components/legacyRoute";
 
 import NavigationComponent from "./components/navigation";
 import Tooltip from "./components/tooltip";
 import Footer from "./components/footer";
 import Fullscreen from 'react-fullscreen-crossbrowser';
+import MainRouter from './components/mainRouter';
 import queryString from 'query-string';
 import axios from './axios';
 
@@ -104,11 +102,7 @@ class App extends Component {
                 onChange={isFullscreenEnabled => this.setState({isFullscreenEnabled})}
               >
                 <div className={styles["main-content"]}>
-                  <Switch>
-                    <Route path="/main.php" exact component={LegacyRoute}/>
-                    <Route path="/" exact render={() => (<Redirect to="/main.php"/>)}/>
-                    <Route path="/" component={ReactRouter}/>
-                  </Switch>
+                  <MainRouter />
                 </div>
               </Fullscreen>
             </div>
