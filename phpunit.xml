@@ -20,9 +20,7 @@
     <testsuites>
         <testsuite name="Symfony Test Suite">
             <directory>./tests/php/*/</directory>
-            <directory>./src/Centreon/Tests/</directory>
-            <directory>./src/CentreonRemote/Tests/</directory>
-            <directory>./src/CentreonModule/Tests/</directory>
+            <directory>./src/*/Tests/</directory>
         </testsuite>
     </testsuites>
 
@@ -38,9 +36,9 @@
             <directory>./src/</directory>
             <exclude>
                 <directory>./src/*/Tests</directory>
-                <directory>./src/Centreon/Domain/Entity</directory>
-                <directory>./src/CentreonRemote/Domain/Resources</directory>
-                <directory>./src/CentreonModule/Infrastructure/Entity</directory>
+                <directory>./src/*/Domain/Entity</directory>
+                <directory>./src/*/Domain/Resources</directory>
+                <directory>./src/*/Infrastructure/Entity</directory>
             </exclude>
         </whitelist>
     </filter>
