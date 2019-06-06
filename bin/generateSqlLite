@@ -261,7 +261,7 @@ try {
                     `severity_id` int(11) DEFAULT NULL,
                     `manufacturer_id` int(11) DEFAULT NULL,
                     `traps_reschedule_svc_enable` int(11) DEFAULT '0',
-                    `traps_execution_command` varchar(255) DEFAULT NULL,
+                    `traps_execution_command` text DEFAULT NULL,
                     `traps_execution_command_enable` int(11) DEFAULT '0',
                     `traps_submit_result_enable` int(11) DEFAULT '0',
                     `traps_advanced_treatment` int(11) DEFAULT '0',
