@@ -131,8 +131,12 @@ class ServiceProvider implements AutoloadServiceProviderInterface
         };
 
         $pimple[static::CENTREON_FRONTEND_COMPONENT_SERVICE] = function (Container $pimple): FrontendComponentService {
-            $service = new FrontendComponentService($pimple);
-            return $service;
+            return new FrontendComponentService(
+                new ServiceLocator(
+                    $pimple,
+                    FrontendComponentService::dependencies()
+                )
+            );
         };
 
         $pimple[static::CENTREON_CLAPI] = function (Container $container): CentreonClapiService {
