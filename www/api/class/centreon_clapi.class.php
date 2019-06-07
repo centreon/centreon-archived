@@ -213,7 +213,7 @@ class CentreonClapi extends CentreonWebService implements CentreonWebServiceDiIn
         }
 
         if (is_array($return['result'])) {
-            array_walk($return['result'], [$this, 'clearCarriageReturns']);
+            array_walk($return['result'], [$this, 'customAlterString']);
         }
 
         return $return;
@@ -240,7 +240,7 @@ class CentreonClapi extends CentreonWebService implements CentreonWebServiceDiIn
      * Removes carriage returns from $item if string
      * @param mixed &$item variable to check
      */
-    private function clearCarriageReturns(&$item) {
+    private function customAlterString(&$item) {
         $item = (is_string($item)) ? str_replace(array("\n", "\t", "\r", "<br/>"), '', $item) : $item;
     }
 }
