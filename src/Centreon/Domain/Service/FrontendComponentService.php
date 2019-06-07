@@ -43,11 +43,23 @@ use CentreonLegacy\ServiceProvider;
 class FrontendComponentService
 {
     /**
+     * List of class dependencies
+     *
+     * @return array
+     */
+    public static function dependencies() : array
+    {
+        return [
+            ServiceProvider::CENTREON_LEGACY_MODULE_INFORMATION,
+        ];
+    }
+
+    /**
      * FrontendComponentService constructor
      *
      * @param \Psr\Container\ContainerInterface $services
      */
-    public function __construct(Container $di)
+    public function __construct(ContainerInterface $services)
     {
         $this->services = $services;
     }
