@@ -107,13 +107,13 @@ You can pass a list of parameters in order to select the data you want.
 +----------------+--------------------------------------------+
 | criticality    | a specific criticity                       |
 +----------------+--------------------------------------------+
-| sortType       | ASC ou DESC                                |
+| sortType       | the sortType (selected in the field list)  |
++----------------+--------------------------------------------+
+| order          | ASC ou DESC                                |
 +----------------+--------------------------------------------+
 | limit          | number of line you want                    |
 +----------------+--------------------------------------------+
 | number         | page number                                |
-+----------------+--------------------------------------------+
-| order          | the order type (selected in the field list)|
 +----------------+--------------------------------------------+
 
 Field list :
@@ -229,13 +229,13 @@ You can pass a list of parameters in order to select the data you want.
 +----------------+--------------------------------------------+
 | criticality    | a specific criticity                       |
 +----------------+--------------------------------------------+
-| sortType       | ASC ou DESC                                |
+| sortType       | the sortType (selected in the field list)  |
++----------------+--------------------------------------------+
+| order          | ASC ou DESC                                |
 +----------------+--------------------------------------------+
 | limit          | number of line you want                    |
 +----------------+--------------------------------------------+
 | number         | page number                                |
-+----------------+--------------------------------------------+
-| order          | the order type (selected in the field list)|
 +----------------+--------------------------------------------+
 
 Field list :
