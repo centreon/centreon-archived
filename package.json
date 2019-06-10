@@ -4,7 +4,9 @@
   "description": "centreon web package",
   "scripts": {
     "build": "webpack --mode production",
-    "build:dev": "webpack --mode development"
+    "build:dev": "webpack --mode development",
+    "eslint": "npx eslint www/front_src/src/**/*.js",
+    "eslint:fix": "npm run eslint --fix"
   },
   "devDependencies": {
     "@babel/core": "^7.0.0",
