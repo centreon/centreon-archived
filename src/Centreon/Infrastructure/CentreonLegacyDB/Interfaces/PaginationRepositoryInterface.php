@@ -11,9 +11,10 @@ interface PaginationRepositoryInterface
      * @param mixed $filters
      * @param int $limit
      * @param int $offset
+     * @param array $ordering
      * @return array
      */
-    public function getPaginationList($filters = null, int $limit = null, int $offset = null): array;
+    public function getPaginationList($filters = null, int $limit = null, int $offset = null, $ordering = []): array;
 
     /**
      * Get total count of elements in the list
