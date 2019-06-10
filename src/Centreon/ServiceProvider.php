@@ -91,6 +91,8 @@ class ServiceProvider implements AutoloadServiceProviderInterface
         };
 
         $pimple[static::CENTREON_WEBSERVICE]->add(Application\Webservice\TopologyWebservice::class);
+        $pimple[static::CENTREON_WEBSERVICE]->add(Application\Webservice\ContactGroupsWebservice::class);
+        $pimple[static::CENTREON_WEBSERVICE]->add(Application\Webservice\ImagesWebservice::class);
 
         if (defined('OpenApi\UNDEFINED') !== false) {
             $pimple[static::CENTREON_WEBSERVICE]->add(\Centreon\Application\Webservice\OpenApiWebservice::class);
@@ -115,8 +117,12 @@ class ServiceProvider implements AutoloadServiceProviderInterface
         };
 
         $pimple[static::CENTREON_FRONTEND_COMPONENT_SERVICE] = function (Container $pimple): FrontendComponentService {
-            $service = new FrontendComponentService($pimple);
-            return $service;
+            return new FrontendComponentService(
+                new ServiceLocator(
+                    $pimple,
+                    FrontendComponentService::dependencies()
+                )
+            );
         };
 
         $pimple[static::CENTREON_CLAPI] = function(Container $container): CentreonClapiService {
