@@ -18,6 +18,7 @@ principaux objets contrôlés par Centreon.
     add_services
     add_host_from_template
     add_svc_from_template
+    custom_view
     add_user
 
 Si vous avez des idées de "quickstart" et que vous souhaitez participer à la création de ces tutoriels pour aider les utilisateurs de la communauté, n'hésitez pas à vous faire des "pull-requests" pour que nous les intégrions facilement depuis `github <https://github.com/centreon/centreon>`_.
