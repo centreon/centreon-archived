@@ -10,6 +10,8 @@ This chapter describes you how to quickly start to configure your Centreon monit
     :maxdepth: 1
 
     login
+    menus
+    change_language
     basic_plugins
     add_host
     add_services
