@@ -266,7 +266,7 @@ class CentreonInstance
             return $items;
         }
 
-        # get list of authorized pollers
+        // get list of authorized pollers
         if (!$centreon->user->access->admin) {
             $pollerAcl = $centreon->user->access->getPollers();
         }
