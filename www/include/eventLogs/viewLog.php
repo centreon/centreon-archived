@@ -552,16 +552,25 @@ if ($engine == 'false') {
                 jQuery("input[name=alternativeDateEndDate]").val("");
                 jQuery("#EndDate").val("");
                 jQuery("#EndTime").val("");
-            } else if (jQuery("input[name=alternativeDateStartDate]").val() != "" &&
-                jQuery("input[name=alternativeDateEndDate]").val() != "" &&
-                document.FormPeriod.StartTime.value != "" &&
-                document.FormPeriod.EndTime.value != ""
-            ) {
+            } else {
                 period = '';
-                StartDate = jQuery("input[name=alternativeDateStartDate]").val();
-                EndDate = jQuery("input[name=alternativeDateEndDate]").val();
-                StartTime = document.FormPeriod.StartTime.value;
-                EndTime = document.FormPeriod.EndTime.value;
+                StartTime = '00:00';
+                EndTime = '23:59';
+
+                if (jQuery("input[name=alternativeDateStartDate]").val() != "" &&
+                    jQuery("input[name=alternativeDateEndDate]").val() != ""
+                ) {
+                    StartDate = jQuery("input[name=alternativeDateStartDate]").val();
+                    EndDate = jQuery("input[name=alternativeDateEndDate]").val();
+                }
+
+                if (document.FormPeriod.StartTime.value != "") {
+                    StartTime = document.FormPeriod.StartTime.value;
+                }
+
+                if (document.FormPeriod.EndTime.value != "") {
+                    EndTime = document.FormPeriod.EndTime.value;
+                }
             }
         }
     }
