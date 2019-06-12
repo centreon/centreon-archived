@@ -836,7 +836,7 @@ if ($engine == 'false') {
                             if (jQuery.inArray(elem.id, host_value) === -1) {
                                 var existingOptions = jQuery("#host_filter").find('option');
                                 var existFlag = false;
-                                existingOptions.forEach(function (el) {
+                                existingOptions.each(function (el) {
                                     if (jQuery(this).val() == elem.id) {
                                         existFlag = true;
                                     }
@@ -872,7 +872,7 @@ if ($engine == 'false') {
                             if (jQuery.inArray(elem.id, service_value) === -1) {
                                 var existingOptions = jQuery("#service_filter option");
                                 var existFlag = false;
-                                existingOptions.forEach(function () {
+                                existingOptions.each(function () {
                                     if (jQuery(this).val() == elem.id) {
                                         existFlag = true;
                                     }
