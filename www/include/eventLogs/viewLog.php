@@ -630,13 +630,13 @@ if ($engine == 'false') {
                         '&num=' + _num + '&error=' + _error + '&alert=' + _alert + '&notification=' + _notification +
                         '&search_H=' + _search_H + '&search_S=' + _search_S + '&period=' + period +
                         '&StartDate=' + StartDate + '&EndDate=' + EndDate + '&StartTime=' + StartTime +
-                        '&EndTime=' + EndTime + '&limit=' + _limit + '&id=' + openid +
+                        '&EndTime=' + EndTime + '&limit=' + _limit + '&id=' + openid
                         <?php
                         if (isset($search) && $search) {
-                            print "&search_host=" . $search;
+                            print " + &search_host=" . $search;
                         }
                         if (isset($search_service) && $search_service) {
-                            print "&search_service=" . $search_service;
+                            print " + &search_service=" . $search_service;
                         }
                         ?> +'&export=1';
                 } else if (type == 'XML') {
