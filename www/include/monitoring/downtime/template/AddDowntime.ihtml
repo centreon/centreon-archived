@@ -125,12 +125,12 @@
         <tr class="list_two">
             <td class="FormRowField">{$form.start.label}</td>
             <td class="FormRowValue">{$form.start.html}&nbsp;{$form.alternativeDateStart.html}&nbsp;{$form.start_time.html}
-                </td>
+            </td>
         </tr>
         <tr class="list_one">
             <td class="FormRowField">{$form.end.label}</td>
             <td class="FormRowValue">{$form.end.html}&nbsp;{$form.alternativeDateEnd.html}&nbsp;{$form.end_time.html}
-                </td>
+            </td>
         </tr>
         <tr class="list_two">
             <td class="FormRowField">{$form.with_services.label}</td>
@@ -153,6 +153,10 @@
 <script type="text/javascript">
 
     initDatepicker("datepicker", "mm/dd/yy", "0");
+
+    $(document).ready(function() {
+        turnOnEvents();
+    });
 
 </script>
 {/literal}
