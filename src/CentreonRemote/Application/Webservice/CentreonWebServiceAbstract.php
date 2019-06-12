@@ -47,14 +47,12 @@ use Pimple\Container;
  *      }
  * )
  */
-
 /**
  * @OA\Info(
  *      title="Centreon Server API",
  *      version="0.1"
  * )
  */
-
 /**
  * @OA\ExternalDocumentation(
  *      url="https://documentation.centreon.com/docs/centreon/en/18.10/api/api_rest/index.html",
@@ -105,8 +103,26 @@ abstract class CentreonWebServiceAbstract extends \CentreonWebService
         return $request;
     }
 
+    /**
+     * Get body of request as string
+     *
+     * @return string
+     */
     public function payloadRaw(): string
     {
+        $content = file_get_contents('php://input');
+
+        return $content ? (string) $content : '';
+    }
+
+    /**
+     * Get body of request as decoded JSON
+     *
+     * @return array
+     */
+    public function payload(): array
+    {
+        $request = [];
         $content = $this->payloadRaw();
 
         if ($content) {
@@ -115,14 +131,7 @@ abstract class CentreonWebServiceAbstract extends \CentreonWebService
             if (json_last_error() !== JSON_ERROR_NONE) {
                 $request = [];
             }
-        } else {
-            $request = [];
         }
-    }
-
-    public function payload(): array
-    {
-        $request = json_decode(file_get_contents('php://input'), true);
 
         return $request;
     }
