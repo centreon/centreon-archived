@@ -13,6 +13,8 @@
   &-wrapper {
     position: relative;
     max-width: 320px;
+    max-height: 590px;
+    overflow-y: auto;
     margin-top: 30px;
     margin: 0 auto;
     border: 1px solid #cdcdcd;
