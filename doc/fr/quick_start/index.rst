@@ -16,6 +16,7 @@ principaux objets contrôlés par Centreon.
     basic_plugins
     monitor_linux_snmp
     monitor_windows_snmp
+    monitor_cisco
     monitor_mysql
     monitor_printer
     monitor_ups

@@ -15,6 +15,7 @@ This chapter describes you how to quickly start to configure your Centreon monit
     basic_plugins
     monitor_linux_snmp
     monitor_windows_snmp
+    monitor_cisco
     monitor_mysql
     monitor_printer
     monitor_ups
