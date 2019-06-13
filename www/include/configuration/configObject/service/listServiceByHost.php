@@ -57,11 +57,6 @@ $dbResult->closeCursor();
 
 $hostgroups = null;
 
-$status = filter_var(
-    $_POST["status"] ?? $_GET["status"] ?? -1,
-    FILTER_VALIDATE_INT
-);
-
 $template = filter_var(
     $_POST['template'] ?? $_GET['template'] ?? null,
     FILTER_SANITIZE_STRING
@@ -81,19 +76,23 @@ if (isset($_POST['search']) || isset($_GET['search'])) {
     //saving filters values
     $centreon->historySearch[$url] = array();
     $centreon->historySearch[$url]["template"] = $template;
-    $centreon->historySearch[$url]["status"] = $status;
     $centreon->historySearch[$url]["searchH"] = $searchH;
     $centreon->historySearch[$url]["searchS"] = $searchS;
     $hostStatus = isset($_POST["statusHostFilter"]) ? 1 : 0;
     $centreon->historySearch[$url]["hostStatus"] = $hostStatus;
+    $status = $_POST["status"] ?? '';
+    $centreon->historySearch[$url]["status"] = $status;
 } else {
     //restoring saved values
     $template = $centreon->historySearch[$url]['template'] ?? null;
-    $status = $centreon->historySearch[$url]["status"] ?? -1;
     $searchH = $centreon->historySearch[$url]["searchH"] ?? null;
     $searchS = $centreon->historySearch[$url]["searchS"] ?? null;
     $hostStatus = $centreon->historySearch[$url]["hostStatus"] ?? 0;
+    $status = $centreon->historySearch[$url]["status"] ?? -1;
 }
+
+// Security fix
+$status = (int)(($status != '') ? $status : -1);
 
 $searchH_SQL = '';
 if ($searchH) {
@@ -136,12 +135,12 @@ $statusFilter = "<option value=''" .
 $statusFilter .= "<option value='1'" .
     (($status == 1) ? " selected" : "") . ">" . _("Enabled") . "</option>";
 $statusFilter .= "<option value='0'" .
-    (($status == 0 && $status != '') ? " selected" : "") . ">" . _("Disabled") . "</option>";
+    (($status == 0) ? " selected" : "") . ">" . _("Disabled") . "</option>";
 
 $sqlFilterCase = "";
 if ($status == 1) {
     $sqlFilterCase = " AND sv.service_activate = '1' ";
-} elseif ($status == 0 && $status != "") {
+} elseif ($status == 0) {
     $sqlFilterCase = " AND sv.service_activate = '0' ";
 }
 
