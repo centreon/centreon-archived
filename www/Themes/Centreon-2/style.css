@@ -462,11 +462,14 @@ p.description a, p.description a:visited {
 .ico-18 {
     width: 18px;
     height: 18px;
+    cursor: pointer;
 }
+
 .ico-20 {
     width: 20px;
     height: 20px;
 }
+
 .ico-22 {
     width: 22px;
     height: 22px;
@@ -2370,6 +2373,12 @@ textarea.default-textarea {
 .ico-col.active {
   border: 1px #4ccaff solid;
   border-radius: 2px;
+}
+
+.ico-col-1,
+.ico-col-2,
+.ico-col-3 {
+    cursor: pointer;
 }
 
 .ico-col.ico-col-1 {
