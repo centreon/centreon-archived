@@ -63,6 +63,8 @@ if (isset($_POST['Search']) || isset($_GET ['Search'])) {
     $centreon->historySearch[$url]["search"] = $searchS;
     $centreon->historySearch[$url]["template"] = $template;
     $status = $_POST["status"] ?? '';
+    // Security fix
+    $status = (int)(($status != '') ? $status : -1);
     $centreon->historySearch[$url]["status"] = $status;
 } else {
     //restoring saved values
@@ -71,8 +73,7 @@ if (isset($_POST['Search']) || isset($_GET ['Search'])) {
     $template = $centreon->historySearch[$url]["template"] ?? null;
     $status = $centreon->historySearch[$url]["status"] ?? -1;
 }
-// Security fix
-$status = (int)(($status != '') ? $status : -1);
+
 
 
 /*

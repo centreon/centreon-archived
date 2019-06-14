@@ -86,6 +86,8 @@ if (isset($_POST['searchH']) || isset($_GET['searchH'])) {
     $centreon->historySearch[$url]["hostgroup"] = $hostgroup;
     $centreon->historySearch[$url]["template"] = $template;
     $status = $_POST["status"] ?? '';
+    // Security fix
+    $status = (int)(($status != '') ? $status : -1);
     $centreon->historySearch[$url]["status"] = $status;
 } else {
     //restoring saved values
@@ -93,13 +95,8 @@ if (isset($_POST['searchH']) || isset($_GET['searchH'])) {
     $poller = $centreon->historySearch[$url]["poller"] ?? 0;
     $hostgroup = $centreon->historySearch[$url]["hostgroup"] ?? 0;
     $template = $centreon->historySearch[$url]["template"] ?? 0;
-    if (isset($centreon->historySearch[$url]["status"])) {
-        $status = $centreon->historySearch[$url]["status"];
-    }
+    $status = $centreon->historySearch[$url]["status"] ?? -1;
 }
-
-// Security fix
-$status = (int)(($status != '') ? $status : -1);
 
 // set object history
 $centreon->poller = $poller;

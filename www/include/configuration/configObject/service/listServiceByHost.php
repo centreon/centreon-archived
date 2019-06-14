@@ -81,6 +81,8 @@ if (isset($_POST['search']) || isset($_GET['search'])) {
     $hostStatus = isset($_POST["statusHostFilter"]) ? 1 : 0;
     $centreon->historySearch[$url]["hostStatus"] = $hostStatus;
     $status = $_POST["status"] ?? '';
+    // Security fix
+    $status = (int)(($status != '') ? $status : -1);
     $centreon->historySearch[$url]["status"] = $status;
 } else {
     //restoring saved values
@@ -91,8 +93,6 @@ if (isset($_POST['search']) || isset($_GET['search'])) {
     $status = $centreon->historySearch[$url]["status"] ?? -1;
 }
 
-// Security fix
-$status = (int)(($status != '') ? $status : -1);
 
 $searchH_SQL = '';
 if ($searchH) {
