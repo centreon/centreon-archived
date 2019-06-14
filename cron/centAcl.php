@@ -91,7 +91,7 @@ try {
     $data = $dbResult->fetch();
 
     $is_running = $data["running"];
-    $appID = $data["id"];
+    $appId = (int)$data["id"];
     $beginTime = time();
 
     if (!$data || count($data) == 0) {
@@ -108,21 +108,25 @@ try {
             exit(1);
         }
         $data = $dbResult->fetch();
-        $appID = $data["id"];
+        $appId = (int)$data["id"];
         $is_running = 0;
     }
 
     if ($is_running == 0) {
-        $dbResult = $pearDB->query(
+        $dbResult = $pearDB->prepare(
             "UPDATE cron_operation SET running = '1', time_launch = '" . time() .
-            "' WHERE id = ' . $appID . '"
+            "' WHERE id = :appId"
         );
+        $dbResult->bindValue(':appId', $appId, \PDO::PARAM_INT);
+        $dbResult->execute();
     } else {
         if ($nbProc <= 1) {
             $errorMessage = "According to DB another instance of centAcl.php is already running and I found " .
                 $nbProc . " process...\n";
-            $errorMessage .= "Executing query: UPDATE cron_operation SET running = 0 WHERE id =  ' . $appID . '";
-            $pearDB->query("UPDATE cron_operation SET running = '0' WHERE id = ' . $appID . '");
+            $errorMessage .= "Executing query: UPDATE cron_operation SET running = 0 WHERE id =  ' . $appId . '";
+            $stmt = $pearDB->prepare("UPDATE cron_operation SET running = '0' WHERE id = :appId");
+            $stmt->bindValue(':appId', $appId, \PDO::PARAM_INT);
+            $stmt->execute();
         } else {
             $errorMessage = "centAcl marked as running. Exiting...";
         }
@@ -132,30 +136,33 @@ try {
     $resourceCache = array();
 
     /** **********************************************
-     * Sync ACL with ldap
+     * Sync ACL with each ldap depending on last sync hour and own synchronization interval
      */
-    $res = $pearDB->query(
-        "SELECT `key`, `value` FROM `options` 
-        WHERE `key` IN ('ldap_auth_enable', 'ldap_last_acl_update')"
+    $ldapConf = $pearDB->query(
+        "SELECT auth.ar_id, auth.ar_sync_base_date, info.ari_value
+        FROM auth_ressource auth INNER JOIN auth_ressource_info info ON auth.ar_id = info.ar_id
+        WHERE auth.ar_enable = '1' AND info.ari_name = 'ldap_sync_interval'"
     );
-    while ($row = $res->fetch()) {
-        switch ($row['key']) {
-            case 'ldap_auth_enable':
-                $ldap_enable = $row['value'];
-                break;
-            case 'ldap_last_acl_update':
-                $ldap_last_update = $row['value'];
-                break;
+    $reSync = false;
+    while ($ldapRow = $ldapConf->fetch()) {
+        $currentTime = time();
+        if ($ldapRow['ar_sync_base_date'] + 3600 * $ldapRow['ari_value'] <= $currentTime) {
+            $reSync = true;
+            $updateSyncTime = $pearDB->prepare(
+                    "UPDATE auth_ressource SET ar_sync_base_date = :currentTime
+                    WHERE ar_id = :arId"
+            );
+            $updateSyncTime->bindValue(':currentTime', $currentTime, \PDO::PARAM_INT);
+            $updateSyncTime->bindValue(':arId', (int)$ldapRow['ar_id'], \PDO::PARAM_INT);
+            $updateSyncTime->execute();
         }
-    }
 
-    /** ********************************************
-     * If the ldap is enable and the last check
-     * is greater than the update period
-     */
-    if ($ldap_enable == 1 && $ldap_last_update < (time() - LDAP_UPDATE_PERIOD)) {
+    }
+    if ($reSync === true) {
+        // @TODO : Synchronize LDAP with contacts data in background to avoid it at login
         $cgObj->syncWithLdap();
     }
+
 
     /** **********************************************
      * Remove data from old groups (deleted groups)
@@ -747,12 +754,12 @@ try {
      * Remove lock
      */
     $dbResult = $pearDB->prepare(
-        "UPDATE cron_operation " .
-        "SET running = '0', last_execution_time = :time
+        "UPDATE cron_operation
+        SET running = '0', last_execution_time = :time
         WHERE id = :appId"
     );
     $dbResult->bindValue(':time', (time() - $beginTime), \PDO::PARAM_INT);
-    $dbResult->bindValue(':appId', $appID, \PDO::PARAM_INT);
+    $dbResult->bindValue(':appId', $appId, \PDO::PARAM_INT);
     $dbResult->execute();
 
     /*
