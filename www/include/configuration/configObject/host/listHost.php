@@ -76,8 +76,6 @@ $template = filter_var(
     FILTER_VALIDATE_INT
 );
 
-$status = -1;
-
 if (isset($_POST['searchH']) || isset($_GET['searchH'])) {
     //saving chosen filters values
     $centreon->historySearch[$url] = array();
