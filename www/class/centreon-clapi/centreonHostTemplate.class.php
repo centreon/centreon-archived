@@ -81,7 +81,7 @@ class CentreonHostTemplate extends CentreonHost
     {
         $sql = "SELECT COUNT(*) AS cnt
                 FROM host_template_relation htr 
-                JOIN host h ON h.host_id = htr.host_tplвсе та_id 
+                JOIN host h ON h.host_id = htr.host_tpl_id 
                 WHERE h.host_name = :hostname";
         $res = $this->db->query(
             $sql,
