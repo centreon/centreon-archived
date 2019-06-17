@@ -395,26 +395,18 @@ $CHOWN -R $WEB_USER:$WEB_GROUP $INSTALL_DIR_CENTREON/config
 
 $INSTALL_DIR/cinstall $cinstall_opts \
     -u "$CENTREON_USER" -g "$CENTREON_GROUP" -d 775 \
-    $CENTREON_GENDIR/filesGeneration/engine >> "$LOG_FILE" 2>&1
+    $CENTREON_GENDIR/engine >> "$LOG_FILE" 2>&1
 $INSTALL_DIR/cinstall $cinstall_opts \
     -u "$CENTREON_USER" -g "$CENTREON_GROUP" -d 775 \
-    $CENTREON_GENDIR/filesGeneration/broker >> "$LOG_FILE" 2>&1
+    $CENTREON_GENDIR/broker >> "$LOG_FILE" 2>&1
 $INSTALL_DIR/cinstall $cinstall_opts \
     -u "$CENTREON_USER" -g "$CENTREON_GROUP" -d 775 \
-    $CENTREON_GENDIR/filesGeneration/export >> "$LOG_FILE" 2>&1
+    $CENTREON_GENDIR/export >> "$LOG_FILE" 2>&1
 
 # By default, CentWeb use a filesGeneration directory in install dir.
 # I create a symlink to continue in a same process
 [ ! -h $INSTALL_DIR_CENTREON/filesGeneration -a ! -d $INSTALL_DIR_CENTREON/filesGeneration ] && \
-    ln -s $CENTREON_GENDIR/filesGeneration $INSTALL_DIR_CENTREON >> $LOG_FILE 2>&1
-
-$INSTALL_DIR/cinstall $cinstall_opts \
-    -u "$CENTREON_USER" -g "$CENTREON_GROUP" -d 775 -v \
-    $CENTREON_GENDIR/filesUpload/images >> "$LOG_FILE" 2>&1
-# By default, CentWeb use a filesGeneration directory in install dir.
-# I create a symlink to continue in a same process
-[ ! -h $INSTALL_DIR_CENTREON/filesUpload -a ! -d $INSTALL_DIR_CENTREON/filesUpload ] && \
-    ln -s $CENTREON_GENDIR/filesUpload $INSTALL_DIR_CENTREON >> $LOG_FILE 2>&1
+    ln -s $CENTREON_GENDIR $INSTALL_DIR_CENTREON/filesGeneration >> $LOG_FILE 2>&1
 
 # Add new directory for save installation directories
 $INSTALL_DIR/cinstall $cinstall_opts \
