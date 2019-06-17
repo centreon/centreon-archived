@@ -1131,7 +1131,7 @@ function check_composer_dependencies() {
 ## @Globals	INSTALL_DIR_CENTREON
 #----
 function check_frontend_application() {
-    if [ -d "$BASE_DIR/www/template" ] ; then
+    if [ -d "$BASE_DIR/www/static" ] ; then
         echo_success "$(gettext "Frontend application is built")" "$ok"
         return 0
     else
