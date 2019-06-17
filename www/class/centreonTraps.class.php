@@ -328,17 +328,16 @@ class CentreonTraps
         $rq .= "`traps_submit_result_enable` = '" . $this->db->escape($ret["traps_submit_result_enable"]) . "', ";
         $rq .= "`traps_reschedule_svc_enable` = '" . $this->db->escape($ret["traps_reschedule_svc_enable"]) . "', ";
         $rq .= "`traps_execution_command` = '" . $this->db->escape($ret["traps_execution_command"]) . "', ";
-        $rq .= "`traps_execution_command_enable` = '" . $this->db->escape($ret["traps_execution_command_enable"]) .
-            "', ";
+        $rq .= "`traps_execution_command_enable` = '" . $this->db->escape($ret["traps_execution_command_enable"]) . "', ";
         $rq .= "`traps_advanced_treatment` = '" . $this->db->escape($ret["traps_advanced_treatment"]) . "', ";
         $rq .= "`traps_comments` = '" . $this->db->escape($ret["traps_comments"]) . "', ";
         $rq .= "`traps_routing_mode` = '" . $this->db->escape($ret["traps_routing_mode"]) . "', ";
         $rq .= "`traps_routing_value` = '" . $this->db->escape($ret["traps_routing_value"]) . "', ";
         $rq .= "`traps_routing_filter_services` = '" . $this->db->escape($ret["traps_routing_filter_services"]) .
             "', ";
-        $rq .= "`manufacturer_id` = '" . $this->db->escape($ret["manufacturer_id"]) . "', ";
+        $rq .= "`manufacturer_id` = " . $this->db->escape($ret["manufacturer_id"]) . ", ";
         $rq .= "`traps_log` = '" . $this->db->escape($ret["traps_log"]) . "', ";
-        $rq .= "`traps_exec_interval` = '" . $this->db->escape($ret["traps_exec_interval"]) . "', ";
+        $rq .= "`traps_exec_interval` = " . $this->db->escape($ret["traps_exec_interval"]) . ", ";
         $rq .= "`traps_exec_interval_type` = '" . $this->db->escape($ret["traps_exec_interval_type"]) . "', ";
         $rq .= "`traps_downtime` = '" . $this->db->escape($ret["traps_downtime"]) . "', ";
         $rq .= "`traps_exec_method` = '" . $this->db->escape($ret["traps_exec_method"]) . "', ";
