@@ -56,17 +56,15 @@ $template = filter_var(
     FILTER_SANITIZE_STRING
 );
 
-$status = filter_var(
-    $_POST["status"] ?? $_GET["status"] ?? -1,
-    FILTER_VALIDATE_INT
-);
-
 if (isset($_POST['Search']) || isset($_GET ['Search'])) {
     //saving filters values
     $centreon->historySearch[$url] = array();
     $centreon->historySearch[$url]["hostgroups"] = $searchHG;
     $centreon->historySearch[$url]["search"] = $searchS;
     $centreon->historySearch[$url]["template"] = $template;
+    $status = $_POST["status"] ?? '';
+    // Security fix
+    $status = (int)(($status != '') ? $status : -1);
     $centreon->historySearch[$url]["status"] = $status;
 } else {
     //restoring saved values
@@ -75,6 +73,8 @@ if (isset($_POST['Search']) || isset($_GET ['Search'])) {
     $template = $centreon->historySearch[$url]["template"] ?? null;
     $status = $centreon->historySearch[$url]["status"] ?? -1;
 }
+
+
 
 /*
  * Get Service Template List
@@ -96,12 +96,12 @@ $dbResult->closeCursor();
 $statusFilter = "<option value=''" . (($status == -1) ? " selected" : "") . "> </option>";
 $statusFilter .= "<option value='1'" . (($status == 1) ? " selected" : "") . ">" . _("Enabled") . "</option>";
 $statusFilter .= "<option value='0'" .
-    (($status == 0 && $status != '') ? " selected" : "") . ">" . _("Disabled") . "</option>";
+    (($status == 0) ? " selected" : "") . ">" . _("Disabled") . "</option>";
 
 $sqlFilterCase = "";
 if ($status == 1) {
     $sqlFilterCase = " AND sv.service_activate = '1' ";
-} elseif ($status == 0 && $status != "") {
+} elseif ($status == 0) {
     $sqlFilterCase = " AND sv.service_activate = '0' ";
 }
 
