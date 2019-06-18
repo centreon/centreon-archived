@@ -44,6 +44,15 @@ const navigationReducer = (state = initialState, action) => {
           loaded: true
         }
       };
+    // navigated to another URL
+    case "@@router/LOCATION_CHANGE":
+        let event = new CustomEvent('react.href.update', {
+          detail: {
+            href: window.location.href
+          }
+        });
+        window.dispatchEvent(event);
+      return state;
     default:
       return state;
   }
