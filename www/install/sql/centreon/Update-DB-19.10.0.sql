@@ -60,3 +60,8 @@ ALTER TABLE `widget_models` MODIFY COLUMN `description` TEXT NOT NULL;
 ALTER TABLE `modules_informations` DROP COLUMN `lang_files`;
 ALTER TABLE `modules_informations` DROP COLUMN `sql_files`;
 ALTER TABLE `modules_informations` DROP COLUMN `php_files`;
+
+--
+-- Change IP field from varchar(16) to varchar(255)
+--
+ALTER TABLE `remote_servers` MODIFY COLUMN `ip` VARCHAR(255) NOT NULL;
