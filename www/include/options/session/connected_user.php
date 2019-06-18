@@ -100,8 +100,8 @@ if ($selectedUserSid) {
                     // requiring a manual synchronization at next login of the contact
                     $stmtRequiredSync = $pearDB->prepare(
                         'UPDATE contact
-                    SET `ldap_required_sync` = "1"
-                    WHERE contact_id = :contactId'
+                        SET `ldap_required_sync` = "1"
+                        WHERE contact_id = :contactId'
                     );
                     $stmtRequiredSync->bindValue(':contactId', $currentData['contact_id'], \PDO::PARAM_INT);
                     $stmtRequiredSync->execute();
