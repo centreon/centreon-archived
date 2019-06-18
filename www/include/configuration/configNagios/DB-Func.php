@@ -394,9 +394,9 @@ function insertNagios($ret = array(), $brokerTab = array())
         $rq .= "'".$ret["service_inter_check_delay_method"]."',  " : $rq .= "NULL, ";
     isset($ret["host_inter_check_delay_method"]) && $ret["host_inter_check_delay_method"] != null ?
         $rq .= "'".$ret["host_inter_check_delay_method"]."',  " : $rq .= "NULL, ";
-    isset($ret["service_interleave_factor"]["service_interleave_factor"])
-        && $ret["service_interleave_factor"]["service_interleave_factor"] != 2 ?
-        $rq .= "'".$ret["service_interleave_factor"]["service_interleave_factor"]."',  " : $rq .= "'2', ";
+    isset($ret["service_interleave_factor"]) && $ret["service_interleave_factor"] != null
+        ? $rq .= "'" . htmlentities($ret["service_interleave_factor"], ENT_QUOTES, "UTF-8") . "',  "
+        : $rq .= "'2', ";
     isset($ret["max_concurrent_checks"]) && $ret["max_concurrent_checks"] != null ?
         $rq .= "'".htmlentities($ret["max_concurrent_checks"], ENT_QUOTES, "UTF-8")."',  " : $rq .= "NULL, ";
     isset($ret["max_service_check_spread"]) && $ret["max_service_check_spread"] != null ?
@@ -833,10 +833,9 @@ function updateNagios($nagios_id = null)
         $rq .= "max_service_check_spread = '"
         . htmlentities($ret["max_service_check_spread"], ENT_QUOTES, "UTF-8")."',  "
         : $rq .= "max_service_check_spread = NULL, ";
-    isset($ret["service_interleave_factor"]["service_interleave_factor"])
-        && $ret["service_interleave_factor"]["service_interleave_factor"] != 2 ?
+    isset($ret["service_interleave_factor"]) && $ret["service_interleave_factor"] != null ?
         $rq .= "service_interleave_factor = '"
-        . $ret["service_interleave_factor"]["service_interleave_factor"]."',  "
+            . htmlentities($ret["service_interleave_factor"], ENT_QUOTES, "UTF-8") . "',  "
         : $rq .= "service_interleave_factor = '2', ";
     isset($ret["max_concurrent_checks"]) && $ret["max_concurrent_checks"] != null ?
         $rq .= "max_concurrent_checks = '"
