@@ -244,7 +244,7 @@ if [ "$silent_install" -ne 1 ] ; then
 	echo -e "\n$(gettext "You will now read Centreon Licence.\\n\\tPress enter to continue.")"
 	read 
 	tput clear 
-	more "$BASE_DIR/LICENSE"
+	more "$BASE_DIR/LICENSE.md"
 
 	yes_no_default "$(gettext "Do you accept GPL license ?")" 
 	if [ "$?" -ne 0 ] ; then 
