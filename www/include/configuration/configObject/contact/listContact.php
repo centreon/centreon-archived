@@ -37,6 +37,17 @@ if (!isset($centreon)) {
     exit();
 }
 
+/**
+ * allowed access
+ */
+const WRITE = 'w';
+const READ = 'r';
+
+/**
+ * specific action available to admins
+ */
+const LDAP_SYNC = 'sync';
+
 include_once "./class/centreonUtils.class.php";
 
 include "./include/common/autoNumLimit.php";
@@ -51,6 +62,16 @@ while ($data = $dbResult->fetch()) {
 }
 unset($data);
 $dbResult->closeCursor();
+
+$selectedContact = filter_var(
+    $_GET['selectedContact'] ?? null,
+    FILTER_VALIDATE_INT
+);
+
+$p = filter_var(
+    $_GET['p'] ?? $_POST['p'],
+    FILTER_VALIDATE_INT
+);
 
 $search = filter_var(
     $_POST['searchC'] ?? $_GET['searchC'] ?? null,
@@ -87,7 +108,9 @@ $aclOptions = array(
         'contact_activate',
         'contact_email',
         'contact_admin',
-        'contact_register'
+        'contact_register',
+        'contact_auth_type',
+        'ldap_required_sync'
     ),
     'keys' => array('contact_id'),
     'order' => array('contact_name'),
@@ -103,8 +126,14 @@ $tpl = new Smarty();
 $tpl = initSmartyTpl($path, $tpl);
 
 // Access level
-($centreon->user->access->page($p) == 1) ? $lvl_access = 'w' : $lvl_access = 'r';
+$lvl_access = ($centreon->user->access->page($p) == 1) ? WRITE : READ;
 $tpl->assign('mode_access', $lvl_access);
+
+$chosenContact = array();
+if ($centreon->user->admin && $selectedContact && $o === "sync") {
+    $chosenContact[$selectedContact] = 1;
+    synchronizeContactWithLdap($chosenContact);
+}
 
 // start header menu
 $tpl->assign("headerMenu_name", _("Full Name"));
@@ -115,8 +144,17 @@ $tpl->assign("headerMenu_svNotif", _("Services Notification Period"));
 $tpl->assign("headerMenu_lang", _("Language"));
 $tpl->assign("headerMenu_status", _("Status"));
 $tpl->assign("headerMenu_access", _("Access"));
+$tpl->assign("headerMenu_accessTooltip", _("Contacts with the 'Reach Centreon Front-end' option enabled"));
 $tpl->assign("headerMenu_admin", _("Admin"));
 $tpl->assign("headerMenu_options", _("Options"));
+
+// header title displayed only to admins
+if ($centreon->user->admin) {
+    $tpl->assign("headerMenu_refreshLdap", _("Refresh"));
+} else {
+    $tpl->assign("headerMenu_refreshLdap", _(""));
+}
+$tpl->assign("headerMenu_refreshLdapTitleTooltip", _("To manually request a LDAP synchronization of a contact"));
 
 /*
  * Contact list
@@ -130,16 +168,28 @@ $form = new HTML_QuickFormCustom('select_form', 'POST', "?p=" . $p);
 
 // Different style between each lines
 $style = "one";
-$contactTypeIcone = array(
+
+//User type icon and tooltip
+$contactTypeIcon = array(
     1 => "./img/icons/admin.png",
     2 => "./img/icons/user.png",
     3 => "./img/icons/user_template.png"
 );
-$contactTypeIconeTitle = array(
+$contactTypeIconTitle = array(
     1 => _("This user is an administrator."),
     2 => _("This user is a simple user."),
     3 => _("This is a contact template.")
 );
+
+// refresh LDAP icon and tooltip
+$refreshLdapHelp = array(
+    0 => _("This user isn't linked to a LDAP"),
+    1 => _("Manually request to synchronize this contact with his LDAP"),
+    2 => _("Already requested, please wait the CRON execution or for the user to login"),
+);
+
+// setting a default value for non admin users
+$refreshLdapBadge = array(0 => "");
 
 // Fill a tab with a multidimensional Array we put in $tpl
 $elemArr = array();
@@ -188,13 +238,35 @@ foreach ($contacts as $contact) {
         $contact_type = 3;
     }
 
+    // linking the user to it's LDAP badge
+    $isLinkedToLdap = 0;
+    // options displayed only to admins for contacts linked to an LDAP
+    if ($centreon->user->admin && $contact['contact_auth_type'] === "ldap") {
+
+        if ($contact['ldap_required_sync'] === '1') {
+            // already required
+            $isLinkedToLdap = 2;
+            $refreshLdapBadge[2] =
+                "<span>" .
+                    "<img src='img/icons/refresh-gray.png' class='ico-18' alt='" . $refreshLdapHelp[2] . "'>" .
+                "</span>";
+        } else {
+            $isLinkedToLdap = 1;
+            $refreshLdapBadge[1] =
+                "<a href='main.php?p=" . $p . "&selectedContact=" . $contact['contact_id'] . "&o=sync&limit=" . $limit .
+                "&num=" . $num . "&search=" . $search . "'>" .
+                    "<img src='img/icons/refresh.png' class='ico-18' alt='" . $refreshLdapHelp[1] . "'>" .
+                "</a>";
+        }
+    }
+
     $elemArr[] = array(
         "MenuClass" => "list_" . $style,
         "RowMenu_select" => $selectedElements->toHtml(),
         "RowMenu_name" => html_entity_decode($contact["contact_name"], ENT_QUOTES, "UTF-8"),
-        "RowMenu_ico" => isset($contactTypeIcone[$contact_type]) ? $contactTypeIcone[$contact_type] : "",
-        "RowMenu_ico_title" => isset($contactTypeIconeTitle[$contact_type])
-            ? $contactTypeIconeTitle[$contact_type]
+        "RowMenu_ico" => isset($contactTypeIcon[$contact_type]) ? $contactTypeIcon[$contact_type] : "",
+        "RowMenu_ico_title" => isset($contactTypeIconTitle[$contact_type])
+            ? $contactTypeIconTitle[$contact_type]
             : "",
         "RowMenu_type" => $contact_type,
         "RowMenu_link" => "main.php?p=" . $p . "&o=c&contact_id=" . $contact['contact_id'],
@@ -223,6 +295,8 @@ foreach ($contacts as $contact) {
         "RowMenu_admin" => $contact["contact_admin"] ? _("Yes") : _("No"),
         "RowMenu_status" => $contact["contact_activate"] ? _("Enabled") : _("Disabled"),
         "RowMenu_badge" => $contact["contact_activate"] ? "service_ok" : "service_critical",
+        "RowMenu_refreshLdap" => $isLinkedToLdap ? $refreshLdapBadge[$isLinkedToLdap] : "",
+        "RowMenu_refreshLdapHelp" => $isLinkedToLdap ? $refreshLdapHelp[$isLinkedToLdap] : "",
         "RowMenu_options" => $moptions
     );
     $style != "two" ? $style = "two" : $style = "one";
@@ -265,31 +339,41 @@ foreach (array('o1', 'o2') as $option) {
     $attrs1 = array(
         'onchange' => "javascript: " .
             " var bChecked = isChecked(); " .
-            " if (this.form.elements['" . $option . "'].selectedIndex != 0 && !bChecked) {" .
-            " alert('" . _("Please select one or more items") . "'); return false;} " .
+            "if (this.form.elements['" . $option . "'].selectedIndex != 0 && !bChecked) {" .
+                " alert('" . _("Please select one or more items") . "'); return false;} " .
             "if (this.form.elements['" . $option . "'].selectedIndex == 1 && confirm('" .
             _("Do you confirm the duplication ?") . "')) {" .
-            "   setO(this.form.elements['" . $option . "'].value); submit();} " .
+                "   setO(this.form.elements['" . $option . "'].value); submit();} " .
             "else if (this.form.elements['" . $option . "'].selectedIndex == 2 && confirm('" .
             _("Do you confirm the deletion ?") . "')) {" .
-            "   setO(this.form.elements['" . $option . "'].value); submit();} " .
+                "   setO(this.form.elements['" . $option . "'].value); submit();} " .
             "else if (this.form.elements['" . $option . "'].selectedIndex == 3 || this.form.elements['" .
             $option . "'].selectedIndex == 4 ||this.form.elements['" . $option . "'].selectedIndex == 5){" .
-            "   setO(this.form.elements['" . $option . "'].value); submit();} " .
+                "   setO(this.form.elements['" . $option . "'].value); submit();} " .
+            "else if (this.form.elements['" . $option . "'].selectedIndex == 6 && confirm('" .
+            _("Do you confirm the LDAP synchronization request ?") . "')) {" .
+                "   setO(this.form.elements['" . $option . "'].value); submit();} " .
             "this.form.elements['" . $option . "'].selectedIndex = 0"
     );
+
+    $formOptions = array(
+        null => _("More actions..."),
+        "m" => _("Duplicate"),
+        "d" => _("Delete"),
+        "mc" => _("Massive Change"),
+        "ms" => _("Enable"),
+        "mu" => _("Disable"),
+    );
+    // adding a specific option available only for admin users
+    if ($centreon->user->admin) {
+        $formOptions["sync"] = _("Synchronize LDAP");
+    }
+
     $form->addElement(
         'select',
         $option,
         null,
-        array(
-            null => _("More actions..."),
-            "m" => _("Duplicate"),
-            "d" => _("Delete"),
-            "mc" => _("Massive Change"),
-            "ms" => _("Enable"),
-            "mu" => _("Disable")
-        ),
+        $formOptions,
         $attrs1
     );
     $form->setDefaults(array($option => null));
