@@ -6,7 +6,6 @@ import { fetchNavigationData, fetchReactRoutesData } from "../../redux/actions/n
 
 class Navigation extends Component {
   componentDidMount = () => {
-	  console.log('test');
     const { fetchNavigationData, fetchReactRoutesData } = this.props;
     fetchNavigationData();
     fetchReactRoutesData();
