@@ -93,11 +93,19 @@ class CentreonHostTemplate extends CentreonHost
         if ($result > 0) {
             throw new CentreonClapiException(self::OBJECTALREADYLINKED . ":" . $objectName);
         } else {
-            parent::del($objectName);
-            $this->db->query(
-                "DELETE FROM service WHERE service_register = '1' "
-                . "AND service_id NOT IN (SELECT service_service_id FROM host_service_relation)"
-            );
+            try {
+                $this->db->beginTransaction();
+
+                parent::del($objectName);
+                $this->db->query(
+                    "DELETE FROM service WHERE service_register = '1' "
+                    . "AND service_id NOT IN (SELECT service_service_id FROM host_service_relation)"
+                );
+
+                $this->db->commit();
+            } catch (\PDOException $e) {
+                $this->db->rollBack();
+            }
         }
     }
 }
