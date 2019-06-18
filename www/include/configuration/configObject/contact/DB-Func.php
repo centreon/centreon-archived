@@ -195,21 +195,100 @@ function disableContactInDB($contact_id = null, $contact_arr = array())
 }
 
 /**
- *
  * Delete Contacts
- * @param $contacts
+ * @param array $contacts
  */
 function deleteContactInDB($contacts = array())
 {
     global $pearDB, $centreon;
 
-    foreach ($contacts as $key => $value) {
-        $query = "SELECT contact_name FROM `contact` WHERE `contact_id` = '" . intval($key) . "' LIMIT 1";
-        $dbResult2 = $pearDB->query($query);
-        $row = $dbResult2->fetch();
+    // getting the contact name for the log
+    $contactNameStmt = $pearDB->prepare(
+        "SELECT contact_name FROM `contact` WHERE `contact_id` = :contactId LIMIT 1"
+    );
 
-        $pearDB->query("DELETE FROM contact WHERE contact_id = '" . intval($key) . "'");
+    $dbResult = $pearDB->prepare(
+        "DELETE FROM contact WHERE contact_id = :contactId"
+    );
+
+    foreach ($contacts as $key => $value) {
+        $contactNameStmt->bindValue(':contactId', (int)$key, \PDO::PARAM_INT);
+        $contactNameStmt->execute();
+        $row = $contactNameStmt->fetch();
+
+        $dbResult->bindValue(':contactId', (int)$key, \PDO::PARAM_INT);
+        $dbResult->execute();
+
         $centreon->CentreonLogAction->insertLog("contact", $key, $row['contact_name'], "d");
+    }
+}
+
+/**
+ * Synchronize contacts with LDAP to update modified data
+ * @param array $contacts
+ */
+function synchronizeContactWithLdap($contacts = array())
+{
+    global $pearDB;
+    $centreonLog = new CentreonLog();
+
+
+    // checking if at least one LDAP configuration is still enable
+    $ldapEnable = $pearDB->query(
+        "SELECT `value` FROM `options` WHERE `key` = 'ldap_auth_enable'"
+    );
+    $rowLdapEnable = $ldapEnable->fetch();
+
+    if ($rowLdapEnable['value'] === '1') {
+        // getting the contact name for the log
+        $contactNameStmt = $pearDB->prepare(
+            "SELECT contact_name FROM `contact` WHERE `contact_id` = :contactId LIMIT 1"
+        );
+
+        // requiring a manual synchronization at next login of the contact
+        $stmtRequiredSync = $pearDB->prepare(
+            'UPDATE contact
+            SET `ldap_required_sync` = "1"
+            WHERE contact_id = :contactId'
+        );
+
+        // checking if the contact is currently logged in Centreon
+        $activeSession = $pearDB->prepare(
+            "SELECT session_id FROM `session` WHERE user_id = :contactId"
+        );
+
+        // disconnecting the active user from centreon
+        $logoutContact = $pearDB->prepare(
+            "DELETE FROM session WHERE session_id = :userSessionId");
+
+        foreach ($contacts as $key => $value) {
+            $contactNameStmt->bindValue(':contactId', (int)$key, \PDO::PARAM_INT);
+            $contactNameStmt->execute();
+            $rowContact = $contactNameStmt->fetch();
+
+            $stmtRequiredSync->bindValue(':contactId', (int)$key, \PDO::PARAM_INT);
+            $stmtRequiredSync->execute();
+
+            $activeSession->bindValue(':contactId', (int)$key, \PDO::PARAM_INT);
+            $activeSession->execute();
+            $rowSession = $activeSession->fetch();
+
+            if ($rowSession['session_id']) {
+                $logoutContact->bindValue(':userSessionId', $rowSession['session_id'], \PDO::PARAM_STR);
+                $logoutContact->execute();
+            }
+
+            $centreonLog->insertLog(
+                3, //ldap.log
+                "LDAP MANUAL SYNC : Successfully planned LDAP synchronization for " . $rowContact['contact_name']
+            );
+        }
+    } else {
+        // unable to plan the manual LDAP request of the contacts
+        $centreonLog->insertLog(
+            3,
+            "LDAP MANUAL SYNC : No LDAP configuration is enabled"
+        );
     }
 }
 
