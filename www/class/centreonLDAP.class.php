@@ -54,7 +54,7 @@ function errorLdapHandler($errno, $errstr, $errfile, $errline, $errcontext)
 class CentreonLDAP
 {
 
-    public $CentreonLog;
+    public $centreonLog;
     private $ds;
     private $db = null;
     private $linkId;
@@ -69,12 +69,12 @@ class CentreonLDAP
     /**
      * Constructor
      * @param \CentreonDB $pearDB The database connection
-     * @param \CentreonLog $CentreonLog The logging object
+     * @param \CentreonLog $centreonLog The logging object
      * @param string $arId
      */
-    public function __construct($pearDB, $CentreonLog = null, $arId = null)
+    public function __construct($pearDB, $centreonLog = null, $arId = null)
     {
-        $this->CentreonLog = $CentreonLog;
+        $this->centreonLog = $centreonLog;
         $this->db = $pearDB;
 
         /* Check if use service form DNS */
@@ -889,7 +889,7 @@ class CentreonLDAP
             $stmt->bindValue(':contactId', $currentUser['contact_id'], \PDO::PARAM_INT);
             $stmt->execute();
         } catch (\PDOException $e) {
-            $this->CentreonLog->insertLog(
+            $this->centreonLog->insertLog(
                 3,
                 "LDAP MANUAL SYNC : Failed to update ldap_last_sync's values for " . $currentUser['contact_alias']
             );
@@ -920,9 +920,9 @@ class CentreonLDAP
             $stmtManualRequest->execute();
             $manualOverride = $stmtManualRequest->fetch();
             if ($manualOverride['ldap_required_sync']) {
-                $this->CentreonLog->insertLog(
+                $this->centreonLog->insertLog(
                     3,
-                    'LDAP AUTH : LDAP synchronisation was requested manually for ' . $manualOverride['contact_name']
+                    'LDAP AUTH : LDAP synchronization was requested manually for ' . $manualOverride['contact_name']
                 );
                 return true;
             }
@@ -954,7 +954,7 @@ class CentreonLDAP
                 $currentTime = time();
                 if (($syncState['ldap_sync_interval'] * 3600 + $ldapBaseSync['referenceDate']) <= $currentTime) {
                     // synchronization is expected
-                    $this->CentreonLog->insertLog(
+                    $this->centreonLog->insertLog(
                         3,
                         'LDAP AUTH : Updating user DN of ' . $manualOverride['contact_name']
                     );
@@ -966,9 +966,9 @@ class CentreonLDAP
             // assuming it needs to be synchronized
             return true;
         }
-        $this->CentreonLog->insertLog(
+        $this->centreonLog->insertLog(
             3,
-            'LDAP AUTH : LDAP synchronisation on login is disabled'
+            'LDAP AUTH : LDAP synchronization on login is disabled'
         );
         return false;
     }
