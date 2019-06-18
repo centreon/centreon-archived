@@ -56,7 +56,7 @@ $submitLogin = $form->addElement('submit', 'submitLogin', _("Connect"), array('c
 
 $loginValidate = $form->validate();
 
-require_once(__DIR__ . "/processLogin.php");
+require_once __DIR__ . "/processLogin.php";
 
 /**
  * Set login messages (errors)

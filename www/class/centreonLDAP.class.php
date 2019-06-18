@@ -816,6 +816,7 @@ class CentreonLDAP
      * @param int $contactId : The Id of the contact to be added
      *
      * @return bool : return true to the parent if everything goes well. Needed for the method calling it
+     * @throws exception
      */
     public function addUserToLdapDefaultCg(int $arId = null, int $contactId = null): bool
     {
@@ -880,8 +881,8 @@ class CentreonLDAP
     {
         $stmt = $this->db->prepare(
             'UPDATE contact SET
-                   `ldap_last_sync` = :currentTime,
-                   `ldap_required_sync` = "0"
+               `ldap_last_sync` = :currentTime,
+               `ldap_required_sync` = "0"
             WHERE contact_id = :contactId'
         );
         try {
@@ -1100,7 +1101,7 @@ class CentreonLdapAdmin
                 $options['ar_sync_base_date'] = time();
                 $this->centreonLog->insertLog(
                     3,
-                    "LDAP PARAM - Warning the reference date wasn\'t set for : " . $options['ar_name']
+                    "LDAP PARAM - Warning the reference date wasn\'t set for LDAP : " . $options['ar_name']
                 );
             }
             $this->db->query(

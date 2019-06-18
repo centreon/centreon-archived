@@ -224,11 +224,15 @@ class CentreonAuth
             || $this->userInfos["contact_auth_type"] == "local"
             || $this->autologin
         ) {
-            if ($this->autologin && $this->userInfos["contact_autologin_key"]
+            if ($this->autologin
+                && $this->userInfos["contact_autologin_key"]
                 && $this->userInfos["contact_autologin_key"] === $token
             ) {
                 $this->passwdOk = 1;
-            } elseif (!empty($password) && $this->userInfos["contact_passwd"] === $password && $this->autologin) {
+            } elseif (!empty($password)
+                && $this->userInfos["contact_passwd"] === $password
+                && $this->autologin
+            ) {
                 $this->passwdOk = 1;
             } elseif (!empty($password)
                 && $this->userInfos["contact_passwd"] === $this->myCrypt($password)
@@ -248,11 +252,13 @@ class CentreonAuth
                 && $this->userInfos["contact_autologin_key"] === $token
             ) {
                 $this->passwdOk = 1;
-            } elseif (!empty($password) && isset($this->userInfos["contact_passwd"])
+            } elseif (!empty($password)
+                && isset($this->userInfos["contact_passwd"])
                 && $this->userInfos["contact_passwd"] === $password && $this->autologin
             ) {
                 $this->passwdOk = 1;
-            } elseif (!empty($password) && isset($this->userInfos["contact_passwd"])
+            } elseif (!empty($password)
+                && isset($this->userInfos["contact_passwd"])
                 && $this->userInfos["contact_passwd"] === $this->myCrypt($password)
                 && $this->autologin == 0
             ) {

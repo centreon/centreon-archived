@@ -78,15 +78,15 @@ if ($selectedUserSid) {
             // finding chosen user's data
             $resUser = $pearDB->prepare(
                 "SELECT `contact_id`, `contact_alias`, `ar_id` FROM contact 
-            LEFT JOIN session ON session.user_id = contact.contact_id 
-            WHERE session.session_id = :userSessionId"
+                LEFT JOIN session ON session.user_id = contact.contact_id 
+                WHERE session.session_id = :userSessionId"
             );
             try {
                 $resUser->bindValue(':userSessionId', $selectedUserSid, \PDO::PARAM_STR);
                 $resUser->execute();
                 $currentData = $resUser->fetch();
 
-                // checking if at least one LDAP configuration is still enable
+                // checking if at least one LDAP configuration is still enabled
                 $ldapEnable = $pearDB->query(
                     "SELECT `value` FROM `options` WHERE `key` = 'ldap_auth_enable'"
                 );
@@ -159,7 +159,7 @@ for ($cpt = 0; $r = $res->fetch(); $cpt++) {
     $resCP->execute();
     $rCP = $resCP->fetch();
 
-    // getting the actual users position in the IHM
+    // getting the current users' position in the IHM
     $session_data[$cpt]["current_page"] = $r["current_page"] . $rCP["topology_url_opt"];
     if ($rCP['topology_name'] != '') {
         $session_data[$cpt]["topology_name"] = _($rCP["topology_name"]);
@@ -169,9 +169,11 @@ for ($cpt = 0; $r = $res->fetch(); $cpt++) {
 
     if ($centreon->user->admin) {
         // adding the link to be able to kick the user
-        $session_data[$cpt]["actions"] = "<a href='./main.php?p=" . $p . "&o=k&session=" . $r['session_id'] .
-            "'><img src='./img/icons/delete.png' border='0' alt='" . _("Kick User") .
-            "' title='" . _("Kick User") . "'></a>";
+        $session_data[$cpt]["actions"] =
+            "<a href='./main.php?p=" . $p . "&o=k&session=" . $r['session_id'] . "'>" .
+                "<img src='./img/icons/delete.png' border='0' alt='" . _("Kick User") .
+                "' title='" . _("Kick User") . "'>" .
+            "</a>";
 
         // checking if the user account is linked to a LDAP
         if ($r['contact_auth_type'] === "ldap") {
@@ -182,7 +184,7 @@ for ($cpt = 0; $r = $res->fetch(); $cpt++) {
                 $session_data[$cpt]["last_sync"] = "-";
             }
 
-            // adding the link to be able to synchronize user's data from the LDAP
+            // adding the link to be able to execute the user's synchronization from the LDAP
             $session_data[$cpt]["synchronize"] = "<a href='./main.php?p=" . $p . "&o=s&session=" . $r['session_id'] .
                 "'><img src='./img/icons/refresh.png' border='0' alt='" . _("Sync LDAP") .
                 "' title='" . _("Sync LDAP") . "'></a>";
@@ -199,7 +201,7 @@ for ($cpt = 0; $r = $res->fetch(); $cpt++) {
         // hiding the buttons
         $session_data[$cpt]["actions"] = "";
         $session_data[$cpt]["synchronize"] = "";
-        // hiding the column titles
+        // hiding the columns title
         $tpl->assign("wi_last_sync", _(""));
         $tpl->assign("wi_syncLdap", _(""));
         $tpl->assign("wi_logoutUser", _(""));

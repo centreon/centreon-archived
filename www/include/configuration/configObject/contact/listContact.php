@@ -151,10 +151,11 @@ $tpl->assign("headerMenu_options", _("Options"));
 // header title displayed only to admins
 if ($centreon->user->admin) {
     $tpl->assign("headerMenu_refreshLdap", _("Refresh"));
+    $tpl->assign("headerMenu_refreshLdapTitleTooltip", _("To manually request a LDAP synchronization of a contact"));
 } else {
     $tpl->assign("headerMenu_refreshLdap", _(""));
 }
-$tpl->assign("headerMenu_refreshLdapTitleTooltip", _("To manually request a LDAP synchronization of a contact"));
+
 
 /*
  * Contact list
@@ -238,13 +239,13 @@ foreach ($contacts as $contact) {
         $contact_type = 3;
     }
 
-    // linking the user to it's LDAP badge
+    // linking the user to its LDAP badge
     $isLinkedToLdap = 0;
     // options displayed only to admins for contacts linked to an LDAP
     if ($centreon->user->admin && $contact['contact_auth_type'] === "ldap") {
 
         if ($contact['ldap_required_sync'] === '1') {
-            // already required
+            // synchronization is already required
             $isLinkedToLdap = 2;
             $refreshLdapBadge[2] =
                 "<span>" .

@@ -202,7 +202,7 @@ function deleteContactInDB($contacts = array())
 {
     global $pearDB, $centreon;
 
-    // getting the contact name for the log
+    // getting the contact name for the logs
     $contactNameStmt = $pearDB->prepare(
         "SELECT contact_name FROM `contact` WHERE `contact_id` = :contactId LIMIT 1"
     );
@@ -232,15 +232,14 @@ function synchronizeContactWithLdap($contacts = array())
     global $pearDB;
     $centreonLog = new CentreonLog();
 
-
-    // checking if at least one LDAP configuration is still enable
+    // checking if at least one LDAP configuration is still enabled
     $ldapEnable = $pearDB->query(
         "SELECT `value` FROM `options` WHERE `key` = 'ldap_auth_enable'"
     );
     $rowLdapEnable = $ldapEnable->fetch();
 
     if ($rowLdapEnable['value'] === '1') {
-        // getting the contact name for the log
+        // getting the contact name for the logs
         $contactNameStmt = $pearDB->prepare(
             "SELECT contact_name FROM `contact` WHERE `contact_id` = :contactId LIMIT 1"
         );
@@ -1134,7 +1133,7 @@ function updateContactContactGroup_MC($contact_id = null, $ret = array())
         "SELECT * FROM contactgroup_contact_relation " .
         "WHERE contact_contact_id = :contactId"
     );
-    $dbResult->bindValue(':contactId', (int)$contact_id, PDO::PARAM_INT);
+    $dbResult->bindValue(':contactId', (int)$contact_id, \PDO::PARAM_INT);
     $dbResult->execute();
     $cmds = array();
     while ($arr = $dbResult->fetch()) {
