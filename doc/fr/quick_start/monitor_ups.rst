@@ -1,3 +1,5 @@
+.. _monitor_ups:
+
 ##############################
 Superviser un onduleur en SNMP
 ##############################

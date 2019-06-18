@@ -1,3 +1,5 @@
+.. _monitor_cisco:
+
 ################################
 Monitor a Cisco Router with SNMP
 ################################

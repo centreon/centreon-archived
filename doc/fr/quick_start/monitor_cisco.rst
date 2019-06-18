@@ -1,3 +1,5 @@
+.. _monitor_cisco:
+
 ###################################
 Superviser un routeur Cisco en SNMP
 ###################################

@@ -1,3 +1,5 @@
+.. _monitor_mysql:
+
 ###############################################
 Superviser une base de données MySQL ou MariaDB
 ###############################################

@@ -1,3 +1,5 @@
+.. _monitor_mysql:
+
 ###################################
 Monitor a MySQL or MariaDB database
 ###################################

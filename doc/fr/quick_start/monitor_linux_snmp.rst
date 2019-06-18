@@ -1,3 +1,5 @@
+.. _monitor_linux:
+
 ###################################
 Superviser un serveur Linux en SNMP
 ###################################

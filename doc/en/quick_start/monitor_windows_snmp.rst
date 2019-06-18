@@ -1,3 +1,5 @@
+.. _monitor_windows:
+
 ##################################
 Monitor a Windows server with SNMP
 ##################################

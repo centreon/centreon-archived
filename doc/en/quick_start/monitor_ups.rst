@@ -1,3 +1,5 @@
+.. _monitor_ups:
+
 ###############################
 Monitor UPS equipment with SNMP
 ###############################

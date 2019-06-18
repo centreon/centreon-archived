@@ -1,3 +1,5 @@
+.. _monitor_printer:
+
 #################################
 Superviser une imprimante en SNMP
 #################################

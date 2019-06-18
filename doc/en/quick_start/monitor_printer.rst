@@ -1,3 +1,5 @@
+.. _monitor_printer:
+
 ###################################
 Monitor Printer equipment with SNMP
 ###################################
