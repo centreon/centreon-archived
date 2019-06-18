@@ -3,9 +3,8 @@ declare(strict_types=1);
 
 namespace Centreon\Application\Controller;
 
-use Centreon\Domain\Annotation\EntityCreator;
 use Centreon\Domain\Entity\Contact;
-use Centreon\Domain\Pagination;
+use Centreon\Domain\Pagination\Pagination;
 use Centreon\Domain\Service\Interfaces\MonitoringServiceInterface;
 use FOS\RestBundle\Context\Context;
 use FOS\RestBundle\Controller\AbstractFOSRestController;

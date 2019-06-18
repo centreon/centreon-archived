@@ -18,32 +18,32 @@ class Host
     public const STATUS_UNREACHABLE = 2;
 
     /**
-     * @Serializer\Groups({"Default"})
+     * @Serializer\Groups({"Default", "host_main", "host_full"})
      * @Desc(column="host_id", modifier="setId")
      * @var int Id of host
      */
     private $id;
 
     /**
-     * @Serializer\Groups({"host_main"})
+     * @Serializer\Groups({"host_main", "host_full"})
      * @var int Poller id
      */
     private $instanceId;
 
     /**
-     * @Serializer\Groups({"Default"})
+     * @Serializer\Groups({"Default", "host_main", "host_full"})
      * @var string Name of host
      */
     private $name;
 
     /**
-     * @Serializer\Groups({"host_main"})
+     * @Serializer\Groups({"host_main", "host_full"})
      * @var bool|null
      */
     private $acknowledged;
 
     /**&
-     * @Serializer\Groups({"host_main"})
+     * @Serializer\Groups({"host_main", "host_full"})
      * @var int|null
      */
     private $acknowledgementType;
@@ -54,18 +54,18 @@ class Host
      */
     private $activeChecks;
     /**
-     * @Serializer\Groups({"host_main"})
+     * @Serializer\Groups({"host_main", "host_full"})
      * @var string|null Ip address or domain name
      */
     private $address;
     /**
-     * @Serializer\Groups({"Default"})
+     * @Serializer\Groups({"Default", "host_main", "host_full"})
      * @var string|null Alias of host
      */
     private $alias;
 
     /**
-     * @Serializer\Groups({"host_main"})
+     * @Serializer\Groups({"host_main", "host_full"})
      * @var int|null
      */
     private $checkAttempt;
@@ -95,43 +95,43 @@ class Host
     private $checkType;
 
     /**
-     * @Serializer\Groups({"host_main"})
+     * @Serializer\Groups({"host_main", "host_full"})
      * @var bool|null
      */
     private $checked;
 
     /**
-     * @Serializer\Groups({"host_main"})
+     * @Serializer\Groups({"host_main", "host_full"})
      * @var string|null
      */
     private $displayName;
 
     /**
-     * @Serializer\Groups({"host_main"})
+     * @Serializer\Groups({"host_main", "host_full"})
      * @var bool
      */
     private $enabled;
 
     /**
-     * @Serializer\Groups({"host_main"})
+     * @Serializer\Groups({"host_main", "host_full"})
      * @var double|null
      */
     private $executionTime;
 
     /**
-     * @Serializer\Groups({"host_main"})
+     * @Serializer\Groups({"host_main", "host_full"})
      * @var string|null
      */
     private $iconImage;
 
     /**
-     * @Serializer\Groups({"host_main"})
+     * @Serializer\Groups({"host_main", "host_full"})
      * @var string|null
      */
     private $iconImageAlt;
 
     /**
-     * @Serializer\Groups({"host_main"})
+     * @Serializer\Groups({"host_main", "host_full"})
      * @var string|null
      */
     private $lastCheck;
@@ -143,7 +143,7 @@ class Host
     private $lastHardState;
 
     /**
-     * @Serializer\Groups({"host_main"})
+     * @Serializer\Groups({"host_main", "host_full"})
      * @var \DateTime|null
      */
     private $lastHardStateChange;
@@ -155,7 +155,7 @@ class Host
     private $lastNotification;
 
     /**
-     * @Serializer\Groups({"host_main"})
+     * @Serializer\Groups({"host_main", "host_full"})
      * @var \DateTime|null
      */
     private $lastStateChange;
@@ -179,7 +179,7 @@ class Host
     private $lastTimeUp;
 
     /**
-     * @Serializer\Groups({"host_main"})
+     * @Serializer\Groups({"host_main", "host_full"})
      * @var \DateTime|null
      */
     private $lastUpdate;
@@ -191,7 +191,7 @@ class Host
     private $latency;
 
     /**
-     * @Serializer\Groups({"host_main"})
+     * @Serializer\Groups({"host_main", "host_full"})
      * @var int|null
      */
     private $maxCheckAttempts;
@@ -263,25 +263,25 @@ class Host
     private $notifyOnUnreachable;
 
     /**
-     * @Serializer\Groups({"host_main"})
+     * @Serializer\Groups({"host_main", "host_full"})
      * @var string|null
      */
     private $output;
 
     /**
-     * @Serializer\Groups({"host_main"})
+     * @Serializer\Groups({"host_main", "host_full"})
      * @var bool|null
      */
     private $passiveChecks;
 
     /**
-     * @Serializer\Groups({"host_main"})
+     * @Serializer\Groups({"host_main", "host_full"})
      * @var int|null
      */
     private $state;
 
     /**
-     * @Serializer\Groups({"host_main"})
+     * @Serializer\Groups({"host_main", "host_full"})
      * @var int|null
      */
     private $stateType;

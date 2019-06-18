@@ -1,0 +1,7 @@
+Centreon\Domain\Entity\TestEntity:
+    properties:
+        id:
+            - Type: integer
+        name:
+            - Type: string
+            - NotBlank: ~

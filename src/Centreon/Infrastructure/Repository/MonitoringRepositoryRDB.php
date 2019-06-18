@@ -7,7 +7,7 @@ use Centreon\Domain\Entity\AccessGroup;
 use Centreon\Domain\Entity\Host;
 use Centreon\Domain\Entity\Service;
 use Centreon\Domain\EntityCreator;
-use Centreon\Domain\Pagination;
+use Centreon\Domain\Pagination\Pagination;
 use Centreon\Domain\Repository\Interfaces\MonitoringRepositoryInterface;
 use Centreon\Infrastructure\DatabaseConnection;
 use \Exception;
@@ -355,7 +355,10 @@ class MonitoringRepositoryRDB implements MonitoringRepositoryInterface
 
         $request =
             'SELECT SQL_CALC_FOUND_ROWS DISTINCT 
-              srv.*, h.*
+              srv.*,
+              h.host_id AS host_id, 
+              h.name AS host_name,
+              h.alias AS host_alias
             FROM `:dbstg`.services srv
             INNER JOIN `:dbstg`.centreon_acl acl
               ON acl.service_id = srv.service_id
@@ -444,8 +447,8 @@ class MonitoringRepositoryRDB implements MonitoringRepositoryInterface
             $serviceId = (int)$result['service_id'];
             $host = (new Host())
                 ->setId((int)$result['host_id'])
-                ->setName($result['name'])
-                ->setAlias($result['alias']);
+                ->setName($result['host_name'])
+                ->setAlias($result['host_alias']);
 
             $isServiceAlreadyInserted = false;
             foreach ($services as $service) {

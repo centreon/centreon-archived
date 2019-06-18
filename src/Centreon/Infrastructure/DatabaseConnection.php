@@ -3,12 +3,10 @@
 namespace Centreon\Infrastructure;
 
 /**
- * Allow to implement PDO
  * @package Centreon\Infrastructure
  */
 class DatabaseConnection extends \PDO
 {
-
     /**
      * @var string
      */
@@ -31,7 +29,8 @@ class DatabaseConnection extends \PDO
     private $port;
 
     /**
-     * DatabaseConnection constructor.
+     * Initialize the PDO connection
+     *
      * @param string $host
      * @param string $basename
      * @param string $login

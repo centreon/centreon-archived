@@ -27,6 +27,7 @@ services:
 
     contact.provider:
         class: Centreon\ContactProvider
+        public: true
 
     Centreon\Domain\Repository\Interfaces\AuthenticationRepositoryInterface:
         class: Centreon\Infrastructure\Repository\AuthenticationRepositoryRDB
@@ -47,6 +48,7 @@ services:
         class: App\EventSubscriber\RequestEventSubscriber
 
     monitoring.repository:
+        public: true
         class: Centreon\Infrastructure\Repository\MonitoringRepositoryRDB
         calls:
             - method: setCentreonDbName

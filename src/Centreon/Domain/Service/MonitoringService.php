@@ -5,8 +5,9 @@ namespace Centreon\Domain\Service;
 
 use Centreon\Domain\Entity\Contact;
 use Centreon\Domain\Entity\Host;
+use Centreon\Domain\Entity\Interfaces\ContactInterface;
 use Centreon\Domain\Entity\Service;
-use Centreon\Domain\Pagination;
+use Centreon\Domain\Pagination\Pagination;
 use Centreon\Domain\Repository\Interfaces\AccessGroupRepositoryInterface;
 use Centreon\Domain\Repository\Interfaces\MonitoringRepositoryInterface;
 use Centreon\Domain\Service\Interfaces\MonitoringServiceInterface;
@@ -24,12 +25,12 @@ class MonitoringService implements MonitoringServiceInterface
     private $accessGroupRepository;
 
     /**
+     * The contact will be use to filter services and hosts.
      * @var Contact
      */
     private $contact;
 
     /**
-     * MonitoringService constructor.
      * @param MonitoringRepositoryInterface $monitoringRepository
      * @param AccessGroupRepositoryInterface $accessGroupRepository
      */
@@ -42,8 +43,7 @@ class MonitoringService implements MonitoringServiceInterface
     }
 
     /**
-     * @return Service[]|null
-     * @throws \Exception
+     * @inheritDoc
      */
     public function findServices(Pagination $pagination): array
     {
@@ -62,8 +62,7 @@ class MonitoringService implements MonitoringServiceInterface
     }
 
     /**
-     * @return Host[]|null
-     * @throws \Exception
+     * @inheritDoc
      */
     public function findHosts(Pagination $pagination): array
     {
@@ -82,29 +81,24 @@ class MonitoringService implements MonitoringServiceInterface
     }
 
     /**
-     * @param Contact $contact
-     * @return mixed|void
+     * @inheritDoc
      */
-    public function filterByContact(Contact $contact): MonitoringServiceInterface
+    public function filterByContact(ContactInterface $contact): MonitoringServiceInterface
     {
         $this->contact = $contact;
         return $this;
     }
 
     /**
-     * @param Contact $contact
-     * @param int $contactId
-     * @return Host
+     * @inheritDoc
      */
-    public function findOneHost(int $contactId): ?Host
+    public function findOneHost(int $hostId): ?Host
     {
         // TODO: Implement findOneHost() method.
     }
 
     /**
-     * @param Contact $contact
-     * @param int $serviceId
-     * @return Service
+     * @inheritDoc
      */
     public function findOneService(int $serviceId): ?Service
     {

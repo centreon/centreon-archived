@@ -67,6 +67,12 @@
     "nikic/php-parser": {
         "version": "v4.2.1"
     },
+    "phar-io/manifest": {
+        "version": "1.0.3"
+    },
+    "phar-io/version": {
+        "version": "2.0.1"
+    },
     "phpcollection/phpcollection": {
         "version": "0.5.0"
     },
@@ -78,6 +84,9 @@
     },
     "psr/simple-cache": {
         "version": "1.0.1"
+    },
+    "sebastian/object-reflector": {
+        "version": "1.1.1"
     },
     "sensio/framework-extra-bundle": {
         "version": "5.2",
@@ -206,8 +215,24 @@
     "symfony/templating": {
         "version": "v4.2.8"
     },
+    "symfony/validator": {
+        "version": "4.1",
+        "recipe": {
+            "repo": "github.com/symfony/recipes",
+            "branch": "master",
+            "version": "4.1",
+            "ref": "21ab70175caf1e4b273791364fb30d27f1153546"
+        },
+        "files": [
+            "config/packages/test/validator.yaml",
+            "config/packages/validator.yaml"
+        ]
+    },
     "symfony/var-exporter": {
         "version": "v4.2.8"
+    },
+    "theseer/tokenizer": {
+        "version": "1.1.2"
     },
     "willdurand/jsonp-callback-validator": {
         "version": "v1.1.0"

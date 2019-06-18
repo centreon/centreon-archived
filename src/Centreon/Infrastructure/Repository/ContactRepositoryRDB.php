@@ -93,7 +93,7 @@ final class ContactRepositoryRDB implements ContactRepositoryInterface
             ->setEmail($contact['contact_email'])
             ->setTemplateId($contact['contact_template_id'])
             ->setIsActive($contact['contact_activate'])
-            ->setIsAdmin($contact['contact_admin'] === '1')
+            ->setAdmin($contact['contact_admin'] === '1')
             ->setToken($contact['contact_autologin_key'])
             ->setEncodedPassword($contact['contact_passwd']);
     }

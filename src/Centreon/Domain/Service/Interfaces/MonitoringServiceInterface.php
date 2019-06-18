@@ -1,26 +1,23 @@
 <?php
 
-
 namespace Centreon\Domain\Service\Interfaces;
 
-use Centreon\Domain\Entity\AccessGroup;
-use Centreon\Domain\Entity\Contact;
 use Centreon\Domain\Entity\Host;
+use Centreon\Domain\Entity\Interfaces\ContactInterface;
 use Centreon\Domain\Entity\Service;
-use Centreon\Domain\Pagination;
+use Centreon\Domain\Pagination\Pagination;
 
 interface MonitoringServiceInterface
 {
     /**
-     * @param int $contactId
-     * @return Host
+     * @param int $hostId Id of the host to be found
+     * @return Host|null
      */
-    public function findOneHost(int $contactId): ?Host;
+    public function findOneHost(int $hostId): ?Host;
 
     /**
-     * @param Contact $contact
-     * @param int $serviceId
-     * @return Service
+     * @param int $serviceId Id of the service to be found
+     * @return Service|null
      */
     public function findOneService(int $serviceId): ?Service;
 
@@ -32,13 +29,13 @@ interface MonitoringServiceInterface
 
     /**
      * @param Pagination $pagination
-     * @return AccessGroup[]|null
+     * @return Service[]|null
      */
     public function findServices(Pagination $pagination): array;
 
     /**
-     * @param Contact $contact
-     * @return mixed
+     * @param ContactInterface $contact Contact to use as a ACL filter
+     * @return self
      */
-    public function filterByContact(Contact $contact): MonitoringServiceInterface;
+    public function filterByContact(ContactInterface $contact): MonitoringServiceInterface;
 }

@@ -11,7 +11,7 @@
  *
 */
 
-namespace Centreon\Domain;
+namespace Centreon\Domain\Pagination;
 
 /**
  * This class can be used to add a paging system.
@@ -344,10 +344,12 @@ class Pagination
 
     /**
      * @param int $limit Number of records per page
+     * @return Pagination
      */
-    public function setLimit(int $limit): void
+    public function setLimit(int $limit): self
     {
         $this->limit = $limit;
+        return $this;
     }
 
     /**
@@ -361,10 +363,12 @@ class Pagination
 
     /**
      * @param int $page Number of the page
+     * @return Pagination
      */
-    public function setPage(int $page): void
+    public function setPage(int $page): self
     {
         $this->page = $page;
+        return $this;
     }
 
     /**
@@ -378,10 +382,12 @@ class Pagination
 
     /**
      * @param string $sort Field to order
+     * @return Pagination
      */
-    public function setSort(?array $sort): void
+    public function setSort(?array $sort): self
     {
         $this->sort = $sort;
+        return $this;
     }
 
     /**
@@ -398,13 +404,15 @@ class Pagination
 
     /**
      * @param array $search Array representing fields to search for.
+     * @return Pagination
      * @throws \Exception
      * @see Pagination::$search
      */
-    public function setSearch(array $search): void
+    public function setSearch(array $search): self
     {
         $this->search = $search;
         $this->checkSearchSchema();
+        return $this;
     }
 
     /**
@@ -418,11 +426,13 @@ class Pagination
 
     /**
      * @param int $total Total of lines founds without limit
+     * @return Pagination
      * @see Pagination::$total
-     */
-    public function setTotal(int $total): void
+     **/
+    public function setTotal(int $total): self
     {
         $this->total = $total;
+        return $this;
     }
 
     /**
@@ -491,6 +501,28 @@ class Pagination
                 }
             }
         }
+    }
+
+    /**
+     * @param string $parameterToExtract
+     * @throws \Exception
+     */
+    public function unsetParameter(string $parameterToExtract)
+    {
+        $parameters = (array)$this->getSearch();
+        $extractFunction = null;
+        $extractFunction = function (string $parameterToExtract, &$parameters) use (&$extractFunction) {
+            foreach ($parameters as $key => &$value) {
+                if ($key === $parameterToExtract) {
+                    unset($parameters[$key]);
+                } elseif (is_array($value) || is_object($value)) {
+                    $value = (array)$value;
+                    $extractFunction($parameterToExtract, $value);
+                }
+            }
+        };
+        $extractFunction($parameterToExtract, $parameters);
+        $this->setSearch($parameters);
     }
 
     /**

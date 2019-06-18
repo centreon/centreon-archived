@@ -2,10 +2,11 @@
 
 namespace Centreon\Domain\Entity;
 
+use Centreon\Domain\Entity\Interfaces\ContactInterface;
 use Symfony\Component\Security\Core\Role\Role;
 use Symfony\Component\Security\Core\User\UserInterface;
 
-class Contact implements UserInterface
+class Contact implements UserInterface, ContactInterface
 {
     /**
      * @var int Id of contact
@@ -154,7 +155,7 @@ class Contact implements UserInterface
      * @param bool $isAdmin
      * @return self
      */
-    public function setIsAdmin(bool $isAdmin): self
+    public function setAdmin(bool $isAdmin): self
     {
         $this->isAdmin = $isAdmin;
         return $this;

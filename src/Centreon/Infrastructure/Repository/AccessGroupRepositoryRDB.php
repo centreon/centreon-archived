@@ -4,6 +4,7 @@ namespace Centreon\Infrastructure\Repository;
 
 use Centreon\Domain\Entity\AccessGroup;
 use Centreon\Domain\Entity\Contact;
+use Centreon\Domain\Entity\Interfaces\ContactInterface;
 use Centreon\Domain\Repository\Interfaces\AccessGroupRepositoryInterface;
 use Centreon\Infrastructure\DatabaseConnection;
 
@@ -21,12 +22,9 @@ final class AccessGroupRepositoryRDB implements AccessGroupRepositoryInterface
     }
 
     /**
-     * Find all access groups from a contact
-     *
-     * @param Contact $contact
-     * @return AccessGroup[]
+     * @inheritDoc
      */
-    public function findByContact(Contact $contact): array
+    public function findByContact(ContactInterface $contact): array
     {
         $contactGroups = [];
         if (! is_null($contactId = $contact->getId())) {

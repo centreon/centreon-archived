@@ -1,49 +1,51 @@
 <?php
 
-
 namespace Centreon\Domain\Repository\Interfaces;
-
 
 use Centreon\Domain\Entity\AccessGroup;
 use Centreon\Domain\Entity\Host;
 use Centreon\Domain\Entity\Service;
-use Centreon\Domain\Pagination;
+use Centreon\Domain\Pagination\Pagination;
 
 interface MonitoringRepositoryInterface
 {
     /**
+     * Sets the access groups that will be used to filter services and the host.
+     *
      * @param AccessGroup[]|null $accessGroups
-     * @return MonitoringRepositoryInterface
+     * @return self
      */
-    public function filterByAccessGroups(?array $accessGroups): MonitoringRepositoryInterface;
+    public function filterByAccessGroups(?array $accessGroups): self;
 
     /**
-     * Retrieve all real time hosts.
+     * Find all real time hosts according to access group.
      *
-     * @param AccessGroup[]|null $accessGroupEntity
+     * @param Pagination $pagination
      * @return Host[]
-     * @throws \Exception
      */
     public function findHosts(Pagination $pagination): array;
 
     /**
-     * @param int $hostId
+     * Find one host based on its id and according to access groups.
+     *
+     * @param int $hostId Id of the host to be found
      * @return Host|null
      */
     public function findOneHost(int $hostId): ?Host;
 
     /**
-     * @param int $serviceId
+     * Find one service based on its id and according to access groups.
+     *
+     * @param int $serviceId Id of the service to be found
      * @return Service|null
      */
     public function findOneService(int $serviceId): ?Service;
 
     /**
-     * Retrieve all real time services according to ACL of contact
+     * Find all real time services according to access group.
      *
-     * @param AccessGroup[]|null $accessGroups
+     * @param Pagination $pagination
      * @return Service[]
-     * @throws \Exception
      */
     public function findServices(Pagination $pagination): array;
 }

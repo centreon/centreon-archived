@@ -22,5 +22,7 @@ $_SERVER['APP_DEBUG'] = $_ENV['APP_DEBUG'] = (int) $_SERVER['APP_DEBUG'] || filt
 
 $conf_centreon = [];
 include_once dirname(__DIR__)."/config/centreon.config.php";
+(new Dotenv(false))->populate($constants);
+
 include_once dirname(__DIR__)."/container.php";
 (new Dotenv(false))->populate($conf_centreon);

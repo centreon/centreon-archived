@@ -42,9 +42,15 @@ services:
 
     security.provider.tokenapi:
         class: App\Security\TokenAPIAuthenticator
+        public: false
 
     security.provider.sessionapi:
         class: App\Security\SessionAPIAuthenticator
+        public: false
+
+    Centreon\Domain\EntityValidator:
+        class: Centreon\Domain\EntityValidator
+        arguments: ["%env(_CENTREON_PATH_)%config/packages/validator/validation.yaml"]
 
 imports:
     resource: './Modules/*.yaml'

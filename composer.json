@@ -15,7 +15,7 @@
     "require-dev": {
         "behat/behat": "^3.3",
         "behat/mink": "^1.7",
-        "phpunit/phpunit": "^5.7",
+        "phpunit/phpunit": "^7.5",
         "squizlabs/php_codesniffer": "^2.9",
         "phing/phing": "^2.16",
         "behat/mink-extension": "^2.2",
@@ -47,7 +47,8 @@
         "symfony/options-resolver": "4.2.*",
         "symfony/serializer-pack": "^1.0",
         "symfony/maker-bundle": "^1.11",
-        "nelmio/cors-bundle": "^1.5"
+        "nelmio/cors-bundle": "^1.5",
+        "symfony/validator": "4.2.*"
     },
     "autoload": {
         "psr-4": {
