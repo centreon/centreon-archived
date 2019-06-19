@@ -775,7 +775,7 @@ sub sendExportFile($){
     # Send data with rSync
     $self->{logger}->writeLogInfo('Export files on poller "' . $server_info->{name} . '" (' . $id . ')');
 
-    $cmd = "$self->{rsync} -ra -e 'ssh -o port=$port' $origin $dest 2>&1";
+    $cmd = "$self->{rsync} -ra -e '$self->{ssh} -o port=$port' $origin $dest 2>&1";
     ($lerror, $stdout, $return_code) = centreon::common::misc::backtick(
         command => $cmd,
         logger => $self->{logger},
