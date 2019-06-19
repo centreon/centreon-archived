@@ -186,8 +186,8 @@ for ($cpt = 0; $r = $res->fetch(); $cpt++) {
 
             // adding the link to be able to execute the user's synchronization from the LDAP
             $session_data[$cpt]["synchronize"] = "<a href='./main.php?p=" . $p . "&o=s&session=" . $r['session_id'] .
-                "'><img src='./img/icons/refresh.png' border='0' alt='" . _("Sync LDAP") .
-                "' title='" . _("Sync LDAP") . "'></a>";
+                "'><img src='./img/icons/refresh.png' border='0' alt='" . _("Synchronize LDAP") .
+                "' title='" . _("Synchronize LDAP") . "'></a>";
         } else {
             // hiding the synchronization option and details
             $session_data[$cpt]["last_sync"] = "";

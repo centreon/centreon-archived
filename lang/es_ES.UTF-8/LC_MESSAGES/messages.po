@@ -286,12 +286,7 @@ msgid "Graph"
 msgstr "Grafico"
 
 #: centreon-web/www/class/centreonXMLBGRequest.class.php:177 centreon-web/www/install/centreon_broker_translation.php:48
-#: centreon-web/www/include/Administration/parameters/ldap/form.php:69
-#: centreon-web/www/include/Administration/parameters/ldap/form.php:73
-#: centreon-web/www/include/Administration/parameters/ldap/form.php:77
-#: centreon-web/www/include/Administration/parameters/ldap/form.php:92
-#: centreon-web/www/include/Administration/parameters/ldap/form.php:99
-#: centreon-web/www/include/Administration/parameters/ldap/form.php:102
+#: centreon-web/www/include/Administration/parameters/ldap/form.php
 #: centreon-web/www/include/Administration/parameters/backup/formBackup.php:73
 #: centreon-web/www/include/Administration/parameters/backup/formBackup.php:124
 #: centreon-web/www/include/Administration/parameters/rrdtool/form.php:122
@@ -428,12 +423,7 @@ msgid "No"
 msgstr "No"
 
 #: centreon-web/www/class/centreonXMLBGRequest.class.php:177 centreon-web/www/install/centreon_broker_translation.php:49
-#: centreon-web/www/include/Administration/parameters/ldap/form.php:68
-#: centreon-web/www/include/Administration/parameters/ldap/form.php:72
-#: centreon-web/www/include/Administration/parameters/ldap/form.php:76
-#: centreon-web/www/include/Administration/parameters/ldap/form.php:84
-#: centreon-web/www/include/Administration/parameters/ldap/form.php:98
-#: centreon-web/www/include/Administration/parameters/ldap/form.php:101
+#: centreon-web/www/include/Administration/parameters/ldap/form.php
 #: centreon-web/www/include/Administration/parameters/backup/formBackup.php:72
 #: centreon-web/www/include/Administration/parameters/backup/formBackup.php:123
 #: centreon-web/www/include/Administration/parameters/rrdtool/form.php:121
@@ -14182,17 +14172,60 @@ msgstr "cubo de basura"
 #~ msgstr "Controles de proceso"
 
 #: centreon-web/www/include/Administration/parameters/ldap/form.php
-#msgid "Default contactgroup"
-#msgstr
+#~ msgid "Default contactgroup"
+#~ msgstr ""
 
 #: centreon-web/www/include/Administration/parameters/ldap/form.php
-#msgid "Synchronization Options"
-#msgstr
+#~ msgid "Synchronization Options"
+#~ msgstr ""
 
 #: centreon-web/www/include/Administration/parameters/ldap/form.php
-#msgid "LDAP synchronization interval (in hours)"
-#msgstr
+#~ msgid "LDAP synchronization interval (in hours)"
+#~ msgstr ""
 
 #: centreon-web/www/include/Administration/parameters/ldap/form.php
-#msgid "Enable LDAP synchronization on login"
-#msgstr
+#~ msgid "Enable LDAP synchronization on login"
+#~ msgstr ""
+
+#: centreon-web/www/include/Administration/parameters/ldap/form.php
+#~ msgid "An integer with a minimum value of 1 is required"
+#~ msgstr ""
+
+#~ msgid "Contacts with the 'Reach Centreon Front-end' option enabled"
+#~ msgstr ""
+
+#~ msgid "Refresh"
+#~ msgstr ""
+
+#~ msgid "Resync data requested."
+#~ msgstr ""
+
+#~ msgid "Error : unable to read or update the contact data in the DB"
+#~ msgstr ""
+
+#~ msgid "To manually request a LDAP synchronization of a contact"
+#~ msgstr ""
+
+#~ msgid "This user isn't linked to a LDAP"
+#~ msgstr ""
+
+#~ msgid "Manually request to synchronize this contact with his LDAP"
+#~ msgstr ""
+
+#~ msgid "Already requested, please wait the CRON execution or for the user to login"
+#~ msgstr ""
+
+#~ msgid "Synchronize LDAP"
+#~ msgstr ""
+
+#~ msgid "No LDAP configuration enabled !"
+#~ msgstr ""
+
+#~ msgid "Refresh LDAP"
+#~ msgstr ""
+
+#~ msgid "Logout user"
+#~ msgstr ""
+
+#~ msgid "Last LDAP sync"
+#~ msgstr ""
