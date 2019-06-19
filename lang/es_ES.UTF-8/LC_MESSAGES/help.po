@@ -4323,11 +4323,9 @@ msgstr ""
 ""
 
 #: /www/include/Administration/parameters/ldap/help.po
-msgid "The interval, in hours, between two synchronizations of LDAP groups with Centreon ACLs. By default 1 hour."
-msgstr ""
-""
+#~ msgid "This field is used to specify the interval, in hours, between two LDAP data synchronization. By default 1 hour."
+#~ msgstr ""
 
 #: /www/include/Administration/parameters/ldap/help.po
-msgid "If checked, a user LDAP groups synchronization will be performed on login to apply Centreon ACLs."
-msgstr ""
-""
+#~ msgid "If enabled, a user LDAP synchronization will be performed on login to update contact's data and calculate new Centreon ACLs."
+#~ msgstr ""

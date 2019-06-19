@@ -5529,17 +5529,62 @@ msgstr "Configuration de RRDTool"
 msgid "Synchronization Options"
 msgstr "Options de Synchronisation"
 
+msgid "An integer with a minimum value of 1 is required"
+msgstr "Un entier supérieur à 1 est requis"
+
 #: centreon-web/www/include/Administration/parameters/ldap/form.php
 msgid "Default contactgroup"
 msgstr "Groupe de contacts par défaut"
 
 #: centreon-web/www/include/Administration/parameters/ldap/form.php
 msgid "LDAP synchronization interval (in hours)"
-msgstr "Intervale (en heures), entre les synchronisations LDAP"
+msgstr "Intervalle (en heures), entre les synchronisations LDAP"
 
 #: centreon-web/www/include/Administration/parameters/ldap/form.php
 msgid "Enable LDAP synchronization on login"
 msgstr "Synchronisation LDAP lors du login"
+
+msgid "Contacts with the 'Reach Centreon Front-end' option enabled"
+msgstr "Contacts autorisés à se connecter à l'interface web"
+
+msgid "Refresh"
+msgstr "Actualiser"
+
+msgid "To manually request a LDAP synchronization of a contact"
+msgstr "Demande de synchronisation LDAP du contact"
+
+msgid "This user isn't linked to a LDAP"
+msgstr "Ce contact n'est lié à aucun LDAP"
+
+msgid "Manually request to synchronize this contact with his LDAP"
+msgstr "Demande de synchronisation LDAP du contact"
+
+msgid "Already requested, please wait the CRON execution or for the user to login"
+msgstr "Demande enregistrée, merci d'attendre la prochaine exécution du CRON ou connection du contact"
+
+msgid "Do you confirm the LDAP synchronization request ?"
+msgstr "Confirmez vous la demande de synchronisation LDAP ?"
+
+msgid "Synchronize LDAP"
+msgstr "Synchroniser avec le LDAP"
+
+msgid "No LDAP configuration enabled !"
+msgstr "Aucune configuration LDAP active !"
+
+msgid "Resync data requested."
+msgstr "Mise à jour des données demandée."
+
+msgid "Error : unable to read or update the contact data in the DB"
+msgstr "Erreur : impossible de lire ou mettre à jour les données en DB"
+
+msgid "Last LDAP sync"
+msgstr "Dernière synchro LDAP"
+
+msgid "Refresh LDAP"
+msgstr "Actualiser LDAP"
+
+msgid "Logout user"
+msgstr "Déconnecter le contact"
 
 #: centreon-web/www/include/Administration/configChangelog/viewLogs.php:127
 #: centreon-web/www/include/Administration/configChangelog/viewLogs.php:134
