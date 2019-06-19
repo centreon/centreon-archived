@@ -50,7 +50,7 @@ class Remover extends Widget
 
         $sth->bindParam(':directory', $this->widgetName, \PDO::PARAM_STR);
 
-        if ($sth->execute() && $sth->rowCount()) {
+        if ($sth->execute()) {
             $removed = true;
         } else {
             $removed = false;
