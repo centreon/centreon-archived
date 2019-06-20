@@ -34,11 +34,6 @@
  *
  */
 
-/**
- * Define the period between to update in second for ldap user/group
- */
-define('LDAP_UPDATE_PERIOD', 3600);
-
 require_once realpath(__DIR__ . "/../config/centreon.config.php");
 include_once _CENTREON_PATH_ . "/cron/centAcl-Func.php";
 include_once _CENTREON_PATH_ . "/www/class/centreonDB.class.php";
@@ -123,7 +118,7 @@ try {
         if ($nbProc <= 1) {
             $errorMessage = "According to DB another instance of centAcl.php is already running and I found " .
                 $nbProc . " process...\n";
-            $errorMessage .= "Executing query: UPDATE cron_operation SET running = 0 WHERE id =  ' . $appId . '";
+            $errorMessage .= "Executing query: UPDATE cron_operation SET running = 0 WHERE id =  $appId";
             $stmt = $pearDB->prepare("UPDATE cron_operation SET running = '0' WHERE id = :appId");
             $stmt->bindValue(':appId', $appId, \PDO::PARAM_INT);
             $stmt->execute();
@@ -149,8 +144,8 @@ try {
         if ($ldapRow['ar_sync_base_date'] + 3600 * $ldapRow['ari_value'] <= $currentTime) {
             $reSync = true;
             $updateSyncTime = $pearDB->prepare(
-                    "UPDATE auth_ressource SET ar_sync_base_date = :currentTime
-                    WHERE ar_id = :arId"
+                "UPDATE auth_ressource SET ar_sync_base_date = :currentTime
+                WHERE ar_id = :arId"
             );
             $updateSyncTime->bindValue(':currentTime', $currentTime, \PDO::PARAM_INT);
             $updateSyncTime->bindValue(':arId', (int)$ldapRow['ar_id'], \PDO::PARAM_INT);

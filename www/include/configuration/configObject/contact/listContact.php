@@ -152,8 +152,6 @@ $tpl->assign("headerMenu_options", _("Options"));
 if ($centreon->user->admin) {
     $tpl->assign("headerMenu_refreshLdap", _("Refresh"));
     $tpl->assign("headerMenu_refreshLdapTitleTooltip", _("To manually request a LDAP synchronization of a contact"));
-} else {
-    $tpl->assign("headerMenu_refreshLdap", _(""));
 }
 
 
@@ -250,8 +248,8 @@ foreach ($contacts as $contact) {
     // options displayed only to admins for contacts linked to an LDAP
     if ($centreon->user->admin && $contact['contact_auth_type'] === "ldap") {
 
+        // synchronization is already required
         if ($contact['ldap_required_sync'] === '1') {
-            // synchronization is already required
             $isLinkedToLdap = 2;
             $refreshLdapBadge[2] =
                 "<span>" .
@@ -308,6 +306,7 @@ foreach ($contacts as $contact) {
     );
     $style != "two" ? $style = "two" : $style = "one";
 }
+$tpl->assign("isAdmin", $centreon->user->admin);
 $tpl->assign("elemArr", $elemArr);
 
 // Different messages we put in the template

@@ -44,7 +44,9 @@
             <td class="ListColHeaderCenter">{$headerMenu_lang}</td>
             <td class="ListColHeaderCenter" title="{$headerMenu_accessTooltip}">{$headerMenu_access}</td>
             <td class="ListColHeaderCenter">{$headerMenu_admin}</td>
-            <td class="ListColHeaderCenter" title="{$headerMenu_refreshLdapTitleTooltip}">{$headerMenu_refreshLdap}</td>
+            {if $isAdmin}
+                <td class="ListColHeaderCenter" title="{$headerMenu_refreshLdapTitleTooltip}">{$headerMenu_refreshLdap}</td>
+            {/if}
             <td class="ListColHeaderCenter">{$headerMenu_status}</td>
             <td class="ListColHeaderRight">{$headerMenu_options}</td>
         </tr>
@@ -62,7 +64,9 @@
             <td class="ListColCenter">{$elemArr[elem].RowMenu_lang}</td>
             <td class="ListColCenter">{$elemArr[elem].RowMenu_access}</td>
             <td class="ListColCenter">{$elemArr[elem].RowMenu_admin}</td>
-            <td class="ListColCenter">{$elemArr[elem].RowMenu_refreshLdap}</td>
+            {if $isAdmin}
+                <td class="ListColCenter">{$elemArr[elem].RowMenu_refreshLdap}</td>
+            {/if}
             <td class="ListColCenter">
                 <span class="badge {$elemArr[elem].RowMenu_badge}">{$elemArr[elem].RowMenu_status}</span>
             </td>
