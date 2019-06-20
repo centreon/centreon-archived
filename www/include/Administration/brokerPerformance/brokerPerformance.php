@@ -263,7 +263,7 @@ try {
     $perf_info = array();
     $perf_err = array();
     while ($row = $stmt->fetch()) {
-        $xmldata = simplexml_load_file('/etc/centreon-broker/' . $row['config_filename'],'SimpleXMLElement',LIBXML_NOCDATA );
+        $xmldata = simplexml_load_file('/etc/centreon-broker/' . $row['config_filename'], 'SimpleXMLElement', LIBXML_NOCDATA);
         $statsfile = $xmldata->stats->json_fifo;
         if ($defaultPoller != $selectedPoller) {
             $statsfile = _CENTREON_VARLIB_ . '/broker-stats/broker-stats-' . $selectedPoller . '.dat';
