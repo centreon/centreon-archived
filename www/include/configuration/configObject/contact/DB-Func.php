@@ -260,27 +260,31 @@ function synchronizeContactWithLdap($contacts = array())
         $logoutContact = $pearDB->prepare(
             "DELETE FROM session WHERE session_id = :userSessionId");
 
-        foreach ($contacts as $key => $value) {
-            $contactNameStmt->bindValue(':contactId', (int)$key, \PDO::PARAM_INT);
-            $contactNameStmt->execute();
-            $rowContact = $contactNameStmt->fetch();
+        try {
+            foreach ($contacts as $key => $value) {
+                $contactNameStmt->bindValue(':contactId', (int)$key, \PDO::PARAM_INT);
+                $contactNameStmt->execute();
+                $rowContact = $contactNameStmt->fetch();
 
-            $stmtRequiredSync->bindValue(':contactId', (int)$key, \PDO::PARAM_INT);
-            $stmtRequiredSync->execute();
+                $stmtRequiredSync->bindValue(':contactId', (int)$key, \PDO::PARAM_INT);
+                $stmtRequiredSync->execute();
 
-            $activeSession->bindValue(':contactId', (int)$key, \PDO::PARAM_INT);
-            $activeSession->execute();
-            $rowSession = $activeSession->fetch();
+                $activeSession->bindValue(':contactId', (int)$key, \PDO::PARAM_INT);
+                $activeSession->execute();
+                $rowSession = $activeSession->fetch();
 
-            if ($rowSession['session_id']) {
-                $logoutContact->bindValue(':userSessionId', $rowSession['session_id'], \PDO::PARAM_STR);
-                $logoutContact->execute();
+                if ($rowSession['session_id']) {
+                    $logoutContact->bindValue(':userSessionId', $rowSession['session_id'], \PDO::PARAM_STR);
+                    $logoutContact->execute();
+                }
+
+                $centreonLog->insertLog(
+                    3, //ldap.log
+                    "LDAP MANUAL SYNC : Successfully planned LDAP synchronization for " . $rowContact['contact_name']
+                );
             }
-
-            $centreonLog->insertLog(
-                3, //ldap.log
-                "LDAP MANUAL SYNC : Successfully planned LDAP synchronization for " . $rowContact['contact_name']
-            );
+        } catch (\PDOException $e) {
+            throw new Exception('Bad Request : ' . $e);
         }
     } else {
         // unable to plan the manual LDAP request of the contacts
