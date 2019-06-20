@@ -197,14 +197,6 @@ for ($cpt = 0; $r = $res->fetch(); $cpt++) {
         $tpl->assign("wi_last_sync", _("Last LDAP sync"));
         $tpl->assign("wi_syncLdap", _("Refresh LDAP"));
         $tpl->assign("wi_logoutUser", _("Logout user"));
-    } else {
-        // hiding the buttons
-        $session_data[$cpt]["actions"] = "";
-        $session_data[$cpt]["synchronize"] = "";
-        // hiding the columns title
-        $tpl->assign("wi_last_sync", _(""));
-        $tpl->assign("wi_syncLdap", _(""));
-        $tpl->assign("wi_logoutUser", _(""));
     }
 }
 
@@ -213,6 +205,7 @@ if (isset($msg)) {
 }
 
 $tpl->assign("session_data", $session_data);
+$tpl->assign("isAdmin", $centreon->user->admin);
 $tpl->assign("wi_user", _("Users"));
 $tpl->assign("wi_where", _("Position"));
 $tpl->assign("wi_last_req", _("Last request"));

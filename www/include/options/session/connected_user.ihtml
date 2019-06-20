@@ -6,9 +6,11 @@
 			<td class="ListColHeaderCenter">{ $distant_location }</td>
 			<td class="ListColHeaderCenter">{ $wi_where }</td>
 			<td class="ListColHeaderCenter">{ $wi_last_req }</td>
-			<td class="ListColHeaderCenter">{ $wi_last_sync }</td>
-			<td class="ListColHeaderCenter">{ $wi_syncLdap }</td>
-			<td class="ListColHeaderCenter">{ $wi_logoutUser }</td>
+			{if $isAdmin == 1}
+				<td class="ListColHeaderCenter">{ $wi_last_sync }</td>
+				<td class="ListColHeaderCenter">{ $wi_syncLdap }</td>
+				<td class="ListColHeaderCenter">{ $wi_logoutUser }</td>
+			{/if}
 		</tr>
 		{foreach name=outer item=sd from=$session_data }
 			<tr class="{$sd.class}">
@@ -23,9 +25,11 @@
 				<td class="ListColCenter">{$sd.ip_address}</td>
 				<td class="ListColCenter"><a href='./main.php?p={$sd.current_page}'>{$sd.topology_name}</a></td>
 				<td class="ListColCenter isTimestamp isShortTime" align=right>{$sd.last_reload}</td>
-				<td class="ListColCenter isTimestamp isShortDate" width="150" align=right>{$sd.last_sync}</td>
-				<td class="ListColCenter" align=right>{$sd.synchronize}</td>
-				<td class="ListColCenter" align=right>{$sd.actions}</td>
+				{if $isAdmin == 1}
+					<td class="ListColCenter isTimestamp isShortDate" width="150" align=right>{$sd.last_sync}</td>
+					<td class="ListColCenter" align=right>{$sd.synchronize}</td>
+					<td class="ListColCenter" align=right>{$sd.actions}</td>
+				{/if}
 			</tr>
 		{/foreach}
 	</table>
