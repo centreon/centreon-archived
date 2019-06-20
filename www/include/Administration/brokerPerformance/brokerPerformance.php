@@ -249,7 +249,7 @@ $tpl->assign('poller_name', $pollerName);
 /*
  * Get the stats file name
  */
-$queryStatName = "SELECT config_name, cache_directory "
+$queryStatName = "SELECT config_name, config_filename, cache_directory "
     . "FROM cfg_centreonbroker "
     . "WHERE stats_activate = '1' "
     . "AND ns_nagios_server = :id";
@@ -263,7 +263,8 @@ try {
     $perf_info = array();
     $perf_err = array();
     while ($row = $stmt->fetch()) {
-        $statsfile = $row['cache_directory'] . '/' . $row['config_name'] . '-stats.json';
+        $xmldata = simplexml_load_file('/etc/centreon-broker/' . $row['config_filename'],'SimpleXMLElement',LIBXML_NOCDATA );
+        $statsfile = $xmldata->stats->json_fifo;
         if ($defaultPoller != $selectedPoller) {
             $statsfile = _CENTREON_VARLIB_ . '/broker-stats/broker-stats-' . $selectedPoller . '.dat';
         }
