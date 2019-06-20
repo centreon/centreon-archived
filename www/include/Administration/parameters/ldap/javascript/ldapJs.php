@@ -107,6 +107,17 @@
         }
     }
 
+    /*
+     * called when LDAP is enabled or not
+     */
+    function toggleParamSync(checkValue, isInit) {
+        if (checkValue == true) {
+            jQuery('#ldap_sync_interval').fadeOut({duration: 0});
+        } else {
+            jQuery('#ldap_sync_interval').fadeIn({duration: 0});
+        }
+    }
+
     /**
      * Display or hide custom options
      */

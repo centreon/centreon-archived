@@ -106,8 +106,22 @@ $form->addElement('text', 'ldap_search_timeout', _('LDAP search timeout'), $attr
  */
 $form->addElement('header', 'ldapScanOption', _("Synchronization Options"));
 // option to disable the auto-scan of the LDAP - by default auto-scan is enabled
-$ldapAutoScan[] = $form->createElement('radio', 'ldap_auto_sync', null, _("Yes"), '1');
-$ldapAutoScan[] = $form->createElement('radio', 'ldap_auto_sync', null, _("No"), '0');
+$ldapAutoScan[] = $form->createElement(
+    'radio',
+    'ldap_auto_sync',
+    null,
+    _("Yes"),
+    '1',
+    array('id' => 'ldap_auto_sync_y', 'onclick' => "toggleParamSync(false, false);")
+);
+$ldapAutoScan[] = $form->createElement(
+    'radio',
+    'ldap_auto_sync',
+    null,
+    _("No"),
+    '0',
+    array('id' => 'ldap_auto_sync_n', 'onclick' => "toggleParamSync(true, false);")
+);
 $form->addGroup($ldapAutoScan, 'ldap_auto_sync', _("Enable LDAP synchronization on login"), '&nbsp;');
 // default interval before re-scanning the whole LDAP. By default, a duration of one hour is set
 $form->addElement('text', 'ldap_sync_interval', _('LDAP synchronization interval (in hours)'), $attrsText2);
@@ -370,6 +384,8 @@ if ($form->validate()) {
         } else {
             $tpl->assign("hideDnsOptions", 0);
         }
+
+        $tpl->assign("hideSyncInterval", (int)$values['ldap_auto_sync']['ldap_auto_sync'] ?? 0);
         $form->freeze();
     }
 }

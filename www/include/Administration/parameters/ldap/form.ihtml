@@ -30,13 +30,6 @@
 	<tr class="list_one" id="ldap_dns_use_domain"><td class="FormRowField"><img class="helpTooltip" name="ldap_dns_use_domain" /><span>{$form.ldap_dns_use_domain.label}</span></td><td class="FormRowValue">{$form.ldap_dns_use_domain.html}</td></tr>
     <!-- LDAP auto scan sub menu -->
     <tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><h4>{$form.header.ldapScanOption}</h4></td></tr>
-    <tr class="list_one" id="ldap_sync_interval">
-        <td class="FormRowField">
-            <img class="helpTooltip" name="ldap_sync_interval" />
-            <span>{$form.ldap_sync_interval.label}</span>
-        </td>
-        <td class="FormRowValue">{$form.ldap_sync_interval.html}</td>
-    </tr>
 	<tr class="list_two" id="ldap_auto_sync">
 		<td class="FormRowField">
 			<img class="helpTooltip" name="ldap_auto_sync" />
@@ -44,6 +37,15 @@
 		</td>
 		<td class="FormRowValue">{$form.ldap_auto_sync.html}</td>
 	</tr>
+	{if hideSyncInterval != 1}
+		<tr class="list_one" id="ldap_sync_interval">
+			<td class="FormRowField">
+				<img class="helpTooltip" name="ldap_sync_interval" />
+				<span>{$form.ldap_sync_interval.label}</span>
+			</td>
+			<td class="FormRowValue">{$form.ldap_sync_interval.html}</td>
+		</tr>
+	{/if}
 	<!-- LDAP server information -->
     <tr class="list_lvl_1" id='ldap_header_tr'><td class="ListColLvl1_name" colspan="2"><h4>{$form.header.ldapserver}</h4></td></tr>
 	{if $o != 'w'}        
