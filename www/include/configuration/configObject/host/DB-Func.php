@@ -298,6 +298,7 @@ function disableHostInDB($host_id = null, $host_arr = array())
 function deleteHostInDB($hosts = array())
 {
     global $pearDB, $centreon;
+    $message = '';
 
     try {
         foreach ($hosts as $key => $value) {
@@ -312,6 +313,9 @@ function deleteHostInDB($hosts = array())
                                   AND host.host_register = '1'";
             $dbResult = $pearDB->query($rq);
 
+            $dbResult2 = $pearDB->query("SELECT host_name FROM `host` WHERE `host_id` = '" . intval($key) . "' LIMIT 1");
+            $hostname = $dbResult2->fetchRow();
+
             $sql = "SELECT COUNT(*) AS cnt
                 FROM host_template_relation htr 
                 JOIN host h ON h.host_id = htr.host_tpl_id 
@@ -319,11 +323,9 @@ function deleteHostInDB($hosts = array())
             $res = $pearDB->query($sql, [':host' => intval($key)]);
             $templates = (int)$res->fetch()['cnt'];
             if ($templates > 0) {
-                continue; // Do not delete if this HTPL is linked to HOST, @TODO - Notify frontend
+                $message .= 'You can\'t delete ' . $hostname['host_name'] . ' because it is used in a host! <br/>';
+                continue;
             }
-
-            $dbResult2 = $pearDB->query("SELECT host_name FROM `host` WHERE `host_id` = '" . intval($key) . "' LIMIT 1");
-            $hostname = $dbResult2->fetchRow();
 
             $pearDB->beginTransaction();
             while ($row = $dbResult->fetchRow()) {
@@ -354,6 +356,7 @@ function deleteHostInDB($hosts = array())
     } catch (\PDOException $e) {
         $pearDB->rollBack();
     }
+    return $message;
 }
 
 /*

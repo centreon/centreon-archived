@@ -99,7 +99,7 @@ switch ($o) {
         require_once($path . "listHostTemplateModel.php");
         break; #Duplicate n host template model
     case "d":
-        deleteHostInDB(isset($select) ? $select : array());
+        $errorMsg = deleteHostInDB(isset($select) ? $select : array());
         require_once($path . "listHostTemplateModel.php");
         break; #Delete n host template models
     default:
