@@ -300,8 +300,10 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
             $serverConfigurationService->setDbUser($this->arguments['db_user']);
             $serverConfigurationService->setDbPassword($this->arguments['db_password']);
             if ($serverWizardIdentity->checkBamOnRemoteServer(
-                $httpMethod . '://' . $serverIP . ':' . $httpPort . trim($centreonPath, '/')))
-            {
+                $httpMethod . '://' . $serverIP . ':' . $httpPort . trim($centreonPath, '/'),
+				$noCheckCertificate,
+				$noProxy
+            )) {
                 $serverConfigurationService->shouldInsertBamBrokers();
             }
         }
