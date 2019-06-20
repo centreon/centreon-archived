@@ -32,18 +32,16 @@ class ServerWizardIdentity
     /**
      * check if bam is installed on remote server
      *
-     * @param string $ip ip address of the remote server
-     * @param string $centreonPath centreon web path on remote server
+     * @param string $centreonUrl URL of Centreon of the remote server
      * @return bool if bam is installed on remote server
      */
-    public function checkBamOnRemoteServer(string $ip, string $centreonPath): bool
+    public function checkBamOnRemoteServer(string $centreonUrl): bool
     {
-        $centreonPath = trim($centreonPath, '/');
-        $url = "{$ip}/{$centreonPath}/api/external.php?object=centreon_modules_webservice&action=getBamModuleInfo";
+        $centreonUrl .= "/api/external.php?object=centreon_modules_webservice&action=getBamModuleInfo";
 
         try {
             $curl = new Curl;
-            $curl->post($url);
+            $curl->post($centreonUrl);
 
             if ($curl->error) {
                 return false;
