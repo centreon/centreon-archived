@@ -80,8 +80,9 @@ class CentreonConfigurationHostgroup extends CentreonConfigurationObjects
             $queryValues['hgName'] = '%%';
         }
 
-        $queryHostGroup = "SELECT SQL_CALC_FOUND_ROWS DISTINCT hg.hg_name, hg.hg_id, hg.hg_activate FROM hostgroup hg " .
-            "WHERE hg.hg_name LIKE :hgName " . $aclHostGroups . "ORDER BY hg.hg_name ";
+        $queryHostGroup = "SELECT SQL_CALC_FOUND_ROWS DISTINCT "
+            . "hg.hg_name, hg.hg_id, hg.hg_activate FROM hostgroup hg "
+            . "WHERE hg.hg_name LIKE :hgName " . $aclHostGroups . "ORDER BY hg.hg_name ";
 
         if (isset($this->arguments['page_limit']) && isset($this->arguments['page'])) {
             if (!is_numeric($this->arguments['page']) || !is_numeric($this->arguments['page_limit'])) {
