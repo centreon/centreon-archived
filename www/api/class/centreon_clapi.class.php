@@ -240,7 +240,8 @@ class CentreonClapi extends CentreonWebService implements CentreonWebServiceDiIn
      * Removes carriage returns from $item if string
      * @param mixed &$item variable to check
      */
-    private function customAlterString(&$item) {
+    private function customAlterString(&$item)
+    {
         $item = (is_string($item)) ? str_replace(array("\n", "\t", "\r", "<br/>"), '', $item) : $item;
     }
 }
