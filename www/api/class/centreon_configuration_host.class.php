@@ -80,9 +80,9 @@ class CentreonConfigurationHost extends CentreonConfigurationObjects
         } else {
             $queryValues["hostName"] = '%' . (string)$this->arguments['q'] . '%';
         }
-        $query .= 'SELECT SQL_CALC_FOUND_ROWS DISTINCT host_name, host_id ' .
+        $query .= 'SELECT SQL_CALC_FOUND_ROWS DISTINCT host_name, host_id, host_activate ' .
             'FROM ( ' .
-            '( SELECT DISTINCT h.host_name, h.host_id ' .
+            '( SELECT DISTINCT h.host_name, h.host_id, h.host_activate ' .
             'FROM host h ';
 
         if (isset($this->arguments['hostgroup'])) {
@@ -158,7 +158,8 @@ class CentreonConfigurationHost extends CentreonConfigurationObjects
         while ($data = $stmt->fetch()) {
             $hostList[] = array(
                 'id' => htmlentities($data['host_id']),
-                'text' => $data['host_name']
+                'text' => $data['host_name'],
+                'status' => (bool) $data['host_activate'],
             );
         }
 
