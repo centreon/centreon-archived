@@ -25,5 +25,5 @@ Un cron se charge de réaliser les mises à jour de la configuration des hôtes,
 ainsi que des modèles.
 
 Par exemple, si vous créez une page dans le wiki en utilisant le motif habituel 
-(ex : ``Host:Centreon-Server`` ou ``Service:Centreon-Server Disk-/``), le ajoutera automatiquement 
+(ex : ``Host:Centreon-Server`` ou ``Service:Centreon-Server Disk-/``), le cron ajoutera automatiquement 
 le lien vers la page du wiki correspondante dans le champ **URL** de la table **Informations étendues**.

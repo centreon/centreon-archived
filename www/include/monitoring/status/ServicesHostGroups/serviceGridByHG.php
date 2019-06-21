@@ -152,8 +152,10 @@ $tpl->assign("tab_order", $tab_order);
         }
 
         function displayingLevel1(val) {
-            _o = val;
-            if (_o == 'svcOVHG') {
+            var filterDetails = document.getElementById("typeDisplay2").value;
+            _o = val + "_" + filterDetails;
+
+            if (val == 'svcOVHG') {
                 _addrXML = "./include/monitoring/status/ServicesHostGroups/xml/serviceGridByHGXML.php";
                 _addrXSL = "./include/monitoring/status/ServicesHostGroups/xsl/serviceGridByHG.xsl";
             } else {

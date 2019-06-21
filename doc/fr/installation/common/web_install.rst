@@ -37,7 +37,8 @@ Définissez les informations concernant l'utilisateur admin, cliquez sur **Next*
    :align: center
    :scale: 65%
 
-Par défaut, le serveur 'localhost' est défini et le mot de passe root est vide. Si vous utilisez un serveur de base de données déporté, il convient de modifier ces deux informations.
+Par défaut, le serveur 'localhost' est défini, l'utilisateur root est défini à *root* et le mot de passe root est vide.
+Si vous utilisez un serveur de base de données déporté, il convient de modifier ces deux informations.
 Dans notre cas, nous avons uniquement besoin de définir un mot de passe pour l'utilisateur accédant aux bases de données Centreon, à savoir 'centreon'.
 
 Cliquez sur **Next**.

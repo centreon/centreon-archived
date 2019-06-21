@@ -73,15 +73,15 @@ Additional actions
 
 The PHP timezone should be set. Run the command: ::
 
-    # echo "date.timezone = Europe/Paris" > /etc/opt/rh/rh-php71/php.d/php-timezone.ini
+    # echo "date.timezone = Europe/Paris" > /etc/opt/rh/rh-php72/php.d/php-timezone.ini
 
 .. note::
     Change **Europe/Paris** to your timezone.
 
 Restart the services by running the following commands: ::
 
-    # systemctl enable rh-php71-php-fpm
-    # systemctl start rh-php71-php-fpm
+    # systemctl enable rh-php72-php-fpm
+    # systemctl start rh-php72-php-fpm
     # systemctl stop httpd
     # systemctl disable httpd
     # systemctl enable httpd24-httpd

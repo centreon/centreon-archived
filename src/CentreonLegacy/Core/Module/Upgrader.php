@@ -102,9 +102,6 @@ class Upgrader extends Module
             '`is_removeable` = :is_removeable , ' .
             '`infos` = :infos , ' .
             '`author` = :author , ' .
-            '`lang_files` = :lang_files , ' .
-            '`sql_files` = :sql_files , ' .
-            '`php_files` = :php_files , ' .
             '`svc_tools` = :svc_tools , ' .
             '`host_tools` = :host_tools ' .
             'WHERE id = :id';
@@ -116,9 +113,6 @@ class Upgrader extends Module
         $sth->bindParam(':is_removeable', $this->moduleConfiguration['is_removeable'], \PDO::PARAM_STR);
         $sth->bindParam(':infos', $this->moduleConfiguration['infos'], \PDO::PARAM_STR);
         $sth->bindParam(':author', $this->moduleConfiguration['author'], \PDO::PARAM_STR);
-        $sth->bindParam(':lang_files', $this->moduleConfiguration['lang_files'], \PDO::PARAM_STR);
-        $sth->bindParam(':sql_files', $this->moduleConfiguration['sql_files'], \PDO::PARAM_STR);
-        $sth->bindParam(':php_files', $this->moduleConfiguration['php_files'], \PDO::PARAM_STR);
         $sth->bindParam(':svc_tools', $this->moduleConfiguration['svc_tools'], \PDO::PARAM_STR);
         $sth->bindParam(':host_tools', $this->moduleConfiguration['host_tools'], \PDO::PARAM_STR);
         $sth->bindParam(':id', $this->moduleId, \PDO::PARAM_INT);
@@ -160,7 +154,7 @@ class Upgrader extends Module
         $installed = false;
 
         $sqlFile = $path . '/sql/upgrade.sql';
-        if ($conf[$this->moduleName]["sql_files"] && $this->services->get('filesystem')->exists($sqlFile)) {
+        if ($this->services->get('filesystem')->exists($sqlFile)) {
             $this->utils->executeSqlFile($sqlFile);
             $installed = true;
         }
@@ -182,7 +176,7 @@ class Upgrader extends Module
         $phpFile = $path . '/php/upgrade';
         $phpFile = $pre ? $phpFile . '.pre.php' : $phpFile . '.php';
 
-        if ($conf[$this->moduleName]['php_files'] && $this->services->get('filesystem')->exists($phpFile)) {
+        if ($this->services->get('filesystem')->exists($phpFile)) {
             $this->utils->executePhpFile($phpFile);
             $installed = true;
         }

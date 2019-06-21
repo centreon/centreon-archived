@@ -1,17 +1,18 @@
 import React, { Component, Suspense } from "react";
 import { connect } from "react-redux";
-import { Switch, Route } from "react-router-dom";
-import { dynamicImport } from "../../utils/dynamicImport";
+import { Switch, Route, withRouter } from "react-router-dom";
+import { reactRoutes } from "../../route-maps";
+import { dynamicImport } from "../../helpers/dynamicImport";
 import centreonAxios from "../../axios";
-import centreonConfig from "../../config";
 import NotAllowedPage from '../../route-components/notAllowedPage';
 import styles from "../../styles/partials/_content.scss";
 
-// class to dynamically import pages from modules
-class ExternalRouter extends Component {
+// class to manage internal react pages
+class ReactRouter extends Component {
 
   getLoadableComponents = () => {
-    const { acl, pages } = this.props;
+    const { history, acl, pages } = this.props;
+    const basename = history.createHref({pathname: '/', search: '', hash: ''});
     let LoadableComponents = [];
 
     // wait acl to add authorized routes
@@ -31,15 +32,15 @@ class ExternalRouter extends Component {
       }
 
       if (isAllowed) {
-        const Page = React.lazy(() => dynamicImport(parameter));
+        const Page = React.lazy(() => dynamicImport(basename, parameter));
         LoadableComponents.push(
           <Route
+            key={path}
             path={path}
             exact="true"
             render={renderProps => (
               <div className={styles["react-page"]}>
                 <Page
-                  centreonConfig={centreonConfig}
                   centreonAxios={centreonAxios}
                   {...renderProps}
                 />
@@ -54,21 +55,46 @@ class ExternalRouter extends Component {
   }
 
   render() {
-    const { fetched } = this.props;
+    const { acl, fetched } = this.props;
+
+    if (!acl.loaded || !fetched) {
+      return null;
+    }
+
     const LoadableComponents = this.getLoadableComponents();
 
     return (
-      <Suspense fallback="">
+      <Suspense fallback={null}>
         <Switch>
+          {reactRoutes.map(({ path, comp: Comp, ...rest }) => (
+            <Route
+              key={path}
+              path={path}
+              exact="true"
+              render={renderProps => (
+                <div className={styles["react-page"]}>
+                  {acl.routes.includes(path) ? (
+                    <Comp
+                      {...renderProps}
+                    />
+                  ) : (
+                    <NotAllowedPage
+                      {...renderProps}
+                    />
+                  )}
+                </div>
+              )}
+              {...rest}
+            />
+          ))}
           {LoadableComponents}
-          {fetched &&
-            <Route component={NotAllowedPage} />
+          {fetched && // wait external components are fetched to avoid quick display of "not allowed" page
+            <Route component={NotAllowedPage}/>
           }
         </Switch>
       </Suspense>
     );
   };
-
 }
 
 const mapStateToProps = ({ navigation, externalComponents }) => ({
@@ -77,4 +103,4 @@ const mapStateToProps = ({ navigation, externalComponents }) => ({
   fetched: externalComponents.fetched,
 });
 
-export default connect(mapStateToProps)(ExternalRouter);
+export default connect(mapStateToProps)(withRouter(ReactRouter));

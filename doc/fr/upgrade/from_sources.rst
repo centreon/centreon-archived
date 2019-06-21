@@ -193,8 +193,8 @@ Configuration d'Apache
 
    What is the fpm-php service name ?
    default to [fpm-php]
-   > php7.1-fpm
-   The fpm-php service : php7.1-fpm
+   > php7.2-fpm
+   The fpm-php service : php7.2-fpm
 
    Do you want to reload PHP FPM service ?
    [y/n], default to [n]:

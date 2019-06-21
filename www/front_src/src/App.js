@@ -1,25 +1,20 @@
 import React, { Component } from "react";
-import config from "./config";
 import Header from "./components/header";
-import { Switch } from "react-router-dom";
-import { connect } from "react-redux";
+import { connect } from 'react-redux';
 import { ConnectedRouter } from "react-router-redux";
 import { history } from "./store";
-import ClassicRoute from "./components/router/classicRoute";
-import ReactRoute from './components/router/reactRoute';
-import ExternalRouter from "./components/externalRouter";
 
-import { classicRoutes, reactRoutes } from "./route-maps";
 import NavigationComponent from "./components/navigation";
 import Tooltip from "./components/tooltip";
 import Footer from "./components/footer";
 import Fullscreen from 'react-fullscreen-crossbrowser';
+import MainRouter from './components/mainRouter';
 import queryString from 'query-string';
 import axios from './axios';
-import NotAllowedPage from './route-components/notAllowedPage';
 
-import { fetchExternalComponents } from "./redux/actions/externalComponentsActions";
+import { batchActions } from "redux-batched-actions";
 import { fetchAclRoutes } from "./redux/actions/navigationActions";
+import { fetchExternalComponents } from "./redux/actions/externalComponentsActions";
 
 import styles from './App.scss';
 import footerStyles from './components/footer/footer.scss';
@@ -28,8 +23,7 @@ import contentStyles from './styles/partials/_content.scss';
 class App extends Component {
 
   state = {
-    isFullscreenEnabled: false,
-    reactRouter: null
+    isFullscreenEnabled: false
   }
 
   keepAliveTimeout = null
@@ -57,9 +51,9 @@ class App extends Component {
 
   // disable fullscreen
   removeFullscreenParams = () => {
-    if (history.location.pathname == './main.php') {
+    if (history.location.pathname == '/main.php') {
       history.push({
-        pathname: './main.php',
+        pathname: '/main.php',
         search: window['fullscreenSearch'],
         hash: window['fullscreenHash']
       })
@@ -68,20 +62,6 @@ class App extends Component {
     // remove fullscreen parameters to keep normal routing
     delete window['fullscreenSearch'];
     delete window['fullscreenHash'];
-  }
-
-  // get allowed routes
-  getAcl = () => {
-    const { fetchAclRoutes } = this.props;
-    // store acl routes in redux
-    fetchAclRoutes();
-  }
-
-  // get external components (pages, hooks...)
-  getExternalComponents = () => {
-    const { fetchExternalComponents } = this.props;
-    // store external components in redux
-    fetchExternalComponents();
   }
 
   // keep alive (redirect to login page if session is expired)
@@ -93,7 +73,7 @@ class App extends Component {
         .catch(error => {
           if (error.response.status == 401) {
             // redirect to login page
-            window.location.href = config.urlBase + 'index.php?disconnect=1'
+            window.location.href = 'index.php?disconnect=1'
           } else {
             // keepalive must be done cause it may failed due to temporary unavailability
             this.keepAlive();
@@ -103,35 +83,16 @@ class App extends Component {
   }
 
   componentDidMount() {
-    this.getAcl();
+    const { fetchAclRoutesAndExternalComponents } = this.props;
+
+    // 1 - fetch allowed react routes
+    // 2 - fetch external components (pages, hooks...)
+    fetchAclRoutesAndExternalComponents();
+
     this.keepAlive();
   }
 
-  componentDidUpdate(prevProps) {
-    const prevAcl = prevProps.acl;
-    const { acl } = this.props;
-    if (!prevAcl.loaded && acl.loaded) {
-      this.getReactRoutes();
-      this.getExternalComponents();
-    }
-  }
-
-  getReactRoutes = () => {
-    const { acl } = this.props;
-    let reactRouter = reactRoutes.map(({ path, comp, ...rest }) => (
-      <ReactRoute
-        history={history}
-        path={path}
-        component={acl.routes.includes(path) ? comp : NotAllowedPage}
-        {...rest}
-      />
-    ));
-    this.setState({ reactRouter });
-  }
-
   render() {
-    const { reactRouter } = this.state;
-
     const min = this.getMinArgument();
 
     return (
@@ -152,13 +113,7 @@ class App extends Component {
                 onChange={isFullscreenEnabled => this.setState({isFullscreenEnabled})}
               >
                 <div className={styles["main-content"]}>
-                  <Switch>
-                    {classicRoutes.map(({path, comp, ...rest}, i) => (
-                      <ClassicRoute key={i} history={history} path={path} component={comp} {...rest} />
-                    ))}
-                    {reactRouter}
-                    <ExternalRouter/>
-                  </Switch>
+                  <MainRouter />
                 </div>
               </Fullscreen>
             </div>
@@ -173,19 +128,13 @@ class App extends Component {
   }
 }
 
-const mapStateToProps = ({ navigation }) => ({
-  acl: navigation.acl
-});
-
 const mapDispatchToProps = dispatch => {
   return {
-    fetchAclRoutes: () => {
-      dispatch(fetchAclRoutes());
-    },
-    fetchExternalComponents: () => {
-      dispatch(fetchExternalComponents());
+    fetchAclRoutesAndExternalComponents: () => {
+      // batch actions to avoid useless multiple rendering
+      dispatch(batchActions([fetchAclRoutes(), fetchExternalComponents()]));
     }
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(App);
+export default connect(null, mapDispatchToProps)(App);

@@ -222,10 +222,16 @@ function get_notified_infos_for_service($serviceId, $hostId)
             $results['contactGroups'] = $results['contactGroups'] + $contactGroups;
         }
 
-        if ($service['contact_additive_inheritance'] == 0 && count($contacts) > 0) {
+        if (isset($service['contact_additive_inheritance'])
+            && $service['contact_additive_inheritance'] == 0
+            && count($contacts) > 0
+        ) {
             $stopReading['contacts'] = 1;
         }
-        if ($service['cg_additive_inheritance'] == 0 && count($contactGroups) > 0) {
+        if (isset($service['cg_additive_inheritance'])
+            && $service['cg_additive_inheritance'] == 0
+            && count($contactGroups) > 0
+        ) {
             $stopReading['contactGroups'] = 1;
         }
 

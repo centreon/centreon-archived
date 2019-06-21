@@ -10,8 +10,6 @@ import miniLogo from "../../img/centreon-logo-mini.svg";
 import { Link, withRouter } from "react-router-dom";
 import axios from "../../axios";
 
-import routeMap from "../../route-maps/route-map";
-
 import { Translate } from 'react-redux-i18n';
 import { fetchNavigationData } from "../../redux/actions/navigationActions";
 
@@ -45,12 +43,8 @@ class NavigationComponent extends Component {
   handleDirectClick = (levelOneKey, levelOneProps) => {
     clearTimeout(this.clickTimeout)
     this.doubleClicked = true
-    const urlOptions = levelOneKey.slice(1) +
-      (levelOneProps.options !== null ? levelOneProps.options : '')
-    this.goToPage(
-      routeMap.module + "?p=" + urlOptions,
-      levelOneKey
-    )
+    const urlOptions = levelOneKey.slice(1) + (levelOneProps.options !== null ? levelOneProps.options : '');
+    this.goToPage(`/main.php?p=${urlOptions}`, levelOneKey);
   }
   // active clicked level
   activeCurrentLevel = (levelOneKey, levelTwoKey) => {
@@ -133,7 +127,7 @@ class NavigationComponent extends Component {
     const urlOptions = entryKey.slice(1) + (entryProps.options !== null ? entryProps.options : '');
     const url = entryProps.is_react == '1'
       ? entryProps.url
-      : routeMap.module + "?p=" + urlOptions;
+      : `/main.php?p=${urlOptions}`;
     return { url, urlOptions };
   }
 

@@ -2,7 +2,6 @@ import React, { Component } from "react";
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import styles from '../header/header.scss';
-import config from "../../config";
 import { Translate, I18n } from 'react-redux-i18n';
 import axios from "../../axios";
 import { Link } from "react-router-dom";
@@ -67,7 +66,7 @@ class PollerMenu extends Component {
     intervalApplied: false
   };
 
-  UNSAFE_componentWillMount() {
+  componentDidMount() {
     window.addEventListener('mousedown', this.handleClick, false);
   };
 
@@ -233,6 +232,9 @@ const mapDispatchToProps = {};
 export default connect(mapStateToProps, mapDispatchToProps)(PollerMenu);
 
 PollerMenu.propTypes = {
-  children: PropTypes.element.isRequired,
+  navigationData: PropTypes.object.isRequired,
+  refreshTime: PropTypes.oneOfType([
+    PropTypes.number,
+    PropTypes.bool
+  ]).isRequired,
 };
-

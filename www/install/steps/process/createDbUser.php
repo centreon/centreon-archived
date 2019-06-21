@@ -49,7 +49,7 @@ $parameters = $step->getDatabaseConfiguration();
 try {
     $link = new \PDO(
         'mysql:host=' . $parameters['address'] . ';port=' . $parameters['port'],
-        'root',
+        $parameters['root_user'],
         $parameters['root_password']
     );
 } catch (\PDOException $e) {

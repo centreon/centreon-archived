@@ -8,7 +8,7 @@ Dans le précédent guide de démarrage rapide vous avez :ref:`ajouté un hôte<
 à partir du modèle d'hôte **generic-host**.
 Ce modèle permet d'apporter une configuration minimale pour définir votre hôte.
 
-Cependant les modèles d'objets dans l'interface Centreon web apporte beaucoup plus
+Cependant les modèles d'objets dans l'interface Centreon web apportent beaucoup plus
 que la simple pré-configuration de certaines valeurs. Dans Centreon web vous pouvez
 `lier des modèles de services à des modèles d'hôtes<hosttemplates>`.
 Grâce à cela vous pouvez déployer facilement et en une seule fois des services
@@ -22,7 +22,7 @@ afin de contrôler un serveur Linux. Ce modèle d'hôte apporte les contrôles s
 * Memory
 * Swap
 
-Premièrement vous devez vous :ref:`connectez<centreon_login>` à l'interface
+Premièrement vous devez vous :ref:`connecter<centreon_login>` à l'interface
 web Centreon avec un compte administrateur ou un compte disposant des droits
 d'accès pour gérer les objets.
 
@@ -50,7 +50,7 @@ Sauvegarder les modifications en cliquant sur le bouton **Save**.
     :align: center
 
 L'hôte est maintenant défini dans l'interface Centreon web mais le moteur ne le
-connait pas encore !
+connaît pas encore !
 
 Vous devez :ref:`générer la configuration, l'exporter et l'envoyer au moteur de supervision<deployconfiguration>`.
 

@@ -133,7 +133,6 @@ Actions complémentaires
 
 Redémarrez le service centengine en exécutant la commande suivante : ::
 
-    # systemctl restart cbd
     # systemctl restart centengine
 
 ******************************

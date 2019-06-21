@@ -38,7 +38,8 @@ Provide the information on the admin user, then click on **Next**.
    :align: center
    :scale: 85%
 
-By default, the *localhost* server is defined and the root password is empty. If you use a remote database server, change these entries.
+By default, the *localhost* server is defined, the database root user is set to *root* and the root password is empty.
+If you use a remote database server, change these entries.
 In this case, you only need to define a password for the user accessing the Centreon databases, i.e., *Centreon*. Click on **Next**.
 
 .. image :: /images/user/adbinfo.png

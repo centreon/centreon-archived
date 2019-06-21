@@ -30,3 +30,19 @@ $help['pollercmd'] = dgettext(
         . "Make sure to have sufficient rights for the Apache user to run these commands."
 );
 $help['description'] = dgettext("help", "Short description of the poller");
+$help['http_method'] = dgettext(
+    "help",
+    "What kind of method is needed to reach the Remote Server, HTTP or HTTPS?"
+);
+$help['http_port'] = dgettext(
+    "help",
+    "On which TCP port is listening the Remote Server?"
+);
+$help['no_check_certificate'] = dgettext(
+    "help",
+    "If checked, it won't check the validity of the SSL certificate of the Remote Server."
+);
+$help['no_proxy'] = dgettext(
+    "help",
+    "If checked, it won't  use the proxy configured in 'Administration > Parameters > Centreon UI' to connect to the Remote Server."
+);

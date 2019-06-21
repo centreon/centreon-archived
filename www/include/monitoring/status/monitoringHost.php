@@ -1,7 +1,7 @@
 <?php
 /*
- * Copyright 2005-2015 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2019 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -59,11 +59,11 @@ if (!isset($_GET["cmd"]) && isset($_POST["cmd"])) {
     $param = $_GET;
 }
 
-if (isset($param["cmd"]) &&
-    $param["cmd"] == 14 &&
-    isset($param["author"]) &&
-    isset($param["en"]) &&
-    $param["en"] == 1
+if (isset($param["cmd"])
+    && $param["cmd"] == 14
+    && isset($param["author"])
+    && isset($param["en"])
+    && $param["en"] == 1
 ) {
     if (!isset($param["sticky"])) {
         $param["sticky"] = 0;
@@ -78,11 +78,11 @@ if (isset($param["cmd"]) &&
         $param["ackhostservice"] = 0;
     }
     acknowledgeHost($param);
-} elseif (isset($param["cmd"]) &&
-    $param["cmd"] == 14 &&
-    isset($param["author"]) &&
-    isset($param["en"]) &&
-    $param["en"] == 0
+} elseif (isset($param["cmd"])
+    && $param["cmd"] == 14
+    && isset($param["author"])
+    && isset($param["en"])
+    && $param["en"] == 0
 ) {
     acknowledgeHostDisable();
 }
@@ -94,7 +94,7 @@ if (isset($param["cmd"]) && $param["cmd"] == 16 && isset($param["output"])) {
 if ($min) {
     switch ($o) {
         default:
-            require_once($pathTools . "tools.php");
+            require_once $pathTools . "tools.php";
             break;
     }
 } else {
@@ -104,25 +104,25 @@ if ($min) {
     if ($continue) {
         switch ($o) {
             case "h":
-                require_once($path . "host.php");
+                require_once $path . "host.php";
                 break;
             case "hpb":
-                require_once($path . "host.php");
+                require_once $path . "host.php";
                 break;
             case "h_unhandled":
-                require_once($path . "host.php");
+                require_once $path . "host.php";
                 break;
             case "hd":
-                require_once($pathDetails . "hostDetails.php");
+                require_once $pathDetails . "hostDetails.php";
                 break;
             case "hpc":
-                require_once("./include/monitoring/submitPassivResults/hostPassiveCheck.php");
+                require_once "./include/monitoring/submitPassivResults/hostPassiveCheck.php";
                 break;
             case "hak":
-                require_once($pathRoot . "acknowlegement/hostAcknowledge.php");
+                require_once $pathRoot . "acknowlegement/hostAcknowledge.php";
                 break;
             default:
-                require_once($path . "host.php");
+                require_once $path . "host.php";
                 break;
         }
     }

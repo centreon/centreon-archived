@@ -58,7 +58,7 @@ The following table describes the software dependencies:
 +----------+------------------+
 | openssl  | >= 1.0.1k        |
 +----------+------------------+
-| PHP      | 7.1 & 7.2        |
+| PHP      | 7.2              |
 +----------+------------------+
 | Qt       | >= 4.7.4         |
 +----------+------------------+
@@ -227,7 +227,7 @@ Description of software and linked users:
 +=================+==================+=================+=======================+
 | Apache          | httpd24-httpd    | apache          | automatic start       |
 +-----------------+------------------+-----------------+-----------------------+
-| PHP-FPM         | rh-php71-php-fpm | apache          | automatic start       |
+| PHP-FPM         | rh-php72-php-fpm | apache          | automatic start       |
 +-----------------+------------------+-----------------+-----------------------+
 | MySQL (MariaDB) | mysqld (mysql)   | mysql           | automatic start       |
 +-----------------+------------------+-----------------+-----------------------+

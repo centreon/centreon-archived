@@ -59,10 +59,20 @@ jQuery(function () {
     var chartId = $a.parents('.graph').data('graphId');
     var start;
     var end;
+    var timezone = localStorage.getItem('realTimezone')
+        ? localStorage.getItem('realTimezone')
+        : moment.tz.guess();
+
     /* Get the period */
     if (jQuery('select[name="period"]').val() === '') {
-      start = moment(jQuery('#StartDate').val() + ' ' + jQuery('#StartTime').val());
-      end = moment(jQuery('#EndDate').val() + ' ' + jQuery('#EndTime').val());
+      start = moment.tz(
+          jQuery('#StartDate').val() + ' ' + jQuery('#StartTime').val(),
+          timezone
+      );
+      end = moment.tz(
+          jQuery('#EndDate').val() + ' ' + jQuery('#EndTime').val(),
+          timezone
+      );
       duration = moment.duration(end.diff(start));
     } else {
       parseInterval = jQuery('select[name="period"]').val().match(/(\d+)([a-z]+)/i);
@@ -70,8 +80,8 @@ jQuery(function () {
         parseInt(parseInterval[1], 10),
         parseInterval[2]
       );
-      start = moment();
-      end = moment();
+      start = moment().tz(timezone);
+      end = moment().tz(timezone);
       start.subtract(parseInterval[1], parseInterval[2]);
     }
 

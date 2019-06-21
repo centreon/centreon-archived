@@ -65,7 +65,7 @@ function myDecodeService($arg)
 if (!$centreon->user->admin) {
     if ($service_id) {
         $checkres = $pearDB->query("SELECT service_id
-                                        FROM $acldbname.centreon_acl
+                                        FROM $aclDbName.centreon_acl
                                         WHERE service_id = " . $pearDB->escape($service_id) . "
                                         AND group_id IN (" . $acl->getAccessGroupsString() . ")");
         if (!$checkres->rowCount()) {

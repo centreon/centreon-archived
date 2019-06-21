@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
+import { batchActions } from 'redux-batched-actions';
 import {
   TopFilters,
   Wrapper,
@@ -11,7 +12,7 @@ import {
 import Hook from "../../../../components/hook";
 
 import axios from "../../../../axios";
-import { fetchNavigationData } from "../../../../redux/actions/navigationActions";
+import { fetchNavigationData, fetchAclRoutes } from "../../../../redux/actions/navigationActions";
 import { fetchExternalComponents } from "../../../../redux/actions/externalComponentsActions";
 
 class ExtensionsRoute extends Component {
@@ -218,6 +219,7 @@ class ExtensionsRoute extends Component {
     );
   };
 
+  // install/remove extension
   runAction = (loadingKey, action, id, type, callback) => {
     this.setStatusesByIds([{ id }], loadingKey, () => {
       axios(`internal.php?object=centreon_module&action=${action}&id=${id}&type=${type}`)
@@ -226,14 +228,12 @@ class ExtensionsRoute extends Component {
           this.getData(() => {
             this.setStatusByKey(loadingKey, id, callback);
             this.reloadNavigation();
-            this.reloadExternalComponents();
           });
         })
         .catch(err => {
           this.getData(() => {
             this.setStatusByKey(loadingKey, id, callback);
             this.reloadNavigation();
-            this.reloadExternalComponents();
           });
           throw err;
         });
@@ -299,7 +299,6 @@ class ExtensionsRoute extends Component {
           .then(() => {
             this.getData();
             this.reloadNavigation();
-            this.reloadExternalComponents();
             if (modalDetailsActive) {
               this.getExtensionDetails(id, type);
             }
@@ -382,16 +381,13 @@ class ExtensionsRoute extends Component {
   };
 
   getExtensionDetails = (id, type) => {
-    const { history } = this.props;
-    const basename = history.createHref({pathname: '/', search: '', hash: ''});
-
     axios(`internal.php?object=centreon_module&action=details&type=${type}&id=${id}`)
       .get()
       .then(({ data }) => {
         let { result } = data;
         if (result.images) {
           result.images = result.images.map(image => {
-            return basename + image;
+            return `./${image}`;
           });
         }
         this.setState({
@@ -592,10 +588,8 @@ class ExtensionsRoute extends Component {
 const mapDispatchToProps = dispatch => {
   return {
     reloadNavigation: () => {
-      dispatch(fetchNavigationData());
-    },
-    reloadExternalComponents: () => {
-      dispatch(fetchExternalComponents());
+      // batch actions to avoid useless multiple rendering
+      dispatch(batchActions([fetchNavigationData(), fetchExternalComponents(), fetchAclRoutes()]));
     },
   };
 };
