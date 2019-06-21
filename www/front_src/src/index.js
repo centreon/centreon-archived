@@ -5,6 +5,7 @@ import AppProvider from "./Provider";
 (async function() {
     window.React = await import(/* webpackChunkName: "external" */ 'react');
     window.ReactDOM = window.ReactDom = await import(/* webpackChunkName: "external" */ 'react-dom');
+    window.PropTypes = window.PropTypes = await import(/* webpackChunkName: "external" */ 'prop-types');
     window.ReactRouterDOM = window.ReactRouterDom = await import(/* webpackChunkName: "external" */ 'react-router-dom');
     window.ReactRedux = await import(/* webpackChunkName: "external" */ 'react-redux');
     window.ReduxForm = await import(/* webpackChunkName: "external" */ 'redux-form');
