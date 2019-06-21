@@ -552,16 +552,25 @@ if ($engine == 'false') {
                 jQuery("input[name=alternativeDateEndDate]").val("");
                 jQuery("#EndDate").val("");
                 jQuery("#EndTime").val("");
-            } else if (jQuery("input[name=alternativeDateStartDate]").val() != "" &&
-                jQuery("input[name=alternativeDateEndDate]").val() != "" &&
-                document.FormPeriod.StartTime.value != "" &&
-                document.FormPeriod.EndTime.value != ""
-            ) {
+            } else {
                 period = '';
-                StartDate = jQuery("input[name=alternativeDateStartDate]").val();
-                EndDate = jQuery("input[name=alternativeDateEndDate]").val();
-                StartTime = document.FormPeriod.StartTime.value;
-                EndTime = document.FormPeriod.EndTime.value;
+                StartTime = '00:00';
+                EndTime = '24:00';
+
+                if (jQuery("input[name=alternativeDateStartDate]").val() != "" &&
+                    jQuery("input[name=alternativeDateEndDate]").val() != ""
+                ) {
+                    StartDate = jQuery("input[name=alternativeDateStartDate]").val();
+                    EndDate = jQuery("input[name=alternativeDateEndDate]").val();
+                }
+
+                if (document.FormPeriod.StartTime.value != "") {
+                    StartTime = document.FormPeriod.StartTime.value;
+                }
+
+                if (document.FormPeriod.EndTime.value != "") {
+                    EndTime = document.FormPeriod.EndTime.value;
+                }
             }
         }
     }
@@ -621,13 +630,13 @@ if ($engine == 'false') {
                         '&num=' + _num + '&error=' + _error + '&alert=' + _alert + '&notification=' + _notification +
                         '&search_H=' + _search_H + '&search_S=' + _search_S + '&period=' + period +
                         '&StartDate=' + StartDate + '&EndDate=' + EndDate + '&StartTime=' + StartTime +
-                        '&EndTime=' + EndTime + '&limit=' + _limit + '&id=' + openid +
+                        '&EndTime=' + EndTime + '&limit=' + _limit + '&id=' + openid
                         <?php
                         if (isset($search) && $search) {
-                            print "&search_host=" . $search;
+                            print " + &search_host=" . $search;
                         }
                         if (isset($search_service) && $search_service) {
-                            print "&search_service=" . $search_service;
+                            print " + &search_service=" . $search_service;
                         }
                         ?> +'&export=1';
                 } else if (type == 'XML') {
@@ -836,7 +845,7 @@ if ($engine == 'false') {
                             if (jQuery.inArray(elem.id, host_value) === -1) {
                                 var existingOptions = jQuery("#host_filter").find('option');
                                 var existFlag = false;
-                                existingOptions.forEach(function (el) {
+                                existingOptions.each(function (el) {
                                     if (jQuery(this).val() == elem.id) {
                                         existFlag = true;
                                     }
@@ -872,7 +881,7 @@ if ($engine == 'false') {
                             if (jQuery.inArray(elem.id, service_value) === -1) {
                                 var existingOptions = jQuery("#service_filter option");
                                 var existFlag = false;
-                                existingOptions.forEach(function () {
+                                existingOptions.each(function () {
                                     if (jQuery(this).val() == elem.id) {
                                         existFlag = true;
                                     }
