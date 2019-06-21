@@ -108,15 +108,15 @@ if ($selectedUserSid) {
                     $msg->setTextColor("green");
                     $msg->setText(_("Resync data requested."));
                     $msg->setText(_(" ")); // adding the space here, to avoid to forgot it in the translation files
-                    /*
-                     * as every SYNC_USER steps were successful, we need to logout the contact
-                     * to synchronize the data at next login or when the centAcl CRON is executed
-                     */
                 }
             } catch (\PDOException $e) {
                 $msg->setText(_("Error : unable to read or update the contact data in the DB"));
                 break;
             }
+        /*
+         * as every SYNC_USER steps were successful, we need to logout the contact
+         * to synchronize the data at next login or when the centAcl CRON is executed
+         */
         case KICK_USER:
             $stmt = $pearDB->prepare("DELETE FROM session WHERE session_id = :userSessionId");
             $stmt->bindValue(':userSessionId', $selectedUserSid, \PDO::PARAM_STR);
