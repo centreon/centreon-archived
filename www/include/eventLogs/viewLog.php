@@ -555,7 +555,7 @@ if ($engine == 'false') {
             } else {
                 period = '';
                 StartTime = '00:00';
-                EndTime = '23:59';
+                EndTime = '24:00';
 
                 if (jQuery("input[name=alternativeDateStartDate]").val() != "" &&
                     jQuery("input[name=alternativeDateEndDate]").val() != ""
