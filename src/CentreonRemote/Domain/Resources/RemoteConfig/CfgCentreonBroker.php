@@ -23,7 +23,21 @@ class CfgCentreonBroker
             'broker' => [
                 'config_name'            => "{$configName}-broker",
                 'config_filename'        => "central-broker.xml",
-                'config_write_timestamp' => '0',
+                'config_write_timestamp' => '1',
+                'config_write_thread_id' => '0',
+                'config_activate'        => '1',
+                'ns_nagios_server'       => $serverID,
+                'event_queue_max_size'   => '100000',
+                'command_file'           => '',
+                'cache_directory'        => '/var/lib/centreon-broker',
+                'stats_activate'         => '1',
+                'correlation_activate'   => '0',
+                'daemon'                 => '1',
+            ],
+            'rrd' => [
+                'config_name'            => "{$configName}-rrd",
+                'config_filename'        => "central-rrd.xml",
+                'config_write_timestamp' => '1',
                 'config_write_thread_id' => '0',
                 'config_activate'        => '1',
                 'ns_nagios_server'       => $serverID,
@@ -47,20 +61,6 @@ class CfgCentreonBroker
                 'stats_activate'         => '1',
                 'correlation_activate'   => '0',
                 'daemon'                 => '0',
-            ],
-            'rrd' => [
-                'config_name'            => "{$configName}-rrd",
-                'config_filename'        => "central-rrd.xml",
-                'config_write_timestamp' => '0',
-                'config_write_thread_id' => '0',
-                'config_activate'        => '1',
-                'ns_nagios_server'       => $serverID,
-                'event_queue_max_size'   => '100000',
-                'command_file'           => '',
-                'cache_directory'        => '/var/lib/centreon-broker',
-                'stats_activate'         => '1',
-                'correlation_activate'   => '0',
-                'daemon'                 => '1',
             ]
         ];
     }
