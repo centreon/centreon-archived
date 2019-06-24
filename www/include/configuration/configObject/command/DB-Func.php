@@ -249,19 +249,15 @@ function insertCommand($ret = array())
     $rq .= "VALUES (
             '" . $pearDB->escape($ret["command_name"]) . "', 
             '" . $pearDB->escape($ret["command_line"]) . "', 
-            '" . $pearDB->escape($ret['enable_shell']) . "', 
+            " . (int)$ret['enable_shell'] . ", 
             '" . $pearDB->escape($ret["command_example"]) . "', 
-            '" . $ret["command_type"]["command_type"] . "', 
-            " . (isset($ret["graph_id"]) && !empty($ret["graph_id"])
-            ? "'" . $ret['graph_id'] . "'"
-            : "NULL") . ", 
-            " . (isset($ret["connectors"]) && !empty($ret["connectors"])
-            ? "'" . $ret['connectors'] . "'"
-            : "NULL") . ", 
+            " . (int)$ret["command_type"]["command_type"] . ", 
+            " . (!empty($ret["graph_id"]) ? (int)$ret['graph_id'] : "NULL") . ", 
+            " . (!empty($ret["connectors"]) ? (int)$ret['connectors'] : "NULL") . ", 
             '" . $pearDB->escape($ret["command_comment"]) . "', 
             '" . $pearDB->escape($ret["command_activate"]["command_activate"]) . "'";
     $rq .= ")";
-    $dbResult = $pearDB->query($rq);
+    $pearDB->query($rq);
 
     /*
      * Get Max ID
