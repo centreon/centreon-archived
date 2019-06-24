@@ -1,7 +1,7 @@
 <?php
 /*
  * Copyright 2005-2019 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -73,15 +73,15 @@ $initialValues = array();
 /*
  * Check if this server is a Remote Server to hide some part of form
  */
-$DBRESULT = $pearDB->query("SELECT i.value FROM informations i WHERE i.key = 'isRemote'");
-$result = $DBRESULT->fetchRow();
+$dbResult = $pearDB->query("SELECT i.value FROM informations i WHERE i.key = 'isRemote'");
+$result = $dbResult->fetchRow();
 if ($result === false) {
     $isRemote = false;
 } else {
     $isRemote = array_map("myDecode", $result);
     $isRemote = ($isRemote['value'] === 'yes') ? true : false;
 }
-$DBRESULT->closeCursor();
+$dbResult->closeCursor();
 
 $cct = array();
 if (($o == "c" || $o == "w") && $contact_id) {
@@ -92,10 +92,10 @@ if (($o == "c" || $o == "w") && $contact_id) {
     $cct["contact_svNotifCmds"] = array();
     $cct["contact_cgNotif"] = array();
 
-    $DBRESULT = $pearDB->query("SELECT * FROM contact WHERE contact_id = '" . intval($contact_id) . "' LIMIT 1");
-    $cct = array_map("myDecode", $DBRESULT->fetchRow());
+    $dbResult = $pearDB->query("SELECT * FROM contact WHERE contact_id = '" . intval($contact_id) . "' LIMIT 1");
+    $cct = array_map("myDecode", $dbResult->fetchRow());
     $cct["contact_passwd"] = null;
-    $DBRESULT->closeCursor();
+    $dbResult->closeCursor();
 
     /**
      * Set Host Notification Options
@@ -149,7 +149,7 @@ if ($o == "mc") {
 }
 
 /**
- * Contact Groups comes from DB -> Store in $notifCcts Array
+ * Contact Groups come from DB -> Store in $notifCcts Array
  */
 $notifCgs = array();
 
@@ -784,6 +784,11 @@ $valid = false;
 
 if ($form->validate() && $from_list_menu == false) {
     $cctObj = $form->getElement('contact_id');
+    if (!$centreon->user->admin && $contactId) {
+        $form->getElement('contact_admin')->setValue(0);
+        $form->getElement('reach_api')->setValue(0);
+        $form->getElement('reach_api_rt')->setValue(0);
+    }
     if ($form->getSubmitValue("submitA")) {
         $newContactId = insertContactInDB();
         $cctObj->setValue($contactId);
