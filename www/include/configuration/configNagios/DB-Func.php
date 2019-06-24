@@ -634,10 +634,8 @@ function insertNagios($ret = array(), $brokerTab = array())
         $rq .= "NULL, ";
     }
 
-    if (isset($ret["service_interleave_factor"]["service_interleave_factor"])
-        && $ret["service_interleave_factor"]["service_interleave_factor"] != 2
-    ) {
-        $rq .= "'" . $ret["service_interleave_factor"]["service_interleave_factor"] . "',  ";
+    if (isset($ret["service_interleave_factor"]) && $ret["service_interleave_factor"] != null) {
+        $rq .= "'" . htmlentities($ret["service_interleave_factor"], ENT_QUOTES, "UTF-8") . "',  ";
     } else {
         $rq .= "'2', ";
     }
@@ -1573,11 +1571,9 @@ function updateNagios($nagios_id = null)
         $rq .= "max_service_check_spread = NULL, ";
     }
 
-    if (isset($ret["service_interleave_factor"]["service_interleave_factor"])
-        && $ret["service_interleave_factor"]["service_interleave_factor"] != 2
-    ) {
+    if (isset($ret["service_interleave_factor"]) && $ret["service_interleave_factor"] != null) {
         $rq .= "service_interleave_factor = '"
-            . $ret["service_interleave_factor"]["service_interleave_factor"]
+            . htmlentities($ret["service_interleave_factor"], ENT_QUOTES, "UTF-8")
             . "',  ";
     } else {
         $rq .= "service_interleave_factor = '2', ";

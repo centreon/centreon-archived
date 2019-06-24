@@ -128,7 +128,6 @@ Additional actions
 
 Restart the services by executing the following commands: ::
 
-    # systemctl restart cbd
     # systemctl restart centengine
 
 ***************************

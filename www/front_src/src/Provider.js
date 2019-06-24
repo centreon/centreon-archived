@@ -12,7 +12,7 @@ class AppProvider extends Component {
     translationsLoaded: false
   }
 
-  UNSAFE_componentWillMount = () => {
+  componentDidMount = () => {
     setTranslations(store, this.finishLoading);
   };
 
@@ -20,8 +20,9 @@ class AppProvider extends Component {
     this.setState({translationsLoaded: true});
   };
 
-  render = () => {
-    const {translationsLoaded} = this.state;
+  render() {
+    const { translationsLoaded } = this.state;
+
     return (
       translationsLoaded && <Provider store={store}>
         <App />

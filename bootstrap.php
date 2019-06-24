@@ -109,24 +109,6 @@ $dependencyInjector['translator'] = $dependencyInjector->factory(function ($c) {
 
 $dependencyInjector['path.files_generation'] = _CENTREON_PATH_ . '/filesGeneration/';
 
-// Defines the web service that will transform the translation files into one json file
-$dependencyInjector[CentreonI18n::class] = function ($container) {
-    require_once _CENTREON_PATH_ . '/www/api/class/centreon_i18n.class.php';
-    $lang = getenv('LANG');
-    if ($lang === false) {
-        // Initialize the language translator
-        $container['translator'];
-        $lang = getenv('LANG');
-    }
-    if (strstr($lang, '.UTF-8') === false) {
-        $lang .= '.UTF-8';
-    }
-    $translationFile = _CENTREON_PATH_  . "www/locale/{$lang}/LC_MESSAGES/messages.ser";
-    $translation = new CentreonI18n();
-    $translation->setFilesGenerationPath($translationFile);
-    return $translation;
-};
-
 // Dynamically register service provider
 \Centreon\Infrastructure\Provider\AutoloadServiceProvider::register($dependencyInjector);
 

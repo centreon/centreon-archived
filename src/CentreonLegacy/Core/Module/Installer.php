@@ -40,7 +40,7 @@ use CentreonLegacy\Core\Module\Information;
 use CentreonLegacy\Core\Utils\Utils;
 
 class Installer extends Module
-{   
+{
     /**
      *
      * @return int
@@ -68,21 +68,18 @@ class Installer extends Module
         }
 
         $query = 'INSERT INTO modules_informations ' .
-            '(`name` , `rname` , `mod_release` , `is_removeable` , `infos` , `author` , `lang_files`, ' .
-            '`sql_files`, `php_files`, `svc_tools`, `host_tools`)' .
-            'VALUES ( :name , :rname , :mod_release , :is_removeable , :infos , :author , :lang_files , ' .
-            ':sql_files , :php_files , :svc_tools , :host_tools )';
+            '(`name` , `rname` , `mod_release` , `is_removeable` , `infos` , `author` , ' .
+            '`svc_tools`, `host_tools`)' .
+            'VALUES ( :name , :rname , :mod_release , :is_removeable , :infos , :author , ' .
+            ':svc_tools , :host_tools )';
         $sth = $this->services->get('configuration_db')->prepare($query);
-        
+
         $sth->bindParam(':name', $this->moduleConfiguration['name'], \PDO::PARAM_STR);
         $sth->bindParam(':rname', $this->moduleConfiguration['rname'], \PDO::PARAM_STR);
         $sth->bindParam(':mod_release', $this->moduleConfiguration['mod_release'], \PDO::PARAM_STR);
         $sth->bindParam(':is_removeable', $this->moduleConfiguration['is_removeable'], \PDO::PARAM_STR);
         $sth->bindParam(':infos', $this->moduleConfiguration['infos'], \PDO::PARAM_STR);
         $sth->bindParam(':author', $this->moduleConfiguration['author'], \PDO::PARAM_STR);
-        $sth->bindParam(':lang_files', $this->moduleConfiguration['lang_files'], \PDO::PARAM_STR);
-        $sth->bindParam(':sql_files', $this->moduleConfiguration['sql_files'], \PDO::PARAM_STR);
-        $sth->bindParam(':php_files', $this->moduleConfiguration['php_files'], \PDO::PARAM_STR);
         $sth->bindParam(':svc_tools', $this->moduleConfiguration['svc_tools'], \PDO::PARAM_STR);
         $sth->bindParam(':host_tools', $this->moduleConfiguration['host_tools'], \PDO::PARAM_STR);
 
@@ -107,7 +104,7 @@ class Installer extends Module
         $installed = false;
 
         $sqlFile = $this->getModulePath($this->moduleName) . '/sql/install.sql';
-        if ($this->moduleConfiguration["sql_files"] && $this->services->get('filesystem')->exists($sqlFile)) {
+        if ($this->services->get('filesystem')->exists($sqlFile)) {
             $this->utils->executeSqlFile($sqlFile);
             $installed = true;
         }
@@ -124,7 +121,7 @@ class Installer extends Module
         $installed = false;
 
         $phpFile = $this->getModulePath($this->moduleName) . '/php/install.php';
-        if ($this->moduleConfiguration["php_files"] && $this->services->get('filesystem')->exists($phpFile)) {
+        if ($this->services->get('filesystem')->exists($phpFile)) {
             $this->utils->executePhpFile($phpFile);
             $installed = true;
         }

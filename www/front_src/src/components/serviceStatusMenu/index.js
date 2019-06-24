@@ -23,7 +23,7 @@ class ServiceStatusMenu extends Component {
     intervalApplied: false
   };
 
-  UNSAFE_componentWillMount() {
+  componentDidMount() {
     window.addEventListener('mousedown', this.handleClick, false);
   };
 
@@ -209,8 +209,7 @@ class ServiceStatusMenu extends Component {
   }
 }
 
-const mapStateToProps = ({ navigation, intervals }) => ({
-  navigationData: navigation,
+const mapStateToProps = ({ intervals }) => ({
   refreshTime: intervals ? parseInt(intervals.AjaxTimeReloadMonitoring)*1000 : false
 });
 
@@ -219,6 +218,8 @@ const mapDispatchToProps = {};
 export default connect(mapStateToProps, mapDispatchToProps)(ServiceStatusMenu);
 
 ServiceStatusMenu.propTypes = {
-  children: PropTypes.element.isRequired,
+  refreshTime: PropTypes.oneOfType([
+    PropTypes.number,
+    PropTypes.bool
+  ]).isRequired,
 };
-

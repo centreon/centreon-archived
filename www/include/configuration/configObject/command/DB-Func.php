@@ -56,8 +56,8 @@ function getCommandName($command_id)
     global $pearDB;
 
     $query = "SELECT `command_name` FROM `command` WHERE `command_id` = " . $pearDB->escape($command_id);
-    $DBRESULT = $pearDB->query($query);
-    $command = $DBRESULT->fetchRow();
+    $dbResult = $pearDB->query($query);
+    $command = $dbResult->fetch();
     if (isset($command['command_name'])) {
         return $command['command_name'];
     } else {
@@ -76,14 +76,14 @@ function testCmdExistence($name = null)
 
     $query = "SELECT `command_name`, `command_id` FROM `command` WHERE `command_name` = '" .
         $pearDB->escape($centreon->checkIllegalChar($name)) . "'";
-    $DBRESULT = $pearDB->query($query);
-    $command = $DBRESULT->fetchRow();
-    if ($DBRESULT->rowCount() >= 1 && $command["command_id"] == $id) {
+    $dbResult = $pearDB->query($query);
+    $command = $dbResult->fetch();
+    if ($dbResult->rowCount() >= 1 && $command["command_id"] == $id) {
         /*
          * Mofication case
          */
         return true;
-    } elseif ($DBRESULT->rowCount() >= 1 && $command["command_id"] != $id) {
+    } elseif ($dbResult->rowCount() >= 1 && $command["command_id"] != $id) {
         /*
          * Duplicate case
          */
@@ -98,10 +98,10 @@ function deleteCommandInDB($commands = array())
     global $pearDB, $centreon;
 
     foreach ($commands as $key => $value) {
-        $query = "SELECT command_name FROM `command` WHERE `command_id` = '" . intval($key) . "' LIMIT 1";
-        $DBRESULT2 = $pearDB->query($query);
-        $row = $DBRESULT2->fetchRow();
-        $pearDB->query("DELETE FROM `command` WHERE `command_id` = '" . intval($key) . "'");
+        $query = "SELECT command_name FROM `command` WHERE `command_id` = '" . (int)$key . "' LIMIT 1";
+        $dbResult2 = $pearDB->query($query);
+        $row = $dbResult2->fetch();
+        $pearDB->query("DELETE FROM `command` WHERE `command_id` = '" . (int)$key . "'");
         $centreon->CentreonLogAction->insertLog("command", $key, $row['command_name'], "d");
     }
 }
@@ -111,10 +111,10 @@ function multipleCommandInDB($commands = array(), $nbrDup = array())
     global $pearDB, $centreon;
 
     foreach ($commands as $key => $value) {
-        $DBRESULT = $pearDB->query("SELECT * FROM `command` WHERE `command_id` = '" . intval($key) . "' LIMIT 1");
+        $dbResult = $pearDB->query("SELECT * FROM `command` WHERE `command_id` = '" . (int)$key . "' LIMIT 1");
 
-        $row = $DBRESULT->fetchRow();
-        $row["command_id"] = '';
+        $row = $dbResult->fetch();
+        $row["command_id"] = null;
 
         for ($i = 1; $i <= $nbrDup[$key]; $i++) {
             $val = null;
@@ -133,13 +133,13 @@ function multipleCommandInDB($commands = array(), $nbrDup = array())
 
             if (isset($command_name) && testCmdExistence($command_name)) {
                 $val ? $rq = "INSERT INTO `command` VALUES (" . $val . ")" : $rq = null;
-                $DBRESULT = $pearDB->query($rq);
+                $dbResult = $pearDB->query($rq);
 
                 /*
                  * Get Max ID
                  */
-                $DBRESULT = $pearDB->query("SELECT MAX(command_id) FROM `command`");
-                $cmd_id = $DBRESULT->fetchRow();
+                $dbResult = $pearDB->query("SELECT MAX(command_id) FROM `command`");
+                $cmd_id = $dbResult->fetch();
                 $centreon->CentreonLogAction->insertLog(
                     "command",
                     $cmd_id["MAX(command_id)"],
@@ -252,14 +252,16 @@ function insertCommand($ret = array())
             '" . $pearDB->escape($ret['enable_shell']) . "', 
             '" . $pearDB->escape($ret["command_example"]) . "', 
             '" . $ret["command_type"]["command_type"] . "', 
-            '" . $ret["graph_id"] . "', 
+            " . (isset($ret["graph_id"]) && !empty($ret["graph_id"])
+            ? "'" . $ret['graph_id'] . "'"
+            : "NULL") . ", 
             " . (isset($ret["connectors"]) && !empty($ret["connectors"])
             ? "'" . $ret['connectors'] . "'"
             : "NULL") . ", 
             '" . $pearDB->escape($ret["command_comment"]) . "', 
             '" . $pearDB->escape($ret["command_activate"]["command_activate"]) . "'";
     $rq .= ")";
-    $DBRESULT = $pearDB->query($rq);
+    $dbResult = $pearDB->query($rq);
 
     /*
      * Get Max ID
@@ -280,8 +282,8 @@ function getMaxID()
 {
     global $pearDB;
 
-    $DBRESULT = $pearDB->query("SELECT MAX(command_id) FROM `command`");
-    $row = $DBRESULT->fetchRow();
+    $dbResult = $pearDB->query("SELECT MAX(command_id) FROM `command`");
+    $row = $dbResult->fetch();
     return $row['MAX(command_id)'];
 }
 
@@ -332,7 +334,7 @@ function insertArgDesc($cmd_id, $ret = null)
         $ret = $form->getSubmitValues();
     }
 
-    $pearDB->query("DELETE FROM `command_arg_description` WHERE cmd_id = '" . intval($cmd_id) . "'");
+    $pearDB->query("DELETE FROM `command_arg_description` WHERE cmd_id = '" . (int)$cmd_id . "'");
     $query = "INSERT INTO `command_arg_description` (cmd_id, macro_name, macro_description) VALUES ";
     if (isset($ret['listOfArg']) && $ret['listOfArg']) {
         $tab1 = preg_split("/\\n/", $ret['listOfArg']);
@@ -357,8 +359,8 @@ function duplicateArgDesc($new_cmd_id, $cmd_id)
     global $pearDB;
 
     $query = "INSERT INTO `command_arg_description` (cmd_id, macro_name, macro_description) 
-                    SELECT '" . intval($new_cmd_id) . "', macro_name, macro_description 
-                    FROM command_arg_description WHERE cmd_id = '" . intval($cmd_id) . "'";
+                    SELECT '" . (int)$new_cmd_id . "', macro_name, macro_description 
+                    FROM command_arg_description WHERE cmd_id = '" . (int)$cmd_id . "'";
     $pearDB->query($query);
 }
 
@@ -372,9 +374,9 @@ function getHostNumberUse($command_id)
     global $pearDB;
 
     $query = "SELECT count(*) AS number FROM host " .
-        "WHERE command_command_id = '" . intval($command_id) . "' AND host_register = '1'";
-    $DBRESULT = $pearDB->query($query);
-    $data = $DBRESULT->fetchRow();
+        "WHERE command_command_id = '" . (int)$command_id . "' AND host_register = '1'";
+    $dbResult = $pearDB->query($query);
+    $data = $dbResult->fetch();
     return $data['number'];
 }
 
@@ -388,9 +390,9 @@ function getServiceNumberUse($command_id)
     global $pearDB;
 
     $query = "SELECT count(*) AS number FROM service " .
-        "WHERE command_command_id = '" . intval($command_id) . "' AND service_register = '1'";
-    $DBRESULT = $pearDB->query($query);
-    $data = $DBRESULT->fetchRow();
+        "WHERE command_command_id = '" . (int)$command_id . "' AND service_register = '1'";
+    $dbResult = $pearDB->query($query);
+    $data = $dbResult->fetch();
     return $data['number'];
 }
 
@@ -404,9 +406,9 @@ function getHostTPLNumberUse($command_id)
     global $pearDB;
 
     $query = "SELECT count(*) AS number FROM host " .
-        "WHERE command_command_id = '" . intval($command_id) . "' AND host_register = '0'";
-    $DBRESULT = $pearDB->query($query);
-    $data = $DBRESULT->fetchRow();
+        "WHERE command_command_id = '" . (int)$command_id . "' AND host_register = '0'";
+    $dbResult = $pearDB->query($query);
+    $data = $dbResult->fetch();
     return $data['number'];
 }
 
@@ -420,9 +422,9 @@ function getServiceTPLNumberUse($command_id)
     global $pearDB;
 
     $query = "SELECT count(*) AS number FROM service " .
-        "WHERE command_command_id = '" . intval($command_id) . "' AND service_register = '0'";
-    $DBRESULT = $pearDB->query($query);
-    $data = $DBRESULT->fetchRow();
+        "WHERE command_command_id = '" . (int)$command_id . "' AND service_register = '0'";
+    $dbResult = $pearDB->query($query);
+    $data = $dbResult->fetch();
     return $data['number'];
 }
 
@@ -439,7 +441,7 @@ function getCommandIdByName($name)
     $id = 0;
     $res = $pearDB->query("SELECT command_id FROM command WHERE command_name = '" . $pearDB->escape($name) . "'");
     if ($res->rowCount()) {
-        $row = $res->fetchRow();
+        $row = $res->fetch();
         $id = $row['command_id'];
     }
     return $id;
@@ -466,7 +468,7 @@ function insertMacrosDesc($cmd, $ret)
         $tab1 = preg_split("/\\n/", $ret['listOfMacros']);
 
         $query = "DELETE FROM `on_demand_macro_command`
-                  WHERE `command_command_id` = " . intval($cmd);
+                  WHERE `command_command_id` = " . (int)$cmd;
         $pearDB->query($query);
 
         foreach ($tab1 as $key => $value) {
@@ -485,7 +487,7 @@ function insertMacrosDesc($cmd, $ret)
             if (!empty($sName)) {
                 $sQueryInsert = "INSERT INTO `on_demand_macro_command` 
                     (`command_command_id`, `command_macro_name`, `command_macro_desciption`, `command_macro_type`) 
-                    VALUES (" . intval($cmd) . ", 
+                    VALUES (" . (int)$cmd . ", 
                         '" . $pearDB->escape($sName) . "', 
                         '" . $pearDB->escape($sDesc) . "', 
                         '" . $arr[$sType] . "')";

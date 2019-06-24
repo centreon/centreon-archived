@@ -48,7 +48,7 @@ function testExistence($name = null)
     $query = "SELECT graph_id, name FROM giv_graphs_template WHERE name = '" .
         htmlentities($name, ENT_QUOTES, "UTF-8") . "'";
     $res = $pearDB->query($query);
-    $graph = $res->fetchRow();
+    $graph = $res->fetch();
     /*
 	 * Modif case
 	 */
@@ -79,7 +79,7 @@ function multipleGraphTemplateInDB($graphs = array(), $nbrDup = array())
     foreach ($graphs as $key => $value) {
         global $pearDB;
         $res = $pearDB->query("SELECT * FROM giv_graphs_template WHERE graph_id = '" . $key . "' LIMIT 1");
-        $row = $res->fetchRow();
+        $row = $res->fetch();
         $row["graph_id"] = '';
         $row["default_tpl1"] = '0';
         for ($i = 1; $i <= $nbrDup[$key]; $i++) {
@@ -185,7 +185,7 @@ function insertGraphTemplate()
     $pearDB->query($rq);
     defaultOreonGraph();
     $res = $pearDB->query("SELECT MAX(graph_id) FROM giv_graphs_template");
-    $graph_id = $res->fetchRow();
+    $graph_id = $res->fetch();
     return ($graph_id["MAX(graph_id)"]);
 }
 

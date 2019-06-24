@@ -30,6 +30,12 @@
       });
     }
 
+    // get timezone from localstorage
+    // be careful, it seems that it's updated when user logout/login
+    this.timezone = localStorage.getItem('realTimezone')
+      ? localStorage.getItem('realTimezone')
+      : moment.tz.guess();
+
     this.timeFormat = this.getTimeFormat();
 
     /* Color for status graph */
@@ -153,10 +159,7 @@
           }
         },
         y: {
-          padding: {bottom: 0, top: 0},
-          tick: {
-            format: this.getAxisTickFormat(this.getBase())
-          }
+          padding: {bottom: 0, top: 0}
         }
       };
       /* Add Y axis range */
@@ -168,11 +171,14 @@
       }
 
       var parsedData = this.buildMetricData(data);
-
       axis = jQuery.extend(true, {}, axis, parsedData.axis);
+      // Of course no-unit series are 1000 based
+      axis.y.tick = {
+        format: this.getAxisTickFormat(axis.y.label ? this.getBase() : 1000)
+      };
       if (axis.hasOwnProperty('y2')) {
         axis.y2.tick = {
-          format: this.getAxisTickFormat(this.getBase())
+          format: this.getAxisTickFormat(axis.y2.label ? this.getBase() : 1000)
         };
       }
 
@@ -202,12 +208,12 @@
         tooltip: {
           format: {
             title: function (x) {
-              return moment(x).format('YYYY-MM-DD HH:mm:ss');
+              return moment(x).tz(self.timezone).format('YYYY-MM-DD HH:mm:ss');
             },
             value: function (value, ratio, id) {
               /* Test if the curve is inversed */
               var fct = self.getAxisTickFormat(
-                self.getBase(),
+                self.getBase(id),
                 self.isInversed(id)
               );
               return fct(value);
@@ -332,16 +338,18 @@
         column.unshift(name);
         data.columns.push(column);
         legend = dataRaw.data[i].label;
+        // Remember that unit can be empty
         if (dataRaw.data[i].unit) {
           legend += '(' + dataRaw.data[i].unit + ')';
-          if (units.hasOwnProperty(dataRaw.data[i].unit) === false) {
-            units[dataRaw.data[i].unit] = [];
-          }
-          units[dataRaw.data[i].unit].push(name);
           axis[axesName] = {
             label: dataRaw.data[i].unit
           };
         }
+        // these no-unit series also go to their own axis
+        if (units.hasOwnProperty(dataRaw.data[i].unit) === false) {
+          units[dataRaw.data[i].unit] = [];
+        }
+        units[dataRaw.data[i].unit].push(name);
         data.names[name] = legend;
         data.types[name] = convertType.hasOwnProperty(dataRaw.data[i].type) !== -1 ?
           convertType[dataRaw.data[i].type] : dataRaw.data[i].type;
@@ -512,15 +520,15 @@
       if (this.settings.period.startTime === null ||
         this.settings.period.endTime === null) {
 
-        start = moment();
-        end = moment();
+        start = moment().tz(this.timezone);
+        end = moment().tz(this.timezone);
 
         start.subtract(this.interval.number, this.interval.unit);
 
       } else {
-
         myStart = this.settings.period.startTime;
         myEnd = this.settings.period.endTime;
+
         if (typeof(this.settings.period.startTime) === "number") {
           myStart = this.settings.period.startTime * 1000;
         }
@@ -529,8 +537,8 @@
           myEnd = this.settings.period.endTime * 1000;
         }
 
-        start = moment(myStart);
-        end = moment(myEnd);
+        start = moment.tz(myStart, this.timezone);
+        end = moment.tz(myEnd, this.timezone);
       }
 
       return {
@@ -542,20 +550,39 @@
      * Define tick for timeseries
      */
     getTimeFormat: function() {
+      var self = this;
       var timeFormat;
+
       if (this.settings.timeFormat !== null) {
         timeFormat = this.settings.timeFormat;
       } else {
-        timeFormat = d3.time.format.multi([
-          [".%L", function(d) { return d.getMilliseconds(); }],
-          [":%S", function(d) { return d.getSeconds(); }],
-          ["%H:%M", function(d) { return d.getMinutes(); }],
-          ["%H:%M", function(d) { return d.getHours(); }],
-          ["%m-%d", function(d) { return d.getDay() && d.getDate() !== 1; }],
-          ["%m-%d", function(d) { return d.getDate() !== 1; }],
-          ["%Y-%m", function(d) { return d.getMonth(); }],
-          ["%Y", function() { return true; }]
-        ]);
+        timeFormat = function(date) {
+          // convert to moment object to manage timezone
+          date = moment(date).tz(self.timezone);
+
+          if (date.millisecond()) {
+            return date.format(".SSS");
+          }
+          if (date.second()) {
+            return date.format(":ss");
+          }
+          if (date.minute()) {
+            return date.format("HH:mm");
+          }
+          if (date.hour()) {
+            return date.format("HH:mm");
+          }
+          if (date.day() && date.date() !== 1) {
+            return date.format("MM-DD");
+          }
+          if (date.date() !== 1) {
+            return date.format("MM-DD");
+          }
+          if (date.month()) {
+            return date.format("YYYY-MM");
+          }
+          return date.format("YYYY");
+        }
       }
 
       return timeFormat;
@@ -706,7 +733,13 @@
      * @param {String} id - The curve id
      * @return {Integer} - 1000 or 1024
      */
-    getBase: function () {
+    getBase: function (id) {
+      // Of course no-unit series are 1000 based
+      for (var e in this.chartData.data) {
+        if((this.chartData.data[e].data[0] === id) && this.chartData.data[e].unit === "") {
+          return 1000;
+        }
+      }
       if (this.chartData.base) {
         return this.chartData.base;
       }
@@ -729,7 +762,7 @@
         if (legends.hasOwnProperty(legend) && self.ids.hasOwnProperty(legend)) {
           curveId = self.ids[legend];
           var fct = self.getAxisTickFormat(
-              self.getBase(),
+              self.getBase(curveId),
               self.isInversed(curveId)
           );
           legendDiv = jQuery('<div>').addClass('chart-legend')
@@ -821,7 +854,7 @@
         }
         var curveId = self.ids[legendName];
         var fct = self.getAxisTickFormat(
-          self.getBase(),
+          self.getBase(curveId),
           self.isInversed(curveId)
         );
         jQuery(el).find('.extra').remove();

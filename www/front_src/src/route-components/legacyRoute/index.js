@@ -4,8 +4,7 @@ import styles from '../../components/header/header.scss';
 import loaderStyles from '../../components/loader/loader.scss';
 import Loader from "../../components/loader";
 
-
-class ModuleRoute extends Component {
+class LegacyRoute extends Component {
 
   constructor(props) {
     super(props);
@@ -39,6 +38,7 @@ class ModuleRoute extends Component {
 
   handleHref = event => {
     let href = event.detail.href;
+
     // update route
     window.history.pushState(null, null, href);
   }
@@ -50,10 +50,10 @@ class ModuleRoute extends Component {
   }
 
   componentDidMount() {
-    this.mainContainer = window.parent.document.getElementById('fullscreen-wrapper');
+    this.mainContainer = window.document.getElementById('fullscreen-wrapper');
 
     // add a listener on global page size
-    window.parent.addEventListener(
+    window.addEventListener(
       "resize",
       this.handleResize
     );
@@ -75,17 +75,17 @@ class ModuleRoute extends Component {
 
   componentWillUnmount() {
     clearTimeout(this.resizeTimeout);
-    window.parent.removeEventListener(
+    window.removeEventListener(
       "resize",
       this.handleResize
     );
 
-    window.parent.removeEventListener(
+    window.removeEventListener(
       "react.href.update",
       this.handleHref
     );
 
-    window.parent.removeEventListener(
+    window.removeEventListener(
       "react.href.disconnect",
       this.handleDisconnect
     );
@@ -93,14 +93,15 @@ class ModuleRoute extends Component {
 
   render() {
     const { contentHeight, loading } = this.state;
-    const { history } = this.props,
-          { search, hash } = history.location;
+    const { history: { location: { search, hash } } } = this.props;
+
     let params;
     if (window['fullscreenSearch']) {
       params = window['fullscreenSearch'] + window['fullscreenHash']
     } else {
       params = (search || '') + (hash || '');
     }
+
     return (
       <>
         {loading &&
@@ -123,4 +124,4 @@ class ModuleRoute extends Component {
   }
 }
 
-export default ModuleRoute;
+export default LegacyRoute;

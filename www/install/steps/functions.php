@@ -43,8 +43,12 @@ function getTemplate($dir)
  */
 function myConnect()
 {
+    $user = "root";
+    if (!empty($_SESSION['root_user'])) {
+        $user = $_SESSION['root_user'];
+    }
     $pass = "";
-    if (isset($_SESSION['root_password']) && $_SESSION['root_password']) {
+    if (!empty($_SESSION['root_password'])) {
         $pass = $_SESSION['root_password'];
     }
     $host = "localhost";
@@ -55,7 +59,7 @@ function myConnect()
     if (isset($_SESSION['DB_PORT']) && $_SESSION['DB_PORT']) {
         $port = $_SESSION['DB_PORT'];
     }
-    return new \PDO('mysql:host=' . $host . ';port=' . $port, 'root', $pass);
+    return new \PDO('mysql:host=' . $host . ';port=' . $port, $user, $pass);
 }
 
 /**

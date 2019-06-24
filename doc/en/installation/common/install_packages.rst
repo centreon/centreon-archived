@@ -48,7 +48,7 @@ The repository is now installed.
 .. note::
     Some may not have the wget package installed. If not perform the following:
     ::
-    
+
         # yum install wget
 
 ************************************
@@ -84,6 +84,22 @@ Run the commands::
 .. note::
     **centreon-database** package installs a database server optimized for use with Centreon.
 
+.. note::
+    Centreon does **not** support the SQL STRICT mode yet. Please make sure that
+    it is disabled. For more information on how to disable the mode please check
+    the official `MariaDB documentation <https://mariadb.com/kb/en/library/sql-mode/#strict-mode>`_.
+
+Then create a distant **root** account: ::
+
+    MariaDB [(none)]> GRANT ALL PRIVILEGES ON *.* TO 'root'@'IP' IDENTIFIED BY 'PASSWORD' WITH GRANT OPTION;
+
+.. note::
+    Replace **IP** by the public IP address of the Centreon server and **PASSWORD**
+    by the **root** password. Once the installation is complete you can delete this
+    account using: ::
+        
+        MariaDB [(none)]> DROP USER 'root'@'IP';
+
 Database management system
 --------------------------
 
@@ -105,7 +121,7 @@ Setting the PHP time zone
 
 You are required to set the PHP time zone. Run the command::
 
-    # echo "date.timezone = Europe/Paris" > /etc/opt/rh/rh-php71/php.d/php-timezone.ini
+    # echo "date.timezone = Europe/Paris" > /etc/opt/rh/rh-php72/php.d/php-timezone.ini
 
 .. note::
     Change **Europe/Paris** to your time zone. You can find the supported list
@@ -113,7 +129,7 @@ You are required to set the PHP time zone. Run the command::
 
 After saving the file, please do not forget to restart the PHP-FPM server::
 
-    # systemctl restart rh-php71-php-fpm
+    # systemctl restart rh-php72-php-fpm
 
 Configuring/disabling the firewall
 ----------------------------------
@@ -132,7 +148,7 @@ To make services start automatically during system bootup, run these commands on
     # systemctl enable httpd24-httpd
     # systemctl enable snmpd
     # systemctl enable snmptrapd
-    # systemctl enable rh-php71-php-fpm
+    # systemctl enable rh-php72-php-fpm
     # systemctl enable centcore
     # systemctl enable centreontrapd
     # systemctl enable cbd
@@ -150,7 +166,7 @@ Concluding the installation
 
 Before starting the web installation process, you will need to execute the following commands::
 
-    # systemctl start rh-php71-php-fpm
+    # systemctl start rh-php72-php-fpm
     # systemctl start httpd24-httpd
     # systemctl start mysqld
     # systemctl start cbd

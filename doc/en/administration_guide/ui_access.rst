@@ -17,8 +17,6 @@ To update the Centreon URI, you need to follow those steps:
 
 2. On the centreon central server:
 
-* Remove the **centreon/www/static** folder.
-* Replace **/centreon** occurences by **/your_custom_uri** in **centreon/www/index.html**.
 * Replace **/centreon** occurences by **/your_custom_uri** in **centreon/www/.htaccess**.
 * Navigate to your Centreon URL.
 
@@ -30,7 +28,7 @@ To access to the UI using HTTPS, follow those steps:
 
 1. Install SSL module for Apache: ::
 
-    # yum install mod_ssl openssl
+    # yum install httpd24-mod_ssl openssl
 
 2. Install your certificats or generate self-signed certificates :
 

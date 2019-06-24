@@ -70,9 +70,12 @@ try {
     if ($parameters['port'] == "") {
         $parameters['port'] = "3306";
     }
+    if ($parameters['root_user'] == "") {
+        $parameters['root_user'] = "root";
+    }
     $link = new \PDO(
         'mysql:host=' . $parameters['address'] . ';port=' . $parameters['port'],
-        'root',
+        $parameters['root_user'],
         $parameters['root_password']
     );
 } catch (\PDOException $e) {
