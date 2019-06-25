@@ -16,6 +16,10 @@ class EntityValidator
      */
     private $validator;
 
+    /**
+     * EntityValidator constructor.
+     * @param string $validationFilePath Path of the validator configuration file
+     */
     public function __construct(string $validationFilePath)
     {
         $validation = Validation::createValidatorBuilder();
@@ -35,6 +39,10 @@ class EntityValidator
     }
 
     /**
+     * We validate a list of parameters according to the path of the given entity.
+     * The purpose is to translate the configuration of the validator entity so
+     * that it can be used with a list of parameters.
+     *
      * @param string $entityName
      * @param array $dataToValidate
      * @param string $groupName
@@ -47,6 +55,9 @@ class EntityValidator
     ): ConstraintViolationListInterface {
         $violations = new ConstraintViolationList();
         if ($this->hasValidatorFor($entityName)) {
+            /**
+             * @var $metadata Symfony\Component\Validator\Constraint\MetadataInterface
+             */
             $metadata = $this->validator->getMetadataFor($entityName);
             $constraints = [];
             foreach ($metadata->getConstrainedProperties() as $id) {
@@ -63,6 +74,12 @@ class EntityValidator
         return $violations;
     }
 
+    /**
+     * Validate an entity.
+     *
+     * @param object $entity Entity to validate
+     * @return ConstraintViolationListInterface
+     */
     public function validateEntity($entity): ConstraintViolationListInterface
     {
         if (is_object($entity)) {
