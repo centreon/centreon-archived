@@ -582,7 +582,8 @@ function toggleEdit(show) {
       if (widgetTitle == 'Click to edit' || widgetTitle == '') {
         jQuery(this).hide();
       } else {
-        jQuery(this).find('.ui-icon').hide();
+        jQuery(this).find('.ui-icon-wrench').hide();
+        jQuery(this).find('.ui-icon-trash').hide();
       }
     });
     $el.find('img').attr('src','./img/icons/edit_mode.png');
@@ -591,7 +592,8 @@ function toggleEdit(show) {
       $el.addClass('edit');
     jQuery('.portlet-header').each(function() {
         jQuery(this).show();
-        jQuery(this).find('.ui-icon').show();
+        jQuery(this).find('.ui-icon-wrench').show();
+        jQuery(this).find('.ui-icon-trash').show();
     });
     $el.find('img').attr('src','./img/icons/no_edit_mode.png');
   }
