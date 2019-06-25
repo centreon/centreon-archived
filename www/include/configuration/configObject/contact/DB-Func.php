@@ -211,15 +211,21 @@ function deleteContactInDB($contacts = array())
         "DELETE FROM contact WHERE contact_id = :contactId"
     );
 
-    foreach ($contacts as $key => $value) {
-        $contactNameStmt->bindValue(':contactId', (int)$key, \PDO::PARAM_INT);
-        $contactNameStmt->execute();
-        $row = $contactNameStmt->fetch();
+    $pearDB->beginTransaction();
+    try {
+        foreach ($contacts as $key => $value) {
+            $contactNameStmt->bindValue(':contactId', (int)$key, \PDO::PARAM_INT);
+            $contactNameStmt->execute();
+            $row = $contactNameStmt->fetch();
 
-        $dbResult->bindValue(':contactId', (int)$key, \PDO::PARAM_INT);
-        $dbResult->execute();
+            $dbResult->bindValue(':contactId', (int)$key, \PDO::PARAM_INT);
+            $dbResult->execute();
 
-        $centreon->CentreonLogAction->insertLog("contact", $key, $row['contact_name'], "d");
+            $centreon->CentreonLogAction->insertLog("contact", $key, $row['contact_name'], "d");
+        }
+        $pearDB->commit();
+    } catch (\PDOException $e) {
+        $pearDB->rollBack();
     }
 }
 
@@ -261,6 +267,7 @@ function synchronizeContactWithLdap($contacts = array())
             "DELETE FROM session WHERE session_id = :userSessionId");
 
         try {
+            $pearDB->beginTransaction();
             foreach ($contacts as $key => $value) {
                 $contactNameStmt->bindValue(':contactId', (int)$key, \PDO::PARAM_INT);
                 $contactNameStmt->execute();
@@ -283,7 +290,9 @@ function synchronizeContactWithLdap($contacts = array())
                     "LDAP MANUAL SYNC : Successfully planned LDAP synchronization for " . $rowContact['contact_name']
                 );
             }
+            $pearDB->commit();
         } catch (\PDOException $e) {
+            $pearDB->rollBack();
             throw new Exception('Bad Request : ' . $e);
         }
     } else {
