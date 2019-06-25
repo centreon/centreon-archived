@@ -299,7 +299,11 @@ class MonitoringRepositoryRDB implements MonitoringRepositoryInterface
         $statement = $this->pdo->prepare($request);
         $statement->bindValue(':service_id', $serviceId, \PDO::PARAM_INT);
         if ($statement->execute()) {
-            return $this->createService($statement->fetch(\PDO::FETCH_ASSOC));
+            if (false !== ($row = $statement->fetch(\PDO::FETCH_ASSOC))) {
+                return $this->createService($row);
+            } else {
+                return null;
+            }
         } else {
             throw new Exception('Bad SQL request');
         }
