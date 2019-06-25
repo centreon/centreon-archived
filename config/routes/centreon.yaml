@@ -1,4 +1,4 @@
-controllers:
+centreon:
     resource: ../../src/Centreon/Application/Controller/
     type: annotation
     prefix: /centreon/apiv2

@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace Centreon\Domain\Entity;
+namespace Centreon\Domain\Monitoring;
 
 use Centreon\Domain\Annotation\EntityDescriptor;
 use JMS\Serializer\Annotation as Serializer;
@@ -42,7 +42,7 @@ class Host
      */
     private $acknowledged;
 
-    /**&
+    /**
      * @Serializer\Groups({"host_main", "host_full"})
      * @var int|null
      */

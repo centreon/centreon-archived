@@ -1,11 +1,8 @@
 <?php
 
-
-namespace Centreon\Domain;
-
+namespace Centreon\Domain\Entity;
 
 use Symfony\Component\Validator\Constraints\Collection;
-use Symfony\Component\Validator\ConstraintViolationInterface;
 use Symfony\Component\Validator\ConstraintViolationList;
 use Symfony\Component\Validator\ConstraintViolationListInterface;
 use Symfony\Component\Validator\Mapping\Loader\YamlFileLoader;
@@ -43,8 +40,11 @@ class EntityValidator
      * @param string $groupName
      * @return ConstraintViolationListInterface
      */
-    public function validateEntityByArray(string $entityName, array $dataToValidate, string $groupName = 'Default'): ConstraintViolationListInterface
-    {
+    public function validateEntityByArray(
+        string $entityName,
+        array $dataToValidate,
+        string $groupName = 'Default'
+    ): ConstraintViolationListInterface {
         $violations = new ConstraintViolationList();
         if ($this->hasValidatorFor($entityName)) {
             $metadata = $this->validator->getMetadataFor($entityName);

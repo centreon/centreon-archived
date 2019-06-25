@@ -1,16 +1,14 @@
 <?php
 declare(strict_types=1);
 
-namespace Centreon\Domain\Service;
+namespace Centreon\Domain\Monitoring;
 
-use Centreon\Domain\Entity\Contact;
-use Centreon\Domain\Entity\Host;
-use Centreon\Domain\Entity\Interfaces\ContactInterface;
-use Centreon\Domain\Entity\Service;
+use Centreon\Domain\Contact\Contact;
+use Centreon\Domain\Contact\Interfaces\ContactInterface;
+use Centreon\Domain\Monitoring\Interfaces\MonitoringServiceInterface;
 use Centreon\Domain\Pagination\Pagination;
-use Centreon\Domain\Repository\Interfaces\AccessGroupRepositoryInterface;
-use Centreon\Domain\Repository\Interfaces\MonitoringRepositoryInterface;
-use Centreon\Domain\Service\Interfaces\MonitoringServiceInterface;
+use Centreon\Domain\Monitoring\Interfaces\MonitoringRepositoryInterface;
+use Centreon\Domain\Security\Interfaces\AccessGroupRepositoryInterface;
 
 class MonitoringService implements MonitoringServiceInterface
 {

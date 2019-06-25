@@ -1,11 +1,10 @@
 <?php
 
-namespace Centreon\Infrastructure\Repository;
+namespace Centreon\Infrastructure\Security;
 
-use Centreon\Domain\Entity\AccessGroup;
-use Centreon\Domain\Entity\Contact;
-use Centreon\Domain\Entity\Interfaces\ContactInterface;
-use Centreon\Domain\Repository\Interfaces\AccessGroupRepositoryInterface;
+use Centreon\Domain\Contact\Interfaces\ContactInterface;
+use Centreon\Domain\Security\AccessGroup;
+use Centreon\Domain\Security\Interfaces\AccessGroupRepositoryInterface;
 use Centreon\Infrastructure\DatabaseConnection;
 
 final class AccessGroupRepositoryRDB implements AccessGroupRepositoryInterface

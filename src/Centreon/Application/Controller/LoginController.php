@@ -3,11 +3,10 @@
 
 namespace Centreon\Application\Controller;
 
-use Centreon\Domain\Service\Interfaces\AuthenticationServiceInterface;
+use Centreon\Domain\Security\Interfaces\AuthenticationServiceInterface;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\Controller\AbstractFOSRestController;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 
 class LoginController extends AbstractFOSRestController
@@ -27,7 +26,8 @@ class LoginController extends AbstractFOSRestController
      *
      * si view_response_listener = true il faut mettre l'annotation suivante, sinon c'est inutile
      * @Rest\View(populateDefaultVars=false)
-     * @return Response
+     * @param Request $request
+     * @return array
      */
     public function login(Request $request)
     {

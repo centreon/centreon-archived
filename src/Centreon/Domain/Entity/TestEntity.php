@@ -3,7 +3,6 @@
 
 namespace Centreon\Domain\Entity;
 
-
 use JMS\Serializer\Annotation as Serializer;
 
 class TestEntity

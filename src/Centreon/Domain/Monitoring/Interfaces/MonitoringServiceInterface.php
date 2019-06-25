@@ -1,10 +1,10 @@
 <?php
 
-namespace Centreon\Domain\Service\Interfaces;
+namespace Centreon\Domain\Monitoring\Interfaces;
 
-use Centreon\Domain\Entity\Host;
-use Centreon\Domain\Entity\Interfaces\ContactInterface;
-use Centreon\Domain\Entity\Service;
+use Centreon\Domain\Contact\Interfaces\ContactInterface;
+use Centreon\Domain\Monitoring\Host;
+use Centreon\Domain\Monitoring\Service;
 use Centreon\Domain\Pagination\Pagination;
 
 interface MonitoringServiceInterface

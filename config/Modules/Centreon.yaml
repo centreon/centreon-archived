@@ -22,26 +22,26 @@ services:
         resource: '../../src/Centreon/Application/Controller'
         tags: ['controller.service_arguments']
 
-    Centreon\Domain\Repository\Interfaces\ContactRepositoryInterface:
-        class: Centreon\Infrastructure\Repository\ContactRepositoryRDB
+    Centreon\Domain\Contact\Interfaces\ContactRepositoryInterface:
+        class: Centreon\Infrastructure\Contact\ContactRepositoryRDB
 
     contact.provider:
-        class: Centreon\ContactProvider
+        class: Centreon\Domain\Contact\ContactProvider
         public: true
 
-    Centreon\Domain\Repository\Interfaces\AuthenticationRepositoryInterface:
-        class: Centreon\Infrastructure\Repository\AuthenticationRepositoryRDB
+    Centreon\Domain\Security\Interfaces\AuthenticationRepositoryInterface:
+        class: Centreon\Infrastructure\Security\AuthenticationRepositoryRDB
 
-    Centreon\Domain\Service\Interfaces\AuthenticationServiceInterface:
-        class: Centreon\Domain\Service\AuthenticationService
+    Centreon\Domain\Security\Interfaces\AuthenticationServiceInterface:
+        class: Centreon\Domain\Security\AuthenticationService
 
-    Centreon\Domain\Service\Interfaces\MonitoringServiceInterface:
-        class: Centreon\Domain\Service\MonitoringService
+    Centreon\Domain\Monitoring\Interfaces\MonitoringServiceInterface:
+        class: Centreon\Domain\Monitoring\MonitoringService
 
-    Centreon\Domain\Repository\Interfaces\AccessGroupRepositoryInterface:
-        class: Centreon\Infrastructure\Repository\AccessGroupRepositoryRDB
+    Centreon\Domain\Security\Interfaces\AccessGroupRepositoryInterface:
+        class: Centreon\Infrastructure\Security\AccessGroupRepositoryRDB
 
-    Centreon\Domain\Repository\Interfaces\MonitoringRepositoryInterface:
+    Centreon\Domain\Monitoring\Interfaces\MonitoringRepositoryInterface:
         alias: 'monitoring.repository'
 
     App\EventSubscriber\RequestEventSubscriber:
@@ -49,7 +49,7 @@ services:
 
     monitoring.repository:
         public: true
-        class: Centreon\Infrastructure\Repository\MonitoringRepositoryRDB
+        class: Centreon\Infrastructure\Monitoring\MonitoringRepositoryRDB
         calls:
             - method: setCentreonDbName
               arguments: ['%database_db%']

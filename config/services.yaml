@@ -48,8 +48,8 @@ services:
         class: App\Security\SessionAPIAuthenticator
         public: false
 
-    Centreon\Domain\EntityValidator:
-        class: Centreon\Domain\EntityValidator
+    Centreon\Domain\Entity\EntityValidator:
+        class: Centreon\Domain\Entity\EntityValidator
         arguments: ["%env(_CENTREON_PATH_)%config/packages/validator/validation.yaml"]
 
 imports:

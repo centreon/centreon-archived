@@ -1,8 +1,8 @@
 <?php
 
-namespace Centreon\Domain\Repository\Interfaces;
+namespace Centreon\Domain\Contact\Interfaces;
 
-use Centreon\Domain\Entity\Contact;
+use Centreon\Domain\Contact\Contact;
 
 interface ContactRepositoryInterface
 {

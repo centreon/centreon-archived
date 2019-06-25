@@ -1,14 +1,14 @@
 <?php
 declare(strict_types=1);
 
-namespace Centreon\Infrastructure\Repository;
+namespace Centreon\Infrastructure\Monitoring;
 
-use Centreon\Domain\Entity\AccessGroup;
-use Centreon\Domain\Entity\Host;
-use Centreon\Domain\Entity\Service;
-use Centreon\Domain\EntityCreator;
+use Centreon\Domain\Security\AccessGroup;
+use Centreon\Domain\Entity\EntityCreator;
+use Centreon\Domain\Monitoring\Host;
+use Centreon\Domain\Monitoring\Service;
 use Centreon\Domain\Pagination\Pagination;
-use Centreon\Domain\Repository\Interfaces\MonitoringRepositoryInterface;
+use Centreon\Domain\Monitoring\Interfaces\MonitoringRepositoryInterface;
 use Centreon\Infrastructure\DatabaseConnection;
 use \Exception;
 
@@ -211,11 +211,12 @@ class MonitoringRepositoryRDB implements MonitoringRepositoryInterface
             );
         }
 
-        /**
-         * We retrieve the services and put them in their associated hosts
-         */
-        $request2 =
-            'SELECT DISTINCT 
+        if (!empty($hosts)) {
+            /**
+             * We retrieve the services and put them in their associated hosts
+             */
+            $request2 =
+                'SELECT DISTINCT 
                 srv.service_id, srv.display_name, srv.description, srv.host_id
             FROM :dbstg.services srv
             INNER JOIN :dbstg.centreon_acl acl
@@ -226,39 +227,39 @@ class MonitoringRepositoryRDB implements MonitoringRepositoryInterface
               AND acg.acl_group_activate = \'1\'
               AND srv.enabled = 1';
 
-        $request2 = str_replace(
-            array(':dbstg', ':db'),
-            array($this->storageDbName, $this->centreonDbName),
-            $request2
-        );
+            $request2 = str_replace(
+                array(':dbstg', ':db'),
+                array($this->storageDbName, $this->centreonDbName),
+                $request2
+            );
 
-        $statement2 = $this->pdo->prepare($request2);
+            $statement2 = $this->pdo->prepare($request2);
 
-        if (false === $statement2->execute($hostIds)) {
-            throw new Exception('Bad SQL request');
-        }
+            if (false === $statement2->execute($hostIds)) {
+                throw new Exception('Bad SQL request');
+            }
 
-        while ($result = $statement2->fetch(\PDO::FETCH_ASSOC)) {
-            $service = (new Service())
-                ->setId((int)$result['service_id'])
-                ->setDisplayName($result['display_name'])
-                ->setDescription($result['description']);
+            while ($result = $statement2->fetch(\PDO::FETCH_ASSOC)) {
+                $service = (new Service())
+                    ->setId((int)$result['service_id'])
+                    ->setDisplayName($result['display_name'])
+                    ->setDescription($result['description']);
 
-            $hostId = (int)$result['host_id'];
-            foreach ($hosts as $host) {
-                if ($host->getId() === $hostId) {
-                    $host->addService($service);
-                    break;
+                $hostId = (int)$result['host_id'];
+                foreach ($hosts as $host) {
+                    if ($host->getId() === $hostId) {
+                        $host->addService($service);
+                        break;
+                    }
                 }
             }
         }
-
         return $hosts;
     }
 
     public function findOneHost(int $hostId): ?Host
     {
-        // TODO: Implement findOneHost() method.
+        return null;
     }
 
     /**
@@ -297,20 +298,8 @@ class MonitoringRepositoryRDB implements MonitoringRepositoryInterface
 
         $statement = $this->pdo->prepare($request);
         $statement->bindValue(':service_id', $serviceId, \PDO::PARAM_INT);
-        if ($statement->execute($this->accessGroups)) {
-            $service = null;
-            while ($result = $statement->fetch(\PDO::FETCH_ASSOC)) {
-                if (is_null($service)) {
-                    $service = $this->createService($result);
-                }
-                $host = (new Host())
-                    ->setId((int)$result['host_id'])
-                    ->setName($result['name'])
-                    ->setAlias($result['alias']);
-                $service->addHost($host);
-            }
-
-            return $service;
+        if ($statement->execute()) {
+            return $this->createService($statement->fetch(\PDO::FETCH_ASSOC));
         } else {
             throw new Exception('Bad SQL request');
         }
@@ -440,29 +429,12 @@ class MonitoringRepositoryRDB implements MonitoringRepositoryInterface
         $services = [];
 
         while ($result = $statement->fetch(\PDO::FETCH_ASSOC)) {
-            $uniqueHostId = (int) $result['host_id'];
-            if (!in_array($uniqueHostId, $hostIds)) {
-                $hostIds[] = $uniqueHostId;
-            }
-            $serviceId = (int)$result['service_id'];
             $host = (new Host())
                 ->setId((int)$result['host_id'])
                 ->setName($result['host_name'])
                 ->setAlias($result['host_alias']);
-
-            $isServiceAlreadyInserted = false;
-            foreach ($services as $service) {
-                if ($service->getId() === $serviceId) {
-                    $service->addHost($host);
-                    $isServiceAlreadyInserted = true;
-                    break;
-                }
-            }
-
-            if (!$isServiceAlreadyInserted) {
-                $services[] = ($this->createService($result))
-                    ->addHost($host);
-            }
+            $services[] = ($this->createService($result))
+                ->setHost($host);
         }
 
         return $services;

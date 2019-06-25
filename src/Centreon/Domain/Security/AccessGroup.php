@@ -1,6 +1,6 @@
 <?php
 
-namespace Centreon\Domain\Entity;
+namespace Centreon\Domain\Security;
 
 class AccessGroup
 {

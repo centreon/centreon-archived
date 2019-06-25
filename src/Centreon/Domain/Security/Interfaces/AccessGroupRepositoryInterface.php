@@ -1,10 +1,9 @@
 <?php
 
-namespace Centreon\Domain\Repository\Interfaces;
+namespace Centreon\Domain\Security\Interfaces;
 
 use Centreon\Domain\Entity\AccessGroup;
-use Centreon\Domain\Entity\Contact;
-use Centreon\Domain\Entity\Interfaces\ContactInterface;
+use Centreon\Domain\Contact\Interfaces\ContactInterface;
 
 interface AccessGroupRepositoryInterface
 {

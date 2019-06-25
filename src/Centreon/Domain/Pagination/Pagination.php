@@ -81,6 +81,8 @@ class Pagination
      * Create an instance of the Pagination class and configure it with the
      * data found in the $ _GET parameters.
      * order_by=desc&limit=10&page=1&sort_by=item_name&search={"item_name": "my_item"}
+     * @param array $parameters
+     * @throws \Exception
      */
     public function init(array $parameters)
     {

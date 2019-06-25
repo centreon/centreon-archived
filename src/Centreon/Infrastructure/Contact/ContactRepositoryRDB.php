@@ -1,9 +1,9 @@
 <?php
 
-namespace Centreon\Infrastructure\Repository;
+namespace Centreon\Infrastructure\Contact;
 
-use Centreon\Domain\Entity\Contact;
-use Centreon\Domain\Repository\Interfaces\ContactRepositoryInterface;
+use Centreon\Domain\Contact\Contact;
+use Centreon\Domain\Contact\Interfaces\ContactRepositoryInterface;
 use Centreon\Infrastructure\DatabaseConnection;
 
 final class ContactRepositoryRDB implements ContactRepositoryInterface
@@ -75,8 +75,8 @@ final class ContactRepositoryRDB implements ContactRepositoryInterface
         );
         $statement->bindValue(':session_id', $sessionId, \PDO::PARAM_STR);
         if ($statement->execute()
-            && ($result = $statement->fetch(\PDO::FETCH_ASSOC)))
-        {
+            && ($result = $statement->fetch(\PDO::FETCH_ASSOC))
+        ) {
             $contact = $this->createContact($result);
             return $contact;
         } else {

@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace Centreon\Domain;
+namespace Centreon\Domain\Entity;
 
 use Centreon\Domain\Annotation\EntityDescriptor;
 use Doctrine\Common\Annotations\AnnotationReader;

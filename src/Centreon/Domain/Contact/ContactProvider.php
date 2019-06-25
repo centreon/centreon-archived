@@ -1,9 +1,9 @@
 <?php
 
-namespace Centreon;
+namespace Centreon\Domain\Contact;
 
-use Centreon\Domain\Entity\Contact;
-use Centreon\Domain\Repository\Interfaces\ContactRepositoryInterface;
+use Centreon\Domain\Contact\Contact;
+use Centreon\Domain\Contact\Interfaces\ContactRepositoryInterface;
 use Symfony\Component\Security\Core\Exception\UsernameNotFoundException;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\UserProviderInterface;

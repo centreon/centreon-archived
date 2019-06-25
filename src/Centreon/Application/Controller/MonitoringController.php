@@ -3,9 +3,9 @@ declare(strict_types=1);
 
 namespace Centreon\Application\Controller;
 
-use Centreon\Domain\Entity\Contact;
+use Centreon\Domain\Contact\Contact;
 use Centreon\Domain\Pagination\Pagination;
-use Centreon\Domain\Service\Interfaces\MonitoringServiceInterface;
+use Centreon\Domain\Monitoring\Interfaces\MonitoringServiceInterface;
 use FOS\RestBundle\Context\Context;
 use FOS\RestBundle\Controller\AbstractFOSRestController;
 use FOS\RestBundle\View\View;
@@ -27,7 +27,6 @@ class MonitoringController extends AbstractFOSRestController
     }
 
    /**
-     * @IsGranted("ROLE_USER")
      * @Rest\Get("/monitoring/services/{serviceId}")
      * @param int $serviceId
      * @return View
@@ -64,7 +63,8 @@ class MonitoringController extends AbstractFOSRestController
             ->findServices($pagination);
 
         $context = (new Context())
-            ->setGroups(['service_main', 'Default']);
+            ->setGroups(['Default', 'service_main'])
+            ->enableMaxDepth();
 
         return $this->view(
             [

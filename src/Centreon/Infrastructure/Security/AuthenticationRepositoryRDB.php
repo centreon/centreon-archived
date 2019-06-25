@@ -1,12 +1,12 @@
 <?php
 
 
-namespace Centreon\Infrastructure\Repository;
+namespace Centreon\Infrastructure\Security;
 
 use Centreon\Domain\Entity\AuthenticationToken;
 use Centreon\Domain\Entity\Session;
-use Centreon\Domain\EntityCreator;
-use Centreon\Domain\Repository\Interfaces\AuthenticationRepositoryInterface;
+use Centreon\Domain\Entity\EntityCreator;
+use Centreon\Domain\Security\Interfaces\AuthenticationRepositoryInterface;
 use Centreon\Infrastructure\DatabaseConnection;
 
 class AuthenticationRepositoryRDB implements AuthenticationRepositoryInterface

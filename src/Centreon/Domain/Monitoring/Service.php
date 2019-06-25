@@ -1,7 +1,7 @@
 <?php
+declare(strict_types=1);
 
-
-namespace Centreon\Domain\Entity;
+namespace Centreon\Domain\Monitoring;
 
 use JMS\Serializer\Annotation as Serializer;
 
@@ -12,6 +12,12 @@ class Service
      * @var int Unique index
      */
     private $id;
+
+    /**
+     * @Serializer\Groups({"Default", "service_main", "service_full"})
+     * @var Host
+     */
+    private $host;
 
     /**
      * @Serializer\Groups({"Default", "service_main", "service_full"})
@@ -102,12 +108,6 @@ class Service
      * @Serializer\Groups({"service_full"})
      */
     private $lastHardStateChange;
-
-    /**
-     * @Serializer\Groups({"service_main", "service_full"})
-     * @var Host[]
-     */
-    private $hosts = [];
 
     /**
      * @return int
@@ -398,30 +398,20 @@ class Service
     }
 
     /**
-     * @return Host[]
+     * @return Host
      */
-    public function getHosts(): array
+    public function getHost(): Host
     {
-        return $this->hosts;
-    }
-
-    /**
-     * @param Host[] $hosts
-     * @return Service
-     */
-    public function setHosts(array $hosts): Service
-    {
-        $this->hosts = $hosts;
-        return $this;
+        return $this->host;
     }
 
     /**
      * @param Host $host
      * @return Service
      */
-    public function addHost(Host $host): Service
+    public function setHost(Host $host): Service
     {
-        $this->hosts[] = $host;
+        $this->host = $host;
         return $this;
     }
 }

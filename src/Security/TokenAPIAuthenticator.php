@@ -4,8 +4,8 @@
 namespace App\Security;
 
 use Centreon\Domain\Exception\ContactDisabledException;
-use Centreon\Domain\Repository\Interfaces\AuthenticationRepositoryInterface;
-use Centreon\Domain\Repository\Interfaces\ContactRepositoryInterface;
+use Centreon\Domain\Security\Interfaces\AuthenticationRepositoryInterface;
+use Centreon\Domain\Contact\Interfaces\ContactRepositoryInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;

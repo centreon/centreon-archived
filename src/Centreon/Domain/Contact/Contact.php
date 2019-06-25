@@ -1,8 +1,8 @@
 <?php
 
-namespace Centreon\Domain\Entity;
+namespace Centreon\Domain\Contact;
 
-use Centreon\Domain\Entity\Interfaces\ContactInterface;
+use Centreon\Domain\Contact\Interfaces\ContactInterface;
 use Symfony\Component\Security\Core\Role\Role;
 use Symfony\Component\Security\Core\User\UserInterface;
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace Centreon\Domain\Repository\Interfaces;
+namespace Centreon\Domain\Security\Interfaces;
 
 use Centreon\Domain\Entity\AuthenticationToken;
 use Centreon\Domain\Entity\Session;

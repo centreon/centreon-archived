@@ -1,10 +1,10 @@
 <?php
 
-namespace Centreon\Domain\Repository\Interfaces;
+namespace Centreon\Domain\Monitoring\Interfaces;
 
-use Centreon\Domain\Entity\AccessGroup;
-use Centreon\Domain\Entity\Host;
-use Centreon\Domain\Entity\Service;
+use Centreon\Domain\Security\AccessGroup;
+use Centreon\Domain\Monitoring\Host;
+use Centreon\Domain\Monitoring\Service;
 use Centreon\Domain\Pagination\Pagination;
 
 interface MonitoringRepositoryInterface

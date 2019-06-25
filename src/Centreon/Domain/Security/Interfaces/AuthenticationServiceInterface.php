@@ -1,10 +1,9 @@
 <?php
 
 
-namespace Centreon\Domain\Service\Interfaces;
+namespace Centreon\Domain\Security\Interfaces;
 
-
-use Centreon\Domain\Entity\Contact;
+use Centreon\Domain\Contact\Contact;
 
 interface AuthenticationServiceInterface
 {

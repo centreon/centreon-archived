@@ -57,9 +57,10 @@ class RequestEventSubscriber implements EventSubscriberInterface
     }
 
     /**
-     * Create a Pagination class to use later in service or repositories
+     * Create a Pagination class to use later in service or repositories.
      *
      * @param GetResponseEvent $request
+     * @throws \Exception
      */
     public function createPagination(GetResponseEvent $request):void
     {

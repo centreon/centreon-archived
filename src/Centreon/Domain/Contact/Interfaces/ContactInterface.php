@@ -1,8 +1,6 @@
 <?php
 
-
-namespace Centreon\Domain\Entity\Interfaces;
-
+namespace Centreon\Domain\Contact\Interfaces;
 
 interface ContactInterface
 {

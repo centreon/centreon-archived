@@ -1,0 +1,4 @@
+centreonBam:
+    resource: ../../src/CentreonBam/Application/Controller/
+    type: annotation
+    prefix: /centreon/apiv2

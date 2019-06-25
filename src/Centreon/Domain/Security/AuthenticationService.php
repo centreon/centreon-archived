@@ -1,11 +1,11 @@
 <?php
 
-namespace Centreon\Domain\Service;
+namespace Centreon\Domain\Security;
 
-use Centreon\Domain\Entity\Contact;
-use Centreon\Domain\Repository\Interfaces\AuthenticationRepositoryInterface;
-use Centreon\Domain\Repository\Interfaces\ContactRepositoryInterface;
-use Centreon\Domain\Service\Interfaces\AuthenticationServiceInterface;
+use Centreon\Domain\Contact\Contact;
+use Centreon\Domain\Security\Interfaces\AuthenticationRepositoryInterface;
+use Centreon\Domain\Contact\Interfaces\ContactRepositoryInterface;
+use Centreon\Domain\Security\Interfaces\AuthenticationServiceInterface;
 use Centreon\Infrastructure\Service\Exception\NotFoundException;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
 
