@@ -41,7 +41,7 @@ class Contact implements UserInterface, ContactInterface
      */
     private $isActive;
     /**
-     * @var string Authentication Token
+     * @var string|null Authentication Token
      */
     private $token;
     /**
@@ -199,18 +199,18 @@ class Contact implements UserInterface, ContactInterface
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getToken(): string
+    public function getToken(): ?string
     {
         return $this->token;
     }
 
     /**
-     * @param string $token
+     * @param string|null $token
      * @return self
      */
-    public function setToken(string $token): self
+    public function setToken(?string $token): self
     {
         $this->token = $token;
         return $this;
