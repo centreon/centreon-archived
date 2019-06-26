@@ -40,18 +40,102 @@ include_once _CENTREON_PATH_ . "/www/class/centreonDB.class.php";
 include_once _CENTREON_PATH_ . "/www/class/centreonLDAP.class.php";
 include_once _CENTREON_PATH_ . "/www/class/centreonMeta.class.php";
 include_once _CENTREON_PATH_ . "/www/class/centreonContactgroup.class.php";
+include_once _CENTREON_PATH_ . "/www/class/centreonLog.class.php";
 
 $centreonDbName = $conf_centreon['db'];
+$centreonLog = new CentreonLog();
 
+/**
+ * method to send a formatted message before exiting the script
+ * @param $msg
+ */
 function programExit($msg)
 {
     echo "[" . date("Y-m-d H:i:s") . "] " . $msg . "\n";
     exit;
 }
 
+/**
+ * method to set the `running` value to 0 to remove the DB's virtual lock
+ * @param integer $appId , the process Id
+ */
+function removeLock(int $appId):void
+{
+    global $pearDB;
+
+    if ($appId === 0) {
+        programExit("Error the process Id can't be null.");
+    }
+    try {
+        $stmt = $pearDB->prepare(
+            "UPDATE cron_operation SET running = '0'
+            WHERE id = :appId"
+        );
+        $pearDB->beginTransaction();
+        $stmt->bindValue(':appId', $appId, \PDO::PARAM_INT);
+        $stmt->execute();
+        $pearDB->commit();
+    } catch (\PDOException $e) {
+        $pearDB->rollBack();
+        programExit("Error can't unlock the process in the cron_operation table.");
+    }
+}
+
+/**
+ * method to set the `running` value to 1 to set a virtual lock on the DB
+ * @param integer $appId , the process Id
+ */
+function putALock(int $appId):void
+{
+    global $pearDB;
+
+    if ($appId === 0) {
+        programExit("Error the process Id can't be null.");
+    }
+    try {
+        $stmt = $pearDB->prepare(
+            "UPDATE cron_operation SET running = '1', time_launch = :currentTime
+            WHERE id = :appId"
+        );
+        $pearDB->beginTransaction();
+        $stmt->bindValue(':appId', $appId, \PDO::PARAM_INT);
+        $stmt->bindValue(':currentTime', time(), \PDO::PARAM_INT);
+        $stmt->execute();
+        $pearDB->commit();
+    } catch (\PDOException $e) {
+        $pearDB->rollBack();
+        programExit("Error can't lock the process in the cron_operation table.");
+    }
+}
+
+/**
+ * method to get centAcl state in the DB
+ * @return array $data
+ */
+function getCentAclRunningState(): array
+{
+    global $pearDB;
+    $data = [];
+
+    try {
+        $dbResult = $pearDB->query(
+            "SELECT id, running FROM cron_operation WHERE name LIKE 'centAcl.php'"
+        );
+        $data = $dbResult->fetch();
+    } catch (\PDOException $e) {
+        programExit("Error can't check state while process is running.");
+    }
+
+    return $data;
+}
+
+
+/**
+ * CentAcl script
+ */
 $nbProc = exec('ps -o args -p $(pidof -o $$ -o $PPID -o %PPID -x php || echo 1000000) | grep -c ' . __FILE__);
 if ((int) $nbProc > 0) {
-    programExit("More than one centAcl.php process currently running. Going to exit...");
+    programExit("More than one centAcl.php process is currently running. Going to exit...");
 }
 
 ini_set('max_execution_time', 0);
@@ -71,57 +155,42 @@ try {
     $metaObj = new CentreonMeta($pearDB);
     $cgObj = new CentreonContactgroup($pearDB);
 
-    /*
-     * Lock in MySQL
-     */
-    try {
-        $dbResult = $pearDB->query(
-            "SELECT id, running FROM cron_operation WHERE name LIKE 'centAcl.php'"
-        );
-    } catch (\PDOException $e) {
-        print "Error can't check when process is running.";
-        exit(1);
-    }
-
-    $data = $dbResult->fetch();
-
-    $is_running = $data["running"];
-    $appId = (int)$data["id"];
+    // checking the state of the Cron
+    $data = getCentAclRunningState();
     $beginTime = time();
 
-    if (!$data || count($data) == 0) {
+    if (empty($data)) {
         try {
+            // at first run (eg: after the install), data may be missing.
+            $pearDB->beginTransaction();
             $pearDB->query(
                 "INSERT INTO cron_operation (name, system, activate) " .
                 "VALUES ('centAcl.php', '1', '1')"
             );
-            $dbResult = $pearDB->query(
-                "SELECT id, running FROM cron_operation WHERE name LIKE 'centAcl.php'"
-            );
+            $pearDB->commit();
         } catch (\PDOException $e) {
-            print "Error can't check when process is running.";
-            exit(1);
+            $pearDB->rollBack();
+            programExit("Error can't insert centAcl values in the `cron_operation` table.");
         }
-        $data = $dbResult->fetch();
-        $appId = (int)$data["id"];
+        $data = getCentAclRunningState();
+        $appId = (int)$data["id"] ?? 0;
         $is_running = 0;
+    } else {
+        $is_running = $data["running"];
+        $appId = (int)$data["id"];
     }
 
+    /*
+     * Lock in MySQL (ie: by setting the `running` value to 1)
+     */
     if ($is_running == 0) {
-        $dbResult = $pearDB->prepare(
-            "UPDATE cron_operation SET running = '1', time_launch = '" . time() .
-            "' WHERE id = :appId"
-        );
-        $dbResult->bindValue(':appId', $appId, \PDO::PARAM_INT);
-        $dbResult->execute();
+        putALock($appId);
     } else {
         if ($nbProc <= 1) {
             $errorMessage = "According to DB another instance of centAcl.php is already running and I found " .
                 $nbProc . " process...\n";
-            $errorMessage .= "Executing query: UPDATE cron_operation SET running = 0 WHERE id =  $appId";
-            $stmt = $pearDB->prepare("UPDATE cron_operation SET running = '0' WHERE id = :appId");
-            $stmt->bindValue(':appId', $appId, \PDO::PARAM_INT);
-            $stmt->execute();
+            $errorMessage .= "Correcting the state in the DB, by setting the `running` value to 0 for id =  $appId";
+            removeLock($appId);
         } else {
             $errorMessage = "centAcl marked as running. Exiting...";
         }
@@ -133,31 +202,37 @@ try {
     /** **********************************************
      * Sync ACL with each ldap depending on last sync hour and own synchronization interval
      */
-    $ldapConf = $pearDB->query(
-        "SELECT auth.ar_id, auth.ar_sync_base_date, info.ari_value
+    $reSync = false;
+    try {
+        $ldapConf = $pearDB->query(
+            "SELECT auth.ar_id, auth.ar_sync_base_date, info.ari_value
         FROM auth_ressource auth INNER JOIN auth_ressource_info info ON auth.ar_id = info.ar_id
         WHERE auth.ar_enable = '1' AND info.ari_name = 'ldap_sync_interval'"
-    );
-    $reSync = false;
-    while ($ldapRow = $ldapConf->fetch()) {
-        $currentTime = time();
-        if ($ldapRow['ar_sync_base_date'] + 3600 * $ldapRow['ari_value'] <= $currentTime) {
-            $reSync = true;
-            $updateSyncTime = $pearDB->prepare(
-                "UPDATE auth_ressource SET ar_sync_base_date = :currentTime
-                WHERE ar_id = :arId"
-            );
-            $updateSyncTime->bindValue(':currentTime', $currentTime, \PDO::PARAM_INT);
-            $updateSyncTime->bindValue(':arId', (int)$ldapRow['ar_id'], \PDO::PARAM_INT);
-            $updateSyncTime->execute();
-        }
+        );
 
+        while ($ldapRow = $ldapConf->fetch()) {
+            $currentTime = time();
+            if ($ldapRow['ar_sync_base_date'] + 3600 * $ldapRow['ari_value'] <= $currentTime) {
+                $reSync = true;
+                $updateSyncTime = $pearDB->prepare(
+                    "UPDATE auth_ressource SET ar_sync_base_date = :currentTime
+                    WHERE ar_id = :arId"
+                );
+                $pearDB->beginTransaction();
+                $updateSyncTime->bindValue(':currentTime', $currentTime, \PDO::PARAM_INT);
+                $updateSyncTime->bindValue(':arId', (int)$ldapRow['ar_id'], \PDO::PARAM_INT);
+                $updateSyncTime->execute();
+                $pearDB->commit();
+            }
+        }
+    } catch (\PDOException $e) {
+        $pearDB->rollBack();
+        programExit("Error when updating LDAP's reference date for next synchronization");
     }
     if ($reSync === true) {
         // @TODO : Synchronize LDAP with contacts data in background to avoid it at login
         $cgObj->syncWithLdap();
     }
-
 
     /** **********************************************
      * Remove data from old groups (deleted groups)
@@ -165,8 +240,18 @@ try {
     $aclGroupToDelete = "SELECT DISTINCT acl_group_id " .
         "FROM " . $centreonDbName . ".acl_groups WHERE acl_group_activate = '1'";
     $aclGroupToDelete2 = "SELECT DISTINCT acl_group_id FROM " . $centreonDbName . ".acl_res_group_relations";
-    $pearDBO->query("DELETE FROM centreon_acl WHERE group_id NOT IN (" . $aclGroupToDelete . ")");
-    $pearDBO->query("DELETE FROM centreon_acl WHERE group_id NOT IN (" . $aclGroupToDelete2 . ")");
+    try {
+        $pearDB->beginTransaction();
+        $pearDBO->query("DELETE FROM centreon_acl WHERE group_id NOT IN (" . $aclGroupToDelete . ")");
+        $pearDBO->query("DELETE FROM centreon_acl WHERE group_id NOT IN (" . $aclGroupToDelete2 . ")");
+        $pearDB->commit();
+    } catch (\PDOException $e) {
+        $pearDB->rollBack();
+        $centreonLog->insertLog(
+            2,
+            "CentACL CRON: failed to delete old groups relations"
+        );
+    }
 
     /** ***********************************************
      * Check if some ACL have global options selected for
@@ -184,99 +269,133 @@ try {
         /**
          * Add Hosts
          */
-        if ($row['all_hosts']) {
-            $res1 = $pearDB->prepare(
-                "SELECT host_id FROM host WHERE host_id NOT IN (SELECT DISTINCT host_host_id
+        try {
+            if ($row['all_hosts']) {
+                $res1 = $pearDB->prepare(
+                    "SELECT host_id FROM host WHERE host_id NOT IN (SELECT DISTINCT host_host_id
                 FROM acl_resources_host_relations WHERE acl_res_id = :aclResId)
                 AND host_register = '1'"
-            );
-            $res1->bindValue(':aclResId', $row['acl_res_id'], \PDO::PARAM_INT);
-            $res1->execute();
-
-            if ($res1->rowCount()) {
-                // set acl_resources.changed flag to 1
-                $aclResourcesUpdated = true;
-            }
-
-            while ($rowData = $res1->fetch()) {
-                $stmt = $pearDB->prepare(
-                    "INSERT INTO acl_resources_host_relations (host_host_id, acl_res_id)
-                    VALUES (:hostId, :aclResId)"
                 );
-                $stmt->bindValue(':hostId', $rowData['host_id'], \PDO::PARAM_INT);
-                $stmt->bindValue(':aclResId', $row['acl_res_id'], \PDO::PARAM_INT);
-                $stmt->execute();
+                $res1->bindValue(':aclResId', $row['acl_res_id'], \PDO::PARAM_INT);
+                $res1->execute();
+
+                if ($res1->rowCount()) {
+                    // set acl_resources.changed flag to 1
+                    $aclResourcesUpdated = true;
+                }
+
+                $pearDB->beginTransaction();
+                while ($rowData = $res1->fetch()) {
+                    $stmt = $pearDB->prepare(
+                        "INSERT INTO acl_resources_host_relations (host_host_id, acl_res_id)
+                    VALUES (:hostId, :aclResId)"
+                    );
+                    $stmt->bindValue(':hostId', $rowData['host_id'], \PDO::PARAM_INT);
+                    $stmt->bindValue(':aclResId', $row['acl_res_id'], \PDO::PARAM_INT);
+                    $stmt->execute();
+                }
+                $pearDB->commit();
+                $res1->closeCursor();
             }
-            $res1->closeCursor();
+        } catch (\PDOException $e) {
+            $pearDB->rollBack();
+            $centreonLog->insertLog(
+                2,
+                "CentACL CRON: failed to add new host"
+            );
         }
+
 
         /**
          * Add Hostgroups
          */
-        if ($row['all_hostgroups']) {
-            $res1 = $pearDB->prepare(
-                "SELECT hg_id FROM hostgroup
-                WHERE hg_id NOT IN (
-                    SELECT DISTINCT hg_hg_id FROM acl_resources_hg_relations
-                    WHERE acl_res_id = :aclResId)"
-            );
-            $res1->bindValue(':aclResId', $row['acl_res_id'], \PDO::PARAM_INT);
-            $res1->execute();
-
-
-            if ($res1->rowCount()) {
-                // set acl_resources.changed flag to 1
-                $aclResourcesUpdated = true;
-            }
-
-            while ($rowData = $res1->fetch()) {
-                $stmt = $pearDB->prepare(
-                    "INSERT INTO acl_resources_hg_relations (hg_hg_id, acl_res_id)
-                    VALUES (:hgId, :aclResId)"
+        try {
+            if ($row['all_hostgroups']) {
+                $res1 = $pearDB->prepare(
+                    "SELECT hg_id FROM hostgroup
+                    WHERE hg_id NOT IN (
+                        SELECT DISTINCT hg_hg_id FROM acl_resources_hg_relations
+                        WHERE acl_res_id = :aclResId)"
                 );
-                $stmt->bindValue(':hgId', $rowData['hg_id'], \PDO::PARAM_INT);
-                $stmt->bindValue(':aclResId', $row['acl_res_id'], \PDO::PARAM_INT);
-                $stmt->execute();
+                $res1->bindValue(':aclResId', $row['acl_res_id'], \PDO::PARAM_INT);
+                $res1->execute();
+
+
+                if ($res1->rowCount()) {
+                    // set acl_resources.changed flag to 1
+                    $aclResourcesUpdated = true;
+                }
+
+                $pearDB->beginTransaction();
+                while ($rowData = $res1->fetch()) {
+                    $stmt = $pearDB->prepare(
+                        "INSERT INTO acl_resources_hg_relations (hg_hg_id, acl_res_id)
+                        VALUES (:hgId, :aclResId)"
+                    );
+                    $stmt->bindValue(':hgId', $rowData['hg_id'], \PDO::PARAM_INT);
+                    $stmt->bindValue(':aclResId', $row['acl_res_id'], \PDO::PARAM_INT);
+                    $stmt->execute();
+                }
+                $pearDB->commit();
+                $res1->closeCursor();
             }
-            $res1->closeCursor();
+        } catch (\PDOException $e) {
+            $pearDB->rollBack();
+            $centreonLog->insertLog(
+                2,
+                "CentACL CRON: failed to add new hostgroups"
+            );
         }
 
         /**
          * Add Servicesgroups
          */
-        if ($row['all_servicegroups']) {
-            $res1 = $pearDB->prepare(
-                "SELECT sg_id FROM servicegroup 
-                WHERE sg_id NOT IN (
-                    SELECT DISTINCT sg_id FROM acl_resources_sg_relations
-                    WHERE acl_res_id = :aclResId)"
-            );
-            $res1->bindValue(':aclResId', $row['acl_res_id'], \PDO::PARAM_INT );
-            $res1->execute();
+        try {
+            if ($row['all_servicegroups']) {
+                $res1 = $pearDB->prepare(
+                    "SELECT sg_id FROM servicegroup 
+                    WHERE sg_id NOT IN (
+                        SELECT DISTINCT sg_id FROM acl_resources_sg_relations
+                        WHERE acl_res_id = :aclResId)"
+                );
+                $res1->bindValue(':aclResId', $row['acl_res_id'], \PDO::PARAM_INT);
+                $res1->execute();
 
-            if ($res1->rowCount()) {
-                // set acl_resources.changed flag to 1
-                $aclResourcesUpdated = true;
+                if ($res1->rowCount()) {
+                    // set acl_resources.changed flag to 1
+                    $aclResourcesUpdated = true;
+                }
+
+                $pearDB->beginTransaction();
+                while ($rowData = $res1->fetch()) {
+                    $stmt = $pearDB->prepare(
+                        "INSERT INTO acl_resources_sg_relations (sg_id, acl_res_id)
+                        VALUES (:sgIg, :aclResId)"
+                    );
+                    $stmt->bindValue(':sgId', $rowData['sg_id'], \PDO::PARAM_INT);
+                    $stmt->bindValue(':aclResId', $row['acl_res_id'], \PDO::PARAM_INT);
+                    $stmt->execute();
+                }
+                $pearDB->commit();
+                $res1->closeCursor();
             }
 
-            while ($rowData = $res1->fetch()) {
+            // as resources has changed we need to save it in the DB
+            $pearDB->beginTransaction();
+            if ($aclResourcesUpdated) {
                 $stmt = $pearDB->prepare(
-                    "INSERT INTO acl_resources_sg_relations (sg_id, acl_res_id)
-                    VALUES (:sgIg, :aclResId)"
+                    "UPDATE acl_resources SET changed = '1' WHERE acl_res_id = :aclResId"
                 );
-                $stmt->bindValue(':sgId', $rowData['sg_id'], \PDO::PARAM_INT);
                 $stmt->bindValue(':aclResId', $row['acl_res_id'], \PDO::PARAM_INT);
                 $stmt->execute();
+                $pearDB->commit();
             }
-            $res1->closeCursor();
-        }
-
-        if ($aclResourcesUpdated) {
-            $stmt = $pearDB->prepare(
-                "UPDATE acl_resources SET changed = '1' WHERE acl_res_id = :aclResId"
+        } catch (\PDOException $e) {
+            $pearDB->rollBack();
+            $centreonLog->insertLog(
+                2,
+                "CentACL CRON: failed to add new servicegroup"
             );
-            $stmt->bindValue(':aclResId', $row['acl_res_id'], \PDO::PARAM_INT);
-            $stmt->execute();
         }
     }
     $res->closeCursor();
