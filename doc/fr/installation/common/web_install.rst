@@ -10,30 +10,30 @@ Configuration
 Connectez-vous à l'interface web via http://[ADRESSE_IP_DE_VOTRE_SERVEUR]/centreon.
 L'assistant de configuration de Centreon s'affiche, cliquez sur **Next**.
 
-.. image :: /images/guide_utilisateur/acentreonwelcome.png
+.. image:: /images/guide_utilisateur/acentreonwelcome.png
    :align: center
    :scale: 65%
 
 L'assistant de configuration de Centreon contrôle la disponibilité des modules, cliquez sur **Next**.
 
-.. image :: /images/guide_utilisateur/acentreoncheckmodules.png
+.. image:: /images/guide_utilisateur/acentreoncheckmodules.png
    :align: center
 
 Cliquez sur **Next**.
 
-.. image :: /images/guide_utilisateur/amonitoringengine2.png
+.. image:: /images/guide_utilisateur/amonitoringengine2.png
    :align: center
    :scale: 65%
 
 Cliquez sur **Next**.
 
-.. image :: /images/guide_utilisateur/abrokerinfo2.png
+.. image:: /images/guide_utilisateur/abrokerinfo2.png
    :align: center
    :scale: 65%
 
 Définissez les informations concernant l'utilisateur admin, cliquez sur **Next**.
 
-.. image :: /images/guide_utilisateur/aadmininfo.png
+.. image:: /images/guide_utilisateur/aadmininfo.png
    :align: center
    :scale: 65%
 
@@ -43,7 +43,7 @@ Dans notre cas, nous avons uniquement besoin de définir un mot de passe pour l'
 
 Cliquez sur **Next**.
 
-.. image :: /images/guide_utilisateur/adbinfo.png
+.. image:: /images/guide_utilisateur/adbinfo.png
    :align: center
    :scale: 65%
 
@@ -70,7 +70,7 @@ L'assistant de configuration configure les bases de données.
 
 Cliquez sur **Next**.
 
-.. image :: /images/guide_utilisateur/adbconf.png
+.. image:: /images/guide_utilisateur/adbconf.png
    :align: center
    :scale: 65%
 
@@ -78,13 +78,13 @@ L'assistant de configuration propose ensuite d'installer les modules présents s
 
 Cliquez sur **Install**.
 
-.. image :: /images/guide_utilisateur/module_installationa.png
+.. image:: /images/guide_utilisateur/module_installationa.png
    :align: center
    :scale: 65%
 
 Une fois les modules installés, cliquez sur **Next**.
 
-.. image :: /images/guide_utilisateur/module_installationb.png
+.. image:: /images/guide_utilisateur/module_installationb.png
    :align: center
    :scale: 65%
 
@@ -93,7 +93,7 @@ de Centreon. Si votre plate-forme est connectée à Internet vous disposez
 des dernières informations, sinon l’information présente dans cette version
 sera proposée.
 
-.. image :: /images/guide_utilisateur/aendinstall.png
+.. image:: /images/guide_utilisateur/aendinstall.png
    :align: center
    :scale: 65%
 
@@ -101,16 +101,6 @@ L’installation est terminée, cliquez sur **Finish**.
 
 Vous pouvez maintenant vous connecter.
 
-.. image :: /images/guide_utilisateur/aconnection.png
+.. image:: /images/guide_utilisateur/aconnection.png
    :align: center
    :scale: 65%
-
-Dans un premier temps, il est nécessaire de passer l'interface en version française. Pour cela :
-
-#. Cliquez sur votre profil utilisateur en haut à droite de l'interface
-#. Cliquez sur le bouton **Edit profile**
-#. Dans le champ **Language**, remplacez **en_US** par **fr_FR.UTF-8**
-#. Cliquez sur **Save**
-
-.. image :: /images/guide_utilisateur/alanguage.png
-   :align: center

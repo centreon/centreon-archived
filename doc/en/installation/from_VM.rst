@@ -43,6 +43,9 @@ additional oerations to be performed. **It is imperative that you complete the i
 .. note::
     To remove this message, delete the **/etc/profile.d/centreon.sh** file.
 
+Go to the :ref:`quick start<quickstart>` chapter to configure your first
+monitoring.
+
 ******
 Poller
 ******

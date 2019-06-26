@@ -10,31 +10,31 @@ Configuration
 Log in to Centreon web interface via the URL: http://[SERVER_IP]/centreon.
 The Centreon setup wizard is displayed. Click on **Next**.
 
-.. image :: /images/user/acentreonwelcome.png
+.. image:: /images/user/acentreonwelcome.png
    :align: center
    :scale: 85%
 
 The Centreon setup wizard checks the availability of the modules. Click on **Next**.
 
-.. image :: /images/user/acentreoncheckmodules.png
+.. image:: /images/user/acentreoncheckmodules.png
    :align: center
    :scale: 85%
 
 Click on **Next**.
 
-.. image :: /images/user/amonitoringengine2.png
+.. image:: /images/user/amonitoringengine2.png
    :align: center
    :scale: 85%
 
 Click on **Next**.
 
-.. image :: /images/user/abrokerinfo2.png
+.. image:: /images/user/abrokerinfo2.png
    :align: center
    :scale: 85%
 
 Provide the information on the admin user, then click on **Next**.
 
-.. image :: /images/user/aadmininfo.png
+.. image:: /images/user/aadmininfo.png
    :align: center
    :scale: 85%
 
@@ -42,7 +42,7 @@ By default, the *localhost* server is defined, the database root user is set to 
 If you use a remote database server, change these entries.
 In this case, you only need to define a password for the user accessing the Centreon databases, i.e., *Centreon*. Click on **Next**.
 
-.. image :: /images/user/adbinfo.png
+.. image:: /images/user/adbinfo.png
    :align: center
    :scale: 85%
 
@@ -69,7 +69,7 @@ In this case, you only need to define a password for the user accessing the Cent
 
 The Centreon setup wizard configures the databases. Click on **Next**.
 
-.. image :: /images/user/adbconf.png
+.. image:: /images/user/adbconf.png
    :align: center
    :scale: 85%
 
@@ -77,13 +77,13 @@ You will now be able to install the Centreon server modules.
 
 Click on **Install**.
 
-.. image :: /images/user/module_installationa.png
+.. image:: /images/user/module_installationa.png
    :align: center
    :scale: 85%
 
 Once installation is complete, click on **Next**.
 
-.. image :: /images/user/module_installationb.png
+.. image:: /images/user/module_installationb.png
    :align: center
    :scale: 85%
 
@@ -91,7 +91,7 @@ At this point, an advertisement informs you of the latest Centreon news and prod
 If your platform is connected to the internet, the information you receive will be up to date.
 If you are not online, only information on the current version will be displayed.
 
-.. image :: /images/user/aendinstall.png
+.. image:: /images/user/aendinstall.png
    :align: center
    :scale: 85%
 
@@ -99,16 +99,6 @@ The installation is complete. Click on **Finish**.
 
 You can now log in.
 
-.. image :: /images/user/aconnection.png
+.. image:: /images/user/aconnection.png
    :align: center
    :scale: 65%
-
-You can change the default language of the web interface:
-
-#. Click on your profile on the top right of the banner.
-#. Click on **Edit profile**.
-#. Select your language in the **Language** field.
-#. Click on **Save**.
-
-.. image :: /images/user/alanguage.png
-   :align: center
