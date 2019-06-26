@@ -1,3 +1,5 @@
+.. _howtotranslate:
+
 =========================
 How to translate Centreon
 =========================
