@@ -2045,7 +2045,7 @@ CREATE TABLE `traps` (
   `severity_id` int(11) DEFAULT NULL,
   `manufacturer_id` int(11) DEFAULT NULL,
   `traps_reschedule_svc_enable` enum('0','1') DEFAULT '0',
-  `traps_execution_command` varchar(255) DEFAULT NULL,
+  `traps_execution_command` text DEFAULT NULL,
   `traps_execution_command_enable` enum('0','1') DEFAULT '0',
   `traps_submit_result_enable` enum('0','1') DEFAULT '0',
   `traps_advanced_treatment` enum('0','1') DEFAULT '0',
