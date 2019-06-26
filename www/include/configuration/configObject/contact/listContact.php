@@ -110,7 +110,7 @@ $aclOptions = array(
         'contact_admin',
         'contact_register',
         'contact_auth_type',
-        'ldap_required_sync'
+        'contact_ldap_required_sync'
     ),
     'keys' => array('contact_id'),
     'order' => array('contact_name'),
@@ -243,7 +243,7 @@ foreach ($contacts as $contact) {
     if ($centreon->user->admin && $contact['contact_auth_type'] === "ldap") {
 
         // synchronization is already required
-        if ($contact['ldap_required_sync'] === '1') {
+        if ($contact['contact_ldap_required_sync'] === '1') {
             $isLinkedToLdap = 2;
             $refreshLdapBadge[2] =
                 "<span>" .

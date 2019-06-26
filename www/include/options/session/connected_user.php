@@ -101,7 +101,7 @@ if ($selectedUserSid) {
                     // requiring a manual synchronization at next login of the contact
                     $stmtRequiredSync = $pearDB->prepare(
                         'UPDATE contact
-                        SET `ldap_required_sync` = "1"
+                        SET `contact_ldap_required_sync` = "1"
                         WHERE contact_id = :contactId'
                     );
                     $stmtRequiredSync->bindValue(':contactId', $currentData['contact_id'], \PDO::PARAM_INT);
@@ -137,7 +137,7 @@ $tpl = initSmartyTpl($path, $tpl);
 
 $session_data = array();
 $res = $pearDB->query(
-    "SELECT session.*, contact_name, contact_admin, contact_auth_type, `ldap_last_sync`
+    "SELECT session.*, contact_name, contact_admin, contact_auth_type, `contact_ldap_last_sync`
     FROM session, contact
     WHERE contact_id = user_id ORDER BY contact_name, contact_admin"
 );
@@ -182,9 +182,9 @@ for ($cpt = 0; $r = $res->fetch(); $cpt++) {
         // checking if the user account is linked to a LDAP
         if ($r['contact_auth_type'] === "ldap") {
             // adding the last synchronization time
-            if ((int)$r["ldap_last_sync"] > 0) {
-                $session_data[$cpt]["last_sync"] = (int)$r["ldap_last_sync"];
-            } elseif ($r["ldap_last_sync"] === '0' || $r["ldap_last_sync"] === NULL) {
+            if ((int)$r["contact_ldap_last_sync"] > 0) {
+                $session_data[$cpt]["last_sync"] = (int)$r["contact_ldap_last_sync"];
+            } elseif ($r["contact_ldap_last_sync"] === '0' || $r["contact_ldap_last_sync"] === NULL) {
                 $session_data[$cpt]["last_sync"] = "-";
             }
 

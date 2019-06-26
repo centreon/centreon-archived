@@ -881,8 +881,8 @@ class CentreonLDAP
     {
         $stmt = $this->db->prepare(
             'UPDATE contact SET
-               `ldap_last_sync` = :currentTime,
-               `ldap_required_sync` = "0"
+               `contact_ldap_last_sync` = :currentTime,
+               `contact_ldap_required_sync` = "0"
             WHERE contact_id = :contactId'
         );
         try {
@@ -914,13 +914,13 @@ class CentreonLDAP
         try {
             // checking if an override was manually set on this contact
             $stmtManualRequest = $this->db->prepare(
-                'SELECT `contact_name`, `ldap_required_sync`, `ldap_last_sync` 
+                'SELECT `contact_name`, `contact_ldap_required_sync`, `contact_ldap_last_sync` 
                 FROM contact WHERE contact_id = :contactId'
             );
             $stmtManualRequest->bindValue(':contactId', $contactId, \PDO::PARAM_INT);
             $stmtManualRequest->execute();
             $manualOverride = $stmtManualRequest->fetch();
-            if ($manualOverride['ldap_required_sync']) {
+            if ($manualOverride['contact_ldap_required_sync']) {
                 $this->centreonLog->insertLog(
                     3,
                     'LDAP AUTH : LDAP synchronization was requested manually for ' . $manualOverride['contact_name']
@@ -941,7 +941,7 @@ class CentreonLDAP
                 $syncState[$row['ari_name']] = $row['ari_value'];
             }
 
-            if ($syncState['ldap_auto_sync'] || !$manualOverride['ldap_last_sync']) {
+            if ($syncState['ldap_auto_sync'] || !$manualOverride['contact_ldap_last_sync']) {
                 // getting the base date reference set in the LDAP parameters
                 $stmtLdapBaseSync = $this->db->prepare(
                     'SELECT ar_sync_base_date AS `referenceDate` FROM auth_ressource
