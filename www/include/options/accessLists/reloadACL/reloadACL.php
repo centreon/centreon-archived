@@ -55,30 +55,36 @@ if (isset($_GET["o"]) && $_GET["o"] == "r") {
     isset($_GET["select"]) ? $sel = $_GET["select"] : $sel = null;
     isset($_POST["select"]) ? $sel = $_POST["select"] : $sel;
 
-    $pearDB->query("UPDATE acl_resources SET changed = '1'");
-    $query = "UPDATE session SET update_acl = '1' WHERE user_id IN (";
-    $i = 0;
-    if (isset($sel)) {
-        foreach ($sel as $key => $val) {
-            if ($i) {
-                $query .= ", ";
+    try {
+        $pearDB->beginTransaction();
+        $pearDB->query("UPDATE acl_resources SET changed = '1'");
+        $query = "UPDATE session SET update_acl = '1' WHERE user_id IN (";
+        $i = 0;
+        if (isset($sel)) {
+            foreach ($sel as $key => $val) {
+                if ($i) {
+                    $query .= ", ";
+                }
+                $query .= "'".$key."'";
+                $i++;
             }
-            $query .= "'".$key."'";
-            $i++;
         }
-    }
-    if (!$i) {
-        $query .= "'')";
-    } else {
-        $query .= ")";
-    }
+        if (!$i) {
+            $query .= "'')";
+        } else {
+            $query .= ")";
+        }
+        $pearDB->query($query);
+        $pearDB->commit();
 
-    $pearDB->query($query);
-    $msg = new CentreonMsg();
-    $msg->setTextStyle("bold");
-    $msg->setText(_("ACL reloaded"));
-    $msg->setTimeOut("3");
-    passthru(_CENTREON_PATH_ . "/cron/centAcl.php");
+        $msg = new CentreonMsg();
+        $msg->setTextStyle("bold");
+        $msg->setText(_("ACL reloaded"));
+        $msg->setTimeOut("3");
+        passthru(_CENTREON_PATH_ . "/cron/centAcl.php");
+    } catch (\PDOException $e) {
+        $pearDB->rollBack();
+    }
 }
 
 # Smarty template Init
