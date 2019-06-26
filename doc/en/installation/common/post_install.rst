@@ -1,3 +1,7 @@
+********************************
+Initialization of the monitoring
+********************************
+
 To start the monitoring engine:
 
 1. From your web interface, go to **Configuration > Pollers**.
@@ -34,58 +38,19 @@ on the central server: ::
     # systemctl enable centengine
     # systemctl enable centreon
 
-The Centreon web interface contains several menus, each with a specific function:
+************************************
+Installation of available extensions
+************************************
 
-.. image :: /images/user/amenu.png
-   :align: center
-
-* **Home** lets you access the first home screen after logging in. It provides
-  a summary of overall monitoring status. Your workspace may be blank for now.
-  Once you configure customizable widgets, you will see data and charts according
-  to your customization.
-* **Monitoring** provides a combined view of the status of all monitored items
-  in real and delayed time using logs and performance graphics.
-* **Reporting** provides an intuitive view (using diagrams) of the evolution of
-  monitoring over a given period.
-* **Configuration** allows you to configure all monitored items and the
-  monitoring infrastructure.
-* **Administration** allows you to configure the Centreon web interface and view
-  the overall status of the servers.
-
-***************************************
-Quick and easy monitoring configuration
-***************************************
-
-Centreon is a highly versatile monitoring solution that can be configured to
-meet the specific needs of your IT infrastructure. To quickly configure Centreon and help you get started, you
-may want to use Centreon IMP. This tool provides you with Plugin Packs, which are bundled configuration
-templates that will dramatically reduce the time needed to implement the Centreon platform for monitoring
-the services in your network.
-
-Centreon IMP requires the Centreon License Manager and Centreon Plugin Pack Manager in order to function.
-
-If you haven't installed any modules during the installation process, go to the
-**Administration > Extensions > Modules** menu.
-
-Click on **Install/Upgrade all** and validate.
-
-.. image:: /_static/images/installation/install_imp_1.png
-   :align: center
-
-Once the installation is complete, click on **Back**.
-The modules are now installed.
+Go to **Administration > Extensions > Manager** menu and click on
+**Install all**:
 
 .. image:: /_static/images/installation/install_imp_2.png
    :align: center
 
-Now proceed to **Configuration > Plugin packs > Manager**.
-Ten free Plugin Packs are provided to get you started. Five additional Packs are
-available once you register, and over 300 more if you subscribe to the IMP
-offer (for more information: `our website <https://www.centreon.com/en/>`_).
+***********
+Quick start
+***********
 
-.. image:: /_static/images/installation/install_imp_3.png
-   :align: center
-
-Configure :ref:`the proxy<impproxy>` to allow the Centreon server to access the
-internet, and then go to the :ref:`quick start<quickstart>` chapter to configure
-your first monitoring.
+Go to the :ref:`quick start<quickstart>` chapter to configure your first
+monitoring.
