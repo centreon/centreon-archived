@@ -271,9 +271,8 @@ class CentreonTraps
     }
 
     /**
-     *
-     * Update
-     * @param $traps_id
+     * @param null $traps_id
+     * @return null
      */
     public function update($traps_id = null)
     {
@@ -321,6 +320,9 @@ class CentreonTraps
         if (!isset($ret['severity']) || $ret['severity'] == "") {
             $ret['severity'] = "NULL";
         }
+        if (!isset($ret['traps_exec_interval']) || $ret['traps_exec_interval'] == "") {
+            $ret['traps_exec_interval'] = "NULL";
+        }
 
         $rq = "UPDATE traps ";
         $rq .= "SET `traps_name` = '" . $this->db->escape($ret["traps_name"]) . "', ";
@@ -332,13 +334,14 @@ class CentreonTraps
         $rq .= "`traps_submit_result_enable` = '" . $this->db->escape($ret["traps_submit_result_enable"]) . "', ";
         $rq .= "`traps_reschedule_svc_enable` = '" . $this->db->escape($ret["traps_reschedule_svc_enable"]) . "', ";
         $rq .= "`traps_execution_command` = '" . $this->db->escape($ret["traps_execution_command"]) . "', ";
-        $rq .= "`traps_execution_command_enable` = '" . $this->db->escape($ret["traps_execution_command_enable"]) . "', ";
+        $rq .= "`traps_execution_command_enable` = '" . $this->db->escape($ret["traps_execution_command_enable"])
+            . "', ";
         $rq .= "`traps_advanced_treatment` = '" . $this->db->escape($ret["traps_advanced_treatment"]) . "', ";
         $rq .= "`traps_comments` = '" . $this->db->escape($ret["traps_comments"]) . "', ";
         $rq .= "`traps_routing_mode` = '" . $this->db->escape($ret["traps_routing_mode"]) . "', ";
         $rq .= "`traps_routing_value` = '" . $this->db->escape($ret["traps_routing_value"]) . "', ";
-        $rq .= "`traps_routing_filter_services` = '" . $this->db->escape($ret["traps_routing_filter_services"]) .
-            "', ";
+        $rq .= "`traps_routing_filter_services` = '" . $this->db->escape($ret["traps_routing_filter_services"])
+            . "', ";
         $rq .= "`manufacturer_id` = " . $this->db->escape($ret["manufacturer_id"]) . ", ";
         $rq .= "`traps_log` = '" . $this->db->escape($ret["traps_log"]) . "', ";
         $rq .= "`traps_exec_interval` = " . $this->db->escape($ret["traps_exec_interval"]) . ", ";
@@ -458,6 +461,7 @@ class CentreonTraps
      * Insert Traps
      *
      * @param array $ret
+     * @return mixed
      */
     public function insert($ret = array())
     {
@@ -501,6 +505,9 @@ class CentreonTraps
         if (!isset($ret['severity']) || $ret['severity'] == "") {
             $ret['severity'] = "NULL";
         }
+        if (!isset($ret['traps_exec_interval']) || $ret['traps_exec_interval'] == "") {
+            $ret['traps_exec_interval'] = "NULL";
+        }
 
         $rq = "INSERT INTO traps ";
         $rq .= "(traps_name, traps_mode, traps_oid, traps_args, 
@@ -516,7 +523,7 @@ class CentreonTraps
         $rq .= "'" . $this->db->escape($ret["traps_oid"]) . "', ";
         $rq .= "'" . $this->db->escape($ret["traps_args"]) . "', ";
         $rq .= "'" . $this->db->escape($ret["traps_status"]) . "', ";
-        $rq .= "" . $this->db->escape($ret["severity"]) . ", ";
+        $rq .= $this->db->escape($ret["severity"]) . ", ";
         $rq .= "'" . $this->db->escape($ret["traps_submit_result_enable"]) . "', ";
         $rq .= "'" . $this->db->escape($ret["traps_reschedule_svc_enable"]) . "', ";
         $rq .= "'" . $this->db->escape($ret["traps_execution_command"]) . "', ";
@@ -528,7 +535,7 @@ class CentreonTraps
         $rq .= "'" . $this->db->escape($ret["traps_routing_filter_services"]) . "', ";
         $rq .= "'" . $this->db->escape($ret["manufacturer_id"]) . "',";
         $rq .= "'" . $this->db->escape($ret["traps_log"]) . "', ";
-        $rq .= "'" . $this->db->escape($ret["traps_exec_interval"]) . "', ";
+        $rq .= $this->db->escape($ret["traps_exec_interval"]) . ", ";
         $rq .= "'" . $this->db->escape(isset($ret["traps_exec_interval_type"]) ? $ret["traps_exec_interval_type"] : '') . "', ";
         $rq .= "'" . $this->db->escape(isset($ret["traps_exec_method"]) ? $ret["traps_exec_method"] : '') . "', ";
         $rq .= "'" . $this->db->escape(isset($ret["traps_downtime"]) ? $ret["traps_downtime"] : '') . "', ";
