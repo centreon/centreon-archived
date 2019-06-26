@@ -348,7 +348,10 @@ class CentreonAuth
                 $this->CentreonLog->insertLog(1, "[".$this->source."] No contact found with this login : '$username'");
             }
             $this->error = _('Your credentials are incorrect.');
-            error_log("user " . $username . " not found", 4);
+            //Strangely fresh installs reach this code with empty username when hitting the portal
+            if (strlen($username) > 0) {
+                error_log("user " . $username . " not found", 4);
+            }
         }
     }
 
