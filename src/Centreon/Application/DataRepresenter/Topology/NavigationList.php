@@ -48,6 +48,7 @@ class NavigationList implements JsonSerializable
 
     /**
      * Configurations from navigation.yml
+     *
      * @var array
      */
     private $navConfig;
@@ -69,7 +70,6 @@ class NavigationList implements JsonSerializable
     }
 
     /**
-     *
      * JSON serialization of entity
      *
      * @return array
@@ -86,7 +86,8 @@ class NavigationList implements JsonSerializable
 
     /**
      * Get navigation items color for page
-     * @param int $pageId The page id
+     *
+     * @param  int $pageId The page id
      * @return string color
      */
     protected function getColor($pageId)
@@ -96,7 +97,8 @@ class NavigationList implements JsonSerializable
 
     /**
      * Get navigation items icons per page
-     * @param int $pageId The page id
+     *
+     * @param  int $pageId The page id
      * @return string icon name
      */
     protected function getIcon($pageId)
@@ -106,7 +108,8 @@ class NavigationList implements JsonSerializable
 
     /**
      * Extract groups from full array of topologies
-     * @param $entities array of topologies
+     *
+     * @param  $entities array of topologies
      * @return array of topologies
      */
     private function extractGroups($entities)
@@ -124,8 +127,9 @@ class NavigationList implements JsonSerializable
 
     /**
      * Generate level list of menu
-     * @param $entities
-     * @param $groups
+     *
+     * @param  $entities
+     * @param  $groups
      * @return array
      */
     private function generateLevels($entities, $groups)
@@ -161,7 +165,6 @@ class NavigationList implements JsonSerializable
 
                 //make sure we skip groups (we extracted them above)
                 if (!(is_null($entity->getTopologyPage()) && $entity->getIsReact() == '0')) {
-
                     //generate the array for the item
                     $levelThree = [
                         'page' => $entity->getTopologyPage(),
@@ -173,16 +176,16 @@ class NavigationList implements JsonSerializable
 
                     //check if topology has group index
                     if (!is_null($entity->getTopologyGroup()) && isset($groups[$levelTwo][$entity->getTopologyGroup()])) {
-
                         if (!isset($naviList[$matches[1]]['children'][$levelTwo]['groups'][$entity->getTopologyGroup()])) {
                             $naviList[$matches[1]]['children'][$levelTwo]['groups'][$entity->getTopologyGroup()] = [
                                 'label' => $groups[$levelTwo][$entity->getTopologyGroup()]['name'],
                                 'children' => []
                             ];
                         }
-                        array_push($naviList[$matches[1]]['children'][$levelTwo]['groups'][$entity->getTopologyGroup()]['children'],
-                            $levelThree);
-
+                        array_push(
+                            $naviList[$matches[1]]['children'][$levelTwo]['groups'][$entity->getTopologyGroup()]['children'],
+                            $levelThree
+                        );
                     } else {
                         if (!isset($naviList[$matches[1]]['children'][$levelTwo]['groups']['default'])) {
                             $naviList[$matches[1]]['children'][$levelTwo]['groups']['default'] = [
@@ -190,8 +193,10 @@ class NavigationList implements JsonSerializable
                                 'children' => []
                             ];
                         }
-                        array_push($naviList[$matches[1]]['children'][$levelTwo]['groups']['default']['children'],
-                            $levelThree);
+                        array_push(
+                            $naviList[$matches[1]]['children'][$levelTwo]['groups']['default']['children'],
+                            $levelThree
+                        );
                     }
                 }
             }
@@ -202,13 +207,13 @@ class NavigationList implements JsonSerializable
 
     /**
      * Extract the array without keys to avoid serialization into objects
-     * @param $naviList
+     *
+     * @param  $naviList
      * @return array
      */
     private function removeKeysFromArray($naviList)
     {
         foreach ($naviList as $key => &$value) {
-
             if (!empty($value['children'])) {
                 foreach ($value['children'] as $k => &$c) {
                     if (!empty($c['groups'])) {
@@ -217,7 +222,6 @@ class NavigationList implements JsonSerializable
                 }
                 $value['children'] = array_values($value['children']);
             }
-
         }
 
         $naviList = array_values($naviList);
