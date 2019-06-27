@@ -104,7 +104,7 @@ class StatementCollector
      * @param mixed $value
      * @param int $data_type
      */
-    public function addParam($parameter, $value, int $data_type = PDO::PARAM_STR)
+    public function addParam(string $parameter, $value, int $data_type = PDO::PARAM_STR)
     {
         $this->params[$parameter] = [
             'value' => $value,
