@@ -1,3 +1,5 @@
+properties([buildDiscarder(logRotator(numToKeepStr: '50'))])
+
 stage('Source') {
   node {
     sh 'setup_centreon_build.sh'
