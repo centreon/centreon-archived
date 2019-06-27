@@ -129,7 +129,7 @@ class StatementCollector
             $stmt->bindValue($parameter, $data['value'], $data['data_type']);
         }
 
-        // bind parameters to statment
+        // bind parameters to statement
         foreach ($this->values as $parameter => $data) {
             $stmt->bindParam($parameter, $data['value'], $data['data_type']);
         }
