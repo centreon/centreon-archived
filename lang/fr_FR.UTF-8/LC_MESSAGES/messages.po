@@ -5560,10 +5560,22 @@ msgid "Manually request to synchronize this contact with his LDAP"
 msgstr "Demande de synchronisation LDAP du contact"
 
 msgid "Already requested, please wait the CRON execution or for the user to login"
-msgstr "Demande enregistrée, merci d'attendre la prochaine exécution du CRON ou connection du contact"
+msgstr "Demande enregistrée, merci d'attendre la prochaine exécution du CRON ou connexion du contact"
 
-msgid "Do you confirm the LDAP synchronization request ?"
-msgstr "Confirmez vous la demande de synchronisation LDAP ?"
+msgid "The chosen contact(s) will be disconnected. Do you confirm the LDAP synchronization request ?"
+msgstr "Les contacts sélectionnés vont être déconnectés. Confirmez-vous la demande de synchronisation LDAP ?"
+
+# centreon/www/include/configuration/configObject/contact/listContact.php
+msgid "If the contact is connected, all his instances will be closed. Are you sure you want to request a "
+"data synchronization at the next login of this Contact ?"
+msgstr "Si ce contact est connecté, toutes ses instances seront supprimées. "
+"Êtes-vous sûr de vouloir que ce contact synchronise ses données LDAP lors de sa prochaine connexion ?"
+
+#centreon/www/include/options/session/connected_user.php
+msgid "All this contact sessions will be closed. Are you sure you want to request a synchronization at the next "
+"login of this Contact ?"
+msgstr "Toutes les sessions de ce contact seront supprimées. Êtes-vous sûr de vouloir que ce contact exécute une"
+"synchronisation lors de sa prochaine connexion ?"
 
 msgid "Synchronize LDAP"
 msgstr "Synchroniser avec le LDAP"
@@ -5575,7 +5587,7 @@ msgid "Resync data requested."
 msgstr "Mise à jour des données demandée."
 
 msgid "Error : unable to read or update the contact data in the DB"
-msgstr "Erreur : impossible de lire ou mettre à jour les données en DB"
+msgstr "Erreur : impossible de lire ou de mettre à jour les données en DB"
 
 msgid "Last LDAP sync"
 msgstr "Dernière synchro LDAP"

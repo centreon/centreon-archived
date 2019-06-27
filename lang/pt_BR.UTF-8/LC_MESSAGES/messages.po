@@ -14373,16 +14373,20 @@ msgstr "Processos de Comandos"
 #~ msgid "Refresh"
 #~ msgstr ""
 
-#~ msgid "Synchronize LDAP"
+#~ msgid "To manually request a LDAP synchronization of a contact"
 #~ msgstr ""
 
-#~ msgid "Error : unable to read or update the contact data in the DB"
+#~ msgid "The chosen contact(s) will be disconnected. Do you confirm the LDAP synchronization request ?"
 #~ msgstr ""
 
-#~ msgid "Resync data requested."
+#: centreon/www/include/configuration/configObject/contact/listContact.php
+#~ msgid "If the contact is connected, all his instances will be closed. Are you sure you want to request a "
+#~ "data synchronization at the next login of this Contact ?"
 #~ msgstr ""
 
-#~ msgid "Last LDAP sync"
+#: centreon/www/include/options/session/connected_user.php
+#~ msgid "All this contact sessions will be closed. Are you sure you want to request a synchronization at the next "
+#~ "login of this Contact ?"
 #~ msgstr ""
 
 #~ msgid "Refresh LDAP"
@@ -14391,10 +14395,19 @@ msgstr "Processos de Comandos"
 #~ msgid "Logout user"
 #~ msgstr ""
 
+#~ msgid "Synchronize LDAP"
+#~ msgstr ""
+
+#~ msgid "Error : unable to read or update the contact data in the DB"
+#~ msgstr ""
+
+#~ msgid "Last LDAP sync"
+#~ msgstr ""
+
 #~ msgid "No LDAP configuration enabled !"
 #~ msgstr ""
 
-#~ msgid "To manually request a LDAP synchronization of a contact"
+#~ msgid "Resync data requested."
 #~ msgstr ""
 
 #~ msgid "This user isn't linked to a LDAP"

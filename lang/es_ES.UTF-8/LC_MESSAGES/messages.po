@@ -14183,7 +14183,7 @@ msgstr "cubo de basura"
 #~ msgid "LDAP synchronization interval (in hours)"
 #~ msgstr ""
 
-#: centreon-web/www/include/Administration/parameters/ldap/form.php
+#: centreon-web/www/include/Administration/parameters/rrdtool/form.php
 #~ msgid "Enable LDAP synchronization on login"
 #~ msgstr ""
 
@@ -14197,13 +14197,41 @@ msgstr "cubo de basura"
 #~ msgid "Refresh"
 #~ msgstr ""
 
-#~ msgid "Resync data requested."
+#~ msgid "To manually request a LDAP synchronization of a contact"
+#~ msgstr ""
+
+#~ msgid "The chosen contact(s) will be disconnected. Do you confirm the LDAP synchronization request ?"
+#~ msgstr ""
+
+#: centreon/www/include/configuration/configObject/contact/listContact.php
+#~ msgid "If the contact is connected, all his instances will be closed. Are you sure you want to request a "
+#~ "data synchronization at the next login of this Contact ?"
+#~ msgstr ""
+
+#: centreon/www/include/options/session/connected_user.php
+#~ msgid "All this contact sessions will be closed. Are you sure you want to request a synchronization at the next "
+#~ "login of this Contact ?"
+#~ msgstr ""
+
+#~ msgid "Refresh LDAP"
+#~ msgstr ""
+
+#~ msgid "Logout user"
+#~ msgstr ""
+
+#~ msgid "Synchronize LDAP"
 #~ msgstr ""
 
 #~ msgid "Error : unable to read or update the contact data in the DB"
 #~ msgstr ""
 
-#~ msgid "To manually request a LDAP synchronization of a contact"
+#~ msgid "Last LDAP sync"
+#~ msgstr ""
+
+#~ msgid "No LDAP configuration enabled !"
+#~ msgstr ""
+
+#~ msgid "Resync data requested."
 #~ msgstr ""
 
 #~ msgid "This user isn't linked to a LDAP"
@@ -14213,19 +14241,4 @@ msgstr "cubo de basura"
 #~ msgstr ""
 
 #~ msgid "Already requested, please wait the CRON execution or for the user to login"
-#~ msgstr ""
-
-#~ msgid "Synchronize LDAP"
-#~ msgstr ""
-
-#~ msgid "No LDAP configuration enabled !"
-#~ msgstr ""
-
-#~ msgid "Refresh LDAP"
-#~ msgstr ""
-
-#~ msgid "Logout user"
-#~ msgstr ""
-
-#~ msgid "Last LDAP sync"
 #~ msgstr ""
