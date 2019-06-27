@@ -119,7 +119,7 @@ class StatementCollector
      */
     public function bind(PDOStatement $stmt)
     {
-        // bind columns to statment
+        // bind columns to statement
         foreach ($this->values as $parameter => $data) {
             $stmt->bindColumn($parameter, $data['value'], $data['data_type']);
         }
