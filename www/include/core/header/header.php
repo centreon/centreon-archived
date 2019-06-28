@@ -220,26 +220,25 @@ if ($handle = @opendir("./Themes/Centreon-2/Color")) {
 
 $colorfile = "Color/" . $tab_file_css[0];
 
-/*
- * Get CSS Order and color
- */
+//Get CSS Order and color
 $DBRESULT = $pearDB->query("SELECT `css_name` FROM `css_color_menu` WHERE `menu_nb` = '" . $level1 . "'");
 if ($DBRESULT->rowCount() && ($elem = $DBRESULT->fetch())) {
     $colorfile = "Color/" . $elem["css_name"];
 }
 
-/*
- * Update Session Table For last_reload and current_page row
- */
-$query = "UPDATE `session` SET `current_page` = '" . $level1 . $level2 . $level3 . $level4 .
-    "', `last_reload` = '" . time() . "', `ip_address` = '" . $_SERVER["REMOTE_ADDR"] .
+//Update Session Table For last_reload and current_page row
+$page = '';
+$page .= $level1 . $level2 . $level3 . $level4;
+if($page == '') {
+    $page = "NULL";
+}
+$query = "UPDATE `session` SET `current_page` = " . $page .
+    ", `last_reload` = '" . time() . "', `ip_address` = '" . $_SERVER["REMOTE_ADDR"] .
     "' WHERE CONVERT(`session_id` USING utf8) = '" . session_id() . "' AND `user_id` = '" .
     $centreon->user->user_id . "'";
 $DBRESULT = $pearDB->query($query);
 
-/*
- * Init Language
- */
+//Init Language
 $centreonLang = new CentreonLang(_CENTREON_PATH_, $centreon);
 $centreonLang->bindLang();
 $centreonLang->bindLang('help');
