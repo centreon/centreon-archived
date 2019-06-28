@@ -230,10 +230,11 @@ function deleteContactInDB($contacts = array())
 }
 
 /**
- * Synchronize contacts with LDAP to update modified data
+ * Synchronize LDAP with contacts' data
+ * Used for massive sync request
  * @param array $contacts
  */
-function synchronizeContactWithLdap($contacts = array())
+function synchronizeContactWithLdap(array $contacts = array()): void
 {
     global $pearDB;
     $centreonLog = new CentreonLog();
@@ -247,7 +248,7 @@ function synchronizeContactWithLdap($contacts = array())
     if ($rowLdapEnable['value'] === '1') {
         // getting the contact name for the logs
         $contactNameStmt = $pearDB->prepare(
-            "SELECT contact_name FROM `contact` WHERE `contact_id` = :contactId LIMIT 1"
+            "SELECT contact_name FROM `contact` WHERE `contact_id` = :contactId"
         );
 
         // requiring a manual synchronization at next login of the contact
@@ -264,10 +265,12 @@ function synchronizeContactWithLdap($contacts = array())
 
         // disconnecting the active user from centreon
         $logoutContact = $pearDB->prepare(
-            "DELETE FROM session WHERE session_id = :userSessionId");
+            "DELETE FROM session WHERE session_id = :userSessionId"
+        );
 
+        $successfullySync = [];
+        $pearDB->beginTransaction();
         try {
-            $pearDB->beginTransaction();
             foreach ($contacts as $key => $value) {
                 $contactNameStmt->bindValue(':contactId', (int)$key, \PDO::PARAM_INT);
                 $contactNameStmt->execute();
@@ -278,19 +281,20 @@ function synchronizeContactWithLdap($contacts = array())
 
                 $activeSession->bindValue(':contactId', (int)$key, \PDO::PARAM_INT);
                 $activeSession->execute();
-                $rowSession = $activeSession->fetch();
-
-                if ($rowSession['session_id']) {
+                //disconnecting every session logged in using this contact data
+                while ($rowSession = $activeSession->fetch()) {
                     $logoutContact->bindValue(':userSessionId', $rowSession['session_id'], \PDO::PARAM_STR);
                     $logoutContact->execute();
                 }
-
-                $centreonLog->insertLog(
-                    3, //ldap.log
-                    "LDAP MANUAL SYNC : Successfully planned LDAP synchronization for " . $rowContact['contact_name']
-                );
+                $successfullySync[] = $rowContact['contact_name'];
             }
             $pearDB->commit();
+            foreach ($successfullySync as $key => $val) {
+                $centreonLog->insertLog(
+                    3, //ldap.log
+                    "LDAP MANUAL SYNC : Successfully planned LDAP synchronization for " . $value
+                );
+            }
         } catch (\PDOException $e) {
             $pearDB->rollBack();
             throw new Exception('Bad Request : ' . $e);

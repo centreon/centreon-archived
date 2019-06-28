@@ -55,8 +55,8 @@ if (isset($_GET["o"]) && $_GET["o"] == "r") {
     isset($_GET["select"]) ? $sel = $_GET["select"] : $sel = null;
     isset($_POST["select"]) ? $sel = $_POST["select"] : $sel;
 
+    $pearDB->beginTransaction();
     try {
-        $pearDB->beginTransaction();
         $pearDB->query("UPDATE acl_resources SET changed = '1'");
         $query = "UPDATE session SET update_acl = '1' WHERE user_id IN (";
         $i = 0;
