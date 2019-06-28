@@ -97,8 +97,10 @@ if ($selectedUserSid) {
                     $msg->setText(_("No LDAP configuration enabled !"));
                     break;
                 } else {
-                    $pearDB->beginTransaction();
-                    // requiring a manual synchronization at next login of the contact
+                    /*
+                     * requiring a manual synchronization at next login of the contact
+                     * if this step is successful, we need to logout the contact to synchronize the data at next login
+                     */
                     $stmtRequiredSync = $pearDB->prepare(
                         'UPDATE contact
                         SET `contact_ldap_required_sync` = "1"
@@ -106,20 +108,16 @@ if ($selectedUserSid) {
                     );
                     $stmtRequiredSync->bindValue(':contactId', $currentData['contact_id'], \PDO::PARAM_INT);
                     $stmtRequiredSync->execute();
-                    $pearDB->commit();
                     $msg->setTextColor("green");
                     $msg->setText(_("Resync data requested."));
                     $msg->setText(_(" ")); // adding the space here, to avoid to forgot it in the translation files
                 }
             } catch (\PDOException $e) {
-                $pearDB->rollBack();
                 $msg->setText(_("Error : unable to read or update the contact data in the DB"));
                 break;
             }
-        /*
-         * as every SYNC_USER steps were successful, we need to logout the contact
-         * to synchronize the data at next login or when the centAcl CRON is executed
-         */
+
+        // logout action
         case KICK_USER:
             $stmt = $pearDB->prepare("DELETE FROM session WHERE session_id = :userSessionId");
             $stmt->bindValue(':userSessionId', $selectedUserSid, \PDO::PARAM_STR);

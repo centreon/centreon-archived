@@ -301,11 +301,10 @@ class CentreonContactgroup
      */
     public function syncWithLdap()
     {
+        $msg = array();
         $ldapRes = $this->db->query(
             "SELECT ar_id FROM auth_ressource WHERE ar_enable = '1'"
         );
-
-        $msg = array();
 
         // Connect to LDAP Server
         while ($ldapRow = $ldapRes->fetch()) {
@@ -358,6 +357,7 @@ class CentreonContactgroup
                                 } catch (\PDOException $e) {
                                     $msg[] = "Error processing delete contactgroup request of ldap group : " .
                                         $row['cg_name'];
+                                    throw $e;
                                 }
                                 continue;
                             } else {
@@ -370,6 +370,7 @@ class CentreonContactgroup
                                 } catch (\PDOException $e) {
                                     $msg[] = "Error processing update contactgroup request of ldap group : " .
                                         $row['cg_name'];
+                                    throw $e;
                                     continue;
                                 }
                             }
@@ -377,9 +378,12 @@ class CentreonContactgroup
                         $members = $ldapConn->listUserForGroup($row['cg_ldap_dn']);
 
                         // Refresh Users Groups.
-                        $queryDeleteRelation = "DELETE FROM contactgroup_contact_relation " .
-                            "WHERE contactgroup_cg_id = " . $row['cg_id'];
-                        $this->db->query($queryDeleteRelation);
+                        $deleteStmt = $this->db->prepare(
+                            "DELETE FROM contactgroup_contact_relation
+                            WHERE contactgroup_cg_id = :cgId"
+                        );
+                        $deleteStmt->bindValue(':cgId', $row['cg_id'], \PDO::PARAM_INT);
+                        $deleteStmt->execute();
                         $contact = '';
                         foreach ($members as $member) {
                             $contact .= $this->db->quote($member) . ',';
@@ -387,22 +391,29 @@ class CentreonContactgroup
                         $contact = rtrim($contact, ",");
 
                         if ($contact !== '') {
-                            $queryContact = "SELECT contact_id FROM contact WHERE contact_ldap_dn IN (" . $contact . ")";
                             try {
-                                $resContact = $this->db->query($queryContact);
+                                $resContact = $this->db->query(
+                                    "SELECT contact_id FROM contact WHERE contact_ldap_dn IN (" . $contact . ")"
+                                );
                             } catch (\PDOException $e) {
                                 $msg[] = "Error in getting contact id from members.";
+                                throw $e;
                                 continue;
                             }
                             while ($rowContact = $resContact->fetch()) {
-                                $queryAddRelation = "INSERT INTO contactgroup_contact_relation " .
-                                    "(contactgroup_cg_id, contact_contact_id) " .
-                                    "VALUES (" . $row['cg_id'] . ", " . $rowContact['contact_id'] . ")";
                                 try {
-                                    $this->db->query($queryAddRelation);
+                                    $insertStmt = $this->db->prepare(
+                                        "INSERT INTO contactgroup_contact_relation
+                                        (contactgroup_cg_id, contact_contact_id)
+                                        VALUES (:cgId, :contactId)"
+                                    );
+                                    $insertStmt->bindValue(':cgId', $row['cg_id'], \PDO::PARAM_INT);
+                                    $insertStmt->bindValue(':contactId', $rowContact['contact_id'], \PDO::PARAM_INT);
+                                    $insertStmt->execute();
                                 } catch (\PDOException $e) {
                                     $msg[] = "Error insert relation between contactgroup " . $row['cg_id'] .
                                         " and contact " . $rowContact['contact_id'];
+                                    throw $e;
                                 }
                             }
                         }

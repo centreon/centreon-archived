@@ -266,8 +266,9 @@ function synchronizeContactWithLdap($contacts = array())
         $logoutContact = $pearDB->prepare(
             "DELETE FROM session WHERE session_id = :userSessionId");
 
+        $successfullySync = [];
+        $pearDB->beginTransaction();
         try {
-            $pearDB->beginTransaction();
             foreach ($contacts as $key => $value) {
                 $contactNameStmt->bindValue(':contactId', (int)$key, \PDO::PARAM_INT);
                 $contactNameStmt->execute();
@@ -284,13 +285,15 @@ function synchronizeContactWithLdap($contacts = array())
                     $logoutContact->bindValue(':userSessionId', $rowSession['session_id'], \PDO::PARAM_STR);
                     $logoutContact->execute();
                 }
-
-                $centreonLog->insertLog(
-                    3, //ldap.log
-                    "LDAP MANUAL SYNC : Successfully planned LDAP synchronization for " . $rowContact['contact_name']
-                );
+                $successfullySync[] = $rowContact['contact_name'];
             }
             $pearDB->commit();
+            foreach ($successfullySync as $key => $val) {
+                $centreonLog->insertLog(
+                    3, //ldap.log
+                    "LDAP MANUAL SYNC : Successfully planned LDAP synchronization for " . $value
+                );
+            }
         } catch (\PDOException $e) {
             $pearDB->rollBack();
             throw new Exception('Bad Request : ' . $e);
