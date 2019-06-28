@@ -227,8 +227,7 @@ if ($DBRESULT->rowCount() && ($elem = $DBRESULT->fetch())) {
 }
 
 //Update Session Table For last_reload and current_page row
-$page = '';
-$page .= $level1 . $level2 . $level3 . $level4;
+$page = '' . $level1 . $level2 . $level3 . $level4;
 if ($page == '') {
     $page = "NULL";
 }
