@@ -5,6 +5,7 @@
   "scripts": {
     "build": "webpack --mode production",
     "build:dev": "webpack --mode development",
+    "start:dev": "npm run build:dev -- --watch",
     "eslint": "npx eslint www/front_src/src/**/*.js",
     "eslint:fix": "npm run eslint -- --fix"
   },
