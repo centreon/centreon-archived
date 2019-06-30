@@ -63,7 +63,7 @@ $template = filter_var(
 );
 
 $searchH = filter_var(
-    $_POST['searchH'] ?? $_GET['search'] ?? null,
+    $_POST['searchH'] ?? $_GET['searchH'] ?? null,
     FILTER_SANITIZE_STRING
 );
 
