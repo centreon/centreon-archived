@@ -47,6 +47,10 @@ class ServiceProviderTest extends TestCase
                 }
             };
 
+        $this->container['yml.config'] = function () {
+          return [];
+        };
+
         $this->container[\Centreon\ServiceProvider::CENTREON_BROKER_REPOSITORY] =
             new \Centreon\Domain\Repository\CfgCentreonBrokerRepository($this->container['configuration_db']);
         $this->container['centreon.broker_configuration_service'] =
