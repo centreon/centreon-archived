@@ -93,7 +93,7 @@ if (($o == "c" || $o == "w") && $contact_id) {
     $cct["contact_cgNotif"] = array();
 
     $dbResult = $pearDB->query("SELECT * FROM contact WHERE contact_id = '" . intval($contact_id) . "' LIMIT 1");
-    $cct = array_map("myDecode", $dbResult->fetchRow());
+    $cct = array_map("myDecode", $dbResult->fetch());
     $cct["contact_passwd"] = null;
     $dbResult->closeCursor();
 
