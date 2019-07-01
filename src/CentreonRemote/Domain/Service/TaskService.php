@@ -149,7 +149,6 @@ class TaskService
 
             $httpMethod = $result['params']['http_method'];
             $httpPort = $result['params']['http_port'];
-            ;
             $noCheckCertificate = $result['params']['no_check_certificate'];
             $noProxy = $result['params']['no_proxy'];
 
