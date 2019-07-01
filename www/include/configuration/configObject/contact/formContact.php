@@ -786,14 +786,14 @@ $valid = false;
 
 if ($form->validate() && $from_list_menu == false) {
     $cctObj = $form->getElement('contact_id');
-    if (!$centreon->user->admin && $contactId) {
+    if (!$centreon->user->admin && $contact_id) {
         $form->getElement('contact_admin')->setValue(0);
         $form->getElement('reach_api')->setValue(0);
         $form->getElement('reach_api_rt')->setValue(0);
     }
     if ($form->getSubmitValue("submitA")) {
         $newContactId = insertContactInDB();
-        $cctObj->setValue($contactId);
+        $cctObj->setValue($contact_id);
 
         $eventDispatcher->notify(
             'contact.form',
