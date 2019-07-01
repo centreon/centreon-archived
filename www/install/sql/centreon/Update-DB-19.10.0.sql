@@ -62,9 +62,13 @@ ALTER TABLE `modules_informations` DROP COLUMN `sql_files`;
 ALTER TABLE `modules_informations` DROP COLUMN `php_files`;
 
 --
+-- Change IP field from varchar(16) to varchar(255)
+--
+ALTER TABLE `remote_servers` MODIFY COLUMN `ip` VARCHAR(255) NOT NULL;
+
+--
 -- Update topology of service grid / by host group / by service group
 --
 UPDATE topology SET topology_url_opt = '&o=svcOV_pb' WHERE topology_page = 20204;
 UPDATE topology SET topology_url_opt = '&o=svcOVHG_pb' WHERE topology_page = 20209;
 UPDATE topology SET topology_url_opt = '&o=svcOVSG_pb' WHERE topology_page = 20212;
-

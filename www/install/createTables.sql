@@ -1952,7 +1952,7 @@ CREATE TABLE `traps` (
   `severity_id` int(11) DEFAULT NULL,
   `manufacturer_id` int(11) DEFAULT NULL,
   `traps_reschedule_svc_enable` enum('0','1') DEFAULT '0',
-  `traps_execution_command` varchar(255) DEFAULT NULL,
+  `traps_execution_command` text DEFAULT NULL,
   `traps_execution_command_enable` enum('0','1') DEFAULT '0',
   `traps_submit_result_enable` enum('0','1') DEFAULT '0',
   `traps_advanced_treatment` enum('0','1') DEFAULT '0',
@@ -2278,7 +2278,7 @@ CREATE TABLE IF NOT EXISTS contact_feature (
 -- Create remote servers table for keeping track of remote instances
 CREATE TABLE IF NOT EXISTS `remote_servers` (
   `id` INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
-  `ip` VARCHAR(16) NOT NULL,
+  `ip` VARCHAR(255) NOT NULL,
   `app_key` VARCHAR(40) NOT NULL,
   `version` VARCHAR(16) NOT NULL,
   `is_connected` TINYINT(1) NOT NULL DEFAULT 0,

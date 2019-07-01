@@ -43,6 +43,9 @@ celles-ci, **les opérations 4 et 5 sont obligatoires**.
 .. note::
     Pour supprimer ce message, supprimez le fichier **/etc/profile.d/centreon.sh**.
 
+Rendez vous au chapitre :ref:`démarrage rapide<quickstart>` pour mettre en place
+votre première supervision.
+
 **********
 Collecteur
 **********
