@@ -48,7 +48,7 @@ class ServiceProviderTest extends TestCase
             };
 
         $this->container['yml.config'] = function () {
-          return [];
+            return [];
         };
 
         $this->container[\Centreon\ServiceProvider::CENTREON_BROKER_REPOSITORY] =
