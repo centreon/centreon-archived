@@ -9348,7 +9348,7 @@ msgid "By OID and Host"
 msgstr "Par OID et hôte"
 
 #: centreon-web/www/include/configuration/configObject/traps/formTraps.php
-msgid "BBy OID, Host and Service"
+msgid "By OID, Host and Service"
 msgstr "Par OID, hôte et service"
 
 #: centreon-web/www/include/configuration/configObject/traps/formTraps.php:325
