@@ -8,7 +8,6 @@ const path = require('path');
 
 module.exports = {
   context: __dirname,
-  devtool: 'sourcemap',
   entry: [
     "@babel/polyfill",
     "./www/front_src/src/index.js"
