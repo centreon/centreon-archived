@@ -67,7 +67,7 @@ class ReactAclForActive implements JsonSerializable
         $output = [];
 
         foreach ($this->entities as $entity) {
-           $output[$entity->getTopologyUrl()] = $entity->getTopologyPage();
+            $output[$entity->getTopologyUrl()] = $entity->getTopologyPage();
         }
 
         return $output;

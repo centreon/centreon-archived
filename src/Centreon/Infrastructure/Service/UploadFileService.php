@@ -59,7 +59,7 @@ class UploadFileService
 
     /**
      * Get all files
-     * 
+     *
      * @return array
      */
     public function getFiles(string $fieldName, array $withExtension = null) : array

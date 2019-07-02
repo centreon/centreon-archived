@@ -109,7 +109,8 @@ class ExportManifest
 
         if (!version_compare($centralVersion, $remoteVersion, '==')) {
             throw new Exception(
-                sprintf('The version of the Central %s and of the Remote %s are incompatible',
+                sprintf(
+                    'The version of the Central %s and of the Remote %s are incompatible',
                     $this->data['version'],
                     $this->version
                 ),
