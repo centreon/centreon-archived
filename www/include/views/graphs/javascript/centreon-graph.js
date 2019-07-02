@@ -211,15 +211,7 @@
               return moment(x).tz(self.timezone).format('YYYY-MM-DD HH:mm:ss');
             },
             value: function (value, ratio, id) {
-<<<<<<< HEAD
-              /* Test if the curve is inversed */
-              var fct = self.getAxisTickFormat(
-                self.getBase(id),
-                self.isInversed(id)
-              );
-=======
               var fct = self.getAxisTickFormat(self.getBase());
->>>>>>> f7b2741e19... new backend export rrdtools
               return fct(value);
             }
           }
@@ -331,29 +323,17 @@
         column = dataRaw.metrics[i].data;
         column.unshift(name);
         data.columns.push(column);
-<<<<<<< HEAD
-        legend = dataRaw.data[i].label;
-        // Remember that unit can be empty
-        if (dataRaw.data[i].unit) {
-          legend += '(' + dataRaw.data[i].unit + ')';
-=======
         legend = dataRaw.metrics[i].legend;
         if (dataRaw.metrics[i].unit) {
-          legend += '(' + dataRaw.metrics[i].unit + ')';
-          if (units.hasOwnProperty(dataRaw.metrics[i].unit) === false) {
-            units[dataRaw.metrics[i].unit] = [];
-          }
-          units[dataRaw.metrics[i].unit].push(name);
->>>>>>> f7b2741e19... new backend export rrdtools
           axis[axesName] = {
             label: dataRaw.metrics[i].unit
           };
         }
         // these no-unit series also go to their own axis
-        if (units.hasOwnProperty(dataRaw.data[i].unit) === false) {
-          units[dataRaw.data[i].unit] = [];
+        if (units.hasOwnProperty(dataRaw.metrics[i].unit) === false) {
+          units[dataRaw.metrics[i].unit] = [];
         }
-        units[dataRaw.data[i].unit].push(name);
+        units[dataRaw.metrics[i].unit].push(name);
         data.names[name] = legend;
         data.types[name] = dataRaw.metrics[i].ds_data.ds_filled == 1 ? 'area' : 'line';
         data.colors[name] = dataRaw.metrics[i].ds_data.ds_color_line;
@@ -727,23 +707,12 @@
       var legendExtra;
       var curveId;
       var i;
-<<<<<<< HEAD
-      for (legend in legends) {
-        if (legends.hasOwnProperty(legend) && self.ids.hasOwnProperty(legend)) {
-          curveId = self.ids[legend];
-          var fct = self.getAxisTickFormat(
-              self.getBase(curveId),
-              self.isInversed(curveId)
-          );
-          legendDiv = jQuery('<div>').addClass('chart-legend')
-=======
       var j;
       for (i = 0; i < legends.length; i++) {
         legend = legends[i];
         curveId = self.ids[legend.legend];
         var fct = self.getAxisTickFormat(self.getBase());
         legendDiv = jQuery('<div>').addClass('chart-legend')
->>>>>>> f7b2741e19... new backend export rrdtools
             .data('curveid', curveId)
             .data('legend', i);
 
@@ -826,14 +795,7 @@
           return true;
         }
         var curveId = self.ids[legendName];
-<<<<<<< HEAD
-        var fct = self.getAxisTickFormat(
-          self.getBase(curveId),
-          self.isInversed(curveId)
-        );
-=======
         var fct = self.getAxisTickFormat(self.getBase());
->>>>>>> f7b2741e19... new backend export rrdtools
         jQuery(el).find('.extra').remove();
         if (legends.hasOwnProperty(legendName)) {
           for (i = 0; i < legends[legendName].extras.length; i++) {
