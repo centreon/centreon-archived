@@ -728,7 +728,7 @@ class CentreonCustomView
                 'WHERE wv.custom_view_id = ? ) ' .
                 'AND user_id IN (' . $userIdKey . ') ';
             $stmt = $this->db->prepare($query);
-            $dbResult = $stmt->execute($queryValue);
+            $dbResult = $this->db->execute($stmt, $queryValue);
             if (!$dbResult) {
                 throw new \Exception($stmt->errorInfo());
             }
@@ -821,7 +821,8 @@ class CentreonCustomView
             $query = 'SELECT contact_contact_id FROM contactgroup_contact_relation ' .
                 'WHERE contactgroup_cg_id IN (' . $userGroupIdKey . ') ';
             $stmt = $this->db->prepare($query);
-            $dbResult = $stmt->execute($queryCgId);
+            $dbResult = $this->db->execute($stmt, $queryCgId);
+
             if (!$dbResult) {
                 throw new \Exception("An error occured");
             }
@@ -829,7 +830,7 @@ class CentreonCustomView
             $tmpValueWidgetPref = array();
             $queryValueWidgetPref[] = (int)$params['custom_view_id'];
             $oldSharedUserOfUsergroups = '';
-            while ($row = $stmt->fetch()) {
+            while ($row = $dbResult->fetchRow()) {
                 $tmpValueWidgetPref[] = (int)$row['contact_contact_id'];
             }
             // compare user and user of user group
@@ -847,9 +848,9 @@ class CentreonCustomView
                     'WHERE wv.custom_view_id = ? ) ' .
                     'AND user_id IN (' . $oldSharedUserOfUsergroups . ') ';
                 $stmt = $this->db->prepare($query);
-                $dbResult = $stmt->execute($queryValueWidgetPref);
-                if (!$dbResult) {
-                    throw new \Exception($stmt->errorInfo());
+                $dbResult = $this->db->execute($stmt, $queryValueWidgetPref);
+                if (PEAR::isError($dbResult)) {
+                    throw new Exception('Bad Request');
                 }
             }
 
