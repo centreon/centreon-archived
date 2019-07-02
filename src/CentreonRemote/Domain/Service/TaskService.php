@@ -148,7 +148,7 @@ class TaskService
             $result = unserialize($remoteDataResult[0]->params);
 
             $httpMethod = $result['params']['http_method'];
-            $httpPort = $result['params']['http_port'];;
+            $httpPort = $result['params']['http_port'];
             $noCheckCertificate = $result['params']['no_check_certificate'];
             $noProxy = $result['params']['no_proxy'];
 

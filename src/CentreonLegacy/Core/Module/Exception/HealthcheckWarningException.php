@@ -37,7 +37,6 @@ namespace CentreonLegacy\Core\Module\Exception;
 
 use RuntimeException;
 
-
 class HealthcheckWarningException extends RuntimeException
 {
 }
