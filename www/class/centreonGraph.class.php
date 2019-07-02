@@ -1496,11 +1496,15 @@ class CentreonGraph
      */
     public function getOVDColor($metricId)
     {
+        // For test purpose. To check vmetrics configuration
+        if (is_null($this->index) || $this->index == '') {
+            return $this->getRandomWebColor();
+        }
         if (is_null($this->colorCache)) {
             $this->colorCache = array();
-            
-            $DBRESULT = $this->DB->query("SELECT metric_id, rnd_color FROM `ods_view_details` WHERE `index_id` = " . $this->index);
-            while (($row = $DBRESULT->fetch())) {
+
+            $DBRESULT = $this->DB->query("SELECT metric_id, rnd_color FROM `ods_view_details` WHERE `index_id` = '" . $this->index . "'");
+            while (($row = $DBRESULT->fetchRow())) {
                 $this->colorCache[$row['metric_id']] = $row['rnd_color']; 
             }
         }
@@ -1509,7 +1513,7 @@ class CentreonGraph
             return $this->colorCache[$metricId];
         }
         $lRndcolor = $this->getRandomWebColor();
-        $this->DB->query("INSERT INTO `ods_view_details` (rnd_color, index_id, metric_id) VALUES ('" . $lRndcolor . "', " . $this->index . ", " . $metricId  . ")");
+        $this->DB->query("INSERT INTO `ods_view_details` (rnd_color, index_id, metric_id) VALUES ('" . $lRndcolor . "', '" . $this->index . "', " . $metricId  . ")");
         return $lRndcolor;
     }
 
