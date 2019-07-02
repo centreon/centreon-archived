@@ -47,7 +47,7 @@ class ServerWizardIdentity
         try {
             $curl = new Curl;
 
-			if ($noCheckCertificate) {
+            if ($noCheckCertificate) {
                 $curl->setOpt(CURLOPT_SSL_VERIFYPEER, false);
             }
 
