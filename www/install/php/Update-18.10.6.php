@@ -78,3 +78,39 @@ try {
         "UPGRADE : Unable to initialize LDAP reference date"
     );
 }
+
+/* Adding to each LDAP configuration two new fields */
+try {
+    // field to enable the automatic sync at login
+    $addSyncStateField = $pearDB->prepare(
+        "INSERT INTO auth_ressource_info
+        (`ar_id`, `ari_name`, `ari_value`)
+        VALUE (:arId, 'ldap_auto_sync', '1')"
+    );
+    // interval between two sync at login
+    $addSyncIntervalField = $pearDB->prepare(
+        "INSERT INTO auth_ressource_info
+        (`ar_id`, `ari_name`, `ari_value`)
+        VALUE (:arId, 'ldap_sync_interval', '1')"
+    );
+
+    $pearDB->beginTransaction();
+    $stmt = $pearDB->query("SELECT DISTINCT(ar_id) FROM auth_ressource");
+    while ($row = $stmt->fetch()) {
+        $addSyncIntervalField->bindValue(':arId', $row['ar_id'], \PDO::PARAM_INT);
+        $addSyncIntervalField->execute();
+        $addSyncStateField->bindValue(':arId', $row['ar_id'], \PDO::PARAM_INT);
+        $addSyncStateField->execute();
+    }
+    $pearDB->commit();
+} catch (\PDOException $e) {
+    $centreonLog->insertLog(
+        1, // ldap.log
+        "UPGRADE PROCESS : Please open your LDAP configuration and save manually the form"
+    );
+    $centreonLog->insertLog(
+        2, // sql-error.log
+        "UPGRADE : Unable to add LDAP new fields"
+    );
+    $pearDB->rollBack();
+}
