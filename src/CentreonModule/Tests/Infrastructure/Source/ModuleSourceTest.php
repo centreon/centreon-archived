@@ -132,7 +132,7 @@ class ModuleSourceTest extends TestCase
                     $result = 'vfs://modules/';
 
                     return $result;
-                }))
+            }))
         ;
         $this->source
             ->method('getModuleConf')
@@ -142,7 +142,7 @@ class ModuleSourceTest extends TestCase
                     ];
 
                     return $result;
-                }))
+            }))
         ;
     }
 
@@ -235,7 +235,7 @@ class ModuleSourceTest extends TestCase
 //    {
 //        $moduleSource = new ModuleSource($this->containerWrap);
 //        $result = $this->invokeMethod($moduleSource, 'getModuleConf', [static::getConfFilePath()]);
-//        //'php://filter/read=string.rot13/resource=' . 
+//        //'php://filter/read=string.rot13/resource=' .
 //    }
 
     public static function getConfFilePath(): string

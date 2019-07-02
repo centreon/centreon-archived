@@ -40,7 +40,8 @@ use CentreonLegacy\Core\Module\Information;
 use CentreonLegacy\Core\Utils\Utils;
 
 class Installer extends Module
-{   
+{
+
     /**
      *
      * @return int
