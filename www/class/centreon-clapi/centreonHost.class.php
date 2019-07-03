@@ -463,7 +463,7 @@ class CentreonHost extends CentreonObject
         if (($objectId = $this->getObjectId($params[self::ORDER_UNIQUENAME])) != 0) {
             $listParam = explode('|', $params[1]);
             foreach ($listParam as $paramSearch) {
-                if (! $paramString) {
+                if (!$paramString) {
                   $paramString = $paramSearch;
                 } else {
                   $paramString = $paramString . $this->delim . $paramSearch;
