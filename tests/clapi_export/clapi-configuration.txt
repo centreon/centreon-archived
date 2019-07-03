@@ -4754,8 +4754,8 @@ CG;setparam;Supervisors;cg_type;local
 CG;ADD;test_contact-group;test_contact-group
 CG;setparam;test_contact-group;cg_activate;1
 CG;setparam;test_contact-group;cg_type;local
-CG;addcontact;Guest;user;user
 CG;addcontact;Guest;guest;guest
+CG;addcontact;Guest;user;user
 CG;addcontact;Supervisors;admin;admin
 CG;addcontact;test_contact-group;test_contact;test_contact
 HOST;ADD;test_host;test_host;0.0.0.0;;Central;
@@ -5211,8 +5211,8 @@ STPL;addhosttemplate;SNMP-Win2K3-Swap;Servers-Win2K3
 STPL;addhosttemplate;SNMP-Windows-CPU;Servers-Win2K3
 HC;ADD;test_category;test_category
 HC;setparam;test_category;hc_activate;1
-HC;addmember;test_category;test_host
 HC;addmember;test_category;my_htpl-test
+HC;addmember;test_category;test_host
 HG;ADD;Firewall;All firewalls
 HG;setparam;Firewall;hg_activate;1
 HG;ADD;Linux-Servers;All linux servers
@@ -5448,3 +5448,4 @@ ACLGROUP;SETACTION;ALL;Simple User;
 ACLGROUP;SETRESOURCE;ALL;All Resources;
 ACLGROUP;SETCONTACT;ALL;test_contact;
 ACLGROUP;SETCONTACTGROUP;ALL;Guest|test_contact-group;
+
