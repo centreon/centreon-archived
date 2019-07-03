@@ -509,7 +509,7 @@ class CentreonGraphNg
             'metric' => $vmetric['vmetric_name'],
             'metric_legend' => $vmetric['vmetric_name'],
             'unit' => $vmetric['unit_name'],
-            'hidden' => isset($vmetric['hidden']) && $vmetric['hidden'] === 1 ? 1 : 0,
+            'hidden' => isset($vmetric['hidden']) && $vmetric['hidden'] == 1 ? 1 : 0,
             'warn' => $vmetric['warn'],
             'crit' => $vmetric['crit'],
             'def_type' => $vmetric['def_type'] == 1 ? 'VDEF' : 'CDEF',
@@ -523,7 +523,7 @@ class CentreonGraphNg
         
         $this->cacheAllMetrics['v:' . $vmetric['vmetric_name']] = $vmetric['vmetric_id'];
         
-        if ($this->vmetrics[$vmetric['vmetric_id']]['hidden'] === 0) {
+        if ($this->vmetrics[$vmetric['vmetric_id']]['hidden'] == 0) {
             # Not cleaning. Should have its own metric_id for ods_view_details
             $vmetric['metric_name'] = $vmetric['vmetric_name'];
             $vmetric['metric_id'] = $vmetric['vmetric_id'];
@@ -766,7 +766,7 @@ class CentreonGraphNg
     public function createLegend()
     {
         foreach ($this->metrics as $metricId => $tm) {
-            if ($tm['hidden'] === 1) {
+            if ($tm['hidden'] == 1) {
                 continue;
             }
             $arg = "LINE1:v" . $metricId . "#0000ff:v" . $metricId;
@@ -1034,13 +1034,13 @@ class CentreonGraphNg
             'metrics' => array(),
         );
         foreach ($this->metrics as $metric) {
-            if ($metric['hidden'] === 1) {
+            if ($metric['hidden'] == 1) {
                 continue;
             }
             $this->graphData['metrics'][] = $metric;
         }
         foreach ($this->vmetricsOrder as $vmetricId) {
-            if ($this->vmetrics[$vmetricId]['hidden'] === 1) {
+            if ($this->vmetrics[$vmetricId]['hidden'] == 1) {
                 continue;
             }
             
