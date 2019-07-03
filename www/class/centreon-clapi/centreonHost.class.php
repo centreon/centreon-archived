@@ -463,10 +463,10 @@ class CentreonHost extends CentreonObject
         if (($objectId = $this->getObjectId($params[self::ORDER_UNIQUENAME])) != 0) {
             $listParam = explode('|', $params[1]);
             foreach ($listParam as $paramSearch) {
-                if (! $paramString) {
-                  $paramString = $paramSearch;
+                if (!$paramString) {
+                    $paramString = $paramSearch;
                 } else {
-                  $paramString = $paramString . $this->delim . $paramSearch;
+                    $paramString = $paramString . $this->delim . $paramSearch;
                 }
                 $field = $paramSearch;
                 if (!in_array($field, $authorizeParam)) {
@@ -548,10 +548,10 @@ class CentreonHost extends CentreonObject
                             $ret = $ret[$field];
                             break;
                     }
-                    if (! $resultString) {
-                      $resultString = $ret;
+                    if (!$resultString) {
+                        $resultString = $ret;
                     } else {
-                      $resultString = $resultString . $this->delim . $ret;
+                        $resultString = $resultString . $this->delim . $ret;
                     }
                 }
             }
