@@ -549,7 +549,7 @@ class CentreonHost extends CentreonObject
                             break;
                     }
                     if (!$resultString) {
-                      $resultString = $ret;
+                        $resultString = $ret;
                     } else {
                       $resultString = $resultString . $this->delim . $ret;
                     }
