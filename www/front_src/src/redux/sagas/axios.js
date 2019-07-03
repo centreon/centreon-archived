@@ -146,9 +146,15 @@ function* axiosRequest(action) {
     if (!action.requestType) {
       throw new Error("Request type is required!");
     } else {
+      let dataBody = null;
+      if(action.requestType === "DELETE"){
+        dataBody = action.data ? { data:action.data } : null
+      }else{
+        dataBody = action.data ? action.data : null
+      }
       const res = yield axios[action.requestType.toLowerCase()](
         action.url,
-        action.data ? action.data : null
+        dataBody ? dataBody : null
       );
 
       const data = yield res.data;
