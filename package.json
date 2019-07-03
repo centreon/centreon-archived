@@ -41,7 +41,7 @@
     "webpack-cli": "^3.0.8"
   },
   "dependencies": {
-    "@centreon/react-components": "19.4.0",
+    "@centreon/react-components": "19.4.0-alpha.126",
     "axios": "^0.18.0",
     "classnames": "^2.2.6",
     "dom-serializer": "^0.1.0",

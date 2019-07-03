@@ -63,8 +63,7 @@ class CentreonModuleService
         bool $installed = null,
         bool $updated = null,
         array $typeList = null
-    ): array
-    {
+    ): array {
         $result = [];
 
         if ($typeList !== null && $typeList) {
