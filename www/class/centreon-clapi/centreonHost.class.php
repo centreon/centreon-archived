@@ -466,7 +466,7 @@ class CentreonHost extends CentreonObject
                 if (!$paramString) {
                   $paramString = $paramSearch;
                 } else {
-                  $paramString = $paramString . $this->delim . $paramSearch;
+                    $paramString = $paramString . $this->delim . $paramSearch;
                 }
                 $field = $paramSearch;
                 if (!in_array($field, $authorizeParam)) {
