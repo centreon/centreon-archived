@@ -217,10 +217,11 @@ class CentreonLDAP extends CentreonObject
             throw new CentreonClapiException(self::NAMEALREADYINUSE . ' (' . $name . ')');
         }
         $stmt = $this->db->prepare(
-            "INSERT INTO auth_ressource (ar_name, ar_description, ar_enable) VALUES (:arName, :description, '1')"
+            "INSERT INTO auth_ressource (ar_name, ar_description, ar_enable, ar_type)
+                VALUES (:arName, :description, '1', '')"
         );
-        $stmt->bindValue(':arName', $name, PDO::PARAM_STR);
-        $stmt->bindValue(':description', $description, PDO::PARAM_STR);
+        $stmt->bindValue(':arName', $name, \PDO::PARAM_STR);
+        $stmt->bindValue(':description', $description, \PDO::PARAM_STR);
         $stmt->execute();
     }
 
