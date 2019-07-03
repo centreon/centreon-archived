@@ -548,7 +548,7 @@ class CentreonHost extends CentreonObject
                             $ret = $ret[$field];
                             break;
                     }
-                    if (! $resultString) {
+                    if (!$resultString) {
                       $resultString = $ret;
                     } else {
                       $resultString = $resultString . $this->delim . $ret;
