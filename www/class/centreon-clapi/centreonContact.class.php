@@ -288,6 +288,9 @@ class CentreonContact extends CentreonObject
 
         $addParams['contact_admin'] = $params[self::ORDER_ADMIN];
         $addParams['contact_oreon'] = $params[self::ORDER_ACCESS];
+        if ($addParams['contact_oreon'] == '') {
+            $addParams['contact_oreon'] = "NULL";
+        }
         if ($this->checkLang($params[self::ORDER_LANG]) == false) {
             throw new CentreonClapiException(self::UNKNOWN_LOCALE);
         }
