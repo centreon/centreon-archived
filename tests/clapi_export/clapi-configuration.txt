@@ -844,7 +844,6 @@ CONTACT;setparam;user;hostnotifcmd;host-notify-by-email
 CONTACT;setparam;user;svcnotifcmd;service-notify-by-email
 TRAP;ADD;adDiagCancelled;.1.3.6.1.4.1.674.10893.1.1.200.0.537
 TRAP;setparam;adDiagCancelled;traps_name;adDiagCancelled
-TRAP;setparam;adDiagCancelled;traps_mode;0
 TRAP;setparam;adDiagCancelled;traps_oid;.1.3.6.1.4.1.674.10893.1.1.200.0.537
 TRAP;setparam;adDiagCancelled;traps_args;Array Manager Event: Array Disk diagnostics cancelled:
 TRAP;setparam;adDiagCancelled;traps_status;1
@@ -862,7 +861,6 @@ TRAP;setparam;adDiagCancelled;traps_downtime;0
 TRAP;setparam;adDiagCancelled;traps_comments;%s, %s diagnostics cancelled.<br/>Variables:<br/>  1: controllerNameEv<br/>  2: arrayDiskNameEv<br/>
 TRAP;ADD;adDiagCompleted;.1.3.6.1.4.1.674.10893.1.1.200.0.555
 TRAP;setparam;adDiagCompleted;traps_name;adDiagCompleted
-TRAP;setparam;adDiagCompleted;traps_mode;0
 TRAP;setparam;adDiagCompleted;traps_oid;.1.3.6.1.4.1.674.10893.1.1.200.0.555
 TRAP;setparam;adDiagCompleted;traps_args;Array Manager Event: Array Disk diagnostics completed:
 TRAP;setparam;adDiagCompleted;traps_status;0
@@ -880,7 +878,6 @@ TRAP;setparam;adDiagCompleted;traps_downtime;0
 TRAP;setparam;adDiagCompleted;traps_comments;%s, %s diagnostics completed.<br/>Variables:<br/>  1: controllerNameEv<br/>  2: arrayDiskNameEv<br/>
 TRAP;ADD;adDiagFailed;.1.3.6.1.4.1.674.10893.1.1.200.0.546
 TRAP;setparam;adDiagFailed;traps_name;adDiagFailed
-TRAP;setparam;adDiagFailed;traps_mode;0
 TRAP;setparam;adDiagFailed;traps_oid;.1.3.6.1.4.1.674.10893.1.1.200.0.546
 TRAP;setparam;adDiagFailed;traps_args;Array Manager Event: Array Disk diagnostics failed:
 TRAP;setparam;adDiagFailed;traps_status;3
@@ -898,7 +895,6 @@ TRAP;setparam;adDiagFailed;traps_downtime;0
 TRAP;setparam;adDiagFailed;traps_comments;%s, %s diagnostics failed.<br/>Variables:<br/>  1: controllerNameEv<br/>  2: arrayDiskNameEv<br/>
 TRAP;ADD;adDiagStarted;.1.3.6.1.4.1.674.10893.1.1.200.0.528
 TRAP;setparam;adDiagStarted;traps_name;adDiagStarted
-TRAP;setparam;adDiagStarted;traps_mode;0
 TRAP;setparam;adDiagStarted;traps_oid;.1.3.6.1.4.1.674.10893.1.1.200.0.528
 TRAP;setparam;adDiagStarted;traps_args;Array Manager Event: Array Disk diagnostics started:
 TRAP;setparam;adDiagStarted;traps_status;1
@@ -916,7 +912,6 @@ TRAP;setparam;adDiagStarted;traps_downtime;0
 TRAP;setparam;adDiagStarted;traps_comments;%s, %s diagnostics started.<br/>Variables:<br/>  1: controllerNameEv<br/>  2: arrayDiskNameEv<br/>
 TRAP;ADD;adFormatCancelled;.1.3.6.1.4.1.674.10893.1.1.200.0.531
 TRAP;setparam;adFormatCancelled;traps_name;adFormatCancelled
-TRAP;setparam;adFormatCancelled;traps_mode;0
 TRAP;setparam;adFormatCancelled;traps_oid;.1.3.6.1.4.1.674.10893.1.1.200.0.531
 TRAP;setparam;adFormatCancelled;traps_args;Array Manager Event: Array Disk format cancelled:
 TRAP;setparam;adFormatCancelled;traps_status;1
@@ -934,7 +929,6 @@ TRAP;setparam;adFormatCancelled;traps_downtime;0
 TRAP;setparam;adFormatCancelled;traps_comments;%s, %s format cancelled.<br/>Variables:<br/>  1: controllerNameEv<br/>  2: arrayDiskNameEv<br/>
 TRAP;ADD;adFormatCompleted;.1.3.6.1.4.1.674.10893.1.1.200.0.549
 TRAP;setparam;adFormatCompleted;traps_name;adFormatCompleted
-TRAP;setparam;adFormatCompleted;traps_mode;0
 TRAP;setparam;adFormatCompleted;traps_oid;.1.3.6.1.4.1.674.10893.1.1.200.0.549
 TRAP;setparam;adFormatCompleted;traps_args;Array Manager Event: Array Disk format completed:
 TRAP;setparam;adFormatCompleted;traps_status;0
@@ -952,7 +946,6 @@ TRAP;setparam;adFormatCompleted;traps_downtime;0
 TRAP;setparam;adFormatCompleted;traps_comments;%s, %s format completed.<br/>Variables:<br/>  1: controllerNameEv<br/>  2: arrayDiskNameEv<br/>
 TRAP;ADD;adFormatFailed;.1.3.6.1.4.1.674.10893.1.1.200.0.540
 TRAP;setparam;adFormatFailed;traps_name;adFormatFailed
-TRAP;setparam;adFormatFailed;traps_mode;0
 TRAP;setparam;adFormatFailed;traps_oid;.1.3.6.1.4.1.674.10893.1.1.200.0.540
 TRAP;setparam;adFormatFailed;traps_args;Array Manager Event: Array Disk format failed:
 TRAP;setparam;adFormatFailed;traps_status;3
@@ -970,7 +963,6 @@ TRAP;setparam;adFormatFailed;traps_downtime;0
 TRAP;setparam;adFormatFailed;traps_comments;%s, %s format failed.<br/>Variables:<br/>  1: controllerNameEv<br/>  2: arrayDiskNameEv<br/>
 TRAP;ADD;adFormatStarted;.1.3.6.1.4.1.674.10893.1.1.200.0.522
 TRAP;setparam;adFormatStarted;traps_name;adFormatStarted
-TRAP;setparam;adFormatStarted;traps_mode;0
 TRAP;setparam;adFormatStarted;traps_oid;.1.3.6.1.4.1.674.10893.1.1.200.0.522
 TRAP;setparam;adFormatStarted;traps_args;Array Manager Event: Array Disk format started:
 TRAP;setparam;adFormatStarted;traps_status;1
@@ -988,7 +980,6 @@ TRAP;setparam;adFormatStarted;traps_downtime;0
 TRAP;setparam;adFormatStarted;traps_comments;%s, %s format started.<br/>Variables:<br/>  1: controllerNameEv<br/>  2: arrayDiskNameEv<br/>
 TRAP;ADD;adInitializeCancelled;.1.3.6.1.4.1.674.10893.1.1.200.0.533
 TRAP;setparam;adInitializeCancelled;traps_name;adInitializeCancelled
-TRAP;setparam;adInitializeCancelled;traps_mode;0
 TRAP;setparam;adInitializeCancelled;traps_oid;.1.3.6.1.4.1.674.10893.1.1.200.0.533
 TRAP;setparam;adInitializeCancelled;traps_args;Array Manager Event: Array Disk initialize cancelled:
 TRAP;setparam;adInitializeCancelled;traps_status;1
@@ -1006,7 +997,6 @@ TRAP;setparam;adInitializeCancelled;traps_downtime;0
 TRAP;setparam;adInitializeCancelled;traps_comments;%s, %s initialize cancelled.<br/>Variables:<br/>  1: controllerNameEv<br/>  2: arrayDiskNameEv<br/>
 TRAP;ADD;adInitializeCompleted;.1.3.6.1.4.1.674.10893.1.1.200.0.551
 TRAP;setparam;adInitializeCompleted;traps_name;adInitializeCompleted
-TRAP;setparam;adInitializeCompleted;traps_mode;0
 TRAP;setparam;adInitializeCompleted;traps_oid;.1.3.6.1.4.1.674.10893.1.1.200.0.551
 TRAP;setparam;adInitializeCompleted;traps_args;Array Manager Event: Array Disk initialize completed:
 TRAP;setparam;adInitializeCompleted;traps_status;0
@@ -1024,7 +1014,6 @@ TRAP;setparam;adInitializeCompleted;traps_downtime;0
 TRAP;setparam;adInitializeCompleted;traps_comments;%s, %s initialize completed.<br/>Variables:<br/>  1: controllerNameEv<br/>  2: arrayDiskNameEv<br/>
 TRAP;ADD;adInitializeFailed;.1.3.6.1.4.1.674.10893.1.1.200.0.542
 TRAP;setparam;adInitializeFailed;traps_name;adInitializeFailed
-TRAP;setparam;adInitializeFailed;traps_mode;0
 TRAP;setparam;adInitializeFailed;traps_oid;.1.3.6.1.4.1.674.10893.1.1.200.0.542
 TRAP;setparam;adInitializeFailed;traps_args;Array Manager Event: Array Disk initialize failed:
 TRAP;setparam;adInitializeFailed;traps_status;3
@@ -1042,7 +1031,6 @@ TRAP;setparam;adInitializeFailed;traps_downtime;0
 TRAP;setparam;adInitializeFailed;traps_comments;%s, %s initialize failed.<br/>Variables:<br/>  1: controllerNameEv<br/>  2: arrayDiskNameEv<br/>
 TRAP;ADD;adInitializeStarted;.1.3.6.1.4.1.674.10893.1.1.200.0.524
 TRAP;setparam;adInitializeStarted;traps_name;adInitializeStarted
-TRAP;setparam;adInitializeStarted;traps_mode;0
 TRAP;setparam;adInitializeStarted;traps_oid;.1.3.6.1.4.1.674.10893.1.1.200.0.524
 TRAP;setparam;adInitializeStarted;traps_args;Array Manager Event: Array Disk initialize started:
 TRAP;setparam;adInitializeStarted;traps_status;1
@@ -1060,7 +1048,6 @@ TRAP;setparam;adInitializeStarted;traps_downtime;0
 TRAP;setparam;adInitializeStarted;traps_comments;%s, %s initialize started.<br/>Variables:<br/>  1: controllerNameEv<br/>  2: arrayDiskNameEv<br/>
 TRAP;ADD;adRebuildCancelled;.1.3.6.1.4.1.674.10893.1.1.200.0.536
 TRAP;setparam;adRebuildCancelled;traps_name;adRebuildCancelled
-TRAP;setparam;adRebuildCancelled;traps_mode;0
 TRAP;setparam;adRebuildCancelled;traps_oid;.1.3.6.1.4.1.674.10893.1.1.200.0.536
 TRAP;setparam;adRebuildCancelled;traps_args;Array Manager Event: Array Disk rebuild cancelled:
 TRAP;setparam;adRebuildCancelled;traps_status;1
@@ -1078,7 +1065,6 @@ TRAP;setparam;adRebuildCancelled;traps_downtime;0
 TRAP;setparam;adRebuildCancelled;traps_comments;%s, %s rebuild cancelled.<br/>Variables:<br/>  1: controllerNameEv<br/>  2: arrayDiskNameEv<br/>
 TRAP;ADD;adRebuildCompleted;.1.3.6.1.4.1.674.10893.1.1.200.0.554
 TRAP;setparam;adRebuildCompleted;traps_name;adRebuildCompleted
-TRAP;setparam;adRebuildCompleted;traps_mode;0
 TRAP;setparam;adRebuildCompleted;traps_oid;.1.3.6.1.4.1.674.10893.1.1.200.0.554
 TRAP;setparam;adRebuildCompleted;traps_args;Array Manager Event: Array Disk rebuild completed:
 TRAP;setparam;adRebuildCompleted;traps_status;0
@@ -1096,7 +1082,6 @@ TRAP;setparam;adRebuildCompleted;traps_downtime;0
 TRAP;setparam;adRebuildCompleted;traps_comments;%s, %s rebuild completed.<br/>Variables:<br/>  1: controllerNameEv<br/>  2: arrayDiskNameEv<br/>
 TRAP;ADD;adRebuildFailed;.1.3.6.1.4.1.674.10893.1.1.200.0.545
 TRAP;setparam;adRebuildFailed;traps_name;adRebuildFailed
-TRAP;setparam;adRebuildFailed;traps_mode;0
 TRAP;setparam;adRebuildFailed;traps_oid;.1.3.6.1.4.1.674.10893.1.1.200.0.545
 TRAP;setparam;adRebuildFailed;traps_args;Array Manager Event: Array Disk rebuild failed:
 TRAP;setparam;adRebuildFailed;traps_status;3
@@ -1114,7 +1099,6 @@ TRAP;setparam;adRebuildFailed;traps_downtime;0
 TRAP;setparam;adRebuildFailed;traps_comments;%s, %s rebuild failed.<br/>Variables:<br/>  1: controllerNameEv<br/>  2: arrayDiskNameEv<br/>
 TRAP;ADD;adRebuildStarted;.1.3.6.1.4.1.674.10893.1.1.200.0.527
 TRAP;setparam;adRebuildStarted;traps_name;adRebuildStarted
-TRAP;setparam;adRebuildStarted;traps_mode;0
 TRAP;setparam;adRebuildStarted;traps_oid;.1.3.6.1.4.1.674.10893.1.1.200.0.527
 TRAP;setparam;adRebuildStarted;traps_args;Array Manager Event: Array Disk rebuild started:
 TRAP;setparam;adRebuildStarted;traps_status;1
@@ -1132,7 +1116,6 @@ TRAP;setparam;adRebuildStarted;traps_downtime;0
 TRAP;setparam;adRebuildStarted;traps_comments;%s, %s rebuild started.<br/>Variables:<br/>  1: controllerNameEv<br/>  2: arrayDiskNameEv<br/>
 TRAP;ADD;alertACPowerCordFailure;.1.3.6.1.4.1.674.10892.1.0.1504
 TRAP;setparam;alertACPowerCordFailure;traps_name;alertACPowerCordFailure
-TRAP;setparam;alertACPowerCordFailure;traps_mode;0
 TRAP;setparam;alertACPowerCordFailure;traps_oid;.1.3.6.1.4.1.674.10892.1.0.1504
 TRAP;setparam;alertACPowerCordFailure;traps_args;Server AC Cord Failure: $3
 TRAP;setparam;alertACPowerCordFailure;traps_status;2
@@ -1150,7 +1133,6 @@ TRAP;setparam;alertACPowerCordFailure;traps_downtime;0
 TRAP;setparam;alertACPowerCordFailure;traps_comments;AC power cord has lost power.<br/>--Novell NMS trap annotation<br/>Variables:<br/>  1: alertSystem<br/>  2: alertTableIndexOID<br/>  3: alertMessage<br/>  4: alertCurrentStatus<br/>  5: alertPreviousStatus<br/>  6: alertData<br/>
 TRAP;ADD;alertACPowerCordNoPowerNonRedundant;.1.3.6.1.4.1.674.10892.1.0.1501
 TRAP;setparam;alertACPowerCordNoPowerNonRedundant;traps_name;alertACPowerCordNoPowerNonRedundant
-TRAP;setparam;alertACPowerCordNoPowerNonRedundant;traps_mode;0
 TRAP;setparam;alertACPowerCordNoPowerNonRedundant;traps_oid;.1.3.6.1.4.1.674.10892.1.0.1501
 TRAP;setparam;alertACPowerCordNoPowerNonRedundant;traps_args;Server AC Cord No Power Non-redundant: $3
 TRAP;setparam;alertACPowerCordNoPowerNonRedundant;traps_status;0
@@ -1168,7 +1150,6 @@ TRAP;setparam;alertACPowerCordNoPowerNonRedundant;traps_downtime;0
 TRAP;setparam;alertACPowerCordNoPowerNonRedundant;traps_comments;AC power cord does not have power, and the reduncancy mode<br/>for its AC power switch has been set to non-redundant.<br/>--Novell NMS trap annotation<br/>Variables:<br/>  1: alertSystem<br/>  2: alertTableIndexOID<br/>  3: alertMessage<br/>  4: alertCurrentStatus<br/>  5: alertPreviousStatus<br/>  6: alertData<br/>
 TRAP;ADD;alertACPowerCordNormal;.1.3.6.1.4.1.674.10892.1.0.1502
 TRAP;setparam;alertACPowerCordNormal;traps_name;alertACPowerCordNormal
-TRAP;setparam;alertACPowerCordNormal;traps_mode;0
 TRAP;setparam;alertACPowerCordNormal;traps_oid;.1.3.6.1.4.1.674.10892.1.0.1502
 TRAP;setparam;alertACPowerCordNormal;traps_args;Server AC Cord Normal: $3
 TRAP;setparam;alertACPowerCordNormal;traps_status;0
@@ -1186,7 +1167,6 @@ TRAP;setparam;alertACPowerCordNormal;traps_downtime;0
 TRAP;setparam;alertACPowerCordNormal;traps_comments;AC power cord has regained power.<br/>--Novell NMS trap annotation<br/>Variables:<br/>  1: alertSystem<br/>  2: alertTableIndexOID<br/>  3: alertMessage<br/>  4: alertCurrentStatus<br/>  5: alertPreviousStatus<br/>  6: alertData<br/>
 TRAP;ADD;alertAmperageProbeFailure;.1.3.6.1.4.1.674.10892.1.0.1204
 TRAP;setparam;alertAmperageProbeFailure;traps_name;alertAmperageProbeFailure
-TRAP;setparam;alertAmperageProbeFailure;traps_mode;0
 TRAP;setparam;alertAmperageProbeFailure;traps_oid;.1.3.6.1.4.1.674.10892.1.0.1204
 TRAP;setparam;alertAmperageProbeFailure;traps_args;Server Amperage Failure: $3
 TRAP;setparam;alertAmperageProbeFailure;traps_status;2
@@ -1204,7 +1184,6 @@ TRAP;setparam;alertAmperageProbeFailure;traps_downtime;0
 TRAP;setparam;alertAmperageProbeFailure;traps_comments;Amperage probe has detected a failure value.<br/>--Novell NMS trap annotation<br/>Variables:<br/>  1: alertSystem<br/>  2: alertTableIndexOID<br/>  3: alertMessage<br/>  4: alertCurrentStatus<br/>  5: alertPreviousStatus<br/>  6: alertData<br/>
 TRAP;ADD;alertAmperageProbeNonRecoverable;.1.3.6.1.4.1.674.10892.1.0.1205
 TRAP;setparam;alertAmperageProbeNonRecoverable;traps_name;alertAmperageProbeNonRecoverable
-TRAP;setparam;alertAmperageProbeNonRecoverable;traps_mode;0
 TRAP;setparam;alertAmperageProbeNonRecoverable;traps_oid;.1.3.6.1.4.1.674.10892.1.0.1205
 TRAP;setparam;alertAmperageProbeNonRecoverable;traps_args;Server Amperage Non-recoverable: $3
 TRAP;setparam;alertAmperageProbeNonRecoverable;traps_status;2
@@ -1222,7 +1201,6 @@ TRAP;setparam;alertAmperageProbeNonRecoverable;traps_downtime;0
 TRAP;setparam;alertAmperageProbeNonRecoverable;traps_comments;Amperage probe has detected a non-recoverable value.<br/>--Novell NMS trap annotation<br/>Variables:<br/>  1: alertSystem<br/>  2: alertTableIndexOID<br/>  3: alertMessage<br/>  4: alertCurrentStatus<br/>  5: alertPreviousStatus<br/>  6: alertData<br/>
 TRAP;ADD;alertAmperageProbeNormal;.1.3.6.1.4.1.674.10892.1.0.1202
 TRAP;setparam;alertAmperageProbeNormal;traps_name;alertAmperageProbeNormal
-TRAP;setparam;alertAmperageProbeNormal;traps_mode;0
 TRAP;setparam;alertAmperageProbeNormal;traps_oid;.1.3.6.1.4.1.674.10892.1.0.1202
 TRAP;setparam;alertAmperageProbeNormal;traps_args;Server Amperage Normal: $3
 TRAP;setparam;alertAmperageProbeNormal;traps_status;0
@@ -1240,7 +1218,6 @@ TRAP;setparam;alertAmperageProbeNormal;traps_downtime;0
 TRAP;setparam;alertAmperageProbeNormal;traps_comments;Amperage probe has returned to a normal value.<br/>--Novell NMS trap annotation<br/>Variables:<br/>  1: alertSystem<br/>  2: alertTableIndexOID<br/>  3: alertMessage<br/>  4: alertCurrentStatus<br/>  5: alertPreviousStatus<br/>  6: alertData<br/>
 TRAP;ADD;alertAmperageProbeWarning;.1.3.6.1.4.1.674.10892.1.0.1203
 TRAP;setparam;alertAmperageProbeWarning;traps_name;alertAmperageProbeWarning
-TRAP;setparam;alertAmperageProbeWarning;traps_mode;0
 TRAP;setparam;alertAmperageProbeWarning;traps_oid;.1.3.6.1.4.1.674.10892.1.0.1203
 TRAP;setparam;alertAmperageProbeWarning;traps_args;Server Amperage Warning: $3
 TRAP;setparam;alertAmperageProbeWarning;traps_status;1
@@ -1258,7 +1235,6 @@ TRAP;setparam;alertAmperageProbeWarning;traps_downtime;0
 TRAP;setparam;alertAmperageProbeWarning;traps_comments;Amperage probe has detected a warning value.<br/>--Novell NMS trap annotation<br/>Variables:<br/>  1: alertSystem<br/>  2: alertTableIndexOID<br/>  3: alertMessage<br/>  4: alertCurrentStatus<br/>  5: alertPreviousStatus<br/>  6: alertData<br/>
 TRAP;ADD;alertAutomaticSystemRecovery;.1.3.6.1.4.1.674.10892.1.0.1006
 TRAP;setparam;alertAutomaticSystemRecovery;traps_name;alertAutomaticSystemRecovery
-TRAP;setparam;alertAutomaticSystemRecovery;traps_mode;0
 TRAP;setparam;alertAutomaticSystemRecovery;traps_oid;.1.3.6.1.4.1.674.10892.1.0.1006
 TRAP;setparam;alertAutomaticSystemRecovery;traps_args;Server Automatic System Recovery: $3
 TRAP;setparam;alertAutomaticSystemRecovery;traps_status;2
@@ -1276,7 +1252,6 @@ TRAP;setparam;alertAutomaticSystemRecovery;traps_downtime;0
 TRAP;setparam;alertAutomaticSystemRecovery;traps_comments;Automatic system recovery (ASR) was performed.<br/>--Novell NMS trap annotation<br/>Variables:<br/>  1: alertSystem<br/>  2: alertTableIndexOID<br/>  3: alertMessage<br/>  4: alertCurrentStatus<br/>  5: alertPreviousStatus<br/>  6: alertData<br/>
 TRAP;ADD;alertBatteryFailure;.1.3.6.1.4.1.674.10892.1.0.1704
 TRAP;setparam;alertBatteryFailure;traps_name;alertBatteryFailure
-TRAP;setparam;alertBatteryFailure;traps_mode;0
 TRAP;setparam;alertBatteryFailure;traps_oid;.1.3.6.1.4.1.674.10892.1.0.1704
 TRAP;setparam;alertBatteryFailure;traps_args;Server Battery Failure: $3
 TRAP;setparam;alertBatteryFailure;traps_status;2
@@ -1294,7 +1269,6 @@ TRAP;setparam;alertBatteryFailure;traps_downtime;0
 TRAP;setparam;alertBatteryFailure;traps_comments;Battery has detected a failure.<br/>--Novell NMS trap annotation<br/>Variables:<br/>  1: alertSystem<br/>  2: alertTableIndexOID<br/>  3: alertMessage<br/>  4: alertCurrentStatus<br/>  5: alertPreviousStatus<br/>  6: alertData<br/>
 TRAP;ADD;alertBatteryNormal;.1.3.6.1.4.1.674.10892.1.0.1702
 TRAP;setparam;alertBatteryNormal;traps_name;alertBatteryNormal
-TRAP;setparam;alertBatteryNormal;traps_mode;0
 TRAP;setparam;alertBatteryNormal;traps_oid;.1.3.6.1.4.1.674.10892.1.0.1702
 TRAP;setparam;alertBatteryNormal;traps_args;Server Battery Normal: $3
 TRAP;setparam;alertBatteryNormal;traps_status;0
@@ -1312,7 +1286,6 @@ TRAP;setparam;alertBatteryNormal;traps_downtime;0
 TRAP;setparam;alertBatteryNormal;traps_comments;Battery has returned to normal.<br/>--Novell NMS trap annotation<br/>Variables:<br/>  1: alertSystem<br/>  2: alertTableIndexOID<br/>  3: alertMessage<br/>  4: alertCurrentStatus<br/>  5: alertPreviousStatus<br/>  6: alertData<br/>
 TRAP;ADD;alertBatteryWarning;.1.3.6.1.4.1.674.10892.1.0.1703
 TRAP;setparam;alertBatteryWarning;traps_name;alertBatteryWarning
-TRAP;setparam;alertBatteryWarning;traps_mode;0
 TRAP;setparam;alertBatteryWarning;traps_oid;.1.3.6.1.4.1.674.10892.1.0.1703
 TRAP;setparam;alertBatteryWarning;traps_args;Server Battery Warning: $3
 TRAP;setparam;alertBatteryWarning;traps_status;1
@@ -1330,7 +1303,6 @@ TRAP;setparam;alertBatteryWarning;traps_downtime;0
 TRAP;setparam;alertBatteryWarning;traps_comments;Battery has detected a warning.<br/>--Novell NMS trap annotation<br/>Variables:<br/>  1: alertSystem<br/>  2: alertTableIndexOID<br/>  3: alertMessage<br/>  4: alertCurrentStatus<br/>  5: alertPreviousStatus<br/>  6: alertData<br/>
 TRAP;ADD;alertChassisIntrusionDetected;.1.3.6.1.4.1.674.10892.1.0.1254
 TRAP;setparam;alertChassisIntrusionDetected;traps_name;alertChassisIntrusionDetected
-TRAP;setparam;alertChassisIntrusionDetected;traps_mode;0
 TRAP;setparam;alertChassisIntrusionDetected;traps_oid;.1.3.6.1.4.1.674.10892.1.0.1254
 TRAP;setparam;alertChassisIntrusionDetected;traps_args;Server Chassis Intrusion Detected: $3
 TRAP;setparam;alertChassisIntrusionDetected;traps_status;2
@@ -1348,7 +1320,6 @@ TRAP;setparam;alertChassisIntrusionDetected;traps_downtime;0
 TRAP;setparam;alertChassisIntrusionDetected;traps_comments;Chassis intrusion has been detected.<br/>--Novell NMS trap annotation<br/>Variables:<br/>  1: alertSystem<br/>  2: alertTableIndexOID<br/>  3: alertMessage<br/>  4: alertCurrentStatus<br/>  5: alertPreviousStatus<br/>  6: alertData<br/>
 TRAP;ADD;alertChassisIntrusionNormal;.1.3.6.1.4.1.674.10892.1.0.1252
 TRAP;setparam;alertChassisIntrusionNormal;traps_name;alertChassisIntrusionNormal
-TRAP;setparam;alertChassisIntrusionNormal;traps_mode;0
 TRAP;setparam;alertChassisIntrusionNormal;traps_oid;.1.3.6.1.4.1.674.10892.1.0.1252
 TRAP;setparam;alertChassisIntrusionNormal;traps_args;Server Chassis Intrusion Normal: $3
 TRAP;setparam;alertChassisIntrusionNormal;traps_status;0
@@ -1366,7 +1337,6 @@ TRAP;setparam;alertChassisIntrusionNormal;traps_downtime;0
 TRAP;setparam;alertChassisIntrusionNormal;traps_comments;Chassis intrusion has returned to normal.<br/>--Novell NMS trap annotation<br/>Variables:<br/>  1: alertSystem<br/>  2: alertTableIndexOID<br/>  3: alertMessage<br/>  4: alertCurrentStatus<br/>  5: alertPreviousStatus<br/>  6: alertData<br/>
 TRAP;ADD;alertCoolingDeviceFailure;.1.3.6.1.4.1.674.10892.1.0.1104
 TRAP;setparam;alertCoolingDeviceFailure;traps_name;alertCoolingDeviceFailure
-TRAP;setparam;alertCoolingDeviceFailure;traps_mode;0
 TRAP;setparam;alertCoolingDeviceFailure;traps_oid;.1.3.6.1.4.1.674.10892.1.0.1104
 TRAP;setparam;alertCoolingDeviceFailure;traps_args;Server Cooling Device Failure: $3
 TRAP;setparam;alertCoolingDeviceFailure;traps_status;2
@@ -1384,7 +1354,6 @@ TRAP;setparam;alertCoolingDeviceFailure;traps_downtime;0
 TRAP;setparam;alertCoolingDeviceFailure;traps_comments;Cooling device sensor has detected a failure value.<br/>--Novell NMS trap annotation<br/>Variables:<br/>  1: alertSystem<br/>  2: alertTableIndexOID<br/>  3: alertMessage<br/>  4: alertCurrentStatus<br/>  5: alertPreviousStatus<br/>  6: alertData<br/>
 TRAP;ADD;alertCoolingDeviceNonRecoverable;.1.3.6.1.4.1.674.10892.1.0.1105
 TRAP;setparam;alertCoolingDeviceNonRecoverable;traps_name;alertCoolingDeviceNonRecoverable
-TRAP;setparam;alertCoolingDeviceNonRecoverable;traps_mode;0
 TRAP;setparam;alertCoolingDeviceNonRecoverable;traps_oid;.1.3.6.1.4.1.674.10892.1.0.1105
 TRAP;setparam;alertCoolingDeviceNonRecoverable;traps_args;Server Cooling Device Non-recoverable: $3
 TRAP;setparam;alertCoolingDeviceNonRecoverable;traps_status;2
@@ -1402,7 +1371,6 @@ TRAP;setparam;alertCoolingDeviceNonRecoverable;traps_downtime;0
 TRAP;setparam;alertCoolingDeviceNonRecoverable;traps_comments;Cooling device sensor has detected a non-recoverable value.<br/>--Novell NMS trap annotation<br/>Variables:<br/>  1: alertSystem<br/>  2: alertTableIndexOID<br/>  3: alertMessage<br/>  4: alertCurrentStatus<br/>  5: alertPreviousStatus<br/>  6: alertData<br/>
 TRAP;ADD;alertCoolingDeviceNormal;.1.3.6.1.4.1.674.10892.1.0.1102
 TRAP;setparam;alertCoolingDeviceNormal;traps_name;alertCoolingDeviceNormal
-TRAP;setparam;alertCoolingDeviceNormal;traps_mode;0
 TRAP;setparam;alertCoolingDeviceNormal;traps_oid;.1.3.6.1.4.1.674.10892.1.0.1102
 TRAP;setparam;alertCoolingDeviceNormal;traps_args;Server Cooling Device Normal: $3
 TRAP;setparam;alertCoolingDeviceNormal;traps_status;0
@@ -1420,7 +1388,6 @@ TRAP;setparam;alertCoolingDeviceNormal;traps_downtime;0
 TRAP;setparam;alertCoolingDeviceNormal;traps_comments;Cooling device sensor has returned to a normal value.<br/>--Novell NMS trap annotation<br/>Variables:<br/>  1: alertSystem<br/>  2: alertTableIndexOID<br/>  3: alertMessage<br/>  4: alertCurrentStatus<br/>  5: alertPreviousStatus<br/>  6: alertData<br/>
 TRAP;ADD;alertCoolingDeviceWarning;.1.3.6.1.4.1.674.10892.1.0.1103
 TRAP;setparam;alertCoolingDeviceWarning;traps_name;alertCoolingDeviceWarning
-TRAP;setparam;alertCoolingDeviceWarning;traps_mode;0
 TRAP;setparam;alertCoolingDeviceWarning;traps_oid;.1.3.6.1.4.1.674.10892.1.0.1103
 TRAP;setparam;alertCoolingDeviceWarning;traps_args;Server Cooling Device Warning: $3
 TRAP;setparam;alertCoolingDeviceWarning;traps_status;1
@@ -1438,7 +1405,6 @@ TRAP;setparam;alertCoolingDeviceWarning;traps_downtime;0
 TRAP;setparam;alertCoolingDeviceWarning;traps_comments;Cooling device sensor has detected a warning value.<br/>--Novell NMS trap annotation<br/>Variables:<br/>  1: alertSystem<br/>  2: alertTableIndexOID<br/>  3: alertMessage<br/>  4: alertCurrentStatus<br/>  5: alertPreviousStatus<br/>  6: alertData<br/>
 TRAP;ADD;alertFanEnclosureExtendedRemoval;.1.3.6.1.4.1.674.10892.1.0.1454
 TRAP;setparam;alertFanEnclosureExtendedRemoval;traps_name;alertFanEnclosureExtendedRemoval
-TRAP;setparam;alertFanEnclosureExtendedRemoval;traps_mode;0
 TRAP;setparam;alertFanEnclosureExtendedRemoval;traps_oid;.1.3.6.1.4.1.674.10892.1.0.1454
 TRAP;setparam;alertFanEnclosureExtendedRemoval;traps_args;Server Fan Enclosure Extended Removal: $3
 TRAP;setparam;alertFanEnclosureExtendedRemoval;traps_status;2
@@ -1456,7 +1422,6 @@ TRAP;setparam;alertFanEnclosureExtendedRemoval;traps_downtime;0
 TRAP;setparam;alertFanEnclosureExtendedRemoval;traps_comments;Fan enclosure has been removed from system for an extended amount of time.<br/>--Novell NMS trap annotation<br/>Variables:<br/>  1: alertSystem<br/>  2: alertTableIndexOID<br/>  3: alertMessage<br/>  4: alertCurrentStatus<br/>  5: alertPreviousStatus<br/>  6: alertData<br/>
 TRAP;ADD;alertFanEnclosureInsertion;.1.3.6.1.4.1.674.10892.1.0.1452
 TRAP;setparam;alertFanEnclosureInsertion;traps_name;alertFanEnclosureInsertion
-TRAP;setparam;alertFanEnclosureInsertion;traps_mode;0
 TRAP;setparam;alertFanEnclosureInsertion;traps_oid;.1.3.6.1.4.1.674.10892.1.0.1452
 TRAP;setparam;alertFanEnclosureInsertion;traps_args;Server Fan Enclosure Insertion: $3
 TRAP;setparam;alertFanEnclosureInsertion;traps_status;0
@@ -1474,7 +1439,6 @@ TRAP;setparam;alertFanEnclosureInsertion;traps_downtime;0
 TRAP;setparam;alertFanEnclosureInsertion;traps_comments;Fan enclosure has been inserted into system.<br/>--Novell NMS trap annotation<br/>Variables:<br/>  1: alertSystem<br/>  2: alertTableIndexOID<br/>  3: alertMessage<br/>  4: alertCurrentStatus<br/>  5: alertPreviousStatus<br/>  6: alertData<br/>
 TRAP;ADD;alertFanEnclosureRemoval;.1.3.6.1.4.1.674.10892.1.0.1453
 TRAP;setparam;alertFanEnclosureRemoval;traps_name;alertFanEnclosureRemoval
-TRAP;setparam;alertFanEnclosureRemoval;traps_mode;0
 TRAP;setparam;alertFanEnclosureRemoval;traps_oid;.1.3.6.1.4.1.674.10892.1.0.1453
 TRAP;setparam;alertFanEnclosureRemoval;traps_args;Server Fan Enclosure Removal: $3
 TRAP;setparam;alertFanEnclosureRemoval;traps_status;1
@@ -1492,7 +1456,6 @@ TRAP;setparam;alertFanEnclosureRemoval;traps_downtime;0
 TRAP;setparam;alertFanEnclosureRemoval;traps_comments;Fan enclosure has been removed from system.<br/>--Novell NMS trap annotation<br/>Variables:<br/>  1: alertSystem<br/>  2: alertTableIndexOID<br/>  3: alertMessage<br/>  4: alertCurrentStatus<br/>  5: alertPreviousStatus<br/>  6: alertData<br/>
 TRAP;ADD;alertLogNormal;.1.3.6.1.4.1.674.10892.1.0.1552
 TRAP;setparam;alertLogNormal;traps_name;alertLogNormal
-TRAP;setparam;alertLogNormal;traps_mode;0
 TRAP;setparam;alertLogNormal;traps_oid;.1.3.6.1.4.1.674.10892.1.0.1552
 TRAP;setparam;alertLogNormal;traps_args;Server Log Normal: $3
 TRAP;setparam;alertLogNormal;traps_status;0
@@ -1510,7 +1473,6 @@ TRAP;setparam;alertLogNormal;traps_downtime;0
 TRAP;setparam;alertLogNormal;traps_comments;Log size returned to a normal level.<br/>--Novell NMS trap annotation<br/>Variables:<br/>  1: alertSystem<br/>  2: alertTableIndexOID<br/>  3: alertMessage<br/>  4: alertCurrentStatus<br/>  5: alertPreviousStatus<br/>  6: alertData<br/>
 TRAP;ADD;alertLogWarning;.1.3.6.1.4.1.674.10892.1.0.1553
 TRAP;setparam;alertLogWarning;traps_name;alertLogWarning
-TRAP;setparam;alertLogWarning;traps_mode;0
 TRAP;setparam;alertLogWarning;traps_oid;.1.3.6.1.4.1.674.10892.1.0.1553
 TRAP;setparam;alertLogWarning;traps_args;Server Log Warning: $3
 TRAP;setparam;alertLogWarning;traps_status;1
@@ -1528,7 +1490,6 @@ TRAP;setparam;alertLogWarning;traps_downtime;0
 TRAP;setparam;alertLogWarning;traps_comments;Log size is near or at capacity.<br/>--Novell NMS trap annotation<br/>Variables:<br/>  1: alertSystem<br/>  2: alertTableIndexOID<br/>  3: alertMessage<br/>  4: alertCurrentStatus<br/>  5: alertPreviousStatus<br/>  6: alertData<br/>
 TRAP;ADD;alertMemoryDeviceFailure;.1.3.6.1.4.1.674.10892.1.0.1404
 TRAP;setparam;alertMemoryDeviceFailure;traps_name;alertMemoryDeviceFailure
-TRAP;setparam;alertMemoryDeviceFailure;traps_mode;0
 TRAP;setparam;alertMemoryDeviceFailure;traps_oid;.1.3.6.1.4.1.674.10892.1.0.1404
 TRAP;setparam;alertMemoryDeviceFailure;traps_args;Server Memory ECC Count Failure: $3
 TRAP;setparam;alertMemoryDeviceFailure;traps_status;2
@@ -1546,7 +1507,6 @@ TRAP;setparam;alertMemoryDeviceFailure;traps_downtime;0
 TRAP;setparam;alertMemoryDeviceFailure;traps_comments;Memory device ECC correctable error count crossed a failure threshold.<br/>--Novell NMS trap annotation<br/>Variables:<br/>  1: alertSystem<br/>  2: alertTableIndexOID<br/>  3: alertMessage<br/>  4: alertCurrentStatus<br/>  5: alertPreviousStatus<br/>  6: alertData<br/>
 TRAP;ADD;alertMemoryDeviceNonRecoverable;.1.3.6.1.4.1.674.10892.1.0.1405
 TRAP;setparam;alertMemoryDeviceNonRecoverable;traps_name;alertMemoryDeviceNonRecoverable
-TRAP;setparam;alertMemoryDeviceNonRecoverable;traps_mode;0
 TRAP;setparam;alertMemoryDeviceNonRecoverable;traps_oid;.1.3.6.1.4.1.674.10892.1.0.1405
 TRAP;setparam;alertMemoryDeviceNonRecoverable;traps_args;Server Memory ECC Count Non-recoverable: $3
 TRAP;setparam;alertMemoryDeviceNonRecoverable;traps_status;2
@@ -1564,7 +1524,6 @@ TRAP;setparam;alertMemoryDeviceNonRecoverable;traps_downtime;0
 TRAP;setparam;alertMemoryDeviceNonRecoverable;traps_comments;Memory device ECC correctable error count crossed a non-recoverable threshold.<br/>--Novell NMS trap annotation<br/>Variables:<br/>  1: alertSystem<br/>  2: alertTableIndexOID<br/>  3: alertMessage<br/>  4: alertCurrentStatus<br/>  5: alertPreviousStatus<br/>  6: alertData<br/>
 TRAP;ADD;alertMemoryDeviceWarning;.1.3.6.1.4.1.674.10892.1.0.1403
 TRAP;setparam;alertMemoryDeviceWarning;traps_name;alertMemoryDeviceWarning
-TRAP;setparam;alertMemoryDeviceWarning;traps_mode;0
 TRAP;setparam;alertMemoryDeviceWarning;traps_oid;.1.3.6.1.4.1.674.10892.1.0.1403
 TRAP;setparam;alertMemoryDeviceWarning;traps_args;Server Memory ECC Count Warning: $3
 TRAP;setparam;alertMemoryDeviceWarning;traps_status;1
@@ -1582,7 +1541,6 @@ TRAP;setparam;alertMemoryDeviceWarning;traps_downtime;0
 TRAP;setparam;alertMemoryDeviceWarning;traps_comments;Memory device ECC correctable error count crossed a warning threshold.<br/>--Novell NMS trap annotation<br/>Variables:<br/>  1: alertSystem<br/>  2: alertTableIndexOID<br/>  3: alertMessage<br/>  4: alertCurrentStatus<br/>  5: alertPreviousStatus<br/>  6: alertData<br/>
 TRAP;ADD;alertPowerSupplyFailure;.1.3.6.1.4.1.674.10892.1.0.1354
 TRAP;setparam;alertPowerSupplyFailure;traps_name;alertPowerSupplyFailure
-TRAP;setparam;alertPowerSupplyFailure;traps_mode;0
 TRAP;setparam;alertPowerSupplyFailure;traps_oid;.1.3.6.1.4.1.674.10892.1.0.1354
 TRAP;setparam;alertPowerSupplyFailure;traps_args;Server Power Supply Failure: $3
 TRAP;setparam;alertPowerSupplyFailure;traps_status;2
@@ -1600,7 +1558,6 @@ TRAP;setparam;alertPowerSupplyFailure;traps_downtime;0
 TRAP;setparam;alertPowerSupplyFailure;traps_comments;Power supply has failed.<br/>--Novell NMS trap annotation<br/>Variables:<br/>  1: alertSystem<br/>  2: alertTableIndexOID<br/>  3: alertMessage<br/>  4: alertCurrentStatus<br/>  5: alertPreviousStatus<br/>  6: alertData<br/>
 TRAP;ADD;alertPowerSupplyNormal;.1.3.6.1.4.1.674.10892.1.0.1352
 TRAP;setparam;alertPowerSupplyNormal;traps_name;alertPowerSupplyNormal
-TRAP;setparam;alertPowerSupplyNormal;traps_mode;0
 TRAP;setparam;alertPowerSupplyNormal;traps_oid;.1.3.6.1.4.1.674.10892.1.0.1352
 TRAP;setparam;alertPowerSupplyNormal;traps_args;Server Power Supply Normal: $3
 TRAP;setparam;alertPowerSupplyNormal;traps_status;0
@@ -1618,7 +1575,6 @@ TRAP;setparam;alertPowerSupplyNormal;traps_downtime;0
 TRAP;setparam;alertPowerSupplyNormal;traps_comments;Power supply has returned to normal.<br/>--Novell NMS trap annotation<br/>Variables:<br/>  1: alertSystem<br/>  2: alertTableIndexOID<br/>  3: alertMessage<br/>  4: alertCurrentStatus<br/>  5: alertPreviousStatus<br/>  6: alertData<br/>
 TRAP;ADD;alertRedundancyDegraded;.1.3.6.1.4.1.674.10892.1.0.1305
 TRAP;setparam;alertRedundancyDegraded;traps_name;alertRedundancyDegraded
-TRAP;setparam;alertRedundancyDegraded;traps_mode;0
 TRAP;setparam;alertRedundancyDegraded;traps_oid;.1.3.6.1.4.1.674.10892.1.0.1305
 TRAP;setparam;alertRedundancyDegraded;traps_args;Server Redundancy Degraded: $3
 TRAP;setparam;alertRedundancyDegraded;traps_status;1
@@ -1636,7 +1592,6 @@ TRAP;setparam;alertRedundancyDegraded;traps_downtime;0
 TRAP;setparam;alertRedundancyDegraded;traps_comments;Redundancy has been degraded.<br/>--Novell NMS trap annotation<br/>Variables:<br/>  1: alertSystem<br/>  2: alertTableIndexOID<br/>  3: alertMessage<br/>  4: alertCurrentStatus<br/>  5: alertPreviousStatus<br/>  6: alertData<br/>
 TRAP;ADD;alertRedundancyLost;.1.3.6.1.4.1.674.10892.1.0.1306
 TRAP;setparam;alertRedundancyLost;traps_name;alertRedundancyLost
-TRAP;setparam;alertRedundancyLost;traps_mode;0
 TRAP;setparam;alertRedundancyLost;traps_oid;.1.3.6.1.4.1.674.10892.1.0.1306
 TRAP;setparam;alertRedundancyLost;traps_args;Server Redundancy Lost: $3
 TRAP;setparam;alertRedundancyLost;traps_status;2
@@ -1654,7 +1609,6 @@ TRAP;setparam;alertRedundancyLost;traps_downtime;0
 TRAP;setparam;alertRedundancyLost;traps_comments;Redundancy has been lost.<br/>--Novell NMS trap annotation<br/>Variables:<br/>  1: alertSystem<br/>  2: alertTableIndexOID<br/>  3: alertMessage<br/>  4: alertCurrentStatus<br/>  5: alertPreviousStatus<br/>  6: alertData<br/>
 TRAP;ADD;alertRedundancyNormal;.1.3.6.1.4.1.674.10892.1.0.1304
 TRAP;setparam;alertRedundancyNormal;traps_name;alertRedundancyNormal
-TRAP;setparam;alertRedundancyNormal;traps_mode;0
 TRAP;setparam;alertRedundancyNormal;traps_oid;.1.3.6.1.4.1.674.10892.1.0.1304
 TRAP;setparam;alertRedundancyNormal;traps_args;Server Redundancy Normal: $3
 TRAP;setparam;alertRedundancyNormal;traps_status;0
@@ -1672,7 +1626,6 @@ TRAP;setparam;alertRedundancyNormal;traps_downtime;0
 TRAP;setparam;alertRedundancyNormal;traps_comments;Redundancy has returned to normal.<br/>--Novell NMS trap annotation<br/>Variables:<br/>  1: alertSystem<br/>  2: alertTableIndexOID<br/>  3: alertMessage<br/>  4: alertCurrentStatus<br/>  5: alertPreviousStatus<br/>  6: alertData<br/>
 TRAP;ADD;alertSystemUp;.1.3.6.1.4.1.674.10892.1.0.1001
 TRAP;setparam;alertSystemUp;traps_name;alertSystemUp
-TRAP;setparam;alertSystemUp;traps_mode;0
 TRAP;setparam;alertSystemUp;traps_oid;.1.3.6.1.4.1.674.10892.1.0.1001
 TRAP;setparam;alertSystemUp;traps_args;Server Administrator Startup Complete: $3
 TRAP;setparam;alertSystemUp;traps_status;0
@@ -1690,7 +1643,6 @@ TRAP;setparam;alertSystemUp;traps_downtime;0
 TRAP;setparam;alertSystemUp;traps_comments;Server Administrator has completed its initialization.<br/>--Novell NMS trap annotation<br/>Variables:<br/>  1: alertSystem<br/>  2: alertTableIndexOID<br/>  3: alertMessage<br/>  4: alertCurrentStatus<br/>  5: alertPreviousStatus<br/>  6: alertData<br/>
 TRAP;ADD;alertTemperatureProbeFailure;.1.3.6.1.4.1.674.10892.1.0.1054
 TRAP;setparam;alertTemperatureProbeFailure;traps_name;alertTemperatureProbeFailure
-TRAP;setparam;alertTemperatureProbeFailure;traps_mode;0
 TRAP;setparam;alertTemperatureProbeFailure;traps_oid;.1.3.6.1.4.1.674.10892.1.0.1054
 TRAP;setparam;alertTemperatureProbeFailure;traps_args;Server Temperature Failure: $3
 TRAP;setparam;alertTemperatureProbeFailure;traps_status;2
@@ -1708,7 +1660,6 @@ TRAP;setparam;alertTemperatureProbeFailure;traps_downtime;0
 TRAP;setparam;alertTemperatureProbeFailure;traps_comments;Temperature probe has detected a failure value.<br/>--Novell NMS trap annotation<br/>Variables:<br/>  1: alertSystem<br/>  2: alertTableIndexOID<br/>  3: alertMessage<br/>  4: alertCurrentStatus<br/>  5: alertPreviousStatus<br/>  6: alertData<br/>
 TRAP;ADD;alertTemperatureProbeNonRecoverable;.1.3.6.1.4.1.674.10892.1.0.1055
 TRAP;setparam;alertTemperatureProbeNonRecoverable;traps_name;alertTemperatureProbeNonRecoverable
-TRAP;setparam;alertTemperatureProbeNonRecoverable;traps_mode;0
 TRAP;setparam;alertTemperatureProbeNonRecoverable;traps_oid;.1.3.6.1.4.1.674.10892.1.0.1055
 TRAP;setparam;alertTemperatureProbeNonRecoverable;traps_args;Server Temperature Non-recoverable: $3
 TRAP;setparam;alertTemperatureProbeNonRecoverable;traps_status;2
@@ -1726,7 +1677,6 @@ TRAP;setparam;alertTemperatureProbeNonRecoverable;traps_downtime;0
 TRAP;setparam;alertTemperatureProbeNonRecoverable;traps_comments;Temperature probe has detected a non-recoverable value.<br/>--Novell NMS trap annotation<br/>Variables:<br/>  1: alertSystem<br/>  2: alertTableIndexOID<br/>  3: alertMessage<br/>  4: alertCurrentStatus<br/>  5: alertPreviousStatus<br/>  6: alertData<br/>
 TRAP;ADD;alertTemperatureProbeNormal;.1.3.6.1.4.1.674.10892.1.0.1052
 TRAP;setparam;alertTemperatureProbeNormal;traps_name;alertTemperatureProbeNormal
-TRAP;setparam;alertTemperatureProbeNormal;traps_mode;0
 TRAP;setparam;alertTemperatureProbeNormal;traps_oid;.1.3.6.1.4.1.674.10892.1.0.1052
 TRAP;setparam;alertTemperatureProbeNormal;traps_args;Server Temperature Normal: $3
 TRAP;setparam;alertTemperatureProbeNormal;traps_status;0
@@ -1744,7 +1694,6 @@ TRAP;setparam;alertTemperatureProbeNormal;traps_downtime;0
 TRAP;setparam;alertTemperatureProbeNormal;traps_comments;Temperature probe has returned to a normal value.<br/>--Novell NMS trap annotation<br/>Variables:<br/>  1: alertSystem<br/>  2: alertTableIndexOID<br/>  3: alertMessage<br/>  4: alertCurrentStatus<br/>  5: alertPreviousStatus<br/>  6: alertData<br/>
 TRAP;ADD;alertTemperatureProbeWarning;.1.3.6.1.4.1.674.10892.1.0.1053
 TRAP;setparam;alertTemperatureProbeWarning;traps_name;alertTemperatureProbeWarning
-TRAP;setparam;alertTemperatureProbeWarning;traps_mode;0
 TRAP;setparam;alertTemperatureProbeWarning;traps_oid;.1.3.6.1.4.1.674.10892.1.0.1053
 TRAP;setparam;alertTemperatureProbeWarning;traps_args;Server Temperature Warning: $3
 TRAP;setparam;alertTemperatureProbeWarning;traps_status;1
@@ -1762,7 +1711,6 @@ TRAP;setparam;alertTemperatureProbeWarning;traps_downtime;0
 TRAP;setparam;alertTemperatureProbeWarning;traps_comments;Temperature probe has detected a warning value.<br/>--Novell NMS trap annotation<br/>Variables:<br/>  1: alertSystem<br/>  2: alertTableIndexOID<br/>  3: alertMessage<br/>  4: alertCurrentStatus<br/>  5: alertPreviousStatus<br/>  6: alertData<br/>
 TRAP;ADD;alertThermalShutdown;.1.3.6.1.4.1.674.10892.1.0.1004
 TRAP;setparam;alertThermalShutdown;traps_name;alertThermalShutdown
-TRAP;setparam;alertThermalShutdown;traps_mode;0
 TRAP;setparam;alertThermalShutdown;traps_oid;.1.3.6.1.4.1.674.10892.1.0.1004
 TRAP;setparam;alertThermalShutdown;traps_args;Server Thermal Shutdown: $3
 TRAP;setparam;alertThermalShutdown;traps_status;2
@@ -1780,7 +1728,6 @@ TRAP;setparam;alertThermalShutdown;traps_downtime;0
 TRAP;setparam;alertThermalShutdown;traps_comments;Thermal shutdown protection has been initiated.<br/>--Novell NMS trap annotation<br/>Variables:<br/>  1: alertSystem<br/>  2: alertTableIndexOID<br/>  3: alertMessage<br/>  4: alertCurrentStatus<br/>  5: alertPreviousStatus<br/>  6: alertData<br/>
 TRAP;ADD;alertVoltageProbeFailure;.1.3.6.1.4.1.674.10892.1.0.1154
 TRAP;setparam;alertVoltageProbeFailure;traps_name;alertVoltageProbeFailure
-TRAP;setparam;alertVoltageProbeFailure;traps_mode;0
 TRAP;setparam;alertVoltageProbeFailure;traps_oid;.1.3.6.1.4.1.674.10892.1.0.1154
 TRAP;setparam;alertVoltageProbeFailure;traps_args;Server Voltage Failure: $3
 TRAP;setparam;alertVoltageProbeFailure;traps_status;2
@@ -1798,7 +1745,6 @@ TRAP;setparam;alertVoltageProbeFailure;traps_downtime;0
 TRAP;setparam;alertVoltageProbeFailure;traps_comments;Voltage probe has detected a failure value.<br/>--Novell NMS trap annotation<br/>Variables:<br/>  1: alertSystem<br/>  2: alertTableIndexOID<br/>  3: alertMessage<br/>  4: alertCurrentStatus<br/>  5: alertPreviousStatus<br/>  6: alertData<br/>
 TRAP;ADD;alertVoltageProbeNonRecoverable;.1.3.6.1.4.1.674.10892.1.0.1155
 TRAP;setparam;alertVoltageProbeNonRecoverable;traps_name;alertVoltageProbeNonRecoverable
-TRAP;setparam;alertVoltageProbeNonRecoverable;traps_mode;0
 TRAP;setparam;alertVoltageProbeNonRecoverable;traps_oid;.1.3.6.1.4.1.674.10892.1.0.1155
 TRAP;setparam;alertVoltageProbeNonRecoverable;traps_args;Server Voltage Non-recoverable: $3
 TRAP;setparam;alertVoltageProbeNonRecoverable;traps_status;2
@@ -1816,7 +1762,6 @@ TRAP;setparam;alertVoltageProbeNonRecoverable;traps_downtime;0
 TRAP;setparam;alertVoltageProbeNonRecoverable;traps_comments;Voltage probe has detected a non-recoverable value.<br/>--Novell NMS trap annotation<br/>Variables:<br/>  1: alertSystem<br/>  2: alertTableIndexOID<br/>  3: alertMessage<br/>  4: alertCurrentStatus<br/>  5: alertPreviousStatus<br/>  6: alertData<br/>
 TRAP;ADD;alertVoltageProbeNormal;.1.3.6.1.4.1.674.10892.1.0.1152
 TRAP;setparam;alertVoltageProbeNormal;traps_name;alertVoltageProbeNormal
-TRAP;setparam;alertVoltageProbeNormal;traps_mode;0
 TRAP;setparam;alertVoltageProbeNormal;traps_oid;.1.3.6.1.4.1.674.10892.1.0.1152
 TRAP;setparam;alertVoltageProbeNormal;traps_args;Server Voltage Normal: $3
 TRAP;setparam;alertVoltageProbeNormal;traps_status;0
@@ -1834,7 +1779,6 @@ TRAP;setparam;alertVoltageProbeNormal;traps_downtime;0
 TRAP;setparam;alertVoltageProbeNormal;traps_comments;Voltage probe has returned to a normal value.<br/>--Novell NMS trap annotation<br/>Variables:<br/>  1: alertSystem<br/>  2: alertTableIndexOID<br/>  3: alertMessage<br/>  4: alertCurrentStatus<br/>  5: alertPreviousStatus<br/>  6: alertData<br/>
 TRAP;ADD;alertVoltageProbeWarning;.1.3.6.1.4.1.674.10892.1.0.1153
 TRAP;setparam;alertVoltageProbeWarning;traps_name;alertVoltageProbeWarning
-TRAP;setparam;alertVoltageProbeWarning;traps_mode;0
 TRAP;setparam;alertVoltageProbeWarning;traps_oid;.1.3.6.1.4.1.674.10892.1.0.1153
 TRAP;setparam;alertVoltageProbeWarning;traps_args;Server Voltage Warning: $3
 TRAP;setparam;alertVoltageProbeWarning;traps_status;1
@@ -1852,7 +1796,6 @@ TRAP;setparam;alertVoltageProbeWarning;traps_downtime;0
 TRAP;setparam;alertVoltageProbeWarning;traps_comments;Voltage probe has detected a warning value.<br/>--Novell NMS trap annotation<br/>Variables:<br/>  1: alertSystem<br/>  2: alertTableIndexOID<br/>  3: alertMessage<br/>  4: alertCurrentStatus<br/>  5: alertPreviousStatus<br/>  6: alertData<br/>
 TRAP;ADD;brDatabaseFull;.1.3.6.1.4.1.43.0.65
 TRAP;setparam;brDatabaseFull;traps_name;brDatabaseFull
-TRAP;setparam;brDatabaseFull;traps_mode;0
 TRAP;setparam;brDatabaseFull;traps_oid;.1.3.6.1.4.1.43.0.65
 TRAP;setparam;brDatabaseFull;traps_args;This trap indicates that either the Filtering  $*
 TRAP;setparam;brDatabaseFull;traps_status;0
@@ -1870,7 +1813,6 @@ TRAP;setparam;brDatabaseFull;traps_downtime;0
 TRAP;setparam;brDatabaseFull;traps_comments;This trap indicates that either the Filtering <br/>database, the permanent database or the ATM Downlink <br/>database has become full. If the database occupancy <br/>exceeds 90% this trap will be sent also. The variable <br/>bindings enable the trap to be identified as refering to <br/>the filtering, permanent, or ATM Downlink database, and <br/>to differentiate between 90% or 100% full.<br/>Variables:<br/>  1: brDatabaseType<br/>  2: brDatabaseLevel<br/>
 TRAP;ADD;ccmCLIRunningConfigChanged;.1.3.6.1.4.1.9.9.43.2.0.2
 TRAP;setparam;ccmCLIRunningConfigChanged;traps_name;ccmCLIRunningConfigChanged
-TRAP;setparam;ccmCLIRunningConfigChanged;traps_mode;0
 TRAP;setparam;ccmCLIRunningConfigChanged;traps_oid;.1.3.6.1.4.1.9.9.43.2.0.2
 TRAP;setparam;ccmCLIRunningConfigChanged;traps_args;This notification indicates that the running $*
 TRAP;setparam;ccmCLIRunningConfigChanged;traps_status;0
@@ -1888,7 +1830,6 @@ TRAP;setparam;ccmCLIRunningConfigChanged;traps_downtime;0
 TRAP;setparam;ccmCLIRunningConfigChanged;traps_comments;This notification indicates that the running<br/>configuration of the managed system has changed<br/>from the CLI.<br/>If the managed system supports a separate <br/>configuration mode(where the configuration commands <br/>are entered under a  configuration session which <br/>affects the running configuration of the system), <br/>then this notification is sent when the configuration <br/>mode is exited.<br/>During this configuration session there can be <br/>one or more running configuration changes.<br/>Variables:<br/>  1: ccmHistoryRunningLastChanged<br/>  2: ccmHistoryEventTerminalType<br/>
 TRAP;ADD;ccmCTIDRolledOver;.1.3.6.1.4.1.9.9.43.2.0.3
 TRAP;setparam;ccmCTIDRolledOver;traps_name;ccmCTIDRolledOver
-TRAP;setparam;ccmCTIDRolledOver;traps_mode;0
 TRAP;setparam;ccmCTIDRolledOver;traps_oid;.1.3.6.1.4.1.9.9.43.2.0.3
 TRAP;setparam;ccmCTIDRolledOver;traps_args;This notification indicates that the Config Change Tracking $*
 TRAP;setparam;ccmCTIDRolledOver;traps_status;0
@@ -1906,7 +1847,6 @@ TRAP;setparam;ccmCTIDRolledOver;traps_downtime;0
 TRAP;setparam;ccmCTIDRolledOver;traps_comments;This notification indicates that the Config Change Tracking<br/>ID has rolled over and will be reset.<br/>Variables:<br/>
 TRAP;ADD;ciscoConfigManEvent;.1.3.6.1.4.1.9.9.43.2.0.1
 TRAP;setparam;ciscoConfigManEvent;traps_name;ciscoConfigManEvent
-TRAP;setparam;ciscoConfigManEvent;traps_mode;0
 TRAP;setparam;ciscoConfigManEvent;traps_oid;.1.3.6.1.4.1.9.9.43.2.0.1
 TRAP;setparam;ciscoConfigManEvent;traps_args;Notification of a configuration management event as $*
 TRAP;setparam;ciscoConfigManEvent;traps_status;0
@@ -1924,7 +1864,6 @@ TRAP;setparam;ciscoConfigManEvent;traps_downtime;0
 TRAP;setparam;ciscoConfigManEvent;traps_comments;Notification of a configuration management event as<br/>recorded in ccmHistoryEventTable.<br/>Variables:<br/>  1: ccmHistoryEventCommandSource<br/>  2: ccmHistoryEventConfigSource<br/>  3: ccmHistoryEventConfigDestination<br/>
 TRAP;ADD;coldStart;.1.3.6.1.6.3.1.1.5.1
 TRAP;setparam;coldStart;traps_name;coldStart
-TRAP;setparam;coldStart;traps_mode;0
 TRAP;setparam;coldStart;traps_oid;.1.3.6.1.6.3.1.1.5.1
 TRAP;setparam;coldStart;traps_args;SNMP is restarting
 TRAP;setparam;coldStart;traps_status;1
@@ -1942,7 +1881,6 @@ TRAP;setparam;coldStart;traps_downtime;0
 TRAP;setparam;coldStart;traps_comments;A coldStart(0) trap signifies that the sending protocol entity is reinitializing itself such that the agent&#039
 TRAP;ADD;dmtfAlert309;.1.3.6.1.4.1.674.10890.1.0.309
 TRAP;setparam;dmtfAlert309;traps_name;dmtfAlert309
-TRAP;setparam;dmtfAlert309;traps_mode;0
 TRAP;setparam;dmtfAlert309;traps_oid;.1.3.6.1.4.1.674.10890.1.0.309
 TRAP;setparam;dmtfAlert309;traps_args;DMI BASEBRDD Alert Event: Event Data: ($3 on $1)
 TRAP;setparam;dmtfAlert309;traps_status;2
@@ -1960,7 +1898,6 @@ TRAP;setparam;dmtfAlert309;traps_downtime;0
 TRAP;setparam;dmtfAlert309;traps_comments;Current sensor warning returned to normal<br/>--NMS trap annotation<br/>Variables:<br/>  1: a9999AlertSystem<br/>  2: a9999AlertGroup<br/>  3: a9999AlertMessage<br/>  4: a9999AlertSeverity<br/>  5: a9999AlertData<br/>
 TRAP;ADD;dmtfAlert310;.1.3.6.1.4.1.674.10890.1.0.310
 TRAP;setparam;dmtfAlert310;traps_name;dmtfAlert310
-TRAP;setparam;dmtfAlert310;traps_mode;0
 TRAP;setparam;dmtfAlert310;traps_oid;.1.3.6.1.4.1.674.10890.1.0.310
 TRAP;setparam;dmtfAlert310;traps_args;DMI BASEBRDD Alert Event: Event Data: ($3 on $1)
 TRAP;setparam;dmtfAlert310;traps_status;2
@@ -1978,7 +1915,6 @@ TRAP;setparam;dmtfAlert310;traps_downtime;0
 TRAP;setparam;dmtfAlert310;traps_comments;Power supply lost redundancy detected<br/>--NMS trap annotation<br/>Variables:<br/>  1: a9999AlertSystem<br/>  2: a9999AlertGroup<br/>  3: a9999AlertMessage<br/>  4: a9999AlertSeverity<br/>  5: a9999AlertData<br/>
 TRAP;ADD;dmtfAlert311;.1.3.6.1.4.1.674.10890.1.0.311
 TRAP;setparam;dmtfAlert311;traps_name;dmtfAlert311
-TRAP;setparam;dmtfAlert311;traps_mode;0
 TRAP;setparam;dmtfAlert311;traps_oid;.1.3.6.1.4.1.674.10890.1.0.311
 TRAP;setparam;dmtfAlert311;traps_args;DMI BASEBRDD Alert Event: Event Data: ($3 on $1)
 TRAP;setparam;dmtfAlert311;traps_status;2
@@ -1996,7 +1932,6 @@ TRAP;setparam;dmtfAlert311;traps_downtime;0
 TRAP;setparam;dmtfAlert311;traps_comments;Power supply regained redundancy<br/>--NMS trap annotation<br/>Variables:<br/>  1: a9999AlertSystem<br/>  2: a9999AlertGroup<br/>  3: a9999AlertMessage<br/>  4: a9999AlertSeverity<br/>  5: a9999AlertData<br/>
 TRAP;ADD;dmtfAlert312;.1.3.6.1.4.1.674.10890.1.0.312
 TRAP;setparam;dmtfAlert312;traps_name;dmtfAlert312
-TRAP;setparam;dmtfAlert312;traps_mode;0
 TRAP;setparam;dmtfAlert312;traps_oid;.1.3.6.1.4.1.674.10890.1.0.312
 TRAP;setparam;dmtfAlert312;traps_args;DMI BASEBRDD Alert Event: Event Data: ($3 on $1)
 TRAP;setparam;dmtfAlert312;traps_status;2
@@ -2014,7 +1949,6 @@ TRAP;setparam;dmtfAlert312;traps_downtime;0
 TRAP;setparam;dmtfAlert312;traps_comments;Power supply degraded redundancy detected<br/>--NMS trap annotation<br/>Variables:<br/>  1: a9999AlertSystem<br/>  2: a9999AlertGroup<br/>  3: a9999AlertMessage<br/>  4: a9999AlertSeverity<br/>  5: a9999AlertData<br/>
 TRAP;ADD;dmtfAlert313;.1.3.6.1.4.1.674.10890.1.0.313
 TRAP;setparam;dmtfAlert313;traps_name;dmtfAlert313
-TRAP;setparam;dmtfAlert313;traps_mode;0
 TRAP;setparam;dmtfAlert313;traps_oid;.1.3.6.1.4.1.674.10890.1.0.313
 TRAP;setparam;dmtfAlert313;traps_args;DMI BASEBRDD Alert Event: Event Data: ($3 on $1)
 TRAP;setparam;dmtfAlert313;traps_status;2
@@ -2032,7 +1966,6 @@ TRAP;setparam;dmtfAlert313;traps_downtime;0
 TRAP;setparam;dmtfAlert313;traps_comments;Power supply degraded redundancy returned to normal<br/>--NMS trap annotation<br/>Variables:<br/>  1: a9999AlertSystem<br/>  2: a9999AlertGroup<br/>  3: a9999AlertMessage<br/>  4: a9999AlertSeverity<br/>  5: a9999AlertData<br/>
 TRAP;ADD;dmtfAlert314;.1.3.6.1.4.1.674.10890.1.0.314
 TRAP;setparam;dmtfAlert314;traps_name;dmtfAlert314
-TRAP;setparam;dmtfAlert314;traps_mode;0
 TRAP;setparam;dmtfAlert314;traps_oid;.1.3.6.1.4.1.674.10890.1.0.314
 TRAP;setparam;dmtfAlert314;traps_args;DMI BASEBRDD Alert Event: Event Data: ($3 on $1)
 TRAP;setparam;dmtfAlert314;traps_status;2
@@ -2050,7 +1983,6 @@ TRAP;setparam;dmtfAlert314;traps_downtime;0
 TRAP;setparam;dmtfAlert314;traps_comments;Power supply failure detected<br/>--NMS trap annotation<br/>Variables:<br/>  1: a9999AlertSystem<br/>  2: a9999AlertGroup<br/>  3: a9999AlertMessage<br/>  4: a9999AlertSeverity<br/>  5: a9999AlertData<br/>
 TRAP;ADD;dmtfAlert315;.1.3.6.1.4.1.674.10890.1.0.315
 TRAP;setparam;dmtfAlert315;traps_name;dmtfAlert315
-TRAP;setparam;dmtfAlert315;traps_mode;0
 TRAP;setparam;dmtfAlert315;traps_oid;.1.3.6.1.4.1.674.10890.1.0.315
 TRAP;setparam;dmtfAlert315;traps_args;DMI BASEBRDD Alert Event: Event Data: ($3 on $1)
 TRAP;setparam;dmtfAlert315;traps_status;2
@@ -2068,7 +2000,6 @@ TRAP;setparam;dmtfAlert315;traps_downtime;0
 TRAP;setparam;dmtfAlert315;traps_comments;Power supply failure returned to normal<br/>--NMS trap annotation<br/>Variables:<br/>  1: a9999AlertSystem<br/>  2: a9999AlertGroup<br/>  3: a9999AlertMessage<br/>  4: a9999AlertSeverity<br/>  5: a9999AlertData<br/>
 TRAP;ADD;dmtfAlert320;.1.3.6.1.4.1.674.10890.1.0.320
 TRAP;setparam;dmtfAlert320;traps_name;dmtfAlert320
-TRAP;setparam;dmtfAlert320;traps_mode;0
 TRAP;setparam;dmtfAlert320;traps_oid;.1.3.6.1.4.1.674.10890.1.0.320
 TRAP;setparam;dmtfAlert320;traps_args;DMI BASEBRDD Alert Event: Event Data: ($3 on $1)
 TRAP;setparam;dmtfAlert320;traps_status;2
@@ -2086,7 +2017,6 @@ TRAP;setparam;dmtfAlert320;traps_downtime;0
 TRAP;setparam;dmtfAlert320;traps_comments;Chassis intrusion detected<br/>--NMS trap annotation<br/>Variables:<br/>  1: a9999AlertSystem<br/>  2: a9999AlertGroup<br/>  3: a9999AlertMessage<br/>  4: a9999AlertSeverity<br/>  5: a9999AlertData<br/>
 TRAP;ADD;dmtfAlert321;.1.3.6.1.4.1.674.10890.1.0.321
 TRAP;setparam;dmtfAlert321;traps_name;dmtfAlert321
-TRAP;setparam;dmtfAlert321;traps_mode;0
 TRAP;setparam;dmtfAlert321;traps_oid;.1.3.6.1.4.1.674.10890.1.0.321
 TRAP;setparam;dmtfAlert321;traps_args;DMI BASEBRDD Alert Event: Event Data: ($3 on $1)
 TRAP;setparam;dmtfAlert321;traps_status;2
@@ -2104,7 +2034,6 @@ TRAP;setparam;dmtfAlert321;traps_downtime;0
 TRAP;setparam;dmtfAlert321;traps_comments;Chassis intrusion returned to normal<br/>--NMS trap annotation<br/>Variables:<br/>  1: a9999AlertSystem<br/>  2: a9999AlertGroup<br/>  3: a9999AlertMessage<br/>  4: a9999AlertSeverity<br/>  5: a9999AlertData<br/>
 TRAP;ADD;dmtfAlert323;.1.3.6.1.4.1.674.10890.1.0.323
 TRAP;setparam;dmtfAlert323;traps_name;dmtfAlert323
-TRAP;setparam;dmtfAlert323;traps_mode;0
 TRAP;setparam;dmtfAlert323;traps_oid;.1.3.6.1.4.1.674.10890.1.0.323
 TRAP;setparam;dmtfAlert323;traps_args;DMI BASEBRDD Alert Event: Event Data: ($3 on $1)
 TRAP;setparam;dmtfAlert323;traps_status;2
@@ -2122,7 +2051,6 @@ TRAP;setparam;dmtfAlert323;traps_downtime;0
 TRAP;setparam;dmtfAlert323;traps_comments;Memory ECC fault detected<br/>--NMS trap annotation<br/>Variables:<br/>  1: a9999AlertSystem<br/>  2: a9999AlertGroup<br/>  3: a9999AlertMessage<br/>  4: a9999AlertSeverity<br/>  5: a9999AlertData<br/>
 TRAP;ADD;dmtfAlert325;.1.3.6.1.4.1.674.10890.1.0.325
 TRAP;setparam;dmtfAlert325;traps_name;dmtfAlert325
-TRAP;setparam;dmtfAlert325;traps_mode;0
 TRAP;setparam;dmtfAlert325;traps_oid;.1.3.6.1.4.1.674.10890.1.0.325
 TRAP;setparam;dmtfAlert325;traps_args;DMI BASEBRDD Alert Event: Event Data: ($3 on $1)
 TRAP;setparam;dmtfAlert325;traps_status;2
@@ -2140,7 +2068,6 @@ TRAP;setparam;dmtfAlert325;traps_downtime;0
 TRAP;setparam;dmtfAlert325;traps_comments;Lost connection to storage system<br/>--NMS trap annotation<br/>Variables:<br/>  1: a9999AlertSystem<br/>  2: a9999AlertGroup<br/>  3: a9999AlertMessage<br/>  4: a9999AlertSeverity<br/>  5: a9999AlertData<br/>
 TRAP;ADD;dmtfAlert326;.1.3.6.1.4.1.674.10890.1.0.326
 TRAP;setparam;dmtfAlert326;traps_name;dmtfAlert326
-TRAP;setparam;dmtfAlert326;traps_mode;0
 TRAP;setparam;dmtfAlert326;traps_oid;.1.3.6.1.4.1.674.10890.1.0.326
 TRAP;setparam;dmtfAlert326;traps_args;DMI BASEBRDD Alert Event: Event Data: ($3 on $1)
 TRAP;setparam;dmtfAlert326;traps_status;2
@@ -2158,7 +2085,6 @@ TRAP;setparam;dmtfAlert326;traps_downtime;0
 TRAP;setparam;dmtfAlert326;traps_comments;Established connection to storage system<br/>--NMS trap annotation<br/>Variables:<br/>  1: a9999AlertSystem<br/>  2: a9999AlertGroup<br/>  3: a9999AlertMessage<br/>  4: a9999AlertSeverity<br/>  5: a9999AlertData<br/>
 TRAP;ADD;dmtfAlert327;.1.3.6.1.4.1.674.10890.1.0.327
 TRAP;setparam;dmtfAlert327;traps_name;dmtfAlert327
-TRAP;setparam;dmtfAlert327;traps_mode;0
 TRAP;setparam;dmtfAlert327;traps_oid;.1.3.6.1.4.1.674.10890.1.0.327
 TRAP;setparam;dmtfAlert327;traps_args;DMI BASEBRDD Alert Event: Event Data: ($3 on $1)
 TRAP;setparam;dmtfAlert327;traps_status;2
@@ -2176,7 +2102,6 @@ TRAP;setparam;dmtfAlert327;traps_downtime;0
 TRAP;setparam;dmtfAlert327;traps_comments;Reestablished connection to storage system<br/>--NMS trap annotation<br/>Variables:<br/>  1: a9999AlertSystem<br/>  2: a9999AlertGroup<br/>  3: a9999AlertMessage<br/>  4: a9999AlertSeverity<br/>  5: a9999AlertData<br/>
 TRAP;ADD;dmtfAlert330;.1.3.6.1.4.1.674.10890.1.0.330
 TRAP;setparam;dmtfAlert330;traps_name;dmtfAlert330
-TRAP;setparam;dmtfAlert330;traps_mode;0
 TRAP;setparam;dmtfAlert330;traps_oid;.1.3.6.1.4.1.674.10890.1.0.330
 TRAP;setparam;dmtfAlert330;traps_args;DMI BASEBRDD Alert Event: Event Data: ($3 on $1)
 TRAP;setparam;dmtfAlert330;traps_status;2
@@ -2194,7 +2119,6 @@ TRAP;setparam;dmtfAlert330;traps_downtime;0
 TRAP;setparam;dmtfAlert330;traps_comments;System Up<br/>--NMS trap annotation<br/>Variables:<br/>  1: a9999AlertSystem<br/>  2: a9999AlertGroup<br/>  3: a9999AlertMessage<br/>  4: a9999AlertSeverity<br/>  5: a9999AlertData<br/>
 TRAP;ADD;eventGenericTrap;.1.3.6.1.4.1.43.0.82
 TRAP;setparam;eventGenericTrap;traps_name;eventGenericTrap
-TRAP;setparam;eventGenericTrap;traps_mode;0
 TRAP;setparam;eventGenericTrap;traps_oid;.1.3.6.1.4.1.43.0.82
 TRAP;setparam;eventGenericTrap;traps_args;This trap is sent to management stations when an internal  $*
 TRAP;setparam;eventGenericTrap;traps_status;0
@@ -2212,7 +2136,6 @@ TRAP;setparam;eventGenericTrap;traps_downtime;0
 TRAP;setparam;eventGenericTrap;traps_comments;This trap is sent to management stations when an internal <br/>RMON event is tiggered and there is no applicable specific trap. The trap <br/>identifies the event index triggered and includes a value for <br/>'eventDescription'. Note that the text is not the literal value of the event <br/>description column in this table but rather the descriptive text that would have <br/>been added to the event log.<br/>Variables:<br/>  1: eventDescription<br/>
 TRAP;ADD;failoverEvent;.1.3.6.1.4.1.4413.1.2.3.0.1
 TRAP;setparam;failoverEvent;traps_name;failoverEvent
-TRAP;setparam;failoverEvent;traps_mode;0
 TRAP;setparam;failoverEvent;traps_oid;.1.3.6.1.4.1.4413.1.2.3.0.1
 TRAP;setparam;failoverEvent;traps_args;$*
 TRAP;setparam;failoverEvent;traps_status;0
@@ -2230,7 +2153,6 @@ TRAP;setparam;failoverEvent;traps_downtime;0
 TRAP;setparam;failoverEvent;traps_comments;<br/>This trap is generated to indicate that adapter Fail-Over <br/>event has occured<br/>Variables:<br/>  1: trapAdapterName<br/>  2: trapTeamName<br/>  3: trapCauseDirection<br/>  4: trapAdapterActivityCause<br/>
 TRAP;ADD;linkDown;.1.3.6.1.6.3.1.1.5.3
 TRAP;setparam;linkDown;traps_name;linkDown
-TRAP;setparam;linkDown;traps_mode;0
 TRAP;setparam;linkDown;traps_oid;.1.3.6.1.6.3.1.1.5.3
 TRAP;setparam;linkDown;traps_args;Link down on interface $2. State: $4.
 TRAP;setparam;linkDown;traps_status;2
@@ -2248,7 +2170,6 @@ TRAP;setparam;linkDown;traps_downtime;0
 TRAP;setparam;linkDown;traps_comments;A linkDown(2) trap signifies that the sending protocol entity recognizes a failure in one of the communication links represented in the agent&#039
 TRAP;ADD;linkUp;.1.3.6.1.6.3.1.1.5.4
 TRAP;setparam;linkUp;traps_name;linkUp
-TRAP;setparam;linkUp;traps_mode;0
 TRAP;setparam;linkUp;traps_oid;.1.3.6.1.6.3.1.1.5.4
 TRAP;setparam;linkUp;traps_args;Link up on interface $2. State: $4.
 TRAP;setparam;linkUp;traps_status;0
@@ -2266,7 +2187,6 @@ TRAP;setparam;linkUp;traps_downtime;0
 TRAP;setparam;linkUp;traps_comments;A linkUp(3) trap signifies that the sending protocol entity recognizes that one of the communication links represented in the agent&#039
 TRAP;ADD;ospfVirtIfTxRetransmit;.1.3.6.1.4.1.11.0.14
 TRAP;setparam;ospfVirtIfTxRetransmit;traps_name;ospfVirtIfTxRetransmit
-TRAP;setparam;ospfVirtIfTxRetransmit;traps_mode;0
 TRAP;setparam;ospfVirtIfTxRetransmit;traps_oid;.1.3.6.1.4.1.11.0.14
 TRAP;setparam;ospfVirtIfTxRetransmit;traps_args;An ospfTxRetransmit  trap  signifies  than  an $*
 TRAP;setparam;ospfVirtIfTxRetransmit;traps_status;0
@@ -2284,7 +2204,6 @@ TRAP;setparam;ospfVirtIfTxRetransmit;traps_downtime;0
 TRAP;setparam;ospfVirtIfTxRetransmit;traps_comments;An ospfTxRetransmit  trap  signifies  than  an<br/>OSPF packet has been retransmitted on a virtual<br/>interface.  All packets that may be retransmit-<br/>ted  are  associated with an LSDB entry. The LS<br/>type, LS ID, and Router ID are used to identify<br/>the LSDB entry.<br/>Variables:<br/>  1: snOspfRouterId<br/>  2: snOspfVirtIfStatusAreaID<br/>  3: snOspfVirtIfStatusNeighbor<br/>  4: snOspfPacketType<br/>  5: snOspfLsdbType<br/>  6: snOspfLsdbLsId<br/>  7: snOspfLsdbRouterId<br/>
 TRAP;ADD;perc2SmartConfigChange;.1.3.6.1.4.1.674.10893.1.1.200.0.586
 TRAP;setparam;perc2SmartConfigChange;traps_name;perc2SmartConfigChange
-TRAP;setparam;perc2SmartConfigChange;traps_mode;0
 TRAP;setparam;perc2SmartConfigChange;traps_oid;.1.3.6.1.4.1.674.10893.1.1.200.0.586
 TRAP;setparam;perc2SmartConfigChange;traps_args;Array Manager Event: Smart Config Change:
 TRAP;setparam;perc2SmartConfigChange;traps_status;1
@@ -2302,7 +2221,6 @@ TRAP;setparam;perc2SmartConfigChange;traps_downtime;0
 TRAP;setparam;perc2SmartConfigChange;traps_comments;%s SMART configuration change on %s.<br/>Variables:<br/>  1: controllerNameEv<br/>  2: arrayDiskNameEv<br/>
 TRAP;ADD;perc2SmartFPTExceeded;.1.3.6.1.4.1.674.10893.1.1.200.0.585
 TRAP;setparam;perc2SmartFPTExceeded;traps_name;perc2SmartFPTExceeded
-TRAP;setparam;perc2SmartFPTExceeded;traps_mode;0
 TRAP;setparam;perc2SmartFPTExceeded;traps_oid;.1.3.6.1.4.1.674.10893.1.1.200.0.585
 TRAP;setparam;perc2SmartFPTExceeded;traps_args;Array Manager Event: Smart FPT Exceeded:
 TRAP;setparam;perc2SmartFPTExceeded;traps_status;0
@@ -2320,7 +2238,6 @@ TRAP;setparam;perc2SmartFPTExceeded;traps_downtime;0
 TRAP;setparam;perc2SmartFPTExceeded;traps_comments;%s SMART:FPT EXCEEDED on %s.<br/>Variables:<br/>  1: controllerNameEv<br/>  2: arrayDiskNameEv<br/>
 TRAP;ADD;perc2SmartFPTExceededTest;.1.3.6.1.4.1.674.10893.1.1.200.0.590
 TRAP;setparam;perc2SmartFPTExceededTest;traps_name;perc2SmartFPTExceededTest
-TRAP;setparam;perc2SmartFPTExceededTest;traps_mode;0
 TRAP;setparam;perc2SmartFPTExceededTest;traps_oid;.1.3.6.1.4.1.674.10893.1.1.200.0.590
 TRAP;setparam;perc2SmartFPTExceededTest;traps_args;    Internal Controller has encountered Strong-ARM processor specific error$1
 TRAP;setparam;perc2SmartFPTExceededTest;traps_status;1
@@ -2338,7 +2255,6 @@ TRAP;setparam;perc2SmartFPTExceededTest;traps_downtime;0
 TRAP;setparam;perc2SmartFPTExceededTest;traps_comments;Internal Controller has encountered Strong-ARM processor specific error<br/>Variables:<br/>
 TRAP;ADD;perc2SmartWarning;.1.3.6.1.4.1.674.10893.1.1.200.0.587
 TRAP;setparam;perc2SmartWarning;traps_name;perc2SmartWarning
-TRAP;setparam;perc2SmartWarning;traps_mode;0
 TRAP;setparam;perc2SmartWarning;traps_oid;.1.3.6.1.4.1.674.10893.1.1.200.0.587
 TRAP;setparam;perc2SmartWarning;traps_args;Array Manager Event: Smart Warning:
 TRAP;setparam;perc2SmartWarning;traps_status;1
@@ -2356,7 +2272,6 @@ TRAP;setparam;perc2SmartWarning;traps_downtime;0
 TRAP;setparam;perc2SmartWarning;traps_comments;%s SMART Warning on %s.<br/>Variables:<br/>  1: controllerNameEv<br/>  2: arrayDiskNameEv<br/>
 TRAP;ADD;perc2SmartWarningDegraded;.1.3.6.1.4.1.674.10893.1.1.200.0.589
 TRAP;setparam;perc2SmartWarningDegraded;traps_name;perc2SmartWarningDegraded
-TRAP;setparam;perc2SmartWarningDegraded;traps_mode;0
 TRAP;setparam;perc2SmartWarningDegraded;traps_oid;.1.3.6.1.4.1.674.10893.1.1.200.0.589
 TRAP;setparam;perc2SmartWarningDegraded;traps_args;Array Manager Event: Smart warning degraded:
 TRAP;setparam;perc2SmartWarningDegraded;traps_status;1
@@ -2374,7 +2289,6 @@ TRAP;setparam;perc2SmartWarningDegraded;traps_downtime;0
 TRAP;setparam;perc2SmartWarningDegraded;traps_comments;%s SMART warning degraded on %s.<br/>Variables:<br/>  1: controllerNameEv<br/>  2: arrayDiskNameEv<br/>
 TRAP;ADD;perc2SmartWarningTemp;.1.3.6.1.4.1.674.10893.1.1.200.0.588
 TRAP;setparam;perc2SmartWarningTemp;traps_name;perc2SmartWarningTemp
-TRAP;setparam;perc2SmartWarningTemp;traps_mode;0
 TRAP;setparam;perc2SmartWarningTemp;traps_oid;.1.3.6.1.4.1.674.10893.1.1.200.0.588
 TRAP;setparam;perc2SmartWarningTemp;traps_args;Array Manager Event: Smart warning temperature:
 TRAP;setparam;perc2SmartWarningTemp;traps_status;1
@@ -2392,7 +2306,6 @@ TRAP;setparam;perc2SmartWarningTemp;traps_downtime;0
 TRAP;setparam;perc2SmartWarningTemp;traps_comments;%s SMART Warning temperature on %s.<br/>Variables:<br/>  1: controllerNameEv<br/>  2: arrayDiskNameEv<br/>
 TRAP;ADD;percPredictiveFailure;.1.3.6.1.4.1.674.10893.1.1.200.0.570
 TRAP;setparam;percPredictiveFailure;traps_name;percPredictiveFailure
-TRAP;setparam;percPredictiveFailure;traps_mode;0
 TRAP;setparam;percPredictiveFailure;traps_oid;.1.3.6.1.4.1.674.10893.1.1.200.0.570
 TRAP;setparam;percPredictiveFailure;traps_args;Array Manager Event: Predictive Failure reported:
 TRAP;setparam;percPredictiveFailure;traps_status;1
@@ -2410,7 +2323,6 @@ TRAP;setparam;percPredictiveFailure;traps_downtime;0
 TRAP;setparam;percPredictiveFailure;traps_comments;%s, %s reported predictive failure.<br/>Variables:<br/>  1: controllerNameEv<br/>  2: arrayDiskNameEv<br/>
 TRAP;ADD;percSCSISenseData;.1.3.6.1.4.1.674.10893.1.1.200.0.571
 TRAP;setparam;percSCSISenseData;traps_name;percSCSISenseData
-TRAP;setparam;percSCSISenseData;traps_mode;0
 TRAP;setparam;percSCSISenseData;traps_oid;.1.3.6.1.4.1.674.10893.1.1.200.0.571
 TRAP;setparam;percSCSISenseData;traps_args;Array Manager Event: SCSI sense data:
 TRAP;setparam;percSCSISenseData;traps_status;1
@@ -2428,7 +2340,6 @@ TRAP;setparam;percSCSISenseData;traps_downtime;0
 TRAP;setparam;percSCSISenseData;traps_comments;%s, %s SCSI sense failure.<br/>Variables:<br/>  1: controllerNameEv<br/>  2: arrayDiskNameEv<br/>
 TRAP;ADD;remPollFailureTrap;.1.3.6.1.4.1.43.0.75
 TRAP;setparam;remPollFailureTrap;traps_name;remPollFailureTrap
-TRAP;setparam;remPollFailureTrap;traps_mode;0
 TRAP;setparam;remPollFailureTrap;traps_oid;.1.3.6.1.4.1.43.0.75
 TRAP;setparam;remPollFailureTrap;traps_args;This trap is generated by the EventTable (if the eventEntry  $*
 TRAP;setparam;remPollFailureTrap;traps_status;0
@@ -2446,7 +2357,6 @@ TRAP;setparam;remPollFailureTrap;traps_downtime;0
 TRAP;setparam;remPollFailureTrap;traps_comments;This trap is generated by the EventTable (if the eventEntry <br/>is configured to send traps) when the remPollTable fails to receive a reply to a poll.<br/>Variables:<br/>  1: remPollAddress<br/>  2: remPollProtocol<br/>  3: remPollInformation<br/>
 TRAP;ADD;remPollSuccessTrap;.1.3.6.1.4.1.43.0.74
 TRAP;setparam;remPollSuccessTrap;traps_name;remPollSuccessTrap
-TRAP;setparam;remPollSuccessTrap;traps_mode;0
 TRAP;setparam;remPollSuccessTrap;traps_oid;.1.3.6.1.4.1.43.0.74
 TRAP;setparam;remPollSuccessTrap;traps_args;This trap is generated by the EventTable (if the eventEntry  $*
 TRAP;setparam;remPollSuccessTrap;traps_status;0
@@ -2464,7 +2374,6 @@ TRAP;setparam;remPollSuccessTrap;traps_downtime;0
 TRAP;setparam;remPollSuccessTrap;traps_comments;This trap is generated by the EventTable (if the eventEntry <br/>is configured to send traps) when the remPollTable receives a reply to a poll <br/>after a sequence of un- successful polls.<br/>Variables:<br/>  1: remPollAddress<br/>  2: remPollProtocol<br/>  3: remPollInformation<br/>
 TRAP;ADD;secureAddressLearned;.1.3.6.1.4.1.43.0.71
 TRAP;setparam;secureAddressLearned;traps_name;secureAddressLearned
-TRAP;setparam;secureAddressLearned;traps_mode;0
 TRAP;setparam;secureAddressLearned;traps_oid;.1.3.6.1.4.1.43.0.71
 TRAP;setparam;secureAddressLearned;traps_args;This trap is sent when a new station has been learned. The  $*
 TRAP;setparam;secureAddressLearned;traps_status;0
@@ -2482,7 +2391,6 @@ TRAP;setparam;secureAddressLearned;traps_downtime;0
 TRAP;setparam;secureAddressLearned;traps_comments;This trap is sent when a new station has been learned. The <br/>slot and port on which the address was received are in the first and<br/>second index of secureAddrRowStatus, and the MAC address of the learned<br/>station is in the third index.<br/>Variables:<br/>  1: secureAddrRowStatus<br/>
 TRAP;ADD;secureAddressLearned2;.1.3.6.1.4.1.43.0.85
 TRAP;setparam;secureAddressLearned2;traps_name;secureAddressLearned2
-TRAP;setparam;secureAddressLearned2;traps_mode;0
 TRAP;setparam;secureAddressLearned2;traps_oid;.1.3.6.1.4.1.43.0.85
 TRAP;setparam;secureAddressLearned2;traps_args;This trap is sent when a new station has been learned. $*
 TRAP;setparam;secureAddressLearned2;traps_status;0
@@ -2500,7 +2408,6 @@ TRAP;setparam;secureAddressLearned2;traps_downtime;0
 TRAP;setparam;secureAddressLearned2;traps_comments;This trap is sent when a new station has been learned.<br/>The slot and port on which the address was received are<br/>in  the  first and second index of secureAddrRowStatus,<br/>and  the MAC  address of the learned station is in  the<br/>third index.<br/>Variables:<br/>  1: secureAddrRowStatus<br/>  2: a3ComVlanIfGlobalIdentifier<br/>
 TRAP;ADD;secureViolation2;.1.3.6.1.4.1.43.0.78
 TRAP;setparam;secureViolation2;traps_name;secureViolation2
-TRAP;setparam;secureViolation2;traps_mode;0
 TRAP;setparam;secureViolation2;traps_oid;.1.3.6.1.4.1.43.0.78
 TRAP;setparam;secureViolation2;traps_args;This trap is sent whenever a security violation has occurred.  $*
 TRAP;setparam;secureViolation2;traps_status;0
@@ -2518,7 +2425,6 @@ TRAP;setparam;secureViolation2;traps_downtime;0
 TRAP;setparam;secureViolation2;traps_comments;This trap is sent whenever a security violation has occurred. <br/>The slot and port on which the violation occured are in the first and<br/>second index of secureAddrRowStatus, and the MAC address of the offending<br/>station is in the third index. rptrPortAdminSTATUS indicates if the port<br/>has been disabled because of the violation. The implementation may not<br/>send violation traps from the same port at intervals of less than 5<br/>seconds<br/>Variables:<br/>  1: secureAddrRowStatus<br/>  2: rptrPortAdminStatus<br/>
 TRAP;ADD;secureViolation3;.1.3.6.1.4.1.43.0.86
 TRAP;setparam;secureViolation3;traps_name;secureViolation3
-TRAP;setparam;secureViolation3;traps_mode;0
 TRAP;setparam;secureViolation3;traps_oid;.1.3.6.1.4.1.43.0.86
 TRAP;setparam;secureViolation3;traps_args;This trap is sent whenever a security violation has  $*
 TRAP;setparam;secureViolation3;traps_status;0
@@ -2536,7 +2442,6 @@ TRAP;setparam;secureViolation3;traps_downtime;0
 TRAP;setparam;secureViolation3;traps_comments;This trap is sent whenever a security violation has <br/>occured. The slot and port on which the violation occured are in the <br/>first and second index of secureAddrRowStatus, and the MAC address of <br/>the offending station is in the third index. ifAdminStatus indicates<br/>if the port has been disabled because of the violation. <br/>The implementation may not send violation traps from the same port<br/>at intervals of less than 5 seconds.<br/>Variables:<br/>  1: secureAddrRowStatus<br/>  2: ifAdminStatus<br/>  3: a3ComVlanIfGlobalIdentifier<br/>
 TRAP;ADD;secureViolation4;.1.3.6.1.4.1.43.0.88
 TRAP;setparam;secureViolation4;traps_name;secureViolation4
-TRAP;setparam;secureViolation4;traps_mode;0
 TRAP;setparam;secureViolation4;traps_oid;.1.3.6.1.4.1.43.0.88
 TRAP;setparam;secureViolation4;traps_args;This trap is sent whenever a security violation has  $*
 TRAP;setparam;secureViolation4;traps_status;0
@@ -2554,7 +2459,6 @@ TRAP;setparam;secureViolation4;traps_downtime;0
 TRAP;setparam;secureViolation4;traps_comments;This trap is sent whenever a security violation has <br/>occurred. The slot and port on which the violation occurred are in the <br/>first and second index of secureAddrRowStatus, and the MAC address of <br/>the offending station is in the third index. ifAdminStatus indicates<br/>if the port has been disabled because of the violation. <br/>The implementation may not send violation traps from the same port<br/>at intervals of less than 5 seconds.<br/>Variables:<br/>  1: secureAddrRowStatus<br/>  2: ifAdminStatus<br/>
 TRAP;ADD;snOspfIfAuthFailure;.1.3.6.1.4.1.11.0.9
 TRAP;setparam;snOspfIfAuthFailure;traps_name;snOspfIfAuthFailure
-TRAP;setparam;snOspfIfAuthFailure;traps_mode;0
 TRAP;setparam;snOspfIfAuthFailure;traps_oid;.1.3.6.1.4.1.11.0.9
 TRAP;setparam;snOspfIfAuthFailure;traps_args;An ospfIfAuthFailure  trap  signifies  that  a $*
 TRAP;setparam;snOspfIfAuthFailure;traps_status;0
@@ -2572,7 +2476,6 @@ TRAP;setparam;snOspfIfAuthFailure;traps_downtime;0
 TRAP;setparam;snOspfIfAuthFailure;traps_comments;An ospfIfAuthFailure  trap  signifies  that  a<br/>packet  has  been received on a non-virtual in-<br/>terface from a router whose authentication  key<br/>or  authentication  type  conflicts  with  this<br/>router's authentication key  or  authentication<br/>type.<br/>Variables:<br/>  1: snOspfRouterId<br/>  2: snOspfIfStatusIpAddress<br/>  3: snOspfPacketSrc<br/>  4: snOspfConfigErrorType<br/>  5: snOspfPacketType<br/>
 TRAP;ADD;snOspfIfConfigError;.1.3.6.1.4.1.11.0.7
 TRAP;setparam;snOspfIfConfigError;traps_name;snOspfIfConfigError
-TRAP;setparam;snOspfIfConfigError;traps_mode;0
 TRAP;setparam;snOspfIfConfigError;traps_oid;.1.3.6.1.4.1.11.0.7
 TRAP;setparam;snOspfIfConfigError;traps_args;An ospfIfConfigError  trap  signifies  that  a $*
 TRAP;setparam;snOspfIfConfigError;traps_status;0
@@ -2590,7 +2493,6 @@ TRAP;setparam;snOspfIfConfigError;traps_downtime;0
 TRAP;setparam;snOspfIfConfigError;traps_comments;An ospfIfConfigError  trap  signifies  that  a<br/>packet  has  been received on a non-virtual in-<br/>terface  from  a  router  whose   configuration<br/>parameters  conflict  with this router's confi-<br/>guration parameters.  Note that the  event  op-<br/>tionMismatch  should  cause  a  trap only if it<br/>prevents an adjacency from forming.<br/>Variables:<br/>  1: snOspfRouterId<br/>  2: snOspfIfStatusIpAddress<br/>  3: snOspfPacketSrc<br/>  4: snOspfConfigErrorType<br/>  5: snOspfPacketType<br/>
 TRAP;ADD;snOspfIfRxBadPacket;.1.3.6.1.4.1.11.0.11
 TRAP;setparam;snOspfIfRxBadPacket;traps_name;snOspfIfRxBadPacket
-TRAP;setparam;snOspfIfRxBadPacket;traps_mode;0
 TRAP;setparam;snOspfIfRxBadPacket;traps_oid;.1.3.6.1.4.1.11.0.11
 TRAP;setparam;snOspfIfRxBadPacket;traps_args;An ospfIfRxBadPacket trap  signifies  that  an $*
 TRAP;setparam;snOspfIfRxBadPacket;traps_status;0
@@ -2608,7 +2510,6 @@ TRAP;setparam;snOspfIfRxBadPacket;traps_downtime;0
 TRAP;setparam;snOspfIfRxBadPacket;traps_comments;An ospfIfRxBadPacket trap  signifies  that  an<br/>OSPF  packet has been received on a non-virtual<br/>interface that cannot be parsed.<br/>Variables:<br/>  1: snOspfRouterId<br/>  2: snOspfIfStatusIpAddress<br/>  3: snOspfPacketSrc<br/>  4: snOspfPacketType<br/>
 TRAP;ADD;snOspfLsdbApproachingOverflow;.1.3.6.1.4.1.11.0.18
 TRAP;setparam;snOspfLsdbApproachingOverflow;traps_name;snOspfLsdbApproachingOverflow
-TRAP;setparam;snOspfLsdbApproachingOverflow;traps_mode;0
 TRAP;setparam;snOspfLsdbApproachingOverflow;traps_oid;.1.3.6.1.4.1.11.0.18
 TRAP;setparam;snOspfLsdbApproachingOverflow;traps_args;An ospfLsdbApproachingOverflow trap  signifies $*
 TRAP;setparam;snOspfLsdbApproachingOverflow;traps_status;0
@@ -2626,7 +2527,6 @@ TRAP;setparam;snOspfLsdbApproachingOverflow;traps_downtime;0
 TRAP;setparam;snOspfLsdbApproachingOverflow;traps_comments;An ospfLsdbApproachingOverflow trap  signifies<br/>that  the  number of LSAs in the router's link-<br/>state database has exceeded ninety  percent  of<br/>ospfExtLsdbLimit.<br/>Variables:<br/>  1: snOspfRouterId<br/>  2: snOspfExtLsdbLimit<br/>
 TRAP;ADD;snOspfLsdbOverflow;.1.3.6.1.4.1.11.0.17
 TRAP;setparam;snOspfLsdbOverflow;traps_name;snOspfLsdbOverflow
-TRAP;setparam;snOspfLsdbOverflow;traps_mode;0
 TRAP;setparam;snOspfLsdbOverflow;traps_oid;.1.3.6.1.4.1.11.0.17
 TRAP;setparam;snOspfLsdbOverflow;traps_args;An ospfLsdbOverflow trap  signifies  that  the $*
 TRAP;setparam;snOspfLsdbOverflow;traps_status;0
@@ -2644,7 +2544,6 @@ TRAP;setparam;snOspfLsdbOverflow;traps_downtime;0
 TRAP;setparam;snOspfLsdbOverflow;traps_comments;An ospfLsdbOverflow trap  signifies  that  the<br/>number of LSAs in the router's link-state data-<br/>base has exceeded ospfExtLsdbLimit.<br/>Variables:<br/>  1: snOspfRouterId<br/>  2: snOspfExtLsdbLimit<br/>
 TRAP;ADD;snOspfMaxAgeLsa;.1.3.6.1.4.1.11.0.16
 TRAP;setparam;snOspfMaxAgeLsa;traps_name;snOspfMaxAgeLsa
-TRAP;setparam;snOspfMaxAgeLsa;traps_mode;0
 TRAP;setparam;snOspfMaxAgeLsa;traps_oid;.1.3.6.1.4.1.11.0.16
 TRAP;setparam;snOspfMaxAgeLsa;traps_args;An ospfMaxAgeLsa trap signifies  that  one  of $*
 TRAP;setparam;snOspfMaxAgeLsa;traps_status;0
@@ -2662,7 +2561,6 @@ TRAP;setparam;snOspfMaxAgeLsa;traps_downtime;0
 TRAP;setparam;snOspfMaxAgeLsa;traps_comments;An ospfMaxAgeLsa trap signifies  that  one  of<br/>the LSA in the router's link-state database has<br/>aged to MaxAge.<br/>Variables:<br/>  1: snOspfRouterId<br/>  2: snOspfLsdbAreaId<br/>  3: snOspfLsdbType<br/>  4: snOspfLsdbLsId<br/>  5: snOspfLsdbRouterId<br/>
 TRAP;ADD;snOspfNbrStateChange;.1.3.6.1.4.1.11.0.5
 TRAP;setparam;snOspfNbrStateChange;traps_name;snOspfNbrStateChange
-TRAP;setparam;snOspfNbrStateChange;traps_mode;0
 TRAP;setparam;snOspfNbrStateChange;traps_oid;.1.3.6.1.4.1.11.0.5
 TRAP;setparam;snOspfNbrStateChange;traps_args;An  ospfNbrStateChange  trap  signifies   that $*
 TRAP;setparam;snOspfNbrStateChange;traps_status;0
@@ -2680,7 +2578,6 @@ TRAP;setparam;snOspfNbrStateChange;traps_downtime;0
 TRAP;setparam;snOspfNbrStateChange;traps_comments;An  ospfNbrStateChange  trap  signifies   that<br/>there  has been a change in the state of a non-<br/>virtual OSPF neighbor.   This  trap  should  be<br/>generated  when  the  neighbor  state regresses<br/>(e.g., goes from Attempt or Full  to  1-Way  or<br/>Down)  or progresses to a terminal state (e.g.,<br/>2-Way or Full).  When an  neighbor  transitions<br/>from  or  to Full on non-broadcast multi-access<br/>and broadcast networks, the trap should be gen-<br/>erated  by the designated router.  A designated<br/>router transitioning to Down will be  noted  by<br/>ospfIfStateChange.<br/>Variables:<br/>  1: snOspfRouterId<br/>  2: snOspfNbrIpAddr<br/>  3: snOspfNbrRtrId<br/>  4: snOspfNbrState<br/>
 TRAP;ADD;snOspfOriginateLsa;.1.3.6.1.4.1.11.0.15
 TRAP;setparam;snOspfOriginateLsa;traps_name;snOspfOriginateLsa
-TRAP;setparam;snOspfOriginateLsa;traps_mode;0
 TRAP;setparam;snOspfOriginateLsa;traps_oid;.1.3.6.1.4.1.11.0.15
 TRAP;setparam;snOspfOriginateLsa;traps_args;An ospfOriginateLsa trap signifies that a  new $*
 TRAP;setparam;snOspfOriginateLsa;traps_status;0
@@ -2698,7 +2595,6 @@ TRAP;setparam;snOspfOriginateLsa;traps_downtime;0
 TRAP;setparam;snOspfOriginateLsa;traps_comments;An ospfOriginateLsa trap signifies that a  new<br/>LSA  has  been originated by this router.  This<br/>trap should not be invoked for simple refreshes<br/>of  LSAs  (which happesn every 30 minutes), but<br/>instead will only be invoked  when  an  LSA  is<br/>(re)originated due to a topology change.  Addi-<br/>tionally, this trap does not include LSAs  that<br/>are  being  flushed  because  they have reached<br/>MaxAge.<br/>Variables:<br/>  1: snOspfRouterId<br/>  2: snOspfLsdbAreaId<br/>  3: snOspfLsdbType<br/>  4: snOspfLsdbLsId<br/>  5: snOspfLsdbRouterId<br/>
 TRAP;ADD;snOspfTxRetransmit;.1.3.6.1.4.1.11.0.13
 TRAP;setparam;snOspfTxRetransmit;traps_name;snOspfTxRetransmit
-TRAP;setparam;snOspfTxRetransmit;traps_mode;0
 TRAP;setparam;snOspfTxRetransmit;traps_oid;.1.3.6.1.4.1.11.0.13
 TRAP;setparam;snOspfTxRetransmit;traps_args;An ospfTxRetransmit  trap  signifies  than  an $*
 TRAP;setparam;snOspfTxRetransmit;traps_status;0
@@ -2716,7 +2612,6 @@ TRAP;setparam;snOspfTxRetransmit;traps_downtime;0
 TRAP;setparam;snOspfTxRetransmit;traps_comments;An ospfTxRetransmit  trap  signifies  than  an<br/>OSPF  packet  has  been retransmitted on a non-<br/>virtual interface.  All packets that may be re-<br/>transmitted  are associated with an LSDB entry.<br/>The LS type, LS ID, and Router ID are  used  to<br/>identify the LSDB entry.<br/>Variables:<br/>  1: snOspfRouterId<br/>  2: snOspfIfStatusIpAddress<br/>  3: snOspfNbrRtrId<br/>  4: snOspfPacketType<br/>  5: snOspfLsdbType<br/>  6: snOspfLsdbLsId<br/>  7: snOspfLsdbRouterId<br/>
 TRAP;ADD;snOspfVirtIfAuthFailure;.1.3.6.1.4.1.11.0.10
 TRAP;setparam;snOspfVirtIfAuthFailure;traps_name;snOspfVirtIfAuthFailure
-TRAP;setparam;snOspfVirtIfAuthFailure;traps_mode;0
 TRAP;setparam;snOspfVirtIfAuthFailure;traps_oid;.1.3.6.1.4.1.11.0.10
 TRAP;setparam;snOspfVirtIfAuthFailure;traps_args;An ospfVirtIfAuthFailure trap signifies that a $*
 TRAP;setparam;snOspfVirtIfAuthFailure;traps_status;0
@@ -2734,7 +2629,6 @@ TRAP;setparam;snOspfVirtIfAuthFailure;traps_downtime;0
 TRAP;setparam;snOspfVirtIfAuthFailure;traps_comments;An ospfVirtIfAuthFailure trap signifies that a<br/>packet has been received on a virtual interface<br/>from a router whose authentication key  or  au-<br/>thentication  type conflicts with this router's<br/>authentication key or authentication type.<br/>Variables:<br/>  1: snOspfRouterId<br/>  2: snOspfVirtIfStatusAreaID<br/>  3: snOspfVirtIfStatusNeighbor<br/>  4: snOspfConfigErrorType<br/>  5: snOspfPacketType<br/>
 TRAP;ADD;snOspfVirtIfConfigError;.1.3.6.1.4.1.11.0.8
 TRAP;setparam;snOspfVirtIfConfigError;traps_name;snOspfVirtIfConfigError
-TRAP;setparam;snOspfVirtIfConfigError;traps_mode;0
 TRAP;setparam;snOspfVirtIfConfigError;traps_oid;.1.3.6.1.4.1.11.0.8
 TRAP;setparam;snOspfVirtIfConfigError;traps_args;An ospfConfigError trap signifies that a pack- $*
 TRAP;setparam;snOspfVirtIfConfigError;traps_status;0
@@ -2752,7 +2646,6 @@ TRAP;setparam;snOspfVirtIfConfigError;traps_downtime;0
 TRAP;setparam;snOspfVirtIfConfigError;traps_comments;An ospfConfigError trap signifies that a pack-<br/>et  has  been  received  on a virtual interface<br/>from a router  whose  configuration  parameters<br/>conflict   with   this  router's  configuration<br/>parameters.  Note that the event optionMismatch<br/>should  cause a trap only if it prevents an ad-<br/>jacency from forming.<br/>Variables:<br/>  1: snOspfRouterId<br/>  2: snOspfVirtIfStatusAreaID<br/>  3: snOspfVirtIfStatusNeighbor<br/>  4: snOspfConfigErrorType<br/>  5: snOspfPacketType<br/>
 TRAP;ADD;snOspfVirtIfRxBadPacket;.1.3.6.1.4.1.11.0.12
 TRAP;setparam;snOspfVirtIfRxBadPacket;traps_name;snOspfVirtIfRxBadPacket
-TRAP;setparam;snOspfVirtIfRxBadPacket;traps_mode;0
 TRAP;setparam;snOspfVirtIfRxBadPacket;traps_oid;.1.3.6.1.4.1.11.0.12
 TRAP;setparam;snOspfVirtIfRxBadPacket;traps_args;An ospfRxBadPacket trap signifies that an OSPF $*
 TRAP;setparam;snOspfVirtIfRxBadPacket;traps_status;0
@@ -2770,7 +2663,6 @@ TRAP;setparam;snOspfVirtIfRxBadPacket;traps_downtime;0
 TRAP;setparam;snOspfVirtIfRxBadPacket;traps_comments;An ospfRxBadPacket trap signifies that an OSPF<br/>packet has been received on a virtual interface<br/>that cannot be parsed.<br/>Variables:<br/>  1: snOspfRouterId<br/>  2: snOspfVirtIfStatusAreaID<br/>  3: snOspfVirtIfStatusNeighbor<br/>  4: snOspfPacketType<br/>
 TRAP;ADD;snOspfVirtNbrStateChange;.1.3.6.1.4.1.11.0.6
 TRAP;setparam;snOspfVirtNbrStateChange;traps_name;snOspfVirtNbrStateChange
-TRAP;setparam;snOspfVirtNbrStateChange;traps_mode;0
 TRAP;setparam;snOspfVirtNbrStateChange;traps_oid;.1.3.6.1.4.1.11.0.6
 TRAP;setparam;snOspfVirtNbrStateChange;traps_args;An ospfIfStateChange trap signifies that there $*
 TRAP;setparam;snOspfVirtNbrStateChange;traps_status;0
@@ -2788,7 +2680,6 @@ TRAP;setparam;snOspfVirtNbrStateChange;traps_downtime;0
 TRAP;setparam;snOspfVirtNbrStateChange;traps_comments;An ospfIfStateChange trap signifies that there<br/>has  been a change in the state of an OSPF vir-<br/>tual neighbor.  This trap should  be  generated<br/>when  the  neighbor state regresses (e.g., goes<br/>from Attempt or  Full  to  1-Way  or  Down)  or<br/>progresses to a terminal state (e.g., Full).<br/>Variables:<br/>  1: snOspfRouterId<br/>  2: snOspfVirtNbrArea<br/>  3: snOspfVirtNbrRtrId<br/>  4: snOspfVirtNbrState<br/>
 TRAP;ADD;snTrapAccessListDeny;.1.3.6.1.4.1.11.0.37
 TRAP;setparam;snTrapAccessListDeny;traps_name;snTrapAccessListDeny
-TRAP;setparam;snTrapAccessListDeny;traps_mode;0
 TRAP;setparam;snTrapAccessListDeny;traps_oid;.1.3.6.1.4.1.11.0.37
 TRAP;setparam;snTrapAccessListDeny;traps_args;The SNMP trap that is generated when a packet was denied $*
 TRAP;setparam;snTrapAccessListDeny;traps_status;0
@@ -2806,7 +2697,6 @@ TRAP;setparam;snTrapAccessListDeny;traps_downtime;0
 TRAP;setparam;snTrapAccessListDeny;traps_comments;The SNMP trap that is generated when a packet was denied<br/>by an access list.<br/>Variables:<br/>  1: snAgGblTrapMessage<br/>
 TRAP;ADD;snTrapChasFanFailed;.1.3.6.1.4.1.11.0.31
 TRAP;setparam;snTrapChasFanFailed;traps_name;snTrapChasFanFailed
-TRAP;setparam;snTrapChasFanFailed;traps_mode;0
 TRAP;setparam;snTrapChasFanFailed;traps_oid;.1.3.6.1.4.1.11.0.31
 TRAP;setparam;snTrapChasFanFailed;traps_args;The SNMP trap that is generated when a fan fails $*
 TRAP;setparam;snTrapChasFanFailed;traps_status;0
@@ -2824,7 +2714,6 @@ TRAP;setparam;snTrapChasFanFailed;traps_downtime;0
 TRAP;setparam;snTrapChasFanFailed;traps_comments;The SNMP trap that is generated when a fan fails<br/>to operate normally.<br/>Variables:<br/>  1: snChasFanIndex<br/>  2: snChasFanDescription<br/>
 TRAP;ADD;snTrapChasPwrSupply;.1.3.6.1.4.1.11.0.1
 TRAP;setparam;snTrapChasPwrSupply;traps_name;snTrapChasPwrSupply
-TRAP;setparam;snTrapChasPwrSupply;traps_mode;0
 TRAP;setparam;snTrapChasPwrSupply;traps_oid;.1.3.6.1.4.1.11.0.1
 TRAP;setparam;snTrapChasPwrSupply;traps_args;The SNMP trap that is generated when a power supply fails $*
 TRAP;setparam;snTrapChasPwrSupply;traps_status;0
@@ -2842,7 +2731,6 @@ TRAP;setparam;snTrapChasPwrSupply;traps_downtime;0
 TRAP;setparam;snTrapChasPwrSupply;traps_comments;The SNMP trap that is generated when a power supply fails<br/>to operate normally.<br/>Variables:<br/>  1: snChasPwrSupplyStatus<br/>
 TRAP;ADD;snTrapChasPwrSupplyFailed;.1.3.6.1.4.1.11.0.30
 TRAP;setparam;snTrapChasPwrSupplyFailed;traps_name;snTrapChasPwrSupplyFailed
-TRAP;setparam;snTrapChasPwrSupplyFailed;traps_mode;0
 TRAP;setparam;snTrapChasPwrSupplyFailed;traps_oid;.1.3.6.1.4.1.11.0.30
 TRAP;setparam;snTrapChasPwrSupplyFailed;traps_args;The SNMP trap that is generated when a power supply fails $*
 TRAP;setparam;snTrapChasPwrSupplyFailed;traps_status;0
@@ -2860,7 +2748,6 @@ TRAP;setparam;snTrapChasPwrSupplyFailed;traps_downtime;0
 TRAP;setparam;snTrapChasPwrSupplyFailed;traps_comments;The SNMP trap that is generated when a power supply fails<br/>to operate normally.<br/>Variables:<br/>  1: snChasPwrSupplyIndex<br/>  2: snChasPwrSupplyDescription<br/>
 TRAP;ADD;snTrapFsrpIfStateChange;.1.3.6.1.4.1.11.0.33
 TRAP;setparam;snTrapFsrpIfStateChange;traps_name;snTrapFsrpIfStateChange
-TRAP;setparam;snTrapFsrpIfStateChange;traps_mode;0
 TRAP;setparam;snTrapFsrpIfStateChange;traps_oid;.1.3.6.1.4.1.11.0.33
 TRAP;setparam;snTrapFsrpIfStateChange;traps_args;The SNMP trap that is generated when a FSRP routing device $*
 TRAP;setparam;snTrapFsrpIfStateChange;traps_status;0
@@ -2878,7 +2765,6 @@ TRAP;setparam;snTrapFsrpIfStateChange;traps_downtime;0
 TRAP;setparam;snTrapFsrpIfStateChange;traps_comments;The SNMP trap that is generated when a FSRP routing device<br/>changed state from active to standby or vice-versa.<br/>Variables:<br/>  1: snAgGblTrapMessage<br/>
 TRAP;ADD;snTrapL4BecomeActive;.1.3.6.1.4.1.11.0.27
 TRAP;setparam;snTrapL4BecomeActive;traps_name;snTrapL4BecomeActive
-TRAP;setparam;snTrapL4BecomeActive;traps_mode;0
 TRAP;setparam;snTrapL4BecomeActive;traps_oid;.1.3.6.1.4.1.11.0.27
 TRAP;setparam;snTrapL4BecomeActive;traps_args;The SNMP trap that is generated when the server load $*
 TRAP;setparam;snTrapL4BecomeActive;traps_status;0
@@ -2896,7 +2782,6 @@ TRAP;setparam;snTrapL4BecomeActive;traps_downtime;0
 TRAP;setparam;snTrapL4BecomeActive;traps_comments;The SNMP trap that is generated when the server load<br/>balancing switch changes state from standby to active.<br/>Variables:<br/>
 TRAP;ADD;snTrapL4BecomeStandby;.1.3.6.1.4.1.11.0.26
 TRAP;setparam;snTrapL4BecomeStandby;traps_name;snTrapL4BecomeStandby
-TRAP;setparam;snTrapL4BecomeStandby;traps_mode;0
 TRAP;setparam;snTrapL4BecomeStandby;traps_oid;.1.3.6.1.4.1.11.0.26
 TRAP;setparam;snTrapL4BecomeStandby;traps_args;The SNMP trap that is generated when the server load $*
 TRAP;setparam;snTrapL4BecomeStandby;traps_status;0
@@ -2914,7 +2799,6 @@ TRAP;setparam;snTrapL4BecomeStandby;traps_downtime;0
 TRAP;setparam;snTrapL4BecomeStandby;traps_comments;The SNMP trap that is generated when the server load<br/>balancing switch changes state from active to standby.<br/>Variables:<br/>
 TRAP;ADD;snTrapL4GslbHealthCheckIpDown;.1.3.6.1.4.1.11.0.44
 TRAP;setparam;snTrapL4GslbHealthCheckIpDown;traps_name;snTrapL4GslbHealthCheckIpDown
-TRAP;setparam;snTrapL4GslbHealthCheckIpDown;traps_mode;0
 TRAP;setparam;snTrapL4GslbHealthCheckIpDown;traps_oid;.1.3.6.1.4.1.11.0.44
 TRAP;setparam;snTrapL4GslbHealthCheckIpDown;traps_args;The SNMP trap that is generated when GSLB health check for an address transitions $*
 TRAP;setparam;snTrapL4GslbHealthCheckIpDown;traps_status;0
@@ -2932,7 +2816,6 @@ TRAP;setparam;snTrapL4GslbHealthCheckIpDown;traps_downtime;0
 TRAP;setparam;snTrapL4GslbHealthCheckIpDown;traps_comments;The SNMP trap that is generated when GSLB health check for an address transitions<br/>from active to down state.<br/>Variables:<br/>  1: snAgGblTrapMessage<br/>
 TRAP;ADD;snTrapL4GslbHealthCheckIpPortDown;.1.3.6.1.4.1.11.0.46
 TRAP;setparam;snTrapL4GslbHealthCheckIpPortDown;traps_name;snTrapL4GslbHealthCheckIpPortDown
-TRAP;setparam;snTrapL4GslbHealthCheckIpPortDown;traps_mode;0
 TRAP;setparam;snTrapL4GslbHealthCheckIpPortDown;traps_oid;.1.3.6.1.4.1.11.0.46
 TRAP;setparam;snTrapL4GslbHealthCheckIpPortDown;traps_args;The SNMP trap that is generated when a given port for a health check address is down. $*
 TRAP;setparam;snTrapL4GslbHealthCheckIpPortDown;traps_status;0
@@ -2950,7 +2833,6 @@ TRAP;setparam;snTrapL4GslbHealthCheckIpPortDown;traps_downtime;0
 TRAP;setparam;snTrapL4GslbHealthCheckIpPortDown;traps_comments;The SNMP trap that is generated when a given port for a health check address is down.<br/>Variables:<br/>  1: snAgGblTrapMessage<br/>
 TRAP;ADD;snTrapL4GslbHealthCheckIpPortUp;.1.3.6.1.4.1.11.0.45
 TRAP;setparam;snTrapL4GslbHealthCheckIpPortUp;traps_name;snTrapL4GslbHealthCheckIpPortUp
-TRAP;setparam;snTrapL4GslbHealthCheckIpPortUp;traps_mode;0
 TRAP;setparam;snTrapL4GslbHealthCheckIpPortUp;traps_oid;.1.3.6.1.4.1.11.0.45
 TRAP;setparam;snTrapL4GslbHealthCheckIpPortUp;traps_args;The SNMP trap that is generated when a given port for a health check address is up. $*
 TRAP;setparam;snTrapL4GslbHealthCheckIpPortUp;traps_status;0
@@ -2968,7 +2850,6 @@ TRAP;setparam;snTrapL4GslbHealthCheckIpPortUp;traps_downtime;0
 TRAP;setparam;snTrapL4GslbHealthCheckIpPortUp;traps_comments;The SNMP trap that is generated when a given port for a health check address is up.<br/>Variables:<br/>  1: snAgGblTrapMessage<br/>
 TRAP;ADD;snTrapL4GslbHealthCheckIpUp;.1.3.6.1.4.1.11.0.43
 TRAP;setparam;snTrapL4GslbHealthCheckIpUp;traps_name;snTrapL4GslbHealthCheckIpUp
-TRAP;setparam;snTrapL4GslbHealthCheckIpUp;traps_mode;0
 TRAP;setparam;snTrapL4GslbHealthCheckIpUp;traps_oid;.1.3.6.1.4.1.11.0.43
 TRAP;setparam;snTrapL4GslbHealthCheckIpUp;traps_args;The SNMP trap that is generated when GSLB health check for an address transitions $*
 TRAP;setparam;snTrapL4GslbHealthCheckIpUp;traps_status;0
@@ -2986,7 +2867,6 @@ TRAP;setparam;snTrapL4GslbHealthCheckIpUp;traps_downtime;0
 TRAP;setparam;snTrapL4GslbHealthCheckIpUp;traps_comments;The SNMP trap that is generated when GSLB health check for an address transitions<br/>from down to active state.<br/>Variables:<br/>  1: snAgGblTrapMessage<br/>
 TRAP;ADD;snTrapL4GslbRemoteControllerDown;.1.3.6.1.4.1.11.0.42
 TRAP;setparam;snTrapL4GslbRemoteControllerDown;traps_name;snTrapL4GslbRemoteControllerDown
-TRAP;setparam;snTrapL4GslbRemoteControllerDown;traps_mode;0
 TRAP;setparam;snTrapL4GslbRemoteControllerDown;traps_oid;.1.3.6.1.4.1.11.0.42
 TRAP;setparam;snTrapL4GslbRemoteControllerDown;traps_args;The SNMP trap that is generated when the connection to the GSLB SI is down. $*
 TRAP;setparam;snTrapL4GslbRemoteControllerDown;traps_status;0
@@ -3004,7 +2884,6 @@ TRAP;setparam;snTrapL4GslbRemoteControllerDown;traps_downtime;0
 TRAP;setparam;snTrapL4GslbRemoteControllerDown;traps_comments;The SNMP trap that is generated when the connection to the GSLB SI is down.<br/>Variables:<br/>  1: snAgGblTrapMessage<br/>
 TRAP;ADD;snTrapL4GslbRemoteControllerUp;.1.3.6.1.4.1.11.0.41
 TRAP;setparam;snTrapL4GslbRemoteControllerUp;traps_name;snTrapL4GslbRemoteControllerUp
-TRAP;setparam;snTrapL4GslbRemoteControllerUp;traps_mode;0
 TRAP;setparam;snTrapL4GslbRemoteControllerUp;traps_oid;.1.3.6.1.4.1.11.0.41
 TRAP;setparam;snTrapL4GslbRemoteControllerUp;traps_args;The SNMP trap that is generated when the connection to the GSLB SI is established. $*
 TRAP;setparam;snTrapL4GslbRemoteControllerUp;traps_status;0
@@ -3022,7 +2901,6 @@ TRAP;setparam;snTrapL4GslbRemoteControllerUp;traps_downtime;0
 TRAP;setparam;snTrapL4GslbRemoteControllerUp;traps_comments;The SNMP trap that is generated when the connection to the GSLB SI is established.<br/>Variables:<br/>  1: snAgGblTrapMessage<br/>
 TRAP;ADD;snTrapL4GslbRemoteDown;.1.3.6.1.4.1.11.0.40
 TRAP;setparam;snTrapL4GslbRemoteDown;traps_name;snTrapL4GslbRemoteDown
-TRAP;setparam;snTrapL4GslbRemoteDown;traps_mode;0
 TRAP;setparam;snTrapL4GslbRemoteDown;traps_oid;.1.3.6.1.4.1.11.0.40
 TRAP;setparam;snTrapL4GslbRemoteDown;traps_args;The SNMP trap that is generated when the connection to the remote SI is down. $*
 TRAP;setparam;snTrapL4GslbRemoteDown;traps_status;0
@@ -3040,7 +2918,6 @@ TRAP;setparam;snTrapL4GslbRemoteDown;traps_downtime;0
 TRAP;setparam;snTrapL4GslbRemoteDown;traps_comments;The SNMP trap that is generated when the connection to the remote SI is down.<br/>Variables:<br/>  1: snAgGblTrapMessage<br/>
 TRAP;ADD;snTrapL4GslbRemoteUp;.1.3.6.1.4.1.11.0.39
 TRAP;setparam;snTrapL4GslbRemoteUp;traps_name;snTrapL4GslbRemoteUp
-TRAP;setparam;snTrapL4GslbRemoteUp;traps_mode;0
 TRAP;setparam;snTrapL4GslbRemoteUp;traps_oid;.1.3.6.1.4.1.11.0.39
 TRAP;setparam;snTrapL4GslbRemoteUp;traps_args;The SNMP trap that is generated when the connection to the remote SI is established. $*
 TRAP;setparam;snTrapL4GslbRemoteUp;traps_status;0
@@ -3058,7 +2935,6 @@ TRAP;setparam;snTrapL4GslbRemoteUp;traps_downtime;0
 TRAP;setparam;snTrapL4GslbRemoteUp;traps_comments;The SNMP trap that is generated when the connection to the remote SI is established.<br/>Variables:<br/>  1: snAgGblTrapMessage<br/>
 TRAP;ADD;snTrapL4MaxSessionLimitReached;.1.3.6.1.4.1.11.0.19
 TRAP;setparam;snTrapL4MaxSessionLimitReached;traps_name;snTrapL4MaxSessionLimitReached
-TRAP;setparam;snTrapL4MaxSessionLimitReached;traps_mode;0
 TRAP;setparam;snTrapL4MaxSessionLimitReached;traps_oid;.1.3.6.1.4.1.11.0.19
 TRAP;setparam;snTrapL4MaxSessionLimitReached;traps_args;The SNMP trap that is generated when the maximum number $*
 TRAP;setparam;snTrapL4MaxSessionLimitReached;traps_status;0
@@ -3076,7 +2952,6 @@ TRAP;setparam;snTrapL4MaxSessionLimitReached;traps_downtime;0
 TRAP;setparam;snTrapL4MaxSessionLimitReached;traps_comments;The SNMP trap that is generated when the maximum number<br/>of connections reached.<br/>Variables:<br/>  1: snL4MaxSessionLimit<br/>
 TRAP;ADD;snTrapL4RealServerDown;.1.3.6.1.4.1.11.0.22
 TRAP;setparam;snTrapL4RealServerDown;traps_name;snTrapL4RealServerDown
-TRAP;setparam;snTrapL4RealServerDown;traps_mode;0
 TRAP;setparam;snTrapL4RealServerDown;traps_oid;.1.3.6.1.4.1.11.0.22
 TRAP;setparam;snTrapL4RealServerDown;traps_args;The SNMP trap that is generated when the load balancing $*
 TRAP;setparam;snTrapL4RealServerDown;traps_status;0
@@ -3094,7 +2969,6 @@ TRAP;setparam;snTrapL4RealServerDown;traps_downtime;0
 TRAP;setparam;snTrapL4RealServerDown;traps_comments;The SNMP trap that is generated when the load balancing<br/>real server is down.<br/>Variables:<br/>  1: snL4TrapRealServerIP<br/>  2: snL4TrapRealServerName<br/>
 TRAP;ADD;snTrapL4RealServerMaxConnectionLimitReached;.1.3.6.1.4.1.11.0.25
 TRAP;setparam;snTrapL4RealServerMaxConnectionLimitReached;traps_name;snTrapL4RealServerMaxConnectionLimitReached
-TRAP;setparam;snTrapL4RealServerMaxConnectionLimitReached;traps_mode;0
 TRAP;setparam;snTrapL4RealServerMaxConnectionLimitReached;traps_oid;.1.3.6.1.4.1.11.0.25
 TRAP;setparam;snTrapL4RealServerMaxConnectionLimitReached;traps_args;The SNMP trap that is generated when the real server reaches $*
 TRAP;setparam;snTrapL4RealServerMaxConnectionLimitReached;traps_status;0
@@ -3112,7 +2986,6 @@ TRAP;setparam;snTrapL4RealServerMaxConnectionLimitReached;traps_downtime;0
 TRAP;setparam;snTrapL4RealServerMaxConnectionLimitReached;traps_comments;The SNMP trap that is generated when the real server reaches<br/>maximum number of connections.<br/>Variables:<br/>  1: snL4TrapRealServerIP<br/>  2: snL4TrapRealServerName<br/>  3: snL4TrapRealServerCurConnections<br/>
 TRAP;ADD;snTrapL4RealServerPortDown;.1.3.6.1.4.1.11.0.24
 TRAP;setparam;snTrapL4RealServerPortDown;traps_name;snTrapL4RealServerPortDown
-TRAP;setparam;snTrapL4RealServerPortDown;traps_mode;0
 TRAP;setparam;snTrapL4RealServerPortDown;traps_oid;.1.3.6.1.4.1.11.0.24
 TRAP;setparam;snTrapL4RealServerPortDown;traps_args;The SNMP trap that is generated when the load balancing $*
 TRAP;setparam;snTrapL4RealServerPortDown;traps_status;0
@@ -3130,7 +3003,6 @@ TRAP;setparam;snTrapL4RealServerPortDown;traps_downtime;0
 TRAP;setparam;snTrapL4RealServerPortDown;traps_comments;The SNMP trap that is generated when the load balancing<br/>real server TCP port is down.<br/>Variables:<br/>  1: snL4TrapRealServerIP<br/>  2: snL4TrapRealServerName<br/>  3: snL4TrapRealServerPort<br/>
 TRAP;ADD;snTrapL4RealServerPortUp;.1.3.6.1.4.1.11.0.23
 TRAP;setparam;snTrapL4RealServerPortUp;traps_name;snTrapL4RealServerPortUp
-TRAP;setparam;snTrapL4RealServerPortUp;traps_mode;0
 TRAP;setparam;snTrapL4RealServerPortUp;traps_oid;.1.3.6.1.4.1.11.0.23
 TRAP;setparam;snTrapL4RealServerPortUp;traps_args;The SNMP trap that is generated when the load balancing $*
 TRAP;setparam;snTrapL4RealServerPortUp;traps_status;0
@@ -3148,7 +3020,6 @@ TRAP;setparam;snTrapL4RealServerPortUp;traps_downtime;0
 TRAP;setparam;snTrapL4RealServerPortUp;traps_comments;The SNMP trap that is generated when the load balancing<br/>real server TCP port is up.<br/>Variables:<br/>  1: snL4TrapRealServerIP<br/>  2: snL4TrapRealServerName<br/>  3: snL4TrapRealServerPort<br/>
 TRAP;ADD;snTrapL4RealServerUp;.1.3.6.1.4.1.11.0.21
 TRAP;setparam;snTrapL4RealServerUp;traps_name;snTrapL4RealServerUp
-TRAP;setparam;snTrapL4RealServerUp;traps_mode;0
 TRAP;setparam;snTrapL4RealServerUp;traps_oid;.1.3.6.1.4.1.11.0.21
 TRAP;setparam;snTrapL4RealServerUp;traps_args;The SNMP trap that is generated when the load balancing $*
 TRAP;setparam;snTrapL4RealServerUp;traps_status;0
@@ -3166,7 +3037,6 @@ TRAP;setparam;snTrapL4RealServerUp;traps_downtime;0
 TRAP;setparam;snTrapL4RealServerUp;traps_comments;The SNMP trap that is generated when the load balancing<br/>real server is up.<br/>Variables:<br/>  1: snL4TrapRealServerIP<br/>  2: snL4TrapRealServerName<br/>
 TRAP;ADD;snTrapL4TcpSynLimitReached;.1.3.6.1.4.1.11.0.20
 TRAP;setparam;snTrapL4TcpSynLimitReached;traps_name;snTrapL4TcpSynLimitReached
-TRAP;setparam;snTrapL4TcpSynLimitReached;traps_mode;0
 TRAP;setparam;snTrapL4TcpSynLimitReached;traps_oid;.1.3.6.1.4.1.11.0.20
 TRAP;setparam;snTrapL4TcpSynLimitReached;traps_args;The SNMP trap that is generated when the number of TCP $*
 TRAP;setparam;snTrapL4TcpSynLimitReached;traps_status;0
@@ -3184,7 +3054,6 @@ TRAP;setparam;snTrapL4TcpSynLimitReached;traps_downtime;0
 TRAP;setparam;snTrapL4TcpSynLimitReached;traps_comments;The SNMP trap that is generated when the number of TCP<br/>SYN limits reached.<br/>Variables:<br/>  1: snL4TcpSynLimit<br/>
 TRAP;ADD;snTrapLockedAddressViolation;.1.3.6.1.4.1.11.0.2
 TRAP;setparam;snTrapLockedAddressViolation;traps_name;snTrapLockedAddressViolation
-TRAP;setparam;snTrapLockedAddressViolation;traps_mode;0
 TRAP;setparam;snTrapLockedAddressViolation;traps_oid;.1.3.6.1.4.1.11.0.2
 TRAP;setparam;snTrapLockedAddressViolation;traps_args;The SNMP trap that is generated when more source MAC addresses $*
 TRAP;setparam;snTrapLockedAddressViolation;traps_status;0
@@ -3202,7 +3071,6 @@ TRAP;setparam;snTrapLockedAddressViolation;traps_downtime;0
 TRAP;setparam;snTrapLockedAddressViolation;traps_comments;The SNMP trap that is generated when more source MAC addresses<br/>are received from a port than the maximum number of addresses<br/>configured to that port.<br/>Variables:<br/>  1: snSwViolatorPortNumber<br/>  2: snSwViolatorMacAddress<br/>
 TRAP;ADD;snTrapLockedAddressViolation2;.1.3.6.1.4.1.11.0.32
 TRAP;setparam;snTrapLockedAddressViolation2;traps_name;snTrapLockedAddressViolation2
-TRAP;setparam;snTrapLockedAddressViolation2;traps_mode;0
 TRAP;setparam;snTrapLockedAddressViolation2;traps_oid;.1.3.6.1.4.1.11.0.32
 TRAP;setparam;snTrapLockedAddressViolation2;traps_args;The SNMP trap that is generated when more source MAC addresses $*
 TRAP;setparam;snTrapLockedAddressViolation2;traps_status;0
@@ -3220,7 +3088,6 @@ TRAP;setparam;snTrapLockedAddressViolation2;traps_downtime;0
 TRAP;setparam;snTrapLockedAddressViolation2;traps_comments;The SNMP trap that is generated when more source MAC addresses<br/>are received from a port than the maximum number of addresses<br/>configured to that port.<br/>Variables:<br/>  1: snAgGblTrapMessage<br/>
 TRAP;ADD;snTrapMacFilterDeny;.1.3.6.1.4.1.11.0.38
 TRAP;setparam;snTrapMacFilterDeny;traps_name;snTrapMacFilterDeny
-TRAP;setparam;snTrapMacFilterDeny;traps_mode;0
 TRAP;setparam;snTrapMacFilterDeny;traps_oid;.1.3.6.1.4.1.11.0.38
 TRAP;setparam;snTrapMacFilterDeny;traps_args;The SNMP trap that is generated when a packet was denied $*
 TRAP;setparam;snTrapMacFilterDeny;traps_status;0
@@ -3238,7 +3105,6 @@ TRAP;setparam;snTrapMacFilterDeny;traps_downtime;0
 TRAP;setparam;snTrapMacFilterDeny;traps_comments;The SNMP trap that is generated when a packet was denied<br/>by a MAC address filter.<br/>Variables:<br/>  1: snAgGblTrapMessage<br/>
 TRAP;ADD;snTrapMgmtModuleRedunStateChange;.1.3.6.1.4.1.11.0.35
 TRAP;setparam;snTrapMgmtModuleRedunStateChange;traps_name;snTrapMgmtModuleRedunStateChange
-TRAP;setparam;snTrapMgmtModuleRedunStateChange;traps_mode;0
 TRAP;setparam;snTrapMgmtModuleRedunStateChange;traps_oid;.1.3.6.1.4.1.11.0.35
 TRAP;setparam;snTrapMgmtModuleRedunStateChange;traps_args;The SNMP trap that is generated when the management module $*
 TRAP;setparam;snTrapMgmtModuleRedunStateChange;traps_status;0
@@ -3256,7 +3122,6 @@ TRAP;setparam;snTrapMgmtModuleRedunStateChange;traps_downtime;0
 TRAP;setparam;snTrapMgmtModuleRedunStateChange;traps_comments;The SNMP trap that is generated when the management module<br/>changes redundancy state.<br/>Variables:<br/>  1: snAgGblTrapMessage<br/>
 TRAP;ADD;snTrapModuleInserted;.1.3.6.1.4.1.11.0.28
 TRAP;setparam;snTrapModuleInserted;traps_name;snTrapModuleInserted
-TRAP;setparam;snTrapModuleInserted;traps_mode;0
 TRAP;setparam;snTrapModuleInserted;traps_oid;.1.3.6.1.4.1.11.0.28
 TRAP;setparam;snTrapModuleInserted;traps_args;The SNMP trap that is generated when a module was inserted $*
 TRAP;setparam;snTrapModuleInserted;traps_status;0
@@ -3274,7 +3139,6 @@ TRAP;setparam;snTrapModuleInserted;traps_downtime;0
 TRAP;setparam;snTrapModuleInserted;traps_comments;The SNMP trap that is generated when a module was inserted<br/>to the chassis during system running.<br/>Variables:<br/>  1: snAgentBrdIndex<br/>
 TRAP;ADD;snTrapModuleRemoved;.1.3.6.1.4.1.11.0.29
 TRAP;setparam;snTrapModuleRemoved;traps_name;snTrapModuleRemoved
-TRAP;setparam;snTrapModuleRemoved;traps_mode;0
 TRAP;setparam;snTrapModuleRemoved;traps_oid;.1.3.6.1.4.1.11.0.29
 TRAP;setparam;snTrapModuleRemoved;traps_args;The SNMP trap that is generated when a module was removed $*
 TRAP;setparam;snTrapModuleRemoved;traps_status;0
@@ -3292,7 +3156,6 @@ TRAP;setparam;snTrapModuleRemoved;traps_downtime;0
 TRAP;setparam;snTrapModuleRemoved;traps_comments;The SNMP trap that is generated when a module was removed<br/>from the chassis during system running.<br/>Variables:<br/>  1: snAgentBrdIndex<br/>
 TRAP;ADD;snTrapOspfIfStateChange;.1.3.6.1.4.1.11.0.3
 TRAP;setparam;snTrapOspfIfStateChange;traps_name;snTrapOspfIfStateChange
-TRAP;setparam;snTrapOspfIfStateChange;traps_mode;0
 TRAP;setparam;snTrapOspfIfStateChange;traps_oid;.1.3.6.1.4.1.11.0.3
 TRAP;setparam;snTrapOspfIfStateChange;traps_args;An ospfIfStateChange trap signifies that there $*
 TRAP;setparam;snTrapOspfIfStateChange;traps_status;0
@@ -3310,7 +3173,6 @@ TRAP;setparam;snTrapOspfIfStateChange;traps_downtime;0
 TRAP;setparam;snTrapOspfIfStateChange;traps_comments;An ospfIfStateChange trap signifies that there<br/>has been a change in the state of a non-virtual<br/>OSPF interface. This trap should  be  generated<br/>when  the interface state regresses (e.g., goes<br/>from Dr to Down) or progresses  to  a  terminal<br/>state  (i.e.,  Point-to-Point, DR Other, Dr, or<br/>Backup).<br/>Variables:<br/>  1: snOspfRouterId<br/>  2: snOspfIfStatusIpAddress<br/>  3: snOspfIfStatusState<br/>
 TRAP;ADD;snTrapOspfVirtIfStateChange;.1.3.6.1.4.1.11.0.4
 TRAP;setparam;snTrapOspfVirtIfStateChange;traps_name;snTrapOspfVirtIfStateChange
-TRAP;setparam;snTrapOspfVirtIfStateChange;traps_mode;0
 TRAP;setparam;snTrapOspfVirtIfStateChange;traps_oid;.1.3.6.1.4.1.11.0.4
 TRAP;setparam;snTrapOspfVirtIfStateChange;traps_args;An ospfIfStateChange trap signifies that there $*
 TRAP;setparam;snTrapOspfVirtIfStateChange;traps_status;0
@@ -3328,7 +3190,6 @@ TRAP;setparam;snTrapOspfVirtIfStateChange;traps_downtime;0
 TRAP;setparam;snTrapOspfVirtIfStateChange;traps_comments;An ospfIfStateChange trap signifies that there<br/>has  been a change in the state of an OSPF vir-<br/>tual interface.<br/>This trap should be generated when  the  inter-<br/>face  state  regresses  (e.g., goes from Point-<br/>to-Point to Down) or progresses to  a  terminal<br/>state (i.e., Point-to-Point).<br/>Variables:<br/>  1: snOspfRouterId<br/>  2: snOspfVirtIfStatusAreaID<br/>  3: snOspfVirtIfStatusNeighbor<br/>  4: snOspfVirtIfStatusState<br/>
 TRAP;ADD;snTrapTemperatureWarning;.1.3.6.1.4.1.11.0.36
 TRAP;setparam;snTrapTemperatureWarning;traps_name;snTrapTemperatureWarning
-TRAP;setparam;snTrapTemperatureWarning;traps_mode;0
 TRAP;setparam;snTrapTemperatureWarning;traps_oid;.1.3.6.1.4.1.11.0.36
 TRAP;setparam;snTrapTemperatureWarning;traps_args;The SNMP trap that is generated when the actual temperature $*
 TRAP;setparam;snTrapTemperatureWarning;traps_status;0
@@ -3346,7 +3207,6 @@ TRAP;setparam;snTrapTemperatureWarning;traps_downtime;0
 TRAP;setparam;snTrapTemperatureWarning;traps_comments;The SNMP trap that is generated when the actual temperature<br/>reading is above the warning temperature threshold.<br/>Variables:<br/>  1: snAgGblTrapMessage<br/>
 TRAP;ADD;snTrapVrrpIfStateChange;.1.3.6.1.4.1.11.0.34
 TRAP;setparam;snTrapVrrpIfStateChange;traps_name;snTrapVrrpIfStateChange
-TRAP;setparam;snTrapVrrpIfStateChange;traps_mode;0
 TRAP;setparam;snTrapVrrpIfStateChange;traps_oid;.1.3.6.1.4.1.11.0.34
 TRAP;setparam;snTrapVrrpIfStateChange;traps_args;The SNMP trap that is generated when a VRRP routing device $*
 TRAP;setparam;snTrapVrrpIfStateChange;traps_status;0
@@ -3364,7 +3224,6 @@ TRAP;setparam;snTrapVrrpIfStateChange;traps_downtime;0
 TRAP;setparam;snTrapVrrpIfStateChange;traps_comments;The SNMP trap that is generated when a VRRP routing device<br/>changed state from master to backup or vice-versa.<br/>Variables:<br/>  1: snAgGblTrapMessage<br/>
 TRAP;ADD;tapeAlertTrap262;.1.3.6.1.4.1.11.2.3.9.7.1.0.262
 TRAP;setparam;tapeAlertTrap262;traps_name;tapeAlertTrap262
-TRAP;setparam;tapeAlertTrap262;traps_mode;0
 TRAP;setparam;tapeAlertTrap262;traps_oid;.1.3.6.1.4.1.11.2.3.9.7.1.0.262
 TRAP;setparam;tapeAlertTrap262;traps_args;HP TapeAlert #262: Hba$1:Channel$2:ScsiID$3 Library Predicted to Fail - Call Helpline
 TRAP;setparam;tapeAlertTrap262;traps_status;1
@@ -3382,7 +3241,6 @@ TRAP;setparam;tapeAlertTrap262;traps_downtime;0
 TRAP;setparam;tapeAlertTrap262;traps_comments;A hardware failure of the library is predicted. <br/>Call the library supplier helpline.<br/>Variables:<br/>  1: hbaNumber<br/>  2: hbaChannel<br/>  3: driveScsiID<br/>
 TRAP;ADD;tapeAlertTrap264;.1.3.6.1.4.1.11.2.3.9.7.1.0.264
 TRAP;setparam;tapeAlertTrap264;traps_name;tapeAlertTrap264
-TRAP;setparam;tapeAlertTrap264;traps_mode;0
 TRAP;setparam;tapeAlertTrap264;traps_oid;.1.3.6.1.4.1.11.2.3.9.7.1.0.264
 TRAP;setparam;tapeAlertTrap264;traps_args;HP TapeAlert #264: Hba$1:Channel$2:ScsiID$3 Library Humidity Specification Exceeded
 TRAP;setparam;tapeAlertTrap264;traps_status;2
@@ -3400,7 +3258,6 @@ TRAP;setparam;tapeAlertTrap264;traps_downtime;0
 TRAP;setparam;tapeAlertTrap264;traps_comments;General environmental conditions inside the library have <br/>exceeded the humidity specifications.<br/>Variables:<br/>  1: hbaNumber<br/>  2: hbaChannel<br/>  3: driveScsiID<br/>
 TRAP;ADD;tapeAlertTrap266;.1.3.6.1.4.1.11.2.3.9.7.1.0.266
 TRAP;setparam;tapeAlertTrap266;traps_name;tapeAlertTrap266
-TRAP;setparam;tapeAlertTrap266;traps_mode;0
 TRAP;setparam;tapeAlertTrap266;traps_oid;.1.3.6.1.4.1.11.2.3.9.7.1.0.266
 TRAP;setparam;tapeAlertTrap266;traps_args;HP TapeAlert #266: Hba$1:Channel$2:ScsiID$3 Library Voltage Specification Exceeded
 TRAP;setparam;tapeAlertTrap266;traps_status;2
@@ -3418,7 +3275,6 @@ TRAP;setparam;tapeAlertTrap266;traps_downtime;0
 TRAP;setparam;tapeAlertTrap266;traps_comments;he voltage supply to the library exceeds specifications.  <br/>There is a potential problem with the power supply or failure <br/>of a redundant power supply<br/>Variables:<br/>  1: hbaNumber<br/>  2: hbaChannel<br/>  3: driveScsiID<br/>
 TRAP;ADD;tapeAlertTrap267;.1.3.6.1.4.1.11.2.3.9.7.1.0.267
 TRAP;setparam;tapeAlertTrap267;traps_name;tapeAlertTrap267
-TRAP;setparam;tapeAlertTrap267;traps_mode;0
 TRAP;setparam;tapeAlertTrap267;traps_oid;.1.3.6.1.4.1.11.2.3.9.7.1.0.267
 TRAP;setparam;tapeAlertTrap267;traps_args;HP TapeAlert #267: Hba$1:Channel$2:ScsiID$3 Library Detects Stray Tape In Drive
 TRAP;setparam;tapeAlertTrap267;traps_status;2
@@ -3436,7 +3292,6 @@ TRAP;setparam;tapeAlertTrap267;traps_downtime;0
 TRAP;setparam;tapeAlertTrap267;traps_comments;A cartridge has been left in a drive inside the library by a <br/>previous hardware fault:<br/>1. Insert an empty magazine to clear the fault.<br/>2. If the fault does not clear, turn the library off and then on again.<br/>3. If the problem persists, call the library supplier helpline.<br/>Variables:<br/>  1: hbaNumber<br/>  2: hbaChannel<br/>  3: driveScsiID<br/>
 TRAP;ADD;tapeAlertTrap268;.1.3.6.1.4.1.11.2.3.9.7.1.0.268
 TRAP;setparam;tapeAlertTrap268;traps_name;tapeAlertTrap268
-TRAP;setparam;tapeAlertTrap268;traps_mode;0
 TRAP;setparam;tapeAlertTrap268;traps_oid;.1.3.6.1.4.1.11.2.3.9.7.1.0.268
 TRAP;setparam;tapeAlertTrap268;traps_args;HP TapeAlert #268: Hba$1:Channel$2:ScsiID$3 Library Has Problems Picking Cartridge from Slot
 TRAP;setparam;tapeAlertTrap268;traps_status;1
@@ -3454,7 +3309,6 @@ TRAP;setparam;tapeAlertTrap268;traps_downtime;0
 TRAP;setparam;tapeAlertTrap268;traps_comments;There is a potential problem with a drive ejecting cartridges short or <br/>with the library mechanism picking a cartridge from a slot.<br/>1. No action needs to be taken at this time. <br/>2. If the problem persists, call the library supplier helpline.<br/>Variables:<br/>  1: hbaNumber<br/>  2: hbaChannel<br/>  3: driveScsiID<br/>
 TRAP;ADD;tapeAlertTrap269;.1.3.6.1.4.1.11.2.3.9.7.1.0.269
 TRAP;setparam;tapeAlertTrap269;traps_name;tapeAlertTrap269
-TRAP;setparam;tapeAlertTrap269;traps_mode;0
 TRAP;setparam;tapeAlertTrap269;traps_oid;.1.3.6.1.4.1.11.2.3.9.7.1.0.269
 TRAP;setparam;tapeAlertTrap269;traps_args;HP TapeAlert #269: Hba$1:Channel$2:ScsiID$3 Library Has Problems Placing Cartridge into Slot
 TRAP;setparam;tapeAlertTrap269;traps_status;1
@@ -3472,7 +3326,6 @@ TRAP;setparam;tapeAlertTrap269;traps_downtime;0
 TRAP;setparam;tapeAlertTrap269;traps_comments;There is a potential problem with the library mechanism <br/>placing a cartridge into a slot<br/>1. No action needs to be taken at this time. <br/>2. If the problem persists, call the library supplier helpline.<br/>Variables:<br/>  1: hbaNumber<br/>  2: hbaChannel<br/>  3: driveScsiID<br/>
 TRAP;ADD;tapeAlertTrap270;.1.3.6.1.4.1.11.2.3.9.7.1.0.270
 TRAP;setparam;tapeAlertTrap270;traps_name;tapeAlertTrap270
-TRAP;setparam;tapeAlertTrap270;traps_mode;0
 TRAP;setparam;tapeAlertTrap270;traps_oid;.1.3.6.1.4.1.11.2.3.9.7.1.0.270
 TRAP;setparam;tapeAlertTrap270;traps_args;HP TapeAlert #270: Hba$1:Channel$2:ScsiID$3 Library Has Problems Loading Cartridge into Drive
 TRAP;setparam;tapeAlertTrap270;traps_status;1
@@ -3490,7 +3343,6 @@ TRAP;setparam;tapeAlertTrap270;traps_downtime;0
 TRAP;setparam;tapeAlertTrap270;traps_comments;There is a potential problem with a drive or the library <br/>mechanism loading cartridges, or an incompatible cartridge.<br/>Variables:<br/>  1: hbaNumber<br/>  2: hbaChannel<br/>  3: driveScsiID<br/>
 TRAP;ADD;tapeAlertTrap271;.1.3.6.1.4.1.11.2.3.9.7.1.0.271
 TRAP;setparam;tapeAlertTrap271;traps_name;tapeAlertTrap271
-TRAP;setparam;tapeAlertTrap271;traps_mode;0
 TRAP;setparam;tapeAlertTrap271;traps_oid;.1.3.6.1.4.1.11.2.3.9.7.1.0.271
 TRAP;setparam;tapeAlertTrap271;traps_args;HP TapeAlert #271: Hba$1:Channel$2:ScsiID$3 Library Door is Open
 TRAP;setparam;tapeAlertTrap271;traps_status;2
@@ -3508,7 +3360,6 @@ TRAP;setparam;tapeAlertTrap271;traps_downtime;0
 TRAP;setparam;tapeAlertTrap271;traps_comments;The operation has failed because the library door is open:<br/>1. Clear any obstructions from the library door.<br/>2. Close the library door.<br/>3. If the problem persists, call the library supplier helpline.<br/>Variables:<br/>  1: hbaNumber<br/>  2: hbaChannel<br/>  3: driveScsiID<br/>
 TRAP;ADD;tapeAlertTrap272;.1.3.6.1.4.1.11.2.3.9.7.1.0.272
 TRAP;setparam;tapeAlertTrap272;traps_name;tapeAlertTrap272
-TRAP;setparam;tapeAlertTrap272;traps_mode;0
 TRAP;setparam;tapeAlertTrap272;traps_oid;.1.3.6.1.4.1.11.2.3.9.7.1.0.272
 TRAP;setparam;tapeAlertTrap272;traps_args;HP TapeAlert #272: Hba$1:Channel$2:ScsiID$3 Library Has Mechanical Fault with Mailslot
 TRAP;setparam;tapeAlertTrap272;traps_status;2
@@ -3526,7 +3377,6 @@ TRAP;setparam;tapeAlertTrap272;traps_downtime;0
 TRAP;setparam;tapeAlertTrap272;traps_comments;There is a mechanical problem with the <br/>library media import/export mailslot.<br/>Variables:<br/>  1: hbaNumber<br/>  2: hbaChannel<br/>  3: driveScsiID<br/>
 TRAP;ADD;tapeAlertTrap273;.1.3.6.1.4.1.11.2.3.9.7.1.0.273
 TRAP;setparam;tapeAlertTrap273;traps_name;tapeAlertTrap273
-TRAP;setparam;tapeAlertTrap273;traps_mode;0
 TRAP;setparam;tapeAlertTrap273;traps_oid;.1.3.6.1.4.1.11.2.3.9.7.1.0.273
 TRAP;setparam;tapeAlertTrap273;traps_args;HP TapeAlert #273: Hba$1:Channel$2:ScsiID$3 Library Cannot Operate Without Magazine
 TRAP;setparam;tapeAlertTrap273;traps_status;2
@@ -3544,7 +3394,6 @@ TRAP;setparam;tapeAlertTrap273;traps_downtime;0
 TRAP;setparam;tapeAlertTrap273;traps_comments;The library cannot operate without the magazine.<br/>1. Insert the magazine into the library<br/>2. Restart the operation.<br/>Variables:<br/>  1: hbaNumber<br/>  2: hbaChannel<br/>  3: driveScsiID<br/>
 TRAP;ADD;tapeAlertTrap274;.1.3.6.1.4.1.11.2.3.9.7.1.0.274
 TRAP;setparam;tapeAlertTrap274;traps_name;tapeAlertTrap274
-TRAP;setparam;tapeAlertTrap274;traps_mode;0
 TRAP;setparam;tapeAlertTrap274;traps_oid;.1.3.6.1.4.1.11.2.3.9.7.1.0.274
 TRAP;setparam;tapeAlertTrap274;traps_args;HP TapeAlert #274: Hba$1:Channel$2:ScsiID$3 Library Security Has Been Compromised
 TRAP;setparam;tapeAlertTrap274;traps_status;1
@@ -3562,7 +3411,6 @@ TRAP;setparam;tapeAlertTrap274;traps_downtime;0
 TRAP;setparam;tapeAlertTrap274;traps_comments;Library security has been compromised<br/>Variables:<br/>  1: hbaNumber<br/>  2: hbaChannel<br/>  3: driveScsiID<br/>
 TRAP;ADD;tapeAlertTrap275;.1.3.6.1.4.1.11.2.3.9.7.1.0.275
 TRAP;setparam;tapeAlertTrap275;traps_name;tapeAlertTrap275
-TRAP;setparam;tapeAlertTrap275;traps_mode;0
 TRAP;setparam;tapeAlertTrap275;traps_oid;.1.3.6.1.4.1.11.2.3.9.7.1.0.275
 TRAP;setparam;tapeAlertTrap275;traps_args;HP TapeAlert #275: Hba$1:Channel$2:ScsiID$3 Library Security Mode Changed
 TRAP;setparam;tapeAlertTrap275;traps_status;0
@@ -3580,7 +3428,6 @@ TRAP;setparam;tapeAlertTrap275;traps_downtime;0
 TRAP;setparam;tapeAlertTrap275;traps_comments;The security mode of the library has been changed.<br/>The library has either been put into secure mode, <br/>or the library has exited the secure mode.<br/>This is for information purposes only. No action is required.<br/>Variables:<br/>  1: hbaNumber<br/>  2: hbaChannel<br/>  3: driveScsiID<br/>
 TRAP;ADD;tapeAlertTrap276;.1.3.6.1.4.1.11.2.3.9.7.1.0.276
 TRAP;setparam;tapeAlertTrap276;traps_name;tapeAlertTrap276
-TRAP;setparam;tapeAlertTrap276;traps_mode;0
 TRAP;setparam;tapeAlertTrap276;traps_oid;.1.3.6.1.4.1.11.2.3.9.7.1.0.276
 TRAP;setparam;tapeAlertTrap276;traps_args;HP TapeAlert #276: Hba$1:Channel$2:ScsiID$3 Library Manually Turned Offline
 TRAP;setparam;tapeAlertTrap276;traps_status;0
@@ -3598,7 +3445,6 @@ TRAP;setparam;tapeAlertTrap276;traps_downtime;0
 TRAP;setparam;tapeAlertTrap276;traps_comments;The library has been manually turned offline and is unavailable for use.<br/>Variables:<br/>  1: hbaNumber<br/>  2: hbaChannel<br/>  3: driveScsiID<br/>
 TRAP;ADD;tapeAlertTrap277;.1.3.6.1.4.1.11.2.3.9.7.1.0.277
 TRAP;setparam;tapeAlertTrap277;traps_name;tapeAlertTrap277
-TRAP;setparam;tapeAlertTrap277;traps_mode;0
 TRAP;setparam;tapeAlertTrap277;traps_oid;.1.3.6.1.4.1.11.2.3.9.7.1.0.277
 TRAP;setparam;tapeAlertTrap277;traps_args;HP TapeAlert #277: Hba$1:Channel$2:ScsiID$3 Library Drive Turned Offline
 TRAP;setparam;tapeAlertTrap277;traps_status;0
@@ -3616,7 +3462,6 @@ TRAP;setparam;tapeAlertTrap277;traps_downtime;0
 TRAP;setparam;tapeAlertTrap277;traps_comments;A drive inside the library has been taken offline.<br/>This is for information purposes only. No action is required.<br/>Variables:<br/>  1: hbaNumber<br/>  2: hbaChannel<br/>  3: driveScsiID<br/>
 TRAP;ADD;tapeAlertTrap278;.1.3.6.1.4.1.11.2.3.9.7.1.0.278
 TRAP;setparam;tapeAlertTrap278;traps_name;tapeAlertTrap278
-TRAP;setparam;tapeAlertTrap278;traps_mode;0
 TRAP;setparam;tapeAlertTrap278;traps_oid;.1.3.6.1.4.1.11.2.3.9.7.1.0.278
 TRAP;setparam;tapeAlertTrap278;traps_args;HP TapeAlert #278: Hba$1:Channel$2:ScsiID$3 Library Has Problems Reading Barcode Labels
 TRAP;setparam;tapeAlertTrap278;traps_status;1
@@ -3634,7 +3479,6 @@ TRAP;setparam;tapeAlertTrap278;traps_downtime;0
 TRAP;setparam;tapeAlertTrap278;traps_comments;There is a potential problem with the barcode label or <br/>the scanner hardware in the library mechanism.<br/>1. No action needs to be taken at this time. <br/>2. If the problem persists, call the library supplier helpline.<br/>Variables:<br/>  1: hbaNumber<br/>  2: hbaChannel<br/>  3: driveScsiID<br/>
 TRAP;ADD;tapeAlertTrap279;.1.3.6.1.4.1.11.2.3.9.7.1.0.279
 TRAP;setparam;tapeAlertTrap279;traps_name;tapeAlertTrap279
-TRAP;setparam;tapeAlertTrap279;traps_mode;0
 TRAP;setparam;tapeAlertTrap279;traps_oid;.1.3.6.1.4.1.11.2.3.9.7.1.0.279
 TRAP;setparam;tapeAlertTrap279;traps_args;HP TapeAlert #279: Hba$1:Channel$2:ScsiID$3 Library Inventory is Inconsistent
 TRAP;setparam;tapeAlertTrap279;traps_status;2
@@ -3652,7 +3496,6 @@ TRAP;setparam;tapeAlertTrap279;traps_downtime;0
 TRAP;setparam;tapeAlertTrap279;traps_comments;The library has detected a inconsistency in its inventory.<br/>1. Redo the library inventory to correct inconsistency.<br/>2. Restart the operation <br/>Check the applications users manual or the hardware users <br/>manual for specific instructions on redoing the library inventory.<br/>Variables:<br/>  1: hbaNumber<br/>  2: hbaChannel<br/>  3: driveScsiID<br/>
 TRAP;ADD;tapeAlertTrap280;.1.3.6.1.4.1.11.2.3.9.7.1.0.280
 TRAP;setparam;tapeAlertTrap280;traps_name;tapeAlertTrap280
-TRAP;setparam;tapeAlertTrap280;traps_mode;0
 TRAP;setparam;tapeAlertTrap280;traps_oid;.1.3.6.1.4.1.11.2.3.9.7.1.0.280
 TRAP;setparam;tapeAlertTrap280;traps_args;HP TapeAlert #280: Hba$1:Channel$2:ScsiID$3 Invalid Library Operation Attempted
 TRAP;setparam;tapeAlertTrap280;traps_status;1
@@ -3670,7 +3513,6 @@ TRAP;setparam;tapeAlertTrap280;traps_downtime;0
 TRAP;setparam;tapeAlertTrap280;traps_comments;A library operation has been attempted that is invalid at this time.<br/>Variables:<br/>  1: hbaNumber<br/>  2: hbaChannel<br/>  3: driveScsiID<br/>
 TRAP;ADD;tapeAlertTrap29;.1.3.6.1.4.1.11.2.3.9.7.1.0.29
 TRAP;setparam;tapeAlertTrap29;traps_name;tapeAlertTrap29
-TRAP;setparam;tapeAlertTrap29;traps_mode;0
 TRAP;setparam;tapeAlertTrap29;traps_oid;.1.3.6.1.4.1.11.2.3.9.7.1.0.29
 TRAP;setparam;tapeAlertTrap29;traps_args;HP TapeAlert #29: Hba$1:Channel$2:ScsiID$3 Tape Device Requires Preventative Maintenance
 TRAP;setparam;tapeAlertTrap29;traps_status;1
@@ -3688,7 +3530,6 @@ TRAP;setparam;tapeAlertTrap29;traps_downtime;0
 TRAP;setparam;tapeAlertTrap29;traps_comments;Preventive maintenance of the tape drive is required.<br/>Check the tape drive users manual for device specific <br/>preventive maintenance tasks or call the tape drive <br/>supplier helpline.<br/>Variables:<br/>  1: hbaNumber<br/>  2: hbaChannel<br/>  3: driveScsiID<br/>
 TRAP;ADD;tapeAlertTrap3;.1.3.6.1.4.1.11.2.3.9.7.1.0.3
 TRAP;setparam;tapeAlertTrap3;traps_name;tapeAlertTrap3
-TRAP;setparam;tapeAlertTrap3;traps_mode;0
 TRAP;setparam;tapeAlertTrap3;traps_oid;.1.3.6.1.4.1.11.2.3.9.7.1.0.3
 TRAP;setparam;tapeAlertTrap3;traps_args;HP TapeAlert #3: Hba$1:Channel$2:ScsiID$3 Tape Device Has Detected Read or Write Data Error
 TRAP;setparam;tapeAlertTrap3;traps_status;1
@@ -3706,7 +3547,6 @@ TRAP;setparam;tapeAlertTrap3;traps_downtime;0
 TRAP;setparam;tapeAlertTrap3;traps_comments;The operation has stopped because an error has<br/>occured while reading or writing data which the<br/>drive cannot correct.<br/>Variables:<br/>  1: hbaNumber<br/>  2: hbaChannel<br/>  3: driveScsiID<br/>
 TRAP;ADD;tapeAlertTrap30;.1.3.6.1.4.1.11.2.3.9.7.1.0.30
 TRAP;setparam;tapeAlertTrap30;traps_name;tapeAlertTrap30
-TRAP;setparam;tapeAlertTrap30;traps_mode;0
 TRAP;setparam;tapeAlertTrap30;traps_oid;.1.3.6.1.4.1.11.2.3.9.7.1.0.30
 TRAP;setparam;tapeAlertTrap30;traps_args;HP TapeAlert #30: Hba$1:Channel$2:ScsiID$3 Tape Device Has Hardware Fault - Reset Drive
 TRAP;setparam;tapeAlertTrap30;traps_status;2
@@ -3724,7 +3564,6 @@ TRAP;setparam;tapeAlertTrap30;traps_downtime;0
 TRAP;setparam;tapeAlertTrap30;traps_comments;The tape drive has a hardware fault:<br/>1. Eject the tape or magazine.<br/>2. Reset the drive.<br/>3. Restart the operation.<br/>Variables:<br/>  1: hbaNumber<br/>  2: hbaChannel<br/>  3: driveScsiID<br/>
 TRAP;ADD;tapeAlertTrap31;.1.3.6.1.4.1.11.2.3.9.7.1.0.31
 TRAP;setparam;tapeAlertTrap31;traps_name;tapeAlertTrap31
-TRAP;setparam;tapeAlertTrap31;traps_mode;0
 TRAP;setparam;tapeAlertTrap31;traps_oid;.1.3.6.1.4.1.11.2.3.9.7.1.0.31
 TRAP;setparam;tapeAlertTrap31;traps_args;HP TapeAlert #31: Hba$1:Channel$2:ScsiID$3 Tape Device Has Hardware Fault - Call Helpline
 TRAP;setparam;tapeAlertTrap31;traps_status;2
@@ -3742,7 +3581,6 @@ TRAP;setparam;tapeAlertTrap31;traps_downtime;0
 TRAP;setparam;tapeAlertTrap31;traps_comments;The tape drive has a hardware fault:<br/>1. Turn the tape drive off and then on again.<br/>2. Restart the operation.<br/>3. If the problem persists, call the tape <br/>drive supplier helpline.<br/>Check the tape drive users manual for device specific <br/>instructions on turning the device power on and off.<br/>Variables:<br/>  1: hbaNumber<br/>  2: hbaChannel<br/>  3: driveScsiID<br/>
 TRAP;ADD;tapeAlertTrap32;.1.3.6.1.4.1.11.2.3.9.7.1.0.32
 TRAP;setparam;tapeAlertTrap32;traps_name;tapeAlertTrap32
-TRAP;setparam;tapeAlertTrap32;traps_mode;0
 TRAP;setparam;tapeAlertTrap32;traps_oid;.1.3.6.1.4.1.11.2.3.9.7.1.0.32
 TRAP;setparam;tapeAlertTrap32;traps_args;HP TapeAlert #32: Hba$1:Channel$2:ScsiID$3 Tape Device Has Host Interface Fault
 TRAP;setparam;tapeAlertTrap32;traps_status;1
@@ -3760,7 +3598,6 @@ TRAP;setparam;tapeAlertTrap32;traps_downtime;0
 TRAP;setparam;tapeAlertTrap32;traps_comments;The tape drive has a problem with the host <br/>interface:<br/>1. Check the cables and cable connections.<br/>2. Restart the operation.<br/>Variables:<br/>  1: hbaNumber<br/>  2: hbaChannel<br/>  3: driveScsiID<br/>
 TRAP;ADD;tapeAlertTrap33;.1.3.6.1.4.1.11.2.3.9.7.1.0.33
 TRAP;setparam;tapeAlertTrap33;traps_name;tapeAlertTrap33
-TRAP;setparam;tapeAlertTrap33;traps_mode;0
 TRAP;setparam;tapeAlertTrap33;traps_oid;.1.3.6.1.4.1.11.2.3.9.7.1.0.33
 TRAP;setparam;tapeAlertTrap33;traps_args;HP TapeAlert #33: Hba$1:Channel$2:ScsiID$3 Tape Device Has Eject Media Request
 TRAP;setparam;tapeAlertTrap33;traps_status;2
@@ -3778,7 +3615,6 @@ TRAP;setparam;tapeAlertTrap33;traps_downtime;0
 TRAP;setparam;tapeAlertTrap33;traps_comments;The operation has failed:<br/>1. Eject the tape or magazine.<br/>2. Insert the tape or magazine again.<br/>3. Restart the operation.<br/>Variables:<br/>  1: hbaNumber<br/>  2: hbaChannel<br/>  3: driveScsiID<br/>
 TRAP;ADD;tapeAlertTrap34;.1.3.6.1.4.1.11.2.3.9.7.1.0.34
 TRAP;setparam;tapeAlertTrap34;traps_name;tapeAlertTrap34
-TRAP;setparam;tapeAlertTrap34;traps_mode;0
 TRAP;setparam;tapeAlertTrap34;traps_oid;.1.3.6.1.4.1.11.2.3.9.7.1.0.34
 TRAP;setparam;tapeAlertTrap34;traps_args;HP TapeAlert #34: Hba$1:Channel$2:ScsiID$3 Tape Device Has Firmware Download Fault
 TRAP;setparam;tapeAlertTrap34;traps_status;1
@@ -3796,7 +3632,6 @@ TRAP;setparam;tapeAlertTrap34;traps_downtime;0
 TRAP;setparam;tapeAlertTrap34;traps_comments;The firmware download has failed because you <br/>have tried to use the incorrect firmware for <br/>this tape drive.<br/>Obtain the correct firmware and try again.<br/>Variables:<br/>  1: hbaNumber<br/>  2: hbaChannel<br/>  3: driveScsiID<br/>
 TRAP;ADD;tapeAlertTrap35;.1.3.6.1.4.1.11.2.3.9.7.1.0.35
 TRAP;setparam;tapeAlertTrap35;traps_name;tapeAlertTrap35
-TRAP;setparam;tapeAlertTrap35;traps_mode;0
 TRAP;setparam;tapeAlertTrap35;traps_oid;.1.3.6.1.4.1.11.2.3.9.7.1.0.35
 TRAP;setparam;tapeAlertTrap35;traps_args;HP TapeAlert #35: Hba$1:Channel$2:ScsiID$3 Tape Device Humidity Specification Exceeded
 TRAP;setparam;tapeAlertTrap35;traps_status;1
@@ -3814,7 +3649,6 @@ TRAP;setparam;tapeAlertTrap35;traps_downtime;0
 TRAP;setparam;tapeAlertTrap35;traps_comments;Environmental conditions inside the tape drive are <br/>exceeding the humidity specifications<br/>Variables:<br/>  1: hbaNumber<br/>  2: hbaChannel<br/>  3: driveScsiID<br/>
 TRAP;ADD;tapeAlertTrap36;.1.3.6.1.4.1.11.2.3.9.7.1.0.36
 TRAP;setparam;tapeAlertTrap36;traps_name;tapeAlertTrap36
-TRAP;setparam;tapeAlertTrap36;traps_mode;0
 TRAP;setparam;tapeAlertTrap36;traps_oid;.1.3.6.1.4.1.11.2.3.9.7.1.0.36
 TRAP;setparam;tapeAlertTrap36;traps_args;HP TapeAlert #36: Hba$1:Channel$2:ScsiID$3 Tape Device Temperature Specification Exceeded
 TRAP;setparam;tapeAlertTrap36;traps_status;1
@@ -3832,7 +3666,6 @@ TRAP;setparam;tapeAlertTrap36;traps_downtime;0
 TRAP;setparam;tapeAlertTrap36;traps_comments;Environmental conditions inside the tape drive are <br/>exceeding the temperature specifications<br/>Variables:<br/>  1: hbaNumber<br/>  2: hbaChannel<br/>  3: driveScsiID<br/>
 TRAP;ADD;tapeAlertTrap37;.1.3.6.1.4.1.11.2.3.9.7.1.0.37
 TRAP;setparam;tapeAlertTrap37;traps_name;tapeAlertTrap37
-TRAP;setparam;tapeAlertTrap37;traps_mode;0
 TRAP;setparam;tapeAlertTrap37;traps_oid;.1.3.6.1.4.1.11.2.3.9.7.1.0.37
 TRAP;setparam;tapeAlertTrap37;traps_args;HP TapeAlert #37: Hba$1:Channel$2:ScsiID$3 Tape Device Voltage Specification Exceeded
 TRAP;setparam;tapeAlertTrap37;traps_status;1
@@ -3850,7 +3683,6 @@ TRAP;setparam;tapeAlertTrap37;traps_downtime;0
 TRAP;setparam;tapeAlertTrap37;traps_comments;The voltage supply to the tape drive exceeds specifications<br/>Variables:<br/>  1: hbaNumber<br/>  2: hbaChannel<br/>  3: driveScsiID<br/>
 TRAP;ADD;tapeAlertTrap38;.1.3.6.1.4.1.11.2.3.9.7.1.0.38
 TRAP;setparam;tapeAlertTrap38;traps_name;tapeAlertTrap38
-TRAP;setparam;tapeAlertTrap38;traps_mode;0
 TRAP;setparam;tapeAlertTrap38;traps_oid;.1.3.6.1.4.1.11.2.3.9.7.1.0.38
 TRAP;setparam;tapeAlertTrap38;traps_args;HP TapeAlert #38: Hba$1:Channel$2:ScsiID$3 Tape Device Predicted to Fail - Call Helpline
 TRAP;setparam;tapeAlertTrap38;traps_status;2
@@ -3868,7 +3700,6 @@ TRAP;setparam;tapeAlertTrap38;traps_downtime;0
 TRAP;setparam;tapeAlertTrap38;traps_comments;A hardware failure of the tape drive is predicted. <br/>Call the tape drive supplier helpline.<br/>Variables:<br/>  1: hbaNumber<br/>  2: hbaChannel<br/>  3: driveScsiID<br/>
 TRAP;ADD;tapeAlertTrap39;.1.3.6.1.4.1.11.2.3.9.7.1.0.39
 TRAP;setparam;tapeAlertTrap39;traps_name;tapeAlertTrap39
-TRAP;setparam;tapeAlertTrap39;traps_mode;0
 TRAP;setparam;tapeAlertTrap39;traps_oid;.1.3.6.1.4.1.11.2.3.9.7.1.0.39
 TRAP;setparam;tapeAlertTrap39;traps_args;HP TapeAlert #39: Hba$1:Channel$2:ScsiID$3 Tape Device May Have Hardware Fault - Run Diagnostics
 TRAP;setparam;tapeAlertTrap39;traps_status;1
@@ -3886,7 +3717,6 @@ TRAP;setparam;tapeAlertTrap39;traps_downtime;0
 TRAP;setparam;tapeAlertTrap39;traps_comments;The tape drive may have a hardware fault.<br/>Run extended diagnostics to verify and diagnose the problem.<br/>Check the tape drive users manual for device specific <br/>instructions on running extended diagnostic tests.<br/>Variables:<br/>  1: hbaNumber<br/>  2: hbaChannel<br/>  3: driveScsiID<br/>
 TRAP;ADD;tapeAlertTrap4;.1.3.6.1.4.1.11.2.3.9.7.1.0.4
 TRAP;setparam;tapeAlertTrap4;traps_name;tapeAlertTrap4
-TRAP;setparam;tapeAlertTrap4;traps_mode;0
 TRAP;setparam;tapeAlertTrap4;traps_oid;.1.3.6.1.4.1.11.2.3.9.7.1.0.4
 TRAP;setparam;tapeAlertTrap4;traps_args;HP TapeAlert #4: Hba$1:Channel$2:ScsiID$3 Tape Device Has Detected Faulty Media [$4]
 TRAP;setparam;tapeAlertTrap4;traps_status;2
@@ -3904,7 +3734,6 @@ TRAP;setparam;tapeAlertTrap4;traps_downtime;0
 TRAP;setparam;tapeAlertTrap4;traps_comments;Your data is at risk:<br/>1. Copy any data you require from this tape<br/>2. Do not use this tape again<br/>3. Restart the operation with a different tape<br/>Variables:<br/>  1: hbaNumber<br/>  2: hbaChannel<br/>  3: driveScsiID<br/>  4: currentMedia<br/>
 TRAP;ADD;tapeAlertTrap40;.1.3.6.1.4.1.11.2.3.9.7.1.0.40
 TRAP;setparam;tapeAlertTrap40;traps_name;tapeAlertTrap40
-TRAP;setparam;tapeAlertTrap40;traps_mode;0
 TRAP;setparam;tapeAlertTrap40;traps_oid;.1.3.6.1.4.1.11.2.3.9.7.1.0.40
 TRAP;setparam;tapeAlertTrap40;traps_args;HP TapeAlert #40: Hba$1:Channel$2:ScsiID$3 Tape Device Has Autoloader Communications Fault
 TRAP;setparam;tapeAlertTrap40;traps_status;2
@@ -3922,7 +3751,6 @@ TRAP;setparam;tapeAlertTrap40;traps_downtime;0
 TRAP;setparam;tapeAlertTrap40;traps_comments;The changer mechanism is having difficulty <br/>communicating with the tape drive:<br/>1. Turn the autoloader off then on.<br/>2. Restart the operation.<br/>3. If problem persists, call the tape drive <br/>supplier helpline.<br/>Variables:<br/>  1: hbaNumber<br/>  2: hbaChannel<br/>  3: driveScsiID<br/>
 TRAP;ADD;tapeAlertTrap41;.1.3.6.1.4.1.11.2.3.9.7.1.0.41
 TRAP;setparam;tapeAlertTrap41;traps_name;tapeAlertTrap41
-TRAP;setparam;tapeAlertTrap41;traps_mode;0
 TRAP;setparam;tapeAlertTrap41;traps_oid;.1.3.6.1.4.1.11.2.3.9.7.1.0.41
 TRAP;setparam;tapeAlertTrap41;traps_args;HP TapeAlert #41: Hba$1:Channel$2:ScsiID$3 Tape Device Detects Stray Tape In Autoloader
 TRAP;setparam;tapeAlertTrap41;traps_status;2
@@ -3940,7 +3768,6 @@ TRAP;setparam;tapeAlertTrap41;traps_downtime;0
 TRAP;setparam;tapeAlertTrap41;traps_comments;A tape has been left in the autoloader by a <br/>previous hardware fault:<br/>1. Insert an empty magazine to clear the fault.<br/>2. If the fault does not clear, turn the autoloader <br/>off and then on again.<br/>3. If the problem persists, call the tape drive <br/>supplier helpline.<br/>Variables:<br/>  1: hbaNumber<br/>  2: hbaChannel<br/>  3: driveScsiID<br/>
 TRAP;ADD;tapeAlertTrap42;.1.3.6.1.4.1.11.2.3.9.7.1.0.42
 TRAP;setparam;tapeAlertTrap42;traps_name;tapeAlertTrap42
-TRAP;setparam;tapeAlertTrap42;traps_mode;0
 TRAP;setparam;tapeAlertTrap42;traps_oid;.1.3.6.1.4.1.11.2.3.9.7.1.0.42
 TRAP;setparam;tapeAlertTrap42;traps_args;HP TapeAlert #42: Hba$1:Channel$2:ScsiID$3 Tape Device Has Autoloader Mechanism Fault
 TRAP;setparam;tapeAlertTrap42;traps_status;1
@@ -3958,7 +3785,6 @@ TRAP;setparam;tapeAlertTrap42;traps_downtime;0
 TRAP;setparam;tapeAlertTrap42;traps_comments;There is a problem with the autoloader mechanism.<br/>Variables:<br/>  1: hbaNumber<br/>  2: hbaChannel<br/>  3: driveScsiID<br/>
 TRAP;ADD;tapeAlertTrap43;.1.3.6.1.4.1.11.2.3.9.7.1.0.43
 TRAP;setparam;tapeAlertTrap43;traps_name;tapeAlertTrap43
-TRAP;setparam;tapeAlertTrap43;traps_mode;0
 TRAP;setparam;tapeAlertTrap43;traps_oid;.1.3.6.1.4.1.11.2.3.9.7.1.0.43
 TRAP;setparam;tapeAlertTrap43;traps_args;HP TapeAlert #43: Hba$1:Channel$2:ScsiID$3 Tape Device Has Autoloader Door Open
 TRAP;setparam;tapeAlertTrap43;traps_status;2
@@ -3976,7 +3802,6 @@ TRAP;setparam;tapeAlertTrap43;traps_downtime;0
 TRAP;setparam;tapeAlertTrap43;traps_comments;The operation has failed because the autoloader <br/>door is open:<br/>1. Clear any obstructions from the autoloader door.<br/>2. Eject the magazine and then insert it again.<br/>3. If the fault does not clear, turn the autoloader <br/>off and then on again.<br/>4. If the problem persists, call the tape drive <br/>supplier helpline.<br/>Variables:<br/>  1: hbaNumber<br/>  2: hbaChannel<br/>  3: driveScsiID<br/>
 TRAP;ADD;tapeAlertTrap44;.1.3.6.1.4.1.11.2.3.9.7.1.0.44
 TRAP;setparam;tapeAlertTrap44;traps_name;tapeAlertTrap44
-TRAP;setparam;tapeAlertTrap44;traps_mode;0
 TRAP;setparam;tapeAlertTrap44;traps_oid;.1.3.6.1.4.1.11.2.3.9.7.1.0.44
 TRAP;setparam;tapeAlertTrap44;traps_args;HP TapeAlert #44: Hba$1:Channel$2:ScsiID$3 Autoloader Has Hardware Fault - Call Helpline
 TRAP;setparam;tapeAlertTrap44;traps_status;2
@@ -3994,7 +3819,6 @@ TRAP;setparam;tapeAlertTrap44;traps_downtime;0
 TRAP;setparam;tapeAlertTrap44;traps_comments;The autoloader has a hardware fault:<br/>1. Turn the autoloader off and then on again.<br/>2. Restart the operation.<br/>3. If the problem persists, call the tape drive supplier helpline.<br/>Check the autoloader users manual for device specific <br/>instructions on turning the device power on and off.<br/>Variables:<br/>  1: hbaNumber<br/>  2: hbaChannel<br/>  3: driveScsiID<br/>
 TRAP;ADD;tapeAlertTrap45;.1.3.6.1.4.1.11.2.3.9.7.1.0.45
 TRAP;setparam;tapeAlertTrap45;traps_name;tapeAlertTrap45
-TRAP;setparam;tapeAlertTrap45;traps_mode;0
 TRAP;setparam;tapeAlertTrap45;traps_oid;.1.3.6.1.4.1.11.2.3.9.7.1.0.45
 TRAP;setparam;tapeAlertTrap45;traps_args;HP TapeAlert #45: Hba$1:Channel$2:ScsiID$3 Autoloader Cannot Operate Without Magazine
 TRAP;setparam;tapeAlertTrap45;traps_status;2
@@ -4012,7 +3836,6 @@ TRAP;setparam;tapeAlertTrap45;traps_downtime;0
 TRAP;setparam;tapeAlertTrap45;traps_comments;The autoloader cannot operate without the magazine.<br/>1. Insert the magazine into the autoloader<br/>2. Restart the operation.<br/>Variables:<br/>  1: hbaNumber<br/>  2: hbaChannel<br/>  3: driveScsiID<br/>
 TRAP;ADD;tapeAlertTrap46;.1.3.6.1.4.1.11.2.3.9.7.1.0.46
 TRAP;setparam;tapeAlertTrap46;traps_name;tapeAlertTrap46
-TRAP;setparam;tapeAlertTrap46;traps_mode;0
 TRAP;setparam;tapeAlertTrap46;traps_oid;.1.3.6.1.4.1.11.2.3.9.7.1.0.46
 TRAP;setparam;tapeAlertTrap46;traps_args;HP TapeAlert #46: Hba$1:Channel$2:ScsiID$3 Autoloader Predicted to Fail - Call Helpline
 TRAP;setparam;tapeAlertTrap46;traps_status;1
@@ -4030,7 +3853,6 @@ TRAP;setparam;tapeAlertTrap46;traps_downtime;0
 TRAP;setparam;tapeAlertTrap46;traps_comments;A hardware failure of the changer mechanism is predicted. <br/>Call the tape drive supplier helpline.<br/>Variables:<br/>  1: hbaNumber<br/>  2: hbaChannel<br/>  3: driveScsiID<br/>
 TRAP;ADD;tapeAlertTrap5;.1.3.6.1.4.1.11.2.3.9.7.1.0.5
 TRAP;setparam;tapeAlertTrap5;traps_name;tapeAlertTrap5
-TRAP;setparam;tapeAlertTrap5;traps_mode;0
 TRAP;setparam;tapeAlertTrap5;traps_oid;.1.3.6.1.4.1.11.2.3.9.7.1.0.5
 TRAP;setparam;tapeAlertTrap5;traps_args;HP TapeAlert #5: Hba$1:Channel$2:ScsiID$3 Tape Device May Have Read Fault - Call Helpline
 TRAP;setparam;tapeAlertTrap5;traps_status;2
@@ -4048,7 +3870,6 @@ TRAP;setparam;tapeAlertTrap5;traps_downtime;0
 TRAP;setparam;tapeAlertTrap5;traps_comments;The tape is damaged or the drive is faulty.<br/>Call the tape drive supplier helpline.<br/>Variables:<br/>  1: hbaNumber<br/>  2: hbaChannel<br/>  3: driveScsiID<br/>
 TRAP;ADD;tapeAlertTrap6;.1.3.6.1.4.1.11.2.3.9.7.1.0.6
 TRAP;setparam;tapeAlertTrap6;traps_name;tapeAlertTrap6
-TRAP;setparam;tapeAlertTrap6;traps_mode;0
 TRAP;setparam;tapeAlertTrap6;traps_oid;.1.3.6.1.4.1.11.2.3.9.7.1.0.6
 TRAP;setparam;tapeAlertTrap6;traps_args;HP TapeAlert #6: Hba$1:Channel$2:ScsiID$3 Tape Device May Have Write Fault - Call Helpline
 TRAP;setparam;tapeAlertTrap6;traps_status;2
@@ -4066,7 +3887,6 @@ TRAP;setparam;tapeAlertTrap6;traps_downtime;0
 TRAP;setparam;tapeAlertTrap6;traps_comments;The tape is from a faulty batch or the tape drive<br/>is faulty:<br/>1. Use a good tape to test the drive.<br/>2. If the problem persists, call the tape drive <br/>supplier helpline.<br/>Variables:<br/>  1: hbaNumber<br/>  2: hbaChannel<br/>  3: driveScsiID<br/>
 TRAP;ADD;tapeAlertTrap7;.1.3.6.1.4.1.11.2.3.9.7.1.0.7
 TRAP;setparam;tapeAlertTrap7;traps_name;tapeAlertTrap7
-TRAP;setparam;tapeAlertTrap7;traps_mode;0
 TRAP;setparam;tapeAlertTrap7;traps_oid;.1.3.6.1.4.1.11.2.3.9.7.1.0.7
 TRAP;setparam;tapeAlertTrap7;traps_args;HP TapeAlert #7: Hba$1:Channel$2:ScsiID$3 Tape Device Has Detected Worn Out Media [$4]
 TRAP;setparam;tapeAlertTrap7;traps_status;1
@@ -4084,7 +3904,6 @@ TRAP;setparam;tapeAlertTrap7;traps_downtime;0
 TRAP;setparam;tapeAlertTrap7;traps_comments;The tape cartridge has reached the end of its <br/>calculated useful life:<br/>1. Copy any data you need to another tape<br/>2. Discard the old tape.<br/>Variables:<br/>  1: hbaNumber<br/>  2: hbaChannel<br/>  3: driveScsiID<br/>  4: currentMedia<br/>
 TRAP;ADD;tapeAlertTrap8;.1.3.6.1.4.1.11.2.3.9.7.1.0.8
 TRAP;setparam;tapeAlertTrap8;traps_name;tapeAlertTrap8
-TRAP;setparam;tapeAlertTrap8;traps_mode;0
 TRAP;setparam;tapeAlertTrap8;traps_oid;.1.3.6.1.4.1.11.2.3.9.7.1.0.8
 TRAP;setparam;tapeAlertTrap8;traps_args;HP TapeAlert #8: Hba$1:Channel$2:ScsiID$3 Media Loaded In Tape Device Is Not Data Grade
 TRAP;setparam;tapeAlertTrap8;traps_status;1
@@ -4102,7 +3921,6 @@ TRAP;setparam;tapeAlertTrap8;traps_downtime;0
 TRAP;setparam;tapeAlertTrap8;traps_comments;The tape cartridge is not data-grade. <br/>Any data you back up to the tape is at risk. <br/>Replace the cartridge with a data-grade tape.<br/>Variables:<br/>  1: hbaNumber<br/>  2: hbaChannel<br/>  3: driveScsiID<br/>
 TRAP;ADD;tapeAlertTrap9;.1.3.6.1.4.1.11.2.3.9.7.1.0.9
 TRAP;setparam;tapeAlertTrap9;traps_name;tapeAlertTrap9
-TRAP;setparam;tapeAlertTrap9;traps_mode;0
 TRAP;setparam;tapeAlertTrap9;traps_oid;.1.3.6.1.4.1.11.2.3.9.7.1.0.9
 TRAP;setparam;tapeAlertTrap9;traps_args;HP TapeAlert #9: Hba$1:Channel$2:ScsiID$3 Tape Device Attempted Backup to Write-Protected Tape
 TRAP;setparam;tapeAlertTrap9;traps_status;2
@@ -4120,7 +3938,6 @@ TRAP;setparam;tapeAlertTrap9;traps_downtime;0
 TRAP;setparam;tapeAlertTrap9;traps_comments;You are trying to write to a write-protected <br/>cartridge. Remove the write-protection or use <br/>another tape.<br/>Variables:<br/>  1: hbaNumber<br/>  2: hbaChannel<br/>  3: driveScsiID<br/>
 TRAP;ADD;trapNoPrinterAttached;.1.3.6.1.4.1.683.6.0.3
 TRAP;setparam;trapNoPrinterAttached;traps_name;trapNoPrinterAttached
-TRAP;setparam;trapNoPrinterAttached;traps_mode;0
 TRAP;setparam;trapNoPrinterAttached;traps_oid;.1.3.6.1.4.1.683.6.0.3
 TRAP;setparam;trapNoPrinterAttached;traps_args;No Printer Attached: Port $1 - No Printer Attached
 TRAP;setparam;trapNoPrinterAttached;traps_status;0
@@ -4138,7 +3955,6 @@ TRAP;setparam;trapNoPrinterAttached;traps_downtime;0
 TRAP;setparam;trapNoPrinterAttached;traps_comments;No printer is attached to the output port.<br/>Variables:<br/>  1: outputIndex<br/>
 TRAP;ADD;trapPrinterDoorOpen;.1.3.6.1.4.1.683.6.0.7
 TRAP;setparam;trapPrinterDoorOpen;traps_name;trapPrinterDoorOpen
-TRAP;setparam;trapPrinterDoorOpen;traps_mode;0
 TRAP;setparam;trapPrinterDoorOpen;traps_oid;.1.3.6.1.4.1.683.6.0.7
 TRAP;setparam;trapPrinterDoorOpen;traps_args;Printer Door Open: Port $1 - Printer Door Open
 TRAP;setparam;trapPrinterDoorOpen;traps_status;0
@@ -4156,7 +3972,6 @@ TRAP;setparam;trapPrinterDoorOpen;traps_downtime;0
 TRAP;setparam;trapPrinterDoorOpen;traps_comments;The printer door is open.<br/>Variables:<br/>  1: outputIndex<br/>
 TRAP;ADD;trapPrinterError;.1.3.6.1.4.1.683.6.0.16
 TRAP;setparam;trapPrinterError;traps_name;trapPrinterError
-TRAP;setparam;trapPrinterError;traps_mode;0
 TRAP;setparam;trapPrinterError;traps_oid;.1.3.6.1.4.1.683.6.0.16
 TRAP;setparam;trapPrinterError;traps_args;General Printer Error: Port $1 - Printer Error
 TRAP;setparam;trapPrinterError;traps_status;1
@@ -4174,7 +3989,6 @@ TRAP;setparam;trapPrinterError;traps_downtime;0
 TRAP;setparam;trapPrinterError;traps_comments;General printer error.<br/>Variables:<br/>  1: outputIndex<br/>
 TRAP;ADD;trapPrinterOffline;.1.3.6.1.4.1.683.6.0.2
 TRAP;setparam;trapPrinterOffline;traps_name;trapPrinterOffline
-TRAP;setparam;trapPrinterOffline;traps_mode;0
 TRAP;setparam;trapPrinterOffline;traps_oid;.1.3.6.1.4.1.683.6.0.2
 TRAP;setparam;trapPrinterOffline;traps_args;Printer Off-Line: Port $1 is Off-Line
 TRAP;setparam;trapPrinterOffline;traps_status;0
@@ -4192,7 +4006,6 @@ TRAP;setparam;trapPrinterOffline;traps_downtime;0
 TRAP;setparam;trapPrinterOffline;traps_comments;The printer is off-line.<br/>Variables:<br/>  1: outputIndex<br/>
 TRAP;ADD;trapPrinterOnline;.1.3.6.1.4.1.683.6.0.1
 TRAP;setparam;trapPrinterOnline;traps_name;trapPrinterOnline
-TRAP;setparam;trapPrinterOnline;traps_mode;0
 TRAP;setparam;trapPrinterOnline;traps_oid;.1.3.6.1.4.1.683.6.0.1
 TRAP;setparam;trapPrinterOnline;traps_args;Printer On-Line: Port $1 is On-Line
 TRAP;setparam;trapPrinterOnline;traps_status;0
@@ -4210,7 +4023,6 @@ TRAP;setparam;trapPrinterOnline;traps_downtime;0
 TRAP;setparam;trapPrinterOnline;traps_comments;The printer is on-line.  This trap will be sent<br/>out after a printer error condition has been cleared.<br/>Variables:<br/>  1: outputIndex<br/>
 TRAP;ADD;trapPrinterPaperJam;.1.3.6.1.4.1.683.6.0.6
 TRAP;setparam;trapPrinterPaperJam;traps_name;trapPrinterPaperJam
-TRAP;setparam;trapPrinterPaperJam;traps_mode;0
 TRAP;setparam;trapPrinterPaperJam;traps_oid;.1.3.6.1.4.1.683.6.0.6
 TRAP;setparam;trapPrinterPaperJam;traps_args;Paper Jam: Port $1 - Paper Jam
 TRAP;setparam;trapPrinterPaperJam;traps_status;2
@@ -4228,7 +4040,6 @@ TRAP;setparam;trapPrinterPaperJam;traps_downtime;0
 TRAP;setparam;trapPrinterPaperJam;traps_comments;The printer has a paper jam.<br/>Variables:<br/>  1: outputIndex<br/>
 TRAP;ADD;trapPrinterPaperOut;.1.3.6.1.4.1.683.6.0.5
 TRAP;setparam;trapPrinterPaperOut;traps_name;trapPrinterPaperOut
-TRAP;setparam;trapPrinterPaperOut;traps_mode;0
 TRAP;setparam;trapPrinterPaperOut;traps_oid;.1.3.6.1.4.1.683.6.0.5
 TRAP;setparam;trapPrinterPaperOut;traps_args;Printer Out of Paper: Port $1 - Out of Paper
 TRAP;setparam;trapPrinterPaperOut;traps_status;1
@@ -4246,7 +4057,6 @@ TRAP;setparam;trapPrinterPaperOut;traps_downtime;0
 TRAP;setparam;trapPrinterPaperOut;traps_comments;The printer is out of paper.<br/>Variables:<br/>  1: outputIndex<br/>
 TRAP;ADD;trapPrinterTonerLow;.1.3.6.1.4.1.683.6.0.4
 TRAP;setparam;trapPrinterTonerLow;traps_name;trapPrinterTonerLow
-TRAP;setparam;trapPrinterTonerLow;traps_mode;0
 TRAP;setparam;trapPrinterTonerLow;traps_oid;.1.3.6.1.4.1.683.6.0.4
 TRAP;setparam;trapPrinterTonerLow;traps_args;Toner Low: Port $1 - Toner Low
 TRAP;setparam;trapPrinterTonerLow;traps_status;1
@@ -4264,7 +4074,6 @@ TRAP;setparam;trapPrinterTonerLow;traps_downtime;0
 TRAP;setparam;trapPrinterTonerLow;traps_comments;The printer toner is low.<br/>Variables:<br/>  1: outputIndex<br/>
 TRAP;ADD;unitDeparture;.1.3.6.1.4.1.43.0.89
 TRAP;setparam;unitDeparture;traps_name;unitDeparture
-TRAP;setparam;unitDeparture;traps_mode;0
 TRAP;setparam;unitDeparture;traps_oid;.1.3.6.1.4.1.43.0.89
 TRAP;setparam;unitDeparture;traps_args;This trap is raised by the lowest numbered unit in a stack when $*
 TRAP;setparam;unitDeparture;traps_status;0
@@ -4282,7 +4091,6 @@ TRAP;setparam;unitDeparture;traps_downtime;0
 TRAP;setparam;unitDeparture;traps_comments;This trap is raised by the lowest numbered unit in a stack when<br/>a communications loss is detected to another unit. The raising of this<br/>trap is optional.<br/>Variables:<br/>  1: stackUnitDesc<br/>  2: stackUnitSerialNumber<br/>
 TRAP;ADD;vdFailedRedundancy;.1.3.6.1.4.1.674.10893.1.1.200.0.510
 TRAP;setparam;vdFailedRedundancy;traps_name;vdFailedRedundancy
-TRAP;setparam;vdFailedRedundancy;traps_mode;0
 TRAP;setparam;vdFailedRedundancy;traps_oid;.1.3.6.1.4.1.674.10893.1.1.200.0.510
 TRAP;setparam;vdFailedRedundancy;traps_args;Array Manager Event: Virtual Disk failed redundancy:
 TRAP;setparam;vdFailedRedundancy;traps_status;1
@@ -4300,7 +4108,6 @@ TRAP;setparam;vdFailedRedundancy;traps_downtime;0
 TRAP;setparam;vdFailedRedundancy;traps_comments;%s, virtual disk (%s) is no longer redundant.<br/>Variables:<br/>  1: controllerNameEv<br/>  2: virtualDiskNameEv<br/>
 TRAP;ADD;vdFormatCancelled;.1.3.6.1.4.1.674.10893.1.1.200.0.530
 TRAP;setparam;vdFormatCancelled;traps_name;vdFormatCancelled
-TRAP;setparam;vdFormatCancelled;traps_mode;0
 TRAP;setparam;vdFormatCancelled;traps_oid;.1.3.6.1.4.1.674.10893.1.1.200.0.530
 TRAP;setparam;vdFormatCancelled;traps_args;Array Manager Event: Virtual Disk format cancelled:
 TRAP;setparam;vdFormatCancelled;traps_status;1
@@ -4318,7 +4125,6 @@ TRAP;setparam;vdFormatCancelled;traps_downtime;0
 TRAP;setparam;vdFormatCancelled;traps_comments;%s, virtual disk (%s) format cancelled.<br/>Variables:<br/>  1: controllerNameEv<br/>  2: virtualDiskNameEv<br/>
 TRAP;ADD;vdFormatCompleted;.1.3.6.1.4.1.674.10893.1.1.200.0.548
 TRAP;setparam;vdFormatCompleted;traps_name;vdFormatCompleted
-TRAP;setparam;vdFormatCompleted;traps_mode;0
 TRAP;setparam;vdFormatCompleted;traps_oid;.1.3.6.1.4.1.674.10893.1.1.200.0.548
 TRAP;setparam;vdFormatCompleted;traps_args;Array Manager Event: Virtual Disk format completed:
 TRAP;setparam;vdFormatCompleted;traps_status;0
@@ -4336,7 +4142,6 @@ TRAP;setparam;vdFormatCompleted;traps_downtime;0
 TRAP;setparam;vdFormatCompleted;traps_comments;%s, virtual disk (%s) format completed.<br/>Variables:<br/>  1: controllerNameEv<br/>  2: virtualDiskNameEv<br/>
 TRAP;ADD;vdFormatFailed;.1.3.6.1.4.1.674.10893.1.1.200.0.539
 TRAP;setparam;vdFormatFailed;traps_name;vdFormatFailed
-TRAP;setparam;vdFormatFailed;traps_mode;0
 TRAP;setparam;vdFormatFailed;traps_oid;.1.3.6.1.4.1.674.10893.1.1.200.0.539
 TRAP;setparam;vdFormatFailed;traps_args;Array Manager Event: Virtual Disk format failed:
 TRAP;setparam;vdFormatFailed;traps_status;3
@@ -4354,7 +4159,6 @@ TRAP;setparam;vdFormatFailed;traps_downtime;0
 TRAP;setparam;vdFormatFailed;traps_comments;%s, virtual disk (%s) format failed.<br/>Variables:<br/>  1: controllerNameEv<br/>  2: virtualDiskNameEv<br/>
 TRAP;ADD;vdFormatStarted;.1.3.6.1.4.1.674.10893.1.1.200.0.521
 TRAP;setparam;vdFormatStarted;traps_name;vdFormatStarted
-TRAP;setparam;vdFormatStarted;traps_mode;0
 TRAP;setparam;vdFormatStarted;traps_oid;.1.3.6.1.4.1.674.10893.1.1.200.0.521
 TRAP;setparam;vdFormatStarted;traps_args;Array Manager Event: Virtual Disk format started:
 TRAP;setparam;vdFormatStarted;traps_status;1
@@ -4372,7 +4176,6 @@ TRAP;setparam;vdFormatStarted;traps_downtime;0
 TRAP;setparam;vdFormatStarted;traps_comments;%s, virtual disk (%s) format started.<br/>Variables:<br/>  1: controllerNameEv<br/>  2: virtualDiskNameEv<br/>
 TRAP;ADD;vdInitializeCancelled;.1.3.6.1.4.1.674.10893.1.1.200.0.532
 TRAP;setparam;vdInitializeCancelled;traps_name;vdInitializeCancelled
-TRAP;setparam;vdInitializeCancelled;traps_mode;0
 TRAP;setparam;vdInitializeCancelled;traps_oid;.1.3.6.1.4.1.674.10893.1.1.200.0.532
 TRAP;setparam;vdInitializeCancelled;traps_args;Array Manager Event: Virtual Disk initialization cancelled:
 TRAP;setparam;vdInitializeCancelled;traps_status;1
@@ -4390,7 +4193,6 @@ TRAP;setparam;vdInitializeCancelled;traps_downtime;0
 TRAP;setparam;vdInitializeCancelled;traps_comments;%s, virtual disk (%s) initialization cancelled.<br/>Variables:<br/>  1: controllerNameEv<br/>  2: virtualDiskNameEv<br/>
 TRAP;ADD;vdInitializeCompleted;.1.3.6.1.4.1.674.10893.1.1.200.0.550
 TRAP;setparam;vdInitializeCompleted;traps_name;vdInitializeCompleted
-TRAP;setparam;vdInitializeCompleted;traps_mode;0
 TRAP;setparam;vdInitializeCompleted;traps_oid;.1.3.6.1.4.1.674.10893.1.1.200.0.550
 TRAP;setparam;vdInitializeCompleted;traps_args;Array Manager Event: Virtual Disk initialization completed:
 TRAP;setparam;vdInitializeCompleted;traps_status;0
@@ -4408,7 +4210,6 @@ TRAP;setparam;vdInitializeCompleted;traps_downtime;0
 TRAP;setparam;vdInitializeCompleted;traps_comments;%s, virtual disk (%s) initialization completed.<br/>Variables:<br/>  1: controllerNameEv<br/>  2: virtualDiskNameEv<br/>
 TRAP;ADD;vdInitializeFailed;.1.3.6.1.4.1.674.10893.1.1.200.0.541
 TRAP;setparam;vdInitializeFailed;traps_name;vdInitializeFailed
-TRAP;setparam;vdInitializeFailed;traps_mode;0
 TRAP;setparam;vdInitializeFailed;traps_oid;.1.3.6.1.4.1.674.10893.1.1.200.0.541
 TRAP;setparam;vdInitializeFailed;traps_args;Array Manager Event: Virtual Disk initialization Failed:
 TRAP;setparam;vdInitializeFailed;traps_status;3
@@ -4426,7 +4227,6 @@ TRAP;setparam;vdInitializeFailed;traps_downtime;0
 TRAP;setparam;vdInitializeFailed;traps_comments;%s, virtual disk (%s) initialization Failed.<br/>Variables:<br/>  1: controllerNameEv<br/>  2: virtualDiskNameEv<br/>
 TRAP;ADD;vdInitializeStarted;.1.3.6.1.4.1.674.10893.1.1.200.0.523
 TRAP;setparam;vdInitializeStarted;traps_name;vdInitializeStarted
-TRAP;setparam;vdInitializeStarted;traps_mode;0
 TRAP;setparam;vdInitializeStarted;traps_oid;.1.3.6.1.4.1.674.10893.1.1.200.0.523
 TRAP;setparam;vdInitializeStarted;traps_args;Array Manager Event: Virtual Disk initialization started:
 TRAP;setparam;vdInitializeStarted;traps_status;0
@@ -4444,7 +4244,6 @@ TRAP;setparam;vdInitializeStarted;traps_downtime;0
 TRAP;setparam;vdInitializeStarted;traps_comments;%s, virtual disk (%s) initialization started.<br/>Variables:<br/>  1: controllerNameEv<br/>  2: virtualDiskNameEv<br/>
 TRAP;ADD;vdRebuildCancelled;.1.3.6.1.4.1.674.10893.1.1.200.0.535
 TRAP;setparam;vdRebuildCancelled;traps_name;vdRebuildCancelled
-TRAP;setparam;vdRebuildCancelled;traps_mode;0
 TRAP;setparam;vdRebuildCancelled;traps_oid;.1.3.6.1.4.1.674.10893.1.1.200.0.535
 TRAP;setparam;vdRebuildCancelled;traps_args;Array Manager Event: Virtual Disk rebuild cancelled:
 TRAP;setparam;vdRebuildCancelled;traps_status;1
@@ -4462,7 +4261,6 @@ TRAP;setparam;vdRebuildCancelled;traps_downtime;0
 TRAP;setparam;vdRebuildCancelled;traps_comments;%s, virtual disk (%s) rebuild cancelled.<br/>Variables:<br/>  1: controllerNameEv<br/>  2: virtualDiskNameEv<br/>
 TRAP;ADD;vdRebuildCompleted;.1.3.6.1.4.1.674.10893.1.1.200.0.553
 TRAP;setparam;vdRebuildCompleted;traps_name;vdRebuildCompleted
-TRAP;setparam;vdRebuildCompleted;traps_mode;0
 TRAP;setparam;vdRebuildCompleted;traps_oid;.1.3.6.1.4.1.674.10893.1.1.200.0.553
 TRAP;setparam;vdRebuildCompleted;traps_args;Array Manager Event: Virtual Disk rebuild completed:
 TRAP;setparam;vdRebuildCompleted;traps_status;0
@@ -4480,7 +4278,6 @@ TRAP;setparam;vdRebuildCompleted;traps_downtime;0
 TRAP;setparam;vdRebuildCompleted;traps_comments;%s, virtual disk (%s) rebuild completed.<br/>Variables:<br/>  1: controllerNameEv<br/>  2: virtualDiskNameEv<br/>
 TRAP;ADD;vdRebuildFailed;.1.3.6.1.4.1.674.10893.1.1.200.0.544
 TRAP;setparam;vdRebuildFailed;traps_name;vdRebuildFailed
-TRAP;setparam;vdRebuildFailed;traps_mode;0
 TRAP;setparam;vdRebuildFailed;traps_oid;.1.3.6.1.4.1.674.10893.1.1.200.0.544
 TRAP;setparam;vdRebuildFailed;traps_args;Array Manager Event: Virtual Disk rebuild failed:
 TRAP;setparam;vdRebuildFailed;traps_status;3
@@ -4498,7 +4295,6 @@ TRAP;setparam;vdRebuildFailed;traps_downtime;0
 TRAP;setparam;vdRebuildFailed;traps_comments;%s, virtual disk (%s) rebuild failed.<br/>Variables:<br/>  1: controllerNameEv<br/>  2: virtualDiskNameEv<br/>
 TRAP;ADD;vdRebuildStarted;.1.3.6.1.4.1.674.10893.1.1.200.0.526
 TRAP;setparam;vdRebuildStarted;traps_name;vdRebuildStarted
-TRAP;setparam;vdRebuildStarted;traps_mode;0
 TRAP;setparam;vdRebuildStarted;traps_oid;.1.3.6.1.4.1.674.10893.1.1.200.0.526
 TRAP;setparam;vdRebuildStarted;traps_args;Array Manager Event: Virtual Disk rebuild started:
 TRAP;setparam;vdRebuildStarted;traps_status;1
@@ -4516,7 +4312,6 @@ TRAP;setparam;vdRebuildStarted;traps_downtime;0
 TRAP;setparam;vdRebuildStarted;traps_comments;%s, virtual disk (%s) rebuild started.<br/>Variables:<br/>  1: controllerNameEv<br/>  2: virtualDiskNameEv<br/>
 TRAP;ADD;vdReconfigCancelled;.1.3.6.1.4.1.674.10893.1.1.200.0.534
 TRAP;setparam;vdReconfigCancelled;traps_name;vdReconfigCancelled
-TRAP;setparam;vdReconfigCancelled;traps_mode;0
 TRAP;setparam;vdReconfigCancelled;traps_oid;.1.3.6.1.4.1.674.10893.1.1.200.0.534
 TRAP;setparam;vdReconfigCancelled;traps_args;Array Manager Event: Virtual Disk Reconfiguration cancelled:
 TRAP;setparam;vdReconfigCancelled;traps_status;1
@@ -4534,7 +4329,6 @@ TRAP;setparam;vdReconfigCancelled;traps_downtime;0
 TRAP;setparam;vdReconfigCancelled;traps_comments;%s, virtual disk (%s) reconfiguration cancelled.<br/>Variables:<br/>  1: controllerNameEv<br/>  2: virtualDiskNameEv<br/>
 TRAP;ADD;vdReconfigCompleted;.1.3.6.1.4.1.674.10893.1.1.200.0.552
 TRAP;setparam;vdReconfigCompleted;traps_name;vdReconfigCompleted
-TRAP;setparam;vdReconfigCompleted;traps_mode;0
 TRAP;setparam;vdReconfigCompleted;traps_oid;.1.3.6.1.4.1.674.10893.1.1.200.0.552
 TRAP;setparam;vdReconfigCompleted;traps_args;Array Manager Event: Virtual Disk Reconfiguration completed:
 TRAP;setparam;vdReconfigCompleted;traps_status;1
@@ -4552,7 +4346,6 @@ TRAP;setparam;vdReconfigCompleted;traps_downtime;0
 TRAP;setparam;vdReconfigCompleted;traps_comments;%s, virtual disk (%s) reconfiguration completed.<br/>Variables:<br/>  1: controllerNameEv<br/>  2: virtualDiskNameEv<br/>
 TRAP;ADD;vdReconfigFailed;.1.3.6.1.4.1.674.10893.1.1.200.0.543
 TRAP;setparam;vdReconfigFailed;traps_name;vdReconfigFailed
-TRAP;setparam;vdReconfigFailed;traps_mode;0
 TRAP;setparam;vdReconfigFailed;traps_oid;.1.3.6.1.4.1.674.10893.1.1.200.0.543
 TRAP;setparam;vdReconfigFailed;traps_args;Array Manager Event: Virtual Disk Reconfiguration failed:
 TRAP;setparam;vdReconfigFailed;traps_status;3
@@ -4570,7 +4363,6 @@ TRAP;setparam;vdReconfigFailed;traps_downtime;0
 TRAP;setparam;vdReconfigFailed;traps_comments;%s, virtual disk (%s) reconfiguration failed.<br/>Variables:<br/>  1: controllerNameEv<br/>  2: virtualDiskNameEv<br/>
 TRAP;ADD;vdReconfigStarted;.1.3.6.1.4.1.674.10893.1.1.200.0.525
 TRAP;setparam;vdReconfigStarted;traps_name;vdReconfigStarted
-TRAP;setparam;vdReconfigStarted;traps_mode;0
 TRAP;setparam;vdReconfigStarted;traps_oid;.1.3.6.1.4.1.674.10893.1.1.200.0.525
 TRAP;setparam;vdReconfigStarted;traps_args;Array Manager Event: Virtual Disk Reconfiguration started:
 TRAP;setparam;vdReconfigStarted;traps_status;1
@@ -4588,7 +4380,6 @@ TRAP;setparam;vdReconfigStarted;traps_downtime;0
 TRAP;setparam;vdReconfigStarted;traps_comments;%s, virtual disk (%s) reconfiguration from <br/>%s stripe size to %s stripe size started.<br/>Variables:<br/>  1: controllerNameEv<br/>  2: virtualDiskNameEv<br/>  3: oldVDConfigEv<br/>  4: newVDConfigEv<br/>
 TRAP;ADD;virtualDiskConfigChanged;.1.3.6.1.4.1.674.10893.1.1.200.0.507
 TRAP;setparam;virtualDiskConfigChanged;traps_name;virtualDiskConfigChanged
-TRAP;setparam;virtualDiskConfigChanged;traps_mode;0
 TRAP;setparam;virtualDiskConfigChanged;traps_oid;.1.3.6.1.4.1.674.10893.1.1.200.0.507
 TRAP;setparam;virtualDiskConfigChanged;traps_args;Array Manager Event: Virtual Disk created:
 TRAP;setparam;virtualDiskConfigChanged;traps_status;0
@@ -4606,7 +4397,6 @@ TRAP;setparam;virtualDiskConfigChanged;traps_downtime;0
 TRAP;setparam;virtualDiskConfigChanged;traps_comments;%s, virtual disk (%s) configuration changed from %s to %s<br/>Variables:<br/>  1: controllerNameEv<br/>  2: virtualDiskNameEv<br/>  3: oldVDConfigEv<br/>  4: newVDConfigEv<br/>
 TRAP;ADD;virtualDiskCreated;.1.3.6.1.4.1.674.10893.1.1.200.0.505
 TRAP;setparam;virtualDiskCreated;traps_name;virtualDiskCreated
-TRAP;setparam;virtualDiskCreated;traps_mode;0
 TRAP;setparam;virtualDiskCreated;traps_oid;.1.3.6.1.4.1.674.10893.1.1.200.0.505
 TRAP;setparam;virtualDiskCreated;traps_args;Array Manager Event: Virtual Disk created:
 TRAP;setparam;virtualDiskCreated;traps_status;0
@@ -4624,7 +4414,6 @@ TRAP;setparam;virtualDiskCreated;traps_downtime;0
 TRAP;setparam;virtualDiskCreated;traps_comments;%s, virtual disk (%s) created.<br/>Variables:<br/>  1: controllerNameEv<br/>  2: virtualDiskNameEv<br/>
 TRAP;ADD;virtualDiskDegraded;.1.3.6.1.4.1.674.10893.1.1.200.0.509
 TRAP;setparam;virtualDiskDegraded;traps_name;virtualDiskDegraded
-TRAP;setparam;virtualDiskDegraded;traps_mode;0
 TRAP;setparam;virtualDiskDegraded;traps_oid;.1.3.6.1.4.1.674.10893.1.1.200.0.509
 TRAP;setparam;virtualDiskDegraded;traps_args;Array Manager Event: Virtual Disk degraded:
 TRAP;setparam;virtualDiskDegraded;traps_status;1
@@ -4642,7 +4431,6 @@ TRAP;setparam;virtualDiskDegraded;traps_downtime;0
 TRAP;setparam;virtualDiskDegraded;traps_comments;%s, virtual disk (%s) degraded.<br/>Variables:<br/>  1: controllerNameEv<br/>  2: virtualDiskNameEv<br/>
 TRAP;ADD;virtualDiskDeleted;.1.3.6.1.4.1.674.10893.1.1.200.0.506
 TRAP;setparam;virtualDiskDeleted;traps_name;virtualDiskDeleted
-TRAP;setparam;virtualDiskDeleted;traps_mode;0
 TRAP;setparam;virtualDiskDeleted;traps_oid;.1.3.6.1.4.1.674.10893.1.1.200.0.506
 TRAP;setparam;virtualDiskDeleted;traps_args;Array Manager Event: Virtual Disk deleted:
 TRAP;setparam;virtualDiskDeleted;traps_status;1
@@ -4660,7 +4448,6 @@ TRAP;setparam;virtualDiskDeleted;traps_downtime;0
 TRAP;setparam;virtualDiskDeleted;traps_comments;%s, virtual disk (%s) deleted.<br/>Variables:<br/>  1: controllerNameEv<br/>  2: virtualDiskNameEv<br/>
 TRAP;ADD;virtualDiskFailed;.1.3.6.1.4.1.674.10893.1.1.200.0.508
 TRAP;setparam;virtualDiskFailed;traps_name;virtualDiskFailed
-TRAP;setparam;virtualDiskFailed;traps_mode;0
 TRAP;setparam;virtualDiskFailed;traps_oid;.1.3.6.1.4.1.674.10893.1.1.200.0.508
 TRAP;setparam;virtualDiskFailed;traps_args;Array Manager Event: Virtual Disk failed:
 TRAP;setparam;virtualDiskFailed;traps_status;3
@@ -4678,7 +4465,6 @@ TRAP;setparam;virtualDiskFailed;traps_downtime;0
 TRAP;setparam;virtualDiskFailed;traps_comments;%s, virtual disk (%s) failed.<br/>Variables:<br/>  1: controllerNameEv<br/>  2: virtualDiskNameEv<br/>
 TRAP;ADD;warmStart;.1.3.6.1.6.3.1.1.5.2
 TRAP;setparam;warmStart;traps_name;warmStart
-TRAP;setparam;warmStart;traps_mode;0
 TRAP;setparam;warmStart;traps_oid;.1.3.6.1.6.3.1.1.5.2
 TRAP;setparam;warmStart;traps_args;SNMP is reinitializing
 TRAP;setparam;warmStart;traps_status;0
