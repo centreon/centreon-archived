@@ -16,9 +16,10 @@ class Task implements EntityInterface
     /**
      * Task states
      */
-    CONST STATE_PENDING = 'pending';
-    CONST STATE_PROGRESS = 'inprogress';
-    CONST STATE_COMPLETED = 'completed';
+    const STATE_PENDING = 'pending';
+    const STATE_PROGRESS = 'inprogress';
+    const STATE_COMPLETED = 'completed';
+    const STATE_FAILED = 'failed';
 
     /**
      * Task type
