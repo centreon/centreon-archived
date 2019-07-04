@@ -75,22 +75,24 @@ class CentreonWorker implements CentreonClapiServiceInterface
 
             try {
                 $this->getDi()['centreon_remote.export']->export($commitment);
+
+                $this->getDi()['centreon.taskservice']->updateStatus($task->getId(), Task::STATE_COMPLETED);
+
+                /**
+                 * move export file
+                 */
+                $cmd = new Command();
+                $compositeKey = $params['server'] . ':' . $task->getId();
+                $cmd->setCommandLine(Command::COMMAND_TRANSFER_EXPORT_FILES . $compositeKey);
+                $cmdService = new CentcoreCommandService();
+                $cmdWritten = $cmdService->sendCommand($cmd);
+
+                echo "{$datetime} - finished.\n";
             } catch (\Exception $e) {
                 echo $e->getMessage() . "\n";
+                echo "{$datetime} - task #" . $task->getId() . " aborted\n";
+                $this->getDi()['centreon.taskservice']->updateStatus($task->getId(), Task::STATE_FAILED);
             }
-
-            $this->getDi()['centreon.taskservice']->updateStatus($task->getId(), Task::STATE_COMPLETED);
-
-            /**
-             * move export file
-             */
-            $cmd = new Command();
-            $compositeKey = $params['server'] . ':' . $task->getId();
-            $cmd->setCommandLine(Command::COMMAND_TRANSFER_EXPORT_FILES . $compositeKey);
-            $cmdService = new CentcoreCommandService();
-            $cmdWritten = $cmdService->sendCommand($cmd);
-
-            echo "finished.\n";
         }
     }
 
@@ -116,12 +118,14 @@ class CentreonWorker implements CentreonClapiServiceInterface
 
             try {
                 $this->getDi()['centreon_remote.export']->import();
+
+                $this->getDi()['centreon.taskservice']->updateStatus($task->getId(), Task::STATE_COMPLETED);
+                echo "{$datetime} - finished.\n";
             } catch (\Exception $e) {
                 echo $e->getMessage() . "\n";
+                echo "{$datetime} - task #" . $task->getId() . " aborted\n";
+                $this->getDi()['centreon.taskservice']->updateStatus($task->getId(), Task::STATE_FAILED);
             }
-            $this->getDi()['centreon.taskservice']->updateStatus($task->getId(), Task::STATE_COMPLETED);
-
-            echo "finished.\n";
         }
 
         echo "{$datetime} - Worker cycle completed.\n";
