@@ -28,7 +28,6 @@ class ServiceProviderTest extends TestCase
         $this->provider = new ServiceProvider();
         $this->container = new Container;
         $this->container['realtime_db'] = $this->container['configuration_db'] = new Mock\CentreonDB;
-//        $this->container['configuration_db']->addResultSet("SELECT * FROM informations WHERE `key` = :key LIMIT 1", []);
 
         $this->provider->register($this->container);
     }
