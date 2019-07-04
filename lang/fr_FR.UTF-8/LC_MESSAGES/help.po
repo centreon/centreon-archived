@@ -1026,8 +1026,12 @@ msgid "Init script for broker daemon."
 msgstr "Script d'initialisation du broker."
 
 #: centreon-web/www/include/Administration/parameters/engine/help.php:35
-msgid "Mailer binary with complete path."
-msgstr "Chemin complet de l'exécutable d'envoi de mails."
+msgid ""
+"Mailer binary with complete path. This define the @MAILER@ macro used in "
+"notification commands."
+msgstr ""
+"Chemin complet de l'exécutable d'envoi de mails. Ceci définit la variable"
+"@MAILER@ utilisée dans les commandes de notification."
 
 #: centreon-web/www/include/Administration/parameters/engine/help.php:43
 msgid "Maximum number of hosts to show in the Tactical Overview page."
