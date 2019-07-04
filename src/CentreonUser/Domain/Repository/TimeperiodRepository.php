@@ -62,7 +62,8 @@ class TimeperiodRepository extends ServiceEntityRepository implements Pagination
      */
     public function getPaginationList($filters = null, int $limit = null, int $offset = null, $ordering = []): array
     {
-        $sql = 'SELECT SQL_CALC_FOUND_ROWS `tp_id` AS `id`, `tp_name` AS `name`, `tp_alias` AS `alias` FROM `' . Timeperiod::TABLE . '`';
+        $sql = 'SELECT SQL_CALC_FOUND_ROWS `tp_id` AS `id`, `tp_name` AS `name`, `tp_alias` AS `alias` '
+            . 'FROM `' . Timeperiod::TABLE . '`';
 
         $collector = new StatementCollector;
 

@@ -66,7 +66,8 @@ class EscalationRepositoryTest extends TestCase
                 ],
             ],
             [
-                'query' => "SELECT SQL_CALC_FOUND_ROWS `esc_id` AS `id`, `esc_name` AS `name` FROM `" . Escalation::TABLE . "` "
+                'query' => "SELECT SQL_CALC_FOUND_ROWS `esc_id` AS `id`, `esc_name` AS `name` "
+                . "FROM `" . Escalation::TABLE . "` "
                 . "WHERE `esc_name` LIKE :search AND `esc_id` IN (:id0) "
                 . "ORDER BY `esc_name` ASC LIMIT :limit OFFSET :offset",
                 'data' => [
