@@ -40,7 +40,6 @@ use Centreon\Domain\Repository\ContactGroupRepository;
 use PHPUnit\Framework\TestCase;
 use Centreon\Test\Mock\CentreonDB;
 
-
 /**
  * @group Centreon
  * @group ORM-repository

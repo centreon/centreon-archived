@@ -58,7 +58,8 @@ class ImagesRepositoryTest extends TestCase
         $this->datasets = [
             [
                 'query' => "SELECT * FROM `view_img_dir`,`view_img_dir_relation` vidr,`view_img` "
-                           . "WHERE `img_id` = `vidr`.`img_img_id` AND `dir_id` = `vidr`.`dir_dir_parent_id` ORDER BY `dir_name`, `img_name`",
+                    . "WHERE `img_id` = `vidr`.`img_img_id` AND `dir_id` = `vidr`.`dir_dir_parent_id` "
+                    . "ORDER BY `dir_name`, `img_name`",
                 'data' => [
                     [
                         'img_id' => '1',
@@ -69,7 +70,8 @@ class ImagesRepositoryTest extends TestCase
             ],
             [
                 'query' => "SELECT * FROM `view_img_dir`,`view_img_dir_relation` vidr,`view_img` "
-                           . "WHERE `img_id` = `vidr`.`img_img_id` AND `dir_id` = `vidr`.`dir_dir_parent_id` LIMIT :limit OFFSET :offset ORDER BY `dir_name`, `img_name`",
+                    . "WHERE `img_id` = `vidr`.`img_img_id` AND `dir_id` = `vidr`.`dir_dir_parent_id` "
+                    . "LIMIT :limit OFFSET :offset ORDER BY `dir_name`, `img_name`",
                 'data' => [
                     [
                         'img_id' => '1',
