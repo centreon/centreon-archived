@@ -846,7 +846,7 @@ TRAP;ADD;adDiagCancelled;.1.3.6.1.4.1.674.10893.1.1.200.0.537
 TRAP;setparam;adDiagCancelled;traps_name;adDiagCancelled
 TRAP;setparam;adDiagCancelled;traps_oid;.1.3.6.1.4.1.674.10893.1.1.200.0.537
 TRAP;setparam;adDiagCancelled;traps_mode;0
-TRAP;setparam;adDiagCancelled;traps_args;Array Manager Event: Array Disk diagnostics cancelled: 
+TRAP;setparam;adDiagCancelled;traps_args;Array Manager Event: Array Disk diagnostics cancelled:
 TRAP;setparam;adDiagCancelled;traps_status;1
 TRAP;setparam;adDiagCancelled;vendor;Dell
 TRAP;setparam;adDiagCancelled;traps_reschedule_svc_enable;0
@@ -864,7 +864,7 @@ TRAP;ADD;adDiagCompleted;.1.3.6.1.4.1.674.10893.1.1.200.0.555
 TRAP;setparam;adDiagCompleted;traps_name;adDiagCompleted
 TRAP;setparam;adDiagCompleted;traps_oid;.1.3.6.1.4.1.674.10893.1.1.200.0.555
 TRAP;setparam;adDiagCompleted;traps_mode;0
-TRAP;setparam;adDiagCompleted;traps_args;Array Manager Event: Array Disk diagnostics completed: 
+TRAP;setparam;adDiagCompleted;traps_args;Array Manager Event: Array Disk diagnostics completed:
 TRAP;setparam;adDiagCompleted;traps_status;0
 TRAP;setparam;adDiagCompleted;vendor;Dell
 TRAP;setparam;adDiagCompleted;traps_reschedule_svc_enable;0
@@ -882,7 +882,7 @@ TRAP;ADD;adDiagFailed;.1.3.6.1.4.1.674.10893.1.1.200.0.546
 TRAP;setparam;adDiagFailed;traps_name;adDiagFailed
 TRAP;setparam;adDiagFailed;traps_oid;.1.3.6.1.4.1.674.10893.1.1.200.0.546
 TRAP;setparam;adDiagFailed;traps_mode;0
-TRAP;setparam;adDiagFailed;traps_args;Array Manager Event: Array Disk diagnostics failed: 
+TRAP;setparam;adDiagFailed;traps_args;Array Manager Event: Array Disk diagnostics failed:
 TRAP;setparam;adDiagFailed;traps_status;3
 TRAP;setparam;adDiagFailed;vendor;Dell
 TRAP;setparam;adDiagFailed;traps_reschedule_svc_enable;0
@@ -900,7 +900,7 @@ TRAP;ADD;adDiagStarted;.1.3.6.1.4.1.674.10893.1.1.200.0.528
 TRAP;setparam;adDiagStarted;traps_name;adDiagStarted
 TRAP;setparam;adDiagStarted;traps_oid;.1.3.6.1.4.1.674.10893.1.1.200.0.528
 TRAP;setparam;adDiagStarted;traps_mode;0
-TRAP;setparam;adDiagStarted;traps_args;Array Manager Event: Array Disk diagnostics started: 
+TRAP;setparam;adDiagStarted;traps_args;Array Manager Event: Array Disk diagnostics started:
 TRAP;setparam;adDiagStarted;traps_status;1
 TRAP;setparam;adDiagStarted;vendor;Dell
 TRAP;setparam;adDiagStarted;traps_reschedule_svc_enable;0
@@ -918,7 +918,7 @@ TRAP;ADD;adFormatCancelled;.1.3.6.1.4.1.674.10893.1.1.200.0.531
 TRAP;setparam;adFormatCancelled;traps_name;adFormatCancelled
 TRAP;setparam;adFormatCancelled;traps_oid;.1.3.6.1.4.1.674.10893.1.1.200.0.531
 TRAP;setparam;adFormatCancelled;traps_mode;0
-TRAP;setparam;adFormatCancelled;traps_args;Array Manager Event: Array Disk format cancelled: 
+TRAP;setparam;adFormatCancelled;traps_args;Array Manager Event: Array Disk format cancelled:
 TRAP;setparam;adFormatCancelled;traps_status;1
 TRAP;setparam;adFormatCancelled;vendor;Dell
 TRAP;setparam;adFormatCancelled;traps_reschedule_svc_enable;0
@@ -936,7 +936,7 @@ TRAP;ADD;adFormatCompleted;.1.3.6.1.4.1.674.10893.1.1.200.0.549
 TRAP;setparam;adFormatCompleted;traps_name;adFormatCompleted
 TRAP;setparam;adFormatCompleted;traps_oid;.1.3.6.1.4.1.674.10893.1.1.200.0.549
 TRAP;setparam;adFormatCompleted;traps_mode;0
-TRAP;setparam;adFormatCompleted;traps_args;Array Manager Event: Array Disk format completed: 
+TRAP;setparam;adFormatCompleted;traps_args;Array Manager Event: Array Disk format completed:
 TRAP;setparam;adFormatCompleted;traps_status;0
 TRAP;setparam;adFormatCompleted;vendor;Dell
 TRAP;setparam;adFormatCompleted;traps_reschedule_svc_enable;0
@@ -954,7 +954,7 @@ TRAP;ADD;adFormatFailed;.1.3.6.1.4.1.674.10893.1.1.200.0.540
 TRAP;setparam;adFormatFailed;traps_name;adFormatFailed
 TRAP;setparam;adFormatFailed;traps_oid;.1.3.6.1.4.1.674.10893.1.1.200.0.540
 TRAP;setparam;adFormatFailed;traps_mode;0
-TRAP;setparam;adFormatFailed;traps_args;Array Manager Event: Array Disk format failed: 
+TRAP;setparam;adFormatFailed;traps_args;Array Manager Event: Array Disk format failed:
 TRAP;setparam;adFormatFailed;traps_status;3
 TRAP;setparam;adFormatFailed;vendor;Dell
 TRAP;setparam;adFormatFailed;traps_reschedule_svc_enable;0
@@ -972,7 +972,7 @@ TRAP;ADD;adFormatStarted;.1.3.6.1.4.1.674.10893.1.1.200.0.522
 TRAP;setparam;adFormatStarted;traps_name;adFormatStarted
 TRAP;setparam;adFormatStarted;traps_oid;.1.3.6.1.4.1.674.10893.1.1.200.0.522
 TRAP;setparam;adFormatStarted;traps_mode;0
-TRAP;setparam;adFormatStarted;traps_args;Array Manager Event: Array Disk format started: 
+TRAP;setparam;adFormatStarted;traps_args;Array Manager Event: Array Disk format started:
 TRAP;setparam;adFormatStarted;traps_status;1
 TRAP;setparam;adFormatStarted;vendor;Dell
 TRAP;setparam;adFormatStarted;traps_reschedule_svc_enable;0
@@ -990,7 +990,7 @@ TRAP;ADD;adInitializeCancelled;.1.3.6.1.4.1.674.10893.1.1.200.0.533
 TRAP;setparam;adInitializeCancelled;traps_name;adInitializeCancelled
 TRAP;setparam;adInitializeCancelled;traps_oid;.1.3.6.1.4.1.674.10893.1.1.200.0.533
 TRAP;setparam;adInitializeCancelled;traps_mode;0
-TRAP;setparam;adInitializeCancelled;traps_args;Array Manager Event: Array Disk initialize cancelled: 
+TRAP;setparam;adInitializeCancelled;traps_args;Array Manager Event: Array Disk initialize cancelled:
 TRAP;setparam;adInitializeCancelled;traps_status;1
 TRAP;setparam;adInitializeCancelled;vendor;Dell
 TRAP;setparam;adInitializeCancelled;traps_reschedule_svc_enable;0
@@ -1008,7 +1008,7 @@ TRAP;ADD;adInitializeCompleted;.1.3.6.1.4.1.674.10893.1.1.200.0.551
 TRAP;setparam;adInitializeCompleted;traps_name;adInitializeCompleted
 TRAP;setparam;adInitializeCompleted;traps_oid;.1.3.6.1.4.1.674.10893.1.1.200.0.551
 TRAP;setparam;adInitializeCompleted;traps_mode;0
-TRAP;setparam;adInitializeCompleted;traps_args;Array Manager Event: Array Disk initialize completed: 
+TRAP;setparam;adInitializeCompleted;traps_args;Array Manager Event: Array Disk initialize completed:
 TRAP;setparam;adInitializeCompleted;traps_status;0
 TRAP;setparam;adInitializeCompleted;vendor;Dell
 TRAP;setparam;adInitializeCompleted;traps_reschedule_svc_enable;0
@@ -1026,7 +1026,7 @@ TRAP;ADD;adInitializeFailed;.1.3.6.1.4.1.674.10893.1.1.200.0.542
 TRAP;setparam;adInitializeFailed;traps_name;adInitializeFailed
 TRAP;setparam;adInitializeFailed;traps_oid;.1.3.6.1.4.1.674.10893.1.1.200.0.542
 TRAP;setparam;adInitializeFailed;traps_mode;0
-TRAP;setparam;adInitializeFailed;traps_args;Array Manager Event: Array Disk initialize failed: 
+TRAP;setparam;adInitializeFailed;traps_args;Array Manager Event: Array Disk initialize failed:
 TRAP;setparam;adInitializeFailed;traps_status;3
 TRAP;setparam;adInitializeFailed;vendor;Dell
 TRAP;setparam;adInitializeFailed;traps_reschedule_svc_enable;0
@@ -1044,7 +1044,7 @@ TRAP;ADD;adInitializeStarted;.1.3.6.1.4.1.674.10893.1.1.200.0.524
 TRAP;setparam;adInitializeStarted;traps_name;adInitializeStarted
 TRAP;setparam;adInitializeStarted;traps_oid;.1.3.6.1.4.1.674.10893.1.1.200.0.524
 TRAP;setparam;adInitializeStarted;traps_mode;0
-TRAP;setparam;adInitializeStarted;traps_args;Array Manager Event: Array Disk initialize started: 
+TRAP;setparam;adInitializeStarted;traps_args;Array Manager Event: Array Disk initialize started:
 TRAP;setparam;adInitializeStarted;traps_status;1
 TRAP;setparam;adInitializeStarted;vendor;Dell
 TRAP;setparam;adInitializeStarted;traps_reschedule_svc_enable;0
@@ -1062,7 +1062,7 @@ TRAP;ADD;adRebuildCancelled;.1.3.6.1.4.1.674.10893.1.1.200.0.536
 TRAP;setparam;adRebuildCancelled;traps_name;adRebuildCancelled
 TRAP;setparam;adRebuildCancelled;traps_oid;.1.3.6.1.4.1.674.10893.1.1.200.0.536
 TRAP;setparam;adRebuildCancelled;traps_mode;0
-TRAP;setparam;adRebuildCancelled;traps_args;Array Manager Event: Array Disk rebuild cancelled: 
+TRAP;setparam;adRebuildCancelled;traps_args;Array Manager Event: Array Disk rebuild cancelled:
 TRAP;setparam;adRebuildCancelled;traps_status;1
 TRAP;setparam;adRebuildCancelled;vendor;Dell
 TRAP;setparam;adRebuildCancelled;traps_reschedule_svc_enable;0
@@ -1080,7 +1080,7 @@ TRAP;ADD;adRebuildCompleted;.1.3.6.1.4.1.674.10893.1.1.200.0.554
 TRAP;setparam;adRebuildCompleted;traps_name;adRebuildCompleted
 TRAP;setparam;adRebuildCompleted;traps_oid;.1.3.6.1.4.1.674.10893.1.1.200.0.554
 TRAP;setparam;adRebuildCompleted;traps_mode;0
-TRAP;setparam;adRebuildCompleted;traps_args;Array Manager Event: Array Disk rebuild completed: 
+TRAP;setparam;adRebuildCompleted;traps_args;Array Manager Event: Array Disk rebuild completed:
 TRAP;setparam;adRebuildCompleted;traps_status;0
 TRAP;setparam;adRebuildCompleted;vendor;Dell
 TRAP;setparam;adRebuildCompleted;traps_reschedule_svc_enable;0
@@ -1098,7 +1098,7 @@ TRAP;ADD;adRebuildFailed;.1.3.6.1.4.1.674.10893.1.1.200.0.545
 TRAP;setparam;adRebuildFailed;traps_name;adRebuildFailed
 TRAP;setparam;adRebuildFailed;traps_oid;.1.3.6.1.4.1.674.10893.1.1.200.0.545
 TRAP;setparam;adRebuildFailed;traps_mode;0
-TRAP;setparam;adRebuildFailed;traps_args;Array Manager Event: Array Disk rebuild failed: 
+TRAP;setparam;adRebuildFailed;traps_args;Array Manager Event: Array Disk rebuild failed:
 TRAP;setparam;adRebuildFailed;traps_status;3
 TRAP;setparam;adRebuildFailed;vendor;Dell
 TRAP;setparam;adRebuildFailed;traps_reschedule_svc_enable;0
@@ -1116,7 +1116,7 @@ TRAP;ADD;adRebuildStarted;.1.3.6.1.4.1.674.10893.1.1.200.0.527
 TRAP;setparam;adRebuildStarted;traps_name;adRebuildStarted
 TRAP;setparam;adRebuildStarted;traps_oid;.1.3.6.1.4.1.674.10893.1.1.200.0.527
 TRAP;setparam;adRebuildStarted;traps_mode;0
-TRAP;setparam;adRebuildStarted;traps_args;Array Manager Event: Array Disk rebuild started: 
+TRAP;setparam;adRebuildStarted;traps_args;Array Manager Event: Array Disk rebuild started:
 TRAP;setparam;adRebuildStarted;traps_status;1
 TRAP;setparam;adRebuildStarted;vendor;Dell
 TRAP;setparam;adRebuildStarted;traps_reschedule_svc_enable;0
@@ -1939,7 +1939,7 @@ TRAP;setparam;coldStart;traps_log;0
 TRAP;setparam;coldStart;traps_routing_mode;0
 TRAP;setparam;coldStart;traps_exec_method;0
 TRAP;setparam;coldStart;traps_downtime;0
-TRAP;setparam;coldStart;traps_comments;A coldStart(0) trap signifies that the sending protocol entity is reinitializing itself such that the agent&#039;s configuration or the protocol entity implementation may be altered.
+TRAP;setparam;coldStart;traps_comments;A coldStart(0) trap signifies that the sending protocol entity is reinitializing itself such that the agent&#039
 TRAP;ADD;dmtfAlert309;.1.3.6.1.4.1.674.10890.1.0.309
 TRAP;setparam;dmtfAlert309;traps_name;dmtfAlert309
 TRAP;setparam;dmtfAlert309;traps_oid;.1.3.6.1.4.1.674.10890.1.0.309
@@ -2245,7 +2245,7 @@ TRAP;setparam;linkDown;traps_log;0
 TRAP;setparam;linkDown;traps_routing_mode;0
 TRAP;setparam;linkDown;traps_exec_method;0
 TRAP;setparam;linkDown;traps_downtime;0
-TRAP;setparam;linkDown;traps_comments;A linkDown(2) trap signifies that the sending protocol entity recognizes a failure in one of the communication links represented in the agent&#039;s configuration.
+TRAP;setparam;linkDown;traps_comments;A linkDown(2) trap signifies that the sending protocol entity recognizes a failure in one of the communication links represented in the agent&#039
 TRAP;ADD;linkUp;.1.3.6.1.6.3.1.1.5.4
 TRAP;setparam;linkUp;traps_name;linkUp
 TRAP;setparam;linkUp;traps_oid;.1.3.6.1.6.3.1.1.5.4
@@ -2263,7 +2263,7 @@ TRAP;setparam;linkUp;traps_log;0
 TRAP;setparam;linkUp;traps_routing_mode;0
 TRAP;setparam;linkUp;traps_exec_method;0
 TRAP;setparam;linkUp;traps_downtime;0
-TRAP;setparam;linkUp;traps_comments;A linkUp(3) trap signifies that the sending protocol entity recognizes that one of the communication links represented in the agent&#039;s configuration has come up.
+TRAP;setparam;linkUp;traps_comments;A linkUp(3) trap signifies that the sending protocol entity recognizes that one of the communication links represented in the agent&#039
 TRAP;ADD;ospfVirtIfTxRetransmit;.1.3.6.1.4.1.11.0.14
 TRAP;setparam;ospfVirtIfTxRetransmit;traps_name;ospfVirtIfTxRetransmit
 TRAP;setparam;ospfVirtIfTxRetransmit;traps_oid;.1.3.6.1.4.1.11.0.14
@@ -2286,7 +2286,7 @@ TRAP;ADD;perc2SmartConfigChange;.1.3.6.1.4.1.674.10893.1.1.200.0.586
 TRAP;setparam;perc2SmartConfigChange;traps_name;perc2SmartConfigChange
 TRAP;setparam;perc2SmartConfigChange;traps_oid;.1.3.6.1.4.1.674.10893.1.1.200.0.586
 TRAP;setparam;perc2SmartConfigChange;traps_mode;0
-TRAP;setparam;perc2SmartConfigChange;traps_args;Array Manager Event: Smart Config Change: 
+TRAP;setparam;perc2SmartConfigChange;traps_args;Array Manager Event: Smart Config Change:
 TRAP;setparam;perc2SmartConfigChange;traps_status;1
 TRAP;setparam;perc2SmartConfigChange;vendor;Dell
 TRAP;setparam;perc2SmartConfigChange;traps_reschedule_svc_enable;0
@@ -2304,7 +2304,7 @@ TRAP;ADD;perc2SmartFPTExceeded;.1.3.6.1.4.1.674.10893.1.1.200.0.585
 TRAP;setparam;perc2SmartFPTExceeded;traps_name;perc2SmartFPTExceeded
 TRAP;setparam;perc2SmartFPTExceeded;traps_oid;.1.3.6.1.4.1.674.10893.1.1.200.0.585
 TRAP;setparam;perc2SmartFPTExceeded;traps_mode;0
-TRAP;setparam;perc2SmartFPTExceeded;traps_args;Array Manager Event: Smart FPT Exceeded: 
+TRAP;setparam;perc2SmartFPTExceeded;traps_args;Array Manager Event: Smart FPT Exceeded:
 TRAP;setparam;perc2SmartFPTExceeded;traps_status;0
 TRAP;setparam;perc2SmartFPTExceeded;vendor;Dell
 TRAP;setparam;perc2SmartFPTExceeded;traps_reschedule_svc_enable;0
@@ -2322,7 +2322,7 @@ TRAP;ADD;perc2SmartFPTExceededTest;.1.3.6.1.4.1.674.10893.1.1.200.0.590
 TRAP;setparam;perc2SmartFPTExceededTest;traps_name;perc2SmartFPTExceededTest
 TRAP;setparam;perc2SmartFPTExceededTest;traps_oid;.1.3.6.1.4.1.674.10893.1.1.200.0.590
 TRAP;setparam;perc2SmartFPTExceededTest;traps_mode;0
-TRAP;setparam;perc2SmartFPTExceededTest;traps_args;    Internal Controller has encountered Strong-ARM processor specific error$1 
+TRAP;setparam;perc2SmartFPTExceededTest;traps_args;    Internal Controller has encountered Strong-ARM processor specific error$1
 TRAP;setparam;perc2SmartFPTExceededTest;traps_status;1
 TRAP;setparam;perc2SmartFPTExceededTest;vendor;Dell
 TRAP;setparam;perc2SmartFPTExceededTest;traps_reschedule_svc_enable;0
@@ -2340,7 +2340,7 @@ TRAP;ADD;perc2SmartWarning;.1.3.6.1.4.1.674.10893.1.1.200.0.587
 TRAP;setparam;perc2SmartWarning;traps_name;perc2SmartWarning
 TRAP;setparam;perc2SmartWarning;traps_oid;.1.3.6.1.4.1.674.10893.1.1.200.0.587
 TRAP;setparam;perc2SmartWarning;traps_mode;0
-TRAP;setparam;perc2SmartWarning;traps_args;Array Manager Event: Smart Warning: 
+TRAP;setparam;perc2SmartWarning;traps_args;Array Manager Event: Smart Warning:
 TRAP;setparam;perc2SmartWarning;traps_status;1
 TRAP;setparam;perc2SmartWarning;vendor;Dell
 TRAP;setparam;perc2SmartWarning;traps_reschedule_svc_enable;0
@@ -2358,7 +2358,7 @@ TRAP;ADD;perc2SmartWarningDegraded;.1.3.6.1.4.1.674.10893.1.1.200.0.589
 TRAP;setparam;perc2SmartWarningDegraded;traps_name;perc2SmartWarningDegraded
 TRAP;setparam;perc2SmartWarningDegraded;traps_oid;.1.3.6.1.4.1.674.10893.1.1.200.0.589
 TRAP;setparam;perc2SmartWarningDegraded;traps_mode;0
-TRAP;setparam;perc2SmartWarningDegraded;traps_args;Array Manager Event: Smart warning degraded: 
+TRAP;setparam;perc2SmartWarningDegraded;traps_args;Array Manager Event: Smart warning degraded:
 TRAP;setparam;perc2SmartWarningDegraded;traps_status;1
 TRAP;setparam;perc2SmartWarningDegraded;vendor;Dell
 TRAP;setparam;perc2SmartWarningDegraded;traps_reschedule_svc_enable;0
@@ -2376,7 +2376,7 @@ TRAP;ADD;perc2SmartWarningTemp;.1.3.6.1.4.1.674.10893.1.1.200.0.588
 TRAP;setparam;perc2SmartWarningTemp;traps_name;perc2SmartWarningTemp
 TRAP;setparam;perc2SmartWarningTemp;traps_oid;.1.3.6.1.4.1.674.10893.1.1.200.0.588
 TRAP;setparam;perc2SmartWarningTemp;traps_mode;0
-TRAP;setparam;perc2SmartWarningTemp;traps_args;Array Manager Event: Smart warning temperature: 
+TRAP;setparam;perc2SmartWarningTemp;traps_args;Array Manager Event: Smart warning temperature:
 TRAP;setparam;perc2SmartWarningTemp;traps_status;1
 TRAP;setparam;perc2SmartWarningTemp;vendor;Dell
 TRAP;setparam;perc2SmartWarningTemp;traps_reschedule_svc_enable;0
@@ -2394,7 +2394,7 @@ TRAP;ADD;percPredictiveFailure;.1.3.6.1.4.1.674.10893.1.1.200.0.570
 TRAP;setparam;percPredictiveFailure;traps_name;percPredictiveFailure
 TRAP;setparam;percPredictiveFailure;traps_oid;.1.3.6.1.4.1.674.10893.1.1.200.0.570
 TRAP;setparam;percPredictiveFailure;traps_mode;0
-TRAP;setparam;percPredictiveFailure;traps_args;Array Manager Event: Predictive Failure reported: 
+TRAP;setparam;percPredictiveFailure;traps_args;Array Manager Event: Predictive Failure reported:
 TRAP;setparam;percPredictiveFailure;traps_status;1
 TRAP;setparam;percPredictiveFailure;vendor;Dell
 TRAP;setparam;percPredictiveFailure;traps_reschedule_svc_enable;0
@@ -2412,7 +2412,7 @@ TRAP;ADD;percSCSISenseData;.1.3.6.1.4.1.674.10893.1.1.200.0.571
 TRAP;setparam;percSCSISenseData;traps_name;percSCSISenseData
 TRAP;setparam;percSCSISenseData;traps_oid;.1.3.6.1.4.1.674.10893.1.1.200.0.571
 TRAP;setparam;percSCSISenseData;traps_mode;0
-TRAP;setparam;percSCSISenseData;traps_args;Array Manager Event: SCSI sense data: 
+TRAP;setparam;percSCSISenseData;traps_args;Array Manager Event: SCSI sense data:
 TRAP;setparam;percSCSISenseData;traps_status;1
 TRAP;setparam;percSCSISenseData;vendor;Dell
 TRAP;setparam;percSCSISenseData;traps_reschedule_svc_enable;0
@@ -4284,7 +4284,7 @@ TRAP;ADD;vdFailedRedundancy;.1.3.6.1.4.1.674.10893.1.1.200.0.510
 TRAP;setparam;vdFailedRedundancy;traps_name;vdFailedRedundancy
 TRAP;setparam;vdFailedRedundancy;traps_oid;.1.3.6.1.4.1.674.10893.1.1.200.0.510
 TRAP;setparam;vdFailedRedundancy;traps_mode;0
-TRAP;setparam;vdFailedRedundancy;traps_args;Array Manager Event: Virtual Disk failed redundancy: 
+TRAP;setparam;vdFailedRedundancy;traps_args;Array Manager Event: Virtual Disk failed redundancy:
 TRAP;setparam;vdFailedRedundancy;traps_status;1
 TRAP;setparam;vdFailedRedundancy;vendor;Dell
 TRAP;setparam;vdFailedRedundancy;traps_reschedule_svc_enable;0
@@ -4302,7 +4302,7 @@ TRAP;ADD;vdFormatCancelled;.1.3.6.1.4.1.674.10893.1.1.200.0.530
 TRAP;setparam;vdFormatCancelled;traps_name;vdFormatCancelled
 TRAP;setparam;vdFormatCancelled;traps_oid;.1.3.6.1.4.1.674.10893.1.1.200.0.530
 TRAP;setparam;vdFormatCancelled;traps_mode;0
-TRAP;setparam;vdFormatCancelled;traps_args;Array Manager Event: Virtual Disk format cancelled: 
+TRAP;setparam;vdFormatCancelled;traps_args;Array Manager Event: Virtual Disk format cancelled:
 TRAP;setparam;vdFormatCancelled;traps_status;1
 TRAP;setparam;vdFormatCancelled;vendor;Dell
 TRAP;setparam;vdFormatCancelled;traps_reschedule_svc_enable;0
@@ -4320,7 +4320,7 @@ TRAP;ADD;vdFormatCompleted;.1.3.6.1.4.1.674.10893.1.1.200.0.548
 TRAP;setparam;vdFormatCompleted;traps_name;vdFormatCompleted
 TRAP;setparam;vdFormatCompleted;traps_oid;.1.3.6.1.4.1.674.10893.1.1.200.0.548
 TRAP;setparam;vdFormatCompleted;traps_mode;0
-TRAP;setparam;vdFormatCompleted;traps_args;Array Manager Event: Virtual Disk format completed: 
+TRAP;setparam;vdFormatCompleted;traps_args;Array Manager Event: Virtual Disk format completed:
 TRAP;setparam;vdFormatCompleted;traps_status;0
 TRAP;setparam;vdFormatCompleted;vendor;Dell
 TRAP;setparam;vdFormatCompleted;traps_reschedule_svc_enable;0
@@ -4338,7 +4338,7 @@ TRAP;ADD;vdFormatFailed;.1.3.6.1.4.1.674.10893.1.1.200.0.539
 TRAP;setparam;vdFormatFailed;traps_name;vdFormatFailed
 TRAP;setparam;vdFormatFailed;traps_oid;.1.3.6.1.4.1.674.10893.1.1.200.0.539
 TRAP;setparam;vdFormatFailed;traps_mode;0
-TRAP;setparam;vdFormatFailed;traps_args;Array Manager Event: Virtual Disk format failed: 
+TRAP;setparam;vdFormatFailed;traps_args;Array Manager Event: Virtual Disk format failed:
 TRAP;setparam;vdFormatFailed;traps_status;3
 TRAP;setparam;vdFormatFailed;vendor;Dell
 TRAP;setparam;vdFormatFailed;traps_reschedule_svc_enable;0
@@ -4356,7 +4356,7 @@ TRAP;ADD;vdFormatStarted;.1.3.6.1.4.1.674.10893.1.1.200.0.521
 TRAP;setparam;vdFormatStarted;traps_name;vdFormatStarted
 TRAP;setparam;vdFormatStarted;traps_oid;.1.3.6.1.4.1.674.10893.1.1.200.0.521
 TRAP;setparam;vdFormatStarted;traps_mode;0
-TRAP;setparam;vdFormatStarted;traps_args;Array Manager Event: Virtual Disk format started: 
+TRAP;setparam;vdFormatStarted;traps_args;Array Manager Event: Virtual Disk format started:
 TRAP;setparam;vdFormatStarted;traps_status;1
 TRAP;setparam;vdFormatStarted;vendor;Dell
 TRAP;setparam;vdFormatStarted;traps_reschedule_svc_enable;0
@@ -4374,7 +4374,7 @@ TRAP;ADD;vdInitializeCancelled;.1.3.6.1.4.1.674.10893.1.1.200.0.532
 TRAP;setparam;vdInitializeCancelled;traps_name;vdInitializeCancelled
 TRAP;setparam;vdInitializeCancelled;traps_oid;.1.3.6.1.4.1.674.10893.1.1.200.0.532
 TRAP;setparam;vdInitializeCancelled;traps_mode;0
-TRAP;setparam;vdInitializeCancelled;traps_args;Array Manager Event: Virtual Disk initialization cancelled: 
+TRAP;setparam;vdInitializeCancelled;traps_args;Array Manager Event: Virtual Disk initialization cancelled:
 TRAP;setparam;vdInitializeCancelled;traps_status;1
 TRAP;setparam;vdInitializeCancelled;vendor;Dell
 TRAP;setparam;vdInitializeCancelled;traps_reschedule_svc_enable;0
@@ -4392,7 +4392,7 @@ TRAP;ADD;vdInitializeCompleted;.1.3.6.1.4.1.674.10893.1.1.200.0.550
 TRAP;setparam;vdInitializeCompleted;traps_name;vdInitializeCompleted
 TRAP;setparam;vdInitializeCompleted;traps_oid;.1.3.6.1.4.1.674.10893.1.1.200.0.550
 TRAP;setparam;vdInitializeCompleted;traps_mode;0
-TRAP;setparam;vdInitializeCompleted;traps_args;Array Manager Event: Virtual Disk initialization completed: 
+TRAP;setparam;vdInitializeCompleted;traps_args;Array Manager Event: Virtual Disk initialization completed:
 TRAP;setparam;vdInitializeCompleted;traps_status;0
 TRAP;setparam;vdInitializeCompleted;vendor;Dell
 TRAP;setparam;vdInitializeCompleted;traps_reschedule_svc_enable;0
@@ -4410,7 +4410,7 @@ TRAP;ADD;vdInitializeFailed;.1.3.6.1.4.1.674.10893.1.1.200.0.541
 TRAP;setparam;vdInitializeFailed;traps_name;vdInitializeFailed
 TRAP;setparam;vdInitializeFailed;traps_oid;.1.3.6.1.4.1.674.10893.1.1.200.0.541
 TRAP;setparam;vdInitializeFailed;traps_mode;0
-TRAP;setparam;vdInitializeFailed;traps_args;Array Manager Event: Virtual Disk initialization Failed: 
+TRAP;setparam;vdInitializeFailed;traps_args;Array Manager Event: Virtual Disk initialization Failed:
 TRAP;setparam;vdInitializeFailed;traps_status;3
 TRAP;setparam;vdInitializeFailed;vendor;Dell
 TRAP;setparam;vdInitializeFailed;traps_reschedule_svc_enable;0
@@ -4428,7 +4428,7 @@ TRAP;ADD;vdInitializeStarted;.1.3.6.1.4.1.674.10893.1.1.200.0.523
 TRAP;setparam;vdInitializeStarted;traps_name;vdInitializeStarted
 TRAP;setparam;vdInitializeStarted;traps_oid;.1.3.6.1.4.1.674.10893.1.1.200.0.523
 TRAP;setparam;vdInitializeStarted;traps_mode;0
-TRAP;setparam;vdInitializeStarted;traps_args;Array Manager Event: Virtual Disk initialization started: 
+TRAP;setparam;vdInitializeStarted;traps_args;Array Manager Event: Virtual Disk initialization started:
 TRAP;setparam;vdInitializeStarted;traps_status;0
 TRAP;setparam;vdInitializeStarted;vendor;Dell
 TRAP;setparam;vdInitializeStarted;traps_reschedule_svc_enable;0
@@ -4446,7 +4446,7 @@ TRAP;ADD;vdRebuildCancelled;.1.3.6.1.4.1.674.10893.1.1.200.0.535
 TRAP;setparam;vdRebuildCancelled;traps_name;vdRebuildCancelled
 TRAP;setparam;vdRebuildCancelled;traps_oid;.1.3.6.1.4.1.674.10893.1.1.200.0.535
 TRAP;setparam;vdRebuildCancelled;traps_mode;0
-TRAP;setparam;vdRebuildCancelled;traps_args;Array Manager Event: Virtual Disk rebuild cancelled: 
+TRAP;setparam;vdRebuildCancelled;traps_args;Array Manager Event: Virtual Disk rebuild cancelled:
 TRAP;setparam;vdRebuildCancelled;traps_status;1
 TRAP;setparam;vdRebuildCancelled;vendor;Dell
 TRAP;setparam;vdRebuildCancelled;traps_reschedule_svc_enable;0
@@ -4464,7 +4464,7 @@ TRAP;ADD;vdRebuildCompleted;.1.3.6.1.4.1.674.10893.1.1.200.0.553
 TRAP;setparam;vdRebuildCompleted;traps_name;vdRebuildCompleted
 TRAP;setparam;vdRebuildCompleted;traps_oid;.1.3.6.1.4.1.674.10893.1.1.200.0.553
 TRAP;setparam;vdRebuildCompleted;traps_mode;0
-TRAP;setparam;vdRebuildCompleted;traps_args;Array Manager Event: Virtual Disk rebuild completed: 
+TRAP;setparam;vdRebuildCompleted;traps_args;Array Manager Event: Virtual Disk rebuild completed:
 TRAP;setparam;vdRebuildCompleted;traps_status;0
 TRAP;setparam;vdRebuildCompleted;vendor;Dell
 TRAP;setparam;vdRebuildCompleted;traps_reschedule_svc_enable;0
@@ -4482,7 +4482,7 @@ TRAP;ADD;vdRebuildFailed;.1.3.6.1.4.1.674.10893.1.1.200.0.544
 TRAP;setparam;vdRebuildFailed;traps_name;vdRebuildFailed
 TRAP;setparam;vdRebuildFailed;traps_oid;.1.3.6.1.4.1.674.10893.1.1.200.0.544
 TRAP;setparam;vdRebuildFailed;traps_mode;0
-TRAP;setparam;vdRebuildFailed;traps_args;Array Manager Event: Virtual Disk rebuild failed: 
+TRAP;setparam;vdRebuildFailed;traps_args;Array Manager Event: Virtual Disk rebuild failed:
 TRAP;setparam;vdRebuildFailed;traps_status;3
 TRAP;setparam;vdRebuildFailed;vendor;Dell
 TRAP;setparam;vdRebuildFailed;traps_reschedule_svc_enable;0
@@ -4500,7 +4500,7 @@ TRAP;ADD;vdRebuildStarted;.1.3.6.1.4.1.674.10893.1.1.200.0.526
 TRAP;setparam;vdRebuildStarted;traps_name;vdRebuildStarted
 TRAP;setparam;vdRebuildStarted;traps_oid;.1.3.6.1.4.1.674.10893.1.1.200.0.526
 TRAP;setparam;vdRebuildStarted;traps_mode;0
-TRAP;setparam;vdRebuildStarted;traps_args;Array Manager Event: Virtual Disk rebuild started: 
+TRAP;setparam;vdRebuildStarted;traps_args;Array Manager Event: Virtual Disk rebuild started:
 TRAP;setparam;vdRebuildStarted;traps_status;1
 TRAP;setparam;vdRebuildStarted;vendor;Dell
 TRAP;setparam;vdRebuildStarted;traps_reschedule_svc_enable;0
@@ -4518,7 +4518,7 @@ TRAP;ADD;vdReconfigCancelled;.1.3.6.1.4.1.674.10893.1.1.200.0.534
 TRAP;setparam;vdReconfigCancelled;traps_name;vdReconfigCancelled
 TRAP;setparam;vdReconfigCancelled;traps_oid;.1.3.6.1.4.1.674.10893.1.1.200.0.534
 TRAP;setparam;vdReconfigCancelled;traps_mode;0
-TRAP;setparam;vdReconfigCancelled;traps_args;Array Manager Event: Virtual Disk Reconfiguration cancelled: 
+TRAP;setparam;vdReconfigCancelled;traps_args;Array Manager Event: Virtual Disk Reconfiguration cancelled:
 TRAP;setparam;vdReconfigCancelled;traps_status;1
 TRAP;setparam;vdReconfigCancelled;vendor;Dell
 TRAP;setparam;vdReconfigCancelled;traps_reschedule_svc_enable;0
@@ -4536,7 +4536,7 @@ TRAP;ADD;vdReconfigCompleted;.1.3.6.1.4.1.674.10893.1.1.200.0.552
 TRAP;setparam;vdReconfigCompleted;traps_name;vdReconfigCompleted
 TRAP;setparam;vdReconfigCompleted;traps_oid;.1.3.6.1.4.1.674.10893.1.1.200.0.552
 TRAP;setparam;vdReconfigCompleted;traps_mode;0
-TRAP;setparam;vdReconfigCompleted;traps_args;Array Manager Event: Virtual Disk Reconfiguration completed: 
+TRAP;setparam;vdReconfigCompleted;traps_args;Array Manager Event: Virtual Disk Reconfiguration completed:
 TRAP;setparam;vdReconfigCompleted;traps_status;1
 TRAP;setparam;vdReconfigCompleted;vendor;Dell
 TRAP;setparam;vdReconfigCompleted;traps_reschedule_svc_enable;0
@@ -4554,7 +4554,7 @@ TRAP;ADD;vdReconfigFailed;.1.3.6.1.4.1.674.10893.1.1.200.0.543
 TRAP;setparam;vdReconfigFailed;traps_name;vdReconfigFailed
 TRAP;setparam;vdReconfigFailed;traps_oid;.1.3.6.1.4.1.674.10893.1.1.200.0.543
 TRAP;setparam;vdReconfigFailed;traps_mode;0
-TRAP;setparam;vdReconfigFailed;traps_args;Array Manager Event: Virtual Disk Reconfiguration failed: 
+TRAP;setparam;vdReconfigFailed;traps_args;Array Manager Event: Virtual Disk Reconfiguration failed:
 TRAP;setparam;vdReconfigFailed;traps_status;3
 TRAP;setparam;vdReconfigFailed;vendor;Dell
 TRAP;setparam;vdReconfigFailed;traps_reschedule_svc_enable;0
@@ -4572,7 +4572,7 @@ TRAP;ADD;vdReconfigStarted;.1.3.6.1.4.1.674.10893.1.1.200.0.525
 TRAP;setparam;vdReconfigStarted;traps_name;vdReconfigStarted
 TRAP;setparam;vdReconfigStarted;traps_oid;.1.3.6.1.4.1.674.10893.1.1.200.0.525
 TRAP;setparam;vdReconfigStarted;traps_mode;0
-TRAP;setparam;vdReconfigStarted;traps_args;Array Manager Event: Virtual Disk Reconfiguration started: 
+TRAP;setparam;vdReconfigStarted;traps_args;Array Manager Event: Virtual Disk Reconfiguration started:
 TRAP;setparam;vdReconfigStarted;traps_status;1
 TRAP;setparam;vdReconfigStarted;vendor;Dell
 TRAP;setparam;vdReconfigStarted;traps_reschedule_svc_enable;0
@@ -4590,7 +4590,7 @@ TRAP;ADD;virtualDiskConfigChanged;.1.3.6.1.4.1.674.10893.1.1.200.0.507
 TRAP;setparam;virtualDiskConfigChanged;traps_name;virtualDiskConfigChanged
 TRAP;setparam;virtualDiskConfigChanged;traps_oid;.1.3.6.1.4.1.674.10893.1.1.200.0.507
 TRAP;setparam;virtualDiskConfigChanged;traps_mode;0
-TRAP;setparam;virtualDiskConfigChanged;traps_args;Array Manager Event: Virtual Disk created: 
+TRAP;setparam;virtualDiskConfigChanged;traps_args;Array Manager Event: Virtual Disk created:
 TRAP;setparam;virtualDiskConfigChanged;traps_status;0
 TRAP;setparam;virtualDiskConfigChanged;vendor;Dell
 TRAP;setparam;virtualDiskConfigChanged;traps_reschedule_svc_enable;0
@@ -4608,7 +4608,7 @@ TRAP;ADD;virtualDiskCreated;.1.3.6.1.4.1.674.10893.1.1.200.0.505
 TRAP;setparam;virtualDiskCreated;traps_name;virtualDiskCreated
 TRAP;setparam;virtualDiskCreated;traps_oid;.1.3.6.1.4.1.674.10893.1.1.200.0.505
 TRAP;setparam;virtualDiskCreated;traps_mode;0
-TRAP;setparam;virtualDiskCreated;traps_args;Array Manager Event: Virtual Disk created: 
+TRAP;setparam;virtualDiskCreated;traps_args;Array Manager Event: Virtual Disk created:
 TRAP;setparam;virtualDiskCreated;traps_status;0
 TRAP;setparam;virtualDiskCreated;vendor;Dell
 TRAP;setparam;virtualDiskCreated;traps_reschedule_svc_enable;0
@@ -4626,7 +4626,7 @@ TRAP;ADD;virtualDiskDegraded;.1.3.6.1.4.1.674.10893.1.1.200.0.509
 TRAP;setparam;virtualDiskDegraded;traps_name;virtualDiskDegraded
 TRAP;setparam;virtualDiskDegraded;traps_oid;.1.3.6.1.4.1.674.10893.1.1.200.0.509
 TRAP;setparam;virtualDiskDegraded;traps_mode;0
-TRAP;setparam;virtualDiskDegraded;traps_args;Array Manager Event: Virtual Disk degraded: 
+TRAP;setparam;virtualDiskDegraded;traps_args;Array Manager Event: Virtual Disk degraded:
 TRAP;setparam;virtualDiskDegraded;traps_status;1
 TRAP;setparam;virtualDiskDegraded;vendor;Dell
 TRAP;setparam;virtualDiskDegraded;traps_reschedule_svc_enable;0
@@ -4644,7 +4644,7 @@ TRAP;ADD;virtualDiskDeleted;.1.3.6.1.4.1.674.10893.1.1.200.0.506
 TRAP;setparam;virtualDiskDeleted;traps_name;virtualDiskDeleted
 TRAP;setparam;virtualDiskDeleted;traps_oid;.1.3.6.1.4.1.674.10893.1.1.200.0.506
 TRAP;setparam;virtualDiskDeleted;traps_mode;0
-TRAP;setparam;virtualDiskDeleted;traps_args;Array Manager Event: Virtual Disk deleted: 
+TRAP;setparam;virtualDiskDeleted;traps_args;Array Manager Event: Virtual Disk deleted:
 TRAP;setparam;virtualDiskDeleted;traps_status;1
 TRAP;setparam;virtualDiskDeleted;vendor;Dell
 TRAP;setparam;virtualDiskDeleted;traps_reschedule_svc_enable;0
@@ -4662,7 +4662,7 @@ TRAP;ADD;virtualDiskFailed;.1.3.6.1.4.1.674.10893.1.1.200.0.508
 TRAP;setparam;virtualDiskFailed;traps_name;virtualDiskFailed
 TRAP;setparam;virtualDiskFailed;traps_oid;.1.3.6.1.4.1.674.10893.1.1.200.0.508
 TRAP;setparam;virtualDiskFailed;traps_mode;0
-TRAP;setparam;virtualDiskFailed;traps_args;Array Manager Event: Virtual Disk failed: 
+TRAP;setparam;virtualDiskFailed;traps_args;Array Manager Event: Virtual Disk failed:
 TRAP;setparam;virtualDiskFailed;traps_status;3
 TRAP;setparam;virtualDiskFailed;vendor;Dell
 TRAP;setparam;virtualDiskFailed;traps_reschedule_svc_enable;0
@@ -5662,3 +5662,4 @@ ACLGROUP;SETACTION;ALL;Simple User;
 ACLGROUP;SETRESOURCE;ALL;All Resources;
 ACLGROUP;SETCONTACT;ALL;test_contact;
 ACLGROUP;SETCONTACTGROUP;ALL;Guest|test_contact-group;
+
