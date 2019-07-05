@@ -368,7 +368,8 @@ function insertServer(array $data): int
     $rq = "INSERT INTO `nagios_server` (`name` , `localhost`, `ns_ip_address`, `ssh_port`, `nagios_bin`," .
         " `nagiostats_bin`, `init_system`, `init_script`, `init_script_centreontrapd`, `snmp_trapd_path_conf`, " .
         "`nagios_perfdata` , `centreonbroker_cfg_path`, `centreonbroker_module_path`, `centreonconnector_path`, " .
-        "`ssh_private_key`, `is_default`, `ns_activate`, `centreonbroker_logs_path`, `remote_id`) ";
+        "`ssh_private_key`, `is_default`, `ns_activate`, `centreonbroker_logs_path`, `remote_id`, " .
+        "`remote_server_centcore_ssh_proxy`) ";
     $rq .= "VALUES (";
     isset($data["name"]) && $data["name"] != null
         ? $rq .= "'" . htmlentities(trim($data["name"]), ENT_QUOTES, "UTF-8") . "', "
@@ -426,7 +427,14 @@ function insertServer(array $data): int
         : $rq .= "NULL,";
     isset($data["remote_id"]) && $data["remote_id"] != null
         ? $rq .= "'" . htmlentities(trim($data["remote_id"]), ENT_QUOTES, "UTF-8") . "' "
-        : $rq .= "NULL";
+        : $rq .= "NULL, ";
+    isset($data["remote_server_centcore_ssh_proxy"]["remote_server_centcore_ssh_proxy"])
+        && $data["remote_server_centcore_ssh_proxy"]["remote_server_centcore_ssh_proxy"] != null
+        ? $rq .= "'" . htmlentities(
+             $data["remote_server_centcore_ssh_proxy"]["remote_server_centcore_ssh_proxy"],
+             ENT_QUOTES,
+             "UTF-8"
+        ) . "'  " : $rq .= "NULL";
     $rq .= ")";
 
     $pearDB->query($rq);
@@ -620,7 +628,8 @@ function updateServer(int $id, $data): void
     isset($data["remote_id"]) && $data["remote_id"] != null
         ? $rq .= "remote_id = '" . htmlentities(trim($data["remote_id"]), ENT_QUOTES, "UTF-8") . "',  "
         : $rq .= "remote_id = NULL, ";
-    $rq .= "ns_activate = '" . $data["ns_activate"]["ns_activate"] . "' ";
+    $rq .= "ns_activate = '" . $data["ns_activate"]["ns_activate"] . "', ";
+    $rq .= "remote_server_centcore_ssh_proxy = '" . $data["remote_server_centcore_ssh_proxy"]["remote_server_centcore_ssh_proxy"] . "' ";
     $rq .= "WHERE id = '" . $id . "'";
     $pearDB->query($rq);
 

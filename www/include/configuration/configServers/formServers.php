@@ -174,6 +174,10 @@ $form->addElement('text', 'ns_ip_address', _("IP Address"), $attrsText);
 $form->addElement('text', 'init_script', _("Monitoring Engine Init Script"), $attrsText2);
 if (strcmp($serverType, 'poller') ==  0) {
     $form->addElement('select2', 'remote_id', _('Attach to Remote Server'), array(), $attrPoller1);
+    $Tab = array();
+    $Tab[] = $form->createElement('radio', 'remote_server_centcore_ssh_proxy', null, _("Yes"), '1');
+    $Tab[] = $form->createElement('radio', 'remote_server_centcore_ssh_proxy', null, _("No"), '0');
+    $form->addGroup($Tab, 'remote_server_centcore_ssh_proxy', _("Use the Remote Server as a proxy for SSH"), '&nbsp;');
 }
 $form->addElement('text', 'nagios_bin', _("Monitoring Engine Binary"), $attrsText2);
 $form->addElement('text', 'nagiostats_bin', _("Monitoring Engine Statistics Binary"), $attrsText2);
@@ -262,7 +266,8 @@ if (isset($_GET["o"]) && $_GET["o"] == SERVER_ADD) {
             "centreonbroker_module_path" => "/usr/share/centreon/lib/centreon-broker",
             "centreonbroker_logs_path" => "/var/log/centreon-broker",
             "init_script_centreontrapd" => "centreontrapd",
-            "snmp_trapd_path_conf" => "/etc/snmp/centreon_traps/"
+            "snmp_trapd_path_conf" => "/etc/snmp/centreon_traps/",
+            "remote_server_centcore_ssh_proxy" => '1'
         )
     );
 } else {
