@@ -242,7 +242,7 @@ CREATE TABLE `auth_ressource` (
   `ar_id` int(11) NOT NULL AUTO_INCREMENT,
   `ar_name` varchar(255) NOT NULL DEFAULT 'Default',
   `ar_description` varchar(255) NOT NULL DEFAULT 'Default description',
-  `ar_type` varchar(50) NOT NULL,
+  `ar_type` varchar(50) NOT NULL DEFAULT 'Default type',
   `ar_enable` enum('0','1') DEFAULT '0',
   PRIMARY KEY (`ar_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
