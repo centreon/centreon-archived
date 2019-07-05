@@ -1,7 +1,7 @@
 <?php
 /*
- * Copyright 2005-2015 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2019 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -32,6 +32,8 @@
  * For more information : contact@centreon.com
  *
  */
+
+use Centreon\Infrastructure\Event\EventDispatcher;
 
 if (!isset($centreon)) {
     exit();
@@ -167,14 +169,34 @@ $attrCommands = array(
 
 
 $form = new HTML_QuickFormCustom('Form', 'post', "?p=" . $p);
+
+// Smarty template Init
+$tpl = new Smarty();
+$tpl = initSmartyTpl($path, $tpl);
+
+// prepare event data
+$eventData = [
+    'form' => $form,
+    'tpl' => $tpl,
+    'contact_id' => $contact_id
+];
+
 if ($o == "a") {
     $form->addElement('header', 'title', _("Add a User"));
+
+    $eventDispatcher->notify($eventContext, EventDispatcher::EVENT_DISPLAY, $eventData);
 } elseif ($o == "c") {
     $form->addElement('header', 'title', _("Modify a User"));
+
+    $eventDispatcher->notify($eventContext, EventDispatcher::EVENT_READ, $eventData);
 } elseif ($o == "w") {
     $form->addElement('header', 'title', _("View a User"));
+
+    $eventDispatcher->notify($eventContext, EventDispatcher::EVENT_READ, $eventData);
 } elseif ($o == "mc") {
     $form->addElement('header', 'title', _("Massive Change"));
+
+    $eventDispatcher->notify($eventContext, EventDispatcher::EVENT_DISPLAY, $eventData);
 }
 
 /**
@@ -461,13 +483,6 @@ if ($o != "mc") {
 }
 $form->setRequiredNote("<font style='color: red;'>*</font>&nbsp;" . _("Required fields"));
 
-
-/**
- * Smarty template Init
- */
-$tpl = new Smarty();
-$tpl = initSmartyTpl($path, $tpl);
-
 $tpl->assign(
     "helpattr",
     'TITLE, "' . _("Help") . '", CLOSEBTN, true, FIX, [this, 0, 5], BGCOLOR, "#ffff99", BORDERCOLOR, ' .
@@ -512,19 +527,35 @@ if ($o == "w") {
 
 $valid = false;
 if ($form->validate() && $from_list_menu == false) {
+
     $cctObj = $form->getElement('contact_id');
+    $eventData = [
+        'form' => $form,
+        'contact_id' => $cctObj->getValue()
+    ];
+
     if ($form->getSubmitValue("submitA")) {
-        $cctObj->setValue(insertContactInDB());
+        $newContactId = insertContactInDB();
+        $cctObj->setValue($newContactId);
+        $eventData['contact_id'] = $newContactId;
+
+        $eventDispatcher->notify($eventContext, EventDispatcher::EVENT_ADD, $eventData);
     } elseif ($form->getSubmitValue("submitC")) {
         updateContactInDB($cctObj->getValue());
+
+        $eventDispatcher->notify($eventContext, EventDispatcher::EVENT_UPDATE, $eventData);
     } elseif ($form->getSubmitValue("submitMC")) {
         $select = explode(",", $select);
+
         foreach ($select as $key => $value) {
-            if ($value) {
+            if (!$value) {
                 updateContactInDB($value, true);
+
+                $eventDispatcher->notify($eventContext, EventDispatcher::EVENT_UPDATE, $eventData);
             }
         }
     }
+
     $o = null;
     $valid = true;
 }
