@@ -255,7 +255,7 @@ try {
             CREATE TABLE IF NOT EXISTS `traps` (
                     `traps_id` int(11) UNIQUE NOT NULL,
                     `traps_name` varchar(255) DEFAULT NULL,
-                    `traps_mode` int(11) DEFAULT '0',
+                    `traps_mode` int(11) DEFAULT 0,
                     `traps_oid` varchar(255) DEFAULT NULL,
                     `traps_args` varchar(255) DEFAULT NULL,
                     `traps_status` int(11) DEFAULT NULL,
