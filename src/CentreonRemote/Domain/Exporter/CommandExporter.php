@@ -43,6 +43,7 @@ class CommandExporter extends ExporterServiceAbstract implements ExporterService
             $this->_dump($command, $this->getFile(static::EXPORT_FILE_COMMAND));
         })();
 
+        /* Not necessary for Remote Server export
         (function () use ($pollerIds) {
             $commandArg = $this->db
                 ->getRepository(Repository\CommandArgDescriptionRepository::class)
@@ -82,6 +83,7 @@ class CommandExporter extends ExporterServiceAbstract implements ExporterService
             ;
             $this->_dump($categoryRelation, $this->getFile(static::EXPORT_FILE_CATEGORY_RELATION));
         })();
+        */
     }
 
     public function exportPartial(): void

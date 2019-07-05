@@ -83,11 +83,14 @@ class ExportService
         $partials = [];
         $interface = ExporterServicePartialInterface::class;
 
+        echo "\n";
         foreach ($this->exporter->all() as $exporterMeta) {
             if ($filterExporters && !in_array($exporterMeta['classname'], $filterExporters)) {
                 continue;
             }
 
+            $datetime = (new \DateTime())->format("Y-m-d H:i:s"); // DEBUG
+            echo "{$datetime} - Start export {$exporterMeta['name']} \n"; // DEBUG
             $exporter = $exporterMeta['factory']();
             $exporter->setCommitment($commitment);
             $exporter->setManifest($manifest);
@@ -102,6 +105,8 @@ class ExportService
 
             // add exporter to manifest
             $manifest->addExporter($exporterMeta['classname']);
+            $datetime = (new \DateTime())->format("Y-m-d H:i:s"); // DEBUG
+            echo "{$datetime} - End export {$exporterMeta['name']} \n"; //DEBUG
         }
 
         // export partial data

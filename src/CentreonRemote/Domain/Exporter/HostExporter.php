@@ -87,6 +87,7 @@ class HostExporter extends ExporterServiceAbstract
             $this->_dump($hostGroupRelation, $this->getFile(static::EXPORT_FILE_GROUP_RELATION));
         })();
 
+        /* Not necessary for Remote Server export
         (function () use ($pollerIds, $hostTemplateChain) {
             $hostGroupHgRelation = $this->db
                 ->getRepository(Repository\HostGroupHgRelationRepository::class)
@@ -94,6 +95,7 @@ class HostExporter extends ExporterServiceAbstract
             ;
             $this->_dump($hostGroupHgRelation, $this->getFile(static::EXPORT_FILE_GROUP_HG_RELATION));
         })();
+        */
 
         (function () use ($pollerIds, $hostTemplateChain) {
             $hostInfo = $this->db
@@ -180,6 +182,7 @@ class HostExporter extends ExporterServiceAbstract
             }
         })();
 
+        /* Not necessary for Remote Server export
         // insert group to group relation
         (function () use ($db) {
             $exportPathFile = $this->getFile(static::EXPORT_FILE_GROUP_HG_RELATION);
@@ -189,6 +192,7 @@ class HostExporter extends ExporterServiceAbstract
                 $db->insert('hostgroup_hg_relation', $data);
             }
         })();
+        */
 
         // insert categories
         (function () use ($db) {
@@ -200,7 +204,7 @@ class HostExporter extends ExporterServiceAbstract
             }
         })();
 
-        // insert categories
+        // insert categories relations
         (function () use ($db) {
             $exportPathFile = $this->getFile(static::EXPORT_FILE_CATEGORY_RELATION);
             $result = $this->_parse($exportPathFile);

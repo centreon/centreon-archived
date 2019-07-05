@@ -217,6 +217,7 @@ class ServiceProvider implements AutoloadServiceProviderInterface
             return $service;
         });
         
+        /* Not necessary for Remote Server export
         // Downtimes
         $pimple['centreon_remote.exporter']->add(Domain\Exporter\DowntimeExporter::class, function () use ($pimple) {
             $services = [
@@ -228,6 +229,7 @@ class ServiceProvider implements AutoloadServiceProviderInterface
 
             return $service;
         });
+        */
         
         // Graphs
         $pimple['centreon_remote.exporter']->add(Domain\Exporter\GraphExporter::class, function () use ($pimple) {
