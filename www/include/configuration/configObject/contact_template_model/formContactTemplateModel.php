@@ -527,7 +527,6 @@ if ($o == "w") {
 
 $valid = false;
 if ($form->validate() && $from_list_menu == false) {
-
     $cctObj = $form->getElement('contact_id');
     $eventData = [
         'form' => $form,
