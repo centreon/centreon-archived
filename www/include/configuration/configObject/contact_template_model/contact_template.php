@@ -84,7 +84,7 @@ if (!is_null($eventDispatcher->getDispatcherLoader())) {
 $eventDispatcher->addEventHandler(
     $eventContext,
     EventDispatcher::EVENT_DUPLICATE,
-    (function(): EventHandler {
+    (function (): EventHandler {
         $handler = new EventHandler();
         $handler->setProcessing(function (array $arguments) {
             if (isset($arguments['contact_ids'], $arguments['numbers'])) {
@@ -109,7 +109,7 @@ $eventDispatcher->addEventHandler(
 $eventDispatcher->addEventHandler(
     $eventContext,
     EventDispatcher::EVENT_DELETE,
-    (function() {
+    (function () {
         // We define a event to delete a list of contacts
         $handler = new EventHandler();
         $handler->setProcessing(function ($arguments) {
