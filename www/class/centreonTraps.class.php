@@ -402,7 +402,7 @@ class CentreonTraps
 
         $rq .= "`traps_customcode` = ";
         isset($ret["traps_customcode"]) && $ret["traps_customcode"] != null
-            ? $rq .= "'" . $ret["traps_customcode"] . "' "
+            ? $rq .= "'" . $ret["traps_customcode"] . "', "
             : $rq .= "NULL ";
 
         $rq .= "`traps_mode` = ";
