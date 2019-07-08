@@ -37,6 +37,8 @@ namespace CentreonLegacy\Core\Configuration;
 
 use CentreonModule\Infrastructure\Source\ModuleSource;
 use CentreonModule\Infrastructure\Source\WidgetSource;
+use Symfony\Component\Finder\Finder;
+use Symfony\Component\Yaml\Yaml;
 
 /**
  * Service provide configuration data
@@ -56,14 +58,20 @@ class Configuration
     protected $centreonPath;
 
     /**
+     * @var Finder
+     */
+    protected $finder;
+
+    /**
      *
      * @param array $configuration the global configuration (mainly database)
      * @param string $centreonPath the centreon directory path
      */
-    public function __construct(array $configuration, string $centreonPath)
+    public function __construct(array $configuration, string $centreonPath, Finder $finder)
     {
         $this->configuration = $configuration;
         $this->centreonPath = $centreonPath;
+        $this->finder = $finder;
     }
 
     /**
@@ -86,6 +94,11 @@ class Configuration
         return $value;
     }
 
+    public function getFinder() : ?Finder
+    {
+        return $this->finder;
+    }
+
     public function getModulePath() : string
     {
         return $this->centreonPath . ModuleSource::PATH;
@@ -94,5 +107,25 @@ class Configuration
     public function getWidgetPath() : string
     {
         return $this->centreonPath . WidgetSource::PATH;
+    }
+
+    /**
+     * Locate all yml files in src/ModuleFolder/config/ and parse them to array
+     * @var string $moduleFolder
+     * @return array
+     */
+    public function getModuleConfig(string $moduleFolder) : array
+    {
+        $configVars = [];
+        $filesIterator = $this->getFinder()
+            ->files()
+            ->name('*.yml')
+            ->depth('== 0')
+            ->in($moduleFolder . '/config');
+        foreach ($filesIterator as $file) {
+            $configVars = array_merge($configVars, Yaml::parseFile($file->getPathName()));
+        }
+
+        return $configVars;
     }
 }
