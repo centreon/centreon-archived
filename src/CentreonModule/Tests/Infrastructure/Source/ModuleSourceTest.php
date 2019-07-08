@@ -129,7 +129,7 @@ class ModuleSourceTest extends TestCase
                     $result = 'vfs://modules/';
 
                     return $result;
-                }))
+            }))
         ;
         $this->source
             ->method('getModuleConf')
@@ -139,7 +139,7 @@ class ModuleSourceTest extends TestCase
                     ];
 
                     return $result;
-                }))
+            }))
         ;
     }
 

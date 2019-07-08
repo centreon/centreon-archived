@@ -875,6 +875,7 @@ sub substitute_centreon_var {
     my $str = $_[0];
 
     $str =~ s/\@HOSTNAME\@/$self->{current_hostname}/g;
+    $str =~ s/\@HOSTID\@/$self->{current_host_id}/g;
     $str =~ s/\@HOSTADDRESS\@/$self->{current_ip}/g;
     $str =~ s/\@HOSTADDRESS2\@/$self->{trap_data}->{agent_dns_name}/g;
     $str =~ s/\@SERVICEDESC\@/$self->{current_service_desc}/g;
