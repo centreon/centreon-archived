@@ -181,22 +181,23 @@ $eventData = [
     'contact_id' => $contact_id
 ];
 
-if ($o == "a") {
-    $form->addElement('header', 'title', _("Add a User"));
-
-    $eventDispatcher->notify($eventContext, EventDispatcher::EVENT_DISPLAY, $eventData);
-} elseif ($o == "c") {
-    $form->addElement('header', 'title', _("Modify a User"));
-
-    $eventDispatcher->notify($eventContext, EventDispatcher::EVENT_READ, $eventData);
-} elseif ($o == "w") {
-    $form->addElement('header', 'title', _("View a User"));
-
-    $eventDispatcher->notify($eventContext, EventDispatcher::EVENT_READ, $eventData);
-} elseif ($o == "mc") {
-    $form->addElement('header', 'title', _("Massive Change"));
-
-    $eventDispatcher->notify($eventContext, EventDispatcher::EVENT_DISPLAY, $eventData);
+switch ($o) {
+    case 'a':
+        $form->addElement('header', 'title', _("Add a User"));
+        $eventDispatcher->notify($eventContext, EventDispatcher::EVENT_DISPLAY, $eventData);
+        break;
+    case 'c':
+        $form->addElement('header', 'title', _("Modify a User"));
+        $eventDispatcher->notify($eventContext, EventDispatcher::EVENT_READ, $eventData);
+        break;
+    case 'w':
+        $form->addElement('header', 'title', _("View a User"));
+        $eventDispatcher->notify($eventContext, EventDispatcher::EVENT_READ, $eventData);
+        break;
+    case 'mc':
+        $form->addElement('header', 'title', _("Massive Change"));
+        $eventDispatcher->notify($eventContext, EventDispatcher::EVENT_DISPLAY, $eventData);
+        break;
 }
 
 /**
@@ -499,7 +500,7 @@ foreach ($help as $key => $text) {
 $tpl->assign("helptext", $helptext);
 
 if ($o == "w") {
-// Just watch a contact information
+    // Just watch a contact information
     if ($centreon->user->access->page($p) != 2) {
         $form->addElement(
             "button",
@@ -511,16 +512,16 @@ if ($o == "w") {
     $form->setDefaults($cct);
     $form->freeze();
 } elseif ($o == "c") {
-// Modify a contact information
+    // Modify a contact information
     $subC = $form->addElement('submit', 'submitC', _("Save"), array("class" => "btc bt_success"));
     $res = $form->addElement('reset', 'reset', _("Reset"), array("class" => "btc bt_default"));
     $form->setDefaults($cct);
 } elseif ($o == "a") {
-// Add a contact information
+    // Add a contact information
     $subA = $form->addElement('submit', 'submitA', _("Save"), array("class" => "btc bt_success"));
     $res = $form->addElement('reset', 'reset', _("Reset"), array("class" => "btc bt_default"));
 } elseif ($o == "mc") {
-// Massive Change
+    // Massive Change
     $subMC = $form->addElement('submit', 'submitMC', _("Save"), array("class" => "btc bt_success"));
     $res = $form->addElement('reset', 'reset', _("Reset"), array("class" => "btc bt_default"));
 }
