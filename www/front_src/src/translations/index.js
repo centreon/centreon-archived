@@ -10,7 +10,7 @@ export default function setTranslations(store, callback) {
 
   Promise
     .all([localePromise, translationsPromise])
-    .then(response => {
+    .then((response) => {
       let locale = response[0].data.locale;
       locale = locale !== null ? locale.slice(0,2) : navigator.language;
       const translations = response[1].data;
