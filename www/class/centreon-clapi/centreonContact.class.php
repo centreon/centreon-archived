@@ -1,7 +1,7 @@
 <?php
 /*
- * Copyright 2005-2015 CENTREON
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2019 CENTREON
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -229,9 +229,10 @@ class CentreonContact extends CentreonObject
     public function show($parameters = null, $filters = array())
     {
         $filters = array('contact_register' => $this->register);
+        $labelField = $this->object->getUniqueLabelField();
         if (isset($parameters)) {
             $parameters = str_replace(" ", "_", $parameters);
-            $filters[$this->object->getUniqueLabelField()] = "%" . $parameters . "%";
+            $filters[$labelField] = "%" . $parameters . "%";
         }
 
         $params = array(
@@ -251,8 +252,8 @@ class CentreonContact extends CentreonObject
             $params,
             -1,
             0,
-            null,
-            null,
+            $labelField ?? null,
+            $labelField ? 'ASC' : null,
             $filters,
             "AND"
         );
