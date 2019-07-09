@@ -218,7 +218,7 @@ class CentreonLDAP extends CentreonObject
         }
         $stmt = $this->db->prepare(
             "INSERT INTO auth_ressource (ar_name, ar_description, ar_enable, ar_type)
-                VALUES (:arName, :description, '1', '')"
+            VALUES (:arName, :description, '1', '')"
         );
         $stmt->bindValue(':arName', $name, \PDO::PARAM_STR);
         $stmt->bindValue(':description', $description, \PDO::PARAM_STR);
