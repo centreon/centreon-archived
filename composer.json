@@ -8,6 +8,7 @@
             "email": "kduret@centreon.com"
         }
     ],
+    "description": "Centreon - IT and Application monitoring software",
     "config": {
         "secure-http": false
     },
