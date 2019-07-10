@@ -191,10 +191,6 @@ class CentreonTopCounter extends CentreonWebService
      */
     public function getUser()
     {
-        $enableAutoLogin = false;
-        $enableAutoLoginShortcut = false;
-        $autoLoginKey = null;
-
         if (!isset($_SESSION['centreon'])) {
             throw new \RestUnauthorizedException('Session does not exists.');
         }
@@ -209,51 +205,52 @@ class CentreonTopCounter extends CentreonWebService
         }
 
         /* Is the autologin feature enabled ? */
-        $query = 'SELECT value FROM options WHERE options.key = "enable_autologin"';
-
         try {
-            $res = $this->pearDB->query($query);
+            $res = $this->pearDB->query(
+                'SELECT value FROM options WHERE options.key = "enable_autologin"'
+            );
         } catch (\Exception $e) {
             throw new \RestInternalServerErrorException('Error getting the user.');
         }
 
-        if ($row = $res->fetch()) {
-            $enableAutoLogin = $row['value'] == '1' ? true : false;
-        }
+        $rowEnableShortcut = $res->fetch();
 
-	    /* Do we need to display the autologin shortcut ? */
-        $query = 'SELECT value FROM options WHERE options.key = "display_autologin_shortcut"';
-
+        /* Do we need to display the autologin shortcut ? */
         try {
-            $res = $this->pearDB->query($query);
+            $res = $this->pearDB->query(
+                'SELECT value FROM options WHERE options.key = "display_autologin_shortcut"'
+            );
         } catch (\Exception $e) {
             throw new \RestInternalServerErrorException('Error getting the user.');
         }
 
-        if ($row = $res->fetch()) {
-            $enableAutoLoginShortcut = $row['value'] == '1' ? true : false;
-        }
+        $rowEnableAutoLogin = $res->fetch();
 
         /* If the autologin feature is enabled then fetch the autologin key
          * And display the shortcut if the option is enabled
          */
-        if ($enableAutoLogin && $enableAutoLoginShortcut) {
+        if (isset($rowEnableAutoLogin['value'])
+            && isset($rowEnableShortcut['value'])
+            && $rowEnableAutoLogin['value'] === '1'
+            && $rowEnableShortcut['value'] === '1'
+        ) {
             /* Get autologinkey */
-            $query = 'SELECT contact_autologin_key FROM contact WHERE contact_id = ' . (int)$user->user_id;
-
             try {
-                $res = $this->pearDB->query($query);
+                $res = $this->pearDB->prepare(
+                    'SELECT contact_autologin_key FROM contact WHERE contact_id = :userID'
+                );
+                $res->bindValue(':userId',  (int)$user->user_id, \PDO::PARAM_INT);
+                $res->execute();
             } catch (\Exception $e) {
                 throw new \RestInternalServerErrorException('Error getting the user.');
             }
 
             if ($res->rowCount() === 0) {
-                throw new \RestUnauthorizedException('User does not exists.');
+                throw new \RestUnauthorizedException('User does not exist.');
             }
 
-            if ($row = $res->fetch()) {
-                $autoLoginKey = $row['contact_autologin_key'];
-            }
+            $row = $res->fetch();
+            $autoLoginKey = $row['contact_autologin_key'] ?? null;
         }
 
         return array(
