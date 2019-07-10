@@ -8,7 +8,7 @@ Comment fonctionne le SSO par Keycloak avec Centreon ?
 ======================================================
 
 Pour utiliser le login par Keycloak, vous avez besoin d'un
-:ref:`serveur Keycloak<https://www.keycloak.org/docs/latest/getting_started/index.html>`_.
+`serveur Keycloak <https://www.keycloak.org/docs/latest/getting_started/index.html>`_.
 
 Comment configurer le SSO par Keycloak dans Centreon ?
 ======================================================
