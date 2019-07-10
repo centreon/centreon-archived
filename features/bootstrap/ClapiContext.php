@@ -25,8 +25,10 @@ class ClapiContext extends CentreonContext
             $cmd .= " > " . $file;
         }
 
-        $image = $this->container->execute('docker images -a');
+        $image = $this->container->execute('docker images -a', 'web');
+        echo $image;
         var_dump($image);
+
         $output = $this->container->execute(
             $cmd,
             'web'
