@@ -1010,7 +1010,7 @@ function insertNagios($ret = array(), $brokerTab = array())
             $level += $key;
         }
     }
-    $rq .= "'.$level.', ";
+    $rq .= "$level, ";
 
     if (isset($ret["nagios_debug_level"]) && $ret["nagios_debug_level"] != null) {
         $rq .= "'" . implode(",", array_keys($ret["nagios_debug_level"])) . "',  ";

@@ -53,6 +53,7 @@ ALTER TABLE `traps_service_relation` DROP COLUMN `tsr_id`;
 --
 ALTER TABLE `acl_groups` MODIFY COLUMN `acl_group_changed` int(11) NOT NULL DEFAULT 1;
 ALTER TABLE `widget_models` MODIFY COLUMN `description` TEXT NOT NULL;
+ALTER TABLE `auth_ressource` ALTER `ar_type` SET DEFAULT 'ldap';
 
 --
 -- Remove modules *_files flags.

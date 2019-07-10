@@ -171,8 +171,6 @@ obsess_over_host	             Whether or not obsess over host option is enabled
 
 passive_checks_enabled	             Whether or not passive checks are enabled
 
-process_perf_data	             Process performance data command
-
 retain_nonstatus_information         Whether or not there is non-status retention
 
 retain_status_information	     Whether or not there is status retention
