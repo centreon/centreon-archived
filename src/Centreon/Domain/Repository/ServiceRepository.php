@@ -10,51 +10,27 @@ class ServiceRepository extends ServiceEntityRepository
     /**
      * Export
      *
-     * @todo restriction by poller
-     *
-     * @param int[] $pollerIds
-     * @param array $templateChainList
+     * @param int[] $serviceList
+     * @param int[] $templateChainList
      * @return array
      */
-    public function export(array $pollerIds, array $templateChainList = null): array
+    public function export(array $serviceList, array $templateChainList = null): array
     {
         // prevent SQL exception
-        if (!$pollerIds) {
+        if (!$serviceList) {
             return [];
         }
 
-        $ids = implode(',', $pollerIds);
-
-        $sql = <<<SQL
-SELECT l.* FROM(
-SELECT
-    t.*
-FROM service AS t
-INNER JOIN host_service_relation AS hsr ON hsr.service_service_id = t.service_id
-LEFT JOIN hostgroup AS hg ON hg.hg_id = hsr.hostgroup_hg_id
-LEFT JOIN hostgroup_relation AS hgr ON hgr.hostgroup_hg_id = hg.hg_id
-INNER JOIN ns_host_relation AS hr ON hr.host_host_id = hsr.host_host_id OR hr.host_host_id = hgr.host_host_id
-WHERE hr.nagios_server_id IN ({$ids})
-GROUP BY t.service_id
-SQL;
-
         if ($templateChainList) {
-            $list = implode(',', $templateChainList);
-            $sql .= <<<SQL
-
-UNION
-                
-SELECT
-    tt.*
-FROM service AS tt
-WHERE tt.service_id IN ({$list})
-GROUP BY tt.service_id
-SQL;
+            $serviceList = array_merge($serviceList, $templateChainList);
         }
 
-        $sql .= <<<SQL
-) AS l
-GROUP BY l.service_id
+        $ids = implode(',', $serviceList);
+
+        $sql = <<<SQL
+SELECT t.*
+FROM service AS t
+WHERE t.service_id IN ({$ids})
 SQL;
 
         $stmt = $this->db->prepare($sql);
@@ -138,6 +114,13 @@ SQL;
         return $result;
     }
 
+    /**
+     * Get a chain of the related object by parant
+     *
+     * @param int $id
+     * @param int[] &$result
+     * @return array
+     */
     public function getChainByParant($id, &$result)
     {
         $sql = <<<SQL
@@ -158,6 +141,97 @@ SQL;
             if (!$isExisting) {
                 $this->getChainByParant($row['id'], $result);
             }
+        }
+
+        return $result;
+    }
+
+    /**
+     * Get a chain of the related objects
+     *
+     * @param int[] $pollerIds
+     * @param int[] $ba
+     * @return array
+     */
+    public function getServiceIdsByPoller(array $pollerIds, array $ba = null): array
+    {
+        // prevent SQL exception
+        if (!$pollerIds) {
+            return [];
+        }
+
+        $ids = implode(',', $pollerIds);
+        $sql = <<<SQL
+SELECT l.* FROM (
+SELECT DISTINCT t.service_id AS `id`
+FROM service AS t
+INNER JOIN host_service_relation AS hsr ON hsr.service_service_id = t.service_id
+INNER JOIN ns_host_relation AS hr ON hr.host_host_id = hsr.host_host_id
+WHERE hr.nagios_server_id IN ({$ids})
+SQL;
+
+        // Extract BA services
+        if ($ba) {
+            foreach ($ba as $key => $val) {
+                $ba[$key] = "'ba_{$val}'";
+            }
+
+            $ba = implode(',', $ba);
+            $sql .= <<<SQL
+UNION
+
+SELECT t2.service_id AS `id` 
+FROM service AS t2 
+WHERE t2.service_description IN({$ba})
+SQL;
+        }
+        
+        $sql .=<<<SQL
+) AS l GROUP BY l.id
+SQL;
+
+
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute();
+
+        $result = [];
+
+        while ($row = $stmt->fetch()) {
+            $result[] = $row['id'];
+        }
+
+        return $result;
+    }
+
+    /**
+     * Get a chain of the related objects
+     *
+     * @param int[] $serviceIDs
+     * @return array
+     */
+    public function getChainByServiceIds(array $serviceIDs): array
+    {
+        // prevent SQL exception
+        if (!$serviceIDs) {
+            return [];
+        }
+
+        $ids = implode(',', $serviceIDs);
+        $sql = <<<SQL
+SELECT DISTINCT service_template_model_stm_id AS `id`
+FROM service
+WHERE service_id IN ({$ids})
+GROUP BY service_template_model_stm_id
+SQL;
+
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute();
+
+        $result = [];
+
+        while ($row = $stmt->fetch()) {
+            $result[$row['id']] = $row['id'];
+            $this->getChainByParant($row['id'], $result);
         }
 
         return $result;

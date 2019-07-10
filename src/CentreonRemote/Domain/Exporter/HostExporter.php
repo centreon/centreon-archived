@@ -37,52 +37,75 @@ class HostExporter extends ExporterServiceAbstract
         $this->createPath();
         $pollerIds = $this->commitment->getPollers();
 
-        $hostTemplateChain = $this->_getIf('host.tpl.relation.chain', function () use ($pollerIds) {
+        /*
+         * Build cahes
+         */
+
+        // Build cache of Host IDs list
+        $hostList = $this->_getIf('host.id.list', function () use ($pollerIds) {
             $baList = $this->cache->get('ba.list');
 
             return $this->db
-                    ->getRepository(Repository\HostTemplateRelationRepository::class)
-                    ->getChainByPoller($pollerIds, $baList)
+                ->getRepository(Repository\HostRepository::class)
+                ->getHostIdsByPoller($pollerIds, $baList)
             ;
         });
 
-        // Extract data
-        (function () use ($pollerIds, $hostTemplateChain) {
+        // Build the cache of HTPL from cache of Host IDs
+        $hostTemplateChain = $this->_getIf('host.tpl.relation.chain', function () use ($hostList) {
+            $baList = $this->cache->get('ba.list');
+
+            return $this->db
+                ->getRepository(Repository\HostTemplateRelationRepository::class)
+                ->getChainByHostIds($hostList, $baList)
+            ;
+        });
+
+        /* 
+         *Extract data
+         */
+
+        // Extract host data
+        (function () use ($hostList, $hostTemplateChain) {
             $hosts = $this->db
                 ->getRepository(Repository\HostRepository::class)
-                ->export($pollerIds, $hostTemplateChain)
+                ->export($hostList, $hostTemplateChain)
             ;
             $this->_dump($hosts, $this->getFile(static::EXPORT_FILE_HOST));
         })();
 
-        (function () use ($pollerIds, $hostTemplateChain) {
+        // Extract categories used by hosts
+        (function () use ($hostList, $hostTemplateChain) {
             $hostCategories = $this->db
                 ->getRepository(Repository\HostCategoryRepository::class)
-                ->export($pollerIds, $hostTemplateChain)
+                ->export($hostList, $hostTemplateChain)
             ;
             $this->_dump($hostCategories, $this->getFile(static::EXPORT_FILE_CATEGORY));
         })();
 
-        (function () use ($pollerIds, $hostTemplateChain) {
+        // Extract relationships between hosts and host categories
+        (function () use ($hostList, $hostTemplateChain) {
             $hostCategoryRelation = $this->db
                 ->getRepository(Repository\HostCategoryRelationRepository::class)
-                ->export($pollerIds, $hostTemplateChain)
+                ->export($hostList, $hostTemplateChain)
             ;
             $this->_dump($hostCategoryRelation, $this->getFile(static::EXPORT_FILE_CATEGORY_RELATION));
         })();
 
-        (function () use ($pollerIds, $hostTemplateChain) {
+        // Extract list of hostgroups used by hosts
+        (function () use ($hostList, $hostTemplateChain) {
             $hostGroups = $this->db
                 ->getRepository(Repository\HostGroupRepository::class)
-                ->export($pollerIds, $hostTemplateChain)
+                ->export($hostList, $hostTemplateChain)
             ;
             $this->_dump($hostGroups, $this->getFile(static::EXPORT_FILE_GROUP));
         })();
 
-        (function () use ($pollerIds, $hostTemplateChain) {
+        // Extract relationships between hosts and hostgroups
+        (function () use ($hostList, $hostTemplateChain) {
             $hostGroupRelation = $this->db
                 ->getRepository(Repository\HostGroupRelationRepository::class)
-                ->export($pollerIds, $hostTemplateChain)
+                ->export($hostList, $hostTemplateChain)
             ;
             $this->_dump($hostGroupRelation, $this->getFile(static::EXPORT_FILE_GROUP_RELATION));
         })();
@@ -97,26 +120,29 @@ class HostExporter extends ExporterServiceAbstract
         })();
         */
 
-        (function () use ($pollerIds, $hostTemplateChain) {
+        // Extract extended information of hosts
+        (function () use ($hostList, $hostTemplateChain) {
             $hostInfo = $this->db
                 ->getRepository(Repository\ExtendedHostInformationRepository::class)
-                ->export($pollerIds, $hostTemplateChain)
+                ->export($hostList, $hostTemplateChain)
             ;
             $this->_dump($hostInfo, $this->getFile(static::EXPORT_FILE_INFO));
         })();
 
-        (function () use ($pollerIds, $hostTemplateChain) {
+        // Extract on demand macros of hosts
+        (function () use ($hostList, $hostTemplateChain) {
             $hostMacros = $this->db
                 ->getRepository(Repository\OnDemandMacroHostRepository::class)
-                ->export($pollerIds, $hostTemplateChain)
+                ->export($hostList, $hostTemplateChain)
             ;
             $this->_dump($hostMacros, $this->getFile(static::EXPORT_FILE_MACRO));
         })();
 
-        (function () use ($pollerIds, $hostTemplateChain) {
+        // Extract relationships between hosttemplates and hosts or hosttemplates
+        (function () use ($hostList, $hostTemplateChain) {
             $hostTemplates = $this->db
                 ->getRepository(Repository\HostTemplateRelationRepository::class)
-                ->export($pollerIds, $hostTemplateChain)
+                ->export($hostList, $hostTemplateChain)
             ;
             $this->_dump($hostTemplates, $this->getFile(static::EXPORT_FILE_TEMPLATE));
         })();

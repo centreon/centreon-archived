@@ -9,28 +9,29 @@ class TrapPreexecRepository extends ServiceEntityRepository
     /**
      * Export
      *
-     * @param int[] $pollerIds
+     * @param int[] $serviceList
      * @param array $templateChainList
      * @return array
      */
-    public function export(array $pollerIds, array $templateChainList = null): array
+    public function export(array $serviceList, array $templateChainList = null): array
     {
         // prevent SQL exception
-        if (!$pollerIds) {
+        if (!$serviceList) {
             return [];
         }
 
-        $ids = join(',', $pollerIds);
-        $list = join(',', $templateChainList ?? []);
-        $sqlFilterList = $list ? " OR tsr.service_id IN ({$list})" : '';
-        $sqlFilter = TrapRepository::exportFilterSql($pollerIds);
+        if ($templateChainList) {
+            $serviceList = array_merge($serviceList, $templateChainList);
+        }
+
+        $ids = implode(',', $serviceList);
+
         $sql = <<<SQL
 SELECT
     t.*
 FROM traps_preexec AS t
-INNER JOIN traps_service_relation AS tsr ON
-    tsr.traps_id = t.trap_id AND
-    (tsr.service_id IN ({$sqlFilter}){$sqlFilterList})
+INNER JOIN traps_service_relation AS tsr ON tsr.traps_id = t.trap_id
+WHERE tsr.service_id IN ($ids)
 GROUP BY t.trap_id
 SQL;
 

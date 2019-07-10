@@ -9,19 +9,19 @@ class HostServiceRelationRepository extends ServiceEntityRepository
     /**
      * Export
      *
-     * @todo restriction by poller
+     * @todo restriction by service IDs
      *
-     * @param int[] $pollerIds
+     * @param int[] $serviceIds
      * @return array
      */
-    public function export(array $pollerIds, array $ba = null): array
+    public function export(array $serviceIds, array $ba = null): array
     {
         // prevent SQL exception
-        if (!$pollerIds) {
+        if (!$serviceIds) {
             return [];
         }
 
-        $ids = join(',', $pollerIds);
+        $ids = join(',', $serviceIds);
 
         $sql = <<<SQL
 SELECT l.* FROM (

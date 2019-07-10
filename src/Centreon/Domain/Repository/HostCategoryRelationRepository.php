@@ -9,33 +9,29 @@ class HostCategoryRelationRepository extends ServiceEntityRepository
     /**
      * Export
      *
-     * @param int[] $pollerIds
+     * @param int[] $hostList
      * @param array $templateChainList
      * @return array
      */
-    public function export(array $pollerIds, array $templateChainList = null): array
+    public function export(array $hostList, array $templateChainList = null): array
     {
         // prevent SQL exception
-        if (!$pollerIds) {
+        if (!$hostList) {
             return [];
         }
 
-        $ids = join(',', $pollerIds);
+        if ($templateChainList) {
+            $hostList = array_merge($hostList, $templateChainList);
+        }
+
+        $ids = join(',', $hostList);
 
         $sql = <<<SQL
 SELECT
     t.*
 FROM hostcategories_relation AS t
-LEFT JOIN ns_host_relation AS hr ON hr.host_host_id = t.host_host_id
-WHERE hr.nagios_server_id IN ({$ids})
+WHERE t.host_host_id IN ({$ids})
 SQL;
-
-        if ($templateChainList) {
-            $list = join(',', $templateChainList);
-            $sql .= <<<SQL
-OR t.host_host_id IN ({$list})
-SQL;
-        }
 
         $stmt = $this->db->prepare($sql);
         $stmt->execute();

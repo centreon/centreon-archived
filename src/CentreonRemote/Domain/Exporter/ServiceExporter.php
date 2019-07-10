@@ -36,77 +36,104 @@ class ServiceExporter extends ExporterServiceAbstract
         $this->createPath();
         $pollerIds = $this->commitment->getPollers();
 
-        $serviceTemplateChain = $this->_getIf('service.chain', function () use ($pollerIds) {
+        /*
+         * Build cahes
+         */
+
+        // Build cache of service IDs list
+        $serviceList = $this->_getIf('service.id.list', function () use ($pollerIds) {
             $baList = $this->cache->get('ba.list');
 
             return $this->db
-                    ->getRepository(Repository\ServiceRepository::class)
-                    ->getChainByPoller($pollerIds, $baList)
+                ->getRepository(Repository\ServiceRepository::class)
+                ->getServiceIdsByPoller($pollerIds, $baList)
+            ;
+        });    
+
+        // Get cache of STPL from cache of service IDs
+        $serviceTemplateChain = $this->_getIf('service.chain', function () use ($pollerIds) {
+            $serviceIds = $this->cache->get('service.id.list');
+
+            return $this->db
+                ->getRepository(Repository\ServiceRepository::class)
+                ->getChainByServiceIds($serviceIds)
             ;
         });
 
-        // Extract data
-        (function () use ($pollerIds) {
+        /* 
+         *Extract data
+         */
+
+        // Extract relations between hosts and services
+        (function () use ($serviceList) {
             $baList = $this->cache->get('ba.list');
+
             $hostRelation = $this->db
                 ->getRepository(Repository\HostServiceRelationRepository::class)
-                ->export($pollerIds, $baList)
+                ->export($serviceList, $baList)
             ;
             $this->_dump($hostRelation, $this->getFile(static::EXPORT_FILE_HOST_RELATION));
         })();
 
-        (function () use ($pollerIds, $serviceTemplateChain) {
+        // Extract services data
+        (function () use ($serviceList, $serviceTemplateChain) {
             $services = $this->db
                 ->getRepository(Repository\ServiceRepository::class)
-                ->export($pollerIds, $serviceTemplateChain)
+                ->export($serviceList, $serviceTemplateChain)
             ;
             $this->_dump($services, $this->getFile(static::EXPORT_FILE_SERVICE));
         })();
 
-        (function () use ($pollerIds, $serviceTemplateChain) {
+        // Extract servicegroups data
+        (function () use ($serviceList, $serviceTemplateChain) {
             $serviceGroups = $this->db
                 ->getRepository(Repository\ServiceGroupRepository::class)
-                ->export($pollerIds, $serviceTemplateChain)
+                ->export($serviceList, $serviceTemplateChain)
             ;
             $this->_dump($serviceGroups, $this->getFile(static::EXPORT_FILE_GROUP));
         })();
 
-        (function () use ($pollerIds, $serviceTemplateChain) {
+        // Extract relation between services and servicegroups
+        (function () use ($serviceList, $serviceTemplateChain) {
             $serviceGroupRelation = $this->db
                 ->getRepository(Repository\ServiceGroupRelationRepository::class)
-                ->export($pollerIds, $serviceTemplateChain)
+                ->export($serviceList, $serviceTemplateChain)
             ;
             $this->_dump($serviceGroupRelation, $this->getFile(static::EXPORT_FILE_GROUP_RELATION));
         })();
 
-        (function () use ($pollerIds, $serviceTemplateChain) {
+        // Extract categories data used by services
+        (function () use ($serviceList, $serviceTemplateChain) {
             $serviceCategories = $this->db
                 ->getRepository(Repository\ServiceCategoryRepository::class)
-                ->export($pollerIds, $serviceTemplateChain)
+                ->export($serviceList, $serviceTemplateChain)
             ;
             $this->_dump($serviceCategories, $this->getFile(static::EXPORT_FILE_CATEGORY));
         })();
 
-        (function () use ($pollerIds, $serviceTemplateChain) {
+        // Extract relation between service categories and services
+        (function () use ($serviceList, $serviceTemplateChain) {
             $serviceCategoryRelation = $this->db
                 ->getRepository(Repository\ServiceCategoryRelationRepository::class)
-                ->export($pollerIds, $serviceTemplateChain)
+                ->export($serviceList, $serviceTemplateChain)
             ;
             $this->_dump($serviceCategoryRelation, $this->getFile(static::EXPORT_FILE_CATEGORY_RELATION));
         })();
 
-        (function () use ($pollerIds, $serviceTemplateChain) {
+        // Extract on demande macros data used by services
+        (function () use ($serviceList, $serviceTemplateChain) {
             $serviceMacros = $this->db
                 ->getRepository(Repository\OnDemandMacroServiceRepository::class)
-                ->export($pollerIds, $serviceTemplateChain)
+                ->export($serviceList, $serviceTemplateChain)
             ;
             $this->_dump($serviceMacros, $this->getFile(static::EXPORT_FILE_MACRO));
         })();
 
-        (function () use ($pollerIds, $serviceTemplateChain) {
+        // Extract extended information of services
+        (function () use ($serviceList, $serviceTemplateChain) {
             $serviceInfo = $this->db
                 ->getRepository(Repository\ExtendedServiceInformationRepository::class)
-                ->export($pollerIds, $serviceTemplateChain)
+                ->export($serviceList, $serviceTemplateChain)
             ;
             $this->_dump($serviceInfo, $this->getFile(static::EXPORT_FILE_INFO));
         })();

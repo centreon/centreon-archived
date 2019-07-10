@@ -35,66 +35,101 @@ class TrapExporter extends ExporterServiceAbstract
         $this->createPath();
         $pollerIds = $this->commitment->getPollers();
 
-        $serviceTemplateChain = $this->_getIf('service.chain', function () use ($pollerIds) {
+        /*
+         * Build cahes
+         */
+
+        // Get cache of service IDs list
+        $serviceList = $this->_getIf('service.id.list', function () use ($pollerIds) {
+
             return $this->db
-                    ->getRepository(Repository\ServiceRepository::class)
-                    ->getChainByPoller($pollerIds)
+                ->getRepository(Repository\ServiceRepository::class)
+                ->getServiceIdsByPoller($pollerIds)
             ;
         });
 
-        // Extract data
-        (function () use ($pollerIds, $serviceTemplateChain) {
+        // Get cache of STPL from cache of service IDs
+        $serviceTemplateChain = $this->_getIf('service.chain', function () use ($pollerIds) {
+
+            return $this->db
+                ->getRepository(Repository\ServiceRepository::class)
+                ->getChainByServiceIds($serviceList)
+            ;
+        });
+
+        // Build cache of SNMP traps IDs list
+        $trapList = $this->_getIf('trap.id.list', function () use ($pollerIds) {
+            $serviceIds = $this->cache->get('service.chain');
+
+            return $this->db
+                ->getRepository(Repository\TrapRepository::class)
+                ->getTrapsByServicesIds($serviceIds, $serviceTemplateChain)
+            ;
+        });
+
+        /* 
+         *Extract data
+         */
+
+        // Extract SNMP traps data
+        (function () use ($serviceList, $serviceTemplateChain) {
             $traps = $this->db
                 ->getRepository(Repository\TrapRepository::class)
-                ->export($pollerIds, $serviceTemplateChain)
+                ->export($serviceList, $serviceTemplateChain)
             ;
             $this->_dump($traps, $this->getFile(static::EXPORT_FILE_TRAP));
         })();
 
-        (function () use ($pollerIds, $serviceTemplateChain) {
+        // Extract SNMP traps vendors data
+        (function () use ($serviceList, $serviceTemplateChain) {
             $vendors = $this->db
                 ->getRepository(Repository\TrapVendorRepository::class)
-                ->export($pollerIds, $serviceTemplateChain)
+                ->export($serviceList, $serviceTemplateChain)
             ;
             $this->_dump($vendors, $this->getFile(static::EXPORT_FILE_VENDOR));
         })();
 
-        (function () use ($pollerIds, $serviceTemplateChain) {
+        // Extract relations between SNMP traps and services or servicetemplates
+        (function () use ($serviceList, $serviceTemplateChain) {
             $serviceRelation = $this->db
                 ->getRepository(Repository\TrapServiceRelationRepository::class)
-                ->export($pollerIds, $serviceTemplateChain)
+                ->export($serviceList, $serviceTemplateChain)
             ;
             $this->_dump($serviceRelation, $this->getFile(static::EXPORT_FILE_SERVICE_RELATION));
         })();
 
-        (function () use ($pollerIds, $serviceTemplateChain) {
+        // Export SNMP traps groups data
+        (function () use ($serviceList, $serviceTemplateChain) {
             $groups = $this->db
                 ->getRepository(Repository\TrapGroupRepository::class)
-                ->export($pollerIds, $serviceTemplateChain)
+                ->export($serviceList, $serviceTemplateChain)
             ;
             $this->_dump($groups, $this->getFile(static::EXPORT_FILE_GROUP));
         })();
 
-        (function () use ($pollerIds, $serviceTemplateChain) {
+        // Extract relations between SNMP trap groups and traps
+        (function () use ($serviceList, $serviceTemplateChain) {
             $groupRelation = $this->db
                 ->getRepository(Repository\TrapGroupRelationRepository::class)
-                ->export($pollerIds, $serviceTemplateChain)
+                ->export($serviceList, $serviceTemplateChain)
             ;
             $this->_dump($groupRelation, $this->getFile(static::EXPORT_FILE_GROUP_RELATION));
         })();
 
-        (function () use ($pollerIds, $serviceTemplateChain) {
+        // Extract SNMP traps matching properties data
+        (function () use ($serviceList, $serviceTemplateChain) {
             $matchingProps = $this->db
                 ->getRepository(Repository\TrapMatchingPropsRepository::class)
-                ->export($pollerIds, $serviceTemplateChain)
+                ->export($serviceList, $serviceTemplateChain)
             ;
             $this->_dump($matchingProps, $this->getFile(static::EXPORT_FILE_MATCHING_PROP));
         })();
 
-        (function () use ($pollerIds, $serviceTemplateChain) {
+        // Extract SNMP traps Preexec data
+        (function () use ($serviceList, $serviceTemplateChain) {
             $preexec = $this->db
                 ->getRepository(Repository\TrapPreexecRepository::class)
-                ->export($pollerIds, $serviceTemplateChain)
+                ->export($serviceList, $serviceTemplateChain)
             ;
             $this->_dump($preexec, $this->getFile(static::EXPORT_FILE_PREEXEC));
         })();

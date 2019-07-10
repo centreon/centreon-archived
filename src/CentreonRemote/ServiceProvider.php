@@ -169,6 +169,7 @@ class ServiceProvider implements AutoloadServiceProviderInterface
             return $service;
         });
         
+        /* Not necessary for Remote Server export
         // Meta services
         $pimple['centreon_remote.exporter']->add(Domain\Exporter\MetaServiceExporter::class, function () use ($pimple) {
             $services = [
@@ -180,6 +181,7 @@ class ServiceProvider implements AutoloadServiceProviderInterface
 
             return $service;
         });
+        */
         
         // Services
         $pimple['centreon_remote.exporter']->add(Domain\Exporter\ServiceExporter::class, function () use ($pimple) {
