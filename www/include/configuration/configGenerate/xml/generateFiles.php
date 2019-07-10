@@ -103,11 +103,11 @@ try {
         ));
     }
 
-    # Sync contactgroups to ldap
+    // Sync contactgroups to ldap
     $cgObj = new CentreonContactgroup($pearDB);
     $cgObj->syncWithLdapConfigGen();
 
-    # Generate configuration
+    // Generate configuration
     if ($pollers == '0') {
         $config_generate->configPollers($username);
     } else {
@@ -117,7 +117,7 @@ try {
         }
     }
 
-    # Debug configuration
+    // Debug configuration
     $statusMsg = $okMsg;
     $statusCode = 0;
     if ($debug) {
@@ -190,8 +190,10 @@ function printDebug($xml, $tabs)
 {
     global $pearDB, $ret, $centreon, $nagiosCFGPath;
 
-    $DBRESULT_Servers = $pearDB->query("SELECT `nagios_bin` FROM `nagios_server` " .
-        "WHERE `localhost` = '1' ORDER BY ns_activate DESC LIMIT 1");
+    $DBRESULT_Servers = $pearDB->query(
+        "SELECT `nagios_bin` FROM `nagios_server`
+        WHERE `localhost` = '1' ORDER BY ns_activate DESC LIMIT 1"
+    );
     $nagios_bin = $DBRESULT_Servers->fetch();
     $DBRESULT_Servers->closeCursor();
     $msg_debug = array();
@@ -209,7 +211,8 @@ function printDebug($xml, $tabs)
 
     foreach ($tab_server as $host) {
         $stdout = shell_exec(
-            escapeshellarg($nagios_bin["nagios_bin"]) . " -v " . $nagiosCFGPath . escapeshellarg($host["id"]) . "/centengine.DEBUG 2>&1"
+            escapeshellarg($nagios_bin["nagios_bin"]) . " -v " . $nagiosCFGPath .
+            escapeshellarg($host["id"]) . "/centengine.DEBUG 2>&1"
         );
         $stdout = htmlspecialchars($stdout, ENT_QUOTES, "UTF-8");
         $msg_debug[$host['id']] = str_replace("\n", "<br />", $stdout);
