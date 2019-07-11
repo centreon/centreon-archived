@@ -234,7 +234,7 @@ class CentreonContactGroup extends CentreonObject
             array($cFieldName, "contact_id"),
             -1,
             0,
-            $cgFieldName,
+            $cgFieldName . ', contact_alias',
             'ASC',
             $filters,
             'AND'
