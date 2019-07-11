@@ -46,14 +46,14 @@ CREATE TABLE `config` (
   `audit_log_option` enum('0','1') NOT NULL DEFAULT '1',
   `len_storage_downtimes` int(11) DEFAULT NULL,
   `len_storage_comments` int(11) DEFAULT NULL,
-  `audit_log_retention`int(11) DEFAULT '0',
+  `audit_log_retention` int(11) DEFAULT 0,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 LOCK TABLES `config` WRITE;
 /*!40000 ALTER TABLE `config` DISABLE KEYS */;
-INSERT INTO `config` VALUES (1,'@centreon_varlib@/metrics/','@centreon_varlib@/status/','@centreon_varlib@/nagios-perf/',180,365,'1',10,360,2,NULL,'1',31,365,'@monitoring_varlog@/centengine.log.log',0,'1', 0, 0,'0');
+INSERT INTO `config` VALUES (1,'@centreon_varlib@/metrics/','@centreon_varlib@/status/','@centreon_varlib@/nagios-perf/',180,365,'1',10,360,2,NULL,'1',31,365,'@monitoring_varlog@/centengine.log.log',0,'1', 0, 0, 0);
 /*!40000 ALTER TABLE `config` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
