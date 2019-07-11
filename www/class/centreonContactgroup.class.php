@@ -361,31 +361,34 @@ class CentreonContactgroup
                     $members = $ldapConn->listUserForGroup($row['cg_ldap_dn']);
 
                     // Refresh Users Groups.
-                    $queryDeleteRelation = "DELETE FROM contactgroup_contact_relation " .
-                        "WHERE contactgroup_cg_id = " . $row['cg_id'];
-                    $this->db->query($queryDeleteRelation);
+                    $this->db->query(
+                        "DELETE FROM contactgroup_contact_relation " .
+                        "WHERE contactgroup_cg_id = " . $row['cg_id']
+                    );
                     $contact = '';
                     foreach ($members as $member) {
                         $contact .= $this->db->quote($member) . ',';
                     }
                     $contact = rtrim($contact, ",");
 
-                    if($contact !== '') {
-                        $queryContact = "SELECT contact_id FROM contact WHERE contact_ldap_dn IN (" . $contact . ")";
+                    if ($contact !== '') {
                         try {
-                            $resContact = $this->db->query($queryContact);
+                            $resContact = $this->db->query(
+                                "SELECT contact_id FROM contact WHERE contact_ldap_dn IN (" . $contact . ")"
+                            );
                         } catch (\PDOException $e) {
                             $msg[] = "Error in getting contact id from members.";
                             continue;
                         }
                         while ($rowContact = $resContact->fetch()) {
-                            $queryAddRelation = "INSERT INTO contactgroup_contact_relation " .
-                                "(contactgroup_cg_id, contact_contact_id) " .
-                                "VALUES (" . $row['cg_id'] . ", " . $rowContact['contact_id'] . ")";
                             try {
-                                $this->db->query($queryAddRelation);
+                                $this->db->query(
+                                    "INSERT INTO contactgroup_contact_relation " .
+                                    "(contactgroup_cg_id, contact_contact_id) " .
+                                    "VALUES (" . $row['cg_id'] . ", " . $rowContact['contact_id'] . ")"
+                                );
                             } catch (\PDOException $e) {
-                                $msg[] = "Error insert relation between contactgroup " . $row['cg_id'] .
+                                $msg[] = "Error inserting relation between contactgroup " . $row['cg_id'] .
                                     " and contact " . $rowContact['contact_id'];
                             }
                         }

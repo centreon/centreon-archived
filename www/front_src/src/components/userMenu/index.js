@@ -4,6 +4,7 @@ import config from "../../config";
 import {Translate} from 'react-redux-i18n';
 import axios from "../../axios";
 import { connect } from "react-redux";
+import { Link } from "react-router-dom";
 
 const EDIT_PROFILE_TOPOLOGY_PAGE = '50104'
 
@@ -110,12 +111,13 @@ class UserMenu extends Component {
                     <span class="submenu-user-name">{fullname}</span>
                     <span class="submenu-user-type"><Translate value="as"/> {username}</span>
                     {allowEditProfile &&
-                      <a
+                      <Link
+                        to={config.urlBase + "main.php?p=" + EDIT_PROFILE_TOPOLOGY_PAGE + "&o=c"}
                         class="submenu-user-edit"
-                        href={config.urlBase + "main.php?p=" + EDIT_PROFILE_TOPOLOGY_PAGE + "&o=c"}
+                        onClick={this.toggle}
                       >
                         <Translate value="Edit profile"/>
-                      </a>
+                      </Link>
                     }
                   </span>
                 </li>

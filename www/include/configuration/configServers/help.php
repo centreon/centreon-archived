@@ -14,7 +14,7 @@ $help['nagiostats_bin'] = dgettext("help", "Path of stats binary of the schedule
 $help['nagios_perfdata'] = dgettext("help", "Perfdata script");
 $help['centreonbroker_cfg_path'] = dgettext("help", "Path of the configuration file for Centreon Broker");
 $help['centreonbroker_module_path'] = dgettext("help", "Path with modules for Centreon Broker");
-$help['centreonbroker_logs_path'] = dgettext("help", "Path of the log file for Centreon Broker");
+$help['centreonbroker_logs_path'] = dgettext("help", "Path of the Centreon Broker log file");
 $help['centreonconnector_path'] = dgettext("help", "Path with Centreon Connector binaries");
 $help['ns_activate'] = dgettext("help", "Enable or disable poller");
 $help['centreontrapd_init_script'] = dgettext("help", "Centreontrapd init script to restart process on poller.");
@@ -30,3 +30,19 @@ $help['pollercmd'] = dgettext(
         . "Make sure to have sufficient rights for the Apache user to run these commands."
 );
 $help['description'] = dgettext("help", "Short description of the poller");
+$help['http_method'] = dgettext(
+    "help",
+    "What kind of method is needed to reach the Remote Server, HTTP or HTTPS?"
+);
+$help['http_port'] = dgettext(
+    "help",
+    "On which TCP port is listening the Remote Server?"
+);
+$help['no_check_certificate'] = dgettext(
+    "help",
+    "If checked, it won't check the validity of the SSL certificate of the Remote Server."
+);
+$help['no_proxy'] = dgettext(
+    "help",
+    "If checked, it won't  use the proxy configured in 'Administration > Parameters > Centreon UI' to connect to the Remote Server."
+);

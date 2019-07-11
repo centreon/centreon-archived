@@ -1,7 +1,7 @@
 <?php
 /*
- * Copyright 2005-2011 MERETHIS
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2019 CENTREON
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -19,11 +19,11 @@
  * combined work based on this program. Thus, the terms and conditions of the GNU
  * General Public License cover the whole combination.
  *
- * As a special exception, the copyright holders of this program give MERETHIS
+ * As a special exception, the copyright holders of this program give CENTREON
  * permission to link this program with independent modules to produce an executable,
  * regardless of the license terms of these independent modules, and to copy and
- * distribute the resulting executable under terms of MERETHIS choice, provided that
- * MERETHIS also meet, for each linked independent module, the terms  and conditions
+ * distribute the resulting executable under terms of CENTREON choice, provided that
+ * CENTREON also meet, for each linked independent module, the terms  and conditions
  * of the license of that module. An independent module is a module which is not
  * derived from this program. If you modify this program, you may extend this
  * exception to your version of the program, but you are not obliged to do so. If you
@@ -33,10 +33,9 @@
  *
  */
 
-if (!isset($oreon)) {
+if (!isset($centreon)) {
     exit;
 }
-
 
 require_once $centreon_path . '/bootstrap.php';
 $pearDB = $dependencyInjector['configuration_db'];
@@ -115,8 +114,9 @@ $tpl->assign('searchTemplatesWithNoProcedure', $checked2);
  * Get Poller List
  */
 if ($searchOptions['poller']) {
-    $query = "SELECT id, name FROM nagios_server ORDER BY name";
-    $res = $pearDB->query($query);
+    $res = $pearDB->query(
+        "SELECT id, name FROM nagios_server ORDER BY name"
+    );
     $searchPoller = "<option value='0'></option>";
     while ($row = $res->fetchRow()) {
         if (isset($_REQUEST['searchPoller']) && $row['id'] == $_REQUEST['searchPoller']) {
@@ -132,8 +132,9 @@ if ($searchOptions['poller']) {
  * Get Hostgroup List
  */
 if ($searchOptions['hostgroup']) {
-    $query = "SELECT hg_id, hg_name FROM hostgroup ORDER BY hg_name";
-    $res = $pearDB->query($query);
+    $res = $pearDB->query(
+        "SELECT hg_id, hg_name FROM hostgroup ORDER BY hg_name"
+    );
     $searchHostgroup = "<option value='0'></option>";
     while ($row = $res->fetchRow()) {
         if (isset($_REQUEST['searchHostgroup']) && $row['hg_id'] == $_REQUEST['searchHostgroup']) {
@@ -149,8 +150,9 @@ if ($searchOptions['hostgroup']) {
  * Get Servicegroup List
  */
 if ($searchOptions['servicegroup']) {
-    $query = "SELECT sg_id, sg_name FROM servicegroup ORDER BY sg_name";
-    $res = $pearDB->query($query);
+    $res = $pearDB->query(
+        "SELECT sg_id, sg_name FROM servicegroup ORDER BY sg_name"
+    );
     $searchServicegroup = "<option value='0'></option>";
     while ($row = $res->fetchRow()) {
         if (isset($_REQUEST['searchServicegroup']) && $row['sg_id'] == $_REQUEST['searchServicegroup']) {

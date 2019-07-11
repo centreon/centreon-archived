@@ -33,26 +33,19 @@
  *
  */
 
-/** ****************************
- * Include configurations files
- */
+// Include configurations files
 include_once "../../../../config/centreon.config.php";
 
-/*
- * Require Classes
- */
+// Require Classes
 require_once _CENTREON_PATH_ . "www/class/centreonSession.class.php";
 require_once _CENTREON_PATH_ . "www/class/centreon.class.php";
 require_once realpath(__DIR__ . "/../../../../bootstrap.php");
 
-/**
- * Connect to DB
- */
-
+// Connect to DB
 $pearDB = $dependencyInjector['configuration_db'];
 $pearDBO = $dependencyInjector['realtime_db'];
 
-/* Check Session */
+// Check Session
 CentreonSession::start();
 if (!CentreonSession::checkSession(session_id(), $pearDB)) {
     print "Bad Session";
@@ -82,9 +75,7 @@ define("STATUS_UNREACHABLE", 2);
 define("TYPE_SOFT", 0);
 define("TYPE_HARD", 1);
 
-/**
- * Include Access Class
- */
+// Include Access Class
 include_once _CENTREON_PATH_ . "www/class/centreonACL.class.php";
 include_once _CENTREON_PATH_ . "www/class/centreonXML.class.php";
 include_once _CENTREON_PATH_ . "www/class/centreonGMT.class.php";
@@ -140,19 +131,21 @@ foreach ($inputArguments as $argumentName => $argumentValue) {
     }
 }
 
-/*
- * Start XML document root
- */
+// Start XML document root
 $buffer = new CentreonXML();
 $buffer->startElement("root");
 
 /*
  * Security check
  */
-(isset($inputs["lang"])) ?
-    $lang_ = htmlentities($inputs["lang"], ENT_QUOTES, "UTF-8") : $lang_ = "-1";
-(isset($inputs["id"])) ?
-    $openid = htmlentities($inputs["id"], ENT_QUOTES, "UTF-8") : $openid = "-1";
+$lang_ = filter_var(
+    $inputs["lang"] ?? "-1",
+    FILTER_SANITIZE_STRING
+);
+$openid = filter_var(
+    $inputs["id"] ?? "-1",
+    FILTER_SANITIZE_STRING
+);
 $sid = session_id();
 (isset($sid)) ? $sid = $sid : $sid = "-1";
 
@@ -196,7 +189,6 @@ $notification = isset($inputs["notification"]) ? htmlentities($inputs["notificat
 $alert = isset($inputs["alert"]) ? htmlentities($inputs["alert"]) : "true";
 $oh = isset($inputs["oh"]) ? htmlentities($inputs["oh"]) : "false";
 $error = isset($inputs["error"]) ? htmlentities($inputs["error"]) : "false";
-
 $output = isset($inputs["output"]) ? urldecode($inputs["output"]) : $output = "";
 $search_H = isset($inputs["search_H"]) ? htmlentities($inputs["search_H"]) : "VIDE";
 $search_S = isset($inputs["search_S"]) ? htmlentities($inputs["search_S"]) : "VIDE";
@@ -239,9 +231,11 @@ if ($EndDate != "") {
     $end = mktime($matchesT[1], $matchesT[2], "0", $matchesD[1], $matchesD[2], $matchesD[3]);
 }
 
+// setting the startDate/Time using the user's chosen period
+// and checking if the start date/time was set by the user, to avoid to display/export the whole data since 1/1/1970
 $period = 86400;
-if ($auto_period > 0) {
-    $period = $auto_period;
+if ($auto_period > 0 || $start === 0) {
+    $period = (int)$auto_period;
     $start = time() - ($period);
     $end = time();
 }
@@ -255,25 +249,43 @@ $tab_color_service = array(
     STATUS_UNKNOWN => 'service_unknown',
     STATUS_PENDING => 'pending'
 );
-$tab_color_host = array(STATUS_UP => 'host_up', STATUS_DOWN => 'host_down', STATUS_UNREACHABLE => 'host_unreachable');
+$tab_color_host = array(
+    STATUS_UP => 'host_up',
+    STATUS_DOWN => 'host_down',
+    STATUS_UNREACHABLE => 'host_unreachable'
+);
 
-$tab_type = array("1" => "HARD", "0" => "SOFT");
-$tab_class = array("0" => "list_one", "1" => "list_two");
-$tab_status_host = array("0" => "UP", "1" => "DOWN", "2" => "UNREACHABLE");
-$tab_status_service = array("0" => "OK", "1" => "WARNING", "2" => "CRITICAL", "3" => "UNKNOWN");
+$tab_type = array(
+    "1" => "HARD",
+    "0" => "SOFT"
+);
+$tab_class = array(
+    "0" => "list_one",
+    "1" => "list_two"
+);
+$tab_status_host = array(
+    "0" => "UP",
+    "1" => "DOWN",
+    "2" => "UNREACHABLE"
+);
+$tab_status_service = array(
+    "0" => "OK",
+    "1" => "WARNING",
+    "2" => "CRITICAL",
+    "3" => "UNKNOWN"
+);
 
 /*
  * Create IP Cache
  */
 if ($export) {
     $HostCache = array();
-    $DBRESULT = $pearDB->query("SELECT host_name, host_address FROM host WHERE host_register = '1'");
-    while ($h = $DBRESULT->fetchRow()) {
+    $dbResult = $pearDB->query("SELECT host_name, host_address FROM host WHERE host_register = '1'");
+    while ($h = $dbResult->fetch()) {
         $HostCache[$h["host_name"]] = $h["host_address"];
     }
-    $DBRESULT->closeCursor();
+    $dbResult->closeCursor();
 }
-
 
 $logs = array();
 
@@ -354,7 +366,7 @@ if (isset($output) && $output != "") {
 
 $innerJoinEngineLog = "";
 if ($engine == "true" && isset($openid) && $openid != "") {
-    $innerJoinEngineLog = " inner join instances i on i.name = logs.instance_name AND i.instance_id IN (" .
+    $innerJoinEngineLog = " INNER JOIN instances i ON i.name = logs.instance_name AND i.instance_id IN (" .
         $pearDBO->escape($openid) . ") ";
 }
 
@@ -609,14 +621,14 @@ if (isset($req) && $req) {
     if ($export !== "1") {
         $limitReq = " LIMIT " . $num * $limit . ", " . $limit;
     }
-    $DBRESULT = $pearDBO->query($req . $limitReq);
+    $dbResult = $pearDBO->query($req . $limitReq);
     $rows = $pearDBO->query("SELECT FOUND_ROWS()")->fetchColumn();
 
-    if (!($DBRESULT->rowCount()) && ($num != 0)) {
+    if (!($dbResult->rowCount()) && ($num != 0)) {
         if ($export !== "1") {
             $limitReq2 = " LIMIT " . (floor($rows / $limit) * $limit) . ", " . $limit;
         }
-        $DBRESULT = $pearDBO->query($req . $limitReq2);
+        $dbResult = $pearDBO->query($req . $limitReq2);
     }
 
     $buffer->startElement("selectLimit");
@@ -632,18 +644,18 @@ if (isset($req) && $req) {
      */
 
     $pageArr = array();
-    $istart = 0;
+    $iStart = 0;
 
-    for ($i = 5, $istart = $num; $istart > 0 && $i > 0; $i--) {
-        $istart--;
+    for ($i = 5, $iStart = $num; $iStart > 0 && $i > 0; $i--) {
+        $iStart--;
     }
 
-    for ($i2 = 0, $iend = $num; ($iend < ($rows / $limit - 1)) && ($i2 < (5 + $i)); $i2++) {
-        $iend++;
+    for ($i2 = 0, $iEnd = $num; ($iEnd < ($rows / $limit - 1)) && ($i2 < (5 + $i)); $i2++) {
+        $iEnd++;
     }
 
-    for ($i = $istart; $i <= $iend; $i++) {
-        $pageArr[$i] = array("url_page" => "&num=$i&limit=" . $limit, "label_page" => ($i + 1), "num" => $i);
+    for ($i = $iStart; $i <= $iEnd; $i++) {
+        $pageArr[$i] = array("url_page" => "&num=" . $i . "&limit=" . $limit, "label_page" => ($i + 1), "num" => $i);
     }
 
     if ($i > 1) {
@@ -719,7 +731,7 @@ if (isset($req) && $req) {
      * Full Request
      */
     $cpts = 0;
-    while ($log = $DBRESULT->fetchRow()) {
+    while ($log = $dbResult->fetch()) {
         $buffer->startElement("line");
         $buffer->writeElement("msg_type", $log["msg_type"]);
         $displayType = $log['type'];
@@ -736,9 +748,8 @@ if (isset($req) && $req) {
          */
         $color = '';
         if (isset($log["status"])) {
-            if (isset($tab_color_service[$log["status"]]) &&
-                isset($log["service_description"]) &&
-                $log["service_description"] != ""
+            if (isset($tab_color_service[$log["status"]])
+                && !empty($log["service_description"])
             ) {
                 $color = $tab_color_service[$log["status"]];
             } elseif (isset($tab_color_host[$log["status"]])) {
@@ -747,7 +758,7 @@ if (isset($req) && $req) {
         }
 
         /*
-         * Variable initialisation to color "INITIAL STATE" on envent logs
+         * Variable initialisation to color "INITIAL STATE" on event logs
          */
         if ($log["output"] == "" && $log["status"] != "") {
             $log["output"] = "INITIAL STATE";
@@ -766,9 +777,9 @@ if (isset($req) && $req) {
 
         if (!strncmp($log["host_name"], "_Module_Meta", strlen("_Module_Meta"))) {
             preg_match('/meta_([0-9]*)/', $log["service_description"], $matches);
-            $DBRESULT2 = $pearDB->query("SELECT meta_name FROM meta_service WHERE meta_id = '" . $matches[1] . "'");
-            $meta = $DBRESULT2->fetchRow();
-            $DBRESULT2->closeCursor();
+            $dbResult2 = $pearDB->query("SELECT meta_name FROM meta_service WHERE meta_id = '" . $matches[1] . "'");
+            $meta = $dbResult2->fetch();
+            $dbResult2->closeCursor();
             $buffer->writeElement("host_name", "Meta", false);
             $buffer->writeElement("real_service_name", $log["service_description"], false);
             $buffer->writeElement("service_description", $meta["meta_name"], false);

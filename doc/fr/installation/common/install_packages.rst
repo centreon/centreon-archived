@@ -50,7 +50,7 @@ Le dépôt est maintenant installé.
 
 .. note::
     Si le paquet n'est pas installé, exécutez la commande : ::
-    
+
         # yum install wget
 
 *******************************
@@ -86,6 +86,24 @@ Exécutez les commandes : ::
 .. note::
     le paquet **centreon-database** installe un serveur de base de données optimisé pour l'utilisation avec Centreon.
 
+.. note::
+    Centreon n'est pas encore **compatible** avec le mode STRICT de SQL. Veuillez
+    vous assurer que le mode soit bien désactivé. Pour plus d'information sur la
+    désactivation du mode vous pouvez consulter la `documentation officielle
+    <https://mariadb.com/kb/en/library/sql-mode/#strict-mode>`_ de MariaDB pour
+    le désactiver
+
+Puis créer un utisateur **root** distant : ::
+
+    MariaDB [(none)]> GRANT ALL PRIVILEGES ON *.* TO 'root'@'IP' IDENTIFIED BY 'PASSWORD' WITH GRANT OPTION;
+
+.. note::
+    Remplacez **IP** par l'adresse IP publique du serveur Centreon et **PASSWORD**
+    par le mot de passe de l'utilisateur **root**. Une fois l'installation terminée
+    vous pouvez supprimer ce compte via la commande : ::
+        
+        MariaDB [(none)]> DROP USER 'root'@'IP';
+
 Système de gestion de base de données
 -------------------------------------
 
@@ -104,7 +122,7 @@ fonctionnera PAS: ::
 Fuseau horaire PHP
 ------------------
 
-La timezone par défaut de PHP doit être configurée. Executer la commande suivante : ::
+La timezone par défaut de PHP doit être configurée. Exécuter la commande suivante : ::
 
     # echo "date.timezone = Europe/Paris" > /etc/opt/rh/rh-php71/php.d/php-timezone.ini
 

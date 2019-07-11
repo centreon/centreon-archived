@@ -72,6 +72,13 @@ if (($o == SERVER_MODIFY || $o == SERVER_WATCH) && $server_id) {
     } elseif (in_array($cfg_server['ns_ip_address'], $remotesServerIPs)) {
         $serverType = "remote";
     }
+
+    if ($serverType === "remote") {
+        $dbResult = $pearDB->query("SELECT http_method, http_port, no_check_certificate, no_proxy " .
+            "FROM `remote_servers` WHERE `ip` = '" . $cfg_server['ns_ip_address'] . "' LIMIT 1");
+        $cfg_server = array_merge($cfg_server, array_map("myDecode", $dbResult->fetch()));
+        $dbResult->closeCursor();
+    }
 }
 
 /*
@@ -138,6 +145,27 @@ $form->addElement('header', 'Misc', _("Miscelleneous"));
 $form->addElement('header', 'Centreontrapd', _("Centreon Trap Collector"));
 
 /*
+ * form for Remote Server
+ */
+if (strcmp($serverType, 'remote') ==  0) {
+    $form->addElement('header', 'Remote_Configuration', _("Remote Server Configuration"));
+    $aMethod = array(
+        'http' => 'http',
+        'https' => 'https'
+    );
+    $form->addElement('select', 'http_method', _("HTTP Method"), $aMethod);
+    $form->addElement('text', 'http_port', _("HTTP Port"), $attrsText3);
+    $Tab = array();
+    $Tab[] = $form->createElement('radio', 'no_check_certificate', null, _("Yes"), '1');
+    $Tab[] = $form->createElement('radio', 'no_check_certificate', null, _("No"), '0');
+    $form->addGroup($Tab, 'no_check_certificate', _("Do not check SSL certificate validation"), '&nbsp;');
+    $Tab = array();
+    $Tab[] = $form->createElement('radio', 'no_proxy', null, _("Yes"), '1');
+    $Tab[] = $form->createElement('radio', 'no_proxy', null, _("No"), '0');
+    $form->addGroup($Tab, 'no_proxy', _("Do not use proxy defined in global configuration"), '&nbsp;');
+}
+
+/*
  * Poller Configuration basic information
  */
 $form->addElement('header', 'information', _("Satellite configuration"));
@@ -190,7 +218,7 @@ $cloneSetCmd[] = $form->addElement(
 $form->addElement('header', 'CentreonBroker', _("Centreon Broker"));
 $form->addElement('text', 'centreonbroker_cfg_path', _("Centreon Broker configuration path"), $attrsText2);
 $form->addElement('text', 'centreonbroker_module_path', _("Centreon Broker modules path"), $attrsText2);
-$form->addElement('text', 'centreonbroker_logs_path', _("Centreon Broker logs"), $attrsText2);
+$form->addElement('text', 'centreonbroker_logs_path', _("Centreon Broker logs path"), $attrsText2);
 
 /*
  * Centreon Connector
@@ -232,7 +260,7 @@ if (isset($_GET["o"]) && $_GET["o"] == SERVER_ADD) {
             "nagios_perfdata"  => $monitoring_engines["nagios_perfdata"],
             "centreonbroker_cfg_path" => "/etc/centreon-broker",
             "centreonbroker_module_path" => "/usr/share/centreon/lib/centreon-broker",
-            "centreonbroker_logs_path" => "/var/log/centreon-broker/watchdog.log",
+            "centreonbroker_logs_path" => "/var/log/centreon-broker",
             "init_script_centreontrapd" => "centreontrapd",
             "snmp_trapd_path_conf" => "/etc/snmp/centreon_traps/"
         )

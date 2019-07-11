@@ -103,8 +103,18 @@ class ExportManifest
             throw new Exception(sprintf("Missing data in a manifest file:\n - %s", join("\n - %s", $missingKeys)), static::ERR_CODE_MANIFEST_WRONG_FORMAT);
         }
 
-        if ($this->data['version'] !== $this->version) {
-            throw new Exception(sprintf('The version of the Central %s and of the Remote %s are incompatible', $this->data['version'], $this->version), static::ERR_CODE_INCOMPATIBLE_VERSIONS);
+        # Compare only the major and minor version, not bugfix because no SQL schema changes
+        $centralVersion = preg_replace('/^(\d+\.\d+).*/', '$1', $this->data['version']);
+        $remoteVersion = preg_replace('/^(\d+\.\d+).*/', '$1', $this->version);
+
+        if (!version_compare($centralVersion, $remoteVersion, '==')) {
+            throw new Exception(
+                sprintf('The version of the Central %s and of the Remote %s are incompatible',
+                    $this->data['version'],
+                    $this->version
+                ),
+                static::ERR_CODE_INCOMPATIBLE_VERSIONS
+            );
         }
 
         if (!$this->data['exporters']) {

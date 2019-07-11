@@ -2038,19 +2038,20 @@ CREATE TABLE `traps` (
   `traps_id` int(11) NOT NULL AUTO_INCREMENT,
   `traps_name` varchar(255) DEFAULT NULL,
   `traps_oid` varchar(255) DEFAULT NULL,
+  `traps_mode` enum('0','1') DEFAULT '0',
   `traps_args` text,
   `traps_status` enum('-1','0','1','2','3') DEFAULT NULL,
   `severity_id` int(11) DEFAULT NULL,
   `manufacturer_id` int(11) DEFAULT NULL,
   `traps_reschedule_svc_enable` enum('0','1') DEFAULT '0',
-  `traps_execution_command` varchar(255) DEFAULT NULL,
+  `traps_execution_command` text DEFAULT NULL,
   `traps_execution_command_enable` enum('0','1') DEFAULT '0',
   `traps_submit_result_enable` enum('0','1') DEFAULT '0',
   `traps_advanced_treatment` enum('0','1') DEFAULT '0',
   `traps_advanced_treatment_default` enum('0','1', '2') DEFAULT '0',
   `traps_timeout` int(11) DEFAULT NULL,
   `traps_exec_interval` int(11) DEFAULT NULL,
-  `traps_exec_interval_type` enum('0','1', '2') DEFAULT '0',
+  `traps_exec_interval_type` enum('0','1','2','3') DEFAULT '0',
   `traps_log` enum('0','1') DEFAULT '0',
   `traps_routing_mode` enum('0','1') DEFAULT '0',
   `traps_routing_value` varchar(255) DEFAULT NULL,
@@ -2371,13 +2372,17 @@ CREATE TABLE IF NOT EXISTS contact_feature (
 -- Create remote servers table for keeping track of remote instances
 CREATE TABLE IF NOT EXISTS `remote_servers` (
   `id` INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
-  `ip` VARCHAR(16) NOT NULL,
+  `ip` VARCHAR(255) NOT NULL,
   `app_key` VARCHAR(40) NOT NULL,
   `version` VARCHAR(16) NOT NULL,
   `is_connected` TINYINT(1) NOT NULL DEFAULT 0,
   `created_at` TIMESTAMP NOT NULL,
   `connected_at` TIMESTAMP NULL,
-  `centreon_path` VARCHAR(255) NULL
+  `centreon_path` VARCHAR(255) NULL,
+  `http_method` enum('http','https') NOT NULL DEFAULT 'http',
+  `http_port` int(11) DEFAULT NULL,
+  `no_check_certificate` enum('0','1') NOT NULL DEFAULT '0',
+  `no_proxy` enum('0','1') NOT NULL DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 

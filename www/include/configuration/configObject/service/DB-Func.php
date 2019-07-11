@@ -1051,7 +1051,7 @@ function insertService($ret = array(), $macro_on_demand = null)
     isset($ret["service_use_only_contacts_from_host"]["service_use_only_contacts_from_host"])
     && $ret["service_use_only_contacts_from_host"]["service_use_only_contacts_from_host"] != null
         ? $rq .= "'" . $ret["service_use_only_contacts_from_host"]["service_use_only_contacts_from_host"] . "', "
-        : $rq .= "'NULL', ";
+        : $rq .= "NULL, ";
     isset($ret["service_stalOpts"]) && $ret["service_stalOpts"] != null
         ? $rq .= "'" . implode(",", array_keys($ret["service_stalOpts"])) . "', "
         : $rq .= "NULL, ";

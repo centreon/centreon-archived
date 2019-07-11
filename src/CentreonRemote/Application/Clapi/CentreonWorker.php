@@ -75,22 +75,24 @@ class CentreonWorker implements CentreonClapiServiceInterface
 
             try {
                 $this->getDi()['centreon_remote.export']->export($commitment);
+
+                $this->getDi()['centreon.taskservice']->updateStatus($task->getId(), Task::STATE_COMPLETED);
+
+                /**
+                 * move export file
+                 */
+                $cmd = new Command();
+                $compositeKey = $params['server'] . ':' . $task->getId();
+                $cmd->setCommandLine(Command::COMMAND_TRANSFER_EXPORT_FILES . $compositeKey);
+                $cmdService = new CentcoreCommandService();
+                $cmdWritten = $cmdService->sendCommand($cmd);
+
+                echo "{$datetime} - finished.\n";
             } catch (\Exception $e) {
                 echo $e->getMessage() . "\n";
+                echo "{$datetime} - task #" . $task->getId() . " aborted\n";
+                $this->getDi()['centreon.taskservice']->updateStatus($task->getId(), Task::STATE_FAILED);
             }
-
-            $this->getDi()['centreon.taskservice']->updateStatus($task->getId(), Task::STATE_COMPLETED);
-
-            /**
-             * move export file
-             */
-            $cmd = new Command();
-            $compositeKey = $params['server'] . ':' . $task->getId();
-            $cmd->setCommandLine(Command::COMMAND_TRANSFER_EXPORT_FILES . $compositeKey);
-            $cmdService = new CentcoreCommandService();
-            $cmdWritten = $cmdService->sendCommand($cmd);
-
-            echo "finished.\n";
         }
     }
 
@@ -116,12 +118,14 @@ class CentreonWorker implements CentreonClapiServiceInterface
 
             try {
                 $this->getDi()['centreon_remote.export']->import();
+
+                $this->getDi()['centreon.taskservice']->updateStatus($task->getId(), Task::STATE_COMPLETED);
+                echo "{$datetime} - finished.\n";
             } catch (\Exception $e) {
                 echo $e->getMessage() . "\n";
+                echo "{$datetime} - task #" . $task->getId() . " aborted\n";
+                $this->getDi()['centreon.taskservice']->updateStatus($task->getId(), Task::STATE_FAILED);
             }
-            $this->getDi()['centreon.taskservice']->updateStatus($task->getId(), Task::STATE_COMPLETED);
-
-            echo "finished.\n";
         }
 
         echo "{$datetime} - Worker cycle completed.\n";
@@ -144,15 +148,21 @@ class CentreonWorker implements CentreonClapiServiceInterface
         $params = unserialize($task->getParams())['params'];
         $centreonPath = trim($params['centreon_path'], '/');
         $centreonPath = $centreonPath ? $centreonPath : '/centreon';
-        $url = "{$params['remote_ip']}/{$centreonPath}/api/external.php?"
-            . "object=centreon_task_service&action=AddImportTaskWithParent";
+        $url = $params['http_method'] ? $params['http_method'] . "://" : "";
+        $url .= $params['remote_ip'];
+        $url .= $params['http_port'] ? ":" . $params['http_port'] : "";
+        $url .= "/{$centreonPath}/api/external.php?object=centreon_task_service&action=AddImportTaskWithParent";
 
         try {
             $curl = new \CentreonRestHttp;
             $res = $curl->call(
                 $url,
                 'POST',
-                ['parent_id' => $task->getId()]
+                ['parent_id' => $task->getId()],
+                null,
+                false,
+                $params['no_check_certificate'],
+                $params['no_proxy']
             );
 
         } catch (\Exception $e) {

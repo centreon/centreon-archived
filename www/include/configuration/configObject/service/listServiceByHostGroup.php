@@ -56,17 +56,15 @@ $template = filter_var(
     FILTER_SANITIZE_STRING
 );
 
-$status = filter_var(
-    $_POST["status"] ?? $_GET["status"] ?? -1,
-    FILTER_VALIDATE_INT
-);
-
 if (isset($_POST['Search']) || isset($_GET ['Search'])) {
-    //initializing filters values
+    //saving filters values
     $centreon->historySearch[$url] = array();
     $centreon->historySearch[$url]["hostgroups"] = $searchHG;
     $centreon->historySearch[$url]["search"] = $searchS;
     $centreon->historySearch[$url]["template"] = $template;
+    $status = $_POST["status"] ?? '';
+    // Security fix
+    $status = (int)(($status != '') ? $status : -1);
     $centreon->historySearch[$url]["status"] = $status;
 } else {
     //restoring saved values
@@ -75,6 +73,8 @@ if (isset($_POST['Search']) || isset($_GET ['Search'])) {
     $template = $centreon->historySearch[$url]["template"] ?? null;
     $status = $centreon->historySearch[$url]["status"] ?? -1;
 }
+
+
 
 /*
  * Get Service Template List
@@ -96,12 +96,12 @@ $dbResult->closeCursor();
 $statusFilter = "<option value=''" . (($status == -1) ? " selected" : "") . "> </option>";
 $statusFilter .= "<option value='1'" . (($status == 1) ? " selected" : "") . ">" . _("Enabled") . "</option>";
 $statusFilter .= "<option value='0'" .
-    (($status == 0 && $status != '') ? " selected" : "") . ">" . _("Disabled") . "</option>";
+    (($status == 0) ? " selected" : "") . ">" . _("Disabled") . "</option>";
 
 $sqlFilterCase = "";
 if ($status == 1) {
     $sqlFilterCase = " AND sv.service_activate = '1' ";
-} elseif ($status == 0 && $status != "") {
+} elseif ($status == 0) {
     $sqlFilterCase = " AND sv.service_activate = '0' ";
 }
 
@@ -113,11 +113,11 @@ $tmp2 = null;
 $searchHG = $pearDB->escape($searchHG);
 $searchS = $pearDB->escape($searchS);
 
-$aclfrom = "";
+$aclFrom = "";
 $aclCond = "";
 $distinct = "";
 if (!$centreon->user->admin) {
-    $aclfrom = ", $acldbname.centreon_acl acl ";
+    $aclFrom = ", $acldbname.centreon_acl acl ";
     $aclCond = " AND sv.service_id = acl.service_id
                  AND acl.group_id IN (" . $acl->getAccessGroupsString() . ") ";
     $distinct = " DISTINCT ";
@@ -135,7 +135,7 @@ if ($searchS != "" || $searchHG != "") {
         $dbResult = $pearDB->query(
             "SELECT " . $distinct . " hostgroup_hg_id, sv.service_id, sv.service_description, " .
             "service_template_model_stm_id " .
-            "FROM service sv, host_service_relation hsr " . $aclfrom .
+            "FROM service sv, host_service_relation hsr " . $aclFrom .
             " WHERE sv.service_register = '1' " . $sqlFilterCase .
             " AND hsr.service_service_id = sv.service_id " . $aclCond .
             " AND hsr.host_host_id IS NULL" .
@@ -153,7 +153,7 @@ if ($searchS != "" || $searchHG != "") {
         $dbResult = $pearDB->query(
             "SELECT " . $distinct . " hostgroup_hg_id, sv.service_id, sv.service_description, " .
             "service_template_model_stm_id " .
-            "FROM service sv, host_service_relation hsr, hostgroup hg " . $aclfrom .
+            "FROM service sv, host_service_relation hsr, hostgroup hg " . $aclFrom .
             "WHERE sv.service_register = '1' " . $sqlFilterCase .
             " AND hsr.service_service_id = sv.service_id " . $aclCond .
             " AND hsr.host_host_id IS NULL " .
@@ -169,7 +169,7 @@ if ($searchS != "" || $searchHG != "") {
         $dbResult = $pearDB->query(
             "SELECT " . $distinct . " hostgroup_hg_id, sv.service_id, sv.service_description, " .
             "service_template_model_stm_id " .
-            "FROM service sv, host_service_relation hsr, hostgroup hg " . $aclfrom .
+            "FROM service sv, host_service_relation hsr, hostgroup hg " . $aclFrom .
             "WHERE sv.service_register = '1' " . $sqlFilterCase .
             " AND hsr.service_service_id = sv.service_id " . $aclCond .
             " AND hsr.host_host_id IS NULL " .
@@ -185,7 +185,7 @@ if ($searchS != "" || $searchHG != "") {
     }
 } else {
     $dbResult = $pearDB->query(
-        "SELECT " . $distinct . " sv.service_description FROM service sv, host_service_relation hsr " . $aclfrom .
+        "SELECT " . $distinct . " sv.service_description FROM service sv, host_service_relation hsr " . $aclFrom .
         "WHERE service_register = '1' " . $sqlFilterCase . $templateStr .
         " AND hsr.service_service_id = sv.service_id AND hsr.host_host_id IS NULL " . $aclCond
     );
@@ -224,7 +224,7 @@ if ($searchS || $searchHG) {
     $query = "SELECT $distinct @nbr:=(SELECT COUNT(*) FROM host_service_relation " .
         "WHERE service_service_id = sv.service_id GROUP BY sv.service_id ) AS nbr, sv.service_id, " .
         "sv.service_description, sv.service_activate, sv.service_template_model_stm_id, hg.hg_id, hg.hg_name " .
-        "FROM service sv, hostgroup hg, host_service_relation hsr $aclfrom " .
+        "FROM service sv, hostgroup hg, host_service_relation hsr $aclFrom " .
         "WHERE sv.service_register = '1' $sqlFilterCase AND sv.service_id IN (" . ($tmp ? $tmp : 'NULL') .
         ") AND hsr.hostgroup_hg_id IN (" . ($tmp2 ? $tmp2 : 'NULL') . ") " .
         ((isset($template) && $template) ? " AND service_template_model_stm_id = '$template' " : "") .
@@ -234,7 +234,7 @@ if ($searchS || $searchHG) {
     $query = "SELECT $distinct @nbr:=(SELECT COUNT(*) FROM host_service_relation " .
         "WHERE service_service_id = sv.service_id GROUP BY sv.service_id ) AS nbr, sv.service_id, " .
         "sv.service_description, sv.service_activate, sv.service_template_model_stm_id, hg.hg_id, hg.hg_name " .
-        "FROM service sv, hostgroup hg, host_service_relation hsr $aclfrom " .
+        "FROM service sv, hostgroup hg, host_service_relation hsr $aclFrom " .
         "WHERE sv.service_register = '1' $sqlFilterCase " .
         ((isset($template) && $template) ? " AND service_template_model_stm_id = '$template' " : "") .
         " AND hsr.service_service_id = sv.service_id AND hg.hg_id = hsr.hostgroup_hg_id " . $aclCond .

@@ -13,7 +13,7 @@
         <td class="ListColHeaderCenter" style="white-space:nowrap;" id="current_state"></td>
         <td class="ListColHeaderCenter" style="white-space:nowrap;" id="last_state_change"></td>
         <xsl:for-each select="//i">
-            <xsl:if test="o = 'svc_unhandled' or o = 'svcpb' or o = 'svc_warning' or o = 'svc_critical' or o = 'svc_unknown' or o = 'svc_unhandled_warning' or o = 'svc_unhandled_critical' or o = 'svc_unhandled_unknown'">
+            <xsl:if test="use_hard_state_duration = 1">
                 <td class="ListColHeaderCenter" style="white-space:nowrap;" id="last_hard_state_change">
                     <xsl:value-of select="hard_state_label"/>
                 </td>
@@ -309,7 +309,7 @@
         <td class="ListColRight" style="white-space:nowrap;">
             <xsl:value-of select="d"/>
         </td>
-        <xsl:if test = "//i/o = 'svc_unhandled' or //i/o = 'svcpb' or //i/o = 'svc_warning' or //i/o = 'svc_critical' or //i/o = 'svc_unknown' or //i/o = 'svc_unhandled_warning' or //i/o = 'svc_unhandled_critical' or //i/o = 'svc_unhandled_unknown'">
+        <xsl:if test = "//i/use_hard_state_duration = 1">
             <td class="ListColRight" style="white-space:nowrap;">
                 <xsl:value-of select="last_hard_state_change"/>
             </td>

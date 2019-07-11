@@ -2288,12 +2288,19 @@ class CentreonACL
         return $hg;
     }
 
-    public function getHostHostGroupAclConf($hg_id, $broker = null, $options = null)
+    /**
+     * @param $hg_id
+     * @param null $broker
+     * @param null $options
+     * @return array|void
+     */
+    public function getHostHostGroupAclConf($hgId, $broker = null, $options = null)
     {
         $hg = array();
 
         if (is_null($options)) {
             $options = array(
+                'distinct' => true,
                 'order' => array('LOWER(host_name)'),
                 'fields' => array('host_id', 'host_name'),
                 'keys' => array('host_id'),
@@ -2304,12 +2311,10 @@ class CentreonACL
 
         $request = $this->constructRequest($options);
 
-        $searchCondition = "";
-
         if ($this->admin) {
             $query = $request['select'] . $request['fields'] . " "
                 . "FROM hostgroup, hostgroup_relation, host "
-                . "WHERE hg_id = '" . CentreonDB::escape($hg_id) . "' "
+                . "WHERE hg_id = '" . CentreonDB::escape($hgId) . "' "
                 . "AND hg_activate = '1' "
                 . "AND host_activate='1' "
                 . "AND hostgroup_relation.hostgroup_hg_id = hostgroup.hg_id "
@@ -2319,14 +2324,16 @@ class CentreonACL
             $groupIds = array_keys($this->accessGroups);
             $query = $request['select'] . $request['fields'] . " "
                 . "FROM hostgroup, hostgroup_relation, host, acl_res_group_relations, acl_resources_hg_relations "
-                . "WHERE hg_id = '" . CentreonDB::escape($hg_id) . "' "
+                . "WHERE hg_id = '" . CentreonDB::escape($hgId) . "' "
                 . "AND hg_activate = '1' "
                 . "AND host_activate='1' "
                 . "AND hostgroup_relation.hostgroup_hg_id = hostgroup.hg_id "
                 . "AND hostgroup_relation.host_host_id = host.host_id "
                 . "AND acl_res_group_relations.acl_group_id  IN (" . implode(',', $groupIds) . ") "
                 . "AND acl_res_group_relations.acl_res_id = acl_resources_hg_relations.acl_res_id "
-                . "AND acl_resources_hg_relations.hg_hg_id = hostgroup.hg_id ";
+                . "AND acl_resources_hg_relations.hg_hg_id = hostgroup.hg_id "
+                . "AND host.host_id NOT IN ( SELECT DISTINCT host_host_id "
+                . "FROM acl_resources_hostex_relations WHERE acl_res_id IN (" . implode(',', $groupIds) . "))";
         }
 
         $query .= $request['order'] . $request['pages'];

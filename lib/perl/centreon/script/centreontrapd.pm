@@ -78,7 +78,6 @@ sub new {
        date_format => "",
        time_format => "",
        date_time_format => "",
-       cache_unknown_traps_enable => 1,
        cache_unknown_traps_retention => 600,
        # secure mode: 1 => cannot use customcode option for traps
        secure_mode => 1,
@@ -625,6 +624,14 @@ sub manage_exec {
             $self->{logger}->writeLogInfo("Skipping trap '" . $self->{current_trap_id} . "' for host ID '" . $self->{current_host_id} . "': time interval");
             return 1;
         }
+        
+        # Host/Service type
+        if ($self->{trap_data}->{ref_oids}->{ $self->{current_trap_id} }->{traps_exec_interval_type} == 3 &&
+            defined($self->{last_time_exec}{host}->{$self->{current_host_id} . ";" . $self->{current_service_id} . ";" . $self->{current_oid}}) &&
+            $self->{trap_data}->{trap_date_time_epoch} < ($self->{last_time_exec}{host}->{$self->{current_host_id} . ";" . $self->{current_service_id} . ";" . $self->{current_oid}} + $self->{trap_data}->{ref_oids}->{ $self->{current_trap_id} }->{traps_exec_interval})) {
+            $self->{logger}->writeLogInfo("Skipping trap '" . $self->{current_trap_id} . "' for host ID '" . $self->{current_host_id} . "' and service ID '" . $self->{current_service_id} . "': time interval");
+            return 1;
+        }
     }
     
     ### Check Sequential exec ###
@@ -664,6 +671,7 @@ sub manage_exec {
     $self->{running_processes}->{$current_pid} = 1;
     $self->{last_time_exec}{oid}->{$self->{current_oid}} = $self->{trap_data}->{trap_date_time_epoch};
     $self->{last_time_exec}{host}->{$self->{current_host_id} . ";" . $self->{current_oid}} = $self->{trap_data}->{trap_date_time_epoch};
+    $self->{last_time_exec}{host}->{$self->{current_host_id} . ";" . $self->{current_service_id} . ";" . $self->{current_oid}} = $self->{trap_data}->{trap_date_time_epoch};
     return 1;
 }
 
@@ -875,6 +883,7 @@ sub substitute_centreon_var {
     my $str = $_[0];
 
     $str =~ s/\@HOSTNAME\@/$self->{current_hostname}/g;
+    $str =~ s/\@HOSTID\@/$self->{current_host_id}/g;
     $str =~ s/\@HOSTADDRESS\@/$self->{current_ip}/g;
     $str =~ s/\@HOSTADDRESS2\@/$self->{trap_data}->{agent_dns_name}/g;
     $str =~ s/\@SERVICEDESC\@/$self->{current_service_desc}/g;
@@ -1045,11 +1054,11 @@ sub executeCommand {
 ## GET HOSTNAME AND SERVICE DESCRIPTION
 #
 sub getTrapsInfos {
-    my $self = shift;
-    my ($fstatus);
+    my ($self, $ids) = @_;
+    my $fstatus;
     
     ### Get OIDS 
-    ($fstatus, $self->{trap_data}->{ref_oids}) = centreon::trapd::lib::get_oids($self->{cdb}, ${$self->{trap_data}->{var}}[3]);
+    ($fstatus, $self->{trap_data}->{ref_oids}) = centreon::trapd::lib::get_oids($self->{cdb}, $ids);
     return 0 if ($fstatus == -1);
     foreach my $trap_id (keys %{$self->{trap_data}->{ref_oids}}) {
         $self->{trap_data}->{current_trap_id} = $trap_id;
@@ -1236,7 +1245,7 @@ sub run {
                                                                      entvarname => \@{$self->{trap_data}->{entvarname}});
                 
                 if ($readtrap_result == 1) {
-                    my ($status) = centreon::trapd::lib::check_known_trap(logger => $self->{logger},
+                    my (@return) = centreon::trapd::lib::check_known_trap(logger => $self->{logger},
                                                                           logger_unknown => $self->{logger_unknown},
                                                                           config => $self->{centreontrapd_config},
                                                                           trap_data => $self->{trap_data},
@@ -1244,9 +1253,9 @@ sub run {
                                                                           cdb => $self->{cdb},
                                                                           last_cache_time => \$self->{last_cache_time},
                                                                           oids_cache => \$self->{oids_cache});
-                    if ($status == 1) {
-                        $unlink_trap = $self->getTrapsInfos();
-                    } elsif ($status == -1) {
+                    if ($return[0] == 1) {
+                        $unlink_trap = $self->getTrapsInfos($return[1]);
+                    } elsif ($return[0] == -1) {
                         # DB deconnection. Need to keep the file. Not deleted it.
                         $unlink_trap = 0;
                     }

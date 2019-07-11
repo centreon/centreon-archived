@@ -38,20 +38,54 @@ class CentreonRemoteServer implements CentreonClapiServiceInterface
      */
     public function enableRemote(string $string_ip)
     {
+        /* Set default value */
+        $noCheckCertificate = false;
+        $data = array(
+            'remoteHttpMethod' => 'http',
+            'remoteHttpPort' => null,
+            'remoteNoCheckCertificate' => false,
+        );
+
+        /* Check CLAPI */
+        $options = explode (';', $string_ip);
+
+        if (count($options) === 6) {
+            $string_ip = $options[0];
+            $noCheckCertificate = $options[1];
+            $data['remoteHttpMethod'] = $options[2];
+            $data['remoteHttpPort'] = $options[3];
+            $data['remoteNoCheckCertificate'] = $options[4];
+            $noProxy = $options[5];
+        } elseif (count($options) > 1) {
+            echo "6 arguments are needed, please check your arguments.";
+            return 1;
+        }
+
+        /* Extract host from URI */
+        $aIPMaster = array();
+        $pattern_extract_host = '/^[a-z][a-z0-9+\-.]*:\/\/([a-z0-9\-._~%!$&\'()*+,;=]+@)?([a-z0-9\-._~%]+|\[[a-z0-9\-._~%!$&\'()*+,;=:]+\])/';
         $ipList = explode(',', $string_ip);
+        foreach ($ipList as $ip) {
+            if (preg_match($pattern_extract_host, $ip, $matches)) {
+                $ip = $matches[2];
+            }
+            $aIPMaster[] = $ip;
+        }
 
         echo "Starting Centreon Remote enable process: \n";
 
         echo "Limiting Menu Access...";
         $result = $this->getDi()['centreon.db-manager']->getRepository(TopologyRepository::class)->disableMenus();
-        echo ($result) ? 'Success' . "\n" : 'Fail' . "\n";
+        echo (($result) ? 'Success' : 'Fail') . "\n";
 
         echo "Limiting Actions...";
         $this->getDi()['centreon.db-manager']->getRepository(InformationsRepository::class)->toggleRemote('yes');
         echo "Done\n";
 
         echo "Authorizing Master...";
-        $this->getDi()['centreon.db-manager']->getRepository(InformationsRepository::class)->authorizeMaster($string_ip);
+        $this->getDi()['centreon.db-manager']->getRepository(InformationsRepository::class)->authorizeMaster(
+            implode(',',$aIPMaster)
+        );
         echo "Done\n";
 
         echo "Set 'remote' instance type...";
@@ -63,10 +97,15 @@ class CentreonRemoteServer implements CentreonClapiServiceInterface
         echo "Notifying Master...";
         $result = "";
         foreach ($ipList as $ip) {
-            $result = $this->getDi()['centreon.notifymaster']->pingMaster($ip);
+            $result = $this->getDi()['centreon.notifymaster']->pingMaster(
+                $ip,
+                $data,
+                $noCheckCertificate,
+                $noProxy
+            );
             if (!empty($result['status']) && $result['status'] == 'success') {
                 echo "Success\n";
-                continue;
+                break;
             }
         }
         if (empty($result['status']) || $result['status'] != 'success') {

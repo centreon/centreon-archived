@@ -1026,8 +1026,12 @@ msgid "Init script for broker daemon."
 msgstr "Script d'initialisation du broker."
 
 #: centreon-web/www/include/Administration/parameters/engine/help.php:35
-msgid "Mailer binary with complete path."
-msgstr "Chemin complet de l'exécutable d'envoi de mails."
+msgid ""
+"Mailer binary with complete path. This define the @MAILER@ macro used in "
+"notification commands."
+msgstr ""
+"Chemin complet de l'exécutable d'envoi de mails. Ceci définit la variable"
+"@MAILER@ utilisée dans les commandes de notification."
 
 #: centreon-web/www/include/Administration/parameters/engine/help.php:43
 msgid "Maximum number of hosts to show in the Tactical Overview page."
@@ -3822,6 +3826,12 @@ msgstr ""
 "Entrer le nom de la trap comme spécifié dans le fichier MIB et envoyé par "
 "l'agent SNMP."
 
+#: centreon-web/www/include/configuration/configObject/traps/help.php
+msgid ""
+"Choose the matching mode."
+msgstr ""
+"Choisir le mode de correspondance."
+
 #: centreon-web/www/include/configuration/configObject/traps/help.php:39
 msgid ""
 "Enter the full numeric object identifier (OID) starting with .1.3.6 (.iso.org."
@@ -6333,20 +6343,24 @@ msgid "Path with modules for Centreon Broker"
 msgstr "Chemin pour les modules de Centreon Broker"
 
 #: centreon-web/www/include/configuration/configServers/help.php:16
+msgid "Path of the Centreon Broker log file"
+msgstr "Chemin du fichier de log de Centreon Broker"
+
+#: centreon-web/www/include/configuration/configServers/help.php:17
 msgid "Path with Centreon Connector binaries"
 msgstr "Chemin d'accès aux connecteurs Centreon"
 
-#: centreon-web/www/include/configuration/configServers/help.php:17
+#: centreon-web/www/include/configuration/configServers/help.php:18
 msgid "Enable or disable poller"
 msgstr "Activer ou désactiver le collecteur"
 
-#: centreon-web/www/include/configuration/configServers/help.php:18
+#: centreon-web/www/include/configuration/configServers/help.php:19
 msgid "Centreontrapd init script to restart process on poller."
 msgstr ""
 "Script d'initialisation du processus Centreontrapd pour redémarrer celui-ci "
 "sur le collecteur."
 
-#: centreon-web/www/include/configuration/configServers/help.php:19
+#: centreon-web/www/include/configuration/configServers/help.php:20
 msgid ""
 "Light databases will be stored in the specified directory. They are used for "
 "synchronizing trap definitions on pollers."
@@ -6355,7 +6369,7 @@ msgstr ""
 "Elles sont utilisées pour synchroniser la configuration des traps SNMP pour un "
 "collecteur distant."
 
-#: centreon-web/www/include/configuration/configServers/help.php:20
+#: centreon-web/www/include/configuration/configServers/help.php:21
 msgid ""
 "Those commands can be executed at the end of the file generation generation/"
 "restart process. Do not specify macros in the commands, for they will not be "
@@ -6367,7 +6381,7 @@ msgstr ""
 "de macros ans cette commande car elles ne seraient pas remplacées. Vérifier "
 "que les droits d'exécution sont suffisant pour l'utilisateur \"apache\"."
 
-#: centreon-web/www/include/configuration/configServers/help.php:21
+#: centreon-web/www/include/configuration/configServers/help.php:22
 msgid "Short description of the poller"
 msgstr "Brève description du collecteur"
 
@@ -6458,6 +6472,26 @@ msgid ""
 msgstr ""
 "Exécute la commande définie dans la configuration du collecteur (Configuration "
 "> Centreon > Poller > Post-Restart command)."
+
+msgid ""
+"What kind of method is needed to reach the Remote Server, HTTP or HTTPS?"
+msgstr ""
+"Quel type de méthode est nécessaire pour contacter le Remote Server, HTTP ou HTTPS ?"
+
+msgid "On which TCP port is listening the Remote Server?"
+msgstr ""
+"Sur quel port TCP écoute le Remote Server ?"
+
+msgid ""
+"If checked, it won't check the validity of the SSL certificate of the Remote Server."
+msgstr ""
+"Si cette case est cochée, la validité du certificat SSL du Remote Server ne sera pas vérifiée."
+
+msgid "If checked, it won't  use the proxy configured in "
+"'Administration > Parameters > Centreon UI' to connect to the Remote Server."
+msgstr ""
+"Si cette case est cochée, le paramétrage du proxy dans le menu "
+"Administration > Parameters > Centreon UI' ne sera pas utilisée pour se connecter au Remote Server"
 
 #~ msgid "SNMP global community."
 #~ msgstr "Communauté SNMP globale utilisée par défaut."

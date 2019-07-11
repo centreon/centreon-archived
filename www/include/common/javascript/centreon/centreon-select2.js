@@ -308,9 +308,12 @@
 
       this.$elem.on('select2:open', function (e) {
         if (self.savedSearch) {
-          self.$elem.data()
-              .select2.$container.find(".select2-search__field")
-              .val(self.savedSearch);
+          let searchField = self.$elem.data().select2.$container.find(".select2-search__field");
+          searchField.val(self.savedSearch);
+          searchField.css(
+            {'width': 'auto'}
+          );
+
           /* Wait for select2 finish to open */
           setTimeout(function () {
             self.$elem.data().select2.trigger(

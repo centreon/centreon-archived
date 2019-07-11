@@ -244,41 +244,45 @@ if ($searchOutput) {
 }
 $request .= $instance_filter;
 
-if (preg_match("/^svc_unhandled/", $statusService)) {
-    if (preg_match("/^svc_unhandled_(warning|critical|unknown)\$/", $statusService, $matches)) {
-        if (isset($matches[1]) && $matches[1] == 'warning') {
-            $request .= " AND s.state = 1 ";
-        }
-        if (isset($matches[1]) && $matches[1] == "critical") {
-            $request .= " AND s.state = 2 ";
-        } elseif (isset($matches[1]) && $matches[1] == "unknown") {
-            $request .= " AND s.state = 3 ";
-        } elseif (isset($matches[1]) && $matches[1] == "pending") {
-            $request .= " AND s.state = 4 ";
-        } else {
-            $request .= " AND s.state != 0 ";
-        }
-    } else {
-        $request .= " AND (s.state != 0 AND s.state != 4) ";
-    }
+if ($statusService == 'svc_unhandled') {
     $request .= " AND s.state_type = 1";
     $request .= " AND s.acknowledged = 0";
     $request .= " AND s.scheduled_downtime_depth = 0";
     $request .= " AND h.acknowledged = 0 AND h.scheduled_downtime_depth = 0 ";
-} elseif ($statusService == "svcpb") {
-    $request .= " AND s.state != 0 AND s.state != 4 ";
 }
 
-if ($statusFilter == "ok") {
-    $request .= " AND s.state = 0";
-} elseif ($statusFilter == "warning") {
-    $request .= " AND s.state = 1";
-} elseif ($statusFilter == "critical") {
-    $request .= " AND s.state = 2";
-} elseif ($statusFilter == "unknown") {
-    $request .= " AND s.state = 3";
-} elseif ($statusFilter == "pending") {
-    $request .= " AND s.state = 4";
+if ($statusService === 'svc_unhandled' || $statusService === 'svcpb') {
+    switch ($statusFilter) {
+        case 'warning':
+            $request .= " AND s.state = 1 ";
+            break;
+        case 'critical':
+            $request .= " AND s.state = 2 ";
+            break;
+        case 'unknown':
+            $request .= " AND s.state = 3 ";
+            break;
+        default:
+            $request .= " AND s.state != 0 AND s.state != 4 ";
+    }
+} elseif ($statusService === 'svc') {
+    switch ($statusFilter) {
+        case 'ok':
+            $request .= " AND s.state = 0";
+            break;
+        case 'warning':
+            $request .= " AND s.state = 1 ";
+            break;
+        case 'critical':
+            $request .= " AND s.state = 2 ";
+            break;
+        case 'unknown':
+            $request .= " AND s.state = 3 ";
+            break;
+        case 'pending':
+            $request .= " AND s.state = 4 ";
+            break;
+    }
 }
 
 /**
@@ -334,6 +338,11 @@ if ($critRes->rowCount()) {
     }
 }
 
+$isHardStateDurationVisible =
+    !($statusService === 'svc'
+        && ($statusFilter === 'ok' || $statusFilter === 'pending')
+    );
+
 /* * **************************************************
  * Create Buffer
  */
@@ -358,6 +367,7 @@ $obj->XML->writeElement("service_not_active_not_passive", _("This service is nei
 $obj->XML->writeElement("service_flapping", _("This Service is flapping"));
 $obj->XML->writeElement("notif_disabled", _("Notification is disabled"));
 $obj->XML->writeElement("use_criticality", $criticalityUsed);
+$obj->XML->writeElement("use_hard_state_duration", $isHardStateDurationVisible ? 1 : 0);
 $obj->XML->endElement();
 
 $host_prev = "";

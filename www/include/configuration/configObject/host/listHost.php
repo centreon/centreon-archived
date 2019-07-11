@@ -60,7 +60,7 @@ $mainQueryParameters = [];
 
 //initializing filters values
 $search = filter_var(
-    $_POST["searchH"] ?? $_GET["search"] ?? null,
+    $_POST["searchH"] ?? $_GET["searchH"] ?? null,
     FILTER_SANITIZE_STRING
 );
 $poller = filter_var(
@@ -76,9 +76,7 @@ $template = filter_var(
     FILTER_VALIDATE_INT
 );
 
-$status = -1;
-
-if (isset($_POST['searchH']) || isset($_GET['search'])) {
+if (isset($_POST['searchH']) || isset($_GET['searchH'])) {
     //saving chosen filters values
     $centreon->historySearch[$url] = array();
     $centreon->historySearch[$url]["search"] = $search;
@@ -86,6 +84,8 @@ if (isset($_POST['searchH']) || isset($_GET['search'])) {
     $centreon->historySearch[$url]["hostgroup"] = $hostgroup;
     $centreon->historySearch[$url]["template"] = $template;
     $status = $_POST["status"] ?? '';
+    // Security fix
+    $status = (int)(($status != '') ? $status : -1);
     $centreon->historySearch[$url]["status"] = $status;
 } else {
     //restoring saved values
@@ -93,13 +93,8 @@ if (isset($_POST['searchH']) || isset($_GET['search'])) {
     $poller = $centreon->historySearch[$url]["poller"] ?? 0;
     $hostgroup = $centreon->historySearch[$url]["hostgroup"] ?? 0;
     $template = $centreon->historySearch[$url]["template"] ?? 0;
-    if (isset($centreon->historySearch[$url]["status"])) {
-        $status = $centreon->historySearch[$url]["status"];
-    }
+    $status = $centreon->historySearch[$url]["status"] ?? -1;
 }
-
-// Security fix
-$status = (int)(($status != '') ? $status : -1);
 
 // set object history
 $centreon->poller = $poller;

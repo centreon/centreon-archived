@@ -1380,8 +1380,12 @@ msgid "Init script for broker daemon."
 msgstr "Script de inicialização do broker."
 
 #: /home/lgcosta/devel/centreon/centreon/www/include/Administration/parameters/engine/help.php:35
-msgid "Mailer binary with complete path."
-msgstr "Caminho completo do executável de envio de emails."
+msgid ""
+"Mailer binary with complete path. This define the @MAILER@ macro used in "
+"notification commands."
+msgstr ""
+"Caminho completo do executável de envio de emails. Isso define a macro @MAILER@ usado nos "
+"comandos de notificação."
 
 #: /home/lgcosta/devel/centreon/centreon/www/include/Administration/parameters/engine/help.php:43
 msgid "Maximum number of hosts to show in the Tactical Overview page."
@@ -1851,10 +1855,10 @@ msgstr "Caminho para o arquivo de configuração do Centreon Broker"
 
 #: /home/lgcosta/devel/centreon/centreon/www/include/configuration/configServers/help.php:16
 msgid "Path with modules for Centreon Broker"
-msgstr "Caminho para os Módulos do Broker Centreon"
+msgstr "Caminho para os Módulos do Centreon Broker"
 
 #: /home/lgcosta/devel/centreon/centreon/www/include/configuration/configServers/help.php:17
-msgid "Path of the log file for Centreon Broker"
+msgid "Path of the Centreon Broker log file"
 msgstr "Caminho do arquivo de log do Centreon Broker"
 
 #: /home/lgcosta/devel/centreon/centreon/www/include/configuration/configServers/help.php:18
@@ -5904,6 +5908,22 @@ msgid ""
 msgstr ""
 "Essa opção torna o mecanismo do Mecanismo Centreon compatível com módulos de"
 " terceiros, como MKLiveStatus e Mod_Gearman."
+
+msgid ""
+"What kind of method is needed to reach the Remote Server, HTTP or HTTPS?"
+msgstr ""
+
+msgid ""
+"On which TCP port is listening the Remote Server?"
+msgstr ""
+
+msgid ""
+"If checked, it won't check the validity of the SSL certificate of the Remote Server."
+msgstr ""
+
+msgid "If checked, it won't  use the proxy configured in "
+"'Administration > Parameters > Centreon UI' to connect to the Remote Server."
+msgstr ""
 
 #~ msgid "Enable caching"
 #~ msgstr "Ativa Cache"

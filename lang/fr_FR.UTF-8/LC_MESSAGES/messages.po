@@ -9355,6 +9355,10 @@ msgstr "Par OID"
 msgid "By OID and Host"
 msgstr "Par OID et hôte"
 
+#: centreon-web/www/include/configuration/configObject/traps/formTraps.php
+msgid "By OID, Host and Service"
+msgstr "Par OID, hôte et service"
+
 #: centreon-web/www/include/configuration/configObject/traps/formTraps.php:325
 msgid "Execution type"
 msgstr "Type d'exécution"
@@ -11650,6 +11654,10 @@ msgstr "Répertoire des fichiers de configuration de Centreon Broker"
 #: centreon-web/www/include/configuration/configServers/formServers.php:158
 msgid "Centreon Broker modules path"
 msgstr "Chemin des modules de Centreon Broker"
+
+#: centreon-web/www/include/configuration/configServers/formServers.php:193
+msgid "Centreon Broker logs path"
+msgstr "Répertoire des logs de Centreon Broker"
 
 #: centreon-web/www/include/configuration/configServers/formServers.php:163
 msgid "Centreon Connector"
@@ -14713,3 +14721,15 @@ msgstr "Vous ne pouvez pas éditer ce temps d’arrêt car vous n'êtes pas auto
 
 msgid "You can't edit this hostgroup because you don't have access to all its resources"
 msgstr "Vous ne pouvez pas éditer groupe d'hote car vous n'êtes pas autorisé à accéder à toutes les ressources liées"
+
+msgid "Filter by Host"
+msgstr "Filtrer par hôtes"
+
+msgid "Filter by Hostgroup"
+msgstr "Filtrer par groupe d'hôtes"
+
+msgid "Filter by Servicegroup"
+msgstr "Filtrer par groupe de services"
+
+msgid "Chart"
+msgstr "Graphiques"

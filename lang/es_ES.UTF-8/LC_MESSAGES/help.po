@@ -766,8 +766,12 @@ msgid "Init script for broker daemon."
 msgstr "Script de inicialización de broker."
 
 #: centreon-web/www/include/Administration/parameters/engine/help.php:35
-msgid "Mailer binary with complete path."
-msgstr "Ruta completa del ejecutable de envío de correos."
+msgid ""
+"Mailer binary with complete path. This define the @MAILER@ macro used in "
+"notification commands."
+msgstr ""
+"Ruta completa del ejecutable de envío de correos. Esto define la macro "
+"@MAILER@ utilizada en los comandos de notificación."
 
 #: centreon-web/www/include/Administration/parameters/engine/help.php:43
 msgid "Maximum number of hosts to show in the Tactical Overview page."
@@ -4209,31 +4213,35 @@ msgid "Path with modules for Centreon Broker"
 msgstr "Ruta para los módulos de Centreon Broker"
 
 #: centreon-web/www/include/configuration/configServers/help.php:16
+msgid "Path of the Centreon Broker log file"
+msgstr "Ruta del archivo de registro de Centreon Broker"
+
+#: centreon-web/www/include/configuration/configServers/help.php:17
 msgid "Path with Centreon Connector binaries"
 msgstr "Ruta a los conectores de Centreon"
 
-#: centreon-web/www/include/configuration/configServers/help.php:17
+#: centreon-web/www/include/configuration/configServers/help.php:18
 msgid "Enable or disable poller"
 msgstr "Habilitar o deshabilitar el colector"
 
-#: centreon-web/www/include/configuration/configServers/help.php:18
+#: centreon-web/www/include/configuration/configServers/help.php:19
 msgid "Centreontrapd init script to restart process on poller."
 msgstr "Script de inicialización del proceso de Centreontrapd para reiniciarlo en el colector."
 
-#: centreon-web/www/include/configuration/configServers/help.php:19
+#: centreon-web/www/include/configuration/configServers/help.php:20
 msgid "Light databases will be stored in the specified directory. They are used for synchronizing trap definitions on pollers."
 msgstr ""
 "Las bases de datos reducidas se guardan en un directorio dedicado. \n"
 "Se utilizan para sincronizar la configuración de capturas SNMP para un recopilador remoto."
 
-#: centreon-web/www/include/configuration/configServers/help.php:20
+#: centreon-web/www/include/configuration/configServers/help.php:21
 msgid "Those commands can be executed at the end of the file generation generation/restart process. Do not specify macros in the commands, for they will not be replaced. Make sure to have sufficient rights for the Apache user to run these commands."
 msgstr ""
 "Estos comandos se ejecutan al final de la generación de la configuración de supervisión y después del reinicio del motor de recopilación. \n"
 "No especifique macros después de este comando porque no se sobrescribirán. \n"
 "Compruebe que los derechos de ejecución son suficientes para el usuario \"apache\"."
 
-#: centreon-web/www/include/configuration/configServers/help.php:21
+#: centreon-web/www/include/configuration/configServers/help.php:22
 msgid "Short description of the poller"
 msgstr "Breve descripción del coleccionista."
 
@@ -4292,3 +4300,20 @@ msgstr "Método de recarga de la configuración: reiniciar, recargar o comando e
 #: centreon-web/www/include/configuration/configGenerate/help.php:8
 msgid "Run the commands that are defined in the poller configuration page (Configuration > Centreon > Poller > Post-Restart command)."
 msgstr "Ejecuta el comando definido en la configuración del recopilador (Configuración> Centreon> Poller> Comando posterior al reinicio)."
+
+msgid ""
+"What kind of method is needed to reach the Remote Server, HTTP or HTTPS?"
+msgstr ""
+
+msgid "On which TCP port is listening the Remote Server?"
+msgstr ""
+
+msgid ""
+"If checked, it won't check the validity of the SSL certificate of the Remote Server."
+msgstr ""
+""
+
+msgid "If checked, it won't  use the proxy configured in "
+"'Administration > Parameters > Centreon UI' to connect to the Remote Server."
+msgstr ""
+""

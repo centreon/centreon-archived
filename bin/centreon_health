@@ -1,0 +1,71 @@
+#!/usr/bin/env perl
+#
+# Copyright 2005 - 2019 Centreon (https://www.centreon.com/)
+# 
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+# For more information : contact@centreon.com
+#
+
+use warnings;
+use centreon::script::centreon_health;
+
+centreon::script::centreon_health->new()->run();
+
+__END__
+
+=head1 NAME
+
+centreon_health - a tool/script to gather informations about Centreon ("noroot" script)
+
+=head1 SYNOPSIS
+
+centreon_health [options]
+
+=head1 OPTIONS
+
+=over 8
+
+=item B<--centstorage-db> <value>
+
+Specify the name of your centstorage db if not standard
+(default: centreon_storage).
+
+=item B<--centreon-branch> <value>
+
+Specify centreon version (X.Y format) if older than 2.8
+(default: 2.8).
+
+=item B<--check-protocol> <value>
+
+Specify favorite check protocol (will be implemented later, 'snmp' is the only one available for now)
+
+=item B<--snmp-community> <value>
+
+Specify snmp community to execute plugins
+
+=item B<--output-type> <value>
+
+Specify output type. Can be: 'MARKDOWN', 'JSON', 'TEXT' or 'DUMPER' (last if for debugging only, raw perl struct)
+
+=item B<--skip-*>
+
+Skip check that might be long (rrd and db e.g) on large setup or overkill in some situation
+Can be : --skip-rrd, --skip-db, --skip-logs
+
+=head1 DESCRIPTION
+
+B<centreon_health> will gather some informations about centreon global metrics
+sample usage: su - centreon -c "/usr/share/centreon/bin/centreon_health --skip-logs"
+
+=cut
