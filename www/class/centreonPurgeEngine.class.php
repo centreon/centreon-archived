@@ -61,7 +61,7 @@ class CentreonPurgeEngine
             '< __RETENTION__) OR (expire_time < __RETENTION__ AND expire_time <> 0)';
         $this->purgeDowntimesQuery = 'DELETE FROM downtimes WHERE (actual_end_time is not null and actual_end_time ' .
             '< __RETENTION__) OR (deletion_time is not null and deletion_time < __RETENTION__)';
-	    $this->purgeAuditLogQuery = 'DELETE FROM log_action WHERE action_log_date < __RETENTION__';
+	$this->purgeAuditLogQuery = 'DELETE FROM log_action WHERE action_log_date < __RETENTION__';
 
         $this->tablesToPurge = array(
             'data_bin' => array(
