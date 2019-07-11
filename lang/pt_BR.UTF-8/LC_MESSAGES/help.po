@@ -2463,7 +2463,6 @@ msgstr ""
 "Defina o número de \"unidades de tempo\" a aguardar antes de enviar a notificação de recuperação quando esse serviço entrar em um estado OK."
 "Com uma unidade de tempo padrão de 60s, esse número significará múltiplos de 1 minuto."
 "Se você configurar o valor para 0, o mecanismo de monitoramento começará a enviar notificações imediatamente."
-"Se você definir esse valor como 0, o mecanismo de monitoramento começará a enviar notificações imediatamente."
 
 #: /home/lgcosta/devel/centreon/centreon/www/include/configuration/configObject/service/help.php:175
 msgid ""
