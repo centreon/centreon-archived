@@ -319,7 +319,7 @@ if ($prepareSelect->execute()) {
                         "badge" => $badge[$tabAction[$res['action_type']]]
                     );
                 } else {
-                    if (empty($contactList[$res['log_contact_id']]) || $contactList[$res['log_contact_id']] == "") {
+                    if (empty($contactList[$res['log_contact_id']])) {
                         $author = "CLAPI";
                     } else {
                         $author = $contactList[$res['log_contact_id']];
