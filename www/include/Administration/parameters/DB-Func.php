@@ -831,7 +831,7 @@ function updateODSConfigData()
         $ret["len_storage_comments"] = 0;
     }
     if (!isset($ret["audit_log_retention"])) {
-	    $ret["audit_log_retention"] = 0;
+	$ret["audit_log_retention"] = 0;
     }
     
     $rq = "UPDATE `config` SET `RRDdatabase_path` = '".$ret["RRDdatabase_path"]."',
