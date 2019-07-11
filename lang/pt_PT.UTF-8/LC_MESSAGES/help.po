@@ -2902,17 +2902,21 @@ msgstr ""
 
 #: centreon-web/www/include/configuration/configObject/host/help.php:37
 msgid ""
-"Define the number of \"time units\" to wait before sending out the first problem notification when this host enters a non-UP state. With the default time unit of 60s, this number will mean multiples of 1 minute. If you set this value to 0, monitoring engine will "
-"start sending out notifications immediately."
+"Define the number of \"time units\" to wait before sending out the first problem notification when this "
+"host enters a non-UP state. "
+"With the default time unit of 60s, this number will mean multiples of 1 minute. "
+"If you set this value to 0, monitoring engine will start sending out notifications immediately."
 msgstr ""
 "Define o número de unidades de tempo a decorrer antes de enviar a primeira notificação de um problema no host, resultando em um estado não OK. \n"
 "Com a unidade padrão de 60s, esse número será um múltiplo de 1 minuto. \n"
 "Se esse valor for 0, o planejador enviará uma notificação assim que o problema aparecer."
 
-#: centreon-web/www/include/configuration/configObject/host/help.php:38 centreon-web/www/include/configuration/configObject/service/help.php:70
+#: centreon-web/www/include/configuration/configObject/host/help.php:38
 msgid ""
-"Define the number of \"time units\" to wait before sending out the recovery notification when this host enters a non-UP state. The default time unit is 0 (this number will mean multiples of 1 minute). If you set this value to 0, monitoring engine will start sending "
-"out notifications immediately."
+"Define the number of \"time units\" to wait before sending out the recovery notification when this "
+"host enters an UP state. "
+"With the default time unit of 60s, this number will mean multiples of 1 minute. "
+"If you set this value to 0, monitoring engine will start sending out notifications immediately."
 msgstr ""
 "Define o número de \"unidades de tempo\" que devem decorrer antes de enviar a primeira notificação sobre recuperação devido a um estado de problema. \n"
 "Com a unidade padrão de 60s, esse número significará um múltiplo de 1 minuto. \n"

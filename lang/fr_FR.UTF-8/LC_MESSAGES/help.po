@@ -4913,19 +4913,6 @@ msgstr ""
 "de surveillance supposera que vous souhaitez que les notifications doivent "
 "être envoyées pour tous les états possibles."
 
-#: centreon-web/www/include/configuration/configObject/service/help.php:69
-msgid ""
-"Define the number of \"time units\" to wait before sending out the first "
-"problem notification when this service enters a non-OK state. With the default "
-"time unit of 60s, this number will mean multiples of 1 minute. If you set this "
-"value to 0, monitoring engine will start sending out notifications immediately."
-msgstr ""
-"Définir le nombre \"d'unités de temps\" à attendre avant l'envoi de la "
-"notification du premier problème lorsque ce service entre dans un état non-OK. "
-"Avec l'unité de temps par défaut de 60, ce nombre représente des multiples de "
-"1 minute. Si vous définissez cette valeur à 0, moteur de supervision "
-"commencera à envoyer des notifications immédiatement."
-
 #: centreon-web/www/include/configuration/configObject/service/help.php:71
 msgid ""
 "If this option is enabled, use host's notification parameters instead of "
