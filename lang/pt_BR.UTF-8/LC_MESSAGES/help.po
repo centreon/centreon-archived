@@ -2449,7 +2449,7 @@ msgid ""
 "If you set this value to 0, monitoring engine will start sending out notifications immediately."
 msgstr ""
 "Configure o número de \"unidades de tempo\" para aguardar antes de enviar a primeira notificação de problema quando este serviço entrar em um estado não OK. \n"
-"Com a unidade padrão de 60, esse número representa múltiplos de 1 minuto. \n"
+"Com a unidade padrão de 60, esse número representa múltiplos de 1 minuto."
 "Se você definir esse valor como 0, o mecanismo de monitoramento começará a enviar notificações imediatamente."
 
 #: /home/lgcosta/devel/centreon/centreon/www/include/configuration/configObject/service/help.php:169
