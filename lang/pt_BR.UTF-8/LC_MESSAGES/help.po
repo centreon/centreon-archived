@@ -2448,8 +2448,8 @@ msgid ""
 "With the default time unit of 60s, this number will mean multiples of 1 minute. "
 "If you set this value to 0, monitoring engine will start sending out notifications immediately."
 msgstr ""
-"Defina o número de \"unidades de tempo\" para aguardar antes de enviar a primeira notificação de problema 
-quando este serviço entrar em um estado não OK."
+"Defina o número de \"unidades de tempo\" para aguardar antes de enviar a primeira notificação de problema "
+"quando este serviço entrar em um estado não OK."
 "Com a unidade padrão de 60, esse número representa múltiplos de 1 minuto."
 "Se você definir esse valor como 0, o mecanismo de monitoramento começará a enviar notificações imediatamente."
 
