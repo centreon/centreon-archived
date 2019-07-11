@@ -320,7 +320,7 @@ if ($prepareSelect->execute()) {
                     );
                 } else {
                     if (empty($contactList[$res['log_contact_id']]) || $contactList[$res['log_contact_id']] == "") {
-                        $author = "looks like a CLAPI action";
+                        $author = "CLAPI";
                     } else {
                         $author = $contactList[$res['log_contact_id']];
                     }
