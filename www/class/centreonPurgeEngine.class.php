@@ -223,11 +223,11 @@ class CentreonPurgeEngine
     private function purgeOldData($table)
     {
         if (isset($this->tablesToPurge[$table]['custom_query'])) {
-    	    $request = str_replace(
+            $request = str_replace(
                 '__RETENTION__',
                 $this->tablesToPurge[$table]['retention'],
                 $this->tablesToPurge[$table]['custom_query']
-	    );
+            );
         } else {
             $request = "DELETE FROM " . $table . " ";
             $request .= "WHERE " . $this->tablesToPurge[$table]['ctime_field'] . " < " .
