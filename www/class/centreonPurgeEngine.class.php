@@ -180,9 +180,10 @@ class CentreonPurgeEngine
         echo "[" . date(DATE_RFC822) . "] Purging index_data...\n";
         $this->purgeIndexData();
         echo "[" . date(DATE_RFC822) . "] index_data purged\n";
-	    echo "[" . date(DATE_RFC822) . "] Purging log_action_modification...\n";
-	    $this->purgeLogActionModification();
-	    echo "[" . date(DATE_RFC822) . "] log_action_modification purged\n";
+
+	echo "[" . date(DATE_RFC822) . "] Purging log_action_modification...\n";
+	$this->purgeLogActionModification();
+	echo "[" . date(DATE_RFC822) . "] log_action_modification purged\n";
     }
 
     /**
@@ -226,7 +227,7 @@ class CentreonPurgeEngine
                 '__RETENTION__',
                 $this->tablesToPurge[$table]['retention'],
                 $this->tablesToPurge[$table]['custom_query']
-	         );
+	    );
         } else {
             $request = "DELETE FROM " . $table . " ";
             $request .= "WHERE " . $this->tablesToPurge[$table]['ctime_field'] . " < " .
@@ -261,8 +262,8 @@ class CentreonPurgeEngine
     }
     private function purgeLogActionModification()
     {
-	$request = "DELETE FROM log_action_modification WHERE action_log_id ".
-        "NOT IN (SELECT action_log_id FROM log_action)";
+	$request = "DELETE FROM log_action_modification WHERE action_log_id " .
+            "NOT IN (SELECT action_log_id FROM log_action)";
 
 	try {
 	    $DBRESULT = $this->dbCentstorage->query($request);
