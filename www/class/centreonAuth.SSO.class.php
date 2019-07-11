@@ -55,16 +55,18 @@ class CentreonAuthSSO extends CentreonAuth
 
         $this->options_sso = $generalOptions;
 
-        if (isset($this->options_sso['sso_enable']) && $this->options_sso['sso_enable'] == 1 &&
-            isset($this->options_sso['sso_header_username']) && $this->options_sso['sso_header_username'] != '' &&
-            isset($_SERVER[$this->options_sso['sso_header_username']])
+        if (isset($this->options_sso['sso_enable'])
+            && $this->options_sso['sso_enable'] == 1
+            && isset($this->options_sso['sso_header_username'])
+            && $this->options_sso['sso_header_username'] != ''
+            && isset($_SERVER[$this->options_sso['sso_header_username']])
         ) {
             $this->sso_username = $_SERVER[$this->options_sso['sso_header_username']];
             if ($this->checkSsoClient()) {
                 $this->sso_mandatory = 1;
                 $username = $this->sso_username;
-                if (isset($this->options_sso['sso_username_pattern']) &&
-                    $this->options_sso['sso_username_pattern'] != ''
+                if (isset($this->options_sso['sso_username_pattern']) 
+                    && $this->options_sso['sso_username_pattern'] != ''
                 ) {
                     $username = preg_replace(
                         $this->options_sso['sso_username_pattern'],
@@ -73,12 +75,19 @@ class CentreonAuthSSO extends CentreonAuth
                     );
                 }
             }
-        } elseif (isset($this->options_sso['keycloak_enable']) && $this->options_sso['keycloak_enable'] == 1 &&
-            isset($this->options_sso['keycloak_url']) && $this->options_sso['keycloak_url'] != '' &&
-            isset($this->options_sso['keycloak_redirect_url']) && $this->options_sso['keycloak_redirect_url'] != '' &&
-            isset($this->options_sso['keycloak_realm']) && $this->options_sso['keycloak_realm'] != '' &&
-            isset($this->options_sso['keycloak_client_id']) && $this->options_sso['keycloak_client_id'] != '' &&
-            isset($this->options_sso['keycloak_client_secret']) && $this->options_sso['keycloak_client_secret'] != '') {
+        } elseif (isset($this->options_sso['keycloak_enable'])
+            && $this->options_sso['keycloak_enable'] == 1
+            && isset($this->options_sso['keycloak_url'])
+            && $this->options_sso['keycloak_url'] != ''
+            && isset($this->options_sso['keycloak_redirect_url'])
+            && $this->options_sso['keycloak_redirect_url'] != ''
+            && isset($this->options_sso['keycloak_realm'])
+            && $this->options_sso['keycloak_realm'] != ''
+            && isset($this->options_sso['keycloak_client_id'])
+            && $this->options_sso['keycloak_client_id'] != ''
+            && isset($this->options_sso['keycloak_client_secret'])
+            && $this->options_sso['keycloak_client_secret'] != ''
+        ) {
 
             $client_id = $this->options_sso['keycloak_client_id'];
             $client_secret = $this->options_sso['keycloak_client_secret'];
@@ -87,15 +96,23 @@ class CentreonAuthSSO extends CentreonAuth
             $redirectNoEncode = $this->options_sso['keycloak_redirect_url'];
 
             $redirect = urlencode($redirectNoEncode);
-            $authUrl = $base . "/realms/".$realm."/protocol/openid-connect/auth?client_id=".$client_id."&response_type=code&redirect_uri=" . $redirect;
+            $authUrl = $base . "/realms/".$realm."/protocol/openid-connect/auth?client_id=" . $client_id
+                ."&response_type=code&redirect_uri=" . $redirect;
 
             if (isset($_GET['force'])) {
                 header('Location: ' . $authUrl);
             }
 
-            if(isset($_GET['code'])) {
+            if (isset($_GET['code'])) {
 
-                $Ktoken = $this->getKeycloakToken($base, $realm,$redirectNoEncode, $client_id, $client_secret, $_GET['code']);
+                $Ktoken = $this->getKeycloakToken(
+                    $base,
+                    $realm,
+                    $redirectNoEncode,
+                    $client_id,
+                    $client_secret,
+                    $_GET['code']
+                );
 
                 $user = $this->getKeycloakUserInfo($base, $realm, $client_id, $client_secret, $Ktoken);
 
@@ -126,8 +143,9 @@ class CentreonAuthSSO extends CentreonAuth
 
     protected function checkSsoClient()
     {
-        if (isset($this->options_sso['sso_enable']) && $this->options_sso['sso_enable'] == 1 &&
-            isset($this->options_sso['sso_mode']) && $this->options_sso['sso_mode'] == 1) {
+        if (isset($this->options_sso['sso_enable']) && $this->options_sso['sso_enable'] == 1
+            && isset($this->options_sso['sso_mode']) && $this->options_sso['sso_mode'] == 1
+        ) {
             # Mixed
 
             $blacklist = explode(',', $this->options_sso['sso_blacklist_clients']);
@@ -148,8 +166,9 @@ class CentreonAuthSSO extends CentreonAuth
                     return 1;
                 }
             }
-        } else if (isset($this->options_sso['keycloak_enable']) && $this->options_sso['keycloak_enable'] == 1 &&
-            isset($this->options_sso['keycloak_mode']) && $this->options_sso['keycloak_mode'] == 1) {
+        } elseif (isset($this->options_sso['keycloak_enable']) && $this->options_sso['keycloak_enable'] == 1
+            && isset($this->options_sso['keycloak_mode']) && $this->options_sso['keycloak_mode'] == 1
+        ) {
             # Mixed
 
             $blacklist = explode(',', $this->options_sso['keycloak_blacklist_clients']);
@@ -161,7 +180,7 @@ class CentreonAuthSSO extends CentreonAuth
             }
 
             $whitelist = explode(',', $this->options_sso['keycloak_trusted_clients']);
-            if(empty($whitelist[0])){
+            if (empty($whitelist[0])) {
                 return 1;
             }
             foreach ($whitelist as $value) {
@@ -195,6 +214,18 @@ class CentreonAuthSSO extends CentreonAuth
     }
 
 
+    /**
+     * Connect to Keycloak and get token access
+     *
+     * @parem string $base Keycloak Server Url
+     * @parem string $realm Keycloak Client Realm
+     * @parem string $redirect_uri Keycloak Redirect Url
+     * @parem string $client_id Keycloak Client ID
+     * @parem string $client_secret Keycloak Client Secret
+     * @parem string $code Keycloak Authorization Code
+     *
+     * @return string
+    */
     function getKeycloakToken($base, $realm, $redirect_uri, $client_id, $client_secret, $code) {
 
         $url = $base."/realms/".$realm."/protocol/openid-connect/token";
@@ -217,6 +248,17 @@ class CentreonAuthSSO extends CentreonAuth
         return $resp["access_token"];
     }
 
+    /**
+     * Validate Centreon user on Keycloak
+     *
+     * @parem string $base Keycloak Server Url
+     * @parem string $realm Keycloak Client Realm
+     * @parem string $client_id Keycloak Client ID
+     * @parem string $client_secret Keycloak Client Secret
+     * @parem string $token Keycloak Token Access
+     *
+     * @return string
+     */
     function getKeycloakUserInfo($base, $realm, $client_id, $client_secret, $token){
 
         $url = $base."/realms/".$realm."/protocol/openid-connect/token/introspect";
