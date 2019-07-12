@@ -127,7 +127,7 @@ class App extends Component {
             <span className={footerStyles["full-screen"]} onClick={this.goFull} />
           </div>
         </ConnectedRouter>
-      <StylesProvider>
+      </StylesProvider>
     );
   }
 }
