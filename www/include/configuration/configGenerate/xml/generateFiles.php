@@ -211,8 +211,8 @@ function printDebug($xml, $tabs)
 
     foreach ($tab_server as $host) {
         $stdout = shell_exec(
-            escapeshellarg($nagios_bin["nagios_bin"]) . " -v " . $nagiosCFGPath .
-            escapeshellarg($host["id"]) . "/centengine.DEBUG 2>&1"
+            escapeshellarg($nagios_bin['nagios_bin']) . " -v " . $nagiosCFGPath .
+            escapeshellarg($host['id']) . "/centengine.DEBUG 2>&1"
         );
         $stdout = htmlspecialchars($stdout, ENT_QUOTES, "UTF-8");
         $msg_debug[$host['id']] = str_replace("\n", "<br />", $stdout);
