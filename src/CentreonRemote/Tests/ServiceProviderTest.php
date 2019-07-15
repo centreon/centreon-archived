@@ -97,11 +97,9 @@ class ServiceProviderTest extends TestCase
     {
         $checkList = [
             Exporter\CommandExporter::class,
-            Exporter\DowntimeExporter::class,
             Exporter\GraphExporter::class,
             Exporter\HostExporter::class,
             Exporter\MediaExporter::class,
-            Exporter\MetaServiceExporter::class,
             Exporter\PollerExporter::class,
             Exporter\ServiceExporter::class,
             Exporter\TimePeriodExporter::class,
