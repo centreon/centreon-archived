@@ -83,7 +83,6 @@ class ExportService
         $partials = [];
         $interface = ExporterServicePartialInterface::class;
 
-        echo "\n";
         foreach ($this->exporter->all() as $exporterMeta) {
             if ($filterExporters && !in_array($exporterMeta['classname'], $filterExporters)) {
                 continue;

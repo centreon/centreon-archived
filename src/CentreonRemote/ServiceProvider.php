@@ -169,20 +169,6 @@ class ServiceProvider implements AutoloadServiceProviderInterface
             return $service;
         });
         
-        /* Not necessary for Remote Server export
-        // Meta services
-        $pimple['centreon_remote.exporter']->add(Domain\Exporter\MetaServiceExporter::class, function () use ($pimple) {
-            $services = [
-                \Centreon\ServiceProvider::CENTREON_DB_MANAGER,
-            ];
-
-            $locator = new ServiceLocator($pimple, $services);
-            $service = new Domain\Exporter\MetaServiceExporter($locator);
-
-            return $service;
-        });
-        */
-        
         // Services
         $pimple['centreon_remote.exporter']->add(Domain\Exporter\ServiceExporter::class, function () use ($pimple) {
             $services = [
@@ -218,20 +204,6 @@ class ServiceProvider implements AutoloadServiceProviderInterface
 
             return $service;
         });
-        
-        /* Not necessary for Remote Server export
-        // Downtimes
-        $pimple['centreon_remote.exporter']->add(Domain\Exporter\DowntimeExporter::class, function () use ($pimple) {
-            $services = [
-                \Centreon\ServiceProvider::CENTREON_DB_MANAGER,
-            ];
-
-            $locator = new ServiceLocator($pimple, $services);
-            $service = new Domain\Exporter\DowntimeExporter($locator);
-
-            return $service;
-        });
-        */
         
         // Graphs
         $pimple['centreon_remote.exporter']->add(Domain\Exporter\GraphExporter::class, function () use ($pimple) {
