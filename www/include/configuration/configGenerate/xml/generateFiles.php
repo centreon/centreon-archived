@@ -1,7 +1,7 @@
 <?php
 /*
- * Copyright 2005-2015 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2019 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -35,8 +35,8 @@
 
 ini_set("display_errors", "Off");
 
-require_once realpath(dirname(__FILE__) . "/../../../../../config/centreon.config.php");
-
+require_once realpath(__DIR__ . "/../../../../../config/centreon.config.php");
+require_once realpath(__DIR__ . "/../../../../../bootstrap.php");
 require_once _CENTREON_PATH_ . "www/include/configuration/configGenerate/DB-Func.php";
 require_once _CENTREON_PATH_ . 'www/class/config-generate/generate.class.php';
 require_once _CENTREON_PATH_ . "www/class/centreon.class.php";
@@ -60,9 +60,7 @@ if (!isset($_POST['poller']) || !isset($_POST['debug'])) {
     exit();
 }
 
-/**
- * List of error from php
- */
+// List of error from php
 global $generatePhpErrors;
 $generatePhpErrors = array();
 
@@ -87,7 +85,7 @@ $ret = array();
 $ret['host'] = $pollers;
 $ret['debug'] = $debug;
 
-/*  Set new error handler */
+// Set new error handler
 set_error_handler('log_error');
 
 $okMsg = "<b><font color='green'>OK</font></b>";
@@ -106,11 +104,11 @@ try {
         ));
     }
 
-    # Sync contactgroups to ldap
+    // Sync contactgroups to ldap
     $cgObj = new CentreonContactgroup($pearDB);
     $cgObj->syncWithLdap();
 
-    # Generate configuration
+    // Generate configuration
     if ($pollers == '0') {
         $config_generate->configPollers($username);
     } else {
@@ -120,7 +118,7 @@ try {
         }
     }
 
-    # Debug configuration
+    // Debug configuration
     $statusMsg = $okMsg;
     $statusCode = 0;
     if ($debug) {
@@ -138,12 +136,10 @@ try {
     $xml->writeElement("error", $e->getMessage());
 }
 
-/* Restore default error handler */
+// Restore default error handler
 restore_error_handler();
 
-/*
- * Add error form php
- */
+// Add error form php
 $xml->startElement('errorsPhp');
 foreach ($generatePhpErrors as $error) {
     if ($error[0] == 'error') {
@@ -156,7 +152,6 @@ foreach ($generatePhpErrors as $error) {
 }
 $xml->endElement();
 
-$xml->endElement();
 header('Content-Type: application/xml');
 header('Cache-Control: no-cache');
 header('Expires: 0');
@@ -173,7 +168,7 @@ $xml->output();
 function log_error($errno, $errstr, $errfile, $errline)
 {
     global $generatePhpErrors;
-    if (!(error_reporting() & $errno)) {
+    if (!(error_reporting() && $errno)) {
         return;
     }
 
@@ -217,7 +212,8 @@ function printDebug($xml, $tabs)
 
     foreach ($tab_server as $host) {
         $stdout = shell_exec(
-            $nagios_bin["nagios_bin"] . " -v " . $nagiosCFGPath . $host["id"] . "/centengine.DEBUG 2>&1"
+            escapeshellarg($nagios_bin['nagios_bin']) . " -v " . $nagiosCFGPath .
+            escapeshellarg($host['id']) . "/centengine.DEBUG 2>&1"
         );
         $stdout = htmlspecialchars($stdout, ENT_QUOTES, "UTF-8");
         $msg_debug[$host['id']] = str_replace("\n", "<br />", $stdout);
@@ -290,7 +286,7 @@ function printDebug($xml, $tabs)
                 "' style='display: none'>[ + ]</label><label id='togglerm_" . $pollerId . "'>[ - ]</label>";
             $returnCode = 1;
         }
-        $str .= "<a href='#' onClick=\"toggleDebug('" . $pollerId . "'); return false;\"/>";
+        $str .= "<a href='#' onClick=\"toggleDebug('" . $pollerId . "'); return false;\">";
         $str .= $toggler . "</a> ";
         $str .= "<b><font color='$pollerNameColor'>" . $tab_server[$pollerId]['name'] . "</font></b><br/>";
         $str .= "<div style='display: $show;' id='debug_" . $pollerId . "'>" . htmlentities($message) . "</div><br/>";
