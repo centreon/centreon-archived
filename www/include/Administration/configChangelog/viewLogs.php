@@ -320,7 +320,7 @@ if ($prepareSelect->execute()) {
                     );
                 } else {
                     if (empty($contactList[$res['log_contact_id']])) {
-                        $author = "CLAPI";
+                        $author = _("unknown");
                     } else {
                         $author = $contactList[$res['log_contact_id']];
                     }
