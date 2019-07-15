@@ -36,7 +36,6 @@
 ini_set("display_errors", "Off");
 
 require_once realpath(__DIR__ . "/../../../../../config/centreon.config.php");
-require_once realpath(__DIR__ . "/../../../../../bootstrap.php");
 require_once _CENTREON_PATH_ . "www/include/configuration/configGenerate/DB-Func.php";
 require_once _CENTREON_PATH_ . 'www/class/config-generate/generate.class.php';
 require_once _CENTREON_PATH_ . "www/class/centreon.class.php";
