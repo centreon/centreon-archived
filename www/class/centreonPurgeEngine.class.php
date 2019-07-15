@@ -260,15 +260,16 @@ class CentreonPurgeEngine
             throw new Exception("Error : Cannot purge index_data, " . $e->getMessage() . "\n");
         }
     }
+    
     private function purgeLogActionModification()
     {
-	$request = "DELETE FROM log_action_modification WHERE action_log_id " .
+        $request = "DELETE FROM log_action_modification WHERE action_log_id " .
             "NOT IN (SELECT action_log_id FROM log_action)";
 
-	try {
-	    $DBRESULT = $this->dbCentstorage->query($request);
-	} catch (\PDOException $e) {
-	    throw new Exception("Error : Cannot purge log_action_modification, " . $e->getMessage() . "\n");
-	}
+        try {
+            $DBRESULT = $this->dbCentstorage->query($request);
+        } catch (\PDOException $e) {
+            throw new Exception("Error : Cannot purge log_action_modification, " . $e->getMessage() . "\n");
+        }
     }
 }
