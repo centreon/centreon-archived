@@ -5,7 +5,7 @@ Manually configuring a poller
 =============================
 
 Configuring the server
-=======================
+======================
 
 Once the installation is complete, you must integrate this remote poller into the Centreon configuration.
 
@@ -20,6 +20,13 @@ Once the installation is complete, you must integrate this remote poller into th
 .. image:: /images/user/configuration/10advanced_configuration/07addpoller.png
    :align: center
 
+.. note::
+    If your poller is attached to a Remote Server, please choose this one in the **Attach to Remote Server** list.
+
+.. note::
+    If If your poller is attached to a Remote Server, but you prefer to send externals commands and configuration
+    directly from the Central server to this poller, please disable the **Use the Remote Server as a proxy for SSH**
+    option.
 
 #. Go to the **Configuration > Pollers > Engine configuration** menu.
 #. Select your last added configuration.
