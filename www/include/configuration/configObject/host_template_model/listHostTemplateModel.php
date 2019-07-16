@@ -241,6 +241,7 @@ foreach (array('o1', 'o2') as $option) {
 }
 
 $tpl->assign('limit', $limit);
+$tpl->assign('errorMsg', $errorMsg ?? '');
 
 $renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 $form->accept($renderer);

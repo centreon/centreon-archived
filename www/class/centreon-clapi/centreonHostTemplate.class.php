@@ -68,4 +68,44 @@ class CentreonHostTemplate extends CentreonHost
     {
         throw new CentreonClapiException(self::UNKNOWN_METHOD);
     }
+
+    /**
+     * Del Action
+     * Host template can be deleted only if it is not used in host
+     *
+     * @param string $objectName
+     * @return void
+     * @throws CentreonClapiException
+     */
+    public function del($objectName)
+    {
+        $sql = "SELECT COUNT(*) AS cnt
+                FROM host_template_relation htr 
+                JOIN host h ON h.host_id = htr.host_tpl_id 
+                WHERE h.host_name = :hostname";
+        $res = $this->db->query(
+            $sql,
+            array(
+                ':hostname' => $objectName
+            )
+        );
+        $result = (int)$res->fetch()['cnt'];
+        if ($result > 0) {
+            throw new CentreonClapiException(self::OBJECTALREADYLINKED . ":" . $objectName);
+        } else {
+            try {
+                $this->db->beginTransaction();
+
+                parent::del($objectName);
+                $this->db->query(
+                    "DELETE FROM service WHERE service_register = '1' "
+                    . "AND service_id NOT IN (SELECT service_service_id FROM host_service_relation)"
+                );
+
+                $this->db->commit();
+            } catch (\PDOException $e) {
+                $this->db->rollBack();
+            }
+        }
+    }
 }

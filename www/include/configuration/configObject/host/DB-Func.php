@@ -298,46 +298,65 @@ function disableHostInDB($host_id = null, $host_arr = array())
 function deleteHostInDB($hosts = array())
 {
     global $pearDB, $centreon;
+    $message = '';
 
-    foreach ($hosts as $key => $value) {
-        $rq = "SELECT @nbr := (SELECT COUNT( * ) 
-                              FROM host_service_relation 
-                              WHERE service_service_id = hsr.service_service_id 
-                              GROUP BY service_service_id) 
-                              AS nbr, hsr.service_service_id 
-                              FROM host_service_relation hsr, host 
-                              WHERE hsr.host_host_id = '" . intval($key) . "' 
-                              AND host.host_id = hsr.host_host_id 
-                              AND host.host_register = '1'";
-        $DBRESULT = $pearDB->query($rq);
+    try {
+        foreach ($hosts as $key => $value) {
+            $rq = "SELECT @nbr := (SELECT COUNT( * ) 
+                                  FROM host_service_relation 
+                                  WHERE service_service_id = hsr.service_service_id 
+                                  GROUP BY service_service_id) 
+                                  AS nbr, hsr.service_service_id 
+                                  FROM host_service_relation hsr, host 
+                                  WHERE hsr.host_host_id = '" . intval($key) . "' 
+                                  AND host.host_id = hsr.host_host_id 
+                                  AND host.host_register = '1'";
+            $dbResult = $pearDB->query($rq);
 
-        $DBRESULT3 = $pearDB->query("SELECT host_name FROM `host` WHERE `host_id` = '" . intval($key) . "' LIMIT 1");
-        $hostname = $DBRESULT3->fetchRow();
+            $dbResult2 = $pearDB->query("SELECT host_name FROM `host` WHERE `host_id` = '" . intval($key) . "' LIMIT 1");
+            $hostname = $dbResult2->fetchRow();
 
-        while ($row = $DBRESULT->fetchRow()) {
-            if ($row["nbr"] == 1) {
-                $DBRESULT4 = $pearDB->query("SELECT service_description 
-                                            FROM `service`
-                                            WHERE `service_id` = '" . $row["service_service_id"] . "' LIMIT 1");
-                $svcname = $DBRESULT4->fetchRow();
-
-                $DBRESULT2 = $pearDB->query("DELETE FROM service 
-                                              WHERE service_id = '" . $row["service_service_id"] . "'");
-                $centreon->CentreonLogAction->insertLog(
-                    "service",
-                    $row["service_service_id"],
-                    $hostname['host_name'] . "/" . $svcname["service_description"],
-                    "d"
-                );
+            $sql = "SELECT COUNT(*) AS cnt
+                FROM host_template_relation htr 
+                JOIN host h ON h.host_id = htr.host_tpl_id 
+                WHERE h.host_id = :host";
+            $res = $pearDB->query($sql, [':host' => intval($key)]);
+            $templates = (int)$res->fetch()['cnt'];
+            if ($templates > 0) {
+                $message .= 'You can\'t delete ' . $hostname['host_name'] . ' because it is used in a host! <br/>';
+                continue;
             }
+
+            $pearDB->beginTransaction();
+            while ($row = $dbResult->fetchRow()) {
+                if ($row["nbr"] == 1) {
+                    $dbResult3 = $pearDB->query("SELECT service_description 
+                                            FROM `service`
+                                            WHERE `service_id` = '" . (int)$row["service_service_id"] . "' LIMIT 1");
+                    $svcname = $dbResult3->fetchRow();
+
+                    $pearDB->query("DELETE FROM service 
+                                                  WHERE service_id = " . (int)$row["service_service_id"]);
+                    $centreon->CentreonLogAction->insertLog(
+                        "service",
+                        $row["service_service_id"],
+                        $hostname['host_name'] . "/" . $svcname["service_description"],
+                        "d"
+                    );
+                }
+            }
+            $centreon->user->access->updateACL(["type" => 'HOST', 'id' => $key, "action" => "DELETE"]);
+            $pearDB->query("DELETE FROM host WHERE host_id = '" . intval($key) . "'");
+            $pearDB->query("DELETE FROM host_template_relation WHERE host_host_id = '" . intval($key) . "'");
+            $pearDB->query("DELETE FROM on_demand_macro_host WHERE host_host_id = '" . intval($key) . "'");
+            $pearDB->query("DELETE FROM contact_host_relation WHERE host_host_id = '" . intval($key) . "'");
+            $centreon->CentreonLogAction->insertLog("host", $key, $hostname['host_name'], "d");
+            $pearDB->commit();
         }
-        $centreon->user->access->updateACL(array("type" => 'HOST', 'id' => $key, "action" => "DELETE"));
-        $DBRESULT = $pearDB->query("DELETE FROM host WHERE host_id = '" . intval($key) . "'");
-        $DBRESULT = $pearDB->query("DELETE FROM host_template_relation WHERE host_host_id = '" . intval($key) . "'");
-        $DBRESULT = $pearDB->query("DELETE FROM on_demand_macro_host WHERE host_host_id = '" . intval($key) . "'");
-        $DBRESULT = $pearDB->query("DELETE FROM contact_host_relation WHERE host_host_id = '" . intval($key) . "'");
-        $centreon->CentreonLogAction->insertLog("host", $key, $hostname['host_name'], "d");
+    } catch (\PDOException $e) {
+        $pearDB->rollBack();
     }
+    return $message;
 }
 
 /*

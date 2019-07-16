@@ -33,6 +33,7 @@
 			{/php}
 		</tr>
 	</table>
+    {if $errorMsg != ''}<div class="error-msg">{$errorMsg}</div>{/if}
 	<table class="ListTable">
 		<tr class="ListHeader">
 			<td class="ListColHeaderPicker"><input type="checkbox" name="checkall" onclick="checkUncheckAll(this);"/></td>
