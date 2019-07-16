@@ -127,7 +127,7 @@ class MetaService extends AbstractObject
             "AND display_name = :meta_name";
         $stmt = $this->backend_instance->db->prepare($query);
         $stmt->bindParam(':meta_composed_name', $composed_name);
-        $stmt->bindParam(':meta_name', $meta_name);
+        $stmt->bindParam(':meta_name', html_entity_decode($meta_name));
         $stmt->execute();
 
         if ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
