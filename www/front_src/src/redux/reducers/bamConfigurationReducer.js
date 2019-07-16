@@ -23,6 +23,7 @@ const initialState = {
       sla_month_duration_warn: null,
       sla_month_duration_crit: null,
       bam_esc: [],
+      bam_kpi:[],
       event_handler_enabled: false,
       event_handler_command: null,
       event_handler_args: null,
