@@ -42,48 +42,6 @@ class CommandExporter extends ExporterServiceAbstract implements ExporterService
             ;
             $this->_dump($command, $this->getFile(static::EXPORT_FILE_COMMAND));
         })();
-
-        /* Not necessary for Remote Server export
-        (function () use ($pollerIds) {
-            $commandArg = $this->db
-                ->getRepository(Repository\CommandArgDescriptionRepository::class)
-                ->export($pollerIds)
-            ;
-            $this->_dump($commandArg, $this->getFile(static::EXPORT_FILE_COMMAND_ARG));
-        })();
-
-        (function () use ($pollerIds) {
-            $commandMacro = $this->db
-                ->getRepository(Repository\OnDemandMacroCommandRepository::class)
-                ->export($pollerIds)
-            ;
-            $this->_dump($commandMacro, $this->getFile(static::EXPORT_FILE_COMMAND_MACRO));
-        })();
-
-        (function () use ($pollerIds) {
-            $connector = $this->db
-                ->getRepository(Repository\ConnectorRepository::class)
-                ->export($pollerIds)
-            ;
-            $this->_dump($connector, $this->getFile(static::EXPORT_FILE_CONNECTOR));
-        })();
-
-        (function () use ($pollerIds) {
-            $category = $this->db
-                ->getRepository(Repository\CommandCategoryRepository::class)
-                ->export($pollerIds)
-            ;
-            $this->_dump($category, $this->getFile(static::EXPORT_FILE_CATEGORY));
-        })();
-
-        (function () use ($pollerIds) {
-            $categoryRelation = $this->db
-                ->getRepository(Repository\CommandCategoryRelationRepository::class)
-                ->export($pollerIds)
-            ;
-            $this->_dump($categoryRelation, $this->getFile(static::EXPORT_FILE_CATEGORY_RELATION));
-        })();
-        */
     }
 
     public function exportPartial(): void

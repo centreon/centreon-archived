@@ -67,16 +67,6 @@ class PollerExporter extends ExporterServiceAbstract
             $this->_dump($data, $this->getFile(static::EXPORT_FILE_CFG_RESOURCE_INSTANCE_RELATION));
         })();
 
-        /* Not necessary for Remote Server export
-        (function () use ($pollerIds) {
-            $pollerCommand = $this->db
-                ->getRepository(Repository\PollerCommandRelationsRepository::class)
-                ->export($pollerIds)
-            ;
-            $this->_dump($pollerCommand, $this->getFile(static::EXPORT_FILE_POLLER_COMMAND));
-        })();
-        */
-
         (function () use ($pollerIds, $overwritePollerService) {
             $cfgNagios = $this->db
                 ->getRepository(Repository\CfgNagiosRepository::class)
@@ -108,16 +98,6 @@ class PollerExporter extends ExporterServiceAbstract
             $cfgCentreonBrokerInfo = $overwritePollerService->getCfgCentreonBrokerInfo($cfgCentreonBrokerInfo);
             $this->_dump($cfgCentreonBrokerInfo, $this->getFile(static::EXPORT_FILE_CFG_CENTREONBROKER_INFO));
         })();
-
-        /* Not necessary for Remote Server export
-        (function () use ($pollerIds) {
-            $timezone = $this->db
-                ->getRepository(Repository\TimezoneRepository::class)
-                ->export($pollerIds)
-            ;
-            $this->_dump($timezone, $this->getFile(static::EXPORT_FILE_TIMEZONE));
-        })();
-        */
     }
 
     /**

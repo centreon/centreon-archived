@@ -120,7 +120,7 @@ class ServiceExporter extends ExporterServiceAbstract
             $this->_dump($serviceCategoryRelation, $this->getFile(static::EXPORT_FILE_CATEGORY_RELATION));
         })();
 
-        // Extract on demande macros data used by services
+        // Extract on demand macros data used by services
         (function () use ($serviceList, $serviceTemplateChain) {
             $serviceMacros = $this->db
                 ->getRepository(Repository\OnDemandMacroServiceRepository::class)

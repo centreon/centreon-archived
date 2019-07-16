@@ -78,7 +78,6 @@ SQL;
 
         $sql = <<<SQL
 SELECT
---    t.*
     t.command_id, t.command_name, t.command_line, t.graph_id
 FROM command AS t
 WHERE t.command_id IN ({$ids})
