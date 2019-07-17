@@ -752,7 +752,6 @@ msgstr "Enviar"
 #: /home/lgcosta/devel/centreon/centreon/www/include/Administration/parameters/ldap/form.php:246
 #: /home/lgcosta/devel/centreon/centreon/www/include/Administration/parameters/api/api.php:93
 #: /home/lgcosta/devel/centreon/centreon/www/include/Administration/parameters/centstorage/form.php:161
-#: /home/lgcosta/devel/centreon/centreon/www/include/Administration/parameters/centstorage/form.php:135
 #: /home/lgcosta/devel/centreon/centreon/www/include/Administration/parameters/general/form.php:250
 #: /home/lgcosta/devel/centreon/centreon/www/include/Administration/parameters/backup/formBackup.php:135
 #: /home/lgcosta/devel/centreon/centreon/www/include/Administration/parameters/engine/form.php:156
@@ -6933,7 +6932,6 @@ msgid "Changed"
 msgstr "Alterado"
 
 #: /home/lgcosta/devel/centreon/centreon/www/include/Administration/configChangelog/viewLogs.php:140
-#: /home/lgcosta/devel/centreon/centreon/www/include/Administration/configChangelog/viewLogs.527
 #: /home/lgcosta/devel/centreon/centreon/www/include/Administration/configChangelog/viewLogs.php:148
 #: /home/lgcosta/devel/centreon/centreon/www/include/configuration/configObject/service/listServiceByHostGroup.php:401
 #: /home/lgcosta/devel/centreon/centreon/www/include/configuration/configObject/service/listServiceByHostGroup.php:434

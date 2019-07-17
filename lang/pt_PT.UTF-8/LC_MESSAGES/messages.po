@@ -752,7 +752,6 @@ msgstr "Enviar"
 #: /home/lgcosta/devel/centreon/centreon/www/include/Administration/parameters/ldap/form.php:246
 #: /home/lgcosta/devel/centreon/centreon/www/include/Administration/parameters/api/api.php:93
 #: /home/lgcosta/devel/centreon/centreon/www/include/Administration/parameters/centstorage/form.php:161
-#: /home/lgcosta/devel/centreon/centreon/www/include/Administration/parameters/centstorage/form.php:135
 #: /home/lgcosta/devel/centreon/centreon/www/include/Administration/parameters/general/form.php:250
 #: /home/lgcosta/devel/centreon/centreon/www/include/Administration/parameters/backup/formBackup.php:135
 #: /home/lgcosta/devel/centreon/centreon/www/include/Administration/parameters/engine/form.php:156
@@ -996,7 +995,6 @@ msgstr "Grupos associados"
 #: /home/lgcosta/devel/centreon/centreon/www/include/views/virtualMetrics/listVirtualMetrics.php:167
 #: /home/lgcosta/devel/centreon/centreon/www/include/Administration/parameters/ldap/list.php:44
 #: /home/lgcosta/devel/centreon/centreon/www/include/Administration/configChangelog/viewLogs.php:141
-#: /home/lgcosta/devel/centreon/centreon/www/include/Administration/configChangelog/viewLogs.php:327
 #: /home/lgcosta/devel/centreon/centreon/www/include/Administration/configChangelog/viewLogs.php:150
 #: /home/lgcosta/devel/centreon/centreon/www/include/configuration/configCentreonBroker/formCentreonBroker.php:118
 #: /home/lgcosta/devel/centreon/centreon/www/include/configuration/configCentreonBroker/listCentreonBroker.php:143
