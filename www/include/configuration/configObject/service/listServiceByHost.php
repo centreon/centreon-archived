@@ -93,7 +93,6 @@ if (isset($_POST['search']) || isset($_GET['search'])) {
     $status = $centreon->historySearch[$url]["status"] ?? null;
 }
 
-var_dump($template);
 
 $searchH_SQL = '';
 if ($searchH) {
