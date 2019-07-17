@@ -43,10 +43,12 @@
       </td>
     </tr>
 		<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="ssh_port"> {$form.ssh_port.label}</td><td class="FormRowValue">{$form.ssh_port.html}</td></tr>
+		{if $form.remote_server_centcore_ssh_proxy.label}
 		<tr class="list_two">
 		  <td class="FormRowField"><img class="helpTooltip" name="remote_server_centcore_ssh_proxy"> {$form.remote_server_centcore_ssh_proxy.label}</td>
 		  <td class="FormRowValue">{$form.remote_server_centcore_ssh_proxy.html}</td>
 		</tr>
+		{/if}
 		<tr class="list_lvl_1">
       <td class="ListColLvl1_name" colspan="2">
         <h4>{$form.header.Nagios_Informations}</h4>
