@@ -46,6 +46,7 @@ if (isset($_POST["o"]) && $_POST["o"]) {
  */
 $DBRESULT = $pearDBO->query("SELECT * FROM `config` LIMIT 1");
 $gopt = array_map("myDecode", $DBRESULT->fetchRow());
+
 /*
  * Get centstorage state
  */
@@ -81,7 +82,6 @@ $DBRESULT3 = $pearDB->query("SELECT * FROM `options` WHERE `key` LIKE 'partition
 while ($data = $DBRESULT3->fetchRow()) {
     $gopt[$data['key']] = $data['value'];
 }
-
 
 /*
  * Format of text input
