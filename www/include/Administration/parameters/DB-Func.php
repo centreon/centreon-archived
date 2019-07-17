@@ -785,7 +785,7 @@ function updateODSConfigData()
         `archive_retention` = '" . $ret["archive_retention"] . "',
         `reporting_retention` = '" . $ret["reporting_retention"] . "',
         `audit_log_option` = '" . $ret["audit_log_option"] . "',
-        `storage_type` = '" . (isset($ret["storage_type"]) ? $ret["storage_type"] : null) . "',
+        `storage_type` = " . (isset($ret["storage_type"]) ? $ret["storage_type"] : 'NULL') . ",
         `len_storage_downtimes` = '" . $ret["len_storage_downtimes"] . "',
         `audit_log_retention` = '" . $ret["audit_log_retention"] . "',
         `len_storage_comments` = '" . $ret["len_storage_comments"] . "' "
