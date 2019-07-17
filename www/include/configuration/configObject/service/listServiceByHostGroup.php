@@ -245,7 +245,6 @@ if ($status) {
 }
 $form->addElement('select2', 'status', "", $statusFilter, $attrServiceStatus);
 
-// Fill a tab with a multidimensional Array we put in $tpl
 $interval_length = $centreon->optGen['interval_length'];
 
 $elemArr = array();
