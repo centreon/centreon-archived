@@ -183,7 +183,7 @@ $form = new HTML_QuickFormCustom('select_form', 'POST', "?p={$p}");
 $style = 'one';
 
 //select2 HG
-$hostgroupsRoute = './include/common/webServices/rest/internal.php?object=centreon_configuration_hostgroup&action=list';
+$hostgroupsRoute = './api/internal.php?object=centreon_configuration_hostgroup&action=list';
 $attrHostgroups = array(
     'datasourceOrigin' => 'ajax',
     'availableDatasetRoute' => $hostgroupsRoute,
@@ -194,7 +194,7 @@ $attrHostgroups = array(
 $form->addElement('select2', 'hostgroup', '', array(), $attrHostgroups);
 
 //select2 Poller
-$pollerRoute = './include/common/webServices/rest/internal.php?object=centreon_configuration_poller&action=list';
+$pollerRoute = './api/internal.php?object=centreon_configuration_poller&action=list';
 $attrPoller = array(
     'datasourceOrigin' => 'ajax',
     'availableDatasetRoute' => $pollerRoute,
@@ -206,7 +206,7 @@ $form->addElement('select2', 'poller', "", array(), $attrPoller);
 
 
 //select2 Host Template
-$hostTplRoute = './include/common/webServices/rest/internal.php?object=centreon_configuration_hosttemplate&action=list';
+$hostTplRoute = './api/internal.php?object=centreon_configuration_hosttemplate&action=list';
 $attrHosttemplates = array(
     'datasourceOrigin' => 'ajax',
     'availableDatasetRoute' => $hostTplRoute,
