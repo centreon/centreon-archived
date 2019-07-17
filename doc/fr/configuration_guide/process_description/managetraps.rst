@@ -163,8 +163,8 @@ Il est possible par l'utilisation de l'option **Reprogrammer les services associ
 
 Le contrôle actif défini au niveau du service est alors effectué.
 
-Executer une commande spciale
-=============================
+Executer une commande spéciale
+==============================
 
 Centreontrapd peut éxecuter une commande spéciale suite à la réception d'un trap SNMP. Pour utiliser cela, il suffit de cocher l'option **Executer une commande spécial** et d'écrire la commande voulue.
 
