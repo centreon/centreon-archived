@@ -71,7 +71,6 @@ $searchS = filter_var(
     $_POST['searchS'] ?? $_GET['searchS'] ?? null,
     FILTER_SANITIZE_STRING
 );
-var_dump($template);
 
 if (isset($_POST['search']) || isset($_GET['search'])) {
     //saving filters values
