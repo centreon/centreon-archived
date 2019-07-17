@@ -197,18 +197,19 @@ function updateCommand($cmd_id = null, $params = array())
         "WHERE `command_id` = :command_id";
 
     $ret["connectors"] = (isset($ret["connectors"]) && !empty($ret["connectors"])) ? $ret["connectors"] : null;
-    $ret["command_activate"]["command_activate"] = (isset($ret["command_activate"]["command_activate"])) ?
-        $ret["command_activate"]["command_activate"] : null;
+    $ret["command_activate"]["command_activate"] = (isset($ret["command_activate"]["command_activate"]))
+            ? $ret["command_activate"]["command_activate"]
+            : null;
 
     $sth = $pearDB->prepare($rq);
     $sth->bindParam(':command_name', $ret["command_name"], PDO::PARAM_STR);
     $sth->bindParam(':command_line', $ret["command_line"], PDO::PARAM_STR);
-    $sth->bindParam(':enable_shell', $ret["enable_shell"], PDO::PARAM_STR);
+    $sth->bindParam(':enable_shell', $ret["enable_shell"], PDO::PARAM_INT);
     $sth->bindParam(':command_example', $ret["command_example"], PDO::PARAM_STR);
-    $sth->bindParam(':command_type', $ret["command_type"]["command_type"], PDO::PARAM_STR);
+    $sth->bindParam(':command_type', $ret["command_type"]["command_type"], PDO::PARAM_INT);
     $sth->bindParam(':command_comment', $ret["command_comment"], PDO::PARAM_STR);
-    $sth->bindParam(':graph_id', $ret["graph_id"], PDO::PARAM_STR);
-    $sth->bindParam(':connector_id', $ret["connectors"], PDO::PARAM_STR);
+    $sth->bindParam(':graph_id', $ret["graph_id"], PDO::PARAM_INT);
+    $sth->bindParam(':connector_id', $ret["connectors"], PDO::PARAM_INT);
     $sth->bindParam(':command_activate', $ret["command_activate"]["command_activate"], PDO::PARAM_STR);
     $sth->bindParam(':command_id', $cmd_id, PDO::PARAM_INT);
     $sth->execute();
@@ -249,19 +250,15 @@ function insertCommand($ret = array())
     $rq .= "VALUES (
             '" . $pearDB->escape($ret["command_name"]) . "', 
             '" . $pearDB->escape($ret["command_line"]) . "', 
-            '" . $pearDB->escape($ret['enable_shell']) . "', 
+            " . (int)$ret['enable_shell'] . ", 
             '" . $pearDB->escape($ret["command_example"]) . "', 
-            '" . $ret["command_type"]["command_type"] . "', 
-            " . (isset($ret["graph_id"]) && !empty($ret["graph_id"])
-            ? "'" . $ret['graph_id'] . "'"
-            : "NULL") . ", 
-            " . (isset($ret["connectors"]) && !empty($ret["connectors"])
-            ? "'" . $ret['connectors'] . "'"
-            : "NULL") . ", 
+            " . (int)$ret["command_type"]["command_type"] . ", 
+            " . (!empty($ret["graph_id"]) ? (int)$ret['graph_id'] : "NULL") . ", 
+            " . (!empty($ret["connectors"]) ? (int)$ret['connectors'] : "NULL") . ", 
             '" . $pearDB->escape($ret["command_comment"]) . "', 
             '" . $pearDB->escape($ret["command_activate"]["command_activate"]) . "'";
     $rq .= ")";
-    $dbResult = $pearDB->query($rq);
+    $pearDB->query($rq);
 
     /*
      * Get Max ID

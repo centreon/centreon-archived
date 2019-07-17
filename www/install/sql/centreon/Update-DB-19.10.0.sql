@@ -53,6 +53,7 @@ ALTER TABLE `traps_service_relation` DROP COLUMN `tsr_id`;
 --
 ALTER TABLE `acl_groups` MODIFY COLUMN `acl_group_changed` int(11) NOT NULL DEFAULT 1;
 ALTER TABLE `widget_models` MODIFY COLUMN `description` TEXT NOT NULL;
+ALTER TABLE `auth_ressource` ALTER `ar_type` SET DEFAULT 'ldap';
 
 --
 -- Remove modules *_files flags.
@@ -60,3 +61,14 @@ ALTER TABLE `widget_models` MODIFY COLUMN `description` TEXT NOT NULL;
 ALTER TABLE `modules_informations` DROP COLUMN `lang_files`;
 ALTER TABLE `modules_informations` DROP COLUMN `sql_files`;
 ALTER TABLE `modules_informations` DROP COLUMN `php_files`;
+
+--
+-- Change IP field from varchar(16) to varchar(255)
+--
+ALTER TABLE `remote_servers` MODIFY COLUMN `ip` VARCHAR(255) NOT NULL;
+
+-- Add trap regexp matching
+ALTER TABLE `traps` ADD COLUMN IF NOT EXISTS `traps_mode` ENUM('0', '1') DEFAULT '0' AFTER `traps_oid`;
+
+-- Add trap filter
+ALTER TABLE `traps` MODIFY COLUMN `traps_exec_interval_type` ENUM('0','1','2','3') NULL DEFAULT '0';
