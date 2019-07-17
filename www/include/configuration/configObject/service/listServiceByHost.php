@@ -212,7 +212,7 @@ $style = "one";
 
 
 //select2 Service template
-$route = './include/common/webServices/rest/internal.php?object=centreon_configuration_servicetemplate&action=list';
+$route = './api/internal.php?object=centreon_configuration_servicetemplate&action=list';
 $attrServicetemplates = array(
     'datasourceOrigin' => 'ajax',
     'availableDatasetRoute' => $route,
