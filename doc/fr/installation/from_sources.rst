@@ -14,78 +14,55 @@ CentOS
 La plupart des utilisateurs de CentOS préfèreront installer Centreon Web
 en utilisant :ref:`les paquets fournis par Centreon <install_from_packages>`.
 
-Dépôt Software collections de Red Hat
--------------------------------------
+Les environnements CentOS et RHEL ne possèdent pas en standard sur
+dépôts l'intégralité des dépendances nécessaires à l'installation
+de Centreon. Vous devez ajouter les dépôts *RPM Forge* et
+*Software Collections*.
 
-Afin d’installer les logiciels Centreon, le dépôt Software collections de Red Hat doit être activé.
+Système el7 : ::
 
-.. note::
-    Le dépôt Software collections est nécessaire pour l’installation de PHP 7 et les librairies associées.
+    $ wget http://repository.it4i.cz/mirrors/repoforge/redhat/el7/en/x86_64/rpmforge/RPMS/rpmforge-release-0.5.3-1.el7.rf.x86_64.rpm
+    $ wget https://repository.it4i.cz/mirrors/repoforge/RPM-GPG-KEY.dag.txt
 
-Exécutez la commande suivante : ::
 
-    # yum install centos-release-scl
+Utilisez votre éditeur de texte favori et supprimez la première
+ligne du fichier *RPM-GPG-KEY.dag.txt*. La première ligne doit
+contenir : ::
 
-Le dépôt est maintenant installé.
+    "-----BEGIN PGP PUBLIC KEY BLOCK-----"
 
-Vous pouvez maintenant installer les prérequis : ::
+Puis exécutez les commandes suivantes : ::
+
+    $ rpm --import RPM-GPG-KEY.dag.txt
+    $ rpm -Uvh rpmforge-release-0.5.3-1.el7.rf.x86_64.rpm
+    $ yum install centos-release-scl
+
+Vous pouvez maintenant installer les dépendances nécessaires : ::
 
     $ yum update
-    $ yum install -y \
-        rh-php72-php-zip \
-        rh-php72-php-xml \
-        rh-php72-php-fpm \
-        rh-php72-php-process \
-        rh-php72-php-common \
-        rh-php72-php-pdo \
-        rh-php72-php-intl \
-        rh-php72-php-pear \
-        rh-php72-php-json \
-        rh-php72-php-mysqlnd \
-        rh-php72-php-ldap \
-        rh-php72-php-gd \
-        rh-php72-php-cli \
-        rh-php72-php-mbstring \
-        rh-php72-php-snmp \
-        perl-DBD-MySQL \
-        perl-Sys-Syslog \
-        httpd24-httpd \
-        perl-DBI \
-        perl-DBD-MySQL \
-        rrdtool \
-        perl-rrdtool \
-        perl-Crypt-DES \
-        perl-Digest-SHA1 \
-        perl-Digest-HMAC \
-        net-snmp-utils \
-        perl-Socket6 \
-        perl-IO-Socket-INET6 \
-        net-snmp \
-        net-snmp-libs \
-        dmidecode \
-        lm_sensors \
-        net-snmp-perl \
-        fping \
-        cpp \
-        gcc \
-        gcc-c++ \
-        libstdc++ \
-        glib2-devel
+    $ yum upgrade
+    $ yum install httpd24-httpd gd fontconfig-devel libjpeg-devel libpng-devel gd-devel perl-GD perl-DateTime \
+        openssl-devel perl-DBD-MySQL mysql-server mysql-devel rh-php72-php rh-php72-php-mysql rh-php72-php-gd \
+        rh-php72-php-ldap rh-php72-php-xml rh-php72-php-mbstring rh-php72-php-snmp \
+        perl-Config-IniFiles perl-DBI perl-DBD-MySQL rrdtool perl-rrdtool perl-Crypt-DES perl-Digest-SHA1 \
+        perl-Digest-HMAC net-snmp-utils perl-Socket6 perl-IO-Socket-INET6 net-snmp net-snmp-libs \
+        dmidecode lm_sensors perl-Net-SNMP net-snmp-perl fping cpp gcc gcc-c++ libstdc++ glib2-devel \
+        rh-php72-php-pear nagios-plugins
 
 Des commandes additionnelles sont nécessaires pour configurer correctement
 l'environnement : ::
 
     $ usermod -U apache
-    $ /opt/rh/rh-php71/root/bin/pear channel-update pear.php.net
+    $ pear channel-update pear.php.net
 
 Si vous ne pouvez pas accéder directement à Internet directement mais passer
 par un proxy, exécutez la commande suivante : ::
 
-    $ /opt/rh/rh-php71/root/bin/pear config-set http_proxy http://my_proxy.com:port
+    $ pear config-set http_proxy http://my_proxy.com:port
 
 Puis exécutez : ::
 
-    $ /opt/rh/rh-php71/root/bin/pear upgrade-all
+    $ pear upgrade-all
 
 Debian Stretch / Ubuntu 18.04
 =============================
