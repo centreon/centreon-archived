@@ -336,7 +336,7 @@ class CentreonUtils
     ) {
         switch ($escapeMethod) {
             case self::ESCAPE_LEGACY_METHOD:
-                return preg_replace("/<script.*?\/script>/s", "", $stringToEscape);
+                return self::escapeAllExceptSelectedTags($stringToEscape, ['script', 'input']);
             case self::ESCAPE_ALL_EXCEPT_LINK:
                 return self::escapeAllExceptLink($stringToEscape);
             case self::ESCAPE_ALL:
