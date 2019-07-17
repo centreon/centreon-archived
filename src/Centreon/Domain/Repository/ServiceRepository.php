@@ -107,8 +107,10 @@ SQL;
         $result = [];
 
         while ($row = $stmt->fetch()) {
-            $result[$row['id']] = $row['id'];
-            $this->getChainByParant($row['id'], $result);
+            if ($row['id']) {
+                $result[$row['id']] = $row['id'];
+                $this->getChainByParant($row['id'], $result);
+            }
         }
 
         return $result;
