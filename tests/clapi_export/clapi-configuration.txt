@@ -110,6 +110,7 @@ INSTANCE;setparam;Central;centreonbroker_module_path;/usr/share/centreon/lib/cen
 INSTANCE;setparam;Central;centreonconnector_path;/usr/lib64/centreon-connector
 INSTANCE;setparam;Central;init_script_centreontrapd;centreontrapd
 INSTANCE;setparam;Central;snmp_trapd_path_conf;/etc/snmp/centreon_traps/
+INSTANCE;setparam;Central;remote_server_centcore_ssh_proxy;1
 INSTANCE;ADD;test_poller;127.0.0.1;22
 INSTANCE;setparam;test_poller;localhost;0
 INSTANCE;setparam;test_poller;is_default;0
@@ -126,6 +127,7 @@ INSTANCE;setparam;test_poller;centreonbroker_module_path;/usr/share/centreon/lib
 INSTANCE;setparam;test_poller;centreonconnector_path;/usr/lib64/centreon-connector
 INSTANCE;setparam;test_poller;init_script_centreontrapd;centreontrapd
 INSTANCE;setparam;test_poller;snmp_trapd_path_conf;/etc/snmp/centreon_traps/
+INSTANCE;setparam;test_poller;remote_server_centcore_ssh_proxy;1
 TP;ADD;24x7;Always
 TP;setparam;24x7;tp_sunday;00:00-24:00
 TP;setparam;24x7;tp_monday;00:00-24:00
