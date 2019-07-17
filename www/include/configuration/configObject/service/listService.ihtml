@@ -25,8 +25,8 @@
                 <td><input type='text' name='searchH' value="{$searchH}" /></td>
             {/if}
 			<td><input type='text' name='searchS' value="{$searchS}" /></td>
-			<td><select name='template'>{$templateFilter}</select></td>
-			<td><select name='status'>{$statusFilter}</select></td>
+			<td>{$form.template.html}</td>
+			<td>{$form.status.html}</td>
 			{if (! isset($hostgroupsFilter))}
 				<td><h4><input type="checkbox" name='statusHostFilter' {$hostStatusChecked}/>{$HostStatus}</h4></td>
 			{/if}
