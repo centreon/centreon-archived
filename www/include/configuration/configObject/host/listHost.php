@@ -467,6 +467,5 @@ $tpl->assign('Hostgroup', _("Hostgroup"));
 $tpl->assign('HelpServices', _("Display all Services for this host"));
 $tpl->assign('Template', _("Template"));
 $tpl->assign('Search', _("Search"));
-$tpl->assign("StatusFilter", _("StatusFilter"));
 
 $tpl->display("listHost.ihtml");
