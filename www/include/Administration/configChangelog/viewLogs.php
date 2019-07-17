@@ -319,6 +319,12 @@ if ($prepareSelect->execute()) {
                         "badge" => $badge[$tabAction[$res['action_type']]]
                     );
                 } else {
+                    if (empty($contactList[$res['log_contact_id']])) {
+                        $author = _("unknown");
+                    } else {
+                        $author = $contactList[$res['log_contact_id']];
+                    }
+
                     // as the relation may have been deleted since the event,
                     // some relations can't be found for this service, while events have been saved for it in the DB
                     $elemArray[] = array(
@@ -328,7 +334,7 @@ if ($prepareSelect->execute()) {
                         "action_log_id" => $res['action_log_id'],
                         "object_id" => $res['object_id'],
                         "modification_type" => $tabAction[$res['action_type']],
-                        "author" => $contactList[$res['log_contact_id']],
+                        "author" => $author,
                         "change" => $tabAction[$res['action_type']],
                         "host" => "<i>Linked resource has changed</i>",
                         "badge" => $badge[$tabAction[$res['action_type']]]
