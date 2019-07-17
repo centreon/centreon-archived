@@ -770,23 +770,27 @@ function updateODSConfigData()
     if (!isset($ret["len_storage_comments"])) {
         $ret["len_storage_comments"] = 0;
     }
-    
-    $rq = "UPDATE `config` SET `RRDdatabase_path` = '".$ret["RRDdatabase_path"]."',
-                `RRDdatabase_status_path` = '".$ret["RRDdatabase_status_path"]."',
-				`RRDdatabase_nagios_stats_path` = '".$ret["RRDdatabase_nagios_stats_path"]."',
-				`len_storage_rrd` = '".$ret["len_storage_rrd"]."',
-				`len_storage_mysql` = '".$ret["len_storage_mysql"]."',
-				`autodelete_rrd_db` = '".$ret["autodelete_rrd_db"]."',
-				`purge_interval` = '".$ret["purge_interval"]."',
-				`archive_log` = '".$ret["archive_log"]."',
-				`archive_retention` = '".$ret["archive_retention"]."',
-				`reporting_retention` = '".$ret["reporting_retention"]."',
-                `audit_log_option` = '".$ret["audit_log_option"]."',
-				`storage_type` = '".(isset($ret["storage_type"]) ? $ret["storage_type"] : null)."', 
-                `len_storage_downtimes` = '".$ret["len_storage_downtimes"]."',
-                `len_storage_comments` = '".$ret["len_storage_comments"]."' "
-                . " WHERE `id` = 1 LIMIT 1 ;";
-    $dbResult = $pearDBO->query($rq);
+    if (!isset($ret["audit_log_retention"])) {
+        $ret["audit_log_retention"] = 0;
+    }
+
+    $rq = "UPDATE `config` SET `RRDdatabase_path` = '" . $ret["RRDdatabase_path"] . "',
+        `RRDdatabase_status_path` = '" . $ret["RRDdatabase_status_path"] . "',
+        `RRDdatabase_nagios_stats_path` = '" . $ret["RRDdatabase_nagios_stats_path"] . "',
+        `len_storage_rrd` = '" . $ret["len_storage_rrd"] . "',
+        `len_storage_mysql` = '" . $ret["len_storage_mysql"] . "',
+        `autodelete_rrd_db` = '" . $ret["autodelete_rrd_db"] . "',
+        `purge_interval` = '" . $ret["purge_interval"] . "',
+        `archive_log` = '" . $ret["archive_log"] . "',
+        `archive_retention` = '" . $ret["archive_retention"] . "',
+        `reporting_retention` = '" . $ret["reporting_retention"] . "',
+        `audit_log_option` = '" . $ret["audit_log_option"] . "',
+        `storage_type` = '" . (isset($ret["storage_type"]) ? $ret["storage_type"] : null) . "',
+        `len_storage_downtimes` = '" . $ret["len_storage_downtimes"] . "',
+        `audit_log_retention` = '" . $ret["audit_log_retention"] . "',
+        `len_storage_comments` = '" . $ret["len_storage_comments"] . "' "
+        . " WHERE `id` = 1 LIMIT 1 ;";
+    $DBRESULT = $pearDBO->query($rq);
 
     updateOption(
         $pearDB,
