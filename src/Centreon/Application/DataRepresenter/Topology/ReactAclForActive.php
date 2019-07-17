@@ -34,59 +34,42 @@
  *
  */
 
-namespace Centreon\Domain\Entity;
+namespace Centreon\Application\DataRepresenter\Topology;
 
-use Centreon\Infrastructure\Event\DispatcherLoaderInterface;
+use JsonSerializable;
 
-/**
- * This class is used to find and include a specific php file in a tree.
- *
- * @package Centreon\Domain\Entity
- */
-class FileLoader implements DispatcherLoaderInterface
+class ReactAclForActive implements JsonSerializable
 {
-    /**
-     * @var string Path where we will try to find php files
-     */
-    private $pathModules;
 
     /**
-     * @var string Name of the php file to find in path
+     * @var array
      */
-    private $filename;
+    private $entities;
 
     /**
-     * FileLoader constructor.
+     * Construct
      *
-     * @param string $pathModules Path where we will try to find php files
-     * @param string $filename Name of the php file to find in path
+     * @param array $entities
      */
-    public function __construct(string $pathModules, string $filename)
+    public function __construct(array $entities)
     {
-        $this->pathModules = $pathModules;
-        $this->filename = $filename;
+        $this->entities = $entities;
     }
 
     /**
-     * Include all php file found.
      *
-     * @throws \Exception
+     * JSON serialization of listing
+     *
+     * @return array
      */
-    public function load():void
+    public function jsonSerialize()
     {
-        if (! is_dir($this->pathModules)) {
-            throw new \Exception("The path does not exist");
-        }
-        $modules = scandir($this->pathModules);
+        $output = [];
 
-        foreach ($modules as $module) {
-            $fileToInclude = $this->pathModules . '/' . $module . '/' . $this->filename;
-            if (preg_match('/^(?!\.)/', $module)
-                && is_dir($this->pathModules . '/' . $module)
-                && file_exists($fileToInclude)
-            ) {
-                require_once($fileToInclude);
-            }
+        foreach ($this->entities as $entity) {
+            $output[$entity->getTopologyUrl()] = $entity->getTopologyPage();
         }
+
+        return $output;
     }
 }

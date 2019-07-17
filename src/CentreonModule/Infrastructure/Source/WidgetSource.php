@@ -76,7 +76,6 @@ class WidgetSource extends SourceAbstract
         $this->remover = $services->get(ServiceProviderLegacy::CENTREON_LEGACY_WIDGET_REMOVER);
 
         parent::__construct($services);
-
     }
 
     public function initInfo()

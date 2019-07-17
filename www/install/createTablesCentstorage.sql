@@ -169,7 +169,7 @@ UNLOCK TABLES;
 CREATE TABLE `log_action_modification` (
   `modification_id` int(11) NOT NULL AUTO_INCREMENT,
   `field_name` varchar(255) NOT NULL,
-  `field_value` varchar(255) NOT NULL,
+  `field_value` text NOT NULL,
   `action_log_id` int(11) NOT NULL,
   PRIMARY KEY (`modification_id`),
   KEY `action_log_id` (`action_log_id`)

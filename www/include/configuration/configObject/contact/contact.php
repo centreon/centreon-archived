@@ -33,6 +33,7 @@
  *
  */
 
+use Centreon\ServiceProvider;
 use Centreon\Infrastructure\Event\EventDispatcher;
 use Centreon\Infrastructure\Event\EventHandler;
 
@@ -74,7 +75,7 @@ $allowedAclGroups = $acl->getAccessGroups();
 /**
  * @var $eventDispatcher EventDispatcher
  */
-$eventDispatcher = $dependencyInjector['centreon.event_dispatcher'];
+$eventDispatcher = $dependencyInjector[ServiceProvider::CENTREON_EVENT_DISPATCHER];
 
 if(! is_null($eventDispatcher->getDispatcherLoader())) {
     $eventDispatcher->getDispatcherLoader()->load();
