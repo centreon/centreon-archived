@@ -61,11 +61,11 @@ class CentreonWorker implements CentreonClapiServiceInterface
             ->getRepository(TaskRepository::class)
             ->findExportTasks() ?? [];
 
-        echo (new \DateTime())->format("Y-m-d H:i:s") . " - INFO - Checking for pending export tasks: "
+        echo date("Y-m-d H:i:s") . " - INFO - Checking for pending export tasks: "
             . count($tasks) . " task(s) found.\n";
 
         foreach (array_values($tasks) as $task) {
-            echo (new \DateTime())->format("Y-m-d H:i:s") . " - INFO - Processing task #" . $task->getId() . "...\n";
+            echo date("Y-m-d H:i:s") . " - INFO - Processing task #" . $task->getId() . "...\n";
 
             /*
              * mark task as being worked on
@@ -89,15 +89,15 @@ class CentreonWorker implements CentreonClapiServiceInterface
                 $cmdService = new CentcoreCommandService();
                 $cmdWritten = $cmdService->sendCommand($cmd);
 
-                echo (new \DateTime())->format("Y-m-d H:i:s") . " - INFO - Task #" . $task->getId() . " completed.\n";
+                echo date("Y-m-d H:i:s") . " - INFO - Task #" . $task->getId() . " completed.\n";
             } catch (\Exception $e) {
-                echo (new \DateTime())->format("Y-m-d H:i:s") . " - ERROR - Task #" . $task->getId() . " failed.\n";
-                echo (new \DateTime())->format("Y-m-d H:i:s") . " - ERROR - Error message: " . $e->getMessage() . "\n";
+                echo date("Y-m-d H:i:s") . " - ERROR - Task #" . $task->getId() . " failed.\n";
+                echo date("Y-m-d H:i:s") . " - ERROR - Error message: " . $e->getMessage() . "\n";
                 $this->getDi()['centreon.taskservice']->updateStatus($task->getId(), Task::STATE_FAILED);
             }
         }
 
-        echo (new \DateTime())->format("Y-m-d H:i:s") . " - INFO - Worker cycle completed.\n";
+        echo date("Y-m-d H:i:s") . " - INFO - Worker cycle completed.\n";
     }
 
     /**
@@ -111,11 +111,11 @@ class CentreonWorker implements CentreonClapiServiceInterface
             ->getRepository(TaskRepository::class)
             ->findImportTasks() ?? [];
 
-        echo (new \DateTime())->format("Y-m-d H:i:s") . " - INFO - Checking for pending import tasks: "
+        echo date("Y-m-d H:i:s") . " - INFO - Checking for pending import tasks: "
             . count($tasks) . " task(s) found.\n";
 
         foreach ($tasks as $x => $task) {
-            echo (new \DateTime())->format("Y-m-d H:i:s") . " - INFO - Processing task #"
+            echo date("Y-m-d H:i:s") . " - INFO - Processing task #"
                 . $task->getId() . " (parent ID #" . $task->getParentId() . ")...\n";
 
             /*
@@ -127,15 +127,15 @@ class CentreonWorker implements CentreonClapiServiceInterface
                 $this->getDi()['centreon_remote.export']->import();
 
                 $this->getDi()['centreon.taskservice']->updateStatus($task->getId(), Task::STATE_COMPLETED);
-                echo (new \DateTime())->format("Y-m-d H:i:s") . " - INFO - Task #" . $task->getId() . " completed.\n";
+                echo date("Y-m-d H:i:s") . " - INFO - Task #" . $task->getId() . " completed.\n";
             } catch (\Exception $e) {
-                echo (new \DateTime())->format("Y-m-d H:i:s") . " - ERROR - Task #" . $task->getId() . " failed.\n";
-                echo (new \DateTime())->format("Y-m-d H:i:s") . " - ERROR - Error message: " . $e->getMessage() . "\n";
+                echo date("Y-m-d H:i:s") . " - ERROR - Task #" . $task->getId() . " failed.\n";
+                echo date("Y-m-d H:i:s") . " - ERROR - Error message: " . $e->getMessage() . "\n";
                 $this->getDi()['centreon.taskservice']->updateStatus($task->getId(), Task::STATE_FAILED);
             }
         }
 
-        echo (new \DateTime())->format("Y-m-d H:i:s") . " - INFO - Worker cycle completed.\n";
+        echo date("Y-m-d H:i:s") . " - INFO - Worker cycle completed.\n";
     }
 
     /**
@@ -174,9 +174,9 @@ class CentreonWorker implements CentreonClapiServiceInterface
                 $params['no_proxy']
             );
         } catch (\Exception $e) {
-            echo (new \DateTime())->format("Y-m-d H:i:s") . " - ERROR - Error while creating parent task on "
+            echo date("Y-m-d H:i:s") . " - ERROR - Error while creating parent task on "
                 . $url . ".\n";
-            echo (new \DateTime())->format("Y-m-d H:i:s") . " - ERROR - Error message: " . $e->getMessage() . "\n";
+            echo date("Y-m-d H:i:s") . " - ERROR - Error message: " . $e->getMessage() . "\n";
         }
     }
 
