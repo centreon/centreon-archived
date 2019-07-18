@@ -160,17 +160,17 @@ class CentreonRemoteServer implements CentreonClapiServiceInterface
      */
     public function import(): void
     {
-        echo (new \DateTime())->format("Y-m-d H:i:s") . " - INFO - Starting Centreon Remote import process...\n";
+        echo date("Y-m-d H:i:s") . " - INFO - Starting Centreon Remote import process...\n";
 
         try {
             $this->getDi()['centreon_remote.export']->import();
-            echo (new \DateTime())->format("Y-m-d H:i:s") . " - INFO - Import succeed\n";
+            echo date("Y-m-d H:i:s") . " - INFO - Import succeed\n";
         } catch (\Exception $e) {
-            echo (new \DateTime())->format("Y-m-d H:i:s") . " - ERROR - Import failed\n";
-            echo (new \DateTime())->format("Y-m-d H:i:s") . " - ERROR - Error message: " . $e->getMessage() . "\n";
+            echo date("Y-m-d H:i:s") . " - ERROR - Import failed\n";
+            echo date("Y-m-d H:i:s") . " - ERROR - Error message: " . $e->getMessage() . "\n";
         }
 
-        echo (new \DateTime())->format("Y-m-d H:i:s") . " - INFO - Centreon Remote import process finished.\n";
+        echo date("Y-m-d H:i:s") . " - INFO - Centreon Remote import process finished.\n";
     }
 
     public function getDi(): Container
