@@ -2,7 +2,6 @@
 
 namespace CentreonRemote\Application\Clapi;
 
-use DateTime;
 use Centreon\Domain\Repository\TaskRepository;
 use Centreon\Infrastructure\Service\CentcoreCommandService;
 use CentreonRemote\Infrastructure\Export\ExportCommitment;
