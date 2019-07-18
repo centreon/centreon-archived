@@ -2,6 +2,7 @@
 
 namespace CentreonRemote\Application\Clapi;
 
+use DateTime;
 use Centreon\Domain\Repository\TaskRepository;
 use Centreon\Infrastructure\Service\CentcoreCommandService;
 use CentreonRemote\Infrastructure\Export\ExportCommitment;
@@ -57,13 +58,15 @@ class CentreonWorker implements CentreonClapiServiceInterface
      */
     private function processExportTasks(): void
     {
-        $datetime = (new \DateTime())->format("Y-m-d H:i:s");
-        $tasks = $this->getDi()[\Centreon\ServiceProvider::CENTREON_DB_MANAGER]->getRepository(TaskRepository::class)->findExportTasks() ?? [];
+        $tasks = $this->getDi()[\Centreon\ServiceProvider::CENTREON_DB_MANAGER]
+            ->getRepository(TaskRepository::class)
+            ->findExportTasks() ?? [];
 
-        echo "{$datetime} - Checking for pending export tasks: " . count($tasks) . " task(s) found\n";
+        echo (new \DateTime())->format("Y-m-d H:i:s") . " - INFO - Checking for pending export tasks: "
+            . count($tasks) . " task(s) found.\n";
 
         foreach (array_values($tasks) as $task) {
-            echo "{$datetime} - Processing task #" . $task->getId() . " ... ";
+            echo (new \DateTime())->format("Y-m-d H:i:s") . " - INFO - Processing task #" . $task->getId() . "...\n";
 
             /*
              * mark task as being worked on
@@ -87,13 +90,15 @@ class CentreonWorker implements CentreonClapiServiceInterface
                 $cmdService = new CentcoreCommandService();
                 $cmdWritten = $cmdService->sendCommand($cmd);
 
-                echo "{$datetime} - finished.\n";
+                echo (new \DateTime())->format("Y-m-d H:i:s") . " - INFO - Task #" . $task->getId() . " completed.\n";
             } catch (\Exception $e) {
-                echo $e->getMessage() . "\n";
-                echo "{$datetime} - task #" . $task->getId() . " aborted\n";
+                echo (new \DateTime())->format("Y-m-d H:i:s") . " - ERROR - Task #" . $task->getId() . " failed.\n";
+                echo (new \DateTime())->format("Y-m-d H:i:s") . " - ERROR - Error message: " . $e->getMessage() . "\n";
                 $this->getDi()['centreon.taskservice']->updateStatus($task->getId(), Task::STATE_FAILED);
             }
         }
+
+        echo (new \DateTime())->format("Y-m-d H:i:s") . " - INFO - Worker cycle completed.\n";
     }
 
     /**
@@ -103,13 +108,16 @@ class CentreonWorker implements CentreonClapiServiceInterface
      */
     private function processImportTasks(): void
     {
-        $datetime = (new \DateTime())->format("Y-m-d H:i:s");
-        $tasks = $this->getDi()[\Centreon\ServiceProvider::CENTREON_DB_MANAGER]->getRepository(TaskRepository::class)->findImportTasks() ?? [];
+        $tasks = $this->getDi()[\Centreon\ServiceProvider::CENTREON_DB_MANAGER]
+            ->getRepository(TaskRepository::class)
+            ->findImportTasks() ?? [];
 
-        echo "{$datetime} - Checking for pending import tasks: " . count($tasks) . " task(s) found\n";
+        echo (new \DateTime())->format("Y-m-d H:i:s") . " - INFO - Checking for pending import tasks: "
+            . count($tasks) . " task(s) found.\n";
 
         foreach ($tasks as $x => $task) {
-            echo "{$datetime} - Processing task #" . $task->getId() . " (parent ID #" . $task->getParentId() . ") ... ";
+            echo (new \DateTime())->format("Y-m-d H:i:s") . " - INFO - Processing task #"
+                . $task->getId() . " (parent ID #" . $task->getParentId() . ")...\n";
 
             /*
              * mark task as being worked on
@@ -120,15 +128,15 @@ class CentreonWorker implements CentreonClapiServiceInterface
                 $this->getDi()['centreon_remote.export']->import();
 
                 $this->getDi()['centreon.taskservice']->updateStatus($task->getId(), Task::STATE_COMPLETED);
-                echo "{$datetime} - finished.\n";
+                echo (new \DateTime())->format("Y-m-d H:i:s") . " - INFO - Task #" . $task->getId() . " completed.\n";
             } catch (\Exception $e) {
-                echo $e->getMessage() . "\n";
-                echo "{$datetime} - task #" . $task->getId() . " aborted\n";
+                echo (new \DateTime())->format("Y-m-d H:i:s") . " - ERROR - Task #" . $task->getId() . " failed.\n";
+                echo (new \DateTime())->format("Y-m-d H:i:s") . " - ERROR - Error message: " . $e->getMessage() . "\n";
                 $this->getDi()['centreon.taskservice']->updateStatus($task->getId(), Task::STATE_FAILED);
             }
         }
 
-        echo "{$datetime} - Worker cycle completed.\n";
+        echo (new \DateTime())->format("Y-m-d H:i:s") . " - INFO - Worker cycle completed.\n";
     }
 
     /**
@@ -140,7 +148,9 @@ class CentreonWorker implements CentreonClapiServiceInterface
     public function createRemoteTask(int $taskId): void
     {
         // find task parameters (type, status, params...)
-        $task = $this->getDi()[\Centreon\ServiceProvider::CENTREON_DB_MANAGER]->getRepository(TaskRepository::class)->findOneById($taskId);
+        $task = $this->getDi()[\Centreon\ServiceProvider::CENTREON_DB_MANAGER]
+            ->getRepository(TaskRepository::class)
+            ->findOneById($taskId);
 
         /**
          * create import task on remote
@@ -165,8 +175,9 @@ class CentreonWorker implements CentreonClapiServiceInterface
                 $params['no_proxy']
             );
         } catch (\Exception $e) {
-            echo "Error while creating parent task on $url\n";
-            echo $e->getMessage() . "\n";
+            echo (new \DateTime())->format("Y-m-d H:i:s") . " - ERROR - Error while creating parent task on "
+                . $url . ".\n";
+            echo (new \DateTime())->format("Y-m-d H:i:s") . " - ERROR - Error message: " . $e->getMessage() . "\n";
         }
     }
 
