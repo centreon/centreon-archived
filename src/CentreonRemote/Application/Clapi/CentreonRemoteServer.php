@@ -2,7 +2,6 @@
 
 namespace CentreonRemote\Application\Clapi;
 
-use DateTime;
 use Centreon\Domain\Repository\InformationsRepository;
 use Centreon\Domain\Repository\TopologyRepository;
 use Centreon\Domain\Repository\OptionsRepository;
@@ -35,7 +34,13 @@ class CentreonRemoteServer implements CentreonClapiServiceInterface
     /**
      * Clapi command to enable remote server
      *
-     * @param string $parametersString parameters string
+     * @param string $parametersString parameters string made of
+     * a comma separated list of hosts/urls/ip adresses representing the central,
+     * a boolean to enable/disable certificate check to contact the central,
+     * the method to use to contact the remote (http or https),
+     * the http port to use to contact the remote,
+     * a boolean to enable/disable certificate check to contact the remote,
+     * a boolean to enable/disable the use of proxy to contact the central
      */
     public function enableRemote(string $parametersString)
     {
