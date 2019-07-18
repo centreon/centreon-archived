@@ -2,7 +2,7 @@
 $help = array();
 
 /*
- * LDAP Informations
+ * LDAP Information
  */
 $help['ar_name'] = dgettext('help', 'Name of configuration');
 $help['ar_description'] = dgettext('help', 'Short description of configuration');
