@@ -32,7 +32,7 @@ class PollerDefaultsOverwriteService
     private function findPollerAndSetResourceData(array $data, $columnName, $resourceName)
     {
         // Remove remote poller resources in the array by the column name and pollerID
-        $newdata = array_filter($data, function ($pollerData) use ($columnName) {
+        $newData = array_filter($data, function ($pollerData) use ($columnName) {
             return $pollerData[$columnName] != $this->pollerID;
         });
 
@@ -53,7 +53,7 @@ class PollerDefaultsOverwriteService
             }
         }
 
-        return array_merge($newdata, $dataToMerge);
+        return array_merge($newData, $dataToMerge);
     }
 
     /**
