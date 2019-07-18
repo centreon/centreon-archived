@@ -362,9 +362,10 @@ if ($form->validate()) {
         // checking if auto-sync at login is enabled and if the next ldap synchronization may occur in the past
         $currentTime = time();
         if (!empty($values['ldap_auto_sync']['ldap_auto_sync'])
-            && ($opt['ldap_auto_sync'] == $values['ldap_auto_sync']) // the saved auto-sync state is the same
-            && ($opt['ldap_sync_interval'] == $values['ldap_sync_interval']) // the saved interval is the same
-            && !empty($gopt['ar_sync_base_date']) // reference date used to calculate next synchronization
+            && ($opt['ldap_auto_sync'] == $values['ldap_auto_sync']['ldap_auto_sync']) // same auto-sync state
+            // the same
+            && ($opt['ldap_sync_interval'] == $values['ldap_sync_interval']) // same saved interval
+            && !empty($gopt['ar_sync_base_date']) // reference date used to calculate next expected synchronization
             && (($gopt['ar_sync_base_date'] + $values['ldap_sync_interval'] * 3600) > $currentTime)
             && ($gopt['ar_sync_base_date'] <= $currentTime)
         ) {
