@@ -126,9 +126,9 @@ class TrapExporter extends ExporterServiceAbstract
             $exportPathFile = $this->getFile(static::EXPORT_FILE_TRAP);
             $result = $this->_parse($exportPathFile);
 
-            foreach ($result as $data) {
-                $db->insert('traps', $data);
-            }
+            $db->insertBulk('traps', $result);
+
+            unset($result);
         })();
 
         // insert vendors
@@ -136,9 +136,9 @@ class TrapExporter extends ExporterServiceAbstract
             $exportPathFile = $this->getFile(static::EXPORT_FILE_VENDOR);
             $result = $this->_parse($exportPathFile);
 
-            foreach ($result as $data) {
-                $db->insert('traps_vendor', $data);
-            }
+            $db->insertBulk('traps_vendor', $result);
+
+            unset($result);
         })();
 
         // insert service relation
@@ -146,9 +146,9 @@ class TrapExporter extends ExporterServiceAbstract
             $exportPathFile = $this->getFile(static::EXPORT_FILE_SERVICE_RELATION);
             $result = $this->_parse($exportPathFile);
 
-            foreach ($result as $data) {
-                $db->insert('traps_service_relation', $data);
-            }
+            $db->insertBulk('traps_service_relation', $result);
+
+            unset($result);
         })();
 
         // insert groups
@@ -156,9 +156,9 @@ class TrapExporter extends ExporterServiceAbstract
             $exportPathFile = $this->getFile(static::EXPORT_FILE_GROUP);
             $result = $this->_parse($exportPathFile);
 
-            foreach ($result as $data) {
-                $db->insert('traps_group', $data);
-            }
+            $db->insertBulk('traps_group', $result);
+
+            unset($result);
         })();
 
         // insert group relation
@@ -166,9 +166,9 @@ class TrapExporter extends ExporterServiceAbstract
             $exportPathFile = $this->getFile(static::EXPORT_FILE_GROUP_RELATION);
             $result = $this->_parse($exportPathFile);
 
-            foreach ($result as $data) {
-                $db->insert('traps_group_relation', $data);
-            }
+            $db->insertBulk('traps_group_relation', $result);
+
+            unset($result);
         })();
 
         // insert properties
@@ -176,9 +176,9 @@ class TrapExporter extends ExporterServiceAbstract
             $exportPathFile = $this->getFile(static::EXPORT_FILE_MATCHING_PROP);
             $result = $this->_parse($exportPathFile);
 
-            foreach ($result as $data) {
-                $db->insert('traps_matching_properties', $data);
-            }
+            $db->insertBulk('traps_matching_properties', $result);
+
+            unset($result);
         })();
 
         // insert pre-executed commands
@@ -186,9 +186,9 @@ class TrapExporter extends ExporterServiceAbstract
             $exportPathFile = $this->getFile(static::EXPORT_FILE_PREEXEC);
             $result = $this->_parse($exportPathFile);
 
-            foreach ($result as $data) {
-                $db->insert('traps_preexec', $data);
-            }
+            $db->insertBulk('traps_preexec', $result);
+
+            unset($result);
         })();
 
         // restore foreign key checks

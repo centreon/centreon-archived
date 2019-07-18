@@ -146,18 +146,38 @@ class HostExporter extends ExporterServiceAbstract
             $exportPathFile = $this->getFile(static::EXPORT_FILE_HOST);
             $result = $this->_parse($exportPathFile);
 
+            $dataHostServerRelation = array();
+            $dataHosts = array();
+
             foreach ($result as $data) {
+
                 if ($data['_nagios_id']) {
-                    $dataRelation = [
+                    $dataHostServerRelation[] = array(
                         'nagios_server_id' => $data['_nagios_id'],
                         'host_host_id' => $data['host_id'],
-                    ];
-                    $db->insert('ns_host_relation', $dataRelation);
+                    );
                 }
-                unset($data['_nagios_id']);
 
-                $db->insert('host', $data);
+                unset($data['_nagios_id']);
+                $dataHosts[] = $data;
             }
+
+            // Insert latest values
+            if ($dataHosts) {
+                // Insert values by group of BULK_SIZE
+                $db->insertBulk('host', $dataHosts);
+
+                // Unset array after insert
+                unset($dataHosts);
+            }
+            if ($dataHostServerRelation) {
+                // Insert values by group of BULK_SIZE
+                $db->insertBulk('ns_host_relation', $dataHostServerRelation);
+
+                // Reset array after insert
+                unset($dataHostServerRelation);
+            }
+            unset($result);
         })();
 
         // insert groups
@@ -165,9 +185,9 @@ class HostExporter extends ExporterServiceAbstract
             $exportPathFile = $this->getFile(static::EXPORT_FILE_GROUP);
             $result = $this->_parse($exportPathFile);
 
-            foreach ($result as $data) {
-                $db->insert('hostgroup', $data);
-            }
+            $db->insertBulk('hostgroup', $result);
+
+            unset($result);
         })();
 
         // insert group relation
@@ -175,19 +195,9 @@ class HostExporter extends ExporterServiceAbstract
             $exportPathFile = $this->getFile(static::EXPORT_FILE_GROUP_RELATION);
             $result = $this->_parse($exportPathFile);
 
-            foreach ($result as $data) {
-                $db->insert('hostgroup_relation', $data);
-            }
-        })();
+            $db->insertBulk('hostgroup_relation', $result);
 
-        // insert group to group relation
-        (function () use ($db) {
-            $exportPathFile = $this->getFile(static::EXPORT_FILE_GROUP_HG_RELATION);
-            $result = $this->_parse($exportPathFile);
-
-            foreach ($result as $data) {
-                $db->insert('hostgroup_hg_relation', $data);
-            }
+            unset($result);
         })();
 
         // insert categories
@@ -195,19 +205,19 @@ class HostExporter extends ExporterServiceAbstract
             $exportPathFile = $this->getFile(static::EXPORT_FILE_CATEGORY);
             $result = $this->_parse($exportPathFile);
 
-            foreach ($result as $data) {
-                $db->insert('hostcategories', $data);
-            }
+            $db->insertBulk('hostcategories', $result);
+
+            unset($result);
         })();
 
-        // insert categories
+        // insert categories relation
         (function () use ($db) {
             $exportPathFile = $this->getFile(static::EXPORT_FILE_CATEGORY_RELATION);
             $result = $this->_parse($exportPathFile);
 
-            foreach ($result as $data) {
-                $db->insert('hostcategories_relation', $data);
-            }
+            $db->insertBulk('hostcategories_relation', $result);
+
+            unset($result);
         })();
 
         // insert info
@@ -215,9 +225,9 @@ class HostExporter extends ExporterServiceAbstract
             $exportPathFile = $this->getFile(static::EXPORT_FILE_INFO);
             $result = $this->_parse($exportPathFile);
 
-            foreach ($result as $data) {
-                $db->insert('extended_host_information', $data);
-            }
+            $db->insertBulk('extended_host_information', $result);
+
+            unset($result);
         })();
 
         // insert macro
@@ -225,9 +235,9 @@ class HostExporter extends ExporterServiceAbstract
             $exportPathFile = $this->getFile(static::EXPORT_FILE_MACRO);
             $result = $this->_parse($exportPathFile);
 
-            foreach ($result as $data) {
-                $db->insert('on_demand_macro_host', $data);
-            }
+            $db->insertBulk('on_demand_macro_host', $result);
+
+            unset($result);
         })();
 
         // insert template
@@ -235,9 +245,9 @@ class HostExporter extends ExporterServiceAbstract
             $exportPathFile = $this->getFile(static::EXPORT_FILE_TEMPLATE);
             $result = $this->_parse($exportPathFile);
 
-            foreach ($result as $data) {
-                $db->insert('host_template_relation', $data);
-            }
+            $db->insertBulk('host_template_relation', $result);
+
+            unset($result);
         })();
 
         // restore foreign key checks
