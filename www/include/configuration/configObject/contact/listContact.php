@@ -56,13 +56,21 @@ $search = filter_var(
     $_POST['searchC'] ?? $_GET['searchC'] ?? null,
     FILTER_SANITIZE_STRING
 );
+
+$contactGroup = filter_var(
+    $_POST["contactGroup"] ?? $_GET["contactGroup"] ?? 0,
+    FILTER_VALIDATE_INT
+);
+
 if (isset($_POST['searchC']) || isset($_GET['searchC'])) {
     //saving filters values
     $centreon->historySearch[$url] = array();
     $centreon->historySearch[$url]['search'] = $search;
+    $centreon->historySearch[$url]['contactGroup'] = $contactGroup;
 } else {
     //restoring saved values
     $search = $centreon->historySearch[$url]['search'] ?? null;
+    $search = $centreon->historySearch[$url]['contactGroup'] ?? null;
 }
 
 $clauses = array();
@@ -71,6 +79,11 @@ if ($search) {
         'contact_name' => array('LIKE', '%' . $search . '%'),
         'contact_alias' => array('OR', 'LIKE', '%' . $search . '%')
     );
+}
+
+if ($contactGroup) {
+    $clauses['contact_contact_id = contact_id'] = '';
+    $clauses['contactgroup_cg_id'] = array('=', $contactGroup);
 }
 
 $aclOptions = array(
@@ -127,6 +140,15 @@ $contacts = $acl->getContactAclConf($aclOptions);
 $search = tidySearchKey($search, $advanced_search);
 
 $form = new HTML_QuickFormCustom('select_form', 'POST', "?p=" . $p);
+
+$contactGrRoute = './api/internal.php?object=centreon_configuration_contactgroup&action=list';
+$attrContactgroups = array(
+    'datasourceOrigin' => 'ajax',
+    'availableDatasetRoute' => $contactGrRoute,
+    'multiple' => false,
+    'linkedObject' => 'centreonContactgroup'
+);
+$form->addElement('select2', 'contactGroup', "", array(), $attrContactgroups);
 
 // Different style between each lines
 $style = "one";

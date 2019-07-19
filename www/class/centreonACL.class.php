@@ -2389,10 +2389,11 @@ class CentreonACL
     public function getContactAclConf($options = array())
     {
         $request = $this->constructRequest($options, true);
+        var_dump($request);
 
         if ($this->admin) {
             $sql = $request['select'] . $request['fields'] . " "
-                . "FROM contact "
+                . "FROM contact, contactgroup_contact_relation "
                 . "WHERE contact_register = '1' "
                 . $request['conditions'];
         } else {
@@ -2416,6 +2417,9 @@ class CentreonACL
         }
 
         $sql .= $request['order'] . $request['pages'];
+
+
+        var_dump($sql);
 
         $result = $this->constructResult($sql, $options);
 
