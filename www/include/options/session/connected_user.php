@@ -73,8 +73,6 @@ if ($selectedUserSid) {
 
     switch ($action) {
         case SYNC_USER:
-            require_once './class/centreonLog.class.php';
-
             // finding chosen user's data
             $resUser = $pearDB->prepare(
                 "SELECT `contact_id`, `contact_alias`, `ar_id` FROM contact 
@@ -99,7 +97,7 @@ if ($selectedUserSid) {
                 } else {
                     /*
                      * requiring a manual synchronization at next login of the contact
-                     * if this step is successful, we need to logout the contact to synchronize the data at next login
+                     * if this step is successful, we need to logout the contact to synchronize the data on next login
                      */
                     $stmtRequiredSync = $pearDB->prepare(
                         'UPDATE contact
@@ -185,11 +183,10 @@ for ($cpt = 0; $r = $res->fetch(); $cpt++) {
             } elseif ($r["contact_ldap_last_sync"] === '0' || $r["contact_ldap_last_sync"] === NULL) {
                 $session_data[$cpt]["last_sync"] = "-";
             }
-
-            // adding the link to be able to execute the user's synchronization from the LDAP
-            $session_data[$cpt]["synchronize"] = "<a href='./main.php?p=" . $p . "&o=s&session=" . $r['session_id'] .
-                "'><img src='./img/icons/refresh.png' border='0' alt='" . _("Synchronize LDAP") .
-                "' title='" . _("Synchronize LDAP") . "'></a>";
+            $session_data[$cpt]["synchronize"] =
+                "<img src='./img/icons/refresh.png' border='0' " .
+                    "alt='" . _("Synchronize LDAP") . "' title='" . _("Synchronize LDAP") . "' " .
+                    "onclick='submitSync(" . $currentPage . ", \"" . $r['session_id'] . "\")'>";
         } else {
             // hiding the synchronization option and details
             $session_data[$cpt]["last_sync"] = "";
@@ -219,4 +216,13 @@ $tpl->display("connected_user.ihtml");
 <script>
     //formatting the tags containing a class isTimestamp
     formatDateMoment();
+    // ask for confirmation when requesting to resynchronize contact data from the LDAP
+    function submitSync(p, sessionId) {
+        // msg = localized message to be displayed in the confirmation popup
+        let msg = "<?= _('The contact will be disconnected. Are you sure you want to request a ' .
+            'synchronization at the next login of this Contact ?'); ?>";
+        if (confirm(msg)) {
+            window.location.href = "?p=" + p + "&o=s&session=" + sessionId;
+        }
+    }
 </script>
