@@ -5,6 +5,7 @@ import { reactRoutes } from "../../route-maps";
 import { dynamicImport } from "../../helpers/dynamicImport";
 import centreonAxios from "../../axios";
 import NotAllowedPage from '../../route-components/notAllowedPage';
+import BreadcrumbWrapper from '../breadcrumbWrapper';
 import styles from "../../styles/partials/_content.scss";
 
 // class to manage internal react pages
@@ -37,13 +38,15 @@ class ReactRouter extends Component {
           <Route
             key={path}
             path={path}
-            exact="true"
+            exact={true}
             render={renderProps => (
               <div className={styles["react-page"]}>
-                <Page
-                  centreonAxios={centreonAxios}
-                  {...renderProps}
-                />
+                <BreadcrumbWrapper path={path}>
+                  <Page
+                    centreonAxios={centreonAxios}
+                    {...renderProps}
+                  />
+                </BreadcrumbWrapper>
               </div>
             )}
           />
@@ -70,13 +73,15 @@ class ReactRouter extends Component {
             <Route
               key={path}
               path={path}
-              exact="true"
+              exact={true}
               render={renderProps => (
                 <div className={styles["react-page"]}>
                   {acl.routes.includes(path) ? (
-                    <Comp
-                      {...renderProps}
-                    />
+                    <BreadcrumbWrapper path={path}>
+                      <Comp
+                        {...renderProps}
+                      />
+                    </BreadcrumbWrapper>
                   ) : (
                     <NotAllowedPage
                       {...renderProps}
