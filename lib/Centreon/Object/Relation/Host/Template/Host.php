@@ -70,6 +70,12 @@ class Centreon_Object_Relation_Host_Template_Host extends Centreon_Object_Relati
         $this->db->query($sql, array($fkey, $skey, $order));
     }
 
+    public function delete($fkey, $skey = null) {
+        parent::delete($fkey, $skey);
+        // Delete linked services as well
+        $this->db->query('DELETE FROM host_service_relation WHERE host_host_id = '. (int)$skey);
+    }
+
     /**
      * Get target id from source id
      *
