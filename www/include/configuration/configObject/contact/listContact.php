@@ -129,6 +129,7 @@ $tpl = initSmartyTpl($path, $tpl);
 $lvl_access = ($centreon->user->access->page($p) == 1) ? WRITE : READ;
 $tpl->assign('mode_access', $lvl_access);
 
+// massive contacts data synchronization request using the event handler
 $chosenContact = array();
 if ($centreon->user->admin && $selectedContact && $o === "sync") {
     $chosenContact[$selectedContact] = 1;
@@ -258,10 +259,8 @@ foreach ($contacts as $contact) {
         } else {
             $isLinkedToLdap = 1;
             $refreshLdapBadge[1] =
-                "<a href='main.php?p=" . $p . "&selectedContact=" . $contact['contact_id'] . "&o=sync&limit=" . $limit .
-                "&num=" . $num . "&search=" . $search . "'>" .
-                    "<img src='img/icons/refresh.png' class='ico-18' alt='" . $refreshLdapHelp[1] . "'>" .
-                "</a>";
+                "<img src='img/icons/refresh.png' class='ico-18' alt='" . $refreshLdapHelp[1] . "' " .
+                "onclick='submitSync(" . $p . ", " . $contact['contact_id'] . ")'>";
         }
     }
 
@@ -337,6 +336,16 @@ if ($row['count_ldap'] > 0) {
     function setO(_i) {
         document.forms['form'].elements['o'].value = _i;
     }
+
+    // ask for confirmation when requesting to resynchronize contact data from the LDAP
+    function submitSync(p, contactId) {
+        // msg = localized message to be displayed in the confirmation popup
+        let msg = "<?= _('If the contact is connected, all his instances will be closed. Are you sure you want to ' .
+            'request a data synchronization at the next login of this Contact ?'); ?>";
+        if (confirm(msg)) {
+            window.location.href = "?p=" + p + "&selectedContact=" + contactId + "&o=sync";
+        }
+    }
 </script>
 <?php
 
@@ -354,10 +363,10 @@ foreach (array('o1', 'o2') as $option) {
             _("Do you confirm the deletion ?") . "')) {" .
                 "   setO(this.form.elements['" . $option . "'].value); submit();} " .
             "else if (this.form.elements['" . $option . "'].selectedIndex == 3 || this.form.elements['" .
-            $option . "'].selectedIndex == 4 ||this.form.elements['" . $option . "'].selectedIndex == 5){" .
+            $option . "'].selectedIndex == 4 || this.form.elements['" . $option . "'].selectedIndex == 5){" .
                 "   setO(this.form.elements['" . $option . "'].value); submit();} " .
             "else if (this.form.elements['" . $option . "'].selectedIndex == 6 && confirm('" .
-            _("Do you confirm the LDAP synchronization request ?") . "')) {" .
+            _("The chosen contact(s) will be disconnected. Do you confirm the LDAP synchronization request ?") . "')) {" .
                 "   setO(this.form.elements['" . $option . "'].value); submit();} " .
             "this.form.elements['" . $option . "'].selectedIndex = 0"
     );
