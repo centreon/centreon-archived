@@ -75,3 +75,10 @@ ALTER TABLE ods_view_details MODIFY metric_id int(11);
 
 -- Add trap filter
 ALTER TABLE `traps` MODIFY COLUMN `traps_exec_interval_type` ENUM('0','1','2','3') NULL DEFAULT '0';
+
+-- Create rs_poller_relation for the additional relationship between poller and remote servers
+CREATE TABLE `rs_poller_relation` (
+  `remote_server_id` int(11) NOT NULL DEFAULT '0',
+  `poller_server_id` int(11) NOT NULL DEFAULT '0',
+  KEY `remote_server_id` (`remote_server_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Relation Table For centreon pollers and remote servers'
