@@ -5,19 +5,29 @@ use CentreonRemote\Infrastructure\Export\ExportManifest;
 use CentreonRemote\Infrastructure\Service\ExporterServiceAbstract;
 use Centreon\Domain\Repository;
 
+require_once dirname(__FILE__) . '/../../../../bootstrap.php';
+require_once 'config-generate-remote/generate.class.php';
+
+use ConfigGenerateRemote\Generate;
+
 class ConfigurationExporter extends ExporterServiceAbstract
 {
 
     const NAME = 'configuration';
+    const MEDIA_PATH = _CENTREON_PATH_ . 'www/img/media';
 
     /**
      * Export data
      */
-    public function export(): void
+    public function export(int $remoteId): void
     {
         // create path
         $this->createPath();
-        // Call to Quentin exporter
+
+        // call to ConfigGenerateRemote\Generate class
+        $dependencyInjector = loadDependencyInjector();
+        $config_generate = new Generate($dependencyInjector);
+        $config_generate->configRemoteServerFromId($remoteId, 'usermoi');
     }
 
     /**
@@ -56,6 +66,9 @@ class ConfigurationExporter extends ExporterServiceAbstract
 
         // commit transaction
         $db->commit();
+
+        
+        // do media import
     }
 
     public static function order(): int
