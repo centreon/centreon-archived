@@ -53,25 +53,42 @@ $search = filter_var(
     FILTER_SANITIZE_STRING
 );
 
+$searchStatus = filter_var(
+    $_POST['status'] ?? $_GET['status'] ?? null,
+    FILTER_SANITIZE_NUMBER_INT
+);
+
+$searchVendor = filter_var(
+    $_POST['vendor'] ?? $_GET['vendor'] ?? null,
+    FILTER_SANITIZE_NUMBER_INT
+);
+
 if (isset($_POST['searchT']) || isset($_GET['searchT'])) {
     //saving filters values
     $centreon->historySearch[$url] = array();
     $centreon->historySearch[$url]['search'] = $search;
+    $centreon->historySearch[$url]['status'] = $searchStatus;
+    $centreon->historySearch[$url]['vendor'] = $searchVendor;
 } else {
     //restoring saved values
     $search = $centreon->historySearch[$url]['search'] ?? null;
+    $searchStatus = $centreon->historySearch[$url]['status'] ?? null;
+    $searchVendor = $centreon->historySearch[$url]['vendor'] ?? null;
 }
 
 // List of elements - Depends on different criteria
-if ($search) {
-    $rq = "SELECT SQL_CALC_FOUND_ROWS * FROM traps " .
-        "WHERE traps_oid LIKE '%" . $search . "%' OR traps_name LIKE '%" . $search . "%' " .
-        "OR manufacturer_id IN (SELECT id FROM traps_vendor WHERE alias LIKE '%" . $search . "%' ) " .
-        "ORDER BY manufacturer_id, traps_name LIMIT " . $num * $limit . ", " . $limit;
+if ($search || $searchStatus || $searchVendor) {
+    $rq = "SELECT SQL_CALC_FOUND_ROWS * FROM traps WHERE 1 " .
+        (!is_null($search) && strlen($search) > 0 ?
+            " AND (traps_oid LIKE '%" . $pearDB->escape($search) . "%' OR traps_name LIKE '%" .
+            $pearDB->escape($search) . "%')" : ''
+        ) .
+        ($searchVendor ? " AND manufacturer_id = " . (int)$searchVendor : '') .
+        ($searchStatus != '' ? " AND traps_status = '" . $pearDB->escape($searchStatus) . "'" : '');
 } else {
-    $rq = "SELECT SQL_CALC_FOUND_ROWS * FROM traps " .
-        "ORDER BY manufacturer_id, traps_name LIMIT " . $num * $limit . ", " . $limit;
+    $rq = "SELECT SQL_CALC_FOUND_ROWS * FROM traps";
 }
+$rq .= " ORDER BY manufacturer_id, traps_name LIMIT " . $num * $limit . ", " . $limit;
 
 $dbResult = $pearDB->query($rq);
 $rows = $pearDB->query("SELECT FOUND_ROWS()")->fetchColumn();
@@ -85,6 +102,14 @@ $tpl = initSmartyTpl($path, $tpl);
 // Access level
 $lvl_access = ($centreon->user->access->page($p) == 1) ? 'w' : 'r';
 $tpl->assign('mode_access', $lvl_access);
+
+// Get vendors (manufacturers) for search dropdown
+$vendorResult = $pearDB->query("SELECT * FROM traps_vendor ORDER BY name, alias");
+$vendors = [];
+for ($i = 0; $vendor = $vendorResult->fetch(); $i++) {
+    $vendors[] = ['id' => $vendor['id'], 'name' => $vendor['name']];
+}
+$tpl->assign('vendors', $vendors);
 
 // start header menu
 $tpl->assign("headerMenu_name", _("Name"));
@@ -133,6 +158,7 @@ for ($i = 0; $trap = $dbResult->fetch(); $i++) {
     $style != "two" ? $style = "two" : $style = "one";
 }
 $tpl->assign("elemArr", $elemArr);
+$tpl->assign("statuses", $tabStatus);
 
 // Different messages we put in the template
 $tpl->assign(
@@ -217,6 +243,8 @@ $o2->setSelected(null);
 
 $tpl->assign('limit', $limit);
 $tpl->assign('searchT', $search);
+$tpl->assign('searchVendor', $searchVendor);
+$tpl->assign('searchStatus', (string)$searchStatus);
 
 // Apply a template definition
 $renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
