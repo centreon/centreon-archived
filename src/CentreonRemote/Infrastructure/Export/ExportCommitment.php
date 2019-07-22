@@ -1,7 +1,6 @@
 <?php
 namespace CentreonRemote\Infrastructure\Export;
 
-use CentreonRemote\Infrastructure\Export\ExportParserYaml;
 use CentreonRemote\Infrastructure\Export\ExportParserJson;
 use CentreonRemote\Infrastructure\Export\ExportParserInterface;
 

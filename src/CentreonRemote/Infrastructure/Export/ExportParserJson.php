@@ -30,8 +30,8 @@ class ExportParserJson implements ExportParserInterface
             return;
         }
 
-        $yaml = json_encode($input);
+        $json = json_encode($input);
 
-        file_put_contents($filename, $yaml);
+        file_put_contents($filename, $json);
     }
 }
