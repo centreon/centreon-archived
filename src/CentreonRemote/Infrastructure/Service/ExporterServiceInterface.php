@@ -14,11 +14,9 @@ interface ExporterServiceInterface
 
     public function setManifest(ExportManifest $manifest): void;
 
-    public function cleanup() : void;
-
     public function export(): void;
 
-    public function import(): void;
+    public function import(ExportManifest $manifest): void;
 
     public static function getName(): string;
 

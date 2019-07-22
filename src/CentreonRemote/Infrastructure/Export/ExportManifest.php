@@ -2,22 +2,16 @@
 namespace CentreonRemote\Infrastructure\Export;
 
 use CentreonRemote\Infrastructure\Export\ExportCommitment;
-use Symfony\Component\Finder\Finder;
 use DateTime;
 use Exception;
 
 class ExportManifest
 {
 
-    const EXPORT_FILE = 'manifest.yaml';
+    const EXPORT_FILE = 'manifest.json';
     const ERR_CODE_MANIFEST_NOT_FOUND = 1001;
     const ERR_CODE_MANIFEST_WRONG_FORMAT = 1002;
-    const ERR_CODE_MISSING_EXPORTERS = 1003;
-    const ERR_CODE_MISSING_DATA = 1004;
     const ERR_CODE_INCOMPATIBLE_VERSIONS = 1005;
-    const ERR_CODE_MODIFIED_FILES = 1006;
-    const ERR_CODE_MISSING_FILES = 1007;
-    const ERR_CODE_EXTERNAL_FILES = 1008;
 
     /**
      * @var \CentreonRemote\Infrastructure\Export\ExportCommitment
@@ -86,8 +80,9 @@ class ExportManifest
         }
 
         $this->data = $this->commitment->getParser()->parse($file);
+        
         $checkManifestKeys = function (array $data) : array {
-            $keys = ['version', 'datetime', 'remote-poller', 'pollers', 'meta', 'exporters', 'exports'];
+            $keys = ['date', 'remote_server', 'pollers', 'import'];
             $missingKeys = [];
             
             foreach ($keys as $key) {
@@ -100,76 +95,25 @@ class ExportManifest
         };
 
         if ($missingKeys = $checkManifestKeys($this->data)) {
-            throw new Exception(sprintf("Missing data in a manifest file:\n - %s", join("\n - %s", $missingKeys)), static::ERR_CODE_MANIFEST_WRONG_FORMAT);
+            throw new Exception(sprintf("Missing data in a manifest file:\n - %s", join("\n - ", $missingKeys)), static::ERR_CODE_MANIFEST_WRONG_FORMAT);
         }
 
-        # Compare only the major and minor version, not bugfix because no SQL schema changes
-        $centralVersion = preg_replace('/^(\d+\.\d+).*/', '$1', $this->data['version']);
-        $remoteVersion = preg_replace('/^(\d+\.\d+).*/', '$1', $this->version);
+        // # Compare only the major and minor version, not bugfix because no SQL schema changes
+        // $centralVersion = preg_replace('/^(\d+\.\d+).*/', '$1', $this->data['version']);
+        // $remoteVersion = preg_replace('/^(\d+\.\d+).*/', '$1', $this->version);
 
-        if (!version_compare($centralVersion, $remoteVersion, '==')) {
-            throw new Exception(
-                sprintf(
-                    'The version of the Central %s and of the Remote %s are incompatible',
-                    $this->data['version'],
-                    $this->version
-                ),
-                static::ERR_CODE_INCOMPATIBLE_VERSIONS
-            );
-        }
+        // if (!version_compare($centralVersion, $remoteVersion, '==')) {
+        //     throw new Exception(
+        //         sprintf(
+        //             'The version of the Central %s and of the Remote %s are incompatible',
+        //             $this->data['version'],
+        //             $this->version
+        //         ),
+        //         static::ERR_CODE_INCOMPATIBLE_VERSIONS
+        //     );
+        // }
 
-        if (!$this->data['exporters']) {
-            throw new Exception('Missing exporters', static::ERR_CODE_MISSING_EXPORTERS);
-        }
-
-        if (!$this->data['exports']) {
-            throw new Exception('Missing export data', static::ERR_CODE_MISSING_DATA);
-        }
-
-        $missing = $this->data['exports'];
-        $modified = [];
-        $externals = [];
-
-        $finder = new Finder();
-        $finder->files()->name('*.yaml')->in($this->commitment->getPath());
-
-        // check for missing, modified and external files
-        foreach ($finder as $file) {
-            $filepath = $this->removePath($file->getPathName());
-
-            // skip manifest
-            if ($filepath === '/' . static::EXPORT_FILE) {
-                continue;
-            } elseif (array_key_exists($filepath, $this->data['exports'])) {
-                // remove from missing list
-                unset($missing[$filepath]);
-
-                // check if the file has been modified
-                $hash = md5_file($file);
-
-                if ($this->data['exports'][$filepath] !== $hash) {
-                    $modified[] = $filepath;
-                }
-
-                continue;
-            }
-
-            $externals[] = $filepath;
-        }
-
-        $missing = array_keys($missing);
-
-        if ($missing) {
-            throw new Exception(sprintf("Export contains external files:\n - %s", join("\n - ", $missing)), static::ERR_CODE_MISSING_FILES);
-        }
-
-        if ($modified) {
-            throw new Exception(sprintf("Export files modified:\n - %s", join("\n - ", $modified)), static::ERR_CODE_MODIFIED_FILES);
-        }
-
-        if ($externals) {
-            throw new Exception(sprintf("Export contains external files:\n - %s", join("\n - ", $externals)), static::ERR_CODE_EXTERNAL_FILES);
-        }
+        return $this->data;
     }
 
     public function dump(): void
