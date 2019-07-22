@@ -24,14 +24,7 @@ export function dynamicImport(basename, parameters) {
       if (typeof(window[vector]) === "object") {
         return resolve(window[vector]);
       } else {
-        //console.log(window.System)
-        /*
-        window.System.init({
-          react: "React"
-        });
-        */
         const module = await(window.System.import(basename + parameters.js));
-        //console.log(module)
         if (module.default && typeof(module.default) === 'object') { // named umd export
           window[vector] = module.default;
         } else { // unnamed umd export or systemjs export
