@@ -289,10 +289,10 @@ function synchronizeContactWithLdap(array $contacts = array()): void
                 $successfullySync[] = $rowContact['contact_name'];
             }
             $pearDB->commit();
-            foreach ($successfullySync as $key => $val) {
+            foreach ($successfullySync as $key => $value) {
                 $centreonLog->insertLog(
                     3, //ldap.log
-                    "LDAP MANUAL SYNC : Successfully planned LDAP synchronization for " . $value
+                    "LDAP MULTI SYNC : Successfully planned LDAP synchronization for " . $value
                 );
             }
         } catch (\PDOException $e) {

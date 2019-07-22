@@ -42,11 +42,6 @@ if (!isset($centreon)) {
  */
 const KICK_USER = "k";
 
-/**
- *  Manually plan the synchronization of the chosen user on next login
- */
-const SYNC_USER = "s";
-
 $path = "./include/options/session/";
 require_once "./include/common/common-Func.php";
 require_once "./class/centreonMsg.class.php";
@@ -72,49 +67,6 @@ if ($selectedUserSid) {
     $msg->setTimeOut("3");
 
     switch ($action) {
-        case SYNC_USER:
-            // finding chosen user's data
-            $resUser = $pearDB->prepare(
-                "SELECT `contact_id`, `contact_alias`, `ar_id` FROM contact 
-                LEFT JOIN session ON session.user_id = contact.contact_id 
-                WHERE session.session_id = :userSessionId"
-            );
-            try {
-                $resUser->bindValue(':userSessionId', $selectedUserSid, \PDO::PARAM_STR);
-                $resUser->execute();
-                $currentData = $resUser->fetch();
-
-                // checking if at least one LDAP configuration is still enabled
-                $ldapEnable = $pearDB->query(
-                    "SELECT `value` FROM `options` WHERE `key` = 'ldap_auth_enable'"
-                );
-                $row = $ldapEnable->fetch();
-
-                if ($row['value'] !== '1') {
-                    // unable to plan the manual LDAP request of the contact
-                    $msg->setText(_("No LDAP configuration enabled !"));
-                    break;
-                } else {
-                    /*
-                     * requiring a manual synchronization at next login of the contact
-                     * if this step is successful, we need to logout the contact to synchronize the data on next login
-                     */
-                    $stmtRequiredSync = $pearDB->prepare(
-                        'UPDATE contact
-                        SET `contact_ldap_required_sync` = "1"
-                        WHERE contact_id = :contactId'
-                    );
-                    $stmtRequiredSync->bindValue(':contactId', $currentData['contact_id'], \PDO::PARAM_INT);
-                    $stmtRequiredSync->execute();
-                    $msg->setTextColor("green");
-                    $msg->setText(_("Resync data requested."));
-                    $msg->setText(_(" ")); // adding the space here, to avoid to forgot it in the translation files
-                }
-            } catch (\PDOException $e) {
-                $msg->setText(_("Error : unable to read or update the contact data in the DB"));
-                break;
-            }
-
         // logout action
         case KICK_USER:
             $stmt = $pearDB->prepare("DELETE FROM session WHERE session_id = :userSessionId");
@@ -208,7 +160,6 @@ $tpl->assign("isAdmin", $centreon->user->admin);
 $tpl->assign("wi_user", _("Users"));
 $tpl->assign("wi_where", _("Position"));
 $tpl->assign("wi_last_req", _("Last request"));
-
 $tpl->assign("distant_location", _("IP Address"));
 $tpl->display("connected_user.ihtml");
 ?>
@@ -216,13 +167,25 @@ $tpl->display("connected_user.ihtml");
 <script>
     //formatting the tags containing a class isTimestamp
     formatDateMoment();
+
     // ask for confirmation when requesting to resynchronize contact data from the LDAP
     function submitSync(p, sessionId) {
         // msg = localized message to be displayed in the confirmation popup
-        let msg = "<?= _('The contact will be disconnected. Are you sure you want to request a ' .
+        let msg = "<?= _('All this contact sessions will be closed. Are you sure you want to request a ' .
             'synchronization at the next login of this Contact ?'); ?>";
+        // then executing the request and refreshing the page
         if (confirm(msg)) {
-            window.location.href = "?p=" + p + "&o=s&session=" + sessionId;
+            $.ajax({
+                url: './api/internal.php?object=centreon_ldap_synchro&action=requestLdapSynchro',
+                type: 'POST',
+                async: false,
+                data: {sessionId: sessionId},
+                success: function(data) {
+                    if (data === true) {
+                        window.location.href = "?p=" + p;
+                    }
+                }
+            });
         }
     }
 </script>

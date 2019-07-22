@@ -343,7 +343,17 @@ if ($row['count_ldap'] > 0) {
         let msg = "<?= _('If the contact is connected, all his instances will be closed. Are you sure you want to ' .
             'request a data synchronization at the next login of this Contact ?'); ?>";
         if (confirm(msg)) {
-            window.location.href = "?p=" + p + "&selectedContact=" + contactId + "&o=sync";
+            $.ajax({
+                url: './api/internal.php?object=centreon_ldap_synchro&action=requestLdapSynchro',
+                type: 'POST',
+                async: false,
+                data: {contactId: contactId},
+                success: function(data) {
+                    if (data === true) {
+                        window.location.href = "?p=" + p;
+                    }
+                }
+            });
         }
     }
 </script>
