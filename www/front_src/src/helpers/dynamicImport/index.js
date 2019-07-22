@@ -25,7 +25,7 @@ export function dynamicImport(basename, parameters) {
         return resolve(window[vector]);
       } else {
         const module = await(window.System.import(basename + parameters.js));
-        if (module.default && typeof(module.default) === 'object') { // named umd export
+        if (module.default && typeof(module.default) && module.default.default) { // named umd export
           window[vector] = module.default;
         } else { // unnamed umd export or systemjs export
           window[vector] = module;
