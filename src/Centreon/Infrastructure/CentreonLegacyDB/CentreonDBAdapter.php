@@ -8,6 +8,7 @@ use CentreonDB;
 
 class CentreonDBAdapter
 {
+    const BULK_SIZE = 10000;
 
     /** @var \CentreonDB */
     private $db;
@@ -131,6 +132,153 @@ class CentreonDBAdapter
             $stmt->execute();
         } catch (\Exception $e) {
             throw new \Exception('Query failed. ' . $e->getMessage());
+        }
+
+        return $this->db->lastInsertId();
+    }
+
+    /**
+     * Generate value template place holders
+     * 
+     * @param string $text
+     * @param int $count
+     * @param string $separator
+     * 
+     * @return string
+     */
+    public function placeHolders($text, $count = 0, $separator = ",")
+    {
+        $result = array();
+        if ($count > 0) {
+            for ($x = 0; $x < $count; $x++) {
+                $result[] = $text;
+            }
+        }
+    
+        return implode($separator, $result);
+    }
+
+    /**
+     * Insert data using load data infile
+     * 
+     * @param string $file Path and name of file to load
+     * @param string $table Table name
+     * @param array $fieldsClause Values of subclauses of FIELDS clause
+     * @param array $linesClause Values of subclauses of LINES clause
+     * @param array $columns Columns name
+     *
+     * @throws \Exception
+     *
+     * @return void
+     */
+    public function loadDataInfile(string $file, string $table, array $fieldsClause, array $linesClause, array $columns)
+    {
+        // SQL statement format:
+        // LOAD DATA
+        // INFILE 'file_name'
+        // INTO TABLE tbl_name
+        // FIELDS TERMINATED BY ',' ENCLOSED BY '\'' ESCAPED BY '\\'
+        // LINES TERMINATED BY '\n' STARTING BY ''
+        // (`col_name`, `col_name`,...)
+
+        // Construct SQL statement
+        $sql = "LOAD DATA INFILE '$file'";
+        $sql .= " INTO TABLE $table";
+        $sql .= " FIELDS TERMINATED BY '" . $fieldsClause["terminated_by"] . "' ENCLOSED BY '"
+            . $fieldsClause["enclosed_by"] . "' ESCAPED BY '" . $fieldsClause["escaped_by"] . "'";
+        $sql .= " LINES TERMINATED BY '" . $linesClause["terminated_by"] . "' STARTING BY '"
+            . $linesClause["starting_by"] . "'";
+        $sql .= " (`" . implode("`, `", $columns) . "`)";
+        echo date("Y-m-d H:i:s") . " - INFO - Query '" . $sql . "'.\n";
+        
+        // Prepare PDO statement.
+        $stmt = $this->db->prepare($sql);
+
+        // Execute
+        try {
+            $stmt->execute();
+        } catch (\Exception $e) {
+            throw new \Exception('Query failed. ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * Insert data using bulk
+     * 
+     * @param string $table
+     * @param array $data
+     *
+     * @throws \Exception
+     *
+     * @return int Last inserted ID
+     */
+    public function insertBulk($table, array $data)
+    {
+        if (!$table && !$data) {
+            throw new \Exception("The argument can't be empty");
+        }
+
+        //Define needed vars
+        $rowsSQL = array();
+        $columnNames = array();
+        $toBind = array();
+        $params = array();
+        $i = 0;
+
+        foreach ($data as $row) {
+            $params = array();
+            $columnNames = array_keys($row);
+            foreach ($row as $columnName => $columnValue) {
+                $param = ":" . $columnName . $i;
+                $params[] = $param;
+                $toBind[$param] = $columnValue; 
+            }
+            $rowsSQL[] = "(" . implode(", ", $params) . ")";
+            $i++;
+
+            if ($i >= BULK_SIZE) {
+                //Construct SQL statement
+                $sql = "INSERT INTO `$table` (`" . implode("`, `", $columnNames) . "`) VALUES " . implode(", ", $rowsSQL);
+
+                //Prepare PDO statement.
+                $stmt = $this->db->prepare($sql);
+
+                //Bind values.
+                foreach ($toBind as $param => $val) {
+                    $stmt->bindValue($param, $val);
+                }
+
+                try {
+                    $stmt->execute();
+
+                    //Reset values
+                    $i = 0;
+                    $rowsSQL = array();
+                    $toBind = array();
+                } catch (\Exception $e) {
+                    throw new \Exception('Query failed. ' . $e->getMessage());
+                }
+            }
+        }
+
+        if ($rowsSQL) {
+            //Construct SQL statement
+            $rowsSQL[] = "(" . implode(", ", $params) . ")";
+            $sql = "INSERT INTO `$table` (`" . implode("`, `", $columnNames) . "`) VALUES " . implode(", ", $rowsSQL);
+
+            //Prepare PDO statement.
+            $stmt = $this->db->prepare($sql);
+
+            //Bind values.
+            foreach ($toBind as $param => $val) {
+                $stmt->bindValue($param, $val);
+            }
+
+            try {
+                $stmt->execute();
+            } catch (\Exception $e) {
+                throw new \Exception('Query failed. ' . $e->getMessage());
+            }
         }
 
         return $this->db->lastInsertId();

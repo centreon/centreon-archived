@@ -130,20 +130,19 @@ class ExportService
             return;
         }
 
+        // parse manifest
         $manifest = new ExportManifest($commitment, $this->version);
         $manifest->validate();
 
-        $filterExporters = $manifest->get('exporters') ?? [];
+        // import configuration
+        $configurationExporter = $this->exporter->get('configuration')['factory']();
+        $configurationExporter->setCommitment($commitment);
+        $configurationExporter->import($manifest);
 
-        foreach ($this->exporter->all() as $exporterMeta) {
-            if (!in_array($exporterMeta['classname'], $filterExporters)) {
-                continue;
-            }
-
-            $exporter = $exporterMeta['factory']();
-            $exporter->setCommitment($commitment);
-            $exporter->import();
-        }
+        // import media
+        $mediaExporter = $this->exporter->get('media')['factory']();
+        $mediaExporter->setCommitment($commitment);
+        $mediaExporter->import($manifest);
 
         // cleanup ACL removed data
         $this->_refreshAcl();

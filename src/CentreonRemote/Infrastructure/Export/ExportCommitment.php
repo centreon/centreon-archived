@@ -2,6 +2,7 @@
 namespace CentreonRemote\Infrastructure\Export;
 
 use CentreonRemote\Infrastructure\Export\ExportParserYaml;
+use CentreonRemote\Infrastructure\Export\ExportParserJson;
 use CentreonRemote\Infrastructure\Export\ExportParserInterface;
 
 final class ExportCommitment
@@ -64,7 +65,7 @@ final class ExportCommitment
             $this->path = _CENTREON_PATH_ . 'filesGeneration/export/' . $this->remote;
         }
 
-        $this->parser = $parser ?? new ExportParserYaml;
+        $this->parser = $parser ?? new ExportParserJson;
     }
 
     public function getRemote(): int
