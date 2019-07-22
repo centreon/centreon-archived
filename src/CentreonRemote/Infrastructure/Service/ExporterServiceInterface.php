@@ -14,7 +14,7 @@ interface ExporterServiceInterface
 
     public function setManifest(ExportManifest $manifest): void;
 
-    public function export(): void;
+    public function export(int $remoteId): void;
 
     public function import(ExportManifest $manifest): void;
 
