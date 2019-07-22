@@ -71,7 +71,7 @@ class ExportService
      */
     public function export(ExportCommitment $commitment): void
     {
-        $filterExporters = $commitment->getExporters();
+        $remoteId = $commitment->getRemote();
 
         // remove export directory if exists
         $exportPath = $commitment->getPath();
@@ -80,36 +80,12 @@ class ExportService
         }
 
         $manifest = new ExportManifest($commitment, $this->version);
-        $partials = [];
-        $interface = ExporterServicePartialInterface::class;
 
-        foreach ($this->exporter->all() as $exporterMeta) {
-            if ($filterExporters && !in_array($exporterMeta['classname'], $filterExporters)) {
-                continue;
-            }
+        // export configuration and media
+        $configurationExporter = $this->exporter->get('configuration')['factory']();
+        $configurationExporter->setCommitment($commitment);
+        $configurationExporter->export($remoteId);
 
-            $exporter = $exporterMeta['factory']();
-            $exporter->setCommitment($commitment);
-            $exporter->setManifest($manifest);
-            $exporter->setCache($this->cache);
-            $exporter->export();
-
-            $hasInterface = (new ReflectionClass($exporter))->implementsInterface($interface);
-
-            if ($hasInterface) {
-                $partials[] = $exporter;
-            }
-
-            // add exporter to manifest
-            $manifest->addExporter($exporterMeta['classname']);
-        }
-
-        // export partial data
-        foreach ($partials as $partial) {
-            $partial->exportPartial();
-        }
-
-        $this->cache->destroy();
         $manifest->dump();
     }
 
@@ -134,15 +110,10 @@ class ExportService
         $manifest = new ExportManifest($commitment, $this->version);
         $manifest->validate();
 
-        // import configuration
+        // import configuration and media
         $configurationExporter = $this->exporter->get('configuration')['factory']();
         $configurationExporter->setCommitment($commitment);
         $configurationExporter->import($manifest);
-
-        // import media
-        $mediaExporter = $this->exporter->get('media')['factory']();
-        $mediaExporter->setCommitment($commitment);
-        $mediaExporter->import($manifest);
 
         // cleanup ACL removed data
         $this->_refreshAcl();
