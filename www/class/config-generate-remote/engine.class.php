@@ -152,7 +152,8 @@ class Engine extends AbstractObject
         enable_environment_macros,
         use_setpgid,
         enable_macros_filter,
-        macros_filter
+        macros_filter,
+        nagios_activate
     ';
     protected $attributes_write = array(
         'nagios_server_id',
@@ -221,7 +222,8 @@ class Engine extends AbstractObject
         'max_debug_file_size',
         'log_pid', // centengine
         'macros_filter',
-        'enable_macros_filter'
+        'enable_macros_filter',
+        'nagios_activate'
     );
     protected $stmt_engine = null;
     protected $stmt_broker = null;
