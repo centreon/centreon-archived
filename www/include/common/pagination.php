@@ -42,7 +42,7 @@ if (!isset($centreon)) {
 global $num, $limit, $search, $url, $pearDB, $search_type_service, $search_type_host,
        $host_name, $hostgroup, $rows, $p, $gopt, $pagination, $poller, $template, $search_output, $search_service;
 
-$type = $_REQUEST["type"] ?? null;
+$type = $_REQUEST["type"] ? '&type=' . $_REQUEST["type"] : '';
 $o = $_GET["o"] ?? null;
 
 //saving current pagination filter value and current displayed page
@@ -175,7 +175,7 @@ for ($i2 = 0, $iEnd = $num; ($iEnd < ($rows / $limit - 1)) && ($i2 < (5 + $i)); 
 
 if ($rows != 0) {
     for ($i = $iStart; $i <= $iEnd; $i++) {
-        $urlPage = "main.php?p=" . $p . "&num=" . $i ;
+        $urlPage = "main.php?p=" . $p . "&num=" . $i . $type;
         $pageArr[$i] = array(
             "url_page" => $urlPage,
             "label_page" => "<b>" . ($i + 1) . "</b>",
@@ -196,14 +196,14 @@ if ($rows != 0) {
     if (($prev = $num - 1) >= 0) {
         $tpl->assign(
             'pagePrev',
-            ("main.php?p=" . $p . "&num=" . $prev . "&limit=" . $limit)
+            ("main.php?p=" . $p . "&num=" . $prev . "&limit=" . $limit . $type)
         );
     }
 
     if (($next = $num + 1) < ($rows / $limit)) {
         $tpl->assign(
             'pageNext',
-            ("main.php?p=" . $p . "&num=" . $next . "&limit=" . $limit)
+            ("main.php?p=" . $p . "&num=" . $next . "&limit=" . $limit . $type)
         );
     }
 
@@ -217,13 +217,13 @@ if ($rows != 0) {
     if ($page_max > 5 && $num != 0) {
         $tpl->assign(
             'firstPage',
-            ("main.php?p=" . $p . "&num=0&limit=" . $limit)
+            ("main.php?p=" . $p . "&num=0&limit=" . $limit . $type)
         );
     }
     if ($page_max > 5 && $num != ($pageNumber - 1)) {
         $tpl->assign(
             'lastPage',
-            ("main.php?p=" . $p . "&num=" . ($pageNumber - 1) . "&limit=" . $limit)
+            ("main.php?p=" . $p . "&num=" . ($pageNumber - 1) . "&limit=" . $limit . $type)
         );
     }
 
@@ -245,15 +245,15 @@ if ($rows != 0) {
 }
 
 ?>
-<script type="text/javascript">
-    function setL(_this) {
-        var _l = document.getElementsByName('l');
-        document.forms['form'].elements['limit'].value = _this;
-        _l[0].value = _this;
-        _l[1].value = _this;
-        window.history.pushState('', '', '?p=<?= $p ?>');
-    }
-</script>
+    <script type="text/javascript">
+        function setL(_this) {
+            var _l = document.getElementsByName('l');
+            document.forms['form'].elements['limit'].value = _this;
+            _l[0].value = _this;
+            _l[1].value = _this;
+            window.history.pushState('', '', '?p=<?= $p.$type ?>');
+        }
+    </script>
 <?php
 $form = new HTML_QuickFormCustom(
     'select_form',

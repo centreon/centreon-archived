@@ -45,11 +45,6 @@ $search = filter_var(
     FILTER_SANITIZE_STRING
 );
 
-$num = filter_var(
-    $_POST['num'] ?? $_GET['num'] ?? $centreon->historyPage[$url] ?? 0,
-    FILTER_VALIDATE_INT
-);
-
 $type = filter_var(
     $_POST['type'] ?? $_GET['type'] ?? null,
     FILTER_VALIDATE_INT
@@ -80,6 +75,7 @@ if (isset($_POST['searchC']) || isset($_GET['searchC'])) {
     //restoring user's search field value
     $search = $centreon->historySearch[$url]['search' . $type] ?? null;
 }
+
 
 $type_str = $type ? " AND `command_type` = " . $type : "";
 $search = tidySearchKey($search, $advanced_search);
@@ -125,6 +121,13 @@ $form = new HTML_QuickForm('form', 'POST', "?p=" . $p);
 
 // Different style between each lines
 $style = "one";
+
+$addrType = $type ? "&type=" . $type : "";
+$attrBtnSuccess = array(
+    "class" => "btc bt_success",
+    "onClick" => "window.history.pushState('', '', '?p=" . $p . $addrType. "');"
+);
+$form->addElement('submit', 'Search', _("Search"), $attrBtnSuccess);
 
 // Define command Type table
 $commandType = array(
