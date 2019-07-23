@@ -25,6 +25,10 @@
 		<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="is_default"> {$form.is_default.label}</td><td class="FormRowValue">{$form.is_default.html}</td></tr>
 		{if $form.remote_id.label}
 		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="remote_id"> {$form.remote_id.label}</td><td class="FormRowValue">{$form.remote_id.html}</td></tr>
+        <tr class="list_tow">
+            <td class="FormRowField"><img class="helpTooltip" name="remote_additional_id"> {$form.remote_additional_id.label}</td>
+            <td class="FormRowValue">{$form.remote_additional_id.html}</td>
+        </tr>
 		{/if}
     {if $form.header.Remote_Configuration.label}
     <tr class="list_lvl_1">

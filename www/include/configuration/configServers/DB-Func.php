@@ -329,6 +329,33 @@ function duplicateServer(array $server, array $nbrDup): void
 }
 
 /**
+ * Insert additionnal Remote Servers relation
+ *
+ * @global CentreonDB $pearDB DB connector
+ * @param int $id Id of the server
+ * @param array $remotes Id of the additionnal Remote Servers
+ * @throws Exception
+ * 
+ * @return void
+ */
+function additionnalRemoteServersByPollerId(int $id, array $remotes = null): void
+{
+    global $pearDB;
+
+    $dbResult = $pearDB->query(
+        "DELETE FROM rs_poller_relation WHERE poller_server_id = '" . $id . "'"
+    );
+
+    if (!is_null($remotes)) {
+        foreach ($remotes as $remote) {
+            $dbResult = $pearDB->query(
+                "INSERT INTO rs_poller_relation VALUES ('" . $remote . "', '" . $id  . "')"
+            );
+        }
+    }
+}
+
+/**
  * Insert a new server
  *
  * @param array $data Data of the new server
@@ -345,6 +372,8 @@ function insertServerInDB(array $data): int
         $sName = $data['name'];
     }
     $iIdNagios = $srvObj->insertServerInCfgNagios(-1, $id, $sName);
+
+    additionnalRemoteServersByPollerId($id, $data["remote_additional_id"]);
 
     if (!empty($iIdNagios)) {
         $srvObj->insertBrokerDefaultDirectives($iIdNagios, 'ui');
@@ -635,6 +664,7 @@ function updateServer(int $id, $data): void
     $pearDB->query($rq);
 
     updateRemoteServerInformation($data);
+    additionnalRemoteServersByPollerId($id, $data["remote_additional_id"]);
 
     if (isset($_REQUEST['pollercmd'])) {
         $instanceObj = new CentreonInstance($pearDB);

@@ -56,6 +56,7 @@ if (!$centreon->user->admin && $server_id && count($serverResult)) {
  * Database retrieve information for Nagios
  */
 $nagios = array();
+$selectedAdditionnalRS = null;
 $serverType = "poller";
 if (($o == SERVER_MODIFY || $o == SERVER_WATCH) && $server_id) {
     $DBRESULT = $pearDB->query("SELECT * FROM `nagios_server` WHERE `id` = '$server_id' LIMIT 1");
@@ -74,9 +75,31 @@ if (($o == SERVER_MODIFY || $o == SERVER_WATCH) && $server_id) {
     }
 
     if ($serverType === "remote") {
-        $dbResult = $pearDB->query("SELECT http_method, http_port, no_check_certificate, no_proxy " .
-            "FROM `remote_servers` WHERE `ip` = '" . $cfg_server['ns_ip_address'] . "' LIMIT 1");
+        $dbResult = $pearDB->query(
+            "SELECT http_method, http_port, no_check_certificate, no_proxy 
+            FROM `remote_servers` 
+            WHERE `ip` = '" . $cfg_server['ns_ip_address'] . "' LIMIT 1"
+        );
         $cfg_server = array_merge($cfg_server, array_map("myDecode", $dbResult->fetch()));
+        $dbResult->closeCursor();
+    }
+
+    if ($serverType === "poller") {
+        // Select additionnal Remote Servers
+        $dbResult = $pearDB->query(
+            "SELECT remote_server_id, name 
+            FROM rs_poller_relation AS rspr
+            LEFT JOIN nagios_server AS ns ON (rspr.remote_server_id = ns.id)
+            WHERE poller_server_id = '" . $cfg_server['id'] . "'"
+        );
+        if ($dbResult->numRows() > 0) {
+            while ($row = $dbResult->fetchRow()) {
+                $selectedAdditionnalRS[] = array(
+                    'id' => $row['remote_server_id'],
+                    'text' => $row['name'],
+                );
+            }
+        }
         $dbResult->closeCursor();
     }
 }
@@ -122,6 +145,12 @@ $attrPoller1 = array_merge(
     $attrPollers,
     array('defaultDatasetRoute' => $route)
 );
+$attrPoller2 = array(
+    'datasourceOrigin' => 'ajax',
+    'availableDatasetRoute' => './api/internal.php?object=centreon_configuration_poller&action=list&t=remote',
+    'multiple' => true,
+    'linkedObject' => 'centreonInstance'
+);/*
 
 /*
  * Form begin
@@ -173,12 +202,18 @@ $form->addElement('text', 'name', _("Poller Name"), $attrsText);
 $form->addElement('text', 'ns_ip_address', _("IP Address"), $attrsText);
 $form->addElement('text', 'init_script', _("Monitoring Engine Init Script"), $attrsText2);
 if (strcmp($serverType, 'poller') ==  0) {
-    $form->addElement('select2', 'remote_id', _('Attach to Remote Server'), array(), $attrPoller1);
-    $tab = array();
+    $form->addElement(
+        'select2',
+        'remote_id',
+        _('Attach to Master Remote Server'),
+        array(),
+        $attrPoller1
+    );
+    $form->addElement('select2', 'remote_additional_id', _('Attach additional Remote Servers'), array(), $attrPoller2);
+    $tab = [];
     $tab[] = $form->createElement('radio', 'remote_server_centcore_ssh_proxy', null, _("Yes"), '1');
     $tab[] = $form->createElement('radio', 'remote_server_centcore_ssh_proxy', null, _("No"), '0');
     $form->addGroup($tab, 'remote_server_centcore_ssh_proxy', _("Use the Remote Server as a proxy for SSH"), '&nbsp;');
-    $form->addElement('select2', 'remote_id', _('Attach to Master Remote Server'), array(), $attrPoller1);
 }
 $form->addElement('text', 'nagios_bin', _("Monitoring Engine Binary"), $attrsText2);
 $form->addElement('text', 'nagiostats_bin', _("Monitoring Engine Statistics Binary"), $attrsText2);
@@ -363,3 +398,57 @@ if ($valid) {
     $tpl->assign("helptext", $helptext);
     $tpl->display("formServers.ihtml");
 }
+
+?>
+<script type='text/javascript'>
+    jQuery("#remote_additional_id").centreonSelect2({
+        select2: {
+            ajax: {
+                url: './api/internal.php?object=centreon_configuration_poller&action=list&t=remote',
+                cache: false
+            },
+            multiple: true,
+        },
+        allowClear: true,
+        additionnalFilters: {
+            e: '#remote_id'
+        }
+    });
+    jQuery(function () {
+        jQuery("#remote_id").change(function () {
+            var master_remote_id = jQuery("#remote_id").val();
+            var remote_additional_id = jQuery("#remote_additional_id").val();
+
+            jQuery.ajax({
+                url: "./api/internal.php?object=centreon_configuration_poller&action=list&t=remote&e=" + master_remote_id,
+                type: "GET",
+                dataType: "json",
+                success: function (json) {
+                    jQuery('#remote_additional_id').val('');
+                    json.items.forEach(function (elem) {
+                        jQuery('#remote_additional_id').empty();
+                        if (jQuery.inArray(elem.id, remote_additional_id) != -1 && elem.id != master_remote_id && elem.id) {
+                            jQuery('#remote_additional_id').append(
+                                '<option value="' + elem.id + '" selected>' + elem.text + '</option>'
+                            );
+                        }
+                    });
+                    jQuery('#remote_additional_id').trigger('change');
+                }
+            });
+        });
+
+        var initAdditionnalRS = '<?php echo json_encode($selectedAdditionnalRS); ?>';
+        var pollers = JSON.parse(initAdditionnalRS);
+        if (pollers) {
+            for (var i = 0; i < pollers.length; i++) {
+                if (pollers[i].text != null) {
+                    jQuery('#remote_additional_id').append(
+                        '<option value="' + pollers[i].id + '" selected>' + pollers[i].text + '</option>'
+                    );
+                }
+            }
+            jQuery('#remote_additional_id').trigger('change');
+        }
+    });
+</script>
