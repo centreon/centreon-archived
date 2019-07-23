@@ -63,6 +63,25 @@ class ExportManifestTest extends TestCase
                     $this->dumpData[$args[1]] = $args[0];
             }))
         ;
+
+        $this->commitment = new ExportCommitment(1, [2, 3], null, $parser);
+        $this->manifest = $this
+            ->getMockBuilder(ExportManifest::class)
+            ->setMethods([
+                'getFile',
+            ])
+            ->setConstructorArgs([
+                $this->commitment,
+                $this->version
+            ])
+            ->getMock()
+        ;
+        $this->manifest
+            ->method('getFile')
+            ->will($this->returnCallback(function () {
+                    return __FILE__;
+            }))
+        ;
     }
 
     /**
