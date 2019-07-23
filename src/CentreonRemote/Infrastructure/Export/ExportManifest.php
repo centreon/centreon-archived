@@ -98,35 +98,27 @@ class ExportManifest
             throw new Exception(sprintf("Missing data in a manifest file:\n - %s", join("\n - ", $missingKeys)), static::ERR_CODE_MANIFEST_WRONG_FORMAT);
         }
 
-        // # Compare only the major and minor version, not bugfix because no SQL schema changes
-        // $centralVersion = preg_replace('/^(\d+\.\d+).*/', '$1', $this->data['version']);
-        // $remoteVersion = preg_replace('/^(\d+\.\d+).*/', '$1', $this->version);
+        # Compare only the major and minor version, not bugfix because no SQL schema changes
+        $centralVersion = preg_replace('/^(\d+\.\d+).*/', '$1', $this->data['version']);
+        $remoteVersion = preg_replace('/^(\d+\.\d+).*/', '$1', $this->version);
 
-        // if (!version_compare($centralVersion, $remoteVersion, '==')) {
-        //     throw new Exception(
-        //         sprintf(
-        //             'The version of the Central %s and of the Remote %s are incompatible',
-        //             $this->data['version'],
-        //             $this->version
-        //         ),
-        //         static::ERR_CODE_INCOMPATIBLE_VERSIONS
-        //     );
-        // }
+        if (!version_compare($centralVersion, $remoteVersion, '==')) {
+            throw new Exception(
+                sprintf(
+                    'The version of the Central %s and of the Remote %s are incompatible',
+                    $this->data['version'],
+                    $this->version
+                ),
+                static::ERR_CODE_INCOMPATIBLE_VERSIONS
+            );
+        }
 
         return $this->data;
     }
 
-    public function dump(): void
+    public function dump(array $exportManifest): void
     {
-        $data = [
-            'version' => $this->version,
-            'datetime' => (new DateTime())->format(DateTime::W3C),
-            'remote-poller' => $this->commitment->getRemote(),
-            'pollers' => $this->commitment->getPollers(),
-            'meta' => $this->commitment->getMeta(),
-            'exporters' => $this->exporters,
-            'exports' => $this->files,
-        ];
+        $data = array_merge($exportManifest, [ "version" => $this->version ]);
 
         $this->commitment->getParser()->dump($data, $this->getFile());
     }
