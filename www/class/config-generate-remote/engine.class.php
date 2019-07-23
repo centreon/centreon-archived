@@ -157,7 +157,6 @@ class Engine extends AbstractObject
     protected $attributes_write = array(
         'nagios_server_id',
         'use_timezone',
-        'resource_file',
         'log_file',
         'status_file',
         'check_result_path',
