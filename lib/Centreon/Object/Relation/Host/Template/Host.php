@@ -83,7 +83,9 @@ class Centreon_Object_Relation_Host_Template_Host extends Centreon_Object_Relati
         try {
             parent::delete($fkey, $skey);
             // Delete linked services as well
-            $this->db->query('DELETE FROM host_service_relation WHERE host_host_id = '. (int)$skey);
+            $stmt = $this->db->prepare('DELETE FROM host_service_relation WHERE host_host_id = :sKey');
+            $stmt->bindValue(':sKey', $skey, \PDO::PARAM_INT);
+            $stmt->execute();
             $this->db->commit();
         } catch (\PDOException $e) {
             $this->db->rollBack();
