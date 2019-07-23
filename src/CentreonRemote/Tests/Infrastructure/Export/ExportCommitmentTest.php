@@ -77,7 +77,7 @@ class ExportCommitmentTest extends TestCase
      */
     public function testGetFilePermission()
     {
-        $this->assertEquals(0777, $this->commitment->getFilePermission());
+        $this->assertEquals(0775, $this->commitment->getFilePermission());
     }
 
     /**
