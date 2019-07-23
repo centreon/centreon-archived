@@ -76,6 +76,13 @@ $template = filter_var(
     FILTER_VALIDATE_INT
 );
 
+$status = filter_var(
+    $_POST["status"] ?? $_GET["status"] ?? 0,
+    FILTER_VALIDATE_INT
+);
+
+
+
 if (isset($_POST['searchH']) || isset($_GET['searchH'])) {
     //saving chosen filters values
     $centreon->historySearch[$url] = array();
@@ -83,9 +90,6 @@ if (isset($_POST['searchH']) || isset($_GET['searchH'])) {
     $centreon->historySearch[$url]["poller"] = $poller;
     $centreon->historySearch[$url]["hostgroup"] = $hostgroup;
     $centreon->historySearch[$url]["template"] = $template;
-    $status = $_POST["status"] ?? '';
-    // Security fix
-    $status = (int)(($status != '') ? $status : -1);
     $centreon->historySearch[$url]["status"] = $status;
 } else {
     //restoring saved values
@@ -93,7 +97,7 @@ if (isset($_POST['searchH']) || isset($_GET['searchH'])) {
     $poller = $centreon->historySearch[$url]["poller"] ?? 0;
     $hostgroup = $centreon->historySearch[$url]["hostgroup"] ?? 0;
     $template = $centreon->historySearch[$url]["template"] ?? 0;
-    $status = $centreon->historySearch[$url]["status"] ?? -1;
+    $status = $centreon->historySearch[$url]["status"] ?? 0;
 }
 
 // set object history
@@ -103,18 +107,18 @@ $centreon->template = $template;
 
 // Status Filter
 $statusFilter = "<option value=''" .
-    (($status == -1) ? " selected" : "") . "> </option>";
+    (($status == 0) ? " selected" : "") . "> </option>";
 
 $statusFilter .= "<option value='1'" .
     (($status == 1) ? " selected" : "") . ">" . _("Enabled") . "</option>";
 
-$statusFilter .= "<option value='0'" .
-    (($status == 0) ? " selected" : "") . ">" . _("Disabled") . "</option>";
+$statusFilter .= "<option value='2'" .
+    (($status == 2) ? " selected" : "") . ">" . _("Disabled") . "</option>";
 
 $sqlFilterCase = '';
 if ($status == 1) {
     $sqlFilterCase = " AND host_activate = '1' ";
-} elseif ($status == 0) {
+} elseif ($status == 2) {
     $sqlFilterCase = " AND host_activate = '0' ";
 }
 
@@ -189,9 +193,13 @@ $form = new HTML_QuickFormCustom('select_form', 'POST', "?p={$p}");
 // Different style between each lines
 $style = 'one';
 
-/*
- * Select hosts
- */
+$attrBtnSuccess = array(
+    "class" => "btc bt_success",
+    "onClick" => "window.history.pushState('', '', '?p=" . $p . "');"
+);
+$form->addElement('submit', 'SearchB', _("Search"), $attrBtnSuccess);
+
+//Select hosts
 $aclFrom = '';
 $aclCond = '';
 if (!$centreon->user->admin) {
@@ -200,6 +208,7 @@ if (!$centreon->user->admin) {
         = ' AND h.host_id = acl.host_id AND acl.service_id IS NULL '
         . 'AND acl.group_id IN (' . $acl->getAccessGroupsString() . ') ';
 }
+
 
 if ($hostgroup) {
     if ($poller) {
@@ -416,12 +425,6 @@ $tpl->assign('limit', $limit);
 $renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 $form->accept($renderer);
 
-$tpl->assign(
-    "search",
-    stripslashes(
-        str_replace('"', "&quot;", $search)
-    )
-);
 
 // create Poller Select
 $options = "<option value='0'>" . _("All Pollers") . "</option>";
@@ -464,7 +467,6 @@ $tpl->assign('Poller', _("Poller"));
 $tpl->assign('Hostgroup', _("Hostgroup"));
 $tpl->assign('HelpServices', _("Display all Services for this host"));
 $tpl->assign('Template', _("Template"));
-$tpl->assign('Search', _("Search"));
 
 $tpl->assign("StatusFilter", $statusFilter);
 

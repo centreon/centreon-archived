@@ -175,8 +175,7 @@ for ($i2 = 0, $iEnd = $num; ($iEnd < ($rows / $limit - 1)) && ($i2 < (5 + $i)); 
 
 if ($rows != 0) {
     for ($i = $iStart; $i <= $iEnd; $i++) {
-        $urlPage = "main.php?p=" . $p . "&num=" . $i . "&limit=" . $limit . "&poller=" . $poller .
-            "&template=" . $template . "&search=" . $search . "&type=" . $type . "&o=" . $o . $url_var;
+        $urlPage = "main.php?p=" . $p . "&num=" . $i ;
         $pageArr[$i] = array(
             "url_page" => $urlPage,
             "label_page" => "<b>" . ($i + 1) . "</b>",
@@ -197,16 +196,14 @@ if ($rows != 0) {
     if (($prev = $num - 1) >= 0) {
         $tpl->assign(
             'pagePrev',
-            ("main.php?p=" . $p . "&num=" . $prev . "&limit=" . $limit . "&poller=" . $poller .
-                "&template=" . $template . "&search=" . $search . "&type=" . $type . "&o=" . $o . $url_var)
+            ("main.php?p=" . $p . "&num=" . $prev . "&limit=" . $limit)
         );
     }
 
     if (($next = $num + 1) < ($rows / $limit)) {
         $tpl->assign(
             'pageNext',
-            ("main.php?p=" . $p . "&num=" . $next . "&limit=" . $limit . "&poller=" . $poller .
-                "&template=" . $template . "&search=" . $search . "&type=" . $type . "&o=" . $o . $url_var)
+            ("main.php?p=" . $p . "&num=" . $next . "&limit=" . $limit)
         );
     }
 
@@ -220,16 +217,13 @@ if ($rows != 0) {
     if ($page_max > 5 && $num != 0) {
         $tpl->assign(
             'firstPage',
-            ("main.php?p=" . $p . "&num=0&limit=" . $limit . "&poller=" . $poller .
-                "&template=" . $template . "&search=" . $search . "&type=" . $type . "&o=" . $o . $url_var)
+            ("main.php?p=" . $p . "&num=0&limit=" . $limit)
         );
     }
     if ($page_max > 5 && $num != ($pageNumber - 1)) {
         $tpl->assign(
             'lastPage',
-            ("main.php?p=" . $p . "&num=" . ($pageNumber - 1) . "&limit=" . $limit .
-                "&template=" . $template . "&poller=" . $poller . "&search=" . $search .
-                "&type=" . $type . "&o=" . $o . $url_var)
+            ("main.php?p=" . $p . "&num=" . ($pageNumber - 1) . "&limit=" . $limit)
         );
     }
 
@@ -257,6 +251,7 @@ if ($rows != 0) {
         document.forms['form'].elements['limit'].value = _this;
         _l[0].value = _this;
         _l[1].value = _this;
+        window.history.pushState('', '', '?p=<?= $p ?>');
     }
 </script>
 <?php

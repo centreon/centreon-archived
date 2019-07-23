@@ -19,7 +19,7 @@
 			<td><select name='poller'>{$poller}</select></td>
 			<td><select name='template'>{$template}</select></td>
 			<td><select name='status' >{$StatusFilter}</select></td>
-			<td><input type='submit' name='SearchB' value='{$Search}' class="btc bt_success"/></td>
+			<td>{$form.SearchB.html}</td>
 		</tr>
 	</tbody>
 </table>
