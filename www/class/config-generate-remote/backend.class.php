@@ -91,7 +91,7 @@ class Backend
         return false;
     }
 
-    protected function createDirectories($paths)
+    public function createDirectories($paths)
     {
         $dir = '';
         $dir_append = '';
