@@ -1,18 +1,27 @@
-import React, { Component } from "react";
-import classnames from 'classnames';
-import styles from '../header/header.scss';
-import PropTypes from 'prop-types';
-import numeral from "numeral";
-import { Link } from "react-router-dom";
-import {Translate} from 'react-redux-i18n';
-import axios from "../../axios";
+/* eslint-disable import/no-extraneous-dependencies */
+/* eslint-disable react/no-unused-prop-types */
+/* eslint-disable radix */
+/* eslint-disable react/prop-types */
+/* eslint-disable react/destructuring-assignment */
+/* eslint-disable jsx-a11y/click-events-have-key-events */
+/* eslint-disable no-return-assign */
+/* eslint-disable jsx-a11y/no-static-element-interactions */
+/* eslint-disable react/jsx-filename-extension */
 
-import { connect } from "react-redux";
+import React, { Component } from 'react';
+import classnames from 'classnames';
+import PropTypes from 'prop-types';
+import numeral from 'numeral';
+import { Link } from 'react-router-dom';
+import { Translate } from 'react-redux-i18n';
+import { connect } from 'react-redux';
+import axios from '../../axios';
+
+import styles from '../header/header.scss';
 
 class ServiceStatusMenu extends Component {
-
   servicesStatusService = axios(
-    "internal.php?object=centreon_topcounter&action=servicesStatus"
+    'internal.php?object=centreon_topcounter&action=servicesStatus',
   );
 
   refreshInterval = null;
@@ -20,52 +29,55 @@ class ServiceStatusMenu extends Component {
   state = {
     toggled: false,
     data: null,
-    intervalApplied: false
+    intervalApplied: false,
   };
 
   componentDidMount() {
     window.addEventListener('mousedown', this.handleClick, false);
-  };
+  }
 
   componentWillUnmount() {
     window.removeEventListener('mousedown', this.handleClick, false);
     clearInterval(this.refreshInterval);
-  };
+  }
 
   // fetch api to get service data
   getData = () => {
-    this.servicesStatusService.get().then(({data}) => {
-      this.setState({
-        data
-      });
-    }).catch((error) => {
-      if (error.response.status == 401){
+    this.servicesStatusService
+      .get()
+      .then(({ data }) => {
         this.setState({
-          data: null
+          data,
         });
-      }
-    });
-  }
+      })
+      .catch((error) => {
+        if (error.response.status === 401) {
+          this.setState({
+            data: null,
+          });
+        }
+      });
+  };
 
   componentWillReceiveProps = (nextProps) => {
-    const {refreshTime} = nextProps;
-    const {intervalApplied} = this.state;
-    if(refreshTime && !intervalApplied){
+    const { refreshTime } = nextProps;
+    const { intervalApplied } = this.state;
+    if (refreshTime && !intervalApplied) {
       this.getData();
       this.refreshInterval = setInterval(() => {
         this.getData();
       }, refreshTime);
       this.setState({
-        intervalApplied:true
-      })
+        intervalApplied: true,
+      });
     }
-  }
+  };
 
   // display/hide detailed service data
   toggle = () => {
     const { toggled } = this.state;
     this.setState({
-      toggled: !toggled
+      toggled: !toggled,
     });
   };
 
@@ -75,7 +87,7 @@ class ServiceStatusMenu extends Component {
       return;
     }
     this.setState({
-      toggled: false
+      toggled: false,
     });
   };
 
@@ -84,119 +96,240 @@ class ServiceStatusMenu extends Component {
 
     // do not display service information until having data
     if (!data) {
-      return null
+      return null;
     }
 
     return (
-      <div className={classnames(styles["wrap-right-services"], {[styles["submenu-active"]]: toggled})}>
-        <Link to={"/main.php?p=20201&o=svc_critical&search="} className={classnames(styles["wrap-middle-icon"], styles["round"], styles["round-small"], {[styles[data.critical.unhandled > 0 ? "red" : "red-bordered"]]: true})} >
-          <span className={styles["number"]}>
-            <span id="count-svc-critical">{numeral(data.critical.unhandled).format("0a")}</span>
-          </span>
-        </Link>
-        <Link to={"/main.php?p=20201&o=svc_warning&search="} className={classnames(styles["wrap-middle-icon"], styles["round"], styles["round-small"], {[styles[data.warning.unhandled > 0 ? "orange" : "orange-bordered"]]: true})}>
-          <span className={styles["number"]}>
-            <span id="count-svc-warning">{numeral(data.warning.unhandled).format("0a")}</span>
-          </span>
-        </Link>
-        <Link to={"/main.php?p=20201&o=svc_unknown&search="} className={classnames(styles["wrap-middle-icon"], styles["round"], styles["round-small"], {[styles[data.unknown.unhandled > 0 ? "gray-light" : "gray-light-bordered"]]: true})}>
-          <span className={styles["number"]}>
-            <span id="count-svc-unknown">{numeral(data.unknown.unhandled).format("0a")}</span>
-          </span>
-        </Link>
-        <Link to={"/main.php?p=20201&o=svc_ok&statusService=svc&search="} className={classnames(styles["wrap-middle-icon"], styles["round"], styles["round-small"], {[styles[data.ok > 0 ? "green" : "green-bordered"]]: true})}>
-          <span className={styles["number"]}>
-            <span id="count-svc-ok">{numeral(data.ok).format("0a")}</span>
-          </span>
-        </Link>
-        <div ref={service => this.service = service}>
-          <span className={styles["wrap-right-icon"]} onClick={this.toggle.bind(this)}>
-            <span className={classnames(styles["iconmoon"], styles["icon-services"])}>
-              {data.pending > 0 ? <span className={styles["custom-icon"]} /> : null}
+      <div
+        className={classnames(styles['wrap-right-services'], {
+          [styles['submenu-active']]: toggled,
+        })}
+      >
+        <Link
+          to="/main.php?p=20201&o=svc_critical&search="
+          className={classnames(
+            styles['wrap-middle-icon'],
+            styles.round,
+            styles['round-small'],
+            {
+              [styles[
+                data.critical.unhandled > 0 ? 'red' : 'red-bordered'
+              ]]: true,
+            },
+          )}
+        >
+          <span className={styles.number}>
+            <span id="count-svc-critical">
+              {numeral(data.critical.unhandled).format('0a')}
             </span>
-            <span className={styles["wrap-right-icon__name"]}>Services</span>
           </span>
-          <span ref={this.setWrapperRef} className={styles["toggle-submenu-arrow"]} onClick={this.toggle.bind(this)} >{this.props.children}</span>
-          <div className={classnames(styles["submenu"], styles["services"])}>
-            <div className={styles["submenu-inner"]}>
-              <ul className={classnames(styles["submenu-items"], styles["list-unstyled"])}>
-                <li className={styles["submenu-item"]}>
+        </Link>
+        <Link
+          to="/main.php?p=20201&o=svc_warning&search="
+          className={classnames(
+            styles['wrap-middle-icon'],
+            styles.round,
+            styles['round-small'],
+            {
+              [styles[
+                data.warning.unhandled > 0 ? 'orange' : 'orange-bordered'
+              ]]: true,
+            },
+          )}
+        >
+          <span className={styles.number}>
+            <span id="count-svc-warning">
+              {numeral(data.warning.unhandled).format('0a')}
+            </span>
+          </span>
+        </Link>
+        <Link
+          to="/main.php?p=20201&o=svc_unknown&search="
+          className={classnames(
+            styles['wrap-middle-icon'],
+            styles.round,
+            styles['round-small'],
+            {
+              [styles[
+                data.unknown.unhandled > 0
+                  ? 'gray-light'
+                  : 'gray-light-bordered'
+              ]]: true,
+            },
+          )}
+        >
+          <span className={styles.number}>
+            <span id="count-svc-unknown">
+              {numeral(data.unknown.unhandled).format('0a')}
+            </span>
+          </span>
+        </Link>
+        <Link
+          to="/main.php?p=20201&o=svc_ok&statusService=svc&search="
+          className={classnames(
+            styles['wrap-middle-icon'],
+            styles.round,
+            styles['round-small'],
+            { [styles[data.ok > 0 ? 'green' : 'green-bordered']]: true },
+          )}
+        >
+          <span className={styles.number}>
+            <span id="count-svc-ok">{numeral(data.ok).format('0a')}</span>
+          </span>
+        </Link>
+        <div ref={(service) => (this.service = service)}>
+          <span
+            className={styles['wrap-right-icon']}
+            onClick={this.toggle.bind(this)}
+          >
+            <span
+              className={classnames(styles.iconmoon, styles['icon-services'])}
+            >
+              {data.pending > 0 ? (
+                <span className={styles['custom-icon']} />
+              ) : null}
+            </span>
+            <span className={styles['wrap-right-icon__name']}>Services</span>
+          </span>
+          <span
+            ref={this.setWrapperRef}
+            className={styles['toggle-submenu-arrow']}
+            onClick={this.toggle.bind(this)}
+          >
+            {this.props.children}
+          </span>
+          <div className={classnames(styles.submenu, styles.services)}>
+            <div className={styles['submenu-inner']}>
+              <ul
+                className={classnames(
+                  styles['submenu-items'],
+                  styles['list-unstyled'],
+                )}
+              >
+                <li className={styles['submenu-item']}>
                   <Link
-                    to={"/main.php?p=20201&o=svc&search="}
-                    className={styles["submenu-item-link"]}
+                    to="/main.php?p=20201&o=svc&search="
+                    className={styles['submenu-item-link']}
                   >
                     <div onClick={this.toggle}>
-                      <span><Translate value="All Services"/>:</span>
-                      <span className={styles["submenu-count"]}>{data.total}</span>
+                      <span>
+                        <Translate value="All Services" />
+                        {':'}
+                      </span>
+                      <span className={styles['submenu-count']}>
+                        {data.total}
+                      </span>
                     </div>
                   </Link>
                 </li>
-                <li className={styles["submenu-item"]}>
+                <li className={styles['submenu-item']}>
                   <Link
-                    to={"/main.php?p=20201&o=svc_critical&search="}
-                    className={styles["submenu-item-link"]}
+                    to="/main.php?p=20201&o=svc_critical&search="
+                    className={styles['submenu-item-link']}
                   >
                     <div onClick={this.toggle}>
-                      <span className={classnames(styles["dot-colored"], styles["red"])}><Translate value="Critical services"/>:</span>
-                      <span className={styles["submenu-count"]}>
-                        {numeral(data.critical.unhandled).format("0a")}/{numeral(data.critical.total).format("0a")}
+                      <span
+                        className={classnames(
+                          styles['dot-colored'],
+                          styles.red,
+                        )}
+                      >
+                        <Translate value="Critical services" />
+                        {':'}
+                      </span>
+                      <span className={styles['submenu-count']}>
+                        {numeral(data.critical.unhandled).format('0a')}
+                        {'/'}
+                        {numeral(data.critical.total).format('0a')}
                       </span>
                     </div>
                   </Link>
                 </li>
-                <li className={styles["submenu-item"]}>
+                <li className={styles['submenu-item']}>
                   <Link
-                    to={"/main.php?p=20201&o=svc_warning&search="}
-                    className={styles["submenu-item-link"]}
+                    to="/main.php?p=20201&o=svc_warning&search="
+                    className={styles['submenu-item-link']}
                   >
                     <div onClick={this.toggle}>
-                      <span className={classnames(styles["dot-colored"], styles["orange"])}>
-                        <Translate value="Warning services"/>:
+                      <span
+                        className={classnames(
+                          styles['dot-colored'],
+                          styles.orange,
+                        )}
+                      >
+                        <Translate value="Warning services" />
+                        {':'}
                       </span>
-                      <span className={styles["submenu-count"]}>
-                        {numeral(data.warning.unhandled).format("0a")}/{numeral(data.warning.total).format("0a")}
+                      <span className={styles['submenu-count']}>
+                        {numeral(data.warning.unhandled).format('0a')}
+                        {'/'}
+                        {numeral(data.warning.total).format('0a')}
                       </span>
                     </div>
                   </Link>
                 </li>
-                <li className={styles["submenu-item"]}>
+                <li className={styles['submenu-item']}>
                   <Link
-                    to={"/main.php?p=20201&o=svc_unknown&search="}
-                    className={styles["submenu-item-link"]}
+                    to="/main.php?p=20201&o=svc_unknown&search="
+                    className={styles['submenu-item-link']}
                   >
                     <div onClick={this.toggle}>
-                      <span className={classnames(styles["dot-colored"], styles["gray-light"])}>
-                        <Translate value="Unknown services"/>:
+                      <span
+                        className={classnames(
+                          styles['dot-colored'],
+                          styles['gray-light'],
+                        )}
+                      >
+                        <Translate value="Unknown services" />
+                        {':'}
                       </span>
-                      <span className={styles["submenu-count"]}>
-                        {numeral(data.unknown.unhandled).format("0a")}/{numeral(data.unknown.total).format("0a")}
+                      <span className={styles['submenu-count']}>
+                        {numeral(data.unknown.unhandled).format('0a')}
+                        {'/'}
+                        {numeral(data.unknown.total).format('0a')}
                       </span>
                     </div>
                   </Link>
                 </li>
-                <li className={styles["submenu-item"]}>
+                <li className={styles['submenu-item']}>
                   <Link
-                    to={"/main.php?p=20201&o=svc_ok&statusService=svc&search="}
-                    className={styles["submenu-item-link"]}
+                    to="/main.php?p=20201&o=svc_ok&statusService=svc&search="
+                    className={styles['submenu-item-link']}
                   >
                     <div onClick={this.toggle}>
-                      <span className={classnames(styles["dot-colored"], styles["green"])}>
-                        <Translate value="Ok services"/>:
+                      <span
+                        className={classnames(
+                          styles['dot-colored'],
+                          styles.green,
+                        )}
+                      >
+                        <Translate value="Ok services" />
+                        {':'}
                       </span>
-                      <span className={styles["submenu-count"]}>{numeral(data.ok).format("0a")}</span>
+                      <span className={styles['submenu-count']}>
+                        {numeral(data.ok).format('0a')}
+                      </span>
                     </div>
                   </Link>
                 </li>
-                <li className={styles["submenu-item"]}>
+                <li className={styles['submenu-item']}>
                   <Link
-                    to={"/main.php?p=20201&o=svc_pending&statusService=svc&search="}
-                    className={styles["submenu-item-link"]}
+                    to="/main.php?p=20201&o=svc_pending&statusService=svc&search="
+                    className={styles['submenu-item-link']}
                   >
                     <div onClick={this.toggle}>
-                      <span className={classnames(styles["dot-colored"], styles["blue"])}>
-                        <Translate value="Pending services"/>:
+                      <span
+                        className={classnames(
+                          styles['dot-colored'],
+                          styles.blue,
+                        )}
+                      >
+                        <Translate value="Pending services" />
+                        {':'}
                       </span>
-                      <span className={styles["submenu-count"]}>{numeral(data.pending).format("0a")}</span>
+                      <span className={styles['submenu-count']}>
+                        {numeral(data.pending).format('0a')}
+                      </span>
                     </div>
                   </Link>
                 </li>
@@ -210,16 +343,19 @@ class ServiceStatusMenu extends Component {
 }
 
 const mapStateToProps = ({ intervals }) => ({
-  refreshTime: intervals ? parseInt(intervals.AjaxTimeReloadMonitoring)*1000 : false
+  refreshTime: intervals
+    ? parseInt(intervals.AjaxTimeReloadMonitoring) * 1000
+    : false,
 });
 
 const mapDispatchToProps = {};
 
-export default connect(mapStateToProps, mapDispatchToProps)(ServiceStatusMenu);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(ServiceStatusMenu);
 
 ServiceStatusMenu.propTypes = {
-  refreshTime: PropTypes.oneOfType([
-    PropTypes.number,
-    PropTypes.bool
-  ]).isRequired,
+  refreshTime: PropTypes.oneOfType([PropTypes.number, PropTypes.bool])
+    .isRequired,
 };

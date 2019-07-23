@@ -1,29 +1,33 @@
-import React, { Component } from "react";
-import WizardFormInstallingStatus from "../../components/wizardFormInstallingStatus";
-import ProgressBar from "../../components/progressBar";
-import {I18n} from "react-redux-i18n";
+/* eslint-disable react/jsx-filename-extension */
+/* eslint-disable react/prop-types */
 
-import { connect } from "react-redux";
+import React, { Component } from 'react';
+import { I18n } from 'react-redux-i18n';
+import { connect } from 'react-redux';
+import WizardFormInstallingStatus from '../../components/wizardFormInstallingStatus';
+import ProgressBar from '../../components/progressBar';
+
 class PollerStepThreeRoute extends Component {
   state = {
     generateStatus: null,
-    processingStatus: null
+    processingStatus: null,
   };
+
   links = [
     {
       active: true,
       prevActive: true,
-      number: 1
+      number: 1,
     },
     { active: true, prevActive: true, number: 2 },
     { active: true, prevActive: true, number: 3 },
-    { active: true, number: 4 }
+    { active: true, number: 4 },
   ];
 
   render() {
-    const { links } = this,
-          { pollerData } = this.props,
-          { generateStatus, processingStatus } = this.state;
+    const { links } = this;
+    const { pollerData } = this.props;
+    const { generateStatus, processingStatus } = this.state;
     return (
       <div>
         <ProgressBar links={links} />
@@ -31,7 +35,7 @@ class PollerStepThreeRoute extends Component {
           statusCreating={pollerData.submitStatus}
           statusGenerating={generateStatus}
           statusProcessing={processingStatus}
-          formTitle={I18n.t("Finalizing Setup") + ":"}
+          formTitle={`${I18n.t('Finalizing Setup')}:`}
         />
       </div>
     );
@@ -39,11 +43,12 @@ class PollerStepThreeRoute extends Component {
 }
 
 const mapStateToProps = ({ pollerForm }) => ({
-  pollerData: pollerForm
+  pollerData: pollerForm,
 });
 
 const mapDispatchToProps = {};
 
-export default connect(mapStateToProps, mapDispatchToProps)(
-  PollerStepThreeRoute
-);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(PollerStepThreeRoute);
