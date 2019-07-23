@@ -51,6 +51,7 @@ class Manifest extends AbstractObject
         #$this->createFile($this->backend_instance->getPath());
 
         $this->manifest['date'] = date('l jS \of F Y h:i:s A');
+        $this->manifest['pollers'] = array();
         $this->manifest['import'] = array(
             'infile_clauses' => array(
                 'fields_clause' => array(
@@ -63,7 +64,6 @@ class Manifest extends AbstractObject
                     'starting_by' => '',
                 )
             ),
-            'pollers' => array(),
             'data' => array()
         );
     }
