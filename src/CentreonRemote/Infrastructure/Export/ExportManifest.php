@@ -26,42 +26,12 @@ class ExportManifest
     /**
      * @var array
      */
-    private $files;
-
-    /**
-     * @var array
-     */
-    private $exporters;
-
-    /**
-     * @var array
-     */
     private $data;
 
     public function __construct(ExportCommitment $commitment, string $version = null)
     {
         $this->commitment = $commitment;
         $this->version = $version;
-    }
-
-    public function addExporter(string $exporters)
-    {
-        $this->exporters[] = $exporters;
-    }
-
-    public function addFile(string $file): void
-    {
-        if (!file_exists($file)) {
-            return;
-        }
-
-        $filepath = $this->removePath($file);
-
-        if ($filepath === null) {
-            return;
-        }
-
-        $this->files[$filepath] = md5_file($file);
     }
 
     public function get(string $key)
@@ -121,17 +91,6 @@ class ExportManifest
         $data = array_merge($exportManifest, [ "version" => $this->version ]);
 
         $this->commitment->getParser()->dump($data, $this->getFile());
-    }
-
-    public function removePath(string $file): ?string
-    {
-        $filepath = explode($this->commitment->getPath(), $file);
-
-        if (!array_key_exists(1, $filepath)) {
-            return null;
-        }
-
-        return $filepath[1];
     }
 
     public function getFile(): string

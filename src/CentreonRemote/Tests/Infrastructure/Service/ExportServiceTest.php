@@ -8,8 +8,7 @@ use CentreonRemote\Infrastructure\Service\ExportService;
 use CentreonRemote\Infrastructure\Service\ExporterService;
 use CentreonRemote\Infrastructure\Service\ExporterCacheService;
 use CentreonRemote\Infrastructure\Export\ExportCommitment;
-use CentreonRemote\Domain\Exporter\PollerExporter;
-use CentreonRemote\Domain\Exporter\HostExporter;
+use CentreonRemote\Domain\Exporter\ConfigurationExporter;
 use CentreonClapi\CentreonACL;
 use Centreon\Test\Mock;
 use Vfs\FileSystem;
@@ -44,20 +43,10 @@ class ExportServiceTest extends TestCase
             ->will($this->returnCallback(function () {
                     return [
                         [
-                            'name' => PollerExporter::getName(),
-                            'classname' => PollerExporter::class,
+                            'name' => ConfigurationExporter::getName(),
+                            'classname' => ConfigurationExporter::class,
                             'factory' => function () {
-                                return $this->getMockBuilder(PollerExporter::class)
-                                    ->disableOriginalConstructor()
-                                    ->getMock()
-                                ;
-                            },
-                        ],
-                        [
-                            'name' => HostExporter::getName(),
-                            'classname' => HostExporter::class,
-                            'factory' => function () {
-                                return $this->getMockBuilder(HostExporter::class)
+                                return $this->getMockBuilder(ConfigurationExporter::class)
                                     ->disableOriginalConstructor()
                                     ->getMock()
                                 ;
@@ -140,7 +129,7 @@ class ExportServiceTest extends TestCase
         $this->fs->get('/export/')->add('test.txt', new File(''));
 
         $commitment = new ExportCommitment(1, [2, 3], null, null, $path, [
-            PollerExporter::class,
+            ConfigurationExporter::class,
         ]);
 
         $this->export->export($commitment);
@@ -148,7 +137,7 @@ class ExportServiceTest extends TestCase
         // @todo replace system('rm -rf vfs://...')
 //        $this->assertFileNotExists("{$path}/test.txt");
 
-        $this->assertFileExists("{$path}/manifest.yaml");
+        $this->assertFileExists("{$path}/manifest.json");
     }
 
     /**
@@ -160,35 +149,28 @@ class ExportServiceTest extends TestCase
 
         // missing export path
         $commitment = new ExportCommitment(null, null, null, null, "{$path}/not-found", [
-            PollerExporter::class,
+            ConfigurationExporter::class,
         ]);
 
         $this->export->import($commitment);
 
-        $this->fs->get('/export/')->add('test.yaml', new File('[]'));
-        $hash = md5_file("{$path}/test.yaml");
+        $manifest = '{
+    "date": "Tuesday 23rd of July 2019 11:22:19 AM",
+    "pollers": [],
+    "import": {},
+    "remote_server": 1,
+    "version": "x.y"
+}';
 
-        $manifest = <<<YAML
-version: x.y
-datetime: '2018-11-13T13:13:13+00:00'
-remote-poller: 1
-pollers: {  }
-meta: null
-exporters:
-    - CentreonRemote\Domain\Exporter\PollerExporter
-exports:
-    /test.yaml: {$hash}
-YAML;
-
-        $this->fs->get('/export/')->add('manifest.yaml', new File($manifest));
+        $this->fs->get('/export/')->add('manifest.json', new File($manifest));
 
         $commitment = new ExportCommitment(null, null, null, null, $path, [
-            PollerExporter::class,
+            ConfigurationExporter::class,
         ]);
 
         $this->export->import($commitment);
 
-        $this->assertFileNotExists("{$path}/manifest.yml");
+        $this->assertFileNotExists("{$path}/manifest.json");
     }
 
     /**
