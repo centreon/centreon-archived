@@ -13,7 +13,10 @@
     let cnt = 0;
     let lastProp;
     for (let p in global) {
-      // in some specific cases, firefox return '0' as first object
+      // '0' means the first iframe
+      // in firefox, new page is loaded before the iframe is totally unmounted
+      // then, we need to avoid to compare this value
+      // (only '0' cause we have a maximum of 1 iframe in the main page)
       if (!global.hasOwnProperty(p) || p === '0') {
         continue;
       }
@@ -33,7 +36,10 @@
     // but this may be faster (pending benchmarks)
     firstGlobalProp = secondGlobalProp = undefined;
     for (let p in global) {
-      // in some specific cases, firefox return '0' as first object
+      // '0' means the first iframe
+      // in firefox, new page is loaded before the iframe is totally unmounted
+      // then, we need to avoid to compare this value
+      // (only '0' cause we have a maximum of 1 iframe in the main page)
       if (!global.hasOwnProperty(p) || p === '0') {
         continue;
       }

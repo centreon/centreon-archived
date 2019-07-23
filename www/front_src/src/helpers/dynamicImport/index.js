@@ -1,5 +1,6 @@
 import '../../../../../node_modules/systemjs/dist/s.js'; // IIFE format so it's imported on window
 import './global'; // override extra bundle of systemjs to manage firefox issue
+import '../../../../../node_modules/systemjs/dist/extras/use-default.js'; // avoid to check module.default.default
 import systemCss from 'systemjs-plugin-css'; // used to import css in <head>
 
 // this function allows to import dynamically js and css using systemjs
@@ -25,11 +26,7 @@ export function dynamicImport(basename, parameters) {
         return resolve(window[vector]);
       } else {
         const module = await(window.System.import(basename + parameters.js));
-        if (module.default && typeof(module.default) && module.default.default) { // named umd export
-          window[vector] = module.default;
-        } else { // unnamed umd export or systemjs export
-          window[vector] = module;
-        }
+        window[vector] = module;
         return resolve(window[vector]);
       }
     } catch (error) {
