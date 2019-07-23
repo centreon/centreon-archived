@@ -44,7 +44,7 @@ if ($configFile !== false) {
 class Backend
 {
     private static $_instance = null;
-    public $generate_path = '/usr/share/centreon/filesGeneration/remote';
+    public $generate_path = '/usr/share/centreon/filesGeneration/export';
     public $db = null;
     public $db_cs = null;
 
