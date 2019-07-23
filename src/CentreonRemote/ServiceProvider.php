@@ -143,18 +143,6 @@ class ServiceProvider implements AutoloadServiceProviderInterface
 
             return $service;
         });
-        
-        // Media
-        $pimple['centreon_remote.exporter']->add(Domain\Exporter\MediaExporter::class, function () use ($pimple) {
-            $services = [
-                \Centreon\ServiceProvider::CENTREON_DB_MANAGER,
-            ];
-
-            $locator = new ServiceLocator($pimple, $services);
-            $service = new Domain\Exporter\MediaExporter($locator);
-
-            return $service;
-        });
     }
 
     public static function order() : int
