@@ -217,6 +217,10 @@ class HTML_QuickForm_select2 extends HTML_QuickForm_select
         if (isset($attributes['linkedObject'])) {
             $this->_linkedObject = $attributes['linkedObject'];
         }
+
+        if (isset($attributes['showDisabled'])) {
+            $this->_showDisabled = $attributes['showDisabled'];
+        }
     }
 
     /**
