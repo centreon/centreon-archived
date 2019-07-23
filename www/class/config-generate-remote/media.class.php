@@ -59,6 +59,7 @@ class Media extends AbstractObject
         'img_path',
         'img_comment',
     );
+    protected $path_img = null;
 
     private function getMedias()
     {
@@ -70,6 +71,16 @@ class Media extends AbstractObject
         $stmt = $this->backend_instance->db->prepare($query);
         $stmt->execute();
         $this->medias = $stmt->fetchAll(PDO::FETCH_GROUP | PDO::FETCH_UNIQUE | PDO::FETCH_ASSOC);
+
+        $stmt = $this->backend_instance->db->prepare('SELECT * FROM options WHERE `key` = "nagios_path_img"');
+        $stmt->execute();
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        $this->path_img = $row['value'];
+    }
+
+    protected function copyMedia($dir, $file) {
+        $this->backend_instance->createDirectories(array($this->backend_instance->getPath() . '/media/' . $dir));
+        @copy($this->path_img . '/' . $dir . '/' . $file, $this->backend_instance->getPath() . '/media/' . $dir . '/' . $file);
     }
 
     public function getMediaPathFromId($media_id)
@@ -94,6 +105,7 @@ class Media extends AbstractObject
             $this->generateObjectInFile($media, $media_id);
             viewImgDirRelation::getInstance($this->dependencyInjector)->addRelation($media_id, $this->medias[$media_id]['dir_id']);
             viewImageDir::getInstance($this->dependencyInjector)->add($this->medias[$media_id], $this->medias[$media_id]['dir_id']);
+            $this->copyMedia($this->medias[$media_id]['dir_name'], $this->medias[$media_id]['img_path']);
         }
 
         return $result;
