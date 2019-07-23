@@ -56,22 +56,24 @@ $template = filter_var(
     FILTER_SANITIZE_STRING
 );
 
+$status = filter_var(
+    $_POST["status"] ?? $_GET["status"] ?? 0,
+    FILTER_VALIDATE_INT
+);
+
 if (isset($_POST['Search']) || isset($_GET ['Search'])) {
     //saving filters values
     $centreon->historySearch[$url] = array();
     $centreon->historySearch[$url]["hostgroups"] = $searchHG;
     $centreon->historySearch[$url]["search"] = $searchS;
     $centreon->historySearch[$url]["template"] = $template;
-    $status = $_POST["status"] ?? '';
-    // Security fix
-    $status = (int)(($status != '') ? $status : -1);
     $centreon->historySearch[$url]["status"] = $status;
 } else {
     //restoring saved values
     $searchHG = $centreon->historySearch[$url]['hostgroups'] ?? null;
     $searchS = $centreon->historySearch[$url]["search"] ?? null;
     $template = $centreon->historySearch[$url]["template"] ?? null;
-    $status = $centreon->historySearch[$url]["status"] ?? -1;
+    $status = $centreon->historySearch[$url]["status"] ?? 0;
 }
 
 
@@ -93,15 +95,15 @@ while ($tpl = $dbResult->fetch()) {
 $dbResult->closeCursor();
 
 //Status Filter
-$statusFilter = "<option value=''" . (($status == -1) ? " selected" : "") . "> </option>";
+$statusFilter = "<option value=''" . (($status == 0) ? " selected" : "") . "> </option>";
 $statusFilter .= "<option value='1'" . (($status == 1) ? " selected" : "") . ">" . _("Enabled") . "</option>";
-$statusFilter .= "<option value='0'" .
-    (($status == 0) ? " selected" : "") . ">" . _("Disabled") . "</option>";
+$statusFilter .= "<option value='2'" .
+    (($status == 2) ? " selected" : "") . ">" . _("Disabled") . "</option>";
 
 $sqlFilterCase = "";
 if ($status == 1) {
     $sqlFilterCase = " AND sv.service_activate = '1' ";
-} elseif ($status == 0) {
+} elseif ($status == 2) {
     $sqlFilterCase = " AND sv.service_activate = '0' ";
 }
 
@@ -247,8 +249,14 @@ $form = new HTML_QuickFormCustom('select_form', 'POST', "?p=" . $p);
 // Different style between each lines
 $style = "one";
 
-// Fill a tab with a multidimensional Array we put in $tpl
+$attrBtnSuccess = array(
+    "class" => "btc bt_success",
+    "onClick" => "window.history.pushState('', '', '?p=" . $p . "');"
+);
+$form->addElement('submit', 'Search', _("Search"), $attrBtnSuccess);
 
+
+// Fill a tab with a multidimensional Array we put in $tpl
 $interval_length = $centreon->optGen['interval_length'];
 
 $elemArr = array();
@@ -480,5 +488,4 @@ $tpl->assign('HostGroups', _("HostGroups"));
 $tpl->assign('Services', _("Services"));
 $tpl->assign('ServiceTemplates', _("Templates"));
 $tpl->assign('ServiceStatus', _("Status"));
-$tpl->assign('Search', _("Search"));
 $tpl->display("listService.ihtml");
