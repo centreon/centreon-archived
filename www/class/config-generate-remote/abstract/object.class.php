@@ -129,7 +129,7 @@ abstract class AbstractObject
             if (isset($object[$this->attributes_write[$i]]) && strlen($object[$this->attributes_write[$i]])) {
                 $line .= $append . $object[$this->attributes_write[$i]];
             } else {
-                $line .= $append . '\N';
+                $line .= $append . 'NULL';
             }
             $append = $this->fieldSeparatorInfile;
         }
