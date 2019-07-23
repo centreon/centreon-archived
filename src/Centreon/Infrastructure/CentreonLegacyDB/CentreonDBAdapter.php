@@ -189,7 +189,6 @@ class CentreonDBAdapter
         $sql .= " LINES TERMINATED BY '" . $linesClause["terminated_by"] . "' STARTING BY '"
             . $linesClause["starting_by"] . "'";
         $sql .= " (`" . implode("`, `", $columns) . "`)";
-        echo date("Y-m-d H:i:s") . " - INFO - Query '" . $sql . "'.\n";
         
         // Prepare PDO statement.
         $stmt = $this->db->prepare($sql);

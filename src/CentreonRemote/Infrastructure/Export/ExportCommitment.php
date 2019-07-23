@@ -30,7 +30,7 @@ final class ExportCommitment
     /**
      * @var int
      */
-    private $filePermission = 0777;
+    private $filePermission = 0775;
 
     /**
      * Construct

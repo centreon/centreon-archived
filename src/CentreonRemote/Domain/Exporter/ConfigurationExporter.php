@@ -60,6 +60,7 @@ class ConfigurationExporter extends ExporterServiceAbstract
     
             // insert data
             $exportPathFile = $this->getFile($data[filename]);
+            echo date("Y-m-d H:i:s") . " - INFO - Loading '" . $exportPathFile . "'.\n";
             $db->loadDataInfile($exportPathFile, $data[table], $import[infile_clauses][fields_clause],
                 $import[infile_clauses][lines_clause], $data[columns]);
         }
@@ -69,9 +70,32 @@ class ConfigurationExporter extends ExporterServiceAbstract
 
         // commit transaction
         $db->commit();
-
         
-        // do media import
+        // media copy
+        $exportPathMedia = $this->commitment->getPath() . "/media";
+        $mediaPath = static::MEDIA_PATH;
+        $this->recursive_copy($exportPathMedia, $mediaPath);
+    }
+
+    /**
+     * Copy directory recusively
+     */
+    private function recursive_copy($src, $dst) {
+        $dir = opendir($src);
+        @mkdir($dst, $this->commitment->getFilePermission(), true);
+        while(( $file = readdir($dir)) ) {
+            if (( $file != '.' ) && ( $file != '..' )) {
+                if ( is_dir($src . '/' . $file) ) {
+                    $this->recursive_copy($src .'/'. $file, $dst .'/'. $file);
+                }
+                else {
+                    echo date("Y-m-d H:i:s") . " - INFO - Copying '" . $src ."/". $file . "'.\n";
+                    copy($src .'/'. $file, $dst .'/'. $file);
+                    chmod($dst .'/'. $file, $this->commitment->getFilePermission());
+                }
+            }
+        }
+        closedir($dir);
     }
 
     public static function order(): int
