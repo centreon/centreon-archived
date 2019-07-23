@@ -30,7 +30,7 @@
 			{if (! isset($hostgroupsFilter))}
 				<td><h4><input type="checkbox" name='statusHostFilter' {$hostStatusChecked}/>{$HostStatus}</h4></td>
 			{/if}
-			<td><input type='submit' name='Search' value='{$Search}' class="btc bt_success" /></td>
+			<td>{$form.Search.html}</td>
         </tr>
       </tbody>
 	</table>
