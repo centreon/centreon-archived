@@ -175,8 +175,9 @@ for ($i2 = 0, $iEnd = $num; ($iEnd < ($rows / $limit - 1)) && ($i2 < (5 + $i)); 
 
 if ($rows != 0) {
     for ($i = $iStart; $i <= $iEnd; $i++) {
-        $urlPage = "main.php?p=" . $p . "&num=" . $i . "&limit=" . $limit . "&poller=" . $poller .
-            "&template=" . $template . "&search=" . $search . "&type=" . $type . "&o=" . $o . $url_var;
+        $urlPage = "main.php?p=" . $p . "&num=" . $i . "&limit=" . $limit ;
+        //. "&poller=" . $poller .
+        //"&template=" . $template . "&search=" . $search . "&type=" . $type . "&o=" . $o . $url_var;
         $pageArr[$i] = array(
             "url_page" => $urlPage,
             "label_page" => "<b>" . ($i + 1) . "</b>",

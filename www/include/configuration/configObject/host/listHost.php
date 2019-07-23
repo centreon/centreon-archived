@@ -77,6 +77,9 @@ $template = filter_var(
 );
 
 if (isset($_POST['searchH']) || isset($_GET['searchH'])) {
+    unset($centreon->historyPage[$url]);
+    unset($centreon->historyLastUrl);
+
     //saving chosen filters values
     $centreon->historySearch[$url] = array();
     $centreon->historySearch[$url]["search"] = $search;
@@ -225,6 +228,12 @@ if ($status) {
     );
 }
 $form->addElement('select2', 'status', "", $statusFilter, $attrHostStatus);
+
+$attrBtnSuccess = array(
+        "class" => "btc bt_success",
+        "onClick" => "window.history.pushState('', '', '?p=" . $p ."');"
+);
+$subS = $form->addElement('submit', 'SearchB', _("Search"), $attrBtnSuccess);
 
 /*
  * Select hosts
@@ -453,12 +462,6 @@ $tpl->assign('limit', $limit);
 $renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 $form->accept($renderer);
 
-$tpl->assign(
-    "search",
-    stripslashes(
-        str_replace('"', "&quot;", $search)
-    )
-);
 
 $tpl->assign('form', $renderer->toArray());
 $tpl->assign('Hosts', _("Name"));
@@ -466,6 +469,4 @@ $tpl->assign('Poller', _("Poller"));
 $tpl->assign('Hostgroup', _("Hostgroup"));
 $tpl->assign('HelpServices', _("Display all Services for this host"));
 $tpl->assign('Template', _("Template"));
-$tpl->assign('Search', _("Search"));
-
 $tpl->display("listHost.ihtml");
