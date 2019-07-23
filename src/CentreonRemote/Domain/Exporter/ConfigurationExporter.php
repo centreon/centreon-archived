@@ -9,6 +9,7 @@ require_once dirname(__FILE__) . '/../../../../bootstrap.php';
 require_once 'config-generate-remote/generate.class.php';
 
 use ConfigGenerateRemote\Generate;
+use ConfigGenerateRemote\Manifest;
 
 class ConfigurationExporter extends ExporterServiceAbstract
 {
@@ -19,7 +20,7 @@ class ConfigurationExporter extends ExporterServiceAbstract
     /**
      * Export data
      */
-    public function export(int $remoteId): void
+    public function export(int $remoteId): array
     {
         // create path
         $this->createPath();
@@ -27,7 +28,9 @@ class ConfigurationExporter extends ExporterServiceAbstract
         // call to ConfigGenerateRemote\Generate class
         $dependencyInjector = loadDependencyInjector();
         $config_generate = new Generate($dependencyInjector);
-        $config_generate->configRemoteServerFromId($remoteId, 'usermoi');
+        $config_generate->configRemoteServerFromId($remoteId, 'user');
+
+        return Manifest::getInstance($dependencyInjector)->getManifest();
     }
 
     /**

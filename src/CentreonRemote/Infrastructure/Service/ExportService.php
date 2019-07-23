@@ -84,9 +84,9 @@ class ExportService
         // export configuration and media
         $configurationExporter = $this->exporter->get('configuration')['factory']();
         $configurationExporter->setCommitment($commitment);
-        $configurationExporter->export($remoteId);
+        $exportManifest = $configurationExporter->export($remoteId);
 
-        $manifest->dump();
+        $manifest->dump($exportManifest);
     }
 
     /**
