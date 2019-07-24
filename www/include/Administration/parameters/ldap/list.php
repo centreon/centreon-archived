@@ -74,6 +74,12 @@ $tpl = initSmartyTpl($path . 'ldap/', $tpl);
 
 $form = new HTML_QuickFormCustom('select_form', 'POST', "?o=ldap&p=" . $p);
 
+$attrBtnSuccess = array(
+    "class" => "btc bt_success",
+    "onClick" => "window.history.pushState('', '', '?p=" . $p . "');"
+);
+$form->addElement('submit', 'Search', _("Search"), $attrBtnSuccess);
+
 $tpl->assign('list', $list);
 $tpl->assign(
     'msg',
