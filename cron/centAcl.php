@@ -157,8 +157,8 @@ try {
         try {
             // at first run (eg: after the install), data may be missing.
             $pearDB->query(
-                "INSERT INTO cron_operation (name, system, activate) " .
-                "VALUES ('centAcl.php', '1', '1')"
+                "INSERT INTO cron_operation (name, system, activate)
+                VALUES ('centAcl.php', '1', '1')"
             );
         } catch (\PDOException $e) {
             programExit("Error can't insert centAcl values in the `cron_operation` table.");
@@ -191,9 +191,8 @@ try {
     $resourceCache = array();
 
     /** **********************************************
-     * Sync ACL with each ldap depending on last sync hour and own synchronization interval
+     * Check expected contact data sync on login with the LDAP, depending on last sync time and own sync interval
      */
-    $reSync = false;
     $pearDB->beginTransaction();
     try {
         $ldapConf = $pearDB->query(
@@ -203,14 +202,13 @@ try {
         );
 
         $updateSyncTime = $pearDB->prepare(
-            "UPDATE auth_ressource SET ar_sync_base_date = :currentTime
-            WHERE ar_id = :arId"
+            'UPDATE auth_ressource SET ar_sync_base_date = :currentTime
+            WHERE ar_id = :arId'
         );
 
+        $currentTime = time();
         while ($ldapRow = $ldapConf->fetch()) {
-            $currentTime = time();
             if ($ldapRow['ar_sync_base_date'] + 3600 * $ldapRow['ari_value'] <= $currentTime) {
-                $reSync = true;
                 $updateSyncTime->bindValue(':currentTime', $currentTime, \PDO::PARAM_INT);
                 $updateSyncTime->bindValue(':arId', (int)$ldapRow['ar_id'], \PDO::PARAM_INT);
                 $updateSyncTime->execute();
@@ -221,10 +219,9 @@ try {
         $pearDB->rollBack();
         programExit("Error when updating LDAP's reference date for next synchronization");
     }
-    if ($reSync === true) {
-        // @TODO : Synchronize LDAP with contacts data in background to avoid it at login
-        $cgObj->syncWithLdap();
-    }
+
+    // @TODO : Synchronize LDAP with contacts data in background to avoid it at login
+    $cgObj->syncWithLdap();
 
     /** **********************************************
      * Remove data from old groups (deleted groups)
