@@ -276,7 +276,7 @@ for ($i = 0; $service = $dbResult->fetch(); $i++) {
     } else {
         $moptions .= "<a href='main.php?p=" . $p . "&service_id=" . $service['service_id'] . "&o=s&limit=" . $limit .
             "&num=" . $num . "&search=" . $search . "&template=" . $template . "&status=" . $status .
-            "'><img src='img/icons/enabled.png' class='ico-14 margin_right' border='0' alt='" . _("Enabled") . "'></a>";
+            "'><img src='img/icons/enabled.png' class='ico-14 margin_right' border='0' alt='" . _("Enabled") . "'>";
     }
     $moptions .= "&nbsp;";
     $moptions .= "<input onKeypress=\"if(event.keyCode > 31 && (event.keyCode < 45 || event.keyCode > 57)) " .
