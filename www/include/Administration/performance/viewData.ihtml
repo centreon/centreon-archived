@@ -22,7 +22,7 @@
             {/foreach}
             </select>
           </td>
-          <td><input type='submit' name='Search' value='{$Search}' class="btc bt_success" /></td>
+			<td>{$form.Search.html}</td>
         </tr>
       </tbody>
 	</table>
