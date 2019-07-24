@@ -102,9 +102,14 @@ $form = new HTML_QuickFormCustom('select_form', 'GET', "?p=" . $p);
 
 $tab_downtime_svc = array();
 
-/*
- * Service Downtimes
- */
+
+$attrBtnSuccess = array(
+    "class" => "btc bt_success",
+    "onClick" => "window.history.pushState('', '', '?p=" . $p . "');"
+);
+$form->addElement('submit', 'SearchB', _("Search"), $attrBtnSuccess);
+
+//Service Downtimes
 if ($view_all == 1) {
     $downtimeTable = "downtimehistory";
     $extrafields = ", actual_end_time, cancelled as was_cancelled ";
