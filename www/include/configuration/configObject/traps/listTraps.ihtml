@@ -13,7 +13,7 @@
         <tr>
             <td><input type="text" name="searchT" value="{$searchT}"></td>
             <td>
-                <select name="status" id="status">
+                <select class="select2" name="status" id="status">
                     <option value="">{t}All{/t}</option>
                     {foreach from=$statuses key=key item=status}
                         <option {if $searchStatus !="" && $key == $searchStatus}selected="selected"{/if}
@@ -22,7 +22,7 @@
                 </select>
             </td>
             <td>
-                <select name="vendor" id="vendor">
+                <select class="select2" name="vendor" id="vendor">
                     <option value="">{t}All{/t}</option>
                     {foreach from=$vendors item=vendor}
                         <option {if $vendor.id == $searchVendor}selected="selected"{/if}
@@ -96,3 +96,13 @@
     <input type='hidden' id='limit' name='limit' value='{$limit}'>
     {$form.hidden}
 </form>
+<script>
+    {literal}
+        $('.select2').centreonSelect2({
+            multiple: false,
+            select2: {
+                allowClear: false
+            }
+        });
+    {/literal}
+</script>
