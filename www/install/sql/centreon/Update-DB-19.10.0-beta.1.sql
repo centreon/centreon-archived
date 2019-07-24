@@ -82,4 +82,4 @@ ALTER TABLE `traps` MODIFY COLUMN `traps_exec_interval_type` ENUM('0','1','2','3
 --
 -- Add new field for Remote Server option
 --
-ALTER TABLE nagios_server ADD COLUMN IF NOT EXISTS `remote_server_centcore_ssh_proxy` enum('0','1') NULL DEFAULT '1';
+ALTER TABLE nagios_server ADD COLUMN IF NOT EXISTS `remote_server_centcore_ssh_proxy` enum('0','1') NOT NULL DEFAULT '1';

@@ -451,7 +451,7 @@ function insertServer(array $data): int
     $fields = CentreonLogAction::prepareChanges($data);
     $centreon->CentreonLogAction->insertLog(
         "poller",
-        isset($poller['last_id']) ? $poller['last_id'] : null,
+        isset($poller['last_id']) ?? null,
         CentreonDB::escape($data["name"]),
         "a",
         $fields
