@@ -1,5 +1,5 @@
 <script type="text/javascript" src="./include/common/javascript/tool.js"></script>		
-<form name="form" method='GET'>
+<form name="form" method='POST'>
 <hidden name="p" value='{$p}'>
 <hidden name="o" value='{$o}'>
 <table class="ajaxOption table">
@@ -13,10 +13,10 @@
 		<td><h4>{t}Output{/t}</h4></td>
 	</tr>
     <tr>
-      <td><input type='text' name='search_host' value="{$search_host}" /></td>
-      <td><input type='text' name='search_service' value="{$search_service}" /></td>
-      <td><input type='text' name='search_output' value="{$search_output}" /></td>
-      <td><input type='submit' name='SearchB' class="btc bt_success" value='{$Search}' /></td>
+      <td><input type='text' name='searchHost' value="{$searchHost}" /></td>
+      <td><input type='text' name='searchService' value="{$searchService}" /></td>
+      <td><input type='text' name='searchOutput' value="{$searchOutput}" /></td>
+	  <td>{$form.Search.html}</td>
     </tr>
   </tbody>
 </table>
