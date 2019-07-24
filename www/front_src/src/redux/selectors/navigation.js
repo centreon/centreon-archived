@@ -34,55 +34,94 @@ function getFirstAvailableUrl(item) {
   return null;
 }
 
+// get breadcrumb step information from an entry
+function getBreadcrumbStep(item) {
+  let step = null;
+  if (item.is_react) {
+    step = {
+      label: item.label,
+      link: item.url
+    };
+  } else {
+    const availableUrl = getFirstAvailableUrl(item);
+    if (availableUrl) {
+      step = {
+        label: item.label,
+        link: availableUrl
+      };
+    }
+  }
+
+  return step;
+}
+
+const getMenuItems = (state) => state.navigation.menuItems;
+
 export const breadcrumbsSelector = createSelector(
-  ({ state: { menuItems } }) => {
+  getMenuItems,
+  (menuItems) => {
     let breadcrumbs = {};
 
+    // build level 1 breadcrumbs
     menuItems.map((itemLvl1) => {
-
-      //url = getLevelUrl(itemLvl1);
-      let urlLvl1 = null;
-      if (itemLvl1.is_react) {
-        urlLvl1 = itemLvl1.url;
-        breadcrumbs[itemLvl1.url] = [
-          [itemLvl1.label, urlLvl1]
-        ];
-      } else {
-        urlLvl1 = getFirstAvailableUrl(itemLvl1);
+      const stepLvl1 = getBreadcrumbStep(itemLvl1);
+      if (stepLvl1 === null) {
+        return;
       }
+      breadcrumbs[stepLvl1.link] = [
+        {
+          label: stepLvl1.label,
+          link: stepLvl1.link,
+        }
+      ];
 
+      // build level 2 breadcrumbs
       if (itemLvl1.children) {
         itemLvl1.children.map((itemLvl2) => {
-          let urlLvl2 = null;
-          if (itemLvl2.is_react) {
-            urlLvl2 = itemLvl2.url;
-            breadcrumbs[itemLvl2.url] = [
-              [itemLvl1.label, urlLvl1],
-              [itemLvl2.label, urlLvl2],
-            ];
-          } else {
-            urlLvl2 = getFirstAvailableUrl(itemLvl2);
+          const stepLvl2 = getBreadcrumbStep(itemLvl2);
+          if (stepLvl2 === null) {
+            return;
           }
+          breadcrumbs[stepLvl2.link] = [
+            {
+              label: stepLvl1.label,
+              link: stepLvl1.link,
+            },
+            {
+              label: stepLvl2.label,
+              link: stepLvl2.link,
+            },
+          ];
 
+          // build level 3 breadcrumbs
           if (itemLvl2.groups) {
             itemLvl2.groups.map((groupLvl3) => {
               if (groupLvl3.children) {
                 groupLvl3.children.map((itemLvl3) => {
-                  if (itemLvl3.is_react) {
-                    breadcrumbs[itemLvl3.url] = [
-                      [itemLvl1.label, urlLvl1],
-                      [itemLvl2.label, urlLvl2],
-                      [itemLvl3.label, itemLvl3.url]
-                    ];
+                  const stepLvl3 = getBreadcrumbStep(itemLvl3);
+                  if (stepLvl3 === null) {
+                    return;
                   }
+                  breadcrumbs[stepLvl3.link] = [
+                    {
+                      label: stepLvl1.label,
+                      link: stepLvl1.link,
+                    },
+                    {
+                      label: stepLvl2.label,
+                      link: stepLvl2.link,
+                    },
+                    {
+                      label: stepLvl3.label,
+                      link: stepLvl3.link,
+                    },
+                  ];
                 });
               }
             });
           }
-
         });
       }
-
     });
 
     return breadcrumbs;
