@@ -69,7 +69,7 @@ class CentreonRemoteServer implements CentreonClapiServiceInterface
 
         /* Extract host from URI */
         $hostList = array();
-        $pattern_extract_host = '/^[htps:\/]*([a-z0-9.]+)[:0-9]*$/';
+        $pattern_extract_host = '/^[htps:\/]*([a-z0-9.-]+)[:0-9]*$/';
         $urlList = explode(',', $urlString);
         foreach ($urlList as $url) {
             if (preg_match($pattern_extract_host, $url, $matches)) {
