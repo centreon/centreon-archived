@@ -35,9 +35,3 @@ DELETE FROM `topology` WHERE (`topology_page` = '50703');
 -- New configuration options for Centreon Engine
 ALTER TABLE `cfg_nagios` ADD COLUMN `enable_macros_filter` ENUM('0', '1') DEFAULT '0';
 ALTER TABLE `cfg_nagios` ADD COLUMN `macros_filter` TEXT DEFAULT '';
-
--- Add trap regexp matching
-ALTER TABLE `traps` ADD `traps_mode` ENUM('0', '1') DEFAULT '0' AFTER `traps_oid`;
-
--- Add trap filter
-ALTER TABLE `traps` MODIFY COLUMN `traps_exec_interval_type` ENUM('0','1','2','3') NULL DEFAULT '0';
