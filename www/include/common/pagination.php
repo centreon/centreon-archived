@@ -251,7 +251,7 @@ if ($rows != 0) {
             document.forms['form'].elements['limit'].value = _this;
             _l[0].value = _this;
             _l[1].value = _this;
-           // window.history.pushState('', '', '?p=<?= $p.$type ?>');
+            window.history.replaceState('', '', '?p=<?= $p.$type ?>');
         }
     </script>
 <?php

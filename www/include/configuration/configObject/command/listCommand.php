@@ -125,7 +125,7 @@ $style = "one";
 $addrType = $type ? "&type=" . $type : "";
 $attrBtnSuccess = array(
     "class" => "btc bt_success",
-    "onClick" => "window.history.pushState('', '', '?p=" . $p . $addrType. "');"
+    "onClick" => "window.history.replaceState('', '', '?p=" . $p . $addrType. "');"
 );
 $form->addElement('submit', 'Search', _("Search"), $attrBtnSuccess);
 

@@ -105,7 +105,7 @@ $tab_downtime_svc = array();
 
 $attrBtnSuccess = array(
     "class" => "btc bt_success",
-    "onClick" => "window.history.pushState('', '', '?p=" . $p . "');"
+    "onClick" => "window.history.replaceState('', '', '?p=" . $p . "');"
 );
 $form->addElement('submit', 'SearchB', _("Search"), $attrBtnSuccess);
 

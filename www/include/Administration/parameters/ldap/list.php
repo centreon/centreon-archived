@@ -76,7 +76,7 @@ $form = new HTML_QuickFormCustom('select_form', 'POST', "?o=ldap&p=" . $p);
 
 $attrBtnSuccess = array(
     "class" => "btc bt_success",
-    "onClick" => "window.history.pushState('', '', '?p=" . $p . "');"
+    "onClick" => "window.history.replaceState('', '', '?p=" . $p . "');"
 );
 $form->addElement('submit', 'Search', _("Search"), $attrBtnSuccess);
 
