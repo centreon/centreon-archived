@@ -74,10 +74,8 @@ Copy this key to the new server: ::
 The password of the **centreon** user is *centreon*. It can be easily changed using the **passwd** command.
 
 .. note::
-    Hit enter when it prompts for a file to save the key to use the default location,
-    or, create one in a specified directory. Leave the passphrase blank if you
-    wish. However it is not recommended. You will receive a key fingerprint
-    and a randomart image.
+    Hit enter when it prompts for a file to save the key to use the default location, or, create one in a specified
+    directory. **Leave the passphrase blank**. You will receive a key fingerprint and a randomart image.
 
 On the Web interface
 ====================
