@@ -54,11 +54,19 @@ if (isset($_POST['limit']) && $_POST['limit']) {
     if (($p >= 200 && $p < 300) || ($p >= 20000 && $p < 30000)) {
         $dbResult = $pearDB->query("SELECT * FROM `options` WHERE `key` = 'maxViewMonitoring'");
         $gopt = $dbResult->fetch();
-        $limit = myDecode($gopt['value']);
+        if((int)$gopt['value']){
+            $limit = (int)$gopt['value'];
+        } else {
+            $limit = 30;
+        }
     } else {
         $dbResult = $pearDB->query("SELECT * FROM `options` WHERE `key` = 'maxViewConfiguration'");
         $gopt = $dbResult->fetch();
-        $limit = myDecode($gopt['value']);
+        if((int)$gopt['value']){
+            $limit = (int)$gopt['value'];
+        } else {
+            $limit = 30;
+        }
     }
 }
 
