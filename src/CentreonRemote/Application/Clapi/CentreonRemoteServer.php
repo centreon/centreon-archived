@@ -34,9 +34,15 @@ class CentreonRemoteServer implements CentreonClapiServiceInterface
     /**
      * Clapi command to enable remote server
      *
-     * @param string $ip ip address of the central server
+     * @param string $parametersString parameters string made of
+     * a comma separated list of hosts/urls/ip adresses representing the central,
+     * a boolean to enable/disable certificate check to contact the central,
+     * the method to use to contact the remote (http or https),
+     * the http port to use to contact the remote,
+     * a boolean to enable/disable certificate check to contact the remote,
+     * a boolean to enable/disable the use of proxy to contact the central
      */
-    public function enableRemote(string $string_ip)
+    public function enableRemote(string $parametersString)
     {
         /* Set default value */
         $noCheckCertificate = false;
@@ -47,65 +53,65 @@ class CentreonRemoteServer implements CentreonClapiServiceInterface
         );
 
         /* Check CLAPI */
-        $options = explode(';', $string_ip);
+        $options = explode(';', $parametersString);
 
         if (count($options) === 6) {
-            $string_ip = $options[0];
+            $urlString = $options[0];
             $noCheckCertificate = $options[1];
             $data['remoteHttpMethod'] = $options[2];
             $data['remoteHttpPort'] = $options[3];
             $data['remoteNoCheckCertificate'] = $options[4];
             $noProxy = $options[5];
         } elseif (count($options) > 1) {
-            echo "6 arguments are needed, please check your arguments.";
+            echo "Expecting 6 parameters, received " . count($options) . "\n";
             return 1;
         }
 
         /* Extract host from URI */
-        $aIPMaster = array();
-        $pattern_extract_host = '/^[a-z][a-z0-9+\-.]*:\/\/([a-z0-9\-._~%!$&\'()*+,;=]+@)?([a-z0-9\-._~%]+|\[[a-z0-9\-._~%!$&\'()*+,;=:]+\])/';
-        $ipList = explode(',', $string_ip);
-        foreach ($ipList as $ip) {
-            if (preg_match($pattern_extract_host, $ip, $matches)) {
-                $ip = $matches[2];
+        $hostList = array();
+        $pattern_extract_host = '/^[htps:\/]*([a-z0-9.]+)[:0-9]*$/';
+        $urlList = explode(',', $urlString);
+        foreach ($urlList as $url) {
+            if (preg_match($pattern_extract_host, $url, $matches)) {
+                $hostList[] = $matches[1];
             }
-            $aIPMaster[] = $ip;
         }
 
-        echo "Starting Centreon Remote enable process: \n";
+        echo "Starting Centreon Remote enable process:\n";
 
-        echo "Limiting Menu Access...";
+        echo "Limiting Menu Access...               ";
         $result =
             $this->getDi()[\Centreon\ServiceProvider::CENTREON_DB_MANAGER]
                 ->getRepository(TopologyRepository::class)
                 ->disableMenus();
         echo (($result) ? 'Success' : 'Fail') . "\n";
 
-        echo "Limiting Actions...";
+        echo "Limiting Actions...                   ";
         $this->getDi()[\Centreon\ServiceProvider::CENTREON_DB_MANAGER]
             ->getRepository(InformationsRepository::class)
             ->toggleRemote('yes');
         echo "Done\n";
 
-        echo "Authorizing Master...";
+        echo "Authorizing Master...                 ";
         $this->getDi()[\Centreon\ServiceProvider::CENTREON_DB_MANAGER]
             ->getRepository(InformationsRepository::class)
             ->authorizeMaster(
-                implode(',', $aIPMaster)
+                implode(',',$hostList)
             );
         echo "Done\n";
 
-        echo "Set 'remote' instance type...";
+        echo "Set 'remote' instance type...         ";
         system(
             "sed -i -r 's/(\\\$instance_mode?\s+=?\s+\")([a-z]+)(\";)/\\1remote\\3/' " . _CENTREON_ETC_ . "/conf.pm"
         );
         echo "Done\n";
 
-        echo "Notifying Master...";
+        echo "Notifying Master...\n";
         $result = "";
-        foreach ($ipList as $ip) {
+        foreach ($hostList as $host) {
+            echo "  Trying host '$host'... ";
             $result = $this->getDi()['centreon.notifymaster']->pingMaster(
-                $ip,
+                $host,
                 $data,
                 $noCheckCertificate,
                 $noProxy
@@ -114,9 +120,7 @@ class CentreonRemoteServer implements CentreonClapiServiceInterface
                 echo "Success\n";
                 break;
             }
-        }
-        if (empty($result['status']) || $result['status'] != 'success') {
-            printf("Fail: %s\n", $result['details']);
+            printf("Fail [Details: %s]\n", $result['details']);
         }
 
         echo "Centreon Remote enabling finished.\n";
@@ -127,22 +131,22 @@ class CentreonRemoteServer implements CentreonClapiServiceInterface
      */
     public function disableRemote(): void
     {
-        echo "Starting Centreon Remote disable process: \n";
+        echo "Starting Centreon Remote disable process:\n";
 
-        echo "Restoring Menu Access...";
+        echo "Restoring Menu Access...              ";
         $result =
             $this->getDi()[\Centreon\ServiceProvider::CENTREON_DB_MANAGER]
                 ->getRepository(TopologyRepository::class)
                 ->enableMenus();
         echo ($result) ? 'Success' : 'Fail' . "\n";
 
-        echo "Restoring Actions...";
+        echo "Restoring Actions...                  ";
         $this->getDi()[\Centreon\ServiceProvider::CENTREON_DB_MANAGER]
             ->getRepository(InformationsRepository::class)
             ->toggleRemote('no');
         echo 'Done'. "\n";
 
-        echo "Restore 'central' instance type...";
+        echo "Restore 'central' instance type...    ";
         system(
             "sed -i -r 's/(\\\$instance_mode?\s+=?\s+\")([a-z]+)(\";)/\\1central\\3/' " . _CENTREON_ETC_ . "/conf.pm"
         );
@@ -156,17 +160,17 @@ class CentreonRemoteServer implements CentreonClapiServiceInterface
      */
     public function import(): void
     {
-        echo "Starting Centreon Remote import process: \n";
-        echo "Importing...";
+        echo date("Y-m-d H:i:s") . " - INFO - Starting Centreon Remote import process...\n";
 
         try {
             $this->getDi()['centreon_remote.export']->import();
-            echo "Success\n";
+            echo date("Y-m-d H:i:s") . " - INFO - Import succeed\n";
         } catch (\Exception $e) {
-            echo "Fail: " . $e->getMessage() . "\n";
+            echo date("Y-m-d H:i:s") . " - ERROR - Import failed\n";
+            echo date("Y-m-d H:i:s") . " - ERROR - Error message: " . $e->getMessage() . "\n";
         }
 
-        echo "Centreon Remote import finished.\n";
+        echo date("Y-m-d H:i:s") . " - INFO - Centreon Remote import process finished.\n";
     }
 
     public function getDi(): Container
