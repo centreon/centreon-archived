@@ -20,7 +20,7 @@ function getFirstAvailableUrl(item) {
           return child.url;
         } else {
           // construct legacy route
-          return `/main.php?p=${child.page}${child.options}`;
+          return `/main.php?p=${child.page}${child.options !== null ? child.options : ''}`;
         }
       } else {
         firstAvailableUrl = getFirstAvailableUrl(child);
