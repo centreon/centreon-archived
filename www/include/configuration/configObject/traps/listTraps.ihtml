@@ -16,7 +16,7 @@
                 <select class="select2" name="status" id="status">
                     <option value="">{t}All{/t}</option>
                     {foreach from=$statuses key=key item=status}
-                        <option {if $searchStatus !="" && $key == $searchStatus}selected="selected"{/if}
+                        <option {if $searchStatus != "" && $key == $searchStatus}selected="selected"{/if}
                             value="{$key}">{$status}</option>
                     {/foreach}
                 </select>

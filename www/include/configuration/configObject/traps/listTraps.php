@@ -53,15 +53,20 @@ $search = filter_var(
     FILTER_SANITIZE_STRING
 );
 
-$searchStatus = filter_var(
-    $_POST['status'] ?? $_GET['status'] ?? null,
-    FILTER_SANITIZE_NUMBER_INT
-);
+if ($search != '') {
+    $searchStatus = filter_var(
+        $_POST['status'] ?? $_GET['status'] ?? null,
+        FILTER_SANITIZE_NUMBER_INT
+    );
 
-$searchVendor = filter_var(
-    $_POST['vendor'] ?? $_GET['vendor'] ?? null,
-    FILTER_SANITIZE_NUMBER_INT
-);
+    $searchVendor = filter_var(
+        $_POST['vendor'] ?? $_GET['vendor'] ?? null,
+        FILTER_SANITIZE_NUMBER_INT
+    );
+} else {
+    $searchStatus = null;
+    $searchVendor = null;
+}
 
 if (isset($_POST['searchT']) || isset($_GET['searchT'])) {
     //saving filters values
@@ -104,7 +109,7 @@ $lvl_access = ($centreon->user->access->page($p) == 1) ? 'w' : 'r';
 $tpl->assign('mode_access', $lvl_access);
 
 // Get vendors (manufacturers) for search dropdown
-$vendorResult = $pearDB->query("SELECT * FROM traps_vendor ORDER BY name, alias");
+$vendorResult = $pearDB->query("SELECT id, name FROM traps_vendor ORDER BY name, alias");
 $vendors = [];
 for ($i = 0; $vendor = $vendorResult->fetch(); $i++) {
     $vendors[] = ['id' => $vendor['id'], 'name' => $vendor['name']];
