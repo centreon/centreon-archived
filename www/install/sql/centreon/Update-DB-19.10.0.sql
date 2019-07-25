@@ -53,6 +53,7 @@ ALTER TABLE `traps_service_relation` DROP COLUMN `tsr_id`;
 --
 ALTER TABLE `acl_groups` MODIFY COLUMN `acl_group_changed` int(11) NOT NULL DEFAULT 1;
 ALTER TABLE `widget_models` MODIFY COLUMN `description` TEXT NOT NULL;
+ALTER TABLE `auth_ressource` ALTER `ar_type` SET DEFAULT 'ldap';
 
 --
 -- Remove modules *_files flags.
@@ -71,3 +72,9 @@ ALTER TABLE `remote_servers` MODIFY COLUMN `ip` VARCHAR(255) NOT NULL;
 --
 TRUNCATE TABLE ods_view_details;
 ALTER TABLE ods_view_details MODIFY metric_id int(11);
+
+-- Add trap regexp matching
+ALTER TABLE `traps` ADD COLUMN IF NOT EXISTS `traps_mode` ENUM('0', '1') DEFAULT '0' AFTER `traps_oid`;
+
+-- Add trap filter
+ALTER TABLE `traps` MODIFY COLUMN `traps_exec_interval_type` ENUM('0','1','2','3') NULL DEFAULT '0';

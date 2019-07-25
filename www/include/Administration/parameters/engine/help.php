@@ -32,7 +32,10 @@ $help['tip_start_script_for_correlator_engine'] = dgettext('help', 'Init script 
  * Mailer path
  */
 
-$help['tip_directory+mailer_binary'] = dgettext('help', 'Mailer binary with complete path.');
+$help['tip_directory+mailer_binary'] = dgettext(
+    'help',
+    'Mailer binary with complete path. This define the @MAILER@ macro used in notification commands.'
+);
 
 /**
  * Tactical Overview

@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "f57638e2-9bbf-40b9-924e-28fe8ebf95ec",
+		"_postman_id": "550c1759-3532-4931-9f0e-3ee750bb27f6",
 		"name": "Centreon Web Rest API",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -19969,10 +19969,11 @@
 						{
 							"listen": "test",
 							"script": {
-								"type": "text/javascript",
+								"id": "042a5d7e-922d-438f-84d5-49a417ae9f5e",
 								"exec": [
 									"tests[\"Status code is 200\"] = responseCode.code === 200;"
-								]
+								],
+								"type": "text/javascript"
 							}
 						}
 					],
@@ -19990,7 +19991,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"action\":\"setparam\",\n  \"object\":\"htpl\",\n  \"values\": \"{{htpl_name}};process_perf_data;{{command_name}}\"\n}"
+							"raw": "{\n  \"action\":\"setparam\",\n  \"object\":\"htpl\",\n  \"values\": \"{{htpl_name}};process_perf_data;2\"\n}"
 						},
 						"url": {
 							"raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
@@ -24419,10 +24420,11 @@
 						{
 							"listen": "test",
 							"script": {
-								"type": "text/javascript",
+								"id": "898cfe6e-beb3-4e4c-a970-f07be37745df",
 								"exec": [
 									"tests[\"Status code is 200\"] = responseCode.code === 200;"
-								]
+								],
+								"type": "text/javascript"
 							}
 						}
 					],
@@ -24440,7 +24442,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"action\":\"setparam\",\n  \"object\":\"host\",\n  \"values\": \"{{host_name}};process_perf_data;{{command_name}}\"\n}"
+							"raw": "{\n  \"action\":\"setparam\",\n  \"object\":\"host\",\n  \"values\": \"{{host_name}};process_perf_data;2\"\n}"
 						},
 						"url": {
 							"raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",

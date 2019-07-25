@@ -1539,6 +1539,10 @@ msgstr "Configurer cette vue comme celle par défaut ?"
 #: centreon-web/www/include/Administration/parameters/ldap/form.php:245
 #: centreon-web/www/include/Administration/parameters/knowledgeBase/formKnowledgeBase.php:90
 #: centreon-web/www/include/Administration/parameters/debug/form.php:89
+#: centreon-web/www/include/Administration/parameters/debug/form.php:134
+msgid "Retention duration for audit logs"
+msgstr "Durée de rétention pour les logs d'actions"
+
 #: centreon-web/www/include/Administration/parameters/centstorage/form.php:145
 #: centreon-web/www/include/Administration/parameters/backup/formBackup.php:139
 #: centreon-web/www/include/Administration/parameters/css/form.php:134
@@ -2108,6 +2112,10 @@ msgstr "Modèle de service"
 
 #: centreon-web/www/install/smarty_translate.php:615
 #: centreon-web/www/include/Administration/configChangelog/viewLogs.php:322
+#: centreon-web/www/include/Administration/configChangelog/viewLogs.php:327
+msgid "looks like a CLAPI action"
+msgstr "Probablement une action réalisée par CLAPI"
+
 #: centreon-web/www/include/configuration/configObject/contact/displayNotification.php:108
 #: centreon-web/www/include/configuration/configObject/contactgroup/displayNotification.php:103
 #: centreon-web/www/include/eventLogs/xml/data.php:743
@@ -9346,6 +9354,10 @@ msgstr "Par OID"
 #: centreon-web/www/include/configuration/configObject/traps/formTraps.php:324
 msgid "By OID and Host"
 msgstr "Par OID et hôte"
+
+#: centreon-web/www/include/configuration/configObject/traps/formTraps.php
+msgid "By OID, Host and Service"
+msgstr "Par OID, hôte et service"
 
 #: centreon-web/www/include/configuration/configObject/traps/formTraps.php:325
 msgid "Execution type"

@@ -34,7 +34,7 @@
  *
  */
 
-namespace Centreon\Domain\Entity;
+namespace Centreon\Infrastructure\Event;
 
 use Centreon\Infrastructure\Event\DispatcherLoaderInterface;
 
