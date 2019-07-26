@@ -3,7 +3,7 @@ import { connect } from "react-redux";
 import { breadcrumbsSelector } from '../../redux/selectors/navigation';
 import { Breadcrumb } from '@centreon/react-components';
 
-function BreadcrumbWrapper({ breadcrumbs, path, children }) {
+function BreadcrumbWrapper({ breadcrumbs, path, children, ...others }) {
 
   const getBreadcrumbPath = (breadcrumbs, path) => {
     if (breadcrumbs[path]) {
@@ -23,7 +23,7 @@ function BreadcrumbWrapper({ breadcrumbs, path, children }) {
 
   return (
     <>
-      <Breadcrumb breadcrumbs={breadcrumbPath}/>
+      <Breadcrumb breadcrumbs={breadcrumbPath} {...others} />
       {children}
     </>
   );
