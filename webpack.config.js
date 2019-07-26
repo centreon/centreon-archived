@@ -21,6 +21,9 @@ module.exports = {
     library: '[name]',
     umdNamedDefine: true,
   },
+  resolve: {
+    extensions: ['.js', '.jsx'],
+  },
   optimization: {
     minimizer: [
       new TerserPlugin({
@@ -79,7 +82,7 @@ module.exports = {
     rules: [
       { parser: { system: false } },
       {
-        test: /\.js$/,
+        test: /\.jsx?$/,
         exclude: /node_modules/,
         use: {
           loader: 'babel-loader',
@@ -146,8 +149,5 @@ module.exports = {
         }]
       },
     ]
-  },
-  resolve: {
-    extensions: ['.js', '.jsx'],
   },
 };
