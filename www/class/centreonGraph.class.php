@@ -1514,7 +1514,12 @@ class CentreonGraph
             return $this->colorCache[$metricId];
         }
         $lRndcolor = $this->getRandomWebColor();
-        $this->DB->query("INSERT INTO `ods_view_details` (rnd_color, index_id, metric_id) VALUES ('" . $lRndcolor . "', '" . $this->index . "', " . $metricId  . ")");
+        if (is_int($metricId)) {
+            $this->DB->query(
+                'INSERT INTO `ods_view_details` (rnd_color, index_id, metric_id) ' . 
+                . 'VALUES (' . $lRndcolor . "', '" . $this->index . "', " . $metricId  . ")"
+            );
+		}
         return $lRndcolor;
     }
 
