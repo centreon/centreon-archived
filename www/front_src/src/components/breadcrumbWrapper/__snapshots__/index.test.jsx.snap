@@ -1,0 +1,23 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`BreadcrumbWrapper renders 1`] = `
+.emotion-0 {
+  padding: 0px 16px;
+}
+
+.emotion-0 .MuiBreadcrumbs-li {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+}
+
+<nav
+  aria-label="Breadcrumb"
+  class="MuiTypography-root MuiBreadcrumbs-root emotion-0 MuiTypography-body1 MuiTypography-colorTextSecondary"
+>
+  <ol
+    class="MuiBreadcrumbs-ol"
+  />
+</nav>
+`;

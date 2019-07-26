@@ -1,58 +1,35 @@
 import { createSelector } from 'reselect';
 
-// loop on each child and get first available url
-function getFirstAvailableUrl(item) {
-  let firstAvailableUrl = null;
-
+// loop on each group/child to get first url
+function findFirstUrl(item) {
   if (item.groups) {
-    for (const group of item.groups) {
-      firstAvailableUrl = getFirstAvailableUrl(group);
-      if (firstAvailableUrl) {
-        return firstAvailableUrl;
-      }
-    }
+    const groupWithUrl = item.groups.find(findFirstUrl);
+
+    return groupWithUrl ? findFirstUrlInChildren(groupWithUrl) : undefined;
   }
 
-  if (item.children) {
-    for (const child of item.children) {
-      if (child.url) {
-        if (child.is_react) {
-          return child.url;
-        } else {
-          // construct legacy route
-          return `/main.php?p=${child.page}${child.options !== null ? child.options : ''}`;
-        }
-      } else {
-        firstAvailableUrl = getFirstAvailableUrl(child);
-        if (firstAvailableUrl) {
-          return firstAvailableUrl;
-        }
-      }
-    }
-  }
+  return item.children ?  findFirstUrlInChildren(item) : undefined;
+}
 
-  return null;
+function findFirstUrlInChildren(item) {
+  const childWithUrl = item.children ? item.children.find((child) => child.url) : undefined;
+
+  return childWithUrl ? getUrl(childWithUrl) : undefined;
+}
+
+function getUrl(item) {
+  return item.is_react ? item.url : `/main.php?p=${item.page}${item.options !== null ? item.options : ''}`;
 }
 
 // get breadcrumb step information from an entry
 function getBreadcrumbStep(item) {
-  let step = null;
-  if (item.is_react) {
-    step = {
-      label: item.label,
-      link: item.url
-    };
-  } else {
-    const availableUrl = getFirstAvailableUrl(item);
-    if (availableUrl) {
-      step = {
+    const availableUrl = item.url ? getUrl(item) : findFirstUrl(item);
+    return availableUrl
+      ? {
         label: item.label,
-        link: availableUrl
-      };
-    }
-  }
-
-  return step;
+        link: availableUrl,
+      }
+      : null;
 }
 
 const getMenuItems = (state) => state.navigation.menuItems;
