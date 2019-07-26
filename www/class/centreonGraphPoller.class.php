@@ -33,19 +33,13 @@
  *
  */
 
-require_once "centreonGMT.class.php";
-
-
 /**
  *  Class tp get metrics for a poller and return this on JSON
  */
 class centreonGraphPoller
 {
-    /**
-     *
-     * @var array Array of rrdtool options
-     */
-    private $rrdtoolOptions;
+    protected $generalOpt;
+    protected $extraDatas;
 
     /**
      *
@@ -58,12 +52,6 @@ class centreonGraphPoller
      * @var int Poller id
      */
     private $pollerId;
-
-    /**
-     *
-     * @var int User id
-     */
-    private $userId;
 
     /**
      *
@@ -123,26 +111,42 @@ class centreonGraphPoller
      *
      * @param \CentreonDB $db
      * @param \CentreonDB $dbMonitoring
-     * @param type $pollerId
-     * @param type $userId
-     * @param type $start
-     * @param type $end
      */
-    public function __construct($db, $dbMonitoring, $pollerId, $userId, $start, $end)
+    public function __construct($db, $dbMonitoring)
     {
         $this->db = $db;
         $this->dbMonitoring = $dbMonitoring;
-        $this->pollerId = $pollerId;
-        $this->userId = $userId;
-        $this->start = $start;
-        $this->end = $end;
-
+                
         $this->initGraphOptions();
         $this->initRrd();
     }
 
     /**
+     * Set poller graph
      *
+     * @param int    $pollerId
+     * @param string $graphName
+     *
+     * @return void
+     */
+    public function setPoller($pollerId, $graphName)
+    {
+        $this->graphName = $graphName;
+        $this->pollerId = $pollerId;
+        $this->extraDatas = array(
+            'title' => $this->title[$graphName],
+            'base' => 1000,
+        );
+        $this->rrdOptions = array();
+        $this->arguments = array();
+        
+        $this->setRRDOption("imgformat", "JSONTIME");
+    }
+
+    /**
+     * Init graph titles
+     *
+     * @return void
      */
     private function initGraphOptions()
     {
@@ -204,21 +208,22 @@ class centreonGraphPoller
     }
 
     /**
-     * Set rrdtool options
+     * Get rrdtool options
+     *
+     * @return void
      */
     private function initRrd()
     {
         $DBRESULT = $this->db->query("SELECT * FROM `options`");
 
-        while ($option = $DBRESULT->fetchRow()) {
-            if (strpos($option["key"], 'rrdtool', 0) !== false) {
-                $this->rrdtoolOptions[$option["key"]] = $option["value"];
-            }
+        $this->generalOpt = array();
+        while ($option = $DBRESULT->fetch()) {
+            $this->generalOpt[$option["key"]] = $option["value"];
         }
         $DBRESULT->closeCursor();
 
         $DBRESULT2 = $this->dbMonitoring->query("SELECT RRDdatabase_nagios_stats_path FROM config");
-        $nagiosStats = $DBRESULT2->fetchRow();
+        $nagiosStats = $DBRESULT2->fetch();
         $this->nagiosStatsPath = $nagiosStats['RRDdatabase_nagios_stats_path'];
         $DBRESULT2->closeCursor();
     }
@@ -242,19 +247,71 @@ class centreonGraphPoller
     }
 
     /**
+     * Add argument rrdtool
      *
-     * @param int $rows
+     * @param string $arg
+     *
+     * @return void
+     */
+    public function addArgument($arg)
+    {
+        $this->arguments[] = $arg;
+    }
+
+    /**
+     * Add argument rrdtool
+     *
+     * @param string $name the key
+     * @param string $value
+     *
+     * @return void
+     */
+    public function setRRDOption($name, $value = null)
+    {
+        if (strpos($value, " ")!==false) {
+            $value = "'".$value."'";
+        }
+        $this->rrdOptions[$name] = $value;
+    }
+
+    /**
+     * Log message
+     *
+     * @param string $message
+     *
+     * @return void
+     */
+    private function log($message)
+    {
+        if ($this->generalOpt['debug_rrdtool'] &&
+            is_writable($this->generalOpt['debug_path'])) {
+            error_log(
+                "[" . date("d/m/Y H:i") ."] RDDTOOL : ".$message." \n",
+                3,
+                $this->generalOpt['debug_path'] . "rrdtool.log"
+            );
+        }
+    }
+
+    /**
+     * Add arguments for rrdtool command line
+     *
+     * @param int $start
+     * @param int $end
+     *
+     * @return void
+     *
      * @throws RuntimeException
      */
-    public function buildCommandLine($rows)
+    public function buildCommandLine($start, $end)
     {
-        $this->commandLine = '';
-
-        /* Build command line */
-        $this->commandLine .= " xport ";
-        $this->commandLine .= " --start " . $this->start;
-        $this->commandLine .= " --end " . $this->end;
-        $this->commandLine .= " --maxrows " . $rows;
+        $this->extraDatas['start'] = $start;
+        $this->extraDatas['end'] = $end;
+        
+        $this->setRRDOption("start", $start);
+        $this->setRRDOption("end", $end);
+        
+        $this->metrics = array();
 
         $metrics = $this->differentStats[$this->options[$this->graphName]];
 
@@ -264,126 +321,147 @@ class centreonGraphPoller
             if (false === file_exists($path)) {
                 throw new RuntimeException();
             }
-            $this->commandLine .= " DEF:v" . $i . "=" . $path . ":$metric:AVERAGE";
-            $this->commandLine .= " GPRINT:v" . ($i) . ":LAST:\"\:%7.2lf%s\l\"";
-            $this->commandLine .= " XPORT:v" . $i . ":v" . $i;
+            
+            $displayformat = "%7.2lf";
+            $this->addArgument("DEF:v" . $i . "=" . $path . ":" . $metric . ":AVERAGE");
+            $this->addArgument("VDEF:v" . $i . $metric . "=v" . $i . ",AVERAGE");
+            $this->addArgument("LINE1:v" . $i . "#0000ff:v" . $i);
+            $this->addArgument("GPRINT:v" . $i . $metric . ":\"" . $metric . "\:" . $displayformat . "\" ");
 
-            $info = array(
-                "data" => array(),
+            $this->metrics[] = array(
+                "metric_id" => $i,
+                "metric" => $metric,
+                "metric_legend" => $metric,
                 "legend" => $metric,
-                "graph_type" => "line",
-                "unit" => null,
-                "color" => $this->colors[$metric],
-                "negative" => false,
-                "stack" => false,
-                "crit" => null,
-                "warn" => null
+                "ds_data" => array(
+                    "ds_filled" => 0,
+                    "ds_color_line" => $this->colors[$metric],
+                )
             );
-
-            if (isset($metric['ds_color_area']) &&
-                isset($metric['ds_filled']) &&
-                $metric['ds_filled'] === '1'
-            ) {
-                $info['graph_type'] = "area";
-            }
-            if (isset($metric['ds_invert']) && $metric['ds_invert'] == 1) {
-                $info['negative'] = true;
-            }
-            if (isset($metric['stack'])) {
-                $info['stack'] = $metric['stack'] == 1 ? true : false;
-            }
-            if (isset($metric['crit'])) {
-                $info['crit'] = $metric['crit'];
-            }
-            if (isset($metric['warn'])) {
-                $info['warn'] = $metric['warn'];
-            }
-            $this->metricsInfos[] = $info;
 
             $i++;
         }
     }
 
     /**
+     * Get graph result
      *
-     * @param int $rows
+     * @param int $start
+     * @param int $end
+     *
      * @return array
+     *
      * @throws RuntimeException
      */
-    public function getData($rows = 200)
+    public function getGraph($start, $end)
     {
-        //$this->initRrdtoolCommandLine();
-
-        $this->buildCommandLine($rows);
-
-        $descriptorspec = array(
-            0 => array('pipe', 'r'),
-            1 => array('pipe', 'w'),
-            2 => array('pipe', 'a'),
-        );
-
-        $process = proc_open($this->rrdtoolOptions['rrdtool_path_bin'] . " - ", $descriptorspec, $pipes, null, null);
-        if (false === is_resource($process)) {
-            throw new RuntimeException();
-        }
-        fwrite($pipes[0], $this->commandLine);
-        fclose($pipes[0]);
-
-        $str = '';
-        stream_set_blocking($pipes[1], 0);
-        do {
-            $status = proc_get_status($process);
-            $str .= stream_get_contents($pipes[1]);
-        } while ($status['running']);
-
-        $str .= stream_get_contents($pipes[1]);
-
-        /* Remove text of the end of the stream */
-        $str = preg_replace("/<\/xport>(.*)$/s", "</xport>", $str);
-
-        $exitCode = $status['exitcode'];
-
-        proc_close($process);
-
-        if ($exitCode != 0) {
-            throw new RuntimeException();
-        }
-
-        /* Transform XML to values */
-        $xml = simplexml_load_string($str);
-        if (false === $xml) {
-            throw new RuntimeException();
-        }
-        $xmlRows = $xml->xpath("//xport/data/row");
-        foreach ($xmlRows as $xmlRow) {
-            $time = null;
-            $i = 0;
-            foreach ($xmlRow->children() as $info) {
-                if (is_null($time)) {
-                    $time = (string)$info;
-                } else {
-                    if (strtolower($info) === "nan" || is_null($info)) {
-                        $this->metricsInfos[$i++]['data'][$time] = $info;
-                    } elseif ($this->metricsInfos[$i]['negative']) {
-                        $this->metricsInfos[$i++]['data'][$time] = floatval((string)$info) * -1;
-                    } else {
-                        $this->metricsInfos[$i++]['data'][$time] = floatval((string)$info);
-                    }
-                }
-            }
-        }
-        return $this->metricsInfos;
+        $this->buildCommandLine($start, $end);
+        return $this->getJsonStream();
     }
 
-    public function getLegends()
+    /**
+     * Get rrdtool result
+     *
+     * @return mixed
+     */
+    private function getJsonStream()
     {
-        $legends = array();
-        $metrics = $this->differentStats[$this->options[$this->graphName]];
-        foreach ($metrics as $metric) {
-            $legends[$metric] = array(
-                'extras' => array()
-            );
+        $commandLine = "";
+        $commandLine = " graph - ";
+
+        foreach ($this->rrdOptions as $key => $value) {
+            $commandLine .= "--" . $key;
+            if (isset($value)) {
+                if (preg_match('/\'/', $value)) {
+                    $value = "'" . preg_replace('/\'/', ' ', $value) . "'";
+                }
+                $commandLine .= "=" . $value;
+            }
+            $commandLine .= " ";
         }
-        return $legends;
+
+        foreach ($this->arguments as $arg) {
+            $commandLine .= " " . $arg . " ";
+        }
+        $commandLine = preg_replace("/(\\\$|`)/", "", $commandLine);
+        $this->log($commandLine);
+
+        if (is_writable($this->generalOpt['debug_path'])) {
+            $stderr = array('file', $this->generalOpt['debug_path'] . '/rrdtool.log', 'a');
+        } else {
+            $stderr = array('pipe', 'a');
+        }
+        $descriptorspec = array(
+                            0 => array("pipe", "r"),  // stdin is pipe for reading
+                            1 => array("pipe", "w"),  // stdout is pipe for writing
+                            2 => $stderr // stderr is a file
+                        );
+
+        $process = proc_open($this->generalOpt['rrdtool_path_bin']. " - ", $descriptorspec, $pipes, null, null);
+        $this->graphData = array(
+            'global' => $this->extraDatas,
+            'metrics' => array(),
+        );
+        foreach ($this->metrics as $metric) {
+            $this->graphData['metrics'][] = $metric;
+        }
+
+        if (is_resource($process)) {
+            fwrite($pipes[0], $commandLine);
+            fclose($pipes[0]);
+
+            $str = stream_get_contents($pipes[1]);
+            $returnValue = proc_close($process);
+
+            $str = preg_replace("/OK u:.*$/", "", $str);
+            $rrdData = json_decode($str, true);
+        }
+        
+        $this->formatByMetrics($rrdData);
+        return $this->graphData;
+    }
+
+    /**
+     * Parse rrdtool result
+     *
+     * @param mixed $rrdData
+     *
+     * @return void
+     */
+    private function formatByMetrics($rrdData)
+    {
+        $this->graphData['times'] = array();
+        $size = count($rrdData['data']);
+        $gprintsSize = count($rrdData['meta']['gprints']);
+        
+        for ($i = 0; $i < $size; $i++) {
+            $this->graphData['times'][] = $rrdData['data'][$i][0];
+        }
+        
+        $i = 1;
+        $gprintsPos = 0;
+        foreach ($this->graphData['metrics'] as &$metric) {
+            $metric['data'] = array();
+            $metric['prints'] = array();
+            
+            $insert = 0;
+            $metricFullname = 'v' . $metric['metric_id'];
+            for (; $gprintsPos < $gprintsSize; $gprintsPos++) {
+                if (isset($rrdData['meta']['gprints'][$gprintsPos]['line'])) {
+                    if ($rrdData['meta']['gprints'][$gprintsPos]['line'] == $metricFullname) {
+                        $insert = 1;
+                    } else {
+                        break;
+                    }
+                } elseif ($insert == 1) {
+                    $metric['prints'][] = array_values($rrdData['meta']['gprints'][$gprintsPos]);
+                }
+            }
+            
+            for ($j = 0; $j < $size; $j++) {
+                $metric['data'][] = $rrdData['data'][$j][$i];
+            }
+            $i++;
+        }
     }
 }
