@@ -1,7 +1,7 @@
 import { createStore, applyMiddleware, compose } from "redux";
-import { routerMiddleware } from "react-router-redux";
+import { routerMiddleware } from 'connected-react-router';
 import { batchDispatchMiddleware } from 'redux-batched-actions';
-import reducers from "../redux/reducers";
+import createRootReducer from "../redux/reducers";
 import thunk from "redux-thunk";
 import createSagaMiddleware from "redux-saga";
 import sagas from "../redux/sagas";
@@ -16,7 +16,7 @@ const createAppStore = (options, initialState = {}) => {
   const middlewares = [routerMiddleware(history), thunk, sagaMiddleware, batchDispatchMiddleware];
 
   const store = createStore(
-    reducers,
+    createRootReducer(history),
     initialState,
     compose(
       applyMiddleware(...middlewares),

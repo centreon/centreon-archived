@@ -1,5 +1,5 @@
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const CleanWebpackPlugin = require('clean-webpack-plugin');
+const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
@@ -98,9 +98,10 @@ module.exports = {
           {
             loader: "css-loader",
             options: {
-              modules: true,
-              localIdentName: "[local]__[hash:base64:5]",
-              sourceMap: true
+              modules: {
+                localIdentName: "[local]__[hash:base64:5]",
+              },
+              sourceMap: true,
             }
           },
           {

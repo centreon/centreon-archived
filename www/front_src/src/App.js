@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import Header from "./components/header";
 import { connect } from 'react-redux';
-import { ConnectedRouter } from "react-router-redux";
+import { ConnectedRouter } from 'connected-react-router';
 import { history } from "./store";
 
 import NavigationComponent from "./components/navigation";
