@@ -106,7 +106,7 @@ function putALock(int $appId):void
  * method to get centAcl state in the DB
  * @return array $data
  */
-function getCentAclRunningState(): array
+function getCentAclRunningState()
 {
     global $pearDB;
     $data = [];
