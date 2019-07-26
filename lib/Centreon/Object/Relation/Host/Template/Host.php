@@ -93,7 +93,7 @@ class Centreon_Object_Relation_Host_Template_Host extends Centreon_Object_Relati
                 // If there are linked services - delete these services
                 $this->db->query('DELETE FROM host_service_relation 
                              WHERE host_host_id = ' . (int)$skey . '
-                             AND service_service_id IN ('.implode(',', $services).')');
+                             AND service_service_id IN (' . implode(',', $services) . ')');
             }
             $this->db->commit();
         } catch (\PDOException $e) {
