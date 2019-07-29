@@ -77,7 +77,7 @@ class Centreon_Object_Relation_Host_Template_Host extends Centreon_Object_Relati
      * @param int $skey
      * @return void
      */
-    public function delete(int $fkey, int $skey = null): void
+    public function delete($fkey, $skey = null): void
     {
         $this->db->beginTransaction();
         try {
