@@ -14,15 +14,15 @@ Password
 
 Before starting to run the script, it is necessary to get root password of Centreon database.
 
-Enable PHP on Centreon 18.10 (**Centos7**)
+Enable PHP on Centreon 19.10 (**Centos7**)
 ------------------------------------------
 
-On the new version 18.10 of Centreon (Centos7), it is mandatory to enable PHP before running PHP scripts in command line.
+On the new version 19.10 of Centreon (Centos7), it is mandatory to enable PHP before running PHP scripts in command line.
 
 Then, run the following command:
 ::
 
-# scl enable rh-php71 bash
+# scl enable rh-php72 bash
 
 Explanations
 ============
