@@ -1,19 +1,26 @@
-import React, { Component, Suspense } from "react";
-import { connect } from "react-redux";
-import { Switch, Route, withRouter } from "react-router-dom";
-import { reactRoutes } from "../../route-maps";
-import { dynamicImport } from "../../helpers/dynamicImport";
-import centreonAxios from "../../axios";
+/* eslint-disable react/jsx-filename-extension */
+/* eslint-disable no-restricted-syntax */
+/* eslint-disable react/prop-types */
+
+import React, { Component, Suspense } from 'react';
+import { connect } from 'react-redux';
+import { Switch, Route, withRouter } from 'react-router-dom';
+import { reactRoutes } from '../../route-maps';
+import { dynamicImport } from '../../helpers/dynamicImport';
+import centreonAxios from '../../axios';
 import NotAllowedPage from '../../route-components/notAllowedPage';
-import styles from "../../styles/partials/_content.scss";
+import styles from '../../styles/partials/_content.scss';
 
 // class to manage internal react pages
 class ReactRouter extends Component {
-
   getLoadableComponents = () => {
     const { history, acl, pages } = this.props;
-    const basename = history.createHref({pathname: '/', search: '', hash: ''});
-    let LoadableComponents = [];
+    const basename = history.createHref({
+      pathname: '/',
+      search: '',
+      hash: '',
+    });
+    const LoadableComponents = [];
 
     // wait acl to add authorized routes
     if (!acl.loaded) {
@@ -21,7 +28,6 @@ class ReactRouter extends Component {
     }
 
     for (const [path, parameter] of Object.entries(pages)) {
-
       // check if each acl route contains external page
       // eg: a user which have access to /configuration will have access to /configuration/hosts
       let isAllowed = false;
@@ -38,21 +44,18 @@ class ReactRouter extends Component {
             key={path}
             path={path}
             exact="true"
-            render={renderProps => (
-              <div className={styles["react-page"]}>
-                <Page
-                  centreonAxios={centreonAxios}
-                  {...renderProps}
-                />
+            render={(renderProps) => (
+              <div className={styles['react-page']}>
+                <Page centreonAxios={centreonAxios} {...renderProps} />
               </div>
             )}
-          />
+          />,
         );
       }
     }
 
     return LoadableComponents;
-  }
+  };
 
   render() {
     const { acl, fetched } = this.props;
@@ -71,16 +74,12 @@ class ReactRouter extends Component {
               key={path}
               path={path}
               exact="true"
-              render={renderProps => (
-                <div className={styles["react-page"]}>
+              render={(renderProps) => (
+                <div className={styles['react-page']}>
                   {acl.routes.includes(path) ? (
-                    <Comp
-                      {...renderProps}
-                    />
+                    <Comp {...renderProps} />
                   ) : (
-                    <NotAllowedPage
-                      {...renderProps}
-                    />
+                    <NotAllowedPage {...renderProps} />
                   )}
                 </div>
               )}
@@ -88,13 +87,17 @@ class ReactRouter extends Component {
             />
           ))}
           {LoadableComponents}
-          {fetched && // wait external components are fetched to avoid quick display of "not allowed" page
-            <Route component={NotAllowedPage}/>
-          }
+          {fetched && (
+            <Route
+              component={
+                NotAllowedPage // wait external components are fetched to avoid quick display of "not allowed" page
+              }
+            />
+          )}
         </Switch>
       </Suspense>
     );
-  };
+  }
 }
 
 const mapStateToProps = ({ navigation, externalComponents }) => ({

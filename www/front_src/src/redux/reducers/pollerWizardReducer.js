@@ -1,4 +1,4 @@
-import * as actions from "../actions/pollerWizardActions";
+import * as actions from '../actions/pollerWizardActions';
 
 const initialState = {};
 
