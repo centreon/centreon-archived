@@ -84,8 +84,10 @@ class Centreon_Object_Relation_Host_Template_Host extends Centreon_Object_Relati
             parent::delete($fkey, $skey);
             // Delete linked services :
             // First get service IDs
-            $sql = 'SELECT service_service_id FROM host_service_relation WHERE host_host_id = ?';
-            $linkedServices = $this->getResult($sql, [(int)$fkey]);
+            $linkedServices = $this->getResult(
+                'SELECT service_service_id FROM host_service_relation WHERE host_host_id = ?',
+                [(int)$fkey]
+            );
             $services = array_map(function($service) {
                 return $service['service_service_id'];
             }, $linkedServices);
