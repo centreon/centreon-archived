@@ -76,13 +76,20 @@ if (isset($_POST['searchC']) || isset($_GET['searchC'])) {
 $clauses = array();
 if ($search) {
     $clauses = array(
+        'contactgroup_cg_id' => array('=', $contactGroup),
         'contact_name' => array('LIKE', '%' . $search . '%'),
         'contact_alias' => array('OR', 'LIKE', '%' . $search . '%')
     );
 }
 
+$join = array();
 if ($contactGroup) {
-    $clauses['contact_contact_id = contact_id'] = '';
+    $join = array(
+        array(
+            'table' => 'contactgroup_contact_relation',
+            'condition' => 'contact_contact_id = contact_id',
+        )
+    );
     $clauses['contactgroup_cg_id'] = array('=', $contactGroup);
 }
 
@@ -104,7 +111,8 @@ $aclOptions = array(
     ),
     'keys' => array('contact_id'),
     'order' => array('contact_name'),
-    'conditions' => $clauses
+    'conditions' => $clauses ,
+    'join' => $join
 );
 $contacts = $acl->getContactAclConf($aclOptions);
 $rows = count($contacts);
