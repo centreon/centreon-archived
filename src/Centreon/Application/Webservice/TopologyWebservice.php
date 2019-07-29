@@ -95,7 +95,7 @@ class TopologyWebservice extends CentreonWebServiceAbstract
 
     /**
      * @OA\Get(
-     *   path="/internal.php?object=centreon_topology&action=menuList",
+     *   path="/internal.php?object=centreon_topology&action=navigationList",
      *   description="Get list of menu items by acl",
      *   tags={"centreon_topology"},
      *   @OA\Parameter(
@@ -114,8 +114,8 @@ class TopologyWebservice extends CentreonWebServiceAbstract
      *       name="action",
      *       @OA\Schema(
      *          type="string",
-     *          enum={"menuList"},
-     *          default="menuList"
+     *          enum={"navigationList"},
+     *          default="navigationList"
      *       ),
      *       description="the name of the action in the API class",
      *       required=true
@@ -141,7 +141,7 @@ class TopologyWebservice extends CentreonWebServiceAbstract
      * )
      * @throws \RestBadRequestException
      */
-    public function getMenuList()
+    public function getNavigationList()
     {
         $user = $this->getDi()[ServiceProvider::CENTREON_USER];
 

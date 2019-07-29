@@ -1,4 +1,4 @@
-import { breadcrumbsSelector } from './navigation';
+import { breadcrumbsSelector } from './breadcrumbs';
 
 describe('breadcrumbsSelector', () => {
   it('returns formatted breadcrumbs', () => {

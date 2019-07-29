@@ -12,7 +12,7 @@ export const fetchReactRoutesData = () => {
   return async dispatch => {
     try {
       const { data } = await axios(
-        "internal.php?object=centreon_topology&action=menulist&reactOnly=1&forActive=1"
+        "internal.php?object=centreon_topology&action=navigationList&reactOnly=1&forActive=1"
       ).get();
 
       dispatch(
@@ -37,7 +37,7 @@ export const fetchNavigationData = () => {
     try {
       // Call the API
       const { data } = await axios(
-        "internal.php?object=centreon_topology&action=menulist"
+        "internal.php?object=centreon_topology&action=navigationList"
       ).get();
 
       let pageIds = [];

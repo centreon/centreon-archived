@@ -2,6 +2,8 @@ import React, { Component } from "react";
 import { Sidebar } from "@centreon/react-components";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
+import { menuSelector } from '../../redux/selectors/navigation/menu';
+import { reactRoutesSelector } from '../../redux/selectors/navigation/reactRoutes';
 import { fetchNavigationData, fetchReactRoutesData } from "../../redux/actions/navigationActions";
 
 class Navigation extends Component {
@@ -38,8 +40,8 @@ class Navigation extends Component {
 }
 
 const mapStateToProps = ({ navigation }) => ({
-  navigationData: navigation.menuItems,
-  reactRoutes: navigation.reactRoutes
+  navigationData: menuSelector(navigation),
+  reactRoutes: reactRoutesSelector(navigation),
 });
 
 const mapDispatchToProps = dispatch => {
