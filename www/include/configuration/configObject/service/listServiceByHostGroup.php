@@ -278,7 +278,7 @@ for ($i = 0; $service = $dbResult->fetch(); $i++) {
             "&num=" . $num . "&search=" . $search . "&template=" . $template . "&status=" . $status .
             "'><img src='img/icons/enabled.png' class='ico-14 margin_right' border='0' alt='" . _("Enabled") . "'>";
     }
-    $moptions .= "&nbsp;";
+    $moptions .= "</a>&nbsp;";
     $moptions .= "<input onKeypress=\"if(event.keyCode > 31 && (event.keyCode < 45 || event.keyCode > 57)) " .
         "event.returnValue = false; if(event.which > 31 && (event.which < 45 || event.which > 57)) " .
         "return false;\" onKeyUp=\"syncInputField(this.name, this.value);\" maxlength=\"3\" size=\"3\" value='1' " .
