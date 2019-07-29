@@ -44,6 +44,84 @@ function microtime_float2()
 }
 
 /**
+ * send a formatted message before exiting the script
+ * @param $msg
+ */
+function programExit($msg)
+{
+    echo "[" . date("Y-m-d H:i:s") . "] " . $msg . "\n";
+    exit;
+}
+
+/**
+ * set the `running` value to 0 to remove the DB's virtual lock
+ * @param integer $appId , the process Id
+ */
+function removeLock(int $appId):void
+{
+    global $pearDB;
+
+    if ($appId === 0) {
+        programExit("Error the process Id can't be null.");
+    }
+    try {
+        $stmt = $pearDB->prepare(
+            "UPDATE cron_operation SET running = '0'
+            WHERE id = :appId"
+        );
+        $stmt->bindValue(':appId', $appId, \PDO::PARAM_INT);
+        $stmt->execute();
+    } catch (\PDOException $e) {
+        programExit("Error can't unlock the process in the cron_operation table.");
+    }
+}
+
+/**
+ * set the `running` value to 1 to set a virtual lock on the DB
+ * @param integer $appId , the process Id
+ */
+function putALock(int $appId):void
+{
+    global $pearDB;
+
+    if ($appId === 0) {
+        programExit("Error the process Id can't be null.");
+    }
+    try {
+        $stmt = $pearDB->prepare(
+            "UPDATE cron_operation SET running = '1', time_launch = :currentTime
+            WHERE id = :appId"
+        );
+        $stmt->bindValue(':appId', $appId, \PDO::PARAM_INT);
+        $stmt->bindValue(':currentTime', time(), \PDO::PARAM_INT);
+        $stmt->execute();
+    } catch (\PDOException $e) {
+        programExit("Error can't lock the process in the cron_operation table.");
+    }
+}
+
+/**
+ * get centAcl state in the DB
+ * @return array $data
+ */
+function getCentAclRunningState()
+{
+    global $pearDB;
+    $data = [];
+
+    try {
+        $dbResult = $pearDB->query(
+            "SELECT id, running FROM cron_operation WHERE name LIKE 'centAcl.php'"
+        );
+        $data = $dbResult->fetch();
+    } catch (\PDOException $e) {
+        programExit("Error can't check state while process is running.");
+    }
+
+    return $data;
+}
+
+/**
  * Return host tab after poller filter
  *
  * @param array $host
