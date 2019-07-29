@@ -42,7 +42,11 @@ if (!isset($centreon)) {
 global $num, $limit, $search, $url, $pearDB, $search_type_service, $search_type_host,
        $host_name, $hostgroup, $rows, $p, $gopt, $pagination, $poller, $template, $search_output, $search_service;
 
-$type = $_REQUEST["type"] ? '&type=' . $_REQUEST["type"] : '';
+$type = filter_var(
+    $_POST['type'] ?? $_GET['type'] ?? null,
+    FILTER_VALIDATE_INT
+);
+$type = $type ? '&type=' . $type : '';
 $o = $_GET["o"] ?? null;
 
 //saving current pagination filter value and current displayed page

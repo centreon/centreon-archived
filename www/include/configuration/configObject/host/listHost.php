@@ -81,8 +81,6 @@ $status = filter_var(
     FILTER_VALIDATE_INT
 );
 
-
-
 if (isset($_POST['search']) || isset($_GET['search'])) {
     //saving chosen filters values
     $centreon->historySearch[$url] = array();
@@ -209,7 +207,6 @@ if (!$centreon->user->admin) {
         . 'AND acl.group_id IN (' . $acl->getAccessGroupsString() . ') ';
 }
 
-
 if ($hostgroup) {
     if ($poller) {
         $dbResult = $pearDB->query(
@@ -268,7 +265,6 @@ $search = tidySearchKey($search, $advanced_search);
 // Fill a tab with a multidimensional Array we put in $tpl
 $elemArr = array();
 $search = str_replace('\_', "_", $search);
-
 
 for ($i = 0; $host = $dbResult->fetch(); $i++) {
     if (!isset($poller)
@@ -427,7 +423,6 @@ $tpl->assign("searchH", $search);
 
 $renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 $form->accept($renderer);
-
 
 // create Poller Select
 $options = "<option value='0'>" . _("All Pollers") . "</option>";
