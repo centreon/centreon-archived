@@ -359,21 +359,20 @@ if ($form->validate()) {
             $values['ldap_default_cg'] = "";
         }
 
-        // checking if auto-sync at login is enabled and if the next ldap synchronization may occur in the past
+        // updating the next expected auto-sync at login if the admin has changed the sync options or it never occurred
         $currentTime = time();
-        if (!empty($values['ldap_auto_sync']['ldap_auto_sync'])
-            && ($opt['ldap_auto_sync'] == $values['ldap_auto_sync']['ldap_auto_sync']) // same auto-sync state
-            // the same
-            && ($opt['ldap_sync_interval'] == $values['ldap_sync_interval']) // same saved interval
-            && !empty($gopt['ar_sync_base_date']) // reference date used to calculate next expected synchronization
-            && (($gopt['ar_sync_base_date'] + $values['ldap_sync_interval'] * 3600) > $currentTime)
-            && ($gopt['ar_sync_base_date'] <= $currentTime)
+        if ($gopt['ldap_auto_sync'] === $values['ldap_auto_sync']['ldap_auto_sync']
+            && $gopt['ldap_sync_interval'] === $values['ldap_sync_interval']
+            && !empty($gopt['ar_sync_base_date'])
         ) {
-            // keeping the base date as reference
-            $values['ar_sync_base_date'] = $gopt['ar_sync_base_date'];
-        } else {
-            // setting a new base date from which we'll sync the LDAP at login
-            $values['ar_sync_base_date'] = (time() - $values['ldap_sync_interval'] * 3600);
+            if (($gopt['ar_sync_base_date'] + $values['ldap_sync_interval'] * 3600) > $currentTime
+                && $currentTime > $gopt['ar_sync_base_date']
+            ) {
+                $values['ar_sync_base_date'] = $gopt['ar_sync_base_date'];
+            } else {
+                // setting a new base date from which we'll sync the LDAP at login
+                $values['ar_sync_base_date'] = ($currentTime - $values['ldap_sync_interval'] * 3600);
+            }
         }
 
         $arId = $ldapAdmin->setGeneralOptions($values['ar_id'], $values);

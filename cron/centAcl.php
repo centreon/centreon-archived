@@ -208,7 +208,7 @@ try {
 
         $currentTime = time();
         while ($ldapRow = $ldapConf->fetch()) {
-            if ($ldapRow['ar_sync_base_date'] + 3600 * $ldapRow['ari_value'] <= $currentTime) {
+            if ($currentTime > ($ldapRow['ar_sync_base_date'] + 3600 * $ldapRow['ari_value'])) {
                 $updateSyncTime->bindValue(':currentTime', $currentTime, \PDO::PARAM_INT);
                 $updateSyncTime->bindValue(':arId', (int)$ldapRow['ar_id'], \PDO::PARAM_INT);
                 $updateSyncTime->execute();
