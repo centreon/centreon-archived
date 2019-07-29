@@ -109,7 +109,7 @@ $attrBtnSuccess = array(
 );
 $form->addElement('submit', 'Search', _("Search"), $attrBtnSuccess);
 
-//Fill a tab with a mutlidimensionnal Array we put in $tpl
+//Fill a tab with a multidimensionnal Array we put in $tpl
 $yesOrNo = array(null => _("No"), 0 => _("No"), 1 => _("Yes"));
 $elemArr = array();
 for ($i = 0; $compo = $stmt->fetch(); $i++) {
