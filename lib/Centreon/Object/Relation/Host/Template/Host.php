@@ -84,18 +84,24 @@ class Centreon_Object_Relation_Host_Template_Host extends Centreon_Object_Relati
             parent::delete($fkey, $skey);
             // Delete linked services :
             // First get service IDs
-            $linkedServices = $this->getResult(
-                'SELECT service_service_id FROM host_service_relation WHERE host_host_id = ?',
-                [(int)$fkey]
+            $stmt = $this->db->prepare(
+                'SELECT service_service_id FROM host_service_relation WHERE host_host_id = :host_id'
             );
-            $services = array_map(function($service) {
-                return $service['service_service_id'];
-            }, $linkedServices);
+            $stmt->bindParam(':host_id', $fkey, PDO::PARAM_INT);
+            $stmt->execute();
+            $services = [];
+            foreach ($stmt->fetchAll(PDO::FETCH_ASSOC) as $row) {
+                $services[] = $row['service_service_id'];
+            }
+
             if (!empty($services)) {
                 // If there are linked services - delete these services
-                $this->db->query('DELETE FROM host_service_relation 
-                             WHERE host_host_id = ' . (int)$skey . '
-                             AND service_service_id IN (' . implode(',', $services) . ')');
+                $stmt = $this->db->prepare('DELETE FROM host_service_relation 
+                             WHERE host_host_id = :host_id
+                             AND service_service_id IN (:services)');
+                $stmt->bindParam(':host_id', $skey, PDO::PARAM_INT);
+                $stmt->bindParam(':services', implode(',', $services), PDO::PARAM_STR);
+                $stmt->execute();
             }
             $this->db->commit();
         } catch (\PDOException $e) {
