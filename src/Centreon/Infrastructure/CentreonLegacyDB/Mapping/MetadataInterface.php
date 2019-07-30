@@ -34,59 +34,18 @@
  *
  */
 
-namespace Centreon\Domain\Repository\Traits;
+namespace Centreon\Infrastructure\CentreonLegacyDB\Mapping;
 
-use Centreon\Infrastructure\CentreonLegacyDB\StatementCollector;
+use Centreon\Infrastructure\CentreonLegacyDB\Mapping\ClassMetadata;
 
-trait CheckListOfIdsTrait
+interface MetadataInterface
 {
 
     /**
-     * Check a list of IDs
+     * Describe the relationship between properties and DB columns as names and data types
      *
-     * @param array $ids
-     * @param string $tableName not needed if entity had metadata
-     * @param string $columnNameOfIdentificator not needed if entity had metadata
-     * @return bool
+     * @param \Centreon\Infrastructure\CentreonLegacyDB\Mapping\ClassMetadata $metadata
+     * @return void
      */
-    protected function checkListOfIdsTrait(
-        array $ids,
-        string $tableName = null,
-        string $columnNameOfIdentificator = null
-    ): bool
-    {
-        if ($tableName === null) {
-            $tableName = $this->getClassMetadata()->getTableName();
-        }
-
-        if ($columnNameOfIdentificator === null) {
-            $columnNameOfIdentificator = $this->getClassMetadata()->getPrimaryKeyColumn();
-        }
-
-        $count = count($ids);
-
-        $collector = new StatementCollector;
-        $sql = "SELECT COUNT(*) AS `total` FROM `{$tableName}` ";
-
-        $isWhere = false;
-        foreach ($ids as $x => $value) {
-            $key = ":id{$x}";
-
-            $sql .= (!$isWhere ? 'WHERE ' : 'OR ') . "`{$columnNameOfIdentificator}` = {$key} ";
-            $collector->addValue($key, $value);
-
-            $isWhere = true;
-            unset($x, $value);
-        }
-
-        $sql .= 'LIMIT 0, 1';
-
-        $stmt = $this->db->prepare($sql);
-        $collector->bind($stmt);
-        $stmt->execute();
-
-        $result = $stmt->fetch();
-
-        return (int) $result['total'] === $count;
-    }
+    public static function loadMetadata(ClassMetadata $metadata): void;
 }

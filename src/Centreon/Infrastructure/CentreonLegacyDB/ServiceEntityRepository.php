@@ -38,6 +38,8 @@ namespace Centreon\Infrastructure\CentreonLegacyDB;
 
 use CentreonDB;
 use Centreon\Infrastructure\Service\CentreonDBManagerService;
+use Centreon\Infrastructure\CentreonLegacyDB\EntityPersister;
+use Centreon\Infrastructure\CentreonLegacyDB\Mapping;
 
 /**
  * Compatibility with Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository
@@ -56,14 +58,78 @@ abstract class ServiceEntityRepository
     protected $manager;
 
     /**
+     * @var \Centreon\Infrastructure\CentreonLegacyDB\Mapping\ClassMetadata
+     */
+    protected $classMetadata;
+
+    /**
+     * @var \Centreon\Infrastructure\CentreonLegacyDB\EntityPersister
+     */
+    protected $entityPersister;
+
+    /**
+     * Get class name and namespace of the Entity
+     *
+     * <example>
+     * public static function entityClass(): string
+     * {
+     *      return MyEntity::class;
+     * }
+     * </example>
+     *
+     * @return string
+     */
+    public static function entityClass(): string
+    {
+        return str_replace('\\Domain\\Repository\\', '\\Domain\\Entity\\', // change namespace
+            substr(get_called_class(), 0, -10) // remove class name suffix "Repository"
+        );
+    }
+
+    /**
      * Construct
      *
      * @param \CentreonDB $db
+     * @param \Centreon\Infrastructure\Service\CentreonDBManagerService $manager
      */
     public function __construct(CentreonDB $db, CentreonDBManagerService $manager = null)
     {
         $this->db = $db;
         $this->manager = $manager;
+        $this->classMetadata = new Mapping\ClassMetadata;
+
+        // load metadata for Entity implemented MetadataInterface
+        $this->loadMetadata();
+    }
+
+    /**
+     * Load ClassMetadata with data from the Entity
+     *
+     * @return void
+     */
+    protected function loadMetadata(): void
+    {
+        if (is_subclass_of(static::entityClass(), Mapping\MetadataInterface::class)) {
+            (static::entityClass())::loadMetadata($this->classMetadata);
+
+            // prepare the Entity persister
+            $this->entityPersister = new EntityPersister(static::entityClass(), $this->classMetadata);
+        }
+    }
+
+    public function getEntityPersister(): ?EntityPersister
+    {
+        return $this->entityPersister;
+    }
+
+    /**
+     * Get ClassMetadata
+     *
+     * @return \Centreon\Infrastructure\CentreonLegacyDB\Mapping\ClassMetadata
+     */
+    public function getClassMetadata(): Mapping\ClassMetadata
+    {
+        return $this->classMetadata;
     }
 
     /**
