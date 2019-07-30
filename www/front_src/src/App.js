@@ -12,8 +12,6 @@ import MainRouter from './components/mainRouter';
 import queryString from 'query-string';
 import axios from './axios';
 
-import { batchActions } from "redux-batched-actions";
-import { fetchAclRoutes } from "./redux/actions/navigationActions";
 import { fetchExternalComponents } from "./redux/actions/externalComponentsActions";
 
 import styles from './App.scss';

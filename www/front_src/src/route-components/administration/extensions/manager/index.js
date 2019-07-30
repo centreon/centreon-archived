@@ -12,7 +12,7 @@ import {
 import Hook from "../../../../components/hook";
 
 import axios from "../../../../axios";
-import { fetchNavigationData, fetchAclRoutes } from "../../../../redux/actions/navigationActions";
+import { fetchNavigationData } from "../../../../redux/actions/navigationActions";
 import { fetchExternalComponents } from "../../../../redux/actions/externalComponentsActions";
 
 class ExtensionsRoute extends Component {
@@ -589,7 +589,7 @@ const mapDispatchToProps = dispatch => {
   return {
     reloadNavigation: () => {
       // batch actions to avoid useless multiple rendering
-      dispatch(batchActions([fetchNavigationData(), fetchExternalComponents(), fetchAclRoutes()]));
+      dispatch(batchActions([fetchNavigationData(), fetchExternalComponents()]));
     },
   };
 };
