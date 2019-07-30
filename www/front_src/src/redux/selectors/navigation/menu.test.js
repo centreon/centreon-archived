@@ -4,7 +4,7 @@ describe('menuSelector', () => {
   it('returns formatted menu', () => {
     const state = {
       navigation: {
-        menuItems: [
+        items: [
           {
             page: '6',
             label: 'Configuration',
@@ -50,7 +50,7 @@ describe('menuSelector', () => {
       },
     };
 
-    let expectedState = [...state.navigation.menuItems];
+    let expectedState = [...state.navigation.items];
     expectedState[0].children[0].groups[0].children.pop(); // remove hidden entry
 
     const menu = menuSelector(state);

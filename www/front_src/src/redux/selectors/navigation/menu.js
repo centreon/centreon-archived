@@ -23,9 +23,9 @@ function filterShowableElements(acc, item) {
   ];
 }
 
-const getMenuItems = (state) => state.navigation.menuItems;
+const getNavigationItems = (state) => state.navigation.items;
 
 export const menuSelector = createSelector(
-  getMenuItems,
-  (menuItems) => menuItems.reduce(filterShowableElements, []),
+  getNavigationItems,
+  (navItems) => navItems.reduce(filterShowableElements, []),
 );

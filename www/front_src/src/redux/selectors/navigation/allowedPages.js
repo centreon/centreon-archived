@@ -1,14 +1,16 @@
 import { createSelector } from 'reselect';
 
-function findReactRoutes(acc, item) {
+function getAllowedPages(acc, item) {
   for (const parameter of ['groups', 'children']) {
     if (item[parameter]) {
-      acc = item[parameter].reduce(findReactRoutes, acc);
+      acc = item[parameter].reduce(getAllowedPages, acc);
     }
   }
 
   if (item.is_react === true) {
-    acc[item.url] = item.page;
+    acc.push(item.url);
+  } else if (item.page) {
+    acc.push(item.page);
   }
 
   return acc;
@@ -16,7 +18,7 @@ function findReactRoutes(acc, item) {
 
 const getNavigationItems = (state) => state.navigation.items;
 
-export const reactRoutesSelector = createSelector(
+export const allowedPagesSelector = createSelector(
   getNavigationItems,
-  (navItems) => navItems.reduce(findReactRoutes, {}),
+  (items) => items.reduce(getAllowedPages, []),
 );

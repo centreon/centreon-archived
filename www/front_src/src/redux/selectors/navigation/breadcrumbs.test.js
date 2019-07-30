@@ -4,7 +4,7 @@ describe('breadcrumbsSelector', () => {
   it('returns formatted breadcrumbs', () => {
     const state = {
       navigation: {
-        menuItems: [
+        items: [
           {
             page: '1',
             label: 'Home',

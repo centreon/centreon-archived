@@ -12,7 +12,7 @@ describe('BreadcrumbWrapper', () => {
     // Initialize mockstore with empty state
     const initialState = {
       navigation: {
-        menuItems: [
+        items: [
           {
             page: '1',
             label: 'Home',

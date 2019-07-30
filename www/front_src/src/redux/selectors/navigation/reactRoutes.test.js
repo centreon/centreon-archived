@@ -1,10 +1,10 @@
-import { reactRoutesSelector } from './menu';
+import { reactRoutesSelector } from './reactRoutes';
 
 describe('reactRoutesSelector', () => {
   it('returns react routes with their topology page', () => {
     const state = {
       navigation: {
-        menuItems: [
+        items: [
           {
             page: '1',
             label: 'Home',
@@ -26,7 +26,7 @@ describe('reactRoutesSelector', () => {
       },
     };
 
-    const reactRoutes = breadcrumbsSelector(state);
+    const reactRoutes = reactRoutesSelector(state);
 
     expect(reactRoutes).toEqual({
       '/home/customViews': '103',

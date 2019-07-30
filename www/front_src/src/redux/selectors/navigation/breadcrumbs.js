@@ -32,15 +32,15 @@ function getBreadcrumbStep(item) {
       : null;
 }
 
-const getMenuItems = (state) => state.navigation.menuItems;
+const getNavigationItems = (state) => state.navigation.items;
 
 export const breadcrumbsSelector = createSelector(
-  getMenuItems,
-  (menuItems) => {
+  getNavigationItems,
+  (navItems) => {
     let breadcrumbs = {};
 
     // build level 1 breadcrumbs
-    menuItems.map((itemLvl1) => {
+    navItems.map((itemLvl1) => {
       const stepLvl1 = getBreadcrumbStep(itemLvl1);
       if (stepLvl1 === null) {
         return;
