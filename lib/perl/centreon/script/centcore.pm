@@ -38,7 +38,7 @@ use File::Path qw(mkpath);
 use centreon::script;
 use centreon::common::db;
 use centreon::common::misc;
-use Data::Dumper; #DEBUG
+
 use base qw(centreon::script);
 
 my %handlers = ('TERM' => {}, 'HUP' => {}, 'DIE' => {});
@@ -202,7 +202,9 @@ sub moveCmdFile($){
 sub getAllBrokerStats {
     my $self = shift;
 
-    my ($status, $sth) = $self->{centreon_dbc}->query("SELECT `id` FROM `nagios_server` WHERE `localhost` = '0' AND `ns_activate` = '1'");
+    my ($status, $sth) = $self->{centreon_dbc}->query(
+        "SELECT `id` FROM `nagios_server` WHERE `localhost` = '0' AND `ns_activate` = '1'"
+    );
     if ($status == -1) {
         $self->{logger}->writeLogError("Error when getting server properties");
         return -1;
@@ -254,23 +256,28 @@ sub getBrokerStats($) {
         # Copy the stat file into a buffer
         my $statistics_file = $data->{cache_directory} . "/" . $data->{config_name} . "-stats.json";
         $cmd = "$self->{ssh} -q $server_info->{ns_ip_address} -p $port 'cat \"" . $statistics_file . "\" > $statPipe'";
-        ($lerror, $stdout) = centreon::common::misc::backtick(command => $cmd,
-                                                              logger => $self->{logger},
-                                                              timeout => $self->{cmd_timeout}
-                                                              );
+        ($lerror, $stdout) = centreon::common::misc::backtick(
+            command => $cmd,
+            logger => $self->{logger},
+            timeout => $self->{cmd_timeout}
+        );
         if ($lerror == -1) {
-            $self->{logger}->writeLogError("Could not read pipe " . $statistics_file . " on poller ".$server_info->{ns_ip_address});
+            $self->{logger}->writeLogError(
+                "Could not read pipe " . $statistics_file . " on poller ".$server_info->{ns_ip_address}
+            );
         }
         if (defined($stdout) && $stdout) {
             $self->{logger}->writeLogInfo("Result : $stdout");
         }
 
-        $cmd = "$self->{scp} -P $port $server_info->{ns_ip_address}:$statPipe $destFile/broker-stats-$poller_id.dat >> /dev/null";
+        $cmd = "$self->{scp} -P $port $server_info->{ns_ip_address}:$statPipe
+            . $destFile/broker-stats-$poller_id.dat >> /dev/null";
         # Get the stats file
-        ($lerror, $stdout) = centreon::common::misc::backtick(command => $cmd,
-                                                              logger => $self->{logger},
-                                                              timeout => $self->{cmd_timeout}
-                                                              );
+        ($lerror, $stdout) = centreon::common::misc::backtick(
+            command => $cmd,
+            logger => $self->{logger},
+            timeout => $self->{cmd_timeout}
+        );
         if ($lerror == -1 && defined($stdout) && $stdout) {
             $self->{logger}->writeLogError("Result : $stdout");
         }
@@ -285,7 +292,9 @@ sub getBrokerStats($) {
 sub getEngineConfigurationField($$){
     my $self = shift;
 
-    my ($status, $sth) = $self->{centreon_dbc}->query("SELECT " . $_[1] . " FROM `cfg_nagios` WHERE `nagios_server_id` = '" . $_[0] . "' AND nagios_activate = '1'");
+    my ($status, $sth) = $self->{centreon_dbc}->query(
+        "SELECT " . $_[1] . " FROM `cfg_nagios` WHERE `nagios_server_id` = '" . $_[0] . "' AND nagios_activate = '1'"
+    );
     if ($status == -1) {
         $self->{logger}->writeLogError("Error when getting server properties");
         return undef;
@@ -297,7 +306,9 @@ sub getEngineConfigurationField($$){
 sub getLocalServerID(){
     my $self = shift;
 
-    my ($status, $sth) = $self->{centreon_dbc}->query("SELECT `id` FROM `nagios_server` WHERE `localhost` = '1' ORDER BY ns_activate DESC LIMIT 1");
+    my ($status, $sth) = $self->{centreon_dbc}->query(
+        "SELECT `id` FROM `nagios_server` WHERE `localhost` = '1' ORDER BY ns_activate DESC LIMIT 1"
+    );
     if ($status == -1) {
         $self->{logger}->writeLogError("Error when getting server properties");
         return undef;
@@ -529,6 +540,7 @@ sub sendExternalCommand($$) {
                     ) {
                         # Forward commands to Remote Server Master
                         my $remote_server = $self->getServerConfig($server_info->{remote_id});
+                        $port = checkSSHPort($remote_server->{ssh_port});
                         $cmd_line =~ s/^\s+|\s+$//g;
                         $cmd2 = "$self->{ssh} -q " . $remote_server->{ns_ip_address} . " -p $port "
                             . "\"$self->{echo} 'EXTERNALCMD:$id:" . $cmd_line . "' "
@@ -557,6 +569,7 @@ sub sendExternalCommand($$) {
                             if ($server_info->{additonal_remotes}) {
                                 foreach my $additional_remote_id ($server_info->{additonal_remotes}) {
                                     my $additional_remote_config = $self->getServerConfig($additional_remote_id->{remote_server_id});
+                                    $port = checkSSHPort($additional_remote_config->{ssh_port});
                                     $self->{logger}->writeLogInfo(
                                         "Try to use additional Remote Server: " . $additional_remote_config->{name}
                                     );
@@ -703,8 +716,10 @@ sub sendConfigFile($) {
     }
 
     # Send configuration for Centreon Engine
-    if (defined($server_info->{remote_id}) && $server_info->{remote_id} != 0
-        && $self->{instance_mode} ne "remote" && $server_info->{remote_server_centcore_ssh_proxy} == 1
+    if (defined($server_info->{remote_id})
+        && $server_info->{remote_id} != 0
+        && $self->{instance_mode} ne "remote"
+        && $server_info->{remote_server_centcore_ssh_proxy} == 1
     ) {
         $remote_server = $self->getServerConfig($server_info->{remote_id});
         $self->{logger}->writeLogInfo(
@@ -715,6 +730,7 @@ sub sendConfigFile($) {
 
         $origin = $self->{cacheDir} . "/config/engine/" . $id;
         $dest = $remote_server->{'ns_ip_address'} . ":" . $self->{cacheDir} . "/config/engine";
+        $port = checkSSHPort($remote_server->{ssh_port});
         $cmd = "$self->{scp} -r -P $port $origin $dest 2>&1";
 
         ($lerror, $stdout, $return_code) = centreon::common::misc::backtick(
@@ -740,6 +756,7 @@ sub sendConfigFile($) {
                         "Try to use additional Remote Server: " . $additional_remote_config->{name}
                     );
                     $dest = $additional_remote_config->{'ns_ip_address'} . ":" . $self->{centreonDir} . "/filesGeneration/engine";
+                    $port = checkSSHPort($additional_remote_config->{ssh_port});
                     $cmd = "$self->{scp} -r -P $port $origin $dest 2>&1";
 
                     ($lerror, $stdout, $return_code) = centreon::common::misc::backtick(
@@ -758,9 +775,10 @@ sub sendConfigFile($) {
                         );
                     } else {
                         # Commands sent, stop loop
-                        $self->{logger}->writeLogInfo(
-                            "Centreon Engine configuration using Remote Server: " . $additional_remote_config->{name} . " sent"
-                        );
+                        $self->{logger}->writeLogInfo(sprintf(
+                            "Centreon Engine configuration using Remote Server: %s sent",
+                            $additional_remote_config->{name}
+                        ));
                         last;
                     }
                 }
@@ -920,6 +938,7 @@ sub sendConfigFile($) {
         $self->{logger}->writeLogDebug(
             'Send command on Remote Server "' . $remote_server->{name} . '" to export configuration'
         );
+        $port = checkSSHPort($remote_server->{ssh_port});
         $cmd = "$self->{ssh} -p $port " . $remote_server->{'ns_ip_address'}  . " "
             . "'echo \"SENDCFGFILE:" . $id . "\" >> $self->{cmdDir}/" . time() . "-sendcmd'";
         ($lerror, $stdout, $return_code) = centreon::common::misc::backtick(
@@ -944,6 +963,7 @@ sub sendConfigFile($) {
                         "Try to use additional Remote Server: " . $additional_remote_config->{name}
                     );
 
+                    $port = checkSSHPort($additional_remote_config->{ssh_port});
                     $cmd = "$self->{ssh} -p $port " . $additional_remote_config->{'ns_ip_address'}  . " "
                         . "'echo \"SENDCFGFILE:" . $id . "\" >> $self->{cmdDir}/" . time() . "-sendcmd'";
                     ($lerror, $stdout, $return_code) = centreon::common::misc::backtick(
@@ -1064,6 +1084,7 @@ sub initEngine($$$) {
         ) {
             my $remote_server = $self->getServerConfig($conf->{remote_id});
             $action =~ s/^\s+|\s+$//g;
+            $port = checkSSHPort($remote_server->{ssh_port});
             $cmd = "$self->{ssh} -p $port " . $remote_server->{ns_ip_address} . " 'echo \"$action\" >> $self->{cmdDir}" . time() . "-sendcmd'";
             
             $self->{logger}->writeLogInfo(sprintf(
@@ -1100,6 +1121,7 @@ sub initEngine($$$) {
                             "Try to use additional Remote Server: " . $additional_remote_config->{name}
                         );
 
+                        $port = checkSSHPort($additional_remote_config->{ssh_port});
                         $cmd = "$self->{ssh} -p $port " . $additional_remote_config->{ns_ip_address} 
                             . " 'echo \"$action\" >> $self->{cmdDir}" . time() . "-sendcmd'";
 
@@ -1224,6 +1246,7 @@ sub syncTraps($) {
                         "Try to use additional Remote Server: " . $additional_remote_config->{name}
                     );
 
+                    $port = checkSSHPort($additional_remote_config->{ssh_port});
                     $cmd = "$self->{scp} -r -P $port /etc/snmp/centreon_traps/$id "
                         . "$additional_remote_config->{'ns_ip_address'}:/etc/snmp/centreon_traps/";
 
@@ -1257,6 +1280,7 @@ sub syncTraps($) {
             #
             # Send synchronization order to Remote Server
             #
+            $port = checkSSHPort($remote_server->{ssh_port});
             $cmd = "$self->{ssh} -p $port " . $remote_server->{'ns_ip_address'}
                 . " 'echo \"SYNCTRAP:" . $id . "\" >> $self->{cmdDir}/" . time() . "-sendcmd'";
 
@@ -1283,6 +1307,7 @@ sub syncTraps($) {
                         "Try to use additional Remote Server: " . $additional_remote_config->{name}
                     );
 
+                    $port = checkSSHPort($additional_remote_config->{ssh_port});
                     $cmd = "$self->{ssh} -p $port " . $additional_remote_config->{'ns_ip_address'}
                         . " 'echo \"SYNCTRAP:" . $id . "\" >> $self->{cmdDir}/" . time() . "-sendcmd'";
 
@@ -1418,6 +1443,7 @@ sub initCentreonTrapd {
                 # Reload/Restart Centreontrapd on poller using Remote Server as proxy
                 my $remote_server = $self->getServerConfig($ns_server->{remote_id});
                 $action =~ s/^\s+|\s+$//g;
+                $port = checkSSHPort($remote_server->{ssh_port});
                 $cmd = "$self->{ssh} -p $port " . $remote_server->{ns_ip_address} . " 'echo \"$action\" >> $self->{cmdDir}" . time() . "-sendcmd'";
                 $self->{logger}->writeLogDebug(sprintf(
                     "Try to %s Centreontrapd on poller %s (%d) using Remote Server: %s",
@@ -1454,6 +1480,7 @@ sub initCentreonTrapd {
                                 $ns_server->{id},
                                 $additional_remote_config->{name}
                             ));
+                            $port = checkSSHPort($additional_remote_config->{ssh_port});
                             $cmd = "$self->{ssh} -p $port " . $additional_remote_config->{ns_ip_address} . " 'echo \"$action\" >> $self->{cmdDir}" . time() . "-sendcmd'";
                             $self->{logger}->writeLogInfo(sprintf(
                                 "Try to %s Centreontrapd on poller %s (%d) using Remote Server: %s",
