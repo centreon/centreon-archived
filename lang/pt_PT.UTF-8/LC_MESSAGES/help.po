@@ -4281,8 +4281,8 @@ msgid "Select the poller you would like to interact with."
 msgstr "Selecione um coletor com o qual você deseja interagir."
 
 #: centreon-web/www/include/configuration/configGenerate/help.php:4
-msgid "Generates configuration files and stores them in centreon/filesGeneration directory."
-msgstr "Gera ficheiros de configuração e os armazena no diretório centreon/filesGeneration."
+msgid "Generates configuration files and stores them in cache directory."
+msgstr "Gera ficheiros de configuração e os armazena no diretório cache."
 
 #: centreon-web/www/include/configuration/configGenerate/help.php:5
 msgid "Runs the scheduler debug mode."
