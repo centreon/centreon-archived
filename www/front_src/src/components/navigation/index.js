@@ -24,6 +24,7 @@ class Navigation extends Component {
 
   render() {
     const { navigationData, reactRoutes, history } = this.props;
+
     return (
       <Sidebar
         navigationData={navigationData}

@@ -2,6 +2,7 @@ import * as actions from "../actions/navigationActions";
 
 // by default, no one menu entry is allowed
 const initialState = {
+  fetched: false,
   items: [],
 };
 
@@ -10,6 +11,7 @@ const navigationReducer = (state = initialState, action) => {
     case actions.FETCH_NAVIGATION_SUCCESS:
       return {
         ...state,
+        fetched: true,
         items: action.items,
       };
     // navigated to another URL

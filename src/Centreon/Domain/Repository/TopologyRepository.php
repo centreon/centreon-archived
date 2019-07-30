@@ -117,10 +117,9 @@ class TopologyRepository extends ServiceEntityRepository
     /**
      * Get list of topologies per user and filter by react pages if specified
      * @param CentreonUser $user
-     * @param bool $is_react
      * @return array
      */
-    public function getTopologyList(CentreonUser $user, bool $is_react = false): array
+    public function getTopologyList(CentreonUser $user): array
     {
         $topologies = [];
 
@@ -129,15 +128,8 @@ class TopologyRepository extends ServiceEntityRepository
             . 'topology_group, topology_order, topology_parent, is_react, readonly, topology_show '
             . 'FROM ' . Topology::TABLE;
 
-        if ($is_react) {
-            //show react-only items
-            $query .= ' WHERE is_react = "1"';
-        } else {
-            $query .= ' WHERE ((topology_page IS NOT NULL) OR (topology_page IS NULL AND is_react ="0"))';
-        }
-
         if (!$user->access->admin) {
-            $query .= ' AND topology_page IN (' . $user->access->getTopologyString() . ')';
+            $query .= ' WHERE topology_page IN (' . $user->access->getTopologyString() . ')';
         }
 
         $query .= ' ORDER BY topology_parent, topology_group, topology_order, topology_page';

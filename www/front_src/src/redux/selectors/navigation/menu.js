@@ -23,9 +23,48 @@ function filterShowableElements(acc, item) {
   ];
 }
 
+function removeEmptyGroups(acc, item) {
+  if (item.children) {
+    return [
+      ...acc,
+      {
+        ...item,
+        children: item.children.reduce(removeEmptyGroups, []),
+      }
+    ];
+  }
+
+  if (item.groups) {
+    return [
+      ...acc,
+      {
+        ...item,
+        groups: item.groups.filter(filterNotEmptyGroup),
+      }
+    ];
+  }
+
+  return [
+    ...acc,
+    item
+  ];
+}
+
+function filterNotEmptyGroup(group) {
+  if (group.children) {
+    for (const child of group.children) {
+      if (child.show === true) {
+        return true;
+      }
+    }
+  }
+
+  return false;
+}
+
 const getNavigationItems = (state) => state.navigation.items;
 
 export const menuSelector = createSelector(
   getNavigationItems,
-  (navItems) => navItems.reduce(filterShowableElements, []),
+  (navItems) => navItems.reduce(filterShowableElements, []).reduce(removeEmptyGroups, []),
 );
