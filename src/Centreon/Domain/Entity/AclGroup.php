@@ -36,12 +36,15 @@
 
 namespace Centreon\Domain\Entity;
 
+use Centreon\Infrastructure\CentreonLegacyDB\Mapping;
+use PDO;
+
 /**
  * ACL group entity
  *
  * @codeCoverageIgnore
  */
-class AclGroup
+class AclGroup implements Mapping\MetadataInterface
 {
 
     const ENTITY_IDENTIFICATOR_COLUMN = 'acl_group_id';
@@ -71,6 +74,19 @@ class AclGroup
      * @var bool
      */
     private $activate;
+
+    /**
+     * {@inheritdoc}
+     */
+    public static function loadMetadata(Mapping\ClassMetadata $metadata): void
+    {
+        $metadata->setTableName(static::TABLE)
+            ->add('id', 'acl_group_id', PDO::PARAM_INT, null, true)
+            ->add('name', 'acl_group_name', PDO::PARAM_STR)
+            ->add('alias', 'acl_group_alias', PDO::PARAM_STR)
+            ->add('changed', 'acl_group_changed', PDO::PARAM_INT)
+            ->add('activate', 'acl_group_activate', PDO::PARAM_STR); // enum
+    }
 
     /**
      * @param type $id
