@@ -200,9 +200,30 @@ function deleteServerInDB(array $serverIds): void
 
     foreach (array_keys($serverIds) as $serverId) {
         $result = $pearDB->query(
-            "SELECT name FROM `nagios_server` WHERE `id` = " . $serverId . " LIMIT 1"
+            "SELECT name, ns_ip_address AS ip FROM `nagios_server` WHERE `id` = " . $serverId . " LIMIT 1"
         );
         $row = $result->fetch();
+
+        // Is a Remote Server?
+        $result = $pearDB->query(
+            "SELECT * FROM remote_servers WHERE ip = '" . $row['ip'] . "'"
+        );
+
+        if ($result->numRows() > 0) {
+            // Delete entry from remote_servers
+            $pearDB->query(
+                "DELETE FROM remote_servers WHERE ip = '" . $row['ip'] . "'"
+            );
+            // Delete all relation bewteen this Remote Server and pollers
+            $pearDB->query(
+                "DELETE FROM rs_poller_relation WHERE remote_server_id = '" . $serverId . "'"
+            );
+        } else {
+            // Delete all relation bewteen this poller and Remote Servers
+            $pearDB->query(
+                "DELETE FROM rs_poller_relation WHERE poller_server_id = '" . $serverId . "'"
+            );
+        }
 
         $pearDB->query('DELETE FROM `nagios_server` WHERE id = ' . $serverId);
         $pearDBO->query(
