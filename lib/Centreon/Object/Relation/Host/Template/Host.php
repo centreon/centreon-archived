@@ -89,19 +89,14 @@ class Centreon_Object_Relation_Host_Template_Host extends Centreon_Object_Relati
             );
             $stmt->bindParam(':host_id', $fkey, PDO::PARAM_INT);
             $stmt->execute();
-            $services = [];
-            foreach ($stmt->fetchAll(PDO::FETCH_ASSOC) as $row) {
-                $services[] = $row['service_service_id'];
-            }
 
-            if (!empty($services)) {
-                // If there are linked services - delete these services
-                $stmt = $this->db->prepare('DELETE FROM host_service_relation 
+            foreach ($stmt->fetchAll(PDO::FETCH_ASSOC) as $row) {
+                $stmt2 = $this->db->prepare('DELETE FROM host_service_relation 
                              WHERE host_host_id = :host_id
-                             AND service_service_id IN (:services)');
-                $stmt->bindParam(':host_id', $skey, PDO::PARAM_INT);
-                $stmt->bindParam(':services', implode(',', $services), PDO::PARAM_STR);
-                $stmt->execute();
+                             AND service_service_id = :service_id');
+                $stmt2->bindParam(':host_id', $skey, PDO::PARAM_INT);
+                $stmt2->bindParam(':service_id', $row['service_service_id'], PDO::PARAM_INT);
+                $stmt2->execute();
             }
             $this->db->commit();
         } catch (\PDOException $e) {
