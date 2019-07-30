@@ -16,7 +16,7 @@
  */
 
 // mock path constants to redirect to base centreon directory
-$mockedPathConstants = ['_CENTREON_PATH_', '_CENTREON_ETC_', '_CENTREON_LOG_'];
+$mockedPathConstants = ['_CENTREON_PATH_', '_CENTREON_ETC_', '_CENTREON_LOG_', '_CENTREON_CACHEDIR_'];
 foreach ($mockedPathConstants as $mockedPathConstant) {
     if (!defined($mockedPathConstant)) {
         define($mockedPathConstant, realpath(__DIR__ . '/../../') . '/');

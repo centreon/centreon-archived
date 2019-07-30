@@ -15,6 +15,7 @@
         <ini name="memory_limit" value="-1" />
         <const name="_CENTREON_PATH_" value="./"/>
         <const name="_CENTREON_ETC_" value="./"/>
+        <const name="_CENTREON_CACHEDIR_" value="./"/>
     </php>
 
     <testsuites>
