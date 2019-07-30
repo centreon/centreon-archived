@@ -403,11 +403,6 @@ $INSTALL_DIR/cinstall $cinstall_opts \
     -u "$CENTREON_USER" -g "$CENTREON_GROUP" -d 775 \
     $CENTREON_GENDIR/export >> "$LOG_FILE" 2>&1
 
-# By default, CentWeb use a filesGeneration directory in install dir.
-# I create a symlink to continue in a same process
-[ ! -h $INSTALL_DIR_CENTREON/filesGeneration -a ! -d $INSTALL_DIR_CENTREON/filesGeneration ] && \
-    ln -s $CENTREON_GENDIR $INSTALL_DIR_CENTREON/filesGeneration >> $LOG_FILE 2>&1
-
 # Add new directory for save installation directories
 $INSTALL_DIR/cinstall $cinstall_opts \
     -u "$CENTREON_USER" -g "$CENTREON_GROUP" -d 775 \
