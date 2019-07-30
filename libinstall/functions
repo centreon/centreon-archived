@@ -776,11 +776,20 @@ function locate_centreon_installdir() {
 #----
 ## Define where is Centreon generation directory
 ## Generation directory is use for a temporary config (same as INSTALL_DIR).
-## filesUpload and filesGeneration directories
 ## @Globals	CENTREON_GENDIR, DEFAULT_CENTREON_GENDIR
 #----
 function locate_centreon_generationdir() {
-	CENTREON_GENDIR="$INSTALL_DIR_CENTREON"
+	if [ -n "$CENTREON_GENDIR" ] ; then
+		dir_test_create "$CENTREON_GENDIR"
+		if [ $? -ne 0 ] ; then
+			CENTREON_GENDIR=""
+		fi
+	fi
+	if [ -z "$CENTREON_GENDIR" ] ; then
+		answer_with_createdir "$(gettext "Where is your Centreon cache directory?")" "$DEFAULT_CENTREON_GENDIR" "CENTREON_GENDIR"
+		echo_success "$(gettext "Path" ) $CENTREON_GENDIR" "$ok"
+	fi
+	CENTREON_GENDIR=`trim ${CENTREON_GENDIR%/}`
 	export CENTREON_GENDIR
 	log "INFO" "CENTREON_GENDIR: $CENTREON_GENDIR"
 }
