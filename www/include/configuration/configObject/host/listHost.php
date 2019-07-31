@@ -228,8 +228,8 @@ if ($status) {
 $form->addElement('select2', 'status', "", $statusFilter, $attrHostStatus);
 
 $attrBtnSuccess = array(
-        "class" => "btc bt_success",
-        "onClick" => "window.history.pushState('', '', '?p=" . $p ."');"
+    "class" => "btc bt_success",
+    "onClick" => "window.history.pushState('', '', '?p=" . $p . "');"
 );
 $subS = $form->addElement('submit', 'SearchB', _("Search"), $attrBtnSuccess);
 
