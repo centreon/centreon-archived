@@ -121,6 +121,8 @@ class ContactGroupsWebservice extends CentreonWebServiceAbstract
 
         $limit = isset($request['limit']) ? (int) $request['limit'] : null;
         $offset = isset($request['offset']) ? (int) $request['offset'] : null;
+        $sortField = isset($request['sortf']) ? $request['sortf'] : null;
+        $sortOrder = isset($request['sorto']) ? $request['sorto'] : 'ASC';
 
         $filters = [];
 
@@ -138,6 +140,7 @@ class ContactGroupsWebservice extends CentreonWebServiceAbstract
         $pagination->setFilters($filters);
         $pagination->setLimit($limit);
         $pagination->setOffset($offset);
+        $pagination->setOrder($sortField, $sortOrder);
 
         return $pagination->getResponse();
     }
