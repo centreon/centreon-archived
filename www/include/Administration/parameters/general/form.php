@@ -112,23 +112,25 @@ if ($handle  = @opendir($oreon->optGen["oreon_path"]."www/Themes/")) {
 $form->addElement('select', 'template', _("Display Template"), $templates);
 
 $global_sort_type = array(
-                        "host_name" => _("Hosts"),
-                        "last_state_change" => _("Duration"),
-                        "service_description" => _("Services"),
-                        "current_state" => _("Status"),
-                        "last_check" => _("Last check"),
-                        "output" => _("Output"),
-                        "criticality_id" => _("Criticality"),
-                        "current_attempt" => _("Attempt"),
-                    );
+    "host_name" => _("Hosts"),
+    "last_state_change" => _("Duration"),
+    "service_description" => _("Services"),
+    "current_state" => _("Status"),
+    "last_check" => _("Last check"),
+    "output" => _("Output"),
+    "criticality_id" => _("Criticality"),
+    "current_attempt" => _("Attempt"),
+);
 
-$sort_type = array(    "last_state_change" => _("Duration"),
-                    "host_name" => _("Hosts"),
-                    "service_description" => _("Services"),
-                    "current_state" => _("Status"),
-                    "last_check" => _("Last check"),
-                    "plugin_output" => _("Output"),
-                    "criticality_id" => _("Criticality"));
+$sort_type = array(
+    "last_state_change" => _("Duration"),
+    "host_name" => _("Hosts"),
+    "service_description" => _("Services"),
+    "current_state" => _("Status"),
+    "last_check" => _("Last check"),
+    "plugin_output" => _("Output"),
+    "criticality_id" => _("Criticality")
+);
 
 $form->addElement('select', 'global_sort_type', _("Sort by  "), $global_sort_type);
 $global_sort_order = array("ASC" => _("Ascending"), "DESC" => _("Descending"));
@@ -188,13 +190,13 @@ $form->addGroup(
 /*
  * SSO
  */
+$alertMessage = _("Are you sure you want to change this parameter? Please read the help before.");
 $sso_enable[] = $form->createElement(
     'checkbox',
     'yes',
     '&nbsp;',
     '',
-    array("onchange" => "javascript:confirm("
-        . "'Are you sure you want to change this parameter ? Please read the help before.')"
+    array("onchange" => "javascript:confirm('" . $alertMessage . "')"
     )
 );
 $form->addGroup($sso_enable, 'sso_enable', _("Enable SSO authentication"), '&nbsp;&nbsp;');

@@ -43,17 +43,17 @@ global $path;
 /**
  * Getting Centreon Version
  */
-$DBRESULT = $pearDB->query("SELECT `value` FROM `informations` WHERE `key` = 'version' LIMIT 1");
-$release = $DBRESULT->fetch();
+$result = $pearDB->query("SELECT `value` FROM `informations` WHERE `key` = 'version' LIMIT 1");
+$release = $result->fetch();
 
 /**
  * Getting Keycloak login state
  */
-$DBRESULT = $pearDB->query("SELECT `value` FROM `options` WHERE `key` = 'keycloak_enable' LIMIT 1");
-$keycloakEnabled = $DBRESULT->fetchRow()["value"];
+$result = $pearDB->query("SELECT `value` FROM `options` WHERE `key` = 'keycloak_enable' LIMIT 1");
+$keycloakEnabled = $result->fetch()["value"];
 
-$DBRESULT = $pearDB->query("SELECT `value` FROM `options` WHERE `key` = 'keycloak_mode' LIMIT 1");
-$keycloakMode = $DBRESULT->fetchRow()["value"];
+$result = $pearDB->query("SELECT `value` FROM `options` WHERE `key` = 'keycloak_mode' LIMIT 1");
+$keycloakMode = $result->fetch()["value"];
 
 /**
  * Defining Login Form

@@ -4,14 +4,14 @@
 Implement Keycloak SSO
 **********************
 
-How Keycloak SSO works with Centreon?
-=====================================
+Follow the getting started guide to Install your Keycloak
+=========================================================
 
 To use Keycloak SSO login, you need an external
 `Keycloak server <https://www.keycloak.org/docs/latest/getting_started/index.html>`_
 
-How to configure Keycloak SSO in Centreon?
-==========================================
+Configure Keycloak SSO in Centreon?
+===================================
 
 You can configure Keycloak SSO in **Administration > Parameters**:
 
