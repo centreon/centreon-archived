@@ -4,7 +4,9 @@
   "description": "centreon web package",
   "scripts": {
     "build": "webpack --mode production",
-    "build:dev": "webpack --mode development"
+    "build:dev": "webpack --mode development",
+    "test": "jest",
+    "test:watch": "npm test -- --watch"
   },
   "devDependencies": {
     "@babel/core": "^7.5.5",
@@ -15,14 +17,22 @@
     "@babel/polyfill": "^7.4.4",
     "@babel/preset-env": "^7.5.5",
     "@babel/preset-react": "^7.0.0",
+    "@testing-library/jest-dom": "^4.0.0",
+    "@testing-library/react": "^8.0.6",
+    "babel-jest": "^24.8.0",
     "clean-webpack-plugin": "^3.0.0",
     "css-loader": "^3.1.0",
     "file-loader": "^4.1.0",
     "html-webpack-plugin": "^3.2.0",
+    "jest": "^24.8.0",
+    "jest-emotion": "^10.0.14",
     "mini-css-extract-plugin": "^0.8.0",
     "node-sass": "^4.12.0",
     "postcss-loader": "^3.0.0",
     "postcss-safe-parser": "^4.0.1",
+    "react-mock-router": "^1.0.15",
+    "react-testing-library": "^8.0.1",
+    "redux-mock-store": "^1.5.3",
     "resolve-url-loader": "^3.1.0",
     "sass-loader": "^7.1.0",
     "terser-webpack-plugin": "^1.3.0",
@@ -31,7 +41,9 @@
     "webpack-cli": "^3.3.6"
   },
   "dependencies": {
-    "@centreon/react-components": "19.4.0-alpha.139",
+    "@centreon/react-components": "0.0.0-MON-4049-breadcrumb.4",
+    "@emotion/core": "^10.0.14",
+    "@emotion/styled": "^10.0.14",
     "axios": "^0.19.0",
     "classnames": "^2.2.6",
     "connected-react-router": "^6.5.2",

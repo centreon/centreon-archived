@@ -6,6 +6,7 @@ import { Translate } from 'react-redux-i18n';
 import axios from "../../axios";
 import { connect } from "react-redux";
 import { Link } from "react-router-dom";
+import { allowedPagesSelector } from '../../redux/selectors/navigation/allowedPages';
 
 const EDIT_PROFILE_TOPOLOGY_PAGE = '50104'
 
@@ -88,8 +89,8 @@ class UserMenu extends Component {
     }
 
     // check if edit profile page (My Account) is allowed
-    const { entries } = this.props.navigationData;
-    const allowEditProfile = entries.includes(EDIT_PROFILE_TOPOLOGY_PAGE)
+    const { allowedPages } = this.props;
+    const allowEditProfile = allowedPages.includes(EDIT_PROFILE_TOPOLOGY_PAGE)
 
     const { fullname, username, autologinkey } = data;
 
@@ -159,8 +160,8 @@ class UserMenu extends Component {
   }
 }
 
-const mapStateToProps = ({ navigation }) => ({
-  navigationData: navigation
+const mapStateToProps = (state) => ({
+  allowedPages: allowedPagesSelector(state),
 });
 
 const mapDispatchToProps = {};

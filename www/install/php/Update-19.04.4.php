@@ -1,7 +1,7 @@
 <?php
 /*
  * Copyright 2005-2019 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -34,42 +34,10 @@
  *
  */
 
-namespace Centreon\Application\DataRepresenter\Topology;
-
-use JsonSerializable;
-
-class ReactAclForActive implements JsonSerializable
-{
-
-    /**
-     * @var array
-     */
-    private $entities;
-
-    /**
-     * Construct
-     *
-     * @param array $entities
-     */
-    public function __construct(array $entities)
-    {
-        $this->entities = $entities;
-    }
-
-    /**
-     *
-     * JSON serialization of listing
-     *
-     * @return array
-     */
-    public function jsonSerialize()
-    {
-        $output = [];
-
-        foreach ($this->entities as $entity) {
-            $output[$entity->getTopologyUrl()] = $entity->getTopologyPage();
-        }
-
-        return $output;
-    }
-}
+// update topology of poller wizard to display breadcrumb
+$pearDB->query(
+    'UPDATE topology
+    SET topology_parent = 60901,
+    topology_show = "0"
+    WHERE topology_url LIKE "/poller-wizard/%"'
+);

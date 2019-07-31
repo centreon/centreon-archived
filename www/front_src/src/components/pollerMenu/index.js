@@ -7,6 +7,7 @@ import axios from "../../axios";
 import { Link } from "react-router-dom";
 
 import { connect } from "react-redux";
+import { allowedPagesSelector } from '../../redux/selectors/navigation/allowedPages';
 
 const POLLER_CONFIGURATION_TOPOLOGY_PAGE = '60901'
 
@@ -130,8 +131,8 @@ class PollerMenu extends Component {
     }
 
     // check if poller configuration page is allowed
-    const { entries } = this.props.navigationData;
-    const allowPollerConfiguration = entries.includes(POLLER_CONFIGURATION_TOPOLOGY_PAGE)
+    const { allowedPages } = this.props;
+    const allowPollerConfiguration = allowedPages.includes(POLLER_CONFIGURATION_TOPOLOGY_PAGE)
 
     const statusIcon = getPollerStatusIcon(data.issues);
 
@@ -222,9 +223,9 @@ class PollerMenu extends Component {
   }
 }
 
-const mapStateToProps = ({ navigation, intervals }) => ({
-  navigationData: navigation,
-  refreshTime: intervals ? parseInt(intervals.AjaxTimeReloadStatistic)*1000 : false
+const mapStateToProps = (state) => ({
+  allowedPages: allowedPagesSelector(state),
+  refreshTime: state.intervals ? parseInt(state.intervals.AjaxTimeReloadStatistic) * 1000 : false
 });
 
 const mapDispatchToProps = {};
@@ -232,7 +233,9 @@ const mapDispatchToProps = {};
 export default connect(mapStateToProps, mapDispatchToProps)(PollerMenu);
 
 PollerMenu.propTypes = {
-  navigationData: PropTypes.object.isRequired,
+  allowedPages: PropTypes.arrayOf(
+    PropTypes.string
+  ).isRequired,
   refreshTime: PropTypes.oneOfType([
     PropTypes.number,
     PropTypes.bool
