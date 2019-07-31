@@ -227,9 +227,9 @@ $gopt = array();
 if ($arId) {
     $gopt = $ldapAdmin->getGeneralOptions($arId);
     $res = $pearDB->prepare(
-        "SELECT `ar_name`, `ar_description`, `ar_enable`, `ar_sync_base_date` " .
-        "FROM `auth_ressource` " .
-        "WHERE ar_id = :arId"
+        "SELECT `ar_name`, `ar_description`, `ar_enable`, `ar_sync_base_date`
+        FROM `auth_ressource`
+        WHERE ar_id = :arId"
     );
     $res->bindValue('arId', $arId, PDO::PARAM_INT);
     $res->execute();
@@ -240,7 +240,7 @@ if ($arId) {
         $gopt['ar_sync_base_date'] = $row['ar_sync_base_date'];
     }
     unset($res);
-    
+
     /*
      * Preset values of ldap servers
      */
@@ -302,24 +302,22 @@ $subC = $form->addElement('submit', 'submitC', _("Save"), array("class" => "btc 
 $DBRESULT = $form->addElement('reset', 'reset', _("Reset"), array("class" => "btc bt_default"));
 
 $nbOfInitialRows = 0;
+$maxHostId = 1;
 if ($arId) {
     $res = $pearDB->prepare(
         "SELECT COUNT(*) as nb FROM auth_ressource_host WHERE auth_ressource_id = :arId"
     );
-    $res->bindValue(':arId', $arId, \PDO::PARAM_INT);
+    $res->bindValue(':arId', (int)$arId, \PDO::PARAM_INT);
     $res->execute();
     $row = $res->fetch();
     $nbOfInitialRows = $row['nb'];
-}
 
-$maxHostId = 1;
-if ($arId) {
     $res = $pearDB->prepare(
         "SELECT MAX(ldap_host_id) as cnt 
         FROM auth_ressource_host 
         WHERE auth_ressource_id = :arId"
     );
-    $res->bindValue(':arId', $arId, \PDO::PARAM_INT);
+    $res->bindValue(':arId', (int)$arId, \PDO::PARAM_INT);
     $res->execute();
     if ($res->rowCount()) {
         $row = $res->fetch();
@@ -359,19 +357,23 @@ if ($form->validate()) {
             $values['ldap_default_cg'] = "";
         }
 
-        // updating the next expected auto-sync at login if the admin has changed the sync options or it never occurred
+        // setting a reference time to calculate the expected synchronization
         $currentTime = time();
+        $values['ar_sync_base_date'] = $currentTime;
+
+        // updating the next expected auto-sync at login if the admin has changed the sync options or it never occurred
         if ($gopt['ldap_auto_sync'] === $values['ldap_auto_sync']['ldap_auto_sync']
-            && $gopt['ldap_sync_interval'] === $values['ldap_sync_interval']
             && !empty($gopt['ar_sync_base_date'])
+            && ($gopt['ar_sync_base_date'] + ($values['ldap_sync_interval'] * 3600)) > $currentTime
+            && $currentTime > $gopt['ar_sync_base_date']
         ) {
-            if (($gopt['ar_sync_base_date'] + $values['ldap_sync_interval'] * 3600) > $currentTime
-                && $currentTime > $gopt['ar_sync_base_date']
+            // distinguishing the enabled and disabled cases
+            if ($values['ldap_auto_sync']['ldap_auto_sync'] == 0
+                || ($values['ldap_auto_sync']['ldap_auto_sync'] == 1
+                    && $gopt['ldap_sync_interval'] == $values['ldap_sync_interval'])
             ) {
+                // synchronization parameters have not changed, the reference time shouldn't be updated
                 $values['ar_sync_base_date'] = $gopt['ar_sync_base_date'];
-            } else {
-                // setting a new base date from which we'll sync the LDAP at login
-                $values['ar_sync_base_date'] = ($currentTime - $values['ldap_sync_interval'] * 3600);
             }
         }
 
