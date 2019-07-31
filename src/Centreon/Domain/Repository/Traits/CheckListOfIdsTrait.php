@@ -54,7 +54,6 @@ trait CheckListOfIdsTrait
         string $tableName = null,
         string $columnNameOfIdentificator = null
     ): bool {
-    {
         if ($tableName === null) {
             $tableName = $this->getClassMetadata()->getTableName();
         }

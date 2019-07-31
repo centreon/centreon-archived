@@ -104,7 +104,6 @@ class ClassMetadata
         callable $dataFormatter = null,
         $primaryKey = false
     ): self {
-    {
         $this->columns[$property] = [
             static::COLUMN => $columnName,
             static::TYPE => $dataType,
