@@ -290,11 +290,13 @@ sub cleanOldBackup() {
 ###############################################
 
 sub getApacheDirectory() {
-	if ( -d '/etc/httpd/conf.d' ) {
-		return '/etc/httpd/conf.d';
-	} else {
-		print STDERR "Unable to get Apache conf directory\n";
-	}
+    if ( -d '/opt/rh/httpd24/root/etc/httpd/conf.d' ) {
+        return '/opt/rh/httpd24/root/etc/httpd/conf.d';
+    } elsif ( -d '/etc/httpd/conf.d' ) {
+        return '/etc/httpd/conf.d';
+    } else {
+        print STDERR "Unable to get Apache conf directory\n";
+    }
 }
 
 sub getMySQLConfFile() {

@@ -76,34 +76,32 @@ $template = filter_var(
     FILTER_VALIDATE_INT
 );
 
-if (isset($_POST['searchH']) || isset($_GET['searchH'])) {
-    unset($centreon->historyPage[$url]);
-    unset($centreon->historyLastUrl);
+$status = filter_var(
+    $_POST["status"] ?? $_GET["status"] ?? 0,
+    FILTER_VALIDATE_INT
+);
 
+if (isset($_POST['search']) || isset($_GET['search'])) {
     //saving chosen filters values
     $centreon->historySearch[$url] = array();
-    $centreon->historySearch[$url]["search"] = $search;
+    $centreon->historySearch[$url]["searchH"] = $search;
     $centreon->historySearch[$url]["poller"] = $poller;
     $centreon->historySearch[$url]["hostgroup"] = $hostgroup;
     $centreon->historySearch[$url]["template"] = $template;
-    $status = $_POST["status"] ?? '';
-    // Security fix
-    $status = (int)(($status != '') ? $status : null);
     $centreon->historySearch[$url]["status"] = $status;
 } else {
     //restoring saved values
-    $search = $centreon->historySearch[$url]['search'] ?? null;
+    $search = $centreon->historySearch[$url]['searchH'] ?? null;
     $poller = $centreon->historySearch[$url]["poller"] ?? 0;
     $hostgroup = $centreon->historySearch[$url]["hostgroup"] ?? 0;
     $template = $centreon->historySearch[$url]["template"] ?? 0;
-    $status = $centreon->historySearch[$url]["status"] ?? null;
+    $status = $centreon->historySearch[$url]["status"] ?? 0;
 }
 
 // set object history
 $centreon->poller = $poller;
 $centreon->hostgroup = $hostgroup;
 $centreon->template = $template;
-
 
 // Status Filter
 $statusFilter = array(1 => _("Disabled"), 2 => _("Enabled"));
@@ -238,6 +236,13 @@ $subS = $form->addElement('submit', 'SearchB', _("Search"), $attrBtnSuccess);
 /*
  * Select hosts
  */
+$attrBtnSuccess = array(
+    "class" => "btc bt_success",
+    "onClick" => "window.history.replaceState('', '', '?p=" . $p . "');"
+);
+$form->addElement('submit', 'SearchB', _("Search"), $attrBtnSuccess);
+
+//Select hosts
 $aclFrom = '';
 $aclCond = '';
 if (!$centreon->user->admin) {
@@ -305,6 +310,7 @@ $search = tidySearchKey($search, $advanced_search);
 // Fill a tab with a multidimensional Array we put in $tpl
 $elemArr = array();
 $search = str_replace('\_', "_", $search);
+
 for ($i = 0; $host = $dbResult->fetch(); $i++) {
     if (!isset($poller)
         || $poller == 0
@@ -458,6 +464,7 @@ foreach (array('o1', 'o2') as $option) {
 }
 
 $tpl->assign('limit', $limit);
+$tpl->assign("searchH", $search);
 
 $renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 $form->accept($renderer);

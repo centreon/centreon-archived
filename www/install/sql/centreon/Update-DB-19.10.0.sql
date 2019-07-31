@@ -67,6 +67,12 @@ ALTER TABLE `modules_informations` DROP COLUMN `php_files`;
 --
 ALTER TABLE `remote_servers` MODIFY COLUMN `ip` VARCHAR(255) NOT NULL;
 
+--
+-- Improve chart performance
+--
+TRUNCATE TABLE ods_view_details;
+ALTER TABLE ods_view_details MODIFY metric_id int(11);
+
 -- Add trap regexp matching
 ALTER TABLE `traps` ADD COLUMN IF NOT EXISTS `traps_mode` ENUM('0', '1') DEFAULT '0' AFTER `traps_oid`;
 

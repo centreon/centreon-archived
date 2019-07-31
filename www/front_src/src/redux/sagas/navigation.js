@@ -1,5 +1,8 @@
-import * as actions from "../actions/navigationActions";
-import { takeEvery } from "redux-saga/effects";
+/* eslint-disable no-use-before-define */
+/* eslint-disable import/prefer-default-export */
+
+import { takeEvery } from 'redux-saga/effects';
+import * as actions from '../actions/navigationActions';
 
 export function* loadNavigationData() {
   yield takeEvery(actions.GET_NAVIGATION_DATA, loadNavigation);
@@ -7,12 +10,8 @@ export function* loadNavigationData() {
 
 function loadNavigation() {
   try {
-    var event = window.parent.document.createEvent("Event");
-    event.initEvent(
-      `reloadNavigation`,
-      false,
-      true
-    );
+    const event = window.parent.document.createEvent('Event');
+    event.initEvent(`reloadNavigation`, false, true);
     window.parent.document.dispatchEvent(event);
   } catch (err) {
     throw err;

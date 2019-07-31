@@ -1,13 +1,18 @@
-import React from "react";
-import Select from "react-select";
+/* eslint-disable react/jsx-filename-extension */
+/* eslint-disable react/prop-types */
+
+import React from 'react';
+import Select from 'react-select';
 
 class MultiSelect extends React.Component {
   state = {
-    selectedOption: null
+    selectedOption: null,
   };
-  handleChange = selectedOption => {
+
+  handleChange = (selectedOption) => {
     this.setState({ selectedOption });
   };
+
   render() {
     const { selectedOption } = this.state;
     const { options, label } = this.props;
@@ -17,7 +22,7 @@ class MultiSelect extends React.Component {
         value={selectedOption}
         onChange={this.handleChange}
         options={options}
-        isMulti={true}
+        isMulti
       />
     );
   }

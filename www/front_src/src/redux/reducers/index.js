@@ -1,12 +1,12 @@
-import { combineReducers } from "redux";
-import { reducer as formReducer } from "redux-form";
+import { combineReducers } from 'redux';
+import { reducer as formReducer } from 'redux-form';
 import { i18nReducer } from 'react-redux-i18n';
 
-import pollerWizardReducer from "./pollerWizardReducer";
-import navigationReducer from "./navigationReducer";
-import refreshReducer from "./refreshReducer";
-import axiosReducer from "./axiosReducer";
-import externalComponentsReducer from "./externalComponentsReducer";
+import pollerWizardReducer from './pollerWizardReducer';
+import navigationReducer from './navigationReducer';
+import refreshReducer from './refreshReducer';
+import axiosReducer from './axiosReducer';
+import externalComponentsReducer from './externalComponentsReducer';
 import tooltipReducer from './tooltipReducer';
 
 export default combineReducers({
