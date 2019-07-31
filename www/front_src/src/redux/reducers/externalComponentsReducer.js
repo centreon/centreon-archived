@@ -1,4 +1,4 @@
-import * as actions from "../actions/externalComponentsActions";
+import * as actions from '../actions/externalComponentsActions';
 
 // by default, no one external page and hook
 const initialState = {
@@ -15,7 +15,7 @@ const externalComponentsReducer = (state = initialState, action) => {
         pages: action.data.pages,
         hooks: action.data.hooks,
         fetched: true,
-      }
+      };
     default:
       return state;
   }

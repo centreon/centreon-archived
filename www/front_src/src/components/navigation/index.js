@@ -1,8 +1,16 @@
-import React, { Component } from "react";
-import { Sidebar } from "@centreon/react-components";
-import { withRouter } from "react-router-dom";
-import { connect } from "react-redux";
-import { fetchNavigationData, fetchReactRoutesData } from "../../redux/actions/navigationActions";
+/* eslint-disable no-undef */
+/* eslint-disable react/jsx-filename-extension */
+/* eslint-disable react/prop-types */
+/* eslint-disable no-shadow */
+
+import React, { Component } from 'react';
+import { Sidebar } from '@centreon/react-components';
+import { withRouter } from 'react-router-dom';
+import { connect } from 'react-redux';
+import {
+  fetchNavigationData,
+  fetchReactRoutesData,
+} from '../../redux/actions/navigationActions';
 
 class Navigation extends Component {
   componentDidMount = () => {
@@ -11,13 +19,13 @@ class Navigation extends Component {
     fetchReactRoutesData();
   };
 
-  goToPage = route => {
+  goToPage = (route) => {
     const { history } = this.props;
     history.push(route);
   };
 
   handleTopLevelClick = (id, { page, options }) => {
-    const urlOptions = page + (options !== null ? options : "");
+    const urlOptions = page + (options !== null ? options : '');
     this.goToPage(`/main.php?p=${urlOptions}`);
   };
 
@@ -27,7 +35,7 @@ class Navigation extends Component {
       <Sidebar
         navigationData={navigationData}
         reactRoutes={reactRoutes}
-        onNavigate={(id, { url }) => {
+        onNavigate={(_id, { url }) => {
           this.goToPage(url);
         }}
         externalHistory={history}
@@ -39,10 +47,10 @@ class Navigation extends Component {
 
 const mapStateToProps = ({ navigation }) => ({
   navigationData: navigation.menuItems,
-  reactRoutes: navigation.reactRoutes
+  reactRoutes: navigation.reactRoutes,
 });
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch) => {
   return {
     fetchNavigationData: () => {
       dispatch(fetchNavigationData());
@@ -52,11 +60,11 @@ const mapDispatchToProps = dispatch => {
     },
     updateTooltip: () => {
       dispatch(updateTooltip());
-    }
+    },
   };
 };
 
 export default connect(
   mapStateToProps,
-  mapDispatchToProps
+  mapDispatchToProps,
 )(withRouter(Navigation));

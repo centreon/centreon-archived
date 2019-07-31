@@ -43,7 +43,7 @@ if (!isset($centreon)) {
 
 isset($_GET["contact_id"]) ? $cG = $_GET["contact_id"] : $cG = null;
 isset($_POST["contact_id"]) ? $cP = $_POST["contact_id"] : $cP = null;
-$cG ? $contact_id = $cG : $contact_id = $cP;
+$cG ? $contactId = $cG : $contactId = $cP;
 
 isset($_GET["select"]) ? $cG = $_GET["select"] : $cG = null;
 isset($_POST["select"]) ? $cP = $_POST["select"] : $cP = null;

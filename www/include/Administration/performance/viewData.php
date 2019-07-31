@@ -285,6 +285,13 @@ $tpl = initSmartyTpl($path, $tpl);
 
 $form = new HTML_QuickFormCustom('form', 'POST', "?p=" . $p);
 
+$attrBtnSuccess = array(
+    "class" => "btc bt_success",
+    "onClick" => "window.history.replaceState('', '', '?p=" . $p . "');"
+);
+$form->addElement('submit', 'Search', _("Search"), $attrBtnSuccess);
+
+
 ?>
     <script type="text/javascript">
         function setO(_i) {

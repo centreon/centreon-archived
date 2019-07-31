@@ -56,22 +56,24 @@ $template = filter_var(
     FILTER_VALIDATE_INT
 );
 
+$status = filter_var(
+    $_POST["status"] ?? $_GET["status"] ?? 0,
+    FILTER_VALIDATE_INT
+);
+
 if (isset($_POST['Search']) || isset($_GET ['Search'])) {
     //saving filters values
     $centreon->historySearch[$url] = array();
     $centreon->historySearch[$url]["hostgroups"] = $searchHG;
     $centreon->historySearch[$url]["search"] = $searchS;
     $centreon->historySearch[$url]["template"] = $template;
-    $status = $_POST["status"] ?? '';
-    // Security fix
-    $status = (int)(($status != '') ? $status : null);
     $centreon->historySearch[$url]["status"] = $status;
 } else {
     //restoring saved values
     $searchHG = $centreon->historySearch[$url]['hostgroups'] ?? null;
     $searchS = $centreon->historySearch[$url]["search"] ?? null;
-    $template = $centreon->historySearch[$url]["template"] ?? 0;
-    $status = $centreon->historySearch[$url]["status"] ?? null;
+    $template = $centreon->historySearch[$url]["template"] ?? null;
+    $status = $centreon->historySearch[$url]["status"] ?? 0;
 }
 
 //Status Filter
@@ -245,6 +247,14 @@ if ($status) {
 }
 $form->addElement('select2', 'status', "", $statusFilter, $attrServiceStatus);
 
+$attrBtnSuccess = array(
+    "class" => "btc bt_success",
+    "onClick" => "window.history.replaceState('', '', '?p=" . $p . "');"
+);
+$form->addElement('submit', 'Search', _("Search"), $attrBtnSuccess);
+
+
+// Fill a tab with a multidimensional Array we put in $tpl
 $interval_length = $centreon->optGen['interval_length'];
 
 $elemArr = array();
@@ -264,9 +274,9 @@ for ($i = 0; $service = $dbResult->fetch(); $i++) {
     } else {
         $moptions .= "<a href='main.php?p=" . $p . "&service_id=" . $service['service_id'] . "&o=s&limit=" . $limit .
             "&num=" . $num . "&search=" . $search . "&template=" . $template . "&status=" . $status .
-            "'><img src='img/icons/enabled.png' class='ico-14 margin_right' border='0' alt='" . _("Enabled") . "'></a>";
+            "'><img src='img/icons/enabled.png' class='ico-14 margin_right' border='0' alt='" . _("Enabled") . "'>";
     }
-    $moptions .= "&nbsp;";
+    $moptions .= "</a>&nbsp;";
     $moptions .= "<input onKeypress=\"if(event.keyCode > 31 && (event.keyCode < 45 || event.keyCode > 57)) " .
         "event.returnValue = false; if(event.which > 31 && (event.which < 45 || event.which > 57)) " .
         "return false;\" onKeyUp=\"syncInputField(this.name, this.value);\" maxlength=\"3\" size=\"3\" value='1' " .
@@ -474,5 +484,4 @@ $tpl->assign('HostGroups', _("HostGroups"));
 $tpl->assign('Services', _("Services"));
 $tpl->assign('ServiceTemplates', _("Templates"));
 $tpl->assign('ServiceStatus', _("Status"));
-$tpl->assign('Search', _("Search"));
 $tpl->display("listService.ihtml");

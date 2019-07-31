@@ -9,8 +9,7 @@
         <td><h4>{t}Contact template{/t}</h4></td>
       </tr>
       <tr>
-        <td><input type="text" name="searchCT" value="{$searchCT}">
-        <input type="submit" value="{t}Search{/t}" class="btc bt_success"></td>
+        <td><input type="text" name="searchCT" value="{$searchCT}">{$form.Search.html}</td>
       </tr>
     </tbody>
     </table>

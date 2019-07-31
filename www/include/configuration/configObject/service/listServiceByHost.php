@@ -58,8 +58,8 @@ $dbResult->closeCursor();
 $hostgroups = null;
 
 $template = filter_var(
-    $_POST["template"] ?? $_GET["template"] ?? 0,
-    FILTER_VALIDATE_INT
+    $_POST['template'] ?? $_GET['template'] ?? null,
+    FILTER_SANITIZE_STRING
 );
 
 $searchH = filter_var(
@@ -72,6 +72,11 @@ $searchS = filter_var(
     FILTER_SANITIZE_STRING
 );
 
+$status = filter_var(
+    $_POST["status"] ?? $_GET["status"] ?? 0,
+    FILTER_VALIDATE_INT
+);
+
 if (isset($_POST['search']) || isset($_GET['search'])) {
     //saving filters values
     $centreon->historySearch[$url] = array();
@@ -80,19 +85,15 @@ if (isset($_POST['search']) || isset($_GET['search'])) {
     $centreon->historySearch[$url]["searchS"] = $searchS;
     $hostStatus = isset($_POST["statusHostFilter"]) ? 1 : 0;
     $centreon->historySearch[$url]["hostStatus"] = $hostStatus;
-    $status = $_POST["status"] ?? '';
-    // Security fix
-    $status = (int)(($status != '') ? $status : null);
     $centreon->historySearch[$url]["status"] = $status;
 } else {
     //restoring saved values
-    $template = $centreon->historySearch[$url]['template'] ?? 0;
+    $template = $centreon->historySearch[$url]['template'] ?? null;
     $searchH = $centreon->historySearch[$url]["searchH"] ?? null;
     $searchS = $centreon->historySearch[$url]["searchS"] ?? null;
     $hostStatus = $centreon->historySearch[$url]["hostStatus"] ?? 0;
-    $status = $centreon->historySearch[$url]["status"] ?? null;
+    $status = $centreon->historySearch[$url]["status"] ?? 0;
 }
-
 
 $searchH_SQL = '';
 if ($searchH) {
@@ -232,6 +233,12 @@ if ($status) {
 }
 $form->addElement('select2', 'status', "", $statusFilter, $attrServiceStatus);
 
+
+$attrBtnSuccess = array(
+    "class" => "btc bt_success",
+    "onClick" => "window.history.replaceState('', '', '?p=" . $p . "');"
+);
+$form->addElement('submit', 'Search', _("Search"), $attrBtnSuccess);
 
 // Fill a tab with a multidimensional Array we put in $tpl
 $elemArr = array();
@@ -443,5 +450,4 @@ $tpl->assign('ServiceTemplates', _("Templates"));
 $tpl->assign('ServiceStatus', _("Status"));
 $tpl->assign('HostStatus', _("Disabled hosts"));
 $tpl->assign('Services', _("Services"));
-$tpl->assign('Search', _("Search"));
 $tpl->display("listService.ihtml");

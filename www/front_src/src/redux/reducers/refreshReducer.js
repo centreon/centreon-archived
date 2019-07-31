@@ -1,4 +1,4 @@
-import * as actions from "../actions/refreshActions";
+import * as actions from '../actions/refreshActions';
 
 const initialState = {};
 

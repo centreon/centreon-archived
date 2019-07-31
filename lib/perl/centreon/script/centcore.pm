@@ -775,7 +775,7 @@ sub sendExportFile($){
     # Send data with rSync
     $self->{logger}->writeLogInfo('Export files on poller "' . $server_info->{name} . '" (' . $id . ')');
 
-    $cmd = "$self->{rsync} -ra --port=$port $origin $dest 2>&1";
+    $cmd = "$self->{rsync} -ra -e '$self->{ssh} -o port=$port' $origin $dest 2>&1";
     ($lerror, $stdout, $return_code) = centreon::common::misc::backtick(
         command => $cmd,
         logger => $self->{logger},
@@ -883,7 +883,7 @@ sub syncTraps($) {
             }
 
             if (defined($ns_server->{remote_id}) && $ns_server->{remote_id} != 0 && $self->{instance_mode} ne "remote") {
-                $cmd = "$self->{ssh} " . $remote_server->{'ns_ip_address'}  . " 'echo \"SYNCTRAP:" . $id . "\" >> $self->{cmdDir}/" . time() . "-sendcmd'";
+                $cmd = "$self->{ssh} -p $port " . $remote_server->{'ns_ip_address'}  . " 'echo \"SYNCTRAP:" . $id . "\" >> $self->{cmdDir}/" . time() . "-sendcmd'";
                 ($lerror, $stdout) = centreon::common::misc::backtick(
                     command => $cmd,
                     logger => $self->{logger},
@@ -923,7 +923,7 @@ sub syncTraps($) {
                     $self->{logger}->writeLogInfo("Result : $stdout");
                 }
                 if (defined($ns_server->{remote_id}) && $ns_server->{remote_id} != 0 && $self->{instance_mode} ne "remote") {
-                    $cmd = "$self->{ssh} " . $remote_server->{'ns_ip_address'}  . " 'echo \"SYNCTRAP:" . $id . "\" >> $self->{cmdDir}/" . time() . "-sendcmd'";
+                    $cmd = "$self->{ssh} -p $port " . $remote_server->{'ns_ip_address'}  . " 'echo \"SYNCTRAP:" . $id . "\" >> $self->{cmdDir}/" . time() . "-sendcmd'";
                     ($lerror, $stdout) = centreon::common::misc::backtick(command => $cmd,
                                                                           logger => $self->{logger},
                                                                           timeout => 300
