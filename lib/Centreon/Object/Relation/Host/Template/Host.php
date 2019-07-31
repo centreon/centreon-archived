@@ -87,20 +87,28 @@ class Centreon_Object_Relation_Host_Template_Host extends Centreon_Object_Relati
             $stmt = $this->db->prepare(
                 'SELECT service_service_id FROM host_service_relation WHERE host_host_id = :host_id'
             );
-            $stmt->bindParam(':host_id', $fkey, PDO::PARAM_INT);
+            $stmt->bindParam(':host_id', $skey, PDO::PARAM_INT);
             $stmt->execute();
-
+            $services = [];
             foreach ($stmt->fetchAll(PDO::FETCH_ASSOC) as $row) {
-                $stmt2 = $this->db->prepare(
+                $services[] = $row['service_service_id'];
+            }
+
+            if (!empty($services)) {
+                $serviceIds = [];
+                foreach ($services as $key => $service) {
+                    $serviceIds[] = ':id_' . $key;
+                }
+                $stmt = $this->db->prepare(
                     'DELETE FROM host_service_relation
-                    WHERE host_host_id = :host_id
-                    AND service_service_id = :service_id'
+                     WHERE host_host_id = :host_id
+                     AND service_service_id IN ( ' . implode(',', $serviceIds) . ' )'
                 );
-                             WHERE host_host_id = :host_id
-                             AND service_service_id = :service_id');
-                $stmt2->bindParam(':host_id', $fkey, PDO::PARAM_INT);
-                $stmt2->bindParam(':service_id', $row['service_service_id'], PDO::PARAM_INT);
-                $stmt2->execute();
+                $stmt->bindParam(':host_id', $skey, PDO::PARAM_INT);
+                foreach ($services as $key => $service) {
+                    $stmt->bindParam(':id_' . $key, $services[$key], PDO::PARAM_INT);
+                }
+                $stmt->execute();
             }
             $this->db->commit();
         } catch (\PDOException $e) {
