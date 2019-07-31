@@ -91,7 +91,11 @@ class Centreon_Object_Relation_Host_Template_Host extends Centreon_Object_Relati
             $stmt->execute();
 
             foreach ($stmt->fetchAll(PDO::FETCH_ASSOC) as $row) {
-                $stmt2 = $this->db->prepare('DELETE FROM host_service_relation 
+                $stmt2 = $this->db->prepare(
+                    'DELETE FROM host_service_relation
+                    WHERE host_host_id = :host_id
+                    AND service_service_id = :service_id'
+                );
                              WHERE host_host_id = :host_id
                              AND service_service_id = :service_id');
                 $stmt2->bindParam(':host_id', $fkey, PDO::PARAM_INT);
