@@ -85,7 +85,10 @@ class ContactGroupRepository extends ServiceEntityRepository implements Paginati
                 $sql .= ' `cg_id` IN (' . implode(',', $idsListKey) . ')';
             }
         }
-        $sql .= ' ORDER BY `cg_name` ASC';
+
+        if (!empty($ordering['field'])) {
+            $sql .= ' ORDER BY `' . $ordering['field'] . '` ' . $ordering['order'];
+        }
 
         if ($limit !== null) {
             $sql .= ' LIMIT :limit';
@@ -96,7 +99,6 @@ class ContactGroupRepository extends ServiceEntityRepository implements Paginati
             $sql .= ' OFFSET :offset';
             $collector->addValue(':offset', $offset, PDO::PARAM_INT);
         }
-        
         $stmt = $this->db->prepare($sql);
         $collector->bind($stmt);
         $stmt->execute();

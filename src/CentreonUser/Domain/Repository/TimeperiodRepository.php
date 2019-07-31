@@ -90,7 +90,9 @@ class TimeperiodRepository extends ServiceEntityRepository implements Pagination
             }
         }
 
-        $sql .= ' ORDER BY `tp_name` ASC';
+        if (!empty($ordering['field'])) {
+            $sql .= ' ORDER BY `' . $ordering['field'] . '` ' . $ordering['order'];
+        }
 
         if ($limit !== null) {
             $sql .= ' LIMIT :limit';
