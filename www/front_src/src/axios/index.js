@@ -1,8 +1,8 @@
-import axios from "axios";
+import axios from 'axios';
 
-export const create = url => {
+export const create = (url) => {
   return axios.create({
-    baseURL: `./api/${url}`
+    baseURL: `./api/${url}`,
   });
 };
 

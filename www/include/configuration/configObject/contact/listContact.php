@@ -160,6 +160,13 @@ $form->addElement('select2', 'contactGroup', "", array(), $attrContactgroups);
 
 // Different style between each lines
 $style = "one";
+
+$attrBtnSuccess = array(
+    "class" => "btc bt_success",
+    "onClick" => "window.history.replaceState('', '', '?p=" . $p . "');"
+);
+$form->addElement('submit', 'Search', _("Search"), $attrBtnSuccess);
+
 $contactTypeIcone = array(
     1 => "./img/icons/admin.png",
     2 => "./img/icons/user.png",

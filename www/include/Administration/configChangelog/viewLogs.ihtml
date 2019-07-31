@@ -14,7 +14,7 @@
             <td><input type='text' name='searchO' value="{$searchO}" /></td>
             <td><input type='text' name='searchU' value="{$searchU}" /></td>
             <td><select name='otype'>{$obj_type}</select></td>
-            <td><input type='submit' class="btc bt_success" name='SearchB' value='{$Search}' /></td>
+            <td>{$form.SearchB.html}</td>
         </tr>
     </tbody>
 </table>

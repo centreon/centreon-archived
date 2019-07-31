@@ -12,7 +12,7 @@
         <tr>
             <td><input type="text" name="searchC" value="{$searchC}"></td>
             <td>{$form.contactGroup.html}</td>
-            <td><input type="submit" value="{t}Search{/t}" class="btc bt_success"></td>
+            <td>{$form.Search.html}</td>
         </tr>
         </tbody>
     </table>
@@ -38,7 +38,8 @@
     </table>
     <table class="ListTable">
         <tr class="ListHeader">
-            <td class="ListColHeaderPicker"><input type="checkbox" name="checkall" onclick="checkUncheckAll(this);"/>
+            <td class="ListColHeaderPicker">
+                <input type="checkbox" name="checkall" onclick="checkUncheckAll(this);"/>
             </td>
             <td class="ListColHeaderLeft">{$headerMenu_desc}</td>
             <td class="ListColHeaderLeft">{$headerMenu_name}</td>
@@ -54,10 +55,7 @@
         {section name=elem loop=$elemArr}
         <tr class={$elemArr[elem].MenuClass}>
             <td class="ListColPicker">{$elemArr[elem].RowMenu_select}</td>
-            <td class="ListColLeft" style='white-space:nowrap;'><img src='{$elemArr[elem].RowMenu_ico}'
-                                                                     title='{$elemArr[elem].RowMenu_ico_title}'
-                                                                     class='ico-22 margin_right'><a
-                    href="{$elemArr[elem].RowMenu_link}">{$elemArr[elem].RowMenu_desc}</a></td>
+            <td class="ListColLeft" style='white-space:nowrap;'><img src='{$elemArr[elem].RowMenu_ico}' title='{$elemArr[elem].RowMenu_ico_title}'  class='ico-22 margin_right'><a href="{$elemArr[elem].RowMenu_link}">{$elemArr[elem].RowMenu_desc}</a></td>
             <td class="ListColLeft"><a href="{$elemArr[elem].RowMenu_link}">{$elemArr[elem].RowMenu_name}</a></td>
             <td class="ListColCenter">{$elemArr[elem].RowMenu_email}</td>
             <td class="ListColCenter">{$elemArr[elem].RowMenu_hostNotif}</td>
@@ -65,8 +63,7 @@
             <td class="ListColCenter">{$elemArr[elem].RowMenu_lang}</td>
             <td class="ListColCenter">{$elemArr[elem].RowMenu_access}</td>
             <td class="ListColCenter">{$elemArr[elem].RowMenu_admin}</td>
-            <td class="ListColCenter"><span
-                    class="badge {$elemArr[elem].RowMenu_badge}">{$elemArr[elem].RowMenu_status}</span></td>
+            <td class="ListColCenter"><span class="badge {$elemArr[elem].RowMenu_badge}">{$elemArr[elem].RowMenu_status}</span></td>
             <td class="ListColRight">{if $mode_access == 'w' }{$elemArr[elem].RowMenu_options}{else}&nbsp;{/if}</td>
         </tr>
         {/section}
