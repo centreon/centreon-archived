@@ -13,7 +13,14 @@ class CentreonWebserviceService implements ContainerInterface
 {
     use ServiceContainerTrait;
 
-    public function add(string $object): void
+    /**
+     * Add webservice from DI
+     *
+     * @param string $object
+     * @return \self
+     * @throws \Centreon\Infrastructure\Service\Exception\NotFoundException
+     */
+    public function add(string $object): self
     {
         $centreonClass = CentreonWebService::class;
         $abstractClass = CentreonWebServiceAbstract::class;
@@ -29,5 +36,7 @@ class CentreonWebserviceService implements ContainerInterface
 
         $name = strtolower($object::getName());
         $this->objects[$name] = $object;
+
+        return $this;
     }
 }

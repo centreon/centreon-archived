@@ -34,59 +34,67 @@
  *
  */
 
-namespace Centreon\Domain\Repository\Traits;
+namespace Centreon\Infrastructure\CentreonLegacyDB;
 
-use Centreon\Infrastructure\CentreonLegacyDB\StatementCollector;
+use Centreon\Infrastructure\CentreonLegacyDB\Mapping\ClassMetadata;
 
-trait CheckListOfIdsTrait
+class EntityPersister
 {
 
     /**
-     * Check a list of IDs
-     *
-     * @param array $ids
-     * @param string $tableName not needed if entity had metadata
-     * @param string $columnNameOfIdentificator not needed if entity had metadata
-     * @return bool
+     * @var string
      */
-    protected function checkListOfIdsTrait(
-        array $ids,
-        string $tableName = null,
-        string $columnNameOfIdentificator = null
-    ): bool {
+    protected $entityClassName;
+
+    /**
+     * @var \Centreon\Infrastructure\CentreonLegacyDB\Mapping\ClassMetadata
+     */
+    protected $classMetadata;
+
+    /**
+     * Construct
+     *
+     * @param string $entity
+     * @param \Centreon\Infrastructure\CentreonLegacyDB\Mapping\ClassMetadata $classMetadata
+     */
+    public function __construct($entityClassName, ClassMetadata $classMetadata)
     {
-        if ($tableName === null) {
-            $tableName = $this->getClassMetadata()->getTableName();
+        $this->entityClassName = $entityClassName;
+        $this->classMetadata = $classMetadata;
+    }
+
+    /**
+     * Get table name of entity
+     *
+     * @return object of Entity
+     */
+    public function load(array $data): object
+    {
+        $entity = new $this->entityClassName;
+
+        // load entity with data
+        foreach ($data as $column => $value) {
+            $property = $this->classMetadata->getProperty($column);
+
+            if ($property === null) {
+                continue;
+            }
+
+            $action = 'set' . ucfirst($property);
+
+            if (!is_callable([$entity, $action])) {
+                continue;
+            }
+
+            $formatter = $this->classMetadata->getFormatter($property);
+
+            if ($formatter === null) {
+                $entity->{$action}($value);
+            } else {
+                $entity->{$action}($formatter($value));
+            }
         }
 
-        if ($columnNameOfIdentificator === null) {
-            $columnNameOfIdentificator = $this->getClassMetadata()->getPrimaryKeyColumn();
-        }
-
-        $count = count($ids);
-
-        $collector = new StatementCollector;
-        $sql = "SELECT COUNT(*) AS `total` FROM `{$tableName}` ";
-
-        $isWhere = false;
-        foreach ($ids as $x => $value) {
-            $key = ":id{$x}";
-
-            $sql .= (!$isWhere ? 'WHERE ' : 'OR ') . "`{$columnNameOfIdentificator}` = {$key} ";
-            $collector->addValue($key, $value);
-
-            $isWhere = true;
-            unset($x, $value);
-        }
-
-        $sql .= 'LIMIT 0, 1';
-
-        $stmt = $this->db->prepare($sql);
-        $collector->bind($stmt);
-        $stmt->execute();
-
-        $result = $stmt->fetch();
-
-        return (int) $result['total'] === $count;
+        return $entity;
     }
 }
