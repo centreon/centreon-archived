@@ -34,14 +34,9 @@
  *
  */
 
-namespace CentreonRemote\Application\Webservice;
+namespace Centreon\Infrastructure\Webservice;
 
-use Centreon\Infrastructure\Webservice\WebServiceAbstract;
-
-/**
- * 
- * @deprecated
- */
-abstract class CentreonWebServiceAbstract extends WebServiceAbstract
+interface WebserviceAutorizePublicInterface
 {
+    
 }
