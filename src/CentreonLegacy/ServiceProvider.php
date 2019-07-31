@@ -108,14 +108,9 @@ class ServiceProvider implements AutoloadServiceProviderInterface
     protected function registerRestHttp(Container $pimple)
     {
         $pimple[static::CENTREON_REST_HTTP] = function (Container $container) {
-<<<<<<< HEAD
-            return function ($contentType = 'application/json', $logFile = null) {
-                return new \CentreonRestHttp($contentType, $logFile);
-=======
             return function($contentType = 'application/json', $logFile = null) {
                 // @codeCoverageIgnoreStart
                 return new \CentreonRestHttp($contentType, $logFile); // @codeCoverageIgnoreEnd
->>>>>>> fix(test): cover legacy service provider
             };
         };
     }
