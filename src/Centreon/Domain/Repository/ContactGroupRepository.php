@@ -91,7 +91,7 @@ class ContactGroupRepository extends ServiceEntityRepository implements Paginati
             $collector->addValue(':limit', $limit, PDO::PARAM_INT);
         }
 
-        if ($limit !== null) {
+        if ($offset !== null) {
             $sql .= ' OFFSET :offset';
             $collector->addValue(':offset', $offset, PDO::PARAM_INT);
         }
