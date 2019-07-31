@@ -103,7 +103,7 @@ class ClassMetadata
         int $dataType = PDO::PARAM_STR,
         callable $dataFormatter = null,
         $primaryKey = false
-    ): self
+    ): self {
     {
         $this->columns[$property] = [
             static::COLUMN => $columnName,
