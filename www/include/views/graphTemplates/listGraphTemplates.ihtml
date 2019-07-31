@@ -9,7 +9,7 @@
         </tr>
         <tr>
             <td><input type="text" name="searchGT" value="{$searchGT}"></td>
-            <td><input type="submit" value="{t}Search{/t}" class="btc bt_success"></td>
+            <td>{$form.Search.html}</td>
         </tr>
     </table>
     <table class="ToolbarTable table">
