@@ -34,13 +34,15 @@
  */
 namespace Centreon\Application\Webservice;
 
-use CentreonRemote\Application\Webservice\CentreonWebServiceAbstract;
+use Centreon\Infrastructure\Webservice;
+use Centreon\Infrastructure\Webservice\WebserviceAutorizePublicInterface;
 use Centreon\ServiceProvider;
 use Pimple\Container;
 use Pimple\Psr11\ServiceLocator;
 
-class CentreonFrontendComponent extends CentreonWebServiceAbstract
+class CentreonFrontendComponent extends Webservice\WebServiceAbstract implements WebserviceAutorizePublicInterface
 {
+
     /**
      * @var \Psr\Container\ContainerInterface
      */
@@ -119,23 +121,8 @@ class CentreonFrontendComponent extends CentreonWebServiceAbstract
      */
     public function setDi(Container $di)
     {
-        $ids = [
+         $this->services = new ServiceLocator($di, [
             ServiceProvider::CENTREON_FRONTEND_COMPONENT_SERVICE,
-		];
-
-         $this->services = new ServiceLocator($di, $ids);
+		]);
 	 }
-
-    /**
-     * Authorize to access to the action
-     *
-     * @param string $action The action name
-     * @param array $user The current user
-     * @param boolean $isInternal If the api is call in internal
-     * @return boolean If the user has access to the action
-     */
-    public function authorize($action, $user, $isInternal = false)
-    {
-        return true;
-    }
 }

@@ -2,13 +2,14 @@
 
 namespace Centreon\Application\Webservice;
 
+use Centreon\Infrastructure\Webservice;
 use Centreon\Application\DataRepresenter\Response;
 use Centreon\Application\DataRepresenter\Topology\NavigationList;
 use Centreon\Domain\Repository\TopologyRepository;
 use Centreon\ServiceProvider;
-use CentreonRemote\Application\Webservice\CentreonWebServiceAbstract;
 
-class TopologyWebservice extends CentreonWebServiceAbstract
+class TopologyWebservice extends Webservice\WebServiceAbstract implements
+    Webservice\WebserviceAutorizePublicInterface
 {
 
     /**

@@ -1,13 +1,14 @@
 <?php
 namespace Centreon\Application\Webservice;
 
-use CentreonRemote\Application\Webservice\CentreonWebServiceAbstract;
+use Centreon\Infrastructure\Webservice;
 
 /**
  * @OA\Tag(name="openapi", description="Generate an OpenAPI documentation")
  * @codeCoverageIgnore
  */
-class OpenApiWebservice extends CentreonWebServiceAbstract
+class OpenApiWebservice extends Webservice\WebServiceAbstract implements
+    Webservice\WebserviceAutorizePublicInterface
 {
 
     /**
@@ -57,20 +58,6 @@ class OpenApiWebservice extends CentreonWebServiceAbstract
 
         echo $openapi->toYaml();
         exit;
-    }
-
-    /**
-     * Authorize to access to the action
-     *
-     * @param string $action The action name
-     * @param \CentreonUser $user The current user
-     * @param boolean $isInternal If the api is call in internal
-     *
-     * @return boolean If the user has access to the action
-     */
-    public function authorize($action, $user, $isInternal = false)
-    {
-        return true;
     }
 
     /**

@@ -68,6 +68,7 @@ class CentreonValidatorTranslator implements TranslatorInterface, DeprecatedTran
     /**
      * Remove when upgrading to 5.0 version of symfony/validator package
      *
+     * @codeCoverageIgnore
      * {@inheritdoc}
      */
     public function transChoice($id, $number, array $parameters = [], $domain = null, $locale = null)
@@ -78,6 +79,7 @@ class CentreonValidatorTranslator implements TranslatorInterface, DeprecatedTran
     /**
      * Remove when upgrading to 5.0 version of symfony/validator package
      *
+     * @codeCoverageIgnore
      * {@inheritdoc}
      */
     public function setLocale($locale)
@@ -88,6 +90,7 @@ class CentreonValidatorTranslator implements TranslatorInterface, DeprecatedTran
     /**
      * Remove when upgrading to 5.0 version of symfony/validator package
      *
+     * @codeCoverageIgnore
      * {@inheritdoc}
      */
     public function getLocale()

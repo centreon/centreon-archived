@@ -6,14 +6,15 @@ use Centreon\Application\DataRepresenter\ContactGroupEntity;
 use Centreon\Application\DataRepresenter\Response;
 use Centreon\ServiceProvider;
 use Centreon\Domain\Repository\ContactGroupRepository;
-use CentreonRemote\Application\Webservice\CentreonWebServiceAbstract;
+use Centreon\Infrastructure\Webservice;
 use Pimple\Container;
 use Pimple\Psr11\ServiceLocator;
 
 /**
  * @OA\Tag(name="centreon_contact_groups", description="Web Service for Contact Groups")
  */
-class ContactGroupsWebservice extends CentreonWebServiceAbstract
+class ContactGroupsWebservice extends Webservice\WebServiceAbstract implements
+    Webservice\WebserviceAutorizeRestApiInterface
 {
 
     /**
@@ -152,25 +153,8 @@ class ContactGroupsWebservice extends CentreonWebServiceAbstract
      */
     public function setDi(Container $di)
     {
-        $ids = [
+        $this->services = new ServiceLocator($di, [
             ServiceProvider::CENTREON_PAGINATION,
-        ];
-        $this->services = new ServiceLocator($di, $ids);
-    }
-
-
-
-    /**
-     * Authorize to access to the action
-     *
-     * @param string $action The action name
-     * @param \CentreonUser $user The current user
-     * @param boolean $isInternal If the api is call in internal
-     *
-     * @return boolean If the user has access to the action
-     */
-    public function authorize($action, $user, $isInternal = false)
-    {
-        return true;
+        ]);
     }
 }

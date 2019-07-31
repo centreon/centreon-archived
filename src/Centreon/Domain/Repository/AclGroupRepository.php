@@ -49,6 +49,14 @@ class AclGroupRepository extends ServiceEntityRepository implements PaginationRe
     use CheckListOfIdsTrait;
 
     /**
+     * {@inheritdoc}
+     */
+    public static function entityClass(): string
+    {
+        return AclGroup::class;
+    }
+
+    /**
      * Check list of IDs
      *
      * @return bool

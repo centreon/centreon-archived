@@ -2,20 +2,19 @@
 
 namespace Centreon\Application\Webservice;
 
-use Centreon\Application\DataRepresenter\ContactGroupEntity;
+use Centreon\Infrastructure\Webservice;
 use Centreon\Application\DataRepresenter\ImageEntity;
 use Centreon\Application\DataRepresenter\Response;
 use Centreon\Domain\Repository\ImagesRepository;
 use Centreon\ServiceProvider;
-use Centreon\Domain\Repository\ContactGroupRepository;
-use CentreonRemote\Application\Webservice\CentreonWebServiceAbstract;
 use Pimple\Container;
 use Pimple\Psr11\ServiceLocator;
 
 /**
  * @OA\Tag(name="centreon_images", description="Web Service for Images")
  */
-class ImagesWebservice extends CentreonWebServiceAbstract
+class ImagesWebservice extends Webservice\WebServiceAbstract implements
+    Webservice\WebserviceAutorizeRestApiInterface
 {
 
     /**
@@ -151,25 +150,8 @@ class ImagesWebservice extends CentreonWebServiceAbstract
      */
     public function setDi(Container $di)
     {
-        $ids = [
+        $this->services = new ServiceLocator($di, [
             ServiceProvider::CENTREON_PAGINATION,
-        ];
-        $this->services = new ServiceLocator($di, $ids);
-    }
-
-
-
-    /**
-     * Authorize to access to the action
-     *
-     * @param string $action The action name
-     * @param \CentreonUser $user The current user
-     * @param boolean $isInternal If the api is call in internal
-     *
-     * @return boolean If the user has access to the action
-     */
-    public function authorize($action, $user, $isInternal = false)
-    {
-        return true;
+        ]);
     }
 }
