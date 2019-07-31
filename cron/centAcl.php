@@ -118,7 +118,7 @@ try {
     $pearDB->beginTransaction();
     try {
         $ldapConf = $pearDB->query(
-            "SELECT auth.ar_id, auth.ar_sync_base_date, info.ari_value
+            "SELECT auth.ar_id, auth.ar_sync_base_date, info.ari_value AS interval
         FROM auth_ressource auth INNER JOIN auth_ressource_info info ON auth.ar_id = info.ar_id
         WHERE auth.ar_enable = '1' AND info.ari_name = 'ldap_sync_interval'"
         );
@@ -130,7 +130,7 @@ try {
 
         $currentTime = time();
         while ($ldapRow = $ldapConf->fetch()) {
-            if ($currentTime > ($ldapRow['ar_sync_base_date'] + 3600 * $ldapRow['ari_value'])) {
+            if ($currentTime > ($ldapRow['ar_sync_base_date'] + 3600 * $ldapRow['interval'])) {
                 $updateSyncTime->bindValue(':currentTime', $currentTime, \PDO::PARAM_INT);
                 $updateSyncTime->bindValue(':arId', (int)$ldapRow['ar_id'], \PDO::PARAM_INT);
                 $updateSyncTime->execute();
