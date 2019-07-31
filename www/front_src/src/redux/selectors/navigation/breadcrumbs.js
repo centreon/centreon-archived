@@ -1,6 +1,10 @@
 import { createSelector } from 'reselect';
 
-// loop on each group/child to get first url
+/**
+ * loop on each group/child to get first url
+ * @param {Object} item
+ * @return {String|undefined} first url found
+ */
 function findFirstUrl(item) {
   if (item.groups) {
     const groupWithUrl = item.groups.find(findFirstUrl);
@@ -8,20 +12,34 @@ function findFirstUrl(item) {
     return groupWithUrl ? findFirstUrlInChildren(groupWithUrl) : undefined;
   }
 
-  return item.children ?  findFirstUrlInChildren(item) : undefined;
+  return item.children ? findFirstUrlInChildren(item) : undefined;
 }
 
+/**
+ * find first URL in children prop
+ * @param {Object} item
+ * @return {String|undefined} first url found
+ */
 function findFirstUrlInChildren(item) {
   const childWithUrl = item.children ? item.children.find((child) => child.url) : undefined;
 
   return childWithUrl ? getUrl(childWithUrl) : undefined;
 }
 
+/**
+ * get URL from legacy or react pages
+ * @param {Object} item
+ * @return {String} build URL
+ */
 function getUrl(item) {
   return item.is_react ? item.url : `/main.php?p=${item.page}${item.options !== null ? item.options : ''}`;
 }
 
-// get breadcrumb step information from an entry
+/**
+ * get breadcrumb step information from an entry
+ * @param Object item
+ * @return {Object|null} breadcrumb step information
+ */
 function getBreadcrumbStep(item) {
     const availableUrl = item.url ? getUrl(item) : findFirstUrl(item);
     return availableUrl

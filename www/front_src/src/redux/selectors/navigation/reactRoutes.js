@@ -1,5 +1,11 @@
 import { createSelector } from 'reselect';
 
+/**
+ * find react routes in children and groups props
+ * @param {Array} acc
+ * @param {Object} item
+ * @return {Array} accumulator of react routes
+ */
 function findReactRoutes(acc, item) {
   for (const parameter of ['groups', 'children']) {
     if (item[parameter]) {

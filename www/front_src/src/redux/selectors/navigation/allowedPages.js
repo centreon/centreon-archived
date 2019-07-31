@@ -1,5 +1,11 @@
 import { createSelector } from 'reselect';
 
+/**
+ * get allowed pages in children and groups props
+ * @param {Array} acc
+ * @param {Object} item
+ * @return {Array} accumulator of allowed pages
+ */
 function getAllowedPages(acc, item) {
   for (const parameter of ['groups', 'children']) {
     if (item[parameter]) {

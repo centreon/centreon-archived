@@ -1,5 +1,11 @@
 import { createSelector } from 'reselect';
 
+/**
+ * find showable in children and groups props
+ * @param {Array} acc
+ * @param {Object} item
+ * @return {Array} accumulator of showable elements
+ */
 function filterShowableElements(acc, item) {
   if (item.show === false) {
     return acc;
@@ -23,6 +29,12 @@ function filterShowableElements(acc, item) {
   ];
 }
 
+/**
+ * remove groups which have no child
+ * @param {Array} acc
+ * @param {Object} item
+ * @return {Array} accumulator of groups which are not empty
+ */
 function removeEmptyGroups(acc, item) {
   if (item.children) {
     return [
@@ -50,6 +62,11 @@ function removeEmptyGroups(acc, item) {
   ];
 }
 
+/**
+ * check if a group is empty or not
+ * @param {Array} group
+ * @return {Boolean} if the group is empty or not
+ */
 function filterNotEmptyGroup(group) {
   if (group.children) {
     for (const child of group.children) {
