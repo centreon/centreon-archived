@@ -108,9 +108,11 @@ class ServiceProvider implements AutoloadServiceProviderInterface
             return $service;
         };
 
-        $pimple[static::CENTREON_WEBSERVICE]->add(Application\Webservice\TopologyWebservice::class);
-        $pimple[static::CENTREON_WEBSERVICE]->add(Application\Webservice\ContactGroupsWebservice::class);
-        $pimple[static::CENTREON_WEBSERVICE]->add(Application\Webservice\ImagesWebservice::class);
+        $pimple[static::CENTREON_WEBSERVICE]
+            ->add(Application\Webservice\TopologyWebservice::class)
+            ->add(Application\Webservice\ContactGroupsWebservice::class)
+            ->add(Application\Webservice\ImagesWebservice::class)
+            ->add(Application\Webservice\AclGroupWebservice::class);
 
         if (defined('OpenApi\UNDEFINED') !== false) {
             $pimple[static::CENTREON_WEBSERVICE]->add(\Centreon\Application\Webservice\OpenApiWebservice::class);

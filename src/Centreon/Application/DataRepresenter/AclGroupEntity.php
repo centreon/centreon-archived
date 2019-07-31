@@ -34,59 +34,51 @@
  *
  */
 
-namespace Centreon\Domain\Repository\Traits;
+namespace Centreon\Application\DataRepresenter;
 
-use Centreon\Infrastructure\CentreonLegacyDB\StatementCollector;
+use JsonSerializable;
+use Centreon\Domain\Entity\AclGroup;
 
-trait CheckListOfIdsTrait
+class AclGroupEntity implements JsonSerializable
 {
 
     /**
-     * Check a list of IDs
-     *
-     * @param array $ids
-     * @param string $tableName not needed if entity had metadata
-     * @param string $columnNameOfIdentificator not needed if entity had metadata
-     * @return bool
+     * @var \Centreon\Domain\Entity\AclGroup
      */
-    protected function checkListOfIdsTrait(
-        array $ids,
-        string $tableName = null,
-        string $columnNameOfIdentificator = null
-    ): bool {
+    private $entity;
+
+    /**
+     * Construct
+     *
+     * @param \Centreon\Domain\Entity\AclGroup $entity
+     */
+    public function __construct(AclGroup $entity)
     {
-        if ($tableName === null) {
-            $tableName = $this->getClassMetadata()->getTableName();
-        }
+        $this->entity = $entity;
+    }
 
-        if ($columnNameOfIdentificator === null) {
-            $columnNameOfIdentificator = $this->getClassMetadata()->getPrimaryKeyColumn();
-        }
-
-        $count = count($ids);
-
-        $collector = new StatementCollector;
-        $sql = "SELECT COUNT(*) AS `total` FROM `{$tableName}` ";
-
-        $isWhere = false;
-        foreach ($ids as $x => $value) {
-            $key = ":id{$x}";
-
-            $sql .= (!$isWhere ? 'WHERE ' : 'OR ') . "`{$columnNameOfIdentificator}` = {$key} ";
-            $collector->addValue($key, $value);
-
-            $isWhere = true;
-            unset($x, $value);
-        }
-
-        $sql .= 'LIMIT 0, 1';
-
-        $stmt = $this->db->prepare($sql);
-        $collector->bind($stmt);
-        $stmt->execute();
-
-        $result = $stmt->fetch();
-
-        return (int) $result['total'] === $count;
+    /**
+     * @OA\Schema(
+     *   schema="AclGroup",
+     *       @OA\Property(property="id", type="integer"),
+     *       @OA\Property(property="name", type="string"),
+     *       @OA\Property(property="alias", type="string"),
+     *       @OA\Property(property="changed", type="integer"),
+     *       @OA\Property(property="activate", type="string", enum={"0","1","2"})
+     * )
+     *
+     * JSON serialization of entity
+     *
+     * @return array
+     */
+    public function jsonSerialize()
+    {
+        return [
+            'id' => $this->entity->getId(),
+            'name' => $this->entity->getName(),
+            'alias' => $this->entity->getAlias(),
+            'changed' => $this->entity->getChanged(),
+            'activate' => $this->entity->getActivate()
+        ];
     }
 }
