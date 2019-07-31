@@ -81,7 +81,9 @@ abstract class ServiceEntityRepository
      */
     public static function entityClass(): string
     {
-        return str_replace('\\Domain\\Repository\\', '\\Domain\\Entity\\', // change namespace
+        return str_replace (
+            '\\Domain\\Repository\\',
+            '\\Domain\\Entity\\', // change namespace
             substr(get_called_class(), 0, -10) // remove class name suffix "Repository"
         );
     }
