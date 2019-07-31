@@ -52,7 +52,6 @@ class CentreonAuthSSO extends CentreonAuth
         $token = "",
         $generalOptions = array()
     ) {
-
         $this->options_sso = $generalOptions;
 
         if (isset($this->options_sso['sso_enable'])
@@ -89,13 +88,21 @@ class CentreonAuthSSO extends CentreonAuth
 
             $redirect = urlencode($redirectNoEncode);
             $authUrl = $base . "/realms/".$realm."/protocol/openid-connect/auth?client_id=" . $client_id
-                ."&response_type=code&redirect_uri=" . $redirect;
+                . "&response_type=code&redirect_uri=" . $redirect;
 
-            if (isset($_GET['force'])) {
+            $inputForce = filter_var(
+                $_POST['force'] ?? $_GET['force'] ?? null,
+                FILTER_SANITIZE_INT
+            );
+            if (isset($inputForce)) {
                 header('Location: ' . $authUrl);
             }
 
-            if (isset($_GET['code'])) {
+            $inputCode = filter_var(
+                $_POST['code'] ?? $_GET['code'] ?? null,
+                FILTER_SANITIZE_STRING
+            );
+            if (isset($inputCode)) {
 
                 $Ktoken = $this->getKeycloakToken(
                     $base,
@@ -103,7 +110,7 @@ class CentreonAuthSSO extends CentreonAuth
                     $redirectNoEncode,
                     $client_id,
                     $client_secret,
-                    $_GET['code']
+                    $inputCode
                 );
 
                 $user = $this->getKeycloakUserInfo($base, $realm, $client_id, $client_secret, $Ktoken);
