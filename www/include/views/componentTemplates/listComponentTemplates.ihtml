@@ -10,7 +10,7 @@
         </tr>
         <tr>
           <td><input type="text" name="searchCurve" value="{$searchCurve}"></td>
-          <td><input type="submit" value="{t}Search{/t}" class="btc bt_success"></td>
+          <td>{$form.Search.html}</td>
         </tr>
       </tbody>
     </table>
