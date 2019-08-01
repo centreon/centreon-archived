@@ -98,7 +98,7 @@ class Generate
     private $poller_cache = array();
     private $backend_instance = null;
     private $current_poller = null;
-    private $installed_modules = null;
+    private $installedModules = null;
     private $module_objects = null;
     protected $dependencyInjector = null;
 
@@ -106,6 +106,16 @@ class Generate
     {
         $this->dependencyInjector = $dependencyInjector;
         $this->backend_instance = Backend::getInstance($this->dependencyInjector);
+    }
+
+    
+    private function ucFirst($delimiters, $string) {
+        $string = str_replace($delimiters, $delimiters[0], $string);
+        $result = '';
+        foreach (explode($delimiters[0], $string) as $value) {
+            $result .= ucfirst($value);
+        }
+        return $result;
     }
 
     private function getPollerFromId($poller_id)
@@ -136,31 +146,10 @@ class Generate
         return $result;
     }
 
-    private function getPollerFromName($poller_name)
-    {
-        $query = "SELECT id, localhost, monitoring_engine, centreonconnector_path FROM nagios_server " .
-            "WHERE name = :poller_name";
-        $stmt = $this->backend_instance->db->prepare($query);
-        $stmt->bindParam(':poller_name', $poller_name, PDO::PARAM_STR);
-        $stmt->execute();
-        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        $this->current_poller = array_pop($result);
-        if (is_null($this->current_poller)) {
-            throw new Exception("Cannot find poller name '" . $poller_name . "'");
-        }
-    }
-
     public function resetObjectsEngine()
     {
         Host::getInstance($this->dependencyInjector)->reset();
         Service::getInstance($this->dependencyInjector)->reset();
-        #MetaCommand::getInstance($this->dependencyInjector)->reset();
-        #MetaTimeperiod::getInstance($this->dependencyInjector)->reset();
-        #MetaService::getInstance($this->dependencyInjector)->reset();
-        #MetaHost::getInstance($this->dependencyInjector)->reset();
-        #Resource::getInstance($this->dependencyInjector)->reset();
-        #Engine::getInstance($this->dependencyInjector)->reset();
-        $this->resetModuleObjects();
     }
 
     private function configPoller($username = 'unknown')
@@ -175,20 +164,20 @@ class Generate
         Engine::getInstance($this->dependencyInjector)->generateFromPoller($this->current_poller);
     }
 
-    public function configRemoteServerFromId($remote_server_id, $username = 'unknown')
+    public function configRemoteServerFromId($remoteServerId, $username = 'unknown')
     {
         try {
             $this->backend_instance->setUserName($username);
-            $this->backend_instance->initPath($remote_server_id);
-            $this->backend_instance->setPollerId($remote_server_id);
-            Manifest::getInstance($this->dependencyInjector)->addRemoteServer($remote_server_id);
+            $this->backend_instance->initPath($remoteServerId);
+            $this->backend_instance->setPollerId($remoteServerId);
+            Manifest::getInstance($this->dependencyInjector)->addRemoteServer($remoteServerId);
 
-            $this->getPollerFromId($remote_server_id);
+            $this->getPollerFromId($remoteServerId);
             $this->current_poller['localhost'] = 1;
             $this->configPoller($username);
-            nagiosServer::getInstance($this->dependencyInjector)->add($this->current_poller, $remote_server_id);
+            nagiosServer::getInstance($this->dependencyInjector)->add($this->current_poller, $remoteServerId);
 
-            $pollers = $this->getPollersFromRemote($remote_server_id);
+            $pollers = $this->getPollersFromRemote($remoteServerId);
             foreach ($pollers as $poller) {
                 $poller['localhost'] = 0;
                 $this->current_poller = $poller;
@@ -197,62 +186,25 @@ class Generate
                 Manifest::getInstance($this->dependencyInjector)->addPoller($poller['id']);
             }
 
-            $this->backend_instance->movePath($remote_server_id);
+            $this->generateModuleObjects($remoteServerId);
+            $this->backend_instance->movePath($remoteServerId);
         } catch (Exception $e) {
             throw new Exception('Exception received : ' . $e->getMessage() . " [file: " . $e->getFile() .
                 "] [line: " . $e->getLine() . "]\n");
             $this->backend_instance->cleanPath();
-        }
-    }
-
-    public function configPollerFromName($poller_name)
-    {
-        try {
-            $this->getPollerFromName($poller_name);
-            $this->configPoller();
-        } catch (Exception $e) {
-            throw new Exception('Exception received : ' . $e->getMessage() . " [file: " . $e->getFile() .
-                "] [line: " . $e->getLine() . "]\n");
-            $this->backend_instance->cleanPath();
-        }
-    }
-
-    public function configPollerFromId($poller_id, $username = 'unknown')
-    {
-        try {
-            if (is_null($this->current_poller)) {
-                $this->getPollerFromId($poller_id);
-            }
-            $this->configPoller($username);
-        } catch (Exception $e) {
-            throw new Exception('Exception received : ' . $e->getMessage() . " [file: " . $e->getFile() .
-                "] [line: " . $e->getLine() . "]\n");
-            $this->backend_instance->cleanPath();
-        }
-    }
-
-    public function configPollers($username = 'unknown')
-    {
-        $query = "SELECT id, localhost, monitoring_engine, centreonconnector_path FROM " .
-            "nagios_server WHERE ns_activate = '1'";
-        $stmt = $this->backend_instance->db->prepare($query);
-        $stmt->execute();
-        foreach ($stmt->fetchAll(PDO::FETCH_ASSOC) as $value) {
-            $this->current_poller = $value;
-            $this->configPollerFromId($this->current_poller['id'], $username);
         }
     }
 
     public function getInstalledModules()
     {
-        if (!is_null($this->installed_modules)) {
-            return $this->installed_modules;
+        if (!is_null($this->installedModules)) {
+            return $this->installedModules;
         }
-        $this->installed_modules = array();
+        $this->installedModules = array();
         $stmt = $this->backend_instance->db->prepare("SELECT name FROM modules_informations");
         $stmt->execute();
         foreach ($stmt->fetchAll(PDO::FETCH_ASSOC) as $value) {
-            $this->installed_modules[] = $value['name'];
+            $this->installedModules[] = $value['name'];
         }
     }
 
@@ -260,34 +212,31 @@ class Generate
     {
         $this->getInstalledModules();
 
-        foreach ($this->installed_modules as $module) {
-            if ($files = glob(_CENTREON_PATH_ . 'www/modules/' . $module . '/generate_files/*.class.php')) {
+        foreach ($this->installedModules as $module) {
+            if ($files = glob(_CENTREON_PATH_ . 'www/modules/' . $module . '/generate_files_remote/generate.class.php')) {
                 foreach ($files as $full_file) {
                     require_once $full_file;
+                    $module = $this->ucFirst(array('-', '_', ' '), $module);
                     $file_name = str_replace('.class.php', '', basename($full_file));
-                    if (class_exists(ucfirst($file_name))) {
-                        $this->module_objects[] = ucfirst($file_name);
+                    $class = $module . ucfirst($file_name);
+                    if (class_exists('\ConfigGenerateRemote\\' . $class)) {
+                        $this->module_objects[] = $class;
                     }
                 }
             }
         }
     }
 
-    public function generateModuleObjects($type = 1)
+    public function generateModuleObjects($remoteServerId)
     {
         if (is_null($this->module_objects)) {
             $this->getModuleObjects();
         }
         if (is_array($this->module_objects)) {
             foreach ($this->module_objects as $module_object) {
-                if (($type == 1 && $module_object::getInstance($this->dependencyInjector)->isEngineObject() == true) ||
-                    ($type == 2 && $module_object::getInstance($this->dependencyInjector)->isBrokerObject() == true)
-                ) {
-                    $module_object::getInstance($this->dependencyInjector)->generateFromPollerId(
-                        $this->current_poller['id'],
-                        $this->current_poller['localhost']
-                    );
-                }
+                $module_object = '\ConfigGenerateRemote\\' . $module_object;
+                $module = new $module_object($this->dependencyInjector);
+                $module->configRemoteServerFromId($remoteServerId);
             }
         }
     }
@@ -311,7 +260,7 @@ class Generate
     {
         $this->poller_cache = array();
         $this->current_poller = null;
-        $this->installed_modules = null;
+        $this->installedModules = null;
         $this->module_objects = null;
     }
 }
