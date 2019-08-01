@@ -1,7 +1,7 @@
 .. _upgrade_from_packages:
 
 =================================
-Mise à jour depuis Centreon 18.10
+Mise à jour depuis Centreon 19.10
 =================================
 
 Ce chapitre décrit la procédure de mise à jour de votre plate-forme vers
@@ -62,30 +62,9 @@ Réalisez les actions suivantes : ::
 
     # systemctl disable rh-php71-php-fpm
     # systemctl stop rh-php71-php-fpm
-    # systemctl stop rh-php72-php-fpm
+    # systemctl start rh-php72-php-fpm
     # systemctl enable rh-php72-php-fpm
-
-Mise à jour du serveur Web Apache
----------------------------------
-
-Centreon 19.10 utilise un nouveau paquet pour le serveur Web Apache.
-
-.. note::
-    Si vous avez modifié la configuration, reportez celle-ci dans le répertoire
-    **/opt/rh/httpd24/root/etc/httpd/conf.d/**.
-    
-    Si SSL était activé, installer le paquet suivant : ::
-    
-    # yum install httpd24-mod_ssl
-
-Puis réalisez les actions suivantes : ::
-
-    # systemctl disable httpd
-    # systemctl stop httpd
-    # systemctl enable httpd24-httpd
-    # systemctl start httpd24-httpd
-    # systemctl enable centreon
-    # systemctl restart centreon
+    # systemctl restart httpd24-httpd
 
 Finalisation de la mise à jour
 ==============================
