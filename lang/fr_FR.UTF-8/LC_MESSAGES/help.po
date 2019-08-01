@@ -928,16 +928,16 @@ msgid "Your Keycloak server url (with \"/auth\")."
 msgstr "L'URL de votre serveur Keycloak (avec le \"/auth\")."
 
 msgid "Your Keycloak redirect url (this server)."
-msgstr "L'URL Keycloak de redirection."
+msgstr "L'URL Keycloak de redirection vers Centreon (ce serveur)."
 
 msgid "Your Keycloak Realm name."
-msgstr "Le nom de votre royaume Keycloak."
+msgstr "Le nom de votre royaume Keycloak comprenant l'application Centreon."
 
 msgid "Your Keycloak client ID."
-msgstr "Votre clientId Keycloak."
+msgstr "L'identifiant Centreon Keycloak (client ID)."
 
 msgid "Your Keycloak client secret."
-msgstr "Votre clef secrète Keycloak."
+msgstr "La clé secrète Keycloak pour l'application Centreon."
 
 #: centreon-web/www/include/Administration/parameters/general/help.php:84
 msgid ""
