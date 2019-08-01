@@ -26,7 +26,10 @@ class ClapiContext extends CentreonContext
         }
 
         echo "OK\n";
-        $image = $this->container->execute('docker images -a', 'web');
+        $image = $this->container->execute(
+            'docker images -a >> /var/log/centreon/sql-error.log 2>&1 &',
+            'web'
+        );
         echo $image;
         var_dump($image);
 
@@ -89,7 +92,7 @@ class ClapiContext extends CentreonContext
             );
             file_put_contents(
                 $this->composeFiles['log_directory'] . '/' .
-                    date('Y-m-d-H-i') . '-diffClapi.txt',
+                date('Y-m-d-H-i') . '-diffClapi.txt',
                 implode("\n", $output)
             );
             throw new \Exception('Configuration not imported');
