@@ -34,67 +34,47 @@
  *
  */
 
-namespace Centreon\Application\Validation;
+namespace Centreon\Tests\Application\DataRepresenter;
 
-use Psr\Container\ContainerInterface;
-use Symfony\Contracts\Translation\TranslatorInterface;
-use Symfony\Component\Translation\TranslatorInterface as DeprecatedTranslatorInterface;
+use PHPUnit\Framework\TestCase;
+use Centreon\Application\Validation\Constraints\RepositoryCallback;
+use Centreon\Application\Validation\Validator\RepositoryCallbackValidator;
 
 /**
- * The interface Symfony\Component\Translation\TranslatorInterface will be deprecated
- * since Symfony 4.2 (use Symfony\Contracts\Translation\TranslatorInterface instead)
- * and will be removed on version 5.0
- *
- * @todo remove implementation of Symfony\Component\Translation\TranslatorInterface interface
- * @todo remove transChoice, setLocale, and getLocale methods
+ * @group Centreon
+ * @group DataRepresenter
  */
-class CentreonValidatorTranslator implements TranslatorInterface, DeprecatedTranslatorInterface
+class RepositoryCallbackTest extends TestCase
 {
 
-    /**
-     * {@inheritdoc}
-     */
-    public function trans($id, array $parameters = array(), $domain = null, $locale = null)
+    public function testCheckDefaultValueOfProperties()
     {
-        $message = gettext($id);
+        $constraint = new RepositoryCallback();
 
-        foreach ($parameters as $key => $val) {
-            $message = str_replace($key, $val, $message);
-        }
+        $this->assertObjectHasAttribute('fieldAccessor', $constraint);
+        $this->assertObjectHasAttribute('repoMethod', $constraint);
+        $this->assertObjectHasAttribute('repository', $constraint);
+        $this->assertObjectHasAttribute('fields', $constraint);
 
-        return $message;
+        $this->assertNull($constraint->fieldAccessor);
+        $this->assertNull($constraint->repoMethod);
+        $this->assertNull($constraint->repository);
+        $this->assertEquals([], $constraint->fields);
     }
 
-    /**
-     * Remove when upgrading to 5.0 version of symfony/validator package
-     *
-     * @codeCoverageIgnore
-     * {@inheritdoc}
-     */
-    public function transChoice($id, $number, array $parameters = [], $domain = null, $locale = null)
+    public function testValidatedBy()
     {
-        // ...
+        $this->assertEquals(
+            RepositoryCallbackValidator::class,
+            (new RepositoryCallback())->validatedBy()
+        );
     }
 
-    /**
-     * Remove when upgrading to 5.0 version of symfony/validator package
-     *
-     * @codeCoverageIgnore
-     * {@inheritdoc}
-     */
-    public function setLocale($locale)
+    public function testGetTargets()
     {
-        // ...
-    }
-
-    /**
-     * Remove when upgrading to 5.0 version of symfony/validator package
-     *
-     * @codeCoverageIgnore
-     * {@inheritdoc}
-     */
-    public function getLocale()
-    {
-        // ...
+        $this->assertEquals(
+            RepositoryCallback::CLASS_CONSTRAINT,
+            (new RepositoryCallback())->getTargets()
+        );
     }
 }

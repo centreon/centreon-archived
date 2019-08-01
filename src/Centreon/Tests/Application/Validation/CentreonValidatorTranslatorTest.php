@@ -33,68 +33,21 @@
  *
  *
  */
+namespace Centreon\Tests\Application\DataRepresenter;
 
-namespace Centreon\Application\Validation;
-
-use Psr\Container\ContainerInterface;
-use Symfony\Contracts\Translation\TranslatorInterface;
-use Symfony\Component\Translation\TranslatorInterface as DeprecatedTranslatorInterface;
+use PHPUnit\Framework\TestCase;
+use Centreon\Application\Validation\CentreonValidatorTranslator;
 
 /**
- * The interface Symfony\Component\Translation\TranslatorInterface will be deprecated
- * since Symfony 4.2 (use Symfony\Contracts\Translation\TranslatorInterface instead)
- * and will be removed on version 5.0
- *
- * @todo remove implementation of Symfony\Component\Translation\TranslatorInterface interface
- * @todo remove transChoice, setLocale, and getLocale methods
+ * @group Centreon
+ * @group DataRepresenter
  */
-class CentreonValidatorTranslator implements TranslatorInterface, DeprecatedTranslatorInterface
+class CentreonValidatorTranslatorTest extends TestCase
 {
-
-    /**
-     * {@inheritdoc}
-     */
-    public function trans($id, array $parameters = array(), $domain = null, $locale = null)
+    public function testTrans()
     {
-        $message = gettext($id);
+        $translator = new CentreonValidatorTranslator();
 
-        foreach ($parameters as $key => $val) {
-            $message = str_replace($key, $val, $message);
-        }
-
-        return $message;
-    }
-
-    /**
-     * Remove when upgrading to 5.0 version of symfony/validator package
-     *
-     * @codeCoverageIgnore
-     * {@inheritdoc}
-     */
-    public function transChoice($id, $number, array $parameters = [], $domain = null, $locale = null)
-    {
-        // ...
-    }
-
-    /**
-     * Remove when upgrading to 5.0 version of symfony/validator package
-     *
-     * @codeCoverageIgnore
-     * {@inheritdoc}
-     */
-    public function setLocale($locale)
-    {
-        // ...
-    }
-
-    /**
-     * Remove when upgrading to 5.0 version of symfony/validator package
-     *
-     * @codeCoverageIgnore
-     * {@inheritdoc}
-     */
-    public function getLocale()
-    {
-        // ...
+        $this->assertEquals('test it', $translator->trans('test :it', [':it' => 'it']));
     }
 }

@@ -33,68 +33,57 @@
  *
  *
  */
+namespace Centreon\Tests\Application\DataRepresenter;
 
-namespace Centreon\Application\Validation;
-
-use Psr\Container\ContainerInterface;
-use Symfony\Contracts\Translation\TranslatorInterface;
-use Symfony\Component\Translation\TranslatorInterface as DeprecatedTranslatorInterface;
+use PHPUnit\Framework\TestCase;
+use Centreon\Application\Validation\Constraints\UniqueEntity;
+use Centreon\Application\Validation\Validator\UniqueEntityValidator;
 
 /**
- * The interface Symfony\Component\Translation\TranslatorInterface will be deprecated
- * since Symfony 4.2 (use Symfony\Contracts\Translation\TranslatorInterface instead)
- * and will be removed on version 5.0
- *
- * @todo remove implementation of Symfony\Component\Translation\TranslatorInterface interface
- * @todo remove transChoice, setLocale, and getLocale methods
+ * @group Centreon
+ * @group DataRepresenter
  */
-class CentreonValidatorTranslator implements TranslatorInterface, DeprecatedTranslatorInterface
+class UniqueEntityTest extends TestCase
 {
-
-    /**
-     * {@inheritdoc}
-     */
-    public function trans($id, array $parameters = array(), $domain = null, $locale = null)
+    public function testCheckDefaultValueOfProperties()
     {
-        $message = gettext($id);
+        $constraint = new UniqueEntity();
 
-        foreach ($parameters as $key => $val) {
-            $message = str_replace($key, $val, $message);
-        }
+        $this->assertObjectHasAttribute('validatorClass', $constraint);
+        $this->assertObjectHasAttribute('entityIdentificatorMethod', $constraint);
+        $this->assertObjectHasAttribute('entityIdentificatorColumn', $constraint);
+        $this->assertObjectHasAttribute('repository', $constraint);
+        $this->assertObjectHasAttribute('repositoryMethod', $constraint);
+        $this->assertObjectHasAttribute('fields', $constraint);
 
-        return $message;
+        $this->assertEquals('getId', $constraint->entityIdentificatorMethod);
+        $this->assertEquals('id', $constraint->entityIdentificatorColumn);
+        $this->assertNull($constraint->repository);
+        $this->assertEquals('findOneBy', $constraint->repositoryMethod);
+        $this->assertEquals([], $constraint->fields);
     }
 
-    /**
-     * Remove when upgrading to 5.0 version of symfony/validator package
-     *
-     * @codeCoverageIgnore
-     * {@inheritdoc}
-     */
-    public function transChoice($id, $number, array $parameters = [], $domain = null, $locale = null)
+    public function testValidatedBy()
     {
-        // ...
+        $this->assertEquals(
+            UniqueEntityValidator::class,
+            (new UniqueEntity())->validatedBy()
+        );
     }
 
-    /**
-     * Remove when upgrading to 5.0 version of symfony/validator package
-     *
-     * @codeCoverageIgnore
-     * {@inheritdoc}
-     */
-    public function setLocale($locale)
+    public function testGetTargets()
     {
-        // ...
+        $this->assertEquals(
+            UniqueEntity::CLASS_CONSTRAINT,
+            (new UniqueEntity())->getTargets()
+        );
     }
 
-    /**
-     * Remove when upgrading to 5.0 version of symfony/validator package
-     *
-     * @codeCoverageIgnore
-     * {@inheritdoc}
-     */
-    public function getLocale()
+    public function testGetDefaultOption()
     {
-        // ...
+        $this->assertEquals(
+            'fields',
+            (new UniqueEntity())->getDefaultOption()
+        );
     }
 }

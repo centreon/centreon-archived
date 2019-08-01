@@ -33,68 +33,55 @@
  *
  *
  */
+namespace Centreon\Tests\Application\DataRepresenter;
 
-namespace Centreon\Application\Validation;
-
-use Psr\Container\ContainerInterface;
-use Symfony\Contracts\Translation\TranslatorInterface;
-use Symfony\Component\Translation\TranslatorInterface as DeprecatedTranslatorInterface;
+use PHPUnit\Framework\TestCase;
+use Centreon\Application\Validation\CentreonValidatorFactory;
+use Pimple\Container;
+use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Validator\Constraints\NotBlankValidator;
 
 /**
- * The interface Symfony\Component\Translation\TranslatorInterface will be deprecated
- * since Symfony 4.2 (use Symfony\Contracts\Translation\TranslatorInterface instead)
- * and will be removed on version 5.0
- *
- * @todo remove implementation of Symfony\Component\Translation\TranslatorInterface interface
- * @todo remove transChoice, setLocale, and getLocale methods
+ * @group Centreon
+ * @group DataRepresenter
  */
-class CentreonValidatorTranslator implements TranslatorInterface, DeprecatedTranslatorInterface
+class CentreonValidatorFactoryTest extends TestCase
 {
-
-    /**
-     * {@inheritdoc}
-     */
-    public function trans($id, array $parameters = array(), $domain = null, $locale = null)
+    public function testGetInstance()
     {
-        $message = gettext($id);
+        $factory = new CentreonValidatorFactory(new Container);
 
-        foreach ($parameters as $key => $val) {
-            $message = str_replace($key, $val, $message);
-        }
+        $this->assertInstanceOf(NotBlankValidator::class, $factory->getInstance(new NotBlank));
+    }
 
-        return $message;
+    public function testGetInstanceWithService()
+    {
+        $service = 'service.constraint';
+
+        $constraint = $this->createMock(NotBlank::class);
+        $constraint->method('validatedBy')
+            ->willReturn($service);
+
+        $factory = new CentreonValidatorFactory(new Container([
+            $service => new \stdClass,
+        ]));
+
+        $this->assertInstanceOf(\stdClass::class, $factory->getInstance($constraint));
     }
 
     /**
-     * Remove when upgrading to 5.0 version of symfony/validator package
-     *
-     * @codeCoverageIgnore
-     * {@inheritdoc}
+     * @expectedException \RuntimeException
      */
-    public function transChoice($id, $number, array $parameters = [], $domain = null, $locale = null)
+    public function testGetInstanceWithoutValidator()
     {
-        // ...
-    }
+        $service = 'service.constraint';
 
-    /**
-     * Remove when upgrading to 5.0 version of symfony/validator package
-     *
-     * @codeCoverageIgnore
-     * {@inheritdoc}
-     */
-    public function setLocale($locale)
-    {
-        // ...
-    }
+        $constraint = $this->createMock(NotBlank::class);
+        $constraint->method('validatedBy')
+            ->willReturn($service);
 
-    /**
-     * Remove when upgrading to 5.0 version of symfony/validator package
-     *
-     * @codeCoverageIgnore
-     * {@inheritdoc}
-     */
-    public function getLocale()
-    {
-        // ...
+        $factory = new CentreonValidatorFactory(new Container);
+
+        $factory->getInstance($constraint);
     }
 }
