@@ -38,8 +38,10 @@ namespace Centreon\Tests\Application\Webservice;
 
 use PHPUnit\Framework\TestCase;
 use Pimple\Container;
-use Centreon\Application\Webservice\CentreonI18n;
 use Centreon\Tests\Resource\Traits;
+use Centreon\Application\Webservice\CentreonI18n;
+use Centreon\Domain\Service\I18nService;
+use Centreon\ServiceProvider;
 
 /**
  * @group Centreon
@@ -52,7 +54,9 @@ class CentreonI18nTest extends TestCase
     protected function setUp()
     {
         // dependencies
-        $container = new Container;
+        $this->container = new Container([
+            ServiceProvider::CENTREON_I18N_SERVICE => $this->createMock(I18nService::class),
+        ]);
 
         $this->webservice = $this->createPartialMock(CentreonI18n::class, [
             'loadDb',
@@ -62,11 +66,35 @@ class CentreonI18nTest extends TestCase
         ]);
 
         // load dependencies
-        $this->webservice->setDi($container);
+        $this->webservice->setDi($this->container);
     }
 
     public function testGetName()
     {
         $this->assertEquals('centreon_i18n', CentreonI18n::getName());
+    }
+
+    public function testGetTranslation()
+    {
+        $value = ['test OK'];
+        $this->container->offsetGet(ServiceProvider::CENTREON_I18N_SERVICE)
+            ->method('getTranslation')
+            ->willReturn($value);
+
+        $this->assertEquals($value, $this->webservice->getTranslation());
+    }
+
+    /**
+     * @expectedException \Exception
+     */
+    public function testGetTranslationWithException()
+    {
+        $this->container->offsetGet(ServiceProvider::CENTREON_I18N_SERVICE)
+            ->method('getTranslation')
+            ->will($this->returnCallback(function() {
+                throw new \Exception('');
+            }));
+
+        $this->webservice->getTranslation();
     }
 }

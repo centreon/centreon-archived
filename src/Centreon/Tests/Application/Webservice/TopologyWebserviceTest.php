@@ -40,6 +40,8 @@ use PHPUnit\Framework\TestCase;
 use Pimple\Container;
 use Centreon\Application\Webservice\TopologyWebservice;
 use Centreon\Tests\Resource\Traits;
+use Centreon\Test\Mock\CentreonDB;
+use Centreon\Test\Traits\TestCaseExtensionTrait;
 
 /**
  * @group Centreon
@@ -47,12 +49,14 @@ use Centreon\Tests\Resource\Traits;
  */
 class TopologyWebserviceTest extends TestCase
 {
-    use Traits\WebServiceAuthorizePublicTrait;
+    use Traits\WebServiceAuthorizePublicTrait,
+        TestCaseExtensionTrait;
 
     protected function setUp()
     {
         // dependencies
-        $container = new Container;
+        $this->container = new Container;
+        $this->db = new CentreonDB;
 
         $this->webservice = $this->createPartialMock(TopologyWebservice::class, [
             'loadDb',
@@ -61,12 +65,45 @@ class TopologyWebserviceTest extends TestCase
             'query',
         ]);
 
+        $this->setProtectedProperty($this->webservice, 'pearDB', $this->db);
+
         // load dependencies
-        $this->webservice->setDi($container);
+        $this->webservice->setDi($this->container);
     }
 
     public function testGetName()
     {
         $this->assertEquals('centreon_topology', TopologyWebservice::getName());
+    }
+
+    public function testGetGetTopologyByPage()
+    {
+        $_GET['topology_page'] = 1;
+        $this->db->addResultSet("SELECT * FROM `topology` WHERE `topology_page` = :id", [['k']]);
+
+        $this->webservice->getGetTopologyByPage();
+    }
+
+    /**
+     * @expectedException \RestBadRequestException
+     */
+    public function testGetGetTopologyByPageWithoutResult()
+    {
+        $_GET['topology_page'] = 1;
+        $this->db->addResultSet("SELECT * FROM `topology` WHERE `topology_page` = :id", []);
+
+        $this->webservice->getGetTopologyByPage();
+    }
+
+    /**
+     * @expectedException \RestBadRequestException
+     */
+    public function testGetGetTopologyByPageWithoutTopologyPage()
+    {
+        if (isset($_GET['topology_page'])) {
+            unset($_GET['topology_page']);
+        }
+
+        $this->webservice->getGetTopologyByPage();
     }
 }
