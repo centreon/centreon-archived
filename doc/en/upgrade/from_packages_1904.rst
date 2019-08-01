@@ -55,7 +55,7 @@ Run the following commands: ::
 
     # systemctl disable rh-php71-php-fpm
     # systemctl stop rh-php71-php-fpm
-    # systemctl stop rh-php72-php-fpm
+    # systemctl start rh-php72-php-fpm
     # systemctl enable rh-php72-php-fpm
     # systemctl restart httpd24-httpd
 
@@ -109,7 +109,7 @@ Upgrading the Centreon solution
 
 Upgrade all the components with the following command: ::
 
-    # yum update centreon*
+    # yum update centreon\*
 
 .. note::
     Accept new GPG keys from the repositories as needed.
