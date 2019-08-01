@@ -62,7 +62,7 @@ $contactGroup = filter_var(
     FILTER_VALIDATE_INT
 );
 
-if (isset($_POST['searchC']) || isset($_GET['searchC'])) {
+if ($search) {
     //saving filters values
     $centreon->historySearch[$url] = array();
     $centreon->historySearch[$url]['search'] = $search;
