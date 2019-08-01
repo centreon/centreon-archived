@@ -127,7 +127,7 @@ for ($cpt = 0; $r = $res->fetch(); $cpt++) {
                 "' title='" . _("Kick User") . "'>" .
             "</a>";
 
-        // checking if the user account is linked to a LDAP
+        // checking if the user account is linked to an LDAP
         if ($r['contact_auth_type'] === "ldap") {
             // adding the last synchronization time
             if ((int)$r["contact_ldap_last_sync"] > 0) {
@@ -136,9 +136,11 @@ for ($cpt = 0; $r = $res->fetch(); $cpt++) {
                 $session_data[$cpt]["last_sync"] = "-";
             }
             $session_data[$cpt]["synchronize"] =
-                "<img src='./img/icons/refresh.png' border='0' " .
-                    "alt='" . _("Synchronize LDAP") . "' title='" . _("Synchronize LDAP") . "' " .
-                    "onclick='submitSync(" . $currentPage . ", \"" . $r['session_id'] . "\")'>";
+                "<a href='#'>" .
+                    "<img src='./img/icons/refresh.png' border='0' " .
+                        "alt='" . _("Synchronize LDAP") . "' title='" . _("Synchronize LDAP") . "' " .
+                        "onclick='submitSync(" . $currentPage . ", \"" . $r['session_id'] . "\")'>" .
+                "</a>";
         } else {
             // hiding the synchronization option and details
             $session_data[$cpt]["last_sync"] = "";
