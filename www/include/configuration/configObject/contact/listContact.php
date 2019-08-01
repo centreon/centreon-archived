@@ -70,7 +70,7 @@ if ($search) {
 } else {
     //restoring saved values
     $search = $centreon->historySearch[$url]['search'] ?? null;
-    $search = $centreon->historySearch[$url]['contactGroup'] ?? null;
+    $search = $centreon->historySearch[$url]['contactGroup'] ?? 0;
 }
 
 $clauses = array();
