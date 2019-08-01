@@ -672,33 +672,32 @@ msgstr ""
 "Esta opción debe habilitarse en un entorno seguro dedicado a la autenticación SSO. \n"
 "El acceso directo a la interfaz web de Centreon para usuarios debe estar deshabilitado."
 
-#~ msgid "Enable login with Keycloak."
-#~ msgstr ""
+msgid "Enable login with Keycloak."
+msgstr "Habilitar inicio de sesión con Keycloak"
 
-#~ msgid "Authentication can be solely based on Keycloak or it can work with both Keycloak and local authentication systems."
-#~ msgstr ""
+msgid "Authentication can be solely based on Keycloak or it can work with both Keycloak and local authentication systems."
+msgstr "La autenticación puede basarse únicamente en Keycloak o puede funcionar tanto con Keycloak como con sistemas de autenticación locales."
 
-#~ msgid "IP/DNS of trusted clients. Use coma as delimiter in case of multiple clients."
-#~ msgstr ""
+msgid "IP/DNS of trusted clients. Use coma as delimiter in case of multiple clients."
+msgstr "IP/DNS de clientes de confianza. Use una coma como delimitador en el caso de varios clientes."
 
-#~ msgid "IP/DNS of blacklist clients. Use coma as delimiter in case of multiple clients."
-#~ msgstr ""
+msgid "IP/DNS of blacklist clients. Use coma as delimiter in case of multiple clients."
+msgstr "IP/DNS de clientes cerrados. Use una coma como delimitador en el caso de varios clientes."
 
-#~ msgid "Your Keycloak server url (with \"/auth\")."
-#~ msgstr ""
+msgid "Your Keycloak server url (with \"/auth\")."
+msgstr "Su URL del servidor de Keycloak (con \"/auth\")."
 
-#~ msgid "Your Keycloak redirect url (this server)."
-#~ msgstr ""
+msgid "Your Keycloak redirect url (this server)."
+msgstr "Su URL de redirección de Keycloak (este servidor)."
 
-#~ msgid "Your Keycloak Realm name."
-#~ msgstr ""
+msgid "Your Keycloak Realm name."
+msgstr "Tu nombre de Dominio Keycloak."
 
-#~ msgid "Your Keycloak client ID."
-#~ msgstr ""
+msgid "Your Keycloak client ID."
+msgstr "Su identificación de cliente de Keycloak."
 
-#~ msgid "Your Keycloak client secret."
-#~ msgstr ""
-
+msgid "Your Keycloak client secret."
+msgstr "Su secreto de cliente de Keycloak"
 
 #: centreon-web/www/include/Administration/parameters/general/help.php:80
 msgid "Authentication can be solely based on SSO or it can work with both SSO and local authentication systems."

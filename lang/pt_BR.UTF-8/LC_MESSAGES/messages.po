@@ -6674,7 +6674,6 @@ msgid "Display comment on chart"
 msgstr "Mostrar comentário no gráfico"
 
 #: centreon-web/www/include/Administration/parameters/general/form.php:199
-#: centreon-web/www/include/Administration/parameters/general/form.php:199
 msgid "Enable SSO authentication"
 msgstr "Ativa autenticação SSO"
 
