@@ -78,3 +78,8 @@ ALTER TABLE `traps` ADD COLUMN IF NOT EXISTS `traps_mode` ENUM('0', '1') DEFAULT
 
 -- Add trap filter
 ALTER TABLE `traps` MODIFY COLUMN `traps_exec_interval_type` ENUM('0','1','2','3') NULL DEFAULT '0';
+
+-- delete legacy engine parameters
+ALTER TABLE `cfg_nagios` DROP COLUMN `check_result_path`;
+ALTER TABLE `cfg_nagios` DROP COLUMN `use_check_result_path`;
+ALTER TABLE `cfg_nagios` DROP COLUMN `max_check_result_file_age`;
