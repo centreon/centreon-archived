@@ -222,31 +222,31 @@ class CentreonAuthLDAP
             $userDisplay = $this->pearDB->escape($userDisplay);
 
             //getting user's email
-            $userEmail = "'" . $this->contactInfos['contact_email'] . "'";
+            $userEmail = $this->contactInfos['contact_email'];
             if (isset($userInfos[$this->ldap->getAttrName('user', 'email')])
                 && trim($userInfos[$this->ldap->getAttrName('user', 'email')]) != ''
             ) {
                 if (is_array($userInfos[$this->ldap->getAttrName('user', 'email')])) {
                     // Get the first if there are multiple entries
                     if ($userInfos[$this->ldap->getAttrName('user', 'email')][0]) {
-                        $userEmail = "'" . $userInfos[$this->ldap->getAttrName('user', 'email')][0] . "'";
+                        $userEmail = $userInfos[$this->ldap->getAttrName('user', 'email')][0];
                     }
                 } elseif ($userInfos[$this->ldap->getAttrName('user', 'email')]) {
-                    $userEmail = "'" . $userInfos[$this->ldap->getAttrName('user', 'email')] . "'";
+                    $userEmail = $userInfos[$this->ldap->getAttrName('user', 'email')];
                 }
             }
             //getting user's pager
-            $userPager = "'" . $this->contactInfos['contact_pager'] . "'";
+            $userPager = $this->contactInfos['contact_pager'];
             if (isset($userInfos[$this->ldap->getAttrName('user', 'pager')])
                 && trim($userInfos[$this->ldap->getAttrName('user', 'pager')]) != ''
             ) {
                 if (is_array($userInfos[$this->ldap->getAttrName('user', 'pager')])) {
                     // Get the first if there are multiple entries
                     if ($userInfos[$this->ldap->getAttrName('user', 'pager')][0]) {
-                        $userPager = "'" . $userInfos[$this->ldap->getAttrName('user', 'pager')][0] . "'";
+                        $userPager = $userInfos[$this->ldap->getAttrName('user', 'pager')][0];
                     }
                 } elseif ($userInfos[$this->ldap->getAttrName('user', 'pager')]) {
-                    $userPager = "'" . $userInfos[$this->ldap->getAttrName('user', 'pager')] . "'";
+                    $userPager = $userInfos[$this->ldap->getAttrName('user', 'pager')];
                 }
             }
 
