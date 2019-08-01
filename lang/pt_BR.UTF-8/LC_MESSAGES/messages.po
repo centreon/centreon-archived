@@ -6677,6 +6677,30 @@ msgstr "Mostrar comentário no gráfico"
 msgid "Enable SSO authentication"
 msgstr "Ativa autenticação SSO"
 
+#~ msgid "Are you sure you want to change this parameter? Please read the help before."
+#~ msgstr ""
+
+#~ msgid "Keycloak trusted client addresses"
+#~ msgstr ""
+
+#~ msgid "Keycloak blacklist client addresses"
+#~ msgstr ""
+
+#~ msgid "Keycloak Server Url"
+#~ msgstr ""
+
+#~ msgid "Keycloak Redirect Url"
+#~ msgstr ""
+
+#~ msgid "Keycloak Client Realm"
+#~ msgstr ""
+
+#~ msgid "Keycloak Client ID"
+#~ msgstr ""
+
+#~ msgid "Keycloak Client Secret"
+#~ msgstr ""
+
 #: centreon-web/www/include/Administration/parameters/general/form.php:202
 msgid "SSO only"
 msgstr "Somente SSO"

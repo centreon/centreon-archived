@@ -679,6 +679,33 @@ msgstr ""
 msgid "Authentication can be solely based on SSO or it can work with both SSO and local authentication systems."
 msgstr "A autenticação pode ser baseada somente no SSO ou pode funcionar tanto com o SSO quanto com um sistema de autenticação local."
 
+#~ msgid "Enable login with Keycloak."
+#~ msgstr ""
+
+#~ msgid "Authentication can be solely based on Keycloak or it can work with both Keycloak and local authentication systems."
+#~ msgstr ""
+
+#~ msgid "IP/DNS of trusted clients. Use coma as delimiter in case of multiple clients."
+#~ msgstr ""
+
+#~ msgid "IP/DNS of blacklist clients. Use coma as delimiter in case of multiple clients."
+#~ msgstr ""
+
+#~ msgid "Your Keycloak server url (with \"/auth\")."
+#~ msgstr ""
+
+#~ msgid "Your Keycloak redirect url (this server)."
+#~ msgstr ""
+
+#~ msgid "Your Keycloak Realm name."
+#~ msgstr ""
+
+#~ msgid "Your Keycloak client ID."
+#~ msgstr ""
+
+#~ msgid "Your Keycloak client secret."
+#~ msgstr ""
+
 #: centreon-web/www/include/Administration/parameters/general/help.php:84
 msgid "IP/DNS of trusted clients. Use coma as delimiter in case of multiple clients."
 msgstr ""

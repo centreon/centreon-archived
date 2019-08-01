@@ -672,6 +672,34 @@ msgstr ""
 "Esta opción debe habilitarse en un entorno seguro dedicado a la autenticación SSO. \n"
 "El acceso directo a la interfaz web de Centreon para usuarios debe estar deshabilitado."
 
+#~ msgid "Enable login with Keycloak."
+#~ msgstr ""
+
+#~ msgid "Authentication can be solely based on Keycloak or it can work with both Keycloak and local authentication systems."
+#~ msgstr ""
+
+#~ msgid "IP/DNS of trusted clients. Use coma as delimiter in case of multiple clients."
+#~ msgstr ""
+
+#~ msgid "IP/DNS of blacklist clients. Use coma as delimiter in case of multiple clients."
+#~ msgstr ""
+
+#~ msgid "Your Keycloak server url (with \"/auth\")."
+#~ msgstr ""
+
+#~ msgid "Your Keycloak redirect url (this server)."
+#~ msgstr ""
+
+#~ msgid "Your Keycloak Realm name."
+#~ msgstr ""
+
+#~ msgid "Your Keycloak client ID."
+#~ msgstr ""
+
+#~ msgid "Your Keycloak client secret."
+#~ msgstr ""
+
+
 #: centreon-web/www/include/Administration/parameters/general/help.php:80
 msgid "Authentication can be solely based on SSO or it can work with both SSO and local authentication systems."
 msgstr "La autenticación solo puede basarse en SSO o puede funcionar tanto con SSO como con un sistema de autenticación local."
