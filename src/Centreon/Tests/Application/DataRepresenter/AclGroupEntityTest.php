@@ -33,7 +33,7 @@
  *
  *
  */
-namespace CentreonNotification\Tests\Application\DataRepresenter;
+namespace Centreon\Tests\Application\DataRepresenter;
 
 use PHPUnit\Framework\TestCase;
 use Centreon\Domain\Entity\AclGroup;
