@@ -118,9 +118,10 @@ try {
     $pearDB->beginTransaction();
     try {
         $ldapConf = $pearDB->query(
-            "SELECT auth.ar_id, auth.ar_sync_base_date, info.ari_value AS interval
-        FROM auth_ressource auth INNER JOIN auth_ressource_info info ON auth.ar_id = info.ar_id
-        WHERE auth.ar_enable = '1' AND info.ari_name = 'ldap_sync_interval'"
+            "SELECT auth.ar_id, auth.ar_sync_base_date, info.ari_value AS `interval`
+            FROM auth_ressource auth
+            INNER JOIN auth_ressource_info info ON auth.ar_id = info.ar_id
+            WHERE auth.ar_enable = '1' AND info.ari_name = 'ldap_sync_interval'"
         );
 
         $updateSyncTime = $pearDB->prepare(
