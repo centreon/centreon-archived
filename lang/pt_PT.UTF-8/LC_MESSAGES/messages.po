@@ -10593,14 +10593,6 @@ msgstr "Ficheiro de Configuração de Objeto"
 msgid "Temp File"
 msgstr "Ficheiro Temporario"
 
-#: /home/lgcosta/devel/centreon/centreon/www/include/configuration/configNagios/formNagios.php:180
-msgid "Check result directory"
-msgstr "Diretorio de resultados de checagem"
-
-#: /home/lgcosta/devel/centreon/centreon/www/include/configuration/configNagios/formNagios.php:181
-msgid "Max Check Result File Age"
-msgstr "Tempo de vida máximo do ficheiro de resultado de checagem"
-
 #: /home/lgcosta/devel/centreon/centreon/www/include/configuration/configNagios/formNagios.php:186
 msgid "Monitoring system User"
 msgstr "Usuário de sistema de Monitoramento"
@@ -11168,10 +11160,6 @@ msgstr "Opções de Checagem de Host"
 #: /home/lgcosta/devel/centreon/centreon/www/install/smarty_translate.php:435
 msgid "Service Check Options"
 msgstr "Opções de checagem de Serviço"
-
-#: /home/lgcosta/devel/centreon/centreon/www/include/configuration/configNagios/formNagios.php:893
-msgid "Result Cache"
-msgstr "Cache de Resultados"
 
 #: /home/lgcosta/devel/centreon/centreon/www/include/configuration/configNagios/formNagios.php:895
 msgid "Freshness"
