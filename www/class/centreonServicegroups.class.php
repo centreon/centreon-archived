@@ -204,8 +204,12 @@ class CentreonServicegroups
         $queryValues = array();
         if (!empty($values)) {
             foreach ($values as $k => $v) {
-                $listValues .= ':sg' . $v . ',';
-                $queryValues['sg' . $v] = (int)$v;
+                //As it happens that $v could be like "X,Y" when two hostgroups are selected, we added a second foreach
+                $multiValues = explode(',', $v);
+                foreach ($multiValues as $item) {
+                    $listValues .= ':sg_' . $item . ',';
+                    $queryValues['sg_' . $item] = (int)$item;
+                }
             }
             $listValues = rtrim($listValues, ',');
         } else {
