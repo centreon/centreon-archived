@@ -258,7 +258,6 @@ function insertNagios($ret = array(), $brokerTab = array())
     $rq = "INSERT INTO cfg_nagios ("
         . "`nagios_id` , `nagios_name` , `use_timezone`, `nagios_server_id`, `log_file` , `cfg_dir` , "
         . "`temp_file` , "
-        . "`check_result_path`, `max_check_result_file_age`, "
         . "`status_file` , `status_update_interval` , `nagios_user` , `nagios_group` , "
         . "`enable_notifications` , `execute_service_checks` , "
         . "`accept_passive_service_checks` , `execute_host_checks` , "
@@ -302,7 +301,7 @@ function insertNagios($ret = array(), $brokerTab = array())
         . "`admin_email` , `admin_pager` , `nagios_comment` , `nagios_activate`, "
         . "`event_broker_options` , `translate_passive_host_checks`, "
         . "`passive_host_checks_are_soft`, `check_for_orphaned_hosts`, `external_command_buffer_slots`, "
-        . "`cfg_file`, `log_pid`, `use_check_result_path`, `enable_macros_filter`, `macros_filter`) ";
+        . "`cfg_file`, `log_pid`, `enable_macros_filter`, `macros_filter`) ";
     $rq .= "VALUES (";
     $rq .= "NULL, ";
 
@@ -338,18 +337,6 @@ function insertNagios($ret = array(), $brokerTab = array())
 
     if (isset($ret["temp_file"]) && $ret["temp_file"] != null) {
         $rq .= "'" . htmlentities($ret["temp_file"], ENT_QUOTES, "UTF-8") . "', ";
-    } else {
-        $rq .= "NULL, ";
-    }
-
-    if (isset($ret["check_result_path"]) && $ret["check_result_path"] != null) {
-        $rq .= "'" . htmlentities($ret["check_result_path"], ENT_QUOTES, "UTF-8") . "', ";
-    } else {
-        $rq .= "NULL, ";
-    }
-
-    if (isset($ret["max_check_result_file_age"]) && $ret["max_check_result_file_age"] != null) {
-        $rq .= "'" . htmlentities($ret["max_check_result_file_age"], ENT_QUOTES, "UTF-8") . "', ";
     } else {
         $rq .= "NULL, ";
     }
@@ -1141,14 +1128,6 @@ function insertNagios($ret = array(), $brokerTab = array())
         $rq .= "'0', ";
     }
 
-    if (isset($ret['use_check_result_path']['use_check_result_path'])
-        && $ret['use_check_result_path']['use_check_result_path']
-    ) {
-        $rq .= "'1',";
-    } else {
-        $rq .= "'0',";
-    }
-
     if (isset($ret['enable_macros_filter']['enable_macros_filter'])
         && $ret['enable_macros_filter']['enable_macros_filter']) {
         $rq .= "'1', ";
@@ -1249,20 +1228,6 @@ function updateNagios($nagios_id = null)
         $rq .= "temp_file = '" . htmlentities($ret["temp_file"], ENT_QUOTES, "UTF-8") . "',  ";
     } else {
         $rq .= "temp_file = NULL, ";
-    }
-
-    if (isset($ret["check_result_path"]) && $ret["check_result_path"] != null) {
-        $rq .= "check_result_path = '" . htmlentities($ret["check_result_path"], ENT_QUOTES, "UTF-8") . "',  ";
-    } else {
-        $rq .= "check_result_path = NULL, ";
-    }
-
-    if (isset($ret["max_check_result_file_age"]) && $ret["max_check_result_file_age"] != null) {
-        $rq .= "max_check_result_file_age = '"
-            . htmlentities($ret["max_check_result_file_age"], ENT_QUOTES, "UTF-8")
-            . "',  ";
-    } else {
-        $rq .= "max_check_result_file_age = NULL, ";
     }
 
     if (isset($ret["status_file"]) && $ret["status_file"] != null) {
@@ -2133,14 +2098,6 @@ function updateNagios($nagios_id = null)
         $rq .= "log_pid = '1',  ";
     } else {
         $rq .= "log_pid = '0', ";
-    }
-
-    if (isset($ret['use_check_result_path']['use_check_result_path'])
-        && $ret['use_check_result_path']['use_check_result_path']
-    ) {
-        $rq .= "use_check_result_path = '1', ";
-    } else {
-        $rq .= "use_check_result_path = '0', ";
     }
 
     if (isset($ret['enable_macros_filter']['enable_macros_filter'])

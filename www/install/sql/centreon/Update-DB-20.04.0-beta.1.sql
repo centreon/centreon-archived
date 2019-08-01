@@ -10,3 +10,8 @@ DELETE FROM `cb_type` WHERE `type_shortname` = 'correlation';
 UPDATE topology SET topology_url_opt = '&o=svcOV_pb' WHERE topology_page = 20204;
 UPDATE topology SET topology_url_opt = '&o=svcOVHG_pb' WHERE topology_page = 20209;
 UPDATE topology SET topology_url_opt = '&o=svcOVSG_pb' WHERE topology_page = 20212;
+
+-- Delete legacy engine parameters
+ALTER TABLE `cfg_nagios` DROP COLUMN `check_result_path`;
+ALTER TABLE `cfg_nagios` DROP COLUMN `use_check_result_path`;
+ALTER TABLE `cfg_nagios` DROP COLUMN `max_check_result_file_age`;

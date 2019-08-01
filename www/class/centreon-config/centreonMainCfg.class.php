@@ -184,7 +184,6 @@ class CentreonMainCfg
             'max_debug_file_size' => '1000000000',
             'daemon_dumps_core' => '0',
             'cfg_file' => 'centengine.cfg',
-            'use_check_result_path' => '0',
             'cached_host_check_horizon' => '60',
             'log_pid' => 1,
             'enable_macros_filter' => 0
@@ -283,10 +282,10 @@ class CentreonMainCfg
             "`enable_predictive_service_dependency_checks`, `passive_host_checks_are_soft`, " .
             "`use_large_installation_tweaks`, `enable_environment_macros`, `use_setpgid`, " .
             "`debug_file`, `debug_level`, `debug_level_opt`, `debug_verbosity`, `max_debug_file_size`, " .
-            "`daemon_dumps_core`, `cfg_file`, `use_check_result_path`) " .
+            "`daemon_dumps_core`, `cfg_file`) " .
             "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, " .
             "?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, " .
-            "?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            "?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         $params = array(
             'Centreon Engine ' . $sName,
@@ -383,8 +382,7 @@ class CentreonMainCfg
             $baseValues['debug_verbosity'],
             $baseValues['max_debug_file_size'],
             $baseValues['daemon_dumps_core'],
-            $baseValues['cfg_file'],
-            $baseValues['use_check_result_path']
+            $baseValues['cfg_file']
         );
         foreach ($params as &$param) {
             if (empty($param)) {

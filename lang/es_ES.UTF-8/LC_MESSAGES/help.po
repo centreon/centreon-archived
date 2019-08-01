@@ -1433,26 +1433,6 @@ msgstr ""
 "Este es un archivo temporal que el motor de supervisión crea periódicamente durante la actualización de comentarios, estados, etc. \n"
 "Este archivo se elimina cuando ya no es necesario."
 
-#: centreon-web/www/include/configuration/configNagios/help.php:67
-msgid ""
-"This options determines which directory Monitoring Engine will use to temporarily store host and service check results before they are processed. This directory should not be used to store any other files, as Monitoring Engine will periodically clean this directory of "
-"old file. Make sure that only a single instance of Monitoring Engine has access to the check result path. If multiple instances of Monitoring Engine have their check result path set to the same directory, you will run into problems with check results being processed "
-"(incorrectly) by the wrong instance of Monitoring Engine!"
-msgstr ""
-"Esta opción determina qué directorio utilizará el motor de administración para almacenar temporalmente los resultados del control. \n"
-"Este directorio no debe almacenar otros archivos, ya que el motor de supervisión elimina el contenido de este directorio repetidamente. \n"
-"Asegúrese de que solo una instancia del motor de supervisión tenga acceso al directorio de resultados. \n"
-"Si varias instancias del motor de monitoreo tienen su directorio de resultados, configure la misma ubicación, tendrá problemas con los resultados de las verificaciones que se procesaron (incorrectamente) en comparación con la mala instancia del motor de supervisión."
-
-#: centreon-web/www/include/configuration/configNagios/help.php:78
-msgid ""
-"This options determines the maximum age in seconds that Monitoring Engine will consider check result files found in the check_result_path directory to be valid. Check result files that are older that this threshold will be deleted by Monitoring Engine and the check "
-"results they contain will not be processed. By using a value of zero (0) with this option, Monitoring Engine will process all check result files."
-msgstr ""
-"Esta opción determina el tiempo máximo en segundos que el motor de administración puede considerar encontrar información de resultados de control en el directorio de almacenamiento de resultados. \n"
-"Los resultados que excedan este límite de tiempo serán eliminados por el motor de supervisión y ya no se podrán utilizar. \n"
-"Al utilizar el valor cero (0) para esta opción, el motor de monitoreo explotará cada archivo de control."
-
 #: centreon-web/www/include/configuration/configNagios/help.php:86
 msgid ""
 "This is used to set the effective user that the Monitoring Engine process should run as. After initial program startup and before starting to monitor anything, Monitoring Engine will drop its effective privileges and run as this user. You may specify either a username "
@@ -2450,10 +2430,6 @@ msgid "Enable the possibility to log pid information in engine log file (option 
 msgstr ""
 "Habilita la capacidad de registrar el PID del proceso en el registro de eventos del motor del supervisor. \n"
 "Esta opción solo funciona para el motor de Centreon."
-
-#: centreon-web/www/include/configuration/configNagios/help.php:492
-msgid "This option enable or disable compatibility mode to use check result path."
-msgstr "Esta opción hace que el motor del motor de Centreon sea compatible con módulos de terceros, como MKLiveStatus y Mod_Gearman."
 
 #: centreon-web/www/include/configuration/configObject/host_dependency/help.php:4 centreon-web/www/include/configuration/configObject/service_dependency/help.php:4
 msgid "Define a short name for this dependency."
