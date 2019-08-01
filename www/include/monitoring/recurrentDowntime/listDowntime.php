@@ -43,7 +43,7 @@ include("./include/common/autoNumLimit.php");
 
 //initializing filters values
 $search = filter_var(
-    $_POST["searchDT"] ?? $_GET["searchDT"] ?? null,
+    $_POST["searchDT"] ?? $_GET["searchDT"] ?? '',
     FILTER_SANITIZE_STRING
 );
 
@@ -53,7 +53,7 @@ if ($search) {
     $centreon->historySearch[$url]["search"] = $search;
 } else {
     //restoring saved values
-    $search = $centreon->historySearch[$url]['search'] ?? null;
+    $search = $centreon->historySearch[$url]['search'] ?? '';
 }
 
 $downtime->setSearch($search);
