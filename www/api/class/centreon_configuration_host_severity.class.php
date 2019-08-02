@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2005-2015 Centreon
+ * Copyright 2005-2019 Centreon
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -35,9 +35,9 @@
 
 
 require_once _CENTREON_PATH_ . "/www/class/centreonDB.class.php";
-require_once dirname(__FILE__) . "/centreon_configuration_objects.class.php";
+require_once __DIR__ . "/centreon_configuration_objects.class.php";
 
-class CentreonConfigurationHostseverity extends CentreonConfigurationObjects    
+class CentreonConfigurationHostSeverity extends CentreonConfigurationObjects    
 {
     /**
      * CentreonConfigurationHostcategory constructor.
@@ -63,9 +63,9 @@ class CentreonConfigurationHostseverity extends CentreonConfigurationObjects
         }
 
         $queryContact = 'SELECT SQL_CALC_FOUND_ROWS DISTINCT hc_id, hc_name FROM hostcategories ' .
-            'WHERE hc_name LIKE :name ';
-        $queryContact .= "AND level IS NOT NULL ";
-        $queryContact .= 'ORDER BY hc_name ';
+            'WHERE hc_name LIKE :name ' .
+            "AND level IS NOT NULL " .
+            'ORDER BY hc_name ';
 
         if (isset($this->arguments['page_limit']) && isset($this->arguments['page'])) {
             if (!is_numeric($this->arguments['page']) || !is_numeric($this->arguments['page_limit'])) {
