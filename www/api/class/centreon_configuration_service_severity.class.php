@@ -77,7 +77,7 @@ class CentreonConfigurationServiceSeverity extends CentreonConfigurationObjects
             $queryValues['limit'] = (int)$this->arguments['page_limit'];
         }
         $stmt = $this->pearDB->prepare($queryContact);
-        $stmt->bindParam(':name', $queryValues['name'], PDO::PARAM_STR);
+        $stmt->bindParam(':name', $queryValues['name'], \PDO::PARAM_STR);
         if (isset($queryValues['offset'])) {
             $stmt->bindParam(':offset', $queryValues["offset"], PDO::PARAM_INT);
             $stmt->bindParam(':limit', $queryValues["limit"], PDO::PARAM_INT);
