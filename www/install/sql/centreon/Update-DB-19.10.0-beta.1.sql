@@ -78,3 +78,7 @@ ALTER TABLE `traps` ADD COLUMN IF NOT EXISTS `traps_mode` ENUM('0', '1') DEFAULT
 
 -- Add trap filter
 ALTER TABLE `traps` MODIFY COLUMN `traps_exec_interval_type` ENUM('0','1','2','3') NULL DEFAULT '0';
+
+-- Add severity preference on host-monitoring widget
+INSERT INTO `widget_parameters_field_type` (`ft_typename`, `is_connector`) VALUES
+('serviceSeverityMulti', 1);

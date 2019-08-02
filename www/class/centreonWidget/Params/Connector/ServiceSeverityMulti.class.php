@@ -33,12 +33,25 @@
  *
  */
 require_once __DIR__ . "/../Select2.class.php";
+
 class CentreonWidgetParamsConnectorServiceSeverityMulti extends CentreonWidgetParamsSelect2
 {
+    /**
+     * Constructor
+     *
+     * @param CentreonDB $db
+     * @param HTML_Quickform $quickform
+     * @param int $userId
+     * @return void
+     */
     public function __construct($db, $quickform, $userId)
     {
         parent::__construct($db, $quickform, $userId);
     }
+
+    /**
+     * @return array
+     */
     public function getParameters()
     {
         $path = './api/internal.php?object=centreon_configuration_service_severity&action=list';

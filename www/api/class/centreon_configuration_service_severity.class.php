@@ -63,9 +63,9 @@ class CentreonConfigurationServiceSeverity extends CentreonConfigurationObjects
         }
 
         $queryContact = 'SELECT SQL_CALC_FOUND_ROWS DISTINCT sc_id, sc_name FROM service_categories ' .
-            'WHERE sc_name LIKE :name ';
-        $queryContact .= "AND level IS NOT NULL ";
-        $queryContact .= 'ORDER BY sc_name ';
+            'WHERE sc_name LIKE :name ' .
+            "AND level IS NOT NULL " .
+            'ORDER BY sc_name ';
 
         if (isset($this->arguments['page_limit']) && isset($this->arguments['page'])) {
             if (!is_numeric($this->arguments['page']) || !is_numeric($this->arguments['page_limit'])) {
