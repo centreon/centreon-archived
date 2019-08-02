@@ -503,7 +503,7 @@ class ExtensionsRoute extends Component {
             customClass="mr-2"
             color="orange"
             style={{
-              opacity: false ? '0.33' : '1',
+              opacity: '1',
             }}
             onClick={this.runActionOnAllEntities.bind(
               this,
