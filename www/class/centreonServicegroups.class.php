@@ -211,7 +211,7 @@ class CentreonServicegroups
                     $queryValues['sg_' . $item] = (int)$item;
                 }
             }
-            $listValues = rtrim($listValues, ',');
+            $listValues = rtrim($listValues, ', ');
         } else {
             $listValues .= '""';
         }
