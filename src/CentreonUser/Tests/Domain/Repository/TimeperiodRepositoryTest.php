@@ -57,7 +57,7 @@ class TimeperiodRepositoryTest extends TestCase
         $this->datasets = [
             [
                 'query' => "SELECT SQL_CALC_FOUND_ROWS `tp_id` AS `id`, `tp_name` AS `name`, `tp_alias` AS `alias` "
-                . "FROM `" . Timeperiod::TABLE . "` ORDER BY `tp_name` ASC",
+                . "FROM `" . Timeperiod::TABLE . "`",
                 'data' => [
                     [
                         'id' => '1',
@@ -124,7 +124,7 @@ class TimeperiodRepositoryTest extends TestCase
         $limit = 1;
         $offset = 0;
 
-        $result = $this->repository->getPaginationList($filters, $limit, $offset);
+        $result = $this->repository->getPaginationList($filters, $limit, $offset, ['field' => 'tp_name', 'order' => 'ASC']);
         $data = $this->datasets[1]['data'][0];
 
         $entity = new Timeperiod();

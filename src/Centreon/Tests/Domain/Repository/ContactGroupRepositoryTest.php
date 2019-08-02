@@ -56,7 +56,7 @@ class ContactGroupRepositoryTest extends TestCase
         $this->datasets = [
             [
                 'query' => "SELECT SQL_CALC_FOUND_ROWS * "
-                    . "FROM `contactgroup` ORDER BY `cg_name` ASC",
+                    . "FROM `contactgroup`",
                 'data' => [
                     [
                         'cg_id' => '1',
@@ -67,7 +67,7 @@ class ContactGroupRepositoryTest extends TestCase
             [
                 'query' => "SELECT SQL_CALC_FOUND_ROWS * FROM `contactgroup` "
                     . "WHERE `cg_name` LIKE :search AND `cg_id` IN (:id0) "
-                    . "LIMIT :limit OFFSET :offset ORDER BY `cg_name` ASC",
+                    . "ORDER BY `cg_name` ASC LIMIT :limit OFFSET :offset",
                 'data' => [
                     [
                         'cg_id' => '1',
@@ -113,7 +113,7 @@ class ContactGroupRepositoryTest extends TestCase
         ];
         $limit = 1;
         $offset = 0;
-        $result = $this->repository->getPaginationList($filters, $limit, $offset);
+        $result = $this->repository->getPaginationList($filters, $limit, $offset, ['field' => 'cg_name', 'order' => 'ASC']);
         $data = $this->datasets[1]['data'][0];
         $entity = new ContactGroup();
         $entity->setCgId($data['cg_id']);
