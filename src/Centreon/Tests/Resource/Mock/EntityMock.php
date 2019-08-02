@@ -60,8 +60,8 @@ class EntityMock implements Mapping\MetadataInterface
     public static function loadMetadata(Mapping\ClassMetadata $metadata): void
     {
         $metadata->setTableName('mock_table')
-            ->add('id', 'id', PDO::PARAM_INT, null, true)
-            ->add('name', 'name', PDO::PARAM_STR);
+            ->add('id', 'id_column', PDO::PARAM_INT, null, true)
+            ->add('name', 'name_column', PDO::PARAM_STR);
     }
 
     /**
