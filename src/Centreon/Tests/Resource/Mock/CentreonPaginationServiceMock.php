@@ -47,11 +47,6 @@ use Centreon\Application\DataRepresenter;
  * @package centreon
  * @subpackage test
  */
-
-/**
- * @group CentreonNotification
- * @group DataRepresenter
- */
 class CentreonPaginationServiceMock extends CentreonPaginationService
 {
 

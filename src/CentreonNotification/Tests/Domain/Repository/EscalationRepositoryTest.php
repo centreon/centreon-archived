@@ -42,7 +42,7 @@ use CentreonNotification\Domain\Entity\Escalation;
 use CentreonNotification\Domain\Repository\EscalationRepository;
 
 /**
- * @group CentreonNotification
+ * @group Centreon
  * @group ORM-repository
  */
 class EscalationRepositoryTest extends TestCase
