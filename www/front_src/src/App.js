@@ -28,8 +28,6 @@ import styles from './App.scss';
 import footerStyles from './components/footer/footer.scss';
 import contentStyles from './styles/partials/_content.scss';
 
-import { StylesProvider } from '@material-ui/styles';
-
 class App extends Component {
   state = {
     isFullscreenEnabled: false,
