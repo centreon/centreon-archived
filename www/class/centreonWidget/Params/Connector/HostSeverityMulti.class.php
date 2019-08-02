@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright 2005-2015 Centreon
+ * Copyright 2005-2019 Centreon
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -33,15 +33,28 @@
  *
  */
 require_once __DIR__ . "/../Select2.class.php";
+
 class CentreonWidgetParamsConnectorHostSeverityMulti extends CentreonWidgetParamsSelect2
 {
+    /**
+     * Constructor
+     *
+     * @param CentreonDB $db
+     * @param HTML_Quickform $quickform
+     * @param int $userId
+     * @return void
+     */
     public function __construct($db, $quickform, $userId)
     {
         parent::__construct($db, $quickform, $userId);
     }
+    
+    /**
+     * @return array
+     */
     public function getParameters()
     {
-        $path = './include/common/webServices/rest/internal.php?object=centreon_configuration_hostseverity&action=list';
+        $path = './api/internal.php?object=centreon_configuration_host_severity&action=list';
         return array(
             'datasourceOrigin' => 'ajax',
             'availableDatasetRoute' => $path,
