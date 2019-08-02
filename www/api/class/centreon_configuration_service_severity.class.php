@@ -56,7 +56,7 @@ class CentreonConfigurationServiceSeverity extends CentreonConfigurationObjects
         $queryValues = array();
 
         // Check for select2 'q' argument
-        if (false !== isset($this->arguments['q'])) {
+        if (!isset($this->arguments['q'])) {
             $queryValues['name'] = '%' . (string)$this->arguments['q'] . '%';
         } else {
             $queryValues['name'] = '%%';
