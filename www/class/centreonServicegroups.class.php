@@ -207,7 +207,7 @@ class CentreonServicegroups
                 // As it happens that $v could be like "X,Y" when two hostgroups are selected, we added a second foreach
                 $multiValues = explode(',', $v);
                 foreach ($multiValues as $item) {
-                    $listValues .= ':sg_' . $item . ',';
+                    $listValues .= ':sg_' . $item . ', ';
                     $queryValues['sg_' . $item] = (int)$item;
                 }
             }
