@@ -37,7 +37,7 @@
 require_once _CENTREON_PATH_ . "/www/class/centreonDB.class.php";
 require_once __DIR__ . "/centreon_configuration_objects.class.php";
 
-class CentreonConfigurationServiceseverity extends CentreonConfigurationObjects
+class CentreonConfigurationServiceSeverity extends CentreonConfigurationObjects
 {
     /**
      * CentreonConfigurationServicecategory constructor.
