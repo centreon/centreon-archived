@@ -100,8 +100,12 @@ class CentreonHostcategories
         $queryValues = array();
         if (!empty($values)) {
             foreach ($values as $k => $v) {
-                $listValues .= ':hc' . $v . ',';
-                $queryValues['hc' . $v] = (int)$v;
+                //As it happens that $v could be like "X,Y" when two hostgroups are selected, we added a second foreach
+                $multiValues = explode(',', $v);
+                foreach ($multiValues as $item) {
+                    $listValues .= ':sc' . $item . ',';
+                    $queryValues['sc' . $item] = (int)$v;
+                }   
             }
             $listValues = rtrim($listValues, ',');
         } else {
