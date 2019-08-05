@@ -41,37 +41,71 @@ include_once "./class/centreonUtils.class.php";
 include "./include/common/autoNumLimit.php";
 
 $tabStatus = array(
+    -1 => _("Pending"),
     0 => _("OK"),
     1 => _("Warning"),
     2 => _("Critical"),
-    3 => _("Unknown"),
-    4 => _("Pending")
+    3 => _("Unknown")
 );
 
-$search = filter_var(
+// list without id 0 for select2
+$tabStatusFilter = array(
+    1 => _("OK"),
+    2 => _("Warning"),
+    3 => _("Critical"),
+    4 => _("Unknown"),
+    5 => _("Pending")
+);
+
+$searchTraps = filter_var(
     $_POST['searchT'] ?? $_GET['searchT'] ?? null,
     FILTER_SANITIZE_STRING
 );
 
-if (isset($_POST['searchT']) || isset($_GET['searchT'])) {
+$searchStatus = filter_var(
+    $_POST['status'] ?? $_GET['status'] ?? null,
+    FILTER_VALIDATE_INT
+);
+
+$searchVendor = filter_var(
+    $_POST['vendor'] ?? $_GET['vendor'] ?? null,
+    FILTER_VALIDATE_INT
+);
+
+if (isset($_POST['Search'])) {
     //saving filters values
     $centreon->historySearch[$url] = array();
-    $centreon->historySearch[$url]['search'] = $search;
+    $centreon->historySearch[$url]['searchTraps'] = $searchTraps;
+    $centreon->historySearch[$url]['searchStatus'] = $searchStatus;
+    $centreon->historySearch[$url]['searchVendor'] = $searchVendor;
 } else {
     //restoring saved values
-    $search = $centreon->historySearch[$url]['search'] ?? null;
+    $searchTraps = $centreon->historySearch[$url]['searchTraps'] ?? null;
+    $searchStatus = $centreon->historySearch[$url]['searchStatus'] ?? null;
+    $searchVendor = $centreon->historySearch[$url]['searchVendor'] ?? null;
 }
 
-// List of elements - Depends on different criteria
-if ($search) {
-    $rq = "SELECT SQL_CALC_FOUND_ROWS * FROM traps " .
-        "WHERE traps_oid LIKE '%" . $search . "%' OR traps_name LIKE '%" . $search . "%' " .
-        "OR manufacturer_id IN (SELECT id FROM traps_vendor WHERE alias LIKE '%" . $search . "%' ) " .
-        "ORDER BY manufacturer_id, traps_name LIMIT " . $num * $limit . ", " . $limit;
+//convert status filter to enum
+if ($searchStatus == 5) {
+    $enumStatus = -1;
 } else {
-    $rq = "SELECT SQL_CALC_FOUND_ROWS * FROM traps " .
-        "ORDER BY manufacturer_id, traps_name LIMIT " . $num * $limit . ", " . $limit;
+    $enumStatus = $searchStatus - 1;
 }
+
+$rq = 'SELECT SQL_CALC_FOUND_ROWS * FROM traps WHERE 1 ';
+// List of elements - Depends on different criteria
+if ($searchTraps) {
+    $rq .= " AND traps_oid LIKE '%" . $searchTraps . "%' OR traps_name LIKE '%" . $searchTraps . "%' " .
+        "OR manufacturer_id IN (SELECT id FROM traps_vendor WHERE alias LIKE '%" . $searchTraps . "%' ) ";
+}
+if ($searchVendor) {
+    $rq .= " AND manufacturer_id = " . (int)$searchVendor;
+}
+if ($searchStatus) {
+    $rq .= " AND traps_status = '" . ($enumStatus) . "'";
+}
+
+$rq .= ' ORDER BY manufacturer_id, traps_name LIMIT ' . $num * $limit . ', ' . $limit;
 
 $dbResult = $pearDB->query($rq);
 $rows = $pearDB->query("SELECT FOUND_ROWS()")->fetchColumn();
@@ -94,7 +128,6 @@ $tpl->assign("headerMenu_manufacturer", _("Vendor Name"));
 $tpl->assign("headerMenu_args", _("Output Message"));
 $tpl->assign("headerMenu_options", _("Options"));
 
-
 $form = new HTML_QuickFormCustom('form', 'POST', "?p=" . $p);
 
 // Different style between each lines
@@ -105,6 +138,30 @@ $attrBtnSuccess = array(
     "onClick" => "window.history.replaceState('', '', '?p=" . $p . "');"
 );
 $form->addElement('submit', 'Search', _("Search"), $attrBtnSuccess);
+
+$attrTrapsStatus = null;
+if ($searchStatus && $searchStatus != '') {
+    $statusDefault = array($tabStatusFilter[$searchStatus] => $searchStatus);
+    $attrTrapsStatus = array(
+        'defaultDataset' => $statusDefault
+    );
+}
+$form->addElement('select2', 'status', "", $tabStatusFilter, $attrTrapsStatus);
+
+$vendorResult = $pearDB->query("SELECT id, name FROM traps_vendor ORDER BY name, alias");
+$vendors = [];
+for ($i = 0; $vendor = $vendorResult->fetch(); $i++) {
+    $vendors[$vendor['id']] = $vendor['name'];
+}
+
+$attrTrapsVendor = null;
+if ($searchVendor) {
+    $vendorDefault = array($vendors[$searchVendor] => $searchVendor);
+    $attrTrapsVendor = array(
+        'defaultDataset' => $vendorDefault
+    );
+}
+$form->addElement('select2', 'vendor', "", $vendors, $attrTrapsVendor);
 
 // Fill a tab with a multidimensional Array we put in $tpl
 $elemArr = array();
@@ -126,8 +183,8 @@ for ($i = 0; $trap = $dbResult->fetch(); $i++) {
         "RowMenu_name" => $trap["traps_name"],
         "RowMenu_link" => "?p=$p&o=c&traps_id={$trap['traps_id']}",
         "RowMenu_desc" => substr($trap["traps_oid"], 0, 40),
-        "RowMenu_status" => isset($tabStatus[$trap["traps_status"]])
-            ? $tabStatus[$trap["traps_status"]]
+        "RowMenu_status" => isset($tabStatus[($trap["traps_status"])])
+            ? $tabStatus[($trap["traps_status"])]
             : $tabStatus[3],
         "RowMenu_args" => $trap["traps_args"],
         "RowMenu_manufacturer" => CentreonUtils::escapeSecure(
@@ -151,11 +208,11 @@ $tpl->assign(
 );
 
 ?>
-<script type="text/javascript">
-    function setO(_i) {
-        document.forms['form'].elements['o'].value = _i;
-    }
-</script>
+    <script type="text/javascript">
+        function setO(_i) {
+            document.forms['form'].elements['o'].value = _i;
+        }
+    </script>
 <?php
 $attrs1 = array(
     'onchange' => "javascript: " .
@@ -222,7 +279,7 @@ $o2->setValue(null);
 $o2->setSelected(null);
 
 $tpl->assign('limit', $limit);
-$tpl->assign('searchT', $search);
+$tpl->assign('searchT', $searchTraps);
 
 // Apply a template definition
 $renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
