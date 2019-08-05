@@ -65,5 +65,6 @@ $help['ldap_sync_interval'] = dgettext(
 );
 $help['ldap_auto_sync'] = dgettext(
     'help',
-    "If enabled, a user LDAP synchronization will be performed on login to update contact's data and calculate new Centreon ACLs."
+    "If enabled, a user LDAP synchronization will be performed on login to update contact's data and calculate " .
+    "new Centreon ACLs."
 );

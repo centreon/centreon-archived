@@ -45,7 +45,8 @@ try {
         "ALTER TABLE `contact` ADD COLUMN IF NOT EXISTS `contact_ldap_last_sync` INT(11) NOT NULL DEFAULT 0;"
     );
     $pearDB->query(
-        "ALTER TABLE `contact` ADD COLUMN IF NOT EXISTS `contact_ldap_required_sync` enum('0','1') NOT NULL DEFAULT '0';"
+        "ALTER TABLE `contact` ADD COLUMN IF NOT EXISTS
+        `contact_ldap_required_sync` enum('0','1') NOT NULL DEFAULT '0';"
     );
 
     // Add a column to check last specific LDAP sync timestamp

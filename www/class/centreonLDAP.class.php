@@ -877,7 +877,7 @@ class CentreonLDAP
      * @return void
      * @throws Exception
      */
-    function setUserCurrentSyncTime(array $currentUser): void
+    public function setUserCurrentSyncTime(array $currentUser): void
     {
         $stmt = $this->db->prepare(
             'UPDATE contact SET
@@ -1098,7 +1098,6 @@ class CentreonLdapAdmin
             && isset($options['ar_description'])
         ) {
             if (!isset($options['ar_sync_base_date'])) {
-
                 $options['ar_sync_base_date'] = time();
                 $this->centreonLog->insertLog(
                     3,

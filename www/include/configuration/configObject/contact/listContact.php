@@ -248,7 +248,6 @@ foreach ($contacts as $contact) {
     $isLinkedToLdap = 0;
     // options displayed only to admins for contacts linked to an LDAP
     if ($centreon->user->admin && $contact['contact_auth_type'] === "ldap") {
-
         // synchronization is already required
         if ($contact['contact_ldap_required_sync'] === '1') {
             $isLinkedToLdap = 2;
@@ -376,7 +375,8 @@ foreach (array('o1', 'o2') as $option) {
             $option . "'].selectedIndex == 4 || this.form.elements['" . $option . "'].selectedIndex == 5){" .
                 "   setO(this.form.elements['" . $option . "'].value); submit();} " .
             "else if (this.form.elements['" . $option . "'].selectedIndex == 6 && confirm('" .
-            _("The chosen contact(s) will be disconnected. Do you confirm the LDAP synchronization request ?") . "')) {" .
+            _("The chosen contact(s) will be disconnected. Do you confirm the LDAP synchronization request ?") .
+                "')) {" .
                 "   setO(this.form.elements['" . $option . "'].value); submit();} " .
             "this.form.elements['" . $option . "'].selectedIndex = 0"
     );
