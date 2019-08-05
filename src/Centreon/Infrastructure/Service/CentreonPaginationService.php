@@ -76,9 +76,14 @@ class CentreonPaginationService
     protected $repository;
 
     /**
-     * @var string
+     * @var array
      */
     protected $ordering;
+
+    /**
+     * @var array
+     */
+    protected $extras;
 
     /**
      * @var string
@@ -163,6 +168,17 @@ class CentreonPaginationService
     }
 
     /**
+     * Set pagination order
+     *
+     * @param array $extras
+     * @throws \RuntimeException
+     */
+    public function setExtras($extras)
+    {
+        $this->extras = $extras;
+    }
+
+    /**
      * Set repository class
      *
      * @param string $repository
@@ -209,7 +225,7 @@ class CentreonPaginationService
     {
         $entities = $this->db
             ->getRepository($this->repository)
-            ->getPaginationList($this->filters, $this->limit, $this->offset, $this->ordering);
+            ->getPaginationList($this->filters, $this->limit, $this->offset, $this->ordering, $this->extras);
 
         $total = $this->db
             ->getRepository($this->repository)
