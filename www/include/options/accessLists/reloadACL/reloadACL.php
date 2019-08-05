@@ -98,8 +98,8 @@ $form = new HTML_QuickFormCustom('select_form', 'POST', "?p=" . $p);
 
 while ($r = $res->fetch()) {
     $resUser = $pearDB->prepare(
-        "SELECT contact_name, contact_admin FROM contact " .
-        "WHERE contact_id = :contactId"
+        "SELECT contact_name, contact_admin FROM contact
+        WHERE contact_id = :contactId"
     );
     $resUser->bindValue(':contactId', $r['user_id'], \PDO::PARAM_INT);
     $resUser->execute();
@@ -116,8 +116,9 @@ while ($r = $res->fetch()) {
         $session_data[$cpt]["admin"] = $rU["contact_admin"];
 
         $resCP = $pearDB->prepare(
-            "SELECT topology_name, topology_page, topology_url_opt FROM topology " .
-            "WHERE topology_page = :topologyPage");
+            "SELECT topology_name, topology_page, topology_url_opt FROM topology
+            WHERE topology_page = :topologyPage"
+        );
         $resCP->bindValue(':topologyPage', $r["current_page"], \PDO::PARAM_INT);
         $resCP->execute();
         $rCP = $resCP->fetch();

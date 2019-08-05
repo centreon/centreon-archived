@@ -305,7 +305,6 @@ class CentreonAuthLDAP
                     'LDAP AUTH : User DN updated for ' . $userDisplay
                 );
                 return true;
-
             } else {
                 /**
                  * The current user wasn't found. Adding him to the DB
