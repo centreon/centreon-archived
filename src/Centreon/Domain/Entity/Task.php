@@ -209,7 +209,8 @@ class Task implements EntityInterface
     private function array_filter_key($input, $callback)
     {
         if (!is_array($input)) {
-            trigger_error('array_filter_key() expects parameter 1 to be array, ' . gettype($input) . ' given', E_USER_WARNING);
+            trigger_error('array_filter_key() expects parameter 1 to be array, ' . gettype($input) .
+                ' given', E_USER_WARNING);
             return null;
         }
 
