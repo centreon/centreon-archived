@@ -73,8 +73,8 @@ class Centreon_Object_Relation_Host_Template_Host extends Centreon_Object_Relati
     /**
      * Delete host template / host relation and linked services
      *
-     * @param int $fkey
-     * @param int $skey
+     * @param int $fkey - host template
+     * @param int $skey - host
      * @return void
      */
     public function delete($fkey, $skey = null): void
@@ -87,7 +87,7 @@ class Centreon_Object_Relation_Host_Template_Host extends Centreon_Object_Relati
             $stmt = $this->db->prepare(
                 'SELECT service_service_id FROM host_service_relation WHERE host_host_id = :host_id'
             );
-            $stmt->bindParam(':host_id', $skey, PDO::PARAM_INT);
+            $stmt->bindParam(':host_id', $fkey, PDO::PARAM_INT);
             $stmt->execute();
             $services = [];
             foreach ($stmt->fetchAll(PDO::FETCH_ASSOC) as $row) {
