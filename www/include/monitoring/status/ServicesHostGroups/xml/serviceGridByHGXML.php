@@ -150,7 +150,7 @@ $DBRESULT->execute();
 $tabH = array();
 $tabHG = array();
 $tab_finalH = array();
-$numRows = $DBRESULT->rowCount();
+$numRows = $obj->DBC->query("SELECT FOUND_ROWS()")->fetchColumn();
 while ($ndo = $DBRESULT->fetch()) {
     if (!isset($tab_finalH[$ndo["alias"]])) {
         $tab_finalH[$ndo["alias"]] = array($ndo["host_name"] => array());
