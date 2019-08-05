@@ -51,7 +51,6 @@ class Broker extends AbstractObjectXML
         command_file,
         cache_directory,
         stats_activate,
-        correlation_activate,
         daemon
     ';
     protected $attributes_select_parameters = '
@@ -142,7 +141,6 @@ class Broker extends AbstractObjectXML
             $config_name = $row['config_name'];
             $cache_directory = $row['cache_directory'];
             $stats_activate = $row['stats_activate'];
-            $correlation_activate = $row['correlation_activate'];
 
             # Base parameters
             $object['broker_id'] = $row['config_id'];

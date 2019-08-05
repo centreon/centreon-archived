@@ -88,17 +88,6 @@ class Host extends AbstractHost
         foreach ($result as $parent_id) {
             if (isset($this->hosts[$parent_id])) {
                 $host['parents'][] = $this->hosts[$parent_id]['host_name'];
-
-                $correlation_instance = Correlation::getInstance($this->dependencyInjector);
-                if ($correlation_instance->hasCorrelation()) {
-                    $this->generated_parentship[] = array(
-                        '@attributes' => array(
-                            'parent' => $parent_id,
-                            'host' => $host['host_id'],
-                            'instance_id' => $this->backend_instance->getPollerId()
-                        )
-                    );
-                }
             }
         }
     }

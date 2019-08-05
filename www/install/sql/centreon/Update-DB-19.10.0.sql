@@ -78,3 +78,11 @@ ALTER TABLE `traps` ADD COLUMN IF NOT EXISTS `traps_mode` ENUM('0', '1') DEFAULT
 
 -- Add trap filter
 ALTER TABLE `traps` MODIFY COLUMN `traps_exec_interval_type` ENUM('0','1','2','3') NULL DEFAULT '0';
+
+-- Remove broker correlation mechanism
+ALTER TABLE `cfg_centreonbroker` DROP COLUMN `correlation_activate`;
+DELETE FROM `cb_field` WHERE
+  `displayname` = 'Correlation file'
+  OR `description` LIKE 'File where correlation%'
+  OR `displayname` = 'Correlation passive';
+DELETE FROM `cb_type` WHERE `type_shortname` = 'correlation';

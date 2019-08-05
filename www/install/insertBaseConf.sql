@@ -501,7 +501,6 @@ INSERT INTO `cb_type` (`cb_type_id`, `type_name`, `type_shortname`, `cb_module_i
 (29, 'Database configuration writer', 'db_cfg_writer', 17),
 (30, 'Storage - Graphite', 'graphite', 18),
 (31, 'Storage - InfluxDB', 'influxdb', 19),
-(32, 'Correlation', 'correlation', 20),
 (33, 'Stream connector', 'lua', 21);
 
 --
@@ -537,8 +536,6 @@ INSERT INTO `cb_field` (`cb_field_id`, `fieldname`, `displayname`, `description`
 (26, 'compression_level', 'Compression level', 'Ranges from 0 (no compression) to 9 (best compression). Default is -1 (zlib compression)', 'int', NULL),
 (27, 'compression_buffer', 'Compression buffer size', 'The higher the buffer size is, the best compression. This however increase data streaming latency. Use with caution.', 'int', NULL),
 (28, 'failover', 'Failover name', 'Name of the input or output object that will act as failover.', 'text', NULL),
-(29, 'file', 'Correlation file', 'Path to the correlation file which holds host, services, dependencies and parenting definitions.', 'text', NULL),
-(30, 'retention', 'Retention file', 'File where correlation state will be stored during correlation engine restart', 'text', NULL),
 (31, 'retry_interval', 'Retry interval', 'Time in seconds to wait between each connection attempt.', 'int', NULL),
 (32, 'buffering_timeout', 'Buffering timeout', 'Time in seconds to wait before launching failover.', 'int', NULL),
 (33, 'fifo', 'File for Centreon Broker statistics', 'File where Centreon Broker statistics will be stored', 'text', NULL),
@@ -567,7 +564,6 @@ INSERT INTO `cb_field` (`cb_field_id`, `fieldname`, `displayname`, `description`
 (67, 'storage_db_name', 'Storage DB name', 'Database name.', 'text', NULL),
 (68, 'storage_db_port', 'Storage DB port', 'Port on which the DB server listens', 'int', NULL),
 (69, 'storage_db_type', 'Storage DB type', 'Target DBMS.', 'select', NULL),
-(70, 'passive', 'Correlation passive', 'The passive mode is for the secondary Centreon Broker.', 'radio', NULL),
 (74, 'path', 'Path', 'Path of the lua script.', 'text', NULL);
 
 INSERT INTO `cb_fieldgroup` (`cb_fieldgroup_id`, `groupname`, `displayname`, `multiple`, `group_parent_id`) VALUES

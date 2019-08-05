@@ -420,7 +420,6 @@ CREATE TABLE `cfg_centreonbroker` (
   `command_file` varchar(255),
   `cache_directory` varchar(255),
   `stats_activate` enum('0','1') DEFAULT '1',
-  `correlation_activate` enum('0','1') DEFAULT '0',
   `daemon` TINYINT(1),
   PRIMARY KEY (`config_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;

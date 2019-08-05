@@ -34,7 +34,6 @@
  */
 
 echo _("Name");
-echo _("Correlation file");
 echo _("Retention file");
 echo _("it's required");
 echo _("Connection port");
