@@ -39,9 +39,13 @@ namespace Centreon\Tests\Application\Webservice;
 use PHPUnit\Framework\TestCase;
 use Pimple\Container;
 use Centreon\Application\Webservice\TopologyWebservice;
+use Centreon\Domain\Repository\TopologyRepository;
 use Centreon\Tests\Resource\Traits;
+use Centreon\Tests\Resource\Dependency;
 use Centreon\Test\Mock\CentreonDB;
 use Centreon\Test\Traits\TestCaseExtensionTrait;
+use Centreon\ServiceProvider;
+use CentreonUser;
 
 /**
  * @group Centreon
@@ -50,13 +54,16 @@ use Centreon\Test\Traits\TestCaseExtensionTrait;
 class TopologyWebserviceTest extends TestCase
 {
     use Traits\WebServiceAuthorizePublicTrait,
-        TestCaseExtensionTrait;
+        TestCaseExtensionTrait,
+        Dependency\CentreonDbManagerDependencyTrait;
 
     protected function setUp()
     {
         // dependencies
         $this->container = new Container;
         $this->db = new CentreonDB;
+        
+        $this->setUpCentreonDbManager($this->container);
 
         $this->webservice = $this->createPartialMock(TopologyWebservice::class, [
             'loadDb',
@@ -74,6 +81,13 @@ class TopologyWebserviceTest extends TestCase
     public function testGetName()
     {
         $this->assertEquals('centreon_topology', TopologyWebservice::getName());
+    }
+
+    public function testDependencies()
+    {
+        $this->assertEquals([
+            ServiceProvider::CENTREON_DB_MANAGER,
+        ], $this->webservice::dependencies());
     }
 
     public function testGetGetTopologyByPage()
@@ -105,5 +119,67 @@ class TopologyWebserviceTest extends TestCase
         }
 
         $this->webservice->getGetTopologyByPage();
+    }
+
+    /**
+     * @expectedException \RestBadRequestException
+     */
+    public function testGetMenuListWithoutAuth()
+    {
+        $this->container[ServiceProvider::CENTREON_USER] = null;
+
+        $this->webservice->getMenuList();
+    }
+
+    public function testGetMenuList()
+    {
+        $calledGetTopologyList = false;
+        $repository = $this->createMock(TopologyRepository::class);
+        $repository->method('getTopologyList')
+            ->will($this->returnCallback(function () use (&$calledGetTopologyList) {
+                $calledGetTopologyList = true;
+
+                return [];
+            }));
+
+        // register mocked repository in DB manager
+        $this->container[ServiceProvider::CENTREON_DB_MANAGER]
+            ->addRepositoryMock(TopologyRepository::class, $repository);
+
+        // mock user service
+        $this->container[ServiceProvider::CENTREON_USER] = $this->createMock(CentreonUser::class);
+        $this->container[ServiceProvider::YML_CONFIG] = [
+            'navigation' => [],
+        ];
+
+        $result = $this->webservice->getMenuList();
+        $this->assertTrue($calledGetTopologyList);
+    }
+
+    public function testGetMenuListWithReact()
+    {
+        $_GET['reactOnly'] = 1;
+
+        $calledGetTopologyList = false;
+        $repository = $this->createMock(TopologyRepository::class);
+        $repository->method('getTopologyList')
+            ->will($this->returnCallback(function () use (&$calledGetTopologyList) {
+                $calledGetTopologyList = true;
+
+                return [];
+            }));
+
+        // register mocked repository in DB manager
+        $this->container[ServiceProvider::CENTREON_DB_MANAGER]
+            ->addRepositoryMock(TopologyRepository::class, $repository);
+
+        // mock user service
+        $this->container[ServiceProvider::CENTREON_USER] = $this->createMock(CentreonUser::class);
+        $this->container[ServiceProvider::YML_CONFIG] = [
+            'navigation' => [],
+        ];
+
+        $this->webservice->getMenuList();
+        $this->assertTrue($calledGetTopologyList);
     }
 }
