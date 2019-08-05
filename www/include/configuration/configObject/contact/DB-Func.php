@@ -248,7 +248,10 @@ function synchronizeContactWithLdap(array $contacts = array()): void
     if ($rowLdapEnable['value'] === '1') {
         // getting the contact name for the logs
         $contactNameStmt = $pearDB->prepare(
-            "SELECT contact_name FROM `contact` WHERE `contact_id` = :contactId"
+            "SELECT contact_name, `ar_id`
+            FROM `contact`
+            WHERE `contact_id` = :contactId
+            AND `ar_id` IS NOT NULL"
         );
 
         // requiring a manual synchronization at next login of the contact
@@ -275,6 +278,10 @@ function synchronizeContactWithLdap(array $contacts = array()): void
                 $contactNameStmt->bindValue(':contactId', (int)$key, \PDO::PARAM_INT);
                 $contactNameStmt->execute();
                 $rowContact = $contactNameStmt->fetch();
+                if (!$rowContact['ar_id']) {
+                    // skipping chosen contacts not bound to an LDAP
+                    continue;
+                }
 
                 $stmtRequiredSync->bindValue(':contactId', (int)$key, \PDO::PARAM_INT);
                 $stmtRequiredSync->execute();
