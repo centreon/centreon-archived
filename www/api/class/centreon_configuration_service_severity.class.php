@@ -36,7 +36,9 @@
 
 require_once _CENTREON_PATH_ . "/www/class/centreonDB.class.php";
 require_once __DIR__ . "/centreon_configuration_objects.class.php";
-
+/**
+ * Configure the selection of multiple host severity (select2 filter)
+ */
 class CentreonConfigurationServiceSeverity extends CentreonConfigurationObjects
 {
     /**
@@ -85,7 +87,10 @@ class CentreonConfigurationServiceSeverity extends CentreonConfigurationObjects
         $stmt->execute();
         $serviceList = array();
         while ($data = $stmt->fetch()) {
-            $serviceList[] = array('id' => $data['sc_id'], 'text' => $data['sc_name']);
+            $serviceList[] = array(
+                'id' => $data['sc_id'], 
+                'text' => $data['sc_name']
+            );
         }
         return array(
             'items' => $serviceList,
