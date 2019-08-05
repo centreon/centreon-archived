@@ -72,7 +72,7 @@ class CentreonConfigurationHostSeverity extends CentreonConfigurationObjects
                 throw new \RestBadRequestException('Error, limit must be numerical');
             }
             $offset = ($this->arguments['page'] - 1) * $this->arguments['page_limit'];
-            $queryContact .= 'LIMIT :offset,:limit';
+            $queryContact .= 'LIMIT :offset, :limit';
             $queryValues['offset'] = (int)$offset;
             $queryValues['limit'] = (int)$this->arguments['page_limit'];
         }
