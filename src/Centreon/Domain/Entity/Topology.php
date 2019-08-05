@@ -114,7 +114,8 @@ class Topology
      */
     public function getTopologyName(): ?string
     {
-        return $this->topology_name;
+        // get translated menu entry
+        return _($this->topology_name);
     }
 
     /**
