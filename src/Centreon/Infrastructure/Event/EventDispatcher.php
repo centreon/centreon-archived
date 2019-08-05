@@ -53,6 +53,7 @@ class EventDispatcher
     public const EVENT_READ    = 8;
     public const EVENT_DISPLAY = 16;
     public const EVENT_DUPLICATE = 32;
+    public const EVENT_SYNCHRONIZE = 64;
 
     /**
      * @var array List a values returned by callable function defined in the
