@@ -1,7 +1,7 @@
 <?php
 /**
  * Copyright 2005-2019 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -33,7 +33,10 @@
  *
  */
 require_once __DIR__ . "/../Select2.class.php";
-
+/**
+ * Creation of a new connector for the host severity that use the centreonHostcategories object 
+ * with configuration from centreon_configuration_host_severity file
+ */
 class CentreonWidgetParamsConnectorHostSeverityMulti extends CentreonWidgetParamsSelect2
 {
     /**

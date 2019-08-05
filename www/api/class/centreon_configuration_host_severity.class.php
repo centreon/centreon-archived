@@ -36,7 +36,9 @@
 
 require_once _CENTREON_PATH_ . "/www/class/centreonDB.class.php";
 require_once __DIR__ . "/centreon_configuration_objects.class.php";
-
+/**
+ * Configure the selection of multiple host severity (select2 filter)
+ */
 class CentreonConfigurationHostSeverity extends CentreonConfigurationObjects    
 {
     /**
@@ -56,7 +58,7 @@ class CentreonConfigurationHostSeverity extends CentreonConfigurationObjects
         $queryValues = array();
 
         // Check for select2 'q' argument
-        if (false !== isset($this->arguments['q'])) {
+        if (!isset($this->arguments['q'])) {
             $queryValues['name'] = '%' . (string)$this->arguments['q'] . '%';
         } else {
             $queryValues['name'] = '%%';
@@ -77,7 +79,7 @@ class CentreonConfigurationHostSeverity extends CentreonConfigurationObjects
             $queryValues['limit'] = (int)$this->arguments['page_limit'];
         }
         $stmt = $this->pearDB->prepare($queryContact);
-        $stmt->bindParam(':name', $queryValues['name'], PDO::PARAM_STR);
+        $stmt->bindParam(':name', $queryValues['name'], \PDO::PARAM_STR);
         if (isset($queryValues['offset'])) {
             $stmt->bindParam(':offset', $queryValues["offset"], PDO::PARAM_INT);
             $stmt->bindParam(':limit', $queryValues["limit"], PDO::PARAM_INT);
@@ -85,7 +87,10 @@ class CentreonConfigurationHostSeverity extends CentreonConfigurationObjects
         $stmt->execute();
         $hostList = array();
         while ($data = $stmt->fetch()) {
-            $hostList[] = array('id' => $data['hc_id'], 'text' => $data['hc_name']);
+            $hostList[] = array(
+                'id' => $data['hc_id'], 
+                'text' => $data['hc_name']
+            );
         }
         return array(
             'items' => $hostList,
