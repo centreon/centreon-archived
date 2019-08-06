@@ -52,8 +52,8 @@ $searchS = filter_var(
 );
 
 $template = filter_var(
-    $_POST['template'] ?? $_GET['template'] ?? null,
-    FILTER_SANITIZE_STRING
+    $_POST['template'] ?? $_GET['template'] ?? 0,
+    FILTER_VALIDATE_INT
 );
 
 $status = filter_var(
@@ -76,34 +76,12 @@ if (isset($_POST['Search']) || isset($_GET ['Search'])) {
     $status = $centreon->historySearch[$url]["status"] ?? 0;
 }
 
-
-
-/*
- * Get Service Template List
- */
-$tplService = array();
-$templateFilter = "<option value='0'></option>";
-$dbResult = $pearDB->query(
-    "SELECT service_id, service_description, service_alias FROM service " .
-    "WHERE service_register = '0' AND service_activate = '1' ORDER BY service_description"
-);
-while ($tpl = $dbResult->fetch()) {
-    $tplService[$tpl["service_id"]] = $tpl["service_alias"];
-    $templateFilter .= "<option value='" . $tpl["service_id"] . "'" .
-        (($tpl["service_id"] == $template) ? " selected" : "") . ">" . $tpl["service_description"] . "</option>";
-}
-$dbResult->closeCursor();
-
 //Status Filter
-$statusFilter = "<option value=''" . (($status == 0) ? " selected" : "") . "> </option>";
-$statusFilter .= "<option value='1'" . (($status == 1) ? " selected" : "") . ">" . _("Enabled") . "</option>";
-$statusFilter .= "<option value='2'" .
-    (($status == 2) ? " selected" : "") . ">" . _("Disabled") . "</option>";
-
+$statusFilter = array(1 => _("Disabled"), 2 => _("Enabled"));
 $sqlFilterCase = "";
-if ($status == 1) {
+if ($status == 2) {
     $sqlFilterCase = " AND sv.service_activate = '1' ";
-} elseif ($status == 2) {
+} elseif ($status == 1) {
     $sqlFilterCase = " AND sv.service_activate = '0' ";
 }
 
@@ -248,6 +226,26 @@ $form = new HTML_QuickFormCustom('select_form', 'POST', "?p=" . $p);
 
 // Different style between each lines
 $style = "one";
+
+//select2 Service template
+$route = './api/internal.php?object=centreon_configuration_servicetemplate&action=list';
+$attrServicetemplates = array(
+    'datasourceOrigin' => 'ajax',
+    'availableDatasetRoute' => $route,
+    'multiple' => false,
+    'defaultDataset' => $template,
+    'linkedObject' => 'centreonServicetemplates'
+);
+$form->addElement('select2', 'template', "", array(), $attrServicetemplates);
+//select2 Service Status
+$attrServiceStatus = null;
+if ($status) {
+    $statusDefault = array($statusFilter[$status] => $status);
+    $attrServiceStatus = array(
+        'defaultDataset' => $statusDefault
+    );
+}
+$form->addElement('select2', 'status', "", $statusFilter, $attrServiceStatus);
 
 $attrBtnSuccess = array(
     "class" => "btc bt_success",
@@ -477,8 +475,6 @@ if (isset($searchS) && $searchS) {
 }
 $tpl->assign("hostgroupsFilter", $searchHG);
 $tpl->assign("searchS", $searchS);
-$tpl->assign("templateFilter", $templateFilter);
-$tpl->assign("statusFilter", $statusFilter);
 
 // Apply a template definition
 $renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);

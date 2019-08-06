@@ -40,7 +40,7 @@ function escape_command($command)
     return preg_replace("/(\\\$|;`)/", "", $command);
 }
 
-    require_once realpath(dirname(__FILE__) . "/../../../../../config/centreon.config.php");
+    require_once realpath(__DIR__ . "/../../../../../config/centreon.config.php");
 
     require_once _CENTREON_PATH_."/www/class/centreonDB.class.php";
     require_once _CENTREON_PATH_."/www/class/centreonSession.class.php";

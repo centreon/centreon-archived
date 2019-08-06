@@ -136,11 +136,36 @@ To add a new directory:
 .. note::
    If the **Auto import users** option is checked, the LDAP settings of any new user who logs into the Centreon interface will automatically be imported into Centreon (name, first name, e-mail address, etc.). ACL profiles will be applied on access (link to :ref:`ACL <acl>`). However, if this option is not checked, only the users imported manually will be able to authenticate.
 
-* **LDAP search size limit** field can be used to limit the size of user searches
-* **LDAP search timeout** field can be used define the maximum time for the LDAP search
-* **Contact template** field defines the contact template that will be linked to all the users imported from this LDAP directory
+* **LDAP search size limit** field can be used to limit the size of user searches.
+* **LDAP search timeout** field can be used define the maximum time for the LDAP search.
+* **Contact template** field defines the contact template that will be linked to all the users imported from this LDAP directory.
 * **Default contactgroup** optional field, which is used to add a new user to a default contactgroup.
-* **Use service DNS** field indicates if it is necessary to use the DNS server to solve the IP address of the LDAP directory
+* **Use service DNS** field indicates if it is necessary to use the DNS server to solve the IP address of the LDAP directory.
+
+.. image :: /images/guide_exploitation/eldap2.png
+:align: center
+
+* **Enable LDAP synchronization on login** If enabled, a user LDAP synchronization will be performed on login to update contact's data and calculate new Centreon ACLs.
+* **LDAP synchronization interval (in hours)** Displayed only if the previous option is enabled. This field is used to specify the time between two LDAP synchronization.
+
+.. note::
+
+   The contact's LDAP data won't be updated in Centreon until the next synchronization is expected. If needed, "on-demand" synchronization are available from the **Administration > Session** page and from the **Configuration > Users > Contact / Users** list.
+
+   The interval is expressed in hours. By default, this field is set to the lower value : 1 hour.
+
+.. note::
+   We save a timestamp as reference date in the DB and use the CentAcl CRON to update it.
+
+   The reference date is used to calculate the next expected LDAP synchronization.
+
+   If you modify one of these two fields the reference timestamp will be reset to your current time.
+
+   The reference date won't be updated if you modify or not, only the other fields / options.
+
+.. image :: /images/guide_exploitation/eldap3.png
+:align: center
+
 * **LDAP servers** field can be used to add one or more LDAP directories to which Centreon will connect
 
 The table below summarizes the settings to add an LDAP server:
@@ -156,6 +181,9 @@ The table below summarizes the settings to add an LDAP server:
 +-------------------------+------------------------------------------------------------------------------------------------------------+
 | TLS                     | Indicates if the TLS protocol is used for the connection to the server                                     |
 +-------------------------+------------------------------------------------------------------------------------------------------------+
+
+.. image :: /images/guide_exploitation/eldap4.png
+:align: center
 
 * **Bind user** and **Bind password** fields define the user name and the password for logging to the LDAP server
 * **Protocol version** field indicates the version of the protocol using to login
