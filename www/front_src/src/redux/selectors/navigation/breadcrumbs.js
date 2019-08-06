@@ -9,10 +9,10 @@ function findFirstUrl(item) {
   if (item.groups) {
     const groupWithUrl = item.groups.find(findFirstUrl);
 
-    return groupWithUrl ? findFirstUrlInChildren(groupWithUrl) : undefined;
+    return groupWithUrl && groupWithUrl.children ? getFirstUrlInChildren(groupWithUrl) : undefined;
   }
 
-  return item.children ? findFirstUrlInChildren(item) : undefined;
+  return item.children ? getFirstUrlInChildren(item) : undefined;
 }
 
 /**
@@ -20,10 +20,21 @@ function findFirstUrl(item) {
  * @param {Object} item
  * @return {String|undefined} first url found
  */
-function findFirstUrlInChildren(item) {
-  const childWithUrl = item.children ? item.children.find((child) => child.url) : undefined;
+function getFirstUrlInChildren(item) {
+  if (!item.children) {
+    return undefined;
+  }
 
-  return childWithUrl ? getUrl(childWithUrl) : undefined;
+  const childWithUrl = item.children.find((child) => child.url);
+
+  if (childWithUrl) {
+    return getUrl(childWithUrl);
+  }
+
+  if (item.children) {
+    const childWithUrl = item.children.find(findFirstUrl);
+    return childWithUrl ? findFirstUrl(childWithUrl) : undefined;
+  }
 }
 
 /**
