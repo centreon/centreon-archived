@@ -183,7 +183,7 @@ for ($i = 0; $trap = $dbResult->fetch(); $i++) {
         "RowMenu_name" => $trap["traps_name"],
         "RowMenu_link" => "?p=$p&o=c&traps_id={$trap['traps_id']}",
         "RowMenu_desc" => substr($trap["traps_oid"], 0, 40),
-        "RowMenu_status" => isset($tabStatus[($trap["traps_status"])])
+        "RowMenu_status" => $tabStatus[($trap["traps_status"])] ?? $tabStatus[3]
             ? $tabStatus[($trap["traps_status"])]
             : $tabStatus[3],
         "RowMenu_args" => $trap["traps_args"],
