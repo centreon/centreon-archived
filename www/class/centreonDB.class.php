@@ -392,4 +392,47 @@ class CentreonDB extends \PDO
         }
         return $info;
     }
+
+    /**
+     * As 'ALTER TABLE IF NOT EXIST' queries are supported only by mariaDB (no more by mysql),
+     * This method check if a column was already added in a previous upgrade script.
+     *
+     * @param string $table - the table on which we'll search the column
+     * @param string $column - the column name to be checked
+     * @return int
+     */
+    public function isColumnExist(string $table = null, string $column = null): int
+    {
+        if (!$table || !$column) {
+            $this->log->insertLog(2, 'UPGRADE PROCESS : Missing data to check if column exist');
+            return -1;
+        }
+
+        $table = filter_var($table, FILTER_SANITIZE_STRING);
+        $column = filter_var($column, FILTER_SANITIZE_STRING);
+
+        $stmt = $this->prepare(
+            "SELECT COLUMN_NAME
+		    FROM INFORMATION_SCHEMA.COLUMNS
+		    WHERE TABLE_SCHEMA = :dbName
+		    AND TABLE_NAME = :tableName
+		    AND COLUMN_NAME = :columnName"
+        );
+
+        try {
+            $stmt->bindValue(':dbName', $this->dsn['hostspec'], \PDO::PARAM_STR);
+            $stmt->bindValue(':tableName', $table, \PDO::PARAM_STR);
+            $stmt->bindValue(':columnName', $column, \PDO::PARAM_STR);
+            $stmt->execute();
+            $stmt->fetch();
+
+            if ($stmt->rowCount) {
+                return 1; // column already exist
+            }
+            return 0; // column to add
+        } catch (\PDOException $e) {
+            $this->log->insertLog(2, 'UPGRADE PROCESS  : Failed when checking if ' . $column . ' exist');
+            return -1;
+        }
+    }
 }
