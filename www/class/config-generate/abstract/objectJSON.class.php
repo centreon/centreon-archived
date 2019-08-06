@@ -1,8 +1,8 @@
 <?php
 
 /*
- * Copyright 2005-2015 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2019 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -34,20 +34,14 @@
  *
  */
 
-abstract class AbstractObjectXML
+abstract class AbstractObjectJSON
 {
     protected $backend_instance = null;
-    protected $generate_subpath = 'nagios';
     protected $generate_filename = null;
-    protected $rootXML = 'centreonBroker';
-    protected $exported = array();
-    protected $fp = null;
 
-    protected $attributes_write = array();
-    protected $attributes_array = array();
-    protected $attributes_hash = array();
-    protected $attributes_default = array();
     protected $dependencyInjector;
+
+    protected $content = [];
 
     public static function getInstance(\Pimple\Container $dependencyInjector)
     {
@@ -66,73 +60,27 @@ abstract class AbstractObjectXML
     {
         $this->dependencyInjector = $dependencyInjector;
         $this->backend_instance = Backend::getInstance($this->dependencyInjector);
-
-        $this->writer = new XMLWriter();
-        $this->writer->openMemory();
-        $this->writer->setIndent(true);
-        $this->writer->startDocument('1.0', 'UTF-8');
     }
 
     public function reset()
     {
-        $this->exported = array();
     }
 
     protected function writeFile($dir)
     {
         $full_file = $dir . '/' . $this->generate_filename;
-        $this->writer->endDocument();
-        $content = $this->writer->outputMemory(true);
         if ($handle = fopen($full_file, 'w')) {
-            if (strcmp($content, "") && !fwrite($handle, $content)) {
+            if (!fwrite($handle, $this->content, JSON_PRETTY_PRINT)) {
                 throw new RuntimeException('Cannot write to file "' . $full_file . '"');
             }
+            fclose($handle);
         } else {
             throw new Exception("Cannot open file " . $full_file);
         }
     }
 
-    protected function generateFile($object, $cdata = true, $root = null)
+    protected function generateFile($object)
     {
-        if (!is_null($root)) {
-            $this->writer->startElement($root);
-        }
-        foreach ($object as $key => $value) {
-            if (is_string($key) && $key == '@attributes') {
-                foreach ($value as $subkey => $subvalue) {
-                    $this->writer->writeAttribute($subkey, $subvalue);
-                }
-            } elseif (!is_numeric($key) && is_array($value)) {
-                $this->writer->startElement($key);
-                $this->generateFile($value);
-                $this->writer->endElement();
-            } elseif (is_array($value)) {
-                $this->generateFile($value);
-            } else {
-                $this->writeElement($key, $value, $cdata);
-            }
-        }
-        if (!is_null($root)) {
-            $this->writer->endElement();
-        }
-    }
-
-    protected function writeElement($key, $value, $cdata)
-    {
-        $this->writer->startElement($key);
-        $value = $this->cleanStr($value);
-        $value = html_entity_decode($value);
-        if ($cdata) {
-            $this->writer->writeCData($value);
-        } else {
-            $this->writer->text($value);
-        }
-        $this->writer->endElement();
-    }
-
-    protected function cleanStr($str)
-    {
-        $str = preg_replace('/[\x00-\x09\x0B-\x0C\x0E-\x1F\x0D]/', "", $str);
-        return $str;
+        $this->content = json_encode(['centreonbroker' => $content], JSON_PRETTY_PRINT);
     }
 }

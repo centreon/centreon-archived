@@ -34,7 +34,7 @@
  *
  */
 
-class Broker extends AbstractObjectXML
+class Broker extends AbstractObjectJSON
 {
     protected $engine = null;
     protected $broker = null;
@@ -197,26 +197,26 @@ class Broker extends AbstractObjectXML
                         ) {
                             continue;
                         } elseif ($subvalue['config_key'] == 'category') {
-                            $object[$subvalue['config_group_id']][$key]['filters'][][$subvalue['config_key']] =
+                            $object[$key][$subvalue['config_group_id']]['filters'][][$subvalue['config_key']] =
                                 $subvalue['config_value'];
                         } else {
-                            $object[$subvalue['config_group_id']][$key][$subvalue['config_key']] =
+                            $object[$key][$subvalue['config_group_id']][$subvalue['config_key']] =
                                 $subvalue['config_value'];
                             
                             // We override with external values
                             if (isset($this->cacheExternalValue[$subvalue['config_key'] . '_' . $blockId])) {
-                                $object[$subvalue['config_group_id']][$key][$subvalue['config_key']] =
+                                $object[$key][$subvalue['config_group_id']][$subvalue['config_key']] =
                                     $this->getInfoDb($this->cacheExternalValue[$subvalue['config_key'] . '_' . $blockId]);
                             }
                             // Let broker insert in index data in pollers
                             if ($subvalue['config_key'] == 'type' && $subvalue['config_value'] == 'storage'
                                 && !$localhost) {
-                                $object[$subvalue['config_group_id']][$key]['insert_in_index_data'] = 'yes';
+                                $object[$key][$subvalue['config_group_id']]['insert_in_index_data'] = 'yes';
                             }
                         }
                     } else {
                         $res = explode('__', $subvalue['config_key'], 3);
-                        $object[$subvalue['config_group_id']][$key][$subvalue['fieldIndex']][$res[0]][$res[1]] =
+                        $object[$key][$subvalue['config_group_id']][$subvalue['fieldIndex']][$res[0]][$res[1]] =
                             $subvalue['config_value'];
                     }
                     $flow_count++;
@@ -226,7 +226,7 @@ class Broker extends AbstractObjectXML
                 foreach ($this->cacheExternalValue as $key2 => $value2) {
                     if (preg_match('/^(.+)_' . $blockId . '$/', $key2, $matches)) {
                         if (!isset($object[$configGroupId][$key][$matches[1]])) {
-                            $object[$configGroupId][$key][$matches[1]] =
+                            $object[$key][$configGroupId][$matches[1]] =
                                 $this->getInfoDb($value2);
                         }
                     }
@@ -235,7 +235,7 @@ class Broker extends AbstractObjectXML
 
             # Stats parameters
             if ($stats_activate == '1') {
-                $object[$flow_count]['stats'] = array(
+                $object['stats'][$flow_count] = array(
                     'type' => 'stats',
                     'name' => $config_name . '-stats',
                     'json_fifo' => $cache_directory . '/' . $config_name . '-stats.json',
@@ -256,7 +256,7 @@ class Broker extends AbstractObjectXML
         );
 
         $this->generate_filename = 'watchdog.xml';
-        $this->generateFile($watchdog, true, 'centreonbroker');
+        $this->generateFile($watchdog);
         $this->writeFile($this->backend_instance->getPath());
     }
 

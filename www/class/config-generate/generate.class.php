@@ -41,7 +41,7 @@ if ($configFile !== false) {
 
 require_once dirname(__FILE__) . '/backend.class.php';
 require_once dirname(__FILE__) . '/abstract/object.class.php';
-require_once dirname(__FILE__) . '/abstract/objectXML.class.php';
+require_once dirname(__FILE__) . '/abstract/objectJSON.class.php';
 require_once dirname(__FILE__) . '/hosttemplate.class.php';
 require_once dirname(__FILE__) . '/command.class.php';
 require_once dirname(__FILE__) . '/timeperiod.class.php';
