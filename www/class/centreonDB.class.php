@@ -411,13 +411,13 @@ class CentreonDB extends \PDO
         $table = filter_var($table, FILTER_SANITIZE_STRING);
         $column = filter_var($column, FILTER_SANITIZE_STRING);
 
-        $stmt = $this->prepare(
-            "SELECT COLUMN_NAME
+        $query = "SELECT COLUMN_NAME
 		    FROM INFORMATION_SCHEMA.COLUMNS
 		    WHERE TABLE_SCHEMA = :dbName
 		    AND TABLE_NAME = :tableName
-		    AND COLUMN_NAME = :columnName"
-        );
+		    AND COLUMN_NAME = :columnName";
+
+        $stmt = $this->prepare($query);
 
         try {
             $stmt->bindValue(':dbName', $this->dsn['hostspec'], \PDO::PARAM_STR);
@@ -433,7 +433,7 @@ class CentreonDB extends \PDO
         } catch (\PDOException $e) {
             $this->log->insertLog(2, 'UPGRADE PROCESS  : Failed when checking if ' . $column . ' exist');
             if ($this->debug) {
-                $this->log->insertLog(2, $e->getMessage() . " QUERY : " . $query_string);
+                $this->log->insertLog(2, $e->getMessage() . " QUERY : " . $query);
             }
             return -1;
         }
