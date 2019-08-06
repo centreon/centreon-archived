@@ -1,7 +1,7 @@
 <?php
 /*
- * Copyright 2005-2015 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2019 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -195,21 +195,123 @@ function disableContactInDB($contact_id = null, $contact_arr = array())
 }
 
 /**
- *
  * Delete Contacts
- * @param $contacts
+ * @param array $contacts
  */
 function deleteContactInDB($contacts = array())
 {
     global $pearDB, $centreon;
 
-    foreach ($contacts as $key => $value) {
-        $query = "SELECT contact_name FROM `contact` WHERE `contact_id` = '" . (int)$key . "' LIMIT 1";
-        $dbResult2 = $pearDB->query($query);
-        $row = $dbResult2->fetch();
+    // getting the contact name for the logs
+    $contactNameStmt = $pearDB->prepare(
+        "SELECT contact_name FROM `contact` WHERE `contact_id` = :contactId LIMIT 1"
+    );
 
-        $pearDB->query("DELETE FROM contact WHERE contact_id = '" . (int)$key . "'");
-        $centreon->CentreonLogAction->insertLog("contact", $key, $row['contact_name'], "d");
+    $dbResult = $pearDB->prepare(
+        "DELETE FROM contact WHERE contact_id = :contactId"
+    );
+
+    $pearDB->beginTransaction();
+    try {
+        foreach ($contacts as $key => $value) {
+            $contactNameStmt->bindValue(':contactId', (int)$key, \PDO::PARAM_INT);
+            $contactNameStmt->execute();
+            $row = $contactNameStmt->fetch();
+
+            $dbResult->bindValue(':contactId', (int)$key, \PDO::PARAM_INT);
+            $dbResult->execute();
+
+            $centreon->CentreonLogAction->insertLog("contact", $key, $row['contact_name'], "d");
+        }
+        $pearDB->commit();
+    } catch (\PDOException $e) {
+        $pearDB->rollBack();
+    }
+}
+
+/**
+ * Synchronize LDAP with contacts' data
+ * Used for massive sync request
+ * @param array $contacts
+ */
+function synchronizeContactWithLdap(array $contacts = array()): void
+{
+    global $pearDB;
+    $centreonLog = new CentreonLog();
+
+    // checking if at least one LDAP configuration is still enabled
+    $ldapEnable = $pearDB->query(
+        "SELECT `value` FROM `options` WHERE `key` = 'ldap_auth_enable'"
+    );
+    $rowLdapEnable = $ldapEnable->fetch();
+
+    if ($rowLdapEnable['value'] === '1') {
+        // getting the contact name for the logs
+        $contactNameStmt = $pearDB->prepare(
+            "SELECT contact_name, `ar_id`
+            FROM `contact`
+            WHERE `contact_id` = :contactId
+            AND `ar_id` IS NOT NULL"
+        );
+
+        // requiring a manual synchronization at next login of the contact
+        $stmtRequiredSync = $pearDB->prepare(
+            'UPDATE contact
+            SET `contact_ldap_required_sync` = "1"
+            WHERE contact_id = :contactId'
+        );
+
+        // checking if the contact is currently logged in Centreon
+        $activeSession = $pearDB->prepare(
+            "SELECT session_id FROM `session` WHERE user_id = :contactId"
+        );
+
+        // disconnecting the active user from centreon
+        $logoutContact = $pearDB->prepare(
+            "DELETE FROM session WHERE session_id = :userSessionId"
+        );
+
+        $successfullySync = [];
+        $pearDB->beginTransaction();
+        try {
+            foreach ($contacts as $key => $value) {
+                $contactNameStmt->bindValue(':contactId', (int)$key, \PDO::PARAM_INT);
+                $contactNameStmt->execute();
+                $rowContact = $contactNameStmt->fetch();
+                if (!$rowContact['ar_id']) {
+                    // skipping chosen contacts not bound to an LDAP
+                    continue;
+                }
+
+                $stmtRequiredSync->bindValue(':contactId', (int)$key, \PDO::PARAM_INT);
+                $stmtRequiredSync->execute();
+
+                $activeSession->bindValue(':contactId', (int)$key, \PDO::PARAM_INT);
+                $activeSession->execute();
+                //disconnecting every session logged in using this contact data
+                while ($rowSession = $activeSession->fetch()) {
+                    $logoutContact->bindValue(':userSessionId', $rowSession['session_id'], \PDO::PARAM_STR);
+                    $logoutContact->execute();
+                }
+                $successfullySync[] = $rowContact['contact_name'];
+            }
+            $pearDB->commit();
+            foreach ($successfullySync as $key => $value) {
+                $centreonLog->insertLog(
+                    3, //ldap.log
+                    "LDAP MULTI SYNC : Successfully planned LDAP synchronization for " . $value
+                );
+            }
+        } catch (\PDOException $e) {
+            $pearDB->rollBack();
+            throw new Exception('Bad Request : ' . $e);
+        }
+    } else {
+        // unable to plan the manual LDAP request of the contacts
+        $centreonLog->insertLog(
+            3,
+            "LDAP MANUAL SYNC : No LDAP configuration is enabled"
+        );
     }
 }
 
@@ -1051,22 +1153,29 @@ function updateContactContactGroup_MC($contact_id = null, $ret = array())
     if (!$contact_id) {
         return;
     }
-    $rq = "SELECT * FROM contactgroup_contact_relation ";
-    $rq .= "WHERE contact_contact_id = '" . (int)$contact_id . "'";
-    $dbResult = $pearDB->query($rq);
+    $dbResult = $pearDB->prepare(
+        "SELECT * FROM contactgroup_contact_relation " .
+        "WHERE contact_contact_id = :contactId"
+    );
+    $dbResult->bindValue(':contactId', (int)$contact_id, \PDO::PARAM_INT);
+    $dbResult->execute();
     $cmds = array();
     while ($arr = $dbResult->fetch()) {
         $cmds[$arr["contactgroup_cg_id"]] = $arr["contactgroup_cg_id"];
     }
     $ret = $form->getSubmitValue("contact_cgNotif");
+    $count = count($ret); // to avoid callable in the for loop termination condition
 
-    for ($i = 0; $i < count($ret); $i++) {
+    for ($i = 0; $i < $count; $i++) {
         if (!isset($cmds[$ret[$i]])) {
-            $rq = "INSERT INTO contactgroup_contact_relation ";
-            $rq .= "(contact_contact_id, contactgroup_cg_id) ";
-            $rq .= "VALUES ";
-            $rq .= "('" . (int)$contact_id . "', '" . $ret[$i] . "')";
-            $dbResult = $pearDB->query($rq);
+            $dbResult = $pearDB->prepare(
+                "INSERT INTO contactgroup_contact_relation " .
+                "(contact_contact_id, contactgroup_cg_id) " .
+                "VALUES (:contactId, :contactgroupId)"
+            );
+            $dbResult->bindValue(':contactId', (int)$contact_id, PDO::PARAM_INT);
+            $dbResult->bindValue(':contactgroupId', $ret[$i], PDO::PARAM_INT);
+            $dbResult->execute();
         }
     }
     CentreonCustomView::syncContactGroupCustomView($centreon, $pearDB, $contact_id);
@@ -1167,7 +1276,7 @@ function insertLdapContactInDB($tmpContacts = array())
         }
 
         //Insert a relation between LDAP's default contactgroup and the contact
-        $ldap->addUserToLdapDefautCg(
+        $ldap->addUserToLdapDefaultCg(
             $arId,
             $contact_id
         );

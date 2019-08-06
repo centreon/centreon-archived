@@ -58,8 +58,8 @@ $dbResult->closeCursor();
 $hostgroups = null;
 
 $template = filter_var(
-    $_POST['template'] ?? $_GET['template'] ?? null,
-    FILTER_SANITIZE_STRING
+    $_POST['template'] ?? $_GET['template'] ?? 0,
+    FILTER_VALIDATE_INT
 );
 
 $searchH = filter_var(
@@ -88,7 +88,7 @@ if (isset($_POST['search']) || isset($_GET['search'])) {
     $centreon->historySearch[$url]["status"] = $status;
 } else {
     //restoring saved values
-    $template = $centreon->historySearch[$url]['template'] ?? null;
+    $template = $centreon->historySearch[$url]['template'] ?? 0;
     $searchH = $centreon->historySearch[$url]["searchH"] ?? null;
     $searchS = $centreon->historySearch[$url]["searchS"] ?? null;
     $hostStatus = $centreon->historySearch[$url]["hostStatus"] ?? 0;

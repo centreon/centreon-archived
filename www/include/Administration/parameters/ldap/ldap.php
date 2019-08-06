@@ -1,7 +1,7 @@
 <?php
 /*
- * Copyright 2005-2012 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2019 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  * 
  * This program is free software; you can redistribute it and/or modify it under 
@@ -33,13 +33,13 @@
  * 
  */
 
-require_once _CENTREON_PATH_.'www/class/centreonLDAP.class.php';
+require_once _CENTREON_PATH_ . 'www/class/centreonLDAP.class.php';
 $tpl = new Smarty();
 
 if (isset($_REQUEST['ar_id']) || isset($_REQUEST['new'])) {
-    include _CENTREON_PATH_.'www/include/Administration/parameters/ldap/form.php';
+    include _CENTREON_PATH_ . 'www/include/Administration/parameters/ldap/form.php';
 } else {
-    $ldapAction = isset($_REQUEST['a']) ? $_REQUEST['a'] : null;
+    $ldapAction = $_REQUEST['a'] ?? null;
     if (!is_null($ldapAction) && isset($_REQUEST['select']) && is_array($_REQUEST['select'])) {
         $select = $_REQUEST['select'];
         $ldapConf = new CentreonLdapAdmin($pearDB);
@@ -57,5 +57,5 @@ if (isset($_REQUEST['ar_id']) || isset($_REQUEST['new'])) {
                 break;
         }
     }
-    include _CENTREON_PATH_.'www/include/Administration/parameters/ldap/list.php';
+    include _CENTREON_PATH_ . 'www/include/Administration/parameters/ldap/list.php';
 }
