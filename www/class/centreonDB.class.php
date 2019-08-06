@@ -1,7 +1,7 @@
 <?php
 /*
- * Copyright 2005-2017 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2019 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -34,7 +34,7 @@
  */
 
 // file centreon.config.php may not exist in test environment
-$configFile = realpath(dirname(__FILE__) . "/../../config/centreon.config.php");
+$configFile = realpath(__DIR__ . "/../../config/centreon.config.php");
 if ($configFile !== false) {
     require_once $configFile;
 }
@@ -42,9 +42,11 @@ if ($configFile !== false) {
 require_once _CENTREON_PATH_ . "/www/class/centreonDBStatement.class.php";
 require_once _CENTREON_PATH_ . "/www/class/centreonLog.class.php";
 
+/**
+ * Class CentreonDB used to manage DB connection
+ */
 class CentreonDB extends \PDO
 {
-
     private static $instance = array();
     protected $db_type = "mysql";
     protected $db_port = "3306";
@@ -60,12 +62,12 @@ class CentreonDB extends \PDO
     protected $requestSuccessful;
     protected $lineRead;
     protected $debug;
-    
+
     /**
      * @var int
      */
     private $queryNumber;
-    
+
     /**
      * @var int
      */
@@ -75,8 +77,8 @@ class CentreonDB extends \PDO
      * Constructor
      *
      * @param string $db | centreon, centstorage, or ndo
-     * @param int $retry
-     * @param bool $silent | when silent is set to false, it will display an HTML error msg,
+     * @param int    $retry
+     * @param bool   $silent | when silent is set to false, it will display an HTML error msg,
      *                       otherwise it will throw an Exception
      * @throws Exception
      */
@@ -124,7 +126,7 @@ class CentreonDB extends \PDO
                 'phptype' => $this->db_type,
                 'username' => $conf_centreon["user"],
                 'password' => $conf_centreon["password"],
-                'port'     => $this->db_port
+                'port' => $this->db_port
             );
 
             switch (strtolower($db)) {
@@ -147,8 +149,8 @@ class CentreonDB extends \PDO
             $this->lineRead = 0;
 
             parent::__construct(
-                $this->dsn['phptype'].":"."dbname=".$this->dsn['database'] .
-                ";host=".$this->dsn['hostspec'] . ";port=".$this->dsn['port'],
+                $this->dsn['phptype'] . ":" . "dbname=" . $this->dsn['database'] .
+                ";host=" . $this->dsn['hostspec'] . ";port=" . $this->dsn['port'],
                 $this->dsn['username'],
                 $this->dsn['password'],
                 $this->options
@@ -220,7 +222,7 @@ class CentreonDB extends \PDO
      *
      * @access public
      * @param string $str
-     * @param bool $htmlSpecialChars | htmlspecialchars() is used when true
+     * @param bool   $htmlSpecialChars | htmlspecialchars() is used when true
      * @return string
      */
     public static function escape($str, $htmlSpecialChars = false)
@@ -237,7 +239,7 @@ class CentreonDB extends \PDO
     /**
      *  Query
      *
-     *  @return \PDOStatement
+     * @return \PDOStatement
      */
     public function query($queryString = null, $parameters = null)
     {
@@ -277,7 +279,7 @@ class CentreonDB extends \PDO
      * launch a getAll
      *
      * @access public
-     * @param   string  $query_string   query
+     * @param string $query_string query
      * @return  object  getAll result
      */
     public function getAll($query_string = null, $placeHolders = array())
@@ -303,8 +305,8 @@ class CentreonDB extends \PDO
      * Factory for singleton
      *
      * @param string $name The name of centreon datasource
-     * @throws Exception
      * @return CentreonDB
+     * @throws Exception
      */
     public static function factory($name = "centreon")
     {
@@ -332,7 +334,7 @@ class CentreonDB extends \PDO
         return $number;
     }
 
-    /*
+    /**
      * checks if there is malicious injection
      */
     public static function checkInjection($sString)
@@ -340,7 +342,7 @@ class CentreonDB extends \PDO
         return 0;
     }
 
-    /*
+    /**
      * return database Properties
      *
      * <code>
@@ -351,7 +353,7 @@ class CentreonDB extends \PDO
      */
     public function getProperties()
     {
-        $unitMultiple = 1024*1024;
+        $unitMultiple = 1024 * 1024;
 
         $info = array(
             'version' => null,
@@ -368,7 +370,7 @@ class CentreonDB extends \PDO
             $row = $res->fetchRow();
             $version = $row['mysql_version'];
             $info['version'] = $row['mysql_version'];
-            if ($DBRESULT = $this->query("SHOW TABLE STATUS FROM `".$this->dsn['database']."`")) {
+            if ($DBRESULT = $this->query("SHOW TABLE STATUS FROM `" . $this->dsn['database'] . "`")) {
                 while ($data = $DBRESULT->fetch()) {
                     $info['dbsize'] += $data['Data_length'] + $data['Index_length'];
                     $info['indexsize'] += $data['Index_length'];
