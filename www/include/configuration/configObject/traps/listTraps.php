@@ -181,7 +181,7 @@ $form->addElement('select2', 'vendor', "", $vendors, $attrTrapsVendor);
 
 // Fill a tab with a multidimensional Array we put in $tpl
 $elemArr = array();
-for ($i = 0; $trap = $stmt->fetchRow(); $i++) {
+for ($i = 0; $trap = $stmt->fetch(); $i++) {
     $trap = array_map(array("CentreonUtils", "escapeAll"), $trap);
     $moptions = "";
     $selectedElements = $form->addElement('checkbox', "select[" . $trap['traps_id'] . "]");
