@@ -1,11 +1,30 @@
 <?php
+/*
+ * Copyright 2005 - 2019 Centreon (https://www.centreon.com/)
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ * For more information : contact@centreon.com
+ *
+ */
+
 namespace CentreonRemote\Domain\Exporter;
 
 use CentreonRemote\Infrastructure\Export\ExportManifest;
 use CentreonRemote\Infrastructure\Service\ExporterServiceAbstract;
 use Centreon\Domain\Repository;
 
-require_once dirname(__FILE__) . '/../../../../bootstrap.php';
+require_once __DIR__ . '/../../../../bootstrap.php';
 require_once 'config-generate-remote/generate.class.php';
 
 use ConfigGenerateRemote\Generate;
@@ -50,26 +69,32 @@ class ConfigurationExporter extends ExporterServiceAbstract
         // start transaction
         $db->beginTransaction();
 
-        // allow insert records without foreign key checks
-        $db->query('SET FOREIGN_KEY_CHECKS=0;');
+        try {
+            // allow insert records without foreign key checks
+            $db->query('SET FOREIGN_KEY_CHECKS=0;');
+            
+            $import = $manifest->get("import");
+            foreach ($import[data] as $data) {
+                // truncate table
+                $db->query("TRUNCATE TABLE `" . $data[table] . "`;");
         
-        $import = $manifest->get("import");
-        foreach ($import[data] as $data) {
-            // truncate table
-            $db->query("TRUNCATE TABLE `" . $data[table] . "`;");
-    
-            // insert data
-            $exportPathFile = $this->getFile($data[filename]);
-            echo date("Y-m-d H:i:s") . " - INFO - Loading '" . $exportPathFile . "'.\n";
-            $db->loadDataInfile($exportPathFile, $data[table], $import[infile_clauses][fields_clause],
-                $import[infile_clauses][lines_clause], $data[columns]);
+                // insert data
+                $exportPathFile = $this->getFile($data[filename]);
+                echo date("Y-m-d H:i:s") . " - INFO - Loading '" . $exportPathFile . "'.\n";
+                $db->loadDataInfile($exportPathFile, $data[table], $import[infile_clauses][fields_clause],
+                    $import[infile_clauses][lines_clause], $data[columns]);
+            }
+
+            // restore foreign key checks
+            $db->query('SET FOREIGN_KEY_CHECKS=1;');
+
+            // commit transaction
+            $db->commit();
+        } catch {
+            // rollback changes
+            $db->rollBack();
+            echo date("Y-m-d H:i:s") . " - ERROR - Loading failed.\n";
         }
-
-        // restore foreign key checks
-        $db->query('SET FOREIGN_KEY_CHECKS=1;');
-
-        // commit transaction
-        $db->commit();
         
         // media copy
         $exportPathMedia = $this->commitment->getPath() . "/media";
@@ -78,7 +103,7 @@ class ConfigurationExporter extends ExporterServiceAbstract
     }
 
     /**
-     * Copy directory recusively
+     * Copy directory recursively
      */
     private function recursive_copy($src, $dst) {
         $dir = opendir($src);

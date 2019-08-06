@@ -6,10 +6,11 @@ use Centreon\Infrastructure\Service\Exception\NotFoundException;
 use ReflectionClass;
 use CentreonDB;
 
+/**
+ * Executes commands against Centreon database backend.
+ */
 class CentreonDBAdapter
 {
-    const BULK_SIZE = 10000;
-
     /** @var \CentreonDB */
     private $db;
 
@@ -138,27 +139,6 @@ class CentreonDBAdapter
     }
 
     /**
-     * Generate value template place holders
-     * 
-     * @param string $text
-     * @param int $count
-     * @param string $separator
-     * 
-     * @return string
-     */
-    public function placeHolders($text, $count = 0, $separator = ",")
-    {
-        $result = array();
-        if ($count > 0) {
-            for ($x = 0; $x < $count; $x++) {
-                $result[] = $text;
-            }
-        }
-    
-        return implode($separator, $result);
-    }
-
-    /**
      * Insert data using load data infile
      * 
      * @param string $file Path and name of file to load
@@ -199,88 +179,6 @@ class CentreonDBAdapter
         } catch (\Exception $e) {
             throw new \Exception('Query failed. ' . $e->getMessage());
         }
-    }
-
-    /**
-     * Insert data using bulk
-     * 
-     * @param string $table
-     * @param array $data
-     *
-     * @throws \Exception
-     *
-     * @return int Last inserted ID
-     */
-    public function insertBulk($table, array $data)
-    {
-        if (!$table && !$data) {
-            throw new \Exception("The argument can't be empty");
-        }
-
-        //Define needed vars
-        $rowsSQL = array();
-        $columnNames = array();
-        $toBind = array();
-        $params = array();
-        $i = 0;
-
-        foreach ($data as $row) {
-            $params = array();
-            $columnNames = array_keys($row);
-            foreach ($row as $columnName => $columnValue) {
-                $param = ":" . $columnName . $i;
-                $params[] = $param;
-                $toBind[$param] = $columnValue; 
-            }
-            $rowsSQL[] = "(" . implode(", ", $params) . ")";
-            $i++;
-
-            if ($i >= BULK_SIZE) {
-                //Construct SQL statement
-                $sql = "INSERT INTO `$table` (`" . implode("`, `", $columnNames) . "`) VALUES " . implode(", ", $rowsSQL);
-
-                //Prepare PDO statement.
-                $stmt = $this->db->prepare($sql);
-
-                //Bind values.
-                foreach ($toBind as $param => $val) {
-                    $stmt->bindValue($param, $val);
-                }
-
-                try {
-                    $stmt->execute();
-
-                    //Reset values
-                    $i = 0;
-                    $rowsSQL = array();
-                    $toBind = array();
-                } catch (\Exception $e) {
-                    throw new \Exception('Query failed. ' . $e->getMessage());
-                }
-            }
-        }
-
-        if ($rowsSQL) {
-            //Construct SQL statement
-            $rowsSQL[] = "(" . implode(", ", $params) . ")";
-            $sql = "INSERT INTO `$table` (`" . implode("`, `", $columnNames) . "`) VALUES " . implode(", ", $rowsSQL);
-
-            //Prepare PDO statement.
-            $stmt = $this->db->prepare($sql);
-
-            //Bind values.
-            foreach ($toBind as $param => $val) {
-                $stmt->bindValue($param, $val);
-            }
-
-            try {
-                $stmt->execute();
-            } catch (\Exception $e) {
-                throw new \Exception('Query failed. ' . $e->getMessage());
-            }
-        }
-
-        return $this->db->lastInsertId();
     }
 
     /**
