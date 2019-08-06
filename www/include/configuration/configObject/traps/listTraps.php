@@ -40,6 +40,7 @@ if (!isset($centreon)) {
 include_once "./class/centreonUtils.class.php";
 include "./include/common/autoNumLimit.php";
 
+// list of enum
 $tabStatus = array(
     -1 => _("Pending"),
     0 => _("OK"),
@@ -91,25 +92,40 @@ if ($searchStatus == 5) {
 } else {
     $enumStatus = $searchStatus - 1;
 }
-
+$queryValues = array();
 $rq = 'SELECT SQL_CALC_FOUND_ROWS * FROM traps WHERE 1 ';
 // List of elements - Depends on different criteria
 if ($searchTraps) {
-    $rq .= " AND traps_oid LIKE '%" . $searchTraps . "%' OR traps_name LIKE '%" . $searchTraps . "%' " .
-        "OR manufacturer_id IN (SELECT id FROM traps_vendor WHERE alias LIKE '%" . $searchTraps . "%' ) ";
+    $rq .= ' AND traps_oid LIKE :trapName OR traps_name LIKE :trapName ' .
+        'OR manufacturer_id IN (SELECT id FROM traps_vendor WHERE alias LIKE :trapName ) ';
+    $queryValues[':trapName'] = '%' . $searchTraps . '%';
 }
 if ($searchVendor) {
-    $rq .= " AND manufacturer_id = " . (int)$searchVendor;
+    $rq .= ' AND manufacturer_id = :manufacturer ';
+    $queryValues[':manufacturer'] = (int)$searchVendor;
 }
 if ($searchStatus) {
-    $rq .= " AND traps_status = '" . ($enumStatus) . "'";
+    $rq .= ' AND traps_status = :status ';
+    $queryValues[':status'] = $enumStatus;
 }
 
-$rq .= ' ORDER BY manufacturer_id, traps_name LIMIT ' . $num * $limit . ', ' . $limit;
+$rq .= ' ORDER BY manufacturer_id, traps_name LIMIT ' . $num * $limit . ', ' . (int)$limit;
 
-$dbResult = $pearDB->query($rq);
+$stmt = $pearDB->prepare($rq);
+
+if (isset($queryValues[':trapName'])) {
+    $stmt->bindValue(':trapName', $queryValues[':trapName'], PDO::PARAM_STR);
+}
+if (isset($queryValues[':manufacturer'])) {
+    $stmt->bindValue(':manufacturer', $queryValues[':manufacturer'], PDO::PARAM_INT);
+}
+if (isset($queryValues[':status'])) {
+    $stmt->bindValue(':status', $queryValues[':status'], PDO::PARAM_STR);
+}
+
+$stmt->execute();
+
 $rows = $pearDB->query("SELECT FOUND_ROWS()")->fetchColumn();
-
 include "./include/common/checkPagination.php";
 
 // Smarty template Init
@@ -165,7 +181,7 @@ $form->addElement('select2', 'vendor', "", $vendors, $attrTrapsVendor);
 
 // Fill a tab with a multidimensional Array we put in $tpl
 $elemArr = array();
-for ($i = 0; $trap = $dbResult->fetch(); $i++) {
+for ($i = 0; $trap = $stmt->fetchRow(); $i++) {
     $trap = array_map(array("CentreonUtils", "escapeAll"), $trap);
     $moptions = "";
     $selectedElements = $form->addElement('checkbox', "select[" . $trap['traps_id'] . "]");
@@ -183,7 +199,7 @@ for ($i = 0; $trap = $dbResult->fetch(); $i++) {
         "RowMenu_name" => $trap["traps_name"],
         "RowMenu_link" => "?p=$p&o=c&traps_id={$trap['traps_id']}",
         "RowMenu_desc" => substr($trap["traps_oid"], 0, 40),
-        "RowMenu_status" => $tabStatus[($trap["traps_status"])] ?? $tabStatus[3]
+        "RowMenu_status" => $tabStatus[($trap["traps_status"])] ?? $tabStatus[3],
         "RowMenu_args" => $trap["traps_args"],
         "RowMenu_manufacturer" => CentreonUtils::escapeSecure(
             $mnftr["alias"],
