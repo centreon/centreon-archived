@@ -116,7 +116,7 @@ class CentreonDB extends \PDO
             /*
              * Add possibility to change SGDB port
              */
-            if (isset($conf_centreon["port"]) && $conf_centreon["port"] != "") {
+            if (!empty($conf_centreon["port"])) {
                 $this->db_port = $conf_centreon["port"];
             } else {
                 $this->db_port = '3306';
@@ -326,8 +326,8 @@ class CentreonDB extends \PDO
     public function numberRows()
     {
         $number = 0;
-        $DBRESULT = $this->query("SELECT FOUND_ROWS() AS number");
-        $data = $DBRESULT->fetch();
+        $dbResult = $this->query("SELECT FOUND_ROWS() AS number");
+        $data = $dbResult->fetch();
         if (isset($data["number"])) {
             $number = $data["number"];
         }
@@ -367,17 +367,17 @@ class CentreonDB extends \PDO
          * Get Version
          */
         if ($res = $this->query("SELECT VERSION() AS mysql_version")) {
-            $row = $res->fetchRow();
+            $row = $res->fetch();
             $version = $row['mysql_version'];
             $info['version'] = $row['mysql_version'];
-            if ($DBRESULT = $this->query("SHOW TABLE STATUS FROM `" . $this->dsn['database'] . "`")) {
-                while ($data = $DBRESULT->fetch()) {
+            if ($dbResult = $this->query("SHOW TABLE STATUS FROM `" . $this->dsn['database'] . "`")) {
+                while ($data = $dbResult->fetch()) {
                     $info['dbsize'] += $data['Data_length'] + $data['Index_length'];
                     $info['indexsize'] += $data['Index_length'];
                     $info['rows'] += $data['Rows'];
                     $info['datafree'] += $data['Data_free'];
                 }
-                $DBRESULT->closeCursor();
+                $dbResult->closeCursor();
             }
             foreach ($info as $key => $value) {
                 if ($key != "rows" && $key != "version" && $key != "engine") {
@@ -432,6 +432,9 @@ class CentreonDB extends \PDO
             return 0; // column to add
         } catch (\PDOException $e) {
             $this->log->insertLog(2, 'UPGRADE PROCESS  : Failed when checking if ' . $column . ' exist');
+            if ($this->debug) {
+                $this->log->insertLog(2, $e->getMessage() . " QUERY : " . $query_string);
+            }
             return -1;
         }
     }
