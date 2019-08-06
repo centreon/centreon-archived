@@ -1,13 +1,34 @@
 <?php
+/*
+ * Copyright 2005 - 2019 Centreon (https://www.centreon.com/)
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ * For more information : contact@centreon.com
+ *
+ */
+
 namespace CentreonRemote\Infrastructure\Export;
 
 use CentreonRemote\Infrastructure\Export\ExportCommitment;
 use DateTime;
 use Exception;
 
+/**
+ * Writes manifest of exported files and reads them for import process.
+ */
 class ExportManifest
 {
-
     const EXPORT_FILE = 'manifest.json';
     const ERR_CODE_MANIFEST_NOT_FOUND = 1001;
     const ERR_CODE_MANIFEST_WRONG_FORMAT = 1002;
@@ -34,6 +55,13 @@ class ExportManifest
         $this->version = $version;
     }
 
+    /**
+     * Retrieves data array field based on key
+     *
+     * @param string $key Key of data array to retrieve
+     *
+     * @return $result Array field
+     */
     public function get(string $key)
     {
         $result = $this->data && array_key_exists($key, $this->data) ? $this->data[$key] : null;
