@@ -65,9 +65,9 @@ class BrokerContext extends CentreonContext
      */
     public function theNewConfigurationIsApplied()
     {
-        $return = $this->container->execute('cat /etc/centreon-broker/watchdog.xml', 'web');
-        if (!preg_match('/\/etc\/centreon-broker\/\/?new-name\.xml/', $return['output'])) {
-            throw new \Exception('new-name.xml is not declared in watchdog.xml');
+        $return = $this->container->execute('cat /etc/centreon-broker/watchdog.json', 'web');
+        if (!preg_match('/\/etc\/centreon-broker\/\/?new-name\.json/', $return['output'])) {
+            throw new \Exception('new-name.xml is not declared in watchdog.json');
         }
     }
 

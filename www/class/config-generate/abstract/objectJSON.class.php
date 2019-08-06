@@ -70,7 +70,7 @@ abstract class AbstractObjectJSON
     {
         $full_file = $dir . '/' . $this->generate_filename;
         if ($handle = fopen($full_file, 'w')) {
-            if (!fwrite($handle, $this->content, JSON_PRETTY_PRINT)) {
+            if (!fwrite($handle, $this->content)) {
                 throw new RuntimeException('Cannot write to file "' . $full_file . '"');
             }
             fclose($handle);
@@ -81,6 +81,6 @@ abstract class AbstractObjectJSON
 
     protected function generateFile($object)
     {
-        $this->content = json_encode(['centreonbroker' => $content], JSON_PRETTY_PRINT);
+        $this->content = json_encode(['centreonBroker' => $object], JSON_UNESCAPED_SLASHES|JSON_PRETTY_PRINT);
     }
 }

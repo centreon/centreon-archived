@@ -90,11 +90,11 @@ class Broker extends AbstractObjectJSON
         if (!is_null($this->cacheExternalValue)) {
             return ;
         }
-        
+
         $this->cacheExternalValue = array();
-        $stmt = $this->backend_instance->db->prepare("SELECT 
+        $stmt = $this->backend_instance->db->prepare("SELECT
             CONCAT(cf.fieldname, '_', cttr.cb_tag_id, '_', ctfr.cb_type_id) as name, external FROM cb_field cf, cb_type_field_relation ctfr, cb_tag_type_relation cttr
-                WHERE cf.external IS NOT NULL 
+                WHERE cf.external IS NOT NULL
                    AND cf.cb_field_id = ctfr.cb_field_id
                    AND ctfr.cb_type_id = cttr.cb_type_id
         ");
@@ -107,9 +107,9 @@ class Broker extends AbstractObjectJSON
     private function generate($poller_id, $localhost)
     {
         $this->getExternalValues();
-        
+
         if (is_null($this->stmt_broker)) {
-            $this->stmt_broker = $this->backend_instance->db->prepare("SELECT 
+            $this->stmt_broker = $this->backend_instance->db->prepare("SELECT
               $this->attributes_select
             FROM cfg_centreonbroker
             WHERE ns_nagios_server = :poller_id
@@ -136,33 +136,30 @@ class Broker extends AbstractObjectJSON
         foreach ($result as $row) {
             $this->generate_filename = $row['config_filename'];
             $object = array();
-            $flow_count = 0;
 
             $config_name = $row['config_name'];
             $cache_directory = $row['cache_directory'];
             $stats_activate = $row['stats_activate'];
 
             # Base parameters
-            $object['broker_id'] = $row['config_id'];
+            $object['broker_id'] = (int)$row['config_id'];
             $object['broker_name'] = $row['config_name'];
-            $object['poller_id'] = $this->engine['id'];
+            $object['poller_id'] = (int)$this->engine['id'];
             $object['poller_name'] = $this->engine['name'];
             $object['module_directory'] = $this->engine['broker_modules_path'];
-            $object['log_timestamp'] = $row['config_write_timestamp'];
-            $object['log_thread_id'] = $row['config_write_thread_id'];
-            $object['event_queue_max_size'] = $row['event_queue_max_size'];
+            $object['log_timestamp'] = $this->castIntoBoolean($row['config_write_timestamp']);
+            $object['log_thread_id'] = $this->castIntoBoolean($row['config_write_thread_id']);
+            $object['event_queue_max_size'] = (int)$row['event_queue_max_size'];
             $object['command_file'] = $row['command_file'];
             $object['cache_directory'] = $cache_directory;
 
             if ($row['daemon'] == '1') {
-                $watchdog[] = array(
-                    'cbd' => array(
-                        'name' => $row['config_name'],
-                        'configuration_file' => $this->engine['broker_cfg_path'] . '/' . $row['config_filename'],
-                        'run' => 1,
-                        'reload' => 1
-                    )
-                );
+                $watchdog['cbd'][] = [
+                    'name' => $row['config_name'],
+                    'configuration_file' => $this->engine['broker_cfg_path'] . '/' . $row['config_filename'],
+                    'run' => true,
+                    'reload' => true,
+                ];
             }
 
             $this->stmt_broker_parameters->bindParam(':config_id', $row['config_id'], PDO::PARAM_INT);
@@ -182,6 +179,8 @@ class Broker extends AbstractObjectJSON
                     }
                 }
 
+
+                $subValuesToCastInArray = [];
                 foreach ($value as $subvalue) {
                     if (!isset($subvalue['fieldIndex']) ||
                         $subvalue['fieldIndex'] == "" ||
@@ -196,13 +195,13 @@ class Broker extends AbstractObjectJSON
                             )
                         ) {
                             continue;
-                        } elseif ($subvalue['config_key'] == 'category') {
-                            $object[$key][$subvalue['config_group_id']]['filters'][][$subvalue['config_key']] =
+                        } elseif ($subvalue['config_key'] === 'category') {
+                            $object[$key][$subvalue['config_group_id']]['filters'][$subvalue['config_key']][] =
                                 $subvalue['config_value'];
                         } else {
                             $object[$key][$subvalue['config_group_id']][$subvalue['config_key']] =
                                 $subvalue['config_value'];
-                            
+
                             // We override with external values
                             if (isset($this->cacheExternalValue[$subvalue['config_key'] . '_' . $blockId])) {
                                 $object[$key][$subvalue['config_group_id']][$subvalue['config_key']] =
@@ -216,12 +215,12 @@ class Broker extends AbstractObjectJSON
                         }
                     } else {
                         $res = explode('__', $subvalue['config_key'], 3);
-                        $object[$key][$subvalue['config_group_id']][$subvalue['fieldIndex']][$res[0]][$res[1]] =
+                        $object[$key][$subvalue['config_group_id']][$res[0]][(int)$subvalue['fieldIndex']][$res[1]] =
                             $subvalue['config_value'];
+                        $subValuesToCastInArray[$subvalue['config_group_id']][] = $res[0];
                     }
-                    $flow_count++;
                 }
-                
+
                 // Check if we need to add values from external
                 foreach ($this->cacheExternalValue as $key2 => $value2) {
                     if (preg_match('/^(.+)_' . $blockId . '$/', $key2, $matches)) {
@@ -231,19 +230,30 @@ class Broker extends AbstractObjectJSON
                         }
                     }
                 }
+
+                // cast into arrays instead of objects with integer as key
+                $object[$key] = array_values($object[$key]);
+                foreach ($subValuesToCastInArray as $configGroupId => $subValues) {
+                    foreach ($subValues as $subValue) {
+                        $object[$key][$configGroupId][$subValue] =
+                            array_values($object[$key][$configGroupId][$subValue]);
+                    }
+                }
             }
 
             # Stats parameters
             if ($stats_activate == '1') {
-                $object['stats'][$flow_count] = array(
-                    'type' => 'stats',
-                    'name' => $config_name . '-stats',
-                    'json_fifo' => $cache_directory . '/' . $config_name . '-stats.json',
-                );
+                $object['stats'] = [
+                    [
+                        'type' => 'stats',
+                        'name' => $config_name . '-stats',
+                        'json_fifo' => $cache_directory . '/' . $config_name . '-stats.json',
+                    ],
+                ];
             }
 
             # Generate file
-            $this->generateFile($object, true, 'centreonBroker');
+            $this->generateFile($object);
             $this->writeFile($this->backend_instance->getPath());
         }
 
@@ -251,11 +261,9 @@ class Broker extends AbstractObjectJSON
         $watchdogLogsPath = trim($this->engine['broker_logs_path']) === '' ?
             '/var/log/centreon-broker/watchdog.log' :
             trim($this->engine['broker_logs_path']) . '/watchdog.log';
-        $watchdog[] = array(
-            'log' => $watchdogLogsPath
-        );
+        $watchdog['log'] = $watchdogLogsPath;
 
-        $this->generate_filename = 'watchdog.xml';
+        $this->generate_filename = 'watchdog.json';
         $this->generateFile($watchdog);
         $this->writeFile($this->backend_instance->getPath());
     }
@@ -287,7 +295,7 @@ class Broker extends AbstractObjectJSON
     {
         $this->generate($poller['id'], $poller['localhost']);
     }
-    
+
     private function getInfoDb($string)
     {
         /*
@@ -350,10 +358,10 @@ class Broker extends AbstractObjectJSON
                 $db = $this->backend_instance->db_cs;
                 break;
         }
-        
+
         $stmt = $db->prepare($query);
         $stmt->execute();
-        
+
         $infos = array();
         while (($row = $stmt->fetch(PDO::FETCH_ASSOC))) {
             $val = $row[$s_column];
@@ -369,7 +377,7 @@ class Broker extends AbstractObjectJSON
         }
         return $infos;
     }
-    
+
     private function rpnCalc($rpn, $val)
     {
         if (!is_numeric($val)) {
@@ -385,7 +393,7 @@ class Broker extends AbstractObjectJSON
             return $val;
         }
     }
-    
+
     private function rpnOperation($result, $item)
     {
         if (in_array($item, array('+', '-', '*', '/'))) {
@@ -402,5 +410,28 @@ class Broker extends AbstractObjectJSON
             throw new InvalidArgumentException('Unrecognized symbol ' . $item);
         }
         return $result;
+    }
+
+    /**
+     * cast broker configuration value to boolean
+     *
+     * @param any $value the value to cast
+     * @return boolean the casted boolean value
+     */
+    private function castIntoBoolean($value): bool
+    {
+        $castedValue = false;
+
+        switch($value) {
+            case 1:
+            case '1':
+            case true:
+            case 'true':
+            case 'yes':
+                $castedValue = true;
+                break;
+        }
+
+        return $castedValue;
     }
 }
