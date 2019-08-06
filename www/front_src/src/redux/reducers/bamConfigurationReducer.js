@@ -3,7 +3,7 @@ import * as actions from "../actions/bamConfigurationActions";
 const initialState = {
     configuration:{
       id: null,
-      activate: false,
+      activate: true,
       name: null,
       description: null,
       icon: null,
