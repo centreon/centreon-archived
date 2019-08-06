@@ -1,7 +1,7 @@
 <?php
 /*
- * Copyright 2005-2015 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2019 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -107,6 +107,17 @@
         }
     }
 
+    /*
+     * called when LDAP is enabled or not
+     */
+    function toggleParamSync(checkValue, isInit) {
+        if (checkValue == true) {
+            jQuery('#ldap_sync_interval').fadeOut({duration: 0});
+        } else {
+            jQuery('#ldap_sync_interval').fadeIn({duration: 0});
+        }
+    }
+
     /**
      * Display or hide custom options
      */
@@ -155,7 +166,19 @@
                 }
             }
         }
+        // getting saved synchronization interval's time field state
+        var loginSync = false;
+        var loginCheckbox = document.getElementById('ldap_auto_sync_n')
+        if (loginCheckbox
+            && loginCheckbox.type === 'radio'
+            && loginCheckbox.checked
+        ) {
+            loginSync = true;
+        }
+
+        // displaying or hiding toggling fields
         toggleParams(noDns, true);
+        toggleParamSync(loginSync, true);
     }
 
     /*

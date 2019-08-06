@@ -149,6 +149,30 @@ Pour ajouter un nouvel annuaire :
 * Le champ **Utiliser le service DNS** indique s'il faut utiliser le serveur DNS pour résoudre l'adresse IP de l'annuaire LDAP
 * Le champ **LDAP servers** permet d'ajouter un ou plusieurs annuaires LDAP vers lequel Centreon va se connecter.
 
+.. image :: /images/guide_exploitation/eldap2.png
+:align: center
+
+* Lorsque l'option **Synchronisation LDAP lors du login** est activée, une mise à jour des données de l'utilisateur provenant du LDAP sera effectuée lors de sa connection et ses ACL seront re-calculées.
+* Le champ **Intervalle (en heures), entre les synchronisations LDAP** est affiché si la précedente option est activée. Il permet de spécifier une durée minimale entre deux synchronisation avec le LDAP.
+
+.. note::
+
+   Les données provenant du LDAP ne seront mises à jour que lorsque cet intervalle sera écoulé. Une synchronisation manuelle est possible sur les pages **Administration > Sessions** et **Configuration > Utilisateurs > Contacts / Utilisateurs**.
+
+   L'intervalle est exprimé en heures. Par défaut, ce champs est initié avec la plus basse valeur possible : 1 heure.
+
+.. note::
+   Nous sauvegardons en DB, un timestamp comme date de référence et c'est le CRON CentAcl qui le met à jour.
+
+   Cette référence temporelle permet de calculer la prochaine synchronisation avec le LDAP.
+
+   Si vous modifiez l'un de ces deux champs, la base temporelle sera réinitialisée à l'heure de la sauvegarde du formulaire.
+
+   Cette reférence temporelle n'est pas affectée par les modifications apportées sur les autres champs du formulaire.
+
+.. image :: /images/guide_exploitation/eldap3.png
+:align: center
+
 Le tableau ci-dessous résume les différents paramètres à insérer pour ajouter un serveur LDAP :
 
 +-------------------------+------------------------------------------------------------------------------------------------------------+
@@ -162,6 +186,9 @@ Le tableau ci-dessous résume les différents paramètres à insérer pour ajout
 +-------------------------+------------------------------------------------------------------------------------------------------------+
 | TLS                     | Indique si le protocole TLS est utilisé pour la connexion au serveur                                       |
 +-------------------------+------------------------------------------------------------------------------------------------------------+
+
+.. image :: /images/guide_exploitation/eldap4.png
+:align: center
 
 * Les champs **Utilisateur du domaine** et **Mot de passe** définissent le nom d'utilisateur et le mot de passe pour se connecter au serveur LDAP
 * Le champ **Version du protocole** indique la version du protocole à utiliser pour se connecter
