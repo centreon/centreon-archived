@@ -184,7 +184,6 @@ for ($i = 0; $trap = $dbResult->fetch(); $i++) {
         "RowMenu_link" => "?p=$p&o=c&traps_id={$trap['traps_id']}",
         "RowMenu_desc" => substr($trap["traps_oid"], 0, 40),
         "RowMenu_status" => $tabStatus[($trap["traps_status"])] ?? $tabStatus[3]
-            : $tabStatus[3],
         "RowMenu_args" => $trap["traps_args"],
         "RowMenu_manufacturer" => CentreonUtils::escapeSecure(
             $mnftr["alias"],
