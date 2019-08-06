@@ -41,6 +41,7 @@ use Centreon\Domain\Entity\ImageDir;
 use Centreon\Domain\Repository\ImagesRepository;
 use PHPUnit\Framework\TestCase;
 use Centreon\Test\Mock\CentreonDB;
+use Centreon\Tests\Resource\Traits;
 
 /**
  * @group Centreon
@@ -48,6 +49,7 @@ use Centreon\Test\Mock\CentreonDB;
  */
 class ImagesRepositoryTest extends TestCase
 {
+    use Traits\CheckListOfIdsTrait;
 
     protected $datasets = [];
     protected $repository;
@@ -94,6 +96,16 @@ class ImagesRepositoryTest extends TestCase
             unset($dataset);
         }
         $this->repository = new ImagesRepository($db);
+    }
+
+    public function testCheckListOfIds()
+    {
+        $this->checkListOfIdsTrait(
+            ImagesRepository::class,
+            'checkListOfIds',
+            Image::TABLE,
+            'img_id'
+        );
     }
 
     /**

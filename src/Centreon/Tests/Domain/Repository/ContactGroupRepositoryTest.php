@@ -39,6 +39,7 @@ use Centreon\Domain\Entity\ContactGroup;
 use Centreon\Domain\Repository\ContactGroupRepository;
 use PHPUnit\Framework\TestCase;
 use Centreon\Test\Mock\CentreonDB;
+use Centreon\Tests\Resource\Traits;
 
 /**
  * @group Centreon
@@ -46,6 +47,7 @@ use Centreon\Test\Mock\CentreonDB;
  */
 class ContactGroupRepositoryTest extends TestCase
 {
+    use Traits\CheckListOfIdsTrait;
 
     protected $datasets = [];
     protected $repository;
@@ -90,6 +92,17 @@ class ContactGroupRepositoryTest extends TestCase
         }
         $this->repository = new ContactGroupRepository($db);
     }
+
+    public function testCheckListOfIds()
+    {
+        $this->checkListOfIdsTrait(
+            ContactGroupRepository::class,
+            'checkListOfIds',
+            ContactGroup::TABLE,
+            ContactGroup::ENTITY_IDENTIFICATOR_COLUMN
+        );
+    }
+
     /**
      * @covers \Centreon\Domain\Repository\ContactGroupRepository::getPaginationList
      */
