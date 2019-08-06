@@ -140,7 +140,7 @@ $attrBtnSuccess = array(
 $form->addElement('submit', 'Search', _("Search"), $attrBtnSuccess);
 
 $attrTrapsStatus = null;
-if ($searchStatus && $searchStatus != '') {
+if (!empty($searchStatus)) {
     $statusDefault = array($tabStatusFilter[$searchStatus] => $searchStatus);
     $attrTrapsStatus = array(
         'defaultDataset' => $statusDefault
