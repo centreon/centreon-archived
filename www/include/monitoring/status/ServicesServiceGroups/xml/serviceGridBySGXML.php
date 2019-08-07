@@ -161,7 +161,7 @@ foreach ($queryValues as $bindId => $bindData) {
     }
 }
 $DBRESULT->execute();
-$numRows = $DBRESULT->rowCount();
+$numRows = $obj->DBC->query("SELECT FOUND_ROWS()")->fetchColumn();
 
 // Create XML Flow
 $obj->XML = new CentreonXML();
