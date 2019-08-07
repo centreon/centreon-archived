@@ -404,7 +404,6 @@ class CentreonDB extends \PDO
     public function isColumnExist(string $table = null, string $column = null): int
     {
         if (!$table || !$column) {
-            $this->log->insertLog(2, 'UPGRADE PROCESS : Missing data to check if column exist');
             return -1;
         }
 
@@ -431,7 +430,6 @@ class CentreonDB extends \PDO
             }
             return 0; // column to add
         } catch (\PDOException $e) {
-            $this->log->insertLog(2, 'UPGRADE PROCESS  : Failed when checking if ' . $column . ' exist');
             if ($this->debug) {
                 $this->log->insertLog(2, $e->getMessage() . " QUERY : " . $query);
             }
