@@ -65,7 +65,7 @@ Connect to your old Centreon server and synchronize following directories::
     Replace **IP_New_Centreon** by the IP or the new Centreon server.
 
 .. warning::
-    In case of migration from CES 3.4.x, Centreon-web 2.8.x under CentOS 6 with MariaDB 5.X, do not sync folders /var/lib/mysql with RSYNC toward Centreon 19.10 / MariaDB 10.1.
+    In case of migration from CES 3.4.x, Centreon-web 2.8.x under CentOS 6 with MariaDB 5.X, do not sync folders /var/lib/mysql with RSYNC toward Centreon 19.10 / MariaDB 10.3.
     
     #. Dump source databases: ::
     
