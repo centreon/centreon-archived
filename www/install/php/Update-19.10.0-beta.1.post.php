@@ -38,25 +38,19 @@ include_once __DIR__ . "/../../class/centreonLog.class.php";
 $centreonLog = new CentreonLog();
 
 try {
-    // Change traps_execution_command from varchar(255) to text
+    // Alter existing tables to conform with strict mode.
     $pearDB->query(
-        "ALTER TABLE `traps` MODIFY COLUMN `traps_execution_command` text DEFAULT NULL"
+        "ALTER TABLE `log_action_modification` MODIFY COLUMN `field_value` text NOT NULL"
     );
-
-    //Add trap regexp matching
-    if (!$pearDB->isColumnExist('traps', 'traps_mode')) {
+    // Add the audit log retention column for the retention options menu
+    if (!$pearDB->isColumnExist('config', 'audit_log_retention')) {
         $pearDB->query(
-            "ALTER TABLE `traps` ADD COLUMN `traps_mode` ENUM('0', '1') DEFAULT '0' AFTER `traps_oid`"
+            "ALTER TABLE `config` ADD COLUMN IF NOT EXISTS audit_log_retention int(11) DEFAULT 0"
         );
     }
-
-    // Add trap filter
-    $pearDB->query(
-        "ALTER TABLE `traps` MODIFY COLUMN `traps_exec_interval_type` ENUM('0','1','2','3') NULL DEFAULT '0'"
-    );
 } catch (\PDOException $e) {
     $centreonLog->insertLog(
         2,
-        "UPGRADE : Unable to process 19.04.3 upgrade"
+        "UPGRADE : Unable to process 19.10.0 post beta 1 upgrade"
     );
 }
