@@ -137,12 +137,18 @@ class ExportManifestTest extends TestCase
      */
     public function testDump()
     {
-        $this->manifest->dump();
+        $date = date('l jS \of F Y h:i:s A');
+        $this->manifest->dump([
+            'date' => $date,
+            'remote_server' => $this->commitment->getRemote(),
+            'pollers' => $this->commitment->getPollers(),
+            'import' => null,
+        ]);
 
         $this->assertEquals([
             $this->manifest->getFile() => [
                 'version' => $this->version,
-                'date' => date('l jS \of F Y h:i:s A'),
+                'date' => $date,
                 'remote_server' => $this->commitment->getRemote(),
                 'pollers' => $this->commitment->getPollers(),
                 'import' => null,
