@@ -38,6 +38,8 @@ const bamConfigurationReducer = (state = initialState, action) => {
       return { ...state, configuration:{...state.configuration, ...action.configuration.configuration}  };
     case actions.SET_BA_CONFIGURATION_ERRORS:
       return { ...state, errors:{...state.errors, ...action.errors.errors} };
+    case actions.RESET_BA_CONFIGURATION_ERRORS:
+      return { ...state, errors:{} };
     default:
       return state;
   }
