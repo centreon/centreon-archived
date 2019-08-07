@@ -52,9 +52,7 @@ include_once "./class/centreonUtils.class.php";
 
 include "./include/common/autoNumLimit.php";
 
-/*
- * Create Timeperiod Cache
- */
+//Create Timeperiod Cache
 $tpCache = array("" => "");
 $dbResult = $pearDB->query("SELECT tp_name, tp_id FROM timeperiod");
 while ($data = $dbResult->fetch()) {
@@ -73,8 +71,13 @@ $p = filter_var(
     FILTER_VALIDATE_INT
 );
 
-$search = filter_var(
+$searchContact = filter_var(
     $_POST['searchC'] ?? $_GET['searchC'] ?? null,
+    FILTER_SANITIZE_STRING
+);
+
+$search = filter_var(
+    $_POST['Search'] ?? $_GET['Search'] ?? null,
     FILTER_SANITIZE_STRING
 );
 
@@ -86,20 +89,20 @@ $contactGroup = filter_var(
 if ($search) {
     //saving filters values
     $centreon->historySearch[$url] = array();
-    $centreon->historySearch[$url]['search'] = $search;
+    $centreon->historySearch[$url]['search'] = $searchContact;
     $centreon->historySearch[$url]['contactGroup'] = $contactGroup;
 } else {
     //restoring saved values
-    $search = $centreon->historySearch[$url]['search'] ?? null;
+    $searchContact = $centreon->historySearch[$url]['search'] ?? null;
     $contactGroup = $centreon->historySearch[$url]['contactGroup'] ?? 0;
 }
 
 $clauses = array();
-if ($search) {
+if ($searchContact) {
     $clauses = array(
         'contactgroup_cg_id' => array('=', $contactGroup),
-        'contact_name' => array('LIKE', '%' . $search . '%'),
-        'contact_alias' => array('OR', 'LIKE', '%' . $search . '%')
+        'contact_name' => array('LIKE', '%' . $searchContact . '%'),
+        'contact_alias' => array('OR', 'LIKE', '%' . $searchContact . '%')
     );
 }
 
@@ -183,7 +186,7 @@ if ($centreon->user->admin) {
 $aclOptions['pages'] = $num * $limit . ", " . $limit;
 $contacts = $acl->getContactAclConf($aclOptions);
 
-$search = tidySearchKey($search, $advanced_search);
+$searchContact = tidySearchKey($searchContact, $advanced_search);
 
 $form = new HTML_QuickFormCustom('select_form', 'POST', "?p=" . $p);
 
@@ -245,12 +248,12 @@ foreach ($contacts as $contact) {
     if ($contact["contact_id"] != $centreon->user->get_id()) {
         if ($contact["contact_activate"]) {
             $moptions .= "<a href='main.php?p=" . $p . "&contact_id=" . $contact['contact_id'] .
-                "&o=u&limit=" . $limit . "&num=" . $num . "&search=" . $search .
+                "&o=u&limit=" . $limit . "&num=" . $num . "&search=" . $searchContact .
                 "'><img src='img/icons/disabled.png' class='ico-14 margin_right' border='0' alt='" .
                 _("Disabled") . "'></a>&nbsp;&nbsp;";
         } else {
             $moptions .= "<a href='main.php?p=" . $p . "&contact_id=" . $contact['contact_id'] .
-                "&o=s&limit=" . $limit . "&num=" . $num . "&search=" . $search .
+                "&o=s&limit=" . $limit . "&num=" . $num . "&search=" . $searchContact .
                 "'><img src='img/icons/enabled.png' class='ico-14 margin_right' border='0' alt='" .
                 _("Enabled") . "'></a>&nbsp;&nbsp;";
         }
@@ -439,7 +442,7 @@ foreach (array('o1', 'o2') as $option) {
 }
 
 $tpl->assign('limit', $limit);
-$tpl->assign('searchC', $search);
+$tpl->assign('searchC', $searchContact);
 
 // Apply a template definition
 $renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
