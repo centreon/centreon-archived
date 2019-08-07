@@ -90,7 +90,7 @@ class ConfigurationExporter extends ExporterServiceAbstract
 
             // commit transaction
             $db->commit();
-        } catch {
+        } catch (\ErrorException $e) {
             // rollback changes
             $db->rollBack();
             echo date("Y-m-d H:i:s") . " - ERROR - Loading failed.\n";
