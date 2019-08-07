@@ -109,7 +109,7 @@ if ($searchStatus) {
     $queryValues[':status'] = $enumStatus;
 }
 
-$rq .= ' ORDER BY manufacturer_id, traps_name LIMIT ' . $num * $limit . ', ' . (int)$limit;
+$rq .= ' ORDER BY manufacturer_id, traps_name LIMIT ' . (int) ($num * $limit) . ', ' . (int)$limit;
 
 $stmt = $pearDB->prepare($rq);
 
