@@ -20,6 +20,8 @@
 
 namespace ConfigGenerateRemote;
 
+use \Exception;
+
 // file centreon.config.php may not exist in test environment
 $configFile = realpath(dirname(__FILE__) . "/../../../config/centreon.config.php");
 if ($configFile !== false) {
