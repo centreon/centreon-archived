@@ -20,6 +20,8 @@
 
 namespace ConfigGenerateRemote;
 
+use \Exception;
+
 abstract class AbstractObject
 {
     protected $backend_instance = null;
