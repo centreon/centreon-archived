@@ -3,7 +3,7 @@ Release notes
 #############
 
 .. warning::
-    **Centreon 19.10 is currently in beta version, do not install this version on your production enrivonnement!!!**
+    **Centreon 19.10 is currently in beta version, do not install this version on your production environment !!!**
 
 You can find in this chapter all changelogs that give you knowledges about the changes integrated into each releases of Centreon Web.
 
