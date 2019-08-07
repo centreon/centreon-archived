@@ -111,7 +111,7 @@ if ($handle  = @opendir($oreon->optGen["oreon_path"]."www/Themes/")) {
 }
 $form->addElement('select', 'template', _("Display Template"), $templates);
 
-$global_sort_type = array(
+$globalSortType = array(
     "host_name" => _("Hosts"),
     "last_state_change" => _("Duration"),
     "service_description" => _("Services"),
@@ -122,7 +122,7 @@ $global_sort_type = array(
     "current_attempt" => _("Attempt"),
 );
 
-$sort_type = array(
+$sortType = array(
     "last_state_change" => _("Duration"),
     "host_name" => _("Hosts"),
     "service_description" => _("Services"),
@@ -132,12 +132,12 @@ $sort_type = array(
     "criticality_id" => _("Criticality")
 );
 
-$form->addElement('select', 'global_sort_type', _("Sort by  "), $global_sort_type);
+$form->addElement('select', 'global_sort_type', _("Sort by  "), $globalSortType);
 $global_sort_order = array("ASC" => _("Ascending"), "DESC" => _("Descending"));
 
 $form->addElement('select', 'global_sort_order', _("Order sort "), $global_sort_order);
 
-$form->addElement('select', 'problem_sort_type', _("Sort problems by"), $sort_type);
+$form->addElement('select', 'problem_sort_type', _("Sort problems by"), $sortType);
 
 $sort_order = array("ASC" => _("Ascending"), "DESC" => _("Descending"));
 $form->addElement('select', 'problem_sort_order', _("Order sort problems"), $sort_order);
@@ -220,7 +220,7 @@ $form->addGroup($options3, 'enable_gmt', _("Enable Timezone management"), '&nbsp
 /*
  * Keycloak
  */
-$keycloak_enable[] = $form->createElement(
+$keycloakEnable[] = $form->createElement(
     'checkbox',
     'yes',
     '&nbsp;',
@@ -229,12 +229,12 @@ $keycloak_enable[] = $form->createElement(
         ."'Are you sure you want to change this parameter ? Please read the help before.')"
     )
 );
-$form->addGroup($keycloak_enable, 'keycloak_enable', _("Enable Keycloak authentication"), '&nbsp;&nbsp;');
+$form->addGroup($keycloakEnable, 'keycloak_enable', _("Enable Keycloak authentication"), '&nbsp;&nbsp;');
 
-$keycloak_mode = array();
-$keycloak_mode[] = $form->createElement('radio', 'keycloak_mode', null, _("Keycloak only"), '0');
-$keycloak_mode[] = $form->createElement('radio', 'keycloak_mode', null, _("Mixed"), '1');
-$form->addGroup($keycloak_mode, 'keycloak_mode', _("Keycloak mode"), '&nbsp;');
+$keycloakMode = array();
+$keycloakMode[] = $form->createElement('radio', 'keycloak_mode', null, _("Keycloak only"), '0');
+$keycloakMode[] = $form->createElement('radio', 'keycloak_mode', null, _("Mixed"), '1');
+$form->addGroup($keycloakMode, 'keycloak_mode', _("Keycloak mode"), '&nbsp;');
 $form->setDefaults(array('keycloak_mode'=>'1'));
 
 $form->addElement('text', 'keycloak_trusted_clients', _('Keycloak trusted client addresses'), array('size' => 50));

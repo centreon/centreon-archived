@@ -38,8 +38,8 @@ include_once _CENTREON_PATH_ . "/www/class/centreonAuth.class.php";
 class CentreonAuthSSO extends CentreonAuth
 {
 
-    protected $options_sso = array();
-    protected $sso_mandatory = 0;
+    protected $ssoOptions = array();
+    protected $ssoMandatory = 0;
 
     public function __construct(
         $dependencyInjector,
@@ -52,42 +52,42 @@ class CentreonAuthSSO extends CentreonAuth
         $token = "",
         $generalOptions = array()
     ) {
-        $this->options_sso = $generalOptions;
+        $this->ssoOptions = $generalOptions;
 
-        if (isset($this->options_sso['sso_enable'])
-            && $this->options_sso['sso_enable'] == 1
-            && !empty($this->options_sso['sso_header_username'])
-            && isset($_SERVER[$this->options_sso['sso_header_username']])
+        if (isset($this->ssoOptions['sso_enable'])
+            && $this->ssoOptions['sso_enable'] == 1
+            && !empty($this->ssoOptions['sso_header_username'])
+            && isset($_SERVER[$this->ssoOptions['sso_header_username']])
         ) {
-            $this->sso_username = $_SERVER[$this->options_sso['sso_header_username']];
+            $this->ssoUsername = $_SERVER[$this->ssoOptions['sso_header_username']];
             if ($this->checkSsoClient()) {
-                $this->sso_mandatory = 1;
-                $username = $this->sso_username;
-                if (!empty($this->options_sso['sso_username_pattern'])) {
+                $this->ssoMandatory = 1;
+                $username = $this->ssoUsername;
+                if (!empty($this->ssoOptions['sso_username_pattern'])) {
                     $username = preg_replace(
-                        $this->options_sso['sso_username_pattern'],
-                        $this->options_sso['sso_username_replace'],
+                        $this->ssoOptions['sso_username_pattern'],
+                        $this->ssoOptions['sso_username_replace'],
                         $username
                     );
                 }
             }
-        } elseif (isset($this->options_sso['keycloak_enable'])
-            && $this->options_sso['keycloak_enable'] == 1
-            && !empty($this->options_sso['keycloak_url'])
-            && !empty($this->options_sso['keycloak_redirect_url'])
-            && !empty($this->options_sso['keycloak_realm'])
-            && !empty($this->options_sso['keycloak_client_id'])
-            && !empty($this->options_sso['keycloak_client_secret'])
+        } elseif (isset($this->ssoOptions['keycloak_enable'])
+            && $this->ssoOptions['keycloak_enable'] == 1
+            && !empty($this->ssoOptions['keycloak_url'])
+            && !empty($this->ssoOptions['keycloak_redirect_url'])
+            && !empty($this->ssoOptions['keycloak_realm'])
+            && !empty($this->ssoOptions['keycloak_client_id'])
+            && !empty($this->ssoOptions['keycloak_client_secret'])
         ) {
 
-            $client_id = $this->options_sso['keycloak_client_id'];
-            $client_secret = $this->options_sso['keycloak_client_secret'];
-            $realm = $this->options_sso['keycloak_realm'];
-            $base = $this->options_sso['keycloak_url'];
-            $redirectNoEncode = $this->options_sso['keycloak_redirect_url'];
+            $clientId = $this->ssoOptions['keycloak_client_id'];
+            $clientSecret = $this->ssoOptions['keycloak_client_secret'];
+            $realm = $this->ssoOptions['keycloak_realm'];
+            $base = $this->ssoOptions['keycloak_url'];
+            $redirectNoEncode = $this->ssoOptions['keycloak_redirect_url'];
 
             $redirect = urlencode($redirectNoEncode);
-            $authUrl = $base . "/realms/".$realm."/protocol/openid-connect/auth?client_id=" . $client_id
+            $authUrl = $base . "/realms/" . $realm . "/protocol/openid-connect/auth?client_id=" . $clientId
                 . "&response_type=code&redirect_uri=" . $redirect;
 
             $inputForce = filter_var(
@@ -104,21 +104,21 @@ class CentreonAuthSSO extends CentreonAuth
             );
             if (isset($inputCode)) {
 
-                $Ktoken = $this->getKeycloakToken(
+                $keyToken = $this->getKeycloakToken(
                     $base,
                     $realm,
                     $redirectNoEncode,
-                    $client_id,
-                    $client_secret,
+                    $clientId,
+                    $clientSecret,
                     $inputCode
                 );
 
-                $user = $this->getKeycloakUserInfo($base, $realm, $client_id, $client_secret, $Ktoken);
+                $user = $this->getKeycloakUserInfo($base, $realm, $clientId, $clientSecret, $keyToken);
 
-                $this->sso_username = $user["preferred_username"];
+                $this->ssoUsername = $user["preferred_username"];
                 if ($this->checkSsoClient()) {
-                    $this->sso_mandatory = 1;
-                    $username = $this->sso_username;
+                    $this->ssoMandatory = 1;
+                    $username = $this->ssoUsername;
                 }
             }
         }
@@ -133,22 +133,22 @@ class CentreonAuthSSO extends CentreonAuth
             $encryptType,
             $token
         );
-        if ($this->error != '' && $this->sso_mandatory == 1) {
-            $this->error .= " SSO Protection (user=" . $this->sso_username . ').';
+        if ($this->error != '' && $this->ssoMandatory == 1) {
+            $this->error .= " SSO Protection (user=" . $this->ssoUsername . ').';
             global $msg_error;
-            $msg_error = "Invalid User. SSO Protection (user=" . $this->sso_username . ")";
+            $msg_error = "Invalid User. SSO Protection (user=" . $this->ssoUsername . ")";
         }
     }
 
     protected function checkSsoClient()
     {
-        if (isset($this->options_sso['sso_enable'])
-            && $this->options_sso['sso_enable'] == 1
-            && isset($this->options_sso['sso_mode'])
-            && $this->options_sso['sso_mode'] == 1
+        if (isset($this->ssoOptions['sso_enable'])
+            && $this->ssoOptions['sso_enable'] == 1
+            && isset($this->ssoOptions['sso_mode'])
+            && $this->ssoOptions['sso_mode'] == 1
         ) {
             # Mixed
-            $blacklist = explode(',', $this->options_sso['sso_blacklist_clients']);
+            $blacklist = explode(',', $this->ssoOptions['sso_blacklist_clients']);
             foreach ($blacklist as $value) {
                 $value = trim($value);
                 if ($value != "" && preg_match('/' . $value . '/', $_SERVER['REMOTE_ADDR'])) {
@@ -156,7 +156,7 @@ class CentreonAuthSSO extends CentreonAuth
                 }
             }
 
-            $whitelist = explode(',', $this->options_sso['sso_trusted_clients']);
+            $whitelist = explode(',', $this->ssoOptions['sso_trusted_clients']);
             if (empty($whitelist[0])) {
                 return 1;
             }
@@ -174,7 +174,7 @@ class CentreonAuthSSO extends CentreonAuth
 
     protected function checkPassword($password, $token = "", $autoimport = false)
     {
-        if ($this->sso_mandatory == 1) {
+        if ($this->ssoMandatory == 1) {
             # Mode LDAP autoimport. Need to call it
             if ($autoimport) {
                 # Password is only because it needs one...
@@ -196,23 +196,23 @@ class CentreonAuthSSO extends CentreonAuth
      *
      * @param string $base Keycloak Server Url
      * @param string $realm Keycloak Client Realm
-     * @param string $redirect_uri Keycloak Redirect Url
-     * @param string $client_id Keycloak Client ID
-     * @param string $client_secret Keycloak Client Secret
+     * @param string $redirectUri Keycloak Redirect Url
+     * @param string $clientId Keycloak Client ID
+     * @param string $clientSecret Keycloak Client Secret
      * @param string $code Keycloak Authorization Code
      *
      * @return string
     */
-    function getKeycloakToken($base, $realm, $redirect_uri, $client_id, $client_secret, $code)
+    function getKeycloakToken($base, $realm, $redirectUri, $clientId, $clientSecret, $code)
     {
 
         $url = $base . "/realms/" . $realm . "/protocol/openid-connect/token";
         $data = array(
-            "client_id" => $client_id,
-            "client_secret" => $client_secret,
+            "client_id" => $clientId,
+            "client_secret" => $clientSecret,
             "grant_type" => "authorization_code",
             "code" => $code,
-            "redirect_uri" => $redirect_uri
+            "redirect_uri" => $redirectUri
         );
         $ch = curl_init($url);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
@@ -232,20 +232,20 @@ class CentreonAuthSSO extends CentreonAuth
      *
      * @param string $base Keycloak Server Url
      * @param string $realm Keycloak Client Realm
-     * @param string $client_id Keycloak Client ID
-     * @param string $client_secret Keycloak Client Secret
+     * @param string $clientId Keycloak Client ID
+     * @param string $clientSecret Keycloak Client Secret
      * @param string $token Keycloak Token Access
      *
      * @return string
      */
-    function getKeycloakUserInfo($base, $realm, $client_id, $client_secret, $token)
+    function getKeycloakUserInfo($base, $realm, $clientId, $clientSecret, $token)
     {
 
         $url = $base . "/realms/" . $realm . "/protocol/openid-connect/token/introspect";
         $data = array(
             "token" => $token,
-            "client_id" => $client_id,
-            "client_secret" => $client_secret
+            "client_id" => $clientId,
+            "client_secret" => $clientSecret
         );
 
         $ch = curl_init($url);
