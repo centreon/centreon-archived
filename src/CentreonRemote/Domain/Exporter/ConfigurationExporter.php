@@ -106,17 +106,17 @@ class ConfigurationExporter extends ExporterServiceAbstract
      * Copy directory recursively
      */
     private function recursive_copy($src, $dst) {
-        $dir = opendir(escapeshellarg($src));
-        @mkdir(escapeshellarg($dst), $this->commitment->getFilePermission(), true);
+        $dir = opendir($src);
+        @mkdir($dst, $this->commitment->getFilePermission(), true);
         while(( $file = readdir($dir)) ) {
             if (( $file != '.' ) && ( $file != '..' )) {
-                if ( is_dir(escapeshellarg($src . '/' . $file)) ) {
-                    $this->recursive_copy(escapeshellarg($src .'/'. $file), escapeshellarg($dst .'/'. $file));
+                if ( is_dir($src . '/' . $file) ) {
+                    $this->recursive_copy($src .'/'. $file, $dst .'/'. $file);
                 }
                 else {
                     echo date("Y-m-d H:i:s") . " - INFO - Copying '" . $src ."/". $file . "'.\n";
-                    copy(escapeshellarg($src .'/'. $file), escapeshellarg($dst .'/'. $file));
-                    chmod(escapeshellarg($dst .'/'. $file), $this->commitment->getFilePermission());
+                    copy($src .'/'. $file, $dst .'/'. $file);
+                    chmod($dst .'/'. $file, $this->commitment->getFilePermission());
                 }
             }
         }
