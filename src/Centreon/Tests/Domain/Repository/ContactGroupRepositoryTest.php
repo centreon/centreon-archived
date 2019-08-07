@@ -81,7 +81,7 @@ class ContactGroupRepositoryTest extends TestCase
                 'query' => "SELECT FOUND_ROWS() AS number",
                 'data' => [
                     [
-                        'number' => 10,
+                        'number' => '10',
                     ],
                 ],
             ],
@@ -103,9 +103,6 @@ class ContactGroupRepositoryTest extends TestCase
         );
     }
 
-    /**
-     * @covers \Centreon\Domain\Repository\ContactGroupRepository::getPaginationList
-     */
     public function testGetPaginationList()
     {
         $result = $this->repository->getPaginationList();
@@ -115,9 +112,7 @@ class ContactGroupRepositoryTest extends TestCase
         $entity->setCgName($data['cg_name']);
         $this->assertEquals([$entity], $result);
     }
-    /**
-     * @covers \Centreon\Domain\Repository\ContactGroupRepository::getPaginationList
-     */
+
     public function testGetPaginationListWithArguments()
     {
         $filters = [
@@ -134,12 +129,10 @@ class ContactGroupRepositoryTest extends TestCase
         $entity->setCgName($data['cg_name']);
         $this->assertEquals([$entity], $result);
     }
-    /**
-     * @covers \Centreon\Domain\Repository\ContactGroupRepository::getPaginationListTotal
-     */
+
     public function testGetPaginationListTotal()
     {
-        $total = $this->datasets[2]['data'][0]['number'];
+        $total = (int)$this->datasets[2]['data'][0]['number'];
         $result = $this->repository->getPaginationListTotal();
         $this->assertEquals($total, $result);
     }

@@ -34,75 +34,28 @@
  *
  */
 
-namespace CentreonUser\Domain\Entity;
+namespace CentreonUser\Tests\Domain\Repository;
 
-use Centreon\Infrastructure\CentreonLegacyDB\Mapping;
-use PDO;
+use CentreonUser\Domain\Repository\ContactRepository;
+use CentreonUser\Domain\Entity\Contact;
+use PHPUnit\Framework\TestCase;
+use Centreon\Tests\Resource\Traits;
 
 /**
- * Timeperiod entity
- *
- * @codeCoverageIgnore
+ * @group CentreonUser
+ * @group ORM-repository
  */
-class Timeperiod implements Mapping\MetadataInterface
+class ContactRepositoryTest extends TestCase
 {
+    use Traits\CheckListOfIdsTrait;
 
-    const TABLE = 'timeperiod';
-    const ENTITY_IDENTIFICATOR_COLUMN = 'tp_id';
-
-    /**
-     * @var int an identification of entity
-     */
-    private $id;
-
-    /**
-     * @var string
-     */
-    private $name;
-
-    /**
-     * @var string
-     */
-    private $alias;
-
-    /**
-     * {@inheritdoc}
-     */
-    public static function loadMetadata(Mapping\ClassMetadata $metadata): void
+    public function testCheckListOfIds()
     {
-        $metadata->setTableName(static::TABLE)
-            ->add('id', 'tp_id', PDO::PARAM_INT, null, true)
-            ->add('name', 'tp_name', PDO::PARAM_STR)
-            ->add('alias', 'tp_alias', PDO::PARAM_STR);
-    }
-
-    public function setId(int $id): void
-    {
-        $this->id = $id;
-    }
-
-    public function getId(): string
-    {
-        return $this->id;
-    }
-
-    public function setName(string $name): void
-    {
-        $this->name = $name;
-    }
-
-    public function getName(): string
-    {
-        return $this->name;
-    }
-
-    public function setAlias(string $alias): void
-    {
-        $this->alias = $alias;
-    }
-
-    public function getAlias(): string
-    {
-        return $this->alias;
+        $this->checkListOfIdsTrait(
+            ContactRepository::class,
+            'checkListOfIds',
+            Contact::TABLE,
+            Contact::ENTITY_IDENTIFICATOR_COLUMN
+        );
     }
 }

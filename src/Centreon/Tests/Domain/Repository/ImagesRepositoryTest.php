@@ -72,8 +72,9 @@ class ImagesRepositoryTest extends TestCase
             ],
             [
                 'query' => "SELECT * FROM `view_img_dir`,`view_img_dir_relation` vidr,`view_img` "
-                    . "WHERE `img_id` = `vidr`.`img_img_id` AND `dir_id` = `vidr`.`dir_dir_parent_id` "
-                    . "LIMIT :limit OFFSET :offset ORDER BY `dir_name`, `img_name`",
+                . "WHERE `img_id` = `vidr`.`img_img_id` AND `dir_id` = `vidr`.`dir_dir_parent_id` "
+                . "AND `img_name` LIKE :search AND `img_id` IN (:id0) "
+                . "LIMIT :limit OFFSET :offset ORDER BY `dir_name`, `img_name`",
                 'data' => [
                     [
                         'img_id' => '1',
@@ -86,7 +87,7 @@ class ImagesRepositoryTest extends TestCase
                 'query' => "SELECT FOUND_ROWS() AS number",
                 'data' => [
                     [
-                        'number' => 10,
+                        'number' => '10',
                     ],
                 ],
             ],
@@ -108,29 +109,48 @@ class ImagesRepositoryTest extends TestCase
         );
     }
 
-    /**
-     * @covers \Centreon\Domain\Repository\ImagesRepository::getPaginationList
-     */
     public function testGetPaginationList()
     {
         $result = $this->repository->getPaginationList();
+
         $data = $this->datasets[0]['data'][0];
+
         $imgDir = new ImageDir();
         $entity = new Image();
         $entity->setImgId($data['img_id']);
         $entity->setImgName($data['img_name']);
         $entity->setImgPath($data['img_path']);
         $entity->setImageDir($imgDir);
+
         $this->assertEquals($entity->getImgName(), $result[0]->getImgName());
     }
 
+    public function testGetPaginationListWithArguments()
+    {
+        $filters = [
+            'search' => 'name',
+            'ids' => ['ids'],
+        ];
+        $limit = 1;
+        $offset = 0;
 
-    /**
-     * @covers \Centreon\Domain\Repository\ImagesRepository::getPaginationListTotal
-     */
+        $data = $this->datasets[1]['data'][0];
+
+        $imgDir = new ImageDir();
+        $entity = new Image();
+        $entity->setImgId($data['img_id']);
+        $entity->setImgName($data['img_name']);
+        $entity->setImgPath($data['img_path']);
+        $entity->setImageDir($imgDir);
+
+        $this->assertEquals([
+                $entity,
+            ], $this->repository->getPaginationList($filters, $limit, $offset));
+    }
+
     public function testGetPaginationListTotal()
     {
-        $total = $this->datasets[2]['data'][0]['number'];
+        $total = (int)$this->datasets[2]['data'][0]['number'];
         $result = $this->repository->getPaginationListTotal();
         $this->assertEquals($total, $result);
     }

@@ -48,13 +48,21 @@ class EscalationRepository extends ServiceEntityRepository implements Pagination
     use CheckListOfIdsTrait;
 
     /**
+     * {@inheritdoc}
+     */
+    public static function entityClass(): string
+    {
+        return Escalation::class;
+    }
+
+    /**
      * Check list of IDs
      *
      * @return bool
      */
     public function checkListOfIds(array $ids): bool
     {
-        return $this->checkListOfIdsTrait($ids, Escalation::TABLE, 'esc_id');
+        return $this->checkListOfIdsTrait($ids);
     }
 
     /**
@@ -62,7 +70,7 @@ class EscalationRepository extends ServiceEntityRepository implements Pagination
      */
     public function getPaginationList($filters = null, int $limit = null, int $offset = null, $ordering = []): array
     {
-        $sql = 'SELECT SQL_CALC_FOUND_ROWS `esc_id` AS `id`, `esc_name` AS `name` FROM `' . Escalation::TABLE . '`';
+        $sql = 'SELECT SQL_CALC_FOUND_ROWS `esc_id`, `esc_name` FROM `' . $this->getClassMetadata()->getTableName() . '`';
 
         $collector = new StatementCollector;
 
@@ -105,8 +113,12 @@ class EscalationRepository extends ServiceEntityRepository implements Pagination
         $collector->bind($stmt);
 
         $stmt->execute();
-        $stmt->setFetchMode(PDO::FETCH_CLASS, Escalation::class);
-        $result = $stmt->fetchAll();
+
+        $result = [];
+
+        while ($row = $stmt->fetch()) {
+            $result[] = $this->getEntityPersister()->load($row);
+        }
 
         return $result;
     }

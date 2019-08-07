@@ -34,75 +34,52 @@
  *
  */
 
-namespace CentreonUser\Domain\Entity;
+namespace Centreon\Tests\Resource\Traits;
 
-use Centreon\Infrastructure\CentreonLegacyDB\Mapping;
-use PDO;
-
-/**
- * Timeperiod entity
- *
- * @codeCoverageIgnore
- */
-class Timeperiod implements Mapping\MetadataInterface
+trait PaginationListTrait
 {
 
-    const TABLE = 'timeperiod';
-    const ENTITY_IDENTIFICATOR_COLUMN = 'tp_id';
+    /**
+     * @var \Centreon\Infrastructure\CentreonLegacyDB\Interfaces\PaginationRepositoryInterface
+     */
+    protected $repository;
 
     /**
-     * @var int an identification of entity
+     * Test pagination list
+     *
+     * @param array $data
+     * @param array $filters
+     * @param int $limit
+     * @param int $offset
+     * @param array $ordering
+     * @return void
      */
-    private $id;
+    public function getPaginationListTrait(
+        array $data = [],
+        array $filters = null,
+        int $limit = null,
+        int $offset = null,
+        array $ordering = []
+    ): void {
+        $this->assertEquals(
+            [
+                $this->repository->getEntityPersister()->load($data),
+            ],
+            $this->repository->getPaginationList($filters, $limit, $offset, $ordering)
+        );
+    }
 
     /**
-     * @var string
+     * Test pagination list total
+     *
+     * @param int|string $data
+     * @return void
      */
-    private $name;
-
-    /**
-     * @var string
-     */
-    private $alias;
-
-    /**
-     * {@inheritdoc}
-     */
-    public static function loadMetadata(Mapping\ClassMetadata $metadata): void
+    public function getPaginationListTotalTrait($data = 0): void
     {
-        $metadata->setTableName(static::TABLE)
-            ->add('id', 'tp_id', PDO::PARAM_INT, null, true)
-            ->add('name', 'tp_name', PDO::PARAM_STR)
-            ->add('alias', 'tp_alias', PDO::PARAM_STR);
-    }
-
-    public function setId(int $id): void
-    {
-        $this->id = $id;
-    }
-
-    public function getId(): string
-    {
-        return $this->id;
-    }
-
-    public function setName(string $name): void
-    {
-        $this->name = $name;
-    }
-
-    public function getName(): string
-    {
-        return $this->name;
-    }
-
-    public function setAlias(string $alias): void
-    {
-        $this->alias = $alias;
-    }
-
-    public function getAlias(): string
-    {
-        return $this->alias;
+        $this->assertEquals(
+            (int) $data,
+            $this->repository->getPaginationListTotal()
+        );
     }
 }

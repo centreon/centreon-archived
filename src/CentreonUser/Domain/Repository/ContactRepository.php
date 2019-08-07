@@ -40,7 +40,7 @@ use Centreon\Infrastructure\CentreonLegacyDB\ServiceEntityRepository;
 use CentreonUser\Domain\Entity\Contact;
 use Centreon\Domain\Repository\Traits\CheckListOfIdsTrait;
 
-class ContactGroupRepository extends ServiceEntityRepository
+class ContactRepository extends ServiceEntityRepository
 {
 
     use CheckListOfIdsTrait;

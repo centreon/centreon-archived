@@ -40,6 +40,7 @@ use PHPUnit\Framework\TestCase;
 use Centreon\Test\Mock\CentreonDB;
 use CentreonUser\Domain\Entity\Timeperiod;
 use CentreonUser\Domain\Repository\TimeperiodRepository;
+use Centreon\Tests\Resource\Traits;
 
 /**
  * @group CentreonUser
@@ -47,34 +48,38 @@ use CentreonUser\Domain\Repository\TimeperiodRepository;
  */
 class TimeperiodRepositoryTest extends TestCase
 {
+    use Traits\CheckListOfIdsTrait,
+        Traits\PaginationListTrait;
 
     protected $datasets = [];
-    protected $repository;
 
     protected function setUp()
     {
-        $db = new CentreonDB;
+        $this->db = new CentreonDB;
+        $this->repository = new TimeperiodRepository($this->db);
+        $tableName = $this->repository->getClassMetadata()->getTableName();
+
         $this->datasets = [
             [
-                'query' => "SELECT SQL_CALC_FOUND_ROWS `tp_id` AS `id`, `tp_name` AS `name`, `tp_alias` AS `alias` "
-                . "FROM `" . Timeperiod::TABLE . "`",
+                'query' => "SELECT SQL_CALC_FOUND_ROWS `tp_id`, `tp_name`, `tp_alias` "
+                . "FROM `" . $tableName . "`",
                 'data' => [
                     [
-                        'id' => '1',
-                        'name' => 'name1',
-                        'alias' => 'alias1',
+                        'tp_id' => '1',
+                        'tp_name' => 'name1',
+                        'tp_alias' => 'alias1',
                     ],
                 ],
             ],
             [
-                'query' => "SELECT SQL_CALC_FOUND_ROWS `tp_id` AS `id`, `tp_name` AS `name`, `tp_alias` AS `alias` "
-                . "FROM `" . Timeperiod::TABLE . "` WHERE (`tp_name` LIKE :search OR `tp_alias` LIKE :search) "
+                'query' => "SELECT SQL_CALC_FOUND_ROWS `tp_id`, `tp_name`, `tp_alias` "
+                . "FROM `" . $tableName . "` WHERE (`tp_name` LIKE :search OR `tp_alias` LIKE :search) "
                 . "AND `tp_id` IN (:id0) ORDER BY `tp_name` ASC LIMIT :limit OFFSET :offset",
                 'data' => [
                     [
-                        'id' => '1',
-                        'name' => 'name1',
-                        'alias' => 'alias1',
+                        'tp_id' => '1',
+                        'tp_name' => 'name1',
+                        'tp_alias' => 'alias1',
                     ],
                 ],
             ],
@@ -89,60 +94,50 @@ class TimeperiodRepositoryTest extends TestCase
         ];
 
         foreach ($this->datasets as $dataset) {
-            $db->addResultSet($dataset['query'], $dataset['data']);
+            $this->db->addResultSet($dataset['query'], $dataset['data']);
             unset($dataset);
         }
-
-        $this->repository = new TimeperiodRepository($db);
     }
 
-    /**
-     * @covers \CentreonUser\Domain\Repository\TimeperiodRepository::getPaginationList
-     */
+    public function testEntityClass()
+    {
+        $this->assertEquals(Timeperiod::class, TimeperiodRepository::entityClass());
+    }
+
+    public function testCheckListOfIds()
+    {
+        $this->checkListOfIdsTrait(
+            TimeperiodRepository::class,
+            'checkListOfIds'
+        );
+    }
+
     public function testGetPaginationList()
     {
-        $result = $this->repository->getPaginationList();
-        $data = $this->datasets[0]['data'][0];
-
-        $entity = new Timeperiod();
-        $entity->setId($data['id']);
-        $entity->setName($data['name']);
-        $entity->setAlias($data['alias']);
-
-        $this->assertEquals([$entity], $result);
+        $this->getPaginationListTrait($this->datasets[0]['data'][0]);
     }
 
-    /**
-     * @covers \CentreonUser\Domain\Repository\TimeperiodRepository::getPaginationList
-     */
     public function testGetPaginationListWithArguments()
     {
-        $filters = [
-            'search' => 'name',
-            'ids' => ['ids'],
-        ];
-        $limit = 1;
-        $offset = 0;
-
-        $result = $this->repository->getPaginationList($filters, $limit, $offset, ['field' => 'tp_name', 'order' => 'ASC']);
-        $data = $this->datasets[1]['data'][0];
-
-        $entity = new Timeperiod();
-        $entity->setId($data['id']);
-        $entity->setName($data['name']);
-        $entity->setAlias($data['alias']);
-
-        $this->assertEquals([$entity], $result);
+        $this->getPaginationListTrait(
+            $this->datasets[1]['data'][0],
+            [
+                'search' => 'name',
+                'ids' => ['ids'],
+            ],
+            1,
+            0,
+            [
+                'field' => 'tp_name',
+                'order' => 'ASC'
+            ]
+        );
     }
 
-    /**
-     * @covers \CentreonUser\Domain\Repository\TimeperiodRepository::getPaginationListTotal
-     */
     public function testGetPaginationListTotal()
     {
-        $total = $this->datasets[2]['data'][0]['number'];
-        $result = $this->repository->getPaginationListTotal();
-
-        $this->assertEquals($total, $result);
+        $this->getPaginationListTotalTrait(
+            $this->datasets[2]['data'][0]['number']
+        );
     }
 }
