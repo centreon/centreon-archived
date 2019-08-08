@@ -209,7 +209,7 @@ class CentreonGMT
             $gmt = $this->myGMT;
         }
 
-        if ($gmt == null) {
+        if (($gmt == null) or (empty($gmt))) {
             $gmt = date_default_timezone_get();
         }
 
