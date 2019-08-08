@@ -88,11 +88,6 @@ class CentreonPaginationService
     /**
      * @var string
      */
-    protected $ordering;
-
-    /**
-     * @var string
-     */
     protected $dataRepresenter;
 
     /**
