@@ -100,21 +100,24 @@ if ($search) {
 $clauses = array();
 if ($searchContact) {
     $clauses = array(
-        'contactgroup_cg_id' => array('=', $contactGroup),
         'contact_name' => array('LIKE', '%' . $searchContact . '%'),
         'contact_alias' => array('OR', 'LIKE', '%' . $searchContact . '%')
     );
 }
 
 $join = array();
-if ($contactGroup) {
+if (!empty($contactGroup)) {
     $join = array(
         array(
             'table' => 'contactgroup_contact_relation',
             'condition' => 'contact_contact_id = contact_id',
         )
     );
-    $clauses['contactgroup_cg_id'] = array('=', $contactGroup);
+    if ($searchContact) {
+        $clauses['contactgroup_cg_id'] = array(') AND (', '=', $contactGroup);
+    } else {
+        $clauses['contactgroup_cg_id'] = array('=', $contactGroup);
+    }
 }
 
 $aclOptions = array(
@@ -195,13 +198,13 @@ $attrContactgroups = array(
     'datasourceOrigin' => 'ajax',
     'availableDatasetRoute' => $contactGrRoute,
     'multiple' => false,
+    'defaultDataset' => $contactGroup,
     'linkedObject' => 'centreonContactgroup'
 );
 $form->addElement('select2', 'contactGroup', "", array(), $attrContactgroups);
 
 // Different style between each lines
 $style = "one";
-
 
 $attrBtnSuccess = array(
     "class" => "btc bt_success",
