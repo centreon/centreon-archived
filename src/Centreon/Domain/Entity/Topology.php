@@ -256,7 +256,7 @@ class Topology
     /**
      * @return string
      */
-    public function getTopologyShow(): ?string
+    public function getTopologyShow(): string
     {
         return $this->topology_show;
     }
@@ -264,7 +264,7 @@ class Topology
     /**
      * @param string $topology_show
      */
-    public function setTopologyShow(?string $topology_show): void
+    public function setTopologyShow(string $topology_show): void
     {
         $this->topology_show = $topology_show;
     }

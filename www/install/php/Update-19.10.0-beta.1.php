@@ -109,3 +109,13 @@ try {
     );
     $pearDB->rollBack();
 }
+
+// update topology of poller wizard to display breadcrumb
+$pearDB->query(
+    'UPDATE topology
+    SET topology_parent = 60901,
+    topology_page = 60959,
+    topology_group = 1,
+    topology_show = "0"
+    WHERE topology_url LIKE "/poller-wizard/%"'
+);
