@@ -134,9 +134,9 @@ $pearDB->query(
 
 try {
     // Add trap regexp matching
-    if (!$pearDB->isColumnExist(traps, traps_mode)) {
+    if (!$pearDB->isColumnExist('traps', 'traps_mode')) {
         $pearDB->query(
-            "ALTER TABLE `traps` ADD COLUMN `traps_mode` ENUM('0', '1') DEFAULT '0' AFTER `traps_oid`"
+            "ALTER TABLE `traps` ADD COLUMN `traps_mode` enum('0','1') DEFAULT '0' AFTER `traps_oid`"
         );
     }
 } catch (\PDOException $e) {
