@@ -4,8 +4,6 @@ namespace Centreon\Application\Webservice;
 
 use Centreon\Application\DataRepresenter\Response;
 use Centreon\Application\DataRepresenter\Topology\NavigationList;
-use Centreon\Application\DataRepresenter\Topology\ReactAcl;
-use Centreon\Application\DataRepresenter\Topology\ReactAclForActive;
 use Centreon\Domain\Repository\TopologyRepository;
 use Centreon\ServiceProvider;
 use CentreonRemote\Application\Webservice\CentreonWebServiceAbstract;
@@ -95,7 +93,7 @@ class TopologyWebservice extends CentreonWebServiceAbstract
 
     /**
      * @OA\Get(
-     *   path="/internal.php?object=centreon_topology&action=menuList",
+     *   path="/internal.php?object=centreon_topology&action=navigationList",
      *   description="Get list of menu items by acl",
      *   tags={"centreon_topology"},
      *   @OA\Parameter(
@@ -114,8 +112,8 @@ class TopologyWebservice extends CentreonWebServiceAbstract
      *       name="action",
      *       @OA\Schema(
      *          type="string",
-     *          enum={"menuList"},
-     *          default="menuList"
+     *          enum={"navigationList"},
+     *          default="navigationList"
      *       ),
      *       description="the name of the action in the API class",
      *       required=true
@@ -141,7 +139,7 @@ class TopologyWebservice extends CentreonWebServiceAbstract
      * )
      * @throws \RestBadRequestException
      */
-    public function getMenuList()
+    public function getNavigationList()
     {
         $user = $this->getDi()[ServiceProvider::CENTREON_USER];
 
@@ -149,22 +147,13 @@ class TopologyWebservice extends CentreonWebServiceAbstract
             throw new \RestBadRequestException('User not found in session. Please relog.');
         }
 
-        $isReact = (isset($_GET['reactOnly']) && $_GET['reactOnly'] == 1);
-
-        $forActive = (isset($_GET['forActive']) && $_GET['forActive'] == 1);
-
         $dbResult = $this->getDi()[ServiceProvider::CENTREON_DB_MANAGER]
             ->getRepository(TopologyRepository::class)
-            ->getTopologyList($user, $isReact);
+            ->getTopologyList($user);
 
-        if ($isReact) {
-            $status = true;
-            $result = ($forActive) ? new ReactAclForActive($dbResult) : new ReactAcl($dbResult);
-        } else {
-            $status = true;
-            $navConfig = $this->getDi()[ServiceProvider::YML_CONFIG]['navigation'];
-            $result = new NavigationList($dbResult, $navConfig);
-        }
+        $status = true;
+        $navConfig = $this->getDi()[ServiceProvider::YML_CONFIG]['navigation'];
+        $result = new NavigationList($dbResult, $navConfig);
 
         return new Response($result, $status);
     }

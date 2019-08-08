@@ -2,13 +2,14 @@ import React, { Component } from "react";
 import { Sidebar } from "@centreon/react-components";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
-import { fetchNavigationData, fetchReactRoutesData } from "../../redux/actions/navigationActions";
+import { menuSelector } from '../../redux/selectors/navigation/menu';
+import { reactRoutesSelector } from '../../redux/selectors/navigation/reactRoutes';
+import { fetchNavigationData } from "../../redux/actions/navigationActions";
 
 class Navigation extends Component {
   componentDidMount = () => {
-    const { fetchNavigationData, fetchReactRoutesData } = this.props;
+    const { fetchNavigationData } = this.props;
     fetchNavigationData();
-    fetchReactRoutesData();
   };
 
   goToPage = route => {
@@ -23,6 +24,7 @@ class Navigation extends Component {
 
   render() {
     const { navigationData, reactRoutes, history } = this.props;
+
     return (
       <Sidebar
         navigationData={navigationData}
@@ -37,18 +39,15 @@ class Navigation extends Component {
   }
 }
 
-const mapStateToProps = ({ navigation }) => ({
-  navigationData: navigation.menuItems,
-  reactRoutes: navigation.reactRoutes
+const mapStateToProps = (state) => ({
+  navigationData: menuSelector(state),
+  reactRoutes: reactRoutesSelector(state),
 });
 
 const mapDispatchToProps = dispatch => {
   return {
     fetchNavigationData: () => {
       dispatch(fetchNavigationData());
-    },
-    fetchReactRoutesData: () => {
-      dispatch(fetchReactRoutesData());
     },
     updateTooltip: () => {
       dispatch(updateTooltip());

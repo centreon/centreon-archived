@@ -147,7 +147,8 @@ class NavigationList implements JsonSerializable
                     'icon' => static::getIcon($entity->getTopologyPage()),
                     'children' => [],
                     'options' => $entity->getTopologyUrlOpt(),
-                    'is_react' => (bool)$entity->getIsReact()
+                    'is_react' => (bool)$entity->getIsReact(),
+                    'show' => (bool)$entity->getTopologyShow()
                 ];
             } elseif (preg_match('/^(\d)(\d\d)$/', $entity->getTopologyPage(), $matches)) {
                 $naviList[$matches[1]]['children'][$entity->getTopologyPage()] = [
@@ -156,7 +157,8 @@ class NavigationList implements JsonSerializable
                     'url' => $entity->getTopologyUrl(),
                     'groups' => [],
                     'options' => $entity->getTopologyUrlOpt(),
-                    'is_react' => (bool)$entity->getIsReact()
+                    'is_react' => (bool)$entity->getIsReact(),
+                    'show' => (bool)$entity->getTopologyShow()
                 ];
             } elseif (preg_match('/^(\d)(\d\d)(\d\d)$/', $entity->getTopologyPage(), $matches)) { // level 3
                 $levelTwo = $matches[1] . $matches[2];
@@ -171,7 +173,8 @@ class NavigationList implements JsonSerializable
                         'label' => $entity->getTopologyName(),
                         'url' => $entity->getTopologyUrl(),
                         'options' => $entity->getTopologyUrlOpt(),
-                        'is_react' => (bool)$entity->getIsReact()
+                        'is_react' => (bool)$entity->getIsReact(),
+                        'show' => (bool)$entity->getTopologyShow()
                     ];
 
                     //check if topology has group index

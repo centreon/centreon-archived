@@ -5,18 +5,20 @@ import { reactRoutes } from "../../route-maps";
 import { dynamicImport } from "../../helpers/dynamicImport";
 import centreonAxios from "../../axios";
 import NotAllowedPage from '../../route-components/notAllowedPage';
+import BreadcrumbWrapper from '../breadcrumbWrapper';
 import styles from "../../styles/partials/_content.scss";
+import { allowedPagesSelector } from "../../redux/selectors/navigation/allowedPages";
 
 // class to manage internal react pages
 class ReactRouter extends Component {
 
   getLoadableComponents = () => {
-    const { history, acl, pages } = this.props;
+    const { history, isNavigationFetched, allowedPages, pages } = this.props;
     const basename = history.createHref({pathname: '/', search: '', hash: ''});
     let LoadableComponents = [];
 
     // wait acl to add authorized routes
-    if (!acl.loaded) {
+    if (!isNavigationFetched) {
       return LoadableComponents;
     }
 
@@ -25,7 +27,7 @@ class ReactRouter extends Component {
       // check if each acl route contains external page
       // eg: a user which have access to /configuration will have access to /configuration/hosts
       let isAllowed = false;
-      for (const route of acl.routes) {
+      for (const route of allowedPages) {
         if (path.includes(route)) {
           isAllowed = true;
         }
@@ -37,13 +39,15 @@ class ReactRouter extends Component {
           <Route
             key={path}
             path={path}
-            exact="true"
+            exact
             render={renderProps => (
               <div className={styles["react-page"]}>
-                <Page
-                  centreonAxios={centreonAxios}
-                  {...renderProps}
-                />
+                <BreadcrumbWrapper path={path}>
+                  <Page
+                    centreonAxios={centreonAxios}
+                    {...renderProps}
+                  />
+                </BreadcrumbWrapper>
               </div>
             )}
           />
@@ -55,9 +59,9 @@ class ReactRouter extends Component {
   }
 
   render() {
-    const { acl, fetched } = this.props;
+    const { isNavigationFetched, allowedPages, fetched } = this.props;
 
-    if (!acl.loaded || !fetched) {
+    if (!isNavigationFetched || !fetched) {
       return null;
     }
 
@@ -70,13 +74,15 @@ class ReactRouter extends Component {
             <Route
               key={path}
               path={path}
-              exact="true"
+              exact
               render={renderProps => (
                 <div className={styles["react-page"]}>
-                  {acl.routes.includes(path) ? (
-                    <Comp
-                      {...renderProps}
-                    />
+                  {allowedPages.includes(path) ? (
+                    <BreadcrumbWrapper path={path}>
+                      <Comp
+                        {...renderProps}
+                      />
+                    </BreadcrumbWrapper>
                   ) : (
                     <NotAllowedPage
                       {...renderProps}
@@ -97,10 +103,11 @@ class ReactRouter extends Component {
   };
 }
 
-const mapStateToProps = ({ navigation, externalComponents }) => ({
-  acl: navigation.acl,
-  pages: externalComponents.pages,
-  fetched: externalComponents.fetched,
+const mapStateToProps = (state) => ({
+  isNavigationFetched: state.navigation.fetched,
+  allowedPages: allowedPagesSelector(state),
+  pages: state.externalComponents.pages,
+  fetched: state.externalComponents.fetched,
 });
 
 export default connect(mapStateToProps)(withRouter(ReactRouter));
