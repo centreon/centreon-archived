@@ -116,10 +116,13 @@ class CentreonPaginationService
      * Set pagination filters
      *
      * @param mixed $filters
+     * @return \Centreon\Infrastructure\Service\CentreonPaginationService
      */
-    public function setFilters($filters)
+    public function setFilters($filters): self
     {
         $this->filters = $filters;
+
+        return $this;
     }
 
     /**
@@ -127,8 +130,9 @@ class CentreonPaginationService
      *
      * @param int $limit
      * @throws \RuntimeException
+     * @return \Centreon\Infrastructure\Service\CentreonPaginationService
      */
-    public function setLimit(int $limit = null)
+    public function setLimit(int $limit = null): self
     {
         if ($limit !== null && $limit > static::LIMIT_MAX) {
             throw new RuntimeException(sprintf('Max value of limit has to be %d instead %d', static::LIMIT_MAX, $limit));
@@ -137,6 +141,8 @@ class CentreonPaginationService
         }
 
         $this->limit = $limit;
+
+        return $this;
     }
 
     /**
@@ -144,14 +150,17 @@ class CentreonPaginationService
      *
      * @param int $offset
      * @throws \RuntimeException
+     * @return \Centreon\Infrastructure\Service\CentreonPaginationService
      */
-    public function setOffset(int $offset = null)
+    public function setOffset(int $offset = null): self
     {
         if ($offset !== null && $offset < 1) {
             throw new RuntimeException(sprintf('Minimum value of offset has to be 1 instead %d', $offset));
         }
 
         $this->offset = $offset;
+
+        return $this;
     }
 
     /**
@@ -159,12 +168,15 @@ class CentreonPaginationService
      *
      * @param int $offset
      * @throws \RuntimeException
+     * @return \Centreon\Infrastructure\Service\CentreonPaginationService
      */
-    public function setOrder($field, $order)
+    public function setOrder($field, $order): self
     {
-        $order = (!empty($order) && ($order == "DESC")) ? $order : 'ASC';
+        $order = (!empty($order) && (strtoupper($order) == "DESC")) ? $order : 'ASC';
 
         $this->ordering = ['field' => $field, 'order'=> $order];
+
+        return $this;
     }
 
     /**
@@ -172,10 +184,13 @@ class CentreonPaginationService
      *
      * @param array $extras
      * @throws \RuntimeException
+     * @return \Centreon\Infrastructure\Service\CentreonPaginationService
      */
-    public function setExtras($extras)
+    public function setExtras($extras): self
     {
         $this->extras = $extras;
+
+        return $this;
     }
 
     /**
@@ -183,8 +198,9 @@ class CentreonPaginationService
      *
      * @param string $repository
      * @throws \Exception
+     * @return \Centreon\Infrastructure\Service\CentreonPaginationService
      */
-    public function setRepository(string $repository)
+    public function setRepository(string $repository): self
     {
         $interface = PaginationRepositoryInterface::class;
         $ref = new ReflectionClass($repository);
@@ -195,6 +211,8 @@ class CentreonPaginationService
         }
 
         $this->repository = $repository;
+
+        return $this;
     }
 
     /**
@@ -202,8 +220,9 @@ class CentreonPaginationService
      *
      * @param string $dataRepresenter
      * @throws \Exception
+     * @return \Centreon\Infrastructure\Service\CentreonPaginationService
      */
-    public function setDataRepresenter(string $dataRepresenter)
+    public function setDataRepresenter(string $dataRepresenter): self
     {
         $interface = JsonSerializable::class;
         $ref = new ReflectionClass($dataRepresenter);
@@ -214,6 +233,8 @@ class CentreonPaginationService
         }
 
         $this->dataRepresenter = $dataRepresenter;
+
+        return $this;
     }
 
     /**
