@@ -49,7 +49,7 @@ class ServiceEntityRepositoryTest extends TestCase
         $tableName = $this->repository->getClassMetadata()->getTableName();
         $columnA = 'id_a';
         $columnB = 'id_b';
-        $checkPoint = (new CheckPoint($this))
+        $checkPoint = (new CheckPoint)
             ->add('select')
             ->add('delete')
             ->add('insert');
@@ -117,6 +117,6 @@ class ServiceEntityRepositoryTest extends TestCase
             $columnB,
         ]);
 
-        $checkPoint->assert();
+        $checkPoint->assert($this);
     }
 }

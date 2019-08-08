@@ -48,7 +48,7 @@ class CentreonDBAdapterTest extends TestCase
 
     public function testQuery()
     {
-        $checkPoint = new CheckPoint($this);
+        $checkPoint = new CheckPoint;
         $checkPoint->add('select');
 
         $id = 1;
@@ -81,7 +81,7 @@ class CentreonDBAdapterTest extends TestCase
             ->results();
 
         $this->assertEquals(1, $this->dbAdapter->count());
-        $checkPoint->assert();
+        $checkPoint->assert($this);
     }
 
     /**
@@ -149,7 +149,7 @@ class CentreonDBAdapterTest extends TestCase
 
     public function testInsert()
     {
-        $checkPoint = new CheckPoint($this);
+        $checkPoint = new CheckPoint;
         $checkPoint->add('insert');
 
         $name = 'test name';
@@ -173,7 +173,7 @@ class CentreonDBAdapterTest extends TestCase
                 'name' => $name,
             ]);
 
-        $checkPoint->assert();
+        $checkPoint->assert($this);
     }
 
     /**
@@ -212,7 +212,7 @@ class CentreonDBAdapterTest extends TestCase
 
     public function testUpdate()
     {
-        $checkPoint = new CheckPoint($this);
+        $checkPoint = new CheckPoint;
         $checkPoint->add('update');
 
         $id = 1;
@@ -241,7 +241,7 @@ class CentreonDBAdapterTest extends TestCase
                 'name' => $name,
             ], $id);
 
-        $checkPoint->assert();
+        $checkPoint->assert($this);
     }
 
     /**
@@ -290,7 +290,7 @@ class CentreonDBAdapterTest extends TestCase
 
     public function testTransaction()
     {
-        $checkPoint = new CheckPoint($this);
+        $checkPoint = new CheckPoint;
         $checkPoint->add('beginTransaction');
         $checkPoint->add('commit');
         $checkPoint->add('rollBack');
@@ -322,6 +322,6 @@ class CentreonDBAdapterTest extends TestCase
         $dbAdapter->commit();
         $dbAdapter->rollBack();
 
-        $checkPoint->assert();
+        $checkPoint->assert($this);
     }
 }

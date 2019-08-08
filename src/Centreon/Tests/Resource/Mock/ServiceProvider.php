@@ -34,70 +34,32 @@
  *
  */
 
-namespace Centreon\Tests\Resource;
+namespace Centreon\Tests\Resource\Mock;
 
-use PHPUnit\Framework\TestCase;
+use Centreon\Infrastructure\Provider\AutoloadServiceProviderInterface;
+use Pimple\Container;
 
 /**
- * This class help to test list of callbacks or methods if they were executed
- * 
- * <example>
- * class MyTest extends TestCase
- * {
- *      public testMethod()
- *      {
- *          $checkpoint = (new CheckPoint)
- *              ->add('point1');
- *          
- *      }
- * }
- * </example>
+ * Mock of service provider class
  */
-class CheckPoint
+class ServiceProvider implements AutoloadServiceProviderInterface
 {
+    const DUMMY_SERVICE = 'dummy.service';
 
     /**
-     * @var array
-     */
-    protected $points;
-
-    /**
-     * Add point
+     * Register dummy service
      *
-     * @param type $name
-     * @return void
+     * @param \Pimple\Container $pimple
      */
-    public function add($name): self
+    public function register(Container $pimple): void
     {
-        $this->points[$name] = false;
-
-        return $this;
+        $pimple[static::DUMMY_SERVICE] = function () {
+            return true;
+        };
     }
 
-    /**
-     * Mark point as executed
-     *
-     * @param $name
-     * @return void
-     */
-    public function mark($name): void
+    public static function order(): int
     {
-        $this->points[$name] = true;
-    }
-
-    /**
-     * Check list of points
-     *
-     * @param \PHPUnit\Framework\TestCase $testCase
-     */
-    public function assert(TestCase $testCase): void
-    {
-        $expected = [];
-
-        foreach ($this->points as $key => $val) {
-            $expected[$key] = true;
-        }
-
-        $testCase->assertEquals($expected, $this->points);
+        return 4;
     }
 }
