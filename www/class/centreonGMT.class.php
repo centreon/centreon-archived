@@ -209,8 +209,8 @@ class CentreonGMT
             $gmt = $this->myGMT;
         }
 
-        if (!isset($gmt)) {
-            $gmt = $this->myGMT;
+        if ($gmt == null) {
+            $gmt = date_default_timezone_get();
         }
 
         if (isset($date) && isset($gmt)) {
