@@ -419,13 +419,13 @@ class CentreonDB extends \PDO
         $stmt = $this->prepare($query);
 
         try {
-            $stmt->bindValue(':dbName', $this->dsn['hostspec'], \PDO::PARAM_STR);
+            $stmt->bindValue(':dbName', $this->dsn['database'], \PDO::PARAM_STR);
             $stmt->bindValue(':tableName', $table, \PDO::PARAM_STR);
             $stmt->bindValue(':columnName', $column, \PDO::PARAM_STR);
             $stmt->execute();
             $stmt->fetch();
 
-            if ($stmt->rowCount) {
+            if ($stmt->rowCount()) {
                 return 1; // column already exist
             }
             return 0; // column to add
