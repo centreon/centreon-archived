@@ -80,6 +80,7 @@ class ServiceProviderTest extends TestCase
             $this->container[\Centreon\ServiceProvider::CENTREON_CLAPI] = new class {
                 public function add($class)
                 {
+                    return $this;
                 }
             };
 
