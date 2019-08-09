@@ -34,24 +34,40 @@
  *
  */
 
-namespace Centreon\Infrastructure\Service;
+namespace Centreon\Tests\Resource\Mock;
 
+use Centreon\Infrastructure\Service\CentreonClapiServiceInterface;
 use Pimple\Container;
 
-interface CentreonClapiServiceInterface
+/**
+ * Mock of CLAPI class
+ */
+class ClapiMock implements CentreonClapiServiceInterface
 {
 
     /**
-     * Construct
-     *
-     * @param \Pimple\Container $di
+     * {@inheritdoc}
      */
-    public function __construct(Container $di);
+    public function __construct(Container $di)
+    {
+        
+    }
 
     /**
-     * Get name of CLAPI service
-     *
-     * @return string
+     * {@inheritdoc}
      */
-    public static function getName(): string;
+    public static function getName(): string
+    {
+        return 'ClapiMock';
+    }
+
+    /**
+     * Execute test CLI command
+     *
+     * @return void
+     */
+    public function execute(): void
+    {
+        throw new \Exception('test cmd');
+    }
 }

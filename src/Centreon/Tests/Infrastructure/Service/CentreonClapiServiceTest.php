@@ -34,24 +34,40 @@
  *
  */
 
-namespace Centreon\Infrastructure\Service;
+namespace Centreon\Tests\Infrastructure\Service;
 
-use Pimple\Container;
+use PHPUnit\Framework\TestCase;
+use Psr\Container\ContainerInterface;
+use Centreon\Infrastructure\Service\CentreonClapiService;
+use Centreon\Tests\Resource\Mock\ClapiMock;
 
-interface CentreonClapiServiceInterface
+class CentreonClapiServiceTest extends TestCase
 {
 
-    /**
-     * Construct
-     *
-     * @param \Pimple\Container $di
-     */
-    public function __construct(Container $di);
+    public function testAdd()
+    {
+        $service = new CentreonClapiService;
+        $this->assertInstanceOf(ContainerInterface::class, $service);
+
+        // check if return this object and add webservice
+        $this->assertInstanceOf(CentreonClapiService::class, $service->add(ClapiMock::class));
+
+        $serviceId = strtolower(ClapiMock::getName());
+
+        // check is webservice is added
+        $this->assertAttributeEquals([
+            $serviceId => ClapiMock::class,
+            ], 'objects', $service);
+    }
 
     /**
-     * Get name of CLAPI service
-     *
-     * @return string
+     * @expectedException \Centreon\Infrastructure\Service\Exception\NotFoundException
      */
-    public static function getName(): string;
+    public function testAddWithoutInterface()
+    {
+        $service = new CentreonClapiService;
+        $this->assertInstanceOf(ContainerInterface::class, $service);
+
+        $service->add(\stdClass::class);
+    }
 }
