@@ -100,7 +100,7 @@ class FrontendComponentService
     private function getInstalledModules(): array
     {
         return $this->services->get(ServiceProvider::CENTREON_LEGACY_MODULE_INFORMATION)
-			->getInstalledList();
+            ->getInstalledList();
     }
 
     /**

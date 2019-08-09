@@ -106,7 +106,7 @@ class CentreonFrontendComponent extends Webservice\WebServiceAbstract implements
      */
     public function getComponents(): array
     {
-		$service = $this->services->get(ServiceProvider::CENTREON_FRONTEND_COMPONENT_SERVICE);
+        $service = $this->services->get(ServiceProvider::CENTREON_FRONTEND_COMPONENT_SERVICE);
 
         return [
             'pages' => $service->getPages(),
@@ -121,8 +121,8 @@ class CentreonFrontendComponent extends Webservice\WebServiceAbstract implements
      */
     public function setDi(Container $di)
     {
-         $this->services = new ServiceLocator($di, [
+        $this->services = new ServiceLocator($di, [
             ServiceProvider::CENTREON_FRONTEND_COMPONENT_SERVICE,
-		]);
-	 }
+        ]);
+    }
 }

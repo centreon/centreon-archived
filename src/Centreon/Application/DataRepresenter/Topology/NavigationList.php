@@ -105,7 +105,9 @@ class NavigationList implements JsonSerializable
      */
     protected function getIcon($pageId)
     {
-        return (!empty($this->getNavConfig()[$pageId]['icon'])) ? $this->getNavConfig()[$pageId]['icon'] : $this->getNavConfig()['default']['icon'];
+        return (!empty($this->getNavConfig()[$pageId]['icon']))
+            ? $this->getNavConfig()[$pageId]['icon']
+            : $this->getNavConfig()['default']['icon'];
     }
 
     /**
@@ -180,15 +182,18 @@ class NavigationList implements JsonSerializable
                     ];
 
                     //check if topology has group index
-                    if (!is_null($entity->getTopologyGroup()) && isset($groups[$levelTwo][$entity->getTopologyGroup()])) {
-                        if (!isset($naviList[$matches[1]]['children'][$levelTwo]['groups'][$entity->getTopologyGroup()])) {
+                    if (!is_null($entity->getTopologyGroup())
+                        && isset($groups[$levelTwo][$entity->getTopologyGroup()])) {
+                        if (!isset($naviList[$matches[1]]['children'][$levelTwo]['groups']
+                                [$entity->getTopologyGroup()])) {
                             $naviList[$matches[1]]['children'][$levelTwo]['groups'][$entity->getTopologyGroup()] = [
                                 'label' => $groups[$levelTwo][$entity->getTopologyGroup()]['name'],
                                 'children' => []
                             ];
                         }
                         array_push(
-                            $naviList[$matches[1]]['children'][$levelTwo]['groups'][$entity->getTopologyGroup()]['children'],
+                            $naviList[$matches[1]]['children'][$levelTwo]['groups']
+                                [$entity->getTopologyGroup()]['children'],
                             $levelThree
                         );
                     } else {

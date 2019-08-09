@@ -66,7 +66,8 @@ class ClassMetadata
     protected $primaryKey;
 
     /**
-     * 
+     * Set table name
+     *
      * @param string $name
      * @return \self
      */

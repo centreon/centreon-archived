@@ -1,7 +1,7 @@
 <?php
 /*
  * Copyright 2005-2019 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -98,7 +98,11 @@ class ServiceProvider implements AutoloadServiceProviderInterface
     {
         $pimple[static::CONFIGURATION] = function (Container $container): Core\Configuration\Configuration {
             global $conf_centreon, $centreon_path;
-            return new Core\Configuration\Configuration($conf_centreon, $centreon_path, $container[static::SYMFONY_FINDER]);
+            return new Core\Configuration\Configuration(
+                $conf_centreon,
+                $centreon_path,
+                $container[static::SYMFONY_FINDER]
+            );
         };
     }
 
@@ -108,7 +112,7 @@ class ServiceProvider implements AutoloadServiceProviderInterface
     protected function registerRestHttp(Container $pimple)
     {
         $pimple[static::CENTREON_REST_HTTP] = function (Container $container) {
-            return function($contentType = 'application/json', $logFile = null) {
+            return function ($contentType = 'application/json', $logFile = null) {
                 // @codeCoverageIgnoreStart
                 return new \CentreonRestHttp($contentType, $logFile); // @codeCoverageIgnoreEnd
             };

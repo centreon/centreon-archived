@@ -81,7 +81,7 @@ abstract class ServiceEntityRepository
      */
     public static function entityClass(): string
     {
-        return str_replace (
+        return str_replace(
             '\\Domain\\Repository\\',
             '\\Domain\\Entity\\', // change namespace
             substr(get_called_class(), 0, -10) // remove class name suffix "Repository"
@@ -150,14 +150,14 @@ abstract class ServiceEntityRepository
         $listRemove = [];
 
         $rows = (function () use ($id, $tableName, $columnA, $columnB) {
-                $sql = "SELECT `{$columnB}` FROM `{$tableName}` WHERE `{$columnA}` = :{$columnA} LIMIT 0, 5000";
-                $stmt = $this->db->prepare($sql);
-                $stmt->bindValue(":{$columnA}", $id, \PDO::PARAM_INT);
-                $stmt->execute();
-                $rows = $stmt->fetchAll();
+            $sql = "SELECT `{$columnB}` FROM `{$tableName}` WHERE `{$columnA}` = :{$columnA} LIMIT 0, 5000";
+            $stmt = $this->db->prepare($sql);
+            $stmt->bindValue(":{$columnA}", $id, \PDO::PARAM_INT);
+            $stmt->execute();
+            $rows = $stmt->fetchAll();
 
-                return $rows;
-            })();
+            return $rows;
+        })();
 
         // to remove
         foreach ($rows as $row) {

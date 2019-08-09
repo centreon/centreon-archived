@@ -40,7 +40,7 @@ use PHPUnit\Framework\TestCase;
 
 /**
  * This class help to test list of callbacks or methods if they were executed
- * 
+ *
  * <example>
  * class MyTest extends TestCase
  * {
@@ -48,7 +48,6 @@ use PHPUnit\Framework\TestCase;
  *      {
  *          $checkpoint = (new CheckPoint)
  *              ->add('point1');
- *          
  *      }
  * }
  * </example>

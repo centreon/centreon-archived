@@ -70,7 +70,8 @@ class EscalationRepository extends ServiceEntityRepository implements Pagination
      */
     public function getPaginationList($filters = null, int $limit = null, int $offset = null, $ordering = []): array
     {
-        $sql = 'SELECT SQL_CALC_FOUND_ROWS `esc_id`, `esc_name` FROM `' . $this->getClassMetadata()->getTableName() . '`';
+        $sql = 'SELECT SQL_CALC_FOUND_ROWS `esc_id`, `esc_name` '
+            . 'FROM `' . $this->getClassMetadata()->getTableName() . '`';
 
         $collector = new StatementCollector;
 

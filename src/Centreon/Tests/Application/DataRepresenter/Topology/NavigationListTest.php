@@ -157,8 +157,5 @@ class NavigationListTest extends TestCase
             ],
         ]);
         $result = $dataRepresenter->jsonSerialize();
-//print_r($result);exit;
-        // check serialized result
-//        $this->assertEquals([[],[]], $result);
     }
 }

@@ -135,7 +135,9 @@ class CentreonPaginationService
     public function setLimit(int $limit = null): self
     {
         if ($limit !== null && $limit > static::LIMIT_MAX) {
-            throw new RuntimeException(sprintf('Max value of limit has to be %d instead %d', static::LIMIT_MAX, $limit));
+            throw new RuntimeException(
+                sprintf('Max value of limit has to be %d instead %d', static::LIMIT_MAX, $limit)
+            );
         } elseif ($limit !== null && $limit < 1) {
             throw new RuntimeException(sprintf('Minimum value of limit has to be 1 instead %d', $limit));
         }
@@ -229,7 +231,9 @@ class CentreonPaginationService
         $hasInterface = $ref->isSubclassOf($interface);
 
         if ($hasInterface === false) {
-            throw new Exception(sprintf('Class %s has to implement %s to be DataRepresenter', $dataRepresenter, $interface));
+            throw new Exception(
+                sprintf('Class %s has to implement %s to be DataRepresenter', $dataRepresenter, $interface)
+            );
         }
 
         $this->dataRepresenter = $dataRepresenter;

@@ -59,8 +59,7 @@ class CheckListOfIdsTraitTest extends TestCase
                 array $ids,
                 string $tableName = null,
                 string $columnNameOfIdentificator = null
-            ): bool
-            {
+            ): bool {
                 return $this->checkListOfIdsTrait($ids, $tableName, $columnNameOfIdentificator);
             }
         };

@@ -38,8 +38,12 @@ namespace Centreon\Tests\Resource\Traits;
 
 trait CheckListOfIdsTrait
 {
-    public function checkListOfIdsTrait(string $repositoryClass, $method, $tableName = null, $identificator = null): void
-    {
+    public function checkListOfIdsTrait(
+        string $repositoryClass,
+        $method,
+        $tableName = null,
+        $identificator = null
+    ): void {
         $ids = [1, 3, 5];
 
         $repository = $this->createPartialMock(

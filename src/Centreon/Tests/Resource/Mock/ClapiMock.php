@@ -50,7 +50,6 @@ class ClapiMock implements CentreonClapiServiceInterface
      */
     public function __construct(Container $di)
     {
-        
     }
 
     /**

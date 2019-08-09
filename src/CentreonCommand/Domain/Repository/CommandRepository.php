@@ -53,9 +53,9 @@ class CommandRepository extends ServiceEntityRepository implements PaginationRep
         int $limit = null,
         int $offset = null,
         $ordering = []
-    ): array
-    {
-        $sql = 'SELECT SQL_CALC_FOUND_ROWS `command_id` AS `id`, `command_name` AS `name` FROM `' . Command::TABLE . '`';
+    ): array {
+        $sql = 'SELECT SQL_CALC_FOUND_ROWS `command_id` AS `id`, `command_name` AS `name` '
+            . 'FROM `' . Command::TABLE . '`';
 
         $collector = new StatementCollector;
 
