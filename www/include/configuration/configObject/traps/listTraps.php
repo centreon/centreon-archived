@@ -96,8 +96,8 @@ $queryValues = array();
 $rq = 'SELECT SQL_CALC_FOUND_ROWS * FROM traps WHERE 1 ';
 // List of elements - Depends on different criteria
 if ($searchTraps) {
-    $rq .= ' AND traps_oid LIKE :trapName OR traps_name LIKE :trapName ' .
-        'OR manufacturer_id IN (SELECT id FROM traps_vendor WHERE alias LIKE :trapName ) ';
+    $rq .= ' AND (traps_oid LIKE :trapName OR traps_name LIKE :trapName ' .
+        'OR manufacturer_id IN (SELECT id FROM traps_vendor WHERE alias LIKE :trapName )) ';
     $queryValues[':trapName'] = '%' . $searchTraps . '%';
 }
 if ($searchVendor) {
