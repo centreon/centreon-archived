@@ -93,8 +93,8 @@ class Generate
         $this->backend_instance = Backend::getInstance($this->dependencyInjector);
     }
 
-    
-    private function ucFirst($delimiters, $string) {
+    private function ucFirst($delimiters, $string)
+    {
         $string = str_replace($delimiters, $delimiters[0], $string);
         $result = '';
         foreach (explode($delimiters[0], $string) as $value) {
@@ -173,10 +173,12 @@ class Generate
 
             $this->generateModuleObjects($remoteServerId);
             $this->backend_instance->movePath($remoteServerId);
+            $this->resetObjects();
         } catch (Exception $e) {
+            $this->resetObjects();
+            $this->backend_instance->cleanPath();
             throw new Exception('Exception received : ' . $e->getMessage() . " [file: " . $e->getFile() .
                 "] [line: " . $e->getLine() . "]\n");
-            $this->backend_instance->cleanPath();
         }
     }
 
@@ -236,6 +238,56 @@ class Generate
                 $module_object::getInstance($this->dependencyInjector)->reset();
             }
         }
+    }
+
+    private function resetObjects()
+    {
+        Host::getInstance($this->dependencyInjector)->reset(true);
+        Service::getInstance($this->dependencyInjector)->reset(true);
+        HostTemplate::getInstance($this->dependencyInjector)->reset();
+        Servicegroup::getInstance($this->dependencyInjector)->reset();
+        HostTemplate::getInstance($this->dependencyInjector)->reset();
+        Command::getInstance($this->dependencyInjector)->reset();
+        Contact::getInstance($this->dependencyInjector)->reset();
+        Contactgroup::getInstance($this->dependencyInjector)->reset();
+        Curves::getInstance($this->dependencyInjector)->reset();
+        Engine::getInstance($this->dependencyInjector)->reset();
+        Graph::getInstance($this->dependencyInjector)->reset();
+        hostCategory::getInstance($this->dependencyInjector)->reset();
+        Hostgroup::getInstance($this->dependencyInjector)->reset();
+        macroService::getInstance($this->dependencyInjector)->reset();
+        Media::getInstance($this->dependencyInjector)->reset();
+        Resource::getInstance($this->dependencyInjector)->reset();
+        serviceCategory::getInstance($this->dependencyInjector)->reset();
+        ServiceTemplate::getInstance($this->dependencyInjector)->reset();
+        Timeperiod::getInstance($this->dependencyInjector)->reset();
+        trap::getInstance($this->dependencyInjector)->reset();
+        cfgResourceInstanceRelation::getInstance($this->dependencyInjector)->reset();
+        contactgroupHostRelation::getInstance($this->dependencyInjector)->reset();
+        contactgroupServiceRelation::getInstance($this->dependencyInjector)->reset();
+        contactHostcommandsRelation::getInstance($this->dependencyInjector)->reset();
+        contactHostRelation::getInstance($this->dependencyInjector)->reset();
+        contactServicecommandsRelation::getInstance($this->dependencyInjector)->reset();
+        contactServiceRelation::getInstance($this->dependencyInjector)->reset();
+        extendedHostInformation::getInstance($this->dependencyInjector)->reset();
+        extendedServiceInformation::getInstance($this->dependencyInjector)->reset();
+        hostcategoriesRelation::getInstance($this->dependencyInjector)->reset();
+        hostgroupRelation::getInstance($this->dependencyInjector)->reset();
+        hostServiceRelation::getInstance($this->dependencyInjector)->reset();
+        hostTemplateRelation::getInstance($this->dependencyInjector)->reset();
+        macroHost::getInstance($this->dependencyInjector)->reset();
+        nagiosServer::getInstance($this->dependencyInjector)->reset();
+        serviceCategoriesRelation::getInstance($this->dependencyInjector)->reset();
+        servicegroupRelation::getInstance($this->dependencyInjector)->reset();        
+        timeperiodExceptions::getInstance($this->dependencyInjector)->reset();
+        trapsGroup::getInstance($this->dependencyInjector)->reset();
+        trapsGroupRelation::getInstance($this->dependencyInjector)->reset();
+        trapsMatching::getInstance($this->dependencyInjector)->reset();
+        trapsPreexec::getInstance($this->dependencyInjector)->reset();
+        trapsServiceRelation::getInstance($this->dependencyInjector)->reset();
+        trapsVendor::getInstance($this->dependencyInjector)->reset();
+        viewImageDir::getInstance($this->dependencyInjector)->reset();
+        viewImgDirRelation::getInstance($this->dependencyInjector)->reset();
     }
 
     /**

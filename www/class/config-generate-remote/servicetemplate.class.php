@@ -201,13 +201,13 @@ class ServiceTemplate extends AbstractService
         $this->loop_tpl = array();
     }
 
-    public function reset()
+    public function reset($createfile=false)
     {
         $this->current_host_id = null;
         $this->current_host_name = null;
         $this->current_service_description = null;
         $this->current_service_id = null;
         $this->loop_stpl = array();
-        parent::reset();
+        parent::reset($createfile);
     }
 }

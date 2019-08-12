@@ -74,11 +74,13 @@ abstract class AbstractObject
         $this->fp = null;
     }
 
-    public function reset()
+    public function reset($createfile=false)
     {
         $this->close_file();
         $this->exported = array();
-        $this->createFile($this->backend_instance->getPath());
+        if ($createfile == true) {
+            $this->createFile($this->backend_instance->getPath());
+        }
     }
 
     protected function createFile($dir)
