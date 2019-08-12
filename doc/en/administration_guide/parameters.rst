@@ -16,7 +16,7 @@ This part covers the configuration of the general options of the Centreon web in
 
 The following window is displayed:
 
-.. image :: /images/guide_exploitation/ecentreon.png
+.. image:: /images/guide_exploitation/ecentreon.png
    :align: center
 
 * **Directory** indicates the directory where Centreon is installed
@@ -80,7 +80,7 @@ This part covers the general options of the real time monitoring interface.
 #. Go into the menu: **Administration > Parameters > Monitoring**
 #. Click on **Monitoring**
 
-.. image :: /images/guide_exploitation/esupervision.png
+.. image:: /images/guide_exploitation/esupervision.png
    :align: center
 
 * **Interval Length** field indicates the time interval in seconds used to program the checks and notifications
@@ -101,7 +101,7 @@ This part can be used set the operation of the CentCore process.
 
 #. Go into the menu: **Administration > Parameters > Centcore**
 
-.. image :: /images/guide_exploitation/ecentcore.png
+.. image:: /images/guide_exploitation/ecentcore.png
    :align: center
 
 * **Enable Broker Statistics Collection** field enables the retrieval of statistics from the Centreon Broker by CentCore. This can be a blocking option because the reading of the pipe can be a blocking action
@@ -125,7 +125,7 @@ To add a new directory:
 #. Go into the menu: **Administration > Options > LDAP**
 #. Click on **Add**
 
-.. image :: /images/guide_exploitation/eldap.png
+.. image:: /images/guide_exploitation/eldap.png
    :align: center
 
 * **Configuration name** and **Description** fields define the name and the description of the LDAP server
@@ -142,8 +142,8 @@ To add a new directory:
 * **Default contactgroup** optional field, which is used to add a new user to a default contactgroup.
 * **Use service DNS** field indicates if it is necessary to use the DNS server to solve the IP address of the LDAP directory.
 
-.. image :: /images/guide_exploitation/eldap2.png
-:align: center
+.. image:: /images/guide_exploitation/eldap2.png
+    :align: center
 
 * **Enable LDAP synchronization on login** If enabled, a user LDAP synchronization will be performed on login to update contact's data and calculate new Centreon ACLs.
 * **LDAP synchronization interval (in hours)** Displayed only if the previous option is enabled. This field is used to specify the time between two LDAP synchronization.
@@ -163,8 +163,8 @@ To add a new directory:
 
    The reference date won't be updated if you modify or not, only the other fields / options.
 
-.. image :: /images/guide_exploitation/eldap3.png
-:align: center
+.. image:: /images/guide_exploitation/eldap3.png
+   :align: center
 
 * **LDAP servers** field can be used to add one or more LDAP directories to which Centreon will connect
 
@@ -182,8 +182,8 @@ The table below summarizes the settings to add an LDAP server:
 | TLS                     | Indicates if the TLS protocol is used for the connection to the server                                     |
 +-------------------------+------------------------------------------------------------------------------------------------------------+
 
-.. image :: /images/guide_exploitation/eldap4.png
-:align: center
+.. image:: /images/guide_exploitation/eldap4.png
+   :align: center
 
 * **Bind user** and **Bind password** fields define the user name and the password for logging to the LDAP server
 * **Protocol version** field indicates the version of the protocol using to login
@@ -213,7 +213,7 @@ RRDTool
 This part can be used to configure the RRDTool graphs generation engine.
 Go into the **Administration > Parameters > RRDTool** menu.
 
-.. image :: /images/guide_exploitation/errdtool.png
+.. image:: /images/guide_exploitation/errdtool.png
    :align: center
 
 * **Directory + RRDTOOL Binary** field defines the path to the RRDTool executable
@@ -235,7 +235,7 @@ This part can be used to configure the enabling of the logging of activity on Ce
 
 #. Go into the menu: **Administration > Parameters > Debug**
 
-.. image :: /images/guide_exploitation/edebug.png
+.. image:: /images/guide_exploitation/edebug.png
    :align: center
 
 * **Logs Directory** field defines the path where event logs will be recorded
