@@ -238,13 +238,14 @@ class Host extends AbstractHost
         return $this->generatedHosts;
     }
 
-    public function reset()
+    public function reset($resetparent=false,$createfile=false)
     {
         $this->hosts_by_name = array();
         $this->hosts = null;
         $this->generated_parentship = array();
         $this->generatedHosts = array();
-        # Don't want to reset file
-        #parent::reset();
+        if ($resetparent == true) {
+            parent::reset($createfile);
+        }
     }
 }

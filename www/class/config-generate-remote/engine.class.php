@@ -272,7 +272,8 @@ class Engine extends AbstractObject
         $this->generate($poller['id']);
     }
 
-    public function reset()
+    public function reset($createfile=false)
     {
+        parent::reset($createfile);
     }
 }

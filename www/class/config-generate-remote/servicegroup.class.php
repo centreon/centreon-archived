@@ -205,9 +205,9 @@ class Servicegroup extends AbstractObject
         return $result;
     }
 
-    public function reset()
+    public function reset($createfile=false)
     {
-        parent::reset();
+        parent::reset($createfile);
         foreach ($this->sg as &$value) {
             if (!is_null($value)) {
                 $value['members_cache'] = array();

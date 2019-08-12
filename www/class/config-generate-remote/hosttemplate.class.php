@@ -171,9 +171,9 @@ class HostTemplate extends AbstractHost
         return $this->hosts[$host_id]['host_name'];
     }
 
-    public function reset()
+    public function reset($createfile=false)
     {
         $this->loop_htpl = array();
-        parent::reset();
+        parent::reset($createfile);
     }
 }

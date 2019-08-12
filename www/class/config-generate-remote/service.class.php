@@ -203,14 +203,15 @@ class Service extends AbstractService
         $this->poller_id = $poller_id;
     }
 
-    public function reset()
+    public function reset($resetparent=false, $createfile=false)
     {
         # We reset it by poller (dont need all. We save memory)
         if ($this->use_cache_poller == 1) {
             $this->service_cache = array();
             $this->done_cache = 0;
         }
-        # Don't want to reset file
-        #parent::reset();
+        if ($resetparent == true) {
+            parent::reset($createfile);
+        }
     }
 }
