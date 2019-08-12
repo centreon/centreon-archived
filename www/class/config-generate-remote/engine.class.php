@@ -209,7 +209,8 @@ class Engine extends AbstractObject
         'log_pid', // centengine
         'macros_filter',
         'enable_macros_filter',
-        'nagios_activate'
+        'nagios_activate',
+        'cfg_dir'
     );
     protected $stmt_engine = null;
     protected $stmt_broker = null;
