@@ -205,7 +205,7 @@ Ajouter la ligne suivante dans le fichier "/etc/openldap/ldap.conf": ::
 
 Puis redémarrez le serveur Apache : ::
 
-  systemctl restart httpd24-httpd
+  # systemctl restart httpd24-httpd
 
 *******
 RRDTool

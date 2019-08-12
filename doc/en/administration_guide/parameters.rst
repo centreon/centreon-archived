@@ -204,7 +204,7 @@ Then restart Apache :
 
 ::
 
-  systemctl restart httpd24-httpd
+  # systemctl restart httpd24-httpd
 
 *******
 RRDTool
