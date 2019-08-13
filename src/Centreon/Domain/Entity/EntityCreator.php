@@ -42,7 +42,7 @@ class EntityCreator
      * Create an entity and complete it according to the data array
      *
      * @param array $data Array that contains the data that will be used to complete entity
-     * @return mixed Entity according to the class given
+     * @return mixed Return an instance of class according to the class name given into constructor
      * @throws \Exception
      */
     public function createByArray(array $data)
@@ -52,7 +52,7 @@ class EntityCreator
         }
         $this->readPublicMethod();
         $this->readAnnotations();
-        $object = new $this->className;
+        $objectToSet = new $this->className;
         foreach ($data as $column => $value) {
             if (array_key_exists($column, $this->entityDescriptors)) {
                 $descriptor = $this->entityDescriptors[$column];
@@ -62,54 +62,86 @@ class EntityCreator
                 if (array_key_exists($setterMethod, $this->publicMethods)) {
                     $parameters = $this->publicMethods[$setterMethod]->getParameters();
                     if (empty($parameters)) {
-                        throw new \Exception("The plublic method {$this->className}::$setterMethod has no parameters");
+                        throw new \Exception("The public method {$this->className}::$setterMethod has no parameters");
                     }
                     $firstParameter = $parameters[0];
                     if ($firstParameter->hasType()) {
-                        $value = $this->convertValueBeforeInsert($value, $firstParameter->getType()->getName());
+                        try {
+                            $value = $this->convertValueBeforeInsert(
+                                $value,
+                                $firstParameter->getType()->getName(),
+                                $firstParameter->allowsNull()
+                            );
+                        } catch (\Exception $error) {
+                            throw new \Exception(
+                                sprintf(
+                                    '[%s::%s]: %s',
+                                    $this->className,
+                                    $setterMethod,
+                                    $error->getMessage()
+                                )
+                            );
+                        }
                     }
 
-                    call_user_func_array(array($object, $setterMethod), [$value]);
+                    call_user_func_array(array($objectToSet, $setterMethod), [$value]);
                 } else {
                     throw new \Exception("The public method {$this->className}::$setterMethod is not found");
                 }
             }
         }
-        return $object;
+        return $objectToSet;
     }
 
     /**
+     * Convert the value according to the type given.
+     *
      * @param $value
      * @param $destinationType
+     * @param bool $allowNull
      * @return bool|\DateTime|float|int|string
      * @throws \Exception
      */
-    private function convertValueBeforeInsert($value, $destinationType)
-    {
+    private function convertValueBeforeInsert(
+        $value,
+        $destinationType,
+        bool $allowNull = true
+    ) {
+        if (is_null($value)) {
+            if ($allowNull) {
+                return $value;
+            } else {
+                throw new \Exception("The value cannot be null");
+            }
+        }
+
         switch ($destinationType) {
             case 'double':
-                return (double)$value;
-            case 'integer':
+            case 'float':
+                return (float) $value;
             case 'int':
-                return (int)$value;
+                return (int) $value;
             case 'string':
-                return (string)$value;
-            case 'boolean':
+                return (string) $value;
             case 'bool':
-                return (bool)$value;
+                return (bool) $value;
             case 'DateTime':
                 if (is_numeric($value)) {
-                    return (new \DateTime())->setTimestamp((int)$value);
+                    return (new \DateTime())->setTimestamp((int) $value);
                 }
+                throw new \Exception("Numeric value expected");
             default:
                 return $value;
         }
     }
 
+    /**
+     * @throws \ReflectionException
+     */
     private function readPublicMethod()
     {
         $this->publicMethods = [];
-        $reflectionClass = new ReflectionClass($this->className);
+        $reflectionClass = new \ReflectionClass($this->className);
         foreach ($reflectionClass->getMethods() as $method) {
             if ($method->isPublic()) {
                 $this->publicMethods[$method->getName()] = $method;

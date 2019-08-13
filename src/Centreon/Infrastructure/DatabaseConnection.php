@@ -2,6 +2,8 @@
 
 namespace Centreon\Infrastructure;
 
+use PDO;
+
 /**
  * @package Centreon\Infrastructure
  */
@@ -45,6 +47,11 @@ class DatabaseConnection extends \PDO
         $this->login = $login;
         $this->password = $password;
         $dsn = "mysql:dbname={$basename};host={$host};port={$port}";
-        parent::__construct($dsn, $this->login, $this->password);
+        $options = array(
+            \PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8',
+            \PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION
+
+        );
+        parent::__construct($dsn, $this->login, $this->password, $options);
     }
 }

@@ -109,6 +109,9 @@
     "symfony/dotenv": {
         "version": "v4.2.8"
     },
+    "symfony/expression-language": {
+        "version": "v4.2.11"
+    },
     "symfony/flex": {
         "version": "1.0",
         "recipe": {

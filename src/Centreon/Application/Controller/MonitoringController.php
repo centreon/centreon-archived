@@ -3,9 +3,10 @@ declare(strict_types=1);
 
 namespace Centreon\Application\Controller;
 
-use Centreon\Domain\Contact\Contact;
-use Centreon\Domain\Pagination\Pagination;
+use Centreon\Domain\Monitoring\Host;
+use Centreon\Domain\Monitoring\HostGroup;
 use Centreon\Domain\Monitoring\Interfaces\MonitoringServiceInterface;
+use Centreon\Domain\Pagination\Interfaces\RequestParametersInterface;
 use FOS\RestBundle\Context\Context;
 use FOS\RestBundle\Controller\AbstractFOSRestController;
 use FOS\RestBundle\View\View;
@@ -13,9 +14,12 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use Symfony\Component\HttpFoundation\Response;
 
+/**
+ * Class MonitoringController
+ * @package Centreon\Application\Controller
+ */
 class MonitoringController extends AbstractFOSRestController
 {
-
     /**
      * @var MonitoringServiceInterface
      */
@@ -26,98 +30,202 @@ class MonitoringController extends AbstractFOSRestController
         $this->monitoring = $monitoringService;
     }
 
-   /**
-     * @Rest\Get("/monitoring/services/{serviceId}")
+    /**
+     * @Rest\Get(
+     *     "/monitoring/hosts/{hostId}/services/{serviceId}",
+     *     condition="request.attributes.get('version') >= 1.0 && request.attributes.get('version.is_beta') == false")
+     *
      * @param int $serviceId
+     * @param int $hostId
      * @return View
      */
-    public function oneService(int $serviceId): View
+    public function oneService(int $serviceId, int $hostId): View
     {
         $service = $this->monitoring
             ->filterByContact($this->getUser())
-            ->findOneService($serviceId);
+            ->findOneService($hostId, $serviceId);
 
-        $context = (new Context())->setGroups(['Default','service_full']);
+        if ($service !== null) {
+            $context = (new Context())
+                ->setGroups(['service_full'])
+                ->enableMaxDepth();
 
-        return $this->view($service)->setContext($context);
+            return $this->view($service)->setContext($context);
+        } else {
+            return View::create(null, Response::HTTP_NOT_FOUND, []);
+        }
     }
 
     /**
-     * The pagination data had been created by a custom event listener.
-     * See the App\Service\MonitoringService constructor to see how to inject it
-     *
      * @IsGranted("ROLE_USER")
-     * @Rest\Get("/monitoring/services")
-     * @param Pagination $pagination
+     * @Rest\Get(
+     *     "/monitoring/services",
+     *     condition="request.attributes.get('version') >= 1.0 && request.attributes.get('version.not_beta')")
+     *
+     * @param RequestParametersInterface $requestParameters
      * @return View
      */
-    public function services(Pagination $pagination): View
+    public function services(RequestParametersInterface $requestParameters): View
     {
-        /**
-         * @var $user Contact
-         */
-        $contact = $this->getUser();
-
         $services = $this->monitoring
-            ->filterByContact($contact)
-            ->findServices($pagination);
+            ->filterByContact($this->getUser())
+            ->findServices();
 
         $context = (new Context())
-            ->setGroups(['Default', 'service_main'])
+            ->setGroups(['service_main', 'service_with_host', 'host_min'])
             ->enableMaxDepth();
 
         return $this->view(
             [
                 'result' => $services,
                 'meta' => [
-                    'pagination' => $pagination->toArray()
+                    'pagination' => $requestParameters->toArray()
                 ]
-            ],
-            $this->getStatusCode($pagination)
+            ]
         )->setContext($context);
     }
 
     /**
      * @IsGranted("ROLE_USER")
-     * @Rest\Get("/monitoring/hosts")
-     * @param Pagination $pagination
+     * @Rest\Get(
+     *     "/monitoring/servicegroups",
+     *     condition="request.attributes.get('version') >= 1.0 && request.attributes.get('version.not_beta')")
+     *
+     * @param RequestParametersInterface $requestParameters
      * @return View
      */
-    public function hosts(Pagination $pagination)
+    public function servicesByServiceGroups(RequestParametersInterface $requestParameters): View
     {
-        /**
-         * @var $user Contact
-         */
-        $contact = $this->getUser();
-
-        $hosts = $this->monitoring
-            ->filterByContact($contact)
-            ->findHosts($pagination);
+        $servicesByServiceGroups = $this->monitoring
+            ->filterByContact($this->getUser())
+            ->findServiceGroups();
 
         $context = (new Context())
-            ->setGroups(['host_main', 'Default']);
+            ->setGroups(['sg_main', 'host_min', 'host_with_services', 'service_min'])
+            ->enableMaxDepth();
+
+        return $this->view(
+            [
+                'result' => $servicesByServiceGroups,
+                'meta' => [
+                    'pagination' => $requestParameters->toArray()
+                ]
+            ]
+        )->setContext($context);
+    }
+
+    /**
+     * @IsGranted("ROLE_USER")
+     * @Rest\Get(
+     *     "/monitoring/hostgroups",
+     *     condition="request.attributes.get('version') >= 1.0 && request.attributes.get('version.not_beta')")
+     *
+     * @param RequestParametersInterface $requestParameters
+     * @return View
+     */
+    public function servicesByHostGroups(RequestParametersInterface $requestParameters)
+    {
+        $hostGroups = $this->monitoring
+            ->filterByContact($this->getUser())
+            ->findHostGroups();
+
+        $context = (new Context())
+            ->setGroups(['hg_main', 'host_min', 'host_with_services', 'service_min'])
+            ->enableMaxDepth();
+
+        return $this->view(
+            [
+                'result' => $hostGroups,
+                'meta' => [
+                    'pagination' => $requestParameters->toArray()
+                ]
+            ]
+        )->setContext($context);
+    }
+
+    /**
+     * @IsGranted("ROLE_USER")
+     * @Rest\Get(
+     *     "/monitoring/hosts",
+     *     condition="request.attributes.get('version') >= 1.0 && request.attributes.get('version.not_beta')")
+     *
+     * @param RequestParametersInterface $requestParameters
+     * @return View
+     */
+    public function hosts(RequestParametersInterface $requestParameters)
+    {
+        $hosts = $this->monitoring
+            ->filterByContact($this->getUser())
+            ->findHosts();
+
+        $context = (new Context())
+            ->setGroups(['host_main', 'service_min']);
 
         return $this->view(
             [
                 'result' => $hosts,
                 'meta' => [
-                    'pagination' => $pagination->toArray()
+                    'pagination' => $requestParameters->toArray()
                 ]
-            ],
-            $this->getStatusCode($pagination)
+            ]
         )->setContext($context);
     }
 
     /**
-     * Returns the correct HTTP code based on the pagination result.
+     * @Rest\Get(
+     *     "/monitoring/hosts/{hostId}",
+     *     condition="request.attributes.get('version') >= 1.0 && request.attributes.get('version.not_beta')")
      *
-     * @param Pagination $pagination
-     * @return int
+     * @param int $hostId
+     * @return View
      */
-    private function getStatusCode(Pagination $pagination): int
+    public function oneHost(int $hostId)
     {
-        return ($pagination->getTotal() > $pagination->getLimit())
-            ? Response::HTTP_PARTIAL_CONTENT
-            : Response::HTTP_OK;
+        $host = $this->monitoring
+            ->filterByContact($this->getUser())
+            ->findOneHost($hostId);
+
+        if ($host !== null) {
+            $context = (new Context())
+                ->setGroups(['host_full', 'service_min'])
+                ->enableMaxDepth();
+
+            return $this->view($host)->setContext($context);
+        } else {
+            return View::create(null, Response::HTTP_NOT_FOUND, []);
+        }
+    }
+
+    /**
+     * @Rest\Get(
+     *      "/monitoring/hosts/{hostId}/services",
+     *      condition="request.attributes.get('version') >= 1.0 && request.attributes.get('version.not_beta')")
+     *
+     * @param int $hostId
+     * @param RequestParametersInterface $requestParameters
+     * @return View
+     */
+    public function servicesByHost(int $hostId, RequestParametersInterface $requestParameters)
+    {
+        $this->monitoring->filterByContact($this->getUser());
+
+        if ($this->monitoring->isHostExists($hostId)) {
+            $services = $this->monitoring->findServicesByHost($hostId);
+
+            $context = (new Context())
+                ->setGroups(['service_main'])
+                ->enableMaxDepth();
+
+            return $this->view(
+                [
+                    'result' => $services,
+                    'meta' => [
+                        'pagination' => $requestParameters->toArray()
+                    ]
+                ]
+            )->setContext($context);
+        } else {
+            return View::create(null, Response::HTTP_NOT_FOUND, []);
+        }
     }
 }

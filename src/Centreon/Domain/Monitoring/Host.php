@@ -3,13 +3,12 @@ declare(strict_types=1);
 
 namespace Centreon\Domain\Monitoring;
 
-use Centreon\Domain\Annotation\EntityDescriptor;
 use JMS\Serializer\Annotation as Serializer;
 use Centreon\Domain\Annotation\EntityDescriptor as Desc;
 
 /**
- * Class HostEntity
- * @package Centreon\Domain\Entity
+ * Class Host
+ * @package Centreon\Domain\Monitoring
  */
 class Host
 {
@@ -18,7 +17,7 @@ class Host
     public const STATUS_UNREACHABLE = 2;
 
     /**
-     * @Serializer\Groups({"Default", "host_main", "host_full"})
+     * @Serializer\Groups({"host_min", "host_main", "host_full"})
      * @Desc(column="host_id", modifier="setId")
      * @var int Id of host
      */
@@ -26,12 +25,13 @@ class Host
 
     /**
      * @Serializer\Groups({"host_main", "host_full"})
+     * @Desc(column="instance_id", modifier="setPollerId")
      * @var int Poller id
      */
-    private $instanceId;
+    private $pollerId;
 
     /**
-     * @Serializer\Groups({"Default", "host_main", "host_full"})
+     * @Serializer\Groups({"host_min", "host_main", "host_full"})
      * @var string Name of host
      */
     private $name;
@@ -43,23 +43,18 @@ class Host
     private $acknowledged;
 
     /**
-     * @Serializer\Groups({"host_main", "host_full"})
-     * @var int|null
-     */
-    private $acknowledgementType;
-
-    /**
      * @Serializer\Groups({"host_full"})
      * @var bool|null
      */
     private $activeChecks;
     /**
      * @Serializer\Groups({"host_main", "host_full"})
+     * @Desc(column="address", modifier="setAddressIp")
      * @var string|null Ip address or domain name
      */
-    private $address;
+    private $addressIp;
     /**
-     * @Serializer\Groups({"Default", "host_main", "host_full"})
+     * @Serializer\Groups({"host_min", "host_main", "host_full"})
      * @var string|null Alias of host
      */
     private $alias;
@@ -107,7 +102,6 @@ class Host
     private $displayName;
 
     /**
-     * @Serializer\Groups({"host_main", "host_full"})
      * @var bool
      */
     private $enabled;
@@ -132,7 +126,7 @@ class Host
 
     /**
      * @Serializer\Groups({"host_main", "host_full"})
-     * @var string|null
+     * @var \DateTime|null
      */
     private $lastCheck;
 
@@ -161,19 +155,19 @@ class Host
     private $lastStateChange;
 
     /**
-     * @Serializer\Groups({"host_full"})
+     * @Serializer\Groups({"host_main", "host_full"})
      * @var \DateTime|null
      */
     private $lastTimeDown;
 
     /**
-     * @Serializer\Groups({"host_full"})
+     * @Serializer\Groups({"host_main", "host_full"})
      * @var \DateTime|null
      */
     private $lastTimeUnreachable;
 
     /**
-     * @Serializer\Groups({"host_full"})
+     * @Serializer\Groups({"host_main", "host_full"})
      * @var \DateTime|null
      */
     private $lastTimeUp;
@@ -216,7 +210,7 @@ class Host
 
     /**
      * @Serializer\Groups({"host_full"})
-     * @var \DateTime|null
+     * @var int|null
      */
     private $notificationNumber;
 
@@ -275,8 +269,14 @@ class Host
     private $passiveChecks;
 
     /**
-     * @Serializer\Groups({"host_main", "host_full"})
-     * @var int|null
+     * @Serializer\Groups({"host_main", "host_full", "host_with_services"})
+     * @var Service[]
+     */
+    private $services = [];
+
+    /**
+     * @Serializer\Groups({"host_min", "host_main", "host_full"})
+     * @var int|null ['0' => 'UP', '1' => 'DOWN', '2' => 'UNREACHABLE', '4' => 'PENDING']
      */
     private $state;
 
@@ -287,22 +287,10 @@ class Host
     private $stateType;
 
     /**
-     * @Serializer\Groups({"host_full"})
+     * @Serializer\Groups({"host_main", "host_full"})
      * @var string|null
      */
     private $timezone;
-
-    /**
-     * @Serializer\Groups({"host_full"})
-     * @var int|null
-     */
-    private $realState;
-
-    /**
-     * @var Service[]
-     * @Serializer\Groups({"host_main", "host_full"})
-     */
-    private $services = [];
 
     /**
      * @return int
@@ -325,18 +313,18 @@ class Host
     /**
      * @return int
      */
-    public function getInstanceId(): int
+    public function getPollerId(): int
     {
-        return $this->instanceId;
+        return $this->pollerId;
     }
 
     /**
-     * @param int $instanceId
+     * @param int $pollerId
      * @return Host
      */
-    public function setInstanceId(int $instanceId): Host
+    public function setPollerId(int $pollerId): Host
     {
-        $this->instanceId = $instanceId;
+        $this->pollerId = $pollerId;
         return $this;
     }
 
@@ -377,24 +365,6 @@ class Host
     }
 
     /**
-     * @return int|null
-     */
-    public function getAcknowledgementType(): ?int
-    {
-        return $this->acknowledgementType;
-    }
-
-    /**
-     * @param int|null $acknowledgementType
-     * @return Host
-     */
-    public function setAcknowledgementType(?int $acknowledgementType): Host
-    {
-        $this->acknowledgementType = $acknowledgementType;
-        return $this;
-    }
-
-    /**
      * @return bool|null
      */
     public function getActiveChecks(): ?bool
@@ -415,18 +385,18 @@ class Host
     /**
      * @return string|null
      */
-    public function getAddress(): ?string
+    public function getAddressIp(): ?string
     {
-        return $this->address;
+        return $this->addressIp;
     }
 
     /**
-     * @param string|null $address
+     * @param string|null $addressIp
      * @return Host
      */
-    public function setAddress(?string $address): Host
+    public function setAddressIp(?string $addressIp): Host
     {
-        $this->address = $address;
+        $this->addressIp = $addressIp;
         return $this;
     }
 
@@ -647,18 +617,18 @@ class Host
     }
 
     /**
-     * @return string|null
+     * @return \DateTime|null
      */
-    public function getLastCheck(): ?string
+    public function getLastCheck(): ?\DateTime
     {
         return $this->lastCheck;
     }
 
     /**
-     * @param string|null $lastCheck
+     * @param \DateTime|null $lastCheck
      * @return Host
      */
-    public function setLastCheck(?string $lastCheck): Host
+    public function setLastCheck(?\DateTime $lastCheck): Host
     {
         $this->lastCheck = $lastCheck;
         return $this;
@@ -899,18 +869,18 @@ class Host
     }
 
     /**
-     * @return \DateTime|null
+     * @return int|null
      */
-    public function getNotificationNumber(): ?\DateTime
+    public function getNotificationNumber(): ?int
     {
         return $this->notificationNumber;
     }
 
     /**
-     * @param \DateTime|null $notificationNumber
+     * @param int|null $notificationNumber
      * @return Host
      */
-    public function setNotificationNumber(?\DateTime $notificationNumber): Host
+    public function setNotificationNumber(?int $notificationNumber): Host
     {
         $this->notificationNumber = $notificationNumber;
         return $this;
@@ -1079,6 +1049,32 @@ class Host
     }
 
     /**
+     * @return Service[]
+     */
+    public function getServices(): array
+    {
+        return $this->services;
+    }
+
+    /**
+     * @param Service[] $services
+     * @return Host
+     */
+    public function setServices(array $services): Host
+    {
+        $this->services = $services;
+        return $this;
+    }
+
+    /**
+     * @param Service $service
+     */
+    public function addService(Service $service)
+    {
+        $this->services[] = $service;
+    }
+
+    /**
      * @return int|null
      */
     public function getState(): ?int
@@ -1129,53 +1125,6 @@ class Host
     public function setTimezone(?string $timezone): Host
     {
         $this->timezone = $timezone;
-        return $this;
-    }
-
-    /**
-     * @return int|null
-     */
-    public function getRealState(): ?int
-    {
-        return $this->realState;
-    }
-
-    /**
-     * @param int|null $realState
-     * @return Host
-     */
-    public function setRealState(?int $realState): Host
-    {
-        $this->realState = $realState;
-        return $this;
-    }
-
-    /**
-     * @return Service[]
-     */
-    public function getServices(): array
-    {
-        return $this->services;
-    }
-
-
-    /**
-     * @param Service[] $services
-     * @return Host
-     */
-    public function setServices(array $services): Host
-    {
-        $this->services = $services;
-        return $this;
-    }
-
-    /**
-     * @param Service $service
-     * @return Host
-     */
-    public function addService(Service $service): Host
-    {
-        $this->services[] = $service;
         return $this;
     }
 }

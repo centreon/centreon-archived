@@ -17,12 +17,8 @@ fos_rest:
     param_fetcher_listener: true
     exception:
         enabled: true # All exceptions will be serialized to Json
-
     versioning:
         enabled: true
-        resolvers:
-            query: true # Query parameter: /users?version=v1
-            custom_header: true # X-Accept-Version header
     body_converter:
         enabled: true
         validate: true

@@ -48,12 +48,14 @@
         "symfony/serializer-pack": "^1.0",
         "symfony/maker-bundle": "^1.11",
         "nelmio/cors-bundle": "^1.5",
-        "symfony/validator": "4.2.*"
+        "symfony/validator": "4.2.*",
+        "symfony/expression-language": "4.2.*"
     },
     "autoload": {
         "psr-4": {
             "": "src/",
-            "App\\": "src/"
+            "App\\": "src/",
+            "Tests\\": "tests/"
         },
         "classmap": ["www/class/"],
         "files" : [

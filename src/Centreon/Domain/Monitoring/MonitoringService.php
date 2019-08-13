@@ -6,7 +6,6 @@ namespace Centreon\Domain\Monitoring;
 use Centreon\Domain\Contact\Contact;
 use Centreon\Domain\Contact\Interfaces\ContactInterface;
 use Centreon\Domain\Monitoring\Interfaces\MonitoringServiceInterface;
-use Centreon\Domain\Pagination\Pagination;
 use Centreon\Domain\Monitoring\Interfaces\MonitoringRepositoryInterface;
 use Centreon\Domain\Security\Interfaces\AccessGroupRepositoryInterface;
 
@@ -43,18 +42,18 @@ class MonitoringService implements MonitoringServiceInterface
     /**
      * @inheritDoc
      */
-    public function findServices(Pagination $pagination): array
+    public function findServices(): array
     {
         if ($this->contact->isAdmin()) {
             return $this
                 ->monitoringRepository
                 ->filterByAccessGroups(null)
-                ->findServices($pagination);
+                ->findServices();
         } elseif (count($accessGroups = $this->accessGroupRepository->findByContact($this->contact)) > 0) {
             return $this
                 ->monitoringRepository
                 ->filterByAccessGroups($accessGroups)
-                ->findServices($pagination);
+                ->findServices();
         }
         return [];
     }
@@ -62,18 +61,53 @@ class MonitoringService implements MonitoringServiceInterface
     /**
      * @inheritDoc
      */
-    public function findHosts(Pagination $pagination): array
+    public function findServicesByHost(int $hostId): array
     {
         if ($this->contact->isAdmin()) {
             return $this
                 ->monitoringRepository
                 ->filterByAccessGroups(null)
-                ->findHosts($pagination);
+                ->findServicesByHost($hostId);
         } elseif (count($accessGroups = $this->accessGroupRepository->findByContact($this->contact)) > 0) {
             return $this
                 ->monitoringRepository
                 ->filterByAccessGroups($accessGroups)
-                ->findHosts($pagination);
+                ->findServicesByHost($hostId);
+        }
+        return [];
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function findHosts(): array
+    {
+        if ($this->contact->isAdmin()) {
+            return $this
+                ->monitoringRepository
+                ->filterByAccessGroups(null)
+                ->findHosts();
+        } elseif (count($accessGroups = $this->accessGroupRepository->findByContact($this->contact)) > 0) {
+            return $this
+                ->monitoringRepository
+                ->filterByAccessGroups($accessGroups)
+                ->findHosts();
+        }
+        return [];
+    }
+
+    public function findHostGroups(): array
+    {
+        if ($this->contact->isAdmin()) {
+            return $this
+                ->monitoringRepository
+                ->filterByAccessGroups(null)
+                ->findHostGroups();
+        } elseif (count($accessGroups = $this->accessGroupRepository->findByContact($this->contact)) > 0) {
+            return $this
+                ->monitoringRepository
+                ->filterByAccessGroups($accessGroups)
+                ->findHostGroups();
         }
         return [];
     }
@@ -92,25 +126,60 @@ class MonitoringService implements MonitoringServiceInterface
      */
     public function findOneHost(int $hostId): ?Host
     {
-        // TODO: Implement findOneHost() method.
+        if ($this->contact->isAdmin()) {
+            return $this
+                ->monitoringRepository
+                ->filterByAccessGroups(null)
+                ->findOneHost($hostId);
+        } elseif (count($accessGroups = $this->accessGroupRepository->findByContact($this->contact)) > 0) {
+            return $this
+                ->monitoringRepository
+                ->filterByAccessGroups($accessGroups)
+                ->findOneHost($hostId);
+        }
+        return null;
     }
 
     /**
      * @inheritDoc
      */
-    public function findOneService(int $serviceId): ?Service
+    public function findOneService(int $hostId, int $serviceId): ?Service
     {
         if ($this->contact->isAdmin()) {
             return $this
                 ->monitoringRepository
                 ->filterByAccessGroups(null)
-                ->findOneService($serviceId);
+                ->findOneService($hostId, $serviceId);
         } elseif (count($accessGroups = $this->accessGroupRepository->findByContact($this->contact)) > 0) {
             return $this
                 ->monitoringRepository
                 ->filterByAccessGroups($accessGroups)
-                ->findOneService($serviceId);
+                ->findOneService($hostId, $serviceId);
         }
         return null;
+    }
+
+    public function findServiceGroups(): array
+    {
+        if ($this->contact->isAdmin()) {
+            return $this
+                ->monitoringRepository
+                ->filterByAccessGroups(null)
+                ->findServiceGroups();
+        } elseif (count($accessGroups = $this->accessGroupRepository->findByContact($this->contact)) > 0) {
+            return $this
+                ->monitoringRepository
+                ->filterByAccessGroups($accessGroups)
+                ->findServiceGroups();
+        }
+        return [];
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function isHostExists(int $hostId): bool
+    {
+        return !is_null($this->findOneHost($hostId));
     }
 }

@@ -1,3 +1,8 @@
+parameters:
+    api.header: "Api-Version"
+    api.version.latest: "2.0"
+    api.version.beta: "2.1"
+
 services:
     _defaults:
         autowire: true      # Automatically injects dependencies in your services.
@@ -41,11 +46,11 @@ services:
     Centreon\Domain\Security\Interfaces\AccessGroupRepositoryInterface:
         class: Centreon\Infrastructure\Security\AccessGroupRepositoryRDB
 
+    Centreon\Domain\Pagination\Interfaces\RequestParametersInterface:
+        class: Centreon\Domain\Pagination\RequestParameters
+
     Centreon\Domain\Monitoring\Interfaces\MonitoringRepositoryInterface:
         alias: 'monitoring.repository'
-
-    App\EventSubscriber\RequestEventSubscriber:
-        class: App\EventSubscriber\RequestEventSubscriber
 
     monitoring.repository:
         public: true
@@ -55,3 +60,5 @@ services:
               arguments: ['%database_db%']
             - method: setStorageDbName
               arguments: ['%database_dbstg%']
+            - method: setSqlRequestTranslator
+              arguments: ['@Centreon\Infrastructure\Repository\SqlRequestParametersTranslator']
