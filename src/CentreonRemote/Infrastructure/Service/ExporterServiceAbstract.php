@@ -115,54 +115,10 @@ abstract class ExporterServiceAbstract implements ExporterServiceInterface
         return 10;
     }
 
-    protected function _parse(string $filename): array
-    {
-        $macros = null;
-
-        if ($this->config !== null) {
-            $macros = function (&$result) {
-                $result !== null ? $this->config->replaceMacros($result) : null;
-            };
-        }
-
-        $result = $this->commitment->getParser()->parse($filename, $macros);
-
-        return $result;
-    }
-
     protected function _getIf(string $key, callable $data)
     {
         $result = $this->cache->getIf($key, $data);
 
         return $result;
-    }
-
-    protected function _dump(array $input, string $filename): void
-    {
-        $this->commitment->getParser()->dump($input, $filename);
-
-        $this->manifest->addFile($filename);
-    }
-
-    protected function _mergeDump(array $input, string $filename, $uniqueId = 'id')
-    {
-        $data = $this->_parse($filename);
-
-        if ($data) {
-            foreach ($data as $row) {
-                $id = $row[$uniqueId];
-
-                foreach ($input as $_key => $_row) {
-                    $_id = $_row[$uniqueId];
-                    if ($id === $_id) {
-                        unset($input[$_key]);
-                    }
-                }
-            }
-
-            $input = array_merge($data, $input);
-        }
-
-        $this->_dump($input, $filename);
     }
 }
