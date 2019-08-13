@@ -13,6 +13,8 @@ Enhancements
 * [Charts] Better management of virtual metrics: you can display or not a virtual metric (PR/#7676) [beta.1]
 * [Charts] Only one color by curve: users see the same color curve (PR/#7676) [beta.1]
 * [Configuration] Add contactgroups filter in list of contacts (PR/#7744) [beta.2]
+* [Configuration] Add status and vendor filters in list of SNMP traps (PR/#7758) [beta.2]
+* [Configuration] Fix SNMP traps generation by poller (PR/#6416) [beta.2]
 * [Install] Allow people to use another user that has root privileges when installing centreon (PR/#7445) [beta.1]
 
 Performance
@@ -31,6 +33,7 @@ Bug fixes
 * [Charts] HTML code instead of accented characters in graphs (PR/#7676, #6318) [beta.1]
 * [Charts] Graphs Period Showing Different Times (PR/#7676, #5939) [beta.1]
 * [Monitoring] Fix pagination display in service monitoring by servicegroups (PR/#7755) [beta.2]
+* [Widget] set GMT to default if null (PR/#7766) [beta.2]
 
 Technical
 ---------
