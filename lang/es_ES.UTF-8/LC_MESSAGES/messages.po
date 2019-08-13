@@ -1286,9 +1286,8 @@ msgstr "aplicar"
 
 #: centreon-web/www/install/smarty_translate.php:159 centreon-web/www/include/home/customViews/views.php:115
 msgid "Deleting this view might impact other users. Are you sure you want to do it?"
-msgstr ""
-"Eliminar esta vista podría afectar a otros usuarios. \n"
-"¿Estás seguro de que quieres hacer eso?"
+msgstr "Eliminar esta vista podría afectar a otros usuarios."
+msgstr "¿Estás seguro de que quieres hacer eso?"
 
 #: centreon-web/www/install/smarty_translate.php:162 centreon-web/www/include/Administration/performance/viewData.php:303
 #: centreon-web/www/include/Administration/parameters/ldap/list.php:78
@@ -5392,9 +5391,8 @@ msgstr ""
 
 #: centreon-web/www/include/home/customViews/views.php:114
 msgid "Deleting this widget might impact users with whom you are sharing this view. Are you sure you want to do it?"
-msgstr ""
-"La eliminación de este widget podría afectar a los usuarios con los que comparte esta vista. \n"
-"¿Estás seguro de que quieres hacer eso?"
+msgstr "La eliminación de este widget podría afectar a los usuarios con los que comparte esta vista."
+msgstr "¿Estás seguro de que quieres hacer eso?"
 
 #: centreon-web/www/include/home/customViews/views.php:116
 msgid "Set this view as your default view?"
