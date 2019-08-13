@@ -32,8 +32,6 @@ Security fixes
 --------------
 
 * [ACL] Fix ACL calculation when interfering with the GET request (PR/#7517) (+18.10.5 + 2.8.28 = #7518)
-Technical
----------
 
 Known issue
 -----------

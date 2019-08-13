@@ -131,7 +131,7 @@ Pour ajouter un nouvel annuaire :
 #. Dans le menu de gauche, cliquez sur **LDAP**
 #. Cliquez sur **Ajouter**
 
-.. image :: /images/guide_exploitation/eldap.png
+.. image:: /images/guide_exploitation/eldap.png
    :align: center
 
 * Les champs **Nom de la configuration** et **Description** définissent le nom et la description du serveur LDAP
@@ -149,14 +149,13 @@ Pour ajouter un nouvel annuaire :
 * Le champ **Utiliser le service DNS** indique s'il faut utiliser le serveur DNS pour résoudre l'adresse IP de l'annuaire LDAP
 * Le champ **LDAP servers** permet d'ajouter un ou plusieurs annuaires LDAP vers lequel Centreon va se connecter.
 
-.. image :: /images/guide_exploitation/eldap2.png
-:align: center
+.. image:: /images/guide_exploitation/eldap2.png
+    :align: center
 
 * Lorsque l'option **Synchronisation LDAP lors du login** est activée, une mise à jour des données de l'utilisateur provenant du LDAP sera effectuée lors de sa connection et ses ACL seront re-calculées.
 * Le champ **Intervalle (en heures), entre les synchronisations LDAP** est affiché si la précedente option est activée. Il permet de spécifier une durée minimale entre deux synchronisation avec le LDAP.
 
 .. note::
-
    Les données provenant du LDAP ne seront mises à jour que lorsque cet intervalle sera écoulé. Une synchronisation manuelle est possible sur les pages **Administration > Sessions** et **Configuration > Utilisateurs > Contacts / Utilisateurs**.
 
    L'intervalle est exprimé en heures. Par défaut, ce champs est initié avec la plus basse valeur possible : 1 heure.
@@ -170,8 +169,8 @@ Pour ajouter un nouvel annuaire :
 
    Cette reférence temporelle n'est pas affectée par les modifications apportées sur les autres champs du formulaire.
 
-.. image :: /images/guide_exploitation/eldap3.png
-:align: center
+.. image:: /images/guide_exploitation/eldap3.png
+    :align: center
 
 Le tableau ci-dessous résume les différents paramètres à insérer pour ajouter un serveur LDAP :
 
@@ -187,8 +186,8 @@ Le tableau ci-dessous résume les différents paramètres à insérer pour ajout
 | TLS                     | Indique si le protocole TLS est utilisé pour la connexion au serveur                                       |
 +-------------------------+------------------------------------------------------------------------------------------------------------+
 
-.. image :: /images/guide_exploitation/eldap4.png
-:align: center
+.. image:: /images/guide_exploitation/eldap4.png
+    :align: center
 
 * Les champs **Utilisateur du domaine** et **Mot de passe** définissent le nom d'utilisateur et le mot de passe pour se connecter au serveur LDAP
 * Le champ **Version du protocole** indique la version du protocole à utiliser pour se connecter
@@ -200,17 +199,13 @@ Le tableau ci-dessous résume les différents paramètres à insérer pour ajout
 
 Sous CentOS 7, on peut définir de ne pas vérifier le certificat serveur avec la procédure suivante:
 
-Ajouter la ligne suivante dans le fichier "/etc/openldap/ldap.conf":
-
-::
+Ajouter la ligne suivante dans le fichier "/etc/openldap/ldap.conf": ::
 
   TLS_REQCERT never
 
-Puis redémarrez le serveur Apache :
+Puis redémarrez le serveur Apache : ::
 
-::
-
-  systemctl restart httpd24-httpd
+  # systemctl restart httpd24-httpd
 
 *******
 RRDTool
@@ -242,7 +237,7 @@ Cette partie permet de configurer l'activation de la journalisation de l'activit
 #. Rendez-vous dans le menu **Administration > Paramétres**
 #. Dans le menu de gauche, cliquez sur **Débogage**
 
-.. image :: /images/guide_exploitation/edebug.png
+.. image:: /images/guide_exploitation/edebug.png
    :align: center
 
 * Le champ **Répertoire d'enregistrement des journaux** définir le chemin où seront enregistrés les journaux d'évènements

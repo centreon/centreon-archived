@@ -16,7 +16,7 @@ Bug Fixes
 * [ACL] Host calculation with ACL is not correct - PR #6436
 * [API] Broker configuration accept accept id 0
 * [API] Unset service/contact relations if set option - PR #7115
-* [API] Use "Reach API *" to validate access to API - PR #7117
+* [API] Use "Reach API" to validate access to API - PR #7117
 * [Authentication] add sync with ldap groups upon login - PR #7057
 * [Backup] Fix scp export of configuration files backup - PR #7112
 * [Chart] fix graph export when a curve is only displayed in legend - PR #7009

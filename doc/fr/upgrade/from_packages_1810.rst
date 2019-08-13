@@ -56,7 +56,15 @@ Actions complémentaires
 Mise à jour de la version de PHP
 --------------------------------
 
-Centreon 19.10 utilise un nouveau paquet PHP
+Centreon 19.10 utilise un nouveau paquet PHP.
+
+Le fuseau horaire par défaut de PHP 7 doit être configuré. Executez la commande
+suivante : ::
+
+    # echo "date.timezone = Europe/Paris" > /etc/opt/rh/rh-php72/php.d/php-timezone.ini
+
+.. note::
+	Changez **Europe/Paris** par votre fuseau horaire.
 
 Réalisez les actions suivantes : ::
 
