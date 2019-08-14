@@ -65,6 +65,10 @@ Cliquez sur **Next**.
     
     5. Cliquez sur **Refresh**
 
+.. note::
+    Si vous utilisez une base de données déportée MySQL 8.x, vous pouvez avoir l'erreur suivante : *erreur*.
+    Référez-vous à l'aide :ref:`suivante<dedicateddbms>` pour corriger le problème.
+
 L'assistant de configuration configure les bases de données.
 
 Cliquez sur **Next**.

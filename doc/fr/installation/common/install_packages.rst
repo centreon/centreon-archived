@@ -74,6 +74,8 @@ Exécutez la commande : ::
 
     # yum install centreon-base-config-centreon-engine
 
+.. _dedicateddbms:
+
 Installer MySQL sur un serveur dédié
 ------------------------------------
 
@@ -95,14 +97,32 @@ Exécutez les commandes : ::
 
 Puis créer un utisateur **root** distant : ::
 
-    MariaDB [(none)]> GRANT ALL PRIVILEGES ON *.* TO 'root'@'IP' IDENTIFIED BY 'PASSWORD' WITH GRANT OPTION;
+    mysql> CREATE USER 'root'@'IP' IDENTIFIED BY 'PASSWORD';
+    mysql> GRANT ALL PRIVILEGES ON *.* TO 'root'@'IP' WITH GRANT OPTION;
+    mysql> FLUSH PRIVILEGES;
 
 .. note::
     Remplacez **IP** par l'adresse IP publique du serveur Centreon et **PASSWORD**
-    par le mot de passe de l'utilisateur **root**. Une fois l'installation terminée
-    vous pouvez supprimer ce compte via la commande : ::
+    par le mot de passe de l'utilisateur **root**.
+
+.. warning::
+    Si PHP est utilisé dans une version 7.1 antérieure à la version 7.1.16, ou PHP 7.2 antérieure à 7.2.4, le
+    plugin de mot de passe doit être défini à mysql_native_password pour MySQL 8 Server, car sinon des erreurs
+    similaires à *The server requested authentication method unknown to the client [caching_sha2_password]* peuvent
+    apparaitre, même si caching_sha2_password n'est pas utilisé.
+    
+    Ceci est dû au fait que MySQL 8 utilise par défaut caching_sha2_password, un plugin qui n'est pas reconnu par les
+    anciennes versions de PHP. À la place il faut modifier le paramètre *default_authentication_plugin=
+    mysql_native_password* dans le fichier **my.cnf**.
+    
+    Changez la méthode de stockage du mot de passe, utilisez la commande suivante : ::
+    
+        mysql> ALTER USER 'root'@'IP' IDENTIFIED WITH mysql_native_password BY 'PASSWORD';
+        mysql> FLUSH PRIVILEGES;
+
+Une fois l'installation terminée vous pouvez supprimer ce compte via la commande : ::
         
-        MariaDB [(none)]> DROP USER 'root'@'IP';
+    mysql> DROP USER 'root'@'IP';
 
 Système de gestion de base de données
 -------------------------------------
