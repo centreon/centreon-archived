@@ -1,7 +1,7 @@
 .. _upgrade_from_packages:
 
 =============================
-Upgrading from Centreon 18.10
+Upgrading from Centreon 19.04
 =============================
 
 This chapter describes how to upgrade your platform to version Centreon 19.10.
@@ -49,9 +49,6 @@ Upgrade all the components with the following command: ::
 Additional actions
 ==================
 
-Updating the PHP version
-------------------------
-
 Centeon 19.10 uses a new version of PHP.
 
 Run the following commands: ::
@@ -60,28 +57,7 @@ Run the following commands: ::
     # systemctl stop rh-php71-php-fpm
     # systemctl start rh-php72-php-fpm
     # systemctl enable rh-php72-php-fpm
-
-Updating the Apache web server
-------------------------------
-
-Centeon 19.10 uses a new version of Apache web server.
-
-.. note::
-    If you made manual configuration, please report it into
-    **/opt/rh/httpd24/root/etc/httpd/conf.d/**.
-    
-    If SSL mode was enabled, execute command: ::
-    
-    # yum install httpd24-mod_ssl
-
-Then, run the following commands: ::
-
-    # systemctl disable httpd
-    # systemctl stop httpd
-    # systemctl enable httpd24-httpd
-    # systemctl start httpd24-httpd
-    # systemctl enable centreon
-    # systemctl restart centreon
+    # systemctl restart httpd24-httpd
 
 Finalizing the upgrade
 ======================
