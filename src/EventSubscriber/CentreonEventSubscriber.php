@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace App\EventSubscriber;
 
@@ -16,7 +17,7 @@ use Symfony\Component\HttpKernel\KernelEvents;
 
 /**
  * We defined an event subscriber on the kernel event request to create a
- * Pagination class according to query parameters and then used in the services
+ * RequestParameters class according to query parameters and then used in the services
  * or repositories.
  *
  * This class is automatically calls by Symfony through the dependency injector
@@ -36,7 +37,6 @@ class CentreonEventSubscriber implements EventSubscriberInterface
     private $requestParameters;
 
     /**
-     * CentreonEventSubscriber constructor.
      * @param RequestParametersInterface $requestParameters
      * @param ContainerInterface $container
      */
@@ -48,19 +48,6 @@ class CentreonEventSubscriber implements EventSubscriberInterface
 
     /**
      * Returns an array of event names this subscriber wants to listen to.
-     *
-     * The array keys are event names and the value can be:
-     *
-     *  * The method name to call (priority defaults to 0)
-     *  * An array composed of the method name to call and the priority
-     *  * An array of arrays composed of the method names to call and respective
-     *    priorities, or 0 if unset
-     *
-     * For instance:
-     *
-     *  * array('eventName' => 'methodName')
-     *  * array('eventName' => array('methodName', $priority))
-     *  * array('eventName' => array(array('methodName1', $priority), array('methodName2')))
      *
      * @return array The event names to listen to
      */
@@ -100,7 +87,7 @@ class CentreonEventSubscriber implements EventSubscriberInterface
     }
 
     /**
-     * Create a Pagination class to use later in service or repositories.
+     * Initializes the RequestParameters instance for later use in the service or repositories.
      *
      * @param GetResponseEvent $request
      * @throws \Exception
@@ -218,33 +205,47 @@ class CentreonEventSubscriber implements EventSubscriberInterface
                 $requestApiVersion = $betaVersion;
             }
 
-            /*if (VersionHelper::compare($requestApiVersion, $latestVersion, VersionHelper::EQUAL)) {
-                $requestApiVersion = 'latest';
-            }*/
             $event->getRequest()->attributes->set('version', (float) $requestApiVersion);
         }
     }
 
     /**
+     * Used to manage exceptions outside controllers.
+     *
      * @param GetResponseForExceptionEvent $event
      */
     public function onKernelException(GetResponseForExceptionEvent $event)
     {
-        $eventCode = $event->getException()->getCode();
-        $errorCode = ($eventCode >= 200 && $eventCode <= 527)
-            ? $eventCode
-            : 500;
-        if ($event->getException()->getCode() > 0) {
+        $flagController = 'Controller';
+        $errorIsBeforeController = true;
+
+        // We detect if the exception occurred before the kernel called the controller
+        foreach ($event->getException()->getTrace() as $trace) {
+            if (strlen($trace['class']) > strlen($flagController)
+                && substr($trace['class'], -strlen($flagController)) === $flagController
+            ) {
+                $errorIsBeforeController = false;
+                break;
+            }
+        }
+
+        // If Yes, we create a custom error message.
+        // If we don't do that a HTML error will appeared.
+        if ($errorIsBeforeController) {
+            $errorCode = $event->getException()->getCode() > 0
+                ? $event->getException()->getCode()
+                : 500;
+
             // Manage exception outside controllers
             $event->setResponse(
                 new Response(
                     json_encode(
                         [
-                            'error' => $errorCode,
+                            'code' => $errorCode,
                             'message' => $event->getException()->getMessage()
                         ]
                     ),
-                    $errorCode
+                    500
                 )
             );
         }
