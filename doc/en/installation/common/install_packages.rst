@@ -72,6 +72,8 @@ Run the command::
 
     # yum install centreon-base-config-centreon-engine
 
+.. _dedicateddbms:
+
 Installing MySQL on the dedicated server
 ----------------------------------------
 
@@ -91,14 +93,30 @@ Run the commands::
 
 Then create a distant **root** account: ::
 
-    MariaDB [(none)]> GRANT ALL PRIVILEGES ON *.* TO 'root'@'IP' IDENTIFIED BY 'PASSWORD' WITH GRANT OPTION;
+    mysql> CREATE USER 'root'@'IP' IDENTIFIED BY 'PASSWORD';
+    mysql> GRANT ALL PRIVILEGES ON *.* TO 'root'@'IP' WITH GRANT OPTION;
+    mysql> FLUSH PRIVILEGES;
 
 .. note::
     Replace **IP** by the public IP address of the Centreon server and **PASSWORD**
-    by the **root** password. Once the installation is complete you can delete this
-    account using: ::
+    by the **root** password.
+
+.. warning::
+    When running a PHP version before 7.1.16, or PHP 7.2 before 7.2.4, set MySQL 8 Server's default password plugin to
+    mysql_native_password or else you will see errors similar to *The server requested authentication method unknown
+    to the client [caching_sha2_password]* even when caching_sha2_password is not used.
+    
+    This is because MySQL 8 defaults to caching_sha2_password, a plugin that is not recognized by the older PHP
+    releases. Instead, change it by setting *default_authentication_plugin=mysql_native_password* in **my.cnf**.
+    
+    Change the method to store the password using following command: ::
+    
+        mysql> ALTER USER 'root'@'IP' IDENTIFIED WITH mysql_native_password BY 'PASSWORD';
+        mysql> FLUSH PRIVILEGES;
+
+Once the installation is complete you can delete this account using: ::
         
-        MariaDB [(none)]> DROP USER 'root'@'IP';
+    mysql> DROP USER 'root'@'IP';
 
 Database management system
 --------------------------
