@@ -38,6 +38,7 @@ class MonitoringController extends AbstractFOSRestController
      * @param int $serviceId
      * @param int $hostId
      * @return View
+     * @throws \Exception
      */
     public function oneService(int $serviceId, int $hostId): View
     {
@@ -64,6 +65,7 @@ class MonitoringController extends AbstractFOSRestController
      *
      * @param RequestParametersInterface $requestParameters
      * @return View
+     * @throws \Exception
      */
     public function services(RequestParametersInterface $requestParameters): View
     {
@@ -93,6 +95,7 @@ class MonitoringController extends AbstractFOSRestController
      *
      * @param RequestParametersInterface $requestParameters
      * @return View
+     * @throws \Exception
      */
     public function servicesByServiceGroups(RequestParametersInterface $requestParameters): View
     {
@@ -122,6 +125,7 @@ class MonitoringController extends AbstractFOSRestController
      *
      * @param RequestParametersInterface $requestParameters
      * @return View
+     * @throws \Exception
      */
     public function servicesByHostGroups(RequestParametersInterface $requestParameters)
     {
@@ -151,6 +155,7 @@ class MonitoringController extends AbstractFOSRestController
      *
      * @param RequestParametersInterface $requestParameters
      * @return View
+     * @throws \Exception
      */
     public function hosts(RequestParametersInterface $requestParameters)
     {
@@ -178,6 +183,7 @@ class MonitoringController extends AbstractFOSRestController
      *
      * @param int $hostId
      * @return View
+     * @throws \Exception
      */
     public function oneHost(int $hostId)
     {
@@ -204,6 +210,7 @@ class MonitoringController extends AbstractFOSRestController
      * @param int $hostId
      * @param RequestParametersInterface $requestParameters
      * @return View
+     * @throws \Exception
      */
     public function servicesByHost(int $hostId, RequestParametersInterface $requestParameters)
     {

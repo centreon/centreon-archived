@@ -22,6 +22,7 @@ interface MonitoringRepositoryInterface
      * Find all real time hosts according to access group.
      *
      * @return Host[]
+     * @throws Exception
      */
     public function findHosts(): array;
 
@@ -34,19 +35,21 @@ interface MonitoringRepositoryInterface
     public function findHostGroups(): array;
 
     /**
-     * Find one host based on its id and according to access groups.
+     * Find one host based on its id and according to ACL.
      *
      * @param int $hostId Id of the host to be found
      * @return Host|null
+     * @throws Exception
      */
     public function findOneHost(int $hostId): ?Host;
 
     /**
-     * Find one service based on its id and according to access groups.
+     * Find one service based on its id and according to ACL.
      *
-     * @param int $serviceId Id of the service to be found
-     * @param int $hostId
+     * @param int $hostId Host id of the service
+     * @param int $serviceId Service Id
      * @return Service|null
+     * @throws Exception
      */
     public function findOneService(int $hostId, int $serviceId): ?Service;
 
@@ -62,14 +65,16 @@ interface MonitoringRepositoryInterface
      * Find all real time services according to access group.
      *
      * @return Service[]
+     * @throws Exception
      */
     public function findServices(): array;
 
     /**
-     * Find all real time services according to access group and host id.
+     * Retrieve all real time services according to ACL of contact and host id
      *
      * @param int $hostId
      * @return Service[]
+     * @throws Exception
      */
     public function findServicesByHost(int $hostId): array;
 }

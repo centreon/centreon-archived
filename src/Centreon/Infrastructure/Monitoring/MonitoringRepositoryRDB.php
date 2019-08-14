@@ -52,16 +52,6 @@ class MonitoringRepositoryRDB implements MonitoringRepositoryInterface
     }
 
     /**
-     * @param int $unixTimestamp
-     * @return \DateTime
-     * @throws Exception
-     */
-    private function createDatetime(int $unixTimestamp): \DateTime
-    {
-        return (new \DateTime())->setTimestamp($unixTimestamp);
-    }
-
-    /**
      * @param AccessGroup[]|null $accessGroups
      * @return MonitoringRepositoryInterface
      */
@@ -109,10 +99,7 @@ class MonitoringRepositoryRDB implements MonitoringRepositoryInterface
     }
 
     /**
-     * Retrieve all real time hosts.
-     *
-     * @return Host[]
-     * @throws Exception
+     * @inheritDoc
      */
     public function findHosts(): array
     {
@@ -375,11 +362,7 @@ class MonitoringRepositoryRDB implements MonitoringRepositoryInterface
     }
 
     /**
-     * Find a host.
-     *
-     * @param int $hostId Host id
-     * @return Host|null
-     * @throws Exception
+     * @inheritDoc
      */
     public function findOneHost(int $hostId): ?Host
     {
@@ -431,12 +414,7 @@ class MonitoringRepositoryRDB implements MonitoringRepositoryInterface
     }
 
     /**
-     * Find a service according to its id.
-     *
-     * @param int $hostId Host id of the service
-     * @param int $serviceId Service Id
-     * @return Service|null
-     * @throws Exception
+     * @inheritDoc
      */
     public function findOneService(int $hostId, int $serviceId): ?Service
     {
@@ -482,28 +460,24 @@ class MonitoringRepositoryRDB implements MonitoringRepositoryInterface
     }
 
     /**
-     * Retrieve all real time services according to ACL of contact
-     *
-     * @return Service[]
-     * @throws Exception
+     * @inheritDoc
      */
     public function findServices(): array
     {
         $this->sqlRequestTranslator->setConcordanceArray([
-            'poller.id' => 'i.instance_id',
-            'host_group.id' => 'hhg.hostgroup_id',
             'host.id' => 'h.host_id',
             'host.name' => 'h.name',
             'host.alias' => 'h.alias',
             'host.address' => 'h.address',
-            'service_group.id' => 'ssg.servicegroup_id',
-            'service.id' => 'srv.service_id',
+            'host.state' => 'h.state',
+            'host_group.id' => 'hhg.hostgroup_id',
+            'poller.id' => 'i.instance_id',
             'service.description' => 'srv.description',
             'service.display_name' => 'srv.display_name',
             'service.is_acknowledged' => 'srv.acknowledged',
             'service.output' => 'srv.output',
             'service.state' => 'srv.state',
-            'status.id' => 'srv.state'
+            'service_group.id' => 'ssg.servicegroup_id',
         ]);
 
         $accessGroupFilter = !is_null($this->accessGroups)
@@ -590,11 +564,7 @@ class MonitoringRepositoryRDB implements MonitoringRepositoryInterface
     }
 
     /**
-     * Retrieve all real time services according to ACL of contact and host id
-     *
-     * @param int $hostId
-     * @return Service[]
-     * @throws Exception
+     * @inheritDoc
      */
     public function findServicesByHost(int $hostId): array
     {
