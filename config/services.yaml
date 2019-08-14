@@ -14,31 +14,17 @@ parameters:
     database_password: "%env(password)%"
 
 services:
-    # default configuration for services in *this* file
+    # Default configuration for services in *this* file
     _defaults:
         autowire: true      # Automatically injects dependencies in your services.
         autoconfigure: true # Automatically registers your services as commands, event subscribers, et
-#
-#    CentreonLegacy\:
-#        resource: '../src/CentreonLegacy/*'
-#        exclude: '../src/CentreonLegacy/Core/Install/Step'
-#
-#    CentreonModule\:
-#        resource: '../src/CentreonModule/*'
-#        exclude: '../src/CentreonModule/Tests'
-#
-#    CentreonRemote\:
-#        resource: '../src/CentreonRemote/*'
-#        exclude: '../src/CentreonRemote/Tests'
 
     App\EventSubscriber\:
         resource: '../src/EventSubscriber/*'
 
-    # mandatory to use 'view_response_listener: true' in the fost rest config failed
+    # Mandatory to use 'view_response_listener: true' in the fost rest config failed
     sensio_framework_extra.view.listener:
         alias: Sensio\Bundle\FrameworkExtraBundle\EventListener\TemplateListener
-
-    # We defined the contact authenticator
 
     security.provider.tokenapi:
         class: App\Security\TokenAPIAuthenticator
