@@ -65,11 +65,34 @@ $host = "localhost";
 if ($parameters['address'] != "127.0.0.1" && $parameters['address'] != "localhost") {
     $host = $_SERVER['SERVER_ADDR'];
 }
-$query = "GRANT ALL PRIVILEGES ON `%s`.* TO `" . $dbUser . "`@`" . $host .
-    "` IDENTIFIED BY '" . $dbPass . "' WITH GRANT OPTION";
+
+// Compatibility adaptation for mysql 8 with php7.1 before 7.1.16, or php7.2 before 7.2.4.
+$createUser = "CREATE USER :dbUser@:host IDENTIFIED BY :dbPass";
+$alterQuery = "ALTER USER :dbUser@:host IDENTIFIED WITH mysql_native_password BY :dbPass";
+
+$queryValues = [];
+$queryValues[':dbUser'] = $dbUser;
+$queryValues[':host'] = $host;
+$queryValues[':dbPass'] = $dbPass;
+
+$query = "GRANT ALL PRIVILEGES ON `%s`.* TO " . $dbUser . "@" . $host . " WITH GRANT OPTION";
+$flushQuery = "FLUSH PRIVILEGES";
+
 try {
+    $prepareCreate = $link->prepare($createUser);
+    $prepareAlter = $link->prepare($alterQuery);
+    foreach ($queryValues as $key => $value) {
+        $prepareCreate->bindValue($key, $value, \PDO::PARAM_STR);
+        $prepareAlter->bindValue($key, $value, \PDO::PARAM_STR);
+    }
+    // creating the user
+    $prepareCreate->execute();
+    // granting privileges
     $link->exec(sprintf($query, $parameters['db_configuration']));
     $link->exec(sprintf($query, $parameters['db_storage']));
+    // altering the mysql's password plugin
+    $prepareAlter->execute();
+    $link->exec($flushQuery);
 } catch (\PDOException $e) {
     $return['msg'] = $e->getMessage();
     echo json_encode($return);
