@@ -60,7 +60,7 @@ $patterns = array(
     '/--CONFDB--/',
     '/--STORAGEDB--/',
     '/--CENTREONDIR--/',
-    '/--CACHEDIR--/',
+    '/--CENTREON_CACHEDIR--/',
     '/--DBPORT--/',
     '/--INSTANCEMODE--/',
     '/--CENTREON_VARLIB--/'
