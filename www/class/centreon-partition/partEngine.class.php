@@ -612,10 +612,24 @@ class PartEngine
     public function isCompatible($db)
     {
         $dbResult = $db->query("SELECT plugin_status FROM INFORMATION_SCHEMA.PLUGINS WHERE plugin_name = 'partition'");
-        $config = $dbResult->fetchRow();
+        $config = $dbResult->fetch();
         $dbResult->closeCursor();
         if ($config["plugin_status"] != "ACTIVE") {
-            return (false);
+            // as the plugin "partition" was deprecated in mysql 5.9
+            // and as it was removed from mysql 8 and replaced by the native partitioning one,
+            // we need to check the current version and db before failing this step
+            $dbResult = $db->query(
+                "SHOW VARIABLES WHERE Variable_name LIKE 'version%'"
+            );
+            $versionDb = $dbResult->fetch();
+            $dbResult->closeCursor();
+            if (stristr($versionDb['version_comment'], "MySQL")
+                && (floatval($versionDb["version"]) > 5.9)
+            ) {
+                unset($config, $versionDb);
+                return true;
+            }
+            return false;
         }
         unset($config);
 
