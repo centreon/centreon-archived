@@ -319,8 +319,14 @@ $redirect->setValue($o);
  * Form Rules
  */
 $form->registerRule('exist', 'callback', 'testExistence');
+$form->registerRule('testAdditionalRemoteServer', 'callback', 'testAdditionalRemoteServer');
 $form->addRule('name', _("Name is already in use"), 'exist');
 $form->addRule('name', _("The name of the poller is mandatory"), 'required');
+$form->addRule(
+    array('remote_additional_id', 'remote_id'),
+    _('To use additional Remote Servers a Master Remote Server must be selected.'),
+    'testAdditionalRemoteServer'
+);
 
 $form->setRequiredNote("<font style='color: red;'>*</font>&nbsp;" . _("Required fields"));
 

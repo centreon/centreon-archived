@@ -98,6 +98,30 @@ function getAvailableSuffixIds(
 }
 
 /**
+ * Check if Master Remote is selected to use additional Remote Server
+ *
+ * @param array $values the values of Remote Servers selectboxes
+ * @return false only if additional Remote Server selectbox is not empty and Master selectbox is empty
+ */
+function testAdditionalRemoteServer(array $values)
+{
+    # If remote_additional_id select2 is not empty
+    if (isset($values[0]) 
+        && is_array($values[0])
+        && count($values[0]) >= 1
+    ) {
+        # If Master Remote Server is not empty
+        if (isset($values[1]) && trim($values[1]) != '') {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+/**
  * Check if the name already exist in database
  *
  * @param string $name Name to check
