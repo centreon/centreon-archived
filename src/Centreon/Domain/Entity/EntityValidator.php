@@ -2,9 +2,15 @@
 
 namespace Centreon\Domain\Entity;
 
+use Symfony\Component\Serializer\NameConverter\CamelCaseToSnakeCaseNameConverter;
+use Symfony\Component\Validator\Constraint;
+use Symfony\Component\Validator\Constraints\All;
 use Symfony\Component\Validator\Constraints\Collection;
+use Symfony\Component\Validator\Constraints\Composite;
+use Symfony\Component\Validator\Constraints\Type;
 use Symfony\Component\Validator\ConstraintViolationList;
 use Symfony\Component\Validator\ConstraintViolationListInterface;
+use Symfony\Component\Validator\Mapping\CascadingStrategy;
 use Symfony\Component\Validator\Mapping\Loader\YamlFileLoader;
 use Symfony\Component\Validator\Validation;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
@@ -55,18 +61,7 @@ class EntityValidator
     ): ConstraintViolationListInterface {
         $violations = new ConstraintViolationList();
         if ($this->hasValidatorFor($entityName)) {
-            /**
-             * @var $metadata Symfony\Component\Validator\Constraint\MetadataInterface
-             */
-            $metadata = $this->validator->getMetadataFor($entityName);
-            $constraints = [];
-            foreach ($metadata->getConstrainedProperties() as $id) {
-                $propertyMetadata = $metadata->getPropertyMetadata($id);
-                if (!empty($propertyMetadata)) {
-                    $constraints[$id] = $propertyMetadata[0]->findConstraints($groupName);
-                }
-            }
-            $assertCollection = new Collection($constraints);
+            $assertCollection = $this->getConstraints($entityName, $groupName);
             $violations->addAll(
                 $this->validator->validate($dataToValidate, $assertCollection)
             );
@@ -75,16 +70,62 @@ class EntityValidator
     }
 
     /**
-     * Validate an entity.
-     *
-     * @param object $entity Entity to validate
-     * @return ConstraintViolationListInterface
+     * @param string $entityName
+     * @param string $groupName
+     * @return Collection
      */
-    public function validateEntity($entity): ConstraintViolationListInterface
+    private function getConstraints(string $entityName, string $groupName, string $type = null): Composite
     {
-        if (is_object($entity)) {
-            return $this->validator->validate($entity);
+        /**
+         * @var $metadata \Symfony\Component\Validator\Mapping\ClassMetadata
+         */
+        $metadata = $this->validator->getMetadataFor($entityName);
+        $constraints = [];
+        foreach ($metadata->getConstrainedProperties() as $id) {
+            $propertyMetadatas = $metadata->getPropertyMetadata($id);
+
+            // We need to convert camel case to snake case because the data sent
+            // are in snake case format whereas the validation definition file
+            // use the real name of properties (camel case)
+            $id = $this->convertCamelCaseToSnakeCase($id);
+
+            if (!empty($propertyMetadatas)) {
+                $propertyMetadata = $propertyMetadatas[0];
+                if ($propertyMetadata->getCascadingStrategy() == CascadingStrategy::CASCADE) {
+                    foreach ($propertyMetadata->getConstraints() as $constraint) {
+                        if ($constraint instanceof Type) {
+                            $constraints[$id] = $this->getConstraints($constraint->type, $groupName);
+                        } elseif ($constraint instanceof All) {
+                            $type = $this->getConstraintType($constraint->constraints);
+                            if ($type !== null) {
+                                $constraints[$id] = new All($this->getConstraints($type, $groupName));
+                            }
+                        }
+                    }
+                } else {
+                    $constraints[$id] = $propertyMetadata->findConstraints($groupName);
+                }
+            }
         }
-        return new ConstraintViolationList();
+        return new Collection($constraints);
+    }
+
+    /**
+     * @param Constraint[] $constraints
+     * @return string
+     */
+    private function getConstraintType(array $constraints): string
+    {
+        foreach ($constraints as $constraint) {
+            if ($constraint instanceof Type) {
+                return $constraint->type;
+            }
+        }
+        return null;
+    }
+
+    private function convertCamelCaseToSnakeCase(string $propertyName): string
+    {
+        return strtolower(preg_replace('/[A-Z]/', '_\\0', lcfirst($propertyName)));
     }
 }
