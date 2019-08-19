@@ -60,7 +60,7 @@ class PartEngine
                 AND TABLE_SCHEMA = '" . $table->getSchema() . "'
                 AND PARTITION_DESCRIPTION = 'MAXVALUE'"
             );
-        } catch (PDOException $e) {
+        } catch (\PDOException $e) {
             throw new Exception(
                 "Error : Cannot get partition maxvalue information for table "
                 . $tableName . ", " . $e->getMessage() . "\n"
@@ -72,7 +72,7 @@ class PartEngine
                 $dbResult = $db->query(
                     "ALTER TABLE " . $tableName . " ADD PARTITION (PARTITION `pmax` VALUES LESS THAN MAXVALUE)"
                 );
-            } catch (PDOException $e) {
+            } catch (\PDOException $e) {
                 throw new Exception(
                     "Error: cannot add a maxvalue partition for table "
                     . $tableName . ", " . $e->getMessage() . "\n"
@@ -126,7 +126,7 @@ class PartEngine
 
         try {
             $dbResult = $db->query($request);
-        } catch (PDOException $e) {
+        } catch (\PDOException $e) {
             throw new Exception("Error: cannot add a new partition 'p" . ($ntime[5] + 1900) . $month . $day
                 . "' for table " . $tableName . ", " . $e->getMessage() . "\n");
         }
@@ -264,7 +264,7 @@ class PartEngine
 
         try {
             $dbResult = $db->query("use " . $table->getSchema());
-        } catch (PDOException $e) {
+        } catch (\PDOException $e) {
             throw new Exception(
                 "SQL Error: Cannot use database "
                 . $table->getSchema() . "," . $e->getMessage() . "\n"
@@ -273,7 +273,7 @@ class PartEngine
 
         try {
             $dbResult = $db->query($table->getCreateStmt() . $partition_part);
-        } catch (PDOException $e) {
+        } catch (\PDOException $e) {
             throw new Exception(
                 "Error : Cannot create table " . $tableName . " with partitions, "
                 . $e->getMessage() . "\n"
@@ -298,7 +298,7 @@ class PartEngine
         $error = false;
         try {
             $dbResult = $db->query($request);
-        } catch (PDOException $e) {
+        } catch (\PDOException $e) {
             $error = true;
         }
         if ($error || !$dbResult->rowCount()) {
@@ -342,7 +342,7 @@ class PartEngine
 
         try {
             $dbResult = $db->query($request);
-        } catch (PDOException $e) {
+        } catch (\PDOException $e) {
             throw new Exception("Error : Cannot get partitions to purge for table "
                 . $tableName . ", " . $e->getMessage() . "\n");
         }
@@ -351,7 +351,7 @@ class PartEngine
             $request = "ALTER TABLE " . $tableName . " DROP PARTITION `" . $row["PARTITION_NAME"] . "`;";
             try {
                 $dbResult2 =& $db->query($request);
-            } catch (PDOException $e) {
+            } catch (\PDOException $e) {
                 throw new Exception("Error : Cannot drop partition " . $row["PARTITION_NAME"] . " of table "
                     . $tableName . ", " . $e->getMessage() . "\n");
             }
@@ -382,7 +382,7 @@ class PartEngine
         echo "[" . date(DATE_RFC822) . "][migrate] Renaming table " . $tableName . " TO " . $tableName . "_old\n";
         try {
             $dbResult = $db->query("RENAME TABLE " . $tableName . " TO " . $tableName . "_old");
-        } catch (PDOException $e) {
+        } catch (\PDOException $e) {
             throw new Exception(
                 "Error: Cannot rename table " . $tableName
                 . " to " . $tableName . "_old, "
@@ -402,7 +402,7 @@ class PartEngine
         $request = "INSERT INTO " . $tableName . " SELECT * FROM " . $tableName . "_old";
         try {
             $dbResult = $db->query($request);
-        } catch (PDOException $e) {
+        } catch (\PDOException $e) {
             throw new Exception(
                 "Error: Cannot copy " . $tableName . "_old data to new table "
                 . $e->getMessage() . "\n"
@@ -423,13 +423,13 @@ class PartEngine
         //verifying if table is partitioned
         try {
             $dbResult = $db->query("use " . $table->getSchema());
-        } catch (PDOException $e) {
+        } catch (\PDOException $e) {
             throw new Exception("Error: cannot use database " . $table->getSchema() . "\n");
         }
 
         try {
             $dbResult = $db->query("SHOW TABLE STATUS LIKE '" . $table->getName() . "'");
-        } catch (PDOException $e) {
+        } catch (\PDOException $e) {
             throw new Exception("Error: cannot get table " . $tableName . " status, " . $e->getMessage() . "\n");
         }
         if (!$dbResult->rowCount()) {
@@ -468,7 +468,7 @@ class PartEngine
         $request .= "AND TABLE_SCHEMA='" . $table->getSchema() . "' ";
         try {
             $dbResult = $db->query($request);
-        } catch (PDOException $e) {
+        } catch (\PDOException $e) {
             throw new Exception(
                 "Error : Cannot get table schema information  for "
                 . $tableName . ", " . $e->getMessage() . "\n"
@@ -479,7 +479,7 @@ class PartEngine
             $request = "ALTER TABLE " . $tableName . " OPTIMIZE PARTITION `" . $row["PARTITION_NAME"] . "`;";
             try {
                 $dbResult2 = $db->query($request);
-            } catch (PDOException $e) {
+            } catch (\PDOException $e) {
                 throw new Exception(
                     "Optimize error : Cannot optimize partition " . $row["PARTITION_NAME"]
                     . " of table " . $tableName . ", " . $e->getMessage() . "\n"
@@ -514,7 +514,7 @@ class PartEngine
         $request .= "ORDER BY PARTITION_NAME DESC ";
         try {
             $dbResult = $db->query($request);
-        } catch (PDOException $e) {
+        } catch (\PDOException $e) {
             throw new Exception(
                 "Error : Cannot get table schema information  for "
                 . $tableName . ", " . $e->getMessage() . "\n"
@@ -561,7 +561,7 @@ class PartEngine
         $request .= "LIMIT 2";
         try {
             $dbResult = $db->query($request);
-        } catch (PDOException $e) {
+        } catch (\PDOException $e) {
             throw new Exception(
                 "Error : Cannot get table schema information  for "
                 . $tableName . ", " . $e->getMessage() . "\n"
@@ -594,7 +594,7 @@ class PartEngine
 
         try {
             $dbResult = $db->query($request);
-        } catch (PDOException $e) {
+        } catch (\PDOException $e) {
             throw new Exception(
                 "FATAL : Cannot dump table " . $tableName
                 . " into file " . $filename . ", "
@@ -627,7 +627,7 @@ class PartEngine
                 && (floatval($versionDb["version"]) > 5.9)
             ) {
                 unset($config, $versionDb);
-                
+
                 return true;
             }
             return false;
@@ -651,7 +651,7 @@ class PartEngine
 
         try {
             $dbResult = $db->query($query);
-        } catch (PDOException $e) {
+        } catch (\PDOException $e) {
             throw new Exception('Cannot get partition information');
         }
 
@@ -676,7 +676,7 @@ class PartEngine
 
         try {
             $dbResult = $db->query($request);
-        } catch (PDOException $e) {
+        } catch (\PDOException $e) {
             throw new Exception(
                 "Error : Cannot get partition maxvalue information for table "
                 . $table->getName() . ", " . $e->getMessage() . "\n"
