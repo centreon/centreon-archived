@@ -1,7 +1,6 @@
 import { all, fork } from 'redux-saga/effects';
 
 import * as axiosSagas from './axios';
-import * as navigationSagas from './navigation';
 import * as bamSagas from './bam';
 
 const rootSaga = function* rootSaga(){
@@ -12,7 +11,6 @@ const rootSaga = function* rootSaga(){
         fork(axiosSagas.deleteAxiosData),
         fork(axiosSagas.uploadAxiosData),
         fork(axiosSagas.resetUploadProgress),
-        fork(navigationSagas.loadNavigationData),
         fork(bamSagas.setBaConfiguration),
         fork(bamSagas.setBaConfigurationErrors)
     ])
