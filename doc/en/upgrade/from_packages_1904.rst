@@ -51,6 +51,13 @@ Additional actions
 
 Centeon 19.10 uses a new version of PHP.
 
+The PHP timezone should be set. Run the command: ::
+
+    # echo "date.timezone = Europe/Paris" > /etc/opt/rh/rh-php72/php.d/php-timezone.ini
+
+.. note::
+    Change **Europe/Paris** to your timezone.
+
 Run the following commands: ::
 
     # systemctl disable rh-php71-php-fpm

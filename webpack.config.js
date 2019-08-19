@@ -1,5 +1,5 @@
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const CleanWebpackPlugin = require('clean-webpack-plugin');
+const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
@@ -20,6 +20,9 @@ module.exports = {
     libraryTarget: 'umd',
     library: '[name]',
     umdNamedDefine: true,
+  },
+  resolve: {
+    extensions: ['.js', '.jsx'],
   },
   optimization: {
     minimizer: [
@@ -79,7 +82,7 @@ module.exports = {
     rules: [
       { parser: { system: false } },
       {
-        test: /\.js$/,
+        test: /\.jsx?$/,
         exclude: /node_modules/,
         use: {
           loader: 'babel-loader',
@@ -95,9 +98,10 @@ module.exports = {
           {
             loader: "css-loader",
             options: {
-              modules: true,
-              localIdentName: "[local]__[hash:base64:5]",
-              sourceMap: true
+              modules: {
+                localIdentName: "[local]__[hash:base64:5]",
+              },
+              sourceMap: true,
             }
           },
           {

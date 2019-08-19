@@ -3,6 +3,7 @@
 /* eslint-disable import/extensions */
 
 import '../../../../node_modules/systemjs/dist/system.js'; // IIFE format so it's imported on window
+import '../../../../node_modules/systemjs/dist/extras/use-default.js'; // avoid to check module.default.default
 import systemCss from 'systemjs-plugin-css'; // used to import css in <head>
 
 // this function allows to import dynamically js and css using systemjs
@@ -26,16 +27,11 @@ export function dynamicImport(basename, parameters) {
         .replace(/\//g, '$')}`;
       if (typeof window[vector] === 'object') {
         return resolve(window[vector]);
-      }
-      const module = await window.System.import(basename + parameters.js);
-      if (module.default && typeof module.default === 'object') {
-        // named umd export
-        window[vector] = module.default;
       } else {
-        // unnamed umd export or systemjs export
+        const module = await(window.System.import(basename + parameters.js));
         window[vector] = module;
+        return resolve(window[vector]);
       }
-      return resolve(window[vector]);
     } catch (error) {
       console.error(error);
     }

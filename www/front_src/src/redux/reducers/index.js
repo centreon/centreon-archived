@@ -1,4 +1,5 @@
 import { combineReducers } from 'redux';
+import { connectRouter } from 'connected-react-router';
 import { reducer as formReducer } from 'redux-form';
 import { i18nReducer } from 'react-redux-i18n';
 
@@ -11,7 +12,8 @@ import tooltipReducer from './tooltipReducer';
 import bamConfigurationReducer from './bamConfigurationReducer';
 import globalsReducer from './globalsReducer';
 
-export default combineReducers({
+export default (history) => combineReducers({
+  router: connectRouter(history),
   form: formReducer,
   pollerForm: pollerWizardReducer,
   i18n: i18nReducer,
