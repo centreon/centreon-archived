@@ -58,8 +58,6 @@ try {
     exit;
 }
 
-$dbUser = $parameters['db_user'];
-$dbPass = $parameters['db_password'];
 $host = "localhost";
 // if database server is not on localhost...
 if ($parameters['address'] != "127.0.0.1" && $parameters['address'] != "localhost") {
@@ -71,11 +69,11 @@ $createUser = "CREATE USER :dbUser@:host IDENTIFIED BY :dbPass";
 $alterQuery = "ALTER USER :dbUser@:host IDENTIFIED WITH mysql_native_password BY :dbPass";
 
 $queryValues = [];
-$queryValues[':dbUser'] = $dbUser;
+$queryValues[':dbUser'] = $parameters['db_user'];
 $queryValues[':host'] = $host;
-$queryValues[':dbPass'] = $dbPass;
+$queryValues[':dbPass'] = $parameters['db_password'];
 
-$query = "GRANT ALL PRIVILEGES ON `%s`.* TO " . $dbUser . "@" . $host . " WITH GRANT OPTION";
+$query = "GRANT ALL PRIVILEGES ON `%s`.* TO " . $parameters['db_user'] . "@" . $host . " WITH GRANT OPTION";
 $flushQuery = "FLUSH PRIVILEGES";
 
 try {
