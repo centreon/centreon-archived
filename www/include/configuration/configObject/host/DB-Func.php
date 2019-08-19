@@ -1239,52 +1239,52 @@ function serviceIsInUse($svc_id, $host_list)
 
 function deleteHostServiceMultiTemplate($hID, $scndHID, $host_list, $antiLoop = null)
 {
-    global $pearDB, $path, $centreon;
+    global $pearDB;
 
     if (isset($antiLoop[$scndHID]) && $antiLoop[$scndHID]) {
         return 0;
     }
-    $DBRESULT3 = $pearDB->query("SELECT service_service_id " .
+    $dbResult = $pearDB->query("SELECT service_service_id " .
         "FROM `service` svc, `host_service_relation` hsr " .
         "WHERE svc.service_id = hsr.service_service_id " .
         "AND svc.service_register = '0' " .
         "AND hsr.host_host_id = '" . $scndHID . "'");
-    while ($svcID = $DBRESULT3->fetchRow()) {
+    while ($svcID = $dbResult->fetchRow()) {
         if (!serviceIsInUse($svcID['service_service_id'], $host_list)) {
             $rq2 = "DELETE hsr, svc FROM `host_service_relation` hsr, `service` svc " .
                 "WHERE hsr.service_service_id = svc.service_id " .
                 "AND svc.service_template_model_stm_id = '" . $svcID['service_service_id'] . "' " .
                 "AND svc.service_register = '1' " .
                 "AND hsr.host_host_id = '" . $hID . "'";
-            $DBRESULT4 = $pearDB->query($rq2);
+            $pearDB->query($rq2);
         }
     }
-    $DBRESULT3->closeCursor();
+    $dbResult->closeCursor();
 
     $rq = "SELECT host_tpl_id " .
         "FROM host_template_relation " .
         "WHERE host_host_id = '" . $scndHID . "' " .
         "ORDER BY `order`";
 
-    $DBRESULT = $pearDB->query($rq);
-    while ($result = $DBRESULT->fetchRow()) {
-        $DBRESULT2 = $pearDB->query("SELECT service_service_id " .
+    $dbResult = $pearDB->query($rq);
+    while ($result = $dbResult->fetchRow()) {
+        $dbResult2 = $pearDB->query("SELECT service_service_id " .
             "FROM `service` svc, `host_service_relation` hsr " .
             "WHERE svc.service_id = hsr.service_service_id " .
             "AND svc.service_register = '0' " .
             "AND hsr.host_host_id = '" . $result["host_tpl_id"] . "'");
-        while ($svcID = $DBRESULT2->fetchRow()) {
+        while ($svcID = $dbResult2->fetchRow()) {
             $rq2 = "DELETE hsr, svc FROM `host_service_relation` hsr, `service` svc " .
                 "WHERE hsr.service_service_id = svc.service_id " .
                 "AND svc.service_template_model_stm_id = '" . $svcID['service_service_id'] . "' " .
                 "AND svc.service_register = '1' " .
                 "AND hsr.host_host_id = '" . $hID . "'";
-            $DBRESULT4 = $pearDB->query($rq2);
+            $pearDB->query($rq2);
         }
         $antiLoop[$scndHID] = 1;
         deleteHostServiceMultiTemplate($hID, $result["host_tpl_id"], $host_list, $antiLoop);
     }
-    $DBRESULT->closeCursor();
+    $dbResult->closeCursor();
 }
 
 function updateHost($host_id = null, $from_MC = false, $cfg = null)
