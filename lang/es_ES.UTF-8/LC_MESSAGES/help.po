@@ -703,18 +703,6 @@ msgstr "Su secreto de cliente de Keycloak"
 msgid "Authentication can be solely based on SSO or it can work with both SSO and local authentication systems."
 msgstr "La autenticación solo puede basarse en SSO o puede funcionar tanto con SSO como con un sistema de autenticación local."
 
-#: centreon-web/www/include/Administration/parameters/general/help.php:84
-msgid "IP/DNS of trusted clients. Use coma as delimiter in case of multiple clients."
-msgstr ""
-"Clientes de confianza IP / DNS. \n"
-"Use comas como separador para múltiples clientes"
-
-#: centreon-web/www/include/Administration/parameters/general/help.php:88
-msgid "IP/DNS of blacklist clients. Use coma as delimiter in case of multiple clients."
-msgstr ""
-"Clientes de la lista negra de IP / DNS. \n"
-"Use comas como separador para múltiples clientes"
-
 #: centreon-web/www/include/Administration/parameters/general/help.php:92
 msgid "The header variable that will be used as login. i.e: $_SERVER['HTTP_AUTH_USER']"
 msgstr "La variable de encabezado que se utilizará como inicio de sesión. es decir: $_SERVER['HTTP_AUTH_USER']"
