@@ -627,6 +627,7 @@ class PartEngine
                 && (floatval($versionDb["version"]) > 5.9)
             ) {
                 unset($config, $versionDb);
+                
                 return true;
             }
             return false;
