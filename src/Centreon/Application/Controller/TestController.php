@@ -3,6 +3,7 @@
 
 namespace Centreon\Application\Controller;
 
+use Centreon\Domain\Entity\Command;
 use Centreon\Domain\Entity\TestEntity;
 use Centreon\Domain\Entity\EntityValidator;
 use FOS\RestBundle\Controller\Annotations as Rest;
@@ -12,6 +13,9 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Serializer\NameConverter\CamelCaseToSnakeCaseNameConverter;
+use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
+use Symfony\Component\Serializer\Serializer;
 
 class TestController extends AbstractFOSRestController
 {
@@ -27,7 +31,7 @@ class TestController extends AbstractFOSRestController
      */
     public function testEntity(Request $request, SerializerInterface $serializer, EntityValidator $entityValidator)
     {
-        $errors = $entityValidator->validateEntityByArray(
+        $errors = $entityValidator->validateEntity(
             TestEntity::class,
             json_decode($request->getContent(), true)
         );

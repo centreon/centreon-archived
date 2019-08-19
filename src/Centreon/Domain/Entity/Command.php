@@ -2,6 +2,8 @@
 
 namespace Centreon\Domain\Entity;
 
+use JMS\Serializer\Annotation as Serializer;
+
 class Command
 {
     const COMMAND_START_IMPEX_WORKER = 'STARTWORKER:1';
@@ -9,6 +11,8 @@ class Command
 
     /**
      * @var string
+     * @Serializer\Type("string")
+     * @Serializer\SerializedName("command_line")
      */
     private $commandLine;
 

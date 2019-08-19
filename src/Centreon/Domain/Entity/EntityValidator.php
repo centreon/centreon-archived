@@ -54,7 +54,7 @@ class EntityValidator
      * @param string $groupName
      * @return ConstraintViolationListInterface
      */
-    public function validateEntityByArray(
+    public function validateEntity(
         string $entityName,
         array $dataToValidate,
         string $groupName = 'Default'

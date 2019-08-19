@@ -1,7 +1,28 @@
+Centreon\Domain\Entity\Command:
+    properties:
+        commandLine:
+            - Type: string
+            - NotNull: ~
+
 Centreon\Domain\Entity\TestEntity:
     properties:
         id:
             - Type: integer
+        isOk:
+            - Type: boolean
+        ids:
+            - All:
+                  - Type: integer
         name:
             - Type: string
             - NotBlank: ~
+        commands:
+            - All:
+                - Type:
+                    type: Centreon\Domain\Entity\Command
+            - Valid: ~
+        oneCommand:
+            - Type:
+                type: Centreon\Domain\Entity\Command
+            - Valid: ~
+            - NotNull: ~
