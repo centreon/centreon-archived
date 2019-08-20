@@ -5391,7 +5391,7 @@ msgstr ""
 
 #: centreon-web/www/include/home/customViews/views.php:114
 msgid "Deleting this widget might impact users with whom you are sharing this view. Are you sure you want to do it?"
-msgstr "La eliminación de este widget podría afectar a los usuarios con los que comparte esta vista."
+msgstr "La eliminación de este widget podría afectar a los usuarios con los que comparte esta vista.\\n"
 msgstr "¿Estás seguro de que quieres hacer eso?"
 
 #: centreon-web/www/include/home/customViews/views.php:116
