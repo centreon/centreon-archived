@@ -57,6 +57,7 @@ use CentreonClapi\CentreonACL;
 use Centreon\Application\Validation;
 use Symfony\Component\Validator;
 use Symfony\Component\Validator\Constraints;
+use CentreonACL as CACL;
 
 class ServiceProvider implements AutoloadServiceProviderInterface
 {
@@ -85,6 +86,8 @@ class ServiceProvider implements AutoloadServiceProviderInterface
     const CENTREON_VALIDATOR_TRANSLATOR = 'centreon.validator_translator';
     const VALIDATOR = 'validator';
     const VALIDATOR_EXPRESSION = 'validator.expression';
+    const CENTREON_ACL = 'centreon.acl';
+    const CENTREON_GLOBAL_ACL = 'centreon.global.acl';
 
     /**
      * Register Centreon services
@@ -183,8 +186,15 @@ class ServiceProvider implements AutoloadServiceProviderInterface
             return $service;
         };
 
-        $pimple['centreon.acl'] = function (Container $container) : CentreonACL {
+        $pimple[static::CENTREON_ACL] = function (Container $container) : CentreonACL {
             $service = new CentreonACL($container);
+
+            return $service;
+        };
+
+
+        $pimple[static::CENTREON_GLOBAL_ACL] = function (Container $container) : CACL {
+            $service = new CACL($_SESSION['centreon']->user->user_id, $_SESSION['centreon']->user->admin);
 
             return $service;
         };
