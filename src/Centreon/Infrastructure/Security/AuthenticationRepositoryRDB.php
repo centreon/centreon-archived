@@ -71,6 +71,23 @@ class AuthenticationRepositoryRDB implements AuthenticationRepositoryInterface
         return $statement->rowCount();
     }
 
+    public function deleteExpiredSession(): void
+    {
+        try {
+            $this->db->query(
+                'DELETE FROM `session`
+            WHERE last_reload < 
+                (SELECT UNIX_TIMESTAMP(NOW() - INTERVAL (`value` * 60) SECOND)
+                FROM `options`
+                wHERE `key` = \'session_expire\')
+            OR last_reload IS NULL'
+            );
+        } catch (\PDOException $ex) {
+            throw new \Exception("Error during deleting expired session");
+        }
+
+    }
+
     public function findSession(string $sessionId): ?Session
     {
         $statement = $this->db->prepare(
@@ -81,8 +98,8 @@ class AuthenticationRepositoryRDB implements AuthenticationRepositoryInterface
         );
         $statement->bindValue(':session_id', $sessionId, \PDO::PARAM_STR);
         if ($statement->execute()
-            && $result = $statement->fetch(\PDO::FETCH_ASSOC))
-        {
+            && $result = $statement->fetch(\PDO::FETCH_ASSOC)
+        ) {
             return EntityCreator::createEntityByArray(
                 Session::class,
                 $result

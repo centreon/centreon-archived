@@ -24,4 +24,6 @@ interface AuthenticationRepositoryInterface
     public function findToken(string $token): ?AuthenticationToken;
 
     public function deleteTokensByContact(int $contactId): int;
+
+    public function deleteExpiredSession(): void;
 }

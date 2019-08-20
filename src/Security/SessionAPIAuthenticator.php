@@ -134,10 +134,14 @@ class SessionAPIAuthenticator extends AbstractGuardAuthenticator
         if (null === $sessionId) {
             return null;
         }
+
+        $this->authenticationRepository->deleteExpiredSession();
+        
         $session = $this->authenticationRepository->findSession($sessionId);
         if ($session === null) {
             throw new NotFoundException('Session not found');
         }
+
         $contact = $this->contactRepository->findBySession($sessionId);
         if ($contact === null) {
             throw new SessionUnavailableException();
