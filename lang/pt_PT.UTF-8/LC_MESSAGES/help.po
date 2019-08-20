@@ -706,16 +706,6 @@ msgstr "Sua identificação de cliente kaycloak"
 msgid "Your Keycloak client secret."
 msgstr "Seu segredo de cliente Keycloak"
 
-#: centreon-web/www/include/Administration/parameters/general/help.php:84
-msgid "IP/DNS of trusted clients. Use coma as delimiter in case of multiple clients."
-msgstr ""
-"Clientes confiáveis ​​de IP / DNS. \n"
-"Use vírgulas como separador para vários clientes"
-
-#: centreon-web/www/include/Administration/parameters/general/help.php:88
-msgid "IP/DNS of blacklist clients. Use coma as delimiter in case of multiple clients."
-msgstr "IP/DNS de clientes da lista negra. Use vírgula como delimitador no caso de vários clientes."
-
 #: centreon-web/www/include/Administration/parameters/general/help.php:92
 msgid "The header variable that will be used as login. i.e: $_SERVER['HTTP_AUTH_USER']"
 msgstr "A variável de cabeçalho que será usada como login. exemplo: $_SERVER['HTTP_AUTH_USER']"

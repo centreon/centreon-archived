@@ -1207,22 +1207,6 @@ msgstr ""
 "A autenticação pode ser baseada somente no SSO ou pode funcionar tanto com o"
 " SSO quanto com um sistema de autenticação local."
 
-#: centreon-web/www/include/Administration/parameters/general/help.php:95
-msgid ""
-"IP/DNS of trusted clients. Use coma as delimiter in case of multiple "
-"clients."
-msgstr ""
-"Clientes confiáveis ​​de IP / DNS. \n"
-"Use vírgulas como separador para vários clientes"
-
-#: centreon-web/www/include/Administration/parameters/general/help.php:99
-msgid ""
-"IP/DNS of blacklist clients. Use coma as delimiter in case of multiple "
-"clients."
-msgstr ""
-"IP/DNS de clientes da lista negra. Use vírgula como delimitador no caso de "
-"vários clientes."
-
 #: centreon-web/www/include/Administration/parameters/general/help.php:103
 msgid ""
 "The header variable that will be used as login. i.e: "
