@@ -95,11 +95,11 @@ try {
     if (!$data || count($data) == 0) {
         try {
             $pearDB->query(
-                "INSERT INTO cron_operation (name, system, activate) " .
+                "INSERT INTO cron_operation (`name`, `system`, `activate`) " .
                 "VALUES ('centAcl.php', '1', '1')"
             );
             $DBRESULT = $pearDB->query(
-                "SELECT id, running FROM cron_operation WHERE name LIKE 'centAcl.php'"
+                "SELECT id, running FROM cron_operation WHERE `name` LIKE 'centAcl.php'"
             );
         } catch (\PDOException $e) {
             print "Error to check if process is running.";
@@ -112,15 +112,15 @@ try {
 
     if ($is_running == 0) {
         $DBRESULT = $pearDB->query(
-            "UPDATE cron_operation SET running = '1', time_launch = '" . time() .
+            "UPDATE cron_operation SET `running` = '1', `time_launch` = '" . time() .
             "' WHERE id = '$appID'"
         );
     } else {
         if ($nbProc <= 1) {
             $errorMessage = "According to DB another instance of centAcl.php is already running and I found " .
                 $nbProc . " process...\n";
-            $errorMessage .= "Executing query: UPDATE cron_operation SET running = 0 WHERE id =  '$appID'";
-            $pearDB->query("UPDATE cron_operation SET running = '0' WHERE id = '$appID'");
+            $errorMessage .= "Executing query: UPDATE cron_operation SET `running` = 0 WHERE id =  ' . $appID . '";
+            $pearDB->query("UPDATE cron_operation SET running = '0' WHERE id = ' . $appID . '");
         } else {
             $errorMessage = "centAcl marked as running. Exiting...";
         }
