@@ -124,14 +124,14 @@ class TopologyWebserviceTest extends TestCase
     /**
      * @expectedException \RestBadRequestException
      */
-    public function testGetMenuListWithoutAuth()
+    public function testGetNavigationListWithoutAuth()
     {
         $this->container[ServiceProvider::CENTREON_USER] = null;
 
-        $this->webservice->getMenuList();
+        $this->webservice->getNavigationList();
     }
 
-    public function testGetMenuList()
+    public function testGetNavigationList()
     {
         $calledGetTopologyList = false;
         $repository = $this->createMock(TopologyRepository::class);
@@ -152,11 +152,11 @@ class TopologyWebserviceTest extends TestCase
             'navigation' => [],
         ];
 
-        $result = $this->webservice->getMenuList();
+        $result = $this->webservice->getNavigationList();
         $this->assertTrue($calledGetTopologyList);
     }
 
-    public function testGetMenuListWithReact()
+    public function testGetNavigationListWithReact()
     {
         $_GET['reactOnly'] = 1;
 
@@ -179,7 +179,7 @@ class TopologyWebserviceTest extends TestCase
             'navigation' => [],
         ];
 
-        $this->webservice->getMenuList();
+        $this->webservice->getNavigationList();
         $this->assertTrue($calledGetTopologyList);
     }
 }

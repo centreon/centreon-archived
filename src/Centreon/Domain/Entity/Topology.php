@@ -130,7 +130,7 @@ class Topology
     /**
      * @return int
      */
-    public function getTopologyId(): int
+    public function getTopologyId(): ?int
     {
         return $this->topology_id;
     }
@@ -291,7 +291,7 @@ class Topology
     /**
      * @return string
      */
-    public function getTopologyShow(): string
+    public function getTopologyShow(): ?string
     {
         return $this->topology_show;
     }
@@ -339,7 +339,7 @@ class Topology
     /**
      * @return string
      */
-    public function getReadonly(): string
+    public function getReadonly(): ?string
     {
         return $this->readonly;
     }
@@ -355,7 +355,7 @@ class Topology
     /**
      * @return string
      */
-    public function getIsReact(): string
+    public function getIsReact(): ?string
     {
         return $this->is_react;
     }
