@@ -1,7 +1,7 @@
 <?php
 /*
  * Copyright 2005-2019 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -39,14 +39,15 @@ namespace Centreon\Application\Webservice;
 use Centreon\Application\DataRepresenter;
 use Centreon\ServiceProvider;
 use Centreon\Domain\Repository\AclGroupRepository;
-use CentreonRemote\Application\Webservice\CentreonWebServiceAbstract;
+use Centreon\Infrastructure\Webservice;
 use Pimple\Container;
 use Pimple\Psr11\ServiceLocator;
 
 /**
  * @OA\Tag(name="centreon_acl_group", description="Web Service for ACL Groups")
  */
-class AclGroupWebservice extends CentreonWebServiceAbstract
+class AclGroupWebservice extends Webservice\WebServiceAbstract implements
+    Webservice\WebserviceAutorizeRestApiInterface
 {
 
     /**
@@ -182,29 +183,8 @@ class AclGroupWebservice extends CentreonWebServiceAbstract
      */
     public function setDi(Container $di)
     {
-        $ids = [
+        $this->services = new ServiceLocator($di, [
             ServiceProvider::CENTREON_PAGINATION,
-        ];
-        $this->services = new ServiceLocator($di, $ids);
-    }
-
-
-
-    /**
-     * Authorize to access to the action
-     *
-     * @param string $action The action name
-     * @param \CentreonUser $user The current user
-     * @param boolean $isInternal If the api is call in internal
-     *
-     * @return boolean If the user has access to the action
-     */
-    public function authorize($action, $user, $isInternal = false)
-    {
-        if (parent::authorize($action, $user, $isInternal)) {
-            return true;
-        }
-
-        return $user && $user->hasAccessRestApiConfiguration();
+        ]);
     }
 }

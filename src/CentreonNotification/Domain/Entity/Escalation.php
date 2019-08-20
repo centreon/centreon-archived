@@ -36,14 +36,24 @@
 
 namespace CentreonNotification\Domain\Entity;
 
+use Centreon\Infrastructure\CentreonLegacyDB\Mapping;
+use PDO;
+
 /**
  * Escalation entity
  *
  * @codeCoverageIgnore
  */
-class Escalation
+class Escalation implements Mapping\MetadataInterface
 {
 
+    /**
+     * Use class metadata instead calling of this constant
+     *
+     * <example>
+     * $this->repository->getClassMetadata()->getTableName()
+     * </example>
+     */
     const TABLE = 'escalation';
 
     /**
@@ -55,6 +65,16 @@ class Escalation
      * @var string escalation name
      */
     private $name;
+
+    /**
+     * {@inheritdoc}
+     */
+    public static function loadMetadata(Mapping\ClassMetadata $metadata): void
+    {
+        $metadata->setTableName(static::TABLE)
+            ->add('id', 'esc_id', PDO::PARAM_INT, null, true)
+            ->add('name', 'esc_name', PDO::PARAM_STR);
+    }
 
     public function setId(int $id): void
     {

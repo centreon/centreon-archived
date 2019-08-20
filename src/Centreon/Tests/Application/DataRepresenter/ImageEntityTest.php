@@ -33,7 +33,7 @@
  *
  *
  */
-namespace CentreonNotification\Tests\Application\DataRepresenter;
+namespace Centreon\Tests\Application\DataRepresenter;
 
 use Centreon\Domain\Entity\ImageDir;
 use PHPUnit\Framework\TestCase;

@@ -40,6 +40,7 @@ use PHPUnit\Framework\TestCase;
 use Centreon\Test\Mock\CentreonDB;
 use CentreonNotification\Domain\Entity\Escalation;
 use CentreonNotification\Domain\Repository\EscalationRepository;
+use Centreon\Tests\Resource\Traits;
 
 /**
  * @group CentreonNotification
@@ -47,33 +48,37 @@ use CentreonNotification\Domain\Repository\EscalationRepository;
  */
 class EscalationRepositoryTest extends TestCase
 {
+    use Traits\CheckListOfIdsTrait,
+        Traits\PaginationListTrait;
 
     protected $datasets = [];
-    protected $repository;
 
     protected function setUp()
     {
-        $db = new CentreonDB;
+        $this->db = new CentreonDB;
+        $this->repository = new EscalationRepository($this->db);
+        $tableName = $this->repository->getClassMetadata()->getTableName();
+
         $this->datasets = [
             [
-                'query' => "SELECT SQL_CALC_FOUND_ROWS `esc_id` AS `id`, `esc_name` AS `name` "
-                . "FROM `" . Escalation::TABLE . "` ORDER BY `esc_name` ASC",
+                'query' => "SELECT SQL_CALC_FOUND_ROWS `esc_id`, `esc_name` "
+                . "FROM `" . $tableName . "` ORDER BY `esc_name` ASC",
                 'data' => [
                     [
-                        'id' => '1',
-                        'name' => 'name1',
+                        'esc_id' => '1',
+                        'esc_name' => 'name1',
                     ],
                 ],
             ],
             [
-                'query' => "SELECT SQL_CALC_FOUND_ROWS `esc_id` AS `id`, `esc_name` AS `name` "
-                . "FROM `" . Escalation::TABLE . "` "
+                'query' => "SELECT SQL_CALC_FOUND_ROWS `esc_id`, `esc_name` "
+                . "FROM `" . $tableName . "` "
                 . "WHERE `esc_name` LIKE :search AND `esc_id` IN (:id0) "
                 . "ORDER BY `esc_name` ASC LIMIT :limit OFFSET :offset",
                 'data' => [
                     [
-                        'id' => '1',
-                        'name' => 'name1',
+                        'esc_id' => '1',
+                        'esc_name' => 'name1',
                     ],
                 ],
             ],
@@ -81,65 +86,53 @@ class EscalationRepositoryTest extends TestCase
                 'query' => "SELECT FOUND_ROWS() AS number",
                 'data' => [
                     [
-                        'number' => 10,
+                        'number' => '10',
                     ],
                 ],
             ],
         ];
 
         foreach ($this->datasets as $dataset) {
-            $db->addResultSet($dataset['query'], $dataset['data']);
+            $this->db->addResultSet($dataset['query'], $dataset['data']);
             unset($dataset);
         }
-
-        $this->repository = new EscalationRepository($db);
     }
 
-    /**
-     * @covers \CentreonNotification\Domain\Repository\EscalationRepository::getPaginationList
-     */
+    public function testEntityClass()
+    {
+        $this->assertEquals(Escalation::class, EscalationRepository::entityClass());
+    }
+
+    public function testCheckListOfIds()
+    {
+        $this->checkListOfIdsTrait(
+            EscalationRepository::class,
+            'checkListOfIds'
+        );
+    }
+
     public function testGetPaginationList()
     {
-        $result = $this->repository->getPaginationList();
-        $data = $this->datasets[0]['data'][0];
-
-        $entity = new Escalation();
-        $entity->setId($data['id']);
-        $entity->setName($data['name']);
-
-        $this->assertEquals([$entity], $result);
+        $this->getPaginationListTrait($this->datasets[0]['data'][0]);
     }
 
-    /**
-     * @covers \CentreonNotification\Domain\Repository\EscalationRepository::getPaginationList
-     */
     public function testGetPaginationListWithArguments()
     {
-        $filters = [
-            'search' => 'name',
-            'ids' => ['ids'],
-        ];
-        $limit = 1;
-        $offset = 0;
-
-        $result = $this->repository->getPaginationList($filters, $limit, $offset);
-        $data = $this->datasets[1]['data'][0];
-
-        $entity = new Escalation();
-        $entity->setId($data['id']);
-        $entity->setName($data['name']);
-
-        $this->assertEquals([$entity], $result);
+        $this->getPaginationListTrait(
+            $this->datasets[1]['data'][0],
+            [
+                'search' => 'name',
+                'ids' => ['ids'],
+            ],
+            1,
+            0
+        );
     }
 
-    /**
-     * @covers \CentreonNotification\Domain\Repository\EscalationRepository::getPaginationListTotal
-     */
     public function testGetPaginationListTotal()
     {
-        $total = $this->datasets[2]['data'][0]['number'];
-        $result = $this->repository->getPaginationListTotal();
-
-        $this->assertEquals($total, $result);
+        $this->getPaginationListTotalTrait(
+            $this->datasets[2]['data'][0]['number']
+        );
     }
 }

@@ -43,7 +43,7 @@ use Centreon\Tests\Resource\Traits\WebserviceTrait;
 use CentreonNotification\Application\Webservice;
 
 /**
- * @group CentreonNotification
+ * @group Centreon
  * @group ServiceProvider
  */
 class ServiceProviderTest extends TestCase

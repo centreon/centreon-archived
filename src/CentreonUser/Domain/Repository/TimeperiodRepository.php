@@ -48,13 +48,21 @@ class TimeperiodRepository extends ServiceEntityRepository implements Pagination
     use CheckListOfIdsTrait;
 
     /**
+     * {@inheritdoc}
+     */
+    public static function entityClass(): string
+    {
+        return Timeperiod::class;
+    }
+
+    /**
      * Check list of IDs
      *
      * @return bool
      */
     public function checkListOfIds(array $ids): bool
     {
-        return $this->checkListOfIdsTrait($ids, Timeperiod::TABLE, 'tp_id');
+        return $this->checkListOfIdsTrait($ids);
     }
 
     /**
@@ -62,8 +70,8 @@ class TimeperiodRepository extends ServiceEntityRepository implements Pagination
      */
     public function getPaginationList($filters = null, int $limit = null, int $offset = null, $ordering = []): array
     {
-        $sql = 'SELECT SQL_CALC_FOUND_ROWS `tp_id` AS `id`, `tp_name` AS `name`, `tp_alias` AS `alias` '
-            . 'FROM `' . Timeperiod::TABLE . '`';
+        $sql = 'SELECT SQL_CALC_FOUND_ROWS `tp_id`, `tp_name`, `tp_alias` '
+            . 'FROM `' . $this->getClassMetadata()->getTableName() . '`';
 
         $collector = new StatementCollector;
 
@@ -108,8 +116,12 @@ class TimeperiodRepository extends ServiceEntityRepository implements Pagination
         $collector->bind($stmt);
 
         $stmt->execute();
-        $stmt->setFetchMode(PDO::FETCH_CLASS, Timeperiod::class);
-        $result = $stmt->fetchAll();
+
+        $result = [];
+
+        while ($row = $stmt->fetch()) {
+            $result[] = $this->getEntityPersister()->load($row);
+        }
 
         return $result;
     }

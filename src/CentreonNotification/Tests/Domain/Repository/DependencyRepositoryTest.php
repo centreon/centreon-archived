@@ -41,7 +41,7 @@ use Centreon\Test\Mock\CentreonDB;
 use CentreonNotification\Domain\Repository\DependencyRepository;
 
 /**
- * @group CentreonNotification
+ * @group Centreon
  * @group ORM-repository
  */
 class DependencyRepositoryTest extends TestCase

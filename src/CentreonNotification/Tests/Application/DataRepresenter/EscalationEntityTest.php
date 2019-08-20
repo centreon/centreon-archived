@@ -41,7 +41,7 @@ use CentreonNotification\Domain\Entity\Escalation;
 use CentreonNotification\Application\DataRepresenter\EscalationEntity;
 
 /**
- * @group CentreonNotification
+ * @group Centreon
  * @group DataRepresenter
  */
 class EscalationEntityTest extends TestCase

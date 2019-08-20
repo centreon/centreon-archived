@@ -1,7 +1,7 @@
 <?php
 /*
  * Copyright 2005-2019 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -34,44 +34,66 @@
  *
  */
 
-namespace Centreon\Tests\Application\Webservice;
+namespace Centreon\Tests\Resource\Mock;
 
-use PHPUnit\Framework\TestCase;
-//use Pimple\Container;
-use Centreon\Application\Webservice\OpenApiWebservice;
+use Centreon\Infrastructure\CentreonLegacyDB\Mapping;
+use PDO;
 
-class OpenApiWebservice2Test extends TestCase
+/**
+ * Mock of entity class
+ */
+class EntityMock implements Mapping\MetadataInterface
 {
-
-//    public function setUp()
-//    {
-//        // dependencies
-//        $container = new Container;
-//
-//        $this->webservice = $this->createPartialMock(OpenApiWebservice::class, [
-//            'loadDb',
-//            'loadArguments',
-//            'loadToken',
-//        ]);
-//
-//        // load dependencies
-//        $this->webservice->setDi($container);
-//    }
-//
-//    /**
-//     * @covers \Centreon\Application\Webservice\OpenApiWebservice::authorize
-//     */
-//    public function testAuthorize()
-//    {
-//        $result = $this->webservice->authorize(null, null);
-//        $this->assertTrue($result);
-//    }
+    /**
+     * @var integer
+     */
+    protected $id;
 
     /**
-     * @ covers \Centreon\Application\Webservice\OpenApiWebservice::getName
+     * @var string
      */
-    public function testGetName()
+    protected $name;
+
+    /**
+     * {@inheritdoc}
+     */
+    public static function loadMetadata(Mapping\ClassMetadata $metadata): void
     {
-        $this->assertEquals('openapi', OpenApiWebservice::getName());
+        $metadata->setTableName('mock_table')
+            ->add('id', 'id_column', PDO::PARAM_INT, null, true)
+            ->add('name', 'name_column', PDO::PARAM_STR);
+    }
+
+    /**
+     * @param type $id
+     * @return void
+     */
+    public function setId($id): void
+    {
+        $this->id = $id;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getId(): ?int
+    {
+        return $this->id;
+    }
+
+    /**
+     * @return string
+     */
+    public function getName(): ?string
+    {
+        return $this->name;
+    }
+
+    /**
+     * @param string $name
+     */
+    public function setName($name): void
+    {
+        $this->name = $name;
     }
 }

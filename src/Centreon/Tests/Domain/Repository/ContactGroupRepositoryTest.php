@@ -39,6 +39,7 @@ use Centreon\Domain\Entity\ContactGroup;
 use Centreon\Domain\Repository\ContactGroupRepository;
 use PHPUnit\Framework\TestCase;
 use Centreon\Test\Mock\CentreonDB;
+use Centreon\Tests\Resource\Traits;
 
 /**
  * @group Centreon
@@ -46,6 +47,7 @@ use Centreon\Test\Mock\CentreonDB;
  */
 class ContactGroupRepositoryTest extends TestCase
 {
+    use Traits\CheckListOfIdsTrait;
 
     protected $datasets = [];
     protected $repository;
@@ -79,7 +81,7 @@ class ContactGroupRepositoryTest extends TestCase
                 'query' => "SELECT FOUND_ROWS() AS number",
                 'data' => [
                     [
-                        'number' => 10,
+                        'number' => '10',
                     ],
                 ],
             ],
@@ -90,9 +92,17 @@ class ContactGroupRepositoryTest extends TestCase
         }
         $this->repository = new ContactGroupRepository($db);
     }
-    /**
-     * @covers \Centreon\Domain\Repository\ContactGroupRepository::getPaginationList
-     */
+
+    public function testCheckListOfIds()
+    {
+        $this->checkListOfIdsTrait(
+            ContactGroupRepository::class,
+            'checkListOfIds',
+            ContactGroup::TABLE,
+            ContactGroup::ENTITY_IDENTIFICATOR_COLUMN
+        );
+    }
+
     public function testGetPaginationList()
     {
         $result = $this->repository->getPaginationList();
@@ -102,9 +112,7 @@ class ContactGroupRepositoryTest extends TestCase
         $entity->setCgName($data['cg_name']);
         $this->assertEquals([$entity], $result);
     }
-    /**
-     * @covers \Centreon\Domain\Repository\ContactGroupRepository::getPaginationList
-     */
+
     public function testGetPaginationListWithArguments()
     {
         $filters = [
@@ -121,12 +129,10 @@ class ContactGroupRepositoryTest extends TestCase
         $entity->setCgName($data['cg_name']);
         $this->assertEquals([$entity], $result);
     }
-    /**
-     * @covers \Centreon\Domain\Repository\ContactGroupRepository::getPaginationListTotal
-     */
+
     public function testGetPaginationListTotal()
     {
-        $total = $this->datasets[2]['data'][0]['number'];
+        $total = (int)$this->datasets[2]['data'][0]['number'];
         $result = $this->repository->getPaginationListTotal();
         $this->assertEquals($total, $result);
     }

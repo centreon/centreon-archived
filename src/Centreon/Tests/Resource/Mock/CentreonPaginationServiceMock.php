@@ -1,7 +1,7 @@
 <?php
 /*
  * Copyright 2005-2019 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -46,11 +46,6 @@ use Centreon\Application\DataRepresenter;
  * @version 1.0.0
  * @package centreon
  * @subpackage test
- */
-
-/**
- * @group CentreonNotification
- * @group DataRepresenter
  */
 class CentreonPaginationServiceMock extends CentreonPaginationService
 {

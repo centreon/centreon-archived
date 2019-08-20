@@ -36,15 +36,19 @@
 
 namespace CentreonUser\Domain\Entity;
 
+use Centreon\Infrastructure\CentreonLegacyDB\Mapping;
+use PDO;
+
 /**
  * Timeperiod entity
  *
  * @codeCoverageIgnore
  */
-class Timeperiod
+class Timeperiod implements Mapping\MetadataInterface
 {
 
     const TABLE = 'timeperiod';
+    const ENTITY_IDENTIFICATOR_COLUMN = 'tp_id';
 
     /**
      * @var int an identification of entity
@@ -60,6 +64,17 @@ class Timeperiod
      * @var string
      */
     private $alias;
+
+    /**
+     * {@inheritdoc}
+     */
+    public static function loadMetadata(Mapping\ClassMetadata $metadata): void
+    {
+        $metadata->setTableName(static::TABLE)
+            ->add('id', 'tp_id', PDO::PARAM_INT, null, true)
+            ->add('name', 'tp_name', PDO::PARAM_STR)
+            ->add('alias', 'tp_alias', PDO::PARAM_STR);
+    }
 
     public function setId(int $id): void
     {

@@ -43,7 +43,7 @@ use CentreonNotification\Application\Webservice\CentreonEscalationWebservice;
 use Centreon\Tests\Resource\Mock\CentreonPaginationServiceMock;
 
 /**
- * @group CentreonNotification
+ * @group Centreon
  * @group Webservice
  */
 class CentreonEscalationWebserviceTest extends TestCase

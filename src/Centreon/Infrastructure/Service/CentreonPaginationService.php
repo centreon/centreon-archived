@@ -1,7 +1,7 @@
 <?php
 /*
  * Copyright 2005-2019 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -116,10 +116,13 @@ class CentreonPaginationService
      * Set pagination filters
      *
      * @param mixed $filters
+     * @return \Centreon\Infrastructure\Service\CentreonPaginationService
      */
-    public function setFilters($filters)
+    public function setFilters($filters): self
     {
         $this->filters = $filters;
+
+        return $this;
     }
 
     /**
@@ -127,16 +130,21 @@ class CentreonPaginationService
      *
      * @param int $limit
      * @throws \RuntimeException
+     * @return \Centreon\Infrastructure\Service\CentreonPaginationService
      */
-    public function setLimit(int $limit = null)
+    public function setLimit(int $limit = null): self
     {
         if ($limit !== null && $limit > static::LIMIT_MAX) {
-            throw new RuntimeException(sprintf('Max value of limit has to be %d instead %d', static::LIMIT_MAX, $limit));
+            throw new RuntimeException(
+                sprintf('Max value of limit has to be %d instead %d', static::LIMIT_MAX, $limit)
+            );
         } elseif ($limit !== null && $limit < 1) {
             throw new RuntimeException(sprintf('Minimum value of limit has to be 1 instead %d', $limit));
         }
 
         $this->limit = $limit;
+
+        return $this;
     }
 
     /**
@@ -144,14 +152,17 @@ class CentreonPaginationService
      *
      * @param int $offset
      * @throws \RuntimeException
+     * @return \Centreon\Infrastructure\Service\CentreonPaginationService
      */
-    public function setOffset(int $offset = null)
+    public function setOffset(int $offset = null): self
     {
         if ($offset !== null && $offset < 1) {
             throw new RuntimeException(sprintf('Minimum value of offset has to be 1 instead %d', $offset));
         }
 
         $this->offset = $offset;
+
+        return $this;
     }
 
     /**
@@ -159,12 +170,15 @@ class CentreonPaginationService
      *
      * @param int $offset
      * @throws \RuntimeException
+     * @return \Centreon\Infrastructure\Service\CentreonPaginationService
      */
-    public function setOrder($field, $order)
+    public function setOrder($field, $order): self
     {
-        $order = (!empty($order) && ($order == "DESC")) ? $order : 'ASC';
+        $order = (!empty($order) && (strtoupper($order) == "DESC")) ? $order : 'ASC';
 
         $this->ordering = ['field' => $field, 'order'=> $order];
+
+        return $this;
     }
 
     /**
@@ -172,10 +186,13 @@ class CentreonPaginationService
      *
      * @param array $extras
      * @throws \RuntimeException
+     * @return \Centreon\Infrastructure\Service\CentreonPaginationService
      */
-    public function setExtras($extras)
+    public function setExtras($extras): self
     {
         $this->extras = $extras;
+
+        return $this;
     }
 
     /**
@@ -183,8 +200,9 @@ class CentreonPaginationService
      *
      * @param string $repository
      * @throws \Exception
+     * @return \Centreon\Infrastructure\Service\CentreonPaginationService
      */
-    public function setRepository(string $repository)
+    public function setRepository(string $repository): self
     {
         $interface = PaginationRepositoryInterface::class;
         $ref = new ReflectionClass($repository);
@@ -195,6 +213,8 @@ class CentreonPaginationService
         }
 
         $this->repository = $repository;
+
+        return $this;
     }
 
     /**
@@ -202,18 +222,23 @@ class CentreonPaginationService
      *
      * @param string $dataRepresenter
      * @throws \Exception
+     * @return \Centreon\Infrastructure\Service\CentreonPaginationService
      */
-    public function setDataRepresenter(string $dataRepresenter)
+    public function setDataRepresenter(string $dataRepresenter): self
     {
         $interface = JsonSerializable::class;
         $ref = new ReflectionClass($dataRepresenter);
         $hasInterface = $ref->isSubclassOf($interface);
 
         if ($hasInterface === false) {
-            throw new Exception(sprintf('Class %s has to implement %s to be DataRepresenter', $dataRepresenter, $interface));
+            throw new Exception(
+                sprintf('Class %s has to implement %s to be DataRepresenter', $dataRepresenter, $interface)
+            );
         }
 
         $this->dataRepresenter = $dataRepresenter;
+
+        return $this;
     }
 
     /**
