@@ -1287,7 +1287,7 @@ msgstr "aplicar"
 #: centreon-web/www/install/smarty_translate.php:159 centreon-web/www/include/home/customViews/views.php:115
 msgid "Deleting this view might impact other users. Are you sure you want to do it?"
 msgstr "Eliminar esta vista podría afectar a otros usuarios.\\n"
-msgstr "¿Estás seguro de que quieres hacer eso?"
+"¿Estás seguro de que quieres hacer eso?"
 
 #: centreon-web/www/install/smarty_translate.php:162 centreon-web/www/include/Administration/performance/viewData.php:303
 #: centreon-web/www/include/Administration/parameters/ldap/list.php:78
