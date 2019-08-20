@@ -92,7 +92,7 @@ class CentreonAuthSSO extends CentreonAuth
 
             $inputForce = filter_var(
                 $_POST['force'] ?? $_GET['force'] ?? null,
-                FILTER_SANITIZE_INT
+                FILTER_SANITIZE_STRING
             );
             if (isset($inputForce)) {
                 header('Location: ' . $authUrl);
