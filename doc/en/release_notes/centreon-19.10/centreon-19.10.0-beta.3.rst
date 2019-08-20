@@ -25,3 +25,8 @@ Technical
 ---------
 
 * [Configuration] Move filesGeneration directory to /var/cache/centreon (PR/#7735)
+
+Known issue
+-----------
+
+* [logs] Fix the limitation of max value for the primary key of the centreon_storage.logs table (:ref:`update_centreon_storage_logs`)
