@@ -106,6 +106,21 @@ class ImagesRepository extends ServiceEntityRepository implements PaginationRepo
         return $result;
     }
 
+    public function getOnebyId(int $id)
+    {
+        if (empty($id)){
+            throw new \Exception('Id required to get Icon by ID, none provided');
+        }
+        $sql = 'SELECT * FROM `' . ImageDir::TABLE . '`,`' . ImageDir::JOIN_TABLE . '` vidr,`' . Image::TABLE
+            . '` WHERE `img_id` = `vidr`.`img_img_id` AND `dir_id` = `vidr`.`dir_dir_parent_id` AND `img_id` ='.$id;
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute();
+        $stmt->setFetchMode(PDO::FETCH_CLASS | PDO::FETCH_PROPS_LATE, Image::class);
+        $result = $stmt->fetch();
+
+        return $result;
+    }
+
     /**
      * {@inheritdoc}
      */
