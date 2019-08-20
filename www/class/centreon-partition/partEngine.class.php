@@ -634,17 +634,29 @@ class PartEngine
             $dbResult = $db->query(
                 "SHOW VARIABLES WHERE Variable_name LIKE 'version%'"
             );
-            $versionDb = $dbResult->fetch();
+            $dbType = $dbVersion = null;
+            while ($row = $dbResult->fetch()) {
+                switch ($row['Variable_name']) {
+                    case 'version_comment' :
+                        $dbType = $row['Value'];
+                        break;
+                    case 'version' :
+                        $dbVersion = $row['Value'];
+                        break;
+                    default :
+                        break;
+                }
+            }
             $dbResult->closeCursor();
-            if (stristr($versionDb['version_comment'], "MySQL")
-                && (floatval($versionDb["version"]) > 5.9)
+
+            if (stristr($dbType, "MySQL")
+                && (floatval($dbVersion) > 5.9)
             ) {
-                unset($config, $versionDb);
+                unset($config, $row);
 
                 return true;
             }
         }
-
         return false;
     }
 
