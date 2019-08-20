@@ -14,15 +14,15 @@ Mot de passe
 
 Avant de pouvoir exécuter le script il est nécessaire de vous munir du mot de passe root de la base de données Centreon.
 
-Activation de PHP pour Centreon 18.10 (**Centos7**)
+Activation de PHP pour Centreon 19.10 (**Centos7**)
 ---------------------------------------------------
 
-Sur la nouvelle version 18.10 de Centreon (Centos7) il est nécessaire d’activer PHP avant de pouvoir lancer des scripts PHP en ligne de commande.
+Sur la nouvelle version 19.10 de Centreon (Centos7) il est nécessaire d’activer PHP avant de pouvoir lancer des scripts PHP en ligne de commande.
 
 La commande est la suivante:
 ::
 
-# scl enable rh-php71 bash
+# scl enable rh-php72 bash
 
 Explications
 ============
