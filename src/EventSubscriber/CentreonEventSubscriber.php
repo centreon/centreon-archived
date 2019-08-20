@@ -229,9 +229,9 @@ class CentreonEventSubscriber implements EventSubscriberInterface
             }
         }
 
-        // If Yes, we create a custom error message.
+        // If Yes and exception code !== 403, we create a custom error message
         // If we don't do that a HTML error will appeared.
-        if ($errorIsBeforeController) {
+        if ($errorIsBeforeController && $event->getException()->getCode() !== 403) {
             $errorCode = $event->getException()->getCode() > 0
                 ? $event->getException()->getCode()
                 : 500;
