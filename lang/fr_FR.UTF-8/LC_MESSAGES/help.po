@@ -918,12 +918,6 @@ msgid "Authentication can be solely based on Keycloak or it can work with both K
 msgstr "L'authentification peut être basée sur Keycloak uniquement ou peut fonctionner avec Keycloak et les systèmes."
 "d'authentification locaux."
 
-msgid "IP/DNS of trusted clients. Use coma as delimiter in case of multiple clients."
-msgstr "Liste d'IP/DNS de confiance. Utilisez une virgule comme délimiteur."
-
-msgid "IP/DNS of blacklist clients. Use coma as delimiter in case of multiple clients."
-msgstr "Liste noire d'IP/DNS. Utilisez une virgule comme délimiteur."
-
 msgid "Your Keycloak server url (with \"/auth\")."
 msgstr "L'URL de votre serveur Keycloak (avec le \"/auth\")."
 
