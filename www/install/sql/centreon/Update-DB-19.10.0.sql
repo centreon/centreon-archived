@@ -20,5 +20,5 @@ VALUES
   (SELECT `cb_field_id` FROM `cb_field` WHERE `description` = 'Use RRD cache.')), 'TCP Port ', 'tcp'
 );
 
-UPDATE `cb_type_field_relation` SET `jshook_name` = 'rrdArguments', `jshook_arguments` = '{"target": "cache"}'
+UPDATE `cb_type_field_relation` SET `jshook_name` = 'rrdArguments', `jshook_arguments` = '{"target": "rrd_cached"}'
 WHERE `cb_type_id` = (SELECT `cb_type_id` FROM `cb_type` WHERE `type_shortname` = 'rrd') AND `cb_field_id` = (SELECT `cb_field_id` FROM `cb_field` WHERE `description` = 'Use RRD cache.');
