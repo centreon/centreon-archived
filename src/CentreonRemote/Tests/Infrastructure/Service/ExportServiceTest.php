@@ -159,7 +159,7 @@ class ExportServiceTest extends TestCase
         $this->export->export($commitment);
 
         // @todo replace system('rm -rf vfs://...')
-        //        $this->assertFileNotExists("{$path}/test.txt");
+        // $this->assertFileNotExists("{$path}/test.txt");
 
         $this->assertFileExists("{$path}/manifest.json");
     }
@@ -203,7 +203,6 @@ class ExportServiceTest extends TestCase
     public function testRefreshAcl()
     {
         $this->invokeMethod($this->export, '_refreshAcl');
-
 
         $this->assertTrue($this->aclReload);
     }
