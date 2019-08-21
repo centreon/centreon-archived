@@ -107,7 +107,7 @@ $dependencyInjector['translator'] = $dependencyInjector->factory(function ($c) {
     return $translator;
 });
 
-$dependencyInjector['path.files_generation'] = _CENTREON_PATH_ . '/filesGeneration/';
+$dependencyInjector['path.files_generation'] = _CENTREON_CACHEDIR_ . '/config/';
 
 // Defines the web service that will transform the translation files into one json file
 $dependencyInjector[CentreonI18n::class] = function ($container) {

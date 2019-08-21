@@ -61,7 +61,7 @@ final class ExportCommitment
         $this->exporters = $exporters ?? [];
 
         if ($this->path === null) {
-            $this->path = _CENTREON_PATH_ . 'filesGeneration/export/' . $this->remote;
+            $this->path = _CENTREON_CACHEDIR_ . '/config/export/' . $this->remote;
         }
 
         $this->parser = $parser ?? new ExportParserYaml;

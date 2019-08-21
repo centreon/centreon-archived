@@ -51,7 +51,7 @@ if ($parameters) {
 }
 
 $name = 'install-' . $_SESSION['CURRENT_VERSION'] . '-' . date('Ymd_His');
-$completeName = $centreon_path . '/installDir/' . $name;
+$completeName = _CENTREON_VARLIB_ . '/installs/' . $name;
 @rename(str_replace('step_upgrade', '', realpath(dirname(__FILE__) .'/../')), $completeName);
 
 session_destroy();

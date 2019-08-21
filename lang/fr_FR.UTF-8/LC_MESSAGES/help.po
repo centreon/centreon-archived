@@ -6403,6 +6403,13 @@ msgstr ""
 msgid "Short description of the poller"
 msgstr "Brève description du collecteur"
 
+msgid ""
+"If checked, the Central server will send configuration and external commands directly to the poller "
+"and will not use the Remote Server as a proxy"
+msgstr ""
+"Si activé, le serveur Central se connectera directement au collecteur pour transférer la configuration"
+"et les commandes externes et n'utilisera pas le Remote Server comme proxy."
+
 #: centreon-web/www/include/configuration/configDowntime/help.php:8
 msgid "The name of the recurrent downtime rule."
 msgstr "Le nom de la règle de temps d'arrêt récurrente."
@@ -6461,11 +6468,9 @@ msgstr "Sélectionner un collecteur avec lequel vous voulez interagir."
 
 #: centreon-web/www/include/configuration/configGenerate/help.php:4
 msgid ""
-"Generates configuration files and stores them in centreon/filesGeneration "
-"directory."
+"Generates configuration files and stores them in cache directory."
 msgstr ""
-"Générer les fichiers de configuration et les enregistrer dans le dossier "
-"centreon/filesGeneration."
+"Générer les fichiers de configuration et les enregistrer dans le dossier cache."
 
 #: centreon-web/www/include/configuration/configGenerate/help.php:5
 msgid "Runs the scheduler debug mode."

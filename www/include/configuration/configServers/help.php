@@ -44,5 +44,11 @@ $help['no_check_certificate'] = dgettext(
 );
 $help['no_proxy'] = dgettext(
     "help",
-    "If checked, it won't  use the proxy configured in 'Administration > Parameters > Centreon UI' to connect to the Remote Server."
+    "If checked, it won't use the proxy configured in 'Administration > Parameters > Centreon UI' "
+        . "to connect to the Remote Server."
+);
+$help['remote_server_centcore_ssh_proxy'] = dgettext(
+    "help",
+    "If checked, the Central server will send configuration and external commands directly to the poller "
+        . "and will not use the Remote Server as a proxy."
 );
