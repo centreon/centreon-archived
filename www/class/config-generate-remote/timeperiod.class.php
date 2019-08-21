@@ -79,37 +79,6 @@ class Timeperiod extends AbstractObject
         }
     }
 
-    protected function getTimeperiodExtendFromId($timeperiod_id, $db_label)
-    {
-        if (!isset($this->timeperiods[$timeperiod_id][$label . '_cache'])) {
-            if (is_null($this->stmt_extend[$db_label])) {
-                $this->stmt_extend[$db_label] = $this->backend_instance->db->prepare(
-                    "SELECT :dbLabel as period_id FROM :tableLbl
-                    WHERE timeperiod_id = :timeperiod_id"
-                );
-            }
-            $this->stmt_extend[$db_label]->bindValue(':timeperiod_id', $timeperiod_id, PDO::PARAM_INT);
-            $this->stmt_extend[$db_label]->bindValue(
-                ':dbLabel',
-                "timeperiod_" . $db_label . "_id",
-                PDO::PARAM_STR
-            );
-            $this->stmt_extend[$db_label]->bindValue(
-                ':tableLbl',
-                "timeperiod_" . $db_label . "_relations",
-                PDO::PARAM_STR
-            );
-            $this->stmt_extend[$db_label]->execute();
-            $this->timeperiods[$timeperiod_id][$label . '_cache'] =
-                $this->stmt_extend[$db_label]->fetchAll(PDO::FETCH_COLUMN);
-        }
-
-        $this->timeperiods[$timeperiod_id][$label] = [];
-        foreach ($this->timeperiods[$timeperiod_id][$label . '_cache'] as $period_id) {
-            $this->timeperiods[$timeperiod_id][$label][] = $this->generateFromTimeperiodId($period_id);
-        }
-    }
-
     public function generateFromTimeperiodId($timeperiod_id)
     {
         if (is_null($timeperiod_id)) {
