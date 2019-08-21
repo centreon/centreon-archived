@@ -85,7 +85,7 @@ class Centreon_Object_Relation_Host_Template_Host extends Centreon_Object_Relati
             parent::delete($fkey, $skey);
             $pearDB = $this->db;
             $centreon = true; // Needed so we can include file below
-            require_once __DIR__."/../../../../../../www/include/configuration/configObject/host/DB-Func.php";
+            require_once _CENTREON_PATH_ . "/www/include/configuration/configObject/host/DB-Func.php";
             deleteHostServiceMultiTemplate($skey, $fkey, array(), null);
             $this->db->commit();
         } catch (\PDOException $e) {
