@@ -22,27 +22,6 @@
             </td>
             <td class="FormRowValue">{$form.rrdtool_version.html}</td>
         </tr>
-
-        <tr class="list_lvl_1">
-            <td class="ListColLvl1_name" colspan="2">
-                <h4>{$form.header.rrdcached_title}</h4>
-            </td>
-        </tr>
-        <tr class="list_two">
-            <td class="FormRowField"><img class="helpTooltip" name="tip_rrdcached_enable">{$form.rrdcached_enable.label}
-            </td>
-            <td class="FormRowValue">{$form.rrdcached_enable.html}</td>
-        </tr>
-        <tr class="list_one">
-            <td class="FormRowField"><img class="helpTooltip" name="tip_rrdcached_port">{$form.rrdcached_port.label}
-            </td>
-            <td class="FormRowValue">{$form.rrdcached_port.html}</td>
-        </tr>
-        <tr class="list_two">
-            <td class="FormRowField"><img class="helpTooltip" name="tip_rrdcached_unix_path">{$form.rrdcached_unix_path.label}
-            </td>
-            <td class="FormRowValue">{$form.rrdcached_unix_path.html}</td>
-        </tr>
     </table>
     {if !$valid}
     <div id="validForm" class="oreonbutton">
