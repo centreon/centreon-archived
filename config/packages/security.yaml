@@ -1,0 +1,32 @@
+security:
+    # https://symfony.com/doc/current/security.html#where-do-users-come-from-user-providers
+    role_hierarchy:
+        ROLE_ADMIN: ROLE_USER # An admin is also an user
+    providers:
+        contact_provider:
+            id: contact.provider
+    firewalls:
+        api:
+            # We don't memorize authentication using PHP session
+            # Token need to be sent on each requests
+            stateless: true
+            pattern: ^/(?!centreon/apiv2/login).*
+            security: true
+            anonymous: true
+            guard:
+                authenticators:
+                    - security.provider.tokenapi
+                    - security.provider.sessionapi
+                entry_point: security.provider.tokenapi
+        login:
+            pattern: ^/centreon/apiv2/login$
+            security: false
+        dev:
+            pattern: ^/centreon/apiv2/(_(profiler|wdt)|css|images|js)/
+            security: false
+
+    # Easy way to control access for large sections of your site
+    # Note: Only the *first* access control that matches will be used
+    access_control:
+        # - { path: ^/admin, roles: ROLE_ADMIN }
+        # - { path: ^/profile, roles: ROLE_USER }

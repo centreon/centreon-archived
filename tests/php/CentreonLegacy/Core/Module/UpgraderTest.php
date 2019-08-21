@@ -24,7 +24,7 @@ use Centreon\Test\Mock\DependencyInjector\ConfigurationDBProvider;
 use Centreon\Test\Mock\DependencyInjector\FilesystemProvider;
 use Centreon\Test\Mock\DependencyInjector\FinderProvider;
 
-class UpgraderTest extends \PHPUnit_Framework_TestCase
+class UpgraderTest extends \PHPUnit\Framework\TestCase
 {
     private $container;
     private $db;
