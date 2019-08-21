@@ -67,9 +67,9 @@ class Timeperiod extends AbstractObject
             return 1;
         }
 
-        $query = "SELECT days, timerange FROM timeperiod_exceptions WHERE timeperiod_id = :timeperiod_id";
+        $query = "SELECT days, timerange FROM timeperiod_exceptions WHERE timeperiod_id = :timeperiodId";
         $stmt = $this->backend_instance->db->prepare($query);
-        $stmt->bindParam(':timeperiod_id', $timeperiod_id, PDO::PARAM_INT);
+        $stmt->bindParam(':timeperiodId', $timeperiod_id, PDO::PARAM_INT);
         $stmt->execute();
         $exceptions = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
@@ -83,11 +83,22 @@ class Timeperiod extends AbstractObject
     {
         if (!isset($this->timeperiods[$timeperiod_id][$label . '_cache'])) {
             if (is_null($this->stmt_extend[$db_label])) {
-                $query = "SELECT timeperiod_" . $db_label . "_id as period_id FROM timeperiod_" . $db_label .
-                    "_relations WHERE timeperiod_id = :timeperiod_id";
-                $this->stmt_extend[$db_label] = $this->backend_instance->db->prepare($query);
+                $this->stmt_extend[$db_label] = $this->backend_instance->db->prepare(
+                    "SELECT :dbLabel as period_id FROM :tableLbl
+                    WHERE timeperiod_id = :timeperiod_id"
+                );
             }
-            $this->stmt_extend[$db_label]->bindParam(':timeperiod_id', $timeperiod_id, PDO::PARAM_INT);
+            $this->stmt_extend[$db_label]->bindValue(':timeperiod_id', $timeperiod_id, PDO::PARAM_INT);
+            $this->stmt_extend[$db_label]->bindValue(
+                ':dbLabel',
+                "timeperiod_" . $db_label . "_id",
+                PDO::PARAM_STR
+            );
+            $this->stmt_extend[$db_label]->bindValue(
+                ':tableLbl',
+                "timeperiod_" . $db_label . "_relations",
+                PDO::PARAM_STR
+            );
             $this->stmt_extend[$db_label]->execute();
             $this->timeperiods[$timeperiod_id][$label . '_cache'] =
                 $this->stmt_extend[$db_label]->fetchAll(PDO::FETCH_COLUMN);
