@@ -89,9 +89,9 @@ class Broker extends AbstractObjectXML
         global $pearDB;
 
         if (!is_null($this->cacheExternalValue)) {
-            return ;
+            return;
         }
-        
+
         $this->cacheExternalValue = array();
         $stmt = $this->backend_instance->db->prepare("SELECT 
             CONCAT(cf.fieldname, '_', cttr.cb_tag_id, '_', ctfr.cb_type_id) as name, external FROM cb_field cf, cb_type_field_relation ctfr, cb_tag_type_relation cttr
@@ -203,12 +203,12 @@ class Broker extends AbstractObjectXML
                             $object[$subvalue['config_group_id']][$key]['filters'][][$subvalue['config_key']] =
                                 $subvalue['config_value'];
                         } else {
-                            if ($subvalue['config_key'] === 'cache_option') {
+                            if ($subvalue['config_key'] === 'rrd_cached_option') {
                                 $rrdCacheOption = $subvalue['config_value'];
                                 continue;
                             }
 
-                            if ($subvalue['config_key'] === 'cache') {
+                            if ($subvalue['config_key'] === 'rrd_cached') {
                                 if ($rrdCacheOption === 'tcp') {
                                     $object[$subvalue['config_group_id']][$key]['port'] = $subvalue['config_value'];
                                 } elseif ($rrdCacheOption === 'unix') {
@@ -303,7 +303,7 @@ class Broker extends AbstractObjectXML
     {
         $this->generate($poller['id'], $poller['localhost']);
     }
-    
+
     private function getInfoDb($string)
     {
         /*
@@ -366,10 +366,10 @@ class Broker extends AbstractObjectXML
                 $db = $this->backend_instance->db_cs;
                 break;
         }
-        
+
         $stmt = $db->prepare($query);
         $stmt->execute();
-        
+
         $infos = array();
         while (($row = $stmt->fetch(PDO::FETCH_ASSOC))) {
             $val = $row[$s_column];
@@ -385,7 +385,7 @@ class Broker extends AbstractObjectXML
         }
         return $infos;
     }
-    
+
     private function rpnCalc($rpn, $val)
     {
         if (!is_numeric($val)) {
@@ -401,7 +401,7 @@ class Broker extends AbstractObjectXML
             return $val;
         }
     }
-    
+
     private function rpnOperation($result, $item)
     {
         if (in_array($item, array('+', '-', '*', '/'))) {

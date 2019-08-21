@@ -1,8 +1,8 @@
 -- Update broker form
-UPDATE `cb_field` SET `fieldname` = 'cache_option', `displayname` = 'Cache Option', `description` = 'Use RRD cache.', `fieldtype` = 'radio', `external` = NULL
+UPDATE `cb_field` SET `fieldname` = 'rrd_cached_option', `displayname` = 'Cache Option', `description` = 'Use RRD cache.', `fieldtype` = 'radio', `external` = NULL
 WHERE `fieldname` = 'path' AND `displayname` = 'Unix socket';
 
-UPDATE `cb_field` SET `fieldname` = 'cache', `displayname` = 'Cache Link', `description` = 'The Unix socket or the TCP port used to communicate with rrdcached.', `fieldtype` = 'text', `external` = NULL
+UPDATE `cb_field` SET `fieldname` = 'rrd_cached', `displayname` = 'Cache Link', `description` = 'The Unix socket or the TCP port used to communicate with rrdcached.', `fieldtype` = 'text', `external` = NULL
 WHERE `fieldname` = 'port' AND `displayname` = 'TCP port';
 
 INSERT INTO `cb_list` (`cb_list_id`, `cb_field_id`, `default_value`)
