@@ -92,9 +92,11 @@ class CentreonAuthSSO extends CentreonAuth
 
             $inputForce = filter_var(
                 $_POST['force'] ?? $_GET['force'] ?? null,
-                FILTER_SANITIZE_STRING
+                FILTER_SANITIZE_NUMBER_INT
             );
-            if (isset($inputForce)) {
+            if ((isset($inputForce) && $inputForce == 1)
+                || (isset($this->options_sso['keycloak_mode']) && $this->options_sso['keycloak_mode'] == 0)
+            ) {
                 header('Location: ' . $authUrl);
             }
 
@@ -103,7 +105,6 @@ class CentreonAuthSSO extends CentreonAuth
                 FILTER_SANITIZE_STRING
             );
             if (isset($inputCode)) {
-
                 $keyToken = $this->getKeycloakToken(
                     $base,
                     $realm,
@@ -115,10 +116,12 @@ class CentreonAuthSSO extends CentreonAuth
 
                 $user = $this->getKeycloakUserInfo($base, $realm, $clientId, $clientSecret, $keyToken);
 
-                $this->ssoUsername = $user["preferred_username"];
-                if ($this->checkSsoClient()) {
-                    $this->ssoMandatory = 1;
-                    $username = $this->ssoUsername;
+                if (!isset($user['error'])) {
+                    $this->ssoUsername = $user["preferred_username"];
+                    if ($this->checkSsoClient()) {
+                        $this->ssoMandatory = 1;
+                        $username = $this->ssoUsername;
+                    }
                 }
             }
         }
@@ -158,6 +161,31 @@ class CentreonAuthSSO extends CentreonAuth
 
             $whitelist = explode(',', $this->ssoOptions['sso_trusted_clients']);
             if (empty($whitelist[0])) {
+                return 1;
+            }
+            foreach ($whitelist as $value) {
+                $value = trim($value);
+                if ($value != "" && preg_match('/' . $value . '/', $_SERVER['REMOTE_ADDR'])) {
+                    return 1;
+                }
+            }
+        } else if (isset($this->options_sso['keycloak_enable'])
+            && $this->options_sso['keycloak_enable'] == 1
+            && isset($this->options_sso['keycloak_mode'])
+            && $this->options_sso['keycloak_mode'] == 1
+        ) {
+            # Mixed
+
+            $blacklist = explode(',', $this->options_sso['keycloak_blacklist_clients']);
+            foreach ($blacklist as $value) {
+                $value = trim($value);
+                if ($value != "" && preg_match('/' . $value . '/', $_SERVER['REMOTE_ADDR'])) {
+                    return 0;
+                }
+            }
+
+            $whitelist = explode(',', $this->options_sso['keycloak_trusted_clients']);
+            if(empty($whitelist[0])){
                 return 1;
             }
             foreach ($whitelist as $value) {
