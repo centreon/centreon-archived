@@ -94,6 +94,7 @@ sub init {
     $self->{cmdFile} = $self->{centreon_config}->{VarLib} . "/centcore.cmd";
     $self->{cmdDir} = $self->{centreon_config}->{VarLib} . "/centcore/";
     $self->{centreonDir} = $self->{centreon_config}->{CentreonDir};
+    $self->{cacheDir} = $self->{centreon_config}->{CacheDir};
 }
 
 sub set_signal_handlers {
@@ -637,11 +638,11 @@ sub sendConfigFile($){
             'using remote server "' . $remote_server->{name} . '" (' . $remote_server->{id} . ')'
         );
 
-        $origin = $self->{centreonDir} . "/filesGeneration/engine/" . $id;
-        $dest = $remote_server->{'ns_ip_address'} . ":" . $self->{centreonDir} . "/filesGeneration/engine";
+        $origin = $self->{cacheDir} . "/config/engine/" . $id;
+        $dest = $remote_server->{'ns_ip_address'} . ":" . $self->{cacheDir} . "/config/engine";
         $cmd = "$self->{scp} -r -P $port $origin $dest 2>&1";
     } else {
-        $origin = $self->{centreonDir} . "/filesGeneration/engine/" . $id . "/*";
+        $origin = $self->{cacheDir} . "/config/engine/" . $id . "/*";
         $dest = $server_info->{'ns_ip_address'} . ":$cfg_dir";
 
         # Send data with SCP
@@ -667,10 +668,10 @@ sub sendConfigFile($){
     }
 
     # Send configuration for Centreon Broker
-    if (-e $self->{centreonDir}  . "/filesGeneration/broker/" . $id) {
+    if (-e $self->{cacheDir}  . "/config/broker/" . $id) {
         # Check availability of broker files.
         my $count = 0;
-        opendir(my $dh, $self->{centreonDir} . "/filesGeneration/broker/" . $id);
+        opendir(my $dh, $self->{cacheDir} . "/config/broker/" . $id);
         while(readdir $dh) {
             $count++;
         }
@@ -687,8 +688,8 @@ sub sendConfigFile($){
                         'on poller "' . $server_info->{name} . '" (' . $server_info->{id} . ') ' .
                         'using remote server "' . $remote_server->{name} . '" (' . $remote_server->{id} . ')'
                     );
-                    $origin = $self->{centreonDir} . "/filesGeneration/broker/" . $id;
-                    $dest = $remote_server->{'ns_ip_address'} . ":" . $self->{centreonDir} . "/filesGeneration/broker";
+                    $origin = $self->{cacheDir} . "/config/broker/" . $id;
+                    $dest = $remote_server->{'ns_ip_address'} . ":" . $self->{cacheDir} . "/config/broker";
                     $cmd = "$self->{scp} -r -P $port $origin $dest 2>&1";
                 } else {
                     $self->{logger}->writeLogInfo(
@@ -696,7 +697,7 @@ sub sendConfigFile($){
                         'on poller "' . $server_info->{name} . '" (' . $server_info->{id} . ')'
                     );
                     $cfg_dir = $server_info->{'centreonbroker_cfg_path'};
-                    $origin = $self->{centreonDir} . "/filesGeneration/broker/" . $id . "/*.*";
+                    $origin = $self->{cacheDir} . "/config/broker/" . $id . "/*.*";
                     $dest = $server_info->{ns_ip_address}.":$cfg_dir";
                     $cmd = "$self->{scp} -P $port $origin $dest 2>&1";
                 }
@@ -769,15 +770,15 @@ sub sendExportFile($){
         return;
     }
 
-    unless (-e $self->{centreonDir}  . "filesGeneration/export/" . $id) {
+    unless (-e $self->{cacheDir}  . "/config/export/" . $id) {
         $self->{logger}->writeLogInfo(
             "Export directory is empty for poller " . $server_info->{name} . " " .
-            $self->{centreonDir} . "filesGeneration/export/$id."
+            $self->{cacheDir} . "/config/export/$id."
         );
         return;
     }
 
-    my $origin = $self->{centreonDir} . "/filesGeneration/export/" . $id . "/*";
+    my $origin = $self->{cacheDir} . "/config/export/" . $id . "/*";
     my $dest = $server_info->{'ns_ip_address'} . ":/var/lib/centreon/remote-data/";
 
     # Send data with rSync

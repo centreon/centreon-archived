@@ -57,10 +57,9 @@ if ((int)$stat['value'] != 1 && (int)$aVersion[2] === 0) {
 
 $title = _('Upgrade finished');
 
-$centreon_path = realpath(dirname(__FILE__) . '/../../../');
-if (false === is_dir($centreon_path . '/installDir')) {
-    $contents .= '<br>Warning : The installation directory cannot be move. Please create the directory '
-        . $centreon_path . '/installDir and give it the rigths to apache user to write.';
+if (false === is_dir(_CENTREON_VARLIB_ . '/installs')) {
+    $contents .= '<br>Warning : The installation directory cannot be moved. Please create the directory '
+        . _CENTREON_VARLIB_ . '/installs and give apache user write permissions.';
     $moveable = false;
 } else {
     $moveable = true;
