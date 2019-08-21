@@ -24,7 +24,7 @@ class extendedServiceInformation extends AbstractObject
 {
     protected $table = 'extended_service_information';
     protected $generate_filename = 'extended_service_information.infile';
-    protected $attributes_write = array(
+    protected $attributes_write = [
         'service_service_id',
         'esi_notes',
         'esi_notes_url',
@@ -32,7 +32,7 @@ class extendedServiceInformation extends AbstractObject
         'esi_icon_image',
         'esi_icon_image_alt',
         'graph_id',
-    );
+    ];
 
     public function add($object, $service_id)
     {

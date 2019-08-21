@@ -17,7 +17,7 @@
  * For more information : contact@centreon.com
  *
  */
- 
+
 namespace ConfigGenerateRemote;
 
 use \PDO;
@@ -27,14 +27,14 @@ class trap extends AbstractObject
     private $use_cache = 1;
     private $done_cache = 0;
 
-    private $trap_cache = array();
-    private $service_linked_cache = array();
+    private $trap_cache = [];
+    private $service_linked_cache = [];
 
     protected $table = 'traps';
     protected $generate_filename = 'traps.infile';
     protected $stmt_service = null;
-    
-    protected $attributes_write = array(
+
+    protected $attributes_write = [
         'traps_id',
         'traps_name',
         'traps_oid',
@@ -60,7 +60,7 @@ class trap extends AbstractObject
         'traps_output_transform',
         'traps_customcode',
         'traps_comments'
-    );
+    ];
 
     public function __construct(\Pimple\Container $dependencyInjector)
     {
@@ -70,10 +70,10 @@ class trap extends AbstractObject
 
     private function cacheTrap()
     {
-        $stmt = $this->backend_instance->db->prepare("SELECT 
-                    * 
-                FROM traps LEFT JOIN traps_vendor ON traps_vendor.id = traps.manufacturer_id
-        ");
+        $stmt = $this->backend_instance->db->prepare(
+            "SELECT * FROM traps
+            LEFT JOIN traps_vendor ON traps_vendor.id = traps.manufacturer_id"
+        );
 
         $stmt->execute();
         $values = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -92,7 +92,7 @@ class trap extends AbstractObject
         $stmt->execute();
         foreach ($stmt->fetchAll(PDO::FETCH_ASSOC) as $value) {
             if (!isset($this->service_linked_cache[$value['service_id']])) {
-                $this->service_linked_cache[$value['service_id']] = array();
+                $this->service_linked_cache[$value['service_id']] = [];
             }
             $this->service_linked_cache[$value['service_id']][] = $value['traps_id'];
         }
@@ -109,7 +109,8 @@ class trap extends AbstractObject
         $this->done_cache = 1;
     }
 
-    public function generateObject($service_id, $service_linked_cache, &$object) {
+    public function generateObject($service_id, $service_linked_cache, &$object)
+    {
         foreach ($service_linked_cache as $trap_id) {
             trapsServiceRelation::getInstance($this->dependencyInjector)->addRelation($trap_id, $service_id);
             if ($this->checkGenerate($trap_id)) {
@@ -119,7 +120,7 @@ class trap extends AbstractObject
             trapsVendor::getInstance($this->dependencyInjector)->add(
                 $object[$trap_id]['id'],
                 $object[$trap_id]['name'],
-                $object[$trap_id]['alias'], 
+                $object[$trap_id]['alias'],
                 $object[$trap_id]['description']
             );
             trapsGroup::getInstance($this->dependencyInjector)->getTrapGroupsByTrapId($trap_id);
@@ -135,31 +136,31 @@ class trap extends AbstractObject
         if (isset($this->service_linked_cache[$service_id])) {
             $this->generateObject($service_id, $this->service_linked_cache[$service_id], $this->trap_cache);
             return $this->service_linked_cache[$service_id];
-        } else if ($this->use_cache == 1) {
+        } elseif ($this->use_cache == 1) {
             return null;
         }
 
         # We get unitary
         if (is_null($this->stmt_service)) {
-            $this->stmt_service = $this->backend_instance->db->prepare("SELECT 
-                    traps.*, traps_service_relation.service_id
-                FROM traps_service_relation, 
-                     traps LEFT JOIN traps_vendor ON traps_vendor.id = traps.manufacturer_id
-                WHERE traps_service_relation.service_id = :service_id 
-                    AND traps_service_relation.traps_id = traps.traps_id
-                ");
+            $this->stmt_service = $this->backend_instance->db->prepare(
+                "SELECT traps.*, traps_service_relation.service_id
+                FROM traps_service_relation, traps
+                LEFT JOIN traps_vendor ON traps_vendor.id = traps.manufacturer_id
+                WHERE traps_service_relation.service_id = :service_id
+                AND traps_service_relation.traps_id = traps.traps_id"
+            );
         }
 
         $this->stmt_service->bindParam(':service_id', $service_id, PDO::PARAM_INT);
         $this->stmt_service->execute();
-        $service_linked_cache = array();
-        $trap_cache = array();
+        $service_linked_cache = [];
+        $trap_cache = [];
         foreach ($this->stmt_service->fetchAll(PDO::FETCH_ASSOC) as &$value) {
             $service_linked_cache[] = $value['traps_id'];
             $trap_cache[$value['traps_id']] = $value;
         }
-        
-        $this->generateObject($service_id, $service_linked_cache, $trap_cache);        
+
+        $this->generateObject($service_id, $service_linked_cache, $trap_cache);
         return $service_linked_cache;
     }
 }

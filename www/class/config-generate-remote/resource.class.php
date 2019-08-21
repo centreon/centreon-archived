@@ -17,7 +17,7 @@
  * For more information : contact@centreon.com
  *
  */
- 
+
 namespace ConfigGenerateRemote;
 
 use \PDO;
@@ -28,13 +28,13 @@ class Resource extends AbstractObject
     protected $generate_filename = 'resource.infile';
     protected $object_name = null;
     protected $stmt = null;
-    protected $attributes_write = array(
+    protected $attributes_write = [
         'resource_id',
         'resource_name',
         'resource_line',
         'resource_comment',
         'resource_activate'
-    );
+    ];
 
     public function generateFromPollerId($poller_id)
     {
@@ -43,16 +43,20 @@ class Resource extends AbstractObject
         }
 
         if (is_null($this->stmt)) {
-            $query = "SELECT cfg_resource.resource_id, resource_name, resource_line, resource_comment, resource_activate FROM cfg_resource_instance_relations, cfg_resource " .
-                "WHERE instance_id = :poller_id AND cfg_resource_instance_relations.resource_id = " .
-                "cfg_resource.resource_id AND cfg_resource.resource_activate = '1'";
+            $query =
+                "SELECT cfg_resource.resource_id, resource_name, resource_line, resource_comment, resource_activate
+                FROM cfg_resource_instance_relations, cfg_resource
+                WHERE instance_id = :poller_id
+                AND cfg_resource_instance_relations.resource_id = cfg_resource.resource_id
+                AND cfg_resource.resource_activate = '1'";
             $this->stmt = $this->backend_instance->db->prepare($query);
         }
         $this->stmt->bindParam(':poller_id', $poller_id, PDO::PARAM_INT);
         $this->stmt->execute();
 
         foreach ($this->stmt->fetchAll(PDO::FETCH_ASSOC) as $value) {
-            cfgResourceInstanceRelation::getInstance($this->dependencyInjector)->addRelation($value['resource_id'], $poller_id);
+            cfgResourceInstanceRelation::getInstance($this->dependencyInjector)
+                ->addRelation($value['resource_id'], $poller_id);
             if ($this->checkGenerate($value['resource_id'])) {
                 continue;
             }

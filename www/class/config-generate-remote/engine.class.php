@@ -29,8 +29,8 @@ class Engine extends AbstractObject
     protected $table = 'cfg_nagios';
     protected $generate_filename = 'cfg_nagios.infile';
 
-    # skipped nagios parameters : temp_file, nagios_user, nagios_group, log_rotation_method, log_archive_path,
-    # lock_file, daemon_dumps_core
+    //skipped nagios parameters : temp_file, nagios_user, nagios_group, log_rotation_method, log_archive_path,
+    //lock_file, daemon_dumps_core
     protected $attributes_select = '
         nagios_server_id,
         nagios_id,
@@ -141,7 +141,7 @@ class Engine extends AbstractObject
         macros_filter,
         nagios_activate
     ';
-    protected $attributes_write = array(
+    protected $attributes_write = [
         'nagios_server_id',
         'use_timezone',
         'log_file',
@@ -211,7 +211,7 @@ class Engine extends AbstractObject
         'enable_macros_filter',
         'nagios_activate',
         'cfg_dir'
-    );
+    ];
     protected $stmt_engine = null;
     protected $stmt_broker = null;
     protected $stmt_interval_length = null;
@@ -260,7 +260,7 @@ class Engine extends AbstractObject
                 "Cannot get engine configuration for poller id (maybe not activate) '" . $poller_id . "'"
             );
         }
-        
+
         $this->generateObjectInFile(
             $this->engine,
             $poller_id
@@ -273,7 +273,7 @@ class Engine extends AbstractObject
         $this->generate($poller['id']);
     }
 
-    public function reset($createfile=false)
+    public function reset($createfile = false)
     {
         parent::reset($createfile);
     }

@@ -64,13 +64,14 @@ class ExportParserJsonTest extends TestCase
         $result = $this->parser->parse('vfs://tmp/test1.json');
 
         $this->assertEquals(['key' => 'val'], $result);
-        
+
         // add file with macros
         $this->fs->get('/tmp')->add('test2.json', new File('{"key":"@val@"}'));
 
-        $result = $this->parser->parse('vfs://tmp/test2.json', function (&$result) {
-            $result = str_replace('@val@', 'val', $result);
-        });
+        $result = $this->parser->parse('vfs://tmp/test2.json',
+            function (&$result) {
+                $result = str_replace('@val@', 'val', $result);
+            });
 
         $this->assertEquals(['key' => 'val'], $result);
     }

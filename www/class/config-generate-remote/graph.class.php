@@ -43,7 +43,7 @@ class Graph extends AbstractObject
         scaled,
         comment
     ';
-    protected $attributes_write = array(
+    protected $attributes_write = [
         'graph_id',
         'name',
         'vertical_label',
@@ -58,7 +58,7 @@ class Graph extends AbstractObject
         'split_component',
         'scaled',
         'comment'
-    );
+    ];
 
     private function getGraph()
     {

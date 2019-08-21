@@ -24,17 +24,17 @@ class serviceCategoriesRelation extends AbstractObject
 {
     protected $table = 'service_categories_relation';
     protected $generate_filename = 'service_categories_relation.infile';
-    protected $attributes_write = array(
+    protected $attributes_write = [
         'sc_id',
         'service_service_id',
-    );
+    ];
 
     public function addRelation($sc_id, $service_id)
     {
-        $relation = array(
+        $relation = [
             'sc_id' => $sc_id,
             'service_service_id' => $service_id,
-        );
+        ];
         $this->generateObjectInFile($relation);
     }
 }

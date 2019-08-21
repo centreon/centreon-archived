@@ -17,7 +17,7 @@
  * For more information : contact@centreon.com
  *
  */
- 
+
 namespace ConfigGenerateRemote;
 
 use \PDO;
@@ -39,7 +39,7 @@ class Timeperiod extends AbstractObject
         tp_friday,
         tp_saturday
     ';
-    protected $attributes_write = array(
+    protected $attributes_write = [
         'tp_id',
         'tp_name',
         'tp_alias',
@@ -50,8 +50,8 @@ class Timeperiod extends AbstractObject
         'tp_thursday',
         'tp_friday',
         'tp_saturday',
-    );
-    protected $stmt_extend = array('include' => null, 'exclude' => null);
+    ];
+    protected $stmt_extend = ['include' => null, 'exclude' => null];
 
     public function getTimeperiods()
     {
@@ -93,7 +93,7 @@ class Timeperiod extends AbstractObject
                 $this->stmt_extend[$db_label]->fetchAll(PDO::FETCH_COLUMN);
         }
 
-        $this->timeperiods[$timeperiod_id][$label] = array();
+        $this->timeperiods[$timeperiod_id][$label] = [];
         foreach ($this->timeperiods[$timeperiod_id][$label . '_cache'] as $period_id) {
             $this->timeperiods[$timeperiod_id][$label][] = $this->generateFromTimeperiodId($period_id);
         }
@@ -116,9 +116,6 @@ class Timeperiod extends AbstractObject
         }
 
         $this->getTimeperiodExceptionFromId($timeperiod_id);
-        # Not used any more in centreon-web
-        #$this->getTimeperiodExtendFromId($timeperiod_id, 'exclude');
-        #$this->getTimeperiodExtendFromId($timeperiod_id, 'include');
 
         $this->timeperiods[$timeperiod_id]['tp_id'] = $timeperiod_id;
         $this->generateObjectInFile($this->timeperiods[$timeperiod_id], $timeperiod_id);

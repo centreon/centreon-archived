@@ -24,20 +24,20 @@ class hostgroupRelation extends AbstractObject
 {
     protected $table = 'hostgroup_relation';
     protected $generate_filename = 'hostgroup_relation.infile';
-    protected $attributes_write = array(
+    protected $attributes_write = [
         'host_host_id',
         'hostgroup_hg_id',
-    );
+    ];
 
     public function addRelation($hg_id, $host_id)
     {
         if ($this->checkGenerate($hg_id . '.' . $host_id)) {
             return null;
         }
-        $relation = array(
+        $relation = [
             'hostgroup_hg_id' => $hg_id,
             'host_host_id' => $host_id,
-        );
+        ];
         $this->generateObjectInFile($relation, $hg_id . '.' . $host_id);
     }
 }

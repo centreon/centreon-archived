@@ -17,24 +17,24 @@
  * For more information : contact@centreon.com
  *
  */
- 
+
 namespace ConfigGenerateRemote;
 
 class hostcategoriesRelation extends AbstractObject
 {
     protected $table = 'hostcategories_relation';
     protected $generate_filename = 'hostcategories_relation.infile';
-    protected $attributes_write = array(
+    protected $attributes_write = [
         'hostcategories_hc_id',
         'host_host_id',
-    );
+    ];
 
     public function addRelation($hc_id, $host_id)
     {
-        $relation = array(
+        $relation = [
             'hostcategories_hc_id' => $hc_id,
             'host_host_id' => $host_id,
-        );
+        ];
         $this->generateObjectInFile($relation);
     }
 }

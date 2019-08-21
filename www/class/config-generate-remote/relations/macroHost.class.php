@@ -24,13 +24,13 @@ class macroHost extends AbstractObject
 {
     protected $table = 'on_demand_macro_host';
     protected $generate_filename = 'on_demand_macro_host.infile';
-    protected $attributes_write = array(
+    protected $attributes_write = [
         'host_host_id',
         'host_macro_name',
         'host_macro_value',
         'is_password',
         'description',
-    );
+    ];
 
     public function add($object, $host_id)
     {

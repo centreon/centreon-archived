@@ -24,17 +24,17 @@ class contactServicecommandsRelation extends AbstractObject
 {
     protected $table = 'contact_servicecommands_relation';
     protected $generate_filename = 'contact_servicecommands_relation.infile';
-    protected $attributes_write = array(
+    protected $attributes_write = [
         'contact_contact_id',
         'command_command_id',
-    );
+    ];
 
     public function addRelation($contact_id, $cmd_id)
     {
-        $relation = array(
+        $relation = [
             'contact_contact_id' => $contact_id,
             'command_command_id' => $cmd_id,
-        );
+        ];
         $this->generateObjectInFile($relation);
     }
 }

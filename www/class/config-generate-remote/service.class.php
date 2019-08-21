@@ -22,7 +22,7 @@ namespace ConfigGenerateRemote;
 
 use \PDO;
 
-require_once dirname(__FILE__) . '/abstract/service.class.php';
+require_once __DIR__ . '/abstract/service.class.php';
 
 class Service extends AbstractService
 {
@@ -32,7 +32,7 @@ class Service extends AbstractService
     protected $service_cache = null;
     protected $table = 'service';
     protected $generate_filename = 'services.infile';
-    public $poller_id = null; # for by poller cache
+    public $poller_id = null; // for by poller cache
 
     public function use_cache()
     {
@@ -87,7 +87,7 @@ class Service extends AbstractService
         $this->service_cache = $stmt->fetchAll(PDO::FETCH_GROUP | PDO::FETCH_UNIQUE | PDO::FETCH_ASSOC);
     }
 
-    public function addServiceCache($service_id, $attr = array())
+    public function addServiceCache($service_id, $attr = [])
     {
         $this->service_cache[$service_id] = $attr;
     }
@@ -108,7 +108,8 @@ class Service extends AbstractService
 
     protected function getSeverity($host_id, $service_id)
     {
-        $severity_id = serviceCategory::getInstance($this->dependencyInjector)->getServiceSeverityByServiceId($service_id);
+        $severity_id =
+            serviceCategory::getInstance($this->dependencyInjector)->getServiceSeverityByServiceId($service_id);
         if (!is_null($severity_id)) {
             serviceCategoriesRelation::getInstance($this->dependencyInjector)->addRelation($severity_id, $service_id);
         }
@@ -184,7 +185,7 @@ class Service extends AbstractService
 
         $this->getSeverity($host_id, $service_id);
         $this->getServiceGroups($service_id, $host_id, $host_name);
-        
+
         $extendedInformation = $this->getExtendedInformation($this->service_cache[$service_id]);
         extendedServiceInformation::getInstance($this->dependencyInjector)->add($extendedInformation, $service_id);
         graph::getInstance($this->dependencyInjector)->getGraphFromId($extendedInformation['graph_id']);
@@ -203,11 +204,11 @@ class Service extends AbstractService
         $this->poller_id = $poller_id;
     }
 
-    public function reset($resetparent=false, $createfile=false)
+    public function reset($resetparent = false, $createfile = false)
     {
         # We reset it by poller (dont need all. We save memory)
         if ($this->use_cache_poller == 1) {
-            $this->service_cache = array();
+            $this->service_cache = [];
             $this->done_cache = 0;
         }
         if ($resetparent == true) {

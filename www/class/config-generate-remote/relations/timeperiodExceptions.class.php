@@ -24,11 +24,11 @@ class timeperiodExceptions extends AbstractObject
 {
     protected $table = 'timeperiod_exceptions';
     protected $generate_filename = 'timeperiod_exceptions.infile';
-    protected $attributes_write = array(
+    protected $attributes_write = [
         'timeperiod_id',
         'days',
         'timerange',
-    );
+    ];
 
     public function add($object, $tp_id)
     {

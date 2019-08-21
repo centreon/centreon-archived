@@ -27,21 +27,21 @@ class hostCategory extends AbstractObject
     private $use_cache = 1;
     private $done_cache = 0;
 
-    private $host_severity_cache = array();
-    private $host_linked_cache = array();
+    private $host_severity_cache = [];
+    private $host_linked_cache = [];
 
     protected $table = 'hostcategories';
     protected $generate_filename = 'hostcategories.infile';
     protected $stmt_host = null;
     protected $stmt_hc_name = null;
-    
-    protected $attributes_write = array(
+
+    protected $attributes_write = [
         'hc_id',
         'hc_name',
         'hc_alias',
         'level',
         'icon_id',
-    );
+    ];
 
     public function __construct(\Pimple\Container $dependencyInjector)
     {
@@ -93,8 +93,10 @@ class hostCategory extends AbstractObject
         # Get from the cache
         if (isset($this->host_linked_cache[$host_id])) {
             if (!$this->checkGenerate($this->host_linked_cache[$host_id])) {
-                $this->generateObjectInFile($this->host_severity_cache[ $this->host_linked_cache[$host_id] ], $this->host_linked_cache[$host_id]);
-                Media::getInstance($this->dependencyInjector)->getMediaPathFromId($this->host_severity_cache[ $this->host_linked_cache[$host_id] ]['icon_id']);
+                $this->generateObjectInFile($this->host_severity_cache[$this->host_linked_cache[$host_id]],
+                    $this->host_linked_cache[$host_id]);
+                Media::getInstance($this->dependencyInjector)
+                    ->getMediaPathFromId($this->host_severity_cache[$this->host_linked_cache[$host_id]]['icon_id']);
             }
             return $this->host_linked_cache[$host_id];
         }
@@ -126,7 +128,8 @@ class hostCategory extends AbstractObject
         $this->host_severity_cache[$severity['hc_id']] = &$severity;
 
         $this->generateObjectInFile($severity, $severity['hc_id']);
-        Media::getInstance($this->dependencyInjector)->getMediaPathFromId($this->host_severity_cache[ $this->host_linked_cache[$host_id] ]['icon_id']);
+        Media::getInstance($this->dependencyInjector)
+            ->getMediaPathFromId($this->host_severity_cache[$this->host_linked_cache[$host_id]]['icon_id']);
         return $severity['hc_id'];
     }
 

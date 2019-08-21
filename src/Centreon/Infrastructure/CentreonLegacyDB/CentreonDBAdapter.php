@@ -54,9 +54,9 @@ class CentreonDBAdapter
      * @param string $query
      * @param array $params
      *
+     * @return $this
      * @throws \Exception
      *
-     * @return $this
      */
     public function query($query, $params = [])
     {
@@ -100,16 +100,16 @@ class CentreonDBAdapter
      * @param string $table
      * @param array $fields
      *
+     * @return int Last inserted ID
      * @throws \Exception
      *
-     * @return int Last inserted ID
      */
     public function insert($table, array $fields)
     {
         if (!$fields) {
             throw new \Exception("The argument `fields` can't be empty");
         }
-        
+
         $keys = [];
         $keyVars = [];
 
@@ -140,16 +140,16 @@ class CentreonDBAdapter
 
     /**
      * Insert data using load data infile
-     * 
+     *
      * @param string $file Path and name of file to load
      * @param string $table Table name
      * @param array $fieldsClause Values of subclauses of FIELDS clause
      * @param array $linesClause Values of subclauses of LINES clause
      * @param array $columns Columns name
      *
+     * @return void
      * @throws \Exception
      *
-     * @return void
      */
     public function loadDataInfile(string $file, string $table, array $fieldsClause, array $linesClause, array $columns)
     {
@@ -169,7 +169,7 @@ class CentreonDBAdapter
         $sql .= " LINES TERMINATED BY '" . $linesClause["terminated_by"] . "' STARTING BY '"
             . $linesClause["starting_by"] . "'";
         $sql .= " (`" . implode("`, `", $columns) . "`)";
-        
+
         // Prepare PDO statement.
         $stmt = $this->db->prepare($sql);
 
@@ -186,9 +186,9 @@ class CentreonDBAdapter
      * @param array $fields
      * @param int $id
      *
+     * @return bool|int Updated ID
      * @throws \Exception
      *
-     * @return bool|int Updated ID
      */
     public function update($table, array $fields, int $id)
     {
@@ -197,17 +197,17 @@ class CentreonDBAdapter
         $keyValues = [];
 
         foreach ($fields as $key => $value) {
-            array_push($keys, $key.'= :'.$key);
-            array_push($keyValues, array($key, $value));
+            array_push($keys, $key . '= :' . $key);
+            array_push($keyValues, [$key, $value]);
         }
 
-        $sql = "UPDATE {$table} SET " . implode(', ', $keys) ." WHERE id = :id";
+        $sql = "UPDATE {$table} SET " . implode(', ', $keys) . " WHERE id = :id";
 
         $qq = $this->db->prepare($sql);
         $qq->bindParam(':id', $id);
 
         foreach ($keyValues as $key => $value) {
-            $qq->bindParam(':'.$key, $value);
+            $qq->bindParam(':' . $key, $value);
         }
 
         try {

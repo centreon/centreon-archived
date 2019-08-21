@@ -26,9 +26,9 @@ class Contact extends AbstractObject
 {
     protected $use_cache = 1;
     private $done_cache = 0;
-    private $contacts_service_linked_cache = array();
-    protected $contacts_cache = array();
-    protected $contacts = array();
+    private $contacts_service_linked_cache = [];
+    protected $contacts_cache = [];
+    protected $contacts = [];
     protected $table = 'contact';
     protected $generate_filename = 'contacts.infile';
     protected $object_name = 'contact';
@@ -48,7 +48,7 @@ class Contact extends AbstractObject
         reach_api,
         reach_api_rt
     ';
-    protected $attributes_write = array(
+    protected $attributes_write = [
         'contact_id',
         'contact_template_id',
         'timeperiod_tp_id',
@@ -62,9 +62,9 @@ class Contact extends AbstractObject
         'reach_api',
         'reach_api_rt',
         'contact_register'
-    );
+    ];
     protected $stmt_contact = null;
-    protected $stmt_commands = array('host' => null, 'service' => null);
+    protected $stmt_commands = ['host' => null, 'service' => null];
     protected $stmt_contact_service = null;
 
     private function getContactCache()
@@ -89,7 +89,7 @@ class Contact extends AbstractObject
             if (isset($this->contacts_service_linked_cache[$value['service_service_id']])) {
                 $this->contacts_service_linked_cache[$value['service_service_id']][] = $value['contact_id'];
             } else {
-                $this->contacts_service_linked_cache[$value['service_service_id']] = array($value['contact_id']);
+                $this->contacts_service_linked_cache[$value['service_service_id']] = [$value['contact_id']];
             }
         }
     }
@@ -103,7 +103,7 @@ class Contact extends AbstractObject
             return $this->contacts_service_linked_cache[$service_id];
         }
         if ($this->done_cache == 1) {
-            return array();
+            return [];
         }
 
         if (is_null($this->stmt_contact_service)) {
@@ -199,9 +199,13 @@ class Contact extends AbstractObject
         }
 
         $this->generateFromContactId($this->contacts[$contact_id]['contact_template_id']);
-        $this->getContactNotificationCommands($contact_id, 'host', contactHostcommandsRelation::getInstance($this->dependencyInjector));
-        $this->getContactNotificationCommands($contact_id, 'service', contactServicecommandsRelation::getInstance($this->dependencyInjector));
-        
+        $this->getContactNotificationCommands($contact_id,
+            'host',
+            contactHostcommandsRelation::getInstance($this->dependencyInjector));
+        $this->getContactNotificationCommands($contact_id,
+            'service',
+            contactServicecommandsRelation::getInstance($this->dependencyInjector));
+
         $period = Timeperiod::getInstance($this->dependencyInjector);
         $period->generateFromTimeperiodId($this->contacts[$contact_id]['timeperiod_tp_id']);
         $period->generateFromTimeperiodId($this->contacts[$contact_id]['timeperiod_tp_id2']);

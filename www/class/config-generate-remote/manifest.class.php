@@ -25,7 +25,7 @@ use \PDO;
 class Manifest extends AbstractObject
 {
     protected $generate_filename = 'manifest.json';
-    protected $manifest = array();
+    protected $manifest = [];
     protected $type = 'manifest';
     protected $subdir = '';
 
@@ -35,46 +35,51 @@ class Manifest extends AbstractObject
         #$this->createFile($this->backend_instance->getPath());
 
         $this->manifest['date'] = date('l jS \of F Y h:i:s A');
-        $this->manifest['pollers'] = array();
-        $this->manifest['import'] = array(
-            'infile_clauses' => array(
-                'fields_clause' => array(
-                    'terminated_by' =>  $this->fieldSeparatorInfile,
-                    'enclosed_by' =>  '',
-                    'escaped_by' =>  '',
-                ),
-                'lines_clause' => array( 
-                    'terminated_by' =>  $this->lineSeparatorInfile,
+        $this->manifest['pollers'] = [];
+        $this->manifest['import'] = [
+            'infile_clauses' => [
+                'fields_clause' => [
+                    'terminated_by' => $this->fieldSeparatorInfile,
+                    'enclosed_by' => '',
+                    'escaped_by' => '',
+                ],
+                'lines_clause' => [
+                    'terminated_by' => $this->lineSeparatorInfile,
                     'starting_by' => '',
-                )
-            ),
-            'data' => array()
-        );
+                ]
+            ],
+            'data' => []
+        ];
     }
 
-    public function __destruct() {
+    public function __destruct()
+    {
         #fwrite($this->fp, json_encode($this->manifest));
         #parent::__destruct();
     }
 
-    public function getManifest() {
+    public function getManifest()
+    {
         return $this->manifest;
     }
 
-    public function addRemoteServer($remote_id) {
+    public function addRemoteServer($remote_id)
+    {
         $this->manifest['remote_server'] = $remote_id;
     }
-    
-    public function addPoller($poller_id) {
+
+    public function addPoller($poller_id)
+    {
         $this->manifest['pollers'][] = $poller_id;
     }
 
-    public function addFile($filename, $type, $table, $columns) {
-        $this->manifest['import']['data'][] = array(
+    public function addFile($filename, $type, $table, $columns)
+    {
+        $this->manifest['import']['data'][] = [
             'filename' => $filename,
             'type' => $type,
             'table' => $table,
             'columns' => $columns
-        );
+        ];
     }
 }

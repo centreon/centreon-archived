@@ -22,19 +22,19 @@ namespace ConfigGenerateRemote;
 
 use \PDO;
 
-require_once dirname(__FILE__) . '/abstract/service.class.php';
+require_once __DIR__ . '/abstract/service.class.php';
 
 class ServiceTemplate extends AbstractService
 {
     protected $hosts = null;
     protected $table = 'service';
     protected $generate_filename = 'serviceTemplates.infile';
-    public $service_cache = array();
+    public $service_cache = [];
     public $current_host_id = null;
     public $current_host_name = null;
     public $current_service_description = null;
     public $current_service_id = null;
-    protected $loop_tpl = array();
+    protected $loop_tpl = [];
     protected $attributes_select = '
         service_id,
         service_template_model_stm_id,
@@ -66,7 +66,7 @@ class ServiceTemplate extends AbstractService
         service_acknowledgement_timeout,
         graph_id
     ';
-    protected $attributes_write = array(
+    protected $attributes_write = [
         'service_id',
         'service_template_model_stm_id',
         'command_command_id',
@@ -90,7 +90,7 @@ class ServiceTemplate extends AbstractService
         'service_notifications_enabled',
         'service_register',
         'service_acknowledgement_timeout',
-    );
+    ];
 
     private function getServiceGroups($service_id)
     {
@@ -139,9 +139,11 @@ class ServiceTemplate extends AbstractService
             return 0;
         }
 
-        $this->service_cache[$service_id]['severity_id'] = serviceCategory::getInstance($this->dependencyInjector)->getServiceSeverityByServiceId($service_id);
+        $this->service_cache[$service_id]['severity_id'] =
+            serviceCategory::getInstance($this->dependencyInjector)->getServiceSeverityByServiceId($service_id);
         if (!is_null($this->service_cache[$service_id]['severity_id'])) {
-            serviceCategoriesRelation::getInstance($this->dependencyInjector)->addRelation($this->service_cache[$service_id]['severity_id'], $service_id);
+            serviceCategoriesRelation::getInstance($this->dependencyInjector)
+                ->addRelation($this->service_cache[$service_id]['severity_id'], $service_id);
         }
     }
 
@@ -198,16 +200,16 @@ class ServiceTemplate extends AbstractService
 
     public function resetLoop()
     {
-        $this->loop_tpl = array();
+        $this->loop_tpl = [];
     }
 
-    public function reset($createfile=false)
+    public function reset($createfile = false)
     {
         $this->current_host_id = null;
         $this->current_host_name = null;
         $this->current_service_description = null;
         $this->current_service_id = null;
-        $this->loop_stpl = array();
+        $this->loop_stpl = [];
         parent::reset($createfile);
     }
 }

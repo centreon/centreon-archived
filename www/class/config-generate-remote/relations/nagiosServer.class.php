@@ -24,7 +24,7 @@ class nagiosServer extends AbstractObject
 {
     protected $table = 'nagios_server';
     protected $generate_filename = 'nagios_server.infile';
-    protected $attributes_write = array(
+    protected $attributes_write = [
         'id',
         'name',
         'localhost',
@@ -51,7 +51,7 @@ class nagiosServer extends AbstractObject
         'centreonbroker_logs_path',
         'remote_id',
         'remote_server_centcore_ssh_proxy'
-    );
+    ];
 
     public function add($object, $id)
     {

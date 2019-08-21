@@ -27,13 +27,13 @@ abstract class AbstractObject
     protected $backend_instance = null;
     protected $generate_filename = null;
     protected $table = null;
-    protected $exported = array();
+    protected $exported = [];
     protected $fp = null;
     protected $type = 'infile';
     protected $subdir = 'configuration';
 
-    protected $attributes_write = array();
-    protected $attributes_array = array();
+    protected $attributes_write = [];
+    protected $attributes_array = [];
 
     protected $engine = true;
     protected $broker = false;
@@ -44,7 +44,7 @@ abstract class AbstractObject
 
     public static function getInstance(\Pimple\Container $dependencyInjector)
     {
-        static $instances = array();
+        static $instances = [];
         $calledClass = get_called_class();
 
         if (!isset($instances[$calledClass])) {
@@ -62,7 +62,8 @@ abstract class AbstractObject
         $this->lineSeparatorInfile = $this->backend_instance->getLineSeparatorInfile();
     }
 
-    public function __destruct() {
+    public function __destruct()
+    {
         $this->close_file();
     }
 
@@ -74,10 +75,10 @@ abstract class AbstractObject
         $this->fp = null;
     }
 
-    public function reset($createfile=false)
+    public function reset($createfile = false)
     {
         $this->close_file();
-        $this->exported = array();
+        $this->exported = [];
         if ($createfile == true) {
             $this->createFile($this->backend_instance->getPath());
         }
@@ -121,11 +122,11 @@ abstract class AbstractObject
             }
             $append = $this->fieldSeparatorInfile;
         }
-    
+
         fwrite($this->fp, $line . $this->lineSeparatorInfile);
     }
 
-    protected function generateObjectInFile($object, $id=null)
+    protected function generateObjectInFile($object, $id = null)
     {
         if (is_null($this->fp)) {
             $this->createFile($this->backend_instance->getPath());
@@ -190,7 +191,7 @@ abstract class AbstractObject
         if (isset($this->exported)) {
             return $this->exported;
         }
-        return array();
+        return [];
     }
 
     public function isEngineObject()

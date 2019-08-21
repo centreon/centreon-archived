@@ -24,17 +24,17 @@ class cfgResourceInstanceRelation extends AbstractObject
 {
     protected $table = 'cfg_resource_instance_relations';
     protected $generate_filename = 'cfg_resource_instance_relations.infile';
-    protected $attributes_write = array(
+    protected $attributes_write = [
         'resource_id',
         'instance_id',
-    );
+    ];
 
     public function addRelation($resource_id, $instance_id)
     {
-        $relation = array(
+        $relation = [
             'resource_id' => $resource_id,
             'instance_id' => $instance_id,
-        );
+        ];
         $this->generateObjectInFile($relation);
     }
 }

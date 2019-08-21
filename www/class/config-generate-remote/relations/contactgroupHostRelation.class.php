@@ -24,17 +24,17 @@ class contactgroupHostRelation extends AbstractObject
 {
     protected $table = 'contactgroup_host_relation';
     protected $generate_filename = 'contactgroup_host_relation.infile';
-    protected $attributes_write = array(
+    protected $attributes_write = [
         'host_host_id',
         'contactgroup_cg_id',
-    );
+    ];
 
     public function addRelation($host_id, $cg_id)
     {
-        $relation = array(
+        $relation = [
             'host_host_id' => $host_id,
             'contactgroup_cg_id' => $cg_id,
-        );
+        ];
         $this->generateObjectInFile($relation);
     }
 }

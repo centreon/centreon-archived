@@ -24,18 +24,18 @@ class hostServiceRelation extends AbstractObject
 {
     protected $table = 'host_service_relation';
     protected $generate_filename = 'host_service_relation.infile';
-    protected $attributes_write = array(
+    protected $attributes_write = [
         'host_host_id',
         'hostgroup_hg_id',
         'service_service_id',
-    );
+    ];
 
     public function addRelationHostService($host_id, $service_id)
     {
-        $relation = array(
+        $relation = [
             'host_host_id' => $host_id,
             'service_service_id' => $service_id,
-        );
+        ];
         $this->generateObjectInFile($relation, 'h_s.' . $host_id . '.' . $service_id);
     }
 
@@ -45,10 +45,10 @@ class hostServiceRelation extends AbstractObject
             return null;
         }
 
-        $relation = array(
+        $relation = [
             'hostgroup_hg_id' => $hg_id,
             'service_service_id' => $service_id,
-        );
+        ];
         $this->generateObjectInFile($relation, 'hg_s.' . $hg_id . '.' . $service_id);
     }
 }

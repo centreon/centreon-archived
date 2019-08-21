@@ -22,7 +22,7 @@ namespace ConfigGenerateRemote;
 
 use \PDO;
 
-require_once dirname(__FILE__) . '/object.class.php';
+require_once __DIR__ . '/object.class.php';
 
 abstract class AbstractHost extends AbstractObject
 {
@@ -61,7 +61,7 @@ abstract class AbstractHost extends AbstractObject
         host_location,
         host_acknowledgement_timeout
     ';
-    protected $attributes_write = array(
+    protected $attributes_write = [
         'host_id',
         'command_command_id',
         'command_command_id_arg1',
@@ -87,9 +87,9 @@ abstract class AbstractHost extends AbstractObject
         'host_register',
         'host_location',
         'host_acknowledgement_timeout'
-    );
-    
-    protected $loop_htpl = array(); # To be reset
+    ];
+
+    protected $loop_htpl = []; # To be reset
     protected $stmt_macro = null;
     protected $stmt_htpl = null;
     protected $stmt_contact = null;
@@ -97,7 +97,7 @@ abstract class AbstractHost extends AbstractObject
 
     protected function getExtendedInformation(&$host)
     {
-        $extended_information = array(
+        $extended_information = [
             'host_host_id' => $host['host_id'],
             'ehi_notes' => $host['ehi_notes'],
             'ehi_notes_url' => $host['ehi_notes_url'],
@@ -106,7 +106,7 @@ abstract class AbstractHost extends AbstractObject
             'ehi_icon_image_alt' => $host['ehi_icon_image_alt'],
             'ehi_2d_coords' => $host['ehi_2d_coords'],
             'ehi_3d_coords' => $host['ehi_3d_coords'],
-        );
+        ];
         unset($host['ehi_notes']);
         unset($host['ehi_notes_url']);
         unset($host['ehi_action_url']);
@@ -141,7 +141,7 @@ abstract class AbstractHost extends AbstractObject
         $this->stmt_macro->execute();
         $macros = $this->stmt_macro->fetchAll(PDO::FETCH_ASSOC);
 
-        $host['macros'] = array();
+        $host['macros'] = [];
         foreach ($macros as $macro) {
             $host['macros'][$macro['host_macro_name']] = $macro['host_macro_value'];
             macroHost::getInstance($this->dependencyInjector)->add($macro, $host['host_id']);
@@ -170,7 +170,8 @@ abstract class AbstractHost extends AbstractObject
         $order = 1;
         foreach ($host['htpl'] as $template_id) {
             $host_template->generateFromHostId($template_id);
-            hostTemplateRelation::getInstance($this->dependencyInjector)->addRelation($host['host_id'], $template_id, $order);
+            hostTemplateRelation::getInstance($this->dependencyInjector)
+                ->addRelation($host['host_id'], $template_id, $order);
             $order++;
         }
     }
@@ -221,8 +222,8 @@ abstract class AbstractHost extends AbstractObject
 
     public function isHostTemplate($host_id, $host_tpl_id)
     {
-        $loop = array();
-        $stack = array();
+        $loop = [];
+        $stack = [];
 
         $hosts_tpl = HostTemplate::getInstance($this->dependencyInjector)->hosts;
         $stack = $this->hosts[$host_id]['htpl'];

@@ -27,17 +27,17 @@ class trapsPreexec extends AbstractObject
     private $use_cache = 1;
     private $done_cache = 0;
 
-    private $trap_preexec_cache = array();
+    private $trap_preexec_cache = [];
 
     protected $table = 'traps_preexec';
     protected $generate_filename = 'traps_preexec.infile';
     protected $stmt_trap = null;
-    
-    protected $attributes_write = array(
+
+    protected $attributes_write = [
         'trap_id',
         'tpe_order',
         'tpe_string'
-    );
+    ];
 
     public function __construct(\Pimple\Container $dependencyInjector)
     {
@@ -56,7 +56,7 @@ class trapsPreexec extends AbstractObject
         $values = $stmt->fetchAll(PDO::FETCH_ASSOC);
         foreach ($values as &$value) {
             if (!isset($this->trap_preexec_cache[$value['trap_id']])) {
-                $this->trap_preexec_cache[$value['trap_id']] = array();
+                $this->trap_preexec_cache[$value['trap_id']] = [];
             }
             $this->trap_preexec_cache[$value['trap_id']][] = &$value;
         }
@@ -72,7 +72,8 @@ class trapsPreexec extends AbstractObject
         $this->done_cache = 1;
     }
 
-    public function generateObject($trap_id, $trap_preexec_cache) {
+    public function generateObject($trap_id, $trap_preexec_cache)
+    {
         foreach ($trap_preexec_cache as $value) {
             $this->generateObjectInFile($value);
         }
@@ -84,7 +85,7 @@ class trapsPreexec extends AbstractObject
         if (isset($this->trap_preexec_cache[$trap_id])) {
             $this->generateObject($trap_id, $this->trap_preexec_cache[$trap_id]);
             return $this->trap_preexec_cache[$trap_id];
-        } else if ($this->use_cache == 1) {
+        } elseif ($this->use_cache == 1) {
             return null;
         }
 
@@ -99,12 +100,12 @@ class trapsPreexec extends AbstractObject
 
         $this->stmt_trap->bindParam(':trap_id', $trap_id, PDO::PARAM_INT);
         $this->stmt_trap->execute();
-        $trap_preexec_cache = array();
+        $trap_preexec_cache = [];
         foreach ($this->stmt_trap->fetchAll(PDO::FETCH_ASSOC) as &$value) {
             $trap_preexec_cache[$value['traps_id']] = $value;
         }
-        
-        $this->generateObject($trap_id, $trap_preexec_cache[$trap_id]);        
+
+        $this->generateObject($trap_id, $trap_preexec_cache[$trap_id]);
         return $trap_preexec_cache;
     }
 }

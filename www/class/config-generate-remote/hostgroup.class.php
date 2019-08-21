@@ -24,7 +24,7 @@ use \PDO;
 
 class Hostgroup extends AbstractObject
 {
-    private $hg = array();
+    private $hg = [];
     protected $table = 'hostgroup';
     protected $generate_filename = 'hostgroups.infile';
     protected $attributes_select = '
@@ -39,7 +39,7 @@ class Hostgroup extends AbstractObject
         geo_coords,
         hg_rrd_retention
     ';
-    protected $attributes_write = array(
+    protected $attributes_write = [
         'hg_id',
         'hg_name',
         'hg_alias',
@@ -50,7 +50,7 @@ class Hostgroup extends AbstractObject
         'hg_map_icon_image',
         'geo_coords',
         'hg_rrd_retention'
-    );
+    ];
     protected $stmt_hg = null;
 
     private function getHostgroupFromId($hg_id)
@@ -69,7 +69,7 @@ class Hostgroup extends AbstractObject
         if (is_null($this->hg[$hg_id])) {
             return null;
         }
-        $this->hg[$hg_id]['members'] = array();
+        $this->hg[$hg_id]['members'] = [];
     }
 
     public function addHostInHg($hg_id, $host_id, $host_name)
@@ -102,7 +102,7 @@ class Hostgroup extends AbstractObject
 
     public function getHostgroups()
     {
-        $result = array();
+        $result = [];
         foreach ($this->hg as $id => &$value) {
             if (is_null($value) || count($value['members']) == 0) {
                 continue;
@@ -112,12 +112,12 @@ class Hostgroup extends AbstractObject
         return $result;
     }
 
-    public function reset($createfile=false)
+    public function reset($createfile = false)
     {
         parent::reset($createfile);
         foreach ($this->hg as &$value) {
             if (!is_null($value)) {
-                $value['members'] = array();
+                $value['members'] = [];
             }
         }
     }

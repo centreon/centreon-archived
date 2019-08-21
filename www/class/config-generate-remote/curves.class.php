@@ -56,13 +56,13 @@ class Curves extends AbstractObject
         default_tpl1,
         comment 
     ';
-    protected $attributes_write = array(
+    protected $attributes_write = [
         'compo_id',
         'host_id',
         'service_id',
         'name',
         'ds_order',
-        'ds_hidecurve', 
+        'ds_hidecurve',
         'ds_name',
         'ds_color_line',
         'ds_color_line_mode',
@@ -83,8 +83,8 @@ class Curves extends AbstractObject
         'ds_jumpline',
         'ds_stack',
         'default_tpl1',
-        'comment' 
-    );
+        'comment'
+    ];
 
     private function getCurves()
     {

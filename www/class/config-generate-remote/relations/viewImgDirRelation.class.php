@@ -24,17 +24,17 @@ class viewImgDirRelation extends AbstractObject
 {
     protected $table = 'view_img_dir_relation';
     protected $generate_filename = 'view_img_dir_relation.infile';
-    protected $attributes_write = array(
+    protected $attributes_write = [
         'dir_dir_parent_id',
         'img_img_id',
-    );
+    ];
 
     public function addRelation($media_id, $dir_id)
     {
-        $relation = array(
+        $relation = [
             'dir_dir_parent_id' => $dir_id,
             'img_img_id' => $media_id,
-        );
+        ];
         $this->generateObjectInFile($relation, $media_id . '.' . $dir_id);
     }
 }

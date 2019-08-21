@@ -27,13 +27,13 @@ class trapsMatching extends AbstractObject
     private $use_cache = 1;
     private $done_cache = 0;
 
-    private $trap_match_cache = array();
+    private $trap_match_cache = [];
 
     protected $table = 'traps_matching_properties';
     protected $generate_filename = 'traps_matching_properties.infile';
     protected $stmt_trap = null;
-    
-    protected $attributes_write = array(
+
+    protected $attributes_write = [
         'tmo_id',
         'trap_id',
         'tmo_order',
@@ -41,7 +41,7 @@ class trapsMatching extends AbstractObject
         'tmo_string',
         'tmo_status',
         'severity_id'
-    );
+    ];
 
     public function __construct(\Pimple\Container $dependencyInjector)
     {
@@ -60,7 +60,7 @@ class trapsMatching extends AbstractObject
         $values = $stmt->fetchAll(PDO::FETCH_ASSOC);
         foreach ($values as &$value) {
             if (!isset($this->trap_match_cache[$value['trap_id']])) {
-                $this->trap_match_cache[$value['trap_id']] = array();
+                $this->trap_match_cache[$value['trap_id']] = [];
             }
             $this->trap_match_cache[$value['trap_id']][] = &$value;
         }
@@ -76,7 +76,8 @@ class trapsMatching extends AbstractObject
         $this->done_cache = 1;
     }
 
-    public function generateObject($trap_id, $trap_match_cache) {
+    public function generateObject($trap_id, $trap_match_cache)
+    {
         foreach ($trap_match_cache as $value) {
             if ($this->checkGenerate($value['tmo_id'])) {
                 continue;
@@ -92,7 +93,7 @@ class trapsMatching extends AbstractObject
         if (isset($this->trap_match_cache[$trap_id])) {
             $this->generateObject($trap_id, $this->trap_match_cache[$trap_id]);
             return $this->trap_match_cache[$trap_id];
-        } else if ($this->use_cache == 1) {
+        } elseif ($this->use_cache == 1) {
             return null;
         }
 
@@ -107,12 +108,12 @@ class trapsMatching extends AbstractObject
 
         $this->stmt_trap->bindParam(':trap_id', $trap_id, PDO::PARAM_INT);
         $this->stmt_trap->execute();
-        $trap_match_cache = array();
+        $trap_match_cache = [];
         foreach ($this->stmt_trap->fetchAll(PDO::FETCH_ASSOC) as &$value) {
             $trap_match_cache[$value['traps_id']] = $value;
         }
-        
-        $this->generateObject($trap_id, $trap_match_cache[$trap_id]);        
+
+        $this->generateObject($trap_id, $trap_match_cache[$trap_id]);
         return $trap_match_cache;
     }
 }

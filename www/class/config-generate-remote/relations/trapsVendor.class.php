@@ -24,24 +24,24 @@ class trapsVendor extends AbstractObject
 {
     protected $table = 'traps_vendor';
     protected $generate_filename = 'traps_vendor.infile';
-    protected $attributes_write = array(
+    protected $attributes_write = [
         'id',
         'name',
         'alias',
         'description'
-    );
+    ];
 
     public function add($id, $name, $alias, $description)
     {
         if ($this->checkGenerate($id)) {
             return null;
         }
-        $relation = array(
+        $relation = [
             'id' => $id,
             'name' => $name,
             'alias' => $alias,
             'description' => $description,
-        );
+        ];
         $this->generateObjectInFile($relation, $id);
     }
 }

@@ -60,11 +60,12 @@ class ServiceProviderTest extends TestCase
         $this->container[\Centreon\ServiceProvider::CENTREON_DB_MANAGER] =
             new \Centreon\Infrastructure\Service\CentreonDBManagerService($locator);
         $this->container[\Centreon\ServiceProvider::CENTREON_WEBSERVICE] =
-            $this->container[\Centreon\ServiceProvider::CENTREON_CLAPI] = new class {
-                public function add($class)
-                {
-                }
-            };
+        $this->container[\Centreon\ServiceProvider::CENTREON_CLAPI] = new class
+        {
+            public function add($class)
+            {
+            }
+        };
 
         $this->container['yml.config'] = function () {
             return [];

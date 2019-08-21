@@ -37,12 +37,12 @@ class Media extends AbstractObject
         dir_alias,
         dir_comment
     ';
-    protected $attributes_write = array(
+    protected $attributes_write = [
         'img_id',
         'img_name',
         'img_path',
         'img_comment',
-    );
+    ];
     protected $path_img = null;
 
     private function getMedias()
@@ -62,9 +62,11 @@ class Media extends AbstractObject
         $this->path_img = $row['value'];
     }
 
-    protected function copyMedia($dir, $file) {
-        $this->backend_instance->createDirectories(array($this->backend_instance->getPath() . '/media/' . $dir));
-        @copy($this->path_img . '/' . $dir . '/' . $file, $this->backend_instance->getPath() . '/media/' . $dir . '/' . $file);
+    protected function copyMedia($dir, $file)
+    {
+        $this->backend_instance->createDirectories([$this->backend_instance->getPath() . '/media/' . $dir]);
+        @copy($this->path_img . '/' . $dir . '/' . $file,
+            $this->backend_instance->getPath() . '/media/' . $dir . '/' . $file);
     }
 
     public function getMediaPathFromId($media_id)
@@ -80,15 +82,17 @@ class Media extends AbstractObject
                 return $result;
             }
 
-            $media = array(
+            $media = [
                 'img_id' => $media_id,
                 'img_name' => $this->medias[$media_id]['img_name'],
                 'img_path' => $this->medias[$media_id]['img_path'],
                 'img_comment' => $this->medias[$media_id]['img_comment'],
-            );
+            ];
             $this->generateObjectInFile($media, $media_id);
-            viewImgDirRelation::getInstance($this->dependencyInjector)->addRelation($media_id, $this->medias[$media_id]['dir_id']);
-            viewImageDir::getInstance($this->dependencyInjector)->add($this->medias[$media_id], $this->medias[$media_id]['dir_id']);
+            viewImgDirRelation::getInstance($this->dependencyInjector)
+                ->addRelation($media_id, $this->medias[$media_id]['dir_id']);
+            viewImageDir::getInstance($this->dependencyInjector)
+                ->add($this->medias[$media_id], $this->medias[$media_id]['dir_id']);
             $this->copyMedia($this->medias[$media_id]['dir_name'], $this->medias[$media_id]['img_path']);
         }
 

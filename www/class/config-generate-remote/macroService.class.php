@@ -26,17 +26,17 @@ class macroService extends AbstractObject
 {
     private $use_cache = 1;
     private $done_cache = 0;
-    private $macro_service_cache = array();
+    private $macro_service_cache = [];
     protected $stmt_service = null;
     protected $table = 'on_demand_macro_service';
     protected $generate_filename = 'on_demand_macro_service.infile';
-    protected $attributes_write = array(
+    protected $attributes_write = [
         'svc_svc_id',
         'svc_macro_name',
         'svc_macro_value',
         'is_password',
         'description',
-    );
+    ];
 
     public function __construct(\Pimple\Container $dependencyInjector)
     {
@@ -53,23 +53,24 @@ class macroService extends AbstractObject
         $stmt->execute();
         while (($macro = $stmt->fetch(PDO::FETCH_ASSOC))) {
             if (!isset($this->macro_service_cache[$macro['svc_svc_id']])) {
-                $this->macro_service_cache[$macro['svc_svc_id']] = array();
+                $this->macro_service_cache[$macro['svc_svc_id']] = [];
             }
-            $this->macro_service_cache[$macro['svc_svc_id']][$macro['svc_macro_id']] = array(
+            $this->macro_service_cache[$macro['svc_svc_id']][$macro['svc_macro_id']] = [
                 'svc_svc_id' => $macro['svc_svc_id'],
                 'svc_macro_name' => $macro['svc_macro_name'],
                 'svc_macro_value' => $macro['svc_macro_value'],
                 'is_password' => $macro['is_password'],
                 'description' => $macro['description'],
-            );
+            ];
         }
     }
 
-    private function writeMacrosService($service_id) {
+    private function writeMacrosService($service_id)
+    {
         if ($this->checkGenerate($service_id)) {
             return null;
         }
-        
+
         foreach ($this->macro_service_cache[$service_id] as $svc_macro_id => $value) {
             $this->generateObjectInFile($value, $service_id);
         }
@@ -97,15 +98,15 @@ class macroService extends AbstractObject
 
         $this->stmt_service->bindParam(':service_id', $service_id, PDO::PARAM_INT);
         $this->stmt_service->execute();
-        $this->macro_service_cache[$service_id] = array();
+        $this->macro_service_cache[$service_id] = [];
         while (($macro = $this->stmt_service->fetch(PDO::FETCH_ASSOC))) {
-             $this->macro_service_cache[$service_id][$macro['svc_macro_id']] = array(
+            $this->macro_service_cache[$service_id][$macro['svc_macro_id']] = [
                 'svc_svc_id' => $macro['svc_svc_id'],
                 'svc_macro_name' => $macro['svc_macro_name'],
                 'svc_macro_value' => $macro['svc_macro_value'],
                 'is_password' => $macro['is_password'],
                 'description' => $macro['description'],
-            );
+            ];
         }
 
         $this->writeMacrosService($service_id);

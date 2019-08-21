@@ -78,22 +78,23 @@ class ExportManifest
         }
 
         $this->data = $this->commitment->getParser()->parse($file);
-        
-        $checkManifestKeys = function (array $data) : array {
+
+        $checkManifestKeys = function (array $data): array {
             $keys = ['date', 'remote_server', 'pollers', 'import'];
             $missingKeys = [];
-            
+
             foreach ($keys as $key) {
                 if (!array_key_exists($key, $data)) {
                     $missingKeys[] = $key;
                 }
             }
-            
+
             return $missingKeys;
         };
 
         if ($missingKeys = $checkManifestKeys($this->data)) {
-            throw new Exception(sprintf("Missing data in a manifest file:\n - %s", join("\n - ", $missingKeys)), static::ERR_CODE_MANIFEST_WRONG_FORMAT);
+            throw new Exception(sprintf("Missing data in a manifest file:\n - %s", join("\n - ", $missingKeys)),
+                static::ERR_CODE_MANIFEST_WRONG_FORMAT);
         }
 
         # Compare only the major and minor version, not bugfix because no SQL schema changes
@@ -116,7 +117,7 @@ class ExportManifest
 
     public function dump(array $exportManifest): void
     {
-        $data = array_merge($exportManifest, [ "version" => $this->version ]);
+        $data = array_merge($exportManifest, ["version" => $this->version]);
 
         $this->commitment->getParser()->dump($data, $this->getFile());
     }

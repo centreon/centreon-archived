@@ -26,8 +26,8 @@ class Contactgroup extends AbstractObject
 {
     protected $use_cache = 1;
     private $done_cache = 0;
-    private $cg_service_linked_cache = array();
-    protected $cg_cache = array();
+    private $cg_service_linked_cache = [];
+    protected $cg_cache = [];
     protected $cg = null;
     protected $table = 'contactgroup';
     protected $generate_filename = 'contactgroups.infile';
@@ -37,12 +37,12 @@ class Contactgroup extends AbstractObject
         cg_alias,
         cg_comment
     ';
-    protected $attributes_write = array(
+    protected $attributes_write = [
         'cg_id',
         'cg_name',
         'cg_alias',
         'cg_comment'
-    );
+    ];
     protected $stmt_cg = null;
     protected $stmt_contact = null;
     protected $stmt_cg_service = null;
@@ -69,7 +69,7 @@ class Contactgroup extends AbstractObject
             if (isset($this->cg_service_linked_cache[$value['service_service_id']])) {
                 $this->cg_service_linked_cache[$value['service_service_id']][] = $value['contactgroup_cg_id'];
             } else {
-                $this->cg_service_linked_cache[$value['service_service_id']] = array($value['contactgroup_cg_id']);
+                $this->cg_service_linked_cache[$value['service_service_id']] = [$value['contactgroup_cg_id']];
             }
         }
     }
@@ -94,7 +94,7 @@ class Contactgroup extends AbstractObject
             return $this->cg_service_linked_cache[$service_id];
         }
         if ($this->done_cache == 1) {
-            return array();
+            return [];
         }
 
         if (is_null($this->stmt_cg_service)) {

@@ -27,8 +27,8 @@ class Servicegroup extends AbstractObject
     private $use_cache = 1;
     private $done_cache = 0;
 
-    private $sg = array();
-    private $sg_relation_cache = array();
+    private $sg = [];
+    private $sg_relation_cache = [];
     protected $table = 'servicegroup';
     protected $generate_filename = 'servicegroups.infile';
     protected $attributes_select = '
@@ -37,12 +37,12 @@ class Servicegroup extends AbstractObject
         sg_alias,
         geo_coords
     ';
-    protected $attributes_write = array(
+    protected $attributes_write = [
         'sg_id',
         'sg_name',
         'sg_alias',
         'geo_coords'
-    );
+    ];
     protected $stmt_sg = null;
     protected $stmt_service_sg = null;
     protected $stmt_stpl_sg = null;
@@ -70,7 +70,7 @@ class Servicegroup extends AbstractObject
         if (is_null($this->sg[$sg_id])) {
             return 1;
         }
-        $this->sg[$sg_id]['members_cache'] = array();
+        $this->sg[$sg_id]['members_cache'] = [];
     }
 
     public function addServiceInSg($sg_id, $service_id, $service_description, $host_id, $host_name)
@@ -83,7 +83,7 @@ class Servicegroup extends AbstractObject
             return 1;
         }
 
-        $this->sg[$sg_id]['members_cache'][$host_id . '_' . $service_id] = array($host_name, $service_description);
+        $this->sg[$sg_id]['members_cache'][$host_id . '_' . $service_id] = [$host_name, $service_description];
         return 0;
     }
 
@@ -102,7 +102,7 @@ class Servicegroup extends AbstractObject
             if (isset($this->sg_relation_cache[$value['service_service_id']])) {
                 $this->sg_relation_cache[$value['service_service_id']][] = $value;
             } else {
-                $this->sg_relation_cache[$value['service_service_id']] = array($value);
+                $this->sg_relation_cache[$value['service_service_id']] = [$value];
             }
         }
 
@@ -116,7 +116,7 @@ class Servicegroup extends AbstractObject
             return $this->sg_relation_cache[$service_id];
         }
         if ($this->done_cache == 1) {
-            return array();
+            return [];
         }
 
         if (is_null($this->stmt_stpl_sg)) {
@@ -143,7 +143,7 @@ class Servicegroup extends AbstractObject
             return $this->sg_relation_cache[$service_id];
         }
         if ($this->done_cache == 1) {
-            return array();
+            return [];
         }
 
         if (is_null($this->stmt_service_sg)) {
@@ -195,7 +195,7 @@ class Servicegroup extends AbstractObject
 
     public function getServicegroups()
     {
-        $result = array();
+        $result = [];
         foreach ($this->sg as $id => &$value) {
             if (is_null($value) || count($value['members_cache']) == 0) {
                 continue;
@@ -205,12 +205,12 @@ class Servicegroup extends AbstractObject
         return $result;
     }
 
-    public function reset($createfile=false)
+    public function reset($createfile = false)
     {
         parent::reset($createfile);
         foreach ($this->sg as &$value) {
             if (!is_null($value)) {
-                $value['members_cache'] = array();
+                $value['members_cache'] = [];
             }
         }
     }

@@ -24,17 +24,17 @@ class trapsGroupRelation extends AbstractObject
 {
     protected $table = 'traps_group_relation';
     protected $generate_filename = 'traps_group_relation.infile';
-    protected $attributes_write = array(
+    protected $attributes_write = [
         'traps_group_id',
         'traps_id',
-    );
+    ];
 
     public function addRelation($traps_id, $traps_group_id)
     {
-        $relation = array(
+        $relation = [
             'traps_id' => $traps_id,
             'traps_group_id' => $traps_group_id,
-        );
+        ];
         $this->generateObjectInFile($relation);
     }
 }

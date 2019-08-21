@@ -48,9 +48,10 @@ class ServiceProvider implements AutoloadServiceProviderInterface
      */
     public function register(Container $pimple): void
     {
-        $pimple->extend(\Centreon\ServiceProvider::YML_CONFIG, function (array $cc, Container $pimple) {
-            return $pimple[\CentreonLegacy\ServiceProvider::CONFIGURATION]->getModuleConfig(__DIR__);
-        });
+        $pimple->extend(\Centreon\ServiceProvider::YML_CONFIG,
+            function (array $cc, Container $pimple) {
+                return $pimple[\CentreonLegacy\ServiceProvider::CONFIGURATION]->getModuleConfig(__DIR__);
+            });
 
         $pimple[\Centreon\ServiceProvider::CENTREON_WEBSERVICE]->add(Webservice\CentreonRemoteServer::class);
         $pimple[\Centreon\ServiceProvider::CENTREON_WEBSERVICE]->add(Webservice\CentreonConfigurationRemote::class);
@@ -87,37 +88,41 @@ class ServiceProvider implements AutoloadServiceProviderInterface
             return $service;
         };
 
-        $pimple['centreon_remote.remote_connection_service'] = function (Container $pimple): RemoteConnectionConfigurationService {
-            $service = new RemoteConnectionConfigurationService(
-                $pimple[\Centreon\ServiceProvider::CENTREON_DB_MANAGER]->getAdapter('configuration_db')
-            );
-            return $service;
-        };
+        $pimple['centreon_remote.remote_connection_service'] =
+            function (Container $pimple): RemoteConnectionConfigurationService {
+                $service = new RemoteConnectionConfigurationService(
+                    $pimple[\Centreon\ServiceProvider::CENTREON_DB_MANAGER]->getAdapter('configuration_db')
+                );
+                return $service;
+            };
 
-        $pimple['centreon_remote.poller_connection_service'] = function (Container $pimple): PollerConnectionConfigurationService {
-            $service = new PollerConnectionConfigurationService(
-                $pimple[\Centreon\ServiceProvider::CENTREON_DB_MANAGER]->getAdapter('configuration_db')
-            );
-            $service->setBrokerRepository($pimple[\Centreon\ServiceProvider::CENTREON_BROKER_REPOSITORY]);
-            $service->setBrokerConfigurationService($pimple['centreon.broker_configuration_service']);
-            return $service;
-        };
+        $pimple['centreon_remote.poller_connection_service'] =
+            function (Container $pimple): PollerConnectionConfigurationService {
+                $service = new PollerConnectionConfigurationService(
+                    $pimple[\Centreon\ServiceProvider::CENTREON_DB_MANAGER]->getAdapter('configuration_db')
+                );
+                $service->setBrokerRepository($pimple[\Centreon\ServiceProvider::CENTREON_BROKER_REPOSITORY]);
+                $service->setBrokerConfigurationService($pimple['centreon.broker_configuration_service']);
+                return $service;
+            };
 
-        $pimple['centreon_remote.poller_config_service'] = function (Container $pimple): LinkedPollerConfigurationService {
-            $service = new LinkedPollerConfigurationService(
-                $pimple[\Centreon\ServiceProvider::CENTREON_DB_MANAGER]->getAdapter('configuration_db')
-            );
-            $service->setBrokerRepository($pimple[\Centreon\ServiceProvider::CENTREON_BROKER_REPOSITORY]);
-            $service->setBrokerConfigurationService($pimple['centreon.broker_configuration_service']);
-            $service->setPollerInteractionService($pimple['centreon_remote.poller_interaction_service']);
-            $service->setTaskService($pimple['centreon.taskservice']);
-            return $service;
-        };
+        $pimple['centreon_remote.poller_config_service'] =
+            function (Container $pimple): LinkedPollerConfigurationService {
+                $service = new LinkedPollerConfigurationService(
+                    $pimple[\Centreon\ServiceProvider::CENTREON_DB_MANAGER]->getAdapter('configuration_db')
+                );
+                $service->setBrokerRepository($pimple[\Centreon\ServiceProvider::CENTREON_BROKER_REPOSITORY]);
+                $service->setBrokerConfigurationService($pimple['centreon.broker_configuration_service']);
+                $service->setPollerInteractionService($pimple['centreon_remote.poller_interaction_service']);
+                $service->setTaskService($pimple['centreon.taskservice']);
+                return $service;
+            };
 
-        $pimple['centreon_remote.poller_config_bridge'] = function (Container $pimple): PollerConfigurationRequestBridge {
-            $service = new PollerConfigurationRequestBridge($pimple);
-            return $service;
-        };
+        $pimple['centreon_remote.poller_config_bridge'] =
+            function (Container $pimple): PollerConfigurationRequestBridge {
+                $service = new PollerConfigurationRequestBridge($pimple);
+                return $service;
+            };
 
         $pimple['centreon_remote.export'] = function (Container $container): Infrastructure\Service\ExportService {
             $services = [
@@ -134,11 +139,12 @@ class ServiceProvider implements AutoloadServiceProviderInterface
             return $service;
         };
 
-        $pimple['centreon_remote.exporter.cache'] = function (Container $container): Infrastructure\Service\ExporterCacheService {
-            $service = new Infrastructure\Service\ExporterCacheService($container);
+        $pimple['centreon_remote.exporter.cache'] =
+            function (Container $container): Infrastructure\Service\ExporterCacheService {
+                $service = new Infrastructure\Service\ExporterCacheService($container);
 
-            return $service;
-        };
+                return $service;
+            };
 
         $pimple['centreon_remote.exporter'] = function (Container $container): Infrastructure\Service\ExporterService {
             $service = new Infrastructure\Service\ExporterService($container);
@@ -149,21 +155,23 @@ class ServiceProvider implements AutoloadServiceProviderInterface
         //-----------//
         // Exporters
         //-----------//
-        
+
         // Configuration
-        $pimple['centreon_remote.exporter']->add(Domain\Exporter\ConfigurationExporter::class, function () use ($pimple) {
-            $services = [
-                \Centreon\ServiceProvider::CENTREON_DB_MANAGER,
-            ];
+        $pimple['centreon_remote.exporter']->add(Domain\Exporter\ConfigurationExporter::class,
+            function () use ($pimple
+            ) {
+                $services = [
+                    \Centreon\ServiceProvider::CENTREON_DB_MANAGER,
+                ];
 
-            $locator = new ServiceLocator($pimple, $services);
-            $service = new Domain\Exporter\ConfigurationExporter($locator);
+                $locator = new ServiceLocator($pimple, $services);
+                $service = new Domain\Exporter\ConfigurationExporter($locator);
 
-            return $service;
-        });
+                return $service;
+            });
     }
 
-    public static function order() : int
+    public static function order(): int
     {
         return 20;
     }

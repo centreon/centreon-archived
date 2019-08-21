@@ -54,7 +54,7 @@ class ConfigurationExporter extends ExporterServiceAbstract
 
     /**
      * Import data
-     * 
+     *
      * @param \CentreonRemote\Infrastructure\Export\ExportManifest $manifest
      */
     public function import(ExportManifest $manifest): void
@@ -72,17 +72,20 @@ class ConfigurationExporter extends ExporterServiceAbstract
         try {
             // allow insert records without foreign key checks
             $db->query('SET FOREIGN_KEY_CHECKS=0;');
-            
+
             $import = $manifest->get("import");
             foreach ($import[data] as $data) {
                 // truncate table
                 $db->query("TRUNCATE TABLE `" . $data[table] . "`;");
-        
+
                 // insert data
                 $exportPathFile = $this->getFile($data[filename]);
                 echo date("Y-m-d H:i:s") . " - INFO - Loading '" . $exportPathFile . "'.\n";
-                $db->loadDataInfile($exportPathFile, $data[table], $import[infile_clauses][fields_clause],
-                    $import[infile_clauses][lines_clause], $data[columns]);
+                $db->loadDataInfile($exportPathFile,
+                    $data[table],
+                    $import[infile_clauses][fields_clause],
+                    $import[infile_clauses][lines_clause],
+                    $data[columns]);
             }
 
             // restore foreign key checks
@@ -95,7 +98,7 @@ class ConfigurationExporter extends ExporterServiceAbstract
             $db->rollBack();
             echo date("Y-m-d H:i:s") . " - ERROR - Loading failed.\n";
         }
-        
+
         // media copy
         $exportPathMedia = $this->commitment->getPath() . "/media";
         $mediaPath = static::MEDIA_PATH;
@@ -105,18 +108,18 @@ class ConfigurationExporter extends ExporterServiceAbstract
     /**
      * Copy directory recursively
      */
-    private function recursive_copy($src, $dst) {
+    private function recursive_copy($src, $dst)
+    {
         $dir = opendir($src);
         @mkdir($dst, $this->commitment->getFilePermission(), true);
-        while(( $file = readdir($dir)) ) {
-            if (( $file != '.' ) && ( $file != '..' )) {
-                if ( is_dir($src . '/' . $file) ) {
-                    $this->recursive_copy($src .'/'. $file, $dst .'/'. $file);
-                }
-                else {
-                    echo date("Y-m-d H:i:s") . " - INFO - Copying '" . $src ."/". $file . "'.\n";
-                    copy($src .'/'. $file, $dst .'/'. $file);
-                    chmod($dst .'/'. $file, $this->commitment->getFilePermission());
+        while (($file = readdir($dir))) {
+            if (($file != '.') && ($file != '..')) {
+                if (is_dir($src . '/' . $file)) {
+                    $this->recursive_copy($src . '/' . $file, $dst . '/' . $file);
+                } else {
+                    echo date("Y-m-d H:i:s") . " - INFO - Copying '" . $src . "/" . $file . "'.\n";
+                    copy($src . '/' . $file, $dst . '/' . $file);
+                    chmod($dst . '/' . $file, $this->commitment->getFilePermission());
                 }
             }
         }

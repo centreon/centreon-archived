@@ -17,70 +17,70 @@
  * For more information : contact@centreon.com
  *
  */
- 
+
 namespace ConfigGenerateRemote;
 
 use \PDO;
 use \Exception;
 
 // file centreon.config.php may not exist in test environment
-$configFile = realpath(dirname(__FILE__) . "/../../../config/centreon.config.php");
+$configFile = realpath(__DIR__ . "/../../../config/centreon.config.php");
 if ($configFile !== false) {
     require_once $configFile;
 }
 
-require_once dirname(__FILE__) . '/backend.class.php';
-require_once dirname(__FILE__) . '/abstract/object.class.php';
-require_once dirname(__FILE__) . '/hosttemplate.class.php';
-require_once dirname(__FILE__) . '/command.class.php';
-require_once dirname(__FILE__) . '/timeperiod.class.php';
-require_once dirname(__FILE__) . '/hostgroup.class.php';
-require_once dirname(__FILE__) . '/servicegroup.class.php';
-require_once dirname(__FILE__) . '/contact.class.php';
-require_once dirname(__FILE__) . '/contactgroup.class.php';
-require_once dirname(__FILE__) . '/servicetemplate.class.php';
-require_once dirname(__FILE__) . '/service.class.php';
-require_once dirname(__FILE__) . '/media.class.php';
-require_once dirname(__FILE__) . '/macroService.class.php';
-require_once dirname(__FILE__) . '/host.class.php';
-require_once dirname(__FILE__) . '/serviceCategory.class.php';
-require_once dirname(__FILE__) . '/resource.class.php';
-require_once dirname(__FILE__) . '/engine.class.php';
-require_once dirname(__FILE__) . '/graph.class.php';
-require_once dirname(__FILE__) . '/manifest.class.php';
-require_once dirname(__FILE__) . '/hostCategory.class.php';
-require_once dirname(__FILE__) . '/curves.class.php';
-require_once dirname(__FILE__) . '/trap.class.php';
-require_once dirname(__FILE__) . '/relations/viewImgDirRelation.class.php';
-require_once dirname(__FILE__) . '/relations/viewImageDir.class.php';
-require_once dirname(__FILE__) . '/relations/extendedServiceInformation.class.php';
-require_once dirname(__FILE__) . '/relations/extendedHostInformation.class.php';
-require_once dirname(__FILE__) . '/relations/hostServiceRelation.class.php';
-require_once dirname(__FILE__) . '/relations/hostTemplateRelation.class.php';
-require_once dirname(__FILE__) . '/relations/macroHost.class.php';
-require_once dirname(__FILE__) . '/relations/timeperiodExceptions.class.php';
-require_once dirname(__FILE__) . '/relations/contactgroupHostRelation.class.php';
-require_once dirname(__FILE__) . '/relations/contactgroupServiceRelation.class.php';
-require_once dirname(__FILE__) . '/relations/contactHostRelation.class.php';
-require_once dirname(__FILE__) . '/relations/contactServiceRelation.class.php';
-require_once dirname(__FILE__) . '/relations/contactHostcommandsRelation.class.php';
-require_once dirname(__FILE__) . '/relations/contactServicecommandsRelation.class.php';
-require_once dirname(__FILE__) . '/relations/hostcategoriesRelation.class.php';
-require_once dirname(__FILE__) . '/relations/serviceCategoriesRelation.class.php';
-require_once dirname(__FILE__) . '/relations/hostgroupRelation.class.php';
-require_once dirname(__FILE__) . '/relations/servicegroupRelation.class.php';
-require_once dirname(__FILE__) . '/relations/trapsServiceRelation.class.php';
-require_once dirname(__FILE__) . '/relations/trapsVendor.class.php';
-require_once dirname(__FILE__) . '/relations/trapsGroupRelation.class.php';
-require_once dirname(__FILE__) . '/relations/trapsGroup.class.php';
-require_once dirname(__FILE__) . '/relations/trapsMatching.class.php';
-require_once dirname(__FILE__) . '/relations/trapsPreexec.class.php';
-require_once dirname(__FILE__) . '/relations/nagiosServer.class.php';
-require_once dirname(__FILE__) . '/relations/cfgResourceInstanceRelation.class.php';
+require_once __DIR__ . '/backend.class.php';
+require_once __DIR__ . '/abstract/object.class.php';
+require_once __DIR__ . '/hosttemplate.class.php';
+require_once __DIR__ . '/command.class.php';
+require_once __DIR__ . '/timeperiod.class.php';
+require_once __DIR__ . '/hostgroup.class.php';
+require_once __DIR__ . '/servicegroup.class.php';
+require_once __DIR__ . '/contact.class.php';
+require_once __DIR__ . '/contactgroup.class.php';
+require_once __DIR__ . '/servicetemplate.class.php';
+require_once __DIR__ . '/service.class.php';
+require_once __DIR__ . '/media.class.php';
+require_once __DIR__ . '/macroService.class.php';
+require_once __DIR__ . '/host.class.php';
+require_once __DIR__ . '/serviceCategory.class.php';
+require_once __DIR__ . '/resource.class.php';
+require_once __DIR__ . '/engine.class.php';
+require_once __DIR__ . '/graph.class.php';
+require_once __DIR__ . '/manifest.class.php';
+require_once __DIR__ . '/hostCategory.class.php';
+require_once __DIR__ . '/curves.class.php';
+require_once __DIR__ . '/trap.class.php';
+require_once __DIR__ . '/relations/viewImgDirRelation.class.php';
+require_once __DIR__ . '/relations/viewImageDir.class.php';
+require_once __DIR__ . '/relations/extendedServiceInformation.class.php';
+require_once __DIR__ . '/relations/extendedHostInformation.class.php';
+require_once __DIR__ . '/relations/hostServiceRelation.class.php';
+require_once __DIR__ . '/relations/hostTemplateRelation.class.php';
+require_once __DIR__ . '/relations/macroHost.class.php';
+require_once __DIR__ . '/relations/timeperiodExceptions.class.php';
+require_once __DIR__ . '/relations/contactgroupHostRelation.class.php';
+require_once __DIR__ . '/relations/contactgroupServiceRelation.class.php';
+require_once __DIR__ . '/relations/contactHostRelation.class.php';
+require_once __DIR__ . '/relations/contactServiceRelation.class.php';
+require_once __DIR__ . '/relations/contactHostcommandsRelation.class.php';
+require_once __DIR__ . '/relations/contactServicecommandsRelation.class.php';
+require_once __DIR__ . '/relations/hostcategoriesRelation.class.php';
+require_once __DIR__ . '/relations/serviceCategoriesRelation.class.php';
+require_once __DIR__ . '/relations/hostgroupRelation.class.php';
+require_once __DIR__ . '/relations/servicegroupRelation.class.php';
+require_once __DIR__ . '/relations/trapsServiceRelation.class.php';
+require_once __DIR__ . '/relations/trapsVendor.class.php';
+require_once __DIR__ . '/relations/trapsGroupRelation.class.php';
+require_once __DIR__ . '/relations/trapsGroup.class.php';
+require_once __DIR__ . '/relations/trapsMatching.class.php';
+require_once __DIR__ . '/relations/trapsPreexec.class.php';
+require_once __DIR__ . '/relations/nagiosServer.class.php';
+require_once __DIR__ . '/relations/cfgResourceInstanceRelation.class.php';
 
 class Generate
 {
-    private $poller_cache = array();
+    private $poller_cache = [];
     private $backend_instance = null;
     private $current_poller = null;
     private $installedModules = null;
@@ -116,7 +116,7 @@ class Generate
             throw new Exception("Cannot find poller id '" . $poller_id . "'");
         }
     }
-    
+
     private function getPollersFromRemote($remote_id)
     {
         $query = "SELECT * FROM nagios_server " .
@@ -126,7 +126,7 @@ class Generate
         $stmt->execute();
         $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
         if (is_null($result)) {
-            $result = array();
+            $result = [];
         }
         return $result;
     }
@@ -187,7 +187,7 @@ class Generate
         if (!is_null($this->installedModules)) {
             return $this->installedModules;
         }
-        $this->installedModules = array();
+        $this->installedModules = [];
         $stmt = $this->backend_instance->db->prepare("SELECT name FROM modules_informations");
         $stmt->execute();
         foreach ($stmt->fetchAll(PDO::FETCH_ASSOC) as $value) {
@@ -200,10 +200,11 @@ class Generate
         $this->getInstalledModules();
 
         foreach ($this->installedModules as $module) {
-            if ($files = glob(_CENTREON_PATH_ . 'www/modules/' . $module . '/generate_files_remote/generate.class.php')) {
+            if ($files =
+                glob(_CENTREON_PATH_ . 'www/modules/' . $module . '/generate_files_remote/generate.class.php')) {
                 foreach ($files as $full_file) {
                     require_once $full_file;
-                    $module = $this->ucFirst(array('-', '_', ' '), $module);
+                    $module = $this->ucFirst(['-', '_', ' '], $module);
                     $file_name = str_replace('.class.php', '', basename($full_file));
                     $class = $module . ucfirst($file_name);
                     if (class_exists('\ConfigGenerateRemote\\' . $class)) {
@@ -278,7 +279,7 @@ class Generate
         macroHost::getInstance($this->dependencyInjector)->reset();
         nagiosServer::getInstance($this->dependencyInjector)->reset();
         serviceCategoriesRelation::getInstance($this->dependencyInjector)->reset();
-        servicegroupRelation::getInstance($this->dependencyInjector)->reset();        
+        servicegroupRelation::getInstance($this->dependencyInjector)->reset();
         timeperiodExceptions::getInstance($this->dependencyInjector)->reset();
         trapsGroup::getInstance($this->dependencyInjector)->reset();
         trapsGroupRelation::getInstance($this->dependencyInjector)->reset();
@@ -295,7 +296,7 @@ class Generate
      */
     public function reset()
     {
-        $this->poller_cache = array();
+        $this->poller_cache = [];
         $this->current_poller = null;
         $this->installedModules = null;
         $this->module_objects = null;

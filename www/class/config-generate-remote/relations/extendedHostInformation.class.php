@@ -24,7 +24,7 @@ class extendedHostInformation extends AbstractObject
 {
     protected $table = 'extended_host_information';
     protected $generate_filename = 'extended_host_information.infile';
-    protected $attributes_write = array(
+    protected $attributes_write = [
         'host_host_id',
         'ehi_notes',
         'ehi_notes_url',
@@ -33,7 +33,7 @@ class extendedHostInformation extends AbstractObject
         'ehi_icon_image_alt',
         'ehi_2d_coords',
         'ehi_3d_coords',
-    );
+    ];
 
     public function add($object, $host_id)
     {

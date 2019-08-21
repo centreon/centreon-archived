@@ -68,7 +68,8 @@ final class ExportCommitment
         ExportParserInterface $parser = null,
         string $path = null,
         array $exporters = null
-    ) {
+    )
+    {
         if ($remote && $pollers && !in_array($remote, $pollers)) {
             $pollers[] = $remote;
         }

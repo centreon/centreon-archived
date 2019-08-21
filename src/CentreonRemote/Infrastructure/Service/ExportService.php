@@ -1,4 +1,5 @@
 <?php
+
 namespace CentreonRemote\Infrastructure\Service;
 
 use Psr\Container\ContainerInterface;
@@ -54,8 +55,7 @@ class ExportService
 
         $version = $this->db
             ->getRepository(Repository\InformationsRepository::class)
-            ->getOneByKey('version')
-        ;
+            ->getOneByKey('version');
 
         if ($version) {
             $this->version = $version->getValue();
@@ -65,9 +65,10 @@ class ExportService
     /**
      * Export all that is registered in exporter
      *
-     * @todo separate work of exporters
-     * @throws \Exception
      * @param \CentreonRemote\Infrastructure\Export\ExportCommitment $commitment
+     *
+     * @throws \Exception
+     * @todo separate work of exporters
      */
     public function export(ExportCommitment $commitment): void
     {
@@ -92,8 +93,9 @@ class ExportService
     /**
      * Import
      *
-     * @throws \Exception
      * @param \CentreonRemote\Infrastructure\Export\ExportCommitment $commitment
+     *
+     * @throws \Exception
      */
     public function import(ExportCommitment $commitment = null): void
     {

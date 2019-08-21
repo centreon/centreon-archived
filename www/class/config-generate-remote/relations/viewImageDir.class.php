@@ -24,12 +24,12 @@ class viewImageDir extends AbstractObject
 {
     protected $table = 'view_img_dir';
     protected $generate_filename = 'view_image_dir.infile';
-    protected $attributes_write = array(
+    protected $attributes_write = [
         'dir_id',
         'dir_name',
         'dir_alias',
         'dir_comment',
-    );
+    ];
 
     public function add($object, $dir_id)
     {

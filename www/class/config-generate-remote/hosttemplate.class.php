@@ -22,7 +22,7 @@ namespace ConfigGenerateRemote;
 
 use \PDO;
 
-require_once dirname(__FILE__) . '/abstract/host.class.php';
+require_once __DIR__ . '/abstract/host.class.php';
 
 class HostTemplate extends AbstractHost
 {
@@ -79,7 +79,7 @@ class HostTemplate extends AbstractHost
         ehi_3d_coords,
         host_acknowledgement_timeout
     ';
-    protected $attributes_write = array(
+    protected $attributes_write = [
         'host_id',
         'command_command_id',
         'command_command_id_arg1',
@@ -105,7 +105,7 @@ class HostTemplate extends AbstractHost
         'host_register',
         'host_location',
         'host_acknowledgement_timeout'
-    );
+    ];
 
     private function getHosts()
     {
@@ -128,7 +128,8 @@ class HostTemplate extends AbstractHost
         $this->hosts[$host_id]['severity_id'] =
             hostCategory::getInstance($this->dependencyInjector)->getHostSeverityByHostId($host_id);
         if (!is_null($this->hosts[$host_id]['severity_id'])) {
-            hostcategoriesRelation::getInstance($this->dependencyInjector)->addRelation($this->hosts[$host_id]['severity_id'], $host_id);
+            hostcategoriesRelation::getInstance($this->dependencyInjector)
+                ->addRelation($this->hosts[$host_id]['severity_id'], $host_id);
         }
     }
 
@@ -171,9 +172,9 @@ class HostTemplate extends AbstractHost
         return $this->hosts[$host_id]['host_name'];
     }
 
-    public function reset($createfile=false)
+    public function reset($createfile = false)
     {
-        $this->loop_htpl = array();
+        $this->loop_htpl = [];
         parent::reset($createfile);
     }
 }

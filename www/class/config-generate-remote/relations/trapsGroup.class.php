@@ -27,17 +27,17 @@ class trapsGroup extends AbstractObject
     private $use_cache = 1;
     private $done_cache = 0;
 
-    private $trapgroup_cache = array();
-    private $trap_linked_cache = array();
+    private $trapgroup_cache = [];
+    private $trap_linked_cache = [];
 
     protected $table = 'traps_group';
     protected $generate_filename = 'traps_group.infile';
     protected $stmt_trap = null;
-    
-    protected $attributes_write = array(
+
+    protected $attributes_write = [
         'traps_group_id',
         'traps_group_name'
-    );
+    ];
 
     public function __construct(\Pimple\Container $dependencyInjector)
     {
@@ -69,7 +69,7 @@ class trapsGroup extends AbstractObject
         $stmt->execute();
         foreach ($stmt->fetchAll(PDO::FETCH_ASSOC) as $value) {
             if (!isset($this->service_linked_cache[$value['traps_id']])) {
-                $this->trap_linked_cache[$value['traps_id']] = array();
+                $this->trap_linked_cache[$value['traps_id']] = [];
             }
             $this->trap_linked_cache[$value['traps_id']][] = $value['traps_group_id'];
         }
@@ -86,7 +86,8 @@ class trapsGroup extends AbstractObject
         $this->done_cache = 1;
     }
 
-    public function generateObject($trap_id, $trap_linked_cache, &$object) {
+    public function generateObject($trap_id, $trap_linked_cache, &$object)
+    {
         foreach ($trap_linked_cache as $trap_group_id) {
             trapsGroupRelation::getInstance($this->dependencyInjector)->addRelation($trap_id, $trap_group_id);
             if ($this->checkGenerate($trap_group_id)) {
@@ -102,7 +103,7 @@ class trapsGroup extends AbstractObject
         if (isset($this->trap_linked_cache[$trap_id])) {
             $this->generateObject($trap_id, $this->trap_linked_cache[$trap_id], $this->trapgroup_cache);
             return $this->trap_linked_cache[$trap_id];
-        } else if ($this->use_cache == 1) {
+        } elseif ($this->use_cache == 1) {
             return null;
         }
 
@@ -119,14 +120,14 @@ class trapsGroup extends AbstractObject
 
         $this->stmt_trap->bindParam(':trap_id', $trap_id, PDO::PARAM_INT);
         $this->stmt_trap->execute();
-        $trap_linked_cache = array();
-        $trapgroup_cache = array();
+        $trap_linked_cache = [];
+        $trapgroup_cache = [];
         foreach ($this->stmt_trap->fetchAll(PDO::FETCH_ASSOC) as &$value) {
             $trap_linked_cache[] = $value['traps_group_id'];
             $trapgroup_cache[$value['traps_id']] = $value;
         }
-        
-        $this->generateObject($trap_id, $trap_linked_cache, $trapgroup_cache);        
+
+        $this->generateObject($trap_id, $trap_linked_cache, $trapgroup_cache);
         return $trap_linked_cache;
     }
 }

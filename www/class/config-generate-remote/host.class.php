@@ -22,12 +22,12 @@ namespace ConfigGenerateRemote;
 
 use \PDO;
 
-require_once dirname(__FILE__) . '/abstract/host.class.php';
-require_once dirname(__FILE__) . '/abstract/service.class.php';
+require_once __DIR__ . '/abstract/host.class.php';
+require_once __DIR__ . '/abstract/service.class.php';
 
 class Host extends AbstractHost
 {
-    protected $hosts_by_name = array();
+    protected $hosts_by_name = [];
     protected $hosts = null;
     protected $table = 'host';
     protected $generate_filename = 'hosts.infile';
@@ -35,8 +35,8 @@ class Host extends AbstractHost
     protected $stmt_parent = null;
     protected $stmt_service = null;
     protected $stmt_service_sg = null;
-    protected $generated_parentship = array();
-    protected $generatedHosts = array();
+    protected $generated_parentship = [];
+    protected $generatedHosts = [];
 
     private function getHostGroups(&$host)
     {
@@ -76,20 +76,20 @@ class Host extends AbstractHost
         $this->stmt_parent->execute();
         $result = $this->stmt_parent->fetchAll(PDO::FETCH_COLUMN);
 
-        $host['parents'] = array();
+        $host['parents'] = [];
         foreach ($result as $parent_id) {
             if (isset($this->hosts[$parent_id])) {
                 $host['parents'][] = $this->hosts[$parent_id]['host_name'];
 
                 $correlation_instance = Correlation::getInstance($this->dependencyInjector);
                 if ($correlation_instance->hasCorrelation()) {
-                    $this->generated_parentship[] = array(
-                        '@attributes' => array(
+                    $this->generated_parentship[] = [
+                        '@attributes' => [
                             'parent' => $parent_id,
                             'host' => $host['host_id'],
                             'instance_id' => $this->backend_instance->getPollerId()
-                        )
-                    );
+                        ]
+                    ];
                 }
             }
         }
@@ -111,7 +111,8 @@ class Host extends AbstractHost
         $service = Service::getInstance($this->dependencyInjector);
         foreach ($host['services_cache'] as $service_id) {
             $service->generateFromServiceId($host['host_id'], $host['host_name'], $service_id);
-            hostServiceRelation::getInstance($this->dependencyInjector)->addRelationHostService($host['host_id'], $service_id);
+            hostServiceRelation::getInstance($this->dependencyInjector)
+                ->addRelationHostService($host['host_id'], $service_id);
         }
     }
 
@@ -133,7 +134,8 @@ class Host extends AbstractHost
         $service = Service::getInstance($this->dependencyInjector);
         foreach ($host['services_hg_cache'] as $value) {
             $service->generateFromServiceId($host['host_id'], $host['host_name'], $value['service_service_id'], 1);
-            hostServiceRelation::getInstance($this->dependencyInjector)->addRelationHgService($value['hostgroup_hg_id'], $value['service_service_id']);
+            hostServiceRelation::getInstance($this->dependencyInjector)
+                ->addRelationHgService($value['hostgroup_hg_id'], $value['service_service_id']);
         }
     }
 
@@ -145,7 +147,7 @@ class Host extends AbstractHost
         }
     }
 
-    public function addHost($host_id, $attr = array())
+    public function addHost($host_id, $attr = [])
     {
         $this->hosts[$host_id] = $attr;
     }
@@ -175,12 +177,12 @@ class Host extends AbstractHost
         $this->getHostTemplates($host);
         $this->getHostCommands($host);
         $this->getHostPeriods($host);
-        
+
         if ($this->backend_instance->isExportContact()) {
             $this->getContactGroups($host);
             $this->getContacts($host);
         }
-        
+
         $this->getHostGroups($host);
         #$this->getParents($host);
         $this->getSeverity($host['host_id']);
@@ -211,7 +213,7 @@ class Host extends AbstractHost
         if ($localhost == 1) {
             #MetaService::getInstance($this->dependencyInjector)->generateObjects();
         }
-        
+
         Curves::getInstance($this->dependencyInjector)->generateObjects();
     }
 
@@ -238,12 +240,12 @@ class Host extends AbstractHost
         return $this->generatedHosts;
     }
 
-    public function reset($resetparent=false,$createfile=false)
+    public function reset($resetparent = false, $createfile = false)
     {
-        $this->hosts_by_name = array();
+        $this->hosts_by_name = [];
         $this->hosts = null;
-        $this->generated_parentship = array();
-        $this->generatedHosts = array();
+        $this->generated_parentship = [];
+        $this->generatedHosts = [];
         if ($resetparent == true) {
             parent::reset($createfile);
         }

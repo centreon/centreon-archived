@@ -28,18 +28,18 @@ abstract class AbstractObjectXML
     protected $generate_subpath = 'nagios';
     protected $generate_filename = null;
     protected $rootXML = 'centreonBroker';
-    protected $exported = array();
+    protected $exported = [];
     protected $fp = null;
 
-    protected $attributes_write = array();
-    protected $attributes_array = array();
-    protected $attributes_hash = array();
-    protected $attributes_default = array();
+    protected $attributes_write = [];
+    protected $attributes_array = [];
+    protected $attributes_hash = [];
+    protected $attributes_default = [];
     protected $dependencyInjector;
 
     public static function getInstance(\Pimple\Container $dependencyInjector)
     {
-        static $instances = array();
+        static $instances = [];
 
         $calledClass = get_called_class();
 
@@ -63,7 +63,7 @@ abstract class AbstractObjectXML
 
     public function reset()
     {
-        $this->exported = array();
+        $this->exported = [];
     }
 
     protected function writeFile($dir)

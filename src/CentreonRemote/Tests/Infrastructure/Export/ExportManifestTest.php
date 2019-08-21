@@ -65,23 +65,20 @@ class ExportManifestTest extends TestCase
                 'parse',
                 'dump',
             ])
-            ->getMock()
-        ;
+            ->getMock();
         $parser->method('parse')
             ->will($this->returnCallback(function () {
-                    $args = func_get_args();
-                    $file = $args[0];
+                $args = func_get_args();
+                $file = $args[0];
 
-                    return [];
-            }))
-        ;
+                return [];
+            }));
         $parser->method('dump')
             ->will($this->returnCallback(function () {
-                    $args = func_get_args();
+                $args = func_get_args();
 
-                    $this->dumpData[$args[1]] = $args[0];
-            }))
-        ;
+                $this->dumpData[$args[1]] = $args[0];
+            }));
 
         $this->commitment = new ExportCommitment(1, [2, 3], null, $parser);
         $this->manifest = $this
@@ -93,14 +90,12 @@ class ExportManifestTest extends TestCase
                 $this->commitment,
                 $this->version
             ])
-            ->getMock()
-        ;
+            ->getMock();
         $this->manifest
             ->method('getFile')
             ->will($this->returnCallback(function () {
-                    return __FILE__;
-            }))
-        ;
+                return __FILE__;
+            }));
     }
 
     /**
@@ -153,6 +148,7 @@ class ExportManifestTest extends TestCase
                 'pollers' => $this->commitment->getPollers(),
                 'import' => null,
             ],
-            ], $this->dumpData);
+        ],
+            $this->dumpData);
     }
 }

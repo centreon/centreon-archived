@@ -17,7 +17,7 @@
  * For more information : contact@centreon.com
  *
  */
- 
+
 namespace ConfigGenerateRemote;
 
 use \PDO;
@@ -35,14 +35,14 @@ class Command extends AbstractObject
         enable_shell,
         graph_id
     ';
-    protected $attributes_write = array(
+    protected $attributes_write = [
         'command_id',
         'command_name',
         'command_line',
         'command_type',
         'enable_shell',
         'graph_id'
-    );
+    ];
 
     private function getCommands()
     {

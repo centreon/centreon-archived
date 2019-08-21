@@ -24,22 +24,22 @@ class servicegroupRelation extends AbstractObject
 {
     protected $table = 'servicegroup_relation';
     protected $generate_filename = 'servicegroup_relation.infile';
-    protected $attributes_write = array(
+    protected $attributes_write = [
         'host_host_id',
         'service_service_id',
         'servicegroup_sg_id',
-    );
+    ];
 
     public function addRelationHostService($sg_id, $host_id, $service_id)
     {
         if ($this->checkGenerate($sg_id . '.' . $host_id . '.' . $service_id)) {
             return null;
         }
-        $relation = array(
+        $relation = [
             'servicegroup_sg_id' => $sg_id,
             'host_host_id' => $host_id,
             'service_service_id' => $service_id,
-        );
+        ];
         $this->generateObjectInFile($relation, $sg_id . '.' . $host_id . '.' . $service_id);
     }
 }

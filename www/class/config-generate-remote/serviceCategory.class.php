@@ -27,22 +27,22 @@ class serviceCategory extends AbstractObject
     private $use_cache = 1;
     private $done_cache = 0;
 
-    private $service_severity_cache = array();
-    private $service_severity_by_name_cache = array();
-    private $service_linked_cache = array();
+    private $service_severity_cache = [];
+    private $service_severity_by_name_cache = [];
+    private $service_linked_cache = [];
 
     protected $table = 'service_categories';
     protected $generate_filename = 'servicecategories.infile';
     protected $stmt_service = null;
     protected $stmt_hc_name = null;
-    
-    protected $attributes_write = array(
+
+    protected $attributes_write = [
         'sc_id',
         'sc_name',
         'sc_description',
         'level',
         'icon_id',
-    );
+    ];
 
     public function __construct(\Pimple\Container $dependencyInjector)
     {
@@ -100,17 +100,19 @@ class serviceCategory extends AbstractObject
         $this->cacheServiceSeverityLinked();
         $this->done_cache = 1;
     }
-    
-    public function generateObject($sc_id) {
+
+    public function generateObject($sc_id)
+    {
         if (is_null($sc_id) || $this->checkGenerate($sc_id)) {
             return null;
         }
-        
+
         if (!isset($this->service_severity_cache[$sc_id])) {
             return null;
         }
         $this->generateObjectInFile($this->service_severity_cache[$sc_id], $sc_id);
-        Media::getInstance($this->dependencyInjector)->getMediaPathFromId($this->service_severity_cache[$sc_id]['icon_id']);
+        Media::getInstance($this->dependencyInjector)
+            ->getMediaPathFromId($this->service_severity_cache[$sc_id]['icon_id']);
     }
 
     public function getServiceSeverityByServiceId($service_id)
@@ -118,8 +120,10 @@ class serviceCategory extends AbstractObject
         # Get from the cache
         if (isset($this->service_linked_cache[$service_id])) {
             if (!$this->checkGenerate($this->service_linked_cache[$service_id])) {
-                $this->generateObjectInFile($this->service_severity_cache[ $this->service_linked_cache[$service_id] ], $this->service_linked_cache[$service_id]);
-                Media::getInstance($this->dependencyInjector)->getMediaPathFromId($this->service_severity_cache[ $this->service_linked_cache[$service_id] ]['icon_id']);
+                $this->generateObjectInFile($this->service_severity_cache[$this->service_linked_cache[$service_id]],
+                    $this->service_linked_cache[$service_id]);
+                Media::getInstance($this->dependencyInjector)
+                    ->getMediaPathFromId($this->service_severity_cache[$this->service_linked_cache[$service_id]]['icon_id']);
             }
             return $this->service_linked_cache[$service_id];
         }
@@ -151,9 +155,10 @@ class serviceCategory extends AbstractObject
         $this->service_linked_cache[$service_id] = $severity['sc_id'];
         $this->service_severity_by_name_cache[$severity['sc_name']] = &$severity;
         $this->service_severity_cache[$severity['sc_id']] = &$severity;
-        
+
         $this->generateObjectInFile($severity, $severity['sc_id']);
-        Media::getInstance($this->dependencyInjector)->getMediaPathFromId($this->service_severity_cache[ $this->service_linked_cache[$service_id] ]['icon_id']);
+        Media::getInstance($this->dependencyInjector)
+            ->getMediaPathFromId($this->service_severity_cache[$this->service_linked_cache[$service_id]]['icon_id']);
         return $severity['sc_id'];
     }
 

@@ -23,7 +23,7 @@ namespace ConfigGenerateRemote;
 use \Exception;
 
 // file centreon.config.php may not exist in test environment
-$configFile = realpath(dirname(__FILE__) . "/../../../config/centreon.config.php");
+$configFile = realpath(__DIR__ . "/../../../config/centreon.config.php");
 if ($configFile !== false) {
     require_once $configFile;
 }
@@ -35,7 +35,7 @@ class Backend
     public $db = null;
     public $db_cs = null;
 
-    private $subdirs = array('configuration', 'media');
+    private $subdirs = ['configuration', 'media'];
 
     private $fieldSeparatorInfile = '~~~';
     private $lineSeparatorInfile = '######';
@@ -47,7 +47,7 @@ class Backend
     private $tmp_dir = null;
     private $full_path = null;
     private $whoaim = 'unknown';
-    
+
     private $exportContact = 0;
 
     private $poller_id = null;
@@ -65,7 +65,7 @@ class Backend
     private function deleteDir($path)
     {
         if (is_dir($path) === true) {
-            $files = array_diff(scandir($path), array('.', '..'));
+            $files = array_diff(scandir($path), ['.', '..']);
             foreach ($files as $file) {
                 $this->deleteDir(realpath($path) . '/' . $file);
             }
@@ -107,9 +107,9 @@ class Backend
 
     public function initPath($poller_id, $engine = 1)
     {
-        $this->createDirectories(array($this->generate_path));
+        $this->createDirectories([$this->generate_path]);
         $this->full_path = $this->generate_path;
-    
+
         if (is_dir($this->full_path . '/' . $poller_id) && !is_writable($this->full_path . '/' . $poller_id)) {
             throw new Exception("Not writeable directory '" . $this->full_path . '/' . $poller_id . "'");
         }
@@ -124,7 +124,7 @@ class Backend
         }
         $this->full_path .= '/' . $this->tmp_dir;
         foreach ($this->subdirs as $subdir) {
-            $this->createDirectories(array($this->full_path . '/' . $subdir));
+            $this->createDirectories([$this->full_path . '/' . $subdir]);
         }
     }
 

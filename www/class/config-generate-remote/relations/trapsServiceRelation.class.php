@@ -24,17 +24,17 @@ class trapsServiceRelation extends AbstractObject
 {
     protected $table = 'traps_service_relation';
     protected $generate_filename = 'traps_service_relation.infile';
-    protected $attributes_write = array(
+    protected $attributes_write = [
         'traps_id',
         'service_id',
-    );
+    ];
 
     public function addRelation($traps_id, $service_id)
     {
-        $relation = array(
+        $relation = [
             'traps_id' => $traps_id,
             'service_id' => $service_id,
-        );
+        ];
         $this->generateObjectInFile($relation);
     }
 }

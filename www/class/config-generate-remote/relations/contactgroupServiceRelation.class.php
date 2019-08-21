@@ -17,24 +17,24 @@
  * For more information : contact@centreon.com
  *
  */
- 
+
 namespace ConfigGenerateRemote;
 
 class contactgroupServiceRelation extends AbstractObject
 {
     protected $table = 'contactgroup_service_relation';
     protected $generate_filename = 'contactgroup_service_relation.infile';
-    protected $attributes_write = array(
+    protected $attributes_write = [
         'service_service_id',
         'contactgroup_cg_id',
-    );
+    ];
 
     public function addRelation($service_id, $cg_id)
     {
-        $relation = array(
+        $relation = [
             'service_service_id' => $service_id,
             'contactgroup_cg_id' => $cg_id,
-        );
+        ];
         $this->generateObjectInFile($relation);
     }
 }

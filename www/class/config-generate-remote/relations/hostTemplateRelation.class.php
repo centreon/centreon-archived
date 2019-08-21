@@ -17,26 +17,26 @@
  * For more information : contact@centreon.com
  *
  */
- 
+
 namespace ConfigGenerateRemote;
 
 class hostTemplateRelation extends AbstractObject
 {
     protected $table = 'host_template_relation';
     protected $generate_filename = 'host_template_relation.infile';
-    protected $attributes_write = array(
+    protected $attributes_write = [
         'host_host_id',
         'host_tpl_id',
         'order',
-    );
+    ];
 
     public function addRelation($host_id, $host_tpl_id, $order)
     {
-        $relation = array(
+        $relation = [
             'host_host_id' => $host_id,
             'host_tpl_id' => $host_tpl_id,
             'order' => $order,
-        );
+        ];
         $this->generateObjectInFile($relation, $host_id . '.' . $host_tpl_id . '.' . $order);
     }
 }
