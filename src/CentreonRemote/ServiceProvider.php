@@ -42,7 +42,7 @@ class ServiceProvider implements AutoloadServiceProviderInterface
 {
 
     /**
-     * Register Centron Remote services
+     * Register Centreon Remote services
      *
      * @param \Pimple\Container $pimple
      */
