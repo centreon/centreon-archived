@@ -99,29 +99,36 @@ if (isset($_POST["centreon_token"])
         $centreon = new Centreon($centreonAuth->userInfos);
         $_SESSION["centreon"] = $centreon;
 
-        $query = "INSERT INTO `session` (`session_id` , `user_id` , `current_page` , `last_reload`, `ip_address`) " .
-            "VALUES (?, ?, ?, ?, ?)";
-        $DBRESULT = $pearDB->prepare($query);
-        $pearDB->execute(
-            $DBRESULT,
-            array(session_id(), $centreon->user->user_id, '1', time(), $_SERVER["REMOTE_ADDR"])
-        );
-        if (!isset($_POST["submit"])) {
-            $minimize = '';
-            if (isset($_GET["min"]) && $_GET["min"] == '1') {
-                $minimize = '&min=1';
-            }
-            if (isset($_GET["p"]) && $_GET["p"] != '') {
-                header('Location: ./main.php?p=' . $_GET["p"] . $minimize);
-            } else if (isset($centreon->user->default_page) && $centreon->user->default_page != '') {
-                header('Location: ./main.php?p=' . $centreon->user->default_page . $minimize);
-            } else {
-                header('Location: ./main.php');
-            }
+        // Check for session
+        $sessionId = session_id();
+        if (!preg_match('/^[a-zA-Z0-9,-]{26}$/', $sessionId)) {
+            header("Location: ./index.php?disconnect=1");
+            $connect = false;
         } else {
-            header("Location: ./main.php");
+            $query = "INSERT INTO `session` (`session_id` , `user_id` , `current_page` , `last_reload`, `ip_address`) " .
+                "VALUES (?, ?, ?, ?, ?)";
+            $dbResult = $pearDB->prepare($query);
+            $pearDB->execute(
+                $dbResult,
+                [$sessionId, $centreon->user->user_id, '1', time(), $_SERVER["REMOTE_ADDR"]]
+            );
+            if (!isset($_POST["submit"])) {
+                $minimize = '';
+                if (isset($_GET["min"]) && $_GET["min"] == '1') {
+                    $minimize = '&min=1';
+                }
+                if (isset($_GET["p"]) && $_GET["p"] != '') {
+                    header('Location: ./main.php?p=' . $_GET["p"] . $minimize);
+                } else if (isset($centreon->user->default_page) && $centreon->user->default_page != '') {
+                    header('Location: ./main.php?p=' . $centreon->user->default_page . $minimize);
+                } else {
+                    header('Location: ./main.php');
+                }
+            } else {
+                header("Location: ./main.php");
+            }
+            $connect = true;
         }
-        $connect = true;
     } else {
         $connect = false;
     }
