@@ -46,7 +46,7 @@ require_once realpath(dirname(__FILE__) . "/../centreonSession.class.php");
 
 
 /**
- * General Centeon Management
+ * General Centreon Management
  */
 require_once "centreon.Config.Poller.class.php";
 

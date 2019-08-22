@@ -4,6 +4,7 @@ $conf_centreon['centreon_etc'] = "/etc/centreon/";
 $conf_centreon['centreon_dir_www'] = "/usr/share/centreon/www/";
 $conf_centreon['centreon_dir_rrd'] = "/var/lib/centreon";
 $conf_centreon['centreon_log'] = "/var/log/centreon";
+$conf_centreon['centreon_cachedir'] = "/var/cache/centreon/";
 $conf_centreon['centreon_varlib'] = "/var/lib/centreon";
 $conf_centreon['centreon_group'] = "centreon";
 $conf_centreon['centreon_user'] = "centreon";
