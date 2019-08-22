@@ -35,6 +35,7 @@ use CentreonRemote\Domain\Service\InformationsService;
 use CentreonRemote\Domain\Service\NotifyMasterService;
 use CentreonRemote\Domain\Service\TaskService;
 use CentreonRemote\Infrastructure\Service\PollerInteractionService;
+use ConfigGenerateRemote\Generate;
 use Centreon\ServiceProvider as SP;
 use Curl\Curl;
 
@@ -166,6 +167,9 @@ class ServiceProvider implements AutoloadServiceProviderInterface
 
                 $locator = new ServiceLocator($pimple, $services);
                 $service = new Domain\Exporter\ConfigurationExporter($locator);
+
+                $generateService = new Generate($pimple);
+                $service->setGenerateService($generateService);
 
                 return $service;
             });

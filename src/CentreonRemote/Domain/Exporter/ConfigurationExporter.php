@@ -24,10 +24,6 @@ use CentreonRemote\Infrastructure\Export\ExportManifest;
 use CentreonRemote\Infrastructure\Service\ExporterServiceAbstract;
 use Centreon\Domain\Repository;
 
-require_once __DIR__ . '/../../../../bootstrap.php';
-require_once 'config-generate-remote/generate.class.php';
-
-use ConfigGenerateRemote\Generate;
 use ConfigGenerateRemote\Manifest;
 
 class ConfigurationExporter extends ExporterServiceAbstract
@@ -37,6 +33,17 @@ class ConfigurationExporter extends ExporterServiceAbstract
     const MEDIA_PATH = _CENTREON_PATH_ . 'www/img/media';
 
     /**
+     * Set generate service
+     *
+     * @param \ConfigGenerateRemote\Generate $generateService
+     * @return void
+     */
+    public function setGenerateService(\ConfigGenerateRemote\Generate $generateService): void
+    {
+        $this->generateService = $generateService;
+    }
+
+    /**
      * Export data
      */
     public function export(int $remoteId): array
@@ -44,10 +51,7 @@ class ConfigurationExporter extends ExporterServiceAbstract
         // create path
         $this->createPath();
 
-        // call to ConfigGenerateRemote\Generate class
-        $dependencyInjector = loadDependencyInjector();
-        $config_generate = new Generate($dependencyInjector);
-        $config_generate->configRemoteServerFromId($remoteId, 'user');
+        $this->generateService->configRemoteServerFromId($remoteId, 'user');
 
         return Manifest::getInstance($dependencyInjector)->getManifest();
     }

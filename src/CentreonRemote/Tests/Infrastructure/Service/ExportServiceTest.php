@@ -53,22 +53,20 @@ class ExportServiceTest extends TestCase
         $container['centreon_remote.exporter'] = $this->getMockBuilder(ExporterService::class)
             ->disableOriginalConstructor()
             ->setMethods([
-                'all',
+                'get',
             ])
             ->getMock();
 
-        $container['centreon_remote.exporter']->method('all')
+        $container['centreon_remote.exporter']->method('get')
             ->will($this->returnCallback(function () {
                 return [
-                    [
-                        'name' => ConfigurationExporter::getName(),
-                        'classname' => ConfigurationExporter::class,
-                        'factory' => function () {
-                            return $this->getMockBuilder(ConfigurationExporter::class)
-                                ->disableOriginalConstructor()
-                                ->getMock();
-                        },
-                    ],
+                    'name' => ConfigurationExporter::getName(),
+                    'classname' => ConfigurationExporter::class,
+                    'factory' => function () {
+                        return $this->getMockBuilder(ConfigurationExporter::class)
+                            ->disableOriginalConstructor()
+                            ->getMock();
+                    },
                 ];
             }));
 
@@ -131,7 +129,7 @@ class ExportServiceTest extends TestCase
     /**
      * @covers \CentreonRemote\Infrastructure\Service\ExportService::__construct
      */
-    public function testCostruct()
+    public function testConstruct()
     {
         $this->assertAttributeInstanceOf(ExporterService::class, 'exporter', $this->export);
         $this->assertAttributeInstanceOf(ExporterCacheService::class, 'cache', $this->export);
@@ -193,8 +191,6 @@ class ExportServiceTest extends TestCase
         ]);
 
         $this->export->import($commitment);
-
-        $this->assertFileNotExists("{$path}/manifest.json");
     }
 
     /**
