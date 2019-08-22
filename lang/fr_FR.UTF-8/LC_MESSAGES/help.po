@@ -234,18 +234,6 @@ msgstr "Protocole de sérialisation des données"
 msgid "Target DBMS."
 msgstr "Type de base de données."
 
-#: centreon-web/help.php:39
-msgid ""
-"The absolute path to unix socket or TCP port for communicating with rrdcached daemon."
-msgstr ""
-"Le chemin absolu vers la socket Unix ou le port TCP pour communiquer avec le démon rrdcached."
-
-#: centreon-web/help.php:40
-msgid ""
-"Enable rrdcached option for Centreon, please see Centreon documentation to configure it."
-msgstr ""
-"Activer l'option rrdcached pour Centreon, veuillez consulter la documentation de Centreon pour le configurer."
-
 #: centreon-web/help.php:41
 msgid ""
 "The higher the buffer size is, the best compression. This however increase "
@@ -1198,14 +1186,6 @@ msgstr "Style de la police des filigranes."
 #: centreon-web/www/include/Administration/parameters/rrdtool/help.php:43
 msgid "Font size of watermarks."
 msgstr "Taille de la police des filigranes."
-
-#: centreon-web/www/include/Administration/parameters/rrdtool/help.php:50
-msgid ""
-"Enable the rrdcached for Centreon. This option is valid only with Centreon "
-"Broker"
-msgstr ""
-"Activer RRDCached pour Centreon. Cette option est utilisée uniquement avec "
-"Centreon Broker."
 
 #: centreon-web/www/include/options/accessLists/resourcesACL/help.php:8
 msgid "Name of resource rule."
