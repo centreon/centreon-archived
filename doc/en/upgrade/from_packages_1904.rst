@@ -49,7 +49,7 @@ Upgrade all the components with the following command: ::
 Additional actions
 ==================
 
-Centeon 19.10 uses a new version of PHP.
+Centreon 19.10 uses a new version of PHP.
 
 The PHP timezone should be set. Run the command: ::
 
