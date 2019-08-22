@@ -102,7 +102,7 @@ if (isset($_POST["centreon_token"])
         // Check for session
         $sessionId = session_id();
         if (empty($_COOKIE['PHPSESSID']) || $_COOKIE['PHPSESSID'] !== $sessionId) {
-            header("Location: ./index.php?disconnect=1");
+            header('Location: ./index.php?disconnect=1');
             $connect = false;
         } else {
             $query = "INSERT INTO `session` (`session_id` , `user_id` , `current_page` , `last_reload`, `ip_address`) " .
