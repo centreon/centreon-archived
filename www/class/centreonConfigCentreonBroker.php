@@ -708,7 +708,7 @@ class CentreonConfigCentreonBroker
     public function updateCentreonBrokerInfos($id, $values)
     {
         // Clean the informations for this id
-        $query = "DELETE FROM WHERE config_id = " . $id;
+        $query = "DELETE FROM cfg_centreonbroker_info WHERE config_id = " . $id;
         $this->db->query($query);
 
         $groups_infos = array();
