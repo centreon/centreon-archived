@@ -710,14 +710,6 @@ msgstr ""
 "Ative o RRDCached para o Centreon. \n"
 "Essa opção é usada apenas com o Centreon Broker."
 
-#: centreon-web/www/include/Administration/parameters/rrdtool/help.php:52
-msgid "Port for communicating with rrdcached"
-msgstr "Porta de comunicação com RRDCached"
-
-#: centreon-web/www/include/Administration/parameters/rrdtool/help.php:55
-msgid "The absolute path to unix socket for communicating with rrdcached"
-msgstr "O caminho do soquete Unix para se comunicar com o RRDCached"
-
 #: centreon-web/www/include/Administration/parameters/knowledgeBase/help.php:9
 msgid "Knowledge wiki url. Exemple: http://wiki/mywiki"
 msgstr ""
@@ -1703,12 +1695,12 @@ msgstr ""
 "Permite que você mantenha dados até que uma conexão de entrada os recupere."
 
 #: centreon-web/www/include/configuration/configCentreonBroker/help.php:75
-msgid ""
-"The Unix socket used to communicate with rrdcached.\n"
-" This is a global option, go to Administration > Options > RRDTool to modify it."
-msgstr ""
-"Caminho do soquete Unix para se comunicar com o processo RRDCacheD. \n"
-"Esta opção é definida globalmente no menu \"Administração> Opções> RRDTool\"."
+#~ msgid ""
+#~ "The Unix socket used to communicate with rrdcached.\n"
+#~ " This is a global option, go to Administration > Options > RRDTool to modify it."
+#~ msgstr ""
+#~ "Caminho do soquete Unix para se comunicar com o processo RRDCacheD. \n"
+#~ "Esta opção é definida globalmente no menu \"Administração> Opções> RRDTool\"."
 
 #: centreon-web/www/include/configuration/configCentreonBroker/help.php:77
 msgid "Path to the file."
@@ -1721,13 +1713,13 @@ msgstr ""
 " para conectar (se um endereço remoto tiver sido inserido)."
 
 #: centreon-web/www/include/configuration/configCentreonBroker/help.php:79
-msgid ""
-"The TCP port used to communicate with rrdcached.\n"
-" This is a global option, go to Administration > Options > RRDTool to modify it."
-msgstr ""
-"Porta de conexão para se comunicar com o processo RRDCacheD.\n"
-" \n"
-"Esta opção é definida globalmente no menu \"Administração> Opções> RRDTool\"."
+#~ msgid ""
+#~ "The TCP port used to communicate with rrdcached.\n"
+#~ " This is a global option, go to Administration > Options > RRDTool to modify it."
+#~ msgstr ""
+#~ "Porta de conexão para se comunicar com o processo RRDCacheD.\n"
+#~ " \n"
+#~ "Esta opção é definida globalmente no menu \"Administração> Opções> RRDTool\"."
 
 #: centreon-web/www/include/configuration/configCentreonBroker/help.php:81
 msgid "Private key file path when TLS encryption is used."

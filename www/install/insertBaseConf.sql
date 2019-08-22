@@ -730,7 +730,7 @@ INSERT INTO `cb_type_field_relation` (`cb_type_id`, `cb_field_id`, `is_required`
 (11, 11, 1, 1),
 (11, 12, 1, 2),
 (11, 41, 0, 3),
-(13, 37, 0, 3),
+(13, 37, 0, 4),
 (13, 13, 1, 1),
 (13, 14, 1, 2),
 (14, 7, 1, 4),
@@ -847,7 +847,7 @@ INSERT INTO `cb_type_field_relation` (`cb_type_id`, `cb_field_id`, `is_required`
 --
 INSERT INTO `cb_type_field_relation` (`cb_type_id`, `cb_field_id`, `is_required`, `order_display`, `jshook_name`, `jshook_arguments`) VALUES
 (33, 73, 0, 5, 'luaArguments', '{"target": "lua_parameter__value_%d"}'),
-(13, 36, 0, 4, 'rrdArguments', '{"target": "rrd_cached"}');
+(13, 36, 0, 3, 'rrdArguments', '{"target": "rrd_cached"}');
 
 --
 -- Contenu de la table `widget_parameters_field_type`
