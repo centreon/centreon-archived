@@ -640,7 +640,7 @@ class PartEngine
                     case 'version_comment':
                         $dbType = $row['Value'];
                         break;
-                    case 'version' :
+                    case 'version':
                         $dbVersion = $row['Value'];
                         break;
                     default :
