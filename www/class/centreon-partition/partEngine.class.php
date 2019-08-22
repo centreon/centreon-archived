@@ -312,7 +312,7 @@ class PartEngine
         $row = $dbResult->fetch();
 
         // maybe we need to check the value of $row["lastPart"]
-        return ($row["lastPart"]);
+        return $row["lastPart"];
     }
 
     /**
