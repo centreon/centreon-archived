@@ -643,8 +643,6 @@ class PartEngine
                     case 'version':
                         $dbVersion = $row['Value'];
                         break;
-                    default :
-                        break;
                 }
             }
             $dbResult->closeCursor();
