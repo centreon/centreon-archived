@@ -101,7 +101,7 @@ if (isset($_POST["centreon_token"])
 
         // Check for session
         $sessionId = session_id();
-        if (!isset($_COOKIE['PHPSESSID']) || $_COOKIE['PHPSESSID'] != $sessionId) {
+        if (empty($_COOKIE['PHPSESSID']) || $_COOKIE['PHPSESSID'] !== $sessionId) {
             header("Location: ./index.php?disconnect=1");
             $connect = false;
         } else {
