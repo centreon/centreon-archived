@@ -528,7 +528,7 @@ function submitShareView()
     lockedUsergroups: lockedUsergroups.filter(function (elem) {return elem !== '';}),
     unlockedUsergroups: unlockedUsergroups.filter(function (elem) {return elem !== '';}),
     action: 'share',
-    centeon_token: jQuery("#formShareView").find('input[name="centreon_token"]').val(),
+    centreon_token: jQuery("#formShareView").find('input[name="centreon_token"]').val(),
   };
 
   jQuery.ajax({
