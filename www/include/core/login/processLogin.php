@@ -125,7 +125,7 @@ if (isset($_POST["centreon_token"])
                     header('Location: ./main.php');
                 }
             } else {
-                header("Location: ./main.php");
+                header('Location: ./main.php');
             }
             $connect = true;
         }
