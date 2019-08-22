@@ -150,7 +150,7 @@ var rrdArguments = {
             var option = entry.input;
             var target = entry[1] + entry[2] + '[' + argument.target + ']';
 
-            if(document.querySelector('input[name="' + option + '"]:checked').value === 'disable'){
+            if (document.querySelector('input[name="' + option + '"]:checked').value === 'disable') {
                 document.getElementsByName(target)[1].disabled = true;
             }
         }
