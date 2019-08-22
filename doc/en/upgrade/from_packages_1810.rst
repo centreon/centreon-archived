@@ -52,7 +52,7 @@ Additional actions
 Updating the PHP version
 ------------------------
 
-Centeon 19.10 uses a new version of PHP.
+Centreon 19.10 uses a new version of PHP.
 
 The PHP timezone should be set. Run the command: ::
 
@@ -71,7 +71,7 @@ Run the following commands: ::
 Updating the Apache web server
 ------------------------------
 
-Centeon 19.10 uses a new version of Apache web server.
+Centreon 19.10 uses a new version of Apache web server.
 
 .. note::
     If you made manual configuration, please report it into
