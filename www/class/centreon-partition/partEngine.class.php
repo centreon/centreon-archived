@@ -629,7 +629,7 @@ class PartEngine
             $dbType = $dbVersion = null;
             while ($row = $dbResult->fetch()) {
                 switch ($row['Variable_name']) {
-                    case 'version_comment' :
+                    case 'version_comment':
                         $dbType = $row['Value'];
                         break;
                     case 'version' :
