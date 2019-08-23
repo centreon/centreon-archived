@@ -15,7 +15,6 @@ $conf_centreon['mail'] = "/bin/mail";
 $conf_centreon['broker_user'] = "centreon-broker";
 $conf_centreon['broker_group'] = "centreon-broker";
 $conf_centreon['broker_etc'] = "/etc/centreon-broker";
-$conf_centreon['broker_init_script'] = "cbd";
 $conf_centreon['monitoring_user'] = "centreon-engine";
 $conf_centreon['monitoring_group'] = "centreon-engine";
 $conf_centreon['monitoring_etc'] = "/etc/centreon-engine";

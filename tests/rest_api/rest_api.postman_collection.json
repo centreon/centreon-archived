@@ -65151,60 +65151,6 @@
 					"response": []
 				},
 				{
-					"name": "Setparam broker_correlator_script",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"type": "text/javascript",
-								"exec": [
-									"tests[\"Status code is 200\"] = responseCode.code === 200;"
-								]
-							}
-						}
-					],
-					"request": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json"
-							},
-							{
-								"key": "centreon-auth-token",
-								"value": "{{token}}"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n  \"action\": \"setparam\",\n  \"object\": \"settings\",\n  \"values\": \"broker_correlator_script;{{broker_correlator_script}}\"\n}"
-						},
-						"url": {
-							"raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
-							"protocol": "http",
-							"host": [
-								"{{url}}"
-							],
-							"path": [
-								"centreon",
-								"api",
-								"index.php"
-							],
-							"query": [
-								{
-									"key": "action",
-									"value": "action"
-								},
-								{
-									"key": "object",
-									"value": "centreon_clapi"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
 					"name": "Setparam centstorage",
 					"event": [
 						{
@@ -66194,9 +66140,6 @@
 									"        {",
 									"            case \"broker\":",
 									"                tests[\"Body contains the correct setting broker\"] = postman.getEnvironmentVariable(\"broker_value\") == exceptionData[i].value;",
-									"                break;",
-									"            case \"broker_correlator_script\":",
-									"                tests[\"Body contains the correct setting broker_correlator_script\"] = postman.getEnvironmentVariable(\"broker_correlator_script\") == exceptionData[i].value;",
 									"                break;",
 									"            case \"debug_auth\":",
 									"                tests[\"Body contains the correct setting debug_auth\"] = postman.getEnvironmentVariable(\"enable_debug_auth\") == exceptionData[i].value;",

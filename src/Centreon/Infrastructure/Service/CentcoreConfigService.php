@@ -70,7 +70,6 @@ class CentcoreConfigService
             'broker_user' => "{$data['BROKER_USER']}",
             'broker_group' => 'centreon-broker',
             'broker_etc' => "{$data['BROKER_ETC']}",
-            'broker_init_script' => "cbd",
             'monitoring_user' => "{$data['MONITORINGENGINE_USER']}",
             'monitoring_group' => "{$data['MONITORINGENGINE_GROUP']}",
             'monitoring_etc' => "{$data['MONITORINGENGINE_ETC']}",

@@ -692,16 +692,6 @@ function locate_broker_etc()
 	log "INFO" "BROKER_ETC: $BROKER_ETC"
 }
 
-function locate_broker_init_script()
-{
-	if [ -z "cbd" ]; then
-		answer_with_testfile "$(gettext "Where is the init script for broker module daemon ?") [$DEFAULT_BROKER_INIT_SCRIPT]" "$DEFAULT_BROKER_INIT_SCRIPT" "BROKER_INIT_SCRIPT"
-	fi
-	BROKER_INIT_SCRIPT=`trim ${BROKER_INIT_SCRIPT}`
-	export BROKER_INIT_SCRIPT
-	log "INFO" "BROKER_INIT_SCRIPT: cbd"
-}
-
 #----
 ## Define where is Centreon log directory
 ## @Globals	CENTREON_LOG, DEFAULT_CENTREON_LOG
@@ -1480,7 +1470,6 @@ function prepare_sudo_config() {
 	[ -z "$MONITORINGENGINE_BINARY" ] && answer_with_testfile "$(gettext "What is the Monitoring engine binary ?") [$DEFAULT_MONITORINGENGINE_BINARY]" "$DEFAULT_MONITORINGENGINE_BINARY" "MONITORINGENGINE_BINARY"
 	[ -z "$MONITORINGENGINE_ETC" ] && locate_monitoringengine_etc
 	[ -z "$BROKER_ETC" ] && locate_broker_etc
-	[ -z "cbd" ] && locate_broker_init_script
 	[ -z "$SERVICE_BINARY" ] && answer_with_testfile "$(gettext "Where is your service command binary ?")" "$(which service)" "SERVICE_BINARY"
 	# Prepare sudo.conf
 
@@ -1641,7 +1630,6 @@ function createConfFile() {
 \$conf_centreon['broker_user'] = "$BROKER_USER";
 \$conf_centreon['broker_group'] = "$BROKER_GROUP";
 \$conf_centreon['broker_etc'] = "$BROKER_ETC";
-\$conf_centreon['broker_init_script'] = "cbd";
 \$conf_centreon['monitoring_user'] = "$MONITORINGENGINE_USER";
 \$conf_centreon['monitoring_group'] = "$MONITORINGENGINE_GROUP";
 \$conf_centreon['monitoring_etc'] = "$MONITORINGENGINE_ETC";
@@ -1696,7 +1684,6 @@ function createCentreonInstallConf() {
 	CENTPLUGINSTRAPS_BINDIR=$CENTPLUGINSTRAPS_BINDIR
 	BROKER_ETC=$BROKER_ETC
 	BROKER_USER=$BROKER_USER
-	BROKER_INIT_SCRIPT=cbd
 	MONITORINGENGINE_ETC=$MONITORINGENGINE_ETC
 	MONITORINGENGINE_INIT_SCRIPT=centengine
 	MONITORINGENGINE_BINARY=$MONITORINGENGINE_BINARY
