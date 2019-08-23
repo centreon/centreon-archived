@@ -354,7 +354,7 @@ class CentreonWebService
             $accessDenied = false;
         } elseif ($wsObj instanceof WebserviceAutorizeRestApiInterface) {
             // unified check for Rest APIs authorization
-            if ($this->authorize($action, $user, $isInternal)) {
+            if ($wsObj->authorize($action, $user, $isInternal)) {
                 $accessDenied = false;
             } elseif (!$user || !$user->hasAccessRestApiConfiguration()) {
                 $accessDenied = false;
