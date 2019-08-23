@@ -627,7 +627,7 @@ class PartEngine
 
             return true;
         } elseif (empty($config["plugin_status"])) {
-            // as the plugin "partition" was deprecated in mysql 5.9
+            // as the plugin "partition" was deprecated in mysql 5.7
             // and as it was removed from mysql 8 and replaced by the native partitioning one,
             // we need to check the current version and db before failing this step
             $dbResult = $db->query(
@@ -647,7 +647,7 @@ class PartEngine
             $dbResult->closeCursor();
 
             if (stristr($dbType, "MySQL")
-                && (floatval($dbVersion) > 5.9)
+                && (version_compare($dbVersion, '8.0.0', '>='))
             ) {
                 unset($config, $row);
 
