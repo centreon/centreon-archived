@@ -119,7 +119,7 @@ if (isset($_POST["centreon_token"])
                 }
                 if (isset($_GET["p"]) && $_GET["p"] != '') {
                     header('Location: ./main.php?p=' . $_GET["p"] . $minimize);
-                } else if (isset($centreon->user->default_page) && $centreon->user->default_page != '') {
+                } elseif (isset($centreon->user->default_page) && $centreon->user->default_page != '') {
                     header('Location: ./main.php?p=' . $centreon->user->default_page . $minimize);
                 } else {
                     header('Location: ./main.php');
