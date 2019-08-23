@@ -34,8 +34,7 @@
  *
  */
 
-$classPath = __DIR__ . "/../..";
-include_once $classPath . "/class/centreonLog.class.php";
+include_once __DIR__ . "/../../class/centreonLog.class.php";
 $centreonLog = new CentreonLog();
 
 /**
@@ -57,7 +56,8 @@ try {
     }
 
     // Adding a column to check last specific LDAP sync timestamp
-    if (!$pearDB->isColumnExist('contact', 'contact_ldap_required_sync')) {
+    $needToUpdateValues = false;
+    if (!$pearDB->isColumnExist('auth_ressource', 'ar_sync_base_date')) {
         $pearDB->query(
             "ALTER TABLE `auth_ressource` ADD COLUMN `ar_sync_base_date` INT(11) DEFAULT 0"
         );
@@ -66,7 +66,7 @@ try {
 } catch (\PDOException $e) {
     $centreonLog->insertLog(
         2,
-        "UPGRADE : Unable to add LDAP new feature's tables in the database"
+        "UPGRADE : 19.04.4 Unable to add LDAP new feature's tables in the database"
     );
 }
 
@@ -81,7 +81,7 @@ if ($needToUpdateValues) {
     } catch (\PDOException $e) {
         $centreonLog->insertLog(
             2,
-            "UPGRADE : Unable to initialize LDAP reference date"
+            "UPGRADE : 19.04.4 Unable to initialize LDAP reference date"
         );
     }
 
@@ -112,11 +112,11 @@ if ($needToUpdateValues) {
     } catch (\PDOException $e) {
         $centreonLog->insertLog(
             1, // ldap.log
-            "UPGRADE PROCESS : Please open your LDAP configuration and save manually the form"
+            "UPGRADE PROCESS : Error - Please open your LDAP configuration and save manually each LDAP form"
         );
         $centreonLog->insertLog(
             2, // sql-error.log
-            "UPGRADE : Unable to add LDAP new fields"
+            "UPGRADE : 19.04.4 Unable to add LDAP new fields"
         );
         $pearDB->rollBack();
     }
@@ -131,3 +131,18 @@ $pearDB->query(
     topology_show = "0"
     WHERE topology_url LIKE "/poller-wizard/%"'
 );
+
+
+try {
+    // Add trap regexp matching
+    if (!$pearDB->isColumnExist('traps', 'traps_mode')) {
+        $pearDB->query(
+            "ALTER TABLE `traps` ADD COLUMN `traps_mode` enum('0','1') DEFAULT '0' AFTER `traps_oid`"
+        );
+    }
+} catch (\PDOException $e) {
+    $centreonLog->insertLog(
+        2,
+        "UPGRADE : 19.04.4 Unable to modify regexp matching in the database"
+    );
+}
