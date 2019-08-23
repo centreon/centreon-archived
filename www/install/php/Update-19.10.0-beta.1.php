@@ -56,6 +56,7 @@ try {
     }
 
     // Adding a column to check last specific LDAP sync timestamp
+    $needToUpdateValues = false;
     if (!$pearDB->isColumnExist('auth_ressource', 'ar_sync_base_date')) {
         $pearDB->query(
             "ALTER TABLE `auth_ressource` ADD COLUMN `ar_sync_base_date` INT(11) DEFAULT 0"
