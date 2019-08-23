@@ -626,8 +626,7 @@ class PartEngine
             unset($config);
 
             return true;
-        }
-        elseif (empty($config["plugin_status"])) {
+        } elseif (empty($config["plugin_status"])) {
             // as the plugin "partition" was deprecated in mysql 5.9
             // and as it was removed from mysql 8 and replaced by the native partitioning one,
             // we need to check the current version and db before failing this step
