@@ -183,6 +183,16 @@ class ClassMetadata
     }
 
     /**
+     * Get data for columns
+     *
+     * @return array|null
+     */
+    public function getColumns(): ?array
+    {
+        return $this->columns;
+    }
+
+    /**
      * Get data type of the property
      *
      * @param string $property

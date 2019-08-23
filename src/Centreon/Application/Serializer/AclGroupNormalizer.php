@@ -34,51 +34,62 @@
  *
  */
 
-namespace Centreon\Application\DataRepresenter;
+namespace Centreon\Application\Serializer;
 
-use JsonSerializable;
 use Centreon\Domain\Entity\AclGroup;
+use Symfony\Component\Serializer\Normalizer;
 
-class AclGroupEntity implements JsonSerializable
+class AclGroupNormalizer extends Normalizer\ObjectNormalizer
 {
-
     /**
-     * @var \Centreon\Domain\Entity\AclGroup
+     * {@inheritdoc}
      */
-    private $entity;
-
-    /**
-     * Construct
-     *
-     * @param \Centreon\Domain\Entity\AclGroup $entity
-     */
-    public function __construct(AclGroup $entity)
+    public function normalize($topic, $format = null, array $context = [])
     {
-        $this->entity = $entity;
+        //  update data to normalize from BV entity
+        $data['id'] = $topic->getId(); // <int>
+
+        // Configuration
+        $data['name'] = $topic->getName(); // <string>
+        $data['alias'] = $topic->getAlias(); // <string>
+        $data['changed'] = $topic->getChanged(); // <bool>
+        $data['activate'] = $topic->getActivate(); // <bool>
+
+        return $data;
     }
 
     /**
-     * @OA\Schema(
-     *   schema="AclGroupEntity",
-     *       @OA\Property(property="id", type="integer"),
-     *       @OA\Property(property="name", type="string"),
-     *       @OA\Property(property="alias", type="string"),
-     *       @OA\Property(property="changed", type="integer"),
-     *       @OA\Property(property="activate", type="string", enum={"0","1","2"})
-     * )
-     *
-     * JSON serialization of entity
-     *
-     * @return array
+     * {@inheritdoc}
      */
-    public function jsonSerialize()
+    public function denormalize($data, $class, $format = null, array $context = [])
     {
-        return [
-            'id' => $this->entity->getId(),
-            'name' => $this->entity->getName(),
-            'alias' => $this->entity->getAlias(),
-            'changed' => $this->entity->getChanged(),
-            'activate' => $this->entity->getActivate()
-        ];
+
+        //translate array data into object
+        $object = new AclGroup();
+
+        // Configuration
+        $object->setId($data['id'] ?? null);
+        $object->setName($data['name'] ?? null);
+        $object->setAlias($data['alias'] ?? null);
+        $object->setChanged($data['changed'] ?? null);
+        $object->setActivate($data['activate'] ?? null);
+
+        return $object;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function supportsNormalization($data, $format = null)
+    {
+        return $data instanceof AclGroup;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function supportsDenormalization($data, $class = null, $format = null)
+    {
+        return $class == AclGroup::class;
     }
 }
