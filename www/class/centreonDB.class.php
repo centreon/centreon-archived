@@ -47,7 +47,7 @@ require_once _CENTREON_PATH_ . "/www/class/centreonLog.class.php";
  */
 class CentreonDB extends \PDO
 {
-    private static $instance = array();
+    private static $instance = [];
     protected $db_type = "mysql";
     protected $db_port = "3306";
     protected $retry;
@@ -77,9 +77,10 @@ class CentreonDB extends \PDO
      * Constructor
      *
      * @param string $db | centreon, centstorage, or ndo
-     * @param int    $retry
-     * @param bool   $silent | when silent is set to false, it will display an HTML error msg,
+     * @param int $retry
+     * @param bool $silent | when silent is set to false, it will display an HTML error msg,
      *                       otherwise it will throw an Exception
+     *
      * @throws Exception
      */
     public function __construct($db = "centreon", $retry = 3, $silent = false)
@@ -103,7 +104,7 @@ class CentreonDB extends \PDO
                 $this->debug = 1;
             }
 
-            $this->options = array(
+            $this->options = [
                 PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
                 PDO::ATTR_STATEMENT_CLASS => [
                     CentreonDBStatement::class,
@@ -111,7 +112,7 @@ class CentreonDB extends \PDO
                 ],
                 PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8',
                 PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION
-            );
+            ];
 
             /*
              * Add possibility to change SGDB port
@@ -122,12 +123,12 @@ class CentreonDB extends \PDO
                 $this->db_port = '3306';
             }
 
-            $this->dsn = array(
+            $this->dsn = [
                 'phptype' => $this->db_type,
                 'username' => $conf_centreon["user"],
                 'password' => $conf_centreon["password"],
                 'port' => $this->db_port
-            );
+            ];
 
             switch (strtolower($db)) {
                 case "centstorage":
@@ -173,6 +174,7 @@ class CentreonDB extends \PDO
      *
      * @param type $stmt
      * @param type $arrayValues
+     *
      * @return type
      */
     public function execute($stmt, $arrayValues)
@@ -221,8 +223,10 @@ class CentreonDB extends \PDO
      * Escapes a string for query
      *
      * @access public
+     *
      * @param string $str
-     * @param bool   $htmlSpecialChars | htmlspecialchars() is used when true
+     * @param bool $htmlSpecialChars | htmlspecialchars() is used when true
+     *
      * @return string
      */
     public static function escape($str, $htmlSpecialChars = false)
@@ -244,7 +248,7 @@ class CentreonDB extends \PDO
     public function query($queryString = null, $parameters = null)
     {
         if (!is_null($parameters) && !is_array($parameters)) {
-            $parameters = array($parameters);
+            $parameters = [$parameters];
         }
 
         /*
@@ -279,12 +283,14 @@ class CentreonDB extends \PDO
      * launch a getAll
      *
      * @access public
+     *
      * @param string $query_string query
+     *
      * @return  object  getAll result
      */
-    public function getAll($query_string = null, $placeHolders = array())
+    public function getAll($query_string = null, $placeHolders = [])
     {
-        $rows = array();
+        $rows = [];
         $this->requestExecuted++;
 
         try {
@@ -305,12 +311,13 @@ class CentreonDB extends \PDO
      * Factory for singleton
      *
      * @param string $name The name of centreon datasource
+     *
      * @return CentreonDB
      * @throws Exception
      */
     public static function factory($name = "centreon")
     {
-        if (!in_array($name, array('centreon', 'centstorage', 'ndo'))) {
+        if (!in_array($name, ['centreon', 'centstorage', 'ndo'])) {
             throw new Exception("The datasource isn't defined in configuration file.");
         }
         if (!isset(self::$instance[$name])) {
@@ -355,14 +362,14 @@ class CentreonDB extends \PDO
     {
         $unitMultiple = 1024 * 1024;
 
-        $info = array(
+        $info = [
             'version' => null,
             'engine' => null,
             'dbsize' => 0,
             'rows' => 0,
             'datafree' => 0,
             'indexsize' => 0
-        );
+        ];
         /*
          * Get Version
          */
@@ -399,6 +406,7 @@ class CentreonDB extends \PDO
      *
      * @param string $table - the table on which we'll search the column
      * @param string $column - the column name to be checked
+     *
      * @return int
      */
     public function isColumnExist(string $table = null, string $column = null): int
