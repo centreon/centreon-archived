@@ -36,6 +36,7 @@
 /**
  *
  * Class that handles MySQL table partitions
+ *
  * @author msugumaran
  *
  */
@@ -181,7 +182,8 @@ class PartEngine
      * Generate query part to build partitions
      *
      * @param MysqlTable $table The table to partition
-     * @param bool       $createPastPartitions If the past partitions need to be created
+     * @param bool $createPastPartitions If the past partitions need to be created
+     *
      * @return string The built partitions query
      */
     private function createDailyPartitions($table, $createPastPartitions): string
@@ -242,7 +244,7 @@ class PartEngine
      *
      * @param MysqlTable $table The table to partition
      * @param CentreonDB $db The database connection
-     * @param bool       $createPastPartitions If the past partitions need to be created
+     * @param bool $createPastPartitions If the past partitions need to be created
      */
     public function createParts($table, $db, $createPastPartitions): void
     {
@@ -316,6 +318,7 @@ class PartEngine
     /**
      *
      * Drop partitions that are older than the retention duration
+     *
      * @param MysqlTable $table
      */
     public function purgeParts($table, $db)
@@ -454,6 +457,7 @@ class PartEngine
 
     /**
      * optimize all partitions for a table
+     *
      * @param MysqlTable $table
      */
     public function optimizeTablePartitions($table, $db)
@@ -492,6 +496,7 @@ class PartEngine
 
     /**
      * list all partitions for a table
+     *
      * @param MysqlTable $table
      */
     public function listParts($table, $db, $throwException = true)
@@ -521,7 +526,7 @@ class PartEngine
             );
         }
 
-        $partitions = array();
+        $partitions = [];
         while ($row = $dbResult->fetch()) {
             if (!is_null($row["PARTITION_NAME"])) {
                 $row["INDEX_LENGTH"] = round($row["INDEX_LENGTH"] / (1024 * 1024), 2);
@@ -540,6 +545,7 @@ class PartEngine
 
     /**
      * Backup Partition
+     *
      * @param MysqlTable $table
      */
     public function backupParts($table, $db)
@@ -606,7 +612,9 @@ class PartEngine
     /**
      *
      * Check if MySQL version is compatible with partitionning.
+     *
      * @param $db The Db singleton
+     *
      * @return boolean
      */
     public function isCompatible($db)
@@ -618,8 +626,7 @@ class PartEngine
             unset($config);
 
             return true;
-        }
-        elseif (empty($config["plugin_status"])) {
+        } elseif (empty($config["plugin_status"])) {
             // as the plugin "partition" was deprecated in mysql 5.9
             // and as it was removed from mysql 8 and replaced by the native partitioning one,
             // we need to check the current version and db before failing this step
