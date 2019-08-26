@@ -51,6 +51,6 @@ try {
 } catch (\PDOException $e) {
     $centreonLog->insertLog(
         2,
-        "UPGRADE : Unable to process 19.10.0 post beta 1 upgrade"
+        "UPGRADE : Unable to process 19.10.0-post-beta 1 upgrade"
     );
 }

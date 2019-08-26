@@ -37,91 +37,6 @@
 include_once __DIR__ . "/../../class/centreonLog.class.php";
 $centreonLog = new CentreonLog();
 
-/**
- * LDAP auto or manual synchronization feature
- */
-try {
-    // Adding two columns to check last user's LDAP sync timestamp
-    if (!$pearDB->isColumnExist('contact', 'contact_ldap_last_sync')) {
-        //$pearDB = "centreon"
-        //$pearDBO = "realtime"
-        $pearDB->query(
-            "ALTER TABLE `contact` ADD COLUMN `contact_ldap_last_sync` INT(11) NOT NULL DEFAULT 0"
-        );
-    }
-    if (!$pearDB->isColumnExist('contact', 'contact_ldap_required_sync')) {
-        $pearDB->query(
-            "ALTER TABLE `contact` ADD COLUMN `contact_ldap_required_sync` enum('0','1') NOT NULL DEFAULT '0'"
-        );
-    }
-
-    // Adding a column to check last specific LDAP sync timestamp
-    $needToUpdateValues = false;
-    if (!$pearDB->isColumnExist('auth_ressource', 'ar_sync_base_date')) {
-        $pearDB->query(
-            "ALTER TABLE `auth_ressource` ADD COLUMN `ar_sync_base_date` INT(11) DEFAULT 0"
-        );
-        $needToUpdateValues = true;
-    }
-} catch (\PDOException $e) {
-    $centreonLog->insertLog(
-        2,
-        "UPGRADE : 19.10.0 Unable to add LDAP new feature's tables in the database"
-    );
-}
-
-// Initializing reference synchronization time for all LDAP configurations */
-if ($needToUpdateValues) {
-    try {
-        $stmt = $pearDB->prepare(
-            "UPDATE `auth_ressource` SET `ar_sync_base_date` = :minusTime"
-        );
-        $stmt->bindValue(':minusTime', time(), \PDO::PARAM_INT);
-        $stmt->execute();
-    } catch (\PDOException $e) {
-        $centreonLog->insertLog(
-            2,
-            "UPGRADE : 19.10.0 Unable to initialize LDAP reference date"
-        );
-    }
-
-    /* Adding to each LDAP configuration two new fields */
-    try {
-        // field to enable the automatic sync at login
-        $addSyncStateField = $pearDB->prepare(
-            "INSERT IGNORE INTO auth_ressource_info
-            (`ar_id`, `ari_name`, `ari_value`)
-            VALUES (:arId, 'ldap_auto_sync', '1')"
-        );
-        // interval between two sync at login
-        $addSyncIntervalField = $pearDB->prepare(
-            "INSERT IGNORE INTO auth_ressource_info
-            (`ar_id`, `ari_name`, `ari_value`)
-            VALUES (:arId, 'ldap_sync_interval', '1')"
-        );
-
-        $pearDB->beginTransaction();
-        $stmt = $pearDB->query("SELECT DISTINCT(ar_id) FROM auth_ressource");
-        while ($row = $stmt->fetch()) {
-            $addSyncIntervalField->bindValue(':arId', $row['ar_id'], \PDO::PARAM_INT);
-            $addSyncIntervalField->execute();
-            $addSyncStateField->bindValue(':arId', $row['ar_id'], \PDO::PARAM_INT);
-            $addSyncStateField->execute();
-        }
-        $pearDB->commit();
-    } catch (\PDOException $e) {
-        $centreonLog->insertLog(
-            1, // ldap.log
-            "UPGRADE PROCESS : Error - Please open your LDAP configuration and save manually each LDAP form"
-        );
-        $centreonLog->insertLog(
-            2, // sql-error.log
-            "UPGRADE : 19.10.0 Unable to add LDAP new fields"
-        );
-        $pearDB->rollBack();
-    }
-}
-
 // update topology of poller wizard to display breadcrumb
 $pearDB->query(
     'UPDATE topology
@@ -143,6 +58,6 @@ try {
 } catch (\PDOException $e) {
     $centreonLog->insertLog(
         2,
-        "UPGRADE : 19.10.0 Unable to modify regexp matching in the database"
+        "UPGRADE : 19.10.0-beta.1 Unable to modify regexp matching in the database"
     );
 }
