@@ -950,11 +950,11 @@ class CentreonGraphNg
     {
         $this->graphData['times'] = array();
 
-        $size = is_countable($rrdData['data'])
+        $size = (is_array($rrdData['data']) || $rrdData['data'] instanceof \Countable)
             ? count($rrdData['data'])
             : $rrdData['data'];
 
-        $gprintsSize = is_countable($rrdData['meta']['gprints'])
+        $gprintsSize = (is_array($rrdData['meta']['gprints']) || $rrdData['meta']['gprints'] instanceof \Countable)
             ? count($rrdData['meta']['gprints'])
             : 0;
         
