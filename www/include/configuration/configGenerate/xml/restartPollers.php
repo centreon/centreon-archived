@@ -156,7 +156,7 @@ try {
     foreach ($poller as $host) {
         if ($ret["restart_mode"] == 1) {
             if (isset($host['localhost']) && $host['localhost'] == 1) {
-                $msg_restart[$host["id"]] = shell_exec("sudo " . $host['engine_restart_command']);
+                $msg_restart[$host["id"]] = shell_exec('sudo ' . $host['engine_reload_command']);
             } else {
                 if ($fh = @fopen($centcore_pipe, 'a+')) {
                     fwrite($fh, "RELOAD:" . $host["id"] . "\n");
@@ -179,7 +179,7 @@ try {
             }
         } elseif ($ret["restart_mode"] == 2) {
             if (isset($host['localhost']) && $host['localhost'] == 1) {
-                $msg_restart[$host["id"]] = shell_exec("sudo " . $host['engine_reload_command']);
+                $msg_restart[$host["id"]] = shell_exec('sudo ' . $host['engine_restart_command']);
             } else {
                 if ($fh = @fopen($centcore_pipe, 'a+')) {
                     fwrite($fh, "RESTART:" . $host["id"] . "\n");
