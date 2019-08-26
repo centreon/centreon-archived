@@ -1,7 +1,7 @@
 <?php
 /*
- * Copyright 2005-2015 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2019 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -171,7 +171,8 @@ if (strcmp($serverType, 'remote') ==  0) {
 $form->addElement('header', 'information', _("Satellite configuration"));
 $form->addElement('text', 'name', _("Poller Name"), $attrsText);
 $form->addElement('text', 'ns_ip_address', _("IP Address"), $attrsText);
-$form->addElement('text', 'init_script', _("Monitoring Engine Init Script"), $attrsText2);
+$form->addElement('text', 'engine_restart_command', _("Monitoring Engine restart command"), $attrsText2);
+$form->addElement('text', 'engine_reload_command', _("Monitoring Engine reload command"), $attrsText2);
 if (strcmp($serverType, 'poller') ==  0) {
     $form->addElement('select2', 'remote_id', _('Attach to Remote Server'), array(), $attrPoller1);
     $tab = array();
@@ -220,6 +221,7 @@ $cloneSetCmd[] = $form->addElement(
  * Centreon Broker
  */
 $form->addElement('header', 'CentreonBroker', _("Centreon Broker"));
+$form->addElement('text', 'broker_reload_command', _("Centreon Broker reload command"), $attrsText2);
 $form->addElement('text', 'centreonbroker_cfg_path', _("Centreon Broker configuration path"), $attrsText2);
 $form->addElement('text', 'centreonbroker_module_path', _("Centreon Broker modules path"), $attrsText2);
 $form->addElement('text', 'centreonbroker_logs_path', _("Centreon Broker logs path"), $attrsText2);
@@ -240,35 +242,37 @@ $form->addElement('text', 'snmp_trapd_path_conf', _('Directory of light database
  * Set Default Values
  */
 if (isset($_GET["o"]) && $_GET["o"] == SERVER_ADD) {
-    $monitoring_engines = array(
+    $monitoring_engines = [
         "nagios_bin" => "/usr/sbin/centengine",
         "nagiostats_bin" => "/usr/sbin/centenginestats",
-        "init_script" => "centengine",
+        "engine_restart_command" => "systemctl restart centengine",
+        "engine_reload_command" => "systemctl reload centengine",
         "nagios_perfdata" => "/var/log/centreon-engine/service-perfdata"
-    );
+    ];
 
     $form->setDefaults(
-        array(
+        [
             "name" => '',
             "localhost" => '0',
             "ns_ip_address" => "127.0.0.1",
             "description" => "",
             "nagios_bin" => $monitoring_engines["nagios_bin"],
             "nagiostats_bin" => $monitoring_engines["nagiostats_bin"],
-            "monitoring_engine"  => $centreon->optGen["monitoring_engine"] ?? '',
-            "init_script" => $monitoring_engines["init_script"],
+            "engine_restart_command" => $monitoring_engines["engine_restart_command"],
+            "engine_reload_command" => $monitoring_engines["engine_reload_command"],
             "ns_activate" => '1',
             "is_default"  =>  '0',
             "ssh_port"  =>  '22',
             "ssh_private_key"  =>  '~/.ssh/rsa.id',
             "nagios_perfdata"  => $monitoring_engines["nagios_perfdata"],
+            "broker_reload_command" => "systemctl reload cbd",
             "centreonbroker_cfg_path" => "/etc/centreon-broker",
             "centreonbroker_module_path" => "/usr/share/centreon/lib/centreon-broker",
             "centreonbroker_logs_path" => "/var/log/centreon-broker",
             "init_script_centreontrapd" => "centreontrapd",
             "snmp_trapd_path_conf" => "/etc/snmp/centreon_traps/",
             "remote_server_centcore_ssh_proxy" => '1'
-        )
+        ]
     );
 } else {
     if (isset($cfg_server)) {
