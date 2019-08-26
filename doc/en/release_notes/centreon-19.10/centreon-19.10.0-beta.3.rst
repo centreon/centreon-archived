@@ -10,6 +10,8 @@ New features
 Enhancements
 ------------
 
+* [Remote-Server] Allow to use direct ssh connection to poller from central (PR/#7680)
+
 Performance
 -----------
 
@@ -21,3 +23,5 @@ Bug fixes
 
 Technical
 ---------
+
+* [Configuration] Move filesGeneration directory to /var/cache/centreon (PR/#7735)
