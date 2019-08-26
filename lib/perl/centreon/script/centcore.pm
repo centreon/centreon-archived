@@ -60,7 +60,7 @@ sub new {
     $self->{rsync} = "rsync";
     $self->{rsyncWT} = $self->{rsync};
     $self->{sudo} = "sudo";
-    $self->{service} = "service";
+    $self->{service} = "/sbin/service";
     $self->{timeout} = 5;
     $self->{cmd_timeout} = 5;
     $self->{illegal_characters} = "";
