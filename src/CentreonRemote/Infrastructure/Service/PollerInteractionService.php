@@ -163,7 +163,7 @@ class PollerInteractionService
 
         foreach ($tabServers as $poller) {
             if (isset($poller['localhost']) && $poller['localhost'] == 1) {
-                shell_exec("sudo service {$poller['init_script']} restart");
+                shell_exec("sudo /sbin/service {$poller['init_script']} restart");
             } else {
                 if ($fh = @fopen($centCorePipe, 'a+')) {
                     fwrite($fh, 'RESTART:' . $poller['id'] . "\n");
