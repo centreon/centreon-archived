@@ -115,7 +115,9 @@ class CentreonConfigurationHost extends CentreonConfigurationObjects
             foreach ($allVirtualHosts as $virtualHosts) {
                 foreach ($virtualHosts as $vHostId => $vHostName) {
                     $virtualHostCondition .= 'UNION ALL ' .
-                        "(SELECT :hostNameTable$vHostId as host_name, :virtualHostId$vHostId as host_id, '1' AS host_activate ) ";
+                        "(SELECT :hostNameTable$vHostId as host_name, "
+                        . ":virtualHostId$vHostId as host_id, "
+                        . "'1' AS host_activate ) ";
                     $queryValues['virtualHost'][$vHostId] = (string)$vHostName;
                 }
             }
