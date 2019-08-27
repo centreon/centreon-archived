@@ -657,6 +657,15 @@ vertical-align: middle;
 }
 
 /* ------- END : Table -----------*/
+
+
+/* ------- START : Chart label style fix ------- */
+.c3-tooltip td {
+    text-align: left;
+}
+/* ------- END : Chart label style fix ------- */
+
+
 /* ------ START : Indicators -----*/
 
 #resume_light {
