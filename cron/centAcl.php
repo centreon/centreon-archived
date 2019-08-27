@@ -102,7 +102,7 @@ try {
         if ($nbProc <= 1) {
             $errorMessage = "According to DB another instance of centAcl.php is already running and I found " .
                 $nbProc . " process...\n";
-            $errorMessage .= "Correcting the state in the DB, by setting the `running` value to 0 for id =  $appId";
+            $errorMessage .= "Correcting the state in the DB, by setting the `running` value to 0 for id =  " . $appId;
             removeLock($appId);
         } else {
             $errorMessage = "centAcl marked as running. Exiting...";
