@@ -120,8 +120,8 @@ LDAP
 ****
 
 .. note::
-    Si vous souhaitez implémenter une authentification SSO, suivez cette
-    :ref:`procédure <sso>`.
+    Si vous souhaitez implémenter une authentification SSO, suivez cette :ref:`procédure <sso>`.
+    Vous pouvez également utiliser le SSO Keycloak en suivant cette :ref:`procédure <keycloak>`.
 
 Cette partie permet de configurer la connexion au(x) annuaire(s) LDAP.
 

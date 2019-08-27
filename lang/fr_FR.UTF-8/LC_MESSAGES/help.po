@@ -910,6 +910,29 @@ msgstr ""
 "L'authentification peut-être seulement basée sur SSO ou elle peut fonctionner "
 "à la fois avec SSO et un système d'authentification local. "
 
+msgid "Enable login with Keycloak."
+msgstr "Activer le login avec Keycloak."
+
+msgid "Authentication can be solely based on Keycloak or it can work with both Keycloak "
+"and local authentication systems."
+msgstr "L'authentification peut être basée sur Keycloak uniquement ou peut fonctionner avec Keycloak et les systèmes."
+"d'authentification locaux."
+
+msgid "Your Keycloak server url (with \"/auth\")."
+msgstr "L'URL de votre serveur Keycloak (avec le \"/auth\")."
+
+msgid "Your Keycloak redirect url (this server)."
+msgstr "L'URL Keycloak de redirection vers Centreon (ce serveur)."
+
+msgid "Your Keycloak Realm name."
+msgstr "Le nom de votre royaume Keycloak comprenant l'application Centreon."
+
+msgid "Your Keycloak client ID."
+msgstr "L'identifiant Centreon Keycloak (client ID)."
+
+msgid "Your Keycloak client secret."
+msgstr "La clé secrète Keycloak pour l'application Centreon."
+
 #: centreon-web/www/include/Administration/parameters/general/help.php:84
 msgid ""
 "IP/DNS of trusted clients. Use coma as delimiter in case of multiple clients."

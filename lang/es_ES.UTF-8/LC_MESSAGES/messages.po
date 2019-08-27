@@ -4957,11 +4957,35 @@ msgstr "Mostrar tiempos de parada y reconocimientos en ghraphics"
 
 #: centreon-web/www/include/Administration/parameters/general/form.php:173
 msgid "Display comment on chart"
-msgstr "Ver comentarios en la tabla"
+msgstr "Mostrar comentario en gráfico"
 
 #: centreon-web/www/include/Administration/parameters/general/form.php:189
 msgid "Enable SSO authentication"
 msgstr "Habilitar autenticación SSO"
+
+msgid "Are you sure you want to change this parameter? Please read the help before."
+msgstr "¿Seguro que quieres cambiar este parámetro? Por favor, lea la ayuda primero."
+
+msgid "Keycloak trusted client addresses"
+msgstr "Direcciones de confianza de SSO Keycloak"
+
+msgid "Keycloak blacklist client addresses"
+msgstr "Direcciones de clientes de cerraduras Keycloak"
+
+msgid "Keycloak Server Url"
+msgstr "URL de servidor Keycloak"
+
+msgid "Keycloak Redirect Url"
+msgstr "Dirección de redireccionamiento de Centreon a Keycloak"
+
+msgid "Keycloak Client Realm"
+msgstr "Dominio cliente Keycloak"
+
+msgid "Keycloak Client ID"
+msgstr "Identificación de cliente Keycloak"
+
+msgid "Keycloak Client Secret"
+msgstr "Secreto de cliente Keycloak"
 
 #: centreon-web/www/include/Administration/parameters/general/form.php:192
 msgid "SSO only"

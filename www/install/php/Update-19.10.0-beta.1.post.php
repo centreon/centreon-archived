@@ -37,27 +37,20 @@
 include_once __DIR__ . "/../../class/centreonLog.class.php";
 $centreonLog = new CentreonLog();
 
-// update topology of poller wizard to display breadcrumb
-$pearDB->query(
-    'UPDATE topology
-    SET topology_parent = 60901,
-    topology_page = 60959,
-    topology_group = 1,
-    topology_show = "0"
-    WHERE topology_url LIKE "/poller-wizard/%"'
-);
-
-
 try {
-    // Add trap regexp matching
-    if (!$pearDB->isColumnExist('traps', 'traps_mode')) {
-        $pearDB->query(
-            "ALTER TABLE `traps` ADD COLUMN `traps_mode` enum('0','1') DEFAULT '0' AFTER `traps_oid`"
+    // Alter existing tables to conform with strict mode.
+    $pearDBO->query(
+        "ALTER TABLE `log_action_modification` MODIFY COLUMN `field_value` text NOT NULL"
+    );
+    // Add the audit log retention column for the retention options menu
+    if (!$pearDBO->isColumnExist('config', 'audit_log_retention')) {
+        $pearDBO->query(
+            "ALTER TABLE `config` ADD COLUMN audit_log_retention int(11) DEFAULT 0"
         );
     }
 } catch (\PDOException $e) {
     $centreonLog->insertLog(
         2,
-        "UPGRADE : 19.10.0-beta.1 Unable to modify regexp matching in the database"
+        "UPGRADE : Unable to process 19.10.0-post-beta 1 upgrade"
     );
 }
