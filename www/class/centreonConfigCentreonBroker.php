@@ -683,25 +683,21 @@ class CentreonConfigCentreonBroker
      * @param array $values The post array
      * @return bool
      */
-    public function updateConfig($id, $values)
+    public function updateConfig(int $id, $values)
     {
-        /*
-         * Insert the Centreon Broker configuration
-         */
-        $query = "UPDATE cfg_centreonbroker SET
-                config_name = '" . $this->db->escape($values['name']) . "',
-                config_filename = '" . $this->db->escape($values['filename']) . "',
-                ns_nagios_server = " . $this->db->escape($values['ns_nagios_server']) . ",
-                config_activate = '" . $this->db->escape($values['activate']['activate']) . "',
-                daemon = '" . $this->db->escape($values['activate_watchdog']['activate_watchdog']) . "',
-                config_write_timestamp = '" . $this->db->escape($values['write_timestamp']['write_timestamp']) . "',
-                config_write_thread_id = '" . $this->db->escape($values['write_thread_id']['write_thread_id']) . "',
-                stats_activate = '" . $this->db->escape($values['stats_activate']['stats_activate']) . "',
-                cache_directory = '" . $this->db->escape($values['cache_directory']) . "',
-                event_queue_max_size = " .
-            (int)$this->db->escape($this->checkEventMaxQueueSizeValue($values['event_queue_max_size'])) . ",
-                command_file = '" . $this->db->escape($values['command_file']) . "'
-            WHERE config_id = " . $id;
+        // Insert the Centreon Broker configuration
+        $query = "UPDATE cfg_centreonbroker SET config_name = '" . $this->db->escape($values['name'])
+            . "', config_filename = '" . $this->db->escape($values['filename'])
+            . "', ns_nagios_server = " . $this->db->escape($values['ns_nagios_server'])
+            . ", config_activate = '" . $this->db->escape($values['activate']['activate'])
+            . "', daemon = '" . $this->db->escape($values['activate_watchdog']['activate_watchdog'])
+            . "', config_write_timestamp = '" . $this->db->escape($values['write_timestamp']['write_timestamp'])
+            . "', config_write_thread_id = '" . $this->db->escape($values['write_thread_id']['write_thread_id'])
+            . "', stats_activate = '" . $this->db->escape($values['stats_activate']['stats_activate'])
+            . "', cache_directory = '" . $this->db->escape($values['cache_directory'])
+            . "', event_queue_max_size = " . (int)$this->checkEventMaxQueueSizeValue($values['event_queue_max_size'])
+            . ", command_file = '" . $this->db->escape($values['command_file'])
+            . "' WHERE config_id = " . $id;
         try {
             $this->db->query($query);
         } catch (\PDOException $e) {
