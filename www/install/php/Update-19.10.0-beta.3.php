@@ -206,3 +206,4 @@ $pearDB->query('ALTER TABLE `nagios_server` DROP COLUMN `init_script`');
 $pearDB->query('ALTER TABLE `nagios_server` DROP COLUMN `init_system`');
 $pearDB->query('ALTER TABLE `nagios_server` DROP COLUMN `monitoring_engine`');
 $pearDB->query('DELETE FROM `options` WHERE `key` = \'broker_correlator_script\'');
+$pearDB->query('DELETE FROM `options` WHERE `key` = \'monitoring_engine\'');
