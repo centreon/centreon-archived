@@ -171,6 +171,8 @@ if (strcmp($serverType, 'remote') ==  0) {
 $form->addElement('header', 'information', _("Satellite configuration"));
 $form->addElement('text', 'name', _("Poller Name"), $attrsText);
 $form->addElement('text', 'ns_ip_address', _("IP Address"), $attrsText);
+$form->addElement('text', 'engine_start_command', _("Monitoring Engine start command"), $attrsText2);
+$form->addElement('text', 'engine_stop_command', _("Monitoring Engine stop command"), $attrsText2);
 $form->addElement('text', 'engine_restart_command', _("Monitoring Engine restart command"), $attrsText2);
 $form->addElement('text', 'engine_reload_command', _("Monitoring Engine reload command"), $attrsText2);
 if (strcmp($serverType, 'poller') ==  0) {
@@ -245,6 +247,8 @@ if (isset($_GET["o"]) && $_GET["o"] == SERVER_ADD) {
     $monitoring_engines = [
         "nagios_bin" => "/usr/sbin/centengine",
         "nagiostats_bin" => "/usr/sbin/centenginestats",
+        "engine_start_command" => "systemctl start centengine",
+        "engine_stop_command" => "systemctl stop centengine",
         "engine_restart_command" => "systemctl restart centengine",
         "engine_reload_command" => "systemctl reload centengine",
         "nagios_perfdata" => "/var/log/centreon-engine/service-perfdata"
@@ -258,6 +262,8 @@ if (isset($_GET["o"]) && $_GET["o"] == SERVER_ADD) {
             "description" => "",
             "nagios_bin" => $monitoring_engines["nagios_bin"],
             "nagiostats_bin" => $monitoring_engines["nagiostats_bin"],
+            "engine_start_command" => $monitoring_engines["engine_start_command"],
+            "engine_stop_command" => $monitoring_engines["engine_stop_command"],
             "engine_restart_command" => $monitoring_engines["engine_restart_command"],
             "engine_reload_command" => $monitoring_engines["engine_reload_command"],
             "ns_activate" => '1',

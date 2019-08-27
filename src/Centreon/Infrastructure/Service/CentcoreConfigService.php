@@ -73,7 +73,6 @@ class CentcoreConfigService
             'monitoring_user' => "{$data['MONITORINGENGINE_USER']}",
             'monitoring_group' => "{$data['MONITORINGENGINE_GROUP']}",
             'monitoring_etc' => "{$data['MONITORINGENGINE_ETC']}",
-            'monitoring_init_script' => "centengine",
             'monitoring_binary' => "{$data['MONITORINGENGINE_BINARY']}",
             'monitoring_varlog' => "{$data['MONITORINGENGINE_LOG']}",
             'plugin_dir' => "{$data['PLUGIN_DIR']}",

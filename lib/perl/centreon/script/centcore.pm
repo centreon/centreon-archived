@@ -872,7 +872,11 @@ sub getEngineCommand($$) {
     my $action = $_[1];
     my $command;
 
-    if ($command eq 'restart') {
+    if ($command eq 'start') {
+        $command = "$self->{sudo} $pollerConf->{engine_start_command}";
+    } elsif ($command eq 'stop') {
+        $command = "$self->{sudo} $pollerConf->{engine_stop_command}";
+    } elsif ($command eq 'restart') {
         $command = "$self->{sudo} $pollerConf->{engine_restart_command}";
     } elsif ($command eq 'reload') {
         $command = "$self->{sudo} $pollerConf->{engine_reload_command}";
@@ -1098,8 +1102,6 @@ sub parseRequest($){
         $self->initEngine($1, "restart", $action);
     } elsif ($action =~ /^RELOAD\:([0-9]*)/){
         $self->initEngine($1, "reload", $action);
-    } elsif ($action =~ /^FORCERELOAD\:([0-9]*)/){
-        $self->initEngine($1, "force-reload", $action);
     } elsif ($action =~ /^START\:([0-9]*)/){
         $self->initEngine($1, "start", $action);
     } elsif ($action =~ /^STOP\:([0-9]*)/){

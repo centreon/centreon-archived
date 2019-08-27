@@ -1458,14 +1458,12 @@ function reload_service_php_fpm() {
 ## @param	directory to generate a centreon.sudo file
 ## @return 0	create file ok
 ## @return 1	create file fail
-## @Globals	MONITORINGENGINE_BINARY, INIT_D, WEB_USER, MONITORINGENGINE_INIT_SCRIPT
+## @Globals	MONITORINGENGINE_BINARY, INIT_D, WEB_USER
 #----
 function prepare_sudo_config() {
 	local directory="$1"
 
-    	locate_sudo
-	# Find Monitoring Engine Init Script
-	answer "$(gettext "What is the Monitoring engine init.d script ?") [$DEFAULT_MONITORINGENGINE_INIT_SCRIPT]" "$DEFAULT_MONITORINGENGINE_INIT_SCRIPT" "MONITORINGENGINE_INIT_SCRIPT"
+    locate_sudo
 	# find nagios binary if not define
 	[ -z "$MONITORINGENGINE_BINARY" ] && answer_with_testfile "$(gettext "What is the Monitoring engine binary ?") [$DEFAULT_MONITORINGENGINE_BINARY]" "$DEFAULT_MONITORINGENGINE_BINARY" "MONITORINGENGINE_BINARY"
 	[ -z "$MONITORINGENGINE_ETC" ] && locate_monitoringengine_etc
@@ -1585,7 +1583,7 @@ function configureSUDO() {
 #----
 ## Create a config file for Web post install
 ## @Globals	line, INSTALL_DIR_CENTREON, CENTREON_ETC,
-## @Globals	MONITORINGENGINE_BINARY, MONITORINGENGINE_INIT_SCRIPT
+## @Globals	MONITORINGENGINE_BINARY
 ## @Globals	BIN_RRDTOOL, WEB_USER, WEB_GROUP,
 ## @Globals	CENTREON_USER, BIN_MAIL
 #----
@@ -1633,7 +1631,6 @@ function createConfFile() {
 \$conf_centreon['monitoring_user'] = "$MONITORINGENGINE_USER";
 \$conf_centreon['monitoring_group'] = "$MONITORINGENGINE_GROUP";
 \$conf_centreon['monitoring_etc'] = "$MONITORINGENGINE_ETC";
-\$conf_centreon['monitoring_init_script'] = "centengine";
 \$conf_centreon['monitoring_binary'] = "$MONITORINGENGINE_BINARY";
 \$conf_centreon['monitoring_varlog'] = "$MONITORINGENGINE_LOG";
 \$conf_centreon['plugin_dir'] = "$PLUGIN_DIR";
@@ -1685,7 +1682,6 @@ function createCentreonInstallConf() {
 	BROKER_ETC=$BROKER_ETC
 	BROKER_USER=$BROKER_USER
 	MONITORINGENGINE_ETC=$MONITORINGENGINE_ETC
-	MONITORINGENGINE_INIT_SCRIPT=centengine
 	MONITORINGENGINE_BINARY=$MONITORINGENGINE_BINARY
 	MONITORINGENGINE_LOG=$MONITORINGENGINE_LOG
 	MONITORINGENGINE_USER=$MONITORINGENGINE_USER

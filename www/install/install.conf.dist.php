@@ -18,7 +18,6 @@ $conf_centreon['broker_etc'] = "/etc/centreon-broker";
 $conf_centreon['monitoring_user'] = "centreon-engine";
 $conf_centreon['monitoring_group'] = "centreon-engine";
 $conf_centreon['monitoring_etc'] = "/etc/centreon-engine";
-$conf_centreon['monitoring_init_script'] = "centengine";
 $conf_centreon['monitoring_binary'] = "/usr/sbin/centengine";
 $conf_centreon['monitoring_varlog'] = "/var/log/centreon-engine";
 $conf_centreon['plugin_dir'] = "/usr/lib/nagios/plugins";

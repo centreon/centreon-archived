@@ -66,6 +66,8 @@ class CentreonInstance extends CentreonObject
             'ssh_port' => '22',
             'nagios_bin' => '/usr/sbin/centengine',
             'nagiostats_bin' => '/usr/bin/centenginestats',
+            'engine_start_command' => 'service centengine start',
+            'engine_stop_command' => 'service centengine stop',
             'engine_restart_command' => 'service centengine restart',
             'engine_reload_command' => 'service centengine reload',
             'broker_reload_command' => 'service cbd reload',

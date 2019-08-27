@@ -128,7 +128,9 @@ try {
     $tabs = $centreon->user->access->getPollerAclConf([
         'fields' => [
             'name', 'id', 'localhost',
-            'engine_restart_command', 'engine_reload_command', 'broker_reload_command'
+            'engine_start_command', 'engine_stop_command',
+            'engine_restart_command', 'engine_reload_command',
+            'broker_reload_command'
         ],
         'order' => array('name'),
         'conditions' => array('ns_activate' => '1'),
@@ -140,6 +142,8 @@ try {
                 "id" => $tab["id"],
                 "name" => $tab["name"],
                 "localhost" => $tab["localhost"],
+                'engine_start_command' => $tab['engine_start_command'],
+                'engine_stop_command' => $tab['engine_stop_command'],
                 'engine_restart_command' => $tab['engine_restart_command'],
                 'engine_reload_command' => $tab['engine_reload_command'],
                 'broker_reload_command' => $tab['broker_reload_command']

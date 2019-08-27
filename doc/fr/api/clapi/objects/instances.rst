@@ -104,25 +104,27 @@ Parameters that you may change are:
 ========================== =====================================================
 Column	                   Description
 ========================== =====================================================
-name	
+name
 
-localhost	           *1* if it is the main poller, *0* otherwise
+localhost	                 *1* if it is the main poller, *0* otherwise
 
-ns_ip_address	           IP address of the poller
+ns_ip_address	             IP address of the poller
 
-ns_activate	           *1* if poller is enabled, *0* otherwise
+ns_activate	               *1* if poller is enabled, *0* otherwise
 
-init_script	           Init script path
+engine_start_command	     Command to start Centreon Engine process
 
-monitoring_engine	   Engine used on poller: *NAGIOS*, *ICINGA*, *SHINKEN*
+engine_stop_command	       Command to stop Centreon Engine process
 
-nagios_bin	           Path of the Scheduler binary
+engine_restart_command	   Command to restart Centreon Engine process
+
+engine_reload_command	     Command to reload Centreon Engine process
+
+nagios_bin	               Path of the Scheduler binary
 
 nagiostats_bin	           Path of the Nagios Stats binary
 
-nagios_perfdata	           Path of perfdata file
-
-ssh_port	           SSH Port
+ssh_port	                 SSH Port
 
 centreonbroker_cfg_path	   Centreon Broker Configuration path
 

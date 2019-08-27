@@ -366,7 +366,8 @@ function insertServer(array $data): int
     global $pearDB, $centreon;
 
     $rq = "INSERT INTO `nagios_server` (`name` , `localhost`, `ns_ip_address`, `ssh_port`, `nagios_bin`, " .
-        "`nagiostats_bin`, `init_system`, `engine_restart_command`, `engine_reload_command`, " .
+        "`nagiostats_bin`, `init_system`, " .
+        "`engine_start_command`, `engine_stop_command`, `engine_restart_command`, `engine_reload_command`, " .
         "`init_script_centreontrapd`, `snmp_trapd_path_conf`, " .
         "`nagios_perfdata` , `broker_reload_command`, " .
         "`centreonbroker_cfg_path`, `centreonbroker_module_path`, `centreonconnector_path`, " .
@@ -393,6 +394,12 @@ function insertServer(array $data): int
         : $rq .= "NULL, ";
     isset($data["init_system"]) && $data["init_system"] != null
         ? $rq .= "'" . htmlentities(trim($data["init_system"]), ENT_QUOTES, "UTF-8") . "',  "
+        : $rq .= "NULL, ";
+    isset($data["engine_start_command"]) && $data["engine_start_command"] != null
+        ? $rq .= "'" . htmlentities(trim($data["engine_start_command"]), ENT_QUOTES, "UTF-8") . "',  "
+        : $rq .= "NULL, ";
+    isset($data["engine_stop_command"]) && $data["engine_stop_command"] != null
+        ? $rq .= "'" . htmlentities(trim($data["engine_stop_command"]), ENT_QUOTES, "UTF-8") . "',  "
         : $rq .= "NULL, ";
     isset($data["engine_restart_command"]) && $data["engine_restart_command"] != null
         ? $rq .= "'" . htmlentities(trim($data["engine_restart_command"]), ENT_QUOTES, "UTF-8") . "',  "
@@ -573,6 +580,20 @@ function updateServer(int $id, $data): void
     isset($data["init_system"]) && $data["init_system"] != null
         ? $rq .= "init_system = '" . htmlentities(trim($data["init_system"]), ENT_QUOTES, "UTF-8") . "',  "
         : $rq .= "init_system = NULL, ";
+    isset($data["engine_start_command"]) && $data["engine_start_command"] != null
+        ? $rq .= "engine_start_command = '" . htmlentities(
+            trim($data["engine_start_command"]),
+            ENT_QUOTES,
+            "UTF-8"
+        ) . "',  "
+        : $rq .= "engine_start_command = NULL, ";
+    isset($data["engine_stop_command"]) && $data["engine_stop_command"] != null
+        ? $rq .= "engine_stop_command = '" . htmlentities(
+            trim($data["engine_stop_command"]),
+            ENT_QUOTES,
+            "UTF-8"
+        ) . "',  "
+        : $rq .= "engine_stop_command = NULL, ";
     isset($data["engine_restart_command"]) && $data["engine_restart_command"] != null
         ? $rq .= "engine_restart_command = '" . htmlentities(
             trim($data["engine_restart_command"]),

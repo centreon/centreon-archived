@@ -35,9 +35,17 @@
  */
 
  // Add columns to manage engine & broker restart/reload process
+ $pearDB->query('
+    ALTER TABLE `nagios_server`
+    ADD COLUMN `engine_start_command` varchar(255) DEFAULT \'service centengine start\' AFTER `monitoring_engine`
+');
 $pearDB->query('
     ALTER TABLE `nagios_server`
-    ADD COLUMN `engine_restart_command` varchar(255) DEFAULT \'service centengine restart\' AFTER `monitoring_engine`
+    ADD COLUMN `engine_stop_command` varchar(255) DEFAULT \'service centengine stop\' AFTER `engine_start_command`
+');
+$pearDB->query('
+    ALTER TABLE `nagios_server`
+    ADD COLUMN `engine_restart_command` varchar(255) DEFAULT \'service centengine restart\' AFTER `engine_stop_command`
 ');
 $pearDB->query('
     ALTER TABLE `nagios_server`
@@ -73,6 +81,8 @@ while ($row = $result->fetch()) {
         $engineServiceName = $row['init_script'];
     }
     $stmt->bindValue(':id', $row['id'], \PDO::PARAM_INT);
+    $stmt->bindValue(':engine_start_command', 'service ' . $engineServiceName . ' start', \PDO::PARAM_STR);
+    $stmt->bindValue(':engine_stop_command', 'service ' . $engineServiceName . ' stop', \PDO::PARAM_STR);
     $stmt->bindValue(':engine_restart_command', 'service ' . $engineServiceName . ' restart', \PDO::PARAM_STR);
     $stmt->bindValue(':engine_reload_command', 'service ' . $engineServiceName . ' reload', \PDO::PARAM_STR);
     $stmt->execute();
