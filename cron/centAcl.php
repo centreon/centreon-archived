@@ -117,27 +117,38 @@ try {
      */
     $pearDB->beginTransaction();
     try {
-        $ldapConf = $pearDB->query(
-            "SELECT auth.ar_id, auth.ar_sync_base_date, info.ari_value AS `interval`
-            FROM auth_ressource auth
-            INNER JOIN auth_ressource_info info ON auth.ar_id = info.ar_id
-            WHERE auth.ar_enable = '1' AND info.ari_name = 'ldap_sync_interval'"
-        );
 
-        $updateSyncTime = $pearDB->prepare(
-            'UPDATE auth_ressource SET ar_sync_base_date = :currentTime
-            WHERE ar_id = :arId'
+        // first, checking if an LDAP configuration is set and enabled
+        $ldapEnabled = $pearDB->query(
+            "SELECT `value` FROM options WHERE `key` = 'ldap_auth_enable'"
         );
+        $resEnabled = $ldapEnabled->fetch();
+        if ($resEnabled['value'] === "1") {
+            $ldapConf = $pearDB->query(
+                "SELECT auth.ar_id, auth.ar_sync_base_date, info.ari_value AS `interval`
+                FROM auth_ressource auth
+                INNER JOIN auth_ressource_info info ON auth.ar_id = info.ar_id
+                WHERE auth.ar_enable = '1' AND info.ari_name = 'ldap_sync_interval'"
+            );
 
-        $currentTime = time();
-        while ($ldapRow = $ldapConf->fetch()) {
-            if ($currentTime > ($ldapRow['ar_sync_base_date'] + 3600 * $ldapRow['interval'])) {
-                $updateSyncTime->bindValue(':currentTime', $currentTime, \PDO::PARAM_INT);
-                $updateSyncTime->bindValue(':arId', (int)$ldapRow['ar_id'], \PDO::PARAM_INT);
-                $updateSyncTime->execute();
+            $updateSyncTime = $pearDB->prepare(
+                'UPDATE auth_ressource SET ar_sync_base_date = :currentTime
+                WHERE ar_id = :arId'
+            );
+
+            $currentTime = time();
+            while ($ldapRow = $ldapConf->fetch()) {
+                if (isset($ldapRow['ar_sync_base_date'])
+                    && isset($ldapRow['interval'])
+                    && $currentTime > ($ldapRow['ar_sync_base_date'] + 3600 * $ldapRow['interval'])
+                ) {
+                    $updateSyncTime->bindValue(':currentTime', $currentTime, \PDO::PARAM_INT);
+                    $updateSyncTime->bindValue(':arId', (int)$ldapRow['ar_id'], \PDO::PARAM_INT);
+                    $updateSyncTime->execute();
+                }
             }
+            $pearDB->commit();
         }
-        $pearDB->commit();
     } catch (\PDOException $e) {
         $pearDB->rollBack();
         programExit("Error when updating LDAP's reference date for next synchronization");
