@@ -255,9 +255,11 @@ notification_contact, output, retry, service_description, service_id, status, ty
 QUERY;
 
 $mainExplanation = <<<TEXT
-Before starting, we inform you that we will create a new centreon_storage.logs table and rename the older.
+Before starting, we inform you that we will create a new %s.logs table and rename the older.
 Then, we will copy the data from the old table into the new one.\n\n
 TEXT;
+
+$mainExplanation = sprintf($mainExplanation, dbcstg);
 
 $recoveryExplanation = <<<TEXT
 Recovery mode.
@@ -316,13 +318,15 @@ try {
 
     try {
         $dsn = sprintf(
-            "mysql:dbname=centreon_storage;host=%s;port=%d",
+            "mysql:dbname=%s;host=%s;port=%d",
+            dbcstg,
             $dbHost,
             $dbPort
         );
         $db = new \PDO($dsn, $dbUser, $dbPassword);
         $db->setAttribute(\PDO::MYSQL_ATTR_USE_BUFFERED_QUERY, false);
         $db->setAttribute(\PDO::ATTR_AUTOCOMMIT, false);
+        $db->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
     } catch (\PDOException $ex) {
         throw new Exception("Can not connect to the database");
     }
@@ -336,12 +340,17 @@ try {
          * First we check if this update is necessary by checking if the log_id
          * column is present
          */
-        $statement = $db->query(
+
+
+
+        $statement = $db->prepare(
             "SELECT COUNT(*) AS is_present
             FROM information_schema.COLUMNS
-            WHERE TABLE_SCHEMA = 'centreon_storage'
+            WHERE TABLE_SCHEMA = :db_storage
             AND TABLE_NAME = 'logs' AND COLUMN_NAME = 'log_id'"
         );
+        $statement->bindValue(':db_storage', dbcstg, \PDO::PARAM_STR);
+        $statement->execute();
         $result = $statement->fetchAll(\PDO::FETCH_ASSOC);
         $shouldBeContinue = $result[0]['is_present'] == '1';
 
@@ -442,17 +451,17 @@ try {
             $result = $db->query("SELECT * FROM logs_old PARTITION ($partitionName)");
         }
 
-        $nbrRecors = 0;
+        $nbrRecords = 0;
         while ($row = $result->fetch(\PDO::FETCH_ASSOC)) {
             unset($row['log_id']);
             fputcsv($fp, $row);
-            $nbrRecors++;
+            $nbrRecords++;
         }
         fclose($fp);
         $currentStep++;
 
         // We copy data from the csv partition file into the new table 'logs'
-        $logs("Copying of $nbrRecors records from the csv file $partitionName into the new table");
+        $logs("Copying of $nbrRecords records from the csv file $partitionName into the new table");
         $query = str_replace('{{DATA_FILE}}', realpath($pathPartition), $loadDataInfileQuery);
         if ($db->beginTransaction()) {
             // LOAD DATA INFILE ...
