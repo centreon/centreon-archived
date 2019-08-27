@@ -103,11 +103,10 @@ INSTANCE;setparam;Central;engine_start_command;service centengine start
 INSTANCE;setparam;Central;engine_stop_command;service centengine stop
 INSTANCE;setparam;Central;engine_restart_command;service centengine restart
 INSTANCE;setparam;Central;engine_reload_command;service centengine reload
-INSTANCE;setparam;Central;init_system;systemv
-INSTANCE;setparam;Central;monitoring_engine;CENGINE
 INSTANCE;setparam;Central;nagios_bin;/usr/sbin/centengine
 INSTANCE;setparam;Central;nagiostats_bin;/usr/sbin/centenginestats
 INSTANCE;setparam;Central;nagios_perfdata;/var/log/centreon-engine/service-perfdata
+INSTANCE;setparam;Central;broker_reload_command;service cbd reload
 INSTANCE;setparam;Central;centreonbroker_cfg_path;/etc/centreon-broker
 INSTANCE;setparam;Central;centreonbroker_module_path;/usr/share/centreon/lib/centreon-broker
 INSTANCE;setparam;Central;centreonconnector_path;/usr/lib64/centreon-connector
@@ -123,11 +122,10 @@ INSTANCE;setparam;test_poller;engine_start_command;service centengine start
 INSTANCE;setparam;test_poller;engine_stop_command;service centengine stop
 INSTANCE;setparam;test_poller;engine_restart_command;service centengine restart
 INSTANCE;setparam;test_poller;engine_reload_command;service centengine reload
-INSTANCE;setparam;test_poller;init_system;systemv
-INSTANCE;setparam;test_poller;monitoring_engine;CENGINE
 INSTANCE;setparam;test_poller;nagios_bin;/usr/sbin/centengine
 INSTANCE;setparam;test_poller;nagiostats_bin;/usr/sbin/centenginestats
 INSTANCE;setparam;test_poller;nagios_perfdata;/var/log/centreon-engine/service-perfdata
+INSTANCE;setparam;test_poller;broker_reload_command;service cbd reload
 INSTANCE;setparam;test_poller;centreonbroker_cfg_path;/etc/centreon-broker
 INSTANCE;setparam;test_poller;centreonbroker_module_path;/usr/share/centreon/lib/centreon-broker
 INSTANCE;setparam;test_poller;centreonconnector_path;/usr/lib64/centreon-connector

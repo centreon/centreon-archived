@@ -6,7 +6,6 @@ $help['localhost'] = dgettext("help", "Whether the poller is local");
 $help['is_default'] = dgettext("help", "Main poller");
 $help['remote_id'] = dgettext("help", "Remote Server to which this server will be attached");
 $help['ssh_port'] = dgettext("help", "SSH port of the remote poller");
-$help['monitoring_engine'] = dgettext("help", "Monitoring engine");
 $help['engine_start_command'] = dgettext("help", "Command to start Centreon Engine process");
 $help['engine_stop_command'] = dgettext("help", "Command to stop Centreon Engine process");
 $help['engine_restart_command'] = dgettext("help", "Command to restart Centreon Engine process");

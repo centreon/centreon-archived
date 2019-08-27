@@ -144,20 +144,7 @@ class CentreonConfigPoller
      */
     private function getMonitoringEngine($poller)
     {
-        if (is_numeric($poller)) {
-            $sQuery = "SELECT monitoring_engine FROM nagios_server WHERE `id` = " . $this->_DB->escape($poller);
-        } else {
-            $sQuery = "SELECT monitoring_engine FROM nagios_server WHERE `name` = '"
-                . $this->_DB->escape($poller) . "'";
-        }
-
-        $res = $this->_DB->query($sQuery);
-
-        $row = $res->fetchRow();
-        if (isset($row['monitoring_engine'])) {
-            return $row['monitoring_engine'];
-        }
-        return "";
+        return 'CENGINE';
     }
 
     /**

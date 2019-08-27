@@ -121,21 +121,5 @@ var engines = {literal}{{/literal}
   {literal}}{/literal}{if not $smarty.foreach.engines.last},{/if}
 
 {/foreach}
-{literal}};
-
-function update_engine_values(e) {
-    var ename = jQuery(this).attr("value");
-
-    jQuery.each(engines[ename], function(key, value) {
-        if (key == "name") {
-            return;
-        }
-        jQuery("input[name=" + key + "]").attr("value", value);
-    });
-}{/literal}
-{if $o == "a"}{literal}
-jQuery(document).ready(function() {
-    jQuery("select[name=monitoring_engine]").change(update_engine_values);
-});{/literal}{/if}
 </script>
 {$helptext}

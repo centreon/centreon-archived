@@ -28,8 +28,6 @@ class NagiosServer
             'engine_stop_command'        => 'service centengine stop',
             'engine_restart_command'     => 'service centengine restart',
             'engine_reload_command'      => 'service centengine reload',
-            'init_system'                => 'systemv',
-            'monitoring_engine'          => 'CENGINE',
             'nagios_bin'                 => '/usr/sbin/centengine',
             'nagiostats_bin'             => '/usr/sbin/centenginestats',
             'nagios_perfdata'            => '/var/log/centreon-engine/service-perfdata',

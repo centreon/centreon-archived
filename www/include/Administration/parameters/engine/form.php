@@ -99,7 +99,6 @@ $scaleChoices = array(
 );
 $form->addElement('select', 'monitoring_dwt_duration_scale', _("Scale of time"), $scaleChoices);
 
-$form->addElement('hidden', 'monitoring_engine', "CENGINE");
 $form->addElement('hidden', 'gopt_id');
 $redirect = $form->addElement('hidden', 'o');
 $redirect->setValue($o);
@@ -127,10 +126,6 @@ $form->addRule('interval_length', _("This value must be a numerical value."), 'i
  */
 $tpl = new Smarty();
 $tpl = initSmartyTpl($path . "/engine", $tpl);
-
-if (!isset($gopt["monitoring_engine"])) {
-    $gopt["monitoring_engine"] = "CENGINE";
-}
 
 $form->setDefaults($gopt);
 

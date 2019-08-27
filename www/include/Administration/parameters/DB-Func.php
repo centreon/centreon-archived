@@ -142,12 +142,6 @@ function updateNagiosConfigData($gopt_id = null)
     );
     updateOption(
         $pearDB,
-        "monitoring_engine",
-        isset($ret["monitoring_engine"]) && $ret["monitoring_engine"] != null
-            ? $ret["monitoring_engine"] : "NULL"
-    );
-    updateOption(
-        $pearDB,
         "mailer_path_bin",
         isset($ret["mailer_path_bin"]) && $ret["mailer_path_bin"] != null
             ? $pearDB->escape($ret["mailer_path_bin"]) : "NULL"

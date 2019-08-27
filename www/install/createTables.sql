@@ -1616,8 +1616,6 @@ CREATE TABLE `nagios_server` (
   `ns_ip_address` varchar(255) DEFAULT NULL,
   `ns_activate` enum('1','0') DEFAULT '1',
   `ns_status` enum('0','1','2','3','4') DEFAULT '0',
-  `init_system` varchar(255) DEFAULT 'systemv',
-  `monitoring_engine` varchar(20) DEFAULT NULL,
   `engine_start_command` varchar(255) DEFAULT 'service centengine start',
   `engine_stop_command` varchar(255) DEFAULT 'service centengine stop',
   `engine_restart_command` varchar(255) DEFAULT 'service centengine restart',
