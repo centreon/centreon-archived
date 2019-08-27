@@ -43,7 +43,7 @@ préalable installer le fichier lié au dépôt. Exécutez la commande suivante.
 
 Installation : ::
 
-    # yum install -y http://yum.centreon.com/standard/19.04/el7/stable/noarch/RPMS/centreon-release-19.04-1.el7.centos.noarch.rpm
+    # yum install -y http://yum.centreon.com/standard/19.10/el7/stable/noarch/RPMS/centreon-release-19.10-1.el7.centos.noarch.rpm
 
 Le dépôt est maintenant installé.
 
@@ -88,13 +88,12 @@ Exécutez les commandes : ::
     le paquet **centreon-database** installe un serveur de base de données optimisé pour l'utilisation avec Centreon.
 
 .. note::
-    Centreon n'est pas encore **compatible** avec le mode STRICT de SQL. Veuillez
-    vous assurer que le mode soit bien désactivé. Pour plus d'information sur la
-    désactivation du mode vous pouvez consulter la `documentation officielle
-    <https://mariadb.com/kb/en/library/sql-mode/#strict-mode>`_ de MariaDB pour
-    le désactiver
+    Centreon est **compatible** avec le mode STRICT de SQL. Pour plus d'information sur le
+    sujet vous pouvez consulter la `documentation officielle
+    <https://mariadb.com/kb/en/library/sql-mode/#strict-mode>`_ de MariaDB. Ou la `documentation officielle
+    <https://dev.mysql.com/doc/refman/8.0/en/sql-mode.html>`_ de MySQL
 
-Puis créer un utisateur **root** distant : ::
+Puis créer un utilisateur **root** distant : ::
 
     mysql> CREATE USER 'root'@'IP' IDENTIFIED BY 'PASSWORD';
     mysql> GRANT ALL PRIVILEGES ON *.* TO 'root'@'IP' WITH GRANT OPTION;
@@ -185,6 +184,8 @@ Lancer les commandes suivantes sur le serveur Central : ::
     d'activation mysql sur ce dernier : ::
     
         # systemctl enable mysql
+    ou
+        # systemctl enable mysqld
 
 Terminer l'installation
 -----------------------
