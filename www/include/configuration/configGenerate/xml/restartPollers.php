@@ -127,9 +127,10 @@ try {
 
     $tabs = $centreon->user->access->getPollerAclConf([
         'fields' => [
-            'name', 'id', 'localhost',
-            'engine_start_command', 'engine_stop_command',
-            'engine_restart_command', 'engine_reload_command',
+            'name',
+            'id',
+            'engine_restart_command',
+            'engine_reload_command',
             'broker_reload_command'
         ],
         'order' => array('name'),
@@ -141,9 +142,6 @@ try {
             $poller[$tab["id"]] = array(
                 "id" => $tab["id"],
                 "name" => $tab["name"],
-                "localhost" => $tab["localhost"],
-                'engine_start_command' => $tab['engine_start_command'],
-                'engine_stop_command' => $tab['engine_stop_command'],
                 'engine_restart_command' => $tab['engine_restart_command'],
                 'engine_reload_command' => $tab['engine_reload_command'],
                 'broker_reload_command' => $tab['broker_reload_command']
@@ -159,50 +157,42 @@ try {
 
     foreach ($poller as $host) {
         if ($ret["restart_mode"] == 1) {
-            if (isset($host['localhost']) && $host['localhost'] == 1) {
-                $msg_restart[$host["id"]] = shell_exec('sudo ' . $host['engine_reload_command']);
+            if ($fh = @fopen($centcore_pipe, 'a+')) {
+                fwrite($fh, "RELOAD:" . $host["id"] . "\n");
+                fclose($fh);
             } else {
-                if ($fh = @fopen($centcore_pipe, 'a+')) {
-                    fwrite($fh, "RELOAD:" . $host["id"] . "\n");
-                    fclose($fh);
-                } else {
-                    throw new Exception(_("Could not write into centcore.cmd. Please check file permissions."));
-                }
+                throw new Exception(_("Could not write into centcore.cmd. Please check file permissions."));
+            }
 
-                // Manage Error Message
-                if (!isset($msg_restart[$host["id"]])) {
-                    $msg_restart[$host["id"]] = "";
-                }
-                if ($return != 0) {
-                    $msg_restart[$host["id"]] .= _("<br><b>Centreon : </b>A reload signal has been sent to "
-                        . $host["name"] . "\n");
-                } else {
-                    $msg_restart[$host["id"]] .= _("<br><b>Centreon : </b>Cannot send signal to "
-                        . $host["name"] . ". Check $centcore_pipe properties.\n");
-                }
+            // Manage Error Message
+            if (!isset($msg_restart[$host["id"]])) {
+                $msg_restart[$host["id"]] = "";
+            }
+            if ($return != 0) {
+                $msg_restart[$host["id"]] .= _("<br><b>Centreon : </b>A reload signal has been sent to "
+                    . $host["name"] . "\n");
+            } else {
+                $msg_restart[$host["id"]] .= _("<br><b>Centreon : </b>Cannot send signal to "
+                    . $host["name"] . ". Check $centcore_pipe properties.\n");
             }
         } elseif ($ret["restart_mode"] == 2) {
-            if (isset($host['localhost']) && $host['localhost'] == 1) {
-                $msg_restart[$host["id"]] = shell_exec('sudo ' . $host['engine_restart_command']);
+            if ($fh = @fopen($centcore_pipe, 'a+')) {
+                fwrite($fh, "RESTART:" . $host["id"] . "\n");
+                fclose($fh);
             } else {
-                if ($fh = @fopen($centcore_pipe, 'a+')) {
-                    fwrite($fh, "RESTART:" . $host["id"] . "\n");
-                    fclose($fh);
-                } else {
-                    throw new Exception(_("Could not write into centcore.cmd. Please check file permissions."));
-                }
+                throw new Exception(_("Could not write into centcore.cmd. Please check file permissions."));
+            }
 
-                // Manage error Message
-                if (!isset($msg_restart[$host["id"]])) {
-                    $msg_restart[$host["id"]] = "";
-                }
-                if ($return != 0) {
-                    $msg_restart[$host["id"]] .= _("<br><b>Centreon : </b>A restart signal has been sent to "
-                        . $host["name"] . "\n");
-                } else {
-                    $msg_restart[$host["id"]] .= _("<br><b>Centreon : </b>Cannot send signal to "
-                        . $host["name"] . ". Check $centcore_pipe properties.\n");
-                }
+            // Manage error Message
+            if (!isset($msg_restart[$host["id"]])) {
+                $msg_restart[$host["id"]] = "";
+            }
+            if ($return != 0) {
+                $msg_restart[$host["id"]] .= _("<br><b>Centreon : </b>A restart signal has been sent to "
+                    . $host["name"] . "\n");
+            } else {
+                $msg_restart[$host["id"]] .= _("<br><b>Centreon : </b>Cannot send signal to "
+                    . $host["name"] . ". Check $centcore_pipe properties.\n");
             }
         }
         $DBRESULT = $pearDB->query("UPDATE `nagios_server` SET `last_restart` = '"

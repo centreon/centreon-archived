@@ -838,9 +838,13 @@ sub initEngine($$$) {
                 'using remote server "' . $remote_server->{name} . '" (' . $remote_server->{id} . ')'
             );
         } else {
-            $cmd = "$self->{ssh} -p $port $conf->{ns_ip_address} " . $self->getEngineCommand($conf, $options);
+            $cmd = '';
+            if ($conf->{localhost} == 0) {
+                $cmd = "$self->{ssh} -p $port $conf->{ns_ip_address} ";
+            }
+            $cmd .= $self->getEngineCommand($conf, $options);
             $self->{logger}->writeLogInfo(
-                'Init Script : "' . $self->getEngineCommand($conf, $options) . '" ' .
+                'Init Script : "' . $cmd . '" ' .
                 'on poller "' . $conf->{name} . '" (' . $id . ')'
             );
         }
