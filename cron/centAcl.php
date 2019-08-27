@@ -147,8 +147,8 @@ try {
                     $updateSyncTime->execute();
                 }
             }
-            $pearDB->commit();
         }
+        $pearDB->commit();
     } catch (\PDOException $e) {
         $pearDB->rollBack();
         programExit("Error when updating LDAP's reference date for next synchronization");
