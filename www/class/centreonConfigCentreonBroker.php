@@ -810,11 +810,10 @@ class CentreonConfigCentreonBroker
                             $info = explode('__', $fieldname, 3);
                             $grp_name = $info[0];
                             $grp_id = $info[1];
-                            $query = "INSERT INTO cfg_centreonbroker_info
-                                        (config_id, config_key, config_value, config_group, config_group_id, grp_level,
-                                        subgrp_id, parent_grp_id)
-                                        VALUES (" . $id . ", '" . $grp_name . "', '', '" . $group . "', " .
-                                $gid . ", " . $lvl . ", " . $grp_id . ", " . $parent_id . ")";
+                            $query = "INSERT INTO cfg_centreonbroker_info 
+                                (config_id, config_key, config_value, config_group, config_group_id, grp_level,
+                                subgrp_id, parent_grp_id) VALUES (" . $id . ", '" . $grp_name . "', '', '"
+                                . $group . "', " . $gid . ", " . $lvl . ", " . $grp_id . ", " . $parent_id . ")";
                             $this->db->query($query);
                             $lvl++;
                             $parent_id = $grp_id;
@@ -822,12 +821,10 @@ class CentreonConfigCentreonBroker
                         }
                         $grp_id = 'NULL';
                         foreach ($fieldvalue as $value) {
-                            $query = "INSERT INTO cfg_centreonbroker_info
-                                        (config_id, config_key, config_value, config_group, config_group_id, grp_level,
-                                        subgrp_id, parent_grp_id)
-                                        VALUES (" . $id . ", '" . $fieldname . "', '" . $value . "', '" .
-                                $group . "', " . $gid . ", " . $lvl . ", " .
-                                $grp_id . ", " . $parent_id . ")";
+                            $query = "INSERT INTO cfg_centreonbroker_info (config_id, config_key, config_value,
+                                config_group, config_group_id, grp_level, subgrp_id, parent_grp_id)
+                                VALUES (" . $id . ", '" . $fieldname . "', '" . $value . "', '" . $group . "', "
+                                . $gid . ", " . $lvl . ", " . $grp_id . ", " . $parent_id . ")";
                             $this->db->query($query);
                         }
                     }
@@ -865,7 +862,7 @@ class CentreonConfigCentreonBroker
         while ($row = $res->fetchRow()) {
             $fieldname = $tag . '[' . $row['config_group_id'] . '][' .
                 $this->getConfigFieldName($config_id, $tag, $row) . ']';
-            /* Multi value for a multiselect */
+            // Multi value for a multiselect
             if (isset($row['fieldIndex']) && !is_null($row['fieldIndex']) && $row['fieldIndex'] != "") {
                 $fieldname = $tag . '[' . $row['config_group_id'] . '][' .
                     $this->getConfigFieldName($config_id, $tag, $row) . '_#index#]';
