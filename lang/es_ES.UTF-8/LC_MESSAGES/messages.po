@@ -1296,8 +1296,7 @@ msgstr "aplicar"
 
 #: centreon-web/www/install/smarty_translate.php:159 centreon-web/www/include/home/customViews/views.php:115
 msgid "Deleting this view might impact other users. Are you sure you want to do it?"
-msgstr ""
-"Eliminar esta vista podría afectar a otros usuarios. \n"
+msgstr "Eliminar esta vista podría afectar a otros usuarios.\\n"
 "¿Estás seguro de que quieres hacer eso?"
 
 #: centreon-web/www/install/smarty_translate.php:162 centreon-web/www/include/Administration/performance/viewData.php:303
@@ -5400,8 +5399,7 @@ msgstr ""
 
 #: centreon-web/www/include/home/customViews/views.php:114
 msgid "Deleting this widget might impact users with whom you are sharing this view. Are you sure you want to do it?"
-msgstr ""
-"La eliminación de este widget podría afectar a los usuarios con los que comparte esta vista. \n"
+msgstr "La eliminación de este widget podría afectar a los usuarios con los que comparte esta vista.\\n"
 "¿Estás seguro de que quieres hacer eso?"
 
 #: centreon-web/www/include/home/customViews/views.php:116
@@ -14180,3 +14178,75 @@ msgstr "cubo de basura"
 
 #~ msgid "Process Commands"
 #~ msgstr "Controles de proceso"
+
+#: centreon-web/www/include/Administration/parameters/ldap/form.php
+#~ msgid "Default contactgroup"
+#~ msgstr ""
+
+#: centreon-web/www/include/Administration/parameters/ldap/form.php
+#~ msgid "Synchronization Options"
+#~ msgstr ""
+
+#: centreon-web/www/include/Administration/parameters/ldap/form.php
+#~ msgid "LDAP synchronization interval (in hours)"
+#~ msgstr ""
+
+#: centreon-web/www/include/Administration/parameters/rrdtool/form.php
+#~ msgid "Enable LDAP synchronization on login"
+#~ msgstr ""
+
+#: centreon-web/www/include/Administration/parameters/ldap/form.php
+#~ msgid "An integer with a minimum value of 1 is required"
+#~ msgstr ""
+
+#~ msgid "Contacts with the 'Reach Centreon Front-end' option enabled"
+#~ msgstr ""
+
+#~ msgid "Refresh"
+#~ msgstr ""
+
+#~ msgid "To manually request a LDAP synchronization of a contact"
+#~ msgstr ""
+
+#~ msgid "The chosen contact(s) will be disconnected. Do you confirm the LDAP synchronization request ?"
+#~ msgstr ""
+
+#: centreon/www/include/configuration/configObject/contact/listContact.php
+#~ msgid "If the contact is connected, all his instances will be closed. Are you sure you want to request a "
+#~ "data synchronization at the next login of this Contact ?"
+#~ msgstr ""
+
+#: centreon/www/include/options/session/connected_user.php
+#~ msgid "All this contact sessions will be closed. Are you sure you want to request a synchronization at the next "
+#~ "login of this Contact ?"
+#~ msgstr ""
+
+#~ msgid "Refresh LDAP"
+#~ msgstr ""
+
+#~ msgid "Logout user"
+#~ msgstr ""
+
+#~ msgid "Synchronize LDAP"
+#~ msgstr ""
+
+#~ msgid "Error : unable to read or update the contact data in the DB"
+#~ msgstr ""
+
+#~ msgid "Last LDAP sync"
+#~ msgstr ""
+
+#~ msgid "No LDAP configuration enabled !"
+#~ msgstr ""
+
+#~ msgid "Resync data requested."
+#~ msgstr ""
+
+#~ msgid "This user isn't linked to a LDAP"
+#~ msgstr ""
+
+#~ msgid "Manually request to synchronize this contact with his LDAP"
+#~ msgstr ""
+
+#~ msgid "Already requested, please wait the CRON execution or for the user to login"
+#~ msgstr ""
