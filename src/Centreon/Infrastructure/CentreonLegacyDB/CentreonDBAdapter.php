@@ -52,7 +52,7 @@ class CentreonDBAdapter
 
     /**
      * @param string $query
-     * @param array $params
+     * @param array  $params
      *
      * @return $this
      * @throws \Exception
@@ -98,7 +98,7 @@ class CentreonDBAdapter
 
     /**
      * @param string $table
-     * @param array $fields
+     * @param array  $fields
      *
      * @return int Last inserted ID
      * @throws \Exception
@@ -141,11 +141,11 @@ class CentreonDBAdapter
     /**
      * Insert data using load data infile
      *
-     * @param string $file Path and name of file to load
-     * @param string $table Table name
-     * @param array $fieldsClause Values of subclauses of FIELDS clause
-     * @param array $linesClause Values of subclauses of LINES clause
-     * @param array $columns Columns name
+     * @param string $file         Path and name of file to load
+     * @param string $table        Table name
+     * @param array  $fieldsClause Values of subclauses of FIELDS clause
+     * @param array  $linesClause  Values of subclauses of LINES clause
+     * @param array  $columns      Columns name
      *
      * @return void
      * @throws \Exception
@@ -183,8 +183,8 @@ class CentreonDBAdapter
 
     /**
      * @param string $table
-     * @param array $fields
-     * @param int $id
+     * @param array  $fields
+     * @param int    $id
      *
      * @return bool|int Updated ID
      * @throws \Exception

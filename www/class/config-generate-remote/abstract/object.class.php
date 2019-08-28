@@ -86,9 +86,9 @@ abstract class AbstractObject
 
     protected function createFile($dir)
     {
-        $full_file = $dir . '/' . $this->subdir . '/' . $this->generate_filename;
-        if (!($this->fp = @fopen($full_file, 'w+'))) {
-            throw new Exception("Cannot open file (writing permission) '" . $full_file . "'");
+        $fullFile = $dir . '/' . $this->subdir . '/' . $this->generate_filename;
+        if (!($this->fp = @fopen($fullFile, 'w+'))) {
+            throw new Exception("Cannot open file (writing permission) '" . $fullFile . "'");
         }
 
         if ($this->type == 'infile') {
@@ -107,6 +107,7 @@ abstract class AbstractObject
         if (mb_detect_encoding($finalString, 'UTF-8', true) !== 'UTF-8') {
             $finalString = mb_convert_encoding($finalString, 'UTF-8');
         }
+
         return $finalString;
     }
 
@@ -183,6 +184,7 @@ abstract class AbstractObject
         if (isset($this->exported[$id])) {
             return 1;
         }
+
         return 0;
     }
 
@@ -191,6 +193,7 @@ abstract class AbstractObject
         if (isset($this->exported)) {
             return $this->exported;
         }
+
         return [];
     }
 

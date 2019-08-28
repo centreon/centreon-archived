@@ -102,20 +102,20 @@ class ConfigurationExporter extends ExporterServiceAbstract
         // media copy
         $exportPathMedia = $this->commitment->getPath() . "/media";
         $mediaPath = static::MEDIA_PATH;
-        $this->recursive_copy($exportPathMedia, $mediaPath);
+        $this->recursiveCopy($exportPathMedia, $mediaPath);
     }
 
     /**
      * Copy directory recursively
      */
-    private function recursive_copy($src, $dst)
+    private function recursiveCopy($src, $dst)
     {
         $dir = opendir($src);
         @mkdir($dst, $this->commitment->getFilePermission(), true);
         while (($file = readdir($dir))) {
             if (($file != '.') && ($file != '..')) {
                 if (is_dir($src . '/' . $file)) {
-                    $this->recursive_copy($src . '/' . $file, $dst . '/' . $file);
+                    $this->recursiveCopy($src . '/' . $file, $dst . '/' . $file);
                 } else {
                     echo date("Y-m-d H:i:s") . " - INFO - Copying '" . $src . "/" . $file . "'.\n";
                     copy($src . '/' . $file, $dst . '/' . $file);

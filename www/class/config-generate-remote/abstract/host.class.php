@@ -61,6 +61,7 @@ abstract class AbstractHost extends AbstractObject
         host_location,
         host_acknowledgement_timeout
     ';
+
     protected $attributes_write = [
         'host_id',
         'command_command_id',
@@ -86,7 +87,7 @@ abstract class AbstractHost extends AbstractObject
         'host_snmp_version',
         'host_register',
         'host_location',
-        'host_acknowledgement_timeout'
+        'host_acknowledgement_timeout',
     ];
 
     protected $loop_htpl = []; # To be reset
@@ -114,6 +115,7 @@ abstract class AbstractHost extends AbstractObject
         unset($host['ehi_icon_image_alt']);
         unset($host['ehi_2d_coords']);
         unset($host['ehi_3d_coords']);
+
         return $extended_information;
     }
 
@@ -131,11 +133,11 @@ abstract class AbstractHost extends AbstractObject
         }
 
         if (is_null($this->stmt_macro)) {
-            $this->stmt_macro = $this->backend_instance->db->prepare("SELECT 
-              host_macro_id, host_macro_name, host_macro_value, is_password, description, host_host_id
-            FROM on_demand_macro_host
-            WHERE host_host_id = :host_id
-            ");
+            $this->stmt_macro = $this->backend_instance->db->prepare(
+                "SELECT host_macro_id, host_macro_name, host_macro_value, is_password, description, host_host_id
+                FROM on_demand_macro_host
+                WHERE host_host_id = :host_id"
+            );
         }
         $this->stmt_macro->bindParam(':host_id', $host['host_id'], PDO::PARAM_INT);
         $this->stmt_macro->execute();
@@ -154,12 +156,12 @@ abstract class AbstractHost extends AbstractObject
     {
         if (!isset($host['htpl'])) {
             if (is_null($this->stmt_htpl)) {
-                $this->stmt_htpl = $this->backend_instance->db->prepare("SELECT 
-                    host_tpl_id
-                FROM host_template_relation
-                WHERE host_host_id = :host_id
-                ORDER BY `order` ASC
-                ");
+                $this->stmt_htpl = $this->backend_instance->db->prepare(
+                    "SELECT host_tpl_id
+                    FROM host_template_relation
+                    WHERE host_host_id = :host_id
+                    ORDER BY `order` ASC"
+                );
             }
             $this->stmt_htpl->bindParam(':host_id', $host['host_id'], PDO::PARAM_INT);
             $this->stmt_htpl->execute();
@@ -180,11 +182,11 @@ abstract class AbstractHost extends AbstractObject
     {
         if (!isset($host['contacts_cache'])) {
             if (is_null($this->stmt_contact)) {
-                $this->stmt_contact = $this->backend_instance->db->prepare("SELECT 
-                    contact_id
-                FROM contact_host_relation
-                WHERE host_host_id = :host_id
-                ");
+                $this->stmt_contact = $this->backend_instance->db->prepare(
+                    "SELECT contact_id
+                    FROM contact_host_relation
+                    WHERE host_host_id = :host_id"
+                );
             }
             $this->stmt_contact->bindParam(':host_id', $host['host_id'], PDO::PARAM_INT);
             $this->stmt_contact->execute();
@@ -202,11 +204,11 @@ abstract class AbstractHost extends AbstractObject
     {
         if (!isset($host['contact_groups_cache'])) {
             if (is_null($this->stmt_cg)) {
-                $this->stmt_cg = $this->backend_instance->db->prepare("SELECT 
-                    contactgroup_cg_id
-                FROM contactgroup_host_relation
-                WHERE host_host_id = :host_id
-                ");
+                $this->stmt_cg = $this->backend_instance->db->prepare(
+                    "SELECT contactgroup_cg_id
+                    FROM contactgroup_host_relation
+                    WHERE host_host_id = :host_id"
+                );
             }
             $this->stmt_cg->bindParam(':host_id', $host['host_id'], PDO::PARAM_INT);
             $this->stmt_cg->execute();
@@ -248,8 +250,8 @@ abstract class AbstractHost extends AbstractObject
 
     protected function getHostCommand(&$host, $command_id_label)
     {
-        Command::getInstance($this->dependencyInjector)
-            ->generateFromCommandId($host[$command_id_label]);
+        Command::getInstance($this->dependencyInjector)->generateFromCommandId($host[$command_id_label]);
+
         return 0;
     }
 
@@ -271,6 +273,7 @@ abstract class AbstractHost extends AbstractObject
         if (isset($this->hosts[$host_id][$attr])) {
             return $this->hosts[$host_id][$attr];
         }
+
         return null;
     }
 }
