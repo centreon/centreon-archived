@@ -112,6 +112,46 @@ $help['sso_username_replace'] = dgettext(
 );
 
 /**
+ * Keycloak
+ */
+$help['keycloak_enable'] = dgettext(
+    'help',
+    'Enable login with Keycloak.'
+);
+$help['keycloak_mode'] = dgettext(
+    'help',
+    'Authentication can be solely based on Keycloak or it can work with both Keycloak and local authentication systems.'
+);
+$help['keycloak_trusted_clients'] = dgettext(
+    'help',
+    'IP/DNS of trusted clients. Use coma as delimiter in case of multiple clients.'
+);
+$help['keycloak_blacklist_clients'] = dgettext(
+    'help',
+    'IP/DNS of blacklist clients. Use coma as delimiter in case of multiple clients.'
+);
+$help['keycloak_url'] = dgettext(
+    'help',
+    'Your Keycloak server url (with "/auth").'
+);
+$help['keycloak_redirect_url'] = dgettext(
+    'help',
+    'Your Keycloak redirect url (this server).'
+);
+$help['keycloak_realm'] = dgettext(
+    'help',
+    'Your Keycloak Realm name.'
+);
+$help['keycloak_client_id'] = dgettext(
+    'help',
+    'Your Keycloak client ID.'
+);
+$help['keycloak_client_secret'] = dgettext(
+    'help',
+    'Your Keycloak client secret.'
+);
+
+/**
  * UI bahvior
  */
 $help['strict_hostParent_poller_management'] = dgettext(
