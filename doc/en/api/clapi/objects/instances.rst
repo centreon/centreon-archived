@@ -121,6 +121,8 @@ nagiostats_bin             Path of the Nagios Stats binary
 
 ssh_port                   SSH Port
 
+broker_reload_command      Command to reload Centreon Broker process
+
 centreonbroker_cfg_path    Centreon Broker Configuration path
 
 centreonbroker_module_path Centreon Broker Module path
