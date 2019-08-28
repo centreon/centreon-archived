@@ -44,7 +44,7 @@ class CentreonWidgetParamsConnectorHostSeverityMulti extends CentreonWidgetParam
      */
     public function getParameters()
     {
-        $path = './api/internal.php?object=centreon_configuration_host_severity&action=list&t=s';
+        $path = './api/internal.php?object=centreon_configuration_hostcategory&action=list&t=s';
         return array(
             'datasourceOrigin' => 'ajax',
             'availableDatasetRoute' => $path,
