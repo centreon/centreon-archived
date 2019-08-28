@@ -820,6 +820,9 @@ function locate_centreon_varlib() {
 		echo_success "$(gettext "Path" ) $CENTREON_VARLIB" "$ok"
 	fi
 	CENTREON_VARLIB=`trim ${CENTREON_VARLIB%/}`
+	if [ ! -d "$CENTREON_VARLIB/installs" ] ; then
+		mkdir -p "$CENTREON_VARLIB/installs"
+	fi
 	export CENTREON_VARLIB
 	log "INFO" "CENTREON_VARLIB: $CENTREON_VARLIB"
 }
@@ -1230,14 +1233,12 @@ function reload_service_apache() {
 	elif [ -x /etc/init.d/httpd ] ; then
 		service="httpd"
 	elif [ -x /bin/systemctl ] ; then
-	    local count_service=$(/bin/systemctl list-units | grep httpd | wc -l)
-	    if [ "$count_service" -gt "0" ] ; then
+	    if [ $(/bin/systemctl list-units | grep httpd24-httpd | wc -l) -gt "0" ] ; then
+	        service="httpd24-httpd"
+        elif [ $(/bin/systemctl list-units | grep httpd | wc -l) -gt "0" ] ; then
 	        service="httpd"
-        else
-            count_service=$(/bin/systemctl list-units | grep apache2 | wc -l)
-            if [ "$count_service" -gt "0" ] ; then
-                service="apache2"
-            fi
+        elif [ $(/bin/systemctl list-units | grep apache2 | wc -l) -gt "0" ] ; then
+            service="apache2"
 	    fi
 	elif [ -x /etc/init.d/apache2 ] ; then
 		service="apache2"
@@ -1317,7 +1318,11 @@ __EOT__
 #----
 function check_php_fpm_directory() {
 	if [ -z "$DIR_PHP_FPM_CONF" ] ; then
-		if [ -d /etc/php/7.1/fpm/pool.d ]; then
+	    if [ -d /etc/php/7.2/fpm/pool.d ]; then
+			DIR_PHP_FPM_CONF="/etc/php/7.2/fpm/pool.d"
+		elif [ -d /etc/opt/rh/rh-php72/php-fpm.d ] ; then
+			DIR_PHP_FPM_CONF="/etc/opt/rh/rh-php72/php-fpm.d"
+		elif [ -d /etc/php/7.1/fpm/pool.d ]; then
 			DIR_PHP_FPM_CONF="/etc/php/7.1/fpm/pool.d"
 		elif [ -d /etc/opt/rh/rh-php71/php-fpm.d ] ; then
 			DIR_PHP_FPM_CONF="/etc/opt/rh/rh-php71/php-fpm.d"
@@ -1814,7 +1819,10 @@ function createCentPluginsForTrapdInstallConf() {
 function check_httpd_directory()
 {
 	if [ -z "$DIR_APACHE" -o -z "$DIR_APACHE_CONF" ] ; then
-		if [ -d /etc/apache/conf ]; then
+	    if [ -d /opt/rh/httpd24/root/etc/httpd/conf ]; then
+			DIR_APACHE="/opt/rh/httpd24/root/etc/httpd/conf"
+			DIR_APACHE_CONF="/opt/rh/httpd24/root/etc/httpd/conf.d"
+		elif [ -d /etc/apache/conf ]; then
 			DIR_APACHE="/etc/apache/conf"
 			DIR_APACHE_CONF="/etc/apache/conf.d"
 		elif [ -d /usr/local/apache2/conf ] ; then
