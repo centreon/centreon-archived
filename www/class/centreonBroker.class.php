@@ -57,7 +57,7 @@ class CentreonBroker
     public function reload()
     {
         if ($command = $this->getReloadCommand()) {
-            shell_exec("sudo $script");
+            shell_exec("sudo $command");
         }
     }
 
