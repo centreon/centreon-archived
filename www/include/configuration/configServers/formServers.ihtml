@@ -56,19 +56,19 @@
     </tr>
     <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="engine_start_command"> {$form.engine_start_command.label}</td><td class="FormRowValue">{$form.engine_start_command.html}</td></tr>
     <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="engine_stop_command"> {$form.engine_stop_command.label}</td><td class="FormRowValue">{$form.engine_stop_command.html}</td></tr>
-		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="engine_restart_command"> {$form.engine_restart_command.label}</td><td class="FormRowValue">{$form.engine_restart_command.html}</td></tr>
+    <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="engine_restart_command"> {$form.engine_restart_command.label}</td><td class="FormRowValue">{$form.engine_restart_command.html}</td></tr>
     <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="engine_reload_command"> {$form.engine_reload_command.label}</td><td class="FormRowValue">{$form.engine_reload_command.html}</td></tr>
-		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="nagios_bin"> {$form.nagios_bin.label}</td><td class="FormRowValue">{$form.nagios_bin.html}</td></tr>
-		<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="nagiostats_bin"> {$form.nagiostats_bin.label}</td><td class="FormRowValue">{$form.nagiostats_bin.html}</td></tr>
-		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="nagios_perfdata"> {$form.nagios_perfdata.label}</td><td class="FormRowValue">{$form.nagios_perfdata.html}</td></tr>
-		<tr class="list_lvl_1">
+    <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="nagios_bin"> {$form.nagios_bin.label}</td><td class="FormRowValue">{$form.nagios_bin.html}</td></tr>
+    <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="nagiostats_bin"> {$form.nagiostats_bin.label}</td><td class="FormRowValue">{$form.nagiostats_bin.html}</td></tr>
+    <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="nagios_perfdata"> {$form.nagios_perfdata.label}</td><td class="FormRowValue">{$form.nagios_perfdata.html}</td></tr>
+    <tr class="list_lvl_1">
       <td class="ListColLvl1_name" colspan="2">
         <h4>{$form.header.CentreonBroker}</h4>
       </td>
     </tr>
     <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="broker_reload_command"> {$form.broker_reload_command.label}</td><td class="FormRowValue">{$form.broker_reload_command.html}</td></tr>
-		<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="centreonbroker_cfg_path"> {$form.centreonbroker_cfg_path.label}</td><td class="FormRowValue">{$form.centreonbroker_cfg_path.html}</td></tr>
-		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="centreonbroker_module_path"> {$form.centreonbroker_module_path.label}</td><td class="FormRowValue">{$form.centreonbroker_module_path.html}</td></tr>
+    <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="centreonbroker_cfg_path"> {$form.centreonbroker_cfg_path.label}</td><td class="FormRowValue">{$form.centreonbroker_cfg_path.html}</td></tr>
+    <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="centreonbroker_module_path"> {$form.centreonbroker_module_path.label}</td><td class="FormRowValue">{$form.centreonbroker_module_path.html}</td></tr>
     <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="centreonbroker_logs_path"> {$form.centreonbroker_logs_path.label}</td><td class="FormRowValue">{$form.centreonbroker_logs_path.html}</td></tr>
     <tr class="list_lvl_1">
       <td class="ListColLvl1_name" colspan="2">
