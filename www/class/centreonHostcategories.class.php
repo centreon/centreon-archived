@@ -104,8 +104,8 @@ class CentreonHostcategories
                 $multiValues = explode(',', $v);
                 foreach ($multiValues as $item) {
                     $listValues .= ':sc' . $item . ', ';
-                    $queryValues['sc' . $item] = (int)$v;
-                }   
+                    $queryValues['sc' . $item] = (int) $item;
+                }
             }
             $listValues = rtrim($listValues, ', ');
         } else {
