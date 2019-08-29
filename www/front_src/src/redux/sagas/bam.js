@@ -33,3 +33,16 @@ function* setErrors({errors}) {
     throw err;
   }
 }
+
+export function* removeErrorByKey() {
+  yield takeEvery(actions.REMOVE_BA_CONFIGURATION_ERROR, removeError);
+}
+
+function* removeError({errors,key}) {
+  try {
+    yield put({ type: actions.REMOVE_BA_CONFIGURATION_ERROR, errors, key });
+  } catch (err) {
+    throw err;
+  }
+}
+
