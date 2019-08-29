@@ -2,7 +2,7 @@
 ** Variables.
 */
 if (env.CHANGE_ID) {
-  currentBuild.displayName = "PR-${env.CHANGE_ID} (${env.CHANGE_TARGET})"
+  currentBuild.displayName = "PR-${env.CHANGE_ID} (${env.CHANGE_BRANCH} -> ${env.CHANGE_TARGET})"
 }
 properties([buildDiscarder(logRotator(numToKeepStr: '50'))])
 def serie = '19.10'
