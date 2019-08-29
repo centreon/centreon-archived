@@ -1,6 +1,10 @@
 /*
 ** Variables.
 */
+if (env.CHANGE_ID) {
+  currentBuild.displayName = "PR-${pullRequest.id} (${pullRequest.base})"
+  currentBuild.description = "${pullRequest.title}"
+}
 properties([buildDiscarder(logRotator(numToKeepStr: '50'))])
 def serie = '19.10'
 def maintenanceBranch = "${serie}.x"
