@@ -2,8 +2,7 @@
 ** Variables.
 */
 if (env.CHANGE_ID) {
-  currentBuild.displayName = "PR-${pullRequest.id} (${pullRequest.base})"
-  currentBuild.description = "${pullRequest.title}"
+  currentBuild.displayName = "PR-${env.CHANGE_ID} (${env.CHANGE_TARGET})"
 }
 properties([buildDiscarder(logRotator(numToKeepStr: '50'))])
 def serie = '19.10'
@@ -19,7 +18,7 @@ def featureFiles = []
 
 /*
 ** Pipeline code.
-*/
+*
 stage('Source') {
   node {
     sh 'setup_centreon_build.sh'
@@ -122,7 +121,7 @@ try {
         node {
           sh 'setup_centreon_build.sh'
           def acceptanceStatus = sh(script: "./centreon-build/jobs/web/${serie}/mon-web-acceptance.sh centos7 features/${feature}", returnStatus: true)
-          junit 'xunit-reports/**/*.xml'
+          junit 'xunit-reports/** /*.xml'
           if ((currentBuild.result == 'UNSTABLE') || (acceptanceStatus != 0))
             currentBuild.result = 'FAILURE'
           archiveArtifacts allowEmptyArchive: true, artifacts: 'acceptance-logs/*.txt, acceptance-logs/*.png, acceptance-logs/*.flv'
@@ -167,3 +166,4 @@ try {
 
   currentBuild.result = 'FAILURE'
 }
+*/
