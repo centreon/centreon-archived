@@ -99,9 +99,19 @@ input[type="radio"] {
     vertical-align: middle;
 }
 select {
-    padding: 6px;
+    background: url('../../img/icones/7x7/sort_desc.gif') 96% / 6% no-repeat #fff;
+    min-width: 100px;
+    width: auto;
+    font-family: "Open Sans", Arial, Tahoma, Helvetica, sans-serif;
+    -moz-appearance: none;
+    -webkit-appearance: none;
+    appearance: none;
+    padding: 3px;
+    color: #444;
 }
-
+select::-ms-expand {
+    display: none;
+}
 select[multiple="multiple"] {
     overflow:auto;
 }
