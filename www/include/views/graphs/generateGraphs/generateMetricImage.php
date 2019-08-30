@@ -128,7 +128,7 @@ $obj->initCurveList();
 $obj->setOption("comment_time");
 
 /**
- * Create Legende
+ * Create Legend
  */
 $obj->createLegend();
 
