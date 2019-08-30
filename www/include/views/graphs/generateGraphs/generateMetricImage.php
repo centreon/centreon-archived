@@ -36,9 +36,9 @@
 /**
  * Include config file
  */
-require_once realpath(dirname(__FILE__) . "/../../../../../config/centreon.config.php");
-require_once "$centreon_path/www/class/centreonDB.class.php";
-require_once _CENTREON_PATH_."/www/class/centreonGraph.class.php";
+require_once realpath(__DIR__ . "/../../../../../config/centreon.config.php");
+require_once _CENTREON_PATH_ . "/www/class/centreonDB.class.php";
+require_once _CENTREON_PATH_ . "/www/class/centreonGraph.class.php";
 
 /**
  * Create XML Request Objects
@@ -68,13 +68,18 @@ if (isset($_GET['index'])) {
     if (false === is_numeric($hostId) || false === is_numeric($svcId)) {
         CentreonGraph::displayError();
     }
-    $query = 'SELECT id FROM index_data
-        WHERE host_id = ' . $hostId . ' AND service_id = ' . $svcId;
-    $res = $pearDBO->query($query);
-    if (PEAR::isError($res)) {
+    $res = $pearDBO->prepare(
+        'SELECT id FROM index_data
+        WHERE host_id = :hostId AND service_id = :svcId'
+    );
+    $res->bindValue(':hostId', $hostId, \PDO::PARAM_INT);
+    $res->bindValue(':svcId', $svcId, \PDO::PARAM_INT);
+    $res->execute();
+
+    if (!$res) {
         CentreonGraph::displayError();
     }
-    $row = $res->fetchRow();
+    $row = $res->fetch();
     if (!$row) {
         CentreonGraph::displayError();
     }
@@ -82,7 +87,7 @@ if (isset($_GET['index'])) {
 }
 
 
-require_once _CENTREON_PATH_."www/include/common/common-Func.php";
+require_once _CENTREON_PATH_ . "www/include/common/common-Func.php";
 $contactId = CentreonSession::getUser($sid, $pearDB);
 $obj = new CentreonGraph($contactId, $index, 0, 1);
 
@@ -101,10 +106,8 @@ if (isset($_GET["metric"])) {
 /**
  * Set arguments from GET
  */
-$obj->setRRDOption("start", $obj->checkArgument("start", $_GET, time() - (60*60*48)));
+$obj->setRRDOption("start", $obj->checkArgument("start", $_GET, time() - (60 * 60 * 48)));
 $obj->setRRDOption("end", $obj->checkArgument("end", $_GET, time()));
-
-//$obj->GMT->getMyGMTFromSession($obj->session_id, $pearDB);
 
 /**
  * Template Management
