@@ -72,18 +72,15 @@ if (isset($_GET['index'])) {
         'SELECT id FROM index_data
         WHERE host_id = :hostId AND service_id = :svcId'
     );
-    $res->bindValue(':hostId', $hostId, \PDO::PARAM_INT);
-    $res->bindValue(':svcId', $svcId, \PDO::PARAM_INT);
-    $res->execute();
-
-    if (!$res) {
+    try {
+        $res->bindValue(':hostId', $hostId, \PDO::PARAM_INT);
+        $res->bindValue(':svcId', $svcId, \PDO::PARAM_INT);
+        $res->execute();
+        $row = $res->fetch();
+        $index = $row['id'];
+    } catch (\PDOException $e) {
         CentreonGraph::displayError();
     }
-    $row = $res->fetch();
-    if (!$row) {
-        CentreonGraph::displayError();
-    }
-    $index = $row['id'];
 }
 
 
