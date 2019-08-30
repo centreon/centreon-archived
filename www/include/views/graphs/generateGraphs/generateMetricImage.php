@@ -54,7 +54,7 @@ if (!CentreonSession::checkSession($sid, $pearDB)) {
     CentreonGraph::displayError();
 }
 
-if (false === isset($_GET['index']) && false === isset($_GET['svcId'])) {
+if (!isset($_GET['index']) && !isset($_GET['svcId'])) {
     CentreonGraph::displayError();
 }
 
@@ -65,7 +65,7 @@ if (isset($_GET['index'])) {
     $index = $_GET['index'];
 } else {
     list($hostId, $svcId) = explode('_', $_GET['svcId']);
-    if (false === is_numeric($hostId) || false === is_numeric($svcId)) {
+    if (!is_numeric($hostId) || !is_numeric($svcId)) {
         CentreonGraph::displayError();
     }
     $res = $pearDBO->prepare(
