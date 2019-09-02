@@ -53,7 +53,7 @@ try {
           cloverReportFileName: 'coverage.xml'
         ])
 
-        if (env.CHANGE_ID) { // pull request, then comment it with coding style issues
+        if (env.CHANGE_ID) { // pull request to comment with coding style issues
           ViolationsToGitHub([
             repositoryName: 'centreon',
             pullRequestId: env.CHANGE_ID,
