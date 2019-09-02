@@ -1,7 +1,18 @@
 openapi: 3.0.1
 info:
   title: Centron API
-  description: Centron API
+  description: |
+    **Centron API v2**
+    # New features
+    + Added real-time monitoring for hosts and services
+    # Information
+    All dates are in **ISO 8601** format
+    # Authentication
+    There are two modes of authentication:
+    * By token: after identification with your login credentials
+    * By cookie: by reusing a valid session ID
+  x-logo:
+    url: ./centreon-logo.png
   contact:
     url: 'https://www.centreon.com'
   license:
@@ -23,19 +34,21 @@ servers:
           - beta
           - v2
 tags:
-  - name: Authentication
-    description: Authentication end-point
+  - name: Authentication token
+    description:
   - name: Monitoring
     description: Real-time monitoring of the services and hosts
 security:
-  - api.authentication: []
+  - Token: []
+  - Cookie: []
 paths:
   /login:
     post:
       tags:
-        - Authentication
-      summary: API authentication
-      description: API authentication
+        - Authentication token
+      summary: Login
+      description: Entry point to retrieve an authentication token.
+      security: []
       requestBody:
         description: Authentication schema
         content:
@@ -154,7 +167,7 @@ paths:
       description: >
         Returns all services associated with a host<br/><br/> The available
         parameters to <b>search</b> / <b>sort_by</b> are:<br/> service.id,
-        service.description, service.display_name, service_group.id, 
+        service.description, service.display_name, service_group.id,
         service.is_acknowledged, service.state
       parameters:
         - name: hostId
@@ -236,7 +249,7 @@ paths:
       description: >
         Returns all services grouped by service groups<br/><br/> The available
         parameters to <b>search</b> / <b>sort_by</b> are:<br/> host.id,
-        host.name, host.alias, host.address, host.state, poller.id, 
+        host.name, host.alias, host.address, host.state, poller.id,
         service.display_name, service_group.id, service_group.name
       parameters:
         - $ref: '#/components/parameters/limit'
@@ -387,11 +400,11 @@ components:
             last_hard_state:
               type: string
               format: date-time
-              description: Date of the last hard state
+              description: Date of the last hard state (ISO8601)
             last_notification:
               type: string
               format: date-time
-              description: Date of the last notification
+              description: Date of the last notification (ISO8601)
             latency:
               type: string
               format: float
@@ -401,7 +414,7 @@ components:
             next_check:
               type: string
               format: date-time
-              description: Scheduled date for the next check
+              description: Scheduled date for the next check (ISO8601)
             next_host_notification:
               type: integer
               description: ...
@@ -478,31 +491,31 @@ components:
             last_check:
               type: string
               format: date-time
-              description: Date of last check
+              description: Date of last check (ISO8601)
             last_hard_state_change:
               type: string
               format: date-time
-              description: Date of the last hard state change
+              description: Date of the last hard state change (ISO8601)
             last_state_change:
               type: string
               format: date-time
-              description: Date of the last state change (soft or hard)
+              description: Date of the last state change (soft or hard) (ISO8601)
             last_time_down:
               type: string
               format: date-time
-              description: The last time the host was DOWN
+              description: The last time the host was DOWN (ISO8601)
             last_time_unreachable:
               type: string
               format: date-time
-              description: The last time the host was UNREACHABLE
+              description: The last time the host was UNREACHABLE (ISO8601)
             last_time_up:
               type: string
               format: date-time
-              description: The last time the host was UP
+              description: The last time the host was UP (ISO8601)
             last_update:
               type: string
               format: date-time
-              description: Date of last update
+              description: Date of last update (ISO8601)
             max_check_attempts:
               type: integer
               format: int64
@@ -590,11 +603,11 @@ components:
             last_check:
               type: string
               format: date-time
-              description: Date of last check
+              description: Date of last check (ISO8601)
             last_state_change:
               type: string
               format: date-time
-              description: Date of the last state change
+              description: Date of the last state change (ISO8601)
             max_check_attempts:
               type: integer
               description: Max check attempts
@@ -647,31 +660,31 @@ components:
             last_hard_state_change:
               type: string
               format: date-time
-              description: Date of the last hard state change
+              description: Date of the last hard state change (ISO8601)
             last_notification:
               type: string
               format: date-time
-              description: Date of the last notification
+              description: Date of the last notification (ISO8601)
             last_time_critical:
               type: string
               format: date-time
-              description: The last time the service was CRITICAL
+              description: The last time the service was CRITICAL (ISO8601)
             last_time_ok:
               type: string
               format: date-time
-              description: The last time the service was OK
+              description: The last time the service was OK (ISO8601)
             last_time_unknown:
               type: string
               format: date-time
-              description: The last time the service was UNKNOWN
+              description: The last time the service was UNKNOWN (ISO8601)
             last_time_warning:
               type: string
               format: date-time
-              description: The last time the service was WARNING
+              description: The last time the service was WARNING (ISO8601)
             last_update:
               type: string
               format: date-time
-              description: Date of the last update
+              description: Date of the last update (ISO8601)
             latency:
               type: number
               format: float
@@ -681,7 +694,7 @@ components:
             next_check:
               type: string
               format: date-time
-              description: Scheduled date for the next check
+              description: Scheduled date for the next check (ISO8601)
             performance_data:
               type: string
               description: Performance data of the last check plugin
@@ -781,7 +794,21 @@ components:
               type: string
               description: Security authentication token
   securitySchemes:
-    api.authentication:
+    Token:
+      description: |
+        The use of the API requires a security token.
+
+        To retrieve it, you will need to authenticate yourself with your login credentials.
+
+        This token will be deleted if the time between two uses is more than 60 minutes
       type: apiKey
       name: X-AUTH-TOKEN
       in: header
+    Cookie:
+      description: |
+        If you have already connected on the Centreon web application, you can reused the PHPSESSID cookie.
+
+        The cookie will be valid as long as the connection to Centreon is maintained.
+      type: apiKey
+      name: PHPSESSID
+      in: cookie
