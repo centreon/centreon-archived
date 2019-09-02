@@ -11,11 +11,7 @@
   <exclude-pattern>*\.(?!(php$))</exclude-pattern>
 
   <rule ref="PSR2"/>
-  <rule ref="Squiz.WhiteSpace.SuperfluousWhitespace">
-    <properties>
-      <property name="ignoreBlankLines" value="false"/>
-    </properties>
-  </rule>
+  <rule ref="Squiz.WhiteSpace.SuperfluousWhitespace"/>
 
   <rule ref="PSR1.Files.SideEffects.FoundWithSymbols">
     <exclude-pattern>www</exclude-pattern>
