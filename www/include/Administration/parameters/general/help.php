@@ -66,6 +66,12 @@ $help['tip_sort_problems_by'] = dgettext('help', 'Default sort in monitoring con
 $help['tip_order_sort_problems'] = dgettext('help', 'Default order in monitoring consoles.');
 
 /**
+ * Notification
+ */
+
+$help['tip_notification_inheritance'] = dgettext('help', 'Notification inheritance.');
+
+/**
  * Authentication properties
  */
 

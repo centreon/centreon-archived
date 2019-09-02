@@ -500,6 +500,15 @@ function updateGeneralConfigData($gopt_id = null)
         isset($ret["oreon_refresh"]) && $ret["oreon_refresh"] != null
             ? htmlentities($ret["oreon_refresh"], ENT_QUOTES, "UTF-8"): "NULL"
     );
+
+    updateOption(
+        $pearDB,
+        "inheritance_mode",
+        !empty($ret["inheritance_mode"]["inheritance_mode"])
+            ? (int)$ret["inheritance_mode"]["inheritance_mode"]
+            : 1
+    );
+
     updateOption(
         $pearDB,
         "session_expire",
