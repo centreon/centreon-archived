@@ -8,7 +8,7 @@
   <exclude-pattern>vendor</exclude-pattern>
   <exclude-pattern>lib/HTML/QuickForm.php</exclude-pattern>
   <exclude-pattern>lib/HTML/QuickForm/**/*.php</exclude-pattern>
-  <!--exclude-pattern>*\.(?!(php$))</exclude-pattern-->
+  <exclude-pattern>*\.(?!(php$))</exclude-pattern>
 
   <rule ref="PSR2"/>
   <rule ref="Squiz.WhiteSpace.SuperfluousWhitespace">
