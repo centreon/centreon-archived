@@ -34,39 +34,10 @@
   </target>
 
   <target name="codestyle" depends="prepare">
-    <phpcodesniffer standard="codingstyle.xml">
+    <phpcodesniffer standard="ruleset.xml">
       <formatter type="full" usefile="false"/>
       <formatter type="checkstyle" outfile="${builddir}/checkstyle.xml"/>
-      <fileset dir="centreon-build">
-        <include name="**/*.php"/>
-      </fileset>
-      <fileset dir="doc">
-        <include name="**/*.php"/>
-      </fileset>
-      <fileset dir="GPL_LIB">
-        <include name="**/*.php"/>
-      </fileset>
-      <fileset dir="node_modules">
-        <include name="**/*.php"/>
-      </fileset>
-      <fileset dir="tests">
-        <include name="**/*.php"/>
-      </fileset>
-      <fileset dir="tmpl">
-        <include name="**/*.php"/>
-      </fileset>
-      <fileset dir="vendor">
-        <include name="**/*.php"/>
-      </fileset>
-      <fileset dir="features">
-        <include name="**/*.php"/>
-      </fileset>
-      <fileset dir="www">
-        <include name="**/*.php"/>
-        <exclude name="lib/HTML/QuickForm.php"/>
-        <exclude name="lib/HTML/QuickForm/**/*.php"/>
-      </fileset>
-      <fileset dir="src">
+      <fileset dir=".">
         <include name="**/*.php"/>
       </fileset>
     </phpcodesniffer>
