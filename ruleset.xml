@@ -12,7 +12,6 @@
 
   <rule ref="PSR2"/>
   <rule ref="Squiz.WhiteSpace.SuperfluousWhitespace"/>
-
   <rule ref="PSR1.Files.SideEffects.FoundWithSymbols">
     <exclude-pattern>www</exclude-pattern>
   </rule>
