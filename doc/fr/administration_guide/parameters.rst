@@ -192,7 +192,7 @@ Le tableau ci-dessous résume les différents paramètres à insérer pour ajout
 * Les champs **Utilisateur du domaine** et **Mot de passe** définissent le nom d'utilisateur et le mot de passe pour se connecter au serveur LDAP
 * Le champ **Version du protocole** indique la version du protocole à utiliser pour se connecter
 * La liste **Modèle** permet de préconfigurer les filtres de recherches des utilisateurs sur l'annuaire LDAP.
-  Ces filtres permettant de proposer par défaut une recherche sur un annuaire de type MS Active Directory, Okta ou de type Posix.
+  Ces filtres permettent de proposer par défaut une recherche sur un annuaire de type MS Active Directory, Okta ou de type Posix.
 
 .. note::
     Avant tout import, vérifiez les paramètres par défaut proposés. Si vous n'avez sélectionné aucun modèle, vous devez définir manuellement les filtres de recherches en complétant les champs.
