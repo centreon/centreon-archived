@@ -52,6 +52,28 @@ try {
           cloverReportDir: '.',
           cloverReportFileName: 'coverage.xml'
         ])
+
+        if (env.CHANGE_ID) { // pull request, then comment it with coding style issues
+          step([
+            $class: 'ViolationsToGitHubRecorder',
+            config: [
+              repositoryName: 'centreon',
+              pullRequestId: env.CHANGE_ID,
+
+              createSingleFileComments: true,
+              commentOnlyChangedContent: true,
+              commentOnlyChangedFiles: true,
+              keepOldComments: false,
+
+              commentTemplate: "**{{violation.severity}}**: {{violation.message}}",
+
+              violationConfigs: [
+                [ pattern: '.*/codestyle.xml$', parser: 'CHECKSTYLE', reporter: 'Checkstyle' ],
+              ]
+            ]
+          ])
+        }
+
         step([
           $class: 'hudson.plugins.checkstyle.CheckStylePublisher',
           pattern: 'codestyle.xml',
@@ -59,6 +81,7 @@ try {
           useDeltaValues: true,
           failedNewAll: '0'
         ])
+
         if ((env.BUILD == 'RELEASE') || (env.BUILD == 'REFERENCE')) {
           withSonarQubeEnv('SonarQube') {
             sh "./centreon-build/jobs/web/${serie}/mon-web-analysis.sh"
