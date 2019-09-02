@@ -238,6 +238,19 @@
         ldapTemplates['Posix']['group_filter'] = '(&(cn=%s)(objectClass=groupOfNames))';
         ldapTemplates['Posix']['group_name'] = 'cn';
         ldapTemplates['Posix']['group_member'] = 'member';
+
+        ldapTemplates['Okta'] = new Array();
+        ldapTemplates['Okta']['user_filter'] = '(&(nickName=%s)(objectclass=inetorgperson))';
+        ldapTemplates['Okta']['alias'] = 'nickname';
+        ldapTemplates['Okta']['user_group'] = 'memberof';
+        ldapTemplates['Okta']['user_name'] = 'cn';
+        ldapTemplates['Okta']['user_firstname'] = 'givenname';
+        ldapTemplates['Okta']['user_lastname'] = 'sn';
+        ldapTemplates['Okta']['user_email'] = 'mail';
+        ldapTemplates['Okta']['user_pager'] = 'mobile';
+        ldapTemplates['Okta']['group_filter'] = '(&(cn=%s)(objectclass=groupofuniquenames))';
+        ldapTemplates['Okta']['group_name'] = 'cn';
+        ldapTemplates['Okta']['group_member'] = 'uniquemember';
     }
 
     /*
