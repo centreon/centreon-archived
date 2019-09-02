@@ -18,7 +18,6 @@ class Navigation extends Component {
 
   render() {
     const { navigationData, reactRoutes } = this.props;
-    console.log(navigationData);
 
     return (
       <Sidebar
