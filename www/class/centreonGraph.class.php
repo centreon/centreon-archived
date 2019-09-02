@@ -1272,7 +1272,7 @@ class CentreonGraph
 
         // generating the PNG with the error message
         imagestring($image, 5, 0, 0, $str, $textcolor);
-        header("Content-Type: image/gif");
+        header("Content-Type: image/png");
 
         // making the PNG to be saved instead of the graph
         imagepng($image);
