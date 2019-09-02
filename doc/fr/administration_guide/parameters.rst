@@ -191,11 +191,17 @@ Le tableau ci-dessous résume les différents paramètres à insérer pour ajout
 
 * Les champs **Utilisateur du domaine** et **Mot de passe** définissent le nom d'utilisateur et le mot de passe pour se connecter au serveur LDAP
 * Le champ **Version du protocole** indique la version du protocole à utiliser pour se connecter
-* La liste **Modèle** permet de préconfigurer les filtres de recherches des utilisateurs sur l'annuaire LDAP. Ces filtres permettant de proposer par défaut une recherche sur un annuaire de type MS AD ou de type Posix.
+* La liste **Modèle** permet de préconfigurer les filtres de recherches des utilisateurs sur l'annuaire LDAP.
+  Ces filtres permettant de proposer par défaut une recherche sur un annuaire de type MS Active Directory, Okta ou de type Posix.
 
 .. note::
     Avant tout import, vérifiez les paramètres par défaut proposés. Si vous n'avez sélectionné aucun modèle, vous devez définir manuellement les filtres de recherches en complétant les champs.
 
+.. note::
+    Il est possible d'utiliser l'annuaire **Okta** avec le `plugin SWA <https://help.okta.com/en/prod/Content/Topics/Apps/Apps_Configure_Template_App.htm>`_:
+    
+    * le champ **Utilisateur du domaine** est du type **uid=<USER>,dc=<ORGANIZATION>,dc=okta,dc=com**
+    * et le champ **Base de recherche de groupe DN** du type **ou=<OU>,dc=<ORGANIZATION>,dc=okta,dc=com**
 
 Sous CentOS 7, on peut définir de ne pas vérifier le certificat serveur avec la procédure suivante:
 
