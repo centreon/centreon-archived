@@ -43,7 +43,7 @@ include("./include/common/autoNumLimit.php");
 
 //initializing filters values
 $search = filter_var(
-    $_POST["searchDT"] ?? $_GET["searchDT"] ?? '',
+    $_POST["searchDT"]??$_GET["searchDT"] ?? '',
     FILTER_SANITIZE_STRING
 );
 
@@ -64,7 +64,8 @@ $tpl = new Smarty();
 $tpl = initSmartyTpl($path, $tpl);
 
 /* Access level */
-($centreon->user->access->page($p) == 1) ? $lvl_access = 'w' : $lvl_access = 'r';
+($centreon->user->access->page($p) == 1) ?
+    $lvl_access = 'w':$lvl_access = 'r';
 $tpl->assign('mode_access', $lvl_access);
 
 /*
@@ -84,7 +85,7 @@ include("./include/common/checkPagination.php");
 
 $listDowntime = $downtime->getList($num, $limit, $type);
 
-$form = new HTML_QuickFormCustom('select_form', 'POST', "?p=" . $p);
+  $form = new HTML_QuickFormCustom('select_form', 'POST', "?p=".$p);
 
 /*
  * Different style between each lines
