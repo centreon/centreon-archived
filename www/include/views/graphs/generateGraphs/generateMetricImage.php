@@ -50,68 +50,67 @@ $sid = session_id();
 $pearDB = new CentreonDB();
 $pearDBO = new CentreonDB('centstorage');
 
+/*
+ *  If an error occurs in this block, the PNG won't be generated and may crash the browser
+ *  To avoid it, we'll generate a PNG with the error message to be displayed using displayError() method
+ */
 if (!CentreonSession::checkSession($sid, $pearDB)) {
-    CentreonGraph::displayError();
+    CentreonGraph::displayError("Wrong sessionId or missing");
 }
 
 if (!isset($_GET['index']) && !isset($_GET['svcId'])) {
-    CentreonGraph::displayError();
+    CentreonGraph::displayError("Index and svcId arguments are missing");
 }
 
 if (isset($_GET['index'])) {
-    if (false === is_numeric($_GET['index'])) {
-        CentreonGraph::displayError();
+    if (!is_numeric($_GET['index'])) {
+        CentreonGraph::displayError("Index is not an integer");
     }
     $index = $_GET['index'];
 } else {
     list($hostId, $svcId) = explode('_', $_GET['svcId']);
     if (!is_numeric($hostId) || !is_numeric($svcId)) {
-        CentreonGraph::displayError();
+        CentreonGraph::displayError("Host or service Id is not an integer");
     }
     $res = $pearDBO->prepare(
         'SELECT id FROM index_data
         WHERE host_id = :hostId AND service_id = :svcId'
     );
-    $res->bindValue(':hostId', $hostId, \PDO::PARAM_INT);
-    $res->bindValue(':svcId', $svcId, \PDO::PARAM_INT);
-    $res->execute();
-
-    if (!$res) {
-        CentreonGraph::displayError();
+    try {
+        $res->bindValue(':hostId', $hostId, \PDO::PARAM_INT);
+        $res->bindValue(':svcId', $svcId, \PDO::PARAM_INT);
+        $res->execute();
+        $row = $res->fetch();
+        $index = $row['id'];
+    } catch (\PDOException $e) {
+        CentreonGraph::displayError("SQL request thrown an error");
     }
-    $row = $res->fetch();
-    if (!$row) {
-        CentreonGraph::displayError();
-    }
-    $index = $row['id'];
 }
 
+if (!$index) {
+    CentreonGraph::displayError("Index not found");
+}
 
+/*
+ * As everything went fine, we should be able to generate a PNG from the RRD data
+ */
 require_once _CENTREON_PATH_ . "www/include/common/common-Func.php";
 $contactId = CentreonSession::getUser($sid, $pearDB);
 $obj = new CentreonGraph($contactId, $index, 0, 1);
 
-/**
- * Set One curve
- **/
+// Set One curve
 $obj->onecurve = true;
 
-/**
- * Set metric id
- */
+// Set metric id
 if (isset($_GET["metric"])) {
     $obj->setMetricList($_GET["metric"]);
 }
 
-/**
- * Set arguments from GET
- */
+// Set arguments from GET
 $obj->setRRDOption("start", $obj->checkArgument("start", $_GET, time() - (60 * 60 * 48)));
 $obj->setRRDOption("end", $obj->checkArgument("end", $_GET, time()));
 
-/**
- * Template Management
- */
+// Template Management
 if (isset($_GET["template_id"])) {
     $obj->setTemplate($_GET["template_id"]);
 } else {
@@ -125,26 +124,18 @@ if (isset($_GET["flagperiod"])) {
 
 $obj->initCurveList();
 
-/**
- * Comment time
- */
+// Comment time
 $obj->setOption("comment_time");
 
-/**
- * Create Legende
- */
+// Create Legend
 $obj->createLegend();
 
-/**
- * Set Colors
- */
+// Set Colors
 $obj->setColor('BACK', '#FFFFFF');
 $obj->setColor('FRAME', '#FFFFFF');
 $obj->setColor('SHADEA', '#EFEFEF');
 $obj->setColor('SHADEB', '#EFEFEF');
 $obj->setColor('ARROW', '#FF0000');
 
-/**
- * Display Images Binary Data
- */
+// Display Images Binary Data
 $obj->displayImageFlow();

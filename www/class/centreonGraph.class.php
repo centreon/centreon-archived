@@ -1247,22 +1247,38 @@ class CentreonGraph
     }
 
     /**
-     * Geneate image...
+     * Instead of crashing, a message should be send when the PNG fail to be generated
+     *
+     * @param string $message The message to be displayed if the other cases didn't match.
+     *                        Optional : to avoid border effects of legacy code
      */
-    public static function displayError()
+    public static function displayError(string $message = "")
     {
-        $image = imagecreate(250, 100);
-        $fond = imagecolorallocate($image, 0xEF, 0xF2, 0xFB);
+        $image = imagecreate(500, 100);
+
+        // background color
+        imagecolorallocate($image, 0xEF, 0xF2, 0xFB);
+
+        // font color
         $textcolor = imagecolorallocate($image, 0, 0, 255);
-        // imagestring($image, 5, 0, 0, "Session: ".$_GET['session_id']."svc_id: ".$_GET["index"], $textcolor);
 
-        /*
-         * Send Header
-         */
-        header("Content-Type: image/gif");
+        $str = "Error : ";
+        if (!empty($_GET['session_id'])) {
+            $str .= "Session = " . $_GET['session_id'];
+        } elseif (!empty($_GET['index'])) {
+            $str .= "SVC_Id = " . $_GET['index'];
+        } elseif (!empty($message)) {
+            $str .= $message;
+        } else {
+            $str .= "An undefined error occurred";
+        }
 
-        imagegif($image);
-        exit;
+        // generating the PNG with the error message
+        imagestring($image, 5, 0, 0, $str, $textcolor);
+        header("Content-Type: image/png");
+
+        // making the PNG to be saved instead of the graph
+        imagepng($image);
     }
 
     /**
