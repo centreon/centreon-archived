@@ -48,7 +48,8 @@ paths:
         - Authentication token
       summary: Login
       description: Entry point to retrieve an authentication token.
-      security: []
+      security:
+        - Token: []
       requestBody:
         description: Authentication schema
         content:
@@ -57,18 +58,39 @@ paths:
               $ref: '#/components/schemas/AuthenticationRequest'
         required: true
       responses:
-        '200':
+        200:
           description: successful operation
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AuthenticationResponse'
-        '401':
+                $ref: '#/components/schemas/LoginAuthenticationResponse'
+        401:
           description: Unauthorized
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorApiResponse'
+  /logout:
+    get:
+      tags:
+        - Authentication token
+      summary: Logout
+      description: Entry point to delete an existing authentication token.
+      security:
+        -   Token: []
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LogoutAuthenticationResponse'
+        403:
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenApiResponse'
   /monitoring/hostgroups:
     get:
       tags:
@@ -99,6 +121,18 @@ paths:
                         - $ref: '#/components/schemas/Monitoring.HostGroup'
                   meta:
                     $ref: '#/components/schemas/Pagination'
+        403:
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenApiResponse'
+        500:
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorApiResponse'
   /monitoring/hosts:
     get:
       tags:
@@ -127,6 +161,18 @@ paths:
                       $ref: '#/components/schemas/Monitoring.Host_main'
                   meta:
                     $ref: '#/components/schemas/Pagination'
+        403:
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenApiResponse'
+        500:
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorApiResponse'
   '/monitoring/hosts/{hostId}':
     get:
       tags:
@@ -144,16 +190,22 @@ paths:
             type: integer
             format: int64
       responses:
-        '200':
+        200:
           description: successful operation
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Monitoring.Host_full'
-        '404':
+        403:
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenApiResponse'
+        404:
           description: Host not found
           content: {}
-        '500':
+        500:
           description: Internal Server Error
           content:
             application/json:
@@ -182,7 +234,7 @@ paths:
         - $ref: '#/components/parameters/sortBy'
         - $ref: '#/components/parameters/search'
       responses:
-        '200':
+        200:
           description: successful operation
           content:
             application/json:
@@ -195,10 +247,16 @@ paths:
                       $ref: '#/components/schemas/Monitoring.Service_main'
                   meta:
                     $ref: '#/components/schemas/Pagination'
-        '404':
+        403:
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenApiResponse'
+        404:
           description: Host not found
           content: {}
-        '500':
+        500:
           description: Internal Server Error
           content:
             application/json:
@@ -226,16 +284,22 @@ paths:
             type: integer
             format: int64
       responses:
-        '200':
+        200:
           description: successful operation
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Monitoring.Service_full'
-        '404':
+        403:
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenApiResponse'
+        404:
           description: Host or service not found
           content: {}
-        '500':
+        500:
           description: Internal Server Error
           content:
             application/json:
@@ -271,6 +335,18 @@ paths:
                         - $ref: '#/components/schemas/Monitoring.ServiceGroup'
                   meta:
                     $ref: '#/components/schemas/Pagination'
+        403:
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenApiResponse'
+        500:
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorApiResponse'
   /monitoring/services:
     get:
       tags:
@@ -288,7 +364,7 @@ paths:
         - $ref: '#/components/parameters/sortBy'
         - $ref: '#/components/parameters/search'
       responses:
-        '200':
+        200:
           description: successful operation
           content:
             application/json:
@@ -303,6 +379,18 @@ paths:
                         - $ref: '#/components/schemas/Monitoring.Service_with_host'
                   meta:
                     $ref: '#/components/schemas/Pagination'
+        403:
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenApiResponse'
+        500:
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorApiResponse'
 components:
   parameters:
     limit:
@@ -742,6 +830,11 @@ components:
     RequestParameters.search:
       type: object
       example: {"host.name": "localhost"}
+    ForbiddenApiResponse:
+      type: object
+      properties:
+        message:
+          type: string
     ErrorApiResponse:
       type: object
       properties:
@@ -765,7 +858,7 @@ components:
                 password:
                   type: string
                   description: password
-    AuthenticationResponse:
+    LoginAuthenticationResponse:
       type: object
       properties:
         contact:
@@ -793,6 +886,11 @@ components:
             token:
               type: string
               description: Security authentication token
+    LogoutAuthenticationResponse:
+      type: object
+      properties:
+        message:
+          type: string
   securitySchemes:
     Token:
       description: |
@@ -800,7 +898,7 @@ components:
 
         To retrieve it, you will need to authenticate yourself with your login credentials.
 
-        This token will be deleted if the time between two uses is more than 60 minutes
+        The token will be deleted if it has not been used for more than one hour.
       type: apiKey
       name: X-AUTH-TOKEN
       in: header

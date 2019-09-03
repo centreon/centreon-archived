@@ -112,7 +112,7 @@ class AuthenticationController extends AbstractFOSRestController
      * @Rest\View(populateDefaultVars=false)
      *
      * @param Request $request
-     * @return string
+     * @return array
      * @throws \RestException
      */
     public function logout(Request $request)
@@ -126,7 +126,7 @@ class AuthenticationController extends AbstractFOSRestController
         try {
             $token = $request->headers->get('X-AUTH-TOKEN');
             $this->auth->logout($token);
-            return 'Successful logout';
+            return ['message' => 'Successful logout'];
         } catch (\Exception $ex) {
             throw new \RestException($ex->getMessage());
         }
