@@ -37,6 +37,8 @@ if (!isset($centreon)) {
     exit();
 }
 
+const VERTICAL_NOTIFICATION = 1;
+
 if (!$centreon->user->admin) {
     if ($host_id && false === strpos($aclHostString, "'" . $host_id . "'")) {
         $msg = new CentreonMsg();
@@ -615,6 +617,8 @@ if ($o == "mc") {
 /*
  * Additive
  */
+$dbResult = $pearDB->query('SELECT `value` FROM options WHERE  `key` = "inheritance_mode"');
+$inheritanceMode = $dbResult->fetch();
 if ($o == "mc") {
     $contactAdditive[] = $form->createElement('radio', 'mc_contact_additive_inheritance', null, _("Yes"), '1');
     $contactAdditive[] = $form->createElement('radio', 'mc_contact_additive_inheritance', null, _("No"), '0');
@@ -625,7 +629,8 @@ if ($o == "mc") {
         _("Default"),
         '2'
     );
-    $form->addGroup($contactAdditive, 'mc_contact_additive_inheritance', _("Contact additive inheritance"), '&nbsp;');
+    $form->addGroup($contactAdditive, 'mc_contact_additive_inheritance', _("Contact additive inheritance"),
+        '&nbsp;');
 
     $contactGroupAdditive[] = $form->createElement('radio', 'mc_cg_additive_inheritance', null, _("Yes"), '1');
     $contactGroupAdditive[] = $form->createElement('radio', 'mc_cg_additive_inheritance', null, _("No"), '0');
@@ -646,6 +651,7 @@ if ($o == "mc") {
     $form->addElement('checkbox', 'contact_additive_inheritance', '', _('Contact additive inheritance'));
     $form->addElement('checkbox', 'cg_additive_inheritance', '', _('Contact group additive inheritance'));
 }
+
 /*
  *  Contacts
  */
@@ -1215,6 +1221,7 @@ if ($valid) {
     $tpl->assign('o', $o);
     $tpl->assign('seconds', _("seconds"));
     $tpl->assign('p', $p);
+    $tpl->assign('inheritance', $inheritanceMode['value']);
     $tpl->assign("Freshness_Control_options", _("Freshness Control options"));
     $tpl->assign("Flapping_Options", _("Flapping options"));
     $tpl->assign("History_Options", _("History Options"));

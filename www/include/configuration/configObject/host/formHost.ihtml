@@ -180,8 +180,12 @@
         </tr>
         <tr class="list_one">
 			<td class="FormRowField"></td>
-			<td class="FormRowValue">{$form.contact_additive_inheritance.html} <img class="helpTooltip" name="contact_additive_inheritance"></td>
-        </tr>		
+			<td class="FormRowValue">
+				<span {if $inheritance !="1" } style="visibility:hidden;" {/if} >
+				{$form.contact_additive_inheritance.html} <img class="helpTooltip" name="contact_additive_inheritance">
+				</span>
+			</td>
+		</tr>
         {/if}
         {if $o == "mc"}
         <tr class="list_one">
@@ -197,10 +201,14 @@
             <td class="FormRowField"><img class="helpTooltip" name="contact_groups"> {$form.host_cgs.label}</td>
             <td class="FormRowValue">{$form.host_cgs.html} </td>
         </tr>
-        <tr class="list_one">
+		<tr class="list_one">
 			<td class="FormRowField"></td>
-			<td class="FormRowValue">{$form.cg_additive_inheritance.html} <img class="helpTooltip" name="cg_additive_inheritance"></td>
-        </tr>		
+			<td class="FormRowValue">
+				<span {if $inheritance !="1" } style="visibility:hidden;" {/if} >
+				{$form.cg_additive_inheritance.html} <img class="helpTooltip" name="cg_additive_inheritance">
+				</span>
+			</td>
+		</tr>
 		{/if}
 		<tr class="list_lvl_1">
 		    <td class="ListColLvl1_name" colspan="2"><h4>{t}Notification options{/t}</h4></td>
