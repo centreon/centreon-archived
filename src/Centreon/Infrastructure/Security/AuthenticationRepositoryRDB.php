@@ -236,6 +236,18 @@ class AuthenticationRepositoryRDB implements AuthenticationRepositoryInterface
     }
 
     /**
+     * @inheritDoc
+     */
+    public function refreshToken(string $token): void
+    {
+        $statement = $this->db->prepare(
+            'UPDATE ws_token SET generate_date = NOW() WHERE token = :token'
+        );
+        $statement->bindValue(':token', $token, DatabaseConnection::PARAM_STR);
+        $statement->execute();
+    }
+
+    /**
      * (Factory) Create a new instance of the AuthenticationToken class
      *
      * @param array $details Data representing the authentication information

@@ -183,6 +183,7 @@ class TokenAPIAuthenticator extends AbstractGuardAuthenticator
         if ($contact->isActive() === false) {
             throw new ContactDisabledException();
         }
+        $this->authenticationRepository->refreshToken($token->getToken());
         return $contact;
     }
 

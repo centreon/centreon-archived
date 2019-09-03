@@ -107,4 +107,11 @@ interface AuthenticationRepositoryInterface
      * @throws \Exception
      */
     public function deleteExpiredSession(): void;
+
+    /**
+     * Refresh the generation date of the authentication token.
+     *
+     * @param string $token Token id for which we want to refresh
+     */
+    public function refreshToken(string $token): void;
 }

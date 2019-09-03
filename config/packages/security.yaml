@@ -7,22 +7,16 @@ security:
             id: contact.provider
     firewalls:
         api:
-            # We don't memorize authentication using PHP session
-            # Token need to be sent on each requests
             stateless: true
-            pattern: ^/(?!centreon/apiv2/login).*
+            pattern: ^/(?!centreon/api/(?:latest|beta|v[0-9]+|v[0-9]+\.[0-9]+)/login).*
             security: true
-            anonymous: true
             guard:
                 authenticators:
                     - security.provider.tokenapi
                     - security.provider.sessionapi
                 entry_point: security.provider.tokenapi
         login:
-            pattern: ^/centreon/apiv2/login$
-            security: false
-        dev:
-            pattern: ^/centreon/apiv2/(_(profiler|wdt)|css|images|js)/
+            pattern: ^/centreon/api/(?:latest|beta|v[0-9]+|v[0-9]+\.[0-9]+)/login$
             security: false
 
     # Easy way to control access for large sections of your site
