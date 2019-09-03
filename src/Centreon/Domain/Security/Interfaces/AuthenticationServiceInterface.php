@@ -38,6 +38,7 @@ declare(strict_types=1);
 namespace Centreon\Domain\Security\Interfaces;
 
 use Centreon\Domain\Contact\Contact;
+use Centreon\Domain\Security\AuthenticationService;
 
 interface AuthenticationServiceInterface
 {
@@ -53,6 +54,7 @@ interface AuthenticationServiceInterface
 
     /**
      * Generate a new token.
+     * There is no limit to the number of tokens per contact.
      *
      * @param string $username Username for which we want to generate a token
      * @return string Returns the new generated token
@@ -66,4 +68,20 @@ interface AuthenticationServiceInterface
      * @return string Returns the generated token
      */
     public function getGeneratedToken():string;
+
+    /**
+     * Delete an existing authentication token
+     *
+     * @param string $authToken
+     * @return bool
+     * @throws \Exception
+     */
+    public function logout(string $authToken): bool;
+
+    /**
+     * Delete all expired tokens
+     *.
+     * @return int Returns the number of expired tokens deleted
+     */
+    public function deleteExpiredTokens(): int;
 }

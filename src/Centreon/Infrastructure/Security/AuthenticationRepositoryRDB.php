@@ -128,6 +128,20 @@ class AuthenticationRepositoryRDB implements AuthenticationRepositoryInterface
     /**
      * @inheritDoc
      */
+    public function deleteTokenFromContact(int $contactId, string $token): bool
+    {
+        $statement = $this->db->prepare(
+            'DELETE FROM ws_token WHERE token = :token AND contact_id = :contact_id'
+        );
+        $statement->bindValue(':token', $token, DatabaseConnection::PARAM_STR);
+        $statement->bindValue(':contact_id', $contactId, DatabaseConnection::PARAM_INT);
+        $statement->execute();
+        return $statement->rowCount() === 1;
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function deleteExpiredSession(): void
     {
         try {

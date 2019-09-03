@@ -46,6 +46,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Core\Exception\AuthenticationExpiredException;
+use Symfony\Component\Security\Core\Exception\CredentialsExpiredException;
 use Symfony\Component\Security\Core\Exception\TokenNotFoundException;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
@@ -173,11 +174,11 @@ class TokenAPIAuthenticator extends AbstractGuardAuthenticator
             return null;
         }
         $token = $this->authenticationRepository->findToken($apiToken);
-        if ($token === null) {
+        if (is_null($token)) {
             throw new TokenNotFoundException();
         }
-        if ($token->isValid() === false) {
-            throw new AuthenticationExpiredException();
+        if (!$token->isValid()) {
+            throw new CredentialsExpiredException();
         }
         $contact = $this->contactRepository->findById($token->getContactId());
         if ($contact->isActive() === false) {

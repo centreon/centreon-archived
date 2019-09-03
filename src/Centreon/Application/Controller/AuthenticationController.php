@@ -46,7 +46,7 @@ use Symfony\Component\HttpKernel\Exception\HttpException;
 /**
  * @package Centreon\Application\Controller
  */
-class LoginController extends AbstractFOSRestController
+class AuthenticationController extends AbstractFOSRestController
 {
     /**
      * @var AuthenticationServiceInterface
@@ -64,19 +64,26 @@ class LoginController extends AbstractFOSRestController
     }
 
     /**
-     * Entry point used to identify yoursef and retrieve an authentication token.
+     * Entry point used to identify yourself and retrieve an authentication token.
      * (If view_response_listener = true, we need to write the following
      * annotation Rest\View(populateDefaultVars=false), otherwise it's not
      * necessary).
      *
      * @Rest\Post("/login")
      * @Rest\View(populateDefaultVars=false)
+     *
      * @param Request $request
      * @return array
      * @throws \Exception
      */
     public function login(Request $request)
     {
+        try {
+            // We take this opportunity to delete all expired tokens
+            $this->auth->deleteExpiredTokens();
+        } catch (\Exception $ex) {
+            // We don't propagate this error
+        }
         $contentBody = json_decode($request->getContent(), true);
         $username = $contentBody['security']['credentials']['login'] ?? '';
         $password = $contentBody['security']['credentials']['password'] ?? '';
@@ -96,5 +103,32 @@ class LoginController extends AbstractFOSRestController
             ];
         }
         throw new HttpException(401, "Invalid credentials");
+    }
+
+    /**
+     * Entry point used to delete an existing authentication token.
+     *
+     * @Rest\Get("/logout")
+     * @Rest\View(populateDefaultVars=false)
+     *
+     * @param Request $request
+     * @return string
+     * @throws \RestException
+     */
+    public function logout(Request $request)
+    {
+        try {
+            // We take this opportunity to delete all expired tokens
+            $this->auth->deleteExpiredTokens();
+        } catch (\Exception $ex) {
+            // We don't propagate this error
+        }
+        try {
+            $token = $request->headers->get('X-AUTH-TOKEN');
+            $this->auth->logout($token);
+            return 'Successful logout';
+        } catch (\Exception $ex) {
+            throw new \RestException($ex->getMessage());
+        }
     }
 }

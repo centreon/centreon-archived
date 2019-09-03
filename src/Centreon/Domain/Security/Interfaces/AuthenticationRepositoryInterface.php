@@ -104,6 +104,7 @@ interface AuthenticationRepositoryInterface
 
     /**
      * Delete all expired sessions.
+     *
      * @throws \Exception
      */
     public function deleteExpiredSession(): void;
@@ -114,4 +115,13 @@ interface AuthenticationRepositoryInterface
      * @param string $token Token id for which we want to refresh
      */
     public function refreshToken(string $token): void;
+
+    /**
+     * Delete a token from a contact.
+     *
+     * @param int $contactId Contact id to which the token belongs
+     * @param string $token Token to delete
+     * @return bool
+     */
+    public function deleteTokenFromContact(int $contactId, string $token): bool;
 }

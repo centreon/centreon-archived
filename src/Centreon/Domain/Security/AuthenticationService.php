@@ -94,10 +94,7 @@ class AuthenticationService implements AuthenticationServiceInterface
         if (is_null($contact)) {
             throw new NotFoundException('Contact not found');
         }
-        $tokens = $this->authenticationRepository->findTokensByContact($contact->getId());
-        if (count($tokens) >= 1) {
-            $this->authenticationRepository->deleteTokensByContact($contact->getId());
-        }
+
         $this->generatedToken = md5(bin2hex(random_bytes(128)));
         $this->authenticationRepository->addToken(
             $contact->getId(),
@@ -112,5 +109,29 @@ class AuthenticationService implements AuthenticationServiceInterface
     public function getGeneratedToken():string
     {
         return $this->generatedToken;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function deleteExpiredTokens(): int
+    {
+        return $this->authenticationRepository->deleteExpiredTokens();
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function logout(string $authToken): bool
+    {
+        $token = $this->authenticationRepository->findToken($authToken);
+        if (is_null($token)) {
+            throw new \Exception('Token not found');
+        }
+
+        return $this->authenticationRepository->deleteTokenFromContact(
+            $token->getContactId(),
+            $token->getToken()
+        );
     }
 }
