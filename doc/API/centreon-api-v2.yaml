@@ -35,7 +35,6 @@ servers:
           - v2
 tags:
   - name: Authentication token
-    description:
   - name: Monitoring
     description: Real-time monitoring of the services and hosts
 security:
@@ -544,6 +543,7 @@ components:
     Monitoring.Host_main:
       allOf:
         - $ref: '#/components/schemas/Monitoring.Host_min'
+        - $ref: '#/components/schemas/Monitoring.Host_with_service'
         - type: object
           properties:
             poller_id:
@@ -616,10 +616,6 @@ components:
             passive_checks:
               type: boolean
               description: Indicates whether the check script is passive or not
-            services:
-              type: array
-              items:
-                $ref: '#/components/schemas/Monitoring.Service_min'
             state_type:
               type: integer
               description: |
