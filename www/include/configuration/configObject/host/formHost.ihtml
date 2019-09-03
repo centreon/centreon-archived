@@ -204,7 +204,7 @@
 		<tr class="list_one">
 			<td class="FormRowField"></td>
 			<td class="FormRowValue">
-				<span {if $inheritance !="1" } style="visibility:hidden;" {/if} >
+				<span {if $inheritance != "1" } style="visibility:hidden;" {/if} >
 				{$form.cg_additive_inheritance.html} <img class="helpTooltip" name="cg_additive_inheritance">
 				</span>
 			</td>
