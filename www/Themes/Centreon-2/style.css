@@ -100,6 +100,7 @@ input[type="radio"] {
 }
 
 select {
+    background-color: #ffffff;
     background-image: url('../../img/icones/7x7/sort_desc.gif');
     background-repeat: no-repeat, repeat;
     background-position: right 5px top 50%, 0 0;
