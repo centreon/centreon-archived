@@ -37,9 +37,9 @@ DBMS
 +----------+------------+
 | Software | Version    |
 +==========+============+
-| MariaDB  |  = 10.1.x  |
+| MariaDB  | = 10.1.x   |
 +----------+------------+
-| MySQL    |  = 5.6.x   |
+| MySQL    | = 5.6.x    |
 +----------+------------+
 
 Software dependencies
