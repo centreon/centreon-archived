@@ -122,45 +122,47 @@ class CentreonEventSubscriber implements EventSubscriberInterface
                 RequestParameters::NAME_FOR_SORT,
                 RequestParameters::NAME_FOR_TOTAL];
 
-            $query  = !empty($_SERVER['QUERY_STRING'])
-                ? explode('&', $_SERVER['QUERY_STRING'])
-                : [];
-            $parameters = [];
-            foreach ($query as $value) {
-                if (strpos($value, '=') === false) {
-                    $value .= '=';
-                }
-
-                list($name, $value) = explode('=', $value, 2);
-                // Extract the parameter name in expression => filter[parameter_name]
-                $name = preg_replace('/^filter\[([[:alnum:]]+)\]$/', '\1', urldecode($name));
-                if (!in_array($name, $reservedFields)) {
-                    $parameters[$name] = explode('|', urldecode($value));
-                }
-            }
-
             $search = [];
-            foreach ($parameters as $filter => $filtervalues) {
-                $parameterName = substr($filter, 7, strlen($filter) - 8);
-                if (count($filtervalues, COUNT_RECURSIVE) > 1) {
-                    // OR expression
-                    $orParameters = [];
-                    foreach ($filtervalues as $value) {
-                        $orParameters[] = [$parameterName => $value];
+            foreach ($query as $parameterName => $parameterValue) {
+                if (in_array($parameterName, $reservedFields)
+                    || $parameterName !== 'filter'
+                    || !is_array($parameterValue)
+                ) {
+                    continue;
+                }
+                foreach ($parameterValue as $subParameterName => $subParameterValues) {
+                    if (strpos($subParameterValues, '|') !== false) {
+                        $subParameterValues = explode('|', urldecode($subParameterValues));
+                        foreach ($subParameterValues as $value) {
+                            $search[RequestParameters::AGGREGATE_OPERATOR_OR][] = [$subParameterName => $value];
+                        }
+                    } else {
+                        $search[RequestParameters::AGGREGATE_OPERATOR_AND][$subParameterName] = $subParameterValues;
                     }
-                    $search[RequestParameters::AGGREGATE_OPERATOR_OR][] = $orParameters;
-                } else {
-                    // AND expression
-                    $value = $filtervalues[0];
-                    if ($value == 'true') {
-                        $value = true;
-                    } elseif ($value == 'false') {
-                        $value = false;
-                    }
-                    $search[RequestParameters::AGGREGATE_OPERATOR_AND][$parameterName] = $value;
                 }
             }
             $this->requestParameters->setSearch(json_encode($search));
+        }
+
+        /**
+         * Add extra parameters
+         */
+        $reservedFields = [
+            RequestParameters::NAME_FOR_LIMIT,
+            RequestParameters::NAME_FOR_PAGE,
+            RequestParameters::NAME_FOR_SEARCH,
+            RequestParameters::NAME_FOR_SORT,
+            RequestParameters::NAME_FOR_TOTAL,
+            'filter'
+        ];
+
+        foreach ($request->getRequest()->query->all() as $parameter => $value) {
+            if (!in_array($parameter, $reservedFields)) {
+                $this->requestParameters->addExtraParameter(
+                    $parameter,
+                    $value
+                );
+            }
         }
     }
 
