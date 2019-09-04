@@ -54,24 +54,22 @@ try {
         ])
 
         if (env.CHANGE_ID) { // pull request to comment with coding style issues
-          publishers {
-            violationsToGitHub {
-              config {
-                repositoryName('centreon')
-                pullRequestId(env.CHANGE_ID)
+          violationsToGitHub {
+            config {
+              repositoryName('centreon')
+              pullRequestId(env.CHANGE_ID)
 
-                createSingleFileComments(true)
-                commentOnlyChangedContent(true)
-                commentOnlyChangedFiles(true)
-                keepOldComments(false)
+              createSingleFileComments(true)
+              commentOnlyChangedContent(true)
+              commentOnlyChangedFiles(true)
+              keepOldComments(false)
 
-                commentTemplate: "**{{violation.severity}}**: {{violation.message}}"
+              commentTemplate: "**{{violation.severity}}**: {{violation.message}}"
 
-                violationConfig: {
-                  parser('CHECKSTYLE')
-                  reporter('Checkstyle')
-                  pattern('.*/codestyle.xml$')
-                }
+              violationConfig: {
+                parser('CHECKSTYLE')
+                reporter('Checkstyle')
+                pattern('.*/codestyle.xml$')
               }
             }
           }
