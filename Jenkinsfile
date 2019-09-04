@@ -54,7 +54,7 @@ try {
         ])
 
         if (env.CHANGE_ID) { // pull request to comment with coding style issues
-          violationsToGitHub {
+          ViolationsToGitHub {
             config {
               repositoryName('centreon')
               pullRequestId(env.CHANGE_ID)
