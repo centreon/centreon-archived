@@ -177,8 +177,13 @@ class MonitoringController extends AbstractFOSRestController
             ->filterByContact($this->getUser())
             ->findHosts();
 
-        $context = (new Context())
-            ->setGroups(['host_main', 'service_min']);
+        $parametersGroup = ['host_main'];
+        $hasServices = $requestParameters->getExtraParameter('show_service') === 'true';
+        if ($hasServices) {
+            $parametersGroup[] = 'host_with_services';
+            $parametersGroup[] = 'service_min';
+        }
+        $context = (new Context())->setGroups($parametersGroup);
 
         return $this->view(
             [

@@ -122,6 +122,9 @@ final class MonitoringRepositoryRDB implements MonitoringRepositoryInterface
      */
     public function findHosts(): array
     {
+        $requestParameter = $this->sqlRequestTranslator->getRequestParameters();
+        $hasServices = $requestParameter->getExtraParameter('show_service') === 'true';
+
         $this->sqlRequestTranslator->setConcordanceArray([
             'host.id' => 'h.host_id',
             'host.name' => 'h.name',
@@ -200,7 +203,7 @@ final class MonitoringRepositoryRDB implements MonitoringRepositoryInterface
             );
         }
 
-        if (count($hostIds) > 0) {
+        if ($hasServices && count($hostIds) > 0) {
             $servicesByHost = $this->findServicesOnMultipleHosts($hostIds);
 
             foreach ($servicesByHost as $hostId => $services) {

@@ -304,7 +304,7 @@ class Host
     private $passiveChecks;
 
     /**
-     * @Serializer\Groups({"host_main", "host_full", "host_with_services"})
+     * @Serializer\Groups({"host_full", "host_with_services"})
      * @var Service[]
      */
     private $services = [];

@@ -95,11 +95,19 @@ paths:
       tags:
         - Monitoring
       summary: List all services grouped by host groups
-      description: >
-        Returns all services grouped by host groups<br/><br/> The available
-        parameters to <b>search</b> / <b>sort_by</b> are:<br/> host.id,
-        host.name, host.alias, host.address, host.state, poller.id,
-        service.display_name, host_group.id
+      description: |
+        Returns all services grouped by host groups.
+        
+        The available parameters to **search** / **sort_by** are:
+        
+        * host.id
+        * host.name
+        * host.alias
+        * host.address
+        * host.state
+        * poller.id
+        * service.display_name
+        * host_group.id
       parameters:
         - $ref: '#/components/parameters/limit'
         - $ref: '#/components/parameters/page'
@@ -137,10 +145,25 @@ paths:
       tags:
         - Monitoring
       summary: List all hosts
-      description: >
-        Returns all hosts<br/><br/> The available parameters to <b>search</b> /
-        <b>sort_by</b> are:<br/> host.id, host.name, host.alias, host.address,
-        host.state, poller.id, service.display_name, host_group.id
+      description: |
+        Returns all hosts.
+        
+        The available parameters to **search** / **sort_by** are:
+        
+        * host.id
+        * host.name
+        * host.alias
+        * host.address
+        * host.state
+        * poller.id
+        * service.display_name
+        * host_group.id
+        
+        # Information
+        By default, the **services** property of host object is not displayed.
+        To display it, set the URI parameter "show_service" to `true`.
+        
+        `/monitoring/hosts?show_service=true`
       parameters:
         - $ref: '#/components/parameters/limit'
         - $ref: '#/components/parameters/page'
@@ -172,14 +195,13 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorApiResponse'
-  '/monitoring/hosts/{hostId}':
+  /monitoring/hosts/{hostId}:
     get:
       tags:
         - Monitoring
       summary: Find host by ID
-      description: >-
-        Retuns a single host with full details and some details about its
-        services
+      description: |
+        Retuns a single host with full details and some details about its services
       parameters:
         - name: hostId
           in: path
@@ -210,16 +232,22 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorApiResponse'
-  '/monitoring/hosts/{hostId}/services':
+  /monitoring/hosts/{hostId}/services:
     get:
       tags:
         - Monitoring
       summary: Find host-related services
-      description: >
-        Returns all services associated with a host<br/><br/> The available
-        parameters to <b>search</b> / <b>sort_by</b> are:<br/> service.id,
-        service.description, service.display_name, service_group.id,
-        service.is_acknowledged, service.state
+      description: |
+        Returns all services associated with a host.
+        
+        The available parameters to **search** / **sort_by** are:
+        
+        * service.id
+        * service.description
+        * service.display_name
+        * service_group.id
+        * service.is_acknowledged
+        * service.state
       parameters:
         - name: hostId
           in: path
@@ -261,7 +289,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorApiResponse'
-  '/monitoring/hosts/{hostId}/services/{serviceId}':
+  /monitoring/hosts/{hostId}/services/{serviceId}:
     get:
       tags:
         - Monitoring
@@ -309,11 +337,20 @@ paths:
       tags:
         - Monitoring
       summary: List all services grouped by service groups
-      description: >
-        Returns all services grouped by service groups<br/><br/> The available
-        parameters to <b>search</b> / <b>sort_by</b> are:<br/> host.id,
-        host.name, host.alias, host.address, host.state, poller.id,
-        service.display_name, service_group.id, service_group.name
+      description: |
+        Returns all services grouped by service groups.
+        
+        The available parameters to **search** / **sort_by** are:
+        
+        * host.id
+        * host.name
+        * host.alias
+        * host.address
+        * host.state
+        * poller.id
+        * service.display_name
+        * service_group.id
+        * service_group.name
       parameters:
         - $ref: '#/components/parameters/limit'
         - $ref: '#/components/parameters/page'
@@ -351,12 +388,25 @@ paths:
       tags:
         - Monitoring
       summary: List all services
-      description: >
-        Returns all services<br/><br/> The available parameters to <b>search</b>
-        / <b>sort_by</b> are:<br/> host.id, host.name, host.alias, host.address,
-        host.state, host_group.id,  service.display_name, service.description,
-        service.is_acknowledged,  service.output, service.state,
-        service_group.id, poller.id.
+      description: |
+        Returns all services.
+        
+        
+        The available parameters to **search** / **sort_by** are:
+        
+        * host.id
+        * host.name
+        * host.alias
+        * host.address
+        * host.state
+        * host_group.id
+        * service.display_name
+        * service.description
+        * service.is_acknowledged
+        * service.output
+        * service.state
+        * service_group.id
+        * poller.id
       parameters:
         - $ref: '#/components/parameters/limit'
         - $ref: '#/components/parameters/page'

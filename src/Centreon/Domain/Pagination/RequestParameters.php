@@ -73,6 +73,8 @@ class RequestParameters implements RequestParametersInterface
 
     private $authorizedOrders = [self::ORDER_ASC, self::ORDER_DESC];
 
+    private $extraParameters = [];
+
     /**
      * @var int Indicates whether we should consider only known search parameters.
      * Used in the data repository classes.
@@ -105,11 +107,30 @@ class RequestParameters implements RequestParametersInterface
     private $total = 0;
 
     /**
+     * @inheritDoc
+     */
+    public function addExtraParameter(string $parameterName, $value): void
+    {
+        $this->extraParameters[$parameterName] = $value;
+    }
+
+    /**
      * @return int
      */
     public function getConcordanceStrictMode(): int
     {
         return $this->concordanceStrictMode;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getExtraParameter(string $parameterName)
+    {
+        if (array_key_exists($parameterName, $this->extraParameters)) {
+            return $this->extraParameters[$parameterName];
+        }
+        return null;
     }
 
     /**
@@ -154,12 +175,16 @@ class RequestParameters implements RequestParametersInterface
     {
         $search = $this->search;
 
-        if (!empty($search)
-            && !isset($search[RequestParameters::AGGREGATE_OPERATOR_AND])
-            && !isset($search[RequestParameters::AGGREGATE_OPERATOR_OR])
-        ) {
-            $newSearch[RequestParameters::AGGREGATE_OPERATOR_AND] = $search;
-            $this->search = $newSearch;
+        if (!empty($search)) {
+            if ((
+                    !isset($search[RequestParameters::AGGREGATE_OPERATOR_AND])
+                    && !isset($search[RequestParameters::AGGREGATE_OPERATOR_OR])
+                )
+                || (count($this->search) > 1)
+            ) {
+                $newSearch[RequestParameters::AGGREGATE_OPERATOR_AND] = $search;
+                $this->search = $newSearch;
+            }
         }
     }
 

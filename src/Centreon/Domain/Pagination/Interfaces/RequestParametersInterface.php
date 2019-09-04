@@ -40,6 +40,14 @@ namespace Centreon\Domain\Pagination\Interfaces;
 interface RequestParametersInterface
 {
     /**
+     * Add an extra parameter.
+     *
+     * @param string $parameterName Parameter name
+     * @param mixed $value Parameter value
+     */
+    public function addExtraParameter(string $parameterName, $value): void;
+
+    /**
      * Find the search parameter.
      *
      * @param string $keyToFind Name of the search parameter
@@ -52,6 +60,14 @@ interface RequestParametersInterface
      * @return int
      */
     public function getConcordanceStrictMode(): int;
+
+    /**
+     * Returns the value of the extra parameter.
+     *
+     * @param string $parameterName Parameter name
+     * @return mixed Returns the value or null
+     */
+    public function getExtraParameter(string $parameterName);
 
     /**
      * @see Pagination::$limit
