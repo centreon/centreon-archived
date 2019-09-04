@@ -37,8 +37,6 @@ declare(strict_types=1);
 
 namespace Centreon\Infrastructure;
 
-use PDO;
-
 /**
  * This class extend the PDO class and can be used to create a database
  * connection.

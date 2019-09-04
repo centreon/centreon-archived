@@ -92,12 +92,20 @@ class SqlRequestParametersTranslator
             : $databaseQuery;
     }
 
+    /**
+     * @return RequestParametersInterface
+     */
     public function getRequestParameters(): RequestParametersInterface
     {
         return $this->requestParameters;
     }
 
-    public function translatePaginationToSql(): ?string
+    /**
+     * Translate the pagination (page and limit parameters) into SQL request.
+     *
+     * @return string
+     */
+    public function translatePaginationToSql(): string
     {
         return sprintf(
             ' LIMIT %d, %d',
@@ -253,6 +261,13 @@ class SqlRequestParametersTranslator
         throw new \Exception('Bad search operator');
     }
 
+    /**
+     * Translates the search operators (RequestParameters::OPERATOR_LIKE, ...)
+     * in their SQL equivalent (LIKE, ...).
+     *
+     * @param string $operator Operator to translate
+     * @return string Operator translated in his SQL equivalent
+     */
     private function translateSearchOperator(string $operator): string
     {
         switch ($operator) {

@@ -93,7 +93,7 @@ class EntityCreator
     public function createByArray(array $data)
     {
         if (!class_exists($this->className)) {
-            throw new \Exception('The class' . $this->className . ' does not exist');
+            throw new \Exception('The class ' . $this->className . ' does not exist');
         }
         $this->readPublicMethod();
         $this->readAnnotations();

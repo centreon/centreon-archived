@@ -20,8 +20,6 @@ www/include/core/menu/templates/*.tpl
 !www/img/media/.keep
 www/img/media/*
 www/template
-!filesGeneration/export/.keep
-filesGeneration/export/*
 
 #temporary files needed for the installation
 www/install/tmp/*

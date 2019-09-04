@@ -100,6 +100,9 @@ class AuthenticationToken
         return $this->generatedDate;
     }
 
+    /**
+     * @return bool
+     */
     public function isValid(): bool
     {
         return $this->isValid;

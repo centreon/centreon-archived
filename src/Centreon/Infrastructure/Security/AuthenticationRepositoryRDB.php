@@ -273,7 +273,7 @@ class AuthenticationRepositoryRDB implements AuthenticationRepositoryInterface
         return new AuthenticationToken(
             $details['token'],
             (int) $details['contact_id'],
-            new \DateTime($details['generate_date'], new \DateTimeZone('Europe/Paris')),
+            new \DateTime($details['generate_date']),
             (bool)$details['is_valid']
         );
     }
