@@ -68,7 +68,7 @@ suivants : ::
     Remplacez **IP_New_Centreon** par l'adresse IP de votre nouveau serveur Centreon.
 
 .. warning::
-    En cas de migration d'une plate-forme CES 3.4.1, Centreon-web 2.8.26 sous CentOS 6 avec MariaDB 5.X, ne pas synchroniser les dossiers /var/lib/mysql avec RSYNC vers la database Centreon 18.10 en MariaDB 10.1.
+    En cas de migration d'une plate-forme CES 3.4.1, Centreon-web 2.8.26 sous CentOS 6 avec MariaDB 5.X, ne pas synchroniser les dossiers /var/lib/mysql avec RSYNC vers la database Centreon 19.04 en MariaDB 10.1.
     
     #. Faire un dump des bases de données sources : ::
     
@@ -79,12 +79,12 @@ suivants : ::
     
         # service mysql stop
     
-    #. Transférer les exports vers le nouveau serveur de base de données Centreon 18.10 : ::
+    #. Transférer les exports vers le nouveau serveur de base de données Centreon 19.04 : ::
     
         # rsync -avz /tmp/centreon.sql root@IP_New_Centreon:/tmp/
         # rsync -avz /tmp/centreon_storage.sql root@IP_New_Centreon:/tmp/
         
-    #. Sur le serveur de base de données Centreon 18.10 supprimer les bases de données vierges et les recréer : ::
+    #. Sur le serveur de base de données Centreon 19.04 supprimer les bases de données vierges et les recréer : ::
     
         # mysql -u root -p
         # drop database centreon;
@@ -140,7 +140,7 @@ dépend de votre installation. Les principaux répertoires à synchroniser sont 
     des sondes de supervision.
 
 .. note::
-    Si vous avez des pollers en centreon engine 1.8.1 que vous comptez migrer plus tard en centreon engine 18.10, attention au dossier des plugins nagios. La ressource $USER1$ ce Centreon 18.10 pointe sur /usr/lib64/nagios/plugins
+    Si vous avez des pollers en centreon engine 1.8.1 que vous comptez migrer plus tard en centreon engine 19.04, attention au dossier des plugins nagios. La ressource $USER1$ ce Centreon 19.04 pointe sur /usr/lib64/nagios/plugins
     
     A éxécuter sur vos collecteurs en centreon-engine 1.8.1 : ::
     
@@ -154,17 +154,17 @@ dépend de votre installation. Les principaux répertoires à synchroniser sont 
         lrwxrwxrwx   1 root root      24  1 nov.  17:59 plugins -> /usr/lib/nagios/plugins/
         -rwxr-xr-x   1 root root 1711288  6 avril  2018 cbmod.so
     
-    Et vous permet de pousser les configuration de collecteur depuis Centreon 18.10 indifféremment vers un collecteur en 18.10 ou 1.8.1
+    Et vous permet de pousser les configuration de collecteur depuis Centreon 19.04 indifféremment vers un collecteur en 19.04 ou 1.8.1
 
 Mise à jour de la suite Centreon
 ================================
 
 Forcez la mise à jour du nouveau serveur en déplacant le contenu du répertoire
-**/usr/share/centreon/installDir/install-18.10.0-YYYYMMDD_HHMMSS** dans le
+**/usr/share/centreon/installDir/install-19.04.0-YYYYMMDD_HHMMSS** dans le
 repértoire **/usr/share/centreon/www/install** : ::
 
     # cd /usr/share/centreon/installDir/
-    # mv install-18.10.0-YYYYMMDD_HHMMSS/ ../www/install/
+    # mv install-19.04.0-YYYYMMDD_HHMMSS/ ../www/install/
 
 .. note::
     Si vous utilisez la meme adresse IP ou le même nom DNS entre l'ancien serveur web Centreon et le nouveau, videz completement le cache de votre navigateur pour éviter des problemes de scripts JS.
@@ -195,4 +195,4 @@ Mise à jour des modules
 =======================
 
 Référez-vous à la documentation des modules installés afin de connaître
-leur compatibilité avec Centreon 18.10, et pour mettre à jour ces derniers.
+leur compatibilité avec Centreon 19.04, et pour mettre à jour ces derniers.
