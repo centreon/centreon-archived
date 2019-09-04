@@ -1182,42 +1182,42 @@ function configureApache() {
 	# Generate a apache config in directory
 	prepare_apache_config "$dir_conf"
 
-	if [ "$silent_install" -ne 1 ] ; then
-		if [ -e $DIR_APACHE_CONF/centreon.conf ] ; then
-			echo "$(gettext "Finding Apache Centreon configuration file")"
-			echo_success "'$DIR_APACHE_CONF/centreon.conf' :" "$ok"
-			yes_no_default "$(gettext "Do you want to update Centreon Apache sub configuration file ?")"
-                        if [ "$?" -eq 0 ] ; then
-                            write_config="1"
-                            cp -f $DIR_APACHE_CONF/centreon.conf $DIR_APACHE_CONF/centreon.conf-bak >> $LOG_FILE 2>&1
-                            echo_info "$(gettext "Backup Centreon Apache configuration completed")"
-                        fi
-		else
-			yes_no_default "$(gettext "Do you want to add Centreon Apache sub configuration file ?")"
-			[ "$?" -eq 0 ] && write_config="1"
-		fi
-	else
-		write_config="1"
-    	fi
-	if [ "$write_config" -eq 1 ] ; then
-                if [ "$upgrade" -eq 1 ] ; then
-                    cp -f $dir_conf/centreon.apache.conf $DIR_APACHE_CONF/centreon.conf.new >> $LOG_FILE 2>&1
-                else
-                    cp -f $dir_conf/centreon.apache.conf $DIR_APACHE_CONF/centreon.conf >> $LOG_FILE 2>&1
-                fi
-		echo_success "$(gettext "Create") '$DIR_APACHE_CONF/centreon.conf'" "$ok"
-		echo_success "$(gettext "Configuring Apache")" "$ok"
-		# After finishing the configuration ->
-		# reload apache ! (if admin wants :p)
-		if [ "${APACHE_RELOAD:-0}" -eq 0 ] ; then
-			yes_no_default "$(gettext "Do you want to reload your Apache ?")"
-			[ $? -eq 0 ] && reload_service_apache
-		elif [ "${APACHE_RELOAD:-0}" -eq 1 ] ; then
-			reload_service_apache
-		fi
-	else
-		echo_info "$(gettext "Please config Apache with this example"):\n $dir_conf/centreon.apache.conf"
-	fi
+    if [ "$silent_install" -ne 1 ] ; then
+        if [ -e $DIR_APACHE_CONF/centreon.conf ] ; then
+            echo "$(gettext "Finding Apache Centreon configuration file")"
+            echo_success "'$DIR_APACHE_CONF/centreon.conf' :" "$ok"
+            yes_no_default "$(gettext "Do you want to update Centreon Apache sub configuration file ?")"
+            if [ "$?" -eq 0 ] ; then
+                write_config="1"
+                cp -f $DIR_APACHE_CONF/centreon.conf $DIR_APACHE_CONF/centreon.conf-bak >> $LOG_FILE 2>&1
+                echo_info "$(gettext "Backup Centreon Apache configuration completed")"
+            fi
+        else
+            yes_no_default "$(gettext "Do you want to add Centreon Apache sub configuration file ?")"
+            [ "$?" -eq 0 ] && write_config="1"
+        fi
+    else
+        write_config="1"
+    fi
+    if [ "$write_config" -eq 1 ] ; then
+        if [ "$upgrade" -eq 1 ] ; then
+            cp -f $dir_conf/centreon.apache.conf $DIR_APACHE_CONF/centreon.conf.new >> $LOG_FILE 2>&1
+        else
+            cp -f $dir_conf/centreon.apache.conf $DIR_APACHE_CONF/centreon.conf >> $LOG_FILE 2>&1
+        fi
+        echo_success "$(gettext "Create") '$DIR_APACHE_CONF/centreon.conf'" "$ok"
+        echo_success "$(gettext "Configuring Apache")" "$ok"
+        # After finishing the configuration ->
+        # reload apache ! (if admin wants :p)
+        if [ "${APACHE_RELOAD:-0}" -eq 0 ] ; then
+            yes_no_default "$(gettext "Do you want to reload your Apache ?")"
+            [ $? -eq 0 ] && reload_service_apache
+        elif [ "${APACHE_RELOAD:-0}" -eq 1 ] ; then
+            reload_service_apache
+        fi
+    else
+        echo_info "$(gettext "Please config Apache with this example"):\n $dir_conf/centreon.apache.conf"
+    fi
 }
 
 #----
