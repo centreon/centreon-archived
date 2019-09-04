@@ -115,8 +115,8 @@ LDAP
 ****
 
 .. note::
-    If you want to use SSO for authentication, please read this
-    :ref:`procedure <sso>`. 
+    If you want to use SSO for authentication, please read this :ref:`procedure <sso>`.
+    You can also use Keycloack SSO using this :ref:`procedure <keycloak>`.
 
 This part can be used to configure the connection to LDAP directories.
 

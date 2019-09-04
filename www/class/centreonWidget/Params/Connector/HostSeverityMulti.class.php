@@ -1,5 +1,5 @@
 <?php
-/*
+/**
  * Copyright 2005-2019 Centreon
  * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
@@ -31,33 +31,25 @@
  *
  * For more information : contact@centreon.com
  *
- *
  */
-
-include_once __DIR__ . "/../../class/centreonLog.class.php";
-$centreonLog = new CentreonLog();
-
-// update topology of poller wizard to display breadcrumb
-$pearDB->query(
-    'UPDATE topology
-    SET topology_parent = 60901,
-    topology_page = 60959,
-    topology_group = 1,
-    topology_show = "0"
-    WHERE topology_url LIKE "/poller-wizard/%"'
-);
-
-
-try {
-    // Add trap regexp matching
-    if (!$pearDB->isColumnExist('traps', 'traps_mode')) {
-        $pearDB->query(
-            "ALTER TABLE `traps` ADD COLUMN `traps_mode` enum('0','1') DEFAULT '0' AFTER `traps_oid`"
+require_once __DIR__ . "/../Select2.class.php";
+/**
+ * Creation of a new connector for the host severity that use the centreonHostcategories object 
+ * with configuration from centreon_configuration_host_severity file
+ */
+class CentreonWidgetParamsConnectorHostSeverityMulti extends CentreonWidgetParamsSelect2
+{
+    /**
+     * @return array
+     */
+    public function getParameters()
+    {
+        $path = './api/internal.php?object=centreon_configuration_hostcategory&action=list&t=s';
+        return array(
+            'datasourceOrigin' => 'ajax',
+            'availableDatasetRoute' => $path,
+            'multiple' => true,
+            'linkedObject' => 'centreonHostcategories'
         );
     }
-} catch (\PDOException $e) {
-    $centreonLog->insertLog(
-        2,
-        "UPGRADE : 19.10.0-beta.1 Unable to modify regexp matching in the database"
-    );
 }
