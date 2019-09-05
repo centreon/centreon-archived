@@ -244,7 +244,7 @@ select {
     -moz-appearance: none;
     -webkit-appearance: none;
     appearance: none;
-    padding: 4px 20px 4px 6px;
+    padding: 2px 20px 2px 6px;
 }
 select::-ms-expand {
     display: none;
