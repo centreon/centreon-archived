@@ -44,9 +44,13 @@ Migration
 Installation du nouveau serveur
 ===============================
 
-Installez un nouveau serveur Centreon à partir de :ref:`l'ISO<installisoel7>`
-ou :ref:`des paquets<install_from_packages>` et terminez le processus
-d'installation en vous connectant à l'interface web.
+Réalisez les actions suivantes :
+
+#. Installez un nouveau serveur Centreon à partir de :ref:`l'ISO<installisoel7>` ou :ref:`des paquets<install_from_packages>` jusqu'à terminer le processus d'installation en vous connectant à l'interface web.
+
+#. Réalisez les mises à jour logicielle et système : ::
+
+    # yum update
 
 .. note::
     Il est préférable de saisir le même mot de passe pour l'utilisateur

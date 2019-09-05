@@ -42,9 +42,12 @@ Migrating
 Installing the new server
 =========================
 
-You will need to install a new Centreon central server from the :ref:`ISO<installisoel7>`
-or from :ref:`packages <install_from_packages>`, and complete the installation process
-by connecting to the Centreon Web interface.
+Perform the following actions:
+
+#. You will need to install a new Centreon central server from the :ref:`ISO<installisoel7>` or from :ref:`packages <install_from_packages>`, until to complete the installation process by connecting to the Centreon Web interface.
+#. Perform software and system updates: ::
+
+    # yum update
 
 .. note::
     It is advisable to set the same password for the *centreon* user during the web
