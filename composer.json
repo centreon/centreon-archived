@@ -39,7 +39,7 @@
     "autoload": {
         "psr-4": {
             "": "src/",
-            "ConfigGenerateRemote": "www/class/config-generate-remote/"
+            "ConfigGenerateRemote\\": "www/class/config-generate-remote/"
         },
         "classmap": ["www/class/"],
         "files" : [
