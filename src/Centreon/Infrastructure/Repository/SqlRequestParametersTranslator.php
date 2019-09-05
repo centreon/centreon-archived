@@ -68,7 +68,7 @@ class SqlRequestParametersTranslator
                     if (is_object($searchRequests)) {
                         $searchRequests = (array) $searchRequests;
                     }
-                    if (is_numeric($searchRequests) || !empty($searchRequests)) {
+                    if (is_numeric($searchRequests) || is_bool($searchRequests) || !empty($searchRequests)) {
                         $databaseSubQuery = $this->createQueryOnKeyValue($key, $searchRequests);
                     }
                 }
