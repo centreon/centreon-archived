@@ -51,6 +51,8 @@ class HTML_QuickFormCustom extends HTML_QuickForm
     {
         if ($elementType == 'radio') { // If element is radio we'll load our custom class type
             $elementType = 'radio_custom';
+        } elseif ($elementType === 'checkbox') {
+            $elementType = 'checkbox_custom';
         }
 
         $parentMethod = [get_parent_class($this), __FUNCTION__];
@@ -246,6 +248,12 @@ class HTML_QuickFormCustom extends HTML_QuickForm
         // Add custom radio element type which will load our own radio HTML class
         if (!isset($GLOBALS['HTML_QUICKFORM_ELEMENT_TYPES']['radio_custom'])) {
             $GLOBALS['HTML_QUICKFORM_ELEMENT_TYPES']['radio_custom'] = 'HTML_QuickForm_radio_Custom';
+        }
+
+        // Add custom checkbox element type which will load our own checkbox HTML class
+        if (!isset($GLOBALS['HTML_QUICKFORM_ELEMENT_TYPES']['checkbox_custom'])) {
+            $GLOBALS['HTML_QUICKFORM_ELEMENT_TYPES']['checkbox'] = 'HTML_QuickForm_checkbox_Custom';
+            $GLOBALS['HTML_QUICKFORM_ELEMENT_TYPES']['checkbox_custom'] = 'HTML_QuickForm_checkbox_Custom';
         }
     }
 }
