@@ -26,7 +26,7 @@ servers:
   - url: 'http://{server}/centreon/api/{version}'
     variables:
       server:
-        default: locahost
+        default: localhost
       version:
         default: latest
         enum:
@@ -97,9 +97,9 @@ paths:
       summary: List all services grouped by host groups
       description: |
         Returns all services grouped by host groups.
-        
+
         The available parameters to **search** / **sort_by** are:
-        
+
         * host.id
         * host.name
         * host.alias
@@ -147,9 +147,9 @@ paths:
       summary: List all hosts
       description: |
         Returns all hosts.
-        
+
         The available parameters to **search** / **sort_by** are:
-        
+
         * host.id
         * host.name
         * host.alias
@@ -158,17 +158,23 @@ paths:
         * poller.id
         * service.display_name
         * host_group.id
-        
+
         # Information
         By default, the **services** property of host object is not displayed.
         To display it, set the URI parameter "show_service" to `true`.
-        
+
         `/monitoring/hosts?show_service=true`
       parameters:
         - $ref: '#/components/parameters/limit'
         - $ref: '#/components/parameters/page'
         - $ref: '#/components/parameters/sortBy'
         - $ref: '#/components/parameters/search'
+        - name: show_service
+          in: query
+          description: |
+            Allows to display services belonging to hosts (by default: **false**)
+          schema:
+            type: boolean
       responses:
         '200':
           description: successful operation
@@ -239,9 +245,9 @@ paths:
       summary: Find host-related services
       description: |
         Returns all services associated with a host.
-        
+
         The available parameters to **search** / **sort_by** are:
-        
+
         * service.id
         * service.description
         * service.display_name
@@ -339,9 +345,9 @@ paths:
       summary: List all services grouped by service groups
       description: |
         Returns all services grouped by service groups.
-        
+
         The available parameters to **search** / **sort_by** are:
-        
+
         * host.id
         * host.name
         * host.alias
@@ -390,10 +396,10 @@ paths:
       summary: List all services
       description: |
         Returns all services.
-        
-        
+
+
         The available parameters to **search** / **sort_by** are:
-        
+
         * host.id
         * host.name
         * host.alias
