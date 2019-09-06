@@ -113,6 +113,10 @@ input[type="checkbox"]  {
     clear: both;
     padding-left: 1px;
 }
+.md-checkbox label.empty-label {
+    margin-left: 0;
+    padding-left: 0;
+}
 .md-checkbox label:not(:empty) {
     padding-left: 0.4em;
 }
@@ -130,9 +134,6 @@ input[type="checkbox"]  {
     border-radius: 0.125em;
     cursor: pointer;
     transition: background .3s;
-}
-.md-checkbox label:after {
-
 }
 
 .md-checkbox input[type="checkbox"] {
@@ -1756,8 +1757,6 @@ td, a.infobulle:hover td {
 .list_one,.list_two,.list_three,.list_four,.line_ack,.line_downtime,.list_unreachable,.row_disabled     {font-weight:400;vertical-align:middle;}
 
 div.ams     {text-align:center;font-style:italic;}
-
-form label { margin-left: 3px; }
 
 .helpTooltip {
     padding-right: 3px;

@@ -19,11 +19,19 @@
  */
 class HTML_QuickForm_checkbox_Custom extends HTML_QuickForm_checkbox
 {
+    /**
+     * @inheritDoc
+     */
     public function toHtml()
     {
         if (empty($this->_text)) {
-            $this->_text = ' ';
+            $label = '<label class="empty-label" for="' . $this->getAttribute('id') . '"/>' . $this->_text . '</label>';
+        } elseif ($this->_flagFrozen) {
+            $label = $this->_text;
+        } else {
+            $label = '<label for="' . $this->getAttribute('id') . '">' . $this->_text . '</label>';
         }
-        return '<div class="md-checkbox md-checkbox-inline">' . parent::toHtml() . '</div>';
+
+        return '<div class="md-checkbox md-checkbox-inline">' . HTML_QuickForm_input::toHtml() . $label . '</div>';
     }
 }

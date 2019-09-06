@@ -4,7 +4,12 @@
 <xsl:template match="/">
 <table class="ListTable">
 	<tr class='ListHeader'>
-		<td class="ListColHeaderPicker"><input type="checkbox" name="checkall" onclick="checkUncheckAll(this);"/></td>
+        <td class="ListColHeaderPicker">
+            <div class="md-checkbox md-checkbox-inline">
+                <input type="checkbox" id="checkall" name="checkall" onclick="checkUncheckAll(this);"/>
+                <label class="empty-label" for="checkall"></label>
+            </div>
+        </td>
         <xsl:if test = "//i/use_criticality = 1">
             <td class="ListColHeaderCenter" style="white-space:nowrap;width:17px;" id="criticality_id"></td>
         </xsl:if>
