@@ -37,8 +37,8 @@
  * Include config file
  */
 require_once realpath(dirname(__FILE__) . "/../../../../../config/centreon.config.php");
-require_once "$centreon_path/www/class/centreonDB.class.php";
-require_once _CENTREON_PATH_."/www/class/centreonGraph.class.php";
+  require_once "$centreon_path/www/class/centreonDB.class.php";
+require_once _CENTREON_PATH_."/www/class/centreonGraph.class.php";   
 
 /**
  * Create XML Request Objects
@@ -50,9 +50,10 @@ $sid = session_id();
 $pearDB = new CentreonDB();
 $pearDBO = new CentreonDB('centstorage');
 
-if (!CentreonSession::checkSession($sid, $pearDB)) {
-    CentreonGraph::displayError();
-}
+if(!CentreonSession::checkSession($sid, $pearDB))
+{
+    CentreonGraph::displayError()
+	    ;}
 
 if (false === isset($_GET['index']) && false === isset($_GET['svcId'])) {
     CentreonGraph::displayError();
