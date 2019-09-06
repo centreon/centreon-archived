@@ -171,7 +171,8 @@ class CentreonEventSubscriber implements EventSubscriberInterface
                             $search[RequestParameters::AGGREGATE_OPERATOR_OR][] = [$subParameterName => $value];
                         }
                     } else {
-                        $search[RequestParameters::AGGREGATE_OPERATOR_AND][$subParameterName] = $subParameterValues;
+                        $search[RequestParameters::AGGREGATE_OPERATOR_AND][$subParameterName] =
+                            urldecode($subParameterValues);
                     }
                 }
             }

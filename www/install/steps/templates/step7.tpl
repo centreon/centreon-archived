@@ -1,4 +1,4 @@
-{t}Currently installing database and configuring cache... please do not interrupt this process.{/t}<br/><br/>
+{t}Currently installing database and generating cache... please do not interrupt this process.{/t}<br/><br/>
 <table cellpadding="0" cellspacing="0" border="0" width="100%" class="StyleDottedHr" align="center">
     <thead>
     <tr>

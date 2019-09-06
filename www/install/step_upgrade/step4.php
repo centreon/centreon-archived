@@ -48,7 +48,7 @@ include_once _CENTREON_PATH_ . "/www/class/centreonDB.class.php";
 
 /*
 ** Get and check initial Centreon version.
-** Should be >= 2.4.0.
+** Should be >= 2.8.0-beta1.
 */
 $db = new CentreonDB();
 $res = $db->query("SELECT `value` FROM `informations` WHERE `key` = 'version'");
