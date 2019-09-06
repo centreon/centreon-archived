@@ -246,23 +246,26 @@ select {
     -webkit-appearance: none;
     appearance: none;
     padding: 4px 20px 4px 6px;
+    color: #444;
 }
 select::-ms-expand {
     display: none;
 }
-
 select[multiple="multiple"] {
     background-image: none;
     overflow: auto;
 }
-
 option {
-    color: #555;
+    color: #444;
     padding-left: 1px;
     padding-right: 1px;
 }
 
-hr          {background-color:#CCC;height:1px;margin: 3px 0;}
+hr {
+    background-color: #CCC;
+    height: 1px;
+    margin: 3px 0;
+}
 
 iframe {
     border: none;
@@ -812,6 +815,15 @@ vertical-align: middle;
 }
 
 /* ------- END : Table -----------*/
+
+
+/* ------- START : Chart label style fix ------- */
+.c3-tooltip td {
+    text-align: left;
+}
+/* ------- END : Chart label style fix ------- */
+
+
 /* ------ START : Indicators -----*/
 
 #resume_light {
