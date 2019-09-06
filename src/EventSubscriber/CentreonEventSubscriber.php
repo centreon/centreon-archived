@@ -37,8 +37,8 @@ declare(strict_types=1);
 
 namespace App\EventSubscriber;
 
-use Centreon\Domain\Pagination\Interfaces\RequestParametersInterface;
-use Centreon\Domain\Pagination\RequestParameters;
+use Centreon\Domain\RequestParameters\Interfaces\RequestParametersInterface;
+use Centreon\Domain\RequestParameters\RequestParameters;
 use Centreon\Domain\VersionHelper;
 use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\DependencyInjection\ContainerInterface;

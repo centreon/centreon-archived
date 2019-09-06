@@ -2,8 +2,8 @@
 
 namespace Centreon\Infrastructure\Repository;
 
-use Centreon\Domain\Pagination\Interfaces\RequestParametersInterface;
-use Centreon\Domain\Pagination\RequestParameters;
+use Centreon\Domain\RequestParameters\Interfaces\RequestParametersInterface;
+use Centreon\Domain\RequestParameters\RequestParameters;
 
 class SqlRequestParametersTranslator
 {

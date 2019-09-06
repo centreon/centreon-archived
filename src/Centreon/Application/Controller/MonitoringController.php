@@ -3,10 +3,8 @@ declare(strict_types=1);
 
 namespace Centreon\Application\Controller;
 
-use Centreon\Domain\Monitoring\Host;
-use Centreon\Domain\Monitoring\HostGroup;
 use Centreon\Domain\Monitoring\Interfaces\MonitoringServiceInterface;
-use Centreon\Domain\Pagination\Interfaces\RequestParametersInterface;
+use Centreon\Domain\RequestParameters\Interfaces\RequestParametersInterface;
 use FOS\RestBundle\Context\Context;
 use FOS\RestBundle\Controller\AbstractFOSRestController;
 use FOS\RestBundle\View\View;
@@ -88,9 +86,7 @@ class MonitoringController extends AbstractFOSRestController
         return $this->view(
             [
                 'result' => $services,
-                'meta' => [
-                    'pagination' => $requestParameters->toArray()
-                ]
+                'meta' => $requestParameters->toArray()
             ]
         )->setContext($context);
     }
@@ -120,9 +116,7 @@ class MonitoringController extends AbstractFOSRestController
         return $this->view(
             [
                 'result' => $servicesByServiceGroups,
-                'meta' => [
-                    'pagination' => $requestParameters->toArray()
-                ]
+                'meta' => $requestParameters->toArray()
             ]
         )->setContext($context);
     }
@@ -152,9 +146,7 @@ class MonitoringController extends AbstractFOSRestController
         return $this->view(
             [
                 'result' => $hostGroups,
-                'meta' => [
-                    'pagination' => $requestParameters->toArray()
-                ]
+                'meta' => $requestParameters->toArray()
             ]
         )->setContext($context);
     }
@@ -188,9 +180,7 @@ class MonitoringController extends AbstractFOSRestController
         return $this->view(
             [
                 'result' => $hosts,
-                'meta' => [
-                    'pagination' => $requestParameters->toArray()
-                ]
+                'meta' => $requestParameters->toArray()
             ]
         )->setContext($context);
     }
@@ -249,9 +239,7 @@ class MonitoringController extends AbstractFOSRestController
             return $this->view(
                 [
                     'result' => $services,
-                    'meta' => [
-                        'pagination' => $requestParameters->toArray()
-                    ]
+                    'meta' => $requestParameters->toArray()
                 ]
             )->setContext($context);
         } else {

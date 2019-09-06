@@ -35,9 +35,9 @@
  */
 declare(strict_types=1);
 
-namespace Centreon\Domain\Pagination;
+namespace Centreon\Domain\RequestParameters;
 
-use Centreon\Domain\Pagination\Interfaces\RequestParametersInterface;
+use Centreon\Domain\RequestParameters\Interfaces\RequestParametersInterface;
 
 class RequestParameters implements RequestParametersInterface
 {

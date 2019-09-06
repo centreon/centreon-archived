@@ -39,7 +39,7 @@ namespace Centreon\Infrastructure\Monitoring;
 
 use Centreon\Domain\Monitoring\HostGroup;
 use Centreon\Domain\Monitoring\ServiceGroup;
-use Centreon\Domain\Pagination\RequestParameters;
+use Centreon\Domain\RequestParameters\RequestParameters;
 use Centreon\Infrastructure\Repository\SqlRequestParametersTranslator;
 use Centreon\Domain\Security\AccessGroup;
 use Centreon\Domain\Entity\EntityCreator;

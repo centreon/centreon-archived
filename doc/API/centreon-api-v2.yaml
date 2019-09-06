@@ -127,7 +127,7 @@ paths:
                       allOf:
                         - $ref: '#/components/schemas/Monitoring.HostGroup'
                   meta:
-                    $ref: '#/components/schemas/Pagination'
+                    $ref: '#/components/schemas/Meta'
         403:
           description: Forbidden
           content:
@@ -182,7 +182,7 @@ paths:
                     items:
                       $ref: '#/components/schemas/Monitoring.Host_main'
                   meta:
-                    $ref: '#/components/schemas/Pagination'
+                    $ref: '#/components/schemas/Meta'
         403:
           description: Forbidden
           content:
@@ -273,7 +273,7 @@ paths:
                     items:
                       $ref: '#/components/schemas/Monitoring.Service_main'
                   meta:
-                    $ref: '#/components/schemas/Pagination'
+                    $ref: '#/components/schemas/Meta'
         403:
           description: Forbidden
           content:
@@ -370,7 +370,7 @@ paths:
                       allOf:
                         - $ref: '#/components/schemas/Monitoring.ServiceGroup'
                   meta:
-                    $ref: '#/components/schemas/Pagination'
+                    $ref: '#/components/schemas/Meta'
         403:
           description: Forbidden
           content:
@@ -427,7 +427,7 @@ paths:
                         - $ref: '#/components/schemas/Monitoring.Service_main'
                         - $ref: '#/components/schemas/Monitoring.Service_with_host'
                   meta:
-                    $ref: '#/components/schemas/Pagination'
+                    $ref: '#/components/schemas/Meta'
         403:
           description: Forbidden
           content:
@@ -841,27 +841,24 @@ components:
         hosts:
           type: object
           $ref: '#/components/schemas/Monitoring.Host_min'
-    Pagination:
+    Meta:
       type: object
       properties:
-        pagination:
+        page:
+          type: integer
+          description: Number of the pagined page
+        limit:
+          type: integer
+          description: Number of items per page
+        search:
           type: object
-          properties:
-            page:
-              type: integer
-              description: Number of the pagined page
-            limit:
-              type: integer
-              description: Number of items per page
-            search:
-              type: object
-              description: Search parameter pass to url
-            sort_by:
-              type: object
-              description: Sort parameter pass to url
-            total:
-              type: integer
-              description: Number of items found
+          description: Search parameter pass to url
+        sort_by:
+          type: object
+          description: Sort parameter pass to url
+        total:
+          type: integer
+          description: Number of items found
     RequestParameters.limit:
       type: integer
       minimum: 1

@@ -35,7 +35,7 @@
  */
 declare(strict_types=1);
 
-namespace Centreon\Domain\Pagination\Interfaces;
+namespace Centreon\Domain\RequestParameters\Interfaces;
 
 interface RequestParametersInterface
 {

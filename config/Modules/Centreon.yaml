@@ -51,8 +51,8 @@ services:
     Centreon\Domain\Security\Interfaces\AccessGroupRepositoryInterface:
         class: Centreon\Infrastructure\Security\AccessGroupRepositoryRDB
 
-    Centreon\Domain\Pagination\Interfaces\RequestParametersInterface:
-        class: Centreon\Domain\Pagination\RequestParameters
+    Centreon\Domain\RequestParameters\Interfaces\RequestParametersInterface:
+        class: Centreon\Domain\RequestParameters\RequestParameters
 
     Centreon\Domain\Monitoring\Interfaces\MonitoringRepositoryInterface:
         alias: 'monitoring.repository'
