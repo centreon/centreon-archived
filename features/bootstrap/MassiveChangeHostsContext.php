@@ -300,10 +300,10 @@ class MassiveChangeHostsContext extends CentreonContext
         $this->currentPage = new HostConfigurationListingPage($this);
         $object = $this->currentPage->getEntry($this->host1['name']);
         $checkbox = $this->assertFind('css', 'input[type="checkbox"][name="select[' . $object['id'] . ']"]');
-        $this->checkCheckbox($checkbox);
+        $this->currentPage->checkCheckbox($checkbox);
         $object = $this->currentPage->getEntry($this->host2['name']);
         $checkbox = $this->assertFind('css', 'input[type="checkbox"][name="select[' . $object['id'] . ']"]');
-        $this->checkCheckbox($checkbox);
+        $this->currentPage->checkCheckbox($checkbox);
         $this->selectInList('select[name="o1"]', 'Massive Change');
         $this->currentPage = new MassiveChangeHostConfigurationPage($this, false);
         $this->currentPage->setProperties($this->updatedProperties);

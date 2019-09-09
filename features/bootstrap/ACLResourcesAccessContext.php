@@ -374,7 +374,7 @@ class ACLResourcesAccessContext extends CentreonContext
         $this->currentPage = new ACLResourceConfigurationListingPage($this);
         $object = $this->currentPage->getEntry($this->initialProperties['acl_name']);
         $checkbox = $this->assertFind('css', 'input[type="checkbox"][name="select[' . $object['id'] . ']"]');
-        $this->checkCheckbox($checkbox);
+        $this->currentPage->checkCheckbox($checkbox);
         $this->setConfirmBox(true);
         $this->selectInList('select[name="o1"]', 'Duplicate');
     }
@@ -549,7 +549,7 @@ class ACLResourcesAccessContext extends CentreonContext
         $this->currentPage = new ACLResourceConfigurationListingPage($this);
         $object = $this->currentPage->getEntry($this->initialProperties['acl_name']);
         $checkbox = $this->assertFind('css', 'input[type="checkbox"][name="select[' . $object['id'] . ']"]');
-        $this->checkCheckbox($checkbox);
+        $this->currentPage->checkCheckbox($checkbox);
         $this->setConfirmBox(true);
         $this->selectInList('select[name="o1"]', 'Delete');
     }

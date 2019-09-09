@@ -329,7 +329,7 @@ class TrapsSNMPConfigurationContext extends CentreonContext
         $this->currentPage = new SnmpTrapsConfigurationListingPage($this);
         $object = $this->currentPage->getEntry($this->updatedProperties['name']);
         $checkbox = $this->assertFind('css', 'input[type="checkbox"][name="select[' . $object['id'] . ']"]');
-        $this->checkCheckbox($checkbox);
+        $this->currentPage->checkCheckbox($checkbox);
         $this->setConfirmBox(true);
         $this->selectInList('select[name="o1"]', 'Duplicate');
     }
@@ -391,7 +391,7 @@ class TrapsSNMPConfigurationContext extends CentreonContext
         $this->currentPage = new SnmpTrapsConfigurationListingPage($this);
         $object = $this->currentPage->getEntry($this->initialProperties['name']);
         $checkbox = $this->assertFind('css', 'input[type="checkbox"][name="select[' . $object['id'] . ']"]');
-        $this->checkCheckbox($checkbox);
+        $this->currentPage->checkCheckbox($checkbox);
         $this->setConfirmBox(true);
         $this->selectInList('select[name="o1"]', 'Delete');
     }
