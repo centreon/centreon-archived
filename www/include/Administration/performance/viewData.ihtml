@@ -46,7 +46,7 @@
                     <input type="checkbox" id="checkall" name="checkall" onclick="checkUncheckAll(this);"/>
                     <label class="empty-label" for="checkall"></label>
                 </div>
-			</td>
+            </td>
             </td>
             <td class="ListColLeft">{$Host}</td>
             <td class="ListColCenter">{$Service}</td>

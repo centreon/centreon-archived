@@ -39,7 +39,7 @@
                     <input type="checkbox" id="checkall" name="checkall" onclick="checkUncheckAll(this);"/>
                     <label class="empty-label" for="checkall"></label>
                 </div>
-			</td>
+            </td>
             <td class="ListColHeaderLeft">{$headerMenu_name}</td>
             <td class="ListColHeaderLeft">{$headerMenu_desc}</td>
             <td class="ListColHeaderRight">{$headerMenu_options}</td>

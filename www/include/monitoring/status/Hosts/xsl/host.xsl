@@ -3,7 +3,7 @@
 <xsl:variable name="i" select="//i"/>
 <xsl:template match="/">
 <table class="ListTable">
-	<tr class='ListHeader'>
+    <tr class='ListHeader'>
         <td class="ListColHeaderPicker">
             <div class="md-checkbox md-checkbox-inline">
                 <input type="checkbox" id="checkall" name="checkall" onclick="checkUncheckAll(this);"/>

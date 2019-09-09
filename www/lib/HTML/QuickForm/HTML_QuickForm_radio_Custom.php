@@ -59,6 +59,9 @@ class HTML_QuickForm_radio_Custom extends HTML_QuickForm_radio
         }
     }
 
+    /**
+     * @inheritDoc
+     */
     public function toHtml()
     {
         return '<div class="md-radio md-radio-inline">' . parent::toHtml() . '</div>';

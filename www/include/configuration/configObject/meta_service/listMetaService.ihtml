@@ -38,7 +38,7 @@
                     <input type="checkbox" id="checkall" name="checkall" onclick="checkUncheckAll(this);"/>
                     <label class="empty-label" for="checkall"></label>
                 </div>
-			</td>
+            </td>
             <td class="ListColHeaderLeft">{$headerMenu_name}</td>
             <td class="ListColHeaderCenter">{$headerMenu_type}</td>
             <td class="ListColHeaderCenter">{$headerMenu_levelw}</td>
