@@ -368,7 +368,8 @@ class ServiceConfigurationContext extends CentreonContext
             'service' => $this->initialProperties['description'],
             'host' => $this->initialProperties['hosts']
         ));
-        $this->assertFind('css', 'input[type="checkbox"][name="select[' . $object['id'] . ']"]')->check();
+        $checkbox = $this->assertFind('css', 'input[type="checkbox"][name="select[' . $object['id'] . ']"]');
+        $this->checkCheckbox($checkbox);
         $this->setConfirmBox(true);
         $this->selectInList('select[name="o1"]', 'Duplicate');
     }
@@ -416,7 +417,8 @@ class ServiceConfigurationContext extends CentreonContext
             'service' => $this->initialProperties['description'],
             'host' => $this->initialProperties['hosts']
         ));
-        $this->assertFind('css', 'input[type="checkbox"][name="select[' . $object['id'] . ']"]')->check();
+        $checkbox = $this->assertFind('css', 'input[type="checkbox"][name="select[' . $object['id'] . ']"]');
+        $this->checkCheckbox($checkbox);
         $this->setConfirmBox(true);
         $this->selectInList('select[name="o1"]', 'Delete');
     }
