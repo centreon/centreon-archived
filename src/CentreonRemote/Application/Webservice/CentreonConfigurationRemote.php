@@ -216,9 +216,14 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
      *              description="pollers to link with the new remote"
      *          ),
      *          @OA\Property(
-     *              property="linked_remote",
+     *              property="linked_remote_master",
      *              type="string",
      *              description="remote to manage the new poller"
+     *          ),
+     *          @OA\Property(
+     *              property="linked_remote_slaves",
+     *              type="string",
+     *              description="additional remotes which receive data from the new poller"
      *          )
      *       )
      *   ),

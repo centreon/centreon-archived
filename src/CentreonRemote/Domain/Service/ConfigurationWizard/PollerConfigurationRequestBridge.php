@@ -47,7 +47,7 @@ class PollerConfigurationRequestBridge
             $linkedPollers = isset($_POST['linked_pollers']) ? (array) $_POST['linked_pollers'] : [];
         } else { // configure poller
             // if the poller is linked to a remote server
-            $linkedPollers = isset($_POST['linked_remote']) ? [$_POST['linked_remote']] : [];
+            $linkedPollers = isset($_POST['linked_remote_master']) ? [$_POST['linked_remote_master']] : [];
         }
 
         $this->pollers = $this->getPollersToLink($linkedPollers); // set and instantiate linked pollers

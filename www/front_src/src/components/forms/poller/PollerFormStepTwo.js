@@ -34,6 +34,9 @@ class PollerFormStepTwo extends Component {
     return availableAdditionals;
   }
 
+  /**
+   * Update selected master in state
+   */
   handleChangeMaster = (event, value) => {
     const { change } = this.props;
     const { selectedAdditionals } = this.state;
@@ -56,6 +59,9 @@ class PollerFormStepTwo extends Component {
     });
   }
 
+  /**
+   * Update selected additionals in state
+   */
   handleChangeAdditionals = (event, values) => {
     this.setState({
       selectedAdditionals: values
@@ -64,7 +70,7 @@ class PollerFormStepTwo extends Component {
 
   render() {
     const { error, handleSubmit, onSubmit, pollers } = this.props;
-    const { selectedMaster, selectedAdditionals } = this.state;
+    const { selectedMaster } = this.state;
 
     const availableAdditionals = this.getAvailableAdditionals();
 
