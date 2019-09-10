@@ -75,10 +75,10 @@ class PollerFormStepTwo extends Component {
     const availableAdditionals = this.getAvailableAdditionals();
 
     return (
-      <div className={styles["form-wrapper"]}>
-        <div className={styles["form-inner"]}>
-          <form autocomplete="off" onSubmit={handleSubmit(onSubmit)}>
-            {pollers ? (
+      <div className={styles['form-wrapper']}>
+        <div className={styles['form-inner']}>
+          <form autoComplete="off" onSubmit={handleSubmit(onSubmit)}>
+            {pollers.length ? (
               <>
                 <h2 className={styles["form-title"]}>
                   <Translate value="Attach poller to a master remote server"/>
@@ -88,13 +88,13 @@ class PollerFormStepTwo extends Component {
                   component={SelectField}
                   options={[
                     {
-                      selected: true,
                       text: '',
                       value: null,
                     }
                   ].concat(
                     pollers.map(c => ({ value: c.id, label: c.name, text:c.name }))
                   )}
+                  value={selectedMaster}
                   onChange={this.handleChangeMaster}
                 />
               </>
@@ -124,6 +124,7 @@ class PollerFormStepTwo extends Component {
               label={I18n.t(
                 'Advanced: reverse Centreon Broker communication flow',
               )}
+              defaultValue={false}
             />
             <div className={styles['form-buttons']}>
               <button className={styles.button} type="submit">
