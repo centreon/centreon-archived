@@ -250,8 +250,8 @@ abstract class AbstractHost extends AbstractObject
         $contactResultAppend = '';
         $hostListing = array();
 
-        foreach ($host['contacts_cache'] as $contact_id) {
-            $tmp = $contact->generateFromContactId($contact_id);
+        foreach ($host['contacts_cache'] as $contactId) {
+            $tmp = $contact->generateFromContactId($contactId);
             if (!is_null($tmp)) {
                 $contactResult .= $contactResultAppend . $tmp;
                 $contactResultAppend = ',';
@@ -262,19 +262,18 @@ abstract class AbstractHost extends AbstractObject
             case self::VERTICAL_NOTIFICATION:
                 //check if the inheritance is enable
                 if ((int)$host['contact_additive_inheritance'] === 1) {
-                    $this->getVerticalInheritance($host['host_id'], $hostListing);
+                    $this->getContactVerticalInheritance($host['host_id'], $hostListing);
                 }
                 break;
             case self::CLOSE_NOTIFICATION:
                 //check if a contact is already present
                 if (empty($contactResult)) {
-                    $this->getCloseInheritance($host['host_id'], $hostListing);
+                    $this->getContactCloseInheritance($host['host_id'], $hostListing);
                 }
                 break;
             case self::CUMULATIVE_NOTIFICATION:
                 // get all host / template inheritance
-                $this->getCumulativeInheritanceHost($host['host_id'], $hostListing);
-
+                $this->getCumulativeInheritance($host['host_id'], $hostListing);
                 break;
             default:
                 break;
@@ -291,7 +290,7 @@ abstract class AbstractHost extends AbstractObject
      * @param $hostId
      * @param array $hostList
      */
-    protected function getVerticalInheritance($hostId, &$hostList = array())
+    protected function getContactVerticalInheritance($hostId, &$hostList = array())
     {
         $hostList[] = $hostId;
         while (1) {
@@ -303,7 +302,7 @@ abstract class AbstractHost extends AbstractObject
             $hostAdd = $stmt->fetch();
 
             if (isset($hostAdd['host_tpl_id']) && (int)$hostAdd['contact_additive_inheritance'] === 1) {
-                $this->getVerticalInheritance($hostAdd['host_tpl_id'], $hostList);
+                $this->getContactVerticalInheritance($hostAdd['host_tpl_id'], $hostList);
             }
             break;
         }
@@ -313,7 +312,7 @@ abstract class AbstractHost extends AbstractObject
      * @param $host
      * @param array $hostList
      */
-    protected function getCumulativeInheritanceHost($host, &$hostList = array())
+    protected function getCumulativeInheritance($host, &$hostList = array())
     {
         $hostList[] = $host;
         $stmt = $this->backend_instance->db->query(
@@ -322,7 +321,7 @@ abstract class AbstractHost extends AbstractObject
         );
 
         while (($row = $stmt->fetch())) {
-            $this->getCumulativeInheritanceHost($row['host_tpl_id'], $hostList);
+            $this->getCumulativeInheritance($row['host_tpl_id'], $hostList);
         }
     }
 
@@ -330,7 +329,7 @@ abstract class AbstractHost extends AbstractObject
      * @param $host
      * @param array $hostList
      */
-    protected function getCloseInheritance($host, &$hostList = array())
+    protected function getContactCloseInheritance($host, &$hostList = array())
     {
         $stmt = $this->backend_instance->db->query(
             "SELECT ch.contact_id, ht.host_tpl_id 
@@ -345,7 +344,7 @@ abstract class AbstractHost extends AbstractObject
                     $hostList[] = (int)$host;
                     break;
                 } elseif (!empty($row['host_tpl_id'])) {
-                    $this->getCloseInheritance($row['host_tpl_id'], $hostList);
+                    $this->getContactCloseInheritance($row['host_tpl_id'], $hostList);
                 }
             } else {
                 break;
@@ -371,21 +370,25 @@ abstract class AbstractHost extends AbstractObject
         return $contacts;
     }
 
-
-
-
-
-
-
+    /**
+     * @param $host
+     */
     protected function getContactGroups(&$host)
     {
+        //check notification mode
+        if (is_null($this->notificationOption)) {
+            $stmtNotification = $this->backend_instance->db->query(
+                "SELECT `value` FROM options WHERE `key` = 'inheritance_mode'"
+            );
+            $notificationOption = $stmtNotification->fetch();
+            $this->notificationOption = $notificationOption['value'];
+        }
+
         if (!isset($host['contact_groups_cache'])) {
             if (is_null($this->stmt_cg)) {
-                $this->stmt_cg = $this->backend_instance->db->prepare("SELECT 
-                    contactgroup_cg_id
-                FROM contactgroup_host_relation
-                WHERE host_host_id = :host_id
-                ");
+                $this->stmt_cg = $this->backend_instance->db->prepare(
+                    "SELECT contactgroup_cg_id FROM contactgroup_host_relation WHERE host_host_id = :host_id"
+                );
             }
             $this->stmt_cg->bindParam(':host_id', $host['host_id'], PDO::PARAM_INT);
             $this->stmt_cg->execute();
@@ -393,23 +396,118 @@ abstract class AbstractHost extends AbstractObject
         }
 
         $cg = Contactgroup::getInstance($this->dependencyInjector);
-        $cg_result = '';
-        $cg_result_append = '';
-        foreach ($host['contact_groups_cache'] as $cg_id) {
-            $tmp = $cg->generateFromCgId($cg_id);
+        $cgResult = '';
+        $cgResultAppend = '';
+        $hostListing = array();
+
+        foreach ($host['contact_groups_cache'] as $cgId) {
+            $tmp = $cg->generateFromCgId($cgId);
             if (!is_null($tmp)) {
-                $cg_result .= $cg_result_append . $tmp;
-                $cg_result_append = ',';
+                $cgResult .= $cgResultAppend . $tmp;
+                $cgResultAppend = ',';
             }
         }
-        if ($cg_result != '') {
-            $host['contact_groups'] = $cg_result;
-            if (!is_null($host['cg_additive_inheritance']) && $host['cg_additive_inheritance'] == 1) {
-                $host['contact_groups'] = '+' . $host['contact_groups'];
+
+        switch ((int)$this->notificationOption) {
+            case self::VERTICAL_NOTIFICATION:
+                //check if the inheritance is enable
+                if ((int)$host['contact_additive_inheritance'] === 1) {
+                    $this->getContactGroupsVerticalInheritance($host['host_id'], $hostListing);
+                }
+                break;
+            case self::CLOSE_NOTIFICATION:
+                //check if a contact is already present
+                if (empty($contactResult)) {
+                    $this->getContactGroupsCloseInheritance($host['host_id'], $hostListing);
+                }
+                break;
+            case self::CUMULATIVE_NOTIFICATION:
+                // get all host / template inheritance
+                $this->getCumulativeInheritance($host['host_id'], $hostListing);
+                break;
+            default:
+                break;
+        }
+
+        if (!empty($hostListing)) {
+            $cgResult = implode(',', $this->getInheritanceContactGroups(array_unique($hostListing)));
+        }
+        $host['contact_groups'] = $cgResult;
+    }
+
+    /**
+     * @param $hostId
+     * @param array $hostList
+     */
+    protected function getContactGroupsVerticalInheritance($hostId, &$hostList = array())
+    {
+        $hostList[] = $hostId;
+        while (1) {
+            $query = "SELECT cg_additive_inheritance, host_tpl_id FROM host, host_template_relation
+                    WHERE `host_id` = `host_host_id`
+                    AND `order` = 1
+                    AND `host_id` = " . $hostId;
+            $stmt = $this->backend_instance->db->query($query);
+            $hostAdd = $stmt->fetch();
+
+            if (isset($hostAdd['host_tpl_id']) && (int)$hostAdd['cg_additive_inheritance'] === 1) {
+                $this->getContactGroupsVerticalInheritance($hostAdd['host_tpl_id'], $hostList);
+            }
+            break;
+        }
+    }
+
+    /**
+     * @param $host
+     * @param array $hostList
+     */
+    protected function getContactGroupsCloseInheritance($host, &$hostList = array())
+    {
+        $stmt = $this->backend_instance->db->query(
+            "SELECT ch.contactgroup_cg_id, ht.host_tpl_id 
+            FROM host_template_relation ht
+            LEFT JOIN contactgroup_host_relation ch ON ht.`host_host_id` = ch.`host_host_id`
+            WHERE ht.`host_host_id` = " . (int)$host . " 
+            ORDER BY ht.`order`"
+        );
+
+        while ($row = $stmt->fetch()) {
+            if (empty($hostList)) {
+                if (!empty($row['contactgroup_cg_id'])) {
+                    $hostList[] = (int)$host;
+                    break;
+                } elseif (!empty($row['host_tpl_id'])) {
+                    $this->getContactGroupsCloseInheritance($row['host_tpl_id'], $hostList);
+                }
+            } else {
+                break;
             }
         }
     }
 
+    /**
+     * @param $host
+     * @return array
+     */
+    protected function getInheritanceContactGroups($host)
+    {
+        $contactGroups = array();
+        $stmt = $this->backend_instance->db->query(
+            'SELECT c.cg_id , cg_name FROM contactgroup c, contactgroup_host_relation ch
+            WHERE ch.host_host_id IN (' . implode(',', $host) . ') AND ch.contactgroup_cg_id = c.cg_id'
+        );
+
+        while (($row = $stmt->fetch())) {
+            $contactGroups[$row['cg_id']] = $row['cg_name'];
+        }
+        return $contactGroups;
+    }
+
+    /**
+     * @param $host_id
+     * @param $host_tpl_id
+     * @return int
+     */
     public function isHostTemplate($host_id, $host_tpl_id)
     {
         $loop = array();
