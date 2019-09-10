@@ -137,18 +137,18 @@
             "authors": [
                 {
                     "name": "Greg Beaver",
-                    "email": "cellog@php.net",
-                    "role": "Helper"
+                    "role": "Helper",
+                    "email": "cellog@php.net"
                 },
                 {
                     "name": "Andrei Zmievski",
-                    "email": "andrei@php.net",
-                    "role": "Lead"
+                    "role": "Lead",
+                    "email": "andrei@php.net"
                 },
                 {
                     "name": "Stig Bakken",
-                    "email": "stig@php.net",
-                    "role": "Developer"
+                    "role": "Developer",
+                    "email": "stig@php.net"
                 }
             ],
             "description": "More info available on: http://pear.php.net/package/Console_Getopt",
@@ -191,8 +191,8 @@
             "authors": [
                 {
                     "name": "Christian Weiske",
-                    "email": "cweiske@php.net",
-                    "role": "Lead"
+                    "role": "Lead",
+                    "email": "cweiske@php.net"
                 }
             ],
             "description": "Minimal set of PEAR core files to be used as composer dependency",
@@ -1042,12 +1042,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/centreon/centreon-test-lib.git",
-                "reference": "c7fef703233e7fa866f11799d4d37b7f83a262d3"
+                "reference": "c4c4787f6ada1c4a46ac07b3fed97c348a6b4b51"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/centreon/centreon-test-lib/zipball/c7fef703233e7fa866f11799d4d37b7f83a262d3",
-                "reference": "c7fef703233e7fa866f11799d4d37b7f83a262d3",
+                "url": "https://api.github.com/repos/centreon/centreon-test-lib/zipball/c4c4787f6ada1c4a46ac07b3fed97c348a6b4b51",
+                "reference": "c4c4787f6ada1c4a46ac07b3fed97c348a6b4b51",
                 "shasum": ""
             },
             "require": {
@@ -1083,7 +1083,7 @@
                 "phpunit",
                 "testing"
             ],
-            "time": "2019-09-09T09:53:26+00:00"
+            "time": "2019-09-10T09:05:55+00:00"
         },
         {
             "name": "container-interop/container-interop",
