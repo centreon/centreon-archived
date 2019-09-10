@@ -200,31 +200,25 @@ class CentreonServicegroups
             );
         }
 
-        $listValues = '';
-        $queryValues = array();
+        $queryValues = [];
         if (!empty($values)) {
             foreach ($values as $k => $v) {
-                // As it happens that $v could be like "X,Y" when two hostgroups are selected, we added a second foreach
                 $multiValues = explode(',', $v);
                 foreach ($multiValues as $item) {
-                    $listValues .= ':sg_' . $item . ', ';
-                    $queryValues['sg_' . $item] = (int)$item;
+                    $queryValues[':sg_' . $item] = (int) $item;
                 }
             }
-            $listValues = rtrim($listValues, ', ');
-        } else {
-            $listValues .= '""';
         }
 
         # get list of selected servicegroups
-        $query = 'SELECT sg_id, sg_name FROM servicegroup ' .
-            'WHERE sg_id IN (' . $listValues . ') ORDER BY sg_name ';
+        $query = 'SELECT sg_id, sg_name FROM servicegroup '
+            . 'WHERE sg_id IN ('
+            . (count($queryValues) ? implode(',', array_keys($queryValues)) : '""')
+            . ') ORDER BY sg_name ';
 
         $stmt = $this->DB->prepare($query);
-        if (!empty($queryValues)) {
-            foreach ($queryValues as $key => $id) {
-                $stmt->bindValue(':' . $key, $id, PDO::PARAM_INT);
-            }
+        foreach ($queryValues as $key => $id) {
+            $stmt->bindValue($key, $id, PDO::PARAM_INT);
         }
         $stmt->execute();
 
