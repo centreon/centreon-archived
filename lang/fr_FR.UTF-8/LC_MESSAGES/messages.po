@@ -14795,8 +14795,11 @@ msgstr "en tant que"
 msgid "Server Configuration"
 msgstr "Configuration du Serveur"
 
-msgid "Attach poller to a server"
-msgstr "Attacher un collecteur à un serveur"
+msgid "Attach poller to a master remote server"
+msgstr "Attacher un collecteur à un remote server"
+
+msgid "Attach poller to additional remote servers"
+msgstr "Attacher un collecteur à des remote servers additionels"
 
 msgid "Advanced: reverse Centreon Broker communication flow"
 msgstr "Avancé: inversé le flux de communication du broker Centreon"
