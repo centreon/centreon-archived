@@ -390,7 +390,7 @@ abstract class AbstractService extends AbstractObject
             if (isset($serviceAdd['service_template_model_stm_id'])
                 && (int)$serviceAdd['cg_additive_inheritance'] === 1
             ) {
-                $this->getContactVerticalInheritance($serviceAdd['service_template_model_stm_id'], $serviceListing);
+                $this->getContactGroupsVerticalInheritance($serviceAdd['service_template_model_stm_id'], $serviceListing);
             }
             break;
         }
