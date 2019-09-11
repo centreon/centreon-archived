@@ -21,8 +21,8 @@ declare(strict_types=1);
 
 namespace Centreon\Infrastructure\Security;
 
-use Centreon\Domain\Entity\AuthenticationToken;
-use Centreon\Domain\Entity\Session;
+use Centreon\Domain\Security\AuthenticationToken;
+use Centreon\Domain\Security\Session;
 use Centreon\Domain\Entity\EntityCreator;
 use Centreon\Domain\Security\Interfaces\AuthenticationRepositoryInterface;
 use Centreon\Infrastructure\DatabaseConnection;

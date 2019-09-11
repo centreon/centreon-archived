@@ -21,8 +21,8 @@ declare(strict_types=1);
 
 namespace Centreon\Domain\Security\Interfaces;
 
-use Centreon\Domain\Entity\AuthenticationToken;
-use Centreon\Domain\Entity\Session;
+use Centreon\Domain\Security\AuthenticationToken;
+use Centreon\Domain\Security\Session;
 
 interface AuthenticationRepositoryInterface
 {
