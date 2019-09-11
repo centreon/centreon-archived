@@ -265,7 +265,8 @@ abstract class AbstractService extends AbstractObject
             "SELECT service_template_model_stm_id FROM service 
                 WHERE `service_id` = " . (int)$serviceId
         );
-        while (($row = $stmt->fetch())) {
+        $row = $stmt->fetch();
+        if ($row['service_template_model_stm_id']) {
             $this->getCumulativeInheritance($row['service_template_model_stm_id'], $serviceListing);
         }
     }
