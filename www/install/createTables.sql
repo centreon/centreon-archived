@@ -2301,7 +2301,7 @@ CREATE TABLE `rs_poller_relation` (
   `remote_server_id` int(11) NOT NULL DEFAULT '0',
   `poller_server_id` int(11) NOT NULL DEFAULT '0',
   KEY `remote_server_id` (`remote_server_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Relation Table For centreon pollers and remote servers'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Relation Table For centreon pollers and remote servers';
 
 -- Create tasks table
 CREATE TABLE IF NOT EXISTS `task` (
