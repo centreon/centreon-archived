@@ -37,7 +37,11 @@ require_once dirname(__FILE__) . '/object.class.php';
 
 abstract class AbstractService extends AbstractObject
 {
-    # no flap_detection_options attribute
+    const VERTICAL_NOTIFICATION = 1;
+    const CLOSE_NOTIFICATION = 2;
+    const CUMULATIVE_NOTIFICATION = 3;
+
+    // no flap_detection_options attribute
     protected $attributes_select = '
         service_id,
         service_template_model_stm_id,
@@ -138,6 +142,7 @@ abstract class AbstractService extends AbstractObject
     protected $stmt_macro = null;
     protected $stmt_stpl = null;
     protected $stmt_contact = null;
+    protected $notificationOption = null;
     protected $stmt_service = null;
 
     protected function getImages(&$service)
@@ -167,6 +172,9 @@ abstract class AbstractService extends AbstractObject
         );
     }
 
+    /**
+     * @param $service
+     */
     protected function getContacts(&$service)
     {
         if (isset($service['service_use_only_contacts_from_host']) &&
@@ -175,29 +183,138 @@ abstract class AbstractService extends AbstractObject
             $service['contacts_cache'] = array();
             $service['contacts'] = "";
         } else {
+            if(is_null($this->notificationOption)){
+                $stmtNotification =$this->backend_instance->db->query(
+                    "SELECT `value` FROM options WHERE `key` = 'inheritance_mode'"
+                );
+                $notificationOption = $stmtNotification->fetch();
+                $this->notificationOption = $notificationOption['value'];
+            }
+
             $contact = Contact::getInstance($this->dependencyInjector);
             $service['contacts_cache'] = $contact->getContactForService($service['service_id']);
-            $contact_result = '';
-            $contact_result_append = '';
-            foreach ($service['contacts_cache'] as $contact_id) {
-                $tmp = $contact->generateFromContactId($contact_id);
+            $contactResult = '';
+            $contactResultAppend = '';
+            $serviceListing = array();
+            foreach ($service['contacts_cache'] as $contactId) {
+                $tmp = $contact->generateFromContactId($contactId);
                 if (!is_null($tmp)) {
-                    $contact_result .= $contact_result_append . $tmp;
-                    $contact_result_append = ',';
+                    $contactResult .= $contactResultAppend . $tmp;
+                    $contactResultAppend = ',';
                 }
             }
 
-            if ($contact_result != '') {
-                $service['contacts'] = $contact_result;
-                if (!is_null($service['contact_additive_inheritance'])
-                    && $service['contact_additive_inheritance'] == 1
-                ) {
-                    $service['contacts'] = '+' . $service['contacts'];
+            switch ((int)$this->notificationOption) {
+                case self::VERTICAL_NOTIFICATION:
+                    //check if the inheritance is enable
+                    if ((int)$service['contact_additive_inheritance'] === 1) {
+                        $this->getContactVerticalInheritance($service['service_id'], $serviceListing);
+                    }
+                    break;
+                case self::CLOSE_NOTIFICATION:
+                    //check if a contact is already present
+                    if (empty($contactResult)) {
+                        $this->getContactCloseInheritance($service['service_id'], $serviceListing);
+                    }
+                    break;
+                case self::CUMULATIVE_NOTIFICATION:
+                    // get all service / template inheritance
+                    $this->getCumulativeInheritance($service['service_id'], $serviceListing);
+                    break;
+                default:
+                    break;
+            }
+
+            if (!empty($serviceListing)) {
+                $contactResult = implode(',', $this->getInheritanceContact(array_unique($serviceListing)));
+            }
+            $service['contacts'] = $contactResult;
+        }
+    }
+
+    /**
+     * @param $serviceId
+     * @param array $serviceListing
+     */
+    protected function getContactVerticalInheritance($serviceId, &$serviceListing = array())
+    {
+        $serviceListing[] = $serviceId;
+        while (1) {
+            $query = "SELECT service_template_model_stm_id, contact_additive_inheritance FROM service
+                    WHERE `service_id` = " . $serviceId;
+            $stmt = $this->backend_instance->db->query($query);
+            $serviceAdd = $stmt->fetch();
+
+            if (isset($serviceAdd['service_template_model_stm_id'])
+                && (int)$serviceAdd['contact_additive_inheritance'] === 1
+            ) {
+                $this->getContactVerticalInheritance($serviceAdd['service_template_model_stm_id'], $serviceListing);
+            }
+            break;
+        }
+    }
+
+    /**
+     * @param $serviceId
+     * @param array $serviceListing
+     */
+    protected function getCumulativeInheritance($serviceId, &$serviceListing = array())
+    {
+        $serviceListing[] = $serviceId;
+        $stmt = $this->backend_instance->db->query(
+            "SELECT service_template_model_stm_id FROM service 
+                WHERE `service_id` = " . (int)$serviceId
+        );
+        while (($row = $stmt->fetch())) {
+            $this->getCumulativeInheritance($row['service_template_model_stm_id'], $hostList);
+        }
+    }
+
+    /**
+     * @param $serviceId
+     * @param array $serviceListing
+     */
+    protected function getContactCloseInheritance($serviceId, &$serviceListing = array())
+    {
+        $stmt = $this->backend_instance->db->query(
+            "SELECT cs.contact_id, s.service_template_model_stm_id FROM service s
+                LEFT JOIN contact_service_relation cs ON cs.`service_service_id` = s.`service_id`
+            WHERE cs.`service_service_id` = " . (int)$serviceId
+        );
+        while ($row = $stmt->fetch()) {
+            if (empty($serviceListing)) {
+                if (!empty($row['contact_id'])) {
+                    $serviceListing[] = (int)$serviceId;
+                    break;
+                } elseif (!empty($row['service_template_model_stm_id'])) {
+                    $this->getContactCloseInheritance($row['service_template_model_stm_id'], $serviceListing);
                 }
+            } else {
+                break;
             }
         }
     }
 
+    /**
+     * @param array $service
+     * @return array
+     */
+    protected function getInheritanceContact(array $service)
+    {
+        $contacts = array();
+        $stmt = $this->backend_instance->db->query(
+            'SELECT c.contact_id , c.contact_name FROM contact c, contact_service_relation cs
+            WHERE cs.service_service_id IN (' . implode(',', $service) . ') AND cs.contact_id = c.contact_id'
+        );
+        while (($row = $stmt->fetch())) {
+            $contacts[$row['contact_id']] = $row['contact_name'];
+        }
+        return $contacts;
+    }
+
+    /**
+     * @param $service
+     */
     protected function getContactGroups(&$service)
     {
         if (isset($service['service_use_only_contacts_from_host']) &&
@@ -206,26 +323,127 @@ abstract class AbstractService extends AbstractObject
             $service['contact_groups_cache'] = array();
             $service['contact_groups'] = "";
         } else {
+
+            if(is_null($this->notificationOption)){
+                $stmtNotification =$this->backend_instance->db->query(
+                    "SELECT `value` FROM options WHERE `key` = 'inheritance_mode'"
+                );
+                $notificationOption = $stmtNotification->fetch();
+                $this->notificationOption = $notificationOption['value'];
+            }
+
             $cg = Contactgroup::getInstance($this->dependencyInjector);
             $service['contact_groups_cache'] = $cg->getCgForService($service['service_id']);
-            $cg_result = '';
-            $cg_result_append = '';
-            foreach ($service['contact_groups_cache'] as $cg_id) {
-                $tmp = $cg->generateFromCgId($cg_id);
+            $cgResult = '';
+            $cgResultAppend = '';
+            $serviceListing = array();
+
+            foreach ($service['contact_groups_cache'] as $cgId) {
+                $tmp = $cg->generateFromCgId($cgId);
                 if (!is_null($tmp)) {
-                    $cg_result .= $cg_result_append . $tmp;
-                    $cg_result_append = ',';
+                    $cgResult .= $cgResultAppend . $tmp;
+                    $cgResultAppend = ',';
                 }
             }
 
-            if ($cg_result != '') {
-                $service['contact_groups'] = $cg_result;
-                if (!is_null($service['cg_additive_inheritance']) && $service['cg_additive_inheritance'] == 1) {
-                    $service['contact_groups'] = '+' . $service['contact_groups'];
+            switch ((int)$this->notificationOption) {
+                case self::VERTICAL_NOTIFICATION:
+                    //check if the inheritance is enable
+                    if ((int)$service['cg_additive_inheritance'] === 1) {
+                        $this->getContactGroupsVerticalInheritance($service['service_id'], $serviceListing);
+                    }
+                    break;
+                case self::CLOSE_NOTIFICATION:
+                    //check if a contact is already present
+                    if (empty($contactResult)) {
+                        $this->getContactGroupsCloseInheritance($service['service_id'], $serviceListing);
+                    }
+                    break;
+                case self::CUMULATIVE_NOTIFICATION:
+                    // get all service / template inheritance
+                    $this->getCumulativeInheritance($service['service_id'], $serviceListing);
+                    break;
+                default:
+                    break;
+            }
+
+            if (!empty($serviceListing)) {
+                $cgResult = implode(',', $this->getInheritanceContactGroups(array_unique($serviceListing)));
+            }
+            $service['contact_groups'] = $cgResult;
+        }
+    }
+
+    /**
+     * @param $serviceId
+     * @param array $serviceListing
+     */
+    protected function getContactGroupsVerticalInheritance($serviceId, &$serviceListing = array())
+    {
+        $serviceListing[] = $serviceId;
+        while (1) {
+            $query = "SELECT service_template_model_stm_id, cg_additive_inheritance FROM service
+                    WHERE `service_id` = " . $serviceId;
+            $stmt = $this->backend_instance->db->query($query);
+            $serviceAdd = $stmt->fetch();
+
+            if (isset($serviceAdd['service_template_model_stm_id'])
+                && (int)$serviceAdd['cg_additive_inheritance'] === 1
+            ) {
+                $this->getContactVerticalInheritance($serviceAdd['service_template_model_stm_id'], $serviceListing);
+            }
+            break;
+        }
+    }
+
+    /**
+     * @param $serviceId
+     * @param array $serviceListing
+     */
+    protected function getContactGroupsCloseInheritance($serviceId, &$serviceListing = array())
+    {
+        $stmt = $this->backend_instance->db->query(
+            "SELECT cs.contactgroup_cg_id, s.service_template_model_stm_id FROM service s
+                LEFT JOIN contactgroup_service_relation cs ON cs.`service_service_id` = s.`service_id`
+            WHERE cs.`service_service_id` = " . (int)$serviceId
+        );
+
+        while ($row = $stmt->fetch()) {
+            if (empty($serviceListing)) {
+                if (!empty($row['contactgroup_cg_id'])) {
+                    $serviceListing[] = (int)$serviceId;
+                    break;
+                } elseif (!empty($row['service_template_model_stm_id'])) {
+                    $this->getContactGroupsCloseInheritance($row['service_template_model_stm_id'], $serviceListing);
                 }
+            } else {
+                break;
             }
         }
     }
+
+    /**
+     * @param $service
+     * @return array
+     */
+    protected function getInheritanceContactGroups($service)
+    {
+        $contactGroups = array();
+        $stmt = $this->backend_instance->db->query(
+            'SELECT c.cg_id , c.cg_name FROM contactgroup c, contactgroup_service_relation cs
+            WHERE cs.service_service_id IN (' . implode(',', $service) . ') AND cs.contactgroup_cg_id = c.cg_id'
+        );
+
+        while (($row = $stmt->fetch())) {
+            $contactGroups[$row['cg_id']] = $row['cg_name'];
+        }
+        return $contactGroups;
+    }
+
+
+
+
+
 
     protected function findCommandName($service_id, $command_label)
     {

@@ -177,11 +177,13 @@ class Service extends AbstractService
     private function isServiceHasContacts($service_id)
     {
         $this->browseContactsInStpl($service_id);
+
         if ($this->service_cache[$service_id]['has_tpl_contacts'] == 1 ||
             $this->service_cache[$service_id]['has_tpl_contact_groups'] == 1
         ) {
             return 1;
         }
+
         if ((isset($this->service_cache[$service_id]['contacts']) &&
                 $this->service_cache[$service_id]['contacts'] != '') ||
             (isset($this->service_cache[$service_id]['contact_groups']) &&
@@ -189,6 +191,7 @@ class Service extends AbstractService
         ) {
             return 1;
         }
+
         return 0;
     }
 
@@ -356,9 +359,9 @@ class Service extends AbstractService
         $this->getServiceTemplates($this->service_cache[$service_id]);
         $this->getServiceCommands($this->service_cache[$service_id]);
         $this->getServicePeriods($this->service_cache[$service_id]);
+
         $this->getContactGroups($this->service_cache[$service_id]);
         $this->getContacts($this->service_cache[$service_id]);
-
 
         # By default in centengine 1.4.15
         $this->getContactsFromHost(
@@ -366,6 +369,7 @@ class Service extends AbstractService
             $service_id,
             $this->service_cache[$service_id]['service_use_only_contacts_from_host']
         );
+
         $this->getSeverity($host_id, $service_id);
         $this->getServiceGroups($service_id, $host_id, $host_name);
         $this->generateObjectInFile(
