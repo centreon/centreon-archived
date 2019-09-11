@@ -266,7 +266,7 @@ abstract class AbstractService extends AbstractObject
                 WHERE `service_id` = " . (int)$serviceId
         );
         while (($row = $stmt->fetch())) {
-            $this->getCumulativeInheritance($row['service_template_model_stm_id'], $hostList);
+            $this->getCumulativeInheritance($row['service_template_model_stm_id'], $serviceListing);
         }
     }
 
@@ -279,7 +279,7 @@ abstract class AbstractService extends AbstractObject
         $stmt = $this->backend_instance->db->query(
             "SELECT cs.contact_id, s.service_template_model_stm_id FROM service s
                 LEFT JOIN contact_service_relation cs ON cs.`service_service_id` = s.`service_id`
-            WHERE cs.`service_service_id` = " . (int)$serviceId
+            WHERE s.`service_id` = " . (int)$serviceId
         );
         while ($row = $stmt->fetch()) {
             if (empty($serviceListing)) {
@@ -405,7 +405,7 @@ abstract class AbstractService extends AbstractObject
         $stmt = $this->backend_instance->db->query(
             "SELECT cs.contactgroup_cg_id, s.service_template_model_stm_id FROM service s
                 LEFT JOIN contactgroup_service_relation cs ON cs.`service_service_id` = s.`service_id`
-            WHERE cs.`service_service_id` = " . (int)$serviceId
+            WHERE s.`service_id` = " . (int)$serviceId
         );
 
         while ($row = $stmt->fetch()) {
