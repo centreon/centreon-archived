@@ -200,14 +200,14 @@ while ($row = $result->fetch()) {
     $severities[$severityName] = $row['sc_id'];
 }
 
-// get poller preferences of service-monitoring widget
+// get poller preferences (criticality_filter) of service-monitoring widget
 $result = $pearDB->query(
     'SELECT wpr.widget_view_id, wpr.parameter_id, wpr.preference_value, wpr.user_id
     FROM widget_preferences wpr
     INNER JOIN widget_parameters wpa ON wpa.parameter_id = wpr.parameter_id
     AND wpa.parameter_code_name = \'criticality_filter\'
     INNER JOIN widget_models wm ON wm.widget_model_id = wpa.widget_model_id
-    AND wm.title = \'Service-Monitoring\''
+    AND wm.title = \'Service Monitoring\''
 );
 
 $statement = $pearDB->prepare(
