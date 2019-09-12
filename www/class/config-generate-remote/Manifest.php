@@ -20,7 +20,7 @@
 
 namespace ConfigGenerateRemote;
 
-use \PDO;
+use ConfigGenerateRemote\Abstracts\AbstractObject;
 
 class Manifest extends AbstractObject
 {
@@ -32,7 +32,6 @@ class Manifest extends AbstractObject
     protected function __construct(\Pimple\Container $dependencyInjector)
     {
         parent::__construct($dependencyInjector);
-        #$this->createFile($this->backendInstance->getPath());
 
         $this->manifest['date'] = date('l jS \of F Y h:i:s A');
         $this->manifest['pollers'] = [];

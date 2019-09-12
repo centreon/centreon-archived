@@ -18,7 +18,7 @@
  *
  */
 
-namespace ConfigGenerateRemote;
+namespace ConfigGenerateRemote\Abstracts;
 
 use \Exception;
 

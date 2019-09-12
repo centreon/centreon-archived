@@ -18,7 +18,9 @@
  *
  */
 
-namespace ConfigGenerateRemote;
+namespace ConfigGenerateRemote\Relations;
+
+use ConfigGenerateRemote\Abstracts\AbstractObject;
 
 class ServiceGroupRelation extends AbstractObject
 {

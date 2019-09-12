@@ -1,7 +1,7 @@
 <?php
 /*
  * Copyright 2005 - 2019 Centreon (https://www.centreon.com/)
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -18,7 +18,9 @@
  *
  */
 
-namespace ConfigGenerateRemote;
+namespace ConfigGenerateRemote\Relations;
+
+use ConfigGenerateRemote\Abstracts\AbstractObject;
 
 class ContactHostCommandsRelation extends AbstractObject
 {

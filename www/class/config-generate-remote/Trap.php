@@ -21,6 +21,7 @@
 namespace ConfigGenerateRemote;
 
 use \PDO;
+use ConfigGenerateRemote\Abstracts\AbstractObject;
 
 class Trap extends AbstractObject
 {

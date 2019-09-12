@@ -18,9 +18,9 @@
  *
  */
 
-namespace ConfigGenerateRemote;
+namespace ConfigGenerateRemote\Abstracts;
 
-require_once dirname(__FILE__) . '/Object.php';
+use ConfigGenerateRemote\Abstracts\AbstractObject;
 
 abstract class AbstractService extends AbstractObject
 {

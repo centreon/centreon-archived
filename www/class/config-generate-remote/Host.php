@@ -21,9 +21,7 @@
 namespace ConfigGenerateRemote;
 
 use \PDO;
-
-require_once __DIR__ . '/abstract/Host.php';
-require_once __DIR__ . '/abstract/Service.php';
+use ConfigGenerateRemote\Abstracts\AbstractHost;
 
 class Host extends AbstractHost
 {

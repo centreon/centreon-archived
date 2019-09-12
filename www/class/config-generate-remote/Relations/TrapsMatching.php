@@ -18,9 +18,10 @@
  *
  */
 
-namespace ConfigGenerateRemote;
+namespace ConfigGenerateRemote\Relations;
 
 use \PDO;
+use ConfigGenerateRemote\Abstracts\AbstractObject;
 
 class TrapsMatching extends AbstractObject
 {
