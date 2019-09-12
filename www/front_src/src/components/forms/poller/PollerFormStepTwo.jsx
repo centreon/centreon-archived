@@ -5,6 +5,7 @@
 
 import React, { Component } from 'react';
 import { Field, reduxForm as connectForm } from 'redux-form';
+import { Translate, I18n } from 'react-redux-i18n';
 import styles from '../../../styles/partials/form/_form.scss';
 import SelectField from "../../form-fields/SelectField";
 import CheckboxField from "../../form-fields/CheckboxField";
