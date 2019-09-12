@@ -43,6 +43,7 @@ class Backend
 
     private $tmpFile = null;
     private $tmpDir = null;
+    private $tmpDirSuffix = '.d';
     private $fullPath = null;
     private $whoaim = 'unknown';
 
@@ -58,9 +59,9 @@ class Backend
      */
     private function __construct(\Pimple\Container $dependencyInjector)
     {
-        $this->generate_path = _CENTREON_CACHEDIR_ . '/config';
+        $this->generatePath = _CENTREON_CACHEDIR_ . '/config/export';
         $this->db = $dependencyInjector['configuration_db'];
-        $this->db_cs = $dependencyInjector['realtime_db'];
+        $this->dbCs = $dependencyInjector['realtime_db'];
     }
 
     /**
@@ -82,18 +83,23 @@ class Backend
      * Delete directory recursively
      *
      * @param string $path
+     * @param bool $onlyContent if set to false, do not delete directory itself
      * @return bool
      */
-    private function deleteDir(?string $path): bool
+    private function deleteDir(?string $path, bool $onlyContent = false): bool
     {
-        if (is_dir($path) === true) {
+        if (is_dir($path)) {
             $files = array_diff(scandir($path), ['.', '..']);
             foreach ($files as $file) {
                 $this->deleteDir(realpath($path) . '/' . $file);
             }
 
-            return rmdir($path);
-        } elseif (is_file($path) === true) {
+            if (!$onlyContent) {
+               return rmdir($path);
+            } else {
+                return true;
+            }
+        } elseif (is_file($path)) {
             return unlink($path);
         }
 
@@ -149,19 +155,19 @@ class Backend
         $this->createDirectories([$this->generatePath]);
         $this->fullPath = $this->generatePath;
 
+        if (!is_writable($this->fullPath)) {
+            throw new Exception("Not writeable directory '" . $this->fullPath . "'");
+        }
+
         if (is_dir($this->fullPath . '/' . $pollerId) && !is_writable($this->fullPath . '/' . $pollerId)) {
             throw new Exception("Not writeable directory '" . $this->fullPath . '/' . $pollerId . "'");
         }
 
-        if (!is_writable($this->fullPath)) {
-            throw new Exception("Not writeable directory '" . $this->fullPath . "'");
-        }
         $this->tmpFile = basename(tempnam($this->fullPath, $this->tmpDirPrefix));
-        $this->tmpDir = $this->tmpFile . $this->tmpDir_suffix;
-        if (!mkdir($this->fullPath . '/' . $this->tmpDir, 0770, true)) {
-            throw new Exception("Cannot create directory '" . $this->fullPath . '/' . $this->tmpDir . "'");
-        }
+        $this->tmpDir = $this->tmpFile . $this->tmpDirSuffix;
         $this->fullPath .= '/' . $this->tmpDir;
+
+        $this->createDirectories([$this->fullPath]);
         foreach ($this->subdirs as $subdir) {
             $this->createDirectories([$this->fullPath . '/' . $subdir]);
         }
@@ -230,7 +236,7 @@ class Backend
     {
         $subdir = dirname($this->fullPath);
         if (is_dir($this->fullPath)) {
-            $this->deleteDir($this->fullPath);
+            $this->deleteDir($this->fullPath, true);
         }
 
         @unlink($subdir . '/' . $this->tmpFile);
