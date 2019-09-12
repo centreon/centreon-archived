@@ -1,7 +1,7 @@
 <?php
 /*
  * Copyright 2005 - 2019 Centreon (https://www.centreon.com/)
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -36,13 +36,10 @@ use CentreonRemote\Domain\Service\NotifyMasterService;
 use CentreonRemote\Domain\Service\TaskService;
 use CentreonRemote\Infrastructure\Service\PollerInteractionService;
 use ConfigGenerateRemote\Generate;
-use Centreon\ServiceProvider as SP;
 use Curl\Curl;
 
 class ServiceProvider implements AutoloadServiceProviderInterface
 {
-    const CENTREON_REMOTE_EXPORTER = 'centreon_remote.exporter';
-
     /**
      * Register Centreon Remote services
      *
