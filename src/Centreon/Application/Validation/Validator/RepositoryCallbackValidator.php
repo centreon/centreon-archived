@@ -69,7 +69,7 @@ class RepositoryCallbackValidator extends CallbackValidator
     public function validate($object, Constraint $constraint)
     {
         if (!$constraint instanceof RepositoryCallback) {
-            throw new UnexpectedTypeException($constraint, __NAMESPACE__.'\RepositoryCallback');
+            throw new UnexpectedTypeException($constraint, __NAMESPACE__ . '\RepositoryCallback');
         }
 
         $method = $constraint->repoMethod;
