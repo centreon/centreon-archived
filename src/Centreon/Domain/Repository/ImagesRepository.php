@@ -107,6 +107,11 @@ class ImagesRepository extends ServiceEntityRepository implements PaginationRepo
         return $result;
     }
 
+    /**
+     * @param int $id
+     * @return mixed
+     * @throws \Exception
+     */
     public function getOnebyId(int $id)
     {
         if (empty($id)){

@@ -1,5 +1,5 @@
 const globalsReducer = (
-	state = {
+  state = {
 	  domainPath: "."
 	}
   ) => state;
