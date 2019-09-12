@@ -136,11 +136,4 @@ abstract class ExporterServiceAbstract implements ExporterServiceInterface
     {
         return 10;
     }
-
-    protected function _getIf(string $key, callable $data)
-    {
-        $result = $this->cache->getIf($key, $data);
-
-        return $result;
-    }
 }
