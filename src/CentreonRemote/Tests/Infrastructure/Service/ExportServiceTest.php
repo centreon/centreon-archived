@@ -138,7 +138,7 @@ class ExportServiceTest extends TestCase
                 "DELETE FROM acl_resources_sg_relations "
                 . "WHERE sg_id NOT IN (SELECT t2.sg_id FROM servicegroup AS t2)",
                 []
-        );
+            );
 
         // mount VFS
         $this->fs = FileSystem::factory('vfs://');
