@@ -1,7 +1,7 @@
 <?php
 /*
  * Copyright 2005 - 2019 Centreon (https://www.centreon.com/)
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -140,15 +140,17 @@ class ExportManifestTest extends TestCase
             'import' => null,
         ]);
 
-        $this->assertEquals([
-            $this->manifest->getFile() => [
-                'version' => $this->version,
-                'date' => $date,
-                'remote_server' => $this->commitment->getRemote(),
-                'pollers' => $this->commitment->getPollers(),
-                'import' => null,
+        $this->assertEquals(
+            [
+                $this->manifest->getFile() => [
+                    'version' => $this->version,
+                    'date' => $date,
+                    'remote_server' => $this->commitment->getRemote(),
+                    'pollers' => $this->commitment->getPollers(),
+                    'import' => null,
+                ],
             ],
-        ],
-            $this->dumpData);
+            $this->dumpData
+        );
     }
 }

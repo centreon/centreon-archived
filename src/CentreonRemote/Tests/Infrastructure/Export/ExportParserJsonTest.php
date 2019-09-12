@@ -1,7 +1,7 @@
 <?php
 /*
  * Copyright 2005 - 2019 Centreon (https://www.centreon.com/)
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -68,10 +68,12 @@ class ExportParserJsonTest extends TestCase
         // add file with macros
         $this->fs->get('/tmp')->add('test2.json', new File('{"key":"@val@"}'));
 
-        $result = $this->parser->parse('vfs://tmp/test2.json',
+        $result = $this->parser->parse(
+            'vfs://tmp/test2.json',
             function (&$result) {
                 $result = str_replace('@val@', 'val', $result);
-            });
+            }
+        );
 
         $this->assertEquals(['key' => 'val'], $result);
     }

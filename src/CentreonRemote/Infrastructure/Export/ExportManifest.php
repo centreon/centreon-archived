@@ -1,7 +1,7 @@
 <?php
 /*
  * Copyright 2005 - 2019 Centreon (https://www.centreon.com/)
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -93,8 +93,10 @@ class ExportManifest
         };
 
         if ($missingKeys = $checkManifestKeys($this->data)) {
-            throw new Exception(sprintf("Missing data in a manifest file:\n - %s", join("\n - ", $missingKeys)),
-                static::ERR_CODE_MANIFEST_WRONG_FORMAT);
+            throw new Exception(
+                sprintf("Missing data in a manifest file:\n - %s", join("\n - ", $missingKeys)),
+                static::ERR_CODE_MANIFEST_WRONG_FORMAT
+            );
         }
 
         # Compare only the major and minor version, not bugfix because no SQL schema changes
