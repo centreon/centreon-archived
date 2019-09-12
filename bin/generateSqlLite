@@ -421,7 +421,7 @@ try {
                     $stmt->bindParam(':host_host_id', $value['host_id'], PDO::PARAM_INT);
                     $stmt->execute();
 
-                    $insertedHostServiceRelation[$value['service_id']."-".$value['host_id']] = true;
+                    $insertedHostServiceRelation[$value['service_id'] . "-" . $value['host_id']] = true;
                 }
             }
             // Insert services by hostgroup
