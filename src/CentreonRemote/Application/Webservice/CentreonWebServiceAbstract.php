@@ -39,7 +39,7 @@ namespace CentreonRemote\Application\Webservice;
 use Centreon\Infrastructure\Webservice\WebServiceAbstract;
 
 /**
- * 
+ *
  * @deprecated
  */
 abstract class CentreonWebServiceAbstract extends WebServiceAbstract

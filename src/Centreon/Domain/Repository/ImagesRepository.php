@@ -114,7 +114,7 @@ class ImagesRepository extends ServiceEntityRepository implements PaginationRepo
      */
     public function getOnebyId(int $id)
     {
-        if (empty($id)){
+        if (empty($id)) {
             throw new \Exception('Id required to get Icon by ID, none provided');
         }
         $sql = 'SELECT * FROM `' . ImageDir::TABLE . '`,`' . ImageDir::JOIN_TABLE . '` vidr,`' . Image::TABLE
