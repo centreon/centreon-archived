@@ -1,7 +1,7 @@
 <?php
 /*
  * Copyright 2005 - 2019 Centreon (https://www.centreon.com/)
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -26,6 +26,7 @@ use Pimple\Psr11\ServiceLocator;
 use CentreonRemote\ServiceProvider;
 use Centreon\Test\Mock;
 use CentreonRemote\Domain;
+use CentreonRemote\Domain\Service\ConfigurationWizard;
 use CentreonRemote\Infrastructure\Service;
 use CentreonRemote\Domain\Exporter;
 use CentreonACL;
@@ -44,7 +45,7 @@ class ServiceProviderTest extends TestCase
     protected function setUp()
     {
         $this->provider = new ServiceProvider();
-        $this->container = new Container;
+        $this->container = new Container();
         $this->container['centreon.acl'] = $this->getMockBuilder(CentreonACL::class)
             ->disableOriginalConstructor()
             ->getMock();
@@ -60,10 +61,10 @@ class ServiceProviderTest extends TestCase
         $this->container[\Centreon\ServiceProvider::CENTREON_DB_MANAGER] =
             new \Centreon\Infrastructure\Service\CentreonDBManagerService($locator);
         $this->container[\Centreon\ServiceProvider::CENTREON_WEBSERVICE] =
-        $this->container[\Centreon\ServiceProvider::CENTREON_CLAPI] = new class
-        {
+        $this->container[\Centreon\ServiceProvider::CENTREON_CLAPI] = new class {
             public function add($class)
             {
+                return $this;
             }
         };
 
@@ -90,10 +91,14 @@ class ServiceProviderTest extends TestCase
             'centreon.notifymaster' => Domain\Service\NotifyMasterService::class,
             'centreon.taskservice' => Domain\Service\TaskService::class,
             'centreon_remote.informations_service' => Domain\Service\InformationsService::class,
-            'centreon_remote.remote_connection_service' => Domain\Service\ConfigurationWizard\RemoteConnectionConfigurationService::class,
-            'centreon_remote.poller_connection_service' => Domain\Service\ConfigurationWizard\PollerConnectionConfigurationService::class,
-            'centreon_remote.poller_config_service' => Domain\Service\ConfigurationWizard\LinkedPollerConfigurationService::class,
-            'centreon_remote.poller_config_bridge' => Domain\Service\ConfigurationWizard\PollerConfigurationRequestBridge::class,
+            'centreon_remote.remote_connection_service' =>
+                ConfigurationWizard\RemoteConnectionConfigurationService::class,
+            'centreon_remote.poller_connection_service' =>
+                ConfigurationWizard\PollerConnectionConfigurationService::class,
+            'centreon_remote.poller_config_service' =>
+                ConfigurationWizard\LinkedPollerConfigurationService::class,
+            'centreon_remote.poller_config_bridge' =>
+                ConfigurationWizard\PollerConfigurationRequestBridge::class,
 
             'centreon_remote.export' => Service\ExportService::class,
             'centreon_remote.exporter' => Service\ExporterService::class,

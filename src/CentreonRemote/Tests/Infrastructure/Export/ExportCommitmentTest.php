@@ -46,8 +46,14 @@ class ExportCommitmentTest extends TestCase
             ->setMethods(['parse', 'dump'])
             ->getMock();
 
-        $this->commitment =
-            new ExportCommitment($this->remote, $this->pollers, $this->meta, $parser, $this->path, $this->exporters);
+        $this->commitment = new ExportCommitment(
+            $this->remote,
+            $this->pollers,
+            $this->meta,
+            $parser,
+            $this->path,
+            $this->exporters
+        );
     }
 
     /**

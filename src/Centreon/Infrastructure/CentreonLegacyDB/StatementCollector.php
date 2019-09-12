@@ -51,21 +51,21 @@ class StatementCollector
      *
      * @var array
      */
-    protected $columns;
+    protected $columns = [];
 
     /**
      * Collection of values
      *
      * @var array
      */
-    protected $values;
+    protected $values = [];
 
     /**
      * Collection of parameters
      *
      * @var array
      */
-    protected $params;
+    protected $params = [];
 
     /**
      * Add a column
@@ -104,7 +104,7 @@ class StatementCollector
      * @param mixed $value
      * @param int $data_type
      */
-    public function addParam(string $parameter, $value, int $data_type = PDO::PARAM_STR)
+    public function addParam($parameter, $value, int $data_type = PDO::PARAM_STR)
     {
         $this->params[$parameter] = [
             'value' => $value,
@@ -119,17 +119,17 @@ class StatementCollector
      */
     public function bind(PDOStatement $stmt)
     {
-        // bind columns to statement
+        // bind columns to statment
         foreach ($this->values as $parameter => $data) {
             $stmt->bindColumn($parameter, $data['value'], $data['data_type']);
         }
 
-        // bind values to statement
+        // bind values to statment
         foreach ($this->values as $parameter => $data) {
             $stmt->bindValue($parameter, $data['value'], $data['data_type']);
         }
 
-        // bind parameters to statement
+        // bind parameters to statment
         foreach ($this->values as $parameter => $data) {
             $stmt->bindParam($parameter, $data['value'], $data['data_type']);
         }

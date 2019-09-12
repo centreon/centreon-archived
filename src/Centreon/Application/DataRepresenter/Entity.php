@@ -1,7 +1,7 @@
 <?php
 /*
  * Copyright 2005-2019 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -37,6 +37,7 @@
 namespace Centreon\Application\DataRepresenter;
 
 use JsonSerializable;
+use ReflectionClass;
 
 class Entity implements JsonSerializable
 {
@@ -63,6 +64,25 @@ class Entity implements JsonSerializable
      */
     public function jsonSerialize()
     {
-        return (array) $this->entity;
+        return is_object($this->entity) ? static::dismount($this->entity) : (array) $this->entity;
+    }
+
+    /**
+     * @param $object
+     * @return array
+     * @throws \ReflectionException
+     */
+    public static function dismount(object $object) : array
+    {
+        $reflectionClass = new ReflectionClass(get_class($object));
+        $array = [];
+
+        foreach ($reflectionClass->getProperties() as $property) {
+            $property->setAccessible(true);
+            $array[$property->getName()] = $property->getValue($object);
+            $property->setAccessible(false);
+        }
+
+        return $array;
     }
 }

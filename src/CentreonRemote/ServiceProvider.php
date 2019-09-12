@@ -40,6 +40,18 @@ use Curl\Curl;
 
 class ServiceProvider implements AutoloadServiceProviderInterface
 {
+    const CENTREON_NOTIFYMASTER = 'centreon.notifymaster';
+    const CENTREON_TASKSERVICE = 'centreon.taskservice';
+    const CENTREON_REMOTE_POLLER_INTERACTION_SERVICE = 'centreon_remote.poller_interaction_service';
+    const CENTREON_REMOTE_INFORMATIONS_SERVICE = 'centreon_remote.informations_service';
+    const CENTREON_REMOTE_REMOTE_CONNECTION_SERVICE = 'centreon_remote.remote_connection_service';
+    const CENTREON_REMOTE_POLLER_CONNECTION_SERVICE = 'centreon_remote.poller_connection_service';
+    const CENTREON_REMOTE_POLLER_CONFIG_SERVICE = 'centreon_remote.poller_config_service';
+    const CENTREON_REMOTE_POLLER_CONFIG_BRIDGE = 'centreon_remote.poller_config_bridge';
+    const CENTREON_REMOTE_EXPORT = 'centreon_remote.export';
+    const CENTREON_REMOTE_EXPORTER_CACHE = 'centreon_remote.exporter.cache';
+    const CENTREON_REMOTE_EXPORTER = 'centreon_remote.exporter';
+
     /**
      * Register Centreon Remote services
      *
@@ -54,22 +66,23 @@ class ServiceProvider implements AutoloadServiceProviderInterface
             }
         );
 
-        $pimple[\Centreon\ServiceProvider::CENTREON_WEBSERVICE]->add(Webservice\CentreonRemoteServer::class);
-        $pimple[\Centreon\ServiceProvider::CENTREON_WEBSERVICE]->add(Webservice\CentreonConfigurationRemote::class);
-        $pimple[\Centreon\ServiceProvider::CENTREON_WEBSERVICE]->add(Webservice\CentreonConfigurationTopology::class);
-        $pimple[\Centreon\ServiceProvider::CENTREON_WEBSERVICE]->add(Webservice\CentreonTaskService::class);
-        $pimple[\Centreon\ServiceProvider::CENTREON_WEBSERVICE]->add(WebService\CentreonAclWebservice::class);
+        $pimple[\Centreon\ServiceProvider::CENTREON_WEBSERVICE]
+            ->add(Webservice\CentreonRemoteServer::class)
+            ->add(Webservice\CentreonConfigurationRemote::class)
+            ->add(Webservice\CentreonConfigurationTopology::class)
+            ->add(Webservice\CentreonTaskService::class)
+            ->add(WebService\CentreonAclWebservice::class);
 
         $pimple[\Centreon\ServiceProvider::CENTREON_CLAPI]->add(Clapi\CentreonRemoteServer::class);
         $pimple[\Centreon\ServiceProvider::CENTREON_CLAPI]->add(Clapi\CentreonWorker::class);
 
-        $pimple['centreon.notifymaster'] = function (Container $pimple): NotifyMasterService {
+        $pimple[static::CENTREON_NOTIFYMASTER] = function (Container $pimple): NotifyMasterService {
             $service = new NotifyMasterService($pimple[\Centreon\ServiceProvider::CENTREON_DB_MANAGER]);
             $service->setCurl(new Curl);
             return $service;
         };
 
-        $pimple['centreon.taskservice'] = function (Container $pimple): TaskService {
+        $pimple[static::CENTREON_TASKSERVICE] = function (Container $pimple): TaskService {
             $service = new TaskService(
                 new AppKeyGeneratorService(),
                 $pimple[\Centreon\ServiceProvider::CENTREON_DB_MANAGER],
@@ -79,17 +92,19 @@ class ServiceProvider implements AutoloadServiceProviderInterface
             return $service;
         };
 
-        $pimple['centreon_remote.poller_interaction_service'] = function (Container $pimple): PollerInteractionService {
-            $service = new PollerInteractionService($pimple);
-            return $service;
-        };
+        $pimple[static::CENTREON_REMOTE_POLLER_INTERACTION_SERVICE] =
+            function (Container $pimple): PollerInteractionService {
+                $service = new PollerInteractionService($pimple);
+                return $service;
+            };
 
-        $pimple['centreon_remote.informations_service'] = function (Container $pimple): InformationsService {
-            $service = new InformationsService($pimple);
-            return $service;
-        };
+        $pimple[static::CENTREON_REMOTE_INFORMATIONS_SERVICE] =
+            function (Container $pimple): InformationsService {
+                $service = new InformationsService($pimple);
+                return $service;
+            };
 
-        $pimple['centreon_remote.remote_connection_service'] =
+        $pimple[static::CENTREON_REMOTE_REMOTE_CONNECTION_SERVICE] =
             function (Container $pimple): RemoteConnectionConfigurationService {
                 $service = new RemoteConnectionConfigurationService(
                     $pimple[\Centreon\ServiceProvider::CENTREON_DB_MANAGER]->getAdapter('configuration_db')
@@ -97,7 +112,7 @@ class ServiceProvider implements AutoloadServiceProviderInterface
                 return $service;
             };
 
-        $pimple['centreon_remote.poller_connection_service'] =
+        $pimple[static::CENTREON_REMOTE_POLLER_CONNECTION_SERVICE] =
             function (Container $pimple): PollerConnectionConfigurationService {
                 $service = new PollerConnectionConfigurationService(
                     $pimple[\Centreon\ServiceProvider::CENTREON_DB_MANAGER]->getAdapter('configuration_db')
@@ -107,58 +122,62 @@ class ServiceProvider implements AutoloadServiceProviderInterface
                 return $service;
             };
 
-        $pimple['centreon_remote.poller_config_service'] =
+        $pimple[static::CENTREON_REMOTE_POLLER_CONFIG_SERVICE] =
             function (Container $pimple): LinkedPollerConfigurationService {
                 $service = new LinkedPollerConfigurationService(
                     $pimple[\Centreon\ServiceProvider::CENTREON_DB_MANAGER]->getAdapter('configuration_db')
                 );
                 $service->setBrokerRepository($pimple[\Centreon\ServiceProvider::CENTREON_BROKER_REPOSITORY]);
                 $service->setBrokerConfigurationService($pimple['centreon.broker_configuration_service']);
-                $service->setPollerInteractionService($pimple['centreon_remote.poller_interaction_service']);
-                $service->setTaskService($pimple['centreon.taskservice']);
+                $service->setPollerInteractionService(
+                    $pimple[ServiceProvider::CENTREON_REMOTE_POLLER_INTERACTION_SERVICE]
+                );
+                $service->setTaskService($pimple[ServiceProvider::CENTREON_TASKSERVICE]);
                 return $service;
             };
 
-        $pimple['centreon_remote.poller_config_bridge'] =
+        $pimple[static::CENTREON_REMOTE_POLLER_CONFIG_BRIDGE] =
             function (Container $pimple): PollerConfigurationRequestBridge {
                 $service = new PollerConfigurationRequestBridge($pimple);
                 return $service;
             };
 
-        $pimple['centreon_remote.export'] = function (Container $container): Infrastructure\Service\ExportService {
-            $services = [
-                'centreon_remote.exporter.cache',
-                'centreon_remote.exporter',
-                \Centreon\ServiceProvider::CENTREON_DB_MANAGER,
-                'centreon.acl',
-            ];
+        $pimple[static::CENTREON_REMOTE_EXPORT] =
+            function (Container $container): Infrastructure\Service\ExportService {
+                $services = [
+                    ServiceProvider::CENTREON_REMOTE_EXPORTER_CACHE,
+                    ServiceProvider::CENTREON_REMOTE_EXPORTER,
+                    \Centreon\ServiceProvider::CENTREON_DB_MANAGER,
+                    'centreon.acl',
+                ];
 
-            $locator = new ServiceLocator($container, $services);
+                $locator = new ServiceLocator($container, $services);
 
-            $service = new Infrastructure\Service\ExportService($locator);
+                $service = new Infrastructure\Service\ExportService($locator);
 
-            return $service;
-        };
+                return $service;
+            };
 
-        $pimple['centreon_remote.exporter.cache'] =
+        $pimple[static::CENTREON_REMOTE_EXPORTER_CACHE] =
             function (Container $container): Infrastructure\Service\ExporterCacheService {
                 $service = new Infrastructure\Service\ExporterCacheService($container);
 
                 return $service;
             };
 
-        $pimple['centreon_remote.exporter'] = function (Container $container): Infrastructure\Service\ExporterService {
-            $service = new Infrastructure\Service\ExporterService($container);
+        $pimple[static::CENTREON_REMOTE_EXPORTER] =
+            function (Container $container): Infrastructure\Service\ExporterService {
+                $service = new Infrastructure\Service\ExporterService($container);
 
-            return $service;
-        };
+                return $service;
+            };
 
         //-----------//
         // Exporters
         //-----------//
 
         // Configuration
-        $pimple['centreon_remote.exporter']->add(
+        $pimple[static::CENTREON_REMOTE_EXPORTER]->add(
             Domain\Exporter\ConfigurationExporter::class,
             function () use ($pimple) {
                 $service = new Domain\Exporter\ConfigurationExporter($pimple);
