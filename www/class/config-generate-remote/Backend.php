@@ -95,7 +95,7 @@ class Backend
             }
 
             if (!$onlyContent) {
-               return rmdir($path);
+                return rmdir($path);
             } else {
                 return true;
             }
