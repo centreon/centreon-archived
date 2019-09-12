@@ -173,7 +173,7 @@ class LinkedPollerConfigurationService
 
     /**
      * Add relation between poller and Remote Servers
-     * 
+     *
      * @param int $pollerId
      * @param PollerServer $remote
      */
