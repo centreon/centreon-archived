@@ -11,18 +11,18 @@ UPDATE `cb_field` SET `fieldname` = 'rrd_cached', `displayname` = 'RRDCacheD lis
 WHERE `fieldname` = 'port' AND `displayname` = 'TCP port';
 
 INSERT INTO `cb_list` (`cb_list_id`, `cb_field_id`, `default_value`)
-VALUES((SELECT coalesce(MAX(l.cb_list_id),0)+1 from cb_list l), (SELECT `cb_field_id` FROM `cb_field` WHERE `description` = 'Enable rrdcached option for Centreon, please see Centreon documentation to configure it.'), 'disable');
+VALUES((SELECT coalesce(MAX(l.cb_list_id),0)+1 from cb_list l), (SELECT `cb_field_id` FROM `cb_field` WHERE `displayname` = 'Enable RRDCached'), 'disable');
 
 INSERT INTO `cb_list_values` (`cb_list_id`, `value_name`, `value_value`)
 VALUES
 ((SELECT `cb_list_id` FROM `cb_list` WHERE `cb_field_id` =
-  (SELECT `cb_field_id` FROM `cb_field` WHERE `description` = 'Enable rrdcached option for Centreon, please see Centreon documentation to configure it.')), 'Disable', 'disable'
+  (SELECT `cb_field_id` FROM `cb_field` WHERE `displayname` = 'Enable RRDCached')), 'Disable', 'disable'
 ),
 ((SELECT `cb_list_id` FROM `cb_list` WHERE `cb_field_id` =
-  (SELECT `cb_field_id` FROM `cb_field` WHERE `description` = 'Enable rrdcached option for Centreon, please see Centreon documentation to configure it.')), 'UNIX Socket', 'unix'
+  (SELECT `cb_field_id` FROM `cb_field` WHERE `displayname` = 'Enable RRDCached')), 'UNIX Socket', 'unix'
 ),
 ((SELECT `cb_list_id` FROM `cb_list` WHERE `cb_field_id` =
-  (SELECT `cb_field_id` FROM `cb_field` WHERE `description` = 'Enable rrdcached option for Centreon, please see Centreon documentation to configure it.')), 'TCP Port ', 'tcp'
+  (SELECT `cb_field_id` FROM `cb_field` WHERE `displayname` = 'Enable RRDCached')), 'TCP Port ', 'tcp'
 );
 
 UPDATE `cb_type_field_relation` SET `jshook_name` = 'rrdArguments', `jshook_arguments` = '{"target": "rrd_cached"}'
