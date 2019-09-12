@@ -1,7 +1,7 @@
 <?php
 /*
  * Copyright 2005 - 2019 Centreon (https://www.centreon.com/)
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -68,8 +68,7 @@ final class ExportCommitment
         ExportParserInterface $parser = null,
         string $path = null,
         array $exporters = null
-    )
-    {
+    ) {
         if ($remote && $pollers && !in_array($remote, $pollers)) {
             $pollers[] = $remote;
         }

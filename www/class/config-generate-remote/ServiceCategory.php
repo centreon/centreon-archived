@@ -53,9 +53,9 @@ class ServiceCategory extends AbstractObject
     private function cacheServiceSeverity()
     {
         $stmt = $this->backendInstance->db->prepare(
-               "SELECT sc_name, sc_id, level, icon_id
-                FROM service_categories
-                WHERE level IS NOT NULL AND sc_activate = '1'"
+            "SELECT sc_name, sc_id, level, icon_id
+            FROM service_categories
+            WHERE level IS NOT NULL AND sc_activate = '1'"
         );
 
         $stmt->execute();
