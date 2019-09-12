@@ -41,6 +41,7 @@ use Curl\Curl;
 
 class ServiceProvider implements AutoloadServiceProviderInterface
 {
+    const CENTREON_REMOTE_EXPORTER = 'centreon_remote.exporter';
 
     /**
      * Register Centreon Remote services
