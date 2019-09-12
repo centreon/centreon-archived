@@ -25,6 +25,7 @@ use Pimple\Container;
 use Pimple\Psr11\ServiceLocator;
 use CentreonRemote\ServiceProvider;
 use Centreon\Test\Mock;
+use Centreon\Infrastructure\Service\CentcoreConfigService;
 use CentreonRemote\Domain;
 use CentreonRemote\Domain\Service\ConfigurationWizard;
 use CentreonRemote\Infrastructure\Service;
@@ -47,6 +48,9 @@ class ServiceProviderTest extends TestCase
         $this->provider = new ServiceProvider();
         $this->container = new Container();
         $this->container['centreon.acl'] = $this->getMockBuilder(CentreonACL::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $this->container['centreon.config'] = $this->getMockBuilder(CentcoreConfigService::class)
             ->disableOriginalConstructor()
             ->getMock();
 
