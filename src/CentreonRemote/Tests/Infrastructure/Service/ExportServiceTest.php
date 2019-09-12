@@ -95,48 +95,48 @@ class ExportServiceTest extends TestCase
                 ]]
             )
             ->addResultSet(
-                "DELETE FROM acl_resources_hc_relations
-                WHERE hc_id NOT IN (SELECT t2.hc_id FROM hostcategories AS t2)",
+                "DELETE FROM acl_resources_hc_relations "
+                . "WHERE hc_id NOT IN (SELECT t2.hc_id FROM hostcategories AS t2)",
                 []
             )
             ->addResultSet(
-                "DELETE FROM acl_resources_hg_relations
-                WHERE hg_hg_id NOT IN (SELECT t2.hg_id FROM hostgroup AS t2)",
+                "DELETE FROM acl_resources_hg_relations "
+                . "WHERE hg_hg_id NOT IN (SELECT t2.hg_id FROM hostgroup AS t2)",
                 []
             )
             ->addResultSet(
-                "DELETE FROM acl_resources_hostex_relations
-                WHERE host_host_id NOT IN (SELECT t2.host_id FROM host AS t2)",
+                "DELETE FROM acl_resources_hostex_relations "
+                . "WHERE host_host_id NOT IN (SELECT t2.host_id FROM host AS t2)",
                 []
             )
             ->addResultSet(
-                "DELETE FROM acl_resources_host_relations
-                WHERE host_host_id NOT IN (SELECT t2.host_id FROM host AS t2)",
+                "DELETE FROM acl_resources_host_relations "
+                . "WHERE host_host_id NOT IN (SELECT t2.host_id FROM host AS t2)",
                 []
             )
             ->addResultSet(
-                "DELETE FROM acl_resources_meta_relations
-                WHERE meta_id NOT IN (SELECT t2.meta_id FROM meta_service AS t2)",
+                "DELETE FROM acl_resources_meta_relations "
+                . "WHERE meta_id NOT IN (SELECT t2.meta_id FROM meta_service AS t2)",
                 []
             )
             ->addResultSet(
-                "DELETE FROM acl_resources_poller_relations
-                WHERE poller_id NOT IN (SELECT t2.id FROM nagios_server AS t2)",
+                "DELETE FROM acl_resources_poller_relations "
+                . "WHERE poller_id NOT IN (SELECT t2.id FROM nagios_server AS t2)",
                 []
             )
             ->addResultSet(
-                "DELETE FROM acl_resources_sc_relations
-                WHERE sc_id NOT IN (SELECT t2.sc_id FROM service_categories AS t2)",
+                "DELETE FROM acl_resources_sc_relations "
+                . "WHERE sc_id NOT IN (SELECT t2.sc_id FROM service_categories AS t2)",
                 []
             )
             ->addResultSet(
-                "DELETE FROM acl_resources_service_relations
-                WHERE service_service_id NOT IN (SELECT t2.service_id FROM service AS t2)",
+                "DELETE FROM acl_resources_service_relations "
+                . "WHERE service_service_id NOT IN (SELECT t2.service_id FROM service AS t2)",
                 []
             )
             ->addResultSet(
-                "DELETE FROM acl_resources_sg_relations
-                WHERE sg_id NOT IN (SELECT t2.sg_id FROM servicegroup AS t2)",
+                "DELETE FROM acl_resources_sg_relations "
+                . "WHERE sg_id NOT IN (SELECT t2.sg_id FROM servicegroup AS t2)",
                 []
         );
 
@@ -225,11 +225,11 @@ class ExportServiceTest extends TestCase
     }
 
     /**
-     * @covers \CentreonRemote\Infrastructure\Service\ExportService::_refreshAcl
+     * @covers \CentreonRemote\Infrastructure\Service\ExportService::refreshAcl
      */
     public function testRefreshAcl()
     {
-        $this->invokeMethod($this->export, '_refreshAcl');
+        $this->invokeMethod($this->export, 'refreshAcl');
 
         $this->assertTrue($this->aclReload);
     }

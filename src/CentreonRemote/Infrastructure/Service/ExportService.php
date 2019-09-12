@@ -118,13 +118,13 @@ class ExportService
         $configurationExporter->import($manifest);
 
         // cleanup ACL removed data
-        $this->_refreshAcl();
+        $this->refreshAcl();
 
         // remove export directory
         system('rm -rf ' . escapeshellarg($exportPath));
     }
 
-    private function _refreshAcl(): void
+    private function refreshAcl(): void
     {
         // cleanup resource table from deleted entities
         $resourceList = [
