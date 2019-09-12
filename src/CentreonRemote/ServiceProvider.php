@@ -55,6 +55,7 @@ use Curl\Curl;
 
 class ServiceProvider implements AutoloadServiceProviderInterface
 {
+
     const CENTREON_NOTIFYMASTER = 'centreon.notifymaster';
     const CENTREON_TASKSERVICE = 'centreon.taskservice';
     const CENTREON_REMOTE_POLLER_INTERACTION_SERVICE = 'centreon_remote.poller_interaction_service';
@@ -187,8 +188,9 @@ class ServiceProvider implements AutoloadServiceProviderInterface
         //-----------//
         // Exporters
         //-----------//
-        
+
         // Commands
+
         $pimple[static::CENTREON_REMOTE_EXPORTER]
             ->add(Domain\Exporter\CommandExporter::class, function () use ($pimple) {
                 $services = [

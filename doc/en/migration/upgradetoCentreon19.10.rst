@@ -42,9 +42,12 @@ Migrating
 Installing the new server
 =========================
 
-You will need to install a new Centreon central server from the :ref:`ISO<installisoel7>`
-or from :ref:`packages <install_from_packages>`, and complete the installation process
-by connecting to the Centreon Web interface.
+Perform the following actions:
+
+#. You will need to install a new Centreon central server from the :ref:`ISO<installisoel7>` or from :ref:`packages <install_from_packages>`, until to complete the installation process by connecting to the Centreon Web interface.
+#. Perform software and system updates: ::
+
+    # yum update
 
 .. note::
     It is advisable to set the same password for the *centreon* user during the web
@@ -65,7 +68,8 @@ Connect to your old Centreon server and synchronize following directories::
     Replace **IP_New_Centreon** by the IP or the new Centreon server.
 
 .. warning::
-    In case of migration from CES 3.4.x, Centreon-web 2.8.x under CentOS 6 with MariaDB 5.X, do not sync folders /var/lib/mysql with RSYNC toward Centreon 19.10 / MariaDB 10.3.
+    In case of migration from CES 3.4.x, Centreon-web 2.8.x under CentOS 6 with MariaDB 5.X, do not sync folders
+    /var/lib/mysql with RSYNC toward Centreon 19.10 / MariaDB 10.2.
     
     #. Dump source databases: ::
     
