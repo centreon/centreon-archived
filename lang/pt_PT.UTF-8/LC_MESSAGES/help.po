@@ -679,15 +679,32 @@ msgstr ""
 msgid "Authentication can be solely based on SSO or it can work with both SSO and local authentication systems."
 msgstr "A autenticação pode ser baseada somente no SSO ou pode funcionar tanto com o SSO quanto com um sistema de autenticação local."
 
-#: centreon-web/www/include/Administration/parameters/general/help.php:84
-msgid "IP/DNS of trusted clients. Use coma as delimiter in case of multiple clients."
-msgstr ""
-"Clientes confiáveis ​​de IP / DNS. \n"
-"Use vírgulas como separador para vários clientes"
+msgid "Enable login with Keycloak."
+msgstr "Ativa autenticação com Keycloak"
 
-#: centreon-web/www/include/Administration/parameters/general/help.php:88
+msgid "Authentication can be solely based on Keycloak or it can work with both Keycloak and local authentication systems."
+msgstr "A autenticação pode ser baseada exclusivamente no Keycloak ou pode funcionar com os sistemas de autenticação Keycloak e local."
+
+msgid "IP/DNS of trusted clients. Use coma as delimiter in case of multiple clients."
+msgstr "IP/DNS de clientes de confiança. Use virgula para delimitar em caso de multiplos clientes."
+
 msgid "IP/DNS of blacklist clients. Use coma as delimiter in case of multiple clients."
-msgstr "IP/DNS de clientes da lista negra. Use vírgula como delimitador no caso de vários clientes."
+msgstr "IP/DNS de clientes bloqueados. Use virgula para delimitar em caso de multiplos clientes."
+
+msgid "Your Keycloak server url (with \"/auth\")."
+msgstr "Seu endereço do servidor Keycloak (com \"/auth\")."
+
+msgid "Your Keycloak redirect url (this server)."
+msgstr "Seu endereço de redirecionamento Keycloak (este servidor)."
+
+msgid "Your Keycloak Realm name."
+msgstr "Seu nome de Dominio Keycloak"
+
+msgid "Your Keycloak client ID."
+msgstr "Sua identificação de cliente kaycloak"
+
+msgid "Your Keycloak client secret."
+msgstr "Seu segredo de cliente Keycloak"
 
 #: centreon-web/www/include/Administration/parameters/general/help.php:92
 msgid "The header variable that will be used as login. i.e: $_SERVER['HTTP_AUTH_USER']"

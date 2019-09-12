@@ -48,10 +48,6 @@ on the market; it is absolutely free and Open Souce.
 <a href="https://github.com/SylvestreG"><img src="https://avatars2.githubusercontent.com/u/3818949?s=400&v=4" title="Sylvestre Gallon" width="80" height="80"></a> &nbsp;
 <a href="https://github.com/Pontissalien"><img src="https://avatars3.githubusercontent.com/u/38663853?s=400&v=4" title="Thomas Arnaud" width="80" height="80"></a> &nbsp; <a href="https://github.com/agelibert"><img src="https://avatars1.githubusercontent.com/u/28709386?s=400&v=4" title="Adrien Gélibert" width="80" height="80"></a> &nbsp;
 
-<h4> Design </h4>
-
-<a href="https://github.com/EdytaSki"><img src="https://avatars2.githubusercontent.com/u/41005916?s=400&v=4" title="Edyta Skibinska" width="80" height="80"></a> &nbsp;
-
 <h4> Quality Assurance </h2>
 
 <a href="https://github.com/adr-mo "><img src="https://avatars2.githubusercontent.com/u/31647811?s=400&v=4" title="Adrien Morais" width="80" height="80"></a> &nbsp; <a href="https://github.com/thiuyendang"><img src="https://avatars2.githubusercontent.com/u/25612980?s=400&v=4" title="Thi Uyên Dang" width="80" height="80"></a> &nbsp;

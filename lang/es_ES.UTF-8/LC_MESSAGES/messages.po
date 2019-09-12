@@ -1286,8 +1286,7 @@ msgstr "aplicar"
 
 #: centreon-web/www/install/smarty_translate.php:159 centreon-web/www/include/home/customViews/views.php:115
 msgid "Deleting this view might impact other users. Are you sure you want to do it?"
-msgstr ""
-"Eliminar esta vista podría afectar a otros usuarios. \n"
+msgstr "Eliminar esta vista podría afectar a otros usuarios.\\n"
 "¿Estás seguro de que quieres hacer eso?"
 
 #: centreon-web/www/install/smarty_translate.php:162 centreon-web/www/include/Administration/performance/viewData.php:303
@@ -4957,11 +4956,35 @@ msgstr "Mostrar tiempos de parada y reconocimientos en ghraphics"
 
 #: centreon-web/www/include/Administration/parameters/general/form.php:173
 msgid "Display comment on chart"
-msgstr "Ver comentarios en la tabla"
+msgstr "Mostrar comentario en gráfico"
 
 #: centreon-web/www/include/Administration/parameters/general/form.php:189
 msgid "Enable SSO authentication"
 msgstr "Habilitar autenticación SSO"
+
+msgid "Are you sure you want to change this parameter? Please read the help before."
+msgstr "¿Seguro que quieres cambiar este parámetro? Por favor, lea la ayuda primero."
+
+msgid "Keycloak trusted client addresses"
+msgstr "Direcciones de confianza de SSO Keycloak"
+
+msgid "Keycloak blacklist client addresses"
+msgstr "Direcciones de clientes de cerraduras Keycloak"
+
+msgid "Keycloak Server Url"
+msgstr "URL de servidor Keycloak"
+
+msgid "Keycloak Redirect Url"
+msgstr "Dirección de redireccionamiento de Centreon a Keycloak"
+
+msgid "Keycloak Client Realm"
+msgstr "Dominio cliente Keycloak"
+
+msgid "Keycloak Client ID"
+msgstr "Identificación de cliente Keycloak"
+
+msgid "Keycloak Client Secret"
+msgstr "Secreto de cliente Keycloak"
 
 #: centreon-web/www/include/Administration/parameters/general/form.php:192
 msgid "SSO only"
@@ -5392,8 +5415,7 @@ msgstr ""
 
 #: centreon-web/www/include/home/customViews/views.php:114
 msgid "Deleting this widget might impact users with whom you are sharing this view. Are you sure you want to do it?"
-msgstr ""
-"La eliminación de este widget podría afectar a los usuarios con los que comparte esta vista. \n"
+msgstr "La eliminación de este widget podría afectar a los usuarios con los que comparte esta vista.\\n"
 "¿Estás seguro de que quieres hacer eso?"
 
 #: centreon-web/www/include/home/customViews/views.php:116
