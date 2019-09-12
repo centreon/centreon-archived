@@ -1,7 +1,7 @@
 <?php
 /*
  * Copyright 2005-2019 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -34,44 +34,53 @@
  *
  */
 
-namespace Centreon\Tests\Application\Webservice;
+namespace CentreonUser\Tests;
 
 use PHPUnit\Framework\TestCase;
-//use Pimple\Container;
-use Centreon\Application\Webservice\OpenApiWebservice;
+use Pimple\Container;
+use CentreonUser\ServiceProvider;
+use Centreon\Tests\Resource\Traits\WebserviceTrait;
+use CentreonUser\Application\Webservice;
 
-class OpenApiWebservice2Test extends TestCase
+/**
+ * @group CentreonUser
+ * @group ServiceProvider
+ */
+class ServiceProviderTest extends TestCase
 {
 
-//    public function setUp()
-//    {
-//        // dependencies
-//        $container = new Container;
-//
-//        $this->webservice = $this->createPartialMock(OpenApiWebservice::class, [
-//            'loadDb',
-//            'loadArguments',
-//            'loadToken',
-//        ]);
-//
-//        // load dependencies
-//        $this->webservice->setDi($container);
-//    }
-//
-//    /**
-//     * @covers \Centreon\Application\Webservice\OpenApiWebservice::authorize
-//     */
-//    public function testAuthorize()
-//    {
-//        $result = $this->webservice->authorize(null, null);
-//        $this->assertTrue($result);
-//    }
+    use WebserviceTrait;
+
+    protected $container;
+    protected $provider;
+
+    protected function setUp()
+    {
+        $this->provider = new ServiceProvider();
+        $this->container = new Container;
+
+        $this->setUpWebservice($this->container);
+
+        $this->provider->register($this->container);
+    }
 
     /**
-     * @ covers \Centreon\Application\Webservice\OpenApiWebservice::getName
+     * @covers \CentreonUser\ServiceProvider::register
      */
-    public function testGetName()
+    public function testWebservices()
     {
-        $this->assertEquals('openapi', OpenApiWebservice::getName());
+        $checkList = [
+            Webservice\CentreonTimeperiodWebservice::class,
+        ];
+
+        $this->checkWebservices($checkList);
+    }
+
+    /**
+     * @covers \CentreonUser\ServiceProvider::order
+     */
+    public function testOrder()
+    {
+        $this->assertEquals(51, $this->provider::order());
     }
 }

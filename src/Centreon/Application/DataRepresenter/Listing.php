@@ -1,7 +1,7 @@
 <?php
 /*
  * Copyright 2005-2019 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -82,7 +82,7 @@ class Listing implements JsonSerializable
     /**
      * Construct
      *
-     * @param \CentreonModule\Infrastructure\Entity\Module $entity
+     * @param mixed $entities
      * @param string $entityClass Entity JSON wrap class
      * @param int $total
      * @param int $offset

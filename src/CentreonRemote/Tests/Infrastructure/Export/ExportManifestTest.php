@@ -174,6 +174,7 @@ class ExportManifestTest extends TestCase
     {
         $this->manifest->dump();
 
+        // @todo value of DateTime has to be more stable to prevent a random result
         $this->assertEquals([
             $this->manifest->getFile() => [
                 'version' => $this->version,
