@@ -22,6 +22,7 @@ namespace ConfigGenerateRemote\Abstracts;
 
 use \Exception;
 use ConfigGenerateRemote\Backend;
+use ConfigGenerateRemote\Manifest;
 
 abstract class AbstractObject
 {

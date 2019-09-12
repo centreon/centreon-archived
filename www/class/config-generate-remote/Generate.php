@@ -160,14 +160,14 @@ class Generate
             $this->getPollerFromId($remoteServerId);
             $this->currentPoller['localhost'] = 1;
             $this->configPoller($username);
-            nagiosServer::getInstance($this->dependencyInjector)->add($this->currentPoller, $remoteServerId);
+            Relations\NagiosServer::getInstance($this->dependencyInjector)->add($this->currentPoller, $remoteServerId);
 
             $pollers = $this->getPollersFromRemote($remoteServerId);
             foreach ($pollers as $poller) {
                 $poller['localhost'] = 0;
                 $this->currentPoller = $poller;
                 $this->configPoller($username);
-                nagiosServer::getInstance($this->dependencyInjector)->add($poller, $poller['id']);
+                Relations\NagiosServer::getInstance($this->dependencyInjector)->add($poller, $poller['id']);
                 Manifest::getInstance($this->dependencyInjector)->addPoller($poller['id']);
             }
 

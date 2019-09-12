@@ -20,15 +20,18 @@
 
 namespace CentreonRemote\Infrastructure\Service;
 
-use Psr\Container\ContainerInterface;
+use Pimple\Container;
 use CentreonRemote\Infrastructure\Service\ExporterCacheService;
 use CentreonRemote\Infrastructure\Service\ExporterServiceInterface;
 use CentreonRemote\Infrastructure\Export\ExportCommitment;
 use CentreonRemote\Infrastructure\Export\ExportManifest;
-use Centreon\Infrastructure\Service\CentcoreConfigService;
 
 abstract class ExporterServiceAbstract implements ExporterServiceInterface
 {
+    /**
+     * @var Container $dependencyInjector
+     */
+    protected $dependencyInjector;
 
     /**
      * @var \Centreon\Infrastructure\Service\CentreonDBManagerService
@@ -53,15 +56,13 @@ abstract class ExporterServiceAbstract implements ExporterServiceInterface
     /**
      * Construct
      *
-     * @param \Psr\Container\ContainerInterface $services
+     * @param Container $services
      */
-    public function __construct(ContainerInterface $services)
+    public function __construct(Container $services)
     {
-        $this->db = $services->get(\Centreon\ServiceProvider::CENTREON_DB_MANAGER);
-
-        if ($services->has('centreon.config')) {
-            $this->config = $services->get('centreon.config');
-        }
+        $this->dependencyInjector = $services;
+        $this->db = $services['centreon.db-manager'];
+        $this->config = $services['centreon.config'];
     }
 
     public function setCache(ExporterCacheService $cache): void

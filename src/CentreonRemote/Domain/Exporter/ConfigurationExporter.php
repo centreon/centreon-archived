@@ -20,6 +20,7 @@
 
 namespace CentreonRemote\Domain\Exporter;
 
+use Pimple\Container;
 use CentreonRemote\Infrastructure\Export\ExportManifest;
 use CentreonRemote\Infrastructure\Service\ExporterServiceAbstract;
 
@@ -34,6 +35,7 @@ class ConfigurationExporter extends ExporterServiceAbstract
     /**
      * Set generate service
      *
+     * @param Container $dependencyInjector
      * @param \ConfigGenerateRemote\Generate $generateService
      * @return void
      */
@@ -52,7 +54,7 @@ class ConfigurationExporter extends ExporterServiceAbstract
 
         $this->generateService->configRemoteServerFromId($remoteId, 'user');
 
-        return Manifest::getInstance($dependencyInjector)->getManifest();
+        return Manifest::getInstance($this->dependencyInjector)->getManifest();
     }
 
     /**

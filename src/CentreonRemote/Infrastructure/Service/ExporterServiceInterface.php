@@ -20,14 +20,14 @@
 
 namespace CentreonRemote\Infrastructure\Service;
 
-use Psr\Container\ContainerInterface;
+use Pimple\Container;
 use CentreonRemote\Infrastructure\Export\ExportCommitment;
 use CentreonRemote\Infrastructure\Export\ExportManifest;
 
 interface ExporterServiceInterface
 {
 
-    public function __construct(ContainerInterface $services);
+    public function __construct(Container $services);
 
     public function setCommitment(ExportCommitment $commitment): void;
 

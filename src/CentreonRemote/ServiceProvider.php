@@ -161,12 +161,7 @@ class ServiceProvider implements AutoloadServiceProviderInterface
         $pimple['centreon_remote.exporter']->add(
             Domain\Exporter\ConfigurationExporter::class,
             function () use ($pimple) {
-                $services = [
-                    \Centreon\ServiceProvider::CENTREON_DB_MANAGER,
-                ];
-
-                $locator = new ServiceLocator($pimple, $services);
-                $service = new Domain\Exporter\ConfigurationExporter($locator);
+                $service = new Domain\Exporter\ConfigurationExporter($pimple);
 
                 $generateService = new Generate($pimple);
                 $service->setGenerateService($generateService);

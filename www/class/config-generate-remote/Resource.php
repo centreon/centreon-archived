@@ -56,7 +56,7 @@ class Resource extends AbstractObject
         $this->stmt->execute();
 
         foreach ($this->stmt->fetchAll(PDO::FETCH_ASSOC) as $value) {
-            cfgResourceInstanceRelation::getInstance($this->dependencyInjector)
+            Relations\CfgResourceInstanceRelation::getInstance($this->dependencyInjector)
                 ->addRelation($value['resource_id'], $pollerId);
             if ($this->checkGenerate($value['resource_id'])) {
                 continue;
