@@ -56,10 +56,10 @@ if ($cache['value']) {
             if ($port['value']) {
                 $query = 'INSERT INTO cfg_centreonbroker_info (config_id, config_key, config_value, '
                     . 'config_group, config_group_id ) VALUES '
-                    . '( ' . $row['config_id'] . ',"rrd_cached_option","tcp",'
-                    . $row['config_group'] . ',' . $row['config_group_id'] . ' ),'
-                    . '( ' . $row['config_id'] . ',"rrd_cached","' . $port['value'] . '",'
-                    . $row['config_group'] . ',' . $row['config_group_id'] . ' )';
+                    . '( ' . $row['config_id'] . ',"rrd_cached_option","tcp", "'
+                    . $row['config_group'] . '",' . $row['config_group_id'] . ' ),'
+                    . '( ' . $row['config_id'] . ',"rrd_cached","' . $port['value'] . '","'
+                    . $row['config_group'] . '",' . $row['config_group_id'] . ' )';
                 $pearDB->query($query);
             } else {
                 $result = $pearDB->query("SELECT `value` FROM options WHERE `key` = 'rrdcached_unix_path' ");
@@ -67,10 +67,10 @@ if ($cache['value']) {
 
                 $query = 'INSERT INTO cfg_centreonbroker_info (config_id, config_key, config_value, '
                     . 'config_group, config_group_id ) VALUES '
-                    . '( ' . $row['config_id'] . ',"rrd_cached_option","unix",'
-                    . $row['config_group'] . ',' . $row['config_group_id'] . ' ),'
-                    . '( ' . $row['config_id'] . ',"rrd_cached","' . $path['value'] . '",'
-                    . $row['config_group'] . ',' . $row['config_group_id'] . ' )';
+                    . '( ' . $row['config_id'] . ',"rrd_cached_option","unix","'
+                    . $row['config_group'] . '",' . $row['config_group_id'] . ' ),'
+                    . '( ' . $row['config_id'] . ',"rrd_cached","' . $path['value'] . '","'
+                    . $row['config_group'] . '",' . $row['config_group_id'] . ' )';
                 $pearDB->query($query);
             }
         }
