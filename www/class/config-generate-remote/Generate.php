@@ -30,7 +30,7 @@ if ($configFile !== false) {
 }
 
 require_once __DIR__ . '/Backend.php';
-require_once __DIR__ . '/Abstracts/Object.php';
+require_once __DIR__ . '/Abstracts/AbstractObject.php';
 require_once __DIR__ . '/HostTemplate.php';
 require_once __DIR__ . '/Command.php';
 require_once __DIR__ . '/TimePeriod.php';
