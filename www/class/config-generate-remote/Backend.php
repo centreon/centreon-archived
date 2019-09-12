@@ -1,7 +1,7 @@
 <?php
 /*
  * Copyright 2005 - 2019 Centreon (https://www.centreon.com/)
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -31,7 +31,6 @@ if ($configFile !== false) {
 class Backend
 {
     private static $_instance = null;
-    public $generatePath = '/usr/share/centreon/filesGeneration/export';
     public $db = null;
     public $dbCs = null;
 
@@ -40,7 +39,6 @@ class Backend
     private $fieldSeparatorInfile = '~~~';
     private $lineSeparatorInfile = '######';
 
-    private $tmpDirSuffix = '.d';
     private $tmpDirPrefix = 'tmpdir_';
 
     private $tmpFile = null;
@@ -53,6 +51,24 @@ class Backend
     private $pollerId = null;
     private $centralPollerId = null;
 
+    /**
+     * Constructor
+     *
+     * @param \Pimple\Container $dependencyInjector
+     */
+    private function __construct(\Pimple\Container $dependencyInjector)
+    {
+        $this->generate_path = _CENTREON_CACHEDIR_ . '/config';
+        $this->db = $dependencyInjector['configuration_db'];
+        $this->db_cs = $dependencyInjector['realtime_db'];
+    }
+
+    /**
+     * Get backend singleton
+     *
+     * @param \Pimple\Container $dependencyInjector
+     * @return void
+     */
     public static function getInstance(\Pimple\Container $dependencyInjector)
     {
         if (is_null(self::$_instance)) {
@@ -62,7 +78,13 @@ class Backend
         return self::$_instance;
     }
 
-    private function deleteDir($path)
+    /**
+     * Delete directory recursively
+     *
+     * @param string $path
+     * @return bool
+     */
+    private function deleteDir(?string $path): bool
     {
         if (is_dir($path) === true) {
             $files = array_diff(scandir($path), ['.', '..']);
@@ -78,7 +100,13 @@ class Backend
         return false;
     }
 
-    public function createDirectories($paths)
+    /**
+     * Create multiple directories
+     *
+     * @param array $paths
+     * @return string created directory path
+     */
+    public function createDirectories(array $paths)
     {
         $dir = '';
         $dirAppend = '';
@@ -100,12 +128,23 @@ class Backend
         return $dir;
     }
 
+    /**
+     * generatePath getter
+     *
+     * @return string
+     */
     public function getEngineGeneratePath()
     {
         return $this->generatePath . '/' . $this->engine_sub;
     }
 
-    public function initPath($pollerId, $engine = 1)
+    /**
+     * Create directories to generation configuration
+     *
+     * @param int $pollerId
+     * @return void
+     */
+    public function initPath(int $pollerId)
     {
         $this->createDirectories([$this->generatePath]);
         $this->fullPath = $this->generatePath;
@@ -120,7 +159,7 @@ class Backend
         $this->tmpFile = basename(tempnam($this->fullPath, $this->tmpDirPrefix));
         $this->tmpDir = $this->tmpFile . $this->tmpDir_suffix;
         if (!mkdir($this->fullPath . '/' . $this->tmpDir, 0770, true)) {
-            throw new Exception("Cannot create directory '" . $dir . "'");
+            throw new Exception("Cannot create directory '" . $this->fullPath . '/' . $this->tmpDir . "'");
         }
         $this->fullPath .= '/' . $this->tmpDir;
         foreach ($this->subdirs as $subdir) {
@@ -128,27 +167,53 @@ class Backend
         }
     }
 
+    /**
+     * fieldSeparatorInfile getter
+     *
+     * @return void
+     */
     public function getFieldSeparatorInfile()
     {
         return $this->fieldSeparatorInfile;
     }
 
+    /**
+     * lineSeparatorInfile getter
+     *
+     * @return void
+     */
     public function getLineSeparatorInfile()
     {
         return $this->lineSeparatorInfile;
     }
 
+    /**
+     * exportContact getter
+     *
+     * @return boolean
+     */
     public function isExportContact()
     {
         return $this->exportContact;
     }
 
+    /**
+     * fullPath getter
+     *
+     * @return void
+     */
     public function getPath()
     {
         return $this->fullPath;
     }
 
-    public function movePath($pollerId)
+    /**
+     * Move poller directory
+     *
+     * @param integer $pollerId
+     * @return void
+     */
+    public function movePath(int $pollerId)
     {
         $subdir = dirname($this->fullPath);
         $this->deleteDir($subdir . '/' . $pollerId);
@@ -156,6 +221,11 @@ class Backend
         rename($this->fullPath, $subdir . '/' . $pollerId);
     }
 
+    /**
+     * Clean directory and files
+     *
+     * @return void
+     */
     public function cleanPath()
     {
         $subdir = dirname($this->fullPath);
@@ -166,27 +236,54 @@ class Backend
         @unlink($subdir . '/' . $this->tmpFile);
     }
 
-    public function setUserName($username)
+    /**
+     * username setter
+     *
+     * @param string $username
+     * @return void
+     */
+    public function setUserName(string $username)
     {
         $this->whoaim = $username;
     }
 
-    public function getUserName()
+    /**
+     * username getter
+     *
+     * @return string
+     */
+    public function getUserName(): string
     {
         return $this->whoaim;
     }
 
-    public function setPollerId($pollerId)
+    /**
+     * poller id setter
+     *
+     * @param integer $pollerId
+     * @return void
+     */
+    public function setPollerId(int $pollerId)
     {
         $this->pollerId = $pollerId;
     }
 
-    public function getPollerId()
+    /**
+     * poller id getter
+     *
+     * @return int
+     */
+    public function getPollerId(): int
     {
         return $this->pollerId;
     }
 
-    public function getCentralPollerId()
+    /**
+     * Get id of central server
+     *
+     * @return int
+     */
+    public function getCentralPollerId(): int
     {
         if (!is_null($this->centralPollerId)) {
             return $this->centralPollerId;
@@ -203,12 +300,5 @@ class Backend
         } else {
             throw new Exception("Cannot get central poller id");
         }
-    }
-
-    private function __construct(\Pimple\Container $dependencyInjector)
-    {
-        #$this->generatePath = _CENTREON_PATH_ . '/filesGeneration';
-        $this->db = $dependencyInjector['configuration_db'];
-        $this->db_cs = $dependencyInjector['realtime_db'];
     }
 }
