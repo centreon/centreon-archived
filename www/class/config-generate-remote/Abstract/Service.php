@@ -1,7 +1,7 @@
 <?php
 /*
  * Copyright 2005 - 2019 Centreon (https://www.centreon.com/)
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -80,7 +80,7 @@ abstract class AbstractService extends AbstractObject
         'service_register',
         'service_acknowledgement_timeout',
     );
-    protected $loopStpl = array(); # To be reset
+    protected $loopStpl = array(); // To be reset
     protected $stmtMacro = null;
     protected $stmtStpl = null;
     protected $stmtContact = null;
@@ -141,7 +141,8 @@ abstract class AbstractService extends AbstractObject
         $service['contacts_cache'] = $contact->getContactForService($service['service_id']);
         foreach ($service['contacts_cache'] as $contactId) {
             $contact->generateFromContactId($contactId);
-            contactServiceRelation::getInstance($this->dependencyInjector)->addRelation($service['service_id'], $contactId);
+            contactServiceRelation::getInstance($this->dependencyInjector)
+                ->addRelation($service['service_id'], $contactId);
         }
     }
 
@@ -151,7 +152,8 @@ abstract class AbstractService extends AbstractObject
         $service['contact_groups_cache'] = $cg->getCgForService($service['service_id']);
         foreach ($service['contact_groups_cache'] as $cgId) {
             $cg->generateFromCgId($cgId);
-            contactgroupServiceRelation::getInstance($this->dependencyInjector)->addRelation($service['service_id'], $cgId);
+            contactgroupServiceRelation::getInstance($this->dependencyInjector)
+                ->addRelation($service['service_id'], $cgId);
         }
     }
 

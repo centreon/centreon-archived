@@ -1,7 +1,7 @@
 <?php
 /*
  * Copyright 2005 - 2019 Centreon (https://www.centreon.com/)
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -22,7 +22,7 @@ namespace ConfigGenerateRemote;
 
 use \PDO;
 
-class hostCategory extends AbstractObject
+class HostCategory extends AbstractObject
 {
     private $useCache = 1;
     private $doneCache = 0;
@@ -51,11 +51,11 @@ class hostCategory extends AbstractObject
 
     private function cacheHostSeverity()
     {
-        $stmt = $this->backendInstance->db->prepare("SELECT 
-                    hc_name, hc_alias, hc_id, level, icon_id
-                FROM hostcategories
-                WHERE level IS NOT NULL AND hc_activate = '1'
-        ");
+        $stmt = $this->backendInstance->db->prepare(
+            "SELECT hc_name, hc_alias, hc_id, level, icon_id
+            FROM hostcategories
+            WHERE level IS NOT NULL AND hc_activate = '1'"
+        );
 
         $stmt->execute();
         $values = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -93,8 +93,10 @@ class hostCategory extends AbstractObject
         # Get from the cache
         if (isset($this->hostLinkedCache[$hostId])) {
             if (!$this->checkGenerate($this->hostLinkedCache[$hostId])) {
-                $this->generateObjectInFile($this->hostSeverityCache[$this->hostLinkedCache[$hostId]],
-                    $this->hostLinkedCache[$hostId]);
+                $this->generateObjectInFile(
+                    $this->hostSeverityCache[$this->hostLinkedCache[$hostId]],
+                    $this->hostLinkedCache[$hostId]
+                );
                 Media::getInstance($this->dependencyInjector)
                     ->getMediaPathFromId($this->hostSeverityCache[$this->hostLinkedCache[$hostId]]['icon_id']);
             }
@@ -106,15 +108,15 @@ class hostCategory extends AbstractObject
 
         # We get unitary
         if (is_null($this->stmtHost)) {
-            $this->stmtHost = $this->backendInstance->db->prepare("SELECT 
-                    hc_id, hc_name, hc_alias, level, icon_id
+            $this->stmtHost = $this->backendInstance->db->prepare(
+                "SELECT hc_id, hc_name, hc_alias, level, icon_id
                 FROM hostcategories_relation, hostcategories
-                WHERE hostcategories_relation.host_host_id = :host_id 
+                WHERE hostcategories_relation.host_host_id = :host_id
                     AND hostcategories_relation.hostcategories_hc_id = hostcategories.hc_id
                     AND level IS NOT NULL AND hc_activate = '1'
                 ORDER BY level DESC
-                LIMIT 1
-                ");
+                LIMIT 1"
+            );
         }
 
         $this->stmtHost->bindParam(':host_id', $hostId, PDO::PARAM_INT);
@@ -124,7 +126,7 @@ class hostCategory extends AbstractObject
             $this->hostLinkedCache[$hostId] = null;
             return null;
         }
-        $this->hostLinkedCache[$serviceId] = $severity['hc_id'];
+        $this->hostLinkedCache[$hostId] = $severity['hc_id'];
         $this->hostSeverityCache[$severity['hc_id']] = &$severity;
 
         $this->generateObjectInFile($severity, $severity['hc_id']);

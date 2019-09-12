@@ -141,7 +141,7 @@ class Host extends AbstractHost
 
     protected function getSeverity($hostIdArg)
     {
-        $severityId = hostCategory::getInstance($this->dependencyInjector)->getHostSeverityByHostId($hostIdArg);
+        $severityId = HostCategory::getInstance($this->dependencyInjector)->getHostSeverityByHostId($hostIdArg);
         if (!is_null($severityId)) {
             hostcategoriesRelation::getInstance($this->dependencyInjector)->addRelation($severityId, $hostIdArg);
         }
@@ -202,7 +202,7 @@ class Host extends AbstractHost
             $this->getHosts($pollerId);
         }
 
-        Service::getInstance($this->dependencyInjector)->set_poller($pollerId);
+        Service::getInstance($this->dependencyInjector)->setPoller($pollerId);
 
         foreach ($this->hosts as $hostId => &$host) {
             $this->hostsByName[$host['host_name']] = $hostId;

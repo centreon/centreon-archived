@@ -1,7 +1,7 @@
 <?php
 /*
  * Copyright 2005 - 2019 Centreon (https://www.centreon.com/)
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -22,7 +22,6 @@ namespace CentreonRemote\Domain\Exporter;
 
 use CentreonRemote\Infrastructure\Export\ExportManifest;
 use CentreonRemote\Infrastructure\Service\ExporterServiceAbstract;
-use Centreon\Domain\Repository;
 
 use ConfigGenerateRemote\Manifest;
 
@@ -85,11 +84,13 @@ class ConfigurationExporter extends ExporterServiceAbstract
                 // insert data
                 $exportPathFile = $this->getFile($data[filename]);
                 echo date("Y-m-d H:i:s") . " - INFO - Loading '" . $exportPathFile . "'.\n";
-                $db->loadDataInfile($exportPathFile,
+                $db->loadDataInfile(
+                    $exportPathFile,
                     $data[table],
                     $import[infile_clauses][fields_clause],
                     $import[infile_clauses][lines_clause],
-                    $data[columns]);
+                    $data[columns]
+                );
             }
 
             // restore foreign key checks

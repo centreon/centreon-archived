@@ -30,7 +30,7 @@ if ($configFile !== false) {
 
 class Backend
 {
-    private static $_instance = null;
+    private static $instance = null;
     public $db = null;
     public $dbCs = null;
 
@@ -71,11 +71,11 @@ class Backend
      */
     public static function getInstance(\Pimple\Container $dependencyInjector)
     {
-        if (is_null(self::$_instance)) {
-            self::$_instance = new Backend($dependencyInjector);
+        if (is_null(self::$instance)) {
+            self::$instance = new Backend($dependencyInjector);
         }
 
-        return self::$_instance;
+        return self::$instance;
     }
 
     /**

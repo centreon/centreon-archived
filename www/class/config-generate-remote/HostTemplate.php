@@ -126,7 +126,7 @@ class HostTemplate extends AbstractHost
         }
 
         $this->hosts[$hostId]['severity_id'] =
-            hostCategory::getInstance($this->dependencyInjector)->getHostSeverityByHostId($hostId);
+            HostCategory::getInstance($this->dependencyInjector)->getHostSeverityByHostId($hostId);
         if (!is_null($this->hosts[$hostId]['severity_id'])) {
             hostcategoriesRelation::getInstance($this->dependencyInjector)
                 ->addRelation($this->hosts[$hostId]['severity_id'], $hostId);

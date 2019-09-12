@@ -1,7 +1,7 @@
 <?php
 /*
  * Copyright 2005 - 2019 Centreon (https://www.centreon.com/)
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -65,8 +65,10 @@ class Media extends AbstractObject
     protected function copyMedia($dir, $file)
     {
         $this->backendInstance->createDirectories([$this->backendInstance->getPath() . '/media/' . $dir]);
-        @copy($this->pathImg . '/' . $dir . '/' . $file,
-            $this->backendInstance->getPath() . '/media/' . $dir . '/' . $file);
+        @copy(
+            $this->pathImg . '/' . $dir . '/' . $file,
+            $this->backendInstance->getPath() . '/media/' . $dir . '/' . $file
+        );
     }
 
     public function getMediaPathFromId($mediaId)

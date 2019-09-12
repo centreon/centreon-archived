@@ -1,7 +1,7 @@
 <?php
 /*
  * Copyright 2005 - 2019 Centreon (https://www.centreon.com/)
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -64,10 +64,10 @@ abstract class AbstractObject
 
     public function __destruct()
     {
-        $this->close_file();
+        $this->closeFile();
     }
 
-    public function close_file()
+    public function closeFile()
     {
         if (!is_null($this->fp)) {
             fclose($this->fp);
@@ -77,7 +77,7 @@ abstract class AbstractObject
 
     public function reset($createfile = false)
     {
-        $this->close_file();
+        $this->closeFile();
         $this->exported = [];
         if ($createfile == true) {
             $this->createFile($this->backendInstance->getPath());

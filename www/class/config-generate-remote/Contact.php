@@ -1,7 +1,7 @@
 <?php
 /*
  * Copyright 2005 - 2019 Centreon (https://www.centreon.com/)
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -67,23 +67,33 @@ class Contact extends AbstractObject
     protected $stmtCommands = ['host' => null, 'service' => null];
     protected $stmtContactService = null;
 
+    /**
+     * Store contacts in cache
+     *
+     * @return void
+     */
     private function getContactCache()
     {
-        $stmt = $this->backendInstance->db->prepare("SELECT 
-                    $this->attributesSelect
+        $stmt = $this->backendInstance->db->prepare(
+               "SELECT $this->attributesSelect
                 FROM contact
-                WHERE contact_activate = '1'
-        ");
+                WHERE contact_activate = '1'"
+        );
         $stmt->execute();
         $this->contactsCache = $stmt->fetchAll(PDO::FETCH_GROUP | PDO::FETCH_UNIQUE | PDO::FETCH_ASSOC);
     }
 
+    /**
+     * Store contacts linked to a service in cache
+     *
+     * @return void
+     */
     private function getContactForServiceCache()
     {
-        $stmt = $this->backendInstance->db->prepare("SELECT 
-                    contact_id, service_service_id
-                FROM contact_service_relation
-        ");
+        $stmt = $this->backendInstance->db->prepare(
+               "SELECT contact_id, service_service_id
+                FROM contact_service_relation"
+        );
         $stmt->execute();
         foreach ($stmt->fetchAll(PDO::FETCH_ASSOC) as $value) {
             if (isset($this->contactsServiceLinkedCache[$value['service_service_id']])) {
@@ -94,7 +104,13 @@ class Contact extends AbstractObject
         }
     }
 
-    public function getContactForService($serviceId)
+    /**
+     * Get contact information linked to a service id
+     *
+     * @param integer $serviceId
+     * @return array
+     */
+    public function getContactForService(int $serviceId): array
     {
         $this->buildCache();
 
@@ -107,11 +123,11 @@ class Contact extends AbstractObject
         }
 
         if (is_null($this->stmtContactService)) {
-            $this->stmtContactService = $this->backendInstance->db->prepare("SELECT 
-                    contact_id
+            $this->stmtContactService = $this->backendInstance->db->prepare(
+                "SELECT contact_id
                 FROM contact_service_relation
-                WHERE service_service_id = :service_id
-            ");
+                WHERE service_service_id = :service_id"
+            );
         }
 
         $this->stmtContactService->bindParam(':service_id', $serviceId, PDO::PARAM_INT);
@@ -120,14 +136,20 @@ class Contact extends AbstractObject
         return $this->contactsServiceLinkedCache[$serviceId];
     }
 
-    protected function getContactFromId($contactId)
+    /**
+     * Store contact in contacts cache
+     *
+     * @param int $contactId
+     * @return void
+     */
+    protected function getContactFromId(int $contactId)
     {
         if (is_null($this->stmtContact)) {
-            $this->stmtContact = $this->backendInstance->db->prepare("SELECT 
-                    $this->attributesSelect
+            $this->stmtContact = $this->backendInstance->db->prepare(
+                "SELECT $this->attributesSelect
                 FROM contact
-                WHERE contact_id = :contact_id AND contact_activate = '1'
-            ");
+                WHERE contact_id = :contact_id AND contact_activate = '1'"
+            );
         }
         $this->stmtContact->bindParam(':contact_id', $contactId, PDO::PARAM_INT);
         $this->stmtContact->execute();
@@ -138,15 +160,28 @@ class Contact extends AbstractObject
         }
     }
 
-    protected function getContactNotificationCommands($contactId, $label, $instance)
+    /**
+     * Generate notification commands linked to contact id
+     *
+     * @param integer $contactId
+     * @param string $label
+     * @param object $instance
+     * @return void|null
+     */
+    protected function getContactNotificationCommands(int $contactId, string $label, object $instance)
     {
+        // avoid sql injection with label
+        if (in_array($label, ['host', 'service'])) {
+            return null;
+        }
+
         if (!isset($this->contacts[$contactId][$label . '_commands_cache'])) {
             if (is_null($this->stmtCommands[$label])) {
-                $this->stmtCommands[$label] = $this->backendInstance->db->prepare("SELECT 
-                        command_command_id
+                $this->stmtCommands[$label] = $this->backendInstance->db->prepare(
+                    "SELECT command_command_id
                     FROM contact_" . $label . "commands_relation
-                    WHERE contact_contact_id = :contact_id
-                ");
+                    WHERE contact_contact_id = :contact_id"
+                );
             }
             $this->stmtCommands[$label]->bindParam(':contact_id', $contactId, PDO::PARAM_INT);
             $this->stmtCommands[$label]->execute();
@@ -161,7 +196,12 @@ class Contact extends AbstractObject
         }
     }
 
-    protected function buildCache()
+    /**
+     * Build contact cache
+     *
+     * @return integer|null
+     */
+    protected function buildCache(): ?int
     {
         if ($this->doneCache == 1) {
             return 0;
@@ -172,7 +212,13 @@ class Contact extends AbstractObject
         $this->doneCache = 1;
     }
 
-    public function generateFromContactId($contactId)
+    /**
+     * Generation configuration from a contact id
+     *
+     * @param integer $contactId
+     * @return string|null the contact name or alias
+     */
+    public function generateFromContactId(int $contactId): ?string
     {
         if (is_null($contactId)) {
             return null;
@@ -199,12 +245,16 @@ class Contact extends AbstractObject
         }
 
         $this->generateFromContactId($this->contacts[$contactId]['contact_template_id']);
-        $this->getContactNotificationCommands($contactId,
+        $this->getContactNotificationCommands(
+            $contactId,
             'host',
-            contactHostcommandsRelation::getInstance($this->dependencyInjector));
-        $this->getContactNotificationCommands($contactId,
+            contactHostcommandsRelation::getInstance($this->dependencyInjector)
+        );
+        $this->getContactNotificationCommands(
+            $contactId,
             'service',
-            contactServicecommandsRelation::getInstance($this->dependencyInjector));
+            contactServicecommandsRelation::getInstance($this->dependencyInjector)
+        );
 
         $period = Timeperiod::getInstance($this->dependencyInjector);
         $period->generateFromTimeperiodId($this->contacts[$contactId]['timeperiod_tp_id']);
@@ -215,13 +265,5 @@ class Contact extends AbstractObject
         return $this->contacts[$contactId]['contact_register'] == 1
             ? $this->contacts[$contactId]['contact_name']
             : $this->contacts[$contactId]['contact_alias'];
-    }
-
-    public function isTemplate($contactId)
-    {
-        if ($this->contacts[$contactId]['contact_register'] == 0) {
-            return 1;
-        }
-        return 0;
     }
 }

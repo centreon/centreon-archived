@@ -1,7 +1,7 @@
 <?php
 /*
  * Copyright 2005 - 2019 Centreon (https://www.centreon.com/)
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -52,11 +52,11 @@ class ServiceCategory extends AbstractObject
 
     private function cacheServiceSeverity()
     {
-        $stmt = $this->backendInstance->db->prepare("SELECT 
-                    sc_name, sc_id, level, icon_id
+        $stmt = $this->backendInstance->db->prepare(
+               "SELECT sc_name, sc_id, level, icon_id
                 FROM service_categories
-                WHERE level IS NOT NULL AND sc_activate = '1'
-        ");
+                WHERE level IS NOT NULL AND sc_activate = '1'"
+        );
 
         $stmt->execute();
         $values = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -120,8 +120,10 @@ class ServiceCategory extends AbstractObject
         # Get from the cache
         if (isset($this->serviceLinkedCache[$serviceId])) {
             if (!$this->checkGenerate($this->serviceLinkedCache[$serviceId])) {
-                $this->generateObjectInFile($this->serviceSeverityCache[$this->serviceLinkedCache[$serviceId]],
-                    $this->serviceLinkedCache[$serviceId]);
+                $this->generateObjectInFile(
+                    $this->serviceSeverityCache[$this->serviceLinkedCache[$serviceId]],
+                    $this->serviceLinkedCache[$serviceId]
+                );
                 Media::getInstance($this->dependencyInjector)
                     ->getMediaPathFromId($this->serviceSeverityCache[$this->serviceLinkedCache[$serviceId]]['icon_id']);
             }
@@ -133,15 +135,15 @@ class ServiceCategory extends AbstractObject
 
         # We get unitary
         if (is_null($this->stmtService)) {
-            $this->stmtService = $this->backendInstance->db->prepare("SELECT 
-                    service_categories.sc_id, sc_name, level, icon_id
+            $this->stmtService = $this->backendInstance->db->prepare(
+                "SELECT service_categories.sc_id, sc_name, level, icon_id
                 FROM service_categories_relation, service_categories
-                WHERE service_categories_relation.service_service_id = :service_id 
+                WHERE service_categories_relation.service_service_id = :service_id
                     AND service_categories_relation.sc_id = service_categories.sc_id
                     AND level IS NOT NULL AND sc_activate = '1'
                 ORDER BY level DESC
-                LIMIT 1
-                ");
+                LIMIT 1"
+            );
         }
 
         $this->stmtService->bindParam(':service_id', $serviceId, PDO::PARAM_INT);
@@ -185,11 +187,11 @@ class ServiceCategory extends AbstractObject
 
         # We get unitary
         if (is_null($this->stmtHcName)) {
-            $this->stmtHcName = $this->backendInstance->db->prepare("SELECT 
-                    sc_name, sc_id, level
+            $this->stmtHcName = $this->backendInstance->db->prepare(
+                "SELECT sc_name, sc_id, level
                 FROM service_categories
-                WHERE sc_name = :sc_name AND level IS NOT NULL AND sc_activate = '1'
-                ");
+                WHERE sc_name = :sc_name AND level IS NOT NULL AND sc_activate = '1'"
+            );
         }
 
         $this->stmtHcName->bindParam(':sc_name', $hcName, PDO::PARAM_STR);

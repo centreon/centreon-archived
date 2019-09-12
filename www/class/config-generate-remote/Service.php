@@ -1,7 +1,7 @@
 <?php
 /*
  * Copyright 2005 - 2019 Centreon (https://www.centreon.com/)
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -199,7 +199,7 @@ class Service extends AbstractService
         return $this->serviceCache[$serviceId]['service_description'];
     }
 
-    public function set_poller($pollerId)
+    public function setPoller($pollerId)
     {
         $this->pollerId = $pollerId;
     }

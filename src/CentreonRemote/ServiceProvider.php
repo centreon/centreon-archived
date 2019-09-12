@@ -47,10 +47,12 @@ class ServiceProvider implements AutoloadServiceProviderInterface
      */
     public function register(Container $pimple): void
     {
-        $pimple->extend(\Centreon\ServiceProvider::YML_CONFIG,
+        $pimple->extend(
+            \Centreon\ServiceProvider::YML_CONFIG,
             function (array $cc, Container $pimple) {
                 return $pimple[\CentreonLegacy\ServiceProvider::CONFIGURATION]->getModuleConfig(__DIR__);
-            });
+            }
+        );
 
         $pimple[\Centreon\ServiceProvider::CENTREON_WEBSERVICE]->add(Webservice\CentreonRemoteServer::class);
         $pimple[\Centreon\ServiceProvider::CENTREON_WEBSERVICE]->add(Webservice\CentreonConfigurationRemote::class);
@@ -156,9 +158,9 @@ class ServiceProvider implements AutoloadServiceProviderInterface
         //-----------//
 
         // Configuration
-        $pimple['centreon_remote.exporter']->add(Domain\Exporter\ConfigurationExporter::class,
-            function () use ($pimple
-            ) {
+        $pimple['centreon_remote.exporter']->add(
+            Domain\Exporter\ConfigurationExporter::class,
+            function () use ($pimple) {
                 $services = [
                     \Centreon\ServiceProvider::CENTREON_DB_MANAGER,
                 ];
@@ -170,9 +172,13 @@ class ServiceProvider implements AutoloadServiceProviderInterface
                 $service->setGenerateService($generateService);
 
                 return $service;
-            });
+            }
+        );
     }
 
+    /**
+     * inheritDoc
+     */
     public static function order(): int
     {
         return 20;
