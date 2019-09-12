@@ -12,6 +12,7 @@ use Centreon\Infrastructure\CentreonLegacyDB\CentreonDBAdapter;
 use Centreon\Domain\Entity\Task;
 use CentreonRemote\Domain\Value\PollerServer;
 use CentreonRemote\Domain\Resources\RemoteConfig\BrokerInfo;
+use CentreonRemote\Domain\Resources\RemoteConfig\BrokerInfo\OutputForwardMaster;
 use CentreonRemote\Infrastructure\Service\PollerInteractionService;
 use Centreon\Domain\Repository\Interfaces\CfgCentreonBrokerInterface;
 use Centreon\Domain\Service\BrokerConfigurationService;
@@ -198,21 +199,30 @@ class LinkedPollerConfigurationService
     private function setBrokerOutputOfPoller($pollerId, PollerServer $remote, $additional = false): void
     {
         if ($additional) { // insert new broker output relation
-            $configQuery = "SELECT MAX(`config_id`)"
+            $configQuery = "SELECT `config_id` "
                 . "FROM `cfg_centreonbroker` "
                 . "WHERE `ns_nagios_server` = :id "
                 . "AND `daemon` = 0";
             $statement = $this->db->prepare($configQuery);
             $statement->bindParam(':id', $pollerId, \PDO::PARAM_INT);
             $statement->execute();
-            $maxConfigId = $statement->fetchColumn();
+            $configId = $statement->fetchColumn();
+
+            $configQuery = "SELECT MAX(`config_group_id`) AS config_group_id "
+                . "FROM `cfg_centreonbroker_info` "
+                . "WHERE `config_id` = :id";
+            $statement = $this->db->prepare($configQuery);
+            $statement->bindParam(':id', $configId, \PDO::PARAM_INT);
+            $statement->execute();
+            $configGRoupId = $statement->fetchColumn('config_group_id') + 1;
 
             $defaultBrokerOutput = (new OutputForwardMaster)->getConfiguration();
-            $defaultBrokerOutput[0]['config_value'] = 'forward-to-' . strreplace(' ', '-', $remote->getName);
+            $defaultBrokerOutput[0]['config_value'] = 'forward-to-' . str_replace(' ', '-', $remote->getName());
             foreach ($defaultBrokerOutput as $item) {
                 $insertQuery = "INSERT INTO `cfg_centreonbroker_info` ("
-                    . "config_key, config_value, config_group, config_group_id, grp_level"
-                    . ") VALUES("
+                    . "config_id, config_key, config_value, config_group, config_group_id, grp_level"
+                    . ") VALUES ("
+                    . ":config_id,"
                     . ":config_key, "
                     . ":config_value,"
                     . ":config_group,"
@@ -220,11 +230,15 @@ class LinkedPollerConfigurationService
                     . ":grp_level"
                     . ")";
                 $statement = $this->db->prepare($insertQuery);
+                $statement->bindParam(':config_id', $configId, \PDO::PARAM_INT);
                 $statement->bindParam(':config_key', $item['config_key'], \PDO::PARAM_STR);
+                if ($item['config_key'] == 'host') {
+                    $item['config_value'] = $remote->getIp();
+                }
                 $statement->bindParam(':config_value', $item['config_value'], \PDO::PARAM_STR);
-                $statement->bindParam(':config_value', $item['config_value'], \PDO::PARAM_STR);
-                $statement->bindParam(':config_group', ($maxConfigId + 1), \PDO::PARAM_INT);
-                $statement->bindParam(':config_group_id', $item['config_group_id'], \PDO::PARAM_INT);
+                $statement->bindParam(':config_group', $item['config_group'], \PDO::PARAM_STR);
+                $statement->bindParam(':config_group_id', $configGRoupId, \PDO::PARAM_INT);
+                $statement->bindParam(':grp_level', $item['grp_level'], \PDO::PARAM_INT);
                 $statement->execute();
             }
         } else { // update host field of poller module output to link it the remote server
@@ -244,6 +258,17 @@ class LinkedPollerConfigurationService
             . "AND `config_key` = 'host'";
             $statement = $this->db->prepare($updateQuery);
             $statement->bindValue(':config_value', $remote->getIp(), \PDO::PARAM_STR);
+            $statement->bindValue(':config_id', $configId, \PDO::PARAM_INT);
+            $updateQuery = "UPDATE `cfg_centreonbroker_info` "
+            . "SET `config_value` = :config_value "
+            . "WHERE `config_id` = :config_id "
+            . "AND `config_key` = 'name'";
+            $statement = $this->db->prepare($updateQuery);
+            $statement->bindValue(
+                ':config_value',
+                'forward-to-' . str_replace(' ', '-', $remote->getName()),
+                \PDO::PARAM_STR
+            );
             $statement->bindValue(':config_id', $configId, \PDO::PARAM_INT);
             $statement->execute();
         }
