@@ -41,7 +41,7 @@ centreon-release package, which will provide the repository file.
 
 Install the Centreon repository using this command::
 
-    # yum install -y http://yum.centreon.com/standard/19.04/el7/stable/noarch/RPMS/centreon-release-19.04-1.el7.centos.noarch.rpm
+    # yum install -y http://yum.centreon.com/standard/19.10/el7/stable/noarch/RPMS/centreon-release-19.10-1.el7.centos.noarch.rpm
 
 The repository is now installed.
 
@@ -87,9 +87,9 @@ Run the commands::
     **centreon-database** package installs a database server optimized for use with Centreon.
 
 .. note::
-    Centreon does **not** support the SQL STRICT mode yet. Please make sure that
-    it is disabled. For more information on how to disable the mode please check
-    the official `MariaDB documentation <https://mariadb.com/kb/en/library/sql-mode/#strict-mode>`_.
+    Centreon **does** support the SQL STRICT mode. For more information about it please check
+    the official `MariaDB documentation <https://mariadb.com/kb/en/library/sql-mode/#strict-mode>`_. Or the official
+     `MySQL documentation <https://dev.mysql.com/doc/refman/8.0/en/sql-mode.html>`_.
 
 Then create a distant **root** account: ::
 
@@ -178,6 +178,8 @@ To make services start automatically during system bootup, run these commands on
     on the database server: ::
     
         # systemctl enable mysql
+    or
+        # systemctl enable mysqld
 
 Concluding the installation
 ---------------------------

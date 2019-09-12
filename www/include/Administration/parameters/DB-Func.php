@@ -669,7 +669,7 @@ function updateGeneralConfigData($gopt_id = null)
     updateOption(
         $pearDB,
         "keycloak_blacklist_clients",
-        isset($ret["keycloak_blacklist_clients"]) && $ret["keycloak_blacklist_clients"] != NULL
+        isset($ret["keycloak_blacklist_clients"]) && $ret["keycloak_blacklist_clients"] != null
             ? $pearDB->escape($ret["keycloak_blacklist_clients"]) : ""
     );
     updateOption(
