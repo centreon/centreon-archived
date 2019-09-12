@@ -147,8 +147,6 @@ class LinkedPollerConfigurationService
             } else { // If one peer retention is disabled, we need to set the host output of the poller
                 $this->setBrokerOutputOfPoller($poller->getId(), $remote, true);
             }
-
-            $this->setPollerRelationToRemote($poller->getId(), $remote);
         }
         $this->insertAddtitionnalRemoteServersRelations($poller, $remotes);
 
