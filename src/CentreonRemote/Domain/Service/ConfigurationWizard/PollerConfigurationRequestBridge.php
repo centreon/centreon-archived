@@ -16,6 +16,9 @@ class PollerConfigurationRequestBridge
     /** @var PollerServer[] */
     private $pollers = [];
 
+    /** @var PollerServer[] */
+    private $additionalRemotes = [];
+
 
     public function __construct(Container $di)
     {
@@ -36,6 +39,14 @@ class PollerConfigurationRequestBridge
     }
 
     /**
+     * @return PollerServer[]
+     */
+    public function getAdditionalRemoteServers(): array
+    {
+        return $this->additionalRemotes;
+    }
+
+    /**
      * Set linked pollers regarding wizard type (poller/remote server)
      */
     public function collectDataFromRequest(): void
@@ -51,6 +62,20 @@ class PollerConfigurationRequestBridge
         }
 
         $this->pollers = $this->getPollersToLink($linkedPollers); // set and instantiate linked pollers
+    }
+
+    /**
+     * Set linked Additonal Remote Servers regarding wizard type poller (poller/remote server)
+     */
+    public function collectDataFromAdditionalRemoteServers(): void
+    {
+        $isRemoteServerWizard = (new ServerWizardIdentity)->requestConfigurationIsRemote();
+
+        if (!$isRemoteServerWizard) {
+            $linkedRemotes= isset($_POST['linked_remote_slaves']) ? [$_POST['linked_remote_slaves']] : [];
+        }
+
+        $this->additionalRemotes = $this->getPollersToLink($linkedRemotes); // set and instantiate linked pollers
     }
 
     /**

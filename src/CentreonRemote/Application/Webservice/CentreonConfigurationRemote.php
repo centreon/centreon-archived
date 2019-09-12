@@ -299,6 +299,8 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
 
         // set linked pollers
         $pollerConfigurationBridge->collectDataFromRequest();
+        // set additional Remote Servers
+        $pollerConfigurationBridge->collectDataFromAdditionalRemoteServers();
 
         // if it's a remote server, set database connection information and check if bam is installed
         if ($isRemoteConnection) {
@@ -372,6 +374,8 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
             $pollers = [$pollerConfigurationBridge->getPollerFromId($serverId)];
             $parentPoller = $pollerConfigurationBridge->getLinkedPollersSelectedForUpdate()[0];
             $pollerConfigurationService->linkPollersToParentPoller($pollers, $parentPoller);
+            $additionalRemotes = $pollerConfigurationBridge->getAdditionalRemoteServers();
+            $pollerConfigurationService->linkPollerToAdditionalRemoteServers($pollers[0], $additionalRemotes);
         }
 
         return ['success' => true, 'task_id' => $taskId];
