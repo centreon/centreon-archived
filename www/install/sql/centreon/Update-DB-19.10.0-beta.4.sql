@@ -1,8 +1,3 @@
---
--- Add new field for Remote Server option
---
-ALTER TABLE nagios_server ADD COLUMN `remote_server_centcore_ssh_proxy` enum('0','1') NOT NULL DEFAULT '1';
-
 -- Update broker form
 UPDATE `cb_field` SET `fieldname` = 'rrd_cached_option', `displayname` = 'Enable RRDCached', `description` = 'Enable rrdcached option for Centreon, please see Centreon documentation to configure it.', `fieldtype` = 'radio', `external` = NULL
 WHERE `fieldname` = 'path' AND `displayname` = 'Unix socket';
