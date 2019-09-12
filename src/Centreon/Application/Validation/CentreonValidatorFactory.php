@@ -82,7 +82,7 @@ class CentreonValidatorFactory implements ConstraintValidatorFactoryInterface
                 // validator as a service
                 $this->validators[$className] = $this->container[$className];
             } else {
-                throw new \RuntimeException(sprintf('The validator "%s" not found', $className));
+                throw new \RuntimeException(sprintf('The validator "%s" is not found', $className));
             }
         }
 
