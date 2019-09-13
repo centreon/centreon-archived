@@ -220,7 +220,6 @@ class Generate
         }
 
         foreach ($this->moduleObjects as $moduleObject) {
-            $moduleObject = '\ConfigGenerateRemote\\' . $moduleObject;
             $module = new $moduleObject($this->dependencyInjector);
             $module->configRemoteServerFromId($remoteServerId);
         }
