@@ -113,21 +113,21 @@ class Trap extends AbstractObject
     public function generateObject($serviceId, $serviceLinkedCache, &$object)
     {
         foreach ($serviceLinkedCache as $trapId) {
-            trapsServiceRelation::getInstance($this->dependencyInjector)->addRelation($trapId, $serviceId);
+            Relations\TrapsServiceRelation::getInstance($this->dependencyInjector)->addRelation($trapId, $serviceId);
             if ($this->checkGenerate($trapId)) {
                 continue;
             }
             $this->generateObjectInFile($object[$trapId], $trapId);
-            trapsVendor::getInstance($this->dependencyInjector)->add(
+            Relations\TrapsVendor::getInstance($this->dependencyInjector)->add(
                 $object[$trapId]['id'],
                 $object[$trapId]['name'],
                 $object[$trapId]['alias'],
                 $object[$trapId]['description']
             );
-            trapsGroup::getInstance($this->dependencyInjector)->getTrapGroupsByTrapId($trapId);
-            trapsMatching::getInstance($this->dependencyInjector)->getTrapMatchingByTrapId($trapId);
-            trapsPreexec::getInstance($this->dependencyInjector)->getTrapPreexecByTrapId($trapId);
-            serviceCategory::getInstance($this->dependencyInjector)->generateObject($object[$trapId]['severity_id']);
+            Relations\TrapsGroup::getInstance($this->dependencyInjector)->getTrapGroupsByTrapId($trapId);
+            Relations\TrapsMatching::getInstance($this->dependencyInjector)->getTrapMatchingByTrapId($trapId);
+            Relations\TrapsPreexec::getInstance($this->dependencyInjector)->getTrapPreexecByTrapId($trapId);
+            ServiceCategory::getInstance($this->dependencyInjector)->generateObject($object[$trapId]['severity_id']);
         }
     }
 

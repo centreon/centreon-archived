@@ -21,6 +21,16 @@
 namespace ConfigGenerateRemote\Abstracts;
 
 use ConfigGenerateRemote\Abstracts\AbstractObject;
+use ConfigGenerateRemote\Command;
+use ConfigGenerateRemote\Contact;
+use ConfigGenerateRemote\ContactGroup;
+use ConfigGenerateRemote\MacroService;
+use ConfigGenerateRemote\Media;
+use ConfigGenerateRemote\TimePeriod;
+use ConfigGenerateRemote\ServiceTemplate;
+use ConfigGenerateRemote\Trap;
+use ConfigGenerateRemote\Relations\ContactServiceRelation;
+use ConfigGenerateRemote\Relations\ContactGroupServiceRelation;
 
 abstract class AbstractService extends AbstractObject
 {
@@ -118,7 +128,7 @@ abstract class AbstractService extends AbstractObject
             return 1;
         }
 
-        $service['macros'] = macroService::getInstance($this->dependencyInjector)
+        $service['macros'] = MacroService::getInstance($this->dependencyInjector)
             ->getServiceMacroByServiceId($service['service_id']);
         return 0;
     }
@@ -141,7 +151,7 @@ abstract class AbstractService extends AbstractObject
         $service['contacts_cache'] = $contact->getContactForService($service['service_id']);
         foreach ($service['contacts_cache'] as $contactId) {
             $contact->generateFromContactId($contactId);
-            contactServiceRelation::getInstance($this->dependencyInjector)
+            ContactServiceRelation::getInstance($this->dependencyInjector)
                 ->addRelation($service['service_id'], $contactId);
         }
     }
@@ -152,7 +162,7 @@ abstract class AbstractService extends AbstractObject
         $service['contact_groups_cache'] = $cg->getCgForService($service['service_id']);
         foreach ($service['contact_groups_cache'] as $cgId) {
             $cg->generateFromCgId($cgId);
-            contactgroupServiceRelation::getInstance($this->dependencyInjector)
+            ContactGroupServiceRelation::getInstance($this->dependencyInjector)
                 ->addRelation($service['service_id'], $cgId);
         }
     }

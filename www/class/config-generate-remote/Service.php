@@ -40,7 +40,7 @@ class Service extends AbstractService
 
     private function getServiceGroups($serviceId, $hostId, $hostName)
     {
-        $servicegroup = Servicegroup::getInstance($this->dependencyInjector);
+        $servicegroup = ServiceGroup::getInstance($this->dependencyInjector);
         $this->serviceCache[$serviceId]['sg'] = $servicegroup->getServiceGroupsForService($hostId, $serviceId);
         foreach ($this->serviceCache[$serviceId]['sg'] as &$value) {
             if (is_null($value['host_host_id']) || $hostId == $value['host_host_id']) {
@@ -51,7 +51,7 @@ class Service extends AbstractService
                     $hostId,
                     $hostName
                 );
-                servicegroupRelation::getInstance($this->dependencyInjector)->addRelationHostService(
+                Relations\ServiceGroupRelation::getInstance($this->dependencyInjector)->addRelationHostService(
                     $value['servicegroup_sg_id'],
                     $hostId,
                     $serviceId
@@ -108,20 +108,15 @@ class Service extends AbstractService
     protected function getSeverity($hostId, $serviceId)
     {
         $severityId =
-            serviceCategory::getInstance($this->dependencyInjector)->getServiceSeverityByServiceId($serviceId);
+            ServiceCategory::getInstance($this->dependencyInjector)->getServiceSeverityByServiceId($serviceId);
         if (!is_null($severityId)) {
-            serviceCategoriesRelation::getInstance($this->dependencyInjector)->addRelation($severityId, $serviceId);
+            Relations\ServiceCategoriesRelation::getInstance($this->dependencyInjector)->addRelation($severityId, $serviceId);
         }
         return null;
     }
 
     private function clean(&$service)
     {
-        #if ($service['contact_from_host'] == 1) {
-        #    $service['contacts'] = null;
-        #    $service['contact_groups'] = null;
-        #    $service['contact_from_host'] = 0;
-        #}
     }
 
     private function buildCache()
@@ -186,8 +181,8 @@ class Service extends AbstractService
         $this->getServiceGroups($serviceId, $hostId, $hostName);
 
         $extendedInformation = $this->getExtendedInformation($this->serviceCache[$serviceId]);
-        extendedServiceInformation::getInstance($this->dependencyInjector)->add($extendedInformation, $serviceId);
-        graph::getInstance($this->dependencyInjector)->getGraphFromId($extendedInformation['graph_id']);
+        Relations\ExtendedServiceInformation::getInstance($this->dependencyInjector)->add($extendedInformation, $serviceId);
+        Graph::getInstance($this->dependencyInjector)->getGraphFromId($extendedInformation['graph_id']);
 
         $this->serviceCache[$serviceId]['service_id'] = $serviceId;
         $this->generateObjectInFile(

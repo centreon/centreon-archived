@@ -249,12 +249,12 @@ class Contact extends AbstractObject
         $this->getContactNotificationCommands(
             $contactId,
             'host',
-            contactHostcommandsRelation::getInstance($this->dependencyInjector)
+            Relations\ContactHostCommandsRelation::getInstance($this->dependencyInjector)
         );
         $this->getContactNotificationCommands(
             $contactId,
             'service',
-            contactServicecommandsRelation::getInstance($this->dependencyInjector)
+            Relations\ContactServiceCommandsRelation::getInstance($this->dependencyInjector)
         );
 
         $period = Timeperiod::getInstance($this->dependencyInjector);

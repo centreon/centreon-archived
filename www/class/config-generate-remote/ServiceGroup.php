@@ -183,14 +183,6 @@ class ServiceGroup extends AbstractObject
 
             $this->sg[$id]['sg_id'] = $id;
             $this->generateObjectInFile($this->sg[$id], $id);
-            #foreach ($value['members_cache'] as $key => $value) {
-            #    list($hostId, $serviceId) = explode('_', $key);
-            #    servicegroupRelation::getInstance($this->dependencyInjector)->addRelationHostService(
-            #        $id,
-            #        $hostId,
-            #        $serviceId
-            #    );
-            #}
         }
     }
 

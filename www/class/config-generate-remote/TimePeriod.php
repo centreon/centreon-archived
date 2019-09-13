@@ -76,7 +76,7 @@ class TimePeriod extends AbstractObject
 
         foreach ($exceptions as $exception) {
             $exception['timeperiod_id'] = $timeperiodId;
-            timeperiodExceptions::getInstance($this->dependencyInjector)->add($exception, $timeperiodId);
+            Relations\TimePeriodExceptions::getInstance($this->dependencyInjector)->add($exception, $timeperiodId);
         }
     }
 

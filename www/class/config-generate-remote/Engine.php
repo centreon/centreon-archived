@@ -231,18 +231,6 @@ class Engine extends AbstractObject
         $this->engine['broker_module'] = $this->stmtBroker->fetchAll(PDO::FETCH_COLUMN);
     }
 
-    private function getIntervalLength()
-    {
-        if (is_null($this->stmtIntervalLength)) {
-            $this->stmtIntervalLength = $this->backendInstance->db->prepare(
-                "SELECT `value` FROM options " .
-                "WHERE `key` = 'interval_length'"
-            );
-        }
-        $this->stmtIntervalLength->execute();
-        $this->engine['interval_length'] = $this->stmtIntervalLength->fetchAll(PDO::FETCH_COLUMN);
-    }
-
     private function generate($pollerId)
     {
         if (is_null($this->stmtEngine)) {

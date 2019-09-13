@@ -23,7 +23,7 @@ namespace ConfigGenerateRemote;
 use \PDO;
 use ConfigGenerateRemote\Abstracts\AbstractObject;
 
-class Hostgroup extends AbstractObject
+class HostGroup extends AbstractObject
 {
     private $hg = [];
     protected $table = 'hostgroup';

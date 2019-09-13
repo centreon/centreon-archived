@@ -22,6 +22,16 @@ namespace ConfigGenerateRemote\Abstracts;
 
 use \PDO;
 use ConfigGenerateRemote\Abstracts\AbstractObject;
+use ConfigGenerateRemote\Command;
+use ConfigGenerateRemote\Contact;
+use ConfigGenerateRemote\ContactGroup;
+use ConfigGenerateRemote\HostTemplate;
+use ConfigGenerateRemote\Media;
+use ConfigGenerateRemote\TimePeriod;
+use ConfigGenerateRemote\Relations\ContactHostRelation;
+use ConfigGenerateRemote\Relations\ContactGroupHostRelation;
+use ConfigGenerateRemote\Relations\HostTemplateRelation;
+use ConfigGenerateRemote\Relations\MacroHost;
 
 abstract class AbstractHost extends AbstractObject
 {
@@ -145,7 +155,7 @@ abstract class AbstractHost extends AbstractObject
         $host['macros'] = [];
         foreach ($macros as $macro) {
             $host['macros'][$macro['host_macro_name']] = $macro['host_macro_value'];
-            macroHost::getInstance($this->dependencyInjector)->add($macro, $host['host_id']);
+            MacroHost::getInstance($this->dependencyInjector)->add($macro, $host['host_id']);
         }
 
         return 0;
@@ -171,7 +181,7 @@ abstract class AbstractHost extends AbstractObject
         $order = 1;
         foreach ($host['htpl'] as $templateId) {
             $host_template->generateFromHostId($templateId);
-            hostTemplateRelation::getInstance($this->dependencyInjector)
+            HostTemplateRelation::getInstance($this->dependencyInjector)
                 ->addRelation($host['host_id'], $templateId, $order);
             $order++;
         }
@@ -195,7 +205,7 @@ abstract class AbstractHost extends AbstractObject
         $contact = Contact::getInstance($this->dependencyInjector);
         foreach ($host['contacts_cache'] as $contactId) {
             $contact->generateFromContactId($contactId);
-            contactHostRelation::getInstance($this->dependencyInjector)->addRelation($host['host_id'], $contactId);
+            ContactHostRelation::getInstance($this->dependencyInjector)->addRelation($host['host_id'], $contactId);
         }
     }
 
@@ -217,7 +227,7 @@ abstract class AbstractHost extends AbstractObject
         $cg = Contactgroup::getInstance($this->dependencyInjector);
         foreach ($host['contact_groups_cache'] as $cgId) {
             $cg->generateFromCgId($cgId);
-            contactgroupHostRelation::getInstance($this->dependencyInjector)->addRelation($host['host_id'], $cgId);
+            ContactGroupHostRelation::getInstance($this->dependencyInjector)->addRelation($host['host_id'], $cgId);
         }
     }
 
@@ -262,7 +272,7 @@ abstract class AbstractHost extends AbstractObject
 
     protected function getHostPeriods(&$host)
     {
-        $period = Timeperiod::getInstance($this->dependencyInjector);
+        $period = TimePeriod::getInstance($this->dependencyInjector);
         $period->generateFromTimeperiodId($host['timeperiod_tp_id']);
         $period->generateFromTimeperiodId($host['timeperiod_tp_id2']);
     }

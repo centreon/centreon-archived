@@ -51,45 +51,13 @@ class Host extends AbstractHost
             $host['hg'] = $this->stmtHg->fetchAll(PDO::FETCH_COLUMN);
         }
 
-        $hostgroup = Hostgroup::getInstance($this->dependencyInjector);
+        $hostgroup = HostGroup::getInstance($this->dependencyInjector);
         foreach ($host['hg'] as $hgId) {
             $hostgroup->addHostInHg($hgId, $host['host_id'], $host['host_name']);
-            hostgroupRelation::getInstance($this->dependencyInjector)->addRelation(
+            Relations\HostGroupRelation::getInstance($this->dependencyInjector)->addRelation(
                 $hgId,
                 $host['host_id']
             );
-        }
-    }
-
-    private function getParents(&$host)
-    {
-        if (is_null($this->stmtParent)) {
-            $this->stmtParent = $this->backendInstance->db->prepare("SELECT
-                    host_parent_hp_id
-                FROM host_hostparent_relation
-                WHERE host_host_id = :host_id
-                ");
-        }
-        $this->stmtParent->bindParam(':host_id', $host['host_id'], PDO::PARAM_INT);
-        $this->stmtParent->execute();
-        $result = $this->stmtParent->fetchAll(PDO::FETCH_COLUMN);
-
-        $host['parents'] = [];
-        foreach ($result as $parentId) {
-            if (isset($this->hosts[$parentId])) {
-                $host['parents'][] = $this->hosts[$parentId]['host_name'];
-
-                $correlationInstance = Correlation::getInstance($this->dependencyInjector);
-                if ($correlationInstance->hasCorrelation()) {
-                    $this->generatedParentship[] = [
-                        '@attributes' => [
-                            'parent' => $parentId,
-                            'host' => $host['host_id'],
-                            'instance_id' => $this->backendInstance->getPollerId()
-                        ]
-                    ];
-                }
-            }
         }
     }
 
@@ -109,7 +77,7 @@ class Host extends AbstractHost
         $service = Service::getInstance($this->dependencyInjector);
         foreach ($host['services_cache'] as $serviceId) {
             $service->generateFromServiceId($host['host_id'], $host['host_name'], $serviceId);
-            hostServiceRelation::getInstance($this->dependencyInjector)
+            Relations\HostServiceRelation::getInstance($this->dependencyInjector)
                 ->addRelationHostService($host['host_id'], $serviceId);
         }
     }
@@ -132,7 +100,7 @@ class Host extends AbstractHost
         $service = Service::getInstance($this->dependencyInjector);
         foreach ($host['services_hg_cache'] as $value) {
             $service->generateFromServiceId($host['host_id'], $host['host_name'], $value['service_service_id'], 1);
-            hostServiceRelation::getInstance($this->dependencyInjector)
+            Relations\HostServiceRelation::getInstance($this->dependencyInjector)
                 ->addRelationHgService($value['hostgroup_hg_id'], $value['service_service_id']);
         }
     }
@@ -141,7 +109,7 @@ class Host extends AbstractHost
     {
         $severityId = HostCategory::getInstance($this->dependencyInjector)->getHostSeverityByHostId($hostIdArg);
         if (!is_null($severityId)) {
-            hostcategoriesRelation::getInstance($this->dependencyInjector)->addRelation($severityId, $hostIdArg);
+            Relations\HostCategoriesRelation::getInstance($this->dependencyInjector)->addRelation($severityId, $hostIdArg);
         }
     }
 
@@ -152,7 +120,7 @@ class Host extends AbstractHost
 
     private function getHosts($pollerId)
     {
-        # We use host_register = 1 because we don't want _Module_* hosts
+        // We use host_register = 1 because we don't want _Module_* hosts
         $stmt = $this->backendInstance->db->prepare("SELECT
               $this->attributesSelect
             FROM ns_host_relation, host
@@ -182,13 +150,12 @@ class Host extends AbstractHost
         }
 
         $this->getHostGroups($host);
-        #$this->getParents($host);
         $this->getSeverity($host['host_id']);
         $this->getServices($host);
         $this->getServicesByHg($host);
 
         $extendedInformation = $this->getExtendedInformation($host);
-        extendedHostInformation::getInstance($this->dependencyInjector)->add($extendedInformation, $host['host_id']);
+        Relations\ExtendedHostInformation::getInstance($this->dependencyInjector)->add($extendedInformation, $host['host_id']);
 
         $this->generateObjectInFile($host, $host['host_id']);
         $this->addGeneratedHost($host['host_id']);

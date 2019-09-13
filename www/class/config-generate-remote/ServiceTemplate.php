@@ -94,7 +94,7 @@ class ServiceTemplate extends AbstractService
     private function getServiceGroups($serviceId)
     {
         $host = Host::getInstance($this->dependencyInjector);
-        $servicegroup = Servicegroup::getInstance($this->dependencyInjector);
+        $servicegroup = ServiceGroup::getInstance($this->dependencyInjector);
         $this->serviceCache[$serviceId]['sg'] = $servicegroup->getServiceGroupsForStpl($serviceId);
         foreach ($this->serviceCache[$serviceId]['sg'] as &$sg) {
             if ($host->isHostTemplate($this->currentHostId, $sg['host_host_id'])) {
@@ -105,7 +105,7 @@ class ServiceTemplate extends AbstractService
                     $this->currentHostId,
                     $this->currentHostName
                 );
-                servicegroupRelation::getInstance($this->dependencyInjector)->addRelationHostService(
+                Relations\ServiceGroupRelation::getInstance($this->dependencyInjector)->addRelationHostService(
                     $sg['servicegroup_sg_id'],
                     $sg['host_host_id'],
                     $serviceId
@@ -139,9 +139,9 @@ class ServiceTemplate extends AbstractService
         }
 
         $this->serviceCache[$serviceId]['severity_id'] =
-            serviceCategory::getInstance($this->dependencyInjector)->getServiceSeverityByServiceId($serviceId);
+            ServiceCategory::getInstance($this->dependencyInjector)->getServiceSeverityByServiceId($serviceId);
         if (!is_null($this->serviceCache[$serviceId]['severity_id'])) {
-            serviceCategoriesRelation::getInstance($this->dependencyInjector)
+            Relations\ServiceCategoriesRelation::getInstance($this->dependencyInjector)
                 ->addRelation($this->serviceCache[$serviceId]['severity_id'], $serviceId);
         }
     }
@@ -169,7 +169,7 @@ class ServiceTemplate extends AbstractService
             return $this->serviceCache[$serviceId]['service_alias'];
         }
 
-        # avoid loop. we return nothing
+        // avoid loop. we return nothing
         if (isset($this->loopTpl[$serviceId])) {
             return null;
         }
@@ -189,8 +189,8 @@ class ServiceTemplate extends AbstractService
         $this->getSeverity($serviceId);
 
         $extendedInformation = $this->getExtendedInformation($this->serviceCache[$serviceId]);
-        extendedServiceInformation::getInstance($this->dependencyInjector)->add($extendedInformation, $serviceId);
-        graph::getInstance($this->dependencyInjector)->getGraphFromId($extendedInformation['graph_id']);
+        Relations\ExtendedServiceInformation::getInstance($this->dependencyInjector)->add($extendedInformation, $serviceId);
+        Graph::getInstance($this->dependencyInjector)->getGraphFromId($extendedInformation['graph_id']);
 
         $this->serviceCache[$serviceId]['service_id'] = $serviceId;
         $this->generateObjectInFile($this->serviceCache[$serviceId], $serviceId);

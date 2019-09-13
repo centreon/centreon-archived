@@ -67,7 +67,7 @@ class Command extends AbstractObject
             return $this->commands[$commandId]['command_name'];
         }
 
-        graph::getInstance($this->dependencyInjector)->getGraphFromId($this->commands[$commandId]['graph_id']);
+        Graph::getInstance($this->dependencyInjector)->getGraphFromId($this->commands[$commandId]['graph_id']);
         $this->commands[$commandId]['command_id'] = $commandId;
         $this->generateObjectInFile(
             $this->commands[$commandId],

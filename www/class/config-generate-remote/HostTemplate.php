@@ -127,7 +127,7 @@ class HostTemplate extends AbstractHost
         $this->hosts[$hostId]['severity_id'] =
             HostCategory::getInstance($this->dependencyInjector)->getHostSeverityByHostId($hostId);
         if (!is_null($this->hosts[$hostId]['severity_id'])) {
-            hostcategoriesRelation::getInstance($this->dependencyInjector)
+            Relations\HostCategoriesRelation::getInstance($this->dependencyInjector)
                 ->addRelation($this->hosts[$hostId]['severity_id'], $hostId);
         }
     }
@@ -165,7 +165,7 @@ class HostTemplate extends AbstractHost
         $this->getSeverity($hostId);
 
         $extendedInformation = $this->getExtendedInformation($this->hosts[$hostId]);
-        extendedHostInformation::getInstance($this->dependencyInjector)->add($extendedInformation, $hostId);
+        Relations\ExtendedHostInformation::getInstance($this->dependencyInjector)->add($extendedInformation, $hostId);
 
         $this->generateObjectInFile($this->hosts[$hostId], $hostId);
         return $this->hosts[$hostId]['host_name'];

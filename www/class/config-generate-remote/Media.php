@@ -92,9 +92,9 @@ class Media extends AbstractObject
                 'img_comment' => $this->medias[$mediaId]['img_comment'],
             ];
             $this->generateObjectInFile($media, $mediaId);
-            viewImgDirRelation::getInstance($this->dependencyInjector)
+            Relations\ViewImgDirRelation::getInstance($this->dependencyInjector)
                 ->addRelation($mediaId, $this->medias[$mediaId]['dir_id']);
-            viewImageDir::getInstance($this->dependencyInjector)
+            Relations\ViewImageDir::getInstance($this->dependencyInjector)
                 ->add($this->medias[$mediaId], $this->medias[$mediaId]['dir_id']);
             $this->copyMedia($this->medias[$mediaId]['dir_name'], $this->medias[$mediaId]['img_path']);
         }
