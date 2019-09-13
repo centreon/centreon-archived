@@ -141,7 +141,7 @@ $query .= "ORDER BY sg.name " . $order . " "
 
 $DBRESULT = $obj->DBC->query($query);
 
-$numRows = $obj->DBC->numberRows();
+$numRows = $obj->DBC->query("SELECT FOUND_ROWS()")->fetchColumn();
 
 
 /** ***************************************************

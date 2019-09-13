@@ -7,9 +7,13 @@
         </tr>
         <tr>
             <td><h4>{t}Snmp Traps{/t}</h4></td>
+            <td><h4>{t}Status{/t}</h4></td>
+            <td><h4>{t}Snmp trap manufacturer{/t}</h4></td>
         </tr>
         <tr>
             <td><input type="text" name="searchT" value="{$searchT}"></td>
+            <td>{$form.status.html}</td>
+            <td>{$form.vendor.html}</td>
             <td>{$form.Search.html}</td>
         </tr>
         </tbody>

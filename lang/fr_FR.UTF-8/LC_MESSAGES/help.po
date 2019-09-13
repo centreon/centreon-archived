@@ -523,6 +523,16 @@ msgid "The user name<br/>In Centreon : Full Name"
 msgstr ""
 "Attribut LDAP définissant le nom de l'utilisateur<br/>Par défaut : Full Name"
 
+#: /www/include/Administration/parameters/ldap/help.po
+msgid "This field is used to specify the interval, in hours, between two LDAP data synchronization. By default 1 hour."
+msgstr "Permet de spécifier une durée minimale, en heures, entre deux synchronisation des données avec le LDAP."
+"Par défaut 1 heure."
+
+#: /www/include/Administration/parameters/ldap/help.po
+msgid "If enabled, a user LDAP synchronization will be performed on login to update contact's data and calculate new Centreon ACLs."
+msgstr "Si cette case est cochée, une synchronisation des groupes LDAP de l'utilisateur sera effectuée lors de "
+"la connexion pour appliquer les ACL Centreon."
+
 #: centreon-web/www/include/Administration/parameters/ldap/help.php:51
 msgid "The user firstname<br/>In Centreon : givenname"
 msgstr ""
@@ -899,6 +909,29 @@ msgid ""
 msgstr ""
 "L'authentification peut-être seulement basée sur SSO ou elle peut fonctionner "
 "à la fois avec SSO et un système d'authentification local. "
+
+msgid "Enable login with Keycloak."
+msgstr "Activer le login avec Keycloak."
+
+msgid "Authentication can be solely based on Keycloak or it can work with both Keycloak "
+"and local authentication systems."
+msgstr "L'authentification peut être basée sur Keycloak uniquement ou peut fonctionner avec Keycloak et les systèmes."
+"d'authentification locaux."
+
+msgid "Your Keycloak server url (with \"/auth\")."
+msgstr "L'URL de votre serveur Keycloak (avec le \"/auth\")."
+
+msgid "Your Keycloak redirect url (this server)."
+msgstr "L'URL Keycloak de redirection vers Centreon (ce serveur)."
+
+msgid "Your Keycloak Realm name."
+msgstr "Le nom de votre royaume Keycloak comprenant l'application Centreon."
+
+msgid "Your Keycloak client ID."
+msgstr "L'identifiant Centreon Keycloak (client ID)."
+
+msgid "Your Keycloak client secret."
+msgstr "La clé secrète Keycloak pour l'application Centreon."
 
 #: centreon-web/www/include/Administration/parameters/general/help.php:84
 msgid ""
@@ -6393,6 +6426,13 @@ msgstr ""
 msgid "Short description of the poller"
 msgstr "Brève description du collecteur"
 
+msgid ""
+"If checked, the Central server will send configuration and external commands directly to the poller "
+"and will not use the Remote Server as a proxy"
+msgstr ""
+"Si activé, le serveur Central se connectera directement au collecteur pour transférer la configuration"
+"et les commandes externes et n'utilisera pas le Remote Server comme proxy."
+
 #: centreon-web/www/include/configuration/configDowntime/help.php:8
 msgid "The name of the recurrent downtime rule."
 msgstr "Le nom de la règle de temps d'arrêt récurrente."
@@ -6451,11 +6491,9 @@ msgstr "Sélectionner un collecteur avec lequel vous voulez interagir."
 
 #: centreon-web/www/include/configuration/configGenerate/help.php:4
 msgid ""
-"Generates configuration files and stores them in centreon/filesGeneration "
-"directory."
+"Generates configuration files and stores them in cache directory."
 msgstr ""
-"Générer les fichiers de configuration et les enregistrer dans le dossier "
-"centreon/filesGeneration."
+"Générer les fichiers de configuration et les enregistrer dans le dossier cache."
 
 #: centreon-web/www/include/configuration/configGenerate/help.php:5
 msgid "Runs the scheduler debug mode."

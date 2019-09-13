@@ -5,6 +5,7 @@ Configuration
 .. note::
     To get the IP address of your Centreon server, uses the command:
     ::
+    
         # ip addr
 
 Log in to Centreon web interface via the URL: http://[SERVER_IP]/centreon.
@@ -66,6 +67,10 @@ In this case, you only need to define a password for the user accessing the Cent
         # systemctl restart mysql
     
     5. Click on **Refresh**.
+
+.. note::
+    If you use a deported MySQL v8.x DBMS, you may have the following error message: *error*.
+    Please have a look to this :ref:`procedure` to solve this issue.
 
 The Centreon setup wizard configures the databases. Click on **Next**.
 

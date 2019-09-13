@@ -66,7 +66,7 @@ class PollerInteractionService
 
     private function moveConfigurationFiles(array $pollerIDs)
     {
-        $centreonBrokerPath = _CENTREON_PATH_ . '/filesGeneration/broker/';
+        $centreonBrokerPath = _CENTREON_CACHEDIR_ . '/config/broker/';
 
         if (defined('_CENTREON_VARLIB_')) {
             $centCorePipe = _CENTREON_VARLIB_ . '/centcore.cmd';

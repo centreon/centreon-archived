@@ -43,8 +43,17 @@ global $path;
 /**
  * Getting Centreon Version
  */
-$DBRESULT = $pearDB->query("SELECT `value` FROM `informations` WHERE `key` = 'version' LIMIT 1");
-$release = $DBRESULT->fetchRow();
+$result = $pearDB->query("SELECT `value` FROM `informations` WHERE `key` = 'version' LIMIT 1");
+$release = $result->fetch();
+
+/**
+ * Getting Keycloak login state
+ */
+$result = $pearDB->query("SELECT `value` FROM `options` WHERE `key` = 'keycloak_enable' LIMIT 1");
+$keycloakEnabled = $result->fetch()["value"];
+
+$result = $pearDB->query("SELECT `value` FROM `options` WHERE `key` = 'keycloak_mode' LIMIT 1");
+$keycloakMode = $result->fetch()["value"];
 
 /**
  * Defining Login Form
@@ -56,7 +65,7 @@ $submitLogin = $form->addElement('submit', 'submitLogin', _("Connect"), array('c
 
 $loginValidate = $form->validate();
 
-require_once(dirname(__FILE__) . "/processLogin.php");
+require_once __DIR__ . "/processLogin.php";
 
 /**
  * Set login messages (errors)
@@ -114,6 +123,8 @@ $tpl = initSmartyTpl($path . '/include/core/login/template/', $tpl);
 $tpl->assign('loginMessages', $loginMessages);
 $tpl->assign('centreonVersion', 'v. ' . $release['value']);
 $tpl->assign('currentDate', date("d/m/Y"));
+$tpl->assign('keycloakEnabled', $keycloakEnabled);
+$tpl->assign('keycloakMode', $keycloakMode);
 
 // Redirect User
 $redirect = filter_input(

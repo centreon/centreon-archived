@@ -51,7 +51,7 @@ $db->query($query);
 
 $message = '';
 try {
-    $backupDir = realpath(__DIR__ . '/../../../../installDir/')
+    $backupDir = _CENTREON_VARLIB_ . '/installs/'
         . '/install-' . $version . '-' . date('Ymd_His');
     $installDir = realpath(__DIR__ . '/../..');
     $dependencyInjector['filesystem']->rename($installDir, $backupDir);
