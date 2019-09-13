@@ -250,14 +250,18 @@ class LinkedPollerConfigurationService
             $statement->execute();
             $configId = $statement->fetchColumn();
 
+            // update output ip address to master remote server 
             $updateQuery = "UPDATE `cfg_centreonbroker_info` "
             . "SET `config_value` = :config_value "
             . "WHERE `config_id` = :config_id "
-            . "AND `config_key` = 'host'";
+            . "AND `config_key` = 'host' "
+            . "AND `config_group` = 'output'";
             $statement = $this->db->prepare($updateQuery);
             $statement->bindValue(':config_value', $remote->getIp(), \PDO::PARAM_STR);
             $statement->bindValue(':config_id', $configId, \PDO::PARAM_INT);
+            $statement->execute();
 
+            // update output name to master remote server 
             $updateQuery = "UPDATE `cfg_centreonbroker_info` "
             . "SET `config_value` = :config_value "
             . "WHERE `config_id` = :config_id "
