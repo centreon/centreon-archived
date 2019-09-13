@@ -764,7 +764,7 @@ sub sendConfigFile($) {
                     $self->{logger}->writeLogInfo(
                         "Try to use additional Remote Server: " . $additional_remote_config->{name}
                     );
-                    $dest = $additional_remote_config->{'ns_ip_address'} . ":" . $self->{centreonDir} . "/filesGeneration/engine";
+                    $dest = $additional_remote_config->{'ns_ip_address'} . ":" . $self->{cacheDir} . "/config/engine";
                     $port = checkSSHPort($additional_remote_config->{ssh_port});
                     $cmd = "$self->{scp} -r -P $port $origin $dest 2>&1";
 
