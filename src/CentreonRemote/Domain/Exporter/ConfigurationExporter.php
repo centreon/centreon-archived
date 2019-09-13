@@ -79,19 +79,19 @@ class ConfigurationExporter extends ExporterServiceAbstract
             $db->query('SET FOREIGN_KEY_CHECKS=0;');
 
             $import = $manifest->get("import");
-            foreach ($import[data] as $data) {
+            foreach ($import['data'] as $data) {
                 // truncate table
-                $db->query("TRUNCATE TABLE `" . $data[table] . "`;");
+                $db->query("TRUNCATE TABLE `" . $data['table'] . "`;");
 
                 // insert data
-                $exportPathFile = $this->getFile($data[filename]);
+                $exportPathFile = $this->getFile($data['filename']);
                 echo date("Y-m-d H:i:s") . " - INFO - Loading '" . $exportPathFile . "'.\n";
                 $db->loadDataInfile(
                     $exportPathFile,
-                    $data[table],
-                    $import[infile_clauses][fields_clause],
-                    $import[infile_clauses][lines_clause],
-                    $data[columns]
+                    $data['table'],
+                    $import['infile_clauses']['fields_clause'],
+                    $import['infile_clauses']['lines_clause'],
+                    $data['columns']
                 );
             }
 
