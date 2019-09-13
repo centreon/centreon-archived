@@ -7,14 +7,15 @@ use Centreon\Domain\Repository;
 use Centreon\Domain\Repository\Interfaces\AclResourceRefreshInterface;
 use CentreonRemote\Infrastructure\Export\ExportCommitment;
 use CentreonRemote\Infrastructure\Export\ExportManifest;
-use CentreonRemote\Infrastructure\Service\ExporterServicePartialInterface;
-use ReflectionClass;
-use WebDriver\Exception;
 
 class ExportService
 {
-
-    const PATH_EXPORTED_DATA = '/var/lib/centreon/remote-data';
+    /**
+     * Path to store exported remote server files
+     *
+     * @var string
+     */
+    private $pathExportedData;
 
     /**
      * @var \CentreonRemote\Infrastructure\Service\ExporterService
@@ -52,6 +53,8 @@ class ExportService
         $this->cache = $services->get('centreon_remote.exporter.cache');
         $this->acl = $services->get('centreon.acl');
         $this->db = $services->get(\Centreon\ServiceProvider::CENTREON_DB_MANAGER);
+
+        $this->pathExportedData = _CENTREON_CACHEDIR_ . '/config/remote-data';
 
         $version = $this->db
             ->getRepository(Repository\InformationsRepository::class)
@@ -99,7 +102,7 @@ class ExportService
      */
     public function import(ExportCommitment $commitment = null): void
     {
-        $commitment = $commitment ?? new ExportCommitment(null, null, null, null, static::PATH_EXPORTED_DATA);
+        $commitment = $commitment ?? new ExportCommitment(null, null, null, null, $this->pathExportedData);
 
         // check is export directory
         $exportPath = $commitment->getPath();
