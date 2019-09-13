@@ -47,7 +47,7 @@ class Backend
     private $fullPath = null;
     private $whoaim = 'unknown';
 
-    private $exportContact = 0;
+    private $exportContact = false;
 
     private $pollerId = null;
     private $centralPollerId = null;
