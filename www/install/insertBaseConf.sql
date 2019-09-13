@@ -694,7 +694,6 @@ INSERT INTO `cb_tag_type_relation` (`cb_tag_id`, `cb_type_id`, `cb_type_uniq`) V
 (1, 29, 1),
 (1, 30, 0),
 (1, 31, 0),
-(1, 32, 1),
 (1, 33, 0);
 
 --
@@ -827,8 +826,6 @@ INSERT INTO `cb_type_field_relation` (`cb_type_id`, `cb_field_id`, `is_required`
 (31, 60, 0, 14),
 (31, 61, 0, 15),
 (31, 62, 0, 16),
-(32, 29, 1, 1),
-(32, 70, 0, 2),
 (33, 74, 1, 1),
 (33, 47, 0, 2),
 (33, 72, 0, 3),
