@@ -537,13 +537,21 @@ sub sendExternalCommand($$) {
             my @splittedCommands = split(/\n/, $cmd);
             my $countCommands = @splittedCommands;
             foreach my $cmd1 (@splittedCommands) {
-                $cmd_line .= $self->removeIllegalCharacters($cmd1) . "\n";
+                if (defined($server_info->{remote_id})
+                    && $server_info->{remote_id} != 0
+                    && $self->{instance_mode} ne "remote"
+                    && $server_info->{remote_server_centcore_ssh_proxy} == 1
+                ) {
+                    $cmd_line .= 'EXTERNALCMD:' . $id . ':' . $self->removeIllegalCharacters($cmd1) . "\n";
+                } else {
+                    $cmd_line .= $self->removeIllegalCharacters($cmd1) . "\n";
+                }
                 $count++;
                 $totalCount++;
 
                 if ($count >= 200 || $totalCount == $countCommands) {
                     if (defined($server_info->{remote_id}) 
-                        && $server_info->{remote_id} != 0 
+                        && $server_info->{remote_id} != 0
                         && $self->{instance_mode} ne "remote"
                         && $server_info->{remote_server_centcore_ssh_proxy} == 1
                     ) {
@@ -552,8 +560,7 @@ sub sendExternalCommand($$) {
                         $port = checkSSHPort($remote_server->{ssh_port});
                         $cmd_line =~ s/^\s+|\s+$//g;
                         $cmd2 = "$self->{ssh} -q " . $remote_server->{ns_ip_address} . " -p $port "
-                            . "\"$self->{echo} 'EXTERNALCMD:$id:" . $cmd_line . "' "
-                            . ">> " . $self->{cmdDir} . time() . "-sendcmd\"";
+                            . "\"$self->{echo} '" . $cmd_line . "' >> " . $self->{cmdDir} . time() . "-sendcmd\"";
                         $self->{logger}->writeLogInfo(
                             "Sending external command using Remote Server: " . $remote_server->{name}
                         );
@@ -583,8 +590,7 @@ sub sendExternalCommand($$) {
                                         "Try to use additional Remote Server: " . $additional_remote_config->{name}
                                     );
                                     $cmd2 = "$self->{ssh} -q " . $additional_remote_config->{ns_ip_address} . " -p $port "
-                                        . "\"$self->{echo} 'EXTERNALCMD:$id:" . $cmd_line . "' "
-                                        . ">> " . $self->{cmdDir} . time() . "-sendcmd\"";
+                                        . "\"$self->{echo} '" . $cmd_line . "' >> " . $self->{cmdDir} . time() . "-sendcmd\"";
                                     $self->{logger}->writeLogInfo(
                                         "Sending external command using Remote Server: "
                                         . $additional_remote_config->{name}
