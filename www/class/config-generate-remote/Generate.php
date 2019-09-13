@@ -1,7 +1,7 @@
 <?php
 /*
  * Copyright 2005 - 2019 Centreon (https://www.centreon.com/)
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -197,19 +197,17 @@ class Generate
 
     public function getModuleObjects()
     {
+        $this->moduleObjects = [];
+
         $this->getInstalledModules();
 
         foreach ($this->installedModules as $module) {
-            if ($files =
-                glob(_CENTREON_PATH_ . 'www/modules/' . $module . '/generate_files_remote/generate.class.php')) {
-                foreach ($files as $fullFile) {
-                    require_once $fullFile;
-                    $module = $this->ucFirst(['-', '_', ' '], $module);
-                    $fileName = str_replace('.class.php', '', basename($fullFile));
-                    $class = $module . ucfirst($fileName);
-                    if (class_exists('\ConfigGenerateRemote\\' . $class)) {
-                        $this->moduleObjects[] = $class;
-                    }
+            $generateFile = __DIR__ . '/../../modules/' . $module . '/GenerateFilesRemote/Generate.php';
+            if (file_exists($generateFile)) {
+                require_once $generateFile;
+                $module = $this->ucFirst(['-', '_', ' '], $module);
+                if (class_exists('\\' . $module . '\ConfigGenerateRemote\\Generate')) {
+                    $this->moduleObjects[] = $class;
                 }
             }
         }
@@ -220,12 +218,11 @@ class Generate
         if (is_null($this->moduleObjects)) {
             $this->getModuleObjects();
         }
-        if (is_array($this->moduleObjects)) {
-            foreach ($this->moduleObjects as $module_object) {
-                $module_object = '\ConfigGenerateRemote\\' . $module_object;
-                $module = new $module_object($this->dependencyInjector);
-                $module->configRemoteServerFromId($remoteServerId);
-            }
+
+        foreach ($this->moduleObjects as $moduleObject) {
+            $moduleObject = '\ConfigGenerateRemote\\' . $moduleObject;
+            $module = new $moduleObject($this->dependencyInjector);
+            $module->configRemoteServerFromId($remoteServerId);
         }
     }
 
