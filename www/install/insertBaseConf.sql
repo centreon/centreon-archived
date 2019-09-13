@@ -615,7 +615,6 @@ INSERT INTO `cb_list` (`cb_list_id`, `cb_field_id`, `default_value`) VALUES
 (9, 61, 'string'),
 (10, 62, 'false'),
 (1, 63, 'yes'),
-(1, 70, 'no'),
 (11, 73, 'string');
 
 --
