@@ -91,6 +91,15 @@ sub init {
     my $self = shift;
     $self->SUPER::init();
 
+    if (!defined $self->{centreon_config}->{VarLib} || $self->{centreon_config}->{VarLib} eq '') {
+        $self->{centreon_config}->{VarLib} = '/var/lib/centreon';
+    }
+    if (!defined $self->{centreon_config}->{CentreonDir} || $self->{centreon_config}->{CentreonDir} eq '') {
+        $self->{centreon_config}->{CentreonDir} = '/usr/share/centreon';
+    }
+    if (!defined $self->{centreon_config}->{CacheDir} || $self->{centreon_config}->{CacheDir} eq '') {
+        $self->{centreon_config}->{CacheDir} = '/var/cache/centreon';
+    }
     $self->{cmdFile} = $self->{centreon_config}->{VarLib} . "/centcore.cmd";
     $self->{cmdDir} = $self->{centreon_config}->{VarLib} . "/centcore/";
     $self->{centreonDir} = $self->{centreon_config}->{CentreonDir};
