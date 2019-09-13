@@ -257,10 +257,12 @@ class LinkedPollerConfigurationService
             $statement = $this->db->prepare($updateQuery);
             $statement->bindValue(':config_value', $remote->getIp(), \PDO::PARAM_STR);
             $statement->bindValue(':config_id', $configId, \PDO::PARAM_INT);
+
             $updateQuery = "UPDATE `cfg_centreonbroker_info` "
             . "SET `config_value` = :config_value "
             . "WHERE `config_id` = :config_id "
-            . "AND `config_key` = 'name'";
+            . "AND `config_key` = 'name' "
+            . "AND `config_group` = 'output'";
             $statement = $this->db->prepare($updateQuery);
             $statement->bindValue(
                 ':config_value',
