@@ -785,16 +785,17 @@ sub sendConfigFile($) {
             }
         }
     } else {
+        $cfg_dir = $self->getEngineConfigurationField($id, "cfg_dir");
         $origin = $self->{cacheDir} . "/config/engine/" . $id . "/*";
         $dest = $server_info->{'ns_ip_address'} . ":$cfg_dir";
+        $cmd = "$self->{scp} -P $port $origin $dest 2>&1";
 
         # Send data with SCP
         $self->{logger}->writeLogInfo(
             'Send Centreon Engine config files ' .
             'on poller "' . $server_info->{name} . '" (' . $server_info->{id} . ')'
         );
-        $cmd = "$self->{scp} -P $port $origin $dest 2>&1";
-
+        
         ($lerror, $stdout, $return_code) = centreon::common::misc::backtick(
             command => $cmd,
             logger => $self->{logger},
@@ -1007,6 +1008,7 @@ sub sendExportFile($) {
 
     my $server_info = $self->getServerConfig($id);
     my $port = checkSSHPort($server_info->{ssh_port});
+    my $cfg_dir = $server_info->{'centreonbroker_cfg_path'};
 
     if (!defined($cfg_dir) || $cfg_dir =~ //) {
         $self->{logger}->writeLogError(
@@ -1438,7 +1440,7 @@ sub initCentreonTrapd {
             if (defined($ns_server->{remote_id}) 
                 && $ns_server->{remote_id} != 0 
                 && $self->{instance_mode} ne "remote"
-                $ns_server->{remote_server_centcore_ssh_proxy} == 1
+                && $ns_server->{remote_server_centcore_ssh_proxy} == 1
             ) {
                 # Reload/Restart Centreontrapd on poller using Remote Server as proxy
                 my $remote_server = $self->getServerConfig($ns_server->{remote_id});
