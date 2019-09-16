@@ -7,4 +7,4 @@ ALTER TABLE nagios_server ADD COLUMN `remote_server_centcore_ssh_proxy` enum('0'
 INSERT INTO `widget_parameters_field_type` (`ft_typename`, `is_connector`) VALUES
 ('hostSeverityMulti', 1);
 
-INSERT INTO `options` (`key`, `value`) VALUES ('inheritance_mode', 1);
+INSERT INTO `options` (`key`, `value`) VALUES ('inheritance_mode', '1');

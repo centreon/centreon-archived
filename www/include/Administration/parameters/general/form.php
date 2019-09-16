@@ -110,7 +110,7 @@ $inheritanceMode[] = $form->createElement(
 );
 
 $form->addGroup($inheritanceMode, 'inheritance_mode', _("Contacts & Contact groups method calculation"), '&nbsp;');
-$form->setDefaults(array('inheritance_mode' => self::CUMULATIVE_NOTIFICATION));
+$form->setDefaults(array('inheritance_mode' => CUMULATIVE_NOTIFICATION));
 
 $limit = array(10 => 10, 20 => 20, 30 => 30, 40 => 40, 50 => 50, 60 => 60, 70 => 70, 80 => 80, 90 => 90, 100 => 100);
 $form->addElement('select', 'maxViewMonitoring', _("Limit per page for Monitoring"), $limit);
