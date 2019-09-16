@@ -426,14 +426,16 @@ if ($valid) {
             var remote_additional_id = jQuery("#remote_additional_id").val();
 
             jQuery.ajax({
-                url: "./api/internal.php?object=centreon_configuration_poller&action=list&t=remote&e=" + master_remote_id,
+                url: "./api/internal.php?object=centreon_configuration_poller&action=list&t=remote&e="
+                    + master_remote_id,
                 type: "GET",
                 dataType: "json",
                 success: function (json) {
                     jQuery('#remote_additional_id').val('');
                     json.items.forEach(function (elem) {
                         jQuery('#remote_additional_id').empty();
-                        if (jQuery.inArray(elem.id, remote_additional_id) != -1 && elem.id != master_remote_id && elem.id) {
+                        if (jQuery.inArray(elem.id, remote_additional_id) != -1
+                          && elem.id != master_remote_id && elem.id) {
                             jQuery('#remote_additional_id').append(
                                 '<option value="' + elem.id + '" selected>' + elem.text + '</option>'
                             );

@@ -106,7 +106,7 @@ function getAvailableSuffixIds(
 function testAdditionalRemoteServer(array $values)
 {
     # If remote_additional_id select2 is not empty
-    if (isset($values[0]) 
+    if (isset($values[0])
         && is_array($values[0])
         && count($values[0]) >= 1
     ) {
@@ -380,7 +380,7 @@ function duplicateServer(array $server, array $nbrDup): void
  * @param int $id Id of the server
  * @param array $remotes Id of the additionnal Remote Servers
  * @throws Exception
- * 
+ *
  * @return void
  */
 function additionnalRemoteServersByPollerId(int $id, array $remotes = null): void
