@@ -2298,8 +2298,8 @@ CREATE TABLE IF NOT EXISTS `remote_servers` (
 
 -- Create rs_poller_relation for the additional relationship between poller and remote servers
 CREATE TABLE `rs_poller_relation` (
-  `remote_server_id` int(11) NOT NULL DEFAULT '0',
-  `poller_server_id` int(11) NOT NULL DEFAULT '0',
+  `remote_server_id` int(11) NOT NULL,
+  `poller_server_id` int(11) NOT NULL,
   KEY `remote_server_id` (`remote_server_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Relation Table For centreon pollers and remote servers';
 
