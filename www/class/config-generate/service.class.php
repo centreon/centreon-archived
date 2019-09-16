@@ -202,11 +202,11 @@ class Service extends AbstractService
             $this->service_cache[$service_id]['contacts'] = $host->getString($host_id, 'contacts');
             $this->service_cache[$service_id]['contact_groups'] = $host->getString($host_id, 'contact_groups');
             $this->service_cache[$service_id]['contact_from_host'] = 1;
-        } else {
+        } elseif (
+            empty($this->service_cache[$service_id]['contacts'])
+            && empty($this->service_cache[$service_id]['contact_groups'])
+        ) {
             $this->service_cache[$service_id]['contact_from_host'] = 0;
-            if ($this->isServiceHasContacts($service_id)) {
-                return 0;
-            }
             $host = Host::getInstance($this->dependencyInjector);
             $this->service_cache[$service_id]['contacts'] = $host->getString($host_id, 'contacts');
             $this->service_cache[$service_id]['contact_groups'] = $host->getString($host_id, 'contact_groups');
