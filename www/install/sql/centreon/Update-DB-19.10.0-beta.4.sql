@@ -17,7 +17,7 @@ VALUES
   (SELECT `cb_field_id` FROM `cb_field` WHERE `displayname` = 'Enable RRDCached')), 'UNIX Socket', 'unix'
 ),
 ((SELECT `cb_list_id` FROM `cb_list` WHERE `cb_field_id` =
-  (SELECT `cb_field_id` cb_type_field_relationFROM `cb_field` WHERE `displayname` = 'Enable RRDCached')), 'TCP Port ', 'tcp'
+  (SELECT `cb_field_id` FROM `cb_field` WHERE `displayname` = 'Enable RRDCached')), 'TCP Port ', 'tcp'
 );
 
 UPDATE `cb_type_field_relation` SET `jshook_name` = 'rrdArguments', `jshook_arguments` = '{"target": "rrd_cached"}', `order_display` = 3
