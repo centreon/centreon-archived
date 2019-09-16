@@ -234,48 +234,24 @@ abstract class AbstractHost extends AbstractObject
             $this->notificationOption = $notificationOption['value'];
         }
 
-        if (!isset($host['contacts_cache'])) {
-            if (is_null($this->stmt_contact)) {
-                $this->stmt_contact = $this->backend_instance->db->prepare(
-                    "SELECT contact_id FROM contact_host_relation WHERE host_host_id = :host_id"
-                );
-            }
-            $this->stmt_contact->bindParam(':host_id', $host['host_id'], PDO::PARAM_INT);
-            $this->stmt_contact->execute();
-            $host['contacts_cache'] = $this->stmt_contact->fetchAll(PDO::FETCH_COLUMN);
-        }
-
-        $contact = Contact::getInstance($this->dependencyInjector);
-        $contactResult = '';
-        $contactResultAppend = '';
-        $hostListing = array();
-
-        foreach ($host['contacts_cache'] as $contactId) {
-            $tmp = $contact->generateFromContactId($contactId);
-            if (!is_null($tmp)) {
-                $contactResult .= $contactResultAppend . $tmp;
-                $contactResultAppend = ',';
-            }
-        }
+        // get the first host (template) link to a contact
+        $this->getContactCloseInheritance($host['host_id'], $hostListing);
 
         switch ((int)$this->notificationOption) {
             case self::VERTICAL_NOTIFICATION:
                 //check if the inheritance is enable
                 if ((int)$host['contact_additive_inheritance'] === 1) {
-                    $this->getContactVerticalInheritance($host['host_id'], $hostListing);
-                }
-                break;
-            case self::CLOSE_NOTIFICATION:
-                //check if a contact is already present
-                if (empty($contactResult)) {
-                    $this->getContactCloseInheritance($host['host_id'], $hostListing);
+                    //use the first template found to start
+                    $this->getContactVerticalInheritance($hostListing[0], $hostListing);
                 }
                 break;
             case self::CUMULATIVE_NOTIFICATION:
                 // get all host / template inheritance
                 $this->getCumulativeInheritance($host['host_id'], $hostListing);
                 break;
+            case self::CLOSE_NOTIFICATION:
             default:
+                //do nothing it's the starting point of other notification option
                 break;
         }
 
@@ -384,48 +360,24 @@ abstract class AbstractHost extends AbstractObject
             $this->notificationOption = $notificationOption['value'];
         }
 
-        if (!isset($host['contact_groups_cache'])) {
-            if (is_null($this->stmt_cg)) {
-                $this->stmt_cg = $this->backend_instance->db->prepare(
-                    "SELECT contactgroup_cg_id FROM contactgroup_host_relation WHERE host_host_id = :host_id"
-                );
-            }
-            $this->stmt_cg->bindParam(':host_id', $host['host_id'], PDO::PARAM_INT);
-            $this->stmt_cg->execute();
-            $host['contact_groups_cache'] = $this->stmt_cg->fetchAll(PDO::FETCH_COLUMN);
-        }
-
-        $cg = Contactgroup::getInstance($this->dependencyInjector);
-        $cgResult = '';
-        $cgResultAppend = '';
-        $hostListing = array();
-
-        foreach ($host['contact_groups_cache'] as $cgId) {
-            $tmp = $cg->generateFromCgId($cgId);
-            if (!is_null($tmp)) {
-                $cgResult .= $cgResultAppend . $tmp;
-                $cgResultAppend = ',';
-            }
-        }
+        // get the first host (template) link to a contact group
+        $this->getContactGroupsCloseInheritance($host['host_id'], $hostListing);
 
         switch ((int)$this->notificationOption) {
             case self::VERTICAL_NOTIFICATION:
                 //check if the inheritance is enable
                 if ((int)$host['contact_additive_inheritance'] === 1) {
-                    $this->getContactGroupsVerticalInheritance($host['host_id'], $hostListing);
-                }
-                break;
-            case self::CLOSE_NOTIFICATION:
-                //check if a contact is already present
-                if (empty($contactResult)) {
-                    $this->getContactGroupsCloseInheritance($host['host_id'], $hostListing);
+                    //use the first template found to start
+                    $this->getContactGroupsVerticalInheritance($hostListing[0], $hostListing);
                 }
                 break;
             case self::CUMULATIVE_NOTIFICATION:
                 // get all host / template inheritance
                 $this->getCumulativeInheritance($host['host_id'], $hostListing);
                 break;
+            case self::CLOSE_NOTIFICATION:
             default:
+                //do nothing it's the starting point of other notification option
                 break;
         }
 

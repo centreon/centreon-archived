@@ -232,8 +232,10 @@ class Host extends AbstractHost
         $this->getHostTemplates($host);
         $this->getHostCommands($host);
         $this->getHostPeriods($host);
+
         $this->getContactGroups($host);
         $this->getContacts($host);
+
         $this->getHostGroups($host);
         $this->getParents($host);
         $this->getSeverity($host['host_id']);
