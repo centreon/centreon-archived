@@ -206,7 +206,8 @@ class Generate
             if (file_exists($generateFile)) {
                 require_once $generateFile;
                 $module = $this->ucFirst(['-', '_', ' '], $module);
-                if (class_exists('\\' . $module . '\ConfigGenerateRemote\\Generate')) {
+                $class = '\\' . $module . '\ConfigGenerateRemote\\Generate';
+                if (class_exists($class)) {
                     $this->moduleObjects[] = $class;
                 }
             }

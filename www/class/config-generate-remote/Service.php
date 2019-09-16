@@ -110,7 +110,8 @@ class Service extends AbstractService
         $severityId =
             ServiceCategory::getInstance($this->dependencyInjector)->getServiceSeverityByServiceId($serviceId);
         if (!is_null($severityId)) {
-            Relations\ServiceCategoriesRelation::getInstance($this->dependencyInjector)->addRelation($severityId, $serviceId);
+            Relations\ServiceCategoriesRelation::getInstance($this->dependencyInjector)
+                ->addRelation($severityId, $serviceId);
         }
         return null;
     }
