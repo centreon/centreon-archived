@@ -155,7 +155,8 @@ class Host extends AbstractHost
         $this->getServicesByHg($host);
 
         $extendedInformation = $this->getExtendedInformation($host);
-        Relations\ExtendedHostInformation::getInstance($this->dependencyInjector)->add($extendedInformation, $host['host_id']);
+        Relations\ExtendedHostInformation::getInstance($this->dependencyInjector)
+            ->add($extendedInformation, $host['host_id']);
 
         $this->generateObjectInFile($host, $host['host_id']);
         $this->addGeneratedHost($host['host_id']);

@@ -74,7 +74,7 @@ class Manifest extends AbstractObject
 
     public function addFile($filename, $type, $table, $columns)
     {
-        $this->manifest['import']['data'][] = [
+        $this->manifest['import']['data'][$filename] = [
             'filename' => $filename,
             'type' => $type,
             'table' => $table,

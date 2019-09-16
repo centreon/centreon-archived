@@ -89,7 +89,7 @@ abstract class AbstractObject
     protected function createFile($dir)
     {
         $fullFile = $dir . '/' . $this->subdir . '/' . $this->generateFilename;
-        if (!($this->fp = @fopen($fullFile, 'w+'))) {
+        if (!($this->fp = @fopen($fullFile, 'a+'))) {
             throw new Exception("Cannot open file (writing permission) '" . $fullFile . "'");
         }
 
