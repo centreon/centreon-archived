@@ -74,7 +74,7 @@ class ContactGroupEntity implements JsonSerializable
         return [
             'id' => $this->entity->getCgId(),
             'name' => $this->entity->getCgName(),
-            'activate' => (int) $this->entity->getCgActivate()
+            'activate' => (int)$this->entity->getCgActivate()
         ];
     }
 }
