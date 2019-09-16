@@ -137,9 +137,16 @@
         <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="mc_update"> {$form.mc_mod_cgs.label}</td><td class="FormRowValue">{$form.mc_mod_cgs.html}</td></tr>
         {/if} 
         {if $o == "mc"}
-        <tr class="list_one">
-            <td class="FormRowField"><img class="helpTooltip" name="contact_additive_inheritance"> {$form.mc_contact_additive_inheritance.label}</td>
-            <td class="FormRowValue">{$form.mc_contact_additive_inheritance.html}</td>
+        <tr class="list_one"  {if $inheritance !="1" } style="display:none;" {/if} >
+            <td class="FormRowField">
+                <span>
+                <img class="helpTooltip" name="contact_additive_inheritance">
+                {$form.mc_contact_additive_inheritance.label}
+                </span>
+            </td>
+            <td class="FormRowValue">
+            {$form.mc_contact_additive_inheritance.html}
+            </td>
         </tr>
         <tr class="list_two">
             <td class="FormRowField"><img class="helpTooltip" name="contact_groups"> {$form.service_cs.label}</td>
@@ -152,12 +159,20 @@
         </tr>
         <tr class="list_two">
             <td class="FormRowField"></td>
-            <td class="FormRowValue">{$form.contact_additive_inheritance.html} <img class="helpTooltip" name="contact_additive_inheritance"></td>
+            <td class="FormRowValue">
+                <span {if $inheritance !="1" } style="visibility:hidden;" {/if} >
+                {$form.contact_additive_inheritance.html}
+                <img class="helpTooltip" name="contact_additive_inheritance">
+                </span>
+            </td>
         </tr>
         {/if}
         {if $o == "mc"}
-        <tr class="list_one">
-            <td class="FormRowField"><img class="helpTooltip" name="cg_additive_inheritance"> {$form.mc_cg_additive_inheritance.label}</td>
+        <tr class="list_one" {if $inheritance !="1" } style="display:none;" {/if}>
+            <td class="FormRowField"  >
+            <img class="helpTooltip" name="cg_additive_inheritance">
+            {$form.mc_cg_additive_inheritance.label}
+            </td>
             <td class="FormRowValue">{$form.mc_cg_additive_inheritance.html}</td>
         </tr>
         <tr class="list_two">
@@ -171,7 +186,12 @@
         </tr>
         <tr class="list_two">
             <td class="FormRowField"></td>
-            <td class="FormRowValue">{$form.cg_additive_inheritance.html} <img class="helpTooltip" name="cg_additive_inheritance"></td>
+            <td class="FormRowValue">
+                <span {if $inheritance !="1" } style="visibility:hidden;" {/if} >
+                {$form.cg_additive_inheritance.html}
+                <img class="helpTooltip" name="cg_additive_inheritance">
+                </span>
+            </td>
         </tr>
         {/if}            
         <tr class="list_lvl_1">
