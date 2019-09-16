@@ -62,7 +62,7 @@ class ContactGroupEntity implements JsonSerializable
      *   schema="ContactGroup",
      *       @OA\Property(property="id", type="integer"),
      *       @OA\Property(property="name", type="string"),
-     *       @OA\Property(property="activate", type="string", enum={"0","1"})
+     *       @OA\Property(property="activate", type="integer")
      * )
      *
      * JSON serialization of entity
@@ -74,7 +74,7 @@ class ContactGroupEntity implements JsonSerializable
         return [
             'id' => $this->entity->getCgId(),
             'name' => $this->entity->getCgName(),
-            'activate' => $this->entity->getCgActivate()
+            'activate' => (int) $this->entity->getCgActivate()
         ];
     }
 }
