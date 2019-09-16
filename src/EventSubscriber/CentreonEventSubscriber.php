@@ -44,9 +44,9 @@ use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
-use Symfony\Component\HttpKernel\Event\GetResponseEvent;
-use Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent;
+use Symfony\Component\HttpKernel\Event\ExceptionEvent;
+use Symfony\Component\HttpKernel\Event\RequestEvent;
+use Symfony\Component\HttpKernel\Event\ResponseEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 
 /**
@@ -61,6 +61,18 @@ use Symfony\Component\HttpKernel\KernelEvents;
  */
 class CentreonEventSubscriber implements EventSubscriberInterface
 {
+    /**
+     * If no version has been defined in the configuration,
+     * this version will be used by default
+     */
+    const DEFAUT_API_VERSION = "2.0";
+
+    /**
+     * If no API header name has been defined in the configuration,
+     * this name will be used by default
+     */
+    const DEFAULT_API_HEADER_NAME = "version";
+
     /**
      * @var Container
      */
@@ -107,29 +119,29 @@ class CentreonEventSubscriber implements EventSubscriberInterface
     /**
      * Use to update the api version into all responses
      *
-     * @param FilterResponseEvent $event
+     * @param ResponseEvent $event
      */
-    public function addApiVersion(FilterResponseEvent $event)
+    public function addApiVersion(ResponseEvent $event)
     {
-        $apiVersion = '1.0';
-        $apiHeaderName = 'version';
+        $defaultApiVersion = self::DEFAUT_API_VERSION;
+        $defaultApiHeaderName = self::DEFAULT_API_HEADER_NAME;
 
-        if ($this->container->hasParameter('api.version.lastest')) {
-            $apiVersion = $this->container->getParameter('api.version.lastest');
+        if ($this->container->hasParameter('api.version.latest')) {
+            $defaultApiVersion = $this->container->getParameter('api.version.latest');
         }
         if ($this->container->hasParameter('api.header')) {
-            $apiHeaderName = $this->container->getParameter('api.header');
+            $defaultApiHeaderName = $this->container->getParameter('api.header');
         }
-        $event->getResponse()->headers->add([$apiHeaderName => $apiVersion]);
+        $event->getResponse()->headers->add([$defaultApiHeaderName => $defaultApiVersion]);
     }
 
     /**
      * Initializes the RequestParameters instance for later use in the service or repositories.
      *
-     * @param GetResponseEvent $request
+     * @param RequestEvent $request
      * @throws \Exception
      */
-    public function initRequestParameters(GetResponseEvent $request):void
+    public function initRequestParameters(RequestEvent $request):void
     {
         $query = $request->getRequest()->query->all();
 
@@ -205,9 +217,9 @@ class CentreonEventSubscriber implements EventSubscriberInterface
      * We retrieve the API version from url to put it in the attributes to allow
      * the kernel to use it in routing conditions.
      *
-     * @param GetResponseEvent $event
+     * @param RequestEvent $event
      */
-    public function defineApiVersionInAttributes(GetResponseEvent $event)
+    public function defineApiVersionInAttributes(RequestEvent $event)
     {
         $latestVersion = $this->container->getParameter('api.version.latest');
         $event->getRequest()->attributes->set('version.latest', $latestVersion);
@@ -252,9 +264,9 @@ class CentreonEventSubscriber implements EventSubscriberInterface
     /**
      * Used to manage exceptions outside controllers.
      *
-     * @param GetResponseForExceptionEvent $event
+     * @param ExceptionEvent $event
      */
-    public function onKernelException(GetResponseForExceptionEvent $event)
+    public function onKernelException(ExceptionEvent $event)
     {
         $flagController = 'Controller';
         $errorIsBeforeController = true;
