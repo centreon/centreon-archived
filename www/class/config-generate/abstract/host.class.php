@@ -236,7 +236,7 @@ abstract class AbstractHost extends AbstractObject
 
         // get the first host (template) link to a contact
         $this->getContactCloseInheritance($host['host_id'], $hostListing);
-
+        $contactResult = '';
         switch ((int)$this->notificationOption) {
             case self::VERTICAL_NOTIFICATION:
                 //check if the inheritance is enable
@@ -362,7 +362,7 @@ abstract class AbstractHost extends AbstractObject
 
         // get the first host (template) link to a contact group
         $this->getContactGroupsCloseInheritance($host['host_id'], $hostListing);
-
+        $cgResult = '';
         switch ((int)$this->notificationOption) {
             case self::VERTICAL_NOTIFICATION:
                 //check if the inheritance is enable

@@ -183,45 +183,31 @@ abstract class AbstractService extends AbstractObject
             $service['contacts_cache'] = array();
             $service['contacts'] = "";
         } else {
-            if(is_null($this->notificationOption)){
-                $stmtNotification =$this->backend_instance->db->query(
+            if (is_null($this->notificationOption)) {
+                $stmtNotification = $this->backend_instance->db->query(
                     "SELECT `value` FROM options WHERE `key` = 'inheritance_mode'"
                 );
                 $notificationOption = $stmtNotification->fetch();
                 $this->notificationOption = $notificationOption['value'];
             }
 
-            $contact = Contact::getInstance($this->dependencyInjector);
-            $service['contacts_cache'] = $contact->getContactForService($service['service_id']);
+            $this->getContactCloseInheritance($service['service_id'], $serviceListing);
             $contactResult = '';
-            $contactResultAppend = '';
-            $serviceListing = array();
-            foreach ($service['contacts_cache'] as $contactId) {
-                $tmp = $contact->generateFromContactId($contactId);
-                if (!is_null($tmp)) {
-                    $contactResult .= $contactResultAppend . $tmp;
-                    $contactResultAppend = ',';
-                }
-            }
-
             switch ((int)$this->notificationOption) {
                 case self::VERTICAL_NOTIFICATION:
                     //check if the inheritance is enable
                     if ((int)$service['contact_additive_inheritance'] === 1) {
-                        $this->getContactVerticalInheritance($service['service_id'], $serviceListing);
-                    }
-                    break;
-                case self::CLOSE_NOTIFICATION:
-                    //check if a contact is already present
-                    if (empty($contactResult)) {
-                        $this->getContactCloseInheritance($service['service_id'], $serviceListing);
+                        //use the first template found to start
+                        $this->getContactVerticalInheritance($serviceListing[0], $serviceListing);
                     }
                     break;
                 case self::CUMULATIVE_NOTIFICATION:
                     // get all service / template inheritance
                     $this->getCumulativeInheritance($service['service_id'], $serviceListing);
                     break;
+                case self::CLOSE_NOTIFICATION:
                 default:
+                    //do nothing it's the starting point of other notification option
                     break;
             }
 
@@ -325,46 +311,33 @@ abstract class AbstractService extends AbstractObject
             $service['contact_groups'] = "";
         } else {
 
-            if(is_null($this->notificationOption)){
-                $stmtNotification =$this->backend_instance->db->query(
+            if (is_null($this->notificationOption)) {
+                $stmtNotification = $this->backend_instance->db->query(
                     "SELECT `value` FROM options WHERE `key` = 'inheritance_mode'"
                 );
                 $notificationOption = $stmtNotification->fetch();
                 $this->notificationOption = $notificationOption['value'];
             }
 
-            $cg = Contactgroup::getInstance($this->dependencyInjector);
-            $service['contact_groups_cache'] = $cg->getCgForService($service['service_id']);
+            // get the first host (template) link to a contact
+            $this->getContactGroupsCloseInheritance($service['service_id'], $serviceListing);
+
             $cgResult = '';
-            $cgResultAppend = '';
-            $serviceListing = array();
-
-            foreach ($service['contact_groups_cache'] as $cgId) {
-                $tmp = $cg->generateFromCgId($cgId);
-                if (!is_null($tmp)) {
-                    $cgResult .= $cgResultAppend . $tmp;
-                    $cgResultAppend = ',';
-                }
-            }
-
             switch ((int)$this->notificationOption) {
                 case self::VERTICAL_NOTIFICATION:
                     //check if the inheritance is enable
                     if ((int)$service['cg_additive_inheritance'] === 1) {
-                        $this->getContactGroupsVerticalInheritance($service['service_id'], $serviceListing);
-                    }
-                    break;
-                case self::CLOSE_NOTIFICATION:
-                    //check if a contact is already present
-                    if (empty($contactResult)) {
-                        $this->getContactGroupsCloseInheritance($service['service_id'], $serviceListing);
+                        //use the first template found to start
+                        $this->getContactGroupsVerticalInheritance($serviceListing[0], $serviceListing);
                     }
                     break;
                 case self::CUMULATIVE_NOTIFICATION:
                     // get all service / template inheritance
                     $this->getCumulativeInheritance($service['service_id'], $serviceListing);
                     break;
+                case self::CLOSE_NOTIFICATION:
                 default:
+                    //do nothing it's the starting point of other notification option
                     break;
             }
 
@@ -391,7 +364,8 @@ abstract class AbstractService extends AbstractObject
             if (isset($serviceAdd['service_template_model_stm_id'])
                 && (int)$serviceAdd['cg_additive_inheritance'] === 1
             ) {
-                $this->getContactGroupsVerticalInheritance($serviceAdd['service_template_model_stm_id'], $serviceListing);
+                $this->getContactGroupsVerticalInheritance($serviceAdd['service_template_model_stm_id'],
+                    $serviceListing);
             }
             break;
         }
@@ -440,11 +414,6 @@ abstract class AbstractService extends AbstractObject
         }
         return $contactGroups;
     }
-
-
-
-
-
 
     protected function findCommandName($service_id, $command_label)
     {
