@@ -120,11 +120,15 @@ fi
 #
 
 print_step_begin "PHP configuration"
-echo "date.timezone = Europe/Paris" > /etc/opt/rh/rh-php71/php.d/10-centreon.ini
+timezone=`date '+%Z'`
+if [ -z "$timezone" ] ; then
+  timezone=UTC
+fi
+echo "date.timezone = $timezone" > /etc/opt/rh/rh-php71/php.d/10-centreon.ini
 if [ "x$has_systemd" '=' x1 ] ; then
   systemctl restart rh-php71-php-fpm
 fi
-print_step_end
+print_step_end "OK, timezone set to $timezone"
 
 #
 # SERVICES
