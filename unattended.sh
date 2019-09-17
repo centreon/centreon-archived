@@ -101,21 +101,6 @@ fi
 print_step_end
 
 #
-# MARIADB
-#
-
-print_step_begin "MariaDB configuration"
-if [ "x$has_systemd" '=' x1 ] ; then
-  mkdir -p  /etc/systemd/system/mariadb.service.d
-  echo -e "[Service]\nLimitNOFILE=32000" >> /etc/systemd/system/mariadb.service.d/limits.conf
-  systemctl daemon-reload
-  systemctl restart mysql
-  print_step_end
-else
-  print_step_end "OK, systemd not detected, skipping"
-fi
-
-#
 # PHP
 #
 
