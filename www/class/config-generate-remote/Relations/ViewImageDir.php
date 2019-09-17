@@ -1,7 +1,7 @@
 <?php
 /*
  * Copyright 2005 - 2019 Centreon (https://www.centreon.com/)
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -33,7 +33,14 @@ class ViewImageDir extends AbstractObject
         'dir_comment',
     ];
 
-    public function add($object, $dirId)
+    /**
+     * Add relation
+     *
+     * @param array $object
+     * @param integer $dirId
+     * @return void
+     */
+    public function add(array $object, int $dirId)
     {
         if ($this->checkGenerate($dirId)) {
             return null;

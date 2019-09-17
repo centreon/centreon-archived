@@ -1,7 +1,7 @@
 <?php
 /*
  * Copyright 2005 - 2019 Centreon (https://www.centreon.com/)
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -61,17 +61,28 @@ class Graph extends AbstractObject
         'comment'
     ];
 
+    /**
+     * Get graph
+     *
+     * @return void
+     */
     private function getGraph()
     {
-        $query = "
-            SELECT $this->attributesSelect
-            FROM giv_graphs_template";
-        $stmt = $this->backendInstance->db->prepare($query);
+        $stmt = $this->backendInstance->db->prepare(
+            "SELECT $this->attributesSelect
+            FROM giv_graphs_template"
+        );
         $stmt->execute();
         $this->graphs = $stmt->fetchAll(PDO::FETCH_GROUP | PDO::FETCH_UNIQUE | PDO::FETCH_ASSOC);
     }
 
-    public function getGraphFromId($graphId)
+    /**
+     * Generate and get graph from id
+     *
+     * @param null|integer $graphId
+     * @return string|null
+     */
+    public function getGraphFromId(?int $graphId)
     {
         if (is_null($this->graphs)) {
             $this->getGraph();

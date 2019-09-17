@@ -1,7 +1,7 @@
 <?php
 /*
  * Copyright 2005 - 2019 Centreon (https://www.centreon.com/)
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -54,14 +54,20 @@ class HostGroup extends AbstractObject
     ];
     protected $stmtHg = null;
 
-    private function getHostgroupFromId($hgId)
+    /**
+     * Get host group from id
+     *
+     * @param integer $hgId
+     * @return void
+     */
+    private function getHostgroupFromId(int $hgId)
     {
         if (is_null($this->stmtHg)) {
-            $this->stmtHg = $this->backendInstance->db->prepare("SELECT 
-                    $this->attributesSelect
+            $this->stmtHg = $this->backendInstance->db->prepare(
+                "SELECT $this->attributesSelect
                 FROM hostgroup
-                WHERE hg_id = :hg_id AND hg_activate = '1'
-                ");
+                WHERE hg_id = :hg_id AND hg_activate = '1'"
+            );
         }
         $this->stmtHg->bindParam(':hg_id', $hgId, PDO::PARAM_INT);
         $this->stmtHg->execute();
@@ -73,7 +79,15 @@ class HostGroup extends AbstractObject
         $this->hg[$hgId]['members'] = [];
     }
 
-    public function addHostInHg($hgId, $hostId, $hostName)
+    /**
+     * Add host in host group
+     *
+     * @param integer $hgId
+     * @param integer $hostId
+     * @param string $hostName
+     * @return void
+     */
+    public function addHostInHg(int $hgId, int $hostId, string $hostName)
     {
         if (!isset($this->hg[$hgId])) {
             $this->getHostgroupFromId($hgId);
@@ -89,6 +103,11 @@ class HostGroup extends AbstractObject
         return 0;
     }
 
+    /**
+     * Generate objects
+     *
+     * @return void
+     */
     public function generateObjects()
     {
         foreach ($this->hg as $id => &$value) {
@@ -101,6 +120,11 @@ class HostGroup extends AbstractObject
         }
     }
 
+    /**
+     * Get host groups
+     *
+     * @return array
+     */
     public function getHostgroups()
     {
         $result = [];
@@ -113,7 +137,13 @@ class HostGroup extends AbstractObject
         return $result;
     }
 
-    public function reset($createfile = false)
+    /**
+     * Reset object
+     *
+     * @param boolean $createfile
+     * @return void
+     */
+    public function reset($createfile = false): void
     {
         parent::reset($createfile);
         foreach ($this->hg as &$value) {
@@ -123,7 +153,14 @@ class HostGroup extends AbstractObject
         }
     }
 
-    public function getString($hgId, $attr)
+    /**
+     * Get host group attribute
+     *
+     * @param integer $hgId
+     * @param string $attr
+     * @return string|null
+     */
+    public function getString(int $hgId, string $attr)
     {
         if (isset($this->hg[$hgId][$attr])) {
             return $this->hg[$hgId][$attr];

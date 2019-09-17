@@ -1,7 +1,7 @@
 <?php
 /*
  * Copyright 2005 - 2019 Centreon (https://www.centreon.com/)
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -31,7 +31,14 @@ class ContactHostRelation extends AbstractObject
         'contact_id',
     ];
 
-    public function addRelation($hostId, $contactId)
+    /**
+     * Add relation
+     *
+     * @param integer $hostId
+     * @param integer $contactId
+     * @return void
+     */
+    public function addRelation(int $hostId, int $contactId)
     {
         $relation = [
             'host_host_id' => $hostId,

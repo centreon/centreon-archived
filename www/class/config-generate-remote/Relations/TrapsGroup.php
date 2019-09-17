@@ -1,7 +1,7 @@
 <?php
 /*
  * Copyright 2005 - 2019 Centreon (https://www.centreon.com/)
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -40,31 +40,46 @@ class TrapsGroup extends AbstractObject
         'traps_group_name'
     ];
 
+    /**
+     * Constructor
+     *
+     * @param \Pimple\Container $dependencyInjector
+     */
     public function __construct(\Pimple\Container $dependencyInjector)
     {
         parent::__construct($dependencyInjector);
         $this->buildCache();
     }
 
+    /**
+     * Build cache of trap groups
+     *
+     * @return void
+     */
     private function cacheTrapGroup()
     {
-        $stmt = $this->backendInstance->db->prepare("SELECT 
-                    * 
-                FROM traps_group
-        ");
+        $stmt = $this->backendInstance->db->prepare(
+            "SELECT *
+            FROM traps_group"
+        );
 
         $stmt->execute();
         $values = $stmt->fetchAll(PDO::FETCH_ASSOC);
         foreach ($values as &$value) {
-            $this->trapgroup_cache[$value['traps_group_id']] = &$value;
+            $this->trapgroupCache[$value['traps_group_id']] = &$value;
         }
     }
 
+    /**
+     * Build cache of relations between traps and trap groups
+     *
+     * @return void
+     */
     private function cacheTrapLinked()
     {
         $stmt = $this->backendInstance->db->prepare(
-            'SELECT traps_group_id, traps_id ' .
-            'FROM traps_group_relation'
+            "SELECT traps_group_id, traps_id
+            FROM traps_group_relation"
         );
 
         $stmt->execute();
@@ -76,6 +91,11 @@ class TrapsGroup extends AbstractObject
         }
     }
 
+    /**
+     * Build cache
+     *
+     * @return void
+     */
     private function buildCache()
     {
         if ($this->doneCache == 1) {
@@ -87,7 +107,15 @@ class TrapsGroup extends AbstractObject
         $this->doneCache = 1;
     }
 
-    public function generateObject($trapId, $trapLinkedCache, &$object)
+    /**
+     * Generate trap group
+     *
+     * @param integer $trapId
+     * @param array $trapLinkedCache
+     * @param array $object
+     * @return void
+     */
+    public function generateObject(int $trapId, array $trapLinkedCache, array &$object)
     {
         foreach ($trapLinkedCache as $trapGroupId) {
             trapsGroupRelation::getInstance($this->dependencyInjector)->addRelation($trapId, $trapGroupId);
@@ -98,11 +126,17 @@ class TrapsGroup extends AbstractObject
         }
     }
 
-    public function getTrapGroupsByTrapId($trapId)
+    /**
+     * Get trap linked trap groups
+     *
+     * @param integer $trapId
+     * @return void
+     */
+    public function getTrapGroupsByTrapId(int $trapId)
     {
         # Get from the cache
         if (isset($this->trapLinkedCache[$trapId])) {
-            $this->generateObject($trapId, $this->trapLinkedCache[$trapId], $this->trapgroup_cache);
+            $this->generateObject($trapId, $this->trapLinkedCache[$trapId], $this->trapgroupCache);
             return $this->trapLinkedCache[$trapId];
         } elseif ($this->useCache == 1) {
             return null;
@@ -110,13 +144,12 @@ class TrapsGroup extends AbstractObject
 
         # We get unitary
         if (is_null($this->stmtTrap)) {
-            $this->stmtTrap = $this->backendInstance->db->prepare("SELECT 
-                    traps_group.*
-                FROM traps_service_relation, 
-                     traps_group
-                WHERE traps_group_relation.traps_id = :trap_id 
-                    AND traps_group_relation.traps_group_id = traps_group.traps_group_id
-                ");
+            $this->stmtTrap = $this->backendInstance->db->prepare(
+                "SELECT traps_group.*
+                FROM traps_service_relation, traps_group
+                WHERE traps_group_relation.traps_id = :trap_id
+                AND traps_group_relation.traps_group_id = traps_group.traps_group_id"
+            );
         }
 
         $this->stmtTrap->bindParam(':trap_id', $trapId, PDO::PARAM_INT);
@@ -129,6 +162,7 @@ class TrapsGroup extends AbstractObject
         }
 
         $this->generateObject($trapId, $trapLinkedCache, $trapGroupCache);
+
         return $trapLinkedCache;
     }
 }

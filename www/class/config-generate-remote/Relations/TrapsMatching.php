@@ -1,7 +1,7 @@
 <?php
 /*
  * Copyright 2005 - 2019 Centreon (https://www.centreon.com/)
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -44,18 +44,28 @@ class TrapsMatching extends AbstractObject
         'severity_id'
     ];
 
+    /**
+     * Constructor
+     *
+     * @param \Pimple\Container $dependencyInjector
+     */
     public function __construct(\Pimple\Container $dependencyInjector)
     {
         parent::__construct($dependencyInjector);
         $this->buildCache();
     }
 
+    /**
+     * Build cache for trap matches
+     *
+     * @return void
+     */
     private function cacheTrapMatch()
     {
-        $stmt = $this->backendInstance->db->prepare("SELECT 
-                    * 
-                FROM traps_matching_properties
-        ");
+        $stmt = $this->backendInstance->db->prepare(
+            "SELECT *
+            FROM traps_matching_properties"
+        );
 
         $stmt->execute();
         $values = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -67,6 +77,11 @@ class TrapsMatching extends AbstractObject
         }
     }
 
+    /**
+     * Build cache
+     *
+     * @return void
+     */
     private function buildCache()
     {
         if ($this->doneCache == 1) {
@@ -77,6 +92,13 @@ class TrapsMatching extends AbstractObject
         $this->doneCache = 1;
     }
 
+    /**
+     * Generate object
+     *
+     * @param integer $trapId
+     * @param array $trapMatchCache
+     * @return void
+     */
     public function generateObject($trapId, $trapMatchCache)
     {
         foreach ($trapMatchCache as $value) {
@@ -88,7 +110,13 @@ class TrapsMatching extends AbstractObject
         }
     }
 
-    public function getTrapMatchingByTrapId($trapId)
+    /**
+     * Get trap matching from trap id
+     *
+     * @param integer $trapId
+     * @return void
+     */
+    public function getTrapMatchingByTrapId(int $trapId)
     {
         # Get from the cache
         if (isset($this->trapMatchCache[$trapId])) {
@@ -100,11 +128,11 @@ class TrapsMatching extends AbstractObject
 
         # We get unitary
         if (is_null($this->stmtTrap)) {
-            $this->stmtTrap = $this->backendInstance->db->prepare("SELECT 
-                    *
+            $this->stmtTrap = $this->backendInstance->db->prepare(
+                "SELECT *
                 FROM traps_matching_properties
-                WHERE trap_id = :trap_id 
-                ");
+                WHERE trap_id = :trap_id"
+            );
         }
 
         $this->stmtTrap->bindParam(':trap_id', $trapId, PDO::PARAM_INT);
@@ -115,6 +143,7 @@ class TrapsMatching extends AbstractObject
         }
 
         $this->generateObject($trapId, $trapMatchCache[$trapId]);
+
         return $trapMatchCache;
     }
 }

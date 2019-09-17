@@ -1,7 +1,7 @@
 <?php
 /*
  * Copyright 2005 - 2019 Centreon (https://www.centreon.com/)
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -31,7 +31,14 @@ class ViewImgDirRelation extends AbstractObject
         'img_img_id',
     ];
 
-    public function addRelation($mediaId, $dirId)
+    /**
+     * Add relation
+     *
+     * @param integer $mediaId
+     * @param integer $dirId
+     * @return void
+     */
+    public function addRelation(int $mediaId, int $dirId)
     {
         $relation = [
             'dir_dir_parent_id' => $dirId,

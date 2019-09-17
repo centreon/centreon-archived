@@ -1,7 +1,7 @@
 <?php
 /*
  * Copyright 2005 - 2019 Centreon (https://www.centreon.com/)
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -48,23 +48,33 @@ class ContactGroup extends AbstractObject
     protected $stmtContact = null;
     protected $stmtCgService = null;
 
-    protected function getCgCache()
+    /**
+     * Generate contact group cache
+     *
+     * @return void
+     */
+    protected function getCgCache(): void
     {
-        $stmt = $this->backendInstance->db->prepare("SELECT 
-                    $this->attributesSelect
-                FROM contactgroup
-                WHERE cg_activate = '1'
-        ");
+        $stmt = $this->backendInstance->db->prepare(
+            "SELECT $this->attributesSelect
+            FROM contactgroup
+            WHERE cg_activate = '1'"
+        );
         $stmt->execute();
         $this->cgCache = $stmt->fetchAll(PDO::FETCH_GROUP | PDO::FETCH_UNIQUE | PDO::FETCH_ASSOC);
     }
 
-    private function getCgForServiceCache()
+    /**
+     * Get contact groups linked to services
+     *
+     * @return void
+     */
+    private function getCgForServiceCache(): void
     {
-        $stmt = $this->backendInstance->db->prepare("SELECT 
-                    contactgroup_cg_id, service_service_id
-                FROM contactgroup_service_relation
-        ");
+        $stmt = $this->backendInstance->db->prepare(
+            "SELECT contactgroup_cg_id, service_service_id
+            FROM contactgroup_service_relation"
+        );
         $stmt->execute();
         foreach ($stmt->fetchAll(PDO::FETCH_ASSOC) as $value) {
             if (isset($this->cgServiceLinkedCache[$value['service_service_id']])) {
@@ -75,6 +85,11 @@ class ContactGroup extends AbstractObject
         }
     }
 
+    /**
+     * Build cache
+     *
+     * @return void|int
+     */
     protected function buildCache()
     {
         if ($this->doneCache == 1) {
@@ -86,7 +101,13 @@ class ContactGroup extends AbstractObject
         $this->doneCache = 1;
     }
 
-    public function getCgForService($serviceId)
+    /**
+     * Get service linked contact groups
+     *
+     * @param int $serviceId
+     * @return array
+     */
+    public function getCgForService(int $serviceId): array
     {
         $this->buildCache();
 
@@ -109,17 +130,24 @@ class ContactGroup extends AbstractObject
         $this->stmtCgService->bindParam(':service_id', $serviceId, PDO::PARAM_INT);
         $this->stmtCgService->execute();
         $this->cgServiceLinkedCache[$serviceId] = $this->stmtCgService->fetchAll(PDO::FETCH_COLUMN);
+
         return $this->cgServiceLinkedCache[$serviceId];
     }
 
-    public function getCgFromId($cgId)
+    /**
+     * Get contact group information
+     *
+     * @param int $cgId
+     * @return void
+     */
+    public function getCgFromId(int $cgId)
     {
         if (is_null($this->stmtCg)) {
-            $this->stmtCg = $this->backendInstance->db->prepare("SELECT 
-                    $this->attributesSelect
+            $this->stmtCg = $this->backendInstance->db->prepare(
+                "SELECT $this->attributesSelect
                 FROM contactgroup
-                WHERE cg_id = :cg_id AND cg_activate = '1'
-            ");
+                WHERE cg_id = :cg_id AND cg_activate = '1'"
+            );
         }
         $this->stmtCg->bindParam(':cg_id', $cgId, PDO::PARAM_INT);
         $this->stmtCg->execute();
@@ -128,15 +156,21 @@ class ContactGroup extends AbstractObject
         return $this->cg[$cgId];
     }
 
-    public function getContactFromCgId($cgId)
+    /**
+     * Get contact group linked contacts
+     *
+     * @param integer $cgId
+     * @return void
+     */
+    public function getContactFromCgId(int $cgId)
     {
         if (!isset($this->cg[$cgId]['members_cache'])) {
             if (is_null($this->stmtContact)) {
-                $this->stmtContact = $this->backendInstance->db->prepare("SELECT 
-                        contact_contact_id
+                $this->stmtContact = $this->backendInstance->db->prepare(
+                    "SELECT contact_contact_id
                     FROM contactgroup_contact_relation
-                    WHERE contactgroup_cg_id = :cg_id
-                ");
+                    WHERE contactgroup_cg_id = :cg_id"
+                );
             }
             $this->stmtContact->bindParam(':cg_id', $cgId, PDO::PARAM_INT);
             $this->stmtContact->execute();
@@ -149,7 +183,13 @@ class ContactGroup extends AbstractObject
         }
     }
 
-    public function generateFromCgId($cgId)
+    /**
+     * Generate contact group and get contact group name
+     *
+     * @param null|integer $cgId
+     * @return void|string
+     */
+    public function generateFromCgId(?int $cgId)
     {
         if (is_null($cgId)) {
             return null;
@@ -177,6 +217,7 @@ class ContactGroup extends AbstractObject
 
         $this->cg[$cgId]['cg_id'] = $cgId;
         $this->generateObjectInFile($this->cg[$cgId], $cgId);
+
         return $this->cg[$cgId]['cg_name'];
     }
 }

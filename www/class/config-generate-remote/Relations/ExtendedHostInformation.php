@@ -1,7 +1,7 @@
 <?php
 /*
  * Copyright 2005 - 2019 Centreon (https://www.centreon.com/)
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -37,7 +37,14 @@ class ExtendedHostInformation extends AbstractObject
         'ehi_3d_coords',
     ];
 
-    public function add($object, $hostId)
+    /**
+     * Add relation
+     *
+     * @param array $object
+     * @param integer $hostId
+     * @return void
+     */
+    public function add(array $object, int $hostId)
     {
         $object['host_host_id'] = $hostId;
         $this->generateObjectInFile($object);

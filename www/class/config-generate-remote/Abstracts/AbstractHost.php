@@ -99,13 +99,20 @@ abstract class AbstractHost extends AbstractObject
         'host_acknowledgement_timeout',
     ];
 
-    protected $loopHtpl = []; # To be reset
+    protected $loopHtpl = []; // To be reset
     protected $stmtMacro = null;
     protected $stmtHtpl = null;
     protected $stmtContact = null;
     protected $stmtCg = null;
 
-    protected function getExtendedInformation(&$host)
+    /**
+     * Get host extended information
+     * extended information are unset on host object
+     *
+     * @param array $host the host to parse
+     * @return array the extended information
+     */
+    protected function getExtendedInformation(array &$host): array
     {
         $extendedInformation = [
             'host_host_id' => $host['host_id'],
@@ -117,6 +124,7 @@ abstract class AbstractHost extends AbstractObject
             'ehi_2d_coords' => $host['ehi_2d_coords'],
             'ehi_3d_coords' => $host['ehi_3d_coords'],
         ];
+
         unset($host['ehi_notes']);
         unset($host['ehi_notes_url']);
         unset($host['ehi_action_url']);
@@ -128,14 +136,26 @@ abstract class AbstractHost extends AbstractObject
         return $extendedInformation;
     }
 
-    protected function getImages(&$host)
+    /**
+     * Get host icons
+     *
+     * @param array $host
+     * @return void
+     */
+    protected function getImages(array &$host): void
     {
         $media = Media::getInstance($this->dependencyInjector);
         $media->getMediaPathFromId($host['ehi_icon_image']);
         $media->getMediaPathFromId($host['ehi_statusmap_image']);
     }
 
-    protected function getMacros(&$host)
+    /**
+     * Get host macros
+     *
+     * @param array $host
+     * @return int
+     */
+    protected function getMacros(array &$host): int
     {
         if (isset($host['macros'])) {
             return 1;
@@ -161,7 +181,13 @@ abstract class AbstractHost extends AbstractObject
         return 0;
     }
 
-    protected function getHostTemplates(&$host)
+    /**
+     * Get linked host templates
+     *
+     * @param array $host
+     * @return void
+     */
+    protected function getHostTemplates(array &$host): void
     {
         if (!isset($host['htpl'])) {
             if (is_null($this->stmt_htpl)) {
@@ -187,7 +213,13 @@ abstract class AbstractHost extends AbstractObject
         }
     }
 
-    protected function getContacts(&$host)
+    /**
+     * Get linked contacts
+     *
+     * @param array $host
+     * @return void
+     */
+    protected function getContacts(array &$host): void
     {
         if (!isset($host['contacts_cache'])) {
             if (is_null($this->stmtContact)) {
@@ -209,7 +241,13 @@ abstract class AbstractHost extends AbstractObject
         }
     }
 
-    protected function getContactGroups(&$host)
+    /**
+     * Get linked contact groups
+     *
+     * @param array $host
+     * @return void
+     */
+    protected function getContactGroups(array &$host): void
     {
         if (!isset($host['contact_groups_cache'])) {
             if (is_null($this->stmtCg)) {
@@ -231,12 +269,19 @@ abstract class AbstractHost extends AbstractObject
         }
     }
 
-    public function isHostTemplate($hostId, $hostTplId)
+    /**
+     * Check if a host id is a host template
+     *
+     * @param integer $hostId
+     * @param integer $hostTplId
+     * @return boolean
+     */
+    public function isHostTemplate(int $hostId, int $hostTplId): bool
     {
         $loop = [];
         $stack = [];
 
-        $hosts_tpl = HostTemplate::getInstance($this->dependencyInjector)->hosts;
+        $hostsTpl = HostTemplate::getInstance($this->dependencyInjector)->hosts;
         $stack = $this->hosts[$hostId]['htpl'];
         while (($hostId = array_shift($stack))) {
             if (isset($loop[$hostId])) {
@@ -244,40 +289,72 @@ abstract class AbstractHost extends AbstractObject
             }
             $loop[$hostId] = 1;
             if ($hostId == $hostTplId) {
-                return 1;
+                return true;
             }
-            $stack = array_merge($hosts_tpl[$hostId]['htpl'], $stack);
+            $stack = array_merge($hostsTpl[$hostId]['htpl'], $stack);
         }
 
-        return 0;
+        return false;
     }
 
-    protected function getHostTimezone(&$host)
+    /**
+     * Get host timezone
+     *
+     * @param array $host
+     * @return void
+     */
+    protected function getHostTimezone(array &$host): void
     {
-        # not needed
+        // not needed
     }
 
-    protected function getHostCommand(&$host, $commandIdLabel)
+    /**
+     * Generate host command
+     *
+     * @param array $host
+     * @param string $commandIdLabel
+     * @return integer
+     */
+    protected function getHostCommand(array &$host, string $commandIdLabel): int
     {
         Command::getInstance($this->dependencyInjector)->generateFromCommandId($host[$commandIdLabel]);
 
         return 0;
     }
 
-    protected function getHostCommands(&$host)
+    /**
+     * Get host linked commands
+     *
+     * @param array $host
+     * @return void
+     */
+    protected function getHostCommands(array &$host): void
     {
         $this->getHostCommand($host, 'command_command_id');
         $this->getHostCommand($host, 'command_command_id2');
     }
 
-    protected function getHostPeriods(&$host)
+    /**
+     * Get host linked timeperiods
+     *
+     * @param array $host
+     * @return void
+     */
+    protected function getHostPeriods(array &$host): void
     {
         $period = TimePeriod::getInstance($this->dependencyInjector);
         $period->generateFromTimeperiodId($host['timeperiod_tp_id']);
         $period->generateFromTimeperiodId($host['timeperiod_tp_id2']);
     }
 
-    public function getString($hostId, $attr)
+    /**
+     * Get host attribute
+     *
+     * @param integer $hostId
+     * @param string $attr
+     * @return string|null
+     */
+    public function getString(int $hostId, string $attr): ?string
     {
         if (isset($this->hosts[$hostId][$attr])) {
             return $this->hosts[$hostId][$attr];

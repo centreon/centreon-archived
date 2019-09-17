@@ -1,7 +1,7 @@
 <?php
 /*
  * Copyright 2005 - 2019 Centreon (https://www.centreon.com/)
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -32,7 +32,15 @@ class ServiceGroupRelation extends AbstractObject
         'servicegroup_sg_id',
     ];
 
-    public function addRelationHostService($sgId, $hostId, $serviceId)
+    /**
+     * Add relation
+     *
+     * @param integer $sgId
+     * @param integer $hostId
+     * @param integer $serviceId
+     * @return void
+     */
+    public function addRelationHostService(int $sgId, int $hostId, int $serviceId)
     {
         if ($this->checkGenerate($sgId . '.' . $hostId . '.' . $serviceId)) {
             return null;

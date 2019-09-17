@@ -1,7 +1,7 @@
 <?php
 /*
  * Copyright 2005 - 2019 Centreon (https://www.centreon.com/)
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -40,18 +40,28 @@ class TrapsPreexec extends AbstractObject
         'tpe_string'
     ];
 
+    /**
+     * Constructor
+     *
+     * @param \Pimple\Container $dependencyInjector
+     */
     public function __construct(\Pimple\Container $dependencyInjector)
     {
         parent::__construct($dependencyInjector);
         $this->buildCache();
     }
 
+    /**
+     * Build cache of trap preexec
+     *
+     * @return void
+     */
     private function cacheTrapPreexec()
     {
-        $stmt = $this->backendInstance->db->prepare("SELECT 
-                    * 
-                FROM traps_preexec
-        ");
+        $stmt = $this->backendInstance->db->prepare(
+            "SELECT *
+            FROM traps_preexec"
+        );
 
         $stmt->execute();
         $values = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -63,6 +73,11 @@ class TrapsPreexec extends AbstractObject
         }
     }
 
+    /**
+     * Build cache
+     *
+     * @return void
+     */
     private function buildCache()
     {
         if ($this->doneCache == 1) {
@@ -73,6 +88,13 @@ class TrapsPreexec extends AbstractObject
         $this->doneCache = 1;
     }
 
+    /**
+     * Generate object
+     *
+     * @param integer $trapId
+     * @param array $trapPreexecCache
+     * @return void
+     */
     public function generateObject($trapId, $trapPreexecCache)
     {
         foreach ($trapPreexecCache as $value) {
@@ -80,9 +102,15 @@ class TrapsPreexec extends AbstractObject
         }
     }
 
-    public function getTrapPreexecByTrapId($trapId)
+    /**
+     * Get trap preexec from trap id
+     *
+     * @param integer $trapId
+     * @return void
+     */
+    public function getTrapPreexecByTrapId(int $trapId)
     {
-        # Get from the cache
+        // Get from the cache
         if (isset($this->trapPreexecCache[$trapId])) {
             $this->generateObject($trapId, $this->trapPreexecCache[$trapId]);
             return $this->trapPreexecCache[$trapId];
@@ -90,13 +118,13 @@ class TrapsPreexec extends AbstractObject
             return null;
         }
 
-        # We get unitary
+        // We get unitary
         if (is_null($this->stmtTrap)) {
-            $this->stmtTrap = $this->backendInstance->db->prepare("SELECT 
-                    *
+            $this->stmtTrap = $this->backendInstance->db->prepare(
+                "SELECT *
                 FROM traps_preexec
-                WHERE trap_id = :trap_id 
-                ");
+                WHERE trap_id = :trap_id"
+            );
         }
 
         $this->stmtTrap->bindParam(':trap_id', $trapId, PDO::PARAM_INT);
@@ -107,6 +135,7 @@ class TrapsPreexec extends AbstractObject
         }
 
         $this->generateObject($trapId, $trapPreexecCache[$trapId]);
+
         return $trapPreexecCache;
     }
 }

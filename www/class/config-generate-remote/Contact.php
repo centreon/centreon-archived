@@ -115,7 +115,7 @@ class Contact extends AbstractObject
     {
         $this->buildCache();
 
-        # Get from the cache
+        // Get from the cache
         if (isset($this->contactsServiceLinkedCache[$serviceId])) {
             return $this->contactsServiceLinkedCache[$serviceId];
         }
@@ -216,10 +216,10 @@ class Contact extends AbstractObject
     /**
      * Generation configuration from a contact id
      *
-     * @param integer $contactId
+     * @param null|integer $contactId
      * @return string|null the contact name or alias
      */
-    public function generateFromContactId(int $contactId): ?string
+    public function generateFromContactId(?int $contactId): ?string
     {
         if (is_null($contactId)) {
             return null;

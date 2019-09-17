@@ -1,7 +1,7 @@
 <?php
 /*
  * Copyright 2005 - 2019 Centreon (https://www.centreon.com/)
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -32,7 +32,14 @@ class TimePeriodExceptions extends AbstractObject
         'timerange',
     ];
 
-    public function add($object, $tpId)
+    /**
+     * Add relation
+     *
+     * @param array $object
+     * @param integer $tpId
+     * @return void
+     */
+    public function add(array $object, int $tpId)
     {
         $this->generateObjectInFile($object, $tpId);
     }

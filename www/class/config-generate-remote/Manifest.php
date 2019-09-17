@@ -29,6 +29,11 @@ class Manifest extends AbstractObject
     protected $type = 'manifest';
     protected $subdir = '';
 
+    /**
+     * Constructor
+     *
+     * @param \Pimple\Container $dependencyInjector
+     */
     protected function __construct(\Pimple\Container $dependencyInjector)
     {
         parent::__construct($dependencyInjector);
@@ -51,28 +56,57 @@ class Manifest extends AbstractObject
         ];
     }
 
+    /**
+     * Destructor
+     */
     public function __destruct()
     {
-        #fwrite($this->fp, json_encode($this->manifest));
-        #parent::__destruct();
+        // fwrite($this->fp, json_encode($this->manifest));
+        // parent::__destruct();
     }
 
+    /**
+     * Get manifest
+     *
+     * @return array
+     */
     public function getManifest()
     {
         return $this->manifest;
     }
 
-    public function addRemoteServer($remoteId)
+    /**
+     * Add remote server
+     *
+     * @param integer $remoteId
+     * @return void
+     */
+    public function addRemoteServer(int $remoteId)
     {
         $this->manifest['remote_server'] = $remoteId;
     }
 
-    public function addPoller($pollerId)
+    /**
+     * Add poller
+     *
+     * @param integer $pollerId
+     * @return void
+     */
+    public function addPoller(int $pollerId)
     {
         $this->manifest['pollers'][] = $pollerId;
     }
 
-    public function addFile($filename, $type, $table, $columns)
+    /**
+     * Add file
+     *
+     * @param string $filename
+     * @param string $type
+     * @param string $table
+     * @param array $columns
+     * @return void
+     */
+    public function addFile(string $filename, string $type, string $table, array $columns)
     {
         $this->manifest['import']['data'][$filename] = [
             'filename' => $filename,

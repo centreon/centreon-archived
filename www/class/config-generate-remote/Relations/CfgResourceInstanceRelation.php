@@ -1,7 +1,7 @@
 <?php
 /*
  * Copyright 2005 - 2019 Centreon (https://www.centreon.com/)
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -31,7 +31,14 @@ class CfgResourceInstanceRelation extends AbstractObject
         'instance_id',
     ];
 
-    public function addRelation($resourceId, $instanceId)
+    /**
+     * Add relation
+     *
+     * @param integer $resourceId
+     * @param integer $instanceId
+     * @return void
+     */
+    public function addRelation(int $resourceId, int $instanceId)
     {
         $relation = [
             'resource_id' => $resourceId,

@@ -31,7 +31,14 @@ class ContactServiceCommandsRelation extends AbstractObject
         'command_command_id',
     ];
 
-    public function addRelation($contactId, $cmdId)
+    /**
+     * Add relation
+     *
+     * @param integer $contactId
+     * @param integer $cmdId
+     * @return void
+     */
+    public function addRelation(int $contactId, int $cmdId)
     {
         $relation = [
             'contact_contact_id' => $contactId,

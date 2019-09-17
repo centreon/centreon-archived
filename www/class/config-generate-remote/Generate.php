@@ -87,13 +87,25 @@ class Generate
     private $moduleObjects = null;
     protected $dependencyInjector = null;
 
+    /**
+     * Constructor
+     *
+     * @param \Pimple\Container $dependencyInjector
+     */
     public function __construct(\Pimple\Container $dependencyInjector)
     {
         $this->dependencyInjector = $dependencyInjector;
         $this->backendInstance = Backend::getInstance($this->dependencyInjector);
     }
 
-    private function ucFirst($delimiters, $string)
+    /**
+     * Remove delimiters and add ucfirst on following string
+     *
+     * @param array $delimiters
+     * @param string $string
+     * @return string
+     */
+    private function ucFirst(array $delimiters, string $string): string
     {
         $string = str_replace($delimiters, $delimiters[0], $string);
         $result = '';
@@ -103,11 +115,18 @@ class Generate
         return $result;
     }
 
-    private function getPollerFromId($pollerId)
+    /**
+     * Get poller information
+     *
+     * @param integer $pollerId
+     * @return void
+     */
+    private function getPollerFromId(int $pollerId)
     {
-        $query = "SELECT * FROM nagios_server " .
-            "WHERE id = :poller_id";
-        $stmt = $this->backendInstance->db->prepare($query);
+        $stmt = $this->backendInstance->db->prepare(
+            "SELECT * FROM nagios_server
+            WHERE id = :poller_id"
+        );
         $stmt->bindParam(':poller_id', $pollerId, PDO::PARAM_INT);
         $stmt->execute();
         $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -117,26 +136,45 @@ class Generate
         }
     }
 
-    private function getPollersFromRemote($remoteId)
+    /**
+     * Get pollers information
+     *
+     * @param integer $remoteId
+     * @return void
+     */
+    private function getPollersFromRemote(int $remoteId)
     {
-        $query = "SELECT * FROM nagios_server " .
-            "WHERE remote_id = :remote_id";
-        $stmt = $this->backendInstance->db->prepare($query);
+        $stmt = $this->backendInstance->db->prepare(
+            "SELECT * FROM nagios_server
+            WHERE remote_id = :remote_id"
+        );
         $stmt->bindParam(':remote_id', $remoteId, PDO::PARAM_INT);
         $stmt->execute();
         $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
         if (is_null($result)) {
             $result = [];
         }
+
         return $result;
     }
 
+    /**
+     * Reset linked objects
+     *
+     * @return void
+     */
     public function resetObjectsEngine()
     {
         Host::getInstance($this->dependencyInjector)->reset();
         Service::getInstance($this->dependencyInjector)->reset();
     }
 
+    /**
+     * Generate host and engine objects
+     *
+     * @param string $username
+     * @return void
+     */
     private function configPoller($username = 'unknown')
     {
         $this->resetObjectsEngine();
@@ -149,7 +187,14 @@ class Generate
         Engine::getInstance($this->dependencyInjector)->generateFromPoller($this->currentPoller);
     }
 
-    public function configRemoteServerFromId($remoteServerId, $username = 'unknown')
+    /**
+     * Generate remote server configuration
+     *
+     * @param int $remoteServerId
+     * @param string $username
+     * @return void
+     */
+    public function configRemoteServerFromId(int $remoteServerId, $username = 'unknown')
     {
         try {
             $this->backendInstance->setUserName($username);
@@ -177,11 +222,18 @@ class Generate
         } catch (Exception $e) {
             $this->resetObjects();
             $this->backendInstance->cleanPath();
-            throw new Exception('Exception received : ' . $e->getMessage() . " [file: " . $e->getFile() .
-                "] [line: " . $e->getLine() . "]\n");
+            throw new Exception(
+                'Exception received : ' . $e->getMessage() . ' [file: ' . $e->getFile() .
+                '] [line: ' . $e->getLine() . "]\n"
+            );
         }
     }
 
+    /**
+     * Get installed modules
+     *
+     * @return void
+     */
     public function getInstalledModules()
     {
         if (!is_null($this->installedModules)) {
@@ -195,6 +247,11 @@ class Generate
         }
     }
 
+    /**
+     * Get module generate objects
+     *
+     * @return void
+     */
     public function getModuleObjects()
     {
         $this->moduleObjects = [];
@@ -214,7 +271,13 @@ class Generate
         }
     }
 
-    public function generateModuleObjects($remoteServerId)
+    /**
+     * Generate objects from modules
+     *
+     * @param int $remoteServerId
+     * @return void
+     */
+    public function generateModuleObjects(int $remoteServerId)
     {
         if (is_null($this->moduleObjects)) {
             $this->getModuleObjects();
@@ -226,6 +289,11 @@ class Generate
         }
     }
 
+    /**
+     * Reset objects from modules
+     *
+     * @return void
+     */
     public function resetModuleObjects()
     {
         if (is_null($this->moduleObjects)) {
@@ -238,6 +306,11 @@ class Generate
         }
     }
 
+    /**
+     * Reset objects
+     *
+     * @return void
+     */
     private function resetObjects()
     {
         Host::getInstance($this->dependencyInjector)->reset(true);
@@ -291,7 +364,7 @@ class Generate
     /**
      * Reset the cache and the instance
      */
-    public function reset()
+    public function reset(): void
     {
         $this->pollerCache = [];
         $this->currentPoller = null;

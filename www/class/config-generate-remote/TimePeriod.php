@@ -1,7 +1,7 @@
 <?php
 /*
  * Copyright 2005 - 2019 Centreon (https://www.centreon.com/)
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -52,8 +52,16 @@ class TimePeriod extends AbstractObject
         'tp_friday',
         'tp_saturday',
     ];
-    protected $stmtExtend = ['include' => null, 'exclude' => null];
+    protected $stmtExtend = [
+        'include' => null,
+        'exclude' => null
+    ];
 
+    /**
+     * Build cache of timeperiods
+     *
+     * @return void
+     */
     public function getTimeperiods()
     {
         $query = "SELECT $this->attributesSelect FROM timeperiod";
@@ -62,7 +70,13 @@ class TimePeriod extends AbstractObject
         $this->timeperiods = $stmt->fetchAll(PDO::FETCH_GROUP | PDO::FETCH_UNIQUE | PDO::FETCH_ASSOC);
     }
 
-    protected function getTimeperiodExceptionFromId($timeperiodId)
+    /**
+     * Get timeperiod exceptions from id
+     *
+     * @param integer $timeperiodId
+     * @return void|int
+     */
+    protected function getTimeperiodExceptionFromId(int $timeperiodId)
     {
         if (isset($this->timeperiods[$timeperiodId]['exceptions'])) {
             return 1;
@@ -80,7 +94,13 @@ class TimePeriod extends AbstractObject
         }
     }
 
-    public function generateFromTimeperiodId($timeperiodId)
+    /**
+     * Generate timeperiod from id
+     *
+     * @param null|integer $timeperiodId
+     * @return null|string
+     */
+    public function generateFromTimeperiodId(?int $timeperiodId)
     {
         if (is_null($timeperiodId)) {
             return null;

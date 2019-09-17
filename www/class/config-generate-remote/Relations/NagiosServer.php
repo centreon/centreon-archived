@@ -1,7 +1,7 @@
 <?php
 /*
  * Copyright 2005 - 2019 Centreon (https://www.centreon.com/)
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -55,7 +55,14 @@ class NagiosServer extends AbstractObject
         'remote_server_centcore_ssh_proxy'
     ];
 
-    public function add($object, $id)
+    /**
+     * Add relation
+     *
+     * @param array $object
+     * @param integer $id
+     * @return void
+     */
+    public function add(array $object, int $id)
     {
         if ($this->checkGenerate($id)) {
             return null;

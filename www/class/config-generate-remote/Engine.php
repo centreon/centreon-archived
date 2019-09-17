@@ -214,24 +214,14 @@ class Engine extends AbstractObject
         'cfg_dir'
     ];
     protected $stmtEngine = null;
-    protected $stmtBroker = null;
-    protected $stmtIntervalLength = null;
 
-    private function getBrokerModules()
-    {
-        if (is_null($this->stmtBroker)) {
-            $this->stmtBroker = $this->backendInstance->db->prepare(
-                "SELECT broker_module FROM cfg_nagios_broker_module " .
-                "WHERE cfg_nagios_id = :id " .
-                "ORDER BY bk_mod_id ASC"
-            );
-        }
-        $this->stmtBroker->bindParam(':id', $this->engine['nagios_id'], PDO::PARAM_INT);
-        $this->stmtBroker->execute();
-        $this->engine['broker_module'] = $this->stmtBroker->fetchAll(PDO::FETCH_COLUMN);
-    }
-
-    private function generate($pollerId)
+    /**
+     * Generate engine configuration from poller id
+     *
+     * @param int $poller
+     * @return void
+     */
+    private function generate(int $pollerId)
     {
         if (is_null($this->stmtEngine)) {
             $this->stmtEngine = $this->backendInstance->db->prepare(
@@ -256,14 +246,15 @@ class Engine extends AbstractObject
         );
     }
 
-    public function generateFromPoller($poller)
+    /**
+     * Generate engine configuration from poller
+     *
+     * @param array $poller
+     * @return void
+     */
+    public function generateFromPoller(array $poller)
     {
         Resource::getInstance($this->dependencyInjector)->generateFromPollerId($poller['id']);
         $this->generate($poller['id']);
-    }
-
-    public function reset($createfile = false)
-    {
-        parent::reset($createfile);
     }
 }

@@ -46,14 +46,19 @@ class Media extends AbstractObject
     ];
     protected $path_img = null;
 
+    /**
+     * Get medias
+     *
+     * @return void
+     */
     private function getMedias()
     {
-        $query = "
-            SELECT $this->attributesSelect
-            FROM view_img, view_img_dir_relation, view_img_dir " .
-            "WHERE view_img.img_id = view_img_dir_relation.img_img_id " .
-            "AND view_img_dir_relation.dir_dir_parent_id = view_img_dir.dir_id";
-        $stmt = $this->backendInstance->db->prepare($query);
+        $stmt = $this->backendInstance->db->prepare(
+            "SELECT $this->attributesSelect
+            FROM view_img, view_img_dir_relation, view_img_dir
+            WHERE view_img.img_id = view_img_dir_relation.img_img_id
+            AND view_img_dir_relation.dir_dir_parent_id = view_img_dir.dir_id"
+        );
         $stmt->execute();
         $this->medias = $stmt->fetchAll(PDO::FETCH_GROUP | PDO::FETCH_UNIQUE | PDO::FETCH_ASSOC);
 
@@ -63,7 +68,14 @@ class Media extends AbstractObject
         $this->pathImg = $row['value'];
     }
 
-    protected function copyMedia($dir, $file)
+    /**
+     * Copy media
+     *
+     * @param string $dir
+     * @param string $file
+     * @return void
+     */
+    protected function copyMedia(string $dir, string $file)
     {
         $this->backendInstance->createDirectories([$this->backendInstance->getPath() . '/media/' . $dir]);
         @copy(
@@ -72,7 +84,13 @@ class Media extends AbstractObject
         );
     }
 
-    public function getMediaPathFromId($mediaId)
+    /**
+     * Generate media object and get path
+     *
+     * @param integer|null $mediaId
+     * @return null|string
+     */
+    public function getMediaPathFromId(?int $mediaId)
     {
         if (is_null($this->medias)) {
             $this->getMedias();

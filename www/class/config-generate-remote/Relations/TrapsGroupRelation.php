@@ -1,7 +1,7 @@
 <?php
 /*
  * Copyright 2005 - 2019 Centreon (https://www.centreon.com/)
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -31,7 +31,14 @@ class TrapsGroupRelation extends AbstractObject
         'traps_id',
     ];
 
-    public function addRelation($trapsId, $trapsGroupId)
+    /**
+     * Add relation
+     *
+     * @param integer $trapsId
+     * @param integer $trapsGroupId
+     * @return void
+     */
+    public function addRelation(int $trapsId, int $trapsGroupId)
     {
         $relation = [
             'traps_id' => $trapsId,

@@ -91,7 +91,13 @@ class ServiceTemplate extends AbstractService
         'service_acknowledgement_timeout',
     ];
 
-    private function getServiceGroups($serviceId)
+    /**
+     * Get linked service groups and generate relations
+     *
+     * @param integer $serviceId
+     * @return void
+     */
+    private function getServiceGroups(int $serviceId)
     {
         $host = Host::getInstance($this->dependencyInjector);
         $servicegroup = ServiceGroup::getInstance($this->dependencyInjector);
@@ -115,15 +121,21 @@ class ServiceTemplate extends AbstractService
         }
     }
 
-    private function getServiceFromId($serviceId)
+    /**
+     * Get service template from id
+     *
+     * @param integer $serviceId
+     * @return void
+     */
+    private function getServiceFromId(int $serviceId)
     {
         if (is_null($this->stmtService)) {
             $this->stmtService = $this->backendInstance->db->prepare(
-                "SELECT " . $this->attributesSelect . " " .
-                "FROM service " .
-                "LEFT JOIN extended_service_information " .
-                "ON extended_service_information.service_service_id = service.service_id " .
-                "WHERE service_id = :service_id AND service_activate = '1' "
+                "SELECT $this->attributesSelect
+                FROM service
+                LEFT JOIN extended_service_information
+                ON extended_service_information.service_service_id = service.service_id
+                WHERE service_id = :service_id AND service_activate = '1'"
             );
         }
         $this->stmtService->bindParam(':service_id', $serviceId, PDO::PARAM_INT);
@@ -132,7 +144,13 @@ class ServiceTemplate extends AbstractService
         $this->serviceCache[$serviceId] = array_pop($results);
     }
 
-    private function getSeverity($serviceId)
+    /**
+     * Get severity from service id
+     *
+     * @param integer $serviceId
+     * @return void|int
+     */
+    private function getSeverity(int $serviceId)
     {
         if (isset($this->serviceCache[$serviceId]['severity_id'])) {
             return 0;
@@ -146,7 +164,13 @@ class ServiceTemplate extends AbstractService
         }
     }
 
-    public function generateFromServiceId($serviceId)
+    /**
+     * Generate service template
+     *
+     * @param null|integer $serviceId
+     * @return void
+     */
+    public function generateFromServiceId(?int $serviceId)
     {
         if (is_null($serviceId)) {
             return null;
@@ -194,15 +218,27 @@ class ServiceTemplate extends AbstractService
 
         $this->serviceCache[$serviceId]['service_id'] = $serviceId;
         $this->generateObjectInFile($this->serviceCache[$serviceId], $serviceId);
+
         return $this->serviceCache[$serviceId]['service_alias'];
     }
 
+    /**
+     * Reset loop
+     *
+     * @return void
+     */
     public function resetLoop()
     {
         $this->loopTpl = [];
     }
 
-    public function reset($createfile = false)
+    /**
+     * Reset object
+     *
+     * @param boolean $createfile
+     * @return void
+     */
+    public function reset($createfile = false): void
     {
         $this->currentHostId = null;
         $this->currentHostName = null;

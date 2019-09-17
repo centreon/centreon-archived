@@ -1,7 +1,7 @@
 <?php
 /*
  * Copyright 2005 - 2019 Centreon (https://www.centreon.com/)
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -32,7 +32,15 @@ class HostTemplateRelation extends AbstractObject
         'order',
     ];
 
-    public function addRelation($hostId, $hostTplId, $order)
+    /**
+     * Add relation
+     *
+     * @param integer $hostId
+     * @param integer $hostTplId
+     * @param integer $order
+     * @return void
+     */
+    public function addRelation(int $hostId, int $hostTplId, $order)
     {
         $relation = [
             'host_host_id' => $hostId,

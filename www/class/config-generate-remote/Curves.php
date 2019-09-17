@@ -1,7 +1,7 @@
 <?php
 /*
  * Copyright 2005 - 2019 Centreon (https://www.centreon.com/)
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -34,7 +34,7 @@ class Curves extends AbstractObject
         service_id,
         name,
         ds_order,
-        ds_hidecurve, 
+        ds_hidecurve,
         ds_name,
         ds_color_line,
         ds_color_line_mode,
@@ -55,7 +55,7 @@ class Curves extends AbstractObject
         ds_jumpline,
         ds_stack,
         default_tpl1,
-        comment 
+        comment
     ';
     protected $attributesWrite = [
         'compo_id',
@@ -87,14 +87,26 @@ class Curves extends AbstractObject
         'comment'
     ];
 
+    /**
+     * Get curves
+     *
+     * @return void
+     */
     private function getCurves()
     {
-        $query = "SELECT $this->attributesSelect FROM giv_components_template";
-        $stmt = $this->backendInstance->db->prepare($query);
+        $stmt = $this->backendInstance->db->prepare(
+            "SELECT $this->attributesSelect
+            FROM giv_components_template"
+        );
         $stmt->execute();
         $this->curves = $stmt->fetchAll(PDO::FETCH_GROUP | PDO::FETCH_UNIQUE | PDO::FETCH_ASSOC);
     }
 
+    /**
+     * Generate curves
+     *
+     * @return void
+     */
     public function generateObjects()
     {
         if (is_null($this->curves)) {

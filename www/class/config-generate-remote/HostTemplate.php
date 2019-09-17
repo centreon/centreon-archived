@@ -1,7 +1,7 @@
 <?php
 /*
  * Copyright 2005 - 2019 Centreon (https://www.centreon.com/)
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -106,19 +106,30 @@ class HostTemplate extends AbstractHost
         'host_acknowledgement_timeout'
     ];
 
+    /**
+     * Get hosts
+     *
+     * @return void
+     */
     private function getHosts()
     {
-        $stmt = $this->backendInstance->db->prepare("SELECT 
-              $this->attributesSelect
-            FROM host 
-                LEFT JOIN extended_host_information ON extended_host_information.host_host_id = host.host_id 
-            WHERE  
-                host.host_register = '0' AND host.host_activate = '1'");
+        $stmt = $this->backendInstance->db->prepare(
+            "SELECT $this->attributesSelect
+            FROM host
+            LEFT JOIN extended_host_information ON extended_host_information.host_host_id = host.host_id
+            WHERE host.host_register = '0' AND host.host_activate = '1'"
+        );
         $stmt->execute();
         $this->hosts = $stmt->fetchAll(PDO::FETCH_GROUP | PDO::FETCH_UNIQUE | PDO::FETCH_ASSOC);
     }
 
-    private function getSeverity($hostId)
+    /**
+     * Get severity from host id
+     *
+     * @param integer $hostId
+     * @return int|void
+     */
+    private function getSeverity(int $hostId)
     {
         if (isset($this->hosts[$hostId]['severity_id'])) {
             return 0;
@@ -132,7 +143,13 @@ class HostTemplate extends AbstractHost
         }
     }
 
-    public function generateFromHostId($hostId)
+    /**
+     * Generate from host id and get host name
+     *
+     * @param integer $hostId
+     * @return null|string
+     */
+    public function generateFromHostId(int $hostId)
     {
         if (is_null($this->hosts)) {
             $this->getHosts();
@@ -145,7 +162,7 @@ class HostTemplate extends AbstractHost
             return $this->hosts[$hostId]['host_name'];
         }
 
-        # Avoid infinite loop!
+        // Avoid infinite loop!
         if (isset($this->loopHtpl[$hostId])) {
             return $this->hosts[$hostId]['host_name'];
         }
@@ -171,7 +188,13 @@ class HostTemplate extends AbstractHost
         return $this->hosts[$hostId]['host_name'];
     }
 
-    public function reset($createfile = false)
+    /**
+     * Reset object
+     *
+     * @param boolean $createfile
+     * @return void
+     */
+    public function reset($createfile = false): void
     {
         $this->loopHtpl = [];
         parent::reset($createfile);

@@ -1,7 +1,7 @@
 <?php
 /*
  * Copyright 2005 - 2019 Centreon (https://www.centreon.com/)
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -63,12 +63,22 @@ class Trap extends AbstractObject
         'traps_comments'
     ];
 
+    /**
+     * Constructor
+     *
+     * @param \Pimple\Container $dependencyInjector
+     */
     public function __construct(\Pimple\Container $dependencyInjector)
     {
         parent::__construct($dependencyInjector);
         $this->buildCache();
     }
 
+    /**
+     * Build cache of traps
+     *
+     * @return void
+     */
     private function cacheTrap()
     {
         $stmt = $this->backendInstance->db->prepare(
@@ -83,11 +93,16 @@ class Trap extends AbstractObject
         }
     }
 
+    /**
+     * Build cache of relations between service and trap
+     *
+     * @return void
+     */
     private function cacheTrapLinked()
     {
         $stmt = $this->backendInstance->db->prepare(
-            'SELECT traps_id, service_id ' .
-            'FROM traps_service_relation'
+            "SELECT traps_id, service_id
+            FROM traps_service_relation"
         );
 
         $stmt->execute();
@@ -99,6 +114,11 @@ class Trap extends AbstractObject
         }
     }
 
+    /**
+     * Build cache
+     *
+     * @return void|int
+     */
     private function buildCache()
     {
         if ($this->doneCache == 1) {
@@ -110,7 +130,15 @@ class Trap extends AbstractObject
         $this->doneCache = 1;
     }
 
-    public function generateObject($serviceId, $serviceLinkedCache, &$object)
+    /**
+     * Generate trap and relations
+     *
+     * @param integer $serviceId
+     * @param array $serviceLinkedCache
+     * @param array $object
+     * @return void
+     */
+    public function generateObject(int $serviceId, array $serviceLinkedCache, array &$object)
     {
         foreach ($serviceLinkedCache as $trapId) {
             Relations\TrapsServiceRelation::getInstance($this->dependencyInjector)->addRelation($trapId, $serviceId);
@@ -131,9 +159,15 @@ class Trap extends AbstractObject
         }
     }
 
-    public function getTrapsByServiceId($serviceId)
+    /**
+     * Get service linked traps
+     *
+     * @param integer $serviceId
+     * @return null|array
+     */
+    public function getTrapsByServiceId(int $serviceId)
     {
-        # Get from the cache
+        // Get from the cache
         if (isset($this->serviceLinkedCache[$serviceId])) {
             $this->generateObject($serviceId, $this->serviceLinkedCache[$serviceId], $this->trapCache);
             return $this->serviceLinkedCache[$serviceId];
@@ -141,7 +175,7 @@ class Trap extends AbstractObject
             return null;
         }
 
-        # We get unitary
+        // We get unitary
         if (is_null($this->stmtService)) {
             $this->stmtService = $this->backendInstance->db->prepare(
                 "SELECT traps.*, traps_service_relation.service_id

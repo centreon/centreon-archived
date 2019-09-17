@@ -90,15 +90,22 @@ abstract class AbstractService extends AbstractObject
         'service_register',
         'service_acknowledgement_timeout',
     );
-    protected $loopStpl = array(); // To be reset
+    protected $loopStpl = []; // To be reset
     protected $stmtMacro = null;
     protected $stmtStpl = null;
     protected $stmtContact = null;
     protected $stmtService = null;
 
-    protected function getExtendedInformation(&$service)
+    /**
+     * Get service extended information
+     * extended information are unset on service object
+     *
+     * @param array $service the service to parse
+     * @return array the extended information
+     */
+    protected function getExtendedInformation(array &$service): array
     {
-        $extendedInformation = array(
+        $extendedInformation = [
             'service_service_id' => $service['service_id'],
             'esi_notes' => $service['esi_notes'],
             'esi_notes_url' => $service['esi_notes_url'],
@@ -106,23 +113,37 @@ abstract class AbstractService extends AbstractObject
             'esi_icon_image' => $service['esi_icon_image'],
             'esi_icon_image_alt' => $service['esi_icon_image_alt'],
             'graph_id' => $service['graph_id']
-        );
+        ];
+
         unset($service['esi_notes']);
         unset($service['esi_notes_url']);
         unset($service['esi_action_url']);
         unset($service['esi_icon_image']);
         unset($service['esi_icon_image_alt']);
         unset($service['graph_id']);
+
         return $extendedInformation;
     }
 
-    protected function getImages(&$service)
+    /**
+     * Get service linked icons
+     *
+     * @param array $service
+     * @return void
+     */
+    protected function getImages(array &$service): void
     {
         $media = Media::getInstance($this->dependencyInjector);
         $media->getMediaPathFromId($service['esi_icon_image']);
     }
 
-    protected function getMacros(&$service)
+    /**
+     * Get service linked macros
+     *
+     * @param array $service
+     * @return integer
+     */
+    protected function getMacros(array &$service): int
     {
         if (isset($service['macros'])) {
             return 1;
@@ -133,19 +154,31 @@ abstract class AbstractService extends AbstractObject
         return 0;
     }
 
-    protected function getTraps(&$service)
+    protected function getTraps(array &$service): void
     {
         Trap::getInstance($this->dependencyInjector)
-                ->getTrapsByServiceId($service['service_id']);
+            ->getTrapsByServiceId($service['service_id']);
     }
 
-    protected function getServiceTemplates(&$service)
+    /**
+     * Get service templates linked to the service
+     *
+     * @param array $service
+     * @return void
+     */
+    protected function getServiceTemplates(array &$service): void
     {
         ServiceTemplate::getInstance($this->dependencyInjector)
-                ->generateFromServiceId($service['service_template_model_stm_id']);
+            ->generateFromServiceId($service['service_template_model_stm_id']);
     }
 
-    protected function getContacts(&$service)
+    /**
+     * Get service linked contacts
+     *
+     * @param array $service
+     * @return void
+     */
+    protected function getContacts(array &$service): void
     {
         $contact = Contact::getInstance($this->dependencyInjector);
         $service['contacts_cache'] = $contact->getContactForService($service['service_id']);
@@ -156,7 +189,13 @@ abstract class AbstractService extends AbstractObject
         }
     }
 
-    protected function getContactGroups(&$service)
+    /**
+     * Get service linked contact groups
+     *
+     * @param array $service
+     * @return void
+     */
+    protected function getContactGroups(array &$service): void
     {
         $cg = Contactgroup::getInstance($this->dependencyInjector);
         $service['contact_groups_cache'] = $cg->getCgForService($service['service_id']);
@@ -167,27 +206,53 @@ abstract class AbstractService extends AbstractObject
         }
     }
 
-    protected function getServiceCommand(&$service, $commandIdLabel)
+    /**
+     * Generate service linked command
+     *
+     * @param array $service
+     * @param string $commandIdLabel
+     * @return integer
+     */
+    protected function getServiceCommand(array &$service, string $commandIdLabel): int
     {
         Command::getInstance($this->dependencyInjector)
             ->generateFromCommandId($service[$commandIdLabel]);
         return 0;
     }
 
-    protected function getServiceCommands(&$service)
+    /**
+     * Get service linked commands
+     *
+     * @param array $service
+     * @return void
+     */
+    protected function getServiceCommands(array &$service)
     {
         $this->getServiceCommand($service, 'command_command_id');
         $this->getServiceCommand($service, 'command_command_id2');
     }
 
-    protected function getServicePeriods(&$service)
+    /**
+     * Get service linked timeperiods
+     *
+     * @param array $service
+     * @return void
+     */
+    protected function getServicePeriods(array &$service)
     {
         $period = Timeperiod::getInstance($this->dependencyInjector);
         $period->generateFromTimeperiodId($service['timeperiod_tp_id']);
         $period->generateFromTimeperiodId($service['timeperiod_tp_id2']);
     }
 
-    public function getString($serviceId, $attr)
+    /**
+     * Get service attribute
+     *
+     * @param integer $serviceId
+     * @param string $attr
+     * @return string|null
+     */
+    public function getString(int $serviceId, string $attr): ?string
     {
         if (isset($this->serviceCache[$serviceId][$attr])) {
             return $this->serviceCache[$serviceId][$attr];

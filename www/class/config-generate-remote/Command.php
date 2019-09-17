@@ -1,7 +1,7 @@
 <?php
 /*
  * Copyright 2005 - 2019 Centreon (https://www.centreon.com/)
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -45,7 +45,12 @@ class Command extends AbstractObject
         'graph_id'
     ];
 
-    private function getCommands()
+    /**
+     * Get commands
+     *
+     * @return void
+     */
+    private function getCommands(): void
     {
         $query = "SELECT $this->attributesSelect FROM command";
         $stmt = $this->backendInstance->db->prepare($query);
@@ -53,9 +58,14 @@ class Command extends AbstractObject
         $this->commands = $stmt->fetchAll(PDO::FETCH_GROUP | PDO::FETCH_UNIQUE | PDO::FETCH_ASSOC);
     }
 
-    public function generateFromCommandId($commandId)
+    /**
+     * Generate command and get command name
+     *
+     * @param null|integer $commandId
+     * @return string|null
+     */
+    public function generateFromCommandId(?int $commandId): ?string
     {
-        $name = null;
         if (is_null($this->commands)) {
             $this->getCommands();
         }
@@ -73,6 +83,7 @@ class Command extends AbstractObject
             $this->commands[$commandId],
             $commandId
         );
+
         return $this->commands[$commandId]['command_name'];
     }
 }

@@ -44,6 +44,12 @@ abstract class AbstractObject
     protected $fieldSeparatorInfile = null;
     protected $lineSeparatorInfile = null;
 
+    /**
+     * Get instance singleton
+     *
+     * @param \Pimple\Container $dependencyInjector
+     * @return object
+     */
     public static function getInstance(\Pimple\Container $dependencyInjector)
     {
         static $instances = [];
@@ -56,6 +62,11 @@ abstract class AbstractObject
         return $instances[$calledClass];
     }
 
+    /**
+     * Constructor
+     *
+     * @param \Pimple\Container $dependencyInjector
+     */
     protected function __construct(\Pimple\Container $dependencyInjector)
     {
         $this->dependencyInjector = $dependencyInjector;
@@ -64,12 +75,20 @@ abstract class AbstractObject
         $this->lineSeparatorInfile = $this->backendInstance->getLineSeparatorInfile();
     }
 
+    /**
+     * Destructor
+     */
     public function __destruct()
     {
         $this->closeFile();
     }
 
-    public function closeFile()
+    /**
+     * Close file if open
+     *
+     * @return void
+     */
+    public function closeFile(): void
     {
         if (!is_null($this->fp)) {
             fclose($this->fp);
@@ -77,7 +96,13 @@ abstract class AbstractObject
         $this->fp = null;
     }
 
-    public function reset($createfile = false)
+    /**
+     * Reset object
+     *
+     * @param boolean $createfile
+     * @return void
+     */
+    public function reset($createfile = false): void
     {
         $this->closeFile();
         $this->exported = [];
@@ -86,7 +111,13 @@ abstract class AbstractObject
         }
     }
 
-    protected function createFile($dir)
+    /**
+     * Create generateFilename in given directory
+     *
+     * @param string $dir
+     * @return void
+     */
+    protected function createFile(string $dir): void
     {
         $fullFile = $dir . '/' . $this->subdir . '/' . $this->generateFilename;
         if (!($this->fp = @fopen($fullFile, 'a+'))) {
@@ -103,7 +134,13 @@ abstract class AbstractObject
         }
     }
 
-    private function toUTF8($str)
+    /**
+     * Convert string in UTF-8
+     *
+     * @param string $str
+     * @return string
+     */
+    private function toUTF8(string $str): string
     {
         $finalString = $str;
         if (mb_detect_encoding($finalString, 'UTF-8', true) !== 'UTF-8') {
@@ -113,7 +150,13 @@ abstract class AbstractObject
         return $finalString;
     }
 
-    protected function writeObject($object)
+    /**
+     * Write object in file
+     *
+     * @param array $object
+     * @return void
+     */
+    protected function writeObject(array $object): void
     {
         $line = '';
         $append = '';
@@ -129,7 +172,14 @@ abstract class AbstractObject
         fwrite($this->fp, $line . $this->lineSeparatorInfile);
     }
 
-    protected function generateObjectInFile($object, $id = null)
+    /**
+     * Generate object in file
+     *
+     * @param array $object
+     * @param int|string|null $id
+     * @return void
+     */
+    protected function generateObjectInFile(array $object, $id = null): void
     {
         if (is_null($this->fp)) {
             $this->createFile($this->backendInstance->getPath());
@@ -140,7 +190,13 @@ abstract class AbstractObject
         }
     }
 
-    private function writeNoObject($object)
+    /**
+     * Write string in file
+     *
+     * @param array $object
+     * @return void
+     */
+    private function writeNoObject(array $object): void
     {
         foreach ($this->attributes_array as &$attr) {
             if (isset($object[$attr]) && !is_null($object[$attr]) && is_array($object[$attr])) {
@@ -172,7 +228,13 @@ abstract class AbstractObject
         }
     }
 
-    protected function generateFile($object)
+    /**
+     * Generate file
+     *
+     * @param array $object
+     * @return void
+     */
+    protected function generateFile(array $object): void
     {
         if (is_null($this->fp)) {
             $this->createFile($this->backendInstance->getPath());
@@ -181,16 +243,27 @@ abstract class AbstractObject
         $this->writeNoObject($object);
     }
 
-    public function checkGenerate($id)
+    /**
+     * Check if an id has already been generated
+     *
+     * @param integer $id
+     * @return boolean
+     */
+    public function checkGenerate($id): bool
     {
         if (isset($this->exported[$id])) {
-            return 1;
+            return true;
         }
 
-        return 0;
+        return false;
     }
 
-    public function getExported()
+    /**
+     * Get exported ids
+     *
+     * @return array
+     */
+    public function getExported(): array
     {
         if (isset($this->exported)) {
             return $this->exported;
@@ -199,12 +272,22 @@ abstract class AbstractObject
         return [];
     }
 
-    public function isEngineObject()
+    /**
+     * Check if current object is engine
+     *
+     * @return boolean
+     */
+    public function isEngineObject(): bool
     {
         return $this->engine;
     }
 
-    public function isBrokerObject()
+    /**
+     * Check if current object is broker
+     *
+     * @return boolean
+     */
+    public function isBrokerObject(): bool
     {
         return $this->broker;
     }

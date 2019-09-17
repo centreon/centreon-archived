@@ -45,12 +45,22 @@ class ServiceCategory extends AbstractObject
         'icon_id',
     ];
 
+    /**
+     * Constructor
+     *
+     * @param \Pimple\Container $dependencyInjector
+     */
     public function __construct(\Pimple\Container $dependencyInjector)
     {
         parent::__construct($dependencyInjector);
         $this->buildCache();
     }
 
+    /**
+     * Build cache of service severity
+     *
+     * @return void
+     */
     private function cacheServiceSeverity()
     {
         $stmt = $this->backendInstance->db->prepare(
@@ -67,6 +77,11 @@ class ServiceCategory extends AbstractObject
         }
     }
 
+    /**
+     * Build cache of relations between service and severity
+     *
+     * @return void
+     */
     private function cacheServiceSeverityLinked()
     {
         $stmt = $this->backendInstance->db->prepare(
@@ -91,6 +106,9 @@ class ServiceCategory extends AbstractObject
         }
     }
 
+    /**
+     * Build cache
+     */
     private function buildCache()
     {
         if ($this->doneCache == 1) {
@@ -102,7 +120,13 @@ class ServiceCategory extends AbstractObject
         $this->doneCache = 1;
     }
 
-    public function generateObject($scId)
+    /**
+     * Generate object
+     *
+     * @param null|integer $scId
+     * @return void
+     */
+    public function generateObject(?int $scId)
     {
         if (is_null($scId) || $this->checkGenerate($scId)) {
             return null;
@@ -116,9 +140,15 @@ class ServiceCategory extends AbstractObject
             ->getMediaPathFromId($this->serviceSeverityCache[$scId]['icon_id']);
     }
 
-    public function getServiceSeverityByServiceId($serviceId)
+    /**
+     * Get severity by service id
+     *
+     * @param integer $serviceId
+     * @return void
+     */
+    public function getServiceSeverityByServiceId(int $serviceId)
     {
-        # Get from the cache
+        // Get from the cache
         if (isset($this->serviceLinkedCache[$serviceId])) {
             if (!$this->checkGenerate($this->serviceLinkedCache[$serviceId])) {
                 $this->generateObjectInFile(
@@ -134,7 +164,7 @@ class ServiceCategory extends AbstractObject
             return null;
         }
 
-        # We get unitary
+        // We get unitary
         if (is_null($this->stmtService)) {
             $this->stmtService = $this->backendInstance->db->prepare(
                 "SELECT service_categories.sc_id, sc_name, level, icon_id
@@ -165,7 +195,13 @@ class ServiceCategory extends AbstractObject
         return $severity['sc_id'];
     }
 
-    public function getServiceSeverityById($scId)
+    /**
+     * Get severity by id
+     *
+     * @param null|integer $scId
+     * @return void
+     */
+    public function getServiceSeverityById(?int $scId)
     {
         if (is_null($scId)) {
             return null;
@@ -177,7 +213,13 @@ class ServiceCategory extends AbstractObject
         return $this->serviceSeverityCache[$scId];
     }
 
-    public function getServiceSeverityMappingHostSeverityByName($hcName)
+    /**
+     * Get mapping with host severity name
+     *
+     * @param string $hcName
+     * @return null|integer
+     */
+    public function getServiceSeverityMappingHostSeverityByName(string $hcName)
     {
         if (isset($this->serviceSeverityByNameCache[$hcName])) {
             return $this->serviceSeverityByNameCache[$hcName];
@@ -186,7 +228,7 @@ class ServiceCategory extends AbstractObject
             return null;
         }
 
-        # We get unitary
+        // We get unitary
         if (is_null($this->stmtHcName)) {
             $this->stmtHcName = $this->backendInstance->db->prepare(
                 "SELECT sc_name, sc_id, level
@@ -205,6 +247,7 @@ class ServiceCategory extends AbstractObject
 
         $this->serviceSeverityByNameCache[$hcName] = &$severity;
         $this->serviceSeverityCache[$hcName] = &$severity;
+
         return $severity['sc_id'];
     }
 }

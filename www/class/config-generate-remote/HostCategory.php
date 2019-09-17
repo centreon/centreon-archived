@@ -44,12 +44,22 @@ class HostCategory extends AbstractObject
         'icon_id',
     ];
 
+    /**
+     * Constructor
+     *
+     * @param \Pimple\Container $dependencyInjector
+     */
     public function __construct(\Pimple\Container $dependencyInjector)
     {
         parent::__construct($dependencyInjector);
         $this->buildCache();
     }
 
+    /**
+     * Build cache of host severity
+     *
+     * @return void
+     */
     private function cacheHostSeverity()
     {
         $stmt = $this->backendInstance->db->prepare(
@@ -65,6 +75,11 @@ class HostCategory extends AbstractObject
         }
     }
 
+    /**
+     * Build cache of relations between host and severities
+     *
+     * @return void
+     */
     private function cacheHostSeverityLinked()
     {
         $stmt = $this->backendInstance->db->prepare(
@@ -89,9 +104,15 @@ class HostCategory extends AbstractObject
         }
     }
 
-    public function getHostSeverityByHostId($hostId)
+    /**
+     * Get host severity by host id
+     *
+     * @param integer $hostId
+     * @return array|null
+     */
+    public function getHostSeverityByHostId(int $hostId)
     {
-        # Get from the cache
+        // Get from the cache
         if (isset($this->hostLinkedCache[$hostId])) {
             if (!$this->checkGenerate($this->hostLinkedCache[$hostId])) {
                 $this->generateObjectInFile(
@@ -107,7 +128,7 @@ class HostCategory extends AbstractObject
             return null;
         }
 
-        # We get unitary
+        // We get unitary
         if (is_null($this->stmtHost)) {
             $this->stmtHost = $this->backendInstance->db->prepare(
                 "SELECT hc_id, hc_name, hc_alias, level, icon_id
@@ -136,7 +157,13 @@ class HostCategory extends AbstractObject
         return $severity['hc_id'];
     }
 
-    public function getHostSeverityById($hcId)
+    /**
+     * Get host severity by id
+     *
+     * @param null|integer $hcId
+     * @return array|null
+     */
+    public function getHostSeverityById(?int $hcId)
     {
         if (is_null($hcId)) {
             return null;
@@ -148,6 +175,11 @@ class HostCategory extends AbstractObject
         return $this->hostSeverityCache[$hcId];
     }
 
+    /**
+     * Build cache
+     *
+     * @return void
+     */
     private function buildCache()
     {
         if ($this->doneCache == 1) {

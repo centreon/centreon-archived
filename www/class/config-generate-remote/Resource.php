@@ -1,7 +1,7 @@
 <?php
 /*
  * Copyright 2005 - 2019 Centreon (https://www.centreon.com/)
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -37,7 +37,13 @@ class Resource extends AbstractObject
         'resource_activate'
     ];
 
-    public function generateFromPollerId($pollerId)
+    /**
+     * Generate resource objects
+     *
+     * @param null|integer $pollerId
+     * @return void
+     */
+    public function generateFromPollerId(?int $pollerId)
     {
         if (is_null($pollerId)) {
             return 0;

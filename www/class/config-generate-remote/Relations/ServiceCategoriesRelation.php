@@ -1,7 +1,7 @@
 <?php
 /*
  * Copyright 2005 - 2019 Centreon (https://www.centreon.com/)
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -31,7 +31,14 @@ class ServiceCategoriesRelation extends AbstractObject
         'service_service_id',
     ];
 
-    public function addRelation($scId, $serviceId)
+    /**
+     * Add relation
+     *
+     * @param integer $scId
+     * @param integer $serviceId
+     * @return void
+     */
+    public function addRelation(int $scId, int $serviceId)
     {
         $relation = [
             'sc_id' => $scId,

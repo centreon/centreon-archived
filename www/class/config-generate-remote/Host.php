@@ -1,7 +1,7 @@
 <?php
 /*
  * Copyright 2005 - 2019 Centreon (https://www.centreon.com/)
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -36,7 +36,13 @@ class Host extends AbstractHost
     protected $generatedParentship = [];
     protected $generatedHosts = [];
 
-    private function getHostGroups(&$host)
+    /**
+     * Get linked host groups
+     *
+     * @param array $host
+     * @return void
+     */
+    private function getHostGroups(array &$host)
     {
         if (!isset($host['hg'])) {
             if (is_null($this->stmtHg)) {
@@ -61,7 +67,13 @@ class Host extends AbstractHost
         }
     }
 
-    private function getServices(&$host)
+    /**
+     * Get linked services
+     *
+     * @param array $host
+     * @return void
+     */
+    private function getServices(array &$host)
     {
         if (is_null($this->stmtService)) {
             $this->stmtService = $this->backendInstance->db->prepare("SELECT
@@ -82,7 +94,13 @@ class Host extends AbstractHost
         }
     }
 
-    private function getServicesByHg(&$host)
+    /**
+     * Get linked services by host group
+     *
+     * @param array $host
+     * @return void
+     */
+    private function getServicesByHg(array &$host)
     {
         if (count($host['hg']) == 0) {
             return 1;
@@ -105,6 +123,12 @@ class Host extends AbstractHost
         }
     }
 
+    /**
+     * Get linked severity
+     *
+     * @param Integer $hostIdArg
+     * @return void
+     */
     protected function getSeverity($hostIdArg)
     {
         $severityId = HostCategory::getInstance($this->dependencyInjector)->getHostSeverityByHostId($hostIdArg);
@@ -113,28 +137,48 @@ class Host extends AbstractHost
         }
     }
 
-    public function addHost($hostId, $attr = [])
+    /**
+     * Add host in cache
+     *
+     * @param int $hostId
+     * @param array $attr
+     * @return void
+     */
+    public function addHost(int $hostId, array $attr = [])
     {
         $this->hosts[$hostId] = $attr;
     }
 
-    private function getHosts($pollerId)
+    /**
+     * Get linked hosts to poller id
+     *
+     * @param integer $pollerId
+     * @return void
+     */
+    private function getHosts(int $pollerId)
     {
         // We use host_register = 1 because we don't want _Module_* hosts
-        $stmt = $this->backendInstance->db->prepare("SELECT
-              $this->attributesSelect
+        $stmt = $this->backendInstance->db->prepare(
+            "SELECT $this->attributesSelect
             FROM ns_host_relation, host
-                LEFT JOIN extended_host_information ON extended_host_information.host_host_id = host.host_id
+            LEFT JOIN extended_host_information ON extended_host_information.host_host_id = host.host_id
             WHERE ns_host_relation.nagios_server_id = :server_id
-                AND ns_host_relation.host_host_id = host.host_id
-                AND host.host_activate = '1' AND host.host_register = '1'");
+            AND ns_host_relation.host_host_id = host.host_id
+            AND host.host_activate = '1'
+            AND host.host_register = '1'"
+        );
         $stmt->bindParam(':server_id', $pollerId, PDO::PARAM_INT);
         $stmt->execute();
         $this->hosts = $stmt->fetchAll(PDO::FETCH_GROUP | PDO::FETCH_UNIQUE | PDO::FETCH_ASSOC);
     }
 
-
-    public function generateFromHostId(&$host)
+    /**
+     * Generate from host id
+     *
+     * @param array $host
+     * @return void
+     */
+    public function generateFromHostId(array &$host)
     {
         $this->getImages($host);
         $this->getMacros($host);
@@ -162,7 +206,14 @@ class Host extends AbstractHost
         $this->addGeneratedHost($host['host_id']);
     }
 
-    public function generateFromPollerId($pollerId, $localhost = 0)
+    /**
+     * Generate from poller id
+     *
+     * @param integer $pollerId
+     * @param integer $localhost
+     * @return void
+     */
+    public function generateFromPollerId(int $pollerId, int $localhost = 0)
     {
         if (is_null($this->hosts)) {
             $this->getHosts($pollerId);
@@ -177,13 +228,19 @@ class Host extends AbstractHost
         }
 
         if ($localhost == 1) {
-            #MetaService::getInstance($this->dependencyInjector)->generateObjects();
+            // MetaService::getInstance($this->dependencyInjector)->generateObjects();
         }
 
         Curves::getInstance($this->dependencyInjector)->generateObjects();
     }
 
-    public function getHostIdByHostName($hostName)
+    /**
+     * Get host id by host name
+     *
+     * @param string $hostName
+     * @return string|void
+     */
+    public function getHostIdByHostName(string $hostName)
     {
         if (isset($this->hostsByName[$hostName])) {
             return $this->hostsByName[$hostName];
@@ -191,28 +248,51 @@ class Host extends AbstractHost
         return null;
     }
 
+    /**
+     * Get generated parentship
+     *
+     * @return array
+     */
     public function getGeneratedParentship()
     {
         return $this->generatedParentship;
     }
 
-    public function addGeneratedHost($hostId)
+    /**
+     * Add generated host
+     *
+     * @param integer $hostId
+     * @return void
+     */
+    public function addGeneratedHost(int $hostId)
     {
         $this->generatedHosts[] = $hostId;
     }
 
+    /**
+     * Get generated hosts
+     *
+     * @return array
+     */
     public function getGeneratedHosts()
     {
         return $this->generatedHosts;
     }
 
-    public function reset($resetparent = false, $createfile = false)
+    /**
+     * Reset object
+     *
+     * @param boolean $resetParent
+     * @param boolean $createfile
+     * @return void
+     */
+    public function reset($resetParent = false, $createfile = false): void
     {
         $this->hostsByName = [];
         $this->hosts = null;
         $this->generatedParentship = [];
         $this->generatedHosts = [];
-        if ($resetparent == true) {
+        if ($resetParent == true) {
             parent::reset($createfile);
         }
     }

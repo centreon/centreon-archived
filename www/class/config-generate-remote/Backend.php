@@ -112,7 +112,7 @@ class Backend
      * @param array $paths
      * @return string created directory path
      */
-    public function createDirectories(array $paths)
+    public function createDirectories(array $paths): string
     {
         $dir = '';
         $dirAppend = '';
@@ -139,7 +139,7 @@ class Backend
      *
      * @return string
      */
-    public function getEngineGeneratePath()
+    public function getEngineGeneratePath(): string
     {
         return $this->generatePath . '/' . $this->engine_sub;
     }
@@ -150,7 +150,7 @@ class Backend
      * @param int $pollerId
      * @return void
      */
-    public function initPath(int $pollerId)
+    public function initPath(int $pollerId): void
     {
         $this->createDirectories([$this->generatePath]);
         $this->fullPath = $this->generatePath;
@@ -232,7 +232,7 @@ class Backend
      *
      * @return void
      */
-    public function cleanPath()
+    public function cleanPath(): void
     {
         $subdir = dirname($this->fullPath);
         if (is_dir($this->fullPath)) {
@@ -248,7 +248,7 @@ class Backend
      * @param string $username
      * @return void
      */
-    public function setUserName(string $username)
+    public function setUserName(string $username): void
     {
         $this->whoaim = $username;
     }
@@ -269,7 +269,7 @@ class Backend
      * @param integer $pollerId
      * @return void
      */
-    public function setPollerId(int $pollerId)
+    public function setPollerId(int $pollerId): void
     {
         $this->pollerId = $pollerId;
     }
