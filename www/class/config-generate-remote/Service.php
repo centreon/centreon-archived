@@ -243,7 +243,8 @@ class Service extends AbstractService
         $this->getServiceGroups($serviceId, $hostId, $hostName);
 
         $extendedInformation = $this->getExtendedInformation($this->serviceCache[$serviceId]);
-        Relations\ExtendedServiceInformation::getInstance($this->dependencyInjector)->add($extendedInformation, $serviceId);
+        Relations\ExtendedServiceInformation::getInstance($this->dependencyInjector)
+            ->add($extendedInformation, $serviceId);
         Graph::getInstance($this->dependencyInjector)->getGraphFromId($extendedInformation['graph_id']);
 
         $this->serviceCache[$serviceId]['service_id'] = $serviceId;

@@ -69,6 +69,11 @@ class ExportManifest
         return $result;
     }
 
+    /**
+     * Validate manifest format and return content
+     *
+     * @return void
+     */
     public function validate()
     {
         $file = $this->getFile();
@@ -117,6 +122,12 @@ class ExportManifest
         return $this->data;
     }
 
+    /**
+     * Dump data in file
+     *
+     * @param array $exportManifest
+     * @return void
+     */
     public function dump(array $exportManifest): void
     {
         $data = array_merge($exportManifest, ["version" => $this->version]);
@@ -124,6 +135,11 @@ class ExportManifest
         $this->commitment->getParser()->dump($data, $this->getFile());
     }
 
+    /**
+     * Get file path
+     *
+     * @return string
+     */
     public function getFile(): string
     {
         $file = $this->commitment->getPath() . '/' . static::EXPORT_FILE;

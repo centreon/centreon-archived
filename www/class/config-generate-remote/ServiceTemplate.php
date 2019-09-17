@@ -213,7 +213,8 @@ class ServiceTemplate extends AbstractService
         $this->getSeverity($serviceId);
 
         $extendedInformation = $this->getExtendedInformation($this->serviceCache[$serviceId]);
-        Relations\ExtendedServiceInformation::getInstance($this->dependencyInjector)->add($extendedInformation, $serviceId);
+        Relations\ExtendedServiceInformation::getInstance($this->dependencyInjector)
+            ->add($extendedInformation, $serviceId);
         Graph::getInstance($this->dependencyInjector)->getGraphFromId($extendedInformation['graph_id']);
 
         $this->serviceCache[$serviceId]['service_id'] = $serviceId;
