@@ -210,11 +210,12 @@ class CentreonClapi extends CentreonWebService implements CentreonWebServiceDiIn
             } else {
                 $return['result'][] = $lines[$i];
             }
-
-            if (is_array($return['result'])) {
-                array_walk($return['result'], [$this, 'clearCarriageReturns']);
-            }
         }
+        
+        if (is_array($return['result'])) {
+            array_walk($return['result'], [$this, 'clearCarriageReturns']);
+        }
+            
         return $return;
     }
 
