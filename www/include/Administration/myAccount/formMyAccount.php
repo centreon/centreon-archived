@@ -218,6 +218,9 @@ $form->setDefaults($defaultFeatures);
 if ($o == "c") {
     $subC = $form->addElement('submit', 'submitC', _("Save"), array("class" => "btc bt_success"));
     $res = $form->addElement('reset', 'reset', _("Reset"), array("class" => "btc bt_default"));
+    foreach ($cct as $key => $value) {
+        $cct[$key] = htmlentities($value);
+    }
     $form->setDefaults($cct);
     /* Add saved value for feature testing */
     $userFeatures = $centreonFeature->userFeaturesValue($centreon->user->get_id());
