@@ -1,7 +1,7 @@
 <?php
 /*
- * Copyright 2005-2015 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2019 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -123,7 +123,7 @@ $contactTypeIcone = array(1 => "./img/icons/admin.png", 2 => "./img/icons/user.p
 $contactTypeIconeTitle = array(1 => _("This user is an administrator."), 2 => _("This user is a simple user."), 3 => _("This is a contact template."));
 
 /*
- * Fill a tab with a mutlidimensionnal Array we put in $tpl
+ * Fill a tab with a multidimensional Array we put in $tpl
  */
 $elemArr = array();
 foreach ($contacts as $contact) {
@@ -158,12 +158,18 @@ foreach ($contacts as $contact) {
 
     $elemArr[] = array("MenuClass" => "list_".$style,
                     "RowMenu_select" => $selectedElements->toHtml(),
-                    "RowMenu_name" => html_entity_decode($contact["contact_name"], ENT_QUOTES, "UTF-8"),
+                    "RowMenu_name" => CentreonUtils::escapeSecure(
+                        html_entity_decode($contact["contact_name"], ENT_QUOTES, "UTF-8"),
+                        CentreonUtils::ESCAPE_ILLEGAL_CHARS
+                    ),
                     "RowMenu_ico" => isset($contactTypeIcone[$contact_type]) ? $contactTypeIcone[$contact_type] : "",
                     "RowMenu_ico_title" => isset($contactTypeIconeTitle[$contact_type]) ? $contactTypeIconeTitle[$contact_type] : "",
                     "RowMenu_type" => $contact_type,
                     "RowMenu_link" => "?p=".$p."&o=c&contact_id=".$contact['contact_id'],
-                    "RowMenu_desc" => CentreonUtils::escapeSecure(html_entity_decode($contact["contact_alias"], ENT_QUOTES, "UTF-8")),
+                    "RowMenu_desc" => CentreonUtils::escapeSecure(
+                        html_entity_decode($contact["contact_alias"], ENT_QUOTES, "UTF-8"),
+                        CentreonUtils::ESCAPE_ILLEGAL_CHARS
+                    ),
                     "RowMenu_email" => $contact["contact_email"],
                     "RowMenu_hostNotif" => html_entity_decode($tpCache[(isset($contact["timeperiod_tp_id"]) ? $contact["timeperiod_tp_id"] : "")], ENT_QUOTES, "UTF-8")." (".(isset($contact["contact_host_notification_options"]) ? $contact["contact_host_notification_options"] : "").")",
                     "RowMenu_svNotif" => html_entity_decode($tpCache[(isset($contact["timeperiod_tp_id2"]) ? $contact["timeperiod_tp_id2"] : "")], ENT_QUOTES, "UTF-8")." (".(isset($contact["contact_service_notification_options"]) ? $contact["contact_service_notification_options"] : "").")",
@@ -199,7 +205,7 @@ if ($row['count_ldap'] > 0) {
 function setO(_i) {
     document.forms['form'].elements['o'].value = _i;
 }
-</SCRIPT>
+</script>
 <?php
 
 /* Manage options */

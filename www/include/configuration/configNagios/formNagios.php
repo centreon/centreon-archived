@@ -1,7 +1,7 @@
 <?php
 /*
- * Copyright 2005-2015 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2019 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -34,7 +34,9 @@
  */
 
 if (!$centreon->user->admin && isset($nagios_id)
-        && count($allowedMainConf) && !isset($allowedMainConf[$nagios_id])) {
+    && count($allowedMainConf)
+    && !isset($allowedMainConf[$nagios_id])
+) {
     $msg = new CentreonMsg();
     $msg->setImage("./img/icons/warning.png");
     $msg->setTextStyle("bold");
@@ -87,7 +89,7 @@ $cdata->addJsData(
 );
 
 /*
- * Database retrieve information for differents elements list we need on the page
+ * Database retrieve information for different elements list we need on the page
  *
  * Check commands comes from DB -> Store in $checkCmds Array
  *
@@ -630,7 +632,7 @@ $tab[] = HTML_QuickForm::createElement('radio', 'action', null, _("Form"), '0');
 $form->addGroup($tab, 'action', _("Post Validation"), '&nbsp;');
 
 /*
- * Predictive dependancy options
+ * Predictive dependency options
  */
 $nagTab = array();
 $nagTab[] = HTML_QuickForm::createElement('radio', 'enable_predictive_host_dependency_checks', null, _("Yes"), '1');
@@ -663,7 +665,7 @@ $form->addElement('text', 'cached_host_check_horizon', _("Cached Host Check"), $
 $form->addElement('text', 'cached_service_check_horizon', _("Cached Service Check"), $attrsText3);
 
 /*
- * Tunning
+ * Tuning
  */
 $nagTab = array();
 $nagTab[] = HTML_QuickForm::createElement('radio', 'use_large_installation_tweaks', null, _("Yes"), '1');
