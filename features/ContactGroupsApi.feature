@@ -15,5 +15,5 @@ Feature: Check health of the Contact Groups API
     And the response has a "status" property
     And the property "result" has value
     """
-    {"pagination":{"total":2,"offset":0,"limit":2},"entities":[{"id":3,"name":"Guest","activate":"1"},{"id":5,"name":"Supervisors","activate":"1"}]}
+    {"pagination":{"total":2,"offset":0,"limit":2},"entities":[{"id":3,"name":"Guest","activate":1},{"id":5,"name":"Supervisors","activate":1}]}
     """
