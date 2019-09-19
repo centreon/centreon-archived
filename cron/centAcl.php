@@ -542,7 +542,7 @@ try {
                 AND `acl_res_group_relations`.acl_res_id = `acl_resources`.acl_res_id
                 AND `acl_resources`.acl_res_activate = '1'"
             );
-            $dbResult2->bindValue(':aclGroupId', $acl_group_id, \PDO::PARAM_INT);
+            $dbResult2->bindValue(':aclGroupId', $aclGroupId, \PDO::PARAM_INT);
             $dbResult2->execute();
             if ($debug) {
                 $time_start = microtime_float2();
@@ -614,11 +614,11 @@ try {
                     $sgElem = [];
                     $tmpH = [];
                     while ($h = $dbResult3->fetch()) {
-                        if (!isset($sgElem[$h["host_id"]])) {
-                            $sgElem[$h["host_id"]] = [];
-                            $tmpH[$h['host_id']] = 1;
+                        if (!isset($sgElem[$h["host_host_id"]])) {
+                            $sgElem[$h["host_host_id"]] = [];
+                            $tmpH[$h['host_host_id']] = 1;
                         }
-                        $sgElem[$h["host_id"]][$h["service_id"]] = 1;
+                        $sgElem[$h["host_host_id"]][$h["service_id"]] = 1;
                     }
 
                     $tmpH = getFilteredHostCategories($tmpH, $res2["acl_res_id"]);
@@ -675,16 +675,19 @@ try {
                 }
 
                 $strBegin = "INSERT INTO centreon_acl (host_id, service_id, group_id) VALUES ";
-                $strEnd = " ON DUPLICATE KEY UPDATE `group_id` = $aclGroupId ";
+                $strEnd = " ON DUPLICATE KEY UPDATE `group_id` = ? ";
 
                 $str = "";
+                $params = [];
                 $i = 0;
                 foreach ($resourceCache[$res2["acl_res_id"]] as $hostId => $svcList) {
                     if (isset($hostCache[$hostId])) {
                         if ($str != "") {
                             $str .= ", ";
                         }
-                        $str .= " ($hostId, NULL, $aclGroupId) ";
+                        $str .= " (?, NULL, ?) ";
+                        $params[] = $hostId;
+                        $params[] = $aclGroupId;
 
                         foreach (array_keys($svcList) as $serviceId) {
                             if ($str != "") {
@@ -692,10 +695,16 @@ try {
                             }
 
                             $i++;
-                            $str .= " ($hostId, $serviceId, $aclGroupId) ";
+                            $str .= " (?, ?, ?) ";
+                            $params[] = $hostId;
+                            $params[] = $serviceId;
+                            $params[] = $aclGroupId;
                             if ($i >= 5000) {
-                                $pearDBO->query($strBegin . $str . $strEnd);
+                                $params[] = $aclGroupId; // argument for $strEnd
+                                $stmt = $pearDBO->prepare($strBegin . $str . $strEnd);
+                                $stmt->execute($params); // inject acl by bulk (1000 relations)
                                 $str = "";
+                                $params = [];
                                 $i = 0;
                             }
                         }
@@ -704,7 +713,9 @@ try {
 
                 // inject remaining acl (bulk of less than 1000 relations)
                 if ($str != "") {
-                    $stmt = $pearDBO->query($strBegin . $str . $strEnd);
+                    $params[] = $aclGroupId; // argument for $strEnd
+                    $stmt = $pearDBO->prepare($strBegin . $str . $strEnd);
+                    $stmt->execute($params);
                     $str = "";
                 }
 

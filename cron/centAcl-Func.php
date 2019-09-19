@@ -135,7 +135,7 @@ function getFilteredPollers($host, $resId)
     $dbResult = $pearDB->prepare(
         "SELECT COUNT(*) AS count FROM acl_resources_poller_relations WHERE acl_res_id = :resId"
     );
-    $dbResult->bindValue(':resId', $res_id, \PDO::PARAM_INT);
+    $dbResult->bindValue(':resId', $resId, \PDO::PARAM_INT);
     $dbResult->execute();
     $row = $dbResult->fetch();
     $isPollerFilter = $row['count'];
