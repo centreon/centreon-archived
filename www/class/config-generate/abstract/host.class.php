@@ -233,28 +233,31 @@ abstract class AbstractHost extends AbstractObject
             $notificationOption = $stmtNotification->fetch();
             $this->notificationOption = $notificationOption['value'];
         }
-
+        $hostListing = array();
         // get the first host (template) link to a contact
         $this->getContactCloseInheritance($host['host_id'], $hostListing);
         $contactResult = '';
-        switch ((int)$this->notificationOption) {
-            case self::VERTICAL_NOTIFICATION:
-                //check if the inheritance is enable
-                if ((int)$host['contact_additive_inheritance'] === 1) {
-                    //use the first template found to start
-                    $this->getContactVerticalInheritance($hostListing[0], $hostListing);
-                }
-                break;
-            case self::CUMULATIVE_NOTIFICATION:
-                // get all host / template inheritance
-                $this->getCumulativeInheritance($host['host_id'], $hostListing);
-                break;
-            case self::CLOSE_NOTIFICATION:
-            default:
-                //do nothing it's the starting point of other notification option
-                break;
-        }
 
+        if (!empty($hostListing)) {
+            switch ((int)$this->notificationOption) {
+                case self::VERTICAL_NOTIFICATION:
+                    //check if the inheritance is enable
+                    if ((int)$host['contact_additive_inheritance'] === 1) {
+                        //use the first template found to start
+                        $this->getContactVerticalInheritance($hostListing[0], $hostListing);
+                    }
+                    break;
+                case self::CUMULATIVE_NOTIFICATION:
+                    // get all host / template inheritance
+                    $hostListing = array();
+                    $this->getCumulativeInheritance($host['host_id'], $hostListing);
+                    break;
+                case self::CLOSE_NOTIFICATION:
+                default:
+                    //do nothing it's the starting point of other notification option
+                    break;
+            }
+        }
         if (!empty($hostListing)) {
             $contactResult = implode(',', $this->getInheritanceContact(array_unique($hostListing)));
         }
@@ -360,30 +363,36 @@ abstract class AbstractHost extends AbstractObject
             $this->notificationOption = $notificationOption['value'];
         }
 
+        $hostListing = array();
         // get the first host (template) link to a contact group
         $this->getContactGroupsCloseInheritance($host['host_id'], $hostListing);
         $cgResult = '';
-        switch ((int)$this->notificationOption) {
-            case self::VERTICAL_NOTIFICATION:
-                //check if the inheritance is enable
-                if ((int)$host['contact_additive_inheritance'] === 1) {
-                    //use the first template found to start
-                    $this->getContactGroupsVerticalInheritance($hostListing[0], $hostListing);
-                }
-                break;
-            case self::CUMULATIVE_NOTIFICATION:
-                // get all host / template inheritance
-                $this->getCumulativeInheritance($host['host_id'], $hostListing);
-                break;
-            case self::CLOSE_NOTIFICATION:
-            default:
-                //do nothing it's the starting point of other notification option
-                break;
+
+        if (!empty($hostListing)) {
+            switch ((int)$this->notificationOption) {
+                case self::VERTICAL_NOTIFICATION:
+                    //check if the inheritance is enable
+                    if ((int)$host['contact_additive_inheritance'] === 1) {
+                        //use the first template found to start
+                        $this->getContactGroupsVerticalInheritance($hostListing[0], $hostListing);
+                    }
+                    break;
+                case self::CUMULATIVE_NOTIFICATION:
+                    // get all host / template inheritance
+                    $hostListing = array();
+                    $this->getCumulativeInheritance($host['host_id'], $hostListing);
+                    break;
+                case self::CLOSE_NOTIFICATION:
+                default:
+                    //do nothing it's the starting point of other notification option
+                    break;
+            }
         }
 
         if (!empty($hostListing)) {
             $cgResult = implode(',', $this->getInheritanceContactGroups(array_unique($hostListing)));
         }
+
         $host['contact_groups'] = $cgResult;
     }
 
@@ -415,13 +424,14 @@ abstract class AbstractHost extends AbstractObject
      */
     protected function getContactGroupsCloseInheritance($host, &$hostList = array())
     {
-        $stmt = $this->backend_instance->db->query(
-            "SELECT ch.contactgroup_cg_id, ht.host_tpl_id 
+
+        $suery = "SELECT ch.contactgroup_cg_id, ht.host_tpl_id 
             FROM host_template_relation ht
             LEFT JOIN contactgroup_host_relation ch ON ht.`host_host_id` = ch.`host_host_id`
             WHERE ht.`host_host_id` = " . (int)$host . " 
-            ORDER BY ht.`order`"
-        );
+            ORDER BY ht.`order`";
+
+        $stmt = $this->backend_instance->db->query($suery);
 
         while ($row = $stmt->fetch()) {
             if (empty($hostList)) {
