@@ -125,7 +125,7 @@ function getCentAclRunningState()
  * Return host tab after poller filter
  *
  * @param array $host
- * @param integer $res_id
+ * @param integer $resId
  * @return array $host
  */
 function getFilteredPollers($host, $resId)
@@ -174,7 +174,7 @@ function getFilteredPollers($host, $resId)
  * avoiding to recalculate it at each occurrence.
  *
  * @param array $host
- * @param integer $res_id
+ * @param integer $resId
  * @return array $filteredHosts
  */
 function getFilteredHostCategories($host, $resId)
@@ -229,8 +229,8 @@ function getFilteredHostCategories($host, $resId)
 /**
  * Return enable categories for this resource access
  *
- * @param integer $res_id
- * @return array $tab_categories
+ * @param integer $resId
+ * @return array $tabCategories
  */
 function getAuthorizedCategories($resId)
 {
@@ -259,7 +259,7 @@ function getAuthorizedCategories($resId)
 /**
  * Get a service template list for categories
  *
- * @param integer $service_id
+ * @param integer $serviceId
  * @return array|void $tabCategory
  */
 function getServiceTemplateCategoryList($serviceId = null)
@@ -302,7 +302,7 @@ function getServiceTemplateCategoryList($serviceId = null)
  * Get ACLs for host from a servicegroup
  *
  * @param $pearDB
- * @param integer $host_id
+ * @param integer $hostId
  * @param integer $resId
  * @return array|void $svc
  */
@@ -331,7 +331,7 @@ function getACLSGForHost($pearDB, $hostId, $resId)
 /**
  * If the resource ACL has poller filter
  *
- * @param int $res_id The ACL resource id
+ * @param int $resId The ACL resource id
  * @return bool
  */
 function hasPollerFilter($resId)
@@ -391,7 +391,7 @@ function hasHostCategoryFilter($resId)
 /**
  * If the resource ACL has service category filter
  *
- * @param int $res_id The ACL resource id
+ * @param int $resId The ACL resource id
  * @return bool
  */
 function hasServiceCategoryFilter($resId)
