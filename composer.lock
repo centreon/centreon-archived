@@ -2006,12 +2006,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/centreon/centreon-test-lib.git",
-                "reference": "aaae16692ea86bdc26e3e6a33b7cd8c2b0d42d62"
+                "reference": "aaff01e0dbb9abfea016a7bc093965cecee9dc82"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/centreon/centreon-test-lib/zipball/aaae16692ea86bdc26e3e6a33b7cd8c2b0d42d62",
-                "reference": "aaae16692ea86bdc26e3e6a33b7cd8c2b0d42d62",
+                "url": "https://api.github.com/repos/centreon/centreon-test-lib/zipball/aaff01e0dbb9abfea016a7bc093965cecee9dc82",
+                "reference": "aaff01e0dbb9abfea016a7bc093965cecee9dc82",
                 "shasum": ""
             },
             "require": {
@@ -2047,7 +2047,7 @@
                 "phpunit",
                 "testing"
             ],
-            "time": "2019-09-10T12:22:02+00:00"
+            "time": "2019-09-19T12:50:32+00:00"
         },
         {
             "name": "container-interop/container-interop",
