@@ -23,8 +23,8 @@ Centreon offers an ISO file including CentOS v7 and all the required packages.
 If you prefer to use **Red Hat OS** you must install **version v7**
 and use the RPMs available from our repositories.
 
-Alternatively, you can use another GNU/Linux operating system,
-but this will require installing the platform from source files and therefore be more complex.
+Open Source users, without Support contract, can use another GNU/Linux operating system.
+This will require installing the platform from source files and therefore be more complex.
 
 .. note::
     Only 64-bit operating systems (x86_64) are supported.

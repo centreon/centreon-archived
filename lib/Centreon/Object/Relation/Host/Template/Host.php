@@ -71,6 +71,30 @@ class Centreon_Object_Relation_Host_Template_Host extends Centreon_Object_Relati
     }
 
     /**
+     * Delete host template / host relation and linked services
+     *
+     * @param int $fkey - host template
+     * @param int $skey - host
+     * @return void
+     */
+    public function delete($fkey, $skey = null): void
+    {
+        global $pearDB;
+        $this->db->beginTransaction();
+        try {
+            parent::delete($fkey, $skey);
+            $pearDB = $this->db;
+            $centreon = true; // Needed so we can include file below
+            require_once _CENTREON_PATH_ . "/www/include/configuration/configObject/host/DB-Func.php";
+            deleteHostServiceMultiTemplate($skey, $fkey, array(), null);
+            $this->db->commit();
+        } catch (\PDOException $e) {
+            $this->db->rollBack();
+            exitProcess(PROCESS_ID, 1, $e->getMessage());
+        }
+    }
+
+    /**
      * Get target id from source id
      *
      * @param int $sourceKey

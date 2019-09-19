@@ -36,14 +36,13 @@
 
 namespace Centreon;
 
-use Centreon\Infrastructure\Event\EventDispatcher;
-use Centreon\Domain\Entity\FileLoader;
 use Pimple\Container;
 use Pimple\Psr11\ServiceLocator;
 use CentreonLegacy\ServiceProvider as LegacyServiceProvider;
 use Centreon\Application\Webservice;
 use Centreon\Infrastructure\Provider\AutoloadServiceProviderInterface;
 use Centreon\Infrastructure\Service;
+use Centreon\Infrastructure\Event;
 use Centreon\Infrastructure\Service\CentreonWebserviceService;
 use Centreon\Infrastructure\Service\CentreonClapiService;
 use Centreon\Infrastructure\Service\CentcoreConfigService;
@@ -58,15 +57,26 @@ use CentreonClapi\CentreonACL;
 
 class ServiceProvider implements AutoloadServiceProviderInterface
 {
+    //webservices
     const CENTREON_WEBSERVICE = 'centreon.webservice';
-    const CENTREON_DB_MANAGER = 'centreon.db-manager';
-    const CENTREON_CLAPI = 'centreon.clapi';
+    const MENU_WEBSERVICE = 'centreon.menu.webservice';
+
+    //services
     const CENTREON_I18N_SERVICE = 'centreon.i18n_service';
     const CENTREON_FRONTEND_COMPONENT_SERVICE = 'centreon.frontend_component_service';
+    const CENTREON_BROKER_CONFIGURATION_SERVICE = 'centreon.broker_configuration_service';
+
+    //repositories
     const CENTREON_BROKER_REPOSITORY = 'centreon.broker_repository';
     const CENTREON_BROKER_INFO_REPOSITORY = 'centreon.broker_info_repository';
-    const CENTREON_BROKER_CONFIGURATION_SERVICE = 'centreon.broker_configuration_service';
+
+    //managers and infrastructure services
+    const CENTREON_DB_MANAGER = 'centreon.db-manager';
+    const CENTREON_CLAPI = 'centreon.clapi';
     const UPLOAD_MANGER = 'upload.manager';
+    const CENTREON_EVENT_DISPATCHER = 'centreon.event_dispatcher';
+    const CENTREON_USER = 'centreon.user';
+    const YML_CONFIG = 'yml.config';
 
     /**
      * Register Centreon services
@@ -75,7 +85,13 @@ class ServiceProvider implements AutoloadServiceProviderInterface
      */
     public function register(Container $pimple): void
     {
-        $pimple[static::CENTREON_WEBSERVICE] = function(Container $container): CentreonWebserviceService {
+
+        //init global yml config from src/Centreon
+        $pimple[static::YML_CONFIG] = function (Container $pimple) {
+            return $pimple[\CentreonLegacy\ServiceProvider::CONFIGURATION]->getModuleConfig(__DIR__);
+        };
+
+        $pimple[static::CENTREON_WEBSERVICE] = function (Container $container): CentreonWebserviceService {
             $service = new CentreonWebserviceService;
 
             return $service;
@@ -110,13 +126,13 @@ class ServiceProvider implements AutoloadServiceProviderInterface
             return $service;
         };
 
-        $pimple[static::CENTREON_CLAPI] = function(Container $container): CentreonClapiService {
+        $pimple[static::CENTREON_CLAPI] = function (Container $container): CentreonClapiService {
             $service = new CentreonClapiService;
 
             return $service;
         };
 
-        $pimple[static::CENTREON_DB_MANAGER] = function(Container $container): CentreonDBManagerService {
+        $pimple[static::CENTREON_DB_MANAGER] = function (Container $container): CentreonDBManagerService {
             $services = [
                 'realtime_db',
                 'configuration_db',
@@ -128,7 +144,7 @@ class ServiceProvider implements AutoloadServiceProviderInterface
             return $service;
         };
 
-        $pimple['centreon.user'] = function (Container $container): \CentreonUser {
+        $pimple[static::CENTREON_USER] = function (Container $container): \CentreonUser {
             if (php_sapi_name() !== 'cli' && session_status() == PHP_SESSION_NONE) {
                 session_start();
             }
@@ -159,14 +175,14 @@ class ServiceProvider implements AutoloadServiceProviderInterface
          */
 
         // @todo class is available via $service->get('centreon.db-manager')->getRepository(Repository\CfgCentreonBrokerRepository::class)
-        $pimple[static::CENTREON_BROKER_REPOSITORY] = function(Container $container): CfgCentreonBrokerRepository {
+        $pimple[static::CENTREON_BROKER_REPOSITORY] = function (Container $container): CfgCentreonBrokerRepository {
             $service = new CfgCentreonBrokerRepository($container['configuration_db']);
 
             return $service;
         };
 
         // @todo class is available via $service->get('centreon.db-manager')->getRepository(Repository\CfgCentreonBrokerInfoRepository::class)
-        $pimple[static::CENTREON_BROKER_INFO_REPOSITORY] = function(Container $container): CfgCentreonBrokerInfoRepository {
+        $pimple[static::CENTREON_BROKER_INFO_REPOSITORY] = function (Container $container): CfgCentreonBrokerInfoRepository {
             $service = new CfgCentreonBrokerInfoRepository($container['configuration_db']);
 
             return $service;
@@ -176,7 +192,7 @@ class ServiceProvider implements AutoloadServiceProviderInterface
          * Services
          */
 
-        $pimple[static::CENTREON_BROKER_CONFIGURATION_SERVICE] = function(Container $container): BrokerConfigurationService {
+        $pimple[static::CENTREON_BROKER_CONFIGURATION_SERVICE] = function (Container $container): BrokerConfigurationService {
             $service = new BrokerConfigurationService($container['configuration_db']);
             $service->setBrokerInfoRepository($container[ServiceProvider::CENTREON_BROKER_INFO_REPOSITORY]);
 
@@ -192,14 +208,15 @@ class ServiceProvider implements AutoloadServiceProviderInterface
             return $service;
         };
 
-        $pimple['centreon.event_dispatcher'] = function (Container $container) {
-            $eventDispatcher = new EventDispatcher();
+        $pimple[static::CENTREON_EVENT_DISPATCHER] = function (Container $container) : Event\EventDispatcher {
+            $eventDispatcher = new Event\EventDispatcher();
             $eventDispatcher->setDispatcherLoader(
-                new FileLoader(
+                new Event\FileLoader(
                     _CENTREON_PATH_ . '/www/modules/',
                     'custom-module-form.php'
                 )
             );
+
             return $eventDispatcher;
         };
     }

@@ -39,6 +39,10 @@ $help["trapname"] = dgettext(
     "help",
     "Enter the trap name as specified in the MIB file and send by the SNMP master agent."
 );
+$help["mode"] = dgettext(
+    "help",
+    "Choose the matching mode."
+);
 $help["oid"] = dgettext("help", "Enter the full numeric object identifier (OID) starting with .1.3.6 (.iso.org.dod).");
 $help["vendor"] = dgettext("help", "Choose a vendor from the list. The vendor must have been created beforehand.");
 $help["submit_result_enabled"] = dgettext(

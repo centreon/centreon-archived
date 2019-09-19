@@ -767,8 +767,12 @@ msgid "Init script for broker daemon."
 msgstr "Script de inicialização do broker."
 
 #: centreon-web/www/include/Administration/parameters/engine/help.php:35
-msgid "Mailer binary with complete path."
-msgstr "Caminho completo do executável de envio de emails."
+msgid ""
+"Mailer binary with complete path. This define the @MAILER@ macro used in "
+"notification commands."
+msgstr ""
+"Caminho completo do executável de envio de emails. Isso define a macro @MAILER@ usado nos "
+"comandos de notificação."
 
 #: centreon-web/www/include/Administration/parameters/engine/help.php:43
 msgid "Maximum number of hosts to show in the Tactical Overview page."
@@ -2898,17 +2902,21 @@ msgstr ""
 
 #: centreon-web/www/include/configuration/configObject/host/help.php:37
 msgid ""
-"Define the number of \"time units\" to wait before sending out the first problem notification when this host enters a non-UP state. With the default time unit of 60s, this number will mean multiples of 1 minute. If you set this value to 0, monitoring engine will "
-"start sending out notifications immediately."
+"Define the number of \"time units\" to wait before sending out the first problem notification when this "
+"host enters a non-UP state. "
+"With the default time unit of 60s, this number will mean multiples of 1 minute. "
+"If you set this value to 0, monitoring engine will start sending out notifications immediately."
 msgstr ""
 "Define o número de unidades de tempo a decorrer antes de enviar a primeira notificação de um problema no host, resultando em um estado não OK. \n"
 "Com a unidade padrão de 60s, esse número será um múltiplo de 1 minuto. \n"
 "Se esse valor for 0, o planejador enviará uma notificação assim que o problema aparecer."
 
-#: centreon-web/www/include/configuration/configObject/host/help.php:38 centreon-web/www/include/configuration/configObject/service/help.php:70
+#: centreon-web/www/include/configuration/configObject/host/help.php:38
 msgid ""
-"Define the number of \"time units\" to wait before sending out the recovery notification when this host enters a non-UP state. The default time unit is 0 (this number will mean multiples of 1 minute). If you set this value to 0, monitoring engine will start sending "
-"out notifications immediately."
+"Define the number of \"time units\" to wait before sending out the recovery notification when this "
+"host enters an UP state. "
+"With the default time unit of 60s, this number will mean multiples of 1 minute. "
+"If you set this value to 0, monitoring engine will start sending out notifications immediately."
 msgstr ""
 "Define o número de \"unidades de tempo\" que devem decorrer antes de enviar a primeira notificação sobre recuperação devido a um estado de problema. \n"
 "Com a unidade padrão de 60s, esse número significará um múltiplo de 1 minuto. \n"
@@ -4773,3 +4781,12 @@ msgstr ""
 
 #~ msgid "Choose the Nagios server instance this configuration is defined for."
 #~ msgstr "Selecione a instância do servidor Nagios para o qual esta configuração está definida."
+
+#: /www/include/Administration/parameters/ldap/help.po
+#~ msgid "This field is used to specify the interval, in hours, between two LDAP data synchronization. By default 1 hour."
+#~msgstr ""
+
+#: /www/include/Administration/parameters/ldap/help.po
+#~ msgid "If enabled, a user LDAP synchronization will be performed on login to update contact's data and calculate new Centreon ACLs."
+#~ "we'll check if modifications have been applied to its account."
+#~ msgstr ""

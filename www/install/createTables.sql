@@ -274,6 +274,7 @@ CREATE TABLE `auth_ressource` (
   `ar_description` varchar(255) NOT NULL DEFAULT 'Default description',
   `ar_type` varchar(50) NOT NULL,
   `ar_enable` enum('0','1') DEFAULT '0',
+  `ar_sync_base_date` int(11) DEFAULT 0,
   PRIMARY KEY (`ar_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -765,6 +766,8 @@ CREATE TABLE `contact` (
   `default_page` int(11) DEFAULT NULL,
   `contact_charset` varchar(255) DEFAULT NULL,
   `contact_register` tinyint(6) NOT NULL DEFAULT '1',
+  `contact_ldap_last_sync` int(11) NOT NULL DEFAULT 0,
+  `contact_ldap_required_sync` enum('0','1') NOT NULL DEFAULT '0',
   PRIMARY KEY (`contact_id`),
   KEY `name_index` (`contact_name`),
   KEY `alias_index` (`contact_alias`),
@@ -2040,6 +2043,7 @@ CREATE TABLE `traps` (
   `traps_id` int(11) NOT NULL AUTO_INCREMENT,
   `traps_name` varchar(255) DEFAULT NULL,
   `traps_oid` varchar(255) DEFAULT NULL,
+  `traps_mode` enum('0','1') DEFAULT '0',
   `traps_args` text,
   `traps_status` enum('-1','0','1','2','3') DEFAULT NULL,
   `severity_id` int(11) DEFAULT NULL,
@@ -2052,7 +2056,7 @@ CREATE TABLE `traps` (
   `traps_advanced_treatment_default` enum('0','1', '2') DEFAULT '0',
   `traps_timeout` int(11) DEFAULT NULL,
   `traps_exec_interval` int(11) DEFAULT NULL,
-  `traps_exec_interval_type` enum('0','1', '2') DEFAULT '0',
+  `traps_exec_interval_type` enum('0','1','2','3') DEFAULT '0',
   `traps_log` enum('0','1') DEFAULT '0',
   `traps_routing_mode` enum('0','1') DEFAULT '0',
   `traps_routing_value` varchar(255) DEFAULT NULL,
@@ -2373,7 +2377,7 @@ CREATE TABLE IF NOT EXISTS contact_feature (
 -- Create remote servers table for keeping track of remote instances
 CREATE TABLE IF NOT EXISTS `remote_servers` (
   `id` INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
-  `ip` VARCHAR(16) NOT NULL,
+  `ip` VARCHAR(255) NOT NULL,
   `app_key` VARCHAR(40) NOT NULL,
   `version` VARCHAR(16) NOT NULL,
   `is_connected` TINYINT(1) NOT NULL DEFAULT 0,

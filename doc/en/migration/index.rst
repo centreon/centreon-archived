@@ -14,7 +14,7 @@ to Centreon version 19.04:
 .. toctree::
    :maxdepth: 1
 
-   upgradetoCentreon18.10
+   upgradetoCentreon19.04
    pollerdisplaytoremoteserver
    nagiostocentreon
 

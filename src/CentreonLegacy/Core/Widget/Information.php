@@ -68,7 +68,7 @@ class Information
     
     /**
      * Construct
-     * 
+     *
      * @param \Psr\Container\ContainerInterface $services
      * @param \CentreonLegacy\Core\Utils\Utils $utils
      */

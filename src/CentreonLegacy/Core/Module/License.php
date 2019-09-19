@@ -91,7 +91,8 @@ class License extends Module
 
         try {
             $healthcheck->check($module);
-        } catch (\Exception $ex) {}
+        } catch (\Exception $ex) {
+        }
 
         if ($expiration = $healthcheck->getLicenseExpiration()) {
             return $expiration->format(\DateTime::ISO8601);

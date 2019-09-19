@@ -90,9 +90,7 @@ $tpl->assign("headerMenu_contacts", _("Contacts"));
 $tpl->assign("headerMenu_status", _("Status"));
 $tpl->assign("headerMenu_options", _("Options"));
 
-/*
- * Contactgroup list
- */
+//Contactgroup list
 $aclOptions['pages'] = $num * $limit . ", " . $limit;
 $cgs = $acl->getContactGroupAclConf($aclOptions);
 
@@ -102,6 +100,12 @@ $form = new HTML_QuickFormCustom('select_form', 'POST', "?p=" . $p);
 
 // Different style between each lines
 $style = "one";
+
+$attrBtnSuccess = array(
+    "class" => "btc bt_success",
+    "onClick" => "window.history.replaceState('', '', '?p=" . $p . "');"
+);
+$form->addElement('submit', 'Search', _("Search"), $attrBtnSuccess);
 
 // Fill a tab with a multidimensional Array we put in $tpl
 $elemArr = array();

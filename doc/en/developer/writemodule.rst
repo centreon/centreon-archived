@@ -8,7 +8,7 @@ one? You're at the right place!
 You should know Centreon contains a page dedicated to the installation
 and the uninstallation of modules (*Administration > Modules*). To
 make the module appears on this page, its directory must be placed
-inside Cetreon's ``modules/`` directory. Example::
+inside Centreon's ``modules/`` directory. Example::
 
   /usr/local/centreon/www/modules/module-Dummy
 

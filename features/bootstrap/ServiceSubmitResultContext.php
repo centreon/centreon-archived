@@ -86,6 +86,5 @@ class ServiceSubmitResultContext extends CentreonContext
         } catch (\Exception $e) {
             throw new Exception('The result submitted is not set as wanted');
         }
-
     }
 }
