@@ -24,13 +24,18 @@
 			{/php}
 		</tr>
 	</table>
-	<table class="ListTable">
-		<tr class="ListHeader">
-			<td class="ListColHeaderPicker"><input type="checkbox" name="checkall" onclick="checkUncheckAll(this);"/></td>
-			<td class="ListColHeaderLeft">{$headerMenu_name}</td>
-			<td class="ListColHeaderLeft">{$headerMenu_img}</td>
-			<td class="ListColHeaderLeft">{$headerMenu_comment}</td>
-		</tr>
+    <table class="ListTable">
+        <tr class="ListHeader">
+            <td class="ListColHeaderPicker">
+                <div class="md-checkbox md-checkbox-inline">
+                    <input type="checkbox" id="checkall" name="checkall" onclick="checkUncheckAll(this);"/>
+                    <label class="empty-label" for="checkall"></label>
+                </div>
+            </td>
+            <td class="ListColHeaderLeft">{$headerMenu_name}</td>
+            <td class="ListColHeaderLeft">{$headerMenu_img}</td>
+            <td class="ListColHeaderLeft">{$headerMenu_comment}</td>
+        </tr>
 
 		{foreach from=$elemArr item=dir}
 			<tr class="list_lvl_1">
