@@ -75,8 +75,8 @@ if ($cache['value']) {
             }
 
             $pearDB->query(
-                "DELETE FROM cfg_centreonbroker_info WHERE `config_id` = " .$row['config_id']
-                . " AND config_group_id = " .$row['config_group_id']
+                "DELETE FROM cfg_centreonbroker_info WHERE `config_id` = " . $row['config_id']
+                . " AND config_group_id = " . $row['config_group_id']
                 . " AND config_group = 'output' AND ( config_key = 'port' OR config_key = 'path') "
             );
         }
