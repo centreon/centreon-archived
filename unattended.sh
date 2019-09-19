@@ -110,10 +110,25 @@ if [ -z "$timezone" ] ; then
   timezone=UTC
 fi
 echo "date.timezone = $timezone" > /etc/opt/rh/rh-php71/php.d/10-centreon.ini
-if [ "x$has_systemd" '=' x1 ] ; then
-  systemctl restart rh-php71-php-fpm
-fi
 print_step_end "OK, timezone set to $timezone"
+
+#
+# FIREWALL
+#
+
+print_step_begin "Firewall configuration"
+command -v firewall-cmd > /dev/null 2>&1
+if [ "x$?" '=' x0 ] ; then
+  for svc in http mysql snmp snmptrap ; do
+    firewall-cmd --zone=public --add-service=$svc --permanent > /dev/null 2>&1
+    if [ "x$?" '!=' x0 ] ; then
+      error_and_exit "Could not configure firewall. You might need to run this script as root."
+    fi
+  done
+  print_step_end
+else
+  print_step_end "OK, not detected"
+fi
 
 #
 # SERVICES
@@ -122,7 +137,7 @@ print_step_end "OK, timezone set to $timezone"
 print_step_begin "Services configuration"
 if [ "x$has_systemd" '=' x1 ] ; then
   systemctl enable httpd24-httpd mysqld rh-php71-php-fpm snmpd snmptrapd centcore centreontrapd cbd centengine centreon
-  systemctl start httpd24-httpd mysqld rh-php71-php-fpm snmpd snmptrapd
+  systemctl restart httpd24-httpd mysqld rh-php71-php-fpm snmpd snmptrapd
   print_step_end
 else
   print_step_end "OK, systemd not detected, skipping"
