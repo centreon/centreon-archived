@@ -2,7 +2,7 @@
 -- Insert version
 --
 
-INSERT INTO `informations` (`key` ,`value`) VALUES ('version', '19.04.3');
+INSERT INTO `informations` (`key` ,`value`) VALUES ('version', '19.10.0-beta.3');
 
 --
 -- Contenu de la table `contact`
@@ -879,6 +879,7 @@ INSERT INTO `widget_parameters_field_type` (`ft_typename`, `is_connector`) VALUE
                                            ('serviceMulti', 1),
                                            ('pollerMulti', 1),
                                            ('serviceGroupMulti', 1),
+                                           ('hostSeverityMulti', 1),
                                            ('integer', 0);
 
 INSERT INTO timezone (`timezone_name`, `timezone_offset`, `timezone_dst_offset`) VALUES

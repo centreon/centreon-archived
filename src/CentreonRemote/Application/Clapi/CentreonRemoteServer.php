@@ -96,7 +96,7 @@ class CentreonRemoteServer implements CentreonClapiServiceInterface
         $this->getDi()[\Centreon\ServiceProvider::CENTREON_DB_MANAGER]
             ->getRepository(InformationsRepository::class)
             ->authorizeMaster(
-                implode(',',$hostList)
+                implode(',', $hostList)
             );
         echo "Done\n";
 

@@ -21,10 +21,7 @@ import {
 import Hook from '../../../../components/hook';
 
 import axios from '../../../../axios';
-import {
-  fetchNavigationData,
-  fetchAclRoutes,
-} from '../../../../redux/actions/navigationActions';
+import { fetchNavigationData } from '../../../../redux/actions/navigationActions';
 import { fetchExternalComponents } from '../../../../redux/actions/externalComponentsActions';
 
 class ExtensionsRoute extends Component {
@@ -503,7 +500,7 @@ class ExtensionsRoute extends Component {
             customClass="mr-2"
             color="orange"
             style={{
-              opacity: false ? '0.33' : '1',
+              opacity: '1',
             }}
             onClick={this.runActionOnAllEntities.bind(
               this,
@@ -603,8 +600,7 @@ const mapDispatchToProps = (dispatch) => {
       dispatch(
         batchActions([
           fetchNavigationData(),
-          fetchExternalComponents(),
-          fetchAclRoutes(),
+          fetchExternalComponents()
         ]),
       );
     },

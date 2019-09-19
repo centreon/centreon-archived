@@ -58,11 +58,11 @@ function testPollerDep($instanceId)
         $form->getSubmitValue('host_parents'),
         FILTER_VALIDATE_INT
     );
-    
+
     if (!$hostId || is_null($hostParents)) {
         return true;
     }
-    
+
     $request = "SELECT COUNT(*) as total "
         . "FROM host_hostparent_relation hhr, ns_host_relation nhr "
         . "WHERE hhr.host_parent_hp_id = nhr.host_host_id "
@@ -77,20 +77,20 @@ function testPollerDep($instanceId)
         $request .= " AND host_parent_hp_id IN (" .
             implode(',', array_keys($fieldsToBind)) . ")";
     }
-    
+
     $prepare = $pearDB->prepare($request);
     $prepare->bindValue(':host_id', $hostId, \PDO::PARAM_INT);
     $prepare->bindValue(':server_id', $instanceId, \PDO::PARAM_INT);
-    
+
     foreach ($fieldsToBind as $field => $hostParentId) {
         $prepare->bindValue($field, $hostParentId, \PDO::PARAM_INT);
     }
-    
+
     if ($prepare->execute()) {
         $result = $prepare->fetch(\PDO::FETCH_ASSOC);
         return ((int) $result['total']) == 0;
     }
-    
+
     return true;
 }
 
@@ -117,12 +117,12 @@ function hostMacHandler()
     $request =
         "SELECT count(*) as total FROM nagios_macro WHERE macro_name IN (" .
         implode(',', array_keys($fieldsToBind)) . ")";
-    
+
     $prepare = $pearDB->prepare($request);
     foreach ($fieldsToBind as $field => $macroName) {
         $prepare->bindValue($field, $macroName, \PDO::PARAM_STR);
     }
-    
+
     if ($prepare->execute()) {
         $result = $prepare->fetch(\PDO::FETCH_ASSOC);
         return ((int) $result['total']) == 0;
@@ -147,18 +147,18 @@ function hasHostNameNeverUsed($name = null)
     if (isset($form)) {
         $id = (int) $form->getSubmitValue('host_id');
     }
-    
+
     $prepare = $pearDB->prepare(
         "SELECT host_name, host_id FROM host "
         . "WHERE host_name = :host_name AND host_register = '1'"
     );
     $hostName = CentreonDB::escape($centreon->checkIllegalChar($name));
-    
+
     $prepare->bindValue(':host_name', $hostName, \PDO::PARAM_STR);
     $prepare->execute();
     $result = $prepare->fetch(\PDO::FETCH_ASSOC);
     $totals = $prepare->rowCount();
-    
+
     if ($totals >= 1 && ($result["host_id"] == $id)) {
         /**
          * In case of modification
@@ -195,7 +195,7 @@ function hasHostTemplateNeverUsed($name = null)
     if (isset($form)) {
         $id = (int) $form->getSubmitValue('host_id');
     }
-    
+
     $prepare = $pearDB->prepare(
         "SELECT host_name, host_id FROM host "
         . "WHERE host_name = :host_name AND host_register = '0'"
@@ -1239,27 +1239,27 @@ function serviceIsInUse($svc_id, $host_list)
 
 function deleteHostServiceMultiTemplate($hID, $scndHID, $host_list, $antiLoop = null)
 {
-    global $pearDB, $path, $centreon;
+    global $pearDB;
 
     if (isset($antiLoop[$scndHID]) && $antiLoop[$scndHID]) {
         return 0;
     }
-    $dbResult3 = $pearDB->query("SELECT service_service_id " .
+    $dbResult = $pearDB->query("SELECT service_service_id " .
         "FROM `service` svc, `host_service_relation` hsr " .
         "WHERE svc.service_id = hsr.service_service_id " .
         "AND svc.service_register = '0' " .
         "AND hsr.host_host_id = '" . $scndHID . "'");
-    while ($svcID = $dbResult3->fetch()) {
+    while ($svcID = $dbResult->fetch()) {
         if (!serviceIsInUse($svcID['service_service_id'], $host_list)) {
             $rq2 = "DELETE hsr, svc FROM `host_service_relation` hsr, `service` svc " .
                 "WHERE hsr.service_service_id = svc.service_id " .
                 "AND svc.service_template_model_stm_id = '" . $svcID['service_service_id'] . "' " .
                 "AND svc.service_register = '1' " .
                 "AND hsr.host_host_id = '" . $hID . "'";
-            $dbResult4 = $pearDB->query($rq2);
+            $pearDB->query($rq2);
         }
     }
-    $dbResult3->closeCursor();
+    $dbResult->closeCursor();
 
     $rq = "SELECT host_tpl_id " .
         "FROM host_template_relation " .
@@ -2402,7 +2402,7 @@ function updateHostHostGroup($host_id, $ret = array())
     $dbResult = $pearDB->query($rq);
     isset($ret["host_hgs"]) ? $ret = $ret["host_hgs"] : $ret = $form->getSubmitValue("host_hgs");
     $hgsNEW = array();
-    
+
     if ($ret) {
         for ($i = 0; $i < count($ret); $i++) {
             $rq = "INSERT INTO hostgroup_relation ";
@@ -2490,11 +2490,11 @@ function updateHostHostCategory($host_id, $ret = array())
 
     $ret = isset($ret["host_hcs"]) ? $ret["host_hcs"] : $ret = $form->getSubmitValue("host_hcs");
     $hcsNEW = array();
-    
+
     if (!$ret) {
         return;
     }
-    
+
     for ($i = 0; $i < count($ret); $i++) {
         $rq = "INSERT INTO hostcategories_relation ";
         $rq .= "(hostcategories_hc_id, host_host_id) ";

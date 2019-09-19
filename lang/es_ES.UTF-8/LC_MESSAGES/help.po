@@ -672,21 +672,36 @@ msgstr ""
 "Esta opción debe habilitarse en un entorno seguro dedicado a la autenticación SSO. \n"
 "El acceso directo a la interfaz web de Centreon para usuarios debe estar deshabilitado."
 
+msgid "Enable login with Keycloak."
+msgstr "Habilitar inicio de sesión con Keycloak"
+
+msgid "Authentication can be solely based on Keycloak or it can work with both Keycloak and local authentication systems."
+msgstr "La autenticación puede basarse únicamente en Keycloak o puede funcionar tanto con Keycloak como con sistemas de autenticación locales."
+
+msgid "IP/DNS of trusted clients. Use coma as delimiter in case of multiple clients."
+msgstr "IP/DNS de clientes de confianza. Use una coma como delimitador en el caso de varios clientes."
+
+msgid "IP/DNS of blacklist clients. Use coma as delimiter in case of multiple clients."
+msgstr "IP/DNS de clientes cerrados. Use una coma como delimitador en el caso de varios clientes."
+
+msgid "Your Keycloak server url (with \"/auth\")."
+msgstr "Su URL del servidor de Keycloak (con \"/auth\")."
+
+msgid "Your Keycloak redirect url (this server)."
+msgstr "Su URL de redirección de Keycloak (este servidor)."
+
+msgid "Your Keycloak Realm name."
+msgstr "Tu nombre de Dominio Keycloak."
+
+msgid "Your Keycloak client ID."
+msgstr "Su identificación de cliente de Keycloak."
+
+msgid "Your Keycloak client secret."
+msgstr "Su secreto de cliente de Keycloak"
+
 #: centreon-web/www/include/Administration/parameters/general/help.php:80
 msgid "Authentication can be solely based on SSO or it can work with both SSO and local authentication systems."
 msgstr "La autenticación solo puede basarse en SSO o puede funcionar tanto con SSO como con un sistema de autenticación local."
-
-#: centreon-web/www/include/Administration/parameters/general/help.php:84
-msgid "IP/DNS of trusted clients. Use coma as delimiter in case of multiple clients."
-msgstr ""
-"Clientes de confianza IP / DNS. \n"
-"Use comas como separador para múltiples clientes"
-
-#: centreon-web/www/include/Administration/parameters/general/help.php:88
-msgid "IP/DNS of blacklist clients. Use coma as delimiter in case of multiple clients."
-msgstr ""
-"Clientes de la lista negra de IP / DNS. \n"
-"Use comas como separador para múltiples clientes"
 
 #: centreon-web/www/include/Administration/parameters/general/help.php:92
 msgid "The header variable that will be used as login. i.e: $_SERVER['HTTP_AUTH_USER']"
@@ -4286,8 +4301,8 @@ msgid "Select the poller you would like to interact with."
 msgstr "Seleccione un colector con el que desea interactuar."
 
 #: centreon-web/www/include/configuration/configGenerate/help.php:4
-msgid "Generates configuration files and stores them in centreon/filesGeneration directory."
-msgstr "Genere los archivos de configuración y guárdelos en la carpeta centreon / filesGeneration."
+msgid "Generates configuration files and stores them in cache directory."
+msgstr "Genere los archivos de configuración y guárdelos en la carpeta cache."
 
 #: centreon-web/www/include/configuration/configGenerate/help.php:5
 msgid "Runs the scheduler debug mode."
@@ -4321,3 +4336,11 @@ msgid "If checked, it won't  use the proxy configured in "
 "'Administration > Parameters > Centreon UI' to connect to the Remote Server."
 msgstr ""
 ""
+
+#: /www/include/Administration/parameters/ldap/help.po
+#~ msgid "This field is used to specify the interval, in hours, between two LDAP data synchronization. By default 1 hour."
+#~ msgstr ""
+
+#: /www/include/Administration/parameters/ldap/help.po
+#~ msgid "If enabled, a user LDAP synchronization will be performed on login to update contact's data and calculate new Centreon ACLs."
+#~ msgstr ""

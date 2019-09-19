@@ -8,7 +8,7 @@
 
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { ConnectedRouter } from 'react-router-redux';
+import { ConnectedRouter } from 'connected-react-router';
 import Fullscreen from 'react-fullscreen-crossbrowser';
 import queryString from 'query-string';
 import { batchActions } from 'redux-batched-actions';
@@ -22,7 +22,6 @@ import Footer from './components/footer';
 import MainRouter from './components/mainRouter';
 import axios from './axios';
 
-import { fetchAclRoutes } from './redux/actions/navigationActions';
 import { fetchExternalComponents } from './redux/actions/externalComponentsActions';
 
 import styles from './App.scss';
@@ -91,11 +90,10 @@ class App extends Component {
   };
 
   componentDidMount() {
-    const { fetchAclRoutesAndExternalComponents } = this.props;
+    const { fetchExternalComponents } = this.props;
 
-    // 1 - fetch allowed react routes
     // 2 - fetch external components (pages, hooks...)
-    fetchAclRoutesAndExternalComponents();
+    fetchExternalComponents();
 
     this.keepAlive();
   }
@@ -145,9 +143,8 @@ class App extends Component {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    fetchAclRoutesAndExternalComponents: () => {
-      // batch actions to avoid useless multiple rendering
-      dispatch(batchActions([fetchAclRoutes(), fetchExternalComponents()]));
+    fetchExternalComponents: () => {
+      dispatch(fetchExternalComponents());
     },
   };
 };

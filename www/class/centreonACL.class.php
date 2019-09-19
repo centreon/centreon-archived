@@ -1868,6 +1868,14 @@ class CentreonACL
             }
         }
 
+        // Manage join
+        $requests['join'] = '';
+        if (isset($options['join']) && is_array($options['join'])) {
+            foreach ($options['join'] as $joinValues) {
+                $requests['join'] .= 'INNER JOIN ' . $joinValues['table'] . ' ON ' . $joinValues['condition'] . ' ';
+            }
+        }
+
         // Manage order by
         $requests['order'] = '';
         if (isset($options['order'])) {
@@ -2389,10 +2397,10 @@ class CentreonACL
     public function getContactAclConf($options = array())
     {
         $request = $this->constructRequest($options, true);
-
         if ($this->admin) {
             $sql = $request['select'] . $request['fields'] . " "
                 . "FROM contact "
+                . $request['join']
                 . "WHERE contact_register = '1' "
                 . $request['conditions'];
         } else {
@@ -2400,6 +2408,7 @@ class CentreonACL
                 . "FROM ( "
                 . "SELECT " . $request['fields'] . " "
                 . "FROM acl_group_contacts_relations agcr, contact c "
+                . $request['join']
                 . "WHERE c.contact_id = agcr.contact_contact_id "
                 . "AND c.contact_register = '1'"
                 . "AND agcr.acl_group_id IN (" . $this->getAccessGroupsString() . ") "
@@ -2416,7 +2425,6 @@ class CentreonACL
         }
 
         $sql .= $request['order'] . $request['pages'];
-
         $result = $this->constructResult($sql, $options);
 
         return $result;

@@ -5,7 +5,7 @@ Mise à jour depuis Centreon 18.10
 =================================
 
 Ce chapitre décrit la procédure de mise à jour de votre plate-forme vers
-Centreon 19.04.
+Centreon 19.10.
 
 Pour mettre à jour votre serveur Centreon Map, référez-vous à la `documentation associée
 <https://documentation.centreon.com/docs/centreon-map-4/en/latest/upgrade/index.html>`_.
@@ -34,7 +34,7 @@ Il est nécessaire de mettre à jour le dépôt Centreon.
 
 Exécutez la commande suivante : ::
 
-    # yum install -y http://yum.centreon.com/standard/19.04/el7/stable/noarch/RPMS/centreon-release-19.04-1.el7.centos.noarch.rpm
+    # yum install -y http://yum.centreon.com/standard/19.10/el7/stable/noarch/RPMS/centreon-release-19.10-1.el7.centos.noarch.rpm
 
 Mise à jour de la solution Centreon
 ===================================
@@ -53,7 +53,30 @@ Mettez à jour l'ensemble des composants : ::
 Actions complémentaires
 =======================
 
-Centreon 19.04 utilise un nouveau paquet pour le serveur Web Apache.
+Mise à jour de la version de PHP
+--------------------------------
+
+Centreon 19.10 utilise un nouveau paquet PHP.
+
+Le fuseau horaire par défaut de PHP 7 doit être configuré. Executez la commande
+suivante : ::
+
+    # echo "date.timezone = Europe/Paris" > /etc/opt/rh/rh-php72/php.d/php-timezone.ini
+
+.. note::
+	Changez **Europe/Paris** par votre fuseau horaire.
+
+Réalisez les actions suivantes : ::
+
+    # systemctl disable rh-php71-php-fpm
+    # systemctl stop rh-php71-php-fpm
+    # systemctl start rh-php72-php-fpm
+    # systemctl enable rh-php72-php-fpm
+
+Mise à jour du serveur Web Apache
+---------------------------------
+
+Centreon 19.10 utilise un nouveau paquet pour le serveur Web Apache.
 
 .. note::
     Si vous avez modifié la configuration, reportez celle-ci dans le répertoire
@@ -116,14 +139,14 @@ Installation des dépôts
 
 Exécutez la commande suivante : ::
 
-    # yum install -y http://yum.centreon.com/standard/19.04/el7/stable/noarch/RPMS/centreon-release-19.04-1.el7.centos.noarch.rpm
+    # yum install -y http://yum.centreon.com/standard/19.10/el7/stable/noarch/RPMS/centreon-release-19.10-1.el7.centos.noarch.rpm
 
 Mise à jour de la solution Centreon
 ===================================
 
 Mettez à jour l'ensemble des composants : ::
 
-    # yum update centreon*
+    # yum update centreon\*
 
 .. note::
     Acceptez les nouvelles clés GPG des dépôts si nécessaire.

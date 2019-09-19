@@ -1,4 +1,39 @@
 <?php
+/*
+ * Copyright 2005-2019 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
+ * GPL Licence 2.0.
+ *
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation ; either version 2 of the License.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+ * PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License along with
+ * this program; if not, see <http://www.gnu.org/licenses>.
+ *
+ * Linking this program statically or dynamically with other modules is making a
+ * combined work based on this program. Thus, the terms and conditions of the GNU
+ * General Public License cover the whole combination.
+ *
+ * As a special exception, the copyright holders of this program give Centreon
+ * permission to link this program with independent modules to produce an executable,
+ * regardless of the license terms of these independent modules, and to copy and
+ * distribute the resulting executable under terms of Centreon choice, provided that
+ * Centreon also meet, for each linked independent module, the terms  and conditions
+ * of the license of that module. An independent module is a module which is not
+ * derived from this program. If you modify this program, you may extend this
+ * exception to your version of the program, but you are not obliged to do so. If you
+ * do not wish to do so, delete this exception statement from your version.
+ *
+ * For more information : contact@centreon.com
+ *
+ *
+ */
+
 namespace CentreonRemote\Tests\Infrastructure\Service;
 
 use PHPUnit\Framework\TestCase;
@@ -91,15 +126,24 @@ class ExportServiceTest extends TestCase
                 'key' => 'version',
                 'value' => 'x.y',
             ]])
-            ->addResultSet("DELETE FROM acl_resources_hc_relations WHERE hc_id NOT IN (SELECT t2.hc_id FROM hostcategories AS t2)", [])
-            ->addResultSet("DELETE FROM acl_resources_hg_relations WHERE hg_hg_id NOT IN (SELECT t2.hg_id FROM hostgroup AS t2)", [])
-            ->addResultSet("DELETE FROM acl_resources_hostex_relations WHERE host_host_id NOT IN (SELECT t2.host_id FROM host AS t2)", [])
-            ->addResultSet("DELETE FROM acl_resources_host_relations WHERE host_host_id NOT IN (SELECT t2.host_id FROM host AS t2)", [])
-            ->addResultSet("DELETE FROM acl_resources_meta_relations WHERE meta_id NOT IN (SELECT t2.meta_id FROM meta_service AS t2)", [])
-            ->addResultSet("DELETE FROM acl_resources_poller_relations WHERE poller_id NOT IN (SELECT t2.id FROM nagios_server AS t2)", [])
-            ->addResultSet("DELETE FROM acl_resources_sc_relations WHERE sc_id NOT IN (SELECT t2.sc_id FROM service_categories AS t2)", [])
-            ->addResultSet("DELETE FROM acl_resources_service_relations WHERE service_service_id NOT IN (SELECT t2.service_id FROM service AS t2)", [])
-            ->addResultSet("DELETE FROM acl_resources_sg_relations WHERE sg_id NOT IN (SELECT t2.sg_id FROM servicegroup AS t2)", [])
+            ->addResultSet("DELETE FROM acl_resources_hc_relations "
+                . "WHERE hc_id NOT IN (SELECT t2.hc_id FROM hostcategories AS t2)", [])
+            ->addResultSet("DELETE FROM acl_resources_hg_relations "
+                . "WHERE hg_hg_id NOT IN (SELECT t2.hg_id FROM hostgroup AS t2)", [])
+            ->addResultSet("DELETE FROM acl_resources_hostex_relations "
+                . "WHERE host_host_id NOT IN (SELECT t2.host_id FROM host AS t2)", [])
+            ->addResultSet("DELETE FROM acl_resources_host_relations "
+                . "WHERE host_host_id NOT IN (SELECT t2.host_id FROM host AS t2)", [])
+            ->addResultSet("DELETE FROM acl_resources_meta_relations "
+                . "WHERE meta_id NOT IN (SELECT t2.meta_id FROM meta_service AS t2)", [])
+            ->addResultSet("DELETE FROM acl_resources_poller_relations "
+                . "WHERE poller_id NOT IN (SELECT t2.id FROM nagios_server AS t2)", [])
+            ->addResultSet("DELETE FROM acl_resources_sc_relations "
+                . "WHERE sc_id NOT IN (SELECT t2.sc_id FROM service_categories AS t2)", [])
+            ->addResultSet("DELETE FROM acl_resources_service_relations "
+                . "WHERE service_service_id NOT IN (SELECT t2.service_id FROM service AS t2)", [])
+            ->addResultSet("DELETE FROM acl_resources_sg_relations "
+                . "WHERE sg_id NOT IN (SELECT t2.sg_id FROM servicegroup AS t2)", [])
         ;
 
         // mount VFS
@@ -125,7 +169,11 @@ class ExportServiceTest extends TestCase
         $this->assertAttributeInstanceOf(ExporterService::class, 'exporter', $this->export);
         $this->assertAttributeInstanceOf(ExporterCacheService::class, 'cache', $this->export);
         $this->assertAttributeInstanceOf(CentreonACL::class, 'acl', $this->export);
-        $this->assertAttributeInstanceOf(\Centreon\Infrastructure\Service\CentreonDBManagerService::class, 'db', $this->export);
+        $this->assertAttributeInstanceOf(
+            \Centreon\Infrastructure\Service\CentreonDBManagerService::class,
+            'db',
+            $this->export
+        );
 
         $this->assertAttributeEquals('x.y', 'version', $this->export);
     }
