@@ -531,7 +531,7 @@ function getMyHostServicesByName($hostId = null)
  */
 function getMetaServices($resId, $db, $metaObj)
 {
-    $sql = "SELECT meta_id FROM acl_resources_meta_relations WHERE acl_res_id = " . $resId;
+    $sql = "SELECT meta_id FROM acl_resources_meta_relations WHERE acl_res_id = " . (int) $resId;
     $res = $db->query($sql);
     $arr = array();
     if ($res->rowCount()) {
