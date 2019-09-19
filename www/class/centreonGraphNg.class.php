@@ -949,8 +949,14 @@ class CentreonGraphNg
     private function formatByMetrics($rrdData)
     {
         $this->graphData['times'] = array();
-        $size = count($rrdData['data']);
-        $gprintsSize = count($rrdData['meta']['gprints']);
+
+        $size = (is_array($rrdData['data']) || $rrdData['data'] instanceof \Countable)
+            ? count($rrdData['data'])
+            : $rrdData['data'];
+
+        $gprintsSize = (is_array($rrdData['meta']['gprints']) || $rrdData['meta']['gprints'] instanceof \Countable)
+            ? count($rrdData['meta']['gprints'])
+            : 0;
         
         for ($i = 0; $i < $size; $i++) {
             $this->graphData['times'][] = $rrdData['data'][$i][0];

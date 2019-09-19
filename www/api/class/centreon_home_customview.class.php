@@ -228,7 +228,7 @@ class CentreonHomeCustomview extends CentreonWebService
         $tpl->compile_check = true;
         $tpl->force_compile = true;
 
-        $form = new HTML_QuickForm('Form', 'post', "?p=103");
+        $form = new HTML_QuickFormCustom('Form', 'post', "?p=103");
         $form->addElement('header', 'title', $title);
         $form->addElement('header', 'information', _("General Information"));
 
