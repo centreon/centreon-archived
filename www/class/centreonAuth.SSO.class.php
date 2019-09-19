@@ -79,7 +79,6 @@ class CentreonAuthSSO extends CentreonAuth
             && !empty($this->ssoOptions['keycloak_client_id'])
             && !empty($this->ssoOptions['keycloak_client_secret'])
         ) {
-
             $clientId = $this->ssoOptions['keycloak_client_id'];
             $clientSecret = $this->ssoOptions['keycloak_client_secret'];
             $realm = $this->ssoOptions['keycloak_realm'];
@@ -169,7 +168,7 @@ class CentreonAuthSSO extends CentreonAuth
                     return 1;
                 }
             }
-        } else if (isset($this->options_sso['keycloak_enable'])
+        } elseif (isset($this->options_sso['keycloak_enable'])
             && $this->options_sso['keycloak_enable'] == 1
             && isset($this->options_sso['keycloak_mode'])
             && $this->options_sso['keycloak_mode'] == 1
@@ -185,7 +184,7 @@ class CentreonAuthSSO extends CentreonAuth
             }
 
             $whitelist = explode(',', $this->options_sso['keycloak_trusted_clients']);
-            if(empty($whitelist[0])){
+            if(empty($whitelist[0])) {
                 return 1;
             }
             foreach ($whitelist as $value) {
@@ -231,9 +230,8 @@ class CentreonAuthSSO extends CentreonAuth
      *
      * @return string
     */
-    function getKeycloakToken($base, $realm, $redirectUri, $clientId, $clientSecret, $code)
+    public function getKeycloakToken($base, $realm, $redirectUri, $clientId, $clientSecret, $code)
     {
-
         $url = $base . "/realms/" . $realm . "/protocol/openid-connect/token";
         $data = array(
             "client_id" => $clientId,
@@ -266,9 +264,8 @@ class CentreonAuthSSO extends CentreonAuth
      *
      * @return string
      */
-    function getKeycloakUserInfo($base, $realm, $clientId, $clientSecret, $token)
+    public function getKeycloakUserInfo($base, $realm, $clientId, $clientSecret, $token)
     {
-
         $url = $base . "/realms/" . $realm . "/protocol/openid-connect/token/introspect";
         $data = array(
             "token" => $token,
