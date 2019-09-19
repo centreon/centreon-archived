@@ -1,36 +1,20 @@
 <?php
 /*
- * Copyright 2005-2019 Centreon
- * Centreon is developed by : Julien Mathis and Romain Le Merlus under
- * GPL Licence 2.0.
+ * Copyright 2005 - 2019 Centreon (https://www.centreon.com/)
  *
- * This program is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation ; either version 2 of the License.
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
- * PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
- * You should have received a copy of the GNU General Public License along with
- * this program; if not, see <http://www.gnu.org/licenses>.
- *
- * Linking this program statically or dynamically with other modules is making a
- * combined work based on this program. Thus, the terms and conditions of the GNU
- * General Public License cover the whole combination.
- *
- * As a special exception, the copyright holders of this program give Centreon
- * permission to link this program with independent modules to produce an executable,
- * regardless of the license terms of these independent modules, and to copy and
- * distribute the resulting executable under terms of Centreon choice, provided that
- * Centreon also meet, for each linked independent module, the terms  and conditions
- * of the license of that module. An independent module is a module which is not
- * derived from this program. If you modify this program, you may extend this
- * exception to your version of the program, but you are not obliged to do so. If you
- * do not wish to do so, delete this exception statement from your version.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  *
  * For more information : contact@centreon.com
- *
  *
  */
 
@@ -51,11 +35,11 @@ use CentreonRemote\Domain\Service\InformationsService;
 use CentreonRemote\Domain\Service\NotifyMasterService;
 use CentreonRemote\Domain\Service\TaskService;
 use CentreonRemote\Infrastructure\Service\PollerInteractionService;
+use ConfigGenerateRemote\Generate;
 use Curl\Curl;
 
 class ServiceProvider implements AutoloadServiceProviderInterface
 {
-
     const CENTREON_NOTIFYMASTER = 'centreon.notifymaster';
     const CENTREON_TASKSERVICE = 'centreon.taskservice';
     const CENTREON_REMOTE_POLLER_INTERACTION_SERVICE = 'centreon_remote.poller_interaction_service';
@@ -69,15 +53,18 @@ class ServiceProvider implements AutoloadServiceProviderInterface
     const CENTREON_REMOTE_EXPORTER = 'centreon_remote.exporter';
 
     /**
-     * Register Centron Remote services
+     * Register Centreon Remote services
      *
      * @param \Pimple\Container $pimple
      */
     public function register(Container $pimple): void
     {
-        $pimple->extend(\Centreon\ServiceProvider::YML_CONFIG, function (array $cc, Container $pimple) {
-            return $pimple[\CentreonLegacy\ServiceProvider::CONFIGURATION]->getModuleConfig(__DIR__);
-        });
+        $pimple->extend(
+            \Centreon\ServiceProvider::YML_CONFIG,
+            function (array $cc, Container $pimple) {
+                return $pimple[\CentreonLegacy\ServiceProvider::CONFIGURATION]->getModuleConfig(__DIR__);
+            }
+        );
 
         $pimple[\Centreon\ServiceProvider::CENTREON_WEBSERVICE]
             ->add(Webservice\CentreonRemoteServer::class)
@@ -189,140 +176,24 @@ class ServiceProvider implements AutoloadServiceProviderInterface
         // Exporters
         //-----------//
 
-        // Commands
+        // Configuration
+        $pimple[static::CENTREON_REMOTE_EXPORTER]->add(
+            Domain\Exporter\ConfigurationExporter::class,
+            function () use ($pimple) {
+                $service = new Domain\Exporter\ConfigurationExporter($pimple);
 
-        $pimple[static::CENTREON_REMOTE_EXPORTER]
-            ->add(Domain\Exporter\CommandExporter::class, function () use ($pimple) {
-                $services = [
-                    \Centreon\ServiceProvider::CENTREON_DB_MANAGER,
-                ];
-
-                $locator = new ServiceLocator($pimple, $services);
-                $service = new Domain\Exporter\CommandExporter($locator);
+                $generateService = new Generate($pimple);
+                $service->setGenerateService($generateService);
 
                 return $service;
-            });
-        
-        // Pollers
-        $pimple[static::CENTREON_REMOTE_EXPORTER]
-            ->add(Domain\Exporter\PollerExporter::class, function () use ($pimple) {
-                $services = [
-                    \Centreon\ServiceProvider::CENTREON_DB_MANAGER,
-                    'centreon.config',
-                ];
-
-                $locator = new ServiceLocator($pimple, $services);
-                $service = new Domain\Exporter\PollerExporter($locator);
-
-                return $service;
-            });
-        
-        // Hosts
-        $pimple[static::CENTREON_REMOTE_EXPORTER]
-            ->add(Domain\Exporter\HostExporter::class, function () use ($pimple) {
-                $services = [
-                    \Centreon\ServiceProvider::CENTREON_DB_MANAGER,
-                ];
-
-                $locator = new ServiceLocator($pimple, $services);
-                $service = new Domain\Exporter\HostExporter($locator);
-
-                return $service;
-            });
-        
-        // Meta services
-        $pimple[static::CENTREON_REMOTE_EXPORTER]
-            ->add(Domain\Exporter\MetaServiceExporter::class, function () use ($pimple) {
-                $services = [
-                    \Centreon\ServiceProvider::CENTREON_DB_MANAGER,
-                ];
-
-                $locator = new ServiceLocator($pimple, $services);
-                $service = new Domain\Exporter\MetaServiceExporter($locator);
-
-                return $service;
-            });
-        
-        // Services
-        $pimple[static::CENTREON_REMOTE_EXPORTER]
-            ->add(Domain\Exporter\ServiceExporter::class, function () use ($pimple) {
-                $services = [
-                    \Centreon\ServiceProvider::CENTREON_DB_MANAGER,
-                ];
-
-                $locator = new ServiceLocator($pimple, $services);
-                $service = new Domain\Exporter\ServiceExporter($locator);
-
-                return $service;
-            });
-        
-        // Traps
-        $pimple[static::CENTREON_REMOTE_EXPORTER]
-            ->add(Domain\Exporter\TrapExporter::class, function () use ($pimple) {
-                $services = [
-                    \Centreon\ServiceProvider::CENTREON_DB_MANAGER,
-                ];
-
-                $locator = new ServiceLocator($pimple, $services);
-                $service = new Domain\Exporter\TrapExporter($locator);
-
-                return $service;
-            });
-        
-        // Time periods
-        $pimple[static::CENTREON_REMOTE_EXPORTER]
-            ->add(Domain\Exporter\TimePeriodExporter::class, function () use ($pimple) {
-                $services = [
-                    \Centreon\ServiceProvider::CENTREON_DB_MANAGER,
-                ];
-
-                $locator = new ServiceLocator($pimple, $services);
-                $service = new Domain\Exporter\TimePeriodExporter($locator);
-
-                return $service;
-            });
-        
-        // Downtimes
-        $pimple[static::CENTREON_REMOTE_EXPORTER]
-            ->add(Domain\Exporter\DowntimeExporter::class, function () use ($pimple) {
-                $services = [
-                    \Centreon\ServiceProvider::CENTREON_DB_MANAGER,
-                ];
-
-                $locator = new ServiceLocator($pimple, $services);
-                $service = new Domain\Exporter\DowntimeExporter($locator);
-
-                return $service;
-            });
-        
-        // Graphs
-        $pimple[static::CENTREON_REMOTE_EXPORTER]
-            ->add(Domain\Exporter\GraphExporter::class, function () use ($pimple) {
-                $services = [
-                    \Centreon\ServiceProvider::CENTREON_DB_MANAGER,
-                ];
-
-                $locator = new ServiceLocator($pimple, $services);
-                $service = new Domain\Exporter\GraphExporter($locator);
-
-                return $service;
-            });
-
-        // Media
-        $pimple[static::CENTREON_REMOTE_EXPORTER]
-            ->add(Domain\Exporter\MediaExporter::class, function () use ($pimple) {
-                $services = [
-                    \Centreon\ServiceProvider::CENTREON_DB_MANAGER,
-                ];
-
-                $locator = new ServiceLocator($pimple, $services);
-                $service = new Domain\Exporter\MediaExporter($locator);
-
-                return $service;
-            });
+            }
+        );
     }
 
-    public static function order() : int
+    /**
+     * inheritDoc
+     */
+    public static function order(): int
     {
         return 20;
     }

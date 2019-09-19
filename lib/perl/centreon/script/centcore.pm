@@ -779,7 +779,7 @@ sub sendExportFile($){
     }
 
     my $origin = $self->{cacheDir} . "/config/export/" . $id . "/*";
-    my $dest = $server_info->{'ns_ip_address'} . ":/var/lib/centreon/remote-data/";
+    my $dest = $server_info->{'ns_ip_address'} . ":" . $self->{cacheDir} . "/config/remote-data/";
 
     # Send data with rSync
     $self->{logger}->writeLogInfo('Export files on poller "' . $server_info->{name} . '" (' . $id . ')');
