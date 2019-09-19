@@ -489,7 +489,6 @@ function hostIsAuthorized($hostId, $groupId)
         $dbRes2->bindValue(':groupId', $groupId, \PDO::PARAM_INT);
         $dbRes2->bindValue(':hostId', $hostId, \PDO::PARAM_INT);
         $dbRes2->execute();
-
     } catch (\PDOException $e) {
         print "DB Error : " . $e->getMessage() . "<br />";
     }

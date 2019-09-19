@@ -591,22 +591,17 @@ try {
                     * get all Service groups
                     */
                     $dbResult3 = $pearDB->prepare(
-                        "SELECT servicegroup_relation.host_host_id, service_id
-                        FROM `acl_resources_sg_relations`, `servicegroup_relation`, `service`
+                        "SELECT servicegroup_relation.host_host_id, servicegroup_relation.service_service_id
+                        FROM `acl_resources_sg_relations`, `servicegroup_relation`
                         WHERE acl_res_id = :aclResId
-                        AND service.service_id = servicegroup_relation.service_service_id
                         AND servicegroup_relation.servicegroup_sg_id = acl_resources_sg_relations.sg_id
-                        AND service_activate = '1'
                         UNION
-                        SELECT servicegroup_relation.host_host_id, service_id
-                        FROM `acl_resources_sg_relations`,
-                            `servicegroup_relation`, `service`, `hostgroup`, `hostgroup_relation`
+                        SELECT servicegroup_relation.host_host_id, servicegroup_relation.service_service_id
+                        FROM `acl_resources_sg_relations`, `servicegroup_relation`, `hostgroup`, `hostgroup_relation`
                         WHERE acl_res_id = :aclResId
                         AND hostgroup.hg_id = servicegroup_relation.hostgroup_hg_id
                         AND servicegroup_relation.hostgroup_hg_id = hostgroup_relation.hostgroup_hg_id
-                        AND service.service_id = servicegroup_relation.service_service_id
-                        AND servicegroup_relation.servicegroup_sg_id = acl_resources_sg_relations.sg_id
-                        AND service_activate = '1'"
+                        AND servicegroup_relation.servicegroup_sg_id = acl_resources_sg_relations.sg_id"
                     );
                     $dbResult3->bindValue(':aclResId', $res2["acl_res_id"], \PDO::PARAM_INT);
                     $dbResult3->execute();
@@ -618,7 +613,7 @@ try {
                             $sgElem[$h["host_host_id"]] = [];
                             $tmpH[$h['host_host_id']] = 1;
                         }
-                        $sgElem[$h["host_host_id"]][$h["service_id"]] = 1;
+                        $sgElem[$h["host_host_id"]][$h["service_service_id"]] = 1;
                     }
 
                     $tmpH = getFilteredHostCategories($tmpH, $res2["acl_res_id"]);
