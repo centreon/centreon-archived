@@ -165,16 +165,19 @@ function hidePasswordInCommand($commandName, $hostId, $serviceId)
  */
 function getHostsTemplates($hostId)
 {
-    $pearDBCentreon = new CentreonDB();
+    global $pearDB;
 
     $query = "SELECT host_tpl_id FROM host_template_relation "
-        . "WHERE host_host_id = '" . $hostId . "'";
-    $res = $pearDBCentreon->query($query);
-    if ($res->numRows() == 0) {
+        . "WHERE host_host_id = :host_id";
+    $sth = $pearDB->prepare($query);
+    $sth->bindParam(':host_id', $hostId, PDO::PARAM_INT);
+    $sth->execute();
+
+    if ($sth->numRows() == 0) {
         return array($hostId);
     } else {
         $arrHostTpl = array();
-        while ($row = $res->fetchRow()) {
+        while ($row = $sth->fetchRow()) {
             $arrHostTpl = array_merge(
                 $arrHostTpl,
                 getHostsTemplates($row['host_tpl_id'])
