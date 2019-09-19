@@ -193,24 +193,25 @@ abstract class AbstractService extends AbstractObject
 
             $this->getContactCloseInheritance($service['service_id'], $serviceListing);
             $contactResult = '';
-            switch ((int)$this->notificationOption) {
-                case self::VERTICAL_NOTIFICATION:
-                    //check if the inheritance is enable
-                    if ((int)$service['contact_additive_inheritance'] === 1) {
-                        //use the first template found to start
-                        $this->getContactVerticalInheritance($serviceListing[0], $serviceListing);
-                    }
-                    break;
-                case self::CUMULATIVE_NOTIFICATION:
-                    // get all service / template inheritance
-                    $this->getCumulativeInheritance($service['service_id'], $serviceListing);
-                    break;
-                case self::CLOSE_NOTIFICATION:
-                default:
-                    //do nothing it's the starting point of other notification option
-                    break;
+            if (!empty($serviceListing)) {
+                switch ((int)$this->notificationOption) {
+                    case self::VERTICAL_NOTIFICATION:
+                        //check if the inheritance is enable
+                        if ((int)$service['contact_additive_inheritance'] === 1) {
+                            //use the first template found to start
+                            $this->getContactVerticalInheritance($serviceListing[0], $serviceListing);
+                        }
+                        break;
+                    case self::CUMULATIVE_NOTIFICATION:
+                        // get all service / template inheritance
+                        $this->getCumulativeInheritance($service['service_id'], $serviceListing);
+                        break;
+                    case self::CLOSE_NOTIFICATION:
+                    default:
+                        //do nothing it's the starting point of other notification option
+                        break;
+                }
             }
-
             if (!empty($serviceListing)) {
                 $contactResult = implode(',', $this->getInheritanceContact(array_unique($serviceListing)));
             }
@@ -321,26 +322,26 @@ abstract class AbstractService extends AbstractObject
 
             // get the first host (template) link to a contact
             $this->getContactGroupsCloseInheritance($service['service_id'], $serviceListing);
-
             $cgResult = '';
-            switch ((int)$this->notificationOption) {
-                case self::VERTICAL_NOTIFICATION:
-                    //check if the inheritance is enable
-                    if ((int)$service['cg_additive_inheritance'] === 1) {
-                        //use the first template found to start
-                        $this->getContactGroupsVerticalInheritance($serviceListing[0], $serviceListing);
-                    }
-                    break;
-                case self::CUMULATIVE_NOTIFICATION:
-                    // get all service / template inheritance
-                    $this->getCumulativeInheritance($service['service_id'], $serviceListing);
-                    break;
-                case self::CLOSE_NOTIFICATION:
-                default:
-                    //do nothing it's the starting point of other notification option
-                    break;
+            if (!empty($serviceListing)) {
+                switch ((int)$this->notificationOption) {
+                    case self::VERTICAL_NOTIFICATION:
+                        //check if the inheritance is enable
+                        if ((int)$service['cg_additive_inheritance'] === 1) {
+                            //use the first template found to start
+                            $this->getContactGroupsVerticalInheritance($serviceListing[0], $serviceListing);
+                        }
+                        break;
+                    case self::CUMULATIVE_NOTIFICATION:
+                        // get all service / template inheritance
+                        $this->getCumulativeInheritance($service['service_id'], $serviceListing);
+                        break;
+                    case self::CLOSE_NOTIFICATION:
+                    default:
+                        //do nothing it's the starting point of other notification option
+                        break;
+                }
             }
-
             if (!empty($serviceListing)) {
                 $cgResult = implode(',', $this->getInheritanceContactGroups(array_unique($serviceListing)));
             }
