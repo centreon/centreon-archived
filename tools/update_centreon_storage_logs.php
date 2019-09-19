@@ -248,10 +248,14 @@ function isInCompatibleMode(\PDO $db)
 $loadDataInfileQuery = <<<'QUERY'
 LOAD DATA INFILE '{{DATA_FILE}}'
 INTO TABLE logs 
-FIELDS TERMINATED BY ','
+FIELDS TERMINATED BY ',' ENCLOSED BY '"' ESCAPED BY '\\'
 LINES TERMINATED BY '\n'
-(ctime, host_id, host_name, instance_name, issue_id, msg_type, notification_cmd, 
-notification_contact, output, retry, service_description, service_id, status, type)
+(ctime, @host_id, host_name, instance_name, @issue_id, msg_type, notification_cmd, 
+notification_contact, output, retry, @service_description, @service_id, status, type)
+set host_id = if(@host_id = '', NULL, @host_id),
+    issue_id = if(@issue_id = '', NULL, @issue_id),
+    service_id = if(@service_id = '', NULL, @service_id),
+    service_description = if(@service_description = '', NULL, @service_description)
 QUERY;
 
 $mainExplanation = <<<TEXT
