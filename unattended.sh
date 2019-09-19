@@ -72,8 +72,8 @@ fi
 #
 
 print_step_begin "Centreon official repositories installation"
-rpm -q centos-release-scl > /dev/null 2>&1
 yum -q clean all
+rpm -q centos-release-scl > /dev/null 2>&1
 if [ "x$?" '!=' x0 ] ; then
   yum -q install -y centos-release-scl
   if [ "x$?" '!=' x0 ] ; then
@@ -96,7 +96,7 @@ print_step_end
 print_step_begin "Centreon installation"
 yum -q install -y centreon
 if [ "x$?" '!=' x0 ] ; then
-  error_and_exit "Coult nod install Centreon (package centreon)"
+  error_and_exit "Could not install Centreon (package centreon)"
 fi
 print_step_end
 
