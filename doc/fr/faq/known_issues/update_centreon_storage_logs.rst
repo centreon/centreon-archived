@@ -4,7 +4,7 @@
 Mise à jour de la table centreon_storage.logs
 =============================================
 
-L’objectif de cette procédure est de permettre la suppression de la colonne log_id de la table centreon_storage.logs.
+L’objectif de cette procédure est de permettre la modification de la colonne log_id de la table centreon_storage.logs sans interruption de service.
 
 Prérequis
 =========
@@ -67,6 +67,8 @@ Exécution en mode non-interactif (>10 millions d’enregistrements)
     indique que faut conserver les données de l’ancienne table centreon_storage.logs_old.
   --no-keep:
     indique que les données de l’ancienne table centreon_storage.logs_old peuvent être supprimées au fur et à mesure de la migration des données vers la nouvelle table centreon_storage.logs.
+  --temporary-path:
+    indique le dossier où seront stockés les fichiers temporaires.
 
 .. warning::
   Si vous décidez de conserver les données de l'ancienne table centreon_storage.logs n'oubliez pas de vérifier l'espace disque disponible.

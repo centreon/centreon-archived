@@ -29,4 +29,4 @@ Technical
 Known issue
 -----------
 
-* [logs] Correction de la limitation de la valeur maximale pour a clé primaire de la table centreon_storage.logs (:ref:`update_centreon_storage_logs`)
+* [logs] Correction de la limitation de la valeur maximale pour la clé primaire de la table centreon_storage.logs (:ref:`update_centreon_storage_logs`)

@@ -49,22 +49,29 @@ $isBrokerAlreadyStarted = isBrokerRunning();
 // Indicates whether this is a migration recovery
 $isMigrationRecovery = false;
 
-// We load start parameters
-if ($argc > 1) {
-    foreach ($argv as $parameter) {
-        if (substr($parameter, 0, 11) === '--password=') {
-            list(, $dbPassword) = explode('=', $parameter);
-        } elseif ($parameter === '--no-keep') {
-            $shouldDeleteOldData = true;
-        } elseif ($parameter === '--keep') {
-            $shouldDeleteOldData = false;
-        } elseif (substr($parameter, 0, 10) === '--continue') {
-            $firstRecoveryPartitionName = '';
-            if (strpos($parameter, '=', 0) !== false) {
-                list(, $firstRecoveryPartitionName) = explode('=', $parameter);
-            }
-            $isMigrationRecovery = true;
-        }
+$fileInfos = pathinfo(__FILE__);
+$lockFileName = $fileInfos['filename'] . '.lock';
+
+/**
+ * Path for the temporary files
+ */
+$temporaryPath = null;
+
+/**
+ * Check if the directory exist and add the character / at the end if it not exist
+ *
+ * @param string &$path Path to check
+ * @throws \Exception
+ */
+function checkTemporaryDirectory(&$path)
+{
+    if (is_dir($path) === false) {
+        throw new \Exception(
+            'This path for temporary files (' . $path . ') does not exist'
+        );
+    }
+    if (substr($path, -1, 1) != '/') {
+        $path .= '/';
     }
 }
 
@@ -181,7 +188,7 @@ function startBroker()
 function isBrokerRunning()
 {
     exec('systemctl status cbd', $output, $status);
-    return (int) $status === 0;
+    return ((int) $status) === 0;
 }
 
 /**
@@ -250,7 +257,7 @@ LOAD DATA INFILE '{{DATA_FILE}}'
 INTO TABLE logs 
 FIELDS TERMINATED BY ',' ENCLOSED BY '"' ESCAPED BY '\\'
 LINES TERMINATED BY '\n'
-(ctime, @host_id, host_name, instance_name, @issue_id, msg_type, notification_cmd, 
+(log_id, ctime, @host_id, host_name, instance_name, @issue_id, msg_type, notification_cmd, 
 notification_contact, output, retry, @service_description, @service_id, status, type)
 set host_id = if(@host_id = '', NULL, @host_id),
     issue_id = if(@issue_id = '', NULL, @issue_id),
@@ -272,18 +279,45 @@ Now we will continue to copy the data from the old table to the new one.\n\n
 TEXT;
 
 $dbUser = 'root';
-
-// We create a .lock file to avoid to start this script while it is already running
-$fileInfos = pathinfo(__FILE__);
-$lockFileName = $fileInfos['filename'] . '.lock';
-if (file_exists($lockFileName)) {
-    mySysLog('Process ' . __FILE__ . ' already running');
-    exit();
-}
-touch($lockFileName);
-
 $currentStep = 1;
+
 try {
+    // We load start parameters
+    if ($argc > 1) {
+        foreach ($argv as $parameter) {
+            if (substr($parameter, 0, 11) === '--password=') {
+                list(, $dbPassword) = explode('=', $parameter);
+            } elseif ($parameter === '--no-keep') {
+                $shouldDeleteOldData = true;
+            } elseif ($parameter === '--keep') {
+                $shouldDeleteOldData = false;
+            } elseif (substr($parameter, 0, 10) === '--continue') {
+                $firstRecoveryPartitionName = '';
+                if (strpos($parameter, '=', 0) !== false) {
+                    list(, $firstRecoveryPartitionName) = explode('=', $parameter);
+                }
+                $isMigrationRecovery = true;
+            } elseif (substr($parameter, 0, 17) === '--temporary-path=') {
+                list(, $temporaryPath) = explode('=', $parameter);
+            }
+        }
+    }
+
+    if (is_null($temporaryPath)) {
+        $temporaryPath = TEMP_DIRECTORY;
+        // We check if the default directory for temporary files exists
+        if (is_dir(TEMP_DIRECTORY) === false) {
+            $temporaryPath = __DIR__;
+        }
+        $path = askQuestion(
+            "Please to give the directory for temporary files [$temporaryPath]\n",
+            false
+        );
+        $temporaryPath = empty($path) ? $temporaryPath : $path;
+    }
+
+    checkTemporaryDirectory($temporaryPath);
+
     if (!isset($shouldDeleteOldData)) {
         // We display explanations according to the recovery mode
         printf($isMigrationRecovery ? $recoveryExplanation : $mainExplanation);
@@ -320,20 +354,25 @@ try {
         $dbPassword = askQuestion("Please enter the root password of database: ", true);
     }
 
-    try {
-        $dsn = sprintf(
-            "mysql:dbname=%s;host=%s;port=%d",
-            dbcstg,
-            $dbHost,
-            $dbPort
-        );
-        $db = new \PDO($dsn, $dbUser, $dbPassword);
-        $db->setAttribute(\PDO::MYSQL_ATTR_USE_BUFFERED_QUERY, false);
-        $db->setAttribute(\PDO::ATTR_AUTOCOMMIT, false);
-        $db->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
-    } catch (\PDOException $ex) {
-        throw new Exception("Can not connect to the database");
+    // We create a .lock file to avoid to start this script while it is already running
+    if (file_exists($lockFileName)) {
+        mySysLog('Process ' . __FILE__ . ' already running');
+        exit();
     }
+    touch($lockFileName);
+
+    // Connection to database
+    $dsn = sprintf(
+        "mysql:dbname=%s;host=%s;port=%d",
+        dbcstg,
+        $dbHost,
+        $dbPort
+    );
+    $db = new \PDO($dsn, $dbUser, $dbPassword);
+    $db->setAttribute(\PDO::MYSQL_ATTR_USE_BUFFERED_QUERY, false);
+    $db->setAttribute(\PDO::ATTR_AUTOCOMMIT, false);
+    $db->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
+
 
     // We will process partitions that are not empty
     $partitions = getNotEmptyPartitions($db, $isMigrationRecovery);
@@ -344,9 +383,6 @@ try {
          * First we check if this update is necessary by checking if the log_id
          * column is present
          */
-
-
-
         $statement = $db->prepare(
             "SELECT COUNT(*) AS is_present
             FROM information_schema.COLUMNS
@@ -379,9 +415,9 @@ try {
         $db->query("CREATE TABLE logs_new LIKE logs");
         $currentStep++;
 
-        // Next we delete the column log_id from the new logs table
-        $logs("Next we delete the column log_id from the new logs table");
-        $db->query("ALTER TABLE logs_new DROP COLUMN log_id");
+        // Next we change the column log_id from the new logs table into BIGINT
+        $logs("Next we modify the log_id column of the new logs table with the type BIGINT");
+        $db->query("ALTER TABLE logs_new MODIFY log_id BIGINT(20) NOT NULL AUTO_INCREMENT");
         $currentStep++;
 
         // Finally we rename the current table 'logs' to 'logs_old'
@@ -457,7 +493,6 @@ try {
 
         $nbrRecords = 0;
         while ($row = $result->fetch(\PDO::FETCH_ASSOC)) {
-            unset($row['log_id']);
             fputcsv($fp, $row);
             $nbrRecords++;
         }
