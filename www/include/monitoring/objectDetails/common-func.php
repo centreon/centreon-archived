@@ -109,14 +109,27 @@ function hidePasswordInCommand($commandName, $hostId, $serviceId)
     }
 
     /* Get custom macros from hosts and templates */
+    $arrHostTplID = getHostsTemplates($hostId);
     $query = "SELECT host_macro_name "
         . "FROM on_demand_macro_host "
         . "WHERE is_password = 1 "
-        . "AND host_host_id IN ('" . implode('\', \'', getHostsTemplates($hostId)) . "')";
-    $res = $pearDB->query($query);
+        . "AND host_host_id IN (";
+    for ($i = 0; $i < count($arrHostTplID); $i++) {
+        if ($i == 0) {
+            $query .= ':host_id' . $i;
+        } else {
+            $query .= ', :host_id' . $i;
+        }
+    }
+    $query .= ")";
+    $sth = $pearDB->prepare($query);
+    for ($i = 0; $i < count($arrHostTplID); $i++) {
+        $sth->bindParam(':host_id' . $i, $arrHostTplID[$i], PDO::PARAM_INT);
+    }
+    $sth->execute();
 
     $arrHostMacroPassword = array();
-    while ($row = $res->fetchRow()) {
+    while ($row = $sth->fetchRow()) {
         $arrHostMacroPassword = array_merge(
             $arrHostMacroPassword,
             array($row['host_macro_name'])
