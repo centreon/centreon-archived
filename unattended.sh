@@ -145,8 +145,8 @@ fi
 
 print_step_begin "Services configuration"
 if [ "x$has_systemd" '=' x1 ] ; then
-  systemctl enable httpd24-httpd mysqld rh-php71-php-fpm snmpd snmptrapd centcore centreontrapd cbd centengine centreon
-  systemctl restart httpd24-httpd mysqld rh-php71-php-fpm snmpd snmptrapd
+  systemctl enable httpd24-httpd mariadb rh-php71-php-fpm snmpd snmptrapd centcore centreontrapd cbd centengine centreon
+  systemctl restart httpd24-httpd mariadb rh-php71-php-fpm snmpd snmptrapd
   print_step_end
 else
   print_step_end "OK, systemd not detected, skipping"
