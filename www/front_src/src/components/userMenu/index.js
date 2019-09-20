@@ -123,7 +123,7 @@ class UserMenu extends Component {
                   </span>
                 </li>
                 {autologinkey &&
-                  <React.Fragment>
+                  <>
                     <button
                       className={styles["submenu-user-button"]}
                       onClick={this.onCopy}
@@ -142,7 +142,7 @@ class UserMenu extends Component {
                       ref={node => this.autologinNode = node}
                       value={autolink}
                     />
-                  </React.Fragment>
+                  </>
                 }
               </ul>
               <div className={styles["button-wrap"]}>
