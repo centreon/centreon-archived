@@ -173,8 +173,6 @@ obsess_over_host	             Whether or not obsess over host option is enabled
 
 passive_checks_enabled	             Whether or not passive checks are enabled
 
-process_perf_data	             Process performance data command
-
 retain_nonstatus_information         Whether or not there is non-status retention
 
 retain_status_information	     Whether or not there is status retention
@@ -204,11 +202,13 @@ Getparam
 In order to get specific parameters on a host configuration, use the **GETPARAM** action::
 
   [root@centreon ~]# ./centreon -u admin -p centreon -o HOST -a getparam -v "test;alias"
-  alias : test
-  [root@centreon ~]# ./centreon -u admin -p centreon -o HOST -a setparam -v "test;alias|alia|timezone"
-  alias : test
-  timezone : Europe/Berlin
+  alias
+  test
+  [root@centreon ~]# ./centreon -u admin -p centreon -o HOST -a getparam -v "test;alias|alia|timezone"
   Object not found:alia
+  [root@centreon ~]# ./centreon -u admin -p centreon -o HOST -a getparam -v "test;alias|address|timezone"
+  alias;address;timezone
+  test;192.168.56.101;Europe/Berlin
 
 You may edit the following parameters:
 
@@ -315,7 +315,7 @@ In order to set the instance from which a host will be monitored, use the **SETI
   [root@centreon ~]# ./centreon -u admin -p centreon -o HOST -a setinstance -v "Centreon-Server;Poller 1"
 
 Showinstance
------------
+------------
 
 To determine the instance from which a host will be monitored, use the **SHOWINSTANCE** action::
 

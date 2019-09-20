@@ -2,6 +2,9 @@
 Notes de version
 ################
 
+.. warning::
+    **Centreon 19.10 est actuellement en version bêta, n'installez pas cette version sur votre environnement de production !!!**
+
 Vous trouverez dans ce chapitre toutes les notes de montée de version vous permettant de connaître la liste des changements intégrés dans chaque version de Centreon Web.
 
 Voici les différentes notes de versions pour les versions majeures :
@@ -9,6 +12,7 @@ Voici les différentes notes de versions pour les versions majeures :
 .. toctree::
     :maxdepth: 1
 
+    centreon-19.10/index.rst
     centreon-19.04/index.rst
     centreon-18.10/index.rst
     centreon-2.8/index.rst

@@ -48,15 +48,15 @@ include_once _CENTREON_PATH_ . "/www/class/centreonDB.class.php";
 
 /*
 ** Get and check initial Centreon version.
-** Should be >= 2.4.0.
+** Should be >= 2.8.0-beta1.
 */
 $db = new CentreonDB();
 $res = $db->query("SELECT `value` FROM `informations` WHERE `key` = 'version'");
 $row = $res->fetchRow();
 $current = $row['value'];
 $_SESSION['CURRENT_VERSION'] = $current;
-if (version_compare($current, '2.4.0') < 0) {
-    $troubleshootTxt1 = _('Upgrade to this release requires Centreon >= 2.4.0.');
+if (version_compare($current, '2.8.0-beta1') < 0) {
+    $troubleshootTxt1 = _('Upgrade to this release requires Centreon >= 2.8.0-beta1.');
     $troubleshootTxt2 = sprintf(_('Your current version is %s.'), $current);
     $troubleshootTxt3 = _('Please upgrade to an intermediate release (ie. 2.8.x) first.');
     $contents .= sprintf(

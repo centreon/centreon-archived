@@ -91,12 +91,16 @@ if (file_exists("./install/setup.php")) {
 $basePath = '/' . trim(explode('index.php', $_SERVER['REQUEST_URI'])[0], "/") . '/';
 $indexHtmlPath = './index.html';
 $indexHtmlContent = file_get_contents($indexHtmlPath);
-$indexHtmlContent = preg_replace(
-    '/(.*<base\shref=").*(">)/',
-    '${1}' . $basePath . '${2}',
-    $indexHtmlContent
-);
-file_put_contents($indexHtmlPath, $indexHtmlContent);
+
+// update base path only if it has changed
+if (!preg_match('/.*<base\shref="' . preg_quote($basePath, '/') . '">/', $indexHtmlContent)) {
+    $indexHtmlContent = preg_replace(
+        '/(.*<base\shref=").*(">)/',
+        '${1}' . $basePath . '${2}',
+        $indexHtmlContent
+    );
+    file_put_contents($indexHtmlPath, $indexHtmlContent);
+}
 
 /*
  * Set PHP Session Expiration time

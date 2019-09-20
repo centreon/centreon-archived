@@ -61,6 +61,11 @@
         {if $o == "a" || $o == "c"}
             <tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">{$form.required._note}</td></tr>
         {/if}
+        {if is_array($modules_template)}
+            {foreach item=module_template from=$modules_template}
+                {include file=$module_template}
+            {/foreach}
+        {/if}
     </table>
     </div>
     <div id='tab2' class='tab'>

@@ -29,7 +29,6 @@ SELECT
     t.*
 FROM traps_service_relation AS t
 WHERE t.service_id IN ({$sqlFilter}){$sqlFilterList}
-GROUP BY t.tsr_id
 SQL;
         $stmt = $this->db->prepare($sql);
         $stmt->execute();

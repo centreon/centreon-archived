@@ -76,30 +76,27 @@ $template = filter_var(
     FILTER_VALIDATE_INT
 );
 
-$status = -1;
+$status = filter_var(
+    $_POST["status"] ?? $_GET["status"] ?? 0,
+    FILTER_VALIDATE_INT
+);
 
-if (isset($_POST['searchH']) || isset($_GET['searchH'])) {
+if (isset($_POST['search']) || isset($_GET['search'])) {
     //saving chosen filters values
     $centreon->historySearch[$url] = array();
-    $centreon->historySearch[$url]["search"] = $search;
+    $centreon->historySearch[$url]["searchH"] = $search;
     $centreon->historySearch[$url]["poller"] = $poller;
     $centreon->historySearch[$url]["hostgroup"] = $hostgroup;
     $centreon->historySearch[$url]["template"] = $template;
-    $status = $_POST["status"] ?? '';
     $centreon->historySearch[$url]["status"] = $status;
 } else {
     //restoring saved values
-    $search = $centreon->historySearch[$url]['search'] ?? null;
+    $search = $centreon->historySearch[$url]['searchH'] ?? null;
     $poller = $centreon->historySearch[$url]["poller"] ?? 0;
     $hostgroup = $centreon->historySearch[$url]["hostgroup"] ?? 0;
     $template = $centreon->historySearch[$url]["template"] ?? 0;
-    if (isset($centreon->historySearch[$url]["status"])) {
-        $status = $centreon->historySearch[$url]["status"];
-    }
+    $status = $centreon->historySearch[$url]["status"] ?? 0;
 }
-
-// Security fix
-$status = (int)(($status != '') ? $status : -1);
 
 // set object history
 $centreon->poller = $poller;
@@ -107,19 +104,11 @@ $centreon->hostgroup = $hostgroup;
 $centreon->template = $template;
 
 // Status Filter
-$statusFilter = "<option value=''" .
-    (($status == -1) ? " selected" : "") . "> </option>";
-
-$statusFilter .= "<option value='1'" .
-    (($status == 1) ? " selected" : "") . ">" . _("Enabled") . "</option>";
-
-$statusFilter .= "<option value='0'" .
-    (($status == 0) ? " selected" : "") . ">" . _("Disabled") . "</option>";
-
+$statusFilter = array(1 => _("Disabled"), 2 => _("Enabled"));
 $sqlFilterCase = '';
-if ($status == 1) {
+if ($status == 2) {
     $sqlFilterCase = " AND host_activate = '1' ";
-} elseif ($status == 0) {
+} elseif ($status == 1) {
     $sqlFilterCase = " AND host_activate = '0' ";
 }
 
@@ -194,9 +183,66 @@ $form = new HTML_QuickFormCustom('select_form', 'POST', "?p={$p}");
 // Different style between each lines
 $style = 'one';
 
+//select2 HG
+$hostgroupsRoute = './api/internal.php?object=centreon_configuration_hostgroup&action=list';
+$attrHostgroups = array(
+    'datasourceOrigin' => 'ajax',
+    'availableDatasetRoute' => $hostgroupsRoute,
+    'multiple' => false,
+    'defaultDataset' => $hostgroup,
+    'linkedObject' => 'centreonHostgroups'
+);
+$form->addElement('select2', 'hostgroup', '', array(), $attrHostgroups);
+
+//select2 Poller
+$pollerRoute = './api/internal.php?object=centreon_configuration_poller&action=list';
+$attrPoller = array(
+    'datasourceOrigin' => 'ajax',
+    'availableDatasetRoute' => $pollerRoute,
+    'multiple' => false,
+    'defaultDataset' => $poller,
+    'linkedObject' => 'centreonInstance'
+);
+$form->addElement('select2', 'poller', "", array(), $attrPoller);
+
+
+//select2 Host Template
+$hostTplRoute = './api/internal.php?object=centreon_configuration_hosttemplate&action=list';
+$attrHosttemplates = array(
+    'datasourceOrigin' => 'ajax',
+    'availableDatasetRoute' => $hostTplRoute,
+    'multiple' => false,
+    'defaultDataset' => $template,
+    'linkedObject' => 'centreonHosttemplates'
+);
+$form->addElement('select2', 'template', "", array(), $attrHosttemplates);
+
+//select2 Host Status
+$attrHostStatus = null;
+if ($status) {
+    $statusDefault = array($statusFilter[$status] => $status);
+    $attrHostStatus = array(
+        'defaultDataset' => $statusDefault
+    );
+}
+$form->addElement('select2', 'status', "", $statusFilter, $attrHostStatus);
+
+$attrBtnSuccess = array(
+    "class" => "btc bt_success",
+    "onClick" => "window.history.pushState('', '', '?p=" . $p . "');"
+);
+$subS = $form->addElement('submit', 'SearchB', _("Search"), $attrBtnSuccess);
+
 /*
  * Select hosts
  */
+$attrBtnSuccess = array(
+    "class" => "btc bt_success",
+    "onClick" => "window.history.replaceState('', '', '?p=" . $p . "');"
+);
+$form->addElement('submit', 'SearchB', _("Search"), $attrBtnSuccess);
+
+//Select hosts
 $aclFrom = '';
 $aclCond = '';
 if (!$centreon->user->admin) {
@@ -264,6 +310,7 @@ $search = tidySearchKey($search, $advanced_search);
 // Fill a tab with a multidimensional Array we put in $tpl
 $elemArr = array();
 $search = str_replace('\_', "_", $search);
+
 for ($i = 0; $host = $dbResult->fetch(); $i++) {
     if (!isset($poller)
         || $poller == 0
@@ -276,12 +323,12 @@ for ($i = 0; $host = $dbResult->fetch(); $i++) {
 
         if ($host["host_activate"]) {
             $moptions = "<a href='main.php?p=$p&host_id={$host['host_id']}"
-            . "&o=u&limit=$limit&num=$num&searchH=$search'>"
+                . "&o=u&limit=$limit&num=$num&searchH=$search'>"
                 . "<img src='img/icons/disabled.png' class='ico-14 margin_right' "
                 . "border='0' alt='" . _("Disabled") . "'></a>";
         } else {
             $moptions = "<a href='main.php?p=$p&host_id={$host['host_id']}"
-            . "&o=s&limit=$limit&num=$num&searchH=$search'>"
+                . "&o=s&limit=$limit&num=$num&searchH=$search'>"
                 . "<img src='img/icons/enabled.png' class='ico-14 margin_right' "
                 . "border='0' alt='" . _("Enabled") . "'></a>";
         }
@@ -352,7 +399,7 @@ for ($i = 0; $host = $dbResult->fetch(); $i++) {
             "RowMenu_badge" => $host["host_activate"] ? "service_ok" : "service_critical",
             "RowMenu_options" => $moptions
         );
-        
+
         $style != "two"
             ? $style = "two"
             : $style = "one";
@@ -372,11 +419,11 @@ $tpl->assign(
 
 // Toolbar select
 ?>
-<script type="text/javascript">
-    function setO(_i) {
-        document.forms['form'].elements['o'].value = _i;
-    }
-</script>
+    <script type="text/javascript">
+        function setO(_i) {
+            document.forms['form'].elements['o'].value = _i;
+        }
+    </script>
 <?php
 foreach (array('o1', 'o2') as $option) {
     $attrs1 = array(
@@ -417,51 +464,11 @@ foreach (array('o1', 'o2') as $option) {
 }
 
 $tpl->assign('limit', $limit);
+$tpl->assign("searchH", $search);
 
 $renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 $form->accept($renderer);
 
-$tpl->assign(
-    "search",
-    stripslashes(
-        str_replace('"', "&quot;", $search)
-    )
-);
-
-// create Poller Select
-$options = "<option value='0'>" . _("All Pollers") . "</option>";
-foreach ($nagios_server as $key => $name) {
-    $options .= "<option value='$key' "
-        . (($poller == $key) ? 'selected' : "")
-        . ">$name</option>";
-}
-
-$tpl->assign("poller", $options);
-unset($options);
-
-$options = "<option value='0'></options>";
-foreach ($hgs as $hgId => $hgName) {
-    $options .= "<option value='" . $hgId . "' "
-        . (($hostgroup == $hgId) ? 'selected' : "")
-        . ">" . $hgName . "</option>";
-}
-
-$tpl->assign('hostgroup', $options);
-unset($options);
-
-$dbResult = $pearDB->query(
-    "SELECT host_id, host_name FROM host WHERE host_register = '0' ORDER BY host_name"
-);
-
-$options = "<option value='0'></options>";
-while ($data = $dbResult->fetch()) {
-    $options .= "<option value='" . $data["host_id"] . "' "
-        . (($template == $data["host_id"]) ? 'selected' : "")
-        . ">" . $data["host_name"] . "</option>";
-}
-
-$tpl->assign('template', $options);
-unset($options);
 
 $tpl->assign('form', $renderer->toArray());
 $tpl->assign('Hosts', _("Name"));
@@ -469,8 +476,4 @@ $tpl->assign('Poller', _("Poller"));
 $tpl->assign('Hostgroup', _("Hostgroup"));
 $tpl->assign('HelpServices', _("Display all Services for this host"));
 $tpl->assign('Template', _("Template"));
-$tpl->assign('Search', _("Search"));
-
-$tpl->assign("StatusFilter", $statusFilter);
-
 $tpl->display("listHost.ihtml");

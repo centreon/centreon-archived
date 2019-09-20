@@ -209,6 +209,10 @@ class CentreonGMT
             $gmt = $this->myGMT;
         }
 
+        if (empty($gmt)) {
+            $gmt = date_default_timezone_get();
+        }
+
         if (isset($date) && isset($gmt)) {
             $sDate = new DateTime();
             $sDate->setTimestamp($date);

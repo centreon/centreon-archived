@@ -16,7 +16,12 @@
     <table class="ListTable">
         <thead>
             <tr class="ListHeader">
-                <td class="ListColHeaderPicker"><input type="checkbox" name="checkall" onclick="checkUncheckAll(this);"/></td>
+                <td class="ListColHeaderPicker">
+                    <div class="md-checkbox md-checkbox-inline">
+                        <input type="checkbox" id="checkall" name="checkall" onclick="checkUncheckAll(this);"/>
+                        <label class="empty-label" for="checkall"></label>
+                    </div>
+                </td>
                 <td class="ListColHeaderLeft">Name</td>
                 <td class="ListColHeaderLeft">Description</td>
                 <td class="ListColHeaderLeft">Command Line</td>

@@ -672,21 +672,36 @@ msgstr ""
 "Esta opción debe habilitarse en un entorno seguro dedicado a la autenticación SSO. \n"
 "El acceso directo a la interfaz web de Centreon para usuarios debe estar deshabilitado."
 
+msgid "Enable login with Keycloak."
+msgstr "Habilitar inicio de sesión con Keycloak"
+
+msgid "Authentication can be solely based on Keycloak or it can work with both Keycloak and local authentication systems."
+msgstr "La autenticación puede basarse únicamente en Keycloak o puede funcionar tanto con Keycloak como con sistemas de autenticación locales."
+
+msgid "IP/DNS of trusted clients. Use coma as delimiter in case of multiple clients."
+msgstr "IP/DNS de clientes de confianza. Use una coma como delimitador en el caso de varios clientes."
+
+msgid "IP/DNS of blacklist clients. Use coma as delimiter in case of multiple clients."
+msgstr "IP/DNS de clientes cerrados. Use una coma como delimitador en el caso de varios clientes."
+
+msgid "Your Keycloak server url (with \"/auth\")."
+msgstr "Su URL del servidor de Keycloak (con \"/auth\")."
+
+msgid "Your Keycloak redirect url (this server)."
+msgstr "Su URL de redirección de Keycloak (este servidor)."
+
+msgid "Your Keycloak Realm name."
+msgstr "Tu nombre de Dominio Keycloak."
+
+msgid "Your Keycloak client ID."
+msgstr "Su identificación de cliente de Keycloak."
+
+msgid "Your Keycloak client secret."
+msgstr "Su secreto de cliente de Keycloak"
+
 #: centreon-web/www/include/Administration/parameters/general/help.php:80
 msgid "Authentication can be solely based on SSO or it can work with both SSO and local authentication systems."
 msgstr "La autenticación solo puede basarse en SSO o puede funcionar tanto con SSO como con un sistema de autenticación local."
-
-#: centreon-web/www/include/Administration/parameters/general/help.php:84
-msgid "IP/DNS of trusted clients. Use coma as delimiter in case of multiple clients."
-msgstr ""
-"Clientes de confianza IP / DNS. \n"
-"Use comas como separador para múltiples clientes"
-
-#: centreon-web/www/include/Administration/parameters/general/help.php:88
-msgid "IP/DNS of blacklist clients. Use coma as delimiter in case of multiple clients."
-msgstr ""
-"Clientes de la lista negra de IP / DNS. \n"
-"Use comas como separador para múltiples clientes"
 
 #: centreon-web/www/include/Administration/parameters/general/help.php:92
 msgid "The header variable that will be used as login. i.e: $_SERVER['HTTP_AUTH_USER']"
@@ -766,8 +781,12 @@ msgid "Init script for broker daemon."
 msgstr "Script de inicialización de broker."
 
 #: centreon-web/www/include/Administration/parameters/engine/help.php:35
-msgid "Mailer binary with complete path."
-msgstr "Ruta completa del ejecutable de envío de correos."
+msgid ""
+"Mailer binary with complete path. This define the @MAILER@ macro used in "
+"notification commands."
+msgstr ""
+"Ruta completa del ejecutable de envío de correos. Esto define la macro "
+"@MAILER@ utilizada en los comandos de notificación."
 
 #: centreon-web/www/include/Administration/parameters/engine/help.php:43
 msgid "Maximum number of hosts to show in the Tactical Overview page."
@@ -2901,17 +2920,21 @@ msgstr ""
 
 #: centreon-web/www/include/configuration/configObject/host/help.php:37
 msgid ""
-"Define the number of \"time units\" to wait before sending out the first problem notification when this host enters a non-UP state. With the default time unit of 60s, this number will mean multiples of 1 minute. If you set this value to 0, monitoring engine will start "
-"sending out notifications immediately."
+"Define the number of \"time units\" to wait before sending out the first problem notification when this "
+"host enters a non-UP state. "
+"With the default time unit of 60s, this number will mean multiples of 1 minute. "
+"If you set this value to 0, monitoring engine will start sending out notifications immediately."
 msgstr ""
 "Establece el número de unidades de tiempo que deben transcurrir antes de enviar la primera notificación de un problema en el host que resulta en un estado no correcto. \n"
 "Con la unidad predeterminada de 60, este número será un múltiplo de 1 minuto. \n"
 "Si este valor es 0, el programador enviará una notificación tan pronto como aparezca el problema."
 
-#: centreon-web/www/include/configuration/configObject/host/help.php:38 centreon-web/www/include/configuration/configObject/service/help.php:70
+#: centreon-web/www/include/configuration/configObject/host/help.php:38
 msgid ""
-"Define the number of \"time units\" to wait before sending out the recovery notification when this host enters a non-UP state. The default time unit is 0 (this number will mean multiples of 1 minute). If you set this value to 0, monitoring engine will start sending "
-"out notifications immediately."
+"Define the number of \"time units\" to wait before sending out the recovery notification when this "
+"host enters an UP state. "
+"With the default time unit of 60s, this number will mean multiples of 1 minute. "
+"If you set this value to 0, monitoring engine will start sending out notifications immediately."
 msgstr ""
 "Establece el número de \"unidades de tiempo\" que deben transcurrir antes de enviar la primera notificación sobre la recuperación debido a un estado de problema. \n"
 "Con la unidad predeterminada de 60, este número significará un múltiplo de 1 minuto. \n"
@@ -4278,8 +4301,8 @@ msgid "Select the poller you would like to interact with."
 msgstr "Seleccione un colector con el que desea interactuar."
 
 #: centreon-web/www/include/configuration/configGenerate/help.php:4
-msgid "Generates configuration files and stores them in centreon/filesGeneration directory."
-msgstr "Genere los archivos de configuración y guárdelos en la carpeta centreon / filesGeneration."
+msgid "Generates configuration files and stores them in cache directory."
+msgstr "Genere los archivos de configuración y guárdelos en la carpeta cache."
 
 #: centreon-web/www/include/configuration/configGenerate/help.php:5
 msgid "Runs the scheduler debug mode."
@@ -4296,3 +4319,28 @@ msgstr "Método de recarga de la configuración: reiniciar, recargar o comando e
 #: centreon-web/www/include/configuration/configGenerate/help.php:8
 msgid "Run the commands that are defined in the poller configuration page (Configuration > Centreon > Poller > Post-Restart command)."
 msgstr "Ejecuta el comando definido en la configuración del recopilador (Configuración> Centreon> Poller> Comando posterior al reinicio)."
+
+msgid ""
+"What kind of method is needed to reach the Remote Server, HTTP or HTTPS?"
+msgstr ""
+
+msgid "On which TCP port is listening the Remote Server?"
+msgstr ""
+
+msgid ""
+"If checked, it won't check the validity of the SSL certificate of the Remote Server."
+msgstr ""
+""
+
+msgid "If checked, it won't  use the proxy configured in "
+"'Administration > Parameters > Centreon UI' to connect to the Remote Server."
+msgstr ""
+""
+
+#: /www/include/Administration/parameters/ldap/help.po
+#~ msgid "This field is used to specify the interval, in hours, between two LDAP data synchronization. By default 1 hour."
+#~ msgstr ""
+
+#: /www/include/Administration/parameters/ldap/help.po
+#~ msgid "If enabled, a user LDAP synchronization will be performed on login to update contact's data and calculate new Centreon ACLs."
+#~ msgstr ""

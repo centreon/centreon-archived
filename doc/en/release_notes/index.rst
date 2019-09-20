@@ -2,6 +2,9 @@
 Release notes
 #############
 
+.. warning::
+    **Centreon 19.10 is currently in beta version, do not install this version on your production environment !!!**
+
 You can find in this chapter all changelogs that give you knowledges about the changes integrated into each releases of Centreon Web.
 
 Please find here the releases notes of the last major versions :
@@ -9,6 +12,7 @@ Please find here the releases notes of the last major versions :
 .. toctree::
     :maxdepth: 1
 
+    centreon-19.10/index.rst
     centreon-19.04/index.rst
     centreon-18.10/index.rst
     centreon-2.8/index.rst

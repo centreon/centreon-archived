@@ -94,6 +94,7 @@ sub init {
     $self->{cmdFile} = $self->{centreon_config}->{VarLib} . "/centcore.cmd";
     $self->{cmdDir} = $self->{centreon_config}->{VarLib} . "/centcore/";
     $self->{centreonDir} = $self->{centreon_config}->{CentreonDir};
+    $self->{cacheDir} = $self->{centreon_config}->{CacheDir};
 }
 
 sub set_signal_handlers {
@@ -514,12 +515,14 @@ sub sendExternalCommand($$){
                 $totalCount++;
 
                 if ($count >= 200 || $totalCount == $countCommands) {
-                    if (defined($server_info->{remote_id}) && $server_info->{remote_id} != 0 && $self->{instance_mode} ne "remote") {
+                    if (defined($server_info->{remote_id}) && $server_info->{remote_id} != 0
+                        && $self->{instance_mode} ne "remote" && $server_info->{remote_server_centcore_ssh_proxy} == 1
+                    ) {
                         my $remote_server = $self->getServerConfig($server_info->{remote_id});
                         $cmd_line =~ s/^\s+|\s+$//g;
                         $cmd2 = "$self->{ssh} -q " . $remote_server->{ns_ip_address} . " -p $port "
                             . "\"$self->{echo} 'EXTERNALCMD:$id:" . $cmd_line . "' "
-                            . "> " . $self->{cmdDir} . time() . "-sendcmd\"";
+                            . ">> " . $self->{cmdDir} . time() . "-sendcmd\"";
                         $self->{logger}->writeLogInfo(
                             "Send external command using Remote Server: " . $remote_server->{ns_ip_address}
                         );
@@ -625,7 +628,9 @@ sub sendConfigFile($){
     }
 
     # Send configuration for Centreon Engine
-    if (defined($server_info->{remote_id}) && $server_info->{remote_id} != 0 && $self->{instance_mode} ne "remote") {
+    if (defined($server_info->{remote_id}) && $server_info->{remote_id} != 0
+        && $self->{instance_mode} ne "remote" && $server_info->{remote_server_centcore_ssh_proxy} == 1
+    ) {
         $remote_server = $self->getServerConfig($server_info->{remote_id});
         $self->{logger}->writeLogInfo(
             'Send Centreon Engine config files ' .
@@ -633,11 +638,11 @@ sub sendConfigFile($){
             'using remote server "' . $remote_server->{name} . '" (' . $remote_server->{id} . ')'
         );
 
-        $origin = $self->{centreonDir} . "/filesGeneration/engine/" . $id;
-        $dest = $remote_server->{'ns_ip_address'} . ":" . $self->{centreonDir} . "/filesGeneration/engine";
+        $origin = $self->{cacheDir} . "/config/engine/" . $id;
+        $dest = $remote_server->{'ns_ip_address'} . ":" . $self->{cacheDir} . "/config/engine";
         $cmd = "$self->{scp} -r -P $port $origin $dest 2>&1";
     } else {
-        $origin = $self->{centreonDir} . "/filesGeneration/engine/" . $id . "/*";
+        $origin = $self->{cacheDir} . "/config/engine/" . $id . "/*";
         $dest = $server_info->{'ns_ip_address'} . ":$cfg_dir";
 
         # Send data with SCP
@@ -663,10 +668,10 @@ sub sendConfigFile($){
     }
 
     # Send configuration for Centreon Broker
-    if (-e $self->{centreonDir}  . "/filesGeneration/broker/" . $id) {
+    if (-e $self->{cacheDir}  . "/config/broker/" . $id) {
         # Check availability of broker files.
         my $count = 0;
-        opendir(my $dh, $self->{centreonDir} . "/filesGeneration/broker/" . $id);
+        opendir(my $dh, $self->{cacheDir} . "/config/broker/" . $id);
         while(readdir $dh) {
             $count++;
         }
@@ -674,15 +679,17 @@ sub sendConfigFile($){
 
         if ($count > 2) {
             if ($server_info->{localhost} == 0) {
-                if (defined($server_info->{remote_id}) && $server_info->{remote_id} != 0 && $self->{instance_mode} ne "remote") {
+                if (defined($server_info->{remote_id}) && $server_info->{remote_id} != 0
+                    && $self->{instance_mode} ne "remote" && $server_info->{remote_server_centcore_ssh_proxy} == 1
+                ) {
                     $remote_server = $self->getServerConfig($server_info->{remote_id});
                     $self->{logger}->writeLogInfo(
                         'Send Centreon Broker config files ' .
                         'on poller "' . $server_info->{name} . '" (' . $server_info->{id} . ') ' .
                         'using remote server "' . $remote_server->{name} . '" (' . $remote_server->{id} . ')'
                     );
-                    $origin = $self->{centreonDir} . "/filesGeneration/broker/" . $id;
-                    $dest = $remote_server->{'ns_ip_address'} . ":" . $self->{centreonDir} . "/filesGeneration/broker";
+                    $origin = $self->{cacheDir} . "/config/broker/" . $id;
+                    $dest = $remote_server->{'ns_ip_address'} . ":" . $self->{cacheDir} . "/config/broker";
                     $cmd = "$self->{scp} -r -P $port $origin $dest 2>&1";
                 } else {
                     $self->{logger}->writeLogInfo(
@@ -690,7 +697,7 @@ sub sendConfigFile($){
                         'on poller "' . $server_info->{name} . '" (' . $server_info->{id} . ')'
                     );
                     $cfg_dir = $server_info->{'centreonbroker_cfg_path'};
-                    $origin = $self->{centreonDir} . "/filesGeneration/broker/" . $id . "/*.*";
+                    $origin = $self->{cacheDir} . "/config/broker/" . $id . "/*.*";
                     $dest = $server_info->{ns_ip_address}.":$cfg_dir";
                     $cmd = "$self->{scp} -P $port $origin $dest 2>&1";
                 }
@@ -722,13 +729,15 @@ sub sendConfigFile($){
     }
 
     # send command on remote server to export configuration
-    if (defined($server_info->{remote_id}) && $server_info->{remote_id} != 0 && $self->{instance_mode} ne "remote") {
+    if (defined($server_info->{remote_id}) && $server_info->{remote_id} != 0
+        && $self->{instance_mode} ne "remote" && $server_info->{remote_server_centcore_ssh_proxy} == 1
+    ) {
         $remote_server = $self->getServerConfig($server_info->{remote_id});
         $self->{logger}->writeLogDebug(
             'Send command on Remote Server "' . $remote_server->{name} . '" to export configuration'
         );
         $cmd = "$self->{ssh} -p $port " . $remote_server->{'ns_ip_address'}  . " "
-            . "'echo \"SENDCFGFILE:" . $id . "\" > $self->{cmdDir}/" . time() . "-sendcmd'";
+            . "'echo \"SENDCFGFILE:" . $id . "\" >> $self->{cmdDir}/" . time() . "-sendcmd'";
         ($lerror, $stdout, $return_code) = centreon::common::misc::backtick(
             command => $cmd,
             logger => $self->{logger},
@@ -761,21 +770,21 @@ sub sendExportFile($){
         return;
     }
 
-    unless (-e $self->{centreonDir}  . "filesGeneration/export/" . $id) {
+    unless (-e $self->{cacheDir}  . "/config/export/" . $id) {
         $self->{logger}->writeLogInfo(
             "Export directory is empty for poller " . $server_info->{name} . " " .
-            $self->{centreonDir} . "filesGeneration/export/$id."
+            $self->{cacheDir} . "/config/export/$id."
         );
         return;
     }
 
-    my $origin = $self->{centreonDir} . "/filesGeneration/export/" . $id . "/*";
-    my $dest = $server_info->{'ns_ip_address'} . ":/var/lib/centreon/remote-data/";
+    my $origin = $self->{cacheDir} . "/config/export/" . $id . "/*";
+    my $dest = $server_info->{'ns_ip_address'} . ":" . $self->{cacheDir} . "/config/remote-data/";
 
     # Send data with rSync
     $self->{logger}->writeLogInfo('Export files on poller "' . $server_info->{name} . '" (' . $id . ')');
 
-    $cmd = "$self->{rsync} -ra --port=$port $origin $dest 2>&1";
+    $cmd = "$self->{rsync} -ra -e '$self->{ssh} -o port=$port' $origin $dest 2>&1";
     ($lerror, $stdout, $return_code) = centreon::common::misc::backtick(
         command => $cmd,
         logger => $self->{logger},
@@ -817,10 +826,12 @@ sub initEngine($$$){
 
     if (defined($conf->{ns_ip_address}) && $conf->{ns_ip_address}) {
         # Launch command
-        if (defined($conf->{remote_id}) && $conf->{remote_id} != 0 && $self->{instance_mode} ne "remote") {
+        if (defined($conf->{remote_id}) && $conf->{remote_id} != 0
+            && $self->{instance_mode} ne "remote" && $conf->{remote_server_centcore_ssh_proxy} == 1
+        ) {
             my $remote_server = $self->getServerConfig($conf->{remote_id});
             $action =~ s/^\s+|\s+$//g;
-            $cmd = "$self->{ssh} -p $port " . $remote_server->{ns_ip_address} . " 'echo \"$action\"  > $self->{cmdDir}" . time() . "-sendcmd'";
+            $cmd = "$self->{ssh} -p $port " . $remote_server->{ns_ip_address} . " 'echo \"$action\" >> $self->{cmdDir}" . time() . "-sendcmd'";
             $self->{logger}->writeLogInfo(
                 'Send command "' . $action . '" to Centreon Engine ' .
                 'on poller "' . $conf->{name} . '" (' . $conf->{id} . ') ' .
@@ -865,7 +876,9 @@ sub syncTraps($) {
         my $remote_server;
 
         if ($id != 0 && $ns_server->{localhost} == 0) {
-            if (defined($ns_server->{remote_id}) && $ns_server->{remote_id} != 0 && $self->{instance_mode} ne "remote") {
+            if (defined($ns_server->{remote_id}) && $ns_server->{remote_id} != 0
+                && $self->{instance_mode} ne "remote" && $ns_server->{remote_server_centcore_ssh_proxy} == 1
+            ) {
                 $remote_server = $self->getServerConfig($ns_server->{remote_id});
                 $port = checkSSHPort($remote_server->{ssh_port});
                 $cmd = "$self->{scp} -r -P $port /etc/snmp/centreon_traps/$id/centreontrapd.sdb $remote_server->{'ns_ip_address'}:/etc/snmp/centreon_traps/";
@@ -882,8 +895,10 @@ sub syncTraps($) {
                 $self->{logger}->writeLogInfo("Result : $stdout");
             }
 
-            if (defined($ns_server->{remote_id}) && $ns_server->{remote_id} != 0 && $self->{instance_mode} ne "remote") {
-                $cmd = "$self->{ssh} " . $remote_server->{'ns_ip_address'}  . " 'echo \"SYNCTRAP:" . $id . "\" > $self->{cmdDir}/" . time() . "-sendcmd'";
+            if (defined($ns_server->{remote_id}) && $ns_server->{remote_id} != 0
+                && $self->{instance_mode} ne "remote" && $ns_server->{remote_server_centcore_ssh_proxy} == 1
+            ) {
+                $cmd = "$self->{ssh} -p $port " . $remote_server->{'ns_ip_address'}  . " 'echo \"SYNCTRAP:" . $id . "\" >> $self->{cmdDir}/" . time() . "-sendcmd'";
                 ($lerror, $stdout) = centreon::common::misc::backtick(
                     command => $cmd,
                     logger => $self->{logger},
@@ -907,7 +922,9 @@ sub syncTraps($) {
             my $remote_server;
 
             if ($id == 0) {
-                if (defined($ns_server->{remote_id}) && $ns_server->{remote_id} != 0 && $self->{instance_mode} ne "remote") {
+                if (defined($ns_server->{remote_id}) && $ns_server->{remote_id} != 0
+                    && $self->{instance_mode} ne "remote" && $ns_server->{remote_server_centcore_ssh_proxy} == 1
+                ) {
                     $remote_server = $self->getServerConfig($ns_server->{remote_id});
                     $port = checkSSHPort($remote_server->{ssh_port});
                     $cmd = "$self->{scp} -r -P $port /etc/snmp/centreon_traps/$id/centreontrapd.sdb $remote_server->{'ns_ip_address'}:/etc/snmp/centreon_traps/";
@@ -922,8 +939,10 @@ sub syncTraps($) {
                 if (defined($stdout) && $stdout){
                     $self->{logger}->writeLogInfo("Result : $stdout");
                 }
-                if (defined($ns_server->{remote_id}) && $ns_server->{remote_id} != 0 && $self->{instance_mode} ne "remote") {
-                    $cmd = "$self->{ssh} " . $remote_server->{'ns_ip_address'}  . " 'echo \"SYNCTRAP:" . $id . "\" > $self->{cmdDir}/" . time() . "-sendcmd'";
+                if (defined($ns_server->{remote_id}) && $ns_server->{remote_id} != 0
+                    && $self->{instance_mode} ne "remote" && $ns_server->{remote_server_centcore_ssh_proxy} == 1
+                ) {
+                    $cmd = "$self->{ssh} -p $port " . $remote_server->{'ns_ip_address'}  . " 'echo \"SYNCTRAP:" . $id . "\" >> $self->{cmdDir}/" . time() . "-sendcmd'";
                     ($lerror, $stdout) = centreon::common::misc::backtick(command => $cmd,
                                                                           logger => $self->{logger},
                                                                           timeout => 300
@@ -1018,10 +1037,12 @@ sub initCentreonTrapd {
                 timeout => 120
             );
         } else {
-            if (defined($ns_server->{remote_id}) && $ns_server->{remote_id} != 0 && $self->{instance_mode} ne "remote") {
+            if (defined($ns_server->{remote_id}) && $ns_server->{remote_id} != 0 &&
+                $self->{instance_mode} ne "remote" && $ns_server->{remote_server_centcore_ssh_proxy} == 1
+            ) {
                 my $remote_server = $self->getServerConfig($ns_server->{remote_id});
                 $action =~ s/^\s+|\s+$//g;
-                $cmd = "$self->{ssh} -p $port " . $remote_server->{ns_ip_address} . " 'echo \"$action\"  > $self->{cmdDir}" . time() . "-sendcmd'";
+                $cmd = "$self->{ssh} -p $port " . $remote_server->{ns_ip_address} . " 'echo \"$action\" >> $self->{cmdDir}" . time() . "-sendcmd'";
                 $self->{logger}->writeLogDebug("Send command using Remote Server");
             } else {
                 $cmd = "$self->{ssh} -p $port ". $ns_server->{ns_ip_address} ." $self->{sudo} $self->{service} ".$ns_server->{init_script_centreontrapd}. " " . $start_type;

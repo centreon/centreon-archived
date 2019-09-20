@@ -1,17 +1,15 @@
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const CleanWebpackPlugin = require('clean-webpack-plugin');
+const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 const safePostCssParser = require('postcss-safe-parser');
 const path = require('path');
 
-
 module.exports = {
   context: __dirname,
   entry: [
     "@babel/polyfill",
-    "./www/front_src/src/App.scss",
     "./www/front_src/src/index.js"
   ],
   output: {
@@ -22,6 +20,9 @@ module.exports = {
     libraryTarget: 'umd',
     library: '[name]',
     umdNamedDefine: true,
+  },
+  resolve: {
+    extensions: ['.js', '.jsx'],
   },
   optimization: {
     minimizer: [
@@ -81,7 +82,7 @@ module.exports = {
     rules: [
       { parser: { system: false } },
       {
-        test: /\.js$/,
+        test: /\.jsx?$/,
         exclude: /node_modules/,
         use: {
           loader: 'babel-loader',
@@ -97,9 +98,10 @@ module.exports = {
           {
             loader: "css-loader",
             options: {
-              modules: true,
-              localIdentName: "[local]__[hash:base64:5]",
-              sourceMap: true
+              modules: {
+                localIdentName: "[local]__[hash:base64:5]",
+              },
+              sourceMap: true,
             }
           },
           {
@@ -145,34 +147,6 @@ module.exports = {
             limit: 10000,
             name: 'static/img/[name].[hash:8].[ext]',
           },
-        }]
-      },
-      {
-        test: require.resolve('react'),
-        use: [{
-          loader: 'expose-loader',
-          options: 'React'
-        }]
-      },
-      {
-        test: /ReactRouterDom\.js/,
-        use: [{
-          loader: 'expose-loader',
-          options: 'ReactRouterDom'
-        }]
-      },
-      {
-        test: /ReactRedux\.js$/,
-        use: [{
-          loader: 'expose-loader',
-          options: 'ReactRedux'
-        }]
-      },
-      {
-        test: /ReduxForm\.js/,
-        use: [{
-          loader: 'expose-loader',
-          options: 'ReduxForm'
         }]
       },
     ]

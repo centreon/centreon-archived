@@ -107,7 +107,7 @@ $dependencyInjector['translator'] = $dependencyInjector->factory(function ($c) {
     return $translator;
 });
 
-$dependencyInjector['path.files_generation'] = _CENTREON_PATH_ . '/filesGeneration/';
+$dependencyInjector['path.files_generation'] = _CENTREON_CACHEDIR_ . '/config/';
 
 // Defines the web service that will transform the translation files into one json file
 $dependencyInjector[CentreonI18n::class] = function ($container) {
@@ -127,9 +127,6 @@ $dependencyInjector[CentreonI18n::class] = function ($container) {
     return $translation;
 };
 
-// Dynamically register service provider
-\Centreon\Infrastructure\Provider\AutoloadServiceProvider::register($dependencyInjector);
-
 // Centreon configuration files
 $configFiles = $dependencyInjector['finder']
     ->files()
@@ -140,3 +137,6 @@ foreach ($configFiles as $configFile) {
     $configFileName = $configFile->getBasename();
     require __DIR__ . '/config/' . $configFileName;
 }
+
+// Dynamically register service provider
+\Centreon\Infrastructure\Provider\AutoloadServiceProvider::register($dependencyInjector);

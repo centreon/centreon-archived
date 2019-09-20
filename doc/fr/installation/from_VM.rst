@@ -43,42 +43,8 @@ celles-ci, **les opérations 4 et 5 sont obligatoires**.
 .. note::
     Pour supprimer ce message, supprimez le fichier **/etc/profile.d/centreon.sh**.
 
-**********
-Collecteur
-**********
+Démarrage rapide
+================
 
-Le déploiement d'un collecteur de supervision (poller) à partir de la machine
-virtuelle est trés similaire à celle d'un serveur Centtreon central. Après
-déploiement, il est nécessaire d'ajouter à cette procédure l'échange des
-clefs SSH et la configuration du collecteur via l'interface Web:
-
-Echange des clefs SSH
-=====================
-
-La communication entre le serveur central et un collecteur se fait via SSH.
-
-Vous devez échanger les clés SSH entre les serveurs.
-
-Si vous n’avez pas de clé SSH privées sur le serveur central pour
-l’utilisateur ‘centreon’ ::
-
-    # su - centreon
-    $ ssh-keygen -t rsa
-
-.. note::
-    Appuyez sur la touche *entrée* quand il vous sera demandé de saisir un
-    fichier pour enregistrer la clé. Laissez le mot de passe vide si vous le
-    souhaitez. Cependant, ce n'est pas recommandé. Vous recevrez une empreinte
-    digitale de clé et une image randomart.
-
-Vous devez copier cette clé sur le nouveau serveur : ::
-
-    # su - centreon
-    $ ssh-copy-id -i .ssh/id_rsa.pub centreon@IP_POLLER
-
-le mot de passe de l'utilisateur centreon sur le collecteur est configuré par défaut à **centreon**. Il est fortement conseillé de la changer en utilisant la commande **passwd**.
-
-Configuration de l'interface Web
-================================
-
-.. include:: ../administration_guide/poller/wizard_add_poller.rst
+Rendez vous au chapitre :ref:`démarrage rapide<quickstart>` pour mettre en place
+votre première supervision.

@@ -14,60 +14,83 @@ CentOS
 La plupart des utilisateurs de CentOS préfèreront installer Centreon Web
 en utilisant :ref:`les paquets fournis par Centreon <install_from_packages>`.
 
-Les environnements CentOS et RHEL ne possèdent pas en standard sur
-dépôts l'intégralité des dépendances nécessaires à l'installation
-de Centreon. Vous devez ajouter les dépôts *RPM Forge* et
-*Software Collections*.
+Dépôt Software collections de Red Hat
+-------------------------------------
 
-Système el7 : ::
+Afin d’installer les logiciels Centreon, le dépôt Software collections de Red Hat doit être activé.
 
-    $ wget http://repository.it4i.cz/mirrors/repoforge/redhat/el7/en/x86_64/rpmforge/RPMS/rpmforge-release-0.5.3-1.el7.rf.x86_64.rpm
-    $ wget https://repository.it4i.cz/mirrors/repoforge/RPM-GPG-KEY.dag.txt
+.. note::
+    Le dépôt Software collections est nécessaire pour l’installation de PHP 7 et les librairies associées.
 
+Exécutez la commande suivante : ::
 
-Utilisez votre éditeur de texte favori et supprimez la première
-ligne du fichier *RPM-GPG-KEY.dag.txt*. La première ligne doit
-contenir : ::
+    # yum install centos-release-scl
 
-    "-----BEGIN PGP PUBLIC KEY BLOCK-----"
+Le dépôt est maintenant installé.
 
-Puis exécutez les commandes suivantes : ::
-
-    $ rpm --import RPM-GPG-KEY.dag.txt
-    $ rpm -Uvh rpmforge-release-0.5.3-1.el7.rf.x86_64.rpm
-    $ yum install centos-release-scl
-
-Vous pouvez maintenant installer les dépendances nécessaires : ::
+Vous pouvez maintenant installer les prérequis : ::
 
     $ yum update
-    $ yum upgrade
-    $ yum install httpd24-httpd gd fontconfig-devel libjpeg-devel libpng-devel gd-devel perl-GD perl-DateTime \
-        openssl-devel perl-DBD-MySQL mysql-server mysql-devel rh-php71-php rh-php71-php-mysql rh-php71-php-gd \
-        rh-php71-php-ldap rh-php71-php-xml rh-php71-php-mbstring rh-php71-php-snmp \
-        perl-Config-IniFiles perl-DBI perl-DBD-MySQL rrdtool perl-rrdtool perl-Crypt-DES perl-Digest-SHA1 \
-        perl-Digest-HMAC net-snmp-utils perl-Socket6 perl-IO-Socket-INET6 net-snmp net-snmp-libs \
-        dmidecode lm_sensors perl-Net-SNMP net-snmp-perl fping cpp gcc gcc-c++ libstdc++ glib2-devel \
-        rh-php71-php-pear nagios-plugins
+    $ yum install -y \
+        rh-php72-php-zip \
+        rh-php72-php-xml \
+        rh-php72-php-fpm \
+        rh-php72-php-process \
+        rh-php72-php-common \
+        rh-php72-php-pdo \
+        rh-php72-php-intl \
+        rh-php72-php-pear \
+        rh-php72-php-json \
+        rh-php72-php-mysqlnd \
+        rh-php72-php-ldap \
+        rh-php72-php-gd \
+        rh-php72-php-cli \
+        rh-php72-php-mbstring \
+        rh-php72-php-snmp \
+        perl-DBD-MySQL \
+        perl-Sys-Syslog \
+        httpd24-httpd \
+        perl-DBI \
+        perl-DBD-MySQL \
+        rrdtool \
+        perl-rrdtool \
+        perl-Crypt-DES \
+        perl-Digest-SHA1 \
+        perl-Digest-HMAC \
+        net-snmp-utils \
+        perl-Socket6 \
+        perl-IO-Socket-INET6 \
+        net-snmp \
+        net-snmp-libs \
+        dmidecode \
+        lm_sensors \
+        net-snmp-perl \
+        fping \
+        cpp \
+        gcc \
+        gcc-c++ \
+        libstdc++ \
+        glib2-devel
 
 Des commandes additionnelles sont nécessaires pour configurer correctement
 l'environnement : ::
 
     $ usermod -U apache
-    $ pear channel-update pear.php.net
+    $ /opt/rh/rh-php72/root/bin/pear channel-update pear.php.net
 
 Si vous ne pouvez pas accéder directement à Internet directement mais passer
 par un proxy, exécutez la commande suivante : ::
 
-    $ pear config-set http_proxy http://my_proxy.com:port
+    $ /opt/rh/rh-php72/root/bin/pear config-set http_proxy http://my_proxy.com:port
 
 Puis exécutez : ::
 
-    $ pear upgrade-all
+    $ /opt/rh/rh-php72/root/bin/pear upgrade-all
 
 Debian Stretch / Ubuntu 18.04
 =============================
 
-Ajoutez le dépot suivant, nécéssaire pour installer php 7.1 :
+Ajoutez le dépot suivant, nécéssaire pour installer php 7.2 :
 Pour Debian Stretch : ::
 
     $ apt-get install apt-transport-https lsb-release ca-certificates
@@ -86,17 +109,17 @@ Pour Ubuntu 18.04 :
 
 Installez les dépendances nécessaires : ::
 
-    $ apt-get install php7.1 php7.1-opcache libapache2-mod-php7.1 php7.1-mysql php7.1-curl php7.1-json \
-        php7.1-gd php7.1-mcrypt php7.1-intl php7.1-mbstring php7.1-xml php7.1-zip php7.1-fpm php7.1-readline \
-        php7.1-sqlite3 php-pear sudo tofrodos bsd-mailx lsb-release mariadb-server libconfig-inifiles-perl \
-        libcrypt-des-perl libdigest-hmac-perl libdigest-sha-perl libgd-perl php7.1-ldap php7.1-snmp php-db php-date
+    $ apt-get install php7.2 php7.2-opcache libapache2-mod-php7.2 php7.2-mysql php7.2-curl php7.2-json \
+        php7.2-gd php7.2-mcrypt php7.2-intl php7.2-mbstring php7.2-xml php7.2-zip php7.2-fpm php7.2-readline \
+        php7.2-sqlite3 php-pear sudo tofrodos bsd-mailx lsb-release mariadb-server libconfig-inifiles-perl \
+        libcrypt-des-perl libdigest-hmac-perl libdigest-sha-perl libgd-perl php7.2-ldap php7.2-snmp php-db php-date
 
 Activez les modules : ::
 
     $ a2enmod proxy_fcgi setenvif proxy rewrite
-    $ a2enconf php7.1-fpm
-    $ a2dismod php7.1
-    $ systemctl restart apache2 php7.1-fpm
+    $ a2enconf php7.2-fpm
+    $ a2dismod php7.2
+    $ systemctl restart apache2 php7.2-fpm
 
 Des commandes additionnelles sont nécessaires pour configurer correctement
 l'environnement : ::
@@ -485,7 +508,7 @@ Configuration de PHP FPM
     [y/n], default to [n]:
     > y
     Creating directory /var/lib/centroen/sessions              OK
-    Create 'etc/php/7.1/fpm/pool.d/centreon.conf'              OK
+    Create 'etc/php/7.2/fpm/pool.d/centreon.conf'              OK
     Configuring PHP FPM                                        OK
 
     Do you want to reload PHP FPM service ?

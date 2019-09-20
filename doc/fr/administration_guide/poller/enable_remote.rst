@@ -5,11 +5,32 @@ Activer l'option Remote Server
 Connectez-vous à votre serveur ayant la fonction **Remote Server** et exécutez
 la commande suivante ::
 
-    # /usr/share/centreon/bin/centreon -u admin -p centreon -a enableRemote -o CentreonRemoteServer -v @IP_CENTREON_CENTRAL
+    # /usr/share/centreon/bin/centreon -u admin -p centreon -a enableRemote -o CentreonRemoteServer -v '@IP_CENTREON_CENTRAL;<not check SSL CA on Central>;<HTTP method>;<TCP port>;<not check SSL CA on Remote>;<no proxy to call Central>'
 
 .. note::
     Remplacez **@IP_CENTREON_CENTRAL** par l'IP du serveur Centreon vu par le collecteur.
-    Vous pouvez définir plusieurs adresse IP en utilisant la virgule comme séparateur.
+    Vous pouvez définir plusieurs adresses IP en utilisant la virgule comme séparateur.
+
+.. note::
+    * Pour utiliser HTTPS, remplacez **@IP_CENTREON_CENTRAL** par
+      **https://@IP_CENTREON_CENTRAL**.
+    * Pour utiliser un autre port TCP, remplacez **@IP_CENTREON_CENTRAL** par
+      **@IP_CENTREON_CENTRAL:<port>**.
+
+Pour ne pas contrôler le certificat SSL sur le serveur Centreon Central,
+mettre à **1** l'option **<not check SSL CA on Central>**, sinon **0**.
+
+L'option **<HTTP method>** permet de définir la méthode de connexion pour
+contacter le Remote Server : HTTP ou HTTPS.
+
+L'option **<TCP port>** permet de définir sur quel port TCP communiquer avec le
+Remote Server.
+
+Pour ne pas contrôler le certificat SSL sur le Remote server, mettre à **1**
+l'option **<not check SSL CA on Central>**, sinon **0**.
+
+Pour ne pas utiliser le proxy pour contacter le serveur Centreon Central,
+mettre à **1** l'option **<no proxy to call Central>**, sinon **0**.
 
 Cette commande va activer le mode **Remote Server** ::
 
@@ -19,8 +40,12 @@ Cette commande va activer le mode **Remote Server** ::
       Limiting Actions...Done
 
       Notifying Master...Success
-      
+
       Set 'remote' instance type...Done
-      
+
       Centreon Remote enabling finished.
 
+Ajout des droits pour l'utilsateur de base de données centreon d'utiliser la commande **LOAD DATA INFILE**::
+
+    # mysql -h <database_server_address> -u root -p
+    MariaDB [(none)]> GRANT FILE on *.* to 'centreon'@'<remote_server_ip>';

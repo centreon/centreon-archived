@@ -211,6 +211,11 @@ class CentreonClapi extends CentreonWebService implements CentreonWebServiceDiIn
                 $return['result'][] = $lines[$i];
             }
         }
+        
+        if (is_array($return['result'])) {
+            array_walk($return['result'], [$this, 'clearCarriageReturns']);
+        }
+            
         return $return;
     }
 
@@ -229,5 +234,14 @@ class CentreonClapi extends CentreonWebService implements CentreonWebServiceDiIn
         }
 
         return $user->hasAccessRestApiConfiguration();
+    }
+
+    /**
+     * Removes carriage returns from $item if string
+     * @param $item variable to check
+     */
+    private function clearCarriageReturns(&$item)
+    {
+        $item = (is_string($item)) ? str_replace(array("\n", "\t", "\r", "<br/>"), '', $item) : $item;
     }
 }

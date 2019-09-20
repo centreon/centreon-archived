@@ -54,11 +54,11 @@ function checkItem(element, toCheck)
 	}
 }
 
-function getChecked(element)
-{
+function getChecked(element) {
 	if (element.type == 'checkbox') {
 		return element.checked;
 	}
+
 	var element = document.Form[element.name];
 	for (var j = 0; j < element.length; j++) {
 		if (element[j].checked) {
@@ -70,8 +70,7 @@ function getChecked(element)
 	return false;
 }
 
-function toggleCheckAll(theElement, id)
-{
+function toggleCheckAll(theElement, id) {
 	var a = document.getElementById(id);
 
 	// enable/disable all subnodes of id
@@ -115,10 +114,9 @@ function toggleCheckAll(theElement, id)
 	    node = upnode;
 	    pos = node.lastIndexOf("_");
 	}
-}					
-		
-function toggleDisplay(id)
-{
+}
+
+function toggleDisplay(id) {
 	var d = document.getElementById(id);
 	if (d){
 		var img = document.getElementById('img_'+id);

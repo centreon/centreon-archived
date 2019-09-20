@@ -1,7 +1,7 @@
 <?php
 /*
  * Copyright 2005-2019 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -39,12 +39,12 @@ if (!isset($centreon)) {
     exit();
 }
 
-if (!$centreon->user->admin && $contact_id) {
+if (!$centreon->user->admin && $contactId) {
     $aclOptions = array(
         'fields' => array('contact_id', 'contact_name'),
         'keys' => array('contact_id'),
         'get_row' => 'contact_name',
-        'conditions' => array('contact_id' => $contact_id)
+        'conditions' => array('contact_id' => $contactId)
     );
     $contacts = $acl->getContactAclConf($aclOptions);
     if (!count($contacts)) {
@@ -73,18 +73,18 @@ $initialValues = array();
 /*
  * Check if this server is a Remote Server to hide some part of form
  */
-$DBRESULT = $pearDB->query("SELECT i.value FROM informations i WHERE i.key = 'isRemote'");
-$result = $DBRESULT->fetchRow();
+$dbResult = $pearDB->query("SELECT i.value FROM informations i WHERE i.key = 'isRemote'");
+$result = $dbResult->fetch();
 if ($result === false) {
     $isRemote = false;
 } else {
     $isRemote = array_map("myDecode", $result);
     $isRemote = ($isRemote['value'] === 'yes') ? true : false;
 }
-$DBRESULT->closeCursor();
+$dbResult->closeCursor();
 
 $cct = array();
-if (($o == "c" || $o == "w") && $contact_id) {
+if (($o == "c" || $o == "w") && $contactId) {
     /**
      * Init Tables informations
      */
@@ -92,10 +92,12 @@ if (($o == "c" || $o == "w") && $contact_id) {
     $cct["contact_svNotifCmds"] = array();
     $cct["contact_cgNotif"] = array();
 
-    $DBRESULT = $pearDB->query("SELECT * FROM contact WHERE contact_id = '" . intval($contact_id) . "' LIMIT 1");
-    $cct = array_map("myDecode", $DBRESULT->fetchRow());
+    $dbResult = $pearDB->prepare("SELECT * FROM contact WHERE contact_id = :contactId LIMIT 1");
+    $dbResult->bindValue(':contactId', $contactId, \PDO::PARAM_INT);
+    $dbResult->execute();
+    $cct = array_map("myDecode", $dbResult->fetch());
     $cct["contact_passwd"] = null;
-    $DBRESULT->closeCursor();
+    $dbResult->closeCursor();
 
     /**
      * Set Host Notification Options
@@ -128,7 +130,7 @@ if (($o == "c" || $o == "w") && $contact_id) {
      */
     $DBRESULT = $pearDB->query("SELECT acl_group_id 
                                 FROM `acl_group_contacts_relations` 
-                                WHERE `contact_contact_id` = '" . intval($contact_id) . "'");
+                                WHERE `contact_contact_id` = '" . intval($contactId) . "'");
     for ($i = 0; $data = $DBRESULT->fetchRow(); $i++) {
         if (!$centreon->user->admin && !isset($allowedAclGroups[$data['acl_group_id']])) {
             $initialValues['contact_acl_groups'] = $data['acl_group_id'];
@@ -149,7 +151,7 @@ if ($o == "mc") {
 }
 
 /**
- * Contact Groups comes from DB -> Store in $notifCcts Array
+ * Contact Groups come from DB -> Store in $notifCcts Array
  */
 $notifCgs = array();
 
@@ -168,8 +170,8 @@ if ($centreon->optGen['ldap_auth_enable'] == 1
 /**
  * Contacts Templates
  */
-if (isset($contact_id)) {
-    $strRestrinction = " AND contact_id != '" . intval($contact_id) . "'";
+if (isset($contactId)) {
+    $strRestrinction = " AND contact_id != '" . intval($contactId) . "'";
 } else {
     $strRestrinction = "";
 }
@@ -242,7 +244,7 @@ if ($o == "a") {
         [
             'form' => $form,
             'tpl' =>$tpl,
-            'contact_id' => $contact_id
+            'contact_id' => $contactId
         ]
     );
 } elseif ($o == "c") {
@@ -254,7 +256,7 @@ if ($o == "a") {
         [
             'form' => $form,
             'tpl' =>$tpl,
-            'contact_id' => $contact_id
+            'contact_id' => $contactId
         ]
     );
 } elseif ($o == "w") {
@@ -266,7 +268,7 @@ if ($o == "a") {
         [
             'form' => $form,
             'tpl' =>$tpl,
-            'contact_id' => $contact_id
+            'contact_id' => $contactId
         ]
     );
 } elseif ($o == "mc") {
@@ -278,7 +280,7 @@ if ($o == "a") {
         [
             'form' => $form,
             'tpl' =>$tpl,
-            'contact_id' => $contact_id
+            'contact_id' => $contactId
         ]
     );
 }
@@ -334,7 +336,7 @@ if ($o == "mc") {
 }
 
 $defaultDatasetRoute = './include/common/webServices/rest/internal.php?object=centreon_configuration_contactgroup'
-    . '&action=defaultValues&target=contact&field=contact_cgNotif&id=' . $contact_id;
+    . '&action=defaultValues&target=contact&field=contact_cgNotif&id=' . $contactId;
 
 $attrContactgroup1 = array_merge(
     $attrContactgroups,
@@ -355,13 +357,13 @@ $form->addElement(
     'password',
     'contact_passwd',
     _("Password"),
-    array("size" => "30", "autocomplete" => "off", "id" => "passwd1", "onkeypress" => "resetPwdType(this);")
+    array("size" => "30", "autocomplete" => "new-password", "id" => "passwd1", "onkeypress" => "resetPwdType(this);")
 );
 $form->addElement(
     'password',
     'contact_passwd2',
     _("Confirm Password"),
-    array("size" => "30", "autocomplete" => "off", "id" => "passwd2", "onkeypress" => "resetPwdType(this);")
+    array("size" => "30", "autocomplete" => "new-password", "id" => "passwd2", "onkeypress" => "resetPwdType(this);")
 );
 $form->addElement('button', 'contact_gen_passwd', _("Generate"), array('onclick' => 'generatePassword("passwd");'));
 
@@ -402,7 +404,7 @@ if ($o == "mc") {
 }
 
 $defaultDatasetRoute = './include/common/webServices/rest/internal.php?object=centreon_administration_aclgroup'
-    . '&action=defaultValues&target=contact&field=contact_acl_groups&id=' . $contact_id;
+    . '&action=defaultValues&target=contact&field=contact_acl_groups&id=' . $contactId;
 $attrAclgroup1 = array_merge(
     $attrAclgroups,
     array('defaultDatasetRoute' => $defaultDatasetRoute)
@@ -419,7 +421,7 @@ $CentreonGMT = new CentreonGMT($pearDB);
 $availableDatasetRoute = './include/common/webServices/rest/internal.php'
     . '?object=centreon_configuration_timezone&action=list';
 $defaultDatasetRoute = './include/common/webServices/rest/internal.php?object=centreon_configuration_timezone'
-    . '&action=defaultValues&target=contact&field=contact_location&id=' . $contact_id;
+    . '&action=defaultValues&target=contact&field=contact_location&id=' . $contactId;
 $attrTimezones = array(
     'datasourceOrigin' => 'ajax',
     'availableDatasetRoute' => $availableDatasetRoute,
@@ -516,7 +518,7 @@ $hostNotifOpt[] = $form->createElement(
 $form->addGroup($hostNotifOpt, 'contact_hostNotifOpts', _("Host Notification Options"), '&nbsp;&nbsp;');
 
 $defaultDatasetRoute = './include/common/webServices/rest/internal.php?object=centreon_configuration_timeperiod'
-    . '&action=defaultValues&target=contact&field=timeperiod_tp_id&id=' . $contact_id;
+    . '&action=defaultValues&target=contact&field=timeperiod_tp_id&id=' . $contactId;
 $attrTimeperiod1 = array_merge(
     $attrTimeperiods,
     array('defaultDatasetRoute' => $defaultDatasetRoute)
@@ -535,7 +537,7 @@ if ($o == "mc") {
 }
 
 $defaultDatasetRoute = './include/common/webServices/rest/internal.php?object=centreon_configuration_command'
-    . '&action=defaultValues&target=contact&field=contact_hostNotifCmds&id=' . $contact_id;
+    . '&action=defaultValues&target=contact&field=contact_hostNotifCmds&id=' . $contactId;
 $availableDatasetRoute = './include/common/webServices/rest/internal.php'
     . '?object=centreon_configuration_command&action=list&t=1';
 $attrCommand1 = array_merge(
@@ -604,7 +606,7 @@ $form->addGroup($svNotifOpt, 'contact_svNotifOpts', _("Service Notification Opti
 
 $defaultAttrTimeperiod2Route = './include/common/webServices/rest/internal.php?'
     . 'object=centreon_configuration_timeperiod&action=defaultValues&target=contact&field=timeperiod_tp_id2&id='
-    . $contact_id;
+    . $contactId;
 
 $attrTimeperiod2 = array_merge(
     $attrTimeperiods,
@@ -621,7 +623,7 @@ if ($o == "mc") {
 }
 
 $defaultattrCommand2Route = './include/common/webServices/rest/internal.php?object=centreon_configuration_command'
-    . '&action=defaultValues&target=contact&field=contact_svNotifCmds&id=' . $contact_id;
+    . '&action=defaultValues&target=contact&field=contact_svNotifCmds&id=' . $contactId;
 $availableCommand2Route = './include/common/webServices/rest/internal.php?'
     . 'object=centreon_configuration_command&action=list&t=1';
 
@@ -753,7 +755,7 @@ if ($o == "w") {
             "button",
             "change",
             _("Modify"),
-            array("onClick" => "javascript:window.location.href='?p=" . $p . "&o=c&contact_id=" . $contact_id . "'")
+            array("onClick" => "javascript:window.location.href='?p=" . $p . "&o=c&contact_id=" . $contactId . "'")
         );
     }
     $form->setDefaults($cct);
@@ -784,6 +786,11 @@ $valid = false;
 
 if ($form->validate() && $from_list_menu == false) {
     $cctObj = $form->getElement('contact_id');
+    if (!$centreon->user->admin && $contact_id) {
+        $form->removeElement('contact_admin');
+        $form->removeElement('reach_api');
+        $form->removeElement('reach_api_rt');
+    }
     if ($form->getSubmitValue("submitA")) {
         $newContactId = insertContactInDB();
         $cctObj->setValue($contactId);
@@ -804,7 +811,7 @@ if ($form->validate() && $from_list_menu == false) {
             EventDispatcher::EVENT_UPDATE,
             [
                 'form' => $form,
-                'contact_id' => $contact_id
+                'contact_id' => $contactId
             ]
         );
     } elseif ($form->getSubmitValue("submitMC")) {

@@ -50,13 +50,13 @@ function testExistence($name = null)
     }
     $query = "SELECT dep_name, dep_id FROM dependency WHERE dep_name = '" .
         htmlentities($name, ENT_QUOTES, "UTF-8") . "'";
-    $DBRESULT = $pearDB->query($query);
-    $dep = $DBRESULT->fetchRow();
+    $dbResult = $pearDB->query($query);
+    $dep = $dbResult->fetch();
     #Modif case
-    if ($DBRESULT->rowCount() >= 1 && $dep["dep_id"] == $id) {
+    if ($dbResult->rowCount() >= 1 && $dep["dep_id"] == $id) {
         return true;
     } #Duplicate entry
-    elseif ($DBRESULT->rowCount() >= 1 && $dep["dep_id"] != $id) {
+    elseif ($dbResult->rowCount() >= 1 && $dep["dep_id"] != $id) {
         return false;
     } else {
         return true;
@@ -86,7 +86,7 @@ function deleteMetaServiceDependencyInDB($dependencies = array())
 {
     global $pearDB;
     foreach ($dependencies as $key => $value) {
-        $DBRESULT = $pearDB->query("DELETE FROM dependency WHERE dep_id = '" . $key . "'");
+        $dbResult = $pearDB->query("DELETE FROM dependency WHERE dep_id = '" . $key . "'");
     }
 }
 
@@ -94,9 +94,9 @@ function multipleMetaServiceDependencyInDB($dependencies = array(), $nbrDup = ar
 {
     foreach ($dependencies as $key => $value) {
         global $pearDB;
-        $DBRESULT = $pearDB->query("SELECT * FROM dependency WHERE dep_id = '" . $key . "' LIMIT 1");
-        $row = $DBRESULT->fetchRow();
-        $row["dep_id"] = '';
+        $dbResult = $pearDB->query("SELECT * FROM dependency WHERE dep_id = '" . $key . "' LIMIT 1");
+        $row = $dbResult->fetch();
+        $row["dep_id"] = null;
         for ($i = 1; $i <= $nbrDup[$key]; $i++) {
             $val = null;
             foreach ($row as $key2 => $value2) {
@@ -108,27 +108,27 @@ function multipleMetaServiceDependencyInDB($dependencies = array(), $nbrDup = ar
             if (testExistence($dep_name)) {
                 $val ? $rq = "INSERT INTO dependency VALUES (" . $val . ")" : $rq = null;
                 $pearDB->query($rq);
-                $DBRESULT = $pearDB->query("SELECT MAX(dep_id) FROM dependency");
-                $maxId = $DBRESULT->fetchRow();
+                $dbResult = $pearDB->query("SELECT MAX(dep_id) FROM dependency");
+                $maxId = $dbResult->fetch();
                 if (isset($maxId["MAX(dep_id)"])) {
                     $query = "SELECT DISTINCT meta_service_meta_id FROM dependency_metaserviceParent_relation " .
                         "WHERE dependency_dep_id = '" . $key . "'";
-                    $DBRESULT = $pearDB->query($query);
-                    while ($ms = $DBRESULT->fetchRow()) {
+                    $dbResult = $pearDB->query($query);
+                    while ($ms = $dbResult->fetch()) {
                         $query = "INSERT INTO dependency_metaserviceParent_relation " .
-                            "VALUES ('', '" . $maxId["MAX(dep_id)"] . "', '" . $ms["meta_service_meta_id"] . "')";
+                            "VALUES ('" . $maxId["MAX(dep_id)"] . "', '" . $ms["meta_service_meta_id"] . "')";
                         $pearDB->query($query);
                     }
-                    $DBRESULT->closeCursor();
+                    $dbResult->closeCursor();
                     $query = "SELECT DISTINCT meta_service_meta_id FROM dependency_metaserviceChild_relation " .
                         "WHERE dependency_dep_id = '" . $key . "'";
-                    $DBRESULT = $pearDB->query($query);
-                    while ($ms = $DBRESULT->fetchRow()) {
-                        $query = "INSERT INTO dependency_metaserviceChild_relation VALUES ('', '" .
+                    $dbResult = $pearDB->query($query);
+                    while ($ms = $dbResult->fetch()) {
+                        $query = "INSERT INTO dependency_metaserviceChild_relation VALUES ('" .
                             $maxId["MAX(dep_id)"] . "', '" . $ms["meta_service_meta_id"] . "')";
                         $pearDB->query($query);
                     }
-                    $DBRESULT->closeCursor();
+                    $dbResult->closeCursor();
                 }
             }
         }
@@ -183,8 +183,8 @@ function insertMetaServiceDependency()
         : $rq .= "NULL ";
     $rq .= ")";
     $pearDB->query($rq);
-    $DBRESULT = $pearDB->query("SELECT MAX(dep_id) FROM dependency");
-    $dep_id = $DBRESULT->fetchRow();
+    $dbResult = $pearDB->query("SELECT MAX(dep_id) FROM dependency");
+    $dep_id = $dbResult->fetch();
     return ($dep_id["MAX(dep_id)"]);
 }
 
@@ -235,7 +235,7 @@ function updateMetaServiceDependencyMetaServiceParents($dep_id = null)
     global $pearDB;
     $rq = "DELETE FROM dependency_metaserviceParent_relation ";
     $rq .= "WHERE dependency_dep_id = '" . $dep_id . "'";
-    $DBRESULT = $pearDB->query($rq);
+    $dbResult = $pearDB->query($rq);
     $ret = array();
     $ret = CentreonUtils::mergeWithInitialValues($form, 'dep_msParents');
     for ($i = 0; $i < count($ret); $i++) {
@@ -243,7 +243,7 @@ function updateMetaServiceDependencyMetaServiceParents($dep_id = null)
         $rq .= "(dependency_dep_id, meta_service_meta_id) ";
         $rq .= "VALUES ";
         $rq .= "('" . $dep_id . "', '" . $ret[$i] . "')";
-        $DBRESULT = $pearDB->query($rq);
+        $dbResult = $pearDB->query($rq);
     }
 }
 
@@ -256,7 +256,7 @@ function updateMetaServiceDependencyMetaServiceChilds($dep_id = null)
     global $pearDB;
     $rq = "DELETE FROM dependency_metaserviceChild_relation ";
     $rq .= "WHERE dependency_dep_id = '" . $dep_id . "'";
-    $DBRESULT = $pearDB->query($rq);
+    $dbResult = $pearDB->query($rq);
     $ret = array();
     $ret = CentreonUtils::mergeWithInitialValues($form, 'dep_msChilds');
     for ($i = 0; $i < count($ret); $i++) {
@@ -264,6 +264,6 @@ function updateMetaServiceDependencyMetaServiceChilds($dep_id = null)
         $rq .= "(dependency_dep_id, meta_service_meta_id) ";
         $rq .= "VALUES ";
         $rq .= "('" . $dep_id . "', '" . $ret[$i] . "')";
-        $DBRESULT = $pearDB->query($rq);
+        $dbResult = $pearDB->query($rq);
     }
 }

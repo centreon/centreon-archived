@@ -44,13 +44,13 @@ function testTrapGroupExistence($name = null)
     }
     $query = "SELECT traps_group_id as id FROM traps_group WHERE traps_group_name = '" .
         $pearDB->escape(htmlentities($name, ENT_QUOTES, "UTF-8")) . "'";
-    $DBRESULT = $pearDB->query($query);
-    $trap_group = $DBRESULT->fetchRow();
+    $dbResult = $pearDB->query($query);
+    $trap_group = $dbResult->fetch();
     # Modif case
-    if ($DBRESULT->rowCount() >= 1 && $trap_group["id"] == $id) {
+    if ($dbResult->rowCount() >= 1 && $trap_group["id"] == $id) {
         return true;
     } #Duplicate entry
-    elseif ($DBRESULT->rowCount() >= 1 && $trap_group["id"] != $id) {
+    elseif ($dbResult->rowCount() >= 1 && $trap_group["id"] != $id) {
         return false;
     } else {
         return true;
@@ -64,8 +64,8 @@ function deleteTrapGroupInDB($trap_groups = array())
     foreach ($trap_groups as $key => $value) {
         $query = "SELECT traps_group_name as name FROM `traps_group` WHERE `traps_group_id` = '" .
             $pearDB->escape($key) . "' LIMIT 1";
-        $DBRESULT2 = $pearDB->query($query);
-        $row = $DBRESULT2->fetchRow();
+        $dbResult2 = $pearDB->query($query);
+        $row = $dbResult2->fetch();
 
         $pearDB->query("DELETE FROM traps_group WHERE traps_group_id = '" . $pearDB->escape($key) . "'");
         $oreon->CentreonLogAction->insertLog("traps_group", $key, $row['name'], "d");
@@ -78,9 +78,9 @@ function multipleTrapGroupInDB($trap_groups = array(), $nbrDup = array())
 
     foreach ($trap_groups as $key => $value) {
         $query = "SELECT * FROM traps_group WHERE traps_group_id = '" . $pearDB->escape($key) . "' LIMIT 1";
-        $DBRESULT = $pearDB->query($query);
-        $row = $DBRESULT->fetchRow();
-        $row["traps_group_id"] = '';
+        $dbResult = $pearDB->query($query);
+        $row = $dbResult->fetch();
+        $row["traps_group_id"] = null;
 
         for ($i = 1; $i <= $nbrDup[$key]; $i++) {
             $val = null;
@@ -165,9 +165,9 @@ function insertTrapGroup($ret = array())
     $rq .= "(traps_group_name) ";
     $rq .= "VALUES ";
     $rq .= "('" . $pearDB->escape(htmlentities($ret["name"], ENT_QUOTES, "UTF-8")) . "')";
-    $DBRESULT = $pearDB->query($rq);
-    $DBRESULT = $pearDB->query("SELECT MAX(traps_group_id) as max_id FROM traps_group");
-    $trap_group_id = $DBRESULT->fetchRow();
+    $dbResult = $pearDB->query($rq);
+    $dbResult = $pearDB->query("SELECT MAX(traps_group_id) as max_id FROM traps_group");
+    $trap_group_id = $dbResult->fetch();
 
     $fields = array();
     if (isset($ret['traps'])) {

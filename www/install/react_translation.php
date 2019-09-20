@@ -75,3 +75,5 @@ echo _("%s is not valid.");
 echo _("You need to send '%s' in the request.");
 echo _("Some database poller updates are not active; check your configuration");
 echo _("Latency detected, check configuration for better optimization");
+echo _("Do not check SSL certificate validation");
+echo _("Do not use configured proxy to connect to this server");

@@ -43,7 +43,7 @@ préalable installer le fichier lié au dépôt. Exécutez la commande suivante.
 
 Installation : ::
 
-    # yum install -y http://yum.centreon.com/standard/19.04/el7/stable/noarch/RPMS/centreon-release-19.04-1.el7.centos.noarch.rpm
+    # yum install -y http://yum.centreon.com/standard/19.10/el7/stable/noarch/RPMS/centreon-release-19.10-1.el7.centos.noarch.rpm
 
 Le dépôt est maintenant installé.
 
@@ -73,6 +73,8 @@ Exécutez la commande : ::
 
     # yum install centreon-base-config-centreon-engine
 
+.. _dedicateddbms:
+
 Installer MySQL sur un serveur dédié
 ------------------------------------
 
@@ -86,22 +88,39 @@ Exécutez les commandes : ::
     le paquet **centreon-database** installe un serveur de base de données optimisé pour l'utilisation avec Centreon.
 
 .. note::
-    Centreon n'est pas encore **compatible** avec le mode STRICT de SQL. Veuillez
-    vous assurer que le mode soit bien désactivé. Pour plus d'information sur la
-    désactivation du mode vous pouvez consulter la `documentation officielle
-    <https://mariadb.com/kb/en/library/sql-mode/#strict-mode>`_ de MariaDB pour
-    le désactiver
+    Centreon est **compatible** avec le mode STRICT de SQL. Pour plus d'information sur le
+    sujet vous pouvez consulter la `documentation officielle
+    <https://mariadb.com/kb/en/library/sql-mode/#strict-mode>`_ de MariaDB. Ou la `documentation officielle
+    <https://dev.mysql.com/doc/refman/8.0/en/sql-mode.html>`_ de MySQL
 
-Puis créer un utisateur **root** distant : ::
+Puis créer un utilisateur **root** distant : ::
 
-    MariaDB [(none)]> GRANT ALL PRIVILEGES ON *.* TO 'root'@'IP' IDENTIFIED BY 'PASSWORD' WITH GRANT OPTION;
+    mysql> CREATE USER 'root'@'IP' IDENTIFIED BY 'PASSWORD';
+    mysql> GRANT ALL PRIVILEGES ON *.* TO 'root'@'IP' WITH GRANT OPTION;
+    mysql> FLUSH PRIVILEGES;
 
 .. note::
     Remplacez **IP** par l'adresse IP publique du serveur Centreon et **PASSWORD**
-    par le mot de passe de l'utilisateur **root**. Une fois l'installation terminée
-    vous pouvez supprimer ce compte via la commande : ::
+    par le mot de passe de l'utilisateur **root**.
+
+.. warning::
+    Si PHP est utilisé dans une version 7.1 antérieure à la version 7.1.16, ou PHP 7.2 antérieure à 7.2.4, le
+    plugin de mot de passe doit être défini à mysql_native_password pour MySQL 8 Server, car sinon des erreurs
+    similaires à *The server requested authentication method unknown to the client [caching_sha2_password]* peuvent
+    apparaitre, même si caching_sha2_password n'est pas utilisé.
+    
+    Ceci est dû au fait que MySQL 8 utilise par défaut caching_sha2_password, un plugin qui n'est pas reconnu par les
+    anciennes versions de PHP. À la place il faut modifier le paramètre *default_authentication_plugin=
+    mysql_native_password* dans le fichier **my.cnf**.
+    
+    Changez la méthode de stockage du mot de passe, utilisez la commande suivante : ::
+    
+        mysql> ALTER USER 'root'@'IP' IDENTIFIED WITH mysql_native_password BY 'PASSWORD';
+        mysql> FLUSH PRIVILEGES;
+
+Une fois l'installation terminée vous pouvez supprimer ce compte via la commande : ::
         
-        MariaDB [(none)]> DROP USER 'root'@'IP';
+    mysql> DROP USER 'root'@'IP';
 
 Système de gestion de base de données
 -------------------------------------
@@ -121,9 +140,9 @@ fonctionnera PAS: ::
 Fuseau horaire PHP
 ------------------
 
-La timezone par défaut de PHP doit être configurée. Executer la commande suivante : ::
+La timezone par défaut de PHP doit être configurée. Exécuter la commande suivante : ::
 
-    # echo "date.timezone = Europe/Paris" > /etc/opt/rh/rh-php71/php.d/php-timezone.ini
+    # echo "date.timezone = Europe/Paris" > /etc/opt/rh/rh-php72/php.d/php-timezone.ini
 
 .. note::
     Changez **Europe/Paris** par votre fuseau horaire. La liste des fuseaux horaires
@@ -131,7 +150,7 @@ La timezone par défaut de PHP doit être configurée. Executer la commande suiv
 
 Après avoir réalisé la modification, redémarrez le service PHP-FPM : ::
 
-    # systemctl restart rh-php71-php-fpm
+    # systemctl restart rh-php72-php-fpm
 
 Pare-feu
 --------
@@ -153,7 +172,7 @@ Lancer les commandes suivantes sur le serveur Central : ::
     # systemctl enable httpd24-httpd
     # systemctl enable snmpd
     # systemctl enable snmptrapd
-    # systemctl enable rh-php71-php-fpm
+    # systemctl enable rh-php72-php-fpm
     # systemctl enable centcore
     # systemctl enable centreontrapd
     # systemctl enable cbd
@@ -165,6 +184,8 @@ Lancer les commandes suivantes sur le serveur Central : ::
     d'activation mysql sur ce dernier : ::
     
         # systemctl enable mysql
+    ou
+        # systemctl enable mysqld
 
 Terminer l'installation
 -----------------------
@@ -172,7 +193,7 @@ Terminer l'installation
 Avant de démarrer la configuration via l'interface web les commandes suivantes
 doivent être exécutées : ::
 
-    # systemctl start rh-php71-php-fpm
+    # systemctl start rh-php72-php-fpm
     # systemctl start httpd24-httpd
     # systemctl start mysqld
     # systemctl start cbd

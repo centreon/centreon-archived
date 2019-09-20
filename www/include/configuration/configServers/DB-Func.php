@@ -75,7 +75,7 @@ function getAvailableSuffixIds(
 
     $notAvailableSuffixes = array();
 
-    while ($result = $results->fetchRow()) {
+    while ($result = $results->fetch()) {
         $suffix = (int)$result['suffix'];
         if (!in_array($suffix, $notAvailableSuffixes)) {
             $notAvailableSuffixes[] = $suffix;
@@ -114,12 +114,12 @@ function testExistence($name = null): bool
     }
 
     $query = "SELECT name, id FROM `nagios_server` WHERE `name` = '" . htmlentities($name, ENT_QUOTES, "UTF-8") . "'";
-    $DBRESULT = $pearDB->query($query);
-    $row = $DBRESULT->fetchRow();
+    $dbResult = $pearDB->query($query);
+    $row = $dbResult->fetch();
 
-    if ($DBRESULT->rowCount() >= 1 && $row["id"] == $id) {
+    if ($dbResult->rowCount() >= 1 && $row["id"] == $id) {
         return true;
-    } elseif ($DBRESULT->rowCount() >= 1 && $row["id"] != $id) {
+    } elseif ($dbResult->rowCount() >= 1 && $row["id"] != $id) {
         return false;
     } else {
         return true;
@@ -139,14 +139,14 @@ function enableServerInDB(int $id): void
     global $pearDB, $centreon;
 
     $dbResult = $pearDB->query("SELECT name FROM `nagios_server` WHERE `id` = " . $id . " LIMIT 1");
-    $row = $dbResult->fetchRow();
+    $row = $dbResult->fetch();
 
     $pearDB->query("UPDATE `nagios_server` SET `ns_activate` = '1' WHERE id = " . $id);
     $centreon->CentreonLogAction->insertLog("poller", $id, $row['name'], "enable");
 
     $query = 'SELECT MIN(`nagios_id`) AS idEngine FROM cfg_nagios WHERE `nagios_server_id` = ' . $id;
     $dbResult = $pearDB->query($query);
-    $idEngine = $dbResult->fetchRow();
+    $idEngine = $dbResult->fetch();
 
     if ($idEngine['idEngine']) {
         $pearDB->query(
@@ -171,7 +171,7 @@ function disableServerInDB(int $id): void
     global $pearDB, $centreon;
 
     $dbResult = $pearDB->query("SELECT name FROM `nagios_server` WHERE `id` = " . $id . " LIMIT 1");
-    $row = $dbResult->fetchRow();
+    $row = $dbResult->fetch();
 
     $pearDB->query("UPDATE `nagios_server` SET `ns_activate` = '0' WHERE id = " . $id);
 
@@ -202,7 +202,7 @@ function deleteServerInDB(array $serverIds): void
         $result = $pearDB->query(
             "SELECT name FROM `nagios_server` WHERE `id` = " . $serverId . " LIMIT 1"
         );
-        $row = $result->fetchRow();
+        $row = $result->fetch();
 
         $pearDB->query('DELETE FROM `nagios_server` WHERE id = ' . $serverId);
         $pearDBO->query(
@@ -252,8 +252,8 @@ function duplicateServer(array $server, array $nbrDup): void
         $result = $pearDB->query(
             'SELECT * FROM `nagios_server` WHERE id = ' . (int) $serverId . ' LIMIT 1'
         );
-        $rowServer = $result->fetchRow();
-        $rowServer["id"] = '';
+        $rowServer = $result->fetch();
+        $rowServer["id"] = null;
         $rowServer["ns_activate"] = '0';
         $rowServer["is_default"] = '0';
         $rowServer["localhost"] = '0';
@@ -298,7 +298,7 @@ function duplicateServer(array $server, array $nbrDup): void
                 try {
                     $res = $pearDB->query($queryGetId);
                     if ($res->rowCount() > 0) {
-                        $row = $res->fetchRow();
+                        $row = $res->fetch();
                         $iId = $obj->insertServerInCfgNagios($serverId, $row['id'], $serverName);
 
                         if (isset($rowBks)) {
@@ -368,7 +368,8 @@ function insertServer(array $data): int
     $rq = "INSERT INTO `nagios_server` (`name` , `localhost`, `ns_ip_address`, `ssh_port`, `nagios_bin`," .
         " `nagiostats_bin`, `init_system`, `init_script`, `init_script_centreontrapd`, `snmp_trapd_path_conf`, " .
         "`nagios_perfdata` , `centreonbroker_cfg_path`, `centreonbroker_module_path`, `centreonconnector_path`, " .
-        "`ssh_private_key`, `is_default`, `ns_activate`, `centreonbroker_logs_path`, `remote_id`) ";
+        "`ssh_private_key`, `is_default`, `ns_activate`, `centreonbroker_logs_path`, `remote_id`, " .
+        "`remote_server_centcore_ssh_proxy`) ";
     $rq .= "VALUES (";
     isset($data["name"]) && $data["name"] != null
         ? $rq .= "'" . htmlentities(trim($data["name"]), ENT_QUOTES, "UTF-8") . "', "
@@ -426,12 +427,19 @@ function insertServer(array $data): int
         : $rq .= "NULL,";
     isset($data["remote_id"]) && $data["remote_id"] != null
         ? $rq .= "'" . htmlentities(trim($data["remote_id"]), ENT_QUOTES, "UTF-8") . "' "
-        : $rq .= "NULL";
+        : $rq .= "NULL, ";
+    isset($data["remote_server_centcore_ssh_proxy"]["remote_server_centcore_ssh_proxy"])
+        && $data["remote_server_centcore_ssh_proxy"]["remote_server_centcore_ssh_proxy"] != null
+        ? $rq .= "'" . htmlentities(
+            $data["remote_server_centcore_ssh_proxy"]["remote_server_centcore_ssh_proxy"],
+            ENT_QUOTES,
+            "UTF-8"
+        ) . "'  " : $rq .= "NULL";
     $rq .= ")";
 
     $pearDB->query($rq);
     $result = $pearDB->query("SELECT MAX(id) as last_id FROM `nagios_server`");
-    $poller = $result->fetchRow();
+    $poller = $result->fetch();
     $result->closeCursor();
 
     if (isset($_REQUEST['pollercmd'])) {
@@ -443,7 +451,7 @@ function insertServer(array $data): int
     $fields = CentreonLogAction::prepareChanges($data);
     $centreon->CentreonLogAction->insertLog(
         "poller",
-        isset($poller["MAX(id)"]) ? $poller["MAX(id)"] : null,
+        $poller['last_id'] ?? null,
         CentreonDB::escape($data["name"]),
         "a",
         $fields
@@ -471,7 +479,7 @@ function addUserRessource(int $serverId): bool
         return false;
     }
     $isInsert = array();
-    while ($resource = $res->fetchRow()) {
+    while ($resource = $res->fetch()) {
         if (!in_array($resource['resource_name'], $isInsert)) {
             $isInsert[] = $resource['resource_name'];
             $query = sprintf(
@@ -493,6 +501,33 @@ function addUserRessource(int $serverId): bool
         }
     }
     return true;
+}
+
+/**
+ * Update Remote Server informations
+ *
+ * @param array $data
+ *
+ */
+function updateRemoteServerInformation(array $data)
+{
+    global $pearDB, $centreon;
+
+    $res = $pearDB->query("SELECT * FROM `remote_servers` WHERE ip = '" . $data["ns_ip_address"]  . "'");
+    $rows = $res->fetch(\PDO::FETCH_ASSOC);
+
+    if ($rows > 1) {
+        $rq = "UPDATE `remote_servers` SET ";
+        $rq .= "http_method = '" . $data["http_method"] . "', ";
+        isset($data["http_port"]) && !empty($data["http_port"])
+            ? $rq .= "http_port = '" . $data["http_port"]  . "', "
+            : $rq .= "http_port = NULL, ";
+        $rq .= "no_check_certificate = '" . $data["no_check_certificate"]["no_check_certificate"] . "', ";
+        $rq .= "no_proxy = '" . $data["no_proxy"]["no_proxy"] . "' ";
+        $rq .= "WHERE ip = '" . $data["ns_ip_address"]  . "'";
+        $pearDB->query($rq);
+    }
+    $res->closeCursor();
 }
 
 /**
@@ -593,9 +628,13 @@ function updateServer(int $id, $data): void
     isset($data["remote_id"]) && $data["remote_id"] != null
         ? $rq .= "remote_id = '" . htmlentities(trim($data["remote_id"]), ENT_QUOTES, "UTF-8") . "',  "
         : $rq .= "remote_id = NULL, ";
-    $rq .= "ns_activate = '" . $data["ns_activate"]["ns_activate"] . "' ";
+    $rq .= "ns_activate = '" . $data["ns_activate"]["ns_activate"] . "', ";
+    $rq .= "remote_server_centcore_ssh_proxy = '"
+        . $data["remote_server_centcore_ssh_proxy"]["remote_server_centcore_ssh_proxy"] . "' ";
     $rq .= "WHERE id = '" . $id . "'";
     $pearDB->query($rq);
+
+    updateRemoteServerInformation($data);
 
     if (isset($_REQUEST['pollercmd'])) {
         $instanceObj = new CentreonInstance($pearDB);

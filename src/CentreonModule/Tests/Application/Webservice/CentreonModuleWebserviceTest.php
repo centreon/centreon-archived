@@ -83,7 +83,7 @@ class CentreonModuleWebserviceTest extends TestCase
                             $module,
                         ],
                     ];
-                }))
+            }))
         ;
         $container[ServiceProvider::CENTREON_MODULE]
             ->method('getDetail')
@@ -94,9 +94,9 @@ class CentreonModuleWebserviceTest extends TestCase
                     $funcArgs[0] = $funcArgs[0] === null ? '-' : $funcArgs[0];
                     $funcArgs[1] = $funcArgs[1] === null ? '-' : $funcArgs[1];
 
-                    if ($funcArgs[0] === ModuleSourceTest::$moduleNameMissing) {
-                        return null;
-                    }
+                if ($funcArgs[0] === ModuleSourceTest::$moduleNameMissing) {
+                    return null;
+                }
 
                     $name = implode(',', $funcArgs);
 
@@ -108,24 +108,24 @@ class CentreonModuleWebserviceTest extends TestCase
                     $module->setType(ModuleSource::TYPE);
 
                     return $module;
-                }))
+            }))
         ;
         $container[ServiceProvider::CENTREON_MODULE]
             ->method('install')
             ->will($this->returnCallback(function () {
                     $funcArgs = func_get_args();
 
-                    if ($funcArgs[0] === '' && $funcArgs[1] === '') {
-                        throw new \Exception('');
-                    }
+                if ($funcArgs[0] === '' && $funcArgs[1] === '') {
+                    throw new \Exception('');
+                }
 
                     // prepare filters
                     $funcArgs[0] = $funcArgs[0] === '' ? '-' : $funcArgs[0];
                     $funcArgs[1] = $funcArgs[1] === '' ? '-' : $funcArgs[1];
 
-                    if ($funcArgs[0] === ModuleSourceTest::$moduleNameMissing) {
-                        return null;
-                    }
+                if ($funcArgs[0] === ModuleSourceTest::$moduleNameMissing) {
+                    return null;
+                }
 
                     $name = implode(',', $funcArgs);
 
@@ -137,24 +137,24 @@ class CentreonModuleWebserviceTest extends TestCase
                     $module->setType(ModuleSource::TYPE);
 
                     return $module;
-                }))
+            }))
         ;
         $container[ServiceProvider::CENTREON_MODULE]
             ->method('update')
             ->will($this->returnCallback(function () {
                     $funcArgs = func_get_args();
 
-                    if ($funcArgs[0] === '' && $funcArgs[1] === '') {
-                        throw new \Exception('');
-                    }
+                if ($funcArgs[0] === '' && $funcArgs[1] === '') {
+                    throw new \Exception('');
+                }
 
                     // prepare filters
                     $funcArgs[0] = $funcArgs[0] === '' ? '-' : $funcArgs[0];
                     $funcArgs[1] = $funcArgs[1] === '' ? '-' : $funcArgs[1];
 
-                    if ($funcArgs[0] === ModuleSourceTest::$moduleNameMissing) {
-                        return null;
-                    }
+                if ($funcArgs[0] === ModuleSourceTest::$moduleNameMissing) {
+                    return null;
+                }
 
                     $name = implode(',', $funcArgs);
 
@@ -166,17 +166,17 @@ class CentreonModuleWebserviceTest extends TestCase
                     $module->setType(ModuleSource::TYPE);
 
                     return $module;
-                }))
+            }))
         ;
         $container[ServiceProvider::CENTREON_MODULE]
             ->method('remove')
             ->will($this->returnCallback(function () {
                     $funcArgs = func_get_args();
 
-                    if ($funcArgs[0] === '' && $funcArgs[1] === '') {
-                        throw new \Exception('');
-                    }
-                }))
+                if ($funcArgs[0] === '' && $funcArgs[1] === '') {
+                    throw new \Exception('');
+                }
+            }))
         ;
 
         $this->webservice = $this->createPartialMock(CentreonModuleWebservice::class, [
@@ -198,7 +198,7 @@ class CentreonModuleWebserviceTest extends TestCase
             ->method('query')
             ->will($this->returnCallback(function () use (&$filters) {
                     return $filters;
-                }))
+            }))
         ;
 
         // without applied filters
@@ -233,7 +233,7 @@ class CentreonModuleWebserviceTest extends TestCase
             ->method('query')
             ->will($this->returnCallback(function () use (&$filters) {
                     return $filters;
-                }))
+            }))
         ;
 
         // find module by id and type
@@ -255,7 +255,7 @@ class CentreonModuleWebserviceTest extends TestCase
             ->method('query')
             ->will($this->returnCallback(function () use (&$filters) {
                     return $filters;
-                }))
+            }))
         ;
 
         $this->executeTest($method, 'response-install-1.json');
@@ -274,7 +274,7 @@ class CentreonModuleWebserviceTest extends TestCase
             ->method('query')
             ->will($this->returnCallback(function () use (&$filters) {
                     return $filters;
-                }))
+            }))
         ;
 
         $this->executeTest($method, 'response-update-1.json');
@@ -293,7 +293,7 @@ class CentreonModuleWebserviceTest extends TestCase
             ->method('query')
             ->will($this->returnCallback(function () use (&$filters) {
                     return $filters;
-                }))
+            }))
         ;
 
         $this->executeTest($method, 'response-remove-1.json');
@@ -322,7 +322,7 @@ class CentreonModuleWebserviceTest extends TestCase
                 ->method('hasAccessRestApiConfiguration')
                 ->will($this->returnCallback(function () {
                         return true;
-                    }))
+                }))
             ;
 
             $result = $this->webservice->authorize(null, $user);

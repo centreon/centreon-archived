@@ -72,6 +72,13 @@ if (($o == SERVER_MODIFY || $o == SERVER_WATCH) && $server_id) {
     } elseif (in_array($cfg_server['ns_ip_address'], $remotesServerIPs)) {
         $serverType = "remote";
     }
+
+    if ($serverType === "remote") {
+        $dbResult = $pearDB->query("SELECT http_method, http_port, no_check_certificate, no_proxy " .
+            "FROM `remote_servers` WHERE `ip` = '" . $cfg_server['ns_ip_address'] . "' LIMIT 1");
+        $cfg_server = array_merge($cfg_server, array_map("myDecode", $dbResult->fetch()));
+        $dbResult->closeCursor();
+    }
 }
 
 /*
@@ -138,6 +145,27 @@ $form->addElement('header', 'Misc', _("Miscelleneous"));
 $form->addElement('header', 'Centreontrapd', _("Centreon Trap Collector"));
 
 /*
+ * form for Remote Server
+ */
+if (strcmp($serverType, 'remote') ==  0) {
+    $form->addElement('header', 'Remote_Configuration', _("Remote Server Configuration"));
+    $aMethod = array(
+        'http' => 'http',
+        'https' => 'https'
+    );
+    $form->addElement('select', 'http_method', _("HTTP Method"), $aMethod);
+    $form->addElement('text', 'http_port', _("HTTP Port"), $attrsText3);
+    $tab = array();
+    $tab[] = $form->createElement('radio', 'no_check_certificate', null, _("Yes"), '1');
+    $tab[] = $form->createElement('radio', 'no_check_certificate', null, _("No"), '0');
+    $form->addGroup($tab, 'no_check_certificate', _("Do not check SSL certificate validation"), '&nbsp;');
+    $tab = array();
+    $tab[] = $form->createElement('radio', 'no_proxy', null, _("Yes"), '1');
+    $tab[] = $form->createElement('radio', 'no_proxy', null, _("No"), '0');
+    $form->addGroup($tab, 'no_proxy', _("Do not use proxy defined in global configuration"), '&nbsp;');
+}
+
+/*
  * Poller Configuration basic information
  */
 $form->addElement('header', 'information', _("Satellite configuration"));
@@ -146,6 +174,10 @@ $form->addElement('text', 'ns_ip_address', _("IP Address"), $attrsText);
 $form->addElement('text', 'init_script', _("Monitoring Engine Init Script"), $attrsText2);
 if (strcmp($serverType, 'poller') ==  0) {
     $form->addElement('select2', 'remote_id', _('Attach to Remote Server'), array(), $attrPoller1);
+    $tab = array();
+    $tab[] = $form->createElement('radio', 'remote_server_centcore_ssh_proxy', null, _("Yes"), '1');
+    $tab[] = $form->createElement('radio', 'remote_server_centcore_ssh_proxy', null, _("No"), '0');
+    $form->addGroup($tab, 'remote_server_centcore_ssh_proxy', _("Use the Remote Server as a proxy for SSH"), '&nbsp;');
 }
 $form->addElement('text', 'nagios_bin', _("Monitoring Engine Binary"), $attrsText2);
 $form->addElement('text', 'nagiostats_bin', _("Monitoring Engine Statistics Binary"), $attrsText2);
@@ -153,20 +185,20 @@ $form->addElement('text', 'nagios_perfdata', _("Perfdata file"), $attrsText2);
 
 $form->addElement('text', 'ssh_port', _("SSH port"), $attrsText3);
 
-$Tab = array();
-$Tab[] = $form->createElement('radio', 'localhost', null, _("Yes"), '1');
-$Tab[] = $form->createElement('radio', 'localhost', null, _("No"), '0');
-$form->addGroup($Tab, 'localhost', _("Localhost ?"), '&nbsp;');
+$tab = array();
+$tab[] = $form->createElement('radio', 'localhost', null, _("Yes"), '1');
+$tab[] = $form->createElement('radio', 'localhost', null, _("No"), '0');
+$form->addGroup($tab, 'localhost', _("Localhost ?"), '&nbsp;');
 
-$Tab = array();
-$Tab[] = $form->createElement('radio', 'is_default', null, _("Yes"), '1');
-$Tab[] = $form->createElement('radio', 'is_default', null, _("No"), '0');
-$form->addGroup($Tab, 'is_default', _("Is default poller ?"), '&nbsp;');
+$tab = array();
+$tab[] = $form->createElement('radio', 'is_default', null, _("Yes"), '1');
+$tab[] = $form->createElement('radio', 'is_default', null, _("No"), '0');
+$form->addGroup($tab, 'is_default', _("Is default poller ?"), '&nbsp;');
 
-$Tab = array();
-$Tab[] = $form->createElement('radio', 'ns_activate', null, _("Enabled"), '1');
-$Tab[] = $form->createElement('radio', 'ns_activate', null, _("Disabled"), '0');
-$form->addGroup($Tab, 'ns_activate', _("Status"), '&nbsp;');
+$tab = array();
+$tab[] = $form->createElement('radio', 'ns_activate', null, _("Enabled"), '1');
+$tab[] = $form->createElement('radio', 'ns_activate', null, _("Disabled"), '0');
+$form->addGroup($tab, 'ns_activate', _("Status"), '&nbsp;');
 
 /*
  * Extra commands
@@ -234,7 +266,8 @@ if (isset($_GET["o"]) && $_GET["o"] == SERVER_ADD) {
             "centreonbroker_module_path" => "/usr/share/centreon/lib/centreon-broker",
             "centreonbroker_logs_path" => "/var/log/centreon-broker",
             "init_script_centreontrapd" => "centreontrapd",
-            "snmp_trapd_path_conf" => "/etc/snmp/centreon_traps/"
+            "snmp_trapd_path_conf" => "/etc/snmp/centreon_traps/",
+            "remote_server_centcore_ssh_proxy" => '1'
         )
     );
 } else {

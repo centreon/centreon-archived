@@ -49,13 +49,13 @@ function testHostGroupDependencyExistence($name = null)
         $id = $form->getSubmitValue('dep_id');
     }
     $query = "SELECT dep_name, dep_id FROM dependency WHERE dep_name = '" . CentreonDB::escape($name) . "'";
-    $DBRESULT = $pearDB->query($query);
-    $dep = $DBRESULT->fetchRow();
+    $dbResult = $pearDB->query($query);
+    $dep = $dbResult->fetch();
     #Modif case
-    if ($DBRESULT->rowCount() >= 1 && $dep["dep_id"] == $id) {
+    if ($dbResult->rowCount() >= 1 && $dep["dep_id"] == $id) {
         return true;
     } #Duplicate entry
-    elseif ($DBRESULT->rowCount() >= 1 && $dep["dep_id"] != $id) {
+    elseif ($dbResult->rowCount() >= 1 && $dep["dep_id"] != $id) {
         return false;
     } else {
         return true;
@@ -85,10 +85,10 @@ function deleteHostGroupDependencyInDB($dependencies = array())
 {
     global $pearDB, $centreon;
     foreach ($dependencies as $key => $value) {
-        $DBRESULT2 = $pearDB->query("SELECT dep_name FROM `dependency` WHERE `dep_id` = '" . $key . "' LIMIT 1");
-        $row = $DBRESULT2->fetchRow();
+        $dbResult2 = $pearDB->query("SELECT dep_name FROM `dependency` WHERE `dep_id` = '" . $key . "' LIMIT 1");
+        $row = $dbResult2->fetch();
 
-        $DBRESULT = $pearDB->query("DELETE FROM dependency WHERE dep_id = '" . $key . "'");
+        $dbResult = $pearDB->query("DELETE FROM dependency WHERE dep_id = '" . $key . "'");
         $centreon->CentreonLogAction->insertLog("hostgroup dependency", $key, $row['dep_name'], "d");
     }
 }
@@ -97,9 +97,9 @@ function multipleHostGroupDependencyInDB($dependencies = array(), $nbrDup = arra
 {
     foreach ($dependencies as $key => $value) {
         global $pearDB, $centreon;
-        $DBRESULT = $pearDB->query("SELECT * FROM dependency WHERE dep_id = '" . $key . "' LIMIT 1");
-        $row = $DBRESULT->fetchRow();
-        $row["dep_id"] = '';
+        $dbResult = $pearDB->query("SELECT * FROM dependency WHERE dep_id = '" . $key . "' LIMIT 1");
+        $row = $dbResult->fetch();
+        $row["dep_id"] = null;
         for ($i = 1; $i <= $nbrDup[$key]; $i++) {
             $val = null;
             foreach ($row as $key2 => $value2) {
@@ -117,33 +117,33 @@ function multipleHostGroupDependencyInDB($dependencies = array(), $nbrDup = arra
             if (isset($dep_name) && testHostGroupDependencyExistence($dep_name)) {
                 $val ? $rq = "INSERT INTO dependency VALUES (" . $val . ")" : $rq = null;
                 $pearDB->query($rq);
-                $DBRESULT = $pearDB->query("SELECT MAX(dep_id) FROM dependency");
-                $maxId = $DBRESULT->fetchRow();
+                $dbResult = $pearDB->query("SELECT MAX(dep_id) FROM dependency");
+                $maxId = $dbResult->fetch();
                 if (isset($maxId["MAX(dep_id)"])) {
                     $query = "SELECT DISTINCT hostgroup_hg_id FROM dependency_hostgroupParent_relation " .
                         "WHERE dependency_dep_id = '" . $key . "'";
-                    $DBRESULT = $pearDB->query($query);
+                    $dbResult = $pearDB->query($query);
                     $fields["dep_hgParents"] = "";
-                    while ($hg = $DBRESULT->fetchRow()) {
-                        $query = "INSERT INTO dependency_hostgroupParent_relation VALUES ('', '" .
+                    while ($hg = $dbResult->fetch()) {
+                        $query = "INSERT INTO dependency_hostgroupParent_relation VALUES ('" .
                             $maxId["MAX(dep_id)"] . "', '" . $hg["hostgroup_hg_id"] . "')";
                         $pearDB->query($query);
                         $fields["dep_hgParents"] .= $hg["hostgroup_hg_id"] . ",";
                     }
                     $fields["dep_hgParents"] = trim($fields["dep_hgParents"], ",");
-                    $DBRESULT->closeCursor();
+                    $dbResult->closeCursor();
                     $query = "SELECT DISTINCT hostgroup_hg_id FROM dependency_hostgroupChild_relation " .
                         "WHERE dependency_dep_id = '" . $key . "'";
-                    $DBRESULT = $pearDB->query($query);
+                    $dbResult = $pearDB->query($query);
                     $fields["dep_hgChilds"] = "";
-                    while ($hg = $DBRESULT->fetchRow()) {
-                        $query = "INSERT INTO dependency_hostgroupChild_relation VALUES ('', '" .
+                    while ($hg = $dbResult->fetch()) {
+                        $query = "INSERT INTO dependency_hostgroupChild_relation VALUES ('" .
                             $maxId["MAX(dep_id)"] . "', '" . $hg["hostgroup_hg_id"] . "')";
                         $pearDB->query($query);
                         $fields["dep_hgChilds"] .= $hg["hostgroup_hg_id"] . ",";
                     }
                     $fields["dep_hgChilds"] = trim($fields["dep_hgChilds"], ",");
-                    $DBRESULT->closeCursor();
+                    $dbResult->closeCursor();
                     $centreon->CentreonLogAction->insertLog(
                         "hostgroup dependency",
                         $maxId["MAX(dep_id)"],
@@ -206,8 +206,8 @@ function insertHostGroupDependency($ret = array())
         : $rq .= "NULL ";
     $rq .= ")";
     $pearDB->query($rq);
-    $DBRESULT = $pearDB->query("SELECT MAX(dep_id) FROM dependency");
-    $dep_id = $DBRESULT->fetchRow();
+    $dbResult = $pearDB->query("SELECT MAX(dep_id) FROM dependency");
+    $dep_id = $dbResult->fetch();
 
     /* Prepare value for changelog */
     $fields = CentreonLogAction::prepareChanges($ret);
@@ -279,7 +279,7 @@ function updateHostGroupDependencyHostGroupParents($dep_id = null, $ret = array(
     global $pearDB;
     $rq = "DELETE FROM dependency_hostgroupParent_relation ";
     $rq .= "WHERE dependency_dep_id = '" . $dep_id . "'";
-    $DBRESULT = $pearDB->query($rq);
+    $dbResult = $pearDB->query($rq);
     if (isset($ret["dep_hgParents"])) {
         $ret = $ret["dep_hgParents"];
     } else {
@@ -290,7 +290,7 @@ function updateHostGroupDependencyHostGroupParents($dep_id = null, $ret = array(
         $rq .= "(dependency_dep_id, hostgroup_hg_id) ";
         $rq .= "VALUES ";
         $rq .= "('" . $dep_id . "', '" . $ret[$i] . "')";
-        $DBRESULT = $pearDB->query($rq);
+        $dbResult = $pearDB->query($rq);
     }
 }
 
@@ -303,7 +303,7 @@ function updateHostGroupDependencyHostGroupChilds($dep_id = null, $ret = array()
     global $pearDB;
     $rq = "DELETE FROM dependency_hostgroupChild_relation ";
     $rq .= "WHERE dependency_dep_id = '" . $dep_id . "'";
-    $DBRESULT = $pearDB->query($rq);
+    $dbResult = $pearDB->query($rq);
     if (isset($ret["dep_hgChilds"])) {
         $ret = $ret["dep_hgChilds"];
     } else {
@@ -314,6 +314,6 @@ function updateHostGroupDependencyHostGroupChilds($dep_id = null, $ret = array()
         $rq .= "(dependency_dep_id, hostgroup_hg_id) ";
         $rq .= "VALUES ";
         $rq .= "('" . $dep_id . "', '" . $ret[$i] . "')";
-        $DBRESULT = $pearDB->query($rq);
+        $dbResult = $pearDB->query($rq);
     }
 }

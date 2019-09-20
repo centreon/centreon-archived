@@ -1,14 +1,14 @@
 {
     "name": "centreon/centreon",
-    "version": "2.7.3",
     "type": "project",
-    "license": "GPL Licence 2.0",
+    "license": "GPL-2.0-only",
     "authors": [
         {
             "name": "Kevin Duret",
             "email": "kduret@centreon.com"
         }
     ],
+    "description": "Centreon - IT and Application monitoring software",
     "config": {
         "secure-http": false
     },
@@ -31,14 +31,21 @@
         "pimple/pimple": "^3.2",
         "symfony/filesystem": "^4.1",
         "symfony/finder": "^4.1",
-        "symfony/yaml": "~3.0",
+        "symfony/yaml": "^4.2",
         "openpsa/quickform": "3.3.*",
         "smarty/smarty": "~2.6",
-        "curl/curl" : "^1.5"
+        "curl/curl" : "^1.5",
+        "symfony/serializer": "4.3.*",
+        "symfony/validator": "4.3.*",
+        "symfony/translation": "4.3.*",
+        "symfony/property-access": "4.3.*",
+        "symfony/property-info": "4.3.*",
+        "symfony/expression-language": "4.3.*"
     },
     "autoload": {
         "psr-4": {
-            "": "src/"
+            "": "src/",
+            "ConfigGenerateRemote\\": "www/class/config-generate-remote/"
         },
         "classmap": ["www/class/"],
         "files" : [
@@ -46,6 +53,7 @@
             "www/api/exceptions.php",
             "www/api/class/webService.class.php",
             "www/lib/HTML/QuickForm/HTML_QuickFormCustom.php",
+            "www/lib/HTML/QuickForm/HTML_QuickForm_checkbox_Custom.php",
             "www/lib/HTML/QuickForm/HTML_QuickForm_radio_Custom.php",
             "www/lib/HTML/QuickForm/select2.php",
             "www/lib/HTML/QuickForm/advmultiselect.php",

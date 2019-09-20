@@ -35,7 +35,7 @@ Sauvegarder les modifications en cliquant sur le bouton **Save**.
     :align: center
 
 Le service est maintenant défini dans l'interface Centreon web mais le moteur ne le
-connait pas encore !
+connaît pas encore !
 
 Vous devez :ref:`générer la configuration, l'exporter et l'envoyer au moteur de supervision<deployconfiguration>`.
 

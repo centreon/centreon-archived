@@ -43,40 +43,8 @@ additional oerations to be performed. **It is imperative that you complete the i
 .. note::
     To remove this message, delete the **/etc/profile.d/centreon.sh** file.
 
-******
-Poller
-******
+Quick start
+===========
 
-Deploying the Poller from a virtual machine is almost the same as from the central server. You have to exchange SSH
-keys and configure the Poller through the web interface.
-
-Exchanging SSH keys
-===================
-
-The communication between the central server and a poller server is done via SSH.
-
-You must exchange the SSH keys between the servers.
-
-If you don’t have any private SSH keys on the central server for the
-**centreon** user: ::
-
-    # su - centreon
-    $ ssh-keygen -t rsa
-
-Copy this key to the new server: ::
-
-    # su - centreon
-    $ ssh-copy-id -i .ssh/id_rsa.pub centreon@IP_POLLER
-
-The password of the **centreon** user is *centreon*. It can be easily changed using the **passwd** command.
-
-.. note::
-    Hit enter when it prompts for a file to save the key to use the default location,
-    or, create one in a specified directory. Leave the passphrase blank if you
-    wish. However it is not recommended. You will receive a key fingerprint
-    and a randomart image.
-
-On the Web interface
-====================
-
-.. include:: ../administration_guide/poller/wizard_add_poller.rst
+Go to the :ref:`quick start<quickstart>` chapter to configure your first
+monitoring.
