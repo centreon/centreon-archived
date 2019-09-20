@@ -194,9 +194,10 @@ class CentreonTopCounter extends CentreonWebService
         if (!isset($_SESSION['centreon'])) {
             throw new \RestUnauthorizedException('Session does not exists.');
         }
-        $user = $_SESSION['centreon']->user;
 
+        $user = $_SESSION['centreon']->user;
         $locale = $user->lang === 'browser' ? null : $user->lang;
+        $autoLoginKey = null;
 
         if (isset($_SESSION['disable_sound'])) {
             $this->soundNotificationsEnabled = !$_SESSION['disable_sound'];
@@ -237,7 +238,7 @@ class CentreonTopCounter extends CentreonWebService
             /* Get autologinkey */
             try {
                 $res = $this->pearDB->prepare(
-                    'SELECT contact_autologin_key FROM contact WHERE contact_id = :userID'
+                    'SELECT contact_autologin_key FROM contact WHERE contact_id = :userId'
                 );
                 $res->bindValue(':userId',  (int)$user->user_id, \PDO::PARAM_INT);
                 $res->execute();
