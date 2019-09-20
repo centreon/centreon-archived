@@ -93,7 +93,8 @@ class CommandConfigurationContext extends CentreonContext
     {
         $this->currentPage = new CommandConfigurationListingPage($this, true, 3);
         $object = $this->currentPage->getEntry($this->initialProperties['command_name']);
-        $this->assertFind('css', 'input[type="checkbox"][name="select[' . $object['id'] . ']"]')->check();
+        $checkbox = $this->assertFind('css', 'input[type="checkbox"][name="select[' . $object['id'] . ']"]');
+        $this->currentPage->checkCheckbox($checkbox);
         $this->setConfirmBox(true);
         $this->selectInList('select[name="o1"]', 'Duplicate');
     }
@@ -141,7 +142,8 @@ class CommandConfigurationContext extends CentreonContext
     {
         $this->currentPage = new CommandConfigurationListingPage($this, true, 3);
         $object = $this->currentPage->getEntry($this->initialProperties['command_name']);
-        $this->assertFind('css', 'input[type="checkbox"][name="select[' . $object['id'] . ']"]')->check();
+        $checkbox = $this->assertFind('css', 'input[type="checkbox"][name="select[' . $object['id'] . ']"]');
+        $this->currentPage->checkCheckbox($checkbox);
         $this->setConfirmBox(true);
         $this->selectInList('select[name="o1"]', 'Delete');
     }
