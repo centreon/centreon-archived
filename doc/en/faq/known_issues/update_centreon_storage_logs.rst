@@ -4,7 +4,29 @@
 Update centreon_storage.logs table
 ==================================
 
-The purpose of this procedure is to allow modification of log_id column of centreon_storage.logs table without service interruption.
+Issues
+======
+
+Some customers have reached the maximum number of records in the centeron_storage.logs table which currently can only contain 2 147 483 647 records (signed integer, count from 0).
+
+Broker can therefore no longer add any elements to this table.
+
+Objectif
+========
+
+The purpose of this procedure is to allow the modification of the log_id column of the centeron_storage.logs table.
+
+The easiest way to make this change would be to execute the following command directly on the table to change the type of the log_id column:
+::
+
+ ALTER TABLE centreon_storage.logs MODIFY log_id BIGINT(20) NOT NULL AUTO_INCREMENT
+
+However, this operation would block the table during the modification and could take several hours before the end of the operation. Broker would be forced to retain and block the logs upload on the Centreon interface throughout the process.
+
+Nevertheless, this option could be considered if the table contains only a few records (< 10 million).
+
+For large volumes we have created a script allowing the migration of data by partition from the old table to the new one without service interruption.
+
 Requirements
 ============
 
@@ -25,6 +47,11 @@ Then, run the following command:
 
 Explanations
 ============
+
+Functional diagram:
+
+.. image:: /images/faq/workflow_centreon_storage_logs.png
+    :align: center
 
 The update will proceed as follows:
 

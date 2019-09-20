@@ -4,7 +4,28 @@
 Mise à jour de la table centreon_storage.logs
 =============================================
 
-L’objectif de cette procédure est de permettre la modification de la colonne log_id de la table centreon_storage.logs sans interruption de service.
+Problématique
+===========
+
+Certains clients ont atteint le nombre maximal d'enregistrements dans la table centreon_storage.logs qui actuellement ne peux contenir que 2 147 483 647 enregistrements (entier signé, comptage à partir de 0).
+
+Broker ne peut donc plus rajouter d'élément dans cette table.
+
+Objectif
+======
+
+L’objectif de cette procédure est de permettre la modification de la colonne log_id de la table centreon_storage.logs
+
+La façon la plus simple pour effectuer cette modification consisterait à exécuter la commande suivante directement sur la table afin de modifier le type de la colonne log_id :
+::
+
+ ALTER TABLE centreon_storage.logs MODIFY log_id BIGINT(20) NOT NULL AUTO_INCREMENT
+
+Cependant cette opération bloquerait la table durant la modification et pourrait prendre plusieurs heures avant la fin de l'opération. Broker se verrait contraint de faire de la rétention et bloquerait la remontée de log sur l'interface Centreon durant tout le processus.
+
+Malgré tout cette option pourrait être envisagée dans le cas où la table ne contiendrait que peu d'enregistrements (< 10 millions).
+
+Pour les grosses volumétries nous avons réalisé un script permettant la migration des données par partition de l'ancienne table vers la nouvelle sans interruption de service.
 
 Prérequis
 =========
@@ -26,6 +47,11 @@ La commande est la suivante:
 
 Explications
 ============
+
+Diagramme fonctionnel:
+
+.. image:: /images/faq/workflow_centreon_storage_logs.png
+    :align: center
 
 La mise à jour de la table se déroulera de la façon suivante:
 
@@ -64,7 +90,7 @@ Exécution en mode non-interactif (>10 millions d’enregistrements)
   --password:
     mot de passe root de la base de données Centreon (ex. --password=my_root_password).
   --keep:
-    indique que faut conserver les données de l’ancienne table centreon_storage.logs_old.
+    indique que faut conserver les données de l’ancienne table (renommé en centreon_storage.logs_old).
   --no-keep:
     indique que les données de l’ancienne table centreon_storage.logs_old peuvent être supprimées au fur et à mesure de la migration des données vers la nouvelle table centreon_storage.logs.
   --temporary-path:
