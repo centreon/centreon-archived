@@ -128,7 +128,7 @@ print_step_end "OK, timezone set to $timezone"
 print_step_begin "Firewall configuration"
 command -v firewall-cmd > /dev/null 2>&1
 if [ "x$?" '=' x0 ] ; then
-  for svc in http mysql snmp snmptrap ; do
+  for svc in http snmp snmptrap ; do
     firewall-cmd --zone=public --add-service=$svc --permanent > /dev/null 2>&1
     if [ "x$?" '!=' x0 ] ; then
       error_and_exit "Could not configure firewall. You might need to run this script as root."
