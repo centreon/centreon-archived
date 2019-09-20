@@ -184,11 +184,11 @@ VENDOR;ADD;HP-Compaq;HP and Compaq Systems
 VENDOR;setparam;HP-Compaq;id;11
 VENDOR;setparam;HP-Compaq;name;HP-Compaq
 VENDOR;setparam;HP-Compaq;alias;HP and Compaq Systems
-CMD;ADD;host-notify-by-email;1;/usr/bin/printf &quot;%b&quot; &quot;***** centreon Notification *****#BR##BR#Type:$NOTIFICATIONTYPE$#BR#Host: $HOSTNAME$#BR#State: $HOSTSTATE$#BR#Address: $HOSTADDRESS$#BR#Info: $HOSTOUTPUT$#BR#Date/Time: $DATE$&quot; | @MAILER@ -s &quot;Host $HOSTSTATE$ alert for $HOSTNAME$!&quot; $CONTACTEMAIL$
+CMD;ADD;host-notify-by-email;1;/usr/bin/printf &quot;%b&quot; &quot;***** Centreon notification *****#BR##BR#Type:    $NOTIFICATIONTYPE$#BR#Host:    $HOSTALIAS$#BR#Address: $HOSTADDRESS$#BR#State:   $HOSTSTATE$#BR#Since:   $HOSTDURATION$#BR#Info:    $HOSTOUTPUT$&quot; | @MAILER@ -s &quot;$HOSTNAME$ - $HOSTSTATE$ - $DATE$ $TIME$&quot; -r &quot;Centreon <centreon-engine>&quot; -S replyto=&quot;Centreon admin <$ADMINEMAIL$>&quot; $CONTACTEMAIL$
 CMD;setparam;host-notify-by-email;enable_shell;1
 CMD;setparam;host-notify-by-email;command_activate;1
 CMD;setparam;host-notify-by-email;command_locked;0
-CMD;ADD;service-notify-by-email;1;/usr/bin/printf &quot;%b&quot; &quot;***** centreon Notification *****#BR##BR#Notification Type: $NOTIFICATIONTYPE$#BR##BR#Service: $SERVICEDESC$#BR#Host: $HOSTALIAS$#BR#Address: $HOSTADDRESS$#BR#State: $SERVICESTATE$#BR##BR#Date/Time: $DATE$ Additional Info : $SERVICEOUTPUT$&quot; | @MAILER@ -s &quot;** $NOTIFICATIONTYPE$ alert - $HOSTALIAS$/$SERVICEDESC$ is $SERVICESTATE$ **&quot; $CONTACTEMAIL$
+CMD;ADD;service-notify-by-email;1;/usr/bin/printf &quot;%b&quot; &quot;***** Centreon notification *****#BR##BR#Type:    $NOTIFICATIONTYPE$#BR#Host:    $HOSTALIAS$#BR#Address: $HOSTADDRESS$#BR#Service: $SERVICEDESC$#BR#State:   $SERVICESTATE$#BR#Since:   $SERVICEDURATION$#BR#Info:    $SERVICEOUTPUT$&quot; | @MAILER@ -s &quot;$HOSTNAME$/$SERVICEDESC$ - $SERVICESTATE$ - $DATE$ $TIME$&quot; -r &quot;Centreon <centreon-engine>&quot; -S replyto=&quot;Centreon admin <$ADMINEMAIL$>&quot; $CONTACTEMAIL$
 CMD;setparam;service-notify-by-email;enable_shell;1
 CMD;setparam;service-notify-by-email;command_activate;1
 CMD;setparam;service-notify-by-email;command_locked;0
@@ -4771,26 +4771,7 @@ HOST;setparam;Centreon-Server;timezone;0
 HOST;setparam;Centreon-Server;host_locked;0
 HOST;setparam;Centreon-Server;host_register;1
 HOST;setparam;Centreon-Server;host_activate;1
-HOST;ADD;test_host;test_host;0.0.0.0;;Central;
-HOST;setparam;test_host;host_active_checks_enabled;2
-HOST;setparam;test_host;host_passive_checks_enabled;2
-HOST;setparam;test_host;host_checks_enabled;2
-HOST;setparam;test_host;host_obsess_over_host;2
-HOST;setparam;test_host;host_check_freshness;2
-HOST;setparam;test_host;host_event_handler_enabled;2
-HOST;setparam;test_host;host_flap_detection_enabled;2
-HOST;setparam;test_host;host_process_perf_data;2
-HOST;setparam;test_host;host_retain_status_information;2
-HOST;setparam;test_host;host_retain_nonstatus_information;2
-HOST;setparam;test_host;host_notifications_enabled;2
-HOST;setparam;test_host;contact_additive_inheritance;0
-HOST;setparam;test_host;cg_additive_inheritance;0
-HOST;setparam;test_host;timezone;0
-HOST;setparam;test_host;host_locked;0
-HOST;setparam;test_host;host_register;1
-HOST;setparam;test_host;host_activate;1
 HOST;addtemplate;Centreon-Server;generic-host
-HOST;addtemplate;test_host;my_htpl-test
 STPL;ADD;generic-service;generic-service;
 STPL;setparam;generic-service;check_period;24x7
 STPL;setparam;generic-service;notification_period;24x7
@@ -5206,7 +5187,6 @@ STPL;addhosttemplate;SNMP-Windows-CPU;Servers-Win2K3
 HC;ADD;test_category;test_category
 HC;setparam;test_category;hc_activate;1
 HC;addmember;test_category;my_htpl-test
-HC;addmember;test_category;test_host
 HG;ADD;Linux-Servers;All linux servers
 HG;setparam;Linux-Servers;hg_activate;1
 HG;ADD;Windows-Servers;All windows servers
@@ -5226,7 +5206,6 @@ HG;setparam;Unix-Servers;hg_activate;1
 HG;ADD;test_host-group;test_host-group
 HG;setparam;test_host-group;hg_activate;1
 HG;addhost;Linux-Servers;Centreon-Server
-HG;addhost;test_host-group;test_host
 SERVICE;ADD;Centreon-Server;Disk-/;SNMP-DISK-/
 SERVICE;setparam;Centreon-Server;Disk-/;service_is_volatile;2
 SERVICE;setparam;Centreon-Server;Disk-/;service_active_checks_enabled;2
@@ -5387,26 +5366,6 @@ SERVICE;setparam;Centreon-Server;Ping;service_use_only_contacts_from_host;0
 SERVICE;setparam;Centreon-Server;Ping;service_locked;0
 SERVICE;setparam;Centreon-Server;Ping;service_register;1
 SERVICE;setparam;Centreon-Server;Ping;service_activate;1
-SERVICE;ADD;test_host;service_test;test_stpl
-SERVICE;setparam;test_host;service_test;service_is_volatile;2
-SERVICE;setparam;test_host;service_test;service_active_checks_enabled;2
-SERVICE;setparam;test_host;service_test;service_passive_checks_enabled;2
-SERVICE;setparam;test_host;service_test;service_parallelize_check;2
-SERVICE;setparam;test_host;service_test;service_obsess_over_service;2
-SERVICE;setparam;test_host;service_test;service_check_freshness;2
-SERVICE;setparam;test_host;service_test;service_event_handler_enabled;2
-SERVICE;setparam;test_host;service_test;service_flap_detection_enabled;2
-SERVICE;setparam;test_host;service_test;service_process_perf_data;2
-SERVICE;setparam;test_host;service_test;service_retain_status_information;2
-SERVICE;setparam;test_host;service_test;service_retain_nonstatus_information;2
-SERVICE;setparam;test_host;service_test;service_notifications_enabled;2
-SERVICE;setparam;test_host;service_test;contact_additive_inheritance;0
-SERVICE;setparam;test_host;service_test;cg_additive_inheritance;0
-SERVICE;setparam;test_host;service_test;service_inherit_contacts_from_host;1
-SERVICE;setparam;test_host;service_test;service_use_only_contacts_from_host;0
-SERVICE;setparam;test_host;service_test;service_locked;0
-SERVICE;setparam;test_host;service_test;service_register;1
-SERVICE;setparam;test_host;service_test;service_activate;1
 SC;ADD;Ping;ping
 SC;setparam;Ping;sc_activate;1
 SC;ADD;Traffic;Traffic

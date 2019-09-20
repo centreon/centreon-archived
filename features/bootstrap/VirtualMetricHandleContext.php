@@ -98,4 +98,60 @@ class VirtualMetricHandleContext extends CentreonContext
             throw new \Exception($this->vmName . ' virtual Metric is still existing');
         }
     }
+
+    /**
+     * @When I filter the list to find default entity
+     */
+    public function iFilterTheListToFindDefaultntity()
+    {
+        $this->iFilterTheListWith($this->vmName);
+    }
+
+    /**
+     * @Then in the list must be default entity only
+     */
+    public function inTheListMustBeDefaultEntityOnly()
+    {
+        $objects = $this->page->getEntries();
+
+        $result = null;
+
+        foreach ($objects as $key => $data) {
+            if ($result === null && $key === $this->vmName) {
+                $result = true;
+            } else {
+                $result = false;
+            }
+        }
+
+        if ($result === false) {
+            throw new \Exception('It\'s not only a default Virtual Metrics in the list');
+        } elseif ($result === null) {
+            throw new \Exception('The default Virtual Metrics not in the list');
+        }
+    }
+
+    /**
+     * @When I filter the list with :virtualMetricsName
+     *
+     * @param string $virtualMetricsName Virtual metrics filter.
+     */
+    public function iFilterTheListWith($virtualMetricsName)
+    {
+        $this->page = new MetricsConfigurationListingPage($this);
+        $this->page->setVirtualMetricsFilter($virtualMetricsName);
+        $this->page->search();
+    }
+
+    /**
+     * @Then the list must be empty
+     */
+    public function theListMustBeEmpty()
+    {
+        $objects = $this->page->getEntries();
+
+        if ($objects) {
+            throw new \Exception('Virtual Metrics list is not empty');
+        }
+    }
 }

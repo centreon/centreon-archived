@@ -1,3 +1,5 @@
+properties([buildDiscarder(logRotator(numToKeepStr: '50'))])
+
 stage('Source') {
   node {
     sh 'setup_centreon_build.sh'
@@ -8,6 +10,14 @@ stage('Source') {
     source = readProperties file: 'source.properties'
     env.VERSION = "${source.VERSION}"
     env.RELEASE = "${source.RELEASE}"
+    publishHTML([
+      allowMissing: false,
+      keepAll: true,
+      reportDir: 'summary',
+      reportFiles: 'index.html',
+      reportName: 'Centreon Build Artifacts',
+      reportTitles: ''
+    ])
   }
 }
 
@@ -31,6 +41,11 @@ try {
           failedNewAll: '0'
         ])
         junit 'jest-test-results.xml'
+        if (env.BRANCH_NAME == '2.8.x') {
+          withSonarQubeEnv('SonarQube') {
+            sh './centreon-build/jobs/web/3.4/mon-web-analysis.sh'
+          }
+        }
       }
     }
     if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
@@ -79,14 +94,9 @@ try {
       node {
         sh 'setup_centreon_build.sh'
         sh './centreon-build/jobs/web/3.4/mon-web-acceptance.sh centos6 @critical'
-        step([
-          $class: 'XUnitBuilder',
-          thresholds: [
-            [$class: 'FailedThreshold', failureThreshold: '0'],
-            [$class: 'SkippedThreshold', failureThreshold: '0']
-          ],
-          tools: [[$class: 'JUnitType', pattern: 'xunit-reports/**/*.xml']]
-        ])
+        junit 'xunit-reports/**/*.xml'
+        if (currentBuild.result == 'UNSTABLE')
+          currentBuild.result = 'FAILURE'
         archiveArtifacts allowEmptyArchive: true, artifacts: 'acceptance-logs/*.txt, acceptance-logs/*.png'
       }
     },
@@ -94,15 +104,10 @@ try {
       node {
         sh 'setup_centreon_build.sh'
         sh './centreon-build/jobs/web/3.4/mon-web-acceptance.sh centos7 @critical'
-        step([
-          $class: 'XUnitBuilder',
-          thresholds: [
-            [$class: 'FailedThreshold', failureThreshold: '0'],
-            [$class: 'SkippedThreshold', failureThreshold: '0']
-          ],
-          tools: [[$class: 'JUnitType', pattern: 'xunit-reports/**/*.xml']]
-        ])
-        archiveArtifacts allowEmptyArchive: true, artifacts: 'acceptance-logs/*.txt, acceptance-logs/*.png'
+        junit 'xunit-reports/**/*.xml'
+        if (currentBuild.result == 'UNSTABLE')
+          currentBuild.result = 'FAILURE'
+        archiveArtifacts allowEmptyArchive: true, artifacts: 'acceptance-logs/*.txt, acceptance-logs/*.png, acceptance-logs/*.flv'
       }
     }
     if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
@@ -116,14 +121,9 @@ try {
         node {
           sh 'setup_centreon_build.sh'
           sh './centreon-build/jobs/web/3.4/mon-web-acceptance.sh centos6 ~@critical'
-          step([
-            $class: 'XUnitBuilder',
-            thresholds: [
-              [$class: 'FailedThreshold', failureThreshold: '0'],
-              [$class: 'SkippedThreshold', failureThreshold: '0']
-            ],
-            tools: [[$class: 'JUnitType', pattern: 'xunit-reports/**/*.xml']]
-          ])
+          junit 'xunit-reports/**/*.xml'
+          if (currentBuild.result == 'UNSTABLE')
+            currentBuild.result = 'FAILURE'
           archiveArtifacts allowEmptyArchive: true, artifacts: 'acceptance-logs/*.txt, acceptance-logs/*.png'
         }
       },
@@ -131,15 +131,10 @@ try {
         node {
           sh 'setup_centreon_build.sh'
           sh './centreon-build/jobs/web/3.4/mon-web-acceptance.sh centos7 ~@critical'
-          step([
-            $class: 'XUnitBuilder',
-            thresholds: [
-              [$class: 'FailedThreshold', failureThreshold: '0'],
-              [$class: 'SkippedThreshold', failureThreshold: '0']
-            ],
-            tools: [[$class: 'JUnitType', pattern: 'xunit-reports/**/*.xml']]
-          ])
-          archiveArtifacts allowEmptyArchive: true, artifacts: 'acceptance-logs/*.txt, acceptance-logs/*.png'
+          junit 'xunit-reports/**/*.xml'
+          if (currentBuild.result == 'UNSTABLE')
+            currentBuild.result = 'FAILURE'
+          archiveArtifacts allowEmptyArchive: true, artifacts: 'acceptance-logs/*.txt, acceptance-logs/*.png, acceptance-logs/*.flv'
         }
       }
       if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
@@ -160,7 +155,7 @@ try {
     build job: 'centreon-awie/1.0.x', wait: false
     build job: 'centreon-export/2.3.x', wait: false
     build job: 'centreon-license-manager/1.2.x', wait: false
-    build job: 'centreon-poller-display/1.6.x', wait: false
+    build job: 'centreon-poller-display/master', wait: false
     build job: 'centreon-pp-manager/2.4.x', wait: false
     build job: 'centreon-bam/3.6.x', wait: false
   }

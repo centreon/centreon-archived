@@ -39,6 +39,64 @@ if (!isset($oreon)) {
     exit;
 }
 
+
+/**
+ * Retrieve the next available suffixes for this virtual metric name from database
+ *
+ * @global CentreonDB $pearDB DB connector
+ * @param string $virtualMetricName Virtual metric name to process
+ * @param int $numberOf Number of suffix requested
+ * @param int $indexId Id of the record in centreon_storage.index_data
+ * @param string $separator Character used to separate the virtual metric name and suffix
+ * @return array Return the next available suffixes
+ * @throws Exception
+ */
+function getAvailableSuffixIds($virtualMetricName, $numberOf, $indexId, $separator = '_')
+{
+    if (!is_int($numberOf) || $numberOf < 0) {
+        return array();
+    }
+
+    global $pearDB;
+    /**
+     * To avoid that this column value will be interpreted like regular
+     * expression in the database query
+     */
+    $virtualMetricName = preg_quote($virtualMetricName);
+
+    // Get list of suffix already used
+    $virtualMetricName = CentreonDB::escape($virtualMetricName);
+    $query = "SELECT CAST(SUBSTRING_INDEX(vmetric_name,'_',-1) AS INT) AS suffix "
+        . "FROM virtual_metrics WHERE vmetric_name REGEXP '^"
+        . $virtualMetricName . $separator . "[0-9]+$' "
+        . 'AND index_id = ' . (int) $indexId . ' '
+        . 'ORDER BY suffix';
+    $results = $pearDB->query($query);
+
+    $notAvailableSuffixes = array();
+
+    while ($result = $results->fetchRow()) {
+        $suffix = (int)$result['suffix'];
+        if (!in_array($suffix, $notAvailableSuffixes)) {
+            $notAvailableSuffixes[] = $suffix;
+        }
+    }
+
+    /**
+     * Search for available suffixes taking into account those found in the database
+     */
+    $nextAvailableSuffixes = array();
+    $counter = 1;
+    while (count($nextAvailableSuffixes) < $numberOf) {
+        if (!in_array($counter, $notAvailableSuffixes)) {
+            $nextAvailableSuffixes[] = $counter;
+        }
+        $counter++;
+    }
+
+    return $nextAvailableSuffixes;
+}
+
 function _TestRPNInfinityLoop()
 {
     global $form;
@@ -92,85 +150,118 @@ function NameTestExistence($vmetric_name = null, $index_id = null)
     }
 }
 
-function deleteVirtualMetricInDB($vmetrics = array())
+/**
+ * Delete a list of virtual metrics identified by their id
+ *
+ * @param int[] $vmetricsIds Id of virtual metrics to delete
+ * @global CentreonDB $pearDB DB Connector
+ * @throws Exception
+ */
+function deleteVirtualMetricInDB(array $vmetricsIds)
 {
     global $pearDB;
-    foreach ($vmetrics as $key => $value) {
-        $DBRESULT = $pearDB->query("DELETE FROM virtual_metrics WHERE vmetric_id = '".$key."'");
+    foreach (array_keys($vmetricsIds) as $id) {
+        $DBRESULT = $pearDB->query(
+            'DELETE FROM virtual_metrics WHERE vmetric_id = ' . (int) $id
+        );
         if (PEAR::isError($DBRESULT)) {
             print "DB Error : ".$DBRESULT->getDebugInfo();
         }
     }
 }
 
-function multipleVirtualMetricInDB($vmetrics = array(), $nbrDup = array())
+/**
+ * Duplicate a list of virtual metric
+ *
+ * @param int[] $vmetricsIds Id of virtual metrics to duplicate
+ * @param array $nbrDup Number of copy per virtual metrics id
+ * @global CentreonDB $pearDB DB Connector
+ * @throws Exception
+ */
+function duplicateVirtualMetric(array $vmetricsIds, array $nbrDup)
 {
     global $pearDB;
-    foreach ($vmetrics as $key => $value) {
-        $DBRESULT = $pearDB->query("SELECT * FROM virtual_metrics WHERE vmetric_id = '".$key."' LIMIT 1");
+    foreach (array_keys($vmetricsIds) as $id) {
+        if (!is_int($id)) {
+            $id = (int) $id;
+        }
+        $DBRESULT = $pearDB->query(
+            'SELECT * FROM virtual_metrics WHERE vmetric_id = ' . $id
+            . ' LIMIT 1'
+        );
 
         if (PEAR::isError($DBRESULT)) {
             print "DB Error : ".$DBRESULT->getDebugInfo();
         }
-        $row = $DBRESULT->fetchRow();
-        $row["vmetric_id"] = '';
-        for ($i = 1; $i <= $nbrDup[$key]; $i++) {
-            $val = null;
-            foreach ($row as $key2 => $value2) {
-                $key2 == "index_id" ? $i_id = $value2 : null;
-                if ($key2 == "vmetric_name") {
-                    $count = 1;
-                    $v_name = $value2."_".$count;
-                    while (!NameTestExistence($v_name, $i_id)) {
-                        $count++;
-                        $v_name = $value2."_".$count;
-                    }
-                    $value2 = $v_name;
+        $virtualMetricInfos = $DBRESULT->fetchRow();
+        $virtualMetricInfos["vmetric_id"] = '';
+        $availableVirtualMetricSuffix = getAvailableSuffixIds(
+            $virtualMetricInfos['vmetric_name'],
+            $nbrDup[$id],
+            (int) $virtualMetricInfos['index_id']
+        );
+        foreach ($availableVirtualMetricSuffix as $suffix) {
+            $queryValues = null;
+            $virtualMetricName = null;
+            $indexId = null;
+
+            foreach ($virtualMetricInfos as $columnName => $columnValue) {
+                if ($columnName == 'vmetric_name') {
+                    $columnValue .= '_' . $suffix;
+                    $virtualMetricName = $columnValue;
+                } elseif ($columnName == 'index_id') {
+                    $indexId = (int) $columnValue;
+                    $columnValue = $indexId;
                 }
-                $val ? $val .= ($value2!=null?(", '".$value2."'"):", NULL") : $val .= ($value2!=null?("'".$value2."'"):"NULL");
+                if (is_null($queryValues)) {
+                    $queryValues .= $columnValue != null
+                        ? ("'" . $columnValue . "'")
+                        : "NULL";
+                } else {
+                    $queryValues .= $columnValue != null
+                        ? (", '" . $columnValue . "'")
+                        : ", NULL";
+                }
             }
-            $val ? $rq = "INSERT INTO virtual_metrics VALUES (".$val.")" : $rq = null;
-            $DBRESULT2 = $pearDB->query($rq);
-            if (PEAR::isError($DBRESULT2)) {
-                print "DB Error : ".$DBRESULT2->getDebugInfo();
+            if (!is_null($queryValues) && NameTestExistence($virtualMetricName, $indexId)) {
+                $DBRESULT2 = $pearDB->query(
+                    'INSERT INTO virtual_metrics VALUES (' . $queryValues . ')'
+                );
+                if (PEAR::isError($DBRESULT2)) {
+                    print "DB Error : ".$DBRESULT2->getDebugInfo();
+                }
             }
         }
     }
 }
 
-function updateVirtualMetricInDB($vmetric_id = null)
+/**
+ * Insert a new virtual metric
+ *
+ * @param HTML_QuickForm $formData Data from HTML form
+ * @global CentreonDB $pearDB DB Connector to centreon database
+ * @global CentreonDB $pearDBO DB Connector to centreon_storage database
+ * @global Centreon $centreon
+ * @return mixed
+ * @throws Exception
+ */
+function insertVirtualMetric($formData)
 {
-    if (!$vmetric_id) {
-        return;
-    }
-    updateVirtualMetric($vmetric_id);
-}
-
-function insertVirtualMetricInDB()
-{
-    $vmetric_id = insertVirtualMetric();
-    return ($vmetric_id);
-}
-
-function insertVirtualMetric()
-{
-    global $form, $pearDB, $pearDBO, $centreon;
+    global $pearDB, $pearDBO, $centreon;
     $h_id = null;
-    $s_id = null;
-    $ret = array();
-    $ret = $form->getSubmitValues();
-    
-    $rq = "INSERT INTO `virtual_metrics` ( `vmetric_id` , `index_id`, `vmetric_name`, `def_type` , `rpn_function`, `unit_name` , `warn`, `crit`, `hidden` , `comment` , `vmetric_activate`, `ck_state`) ";
-    $rq .= "VALUES ( NULL, ";
 
-    if (isset($ret["host_id"]) && preg_match('/\d+\-\d+/', $ret["host_id"])) {
+    $rq =
+        'INSERT INTO `virtual_metrics` '
+        . '( `vmetric_id` , `index_id`, `vmetric_name`, `def_type` , `rpn_function`, `unit_name` , '
+        . '`warn`, `crit`, `hidden` , `comment` , `vmetric_activate`, `ck_state`) '
+        . 'VALUES ( NULL, ';
+
+    if (isset($formData["host_id"]) && preg_match('/\d+\-\d+/', $formData["host_id"])) {
         # Get index_id
-        list($host_id, $service_id) = explode('-', $ret["host_id"]);
-        $query = "SELECT id "
-            . "FROM index_data "
-            . "WHERE host_id = " . $host_id . " "
-            . "AND service_id = " . $service_id . " ";
-        $result = $pearDBO->query($query);
+        list($host_id, $service_id) = explode('-', $formData["host_id"]);
+        $result = $pearDBO->query(
+            'SELECT id FROM index_data WHERE host_id = ' . (int) $host_id . ' AND service_id = ' . (int) $service_id
+        );
         if ($row = $result->fetchRow()) {
             $rq .= "'" . $row['id'] . "', ";
         } else {
@@ -179,40 +270,71 @@ function insertVirtualMetric()
     } else {
         $rq .= "NULL, ";
     }
-    isset($ret["vmetric_name"]) && $ret["vmetric_name"] != null ? $rq .= "'".htmlentities($ret["vmetric_name"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
-    isset($ret["def_type"]) && $ret["def_type"] != null ? $rq .= "'".$ret["def_type"]."', ": $rq .= "NULL, ";
-    isset($ret["rpn_function"]) && $ret["rpn_function"] != null ? $rq .= "'".$ret["rpn_function"]."', ": $rq .= "NULL, ";
-    isset($ret["unit_name"]) && $ret["unit_name"] != null ? $rq .= "'".$ret["unit_name"]."', ": $rq .= "NULL, ";
-    isset($ret["warn"]) && $ret["warn"] != null ? $rq .= "'".$ret["warn"]."', ": $rq .= "NULL, ";
-    isset($ret["crit"]) && $ret["crit"] != null ? $rq .= "'".$ret["crit"]."', ": $rq .= "NULL, ";
-    isset($ret["vhidden"]) && $ret["vhidden"] != null ? $rq .= "'".$ret["vhidden"]."', ": $rq .= "NULL, ";
-    isset($ret["comment"]) && $ret["comment"] != null ? $rq .= "'".htmlentities($ret["comment"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
+    isset($formData["vmetric_name"]) && $formData["vmetric_name"] != null
+        ? $rq .= "'".htmlentities($formData["vmetric_name"], ENT_QUOTES, "UTF-8")."', "
+        : $rq .= "NULL, ";
+    isset($formData["def_type"]) && $formData["def_type"] != null
+        ? $rq .= "'".$formData["def_type"]."', "
+        : $rq .= "NULL, ";
+    isset($formData["rpn_function"]) && $formData["rpn_function"] != null
+        ? $rq .= "'".$formData["rpn_function"]."', "
+        : $rq .= "NULL, ";
+    isset($formData["unit_name"]) && $formData["unit_name"] != null
+        ? $rq .= "'".$formData["unit_name"]."', "
+        : $rq .= "NULL, ";
+    isset($formData["warn"]) && $formData["warn"] != null
+        ? $rq .= "'".$formData["warn"]."', "
+        : $rq .= "NULL, ";
+    isset($formData["crit"]) && $formData["crit"] != null
+        ? $rq .= "'".$formData["crit"]."', "
+        : $rq .= "NULL, ";
+    isset($formData["vhidden"]) && $formData["vhidden"] != null
+        ? $rq .= "'".$formData["vhidden"]."', "
+        : $rq .= "NULL, ";
+    isset($formData["comment"]) && $formData["comment"] != null
+        ? $rq .= "'".htmlentities($formData["comment"], ENT_QUOTES, "UTF-8")."', "
+        : $rq .= "NULL, ";
+
     $rq .= "NULL, NULL";
     $rq .= ")";
     if ($centreon->optGen["debug_rrdtool"] == "1") {
         $debug_path = realpath($centreon->optGen["debug_path"]);
         error_log("[" . date("d/m/Y H:s") ."] VIRTUAL METRIC : $rq \n", 3, $debug_path . "/rrdtool.log");
     }
-    $DBRESULT = $pearDB->query($rq);
-    $DBRESULT = $pearDB->query("SELECT MAX(vmetric_id) FROM virtual_metrics");
-    $vmetric_id = $DBRESULT->fetchRow();
-    $vmetric_id = $vmetric_id["MAX(vmetric_id)"];
-    return $vmetric_id;
+    $pearDB->query($rq);
+
+    $DBRESULT = $pearDB->query(
+        'SELECT MAX(vmetric_id) AS vmetric_id FROM virtual_metrics'
+    );
+    $result = $DBRESULT->fetchRow();
+
+    return (int) $result['vmetric_id'];
 }
 
-function updateVirtualMetric($vmetric_id = null)
+/**
+ * Update a virtual metric
+ *
+ * @param int $vmetric_id Id of virtual metric to update
+ * @param HTML_QuickForm $data New data of virtual metric
+ * @global CentreonDB $pearDB DB connector in centreon database
+ * @global CentreonDB $pearDBO DB connector in centreon_storage database
+ * @throws Exception
+ */
+function updateVirtualMetric($vmetric_id, $data)
 {
-    if (!$vmetric_id) {
+    if (is_null($vmetric_id)) {
         return;
     }
-    global $form, $pearDB, $pearDBO;
-    $ret = array();
-    $ret = $form->getSubmitValues();
+    if (!is_int($vmetric_id)) {
+        $vmetric_id = (int) $vmetric_id;
+    }
+    global $pearDB, $pearDBO;
+
     $rq = "UPDATE virtual_metrics ";
     $rq .= "SET `index_id` = ";
-    if (isset($ret["host_id"]) && preg_match('/\d+\-\d+/', $ret["host_id"])) {
+    if (isset($data["host_id"]) && preg_match('/\d+\-\d+/', $data["host_id"])) {
         # Get index_id
-        list($host_id, $service_id) = explode('-', $ret["host_id"]);
+        list($host_id, $service_id) = explode('-', $data["host_id"]);
         $query = "SELECT id "
             . "FROM index_data "
             . "WHERE host_id = " . $host_id . " "
@@ -227,125 +349,213 @@ function updateVirtualMetric($vmetric_id = null)
         $rq .= "NULL, ";
     }
     $rq .=  "vmetric_name = ";
-    isset($ret["vmetric_name"]) && $ret["vmetric_name"] != null ? $rq .= "'".htmlentities($ret["vmetric_name"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
+    isset($data["vmetric_name"]) && $data["vmetric_name"] != null
+        ? $rq .= "'".htmlentities($data["vmetric_name"], ENT_QUOTES, "UTF-8")."', "
+        : $rq .= "NULL, ";
     $rq .=  "def_type = ";
-    isset($ret["def_type"]) && $ret["def_type"] != null ? $rq .= "'".$ret["def_type"]."', ": $rq .= "NULL, ";
+    isset($data["def_type"]) && $data["def_type"] != null
+        ? $rq .= "'".$data["def_type"]."', "
+        : $rq .= "NULL, ";
     $rq .=  "rpn_function = ";
-    isset($ret["rpn_function"]) && $ret["rpn_function"] != null ? $rq .= "'".$ret["rpn_function"]."', ": $rq .= "NULL, ";
+    isset($data["rpn_function"]) && $data["rpn_function"] != null
+        ? $rq .= "'".$data["rpn_function"]."', "
+        : $rq .= "NULL, ";
     $rq .=  "unit_name = ";
-    isset($ret["unit_name"]) && $ret["unit_name"] != null ? $rq .= "'".$ret["unit_name"]."', ": $rq .= "NULL, ";
+    isset($data["unit_name"]) && $data["unit_name"] != null
+        ? $rq .= "'".$data["unit_name"]."', "
+        : $rq .= "NULL, ";
     $rq .=  "warn = ";
-    isset($ret["warn"]) && $ret["warn"] != null ? $rq .= "'".$ret["warn"]."', ": $rq .= "NULL, ";
+    isset($data["warn"]) && $data["warn"] != null
+        ? $rq .= "'".$data["warn"]."', "
+        : $rq .= "NULL, ";
     $rq .=  "crit = ";
-    isset($ret["crit"]) && $ret["crit"] != null ? $rq .= "'".$ret["crit"]."', ": $rq .= "NULL, ";
+    isset($data["crit"]) && $data["crit"] != null
+        ? $rq .= "'".$data["crit"]."', "
+        : $rq .= "NULL, ";
     $rq .=  "hidden = ";
-    isset($ret["vhidden"]) && $ret["vhidden"] != null ? $rq .= "'".$ret["vhidden"]."', ": $rq .= "NULL, ";
+    isset($data["vhidden"]) && $data["vhidden"] != null
+        ? $rq .= "'".$data["vhidden"]."', "
+        : $rq .= "NULL, ";
     $rq .=  "comment = ";
-    isset($ret["comment"]) && $ret["comment"] != null ? $rq .= "'".htmlentities($ret["comment"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
+    isset($data["comment"]) && $data["comment"] != null
+        ? $rq .= "'".htmlentities($data["comment"], ENT_QUOTES, "UTF-8")."', "
+        : $rq .= "NULL, ";
     $rq .= "vmetric_activate = NULL, ck_state = NULL ";
     $rq .= "WHERE vmetric_id = '".$vmetric_id."'";
-    $DBRESULT = $pearDB->query($rq);
+    $pearDB->query($rq);
 
     if (!enableVirtualMetricInDB($vmetric_id)) {
-        disableVirtualMetricInDB($vmetric_id, 1);
+        disableVirtualMetricInDB($vmetric_id, true);
     }
 }
 
-function disableVirtualMetricInDB($vmetric_id = null, $force = 0)
+/**
+ * Disable a virtual metric
+ *
+ * @param int $vmetric_id Id of the virtual metric to disable
+ * @param bool $force Indicates whether or not you can force the deactivation
+ * @global CentreonDB $pearDB Db connector
+ * @return bool Indicates whether or not the deactivation has been done
+ * @throws Exception
+ */
+function disableVirtualMetricInDB($virtualMetricId, $force = false)
 {
-    if (!$vmetric_id) {
-        return 0;
+    if (is_null($virtualMetricId)) {
+        return false;
+    }
+    if (!is_int($virtualMetricId)) {
+        $virtualMetricId = (int) $virtualMetricId;
     }
     global $pearDB;
     
-    $v_dis = disableVirtualMetric($vmetric_id, $force);
-    if (!count($v_dis)) {
-        return 0;
+    $virtualMetricIds = disableVirtualMetric($virtualMetricId, $force);
+    if (!count($virtualMetricIds)) {
+        return false;
     }
-    foreach ($v_dis as $pkey => $vm) {
-        $pearDB->query("UPDATE `virtual_metrics` SET `vmetric_activate` = '0' WHERE `vmetric_id` ='$vm';");
+    foreach (array_values($virtualMetricIds) as $id) {
+        $pearDB->query(
+            "UPDATE `virtual_metrics` SET `vmetric_activate` = '0' "
+            . 'WHERE `vmetric_id` = ' . $id
+        );
     }
-    return 1;
+    return true;
 }
 
-function &disableVirtualMetric($v_id = null, $force = 0)
+/**
+ * Disable a virtual metric
+ *
+ * @param int $virtualMetricId Id of the virtual metric to disable
+ * @param bool $force Indicates whether or not you can force the deactivation
+ * @return int[] Returns a virtual metric id list that has been disabled
+ * @throws Exception
+ */
+function &disableVirtualMetric($virtualMetricId = null, $force = false)
 {
     global $pearDB;
-    $v_dis = array();
+    $virtualMetricIds = array();
     
     $repA = array("*", "+", "-", "?", "^", "$");
     $repB = array("\\\\*", "\\\\+", "\\\\-", "\\\\?", "\\\\^", "\\\\$");
-    $l_where = ($force == 0) ? " AND `vmetric_activate` = '1'" : "";
-    $l_pqy = $pearDB->query("SELECT index_id, vmetric_name FROM `virtual_metrics` WHERE `vmetric_id`='$v_id'$l_where;");
-    if ($l_pqy->numRows() == 1) {
-        $vmetric = $l_pqy->fetchRow();
-        $l_pqy->free();
-        $l_pqy = $pearDB->query("SELECT vmetric_id FROM `virtual_metrics` WHERE `index_id`='".$vmetric["index_id"]."' AND `vmetric_activate` = '1' AND `rpn_function` REGEXP '(^|,)".str_replace($repA, $repB, $vmetric["vmetric_name"])."(,|$)';");
-        while ($d_vmetric = $l_pqy->fetchRow()) {
-            $lv_dis = disableVirtualMetric($d_vmetric["vmetric_id"]);
+
+    $request =
+        'SELECT index_id, vmetric_name FROM `virtual_metrics` '
+        . 'WHERE `vmetric_id` = ' . $virtualMetricId;
+    if (!$force) {
+        $request .= " AND `vmetric_activate` = '1'";
+    }
+    $result = $pearDB->query($request);
+    if ($result->numRows() == 1) {
+        $vmetric = $result->fetchRow();
+        $result->free();
+        $virtualMetricName = str_replace($repA, $repB, $vmetric["vmetric_name"]);
+        $result = $pearDB->query(
+            "SELECT vmetric_id FROM `virtual_metrics` "
+            . "WHERE `index_id`='" . (int) $vmetric["index_id"] . "' "
+            . "AND `vmetric_activate` = '1' "
+            . "AND `rpn_function` REGEXP '(^|,)" . $virtualMetricName . "(,|$)'");
+
+        while ($d_vmetric = $result->fetchRow()) {
+            $lv_dis = disableVirtualMetric((int) $d_vmetric["vmetric_id"]);
             if (is_array($lv_dis)) {
-                foreach ($lv_dis as $pkey => $vm) {
-                    $v_dis[] = $vm;
+                foreach (array_values($lv_dis) as $id) {
+                    $virtualMetricIds[] = $id;
                 }
             }
         }
-        $l_pqy->free();
+        $result->free();
         if (!$force) {
-            $v_dis[] = $v_id;
+            $virtualMetricIds[] = $virtualMetricId;
         }
     }
-    return $v_dis;
+    return $virtualMetricIds;
 }
 
-function enableVirtualMetricInDB($vmetric_id = null)
+/**
+ * Enables a virtual metric
+ *
+ * @param int $virtualMetricId Id of the virtual metric to enable
+ * @global CentreonDB $pearDB DB connector
+ * @return bool Indicates whether or not the activation has been done
+ * @throws Exception
+ */
+function enableVirtualMetricInDB($virtualMetricId)
 {
-    if (!$vmetric_id) {
-        return 0;
+    if (is_null($virtualMetricId)) {
+        return false;
+    }
+
+    if (!is_int($virtualMetricId)) {
+        $virtualMetricId = (int) $virtualMetricId;
     }
 
     global $pearDB;
 
-    $v_ena = enableVirtualMetric($vmetric_id);
-    if (!count($v_ena)) {
-        return 0;
+    $virtualMetricIds = enableVirtualMetric($virtualMetricId);
+    if (!count($virtualMetricIds)) {
+        return false;
     }
-    foreach ($v_ena as $pkey => $v_id) {
-        list($rc, $output) = checkRRDGraphData($v_id);
+    foreach (array_values($virtualMetricIds) as $id) {
+        list($rc, $output) = checkRRDGraphData($id);
         if ($rc) {
             $error = preg_replace('/^ERROR:\s*/', '', $output);
             throw new Exception("Wrong RPN syntax (RRDtool said: $error)");
         }
-        $pearDB->query("UPDATE `virtual_metrics` SET `vmetric_activate` = '1' WHERE `vmetric_id` ='$v_id';");
+        $pearDB->query(
+            "UPDATE `virtual_metrics` SET `vmetric_activate` = '1' "
+            . "WHERE `vmetric_id` = " . $id
+        );
     }
-    return 1;
+    return true;
 }
 
-function enableVirtualMetric($v_id, $v_name = null, $index_id = null)
+/**
+ * Enables a virtual metric
+ *
+ * @param int $virtualMetricId Id of the virtual metric to enable
+ * @param string $virtualMetricName
+ * @param int $indexId Index of the virtual metric
+ * @global CentreonDB $pearDB DB connector
+ * @return int[] Returns a virtual metric id list that has been enabled
+ * @throws Exception
+ */
+function enableVirtualMetric($virtualMetricId, $virtualMetricName = null, $indexId = null)
 {
     global $pearDB;
-    $v_ena = array();
 
-    $l_where = "vmetric_id = '$v_id'";
-    if (is_null($v_id)) {
-        $l_where = "vmetric_name = '$v_name' AND index_id ='$index_id'";
+    if (!is_null($virtualMetricId) && !is_int($virtualMetricId)) {
+        $virtualMetricId = (int) $virtualMetricId;
     }
 
-    $l_pqy = $pearDB->query("SELECT vmetric_id, index_id, rpn_function FROM virtual_metrics WHERE $l_where AND (vmetric_activate = '0' OR vmetric_activate IS NULL);");
-    if ($l_pqy->numRows() == 1) {
-        $p_vmetric = $l_pqy->fetchRow();
-        $l_mlist = preg_split("/\,/", $p_vmetric["rpn_function"]);
-        foreach ($l_mlist as $l_mnane) {
-            $lv_ena = enableVirtualMetric(null, $l_mnane, $p_vmetric["index_id"]);
+    $virtualMetricIds = array();
+
+    $subrequest = 'vmetric_id = ' . $virtualMetricId;
+    if (is_null($virtualMetricId) && !is_null($indexId)) {
+        if (!is_int($indexId)) {
+            $indexId = (int) $indexId;
+        }
+        $virtualMetricName = CentreonDB::escape($virtualMetricName);
+        $subrequest = "vmetric_name = '$virtualMetricName' AND index_id = " . $indexId;
+    }
+
+    $result = $pearDB->query(
+        'SELECT vmetric_id, index_id, rpn_function FROM virtual_metrics '
+        . "WHERE $subrequest AND (vmetric_activate = '0' OR vmetric_activate IS NULL)"
+    );
+    if ($result->numRows() == 1) {
+        $virtualMetric = $result->fetchRow();
+        $virtualMetricNames = preg_split("/\,/", $virtualMetric["rpn_function"]);
+        foreach ($virtualMetricNames as $name) {
+            $lv_ena = enableVirtualMetric(null, $name, $virtualMetric["index_id"]);
             if (is_array($lv_ena)) {
-                foreach ($lv_ena as $pkey => $vm) {
-                    $v_ena[] = $vm;
+                foreach (array_values($lv_ena) as $id) {
+                    $virtualMetricIds[] = $id;
                 }
             }
         }
-        $v_ena[] = $p_vmetric["vmetric_id"];
+        $virtualMetricIds[] = (int) $virtualMetric["vmetric_id"];
     }
-    $l_pqy->free();
-    return $v_ena;
+    $result->free();
+    return $virtualMetricIds;
 }
 
 function checkRRDGraphData($v_id = null, $force = 0)

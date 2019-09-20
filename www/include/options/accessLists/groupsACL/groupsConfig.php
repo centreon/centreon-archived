@@ -37,17 +37,47 @@ if (!isset($centreon)) {
     exit();
 }
 
-isset($_GET["acl_group_id"]) ? $cG = $_GET["acl_group_id"] : $cG = null;
-isset($_POST["acl_group_id"]) ? $cP = $_POST["acl_group_id"] : $cP = null;
-$cG ? $acl_group_id = $cG : $acl_group_id = $cP;
+// If acl_group_id is not correctly typed, value will be set to false
+$acl_group_id = filter_var(
+    call_user_func(function () {
+        if (isset($_GET['acl_group_id'])) {
+            return $_GET['acl_group_id'];
+        } elseif (isset($_POST['acl_group_id'])) {
+            return $_POST['acl_group_id'];
+        } else {
+            return null;
+        }
+    }),
+    FILTER_VALIDATE_INT
+);
 
-isset($_GET["select"]) ? $cG = $_GET["select"] : $cG = null;
-isset($_POST["select"]) ? $cP = $_POST["select"] : $cP = null;
-$cG ? $select = $cG : $select = $cP;
+// If one data is not correctly typed in array, it will be set to false
+$select = filter_var_array(
+    call_user_func(function () {
+        if (isset($_GET["select"])) {
+            return $_GET["select"];
+        } elseif (isset($_POST["select"])) {
+            return $_POST["select"];
+        } else {
+            return array();
+        }
+    }),
+    FILTER_VALIDATE_INT
+);
 
-isset($_GET["dupNbr"]) ? $cG = $_GET["dupNbr"] : $cG = null;
-isset($_POST["dupNbr"]) ? $cP = $_POST["dupNbr"] : $cP = null;
-$cG ? $dupNbr = $cG : $dupNbr = $cP;
+// If one data is not correctly typed in array, it will be set to false
+$dupNbr = filter_var_array(
+    call_user_func(function () {
+        if (isset($_GET["dupNbr"])) {
+            return $_GET["dupNbr"];
+        } elseif (isset($_POST["dupNbr"])) {
+            return $_POST["dupNbr"];
+        } else {
+            return array();
+        }
+    }),
+    FILTER_VALIDATE_INT
+);
 
 /*
  * Pear library

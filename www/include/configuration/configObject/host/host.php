@@ -37,17 +37,53 @@ if (!isset($centreon)) {
     exit();
 }
 
-isset($_GET["host_id"]) ? $hG = $_GET["host_id"] : $hG = null;
-isset($_POST["host_id"]) ? $hP = $_POST["host_id"] : $hP = null;
-$hG ? $host_id = $hG : $host_id = $hP;
+// If host_id is not correctly typed, value will be set to false
+$host_id = filter_var(
+    call_user_func(function () {
+        if (isset($_GET["host_id"])) {
+            return $_GET["host_id"];
+        } elseif (isset($_POST["host_id"])) {
+            return $_POST["host_id"];
+        } else {
+            return null;
+        }
+    }),
+    FILTER_VALIDATE_INT
+);
 
-isset($_GET["select"]) ? $cG = $_GET["select"] : $cG = null;
-isset($_POST["select"]) ? $cP = $_POST["select"] : $cP = null;
-$cG ? $select = $cG : $select = $cP;
+// select can be an array of integer or a string of integers separated by comma
+$select = filter_var_array(
+    call_user_func(function () {
+        $selectValue = array();
+        if (isset($_GET["select"])) {
+            $selectValue = $_GET["select"];
+        } elseif (isset($_POST["select"])) {
+            $selectValue = $_POST["select"];
+        }
 
-isset($_GET["dupNbr"]) ? $cG = $_GET["dupNbr"] : $cG = null;
-isset($_POST["dupNbr"]) ? $cP = $_POST["dupNbr"] : $cP = null;
-$cG ? $dupNbr = $cG : $dupNbr = $cP;
+        // when the data is sent from the form, the format is "1,2,5"
+        // so we need to split it by comma, and validate that each element is an integer
+        if (!is_array($selectValue)) {
+            $selectValue = array_filter(explode(',', $selectValue));
+        }
+        return $selectValue;
+    }),
+    FILTER_VALIDATE_INT
+);
+
+// If one data is not correctly typed in array, it will be set to false
+$dupNbr = filter_var_array(
+    call_user_func(function () {
+        if (isset($_GET["dupNbr"])) {
+            return $_GET["dupNbr"];
+        } elseif (isset($_POST["dupNbr"])) {
+            return $_POST["dupNbr"];
+        } else {
+            return array();
+        }
+    }),
+    FILTER_VALIDATE_INT
+);
 
 /*
  * Pear library
@@ -69,13 +105,35 @@ $path = "./include/configuration/configObject/host/";
 require_once $path."DB-Func.php";
 require_once "./include/common/common-Func.php";
 
-if (isset($_POST["o1"]) && isset($_POST["o2"])) {
-    if ($_POST["o1"] != "") {
-        $o = $_POST["o1"];
-    }
-    if ($_POST["o2"] != "") {
-        $o = $_POST["o2"];
-    }
+define('HOST_ADD', 'a');
+define('HOST_DELETE', 'd');
+define('HOST_DEPLOY', 'dp');
+define('HOST_DISABLE', 'u');
+define('HOST_MASSIVE_DISABLE', 'mu');
+define('HOST_DUPLICATE', 'm');
+define('HOST_ENABLE', 's');
+define('HOST_MASSIVE_ENABLE', 'ms');
+define('HOST_MODIFY', 'c');
+define('HOST_MASSIVE_CHANGE', 'mc');
+define('HOST_WATCH', 'w');
+
+$action = filter_var(
+    call_user_func(function () {
+        if (!empty($_POST["o1"])) {
+            return $_POST["o1"];
+        } elseif (!empty($_POST["o2"])) {
+            return $_POST["o2"];
+        } else {
+            return null;
+        }
+    }),
+    FILTER_VALIDATE_REGEXP,
+    array(
+        "options" => array("regexp"=>"/^(a|c|mc|d|dp|m|ms|s|u|mu|w)$/")
+    )
+);
+if ($action !== false) {
+    $o = $action;
 }
 
 /* Set the real page */
@@ -93,46 +151,60 @@ $aclHostString = $acl->getHostsString('ID', $dbmon);
 $aclPollerString = $acl->getPollerString();
 
 switch ($o) {
-    case "a":
+    case HOST_ADD:
         require_once($path."formHost.php");
-        break; #Add a host
-    case "w":
+        break;
+    case HOST_WATCH:
         require_once($path."formHost.php");
-        break; #Watch a host
-    case "c":
+        break;
+    case HOST_MODIFY:
         require_once($path."formHost.php");
-        break; #Modify a host
-    case "mc":
+        break;
+    case HOST_MASSIVE_CHANGE:
         require_once($path."formHost.php");
-        break; # Massive Change
-    case "s":
-        enableHostInDB($host_id);
-        require_once($path."listHost.php");
-        break; #Activate a host
-    case "ms":
-        enableHostInDB(null, isset($select) ? $select : array());
+        break;
+    case HOST_ENABLE:
+        if ($host_id !== false) {
+            enableHostInDB($host_id);
+        }
         require_once($path."listHost.php");
         break;
-    case "u":
-        disableHostInDB($host_id);
-        require_once($path."listHost.php");
-        break; #Desactivate a host
-    case "mu":
-        disableHostInDB(null, isset($select) ? $select : array());
+    case HOST_MASSIVE_ENABLE:
+        if (!in_array(false, $select)) {
+            enableHostInDB(null, $select);
+        }
         require_once($path."listHost.php");
         break;
-    case "m":
-        multipleHostInDB(isset($select) ? $select : array(), $dupNbr);
+    case HOST_DISABLE:
+        if ($host_id !== false) {
+            disableHostInDB($host_id);
+        }
         require_once($path."listHost.php");
-        break; #Duplicate n hosts
-    case "d":
-        deleteHostInDB(isset($select) ? $select : array());
+        break;
+    case HOST_MASSIVE_DISABLE:
+        if (!in_array(false, $select)) {
+            disableHostInDB(null, $select);
+        }
         require_once($path."listHost.php");
-        break; #Delete n hosts
-    case "dp":
-        applytpl(isset($select) ? $select : array());
+        break;
+    case HOST_DUPLICATE: // Duplicate one or more hosts
+        if (!in_array(false, $select) && !in_array(false, $dupNbr)) {
+            multipleHostInDB($select, $dupNbr);
+        }
         require_once($path."listHost.php");
-        break; #Deploy service n hosts
+        break;
+    case HOST_DELETE: // Delete one or more hosts
+        if (!in_array(false, $select)) {
+            deleteHostInDB($select);
+        }
+        require_once($path."listHost.php");
+        break;
+    case HOST_DEPLOY: // Deploy one or more hosts
+        if (!in_array(false, $select)) {
+            applytpl($select);
+        }
+        require_once($path."listHost.php");
+        break;
     default:
         require_once($path."listHost.php");
         break;

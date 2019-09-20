@@ -5,9 +5,7 @@
 			{if $widget.column == 0 || $widget.column > 2}
 			<div class="portlet" name="portlet_{$widget.widget_id}" style="overflow: hidden;">
 				<div class="portlet-header"><span class='widgetTitle' id='title_{$widget.widget_id}'>{$widget.title}</span></div>					
-				<div class="portlet-content" style="overflow: hidden;">
-					<iframe class="portlet-frame" name="widget_{$view_id}_{$widget.widget_id}" frameBorder="0" width="100%" style='overflow: hidden;'></iframe>
-				</div>
+				<div class="portlet-content" id="widget_cont_{$widget.widget_id}" style="overflow: hidden;"></div>
 			</div>
 			{/if}
 		{/foreach}
@@ -18,9 +16,7 @@
 			{if $widget.column == 1}
 			<div class="portlet" name="portlet_{$widget.widget_id}" style="overflow: hidden;">
 				<div class="portlet-header"><span class='widgetTitle' id='title_{$widget.widget_id}'>{$widget.title}</span></div>					
-				<div class="portlet-content" style="overflow: hidden;">
-					<iframe class="portlet-frame" name="widget_{$view_id}_{$widget.widget_id}" frameBorder="0" width="100%" style="overflow: hidden;"></iframe>
-				</div>
+				<div class="portlet-content" id="widget_cont_{$widget.widget_id}" style="overflow: hidden;"></div>
 			</div>
 			{/if}
 		{/foreach}
@@ -31,9 +27,7 @@
 			{if $widget.column == 2}
 			<div class="portlet" name="portlet_{$widget.widget_id}" style="overflow: hidden;">
 				<div class="portlet-header"><span class='widgetTitle' id='title_{$widget.widget_id}'>{$widget.title}</span></div>					
-				<div class="portlet-content" style="overflow: hidden;">
-					<iframe class="portlet-frame" name="widget_{$view_id}_{$widget.widget_id}" frameBorder="0" width="100%" style="overflow: hidden;"></iframe>
-				</div>
+				<div class="portlet-content" id="widget_cont_{$widget.widget_id}" style="overflow: hidden;"></div>
 			</div>
 			{/if}
 		{/foreach}

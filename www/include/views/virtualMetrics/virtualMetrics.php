@@ -37,18 +37,70 @@ if (!isset($centreon)) {
         exit();
 }
 
-isset($_GET["vmetric_id"]) ? $cG = $_GET["vmetric_id"] : $cG = null;
-isset($_POST["vmetric_id"]) ? $cP = $_POST["vmetric_id"] : $cP = null;
-$cG ? $vmetric_id = $cG : $vmetric_id = $cP;
+define('VIRTUAL_METRIC_ADD', 'a');
+define('VIRTUAL_METRIC_MODIFY', 'c');
+define('VIRTUAL_METRIC_DELETE', 'd');
+define('VIRTUAL_METRIC_DUPLICATE', 'm');
+define('VIRTUAL_METRIC_ENABLE', 's');
+define('VIRTUAL_METRIC_DISABLE', 'u');
+define('VIRTUAL_METRIC_WATCH', 'w');
 
-isset($_GET["select"]) ? $cG = $_GET["select"] : $cG = null;
-isset($_POST["select"]) ? $cP = $_POST["select"] : $cP = null;
-$cG ? $select = $cG : $select = $cP;
+/**
+ * @var int $vmetric_id Id of the metric
+ */
+$vmetric_id = filter_var(
+    call_user_func(function () {
+        if (isset($_GET['vmetric_id'])) {
+            return $_GET['vmetric_id'];
+        } elseif (isset($_POST['vmetric_id'])) {
+            return $_POST['vmetric_id'];
+        } else {
+            return null;
+        }
+    }),
+    FILTER_VALIDATE_INT
+);
 
-isset($_GET["dupNbr"]) ? $cG = $_GET["dupNbr"] : $cG = null;
-isset($_POST["dupNbr"]) ? $cP = $_POST["dupNbr"] : $cP = null;
-$cG ? $dupNbr = $cG : $dupNbr = $cP;
+/**
+ * @var int[] $select Id of virtual metrics selected
+ */
+$select = filter_var_array(
+    call_user_func(function () {
+        if (isset($_GET["select"])) {
+            return $_GET["select"];
+        } elseif (isset($_POST["select"])) {
+            return $_POST["select"];
+        } else {
+            return array();
+        }
+    }),
+    FILTER_VALIDATE_INT
+);
 
+/**
+ * @var int[] $dupNbr Number of copy of virtual metrics selected
+ */
+$dupNbr = filter_var_array(
+    call_user_func(function () {
+        if (isset($_GET["dupNbr"])) {
+            return $_GET["dupNbr"];
+        } elseif (isset($_POST["dupNbr"])) {
+            return $_POST["dupNbr"];
+        } else {
+            return array();
+        }
+    }),
+    FILTER_VALIDATE_INT
+);
+
+if (isset($_POST["o1"]) && isset($_POST["o2"])) {
+    if ($_POST["o1"] != "") {
+        $o = $_POST["o1"];
+    }
+    if ($_POST["o2"] != "") {
+        $o = $_POST["o2"];
+    }
+}
 /*
  * Pear library
  */
@@ -68,31 +120,39 @@ require_once $path."DB-Func.php";
 require_once "./include/common/common-Func.php";
 
 switch ($o) {
-    case "a":
+    case VIRTUAL_METRIC_ADD:
         require_once $path."formVirtualMetrics.php";
-        break; #Add a Virtual Metrics
-    case "w":
+        break;
+    case VIRTUAL_METRIC_WATCH:
         require_once $path."formVirtualMetrics.php";
-        break; #Watch a Virtual Metrics
-    case "c":
+        break;
+    case VIRTUAL_METRIC_MODIFY:
         require_once $path."formVirtualMetrics.php" ;
-        break; #Modify a Virtual Metrics
-    case "s":
-        enableVirtualMetricInDB($vmetric_id);
+        break;
+    case VIRTUAL_METRIC_ENABLE:
+        if ($vmetric_id !== false) {
+            enableVirtualMetricInDB($vmetric_id);
+        }
         require_once $path."listVirtualMetrics.php";
-        break; #Activate a Virtual Metrics
-    case "u":
-        disableVirtualMetricInDB($vmetric_id);
+        break;
+    case VIRTUAL_METRIC_DISABLE:
+        if ($vmetric_id !== false) {
+            disableVirtualMetricInDB($vmetric_id);
+        }
         require_once $path."listVirtualMetrics.php";
-        break; #Desactivate a Virtual Metrics...
-    case "m":
-        multipleVirtualMetricInDB(isset($select) ? $select : array(), $dupNbr);
+        break;
+    case VIRTUAL_METRIC_DUPLICATE:
+        if (!in_array(false, $select) && !in_array(false, $dupNbr)) {
+            duplicateVirtualMetric($select, $dupNbr);
+        }
         require_once $path."listVirtualMetrics.php";
-        break; #Duplicate n Virtual Metrics
-    case "d":
-        deleteVirtualMetricInDB(isset($select) ? $select : array());
+        break;
+    case VIRTUAL_METRIC_DELETE:
+        if (!in_array(false, $select)) {
+            deleteVirtualMetricInDB($select);
+        }
         require_once $path."listVirtualMetrics.php";
-        break; #Delete n Virtual Metrics
+        break;
     default:
         require_once $path."listVirtualMetrics.php";
         break;

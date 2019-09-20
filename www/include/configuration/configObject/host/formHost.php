@@ -112,7 +112,7 @@ function parentSameInstance()
 function allInSameInstance($hosts, $instanceId)
 {
     global $pearDB;
-
+    $instanceId = (int) $instanceId;
     $query = 'SELECT host_host_id FROM ns_host_relation
             WHERE nagios_server_id != ' . $instanceId . '
             AND host_host_id IN (' . join(', ', $hosts) . ')';
@@ -127,7 +127,7 @@ function allInSameInstance($hosts, $instanceId)
  * Database retrieve information for Host
  */
 $host = array();
-if (($o == "c" || $o == "w") && $host_id) {
+if (($o == HOST_MODIFY || $o == HOST_WATCH) && $host_id) {
     $DBRESULT = $pearDB->query("SELECT * FROM host, extended_host_information ehi WHERE host_id = '" . $host_id . "' AND ehi.host_host_id = host.host_id LIMIT 1");
 
     /*
@@ -240,7 +240,7 @@ if (($o == "c" || $o == "w") && $host_id) {
      * Set Host and Nagios Server Relation
      */
     $DBRESULT = $pearDB->query("SELECT `nagios_server_id` FROM `ns_host_relation` WHERE `host_host_id` = '" . $host_id . "'");
-    for (($o != "mc") ? $i = 0 : $i = 1; $ns = $DBRESULT->fetchRow(); $i++) {
+    for (($o != HOST_MASSIVE_CHANGE) ? $i = 0 : $i = 1; $ns = $DBRESULT->fetchRow(); $i++) {
         $host["nagios_server_id"][$i] = $ns["nagios_server_id"];
     }
     $DBRESULT->free();
@@ -340,7 +340,7 @@ $DBRESULT->free();
  */
 
 $nsServers = array();
-if ($o == "mc") {
+if ($o == HOST_MASSIVE_CHANGE) {
     $nsServers[null] = null;
 }
 $DBRESULT = $pearDB->query("SELECT id, name
@@ -478,20 +478,20 @@ $TemplateValues = array();
 
 /*
  * For a shitty reason, Quickform set checkbox with stal[o] name
- */ 
+ */
 unset($_POST['o']);
 $form = new HTML_QuickForm('Form', 'post', "?p=" . $p);
 
 $form->registerRule('validate_childs', 'function', 'childSameInstance');
 $form->registerRule('validate_parents', 'function', 'parentSameInstance');
 
-if ($o == "a") {
+if ($o == HOST_ADD) {
     $form->addElement('header', 'title', _("Add a Host"));
-} elseif ($o == "c") {
+} elseif ($o == HOST_MODIFY) {
     $form->addElement('header', 'title', _("Modify a Host"));
-} elseif ($o == "w") {
+} elseif ($o == HOST_WATCH) {
     $form->addElement('header', 'title', _("View a Host"));
-} elseif ($o == "mc") {
+} elseif ($o == HOST_MASSIVE_CHANGE) {
     $form->addElement('header', 'title', _("Massive Change"));
 }
 
@@ -501,7 +501,7 @@ if ($o == "a") {
 #
 $form->addElement('header', 'information', _("General Information"));
 # No possibility to change name and alias, because there's no interest
-if ($o != "mc") {
+if ($o != HOST_MASSIVE_CHANGE) {
     $form->addElement('text', 'host_name', _("Name"), $attrsText);
     $form->addElement('text', 'host_alias', _("Alias"), $attrsText);
     $form->addElement('text', 'host_address', _("IP Address / DNS"), array_merge(array('id' => 'host_address'), $attrsText));
@@ -529,11 +529,11 @@ $form->addElement('select', 'nagios_server_id', _("Monitored from"), $nsServers)
 $DBRESULT = $pearDB->query("SELECT id FROM nagios_server WHERE is_default = '1'");
 $defaultServer = $DBRESULT->fetchRow();
 $DBRESULT->free();
-if (isset($defaultServer) && $defaultServer && $o != "mc") {
+if (isset($defaultServer) && $defaultServer && $o != HOST_MASSIVE_CHANGE) {
     $form->setDefaults(array('nagios_server_id' => $defaultServer["id"]));
 }
 
-if ($o == "mc") {
+if ($o == HOST_MASSIVE_CHANGE) {
     $mc_mod_tplp = array();
     $mc_mod_tplp[] = HTML_QuickForm::createElement('radio', 'mc_mod_tplp', null, _("Incremental"), '0');
     $mc_mod_tplp[] = HTML_QuickForm::createElement('radio', 'mc_mod_tplp', null, _("Replacement"), '1');
@@ -598,11 +598,11 @@ $cloneSetTemplate[] = $form->addElement(
 $dupSvTpl[] = HTML_QuickForm::createElement('radio', 'dupSvTplAssoc', null, _("Yes"), '1');
 $dupSvTpl[] = HTML_QuickForm::createElement('radio', 'dupSvTplAssoc', null, _("No"), '0');
 $form->addGroup($dupSvTpl, 'dupSvTplAssoc', _("Checks Enabled"), '&nbsp;');
-if ($o == "c") {
+if ($o == HOST_MODIFY) {
     $form->setDefaults(array('dupSvTplAssoc' => '0'));
-} elseif ($o == "w") {
+} elseif ($o == HOST_WATCH) {
     ;
-} elseif ($o != "mc") {
+} elseif ($o != HOST_MASSIVE_CHANGE) {
     $form->setDefaults(array('dupSvTplAssoc' => '1'));
 }
 $form->addElement('static', 'dupSvTplAssocText', _("Create Services linked to the Template too"));
@@ -632,7 +632,7 @@ $hostEHE[] = HTML_QuickForm::createElement('radio', 'host_event_handler_enabled'
 $hostEHE[] = HTML_QuickForm::createElement('radio', 'host_event_handler_enabled', null, _("No"), '0');
 $hostEHE[] = HTML_QuickForm::createElement('radio', 'host_event_handler_enabled', null, _("Default"), '2');
 $form->addGroup($hostEHE, 'host_event_handler_enabled', _("Event Handler Enabled"), '&nbsp;');
-if ($o != "mc") {
+if ($o != HOST_MASSIVE_CHANGE) {
     $form->setDefaults(array('host_event_handler_enabled' => '2'));
 }
 
@@ -651,7 +651,7 @@ $hostACE[] = HTML_QuickForm::createElement('radio', 'host_active_checks_enabled'
 $hostACE[] = HTML_QuickForm::createElement('radio', 'host_active_checks_enabled', null, _("No"), '0');
 $hostACE[] = HTML_QuickForm::createElement('radio', 'host_active_checks_enabled', null, _("Default"), '2');
 $form->addGroup($hostACE, 'host_active_checks_enabled', _("Active Checks Enabled"), '&nbsp;');
-if ($o != "mc") {
+if ($o != HOST_MASSIVE_CHANGE) {
     $form->setDefaults(array('host_active_checks_enabled' => '2'));
 }
 
@@ -659,7 +659,7 @@ $hostPCE[] = HTML_QuickForm::createElement('radio', 'host_passive_checks_enabled
 $hostPCE[] = HTML_QuickForm::createElement('radio', 'host_passive_checks_enabled', null, _("No"), '0');
 $hostPCE[] = HTML_QuickForm::createElement('radio', 'host_passive_checks_enabled', null, _("Default"), '2');
 $form->addGroup($hostPCE, 'host_passive_checks_enabled', _("Passive Checks Enabled"), '&nbsp;');
-if ($o != "mc") {
+if ($o != HOST_MASSIVE_CHANGE) {
     $form->setDefaults(array('host_passive_checks_enabled' => '2'));
 }
 
@@ -682,11 +682,11 @@ $hostNE[] = HTML_QuickForm::createElement('radio', 'host_notifications_enabled',
 $hostNE[] = HTML_QuickForm::createElement('radio', 'host_notifications_enabled', null, _("No"), '0');
 $hostNE[] = HTML_QuickForm::createElement('radio', 'host_notifications_enabled', null, _("Default"), '2');
 $form->addGroup($hostNE, 'host_notifications_enabled', _("Notification Enabled"), '&nbsp;');
-if ($o != "mc") {
+if ($o != HOST_MASSIVE_CHANGE) {
     $form->setDefaults(array('host_notifications_enabled' => '2'));
 }
 
-if ($o == "mc") {
+if ($o == HOST_MASSIVE_CHANGE) {
     $mc_mod_notifopt_first_notification_delay = array();
     $mc_mod_notifopt_first_notification_delay[] = &HTML_QuickForm::createElement('radio', 'mc_mod_notifopt_first_notification_delay', null, _("Incremental"), '0');
     $mc_mod_notifopt_first_notification_delay[] = &HTML_QuickForm::createElement('radio', 'mc_mod_notifopt_first_notification_delay', null, _("Replacement"), '1');
@@ -698,7 +698,7 @@ $form->addElement('text', 'host_first_notification_delay', _("First notification
 
 $form->addElement('text', 'host_recovery_notification_delay', _("Recovery notification delay"), $attrsText2);
 
-if ($o == "mc") {
+if ($o == HOST_MASSIVE_CHANGE) {
     $mc_mod_hcg = array();
     $mc_mod_hcg[] = HTML_QuickForm::createElement('radio', 'mc_mod_hcg', null, _("Incremental"), '0');
     $mc_mod_hcg[] = HTML_QuickForm::createElement('radio', 'mc_mod_hcg', null, _("Replacement"), '1');
@@ -709,7 +709,7 @@ if ($o == "mc") {
 /*
  * Additive
  */
-if ($o == "mc") {
+if ($o == HOST_MASSIVE_CHANGE) {
     $contactAdditive[] = HTML_QuickForm::createElement('radio', 'mc_contact_additive_inheritance', null, _("Yes"), '1');
     $contactAdditive[] = HTML_QuickForm::createElement('radio', 'mc_contact_additive_inheritance', null, _("No"), '0');
     $contactAdditive[] = HTML_QuickForm::createElement('radio', 'mc_contact_additive_inheritance', null, _("Default"), '2');
@@ -742,7 +742,7 @@ $attrContactgroup1 = array_merge(
 $form->addElement('select2', 'host_cgs', _("Linked Contact Groups"), array(), $attrContactgroup1);
 
 
-if ($o == "mc") {
+if ($o == HOST_MASSIVE_CHANGE) {
     $mc_mod_notifopt_notification_interval = array();
     $mc_mod_notifopt_notification_interval[] = &HTML_QuickForm::createElement('radio', 'mc_mod_notifopt_notification_interval', null, _("Incremental"), '0');
     $mc_mod_notifopt_notification_interval[] = &HTML_QuickForm::createElement('radio', 'mc_mod_notifopt_notification_interval', null, _("Replacement"), '1');
@@ -752,7 +752,7 @@ if ($o == "mc") {
 
 $form->addElement('text', 'host_notification_interval', _("Notification Interval"), $attrsText2);
 
-if ($o == "mc") {
+if ($o == HOST_MASSIVE_CHANGE) {
     $mc_mod_notifopt_timeperiod = array();
     $mc_mod_notifopt_timeperiod[] = &HTML_QuickForm::createElement('radio', 'mc_mod_notifopt_timeperiod', null, _("Incremental"), '0');
     $mc_mod_notifopt_timeperiod[] = &HTML_QuickForm::createElement('radio', 'mc_mod_notifopt_timeperiod', null, _("Replacement"), '1');
@@ -766,7 +766,7 @@ $attrTimeperiod2 = array_merge(
 );
 $form->addElement('select2', 'timeperiod_tp_id2', _("Notification Period"), array(), $attrTimeperiod2);
 
-if ($o == "mc") {
+if ($o == HOST_MASSIVE_CHANGE) {
     $mc_mod_notifopts = array();
     $mc_mod_notifopts[] = &HTML_QuickForm::createElement('radio', 'mc_mod_notifopts', null, _("Incremental"), '0');
     $mc_mod_notifopts[] = &HTML_QuickForm::createElement('radio', 'mc_mod_notifopts', null, _("Replacement"), '1');
@@ -794,7 +794,7 @@ $form->addElement('header', 'furtherInfos', _("Additional Information"));
 $hostActivation[] = HTML_QuickForm::createElement('radio', 'host_activate', null, _("Enabled"), '1');
 $hostActivation[] = HTML_QuickForm::createElement('radio', 'host_activate', null, _("Disabled"), '0');
 $form->addGroup($hostActivation, 'host_activate', _("Status"), '&nbsp;');
-if ($o != "mc") {
+if ($o != HOST_MASSIVE_CHANGE) {
     $form->setDefaults(array('host_activate' => '1'));
 }
 $form->addElement('textarea', 'host_comment', _("Comments"), $attrsTextarea);
@@ -802,13 +802,13 @@ $form->addElement('textarea', 'host_comment', _("Comments"), $attrsTextarea);
 #
 ## Sort 2 - Host Relations
 #
-if ($o == "a") {
+if ($o == HOST_ADD) {
     $form->addElement('header', 'title2', _("Add relations"));
-} elseif ($o == "c") {
+} elseif ($o == HOST_MODIFY) {
     $form->addElement('header', 'title2', _("Modify relations"));
-} elseif ($o == "w") {
+} elseif ($o == HOST_WATCH) {
     $form->addElement('header', 'title2', _("View relations"));
-} elseif ($o == "mc") {
+} elseif ($o == HOST_MASSIVE_CHANGE) {
     $form->addElement('header', 'title2', _("Massive Change"));
 }
 
@@ -816,7 +816,7 @@ $form->addElement('header', 'links', _("Relations"));
 $form->addElement('header', 'HGlinks', _("Hostgroup Relations"));
 $form->addElement('header', 'HClinks', _("Host Categories Relations"));
 
-if ($o == "mc") {
+if ($o == HOST_MASSIVE_CHANGE) {
     $mc_mod_hpar = array();
     $mc_mod_hpar[] = HTML_QuickForm::createElement('radio', 'mc_mod_hpar', null, _("Incremental"), '0');
     $mc_mod_hpar[] = HTML_QuickForm::createElement('radio', 'mc_mod_hpar', null, _("Replacement"), '1');
@@ -831,7 +831,7 @@ $attrHost1 = array_merge(
 );
 $form->addElement('select2', 'host_parents', _("Parent Hosts"), array(), $attrHost1);
 
-if ($o == "mc") {
+if ($o == HOST_MASSIVE_CHANGE) {
     $mc_mod_hch = array();
     $mc_mod_hch[] = HTML_QuickForm::createElement('radio', 'mc_mod_hch', null, _("Incremental"), '0');
     $mc_mod_hch[] = HTML_QuickForm::createElement('radio', 'mc_mod_hch', null, _("Replacement"), '1');
@@ -845,7 +845,7 @@ $attrHost2 = array_merge(
 );
 $form->addElement('select2', 'host_childs', _("Child Hosts"), array(), $attrHost2);
 
-if ($o == "mc") {
+if ($o == HOST_MASSIVE_CHANGE) {
     $mc_mod_hhg = array();
     $mc_mod_hhg[] = HTML_QuickForm::createElement('radio', 'mc_mod_hhg', null, _("Incremental"), '0');
     $mc_mod_hhg[] = HTML_QuickForm::createElement('radio', 'mc_mod_hhg', null, _("Replacement"), '1');
@@ -859,7 +859,7 @@ $attrHostgroup1 = array_merge(
 );
 $form->addElement('select2', 'host_hgs', _("Parent Host Groups"), array(), $attrHostgroup1);
 
-if ($o == "mc") {
+if ($o == HOST_MASSIVE_CHANGE) {
     $mc_mod_hhc = array();
     $mc_mod_hhc[] = HTML_QuickForm::createElement('radio', 'mc_mod_hhc', null, _("Incremental"), '0');
     $mc_mod_hhc[] = HTML_QuickForm::createElement('radio', 'mc_mod_hhc', null, _("Replacement"), '1');
@@ -873,7 +873,7 @@ $attrHostcategory1 = array_merge(
 );
 $form->addElement('select2', 'host_hcs', _("Parent Host Categories"), array(), $attrHostcategory1);
 
-if ($o == "mc") {
+if ($o == HOST_MASSIVE_CHANGE) {
     $mc_mod_nsid = array();
     $mc_mod_nsid[] = HTML_QuickForm::createElement('radio', 'mc_mod_nsid', null, _("Incremental"), '0');
     $mc_mod_nsid[] = HTML_QuickForm::createElement('radio', 'mc_mod_nsid', null, _("Replacement"), '1');
@@ -884,13 +884,13 @@ if ($o == "mc") {
 #
 ## Sort 3 - Data treatment
 #
-if ($o == "a") {
+if ($o == HOST_ADD) {
     $form->addElement('header', 'title3', _("Add Data Processing"));
-} elseif ($o == "c") {
+} elseif ($o == HOST_MODIFY) {
     $form->addElement('header', 'title3', _("Modify Data Processing"));
-} elseif ($o == "w") {
+} elseif ($o == HOST_WATCH) {
     $form->addElement('header', 'title3', _("View Data Processing"));
-} elseif ($o == "mc") {
+} elseif ($o == HOST_MASSIVE_CHANGE) {
     $form->addElement('header', 'title3', _("Massive Change"));
 }
 
@@ -900,7 +900,7 @@ $hostOOH[] = HTML_QuickForm::createElement('radio', 'host_obsess_over_host', nul
 $hostOOH[] = HTML_QuickForm::createElement('radio', 'host_obsess_over_host', null, _("No"), '0');
 $hostOOH[] = HTML_QuickForm::createElement('radio', 'host_obsess_over_host', null, _("Default"), '2');
 $form->addGroup($hostOOH, 'host_obsess_over_host', _("Obsess Over Host"), '&nbsp;');
-if ($o != "mc") {
+if ($o != HOST_MASSIVE_CHANGE) {
     $form->setDefaults(array('host_obsess_over_host' => '2'));
 }
 
@@ -908,7 +908,7 @@ $hostCF[] = HTML_QuickForm::createElement('radio', 'host_check_freshness', null,
 $hostCF[] = HTML_QuickForm::createElement('radio', 'host_check_freshness', null, _("No"), '0');
 $hostCF[] = HTML_QuickForm::createElement('radio', 'host_check_freshness', null, _("Default"), '2');
 $form->addGroup($hostCF, 'host_check_freshness', _("Check Freshness"), '&nbsp;');
-if ($o != "mc") {
+if ($o != HOST_MASSIVE_CHANGE) {
     $form->setDefaults(array('host_check_freshness' => '2'));
 }
 
@@ -916,7 +916,7 @@ $hostFDE[] = HTML_QuickForm::createElement('radio', 'host_flap_detection_enabled
 $hostFDE[] = HTML_QuickForm::createElement('radio', 'host_flap_detection_enabled', null, _("No"), '0');
 $hostFDE[] = HTML_QuickForm::createElement('radio', 'host_flap_detection_enabled', null, _("Default"), '2');
 $form->addGroup($hostFDE, 'host_flap_detection_enabled', _("Flap Detection Enabled"), '&nbsp;');
-if ($o != "mc") {
+if ($o != HOST_MASSIVE_CHANGE) {
     $form->setDefaults(array('host_flap_detection_enabled' => '2'));
 }
 
@@ -928,7 +928,7 @@ $hostRSI[] = HTML_QuickForm::createElement('radio', 'host_retain_status_informat
 $hostRSI[] = HTML_QuickForm::createElement('radio', 'host_retain_status_information', null, _("No"), '0');
 $hostRSI[] = HTML_QuickForm::createElement('radio', 'host_retain_status_information', null, _("Default"), '2');
 $form->addGroup($hostRSI, 'host_retain_status_information', _("Retain Status Information"), '&nbsp;');
-if ($o != "mc") {
+if ($o != HOST_MASSIVE_CHANGE) {
     $form->setDefaults(array('host_retain_status_information' => '2'));
 }
 
@@ -936,20 +936,20 @@ $hostRNI[] = HTML_QuickForm::createElement('radio', 'host_retain_nonstatus_infor
 $hostRNI[] = HTML_QuickForm::createElement('radio', 'host_retain_nonstatus_information', null, _("No"), '0');
 $hostRNI[] = HTML_QuickForm::createElement('radio', 'host_retain_nonstatus_information', null, _("Default"), '2');
 $form->addGroup($hostRNI, 'host_retain_nonstatus_information', _("Retain Non Status Information"), '&nbsp;');
-if ($o != "mc") {
+if ($o != HOST_MASSIVE_CHANGE) {
     $form->setDefaults(array('host_retain_nonstatus_information' => '2'));
 }
 
 /*
  * Sort 4 - Extended Infos
  */
-if ($o == "a") {
+if ($o == HOST_ADD) {
     $form->addElement('header', 'title4', _("Add a Host Extended Info"));
-} elseif ($o == "c") {
+} elseif ($o == HOST_MODIFY) {
     $form->addElement('header', 'title4', _("Modify a Host Extended Info"));
-} elseif ($o == "w") {
+} elseif ($o == HOST_WATCH) {
     $form->addElement('header', 'title4', _("View a Host Extended Info"));
-} elseif ($o == "mc") {
+} elseif ($o == HOST_MASSIVE_CHANGE) {
     $form->addElement('header', 'title4', _("Massive Change"));
 }
 
@@ -965,7 +965,7 @@ $form->addElement('text', 'ehi_2d_coords', _("2d Coords"), $attrsText2);
 $form->addElement('text', 'ehi_3d_coords', _("3d Coords"), $attrsText2);
 $form->addElement('text', 'geo_coords', _("Geo coordinates"), $attrsText2);
 
-if (!$centreon->user->admin && $o == "a") {
+if (!$centreon->user->admin && $o == HOST_ADD) {
     $attrAclgroups = array(
         'datasourceOrigin' => 'ajax',
         'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_administration_aclgroup&action=list',
@@ -990,13 +990,13 @@ $form->addElement('select', 'criticality_id', _('Severity level'), $criticalityI
 /*
  * Sort 5 - Macros - Nagios 3
  */
-if ($o == "a") {
+if ($o == HOST_ADD) {
     $form->addElement('header', 'title5', _("Add macros"));
-} elseif ($o == "c") {
+} elseif ($o == HOST_MODIFY) {
     $form->addElement('header', 'title5', _("Modify macros"));
-} elseif ($o == "w") {
+} elseif ($o == HOST_WATCH) {
     $form->addElement('header', 'title5', _("View macros"));
-} elseif ($o == "mc") {
+} elseif ($o == HOST_MASSIVE_CHANGE) {
     $form->addElement('header', 'title5', _("Massive Change"));
 }
 
@@ -1037,7 +1037,7 @@ function myReplace()
 
 $form->applyFilter('__ALL__', 'myTrim');
 $from_list_menu = false;
-if ($o != "mc") {
+if ($o != HOST_MASSIVE_CHANGE) {
     $form->applyFilter('host_name', 'myReplace');
     $form->addRule('host_name', _("Compulsory Name"), 'required');
 
@@ -1076,7 +1076,7 @@ if ($o != "mc") {
     if ($mustApplyFormRule) {
         $form->addRule('host_alias', _("Compulsory Alias"), 'required');
     }
-} elseif ($o == "mc") {
+} elseif ($o == HOST_MASSIVE_CHANGE) {
     if ($form->getSubmitValue("submitMC")) {
         $from_list_menu = false;
     } else {
@@ -1099,7 +1099,7 @@ $tpl = initSmartyTpl($path, $tpl);
 
 $tpl->assign('alert_check_interval', _("Warning, unconventional use of interval check. You should prefer to use an interval lower than 24h, if needed, pair this configuration with the use of timeperiods"));
 
-if ($o == "w") {
+if ($o == HOST_WATCH) {
     /*
      * Just watch a host information
      */
@@ -1108,20 +1108,20 @@ if ($o == "w") {
     }
     $form->setDefaults($host);
     $form->freeze();
-} elseif ($o == "c") {
+} elseif ($o == HOST_MODIFY) {
     /*
      * Modify a host information
      */
     $subC = $form->addElement('submit', 'submitC', _("Save"), array("class" => "btc bt_success"));
     $res = $form->addElement('button', 'reset', _("Reset"), array("onClick" => "history.go(0);", "class" => "btc bt_default"));
     $form->setDefaults($host);
-} elseif ($o == "a") {
+} elseif ($o == HOST_ADD) {
     /*
      * Add a host information
      */
     $subA = $form->addElement('submit', 'submitA', _("Save"), array("class" => "btc bt_success"));
     $res = $form->addElement('reset', 'reset', _("Reset"), array("class" => "btc bt_default"));
-} elseif ($o == "mc") {
+} elseif ($o == HOST_MASSIVE_CHANGE) {
     /*
      * Massive Change
      */
@@ -1153,7 +1153,7 @@ foreach ($help as $key => $text) {
 }
 $tpl->assign("helptext", $helptext);
 
-if ($o != "a" && $o != "c") {
+if ($o != HOST_ADD && $o != HOST_MODIFY) {
     $tpl->assign('time_unit', " * " . $centreon->optGen["interval_length"] . " " . _("seconds"));
 } else {
     /*
@@ -1170,14 +1170,13 @@ if ($form->validate() && $from_list_menu == false) {
     } elseif ($form->getSubmitValue("submitC")) {
         updateHostInDB($hostObj->getValue());
     } elseif ($form->getSubmitValue("submitMC")) {
-        $select = explode(",", $select);
         foreach ($select as $key => $value) {
             if ($value) {
                 updateHostInDB($value, true);
             }
         }
     }
-    $o = "w";
+    $o = HOST_WATCH;
     $valid = true;
 } elseif ($form->isSubmitted()) {
     $tpl->assign("macChecker", "<i style='color:red;'>" . $form->getElementError("macChecker") . "</i>");

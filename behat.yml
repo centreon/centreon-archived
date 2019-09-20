@@ -332,3 +332,11 @@ default:
     topcounterpoller:
       paths: [ %paths.base%/features/TopCounterPollers.feature ]
       contexts: [ TopCounterPollersContext ]
+
+    vulnerability_comment:
+      paths: [ %paths.base%/features/VulnerabilityComment.feature ]
+      contexts: [ VulnerabilityCommentContext ]
+
+    XSS_vulnerability_on_poller_resource:
+      paths: [ %paths.base%/features/PollerResourceConfiguration.feature ]
+      contexts: [ PollerResourceConfigurationContext ]

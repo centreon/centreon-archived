@@ -30,11 +30,8 @@ Il existe deux types de temps d'arrêts :
 Configuration
 *************
 
-Pour ajouter un temps d'arrêt récurrent :
-
-#. Rendez-vous dans le menu **Configuration** ==> **Hôtes** (ou **Services** suivant le type d'objet sur lequel réaliser le temps d'arrêt)
-#. Dans le menu de gauche, cliquez sur **Temps d'arrêt**
-#. Cliquez sur **Ajouter**
+Pour ajouter un temps d'arrêt récurrent, rendez-vous dans le menu **Supervision
+> Temps d'arrêt > Recurrent downtimes** et cliquez sur **Ajnouter**
 
 .. image :: /images/guide_utilisateur/configuration/10advanced_configuration/05recurrentdowntimes.png
    :align: center 

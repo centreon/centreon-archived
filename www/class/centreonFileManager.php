@@ -58,8 +58,6 @@ class CentreonFileManager implements iFileManager
     protected $legalSize;
 
     /**
-     * centreonFileManager constructor.
-     * @param \Pimple\Container $dependencyInjector
      * @param $rawFile
      * @param $mediaPath
      * @param $destinationDir
@@ -89,7 +87,9 @@ class CentreonFileManager implements iFileManager
     }
 
     /**
-     * @return mixed
+     * Upload a new image
+     *
+     * @return bool Returns true on success
      */
     public function upload()
     {
@@ -98,10 +98,16 @@ class CentreonFileManager implements iFileManager
             return true;
         } else {
             return false;
-        };
+        }
     }
 
     /**
+     * Indicates if all tests are passed
+     *
+     * @see CentreonFileManager::validFile()
+     * @see CentreonFileManager::validSize()
+     * @see CentreonFileManager::secureExtension()
+     * @see CentreonFileManager::fileExist()
      * @return bool
      */
     protected function securityCheck()
@@ -118,8 +124,10 @@ class CentreonFileManager implements iFileManager
     }
 
     /**
-     * @param $text
-     * @return mixed
+     * Secure the text given as a parameter
+     *
+     * @param string $text text to secure
+     * @return string Returns the secured text
      */
     protected function secureName($text)
     {
@@ -148,19 +156,21 @@ class CentreonFileManager implements iFileManager
     }
 
     /**
-     * @return bool
+     * Indicates whether the extension file is allowed
+     *
+     * @return bool Returns true if the extension file is allowed
      */
     protected function secureExtension()
     {
 
-        if (in_array(strtolower($this->extension), $this->legalExtensions)) {
-            return true;
-        } else {
-            return false;
-        }
+       return in_array(strtolower($this->extension), $this->legalExtensions);
     }
 
     /**
+     * Indicates whether the uploaded file is valid.
+     * Check if the file name is not empty.
+     * Check if the file size is not equal to 0.
+     *
      * @return bool
      */
     protected function validFile()
@@ -173,6 +183,7 @@ class CentreonFileManager implements iFileManager
     }
 
     /**
+     * Indicates whether the size of the uploaded file is valid
      * @return bool
      */
     protected function validSize()
@@ -185,7 +196,9 @@ class CentreonFileManager implements iFileManager
     }
 
     /**
-     * @return bool
+     * Indicates if the destination file exists
+     *
+     * @return bool Returns true if the file exists
      */
     protected function fileExist()
     {
@@ -197,20 +210,25 @@ class CentreonFileManager implements iFileManager
     }
 
     /**
-     * @param $dir
+     * Create directory if not exist
+     *
+     * @param string $dir Directory name to check
+     * @return bool Returns true on success
      */
     protected function dirExist($dir)
     {
         if (!is_dir($dir)) {
-            @mkdir($dir);
+            return @mkdir($dir);
         }
     }
 
     /**
-     * @return mixed
+     * Move the uploaded file
+     *
+     * @return bool Returns true on success
      */
     protected function moveFile()
     {
-        move_uploaded_file($this->tmpFile, $this->completePath);
+        return move_uploaded_file($this->tmpFile, $this->completePath);
     }
 }

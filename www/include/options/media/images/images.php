@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2005-2015 Centreon
+ * Copyright 2005-2018 Centreon
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -40,18 +40,52 @@ if (!isset($oreon)) {
     exit();
 }
 
-isset($_GET["img_id"]) ? $imgG = $_GET["img_id"] : $imgG = null;
-isset($_POST["img_id"]) ? $imgP = $_POST["img_id"] : $imgP = null;
-$imgG ? $img_id = $imgG : $img_id = $imgP;
+define('IMAGE_ADD', 'a');
+define('IMAGE_WATCH', 'w');
+define('IMAGE_MODIFY', 'ci');
+define('IMAGE_MODIFY_DIRECTORY', 'cd');
+define('IMAGE_MOVE', 'm');
+define('IMAGE_DELETE', 'd');
+define('IMAGE_SYNC_DIR', 'sd');
 
-isset($_GET["dir_id"]) ? $dirG = $_GET["dir_id"] : $dirG = null;
-isset($_POST["dir_id"]) ? $dirP = $_POST["dir_id"] : $dirP = null;
-$dirG ? $dir_id = $dirG : $dir_id = $dirP;
+$img_id = filter_var(
+    call_user_func(function () {
+        if (isset($_GET['img_id'])) {
+            return $_GET['img_id'];
+        } elseif (isset($_POST['img_id'])) {
+            return $_POST['img_id'];
+        } else {
+            return null;
+        }
+    }),
+    FILTER_VALIDATE_INT
+);
 
+$dir_id = filter_var(
+    call_user_func(function () {
+        if (isset($_GET['dir_id'])) {
+            return $_GET['dir_id'];
+        } elseif (isset($_POST['dir_id'])) {
+            return $_POST['dir_id'];
+        } else {
+            return null;
+        }
+    }),
+    FILTER_VALIDATE_INT
+);
 
-isset($_GET["select"]) ? $cG = $_GET["select"] : $cG = null;
-isset($_POST["select"]) ? $cP = $_POST["select"] : $cP = null;
-$cG ? $select = $cG : $select = $cP;
+$select = filter_var_array(
+    call_user_func(function () {
+        if (isset($_GET["select"])) {
+            return $_GET["select"];
+        } elseif (isset($_POST["select"])) {
+            return $_POST["select"];
+        } else {
+            return array();
+        }
+    }),
+    FILTER_VALIDATE_INT
+);
 
 /*
  * Pear library
@@ -72,30 +106,26 @@ require_once $path."DB-Func.php";
 require_once "./include/common/common-Func.php";
 
 switch ($o) {
-    case "a": #Add a img
-        require_once($path."formImg.php");
+    case IMAGE_ADD:
+    case IMAGE_WATCH:
+    case IMAGE_MODIFY:
+        require_once($path . "formImg.php");
         break;
-    case "w": #Watch a img
-        require_once($path."formImg.php");
+    case IMAGE_MODIFY_DIRECTORY:
+    case IMAGE_MOVE:
+        require_once($path . "formDirectory.php");
         break;
-    case "ci": #Modify a img
-        require_once($path."formImg.php");
+    case IMAGE_DELETE:
+        if (!in_array(false, $select)) {
+            deleteMultImg($select);
+            deleteMultDirectory($select);
+        }
+        require_once($path . "listImg.php");
         break;
-    case "cd": #Modify a dir
-        require_once($path."formDirectory.php");
-        break;
-    case "m": #Move files to a dir
-        require_once($path."formDirectory.php");
-        break;
-    case "d":
-        deleteMultImg(isset($select) ? $select : array());
-        deleteMultDirectory(isset($select) ? $select : array());
-        require_once($path."listImg.php");
-        break;
-    case "sd":
-        require_once($path."syncDir.php");
+    case IMAGE_SYNC_DIR:
+        require_once($path . "syncDir.php");
         break;
     default:
-        require_once($path."listImg.php");
+        require_once($path . "listImg.php");
         break;
 }

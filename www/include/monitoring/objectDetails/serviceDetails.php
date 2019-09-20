@@ -281,7 +281,10 @@ if (!is_null($host_id)) {
                 $tabCommentServices[$i] = $data;
                 $tabCommentServices[$i]['host_name'] = $data['host_name'];
                 $tabCommentServices[$i]['service_description'] = $data['service_description'];
-                $tabCommentServices[$i]['comment_data'] = $data['comment_data'];
+                $tabCommentServices[$i]['comment_data'] = CentreonUtils::escapeSecure(
+                    $data['comment_data'],
+                    CentreonUtils::ESCAPE_ALL_EXCEPT_LINK
+                );
                 $tabCommentServices[$i]["is_persistent"] = $en[$tabCommentServices[$i]["is_persistent"]];
             }
             $DBRESULT->free();

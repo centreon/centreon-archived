@@ -113,7 +113,7 @@ In order to update the Centreon monitoring interface, simply run the following c
 
  ::
 
- # yum update centreon
+ # yum update centreon*
 
 .. warning::
    If you encounter dependency problems with centreon-engine-webservices, please remove this RPM that is now deprecated. Run the following line:
@@ -210,7 +210,7 @@ EMS/EPP upgrade
 .. note::
    Not a EMS/EPP user ? You might still find Centreon Plugin Packs very
    useful to configure your monitoring system in minutes. You will find
-   installation guidance in the :ref:`online documentation <installation_ppm>`.
+   installation guidance in the :ref:`online documentation <impconfiguration>`.
 
 
 If you use additional Centreon modules you might need to update them too,

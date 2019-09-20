@@ -9,7 +9,7 @@
                             {$m_mon_services} {$svc_display_name}
                             {if $is_meta == 'false'}
                             <p style="padding-left: 28px; font-size: 12px;float:right;">
-                                {$h.host_alias} | {$h.host_address}
+                                {$h.host_alias} | {$h.host_address|escape:'htmlall'}
                             </p>
                             {/if}
                         </h3>

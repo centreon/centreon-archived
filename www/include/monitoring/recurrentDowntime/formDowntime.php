@@ -156,6 +156,7 @@ $attrHost1 = array_merge(
     $attrHosts,
     array('defaultDatasetRoute' => $routeAttrHosts)
 );
+
 $form->addElement('select2', 'host_relation', _("Linked with Hosts"), array(), $attrHost1);
 
 /*
@@ -212,6 +213,7 @@ if ($o == "c" || $o == 'w') {
     );
 }
 
+
 /*
  * Smarty template Init
  */
@@ -234,6 +236,39 @@ if ($o == "w") {
     /*
 	 * Modify a service information
 	 */
+    require_once _CENTREON_PATH_ . "/www/class/centreonACL.class.php";
+
+    $userId = $centreon->user->user_id;
+    $isAdmin = $centreon->user->admin;
+    $acl = new CentreonACL($userId, $isAdmin);
+
+    //check host resources
+    $host = $acl->getHostAclConf(null, 'broker');
+    $accessHost = array_keys($host);
+    $result = array_diff($default_dt['host_relation'], $accessHost);
+    if (!empty($result)) {
+        $form->addElement('text', 'msgacl', _("error"), 'error');
+        $form->freeze();
+    } else {
+        //check hostgroup resources
+        $hgs = $acl->getHostGroupAclConf(null, 'broker');
+        $accessHg = array_keys($hgs);
+        $result = array_diff($default_dt['hostgroup_relation'], $accessHg);
+        if (!empty($result)) {
+            $form->addElement('text', 'msgacl', _("error"), 'error');
+            $form->freeze();
+        } else {
+            //check servicegroup resources
+            $sgs = $acl->getServiceGroupAclConf(null, 'broker');
+            $accessSg = array_keys($sgs);
+            $result = array_diff($default_dt['svcgroup_relation'], $accessSg);
+            if (!empty($result)) {
+                $form->addElement('text', 'msgacl', _("error"), 'error');
+                $form->freeze();
+            }
+        }
+    }
+
     $subC = $form->addElement(
         'button',
         'submitC',

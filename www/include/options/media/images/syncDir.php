@@ -56,8 +56,12 @@ if (!isset($sid)) {
     exit ;
 }
 
+define('MEDIA_DIR', './img/media/');
+
 if (isset($sid)) {
-    $DBRESULT = $pearDB->query("SELECT * FROM session WHERE session_id = '".$pearDB->escape($sid)."'");
+    $DBRESULT = $pearDB->query(
+        "SELECT * FROM session WHERE session_id = '" . $pearDB->escape($sid) . "'"
+    );
     if ($DBRESULT->numRows() == 0) {
         exit();
     }
@@ -72,15 +76,17 @@ $dirCreated = 0;
 $regCounter = 0;
 $gdCounter = 0;
 
-if (is_dir($dir)) {
-    if ($dh = opendir($dir)) {
+if (is_dir(MEDIA_DIR)) {
+    if ($dh = opendir(MEDIA_DIR)) {
         while (($subdir = readdir($dh)) !== false) {
-            if (!isset($rejectedDir[$subdir]) && filetype($dir . $subdir) == "dir") {
+            if (!isset($rejectedDir[$subdir])
+                && filetype(MEDIA_DIR . $subdir) == "dir"
+            ) {
                 $dir_id = checkDirectory($subdir, $pearDB);
-                if ($dh2 = opendir($dir.$subdir)) {
+                if ($dh2 = opendir(MEDIA_DIR . $subdir)) {
                     while (($picture = readdir($dh2)) !== false) {
                         if (!isset($rejectedDir[$picture])) {
-                            checkPicture($picture, $dir.$subdir, $dir_id, $pearDB);
+                            checkPicture($picture, MEDIA_DIR . $subdir, $dir_id, $pearDB);
                         }
                     }
                     closedir($dh2);
@@ -128,14 +134,22 @@ function checkDirectory($dir, $pearDB)
 {
     global $dirCreated;
     $DBRESULT = $pearDB->query(
-        "SELECT dir_id FROM view_img_dir WHERE dir_alias = '".$dir."'"
+        "SELECT dir_id FROM view_img_dir WHERE dir_alias = '" . CentreonDB::escape($dir) . "'"
     );
     if (!$DBRESULT->numRows()) {
         $DBRESULT = $pearDB->query(
-            "INSERT INTO view_img_dir (`dir_name`, `dir_alias`) VALUES ('".$dir."', '".$dir."')"
+            'INSERT INTO view_img_dir (`dir_name`, `dir_alias`) '
+            . "VALUES ('" . CentreonDB::escape($dir) . "', '" . CentreonDB::escape($dir) . "')"
         );
-        @mkdir("./img/media/$dir");
-        $DBRESULT = $pearDB->query("SELECT dir_id FROM view_img_dir WHERE dir_alias = '".$dir."'");
+        @mkdir(MEDIA_DIR . $dir);
+
+        if (is_dir(MEDIA_DIR . $dir)) {
+            touch(MEDIA_DIR . $dir . '/index.html');
+        }
+        $DBRESULT = $pearDB->query(
+             'SELECT dir_id FROM view_img_dir '
+            . "WHERE dir_alias = '" . CentreonDB::escape($dir) . "'"
+        );
         $data = $DBRESULT->fetchRow();
         $dirCreated++;
         return $data["dir_id"];
@@ -176,29 +190,32 @@ function checkPicture($picture, $dirpath, $dir_id, $pearDB)
         $gdCounter++;
     }
 
-    $DBRESULT = $pearDB->query("SELECT img_id " .
-    "FROM view_img, view_img_dir_relation vidh " .
-    "WHERE img_path = '".$picture."' " .
-    "	AND vidh.dir_dir_parent_id = '".$dir_id."'" .
-    "	AND vidh.img_img_id = img_id");
+    $DBRESULT = $pearDB->query(
+        'SELECT img_id '
+        . 'FROM view_img, view_img_dir_relation vidh '
+        . "WHERE img_path = '" . CentreonDB::escape($picture) . "' "
+        . '	AND vidh.dir_dir_parent_id = ' . (int) $dir_id
+        . '	AND vidh.img_img_id = img_id'
+    );
     if (!$DBRESULT->numRows()) {
-        $DBRESULT = $pearDB->query(
+        $pearDB->query(
             "INSERT INTO view_img (`img_name`, `img_path`) VALUES ('"
-            .$img_info["filename"]."', '".$picture."')"
+            . CentreonDB::escape($img_info["filename"])
+            . "', '" . $picture . "')"
         );
         $DBRESULT = $pearDB->query(
             "SELECT img_id FROM view_img WHERE `img_name` = '"
-            .$img_info["filename"]."' AND `img_path` = '".$picture."'"
+            . CentreonDB::escape($img_info["filename"])
+            . "' AND `img_path` = '" . $picture . "'"
         );
         $data = $DBRESULT->fetchRow();
         $regCounter++;
-        $DBRESULT = $pearDB->query(
-            "INSERT INTO view_img_dir_relation (`dir_dir_parent_id`, `img_img_id`) VALUES ('"
-            .$dir_id."', '".$data['img_id']."')"
+        $pearDB->query(
+            'INSERT INTO view_img_dir_relation (`dir_dir_parent_id`, `img_img_id`) '
+            . "VALUES ('". (int) $dir_id . "', '" . (int) $data['img_id'] . "')"
         );
         return $data['img_id'];
     } else {
-        $data = $DBRESULT->fetchRow();
         return 0;
     }
 }
@@ -215,8 +232,10 @@ function DeleteOldPictures($pearDB)
         . "WHERE vidr.img_img_id = vi.img_id AND vid.dir_id = vidr.dir_dir_parent_id"
     );
     while ($row2 = $DBRESULT->fetchRow()) {
-        if (!file_exists("./img/media/".$row2["dir_alias"]."/".$row2["img_path"])) {
-            $pearDB->query("DELETE FROM view_img WHERE img_id = '".$row2["img_id"]."'");
+        if (!file_exists(MEDIA_DIR . $row2["dir_alias"] . "/" . $row2["img_path"])) {
+            $pearDB->query(
+                'DELETE FROM view_img WHERE img_id = ' . (int) $row2["img_id"]
+            );
             $fileRemoved++;
         }
     }

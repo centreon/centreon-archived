@@ -1293,11 +1293,12 @@ class CentreonWidget
             'FROM widget_preferences pref, widget_parameters param, widget_views wv ' .
             'WHERE param.parameter_id = pref.parameter_id ' .
             'AND pref.widget_view_id = wv.widget_view_id ' .
-            'AND wv.widget_id = ?';
+            'AND wv.widget_id = ? ' .
+            'AND pref.user_id = ?';
 
         // Prevent SQL injection with widget id
         $stmt = $this->db->prepare($query);
-        $res = $this->db->execute($stmt, array((int)$widgetId));
+        $res = $this->db->execute($stmt, array((int)$widgetId, (int)$this->userId));
         if (PEAR::isError($res)) {
             throw new Exception('Bad Request');
         }

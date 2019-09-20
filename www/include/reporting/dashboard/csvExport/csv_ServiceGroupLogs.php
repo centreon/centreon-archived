@@ -1,7 +1,7 @@
 <?php
 /*
- * Copyright 2005-2016 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2019 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -76,6 +76,18 @@ $centreon = $oreon;
 
 isset($_GET["servicegroup"]) ? $id = htmlentities($_GET["servicegroup"], ENT_QUOTES, "UTF-8") : $id = "NULL";
 isset($_POST["servicegroup"]) ? $id = htmlentities($_POST["servicegroup"], ENT_QUOTES, "UTF-8") : $id = $id;
+
+// finding the user's allowed servicegroup
+$allowedServicegroups = $centreon->user->access->getServiceGroupAclConf(null, 'broker');
+//checking if the user has ACL rights for this resource
+if (!$centreon->user->admin
+    && $id !== null
+    && !array_key_exists($id, $allowedServicegroups)
+) {
+    echo '<div align="center" style="color:red">' .
+        '<b>You are not allowed to access this service group</b></div>';
+    exit();
+}
 
 /*
  * Getting time interval to report

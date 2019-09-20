@@ -11,7 +11,7 @@ Prérequis
 =========
 
 Avant toute chose vous devez avoir une plate-forme Centreon installée et prête à 
-l'emploi. Se référer à la documentation :ref:`d'installation de Centreon<firststepsces3>`.
+l'emploi. Se référer à la documentation :ref:`d'installation de Centreon<installisoel7>`.
 
 Installation
 ============

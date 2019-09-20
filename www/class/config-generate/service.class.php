@@ -54,19 +54,25 @@ class Service extends AbstractService {
         $this->service_cache[$service_id]['sg'] = &$servicegroup->getServiceGroupsForService($host_id, $service_id);
         foreach ($this->service_cache[$service_id]['sg'] as &$value) {
             if (is_null($value['host_host_id']) || $host_id == $value['host_host_id']) {
-                $servicegroup->addServiceInSg($value['servicegroup_sg_id'], $service_id, $this->service_cache[$service_id]['service_description'], $host_id, $host_name);
+                $servicegroup->addServiceInSg(
+                    $value['servicegroup_sg_id'],
+                    $service_id,
+                    $this->service_cache[$service_id]['service_description'],
+                    $host_id,
+                    $host_name
+                );
             }
         }
     }
     
     private function getServiceByPollerCache() {
-        $stmt = $this->backend_instance->db->prepare("SELECT 
-              $this->attributes_select
-            FROM ns_host_relation, host_service_relation, service
-                LEFT JOIN extended_service_information ON extended_service_information.service_service_id = service.service_id                 
-            WHERE ns_host_relation.nagios_server_id = :server_id 
-                AND ns_host_relation.host_host_id = host_service_relation.host_host_id 
-                AND host_service_relation.service_service_id = service.service_id AND service_activate = '1'");
+        $stmt = $this->backend_instance->db->prepare("SELECT " . $this->attributes_select .
+            " FROM ns_host_relation, host_service_relation, service " .
+            " LEFT JOIN extended_service_information " .
+            " ON extended_service_information.service_service_id = service.service_id " .
+            " WHERE ns_host_relation.nagios_server_id = :server_id " .
+            " AND ns_host_relation.host_host_id = host_service_relation.host_host_id " .
+            " AND host_service_relation.service_service_id = service.service_id AND service_activate = '1'");
         $stmt->bindParam(':server_id', $this->poller_id, PDO::PARAM_INT);
         $stmt->execute();
         
@@ -76,12 +82,11 @@ class Service extends AbstractService {
     }
     
     private function getServiceCache() {
-        $stmt = $this->backend_instance->db->prepare("SELECT 
-                    $this->attributes_select
-                FROM service
-                    LEFT JOIN extended_service_information ON extended_service_information.service_service_id = service.service_id 
-                WHERE service_register = '1' AND service_activate = '1'
-        ");
+        $stmt = $this->backend_instance->db->prepare("SELECT " . $this->attributes_select .
+            " FROM service " .
+            " LEFT JOIN extended_service_information " .
+            " ON extended_service_information.service_service_id = service.service_id " .
+            " WHERE service_register = '1' AND service_activate = '1'");
         $stmt->execute();
         $this->service_cache = $stmt->fetchAll(PDO::FETCH_GROUP|PDO::FETCH_UNIQUE|PDO::FETCH_ASSOC);
     }
@@ -92,12 +97,10 @@ class Service extends AbstractService {
     
     private function getServiceFromId($service_id) {
         if (is_null($this->stmt_service)) {
-            $this->stmt_service = $this->backend_instance->db->prepare("SELECT 
-                    $this->attributes_select
-                FROM service
-                    LEFT JOIN extended_service_information ON extended_service_information.service_service_id = service.service_id 
-                WHERE service_id = :service_id AND service_activate = '1'
-            ");
+            $this->stmt_service = $this->backend_instance->db->prepare("SELECT " . $this->attributes_select .
+                " FROM service LEFT JOIN extended_service_information" .
+                " ON extended_service_information.service_service_id = service.service_id" .
+                " WHERE service_id = :service_id AND service_activate = '1'");
         }
         $this->stmt_service->bindParam(':service_id', $service_id, PDO::PARAM_INT);
         $this->stmt_service->execute();
@@ -107,7 +110,9 @@ class Service extends AbstractService {
     
     private function browseContactsInStpl($service_id) {
         $services_tpl = &ServiceTemplate::getInstance()->service_cache;
-        $service_tpl_id = isset($this->service_cache[$service_id]['service_template_model_stm_id']) ? $this->service_cache[$service_id]['service_template_model_stm_id'] : null;        
+        $service_tpl_id = isset($this->service_cache[$service_id]['service_template_model_stm_id']) ?
+            $this->service_cache[$service_id]['service_template_model_stm_id'] : null;
+
         if (isset($this->service_cache[$service_id]['has_tpl_contacts'])) {
             return 0;
         }
@@ -117,8 +122,12 @@ class Service extends AbstractService {
             return 0;
         }
         if (isset($services_tpl[$service_tpl_id]['has_tpl_contacts'])) {
-            $this->service_cache[$service_id]['has_tpl_contacts'] = $services_tpl[$service_tpl_id]['has_tpl_contacts'];
-            $this->service_cache[$service_id]['has_tpl_contact_groups'] = $services_tpl[$service_tpl_id]['has_tpl_contact_groups'];
+            $this->service_cache[$service_id]['has_tpl_contacts'] =
+                $services_tpl[$service_tpl_id]['has_tpl_contacts'];
+
+            $this->service_cache[$service_id]['has_tpl_contact_groups'] =
+                $services_tpl[$service_tpl_id]['has_tpl_contact_groups'];
+
             return 0;
         }
         
@@ -129,8 +138,12 @@ class Service extends AbstractService {
             }
             $loop[$service_tpl_id] = 1;
             if (isset($services_tpl[$service_tpl_id]['has_tpl_contacts'])) {
-                $services_tpl[$service_tpl_top_id]['has_tpl_contacts'] = $services_tpl[$service_tpl_id]['has_tpl_contacts'];
-                $services_tpl[$service_tpl_top_id]['has_tpl_contact_groups'] = $services_tpl[$service_tpl_id]['has_tpl_contact_groups'];
+                $services_tpl[$service_tpl_top_id]['has_tpl_contacts'] =
+                    $services_tpl[$service_tpl_id]['has_tpl_contacts'];
+
+                $services_tpl[$service_tpl_top_id]['has_tpl_contact_groups'] =
+                    $services_tpl[$service_tpl_id]['has_tpl_contact_groups'];
+
                 break;
             }
 
@@ -146,20 +159,32 @@ class Service extends AbstractService {
                 $services_tpl[$service_tpl_top_id]['has_tpl_contact_groups'] = 1;
             }
 
-            $service_tpl_id = isset($services_tpl[$service_tpl_id]['service_template_model_stm_id']) ? $services_tpl[$service_tpl_id]['service_template_model_stm_id'] : null;
+            $service_tpl_id =
+                isset($services_tpl[$service_tpl_id]['service_template_model_stm_id']) ?
+                    $services_tpl[$service_tpl_id]['service_template_model_stm_id'] : null;
         }
         
-        $this->service_cache[$service_id]['has_tpl_contacts'] = $services_tpl[$service_tpl_top_id]['has_tpl_contacts'];
-        $this->service_cache[$service_id]['has_tpl_contact_groups'] = $services_tpl[$service_tpl_top_id]['has_tpl_contact_groups'];
+        $this->service_cache[$service_id]['has_tpl_contacts'] =
+            isset($services_tpl[$service_tpl_top_id]['has_tpl_contacts']) ?
+                $services_tpl[$service_tpl_top_id]['has_tpl_contacts'] : null;
+
+        $this->service_cache[$service_id]['has_tpl_contact_groups'] =
+            isset($services_tpl[$service_tpl_top_id]['has_tpl_contact_groups']) ?
+                $services_tpl[$service_tpl_top_id]['has_tpl_contact_groups'] : null;
     }
     
     private function isServiceHasContacts($service_id) {
         $this->browseContactsInStpl($service_id);
-        if ($this->service_cache[$service_id]['has_tpl_contacts'] == 1 || $this->service_cache[$service_id]['has_tpl_contact_groups'] == 1) {
+        if ($this->service_cache[$service_id]['has_tpl_contacts'] == 1 ||
+            $this->service_cache[$service_id]['has_tpl_contact_groups'] == 1
+        ) {
             return 1;
         }
-        if ((isset($this->service_cache[$service_id]['contacts']) && $this->service_cache[$service_id]['contacts'] != '') ||
-            (isset($this->service_cache[$service_id]['contact_groups']) && $this->service_cache[$service_id]['contact_groups'] != '')) {
+        if ((isset($this->service_cache[$service_id]['contacts']) &&
+                $this->service_cache[$service_id]['contacts'] != '') ||
+            (isset($this->service_cache[$service_id]['contact_groups']) &&
+                $this->service_cache[$service_id]['contact_groups'] != '')
+        ) {
             return 1;
         }
         return 0;
@@ -188,8 +213,10 @@ class Service extends AbstractService {
             return 0;
         }
         
-        $this->service_cache[$service_id_arg]['severity_id'] = Severity::getInstance()->getServiceSeverityByServiceId($service_id_arg);
-        $severity = Severity::getInstance()->getServiceSeverityById($this->service_cache[$service_id_arg]['severity_id']);
+        $this->service_cache[$service_id_arg]['severity_id'] =
+            Severity::getInstance()->getServiceSeverityByServiceId($service_id_arg);
+        $severity =
+            Severity::getInstance()->getServiceSeverityById($this->service_cache[$service_id_arg]['severity_id']);
         if (!is_null($severity)) {
             $this->service_cache[$service_id_arg]['macros']['_CRITICALITY_LEVEL'] = $severity['level'];
             $this->service_cache[$service_id_arg]['macros']['_CRITICALITY_ID'] = $severity['sc_id'];
@@ -199,7 +226,9 @@ class Service extends AbstractService {
         # Check from service templates
         $loop = array();        
         $services_tpl = &ServiceTemplate::getInstance()->service_cache;
-        $services_top_tpl = isset($this->service_cache[$service_id_arg]['service_template_model_stm_id']) ? $this->service_cache[$service_id_arg]['service_template_model_stm_id'] : null;
+        $services_top_tpl = isset($this->service_cache[$service_id_arg]['service_template_model_stm_id']) ?
+            $this->service_cache[$service_id_arg]['service_template_model_stm_id'] : null;
+
         $service_id = $services_top_tpl;
         $severity_id = null;
         while (!is_null($service_id)) {
@@ -207,18 +236,22 @@ class Service extends AbstractService {
                 break;
             }
             if (isset($services_tpl[$service_id]['severity_id_from_below'])) {
-                $this->service_cache[$service_id_arg]['severity_id'] = $services_tpl[$service_id]['severity_id_from_below'];
+                $this->service_cache[$service_id_arg]['severity_id'] =
+                    $services_tpl[$service_id]['severity_id_from_below'];
                 break;
             }
+
             $loop[$service_id] = 1;
-            if (isset($services_tpl[$service_id]['severity_id']) && !is_null($services_tpl[$service_id]['severity_id'])) {
+            if (isset($services_tpl[$service_id]['severity_id']) &&
+                !is_null($services_tpl[$service_id]['severity_id'])
+            ) {
                 $this->service_cache[$service_id_arg]['severity_id'] = $services_tpl[$service_id]['severity_id'];
                 $services_tpl[$services_top_tpl]['severity_id_from_below'] = $services_tpl[$service_id]['severity_id'];
                 break;
             }
-            $service_id = isset($services_tpl[$service_id]['service_template_model_stm_id']) ? $services_tpl[$service_id]['service_template_model_stm_id'] : null;
+            $service_id = isset($services_tpl[$service_id]['service_template_model_stm_id']) ?
+                $services_tpl[$service_id]['service_template_model_stm_id'] : null;
         }
-        
         return 0;
     }
     
@@ -230,7 +263,8 @@ class Service extends AbstractService {
             $this->service_cache[$service_id]['severity_from_host'] = 1;
             $severity = Host::getInstance()->getSeverityForService($host_id);
             if (!is_null($severity)) {
-                $service_severity = Severity::getInstance()->getServiceSeverityMappingHostSeverityByName($severity['hc_name']);
+                $service_severity =
+                    Severity::getInstance()->getServiceSeverityMappingHostSeverityByName($severity['hc_name']);
                 if (!is_null($service_severity)) {
                     $this->service_cache[$service_id]['macros']['_CRITICALITY_LEVEL'] = $service_severity['level'];
                     $this->service_cache[$service_id]['macros']['_CRITICALITY_ID'] = $service_severity['sc_id'];
@@ -315,10 +349,17 @@ class Service extends AbstractService {
         
         
         # By default in centengine 1.4.15
-        $this->getContactsFromHost($host_id, $service_id, $this->service_cache[$service_id]['service_use_only_contacts_from_host']);
+        $this->getContactsFromHost(
+            $host_id,
+            $service_id,
+            $this->service_cache[$service_id]['service_use_only_contacts_from_host']
+        );
         $this->getSeverity($host_id, $service_id);
         $this->getServiceGroups($service_id, $host_id, $host_name);        
-        $this->generateObjectInFile($this->service_cache[$service_id] + array('host_name' => $host_name), $host_id . '.' . $service_id);
+        $this->generateObjectInFile(
+            $this->service_cache[$service_id] + array('host_name' => $host_name),
+            $host_id . '.' . $service_id
+        );
         $this->addGeneratedServices($host_id, $service_id);
         $this->clean($this->service_cache[$service_id]);
         return $this->service_cache[$service_id]['service_description'];

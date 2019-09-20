@@ -486,9 +486,8 @@ $tpl->display("service.ihtml");
 
     jQuery(function () {
         preInit();
-        /* Disable to prevent double Ajax call*/
-        //updateSelect();
     });
+
     function preInit()
     {
         _keyPrefix = '<?php echo $keyPrefix; ?>';
@@ -544,7 +543,5 @@ $tpl->display("service.ihtml");
     function statusServices(value, isInit)
     {
         _o = value;
-        window.clearTimeout(_timeoutID);
-        initM(_tm, _sid, _o);
     }
 </script>
