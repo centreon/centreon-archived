@@ -303,13 +303,13 @@ $form->addElement(
     'password',
     'contact_passwd',
     _("Password"),
-    array("size" => "30", "autocomplete" => "off", "id" => "passwd1", "onkeypress" => "resetPwdType(this);")
+    array("size" => "30", "autocomplete" => "new-password", "id" => "passwd1", "onkeypress" => "resetPwdType(this);")
 );
 $form->addElement(
     'password',
     'contact_passwd2',
     _("Confirm Password"),
-    array("size" => "30", "autocomplete" => "off", "id" => "passwd2", "onkeypress" => "resetPwdType(this);")
+    array("size" => "30", "autocomplete" => "new-password", "id" => "passwd2", "onkeypress" => "resetPwdType(this);")
 );
 $form->addElement('button', 'contact_gen_passwd', _("Generate"), array('onclick' => 'generatePassword("passwd");'));
 
