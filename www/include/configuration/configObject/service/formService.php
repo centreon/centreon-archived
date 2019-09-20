@@ -484,10 +484,6 @@ if ($o != "mc") {
 /*
  * Additive
  */
-
-$dbResult = $pearDB->query('SELECT `value` FROM options WHERE  `key` = "inheritance_mode"');
-$inheritanceMode = $dbResult->fetch();
-
 if ($o == "mc") {
     $contactAdditive[] = $form->createElement('radio', 'mc_contact_additive_inheritance', null, _("Yes"), '1');
     $contactAdditive[] = $form->createElement('radio', 'mc_contact_additive_inheritance', null, _("No"), '0');
@@ -1117,6 +1113,8 @@ if ($valid) {
         require_once($path . "listServiceByHost.php");
     }
 } else {
+    $dbResult = $pearDB->query('SELECT `value` FROM options WHERE  `key` = "inheritance_mode"');
+    $inheritanceMode = $dbResult->fetch();
     // Apply a template definition
     $renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl, true);
     $renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
