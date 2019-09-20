@@ -27,6 +27,15 @@ print_step_begin "System analysis"
 if [ \! -e /etc/redhat-release ] ; then
   error_and_exit "This unattended installation script only supports Red Hat compatible distributions. Please check https://documentation.centreon.com/docs/centreon/en/latest/installation/index.html for alternative installation methods."
 fi
+rhrelease=`cat /etc/redhat-release`
+case "$rhrelease" in
+  'CentOS Linux release 7.'*)
+    # Good to go.
+    ;;
+  *)
+    error_and_exit "This unattended installation script only supports CentOS 7. Please check https://documentation.centreon.com/docs/centreon/en/latest/installation/index.html for alternative installation methods."
+    ;;
+esac
 
 # systemd check.
 command -v systemctl > /dev/null 2>&1
