@@ -502,12 +502,15 @@ components:
           type: integer
           format: int64
           description: Unique host id
-        name:
-          type: string
-          description: Host name
         alias:
           type: string
           description: Host alias
+        display_name:
+          type: string
+          description: Host display name
+        name:
+          type: string
+          description: Host name
         state:
           type: integer
           description: |
@@ -619,9 +622,6 @@ components:
             checked:
               type: boolean
               description: Indicates whether the host is checked
-            display_name:
-              type: string
-              description: Host display name
             execution_time:
               type: number
               format: float

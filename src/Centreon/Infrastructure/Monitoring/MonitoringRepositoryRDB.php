@@ -131,12 +131,14 @@ final class MonitoringRepositoryRDB implements MonitoringRepositoryInterface
         $request =
             'SELECT SQL_CALC_FOUND_ROWS DISTINCT 
               h.*,
-              i.name AS instance_name
+              i.name AS instance_name,
+              IF (h.display_name LIKE \'_Module_Meta%\', \'Meta\', h.display_name) AS display_name,
+              IF (h.display_name LIKE \'_Module_Meta%\', \'0\', h.state) AS state
             FROM `:dbstg`.`instances` i
             INNER JOIN `:dbstg`.`hosts` h
               ON h.instance_id = i.instance_id
               AND h.enabled = \'1\'
-              AND h.name NOT LIKE \'_Module_%\''
+              AND h.name NOT LIKE \'_Module_BAM%\''
             . $accessGroupFilter
             .' LEFT JOIN `:dbstg`.`services` srv
               ON srv.host_id = h.host_id
@@ -280,7 +282,8 @@ final class MonitoringRepositoryRDB implements MonitoringRepositoryInterface
         $request =
             'SELECT SQL_CALC_FOUND_ROWS DISTINCT
               hg.hostgroup_id, hg.name AS hostgroup_name,
-              h.host_id, h.name AS host_name, h.state AS host_state, h.alias AS host_alias
+              h.host_id, h.name as host_name, h.display_name AS host_display_name,
+              h.state AS host_state, h.alias AS host_alias
             FROM `:dbstg`.`hostgroups` hg
             INNER JOIN `:dbstg`.`hosts_hostgroups` hhg
               ON hhg.hostgroup_id = hg.hostgroup_id
@@ -331,6 +334,7 @@ final class MonitoringRepositoryRDB implements MonitoringRepositoryInterface
                 ->setId((int) $result['host_id'])
                 ->setName($result['host_name'])
                 ->setAlias($result['host_alias'])
+                ->setDisplayName($result['host_display_name'])
                 ->setState((int) $result['host_state']);
 
             if (!in_array($host->getId(), $hostIds)) {
@@ -377,7 +381,9 @@ final class MonitoringRepositoryRDB implements MonitoringRepositoryInterface
             : ' ';
 
         $request =
-            'SELECT h.*
+            'SELECT h.*,
+              IF (h.display_name LIKE \'_Module_Meta%\', \'Meta\', h.display_name) AS display_name,
+              IF (h.display_name LIKE \'_Module_Meta%\', \'0\', h.state) AS state
             FROM `:dbstg`.`hosts` h'
             . $accessGroupFilter
             . ' INNER JOIN `:dbstg`.`services` srv
@@ -429,8 +435,7 @@ final class MonitoringRepositoryRDB implements MonitoringRepositoryInterface
             : ' ';
 
         $request =
-            'SELECT DISTINCT srv.*,
-                h.host_id, h.name, h.alias
+            'SELECT DISTINCT srv.*
             FROM `:dbstg`.services srv
             LEFT JOIN `:dbstg`.hosts h 
               ON h.host_id = srv.host_id'
@@ -493,7 +498,9 @@ final class MonitoringRepositoryRDB implements MonitoringRepositoryInterface
         $request =
             'SELECT SQL_CALC_FOUND_ROWS DISTINCT 
               srv.*,
-              h.host_id, h.name, h.alias
+              h.host_id, h.alias AS host_alias, h.name AS host_name,
+              IF (h.display_name LIKE \'_Module_Meta%\', \'Meta\', h.display_name) AS host_display_name,
+              IF (h.display_name LIKE \'_Module_Meta%\', \'0\', h.state) AS host_state
             FROM `:dbstg`.services srv'
             . $accessGroupFilter
             . ' INNER JOIN `:dbstg`.hosts h 
@@ -551,12 +558,14 @@ final class MonitoringRepositoryRDB implements MonitoringRepositoryInterface
                 $result
             );
 
-            $host = EntityCreator::createEntityByArray(
-                Host::class,
-                $result
-            );
-            $service->setHost($host);
+            $host = (new Host())
+                ->setId((int) $result['host_id'])
+                ->setName($result['host_name'])
+                ->setAlias($result['host_alias'])
+                ->setState((int) $result['host_state'])
+                ->setDisplayName($result['host_display_name']);
 
+            $service->setHost($host);
             $services[] = $service;
         }
 
@@ -587,11 +596,10 @@ final class MonitoringRepositoryRDB implements MonitoringRepositoryInterface
             : ' ';
 
         $request =
-            'SELECT SQL_CALC_FOUND_ROWS DISTINCT 
-              srv.*,h.*
+            'SELECT SQL_CALC_FOUND_ROWS DISTINCT srv.*
             FROM `:dbstg`.services srv'
             . $accessGroupFilter
-            . ' INNER JOIN `:dbstg`.hosts h 
+            . ' INNER JOIN `:dbstg`.hosts h
               ON h.host_id = srv.host_id
               AND h.host_id = :host_id
               AND h.name NOT LIKE \'_Module_BAM%\'
@@ -726,8 +734,9 @@ final class MonitoringRepositoryRDB implements MonitoringRepositoryInterface
 
         $request =
             'SELECT DISTINCT
-              sg.servicegroup_id, sg.name as servicegroup_name,
-              h.host_id, h.name as host_name, h.state as host_state, h.alias as host_alias,
+              sg.servicegroup_id, sg.name AS servicegroup_name,
+              h.host_id, h.name AS host_name, h.alias AS host_alias,
+              h.display_name AS host_display_name, h.state AS host_state,
               GROUP_CONCAT(DISTINCT srv.service_id ORDER BY srv.display_name ASC) AS serviceIds
             FROM `:dbstg`.`servicegroups` sg
             INNER JOIN `:dbstg`.`services_servicegroups` ssg
@@ -778,6 +787,7 @@ final class MonitoringRepositoryRDB implements MonitoringRepositoryInterface
                 ->setId((int) $result['host_id'])
                 ->setName($result['host_name'])
                 ->setAlias($result['host_alias'])
+                ->setDisplayName($result['host_display_name'])
                 ->setState((int) $result['host_state'])
                 ->setServices(
                     $this->findCertainServicesByHost(

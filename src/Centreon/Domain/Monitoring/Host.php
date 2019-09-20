@@ -115,7 +115,7 @@ class Host
     private $checked;
 
     /**
-     * @Serializer\Groups({"host_main", "host_full"})
+     * @Serializer\Groups({"host_min", "host_main", "host_full"})
      * @var string|null
      */
     private $displayName;
