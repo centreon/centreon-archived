@@ -83,8 +83,20 @@ $disable        = $obj->checkArgument("disable", $_GET, "disable");
 $dateFormat         = $obj->checkArgument("date_time_format_status", $_GET, "Y/m/d H:i:s");
 
 $tab = preg_split('/\_/', $svc_id);
-$host_id = $tab[0];
-$service_id = $tab[1];
+$host_id = filter_var(
+    $tab[0] ?? null,
+    FILTER_SANITIZE_NUMBER_INT
+);
+
+$service_id = filter_var(
+    $tab[1] ?? null,
+    FILTER_SANITIZE_NUMBER_INT
+);
+
+if (!$host_id || !$service_id) {
+    print "Bad service ID";
+    exit();
+}
 
 /** **************************************************
  * Get Service status
