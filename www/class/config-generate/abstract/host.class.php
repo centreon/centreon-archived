@@ -311,12 +311,15 @@ abstract class AbstractHost extends AbstractObject
     protected function getContactCloseInheritance($host, &$hostList = array())
     {
         $stmt = $this->backend_instance->db->query(
-            "SELECT ch.contact_id, ht.host_tpl_id 
-                    FROM host_template_relation ht
-                    LEFT JOIN contact_host_relation ch ON ht.`host_host_id` = ch.`host_host_id`
-                    WHERE ht.`host_host_id` = " . (int)$host . " 
-                    ORDER BY ht.`order`"
+            "(SELECT ch.contact_id, ht.host_tpl_id FROM host_template_relation ht
+                LEFT JOIN contact_host_relation ch ON ht.`host_host_id` = ch.`host_host_id`
+            WHERE ht.`host_host_id` = " . (int)$host . " ORDER BY ht.`order`)
+            UNION 
+            (SELECT hr.contact_id, ht.host_host_id FROM contact_host_relation hr 
+                LEFT JOIN host_template_relation ht ON ht.`host_host_id` = hr.`host_host_id` 
+            WHERE hr.host_host_id = " . (int)$host . "  ORDER BY ht.`order`) "
         );
+
         while ($row = $stmt->fetch()) {
             if (empty($hostList)) {
                 if (!empty($row['contact_id'])) {
@@ -424,14 +427,14 @@ abstract class AbstractHost extends AbstractObject
      */
     protected function getContactGroupsCloseInheritance($host, &$hostList = array())
     {
-
-        $suery = "SELECT ch.contactgroup_cg_id, ht.host_tpl_id 
-            FROM host_template_relation ht
+        $stmt = $this->backend_instance->db->query(
+            "(SELECT ch.contactgroup_cg_id, ht.host_tpl_id FROM host_template_relation ht
             LEFT JOIN contactgroup_host_relation ch ON ht.`host_host_id` = ch.`host_host_id`
-            WHERE ht.`host_host_id` = " . (int)$host . " 
-            ORDER BY ht.`order`";
-
-        $stmt = $this->backend_instance->db->query($suery);
+            WHERE ht.`host_host_id` = " . (int)$host . " ORDER BY ht.`order`)
+            UNION
+            (SELECT ch.contactgroup_cg_id, ht.host_tpl_id FROM contactgroup_host_relation ch
+            LEFT JOIN host_template_relation ht ON ht.`host_host_id` = ch.`host_host_id`
+            WHERE ch.`host_host_id` = " . (int)$host . " ORDER BY ht.`order`)");
 
         while ($row = $stmt->fetch()) {
             if (empty($hostList)) {
