@@ -297,13 +297,14 @@ abstract class AbstractService extends AbstractObject
      */
     protected function getInheritanceContact(array $service)
     {
+        $contact = Contact::getInstance($this->dependencyInjector);
         $contacts = array();
         $stmt = $this->backend_instance->db->query(
             'SELECT c.contact_id , c.contact_name FROM contact c, contact_service_relation cs
             WHERE cs.service_service_id IN (' . implode(',', $service) . ') AND cs.contact_id = c.contact_id'
         );
         while (($row = $stmt->fetch())) {
-            $contacts[$row['contact_id']] = $row['contact_name'];
+            $contacts[$row['contact_id']] = $contact->generateFromContactId($row['contact_id']);
         }
         return $contacts;
     }
@@ -416,6 +417,7 @@ abstract class AbstractService extends AbstractObject
      */
     protected function getInheritanceContactGroups($service)
     {
+        $cg = Contactgroup::getInstance($this->dependencyInjector);
         $contactGroups = array();
         $stmt = $this->backend_instance->db->query(
             'SELECT c.cg_id , c.cg_name FROM contactgroup c, contactgroup_service_relation cs
@@ -423,7 +425,7 @@ abstract class AbstractService extends AbstractObject
         );
 
         while (($row = $stmt->fetch())) {
-            $contactGroups[$row['cg_id']] = $row['cg_name'];
+            $contactGroups[$row['cg_id']] = $cg->generateFromCgId($row['cg_id']);;
         }
         return $contactGroups;
     }

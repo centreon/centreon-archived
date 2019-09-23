@@ -344,6 +344,7 @@ abstract class AbstractHost extends AbstractObject
      */
     protected function getInheritanceContact($host)
     {
+        $contact = Contact::getInstance($this->dependencyInjector);
         $contacts = array();
         $stmt = $this->backend_instance->db->query(
             'SELECT c.contact_id , contact_name FROM contact c, contact_host_relation ch
@@ -351,7 +352,7 @@ abstract class AbstractHost extends AbstractObject
         );
 
         while (($row = $stmt->fetch())) {
-            $contacts[$row['contact_id']] = $row['contact_name'];
+            $contacts[$row['contact_id']] = $contact->generateFromContactId($row['contact_id']);;
         }
         return $contacts;
     }
@@ -460,6 +461,7 @@ abstract class AbstractHost extends AbstractObject
      */
     protected function getInheritanceContactGroups($host)
     {
+        $cg = Contactgroup::getInstance($this->dependencyInjector);
         $contactGroups = array();
         $stmt = $this->backend_instance->db->query(
             'SELECT c.cg_id , cg_name FROM contactgroup c, contactgroup_host_relation ch
@@ -467,7 +469,7 @@ abstract class AbstractHost extends AbstractObject
         );
 
         while (($row = $stmt->fetch())) {
-            $contactGroups[$row['cg_id']] = $row['cg_name'];
+            $contactGroups[$row['cg_id']] = $cg->generateFromCgId($row['cg_id']);;
         }
         return $contactGroups;
     }
