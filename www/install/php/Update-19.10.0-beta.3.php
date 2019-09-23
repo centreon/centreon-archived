@@ -175,7 +175,9 @@ $pearDB->query('
 
 $stmt = $pearDB->prepare('
     UPDATE `nagios_server`
-    SET engine_restart_command = :engine_restart_command,
+    SET engine_start_command = :engine_start_command,
+    engine_stop_command = :engine_stop_command,
+    engine_restart_command = :engine_restart_command,
     engine_reload_command = :engine_reload_command,
     broker_reload_command = :broker_reload_command
     WHERE id = :id
