@@ -147,6 +147,74 @@ try {
     );
 }
 
+
+/**
+ * Add columns to manage engine & broker restart/reload process
+ */
+
+$pearDB->query('
+    ALTER TABLE `nagios_server`
+    ADD COLUMN `engine_start_command` varchar(255) DEFAULT \'service centengine start\' AFTER `monitoring_engine`
+');
+$pearDB->query('
+    ALTER TABLE `nagios_server`
+    ADD COLUMN `engine_stop_command` varchar(255) DEFAULT \'service centengine stop\' AFTER `engine_start_command`
+');
+$pearDB->query('
+    ALTER TABLE `nagios_server`
+    ADD COLUMN `engine_restart_command` varchar(255) DEFAULT \'service centengine restart\' AFTER `engine_stop_command`
+');
+$pearDB->query('
+    ALTER TABLE `nagios_server`
+    ADD COLUMN `engine_reload_command` varchar(255) DEFAULT \'service centengine reload\' AFTER `engine_restart_command`
+');
+$pearDB->query('
+    ALTER TABLE `nagios_server`
+    ADD COLUMN `broker_reload_command` varchar(255) DEFAULT \'service cbd reload\' AFTER `nagios_perfdata`
+');
+
+$stmt = $pearDB->prepare('
+    UPDATE `nagios_server`
+    SET engine_start_command = :engine_start_command,
+    engine_stop_command = :engine_stop_command,
+    engine_restart_command = :engine_restart_command,
+    engine_reload_command = :engine_reload_command,
+    broker_reload_command = :broker_reload_command
+    WHERE id = :id
+');
+
+$result = $pearDB->query('SELECT value FROM `options` WHERE `key` = \'broker_correlator_script\'');
+$brokerServiceName = 'cbd';
+if ($row = $result->fetch()) {
+    if (!empty($row['value'])) {
+        $brokerServiceName = $row['value'];
+    }
+}
+$stmt->bindValue(':broker_reload_command', 'service ' . $brokerServiceName . ' reload', \PDO::PARAM_STR);
+
+$result = $pearDB->query('SELECT id, init_script FROM `nagios_server`');
+
+while ($row = $result->fetch()) {
+    $engineServiceName = 'centengine';
+    if (!empty($row['init_script'])) {
+        $engineServiceName = $row['init_script'];
+    }
+    $stmt->bindValue(':id', $row['id'], \PDO::PARAM_INT);
+    $stmt->bindValue(':engine_start_command', 'service ' . $engineServiceName . ' start', \PDO::PARAM_STR);
+    $stmt->bindValue(':engine_stop_command', 'service ' . $engineServiceName . ' stop', \PDO::PARAM_STR);
+    $stmt->bindValue(':engine_restart_command', 'service ' . $engineServiceName . ' restart', \PDO::PARAM_STR);
+    $stmt->bindValue(':engine_reload_command', 'service ' . $engineServiceName . ' reload', \PDO::PARAM_STR);
+    $stmt->execute();
+}
+
+// Remove deprecated engine & broker init script paths
+$pearDB->query('ALTER TABLE `nagios_server` DROP COLUMN `init_script`');
+$pearDB->query('ALTER TABLE `nagios_server` DROP COLUMN `init_system`');
+$pearDB->query('ALTER TABLE `nagios_server` DROP COLUMN `monitoring_engine`');
+$pearDB->query('DELETE FROM `options` WHERE `key` = \'broker_correlator_script\'');
+$pearDB->query('DELETE FROM `options` WHERE `key` = \'monitoring_engine\'');
+
+
 /**
  * Manage upgrade of widget preferences
  */

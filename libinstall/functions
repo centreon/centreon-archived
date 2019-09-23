@@ -692,16 +692,6 @@ function locate_broker_etc()
 	log "INFO" "BROKER_ETC: $BROKER_ETC"
 }
 
-function locate_broker_init_script()
-{
-	if [ -z "cbd" ]; then
-		answer_with_testfile "$(gettext "Where is the init script for broker module daemon ?") [$DEFAULT_BROKER_INIT_SCRIPT]" "$DEFAULT_BROKER_INIT_SCRIPT" "BROKER_INIT_SCRIPT"
-	fi
-	BROKER_INIT_SCRIPT=`trim ${BROKER_INIT_SCRIPT}`
-	export BROKER_INIT_SCRIPT
-	log "INFO" "BROKER_INIT_SCRIPT: cbd"
-}
-
 #----
 ## Define where is Centreon log directory
 ## @Globals	CENTREON_LOG, DEFAULT_CENTREON_LOG
@@ -830,6 +820,9 @@ function locate_centreon_varlib() {
 		echo_success "$(gettext "Path" ) $CENTREON_VARLIB" "$ok"
 	fi
 	CENTREON_VARLIB=`trim ${CENTREON_VARLIB%/}`
+	if [ ! -d "$CENTREON_VARLIB/installs" ] ; then
+		mkdir -p "$CENTREON_VARLIB/installs"
+	fi
 	export CENTREON_VARLIB
 	log "INFO" "CENTREON_VARLIB: $CENTREON_VARLIB"
 }
@@ -1189,42 +1182,42 @@ function configureApache() {
 	# Generate a apache config in directory
 	prepare_apache_config "$dir_conf"
 
-	if [ "$silent_install" -ne 1 ] ; then
-		if [ -e $DIR_APACHE_CONF/centreon.conf ] ; then
-			echo "$(gettext "Finding Apache Centreon configuration file")"
-			echo_success "'$DIR_APACHE_CONF/centreon.conf' :" "$ok"
-			yes_no_default "$(gettext "Do you want to update Centreon Apache sub configuration file ?")"
-                        if [ "$?" -eq 0 ] ; then
-                            write_config="1"
-                            cp -f $DIR_APACHE_CONF/centreon.conf $DIR_APACHE_CONF/centreon.conf-bak >> $LOG_FILE 2>&1
-                            echo_info "$(gettext "Backup Centreon Apache configuration completed")"
-                        fi
-		else
-			yes_no_default "$(gettext "Do you want to add Centreon Apache sub configuration file ?")"
-			[ "$?" -eq 0 ] && write_config="1"
-		fi
-	else
-		write_config="1"
-    	fi
-	if [ "$write_config" -eq 1 ] ; then
-                if [ "$upgrade" -eq 1 ] ; then
-                    cp -f $dir_conf/centreon.apache.conf $DIR_APACHE_CONF/centreon.conf.new >> $LOG_FILE 2>&1
-                else
-                    cp -f $dir_conf/centreon.apache.conf $DIR_APACHE_CONF/centreon.conf >> $LOG_FILE 2>&1
-                fi
-		echo_success "$(gettext "Create") '$DIR_APACHE_CONF/centreon.conf'" "$ok"
-		echo_success "$(gettext "Configuring Apache")" "$ok"
-		# After finishing the configuration ->
-		# reload apache ! (if admin wants :p)
-		if [ "${APACHE_RELOAD:-0}" -eq 0 ] ; then
-			yes_no_default "$(gettext "Do you want to reload your Apache ?")"
-			[ $? -eq 0 ] && reload_service_apache
-		elif [ "${APACHE_RELOAD:-0}" -eq 1 ] ; then
-			reload_service_apache
-		fi
-	else
-		echo_info "$(gettext "Please config Apache with this example"):\n $dir_conf/centreon.apache.conf"
-	fi
+    if [ "$silent_install" -ne 1 ] ; then
+        if [ -e $DIR_APACHE_CONF/centreon.conf ] ; then
+            echo "$(gettext "Finding Apache Centreon configuration file")"
+            echo_success "'$DIR_APACHE_CONF/centreon.conf' :" "$ok"
+            yes_no_default "$(gettext "Do you want to update Centreon Apache sub configuration file ?")"
+            if [ "$?" -eq 0 ] ; then
+                write_config="1"
+                cp -f $DIR_APACHE_CONF/centreon.conf $DIR_APACHE_CONF/centreon.conf-bak >> $LOG_FILE 2>&1
+                echo_info "$(gettext "Backup Centreon Apache configuration completed")"
+            fi
+        else
+            yes_no_default "$(gettext "Do you want to add Centreon Apache sub configuration file ?")"
+            [ "$?" -eq 0 ] && write_config="1"
+        fi
+    else
+        write_config="1"
+    fi
+    if [ "$write_config" -eq 1 ] ; then
+        if [ "$upgrade" -eq 1 ] ; then
+            cp -f $dir_conf/centreon.apache.conf $DIR_APACHE_CONF/centreon.conf.new >> $LOG_FILE 2>&1
+        else
+            cp -f $dir_conf/centreon.apache.conf $DIR_APACHE_CONF/centreon.conf >> $LOG_FILE 2>&1
+        fi
+        echo_success "$(gettext "Create") '$DIR_APACHE_CONF/centreon.conf'" "$ok"
+        echo_success "$(gettext "Configuring Apache")" "$ok"
+        # After finishing the configuration ->
+        # reload apache ! (if admin wants :p)
+        if [ "${APACHE_RELOAD:-0}" -eq 0 ] ; then
+            yes_no_default "$(gettext "Do you want to reload your Apache ?")"
+            [ $? -eq 0 ] && reload_service_apache
+        elif [ "${APACHE_RELOAD:-0}" -eq 1 ] ; then
+            reload_service_apache
+        fi
+    else
+        echo_info "$(gettext "Please config Apache with this example"):\n $dir_conf/centreon.apache.conf"
+    fi
 }
 
 #----
@@ -1240,14 +1233,12 @@ function reload_service_apache() {
 	elif [ -x /etc/init.d/httpd ] ; then
 		service="httpd"
 	elif [ -x /bin/systemctl ] ; then
-	    local count_service=$(/bin/systemctl list-units | grep httpd | wc -l)
-	    if [ "$count_service" -gt "0" ] ; then
+	    if [ $(/bin/systemctl list-units | grep httpd24-httpd | wc -l) -gt "0" ] ; then
+	        service="httpd24-httpd"
+        elif [ $(/bin/systemctl list-units | grep httpd | wc -l) -gt "0" ] ; then
 	        service="httpd"
-        else
-            count_service=$(/bin/systemctl list-units | grep apache2 | wc -l)
-            if [ "$count_service" -gt "0" ] ; then
-                service="apache2"
-            fi
+        elif [ $(/bin/systemctl list-units | grep apache2 | wc -l) -gt "0" ] ; then
+            service="apache2"
 	    fi
 	elif [ -x /etc/init.d/apache2 ] ; then
 		service="apache2"
@@ -1326,16 +1317,20 @@ __EOT__
 ## @Globals	DIR_PHP_FPM_CONF
 #----
 function check_php_fpm_directory() {
-	if [ -z "$DIR_PHP_FPM_CONF" ] ; then
-		if [ -d /etc/php/7.1/fpm/pool.d ]; then
-			DIR_PHP_FPM_CONF="/etc/php/7.1/fpm/pool.d"
-		elif [ -d /etc/opt/rh/rh-php71/php-fpm.d ] ; then
-			DIR_PHP_FPM_CONF="/etc/opt/rh/rh-php71/php-fpm.d"
-		else
-			echo_passed "$(gettext "PHP FPM config directory not found")" "$critical"
-			answer_with_testdir "$(gettext "Where is your PHP FPM conf.d directory")" "NO_DEFAULT" "DIR_PHP_FPM_CONF"
-		fi
-	fi
+    if [ -z "$DIR_PHP_FPM_CONF" ] ; then
+        if [ -d /etc/php/7.2/fpm/pool.d ]; then
+            DIR_PHP_FPM_CONF="/etc/php/7.2/fpm/pool.d"
+        elif [ -d /etc/opt/rh/rh-php72/php-fpm.d ] ; then
+            DIR_PHP_FPM_CONF="/etc/opt/rh/rh-php72/php-fpm.d"
+        elif [ -d /etc/php/7.1/fpm/pool.d ]; then
+            DIR_PHP_FPM_CONF="/etc/php/7.1/fpm/pool.d"
+        elif [ -d /etc/opt/rh/rh-php71/php-fpm.d ] ; then
+            DIR_PHP_FPM_CONF="/etc/opt/rh/rh-php71/php-fpm.d"
+        else
+            echo_passed "$(gettext "PHP FPM config directory not found")" "$critical"
+            answer_with_testdir "$(gettext "Where is your PHP FPM conf.d directory")" "NO_DEFAULT" "DIR_PHP_FPM_CONF"
+        fi
+    fi
 	DIR_PHP_FPM_CONF=${DIR_PHP_FPM_CONF%/}
 	export DIR_PHP_FPM_CONF
 	log "INFO" "DIR_PHP_FPM_CONF: $DIR_PHP_FPM_CONF"
@@ -1468,19 +1463,16 @@ function reload_service_php_fpm() {
 ## @param	directory to generate a centreon.sudo file
 ## @return 0	create file ok
 ## @return 1	create file fail
-## @Globals	MONITORINGENGINE_BINARY, INIT_D, WEB_USER, MONITORINGENGINE_INIT_SCRIPT
+## @Globals	MONITORINGENGINE_BINARY, INIT_D, WEB_USER
 #----
 function prepare_sudo_config() {
 	local directory="$1"
 
-    	locate_sudo
-	# Find Monitoring Engine Init Script
-	answer "$(gettext "What is the Monitoring engine init.d script ?") [$DEFAULT_MONITORINGENGINE_INIT_SCRIPT]" "$DEFAULT_MONITORINGENGINE_INIT_SCRIPT" "MONITORINGENGINE_INIT_SCRIPT"
+    locate_sudo
 	# find nagios binary if not define
 	[ -z "$MONITORINGENGINE_BINARY" ] && answer_with_testfile "$(gettext "What is the Monitoring engine binary ?") [$DEFAULT_MONITORINGENGINE_BINARY]" "$DEFAULT_MONITORINGENGINE_BINARY" "MONITORINGENGINE_BINARY"
 	[ -z "$MONITORINGENGINE_ETC" ] && locate_monitoringengine_etc
 	[ -z "$BROKER_ETC" ] && locate_broker_etc
-	[ -z "cbd" ] && locate_broker_init_script
 	[ -z "$SERVICE_BINARY" ] && answer_with_testfile "$(gettext "Where is your service command binary ?")" "$(which service)" "SERVICE_BINARY"
 	# Prepare sudo.conf
 
@@ -1596,7 +1588,7 @@ function configureSUDO() {
 #----
 ## Create a config file for Web post install
 ## @Globals	line, INSTALL_DIR_CENTREON, CENTREON_ETC,
-## @Globals	MONITORINGENGINE_BINARY, MONITORINGENGINE_INIT_SCRIPT
+## @Globals	MONITORINGENGINE_BINARY
 ## @Globals	BIN_RRDTOOL, WEB_USER, WEB_GROUP,
 ## @Globals	CENTREON_USER, BIN_MAIL
 #----
@@ -1641,11 +1633,9 @@ function createConfFile() {
 \$conf_centreon['broker_user'] = "$BROKER_USER";
 \$conf_centreon['broker_group'] = "$BROKER_GROUP";
 \$conf_centreon['broker_etc'] = "$BROKER_ETC";
-\$conf_centreon['broker_init_script'] = "cbd";
 \$conf_centreon['monitoring_user'] = "$MONITORINGENGINE_USER";
 \$conf_centreon['monitoring_group'] = "$MONITORINGENGINE_GROUP";
 \$conf_centreon['monitoring_etc'] = "$MONITORINGENGINE_ETC";
-\$conf_centreon['monitoring_init_script'] = "centengine";
 \$conf_centreon['monitoring_binary'] = "$MONITORINGENGINE_BINARY";
 \$conf_centreon['monitoring_varlog'] = "$MONITORINGENGINE_LOG";
 \$conf_centreon['plugin_dir'] = "$PLUGIN_DIR";
@@ -1696,9 +1686,7 @@ function createCentreonInstallConf() {
 	CENTPLUGINSTRAPS_BINDIR=$CENTPLUGINSTRAPS_BINDIR
 	BROKER_ETC=$BROKER_ETC
 	BROKER_USER=$BROKER_USER
-	BROKER_INIT_SCRIPT=cbd
 	MONITORINGENGINE_ETC=$MONITORINGENGINE_ETC
-	MONITORINGENGINE_INIT_SCRIPT=centengine
 	MONITORINGENGINE_BINARY=$MONITORINGENGINE_BINARY
 	MONITORINGENGINE_LOG=$MONITORINGENGINE_LOG
 	MONITORINGENGINE_USER=$MONITORINGENGINE_USER
@@ -1830,48 +1818,51 @@ function createCentPluginsForTrapdInstallConf() {
 #----
 function check_httpd_directory()
 {
-	if [ -z "$DIR_APACHE" -o -z "$DIR_APACHE_CONF" ] ; then
-		if [ -d /etc/apache/conf ]; then
-			DIR_APACHE="/etc/apache/conf"
-			DIR_APACHE_CONF="/etc/apache/conf.d"
-		elif [ -d /usr/local/apache2/conf ] ; then
-			DIR_APACHE="/usr/local/apache2/conf"
-			DIR_APACHE_CONF="/usr/local/apache2/conf"
-		elif [ -d /etc/apache2 ] ; then
-			DIR_APACHE="/etc/apache2"
-			DIR_APACHE_CONF="/etc/apache2/conf-available"
-			if [ -d '/etc/apache2/conf-avaible' ]; then
-				DIR_APACHE_CONF="/etc/apache2/conf-available"
-			elif [ -d '/etc/apache2/conf.d' ]; then
-				DIR_APACHE_CONF="/etc/apache2/conf.d"
-			fi
-			if [ ! -d "$DIR_APACHE_CONF" ] ; then
-				mkdir "$DIR_APACHE_CONF"
-				echo_success "$(gettext "Created Apache configuration directory")" "$ok"
-			fi
-			if [ -d '/etc/apache2/conf-enabled' -a -x "$(type -p a2enconf 2>/dev/null)" ] ; then
-				echo_success "$(gettext "Enable Apache configuration")" "$ok"
-				a2enconf centreon.conf
-			fi
-		elif [ -d /etc/httpd/conf ] ; then
-			DIR_APACHE="/etc/httpd/conf"
-			DIR_APACHE_CONF="/etc/httpd/conf.d"
-		elif [ -d /usr/local/etc/apache ] ; then
-			DIR_APACHE="/usr/local/etc/apache"
-			DIR_APACHE_CONF="/usr/local/etc/apache/Includes"
-		elif [ -d /usr/local/etc/apache2 ] ; then
-			DIR_APACHE="/usr/local/etc/apache2"
-			DIR_APACHE_CONF="/usr/local/etc/apache2/Includes"
-		elif [ -d /usr/local/etc/apache22 ] ; then
-			# add for freeBSD 7 with apache2.2
-			DIR_APACHE="/usr/local/etc/apache22"
-			DIR_APACHE_CONF="/usr/local/etc/apache22/Includes"
-		else
-			echo_passed "$(gettext "Apache config directoty not found")" "$critical"
-			answer_with_testdir "$(gettext "Where is your Apache etc directory")" "NO_DEFAULT" "DIR_APACHE"
-			answer_with_testdir "$(gettext "Where is your Apache conf.d directory")" "NO_DEFAULT" "DIR_APACHE_CONF"
-		fi
-	fi
+    if [ -z "$DIR_APACHE" -o -z "$DIR_APACHE_CONF" ] ; then
+        if [ -d /opt/rh/httpd24/root/etc/httpd/conf ] ; then
+            DIR_APACHE="/opt/rh/httpd24/root/etc/httpd/conf"
+            DIR_APACHE_CONF="/opt/rh/httpd24/root/etc/httpd/conf.d"
+        elif [ -d /etc/apache/conf ] ; then
+            DIR_APACHE="/etc/apache/conf"
+            DIR_APACHE_CONF="/etc/apache/conf.d"
+        elif [ -d /usr/local/apache2/conf ] ; then
+            DIR_APACHE="/usr/local/apache2/conf"
+            DIR_APACHE_CONF="/usr/local/apache2/conf"
+        elif [ -d /etc/apache2 ] ; then
+            DIR_APACHE="/etc/apache2"
+            DIR_APACHE_CONF="/etc/apache2/conf-available"
+            if [ -d '/etc/apache2/conf-avaible' ] ; then
+                DIR_APACHE_CONF="/etc/apache2/conf-available"
+            elif [ -d '/etc/apache2/conf.d' ] ; then
+                DIR_APACHE_CONF="/etc/apache2/conf.d"
+            fi
+            if [ ! -d "$DIR_APACHE_CONF" ] ; then
+                mkdir "$DIR_APACHE_CONF"
+                echo_success "$(gettext "Created Apache configuration directory")" "$ok"
+            fi
+            if [ -d '/etc/apache2/conf-enabled' -a -x "$(type -p a2enconf 2>/dev/null)" ] ; then
+                echo_success "$(gettext "Enable Apache configuration")" "$ok"
+                a2enconf centreon.conf
+            fi
+        elif [ -d /etc/httpd/conf ] ; then
+            DIR_APACHE="/etc/httpd/conf"
+            DIR_APACHE_CONF="/etc/httpd/conf.d"
+        elif [ -d /usr/local/etc/apache ] ; then
+            DIR_APACHE="/usr/local/etc/apache"
+            DIR_APACHE_CONF="/usr/local/etc/apache/Includes"
+        elif [ -d /usr/local/etc/apache2 ] ; then
+            DIR_APACHE="/usr/local/etc/apache2"
+            DIR_APACHE_CONF="/usr/local/etc/apache2/Includes"
+        elif [ -d /usr/local/etc/apache22 ] ; then
+            # add for freeBSD 7 with apache2.2
+            DIR_APACHE="/usr/local/etc/apache22"
+            DIR_APACHE_CONF="/usr/local/etc/apache22/Includes"
+        else
+            echo_passed "$(gettext "Apache config directoty not found")" "$critical"
+            answer_with_testdir "$(gettext "Where is your Apache etc directory")" "NO_DEFAULT" "DIR_APACHE"
+            answer_with_testdir "$(gettext "Where is your Apache conf.d directory")" "NO_DEFAULT" "DIR_APACHE_CONF"
+        fi
+    fi
 	DIR_APACHE=${DIR_APACHE%/}
 	export DIR_APACHE
 	DIR_APACHE_CONF=${DIR_APACHE_CONF%/}

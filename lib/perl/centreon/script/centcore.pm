@@ -61,6 +61,7 @@ sub new {
     $self->{rsyncWT} = $self->{rsync};
     $self->{sudo} = "sudo";
     $self->{service} = "service";
+    $self->{engineInitScript} = 'centengine';
     $self->{timeout} = 5;
     $self->{cmd_timeout} = 5;
     $self->{illegal_characters} = "";
@@ -68,7 +69,6 @@ sub new {
     $self->{ssh} .= " -o ConnectTimeout=$self->{timeout} -o StrictHostKeyChecking=yes -o PreferredAuthentications=publickey -o ServerAliveInterval=10 -o ServerAliveCountMax=3 -o Compression=yes ";
     $self->{rsync} .= " --timeout=$self->{timeout} ";
     $self->{scp} .= " -o ConnectTimeout=$self->{timeout} -o StrictHostKeyChecking=yes -o PreferredAuthentications=publickey -o ServerAliveInterval=10 -o ServerAliveCountMax=3 -o Compression=yes ";
-
 
     $self->{timeBetween2SyncPerf} = 60;
     $self->{perfdataSync} = 0;
@@ -801,17 +801,17 @@ sub sendExportFile($){
 }
 
 ##################################################
-# Function for initialize Nagios :
+# Function for initialize Centreon Engine :
 # Parameters :
 #   - start
 #   - restart
 #   - stop
 #
-sub initEngine($$$){
+sub initEngine($$$) {
     my $self = shift;
-    my $id = $_[0];
-    my $options = $_[1];
-    my $action = $_[2];
+    my $id = $_[0]; # poller id
+    my $options = $_[1]; # restart, reload, stop...
+    my $action = $_[2]; # full command
     my ($lerror, $cmd, $stdout);
 
     # Get configuration
@@ -838,10 +838,13 @@ sub initEngine($$$){
                 'using remote server "' . $remote_server->{name} . '" (' . $remote_server->{id} . ')'
             );
         } else {
-            $cmd = "$self->{ssh} -p $port " . $conf->{ns_ip_address} . " $self->{sudo} $self->{service} "
-                . $conf->{init_script} . " " . $options;
+            $cmd = '';
+            if ($conf->{localhost} == 0) {
+                $cmd = "$self->{ssh} -p $port $conf->{ns_ip_address} ";
+            }
+            $cmd .= $self->getEngineCommand($conf, $options);
             $self->{logger}->writeLogInfo(
-                'Init Script : "' . $self->{sudo} . ' ' . $self->{service} . ' ' . $conf->{init_script} . ' ' . $options . '" ' .
+                'Init Script : "' . $cmd . '" ' .
                 'on poller "' . $conf->{name} . '" (' . $id . ')'
             );
         }
@@ -859,6 +862,33 @@ sub initEngine($$$){
             $self->{logger}->writeLogDebug("Engine : " . $line);
         }
     }
+}
+
+##################################################
+# Function to generate Centreon Engine command :
+# Arguments:
+#     $pollerConf: array Poller configuration get in database (nagios_server table)
+#     $action: string Name of the action (restart, reload, stop...)
+#
+sub getEngineCommand($$) {
+    my $self = shift;
+    my $pollerConf = $_[0];
+    my $action = $_[1];
+    my $command;
+
+    if ($action eq 'start') {
+        $command = "$self->{sudo} $pollerConf->{engine_start_command}";
+    } elsif ($action eq 'stop') {
+        $command = "$self->{sudo} $pollerConf->{engine_stop_command}";
+    } elsif ($action eq 'restart') {
+        $command = "$self->{sudo} $pollerConf->{engine_restart_command}";
+    } elsif ($action eq 'reload') {
+        $command = "$self->{sudo} $pollerConf->{engine_reload_command}";
+    } else {
+        $command = "$self->{sudo} $self->{service} $self->{engineInitScript} $action";
+    }
+
+    return $command;
 }
 
 ##################################################
@@ -1076,8 +1106,6 @@ sub parseRequest($){
         $self->initEngine($1, "restart", $action);
     } elsif ($action =~ /^RELOAD\:([0-9]*)/){
         $self->initEngine($1, "reload", $action);
-    } elsif ($action =~ /^FORCERELOAD\:([0-9]*)/){
-        $self->initEngine($1, "force-reload", $action);
     } elsif ($action =~ /^START\:([0-9]*)/){
         $self->initEngine($1, "start", $action);
     } elsif ($action =~ /^STOP\:([0-9]*)/){

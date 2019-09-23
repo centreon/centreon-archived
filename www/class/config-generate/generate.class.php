@@ -131,7 +131,7 @@ class Generate
 
     private function getPollerFromId($poller_id)
     {
-        $query = "SELECT id, localhost, monitoring_engine, centreonconnector_path FROM nagios_server " .
+        $query = "SELECT id, localhost,  centreonconnector_path FROM nagios_server " .
             "WHERE id = :poller_id";
         $stmt = $this->backend_instance->db->prepare($query);
         $stmt->bindParam(':poller_id', $poller_id, PDO::PARAM_INT);
@@ -145,7 +145,7 @@ class Generate
 
     private function getPollerFromName($poller_name)
     {
-        $query = "SELECT id, localhost, monitoring_engine, centreonconnector_path FROM nagios_server " .
+        $query = "SELECT id, localhost, centreonconnector_path FROM nagios_server " .
             "WHERE name = :poller_name";
         $stmt = $this->backend_instance->db->prepare($query);
         $stmt->bindParam(':poller_name', $poller_name, PDO::PARAM_STR);
@@ -233,7 +233,7 @@ class Generate
 
     public function configPollers($username = 'unknown')
     {
-        $query = "SELECT id, localhost, monitoring_engine, centreonconnector_path FROM " .
+        $query = "SELECT id, localhost, centreonconnector_path FROM " .
             "nagios_server WHERE ns_activate = '1'";
         $stmt = $this->backend_instance->db->prepare($query);
         $stmt->execute();
