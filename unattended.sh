@@ -134,6 +134,7 @@ if [ "x$?" '=' x0 ] ; then
       error_and_exit "Could not configure firewall. You might need to run this script as root."
     fi
   done
+  firewall-cmd --reload
   print_step_end
 else
   print_step_end "OK, not detected"
