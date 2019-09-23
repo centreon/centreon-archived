@@ -178,8 +178,8 @@ abstract class AbstractService extends AbstractObject
     protected function getContacts(&$service)
     {
         // check inheritance host option
-        if (isset($service['service_use_only_contacts_from_host']) &&
-            $service['service_use_only_contacts_from_host'] == 1
+        if (isset($service['service_use_only_contacts_from_host'])
+            && $service['service_use_only_contacts_from_host'] == 1
         ) {
             $service['contacts_cache'] = array();
             $service['contacts'] = "";
@@ -221,7 +221,7 @@ abstract class AbstractService extends AbstractObject
      */
     protected function isContactInheritance($serviceId)
     {
-        $query = "SELECT contact_additive_inheritance FROM service WHERE `service_id` = " . $serviceId;
+        $query = "SELECT contact_additive_inheritance FROM service WHERE `service_id` = " . (int)$serviceId;
         $stmt = $this->backend_instance->db->query($query);
         $inheritance = $stmt->fetch();
         return (int)$inheritance['contact_additive_inheritance'];
@@ -234,19 +234,17 @@ abstract class AbstractService extends AbstractObject
     protected function getContactVerticalInheritance($serviceId, &$serviceListing = array())
     {
         $serviceListing[] = $serviceId;
-        while (1) {
-            $query = "SELECT service_template_model_stm_id, contact_additive_inheritance FROM service
-                    WHERE `service_id` = " . $serviceId;
-            $stmt = $this->backend_instance->db->query($query);
-            $serviceAdd = $stmt->fetch();
+        $query = "SELECT service_template_model_stm_id, contact_additive_inheritance FROM service
+                    WHERE `service_id` = " . (int)$serviceId;
+        $stmt = $this->backend_instance->db->query($query);
+        $serviceAdd = $stmt->fetch();
 
-            if (isset($serviceAdd['service_template_model_stm_id'])
-                && (int)$serviceAdd['contact_additive_inheritance'] === 1
-            ) {
-                $this->getContactVerticalInheritance($serviceAdd['service_template_model_stm_id'], $serviceListing);
-            }
-            break;
+        if (isset($serviceAdd['service_template_model_stm_id'])
+            && (int)$serviceAdd['contact_additive_inheritance'] === 1
+        ) {
+            $this->getContactVerticalInheritance($serviceAdd['service_template_model_stm_id'], $serviceListing);
         }
+
     }
 
     /**
@@ -257,8 +255,7 @@ abstract class AbstractService extends AbstractObject
     {
         $serviceListing[] = $serviceId;
         $stmt = $this->backend_instance->db->query(
-            "SELECT service_template_model_stm_id FROM service 
-                WHERE `service_id` = " . (int)$serviceId
+            "SELECT service_template_model_stm_id FROM service WHERE `service_id` = " . (int)$serviceId
         );
         $row = $stmt->fetch();
         if ($row['service_template_model_stm_id']) {
@@ -315,8 +312,8 @@ abstract class AbstractService extends AbstractObject
     protected function getContactGroups(&$service)
     {
         // check inheritance host option
-        if (isset($service['service_use_only_contacts_from_host']) &&
-            $service['service_use_only_contacts_from_host'] == 1
+        if (isset($service['service_use_only_contacts_from_host'])
+            && $service['service_use_only_contacts_from_host'] == 1
         ) {
             $service['contact_groups_cache'] = array();
             $service['contact_groups'] = "";
@@ -357,7 +354,7 @@ abstract class AbstractService extends AbstractObject
      */
     protected function isContactGroupsInheritance($serviceId)
     {
-        $query = "SELECT cg_additive_inheritance FROM service WHERE `service_id` = " . $serviceId;
+        $query = "SELECT cg_additive_inheritance FROM service WHERE `service_id` = " . (int)$serviceId;
         $stmt = $this->backend_instance->db->query($query);
         $inheritance = $stmt->fetch();
         return (int)$inheritance['cg_additive_inheritance'];
@@ -371,7 +368,7 @@ abstract class AbstractService extends AbstractObject
     {
         $serviceListing[] = (int)$serviceId;
         $query = "SELECT service_template_model_stm_id, cg_additive_inheritance FROM service
-                    WHERE `service_id` = " . $serviceId;
+                    WHERE `service_id` = " . (int)$serviceId;
         $stmt = $this->backend_instance->db->query($query);
         $serviceAdd = $stmt->fetch();
 

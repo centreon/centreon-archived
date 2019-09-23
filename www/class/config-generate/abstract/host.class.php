@@ -229,11 +229,10 @@ abstract class AbstractHost extends AbstractObject
         if (is_null($this->notificationOption)) {
             $this->notificationOption = $this->getInheritanceMode();
         }
-
         $hostListing = array();
         $contactResult = '';
         //check cumulative option
-        if (self::CUMULATIVE_NOTIFICATION == $this->notificationOption){
+        if (self::CUMULATIVE_NOTIFICATION == $this->notificationOption) {
             // get all host / template inheritance
             $this->getCumulativeInheritance($host['host_id'], $hostListing);
         } else {
@@ -253,7 +252,6 @@ abstract class AbstractHost extends AbstractObject
         if (!empty($hostListing)) {
             $contactResult = implode(',', $this->getInheritanceContact(array_unique($hostListing)));
         }
-
         $host['contacts'] = $contactResult;
     }
 
@@ -263,7 +261,7 @@ abstract class AbstractHost extends AbstractObject
      */
     protected function isContactInheritance($hostId)
     {
-        $query = "SELECT contact_additive_inheritance FROM host WHERE `host_id` = " . $hostId;
+        $query = "SELECT contact_additive_inheritance FROM host WHERE `host_id` = " . (int)$hostId;
         $stmt = $this->backend_instance->db->query($query);
         $inheritance = $stmt->fetch();
         return (int)$inheritance['contact_additive_inheritance'];
@@ -275,12 +273,12 @@ abstract class AbstractHost extends AbstractObject
      */
     protected function getContactVerticalInheritance($hostId, &$hostList = array())
     {
-        $hostList[] = $hostId;
+        $hostList[] = (int)$hostId;
         while (1) {
             $query = "SELECT contact_additive_inheritance, host_tpl_id FROM host, host_template_relation
                     WHERE `host_id` = `host_host_id`
                     AND `order` = 1
-                    AND `host_id` = " . $hostId;
+                    AND `host_id` = " . (int)$hostId;
             $stmt = $this->backend_instance->db->query($query);
             $hostAdd = $stmt->fetch();
 
@@ -366,18 +364,16 @@ abstract class AbstractHost extends AbstractObject
         if (is_null($this->notificationOption)) {
             $this->notificationOption = $this->getInheritanceMode();
         }
-
         $hostListing = array();
         $cgResult = '';
         //check cumulative option
-        if (self::CUMULATIVE_NOTIFICATION == $this->notificationOption){
+        if (self::CUMULATIVE_NOTIFICATION == $this->notificationOption) {
             // get all host / template inheritance
             $this->getCumulativeInheritance($host['host_id'], $hostListing);
         } else {
             // get the first host (template) link to a contact group
             // use for close inheritance mode too
             $this->getContactGroupsCloseInheritance($host['host_id'], $hostListing);
-
             //check vertical inheritance
             if (!empty($hostListing)
                 && (self::VERTICAL_NOTIFICATION == $this->notificationOption)
@@ -394,14 +390,13 @@ abstract class AbstractHost extends AbstractObject
         $host['contact_groups'] = $cgResult;
     }
 
-
     /**
      * @param $hostId
      * @return int
      */
     protected function isContactGroupsInheritance($hostId)
     {
-        $query = "SELECT cg_additive_inheritance FROM host WHERE `host_id` = " . $hostId;
+        $query = "SELECT cg_additive_inheritance FROM host WHERE `host_id` = " . (int)$hostId;
         $stmt = $this->backend_instance->db->query($query);
         $inheritance = $stmt->fetch();
         return (int)$inheritance['cg_additive_inheritance'];
@@ -417,7 +412,7 @@ abstract class AbstractHost extends AbstractObject
         $query = "SELECT cg_additive_inheritance, host_tpl_id FROM host, host_template_relation
                     WHERE `host_id` = `host_host_id`
                     AND `order` = 1
-                    AND `host_id` = " . $hostId;
+                    AND `host_id` = " . (int)$hostId;
         $stmt = $this->backend_instance->db->query($query);
         $hostAdd = $stmt->fetch();
 
