@@ -53,7 +53,8 @@
 			</td>
 		</tr>
         <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="enable_shell"> {$form.enable_shell.label}</td><td class="FormRowValue">{$form.enable_shell.html}</td></tr>
-		<tr class="list_one">
+        <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="arg_example"> {$form.command_example.label}</td><td class="FormRowValue">{if $o != "w"}{$form.command_example.html}{/if}</td></tr>
+		<tr class="list_two">
 			<td class="FormRowField"><img class="helpTooltip" name="arg_description"> {$arg_desc_label}</td>
 			<td class="FormRowValue">
                 {if $o != "w"}{$form.desc_arg.html}&nbsp;{$form.clear_arg.html}<br/><br/>{/if}
@@ -62,13 +63,13 @@
 				 </div>
 			</td>
 		</tr>
-                <tr class="list_one">
+		<tr class="list_one">
 			<td class="FormRowField"><img class="helpTooltip" name="macro_description"> {$macro_desc_label}</td>
 			<td class="FormRowValue">
 				<div id="listOfMacroDiv">
 				    {$form.desc_macro.html}
 				</div>
-                                <div id="listOfArgDiv">
+				<div id="listOfArgDiv">
 				    {$form.listOfMacros.html}
 				</div>
 			</td>

@@ -249,6 +249,7 @@ $form->addRule('command_name', _("Compulsory Name"), 'required');
 $form->addRule('command_line', _("Compulsory Command Line"), 'required');
 $form->registerRule('exist', 'callback', 'testCmdExistence');
 $form->addRule('command_name', _("Name is already in use"), 'exist');
+$form->addElement('text', 'command_example', _("Argument Example"), $attrsText);
 $form->setRequiredNote("<font style='color: red;'>*</font>&nbsp;" . _("Required fields"));
 
 /*
