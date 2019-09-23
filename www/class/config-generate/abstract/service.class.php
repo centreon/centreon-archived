@@ -422,7 +422,7 @@ abstract class AbstractService extends AbstractObject
         );
 
         while (($row = $stmt->fetch())) {
-            $contactGroups[$row['cg_id']] = $cg->generateFromCgId($row['cg_id']);;
+            $contactGroups[$row['cg_id']] = $cg->generateFromCgId($row['cg_id']);
         }
         return $contactGroups;
     }

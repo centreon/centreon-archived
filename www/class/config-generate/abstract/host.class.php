@@ -350,7 +350,7 @@ abstract class AbstractHost extends AbstractObject
         );
 
         while (($row = $stmt->fetch())) {
-            $contacts[$row['contact_id']] = $contact->generateFromContactId($row['contact_id']);;
+            $contacts[$row['contact_id']] = $contact->generateFromContactId($row['contact_id']);
         }
         return $contacts;
     }
@@ -464,7 +464,7 @@ abstract class AbstractHost extends AbstractObject
         );
 
         while (($row = $stmt->fetch())) {
-            $contactGroups[$row['cg_id']] = $cg->generateFromCgId($row['cg_id']);;
+            $contactGroups[$row['cg_id']] = $cg->generateFromCgId($row['cg_id']);
         }
         return $contactGroups;
     }
