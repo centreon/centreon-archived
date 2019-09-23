@@ -247,10 +247,10 @@ if (isset($_GET["o"]) && $_GET["o"] == SERVER_ADD) {
     $monitoring_engines = [
         "nagios_bin" => "/usr/sbin/centengine",
         "nagiostats_bin" => "/usr/sbin/centenginestats",
-        "engine_start_command" => "systemctl start centengine",
-        "engine_stop_command" => "systemctl stop centengine",
-        "engine_restart_command" => "systemctl restart centengine",
-        "engine_reload_command" => "systemctl reload centengine",
+        "engine_start_command" => "service centengine start",
+        "engine_stop_command" => "service centengine stop",
+        "engine_restart_command" => "service centengine restart",
+        "engine_reload_command" => "service centengine reload",
         "nagios_perfdata" => "/var/log/centreon-engine/service-perfdata"
     ];
 
@@ -271,7 +271,7 @@ if (isset($_GET["o"]) && $_GET["o"] == SERVER_ADD) {
             "ssh_port"  =>  '22',
             "ssh_private_key"  =>  '~/.ssh/rsa.id',
             "nagios_perfdata"  => $monitoring_engines["nagios_perfdata"],
-            "broker_reload_command" => "systemctl reload cbd",
+            "broker_reload_command" => "service cbd reload",
             "centreonbroker_cfg_path" => "/etc/centreon-broker",
             "centreonbroker_module_path" => "/usr/share/centreon/lib/centreon-broker",
             "centreonbroker_logs_path" => "/var/log/centreon-broker",
