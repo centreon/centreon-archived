@@ -144,14 +144,14 @@ class Broker extends AbstractObjectJSON
             // Base parameters
             $object['broker_id'] = (int) $row['config_id'];
             $object['broker_name'] = $row['config_name'];
-            $object['poller_id'] = (int)$this->engine['id'];
+            $object['poller_id'] = (int) $this->engine['id'];
             $object['poller_name'] = $this->engine['name'];
-            $object['module_directory'] = $this->engine['broker_modules_path'];
+            $object['module_directory'] = (string) $this->engine['broker_modules_path'];
             $object['log_timestamp'] = $this->castIntoBoolean($row['config_write_timestamp']);
             $object['log_thread_id'] = $this->castIntoBoolean($row['config_write_thread_id']);
             $object['event_queue_max_size'] = (int)$row['event_queue_max_size'];
-            $object['command_file'] = $row['command_file'];
-            $object['cache_directory'] = $cache_directory;
+            $object['command_file'] = (string) $row['command_file'];
+            $object['cache_directory'] = (string) $cache_directory;
 
             if ($row['daemon'] == '1') {
                 $watchdog['cbd'][] = [
@@ -380,7 +380,7 @@ class Broker extends AbstractObjectJSON
         while (($row = $stmt->fetch(PDO::FETCH_ASSOC))) {
             $val = $row[$s_column];
             if (!is_null($s_rpn)) {
-                $val = $this->rpnCalc($s_rpn, $val);
+                $val = (string) $this->rpnCalc($s_rpn, $val);
             }
             $infos[] = $val;
         }
