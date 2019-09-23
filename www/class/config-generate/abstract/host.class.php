@@ -229,31 +229,27 @@ abstract class AbstractHost extends AbstractObject
         if (is_null($this->notificationOption)) {
             $this->notificationOption = $this->getInheritanceMode();
         }
-        $hostListing = array();
-        // get the first host (template) link to a contact
-        $this->getContactCloseInheritance($host['host_id'], $hostListing);
-        $contactResult = '';
 
-        if (!empty($hostListing)) {
-            switch ((int)$this->notificationOption) {
-                case self::VERTICAL_NOTIFICATION:
-                    //check if the inheritance is enable
-                    if ($this->isContactInheritance($hostListing[0])) {
-                        //use the first template found to start
-                        $this->getContactVerticalInheritance($hostListing[0], $hostListing);
-                    }
-                    break;
-                case self::CUMULATIVE_NOTIFICATION:
-                    // get all host / template inheritance
-                    $hostListing = array();
-                    $this->getCumulativeInheritance($host['host_id'], $hostListing);
-                    break;
-                case self::CLOSE_NOTIFICATION:
-                default:
-                    //do nothing it's the starting point of other notification option
-                    break;
+        $hostListing = array();
+        $contactResult = '';
+        //check cumulative option
+        if (self::CUMULATIVE_NOTIFICATION == $this->notificationOption){
+            // get all host / template inheritance
+            $this->getCumulativeInheritance($host['host_id'], $hostListing);
+        } else {
+            // get the first host (template) link to a contact group
+            // use for close inheritance mode too
+            $this->getContactCloseInheritance($host['host_id'], $hostListing);
+
+            //check vertical inheritance
+            if (!empty($hostListing)
+                && (self::VERTICAL_NOTIFICATION == $this->notificationOption)
+                && $this->isContactInheritance($hostListing[0])) {
+                //use the first template found to start
+                $this->getContactVerticalInheritance($hostListing[0], $hostListing);
             }
         }
+        //check if we have Host link to a contact.
         if (!empty($hostListing)) {
             $contactResult = implode(',', $this->getInheritanceContact(array_unique($hostListing)));
         }
@@ -371,31 +367,25 @@ abstract class AbstractHost extends AbstractObject
         }
 
         $hostListing = array();
-        // get the first host (template) link to a contact group
-        $this->getContactGroupsCloseInheritance($host['host_id'], $hostListing);
         $cgResult = '';
+        //check cumulative option
+        if (self::CUMULATIVE_NOTIFICATION == $this->notificationOption){
+            // get all host / template inheritance
+            $this->getCumulativeInheritance($host['host_id'], $hostListing);
+        } else {
+            // get the first host (template) link to a contact group
+            // use for close inheritance mode too
+            $this->getContactGroupsCloseInheritance($host['host_id'], $hostListing);
 
-        if (!empty($hostListing)) {
-            switch ((int)$this->notificationOption) {
-                case self::VERTICAL_NOTIFICATION:
-                    //check if the inheritance is enable
-                    if ($this->isContactGroupsInheritance($hostListing[0])) {
-                        //use the first template found to start
-                        $this->getContactGroupsVerticalInheritance($hostListing[0], $hostListing);
-                    }
-                    break;
-                case self::CUMULATIVE_NOTIFICATION:
-                    // get all host / template inheritance
-                    $hostListing = array();
-                    $this->getCumulativeInheritance($host['host_id'], $hostListing);
-                    break;
-                case self::CLOSE_NOTIFICATION:
-                default:
-                    //do nothing it's the starting point of other notification option
-                    break;
+            //check vertical inheritance
+            if (!empty($hostListing)
+                && (self::VERTICAL_NOTIFICATION == $this->notificationOption)
+                && $this->isContactGroupsInheritance($hostListing[0])) {
+                //use the first template found to start
+                $this->getContactGroupsVerticalInheritance($hostListing[0], $hostListing);
             }
         }
-
+        //check if we have Host link to a contactGroup.
         if (!empty($hostListing)) {
             $cgResult = implode(',', $this->getInheritanceContactGroups(array_unique($hostListing)));
         }
