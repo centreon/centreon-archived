@@ -227,11 +227,7 @@ abstract class AbstractHost extends AbstractObject
     {
         //check notification mode
         if (is_null($this->notificationOption)) {
-            $stmtNotification = $this->backend_instance->db->query(
-                "SELECT `value` FROM options WHERE `key` = 'inheritance_mode'"
-            );
-            $notificationOption = $stmtNotification->fetch();
-            $this->notificationOption = $notificationOption['value'];
+            $this->notificationOption = $this->getInheritanceMode();
         }
         $hostListing = array();
         // get the first host (template) link to a contact
@@ -371,11 +367,7 @@ abstract class AbstractHost extends AbstractObject
     {
         //check notification mode
         if (is_null($this->notificationOption)) {
-            $stmtNotification = $this->backend_instance->db->query(
-                "SELECT `value` FROM options WHERE `key` = 'inheritance_mode'"
-            );
-            $notificationOption = $stmtNotification->fetch();
-            $this->notificationOption = $notificationOption['value'];
+            $this->notificationOption = $this->getInheritanceMode();
         }
 
         $hostListing = array();

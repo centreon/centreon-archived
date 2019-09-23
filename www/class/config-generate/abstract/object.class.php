@@ -84,6 +84,18 @@ abstract class AbstractObject
         $this->createFile($this->backend_instance->getPath());
     }
 
+    /**
+     * @return mixed
+     */
+    public function getInheritanceMode()
+    {
+        $stmtNotification = $this->backend_instance->db->query(
+            "SELECT `value` FROM options WHERE `key` = 'inheritance_mode'"
+        );
+        $notificationOption = $stmtNotification->fetch();
+        return $notificationOption['value'];
+    }
+
     private function setHeader()
     {
         $header =

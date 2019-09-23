@@ -184,11 +184,7 @@ abstract class AbstractService extends AbstractObject
             $service['contacts'] = "";
         } else {
             if (is_null($this->notificationOption)) {
-                $stmtNotification = $this->backend_instance->db->query(
-                    "SELECT `value` FROM options WHERE `key` = 'inheritance_mode'"
-                );
-                $notificationOption = $stmtNotification->fetch();
-                $this->notificationOption = $notificationOption['value'];
+                $this->notificationOption = $this->getInheritanceMode();
             }
 
             $this->getContactCloseInheritance($service['service_id'], $serviceListing);
@@ -320,11 +316,7 @@ abstract class AbstractService extends AbstractObject
             $service['contact_groups'] = "";
         } else {
             if (is_null($this->notificationOption)) {
-                $stmtNotification = $this->backend_instance->db->query(
-                    "SELECT `value` FROM options WHERE `key` = 'inheritance_mode'"
-                );
-                $notificationOption = $stmtNotification->fetch();
-                $this->notificationOption = $notificationOption['value'];
+                $this->notificationOption = $this->getInheritanceMode();
             }
 
             // get the first host (template) link to a contact
