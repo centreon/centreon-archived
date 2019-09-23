@@ -144,20 +144,7 @@ class CentreonConfigPoller
      */
     private function getMonitoringEngine($poller)
     {
-        if (is_numeric($poller)) {
-            $sQuery = "SELECT monitoring_engine FROM nagios_server WHERE `id` = " . $this->_DB->escape($poller);
-        } else {
-            $sQuery = "SELECT monitoring_engine FROM nagios_server WHERE `name` = '"
-                . $this->_DB->escape($poller) . "'";
-        }
-
-        $res = $this->_DB->query($sQuery);
-
-        $row = $res->fetchRow();
-        if (isset($row['monitoring_engine'])) {
-            return $row['monitoring_engine'];
-        }
-        return "";
+        return 'CENGINE';
     }
 
     /**
@@ -213,25 +200,25 @@ class CentreonConfigPoller
         /*
          * Get Init Script
          */
-        $DBRESULT = $this->_DB->query(
-            "SELECT id, init_script FROM nagios_server WHERE localhost = '1' AND ns_activate = '1'"
+        $result = $this->_DB->query(
+            "SELECT id, engine_reload_command FROM nagios_server WHERE localhost = '1' AND ns_activate = '1'"
         );
-        $serveurs = $DBRESULT->fetchrow();
-        $DBRESULT->closeCursor();
-        (isset($serveurs["init_script"]))
-            ? $nagios_init_script = $serveurs["init_script"]
-            : $nagios_init_script = "centengine";
-        unset($serveurs);
+        $servers = $result->fetch();
+        $result->closeCursor();
+        $engineReloadCommand = (isset($servers['engine_reload_command']))
+            ? $servers['engine_reload_command']
+            : 'service centengine reload';
+        unset($servers);
 
-        $DBRESULT = $this->_DB->query(
+        $result = $this->_DB->query(
             "SELECT * FROM `nagios_server` WHERE `id` = '" . $this->_DB->escape($poller_id) . "'  LIMIT 1"
         );
-        $host = $DBRESULT->fetchRow();
-        $DBRESULT->closeCursor();
+        $host = $result->fetch();
+        $result->closeCursor();
 
         $msg_restart = "";
         if (isset($host['localhost']) && $host['localhost'] == 1) {
-            $msg_restart = exec("sudo service " . $nagios_init_script . " reload", $stdout, $return_code);
+            $msg_restart = exec("sudo " . $engineReloadCommand, $stdout, $return_code);
         } else {
             exec("echo 'RELOAD:" . $host["id"] . "' >> " . $this->centcore_pipe, $stdout, $return_code);
             $msg_restart .= _("OK: A reload signal has been sent to '" . $host["name"] . "'");
@@ -303,25 +290,25 @@ class CentreonConfigPoller
         /*
          * Get Init Script
          */
-        $DBRESULT = $this->_DB->query(
-            "SELECT id, init_script FROM nagios_server WHERE localhost = '1' AND ns_activate = '1'"
+        $result = $this->_DB->query(
+            "SELECT id, engine_restart_command FROM nagios_server WHERE localhost = '1' AND ns_activate = '1'"
         );
-        $serveurs = $DBRESULT->fetchrow();
-        $DBRESULT->closeCursor();
-        (isset($serveurs["init_script"]))
-            ? $nagios_init_script = $serveurs["init_script"]
-            : $nagios_init_script = "centengine";
-        unset($serveurs);
+        $servers = $result->fetch();
+        $result->closeCursor();
+        $engineRestartCommand = (isset($servers["engine_restart_command"]))
+            ? $servers['engine_restart_command']
+            : 'service centengine restart';
+        unset($servers);
 
-        $DBRESULT = $this->_DB->query(
+        $result = $this->_DB->query(
             "SELECT * FROM `nagios_server` WHERE `id` = '" . $this->_DB->escape($poller_id) . "'  LIMIT 1"
         );
-        $host = $DBRESULT->fetchRow();
-        $DBRESULT->closeCursor();
+        $host = $result->fetch();
+        $result->closeCursor();
 
         if (isset($host['localhost']) && $host['localhost'] == 1) {
             $msg_restart = exec(
-                escapeshellcmd("sudo service " . $nagios_init_script . " restart"),
+                escapeshellcmd('sudo ' . $engineRestartCommand),
                 $lines,
                 $return_code
             );
