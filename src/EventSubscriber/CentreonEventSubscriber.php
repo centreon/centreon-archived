@@ -65,7 +65,13 @@ class CentreonEventSubscriber implements EventSubscriberInterface
      * If no version has been defined in the configuration,
      * this version will be used by default
      */
-    const DEFAUT_API_VERSION = "2.0";
+    const DEFAULT_API_VERSION = "2.0";
+
+    /**
+     * If no beta version has been defined in the configuration,
+     * this version will be used by default
+     */
+    const DEFAULT_API_BETA_VERSION = "2.1";
 
     /**
      * If no API header name has been defined in the configuration,
@@ -123,7 +129,7 @@ class CentreonEventSubscriber implements EventSubscriberInterface
      */
     public function addApiVersion(ResponseEvent $event)
     {
-        $defaultApiVersion = self::DEFAUT_API_VERSION;
+        $defaultApiVersion = self::DEFAULT_API_VERSION;
         $defaultApiHeaderName = self::DEFAULT_API_HEADER_NAME;
 
         if ($this->container->hasParameter('api.version.latest')) {
@@ -221,11 +227,19 @@ class CentreonEventSubscriber implements EventSubscriberInterface
      */
     public function defineApiVersionInAttributes(RequestEvent $event)
     {
-        $latestVersion = $this->container->getParameter('api.version.latest');
+        if ($this->container->hasParameter('api.version.latest')) {
+            $latestVersion = $this->container->getParameter('api.version.latest');
+        } else {
+            $latestVersion = self::DEFAULT_API_VERSION;
+        }
         $event->getRequest()->attributes->set('version.latest', $latestVersion);
         $event->getRequest()->attributes->set('version.is_latest', false);
 
-        $betaVersion = $this->container->getParameter('api.version.beta');
+        if ($this->container->hasParameter('api.version.beta')) {
+            $betaVersion = $this->container->getParameter('api.version.beta');
+        } else {
+            $betaVersion = self::DEFAULT_API_BETA_VERSION;
+        }
         $event->getRequest()->attributes->set('version.beta', $betaVersion);
         $event->getRequest()->attributes->set('version.is_beta', false);
         $event->getRequest()->attributes->set('version.not_beta', true);
@@ -292,12 +306,10 @@ class CentreonEventSubscriber implements EventSubscriberInterface
             // Manage exception outside controllers
             $event->setResponse(
                 new Response(
-                    json_encode(
-                        [
-                            'code' => $errorCode,
-                            'message' => $event->getException()->getMessage()
-                        ]
-                    ),
+                    json_encode([
+                        'code' => $errorCode,
+                        'message' => $event->getException()->getMessage()
+                    ]),
                     500
                 )
             );
