@@ -302,7 +302,7 @@ if ($cache['value']) {
             );
         }
         $pearDB->query(
-            "DELETE FROM options WHERE `key` = 'rrdcached_enable' 
+            "DELETE FROM options WHERE `key` = 'rrdcached_enable'
                 OR `key` = 'rrdcached_port' OR `key` = 'rrdcached_unix_path'"
         );
         $pearDB->commit();
@@ -314,4 +314,23 @@ if ($cache['value']) {
         );
         $pearDB->rollBack();
     }
+}
+
+// Move broker xml files to json format
+$result = $pearDB->query(
+    "SELECT config_id, config_filename
+    FROM cfg_centreonbroker"
+);
+
+$statement = $pearDB->prepare(
+    "UPDATE cfg_centreonbroker
+    SET config_filename= :value
+    WHERE config_id = :id"
+);
+
+while ($row = $result->fetch()) {
+    $fileName = str_replace('.xml', '.json', $row['config_filename']);
+    $statement->bindValue(':value', $fileName, \PDO::PARAM_STR);
+    $statement->bindValue(':id', $row['config_id'], \PDO::PARAM_INT);
+    $statement->execute();
 }
