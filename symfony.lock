@@ -185,7 +185,7 @@
         "version": "2.1.2"
     },
     "phpunit/php-token-stream": {
-        "version": "3.1.0"
+        "version": "3.1.1"
     },
     "phpunit/phpunit": {
         "version": "4.7",
@@ -233,7 +233,7 @@
         "version": "4.2.2"
     },
     "sebastian/exporter": {
-        "version": "3.1.1"
+        "version": "3.1.2"
     },
     "sebastian/global-state": {
         "version": "2.0.0"
@@ -295,9 +295,6 @@
             "bin/console",
             "config/bootstrap.php"
         ]
-    },
-    "symfony/contracts": {
-        "version": "v1.1.6"
     },
     "symfony/css-selector": {
         "version": "v4.3.4"
