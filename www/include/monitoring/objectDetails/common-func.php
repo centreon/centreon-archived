@@ -147,7 +147,6 @@ function hidePasswordInCommand($commandName, $hostId, $serviceId)
     if (count($arrMacroPassword) && preg_match('/(' . $patternMacro . ')/', $commandLineWithMacros)) {
         if (count($aCommandLineWithMacros) == count($aCommandLineExecuted)) {
             for ($i = 0; $i < count($aCommandLineWithMacros); $i++) {
-                
                 if (preg_match_all('/(' . $patternMacro . ')/', $aCommandLineWithMacros[$i], $matches)) {
                     $pattern = $aCommandLineWithMacros[$i];
                     foreach ($matches as $match) {
