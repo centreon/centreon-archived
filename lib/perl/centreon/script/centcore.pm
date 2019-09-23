@@ -876,13 +876,13 @@ sub getEngineCommand($$) {
     my $action = $_[1];
     my $command;
 
-    if ($command eq 'start') {
+    if ($action eq 'start') {
         $command = "$self->{sudo} $pollerConf->{engine_start_command}";
-    } elsif ($command eq 'stop') {
+    } elsif ($action eq 'stop') {
         $command = "$self->{sudo} $pollerConf->{engine_stop_command}";
-    } elsif ($command eq 'restart') {
+    } elsif ($action eq 'restart') {
         $command = "$self->{sudo} $pollerConf->{engine_restart_command}";
-    } elsif ($command eq 'reload') {
+    } elsif ($action eq 'reload') {
         $command = "$self->{sudo} $pollerConf->{engine_reload_command}";
     } else {
         $command = "$self->{sudo} $self->{service} $self->{engineInitScript} $action";
