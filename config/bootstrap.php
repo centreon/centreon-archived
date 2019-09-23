@@ -34,7 +34,7 @@ if (file_exists(dirname(__DIR__) . '/.env.local.php')
     );
 } else {
     // load all the .env files
-    (new Dotenv())->loadEnv(dirname(__DIR__) . '/.env');
+    (new Dotenv(false))->loadEnv(dirname(__DIR__) . '/.env');
 }
 
 $_SERVER += $_ENV;
@@ -46,7 +46,7 @@ $_SERVER['APP_DEBUG'] = $_ENV['APP_DEBUG'] =
 
 $conf_centreon = [];
 include_once dirname(__DIR__) . "/config/centreon.config.php";
-(new Dotenv())->populate($constants);
+(new Dotenv(false))->populate($constants);
 
 include_once dirname(__DIR__) . "/container.php";
-(new Dotenv())->populate($conf_centreon);
+(new Dotenv(false))->populate($conf_centreon);
