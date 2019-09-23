@@ -141,7 +141,7 @@ class PollerInteractionService
         }
 
         $tabs = $this->centreon->user->access->getPollerAclConf([
-            'fields'     => ['name', 'id', 'localhost', 'init_script'],
+            'fields'     => ['name', 'id', 'localhost', 'engine_restart_command'],
             'order'      => ['name'],
             'conditions' => ['ns_activate' => '1'],
             'keys'       => ['id']
@@ -156,14 +156,14 @@ class PollerInteractionService
                     'id'          => $tab['id'],
                     'name'        => $tab['name'],
                     'localhost'   => $tab['localhost'],
-                    'init_script' => $tab['init_script']
+                    'engine_restart_command' => $tab['engine_restart_command']
                 ];
             }
         }
 
         foreach ($tabServers as $poller) {
             if (isset($poller['localhost']) && $poller['localhost'] == 1) {
-                shell_exec("sudo service {$poller['init_script']} restart");
+                shell_exec("sudo {$poller['engine_restart_command']}");
             } else {
                 if ($fh = @fopen($centCorePipe, 'a+')) {
                     fwrite($fh, 'RESTART:' . $poller['id'] . "\n");

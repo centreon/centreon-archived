@@ -163,16 +163,16 @@ msgid "Target DBMS."
 msgstr "Tipo de base de dados."
 
 #: centreon-web/help.php:39
-msgid "The TCP port used to communicate with rrdcached. This is a global option, go to Administration > Options > RRDTool to modify it."
-msgstr ""
-"Porta de conexão para se comunicar com o processo RRDCacheD. \n"
-"Esta opção é definida globalmente no menu \"Administração> Opções> RRDTool\"."
+#~ msgid "The TCP port used to communicate with rrdcached. This is a global option, go to Administration > Options > RRDTool to modify it."
+#~ msgstr ""
+#~ "Porta de conexão para se comunicar com o processo RRDCacheD. \n"
+#~ "Esta opção é definida globalmente no menu \"Administração> Opções> RRDTool\"."
 
 #: centreon-web/help.php:40
-msgid "The Unix socket used to communicate with rrdcached. This is a global option, go to Administration > Options > RRDTool to modify it."
-msgstr ""
-"Caminho do soquete Unix para se comunicar com o processo RRDCacheD. \n"
-"Esta opção é definida globalmente no menu \"Administração> Opções> RRDTool\"."
+#~ msgid "The Unix socket used to communicate with rrdcached. This is a global option, go to Administration > Options > RRDTool to modify it."
+#~ msgstr ""
+#~ "Caminho do soquete Unix para se comunicar com o processo RRDCacheD. \n"
+#~ "Esta opção é definida globalmente no menu \"Administração> Opções> RRDTool\"."
 
 #: centreon-web/help.php:41
 msgid "The higher the buffer size is, the best compression. This however increase data streaming latency. Use with caution."
@@ -928,20 +928,6 @@ msgstr "Estilo de fonte de marcas d'água."
 #: centreon-web/www/include/Administration/parameters/rrdtool/help.php:43
 msgid "Font size of watermarks."
 msgstr "Tamanho da fonte das marcas d'água."
-
-#: centreon-web/www/include/Administration/parameters/rrdtool/help.php:50
-msgid "Enable the rrdcached for Centreon. This option is valid only with Centreon Broker"
-msgstr ""
-"Ative o RRDCached para o Centreon. \n"
-"Essa opção é usada apenas com o Centreon Broker."
-
-#: centreon-web/www/include/Administration/parameters/rrdtool/help.php:52
-msgid "Port for communicating with rrdcached"
-msgstr "Porta de comunicação com RRDCached"
-
-#: centreon-web/www/include/Administration/parameters/rrdtool/help.php:55
-msgid "The absolute path to unix socket for communicating with rrdcached"
-msgstr "O caminho do soquete Unix para se comunicar com o RRDCached"
 
 #: centreon-web/www/include/options/accessLists/resourcesACL/help.php:8
 msgid "Name of resource rule."
@@ -4151,21 +4137,21 @@ msgstr ""
 "Este processo é normalmente feito pelo Centreon e a modificação desta opção deve ser feita conscientemente."
 
 #: centreon-web/www/include/configuration/configCentreonBroker/help.php:75
-msgid ""
-"The Unix socket used to communicate with rrdcached.\n"
-" This is a global option, go to Administration > Options > RRDTool to modify it."
-msgstr ""
-"Caminho do soquete Unix para se comunicar com o processo RRDCacheD. \n"
-"Esta opção é definida globalmente no menu \"Administração> Opções> RRDTool\"."
+#~ msgid ""
+#~ "The Unix socket used to communicate with rrdcached.\n"
+#~ " This is a global option, go to Administration > Options > RRDTool to modify it."
+#~ msgstr ""
+#~ "Caminho do soquete Unix para se comunicar com o processo RRDCacheD. \n"
+#~ "Esta opção é definida globalmente no menu \"Administração> Opções> RRDTool\"."
 
 #: centreon-web/www/include/configuration/configCentreonBroker/help.php:79
-msgid ""
-"The TCP port used to communicate with rrdcached.\n"
-" This is a global option, go to Administration > Options > RRDTool to modify it."
-msgstr ""
-"Porta de conexão para se comunicar com o processo RRDCacheD.\n"
-" \n"
-"Esta opção é definida globalmente no menu \"Administração> Opções> RRDTool\"."
+#~ msgid ""
+#~ "The TCP port used to communicate with rrdcached.\n"
+#~ " This is a global option, go to Administration > Options > RRDTool to modify it."
+#~ msgstr ""
+#~ "Porta de conexão para se comunicar com o processo RRDCacheD.\n"
+#~ " \n"
+#~ "Esta opção é definida globalmente no menu \"Administração> Opções> RRDTool\"."
 
 #: centreon-web/www/include/configuration/configCentreonBroker/help.php:90
 msgid ""
