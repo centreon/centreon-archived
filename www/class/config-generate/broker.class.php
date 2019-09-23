@@ -88,7 +88,7 @@ class Broker extends AbstractObjectJSON
         global $pearDB;
 
         if (!is_null($this->cacheExternalValue)) {
-            return ;
+            return;
         }
 
         $this->cacheExternalValue = array();
@@ -141,8 +141,8 @@ class Broker extends AbstractObjectJSON
             $cache_directory = $row['cache_directory'];
             $stats_activate = $row['stats_activate'];
 
-            # Base parameters
-            $object['broker_id'] = (int)$row['config_id'];
+            // Base parameters
+            $object['broker_id'] = (int) $row['config_id'];
             $object['broker_name'] = $row['config_name'];
             $object['poller_id'] = (int)$this->engine['id'];
             $object['poller_name'] = $this->engine['name'];
@@ -166,7 +166,7 @@ class Broker extends AbstractObjectJSON
             $this->stmt_broker_parameters->execute();
             $resultParameters = $this->stmt_broker_parameters->fetchAll(PDO::FETCH_GROUP | PDO::FETCH_ASSOC);
 
-            # Flow parameters
+            // Flow parameters
             foreach ($resultParameters as $key => $value) {
                 // We search the BlockId
                 $blockId = 0;
@@ -179,8 +179,8 @@ class Broker extends AbstractObjectJSON
                     }
                 }
 
-
                 $subValuesToCastInArray = [];
+                $rrdCacheOption = 'disable';
                 foreach ($value as $subvalue) {
                     if (!isset($subvalue['fieldIndex']) ||
                         $subvalue['fieldIndex'] == "" ||
@@ -199,6 +199,20 @@ class Broker extends AbstractObjectJSON
                             $object[$key][$subvalue['config_group_id']]['filters'][$subvalue['config_key']][] =
                                 $subvalue['config_value'];
                         } else {
+                            if ($subvalue['config_key'] === 'rrd_cached_option') {
+                                $rrdCacheOption = $subvalue['config_value'];
+                                continue;
+                            }
+
+                            if ($subvalue['config_key'] === 'rrd_cached') {
+                                if ($rrdCacheOption === 'tcp') {
+                                    $object[$key][$subvalue['config_group_id']]['port'] = $subvalue['config_value'];
+                                } elseif ($rrdCacheOption === 'unix') {
+                                    $object[$key][$subvalue['config_group_id']]['path'] = $subvalue['config_value'];
+                                }
+                                continue;
+                            }
+
                             $object[$key][$subvalue['config_group_id']][$subvalue['config_key']] =
                                 $subvalue['config_value'];
 
@@ -241,7 +255,7 @@ class Broker extends AbstractObjectJSON
                 }
             }
 
-            # Stats parameters
+            // Stats parameters
             if ($stats_activate == '1') {
                 $object['stats'] = [
                     [
@@ -252,7 +266,7 @@ class Broker extends AbstractObjectJSON
                 ];
             }
 
-            # Generate file
+            // Generate file
             $this->generateFile($object);
             $this->writeFile($this->backend_instance->getPath());
         }

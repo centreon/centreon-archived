@@ -41,9 +41,11 @@ use Centreon\Infrastructure\Service\CentreonDBManagerService;
 use ReflectionClass;
 use CentreonDB;
 
+/**
+ * Executes commands against Centreon database backend.
+ */
 class CentreonDBAdapter
 {
-
     /** @var \CentreonDB */
     private $db;
 
@@ -91,11 +93,11 @@ class CentreonDBAdapter
 
     /**
      * @param string $query
-     * @param array $params
-     *
-     * @throws \Exception
+     * @param array  $params
      *
      * @return $this
+     * @throws \Exception
+     *
      */
     public function query($query, $params = [])
     {
@@ -137,11 +139,11 @@ class CentreonDBAdapter
 
     /**
      * @param string $table
-     * @param array $fields
-     *
-     * @throws \Exception
+     * @param array  $fields
      *
      * @return int Last inserted ID
+     * @throws \Exception
+     *
      */
     public function insert($table, array $fields)
     {
@@ -178,13 +180,56 @@ class CentreonDBAdapter
     }
 
     /**
-     * @param string $table
-     * @param array $fields
-     * @param int $id
+     * Insert data using load data infile
      *
+     * @param string $file         Path and name of file to load
+     * @param string $table        Table name
+     * @param array  $fieldsClause Values of subclauses of FIELDS clause
+     * @param array  $linesClause  Values of subclauses of LINES clause
+     * @param array  $columns      Columns name
+     *
+     * @return void
      * @throws \Exception
      *
+     */
+    public function loadDataInfile(string $file, string $table, array $fieldsClause, array $linesClause, array $columns)
+    {
+        // SQL statement format:
+        // LOAD DATA
+        // INFILE 'file_name'
+        // INTO TABLE tbl_name
+        // FIELDS TERMINATED BY ',' ENCLOSED BY '\'' ESCAPED BY '\\'
+        // LINES TERMINATED BY '\n' STARTING BY ''
+        // (`col_name`, `col_name`,...)
+
+        // Construct SQL statement
+        $sql = "LOAD DATA INFILE '$file'";
+        $sql .= " INTO TABLE $table";
+        $sql .= " FIELDS TERMINATED BY '" . $fieldsClause["terminated_by"] . "' ENCLOSED BY '"
+            . $fieldsClause["enclosed_by"] . "' ESCAPED BY '" . $fieldsClause["escaped_by"] . "'";
+        $sql .= " LINES TERMINATED BY '" . $linesClause["terminated_by"] . "' STARTING BY '"
+            . $linesClause["starting_by"] . "'";
+        $sql .= " (`" . implode("`, `", $columns) . "`)";
+
+        // Prepare PDO statement.
+        $stmt = $this->db->prepare($sql);
+
+        // Execute
+        try {
+            $stmt->execute();
+        } catch (\Exception $e) {
+            throw new \Exception('Query failed. ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * @param string $table
+     * @param array  $fields
+     * @param int    $id
+     *
      * @return bool|int Updated ID
+     * @throws \Exception
+     *
      */
     public function update($table, array $fields, int $id)
     {
@@ -193,17 +238,17 @@ class CentreonDBAdapter
         $keyValues = [];
 
         foreach ($fields as $key => $value) {
-            array_push($keys, $key.'= :'.$key);
-            array_push($keyValues, array($key, $value));
+            array_push($keys, $key . '= :' . $key);
+            array_push($keyValues, [$key, $value]);
         }
 
-        $sql = "UPDATE {$table} SET " . implode(', ', $keys) ." WHERE id = :id";
+        $sql = "UPDATE {$table} SET " . implode(', ', $keys) . " WHERE id = :id";
 
         $qq = $this->db->prepare($sql);
         $qq->bindParam(':id', $id);
 
         foreach ($keyValues as $key => $value) {
-            $qq->bindParam(':'.$key, $value);
+            $qq->bindParam(':' . $key, $value);
         }
 
         try {

@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "550c1759-3532-4931-9f0e-3ee750bb27f6",
+		"_postman_id": "977609fc-e339-4f33-bddc-7eec145a0f55",
 		"name": "Centreon Web Rest API",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -10124,114 +10124,6 @@
 						"body": {
 							"mode": "raw",
 							"raw": "{\n  \"action\": \"setoutput\",\n  \"object\": \"centbrokercfg\",\n  \"values\": \"{{broker_name}};{{output_rrd_id}};retry_interval;{{output_retry_interval}}\"\n}"
-						},
-						"url": {
-							"raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
-							"protocol": "http",
-							"host": [
-								"{{url}}"
-							],
-							"path": [
-								"centreon",
-								"api",
-								"index.php"
-							],
-							"query": [
-								{
-									"key": "action",
-									"value": "action"
-								},
-								{
-									"key": "object",
-									"value": "centreon_clapi"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Setoutput port",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"type": "text/javascript",
-								"exec": [
-									"tests[\"Status code is 200\"] = responseCode.code === 200;"
-								]
-							}
-						}
-					],
-					"request": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json"
-							},
-							{
-								"key": "centreon-auth-token",
-								"value": "{{token}}"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n  \"action\": \"setoutput\",\n  \"object\": \"centbrokercfg\",\n  \"values\": \"{{broker_name}};{{output_rrd_id}};port;{{output_port}}\"\n}"
-						},
-						"url": {
-							"raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
-							"protocol": "http",
-							"host": [
-								"{{url}}"
-							],
-							"path": [
-								"centreon",
-								"api",
-								"index.php"
-							],
-							"query": [
-								{
-									"key": "action",
-									"value": "action"
-								},
-								{
-									"key": "object",
-									"value": "centreon_clapi"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Setoutput path",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"type": "text/javascript",
-								"exec": [
-									"tests[\"Status code is 200\"] = responseCode.code === 200;"
-								]
-							}
-						}
-					],
-					"request": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json"
-							},
-							{
-								"key": "centreon-auth-token",
-								"value": "{{token}}"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n  \"action\": \"setoutput\",\n  \"object\": \"centbrokercfg\",\n  \"values\": \"{{broker_name}};{{output_rrd_id}};path;{{output_path}}\"\n}"
 						},
 						"url": {
 							"raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
