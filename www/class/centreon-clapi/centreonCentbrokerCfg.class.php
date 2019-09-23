@@ -71,7 +71,7 @@ class CentreonCentbrokerCfg extends CentreonObject
         $this->brokerObj = new \CentreonConfigCentreonBroker($dependencyInjector['configuration_db']);
         $this->object = new \Centreon_Object_Broker($dependencyInjector);
         $this->params = array(
-            'config_filename' => 'central-broker.xml',
+            'config_filename' => 'central-broker.json',
             'config_activate' => '1'
         );
         $this->insertParams = array('name', 'ns_nagios_server');

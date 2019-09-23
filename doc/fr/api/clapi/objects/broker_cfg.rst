@@ -83,7 +83,7 @@ Parameters that you may change are:
 ======================== ==================================================
 Column	                 Description
 ======================== ==================================================
-filename                 Filename of configuration (.xml extension)
+filename                 Filename of configuration (.json extension)
 
 name	                 Name of configuration
 

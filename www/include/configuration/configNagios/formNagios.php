@@ -79,7 +79,7 @@ if ($o != "a") {
     $dirArray = $mainCfg->getBrokerDirectives(isset($nagios_id) ? $nagios_id : null);
 } else {
     $dirArray[0]['in_broker_#index#'] = "/usr/lib64/centreon-engine/externalcmd.so";
-    $dirArray[1]['in_broker_#index#'] = "/usr/lib64/nagios/cbmod.so /etc/centreon-broker/poller-module.xml";
+    $dirArray[1]['in_broker_#index#'] = "/usr/lib64/nagios/cbmod.so /etc/centreon-broker/poller-module.json";
 }
 $cdata->addJsData(
     'clone-values-broker',

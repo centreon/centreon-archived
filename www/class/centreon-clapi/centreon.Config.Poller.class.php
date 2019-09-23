@@ -459,7 +459,7 @@ class CentreonConfigPoller
             chgrp($this->brokerCachePath . "/$poller_id", $apacheUser);
 
             foreach (glob($this->brokerCachePath
-                . "/$poller_id/*.{xml,cfg}", GLOB_BRACE) as $file) {
+                . "/$poller_id/*.{xml,json,cfg}", GLOB_BRACE) as $file) {
                 chown($file, $apacheUser);
                 chgrp($file, $apacheUser);
             }
@@ -555,7 +555,7 @@ class CentreonConfigPoller
             /*
              * Centreon Broker configuration
              */
-            $listBrokerFile = glob($this->brokerCachePath . '/' . $host['id'] . "/*.{xml,cfg}", GLOB_BRACE);
+            $listBrokerFile = glob($this->brokerCachePath . '/' . $host['id'] . "/*.{xml,json,cfg}", GLOB_BRACE);
             if (count($listBrokerFile) > 0) {
                 $centreonBrokerDirCfg = getCentreonBrokerDirCfg($host['id']);
                 if (!is_null($centreonBrokerDirCfg)) {
@@ -588,7 +588,7 @@ class CentreonConfigPoller
 
                 /* Change files owner */
                 if ($apacheUser != "") {
-                    foreach (glob(rtrim($centreonBrokerDirCfg, "/") . "/" . "/*.{xml,cfg}", GLOB_BRACE) as $file) {
+                    foreach (glob(rtrim($centreonBrokerDirCfg, "/") . "/" . "/*.{xml,json,cfg}", GLOB_BRACE) as $file) {
                         chown($file, $apacheUser);
                         chgrp($file, $apacheUser);
                     }

@@ -203,7 +203,7 @@ try {
 
     foreach ($tab_server as $host) {
         if (isset($pollers) && ($pollers == 0 || in_array($host['id'], $pollers))) {
-            $listBrokerFile = glob($centreonBrokerPath . $host['id'] . "/*.{xml,cfg,sql}", GLOB_BRACE);
+            $listBrokerFile = glob($centreonBrokerPath . $host['id'] . "/*.{xml,json,cfg,sql}", GLOB_BRACE);
             if (isset($host['localhost']) && $host['localhost'] == 1) {
                 /*
                  * Check if monitoring engine's configuration directory existss
