@@ -28,19 +28,19 @@ class ExporterService implements ContainerInterface
             'factory' => $factory,
         ];
 
-        $this->_sort();
+        $this->sort();
     }
 
     public function has($id): bool
     {
-        $result = $this->_getKey($id);
+        $result = $this->getKey($id);
 
         return $result !== null;
     }
 
     public function get($id): array
     {
-        $key = $this->_getKey($id);
+        $key = $this->getKey($id);
         if ($key === null) {
             throw new NotFoundException('Not found exporter with name: ' . $id);
         }
@@ -50,7 +50,7 @@ class ExporterService implements ContainerInterface
         return $result;
     }
 
-    private function _getKey($id): ?int
+    private function getKey($id): ?int
     {
         foreach ($this->objects as $key => $object) {
             if ($object['name'] === $id) {
@@ -61,7 +61,7 @@ class ExporterService implements ContainerInterface
         return null;
     }
 
-    private function _sort(): void
+    private function sort(): void
     {
         usort($this->objects, function ($a, $b) {
             return $a['classname']::order() - $b['classname']::order();

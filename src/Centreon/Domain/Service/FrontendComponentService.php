@@ -34,7 +34,8 @@
  */
 namespace Centreon\Domain\Service;
 
-use Pimple\Container;
+use Psr\Container\ContainerInterface;
+use CentreonLegacy\ServiceProvider;
 
 /**
  * Class to manage external frontend components provided by modules and widgets
@@ -42,28 +43,25 @@ use Pimple\Container;
 class FrontendComponentService
 {
     /**
-     * @var Container
+     * List of class dependencies
+     *
+     * @return array
      */
-    private $di;
+    public static function dependencies() : array
+    {
+        return [
+            ServiceProvider::CENTREON_LEGACY_MODULE_INFORMATION,
+        ];
+    }
 
     /**
      * FrontendComponentService constructor
      *
-     * @param string $di The dependency injector
+     * @param \Psr\Container\ContainerInterface $services
      */
-    public function __construct(Container $di)
+    public function __construct(ContainerInterface $services)
     {
-        $this->di = $di;
-    }
-
-    /**
-     * Dependency injector getter
-     *
-     * @return string The dependency injector
-     */
-    private function getDi(): Container
-    {
-        return $this->di;
+        $this->services = $services;
     }
 
     /**
@@ -101,13 +99,8 @@ class FrontendComponentService
      */
     private function getInstalledModules(): array
     {
-        // @todo create serviceprovider in CentreonLegacy namespace
-        $utilsFactory = new \CentreonLegacy\Core\Utils\Factory($this->di);
-        $utils = $utilsFactory->newUtils();
-        $moduleFactory = new \CentreonLegacy\Core\Module\Factory($this->di, $utils);
-        $module = $moduleFactory->newInformation();
-
-        return $module->getInstalledList();
+        return $this->services->get(ServiceProvider::CENTREON_LEGACY_MODULE_INFORMATION)
+            ->getInstalledList();
     }
 
     /**

@@ -39,7 +39,6 @@ require_once _CENTREON_PATH_ . "www/class/centreonDB.class.php";
 require_once _CENTREON_PATH_ . "www/class/centreonSession.class.php";
 require_once _CENTREON_PATH_ . "www/class/centreonUser.class.php";
 require_once _CENTREON_PATH_ . "www/class/centreonXML.class.php";
-require_once _CENTREON_PATH_ . "www/class/centreonBroker.class.php";
 
 session_start();
 session_write_close();
@@ -56,7 +55,6 @@ $pearDB = $db;
 if (CentreonSession::checkSession(session_id(), $db) == 0) {
     exit();
 }
-$brk = new CentreonBroker($db);
 $monitoringDb = new CentreonDB('centstorage');
 
 $xml = new CentreonXML();
