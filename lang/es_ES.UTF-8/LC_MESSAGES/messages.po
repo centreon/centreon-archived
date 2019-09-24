@@ -14268,4 +14268,4 @@ msgstr "cubo de basura"
 #~ msgstr ""
 
 #~ msgid "To use additional Remote Servers a Master Remote Server must be selected."
-#~ msgstr ""
+#~ msgstr "Para usar REmote Server adicionales, se debe seleccionar un REmote Server maestro."

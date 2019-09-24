@@ -14447,4 +14447,4 @@ msgstr "Processos de Comandos"
 #~ msgstr ""
 
 #~ msgid "To use additional Remote Servers a Master Remote Server must be selected."
-#~ msgstr ""
+#~ msgstr "Para usar REmote Server adicionais, um Remote Server mestre deve ser selecionado."

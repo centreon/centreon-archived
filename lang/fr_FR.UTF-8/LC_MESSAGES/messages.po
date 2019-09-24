@@ -14835,4 +14835,4 @@ msgid "Chart"
 msgstr "Graphiques"
 
 msgid "To use additional Remote Servers a Master Remote Server must be selected."
-msgstr "Un Serveur distant principal doit être sélectionné, avant d'utiliser des Serveurs Distants"
+msgstr "Un Remote Server principal doit être sélectionné, avant d'utiliser des Remote Server additionnels."
