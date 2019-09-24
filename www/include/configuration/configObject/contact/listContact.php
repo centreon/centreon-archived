@@ -199,7 +199,7 @@ if ($row['count_ldap'] > 0) {
 function setO(_i) {
     document.forms['form'].elements['o'].value = _i;
 }
-</SCRIPT>
+</script>
 <?php
 
 /* Manage options */
