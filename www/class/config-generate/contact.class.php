@@ -218,7 +218,7 @@ class Contact extends AbstractObject
             if (!isset($this->contacts_cache[$contact_id])) {
                 return null;
             }
-            $this->contacts[$contact_id] = &$this->contacts_cache[$contact_id];
+            $this->contacts[$contact_id] = $this->contacts_cache[$contact_id];
         } elseif (!isset($this->contacts[$contact_id])) {
             $this->getContactFromId($contact_id);
         }

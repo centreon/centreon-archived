@@ -346,7 +346,8 @@ abstract class AbstractHost extends AbstractObject
         $contacts = array();
         $stmt = $this->backend_instance->db->query(
             'SELECT c.contact_id , contact_name FROM contact c, contact_host_relation ch
-            WHERE ch.host_host_id IN (' . implode(',', $host) . ') AND ch.contact_id = c.contact_id'
+            WHERE ch.host_host_id IN (' . implode(',', $host) . ') AND ch.contact_id = c.contact_id 
+            AND contact_activate = "1"'
         );
 
         while (($row = $stmt->fetch())) {
@@ -460,7 +461,8 @@ abstract class AbstractHost extends AbstractObject
         $contactGroups = array();
         $stmt = $this->backend_instance->db->query(
             'SELECT c.cg_id , cg_name FROM contactgroup c, contactgroup_host_relation ch
-            WHERE ch.host_host_id IN (' . implode(',', $host) . ') AND ch.contactgroup_cg_id = c.cg_id'
+            WHERE ch.host_host_id IN (' . implode(',', $host) . ') AND ch.contactgroup_cg_id = c.cg_id 
+            AND cg_activate = "1"'
         );
 
         while (($row = $stmt->fetch())) {

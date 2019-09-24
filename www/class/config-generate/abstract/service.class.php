@@ -298,7 +298,8 @@ abstract class AbstractService extends AbstractObject
         $contacts = array();
         $stmt = $this->backend_instance->db->query(
             'SELECT c.contact_id , c.contact_name FROM contact c, contact_service_relation cs
-            WHERE cs.service_service_id IN (' . implode(',', $service) . ') AND cs.contact_id = c.contact_id'
+            WHERE cs.service_service_id IN (' . implode(',', $service) . ') AND cs.contact_id = c.contact_id 
+            AND contact_activate = "1"'
         );
         while (($row = $stmt->fetch())) {
             $contacts[$row['contact_id']] = $contact->generateFromContactId($row['contact_id']);
@@ -418,7 +419,8 @@ abstract class AbstractService extends AbstractObject
         $contactGroups = array();
         $stmt = $this->backend_instance->db->query(
             'SELECT c.cg_id , c.cg_name FROM contactgroup c, contactgroup_service_relation cs
-            WHERE cs.service_service_id IN (' . implode(',', $service) . ') AND cs.contactgroup_cg_id = c.cg_id'
+            WHERE cs.service_service_id IN (' . implode(',', $service) . ') AND cs.contactgroup_cg_id = c.cg_id 
+            AND cg_activate = "1"'
         );
 
         while (($row = $stmt->fetch())) {
