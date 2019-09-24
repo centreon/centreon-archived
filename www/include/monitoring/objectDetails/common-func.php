@@ -54,7 +54,7 @@ function hidePasswordInCommand($commandName, $hostId, $serviceId)
 
     $pearDBStorage = new CentreonDB('centstorage');
 
-    /* Get command line with macro */
+    // Get command line with macro
     $query = "SELECT command_line FROM command WHERE command_name = :command_name";
     $sth = $pearDB->prepare($query);
     $sth->bindParam(':command_name', $commandName, PDO::PARAM_STR);
@@ -62,7 +62,7 @@ function hidePasswordInCommand($commandName, $hostId, $serviceId)
     $row = $sth->fetchRow();
     $commandLineWithMacros = $row['command_line'];
 
-    /* Get executed command lines */
+    // Get executed command lines
     $query = "SELECT host_id, check_command, command_line "
         . "FROM services "
         . "WHERE host_id = :host_id "
@@ -74,20 +74,20 @@ function hidePasswordInCommand($commandName, $hostId, $serviceId)
     $row = $sth->fetchRow();
     $commandLineExecuted = $row['command_line'];
 
-    /* Get list of templates */
+    // Get list of templates
     $arrtSvcTpl = getListTemplates($pearDB, $serviceId);
     $arrSvcTplID = array($serviceId);
     foreach ($arrtSvcTpl as $svc) {
         $arrSvcTplID[] = $svc['service_id'];
     }
 
-    /* Get list of custom macros from services and templates */
+    // Get list of custom macros from services and templates
     $query = "SELECT svc_macro_name "
         . "FROM on_demand_macro_service "
         . "WHERE is_password = 1 "
         . "AND svc_svc_id IN (";
     for ($i = 0; $i < count($arrSvcTplID); $i++) {
-        if ($i == 0) {
+        if ($i === 0) {
             $query .= ':svc_id' . $i;
         } else {
             $query .= ', :svc_id' . $i;
@@ -108,14 +108,14 @@ function hidePasswordInCommand($commandName, $hostId, $serviceId)
         );
     }
 
-    /* Get custom macros from hosts and templates */
+    // Get custom macros from hosts and templates
     $arrHostTplID = getHostsTemplates($hostId);
     $query = "SELECT host_macro_name "
         . "FROM on_demand_macro_host "
         . "WHERE is_password = 1 "
         . "AND host_host_id IN (";
     for ($i = 0; $i < count($arrHostTplID); $i++) {
-        if ($i == 0) {
+        if ($i === 0) {
             $query .= ':host_id' . $i;
         } else {
             $query .= ', :host_id' . $i;
