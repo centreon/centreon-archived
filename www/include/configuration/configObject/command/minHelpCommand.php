@@ -46,7 +46,7 @@ if (isset($_GET["command_id"])) {
 }
 
 $commandId = filter_var(
-    $commandId ?? null,
+    $commandId,
     FILTER_SANITIZE_NUMBER_INT
 );
 
@@ -59,7 +59,7 @@ if (isset($_GET["command_name"])) {
 }
 
 $commandName = filter_var(
-    $commandName ?? null,
+    $commandName,
     FILTER_SANITIZE_STRING
 );
 
