@@ -173,13 +173,13 @@ class LinkedPollerConfigurationService
     /**
      * Add relation between poller and Remote Servers
      *
-     * @param int $pollerId
+     * @param int          $pollerId
      * @param PollerServer $remote
      */
     private function insertAddtitionnalRemoteServersRelations(PollerServer $poller, array $remotes)
     {
         foreach ($remotes as $remote) {
-            $query = 'INSERT INTO `rs_poller_relation` VALUES(:remoteId, :pollerId)';
+            $query = 'INSERT INTO `rs_poller_relation` VALUES (:remoteId, :pollerId)';
             $statement = $this->db->prepare($query);
             $statement->bindParam(':remoteId', $remote->getId(), \PDO::PARAM_INT);
             $statement->bindParam(':pollerId', $poller->getId(), \PDO::PARAM_INT);
@@ -197,37 +197,34 @@ class LinkedPollerConfigurationService
     private function setBrokerOutputOfPoller($pollerId, PollerServer $remote, $additional = false): void
     {
         if ($additional) { // insert new broker output relation
-            $configQuery = "SELECT `config_id` "
-                . "FROM `cfg_centreonbroker` "
-                . "WHERE `ns_nagios_server` = :id "
-                . "AND `daemon` = 0";
-            $statement = $this->db->prepare($configQuery);
+            $statement = $this->db->prepare("SELECT `config_id`
+                FROM `cfg_centreonbroker`
+                WHERE `ns_nagios_server` = :id
+                AND `daemon` = 0");
             $statement->bindParam(':id', $pollerId, \PDO::PARAM_INT);
             $statement->execute();
             $configId = $statement->fetchColumn();
 
-            $configQuery = "SELECT MAX(`config_group_id`) AS config_group_id "
-                . "FROM `cfg_centreonbroker_info` "
-                . "WHERE `config_id` = :id";
-            $statement = $this->db->prepare($configQuery);
+            $statement = $this->db->prepare("SELECT MAX(`config_group_id`) AS config_group_id
+                FROM `cfg_centreonbroker_info`
+                WHERE `config_id` = :id");
             $statement->bindParam(':id', $configId, \PDO::PARAM_INT);
             $statement->execute();
             $configGRoupId = $statement->fetchColumn('config_group_id') + 1;
 
             $defaultBrokerOutput = (new OutputForwardMaster)->getConfiguration();
             $defaultBrokerOutput[0]['config_value'] = 'forward-to-' . str_replace(' ', '-', $remote->getName());
+            $statement = $this->db->prepare("INSERT INTO `cfg_centreonbroker_info` (
+                config_id, config_key, config_value, config_group, config_group_id, grp_level
+                ) VALUES (
+                :config_id,
+                :config_key,
+                :config_value,
+                :config_group,
+                :config_group_id,
+                :grp_level
+                )");
             foreach ($defaultBrokerOutput as $item) {
-                $insertQuery = "INSERT INTO `cfg_centreonbroker_info` ("
-                    . "config_id, config_key, config_value, config_group, config_group_id, grp_level"
-                    . ") VALUES ("
-                    . ":config_id,"
-                    . ":config_key, "
-                    . ":config_value,"
-                    . ":config_group,"
-                    . ":config_group_id,"
-                    . ":grp_level"
-                    . ")";
-                $statement = $this->db->prepare($insertQuery);
                 $statement->bindParam(':config_id', $configId, \PDO::PARAM_INT);
                 $statement->bindParam(':config_key', $item['config_key'], \PDO::PARAM_STR);
                 if ($item['config_key'] == 'host') {
@@ -241,33 +238,30 @@ class LinkedPollerConfigurationService
             }
         } else { // update host field of poller module output to link it the remote server
             // find broker config id of poller module
-            $configQuery = "SELECT `config_id` "
-                . "FROM `cfg_centreonbroker` "
-                . "WHERE `ns_nagios_server` = :id "
-                . "AND `daemon` = 0";
-            $statement = $this->db->prepare($configQuery);
+            $statement = $this->db->prepare("SELECT `config_id`
+                FROM `cfg_centreonbroker`
+                WHERE `ns_nagios_server` = :id
+                AND `daemon` = 0");
             $statement->bindParam(':id', $pollerId, \PDO::PARAM_INT);
             $statement->execute();
             $configId = $statement->fetchColumn();
 
             // update output ip address to master remote server
-            $updateQuery = "UPDATE `cfg_centreonbroker_info` "
-            . "SET `config_value` = :config_value "
-            . "WHERE `config_id` = :config_id "
-            . "AND `config_key` = 'host' "
-            . "AND `config_group` = 'output'";
-            $statement = $this->db->prepare($updateQuery);
+            $statement = $this->db->prepare("UPDATE `cfg_centreonbroker_info`
+                SET `config_value` = :config_value
+                WHERE `config_id` = :config_id
+                AND `config_key` = 'host'
+                AND `config_group` = 'output'");
             $statement->bindValue(':config_value', $remote->getIp(), \PDO::PARAM_STR);
             $statement->bindValue(':config_id', $configId, \PDO::PARAM_INT);
             $statement->execute();
 
             // update output name to master remote server
-            $updateQuery = "UPDATE `cfg_centreonbroker_info` "
-            . "SET `config_value` = :config_value "
-            . "WHERE `config_id` = :config_id "
-            . "AND `config_key` = 'name' "
-            . "AND `config_group` = 'output'";
-            $statement = $this->db->prepare($updateQuery);
+            $statement = $this->db->prepare("UPDATE `cfg_centreonbroker_info`
+                SET `config_value` = :config_value
+                WHERE `config_id` = :config_id
+                AND `config_key` = 'name'
+                AND `config_group` = 'output'");
             $statement->bindValue(
                 ':config_value',
                 'forward-to-' . str_replace(' ', '-', $remote->getName()),

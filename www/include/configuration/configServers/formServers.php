@@ -75,25 +75,27 @@ if (($o == SERVER_MODIFY || $o == SERVER_WATCH) && $server_id) {
     }
 
     if ($serverType === "remote") {
-        $dbResult = $pearDB->query(
-            "SELECT http_method, http_port, no_check_certificate, no_proxy 
-            FROM `remote_servers` 
-            WHERE `ip` = '" . $cfg_server['ns_ip_address'] . "' LIMIT 1"
-        );
-        $cfg_server = array_merge($cfg_server, array_map("myDecode", $dbResult->fetch()));
-        $dbResult->closeCursor();
+        $statement = $pearDB->prepare("SELECT http_method, http_port, no_check_certificate, no_proxy
+            FROM `remote_servers`
+            WHERE `ip` = :ns_ip_address LIMIT 1");
+        $statement->bindParam(':ns_ip_address', $cfg_server['ns_ip_address'], \PDO::PARAM_STR);
+        $statement->execute();
+
+        $cfg_server = array_merge($cfg_server, array_map("myDecode", $statement->fetch()));
+        $statement->closeCursor();
     }
 
     if ($serverType === "poller") {
         // Select additionnal Remote Servers
-        $dbResult = $pearDB->query(
-            "SELECT remote_server_id, name 
+        $statement = $pearDB->prepare("SELECT remote_server_id, name 
             FROM rs_poller_relation AS rspr
             LEFT JOIN nagios_server AS ns ON (rspr.remote_server_id = ns.id)
-            WHERE poller_server_id = '" . $cfg_server['id'] . "'"
-        );
-        if ($dbResult->numRows() > 0) {
-            while ($row = $dbResult->fetchRow()) {
+            WHERE poller_server_id = :poller_server_id");
+        $statement->bindParam(':poller_server_id', $cfg_server['id'], \PDO::PARAM_INT);
+        $statement->execute();
+
+        if ($statement->numRows() > 0) {
+            while ($row = $statement->fetch()) {
                 $selectedAdditionnalRS[] = array(
                     'id' => $row['remote_server_id'],
                     'text' => $row['name'],

@@ -1,6 +1,6 @@
 ################################################################################
 # Copyright 2005-2019 Centreon
-# Centreon is developped by : Julien Mathis and Romain Le Merlus under
+# Centreon is developed by : Julien Mathis and Romain Le Merlus under
 # GPL Licence 2.0.
 # 
 # This program is free software; you can redistribute it and/or modify it under 
@@ -298,7 +298,7 @@ sub getBrokerStats($) {
 #      Functions
 # -------------------
 
-sub getEngineConfigurationField($$){
+sub getEngineConfigurationField($$) {
     my $self = shift;
 
     my ($status, $sth) = $self->{centreon_dbc}->query(
@@ -980,8 +980,8 @@ sub sendConfigFile($) {
                     );
 
                     $port = checkSSHPort($additional_remote_config->{ssh_port});
-                    $cmd = "$self->{ssh} -p $port " . $additional_remote_config->{'ns_ip_address'}  . " "
-                        . "'echo \"SENDCFGFILE:" . $id . "\" >> $self->{cmdDir}/" . time() . "-sendcmd'";
+                    $cmd = "$self->{ssh} -p $port " . $additional_remote_config->{'ns_ip_address'}
+                        . " 'echo \"SENDCFGFILE:" . $id . "\" >> $self->{cmdDir}/" . time() . "-sendcmd'";
                     ($lerror, $stdout, $return_code) = centreon::common::misc::backtick(
                         command => $cmd,
                         logger => $self->{logger},
@@ -1384,8 +1384,8 @@ sub syncTraps($) {
                 }
             }
         } else {
-            $cmd = "$self->{scp} -P $port /etc/snmp/centreon_traps/$id/centreontrapd.sdb " .
-                " $ns_server->{ns_ip_address}:$ns_server->{snmp_trapd_path_conf} 2>&1";
+            $cmd = "$self->{scp} -P $port /etc/snmp/centreon_traps/$id/centreontrapd.sdb "
+                . "$ns_server->{ns_ip_address}:$ns_server->{snmp_trapd_path_conf} 2>&1";
             
             $self->{logger}->writeLogDebug($cmd);
             ($lerror, $stdout, $return_code) = centreon::common::misc::backtick(
@@ -1469,12 +1469,13 @@ sub initCentreonTrapd {
     my $ns_server = $self->getServerConfig($id);
     my $port = checkSSHPort($ns_server->{ssh_port});
 
-    if (defined($ns_server->{ns_ip_address}) && $ns_server->{ns_ip_address}
-        && defined($ns_server->{init_script_centreontrapd}) && $ns_server->{init_script_centreontrapd} ne ""
+    if (defined($ns_server->{ns_ip_address})
+        && defined($ns_server->{init_script_centreontrapd})
+        && $ns_server->{init_script_centreontrapd} ne ""
     ) {
         if (defined($ns_server->{localhost}) && $ns_server->{localhost}) {
             # Reload/Restart Centreontrapd locally
-            $cmd = "$self->{sudo} $self->{service} ".$ns_server->{init_script_centreontrapd} . " " . $start_type;
+            $cmd = "$self->{sudo} $self->{service} " . $ns_server->{init_script_centreontrapd} . " " . $start_type;
             $self->{logger}->writeLogDebug($cmd);
             ($lerror, $stdout, $return_code) = centreon::common::misc::backtick(
                 command => $cmd,
@@ -1563,7 +1564,8 @@ sub initCentreonTrapd {
                 }
             } else {
                 # Reload/Restart Centreontrapd on Poller/Remote Server using ssh
-                $cmd = "$self->{ssh} -p $port ". $ns_server->{ns_ip_address} ." $self->{sudo} $self->{service} ".$ns_server->{init_script_centreontrapd}. " " . $start_type;
+                $cmd = "$self->{ssh} -p $port " . $ns_server->{ns_ip_address} . " $self->{sudo} $self->{service} "
+                    . $ns_server->{init_script_centreontrapd} . " " . $start_type;
                 $self->{logger}->writeLogDebug($cmd);
                 ($lerror, $stdout, $return_code) = centreon::common::misc::backtick(
                     command => $cmd,

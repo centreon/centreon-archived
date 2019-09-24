@@ -387,15 +387,16 @@ function additionnalRemoteServersByPollerId(int $id, array $remotes = null): voi
 {
     global $pearDB;
 
-    $dbResult = $pearDB->query(
-        "DELETE FROM rs_poller_relation WHERE poller_server_id = '" . $id . "'"
-    );
+    $statement = $pearDB->prepare("DELETE FROM rs_poller_relation WHERE poller_server_id = :id");
+    $statement->bindParam(':id', $id, \PDO::PARAM_INT);
+    $statement->execute();
 
     if (!is_null($remotes)) {
+        $statement = $pearDB->query("INSERT INTO rs_poller_relation VALUES (:remote_id,:poller_id)");
         foreach ($remotes as $remote) {
-            $dbResult = $pearDB->query(
-                "INSERT INTO rs_poller_relation VALUES ('" . $remote . "', '" . $id  . "')"
-            );
+            $statement->bindParam(':remote_id', $remote, \PDO::PARAM_INT);
+            $statement->bindParam(':poller_id', $id, \PDO::PARAM_INT);
+            $statement->execute();
         }
     }
 }
