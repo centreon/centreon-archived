@@ -139,7 +139,7 @@ class UserMenu extends Component {
                     </span>
                     <span className={styles['submenu-user-type']}>
                       <Translate value="as" />
-                      {username}
+                      {` ${username}`}
                     </span>
                     {allowEditProfile && (
                       <Link
