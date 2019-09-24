@@ -142,21 +142,9 @@ function updateNagiosConfigData($gopt_id = null)
     );
     updateOption(
         $pearDB,
-        "monitoring_engine",
-        isset($ret["monitoring_engine"]) && $ret["monitoring_engine"] != null
-            ? $ret["monitoring_engine"] : "NULL"
-    );
-    updateOption(
-        $pearDB,
         "mailer_path_bin",
         isset($ret["mailer_path_bin"]) && $ret["mailer_path_bin"] != null
             ? $pearDB->escape($ret["mailer_path_bin"]) : "NULL"
-    );
-    updateOption(
-        $pearDB,
-        "broker_correlator_script",
-        isset($ret["broker_correlator_script"]) && $ret["broker_correlator_script"] != null
-            ? $pearDB->escape($ret["broker_correlator_script"]) : "NULL"
     );
     updateOption(
         $pearDB,
@@ -171,11 +159,6 @@ function updateNagiosConfigData($gopt_id = null)
             ? $pearDB->escape($ret['broker']) : "broker"
     );
     $pearDB->query("UPDATE acl_resources SET changed = 1");
-    
-    /*
-     * Correlation engine
-     */
-    updateOption($pearDB, 'broker_correlator_script', $ret['broker_correlator_script']);
 
     /*
      * Tactical Overview part
