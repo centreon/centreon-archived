@@ -58,6 +58,8 @@
 
         installButton.on('click', function() {
             installButton.prop('disabled', true);
+            installButton.removeClass('bt_info');
+            installButton.addClass('bt_default');
             var moduleBoxes = jQuery("input[type=checkbox]:checked");
             var moduleNames = [];
             moduleBoxes.each(function() {
