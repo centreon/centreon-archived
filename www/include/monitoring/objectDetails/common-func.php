@@ -55,19 +55,17 @@ function hidePasswordInCommand($commandName, $hostId, $serviceId)
     $pearDBStorage = new CentreonDB('centstorage');
 
     // Get command line with macro
-    $query = "SELECT command_line FROM command WHERE command_name = :command_name";
-    $sth = $pearDB->prepare($query);
+    $sth = $pearDB->prepare("SELECT command_line FROM command WHERE command_name = :command_name");
     $sth->bindParam(':command_name', $commandName, PDO::PARAM_STR);
     $sth->execute();
     $row = $sth->fetchRow();
     $commandLineWithMacros = $row['command_line'];
 
     // Get executed command lines
-    $query = "SELECT host_id, check_command, command_line "
-        . "FROM services "
-        . "WHERE host_id = :host_id "
-        . "AND service_id = :service_id";
-    $sth = $pearDBStorage->prepare($query);
+    $sth = $pearDBStorage->prepare("SELECT host_id, check_command, command_line
+        FROM services
+        WHERE host_id = :host_id
+        AND service_id = :service_id");
     $sth->bindParam(':host_id', $hostId, PDO::PARAM_INT);
     $sth->bindParam(':service_id', $serviceId, PDO::PARAM_INT);
     $sth->execute();
@@ -179,9 +177,9 @@ function getHostsTemplates($hostId)
 {
     global $pearDB;
 
-    $query = "SELECT host_tpl_id FROM host_template_relation "
-        . "WHERE host_host_id = :host_id";
-    $sth = $pearDB->prepare($query);
+    $sth = $pearDB->prepare("SELECT host_tpl_id
+        FROM host_template_relation
+        WHERE host_host_id = :host_id");
     $sth->bindParam(':host_id', $hostId, PDO::PARAM_INT);
     $sth->execute();
 
