@@ -178,12 +178,18 @@ class LinkedPollerConfigurationService
      */
     private function insertAddtitionnalRemoteServersRelations(PollerServer $poller, array $remotes)
     {
-        foreach ($remotes as $remote) {
-            $query = 'INSERT INTO `rs_poller_relation` VALUES (:remoteId, :pollerId)';
-            $statement = $this->db->prepare($query);
-            $statement->bindParam(':remoteId', $remote->getId(), \PDO::PARAM_INT);
-            $statement->bindParam(':pollerId', $poller->getId(), \PDO::PARAM_INT);
-            $statement->execute();
+        $query = 'INSERT INTO `rs_poller_relation` VALUES (:remoteId, :pollerId)';
+        $this->db->beginTransaction();
+        $statement = $this->db->prepare($query);
+        try {
+            foreach ($remotes as $remote) {
+                $statement->bindParam(':remoteId', $remote->getId(), \PDO::PARAM_INT);
+                $statement->bindParam(':pollerId', $poller->getId(), \PDO::PARAM_INT);
+                $statement->execute();
+            }
+            $this->db->commit();
+        } catch (PDOException $Exception) {
+            $this->db->rollBack();
         }
     }
 
