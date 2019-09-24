@@ -103,7 +103,7 @@
     <div id="validForm">
         {if $o == "a" || $o == "c"}
         <p class="oreonbutton">{$form.submitC.html}{$form.submitA.html}&nbsp;&nbsp;&nbsp;{$form.reset.html}</p>
-        {else if $o == "w"}
+        {elseif $o == "w"}
         <p class="oreonbutton">{$form.change.html}</p>
         {/if}
     </div>
