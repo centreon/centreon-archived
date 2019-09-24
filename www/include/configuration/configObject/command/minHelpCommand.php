@@ -39,7 +39,7 @@ if (!isset($oreon)) {
 
 $commandId = filter_var(
     $_GET["command_id"] ?? $_POST["command_id"] ?? null,
-    FILTER_SANITIZE_NUMBER_INT
+    FILTER_VALIDATE_INT
 );
 
 $commandName = filter_var(
