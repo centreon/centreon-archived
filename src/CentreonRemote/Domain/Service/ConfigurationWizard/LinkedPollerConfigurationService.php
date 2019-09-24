@@ -173,8 +173,8 @@ class LinkedPollerConfigurationService
     /**
      * Add relation between poller and Remote Servers
      *
-     * @param int          $pollerId
-     * @param PollerServer $remote
+     * @param int            $pollerId
+     * @param PollerServer[] $remote
      */
     private function insertAddtitionnalRemoteServersRelations(PollerServer $poller, array $remotes)
     {
