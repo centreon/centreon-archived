@@ -14446,3 +14446,6 @@ msgstr "Processos de Comandos"
 
 #~ msgid "Already requested, please wait the CRON execution or for the user to login"
 #~ msgstr ""
+
+#~ msgid "To use additional Remote Servers a Master Remote Server must be selected."
+#~ msgstr ""
