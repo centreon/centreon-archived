@@ -359,7 +359,8 @@ class HostGroupServiceConfigurationContext extends CentreonContext
             'service' => $this->initialProperties['description'],
             'host_group' => $this->initialProperties['hosts']
         ));
-        $this->assertFind('css', 'input[type="checkbox"][name="select[' . $object['id'] . ']"]')->check();
+        $checkbox = $this->assertFind('css', 'input[type="checkbox"][name="select[' . $object['id'] . ']"]');
+        $this->currentPage->checkCheckbox($checkbox);
         $this->setConfirmBox(true);
         $this->selectInList('select[name="o1"]', 'Duplicate');
     }
@@ -407,7 +408,8 @@ class HostGroupServiceConfigurationContext extends CentreonContext
             'service' => $this->initialProperties['description'],
             'host_group' => $this->initialProperties['hosts']
         ));
-        $this->assertFind('css', 'input[type="checkbox"][name="select[' . $object['id'] . ']"]')->check();
+        $checkbox = $this->assertFind('css', 'input[type="checkbox"][name="select[' . $object['id'] . ']"]');
+        $this->currentPage->checkCheckbox($checkbox);
         $this->setConfirmBox(true);
         $this->selectInList('select[name="o1"]', 'Delete');
     }

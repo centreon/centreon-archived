@@ -40,8 +40,12 @@ Cette commande va activer le mode **Remote Server** ::
       Limiting Actions...Done
 
       Notifying Master...Success
-      
+
       Set 'remote' instance type...Done
-      
+
       Centreon Remote enabling finished.
 
+Ajout des droits pour l'utilsateur de base de données centreon d'utiliser la commande **LOAD DATA INFILE**::
+
+    # mysql -h <database_server_address> -u root -p
+    MariaDB [(none)]> GRANT FILE on *.* to 'centreon'@'<remote_server_ip>';

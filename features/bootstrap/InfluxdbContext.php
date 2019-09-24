@@ -45,8 +45,8 @@ class InfluxdbContext extends CentreonContext
         $this->assertFind(
             'css',
             '#metrics_column___4_template0 > td:nth-child(1) > table:nth-child(1) > tbody:nth-child(1) > ' .
-            'tr:nth-child(1) > td:nth-child(2) > input:nth-child(1)'
-        )->setValue('true');
+            'tr:nth-child(1) > td:nth-child(2) input[value="true"]'
+        )->getParent()->click();
         $this->assertFind(
             'css',
             '#metrics_column___4_template0 > td:nth-child(1) > table:nth-child(1) > tbody:nth-child(1) > ' .
@@ -86,8 +86,8 @@ class InfluxdbContext extends CentreonContext
         $this->assertFind(
             'css',
             '#status_column___4_template0 > td:nth-child(1) > table:nth-child(1) > tbody:nth-child(1) > ' .
-            'tr:nth-child(1) > td:nth-child(2) > input:nth-child(1)'
-        )->setValue('true');
+            'tr:nth-child(1) > td:nth-child(2) input[value="true"]'
+        )->getParent()->click();
         $this->assertFind(
             'css',
             '#status_column___4_template0 > td:nth-child(1) > table:nth-child(1) > tbody:nth-child(1) > ' .

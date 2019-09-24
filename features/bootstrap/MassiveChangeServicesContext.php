@@ -321,12 +321,14 @@ class MassiveChangeServicesContext extends CentreonContext
             'service' => $this->service1['description'],
             'host' => $this->service1['hosts']
         ));
-        $this->assertFind('css', 'input[type="checkbox"][name="select[' . $object['id'] . ']"]')->check();
+        $checkbox = $this->assertFind('css', 'input[type="checkbox"][name="select[' . $object['id'] . ']"]');
+        $this->currentPage->checkCheckbox($checkbox);
         $object = $this->currentPage->getEntry(array(
             'service' => $this->service2['description'],
             'host' => $this->service2['hosts']
         ));
-        $this->assertFind('css', 'input[type="checkbox"][name="select[' . $object['id'] . ']"]')->check();
+        $checkbox = $this->assertFind('css', 'input[type="checkbox"][name="select[' . $object['id'] . ']"]');
+        $this->currentPage->checkCheckbox($checkbox);
         $this->selectInList('select[name="o1"]', 'Massive Change');
         $this->currentPage = new MassiveChangeServiceConfigurationPage($this, false);
         $this->currentPage->setProperties($this->updatedProperties);
