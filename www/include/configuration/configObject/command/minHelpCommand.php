@@ -1,7 +1,7 @@
 <?php
 /*
- * Copyright 2005-2015 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2019 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -49,7 +49,7 @@ $commandName = filter_var(
 
 if ($commandId != null) {
     /*
-     * Get command informations
+     * Get command information
      */
     $sth = $pearDB->prepare("SELECT * FROM `command` WHERE `command_id` = :command_id LIMIT 1");
     $sth->bindParam(':command_id', $commandId, PDO::PARAM_INT);
