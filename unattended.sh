@@ -157,12 +157,8 @@ fi
 # SUMMARY
 #
 
-IPADDR=`hostname -i`
-if [ "x$?" '!=' x0 -o -z "$IPADDR" -o "$IPADDR" '=' '127.0.0.1' ] ; then
-  IPADDR='[SERVERADDRESS]'
-fi
 echo
 echo "Centreon was successfully installed !"
 echo
-echo "Log in to Centreon web interface via the URL: http://$IPADDR/centreon"
+echo "Log in to Centreon web interface via the URL: http://[SERVER_IP]/centreon"
 echo "Follow the steps described in Centreon documentation: https://documentation.centreon.com/docs/centreon/en/19.04/installation/from_packages.html#configuration"
