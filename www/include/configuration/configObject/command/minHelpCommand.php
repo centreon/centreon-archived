@@ -37,29 +37,13 @@ if (!isset($oreon)) {
     exit();
 }
 
-if (isset($_GET["command_id"])) {
-    $commandId = $_GET["command_id"];
-} elseif (isset($_POST["command_id"])) {
-    $commandId = $_POST["command_id"];
-} else {
-    $commandId = null;
-}
-
 $commandId = filter_var(
-    $commandId,
+    $_GET["command_id"] ?? $_POST["command_id"] ?? null,
     FILTER_SANITIZE_NUMBER_INT
 );
 
-if (isset($_GET["command_name"])) {
-    $commandName = $_GET["command_name"];
-} elseif (isset($_POST["command_name"])) {
-    $commandName = $_POST["command_name"];
-} else {
-    $commandName = null;
-}
-
 $commandName = filter_var(
-    $commandName,
+    $_GET["command_name"] ?? $_POST["command_name"] ?? "",
     FILTER_SANITIZE_STRING
 );
 
@@ -70,7 +54,7 @@ if ($commandId != null) {
     $sth = $pearDB->prepare("SELECT * FROM `command` WHERE `command_id` = :command_id LIMIT 1");
     $sth->bindParam(':command_id', $commandId, PDO::PARAM_INT);
     $sth->execute();
-    $cmd = $sth->fetchRow();
+    $cmd = $sth->fetch();
     unset($sth);
 
     $aCmd = explode(" ", $cmd["command_line"]);
@@ -90,7 +74,7 @@ if ($commandId != null) {
             "WHERE `resource_name` = '\$USER" . $matches[1] . "\$' LIMIT 1";
         $sth = $pearDB->query($query);
 
-        $resource = $sth->fetchRow();
+        $resource = $sth->fetch();
         unset($sth);
 
         $resourcePath = $resource["resource_line"];
