@@ -220,6 +220,8 @@ class LinkedPollerConfigurationService
 
             $defaultBrokerOutput = (new OutputForwardMaster)->getConfiguration();
             $defaultBrokerOutput[0]['config_value'] = 'forward-to-' . str_replace(' ', '-', $remote->getName());
+
+            $this->db->beginTransaction();
             $statement = $this->db->prepare("INSERT INTO `cfg_centreonbroker_info` (
                 config_id, config_key, config_value, config_group, config_group_id, grp_level
                 ) VALUES (
@@ -230,17 +232,22 @@ class LinkedPollerConfigurationService
                 :config_group_id,
                 :grp_level
                 )");
-            foreach ($defaultBrokerOutput as $item) {
-                $statement->bindParam(':config_id', $configId, \PDO::PARAM_INT);
-                $statement->bindParam(':config_key', $item['config_key'], \PDO::PARAM_STR);
-                if ($item['config_key'] == 'host') {
-                    $item['config_value'] = $remote->getIp();
+            try {
+                foreach ($defaultBrokerOutput as $item) {
+                    $statement->bindParam(':config_id', $configId, \PDO::PARAM_INT);
+                    $statement->bindParam(':config_key', $item['config_key'], \PDO::PARAM_STR);
+                    if ($item['config_key'] == 'host') {
+                        $item['config_value'] = $remote->getIp();
+                    }
+                    $statement->bindParam(':config_value', $item['config_value'], \PDO::PARAM_STR);
+                    $statement->bindParam(':config_group', $item['config_group'], \PDO::PARAM_STR);
+                    $statement->bindParam(':config_group_id', $configGRoupId, \PDO::PARAM_INT);
+                    $statement->bindParam(':grp_level', $item['grp_level'], \PDO::PARAM_INT);
+                    $statement->execute();
                 }
-                $statement->bindParam(':config_value', $item['config_value'], \PDO::PARAM_STR);
-                $statement->bindParam(':config_group', $item['config_group'], \PDO::PARAM_STR);
-                $statement->bindParam(':config_group_id', $configGRoupId, \PDO::PARAM_INT);
-                $statement->bindParam(':grp_level', $item['grp_level'], \PDO::PARAM_INT);
-                $statement->execute();
+                $this->db->commit();
+            } catch (PDOException $Exception) {
+                $this->db->rollBack();
             }
         } else { // update host field of poller module output to link it the remote server
             // find broker config id of poller module
