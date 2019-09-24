@@ -14267,5 +14267,8 @@ msgstr "cubo de basura"
 #~ msgid "Already requested, please wait the CRON execution or for the user to login"
 #~ msgstr ""
 
-#~ msgid "To use additional Remote Servers a Master Remote Server must be selected."
-#~ msgstr "Para usar REmote Server adicionales, se debe seleccionar un REmote Server maestro."
+msgid "To use additional Remote Servers a Master Remote Server must be selected."
+msgstr "Para usar Remote Server adicionales, se debe seleccionar un Remote Server maestro."
+
+msgid "Attach additional Remote Servers"
+msgstr "Adjunte Remote Servers adicionales"

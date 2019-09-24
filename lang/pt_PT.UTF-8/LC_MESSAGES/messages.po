@@ -14447,5 +14447,8 @@ msgstr "Processos de Comandos"
 #~ msgid "Already requested, please wait the CRON execution or for the user to login"
 #~ msgstr ""
 
-#~ msgid "To use additional Remote Servers a Master Remote Server must be selected."
-#~ msgstr "Para usar REmote Server adicionais, um Remote Server mestre deve ser selecionado."
+msgid "To use additional Remote Servers a Master Remote Server must be selected."
+msgstr "Para usar Remote Server adicionais, um Remote Server mestre deve ser selecionado."
+
+msgid "Attach additional Remote Servers"
+msgstr "Anexar Remote Server adicionais"
