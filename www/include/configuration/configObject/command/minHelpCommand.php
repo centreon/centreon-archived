@@ -43,7 +43,7 @@ $commandId = filter_var(
 );
 
 $commandName = filter_var(
-    $_GET["command_name"] ?? $_POST["command_name"] ?? "",
+    $_GET["command_name"] ?? $_POST["command_name"] ?? null,
     FILTER_SANITIZE_STRING
 );
 
