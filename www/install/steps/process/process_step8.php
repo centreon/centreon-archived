@@ -39,6 +39,7 @@ require_once __DIR__ . '/../../../../bootstrap.php';
 $result = array();
 
 $parameters = filter_input_array(INPUT_POST);
+
 if (isset($parameters['modules'])) {
     $utilsFactory = new \CentreonLegacy\Core\Utils\Factory($dependencyInjector);
     $utils = $utilsFactory->newUtils();
@@ -50,8 +51,26 @@ if (isset($parameters['modules'])) {
         if ($id) {
             $install = true;
         }
-        $result[] = array(
+        $result['modules'][] = array(
             'module' => $module,
+            'install' => $install
+        );
+    }
+}
+
+if (isset($parameters['widgets'])) {
+    $utilsFactory = new \CentreonLegacy\Core\Utils\Factory($dependencyInjector);
+    $utils = $utilsFactory->newUtils();
+    $widgetFactory = new \CentreonLegacy\Core\Widget\Factory($dependencyInjector, $utils);
+    foreach ($parameters['widgets'] as $widget) {
+        $installer = $widgetFactory->newInstaller($widget);
+        $id = $installer->install();
+        $install = false;
+        if ($id) {
+            $install = true;
+        }
+        $result['widgets'][] = array(
+            'widget' => $widget,
             'install' => $install
         );
     }
