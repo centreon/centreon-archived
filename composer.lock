@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "d0e735f3c648b1bb7a4ddbe629444c10",
+    "content-hash": "945d6805b69c33e899107ab032df14de",
     "packages": [
         {
             "name": "curl/curl",
@@ -1226,18 +1226,18 @@
             "authors": [
                 {
                     "name": "Greg Beaver",
-                    "role": "Helper",
-                    "email": "cellog@php.net"
+                    "email": "cellog@php.net",
+                    "role": "Helper"
                 },
                 {
                     "name": "Andrei Zmievski",
-                    "role": "Lead",
-                    "email": "andrei@php.net"
+                    "email": "andrei@php.net",
+                    "role": "Lead"
                 },
                 {
                     "name": "Stig Bakken",
-                    "role": "Developer",
-                    "email": "stig@php.net"
+                    "email": "stig@php.net",
+                    "role": "Developer"
                 }
             ],
             "description": "More info available on: http://pear.php.net/package/Console_Getopt",
@@ -5045,16 +5045,16 @@
         },
         {
             "name": "centreon/centreon-test-lib",
-            "version": "dev-MON-4113",
+            "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "https://github.com/centreon/centreon-test-lib.git",
-                "reference": "70fd4a6e4095da4ec427eedf85c22d69124f44ac"
+                "reference": "0f268be6ab9085a78a098f91caced9209cf7eaa2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/centreon/centreon-test-lib/zipball/70fd4a6e4095da4ec427eedf85c22d69124f44ac",
-                "reference": "70fd4a6e4095da4ec427eedf85c22d69124f44ac",
+                "url": "https://api.github.com/repos/centreon/centreon-test-lib/zipball/0f268be6ab9085a78a098f91caced9209cf7eaa2",
+                "reference": "0f268be6ab9085a78a098f91caced9209cf7eaa2",
                 "shasum": ""
             },
             "require": {
@@ -5090,7 +5090,7 @@
                 "phpunit",
                 "testing"
             ],
-            "time": "2019-09-24T09:40:44+00:00"
+            "time": "2019-09-24T18:19:46+00:00"
         },
         {
             "name": "container-interop/container-interop",
@@ -5869,8 +5869,8 @@
             "authors": [
                 {
                     "name": "Sebastian Bergmann",
-                    "email": "sebastian@phpunit.de",
-                    "role": "lead"
+                    "role": "lead",
+                    "email": "sebastian@phpunit.de"
                 }
             ],
             "description": "Simple template engine.",
@@ -6710,8 +6710,8 @@
             "authors": [
                 {
                     "name": "Sebastian Bergmann",
-                    "email": "sebastian@phpunit.de",
-                    "role": "lead"
+                    "role": "lead",
+                    "email": "sebastian@phpunit.de"
                 }
             ],
             "description": "Library that helps with managing the version number of Git-hosted PHP projects",
