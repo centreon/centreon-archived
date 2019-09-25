@@ -80,6 +80,8 @@
                 manageButtons();
             }).complete(function() {
                 installButton.prop('disabled', false);
+                installButton.removeClass('bt_default');
+                installButton.addClass('bt_info');
             });
         });
 
