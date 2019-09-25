@@ -584,8 +584,9 @@ function updateContact($contact_id = null, $from_MC = false)
     }
     $ret = array();
     $ret = $form->getSubmitValues();
-
-    $ret["contact_name"] = $centreon->checkIllegalChar($ret["contact_name"]);
+    // remove illegal chars in data sent by the user
+    $ret['contact_name'] = CentreonUtils::escapeSecure($ret['contact_name'], CentreonUtils::ESCAPE_ILLEGAL_CHARS);
+    $ret['contact_alias'] = CentreonUtils::escapeSecure($ret['contact_alias'], CentreonUtils::ESCAPE_ILLEGAL_CHARS);
 
     $rq = "UPDATE contact ";
     $rq .= "SET timeperiod_tp_id = ";
