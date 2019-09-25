@@ -133,7 +133,8 @@ if (!is_null($host_id)) {
         }
 
         // Get notifications contacts
-        $retrievedNotificationsInfos = get_notified_infos_for_service($service_id, $host_id);
+        $retrievedNotificationsInfos = getNotifiedInfosForService($service_id, $host_id, $dependencyInjector);
+
         $contacts = $retrievedNotificationsInfos['contacts'];
         $contactGroups = $retrievedNotificationsInfos['contactGroups'];
 

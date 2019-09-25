@@ -225,12 +225,27 @@ abstract class AbstractHost extends AbstractObject
      */
     protected function getContacts(&$host)
     {
+        $contactResult = '';
+        $hostListing = $this->listHostsWithContacts($host);
+        //check if we have Host link to a contact.
+        if (!empty($hostListing)) {
+            $contactResult = implode(',', $this->getInheritanceContact(array_unique($hostListing)));
+        }
+        $host['contacts'] = $contactResult;
+    }
+
+    /**
+     * @param $host
+     * @return mixed
+     */
+    public function listHostsWithContacts($host)
+    {
         //check notification mode
         if (is_null($this->notificationOption)) {
             $this->notificationOption = $this->getInheritanceMode();
         }
         $hostListing = array();
-        $contactResult = '';
+        //check cumulative option
         //check cumulative option
         if (self::CUMULATIVE_NOTIFICATION == $this->notificationOption) {
             // get all host / template inheritance
@@ -239,7 +254,6 @@ abstract class AbstractHost extends AbstractObject
             // get the first host (template) link to a contact group
             // use for close inheritance mode too
             $this->getContactCloseInheritance($host['host_id'], $hostListing);
-
             //check vertical inheritance
             if (!empty($hostListing)
                 && (self::VERTICAL_NOTIFICATION == $this->notificationOption)
@@ -248,13 +262,8 @@ abstract class AbstractHost extends AbstractObject
                 $this->getContactVerticalInheritance($hostListing[0], $hostListing);
             }
         }
-        //check if we have Host link to a contact.
-        if (!empty($hostListing)) {
-            $contactResult = implode(',', $this->getInheritanceContact(array_unique($hostListing)));
-        }
-        $host['contacts'] = $contactResult;
+        return $hostListing;
     }
-
     /**
      * @param $hostId
      * @return int
@@ -361,12 +370,26 @@ abstract class AbstractHost extends AbstractObject
      */
     protected function getContactGroups(&$host)
     {
+        $cgResult = '';
+        $hostListing = $this->listHostsWithContactGroups($host);
+        //check if we have Host link to a contactGroup.
+        if (!empty($hostListing)) {
+            $cgResult = implode(',', $this->getInheritanceContactGroups(array_unique($hostListing)));
+        }
+
+        $host['contact_groups'] = $cgResult;
+    }
+
+    /**
+     * @param $host
+     * @return array
+     */
+    public function listHostsWithContactGroups($host){
         //check notification mode
         if (is_null($this->notificationOption)) {
             $this->notificationOption = $this->getInheritanceMode();
         }
         $hostListing = array();
-        $cgResult = '';
         //check cumulative option
         if (self::CUMULATIVE_NOTIFICATION == $this->notificationOption) {
             // get all host / template inheritance
@@ -383,12 +406,7 @@ abstract class AbstractHost extends AbstractObject
                 $this->getContactGroupsVerticalInheritance($hostListing[0], $hostListing);
             }
         }
-        //check if we have Host link to a contactGroup.
-        if (!empty($hostListing)) {
-            $cgResult = implode(',', $this->getInheritanceContactGroups(array_unique($hostListing)));
-        }
-
-        $host['contact_groups'] = $cgResult;
+        return $hostListing;
     }
 
     /**
