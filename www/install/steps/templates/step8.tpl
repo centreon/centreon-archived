@@ -44,7 +44,7 @@
     jQuery(function() {
         jQuery("input[type=button]#previous").hide();
         var nextButton = jQuery("input[type=button]#next");
-        nextButton.parent().append('<input class="btc bt_info" type="button" id="installModules" value="Install" style="display: none;"/>');
+        nextButton.parent().append('<input class="btc bt_default bt_info" type="button" id="installModules" value="Install" style="display: none;"/>');
         var installButton = jQuery("input[type=button]#installModules");
         var moduleBoxes = jQuery("input[type=checkbox]");
         moduleBoxes.each(function() {
@@ -57,18 +57,22 @@
         });
 
         installButton.on('click', function() {
-            installButton.prop('disabled', true);
-            installButton.removeClass('bt_info');
-            installButton.addClass('bt_default');
-            var moduleBoxes = jQuery("input[type=checkbox]:checked");
+            installButton.prop('disabled', true)
+                .removeClass('bt_info')
+                .prop('value', 'Installing...');
             var moduleNames = [];
             moduleBoxes.each(function() {
-                moduleNames.push(jQuery(this).attr('id'));
+                if (jQuery(this).prop('checked')) {
+                    moduleNames.push(jQuery(this).attr('id'));
+                }
+                jQuery(this).attr('disabled', 'disabled');
             });
             jQuery.ajax({
                 type: 'POST',
                 url: './steps/process/process_step8.php',
-                data: {'modules':moduleNames}
+                data: {
+                    'modules': moduleNames
+                }
             }).success(function(data) {
                 var data = JSON.parse(data);
                 data.forEach(function(module) {
@@ -79,9 +83,9 @@
                 });
                 manageButtons();
             }).complete(function() {
-                installButton.prop('disabled', false);
-                installButton.removeClass('bt_default');
-                installButton.addClass('bt_info');
+                installButton.prop('disabled', false)
+                    .addClass('bt_info')
+                    .prop('value', 'Install');
             });
         });
 
