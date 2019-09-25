@@ -3,9 +3,10 @@
 --
 ALTER TABLE nagios_server ADD COLUMN `remote_server_centcore_ssh_proxy` enum('0','1') NOT NULL DEFAULT '1';
 
--- Add severity preference on host-monitoring widget
+-- Add severity preference on host-monitoring and service-monitoring widgets
 INSERT INTO `widget_parameters_field_type` (`ft_typename`, `is_connector`) VALUES
-('hostSeverityMulti', 1);
+('hostSeverityMulti', 1),
+('serviceSeverityMulti', 1);
 
 -- Create rs_poller_relation for the additional relationship between poller and remote servers
 CREATE TABLE `rs_poller_relation` (

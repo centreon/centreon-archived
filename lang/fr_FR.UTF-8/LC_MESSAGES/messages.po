@@ -2847,12 +2847,9 @@ msgid "Installation"
 msgstr "Installation"
 
 #: centreon-web/www/install/steps/step7.php:45
-msgid ""
-"Currently installing database... please do not interrupt this process.<br/"
-"><br/>"
-msgstr ""
-"Installation des bases de données en cours... ne pas interrompre le "
-"processus.<br/><br/>"
+msgid "Currently installing database and generating cache... please do not interrupt this process."
+msgstr "Installation en cours de la base de données et génération du cache... "
+"ne pas interrompre le processus.<br/><br/>"
 
 #: centreon-web/www/install/steps/step7.php:50
 #: centreon-web/www/install/step_upgrade/step4.php:61
