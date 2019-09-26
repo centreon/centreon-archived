@@ -61,7 +61,7 @@ $commandName = filter_var(
     FILTER_SANITIZE_STRING
 );
 
-if ($commandId != null) {
+if ($commandId !== false) {
     /*
      * Get command information
      */
