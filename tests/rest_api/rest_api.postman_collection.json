@@ -337,114 +337,6 @@
 					"response": []
 				},
 				{
-					"name": "Setparam init_script",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"type": "text/javascript",
-								"exec": [
-									"tests[\"Status code is 200\"] = responseCode.code === 200;"
-								]
-							}
-						}
-					],
-					"request": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json"
-							},
-							{
-								"key": "centreon-auth-token",
-								"value": "{{token}}"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n  \"action\": \"setparam\",\n  \"object\": \"instance\",\n  \"values\": \"{{instance_name}};init_script;{{instance_init_script}}\"\n}"
-						},
-						"url": {
-							"raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
-							"protocol": "http",
-							"host": [
-								"{{url}}"
-							],
-							"path": [
-								"centreon",
-								"api",
-								"index.php"
-							],
-							"query": [
-								{
-									"key": "action",
-									"value": "action"
-								},
-								{
-									"key": "object",
-									"value": "centreon_clapi"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Setparam monitoring_engine",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"type": "text/javascript",
-								"exec": [
-									"tests[\"Status code is 200\"] = responseCode.code === 200;"
-								]
-							}
-						}
-					],
-					"request": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json"
-							},
-							{
-								"key": "centreon-auth-token",
-								"value": "{{token}}"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n  \"action\": \"setparam\",\n  \"object\": \"instance\",\n  \"values\": \"{{instance_name}};monitoring_engine;{{instance_monitoring_engine}}\"\n}"
-						},
-						"url": {
-							"raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
-							"protocol": "http",
-							"host": [
-								"{{url}}"
-							],
-							"path": [
-								"centreon",
-								"api",
-								"index.php"
-							],
-							"query": [
-								{
-									"key": "action",
-									"value": "action"
-								},
-								{
-									"key": "object",
-									"value": "centreon_clapi"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
 					"name": "Setparam nagios_bin",
 					"event": [
 						{
@@ -788,7 +680,10 @@
 									"            tests[\"Body contains added instance_localhost\"] = postman.getEnvironmentVariable(\"instance_localhost\") == instanceData[i].localhost;",
 									"            tests[\"Body contains added instance_address\"] = postman.getEnvironmentVariable(\"instance_address\") == instanceData[i]['ip address'];",
 									"            tests[\"Body contains added instance_activate\"] = postman.getEnvironmentVariable(\"instance_activate\") == instanceData[i].activate;",
-									"            tests[\"Body contains added instance_init_script\"] = postman.getEnvironmentVariable(\"instance_init_script\") == instanceData[i]['init script'];",
+									"            tests[\"Body contains added instance_engine_start_command\"] = postman.getEnvironmentVariable(\"instance_engine_start_command\") == instanceData[i]['init script'];",
+									"            tests[\"Body contains added instance_engine_stop_command\"] = postman.getEnvironmentVariable(\"instance_engine_stop_command\") == instanceData[i]['init script'];",
+									"            tests[\"Body contains added instance_engine_restart_command\"] = postman.getEnvironmentVariable(\"instance_engine_restart_command\") == instanceData[i]['init script'];",
+									"            tests[\"Body contains added instance_engine_reload_command\"] = postman.getEnvironmentVariable(\"instance_engine_reload_command\") == instanceData[i]['init script'];",
 									"            tests[\"Body contains added instance_nagios_bin\"] = postman.getEnvironmentVariable(\"instance_nagios_bin\") == instanceData[i].bin;",
 									"            tests[\"Body contains added instance_nagiostats_bin\"] = postman.getEnvironmentVariable(\"instance_nagiostats_bin\") == instanceData[i]['stats bin'];",
 									"            tests[\"Body contains added instance_ssh_port\"] = postman.getEnvironmentVariable(\"instance_ssh_port\") == instanceData[i]['ssh port'];",
@@ -65043,60 +64938,6 @@
 					"response": []
 				},
 				{
-					"name": "Setparam broker_correlator_script",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"type": "text/javascript",
-								"exec": [
-									"tests[\"Status code is 200\"] = responseCode.code === 200;"
-								]
-							}
-						}
-					],
-					"request": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json"
-							},
-							{
-								"key": "centreon-auth-token",
-								"value": "{{token}}"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n  \"action\": \"setparam\",\n  \"object\": \"settings\",\n  \"values\": \"broker_correlator_script;{{broker_correlator_script}}\"\n}"
-						},
-						"url": {
-							"raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
-							"protocol": "http",
-							"host": [
-								"{{url}}"
-							],
-							"path": [
-								"centreon",
-								"api",
-								"index.php"
-							],
-							"query": [
-								{
-									"key": "action",
-									"value": "action"
-								},
-								{
-									"key": "object",
-									"value": "centreon_clapi"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
 					"name": "Setparam centstorage",
 					"event": [
 						{
@@ -66086,9 +65927,6 @@
 									"        {",
 									"            case \"broker\":",
 									"                tests[\"Body contains the correct setting broker\"] = postman.getEnvironmentVariable(\"broker_value\") == exceptionData[i].value;",
-									"                break;",
-									"            case \"broker_correlator_script\":",
-									"                tests[\"Body contains the correct setting broker_correlator_script\"] = postman.getEnvironmentVariable(\"broker_correlator_script\") == exceptionData[i].value;",
 									"                break;",
 									"            case \"debug_auth\":",
 									"                tests[\"Body contains the correct setting debug_auth\"] = postman.getEnvironmentVariable(\"enable_debug_auth\") == exceptionData[i].value;",

@@ -13054,8 +13054,8 @@ msgstr "Apelido"
 msgid "Congratulations, you have successfully installed Centreon!"
 msgstr "Parabéns, o Centreon foi instalado com sucesso!"
 
-msgid "Currently installing database... please do not interrupt this process.<br/><br/>"
-msgstr "Efetuando a instalação do banco de dados ... por favor não interrompa este processo.<br/><br/>"
+msgid "Currently installing database and generating cache... please do not interrupt this process.<br/><br/>"
+msgstr "Efetuando a instalação do banco de dados e gerando o cache ... por favor não interrompa este processo.<br/><br/>"
 
 msgid "Configuration database"
 msgstr "Configuração do banco de dados"
