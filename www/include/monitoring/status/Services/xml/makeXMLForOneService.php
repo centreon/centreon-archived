@@ -40,6 +40,7 @@ require_once realpath(dirname(__FILE__) . "/../../../../../../config/centreon.co
 require_once realpath(__DIR__ . "/../../../../../../bootstrap.php");
 
 include_once $centreon_path . "www/class/centreonUtils.class.php";
+include_once $centreon_path . "www/class/centreonACL.class.php";
 
 /**
  * Include Monitoring Classes
@@ -65,7 +66,7 @@ $centreon = $_SESSION['centreon'];
 if (isset($obj->session_id) && CentreonSession::checkSession($obj->session_id, $obj->DB)) {
     ;
 } else {
-    print "Bad Session ID";
+    print _("Bad Session ID");
     exit();
 }
 
@@ -86,17 +87,28 @@ $dateFormat = $obj->checkArgument("date_time_format_status", $_GET, "Y/m/d H:i:s
 $tab = preg_split('/\_/', $svc_id);
 $host_id = filter_var(
     $tab[0] ?? null,
-    FILTER_SANITIZE_NUMBER_INT
+    FILTER_VALIDATE_INT
 );
 
 $service_id = filter_var(
     $tab[1] ?? null,
-    FILTER_SANITIZE_NUMBER_INT
+    FILTER_VALIDATE_INT
 );
 
 if (!$host_id || !$service_id) {
-    print "Bad service ID";
+    print _("Bad service ID");
     exit();
+}
+
+// Get Check if user is not admin
+$isAdmin = $centreon->user->admin;
+if (!$isAdmin) {
+    $userId = $centreon->user->user_id;
+    $acl = new CentreonACL($userId, $isAdmin);
+    if (!$acl->checkService($service_id)) {
+        print _("You don't have access to this resource");
+        exit();
+    }
 }
 
 /** **************************************************
