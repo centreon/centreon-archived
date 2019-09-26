@@ -89,7 +89,7 @@ $host_id = filter_var(
     FILTER_VALIDATE_INT
 );
 
-if (!$host_id) {
+if ($host_id === false) {
     print _("Bad host ID");
     exit();
 }

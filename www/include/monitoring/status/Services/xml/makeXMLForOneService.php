@@ -95,7 +95,7 @@ $service_id = filter_var(
     FILTER_VALIDATE_INT
 );
 
-if (!$host_id || !$service_id) {
+if ($host_id === false || $service_id === false) {
     print _("Bad service ID");
     exit();
 }
