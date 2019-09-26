@@ -66,7 +66,7 @@ if ($commandId != null) {
      * Get command information
      */
     $res = $pearDB->query(
-        "SELECT * FROM `command` WHERE `command_id` = '" . $pearDB->escape($commandId) . "' LIMIT 1"
+        "SELECT * FROM `command` WHERE `command_id` = '" . (int)$commandId . "' LIMIT 1"
     );
     $cmd = $res->fetchRow();
     unset($res);
