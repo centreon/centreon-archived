@@ -37,13 +37,27 @@ if (!isset($oreon)) {
     exit();
 }
 
+if (isset($_GET["command_id"])) {
+    $commandId = $_GET["command_id"];
+} elseif (isset($_POST["command_id"])) {
+    $commandId = $_POST["command_id"];
+} else {
+    $commandId = null;
+}
 $commandId = filter_var(
-    $_GET["command_id"] ?? $_POST["command_id"] ?? null,
+    isset($commandId) ? $commandId : null,
     FILTER_VALIDATE_INT
 );
 
+if (isset($_GET["command_name"])) {
+    $commandName = $_GET["command_name"];
+} elseif (isset($_POST["command_name"])) {
+    $commandName = $_POST["command_name"];
+} else {
+    $commandName = null;
+}
 $commandName = filter_var(
-    $_GET["command_name"] ?? $_POST["command_name"] ?? null,
+    isset($commandName) ? $commandName : null,
     FILTER_SANITIZE_STRING
 );
 
@@ -52,7 +66,7 @@ if ($commandId != null) {
      * Get command information
      */
     $res = $pearDB->query(
-        "SELECT * FROM `command` WHERE `command_id` = '" . $pearDB->escape($command_id) . "' LIMIT 1"
+        "SELECT * FROM `command` WHERE `command_id` = '" . $pearDB->escape($commandId) . "' LIMIT 1"
     );
     $cmd = $res->fetchRow();
     unset($res);
