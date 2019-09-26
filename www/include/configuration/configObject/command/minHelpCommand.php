@@ -93,7 +93,7 @@ if ($commandId != null) {
 
         $resourcePath = $resource["resource_line"];
         unset($aCmd[0]);
-        $command = rtrim($resourcePath, "/")."#S#".implode("#S#", $aCmd);
+        $command = rtrim($resourcePath, "/") . "#S#" . implode("#S#", $aCmd);
     } else {
         $command = $fullLine;
     }
