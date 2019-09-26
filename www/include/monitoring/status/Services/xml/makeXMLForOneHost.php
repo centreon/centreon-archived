@@ -84,7 +84,7 @@ $disable        = $obj->checkArgument("disable", $_GET, "disable");
 $dateFormat     = $obj->checkArgument("date_time_format_status", $_GET, "Y/m/d H:i:s");
 
 $host_id = filter_var(
-    $host_id ? $host_id : null,
+    isset($host_id) ? $host_id : null,
     FILTER_VALIDATE_INT
 );
 

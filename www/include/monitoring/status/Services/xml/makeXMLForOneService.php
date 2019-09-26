@@ -85,12 +85,12 @@ $dateFormat         = $obj->checkArgument("date_time_format_status", $_GET, "Y/m
 
 $tab = preg_split('/\_/', $svc_id);
 $host_id = filter_var(
-    $tab[0] ? $tab[0] : null,
+    isset($tab[0]) ? $tab[0] : null,
     FILTER_VALIDATE_INT
 );
 
 $service_id = filter_var(
-    $tab[1] ? $tab[1] : null,
+    isset($tab[1]) ? $tab[1] : null,
     FILTER_VALIDATE_INT
 );
 
