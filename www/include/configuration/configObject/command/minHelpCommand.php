@@ -85,7 +85,7 @@ if ($commandId != null) {
          * Select Resource line
          */
         $res = $pearDB->query(
-            "SELECT `resource_line` FROM `cfg_resource` WHERE `resource_name` = '\$USER".$matches[1]."\$' LIMIT 1"
+            "SELECT `resource_line` FROM `cfg_resource` WHERE `resource_name` = '\$USER" . $matches[1] . "\$' LIMIT 1"
         );
 
         $resource = $res->fetchRow();
@@ -93,7 +93,7 @@ if ($commandId != null) {
 
         $resourcePath = $resource["resource_line"];
         unset($aCmd[0]);
-        $command = rtrim($resourcePath, "/")."#S#".implode("#S#", $aCmd);
+        $command = rtrim($resourcePath, "/") . "#S#" . implode("#S#", $aCmd);
     } else {
         $command = $fullLine;
     }
