@@ -39,6 +39,7 @@
 require_once realpath(dirname(__FILE__) . "/../../../../../../config/centreon.config.php");
 
 include_once $centreon_path . "www/class/centreonUtils.class.php";
+include_once $centreon_path . "www/class/centreonACL.class.php";
 
 /**
  * Include Monitoring Classes
@@ -64,7 +65,7 @@ $centreon = $_SESSION['centreon'];
 if (isset($obj->session_id) && CentreonSession::checkSession($obj->session_id, $obj->DB)) {
     ;
 } else {
-    print "Bad Session ID";
+    print _("Bad Session ID");
     exit();
 }
 
@@ -84,12 +85,23 @@ $dateFormat     = $obj->checkArgument("date_time_format_status", $_GET, "Y/m/d H
 
 $host_id = filter_var(
     $host_id ?? null,
-    FILTER_SANITIZE_NUMBER_INT
+    FILTER_VALIDATE_INT
 );
 
 if (!$host_id) {
-    print "Bad host ID";
+    print _("Bad host ID");
     exit();
+}
+
+// Check ACL if user is not admin
+$isAdmin = $centreon->user->admin;
+if (!$isAdmin) {
+    $userId = $centreon->user->user_id;
+    $acl = new CentreonACL($userId, $isAdmin);
+    if (!$acl->checkHost($host_id)) {
+        print _("You don't have access to this resource");
+        exit();
+    }
 }
 
 /** ***************************************************
