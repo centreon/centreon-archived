@@ -723,9 +723,11 @@ function updateContact($contact_id = null, $from_MC = false)
         ? $rq .= "'" . $ret["contact_address6"] . "' "
         : $rq .= "NULL ";
 
-    $rq .= "WHERE contact_id = '" . $contact_id . "'";
+    $rq .= "WHERE contact_id = :contactId";
 
-    $pearDB->query($rq);
+    $stmt = $pearDB->prepare($rq);
+    $stmt->bindValue(':contactId', $contact_id, \PDO::PARAM_INT);
+    $stmt->execute();
 
     if (isset($ret["contact_lang"]) && $ret["contact_lang"] != null && $contact_id == $centreon->user->get_id()) {
         $centreon->user->set_lang($ret["contact_lang"]);

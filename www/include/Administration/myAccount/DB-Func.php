@@ -171,10 +171,10 @@ function updateContact($contact_id = null)
     $rq .= "contact_autologin_key = ";
     $rq .= isset($ret["contact_autologin_key"]) ? "'" . $pearDB->escape($ret['contact_autologin_key']) . "'" : "''";
     $rq .= "WHERE contact_id = :contactId";
+
     $stmt = $pearDB->prepare($rq);
     $stmt->bindValue(':contactId', $contact_id, \PDO::PARAM_INT);
     $stmt->execute();
-
 
     /*
 	 * Update user object..
