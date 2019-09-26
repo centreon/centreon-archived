@@ -5245,6 +5245,15 @@ msgstr ""
 "option ne peut pas être désactivée. Notez que les commandes qui nécessitent le "
 "shell ralentissent le serveur de collecte."
 
+#: centreon-web/www/include/configuration/configObject/command/help.php:43
+msgid ""
+"The argument example defined here will be displayed together with the command "
+"selection and help in providing a hint of how to parametrize the command for "
+"execution."
+msgstr ""
+"L'exemple d'argument défini ici sera affiché lors de la sélection de commande "
+"et fournit de l'aide sur les options à définir pour l'exécution de la commande."
+
 #: centreon-web/www/include/configuration/configObject/command/help.php:44
 msgid ""
 "Define the type of the command. The type will be used to show the command only "

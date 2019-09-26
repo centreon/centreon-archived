@@ -2031,6 +2031,15 @@ msgstr ""
 "Se você usar o Nagios, esta opção não pode ser desativada. \n"
 "Observe que os comandos que exigem o shell tornam o servidor de coleta mais lento."
 
+#: centreon-web/www/include/configuration/configObject/command/help.php:61
+msgid ""
+"The argument example defined here will be displayed together with the "
+"command selection and help in providing a hint of how to parametrize the "
+"command for execution."
+msgstr ""
+"O exemplo do argumento definido aqui será exibido ao selecionar o comando e "
+"fornece ajuda sobre as opções a serem definidas para a execução do comando."
+
 #: centreon-web/www/include/configuration/configObject/command/help.php:66
 msgid ""
 "Define the type of the command. The type will be used to show the command "
