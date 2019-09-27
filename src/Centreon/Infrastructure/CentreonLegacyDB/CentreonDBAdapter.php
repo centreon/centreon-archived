@@ -203,7 +203,7 @@ class CentreonDBAdapter
         // (`col_name`, `col_name`,...)
 
         // Construct SQL statement
-        $sql = "LOAD DATA INFILE '$file'";
+        $sql = "LOAD DATA LOCAL INFILE '$file'";
         $sql .= " INTO TABLE $table";
         $sql .= " FIELDS TERMINATED BY '" . $fieldsClause["terminated_by"] . "' ENCLOSED BY '"
             . $fieldsClause["enclosed_by"] . "' ESCAPED BY '" . $fieldsClause["escaped_by"] . "'";
