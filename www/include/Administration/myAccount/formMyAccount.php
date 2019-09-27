@@ -1,7 +1,7 @@
 <?php
 /*
- * Copyright 2005-2015 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2019 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -79,7 +79,7 @@ if ($o == "c") {
 }
 
 /*
- * Database retrieve information for differents elements list we need on the page
+ * Database retrieve information for different elements list we need on the page
  *
  * Langs -> $langs Array
  */
@@ -87,7 +87,7 @@ $langs = array();
 $langs = getLangs();
 $attrsText = array("size"=>"35");
 
-$form = new HTML_QuickForm('Form', 'post', "?p=".$p);
+$form = new HTML_QuickForm('Form', 'post', "?p=" . $p);
 $form->addElement('header', 'title', _("Change my settings"));
 
 $form->addElement('header', 'information', _("General Information"));
@@ -213,6 +213,10 @@ $tpl = new Smarty();
 $tpl = initSmartyTpl($path, $tpl);
 
 $form->setDefaults($defaultFeatures);
+
+// remove illegal chars in data sent by the user
+$cct['contact_name'] = CentreonUtils::escapeSecure($cct['contact_name'], CentreonUtils::ESCAPE_ILLEGAL_CHARS);
+$cct['contact_alias'] = CentreonUtils::escapeSecure($cct['contact_alias'], CentreonUtils::ESCAPE_ILLEGAL_CHARS);
 
 // Modify a contact information
 if ($o == "c") {

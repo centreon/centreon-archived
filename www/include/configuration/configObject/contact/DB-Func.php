@@ -491,7 +491,9 @@ function updateContact($contact_id = null, $from_MC = false)
 
     $utilsObject = new CentreonUtils();
 
-    $ret["contact_name"] = $centreon->checkIllegalChar($ret["contact_name"]);
+    // remove illegal chars in data sent by the user
+    $ret["contact_name"] = CentreonUtils::escapeSecure($ret["contact_name"], CentreonUtils::ESCAPE_ILLEGAL_CHARS);
+    $ret["contact_alias"] = CentreonUtils::escapeSecure($ret["contact_alias"], CentreonUtils::ESCAPE_ILLEGAL_CHARS);
 
     $rq = "UPDATE contact ";
     $rq .= "SET timeperiod_tp_id = ";
@@ -568,9 +570,10 @@ function updateContact($contact_id = null, $from_MC = false)
     $rq .= "contact_address6 = ";
     isset($ret["contact_address6"]) && $ret["contact_address6"] != null ? $rq .= "'" . $ret["contact_address6"] . "' " : $rq .= "NULL ";
 
-    $rq .= "WHERE contact_id = '" . $contact_id . "'";
+    $rq .= "WHERE contact_id = '" . (int)$contact_id . "'";
 
-    $DBRESULT = $pearDB->query($rq);
+    $pearDB->query($rq);
+
     if (isset($ret["contact_lang"]) && $ret["contact_lang"] != null && $contact_id == $centreon->user->get_id()) {
         $centreon->user->set_lang($ret["contact_lang"]);
     }

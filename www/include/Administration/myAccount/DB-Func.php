@@ -113,6 +113,11 @@ function updateContact($contact_id = null)
     
     $ret = array();
     $ret = $form->getSubmitValues();
+
+    // remove illegal chars in data sent by the user
+    $ret["contact_name"] = CentreonUtils::escapeSecure($ret["contact_name"], CentreonUtils::ESCAPE_ILLEGAL_CHARS);
+    $ret["contact_alias"] = CentreonUtils::escapeSecure($ret["contact_alias"], CentreonUtils::ESCAPE_ILLEGAL_CHARS);
+
     $rq = "UPDATE contact SET ";
     $rq .= "contact_name = ";
     isset($ret["contact_name"]) && $ret["contact_name"] != null ? $rq .= "'".htmlentities($ret["contact_name"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
@@ -143,8 +148,8 @@ function updateContact($contact_id = null)
     isset($ret["contact_js_effects"]) ? $rq .= "'1', ": $rq .= "'0', ";
     $rq .= "contact_autologin_key = ";
     $rq .= isset($ret["contact_autologin_key"]) ? "'".$pearDB->escape($ret['contact_autologin_key'])."'" : "''";
-    $rq .= "WHERE contact_id = '".$contact_id."'";
-    $DBRESULT = $pearDB->query($rq);
+    $rq .= "WHERE contact_id = '" . (int)$contact_id . "'";
+    $pearDB->query($rq);
     
     /*
 	 * Update user object..
