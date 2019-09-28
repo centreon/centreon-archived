@@ -211,7 +211,10 @@ if (!$is_admin && !$haveAccess) {
             $row['line_class'] = $class;
 
             /* Split the plugin_output */
-            $outputLines = explode("\n", $row['plugin_output']);
+            $outputLines = explode(
+                "\n",
+                htmlentities($row['plugin_output'], ENT_QUOTES, 'UTF-8')
+            );
             $row['short_output'] = $outputLines[0];
             $row["hnl"] = CentreonUtils::escapeSecure(urlencode($row["host_name"]));
             $row["sdl"] = CentreonUtils::escapeSecure(urlencode($row["service_description"]));
