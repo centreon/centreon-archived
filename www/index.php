@@ -90,7 +90,9 @@ if (file_exists("./install/setup.php")) {
 /*
  * Set PHP Session Expiration time
  */
-ini_set("session.gc_maxlifetime", "31536000");
+ini_set('session.gc_maxlifetime', 31536000);
+// security fix to avoid session fixation hijack
+ini_set('session.use_strict_mode', 1);
 
 CentreonSession::start();
 
