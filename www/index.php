@@ -105,7 +105,9 @@ if (!preg_match('/.*<base\shref="' . preg_quote($basePath, '/') . '">/', $indexH
 /*
  * Set PHP Session Expiration time
  */
-ini_set("session.gc_maxlifetime", "31536000");
+ini_set('session.gc_maxlifetime', 31536000);
+// security fix to avoid session fixation hijack
+ini_set('session.use_strict_mode', 1);
 
 CentreonSession::start();
 
