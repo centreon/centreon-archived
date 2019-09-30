@@ -62,7 +62,7 @@ class CentreonSession
 
     public static function restart()
     {
-        static::stop();
+        self::stop();
         self::start();
         session_regenerate_id(true);
     }
