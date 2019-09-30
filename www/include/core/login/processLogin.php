@@ -105,9 +105,10 @@ if (isset($_POST["centreon_token"])
             header('Location: ./index.php?disconnect=1');
             $connect = false;
         } else {
-            $query = "INSERT INTO `session` (`session_id` , `user_id` , `current_page` , `last_reload`, `ip_address`) " .
-                "VALUES (?, ?, ?, ?, ?)";
-            $dbResult = $pearDB->prepare($query);
+            $dbResult = $pearDB->prepare(
+                "INSERT INTO `session` (`session_id` , `user_id` , `current_page` , `last_reload`, `ip_address`)
+                VALUES (?, ?, ?, ?, ?)"
+            );
             $pearDB->execute(
                 $dbResult,
                 [$sessionId, $centreon->user->user_id, '1', time(), $_SERVER["REMOTE_ADDR"]]
