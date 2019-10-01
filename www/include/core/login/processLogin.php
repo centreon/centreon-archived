@@ -97,30 +97,31 @@ if (isset($_POST["centreon_token"])
     );
     if ($centreonAuth->passwdOk == 1) {
         $centreon = new Centreon($centreonAuth->userInfos);
+        // security fix - regenerate the sid after the login
+        session_regenerate_id();
         $_SESSION["centreon"] = $centreon;
-
+        // saving session data in the DB
         $query = "INSERT INTO `session` (`session_id` , `user_id` , `current_page` , `last_reload`, `ip_address`) " .
             "VALUES (?, ?, ?, ?, ?)";
-        $DBRESULT = $pearDB->prepare($query);
+        $dbResult = $pearDB->prepare($query);
         $pearDB->execute(
-            $DBRESULT,
+            $dbResult,
             array(session_id(), $centreon->user->user_id, '1', time(), $_SERVER["REMOTE_ADDR"])
         );
+
         if (!isset($_POST["submit"])) {
+            $headerRedirection = "./main.php";
             $minimize = '';
             if (isset($_GET["min"]) && $_GET["min"] == '1') {
                 $minimize = '&min=1';
             }
             if (!empty($_GET["p"])) {
-                header('Location: ./main.php?p=' . $_GET["p"] . $minimize);
+                $headerRedirection .= "?p=" . $_GET["p"];
             } else if (isset($centreon->user->default_page) && $centreon->user->default_page != '') {
-                header('Location: ./main.php?p=' . $centreon->user->default_page . $minimize);
-            } else {
-                header('Location: ./main.php');
+                $headerRedirection .= "?p=" . $centreon->user->default_page;
             }
-        } else {
-            header("Location: ./main.php");
         }
+        header("Location: " . $headerRedirection . $minimize);
         $connect = true;
     } else {
         $connect = false;
