@@ -131,7 +131,7 @@ if (isset($_SESSION["centreon"])) {
 /*
  * Check PHP version
  *
- *  Centreon 18.10 doesn't support PHP < 7.1
+ *  Centreon >= 18.10 doesn't support PHP < 7.1
  *
  */
 if (version_compare(phpversion(), '7.1') < 0) {
