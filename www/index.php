@@ -118,10 +118,21 @@ if (isset($_GET["disconnect"])) {
      * Init log class
      */
     if (is_object($centreon)) {
-        $CentreonLog = new CentreonUserLog($centreon->user->get_id(), $pearDB);
+        $userId = $centreon->user->get_id();
+
+        // log the logout event
+        $CentreonLog = new CentreonUserLog($userId, $pearDB);
         $CentreonLog->insertLog(1, "Contact '" . $centreon->user->get_alias() . "' logout");
 
-        $pearDB->query("DELETE FROM session WHERE session_id = '" . session_id() . "'");
+        // delete the current user's session
+        $stmt = $pearDB->prepare("DELETE FROM session WHERE session_id = :sessionId");
+        $stmt->bindValue(':sessionId', session_id(), \PDO::PARAM_STR);
+        $stmt->execute();
+        
+        // delete all the sessions linked to the disconnected user
+        $stmt = $pearDB->query("DELETE FROM session WHERE user_id = :userId");
+        $stmt->bindValue(':userId', $userId, \PDO::PARAM_STR);
+        $stmt->execute();
 
         CentreonSession::restart();
     }
