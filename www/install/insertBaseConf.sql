@@ -885,6 +885,7 @@ INSERT INTO `widget_parameters_field_type` (`ft_typename`, `is_connector`) VALUE
                                            ('pollerMulti', 1),
                                            ('serviceGroupMulti', 1),
                                            ('hostSeverityMulti', 1),
+                                           ('serviceSeverityMulti', 1),
                                            ('integer', 0);
 
 INSERT INTO timezone (`timezone_name`, `timezone_offset`, `timezone_dst_offset`) VALUES

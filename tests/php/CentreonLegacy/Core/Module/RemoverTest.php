@@ -22,9 +22,8 @@ use Centreon\Test\Mock\CentreonDB;
 use Centreon\Test\Mock\DependencyInjector\ServiceContainer;
 use Centreon\Test\Mock\DependencyInjector\ConfigurationDBProvider;
 use Centreon\Test\Mock\DependencyInjector\FilesystemProvider;
-use Centreon\Test\Mock\DependencyInjector\FinderProvider;
 
-class RemoverTest extends \PHPUnit_Framework_TestCase
+class RemoverTest extends \PHPUnit\Framework\TestCase
 {
     private $container;
     private $db;

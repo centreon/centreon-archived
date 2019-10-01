@@ -124,6 +124,7 @@ input[type="checkbox"]  {
 .md-checkbox label:before, .md-checkbox label:after {
     content: "";
     position: absolute;
+    box-sizing: border-box;
     left: 0;
     top: 0;
 }
@@ -164,9 +165,6 @@ input[type="checkbox"]  {
 }
 .md-checkbox input[type="checkbox"]:disabled:checked + label:before {
     background: rgba(0, 0, 0, 0.26);
-}
-*, *:before, *:after {
-    box-sizing: border-box;
 }
 
 
