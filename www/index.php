@@ -103,10 +103,15 @@ if (isset($_GET["disconnect"])) {
      * Init log class
      */
     if (is_object($centreon)) {
-        $CentreonLog = new CentreonUserLog($centreon->user->get_id(), $pearDB);
+        $userId = $centreon->user->get_id();
+        $CentreonLog = new CentreonUserLog($userId, $pearDB);
         $CentreonLog->insertLog(1, "Contact '".$centreon->user->get_alias()."' logout");
 
+        // delete current session
         $pearDB->query("DELETE FROM session WHERE session_id = '".session_id()."'");
+
+        // delete all user's sessions
+        $pearDB->query("DELETE FROM session WHERE user_id = '" . $userId . "'");
 
         CentreonSession::restart();
     }
