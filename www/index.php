@@ -78,11 +78,11 @@ $dbResult->closeCursor();
 /*
  * detect installation dir
  */
-$file_install_acces = 0;
+$file_install_access = 0;
 if (file_exists("./install/setup.php")) {
     $error_msg = "Installation Directory '" . __DIR__ .
         "/install/' is accessible. Delete this directory to prevent security problem.";
-    $file_install_acces = 1;
+    $file_install_access = 1;
 }
 
 /**
