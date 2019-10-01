@@ -1,7 +1,7 @@
 <?php
 /*
- * Copyright 2005-2015 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2019 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -89,6 +89,7 @@ if (file_exists("./install/setup.php")) {
 
 /*
  * Set PHP Session Expiration time
+ * These parameters have been moved in the php.ini in Centreon >=18.10.x
  */
 ini_set('session.gc_maxlifetime', 31536000);
 // security fix to avoid session fixation hijack
