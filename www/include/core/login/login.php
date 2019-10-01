@@ -72,7 +72,7 @@ if (isset($_GET["disconnect"]) && $_GET["disconnect"] == 2) {
     $loginMessages[] = _('Your session is expired.');
 }
 
-if ($file_install_acces) {
+if ($file_install_access) {
     $loginMessages[] = $error_msg;
 }
 
@@ -100,7 +100,7 @@ $form->addRule('password', _("You must specify a password"), 'required');
 if (isset($freeze) && $freeze) {
     $form->freeze();
 }
-if ($file_install_acces) {
+if ($file_install_access) {
     $submitLogin->freeze();
 }
 
