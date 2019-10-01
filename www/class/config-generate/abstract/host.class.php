@@ -284,10 +284,11 @@ abstract class AbstractHost extends AbstractObject
     {
         $hostList[] = (int)$hostId;
         while (1) {
-            $query = "SELECT contact_additive_inheritance, host_tpl_id FROM host, host_template_relation
+            $query = 'SELECT contact_additive_inheritance, host_tpl_id FROM host, host_template_relation
                     WHERE `host_id` = `host_host_id`
                     AND `order` = 1
-                    AND `host_id` = " . (int)$hostId;
+                    AND `host_activate` != "0"
+                    AND `host_id` = ' . (int)$hostId;
             $stmt = $this->backend_instance->db->query($query);
             $hostAdd = $stmt->fetch();
 
@@ -306,10 +307,13 @@ abstract class AbstractHost extends AbstractObject
     {
         $hostList[] = $host;
         $stmt = $this->backend_instance->db->query(
-            "SELECT host_tpl_id  FROM host_template_relation 
-                WHERE `host_host_id` = " . (int)$host . " ORDER BY `order`"
+            'SELECT host_template_relation.host_tpl_id 
+            FROM host_template_relation, host 
+            WHERE host_template_relation.`host_host_id` = ' . (int)$host . ' 
+            AND host_template_relation.`host_host_id` = host.`host_id` 
+            AND host.`host_activate` 
+            ORDER BY `order`'
         );
-
         while (($row = $stmt->fetch())) {
             $this->getCumulativeInheritance($row['host_tpl_id'], $hostList);
         }
@@ -322,26 +326,31 @@ abstract class AbstractHost extends AbstractObject
     protected function getContactCloseInheritance($host, &$hostList = array())
     {
         $stmt = $this->backend_instance->db->query(
-            "(SELECT ch.contact_id, ht.host_tpl_id FROM host_template_relation ht
-                LEFT JOIN contact_host_relation ch ON ht.`host_host_id` = ch.`host_host_id`
-            WHERE ht.`host_host_id` = " . (int)$host . " ORDER BY ht.`order`)
-            UNION 
-            (SELECT hr.contact_id, ht.host_host_id FROM contact_host_relation hr 
-                LEFT JOIN host_template_relation ht ON ht.`host_host_id` = hr.`host_host_id` 
-            WHERE hr.host_host_id = " . (int)$host . "  ORDER BY ht.`order`) "
+            'SELECT GROUP_CONCAT(contact.contact_id) AS contact_id, 
+                (SELECT GROUP_CONCAT(host_template_relation.host_tpl_id)
+	            FROM host_template_relation , host
+	            WHERE host_template_relation.host_host_id = ' . (int)$host . '
+                AND host.host_id = host_template_relation.host_host_id
+	            AND host.host_activate = "1") as host_tpl_id	
+            FROM contact, contact_host_relation, host
+            WHERE contact.`contact_id` = contact_host_relation.`contact_id`
+            AND contact_host_relation.host_host_id = ' . (int)$host . '
+            AND contact.contact_enable_notifications != "0"
+            AND contact.contact_activate = "1"
+            AND host.host_id = contact_host_relation.host_host_id
+            AND host.host_activate = "1"
+            AND host.host_notifications_enabled != "0"'
         );
-
         while ($row = $stmt->fetch()) {
-            if (empty($hostList)) {
-                if (!empty($row['contact_id'])) {
-                    $hostList[] = (int)$host;
-                    break;
-                } elseif (!empty($row['host_tpl_id'])) {
-                    $this->getContactCloseInheritance($row['host_tpl_id'], $hostList);
-                }
-            } else {
+            if ($row['contact_id']) {
+                $hostList[] = (int)$host;
                 break;
+            } elseif ($row['host_tpl_id']) {
+                foreach (explode(',', $row['host_tpl_id']) as $hostTplId){
+                    $this->getContactCloseInheritance($hostTplId, $hostList);
+                }
             }
+            break;
         }
     }
 
@@ -356,7 +365,7 @@ abstract class AbstractHost extends AbstractObject
         $stmt = $this->backend_instance->db->query(
             'SELECT c.contact_id , contact_name FROM contact c, contact_host_relation ch
             WHERE ch.host_host_id IN (' . implode(',', $host) . ') AND ch.contact_id = c.contact_id 
-            AND contact_activate = "1"'
+            AND contact_activate = "1" AND contact_enable_notifications != "0"'
         );
 
         while (($row = $stmt->fetch())) {
@@ -447,21 +456,29 @@ abstract class AbstractHost extends AbstractObject
     protected function getContactGroupsCloseInheritance($host, &$hostList = array())
     {
         $stmt = $this->backend_instance->db->query(
-            "(SELECT ch.contactgroup_cg_id, ht.host_tpl_id FROM host_template_relation ht
-            LEFT JOIN contactgroup_host_relation ch ON ht.`host_host_id` = ch.`host_host_id`
-            WHERE ht.`host_host_id` = " . (int)$host . " ORDER BY ht.`order`)
-            UNION
-            (SELECT ch.contactgroup_cg_id, ht.host_tpl_id FROM contactgroup_host_relation ch
-            LEFT JOIN host_template_relation ht ON ht.`host_host_id` = ch.`host_host_id`
-            WHERE ch.`host_host_id` = " . (int)$host . " ORDER BY ht.`order`)");
-
+            'SELECT GROUP_CONCAT(contactgroup.cg_id) AS cg_id, 
+                (SELECT GROUP_CONCAT(host_template_relation.host_tpl_id)
+	            FROM host_template_relation , host
+	            WHERE host_template_relation.host_host_id = ' . (int)$host . '
+                AND host.host_id = host_template_relation.host_host_id
+	            AND host.host_activate = "1") as host_tpl_id	
+            FROM contactgroup, contactgroup_host_relation, host
+            WHERE contactgroup.`cg_id` = contactgroup_host_relation.`contactgroup_cg_id`
+            AND contactgroup_host_relation.host_host_id = ' . (int)$host . '
+            AND contactgroup.cg_activate = "1"
+            AND host.host_id = contactgroup_host_relation.host_host_id
+            AND host.host_activate = "1"
+            AND host.host_notifications_enabled != "0"'
+        );
         while ($row = $stmt->fetch()) {
             if (empty($hostList)) {
-                if (!empty($row['contactgroup_cg_id'])) {
+                if ($row['cg_id']) {
                     $hostList[] = (int)$host;
                     break;
-                } elseif (!empty($row['host_tpl_id'])) {
-                    $this->getContactGroupsCloseInheritance($row['host_tpl_id'], $hostList);
+                } elseif ($row['host_tpl_id']) {
+                    foreach (explode(',', $row['host_tpl_id']) as $hostTplId){
+                        $this->getContactGroupsCloseInheritance($hostTplId, $hostList);
+                    }
                 }
             } else {
                 break;
