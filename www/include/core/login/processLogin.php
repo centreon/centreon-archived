@@ -111,7 +111,7 @@ if (isset($_POST["centreon_token"])
             if (isset($_GET["min"]) && $_GET["min"] == '1') {
                 $minimize = '&min=1';
             }
-            if (isset($_GET["p"]) && $_GET["p"] != '') {
+            if (!empty($_GET["p"])) {
                 header('Location: ./main.php?p=' . $_GET["p"] . $minimize);
             } else if (isset($centreon->user->default_page) && $centreon->user->default_page != '') {
                 header('Location: ./main.php?p=' . $centreon->user->default_page . $minimize);
