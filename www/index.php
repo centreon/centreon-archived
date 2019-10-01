@@ -97,21 +97,16 @@ ini_set('session.use_strict_mode', 1);
 CentreonSession::start();
 
 if (isset($_GET["disconnect"])) {
-    $centreon = & $_SESSION["centreon"];
-    
+    $centreon = &$_SESSION["centreon"];
+
     /*
      * Init log class
      */
     if (is_object($centreon)) {
-        $userId = $centreon->user->get_id();
-        $CentreonLog = new CentreonUserLog($userId, $pearDB);
-        $CentreonLog->insertLog(1, "Contact '".$centreon->user->get_alias()."' logout");
+        $CentreonLog = new CentreonUserLog($centreon->user->get_id(), $pearDB);
+        $CentreonLog->insertLog(1, "Contact '" . $centreon->user->get_alias() . "' logout");
 
-        // delete current session
-        $pearDB->query("DELETE FROM session WHERE session_id = '".session_id()."'");
-
-        // delete all user's sessions
-        $pearDB->query("DELETE FROM session WHERE user_id = '" . $userId . "'");
+        $pearDB->query("DELETE FROM session WHERE session_id = '" . session_id() . "'");
 
         CentreonSession::restart();
     }
