@@ -27,6 +27,9 @@ use Symfony\Component\Security\Core\User\UserInterface;
 
 class Contact implements UserInterface, ContactInterface
 {
+    const ROLE_API_CONFIGURATION = 'ROLE_API_CONFIGURATION';
+    const ROLE_API_REALTIME = 'ROLE_API_REALTIME';
+
     /**
      * @var int Id of contact
      */
@@ -78,9 +81,19 @@ class Contact implements UserInterface, ContactInterface
     private $encodedPassword;
 
     /**
+     * @var bool Indicates if this user has access to the configuration section of API
+     */
+    private $hasAccessToApiConfiguration;
+
+    /**
+     * @var bool Indicates if this user has access to the real time section of API
+     */
+    private $hasAccessToApiRealTime;
+
+    /**
      * @var (Role|string)[]
      */
-    private $roles;
+    private $roles = [];
 
     /**
      * @return int
@@ -187,9 +200,12 @@ class Contact implements UserInterface, ContactInterface
     public function setAdmin(bool $isAdmin): self
     {
         $this->isAdmin = $isAdmin;
+        if ($this->isAdmin) {
+            $this->addRole(self::ROLE_API_REALTIME);
+            $this->addRole(self::ROLE_API_CONFIGURATION);
+        }
         return $this;
     }
-
 
     /**
      * @return int
@@ -279,7 +295,7 @@ class Contact implements UserInterface, ContactInterface
      */
     public function getRoles()
     {
-        return ($this->isAdmin) ? ['ROLE_ADMIN'] : ['ROLE_USER'];
+        return $this->roles;
     }
 
     /**
@@ -326,5 +342,66 @@ class Contact implements UserInterface, ContactInterface
     public function eraseCredentials()
     {
         // Nothing to do. But we must to define this method
+    }
+
+    /**
+     * @return bool
+     */
+    public function hasAccessToApiConfiguration(): bool
+    {
+        return $this->hasAccessToApiConfiguration;
+    }
+
+    /**
+     * @param bool $hasAccessToApiConfiguration
+     * @return self
+     */
+    public function setAccessToApiConfiguration(bool $hasAccessToApiConfiguration): self
+    {
+        $this->hasAccessToApiConfiguration = $hasAccessToApiConfiguration;
+        $this->addRole(self::ROLE_API_CONFIGURATION);
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function hasAccessToApiRealTime(): bool
+    {
+        return $this->hasAccessToApiRealTime;
+    }
+
+    /**
+     * @param bool $hasAccessToApiRealTime
+     * @return self
+     */
+    public function setAccessToApiRealTime(bool $hasAccessToApiRealTime): self
+    {
+        $this->hasAccessToApiRealTime = $hasAccessToApiRealTime;
+        $this->addRole(self::ROLE_API_REALTIME);
+        return $this;
+    }
+
+    /**
+     * Indicates if this user has a role.
+     *
+     * @param string $role Role name to find
+     * @return bool
+     */
+    public function hasRole(string $role): bool
+    {
+        return in_array($role, $this->roles);
+    }
+
+    /**
+     * Add a specific role to this user.
+     *
+     * @param string $roleName Role name to add
+     */
+    private function addRole(string $roleName): void
+    {
+        if (!in_array($roleName, $this->roles)) {
+            $this->roles[] = $roleName;
+        }
     }
 }

@@ -19,33 +19,25 @@
  */
 declare(strict_types=1);
 
-namespace Centreon\Domain\Contact\Interfaces;
+namespace Centreon\Domain\Engine\Interfaces;
 
-interface ContactInterface
+use Centreon\Domain\Engine\EngineException;
+
+interface EngineRepositoryInterface
 {
     /**
-     * @return int Returns the contact id
+     * Adds a command
+     *
+     * @param string Command to send
+     * @throws EngineException
      */
-    public function getId(): int;
+    public function sendExternalCommand(string $command): void;
 
     /**
-     * Indicates whether the contact is an administrator.
+     * Adds commands
      *
-     * @return bool
+     * @param string[] List of commands to send
+     * @throws EngineException
      */
-    public function isAdmin(): bool;
-
-    /**
-     * Indicates whether the contact is active.
-     *
-     * @return bool
-     */
-    public function isActive(): bool;
-
-    /**
-     * Contact alias.
-     *
-     * @return string
-     */
-    public function getAlias(): string;
+    public function sendExternalCommands(array $commands): void;
 }

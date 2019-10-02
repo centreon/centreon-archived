@@ -53,6 +53,7 @@ class MonitoringController extends AbstractFOSRestController
     /**
      * Entry point to get a real time service.
      *
+     * @IsGranted("ROLE_API_REALTIME", message="You are not authorized to access this resource")
      * @Rest\Get(
      *     "/monitoring/hosts/{hostId}/services/{serviceId}",
      *     condition="request.attributes.get('version') >= 1.0 && request.attributes.get('version.is_beta') == false")
@@ -82,7 +83,7 @@ class MonitoringController extends AbstractFOSRestController
     /**
      * Entry point to get all real time services.
      *
-     * @IsGranted("ROLE_USER")
+     * @IsGranted("ROLE_API_REALTIME", message="You are not authorized to access this resource")
      * @Rest\Get(
      *     "/monitoring/services",
      *     condition="request.attributes.get('version') >= 1.0 && request.attributes.get('version.not_beta')")
@@ -112,7 +113,7 @@ class MonitoringController extends AbstractFOSRestController
     /**
      * Entry point to get all real time services based on a service group
      *
-     * @IsGranted("ROLE_USER")
+     * @IsGranted("ROLE_API_REALTIME", message="You are not authorized to access this resource")
      * @Rest\Get(
      *     "/monitoring/servicegroups",
      *     condition="request.attributes.get('version') >= 1.0 && request.attributes.get('version.not_beta')")
@@ -142,7 +143,7 @@ class MonitoringController extends AbstractFOSRestController
     /**
      * Entry point to get all real time services based on a host group.
      *
-     * @IsGranted("ROLE_USER")
+     * @IsGranted("ROLE_API_REALTIME", message="You are not authorized to access this resource")
      * @Rest\Get(
      *     "/monitoring/hostgroups",
      *     condition="request.attributes.get('version') >= 1.0 && request.attributes.get('version.not_beta')")
@@ -172,7 +173,7 @@ class MonitoringController extends AbstractFOSRestController
     /**
      * Entry point to get all real time hosts.
      *
-     * @IsGranted("ROLE_USER")
+     * @IsGranted("ROLE_API_REALTIME", message="You are not authorized to access this resource")
      * @Rest\Get(
      *     "/monitoring/hosts",
      *     condition="request.attributes.get('version') >= 1.0 && request.attributes.get('version.not_beta')")
@@ -206,6 +207,7 @@ class MonitoringController extends AbstractFOSRestController
     /**
      * Entry point to get a real time host.
      *
+     * @IsGranted("ROLE_API_REALTIME", message="You are not authorized to access this resource")
      * @Rest\Get(
      *     "/monitoring/hosts/{hostId}",
      *     condition="request.attributes.get('version') >= 1.0 && request.attributes.get('version.not_beta')")
@@ -234,6 +236,7 @@ class MonitoringController extends AbstractFOSRestController
     /**
      * Entry point to get all real time services based on a host.
      *
+     * @IsGranted("ROLE_API_REALTIME", message="You are not authorized to access this resource")
      * @Rest\Get(
      *      "/monitoring/hosts/{hostId}/services",
      *      condition="request.attributes.get('version') >= 1.0 && request.attributes.get('version.not_beta')")

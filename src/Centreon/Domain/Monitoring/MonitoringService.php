@@ -26,13 +26,14 @@ use Centreon\Domain\Contact\Interfaces\ContactInterface;
 use Centreon\Domain\Monitoring\Interfaces\MonitoringServiceInterface;
 use Centreon\Domain\Monitoring\Interfaces\MonitoringRepositoryInterface;
 use Centreon\Domain\Security\Interfaces\AccessGroupRepositoryInterface;
+use Centreon\Domain\Service\AbstractCentreonService;
 
 /**
  * Monitoring class used to manage the real time services and hosts
  *
  * @package Centreon\Domain\Monitoring
  */
-class MonitoringService implements MonitoringServiceInterface
+class MonitoringService extends AbstractCentreonService implements MonitoringServiceInterface
 {
     /**
      * @var MonitoringRepositoryInterface
@@ -43,12 +44,6 @@ class MonitoringService implements MonitoringServiceInterface
      * @var AccessGroupRepositoryInterface
      */
     private $accessGroupRepository;
-
-    /**
-     * The contact will be use to filter services and hosts.
-     * @var Contact
-     */
-    private $contact;
 
     /**
      * @param MonitoringRepositoryInterface $monitoringRepository
@@ -63,22 +58,29 @@ class MonitoringService implements MonitoringServiceInterface
     }
 
     /**
+     * {@inheritDoc}
+     * @param Contact $contact
+     * @return self
+     */
+    public function filterByContact($contact)
+    {
+        parent::filterByContact($contact);
+
+        $accessGroups = $this->accessGroupRepository->findByContact($contact);
+
+        $this->monitoringRepository
+            ->setAdmin($this->contact->isAdmin())
+            ->filterByAccessGroups($accessGroups);
+
+        return $this;
+    }
+
+    /**
      * @inheritDoc
      */
     public function findServices(): array
     {
-        if ($this->contact->isAdmin()) {
-            return $this
-                ->monitoringRepository
-                ->filterByAccessGroups(null)
-                ->findServices();
-        } elseif (count($accessGroups = $this->accessGroupRepository->findByContact($this->contact)) > 0) {
-            return $this
-                ->monitoringRepository
-                ->filterByAccessGroups($accessGroups)
-                ->findServices();
-        }
-        return [];
+        return $this->monitoringRepository->findServices();
     }
 
     /**
@@ -86,18 +88,7 @@ class MonitoringService implements MonitoringServiceInterface
      */
     public function findServicesByHost(int $hostId): array
     {
-        if ($this->contact->isAdmin()) {
-            return $this
-                ->monitoringRepository
-                ->filterByAccessGroups(null)
-                ->findServicesByHost($hostId);
-        } elseif (count($accessGroups = $this->accessGroupRepository->findByContact($this->contact)) > 0) {
-            return $this
-                ->monitoringRepository
-                ->filterByAccessGroups($accessGroups)
-                ->findServicesByHost($hostId);
-        }
-        return [];
+        return $this->monitoringRepository->findServicesByHost($hostId);
     }
 
     /**
@@ -105,18 +96,11 @@ class MonitoringService implements MonitoringServiceInterface
      */
     public function findHosts(): array
     {
-        if ($this->contact->isAdmin()) {
-            return $this
-                ->monitoringRepository
-                ->filterByAccessGroups(null)
-                ->findHosts();
-        } elseif (count($accessGroups = $this->accessGroupRepository->findByContact($this->contact)) > 0) {
-            return $this
-                ->monitoringRepository
-                ->filterByAccessGroups($accessGroups)
-                ->findHosts();
+        $hosts = $this->monitoringRepository->findHosts();
+        if (!empty($hosts)) {
+            $hosts = $this->completeHostsWithTheirServices($hosts);
         }
-        return [];
+        return $hosts;
     }
 
     /**
@@ -124,27 +108,44 @@ class MonitoringService implements MonitoringServiceInterface
      */
     public function findHostGroups(): array
     {
-        if ($this->contact->isAdmin()) {
-            return $this
-                ->monitoringRepository
-                ->filterByAccessGroups(null)
-                ->findHostGroups();
-        } elseif (count($accessGroups = $this->accessGroupRepository->findByContact($this->contact)) > 0) {
-            return $this
-                ->monitoringRepository
-                ->filterByAccessGroups($accessGroups)
-                ->findHostGroups();
-        }
-        return [];
-    }
+        /**
+         * @param array $hostGroups
+         * @return HostGroup[]
+         */
+        $completeHostsOfHostGroupsWithTheirServices = function (array $hostGroups): array {
+            $hostsById = [];
+            // We create a unique hosts list indexed by their id
+            foreach ($hostGroups as $hostGroup) {
+                foreach ($hostGroup->getHosts() as $host) {
+                    if (!array_key_exists($host->getId(), $hostsById)) {
+                        $hostsById[$host->getId()] = $host;
+                    }
+                }
+            }
 
-    /**
-     * @inheritDoc
-     */
-    public function filterByContact(ContactInterface $contact): MonitoringServiceInterface
-    {
-        $this->contact = $contact;
-        return $this;
+            // We complete the hosts of host group by their services
+            if (!empty($hostsById)) {
+                $hosts = $this->completeHostsWithTheirServices(array_values($hostsById));
+                $hostsById = [];
+                foreach ($hosts as $host) {
+                    $hostsById[$host->getId()] = $host;
+                }
+
+                foreach ($hostGroups as $hostGroup) {
+                    foreach ($hostGroup->getHosts() as $host) {
+                        if (array_key_exists($host->getId(), $hostsById)) {
+                            $host->setServices($hostsById[$host->getId()]->getServices());
+                        }
+                    }
+                }
+            }
+
+            return $hostGroups;
+        };
+
+        $hostGroups = $this->monitoringRepository->findHostGroups();
+
+        return $completeHostsOfHostGroupsWithTheirServices($hostGroups);
     }
 
     /**
@@ -152,18 +153,12 @@ class MonitoringService implements MonitoringServiceInterface
      */
     public function findOneHost(int $hostId): ?Host
     {
-        if ($this->contact->isAdmin()) {
-            return $this
-                ->monitoringRepository
-                ->filterByAccessGroups(null)
-                ->findOneHost($hostId);
-        } elseif (count($accessGroups = $this->accessGroupRepository->findByContact($this->contact)) > 0) {
-            return $this
-                ->monitoringRepository
-                ->filterByAccessGroups($accessGroups)
-                ->findOneHost($hostId);
+        $host = $this->monitoringRepository->findOneHost($hostId);
+
+        if (!empty($host)) {
+            $host = $this->completeHostsWithTheirServices([$host])[0];
         }
-        return null;
+        return $host;
     }
 
     /**
@@ -171,18 +166,7 @@ class MonitoringService implements MonitoringServiceInterface
      */
     public function findOneService(int $hostId, int $serviceId): ?Service
     {
-        if ($this->contact->isAdmin()) {
-            return $this
-                ->monitoringRepository
-                ->filterByAccessGroups(null)
-                ->findOneService($hostId, $serviceId);
-        } elseif (count($accessGroups = $this->accessGroupRepository->findByContact($this->contact)) > 0) {
-            return $this
-                ->monitoringRepository
-                ->filterByAccessGroups($accessGroups)
-                ->findOneService($hostId, $serviceId);
-        }
-        return null;
+        return $this->monitoringRepository->findOneService($hostId, $serviceId);
     }
 
     /**
@@ -190,18 +174,7 @@ class MonitoringService implements MonitoringServiceInterface
      */
     public function findServiceGroups(): array
     {
-        if ($this->contact->isAdmin()) {
-            return $this
-                ->monitoringRepository
-                ->filterByAccessGroups(null)
-                ->findServiceGroups();
-        } elseif (count($accessGroups = $this->accessGroupRepository->findByContact($this->contact)) > 0) {
-            return $this
-                ->monitoringRepository
-                ->filterByAccessGroups($accessGroups)
-                ->findServiceGroups();
-        }
-        return [];
+        return $this->monitoringRepository->findServiceGroups();
     }
 
     /**
@@ -210,5 +183,28 @@ class MonitoringService implements MonitoringServiceInterface
     public function isHostExists(int $hostId): bool
     {
         return !is_null($this->findOneHost($hostId));
+    }
+
+    /**
+     * Completes hosts with their services.
+     *
+     * @param array $hosts Host list for which we want to complete with their services
+     * @return array Returns the host list with their services
+     * @throws \Exception
+     */
+    private function completeHostsWithTheirServices(array $hosts): array
+    {
+        $hostIds = [];
+        foreach ($hosts as $host) {
+            $hostIds[] = $host->getId();
+        }
+        $services = $this->monitoringRepository->findServicesOnMultipleHosts($hostIds);
+
+        foreach ($hosts as $host) {
+            if (array_key_exists($host->getId(), $services)) {
+                $host->setServices($services[$host->getId()]);
+            }
+        }
+        return $hosts;
     }
 }

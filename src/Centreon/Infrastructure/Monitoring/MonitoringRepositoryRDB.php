@@ -24,27 +24,22 @@ namespace Centreon\Infrastructure\Monitoring;
 use Centreon\Domain\Monitoring\HostGroup;
 use Centreon\Domain\Monitoring\ServiceGroup;
 use Centreon\Domain\RequestParameters\RequestParameters;
-use Centreon\Infrastructure\Repository\SqlRequestParametersTranslator;
+use Centreon\Infrastructure\Repository\AbstractRepositoryDRB;
 use Centreon\Domain\Security\AccessGroup;
 use Centreon\Domain\Entity\EntityCreator;
 use Centreon\Domain\Monitoring\Host;
 use Centreon\Domain\Monitoring\Service;
 use Centreon\Domain\Monitoring\Interfaces\MonitoringRepositoryInterface;
 use Centreon\Infrastructure\DatabaseConnection;
-use \Exception;
+use Centreon\Infrastructure\RequestParameters\SqlRequestParametersTranslator;
 
 /**
  * Database repository for the real time monitoring of services and host.
  *
  * @package Centreon\Infrastructure\Monitoring
  */
-final class MonitoringRepositoryRDB implements MonitoringRepositoryInterface
+final class MonitoringRepositoryRDB extends AbstractRepositoryDRB implements MonitoringRepositoryInterface
 {
-    /**
-     * @var DatabaseConnection
-     */
-    private $db;
-
     /**
      * @var string Name of the configuration database
      */
@@ -64,6 +59,11 @@ final class MonitoringRepositoryRDB implements MonitoringRepositoryInterface
      * @var SqlRequestParametersTranslator
      */
     private $sqlRequestTranslator;
+
+    /**
+     * @var bool Indicates whether the contact is an admin or not
+     */
+    private $isAdmin = false;
 
     /**
      * MonitoringRepositoryRDB constructor.
@@ -106,8 +106,11 @@ final class MonitoringRepositoryRDB implements MonitoringRepositoryInterface
      */
     public function findHosts(): array
     {
-        $requestParameter = $this->sqlRequestTranslator->getRequestParameters();
-        $hasServices = $requestParameter->getExtraParameter('show_service') === 'true';
+        $hosts = [];
+
+        if (!$this->hasEnoughRightsToContinue()) {
+            return $hosts;
+        }
 
         $this->sqlRequestTranslator->setConcordanceArray([
             'host.id' => 'h.host_id',
@@ -119,9 +122,10 @@ final class MonitoringRepositoryRDB implements MonitoringRepositoryInterface
             'service.display_name' => 'srv.display_name',
             'host_group.id' => 'hg.hostgroup_id']);
 
-        $accessGroupFilter = !is_null($this->accessGroups)
+        $accessGroupFilter = !empty($this->accessGroups)
             ? ' INNER JOIN `:dbstg`.`centreon_acl` acl
                   ON acl.host_id = h.host_id
+                  AND acl.service_id IS NULL
                 INNER JOIN `:db`.`acl_groups` acg
                   ON acg.acl_group_id = acl.group_id
                   AND acg.acl_group_activate = \'1\'
@@ -170,7 +174,7 @@ final class MonitoringRepositoryRDB implements MonitoringRepositoryInterface
             $statement->bindValue($key, $value, $type);
         }
         if (false === $statement->execute()) {
-            throw new Exception('Bad SQL request');
+            throw new \Exception('Bad SQL request');
         }
 
         $result = $this->db->query('SELECT FOUND_ROWS()');
@@ -178,7 +182,6 @@ final class MonitoringRepositoryRDB implements MonitoringRepositoryInterface
             (int) $result->fetchColumn()
         );
 
-        $hosts = [];
         $hostIds = [];
 
         while (false !== ($result = $statement->fetch(\PDO::FETCH_ASSOC))) {
@@ -189,19 +192,6 @@ final class MonitoringRepositoryRDB implements MonitoringRepositoryInterface
             );
         }
 
-        if ($hasServices && count($hostIds) > 0) {
-            $servicesByHost = $this->findServicesOnMultipleHosts($hostIds);
-
-            foreach ($servicesByHost as $hostId => $services) {
-                foreach ($hosts as $host) {
-                    if ($host->getId() === $hostId) {
-                        $host->setServices($services);
-                        break;
-                    }
-                }
-            }
-        }
-
         return $hosts;
     }
 
@@ -210,6 +200,12 @@ final class MonitoringRepositoryRDB implements MonitoringRepositoryInterface
      */
     public function findHostGroups(): array
     {
+        $hostGroups = [];
+
+        if (!$this->hasEnoughRightsToContinue()) {
+            return $hostGroups;
+        }
+
         $this->sqlRequestTranslator->setConcordanceArray([
             'host.id' => 'h.host_id',
             'host.name' => 'h.name',
@@ -220,9 +216,10 @@ final class MonitoringRepositoryRDB implements MonitoringRepositoryInterface
             'service.display_name' => 'srv.display_name',
             'host_group.id' => 'hg.hostgroup_id']);
 
-        $accessGroupFilter = !is_null($this->accessGroups)
+        $accessGroupFilter = !empty($this->accessGroups)
             ? ' INNER JOIN `:dbstg`.`centreon_acl` acl
                   ON acl.host_id = h.host_id
+                  AND acl.service_id IS NULL
                 INNER JOIN `:db`.`acl_groups` acg
                   ON acg.acl_group_id = acl.group_id
                   AND acg.acl_group_activate = \'1\'
@@ -271,7 +268,7 @@ final class MonitoringRepositoryRDB implements MonitoringRepositoryInterface
             $statement->bindValue($key, $value, $type);
         }
         if (false === $statement->execute()) {
-            throw new Exception('Bad SQL request');
+            throw new \Exception('Bad SQL request');
         }
 
         $result = $this->db->query('SELECT FOUND_ROWS()');
@@ -322,11 +319,8 @@ final class MonitoringRepositoryRDB implements MonitoringRepositoryInterface
             $statement->bindValue($key, $value, $type);
         }
         if (false === $statement->execute()) {
-            throw new Exception('Bad SQL request');
+            throw new \Exception('Bad SQL request');
         }
-
-        $hostGroups = [];
-        $hostIds = [];
 
         while (false !== ($result = $statement->fetch(\PDO::FETCH_ASSOC))) {
             $hostGroupId = (int) $result['hostgroup_id'];
@@ -334,12 +328,7 @@ final class MonitoringRepositoryRDB implements MonitoringRepositoryInterface
                 ->setId((int) $result['host_id'])
                 ->setName($result['host_name'])
                 ->setAlias($result['host_alias'])
-                ->setDisplayName($result['host_display_name'])
                 ->setState((int) $result['host_state']);
-
-            if (!in_array($host->getId(), $hostIds)) {
-                $hostIds[] = $host->getId();
-            }
 
             if (!array_key_exists($hostGroupId, $hostGroups)) {
                 $hostGroups[$hostGroupId] = (new HostGroup())
@@ -352,17 +341,6 @@ final class MonitoringRepositoryRDB implements MonitoringRepositoryInterface
             }
         }
 
-        if (!empty($hostIds)) {
-            $servicesByHost = $this->findServicesOnMultipleHosts($hostIds);
-            foreach ($hostGroups as $hostGroupId => $hostGroup) {
-                foreach ($hostGroup->getHosts() as $host) {
-                    if (array_key_exists($host->getId(), $servicesByHost)) {
-                        $host->setServices($servicesByHost[$host->getId()]);
-                    }
-                }
-            }
-        }
-
         return array_values($hostGroups);
     }
 
@@ -371,9 +349,14 @@ final class MonitoringRepositoryRDB implements MonitoringRepositoryInterface
      */
     public function findOneHost(int $hostId): ?Host
     {
-        $accessGroupFilter = !is_null($this->accessGroups)
+        if (!$this->hasEnoughRightsToContinue()) {
+            return null;
+        }
+
+        $accessGroupFilter = !empty($this->accessGroups)
             ? ' INNER JOIN `:dbstg`.`centreon_acl` acl
                   ON acl.host_id = h.host_id
+                  AND acl.service_id IS NULL
                 INNER JOIN `:db`.`acl_groups` acg
                   ON acg.acl_group_id = acl.group_id
                   AND acg.acl_group_activate = \'1\'
@@ -416,7 +399,7 @@ final class MonitoringRepositoryRDB implements MonitoringRepositoryInterface
                 return null;
             }
         } else {
-            throw new Exception('Bad SQL request');
+            throw new \Exception('Bad SQL request');
         }
     }
 
@@ -425,9 +408,14 @@ final class MonitoringRepositoryRDB implements MonitoringRepositoryInterface
      */
     public function findOneService(int $hostId, int $serviceId): ?Service
     {
-        $accessGroupFilter = !is_null($this->accessGroups)
+        if (!$this->hasEnoughRightsToContinue()) {
+            return null;
+        }
+
+        $accessGroupFilter = !empty($this->accessGroups)
             ? ' INNER JOIN `:dbstg`.`centreon_acl` acl
                   ON acl.host_id = h.host_id
+                  AND acl.service_id = srv.service_id
                 INNER JOIN `:db`.`acl_groups` acg
                   ON acg.acl_group_id = acl.group_id
                   AND acg.acl_group_activate = \'1\'
@@ -461,7 +449,7 @@ final class MonitoringRepositoryRDB implements MonitoringRepositoryInterface
                 return null;
             }
         } else {
-            throw new Exception('Bad SQL request');
+            throw new \Exception('Bad SQL request');
         }
     }
 
@@ -470,6 +458,12 @@ final class MonitoringRepositoryRDB implements MonitoringRepositoryInterface
      */
     public function findServices(): array
     {
+        $services = [];
+
+        if (!$this->hasEnoughRightsToContinue()) {
+            return $services;
+        }
+
         $this->sqlRequestTranslator->setConcordanceArray([
             'host.id' => 'h.host_id',
             'host.name' => 'h.name',
@@ -486,9 +480,10 @@ final class MonitoringRepositoryRDB implements MonitoringRepositoryInterface
             'service_group.id' => 'ssg.servicegroup_id',
         ]);
 
-        $accessGroupFilter = !is_null($this->accessGroups)
+        $accessGroupFilter = !empty($this->accessGroups)
             ? ' INNER JOIN `:dbstg`.`centreon_acl` acl
-                  ON acl.host_id = h.host_id
+                  ON acl.host_id = srv.host_id
+                  AND acl.service_id = srv.service_id
                 INNER JOIN `:db`.`acl_groups` acg
                   ON acg.acl_group_id = acl.group_id
                   AND acg.acl_group_activate = \'1\'
@@ -542,15 +537,13 @@ final class MonitoringRepositoryRDB implements MonitoringRepositoryInterface
             $statement->bindValue($key, $value, $type);
         }
         if (false === $statement->execute()) {
-            throw new Exception('Bad SQL request');
+            throw new \Exception('Bad SQL request');
         }
 
         $result = $this->db->query('SELECT FOUND_ROWS()');
         $this->sqlRequestTranslator->getRequestParameters()->setTotal(
             (int) $result->fetchColumn()
         );
-
-        $services = [];
 
         while (false !== ($result = $statement->fetch(\PDO::FETCH_ASSOC))) {
             $service = EntityCreator::createEntityByArray(
@@ -577,6 +570,12 @@ final class MonitoringRepositoryRDB implements MonitoringRepositoryInterface
      */
     public function findServicesByHost(int $hostId): array
     {
+        $services = [];
+
+        if (!$this->hasEnoughRightsToContinue()) {
+            return $services;
+        }
+
         $this->sqlRequestTranslator->setConcordanceArray([
             'service.id' => 'srv.service_id',
             'service.description' => 'srv.description',
@@ -586,9 +585,10 @@ final class MonitoringRepositoryRDB implements MonitoringRepositoryInterface
             'service.state' => 'srv.state'
         ]);
 
-        $accessGroupFilter = !is_null($this->accessGroups)
+        $accessGroupFilter = !empty($this->accessGroups)
             ? ' INNER JOIN `:dbstg`.`centreon_acl` acl
-                  ON acl.host_id = h.host_id
+                  ON acl.host_id = srv.host_id
+                  AND acl.service_id = srv.service_id
                 INNER JOIN `:db`.`acl_groups` acg
                   ON acg.acl_group_id = acl.group_id
                   AND acg.acl_group_activate = \'1\'
@@ -635,15 +635,13 @@ final class MonitoringRepositoryRDB implements MonitoringRepositoryInterface
             $statement->bindValue($key, $value, $type);
         }
         if (false === $statement->execute()) {
-            throw new Exception('Bad SQL request');
+            throw new \Exception('Bad SQL request');
         }
 
         $result = $this->db->query('SELECT FOUND_ROWS()');
         $this->sqlRequestTranslator->getRequestParameters()->setTotal(
             (int) $result->fetchColumn()
         );
-
-        $services = [];
 
         while (false !== ($result = $statement->fetch(\PDO::FETCH_ASSOC))) {
             $services[] = EntityCreator::createEntityByArray(
@@ -660,6 +658,12 @@ final class MonitoringRepositoryRDB implements MonitoringRepositoryInterface
      */
     public function findServiceGroups(): array
     {
+        $serviceGroups = [];
+
+        if (!$this->hasEnoughRightsToContinue()) {
+            return $serviceGroups;
+        }
+
         $this->sqlRequestTranslator->setConcordanceArray([
             'host.id' => 'h.host_id',
             'host.name' => 'h.name',
@@ -671,9 +675,10 @@ final class MonitoringRepositoryRDB implements MonitoringRepositoryInterface
             'service_group.id' => 'sg.servicegroup_id',
             'service_group.name' => 'sg.name']);
 
-        $accessGroupFilter = !is_null($this->accessGroups)
+        $accessGroupFilter = !empty($this->accessGroups)
             ? ' INNER JOIN `:dbstg`.`centreon_acl` acl
                   ON acl.host_id = h.host_id
+                  AND acl.service_id = ssg.service_id
                 INNER JOIN `:db`.`acl_groups` acg
                   ON acg.acl_group_id = acl.group_id
                   AND acg.acl_group_activate = \'1\'
@@ -724,7 +729,7 @@ final class MonitoringRepositoryRDB implements MonitoringRepositoryInterface
         }
 
         if (false === $statement->execute()) {
-            throw new Exception('Bad SQL request');
+            throw new \Exception('Bad SQL request');
         }
 
         $result = $this->db->query('SELECT FOUND_ROWS()');
@@ -776,10 +781,8 @@ final class MonitoringRepositoryRDB implements MonitoringRepositoryInterface
             $statement->bindValue($key, $value, $type);
         }
         if (false === $statement->execute()) {
-            throw new Exception('Bad SQL request');
+            throw new \Exception('Bad SQL request');
         }
-
-        $serviceGroups = [];
 
         while (false !== ($result = $statement->fetch(\PDO::FETCH_ASSOC))) {
             $serviceGroupId = (int) $result['servicegroup_id'];
@@ -790,7 +793,7 @@ final class MonitoringRepositoryRDB implements MonitoringRepositoryInterface
                 ->setDisplayName($result['host_display_name'])
                 ->setState((int) $result['host_state'])
                 ->setServices(
-                    $this->findCertainServicesByHost(
+                    $this->findSelectedServicesByHost(
                         (int) $result['host_id'],
                         explode(',', $result['serviceIds'])
                     )
@@ -811,48 +814,34 @@ final class MonitoringRepositoryRDB implements MonitoringRepositoryInterface
     }
 
     /**
-     * Formats the access group ids in string. (values are separated by coma)
-     *
-     * @param AccessGroup[] $accessGroups
-     * @return string
+     * @inheritDoc
      */
-    private function accessGroupIdToString(array $accessGroups): string
-    {
-        $ids = [];
-        foreach ($accessGroups as $accessGroup) {
-            $ids[] = $accessGroup->getId();
-        }
-        return implode(',', $ids);
-    }
-
-    /**
-     * Find services according to the host id and service ids given
-     *
-     * @param int $hostId Host id
-     * @param int[] $serviceIds Service Ids
-     * @return Service[]
-     * @throws Exception
-     */
-    private function findCertainServicesByHost(int $hostId, array $serviceIds): array
+    public function findSelectedServicesByHost(int $hostId, array $serviceIds): array
     {
         $services = [];
+
+        if (!$this->hasEnoughRightsToContinue()) {
+            return $services;
+        }
+
         if (empty($serviceIds)) {
             return $services;
         }
         $serviceIds = array_map(
             function ($serviceId) {
-                return (int) $serviceId;
+                return (int)$serviceId;
             },
             $serviceIds
         );
 
-        $accessGroupFilter = !is_null($this->accessGroups)
+        $accessGroupFilter = !empty($this->accessGroups)
             ? ' INNER JOIN `:dbstg`.`centreon_acl` acl
                   ON acl.host_id = h.host_id
+                  AND acl.service_id = srv.service_id
                 INNER JOIN `:db`.`acl_groups` acg
                   ON acg.acl_group_id = acl.group_id
                   AND acg.acl_group_activate = \'1\'
-                  AND acg.acl_group_id IN (' . $this->accessGroupIdToString($this->accessGroups). ') '
+                  AND acg.acl_group_id IN (' . $this->accessGroupIdToString($this->accessGroups) . ') '
             : ' ';
 
 
@@ -875,7 +864,7 @@ final class MonitoringRepositoryRDB implements MonitoringRepositoryInterface
         $statement = $this->db->prepare($request);
 
         if (false === $statement->execute(array_merge([$hostId], $serviceIds))) {
-            throw new Exception('Bad SQL request');
+            throw new \Exception('Bad SQL request');
         }
 
         while (false !== ($result = $statement->fetch(\PDO::FETCH_ASSOC))) {
@@ -889,27 +878,28 @@ final class MonitoringRepositoryRDB implements MonitoringRepositoryInterface
     }
 
     /**
-     * Finds services from a list of hosts.
-     *
-     * @param array $hostIds List of host for which we want to get services
-     * @return array Return a list of services indexed by host
-     * [host_id => Service[], ...]
-     * @throws Exception
+     * @inheritDoc
      */
-    private function findServicesOnMultipleHosts(array $hostIds): array
+    public function findServicesOnMultipleHosts(array $hostIds): array
     {
         $services = [];
+
+        if (!$this->hasEnoughRightsToContinue()) {
+            return $services;
+        }
+
         if (empty($hostIds)) {
             return $services;
         }
 
-        $accessGroupFilter = !is_null($this->accessGroups)
+        $accessGroupFilter = !empty($this->accessGroups)
             ? ' INNER JOIN `:dbstg`.`centreon_acl` acl
                   ON acl.host_id = h.host_id
+                  AND acl.service_id = srv.service_id
                 INNER JOIN `:db`.`acl_groups` acg
                   ON acg.acl_group_id = acl.group_id
                   AND acg.acl_group_activate = \'1\'
-                  AND acg.acl_group_id IN (' . $this->accessGroupIdToString($this->accessGroups). ') '
+                  AND acg.acl_group_id IN (' . $this->accessGroupIdToString($this->accessGroups) . ') '
             : ' ';
 
         $request =
@@ -934,11 +924,11 @@ final class MonitoringRepositoryRDB implements MonitoringRepositoryInterface
         $statement = $this->db->prepare($request);
 
         if (false === $statement->execute($hostIds)) {
-            throw new Exception('Bad SQL request');
+            throw new \Exception('Bad SQL request');
         }
 
         while (false !== ($result = $statement->fetch(\PDO::FETCH_ASSOC))) {
-            $services[(int) $result['host_id']][] = EntityCreator::createEntityByArray(
+            $services[(int)$result['host_id']][] = EntityCreator::createEntityByArray(
                 Service::class,
                 $result
             );
@@ -948,19 +938,19 @@ final class MonitoringRepositoryRDB implements MonitoringRepositoryInterface
     }
 
     /**
-     * Replace all instances of :dbstg and :db by the real db names.
-     * The table names of the database are defined in the services.yaml
-     * configuration file.
-     *
-     * @param string $request Request to translate
-     * @return string Request translated
+     * @inheritDoc
      */
-    private function translateDbName(string $request): string
+    public function setAdmin(bool $isAdmin): MonitoringRepositoryInterface
     {
-        return str_replace(
-            array(':dbstg', ':db'),
-            array($this->storageDbName, $this->centreonDbName),
-            $request
-        );
+        $this->isAdmin = $isAdmin;
+        return $this;
+    }
+
+    /**
+     * @return bool Return TRUE if the contact is an admin or has at least one access group.
+     */
+    private function hasEnoughRightsToContinue(): bool
+    {
+        return $this->isAdmin || count($this->accessGroups) > 0;
     }
 }

@@ -37,9 +37,12 @@ declare(strict_types=1);
 
 namespace App\EventSubscriber;
 
+use Centreon\Domain\Entity\EntityValidator;
+use Centreon\Domain\Exception\EntityNotFoundException;
 use Centreon\Domain\RequestParameters\Interfaces\RequestParametersInterface;
 use Centreon\Domain\RequestParameters\RequestParameters;
 use Centreon\Domain\VersionHelper;
+use JMS\Serializer\Exception\ValidationFailedException;
 use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -296,12 +299,15 @@ class CentreonEventSubscriber implements EventSubscriberInterface
             }
         }
 
-        // If Yes and exception code !== 403, we create a custom error message
-        // If we don't do that a HTML error will appeared.
+        /*
+         * If Yes and exception code !== 403 (Forbidden access),
+         * we create a custom error message.
+         * If we don't do that a HTML error will appeared.
+         */
         if ($errorIsBeforeController && $event->getException()->getCode() !== 403) {
             $errorCode = $event->getException()->getCode() > 0
                 ? $event->getException()->getCode()
-                : 500;
+                : Response::HTTP_INTERNAL_SERVER_ERROR;
 
             // Manage exception outside controllers
             $event->setResponse(
@@ -310,8 +316,45 @@ class CentreonEventSubscriber implements EventSubscriberInterface
                         'code' => $errorCode,
                         'message' => $event->getException()->getMessage()
                     ]),
-                    500
+                    Response::HTTP_INTERNAL_SERVER_ERROR
                 )
+            );
+        } elseif (!$errorIsBeforeController) {
+            $errorCode = $event->getException()->getCode() > 0
+                ? $event->getException()->getCode()
+                : Response::HTTP_INTERNAL_SERVER_ERROR;
+            $httpCode = Response::HTTP_INTERNAL_SERVER_ERROR;
+
+            if ($event->getException() instanceof EntityNotFoundException) {
+                $errorMessage = null;
+                $httpCode = Response::HTTP_NOT_FOUND;
+            } elseif ($event->getException() instanceof ValidationFailedException) {
+                $errorMessage = json_encode([
+                    'code' => $errorCode,
+                    'message' => EntityValidator::formatErrors(
+                        $event->getException()->getConstraintViolationList(),
+                        true
+                    )
+                ]);
+                $httpCode = Response::HTTP_INTERNAL_SERVER_ERROR;
+            } elseif ($event->getException() instanceof \PDOException) {
+                $errorMessage = json_encode([
+                    'code' => $errorCode,
+                    'message' => 'An error has occurred in a repository'
+                ]);
+            } elseif (get_class($event->getException()) == \Exception::class) {
+                $errorMessage = json_encode([
+                    'code' => $errorCode,
+                    'message' => 'Internal error'
+                ]);
+            } else {
+                $errorMessage = json_encode([
+                    'code' => $errorCode,
+                    'message' => $event->getException()->getMessage()
+                ]);
+            }
+            $event->setResponse(
+                new Response($errorMessage, $httpCode)
             );
         }
     }

@@ -21,16 +21,20 @@ declare(strict_types=1);
 
 namespace Centreon\Domain\Entity;
 
-use Symfony\Component\Serializer\NameConverter\CamelCaseToSnakeCaseNameConverter;
+use Symfony\Component\Finder\Finder;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\Constraints\All;
 use Symfony\Component\Validator\Constraints\Collection;
 use Symfony\Component\Validator\Constraints\Composite;
+use Symfony\Component\Validator\Constraints\GroupSequence;
 use Symfony\Component\Validator\Constraints\Type;
+use Symfony\Component\Validator\ConstraintViolationInterface;
 use Symfony\Component\Validator\ConstraintViolationList;
 use Symfony\Component\Validator\ConstraintViolationListInterface;
 use Symfony\Component\Validator\Mapping\CascadingStrategy;
 use Symfony\Component\Validator\Mapping\Loader\YamlFileLoader;
+use Symfony\Component\Validator\Mapping\Loader\YamlFilesLoader;
 use Symfony\Component\Validator\Validation;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
@@ -40,6 +44,10 @@ class EntityValidator
      * @var ValidatorInterface
      */
     private $validator;
+    /**
+     * @var bool
+     */
+    private $allowExtraFields;
 
     /**
      * EntityValidator constructor.
@@ -49,9 +57,31 @@ class EntityValidator
     public function __construct(string $validationFilePath)
     {
         $validation = Validation::createValidatorBuilder();
-        $validation->addLoader(
-            new YamlFileLoader($validationFilePath)
-        );
+        if (is_file($validationFilePath)) {
+            $validation->addLoader(
+                new YamlFileLoader($validationFilePath)
+            );
+        } elseif (is_dir($validationFilePath)) {
+            $finder = (new Finder())
+                ->in($validationFilePath)
+                ->filter(function (\SplFileInfo $file) {
+                    return $file->getExtension() == 'yaml';
+                })
+                ->files();
+            if ($finder->hasResults()) {
+                $paths = [];
+                foreach ($finder as $yamlConfigurationFiles) {
+                    /**
+                     * @var $yamlConfigurationFiles \SplFileInfo
+                     */
+                    $paths[] = $yamlConfigurationFiles->getRealPath();
+                }
+                $validation->addLoader(
+                    new YamlFilesLoader($paths)
+                );
+            }
+        }
+
         $this->validator = $validation->getValidator();
     }
 
@@ -73,32 +103,63 @@ class EntityValidator
      *
      * @param string $entityName Entity name
      * @param array $dataToValidate Data to validate
-     * @param string $groupName Name of the rule group
+     * @param array $groups Rule groups
+     * @param bool $allowExtraFields If TRUE, errors will show on not expected fields
      * @return ConstraintViolationListInterface
      */
     public function validateEntity(
         string $entityName,
         array $dataToValidate,
-        string $groupName = 'Default'
+        array $groups = ['Default'],
+        bool $allowExtraFields = true
     ): ConstraintViolationListInterface {
+        if (empty($groups)) {
+            $groups[] = Constraint::DEFAULT_GROUP;
+        }
+        $this->allowExtraFields = $allowExtraFields;
         $violations = new ConstraintViolationList();
         if ($this->hasValidatorFor($entityName)) {
-            $assertCollection = $this->getConstraints($entityName, $groupName);
+            $assertCollection = $this->getConstraints($entityName, $groups, true);
             $violations->addAll(
-                $this->validator->validate($dataToValidate, $assertCollection)
+                $this->validator->validate(
+                    $dataToValidate,
+                    $assertCollection,
+                    $groups
+                )
             );
         }
-        return $violations;
+        return $this->removeDuplicatedViolation($violations);
+    }
+
+
+    /**
+     * @param $object
+     * @param Constraint|Constraint[] $constraints
+     * @param string|GroupSequence|(string|GroupSequence)[]|null $groups
+     * @return ConstraintViolationListInterface
+     */
+    public function validate($object, $constraints = null, $groups = null): ConstraintViolationListInterface
+    {
+        return $this->validator->validate($object, $constraints, $groups);
     }
 
     /**
-     * Gets contraints found in the validation rules.
+     * @return ValidatorInterface
+     */
+    public function getValidator(): ValidatorInterface
+    {
+        return $this->validator;
+    }
+
+    /**
+     * Gets constraints found in the validation rules.
      *
      * @param string $entityName Entity name for which we want to get constraints
-     * @param string $groupName Name of the rule group
-     * @return Collection Returns a contraints collection object
+     * @param array $groups NRule groups
+     * @param bool $firstCall
+     * @return Collection Returns a constraints collection object
      */
-    private function getConstraints(string $entityName, string $groupName, string $type = null): Composite
+    private function getConstraints(string $entityName, array $groups, bool $firstCall = false): Composite
     {
         /**
          * @var $metadata \Symfony\Component\Validator\Mapping\ClassMetadata
@@ -111,33 +172,75 @@ class EntityValidator
             // We need to convert camel case to snake case because the data sent
             // are in snake case format whereas the validation definition file
             // use the real name of properties (camel case)
-            $id = $this->convertCamelCaseToSnakeCase($id);
+            $id =self::convertCamelCaseToSnakeCase($id);
 
             if (!empty($propertyMetadatas)) {
                 $propertyMetadata = $propertyMetadatas[0];
                 if ($propertyMetadata->getCascadingStrategy() == CascadingStrategy::CASCADE) {
                     foreach ($propertyMetadata->getConstraints() as $constraint) {
                         if ($constraint instanceof Type) {
-                            $constraints[$id] = $this->getConstraints($constraint->type, $groupName);
+                            $constraints[$id] = $this->getConstraints($constraint->type, $groups);
                         } elseif ($constraint instanceof All) {
                             $type = $this->findTypeConstraint($constraint->constraints);
                             if ($type !== null) {
-                                $constraints[$id] = new All($this->getConstraints($type, $groupName));
+                                $constraints[$id] = new All($this->getConstraints($type, $groups));
                             }
                         }
                     }
                 } else {
-                    $constraints[$id] = $propertyMetadata->findConstraints($groupName);
+                    foreach ($groups as $group) {
+                        $currentConstraint = $propertyMetadata->findConstraints($group);
+                        if (empty($currentConstraint)) {
+                            continue;
+                        }
+                        if (array_key_exists($id, $constraints)) {
+                            $constraints[$id] = array_merge(
+                                $constraints[$id],
+                                $propertyMetadata->findConstraints($group)
+                            );
+                        } else {
+                            $constraints[$id] = $propertyMetadata->findConstraints($group);
+                        }
+                    }
                 }
             }
         }
-        return new Collection($constraints);
+        if ($firstCall) {
+            return new Collection([
+                'fields' => $constraints,
+                'allowExtraFields' => $this->allowExtraFields
+            ]);
+        } else {
+            return new Collection($constraints);
+        }
     }
 
     /**
-     * Find the 'Type' contraint from the contraints list.
+     * @param ConstraintViolationListInterface $violations
+     * @return ConstraintViolationListInterface
+     */
+    private function removeDuplicatedViolation(
+        ConstraintViolationListInterface $violations
+    ) :ConstraintViolationListInterface {
+        $violationCodes = [];
+        /**
+         * @var $violation ConstraintViolationInterface
+         */
+        for ($index = 0; $index < count($violations); $index++) {
+            $violation = $violations[$index];
+            if (!in_array($violation->getCode(), $violationCodes)) {
+                $violationCodes[] = $violation->getCode();
+            } else {
+                $violations->remove($index);
+            }
+        }
+        return $violations;
+    }
+
+    /**
+     * Find the Type' constraint from the constraints list.
      *
-     * @param Constraint[] $constraints Contraints list for which we want to find the 'Type' contraint
+     * @param Constraint[] $constraints Constraints list for which we want to find the 'Type' constraint
      * @return string|null
      */
     private function findTypeConstraint(array $constraints): ?string
@@ -151,12 +254,48 @@ class EntityValidator
     }
 
     /**
+     * Formats errors to be more readable.
+     *
+     * @param ConstraintViolationListInterface $violations
+     * @param bool $showPropertiesInSnakeCase Set TRUE to convert the properties name into snake case
+     * @return string List of error messages
+     */
+    public static function formatErrors(
+        ConstraintViolationListInterface $violations,
+        bool $showPropertiesInSnakeCase = false
+    ): string {
+        $errorMessages = '';
+        /**
+         * @var $violation ConstraintViolationInterface
+         */
+        for ($index = 0; $index < count($violations); $index++) {
+            $violation = $violations[$index];
+            if (!empty($errorMessages)) {
+                $errorMessages .= "\n";
+            }
+            $propertyName = $violation->getPropertyPath();
+            if ($propertyName[0] == '[' && $propertyName[strlen($propertyName) - 1] == ']') {
+                $propertyName = substr($propertyName, 1, -1);
+            }
+            $errorMessages .= sprintf(
+                'Error on \'%s\': %s',
+                (($showPropertiesInSnakeCase)
+                    ? self::convertCamelCaseToSnakeCase($propertyName)
+                    : $violation->getPropertyPath()),
+                $violation->getMessage()
+            );
+        }
+
+        return $errorMessages;
+    }
+
+    /**
      * Convert a string from camel case to snake case.
      *
      * @param string $stringToConvert String to convert
      * @return string
      */
-    private function convertCamelCaseToSnakeCase(string $stringToConvert): string
+    private static function convertCamelCaseToSnakeCase(string $stringToConvert): string
     {
         return strtolower(preg_replace('/[A-Z]/', '_\\0', lcfirst($stringToConvert)));
     }

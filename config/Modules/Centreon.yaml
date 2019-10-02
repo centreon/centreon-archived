@@ -45,21 +45,36 @@ services:
     Centreon\Domain\Security\Interfaces\AuthenticationServiceInterface:
         class: Centreon\Domain\Security\AuthenticationService
 
-    Centreon\Domain\Monitoring\Interfaces\MonitoringServiceInterface:
-        class: Centreon\Domain\Monitoring\MonitoringService
-
     Centreon\Domain\Security\Interfaces\AccessGroupRepositoryInterface:
         class: Centreon\Infrastructure\Security\AccessGroupRepositoryRDB
 
     Centreon\Domain\RequestParameters\Interfaces\RequestParametersInterface:
         class: Centreon\Domain\RequestParameters\RequestParameters
 
-    Centreon\Domain\Monitoring\Interfaces\MonitoringRepositoryInterface:
-        alias: 'monitoring.repository'
+    # Real time monitoring
+    sqlRequestTranslator:
+        class: Centreon\Infrastructure\RequestParameters\SqlRequestParametersTranslator
 
-    monitoring.repository:
-        public: true
+    Centreon\Domain\Monitoring\Interfaces\MonitoringServiceInterface:
+        class: Centreon\Domain\Monitoring\MonitoringService
+
+    Centreon\Domain\Monitoring\Interfaces\MonitoringRepositoryInterface:
         class: Centreon\Infrastructure\Monitoring\MonitoringRepositoryRDB
         calls:
             - method: setSqlRequestTranslator
-              arguments: ['@Centreon\Infrastructure\Repository\SqlRequestParametersTranslator']
+              arguments: ['@sqlRequestTranslator']
+
+    # Engine
+    Centreon\Domain\Engine\Interfaces\EngineRepositoryInterface:
+        class: Centreon\Infrastructure\Engine\EngineRepositoryFile
+        arguments: ['%centreon_var_lib%/centcore.cmd']
+
+    Centreon\Domain\Engine\Interfaces\EngineServiceInterface:
+        class: Centreon\Domain\Engine\EngineService
+
+    # API Acknowledgement
+    Centreon\Domain\Acknowledgement\Interfaces\AcknowledgementRepositoryInterface:
+        class: Centreon\Infrastructure\Acknowledgement\AcknowledgmentRepositoryRDB
+
+    Centreon\Domain\Acknowledgement\Interfaces\AcknowledgementServiceInterface:
+        class: Centreon\Domain\Acknowledgement\AcknowledgementService

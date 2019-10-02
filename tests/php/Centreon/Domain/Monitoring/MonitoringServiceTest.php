@@ -42,53 +42,18 @@ class MonitoringServiceTest extends TestCase
             ->setDisplayName('test');
 
         $repository = $this->createMock(MonitoringRepositoryInterface::class);
-
-        $repository->expects(self::any())
-            ->method('filterByAccessGroups')
-            ->will(self::returnSelf());
-
         $repository->expects(self::any())
             ->method('findServices')
             ->willReturn([$service]); // values returned for the all next tests
 
         $accessGroup = $this->createMock(AccessGroupRepositoryInterface::class);
-        $accessGroup->expects(self::any())
-            ->method('findByContact')
-            ->willReturn([1], []); // values returned for the next 2 tests
-
         $monitoringService = new MonitoringService($repository, $accessGroup);
 
-        $contact = $this->createMock(ContactInterface::class);
-        $contact->expects(self::any())
-            ->method('isAdmin')
-            ->willReturn(true, false, false); // values returned for the next 3 tests
-
-        $monitoringService->filterByContact($contact);
-
-        // First test when the contact is an admin (no need to filter by access group ids)
         $servicesFound = $monitoringService->findServices();
         $this->assertCount(
             1,
             $servicesFound,
-            "Error when the contact is an admin (no need to filter by access group ids)"
-        );
-        $this->assertEquals($servicesFound[0]->getId(), $service->getId());
-
-        // Second test when the contact is not an admin and the access group filter is not empty
-        $servicesFound = $monitoringService->findServices();
-        $this->assertCount(
-            1,
-            $servicesFound,
-            "Error when the contact is not an admin and the access group filter is not empty"
-        );
-        $this->assertEquals($servicesFound[0]->getId(), $service->getId());
-
-        // Third test when the contact is not an administrator and the access group filter is empty
-        $servicesFound = $monitoringService->findServices();
-        $this->assertCount(
-            0,
-            $servicesFound,
-            "Error when the contact is not an administrator and the access group filter is empty"
+            "Error, this method must relay the 'findServices' method of the monitoring repository"
         );
     }
 
@@ -100,56 +65,22 @@ class MonitoringServiceTest extends TestCase
         $service = (new Service())
             ->setId(1)
             ->setDisplayName('test');
+        $hostId = 1;
 
         $repository = $this->createMock(MonitoringRepositoryInterface::class);
-
-        $repository->expects(self::any())
-            ->method('filterByAccessGroups')
-            ->will(self::returnSelf());
-
         $repository->expects(self::any())
             ->method('findServicesByHost')
-            ->willReturn([$service])
-            ->with($service->getId());
+            ->with($hostId)
+            ->willReturn([$service]); // values returned for the all next tests
 
         $accessGroup = $this->createMock(AccessGroupRepositoryInterface::class);
-        $accessGroup->expects(self::any())
-            ->method('findByContact')
-            ->willReturn([1], []); // values returned for the next 2 tests
-
         $monitoringService = new MonitoringService($repository, $accessGroup);
 
-        $contact = $this->createMock(ContactInterface::class);
-        $contact->expects(self::any())
-            ->method('isAdmin')
-            ->willReturn(true, false, false); // values returned for the next 3 tests
-
-        $monitoringService->filterByContact($contact);
-
-        // First test when the contact is an admin (no need to filter by access group ids)
-        $servicesByHostFound = $monitoringService->findServicesByHost($service->getId());
+        $servicesFound = $monitoringService->findServicesByHost($hostId);
         $this->assertCount(
             1,
-            $servicesByHostFound,
-            "Error when the contact is an admin (no need to filter by access group ids)"
-        );
-        $this->assertEquals($servicesByHostFound[0]->getId(), $service->getId());
-
-        // Second test when the contact is not an admin and the access group filter is not empty
-        $servicesByHostFound = $monitoringService->findServicesByHost($service->getId());
-        $this->assertCount(
-            1,
-            $servicesByHostFound,
-            "Error when the contact is not an admin and the access group filter is not empty"
-        );
-        $this->assertEquals($servicesByHostFound[0]->getId(), $service->getId());
-
-        // Third test when the contact is not an administrator and the access group filter is empty
-        $servicesByHostFound = $monitoringService->findServicesByHost($service->getId());
-        $this->assertCount(
-            0,
-            $servicesByHostFound,
-            "Error when the contact is not an administrator and the access group filter is empty"
+            $servicesFound,
+            "Error, this method must relay the 'findServicesByHost' method of the monitoring repository"
         );
     }
 
@@ -158,6 +89,10 @@ class MonitoringServiceTest extends TestCase
      */
     public function testFindHosts()
     {
+        $service = (new Service())
+            ->setId(1)
+            ->setDisplayName('test');
+
         $host = (new Host())
             ->setId(1)
             ->setDisplayName('test');
@@ -165,52 +100,37 @@ class MonitoringServiceTest extends TestCase
         $repository = $this->createMock(MonitoringRepositoryInterface::class);
 
         $repository->expects(self::any())
-            ->method('filterByAccessGroups')
-            ->will(self::returnSelf());
-
-        $repository->expects(self::any())
             ->method('findHosts')
             ->willReturn([$host]); // values returned for the all next tests
 
+        $repository->expects(self::any())
+            ->method('findServicesOnMultipleHosts')
+            ->with([$host->getId()])
+            ->willReturn([$host->getId() => [$service]]); // values returned for the all next tests
+
         $accessGroup = $this->createMock(AccessGroupRepositoryInterface::class);
-        $accessGroup->expects(self::any())
-            ->method('findByContact')
-            ->willReturn([1], []); // values returned for the next 2 tests
 
         $monitoringService = new MonitoringService($repository, $accessGroup);
 
-        $contact = $this->createMock(ContactInterface::class);
-        $contact->expects(self::any())
-            ->method('isAdmin')
-            ->willReturn(true, false, false); // values returned for the next 3 tests
-
-        $monitoringService->filterByContact($contact);
-
-        // First test when the contact is an admin (no need to filter by access group ids)
+        /**
+         * @var Host[] $hostsFound
+         */
         $hostsFound = $monitoringService->findHosts();
         $this->assertCount(
             1,
             $hostsFound,
-            "Error when the contact is an admin (no need to filter by access group ids)"
+            "Error, the number of hosts is not equal to the number given by the "
+            . "'findHosts' method of the monitoring repository"
         );
         $this->assertEquals($hostsFound[0]->getId(), $host->getId());
 
-        // Second test when the contact is not an admin and the access group filter is not empty
-        $hostsFound = $monitoringService->findHosts();
         $this->assertCount(
             1,
-            $hostsFound,
-            "Error when the contact is not an admin and the access group filter is not empty"
+            $hostsFound[0]->getServices(),
+            "Error, the service of the first host does not match the one given by the "
+            . "'findServicesOnMultipleHosts' method of the monitoring repository"
         );
-        $this->assertEquals($hostsFound[0]->getId(), $host->getId());
-
-        // Third test when the contact is not an administrator and the access group filter is empty
-        $hostsFound = $monitoringService->findHosts();
-        $this->assertCount(
-            0,
-            $hostsFound,
-            "Error when the contact is not an administrator and the access group filter is empty"
-        );
+        $this->assertEquals($hostsFound[0]->getServices()[0]->getId(), $service->getId());
     }
 
     /**
@@ -218,60 +138,40 @@ class MonitoringServiceTest extends TestCase
      */
     public function testFindServiceGroups()
     {
-        $serviceGroup = (new ServiceGroup())
+        $service = (new Service())
             ->setId(1)
-            ->setName('test');
+            ->setDisplayName('test');
+
+        $host = (new Host())
+            ->setId(2)
+            ->setDisplayName('test');
+        $host->addService($service);
+
+        $serviceGroup = (new ServiceGroup())
+            ->setId(3)
+            ->setHosts([$host]);
 
         $repository = $this->createMock(MonitoringRepositoryInterface::class);
 
         $repository->expects(self::any())
-            ->method('filterByAccessGroups')
-            ->will(self::returnSelf());
-
-        $repository->expects(self::any())
             ->method('findServiceGroups')
-            ->willReturn([$serviceGroup]);
+            ->willReturn([$serviceGroup]); // values returned for the all next tests
 
         $accessGroup = $this->createMock(AccessGroupRepositoryInterface::class);
-        $accessGroup->expects(self::any())
-            ->method('findByContact')
-            ->willReturn([1], []); // values returned for the next 2 tests
 
         $monitoringService = new MonitoringService($repository, $accessGroup);
-
-        $contact = $this->createMock(ContactInterface::class);
-        $contact->expects(self::any())
-            ->method('isAdmin')
-            ->willReturn(true, false, false); // values returned for the next 3 tests
-
-        $monitoringService->filterByContact($contact);
-
-
-        // First test when the contact is an admin (no need to filter by access group ids)
-        $serviceGroupsFound = $monitoringService->findServiceGroups();
+        /**
+         * @var ServiceGroup[] $servicesGroupsFound
+         */
+        $servicesGroupsFound = $monitoringService->findServiceGroups();
         $this->assertCount(
             1,
-            $serviceGroupsFound,
-            "Error when the contact is an admin (no need to filter by access group ids)"
+            $servicesGroupsFound,
+            "Error, this method must relay the 'findServiceGroups' method of the monitoring repository"
         );
-        $this->assertEquals($serviceGroupsFound[0]->getId(), $serviceGroup->getId());
-
-        // Second test when the contact is not an admin and the access group filter is not empty
-        $serviceGroupsFound = $monitoringService->findServiceGroups();
-        $this->assertCount(
-            1,
-            $serviceGroupsFound,
-            "Error when the contact is not an admin and the access group filter is not empty"
-        );
-        $this->assertEquals($serviceGroupsFound[0]->getId(), $serviceGroup->getId());
-
-        // Third test when the contact is not an administrator and the access group filter is empty
-        $serviceGroupsFound = $monitoringService->findServiceGroups();
-        $this->assertCount(
-            0,
-            $serviceGroupsFound,
-            "Error when the contact is not an administrator and the access group filter is empty"
-        );
+        $this->assertEquals($serviceGroup->getId(), $servicesGroupsFound[0]->getId());
+        $this->assertEquals($host->getId(), $serviceGroup->getHosts()[0]->getId());
+        $this->assertEquals($service->getId(), $serviceGroup->getHosts()[0]->getServices()[0]->getId());
     }
 
     /**
@@ -283,52 +183,27 @@ class MonitoringServiceTest extends TestCase
             ->setId(1)
             ->setDisplayName('test');
 
+        $host = (new Host())
+            ->setId(1)
+            ->setDisplayName('test');
+
         $repository = $this->createMock(MonitoringRepositoryInterface::class);
 
         $repository->expects(self::any())
-            ->method('filterByAccessGroups')
-            ->will(self::returnSelf());
-
-        $repository->expects(self::any())
             ->method('findOneService')
-            ->willReturn($service)
-            ->with(0, $service->getId());
+            ->with($host->getId(), $service->getId())
+            ->willReturn($service); // values returned for the all next tests
 
         $accessGroup = $this->createMock(AccessGroupRepositoryInterface::class);
-        $accessGroup->expects(self::any())
-            ->method('findByContact')
-            ->willReturn([1], []); // values returned for the next 2 tests
 
         $monitoringService = new MonitoringService($repository, $accessGroup);
 
-        $contact = $this->createMock(ContactInterface::class);
-        $contact->expects(self::any())
-            ->method('isAdmin')
-            ->willReturn(true, false, false); // values returned for the next 3 tests
-
-        $monitoringService->filterByContact($contact);
-
-        // First test when the contact is an admin (no need to filter by access group ids)
-        $serviceFound = $monitoringService->findOneService(0, $service->getId());
-        $this->assertNotNull(
-            $serviceFound,
-            "Error when the contact is an admin (no need to filter by access group ids)"
-        );
-        $this->assertEquals($serviceFound->getId(), $service->getId());
-
-        // Second test when the contact is not an admin and the access group filter is not empty
-        $serviceFound = $monitoringService->findOneService(0, $service->getId());
-        $this->assertNotNull(
-            $serviceFound,
-            "Error when the contact is not an admin and the access group filter is not empty"
-        );
-        $this->assertEquals($serviceFound->getId(), $service->getId());
-
-        // Third test when the contact is not an administrator and the access group filter is empty
-        $serviceFound = $monitoringService->findOneService(0, $service->getId());
-        $this->assertNull(
-            $serviceFound,
-            "Error when the contact is not an administrator and the access group filter is empty"
+        $oneService = $monitoringService->findOneService($host->getId(), $service->getId());
+        $this->assertNotNull($oneService);
+        $this->assertEquals(
+            $oneService->getId(),
+            $service->getId(),
+            "Error, this method must relay the 'findOneService' method of the monitoring repository"
         );
     }
 
@@ -337,57 +212,33 @@ class MonitoringServiceTest extends TestCase
      */
     public function testFindOneHost()
     {
+        $service = (new Service())
+            ->setId(1)
+            ->setDisplayName('test');
+
         $host = (new Host())
             ->setId(1)
             ->setDisplayName('test');
+        $host->addService($service);
 
         $repository = $this->createMock(MonitoringRepositoryInterface::class);
 
         $repository->expects(self::any())
-            ->method('filterByAccessGroups')
-            ->will(self::returnSelf());
-
-        $repository->expects(self::any())
             ->method('findOneHost')
-            ->willReturn($host)
-            ->with($host->getId());
+            ->with($host->getId())
+            ->willReturn($host, null);
 
         $accessGroup = $this->createMock(AccessGroupRepositoryInterface::class);
-        $accessGroup->expects(self::any())
-            ->method('findByContact')
-            ->willReturn([1], []); // values returned for the next 2 tests
 
         $monitoringService = new MonitoringService($repository, $accessGroup);
 
-        $contact = $this->createMock(ContactInterface::class);
-        $contact->expects(self::any())
-            ->method('isAdmin')
-            ->willReturn(true, false, false); // values returned for the next 3 tests
-
-        $monitoringService->filterByContact($contact);
-
-        // First test when the contact is an admin (no need to filter by access group ids)
         $hostFound = $monitoringService->findOneHost($host->getId());
-        $this->assertNotNull(
-            $hostFound,
-            "Error when the contact is an admin (no need to filter by access group ids)"
-        );
-        $this->assertEquals($hostFound->getId(), $host->getId());
+        $this->assertNotNull($hostFound);
+        $this->assertEquals($host->getId(), $hostFound->getId());
+        $this->assertEquals($host->getServices()[0]->getId(), $service->getId());
 
-        // Second test when the contact is not an admin and the access group filter is not empty
         $hostFound = $monitoringService->findOneHost($host->getId());
-        $this->assertNotNull(
-            $hostFound,
-            "Error when the contact is not an admin and the access group filter is not empty"
-        );
-        $this->assertEquals($hostFound->getId(), $host->getId());
-
-        // Third test when the contact is not an administrator and the access group filter is empty
-        $hostFound = $monitoringService->findOneHost($host->getId());
-        $this->assertNull(
-            $hostFound,
-            "Error when the contact is not an administrator and the access group filter is empty"
-        );
+        $this->assertNull($hostFound);
     }
 
     /**
@@ -395,60 +246,41 @@ class MonitoringServiceTest extends TestCase
      */
     public function testFindHostGroups()
     {
+        $service = (new Service())
+            ->setId(3)
+            ->setDisplayName('test');
+
+        $host = (new Host())
+            ->setId(2)
+            ->setDisplayName('test');
+        $host->addService($service);
+
         $hostGroup = (new HostGroup())
             ->setId(1)
-            ->setName('test');
+            ->addHost($host);
 
         $repository = $this->createMock(MonitoringRepositoryInterface::class);
-
-        $repository->expects(self::any())
-            ->method('filterByAccessGroups')
-            ->will(self::returnSelf());
 
         $repository->expects(self::any())
             ->method('findHostGroups')
             ->willReturn([$hostGroup]);
 
         $accessGroup = $this->createMock(AccessGroupRepositoryInterface::class);
-        $accessGroup->expects(self::any())
-            ->method('findByContact')
-            ->willReturn([1], []); // values returned for the next 2 tests
 
         $monitoringService = new MonitoringService($repository, $accessGroup);
 
-        $contact = $this->createMock(ContactInterface::class);
-        $contact->expects(self::any())
-            ->method('isAdmin')
-            ->willReturn(true, false, false); // values returned for the next 3 tests
-
-        $monitoringService->filterByContact($contact);
-
-
-        // First test when the contact is an admin (no need to filter by access group ids)
-        $hostGroupsFound = $monitoringService->findHostGroups();
+        /**
+         * @var HostGroup[] $hostsGroupsFound
+         */
+        $hostsGroupsFound = $monitoringService->findHostGroups();
         $this->assertCount(
             1,
-            $hostGroupsFound,
-            "Error when the contact is an admin (no need to filter by access group ids)"
+            $hostsGroupsFound,
+            "Error, this method must relay the 'findHostGroups' method of the monitoring repository"
         );
-        $this->assertEquals($hostGroupsFound[0]->getId(), $hostGroup->getId());
-
-        // Second test when the contact is not an admin and the access group filter is not empty
-        $hostGroupsFound = $monitoringService->findHostGroups();
-        $this->assertCount(
-            1,
-            $hostGroupsFound,
-            "Error when the contact is not an admin and the access group filter is not empty"
-        );
-        $this->assertEquals($hostGroupsFound[0]->getId(), $hostGroup->getId());
-
-        // Third test when the contact is not an administrator and the access group filter is empty
-        $hostGroupsFound = $monitoringService->findHostGroups();
-        $this->assertCount(
-            0,
-            $hostGroupsFound,
-            "Error when the contact is not an administrator and the access group filter is empty"
-        );
+        $this->assertEquals($hostsGroupsFound[0]->getId(), $hostGroup->getId());
+        $this->assertEquals($hostsGroupsFound[0]->getHosts()[0]->getId(), $host->getId());
+        $this->assertEquals($hostsGroupsFound[0]->getHosts()[0]->getServices()[0]->getId(), $service->getId());
     }
 
     /**
@@ -463,38 +295,19 @@ class MonitoringServiceTest extends TestCase
         $repository = $this->createMock(MonitoringRepositoryInterface::class);
 
         $repository->expects(self::any())
-            ->method('filterByAccessGroups')
-            ->will(self::returnSelf());
-
-        $repository->expects(self::any())
             ->method('findOneHost')
-            ->willReturn($host)
-            ->with($host->getId());
+            ->with($host->getId())
+            ->willReturn($host, null);
 
         $accessGroup = $this->createMock(AccessGroupRepositoryInterface::class);
-        $accessGroup->expects(self::any())
-            ->method('findByContact')
-            ->willReturn([1], []); // values returned for the next 2 tests
-
         $monitoringService = new MonitoringService($repository, $accessGroup);
 
-        $contact = $this->createMock(ContactInterface::class);
-        $contact->expects(self::any())
-            ->method('isAdmin')
-            ->willReturn(true, false, false); // values returned for the next 3 tests
-
-        $monitoringService->filterByContact($contact);
-
-        // First test when the contact is an admin (no need to filter by access group ids)
+        // First test when the 'findOneHost' returns one host
         $isHostExist = $monitoringService->isHostExists($host->getId());
         $this->assertTrue($isHostExist);
 
-        // Second test when the contact is not an admin and the access group filter is not empty
+        // Second test when the 'findOneHost' returns null
         $isHostExist = $monitoringService->isHostExists($host->getId());
-        $this->assertTrue($isHostExist);
-
-        // Third test when the contact is not an administrator and the access group filter is empty
-        $isHostExist = $monitoringService->isHostExists($host->getId());
-        $this->assertFalse($isHostExist);
+        $this->assertfalse($isHostExist);
     }
 }

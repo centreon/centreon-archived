@@ -21,22 +21,13 @@ declare(strict_types=1);
 
 namespace Centreon\Domain\Monitoring\Interfaces;
 
+use Centreon\Domain\Contact\Interfaces\ContactFilterInterface;
 use Centreon\Domain\Contact\Interfaces\ContactInterface;
 use Centreon\Domain\Monitoring\Host;
 use Centreon\Domain\Monitoring\Service;
 
-interface MonitoringServiceInterface
+interface MonitoringServiceInterface extends ContactFilterInterface
 {
-    /**
-     * Used to filter requests according to a contact.
-     * If the filter is defined, all requests will use the ACL of the contact
-     * to fetch data.
-     *
-     * @param ContactInterface $contact Contact to use as a ACL filter
-     * @return self
-     */
-    public function filterByContact(ContactInterface $contact): MonitoringServiceInterface;
-
     /**
      * Find all hosts.
      *

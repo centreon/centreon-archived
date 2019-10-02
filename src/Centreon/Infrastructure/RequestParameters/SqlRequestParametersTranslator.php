@@ -17,7 +17,9 @@
  * For more information : contact@centreon.com
  *
  */
-namespace Centreon\Infrastructure\Repository;
+declare(strict_types=1);
+
+namespace Centreon\Infrastructure\RequestParameters;
 
 use Centreon\Domain\RequestParameters\Interfaces\RequestParametersInterface;
 use Centreon\Domain\RequestParameters\RequestParameters;
@@ -57,7 +59,7 @@ class SqlRequestParametersTranslator
      * @param array $search Array containing search parameters
      * @param string|null $aggregateOperator Aggregate operator
      * @return string Return the processed database query
-     * @throws \Exception
+     * @throws RequestParametersTranslatorException
      */
     private function createDatabaseQuery(array $search, string $aggregateOperator = null): string
     {
@@ -140,7 +142,7 @@ class SqlRequestParametersTranslator
      * </code>
      *
      * @return string|null SQL request according to the search parameters
-     * @throws \Exception
+     * @throws RequestParametersTranslatorException
      */
     public function translateSearchParameterToSql(): ?string
     {
@@ -181,7 +183,7 @@ class SqlRequestParametersTranslator
      * @param string $key Key representing the entity to search
      * @param $valueOrArray String value or array representing the value to search.
      * @return string Part of the database query.
-     * @throws \RestBadRequestException
+     * @throws RequestParametersTranslatorException
      */
     private function createQueryOnKeyValue(
         string $key,
@@ -190,7 +192,7 @@ class SqlRequestParametersTranslator
         if ($this->requestParameters->getConcordanceStrictMode() === RequestParameters::CONCORDANCE_MODE_STRICT
             && !key_exists($key, $this->concordanceArray)
         ) {
-            throw new \RestBadRequestException('The parameter \''. $key . '\'is not allowed');
+            throw new RequestParametersTranslatorException('The parameter \''. $key . '\' is not allowed');
         }
         if (is_array($valueOrArray)) {
             $searchOperator = key($valueOrArray);
@@ -271,7 +273,7 @@ class SqlRequestParametersTranslator
     /**
      * @param string $aggregateOperator
      * @return string
-     * @throws \Exception
+     * @throws RequestParametersTranslatorException
      */
     private function translateAggregateOperator(string $aggregateOperator): string
     {
@@ -280,7 +282,7 @@ class SqlRequestParametersTranslator
         } elseif ($aggregateOperator === RequestParameters::AGGREGATE_OPERATOR_OR) {
             return 'OR';
         }
-        throw new \Exception('Bad search operator');
+        throw new RequestParametersTranslatorException('Bad search operator');
     }
 
     /**
