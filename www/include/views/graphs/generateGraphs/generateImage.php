@@ -65,7 +65,7 @@ if ((isset($_GET["token"]) || isset($_GET["akey"])) && isset($_GET['username']))
         $res = $pearDB->query("SELECT session_id FROM session WHERE session_id = '".$mySessionId."'");
         if (!$res->numRows()) {
             // security fix - regenerate the sid to prevent session fixation
-            session_regenerate_id();
+            session_regenerate_id(true);
             $mySessionId = session_id();
             $DBRESULT = $pearDB->prepare(
                 "INSERT INTO `session` (`session_id` , `user_id` , `current_page` , `last_reload`, `ip_address`)
