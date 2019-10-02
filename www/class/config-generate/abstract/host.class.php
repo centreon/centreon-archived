@@ -342,15 +342,19 @@ abstract class AbstractHost extends AbstractObject
             AND host.host_notifications_enabled != "0"'
         );
         while ($row = $stmt->fetch()) {
-            if ($row['contact_id']) {
-                $hostList[] = (int)$host;
-                break;
-            } elseif ($row['host_tpl_id']) {
-                foreach (explode(',', $row['host_tpl_id']) as $hostTplId){
-                    $this->getContactCloseInheritance($hostTplId, $hostList);
+            if (empty($hostList)) {
+                if ($row['contact_id']) {
+                    $hostList[] = (int)$host;
+                    break;
+                } elseif ($row['host_tpl_id']) {
+                    foreach (explode(',', $row['host_tpl_id']) as $hostTplId) {
+                        $this->getContactCloseInheritance($hostTplId, $hostList);
+                    }
                 }
+                break;
+            } else {
+                break;
             }
-            break;
         }
     }
 
