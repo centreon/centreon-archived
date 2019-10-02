@@ -64,8 +64,17 @@ if ((isset($_GET["token"]) || isset($_GET["akey"])) && isset($_GET['username']))
         $row = $DBRESULT->fetchRow();
         $res = $pearDB->query("SELECT session_id FROM session WHERE session_id = '".$mySessionId."'");
         if (!$res->numRows()) {
-            $DBRESULT = $pearDB->prepare("INSERT INTO `session` (`session_id` , `user_id` , `current_page` , `last_reload`, `ip_address`) VALUES (?, ?, '', ?, ?)");
-            $DBRESULT = $pearDB->execute($DBRESULT, array($mySessionId, $row["contact_id"], time(), $_SERVER["REMOTE_ADDR"]));
+            // security fix - regenerate the sid to prevent session fixation
+            session_regenerate_id();
+            $mySessionId = session_id();
+            $DBRESULT = $pearDB->prepare(
+                "INSERT INTO `session` (`session_id` , `user_id` , `current_page` , `last_reload`, `ip_address`)
+                VALUES (?, ?, '', ?, ?)"
+            );
+            $DBRESULT = $pearDB->execute(
+                $DBRESULT,
+                array($mySessionId, $row["contact_id"], time(), $_SERVER["REMOTE_ADDR"])
+            );
         }
     } else {
         die('Invalid token');
@@ -203,6 +212,9 @@ $obj->displayImageFlow();
  * Closing session
  */
 if (isset($_GET['akey'])) {
-    $DBRESULT = $pearDB->prepare("DELETE FROM session WHERE session_id = ? AND user_id = (SELECT contact_id from contact where contact_autologin_key = ?)");
+    $DBRESULT = $pearDB->prepare(
+        "DELETE FROM session
+        WHERE session_id = ? AND user_id = (SELECT contact_id from contact where contact_autologin_key = ?)"
+    );
     $DBRESULT = $pearDB->execute($DBRESULT, array($mySessionId, $_GET['akey']));
 }
