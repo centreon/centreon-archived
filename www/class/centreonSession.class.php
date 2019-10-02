@@ -1,7 +1,7 @@
 <?php
 /*
- * Copyright 2005-2015 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2019 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -56,6 +56,7 @@ class CentreonSession
 
     public function stop()
     {
+        // destroy the session
         session_unset();
         session_destroy();
     }
@@ -64,6 +65,7 @@ class CentreonSession
     {
         self::stop();
         self::start();
+        // regenerate the session id value
         session_regenerate_id(true);
     }
 

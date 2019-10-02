@@ -1,7 +1,7 @@
 <?php
 /*
- * Copyright 2005-2015 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2019 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -79,25 +79,25 @@ if (isset($_POST["centreon_token"])
     $centreonAuth = new CentreonAuthSSO($useralias, $password, $autologin, $pearDB, $CentreonLog, $encryptType, $token, $generalOptions);
     if ($centreonAuth->passwdOk == 1) {
         $centreon = new Centreon($centreonAuth->userInfos);
+        // security fix - regenerate the sid after the login to prevent session fixation
+        session_regenerate_id(true);
         $_SESSION["centreon"] = $centreon;
-
-        $DBRESULT = $pearDB->prepare("INSERT INTO `session` (`session_id` , `user_id` , `current_page` , `last_reload`, `ip_address`) VALUES (?, ?, ?, ?, ?)");
-        $pearDB->execute($DBRESULT, array(session_id(), $centreon->user->user_id, '1', time(), $_SERVER["REMOTE_ADDR"]));
+        // saving session data in the DB
+        $dbResult = $pearDB->prepare("INSERT INTO `session` (`session_id` , `user_id` , `current_page` , `last_reload`, `ip_address`) VALUES (?, ?, ?, ?, ?)");
+        $pearDB->execute($dbResult, array(session_id(), $centreon->user->user_id, '1', time(), $_SERVER["REMOTE_ADDR"]));
         if (!isset($_POST["submit"])) {
+            $headerRedirection = "./main.php";
             $minimize = '';
             if (isset ($_GET["min"]) && $_GET["min"] == '1') {
                 $minimize = '&min=1';
             }
             if (isset ($_GET["p"]) && $_GET["p"] != '') {
-                header('Location: main.php?p=' . $_GET["p"] . $minimize);
+                $headerRedirection .= "?p=" . $_GET["p"];
             } else if (isset($centreon->user->default_page) && $centreon->user->default_page != '') {
-                header('Location: main.php?p=' . $centreon->user->default_page . $minimize);
-            } else {
-                header('Location: main.php');
+                $headerRedirection .= "?p=" . $centreon->user->default_page;
             }
-        } else {
-            header("Location: ./main.php");
         }
+        header("Location: " . $headerRedirection . $minimize);
         $connect = true;
     } else {
         $connect = false;

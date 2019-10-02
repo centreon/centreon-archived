@@ -1,7 +1,7 @@
 <?php
 /*
- * Copyright 2005-2015 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2019 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -90,21 +90,21 @@ if (file_exists("./install/setup.php")) {
 /*
  * Set PHP Session Expiration time
  */
-ini_set("session.gc_maxlifetime", "31536000");
+ini_set('session.gc_maxlifetime', 31536000);
 
 CentreonSession::start();
 
 if (isset($_GET["disconnect"])) {
-    $centreon = & $_SESSION["centreon"];
-    
+    $centreon = &$_SESSION["centreon"];
+
     /*
      * Init log class
      */
     if (is_object($centreon)) {
         $CentreonLog = new CentreonUserLog($centreon->user->get_id(), $pearDB);
-        $CentreonLog->insertLog(1, "Contact '".$centreon->user->get_alias()."' logout");
+        $CentreonLog->insertLog(1, "Contact '" . $centreon->user->get_alias() . "' logout");
 
-        $pearDB->query("DELETE FROM session WHERE session_id = '".session_id()."'");
+        $pearDB->query("DELETE FROM session WHERE session_id = '" . session_id() . "'");
 
         CentreonSession::restart();
     }
