@@ -100,15 +100,15 @@ function getNotifiedInfosForHost($hostId, $dependencyInjector)
     $query = "SELECT * FROM host WHERE host_id = " . (int)$hostId;
     $dbResult = $pearDB->query($query);
     $hostInfo = $dbResult->fetch();
-    $listServicesContact = $hostInstance->listHostsWithContacts($hostInfo);
-    $listServicesContactGroup = $hostInstance->listHostsWithContactGroups($hostInfo);
+    $listHostsContact = array_unique($hostInstance->listHostsWithContacts($hostInfo));
+    $listHostsContactGroup = array_unique($hostInstance->listHostsWithContactGroups($hostInfo));
 
-    foreach ($listServicesContact as $service) {
-        $contacts = getContactsForHost($hostId);
+    foreach ($listHostsContact as $host) {
+        $contacts = getContactsForHost($host);
         $results['contacts'] = $results['contacts'] + $contacts;
     }
-    foreach ($listServicesContactGroup as $service) {
-        $contactGroups = getContactGroupsForHost($hostId);
+    foreach ($listHostsContactGroup as $host) {
+        $contactGroups = getContactGroupsForHost($host);
         $results['contactGroups'] = $results['contactGroups'] + $contactGroups;
     }
     natcasesort($results['contacts']);
