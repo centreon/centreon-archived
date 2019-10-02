@@ -7215,3 +7215,10 @@ msgstr ""
 #~ msgstr ""
 #~ "Sélectionner l'instance du serveur Nagios pour laquelle cette configuration "
 #~ "est définie."
+
+#: centreon-web/www/include/configuration/configServers/help.php:7
+#~ msgid "Master Remote Server to which this server will be attached"
+#~ msgstr ""
+
+#~ msgid "Additional Remote Server to which this server will be attached"
+#~ msgstr ""

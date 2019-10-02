@@ -79,18 +79,36 @@ $pollers = explode(',', $_POST['poller']);
 // Add task to export files if there is a remote
 $idBindString = str_repeat('?,', count($pollers));
 $idBindString = rtrim($idBindString, ',');
-$queryRemotes = "SELECT ns.id, ns.ns_ip_address AS ip,
-    rs.centreon_path, rs.http_method, rs.http_port, rs.no_check_certificate, rs.no_proxy
-    FROM nagios_server AS ns
-    JOIN remote_servers AS rs ON rs.ip = ns.ns_ip_address
-    WHERE ns.id IN ({$idBindString})";
+$queryRemotes =<<<SQL
+SELECT ns1.id, ns1.ns_ip_address AS ip, 
+rs.centreon_path, rs.http_method, rs.http_port, rs.no_check_certificate, rs.no_proxy 
+FROM nagios_server AS ns1 
+JOIN remote_servers AS rs ON rs.ip = ns1.ns_ip_address 
+JOIN nagios_server AS ns2 ON ns1.id = ns2.remote_id 
+WHERE ns2.id IN ({$idBindString})
+UNION 
+SELECT ns1.id, ns1.ns_ip_address AS ip, 
+rs.centreon_path, rs.http_method, rs.http_port, rs.no_check_certificate, rs.no_proxy 
+FROM nagios_server AS ns1 
+JOIN remote_servers AS rs ON rs.ip = ns1.ns_ip_address 
+JOIN rs_poller_relation AS rspr ON rspr.remote_server_id = ns1.id 
+WHERE rspr.poller_server_id IN ({$idBindString})
+SQL;
 
-$remotesStatement = $pearDB->query($queryRemotes, $pollers);
+$remotesStatement = $pearDB->query($queryRemotes, array_merge($pollers, $pollers));
 $remotesResults = $remotesStatement->fetchAll(PDO::FETCH_ASSOC);
 
 if (!empty($remotesResults)) {
     foreach ($remotesResults as $remote) {
-        $queryLinked = "SELECT id FROM nagios_server WHERE remote_id = {$remote['id']}";
+        $queryLinked =<<<SQL
+SELECT id 
+FROM nagios_server 
+WHERE remote_id = {$remote['id']} 
+UNION 
+SELECT poller_server_id AS id 
+FROM rs_poller_relation 
+WHERE remote_server_id = {$remote['id']}
+SQL;
         $linkedStatement = $pearDB->query($queryLinked);
         $linkedResults = $linkedStatement->fetchAll(PDO::FETCH_ASSOC);
 

@@ -2298,6 +2298,12 @@ CREATE TABLE IF NOT EXISTS `remote_servers` (
   `no_proxy` enum('0','1') NOT NULL DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+-- Create rs_poller_relation for the additional relationship between poller and remote servers
+CREATE TABLE `rs_poller_relation` (
+  `remote_server_id` int(11) NOT NULL,
+  `poller_server_id` int(11) NOT NULL,
+  KEY `remote_server_id` (`remote_server_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Relation Table For centreon pollers and remote servers';
 
 -- Create tasks table
 CREATE TABLE IF NOT EXISTS `task` (

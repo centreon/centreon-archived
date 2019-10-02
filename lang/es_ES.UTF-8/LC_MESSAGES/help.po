@@ -4330,3 +4330,10 @@ msgstr ""
 #: /www/include/Administration/parameters/ldap/help.po
 #~ msgid "If enabled, a user LDAP synchronization will be performed on login to update contact's data and calculate new Centreon ACLs."
 #~ msgstr ""
+
+#: centreon-web/www/include/configuration/configServers/help.php:7
+#~ msgid "Master Remote Server to which this server will be attached"
+#~ msgstr ""
+
+#~ msgid "Additional Remote Server to which this server will be attached"
+#~ msgstr ""
