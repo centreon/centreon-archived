@@ -211,19 +211,6 @@
     function initTemplates() {
         ldapTemplates = new Array();
 
-        ldapTemplates['Posix'] = new Array();
-        ldapTemplates['Posix']['user_filter'] = '(&(uid=%s)(objectClass=inetOrgPerson))';
-        ldapTemplates['Posix']['alias'] = 'uid';
-        ldapTemplates['Posix']['user_group'] = '';
-        ldapTemplates['Posix']['user_name'] = 'cn';
-        ldapTemplates['Posix']['user_firstname'] = 'givenname';
-        ldapTemplates['Posix']['user_lastname'] = 'sn';
-        ldapTemplates['Posix']['user_email'] = 'mail';
-        ldapTemplates['Posix']['user_pager'] = 'mobile';
-        ldapTemplates['Posix']['group_filter'] = '(&(cn=%s)(objectClass=groupOfNames))';
-        ldapTemplates['Posix']['group_name'] = 'cn';
-        ldapTemplates['Posix']['group_member'] = 'member';
-
         ldapTemplates['Active Directory'] = new Array();
         ldapTemplates['Active Directory']['user_filter'] =
             '(&(samAccountName=%s)(objectClass=user)(samAccountType=805306368))';
@@ -238,6 +225,32 @@
             '(&(samAccountName=%s)(objectClass=group)(samAccountType=268435456))';
         ldapTemplates['Active Directory']['group_name'] = 'samaccountname';
         ldapTemplates['Active Directory']['group_member'] = 'member';
+
+        ldapTemplates['Posix'] = new Array();
+        ldapTemplates['Posix']['user_filter'] = '(&(uid=%s)(objectClass=inetOrgPerson))';
+        ldapTemplates['Posix']['alias'] = 'uid';
+        ldapTemplates['Posix']['user_group'] = '';
+        ldapTemplates['Posix']['user_name'] = 'cn';
+        ldapTemplates['Posix']['user_firstname'] = 'givenname';
+        ldapTemplates['Posix']['user_lastname'] = 'sn';
+        ldapTemplates['Posix']['user_email'] = 'mail';
+        ldapTemplates['Posix']['user_pager'] = 'mobile';
+        ldapTemplates['Posix']['group_filter'] = '(&(cn=%s)(objectClass=groupOfNames))';
+        ldapTemplates['Posix']['group_name'] = 'cn';
+        ldapTemplates['Posix']['group_member'] = 'member';
+
+        ldapTemplates['Okta'] = new Array();
+        ldapTemplates['Okta']['user_filter'] = '(&(nickName=%s)(objectclass=inetorgperson))';
+        ldapTemplates['Okta']['alias'] = 'nickname';
+        ldapTemplates['Okta']['user_group'] = 'memberof';
+        ldapTemplates['Okta']['user_name'] = 'cn';
+        ldapTemplates['Okta']['user_firstname'] = 'givenname';
+        ldapTemplates['Okta']['user_lastname'] = 'sn';
+        ldapTemplates['Okta']['user_email'] = 'mail';
+        ldapTemplates['Okta']['user_pager'] = 'mobile';
+        ldapTemplates['Okta']['group_filter'] = '(&(cn=%s)(objectclass=groupofuniquenames))';
+        ldapTemplates['Okta']['group_name'] = 'cn';
+        ldapTemplates['Okta']['group_member'] = 'uniquemember';
     }
 
     /*

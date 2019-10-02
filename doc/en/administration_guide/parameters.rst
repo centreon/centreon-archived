@@ -187,10 +187,18 @@ The table below summarizes the settings to add an LDAP server:
 
 * **Bind user** and **Bind password** fields define the user name and the password for logging to the LDAP server
 * **Protocol version** field indicates the version of the protocol using to login
-* **Template** list can be used to pre-configure the search filters for users on the LDAP directory. These filters serve to propose, by default, a search on the MS AD or of Posix type directories.
+* **Template** list can be used to pre-configure the search filters for users on the LDAP directory. These filters
+  serve to propose, by default, a search on the MS Active Directory, Okta or of Posix type directories.
 
 .. note::
    Before any import, check the default settings proposed. If you have not selected a Model, you will need to define the search filters manually by filling in the fields.
+
+.. note::
+    You can use **Okta** as LDAP server with `SWA plugin <https://help.okta.com/en/prod/Content/Topics/Apps/Apps_Configure_Template_App.htm>`_.
+    Please define:
+    
+    * **uid=<USER>,dc=<ORGANIZATION>,dc=okta,dc=com** for **Bind DN** field
+    * **ou=<OU>,dc=<ORGANIZATION>,dc=okta,dc=com** ** for **Search group base DN** field.
 
 With CentOS 7, it's possible to not check server certificate, follow procedure :
 
