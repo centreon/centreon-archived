@@ -179,7 +179,7 @@ $template->display('content.tpl');
 
     function generationCache() {
       stepContent.append('<tr>');
-      stepContent.append('<td>API cache generation</td>');
+      stepContent.append('<td>Generating application cache</td>');
       stepContent.append(
         '<td style="font-weight: bold;" name="api.cache"><img src="../img/misc/ajax-loader.gif"></td>'
       );
