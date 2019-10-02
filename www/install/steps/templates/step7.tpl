@@ -41,7 +41,7 @@
         },
         'generationCache': {
             'file': './steps/process/generationCache.php',
-            'label': '{/literal}{t}Generating of the cache structures{/t}{literal}'
+            'label': '{/literal}{t}Generating application cache{/t}{literal}'
         }
     };
 
