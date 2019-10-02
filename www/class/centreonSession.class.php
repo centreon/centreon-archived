@@ -55,9 +55,6 @@ class CentreonSession
 
     public static function stop()
     {
-        // delete the current cookie using the 'PHP session expiration time' value
-        setcookie(session_name(), "", time() - 31536000);
-
         // destroy the session
         session_unset();
         session_destroy();
@@ -67,6 +64,7 @@ class CentreonSession
     {
         static::stop();
         self::start();
+        // regenerate the session id value
         session_regenerate_id(true);
     }
 
