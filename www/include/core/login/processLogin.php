@@ -79,7 +79,7 @@ if (isset($_POST["centreon_token"])
     $centreonAuth = new CentreonAuthSSO($useralias, $password, $autologin, $pearDB, $CentreonLog, $encryptType, $token, $generalOptions);
     if ($centreonAuth->passwdOk == 1) {
         $centreon = new Centreon($centreonAuth->userInfos);
-        // security fix - regenerate the sid after the login
+        // security fix - regenerate the sid after the login to prevent session fixation
         session_regenerate_id();
         $_SESSION["centreon"] = $centreon;
         // saving session data in the DB
