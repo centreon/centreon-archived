@@ -98,7 +98,7 @@ if (isset($_POST["centreon_token"])
     if ($centreonAuth->passwdOk == 1) {
         $centreon = new Centreon($centreonAuth->userInfos);
         // security fix - regenerate the sid after the login to prevent session fixation
-        session_regenerate_id();
+        session_regenerate_id(true);
         $_SESSION["centreon"] = $centreon;
         // saving session data in the DB
         $query = "INSERT INTO `session` (`session_id` , `user_id` , `current_page` , `last_reload`, `ip_address`) " .

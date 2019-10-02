@@ -69,7 +69,7 @@ if ((isset($_GET["token"]) || isset($_GET["akey"])) && isset($_GET['username']))
         $res->execute();
         if (!$res->rowCount()) {
             // security fix - regenerate the sid to prevent session fixation
-            session_regenerate_id();
+            session_regenerate_id(true);
             $mySessionId = session_id();
 
             $dbResult = $pearDB->prepare(
