@@ -19,7 +19,7 @@
                             <td class='formValue'>
                                 <div class='md-checkbox md-checkbox-inline'>
                                     <input id='send_statistics' value='1' name='send_statistics' type='checkbox' checked='checked'/>
-                                    <label class="empty-label md-label-green" for='send_statistics'></label>
+                                    <label class="empty-label" for='send_statistics'></label>
                                 </div>
                             </td>
                             <td class='formlabel'>
