@@ -1821,8 +1821,8 @@ msgid "Main poller"
 msgstr "Coletor principal"
 
 #: centreon-web/www/include/configuration/configServers/help.php:7
-msgid "Remote Server to which this server will be attached"
-msgstr "Servidor Remoto ao qual este servidor será conectado"
+#~ msgid "Master Remote Server to which this server will be attached"
+#~ msgstr ""
 
 #: centreon-web/www/include/configuration/configServers/help.php:8
 msgid "SSH port of the remote poller"
