@@ -18,20 +18,20 @@
                     {$module.author}
                 </td>
                 <td>
-                {if !$module.is_installed}
-                    {$module.available_version}
-                {else}
+                {if $module.is_installed}
                     {$module.installed_version}
+                {else}
+                    {$module.available_version}
                 {/if}
                 </td>
                 <td>
                     <div class="md-checkbox md-checkbox-inline">
-                    {if !$module.is_installed}
-                        <input type="checkbox" id="module_{$module_id}"/>
-                        <label class="empty-label" for="module_{$module_id}"></label>
-                    {else}
+                    {if $module.is_installed}
                         <input type="checkbox" id="module_{$module_id}" disabled="disabled"/>
                         <label class="empty-label md-label-green" for="module_{$module_id}"></label>
+                    {else}
+                        <input type="checkbox" id="module_{$module_id}"/>
+                        <label class="empty-label" for="module_{$module_id}"></label>
                     {/if}
                     </div>
                 </td>
@@ -54,20 +54,20 @@
                     {$widget.author}
                 </td>
                 <td>
-                {if !$widget.is_installed}
-                    {$widget.available_version}
-                {else}
+                {if $widget.is_installed}
                     {$widget.installed_version}
+                {else}
+                    {$widget.available_version}
                 {/if}
                 </td>
                 <td>
                     <div class="md-checkbox md-checkbox-inline">
-                    {if !$widget.is_installed}
-                        <input type="checkbox" id="widget_{$widget_id}"/>
-                        <label class="empty-label" for="widget_{$widget_id}"></label>
-                    {else}
+                    {if $widget.is_installed}
                         <input type="checkbox" id="widget_{$widget_id}" disabled="disabled"/>
                         <label class="empty-label md-label-green" for="widget_{$widget_id}"></label>
+                    {else}
+                        <input type="checkbox" id="widget_{$widget_id}" />
+                        <label class="empty-label" for="widget_{$widget_id}"></label>
                     {/if}
                     </div>
                 </td>
