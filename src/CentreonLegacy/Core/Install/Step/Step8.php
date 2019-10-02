@@ -61,11 +61,11 @@ class Step8 extends AbstractStep
         $module = $moduleFactory->newInformation();
         return $module->getList();
     }
-    
+
     /**
      * Get the list of available widgets (installed on the system).
      * List filled with the content of the config.xml widget files
-     * 
+     *
      * @return array
      */
     public function getWidgets()
