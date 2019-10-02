@@ -75,7 +75,10 @@ if ($stat === false) {
                         <tbody>
                         <tr>
                             <td class=\'formValue\'>
-                                <input value=\'1\' name=\'send_statistics\' type="checkbox" checked/>
+                                <div class=\'md-checkbox md-checkbox-inline\'>
+                                    <input id=\'send_statistics\' value='1' name=\'send_statistics\' type=\'checkbox\' checked=\'checked\'/>
+                                    <label class=\'empty-label\' for=\'send_statistics\'></label>
+                                </div>
                             </td>
                             <td class=\'formlabel\'>
                                 <p style="text-align:justify">I agree to participate to the Centreon Customer Experience
