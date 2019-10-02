@@ -1,7 +1,7 @@
 <?php
 /*
- * Copyright 2005-2015 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2019 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -37,57 +37,54 @@ if (!isset($oreon)) {
     exit();
 }
 
-if (isset($_GET["command_id"])) {
-    $command_id = $_GET["command_id"];
-} elseif (isset($_POST["command_id"])) {
-    $command_id = $_POST["command_id"];
-} else {
-    $command_id = null;
-}
+$commandId = filter_var(
+    $_GET["command_id"] ?? $_POST["command_id"] ?? null,
+    FILTER_VALIDATE_INT
+);
 
-if (isset($_GET["command_name"])) {
-    $command_name = $_GET["command_name"];
-} elseif (isset($_POST["command_name"])) {
-    $command_name = $_POST["command_name"];
-} else {
-    $command_name = null;
-}
+$commandName = filter_var(
+    $_GET["command_name"] ?? $_POST["command_name"] ?? null,
+    FILTER_SANITIZE_STRING
+);
 
-if ($command_id != null) {
+if ($commandId != null) {
     /*
-     * Get command informations
+     * Get command information
      */
-    $DBRESULT = $pearDB->query("SELECT * FROM `command` WHERE `command_id` = '" . $command_id . "' LIMIT 1");
-    $cmd = $DBRESULT->fetchRow();
+    $sth = $pearDB->prepare("SELECT * FROM `command` WHERE `command_id` = :command_id LIMIT 1");
+    $sth->bindParam(':command_id', $commandId, PDO::PARAM_INT);
+    $sth->execute();
+    $cmd = $sth->fetch();
+    unset($sth);
 
-    $cmd_array = explode(" ", $cmd["command_line"]);
-    $full_line = $cmd_array[0];
-    $cmd_array = explode("/", $full_line);
-    $resource_info = $cmd_array[0];
-    $resource_def = str_replace('$', '@DOLLAR@', $resource_info);
+    $aCmd = explode(" ", $cmd["command_line"]);
+    $fullLine = $aCmd[0];
+    $aCmd = explode("/", $fullLine);
+    $resourceInfo = $aCmd[0];
+    $resourceDef = str_replace('$', '@DOLLAR@', $resourceInfo);
 
     /*
      * Match if the first part of the path is a MACRO
      */
-    if (preg_match("/@DOLLAR@USER([0-9]+)@DOLLAR@/", $resource_def, $matches)) {
+    if (preg_match("/@DOLLAR@USER([0-9]+)@DOLLAR@/", $resourceDef, $matches)) {
         /*
          * Select Resource line
          */
         $query = "SELECT `resource_line` FROM `cfg_resource` " .
             "WHERE `resource_name` = '\$USER" . $matches[1] . "\$' LIMIT 1";
-        $DBRESULT = $pearDB->query($query);
+        $sth = $pearDB->query($query);
 
-        $resource = $DBRESULT->fetchRow();
-        unset($DBRESULT);
+        $resource = $sth->fetch();
+        unset($sth);
 
-        $resource_path = $resource["resource_line"];
-        unset($cmd_array[0]);
-        $command = rtrim($resource_path, "/") . "#S#" . implode("#S#", $cmd_array);
+        $resourcePath = $resource["resource_line"];
+        unset($aCmd[0]);
+        $command = rtrim($resourcePath, "/") . "#S#" . implode("#S#", $aCmd);
     } else {
-        $command = $full_line;
+        $command = $fullLine;
     }
 } else {
-    $command = $oreon->optGen["nagios_path_plugins"] . $command_name;
+    $command = $oreon->optGen["nagios_path_plugins"] . $commandName;
 }
 
 $command = str_replace("#S#", "/", $command);
