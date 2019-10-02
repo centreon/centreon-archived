@@ -65,7 +65,7 @@ if (isset($parameters['widgets'])) {
     foreach ($parameters['widgets'] as $widget) {
         $installer = $widgetFactory->newInstaller($widget);
         $id = $installer->install();
-        $install = false;
+        $install = ($id) ? true : false;
         if ($id) {
             $install = true;
         }
