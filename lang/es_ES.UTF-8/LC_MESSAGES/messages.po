@@ -14272,3 +14272,9 @@ msgstr "Para usar Remote Server adicionales, se debe seleccionar un Remote Serve
 
 msgid "Attach additional Remote Servers"
 msgstr "Adjunte Remote Servers adicionales"
+
+#~ msgid "Attach poller to a master remote server"
+#~ msgstr ""
+
+#~ msgid "Attach poller to additional remote servers"
+#~ msgstr ""
