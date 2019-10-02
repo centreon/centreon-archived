@@ -47,10 +47,7 @@ if (isset($parameters['modules'])) {
     foreach ($parameters['modules'] as $module) {
         $installer = $moduleFactory->newInstaller($module);
         $id = $installer->install();
-        $install = false;
-        if ($id) {
-            $install = true;
-        }
+        $install = ($id) ? true : false;
         $result['modules'][] = array(
             'module' => $module,
             'install' => $install
@@ -66,9 +63,6 @@ if (isset($parameters['widgets'])) {
         $installer = $widgetFactory->newInstaller($widget);
         $id = $installer->install();
         $install = ($id) ? true : false;
-        if ($id) {
-            $install = true;
-        }
         $result['widgets'][] = array(
             'widget' => $widget,
             'install' => $install
