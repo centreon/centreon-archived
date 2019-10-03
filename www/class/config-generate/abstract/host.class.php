@@ -246,7 +246,6 @@ abstract class AbstractHost extends AbstractObject
         }
         $hostListing = array();
         //check cumulative option
-        //check cumulative option
         if (self::CUMULATIVE_NOTIFICATION == $this->notificationOption) {
             // get all host / template inheritance
             $this->getCumulativeInheritance($host['host_id'], $hostListing);
