@@ -157,7 +157,7 @@ function getHostsTemplates($host_id) {
     $res = $pearDBCentreon->query(
         "SELECT host_tpl_id
         FROM host_template_relation
-        WHERE host_host_id = " . (int) $hostId;
+        WHERE host_host_id = " . (int) $hostId
     );
 
     if ($res->numRows() == 0) {
