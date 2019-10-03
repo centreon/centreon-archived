@@ -2299,7 +2299,7 @@ CREATE TABLE IF NOT EXISTS `remote_servers` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- Create rs_poller_relation for the additional relationship between poller and remote servers
-CREATE TABLE `rs_poller_relation` (
+CREATE TABLE IF NOT EXISTS `rs_poller_relation` (
   `remote_server_id` int(11) NOT NULL,
   `poller_server_id` int(11) NOT NULL,
   KEY `remote_server_id` (`remote_server_id`)
