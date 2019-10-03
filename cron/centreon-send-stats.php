@@ -25,6 +25,8 @@ require_once __DIR__ . '/../www/class/centreonStatistics.class.php';
 
 $sendStatistics = 0;
 $isRemote = 0;
+$hasValidLicenses = false;
+$isImpUser = false;
 
 $db = $dependencyInjector['configuration_db'];
 
@@ -41,7 +43,6 @@ if ($row = $result->fetch()) {
 }
 
 // Check if valid Centreon licences exist
-$hasValidLicenses = false;
 $centreonLicensesDir = "/etc/centreon/license.d/";
 if (is_dir($centreonLicensesDir)) {
     if ($dh = opendir($centreonLicensesDir)) {
@@ -58,6 +59,14 @@ if (is_dir($centreonLicensesDir)) {
                 }
             }
         }
+    }
+}
+
+// Check if it's a IMP user
+$result = $db->query("SELECT options.value FROM options WHERE options.key = 'impCompanyToken'");
+if ($row = $result->fetch()) {
+    if (isset($row['value']) && !empty($row['value'])) {
+        $isImpUser = true;
     }
 }
 
@@ -80,7 +89,7 @@ if ($isRemote !== 'yes') {
      * Only send statistics if free user enabled this option
      * or if at least a Centeron license is valid
      */
-    if ($sendStatistics || $hasValidLicenses) {
+    if ($sendStatistics || $hasValidLicenses || $isRemote) {
         $additional = $oStatistics->getAdditionalData();
     }
 
