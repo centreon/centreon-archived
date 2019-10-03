@@ -116,7 +116,7 @@ $tpl->assign("headerMenu_huse", _("Host Uses"));
 $tpl->assign("headerMenu_suse", _("Services Uses"));
 $tpl->assign("headerMenu_options", _("Options"));
 
-$form = new HTML_QuickForm('form', 'POST', "?p=" . $p);
+$form = new HTML_QuickFormCustom('form', 'POST', "?p=" . $p);
 
 // Different style between each lines
 $style = "one";
