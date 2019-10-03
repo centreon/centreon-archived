@@ -125,14 +125,14 @@ function getContactgroupsForHost($hostId)
     global $pearDB;
 
     $contactGroups = array();
-    $DBRESULT = $pearDB->query(
+    $dbResult = $pearDB->query(
         'SELECT contactgroup.cg_id, contactgroup.cg_name 
         FROM contactgroup, contactgroup_host_relation 
         WHERE contactgroup_host_relation.host_host_id = ' . (int)$hostId . '
         AND contactgroup_host_relation.contactgroup_cg_id = contactgroup.cg_id
         AND contactgroup.cg_activate = "1"'
     );
-    while (($row = $DBRESULT->fetchRow())) {
+    while (($row = $dbResult->fetchRow())) {
         $contactGroups[$row['cg_id']] = $row['cg_name'];
     }
     return $contactGroups;
