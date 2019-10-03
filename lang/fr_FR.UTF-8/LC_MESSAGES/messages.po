@@ -14836,3 +14836,6 @@ msgstr "Un Remote Server principal doit être sélectionné, avant d'utiliser de
 
 msgid "Attach additional Remote Servers"
 msgstr "Ajouter des Remote Server additonnels"
+
+msgid "Locked elements"
+msgstr "Eléments verrouillés"
