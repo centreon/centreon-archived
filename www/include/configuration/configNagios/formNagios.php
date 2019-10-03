@@ -664,30 +664,20 @@ $eventBrokerOptionsData = [];
 // Add checkbox for each of event broker options
 foreach (CentreonMainCfg::EVENT_BROKER_OPTIONS as $bit => $label) {
     if ($bit === -1 || $bit === 0) {
-        $element = $form->createElement(
-            'customcheckbox',
-            $bit,
-            '',
-            _($label),
-            [
-                'onClick' => 'unCheckOthers("event-broker-options", this.name);',
-                'class' => 'event-broker-options'
-            ]
-        );
+        $onClick = 'unCheckOthers("event-broker-options", this.name);';
     } else {
-        $element = $form->createElement(
-            'customcheckbox',
-            $bit,
-            '',
-            _($label),
-            [
-                'onClick' => 'unCheckAllAndNaught("event-broker-options");',
-                'class' => 'event-broker-options'
-            ]
-        );
+        $onClick = 'unCheckOthers("event-broker-options", this.name);';
     }
-    $element->setCheckboxTemplate('<span class="checkbox-inline">{element}</span>');
-    $eventBrokerOptionsData[] = $element;
+    $eventBrokerOptionsData[] = $form->createElement(
+        'checkbox',
+        $bit,
+        '',
+        _($label),
+        [
+            'onClick' => $onClick,
+            'class' => 'event-broker-options'
+        ]
+    );;
 }
 $form->addGroup($eventBrokerOptionsData, 'event_broker_options', _("Broker Module Options"), '&nbsp;');
  // New options for enable whitelist of macros sent to Centreon Broker
