@@ -305,16 +305,19 @@ abstract class AbstractHost extends AbstractObject
      */
     protected function getCumulativeInheritance($host, &$hostList = array())
     {
-        $hostList[] = $host;
+
         $stmt = $this->backend_instance->db->query(
-            'SELECT host_template_relation.host_tpl_id 
-            FROM host_template_relation, host 
-            WHERE host_template_relation.`host_host_id` = ' . (int)$host . ' 
-            AND host_template_relation.`host_host_id` = host.`host_id` 
-            AND host.`host_activate` 
-            ORDER BY `order`'
+            'SELECT host.host_notifications_enabled, host_template_relation.host_tpl_id
+            FROM host
+            LEFT JOIN host_template_relation ON host_template_relation.`host_host_id` = host.`host_id` 
+            WHERE host.`host_id` = ' . (int)$host . ' 
+            AND host.`host_activate` = "1"'
         );
+
         while (($row = $stmt->fetch())) {
+            if($row['host_notifications_enabled'] != '0'){
+                $hostList[] = $host;
+            }
             $this->getCumulativeInheritance($row['host_tpl_id'], $hostList);
         }
     }
@@ -367,9 +370,12 @@ abstract class AbstractHost extends AbstractObject
         $contact = Contact::getInstance($this->dependencyInjector);
         $contacts = array();
         $stmt = $this->backend_instance->db->query(
-            'SELECT c.contact_id , contact_name FROM contact c, contact_host_relation ch
-            WHERE ch.host_host_id IN (' . implode(',', $host) . ') AND ch.contact_id = c.contact_id 
-            AND contact_activate = "1" AND contact_enable_notifications != "0"'
+            'SELECT contact.contact_id , contact.contact_name 
+            FROM contact, contact_host_relation 
+            WHERE contact_host_relation.host_host_id IN (' . implode(',', $host) . ') 
+            AND contact_host_relation.contact_id = contact.contact_id 
+            AND contact.contact_activate = "1" 
+            AND contact.contact_enable_notifications != "0"'
         );
 
         while (($row = $stmt->fetch())) {
