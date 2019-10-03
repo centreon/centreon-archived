@@ -781,7 +781,7 @@ comme dans l'exemple suivant : ::
 Après avoir sauvegardé le fichier, veuillez redémarrer votre système
 d'exploitation pour prendre en compte les changements.
 
-La timezone par défaut ainsi que des paramètres requis de PHP doit être configurée. Pour cela, allez dans le
+La timezone par défaut ainsi que des paramètres requis de PHP doivent être configurés. Pour cela, allez dans le
 répertoire `/etc/php/7.1/cli/conf.d` ou `/etc/php/7.1/apache2/conf.d` et créez un fichier nommé `centreon.ini`
 contenant les lignes suivantes : ::
 
