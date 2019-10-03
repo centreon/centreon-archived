@@ -52,26 +52,23 @@ $search = filter_var(
     $_POST['searchST'] ?? $_GET['searchST'] ?? null,
     FILTER_SANITIZE_STRING
 );
+$displayLocked = filter_var(
+    $_POST["displayLocked"] ?? $_GET["displayLocked"] ?? 'off',
+    FILTER_VALIDATE_BOOLEAN
+);
+$centreon->historySearch[$url]["displayLocked"] = $displayLocked ?: $centreon->historySearch[$url]["displayLocked"];
 
 if (isset($_POST['searchST']) || isset($_GET['searchST'])) {
     //saving filters values
     $centreon->historySearch[$url] = array();
     $centreon->historySearch[$url]["search"] = $search;
-    isset($_POST["displayLocked"]) ? $displayLocked = 1 : $displayLocked = 0;
-    $centreon->historySearch[$url]["displayLocked"] = $displayLocked;
 } else {
     //restoring saved values
     $search = $centreon->historySearch[$url]["search"] ?? null;
-    $displayLocked = $centreon->historySearch[$url]["displayLocked"] ?? 0;
 }
 
 // Locked Filter
-$displayLockedChecked = "";
-$sqlFilter = "AND sv.service_locked = '0'";
-if ($displayLocked == 1) {
-    $displayLockedChecked = "checked";
-    $sqlFilter = "";
-}
+$lockedFilter = $displayLocked ? "" : "AND sv.service_locked = '0' ";
 
 //Service Template Model list
 if ($search) {
@@ -79,13 +76,15 @@ if ($search) {
         "sv.service_activate, sv.service_template_model_stm_id " .
         "FROM service sv " .
         "WHERE (sv.service_description LIKE '%" . $search . "%' OR sv.service_alias LIKE '%" . $search . "%') " .
-        "AND sv.service_register = '0' " . $sqlFilter . " " .
+        "AND sv.service_register = '0' " .
+        $lockedFilter .
         "ORDER BY service_description LIMIT " . $num * $limit . ", " . $limit;
 } else {
     $query = "SELECT SQL_CALC_FOUND_ROWS sv.service_id, sv.service_description, sv.service_alias, " .
         "sv.service_activate, sv.service_template_model_stm_id " .
         "FROM service sv " .
         "WHERE sv.service_register = '0' " .
+        $lockedFilter .
         "ORDER BY service_description LIMIT " . $num * $limit . ", " . $limit;
 }
 $dbResult = $pearDB->query($query);
@@ -330,12 +329,10 @@ $o2->setSelected(null);
 
 $tpl->assign('limit', $limit);
 $tpl->assign('searchST', $search);
-$tpl->assign("displayLockedChecked", $displayLockedChecked);
-$tpl->assign('displayLocked', _("Display locked"));
+$tpl->assign("displayLocked", $displayLocked);
 
 // Apply a template definition
 $renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 $form->accept($renderer);
 $tpl->assign('form', $renderer->toArray());
 $tpl->display("listServiceTemplateModel.ihtml");
-?>
