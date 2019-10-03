@@ -49,26 +49,29 @@ include "./include/common/autoNumLimit.php";
 $o = "";
 
 $search = filter_var(
-    $_POST['searchST'] ?? $_GET['searchST'] ?? null,
+    $_POST['searchST'] ?? $_GET['searchST'] ?? $centreon->historySearch[$url]['search'] ?? '',
     FILTER_SANITIZE_STRING
 );
+
 $displayLocked = filter_var(
-    $_POST["displayLocked"] ?? $_GET["displayLocked"] ?? 'off',
+    $_POST['displayLocked'] ?? $_GET['displayLocked'] ?? 'off',
     FILTER_VALIDATE_BOOLEAN
 );
-$centreon->historySearch[$url]["displayLocked"] = $displayLocked ?: $centreon->historySearch[$url]["displayLocked"];
 
-if (isset($_POST['searchST']) || isset($_GET['searchST'])) {
-    //saving filters values
-    $centreon->historySearch[$url] = array();
-    $centreon->historySearch[$url]["search"] = $search;
-} else {
-    //restoring saved values
-    $search = $centreon->historySearch[$url]["search"] ?? null;
+// keep checkbox state if navigating in pagination
+// this trick is mandatory cause unchecked checkboxes do not post any data
+if (($centreon->historyPage[$url] > 0 || $num !== 0) && isset($centreon->historySearch[$url]['displayLocked'])) {
+    $displayLocked = $centreon->historySearch[$url]['displayLocked'];
 }
 
-// Locked Filter
-$lockedFilter = $displayLocked ? "" : "AND sv.service_locked = '0' ";
+// store filters in session
+$centreon->historySearch[$url] = [
+    'search' => $search,
+    'displayLocked' => $displayLocked
+];
+
+// Locked filter
+$lockedFilter = $displayLocked ? "" : "AND sv.service_locked = 0 ";
 
 //Service Template Model list
 if ($search) {
