@@ -15,7 +15,7 @@
             <td>
                 <div class="md-checkbox md-checkbox-inline">
                     <input type="checkbox" id="displayLocked" name="displayLocked" {if $displayLocked}checked{/if} />
-                    <label for="displayLocked">{t}Display locked{/t}</label>
+                    <label for="displayLocked">{t}Locked elements{/t}</label>
                 </div>
             </td>
           <td><input type='submit' value='{t}Search{/t}' class="btc bt_success"/></td>

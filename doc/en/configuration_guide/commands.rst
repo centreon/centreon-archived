@@ -21,9 +21,9 @@ All the commands can be configured in the menu: **Configuration > Commands**.
    :align: center
 
 .. note::
-   By default, locked commands are hidden. Check the "Display locked" box to list all commands.
+   By default, locked commands are hidden. Check the "Locked elements" box to list all commands.
 
-**************** 
+****************
 Adding a command
 ****************
 

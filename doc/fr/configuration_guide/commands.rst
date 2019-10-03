@@ -19,12 +19,12 @@ Il existe trois types de commandes :
  l'ordonnanceur pour le traitement des données...
 
 Toutes les commandes peuvent être configurées au sein du menu **Configuration > Commandes**.
- 
+
 .. image :: /images/guide_utilisateur/configuration/04commandlist.png
    :align: center
 
 .. note::
-   Par défaut, les commandes verrouillées sont masquées. Cocher la case "Afficher verrouillé" pour les afficher toutes.
+   Par défaut, les commandes verrouillées sont masquées. Cocher la case "Eléments verrouillés" pour les afficher toutes.
 
 ********************
 Ajouter une commande
@@ -33,14 +33,14 @@ Ajouter une commande
 Avant d'ajouter une commande :
 
 1.	Sélectionnez dans le menu de gauche le type de commande que vous souhaitez ajouter (Contrôles, Notifications, Divers).
- 
+
 .. image :: /images/guide_utilisateur/configuration/04leftmenu.png
-   :align: center 
- 
+   :align: center
+
 2. Cliquez sur **Ajouter**
- 
+
 .. image :: /images/guide_utilisateur/configuration/04command.png
-   :align: center 
+   :align: center
 
 .. note::
     Les champs de configuration d'une commande sont les mêmes qu'importe le type de commande choisi.
