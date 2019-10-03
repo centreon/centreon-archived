@@ -105,7 +105,7 @@ function hidePasswordInCommand($commandName, $hostId, $serviceId)
     );
 
     $arrHostMacroPassword = array();
-    while ($row = $sth->fetchRow()) {
+    while ($row = $res->fetchRow()) {
         $arrHostMacroPassword = array_merge(
             $arrHostMacroPassword,
             array($row['host_macro_name'])
