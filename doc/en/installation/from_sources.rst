@@ -795,7 +795,7 @@ and replace **enforcing** by **disabled**: ::
 
 After saving the file, please reboot your operating system to apply the changes.
 
-Timezone and mandatory PHP parameters has to be set: go to `/etc/php/7.2/cli/conf.d` or `/etc/php/7.2/apache2/conf.d`
+Timezone and mandatory PHP parameters have to be set: go to `/etc/php/7.2/cli/conf.d` or `/etc/php/7.2/apache2/conf.d`
 directory and create a file named `centreon.ini`
 which contains the following lines: ::
 
