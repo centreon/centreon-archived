@@ -666,7 +666,7 @@ foreach (CentreonMainCfg::EVENT_BROKER_OPTIONS as $bit => $label) {
     if ($bit === -1 || $bit === 0) {
         $onClick = 'unCheckOthers("event-broker-options", this.name);';
     } else {
-        $onClick = 'unCheckOthers("event-broker-options", this.name);';
+        $onClick = 'unCheckAllAndNaught("event-broker-options");';
     }
     $eventBrokerOptionsData[] = $form->createElement(
         'checkbox',
