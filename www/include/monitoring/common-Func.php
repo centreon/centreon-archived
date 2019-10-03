@@ -143,12 +143,16 @@ function getContactsForHost($hostId)
     global $pearDB;
 
     $contacts = array();
-    $DBRESULT = $pearDB->query("SELECT c.contact_id, contact_name FROM contact c, contact_host_relation chr
-            WHERE chr.host_host_id = " . $hostId . " AND chr.contact_id = c.contact_id");
+    $DBRESULT = $pearDB->query(
+        'SELECT contact.contact_id, contact.contact_name 
+        FROM contact, contact_host_relation 
+        WHERE contact_host_relation.host_host_id = ' . $hostId . '
+        AND contact_host_relation.contact_id = contact.contact_id
+        AND contact.contact_activate = "1" 
+        AND contact.contact_enable_notifications != "0"');
     while (($row = $DBRESULT->fetchRow())) {
         $contacts[$row['contact_id']] = $row['contact_name'];
     }
-
     return $contacts;
 }
 
