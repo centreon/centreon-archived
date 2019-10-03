@@ -106,7 +106,7 @@ class ServiceStatusMenu extends Component {
         })}
       >
         <Link
-          to="/main.php?p=20201&o=svc_critical&search="
+          to="/main.php?p=20201&o=svc_unhandled&statusFilter=critical&search="
           className={classnames(
             styles['wrap-middle-icon'],
             styles.round,
@@ -125,7 +125,7 @@ class ServiceStatusMenu extends Component {
           </span>
         </Link>
         <Link
-          to="/main.php?p=20201&o=svc_warning&search="
+          to="/main.php?p=20201&o=svc_unhandled&statusFilter=warning&search="
           className={classnames(
             styles['wrap-middle-icon'],
             styles.round,
@@ -144,7 +144,7 @@ class ServiceStatusMenu extends Component {
           </span>
         </Link>
         <Link
-          to="/main.php?p=20201&o=svc_unknown&search="
+          to="/main.php?p=20201&o=svc_unhandled&statusFilter=unknown&search="
           className={classnames(
             styles['wrap-middle-icon'],
             styles.round,
@@ -165,7 +165,7 @@ class ServiceStatusMenu extends Component {
           </span>
         </Link>
         <Link
-          to="/main.php?p=20201&o=svc_ok&statusService=svc&search="
+          to="/main.php?p=20201&o=svc&statusFilter=ok&search="
           className={classnames(
             styles['wrap-middle-icon'],
             styles.round,
@@ -208,7 +208,7 @@ class ServiceStatusMenu extends Component {
               >
                 <li className={styles['submenu-item']}>
                   <Link
-                    to="/main.php?p=20201&o=svc&search="
+                    to="/main.php?p=20201&o=svc&statusFilter=&search="
                     className={styles['submenu-item-link']}
                   >
                     <div onClick={this.toggle}>
@@ -224,7 +224,7 @@ class ServiceStatusMenu extends Component {
                 </li>
                 <li className={styles['submenu-item']}>
                   <Link
-                    to="/main.php?p=20201&o=svc_critical&search="
+                    to="/main.php?p=20201&o=svc_unhandled&statusFilter=critical&search="
                     className={styles['submenu-item-link']}
                   >
                     <div onClick={this.toggle}>
@@ -247,7 +247,7 @@ class ServiceStatusMenu extends Component {
                 </li>
                 <li className={styles['submenu-item']}>
                   <Link
-                    to="/main.php?p=20201&o=svc_warning&search="
+                    to="/main.php?p=20201&o=svc_unhandled&statusFilter=warning&search="
                     className={styles['submenu-item-link']}
                   >
                     <div onClick={this.toggle}>
@@ -270,7 +270,7 @@ class ServiceStatusMenu extends Component {
                 </li>
                 <li className={styles['submenu-item']}>
                   <Link
-                    to="/main.php?p=20201&o=svc_unknown&search="
+                    to="/main.php?p=20201&o=svc_unhandled&statusFilter=unknown&search="
                     className={styles['submenu-item-link']}
                   >
                     <div onClick={this.toggle}>
@@ -293,7 +293,7 @@ class ServiceStatusMenu extends Component {
                 </li>
                 <li className={styles['submenu-item']}>
                   <Link
-                    to="/main.php?p=20201&o=svc_ok&statusService=svc&search="
+                    to="/main.php?p=20201&o=svc&statusFilter=ok&search="
                     className={styles['submenu-item-link']}
                   >
                     <div onClick={this.toggle}>
@@ -314,7 +314,7 @@ class ServiceStatusMenu extends Component {
                 </li>
                 <li className={styles['submenu-item']}>
                   <Link
-                    to="/main.php?p=20201&o=svc_pending&statusService=svc&search="
+                    to="/main.php?p=20201&o=svc&statusFilter=pending&search="
                     className={styles['submenu-item-link']}
                   >
                     <div onClick={this.toggle}>

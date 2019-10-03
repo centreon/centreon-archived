@@ -412,17 +412,21 @@ $form->addElement(
     $statusList,
     array('id' => 'statusFilter', 'onChange' => "filterStatus(this.value);")
 );
-if ((!isset($_GET['o']) || empty($_GET['o'])) && isset($_SESSION['monitoring_service_status_filter'])) {
-    $form->setDefaults(array('statusFilter' => $_SESSION['monitoring_service_status_filter']));
-}
-$defaultStatusFilter = $_GET['statusFilter'] ?? '';
-$serviceStatusFromO = isset($_GET['o']) && in_array($_GET['o'], array_keys($statusService)) ? $_GET['o'] : null;
+
+$serviceStatusFromO = isset($_GET['o']) && in_array($_GET['o'], array_keys($statusService))
+    ? $_GET['o']
+    : null;
 $defaultStatusService =  $_GET['statusService']
     ?? $_POST['statusService']
     ?? $serviceStatusFromO
     ?: $_SESSION['monitoring_service_status']
     ?? 'svc_unhandled';
 $o = $defaultStatusService;
+
+$defaultStatusFilter = $_GET['statusFilter']
+    ?? $_POST['statusFilter']
+    ?: $_SESSION['monitoring_service_status_filter']
+    ?? '';
 
 $form->addElement(
     'select',
@@ -534,7 +538,9 @@ $tpl->display("service.ihtml");
         if (_defaultStatusService !== '') {
             jQuery("#statusService option[value='" + _defaultStatusService + "']").prop('selected', true);
         }
-
+        if (_defaultStatusFilter !== '') {
+            jQuery("#statusFilter option[value='" + _defaultStatusFilter + "']").prop('selected', true);
+        }
         filterStatus(document.getElementById('statusFilter').value, 1);
     }
 
