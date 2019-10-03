@@ -258,7 +258,9 @@ abstract class AbstractHost extends AbstractObject
                 && (self::VERTICAL_NOTIFICATION == $this->notificationOption)
                 && $this->isContactInheritance($hostListing[0])) {
                 //use the first template found to start
-                $this->getContactVerticalInheritance($hostListing[0], $hostListing);
+                $startHost = $hostListing[0];
+                $hostListing = array();
+                $this->getContactVerticalInheritance($startHost, $hostListing);
             }
         }
         return $hostListing;
@@ -281,20 +283,19 @@ abstract class AbstractHost extends AbstractObject
      */
     protected function getContactVerticalInheritance($hostId, &$hostList = array())
     {
-        $hostList[] = (int)$hostId;
-        while (1) {
-            $query = 'SELECT contact_additive_inheritance, host_tpl_id FROM host, host_template_relation
+        $stmt = $this->backend_instance->db->query('SELECT host_notifications_enabled, contact_additive_inheritance, host_tpl_id 
+                    FROM host, host_template_relation
                     WHERE `host_id` = `host_host_id`
                     AND `order` = 1
                     AND `host_activate` != "0"
-                    AND `host_id` = ' . (int)$hostId;
-            $stmt = $this->backend_instance->db->query($query);
-            $hostAdd = $stmt->fetch();
+                    AND `host_id` = ' . (int)$hostId);
+        $hostAdd = $stmt->fetch();
 
-            if (isset($hostAdd['host_tpl_id']) && (int)$hostAdd['contact_additive_inheritance'] === 1) {
-                $this->getContactVerticalInheritance($hostAdd['host_tpl_id'], $hostList);
-            }
-            break;
+        if ($hostAdd['host_notifications_enabled'] != '0') {
+            $hostList[] = $hostId;
+        }
+        if (isset($hostAdd['host_tpl_id']) && (int)$hostAdd['contact_additive_inheritance'] == 1) {
+            $this->getContactVerticalInheritance((int)$hostAdd['host_tpl_id'], $hostList);
         }
     }
 
