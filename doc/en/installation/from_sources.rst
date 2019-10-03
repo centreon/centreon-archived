@@ -777,7 +777,7 @@ which contains the following lines: ::
     date.timezone = Europe/Paris
     max_execution_time = 300
     session.use_strict_mode = 1
-    session.gc_maxlifetime = 31536000
+    session.gc_maxlifetime = 7200
 
 After saving the file, please don't forget to restart apache server.
 
