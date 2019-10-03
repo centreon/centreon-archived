@@ -76,7 +76,7 @@ if ($stat === false) {
                         <tr>
                             <td class=\'formValue\'>
                                 <div class=\'md-checkbox md-checkbox-inline\'>
-                                    <input id=\'send_statistics\' value='1' name=\'send_statistics\' type=\'checkbox\' checked=\'checked\'/>
+                                    <input id=\'send_statistics\' value=\'1\' name=\'send_statistics\' type=\'checkbox\' checked=\'checked\'/>
                                     <label class=\'empty-label\' for=\'send_statistics\'></label>
                                 </div>
                             </td>
