@@ -172,7 +172,7 @@ class EntityValidator
             // We need to convert camel case to snake case because the data sent
             // are in snake case format whereas the validation definition file
             // use the real name of properties (camel case)
-            $id =self::convertCamelCaseToSnakeCase($id);
+            $id = self::convertCamelCaseToSnakeCase($id);
 
             if (!empty($propertyMetadatas)) {
                 $propertyMetadata = $propertyMetadatas[0];
@@ -221,7 +221,7 @@ class EntityValidator
      */
     private function removeDuplicatedViolation(
         ConstraintViolationListInterface $violations
-    ) :ConstraintViolationListInterface {
+    ): ConstraintViolationListInterface {
         $violationCodes = [];
         /**
          * @var $violation ConstraintViolationInterface

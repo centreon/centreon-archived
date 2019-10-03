@@ -28,7 +28,6 @@ use Centreon\Domain\Engine\Interfaces\EngineServiceInterface;
 use Centreon\Domain\Entity\EntityValidator;
 use Centreon\Domain\Exception\EntityNotFoundException;
 use Centreon\Domain\Monitoring\Interfaces\MonitoringRepositoryInterface;
-use Centreon\Domain\Security\AccessGroup;
 use Centreon\Domain\Security\Interfaces\AccessGroupRepositoryInterface;
 use Centreon\Domain\Service\AbstractCentreonService;
 use JMS\Serializer\Exception\ValidationFailedException;
@@ -91,7 +90,7 @@ class AcknowledgementService extends AbstractCentreonService implements Acknowle
      * @param Contact $contact
      * @return AcknowledgementServiceInterface
      */
-    public function filterByContact($contact)
+    public function filterByContact($contact): self
     {
         parent::filterByContact($contact);
         $this->engineService->filterByContact($contact);
