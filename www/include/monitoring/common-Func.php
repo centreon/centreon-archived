@@ -153,7 +153,8 @@ function getContactsForHost($hostId)
         WHERE contact_host_relation.host_host_id = ' . $hostId . '
         AND contact_host_relation.contact_id = contact.contact_id
         AND contact.contact_activate = "1" 
-        AND contact.contact_enable_notifications != "0"');
+        AND contact.contact_enable_notifications != "0"'
+    );
     while (($row = $DBRESULT->fetchRow())) {
         $contacts[$row['contact_id']] = $row['contact_name'];
     }
@@ -205,8 +206,13 @@ function getContactgroupsForService($serviceId)
 {
     global $pearDB;
     $contactGroups = array();
-    $DBRESULT = $pearDB->query("SELECT cg_id, cg_name FROM contactgroup cg, contactgroup_service_relation cgsr
-            WHERE cgsr.service_service_id = " . $serviceId . " AND cgsr.contactgroup_cg_id = cg.cg_id");
+    $DBRESULT = $pearDB->query(
+        'SELECT contactgroup.cg_id, contactgroup.cg_name 
+        FROM contactgroup, contactgroup_service_relation 
+        WHERE contactgroup_service_relation.service_service_id = ' . (int)$serviceId . '
+        AND contactgroup_service_relation.contactgroup_cg_id = contactgroup.cg_id
+        AND contactgroup.cg_activate = "1"'
+    );
     while (($row = $DBRESULT->fetchRow())) {
         $contactGroups[$row['cg_id']] = $row['cg_name'];
     }
@@ -222,8 +228,14 @@ function getContactsForService($serviceId)
 {
     global $pearDB;
     $contacts = array();
-    $DBRESULT = $pearDB->query("SELECT c.contact_id , contact_name FROM contact c, contact_service_relation csr
-            WHERE csr.service_service_id = " . $serviceId . " AND csr.contact_id = c.contact_id");
+    $DBRESULT = $pearDB->query(
+        'SELECT contact.contact_id, contact.contact_name 
+        FROM contact, contact_service_relation 
+        WHERE contact_service_relation.service_service_id = ' . $serviceId . '
+        AND contact_service_relation.contact_id = contact.contact_id
+        AND contact.contact_activate = "1" 
+        AND contact.contact_enable_notifications != "0"'
+        );
     while (($row = $DBRESULT->fetchRow())) {
         $contacts[$row['contact_id']] = $row['contact_name'];
     }
