@@ -1,7 +1,7 @@
 <?php
 /*
- * Copyright 2005-2015 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2019 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -39,7 +39,7 @@ function updateOption($pearDB, $key, $value)
     /*
      * Purge
      */
-    $dbResult = $pearDB->query("DELETE FROM `options` WHERE `key` = '$key'");
+    $pearDB->query("DELETE FROM `options` WHERE `key` = '$key'");
     
     /*
      * Add
@@ -47,7 +47,7 @@ function updateOption($pearDB, $key, $value)
     if (!is_null($value) && $value != 'NULL') {
         $value = "'$value'";
     }
-    $dbResult = $pearDB->query("INSERT INTO `options` (`key`, `value`) VALUES ('$key', $value)");
+    $pearDB->query("INSERT INTO `options` (`key`, `value`) VALUES ('$key', $value)");
 }
 
 function is_valid_path_images($path)
@@ -111,6 +111,18 @@ function is_writable_file_if_exist($path = null)
         return true;
     }
     return false;
+}
+
+/**
+ * rule to check the session duration value chosen by the user
+ * @param int $value
+ * @param int $valueMax
+ *
+ * @return bool
+ */
+function is_session_duration_valid(int $value = null)
+{
+    return ($value > 0 && $value <= SESSION_DURATION_LIMIT);
 }
 
 function updateGeneralOptInDB($gopt_id = null)
