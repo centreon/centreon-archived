@@ -6,7 +6,7 @@
         <type>date</type>
         <createstmt>
 CREATE TABLE `logs` (
-  `log_id` int(11) NOT NULL AUTO_INCREMENT,
+  `log_id` bigint(20) NOT NULL AUTO_INCREMENT,
   `ctime` int(11) DEFAULT NULL,
   `host_id` int(11) DEFAULT NULL,
   `host_name` varchar(255) DEFAULT NULL,
