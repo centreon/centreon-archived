@@ -425,7 +425,7 @@ $o = $defaultStatusService;
 
 $defaultStatusFilter = $_GET['statusFilter']
     ?? $_POST['statusFilter']
-    ?: $_SESSION['monitoring_service_status_filter']
+    ?? $_SESSION['monitoring_service_status_filter']
     ?? '';
 
 $form->addElement(
