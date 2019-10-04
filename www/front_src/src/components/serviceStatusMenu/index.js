@@ -217,7 +217,7 @@ class ServiceStatusMenu extends Component {
                         {':'}
                       </span>
                       <span className={styles['submenu-count']}>
-                        {data.total}
+                        {numeral(data.total).format()}
                       </span>
                     </div>
                   </Link>
@@ -238,9 +238,9 @@ class ServiceStatusMenu extends Component {
                         {':'}
                       </span>
                       <span className={styles['submenu-count']}>
-                        {numeral(data.critical.unhandled).format('0a')}
+                        {numeral(data.critical.unhandled).format()}
                         {'/'}
-                        {numeral(data.critical.total).format('0a')}
+                        {numeral(data.critical.total).format()}
                       </span>
                     </div>
                   </Link>
@@ -261,9 +261,9 @@ class ServiceStatusMenu extends Component {
                         {':'}
                       </span>
                       <span className={styles['submenu-count']}>
-                        {numeral(data.warning.unhandled).format('0a')}
+                        {numeral(data.warning.unhandled).format()}
                         {'/'}
-                        {numeral(data.warning.total).format('0a')}
+                        {numeral(data.warning.total).format()}
                       </span>
                     </div>
                   </Link>
@@ -284,9 +284,9 @@ class ServiceStatusMenu extends Component {
                         {':'}
                       </span>
                       <span className={styles['submenu-count']}>
-                        {numeral(data.unknown.unhandled).format('0a')}
+                        {numeral(data.unknown.unhandled).format()}
                         {'/'}
-                        {numeral(data.unknown.total).format('0a')}
+                        {numeral(data.unknown.total).format()}
                       </span>
                     </div>
                   </Link>
@@ -307,7 +307,7 @@ class ServiceStatusMenu extends Component {
                         {':'}
                       </span>
                       <span className={styles['submenu-count']}>
-                        {numeral(data.ok).format('0a')}
+                        {numeral(data.ok).format()}
                       </span>
                     </div>
                   </Link>
@@ -328,7 +328,7 @@ class ServiceStatusMenu extends Component {
                         {':'}
                       </span>
                       <span className={styles['submenu-count']}>
-                        {numeral(data.pending).format('0a')}
+                        {numeral(data.pending).format()}
                       </span>
                     </div>
                   </Link>
