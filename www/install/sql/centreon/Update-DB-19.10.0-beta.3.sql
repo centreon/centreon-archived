@@ -35,6 +35,3 @@ WHERE `cb_type_id` = (SELECT `cb_type_id` FROM `cb_type` WHERE `type_shortname` 
 
 UPDATE `cb_type_field_relation` SET `order_display` = 4
 WHERE `cb_type_id` = (SELECT `cb_type_id` FROM `cb_type` WHERE `type_shortname` = 'rrd') AND `cb_field_id` = (SELECT `cb_field_id` FROM `cb_field` WHERE `displayname` = 'RRDCacheD listening socket/port');
-
---new inheritance mode
-INSERT INTO `options` (`key`, `value`) VALUES ('inheritance_mode', '1');
