@@ -26,6 +26,7 @@ class DisableFieldsOnBlockedObjectsContext extends CentreonContext
         $centreonDb->query("UPDATE host SET host_locked = 1 WHERE host_name = 'myHostTemplate'");
 
         $hostTemplate = new HostTemplateConfigurationListingPage($this);
+        $hostTemplate->setLockedElements(true);
         $hostTemplate = $hostTemplate->getEntries();
         $hostTemplate = $hostTemplate['myHostTemplate'];
 
