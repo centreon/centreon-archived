@@ -120,7 +120,7 @@ function is_writable_file_if_exist($path = null)
  *
  * @return bool
  */
-function is_session_duration_valid(int $value = null)
+function isSessionDurationValid(int $value = null)
 {
     return ($value > 0 && $value <= SESSION_DURATION_LIMIT);
 }

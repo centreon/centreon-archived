@@ -66,8 +66,8 @@ while ($opt = $dbResult->fetch()) {
 /*
  * Style
  */
-$attrsText = array("size"=>"40");
-$attrsText2 = array("size"=>"5");
+$attrsText = array("size" => "40");
+$attrsText2 = array("size" => "5");
 $attrsAdvSelect = null;
 
 /*
@@ -84,11 +84,11 @@ $form->addElement('text', 'oreon_path', _("Directory"), $attrsText);
 $form->addElement('text', 'oreon_web_path', _("Centreon Web Directory"), $attrsText);
 
 $form->addElement('text', 'session_expire', _("Sessions Expiration Time"), $attrsText2);
-$form->registerRule('is_session_duration_valid', 'callback', 'is_session_duration_valid');
+$form->registerRule('isSessionDurationValid', 'callback', 'isSessionDurationValid');
 $form->addRule(
     'session_expire',
     _("This value needs to be an integer lesser than") . " " . SESSION_DURATION_LIMIT . " min",
-    'is_session_duration_valid'
+    'isSessionDurationValid'
 );
 
 $limit = array(10 => 10, 20 => 20, 30 => 30, 40 => 40, 50 => 50, 60 => 60, 70 => 70, 80 => 80, 90 => 90, 100 => 100);
