@@ -40,7 +40,7 @@ if (!isset($centreon)) {
 
 // getting the garbage collector value set
 $lifetime = ini_get_all("session", false);
-$lifetime = ((int) $lifetime['session.gc_maxlifetime']) / 60;
+$lifetime = ((int)$lifetime['session.gc_maxlifetime']) / 60;
 define("SESSION_DURATION_LIMIT", $lifetime);
 
 $transcoKey = array(
@@ -74,7 +74,7 @@ $attrsAdvSelect = null;
 /*
  * Form begin
  */
-$form = new HTML_QuickFormCustom('Form', 'post', "?p=".$p);
+$form = new HTML_QuickFormCustom('Form', 'post', "?p=" . $p);
 $form->addElement('header', 'title', _("Modify General Options"));
 
 /*
@@ -85,11 +85,11 @@ $form->addElement('text', 'oreon_path', _("Directory"), $attrsText);
 $form->addElement('text', 'oreon_web_path', _("Centreon Web Directory"), $attrsText);
 
 $form->addElement('text', 'session_expire', _("Sessions Expiration Time"), $attrsText2);
-$form->registerRule('is_session_duration_valid', 'callback', 'is_session_duration_valid');
+$form->registerRule('isSessionDurationValid', 'callback', 'isSessionDurationValid');
 $form->addRule(
     'session_expire',
     _("This value needs to be an integer lesser than") . " " . SESSION_DURATION_LIMIT . " min",
-    'is_session_duration_valid'
+    'isSessionDurationValid'
 );
 
 $limit = array(10 => 10, 20 => 20, 30 => 30, 40 => 40, 50 => 50, 60 => 60, 70 => 70, 80 => 80, 90 => 90, 100 => 100);
@@ -108,9 +108,9 @@ $GMTList = $CentreonGMT->getGMTList();
 $form->addElement('select', 'gmt', _("Timezone"), $GMTList);
 
 $templates = array();
-if ($handle  = @opendir($oreon->optGen["oreon_path"]."www/Themes/")) {
+if ($handle = @opendir($oreon->optGen["oreon_path"] . "www/Themes/")) {
     while ($file = @readdir($handle)) {
-        if (!is_file($oreon->optGen["oreon_path"]."www/Themes/".$file)
+        if (!is_file($oreon->optGen["oreon_path"] . "www/Themes/" . $file)
             && $file != "."
             && $file != ".."
             && $file != ".svn"
@@ -140,7 +140,7 @@ $sortType = array(
     "current_state" => _("Status"),
     "last_check" => _("Last check"),
     "plugin_output" => _("Output"),
-    "criticality_id" => _("Criticality")
+    "criticality_id" => _("Criticality"),
 );
 
 $form->addElement('select', 'global_sort_type', _("Sort by  "), $globalSortType);
@@ -207,7 +207,8 @@ $sso_enable[] = $form->createElement(
     'yes',
     '&nbsp;',
     '',
-    array("onchange" => "javascript:confirm('" . $alertMessage . "')"
+    array(
+        "onchange" => "javascript:confirm('" . $alertMessage . "')",
     )
 );
 $form->addGroup($sso_enable, 'sso_enable', _("Enable SSO authentication"), '&nbsp;&nbsp;');
@@ -216,14 +217,14 @@ $sso_mode = array();
 $sso_mode[] = $form->createElement('radio', 'sso_mode', null, _("SSO only"), '0');
 $sso_mode[] = $form->createElement('radio', 'sso_mode', null, _("Mixed"), '1');
 $form->addGroup($sso_mode, 'sso_mode', _("SSO mode"), '&nbsp;');
-$form->setDefaults(array('sso_mode'=>'1'));
+$form->setDefaults(array('sso_mode' => '1'));
 
 $form->addElement('text', 'sso_trusted_clients', _('SSO trusted client addresses'), array('size' => 50));
 $form->addElement('text', 'sso_blacklist_clients', _('SSO blacklist client addresses'), array('size' => 50));
 $form->addElement('text', 'sso_username_pattern', _('SSO pattern matching login'), array('size' => 50));
 $form->addElement('text', 'sso_username_replace', _('SSO pattern replace login'), array('size' => 50));
 $form->addElement('text', 'sso_header_username', _('SSO login header'), array('size' => 30));
-$form->setDefaults(array('sso_header_username'=>'HTTP_AUTH_USER'));
+$form->setDefaults(array('sso_header_username' => 'HTTP_AUTH_USER'));
 
 $options3[] = $form->createElement('checkbox', 'yes', '&nbsp;', '');
 $form->addGroup($options3, 'enable_gmt', _("Enable Timezone management"), '&nbsp;&nbsp;');
@@ -236,8 +237,9 @@ $keycloakEnable[] = $form->createElement(
     'yes',
     '&nbsp;',
     '',
-    array("onchange" => "javascript:confirm("
-        ."'Are you sure you want to change this parameter ? Please read the help before.')"
+    array(
+        "onchange" => "javascript:confirm("
+            . "'Are you sure you want to change this parameter ? Please read the help before.')",
     )
 );
 $form->addGroup($keycloakEnable, 'keycloak_enable', _("Enable Keycloak authentication"), '&nbsp;&nbsp;');
@@ -246,7 +248,7 @@ $keycloakMode = array();
 $keycloakMode[] = $form->createElement('radio', 'keycloak_mode', null, _("Keycloak only"), '0');
 $keycloakMode[] = $form->createElement('radio', 'keycloak_mode', null, _("Mixed"), '1');
 $form->addGroup($keycloakMode, 'keycloak_mode', _("Keycloak mode"), '&nbsp;');
-$form->setDefaults(array('keycloak_mode'=>'1'));
+$form->setDefaults(array('keycloak_mode' => '1'));
 
 $form->addElement('text', 'keycloak_trusted_clients', _('Keycloak trusted client addresses'), array('size' => 50));
 $form->addElement('text', 'keycloak_blacklist_clients', _('Keycloak blacklist client addresses'), array('size' => 50));
@@ -280,7 +282,7 @@ $form->addRule('oreon_path', _("Can't write in directory"), 'is_valid_path');
  * Smarty template Init
  */
 $tpl = new Smarty();
-$tpl = initSmartyTpl($path.'general/', $tpl);
+$tpl = initSmartyTpl($path . 'general/', $tpl);
 
 $form->setDefaults($gopt);
 
@@ -305,14 +307,14 @@ if ($form->validate()) {
 }
 
 if (!$form->validate() && isset($_POST["gopt_id"])) {
-    print("<div class='msg' align='center'>"._("Impossible to validate, one or more field is incorrect")."</div>");
+    print("<div class='msg' align='center'>" . _("Impossible to validate, one or more field is incorrect") . "</div>");
 }
 
 $form->addElement(
     "button",
     "change",
     _("Modify"),
-    array("onClick"=>"javascript:window.location.href='?p=".$p."'", 'class' => 'btc bt_info')
+    array("onClick" => "javascript:window.location.href='?p=" . $p . "'", 'class' => 'btc bt_info')
 );
 
 /*
@@ -339,7 +341,7 @@ $tpl->assign('valid', $valid);
 $helptext = "";
 include_once("help.php");
 foreach ($help as $key => $text) {
-    $helptext .= '<span style="display:none" id="help:'.$key.'">'.$text.'</span>'."\n";
+    $helptext .= '<span style="display:none" id="help:' . $key . '">' . $text . '</span>' . "\n";
 }
 $tpl->assign("helptext", $helptext);
 
