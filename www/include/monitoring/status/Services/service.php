@@ -405,14 +405,6 @@ if ($o == "svc") {
     }
 }
 
-$form->addElement(
-    'select',
-    'statusFilter',
-    _('Status'),
-    $statusList,
-    array('id' => 'statusFilter', 'onChange' => "filterStatus(this.value);")
-);
-
 $serviceStatusFromO = isset($_GET['o']) && in_array($_GET['o'], array_keys($statusService))
     ? $_GET['o']
     : null;
@@ -422,6 +414,7 @@ $defaultStatusService =  $_GET['statusService']
     ?: $_SESSION['monitoring_service_status']
     ?? 'svc_unhandled';
 $o = $defaultStatusService;
+$form->setDefaults(array('statusFilter' => $defaultStatusService));
 
 $defaultStatusFilter = $_GET['statusFilter']
     ?? $_POST['statusFilter']
@@ -430,11 +423,21 @@ $defaultStatusFilter = $_GET['statusFilter']
 
 $form->addElement(
     'select',
+    'statusFilter',
+    _('Status'),
+    $statusList,
+    array('id' => 'statusFilter', 'onChange' => "filterStatus(this.value);")
+);
+$form->setDefaults(['statusFilter' => $defaultStatusFilter]);
+
+$form->addElement(
+    'select',
     'statusService',
     _('Service Status'),
     $statusService,
     array('id' => 'statusService', 'onChange' => "statusServices(this.value);")
 );
+$form->setDefaults(['statusService' => $defaultStatusService]);
 
 $criticality = new CentreonCriticality($pearDB);
 $crits = $criticality->getList(null, "level", 'ASC', null, null, true);
