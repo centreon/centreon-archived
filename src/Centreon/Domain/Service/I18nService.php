@@ -149,6 +149,7 @@ class I18nService
 
                 foreach ($files as $file) {
                     $data = array_replace_recursive(
+                        $data,
                         unserialize($file->getContents())
                     );
                 }
