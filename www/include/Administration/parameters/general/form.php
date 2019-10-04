@@ -67,7 +67,7 @@ while ($opt = $dbResult->fetch()) {
 /*
  * Style
  */
-$attrsText = array("size"=>"40");
+$attrsText = array("size" => "40");
 $attrsText2 = array("size"=>"5");
 $attrsAdvSelect = null;
 
