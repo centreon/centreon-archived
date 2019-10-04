@@ -1,7 +1,7 @@
 <?php
 /*
- * Copyright 2005-2015 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2019 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -38,6 +38,11 @@ if (!isset($centreon)) {
     exit();
 }
 
+// getting the garbage collector value set
+$lifetime = ini_get_all("session", false);
+$lifetime = ((int) $lifetime['session.gc_maxlifetime']) / 60;
+define("SESSION_DURATION_LIMIT", $lifetime);
+
 $transcoKey = array(
     "enable_autologin" => "yes",
     "display_autologin_shortcut" => "yes",
@@ -49,8 +54,8 @@ $transcoKey = array(
     'send_statistics' => 'yes'
 );
 
-$DBRESULT = $pearDB->query("SELECT * FROM `options`");
-while ($opt = $DBRESULT->fetchRow()) {
+$dbResult = $pearDB->query("SELECT * FROM `options`");
+while ($opt = $dbResult->fetch()) {
     if (isset($transcoKey[$opt["key"]])) {
         $gopt[$opt["key"]][$transcoKey[$opt["key"]]] = myDecode($opt["value"]);
     } else {
@@ -61,8 +66,8 @@ while ($opt = $DBRESULT->fetchRow()) {
 /*
  * Style
  */
-$attrsText        = array("size"=>"40");
-$attrsText2        = array("size"=>"5");
+$attrsText = array("size"=>"40");
+$attrsText2 = array("size"=>"5");
 $attrsAdvSelect = null;
 
 /*
@@ -79,6 +84,12 @@ $form->addElement('text', 'oreon_path', _("Directory"), $attrsText);
 $form->addElement('text', 'oreon_web_path', _("Centreon Web Directory"), $attrsText);
 
 $form->addElement('text', 'session_expire', _("Sessions Expiration Time"), $attrsText2);
+$form->registerRule('is_session_duration_valid', 'callback', 'is_session_duration_valid');
+$form->addRule(
+    'session_expire',
+    _("This value needs to be an integer lesser than") . " " . SESSION_DURATION_LIMIT . " min",
+    'is_session_duration_valid'
+);
 
 $limit = array(10 => 10, 20 => 20, 30 => 30, 40 => 40, 50 => 50, 60 => 60, 70 => 70, 80 => 80, 90 => 90, 100 => 100);
 $form->addElement('select', 'maxViewMonitoring', _("Limit per page for Monitoring"), $limit);
@@ -111,23 +122,25 @@ if ($handle  = @opendir($oreon->optGen["oreon_path"]."www/Themes/")) {
 $form->addElement('select', 'template', _("Display Template"), $templates);
 
 $global_sort_type = array(
-                        "host_name" => _("Hosts"),
-                        "last_state_change" => _("Duration"),
-                        "service_description" => _("Services"),
-                        "current_state" => _("Status"),
-                        "last_check" => _("Last check"),
-                        "output" => _("Output"),
-                        "criticality_id" => _("Criticality"),
-                        "current_attempt" => _("Attempt"),
-                    );
+    "host_name" => _("Hosts"),
+    "last_state_change" => _("Duration"),
+    "service_description" => _("Services"),
+    "current_state" => _("Status"),
+    "last_check" => _("Last check"),
+    "output" => _("Output"),
+    "criticality_id" => _("Criticality"),
+    "current_attempt" => _("Attempt"),
+);
 
-$sort_type = array(    "last_state_change" => _("Duration"),
-                    "host_name" => _("Hosts"),
-                    "service_description" => _("Services"),
-                    "current_state" => _("Status"),
-                    "last_check" => _("Last check"),
-                    "plugin_output" => _("Output"),
-                    "criticality_id" => _("Criticality"));
+$sort_type = array(
+    "last_state_change" => _("Duration"),
+    "host_name" => _("Hosts"),
+    "service_description" => _("Services"),
+    "current_state" => _("Status"),
+    "last_check" => _("Last check"),
+    "plugin_output" => _("Output"),
+    "criticality_id" => _("Criticality")
+);
 
 $form->addElement('select', 'global_sort_type', _("Sort by  "), $global_sort_type);
 $global_sort_order = array("ASC" => _("Ascending"), "DESC" => _("Descending"));
@@ -219,7 +232,6 @@ $form->addGroup($options3, 'enable_gmt', _("Enable Timezone management"), '&nbsp
  */
 $form->addElement('text', 'centreon_support_email', _("Centreon Support Email"), $attrsText);
 
-
 $form->applyFilter('__ALL__', 'myTrim');
 $form->applyFilter('nagios_path', 'slash');
 $form->applyFilter('nagios_path_img', 'slash');
@@ -234,9 +246,6 @@ $form->registerRule('is_writable_path', 'callback', 'is_writable_path');
 $form->registerRule('is_writable_file', 'callback', 'is_writable_file');
 $form->registerRule('is_writable_file_if_exist', 'callback', 'is_writable_file_if_exist');
 $form->addRule('oreon_path', _("Can't write in directory"), 'is_valid_path');
-// $form->addRule('nagios_path_plugins', _("Can't write in directory"), 'is_writable_path'); - Field is not added so no need for rule
-// $form->addRule('nagios_path_img', _("Can't write in directory"), 'is_writable_path'); - Field is not added so no need for rule
-// $form->addRule('nagios_path', _("The directory isn't valid"), 'is_valid_path'); - Field is not added so no need for rule
 
 /*
  * Smarty template Init
