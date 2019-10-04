@@ -629,8 +629,12 @@ if ($o == "mc") {
         _("Default"),
         '2'
     );
-    $form->addGroup($contactAdditive, 'mc_contact_additive_inheritance', _("Contact additive inheritance"),
-        '&nbsp;');
+    $form->addGroup(
+        $contactAdditive,
+        'mc_contact_additive_inheritance',
+        _("Contact additive inheritance"),
+        '&nbsp;'
+    );
 
     $contactGroupAdditive[] = $form->createElement('radio', 'mc_cg_additive_inheritance', null, _("Yes"), '1');
     $contactGroupAdditive[] = $form->createElement('radio', 'mc_cg_additive_inheritance', null, _("No"), '0');

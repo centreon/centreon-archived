@@ -99,7 +99,8 @@ $inheritanceMode[] = $form->createElement(
     'inheritance_mode',
     null,
     _("Most Close Value"),
-    CLOSE_NOTIFICATION);
+    CLOSE_NOTIFICATION
+);
 
 $inheritanceMode[] = $form->createElement(
     'radio',
