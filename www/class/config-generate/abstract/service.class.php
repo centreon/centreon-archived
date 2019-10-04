@@ -38,7 +38,7 @@ require_once dirname(__FILE__) . '/object.class.php';
 abstract class AbstractService extends AbstractObject
 {
     const VERTICAL_NOTIFICATION = 1;
-    const CLOSE_NOTIFICATION = 2;
+    // CLOSE_NOTIFICATION = 2
     const CUMULATIVE_NOTIFICATION = 3;
 
     // no flap_detection_options attribute
@@ -233,8 +233,9 @@ abstract class AbstractService extends AbstractObject
      */
     protected function isContactInheritance($serviceId)
     {
-        $query = "SELECT contact_additive_inheritance FROM service WHERE `service_id` = " . (int)$serviceId;
-        $stmt = $this->backend_instance->db->query($query);
+        $stmt = $this->backend_instance->db->query(
+            'SELECT contact_additive_inheritance FROM service WHERE `service_id` = ' . (int)$serviceId
+        );
         $inheritance = $stmt->fetch();
         return (int)$inheritance['contact_additive_inheritance'];
     }
@@ -245,14 +246,16 @@ abstract class AbstractService extends AbstractObject
      */
     protected function getContactVerticalInheritance($serviceId, &$serviceListing = array())
     {
-        $serviceListing[] = $serviceId;
-        $query = 'SELECT service_template_model_stm_id, contact_additive_inheritance
-                FROM service
-                WHERE `service_activate` = "1" 
-                AND `service_id` = ' . (int)$serviceId;
-        $stmt = $this->backend_instance->db->query($query);
+        $stmt = $this->backend_instance->db->query(
+            'SELECT service_template_model_stm_id, contact_additive_inheritance, service_notifications_enabled
+            FROM service
+            WHERE `service_activate` = "1" 
+            AND `service_id` = ' . (int)$serviceId
+        );
         $serviceAdd = $stmt->fetch();
-
+        if ($serviceAdd['service_notifications_enabled'] != '0') {
+            $serviceListing[] = $serviceId;
+        }
         if (isset($serviceAdd['service_template_model_stm_id'])
             && (int)$serviceAdd['contact_additive_inheritance'] === 1
         ) {
@@ -273,7 +276,7 @@ abstract class AbstractService extends AbstractObject
         );
         $row = $stmt->fetch();
 
-        if($row['service_notifications_enabled'] != 0){
+        if ($row['service_notifications_enabled'] != 0) {
             $serviceListing[] = (int)$serviceId;
         }
         if ($row['service_template_model_stm_id']) {
@@ -395,8 +398,9 @@ abstract class AbstractService extends AbstractObject
      */
     protected function isContactGroupsInheritance($serviceId)
     {
-        $query = "SELECT cg_additive_inheritance FROM service WHERE `service_id` = " . (int)$serviceId;
-        $stmt = $this->backend_instance->db->query($query);
+        $stmt = $this->backend_instance->db->query(
+            'SELECT cg_additive_inheritance FROM service WHERE `service_id` = ' . (int)$serviceId
+        );
         $inheritance = $stmt->fetch();
         return (int)$inheritance['cg_additive_inheritance'];
     }
@@ -407,21 +411,19 @@ abstract class AbstractService extends AbstractObject
      */
     protected function getContactGroupsVerticalInheritance($serviceId, &$serviceListing = array())
     {
-        $query = "SELECT service_template_model_stm_id, cg_additive_inheritance, service_notifications_enabled
-                FROM service
-                WHERE `service_activate` = '1'
-                AND `service_id` = " . (int)$serviceId;
-        $stmt = $this->backend_instance->db->query($query);
+        $stmt = $this->backend_instance->db->query(
+            'SELECT service_template_model_stm_id, cg_additive_inheritance, service_notifications_enabled
+            FROM service
+            WHERE `service_activate` = "1"
+            AND `service_id` = ' . (int)$serviceId
+        );
         $serviceAdd = $stmt->fetch();
-
-        if($serviceAdd['service_notifications_enabled'] != 0){
+        if ($serviceAdd['service_notifications_enabled'] != 0) {
             $serviceListing[] = (int)$serviceId;
         }
-
         if (isset($serviceAdd['service_template_model_stm_id'])
             && (int)$serviceAdd['cg_additive_inheritance'] === 1
         ) {
-
             $this->getContactGroupsVerticalInheritance(
                 $serviceAdd['service_template_model_stm_id'],
                 $serviceListing
