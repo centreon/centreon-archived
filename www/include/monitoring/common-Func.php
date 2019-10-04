@@ -147,7 +147,7 @@ function getContactsForHost($hostId)
     global $pearDB;
 
     $contacts = array();
-    $DBRESULT = $pearDB->query(
+    $dbResult = $pearDB->query(
         'SELECT contact.contact_id, contact.contact_name 
         FROM contact, contact_host_relation 
         WHERE contact_host_relation.host_host_id = ' . $hostId . '
@@ -155,7 +155,7 @@ function getContactsForHost($hostId)
         AND contact.contact_activate = "1" 
         AND contact.contact_enable_notifications != "0"'
     );
-    while (($row = $DBRESULT->fetchRow())) {
+    while (($row = $dbResult->fetch())) {
         $contacts[$row['contact_id']] = $row['contact_name'];
     }
     return $contacts;
@@ -206,14 +206,14 @@ function getContactgroupsForService($serviceId)
 {
     global $pearDB;
     $contactGroups = array();
-    $DBRESULT = $pearDB->query(
+    $dbResult = $pearDB->query(
         'SELECT contactgroup.cg_id, contactgroup.cg_name 
         FROM contactgroup, contactgroup_service_relation 
         WHERE contactgroup_service_relation.service_service_id = ' . (int)$serviceId . '
         AND contactgroup_service_relation.contactgroup_cg_id = contactgroup.cg_id
         AND contactgroup.cg_activate = "1"'
     );
-    while (($row = $DBRESULT->fetchRow())) {
+    while (($row = $dbResult->fetch())) {
         $contactGroups[$row['cg_id']] = $row['cg_name'];
     }
 
@@ -228,7 +228,7 @@ function getContactsForService($serviceId)
 {
     global $pearDB;
     $contacts = array();
-    $DBRESULT = $pearDB->query(
+    $dbResult = $pearDB->query(
         'SELECT contact.contact_id, contact.contact_name 
         FROM contact, contact_service_relation 
         WHERE contact_service_relation.service_service_id = ' . $serviceId . '
@@ -236,7 +236,7 @@ function getContactsForService($serviceId)
         AND contact.contact_activate = "1" 
         AND contact.contact_enable_notifications != "0"'
     );
-    while (($row = $DBRESULT->fetchRow())) {
+    while (($row = $dbResult->fetch())) {
         $contacts[$row['contact_id']] = $row['contact_name'];
     }
 
