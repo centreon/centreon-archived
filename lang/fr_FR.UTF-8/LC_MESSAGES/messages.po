@@ -14725,3 +14725,6 @@ msgstr "Filtrer par groupe de services"
 
 msgid "Chart"
 msgstr "Graphiques"
+
+msgid "This value needs to be an integer lesser than"
+msgstr "Cette valeur doit être inférieur à"
