@@ -166,6 +166,9 @@ input[type="checkbox"]  {
 .md-checkbox input[type="checkbox"]:disabled:checked + label:before {
     background: rgba(0, 0, 0, 0.26);
 }
+.md-checkbox input[type="checkbox"]:disabled:checked + label.md-label-green:before {
+    background: rgb(136, 185, 23);
+}
 
 
 @keyframes ripple {
@@ -1142,6 +1145,16 @@ div.menuLeft {
 
 .table .FormRowValue {
     padding: 4px 6px;
+}
+
+.table .FormRowValue.flex-row-wrap {
+    display: flex;
+    flex-flow: row wrap;
+    max-width: 80vw;
+}
+
+.table .FormRowValue.flex-row-wrap .md-checkbox-inline {
+    margin: 2px 10px 2px 0px;
 }
 
 /* ------ END : Popover-----*/

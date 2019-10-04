@@ -12726,8 +12726,11 @@ msgid "Server Configuration"
 msgstr "Configuração do Servidor"
 
 #: centreon-web/www/install/react_translation.php:72
-msgid "Attach poller to a server"
-msgstr "Anexar coletor a um servidor"
+msgid "Attach poller to a master remote server"
+msgstr "Anexar coletor a um servidor mestre remoto"
+
+msgid "Attach poller to additional remote servers"
+msgstr "Anexar coletor a servidores remotos adicionais"
 
 #: centreon-web/www/install/react_translation.php:73
 msgid "Advanced: reverse Centreon Broker communication flow"
@@ -14443,3 +14446,9 @@ msgstr "Processos de Comandos"
 
 #~ msgid "Already requested, please wait the CRON execution or for the user to login"
 #~ msgstr ""
+
+msgid "To use additional Remote Servers a Master Remote Server must be selected."
+msgstr "Para usar Remote Server adicionais, um Remote Server mestre deve ser selecionado."
+
+msgid "Attach additional Remote Servers"
+msgstr "Anexar Remote Server adicionais"

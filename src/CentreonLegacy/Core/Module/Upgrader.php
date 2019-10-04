@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright 2005-2017 Centreon
+ * Copyright 2005-2019 Centreon
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -63,11 +63,6 @@ class Upgrader extends Module
                 continue;
             }
 
-            $configuration = $this->utils->requireConfiguration(
-                $upgradePath . '/conf.php',
-                'upgrade'
-            );
-
             if (version_compare($moduleInstalledInformation["mod_release"], $upgradeName) >= 0) {
                 continue;
             }
@@ -75,9 +70,9 @@ class Upgrader extends Module
             $this->upgradeVersion($upgradeName);
             $moduleInstalledInformation["mod_release"] = $upgradeName;
 
-            $this->upgradePhpFiles($configuration, $upgradePath, true);
-            $this->upgradeSqlFiles($configuration, $upgradePath);
-            $this->upgradePhpFiles($configuration, $upgradePath, false);
+            $this->upgradePhpFiles($upgradePath, true);
+            $this->upgradeSqlFiles($upgradePath);
+            $this->upgradePhpFiles($upgradePath, false);
         }
 
         return $this->moduleId;
@@ -145,11 +140,10 @@ class Upgrader extends Module
 
     /**
      *
-     * @param array $conf
      * @param string $path
      * @return boolean
      */
-    private function upgradeSqlFiles($conf, $path)
+    private function upgradeSqlFiles($path)
     {
         $installed = false;
 
@@ -164,12 +158,11 @@ class Upgrader extends Module
 
     /**
      *
-     * @param array $conf
      * @param string $path
      * @param boolean $pre
      * @return boolean
      */
-    private function upgradePhpFiles($conf, $path, $pre = false)
+    private function upgradePhpFiles($path, $pre = false)
     {
         $installed = false;
 

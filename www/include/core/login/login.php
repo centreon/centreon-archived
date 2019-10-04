@@ -1,7 +1,7 @@
 <?php
 /*
- * Copyright 2005-2015 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2019 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -81,7 +81,7 @@ if (isset($_GET["disconnect"]) && $_GET["disconnect"] == 2) {
     $loginMessages[] = _('Your session is expired.');
 }
 
-if ($file_install_acces) {
+if ($file_install_access) {
     $loginMessages[] = $error_msg;
 }
 
@@ -109,7 +109,7 @@ $form->addRule('password', _("You must specify a password"), 'required');
 if (isset($freeze) && $freeze) {
     $form->freeze();
 }
-if ($file_install_acces) {
+if ($file_install_access) {
     $submitLogin->freeze();
 }
 

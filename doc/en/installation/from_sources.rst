@@ -123,7 +123,7 @@ Activate the modules: ::
 Additional commands are necessary to configure the environment correctly: ::
 
     $ groupadd -g 6000 centreon
-    $ useradd -u 6000 -g centreon -m -r -d /var/lib/centreon -c "Centreon Admin" -s /bin/bash centreon
+    $ useradd -u 6000 -g centreon -m -r -d /var/lib/centreon -c "Centreon Admin" -s /bin/sh centreon
 
 To finish, you should install SNMP MIBs. Because of a license problem the MIB files
 are not available by default in Debian. To add them, change the /etc/apt/sources.list
@@ -795,10 +795,14 @@ and replace **enforcing** by **disabled**: ::
 
 After saving the file, please reboot your operating system to apply the changes.
 
-PHP timezone should be set: go to `/etc/php.d` directory and create a file named `php-timezone.ini`
-which contains the following line: ::
+Timezone and mandatory PHP parameters have to be set: go to `/etc/php/7.2/cli/conf.d` or `/etc/php/7.2/apache2/conf.d`
+directory and create a file named `centreon.ini`
+which contains the following lines: ::
 
     date.timezone = Europe/Paris
+    max_execution_time = 300
+    session.use_strict_mode = 1
+    session.gc_maxlifetime = 7200
 
 After saving the file, please don't forget to restart apache server.
 
