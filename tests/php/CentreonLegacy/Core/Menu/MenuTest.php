@@ -37,7 +37,7 @@ namespace CentreonLegacy\Core\Menu;
 
 use \Centreon\Test\Mock\CentreonDB;
 
-class MenuTest extends \PHPUnit_Framework_TestCase
+class MenuTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var CentreonDb The database mock

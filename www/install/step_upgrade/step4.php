@@ -70,7 +70,7 @@ if (version_compare($current, '2.8.0-beta1') < 0) {
 ** Print upcoming database upgrade steps.
 */
 } else {
-    $contents = _('<p>Currently upgrading database... please do not interrupt this process.</p>');
+    $contents = _('<p>Currently upgrading... please do not interrupt this process.</p>');
     $contents .= "<table cellpadding='0' cellspacing='0' border='0' width='80%' class='StyleDottedHr' align='center'>
                     <thead>
                         <tr>
@@ -126,19 +126,20 @@ $template->assign('blockPreview', 1);
 $template->display('content.tpl');
 ?>
 <script type='text/javascript'>
-    var step = <?php echo STEP_NUMBER;?>;
-    var mycurrent;
-    var mynext;
-    var result = false;
+    let step = <?php echo STEP_NUMBER;?>;
+    let myCurrent;
+    let myNext;
+    let result = false;
+    let stepContent = jQuery('#step_contents');
 
     jQuery(function () {
-        mycurrent = '<?php echo $current;?>';
-        mynext = '<?php echo $next;?>';
-        if (mycurrent != '' && mynext != '') {
-            jQuery("input[type=button]").hide();
-            nextStep(mycurrent, mynext);
+        myCurrent = '<?php echo $current;?>';
+        myNext = '<?php echo $next;?>';
+        jQuery("input[type=button]").hide();
+        if (myCurrent !== '' && myNext !== '') {
+            nextStep(myCurrent, myNext);
         } else {
-            result = true;
+            generationCache();
         }
     });
 
@@ -150,31 +151,55 @@ $template->display('content.tpl');
      * @return void
      */
     function nextStep(current, next) {
-        jQuery('#step_contents').append('<tr>');
-        jQuery('#step_contents').append('<td>' + current + ' to ' + next + '</td>');
-        jQuery('#step_contents').append('<td style="font-weight: bold;" name="'
+        stepContent.append('<tr>');
+        stepContent.append('<td>' + current + ' to ' + next + '</td>');
+        stepContent.append('<td style="font-weight: bold;" name="'
             + replaceDot(current) + '"><img src="../img/misc/ajax-loader.gif"></td>');
-        jQuery('#step_contents').append('</tr>');
+        stepContent.append('</tr>');
         doProcess(
             true,
             './step_upgrade/process/process_step' + step + '.php'
             , {'current': current, 'next': next},
             function (response) {
-                var data = jQuery.parseJSON(response);
+                let data = jQuery.parseJSON(response);
                 jQuery('td[name=' + replaceDot(current) + ']').html(data['msg']);
-                if (data['result'] == "0") {
+                if (data['result'] === "0") {
                     jQuery('#troubleshoot').hide();
                     if (data['next']) {
                         nextStep(data['current'], data['next']);
                     } else {
-                        jQuery('#next').show();
-                        result = true;
+                        generationCache();
                     }
                 } else {
                     jQuery('#troubleshoot').show();
                     jQuery('#refresh').show();
                 }
             });
+    }
+
+    function generationCache() {
+      stepContent.append('<tr>');
+      stepContent.append('<td>Application cache generation</td>');
+      stepContent.append(
+        '<td style="font-weight: bold;" name="api.cache"><img src="../img/misc/ajax-loader.gif"></td>'
+      );
+      stepContent.append('</tr>');
+      doProcess(
+        true,
+        './steps/process/generationCache.php',
+        null,
+        function (response) {
+          let data = jQuery.parseJSON(response);
+          if (data['result'] === 0) {
+            jQuery('td[name="api.cache"]').html("<span style='color:#88b917;'>" + data['msg'] + '</span>');
+            jQuery('#troubleshoot').hide();
+            jQuery('#next').show();
+            result = true;
+          } else {
+            jQuery('td[name="api.cache"]').html("<span style='color:red;'>" + data['msg'] + '</span>');
+            jQuery('#refresh').show();
+          }
+        });
     }
 
     /**

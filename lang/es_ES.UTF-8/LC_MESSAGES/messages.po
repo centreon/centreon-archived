@@ -2613,8 +2613,8 @@ msgid "Installation"
 msgstr "Instalación"
 
 #: centreon-web/www/install/steps/step7.php:45
-msgid "Currently installing database... please do not interrupt this process.<br/><br/>"
-msgstr "Instalando las bases de datos ... no interrumpa el proceso. <br/> <br/>"
+msgid "Currently installing database and generating cache... please do not interrupt this process.<br/><br/>"
+msgstr "Instalando las bases de datos y generando el caché... no interrumpa el proceso. <br/> <br/>"
 
 #: centreon-web/www/install/steps/step7.php:50 centreon-web/www/install/step_upgrade/step4.php:61
 msgid "Step"
@@ -14265,4 +14265,16 @@ msgstr "cubo de basura"
 #~ msgstr ""
 
 #~ msgid "Already requested, please wait the CRON execution or for the user to login"
+#~ msgstr ""
+
+msgid "To use additional Remote Servers a Master Remote Server must be selected."
+msgstr "Para usar Remote Server adicionales, se debe seleccionar un Remote Server maestro."
+
+msgid "Attach additional Remote Servers"
+msgstr "Adjunte Remote Servers adicionales"
+
+#~ msgid "Attach poller to a master remote server"
+#~ msgstr ""
+
+#~ msgid "Attach poller to additional remote servers"
 #~ msgstr ""

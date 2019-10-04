@@ -147,6 +147,74 @@ try {
     );
 }
 
+
+/**
+ * Add columns to manage engine & broker restart/reload process
+ */
+
+$pearDB->query('
+    ALTER TABLE `nagios_server`
+    ADD COLUMN `engine_start_command` varchar(255) DEFAULT \'service centengine start\' AFTER `monitoring_engine`
+');
+$pearDB->query('
+    ALTER TABLE `nagios_server`
+    ADD COLUMN `engine_stop_command` varchar(255) DEFAULT \'service centengine stop\' AFTER `engine_start_command`
+');
+$pearDB->query('
+    ALTER TABLE `nagios_server`
+    ADD COLUMN `engine_restart_command` varchar(255) DEFAULT \'service centengine restart\' AFTER `engine_stop_command`
+');
+$pearDB->query('
+    ALTER TABLE `nagios_server`
+    ADD COLUMN `engine_reload_command` varchar(255) DEFAULT \'service centengine reload\' AFTER `engine_restart_command`
+');
+$pearDB->query('
+    ALTER TABLE `nagios_server`
+    ADD COLUMN `broker_reload_command` varchar(255) DEFAULT \'service cbd reload\' AFTER `nagios_perfdata`
+');
+
+$stmt = $pearDB->prepare('
+    UPDATE `nagios_server`
+    SET engine_start_command = :engine_start_command,
+    engine_stop_command = :engine_stop_command,
+    engine_restart_command = :engine_restart_command,
+    engine_reload_command = :engine_reload_command,
+    broker_reload_command = :broker_reload_command
+    WHERE id = :id
+');
+
+$result = $pearDB->query('SELECT value FROM `options` WHERE `key` = \'broker_correlator_script\'');
+$brokerServiceName = 'cbd';
+if ($row = $result->fetch()) {
+    if (!empty($row['value'])) {
+        $brokerServiceName = $row['value'];
+    }
+}
+$stmt->bindValue(':broker_reload_command', 'service ' . $brokerServiceName . ' reload', \PDO::PARAM_STR);
+
+$result = $pearDB->query('SELECT id, init_script FROM `nagios_server`');
+
+while ($row = $result->fetch()) {
+    $engineServiceName = 'centengine';
+    if (!empty($row['init_script'])) {
+        $engineServiceName = $row['init_script'];
+    }
+    $stmt->bindValue(':id', $row['id'], \PDO::PARAM_INT);
+    $stmt->bindValue(':engine_start_command', 'service ' . $engineServiceName . ' start', \PDO::PARAM_STR);
+    $stmt->bindValue(':engine_stop_command', 'service ' . $engineServiceName . ' stop', \PDO::PARAM_STR);
+    $stmt->bindValue(':engine_restart_command', 'service ' . $engineServiceName . ' restart', \PDO::PARAM_STR);
+    $stmt->bindValue(':engine_reload_command', 'service ' . $engineServiceName . ' reload', \PDO::PARAM_STR);
+    $stmt->execute();
+}
+
+// Remove deprecated engine & broker init script paths
+$pearDB->query('ALTER TABLE `nagios_server` DROP COLUMN `init_script`');
+$pearDB->query('ALTER TABLE `nagios_server` DROP COLUMN `init_system`');
+$pearDB->query('ALTER TABLE `nagios_server` DROP COLUMN `monitoring_engine`');
+$pearDB->query('DELETE FROM `options` WHERE `key` = \'broker_correlator_script\'');
+$pearDB->query('DELETE FROM `options` WHERE `key` = \'monitoring_engine\'');
+
+
 /**
  * Manage upgrade of widget preferences
  */
@@ -189,4 +257,108 @@ while ($row = $result->fetch()) {
     $statement->bindValue(':parameter_id', $row['parameter_id'], \PDO::PARAM_INT);
     $statement->bindValue(':user_id', $row['user_id'], \PDO::PARAM_INT);
     $statement->execute();
+}
+
+// set cache for severities
+$severities = [];
+$result = $pearDB->query('SELECT sc_id, sc_name FROM service_categories WHERE level IS NOT NULL');
+while ($row = $result->fetch()) {
+    $severityName = strtolower($row['sc_name']);
+    $severities[$severityName] = $row['sc_id'];
+}
+
+// get poller preferences (criticality_filter) of service-monitoring widget
+$result = $pearDB->query(
+    'SELECT wpr.widget_view_id, wpr.parameter_id, wpr.preference_value, wpr.user_id
+    FROM widget_preferences wpr
+    INNER JOIN widget_parameters wpa ON wpa.parameter_id = wpr.parameter_id
+    AND wpa.parameter_code_name = \'criticality_filter\'
+    INNER JOIN widget_models wm ON wm.widget_model_id = wpa.widget_model_id
+    AND wm.title = \'Service Monitoring\''
+);
+
+$statement = $pearDB->prepare(
+    'UPDATE widget_preferences
+    SET preference_value= :value
+    WHERE widget_view_id = :view_id
+    AND parameter_id = :parameter_id
+    AND user_id = :user_id'
+);
+
+// update poller preferences from name to id
+while ($row = $result->fetch()) {
+    $severityIds = [];
+    $severityNames = explode(',', $row['preference_value']);
+    foreach ($severityNames as $severityName) {
+        $severityName = strtolower($severityName);
+        if (isset($severities[$severityName])) {
+            $severityIds[] = $severities[$severityName];
+        }
+    }
+
+    $severityIds = !empty($severityIds) ? implode(',', $severityIds) : '';
+
+    $statement->bindValue(':value', $severityIds, \PDO::PARAM_STR);
+    $statement->bindValue(':view_id', $row['widget_view_id'], \PDO::PARAM_INT);
+    $statement->bindValue(':parameter_id', $row['parameter_id'], \PDO::PARAM_INT);
+    $statement->bindValue(':user_id', $row['user_id'], \PDO::PARAM_INT);
+    $statement->execute();
+}
+
+// manage rrdcached upgrade
+$result = $pearDB->query("SELECT `value` FROM options WHERE `key` = 'rrdcached_enable' ");
+$cache = $result->fetch();
+
+if ($cache['value']) {
+
+    try {
+        $pearDB->beginTransaction();
+
+        $res = $pearDB->query(
+            "SELECT * FROM cfg_centreonbroker_info WHERE `config_key` = 'type' AND `config_value` = 'rrd'"
+        );
+        $result = $pearDB->query("SELECT `value` FROM options WHERE `key` = 'rrdcached_port' ");
+        $port = $result->fetch();
+
+        while ($row = $res->fetch()) {
+            if ($port['value']) {
+                $query = 'INSERT INTO cfg_centreonbroker_info (config_id, config_key, config_value, '
+                    . 'config_group, config_group_id ) VALUES '
+                    . '( ' . $row['config_id'] . ',"rrd_cached_option","tcp", "'
+                    . $row['config_group'] . '",' . $row['config_group_id'] . ' ),'
+                    . '( ' . $row['config_id'] . ',"rrd_cached","' . $port['value'] . '","'
+                    . $row['config_group'] . '",' . $row['config_group_id'] . ' )';
+                $pearDB->query($query);
+            } else {
+                $result = $pearDB->query("SELECT `value` FROM options WHERE `key` = 'rrdcached_unix_path' ");
+                $path = $result->fetch();
+
+                $query = 'INSERT INTO cfg_centreonbroker_info (config_id, config_key, config_value, '
+                    . 'config_group, config_group_id ) VALUES '
+                    . '( ' . $row['config_id'] . ',"rrd_cached_option","unix","'
+                    . $row['config_group'] . '",' . $row['config_group_id'] . ' ),'
+                    . '( ' . $row['config_id'] . ',"rrd_cached","' . $path['value'] . '","'
+                    . $row['config_group'] . '",' . $row['config_group_id'] . ' )';
+                $pearDB->query($query);
+            }
+
+            $pearDB->query(
+                "DELETE FROM cfg_centreonbroker_info WHERE `config_id` = " . $row['config_id']
+                . " AND config_group_id = " . $row['config_group_id']
+                . " AND config_group = 'output' AND ( config_key = 'port' OR config_key = 'path') "
+            );
+        }
+        $pearDB->query(
+            "DELETE FROM options WHERE `key` = 'rrdcached_enable' 
+                OR `key` = 'rrdcached_port' OR `key` = 'rrdcached_unix_path'"
+        );
+        $pearDB->commit();
+    } catch (\PDOException $e) {
+
+        $centreonLog->insertLog(
+            2, // sql-error.log
+            "UPGRADE : Unable to move rrd global cache option on broker form"
+        );
+        $pearDB->rollBack();
+    }
 }

@@ -544,8 +544,8 @@ INSERT INTO `cb_field` (`cb_field_id`, `fieldname`, `displayname`, `description`
 (33, 'fifo', 'File for Centreon Broker statistics', 'File where Centreon Broker statistics will be stored', 'text', NULL),
 (34, 'queries_per_transaction', 'Maximum queries per transaction', 'The maximum queries per transaction before commit.', 'int', NULL),
 (35, 'read_timeout', 'Transaction commit timeout', 'The transaction timeout before running commit.', 'int', NULL),
-(36, 'path', 'Unix socket', 'The Unix socket used to communicate with rrdcached. This is a global option, go to Administration > Options > RRDTool to modify it.', 'text', 'T=options:C=value:CK=key:K=rrdcached_unix_path'),
-(37, 'port', 'TCP port', 'The TCP port used to communicate with rrdcached. This is a global option, go to Administration > Options > RRDTool to modify it.', 'int', 'T=options:C=value:CK=key:K=rrdcached_port'),
+(36, 'rrd_cached_option', 'Enable RRDCached', 'Enable rrdcached option for Centreon, please see Centreon documentation to configure it.', 'radio', NULL),
+(37, 'rrd_cached', 'RRDCacheD listening socket/port', 'The absolute path to unix socket or TCP port for communicating with rrdcached daemon.', 'text', NULL),
 (38, 'max_size', 'Max file size in bytes', 'The maximum size of log file.', 'int', NULL),
 (39, 'check_replication', 'Replication enabled', 'When enabled, the broker engine will check whether or not the replication is up to date before attempting to update data.', 'radio', NULL),
 (40, 'rebuild_check_interval', 'Rebuild check interval in seconds', 'The interval between check if some metrics must be rebuild. The default value is 300s', 'int', NULL),
@@ -620,7 +620,8 @@ INSERT INTO `cb_list` (`cb_list_id`, `cb_field_id`, `default_value`) VALUES
 (10, 62, 'false'),
 (1, 63, 'yes'),
 (1, 70, 'no'),
-(11, 73, 'string');
+(11, 73, 'string'),
+(12, 36, 'disable');
 
 --
 -- Contenu de la table `cb_list_values`
@@ -658,7 +659,10 @@ INSERT INTO `cb_list_values` (`cb_list_id`, `value_name`, `value_value`) VALUES
 (10, 'False', 'false'),
 (11, 'String', 'string'),
 (11, 'Number', 'number'),
-(11, 'Password', 'password');
+(11, 'Password', 'password'),
+(12, 'Disable', 'disable'),
+(12, 'TCP Port', 'tcp'),
+(12, 'UNIX Socket', 'unix');
 
 --
 -- Contenu de la table `cb_module_relation`
@@ -726,8 +730,7 @@ INSERT INTO `cb_type_field_relation` (`cb_type_id`, `cb_field_id`, `is_required`
 (11, 11, 1, 1),
 (11, 12, 1, 2),
 (11, 41, 0, 3),
-(13, 36, 0, 4),
-(13, 37, 0, 3),
+(13, 37, 0, 4),
 (13, 13, 1, 1),
 (13, 14, 1, 2),
 (14, 7, 1, 4),
@@ -843,7 +846,8 @@ INSERT INTO `cb_type_field_relation` (`cb_type_id`, `cb_field_id`, `is_required`
 -- Contenu de la table `cb_type_field_relation`
 --
 INSERT INTO `cb_type_field_relation` (`cb_type_id`, `cb_field_id`, `is_required`, `order_display`, `jshook_name`, `jshook_arguments`) VALUES
-(33, 73, 0, 5, 'luaArguments', '{"target": "lua_parameter__value_%d"}');
+(33, 73, 0, 5, 'luaArguments', '{"target": "lua_parameter__value_%d"}'),
+(13, 36, 0, 3, 'rrdArguments', '{"target": "rrd_cached"}');
 
 --
 -- Contenu de la table `widget_parameters_field_type`
@@ -880,6 +884,7 @@ INSERT INTO `widget_parameters_field_type` (`ft_typename`, `is_connector`) VALUE
                                            ('pollerMulti', 1),
                                            ('serviceGroupMulti', 1),
                                            ('hostSeverityMulti', 1),
+                                           ('serviceSeverityMulti', 1),
                                            ('integer', 0);
 
 INSERT INTO timezone (`timezone_name`, `timezone_offset`, `timezone_dst_offset`) VALUES

@@ -139,7 +139,7 @@ class UserMenu extends Component {
                     </span>
                     <span className={styles['submenu-user-type']}>
                       <Translate value="as" />
-                      {username}
+                      {` ${username}`}
                     </span>
                     {allowEditProfile && (
                       <Link
@@ -153,7 +153,7 @@ class UserMenu extends Component {
                   </span>
                 </li>
                 {autologinkey && (
-                  <React.Fragment>
+                  <>
                     <button
                       className={styles['submenu-user-button']}
                       onClick={this.onCopy}
@@ -172,7 +172,7 @@ class UserMenu extends Component {
                       ref={(node) => (this.autologinNode = node)}
                       value={autolink}
                     />
-                  </React.Fragment>
+                  </>
                 )}
               </ul>
               <div className={styles['button-wrap']}>

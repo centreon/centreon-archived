@@ -24,10 +24,10 @@ class HTML_QuickForm_checkbox_Custom extends HTML_QuickForm_checkbox
      */
     public function toHtml()
     {
-        if (empty($this->_text)) {
-            $label = '<label class="empty-label" for="' . $this->getAttribute('id') . '"/>' . $this->_text . '</label>';
-        } elseif ($this->_flagFrozen) {
+        if ($this->_flagFrozen) {
             $label = $this->_text;
+        } elseif (empty($this->_text)) {
+            $label = '<label class="empty-label" for="' . $this->getAttribute('id') . '"/>' . $this->_text . '</label>';
         } else {
             $label = '<label for="' . $this->getAttribute('id') . '">' . $this->_text . '</label>';
         }

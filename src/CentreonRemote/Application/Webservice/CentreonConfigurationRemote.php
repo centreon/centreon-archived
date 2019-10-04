@@ -216,9 +216,14 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
      *              description="pollers to link with the new remote"
      *          ),
      *          @OA\Property(
-     *              property="linked_remote",
+     *              property="linked_remote_master",
      *              type="string",
      *              description="remote to manage the new poller"
+     *          ),
+     *          @OA\Property(
+     *              property="linked_remote_slaves",
+     *              type="string",
+     *              description="additional remotes which receive data from the new poller"
      *          )
      *       )
      *   ),
@@ -294,6 +299,8 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
 
         // set linked pollers
         $pollerConfigurationBridge->collectDataFromRequest();
+        // set additional Remote Servers
+        $pollerConfigurationBridge->collectDataFromAdditionalRemoteServers();
 
         // if it's a remote server, set database connection information and check if bam is installed
         if ($isRemoteConnection) {
@@ -367,6 +374,9 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
             $pollers = [$pollerConfigurationBridge->getPollerFromId($serverId)];
             $parentPoller = $pollerConfigurationBridge->getLinkedPollersSelectedForUpdate()[0];
             $pollerConfigurationService->linkPollersToParentPoller($pollers, $parentPoller);
+            // add broker output to forward data to additionnal remote server and link in db
+            $additionalRemotes = $pollerConfigurationBridge->getAdditionalRemoteServers();
+            $pollerConfigurationService->linkPollerToAdditionalRemoteServers($pollers[0], $additionalRemotes);
         }
 
         return ['success' => true, 'task_id' => $taskId];

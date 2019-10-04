@@ -172,9 +172,11 @@ class ServiceProvider implements AutoloadServiceProviderInterface
             return $service;
         };
 
-        $pimple['centreon.user'] = function (Container $container): \CentreonUser {
+        $pimple['centreon.user'] = function (Container $container): ?\CentreonUser {
             // @codeCoverageIgnoreStart
-            if (php_sapi_name() !== 'cli' && session_status() == PHP_SESSION_NONE) {
+            if (!empty($GLOBALS['centreon']->user) && $GLOBALS['centreon']->user instanceof \CentreonUser) {
+                return $GLOBALS['centreon']->user;
+            } elseif (php_sapi_name() !== 'cli' && session_status() == PHP_SESSION_NONE) {
                 session_start();
             }
 

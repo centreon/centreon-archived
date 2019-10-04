@@ -338,6 +338,10 @@ $tpl = initSmartyTpl($path, $tpl);
 
 $form->setDefaults($defaultFeatures);
 
+// remove illegal chars in data sent by the user
+$cct['contact_name'] = CentreonUtils::escapeSecure($cct['contact_name'], CentreonUtils::ESCAPE_ILLEGAL_CHARS);
+$cct['contact_alias'] = CentreonUtils::escapeSecure($cct['contact_alias'], CentreonUtils::ESCAPE_ILLEGAL_CHARS);
+
 // Modify a contact information
 if ($o == "c") {
     $subC = $form->addElement('submit', 'submitC', _("Save"), array("class" => "btc bt_success"));

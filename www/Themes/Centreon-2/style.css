@@ -124,6 +124,7 @@ input[type="checkbox"]  {
 .md-checkbox label:before, .md-checkbox label:after {
     content: "";
     position: absolute;
+    box-sizing: border-box;
     left: 0;
     top: 0;
 }
@@ -165,8 +166,8 @@ input[type="checkbox"]  {
 .md-checkbox input[type="checkbox"]:disabled:checked + label:before {
     background: rgba(0, 0, 0, 0.26);
 }
-*, *:before, *:after {
-    box-sizing: border-box;
+.md-checkbox input[type="checkbox"]:disabled:checked + label.md-label-green:before {
+    background: rgb(136, 185, 23);
 }
 
 
@@ -1144,6 +1145,16 @@ div.menuLeft {
 
 .table .FormRowValue {
     padding: 4px 6px;
+}
+
+.table .FormRowValue.flex-row-wrap {
+    display: flex;
+    flex-flow: row wrap;
+    max-width: 80vw;
+}
+
+.table .FormRowValue.flex-row-wrap .md-checkbox-inline {
+    margin: 2px 10px 2px 0px;
 }
 
 /* ------ END : Popover-----*/

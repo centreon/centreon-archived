@@ -59,7 +59,7 @@ check_php_version
 check_composer_dependencies
 [ "$?" -eq 1 ] && purge_centreon_tmp_dir && exit 1
 
-## Check frontend application (if www/template directory exists)
+## Check frontend application (if www/static directory exists)
 check_frontend_application
 [ "$?" -eq 1 ] && purge_centreon_tmp_dir && exit 1
 
@@ -163,7 +163,7 @@ cd "${OLDPATH}"
 OLDPATH=$(pwd)
 cd $TMP_DIR/src/
 log "INFO" "$(gettext "Copying frontend application...")"
-cp -Rf www/index.html www/template www/.htaccess $TMP_DIR/final/www/
+cp -Rf www/index.html www/static www/.htaccess $TMP_DIR/final/www/
 cd "${OLDPATH}"
 
 ## Create temporary directory

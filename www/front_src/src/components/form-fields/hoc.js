@@ -53,12 +53,14 @@ const fieldHoc = (WrapComponent) => {
 
     handleBlur(e) {
       const {
-        input: { onBlur },
+        input: { onBlur, value }
       } = this.props;
 
       this.setState({ isFocused: false });
 
-      if (onBlur) onBlur(e);
+      if (onBlur) {
+        return onBlur(value);
+      }
     }
 
     isInputValue(value) {

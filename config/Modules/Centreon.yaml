@@ -1,0 +1,65 @@
+parameters:
+    api.header: "Api-Version"
+    api.version.latest: "2.0"
+    api.version.beta: "2.1"
+
+services:
+    _defaults:
+        autowire: true      # Automatically injects dependencies in your services.
+        autoconfigure: true # Automatically registers your services as commands, event subscribers, controller...
+
+    Centreon\:
+        resource: '../../src/Centreon/*'
+        exclude: '../../src/Centreon/Tests'
+
+    Centreon\Infrastructure\DatabaseConnection:
+        class: Centreon\Infrastructure\DatabaseConnection
+        arguments:
+            $host: '%database_host%'
+            $port: '%database_port%'
+            $basename: '%database_db%'
+            $login: '%database_user%'
+            $password: '%database_password%'
+        calls:
+            - method: setCentreonDbName
+              arguments: ['%database_db%']
+            - method: setStorageDbName
+              arguments: ['%database_dbstg%']
+
+    # controllers are imported separately to make sure services can be injected
+    # as action arguments even if you don't extend any base controller class
+    Centreon\Application\Controller\:
+        resource: '../../src/Centreon/Application/Controller'
+        tags: ['controller.service_arguments']
+
+    Centreon\Domain\Contact\Interfaces\ContactRepositoryInterface:
+        class: Centreon\Infrastructure\Contact\ContactRepositoryRDB
+
+    contact.provider:
+        class: Centreon\Domain\Contact\ContactProvider
+        public: true
+
+    Centreon\Domain\Security\Interfaces\AuthenticationRepositoryInterface:
+        class: Centreon\Infrastructure\Security\AuthenticationRepositoryRDB
+
+    Centreon\Domain\Security\Interfaces\AuthenticationServiceInterface:
+        class: Centreon\Domain\Security\AuthenticationService
+
+    Centreon\Domain\Monitoring\Interfaces\MonitoringServiceInterface:
+        class: Centreon\Domain\Monitoring\MonitoringService
+
+    Centreon\Domain\Security\Interfaces\AccessGroupRepositoryInterface:
+        class: Centreon\Infrastructure\Security\AccessGroupRepositoryRDB
+
+    Centreon\Domain\RequestParameters\Interfaces\RequestParametersInterface:
+        class: Centreon\Domain\RequestParameters\RequestParameters
+
+    Centreon\Domain\Monitoring\Interfaces\MonitoringRepositoryInterface:
+        alias: 'monitoring.repository'
+
+    monitoring.repository:
+        public: true
+        class: Centreon\Infrastructure\Monitoring\MonitoringRepositoryRDB
+        calls:
+            - method: setSqlRequestTranslator
+              arguments: ['@Centreon\Infrastructure\Repository\SqlRequestParametersTranslator']
