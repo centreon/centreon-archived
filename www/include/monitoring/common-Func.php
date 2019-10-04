@@ -235,7 +235,7 @@ function getContactsForService($serviceId)
         AND contact_service_relation.contact_id = contact.contact_id
         AND contact.contact_activate = "1" 
         AND contact.contact_enable_notifications != "0"'
-        );
+    );
     while (($row = $DBRESULT->fetchRow())) {
         $contacts[$row['contact_id']] = $row['contact_name'];
     }
