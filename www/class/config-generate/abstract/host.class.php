@@ -446,14 +446,18 @@ abstract class AbstractHost extends AbstractObject
      */
     protected function getContactGroupsVerticalInheritance($hostId, &$hostList = array())
     {
-        $hostList[] = $hostId;
-        $query = "SELECT cg_additive_inheritance, host_tpl_id FROM host, host_template_relation
-                    WHERE `host_id` = `host_host_id`
-                    AND `order` = 1
-                    AND `host_id` = " . (int)$hostId;
-        $stmt = $this->backend_instance->db->query($query);
+        $stmt = $this->backend_instance->db->query(
+        'SELECT cg_additive_inheritance, host_tpl_id, host_notifications_enabled
+        FROM host, host_template_relation
+        WHERE `host_id` = `host_host_id`
+        AND `order` = 1
+        AND `host_id` = ' . (int)$hostId
+        );
         $hostAdd = $stmt->fetch();
 
+        if($hostAdd['host_notifications_enabled'] != 0){
+            $hostList[] = (int)$hostId;
+        }
         if (isset($hostAdd['host_tpl_id']) && (int)$hostAdd['cg_additive_inheritance'] === 1) {
             $this->getContactGroupsVerticalInheritance($hostAdd['host_tpl_id'], $hostList);
         }
