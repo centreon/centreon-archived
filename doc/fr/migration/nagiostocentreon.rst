@@ -69,7 +69,7 @@ Pour exécuter le script lancer la commande :
 
 ::
 
-  $ perl nagios_reader_to_centreon_clapi.pl --config /usr/local/nagios/etc/nagios.cfg > /tmp/centreon_clapi_import_commands.txt
+  $ perl nagios_reader_to_centreon_clapi.pl --config /usr/local/nagios/etc/ > /tmp/centreon_clapi_import_commands.txt
 
 Exportez le fichier **/tmp/centreon_clapi_import_commands.txt** sur votre serveur Centreon.
 
