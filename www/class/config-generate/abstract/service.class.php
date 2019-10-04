@@ -266,13 +266,16 @@ abstract class AbstractService extends AbstractObject
      */
     protected function getCumulativeInheritance($serviceId, &$serviceListing = array())
     {
-        $serviceListing[] = $serviceId;
         $stmt = $this->backend_instance->db->query(
-            'SELECT service_template_model_stm_id FROM service
+            'SELECT service_template_model_stm_id, service_notifications_enabled FROM service
             WHERE `service_activate` = "1" 
             AND `service_id` = ' . (int)$serviceId
         );
         $row = $stmt->fetch();
+
+        if($row['service_notifications_enabled'] != 0){
+            $serviceListing[] = (int)$serviceId;
+        }
         if ($row['service_template_model_stm_id']) {
             $this->getCumulativeInheritance($row['service_template_model_stm_id'], $serviceListing);
         }
@@ -414,6 +417,7 @@ abstract class AbstractService extends AbstractObject
         if($serviceAdd['service_notifications_enabled'] != 0){
             $serviceListing[] = (int)$serviceId;
         }
+
         if (isset($serviceAdd['service_template_model_stm_id'])
             && (int)$serviceAdd['cg_additive_inheritance'] === 1
         ) {
