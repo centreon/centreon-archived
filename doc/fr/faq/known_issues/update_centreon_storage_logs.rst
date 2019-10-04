@@ -103,3 +103,39 @@ Exécution en mode non-interactif (>10 millions d’enregistrements)
 .. warning::
     Si vous décidez de conserver les données de l'ancienne table centreon_storage.logs n'oubliez pas de vérifier l'espace
     disque disponible.
+
+Reprise de la migration
+-----------------------
+
+Si, pour une raison quelconque, vous souhaitez arrêter le script de migration sachez qu’il est possible de le redémarrer
+afin qu’il reprenne là où il en était.
+
+.. note:: Option de reprise :
+    
+    --continue:
+        Cette option permet de spécifier la reprise des migrations après une interruption d'exécution.
+        
+        Si cette option est spécifiée les structures des tables *centreon_storage.logs* et *centreon_storage.logs_old*
+        ne seront pas touchées.
+
+Pour cela il y a deux possibilités :
+
+1. En spécifiant le nom de dernière partition traitée.
+2. Sans spécifier le nom de la dernière partition traitée, le script utilisera la première partition non-vide de la
+  table centreon_storage.logs_old.
+
+.. warning::
+    L’utilisation de l’option *--continue* sans spécifier le nom de la dernière partition traitée n’est à utiliser que
+    si vous aviez spécifié l’option *--no-keep* lors de la précédente exécution du script.
+
+Exemples : ::
+
+    # nohup php update_centreon_storage_logs.php --continue [--password=root_password]
+
+ou ::
+
+    # nohup php update_centreon_storage_logs.php --continue=last_partition_name [--password=root_password]
+
+.. note::
+    Pour connaître le nom de la dernière partition traitée il vous suffit de regarder dans les logs de traitement du
+    script le nom de la dernière partition en cours de traitement avant l’arrêt du script.
