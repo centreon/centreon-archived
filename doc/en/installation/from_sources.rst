@@ -123,7 +123,7 @@ Activate the modules: ::
 Additional commands are necessary to configure the environment correctly: ::
 
     $ groupadd -g 6000 centreon
-    $ useradd -u 6000 -g centreon -m -r -d /var/lib/centreon -c "Centreon Admin" -s /bin/bash centreon
+    $ useradd -u 6000 -g centreon -m -r -d /var/lib/centreon -c "Centreon Admin" -s /bin/sh centreon
 
 To finish, you should install SNMP MIBs. Because of a license problem the MIB files
 are not available by default in Debian. To add them, change the /etc/apt/sources.list

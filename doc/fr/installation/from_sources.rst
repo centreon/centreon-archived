@@ -125,7 +125,7 @@ Des commandes additionnelles sont nécessaires pour configurer correctement
 l'environnement : ::
 
     $ groupadd -g 6000 centreon
-    $ useradd -u 6000 -g centreon -m -r -d /var/lib/centreon -c "Centreon Admin" -s /bin/bash centreon
+    $ useradd -u 6000 -g centreon -m -r -d /var/lib/centreon -c "Centreon Admin" -s /bin/sh centreon
 
 Pour finir, vous devez installer des MIBs SNMP. En raison d'un problème de licence,
 les fichiers MIBs ne sont pas disponibles par défaut sous Debian. Pour les ajouter,
