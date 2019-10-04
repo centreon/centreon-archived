@@ -770,10 +770,14 @@ and replace **enforcing** by **disabled**: ::
 
 After saving the file, please reboot your operating system to apply the changes.
 
-PHP timezone should be set: go to `/etc/php.d` directory and create a file named `php-timezone.ini`
-which contains the following line: ::
+Timezone and mandatory PHP parameters have to be set: go to `/etc/php/7.1/cli/conf.d` or `/etc/php/7.1/apache2/conf.d`
+directory and create a file named `centreon.ini`
+which contains the following lines: ::
 
     date.timezone = Europe/Paris
+    max_execution_time = 300
+    session.use_strict_mode = 1
+    session.gc_maxlifetime = 7200
 
 After saving the file, please don't forget to restart apache server.
 
