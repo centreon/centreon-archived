@@ -69,7 +69,11 @@ $help['tip_order_sort_problems'] = dgettext('help', 'Default order in monitoring
  * Notification
  */
 
-$help['tip_notification_inheritance'] = dgettext('help', 'Notification inheritance.');
+$help['tip_notification_inheritance'] = dgettext(
+    'help',
+    'Notification inheritance for hosts and services. Vertical for the legacy mode, Close for the first valid object '
+    . 'and Cumulative for all valid object.'
+);
 
 /**
  * Authentication properties
