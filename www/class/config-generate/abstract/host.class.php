@@ -500,16 +500,16 @@ abstract class AbstractHost extends AbstractObject
     /**
      * Get enable contact group id/name of a host list
      *
-     * @param array $host List of host id
+     * @param array $hostIds List of host id
      * @return array
      */
-    protected function getInheritanceContactGroups($host)
+    protected function getInheritanceContactGroups($hostIds)
     {
         $cg = Contactgroup::getInstance($this->dependencyInjector);
         $contactGroups = array();
         $stmt = $this->backend_instance->db->query(
             'SELECT c.cg_id , cg_name FROM contactgroup c, contactgroup_host_relation ch
-            WHERE ch.host_host_id IN (' . implode(',', $host) . ') AND ch.contactgroup_cg_id = c.cg_id 
+            WHERE ch.host_host_id IN (' . implode(',', $hostIds) . ') AND ch.contactgroup_cg_id = c.cg_id 
             AND cg_activate = "1"'
         );
         while (($row = $stmt->fetch())) {
