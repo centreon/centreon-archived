@@ -177,7 +177,7 @@ abstract class AbstractService extends AbstractObject
      *
      * @param array $service
      */
-    protected function getContacts(&$service)
+    protected function getContacts(array &$service): void
     {
         // check inheritance host option
         if (isset($service['service_use_only_contacts_from_host'])
@@ -202,7 +202,7 @@ abstract class AbstractService extends AbstractObject
      * @param array $service
      * @return array
      */
-    public function listServicesWithContacts($service)
+    public function listServicesWithContacts(array $service): array
     {
         //check notification mode
         if (is_null($this->notificationOption)) {
@@ -220,7 +220,7 @@ abstract class AbstractService extends AbstractObject
             //check vertical inheritance
             if (!empty($serviceListing) && (self::VERTICAL_NOTIFICATION === $this->notificationOption)) {
                 //use the first template found to start
-                $startService = $serviceListing[0];
+                $startService = (int)$serviceListing[0];
                 $serviceListing = array();
                 $this->getContactVerticalInheritance($startService, $serviceListing);
             }
@@ -234,13 +234,13 @@ abstract class AbstractService extends AbstractObject
      * @param $serviceId
      * @param array $serviceListing
      */
-    protected function getContactVerticalInheritance($serviceId, &$serviceListing = array())
+    protected function getContactVerticalInheritance(int $serviceId, &$serviceListing = array()): void
     {
         $stmt = $this->backend_instance->db->query(
             'SELECT service_template_model_stm_id, contact_additive_inheritance, service_notifications_enabled
             FROM service
             WHERE `service_activate` = "1" 
-            AND `service_id` = ' . (int)$serviceId
+            AND `service_id` = ' . $serviceId
         );
         $serviceAdd = $stmt->fetch();
         if ($serviceAdd['service_notifications_enabled'] != '0') {
@@ -249,7 +249,7 @@ abstract class AbstractService extends AbstractObject
         if (isset($serviceAdd['service_template_model_stm_id'])
             && (int)$serviceAdd['contact_additive_inheritance'] === 1
         ) {
-            $this->getContactVerticalInheritance($serviceAdd['service_template_model_stm_id'], $serviceListing);
+            $this->getContactVerticalInheritance((int)$serviceAdd['service_template_model_stm_id'], $serviceListing);
         }
     }
 
@@ -259,20 +259,20 @@ abstract class AbstractService extends AbstractObject
      * @param $serviceId
      * @param array $serviceListing
      */
-    protected function getCumulativeInheritance($serviceId, &$serviceListing = array())
+    protected function getCumulativeInheritance(int $serviceId, &$serviceListing = array()): void
     {
         $stmt = $this->backend_instance->db->query(
             'SELECT service_template_model_stm_id, service_notifications_enabled FROM service
             WHERE `service_activate` = "1" 
-            AND `service_id` = ' . (int)$serviceId
+            AND `service_id` = ' . $serviceId
         );
         $row = $stmt->fetch();
 
         if ($row['service_notifications_enabled'] != 0) {
-            $serviceListing[] = (int)$serviceId;
+            $serviceListing[] = $serviceId;
         }
         if ($row['service_template_model_stm_id']) {
-            $this->getCumulativeInheritance($row['service_template_model_stm_id'], $serviceListing);
+            $this->getCumulativeInheritance((int)$row['service_template_model_stm_id'], $serviceListing);
         }
     }
 
@@ -282,31 +282,26 @@ abstract class AbstractService extends AbstractObject
      * @param $serviceId
      * @param array $serviceListing
      */
-    protected function getContactCloseInheritance($serviceId, &$serviceListing = array())
+    protected function getContactCloseInheritance(int $serviceId, &$serviceListing = array()): void
     {
         $stmt = $this->backend_instance->db->query(
             'SELECT GROUP_CONCAT(contact.`contact_id`) as contact_id, 
  	            (SELECT service_template_model_stm_id FROM service
 	            WHERE service.`service_activate` = "1"
-                AND service.`service_id` = ' . (int)$serviceId . ' ) as `service_template_model_stm_id` 
+                AND service.`service_id` = ' . $serviceId . ' ) as `service_template_model_stm_id` 
             FROM service, contact, contact_service_relation 
             WHERE contact_service_relation.`service_service_id` = service.`service_id`
             AND contact.`contact_id` = contact_service_relation.`contact_id`
             AND contact.`contact_activate` = "1"
             AND contact.`contact_enable_notifications` != "0"
             AND service.`service_notifications_enabled` != "0"
-            AND service.`service_id` = ' . (int)$serviceId
+            AND service.`service_id` = ' . $serviceId
         );
-        while ($row = $stmt->fetch()) {
-            if (empty($serviceListing)) {
-                if ($row['contact_id']) {
-                    $serviceListing[] = (int)$serviceId;
-                    break;
-                } elseif (!empty($row['service_template_model_stm_id'])) {
-                    $this->getContactCloseInheritance($row['service_template_model_stm_id'], $serviceListing);
-                }
-            } else {
-                break;
+        if ($row = $stmt->fetch() && empty($serviceListing)) {
+            if ($row['contact_id']) {
+                $serviceListing[] = $serviceId;
+            } elseif (!empty($row['service_template_model_stm_id'])) {
+                $this->getContactCloseInheritance((int)$row['service_template_model_stm_id'], $serviceListing);
             }
         }
     }
@@ -317,7 +312,7 @@ abstract class AbstractService extends AbstractObject
      * @param array $service List of service id
      * @return array
      */
-    protected function getInheritanceContact(array $service)
+    protected function getInheritanceContact(array $service): array
     {
         $contact = Contact::getInstance($this->dependencyInjector);
         $contacts = array();
@@ -338,7 +333,7 @@ abstract class AbstractService extends AbstractObject
      *
      * @param array $service
      */
-    protected function getContactGroups(&$service)
+    protected function getContactGroups(array &$service):void
     {
         // check inheritance host option
         if (isset($service['service_use_only_contacts_from_host'])
@@ -363,7 +358,7 @@ abstract class AbstractService extends AbstractObject
      * @param array $service
      * @return array
      */
-    public function listServicesWithContactGroups($service)
+    public function listServicesWithContactGroups(array $service): array
     {
         //check notification mode
         if (is_null($this->notificationOption)) {
@@ -381,7 +376,7 @@ abstract class AbstractService extends AbstractObject
             //check vertical inheritance
             if (!empty($serviceListing) && (self::VERTICAL_NOTIFICATION === $this->notificationOption)) {
                 //use the first template found to start
-                $startService = $serviceListing[0];
+                $startService = (int)$serviceListing[0];
                 $serviceListing = array();
                 $this->getContactGroupsVerticalInheritance($startService, $serviceListing);
             }
@@ -395,23 +390,23 @@ abstract class AbstractService extends AbstractObject
      * @param $serviceId
      * @param array $serviceListing
      */
-    protected function getContactGroupsVerticalInheritance($serviceId, &$serviceListing = array())
+    protected function getContactGroupsVerticalInheritance(int $serviceId, &$serviceListing = array()): void
     {
         $stmt = $this->backend_instance->db->query(
             'SELECT service_template_model_stm_id, cg_additive_inheritance, service_notifications_enabled
             FROM service
             WHERE `service_activate` = "1"
-            AND `service_id` = ' . (int)$serviceId
+            AND `service_id` = ' . $serviceId
         );
         $serviceAdd = $stmt->fetch();
         if ($serviceAdd['service_notifications_enabled'] != 0) {
-            $serviceListing[] = (int)$serviceId;
+            $serviceListing[] = $serviceId;
         }
         if (isset($serviceAdd['service_template_model_stm_id'])
             && (int)$serviceAdd['cg_additive_inheritance'] === 1
         ) {
             $this->getContactGroupsVerticalInheritance(
-                $serviceAdd['service_template_model_stm_id'],
+                (int)$serviceAdd['service_template_model_stm_id'],
                 $serviceListing
             );
         }
@@ -423,31 +418,26 @@ abstract class AbstractService extends AbstractObject
      * @param $serviceId
      * @param array $serviceListing
      */
-    protected function getContactGroupsCloseInheritance($serviceId, &$serviceListing = array())
+    protected function getContactGroupsCloseInheritance(int $serviceId, &$serviceListing = array()): void
     {
         $stmt = $this->backend_instance->db->query(
             'SELECT GROUP_CONCAT(contactgroup.cg_id) as cg_id, 
                 (SELECT service_template_model_stm_id FROM service
 	            WHERE service.`service_activate` = "1" 
-	            AND service.`service_id` = ' . (int)$serviceId . ' ) as `service_template_model_stm_id` 
+	            AND service.`service_id` = ' . $serviceId . ' ) as `service_template_model_stm_id` 
             FROM service, contactgroup, contactgroup_service_relation
             WHERE contactgroup_service_relation.`service_service_id` = service.`service_id`
             AND contactgroup.`cg_id` = contactgroup_service_relation.`contactgroup_cg_id`
             AND contactgroup.`cg_activate` = "1"
             AND service.`service_notifications_enabled` != "0" 
             AND service.`service_activate` = "1" 
-            AND service.`service_id` = ' . (int)$serviceId
+            AND service.`service_id` = ' . $serviceId
         );
-        while ($row = $stmt->fetch()) {
-            if (empty($serviceListing)) {
-                if ($row['cg_id']) {
-                    $serviceListing[] = (int)$serviceId;
-                    break;
-                } elseif (!empty($row['service_template_model_stm_id'])) {
-                    $this->getContactGroupsCloseInheritance($row['service_template_model_stm_id'], $serviceListing);
-                }
-            } else {
-                break;
+        if ($row = $stmt->fetch() && empty($serviceListing)) {
+            if ($row['cg_id']) {
+                $serviceListing[] = $serviceId;
+            } elseif (!empty($row['service_template_model_stm_id'])) {
+                $this->getContactGroupsCloseInheritance((int)$row['service_template_model_stm_id'], $serviceListing);
             }
         }
     }
@@ -458,7 +448,7 @@ abstract class AbstractService extends AbstractObject
      * @param array $serviceIds List of service id
      * @return array
      */
-    protected function getInheritanceContactGroups($serviceIds)
+    protected function getInheritanceContactGroups(array $serviceIds): array
     {
         $cg = Contactgroup::getInstance($this->dependencyInjector);
         $contactGroups = array();
@@ -467,8 +457,6 @@ abstract class AbstractService extends AbstractObject
             WHERE cs.service_service_id IN (' . implode(',', $serviceIds) . ') AND cs.contactgroup_cg_id = c.cg_id 
             AND cg_activate = "1"'
         );
-
-
         while (($row = $stmt->fetch())) {
             $contactGroups[$row['cg_id']] = $cg->generateFromCgId($row['cg_id']);
         }

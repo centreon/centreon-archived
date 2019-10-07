@@ -88,7 +88,7 @@ abstract class AbstractObject
      * Get the global inheritance option of notification
      * 1 = vertical, 2 = close, 3 = cumulative
      *
-     * @return mixed
+     * @return int
      */
     public function getInheritanceMode()
     {
@@ -96,7 +96,7 @@ abstract class AbstractObject
             "SELECT `value` FROM options WHERE `key` = 'inheritance_mode'"
         );
         $notificationOption = $stmtNotification->fetch();
-        return $notificationOption['value'];
+        return (int)$notificationOption['value'];
     }
 
     private function setHeader()
