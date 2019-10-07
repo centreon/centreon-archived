@@ -14800,4 +14800,4 @@ msgid "Chart"
 msgstr "Graphiques"
 
 msgid "This value needs to be an integer lesser than"
-msgstr "Cette valeur doit être inférieure à"
+msgstr "Cette valeur doit être un entier inférieur à"
