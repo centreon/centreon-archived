@@ -14250,3 +14250,6 @@ msgstr "cubo de basura"
 
 #~ msgid "Already requested, please wait the CRON execution or for the user to login"
 #~ msgstr ""
+
+#~ msgid "This value needs to be an integer lesser than"
+#~ msgstr ""
