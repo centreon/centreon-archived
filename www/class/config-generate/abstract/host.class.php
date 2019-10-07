@@ -290,7 +290,7 @@ abstract class AbstractHost extends AbstractObject
         if ($hostAdd['host_notifications_enabled'] != '0') {
             $hostList[] = $hostId;
         }
-        if (isset($hostAdd['host_tpl_id']) && (int)$hostAdd['contact_additive_inheritance'] == 1) {
+        if (isset($hostAdd['host_tpl_id']) && (int)$hostAdd['contact_additive_inheritance'] === 1) {
             $this->getContactVerticalInheritance((int)$hostAdd['host_tpl_id'], $hostList);
         }
     }

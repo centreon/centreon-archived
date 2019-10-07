@@ -455,16 +455,16 @@ abstract class AbstractService extends AbstractObject
     /**
      * Get enable contact group id/name of a service list
      *
-     * @param array $service List of service id
+     * @param array $serviceIds List of service id
      * @return array
      */
-    protected function getInheritanceContactGroups($service)
+    protected function getInheritanceContactGroups($serviceIds)
     {
         $cg = Contactgroup::getInstance($this->dependencyInjector);
         $contactGroups = array();
         $stmt = $this->backend_instance->db->query(
             'SELECT c.cg_id , c.cg_name FROM contactgroup c, contactgroup_service_relation cs
-            WHERE cs.service_service_id IN (' . implode(',', $service) . ') AND cs.contactgroup_cg_id = c.cg_id 
+            WHERE cs.service_service_id IN (' . implode(',', $serviceIds) . ') AND cs.contactgroup_cg_id = c.cg_id 
             AND cg_activate = "1"'
         );
 

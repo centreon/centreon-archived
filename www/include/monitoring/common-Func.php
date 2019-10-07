@@ -87,19 +87,19 @@ function set_user_param($user_id, $pearDB, $key, $value)
 }
 
 /**
+ * Get the notified contact/contact group of host tree inheritance
+ *
  * @param $hostId
  * @param $dependencyInjector
  * @return array
  */
 function getNotifiedInfosForHost($hostId, $dependencyInjector)
 {
-    global $pearDB;
+    $hostInfo = array();
     $hostInstance = Host::getInstance($dependencyInjector);
     $results = array('contacts' => array(), 'contactGroups' => array());
 
-    $query = "SELECT * FROM host WHERE host_id = " . (int)$hostId;
-    $dbResult = $pearDB->query($query);
-    $hostInfo = $dbResult->fetch();
+    $hostInfo['host_id'] = (int)$hostId;
     $listHostsContact = array_unique($hostInstance->listHostsWithContacts($hostInfo));
     $listHostsContactGroup = array_unique($hostInstance->listHostsWithContactGroups($hostInfo));
 
@@ -117,6 +117,8 @@ function getNotifiedInfosForHost($hostId, $dependencyInjector)
 }
 
 /**
+ * Get the list of enable contact groups (id/name) for a host
+ *
  * @param $hostId
  * @return array
  */
@@ -139,6 +141,8 @@ function getContactgroupsForHost($hostId)
 }
 
 /**
+ * Get the list of enable contact (id/name) for a host
+ *
  * @param $hostId
  * @return array
  */
@@ -150,7 +154,7 @@ function getContactsForHost($hostId)
     $dbResult = $pearDB->query(
         'SELECT contact.contact_id, contact.contact_name 
         FROM contact, contact_host_relation 
-        WHERE contact_host_relation.host_host_id = ' . $hostId . '
+        WHERE contact_host_relation.host_host_id = ' . (int)$hostId . '
         AND contact_host_relation.contact_id = contact.contact_id
         AND contact.contact_activate = "1" 
         AND contact.contact_enable_notifications != "0"'
@@ -162,6 +166,8 @@ function getContactsForHost($hostId)
 }
 
 /**
+ * Get the notified contact/contact group of service tree inheritance
+ *
  * @param $serviceId
  * @param $hostId
  * @param $dependencyInjector
@@ -169,13 +175,11 @@ function getContactsForHost($hostId)
  */
 function getNotifiedInfosForService($serviceId, $hostId, $dependencyInjector)
 {
-    global $pearDB;
+    $serviceInfo = array();
     $results = array('contacts' => array(), 'contactGroups' => array());
     $serviceInstance = Service::getInstance($dependencyInjector);
+    $serviceInfo['service_id'] = (int)$serviceId;
 
-    $query = "SELECT * FROM service WHERE service_id = " . (int)$serviceId;
-    $dbResult = $pearDB->query($query);
-    $serviceInfo = $dbResult->fetch();
     $listServicesContact = $serviceInstance->listServicesWithContacts($serviceInfo);
     $listServicesContactGroup = $serviceInstance->listServicesWithContactGroups($serviceInfo);
 
@@ -199,6 +203,8 @@ function getNotifiedInfosForService($serviceId, $hostId, $dependencyInjector)
 }
 
 /**
+ * Get the list of enable contact groups (id/name) for a service
+ *
  * @param $serviceId
  * @return array
  */
@@ -216,11 +222,12 @@ function getContactgroupsForService($serviceId)
     while (($row = $dbResult->fetch())) {
         $contactGroups[$row['cg_id']] = $row['cg_name'];
     }
-
     return $contactGroups;
 }
 
 /**
+ * Get the list of enable contact (id/name) for a host
+ *
  * @param $serviceId
  * @return array
  */
@@ -231,7 +238,7 @@ function getContactsForService($serviceId)
     $dbResult = $pearDB->query(
         'SELECT contact.contact_id, contact.contact_name 
         FROM contact, contact_service_relation 
-        WHERE contact_service_relation.service_service_id = ' . $serviceId . '
+        WHERE contact_service_relation.service_service_id = ' . (int)$serviceId . '
         AND contact_service_relation.contact_id = contact.contact_id
         AND contact.contact_activate = "1" 
         AND contact.contact_enable_notifications != "0"'

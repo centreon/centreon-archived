@@ -37,8 +37,6 @@ if (!isset($centreon)) {
     exit();
 }
 
-const VERTICAL_NOTIFICATION = 1;
-
 if (!$centreon->user->admin) {
     if ($host_id && false === strpos($aclHostString, "'" . $host_id . "'")) {
         $msg = new CentreonMsg();
