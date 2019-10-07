@@ -14839,3 +14839,6 @@ msgstr "Ajouter des Remote Server additonnels"
 
 msgid "Locked elements"
 msgstr "Eléments verrouillés"
+
+msgid "This value needs to be an integer lesser than"
+msgstr "Cette valeur doit être un entier inférieur à"

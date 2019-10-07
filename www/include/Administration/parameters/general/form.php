@@ -1,7 +1,7 @@
 <?php
 /*
- * Copyright 2005-2015 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2019 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -42,6 +42,9 @@ if (!isset($centreon)) {
     exit();
 }
 
+// getting the garbage collector value set
+define("SESSION_DURATION_LIMIT", (int)(ini_get('session.gc_maxlifetime') / 60));
+
 $transcoKey = array(
     "enable_autologin" => "yes",
     "display_autologin_shortcut" => "yes",
@@ -54,8 +57,8 @@ $transcoKey = array(
     'send_statistics' => 'yes'
 );
 
-$DBRESULT = $pearDB->query("SELECT * FROM `options`");
-while ($opt = $DBRESULT->fetchRow()) {
+$dbResult = $pearDB->query("SELECT * FROM `options`");
+while ($opt = $dbResult->fetch()) {
     if (isset($transcoKey[$opt["key"]])) {
         $gopt[$opt["key"]][$transcoKey[$opt["key"]]] = myDecode($opt["value"]);
     } else {
@@ -84,6 +87,12 @@ $form->addElement('text', 'oreon_path', _("Directory"), $attrsText);
 $form->addElement('text', 'oreon_web_path', _("Centreon Web Directory"), $attrsText);
 
 $form->addElement('text', 'session_expire', _("Sessions Expiration Time"), $attrsText2);
+$form->registerRule('isSessionDurationValid', 'callback', 'isSessionDurationValid');
+$form->addRule(
+    'session_expire',
+    _("This value needs to be an integer lesser than") . " " . SESSION_DURATION_LIMIT . " min",
+    'isSessionDurationValid'
+);
 
 $inheritanceMode = array();
 $inheritanceMode[] = $form->createElement(
@@ -161,7 +170,7 @@ $sortType = array(
     "current_state" => _("Status"),
     "last_check" => _("Last check"),
     "plugin_output" => _("Output"),
-    "criticality_id" => _("Criticality")
+    "criticality_id" => _("Criticality"),
 );
 
 $form->addElement('select', 'global_sort_type', _("Sort by  "), $globalSortType);
@@ -229,7 +238,7 @@ $sso_enable[] = $form->createElement(
     '&nbsp;',
     '',
     array(
-        "onchange" => "javascript:confirm('" . $alertMessage . "')"
+        "onchange" => "javascript:confirm('" . $alertMessage . "')",
     )
 );
 $form->addGroup($sso_enable, 'sso_enable', _("Enable SSO authentication"), '&nbsp;&nbsp;');
@@ -284,7 +293,6 @@ $form->addElement('text', 'keycloak_client_secret', _('Keycloak Client Secret'),
  */
 $form->addElement('text', 'centreon_support_email', _("Centreon Support Email"), $attrsText);
 
-
 $form->applyFilter('__ALL__', 'myTrim');
 $form->applyFilter('nagios_path', 'slash');
 $form->applyFilter('nagios_path_img', 'slash');
@@ -299,9 +307,6 @@ $form->registerRule('is_writable_path', 'callback', 'is_writable_path');
 $form->registerRule('is_writable_file', 'callback', 'is_writable_file');
 $form->registerRule('is_writable_file_if_exist', 'callback', 'is_writable_file_if_exist');
 $form->addRule('oreon_path', _("Can't write in directory"), 'is_valid_path');
-// $form->addRule('nagios_path_plugins', _("Can't write in directory"), 'is_writable_path'); - Field is not added so no need for rule
-// $form->addRule('nagios_path_img', _("Can't write in directory"), 'is_writable_path'); - Field is not added so no need for rule
-// $form->addRule('nagios_path', _("The directory isn't valid"), 'is_valid_path'); - Field is not added so no need for rule
 
 /*
  * Smarty template Init
