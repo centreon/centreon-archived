@@ -457,7 +457,7 @@ abstract class AbstractHost extends AbstractObject
         );
         $hostAdd = $stmt->fetch();
 
-        if($hostAdd['host_notifications_enabled'] != '0'){
+        if ($hostAdd['host_notifications_enabled'] != '0'){
             $hostList[] = (int)$hostId;
         }
         if (isset($hostAdd['host_tpl_id']) && (int)$hostAdd['cg_additive_inheritance'] === 1) {
