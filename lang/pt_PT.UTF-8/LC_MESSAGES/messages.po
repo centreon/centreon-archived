@@ -14452,3 +14452,6 @@ msgstr "Para usar Remote Server adicionais, um Remote Server mestre deve ser sel
 
 msgid "Attach additional Remote Servers"
 msgstr "Anexar Remote Server adicionais"
+
+#~ msgid "This value needs to be an integer lesser than"
+#~ msgstr ""

@@ -17,3 +17,29 @@
  * For more information : contact@centreon.com
  *
  */
+
+include_once __DIR__ . "/../../class/centreonLog.class.php";
+$centreonLog = new CentreonLog();
+
+/**
+ * Update session duration value to the max allowed duration set in the php
+ * configuration file 50-centreon.ini
+ */
+try {
+    $stmt = $pearDB->query(
+        'SELECT `value` FROM `options` WHERE `key` = "session_expire"'
+    );
+    $sessionValue = $stmt->fetch();
+
+    if ($sessionValue > 120) {
+        $pearDB->query(
+            'UPDATE `options` SET `value` = "120"
+            WHERE `key` = "session_expire"'
+        );
+    }
+} catch (\PDOException $e) {
+    $centreonLog->insertLog(
+        2,
+        "UPGRADE : 19.10.0 Unable to modify session expiration value"
+    );
+}

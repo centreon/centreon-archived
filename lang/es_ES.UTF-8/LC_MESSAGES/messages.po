@@ -14278,3 +14278,6 @@ msgstr "Adjunte Remote Servers adicionales"
 
 #~ msgid "Attach poller to additional remote servers"
 #~ msgstr ""
+
+#~ msgid "This value needs to be an integer lesser than"
+#~ msgstr ""

@@ -1094,9 +1094,9 @@ msgid "The number elements loaded in async select."
 msgstr "O número de elementos carregados por padrão nas listas de seleção."
 
 #: centreon-web/www/include/Administration/parameters/general/help.php:40
-msgid "Life duration of sessions."
-msgstr ""
-"Tempo de expiração em minutos de sessões de usuários conectados ao Centreon."
+#~ msgid "Life duration of sessions. The value in minutes cannot be greater than the session.gc_maxlifetime value "
+#~ "set in your php centreon.ini file."
+#~ msgstr "Tempo de expiração em minutos de sessões de usuários conectados ao Centreon."
 
 #: centreon-web/www/include/Administration/parameters/general/help.php:46
 msgid "Refresh interval."
