@@ -363,17 +363,17 @@ abstract class AbstractHost extends AbstractObject
     /**
      * Get enable and notifiable contact id/name of a host list
      *
-     * @param array $hostList
+     * @param array $hostIds list of host id
      * @return array
      */
-    protected function getInheritanceContact($hostList)
+    protected function getInheritanceContact($hostIds)
     {
         $contact = Contact::getInstance($this->dependencyInjector);
         $contacts = array();
         $stmt = $this->backend_instance->db->query(
             'SELECT contact.contact_id , contact.contact_name 
             FROM contact, contact_host_relation 
-            WHERE contact_host_relation.host_host_id IN (' . implode(',', $hostList) . ') 
+            WHERE contact_host_relation.host_host_id IN (' . implode(',', $hostIds) . ') 
             AND contact_host_relation.contact_id = contact.contact_id 
             AND contact.contact_activate = "1" 
             AND contact.contact_enable_notifications != "0"'
