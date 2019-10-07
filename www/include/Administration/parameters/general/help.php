@@ -37,7 +37,11 @@ $help['tip_select_paginagion_size'] = dgettext('help', 'The number elements load
  * Sessions Properties
  */
 
-$help['tip_sessions_expiration_time'] = dgettext('help', 'Life duration of sessions.');
+$help['tip_sessions_expiration_time'] = dgettext(
+    'help',
+    'Life duration of sessions. The value in minutes cannot be greater than the session.gc_maxlifetime value set ' .
+    'in your php centreon.ini file.'
+);
 
 /**
  * Refresh Properties
