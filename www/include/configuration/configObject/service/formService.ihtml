@@ -140,12 +140,12 @@
         <tr class="list_one"  {if $inheritance !="1" } style="display:none;" {/if} >
             <td class="FormRowField">
                 <span>
-                <img class="helpTooltip" name="contact_additive_inheritance">
-                {$form.mc_contact_additive_inheritance.label}
+                    <img class="helpTooltip" name="contact_additive_inheritance">
+                    {$form.mc_contact_additive_inheritance.label}
                 </span>
             </td>
             <td class="FormRowValue">
-            {$form.mc_contact_additive_inheritance.html}
+                {$form.mc_contact_additive_inheritance.html}
             </td>
         </tr>
         <tr class="list_two">
@@ -161,17 +161,17 @@
             <td class="FormRowField"></td>
             <td class="FormRowValue">
                 <span {if $inheritance !="1" } style="visibility:hidden;" {/if} >
-                {$form.contact_additive_inheritance.html}
-                <img class="helpTooltip" name="contact_additive_inheritance">
+                    {$form.contact_additive_inheritance.html}
+                    <img class="helpTooltip" name="contact_additive_inheritance">
                 </span>
             </td>
         </tr>
         {/if}
         {if $o == "mc"}
         <tr class="list_one" {if $inheritance !="1" } style="display:none;" {/if}>
-            <td class="FormRowField"  >
-            <img class="helpTooltip" name="cg_additive_inheritance">
-            {$form.mc_cg_additive_inheritance.label}
+            <td class="FormRowField">
+                <img class="helpTooltip" name="cg_additive_inheritance">
+                {$form.mc_cg_additive_inheritance.label}
             </td>
             <td class="FormRowValue">{$form.mc_cg_additive_inheritance.html}</td>
         </tr>
@@ -188,8 +188,8 @@
             <td class="FormRowField"></td>
             <td class="FormRowValue">
                 <span {if $inheritance !="1" } style="visibility:hidden;" {/if} >
-                {$form.cg_additive_inheritance.html}
-                <img class="helpTooltip" name="cg_additive_inheritance">
+                    {$form.cg_additive_inheritance.html}
+                    <img class="helpTooltip" name="cg_additive_inheritance">
                 </span>
             </td>
         </tr>

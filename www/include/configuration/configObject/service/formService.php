@@ -1113,7 +1113,7 @@ if ($valid) {
         require_once($path . "listServiceByHost.php");
     }
 } else {
-    $dbResult = $pearDB->query('SELECT `value` FROM options WHERE  `key` = "inheritance_mode"');
+    $dbResult = $pearDB->query('SELECT `value` FROM options WHERE `key` = "inheritance_mode"');
     $inheritanceMode = $dbResult->fetch();
     // Apply a template definition
     $renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl, true);

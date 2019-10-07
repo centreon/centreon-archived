@@ -615,7 +615,7 @@ if ($o == "mc") {
 /*
  * Additive
  */
-$dbResult = $pearDB->query('SELECT `value` FROM options WHERE  `key` = "inheritance_mode"');
+$dbResult = $pearDB->query('SELECT `value` FROM options WHERE `key` = "inheritance_mode"');
 $inheritanceMode = $dbResult->fetch();
 if ($o == "mc") {
     $contactAdditive[] = $form->createElement('radio', 'mc_contact_additive_inheritance', null, _("Yes"), '1');
