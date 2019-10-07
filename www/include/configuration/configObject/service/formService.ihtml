@@ -162,7 +162,7 @@
             <td class="FormRowValue">
                 <span {if $inheritance !="1" } style="visibility:hidden;" {/if} >
                 {$form.contact_additive_inheritance.html}
-                <img class="helpTooltip" name="contact_additive_inheritance">
+                    <img class="helpTooltip" name="contact_additive_inheritance">
                 </span>
             </td>
         </tr>
