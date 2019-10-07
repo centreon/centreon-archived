@@ -173,7 +173,9 @@ abstract class AbstractService extends AbstractObject
     }
 
     /**
-     * @param $service
+     * Get contacts list for the configuration file by service
+     *
+     * @param array $service
      */
     protected function getContacts(&$service)
     {
@@ -190,24 +192,25 @@ abstract class AbstractService extends AbstractObject
             if (!empty($serviceListing)) {
                 $contactResult = implode(',', $this->getInheritanceContact(array_unique($serviceListing)));
             }
-
             $service['contacts'] = $contactResult;
         }
     }
 
     /**
-     * @param $service
+     * Get the tree of services with contact according to the inheritance notification option
+     *
+     * @param array $service
      * @return array
      */
     public function listServicesWithContacts($service)
     {
         //check notification mode
         if (is_null($this->notificationOption)) {
-            $this->notificationOption = $this->getInheritanceMode();
+            $this->notificationOption = (int)$this->getInheritanceMode();
         }
         $serviceListing = array();
         //check cumulative option
-        if (self::CUMULATIVE_NOTIFICATION == $this->notificationOption) {
+        if (self::CUMULATIVE_NOTIFICATION === $this->notificationOption) {
             // get all service / template inheritance
             $this->getCumulativeInheritance($service['service_id'], $serviceListing);
         } else {
@@ -215,9 +218,7 @@ abstract class AbstractService extends AbstractObject
             // use for close inheritance mode too
             $this->getContactCloseInheritance($service['service_id'], $serviceListing);
             //check vertical inheritance
-            if (!empty($serviceListing)
-                && (self::VERTICAL_NOTIFICATION == $this->notificationOption)
-                && $this->isContactInheritance($serviceListing[0])) {
+            if (!empty($serviceListing) && (self::VERTICAL_NOTIFICATION === $this->notificationOption)) {
                 //use the first template found to start
                 $startService = $serviceListing[0];
                 $serviceListing = array();
@@ -228,19 +229,8 @@ abstract class AbstractService extends AbstractObject
     }
 
     /**
-     * @param $serviceId
-     * @return int
-     */
-    protected function isContactInheritance($serviceId)
-    {
-        $stmt = $this->backend_instance->db->query(
-            'SELECT contact_additive_inheritance FROM service WHERE `service_id` = ' . (int)$serviceId
-        );
-        $inheritance = $stmt->fetch();
-        return (int)$inheritance['contact_additive_inheritance'];
-    }
-
-    /**
+     * Get the tree of host for vertical notification option on contact
+     *
      * @param $serviceId
      * @param array $serviceListing
      */
@@ -264,6 +254,8 @@ abstract class AbstractService extends AbstractObject
     }
 
     /**
+     * Get the tree of services for cumulative notification option
+     *
      * @param $serviceId
      * @param array $serviceListing
      */
@@ -285,6 +277,8 @@ abstract class AbstractService extends AbstractObject
     }
 
     /**
+     * Get the first service who have a valid notifiable contact
+     *
      * @param $serviceId
      * @param array $serviceListing
      */
@@ -318,7 +312,9 @@ abstract class AbstractService extends AbstractObject
     }
 
     /**
-     * @param array $service
+     * Get enable and notifiable contact id/name of a service list
+     *
+     * @param array $service List of service id
      * @return array
      */
     protected function getInheritanceContact(array $service)
@@ -338,7 +334,9 @@ abstract class AbstractService extends AbstractObject
     }
 
     /**
-     * @param $service
+     * Get contact groups list for the configuration file by service
+     *
+     * @param array $service
      */
     protected function getContactGroups(&$service)
     {
@@ -360,18 +358,20 @@ abstract class AbstractService extends AbstractObject
     }
 
     /**
-     * @param $service
+     * Get the tree of services with contact group according to the inheritance notification option
+     *
+     * @param array $service
      * @return array
      */
     public function listServicesWithContactGroups($service)
     {
         //check notification mode
         if (is_null($this->notificationOption)) {
-            $this->notificationOption = $this->getInheritanceMode();
+            $this->notificationOption = (int)$this->getInheritanceMode();
         }
         //check cumulative option
         $serviceListing = array();
-        if (self::CUMULATIVE_NOTIFICATION == $this->notificationOption) {
+        if (self::CUMULATIVE_NOTIFICATION === $this->notificationOption) {
             // get all service / template inheritance
             $this->getCumulativeInheritance($service['service_id'], $serviceListing);
         } else {
@@ -379,9 +379,7 @@ abstract class AbstractService extends AbstractObject
             // use for close inheritance mode too
             $this->getContactGroupsCloseInheritance($service['service_id'], $serviceListing);
             //check vertical inheritance
-            if (!empty($serviceListing)
-                && (self::VERTICAL_NOTIFICATION == $this->notificationOption)
-                && $this->isContactGroupsInheritance($serviceListing[0])) {
+            if (!empty($serviceListing) && (self::VERTICAL_NOTIFICATION === $this->notificationOption)) {
                 //use the first template found to start
                 $startService = $serviceListing[0];
                 $serviceListing = array();
@@ -391,21 +389,9 @@ abstract class AbstractService extends AbstractObject
         return $serviceListing;
     }
 
-
     /**
-     * @param $serviceId
-     * @return int
-     */
-    protected function isContactGroupsInheritance($serviceId)
-    {
-        $stmt = $this->backend_instance->db->query(
-            'SELECT cg_additive_inheritance FROM service WHERE `service_id` = ' . (int)$serviceId
-        );
-        $inheritance = $stmt->fetch();
-        return (int)$inheritance['cg_additive_inheritance'];
-    }
-
-    /**
+     * Get the tree of services for vertical notification option on contact group
+     *
      * @param $serviceId
      * @param array $serviceListing
      */
@@ -432,6 +418,8 @@ abstract class AbstractService extends AbstractObject
     }
 
     /**
+     * Get the first service who have a valid notifiable contact group
+     *
      * @param $serviceId
      * @param array $serviceListing
      */
@@ -465,7 +453,9 @@ abstract class AbstractService extends AbstractObject
     }
 
     /**
-     * @param $service
+     * Get enable contact group id/name of a service list
+     *
+     * @param array $service List of service id
      * @return array
      */
     protected function getInheritanceContactGroups($service)

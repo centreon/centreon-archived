@@ -246,11 +246,11 @@ abstract class AbstractHost extends AbstractObject
     {
         //check notification mode
         if (is_null($this->notificationOption)) {
-            $this->notificationOption = $this->getInheritanceMode();
+            $this->notificationOption = (int)$this->getInheritanceMode();
         }
         $hostListing = array();
         //check cumulative option
-        if (self::CUMULATIVE_NOTIFICATION == $this->notificationOption) {
+        if (self::CUMULATIVE_NOTIFICATION === $this->notificationOption) {
             // get all host / template inheritance
             $this->getCumulativeInheritance($host['host_id'], $hostListing);
         } else {
@@ -259,7 +259,7 @@ abstract class AbstractHost extends AbstractObject
             $this->getContactCloseInheritance($host['host_id'], $hostListing);
             //check vertical inheritance
             if (!empty($hostListing)
-                && (self::VERTICAL_NOTIFICATION == $this->notificationOption)
+                && (self::VERTICAL_NOTIFICATION === $this->notificationOption)
             ) {
                 //use the first template found to start
                 $startHost = $hostListing[0];
@@ -411,11 +411,11 @@ abstract class AbstractHost extends AbstractObject
     {
         //check notification mode
         if (is_null($this->notificationOption)) {
-            $this->notificationOption = $this->getInheritanceMode();
+            $this->notificationOption = (int)$this->getInheritanceMode();
         }
         $hostListing = array();
         //check cumulative option
-        if (self::CUMULATIVE_NOTIFICATION == $this->notificationOption) {
+        if (self::CUMULATIVE_NOTIFICATION === $this->notificationOption) {
             // get all host / template inheritance
             $this->getCumulativeInheritance($host['host_id'], $hostListing);
         } else {
@@ -498,7 +498,9 @@ abstract class AbstractHost extends AbstractObject
     }
 
     /**
-     * @param array $host
+     * Get enable contact group id/name of a host list
+     *
+     * @param array $host List of host id
      * @return array
      */
     protected function getInheritanceContactGroups($host)
