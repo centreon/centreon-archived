@@ -1,6 +1,7 @@
 {$form.javascript}{$javascript}
 <form {$form.attributes}>
     {if $inheritance !="1" }
+    <!-- notification inheritance option -->
     <div style='visibility: hidden'>
         {$form.contact_additive_inheritance.html}
         {$form.cg_additive_inheritance.html}
