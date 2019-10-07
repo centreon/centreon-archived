@@ -102,7 +102,7 @@ if (($o == SERVER_MODIFY || $o == SERVER_WATCH) && $server_id) {
                 );
             }
         }
-        $dbResult->closeCursor();
+        $statement->closeCursor();
     }
 }
 
