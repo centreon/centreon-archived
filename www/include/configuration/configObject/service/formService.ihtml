@@ -141,7 +141,7 @@
             <td class="FormRowField">
                 <span>
                     <img class="helpTooltip" name="contact_additive_inheritance">
-                {$form.mc_contact_additive_inheritance.label}
+                    {$form.mc_contact_additive_inheritance.label}
                 </span>
             </td>
             <td class="FormRowValue">
