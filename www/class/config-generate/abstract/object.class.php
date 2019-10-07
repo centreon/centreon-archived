@@ -85,6 +85,9 @@ abstract class AbstractObject
     }
 
     /**
+     * Get the global inheritance option of notification
+     * 1 = vertical, 2 = close, 3 = cumulative
+     *
      * @return mixed
      */
     public function getInheritanceMode()
