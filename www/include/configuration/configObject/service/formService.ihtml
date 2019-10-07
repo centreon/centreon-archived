@@ -171,7 +171,7 @@
         <tr class="list_one" {if $inheritance !="1" } style="display:none;" {/if}>
             <td class="FormRowField">
                 <img class="helpTooltip" name="cg_additive_inheritance">
-            {$form.mc_cg_additive_inheritance.label}
+                {$form.mc_cg_additive_inheritance.label}
             </td>
             <td class="FormRowValue">{$form.mc_cg_additive_inheritance.html}</td>
         </tr>
