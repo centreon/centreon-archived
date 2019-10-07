@@ -145,8 +145,16 @@ class Generate
     private function getPollersFromRemote(int $remoteId)
     {
         $stmt = $this->backendInstance->db->prepare(
-            "SELECT * FROM nagios_server
-            WHERE remote_id = :remote_id"
+            "SELECT ns1.*
+            FROM nagios_server AS ns1
+            WHERE ns1.remote_id = :remote_id
+            GROUP BY ns1.id
+            UNION
+            SELECT ns2.*
+            FROM nagios_server AS ns2
+            INNER JOIN rs_poller_relation AS rspr ON rspr.poller_server_id = ns2.id
+            AND rspr.remote_server_id = :remote_id
+            GROUP BY ns2.id"
         );
         $stmt->bindParam(':remote_id', $remoteId, PDO::PARAM_INT);
         $stmt->execute();
