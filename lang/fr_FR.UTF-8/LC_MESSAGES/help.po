@@ -831,8 +831,8 @@ msgid "The number elements loaded in async select."
 msgstr "Le nombre d'éléments chargé par défaut dans les listes de sélection."
 
 #: centreon-web/www/include/Administration/parameters/general/help.php:29
-#~ msgid "Life duration of sessions. The value in minutes cannot be greater than the session.gc_maxlifetime value "
-#~ "set in your php centreon.ini file."
+msgid "Life duration of sessions. The value in minutes cannot be greater than the session.gc_maxlifetime value "
+"set in your php centreon.ini file."
 msgstr "Temps d'expiration en minutes de la session des utilisateurs connectés à Centreon."
 "Cette valeur ne peut dépasser la valeur définie dans votre fichier de configuration php centreon.ini"
 
@@ -842,8 +842,7 @@ msgstr "Intervalle de rafraichissement global des objets."
 
 #: centreon-web/www/include/Administration/parameters/general/help.php:36
 msgid "Refresh interval used for statistics (top counters)."
-msgstr ""
-"Intervalle de rafraichissement utilisé pour les statistiques des états des "
+msgstr "Intervalle de rafraichissement utilisé pour les statistiques des états des "
 "hôtes et services (tableaux situés en haut des pages)."
 
 #: centreon-web/www/include/Administration/parameters/general/help.php:37
@@ -852,8 +851,7 @@ msgstr "Intervalle de rafraichissement utilisé dans les pages de supervision."
 
 #: centreon-web/www/include/Administration/parameters/general/help.php:40
 msgid "First refresh delay for statistics (top counters)."
-msgstr ""
-"Délai de rafraichissement des statistiques des états des hôtes et des services "
+msgstr "Délai de rafraichissement des statistiques des états des hôtes et des services "
 "lors du premier accès à la page (tableaux situés en haut des pages)."
 
 #: centreon-web/www/include/Administration/parameters/general/help.php:42

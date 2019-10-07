@@ -623,7 +623,6 @@ msgstr "O número de elementos carregados por padrão nas listas de seleção."
 #: centreon-web/www/include/Administration/parameters/general/help.php:29
 #~ msgid "Life duration of sessions. The value in minutes cannot be greater than the session.gc_maxlifetime value "
 #~ "set in your php centreon.ini file."
-#~ The translation needs an update
 #~ msgstr "Tempo de expiração em minutos de sessões de utilizadors conectados ao Centreon."
 
 
