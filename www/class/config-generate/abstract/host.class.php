@@ -421,7 +421,7 @@ abstract class AbstractHost extends AbstractObject
             $this->getContactGroupsCloseInheritance($host['host_id'], $hostListing);
             //check vertical inheritance
             if (!empty($hostListing)
-                && (self::VERTICAL_NOTIFICATION == $this->notificationOption)
+                && (self::VERTICAL_NOTIFICATION === $this->notificationOption)
                 && $this->isContactGroupsInheritance($hostListing[0])) {
                 //use the first template found to start
                 $this->getContactGroupsVerticalInheritance($hostListing[0], $hostListing);
