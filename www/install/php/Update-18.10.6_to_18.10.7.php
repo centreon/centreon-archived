@@ -40,6 +40,6 @@ try {
 } catch (\PDOException $e) {
     $centreonLog->insertLog(
         2,
-        "UPGRADE : 19.04.5 Unable to modify session expiration value"
+        "UPGRADE : 18.10.7 Unable to modify session expiration value"
     );
 }
