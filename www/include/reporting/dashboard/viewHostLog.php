@@ -58,15 +58,23 @@ $formHost = new HTML_QuickFormCustom('formHost', 'post', "?p=" . $p);
 $redirect = $formHost->addElement('hidden', 'o');
 $redirect->setValue($o);
 
-$hosts = getAllHostsForReporting($is_admin, $lcaHoststr);
+$hostsRoute = array(
+    'datasourceOrigin' => 'ajax',
+    'multiple' => false,
+    'linkedObject' => 'centreonHost',
+	'availableDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_host&action=list',
+	'defaultDatasetRoute' => './include/common/webServices/rest/internal.php?object=centreon_configuration_host&action=defaultValues&target=host&field=host_id&id=' . $id,
+);
 $selHost = $formHost->addElement(
-    'select',
+    'select2',
     'host',
     _("Host"),
-    $hosts,
-    array(
-        "onChange" =>"this.form.submit();"
-    )
+    array(), 
+	$hostsRoute
+);
+$selHost->addJsCallback(
+	'change',
+	'this.form.submit();'
 );
 $formHost->addElement(
     'hidden',
