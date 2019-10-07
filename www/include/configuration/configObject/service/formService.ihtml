@@ -145,7 +145,7 @@
                 </span>
             </td>
             <td class="FormRowValue">
-            {$form.mc_contact_additive_inheritance.html}
+                {$form.mc_contact_additive_inheritance.html}
             </td>
         </tr>
         <tr class="list_two">
