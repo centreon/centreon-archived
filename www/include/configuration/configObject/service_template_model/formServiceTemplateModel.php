@@ -983,7 +983,7 @@ if ($form->validate() && $from_list_menu == false) {
 if ($valid) {
     require_once($path . "listServiceTemplateModel.php");
 } else {
-    $dbResult = $pearDB->query('SELECT `value` FROM options WHERE  `key` = "inheritance_mode"');
+    $dbResult = $pearDB->query('SELECT `value` FROM options WHERE `key` = "inheritance_mode"');
     $inheritanceMode = $dbResult->fetch();
     # Apply a template definition
     require_once _CENTREON_PATH_ . 'www/include/configuration/configObject/service/javascript/argumentJs.php';
