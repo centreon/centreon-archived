@@ -524,19 +524,19 @@
 
       if (this.remoteData) {
         /* Append new elements */
+        option = '';
         for (var i = 0; i < elements.length; i++) {
           item = elements[i];
 
           /* Create DOM option that is pre-selected by default */
-          option = '<option selected value="' + item.id + '"';
+          option += '<option selected value="' + item.id + '"';
           if (item.hide === true) {
             option += ' hidden';
           }
           option += '>' + item.text + '</option>';
-
-          /* Append it to select */
-          self.$elem.append(option);
         }
+        /* Append it to select */
+        self.$elem.append(option);
       } else {
         /* Select existing elements */
         selectedElements = elements.map(function (object) {
