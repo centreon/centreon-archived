@@ -4,7 +4,7 @@
 
 import '../../../../node_modules/systemjs/dist/s.js'; // IIFE format so it's imported on window
 import '../../../../node_modules/systemjs/dist/extras/use-default.js'; // avoid to check module.default.default
-import './extras/global.js'; // fork global.js from systemjs to embed path for IE (https://github.com/systemjs/systemjs/pull/2035)
+import './extras/global.js'; // fork global.js from systemjs to embed patch for IE (https://github.com/systemjs/systemjs/pull/2035)
 import systemCss from 'systemjs-plugin-css'; // used to import css in <head>
 
 // this function allows to import dynamically js and css using systemjs
