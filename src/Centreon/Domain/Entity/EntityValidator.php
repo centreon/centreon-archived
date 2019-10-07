@@ -238,7 +238,7 @@ class EntityValidator
     }
 
     /**
-     * Find the Type' constraint from the constraints list.
+     * Find the 'Type' constraint from the constraints list.
      *
      * @param Constraint[] $constraints Constraints list for which we want to find the 'Type' constraint
      * @return string|null
