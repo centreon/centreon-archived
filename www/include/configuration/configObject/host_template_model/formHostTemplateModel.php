@@ -385,7 +385,7 @@ if ($o != "mc") {
 /*
  * Additive
  */
-$dbResult = $pearDB->query('SELECT `value` FROM options WHERE  `key` = "inheritance_mode"');
+$dbResult = $pearDB->query('SELECT `value` FROM options WHERE `key` = "inheritance_mode"');
 $inheritanceMode = $dbResult->fetch();
 
 if ($o == "mc") {
