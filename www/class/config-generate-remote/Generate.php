@@ -358,6 +358,7 @@ class Generate
         Relations\HostGroupRelation::getInstance($this->dependencyInjector)->reset();
         Relations\HostServiceRelation::getInstance($this->dependencyInjector)->reset();
         Relations\HostTemplateRelation::getInstance($this->dependencyInjector)->reset();
+        Relations\HostPollerRelation::getInstance($this->dependencyInjector)->reset();
         Relations\MacroHost::getInstance($this->dependencyInjector)->reset();
         Relations\NagiosServer::getInstance($this->dependencyInjector)->reset();
         Relations\ServiceCategoriesRelation::getInstance($this->dependencyInjector)->reset();
