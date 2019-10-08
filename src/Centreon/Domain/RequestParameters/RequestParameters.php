@@ -171,7 +171,7 @@ class RequestParameters implements RequestParametersInterface
         ];
         $names = [];
         $searchIn = null;
-        $searchIn = function($data) use (&$searchIn, &$names, $notAllowedKeys) {
+        $searchIn = function ($data) use (&$searchIn, &$names, $notAllowedKeys) {
             foreach ($data as $key => $value) {
                 if (!in_array($key, $names) && !in_array($key, $notAllowedKeys)) {
                     $names[] = $key;
