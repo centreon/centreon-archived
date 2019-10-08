@@ -193,7 +193,7 @@ class Host extends AbstractHost
                 }
                 $stack2 = array_merge($hosts_tpl[$host_id2]['htpl'], $stack2);
             }
-            if($severity_id) {
+            if ($severity_id) {
                 $hosts_tpl[$host_id]['severity_id_from_below'] = $severity_id;
             }
         }
