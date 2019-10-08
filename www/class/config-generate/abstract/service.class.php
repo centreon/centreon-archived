@@ -212,11 +212,11 @@ abstract class AbstractService extends AbstractObject
         //check cumulative option
         if (self::CUMULATIVE_NOTIFICATION === $this->notificationOption) {
             // get all service / template inheritance
-            $this->getCumulativeInheritance($service['service_id'], $serviceListing);
+            $this->getCumulativeInheritance((int)$service['service_id'], $serviceListing);
         } else {
             // get the first service (template) link to a contact
             // use for close inheritance mode too
-            $this->getContactCloseInheritance($service['service_id'], $serviceListing);
+            $this->getContactCloseInheritance((int)$service['service_id'], $serviceListing);
             //check vertical inheritance
             if (!empty($serviceListing) && (self::VERTICAL_NOTIFICATION === $this->notificationOption)) {
                 //use the first template found to start
@@ -368,11 +368,11 @@ abstract class AbstractService extends AbstractObject
         $serviceListing = array();
         if (self::CUMULATIVE_NOTIFICATION === $this->notificationOption) {
             // get all service / template inheritance
-            $this->getCumulativeInheritance($service['service_id'], $serviceListing);
+            $this->getCumulativeInheritance((int)$service['service_id'], $serviceListing);
         } else {
             // get the first service (template) link to a contact
             // use for close inheritance mode too
-            $this->getContactGroupsCloseInheritance($service['service_id'], $serviceListing);
+            $this->getContactGroupsCloseInheritance((int)$service['service_id'], $serviceListing);
             //check vertical inheritance
             if (!empty($serviceListing) && (self::VERTICAL_NOTIFICATION === $this->notificationOption)) {
                 //use the first template found to start

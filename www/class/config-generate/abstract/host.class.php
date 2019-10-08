@@ -314,7 +314,9 @@ abstract class AbstractHost extends AbstractObject
             if($row['host_notifications_enabled'] != '0'){
                 $hostList[] = $hostId;
             }
-            $this->getCumulativeInheritance($row['host_tpl_id'], $hostList);
+            if($row['host_tpl_id']){
+                $this->getCumulativeInheritance((int)$row['host_tpl_id'], $hostList);
+            }
         }
     }
 
@@ -411,11 +413,11 @@ abstract class AbstractHost extends AbstractObject
         //check cumulative option
         if (self::CUMULATIVE_NOTIFICATION === $this->notificationOption) {
             // get all host / template inheritance
-            $this->getCumulativeInheritance($host['host_id'], $hostListing);
+            $this->getCumulativeInheritance((int)$host['host_id'], $hostListing);
         } else {
             // get the first host (template) link to a contact group
             // use for close inheritance mode too
-            $this->getContactGroupsCloseInheritance($host['host_id'], $hostListing);
+            $this->getContactGroupsCloseInheritance((int)$host['host_id'], $hostListing);
             //check vertical inheritance
             if (!empty($hostListing) && (self::VERTICAL_NOTIFICATION === $this->notificationOption)) {
                 //use the first template found to start
@@ -480,7 +482,7 @@ abstract class AbstractHost extends AbstractObject
                 $hostList[] = (int)$hostId;
             } elseif ($row['host_tpl_id']) {
                 foreach (explode(',', $row['host_tpl_id']) as $hostTplId) {
-                    $this->getContactGroupsCloseInheritance($hostTplId, $hostList);
+                    $this->getContactGroupsCloseInheritance((int)$hostTplId, $hostList);
                 }
             }
         }
