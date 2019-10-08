@@ -9,19 +9,79 @@ Feature: Check health of the Monitoring - Host API
   Scenario: List all hosts without services
     When I make a GET request to "/api/latest/monitoring/hosts?show_service=false"
     Then the response code should be 200
+    And the property "meta" has value
+    """
+    {"page":1,"limit":10,"search":{},"sort_by":{},"total":1}
+    """
+    And the property "result" has value matched to the pattern
+    """
+    [{"id":14,"poller_id":1,"name":"Centreon-Server","acknowledged":false,"address_ip":"127.0.0.1","alias":"Monitoring Server","check_attempt":1,"checked":false,"display_name":"Centreon-Server","execution_time":0,"icon_image":"","icon_image_alt":"","last_check":null,"last_hard_state_change":null,"last_state_change":null,"last_time_down":null,"last_time_unreachable":null,"last_time_up":null,"last_update":"*","max_check_attempts":5,"output":"","passive_checks":false,"state":4,"state_type":1,"timezone":""}]
+    """
 
   Scenario: List all hosts with services
     When I make a GET request to "/api/latest/monitoring/hosts?show_service=true"
     Then the response code should be 200
+    And the property "meta" has value
+    """
+    {"page":1,"limit":10,"search":{},"sort_by":{},"total":1}
+    """
+    And the property "result" has value matched to the pattern
+    """
+    [{"id":14,"poller_id":1,"name":"Centreon-Server","acknowledged":false,"address_ip":"127.0.0.1","alias":"Monitoring Server","check_attempt":1,"checked":false,"display_name":"Centreon-Server","execution_time":0,"icon_image":"","icon_image_alt":"","last_check":null,"last_hard_state_change":null,"last_state_change":null,"last_time_down":null,"last_time_unreachable":null,"last_time_up":null,"last_update":"*","max_check_attempts":5,"output":"","passive_checks":false,"services":[{"id":19,"description":"Disk-\/","display_name":"Disk-\/","state":4},{"id":24,"description":"Load","display_name":"Load","state":4},{"id":25,"description":"Memory","display_name":"Memory","state":4},{"id":26,"description":"Ping","display_name":"Ping","state":4}],"state":4,"state_type":1,"timezone":""}]
+    """
 
   Scenario: List hosts and search by host.name
-    When I make a GET request to "/api/latest/monitoring/hosts?show_service=false&search={%22host.name%22:%22esx-alger-01%22}"
+    When I make a GET request to "/api/latest/monitoring/hosts?show_service=false&search={%22host.name%22:%22Centreon-Server%22}"
     Then the response code should be 200
+    And the property "meta" has value
+    """
+    {"page":1,"limit":10,"search":{"$and":{"host.name":"Centreon-Server"}},"sort_by":{},"total":1}
+    """
+    And the property "result" has value matched to the pattern
+    """
+    [{"id":14,"poller_id":1,"name":"Centreon-Server","acknowledged":false,"address_ip":"127.0.0.1","alias":"Monitoring Server","check_attempt":1,"checked":true,"display_name":"Centreon-Server","execution_time":0.141715,"icon_image":"","icon_image_alt":"","last_check":"2019-10-08T13:59:17+02:00","last_hard_state_change":null,"last_state_change":null,"last_time_down":null,"last_time_unreachable":null,"last_time_up":"2019-10-08T13:59:22+02:00","last_update":"*","max_check_attempts":5,"output":"OK - 127.0.0.1 rta 0.070ms lost 0%\n","passive_checks":false,"state":0,"state_type":1,"timezone":""}]
+    """
+    When I make a GET request to "/api/latest/monitoring/hosts?show_service=false&search={%22host.name%22:%22MissingOne%22}"
+    Then the response code should be 200
+    And the property "meta" has value
+    """
+    {"page":1,"limit":10,"search":{"$and":{"host.name":"MissingOne"}},"sort_by":{},"total":0}
+    """
+    And the property "result" has value
+    """
+    []
+    """
 
   Scenario: List hosts by status (filter on status)
     When I make a GET request to "/api/latest/monitoring/hosts?show_service=false&search={%22host.state%22:1}"
     Then the response code should be 200
+    And the property "meta" has value
+    """
+    {"page":1,"limit":10,"search":{"$and":{"host.state":1}},"sort_by":[],"total":0}
+    """
+    And the property "result" has value matched to the pattern
+    """
+    [{"id":14,"poller_id":1,"name":"Centreon-Server","acknowledged":false,"address_ip":"127.0.0.1","alias":"Monitoring Server","check_attempt":1,"checked":true,"display_name":"Centreon-Server","execution_time":0.0,"icon_image":"","icon_image_alt":"","last_check":"*","last_hard_state_change":"2019-10-08T14:00:32+02:00","last_state_change":"2019-10-08T14:01:52+02:00","last_time_down":"2019-10-08T14:01:52+02:00","last_time_unreachable":null,"last_time_up":"2019-10-08T13:59:22+02:00","last_update":"2019-10-08T14:01:52+02:00","max_check_attempts":5,"output":"OK - 127.0.0.1 rta 0.074ms lost 0%\n","passive_checks":false,"state":1,"state_type":0,"timezone":""}]
+    """
+    When I make a GET request to "/api/latest/monitoring/hosts?show_service=false&search={%22host.state%22:0}"
+    Then the response code should be 200
+    And the property "meta" has value
+    """
+    {"page":1,"limit":10,"search":{"$and":{"host.state":0}},"sort_by":{},"total":0}
+    """
+    And the property "result" has value
+    """
+    []
+    """
 
   Scenario: List hosts by hostgroup
     When I make a GET request to "/api/latest/monitoring/hostgroups"
     Then the response code should be 200
+    And the property "meta" has value
+    """
+    {"page":1,"limit":10,"search":[],"sort_by":[],"total":1}
+    """
+    And the property "result" has value matched to the pattern
+    """
+    [{"id":53,"hosts":[{"id":14,"name":"Centreon-Server","alias":"Monitoring Server","display_name":"Centreon-Server","services":[{"id":19,"description":"Disk-/","display_name":"Disk-/","state":4},{"id":24,"description":"Load","display_name":"Load","state":3},{"id":25,"description":"Memory","display_name":"Memory","state":3},{"id":26,"description":"Ping","display_name":"Ping","state":0}]
+    """
