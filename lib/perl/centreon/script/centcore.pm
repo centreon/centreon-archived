@@ -459,13 +459,15 @@ sub sendExternalCommand($$){
             if ($result == 0) {
                 my $multipleCommands = '';
                 my $count = 0;
+                my $totalCount = 0;
                 foreach my $command (@{$commandArray}) {
                     $command =~ s/\\/\\\\/g;
                     $command = $self->removeIllegalCharacters($command);
                     $multipleCommands .= $command . "\n";
                     $count++;
+                    $totalCount++;
 
-                    if ($count >= 200 || $count == scalar(@{$commandArray})) {
+                    if ($count >= 200 || $totalCount == scalar(@{$commandArray})) {
                         $self->{logger}->writeLogInfo(
                             "Send external command to local server engine (ID '" . $pollerId . "'):"
                         );
@@ -495,10 +497,12 @@ sub sendExternalCommand($$){
             my $remoteServer = '';
             my $multipleCommands = '';
             my $count = 0;
+            my $totalCount = 0;
             foreach my $command (@{$commandArray}) {
                 $command =~ s/\'/\'\\\'\'/g;
                 $command = $self->removeIllegalCharacters($command);
                 $count++;
+                $totalCount++;
 
                 if (defined($serverInfo->{remote_id}) && $serverInfo->{remote_id} != 0
                     && $self->{instance_mode} ne "remote" && $serverInfo->{remote_server_centcore_ssh_proxy} == 1) {
@@ -511,7 +515,7 @@ sub sendExternalCommand($$){
                 }
 
                 my $commandExec = '';
-                if ($count >= 200 || $count == scalar(@{$commandArray})) {
+                if ($count >= 200 || $totalCount == scalar(@{$commandArray})) {
                     if (defined($serverInfo->{remote_id}) && $serverInfo->{remote_id} != 0
                         && $self->{instance_mode} ne "remote" && $serverInfo->{remote_server_centcore_ssh_proxy} == 1
                     ) {
