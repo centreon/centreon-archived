@@ -235,7 +235,7 @@ abstract class AbstractHost extends AbstractObject
         $pollerId = $this->stmtPoller->fetchAll(PDO::FETCH_COLUMN);
 
         HostPollerRelation::getInstance($this->dependencyInjector)
-                ->addRelation($pollerId[0], $host['host_id']);
+            ->addRelation($pollerId[0], $host['host_id']);
     }
 
     /**
