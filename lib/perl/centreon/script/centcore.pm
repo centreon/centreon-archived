@@ -63,7 +63,7 @@ sub new {
     $self->{service} = "service";
     $self->{engineInitScript} = 'centengine';
     $self->{timeout} = 5;
-    $self->{cmd_timeout} = 5;
+    $self->{cmd_timeout} = 10;
     $self->{illegal_characters} = "";
 
     $self->{ssh} .= " -o ConnectTimeout=$self->{timeout} -o StrictHostKeyChecking=yes -o PreferredAuthentications=publickey -o ServerAliveInterval=10 -o ServerAliveCountMax=3 -o Compression=yes ";
@@ -79,8 +79,6 @@ sub new {
 
     $self->{timeSyncPerf} = 0;
     $self->{difTime} = 10;
-
-    %{$self->{commandBuffer}} = ();
 
     $self->set_signal_handlers;
 
@@ -345,7 +343,7 @@ sub getServerConfig($){
         "SELECT remote_server_id FROM `rs_poller_relation` WHERE `poller_server_id` = '" . $_[0] . "'"
     );
     if ($status != -1) {
-        $data->{'additonal_remotes'} = $sth->fetchrow_hashref();
+        $data->{'additional_remotes'} = $sth->fetchrow_hashref();
     }
     return $data;
 }
@@ -467,194 +465,144 @@ sub removeIllegalCharacters($) {
 
 ################################################
 ## Send an external command on a remote server.
-## Param : id_remote_server, external command
+## Param : Poller/Remote/Central server ID, Array of external commands
 #
 sub sendExternalCommand($$) {
     my $self = shift;
     # Init Parameters
-    my ($id, $cmd) = @_;
-    my ($lerror, $return_code, $stdout, $cmd2, $cmd_line);
+    my ($pollerId, $commandArray) = @_;
 
     # Get server informations
-    my $server_info = $self->getServerConfig($id);
-    my $port = checkSSHPort($server_info->{ssh_port});
+    my $serverInfo = $self->getServerConfig($pollerId);
+    my $port = checkSSHPort($serverInfo->{ssh_port});
 
     # Get command file
-    my $command_file = $self->getEngineConfigurationField($id, "command_file");
+    my $commandFile = $self->getNagiosConfigurationField($pollerId, "command_file");
 
     # check if ip address is defined
-    if (defined($server_info->{ns_ip_address})) {
-        $cmd =~ s/\\/\\\\/g;
-        if ($server_info->{localhost} == 1) {
-            my $result = waitPipe($command_file);
+    if (defined($serverInfo->{ns_ip_address})) {
+        if ($serverInfo->{localhost} == 1) {
+            my $result = waitPipe($commandFile);
 
             if ($result == 0) {
-                # split $cmd in order to send it in multiple line
+                my $multipleCommands = '';
                 my $count = 0;
-                foreach my $cmd1 (split(/\n/, $cmd)) {
-                    if ($count >= 200) {
-                        $cmd2 = "$self->{echo} \"".$cmd_line."\" >> ".$command_file;
-                        $self->{logger}->writeLogInfo("External command on Central Server: ($id) : \"".$cmd_line."\"");
-                        ($lerror, $stdout, $return_code) = centreon::common::misc::backtick(
-                            command => $cmd2,
+                my $totalCount = 0;
+                foreach my $command (@{$commandArray}) {
+                    $command =~ s/\\/\\\\/g;
+                    $command = $self->removeIllegalCharacters($command);
+                    $multipleCommands .= $command . "\n";
+                    $count++;
+                    $totalCount++;
+
+                    if ($count >= 200 || $totalCount == scalar(@{$commandArray})) {
+                        $self->{logger}->writeLogInfo(
+                            "Send external command to local server engine (ID '" . $pollerId . "'):"
+                        );
+                        foreach (split(/\n/, $multipleCommands)) {
+                            $self->{logger}->writeLogInfo("  '" . $_ . "'");
+                        }
+                        my ($lerror, $stdout, $returnCode) = centreon::common::misc::backtick(
+                            command => "$self->{echo} \"" . $multipleCommands."\" >> " . $commandFile,
                             logger => $self->{logger},
                             timeout => $self->{cmd_timeout}
                         );
-                        $cmd_line = "";
+                        if ($lerror != 0 || (defined($returnCode) && $returnCode != 0)) {
+                            $self->{logger}->writeLogError(
+                                "Cannot write into pipe file '" . $commandFile . "'"
+                            );
+                        }
+                        $multipleCommands = '';
                         $count = 0;
-                    } else {
-                        $cmd_line .= $self->removeIllegalCharacters($cmd1) . "\n";
                     }
-                    $count++;
-                }
-                if ($count gt 0) {
-                    $cmd2 = "$self->{echo} \"".$cmd_line."\" >> ".$command_file;
-                    $self->{logger}->writeLogInfo("External command on Central Server: ($id) : \"".$cmd_line."\"");
-                    ($lerror, $stdout, $return_code) = centreon::common::misc::backtick(
-                        command => $cmd2,
-                        logger => $self->{logger},
-                        timeout => $self->{cmd_timeout}
-                    );
-                    $cmd_line = "";
-                    $count = 0;
-                }
-                if ($lerror != 0 || (defined($return_code)  && $return_code != 0)) {
-                    $self->{logger}->writeLogError(
-                        "Could not write into pipe file " . $command_file . " on poller " . $id
-                    );
                 }
             } else {
                 $self->{logger}->writeLogError(
-                    'Cannot write external command on central server : "' . $cmd_line . '"'
+                    "Cannot write external command on local server. File '" . $commandFile . "' not available."
                 );
             }
         } else {
-            $cmd =~ s/\'/\'\\\'\'/g;
-
-            # split $cmd in order to send it in multiple line
+            my $multipleCommands = '';
             my $count = 0;
             my $totalCount = 0;
-            my @splittedCommands = split(/\n/, $cmd);
-            my $countCommands = @splittedCommands;
-            foreach my $cmd1 (@splittedCommands) {
-                if (defined($server_info->{remote_id})
-                    && $server_info->{remote_id} != 0
-                    && $self->{instance_mode} ne "remote"
-                    && $server_info->{remote_server_centcore_ssh_proxy} == 1
-                ) {
-                    $cmd_line .= 'EXTERNALCMD:' . $id . ':' . $self->removeIllegalCharacters($cmd1) . "\n";
-                } else {
-                    $cmd_line .= $self->removeIllegalCharacters($cmd1) . "\n";
-                }
+            foreach my $command (@{$commandArray}) {
+                $command =~ s/\'/\'\\\'\'/g;
+                $command = $self->removeIllegalCharacters($command);
                 $count++;
                 $totalCount++;
 
-                if ($count >= 200 || $totalCount == $countCommands) {
-                    if (defined($server_info->{remote_id}) 
-                        && $server_info->{remote_id} != 0
-                        && $self->{instance_mode} ne "remote"
-                        && $server_info->{remote_server_centcore_ssh_proxy} == 1
+                if (defined($serverInfo->{remote_id}) && $serverInfo->{remote_id} != 0
+                    && $self->{instance_mode} ne "remote" && $serverInfo->{remote_server_centcore_ssh_proxy} == 1) {
+                    # Add Centcore MACRO when routing to Remote Server
+                    $command = "EXTERNALCMD:" . $pollerId . ":" . $command;
+                    $multipleCommands .= $command . "\n";
+                } else {
+                    $multipleCommands .= $command . "\n";
+                }
+
+                if ($count >= 200 || $totalCount == scalar(@{$commandArray})) {
+                    if (defined($serverInfo->{remote_id}) && $serverInfo->{remote_id} != 0
+                        && $self->{instance_mode} ne "remote" && $serverInfo->{remote_server_centcore_ssh_proxy} == 1
                     ) {
-                        # Forward commands to Remote Server Master
-                        my $remote_server = $self->getServerConfig($server_info->{remote_id});
-                        $port = checkSSHPort($remote_server->{ssh_port});
-                        $cmd_line =~ s/^\s+|\s+$//g;
-                        $cmd2 = "$self->{ssh} -q " . $remote_server->{ns_ip_address} . " -p $port "
-                            . "\"$self->{echo} '" . $cmd_line . "' >> " . $self->{cmdDir} . time() . "-sendcmd\"";
-                        $self->{logger}->writeLogInfo(
-                            "Sending external command using Remote Server: " . $remote_server->{name}
-                        );
+                        $multipleCommands =~ s/^\s+|\s+$//g;
 
-                        ($lerror, $stdout, $return_code) = centreon::common::misc::backtick(
-                            command => $cmd2,
-                            logger => $self->{logger},
-                            timeout => $self->{cmd_timeout},
-                            wait_exit => 1
-                        );
-                        
-                        if ($lerror != 0 || (defined($return_code)  && $return_code != 0)) {
-                            $self->{logger}->writeLogError(sprintf(
-                                "Couldn't send external command %s on Remote Server: %s (%d)", 
-                                $cmd_line,
-                                $remote_server->{name},
-                                $remote_server->{id}
-                                )
-                            );
+                        my @remoteIds;
+                        push @remoteIds, $serverInfo->{remote_id};
+                        foreach my $additionalRemote (@{$serverInfo->{additional_remotes}}) {
+                            push @remoteIds, $additionalRemote->{remote_server_id};
+                        }
 
-                            # Try with additionnals Remote Server
-                            if ($server_info->{additonal_remotes}) {
-                                foreach my $additional_remote_id ($server_info->{additonal_remotes}) {
-                                    my $additional_remote_config = $self->getServerConfig($additional_remote_id->{remote_server_id});
-                                    $port = checkSSHPort($additional_remote_config->{ssh_port});
-                                    $self->{logger}->writeLogInfo(
-                                        "Try to use additional Remote Server: " . $additional_remote_config->{name}
-                                    );
-                                    $cmd2 = "$self->{ssh} -q " . $additional_remote_config->{ns_ip_address} . " -p $port "
-                                        . "\"$self->{echo} '" . $cmd_line . "' >> " . $self->{cmdDir} . time() . "-sendcmd\"";
-                                    $self->{logger}->writeLogInfo(
-                                        "Sending external command using Remote Server: "
-                                        . $additional_remote_config->{name}
-                                    );
-
-                                    ($lerror, $stdout, $return_code) = centreon::common::misc::backtick(
-                                        command => $cmd2,
-                                        logger => $self->{logger},
-                                        timeout => $self->{cmd_timeout},
-                                        wait_exit => 1
-                                    );
-
-                                    if ($lerror != 0 || (defined($return_code)  && $return_code != 0)) {
-                                        $self->{logger}->writeLogError(sprintf(
-                                            "Couldn't send external command %s on Remote Server: %s (%d)", 
-                                            $cmd_line,
-                                            $additional_remote_config->{name},
-                                            $additional_remote_config->{id}
-                                            )
-                                        );
-                                    } else {
-                                        # Commands sent, stop loop
-                                        $self->{logger}->writeLogInfo(
-                                            "External command using Remote Server: " . $additional_remote_config->{name} . " sent"
-                                        );
-                                        last;
-                                    }
-                                }
-                            }
-                        } else {
+                        foreach my $remoteId (@remoteIds) {
+                            my $remoteServer = $self->getServerConfig($remoteId);
+                            my $commandExec = "$self->{ssh} -q " . $remoteServer->{ns_ip_address} . " -p $port "
+                                . "\"$self->{echo} '" . $multipleCommands . "' "
+                                . ">> " . $self->{cmdDir} . time() . "-sendcmd\"";
                             $self->{logger}->writeLogInfo(
-                                "External command using Remote Server: " . $remote_server->{name} . " sent"
+                                "Send external command to Poller engine '" . $serverInfo->{name} . "' (" 
+                                    . $pollerId . ") using Remote Server '" . $remoteServer->{name} . "' (" 
+                                    . $remoteId . ")"
                             );
+                            
+                            my ($lerror, $stdout, $returnCode) = centreon::common::misc::backtick(
+                                command => $commandExec,
+                                logger => $self->{logger},
+                                timeout => $self->{cmd_timeout},
+                                wait_exit => 1
+                            );
+                            if ($lerror != 0 || (defined($returnCode)  && $returnCode != 0)) {
+                                $self->{logger}->writeLogError("Cannot send external command");
+                            } else {
+                                # Commands sent, stop loop
+                                last;
+                            }
                         }
                     } else {
-                        # Send commands directly to poller
-                        $cmd2 = "$self->{ssh} -q " . $server_info->{ns_ip_address} . " -p $port "
-                            . "\"$self->{echo} '" . $cmd_line."' >> " . $command_file . "\"";
+                        my $commandExec = "$self->{ssh} -q " . $serverInfo->{ns_ip_address} . " -p $port "
+                            . "\"$self->{echo} '" . $multipleCommands . "' >> " . $commandFile . "\"";
                         $self->{logger}->writeLogInfo(
-                            "External command : " . $server_info->{ns_ip_address} . " ($id) : \"" . $cmd_line . "\""
+                            "Send external command to Poller engine '" . $serverInfo->{name} . "' (" . $pollerId . "):"
                         );
-                        ($lerror, $stdout, $return_code) = centreon::common::misc::backtick(
-                            command => $cmd2,
+                        foreach (split(/\n/, $multipleCommands)) {
+                            $self->{logger}->writeLogInfo("  '" . $_ . "'");
+                        }
+                        
+                        my ($lerror, $stdout, $returnCode) = centreon::common::misc::backtick(
+                            command => $commandExec,
                             logger => $self->{logger},
                             timeout => $self->{cmd_timeout}
                         );
-                        if ($lerror != 0 || (defined($return_code)  && $return_code != 0)) {
-                            $self->{logger}->writeLogError(sprintf(
-                                "Could not write into pipe file " . $command_file . " on poller: " . $id
-                            ));
+                        if ($lerror != 0 || (defined($returnCode) && $returnCode != 0)) {
+                            $self->{logger}->writeLogError("Cannot send external command");
                         }
                     }
-
-                    $cmd_line = "";
+                    
+                    $multipleCommands = '';
                     $count = 0;
                 }
             }
         }
-
-        if (defined($stdout) && $stdout){
-            $self->{logger}->writeLogInfo("Result : $stdout");
-        }
     } else {
-        $self->{logger}->writeLogError("Ip address not defined for poller $id");
+        $self->{logger}->writeLogError("IP address not defined for poller '" . $pollerId . "'");
     }
 }
 
@@ -764,8 +712,8 @@ sub sendConfigFile($) {
             );
             
             # Try with additionnals Remote Server
-            if ($server_info->{'additonal_remotes'}) {
-                foreach my $additional_remote_id ($server_info->{additonal_remotes}) {
+            if ($server_info->{'additional_remotes'}) {
+                foreach my $additional_remote_id ($server_info->{additional_remotes}) {
                     my $additional_remote_config = $self->getServerConfig($additional_remote_id->{remote_server_id});
                     $self->{logger}->writeLogInfo(
                         "Try to use additional Remote Server: " . $additional_remote_config->{name}
@@ -869,8 +817,8 @@ sub sendConfigFile($) {
                         );
                         
                         # Try with additionnals Remote Server
-                        if ($server_info->{'additonal_remotes'}) {
-                            foreach my $additional_remote_id ($server_info->{additonal_remotes}) {
+                        if ($server_info->{'additional_remotes'}) {
+                            foreach my $additional_remote_id ($server_info->{additional_remotes}) {
                                 my $additional_remote_config = $self->getServerConfig($additional_remote_id->{remote_server_id});
                                 $self->{logger}->writeLogInfo(
                                     "Try to use additional Remote Server: " . $additional_remote_config->{name}
@@ -972,8 +920,8 @@ sub sendConfigFile($) {
             ));
 
             # Try with additionnals Remote Server
-            if ($server_info->{additonal_remotes}) {
-                foreach my $additional_remote_id ($server_info->{additonal_remotes}) {
+            if ($server_info->{additional_remotes}) {
+                foreach my $additional_remote_id ($server_info->{additional_remotes}) {
                     my $additional_remote_config = $self->getServerConfig($additional_remote_id->{remote_server_id});
                     $self->{logger}->writeLogInfo(
                         "Try to use additional Remote Server: " . $additional_remote_config->{name}
@@ -1131,8 +1079,8 @@ sub initEngine($$$) {
                 ));
 
                 # Try with additionnals Remote Server
-                if ($conf->{additonal_remotes}) {
-                    foreach my $additional_remote_id ($conf->{additonal_remotes}) {
+                if ($conf->{additional_remotes}) {
+                    foreach my $additional_remote_id ($conf->{additional_remotes}) {
                         my $additional_remote_config = $self->getServerConfig($additional_remote_id->{remote_server_id});
                         $self->{logger}->writeLogInfo(
                             "Try to use additional Remote Server: " . $additional_remote_config->{name}
@@ -1286,8 +1234,8 @@ sub syncTraps($) {
             }
 
             # Try with additionnals Remote Server
-            if ($ns_server->{additonal_remotes}) {
-                foreach my $additional_remote_id ($ns_server->{additonal_remotes}) {
+            if ($ns_server->{additional_remotes}) {
+                foreach my $additional_remote_id ($ns_server->{additional_remotes}) {
                     my $additional_remote_config = $self->getServerConfig($additional_remote_id->{remote_server_id});
                     $self->{logger}->writeLogInfo(
                         "Try to use additional Remote Server: " . $additional_remote_config->{name}
@@ -1347,8 +1295,8 @@ sub syncTraps($) {
             }
 
             # Try with additionnals Remote Server
-            if ($ns_server->{additonal_remotes}) {
-                foreach my $additional_remote_id ($ns_server->{additonal_remotes}) {
+            if ($ns_server->{additional_remotes}) {
+                foreach my $additional_remote_id ($ns_server->{additional_remotes}) {
                     my $additional_remote_config = $self->getServerConfig($additional_remote_id->{remote_server_id});
                     $self->{logger}->writeLogInfo(
                         "Try to use additional Remote Server: " . $additional_remote_config->{name}
@@ -1518,8 +1466,8 @@ sub initCentreonTrapd {
                     ));
 
                     # Try with additionnals Remote Server
-                    if ($ns_server->{additonal_remotes}) {
-                        foreach my $additional_remote_id ($ns_server->{additonal_remotes}) {
+                    if ($ns_server->{additional_remotes}) {
+                        foreach my $additional_remote_id ($ns_server->{additional_remotes}) {
                             my $additional_remote_config = $self->getServerConfig($additional_remote_id->{remote_server_id});
                             $self->{logger}->writeLogDebug(sprintf(
                                 "Try to %s Centreontrapd on poller %s (%d) using Remote Server: %s",
@@ -1681,10 +1629,7 @@ sub storeCommands($$) {
     my $self = shift;
     my ($poller_id, $command) = @_;
     
-    if (!defined($self->{commandBuffer}{$poller_id})) {
-        $self->{commandBuffer}{$poller_id} = "";
-    }
-    $self->{commandBuffer}{$poller_id} .= $command . "\n";
+    push @{$self->{commandBuffer}->{$poller_id}}, $command;
 }
 
 sub run {
@@ -1717,10 +1662,10 @@ sub run {
                 while (<FILE>){
                     $self->parseRequest($_);
                 }
-                foreach my $poller (keys(%{$self->{commandBuffer}})) {
-                    if (length($self->{commandBuffer}{$poller}) != 0) {
-                        $self->sendExternalCommand($poller, $self->{commandBuffer}{$poller});
-                        $self->{commandBuffer}{$poller} = "";
+                foreach my $poller (keys %{$self->{commandBuffer}}) {
+                    if (scalar(@{$self->{commandBuffer}->{$poller}}) > 0) {
+                        $self->sendExternalCommand($poller, $self->{commandBuffer}->{$poller});
+                        delete $self->{commandBuffer}->{$poller};
                     }
                 }
                 close(FILE);
@@ -1737,10 +1682,10 @@ sub run {
                         while (<FILE>){
                             $self->parseRequest($_);
                         }
-                        foreach my $poller (keys(%{$self->{commandBuffer}})) {
-                            if (length($self->{commandBuffer}{$poller}) != 0) {
-                                $self->sendExternalCommand($poller, $self->{commandBuffer}{$poller});
-                                $self->{commandBuffer}{$poller} = "";
+                        foreach my $poller (keys %{$self->{commandBuffer}}) {
+                            if (scalar(@{$self->{commandBuffer}->{$poller}}) > 0) {
+                                $self->sendExternalCommand($poller, $self->{commandBuffer}->{$poller});
+                                delete $self->{commandBuffer}->{$poller};
                             }
                         }
                         close(FILE);
