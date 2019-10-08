@@ -23,6 +23,7 @@ namespace Centreon\Infrastructure\Acknowledgement;
 
 use Centreon\Domain\Acknowledgement\Acknowledgement;
 use Centreon\Domain\Acknowledgement\Interfaces\AcknowledgementRepositoryInterface;
+use Centreon\Domain\Contact\Interfaces\ContactInterface;
 use Centreon\Domain\Entity\EntityCreator;
 use Centreon\Domain\RequestParameters\RequestParameters;
 use Centreon\Domain\Security\AccessGroup;
@@ -57,6 +58,11 @@ final class AcknowledgmentRepositoryRDB extends AbstractRepositoryDRB implements
      * @var bool Indicates whether the contact is an admin or not
      */
     private $isAdmin = false;
+
+    /**
+     * @var ContactInterface
+     */
+    private $contact;
 
     /**
      * AcknowledgmentRepositoryRDB constructor.
@@ -116,7 +122,7 @@ final class AcknowledgmentRepositoryRDB extends AbstractRepositoryDRB implements
      */
     public function findLatestHostAcknowledgement(int $hostId): ?Acknowledgement
     {
-        if (!$this->hasEnoughRightsToContinue()) {
+        if ($this->hasNotEnoughRightsToContinue()) {
             return null;
         }
 
@@ -162,7 +168,7 @@ final class AcknowledgmentRepositoryRDB extends AbstractRepositoryDRB implements
      */
     public function findLatestServiceAcknowledgement(int $hostId, int $serviceId): ?Acknowledgement
     {
-        if (!$this->hasEnoughRightsToContinue()) {
+        if ($this->hasNotEnoughRightsToContinue()) {
             return null;
         }
 
@@ -217,7 +223,7 @@ final class AcknowledgmentRepositoryRDB extends AbstractRepositoryDRB implements
     {
         $acknowledgements = [];
 
-        if (!$this->hasEnoughRightsToContinue()) {
+        if ($this->hasNotEnoughRightsToContinue()) {
             return $acknowledgements;
         }
 
@@ -306,11 +312,29 @@ final class AcknowledgmentRepositoryRDB extends AbstractRepositoryDRB implements
         return $acknowledgements;
     }
 
+    private function isAdmin(): bool
+    {
+        return ($this->contact !== null)
+            ? $this->contact->isAdmin()
+            : false;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function setContact(ContactInterface $contact): AcknowledgementRepositoryInterface
+    {
+        $this->contact = $contact;
+        return $this;
+    }
+
     /**
      * @return bool Return TRUE if the contact is an admin or has at least one access group.
      */
-    private function hasEnoughRightsToContinue(): bool
+    private function hasNotEnoughRightsToContinue(): bool
     {
-        return $this->isAdmin || count($this->accessGroups) > 0;
+        return ($this->contact !== null)
+            ? !($this->contact->isAdmin() || count($this->accessGroups) > 0)
+            : count($this->accessGroups) == 0;
     }
 }

@@ -22,6 +22,7 @@ declare(strict_types=1);
 namespace Centreon\Domain\Acknowledgement\Interfaces;
 
 use Centreon\Domain\Acknowledgement\Acknowledgement;
+use Centreon\Domain\Contact\Interfaces\ContactInterface;
 use Centreon\Domain\Security\AccessGroup;
 use Centreon\Infrastructure\RequestParameters\RequestParametersTranslatorException;
 
@@ -79,4 +80,10 @@ interface AcknowledgementRepositoryInterface
      * @return self
      */
     public function setAdmin(bool $isAdmin): self;
+
+    /**
+     * @param ContactInterface $contact
+     * @return AcknowledgementRepositoryInterface
+     */
+    public function setContact(ContactInterface $contact): self;
 }

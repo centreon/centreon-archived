@@ -21,8 +21,10 @@ declare(strict_types=1);
 
 namespace Centreon\Domain\Monitoring\Interfaces;
 
+use Centreon\Domain\Contact\Interfaces\ContactInterface;
 use Centreon\Domain\Entity\EntityCreator;
 use Centreon\Domain\Monitoring\HostGroup;
+use Centreon\Domain\Monitoring\ServiceGroup;
 use Centreon\Domain\Security\AccessGroup;
 use Centreon\Domain\Monitoring\Host;
 use Centreon\Domain\Monitoring\Service;
@@ -47,10 +49,27 @@ interface MonitoringRepositoryInterface
     public function findHosts(): array;
 
     /**
+     * Find the hosts of the hosts groups ids given.
+     *
+     * @param array $hostsGroupsIds List of hosts groups Ids for which we want to retrieve the hosts
+     * @return array [hostGroupId => hostId,...]
+     * @throws \Exception
+     */
+    public function findHostsByHostsGroups(array $hostsGroupsIds): array;
+
+    /**
+     * Find the hosts of the services groups ids given.
+     *
+     * @param array $servicesGroupsIds List of services groups Ids for which we want to retrieve the hosts
+     * @return array [serviceGroupId => hostId,...]
+     * @throws \Exception
+     */
+    public function findHostsByServiceGroups(array $servicesGroupsIds): array;
+
+    /**
      * Find all services grouped by host groups
      *
      * @return HostGroup[]
-     * @throws \Exception
      */
     public function findHostGroups(): array;
 
@@ -114,15 +133,19 @@ interface MonitoringRepositoryInterface
      * @param array $hostIds List of host for which we want to get services
      * @return array Return a list of services indexed by host
      * [host_id => Service[], ...]
-     * @throws \Exception
      */
-    public function findServicesOnMultipleHosts(array $hostIds): array;
+    public function findServicesByHosts(array $hostIds): array;
 
     /**
-     * Indicates whether the contact is an admin or not.
-     *
-     * @param bool $isAdmin Set TRUE if the contact is an admin
-     * @return self
+     * @param ContactInterface $contact
+     * @return MonitoringRepositoryInterface
      */
-    public function setAdmin(bool $isAdmin): self;
+    public function setContact(ContactInterface $contact): self;
+
+    /**
+     * @param array $serviceGroups
+     * @return array
+     * @throws \Exception
+     */
+    public function findServicesByServiceGroups(array $serviceGroups): array;
 }

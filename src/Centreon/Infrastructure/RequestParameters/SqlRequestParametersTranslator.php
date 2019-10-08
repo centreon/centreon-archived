@@ -262,12 +262,12 @@ class SqlRequestParametersTranslator
     /**
      * Indicates if the key is an aggregate operator
      *
-     * @param string $key Key to test
+     * @param mixed $key Key to test
      * @return bool Return TRUE if the key is an aggregate operator otherwise FALSE
      */
-    private function isAggregateOperator(string $key): bool
+    private function isAggregateOperator($key): bool
     {
-        return in_array($key, $this->aggregateOperators);
+        return is_string($key) && in_array($key, $this->aggregateOperators);
     }
 
     /**

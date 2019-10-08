@@ -39,7 +39,7 @@ class HostGroup
     private $id;
 
     /**
-     * @Serializer\Groups({"hg_main"})
+     * @Serializer\Groups({"hg_with_host"})
      * @var Host[]
      */
     private $hosts = [];

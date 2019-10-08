@@ -359,7 +359,11 @@ class Contact implements UserInterface, ContactInterface
     public function setAccessToApiConfiguration(bool $hasAccessToApiConfiguration): self
     {
         $this->hasAccessToApiConfiguration = $hasAccessToApiConfiguration;
-        $this->addRole(self::ROLE_API_CONFIGURATION);
+        if ($this->hasAccessToApiRealTime) {
+            $this->addRole(self::ROLE_API_CONFIGURATION);
+        } else {
+            $this->removeRole(self::ROLE_API_CONFIGURATION);
+        }
         return $this;
     }
 
@@ -378,7 +382,11 @@ class Contact implements UserInterface, ContactInterface
     public function setAccessToApiRealTime(bool $hasAccessToApiRealTime): self
     {
         $this->hasAccessToApiRealTime = $hasAccessToApiRealTime;
-        $this->addRole(self::ROLE_API_REALTIME);
+        if ($this->hasAccessToApiRealTime) {
+            $this->addRole(self::ROLE_API_REALTIME);
+        } else {
+            $this->removeRole(self::ROLE_API_REALTIME);
+        }
         return $this;
     }
 
@@ -403,5 +411,10 @@ class Contact implements UserInterface, ContactInterface
         if (!in_array($roleName, $this->roles)) {
             $this->roles[] = $roleName;
         }
+    }
+
+    private function removeRole(string $roleName): void
+    {
+        unset($this->roles[$roleName]);
     }
 }

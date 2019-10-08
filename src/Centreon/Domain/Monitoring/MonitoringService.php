@@ -22,7 +22,6 @@ declare(strict_types=1);
 namespace Centreon\Domain\Monitoring;
 
 use Centreon\Domain\Contact\Contact;
-use Centreon\Domain\Contact\Interfaces\ContactInterface;
 use Centreon\Domain\Monitoring\Interfaces\MonitoringServiceInterface;
 use Centreon\Domain\Monitoring\Interfaces\MonitoringRepositoryInterface;
 use Centreon\Domain\Security\Interfaces\AccessGroupRepositoryInterface;
@@ -62,14 +61,14 @@ class MonitoringService extends AbstractCentreonService implements MonitoringSer
      * @param Contact $contact
      * @return self
      */
-    public function filterByContact($contact)
+    public function filterByContact($contact): self
     {
         parent::filterByContact($contact);
 
         $accessGroups = $this->accessGroupRepository->findByContact($contact);
 
         $this->monitoringRepository
-            ->setAdmin($this->contact->isAdmin())
+            ->setContact($this->contact)
             ->filterByAccessGroups($accessGroups);
 
         return $this;
@@ -94,10 +93,10 @@ class MonitoringService extends AbstractCentreonService implements MonitoringSer
     /**
      * @inheritDoc
      */
-    public function findHosts(): array
+    public function findHosts(bool $withServices = false): array
     {
         $hosts = $this->monitoringRepository->findHosts();
-        if (!empty($hosts)) {
+        if ($withServices && !empty($hosts)) {
             $hosts = $this->completeHostsWithTheirServices($hosts);
         }
         return $hosts;
@@ -106,46 +105,53 @@ class MonitoringService extends AbstractCentreonService implements MonitoringSer
     /**
      * @inheritDoc
      */
-    public function findHostGroups(): array
+    public function findHostGroups(bool $withHosts = false, bool $withServices = false): array
     {
-        /**
-         * @param array $hostGroups
-         * @return HostGroup[]
-         */
-        $completeHostsOfHostGroupsWithTheirServices = function (array $hostGroups): array {
-            $hostsById = [];
-            // We create a unique hosts list indexed by their id
-            foreach ($hostGroups as $hostGroup) {
-                foreach ($hostGroup->getHosts() as $host) {
-                    if (!array_key_exists($host->getId(), $hostsById)) {
-                        $hostsById[$host->getId()] = $host;
-                    }
-                }
-            }
+        // Find hosts groups only
+        $hostGroups = $this->monitoringRepository->findHostGroups();
 
-            // We complete the hosts of host group by their services
-            if (!empty($hostsById)) {
-                $hosts = $this->completeHostsWithTheirServices(array_values($hostsById));
-                $hostsById = [];
-                foreach ($hosts as $host) {
-                    $hostsById[$host->getId()] = $host;
-                }
-
+        if (!empty($hostGroups)) {
+            $hostIds = [];
+            if ($withHosts || $withServices) {
+                // We will find hosts linked to hosts groups found
+                $hostGroupIds = [];
                 foreach ($hostGroups as $hostGroup) {
-                    foreach ($hostGroup->getHosts() as $host) {
-                        if (array_key_exists($host->getId(), $hostsById)) {
-                            $host->setServices($hostsById[$host->getId()]->getServices());
+                    $hostGroupIds[] = $hostGroup->getId();
+                }
+
+                if (!empty($hostGroupIds)) {
+                    $hostsByHostsGroups = $this->monitoringRepository->findHostsByHostsGroups($hostGroupIds);
+
+                    foreach ($hostGroups as $hostGroup) {
+                        if (array_key_exists($hostGroup->getId(), $hostsByHostsGroups)) {
+                            $hostGroup->setHosts($hostsByHostsGroups[$hostGroup->getId()]);
+                            // We keep the host ids if we must to retrieve their services
+                            if ($withServices && !empty($hostGroup->getHosts())) {
+                                foreach ($hostGroup->getHosts() as $host) {
+                                    if (!in_array($host->getId(), $hostIds)) {
+                                        $hostIds[] = $host->getId();
+                                    }
+                                }
+                            }
                         }
                     }
                 }
             }
 
-            return $hostGroups;
-        };
+            if ($withServices) {
+                // We will find services linked to hosts linked to host groups
+                $servicesByHost = $this->monitoringRepository->findServicesByHosts($hostIds);
+                foreach ($hostGroups as $hostGroup) {
+                    foreach ($hostGroup->getHosts() as $host) {
+                        if (array_key_exists($host->getId(), $servicesByHost)) {
+                            $host->setServices($servicesByHost[$host->getId()]);
+                        }
+                    }
+                }
+            }
+        }
 
-        $hostGroups = $this->monitoringRepository->findHostGroups();
-
-        return $completeHostsOfHostGroupsWithTheirServices($hostGroups);
+        return $hostGroups;
     }
 
     /**
@@ -172,9 +178,62 @@ class MonitoringService extends AbstractCentreonService implements MonitoringSer
     /**
      * @inheritDoc
      */
-    public function findServiceGroups(): array
+    public function findServiceGroups(bool $withHosts = false, bool $withServices = false): array
     {
-        return $this->monitoringRepository->findServiceGroups();
+        // Find hosts groups only
+        $serviceGroups = $this->monitoringRepository->findServiceGroups();
+
+        if (!empty($serviceGroups) && ($withHosts || $withServices)) {
+            // We will find hosts linked to hosts groups found
+            $serviceGroupIds = [];
+            foreach ($serviceGroups as $serviceGroup) {
+                $serviceGroupIds[] = $serviceGroup->getId();
+            }
+
+            $hostsByServicesGroups = $this->monitoringRepository->findHostsByServiceGroups($serviceGroupIds);
+
+            foreach ($serviceGroups as $serviceGroup) {
+                if (array_key_exists($serviceGroup->getId(), $hostsByServicesGroups)) {
+                    $serviceGroup->setHosts($hostsByServicesGroups[$serviceGroup->getId()]);
+                }
+            }
+
+            if ($withServices) {
+                // We will find services linked to hosts linked to service groups
+                $servicesByServiceGroup = $this->monitoringRepository->findServicesByServiceGroups($serviceGroupIds);
+
+                // First, we will sort services by service groups and hosts
+                $servicesByServiceGroupAndHost = [];
+                /**
+                 * @var $services Service[]
+                 */
+                foreach ($servicesByServiceGroup as $serviceGroupId => $services) {
+                    foreach ($services as $service) {
+                        $hostId = $service->getHost()->getId();
+                        $servicesByServiceGroupAndHost[$serviceGroupId][$hostId][] = $service;
+                    }
+                }
+
+                // Next, we will linked services to host
+                /**
+                 * @var $serviceGroup ServiceGroup
+                 */
+                foreach ($serviceGroups as $serviceGroup) {
+                    foreach ($serviceGroup->getHosts() as $host) {
+                        if (
+                            array_key_exists($serviceGroup->getId(), $servicesByServiceGroupAndHost)
+                            && array_key_exists($host->getId(), $servicesByServiceGroupAndHost[$serviceGroup->getId()])
+                        ) {
+                            $host->setServices(
+                                $servicesByServiceGroupAndHost[$serviceGroup->getId()][$host->getId()]
+                            );
+                        }
+                    }
+                }
+            }
+        }
+
+        return $serviceGroups;
     }
 
     /**
@@ -198,7 +257,7 @@ class MonitoringService extends AbstractCentreonService implements MonitoringSer
         foreach ($hosts as $host) {
             $hostIds[] = $host->getId();
         }
-        $services = $this->monitoringRepository->findServicesOnMultipleHosts($hostIds);
+        $services = $this->monitoringRepository->findServicesByHosts($hostIds);
 
         foreach ($hosts as $host) {
             if (array_key_exists($host->getId(), $services)) {

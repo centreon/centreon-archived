@@ -98,11 +98,11 @@ class AcknowledgementService extends AbstractCentreonService implements Acknowle
         $accessGroups = $this->accessGroupRepository->findByContact($contact);
 
         $this->monitoringRepository
-            ->setAdmin($this->contact->isAdmin())
+            ->setContact($this->contact)
             ->filterByAccessGroups($accessGroups);
 
         $this->acknowledgementRepository
-            ->setAdmin($this->contact->isAdmin())
+            ->setContact($this->contact)
             ->filterByAccessGroups($accessGroups);
 
         return $this;
