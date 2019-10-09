@@ -10511,19 +10511,28 @@ msgid "You are not allowed to access this contact"
 msgstr "No estás autorizado para acceder a este contacto."
 
 #: centreon-web/www/include/configuration/configObject/contact/formContact.php:274
-#: centreon-web/www/include/configuration/configObject/contact_template_model/formContactTemplateModel.php:162
 msgid "Add a User"
 msgstr "Agregar un usuario"
 
 #: centreon-web/www/include/configuration/configObject/contact/formContact.php:276
-#: centreon-web/www/include/configuration/configObject/contact_template_model/formContactTemplateModel.php:164
 msgid "Modify a User"
 msgstr "Editar un usuario"
 
 #: centreon-web/www/include/configuration/configObject/contact/formContact.php:278
-#: centreon-web/www/include/configuration/configObject/contact_template_model/formContactTemplateModel.php:166
 msgid "View a User"
 msgstr "Ver un usuario"
+
+#: centreon-web/www/include/configuration/configObject/contact_template_model/formContactTemplateModel.php:162
+msgid "Add a User Template"
+msgstr "Agregar un modelo de usuario"
+
+#: centreon-web/www/include/configuration/configObject/contact_template_model/formContactTemplateModel.php:164
+msgid "Modify a User Template"
+msgstr "Editar un modelo de usuario"
+
+#: centreon-web/www/include/configuration/configObject/contact_template_model/formContactTemplateModel.php:166
+msgid "View a User Template"
+msgstr "Ver un modelo de usuario"
 
 #: centreon-web/www/include/configuration/configObject/contact/formContact.php:288
 #: centreon-web/www/include/configuration/configObject/contact_template_model/formContactTemplateModel.php:176
