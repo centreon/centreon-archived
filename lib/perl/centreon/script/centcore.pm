@@ -535,10 +535,9 @@ sub sendExternalCommand($$) {
                     && $self->{instance_mode} ne "remote" && $serverInfo->{remote_server_centcore_ssh_proxy} == 1) {
                     # Add Centcore MACRO when routing to Remote Server
                     $command = "EXTERNALCMD:" . $pollerId . ":" . $command;
-                    $multipleCommands .= $command . "\n";
-                } else {
-                    $multipleCommands .= $command . "\n";
                 }
+
+                $multipleCommands .= $command . "\n";
 
                 if ($count >= 200 || $totalCount == scalar(@{$commandArray})) {
                     if (defined($serverInfo->{remote_id}) && $serverInfo->{remote_id} != 0
