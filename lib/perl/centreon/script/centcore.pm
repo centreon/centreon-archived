@@ -1,5 +1,5 @@
 ################################################################################
-# Copyright 2005-2017 Centreon
+# Copyright 2005-2019 Centreon
 # Centreon is developped by : Julien Mathis and Romain Le Merlus under
 # GPL Licence 2.0.
 # 
@@ -524,14 +524,15 @@ sub sendExternalCommand($$){
                             . "\"$self->{echo} '" . $multipleCommands . "' "
                             . ">> " . $self->{cmdDir} . time() . "-sendcmd\"";
                         $self->{logger}->writeLogInfo(
-                            "Send external command to Poller engine '" . $pollerId . "' using Remote Server '"
-                                . $serverInfo->{remote_id} . "'"
+                            "Send external command to Poller engine '" . $serverInfo->{name} . "' (" 
+                                . $pollerId . ") using Remote Server '" . $remoteServer->{name} . "' (" 
+                                . $remoteId . ")"
                         );
                     } else {
                         $commandExec = "$self->{ssh} -q " . $serverInfo->{ns_ip_address} . " -p $port "
                             . "\"$self->{echo} '" . $multipleCommands . "' >> " . $commandFile . "\"";
                         $self->{logger}->writeLogInfo(
-                            "Send external command to Poller engine '" . $pollerId . "':"
+                            "Send external command to Poller engine '" . $serverInfo->{name} . "' (" . $pollerId . "):"
                         );                        
                         foreach (split(/\n/, $multipleCommands)) {
                             $self->{logger}->writeLogInfo("  '" . $_ . "'");
