@@ -84,6 +84,21 @@ abstract class AbstractObject
         $this->createFile($this->backend_instance->getPath());
     }
 
+    /**
+     * Get the global inheritance option of notification
+     * 1 = vertical, 2 = close, 3 = cumulative
+     *
+     * @return int
+     */
+    public function getInheritanceMode()
+    {
+        $stmtNotification = $this->backend_instance->db->query(
+            "SELECT `value` FROM options WHERE `key` = 'inheritance_mode'"
+        );
+        $notificationOption = $stmtNotification->fetch();
+        return (int)$notificationOption['value'];
+    }
+
     private function setHeader()
     {
         $header =

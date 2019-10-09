@@ -16,8 +16,15 @@
     </tr>
 	<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_directory">{$form.oreon_path.label}</td><td class="FormRowValue">{$form.oreon_path.html}</td></tr>
 	<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="tip_centreon_web_directory">{$form.oreon_web_path.label}</td><td class="FormRowValue">{$form.oreon_web_path.html}</td></tr>
- 	
- 	<tr class="list_lvl_1">
+
+    <tr class="list_lvl_1">
+        <td class="ListColLvl1_name" colspan="2">
+            <h4>{$notification}</h4>
+        </td>
+    </tr>
+    <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_notification_inheritance">{$form.inheritance_mode.label}</td><td class="FormRowValue">{$form.inheritance_mode.html}</td></tr>
+
+    <tr class="list_lvl_1">
       <td class="ListColLvl1_name" colspan="2">
         <h4>{$genOpt_max_page_size}</h4>
       </td>

@@ -5125,12 +5125,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/centreon/centreon-test-lib.git",
-                "reference": "84aeb4736ab0b1f85e32cfab7ed197cb14f2e9ff"
+                "reference": "9f4cac455e094029001765a523bbde105cf966c4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/centreon/centreon-test-lib/zipball/84aeb4736ab0b1f85e32cfab7ed197cb14f2e9ff",
-                "reference": "84aeb4736ab0b1f85e32cfab7ed197cb14f2e9ff",
+                "url": "https://api.github.com/repos/centreon/centreon-test-lib/zipball/9f4cac455e094029001765a523bbde105cf966c4",
+                "reference": "9f4cac455e094029001765a523bbde105cf966c4",
                 "shasum": ""
             },
             "require": {
