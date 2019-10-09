@@ -185,6 +185,7 @@ class Host extends AbstractHost
 
         $this->getHostTimezone($host);
         $this->getHostTemplates($host);
+        $this->getHostPoller($host);
         $this->getHostCommands($host);
         $this->getHostPeriods($host);
 
