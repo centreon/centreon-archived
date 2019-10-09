@@ -39,7 +39,7 @@ class ServiceGroup
     private $id;
 
     /**
-     * @Serializer\Groups({"sg_main"})
+     * @Serializer\Groups({"sg_with_host"})
      * @var Host[]
      */
     private $hosts = [];

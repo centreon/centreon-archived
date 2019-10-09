@@ -19,33 +19,32 @@
  */
 declare(strict_types=1);
 
-namespace Centreon\Domain\Contact\Interfaces;
+namespace Centreon\Domain\Service;
 
-interface ContactInterface
+use Centreon\Domain\Contact\Interfaces\ContactInterface;
+
+class AbstractCentreonService
 {
     /**
-     * @return int Returns the contact id
+     * @var ContactInterface
      */
-    public function getId(): int;
+    protected $contact;
 
     /**
-     * Indicates whether the contact is an administrator.
+     * Used to filter requests according to a contact.
+     * If the filter is defined, all requests will use the ACL of the contact
+     * to fetch data.
      *
-     * @return bool
+     * @param mixed $contact Contact to use as a ACL filter
+     * @return self
+     * @throws \Exception
      */
-    public function isAdmin(): bool;
-
-    /**
-     * Indicates whether the contact is active.
-     *
-     * @return bool
-     */
-    public function isActive(): bool;
-
-    /**
-     * Contact alias.
-     *
-     * @return string
-     */
-    public function getAlias(): string;
+    public function filterByContact($contact)
+    {
+        if (!\is_object($contact) || !($contact instanceof ContactInterface)) {
+            throw new \Exception('Contact expected');
+        }
+        $this->contact = $contact;
+        return $this;
+    }
 }

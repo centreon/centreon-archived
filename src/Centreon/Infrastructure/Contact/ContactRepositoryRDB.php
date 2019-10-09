@@ -129,6 +129,8 @@ final class ContactRepositoryRDB implements ContactRepositoryInterface
             ->setIsActive($contact['contact_activate'] === '1')
             ->setAdmin($contact['contact_admin'] === '1')
             ->setToken($contact['contact_autologin_key'])
-            ->setEncodedPassword($contact['contact_passwd']);
+            ->setEncodedPassword($contact['contact_passwd'])
+            ->setAccessToApiRealTime($contact['reach_api_rt'] === '1')
+            ->setAccessToApiConfiguration($contact['reach_api'] === '1');
     }
 }

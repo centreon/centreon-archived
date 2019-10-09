@@ -53,8 +53,7 @@ class EntityCreator
      */
     public static function createEntityByArray(string $className, array $data)
     {
-        $ec = new self($className);
-        return $ec->createByArray($data);
+        return (new self($className))->createByArray($data);
     }
 
     /**

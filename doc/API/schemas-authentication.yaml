@@ -1,0 +1,48 @@
+AuthenticationRequest:
+  type: object
+  properties:
+    security:
+      type: object
+      properties:
+        credentials:
+          type: object
+          properties:
+            login:
+              type: string
+              description: Login
+            password:
+              type: string
+              description: password
+LoginAuthenticationResponse:
+  type: object
+  properties:
+    contact:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Contact id
+        name:
+          type: string
+          description: Contact name
+        alias:
+          type: string
+          description: Alias of the contact
+        email:
+          type: string
+          format: email
+          description: Email of the contact
+        is_admin:
+          type: boolean
+          description: Indicates whether it is an admin user or not
+    security:
+      type: object
+      properties:
+        token:
+          type: string
+          description: Security authentication token
+LogoutAuthenticationResponse:
+      type: object
+      properties:
+        message:
+          type: string

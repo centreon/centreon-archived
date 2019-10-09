@@ -19,33 +19,12 @@
  */
 declare(strict_types=1);
 
-namespace Centreon\Domain\Contact\Interfaces;
+namespace Centreon\Domain\Acknowledgement;
 
-interface ContactInterface
+class AcknowledgementException extends \RuntimeException
 {
-    /**
-     * @return int Returns the contact id
-     */
-    public function getId(): int;
-
-    /**
-     * Indicates whether the contact is an administrator.
-     *
-     * @return bool
-     */
-    public function isAdmin(): bool;
-
-    /**
-     * Indicates whether the contact is active.
-     *
-     * @return bool
-     */
-    public function isActive(): bool;
-
-    /**
-     * Contact alias.
-     *
-     * @return string
-     */
-    public function getAlias(): string;
+    public function __construct($message = "", $code = 0, \Throwable $previous = null)
+    {
+        parent::__construct($message, $code, $previous);
+    }
 }

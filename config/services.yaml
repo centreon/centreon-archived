@@ -12,6 +12,8 @@ parameters:
     database_dbstg: "%env(dbcstg)%"
     database_user: "%env(user)%"
     database_password: "%env(password)%"
+    centreon_var_lib: "%env(_CENTREON_VARLIB_)%"
+    validation_path: "%env(_CENTREON_PATH_)%config/packages/validator/validation.yaml"
 
 services:
     # Default configuration for services in *this* file
@@ -36,7 +38,7 @@ services:
 
     Centreon\Domain\Entity\EntityValidator:
         class: Centreon\Domain\Entity\EntityValidator
-        arguments: ["%env(_CENTREON_PATH_)%config/packages/validator/validation.yaml"]
+        arguments: ['%validation_path%']
 
 imports:
     resource: './Modules/*.yaml'

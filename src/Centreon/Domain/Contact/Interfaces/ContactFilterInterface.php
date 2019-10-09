@@ -21,31 +21,15 @@ declare(strict_types=1);
 
 namespace Centreon\Domain\Contact\Interfaces;
 
-interface ContactInterface
+interface ContactFilterInterface
 {
     /**
-     * @return int Returns the contact id
-     */
-    public function getId(): int;
-
-    /**
-     * Indicates whether the contact is an administrator.
+     * Used to filter requests according to a contact.
+     * If the filter is defined, all requests will use the ACL of the contact
+     * to fetch data.
      *
-     * @return bool
+     * @param mixed $contact Contact to use as a ACL filter
+     * @throws \Exception
      */
-    public function isAdmin(): bool;
-
-    /**
-     * Indicates whether the contact is active.
-     *
-     * @return bool
-     */
-    public function isActive(): bool;
-
-    /**
-     * Contact alias.
-     *
-     * @return string
-     */
-    public function getAlias(): string;
+    public function filterByContact($contact);
 }
