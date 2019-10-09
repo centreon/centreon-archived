@@ -509,10 +509,9 @@ sub sendExternalCommand($$){
                     $remoteServer = $self->getServerConfig($serverInfo->{remote_id});
                     # Add Centcore MACRO when routing to Remote Server
                     $command = "EXTERNALCMD:" . $pollerId . ":" . $command;
-                    $multipleCommands .= $command . "\n";
-                } else {
-                    $multipleCommands .= $command . "\n";
                 }
+
+                $multipleCommands .= $command . "\n";
 
                 my $commandExec = '';
                 if ($count >= 200 || $totalCount == scalar(@{$commandArray})) {
