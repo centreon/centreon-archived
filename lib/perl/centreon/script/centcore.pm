@@ -475,7 +475,7 @@ sub sendExternalCommand($$){
                             $self->{logger}->writeLogInfo("  '" . $_ . "'");
                         }
                         my ($lerror, $stdout, $returnCode) = centreon::common::misc::backtick(
-                            command => "$self->{echo} \"" . $multipleCommands."\" >> " . $commandFile,
+                            command => "$self->{echo} \"" . $multipleCommands . "\" >> " . $commandFile,
                             logger => $self->{logger},
                             timeout => $self->{cmd_timeout}
                         );
