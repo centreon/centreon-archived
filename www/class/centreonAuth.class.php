@@ -319,19 +319,19 @@ class CentreonAuth
                     $this->CentreonLog->setUID($this->userInfos["contact_id"]);
                     $this->CentreonLog->insertLog(
                         1,
-                        "[".$this->source."] Contact '" . $username . "' logged in - IP : " . $_SERVER["REMOTE_ADDR"]
+                        "[".$this->source."] [".$_SERVER["REMOTE_ADDR"]."] Authentication succeeded for '" . $username
                     );
                 } else {
                     $this->CentreonLog->insertLog(
                         1,
-                        "Contact '" . $username . "' doesn't match with password"
+                        "[".$this->source."] [".$_SERVER["REMOTE_ADDR"]."] Authentication failed for '" . $username . "' : password mismatch"
                     );
                     $this->error = _('Your credentials are incorrect.');
                 }
             } else {
                 $this->CentreonLog->insertLog(
                     1,
-                    "[".$this->source."] Contact '" . $username . "' is not enable for reaching centreon"
+                    "[".$this->source."] [".$_SERVER["REMOTE_ADDR"]."] Authentication failed for '" . $username . "' : not authorized"
                 );
                 $this->error = _('Your credentials are incorrect.');
             }
@@ -366,12 +366,10 @@ class CentreonAuth
                 }
             }
         } else {
-            if ($this->debug) {
-                $this->CentreonLog->insertLog(
-                    1,
-                    "[".$this->source."] No contact found with this login : '$username'"
-                );
-            }
+            $this->CentreonLog->insertLog(
+                1,
+                "[".$this->source."] [".$_SERVER["REMOTE_ADDR"]."] Authentication failed for '" . $username . "' : not found"
+            );
             $this->error = _('Your credentials are incorrect.');
         }
     }
