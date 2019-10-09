@@ -80,8 +80,10 @@ class ConfigurationExporter extends ExporterServiceAbstract
 
             $import = $manifest->get("import");
             foreach ($import['data'] as $data) {
-                // truncate table
-                $db->query("TRUNCATE TABLE `" . $data['table'] . "`;");
+                // empty table
+                $db->query("DELETE FROM `" . $data['table'] . "`");
+                // optimize table
+                $db->query("ALTER TABLE `" . $data['table'] . "`");
 
                 // insert data
                 $exportPathFile = $this->getFile($data['filename']);
