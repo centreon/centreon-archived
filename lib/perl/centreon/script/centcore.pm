@@ -477,7 +477,7 @@ sub sendExternalCommand($$) {
     my $port = checkSSHPort($serverInfo->{ssh_port});
 
     # Get command file
-    my $commandFile = $self->getNagiosConfigurationField($pollerId, "command_file");
+    my $commandFile = $self->getEngineConfigurationField($pollerId, "command_file");
 
     # check if ip address is defined
     if (defined($serverInfo->{ns_ip_address})) {
