@@ -58,8 +58,7 @@ class Upgrader extends Module
         usort($orderedUpgrades, 'version_compare');
         foreach ($orderedUpgrades as $upgradeName) {
             $upgradePath = $upgradesPath . $upgradeName;
-            if (!preg_match('/^(\d+\.\d+\.\d+)/', $upgradeName, $matches) ||
-                !$this->services->get('filesystem')->exists($upgradePath . '/conf.php')) {
+            if (!preg_match('/^(\d+\.\d+\.\d+)/', $upgradeName, $matches)) {
                 continue;
             }
 
