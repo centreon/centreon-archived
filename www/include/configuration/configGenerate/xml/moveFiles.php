@@ -120,6 +120,7 @@ if (!empty($remotesResults)) {
             WHERE remote_server_id = :remote_id
         ');
         $linkedStatement->bindValue(':remote_id', $remote['id'], \PDO::PARAM_INT);
+        $linkedStatement->execute();
         $linkedResults = $linkedStatement->fetchAll(PDO::FETCH_ASSOC);
 
         $exportParams = [
