@@ -79,13 +79,25 @@ For each exceptional day, you will need to define a time period. The table below
 Extended Settings
 =================
 
-In the extended settings, it is possible to **include** or to **exclude** periods in the definition of the object. 
+To include an object, go to *General Information > Advanced Settings* and add the Timeperiod in the templates field. Excluding a time period is not possible through the web interface, only through the **CLAPI** or the **REST-API**.
+
+Syntax for the CLAPI call:
+
+.. code-block:: bash
+
+    ./centreon -u user -p password -o TP -a setparam -v "Timeperiod;exclude;TimeperiodToExclude"
+
+
 
 Example of application: Let us take two time periods:
 
 * One period is defined as 24 hours a day / 7 days a week, called **24x7**
 * Another which covers the office opening hours, called **working_hours**
 
-To obtain the office closing hours, we simply have to create a time period in which we include the period **24x7** and from which we exclude the **working_hours** period.
+To obtain the office closing hours, we simply have to create a time period (in this example called **non_working_hours**) in which we include the period **24x7** and from which we exclude the **working_hours** period.
+
+.. code-block:: bash
+
+    ./centreon -u admin -p centreon -o TP -a setparam -v "non_working_hours;exclude;working_hours"
 
 .. |navigate_plus|      image:: /images/navigate_plus.png
