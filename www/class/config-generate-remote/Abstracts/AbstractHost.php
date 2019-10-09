@@ -221,7 +221,7 @@ abstract class AbstractHost extends AbstractObject
      * @param array $host
      * @return void
      */
-    protected function getHostPoller(array &$host): void
+    protected function getHostPoller(array $host): void
     {
         if (is_null($this->stmtPoller)) {
             $this->stmtPoller = $this->backendInstance->db->prepare(
