@@ -345,7 +345,7 @@ class CentreonUtils
                     ENT_QUOTES,
                     "UTF-8"
                 );
-                return preg_replace("/[" . $pattern . "]/", "", $stringToEscape);
+                return str_replace(str_split($pattern), "", $stringToEscape);
         }
     }
 
