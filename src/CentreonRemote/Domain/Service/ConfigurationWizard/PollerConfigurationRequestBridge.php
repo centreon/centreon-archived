@@ -72,13 +72,10 @@ class PollerConfigurationRequestBridge
         $isRemoteServerWizard = (new ServerWizardIdentity)->requestConfigurationIsRemote();
 
         $linkedRemotes = [];
-        if (!$isRemoteServerWizard) {
-            $linkedRemotes = isset($_POST['linked_remote_slaves']) ? $_POST['linked_remote_slaves'] : [];
+        if (!$isRemoteServerWizard && isset($_POST['linked_remote_slaves'])) {
+            $linkedRemotes = $_POST['linked_remote_slaves'];
         }
-$linkedRemotes = [];
-if (!$isRemoteServerWizard && isset($_POST['linked_remote_slaves'])) {
-    $linkedRemotes = $_POST['linked_remote_slaves'];
-}
+
         $this->additionalRemotes = $this->getPollersToLink($linkedRemotes); // set and instantiate linked pollers
     }
 
