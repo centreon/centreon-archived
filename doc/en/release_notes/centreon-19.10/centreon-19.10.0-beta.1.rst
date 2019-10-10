@@ -33,7 +33,7 @@ Technical
 ---------
 
 * Compatibility with rrdtool >= 1.7.x (PR/#7676)
-* Compatibility with MariaDB/MySQL STRICT mode (PR/#7544)
+* Start compatibility with MariaDB/MySQL STRICT mode - in progres (PR/#7544)
 * [Database] Remove useless primary keys on multiple tables (PR/#7542)
 * [Database] Change type of column widget_models.description to TEXT (PR/#7542)
 * [Database] Add default value to acl_groups.acl_group_changed table (PR/#7542)
