@@ -195,7 +195,7 @@ if (!$centreon->user->access->checkAction("host_schedule_downtime")
     );
 
     /* Host Parents */
-    if (0 != $resourceId) {
+    if (0 !== $resourceId) {
         $attrPoller1 = array_merge(
             $attrPoller,
             array(
