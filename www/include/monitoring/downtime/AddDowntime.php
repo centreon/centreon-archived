@@ -485,8 +485,9 @@ if (!$centreon->user->access->checkAction("host_schedule_downtime")
              * Set a downtime for a service group list
              */
             foreach ($_POST["servicegroup_id"] as $sgId) {
-                $query = "SELECT host_id, service_id FROM services_servicegroups WHERE servicegroup_id = :sgId";
-                $stmt = $pearDBO->prepare($query);
+                $stmt = $pearDBO->prepare(
+                    "SELECT host_id, service_id FROM services_servicegroups WHERE servicegroup_id = :sgId"
+                );
                 $stmt->bindValue(':sgId', $sgId, PDO::PARAM_INT);
                 $stmt->execute();
 
@@ -508,8 +509,9 @@ if (!$centreon->user->access->checkAction("host_schedule_downtime")
              * Set a downtime for poller
              */
             foreach ($_POST['poller_id'] as $pollerId) {
-                $query = "SELECT host_id FROM hosts WHERE instance_id = :poller_id AND enabled = 1";
-                $stmt = $pearDBO->prepare($query);
+                $stmt = $pearDBO->prepare(
+                    "SELECT host_id FROM hosts WHERE instance_id = :poller_id AND enabled = 1"
+                );
                 $stmt->bindValue(':poller_id', $pollerId, PDO::PARAM_INT);
                 $stmt->execute();
                 while ($row = $stmt->fetch()) {
