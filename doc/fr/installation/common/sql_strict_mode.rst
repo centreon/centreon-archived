@@ -10,9 +10,9 @@
         # SET sql_mode = 'NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION';
         # SET GLOBAL sql_mode = 'NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION';
     
-      ou modifiez le fichier */etc/my.cnf.d/centreon.cnf* pour ajouter à la section '[server]' la ligne suivante : ::
+    ou modifiez le fichier */etc/my.cnf.d/centreon.cnf* pour ajouter à la section '[server]' la ligne suivante : ::
         
-          sql_mode = 'NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION'
+        sql_mode = 'NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION'
     
     puis redémarrez votre SGBD.
 
@@ -23,8 +23,8 @@
         # SET sql_mode = 'NO_ENGINE_SUBSTITUTION';
         # SET GLOBAL sql_mode = 'NO_ENGINE_SUBSTITUTION';
     
-      ou modifiez le fichier */etc/my.cnf.d/centreon.cnf* pour ajouter à la section '[server]' la ligne suivante : ::
+    ou modifiez le fichier */etc/my.cnf.d/centreon.cnf* pour ajouter à la section '[server]' la ligne suivante : ::
         
-          sql_mode = 'NO_ENGINE_SUBSTITUTION'
+        sql_mode = 'NO_ENGINE_SUBSTITUTION'
     
     puis redémarrez votre SGBD.
