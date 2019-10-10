@@ -65,6 +65,8 @@ Run the command::
     # yum install centreon
     # systemctl restart mysql
 
+.. include:: common/sql_strict_mode.rst
+
 Installing a Centreon Central Server without database
 -----------------------------------------------------
 
@@ -85,11 +87,6 @@ Run the commands::
 
 .. note::
     **centreon-database** package installs a database server optimized for use with Centreon.
-
-.. note::
-    Centreon **does** support the SQL STRICT mode. For more information about it please check
-    the official `MariaDB documentation <https://mariadb.com/kb/en/library/sql-mode/#strict-mode>`_. Or the official
-     `MySQL documentation <https://dev.mysql.com/doc/refman/8.0/en/sql-mode.html>`_.
 
 Then create a distant **root** account: ::
 
@@ -113,6 +110,8 @@ Then create a distant **root** account: ::
     
         mysql> ALTER USER 'root'@'IP' IDENTIFIED WITH mysql_native_password BY 'PASSWORD';
         mysql> FLUSH PRIVILEGES;
+
+.. include:: common/sql_strict_mode.rst
 
 Once the installation is complete you can delete this account using: ::
         
