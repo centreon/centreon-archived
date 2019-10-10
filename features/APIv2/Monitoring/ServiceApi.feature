@@ -7,7 +7,7 @@ Feature: Check health of the Monitoring - Service API
     And Exchange user identity token for admin user
 
   Scenario: List services
-    When I make a GET request to "/api/latest/monitoring/services"
+    When I make a GET request to "/api/beta/monitoring/services"
     Then the response code should be 200
     And the property "meta" has value
     """
@@ -19,7 +19,7 @@ Feature: Check health of the Monitoring - Service API
     """
 
   Scenario: List services and search by service.name
-    When I make a GET request to "/api/latest/monitoring/services?search={%22service.display_name%22:%22Ping%22}"
+    When I make a GET request to "/api/beta/monitoring/services?search={%22service.display_name%22:%22Ping%22}"
     Then the response code should be 200
     And the property "meta" has value
     """
@@ -31,7 +31,7 @@ Feature: Check health of the Monitoring - Service API
     """
 
   Scenario: List services by status
-    When I make a GET request to "/api/latest/monitoring/services?search={%22service.state%22:%221%22}"
+    When I make a GET request to "/api/beta/monitoring/services?search={%22service.state%22:%221%22}"
     Then the response code should be 200
     And the property "meta" has value
     """
@@ -41,7 +41,7 @@ Feature: Check health of the Monitoring - Service API
     """
     []
     """
-    When I make a GET request to "/api/latest/monitoring/services?search={%22service.state%22:%220%22}"
+    When I make a GET request to "/api/beta/monitoring/services?search={%22service.state%22:%220%22}"
     Then the response code should be 200
     And the property "meta" has value
     """
@@ -53,7 +53,7 @@ Feature: Check health of the Monitoring - Service API
     """
 
   Scenario: List services by servicegroup
-    When I make a GET request to "/api/latest/monitoring/servicegroups"
+    When I make a GET request to "/api/beta/monitoring/servicegroups"
     Then the response code should be 200
     And the property "meta" has value
     """
@@ -65,7 +65,7 @@ Feature: Check health of the Monitoring - Service API
     """
 
   Scenario: List services of a host
-    When I make a GET request to "/api/latest/monitoring/services?search={%22host.name%22:%22Centreon-Server%22}"
+    When I make a GET request to "/api/beta/monitoring/services?search={%22host.name%22:%22Centreon-Server%22}"
     Then the response code should be 200
     And the property "meta" has value
     """
@@ -77,7 +77,7 @@ Feature: Check health of the Monitoring - Service API
     """
 
   Scenario: List one service of a host
-    When I make a GET request to "/api/latest/monitoring/hosts/14/services/19"
+    When I make a GET request to "/api/beta/monitoring/hosts/14/services/19"
     Then the response code should be 200
     And the response matched to the pattern
     """
