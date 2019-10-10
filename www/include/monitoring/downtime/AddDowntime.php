@@ -203,6 +203,8 @@ if (!$centreon->user->access->checkAction("host_schedule_downtime")
         );
 
         $form->addElement('select2', 'poller_id', _("Pollers"), array(), $attrPoller1);
+    } else {
+        $form->addElement('select2', 'poller_id', _("Pollers"), array(), $attrPoller);
     }
 
     $chbx = $form->addElement(
@@ -505,9 +507,11 @@ if (!$centreon->user->access->checkAction("host_schedule_downtime")
              * Set a downtime for poller
              */
             foreach ($_POST['poller_id'] as $poller_id) {
-                $DBRESULT = $pearDBO->query("SELECT host_id FROM hosts WHERE instance_id = " .
-                    $poller_id . "AND enabled = 1");
-                while ($row = $DBRESULT->fetch()) {
+                $query = "SELECT host_id FROM hosts WHERE instance_id = :poller_id AND enabled = 1";
+                $stmt = $pearDBO->prepare($query);
+                $stmt->bindValue(':poller_id', $poller_id, PDO::PARAM_INT);
+                $stmt->execute();
+                while ($row = $stmt->fetch()) {
                     if ($centreon->user->access->admin ||
                         in_array($row['host_id'], $host_acl_id)
                     ) {
