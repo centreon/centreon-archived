@@ -74,6 +74,9 @@ class Upgrader extends Module
             $this->upgradePhpFiles($upgradePath, false);
         }
 
+        // finally, upgrade to current version
+        $this->upgradeVersion($this->moduleConfiguration['mod_release']);
+
         return $this->moduleId;
     }
 
