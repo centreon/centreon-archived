@@ -39,3 +39,39 @@ Security warning
 SSO feature has only to be enabled in a secured and dedicated environment for SSO.
 Direct access to Centreon UI from users have to be disabled.
 
+OpenID Connect 1.0 & OAuth 2.0
+==============================
+
+To use these protocoles, the following Apaches modules need to be installed and activated :
+* mod_auth_openidc : https://github.com/zmartzone/mod_auth_openidc
+* mod_oauth2 : https://github.com/zmartzone/mod_oauth2
+
+Configuration examples are available in the documentation https://github.com/zmartzone/mod_auth_openidc/wiki, they have to be apply on you Centreon web Vhost.
+```
+#exemple
+<VirtualHost *:80>
+    ServerName myserver.com
+
+    <Location />
+        AuthType openid-connect
+        Require valid-user
+    </Location>
+
+    OIDCProviderMetadataURL https://openid.com/fss/.well-known/openid-configuration
+    OIDCClientID MY-Centreon
+    OIDCClientSecret abcdefghijklmnop
+    OIDCProviderTokenEndpointAuth client_secret_post
+    OIDCRedirectURI https://myserver.com/ssoredirect
+    OIDCScope "openid profile"
+    OIDCCryptoPassphrase mypassphrase
+    OIDCAuthNHeader MY_HEADER
+    OIDCRemoteUserClaim sub
+    OIDCClaimPrefix myprefix_
+
+    ProxyPreserveHost on
+    ProxyPass / http://10.10.10.10/
+    ProxyPassReverse / http://10.10.10.10/
+
+</VirtualHost>
+```
+
