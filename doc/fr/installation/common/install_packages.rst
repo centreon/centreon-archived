@@ -77,8 +77,8 @@ Exécutez la commande : ::
 
 .. _dedicateddbms:
 
-Installer MySQL sur un serveur dédié
-------------------------------------
+Installer le SGBD sur un serveur dédié
+--------------------------------------
 
 Exécutez les commandes : ::
 
@@ -98,6 +98,12 @@ Puis créer un utilisateur **root** distant : ::
 .. note::
     Remplacez **IP** par l'adresse IP publique du serveur Centreon et **PASSWORD**
     par le mot de passe de l'utilisateur **root**.
+
+.. warning::
+    MySQL >= 8 requière un mot de passe fort. Utilisez des lettres minuscules et majuscules ainsi que des caractères
+    numériques et spéciaux; ou désinstallez le plugin **validate_password** de MySQL en utilisant la commande suivantes :
+        
+        mysql> uninstall plugin validate_password;
 
 .. warning::
     Si PHP est utilisé dans une version 7.1 antérieure à la version 7.1.16, ou PHP 7.2 antérieure à 7.2.4, le
@@ -128,10 +134,19 @@ La base de données MySQL doit être disponible pour pouvoir continuer l'install
 
 Pour les systèmes CentOS / RHEL en version 7, il est nécessaire de modifier
 la limitation **LimitNOFILE**. Changer cette option dans /etc/my.cnf NE
-fonctionnera PAS: ::
+fonctionnera PAS.
+
+**Pour MariaDB** : ::
 
     # mkdir -p  /etc/systemd/system/mariadb.service.d/
     # echo -ne "[Service]\nLimitNOFILE=32000\n" | tee /etc/systemd/system/mariadb.service.d/limits.conf
+    # systemctl daemon-reload
+    # systemctl restart mysql
+
+**Pour MySQL** : ::
+
+    # mkdir -p  /etc/systemd/system/mysqld.service.d
+    # echo -ne "[Service]\nLimitNOFILE=32000\n" | tee /etc/systemd/system/mysqld.service.d/limits.conf
     # systemctl daemon-reload
     # systemctl restart mysql
 
@@ -178,11 +193,13 @@ Lancer les commandes suivantes sur le serveur Central : ::
     # systemctl enable centreon
 
 .. note::
-    Si la base de données MySQL est sur un serveur dédié, lancer la commande
+    Si la base de données MariaDB est sur un serveur dédié, lancer la commande
     d'activation mysql sur ce dernier : ::
-    
+        
         # systemctl enable mysql
-    ou
+    
+    ou pour Mysql : ::
+        
         # systemctl enable mysqld
 
 Terminer l'installation
@@ -194,6 +211,6 @@ doivent être exécutées : ::
     # systemctl start rh-php72-php-fpm
     # systemctl start httpd24-httpd
     # systemctl start mysqld
-    # systemctl start cbd
+    # systemctl start centeron
     # systemctl start snmpd
     # systemctl start snmptrapd
