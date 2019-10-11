@@ -243,7 +243,7 @@ abstract class AbstractService extends AbstractObject
             AND `service_id` = ' . $serviceId
         );
         $serviceAdd = $stmt->fetch();
-        if ($serviceAdd['service_notifications_enabled'] != '0') {
+        if ($serviceAdd && $serviceAdd['service_notifications_enabled'] !== '0') {
             $serviceListing[] = $serviceId;
         }
         if (isset($serviceAdd['service_template_model_stm_id'])
@@ -267,8 +267,7 @@ abstract class AbstractService extends AbstractObject
             AND `service_id` = ' . $serviceId
         );
         $row = $stmt->fetch();
-
-        if ($row['service_notifications_enabled'] != 0) {
+        if ($row && $row['service_notifications_enabled'] !== '0') {
             $serviceListing[] = $serviceId;
         }
         if ($row['service_template_model_stm_id']) {
@@ -399,7 +398,7 @@ abstract class AbstractService extends AbstractObject
             AND `service_id` = ' . $serviceId
         );
         $serviceAdd = $stmt->fetch();
-        if ($serviceAdd['service_notifications_enabled'] != 0) {
+        if ($serviceAdd && $serviceAdd['service_notifications_enabled'] !== '0') {
             $serviceListing[] = $serviceId;
         }
         if (isset($serviceAdd['service_template_model_stm_id'])
