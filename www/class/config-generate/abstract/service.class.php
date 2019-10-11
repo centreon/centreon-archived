@@ -188,7 +188,8 @@ abstract class AbstractService extends AbstractObject
         } else {
             $contactResult = '';
             $serviceListing = $this->listServicesWithContacts($service);
-            //check if we have Service link to a contact.
+            //check if we have Service link to a contact.i
+
             if (!empty($serviceListing)) {
                 $contactResult = implode(',', $this->getInheritanceContact(array_unique($serviceListing)));
             }
@@ -284,7 +285,7 @@ abstract class AbstractService extends AbstractObject
     protected function getContactCloseInheritance(int $serviceId, &$serviceListing = array()): void
     {
         $stmt = $this->backend_instance->db->query(
-            'SELECT GROUP_CONCAT(contact.`contact_id`) as contact_id, 
+            'SELECT GROUP_CONCAT(contact.`contact_id`) as contact_id, service.`service_activate`,
  	            (SELECT service_template_model_stm_id FROM service
 	            WHERE service.`service_activate` = "1"
                 AND service.`service_id` = ' . $serviceId . ' ) as `service_template_model_stm_id` 
@@ -294,9 +295,10 @@ abstract class AbstractService extends AbstractObject
             AND contact.`contact_activate` = "1"
             AND contact.`contact_enable_notifications` != "0"
             AND service.`service_notifications_enabled` != "0"
+            AND service.`service_activate` = "1"
             AND service.`service_id` = ' . $serviceId
         );
-        if (($row = $stmt->fetch()) && empty($serviceListing)) {
+        if (($row = $stmt->fetch()) && empty($serviceListing) && ($row['service_activate'] !== '0')) {
             if ($row['contact_id']) {
                 $serviceListing[] = $serviceId;
             } elseif (!empty($row['service_template_model_stm_id'])) {
@@ -420,7 +422,7 @@ abstract class AbstractService extends AbstractObject
     protected function getContactGroupsCloseInheritance(int $serviceId, &$serviceListing = array()): void
     {
         $stmt = $this->backend_instance->db->query(
-            'SELECT GROUP_CONCAT(contactgroup.cg_id) as cg_id, 
+            'SELECT GROUP_CONCAT(contactgroup.cg_id) as cg_id, service.`service_activate`,
                 (SELECT service_template_model_stm_id FROM service
 	            WHERE service.`service_activate` = "1" 
 	            AND service.`service_id` = ' . $serviceId . ' ) as `service_template_model_stm_id` 
@@ -432,7 +434,7 @@ abstract class AbstractService extends AbstractObject
             AND service.`service_activate` = "1" 
             AND service.`service_id` = ' . $serviceId
         );
-        if (($row = $stmt->fetch()) && empty($serviceListing)) {
+        if (($row = $stmt->fetch()) && empty($serviceListing) && ($row['service_activate'] !== '0')) {
             if ($row['cg_id']) {
                 $serviceListing[] = $serviceId;
             } elseif (!empty($row['service_template_model_stm_id'])) {
