@@ -65,7 +65,7 @@ if (is_dir($centreonLicensesDir)) {
 // Check if it's an IMP user
 $result = $db->query("SELECT options.value FROM options WHERE options.key = 'impCompanyToken'");
 if ($row = $result->fetch()) {
-    if (isset($row['value']) && !empty($row['value'])) {
+    if (!empty($row['value'])) {
         $isImpUser = true;
     }
 }
