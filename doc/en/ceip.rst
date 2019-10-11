@@ -6,24 +6,29 @@ CEIP Program
 
 Joining the Centreon Customer Experience Improvement Program
 
-**********************************************
-Customer Experience Improvement Program (CEIP)
-**********************************************
+***************************************
+Customer Experience Improvement Program
+***************************************
 
-Centreon is continually striving to understand and anticipate our customer needs
-in order to deliver world-class products and solutions. The Customer Experience
-Improvement Program (CEIP) will deliver benefits to the customers by allowing us
-to understand how you use our software, so that we can provide you with a
-continuous enhancement of your Centreon software experience. The program is
-voluntary and anonymous. Customers who choose to participate agree to share:
+Centreon is continually striving to understand and anticipate our users needs in order to deliver world-class products
+and solutions. The Customer Experience Improvement Program (CEIP) will deliver benefits to our users by allowing us to
+understand how you use our software, so that we can provide you with a continuous enhancement of your Centreon software
+experience. The program has two components:
 
-* Information such as the operating system version of the Centreon main server of the platform as well as the name and version of the DBMS.
-* Centreon product information such as number of servers and version numbers of components installed on the Centreon main server (modules & widgets).
+* A simple telemetry
+* Advanced statistics on the use of the Centreon software suite
+
+Telemetry anonymously and automatically collects the following data:
+
+* Information such as the operating system version of the Centreon main server of the platform as well as the name and
+  version of the DBMS.
+* Centreon product information such as number of servers and version numbers of components installed on the Centreon
+  main server (modules & widgets).
 * Centreon information such as number of hosts, services, groups of hosts & services, and usage of modules and widgets.
 * The timezone of the Centreon server.
 
-During the installation or upgrade processus, you will be asked to participate in
-the improvement program. Keep the box checked to join the improvement program.
+Advanced statistics include the use of additional components such as the use of widgets in custom views, slot
+management for Centreon DSM, use of deployed Plugin Packs, and more.
 
 **************************
 Frequently Asked Questions
@@ -32,8 +37,8 @@ Frequently Asked Questions
 What are the possible configuration settings of the CEIP program?
 =================================================================
 
-Participation in the program is enabled by default, but this can be modified
-in the web interface. The options are:
+Participation in the program is enabled by default. However sending advanced statistics can be configured in the web
+interface. The options are:
 
 * Enabled
 * Disabled

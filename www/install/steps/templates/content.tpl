@@ -27,7 +27,7 @@
                 <p class="link-group">
                     <a href="https://documentation.centreon.com" target="_blank">Documentation</a> |
                     <a href="https://github.com/centreon/centreon" target="_blank">Github </a> |
-                    <a href="https://forum.centreon.com/" target="_blank">Forum</a> |
+                    <a href="http://centreon.github.io/" target="_blank">Community Slack</a> |
                     <a href="http://support.centreon.com" target="_blank">Support</a>
                     <b><a href=" https://www.centreon.com" target="_blank">www.centreon.com</a></b>
                 </p>
