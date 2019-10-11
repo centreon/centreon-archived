@@ -39,3 +39,42 @@ Avertissement de sécurité
 La fonctionnalité SSO doit être activée seulement dans un environnement dédié et sécurisé pour le SSO.
 Les accès direct des utilisateurs à Centreon Web doivent être désactivés.
 
+OpenID Connect 1.0 & OAuth 2.0
+==============================
+
+Pour utiliser ces prococoles il faut installer et activer les modules Apaches suivants :
+* mod_auth_openidc : https://github.com/zmartzone/mod_auth_openidc
+* mod_oauth2 : https://github.com/zmartzone/mod_oauth2
+
+Des exemples de configurations sont disponibles dans la  documentation et sont à appliquer sur le vhost de votre Centreon web.
+```
+#exemple
+<VirtualHost *:80>
+    ServerName myserver.com
+
+    <Location />
+        AuthType openid-connect
+        Require valid-user
+    </Location>
+
+    OIDCProviderMetadataURL https://openid.com/fss/.well-known/openid-configuration
+    OIDCClientID MY-Centreon
+    OIDCClientSecret abcdefghijklmnop
+    OIDCProviderTokenEndpointAuth client_secret_post
+    OIDCRedirectURI https://myserver.com/ssoredirect
+    OIDCScope "openid profile"
+    OIDCCryptoPassphrase mypassphrase
+    OIDCAuthNHeader MY_HEADER
+    OIDCRemoteUserClaim sub
+    OIDCClaimPrefix myprefix_
+
+    ProxyPreserveHost on
+    ProxyPass / http://10.10.10.10/
+    ProxyPassReverse / http://10.10.10.10/
+
+</VirtualHost>
+```
+
+
+
+
