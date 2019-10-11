@@ -297,7 +297,7 @@ abstract class AbstractService extends AbstractObject
             AND service.`service_notifications_enabled` != "0"
             AND service.`service_id` = ' . $serviceId
         );
-        if ($row = $stmt->fetch() && empty($serviceListing)) {
+        if (($row = $stmt->fetch()) && empty($serviceListing)) {
             if ($row['contact_id']) {
                 $serviceListing[] = $serviceId;
             } elseif (!empty($row['service_template_model_stm_id'])) {
@@ -433,7 +433,7 @@ abstract class AbstractService extends AbstractObject
             AND service.`service_activate` = "1" 
             AND service.`service_id` = ' . $serviceId
         );
-        if ($row = $stmt->fetch() && empty($serviceListing)) {
+        if (($row = $stmt->fetch()) && empty($serviceListing)) {
             if ($row['cg_id']) {
                 $serviceListing[] = $serviceId;
             } elseif (!empty($row['service_template_model_stm_id'])) {
@@ -457,7 +457,7 @@ abstract class AbstractService extends AbstractObject
             WHERE cs.service_service_id IN (' . implode(',', $serviceIds) . ') AND cs.contactgroup_cg_id = c.cg_id 
             AND cg_activate = "1"'
         );
-        while (($row = $stmt->fetch())) {
+        while ($row = $stmt->fetch()) {
             $contactGroups[$row['cg_id']] = $cg->generateFromCgId($row['cg_id']);
         }
         return $contactGroups;

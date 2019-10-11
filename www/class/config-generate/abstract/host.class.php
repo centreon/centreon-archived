@@ -345,7 +345,7 @@ abstract class AbstractHost extends AbstractObject
             AND host.host_notifications_enabled != "0"'
         );
 
-        if ($row = $stmt->fetch() && empty($hostList)) {
+        if (($row = $stmt->fetch()) && empty($hostList)) {
             if ($row['contact_id']) {
                 $hostList[] = (int)$hostId;
             } elseif ($row['host_tpl_id']) {
@@ -477,7 +477,7 @@ abstract class AbstractHost extends AbstractObject
             AND host.host_activate = "1"
             AND host.host_notifications_enabled != "0"'
         );
-        if ($row = $stmt->fetch() && empty($hostList)) {
+        if (($row = $stmt->fetch()) && empty($hostList)) {
             if ($row['cg_id']) {
                 $hostList[] = (int)$hostId;
             } elseif ($row['host_tpl_id']) {
