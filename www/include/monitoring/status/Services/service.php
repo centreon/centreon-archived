@@ -543,5 +543,7 @@ $tpl->display("service.ihtml");
     function statusServices(value, isInit)
     {
         _o = value;
+        window.clearTimeout(_timeoutID);
+        initM(_tm, _sid, _o);
     }
 </script>
