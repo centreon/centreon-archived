@@ -211,6 +211,6 @@ doivent être exécutées : ::
     # systemctl start rh-php72-php-fpm
     # systemctl start httpd24-httpd
     # systemctl start mysqld
-    # systemctl start centeron
+    # systemctl start centreon
     # systemctl start snmpd
     # systemctl start snmptrapd
