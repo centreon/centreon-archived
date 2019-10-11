@@ -285,11 +285,11 @@ abstract class AbstractHost extends AbstractObject
 	            host_tpl_id,
 	            chr.contact_id
             FROM host h
-                LEFT JOIN contact_host_relation chr
-	                ON chr.host_host_id = h.host_id
-                LEFT JOIN host_template_relation htr
-	                ON h.host_id = htr.host_host_id
-	                AND htr.`order` = 1
+            LEFT JOIN contact_host_relation chr
+	            ON chr.host_host_id = h.host_id
+            LEFT JOIN host_template_relation htr
+	            ON h.host_id = htr.host_host_id
+	            AND htr.`order` = 1
             WHERE h.`host_activate` != "0"
             AND h.`host_id` = ' . $hostId
         );
@@ -451,11 +451,11 @@ abstract class AbstractHost extends AbstractObject
 	            host_tpl_id,
 	            chr.contactgroup_cg_id
             FROM host h
-                LEFT JOIN contactgroup_host_relation chr
-	                ON chr.host_host_id = h.host_id
-                LEFT JOIN host_template_relation htr
-	                ON h.host_id = htr.host_host_id
-	                AND htr.`order` = 1
+            LEFT JOIN contactgroup_host_relation chr
+	            ON chr.host_host_id = h.host_id
+            LEFT JOIN host_template_relation htr
+	            ON h.host_id = htr.host_host_id
+	            AND htr.`order` = 1
             WHERE h.`host_activate` != "0"
             AND h.`host_id` =' . $hostId
         );
