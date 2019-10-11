@@ -30,7 +30,7 @@ $isImpUser = false;
 
 $db = $dependencyInjector['configuration_db'];
 
-// Check is CEIP is enable
+// Check if CEIP is enable
 $result = $db->query("SELECT `value` FROM `options` WHERE `key` = 'send_statistics'");
 if ($row = $result->fetch()) {
     $sendStatistics = (int)$row['value'];
@@ -62,7 +62,7 @@ if (is_dir($centreonLicensesDir)) {
     }
 }
 
-// Check if it's a IMP user
+// Check if it's an IMP user
 $result = $db->query("SELECT options.value FROM options WHERE options.key = 'impCompanyToken'");
 if ($row = $result->fetch()) {
     if (isset($row['value']) && !empty($row['value'])) {
@@ -86,8 +86,8 @@ if ($isRemote !== 'yes') {
     $additional = [];
 
     /*
-     * Only send statistics if free user enabled this option
-     * or if at least a Centeron license is valid
+     * Only send statistics if user using a free version has enabled this option
+     * or if at least a Centreon license is valid
      */
     if ($sendStatistics || $hasValidLicenses || $isRemote) {
         $additional = $oStatistics->getAdditionalData();
