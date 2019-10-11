@@ -99,7 +99,7 @@ Then create a distant **root** account: ::
     by the **root** password.
 
 .. warning::
-    MySQL >= 8 require a strong password. Please use uppercase, numeric and special characters; or unstall the
+    MySQL >= 8 require a strong password. Please use uppercase, numeric and special characters; or uninstall the
     validate_password using following command: ::
         
         mysql> uninstall plugin validate_password;

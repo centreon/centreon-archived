@@ -101,7 +101,8 @@ Puis créer un utilisateur **root** distant : ::
 
 .. warning::
     MySQL >= 8 requière un mot de passe fort. Utilisez des lettres minuscules et majuscules ainsi que des caractères
-    numériques et spéciaux; ou désinstallez le plugin **validate_password** de MySQL en utilisant la commande suivantes :
+    numériques et spéciaux; ou désinstallez le plugin **validate_password** de MySQL en utilisant la commande
+    suivantes : ::
         
         mysql> uninstall plugin validate_password;
 
