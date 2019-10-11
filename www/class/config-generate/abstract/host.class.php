@@ -279,12 +279,19 @@ abstract class AbstractHost extends AbstractObject
     protected function getContactVerticalInheritance(int $hostId, &$hostList = array()): void
     {
         $stmt = $this->backend_instance->db->query(
-            'SELECT host_notifications_enabled, contact_additive_inheritance, host_tpl_id 
-            FROM host, host_template_relation
-            WHERE `host_id` = `host_host_id`
-            AND `order` = 1
-            AND `host_activate` != "0"
-            AND `host_id` = ' . $hostId
+            'SELECT 
+	            h.host_notifications_enabled, 
+	            h.contact_additive_inheritance,
+	            host_tpl_id,
+	            chr.contact_id
+            FROM host h
+            LEFT JOIN contact_host_relation chr
+	            ON chr.host_host_id = h.host_id
+            LEFT JOIN host_template_relation htr
+	            ON h.host_id = htr.host_host_id
+	            AND htr.`order` = 1
+            WHERE h.`host_activate` != "0"
+            AND h.`host_id` = ' . $hostId
         );
         $hostAdd = $stmt->fetch();
         if ($hostAdd && $hostAdd['host_notifications_enabled'] !== '0') {
@@ -438,11 +445,19 @@ abstract class AbstractHost extends AbstractObject
     protected function getContactGroupsVerticalInheritance(int $hostId, &$hostList = array()): void
     {
         $stmt = $this->backend_instance->db->query(
-            'SELECT cg_additive_inheritance, host_tpl_id, host_notifications_enabled
-            FROM host, host_template_relation
-            WHERE `host_id` = `host_host_id`
-            AND `order` = 1
-            AND `host_id` = ' . $hostId
+            'SELECT 
+	            h.host_notifications_enabled, 
+	            h.cg_additive_inheritance,
+	            host_tpl_id,
+	            chr.contactgroup_cg_id
+            FROM host h
+            LEFT JOIN contactgroup_host_relation chr
+	            ON chr.host_host_id = h.host_id
+            LEFT JOIN host_template_relation htr
+	            ON h.host_id = htr.host_host_id
+	            AND htr.`order` = 1
+            WHERE h.`host_activate` != "0"
+            AND h.`host_id` =' . $hostId
         );
         $hostAdd = $stmt->fetch();
         if ($hostAdd && $hostAdd['host_notifications_enabled'] !== '0') {
