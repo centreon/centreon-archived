@@ -100,7 +100,7 @@ Puis créer un utilisateur **root** distant : ::
     par le mot de passe de l'utilisateur **root**.
 
 .. warning::
-    MySQL >= 8 requière un mot de passe fort. Utilisez des lettres minuscules et majuscules ainsi que des caractères
+    MySQL >= 8 requiert un mot de passe fort. Utilisez des lettres minuscules et majuscules ainsi que des caractères
     numériques et spéciaux; ou désinstallez le plugin **validate_password** de MySQL en utilisant la commande
     suivantes : ::
         
@@ -133,9 +133,8 @@ Système de gestion de base de données
 La base de données MySQL doit être disponible pour pouvoir continuer l'installation
 (localement ou non). Pour information nous recommandons MariaDB.
 
-Pour les systèmes CentOS / RHEL en version 7, il est nécessaire de modifier
-la limitation **LimitNOFILE**. Changer cette option dans /etc/my.cnf NE
-fonctionnera PAS.
+Pour les systèmes CentOS / RHEL en version 7, il est nécessaire de modifier la limitation **LimitNOFILE**. Changer
+cette option dans /etc/my.cnf *ne fonctionnera pas*.
 
 **Pour MariaDB** : ::
 
@@ -149,7 +148,7 @@ fonctionnera PAS.
     # mkdir -p  /etc/systemd/system/mysqld.service.d
     # echo -ne "[Service]\nLimitNOFILE=32000\n" | tee /etc/systemd/system/mysqld.service.d/limits.conf
     # systemctl daemon-reload
-    # systemctl restart mysql
+    # systemctl restart mysqld
 
 Fuseau horaire PHP
 ------------------

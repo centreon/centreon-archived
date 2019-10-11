@@ -144,7 +144,7 @@ option in **/etc/my.cnf** because it will *not* work. Run the commands:
     # mkdir -p  /etc/systemd/system/mysqld.service.d
     # echo -ne "[Service]\nLimitNOFILE=32000\n" | tee /etc/systemd/system/mysqld.service.d/limits.conf
     # systemctl daemon-reload
-    # systemctl restart mysql
+    # systemctl restart mysqld
 
 Setting the PHP time zone
 -------------------------

@@ -1,6 +1,6 @@
 .. warning::
     Centreon started the compatibility with SQL strict mode but not all components are ready yet. It is mandatory to
-    disable the strict mode if you use MariaDB >= 10.2.4 or MySQL >= 5.7.5.
+    disable the strict mode if you use MariaDB >= 10.2.4 or MySQL >= 5.7.5 for your production environments.
     
     **For MariaDB**
 
