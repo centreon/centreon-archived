@@ -88,8 +88,6 @@ suivante : ::
 
 Réalisez les actions suivantes : ::
 
-    # systemctl disable rh-php71-php-fpm
-    # systemctl stop rh-php71-php-fpm
     # systemctl start rh-php72-php-fpm
     # systemctl enable rh-php72-php-fpm
 
