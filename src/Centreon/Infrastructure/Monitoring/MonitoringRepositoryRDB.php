@@ -688,7 +688,7 @@ final class MonitoringRepositoryRDB extends AbstractRepositoryDRB implements Mon
                 INNER JOIN `:db`.`acl_groups` acg
                   ON acg.acl_group_id = acl.group_id
                   AND acg.acl_group_activate = \'1\'
-                  AND acg.acl_group_id IN (' . $this->accessGroupIdToString($this->accessGroups). ') ';
+                  AND acg.acl_group_id IN (' . $this->accessGroupIdToString($this->accessGroups) . ') ';
 
         $request =
             'SELECT SQL_CALC_FOUND_ROWS DISTINCT srv.*
