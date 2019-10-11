@@ -279,7 +279,7 @@ sub getBrokerStats($) {
             $self->{logger}->writeLogInfo("Result : $stdout");
         }
 
-        $cmd = "$self->{scp} -P $port $server_info->{ns_ip_address}:$statPipe"
+        $cmd = "$self->{scp} -P $port $server_info->{ns_ip_address}:$statPipe "
             . "$destFile/broker-stats-$poller_id.dat >> /dev/null";
         # Get the stats file
         ($lerror, $stdout) = centreon::common::misc::backtick(
