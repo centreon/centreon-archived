@@ -298,7 +298,7 @@ abstract class AbstractService extends AbstractObject
             AND service.`service_activate` = "1"
             AND service.`service_id` = ' . $serviceId
         );
-        if (($row = $stmt->fetch()) && empty($serviceListing) && ($row['service_activate'] == 1)) {
+        if (($row = $stmt->fetch()) && empty($serviceListing) && ($row['service_activate'] !== '0')) {
             if ($row['contact_id']) {
                 $serviceListing[] = $serviceId;
             } elseif (!empty($row['service_template_model_stm_id'])) {
@@ -434,7 +434,7 @@ abstract class AbstractService extends AbstractObject
             AND service.`service_activate` = "1" 
             AND service.`service_id` = ' . $serviceId
         );
-        if (($row = $stmt->fetch()) && empty($serviceListing) && ($row['service_activate'] == 1)) {
+        if (($row = $stmt->fetch()) && empty($serviceListing) && ($row['service_activate'] !== '0')) {
             if ($row['cg_id']) {
                 $serviceListing[] = $serviceId;
             } elseif (!empty($row['service_template_model_stm_id'])) {
