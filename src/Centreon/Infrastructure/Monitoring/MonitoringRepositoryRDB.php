@@ -521,7 +521,8 @@ final class MonitoringRepositoryRDB extends AbstractRepositoryDRB implements Mon
             LEFT JOIN `:dbstg`.hosts h 
               ON h.host_id = srv.host_id'
             . $accessGroupFilter
-            . ' WHERE srv.enabled = 1
+            . ' WHERE srv.enabled = \'1\'
+              AND h.enabled = \'1\'
               AND srv.service_id = :service_id
               AND srv.host_id = :host_id
             GROUP BY srv.service_id';
