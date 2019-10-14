@@ -83,7 +83,7 @@ class ConfigurationExporter extends ExporterServiceAbstract
                 // empty table
                 $db->query("DELETE FROM `" . $data['table'] . "`");
                 // optimize table
-                $db->query("ALTER TABLE `" . $data['table'] . "`");
+                $db->query("OPTIMIZE TABLE `" . $data['table'] . "`");
 
                 // insert data
                 $exportPathFile = $this->getFile($data['filename']);
