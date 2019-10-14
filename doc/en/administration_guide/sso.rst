@@ -46,7 +46,7 @@ To use these protocoles, the following Apaches modules need to be installed and 
 * mod_auth_openidc : https://github.com/zmartzone/mod_auth_openidc
 * mod_oauth2 : https://github.com/zmartzone/mod_oauth2
 
-Configuration examples are available in the documentation https://github.com/zmartzone/mod_auth_openidc/wiki, they have to be apply on you Centreon web Vhost.
+Configuration examples are available in the documentation https://github.com/zmartzone/mod_auth_openidc/wiki, they have to be applied on you Centreon web Vhost.
 ```
 #exemple
 <VirtualHost *:80>
