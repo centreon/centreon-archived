@@ -306,16 +306,15 @@ paths:
         * host_group.id
 
         # Information
-        By default, the **services** property of hostgroup object is not displayed.
-        To display it, set the URI parameter "show_service" to `true`.
-
-        `/monitoring/hostgroups?show_service=true`
-
-        # Information
         By default, the **hosts** property of hostgroup object is not displayed.
         To display it, set the URI parameter "show_host" to `true`.
 
         `/monitoring/hostgroups?show_host=true`
+
+        By default, the **services** property of host object is not displayed.
+        To display it, set the URI parameter "show_service" to `true`.
+
+        `/monitoring/hostgroups?show_service=true`
 
       parameters:
         - $ref: '#/components/parameters/limit'
@@ -580,16 +579,15 @@ paths:
         * service_group.name
 
         # Information
-        By default, the **services** property of hostgroup object is not displayed.
-        To display it, set the URI parameter "show_service" to `true`.
-
-        `/monitoring/hostgroups?show_service=true`
-
-        # Information
-        By default, the **hosts** property of hostgroup object is not displayed.
+        By default, the **hosts** property of service group object is not displayed.
         To display it, set the URI parameter "show_host" to `true`.
 
         `/monitoring/hostgroups?show_host=true`
+
+        By default, the **services** property of host object is not displayed.
+        To display it, set the URI parameter "show_service" to `true`.
+
+        `/monitoring/hostgroups?show_service=true`
       parameters:
         - $ref: '#/components/parameters/limit'
         - $ref: '#/components/parameters/page'
