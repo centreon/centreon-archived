@@ -42,7 +42,7 @@ Direct access to Centreon UI from users have to be disabled.
 OpenID Connect 1.0 & OAuth 2.0
 ==============================
 
-To use these protocoles, the following Apaches modules need to be installed and activated :
+To use those protocols, the following Apaches modules need to be installed and activated :
 * mod_auth_openidc : https://github.com/zmartzone/mod_auth_openidc
 * mod_oauth2 : https://github.com/zmartzone/mod_oauth2
 
