@@ -5,16 +5,19 @@ Centreon Web 19.10.0
 Features
 ========
 
-add new notification inheritance option PR/#7917, #7960, #7963, #7965, #7971)
 * [Authentication] Add Keycloak SSO authentication in Centreon (PR/#7700)
 * [API v2] New real time monitoring JSON REST API v2 for services and hosts - currently in beta version (PR/#7821)
 * [API v2] Manage acknowledgements (PR/#7907)
+* [Notification] Add new options for Contacts & Contact groups method calculation (PR/#7917, #7960, #7963, #7965, #7971):
+  * *Vertical Inheritance Only*: get contacts and contactgroups of resources and linked templates, using additive inheritance enabled option (Legacy method, keep for upgrade)
+  * *Closest Value*: get most closed contacts and contactgroups of resources including templates
+  * *Cumulative inheritance*: Cumulate all contacts and contactgroups of resources and linked templates (method used for new installation)
 
 Enhancements
 ============
 
 * [Administration] [Audit logs] Add purge function for audit logs (PR/#7710)
-* [Authentication] Add okta LDAP template (PR/#7825)
+* [Authentication] Add Okta LDAP template (PR/#7825)
 * [Charts] Centreon-Web Graph Display and png export is coherent (PR/#7676)
 * [Charts] Better management of virtual metrics: you can display or not a virtual metric (PR/#7676)
 * [Charts] Only one color by curve: users see the same color curve (PR/#7676)
@@ -48,9 +51,9 @@ Performance
 Documentation
 =============
 
-* Doc correct migration using nagios reader (PR/#7781)
-* Update mysql prerequisites for master (PR/#7904)
-* Improve documentation for MySQL/MariaB stric mode (PR/#7806)
+* Doc correct migration using Nagios reader (PR/#7781)
+* Update MySQL prerequisites for master (PR/#7904)
+* Improve documentation for MySQL/MariaB strict mode (PR/#7806)
 * Improve migration procedure (commit 47be1c3)
 * Improve prerequisites (commit 7200461)
 * Fix typo Centreon word (and one variable) (PR/#7796, PR/#7806)
@@ -65,7 +68,7 @@ Bug Fixes
 * [API] Delete services when host template is detached from host (PR/#7784)
 * [API] Fix import of contactgroup when linked to ldap (PR/#7797)
 * [API v2] Fix bad verification when an admin has access group (PR/#7972)
-* [Charts] Fix export png for splitted graph (PR/#7676)
+* [Charts] Fix export png for splited graph (PR/#7676)
 * [Charts] Graph is smoothed to much (PR/#7676, #4898)
 * [Charts] Unit curves not displayed when only 1 metric (PR/#7676, #5533)
 * [Charts] strange char & missing dates in exports (PR/#7676, #7310)
@@ -128,7 +131,7 @@ Technical
 
 * [API] Update type of returned activate property (PR/#7851)
 * [CEIP] Telemetry ceip improvements (PR/#7931)
-* [Component] Compatibility with rrdtool >= 1.7.x (PR/#7676)
+* [Component] Compatibility with RRDtool >= 1.7.x (PR/#7676)
 * [Component] Update to rh-php72 (PR/#7542)
 * [Composer] Reduce size of centreon package on packagist (PR/#7818)
 * [Composer] Add missing translation dependency in composer.json (PR/#7879)
@@ -153,6 +156,6 @@ Technical
 * [Update] Finish module update with upgrade to last version (PR/#7956)
 
 Known issue
------------
+===========
 
 * [logs] Fix the limitation of max value for the primary key of the centreon_storage.logs table (:ref:`update_centreon_storage_logs`)

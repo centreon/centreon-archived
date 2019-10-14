@@ -7,8 +7,8 @@ Features
 
 * [Authentication] Add Keycloak SSO authentication in Centreon (PR/#7700)
 * [API v2] New real time monitoring JSON REST API v2 for services and hosts - currently in beta version (PR/#7821)
-* [API v2] Manage acknowledgements (PR/#7907)
-* [Notification] Add new options for Contacts & Contact groups method calculation (PR/#7917, #7960, #7963, #7965, #7971):
+* [API v2] Manage acknowledgements with ACL (PR/#7907, PR/#7976)
+* [Notification] Add new options for Contacts & Contact groups method calculation (PR/#7917, PR/#7960, PR/#7963, PR/#7965, PR/#7971):
   * *Vertical Inheritance Only*: get contacts and contactgroups of resources and linked templates, using additive inheritance enabled option (Legacy method, keep for upgrade)
   * *Closest Value*: get most closed contacts and contactgroups of resources including templates
   * *Cumulative inheritance*: Cumulate all contacts and contactgroups of resources and linked templates (method used for new installation)
