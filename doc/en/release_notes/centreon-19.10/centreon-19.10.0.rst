@@ -9,6 +9,7 @@ Features
 * [API v2] New real time monitoring JSON REST API v2 for services and hosts - currently in beta version (PR/#7821)
 * [API v2] Manage acknowledgements (PR/#7907)
 * [Notification] Add new options for Contacts & Contact groups method calculation (PR/#7917, #7960, #7963, #7965, #7971):
+
   * *Vertical Inheritance Only*: get contacts and contactgroups of resources and linked templates, using additive inheritance enabled option (Legacy method, keep for upgrade)
   * *Closest Value*: get most closed contacts and contactgroups of resources including templates
   * *Cumulative inheritance*: Cumulate all contacts and contactgroups of resources and linked templates (method used for new installation)
