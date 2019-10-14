@@ -1462,6 +1462,174 @@ To delete more than one parent, use the character '|'. Ex:  ::
   "values": "mail-uranus-frontend;fw-berlin|fw-dublin"
 
 
+Get child
+----------
+
+**POST**  ::
+
+ api.domain.tld/centreon/api/index.php?action=action&object=centreon_clapi
+
+
+**Header**
+
++---------------------+------------------------------------------------+
+|  key                |   value                                        |
+|                     |                                                |
++---------------------+------------------------------------------------+
+| Content-Type        | application/json                               |
++---------------------+------------------------------------------------+
+| centreon-auth-token | the value of authToken you got                 |
+|                     | on the response of the authentication part     |
++---------------------+------------------------------------------------+
+
+
+**Body**  ::
+
+  {
+    "action": "getchild",
+    "object": "host",
+    "values": "mail-uranus-frontdad"
+  }
+
+
+**Response** ::
+
+ {
+  "result": [
+    {
+      "id": "219",
+      "name": "mail-uranus-frontchild"
+    }
+  ]
+ }
+
+
+Add child
+----------
+
+**POST**  ::
+
+ api.domain.tld/centreon/api/index.php?action=action&object=centreon_clapi
+
+
+**Header**
+
++---------------------+------------------------------------------------+
+|  key                |   value                                        |
+|                     |                                                |
++---------------------+------------------------------------------------+
+| Content-Type        | application/json                               |
++---------------------+------------------------------------------------+
+| centreon-auth-token | the value of authToken you got                 |
+|                     | on the response of the authentication part     |
++---------------------+------------------------------------------------+
+
+
+**Body**  ::
+
+  {
+    "action": "addchild",
+    "object": "host",
+    "values": "fw-berlin;mail-uranus-frontend"
+  }
+
+
+**Response** ::
+
+ {
+  "result": []
+ }
+
+To add more than one parent to a host, use the character '|'. Ex:  ::
+
+  "values": "fw-berlin;mail-uranus-frontend|mail-neptune-frontend"
+
+The add action add the parent without overwriting he previous configuration.
+
+
+Set child
+----------
+
+**POST**  ::
+
+ api.domain.tld/centreon/api/index.php?action=action&object=centreon_clapi
+
+
+**Header**
+
++---------------------+------------------------------------------------+
+|  key                |   value                                        |
+|                     |                                                |
++---------------------+------------------------------------------------+
+| Content-Type        | application/json                               |
++---------------------+------------------------------------------------+
+| centreon-auth-token | the value of authToken you got                 |
+|                     | on the response of the authentication part     |
++---------------------+------------------------------------------------+
+
+
+**Body**  ::
+
+  {
+    "action": "setchild",
+    "object": "host",
+    "values": "fw-berlin;mail-uranus-frontend"
+  }
+
+
+**Response** ::
+
+ {
+  "result": []
+ }
+
+To set more than one parent to a host, use the character '|'. Ex:  ::
+
+  "values": "fw-berlin;mail-uranus-frontend|mail-neptune-frontend"
+
+The set action overwrite the previous configuration before setting the new parent.
+
+
+Delete child
+-------------
+
+**POST**  ::
+
+ api.domain.tld/centreon/api/index.php?action=action&object=centreon_clapi
+
+
+**Header**
+
++---------------------+------------------------------------------------+
+|  key                |   value                                        |
+|                     |                                                |
++---------------------+------------------------------------------------+
+| Content-Type        | application/json                               |
++---------------------+------------------------------------------------+
+| centreon-auth-token | the value of authToken you got                 |
+|                     | on the response of the authentication part     |
++---------------------+------------------------------------------------+
+
+
+**Body**  ::
+
+  {
+    "action": "delchild",
+    "object": "host",
+    "values": "fw-berlin;mail-uranus-frontend"
+  }
+
+
+**Response** ::
+
+ {
+  "result": []
+ }
+
+To delete more than one parent, use the character '|'. Ex:  ::
+
+  "values": "fw-berlin;mail-uranus-frontend|mail-neptune-frontend"
+
 
 Get contact group
 -----------------
