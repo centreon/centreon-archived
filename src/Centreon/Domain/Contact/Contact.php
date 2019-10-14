@@ -29,6 +29,10 @@ class Contact implements UserInterface, ContactInterface
 {
     const ROLE_API_CONFIGURATION = 'ROLE_API_CONFIGURATION';
     const ROLE_API_REALTIME = 'ROLE_API_REALTIME';
+    const ROLE_HOST_ACKNOWLEDGEMENT = 'ROLE_HOST_ACKNOWLEDGEMENT';
+    const ROLE_HOST_DISACKNOWLEDGEMENT = 'ROLE_HOST_DISACKNOWLEDGEMENT';
+    const ROLE_SERVICE_ACKNOWLEDGEMENT = 'ROLE_SERVICE_ACKNOWLEDGEMENT';
+    const ROLE_SERVICE_DISACKNOWLEDGEMENT = 'ROLE_SERVICE_DISACKNOWLEDGEMENT';
 
     /**
      * @var int Id of contact
@@ -406,7 +410,7 @@ class Contact implements UserInterface, ContactInterface
      *
      * @param string $roleName Role name to add
      */
-    private function addRole(string $roleName): void
+    public function addRole(string $roleName): void
     {
         if (!in_array($roleName, $this->roles)) {
             $this->roles[] = $roleName;

@@ -51,18 +51,18 @@ final class ContactRepositoryRDB implements ContactRepositoryInterface
      */
     public function findById(int $contactId): ?Contact
     {
-        $prepare = $this->db->prepare(
+        $statement = $this->db->prepare(
             "SELECT * FROM contact WHERE contact_id = :contact_id"
         );
-        $prepare->bindValue(':contact_id', $contactId, \PDO::PARAM_INT);
+        $statement->bindValue(':contact_id', $contactId, \PDO::PARAM_INT);
 
         $contact = null;
-        if ($prepare->execute()
-            && ($result = $prepare->fetch(\PDO::FETCH_ASSOC))
-        ) {
-            $contact = $this->createContact($result);
-        }
+        $statement->execute();
 
+        if (($result = $statement->fetch(\PDO::FETCH_ASSOC)) !== false) {
+            $contact = $this->createContact($result);
+            $this->findAndAddRules($contact);
+        }
         return $contact;
     }
 
@@ -78,14 +78,15 @@ final class ContactRepositoryRDB implements ContactRepositoryInterface
             LIMIT 1'
         );
         $statement->bindValue(':username', $name, \PDO::PARAM_STR);
-        if ($statement->execute()
-            && ($result = $statement->fetch(\PDO::FETCH_ASSOC))
-        ) {
+        $statement->execute();
+
+        $contact = null;
+        if (($result = $statement->fetch(\PDO::FETCH_ASSOC)) !== false) {
             $contact = $this->createContact($result);
-            return $contact;
-        } else {
-            return null;
+            $this->findAndAddRules($contact);
         }
+
+        return $contact;
     }
 
     /**
@@ -102,13 +103,50 @@ final class ContactRepositoryRDB implements ContactRepositoryInterface
             LIMIT 1'
         );
         $statement->bindValue(':session_id', $sessionId, \PDO::PARAM_STR);
-        if ($statement->execute()
-            && ($result = $statement->fetch(\PDO::FETCH_ASSOC))
-        ) {
+        $statement->execute();
+
+        $contact = null;
+        if (($result = $statement->fetch(\PDO::FETCH_ASSOC)) !== false) {
             $contact = $this->createContact($result);
-            return $contact;
-        } else {
-            return null;
+            $this->findAndAddRules($contact);
+        }
+
+        return $contact;
+    }
+
+    /**
+     * Find and add all rules for a contact.
+     *
+     * @param Contact $contact Contact for which we want to find and add all rules
+     */
+    private function findAndAddRules(Contact $contact): void
+    {
+        $statement = $this->db->prepare(
+            'SELECT rules.acl_action_name
+            FROM centreon.contact contact
+            LEFT JOIN centreon.contactgroup_contact_relation cgcr
+                ON cgcr.contact_contact_id = contact.contact_id
+            LEFT JOIN centreon.acl_group_contactgroups_relations gcgr
+                ON gcgr.cg_cg_id = cgcr.contactgroup_cg_id
+            LEFT JOIN centreon.acl_group_contacts_relations gcr
+                ON gcr.contact_contact_id = contact.contact_id
+            LEFT JOIN centreon.acl_group_actions_relations agar
+                ON agar.acl_group_id = gcr.acl_group_id
+                OR agar.acl_group_id = gcgr.acl_group_id
+            LEFT JOIN centreon.acl_actions actions
+                ON actions.acl_action_id = agar.acl_action_id
+            LEFT JOIN centreon.acl_actions_rules rules
+                ON rules.acl_action_rule_id = actions.acl_action_id
+            WHERE contact.contact_id = :contact_id 
+            ORDER BY contact.contact_id, rules.acl_action_name'
+        );
+        $statement->bindValue(':contact_id', $contact->getId(), \PDO::PARAM_INT);
+        $statement->execute();
+
+        while ($result = $statement->fetch(\PDO::FETCH_ASSOC)) {
+            if (!$contact->isAdmin() && !is_null($result['acl_action_name'])) {
+                $this->addSpecificRule($contact, $result['acl_action_name']);
+            }
         }
     }
 
@@ -132,5 +170,29 @@ final class ContactRepositoryRDB implements ContactRepositoryInterface
             ->setEncodedPassword($contact['contact_passwd'])
             ->setAccessToApiRealTime($contact['reach_api_rt'] === '1')
             ->setAccessToApiConfiguration($contact['reach_api'] === '1');
+    }
+
+    /**
+     * Add a specific rule to contact.
+     *
+     * @param Contact $contact Contact for which we want to add rule
+     * @param string $ruleName Rule to add
+     */
+    private function addSpecificRule(Contact $contact, string $ruleName): void
+    {
+        switch ($ruleName) {
+            case 'host_acknowledgement':
+                $contact->addRole(Contact::ROLE_HOST_ACKNOWLEDGEMENT);
+                break;
+            case 'host_disacknowledgement':
+                $contact->addRole(Contact::ROLE_HOST_DISACKNOWLEDGEMENT);
+                break;
+            case 'service_acknowledgement':
+                $contact->addRole(Contact::ROLE_SERVICE_ACKNOWLEDGEMENT);
+                break;
+            case 'service_disacknowledgement':
+                $contact->addRole(Contact::ROLE_SERVICE_DISACKNOWLEDGEMENT);
+                break;
+        }
     }
 }
