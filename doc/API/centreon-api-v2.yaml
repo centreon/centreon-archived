@@ -29,7 +29,7 @@ servers:
       server:
         default: localhost
       version:
-        default: latest
+        default: beta
         enum:
           - latest
           - beta
