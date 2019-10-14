@@ -51,9 +51,10 @@ final class ContactRepositoryRDB implements ContactRepositoryInterface
      */
     public function findById(int $contactId): ?Contact
     {
-        $statement = $this->db->prepare(
-            "SELECT * FROM contact WHERE contact_id = :contact_id"
-        );
+        $request = "SELECT * FROM `:db`.contact WHERE contact_id = :contact_id";
+        $request = $this->translateDbName($request);
+        
+        $statement = $this->db->prepare($request);
         $statement->bindValue(':contact_id', $contactId, \PDO::PARAM_INT);
 
         $contact = null;
@@ -71,13 +72,15 @@ final class ContactRepositoryRDB implements ContactRepositoryInterface
      */
     public function findByName(string $name): ?Contact
     {
-        $statement = $this->db->prepare(
-            'SELECT * 
-            FROM contact 
+        $request = 'SELECT * 
+            FROM `:db`.contact 
             WHERE contact_alias = :username
-            LIMIT 1'
-        );
+            LIMIT 1';
+
+        $request = $this->translateDbName($request);
+        $statement = $this->db->prepare($request);
         $statement->bindValue(':username', $name, \PDO::PARAM_STR);
+
         $statement->execute();
 
         $contact = null;
@@ -94,14 +97,15 @@ final class ContactRepositoryRDB implements ContactRepositoryInterface
      */
     public function findBySession(string $sessionId): ?Contact
     {
-        $statement = $this->db->prepare(
-            'SELECT contact.*
-            FROM contact
-            INNER JOIN session
+        $request = 'SELECT contact.*
+            FROM `:db`.contact
+            INNER JOIN `:db`.session
               on session.user_id = contact.contact_id
             WHERE session.session_id = :session_id
-            LIMIT 1'
-        );
+            LIMIT 1';
+
+        $request = $this->translateDbName($request);
+        $statement = $this->db->prepare($request);
         $statement->bindValue(':session_id', $sessionId, \PDO::PARAM_STR);
         $statement->execute();
 
@@ -121,32 +125,32 @@ final class ContactRepositoryRDB implements ContactRepositoryInterface
      */
     private function findAndAddRules(Contact $contact): void
     {
-        $statement = $this->db->prepare(
+        $request =
             'SELECT rules.acl_action_name
-            FROM centreon.contact contact
-            LEFT JOIN centreon.contactgroup_contact_relation cgcr
+            FROM `:db`.contact contact
+            LEFT JOIN `:db`.contactgroup_contact_relation cgcr
                 ON cgcr.contact_contact_id = contact.contact_id
-            LEFT JOIN centreon.acl_group_contactgroups_relations gcgr
+            LEFT JOIN `:db`.acl_group_contactgroups_relations gcgr
                 ON gcgr.cg_cg_id = cgcr.contactgroup_cg_id
-            LEFT JOIN centreon.acl_group_contacts_relations gcr
+            LEFT JOIN `:db`.acl_group_contacts_relations gcr
                 ON gcr.contact_contact_id = contact.contact_id
-            LEFT JOIN centreon.acl_group_actions_relations agar
+            LEFT JOIN `:db`.acl_group_actions_relations agar
                 ON agar.acl_group_id = gcr.acl_group_id
                 OR agar.acl_group_id = gcgr.acl_group_id
-            LEFT JOIN centreon.acl_actions actions
+            LEFT JOIN `:db`.acl_actions actions
                 ON actions.acl_action_id = agar.acl_action_id
-            LEFT JOIN centreon.acl_actions_rules rules
+            LEFT JOIN `:db`.acl_actions_rules rules
                 ON rules.acl_action_rule_id = actions.acl_action_id
             WHERE contact.contact_id = :contact_id 
-            ORDER BY contact.contact_id, rules.acl_action_name'
-        );
+            ORDER BY contact.contact_id, rules.acl_action_name';
+
+        $request = $this->translateDbName($request);
+        $statement = $this->db->prepare($request);
         $statement->bindValue(':contact_id', $contact->getId(), \PDO::PARAM_INT);
         $statement->execute();
 
         while ($result = $statement->fetch(\PDO::FETCH_ASSOC)) {
-            if (!is_null($result['acl_action_name'])) {
-                $this->addSpecificRule($contact, $result['acl_action_name']);
-            }
+            $this->addSpecificRule($contact, $result['acl_action_name']);
         }
     }
 
@@ -194,5 +198,22 @@ final class ContactRepositoryRDB implements ContactRepositoryInterface
                 $contact->addRole(Contact::ROLE_SERVICE_DISACKNOWLEDGEMENT);
                 break;
         }
+    }
+
+    /**
+     * Replace all instances of :dbstg and :db by the real db names.
+     * The table names of the database are defined in the services.yaml
+     * configuration file.
+     *
+     * @param string $request Request to translate
+     * @return string Request translated
+     */
+    protected function translateDbName(string $request): string
+    {
+        return str_replace(
+            array(':dbstg', ':db'),
+            array($this->db->getStorageDbName(), $this->db->getCentreonDbName()),
+            $request
+        );
     }
 }
