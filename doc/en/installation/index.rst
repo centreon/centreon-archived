@@ -31,6 +31,6 @@ Finally, you can install the platform.
     from_VM
     from_sources
 
-To quickly test Centreon, you can from a CentOS or Red Hat 7.x server run the following command: ::
+To quickly test Centreon from a CentOS or Red Hat 7.x, you can run the following command as **root**: ::
 
     # curl -L https://raw.githubusercontent.com/centreon/centreon/master/unattended.sh | sh
