@@ -126,7 +126,7 @@ final class ContactRepositoryRDB implements ContactRepositoryInterface
     private function findAndAddRules(Contact $contact): void
     {
         $request =
-            'SELECT rules.acl_action_name
+            'SELECT DISTINCT rules.acl_action_name
             FROM `:db`.contact contact
             LEFT JOIN `:db`.contactgroup_contact_relation cgcr
                 ON cgcr.contact_contact_id = contact.contact_id
@@ -142,6 +142,7 @@ final class ContactRepositoryRDB implements ContactRepositoryInterface
             LEFT JOIN `:db`.acl_actions_rules rules
                 ON rules.acl_action_rule_id = actions.acl_action_id
             WHERE contact.contact_id = :contact_id 
+                AND rules.acl_action_name IS NOT NULL
             ORDER BY contact.contact_id, rules.acl_action_name';
 
         $request = $this->translateDbName($request);
