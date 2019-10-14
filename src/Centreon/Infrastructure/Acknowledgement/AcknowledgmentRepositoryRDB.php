@@ -256,7 +256,7 @@ final class AcknowledgmentRepositoryRDB extends AbstractRepositoryDRB implements
 
         $this->sqlRequestTranslator->setConcordanceArray($concordanceArray);
 
-        $request = 'SELECT *
+        $request = 'SELECT ack.*, contact.contact_id AS author_id
             FROM `:dbstg`.acknowledgements ack
             INNER JOIN `:db`.contact
                 ON contact.contact_alias = ack.author ';
