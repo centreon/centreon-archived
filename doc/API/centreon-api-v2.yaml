@@ -304,11 +304,36 @@ paths:
         * poller.id
         * service.display_name
         * host_group.id
+
+        # Information
+        By default, the **services** property of hostgroup object is not displayed.
+        To display it, set the URI parameter "show_service" to `true`.
+
+        `/monitoring/hostgroups?show_service=true`
+
+        # Information
+        By default, the **hosts** property of hostgroup object is not displayed.
+        To display it, set the URI parameter "show_host" to `true`.
+
+        `/monitoring/hostgroups?show_host=true`
+
       parameters:
         - $ref: '#/components/parameters/limit'
         - $ref: '#/components/parameters/page'
         - $ref: '#/components/parameters/sortBy'
         - $ref: '#/components/parameters/search'
+        - name: show_service
+          in: query
+          description: |
+            Allows to display services belonging to hosts belonging to requested hostgroups (by default: **false**)
+          schema:
+            type: boolean
+        - name: show_host
+          in: query
+          description: |
+            Allows to display hosts belonging to hostgroups (by default: **false**)
+          schema:
+            type: boolean
       responses:
         '200':
           description: successful operation
@@ -553,11 +578,35 @@ paths:
         * service.display_name
         * service_group.id
         * service_group.name
+
+        # Information
+        By default, the **services** property of hostgroup object is not displayed.
+        To display it, set the URI parameter "show_service" to `true`.
+
+        `/monitoring/hostgroups?show_service=true`
+
+        # Information
+        By default, the **hosts** property of hostgroup object is not displayed.
+        To display it, set the URI parameter "show_host" to `true`.
+
+        `/monitoring/hostgroups?show_host=true`
       parameters:
         - $ref: '#/components/parameters/limit'
         - $ref: '#/components/parameters/page'
         - $ref: '#/components/parameters/sortBy'
         - $ref: '#/components/parameters/search'
+        - name: show_service
+          in: query
+          description: |
+            Allows to display services belonging to servicegroups (by default: **false**)
+          schema:
+            type: boolean
+        - name: show_host
+          in: query
+          description: |
+            Allows to display hosts related to services belonging to servicegroups (by default: **false**)
+          schema:
+            type: boolean
       responses:
         '200':
           description: successful operation
