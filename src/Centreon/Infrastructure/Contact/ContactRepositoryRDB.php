@@ -144,7 +144,7 @@ final class ContactRepositoryRDB implements ContactRepositoryInterface
         $statement->execute();
 
         while ($result = $statement->fetch(\PDO::FETCH_ASSOC)) {
-            if (!$contact->isAdmin() && !is_null($result['acl_action_name'])) {
+            if (!is_null($result['acl_action_name'])) {
                 $this->addSpecificRule($contact, $result['acl_action_name']);
             }
         }
