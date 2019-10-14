@@ -1540,11 +1540,11 @@ Add child
   "result": []
  }
 
-To add more than one parent to a host, use the character '|'. Ex:  ::
+To add more than one child to a host, use the character '|'. Ex:  ::
 
   "values": "fw-berlin;mail-uranus-frontend|mail-neptune-frontend"
 
-The add action add the parent without overwriting he previous configuration.
+The add action add the child without overwriting he previous configuration.
 
 
 Set child
@@ -1583,11 +1583,11 @@ Set child
   "result": []
  }
 
-To set more than one parent to a host, use the character '|'. Ex:  ::
+To set more than one child to a host, use the character '|'. Ex:  ::
 
   "values": "fw-berlin;mail-uranus-frontend|mail-neptune-frontend"
 
-The set action overwrite the previous configuration before setting the new parent.
+The set action overwrite the previous configuration before setting the new child.
 
 
 Delete child
@@ -1626,7 +1626,7 @@ Delete child
   "result": []
  }
 
-To delete more than one parent, use the character '|'. Ex:  ::
+To delete more than one child, use the character '|'. Ex:  ::
 
   "values": "fw-berlin;mail-uranus-frontend|mail-neptune-frontend"
 
