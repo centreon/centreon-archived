@@ -8,7 +8,7 @@ Features
 * [Authentication] Add Keycloak SSO authentication in Centreon (PR/#7700)
 * [API v2] New real time monitoring JSON REST API v2 for services and hosts - currently in beta version (PR/#7821)
 * [API v2] Manage acknowledgements (PR/#7907)
-* [Notification] Add new options for Contacts & Contact groups method calculation (PR/#7917, #7960, #7963, #7965, #7971):
+* [Notification] Add new options for Contacts & Contact groups method calculation (PR/#7917, PR/#7960, PR/#7963, PR/#7965, PR/#7971):
 
   * *Vertical Inheritance Only*: get contacts and contactgroups of resources and linked templates, using additive inheritance enabled option (Legacy method, keep for upgrade)
   * *Closest Value*: get most closed contacts and contactgroups of resources including templates
@@ -65,7 +65,8 @@ Bug Fixes
 =========
 
 * [ACL] Redirect to login page when user is unauthorized (PR/#7687)
-* [ACL] add ACL to select meta-services for list of services in performance menu (PR/#7736)
+* [ACL] Add ACL to select meta-services for list of services in performance menu (PR/#7736)
+* [ACL] Fix cron renaming bound variable name (PR/#7984)
 * [API] Delete services when host template is detached from host (PR/#7784)
 * [API] Fix import of contactgroup when linked to ldap (PR/#7797)
 * [API v2] Fix bad verification when an admin has access group (PR/#7972)
