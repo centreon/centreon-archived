@@ -284,7 +284,7 @@ try {
                 while ($rowData = $res1->fetch()) {
                     $stmt = $pearDB->prepare(
                         "INSERT INTO acl_resources_sg_relations (sg_id, acl_res_id)
-                        VALUES (:sgIg, :aclResId)"
+                        VALUES (:sgId, :aclResId)"
                     );
                     $stmt->bindValue(':sgId', $rowData['sg_id'], \PDO::PARAM_INT);
                     $stmt->bindValue(':aclResId', $row['acl_res_id'], \PDO::PARAM_INT);
