@@ -41,7 +41,7 @@
     "webpack-cli": "^3.3.6"
   },
   "dependencies": {
-    "@centreon/react-components": "19.4.0-alpha.151",
+    "@centreon/react-components": "0.0.0-19-04-x.2",
     "@emotion/core": "^10.0.14",
     "@emotion/styled": "^10.0.14",
     "axios": "^0.19.0",
