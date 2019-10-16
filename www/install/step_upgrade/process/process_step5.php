@@ -35,8 +35,10 @@
 
 session_start();
 require_once __DIR__ . '/../../../../bootstrap.php';
+require_once '../../steps/functions.php';
 
 $parameters = filter_input_array(INPUT_POST);
+$current = $_POST['current'];
 
 if ($parameters) {
     if ((int)$parameters["send_statistics"] === 1) {
@@ -52,6 +54,14 @@ if ($parameters) {
 
 $name = 'install-' . $_SESSION['CURRENT_VERSION'] . '-' . date('Ymd_His');
 $completeName = _CENTREON_VARLIB_ . '/installs/' . $name;
-@rename(str_replace('step_upgrade', '', realpath(dirname(__FILE__) .'/../')), $completeName);
+$sourceInstallDir = str_replace('step_upgrade', '', realpath(dirname(__FILE__) .'/../'));
+
+try {
+    if (copy($sourceInstallDir, $completeName)) {
+        unlink();
+    }
+} catch (Exception $e) {
+    exitUpgradeProcess(1, $current, '', $e->getMessage());
+}
 
 session_destroy();
