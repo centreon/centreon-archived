@@ -62,7 +62,7 @@ if ($parameters) {
 
 $name = 'install-' . $_SESSION['CURRENT_VERSION'] . '-' . date('Ymd_His');
 $completeName = _CENTREON_VARLIB_ . '/installs/' . $name;
-$sourceInstallDir = str_replace('step_upgrade', '', realpath(dirname(__FILE__) .'/../'));
+$sourceInstallDir = str_replace('step_upgrade', '', realpath(dirname(__FILE__) . '/../'));
 
 try {
     if (copy($sourceInstallDir, $completeName)) {
