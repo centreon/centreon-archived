@@ -126,7 +126,7 @@ if ($o == "as") {
     $form->addElement('header', 'title', _("Modify a Meta Service indicator"));
 }
 
-/* 
+/*
  * Indicator basic information
  */
 $redirect = $form->addElement('hidden', 'o');
@@ -150,8 +150,6 @@ $form->setDefaults(array('activate' => '1'));
 $form->addElement('textarea', 'msr_comment', _("Comments"), $attrsTextarea);
 
 $tab = array();
-$tab[] = $form->createElement('radio', 'action', null, _("List"), '1');
-$tab[] = $form->createElement('radio', 'action', null, _("Form"), '0');
 $form->addGroup($tab, 'action', _("Post Validation"), '&nbsp;');
 $form->setDefaults(array('action' => '1'));
 
@@ -197,7 +195,6 @@ if (((isset($_POST["submitA"]) && $_POST["submitA"]) || (isset($_POST["submitC"]
     $valid = true;
 }
 
-$action = $form->getSubmitValue("action");
 if ($valid) {
     require_once($path . "listMetric.php");
 } else {
