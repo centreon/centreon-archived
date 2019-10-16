@@ -37,6 +37,14 @@ session_start();
 require_once __DIR__ . '/../../../../bootstrap.php';
 require_once '../../steps/functions.php';
 
+function recurseRmdir($dir) {
+    $files = array_diff(scandir($dir), array('.','..'));
+    foreach ($files as $file) {
+        (is_dir("$dir/$file")) ? recurseRmdir("$dir/$file") : unlink("$dir/$file");
+    }
+    return rmdir($dir);
+}
+
 $parameters = filter_input_array(INPUT_POST);
 $current = $_POST['current'];
 
@@ -58,7 +66,7 @@ $sourceInstallDir = str_replace('step_upgrade', '', realpath(dirname(__FILE__) .
 
 try {
     if (copy($sourceInstallDir, $completeName)) {
-        unlink();
+        recurseRmdir($sourceInstallDir);
     }
 } catch (Exception $e) {
     exitUpgradeProcess(1, $current, '', $e->getMessage());
