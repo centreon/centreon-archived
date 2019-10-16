@@ -45,6 +45,33 @@ function recurseRmdir($dir) {
     return rmdir($dir);
 }
 
+function recurseCopy($source, $dest)
+{
+    if (is_link($source)) {
+        return symlink(readlink($source), $dest);
+    }
+
+    if (is_file($source)) {
+        return copy($source, $dest);
+    }
+
+    if (!is_dir($dest)) {
+        mkdir($dest);
+    }
+
+    $dir = dir($source);
+    while (false !== $entry = $dir->read()) {
+        if ($entry == '.' || $entry == '..') {
+            continue;
+        }
+
+        recurseCopy("$source/$entry", "$dest/$entry");
+    }
+
+    $dir->close();
+    return true;
+}
+
 $parameters = filter_input_array(INPUT_POST);
 $current = $_POST['current'];
 
@@ -65,7 +92,7 @@ $completeName = _CENTREON_VARLIB_ . '/installs/' . $name;
 $sourceInstallDir = str_replace('step_upgrade', '', realpath(dirname(__FILE__) . '/../'));
 
 try {
-    if (copy($sourceInstallDir, $completeName)) {
+    if (recurseCopy($sourceInstallDir, $completeName)) {
         recurseRmdir($sourceInstallDir);
     }
 } catch (Exception $e) {
