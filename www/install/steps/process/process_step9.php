@@ -59,7 +59,7 @@ try {
     if ($dependencyInjector['filesystem']->exists($installDir)) {
         throw new \Exception(
             'Cannot move directory from ' . $installDir . ' to ' . $backupDir
-            . ', please remove it manually.'
+            . ', please move it manually.'
         );
     }
     $dependencyInjector['filesystem']->remove($backupDir . '/tmp/admin.json');
