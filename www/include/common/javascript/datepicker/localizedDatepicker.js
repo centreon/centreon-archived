@@ -121,6 +121,9 @@ function setUserFormat() {
                     jQuery('<script>')
                         .attr('src', './include/common/javascript/datepicker/' + data)
                         .appendTo('body');
+                    jQuery('<script>')
+                        .attr('src', './include/common/javascript/timepicker/' + data)
+                        .appendTo('body');
                 } else {
                     console.log('WARNING : datepicker localized library not found for : "' + userLanguage + '"');
                     console.log('Initializing the datepicker for "en_US"');
