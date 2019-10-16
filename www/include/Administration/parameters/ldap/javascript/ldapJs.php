@@ -31,9 +31,6 @@
  *
  * For more information : contact@centreon.com
  *
- * SVN : $URL$
- * SVN : $Id$
- *
  */
 ?>
 <script type="text/javascript">
@@ -44,49 +41,13 @@
     function set_header_title() {
     }
 
-    var nextRowId;
-    var counter = '<?php echo $maxHostId;?>';
-    var nbOfInitialRows = '<?php echo $nbOfInitialRows; ?>';
-    var o = '<?php echo $o;?>';
-    var arId = '<?php echo $arId;?>';
-    var templates;
-
-    /*
-     * Transform our div
-     */
-    function transformForm() {
-        var params;
-        var proc;
-        var addrXML;
-        var addrXSL;
-
-        //var params = '?sid=' + sid;
-
-        if (o == 'w' || o == 'ldap') {
-            params = '?arId=' + arId;
-            proc = new Transformation();
-            addrXML = './include/options/oreon/generalOpt/ldap/xml/ldap_host.php' + params;
-            addrXSL = './include/options/oreon/generalOpt/ldap/xsl/ldap_host.xsl';
-            proc.setXml(addrXML);
-            proc.setXslt(addrXSL);
-            proc.transform("dynamicDiv");
-            o = 0;
-        } else {
-            params = '?id=' + counter + '&nbOfInitialRows=' + nbOfInitialRows;
-            proc = new Transformation();
-            addrXML = './include/options/oreon/generalOpt/ldap/xml/additionalRowXml.php' + params;
-            addrXSL = './include/options/oreon/generalOpt/ldap/xsl/additionalRow.xsl';
-            proc.setXml(addrXML);
-            proc.setXslt(addrXSL);
-            proc.transform(nextRowId);
-        }
-    }
+    let ldapTemplates = [];
 
     /*
      * called when the use _dns is to set at no is clicked
      */
-    function toggleParams(checkValue, isInit) {
-        if (checkValue == true) {
+    function toggleParams(checkValue) {
+        if (checkValue === true) {
             Effect.Fade('ldap_dns_use_ssl', {duration: 0});
             Effect.Fade('ldap_dns_use_tls', {duration: 0});
             Effect.Fade('ldap_dns_use_domain', {duration: 0});
@@ -111,11 +72,11 @@
      * Display or hide custom options
      */
     function toggleCustom(select) {
-        if (typeof(select) == 'undefined' || typeof(select.selectedIndex) == 'undefined') {
+        if (typeof(select) === 'undefined' || typeof(select.selectedIndex) === 'undefined') {
             return null;
         }
-        value = select.options[select.selectedIndex].value;
-        if (value == 0) {
+        let value = select.options[select.selectedIndex].value;
+        if (value === 0) {
             Effect.Appear('ldap_user_filter', {duration: 0});
             Effect.Appear('ldap_user_uid_attr', {duration: 0});
             Effect.Appear('ldap_user_group', {duration: 0});
@@ -147,48 +108,24 @@
      */
     function initParams() {
         initTemplates();
+        let noDns = false;
         if (document.getElementById('ldap_srv_dns_n')) {
-            var noDns = false;
-            if (document.getElementById('ldap_srv_dns_n').type == 'radio') {
+            if (document.getElementById('ldap_srv_dns_n').type === 'radio') {
                 if (document.getElementById('ldap_srv_dns_n').checked) {
                     noDns = true;
                 }
             }
         }
-        toggleParams(noDns, true);
-    }
-
-    /*
-     * Function is called when the '+' button is pressed
-     */
-    function addNewHost() {
-        nbOfInitialRows++;
-        nextRowId = 'additionalRow_' + nbOfInitialRows;
-        transformForm();
-        counter++;
-    }
-
-    /*
-     * function that is called when the 'x' button is pressed
-     */
-    function removeTr(trId) {
-        if (document.getElementById(trId)) {
-            if (navigator.appName == "Microsoft Internet Explorer") {
-                document.getElementById(trId).innerText = "";
-            } else {
-                document.getElementById(trId).innerHTML = "";
-            }
-            Effect.Fade(trId, {duration: 0});
-        }
+        toggleParams(noDns);
     }
 
     /*
      * Initializes templates
      */
     function initTemplates() {
-        ldapTemplates = new Array();
+        ldapTemplates = [];
 
-        ldapTemplates['Posix'] = new Array();
+        ldapTemplates['Posix'] = [];
         ldapTemplates['Posix']['user_filter'] = '(&(uid=%s)(objectClass=inetOrgPerson))';
         ldapTemplates['Posix']['alias'] = 'uid';
         ldapTemplates['Posix']['user_group'] = '';
@@ -201,7 +138,7 @@
         ldapTemplates['Posix']['group_name'] = 'cn';
         ldapTemplates['Posix']['group_member'] = 'member';
 
-        ldapTemplates['Active Directory'] = new Array();
+        ldapTemplates['Active Directory'] = [];
         ldapTemplates['Active Directory']['user_filter'] =
             '(&(samAccountName=%s)(objectClass=user)(samAccountType=805306368))';
         ldapTemplates['Active Directory']['alias'] = 'samaccountname';
@@ -222,16 +159,16 @@
      */
     function applyTemplate(templateValue) {
         $$('input[type^=text]').each(function (el) {
-            key = el.getAttribute('name');
-            var attr = key;
+            let attr = el.getAttribute('name');
 
-            if (typeof(ldapTemplates[templateValue]) != 'undefined') {
-                if (typeof(ldapTemplates[templateValue][attr]) != 'undefined') {
+            if (typeof(ldapTemplates[templateValue]) !== 'undefined') {
+                if (typeof(ldapTemplates[templateValue][attr]) !== 'undefined') {
                     el.setValue(ldapTemplates[templateValue][attr]);
                 }
             }
         });
     }
+    
     Event.observe(window, "load", function () {
         initParams();
     });
