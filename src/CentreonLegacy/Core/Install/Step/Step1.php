@@ -54,7 +54,7 @@ class Step1 extends AbstractStep
 
     public function setConfiguration()
     {
-        if (version_compare(phpversion(), '<', '7.2')) {
+        if (version_compare(phpversion(), '7.2', '<')) {
             throw new \Exception('Please update your PHP to 7.2 or upper.');
         }
 
