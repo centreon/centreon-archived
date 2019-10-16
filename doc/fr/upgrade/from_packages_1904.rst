@@ -76,6 +76,9 @@ suivante : ::
 
 .. note::
     Changez **Europe/Paris** par votre fuseau horaire.
+ 
+.. warning::
+    N'oubliez pas de reporter les configurations spécifiques qui peuvent être configurées dans /etc/opt/rh/rh-php71/php.ini et/ou /etc/opt/rh/rh-php71/php-fpm.d/centreon.conf
 
 Réalisez les actions suivantes : ::
 
