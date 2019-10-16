@@ -35,8 +35,46 @@
 
 session_start();
 require_once __DIR__ . '/../../../../bootstrap.php';
+require_once '../../steps/functions.php';
+
+function recurseRmdir($dir)
+{
+    $files = array_diff(scandir($dir), array('.', '..'));
+    foreach ($files as $file) {
+        (is_dir("$dir/$file")) ? recurseRmdir("$dir/$file") : unlink("$dir/$file");
+    }
+    return rmdir($dir);
+}
+
+function recurseCopy($source, $dest)
+{
+    if (is_link($source)) {
+        return symlink(readlink($source), $dest);
+    }
+
+    if (is_file($source)) {
+        return copy($source, $dest);
+    }
+
+    if (!is_dir($dest)) {
+        mkdir($dest);
+    }
+
+    $dir = dir($source);
+    while (false !== $entry = $dir->read()) {
+        if ($entry == '.' || $entry == '..') {
+            continue;
+        }
+
+        recurseCopy("$source/$entry", "$dest/$entry");
+    }
+
+    $dir->close();
+    return true;
+}
 
 $parameters = filter_input_array(INPUT_POST);
+$current = $_POST['current'];
 
 if ($parameters) {
     if ((int)$parameters["send_statistics"] === 1) {
@@ -52,6 +90,14 @@ if ($parameters) {
 
 $name = 'install-' . $_SESSION['CURRENT_VERSION'] . '-' . date('Ymd_His');
 $completeName = _CENTREON_VARLIB_ . '/installs/' . $name;
-@rename(str_replace('step_upgrade', '', realpath(dirname(__FILE__) .'/../')), $completeName);
+$sourceInstallDir = str_replace('step_upgrade', '', realpath(dirname(__FILE__) . '/../'));
+
+try {
+    if (recurseCopy($sourceInstallDir, $completeName)) {
+        recurseRmdir($sourceInstallDir);
+    }
+} catch (Exception $e) {
+    exitUpgradeProcess(1, $current, '', $e->getMessage());
+}
 
 session_destroy();
