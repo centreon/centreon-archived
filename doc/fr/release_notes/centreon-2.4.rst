@@ -1,10 +1,91 @@
+==============
+Centreon 2.4.5
+==============
+
+***************
+Important notes
+***************
+
+Connector
+=========
+
+You can now linked a command to a connector from the connector form in `Configuration` > `Commands` > `Connectors`.
+
+
+Centreon Broker
+===================
+
+Centreon 2.4.x branch is now compatible with Centreon Broker 2.5.x branch.
+Also several options have been added in Centreon Broker configuration form accessible in `Configuration` > `Centreon` > `Configuration` (Below Centreon-Broker label in the left panel).
+Here the new options:
+
+    * "Write timestamp" in `General` tab: To enable or disable timestamp logging in each log line (disable this option is useful with when Centreon-Broker is used with Nagios)
+    * "Write thread id" in `General` tab: To enable or disable thread id logging in each log line
+    * "Write metrics" in `Output` tab with `RRD - RRD file generator`: To enable or disable the update of the performance graph
+    * "Write status" in `Output` tab with `RRD - RRD file generator`: To enable or disable the update of the status graph
+    * "Store performance data in data_bin" in `Output` tab with `Storage - Perfdata Generator (Centreon Storage)`: To enable or disable insertion of performance data in data_bin table
+    * "Insert in index data" in `Output` tab with `Storage - Perfdata Generator (Centreon Storage)`: Allow Centreon-Broker to create entries in index_data table (use with caution)
+
+==============
+Centreon 2.4.4
+==============
+
+***************
+Important notes
+***************
+
+Graphs
+======
+
+It is now possible to set RRD graphs' to "DERIVE" and "ABSOLUTE" type. In order 
+to do so go to `Administration` > `Options` > `CentStorage` > `Manage`, then
+click on the metric you would like to update. In the "More actions" toolbar, you 
+will now see the new data source types.
+
+
+Monitoring consoles
+===================
+
+A new option is available, allowing you to choose the display order of the 
+monitored resources. The new option is available in `Administration` > `Options`, 
+in the `Problem display properties` section.
+
+==============
+Centreon 2.4.1
+==============
+
+***************
+Important notes
+***************
+
+Connectors
+==========
+
+If you are already using the *Centreon Connectors*, please note that the connector
+path is no longer called with user variable *$USER3$*. It is instead in the 
+``Configuration`` > ``Centreon`` > ``Pollers`` > ``Centreon Connector path``. In that regard,
+be sure to fill this field and update the connector command line in ``Configuration`` > 
+``Commands`` > ``Connectors`` by removing the *$USER3$* prefix.
+
+i.e::
+
+    $USER3$/centreon_connector_perl
+
+should become::
+
+    centreon_connector_perl
+
+Once you're done with updating those configurations, you may delete the former *$USER3$*
+as it will be no longer used.
+
+
 ============
 Centreon 2.4
 ============
 
-**********
-What's new
-**********
+***********
+What's new?
+***********
 
 Better integration with Centreon Engine and Centreon Broker
 ===========================================================
@@ -49,7 +130,7 @@ New *autologin* mechanism
 
 A better :ref:`autologin <autologin>` mechanism has been introduced in
 this version. Now using randomly generated keys, it allows you to
-access specific pages without beeing prompted for a username and a
+access specific pages without being prompted for a username and a
 password.
 
 Database indexes verification tool
@@ -107,8 +188,8 @@ Centcore options
 
 Two parameters have been added into the ``Administration`` > ``Options`` > ``Monitoring`` page:
 
-* Enable Perfdata Synchronisation (Centcore)
-* Enable Logs Synchronisation (Centcore)
+* Enable Perfdata Synchronization (Centcore)
+* Enable Logs Synchronization (Centcore)
 
 For performance issues, these options must be disabled if your monitoring system is running
 with Centreon Broker.
@@ -140,4 +221,3 @@ to *Centstorage* as it will soon be replaced by *Centreon Broker*.
 
 See the :ref:`Centreon Broker documentation <centreon-broker:graphic_types>` to learn how you can
 convert your existing plugins.
-
