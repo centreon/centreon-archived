@@ -292,15 +292,15 @@ class CentreonWidget
             $matrix[$row][] = $col;
         }
         ksort($matrix);
-        $rowNb = 0;
+        $rowNb = 0; //current row in the foreach
         foreach ($matrix as $row => $cols) {
             if ($rowNb != $row) {
                 break;
             }
             if (count($cols) < $layout) {
-                sort($cols);
+                sort($cols); // number of used columns in this row
                 for ($i = 0; $i < $layout; $i++) {
-                    if ($cols[$i] != $i) {
+                    if (!isset($cols[$i]) || $cols[$i] != $i) {
                         $newPosition = $i . '_' . $rowNb;
                         break;
                     }

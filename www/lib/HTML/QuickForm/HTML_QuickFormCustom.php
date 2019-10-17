@@ -1,4 +1,22 @@
 <?php
+/*
+ * Copyright 2005 - 2019 Centreon (https://www.centreon.com/)
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ * For more information : contact@centreon.com
+ *
+ */
 
 class HTML_QuickFormCustom extends HTML_QuickForm
 {
@@ -51,6 +69,8 @@ class HTML_QuickFormCustom extends HTML_QuickForm
     {
         if ($elementType == 'radio') { // If element is radio we'll load our custom class type
             $elementType = 'radio_custom';
+        } elseif ($elementType === 'checkbox') {
+            $elementType = 'checkbox_custom';
         }
 
         $parentMethod = [get_parent_class($this), __FUNCTION__];
@@ -246,6 +266,12 @@ class HTML_QuickFormCustom extends HTML_QuickForm
         // Add custom radio element type which will load our own radio HTML class
         if (!isset($GLOBALS['HTML_QUICKFORM_ELEMENT_TYPES']['radio_custom'])) {
             $GLOBALS['HTML_QUICKFORM_ELEMENT_TYPES']['radio_custom'] = 'HTML_QuickForm_radio_Custom';
+        }
+
+        // Add custom checkbox element type which will load our own checkbox HTML class
+        if (!isset($GLOBALS['HTML_QUICKFORM_ELEMENT_TYPES']['checkbox_custom'])) {
+            $GLOBALS['HTML_QUICKFORM_ELEMENT_TYPES']['checkbox'] = 'HTML_QuickForm_checkbox_Custom';
+            $GLOBALS['HTML_QUICKFORM_ELEMENT_TYPES']['checkbox_custom'] = 'HTML_QuickForm_checkbox_Custom';
         }
     }
 }

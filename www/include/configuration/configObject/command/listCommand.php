@@ -40,20 +40,26 @@ if (!isset($centreon)) {
 include_once "./class/centreonUtils.class.php";
 include_once "./include/common/autoNumLimit.php";
 
+$type = filter_var(
+    $_POST['type'] ?? $_GET['type'] ?? $centreon->historySearch[$url]['type'] ?? null,
+    FILTER_VALIDATE_INT
+);
+
 $search = filter_var(
-    $_POST['searchC'] ?? $_GET['searchC'] ?? null,
+    $_POST['searchC'] ?? $_GET['searchC'] ?? $centreon->historySearch[$url]['search' . $type] ?? '',
     FILTER_SANITIZE_STRING
 );
 
-$num = filter_var(
-    $_POST['num'] ?? $_GET['num'] ?? $centreon->historyPage[$url] ?? 0,
-    FILTER_VALIDATE_INT
+$displayLocked = filter_var(
+    $_POST['displayLocked'] ?? $_GET['displayLocked'] ?? 'off',
+    FILTER_VALIDATE_BOOLEAN
 );
 
-$type = filter_var(
-    $_POST['type'] ?? $_GET['type'] ?? null,
-    FILTER_VALIDATE_INT
-);
+// keep checkbox state if navigating in pagination
+// this trick is mandatory cause unchecked checkboxes do not post any data
+if (($centreon->historyPage[$url] > 0 || $num !== 0) && isset($centreon->historySearch[$url]['displayLocked'])) {
+    $displayLocked = $centreon->historySearch[$url]['displayLocked'];
+}
 
 // As the four pages of this menu are generated dynamically from the same ihtml and php files,
 // we need to save $type and to overload the $num value set in the pagination.php file to restore each user's filter.
@@ -64,39 +70,28 @@ $savedType = $centreon->historySearch[$url]['type'] ?? null;
 if (isset($type) && $type !== $savedType) {
     //if so, we reset the pagination and save the current $type
     $num = $centreon->historyPage[$url] = 0;
-    $centreon->historySearch[$url]['type'] = $type;
 } else {
     //saving again the pagination filter
     $centreon->historyPage[$url] = $num;
 }
 
-if (isset($_POST['searchC']) || isset($_GET['searchC'])) {
-    //saving user's search field value
-    $centreon->historySearch[$url] = array();
-    // the four pages have the same $url, so we need to distinguish each page using its $type,
-    // and to save the four search filters.
-    $centreon->historySearch[$url]['search' . $type] = $search;
-} else {
-    //restoring user's search field value
-    $search = $centreon->historySearch[$url]['search' . $type] ?? null;
-}
+// store filters in session
+$centreon->historySearch[$url] = [
+    'search' . $type => $search,
+    'type' => $type,
+    'displayLocked' => $displayLocked
+];
 
-$type_str = $type ? " AND `command_type` = " . $type : "";
+// Locked filter
+$lockedFilter = $displayLocked ? "" : "AND command_locked = 0 ";
+
+// Type filter
+$typeFilter = $type ? "AND `command_type` = " . $type . " " : "";
 $search = tidySearchKey($search, $advanced_search);
 
-//List of elements - Depends on different criteria
-if (isset($search) && $search) {
-    $rq = "SELECT SQL_CALC_FOUND_ROWS `command_id`, `command_name`, `command_line`, `command_type`, " .
-        "`command_activate` FROM `command` WHERE `command_name` LIKE '%" . $search . "%' " .
-        $type_str . " ORDER BY `command_name` LIMIT " . $num * $limit . ", " . $limit;
-} elseif ($type) {
-    $rq = "SELECT SQL_CALC_FOUND_ROWS `command_id`, `command_name`, `command_line`, `command_type`, " .
-        "`command_activate` FROM `command` WHERE `command_type` = '" . $type .
-        "' ORDER BY command_name LIMIT " . $num * $limit . ", " . $limit;
-} else {
-    $rq = "SELECT SQL_CALC_FOUND_ROWS `command_id`, `command_name`, `command_line`, `command_type`, " .
-        "`command_activate` FROM `command` ORDER BY `command_name` LIMIT " . $num * $limit . ", " . $limit;
-}
+$rq = "SELECT SQL_CALC_FOUND_ROWS `command_id`, `command_name`, `command_line`, `command_type`, " .
+    "`command_activate` FROM `command` WHERE `command_name` LIKE '%" . $search . "%' " .
+    $typeFilter . $lockedFilter . " ORDER BY `command_name` LIMIT " . $num * $limit . ", " . $limit;
 
 $dbResult = $pearDB->query($rq);
 $rows = $pearDB->query("SELECT FOUND_ROWS()")->fetchColumn();
@@ -121,10 +116,17 @@ $tpl->assign("headerMenu_huse", _("Host Uses"));
 $tpl->assign("headerMenu_suse", _("Services Uses"));
 $tpl->assign("headerMenu_options", _("Options"));
 
-$form = new HTML_QuickForm('form', 'POST', "?p=" . $p);
+$form = new HTML_QuickFormCustom('form', 'POST', "?p=" . $p);
 
 // Different style between each lines
 $style = "one";
+
+$addrType = $type ? "&type=" . $type : "";
+$attrBtnSuccess = array(
+    "class" => "btc bt_success",
+    "onClick" => "window.history.replaceState('', '', '?p=" . $p . $addrType. "');"
+);
+$form->addElement('submit', 'Search', _("Search"), $attrBtnSuccess);
 
 // Define command Type table
 $commandType = array(
@@ -250,5 +252,5 @@ $tpl->assign('form', $renderer->toArray());
 $tpl->assign('limit', $limit);
 $tpl->assign('type', $type);
 $tpl->assign('searchC', $search);
-
+$tpl->assign("displayLocked", $displayLocked);
 $tpl->display("listCommand.ihtml");

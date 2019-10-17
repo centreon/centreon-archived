@@ -70,9 +70,7 @@ class MassiveChangeHostsContext extends CentreonContext
         'active_checks_enabled' => 2,
         'passive_checks_enabled' => 0,
         'notifications_enabled' => 1,
-        'contact_additive_inheritance' => 1,
         'contacts' => 'Guest',
-        'contact_group_additive_inheritance' => 0,
         'contact_groups' => 'Supervisors',
         'update_mode_notifopts' => 1,
         'notify_on_down' => 1,
@@ -149,9 +147,7 @@ class MassiveChangeHostsContext extends CentreonContext
         'active_checks_enabled' => 2,
         'passive_checks_enabled' => 0,
         'notifications_enabled' => 1,
-        'contact_additive_inheritance' => 1,
         'contacts' => 'Guest',
-        'contact_group_additive_inheritance' => 0,
         'contact_groups' => 'Supervisors',
         'notify_on_down' => 1,
         'notify_on_unreachable' => 1,
@@ -220,9 +216,7 @@ class MassiveChangeHostsContext extends CentreonContext
         'active_checks_enabled' => 2,
         'passive_checks_enabled' => 0,
         'notifications_enabled' => 1,
-        'contact_additive_inheritance' => 1,
         'contacts' => 'Guest',
-        'contact_group_additive_inheritance' => 0,
         'contact_groups' => 'Supervisors',
         'notify_on_none' => 0,
         'notify_on_down' => 1,
@@ -299,10 +293,15 @@ class MassiveChangeHostsContext extends CentreonContext
     {
         $this->currentPage = new HostConfigurationListingPage($this);
         $object = $this->currentPage->getEntry($this->host1['name']);
-        $this->assertFind('css', 'input[type="checkbox"][name="select[' . $object['id'] . ']"]')->check();
+        $checkbox = $this->assertFind('css', 'input[type="checkbox"][name="select[' . $object['id'] . ']"]');
+        $this->currentPage->checkCheckbox($checkbox);
         $object = $this->currentPage->getEntry($this->host2['name']);
-        $this->assertFind('css', 'input[type="checkbox"][name="select[' . $object['id'] . ']"]')->check();
+        $checkbox = $this->assertFind('css', 'input[type="checkbox"][name="select[' . $object['id'] . ']"]');
+        $this->currentPage->checkCheckbox($checkbox);
         $this->selectInList('select[name="o1"]', 'Massive Change');
+
+
+
         $this->currentPage = new MassiveChangeHostConfigurationPage($this, false);
         $this->currentPage->setProperties($this->updatedProperties);
         $this->currentPage->save();

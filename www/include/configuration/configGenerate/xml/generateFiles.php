@@ -65,9 +65,8 @@ global $generatePhpErrors;
 $generatePhpErrors = array();
 
 $path = _CENTREON_PATH_ . "www/include/configuration/configGenerate/";
-$nagiosCFGPath = _CENTREON_PATH_ . "filesGeneration/engine/";
-$centreonBrokerPath = _CENTREON_PATH_ . "filesGeneration/broker/";
-$DebugPath = "filesGeneration/engine/";
+$nagiosCFGPath = _CENTREON_CACHEDIR_ . "/config/engine/";
+$centreonBrokerPath = _CENTREON_CACHEDIR_ . "/config/broker/";
 
 chdir(_CENTREON_PATH_ . "www");
 $username = 'unknown';
@@ -96,7 +95,7 @@ try {
     $tabs = array();
     if ($generate) {
         $tabs = $centreon->user->access->getPollerAclConf(array(
-            'fields' => array('id', 'name', 'localhost', 'monitoring_engine'),
+            'fields' => array('id', 'name', 'localhost'),
             'order' => array('name'),
             'keys' => array('id'),
             'conditions' => array('ns_activate' => '1')

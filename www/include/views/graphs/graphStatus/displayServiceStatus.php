@@ -40,7 +40,7 @@ function escape_command($command)
     return preg_replace("/(\\\$|;`)/", "", $command);
 }
 
-    require_once realpath(dirname(__FILE__) . "/../../../../../config/centreon.config.php");
+    require_once realpath(__DIR__ . "/../../../../../config/centreon.config.php");
 
     require_once _CENTREON_PATH_."/www/class/centreonDB.class.php";
     require_once _CENTREON_PATH_."/www/class/centreonSession.class.php";
@@ -123,10 +123,13 @@ if (!$session->rowCount()) {
  */
 
     if (!isset($_GET["host_name"]) && !isset($_GET["service_description"])) {
-        $DBRESULT = $pearDBO->query("SELECT * FROM index_data WHERE `id` = '".$pearDB->escape($_GET["index"])."' LIMIT 1");
+        $DBRESULT = $pearDBO->query("SELECT * FROM index_data
+            WHERE `id` = '" . $pearDB->escape($_GET["index"]) . "' LIMIT 1");
     } else {
         $pearDBO->query("SET NAMES 'utf8'");
-        $DBRESULT = $pearDBO->query("SELECT * FROM index_data WHERE host_name = '".$pearDB->escape($_GET["host_name"])."' AND `service_description` = '".$pearDB->escape($_GET["service_description"])."' LIMIT 1");
+        $DBRESULT = $pearDBO->query("SELECT * FROM index_data
+            WHERE host_name = '" . $pearDB->escape($_GET["host_name"]) . "'
+            AND `service_description` = '" . $pearDB->escape($_GET["service_description"]) . "' LIMIT 1");
     }
 
     $index_data_ODS = $DBRESULT->fetchRow();
@@ -159,7 +162,8 @@ if (!$session->rowCount()) {
         exit();
     }
 
-    $DBRESULT = $pearDB->query("SELECT * FROM giv_graphs_template WHERE graph_id = '".$pearDB->escape($template_id)."' LIMIT 1");
+    $DBRESULT = $pearDB->query("SELECT * FROM giv_graphs_template WHERE graph_id = '" . $pearDB->escape($template_id)
+        . "' LIMIT 1");
     $GraphTemplate = $DBRESULT->fetchRow();
     if (is_null($GraphTemplate)) {
         unset($DBRESULT);
@@ -193,7 +197,8 @@ if (!$session->rowCount()) {
         $GraphTemplate["vertical_label"] = "sds";
     }
 
-    $command_line .= " --interlaced $base --imgformat PNG --width=".$GraphTemplate["width"]." --height=".$GraphTemplate["height"]." ";
+    $command_line .= " --interlaced $base --imgformat PNG --width=" 
+        . $GraphTemplate["width"] . " --height=".$GraphTemplate["height"] ." ";
 
     $sdesc = $index_data_ODS['service_description'];
     $hname = $index_data_ODS['host_name'];
@@ -289,7 +294,11 @@ if (!$session->rowCount()) {
     $command_line = escape_command("$command_line");
 
     if ($centreon->optGen["debug_rrdtool"] == "1") {
-        error_log("[" . date("d/m/Y H:s") ."] RDDTOOL : $command_line \n", 3, $centreon->optGen["debug_path"]."rrdtool.log");
+        error_log(
+            "[" . date("d/m/Y H:s") . "] RDDTOOL : $command_line \n",
+            3,
+            $centreon->optGen["debug_path"]."rrdtool.log"
+        );
     }
 
     $fp = popen($command_line, 'r');

@@ -62,9 +62,7 @@ class ServiceConfigurationContext extends CentreonContext
         'notifications_enabled' => 2,
         'inherits_contacts_groups' => 0,
         'contacts' => 'Guest',
-        'contact_additive_inheritance' => 1,
         'contact_groups' => 'Supervisors',
-        'contact_group_additive_inheritance' => 1,
         'notification_interval' => 23,
         'notify_on_none' => 1,
         'notify_on_warning' => 0,
@@ -124,9 +122,7 @@ class ServiceConfigurationContext extends CentreonContext
         'notifications_enabled' => 2,
         'inherits_contacts_groups' => 0,
         'contacts' => 'Guest',
-        'contact_additive_inheritance' => 1,
         'contact_groups' => 'Supervisors',
-        'contact_group_additive_inheritance' => 1,
         'notification_interval' => 23,
         'notify_on_none' => 1,
         'notify_on_warning' => 0,
@@ -245,9 +241,7 @@ class ServiceConfigurationContext extends CentreonContext
         'notifications_enabled' => 0,
         'inherits_contacts_groups' => 1,
         'contacts' => '',
-        'contact_additive_inheritance' => 0,
         'contact_groups' => '',
-        'contact_group_additive_inheritance' => 0,
         'notification_interval' => 14,
         'notify_on_none' => 0,
         'notify_on_warning' => 1,
@@ -368,7 +362,8 @@ class ServiceConfigurationContext extends CentreonContext
             'service' => $this->initialProperties['description'],
             'host' => $this->initialProperties['hosts']
         ));
-        $this->assertFind('css', 'input[type="checkbox"][name="select[' . $object['id'] . ']"]')->check();
+        $checkbox = $this->assertFind('css', 'input[type="checkbox"][name="select[' . $object['id'] . ']"]');
+        $this->currentPage->checkCheckbox($checkbox);
         $this->setConfirmBox(true);
         $this->selectInList('select[name="o1"]', 'Duplicate');
     }
@@ -416,7 +411,8 @@ class ServiceConfigurationContext extends CentreonContext
             'service' => $this->initialProperties['description'],
             'host' => $this->initialProperties['hosts']
         ));
-        $this->assertFind('css', 'input[type="checkbox"][name="select[' . $object['id'] . ']"]')->check();
+        $checkbox = $this->assertFind('css', 'input[type="checkbox"][name="select[' . $object['id'] . ']"]');
+        $this->currentPage->checkCheckbox($checkbox);
         $this->setConfirmBox(true);
         $this->selectInList('select[name="o1"]', 'Delete');
     }

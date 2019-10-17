@@ -69,7 +69,8 @@ class LdapConfigurationContext extends CentreonContext
         $this->page->save();
         $this->page = new LdapConfigurationListingPage($this);
         $object = $this->page->getEntry($this->configuration_name);
-        $this->assertFind('css', 'input[type="checkbox"][name="select[' . $object['id'] . ']"]')->check();
+        $checkbox = $this->assertFind('css', 'input[type="checkbox"][name="select[' . $object['id'] . ']"]');
+        $this->page->checkCheckbox($checkbox);
         $this->setConfirmBox(true);
         $this->selectInList('select[name="o1"]', 'Delete');
     }

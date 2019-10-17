@@ -73,8 +73,6 @@ $pearDBO = new CentreonDB("centstorage");
 
 $centreonSession = new CentreonSession();
 
-ini_set("session.gc_maxlifetime", "31536000");
-
 CentreonSession::start();
 
 /*
@@ -136,15 +134,14 @@ if (!isset($_SESSION["centreon"])) {
  * Define Oreon var alias
  */
 if (isset($_SESSION["centreon"])) {
-    $centreon = $_SESSION["centreon"];
-    $oreon = $centreon;
+    $oreon = $centreon = $_SESSION["centreon"];
 }
 if (!isset($centreon) || !is_object($centreon)) {
     exit();
 }
 
 /*
- * Init differents elements we need in a lot of pages
+ * Init different elements we need in a lot of pages
  */
 unset($centreon->Nagioscfg);
 $centreon->initNagiosCFG($pearDB);

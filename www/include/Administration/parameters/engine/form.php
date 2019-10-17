@@ -70,9 +70,6 @@ $form->addElement('text', 'nagios_path_plugins', _("Plugins Directory"), $attrsT
 $form->addElement('text', 'interval_length', _("Interval Length"), $attrsText2);
 $form->addElement('text', 'mailer_path_bin', _("Directory + Mailer Binary"), $attrsText);
 
-// Correlation engine
-$form->addElement('text', 'broker_correlator_script', _("Start script for broker daemon"), $attrsText);
-
 // Tactical Overview form
 $limitArray = array();
 for ($i = 10; $i <= 100; $i += 10) {
@@ -102,7 +99,6 @@ $scaleChoices = array(
 );
 $form->addElement('select', 'monitoring_dwt_duration_scale', _("Scale of time"), $scaleChoices);
 
-$form->addElement('hidden', 'monitoring_engine', "CENGINE");
 $form->addElement('hidden', 'gopt_id');
 $redirect = $form->addElement('hidden', 'o');
 $redirect->setValue($o);
@@ -130,10 +126,6 @@ $form->addRule('interval_length', _("This value must be a numerical value."), 'i
  */
 $tpl = new Smarty();
 $tpl = initSmartyTpl($path . "/engine", $tpl);
-
-if (!isset($gopt["monitoring_engine"])) {
-    $gopt["monitoring_engine"] = "CENGINE";
-}
 
 $form->setDefaults($gopt);
 
@@ -182,7 +174,6 @@ $tpl->assign('form', $renderer->toArray());
 $tpl->assign('o', $o);
 $tpl->assign("genOpt_nagios_version", _("Monitoring Engine"));
 $tpl->assign("genOpt_dbLayer", _("Monitoring database layer"));
-$tpl->assign("genOpt_Correlation_script", _("Centreon Broker"));
 $tpl->assign("genOpt_nagios_direstory", _("Engine Directories"));
 $tpl->assign("tacticalOverviewOptions", _("Tactical Overview"));
 $tpl->assign("genOpt_mailer_path", _("Mailer path"));

@@ -1,19 +1,27 @@
-import React, { Component } from "react";
-import PropTypes from "prop-types";
+/* eslint-disable import/no-extraneous-dependencies */
+/* eslint-disable react/require-default-props */
+/* eslint-disable react/default-props-match-prop-types */
+/* eslint-disable jsx-a11y/label-has-for */
+/* eslint-disable jsx-a11y/label-has-associated-control */
+/* eslint-disable react/jsx-filename-extension */
+/* eslint-disable react/prop-types */
+
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import styles from '../../styles/partials/form/_form.scss';
-import fieldHoc from "./hoc";
-import { prepareInputProps } from "./utils";
+import fieldHoc from './hoc';
+import { prepareInputProps } from './utils';
 
 class PasswordInputField extends Component {
   state = {
-    shown: false
+    shown: false,
   };
 
   toggleShowPassword = () => {
     const { shown } = this.state;
     this.setState({
-      shown: !shown
+      shown: !shown,
     });
   };
 
@@ -33,39 +41,43 @@ class PasswordInputField extends Component {
     const { shown } = this.state;
 
     return (
-      <div className={classnames(styles["form-group"], {[styles["has-danger"]]: !!error})}>
+      <div
+        className={classnames(styles['form-group'], {
+          [styles['has-danger']]: !!error,
+        })}
+      >
         <label>
           <span>{label}</span>
-          <span className={classnames(styles["label-option"], styles["required"])}>
-            {topRightLabel ? topRightLabel : null}
+          <span className={classnames(styles['label-option'], styles.required)}>
+            {topRightLabel || null}
           </span>
         </label>
-        <div className={styles["input-group"]}>
+        <div className={styles['input-group']}>
           <input
-            type={shown ? "text" : "password"}
+            type={shown ? 'text' : 'password'}
             placeholder={placeholder}
-            className={classnames(styles["form-control"], styles["password"], {[styles["is-invalid"]]: !!error})}
+            className={classnames(styles['form-control'], styles.password, {
+              [styles['is-invalid']]: !!error,
+            })}
             {...prepareInputProps(rest)}
           />
         </div>
         {error ? (
-          <div className={styles["invalid-feedback"]}>
-            {error}{" "}
-          </div>
+          <div className={styles['invalid-feedback']}>{error}</div>
         ) : null}
       </div>
     );
   }
 }
 
-PasswordInputField.displayName = "PasswordInputField";
+PasswordInputField.displayName = 'PasswordInputField';
 PasswordInputField.defaultProps = {
-  className: styles["form-control"],
+  className: styles['form-control'],
   modifiers: [],
-  renderMeta: null
+  renderMeta: null,
 };
 PasswordInputField.propTypes = {
-  error: PropTypes.element
+  error: PropTypes.element,
 };
 
 export { PasswordInputField };

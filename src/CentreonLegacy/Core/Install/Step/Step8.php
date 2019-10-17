@@ -44,10 +44,12 @@ class Step8 extends AbstractStep
         $template = getTemplate($installDir . '/steps/templates');
 
         $modules = $this->getModules();
+        $widgets = $this->getWidgets();
 
         $template->assign('title', _('Modules installation'));
         $template->assign('step', 8);
         $template->assign('modules', $modules);
+        $template->assign('widgets', $widgets);
         return $template->fetch('content.tpl');
     }
 
@@ -58,5 +60,20 @@ class Step8 extends AbstractStep
         $moduleFactory = new \CentreonLegacy\Core\Module\Factory($this->dependencyInjector, $utils);
         $module = $moduleFactory->newInformation();
         return $module->getList();
+    }
+
+    /**
+     * Get the list of available widgets (installed on the system).
+     * List filled with the content of the config.xml widget files
+     *
+     * @return array
+     */
+    public function getWidgets()
+    {
+        $utilsFactory = new \CentreonLegacy\Core\Utils\Factory($this->dependencyInjector);
+        $utils = $utilsFactory->newUtils();
+        $widgetFactory = new \CentreonLegacy\Core\Widget\Factory($this->dependencyInjector, $utils);
+        $widget = $widgetFactory->newInformation();
+        return $widget->getList();
     }
 }

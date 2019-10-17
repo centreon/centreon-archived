@@ -463,6 +463,11 @@ class CentreonHost extends CentreonObject
         if (($objectId = $this->getObjectId($params[self::ORDER_UNIQUENAME])) != 0) {
             $listParam = explode('|', $params[1]);
             foreach ($listParam as $paramSearch) {
+                if (!$paramString) {
+                    $paramString = $paramSearch;
+                } else {
+                    $paramString = $paramString . $this->delim . $paramSearch;
+                }
                 $field = $paramSearch;
                 if (!in_array($field, $authorizeParam)) {
                     $unknownParam[] = $field;
@@ -543,7 +548,11 @@ class CentreonHost extends CentreonObject
                             $ret = $ret[$field];
                             break;
                     }
-                    echo $paramSearch . ' : ' . $ret . "\n";
+                    if (!$resultString) {
+                        $resultString = $ret;
+                    } else {
+                        $resultString = $resultString . $this->delim . $ret;
+                    }
                 }
             }
         } else {
@@ -553,6 +562,8 @@ class CentreonHost extends CentreonObject
         if (!empty($unknownParam)) {
             throw new CentreonClapiException(self::OBJECT_NOT_FOUND . ":" . implode('|', $unknownParam));
         }
+        echo $paramString . "\n";
+        echo $resultString . "\n";
     }
 
     /**

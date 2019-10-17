@@ -45,7 +45,10 @@ $template = getTemplate('templates');
 
 $title = _('Centreon Upgrade');
 
-if (is_file('../install.conf.php')) {
+if (version_compare(phpversion(), '7.2', '<')) {
+    $status = 1;
+    $content = sprintf("<p class='required'>%s</p>", _('Please update your PHP to 7.2 or upper.'));
+} elseif (is_file('../install.conf.php')) {
     $status = 0;
     $content = sprintf(
         "<p>%s%s</p>",

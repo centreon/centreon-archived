@@ -92,7 +92,9 @@ class NavigationList implements JsonSerializable
      */
     protected function getColor($pageId)
     {
-        return (!empty($this->getNavConfig()[$pageId]['color'])) ? $this->getNavConfig()[$pageId]['color'] : $this->getNavConfig()['default']['color'];
+        return (!empty($this->getNavConfig()[$pageId]['color']))
+            ? $this->getNavConfig()[$pageId]['color']
+            : $this->getNavConfig()['default']['color'];
     }
 
     /**
@@ -103,7 +105,9 @@ class NavigationList implements JsonSerializable
      */
     protected function getIcon($pageId)
     {
-        return (!empty($this->getNavConfig()[$pageId]['icon'])) ? $this->getNavConfig()[$pageId]['icon'] : $this->getNavConfig()['default']['icon'];
+        return (!empty($this->getNavConfig()[$pageId]['icon']))
+            ? $this->getNavConfig()[$pageId]['icon']
+            : $this->getNavConfig()['default']['icon'];
     }
 
     /**
@@ -147,7 +151,8 @@ class NavigationList implements JsonSerializable
                     'icon' => static::getIcon($entity->getTopologyPage()),
                     'children' => [],
                     'options' => $entity->getTopologyUrlOpt(),
-                    'is_react' => (bool)$entity->getIsReact()
+                    'is_react' => (bool)$entity->getIsReact(),
+                    'show' => (bool)$entity->getTopologyShow()
                 ];
             } elseif (preg_match('/^(\d)(\d\d)$/', $entity->getTopologyPage(), $matches)) {
                 $naviList[$matches[1]]['children'][$entity->getTopologyPage()] = [
@@ -156,7 +161,8 @@ class NavigationList implements JsonSerializable
                     'url' => $entity->getTopologyUrl(),
                     'groups' => [],
                     'options' => $entity->getTopologyUrlOpt(),
-                    'is_react' => (bool)$entity->getIsReact()
+                    'is_react' => (bool)$entity->getIsReact(),
+                    'show' => (bool)$entity->getTopologyShow()
                 ];
             } elseif (preg_match('/^(\d)(\d\d)(\d\d)$/', $entity->getTopologyPage(), $matches)) { // level 3
                 $levelTwo = $matches[1] . $matches[2];
@@ -171,19 +177,23 @@ class NavigationList implements JsonSerializable
                         'label' => $entity->getTopologyName(),
                         'url' => $entity->getTopologyUrl(),
                         'options' => $entity->getTopologyUrlOpt(),
-                        'is_react' => (bool)$entity->getIsReact()
+                        'is_react' => (bool)$entity->getIsReact(),
+                        'show' => (bool)$entity->getTopologyShow()
                     ];
 
                     //check if topology has group index
-                    if (!is_null($entity->getTopologyGroup()) && isset($groups[$levelTwo][$entity->getTopologyGroup()])) {
-                        if (!isset($naviList[$matches[1]]['children'][$levelTwo]['groups'][$entity->getTopologyGroup()])) {
+                    if (!is_null($entity->getTopologyGroup())
+                        && isset($groups[$levelTwo][$entity->getTopologyGroup()])) {
+                        if (!isset($naviList[$matches[1]]['children'][$levelTwo]['groups']
+                                [$entity->getTopologyGroup()])) {
                             $naviList[$matches[1]]['children'][$levelTwo]['groups'][$entity->getTopologyGroup()] = [
                                 'label' => $groups[$levelTwo][$entity->getTopologyGroup()]['name'],
                                 'children' => []
                             ];
                         }
                         array_push(
-                            $naviList[$matches[1]]['children'][$levelTwo]['groups'][$entity->getTopologyGroup()]['children'],
+                            $naviList[$matches[1]]['children'][$levelTwo]['groups']
+                                [$entity->getTopologyGroup()]['children'],
                             $levelThree
                         );
                     } else {

@@ -100,14 +100,16 @@ $tpl->assign("headerMenu_options", _("Options"));
 
 $form = new HTML_QuickFormCustom('select_form', 'POST', "?p=" . $p);
 
-/*
- * Different style between each lines
- */
+//Different style between each lines
 $style = "one";
 
-/*
- * Fill a tab with a mutlidimensionnal Array we put in $tpl
- */
+$attrBtnSuccess = array(
+    "class" => "btc bt_success",
+    "onClick" => "window.history.replaceState('', '', '?p=" . $p . "');"
+);
+$form->addElement('submit', 'Search', _("Search"), $attrBtnSuccess);
+
+//Fill a tab with a multidimensionnal Array we put in $tpl
 $yesOrNo = array(null => _("No"), 0 => _("No"), 1 => _("Yes"));
 $elemArr = array();
 for ($i = 0; $compo = $stmt->fetch(); $i++) {

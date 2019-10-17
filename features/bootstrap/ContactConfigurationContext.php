@@ -156,7 +156,8 @@ class ContactConfigurationContext extends CentreonContext
     {
         $this->currentPage = new ContactConfigurationListingPage($this);
         $object = $this->currentPage->getEntry($this->initialProperties['alias']);
-        $this->assertFind('css', 'input[type="checkbox"][name="select[' . $object['id'] . ']"]')->check();
+        $checkbox = $this->assertFind('css', 'input[type="checkbox"][name="select[' . $object['id'] . ']"]');
+        $this->currentPage->checkCheckbox($checkbox);
         $this->setConfirmBox(true);
         $this->selectInList('select[name="o1"]', 'Duplicate');
     }
@@ -206,7 +207,8 @@ class ContactConfigurationContext extends CentreonContext
     {
         $this->currentPage = new ContactConfigurationListingPage($this);
         $object = $this->currentPage->getEntry($this->initialProperties['alias']);
-        $this->assertFind('css', 'input[type="checkbox"][name="select[' . $object['id'] . ']"]')->check();
+        $checkbox = $this->assertFind('css', 'input[type="checkbox"][name="select[' . $object['id'] . ']"]');
+        $this->currentPage->checkCheckbox($checkbox);
         $this->setConfirmBox(true);
         $this->selectInList('select[name="o1"]', 'Delete');
     }

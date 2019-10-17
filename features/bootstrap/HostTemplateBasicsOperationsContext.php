@@ -57,9 +57,7 @@ class HostTemplateBasicsOperationsContext extends CentreonContext
         'active_checks_enabled' => 2,
         'passive_checks_enabled' => 0,
         'notifications_enabled' => 1,
-        'contact_additive_inheritance' => 1,
         'contacts' => 'Guest',
-        'contact_group_additive_inheritance' => 0,
         'contact_groups' => 'Supervisors',
         'notify_on_down' => 1,
         'notify_on_unreachable' => 1,
@@ -123,9 +121,7 @@ class HostTemplateBasicsOperationsContext extends CentreonContext
         'active_checks_enabled' => 2,
         'passive_checks_enabled' => 0,
         'notifications_enabled' => 1,
-        'contact_additive_inheritance' => 1,
         'contacts' => 'Guest',
-        'contact_group_additive_inheritance' => 0,
         'contact_groups' => 'Supervisors',
         'notify_on_down' => 1,
         'notify_on_unreachable' => 1,
@@ -189,9 +185,7 @@ class HostTemplateBasicsOperationsContext extends CentreonContext
         'active_checks_enabled' => 1,
         'passive_checks_enabled' => 1,
         'notifications_enabled' => 0,
-        'contact_additive_inheritance' => 0,
         'contacts' => 'User',
-        'contact_group_additive_inheritance' => 1,
         'contact_groups' => 'Guest',
         'notify_on_down' => 0,
         'notify_on_unreachable' => 0,
@@ -256,9 +250,7 @@ class HostTemplateBasicsOperationsContext extends CentreonContext
         'active_checks_enabled' => 1,
         'passive_checks_enabled' => 1,
         'notifications_enabled' => 0,
-        'contact_additive_inheritance' => 0,
         'contacts' => 'User',
-        'contact_group_additive_inheritance' => 1,
         'contact_groups' => 'Guest',
         'notify_on_down' => 0,
         'notify_on_unreachable' => 0,
@@ -373,7 +365,8 @@ class HostTemplateBasicsOperationsContext extends CentreonContext
     {
         $this->currentPage = new HostTemplateConfigurationListingPage($this);
         $object = $this->currentPage->getEntry($this->initialProperties['name']);
-        $this->assertFind('css', 'input[type="checkbox"][name="select[' . $object['id'] . ']"]')->check();
+        $checkbox = $this->assertFind('css', 'input[type="checkbox"][name="select[' . $object['id'] . ']"]');
+        $this->currentPage->checkCheckbox($checkbox);
         $this->setConfirmBox(true);
         $this->selectInList('select[name="o1"]', 'Duplicate');
     }
@@ -418,7 +411,8 @@ class HostTemplateBasicsOperationsContext extends CentreonContext
     {
         $this->currentPage = new HostTemplateConfigurationListingPage($this);
         $object = $this->currentPage->getEntry($this->initialProperties['name']);
-        $this->assertFind('css', 'input[type="checkbox"][name="select[' . $object['id'] . ']"]')->check();
+        $checkbox = $this->assertFind('css', 'input[type="checkbox"][name="select[' . $object['id'] . ']"]');
+        $this->currentPage->checkCheckbox($checkbox);
         $this->setConfirmBox(true);
         $this->selectInList('select[name="o1"]', 'Delete');
     }

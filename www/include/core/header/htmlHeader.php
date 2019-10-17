@@ -37,6 +37,11 @@ if (!isset($centreon)) {
     exit();
 }
 
+// generate version URI parameter to clean css cache at each new version
+$versionParam = isset($centreon->informations) && isset($centreon->informations['version'])
+    ? '?version=' . $centreon->informations['version']
+    : '';
+
 print "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
 
 ?>
@@ -53,9 +58,9 @@ print "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
     <link href="./Themes/Centreon-2/MobileMenu/css/menu.css" rel="stylesheet" type="text/css"/>
     <?php endif; ?>
     <link href="./include/common/javascript/jquery/plugins/jpaginator/jPaginator.css" rel="stylesheet" type="text/css"/>
-    <link href="./Themes/Centreon-2/style.css" rel="stylesheet" type="text/css"/>
-    <link href="./Themes/Centreon-2/centreon-loading.css" rel="stylesheet" type="text/css"/>
-    <link href="./Themes/Centreon-2/responsive-style.css" rel="stylesheet" type="text/css"/>
+    <link href="./Themes/Centreon-2/style.css<?php echo $versionParam; ?>" rel="stylesheet" type="text/css"/>
+    <link href="./Themes/Centreon-2/centreon-loading.css<?php echo $versionParam; ?>" rel="stylesheet" type="text/css"/>
+    <link href="./Themes/Centreon-2/responsive-style.css<?php echo $versionParam; ?>" rel="stylesheet" type="text/css"/>
     <link href="./Themes/Centreon-2/<?php echo $colorfile; ?>" rel="stylesheet" type="text/css"/>
     <link href="./include/common/javascript/jquery/plugins/timepicker/jquery.ui.timepicker.css" rel="stylesheet"
           type="text/css" media="screen"/>

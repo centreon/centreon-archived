@@ -79,9 +79,13 @@ if (isset($hName) && isset($sName)) {
     header("Content-disposition: filename=".$index.".xml");
 }
 
-$DBRESULT = $pearDBO->query("SELECT metric_id FROM metrics, index_data WHERE metrics.index_id = index_data.id AND id = '$index' ORDER BY metric_name");
+$DBRESULT = $pearDBO->query("SELECT metric_id FROM metrics, index_data
+    WHERE metrics.index_id = index_data.id AND id = '$index' ORDER BY metric_name");
 while ($index_data = $DBRESULT->fetchRow()) {
-    $DBRESULT2 = $pearDBO->query("SELECT ctime,value FROM data_bin WHERE id_metric = '".$index_data["metric_id"]."' AND ctime >= '".htmlentities($_GET["start"], ENT_QUOTES, "UTF-8")."' AND ctime < '".htmlentities($_GET["end"], ENT_QUOTES, "UTF-8")."'");
+    $DBRESULT2 = $pearDBO->query("SELECT ctime,value FROM data_bin
+        WHERE id_metric = '".$index_data["metric_id"]."'
+        AND ctime >= '".htmlentities($_GET["start"], ENT_QUOTES, "UTF-8")."'
+        AND ctime < '".htmlentities($_GET["end"], ENT_QUOTES, "UTF-8")."'");
     while ($data = $DBRESULT2->fetchRow()) {
         if (!isset($datas[$data["ctime"]])) {
             $datas[$data["ctime"]] = array();

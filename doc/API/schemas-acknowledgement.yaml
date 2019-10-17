@@ -1,0 +1,87 @@
+Acknowledgement.Host:
+  type: object
+  properties:
+    id:
+      type: integer
+      format: int64
+      description: Unique acknowledgement id
+    author_id:
+      type: integer
+      format: int64
+      description: Unique id of the contact who requested an acknowledgement
+    comment:
+      type: string
+      description: Short description of the acknowledgement
+    deletion_time:
+      type: string
+      format: date-time
+      description: Date of the request for cancellation of the acknowledgement (ISO8601)
+    entry_time:
+      type: string
+      format: date-time
+      description: Date of the request for acknowledgement (ISO8601)
+    host_id:
+      type: integer
+      format: int64
+      description: Unique id of the host to acknowledge
+    poller_id:
+      type: integer
+      format: int64
+      description:
+    is_notify_contacts:
+      type: boolean
+      description: Indicates whether notification is send to the contacts linked to the host or service
+    is_persistent_comment:
+      type: boolean
+      description: Indicates whether acknowledgement is maintained in the case of a restart of the scheduler
+    is_sticky:
+      type: boolean
+      description: Indicates whether acknowledgement is maintained in the case of a change of status
+    state:
+      type: integer
+      description: |
+        State type
+         * `1` - WARNING
+         * `2` - CRITICAL
+         * `3` - UNKNOWN
+Acknowledgement.Service:
+  allOf:
+    - $ref: '#/Acknowledgement.Host'
+    - type: object
+      properties:
+        host_id:
+          type: integer
+          format: int64
+          description: Unique id of the host linked to the service
+        service_id:
+          type: integer
+          format: int64
+          description: Unique id of the service to acknowledge
+Acknowledgement.Host.Add:
+  type: object
+  properties:
+    comment:
+      type: string
+      description: Short description of the acknowledgement
+    host_id:
+      type: integer
+      format: int64
+      description: Unique id of the host
+    is_notify_contacts:
+      type: boolean
+      description: Indicates whether notification is send to the contacts linked to the host or service
+    is_persistent_comment:
+      type: boolean
+      description: Indicates whether acknowledgement is maintained in the case of a restart of the scheduler
+    is_sticky:
+      type: boolean
+      description: Indicates whether acknowledgement is maintained in the case of a change of status
+Acknowledgement.Service.Add:
+  allOf:
+    - $ref: '#/Acknowledgement.Host.Add'
+    - type: object
+      properties:
+        service_id:
+          type: integer
+          format: int64
+          description: Unique id of the service to acknowledge

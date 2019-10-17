@@ -101,6 +101,8 @@ You may edit the following parameters:
 ==================================== =================================================================================
 Parameter	                     Description
 ==================================== =================================================================================
+geo_coords	                     Geo coordinates
+
 2d_coords	                     2D coordinates (used by statusmap)
 
 3d_coords	                     3D coordinates (used by statusmap)
@@ -197,11 +199,13 @@ Getparam
 In order to get specific parameters on a host configuration, use the **GETPARAM** action::
 
   [root@centreon ~]# ./centreon -u admin -p centreon -o HOST -a getparam -v "test;alias"
-  alias : test
-  [root@centreon ~]# ./centreon -u admin -p centreon -o HOST -a setparam -v "test;alias|alia|timezone"
-  alias : test
-  timezone : Europe/Berlin
+  alias
+  test
+  [root@centreon ~]# ./centreon -u admin -p centreon -o HOST -a getparam -v "test;alias|alia|timezone"
   Object not found:alia
+  [root@centreon ~]# ./centreon -u admin -p centreon -o HOST -a getparam -v "test;alias|address|timezone"
+  alias;address;timezone
+  test;192.168.56.101;Europe/Berlin
 
 You may edit the following parameters:
 
@@ -312,7 +316,7 @@ In order to set the instance from which a host will be monitored, use the **SETI
   [root@centreon ~]# ./centreon -u admin -p centreon -o HOST -a setinstance -v "Centreon-Server;Poller 1"
 
 Showinstance
------------
+------------
 
 To determine the instance from which a host will be monitored, use the **SHOWINSTANCE** action::
 

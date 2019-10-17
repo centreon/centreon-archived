@@ -244,6 +244,7 @@ CREATE TABLE `auth_ressource` (
   `ar_description` varchar(255) NOT NULL DEFAULT 'Default description',
   `ar_type` varchar(50) NOT NULL DEFAULT 'ldap',
   `ar_enable` enum('0','1') DEFAULT '0',
+  `ar_sync_base_date` int(11) DEFAULT 0,
   PRIMARY KEY (`ar_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -733,6 +734,8 @@ CREATE TABLE `contact` (
   `default_page` int(11) DEFAULT NULL,
   `contact_charset` varchar(255) DEFAULT NULL,
   `contact_register` tinyint(6) NOT NULL DEFAULT '1',
+  `contact_ldap_last_sync` int(11) NOT NULL DEFAULT 0,
+  `contact_ldap_required_sync` enum('0','1') NOT NULL DEFAULT '0',
   PRIMARY KEY (`contact_id`),
   KEY `name_index` (`contact_name`),
   KEY `alias_index` (`contact_alias`),
@@ -1613,12 +1616,14 @@ CREATE TABLE `nagios_server` (
   `ns_ip_address` varchar(255) DEFAULT NULL,
   `ns_activate` enum('1','0') DEFAULT '1',
   `ns_status` enum('0','1','2','3','4') DEFAULT '0',
-  `init_script` varchar(255) DEFAULT NULL,
-  `init_system` varchar(255) DEFAULT 'systemv',
-  `monitoring_engine` varchar(20) DEFAULT NULL,
+  `engine_start_command` varchar(255) DEFAULT 'service centengine start',
+  `engine_stop_command` varchar(255) DEFAULT 'service centengine stop',
+  `engine_restart_command` varchar(255) DEFAULT 'service centengine restart',
+  `engine_reload_command` varchar(255) DEFAULT 'service centengine reload',
   `nagios_bin` varchar(255) DEFAULT NULL,
   `nagiostats_bin` varchar(255) DEFAULT NULL,
   `nagios_perfdata` varchar(255) DEFAULT NULL,
+  `broker_reload_command` varchar(255) DEFAULT 'service cbd reload',
   `centreonbroker_cfg_path` varchar(255) DEFAULT NULL,
   `centreonbroker_module_path` varchar(255) DEFAULT NULL,
   `centreonconnector_path` varchar(255) DEFAULT NULL,
@@ -1630,6 +1635,7 @@ CREATE TABLE `nagios_server` (
   `engine_version` varchar(255) DEFAULT NULL,
   `centreonbroker_logs_path` VARCHAR(255),
   `remote_id` int(11) NULL,
+  `remote_server_centcore_ssh_proxy` enum('0','1') NOT NULL DEFAULT '1',
   PRIMARY KEY (`id`),
   CONSTRAINT `nagios_server_remote_id_id` FOREIGN KEY (`remote_id`) REFERENCES `nagios_server` (`id`) ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -1651,7 +1657,7 @@ CREATE TABLE `ns_host_relation` (
 CREATE TABLE `ods_view_details` (
   `dv_id` int(11) NOT NULL AUTO_INCREMENT,
   `index_id` int(11) DEFAULT NULL,
-  `metric_id` varchar(12) DEFAULT NULL,
+  `metric_id` int(11) DEFAULT NULL,
   `rnd_color` varchar(7) DEFAULT NULL,
   `contact_id` int(11) DEFAULT NULL,
   `all_user` enum('0','1') DEFAULT NULL,
@@ -2292,6 +2298,12 @@ CREATE TABLE IF NOT EXISTS `remote_servers` (
   `no_proxy` enum('0','1') NOT NULL DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+-- Create rs_poller_relation for the additional relationship between poller and remote servers
+CREATE TABLE IF NOT EXISTS `rs_poller_relation` (
+  `remote_server_id` int(11) NOT NULL,
+  `poller_server_id` int(11) NOT NULL,
+  KEY `remote_server_id` (`remote_server_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Relation Table For centreon pollers and remote servers';
 
 -- Create tasks table
 CREATE TABLE IF NOT EXISTS `task` (

@@ -60,6 +60,7 @@ $patterns = array(
     '/--CONFDB--/',
     '/--STORAGEDB--/',
     '/--CENTREONDIR--/',
+    '/--CENTREON_CACHEDIR--/',
     '/--DBPORT--/',
     '/--INSTANCEMODE--/',
     '/--CENTREON_VARLIB--/'
@@ -72,6 +73,7 @@ $replacements = array(
     $parameters['db_configuration'],
     $parameters['db_storage'],
     $configuration['centreon_dir'],
+    $configuration['centreon_cachedir'],
     $parameters['port'],
     "central",
     $configuration['centreon_varlib']

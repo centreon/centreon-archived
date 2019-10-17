@@ -14,52 +14,77 @@ CentOS
 Most CentOS users will find easier to install Centreon Web by using
 :ref:`packages provided by Centreon <install_from_packages>`.
 
-CentOS and RHEL environments do not possess as standard on archives all the
-dependencies necessary for the installation of Centreon. You should add the
-*RPM Forge* and *Software Collections* repositories.
+Redhat Software Collections Repository
+--------------------------------------
 
-el7 system: ::
+To install Centreon you will need to set up the official software collections repository supported by Redhat.
 
-    $ wget http://repository.it4i.cz/mirrors/repoforge/redhat/el7/en/x86_64/rpmforge/RPMS/rpmforge-release-0.5.3-1.el7.rf.x86_64.rpm
-    $ wget https://repository.it4i.cz/mirrors/repoforge/RPM-GPG-KEY.dag.txt
+.. note::
+    Software collections are required for installing PHP 7 and associated libraries (Centreon requirement).
 
+Install the software collections repository using this command::
 
-Use your favorite text editor and delete the first line of the RPM-GPG-KEY.dag.txt
-file. The first line should contain: ::
+   # yum install centos-release-scl
 
-    "-----BEGIN PGP PUBLIC KEY BLOCK-----"
-
-Then perform the following commands: ::
-
-    $ rpm --import RPM-GPG-KEY.dag.txt
-    $ rpm -Uvh rpmforge-release-0.5.3-1.el7.rf.x86_64.rpm
-    $ yum install centos-release-scl
+The repository is now installed.
 
 You can now install the necessary prerequisites::
 
     $ yum update
-    $ yum upgrade
-    $ yum install httpd24-httpd gd fontconfig-devel libjpeg-devel libpng-devel gd-devel perl-GD perl-DateTime \
-        openssl-devel perl-DBD-MySQL mysql-server mysql-devel rh-php72-php rh-php72-php-mysql rh-php72-php-gd \
-        rh-php72-php-ldap rh-php72-php-xml rh-php72-php-mbstring rh-php72-php-snmp \
-        perl-Config-IniFiles perl-DBI perl-DBD-MySQL rrdtool perl-rrdtool perl-Crypt-DES perl-Digest-SHA1 \
-        perl-Digest-HMAC net-snmp-utils perl-Socket6 perl-IO-Socket-INET6 net-snmp net-snmp-libs \
-        dmidecode lm_sensors perl-Net-SNMP net-snmp-perl fping cpp gcc gcc-c++ libstdc++ glib2-devel \
-        rh-php72-php-pear nagios-plugins
+    $ yum install -y \
+        rh-php72-php-zip \
+        rh-php72-php-xml \
+        rh-php72-php-fpm \
+        rh-php72-php-process \
+        rh-php72-php-common \
+        rh-php72-php-pdo \
+        rh-php72-php-intl \
+        rh-php72-php-pear \
+        rh-php72-php-json \
+        rh-php72-php-mysqlnd \
+        rh-php72-php-ldap \
+        rh-php72-php-gd \
+        rh-php72-php-cli \
+        rh-php72-php-mbstring \
+        rh-php72-php-snmp \
+        perl-DBD-MySQL \
+        perl-Sys-Syslog \
+        httpd24-httpd \
+        perl-DBI \
+        perl-DBD-MySQL \
+        rrdtool \
+        perl-rrdtool \
+        perl-Crypt-DES \
+        perl-Digest-SHA1 \
+        perl-Digest-HMAC \
+        net-snmp-utils \
+        perl-Socket6 \
+        perl-IO-Socket-INET6 \
+        net-snmp \
+        net-snmp-libs \
+        dmidecode \
+        lm_sensors \
+        net-snmp-perl \
+        fping \
+        cpp \
+        gcc \
+        gcc-c++ \
+        libstdc++ \
+        glib2-devel
 
 Additional commands are necessary to configure the environment correctly: ::
 
     $ usermod -U apache
-    $ pear channel-update pear.php.net
+    $ /opt/rh/rh-php72/root/bin/pear channel-update pear.php.net
 
 If you can’t access the Internet directly but have to pass via a proxy,
 perform the following command: ::
 
-    $ pear config-set http_proxy http://my_proxy.com:port
+    $ /opt/rh/rh-php72/root/bin/pear config-set http_proxy http://my_proxy.com:port
 
 Then execute::
 
-    $ pear upgrade-all
+    $ /opt/rh/rh-php72/root/bin/pear upgrade-all
 
 Debian Stretch / Ubuntu 18.04
 =============================
@@ -67,7 +92,7 @@ Debian Stretch / Ubuntu 18.04
 Add the php 7.2 repository:
 For Debian Stretch: ::
 
-      $ apt-get install apt-transport-https lsb-release ca-certificates
+      $ apt-get install wget apt-transport-https lsb-release ca-certificates
       $ wget -O /etc/apt/trusted.gpg.d/php.gpg https://packages.sury.org/php/apt.gpg
       $ echo "deb https://packages.sury.org/php/ $(lsb_release -sc) main" >> /etc/apt/sources.list.d/php.list
       $ apt-get update
@@ -98,7 +123,7 @@ Activate the modules: ::
 Additional commands are necessary to configure the environment correctly: ::
 
     $ groupadd -g 6000 centreon
-    $ useradd -u 6000 -g centreon -m -r -d /var/lib/centreon -c "Centreon Admin" -s /bin/bash centreon
+    $ useradd -u 6000 -g centreon -m -r -d /var/lib/centreon -c "Centreon Admin" -s /bin/sh centreon
 
 To finish, you should install SNMP MIBs. Because of a license problem the MIB files
 are not available by default in Debian. To add them, change the /etc/apt/sources.list
@@ -770,10 +795,14 @@ and replace **enforcing** by **disabled**: ::
 
 After saving the file, please reboot your operating system to apply the changes.
 
-PHP timezone should be set: go to `/etc/php.d` directory and create a file named `php-timezone.ini`
-which contains the following line: ::
+Timezone and mandatory PHP parameters have to be set: go to `/etc/php/7.2/cli/conf.d` or `/etc/php/7.2/apache2/conf.d`
+directory and create a file named `centreon.ini`
+which contains the following lines: ::
 
     date.timezone = Europe/Paris
+    max_execution_time = 300
+    session.use_strict_mode = 1
+    session.gc_maxlifetime = 7200
 
 After saving the file, please don't forget to restart apache server.
 

@@ -202,6 +202,7 @@ class CentreonTopCounter extends CentreonWebService
         $locale = $this->centreon->user->lang === 'browser'
             ? null
             : $this->centreon->user->lang;
+        $autoLoginKey = null;
 
         if (isset($_SESSION['disable_sound'])) {
             $this->soundNotificationsEnabled = !$_SESSION['disable_sound'];
@@ -209,19 +210,53 @@ class CentreonTopCounter extends CentreonWebService
             $this->soundNotificationsEnabled = true;
         }
 
-        /* Get autologinkey */
-        $query = 'SELECT contact_autologin_key FROM contact WHERE contact_id = ' . (int)$this->centreon->user->user_id;
-
+        // Is the autologin feature enabled ?
         try {
-            $res = $this->pearDB->query($query);
+            $res = $this->pearDB->query(
+                'SELECT value FROM options WHERE options.key = "enable_autologin"'
+            );
         } catch (\Exception $e) {
             throw new \RestInternalServerErrorException('Error getting the user.');
         }
 
-        if ($res->rowCount() === 0) {
-            throw new \RestUnauthorizedException('User does not exists.');
+        $rowEnableShortcut = $res->fetch();
+
+        // Do we need to display the autologin shortcut ?
+        try {
+            $res = $this->pearDB->query(
+                'SELECT value FROM options WHERE options.key = "display_autologin_shortcut"'
+            );
+        } catch (\Exception $e) {
+            throw new \RestInternalServerErrorException('Error getting the user.');
         }
-        $row = $res->fetch();
+
+        $rowEnableAutoLogin = $res->fetch();
+
+        // If the autologin feature is enabled then fetch the autologin key
+        // And display the shortcut if the option is enabled
+        if (isset($rowEnableAutoLogin['value'])
+            && isset($rowEnableShortcut['value'])
+            && $rowEnableAutoLogin['value'] === '1'
+            && $rowEnableShortcut['value'] === '1'
+        ) {
+            // Get autologinkey
+            try {
+                $res = $this->pearDB->prepare(
+                    'SELECT contact_autologin_key FROM contact WHERE contact_id = :userId'
+                );
+                $res->bindValue(':userId',  (int) $this->centreon->user->user_id, \PDO::PARAM_INT);
+                $res->execute();
+            } catch (\Exception $e) {
+                throw new \RestInternalServerErrorException('Error getting the user.');
+            }
+
+            if ($res->rowCount() === 0) {
+                throw new \RestUnauthorizedException('User does not exist.');
+            }
+
+            $row = $res->fetch();
+            $autoLoginKey = $row['contact_autologin_key'] ?? null;
+        }
 
         return array(
             'userId' => $this->centreon->user->user_id,
@@ -230,7 +265,7 @@ class CentreonTopCounter extends CentreonWebService
             'locale' => $locale,
             'timezone' => $this->centreon->user->gmt,
             'hasAccessToProfile' => $this->hasAccessToProfile,
-            'autologinkey' => $row['contact_autologin_key'],
+            'autologinkey' => $autoLoginKey,
             'soundNotificationsEnabled' => $this->soundNotificationsEnabled
         );
     }

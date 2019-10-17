@@ -1,10 +1,15 @@
-import React, { Component } from "react";
-import Form from "../../components/forms/poller/PollerFormStepOne";
-import { setPollerWizard } from "../../redux/actions/pollerWizardActions";
-import ProgressBar from "../../components/progressBar";
-import routeMap from "../../route-maps/route-map";
+/* eslint-disable react/jsx-no-bind */
+/* eslint-disable react/jsx-filename-extension */
+/* eslint-disable react/prop-types */
+/* eslint-disable no-shadow */
+/* eslint-disable react/no-unused-state */
 
-import { connect } from "react-redux";
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import Form from '../../components/forms/poller/PollerFormStepOne';
+import { setPollerWizard } from '../../redux/actions/pollerWizardActions';
+import ProgressBar from '../../components/progressBar';
+import routeMap from '../../route-maps/route-map';
 
 class PollerStepOneRoute extends Component {
   links = [
@@ -12,18 +17,18 @@ class PollerStepOneRoute extends Component {
       active: true,
       prevActive: true,
       number: 1,
-      path: routeMap.serverConfigurationWizard
+      path: routeMap.serverConfigurationWizard,
     },
     { active: true, number: 2, path: routeMap.pollerStep1 },
     { active: false, number: 3 },
-    { active: false, number: 4 }
+    { active: false, number: 4 },
   ];
 
   state = {
-    error: null
+    error: null,
   };
 
-  handleSubmit = data => {
+  handleSubmit = (data) => {
     const { history, setPollerWizard } = this.props;
     setPollerWizard(data);
     history.push(routeMap.pollerStep2);
@@ -34,20 +39,20 @@ class PollerStepOneRoute extends Component {
     return (
       <div>
         <ProgressBar links={links} />
-        <Form
-          onSubmit={this.handleSubmit.bind(this)}
-          initialValues={{}}
-        />
+        <Form onSubmit={this.handleSubmit.bind(this)} initialValues={{}} />
       </div>
     );
   }
 }
 
 const mapStateToProps = ({ pollerForm }) => ({
-  pollerData: pollerForm
+  pollerData: pollerForm,
 });
 
 const mapDispatchToProps = {
-  setPollerWizard
+  setPollerWizard,
 };
-export default connect(mapStateToProps, mapDispatchToProps)(PollerStepOneRoute);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(PollerStepOneRoute);

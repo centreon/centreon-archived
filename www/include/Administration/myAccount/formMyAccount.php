@@ -102,13 +102,13 @@ if ($cct["contact_auth_type"] != 'ldap') {
         'password',
         'contact_passwd',
         _("Password"),
-        array("size" => "30", "autocomplete" => "off", "id" => "passwd1", "onFocus" => "resetPwdType(this);")
+        array("size" => "30", "autocomplete" => "new-password", "id" => "passwd1", "onFocus" => "resetPwdType(this);")
     );
     $form->addElement(
         'password',
         'contact_passwd2',
         _("Confirm Password"),
-        array("size" => "30", "autocomplete" => "off", "id" => "passwd2", "onFocus" => "resetPwdType(this);")
+        array("size" => "30", "autocomplete" => "new-password", "id" => "passwd2", "onFocus" => "resetPwdType(this);")
     );
     $form->addElement(
         'button',
@@ -337,6 +337,10 @@ $tpl = new Smarty();
 $tpl = initSmartyTpl($path, $tpl);
 
 $form->setDefaults($defaultFeatures);
+
+// remove illegal chars in data sent by the user
+$cct['contact_name'] = CentreonUtils::escapeSecure($cct['contact_name'], CentreonUtils::ESCAPE_ILLEGAL_CHARS);
+$cct['contact_alias'] = CentreonUtils::escapeSecure($cct['contact_alias'], CentreonUtils::ESCAPE_ILLEGAL_CHARS);
 
 // Modify a contact information
 if ($o == "c") {

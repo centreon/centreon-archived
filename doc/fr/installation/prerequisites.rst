@@ -24,7 +24,8 @@ paquets nécessaires à l'installation.
 Si vous préférez utiliser **Red Hat OS** vous devez installer une **version 7**
 du système puis y installer les rpms disponible dans nos dépôts de téléchargement.
 
-Enfin, vous pouvez utiliser une autre distribution GNU/Linux mais l'installation de la plate-forme
+Les utilisateurs Open Source, sans contrat de support, peuvent utiliser une autre distribution GNU/Linux.
+L'installation de la plate-forme sera plus complexe à partir des fichiers sources de chaque composant.
 sera plus complexe à partir des fichiers sources de chaque composant.
 
 .. note::
@@ -38,9 +39,9 @@ SGBD
 +----------+------------+
 | Logiciel | Version    |
 +==========+============+
-| MariaDB  | >= 10.1.29 |
+| MariaDB  | = 10.2.x   |
 +----------+------------+
-| MySQL    | >= 5.6.16  |
+| MySQL    | = 5.6.x    |
 +----------+------------+
 
 Dépendances logicielles

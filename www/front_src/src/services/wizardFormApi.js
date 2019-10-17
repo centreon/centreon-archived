@@ -1,15 +1,17 @@
-import axios from "axios";
+/* eslint-disable import/prefer-default-export */
+
+import axios from 'axios';
 
 const wizardFormApi =
-  "./api/internal.php?object=centreon_configuration_remote&action=linkCentreonRemoteServer";
+  './api/internal.php?object=centreon_configuration_remote&action=linkCentreonRemoteServer';
 
 export function getWizardFormData(callback) {
   axios
     .get(wizardFormApi)
-    .then(res => {
+    .then((res) => {
       callback(res);
     })
-    .catch(err => {
+    .catch((err) => {
       throw err;
     });
 }

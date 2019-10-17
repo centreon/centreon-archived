@@ -16,8 +16,15 @@
     </tr>
 	<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_directory">{$form.oreon_path.label}</td><td class="FormRowValue">{$form.oreon_path.html}</td></tr>
 	<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="tip_centreon_web_directory">{$form.oreon_web_path.label}</td><td class="FormRowValue">{$form.oreon_web_path.html}</td></tr>
- 	
- 	<tr class="list_lvl_1">
+
+    <tr class="list_lvl_1">
+        <td class="ListColLvl1_name" colspan="2">
+            <h4>{$notification}</h4>
+        </td>
+    </tr>
+    <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_notification_inheritance">{$form.inheritance_mode.label}</td><td class="FormRowValue">{$form.inheritance_mode.html}</td></tr>
+
+    <tr class="list_lvl_1">
       <td class="ListColLvl1_name" colspan="2">
         <h4>{$genOpt_max_page_size}</h4>
       </td>
@@ -95,6 +102,21 @@
     <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="sso_header_username">{$form.sso_header_username.label}</td><td class="FormRowValue">{$form.sso_header_username.html}</td></tr>
     <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="sso_username_pattern">{$form.sso_username_pattern.label}</td><td class="FormRowValue">{$form.sso_username_pattern.html}</td></tr>
     <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="sso_username_replace">{$form.sso_username_replace.label}</td><td class="FormRowValue">{$form.sso_username_replace.html}</td></tr>
+
+    <tr class="list_lvl_1">
+      <td class="ListColLvl1_name" colspan="2">
+        <h4>{$genOpt_keycloak}</h4>
+      </td>
+    </tr>
+    <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="keycloak_enable">{$form.keycloak_enable.label}</td><td class="FormRowValue">{$form.keycloak_enable.html}</td></tr>
+    <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="keycloak_mode">{$form.keycloak_mode.label}</td><td class="FormRowValue">{$form.keycloak_mode.html}</td></tr>
+    <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="keycloak_trusted_clients">{$form.keycloak_trusted_clients.label}</td><td class="FormRowValue">{$form.keycloak_trusted_clients.html}</td></tr>
+    <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="keycloak_blacklist_clients">{$form.keycloak_blacklist_clients.label}</td><td class="FormRowValue">{$form.keycloak_blacklist_clients.html}</td></tr>      
+    <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="keycloak_url">{$form.keycloak_url.label}</td><td class="FormRowValue">{$form.keycloak_url.html}</td></tr>
+    <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="keycloak_redirect_url">{$form.keycloak_redirect_url.label}</td><td class="FormRowValue">{$form.keycloak_redirect_url.html}</td></tr>
+    <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="keycloak_realm">{$form.keycloak_realm.label}</td><td class="FormRowValue">{$form.keycloak_realm.html}</td></tr>
+    <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="keycloak_client_id">{$form.keycloak_client_id.label}</td><td class="FormRowValue">{$form.keycloak_client_id.html}</td></tr>
+    <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="keycloak_client_secret">{$form.keycloak_client_secret.label}</td><td class="FormRowValue">{$form.keycloak_client_secret.html}</td></tr>
 
 	<tr class="list_lvl_1">
       <td class="ListColLvl1_name" colspan="2">

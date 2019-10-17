@@ -94,9 +94,7 @@ class MassiveChangeServicesContext extends CentreonContext
         'notifications_enabled' => 2,
         'inherits_contacts_groups' => 0,
         'update_mode_cgs' => 1,
-        'contact_additive_inheritance' => 1,
         'contacts' => 'contactName',
-        'contact_group_additive_inheritance' => 0,
         'contact_groups' => 'Supervisors',
         'update_mode_notif_interval' => 1,
         'notification_interval' => 15,
@@ -164,9 +162,7 @@ class MassiveChangeServicesContext extends CentreonContext
         'is_volatile' => 0,
         'notifications_enabled' => 2,
         'inherits_contacts_groups' => 0,
-        'contact_additive_inheritance' => 1,
         'contacts' => 'contactName',
-        'contact_group_additive_inheritance' => 0,
         'contact_groups' => 'Supervisors',
         'notification_interval' => 15,
         'notification_period' => 'workhours',
@@ -228,9 +224,7 @@ class MassiveChangeServicesContext extends CentreonContext
         'is_volatile' => 0,
         'notifications_enabled' => 2,
         'inherits_contacts_groups' => 0,
-        'contact_additive_inheritance' => 1,
         'contacts' => 'contactName',
-        'contact_group_additive_inheritance' => 0,
         'contact_groups' => 'Supervisors',
         'notification_interval' => 15,
         'notification_period' => 'workhours',
@@ -321,12 +315,14 @@ class MassiveChangeServicesContext extends CentreonContext
             'service' => $this->service1['description'],
             'host' => $this->service1['hosts']
         ));
-        $this->assertFind('css', 'input[type="checkbox"][name="select[' . $object['id'] . ']"]')->check();
+        $checkbox = $this->assertFind('css', 'input[type="checkbox"][name="select[' . $object['id'] . ']"]');
+        $this->currentPage->checkCheckbox($checkbox);
         $object = $this->currentPage->getEntry(array(
             'service' => $this->service2['description'],
             'host' => $this->service2['hosts']
         ));
-        $this->assertFind('css', 'input[type="checkbox"][name="select[' . $object['id'] . ']"]')->check();
+        $checkbox = $this->assertFind('css', 'input[type="checkbox"][name="select[' . $object['id'] . ']"]');
+        $this->currentPage->checkCheckbox($checkbox);
         $this->selectInList('select[name="o1"]', 'Massive Change');
         $this->currentPage = new MassiveChangeServiceConfigurationPage($this, false);
         $this->currentPage->setProperties($this->updatedProperties);

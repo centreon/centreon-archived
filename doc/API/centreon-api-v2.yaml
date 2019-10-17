@@ -1,0 +1,794 @@
+openapi: 3.0.1
+info:
+  title: Centron API
+  description: |
+    **Centron API v2**
+    # New features
+    + Added real-time monitoring for hosts and services
+    + Added acknowledgement for hosts and services
+    # Information
+    All dates are in **ISO 8601** format
+    # Authentication
+    There are two modes of authentication:
+    * By token: after identification with your login credentials
+    * By cookie: by reusing a valid session ID
+  x-logo:
+    url: ./centreon-logo.png
+  contact:
+    url: 'https://www.centreon.com'
+  license:
+    name: Apache 2.0
+    url: 'http://www.apache.org/licenses/LICENSE-2.0.html'
+  version: 2.0.0
+externalDocs:
+  description: You can contact us on our community Slack
+  url: 'https://centreon.slack.com/messages/CCRGLQSE5'
+servers:
+  - url: 'http://{server}/centreon/api/{version}'
+    variables:
+      server:
+        default: localhost
+      version:
+        default: beta
+        enum:
+          - latest
+          - beta
+          - v2
+tags:
+  - name: Acknowledgements
+    description: |
+      This API allow to:
+      * Show the latest acknowledgement for host or service
+      * Acknowledge a host or a service
+      * Cancel an acknowledgement of host or service
+  - name: Authentication
+  - name: Monitoring
+    description: Real-time monitoring of the services and hosts
+security:
+  - Token: []
+  - Cookie: []
+paths:
+  /acknowledgements/hosts:
+    get:
+      tags:
+        - Acknowledgements
+      summary: List the latest acknowledgement of each host
+      parameters:
+        - $ref: '#/components/parameters/limit'
+        - $ref: '#/components/parameters/page'
+        - $ref: '#/components/parameters/sortBy'
+        - $ref: '#/components/parameters/search'
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result:
+                    type: array
+                    items:
+                      allOf:
+                        - $ref: 'schemas-acknowledgement.yaml#/Acknowledgement.Host'
+                  meta:
+                    $ref: '#/components/schemas/Meta'
+        403:
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenApiResponse'
+        500:
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorApiResponse'
+    post:
+      tags:
+        - Acknowledgements
+      summary: Adds an acknowledgement on host
+      requestBody:
+        description: Acknowledgment
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: 'schemas-acknowledgement.yaml#/Acknowledgement.Host.Add'
+      responses:
+        204:
+          description: Command sent
+        403:
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenApiResponse'
+        500:
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorApiResponse'
+  /acknowledgements/hosts/{host_id}:
+      delete:
+        tags:
+          - Acknowledgements
+        summary: Cancel an acknowledgement on host
+        parameters:
+          - name: host_id
+            in: path
+            description: ID of host for which you want to cancel acknowledgement
+            required: true
+            schema:
+              type: integer
+              format: int64
+        responses:
+          204:
+            description: Command sent
+          403:
+            description: Forbidden
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/ForbiddenApiResponse'
+          500:
+            description: Internal Server Error
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/ErrorApiResponse'
+  /acknowledgements/services:
+    get:
+      tags:
+        - Acknowledgements
+      summary: List the latest acknowledgement of each service
+      parameters:
+        - $ref: '#/components/parameters/limit'
+        - $ref: '#/components/parameters/page'
+        - $ref: '#/components/parameters/sortBy'
+        - $ref: '#/components/parameters/search'
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result:
+                    type: array
+                    items:
+                      allOf:
+                        - $ref: 'schemas-acknowledgement.yaml#/Acknowledgement.Service'
+                  meta:
+                    $ref: '#/components/schemas/Meta'
+        403:
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenApiResponse'
+        500:
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorApiResponse'
+    post:
+      tags:
+        - Acknowledgements
+      summary: Adds an acknowledgement on service
+      requestBody:
+        description: Acknowledgment
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: 'schemas-acknowledgement.yaml#/Acknowledgement.Service.Add'
+      responses:
+        204:
+          description: Command sent
+        403:
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenApiResponse'
+        500:
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorApiResponse'
+  /acknowledgements/hosts/{host_id}/services/{service_id}:
+    delete:
+      tags:
+        - Acknowledgements
+      summary: Cancel an acknowledgement on service
+      parameters:
+        - name: host_id
+          in: path
+          description: ID of host linked to service
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: service_id
+          in: path
+          description: ID of service for which you want to cancel acknowledgement
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        204:
+          description: Command sent
+        403:
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenApiResponse'
+        500:
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorApiResponse'
+  /login:
+    post:
+      tags:
+        - Authentication
+      summary: Login
+      description: Entry point to retrieve an authentication token.
+      security:
+        - Token: []
+      requestBody:
+        description: Authentication schema
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: 'schemas-authentication.yaml#/AuthenticationRequest'
+        required: true
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: 'schemas-authentication.yaml#/LoginAuthenticationResponse'
+        401:
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: 'main.yaml#/components/schemas/ErrorApiResponse'
+  /logout:
+    get:
+      tags:
+        - Authentication
+      summary: Logout
+      description: Entry point to delete an existing authentication token.
+      security:
+        - Token: []
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: 'schemas-authentication.yaml#/LogoutAuthenticationResponse'
+        403:
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: 'main.yaml#/components/schemas/ForbiddenApiResponse'
+  /monitoring/hostgroups:
+    get:
+      tags:
+        - Monitoring
+      summary: List all services grouped by host groups
+      description: |
+        Returns all services grouped by host groups.
+
+        The available parameters to **search** / **sort_by** are:
+
+        * host.id
+        * host.name
+        * host.alias
+        * host.address
+        * host.state
+        * poller.id
+        * service.display_name
+        * host_group.id
+
+        # Information
+        By default, the **hosts** property of hostgroup object is not displayed.
+        To display it, set the URI parameter "show_host" to `true`.
+
+        `/monitoring/hostgroups?show_host=true`
+
+        By default, the **services** property of host object is not displayed.
+        To display it, set the URI parameter "show_service" to `true`.
+
+        `/monitoring/hostgroups?show_service=true`
+
+      parameters:
+        - $ref: '#/components/parameters/limit'
+        - $ref: '#/components/parameters/page'
+        - $ref: '#/components/parameters/sortBy'
+        - $ref: '#/components/parameters/search'
+        - name: show_service
+          in: query
+          description: |
+            Allows to display services belonging to hosts belonging to requested hostgroups (by default: **false**)
+          schema:
+            type: boolean
+        - name: show_host
+          in: query
+          description: |
+            Allows to display hosts belonging to hostgroups (by default: **false**)
+          schema:
+            type: boolean
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result:
+                    type: array
+                    items:
+                      allOf:
+                        - $ref: 'schemas-monitoring.yaml#/Monitoring.HostGroup'
+                  meta:
+                    $ref: '#/components/schemas/Meta'
+        403:
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenApiResponse'
+        500:
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorApiResponse'
+  /monitoring/hosts:
+    get:
+      tags:
+        - Monitoring
+      summary: List all hosts
+      description: |
+        Returns all hosts.
+
+        The available parameters to **search** / **sort_by** are:
+
+        * host.id
+        * host.name
+        * host.alias
+        * host.address
+        * host.state
+        * poller.id
+        * service.display_name
+        * host_group.id
+
+        # Information
+        By default, the **services** property of host object is not displayed.
+        To display it, set the URI parameter "show_service" to `true`.
+
+        `/monitoring/hosts?show_service=true`
+      parameters:
+        - $ref: '#/components/parameters/limit'
+        - $ref: '#/components/parameters/page'
+        - $ref: '#/components/parameters/sortBy'
+        - $ref: '#/components/parameters/search'
+        - name: show_service
+          in: query
+          description: |
+            Allows to display services belonging to hosts (by default: **false**)
+          schema:
+            type: boolean
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result:
+                    type: array
+                    items:
+                      $ref: 'schemas-monitoring.yaml#/Monitoring.Host_main'
+                  meta:
+                    $ref: '#/components/schemas/Meta'
+        403:
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenApiResponse'
+        500:
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorApiResponse'
+  /monitoring/hosts/{hostId}:
+    get:
+      tags:
+        - Monitoring
+      summary: Find host by ID
+      description: |
+        Retuns a single host with full details and some details about its services
+      parameters:
+        - name: hostId
+          in: path
+          description: ID of host to return
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: 'schemas-monitoring.yaml#/Monitoring.Host_full'
+        403:
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenApiResponse'
+        404:
+          description: Host not found
+          content: {}
+        500:
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorApiResponse'
+  /monitoring/hosts/{hostId}/services:
+    get:
+      tags:
+        - Monitoring
+      summary: Find host-related services
+      description: |
+        Returns all services associated with a host.
+
+        The available parameters to **search** / **sort_by** are:
+
+        * service.id
+        * service.description
+        * service.display_name
+        * service_group.id
+        * service.is_acknowledged
+        * service.state
+      parameters:
+        - name: hostId
+          in: path
+          description: Host Id for which we want to get its associated services
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - $ref: '#/components/parameters/limit'
+        - $ref: '#/components/parameters/page'
+        - $ref: '#/components/parameters/sortBy'
+        - $ref: '#/components/parameters/search'
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result:
+                    type: array
+                    items:
+                      $ref: 'schemas-monitoring.yaml#/Monitoring.Service_main'
+                  meta:
+                    $ref: '#/components/schemas/Meta'
+        403:
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenApiResponse'
+        404:
+          description: Host not found
+          content: {}
+        500:
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorApiResponse'
+  /monitoring/hosts/{hostId}/services/{serviceId}:
+    get:
+      tags:
+        - Monitoring
+      summary: Find service by ID related to a host
+      description: Retuns a single host with full details
+      parameters:
+        - name: hostId
+          in: path
+          description: Host Id for which service is associed
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: serviceId
+          in: path
+          description: ID of service to return
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: 'schemas-monitoring.yaml#/Monitoring.Service_full'
+        403:
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenApiResponse'
+        404:
+          description: Host or service not found
+          content: {}
+        500:
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorApiResponse'
+  /monitoring/servicegroups:
+    get:
+      tags:
+        - Monitoring
+      summary: List all services grouped by service groups
+      description: |
+        Returns all services grouped by service groups.
+
+        The available parameters to **search** / **sort_by** are:
+
+        * host.id
+        * host.name
+        * host.alias
+        * host.address
+        * host.state
+        * poller.id
+        * service.display_name
+        * service_group.id
+        * service_group.name
+
+        # Information
+        By default, the **hosts** property of service group object is not displayed.
+        To display it, set the URI parameter "show_host" to `true`.
+
+        `/monitoring/hostgroups?show_host=true`
+
+        By default, the **services** property of host object is not displayed.
+        To display it, set the URI parameter "show_service" to `true`.
+
+        `/monitoring/hostgroups?show_service=true`
+      parameters:
+        - $ref: '#/components/parameters/limit'
+        - $ref: '#/components/parameters/page'
+        - $ref: '#/components/parameters/sortBy'
+        - $ref: '#/components/parameters/search'
+        - name: show_service
+          in: query
+          description: |
+            Allows to display services belonging to servicegroups (by default: **false**)
+          schema:
+            type: boolean
+        - name: show_host
+          in: query
+          description: |
+            Allows to display hosts related to services belonging to servicegroups (by default: **false**)
+          schema:
+            type: boolean
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result:
+                    type: array
+                    items:
+                      allOf:
+                        - $ref: 'schemas-monitoring.yaml#/Monitoring.ServiceGroup'
+                  meta:
+                    $ref: '#/components/schemas/Meta'
+        403:
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenApiResponse'
+        500:
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorApiResponse'
+  /monitoring/services:
+    get:
+      tags:
+        - Monitoring
+      summary: List all services
+      description: |
+        Returns all services.
+
+
+        The available parameters to **search** / **sort_by** are:
+
+        * host.id
+        * host.name
+        * host.alias
+        * host.address
+        * host.state
+        * host_group.id
+        * service.display_name
+        * service.description
+        * service.is_acknowledged
+        * service.output
+        * service.state
+        * service_group.id
+        * poller.id
+      parameters:
+        - $ref: '#/components/parameters/limit'
+        - $ref: '#/components/parameters/page'
+        - $ref: '#/components/parameters/sortBy'
+        - $ref: '#/components/parameters/search'
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result:
+                    type: array
+                    items:
+                      allOf:
+                        - $ref: 'schemas-monitoring.yaml#/Monitoring.Service_main'
+                        - $ref: 'schemas-monitoring.yaml#/Monitoring.Service_with_host'
+                  meta:
+                    $ref: '#/components/schemas/Meta'
+        403:
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenApiResponse'
+        500:
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorApiResponse'
+components:
+  parameters:
+    limit:
+      in: query
+      name: limit
+      required: false
+      description: Max items per pages
+      schema:
+        $ref: '#/components/schemas/RequestParameters.limit'
+    page:
+      in: query
+      name: page
+      required: false
+      description: Number of the page requested
+      schema:
+        $ref: '#/components/schemas/RequestParameters.page'
+    sortBy:
+      in: query
+      name: sort_by
+      required: false
+      description: Used to sort the request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/RequestParameters.sortBy'
+    search:
+      in: query
+      name: search
+      required: false
+      description: Used to search with specifics parameters
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/RequestParameters.search'
+  schemas:
+    Meta:
+      type: object
+      properties:
+        page:
+          type: integer
+          description: Number of the pagined page
+        limit:
+          type: integer
+          description: Number of items per page
+        search:
+          type: object
+          description: Search parameter pass to url
+        sort_by:
+          type: object
+          description: Sort parameter pass to url
+        total:
+          type: integer
+          description: Number of items found
+    RequestParameters.limit:
+      type: integer
+      minimum: 1
+      example: 20
+    RequestParameters.page:
+      type: integer
+      minimum: 1
+      example: 1
+    RequestParameters.sortBy:
+      type: object
+      example: {"host.name": "ASC"}
+    RequestParameters.search:
+      type: object
+      example: {"host.name": "localhost"}
+    ForbiddenApiResponse:
+      type: object
+      properties:
+        message:
+          type: string
+    ErrorApiResponse:
+      type: object
+      properties:
+        code:
+          type: integer
+          format: int64
+        message:
+          type: string
+    allOf:
+      - $ref: 'schemas-acknowledgement.yaml'
+      - $ref: 'schemas-authentication.yaml'
+      - $ref: 'schemas-monitoring.yaml'
+  securitySchemes:
+    Token:
+      description: |
+        The use of the API requires a security token.
+
+        To retrieve it, you will need to authenticate yourself with your login credentials.
+
+        The token will be deleted if it has not been used for more than one hour.
+      type: apiKey
+      name: X-AUTH-TOKEN
+      in: header
+    Cookie:
+      description: |
+        If you have already connected on the Centreon web application, you can reused the PHPSESSID cookie.
+
+        The cookie will be valid as long as the connection to Centreon is maintained.
+      type: apiKey
+      name: PHPSESSID
+      in: cookie

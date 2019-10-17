@@ -35,13 +35,15 @@ mettre à **1** l'option **<no proxy to call Central>**, sinon **0**.
 Cette commande va activer le mode **Remote Server** ::
 
     Starting Centreon Remote enable process:
+    Limiting Menu Access...               Success
+    Limiting Actions...                   Done
+    Authorizing Master...                 Done
+    Set 'remote' instance type...         Done
+    Notifying Master...
+    Trying host '10.1.2.3'... Success
+    Centreon Remote enabling finished.
 
-      Limiting Menu Access...Success
-      Limiting Actions...Done
+Ajout des droits pour que l'utilisateur de base de données centreon puisse utiliser la commande **LOAD DATA INFILE**::
 
-      Notifying Master...Success
-      
-      Set 'remote' instance type...Done
-      
-      Centreon Remote enabling finished.
-
+    # mysql -u root -p
+    MariaDB [(none)]> GRANT FILE on *.* to 'centreon'@'localhost';

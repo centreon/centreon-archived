@@ -20,8 +20,6 @@ www/include/core/menu/templates/*.tpl
 !www/img/media/.keep
 www/img/media/*
 www/template
-!filesGeneration/export/.keep
-filesGeneration/export/*
 
 #temporary files needed for the installation
 www/install/tmp/*
@@ -36,3 +34,13 @@ config/centreon.config.php
 coverage-report/
 centreon-build/
 secret
+
+###> symfony/framework-bundle ###
+/.env.local
+/.env.local.php
+/.env.*.local
+/public/bundles/
+/var/
+###< symfony/framework-bundle ###
+/bin/.phpunit/
+/doc/en/_build/

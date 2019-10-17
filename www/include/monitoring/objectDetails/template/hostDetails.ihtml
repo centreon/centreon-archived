@@ -378,7 +378,7 @@
                 {if ($lcaTopo.60101 || $admin == 1) && !$isRemote}
                 <tr class='list_two'>
                     <td class="ListColLeft ColPopup">
-                        <a href='./main.php?p=60101&host_id={$host_id}&o=c'>{$lnk_host_config} {$host_data.host_name}</a>
+                        <a href='./main.php?p=60101&host_id={$host_id}&o=c'>{$lnk_host_config}</a>
                     </td>
                 </tr>
                 {/if}
@@ -392,7 +392,7 @@
                 {if $lcaTopo.20301 || $admin == 1}
                 <tr class='list_two'>
                     <td class="ListColLeft ColPopup">
-                        <a href='./main.php?p=20201&o=svc&host_search={$host_data.host_name}&statusService=svc'>{$lnk_all_services}</a>
+                        <a href='./main.php?p=20201&o=svc&host_search={$host_data.host_name}&statusService=svc&statusFilter='>{$lnk_all_services}</a>
                     </td>
                 </tr>
                 {/if}

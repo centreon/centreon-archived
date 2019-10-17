@@ -37,7 +37,11 @@ $help['tip_select_paginagion_size'] = dgettext('help', 'The number elements load
  * Sessions Properties
  */
 
-$help['tip_sessions_expiration_time'] = dgettext('help', 'Life duration of sessions.');
+$help['tip_sessions_expiration_time'] = dgettext(
+    'help',
+    'Life duration of sessions. The value in minutes cannot be greater than the session.gc_maxlifetime value set ' .
+    'in your php centreon.ini file.'
+);
 
 /**
  * Refresh Properties
@@ -64,6 +68,16 @@ $help['tip_display_template'] = dgettext('help', 'CSS theme.');
 
 $help['tip_sort_problems_by'] = dgettext('help', 'Default sort in monitoring consoles.');
 $help['tip_order_sort_problems'] = dgettext('help', 'Default order in monitoring consoles.');
+
+/**
+ * Notification
+ */
+
+$help['tip_notification_inheritance'] = dgettext(
+    'help',
+    'Notification inheritance for hosts and services. Vertical for the legacy mode, Close for the first valid object '
+    . 'and Cumulative for all valid object.'
+);
 
 /**
  * Authentication properties
@@ -109,6 +123,46 @@ $help['sso_username_pattern'] = dgettext(
 $help['sso_username_replace'] = dgettext(
     'help',
     'The string to replace.'
+);
+
+/**
+ * Keycloak
+ */
+$help['keycloak_enable'] = dgettext(
+    'help',
+    'Enable login with Keycloak.'
+);
+$help['keycloak_mode'] = dgettext(
+    'help',
+    'Authentication can be solely based on Keycloak or it can work with both Keycloak and local authentication systems.'
+);
+$help['keycloak_trusted_clients'] = dgettext(
+    'help',
+    'IP/DNS of trusted clients. Use coma as delimiter in case of multiple clients.'
+);
+$help['keycloak_blacklist_clients'] = dgettext(
+    'help',
+    'IP/DNS of blacklist clients. Use coma as delimiter in case of multiple clients.'
+);
+$help['keycloak_url'] = dgettext(
+    'help',
+    'Your Keycloak server url (with "/auth").'
+);
+$help['keycloak_redirect_url'] = dgettext(
+    'help',
+    'Your Keycloak redirect url (this server).'
+);
+$help['keycloak_realm'] = dgettext(
+    'help',
+    'Your Keycloak Realm name.'
+);
+$help['keycloak_client_id'] = dgettext(
+    'help',
+    'Your Keycloak client ID.'
+);
+$help['keycloak_client_secret'] = dgettext(
+    'help',
+    'Your Keycloak client secret.'
 );
 
 /**

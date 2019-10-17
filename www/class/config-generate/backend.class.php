@@ -45,7 +45,7 @@ define('TMP_DIR_SUFFIX', '.d');
 class Backend
 {
     private static $_instance = null;
-    public $generate_path = '/usr/share/centreon/filesGeneration';
+    public $generate_path = '/var/cache/centreon/config';
     public $engine_sub = 'engine';
     public $broker_sub = 'broker';
     public $db = null;
@@ -199,7 +199,7 @@ class Backend
 
     private function __construct(\Pimple\Container $dependencyInjector)
     {
-        $this->generate_path = _CENTREON_PATH_ . '/filesGeneration';
+        $this->generate_path = _CENTREON_CACHEDIR_ . '/config';
         $this->db = $dependencyInjector['configuration_db'];
         $this->db_cs = $dependencyInjector['realtime_db'];
     }

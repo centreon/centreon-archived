@@ -1,0 +1,49 @@
+Centreon\Domain\Acknowledgement\Acknowledgement:
+    properties:
+        authorId:
+            - Type:
+                type: integer
+            - NotNull: ~
+        comment:
+            - Type:
+                type: string
+                groups: [Default, add_host_ack, add_service_ack]
+            - NotNull:
+                  groups: [Default, add_host_ack, add_service_ack]
+        entryTime:
+            - Type:
+                type: integer
+        hostId:
+            - Type:
+                type: integer
+                groups: [Default, add_host_ack, add_service_ack]
+            - NotNull:
+                groups: [Default, add_host_ack, add_service_ack]
+        pollerId:
+            - Type:
+                type: integer
+            - NotNull: ~
+        isNotifyContacts:
+            - Type:
+                type: boolean
+                groups: [Default, add_host_ack, add_service_ack]
+            - NotNull:
+                groups: [Default, add_host_ack, add_service_ack]
+        isPersistentComment:
+            - Type:
+                type: boolean
+                groups: [Default, add_host_ack, add_service_ack]
+            - NotNull:
+                groups: [Default, add_host_ack, add_service_ack]
+        isSticky:
+            - Type:
+                type: boolean
+                groups: [Default, add_host_ack, add_service_ack]
+            - NotNull:
+                groups: [Default, add_host_ack, add_service_ack]
+        serviceId:
+            - Type:
+                type: integer
+                groups: [Default, add_service_ack]
+            - NotNull:
+                groups: [add_service_ack]

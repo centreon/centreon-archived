@@ -146,7 +146,7 @@ foreach ($queryValues as $bindId => $bindData) {
     }
 }
 $DBRESULT->execute();
-$numRows = $DBRESULT->rowCount();
+$numRows = $obj->DBC->query("SELECT FOUND_ROWS()")->fetchColumn();
 
 $class = "list_one";
 $ct = 0;

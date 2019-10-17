@@ -193,8 +193,9 @@ class Host extends AbstractHost
                 }
                 $stack2 = array_merge($hosts_tpl[$host_id2]['htpl'], $stack2);
             }
-
-            $hosts_tpl[$host_id]['severity_id_from_below'] = $severity_id;
+            if ($severity_id) {
+                $hosts_tpl[$host_id]['severity_id_from_below'] = $severity_id;
+            }
         }
 
         # For applied on services without severity
@@ -232,8 +233,10 @@ class Host extends AbstractHost
         $this->getHostTemplates($host);
         $this->getHostCommands($host);
         $this->getHostPeriods($host);
+
         $this->getContactGroups($host);
         $this->getContacts($host);
+
         $this->getHostGroups($host);
         $this->getParents($host);
         $this->getSeverity($host['host_id']);

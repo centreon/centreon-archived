@@ -4,7 +4,7 @@
 Upgrading from Centreon 18.10
 =============================
 
-This chapter describes how to upgrade your platform to version Centreon 19.04.
+This chapter describes how to upgrade your platform to version Centreon 19.10.
 
 To upgrade your Centreon MAP server, refer to the `related documentation
 <https://documentation.centreon.com/docs/centreon-map-4/en/latest/upgrade/index.html>`_.
@@ -25,12 +25,22 @@ Be sure that you have fully backed up your environment for the following servers
 Upgrading the Centreon Central Server
 *************************************
 
+Updating the operating system
+=============================
+
+Remember to update your operating system via the command: ::
+
+    # yum update
+
+.. note::
+    Accept all GPG keys and consider rebooting your server if a kernel update is proposed.
+
 Upgrading the Centreon Repository
 =================================
 
 Run the following commands: ::
 
-    # yum install -y http://yum.centreon.com/standard/19.04/el7/stable/noarch/RPMS/centreon-release-19.04-1.el7.centos.noarch.rpm
+    # yum install -y http://yum.centreon.com/standard/19.10/el7/stable/noarch/RPMS/centreon-release-19.10-1.el7.centos.noarch.rpm
 
 Updating the Centreon solution
 ==============================
@@ -49,7 +59,29 @@ Upgrade all the components with the following command: ::
 Additional actions
 ==================
 
-Centeon 19.04 uses a new version of Apache web server.
+Updating the PHP version
+------------------------
+
+Centreon 19.10 uses a new version of PHP.
+
+The PHP timezone should be set. Run the command: ::
+
+    # echo "date.timezone = Europe/Paris" > /etc/opt/rh/rh-php72/php.d/php-timezone.ini
+
+.. note::
+    Change **Europe/Paris** to your timezone.
+
+Run the following commands: ::
+
+    # systemctl disable rh-php71-php-fpm
+    # systemctl stop rh-php71-php-fpm
+    # systemctl start rh-php72-php-fpm
+    # systemctl enable rh-php72-php-fpm
+
+Updating the Apache web server
+------------------------------
+
+Centreon 19.10 uses a new version of Apache web server.
 
 .. note::
     If you made manual configuration, please report it into
@@ -111,14 +143,14 @@ Upgrading the repository
 
 Run the following command: ::
 
-    # yum install -y http://yum.centreon.com/standard/19.04/el7/stable/noarch/RPMS/centreon-release-19.04-1.el7.centos.noarch.rpm
+    # yum install -y http://yum.centreon.com/standard/19.10/el7/stable/noarch/RPMS/centreon-release-19.10-1.el7.centos.noarch.rpm
 
 Upgrading the Centreon solution
 ===============================
 
 Upgrade all the components with the following command: ::
 
-    # yum update centreon*
+    # yum update centreon\*
 
 .. note::
     Accept new GPG keys from the repositories as needed.

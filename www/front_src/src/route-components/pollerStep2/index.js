@@ -1,15 +1,20 @@
-import React, { Component } from "react";
-import Form from "../../components/forms/poller/PollerFormStepTwo";
-import ProgressBar from "../../components/progressBar";
-import routeMap from "../../route-maps/route-map";
-import axios from "../../axios";
-import { connect } from "react-redux";
-import { SubmissionError } from "redux-form";
-import { setPollerWizard } from "../../redux/actions/pollerWizardActions";
+/* eslint-disable react/jsx-no-bind */
+/* eslint-disable react/jsx-filename-extension */
+/* eslint-disable no-shadow */
+/* eslint-disable react/prop-types */
+
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import { SubmissionError } from 'redux-form';
+import Form from '../../components/forms/poller/PollerFormStepTwo';
+import ProgressBar from '../../components/progressBar';
+import routeMap from '../../route-maps/route-map';
+import axios from '../../axios';
+import { setPollerWizard } from '../../redux/actions/pollerWizardActions';
 
 class PollerStepTwoRoute extends Component {
   state = {
-    pollers: null
+    pollers: []
   };
 
   links = [
@@ -17,22 +22,23 @@ class PollerStepTwoRoute extends Component {
       active: true,
       prevActive: true,
       number: 1,
-      path: routeMap.serverConfigurationWizard
+      path: routeMap.serverConfigurationWizard,
     },
     { active: true, prevActive: true, number: 2, path: routeMap.pollerStep1 },
     { active: true, number: 3 },
-    { active: false, number: 4 }
+    { active: false, number: 4 },
   ];
 
   pollerListApi = axios(
-    "internal.php?object=centreon_configuration_remote&action=getRemotesList"
+    'internal.php?object=centreon_configuration_remote&action=getRemotesList',
   );
+
   wizardFormApi = axios(
-    "internal.php?object=centreon_configuration_remote&action=linkCentreonRemoteServer"
+    'internal.php?object=centreon_configuration_remote&action=linkCentreonRemoteServer',
   );
 
   getPollers = () => {
-    this.pollerListApi.post().then(response => {
+    this.pollerListApi.post().then((response) => {
       this.setState({ pollers: response.data });
     });
   };
@@ -41,29 +47,29 @@ class PollerStepTwoRoute extends Component {
     this.getPollers();
   };
 
-  handleSubmit = data => {
+  handleSubmit = (data) => {
     const { history, pollerData, setPollerWizard } = this.props;
-    let postData = { ...data, ...pollerData };
+    const postData = { ...data, ...pollerData };
     postData.server_type = 'poller';
     return this.wizardFormApi
-      .post("", postData)
-      .then(response => {
+      .post('', postData)
+      .then((response) => {
         setPollerWizard({ submitStatus: response.data.success });
-        if (pollerData.linked_remote){
+        if (pollerData.linked_remote_master){
           history.push(routeMap.pollerStep3);
         } else {
           history.push(routeMap.pollerList);
         }
       })
-      .catch(err => {
+      .catch((err) => {
         throw new SubmissionError({ _error: new Error(err.response.data) });
       });
   };
 
   render() {
-    const { links } = this,
-          { pollerData } = this.props,
-          { pollers } = this.state;
+    const { links } = this;
+    const { pollerData } = this.props;
+    const { pollers } = this.state;
     return (
       <div>
         <ProgressBar links={links} />
@@ -78,11 +84,14 @@ class PollerStepTwoRoute extends Component {
 }
 
 const mapStateToProps = ({ pollerForm }) => ({
-  pollerData: pollerForm
+  pollerData: pollerForm,
 });
 
 const mapDispatchToProps = {
-  setPollerWizard
+  setPollerWizard,
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(PollerStepTwoRoute);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(PollerStepTwoRoute);
