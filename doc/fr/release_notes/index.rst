@@ -9,14 +9,14 @@ Voici les différentes notes de versions pour les versions majeures :
 .. toctree::
     :maxdepth: 1
 
-    centreon-19.10/index.rst
-    centreon-19.04/index.rst
-    centreon-18.10/index.rst
-    centreon-2.8/index.rst
-    centreon-2.7/index.rst
-    centreon-2.6/index.rst
-    centreon-2.5/index.rst
-    centreon-2.4/index.rst
+    centreon-19.10.rst
+    centreon-19.04.rst
+    centreon-18.10.rst
+    centreon-2.8.rst
+    centreon-2.7.rst
+    centreon-2.6.rst
+    centreon-2.5.rst
+    centreon-2.4.rst
 
 Il est très important lorsque vous souhaitez mettre à jour votre système de vous reporter à cette section afin de connaître les changements de comportement ou les changements majeurs qui ont été opérés sur cette version. Cela vous permettra de connaître l'impact de l'installation de ces versions sur les fonctionnalités que vous utilisez ou sur les développements spécifiques que vous avez intégrés sur votre plateforme (modules, widgets, plugins).
 
