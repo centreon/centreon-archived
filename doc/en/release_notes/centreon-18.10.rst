@@ -43,12 +43,9 @@ Security fixes
 
 * [UI] add escapeshellarg to nagios_bin binary passed to shell_exec (#7694 closes CVE-2019-13024)
 
-Known issue
------------
-
-####################
+====================
 Centreon Web 18.10.5
-####################
+====================
 
 Enhancements
 ------------
@@ -97,18 +94,12 @@ Security fixes
 * Remove obsolete rrdtool configuration and sources (PR/#7195)
 * Fix SQL injection on Service grid by hostgroup page (PR/#7275)
 
-Technical
----------
-
-Known issue
------------
-
-####################
+====================
 Centreon Web 18.10.4
-####################
+====================
 
 Enhancements
-============
+------------
 
 * [API] API for commands arguments descriptions (PR/#7196)
 * [API] Add showinstance CLAPI command to Host (PR/#7199)
@@ -119,7 +110,7 @@ Enhancements
 * [UI] Indent third level menu (PR/#7251)
 
 Bug Fixes
-=========
+---------
 
 * [UI] Fix issue with comments date in host and service detail pages (Issue/#7180 - PR/#7194)
 * [UI] Fix issue with session expiration and avoid login "inception" (PR/#7202)
@@ -127,7 +118,7 @@ Bug Fixes
 * [UI] Fix search filter for recurrent downtimes (PR/#7201)
 
 Documentation
-=============
+-------------
 
 * Improve prerequisities (PR/#7244)
 * Improve poller configuration (PR/#7116)
@@ -138,7 +129,7 @@ Documentation
 * Add daemon-reload command added when installing DB on dedicated server (Issue/#7137 - PR/#7139)
 
 Security
-========
+--------
 
 * Fix security issue by removing dead code related to escalation (PR/#7200)
 * Fix rce vulnerability when using command's testing feature (PR/#7245)
@@ -230,9 +221,6 @@ Bug fixes
 * [Translation] Update strings - PR #6899
 * [Global] Remove duplicate() method in children classes - PR #6918
 * [Global] Update topology extract where clause from db - PR #6898
-
-Security fixes
---------------
 
 ====================
 Centreon Web 18.10.0

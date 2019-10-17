@@ -2,18 +2,17 @@
 Centreon 2.4.5
 ==============
 
-***************
 Important notes
-***************
+---------------
 
 Connector
-=========
+#########
 
 You can now linked a command to a connector from the connector form in `Configuration` > `Commands` > `Connectors`.
 
 
 Centreon Broker
-===================
+###############
 
 Centreon 2.4.x branch is now compatible with Centreon Broker 2.5.x branch.
 Also several options have been added in Centreon Broker configuration form accessible in `Configuration` > `Centreon` > `Configuration` (Below Centreon-Broker label in the left panel).
@@ -30,12 +29,11 @@ Here the new options:
 Centreon 2.4.4
 ==============
 
-***************
 Important notes
-***************
+---------------
 
 Graphs
-======
+######
 
 It is now possible to set RRD graphs' to "DERIVE" and "ABSOLUTE" type. In order 
 to do so go to `Administration` > `Options` > `CentStorage` > `Manage`, then
@@ -44,7 +42,7 @@ will now see the new data source types.
 
 
 Monitoring consoles
-===================
+###################
 
 A new option is available, allowing you to choose the display order of the 
 monitored resources. The new option is available in `Administration` > `Options`, 
@@ -54,12 +52,11 @@ in the `Problem display properties` section.
 Centreon 2.4.1
 ==============
 
-***************
 Important notes
-***************
+---------------
 
 Connectors
-==========
+##########
 
 If you are already using the *Centreon Connectors*, please note that the connector
 path is no longer called with user variable *$USER3$*. It is instead in the 
@@ -83,12 +80,11 @@ as it will be no longer used.
 Centreon 2.4
 ============
 
-***********
 What's new?
-***********
+-----------
 
 Better integration with Centreon Engine and Centreon Broker
-===========================================================
+###########################################################
 
 The :ref:`installation <centreon_install>` process has been reviewed: 
 it is now possible to specify the monitoring engine (Centreon Engine or Nagios) 
@@ -104,7 +100,7 @@ familiar with its functioning. Centreon 2.4 offers a configuration wizard now!
 
 
 Custom views
-============
+############
 
 This new page enables users to make their own views with various
 widgets and they are able to share their custom views with their
@@ -115,7 +111,7 @@ this feature.
 
 
 Support for multiple LDAP servers
-=================================
+#################################
 
 The LDAP authentication system is much more robust than before.
 Indeed, it is now possible to have :ref:`multiple LDAP configurations <ldapconfiguration>` on
@@ -126,7 +122,7 @@ Make sure that all your LDAP parameters are correctly imported after an upgrade.
 
 
 New *autologin* mechanism
-=========================
+#########################
 
 A better :ref:`autologin <autologin>` mechanism has been introduced in
 this version. Now using randomly generated keys, it allows you to
@@ -134,26 +130,25 @@ access specific pages without being prompted for a username and a
 password.
 
 Database indexes verification tool
-==================================
+##################################
 
 If you upgrade from an old version of Centreon, now you can :ref:`check the
 existence of all database indexes <synchronizing-indexes>` to ensure maximum performance
 
-***************
 Important notes
-***************
+---------------
 
 Administration
-==============
+##############
 
 Communication with pollers
---------------------------
+##########################
 
 The default system user used by *Centcore* to communicate with pollers
 has changed from ``nagios`` to ``centreon``.
 
 Plugins
--------
+#######
 
 For better performances, we advise you to use ``check_icmp`` 
 instead of ``check_ping`` if you are in an IPv4 network, that is
@@ -162,29 +157,26 @@ instead of ``check_ping`` if you are in an IPv4 network, that is
 All you have to do is change the check commands: ``check_centreon_ping``, 
 ``check_host_alive`` and all the commands that call ``check_ping``.
 
-
 Web interface
-=============
+-------------
 
 Autologin
----------
+#########
 
 A :ref:`new autologin mechanism <autologin>` has been added in
 Centreon 2.4. More secured than the previous one, it will soon replace
 it. If you currently use this feature, we recommend upgrading to the
 new one as soon as you can.
 
-
 Centreon Broker init script
----------------------------
+###########################
 
 If you are using *Centreon Broker*, make sure to fill the *Start script for broker daemon* 
 parameter in ``Administration`` > ``Options`` > ``Monitoring``. RRD graphs cannot be rebuilt
 if this parameter is omitted!
 
-
 Centcore options
-----------------
+################
 
 Two parameters have been added into the ``Administration`` > ``Options`` > ``Monitoring`` page:
 
@@ -194,26 +186,23 @@ Two parameters have been added into the ``Administration`` > ``Options`` > ``Mon
 For performance issues, these options must be disabled if your monitoring system is running
 with Centreon Broker.
 
-
 Resource.cfg and CGI.cfg
-------------------------
+########################
 
 The resource and CGI configuration objects are now specific to each monitoring poller. The
 values of $USERx$ macros can be different from one poller to another.
 
-
 Interval length
----------------
+###############
 
 The ``interval_length`` is now a global parameter that you have to set in ``Administration`` > ``Options`` 
 > ``Monitoring``, although it should be left at ``60 seconds`` in most cases.
 
-
 Centstorage
-===========
+-----------
 
 Supported data source types
----------------------------
+###########################
 
 *Centreon Broker* now supports all of the RRDtool data source types
 (COUNTER, GAUGE, DERIVE and ABSOLUTE). This support will not be added

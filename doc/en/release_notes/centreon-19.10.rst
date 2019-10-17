@@ -1,18 +1,18 @@
-####################
+====================
 Centreon Web 19.10.1
-####################
+====================
 
 Bug Fixes
-=========
+---------
 
 * [Install/update] correct loop issue on installation/update (PR/#7997)
 
-####################
+====================
 Centreon Web 19.10.0
-####################
+====================
 
 Features
-========
+--------
 
 * [Authentication] Add Keycloak SSO authentication in Centreon (PR/#7700)
 * [API v2] New real time monitoring JSON REST API v2 for services and hosts - currently in beta version (PR/#7821)
@@ -24,7 +24,7 @@ Features
   * *Cumulative inheritance*: Cumulate all contacts and contactgroups of resources and linked templates (method used for new installation)
 
 Enhancements
-============
+------------
 
 * [Administration] [Audit logs] Add purge function for audit logs (PR/#7710)
 * [Authentication] Add Okta LDAP template (PR/#7825)
@@ -52,14 +52,14 @@ Enhancements
 * [Widgets] Add connectors for servicegroups and severities (PR/#7753)
 
 Performance
-===========
+-----------
 
 * [ACL] centAcl optimize memory and time execution (PR/#7751)
 * [API] Improve performance of clapi call through REST API (PR/#7842)
 * [Chart] Increase performance on server side when we get data from rrd files to display charts: between 70% and 90% (PR/#7676)
 
 Documentation
-=============
+-------------
 
 * Doc correct migration using Nagios reader (PR/#7781)
 * Update MySQL prerequisites for master (PR/#7904)
@@ -71,7 +71,7 @@ Documentation
 * Add OS update (commit 04e9942)
 
 Bug Fixes
-=========
+---------
 
 * [ACL] Redirect to login page when user is unauthorized (PR/#7687)
 * [ACL] Add ACL to select meta-services for list of services in performance menu (PR/#7736)
@@ -124,7 +124,7 @@ Bug Fixes
 * [Widgets] set GMT to default if null (PR/#7766)
 
 Security fixes
-==============
+--------------
 
 * Add rule for max session duration (PR/#7918)
 * Hide password in command line for status details page (#7414, PR/#7859)
@@ -138,7 +138,7 @@ Security fixes
 * the ini_set session duration param has been moved in php.ini (PR/7896)
 
 Technical
-=========
+---------
 
 * [API] Update type of returned activate property (PR/#7851)
 * [CEIP] Telemetry ceip improvements (PR/#7931)
@@ -167,16 +167,16 @@ Technical
 * [Update] Finish module update with upgrade to last version (PR/#7956)
 
 Known issue
-===========
+-----------
 
 * [logs] Fix the limitation of max value for the primary key of the centreon_storage.logs table (:ref:`update_centreon_storage_logs`)
 
-#########################
+=========================
 Centreon Web 19.10.0-rc.1
-#########################
+=========================
 
 Enhancements
-============
+------------
 
 * [authentication] Add okta LDAP template (PR/#7825)
 * [Configuration] Add display locked checkbox for objects listing (#7444)
@@ -185,13 +185,13 @@ Enhancements
 * [UI] Do not display round values in detailed top counter (PR/#7547)
 
 Documentation
-=============
+-------------
 
 * Doc correct migration using nagios reader (PR/#7781)
 * Update mysql prerequisites for master (PR/#7904)
 
 Bug Fixes
-=========
+---------
 
 * [Centcore] Create centcore file by action (PR/#6985)
 * [Configuration] Correct issue in wizard with PR #7849 (commit 2b8a728478)
@@ -206,7 +206,7 @@ Bug Fixes
 * [UI] Fix style of frozen checkboxes (PR/#7882)
 
 Security fixes
-==============
+--------------
 
 * Hide password in command line for status details page (#7414, PR/#7859)
 * Escape script and input tags by default (PR/#7811)
@@ -219,7 +219,7 @@ Security fixes
 * the ini_set session duration param has been moved in php.ini (PR/7896)
 
 Technical
-=========
+---------
 
 * [Core] Improve the centreon user service definition in ServiceProvider (PR/#7891)
 * [Test] Fix acceptance test of locked elements (PR/#7910)
@@ -326,9 +326,6 @@ Technical
 Centreon Web 19.10.0-beta.1
 ===========================
 
-New features
-------------
-
 Enhancements
 ------------
 
@@ -363,4 +360,3 @@ Technical
 * [Database] Add default value to acl_groups.acl_group_changed table (PR/#7542)
 * Remove wizard graph tour in performance view (PR/#7676)
 * Update to rh-php72 (PR/#7542)
-

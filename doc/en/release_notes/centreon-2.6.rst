@@ -4,19 +4,14 @@ Centreon 2.6.6
 
 Released October 29, 2015
 
-******
 Notice
-******
+------
+
 If you are upgrading from a version prior to 2.6.0, make sure to go through all the release notes available
 `here <http://documentation.centreon.com/docs/centreon/en/latest/release_notes/index.html>`_.
 
-
-*********
-CHANGELOG
-*********
-
 Bug fixes
-=========
+---------
 
 - #3812: [2.6.3] Strange display of service group details page
 - #3824: PHP Warning: array_map(): Argument #2 should be an array
@@ -35,25 +30,20 @@ Centreon 2.6.5
 
 Released October 21, 2015
 
-******
 Notice
-******
+------
+
 If you are upgrading from a version prior to 2.6.0, make sure to go through all the release notes available
 `here <http://documentation.centreon.com/docs/centreon/en/latest/release_notes/index.html>`_.
 
-
-*********
-CHANGELOG
-*********
-
 Security fixes
-==============
+--------------
 
 - #3831: XSS injection in object lists (ZSL-2015-5266)
 - #3835: CSRF Issues on Centreon (ZSL-2015-5263)
 
 Bug fixes
-=========
+---------
 
 - #3821: Upgrade from 2.6.1 to 2.6.3 kill Centreon Frontend
 - #3826: Split Component and zoom doesn't work
@@ -66,19 +56,14 @@ Centreon 2.6.4
 ==============
 
 
-******
 Notice
-******
+------
+
 If you are upgrading from a version prior to 2.6.0, make sure to go through all the release notes available
 `here <http://documentation.centreon.com/docs/centreon/en/latest/release_notes/index.html>`_.
 
-
-*********
-CHANGELOG
-*********
-
 Bug fixes
-=========
+---------
 
 - #3793: Problem when creating an empty hostgroup with non admin user
 - #3795: Update Centreon Administration About page (forge -> GitHub)
@@ -93,19 +78,14 @@ Centreon 2.6.3
 ==============
 
 
-******
 Notice
-******
+------
+
 If you are upgrading from a version prior to 2.6.0, make sure to go through all the release notes available
 `here <http://documentation.centreon.com/docs/centreon/en/latest/release_notes/index.html>`_.
 
-
-*********
-CHANGELOG
-*********
-
 Bug fixes
-=========
+---------
 
 - #564: Filter field does not work in service groups monitoring screen
 - #1000: Services of service groups are dispatched on many pages
@@ -117,31 +97,25 @@ Bug fixes
 Centreon 2.6.2
 ==============
 
-
-******
 Notice
-******
+------
+
 If you are upgrading from a version prior to 2.6.0, make sure to go through all the release notes available
 `here <http://documentation.centreon.com/docs/centreon/en/latest/release_notes/index.html>`_.
 
-
-*********
-CHANGELOG
-*********
-
 Features
-========
+--------
 
 - Modules can extend actions after restart/reload pollers
 
 Security fixes
-==============
+--------------
 
 - #2979 : Secure the type of media which file can be uploaded (ZSL-2015-5264)
 - Fix some SQL injections (ZSL-2015-5265)
 
 Bug fixes
-=========
+---------
 
 - #3559 : Fix query with MariaDB / MySQL configure in STRICT_TRANS_TABLES
 - #3554 : Can send acknowledgment with multiline from monitoring page
@@ -154,20 +128,14 @@ Bug fixes
 Centreon 2.6.1
 ==============
 
-
-******
 Notice
-******
+------
+
 If you are upgrading from a version prior to 2.6.0, make sure to go through all the release notes available
 `here <http://documentation.centreon.com/docs/centreon/en/latest/release_notes/index.html>`_.
 
-
-*********
-CHANGELOG
-*********
-
 Bug fixes
-=========
+---------
 
 - #5655: Changing Host Templates doesn't delete services
 - #5925: Popup Dialogs (Acknowledge, Downtimes etc.) not working with Internet Explorer
@@ -184,7 +152,7 @@ Bug fixes
 - #6410: Do not limit to 20 the number of trap rules or macro in host and services config pages
 
 Features
-========
+--------
 
 - #6035: Removing Centreon Broker local module
 - #6366: New option for Centreon Engine log
@@ -194,27 +162,24 @@ Features
 Centreon 2.6.0
 ==============
 
-
-******
 Notice
-******
+------
+
 If you are upgrading from a version prior to 2.5.4, make sure to go through all the release notes available
 `here <http://documentation.centreon.com/docs/centreon/en/latest/release_notes/index.html>`_.
 
-***********
 What's new?
-***********
+-----------
 
 Compatibility with PHP 5.4.x
-============================
+############################
 
 Centreon is now compatible with PHP in version 5.4.x. So, you do not need to downgrade to PHP 5.3.x version when you install it on Debian 6, Ubuntu 13.04, RedHat 7 and CentOS 7.
 
 Centreon proprietary module (Centreon BAM, Centreon BI, Centreon MAP, Centreon KB) is not compatible as yet with this PHP version.
 
-
 New options for Centreontrapd
-=============================
+#############################
 
 It's now possible with Centreontrapd to :
 
@@ -224,41 +189,33 @@ It's now possible with Centreontrapd to :
 - Add custom code execution ;
 - Put unknown trap in another file. 
 
-
 ACL and configuration modification with admin users
-===================================================
+###################################################
 
 ACL management has been improved to allow for a greater number of simultaneous sysadmin users to work on the same monitoring platform.
 
 The synchronization is more efficient in configuration page between admin and normal users.
 
-
 Partial rebuild of events information
-=====================================
+#####################################
 
 It's now possible to partially rebuild events information with eventsRebuild script. You can now use option '-s' when rebuilding and the rebuild will start from this date.
 
 Before, you had to rebuild from the beginning of the related data. 
 
-
 Criticality inheritance
-=======================
+#######################
 
 Centreon 2.6 introduces a capability for the dependent services of a host to automatically inherit its configured criticality.  It’s also possible to define the levels of global critically of a particular host and dependent services cluster thanks to the use of templates.
 
-
 Integration of Centreon new logo
-================================
+################################
 
 The new Centreon logo has been integrated into this new version.
 
-
-*********
-CHANGELOG
-*********
-
 Bug fixes
-=========
+---------
+
 - #5655: Changing Host Templates doesn't delete services 
 - #5782: Warning daemon_dumps_core variable ignored
 - #5795: ACL and configuration modification with admin users
@@ -269,7 +226,7 @@ Bug fixes
 - #6336: Problem with schedule downtime when using different timezones
 
 Features
-========
+--------
 
 - #3239: PHP-5.4 Compatibility
 - #5238: Criticality inheritance

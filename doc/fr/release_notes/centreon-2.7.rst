@@ -1,19 +1,18 @@
-###############
+===============
 Centreon 2.7.12
-###############
+===============
 
 The 2.7.12 release for Centreon Web is now available for `download <https://download.centreon.com>`_.
 The full release notes for 2.7.12 follow.
 
-******
 Notice
-******
+------
 
 If you are upgrading from a version prior to 2.7.0, make sure to go through all the release notes available
 `here <http://documentation.centreon.com/docs/centreon/en/latest/release_notes/index.html>`_.
 
 Bug Fixes
-=========
+---------
 
 * [CLAPI] Several bugs on HG / CG when export is filtered #5297 PR #5320
 * [CLAPI] fix clapi ldap contact import
@@ -21,22 +20,21 @@ Bug Fixes
 * Impossible to acknowledge several object from custom views #5420
 * Security: avoid external command shell injection in comment
 
-###############
+===============
 Centreon 2.7.11
-###############
+===============
 
 The 2.7.11 release for Centreon Web is now available for `download <https://download.centreon.com>`_.
 The full release notes for 2.7.11 follow.
 
-******
 Notice
-******
+------
 
 If you are upgrading from a version prior to 2.7.0, make sure to go through all the release notes available
 `here <http://documentation.centreon.com/docs/centreon/en/latest/release_notes/index.html>`_.
 
 Bug Fixes
-=========
+---------
 
 - Fix ldap authentication #5216
 - Fix CLAPI export using filters #5084
@@ -50,119 +48,105 @@ Bug Fixes
 - Improve performances #5157
 - Convert string in UTF-8 #5118 #5244
 
-###############
+===============
 Centreon 2.7.10
-###############
+===============
 
 The 2.7.10 release for Centreon Web is now available for `download <https://download.centreon.com>`_. The full release notes for 2.7.10 follow.
 
-******
 Notice
-******
+------
 
 If you are upgrading from a version prior to 2.7.0, make sure to go through all the release notes available
 `here <http://documentation.centreon.com/docs/centreon/en/latest/release_notes/index.html>`_.
 
 Bug Fixes
-=========
+---------
 
 - Fix various security issues
 - Fix ldap configuration form
 - Fix downtime popup in listing pages
 - Fix object listing pages which are empty after some actions
 
-##############
+==============
 Centreon 2.7.9
-##############
+==============
 
 Released March, 21th 2017.
 
 The 2.7.9 release for Centreon Web is now available for `download <https://download.centreon.com>`_. The full release notes for 2.7.9 follow.
 
-******
 Notice
-******
+------
 
 If you are upgrading from a version prior to 2.7.0, make sure to go through all the release notes available
 `here <http://documentation.centreon.com/docs/centreon/en/latest/release_notes/index.html>`_.
 
 Features and Bug Fixes
-======================
+----------------------
 
 - Fix: allow full configuration export for Centreon Poller Display
 - All graphs linked to a host aren't displayed in performance page - #4731
 - Documentation - correct example to use TP instead of TIMEPERIOD - PR #4915, Pr #4916
 - Force CENGINE key in centreon database options to use Centreon Engine - #4922
 
-##############
+==============
 Centreon 2.7.8
-##############
+==============
 
 Released November 09,2016  
 
 The 2.7.8 release for Centreon Web is now available for `download <https://download.centreon.com>`_. The full release notes for 2.7.8 follow.
 
-******
 Notice
-******
+------
+
 If you are upgrading from a version prior to 2.7.0, make sure to go through all the release notes available
 `here <http://documentation.centreon.com/docs/centreon/en/latest/release_notes/index.html>`_.
 
-*********
-CHANGELOG
-*********
-
 Features and Bug Fixes
-======================
+----------------------
 
 - Fix: Improve graph rest API
 - Fix: Two "update mode" lines for service groups in Massive change causing annoying behavior
 
-##############
+==============
 Centreon 2.7.7
-##############
+==============
 
 Released September 13,2016  
 
 The 2.7.7 release for Centreon Web is now available for `download <https://download.centreon.com>`_. The full release notes for 2.7.7 follow.
 
-******
 Notice
-******
+------
+
 If you are upgrading from a version prior to 2.7.0, make sure to go through all the release notes available
 `here <http://documentation.centreon.com/docs/centreon/en/latest/release_notes/index.html>`_.
 
-*********
-CHANGELOG
-*********
-
 Features and Bug Fixes
-======================
+----------------------
 
 - Fix: Non initialized value in Centreon ACL page
 - Fix : Security issue with autologin when user has no password
 - Enh: [Centreon Clapi] Add export filters
 
-##############
+==============
 Centreon 2.7.6
-##############
+==============
 
 Released July 21,2016  
 
 The 2.7.6 release for Centreon Web is now available for `download <https://download.centreon.com>`_. The full release notes for 2.7.6 follow.
 
-******
 Notice
-******
+------
+
 If you are upgrading from a version prior to 2.7.0, make sure to go through all the release notes available
 `here <http://documentation.centreon.com/docs/centreon/en/latest/release_notes/index.html>`_.
 
-*********
-CHANGELOG
-*********
-
 Features and Bug Fixes
-======================
+----------------------
 
 - Fix: Hard PATHs in some folders
 - Fix: Correction of some typos
@@ -173,26 +157,22 @@ Features and Bug Fixes
 - Fix: Service comments wrong request
 - Enh: SQL Optimisation in handling service templates
 
-##############
+==============
 Centreon 2.7.5
-##############
+==============
 
 Released July 06,2016  
 
 The 2.7.5 release for Centreon Web is now available for `download <https://download.centreon.com>`_. The full release notes for 2.7.5 follow.
 
-******
 Notice
-******
+------
+
 If you are upgrading from a version prior to 2.7.0, make sure to go through all the release notes available
 `here <http://documentation.centreon.com/docs/centreon/en/latest/release_notes/index.html>`_.
 
-*********
-CHANGELOG
-*********
-
 Features and Bug Fixes
-======================
+----------------------
 
 - Fix: Flapping configuration was not exported to Centreon Engine configuration files
 - Fix: Option "test the plugin" didn't working with special characters
@@ -205,30 +185,29 @@ Features and Bug Fixes
 - Fix: Exclude Deactivate poller in configuration generation page filter
 - Enh: Add an error message when no pollers are selected in configuration generation page
 
-##############
+==============
 Centreon 2.7.4
-##############
+==============
 
 Released April 14,2016
 
 The 2.7.4 release for Centreon Web is now available for `download <https://download.centreon.com>`_. The full release notes for 2.7.4 follow.
 
-******
 Notice
-******
+------
+
 If you are upgrading from a version prior to 2.7.0, make sure to go through all the release notes available
 `here <http://documentation.centreon.com/docs/centreon/en/latest/release_notes/index.html>`_.
 
-**************************
 Fix of an encoding problem
-**************************
+##########################
 
 Following a change of encoding tables in centreon database which occurred in the 2.7.0 version, bad encoded characters appear in the Centreon web interface. Indeed, the change charset "latin1" to "utf8" was not followed by an update of the content of tables in the database.
 
 To restore a valid encoding of special and accented characters, it is necessary to manually run the script provided by Centreon.
 
 Warning
-=======
+#######
 
 This script should be run once and only once.
 
@@ -237,35 +216,31 @@ If an operator has modified/corrected special characters or accented since the 2
 All contents of table type "varchar", "char" or "text" will be updated
 
 Prerequisites
-=============
+#############
 
 Don't forget to backup your database before doing any operations.
 
 Installation
-============
+############
 
 Download and install the script in "/usr/share/centreon/bin/" with the command:
 
 wget http://resources.centreon.com/upgrade-2.6-to-2.7/migrate_utf8.php -O /usr/share/centreon/bin/migrate_utf8.php
 
 Execution
-=========
+#########
 
 From a shell terminal, perform the script:
 
 php /usr/share/centreon/bin/migrate_utf8.php
 
 Validation
-==========
+##########
 
 Connect to your web interface and check that there are no more bad encoded characters on it.
 
-*********
-CHANGELOG
-*********
-
 Features and Bug Fixes
-======================
+----------------------
 
 - Fix: Contacts in contactgroups were exported with a wrong ID
 - Fix: Error when saving "Administration > Parameters > Monitoring" page
@@ -279,26 +254,22 @@ Features and Bug Fixes
 - Fix: SSO connection with LDAP user
 - Enh: Add possibility to set local to "browser" when adding a contact by CLAPI
 
-##############
+==============
 Centreon 2.7.3
-##############
+==============
 
 Released March 15,2016  
 
 The 2.7.3 release for Centreon Web is now available for `download <https://download.centreon.com>`_. The full release notes for 2.7.3 follow.
 
-******
 Notice
-******
+------
+
 If you are upgrading from a version prior to 2.7.0, make sure to go through all the release notes available
 `here <http://documentation.centreon.com/docs/centreon/en/latest/release_notes/index.html>`_.
 
-*********
-CHANGELOG
-*********
-
 Features and Bug Fixes
-======================
+----------------------
 
 - Fix Recurrent downtimes starting at 00:00
 - Fix search in Poller configuration page
@@ -321,26 +292,22 @@ Features and Bug Fixes
 - Enh Possibility to reload several pollers in one time
 - Enh Add an API to send External Commands
 
-##############
+==============
 Centreon 2.7.2
-##############
+==============
 
 Released February 24, 2016
 
 The 2.7.2 release for Centreon Web is now available for `download <https://download.centreon.com>`_. The full release notes for 2.7.2 follow:
 
-******
 Notice
-******
+------
+
 If you are upgrading from a version prior to 2.7.0, make sure to go through all the release notes available
 `here <http://documentation.centreon.com/docs/centreon/en/latest/release_notes/index.html>`_.
 
-*********
-CHANGELOG
-*********
-
 Features and Bug Fixes
-======================
+----------------------
 
 - Fix eventlogs pages for performances and right for non admin users
 - Fix Recurent Downtimes behavior with timezones
@@ -356,32 +323,28 @@ Features and Bug Fixes
 - Improve ACL on Custom Views 
 
 Known Bugs
-==========
+----------
 
 - Recurrent downtimes during for more than a day are not working
 - It's impossible to remove relations between usergroup and custom views
 - With the update some widgets have to be deleted and recreated
 
-##############
+==============
 Centreon 2.7.1
-##############
+==============
 
 Released January 07, 2016
 
 The 2.7.1 release for Centreon Web is now available for `download <https://download.centreon.com>`_. The full release notes for 2.7.1 follow:
 
-******
 Notice
-******
+------
+
 If you are upgrading from a version prior to 2.7.0, make sure to go through all the release notes available
 `here <http://documentation.centreon.com/docs/centreon/en/latest/release_notes/index.html>`_.
 
-*********
-CHANGELOG
-*********
-
 Features and Bug Fixes
-======================
+----------------------
 
 - Improved ergonomics of the select2 component
 - Improved performances of monitoring pages
@@ -393,9 +356,9 @@ Features and Bug Fixes
 - Fixed problem in services per hostgroups pages
 - Fixed problems in configuration generation when mysql is not using 3306 port
 
-##############
+==============
 Centreon 2.7.0
-##############
+==============
 
 Released December 17, 2015
 
@@ -495,4 +458,3 @@ How to Install ?
 ----------------
 
 Now that you are aware about all specificities of this version, you can install it. If you install from zero your system, please follow the :ref:`installation guide <install>`. Else you can refer to the :ref:`upgrade guide <upgrade>`. Take care about prerequisites and all upgrade steps in order to avoid data loss.
-

@@ -1,20 +1,17 @@
-###################
+===================
 Centreon Web 2.8.28
-###################
+===================
 
 Enhancements
-============
+------------
 
 Bug Fixes
-=========
+---------
 
 * [Actions] Downtime and acknowledgement not working (PR/#7233)
 
-Documentation
-=============
-
 Security
-========
+--------
 
 * Adding security filters on the host list page (PR/#6625)
 * Fix ACL calculation when interfering with the GET request (PR/#7518)
@@ -22,15 +19,12 @@ Security
 * Type juggling can lead to authentication bypass (PR/#7084)
 * Fix SQL injection on Service grid by hostgroup page (PR/#7275)
 
-Others
-======
-
-###################
+===================
 Centreon Web 2.8.27
-###################
+===================
 
 Enhancements
-============
+------------
 
 * [ACL] Improve ACL access on downtime and hostgroup form - PR #6962
 * [API] API for commands arguments descriptions - PR #7196
@@ -38,7 +32,7 @@ Enhancements
 * [LDAP] manage multiple ldap group with same dn - PR #6714
 
 Bug Fixes
-=========
+---------
 
 * [ACL] Host calculation with ACL is not correct - PR #6436
 * [API] Broker configuration accept accept id 0
@@ -60,7 +54,7 @@ Bug Fixes
 * [Visual notification] exclude services started by BA from BAM UI notification style - PR #6782
 
 Documentation
-=============
+-------------
 
 * Correct menu access to add/edit recurrent downtime - #6698
 * Correct the upgrape chapter - #6916
@@ -68,7 +62,7 @@ Documentation
 * Quick Start improvements 
 
 Security
-========
+--------
 
 * Add SQL and XSS protection of Administration Logs page - PR #7038
 * Avoid password macro to appear in cleartext - PR #7020
@@ -84,23 +78,23 @@ Security
 * Rce vulnerability fixed when using command's testing feature (#7245)
 
 Others
-======
+------
 
 * Change copyright calculation code and replace mailto link by a direct link to our website
 * Fix compatibility with PHP 5.3
 
-###################
+===================
 Centreon Web 2.8.26
-###################
+===================
 
 Enhancements
-============
+------------
 
 * [Authentication] Set LDAP version 3 as default in LDAP configuration form - PR #6452
 * [Notification] Standardize mail notifications PR #6570 (ex PR #6530)
 
 Bug Fixes
-=========
+---------
 
 * [ACL] Do not get severity of parents if present on actual object - PR #6484
 * [ACL] ACLs calculation is too slow with lot of acl resources - #6461, PR #6495
@@ -112,7 +106,7 @@ Bug Fixes
 * [Monitoring] Sort hosts by name ASC in serviceGridByHGXML - #6529, PR #6547
 
 Documentation
-=============
+-------------
 
 * Fix doc architecture - PR #6430
 * Fix images for db replication - PR #6432
@@ -124,19 +118,19 @@ Documentation
 * Global review documentation content - #6560, PR #6510
 
 Others
-======
+------
 
 * Remove dead code from escalation page - PR #6393
 * Remove old and unused file in order to avoid problems with ACL - PR #6210
 
 Notice
-======
+------
 
 The Standardize mail notifications enhancement is only available for new instalaltion (PR #6570)
 
-###################
+===================
 Centreon Web 2.8.25
-###################
+===================
 
 Introduction to a new banner to prepare the next releases. This feature must be
 enabled for each user. After the update, users will be asked to activate or not this
@@ -144,14 +138,14 @@ feature. New banner will appear after refresh of the page. A rollback is still p
 through the "My account" menu.
 
 Enhancements
-============
+------------
 
 * [UX] New banner in feature flipping mode - PR #6294
 * [API] Submit result for passif resources - PR #6209
 * [API] Export is too long when lot of parentship - PR #6372
 
 Bug Fixes
-=========
+---------
 
 * [API] Correct real time service filters - #6080 PR #6363
 * [API] Restore broker configuration with clapi generate too much output and input - #5011 PR #6220
@@ -167,12 +161,12 @@ Bug Fixes
 * [Reporting] Avoid bug on partitioned tables - PR #6382
 
 Security
-========
+--------
 
 * Fix SQL injection from metrics RPN's field - PR #6356
 
 Others
-======
+------
 
 * Avoid PHP notice Undefined index: centreon in notifications.php - PR #6266
 * Delete "Ping" and "Tracert" entries (no more used) - PR #6277
@@ -181,17 +175,17 @@ Others
 * Add some missing developers in Centreon About - PR #6410 #6253
 * Several fixes and improvements in documentation
 
-###################
+===================
 Centreon Web 2.8.24
-###################
+===================
 
 Bug Fixes
-=========
+---------
 
 * Remove duplicate entries in centreon_acl table - PR #6366
 
 Security
-========
+--------
 
 * Fix execution command by rrdtool command line - PR #6263
 * Fix XSS on command form - PR #6260
@@ -202,31 +196,31 @@ Security
 * Fix SQL injection in Curve template - PR #6256
 * Fix SQL Injection in Virtual Metrics - PR #6257
 
-###################
+===================
 Centreon Web 2.8.23
-###################
+===================
 
 Enhancements
-============
+------------
 
 * [Documentation] Correct typo - PR #6202
 * [Documentation] Update icon to add metrics to a meta service - PR #6167
 * [Documentation] Correct typo in documentation about stream connector howto #6261
 
 Bug Fixes
-=========
+---------
 
 * [ACL] fix select all checkbox in acl actions form - PR #6193
 * [Administration] fix purge on pmax partition - PR #6232
 * [Downtimes] fix recurrent downtimes on HG when no SG exist - PR #6201
 
 Security
-========
+--------
 
 * Update jquery ui libs +fix compat - PR #6181
 
 Others
-======
+------
 
 * fix(centAcl.php): Dead code removed - PR #6262
 * fix(lib): allow chaining on jquery pagination plugin - PR #6219
@@ -236,49 +230,46 @@ Others
 * fix(front): retrieve jquery toggle function (renamed to toggleClick) - PR #6217
 * fix(front): fix acl actions checkboxes (check all / uncheck all) - PR #6309
 
-###################
+===================
 Centreon Web 2.8.22
-###################
+===================
 
 Enhancements
-============
+------------
 
 Bug Fixes
-=========
+---------
 
 * [CLAPI] Fix host services deployment - PR #6212
 
-Other
-=====
-
-###################
+===================
 Centreon Web 2.8.21
-###################
+===================
 
 Enhancements
-============
+------------
 
 * [Documentation] Add chapter about how to write a stream connector - PR #6189
 * [API] Separate REST API configuration and REST API realtime access - PR #6188
 
 Bug Fixes
-=========
+---------
 
 * [ACL] Manage filters (poller, host, service) on servicegroup - PR #6163
 * [Configuration] Fix output stream connector name for fresh install - PR #6159 #6182
 * [Configuration] No "Conf changed" flag set to "yes" when deploying services to selected hosts - #6160 PR #6191
 
 Other
-=====
+-----
 
 * Fix php warning in realtime host API - PR #6174
 
-###################
+===================
 Centreon Web 2.8.20
-###################
+===================
 
 Enhancements
-============
+------------
 
 * [API] Add default poller - PR #6098
 * [API] Link host with default poller if unknown poller - PR #6099
@@ -289,7 +280,7 @@ Enhancements
 * [Monitoring] Display links in output and comments  - #5943 PR #6113
 
 Bug Fixes
-=========
+---------
 
 * [ACL] Allow nested groups filter in ldap configuration - #6127 PR #6128
 * [API] Export specific service, add host before service in CLAPI - PR #6100
@@ -301,35 +292,35 @@ Bug Fixes
 * [Poller Stats] Poller Statistics Graphs are displayed in first column only - #6003 PR #6122
 
 Others
-======
+------
 
 * Update copyright date on the login page - PR #6076
 * Remove multiple debug in Centreon - PR #6138
 
-###################
+===================
 Centreon Web 2.8.19
-###################
+===================
 
 Enhancements
-============
+------------
 
 * [API] Return error when filtered object does not exist - PR #6074 
 * [API] Add clapi set option - PR #6065
 * [UX] Add new loading css - PR #6066 #6072
 
 Bug Fixes
-=========
+---------
 
 * [API] Fix clapi export with hosts parent relations - #6061
 * [API] Uninitialized array causing php warning - PR #6046 #6097
 * [Monitoring] Top counter very slow since upgrade from 2.8.17 to 2.8.18 - #6085 PR #6093
 
-###################
+===================
 Centreon Web 2.8.18
-###################
+===================
 
 Enhancements
-============
+------------
 
 * [Administration] Add more actions and logging for ACL management  - PR #5841
 * [API] Validate input parameters - PR #5958
@@ -342,7 +333,7 @@ Enhancements
 * [Knowledge-Base] Add option to disable SSL certificate - PR #6027
 
 Bug Fixes
-=========
+---------
 
 * [Administration] Define default value for Broker - #6029 PR #6033
 * [Configuration] Change low limit of EventMaxQueueSize for Centreon Broker configuration - PR #6013
@@ -355,12 +346,12 @@ Bug Fixes
 * [Monitoring] Replace dot character in command line for better display - PR #5945
 * [Monitoring] Fix add downtime on hostgroup or poller with ACL - PR #6023 
 
-###################
+===================
 Centreon Web 2.8.17
-###################
+===================
 
 Enhancements
-============
+------------
 
 * [API] Add Host getparam PR #5783
 * [API] Delete/Cancel Real Time Downtime #5879 PR #5894
@@ -369,7 +360,7 @@ Enhancements
 * [Documentation] Remove obsolete paragraph PR #5898
 
 Bug Fixes
-=========
+---------
 
 * [ACL] Undefined variable host id PR #5891
 * [ACL] Use correct id for acl host relation PR #5896
@@ -383,18 +374,18 @@ Bug Fixes
 * [Monitoring] fix macro password with arguments in object details page PR #5928 #5881
 
 Security
-========
+--------
 
 * Prepare query and execute it #5904
 * Improve list of objects for Select2 #5918
 * Update SQL query to prevent SQL injection in setRotate form #5915
 
-###################
+===================
 Centreon Web 2.8.16
-###################
+===================
 
 Enhancements
-============
+------------
 
 * [Administration] Improve 'Server Status' page PR #5820
 * [API] Add exceptions for realtime PR #5735  #5795
@@ -406,7 +397,7 @@ Enhancements
 * [Documentation] Improve API realtime downtimes examples
 
 Bugfix
-======
+------
 
 * [Install] Properly place update to 2.8 from 2.7. #5809
 * [ACL] centAcl cron LDAP sync removes all ContactGroups on unexpected error  #5547
@@ -421,12 +412,12 @@ Bugfix
 * [Monitoring] Display 0 in top counter if SQL result is empty #5758 PR #5826
 * [Security] Some field was not encoded PR #5847
 
-###################
+===================
 Centreon Web 2.8.15
-###################
+===================
 
 Important notice
-================
+----------------
 
 This version include a fix for the calculation of downtimes with daylight saving 
 time (DST). The downtime end will be calculate with the new hour.
@@ -436,13 +427,13 @@ downtime will be 5 hours if during the DST you get 1 hour more (3 AM come back
 to 2 AM).
 
 Enhancements
-============
+------------
 
 * [Documentation] Improve api documentation (url) #5792
 * [Downtimes] Manage downtimes with dst (recurrent and realtime) #5780
 
 Bugfix
-======
+------
 
 * [Install] Fix foreign key upgrade of traps_group table PR #5752
 * [CLAPI] Fix duplicate ldap serverPR #5769
@@ -455,12 +446,12 @@ Bugfix
 * [Monitoring] Ranking of ascending / descending guests NOK #5695 PR #5744
 * [Monitoring] fix variable name in centreontrapd.pm
 
-###################
+===================
 Centreon Web 2.8.14
-###################
+===================
 
 Enhancements
-============
+------------
 
 * [API] Update CLAPI commands to show resources of a downtime PR #5705
 * [API] Add possibility to grant access to children menu (or not) PR #5694
@@ -471,7 +462,7 @@ Enhancements
 * [Administration] Add possibility to test proxy configuration #5561 PR #5722
 
 Bugfix
-======
+------
 
 * [API] Fix list of hosts with gethosts method of Instance object #5300 PR #5603
 * [Install]  Add unique key on comments table PR #5665
@@ -482,19 +473,19 @@ Bugfix
 * [Monitoring] No inheritance in query of notified contacts #4981
 * [Monitoring] Top counter display too much resources with ACL #5713 PR #5703
 
-###################
+===================
 Centreon Web 2.8.13
-###################
+===================
 
 Enhancements
-============
+------------
 
 * [Doc] Improve centreon documentation #5611 PR #5612
 * [Doc] clarify documentation of centreon clapi authentication #5625 PR #5628
 * [Performance] Correct svc top counter with meta and merge SQL requests PR #5616
 
 Bugfix
-======
+------
 
 * [Top Counter] Metaservices not counted properly in statuses filter #5458 PR #5616
 * [Configuration] Properly export interval length in storage endpoints #5461
@@ -503,13 +494,12 @@ Bugfix
 * [LDAP] Problem with LDAP autoimport and groupmapping with comma in CN #4867
 * [Monitoring] No inheritance in query of notified contacts (Monitoring view) #4981
 
-
-###################
+===================
 Centreon Web 2.8.12
-###################
+===================
 
 Enhancements
-============
+------------
 
 * [API] Update documentation to remove non available functions
 * [API] Export/Import LDAP configuration
@@ -526,7 +516,7 @@ Enhancements
 * [Backup] Get correct datadir with CentOS7/MariaDB PR #5484
 
 Bugfix
-======
+------
 
 * [ACL] Bug on Access Groups #5189
 * [ACL] The ACL of a contact and of a contact group is deleted during duplication #5497
@@ -553,18 +543,18 @@ Bugfix
 * [Configuration] Fix search in trap select2
 * [Configuration] Fix search in service template select2
 
-###################
+===================
 Centreon Web 2.8.11
-###################
+===================
 
 Enhancements
-============
+------------
 
 * Fix typos in Enabled/Disabled filters PR #5251
 * Do not list meta services in list of service to add to a SNMP trap #5418 PR #5419
 
 Bugfix
-======
+------
 
 * Knowledgebase - Delete wiki page not functional #5059
 * Massive Change don't modify the Recovery notification delay of a host #5451
@@ -576,12 +566,12 @@ Bugfix
 * [CLAPI] Duplicate CMD in export #5455
 * [CLAPI] Fatal error with PDOException #5453 PR #5462
 
-###################
+===================
 Centreon Web 2.8.10
-###################
+===================
 
 Enhancements
-============
+------------
 
 * Proposal break Ajax #5256
 * Do not export empty Centreon Broker parameters with API #5284
@@ -592,7 +582,7 @@ Enhancements
 * Rename Centreon Broker Daemon option #5276
 
 Bugfix
-======
+------
 
 * Failure with special character in password for mysqldump #5173
 * Unable to select all services in escalation form #5326 #PR5325
@@ -609,12 +599,12 @@ Bugfix
 * Graph period displayed does not match selected zoom period #5334
 * Host configuration can not be saved or modified #5348
 
-##################
+==================
 Centreon Web 2.8.9
-##################
+==================
 
 Bug Fixes
-=========
+---------
 
 * Fix Incorrect style for "Scheduled downtime" in dashboard - #5240
 * Apply new Centreon graphical charter to add and modify pages for metaservice indicator - #5255
@@ -662,39 +652,35 @@ Graphs
 * Add option for display or not the toggle all curves in views charts - #5159
 * Use the base from graph template for humanreable ticks - #5149
 
-##################
+==================
 Centreon Web 2.8.8
-##################
+==================
 
 Bug Fixes
-=========
+---------
 
 * Fix Centreon Engine configuration form
 * Fix custom view sharing
 * Fix Knowledge Base script compatibility with PHP < 5.4
 
-
-##################
+==================
 Centreon Web 2.8.7
-##################
+==================
 
 Bug Fixes
-=========
+---------
 
 * Fix various security issues
 * Fix ldap configuration form
 * Fix downtime popup in listing pages
 * Fix object listing pages which are empty after some actions
 
-##################
+==================
 Centreon Web 2.8.6
-##################
+==================
 
 Bug Fixes
-=========
-
-KB
---
+---------
 
 * Downtimes - Display real BA name instead of _Module_ - #5014, PR #5094
 * InfluxDB broker output config: metric columns not stored properly - #5058, PR #5089
@@ -714,7 +700,7 @@ KB
 * Poller status still working when the poller is disabled - #5126, PR #5133
 
 Enhancements
-============
+------------
 
 * Display inherited categories in host details page
 * Do not check modification of configuration on disabled poller for better performance - PR #4928
@@ -732,37 +718,37 @@ If you already used a knowledge base, please execute following script :
 
 
 Known bugs or issues
-====================
+--------------------
 
 * There's an issue in the ldap configuration form. A fix is available and will be package with the next bugfix version. Until then you can apply the patch available `here <https://github.com/centreon/centreon/commit/8aef6dfa4e3af27f16277b4211655889cf91fb71>`_
 * There's an issue on all listing pages. A fix is available and will be package with the next bugfix version. Until then you can apply the `available patch <https://github.com/centreon/centreon/commit/d9b58f203f1af377575328d6f955ac1e9c8fb804>`_
 
-##################
+==================
 Centreon Web 2.8.5
-##################
+==================
 
 Released March 29th, 2017.
 
 The 2.8.5 release for Centreon Web is now available for download. Here are its release notes.
 
 Features
-========
+--------
 
 API
----
+###
 
 * Possibility to create an account to reach API without web access - #4980, PR #4992
 
 
 Monitoring
-----------
+##########
 
 * Better display in service detail with long output or long command - #4974, #4975, PR #5002
 * Recurrent downtimes, extend specific period settings to select 2nd, 2td or 5th o month - #4207, #4908
 
 
 Charts
-------
+######
 
 * Add split function in chart - #4803, #4990
 * Add button to display curve legend (min/max/average) - #4595
@@ -772,17 +758,17 @@ Charts
 
 
 Ergonomics
-----------
+##########
 
 * Add new Centreon style for some buttons - PR #5060, PR #5061, PR #5062, PR #5067, PR #5068
 * Add possibility to copy-paste executed command ligne from service details page - PR #5065
 
 
 Bug Fixes
-=========
+---------
 
 ACL
----
+###
 
 * Incorrect redirection to error page with ACL - #4932
 * Dashboard not works when using filter #4886, PR #5023
@@ -790,7 +776,7 @@ ACL
 
 
 Authentication
---------------
+##############
 
 * Only logout are logged - #4924, PR #5004
 * Autologin with any token - #4668
@@ -798,7 +784,7 @@ Authentication
 
 
 Monitoring
-----------
+##########
 
 * "Executed Check Command Line" is wrong for services associated to hostgroups - #4955, PR #5037
 * Poller delete stay on Poller list in Monitoring Tab - #5026, PR #5027
@@ -815,20 +801,20 @@ Monitoring
 
 
 Graphs
-------
+######
 
 * Curves color on New graph is not equal to old graph - #5033
 * Wrong host title in Graph - #4964 #4984
 
 
 Dashboard
----------
+#########
 
 * Incorrect CSS for reporting of a service - #4934, PR #5009
 
 
 Configuration
--------------
+#############
 
 * Exploit correlation with Centreon BAM - PR #5049
 * Disable notification sounds not working - #4988, PR #4973
@@ -842,7 +828,7 @@ Configuration
 
 
 Custom view
------------
+###########
 
 * Rewrite system to share public views - PR #4823
 * Rewrite system to share locked views to contacts or contactgroups
@@ -852,7 +838,7 @@ Custom view
 * "Set Default" button not working - #5079
 
 Documentation
--------------
+#############
 
 * Improve installation chapters - #4970, PR #4967
 * open_files_limit error during installation - #5017, #5038
@@ -860,31 +846,29 @@ Documentation
 * Update product lifecycle - PR 5044
 * Correct contact creation example - PR #5035, - PR #5036
 
-
 API
----
+###
 
 * Rename TIMEPERIOD object to TP - PR #4913, PR #4914
 * CLAPI doesn't work when Centreon BAM is installed - #4921, PR #5049, PR 5005
 * DowntimeManager - do not remove downtimes not linked to objects to allows configuration with API - #5057
 
-
 Backup
-------
+######
 
 * Backup export does not work - #4726, PR #5019
 * Backup won't work without old deprecated variables - #4965, #PR #5007
 
 
 Installation
-------------
+############
 
 * SQL script error for upgrade from 2.6.6 to 2.7.0RC1 - #5064, PR #5066
 * Using sources, error with CentPlugins Trap on install - PR #4963
 
 
 Known bugs or issues
-====================
+--------------------
 
 * Centreon Engine performance chart still in RRDTools PNG format;
 * Zoom out on chart change period on filters;
@@ -892,9 +876,9 @@ Known bugs or issues
 * Problem with recurrent downtimes and DST;
 * Issue with international keyboard and chrome when use accented characters;
 
-##################
+==================
 Centreon Web 2.8.4
-##################
+==================
 
 Released February 8th, 2017.
 
@@ -911,7 +895,6 @@ Bug Fixes
 * Fix problem with the upgrade process - all Centreon systems coming from 2.7.x have a database problem - column timezone was missing in the table $STORAGE$.hosts ;
   --> this problem prevents centreon-broker from starting
 
-
 Known bugs or issues
 --------------------
 
@@ -920,9 +903,9 @@ Known bugs or issues
 * User with ACL can't see it own previously created meta service ;
 * Problem with recurrent downtimes and DST ;
 
-##################
+==================
 Centreon Web 2.8.3
-##################
+==================
 
 Released January 11th, 2017.
 
@@ -955,9 +938,9 @@ Known bugs or issues
 * User with ACL can't see it own previously created meta service ;
 * Problem with recurrent downtimes and DST ;
 
-##################
+==================
 Centreon Web 2.8.2
-##################
+==================
 
 Released December 8th, 2016.
 
@@ -986,9 +969,9 @@ Known bugs or issues
 * User with ACL can't see it own previously created meta service ;
 * Problem with recurrent downtimes and DST ;
 
-##################
+==================
 Centreon Web 2.8.1
-##################
+==================
 
 Released November 14th, 2016
 
@@ -1066,4 +1049,3 @@ Known bugs or issues
 * User with ACL can't see it own previously created meta service ;
 * Problem with recurrent downtimes and DST ;
 * Issues on SSO Authentication
-

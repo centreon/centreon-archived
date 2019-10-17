@@ -62,10 +62,7 @@ Documentation
 Security fixes
 --------------
 
-* [UI] add escapeshellarg to  nagios_bin binary passed to shell_exec (#7694 closes CVE-2019-13024)
-
-Known issue
------------
+* [UI] add escapeshellarg to  nagios_bin binary passed to shell_exec (#7694 closes CVE-2019-13024)
 
 ====================
 Centreon Web 19.04.2
@@ -106,16 +103,10 @@ Bug fixes
 * [Monitoring] Macros not displayed in WUI for new services when you select your template (Fixes #7121 with #7515, #7535)
 * [Monitoring] Filter issues on host monitoring page fixed (#7511)
 
-Documentation
--------------
-
 Security fixes
 --------------
 
 * [ACL] Fix ACL calculation when interfering with the GET request (PR/#7517)
-
-Known issue
------------
 
 ====================
 Centreon Web 19.04.0
