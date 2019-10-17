@@ -1,4 +1,123 @@
 ====================
+Centreon Web 19.04.4
+====================
+
+Enhancements
+------------
+
+
+Bug fixes
+---------
+
+
+Documentation
+-------------
+
+
+Security fixes
+--------------
+
+
+Known issue
+-----------
+
+====================
+Centreon Web 19.04.3
+====================
+
+Enhancements
+------------
+
+* [Traps] Increase trap special command database field (#7610)
+* [Traps] Make @HOSTID@ macro available for trap configuration (#7592)
+* [Traps] You can create a trap with matching mode regexp (#7679)
+* [UI] Enhance helper (tooltip) for mail configuration (#7584)
+* [UI] Translate notification delay parameters (#7696)
+
+Bug fixes
+---------
+
+* [Centcore] Issue fixed with commands that were overwritten (#7650)
+* [Configuration] Correctly save service_interleave_factor value in Engine configuration form (#7591)
+* [Configuration] Correctly search services by "disabled" state (#7612)
+* [Downtime] Correctly compute downtime duration & end date (#7601)
+* [Event Logs] Several issues fixed on CSV export (group arrows, host filter)
+* [Installation] Missing template directory in tar.gz package
+* [Monitoring] Correctly display services with special character "+" (#7624)
+* [Remote Server] Update only properties of selected poller (#7633)
+* [Remote Server] Do not compare bugfix version on task import (#7638)
+* [Remote Server] Increase size of database field to store large FQDN (#7637 closes #7615)
+* [Remote Server] Set task in failed if an error appears during import/export (#7634)
+* [Remote Server] Filter output to master on NEB category only (#7695)
+* [Reporting] Correctly apply ACL on reporting dashboard (#7604)
+* [UI] Add scrollbar to remote server configuration wizard (#7600)
+* [UI] Change icon cursor when exporting graphs to PNG (#7613)
+* [Upgrade] Issue with upgrade from 18.10.x to 19.04.x (#7602 closes #7596)
+
+Documentation
+-------------
+
+* [Onboarding] Improve actual content for Quick Start and add more (#7609)
+
+Security fixes
+--------------
+
+* [UI] add escapeshellarg to  nagios_bin binary passed to shell_exec (#7694 closes CVE-2019-13024)
+
+Known issue
+-----------
+
+====================
+Centreon Web 19.04.2
+====================
+
+Bug fixes
+---------
+
+* [LDAP] optimizing the data sent when importing contact (PR/#7559)
+* [Web] expose properly react router dom (PR/#7582)
+* [Web] retrieve loading animation (PR/#7587)
+* [Web] retrieve scrollbar on internal react pages
+
+====================
+Centreon Web 19.04.1
+====================
+
+Enhancements
+------------
+
+* [Graphs] Add more curves template for fresh installations (#5819, #7530)
+* [Remote Server] Add possibility to use HTTPS or HTTP for communication and to define TCP port (PR/#7536)
+* [Remote Server] Add possibility to verify or not peer SSL certificate (PR/#7536)
+* [Remote Server] Add possibility to use or not configured proxy (PR/#7536)
+
+Bug fixes
+---------
+
+* [ACL] Fix issue with monitoring pages (PR/#7554)
+* [Administration] Correct the redirection after submitting the monitoring form (PR/#7545)
+* [Packaging] Install systemd .service files with 644 permissions
+* [Web] Fix date format for CSV export (PR/#7533)
+* [Web] Correct the displayed saved researched value in the select2 components (PR/#7525)
+* [Packaging] fix installation of conf.pm and centreontrapd.pm
+* [Monitoring] Fix hard_state_duration column (#7506)
+* [Graphs] No-unit series now trigger a second axis (Closes #7330 with #7341)
+* [Graphs] "Split chart" mode do not show thresholds (Closes #7342,#7235 with #7343)
+* [Monitoring] Macros not displayed in WUI for new services when you select your template (Fixes #7121 with #7515, #7535)
+* [Monitoring] Filter issues on host monitoring page fixed (#7511)
+
+Documentation
+-------------
+
+Security fixes
+--------------
+
+* [ACL] Fix ACL calculation when interfering with the GET request (PR/#7517)
+
+Known issue
+-----------
+
+====================
 Centreon Web 19.04.0
 ====================
 
