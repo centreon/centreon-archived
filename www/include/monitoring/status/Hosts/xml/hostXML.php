@@ -109,58 +109,56 @@ $obj->setCriticality($criticalityValue);
 /*
  * Get Host status
  */
-$rq1 =  " SELECT SQL_CALC_FOUND_ROWS DISTINCT h.state," .
-    " h.acknowledged, " .
-    " h.passive_checks," .
-    " h.active_checks," .
-    " h.notify," .
-    " h.last_state_change," .
-    " h.last_hard_state_change," .
-    " h.output," .
-    " h.last_check, " .
-    " h.address," .
-    " h.name," .
-    " h.alias," .
-    " h.action_url," .
-    " h.notes_url," .
-    " h.notes," .
-    " h.icon_image," .
-    " h.icon_image_alt," .
-    " h.max_check_attempts," .
-    " h.state_type," .
-    " h.check_attempt, " .
-    " h.scheduled_downtime_depth, " .
-    " h.host_id, " .
-    " h.flapping, " .
-    " hph.parent_id as is_parent, " .
-    " i.name as instance_name, " .
-    " cv.value as criticality, ".
-    " cv.value IS NULL as isnull ";
-$rq1 .= " FROM instances i, ";
+$rq1 =  " SELECT SQL_CALC_FOUND_ROWS DISTINCT h.state,
+    h.acknowledged,
+    h.passive_checks,
+    h.active_checks,
+    h.notify,
+    h.last_state_change,
+    h.last_hard_state_change,
+    h.output,
+    h.last_check,
+    h.address,
+    h.name,
+    h.alias,
+    h.action_url,
+    h.notes_url,
+    h.notes,
+    h.icon_image,
+    h.icon_image_alt,
+    h.max_check_attempts,
+    h.state_type,
+    h.check_attempt,
+    h.scheduled_downtime_depth,
+    h.host_id,
+    h.flapping,
+    hph.parent_id as is_parent,
+    i.name as instance_name,
+    cv.value as criticality,
+    cv.value IS NULL as isnull
+    FROM instances i, ";
 if (!$obj->is_admin) {
-    $rq1 .= " centreon_acl, ";
+    $rq1 .= "centreon_acl, ";
 }
 if ($hostgroup) {
-    $rq1 .= " hosts_hostgroups hhg, hostgroups hg, ";
+    $rq1 .= "hosts_hostgroups hhg, hostgroups hg, ";
 }
 if ($criticalityValue) {
     $rq1 .= "customvariables cvs, ";
 }
-$rq1 .= " `hosts` h ";
-$rq1 .= " LEFT JOIN hosts_hosts_parents hph ";
-$rq1 .= " ON hph.parent_id = h.host_id ";
-
-$rq1 .= " LEFT JOIN `customvariables` cv ";
-$rq1 .= " ON (cv.host_id = h.host_id AND cv.service_id IS NULL AND cv.name = 'CRITICALITY_LEVEL') ";
-
-$rq1 .= " WHERE h.name NOT LIKE '_Module_%'";
-$rq1 .= " AND h.instance_id = i.instance_id ";
+$rq1 .= " `hosts` h
+    LEFT JOIN hosts_hosts_parents hph
+    ON hph.parent_id = h.host_id
+    LEFT JOIN `customvariables` cv
+    ON (cv.host_id = h.host_id AND cv.service_id IS NULL AND cv.name = 'CRITICALITY_LEVEL')
+    WHERE h.name NOT LIKE '_Module_%'
+    AND h.instance_id = i.instance_id ";
 
 if ($criticalityValue) {
     $rq1 .= " AND h.host_id = cvs.host_id
-              AND cvs.name = 'CRITICALITY_ID'
-              AND cvs.service_id IS NULL
-              AND cvs.value = '".$obj->DBC->escape($criticalityValue)."' ";
+        AND cvs.name = 'CRITICALITY_ID'
+        AND cvs.service_id IS NULL
+        AND cvs.value = '" . $obj->DBC->escape($criticalityValue) . "' ";
 }
 
 if (!$obj->is_admin) {
@@ -174,22 +172,22 @@ if ($search != "") {
 }
 
 if ($statusHost == "h_unhandled") {
-    $rq1 .= " AND h.state = 1 ";
-    $rq1 .= " AND h.state_type = '1'";
-    $rq1 .= " AND h.acknowledged = 0";
-    $rq1 .= " AND h.scheduled_downtime_depth = 0";
+    $rq1 .= " AND h.state = 1
+        AND h.state_type = '1'
+        AND h.acknowledged = 0
+        AND h.scheduled_downtime_depth = 0";
 } elseif ($statusHost == "hpb") {
-     $rq1 .= " AND (h.state != 0 AND h.state != 4) ";
+     $rq1 .= " AND (h.state != 0 AND h.state != 4)";
 }
 
 if ($statusFilter == "up") {
-    $rq1 .= " AND h.state = 0 ";
+    $rq1 .= " AND h.state = 0";
 } elseif ($statusFilter == "down") {
-    $rq1 .= " AND h.state = 1 ";
+    $rq1 .= " AND h.state = 1";
 } elseif ($statusFilter == "unreachable") {
-    $rq1 .= " AND h.state = 2 ";
+    $rq1 .= " AND h.state = 2";
 } elseif ($statusFilter == "pending") {
-    $rq1 .= " AND h.state = 4 ";
+    $rq1 .= " AND h.state = 4";
 }
 
 if ($hostgroup) {
@@ -200,38 +198,38 @@ if ($hostgroup) {
 if ($instance != -1 && !empty($instance)) {
     $rq1 .= " AND h.instance_id = " . $instance;
 }
-$rq1 .= " AND h.enabled = 1 ";
+$rq1 .= " AND h.enabled = 1";
 switch ($sort_type) {
     case 'name':
         $rq1 .= " ORDER BY h.name " . $order;
         break;
     case 'current_state':
-        $rq1 .= " ORDER BY h.state " . $order . ",h.name ";
+        $rq1 .= " ORDER BY h.state " . $order . ", h.name";
         break;
     case 'last_state_change':
-        $rq1 .= " ORDER BY h.last_state_change " . $order . ",h.name ";
+        $rq1 .= " ORDER BY h.last_state_change " . $order . ", h.name";
         break;
     case 'last_hard_state_change':
-        $rq1 .= " ORDER BY h.last_hard_state_change " . $order . ",h.name ";
+        $rq1 .= " ORDER BY h.last_hard_state_change " . $order . ", h.name";
         break;
     case 'last_check':
-        $rq1 .= " ORDER BY h.last_check " . $order . ",h.name ";
+        $rq1 .= " ORDER BY h.last_check " . $order . ", h.name";
         break;
     case 'current_check_attempt':
-        $rq1 .= " ORDER BY h.check_attempt " . $order . ",h.name ";
+        $rq1 .= " ORDER BY h.check_attempt " . $order . ", h.name";
         break;
     case 'ip':
         # Not SQL portable
-        $rq1 .= " ORDER BY IFNULL(inet_aton(h.address), h.address) ". $order . ",h.name ";
+        $rq1 .= " ORDER BY IFNULL(inet_aton(h.address), h.address) " . $order . ", h.name";
         break;
     case 'plugin_output':
-        $rq1 .= " ORDER BY h.output " . $order . ",h.name ";
+        $rq1 .= " ORDER BY h.output " . $order . ", h.name";
         break;
     case 'criticality_id':
-        $rq1 .= " ORDER BY isnull " . $order . ", criticality " . $order . ", h.name ";
+        $rq1 .= " ORDER BY isnull " . $order . ", criticality " . $order . ", h.name";
         break;
     default:
-        $rq1 .= " ORDER BY isnull " . $order . ", criticality " . $order . ", h.name ";
+        $rq1 .= " ORDER BY isnull " . $order . ", criticality " . $order . ", h.name";
         break;
 }
 $rq1 .= " LIMIT " . ($num * $limit) . ", " . $limit;
