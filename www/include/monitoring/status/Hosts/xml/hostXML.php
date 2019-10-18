@@ -67,35 +67,36 @@ if (!isset($obj->session_id) || !CentreonSession::checkSession($obj->session_id,
 $obj->getDefaultFilters();
 
 /*
- *  Check Arguments from GET
+ *  Sanitizing Arguments from filters
  */
-$o = $obj->checkArgument("o", $_GET, "h");
-$p = $obj->checkArgument("p", $_GET, "2");
-$num = $obj->checkArgument("num", $_GET, 0);
-$limit = $obj->checkArgument("limit", $_GET, 20);
-$instance = $obj->checkArgument("instance", $_GET, $obj->defaultPoller);
-$hostgroup = $obj->checkArgument("hostgroups", $_GET, $obj->defaultHostgroups);
-$search = $obj->checkArgument("search", $_GET, "");
-$order = $obj->checkArgument("order", $_GET, "ASC");
-$dateFormat = $obj->checkArgument("date_time_format_status", $_GET, "Y/m/d H:i:s");
+$o = filter_var($_GET['o'] ?? "h", FILTER_SANITIZE_STRING);
+$p = filter_var($_GET['p'] ?? 2, FILTER_VALIDATE_INT);
+$num = filter_var($_GET['num'] ?? 0, FILTER_VALIDATE_INT);
+$limit = filter_var($_GET['limit'] ?? 20, FILTER_VALIDATE_INT);
+$instance = filter_var($_GET['instance'] ?? $obj->defaultPoller, FILTER_VALIDATE_INT);
+$hostgroup = filter_var($_GET['hostgroups'] ?? $obj->defaultHostgroups, FILTER_VALIDATE_INT);
+$search = filter_var($_GET['search'] ?? "", FILTER_SANITIZE_STRING);
+$order = isset($_GET['order']) && $_GET['order'] === "ASC"
+    ? "ASC"
+    : "DESC";
+$dateFormat = filter_var($_GET['date_time_format_status'] ?? "Y/m/d H:i:s", FILTER_SANITIZE_STRING);
+$statusHost = filter_var($_GET['statusHost'] ?? "", FILTER_SANITIZE_STRING);
+$statusFilter = filter_var($_GET['statusFilter'] ?? "", FILTER_SANITIZE_STRING);
+$criticalityValue = filter_var($_GET['criticality'] ?? $obj->defaultCriticality, FILTER_SANITIZE_STRING);
 
-$statusHost = $obj->checkArgument("statusHost", $_GET, "");
-$statusFilter = $obj->checkArgument("statusFilter", $_GET, "");
+if (isset($_GET['sort_type']) && $_GET['sort_type'] === "host_name") {
+    $sort_type = "name";
+} else {
+    if ($o == "hpb" || $o == "h_unhandled") {
+        $sort_type = filter_var($_GET['sort_type'] ?? "", FILTER_SANITIZE_STRING);
+    } else {
+        $sort_type = filter_var($_GET['sort_type'] ?? "host_name", FILTER_SANITIZE_STRING);
+    }
+}
 
 /* Store in session the last type of call */
 $_SESSION['monitoring_host_status'] = $statusHost;
 $_SESSION['monitoring_host_status_filter'] = $statusFilter;
-
-if (isset($_GET['sort_type']) && $_GET['sort_type'] == "host_name") {
-    $sort_type = "name";
-} else {
-    if ($o == "hpb" || $o == "h_unhandled") {
-        $sort_type = $obj->checkArgument("sort_type", $_GET, "");
-    } else {
-        $sort_type = $obj->checkArgument("sort_type", $_GET, "host_name");
-    }
-}
-$criticalityValue = $obj->checkArgument('criticality', $_GET, $obj->defaultCriticality);
 
 /*
  * Backup poller selection
