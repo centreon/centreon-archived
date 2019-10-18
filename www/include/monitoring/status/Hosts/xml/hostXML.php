@@ -73,36 +73,38 @@ $o = $obj->checkArgument("o", $_GET, "h");
 $p = $obj->checkArgument("p", $_GET, "2");
 $num = $obj->checkArgument("num", $_GET, 0);
 $limit = $obj->checkArgument("limit", $_GET, 20);
-$instance = $obj->checkArgument("instance", $_GET, $obj->defaultPoller);
-$hostgroups = $obj->checkArgument("hostgroups", $_GET, $obj->defaultHostgroups);
 $search = $obj->checkArgument("search", $_GET, "");
-$order = $obj->checkArgument("order", $_GET, "ASC");
-$dateFormat = $obj->checkArgument("date_time_format_status", $_GET, "Y/m/d H:i:s");
+$order = isset($_GET['order']) && $_GET['order'] === "ASC"
+    ? "ASC"
+    : "DESC";
 
 $statusHost = $obj->checkArgument("statusHost", $_GET, "");
 $statusFilter = $obj->checkArgument("statusFilter", $_GET, "");
+$criticalityValue = $obj->checkArgument('criticality', $_GET, $obj->defaultCriticality);
 
-/* Store in session the last type of call */
-$_SESSION['monitoring_host_status'] = $statusHost;
-$_SESSION['monitoring_host_status_filter'] = $statusFilter;
+$instance = $obj->defaultPoller;
+$hostgroup = $obj->defaultHostgroups;
 
 if (isset($_GET['sort_type']) && $_GET['sort_type'] === "host_name") {
     $sort_type = "name";
 } else {
     if ($o === "hpb" || $o === "h_unhandled") {
-        $sort_type  = $obj->checkArgument("sort_type", $_GET, "");
+        $sort_type = $obj->checkArgument("sort_type", $_GET, "");
     } else {
-        $sort_type  = $obj->checkArgument("sort_type", $_GET, "host_name");
+        $sort_type = $obj->checkArgument("sort_type", $_GET, "host_name");
     }
 }
-$criticality_id = $obj->checkArgument('criticality', $_GET, $obj->defaultCriticality);
+
+/* Store in session the last type of call */
+$_SESSION['monitoring_host_status'] = $statusHost;
+$_SESSION['monitoring_host_status_filter'] = $statusFilter;
 
 /*
  * Backup poller selection
  */
 $obj->setInstanceHistory($instance);
-$obj->setHostGroupsHistory($hostgroups);
-$obj->setCriticality($criticality_id);
+$obj->setHostGroupsHistory($hostgroup);
+$obj->setCriticality($criticalityValue);
 
 /*
  * Get Host status
@@ -138,10 +140,10 @@ $rq1 .= " FROM instances i, ";
 if (!$obj->is_admin) {
     $rq1 .= " centreon_acl, ";
 }
-if ($hostgroups) {
+if ($hostgroup) {
     $rq1 .= " hosts_hostgroups hhg, hostgroups hg, ";
 }
-if ($criticality_id) {
+if ($criticalityValue) {
     $rq1 .= "customvariables cvs, ";
 }
 $rq1 .= " `hosts` h ";
@@ -154,11 +156,11 @@ $rq1 .= " ON (cv.host_id = h.host_id AND cv.service_id IS NULL AND cv.name = 'CR
 $rq1 .= " WHERE h.name NOT LIKE '_Module_%'";
 $rq1 .= " AND h.instance_id = i.instance_id ";
 
-if ($criticality_id) {
+if ($criticalityValue) {
     $rq1 .= " AND h.host_id = cvs.host_id
               AND cvs.name = 'CRITICALITY_ID'
               AND cvs.service_id IS NULL
-              AND cvs.value = '".$obj->DBC->escape($criticality_id)."' ";
+              AND cvs.value = '".$obj->DBC->escape($criticalityValue)."' ";
 }
 
 if (!$obj->is_admin) {
@@ -190,9 +192,9 @@ if ($statusFilter == "up") {
     $rq1 .= " AND h.state = 4 ";
 }
 
-if ($hostgroups) {
-    $rq1 .= " AND h.host_id = hhg.host_id AND hg.hostgroup_id IN (" . $hostgroups . ") AND hhg.hostgroup_id = hg
-        .hostgroup_id";
+if ($hostgroup) {
+    $rq1 .= " AND h.host_id = hhg.host_id AND hg.hostgroup_id IN (" . $hostgroup .
+        ") AND hhg.hostgroup_id = hg.hostgroup_id";
 }
 
 if ($instance != -1 && !empty($instance)) {
@@ -240,14 +242,14 @@ $numRows = $obj->DBC->numberRows();
 /**
  * Get criticality ids
  */
+$ct = 0;
+$flag = 0;
 $critRes = $obj->DBC->query(
     "SELECT value, host_id 
     FROM customvariables
     WHERE name = 'CRITICALITY_ID'
     AND service_id IS NULL"
 );
-$ct = 0;
-$flag = 0;
 $criticalityUsed = 0;
 $critCache = array();
 if ($critRes->numRows()) {
@@ -320,10 +322,7 @@ while ($data = $DBRESULT->fetchRow()) {
     $obj->XML->writeElement("ou", ($data["output"] ? CentreonUtils::escapeSecure($data["output"]) : "N/A"));
     $obj->XML->writeElement(
         "lc",
-        ($data["last_check"] != 0
-            ? CentreonDuration::toString(time() - $data["last_check"])
-            : "N/A"
-        )
+        ($data["last_check"] != 0 ? CentreonDuration::toString(time() - $data["last_check"]) : "N/A")
     );
     $obj->XML->writeElement("cs", _($obj->statusHost[$data["state"]]), false);
     $obj->XML->writeElement("pha", $data["acknowledged"]);
@@ -381,11 +380,7 @@ while ($data = $DBRESULT->fetchRow()) {
                     str_replace(
                         "\$HOSTNAME\$",
                         $data["name"],
-                        str_replace(
-                            "\$HOSTADDRESS\$",
-                            $data["address"],
-                            $data["notes"]
-                        )
+                        str_replace("\$HOSTADDRESS\$", $data["address"], $data["notes"])
                     )
                 )
             )
@@ -431,7 +426,8 @@ while ($data = $DBRESULT->fetchRow()) {
 
         $str = str_replace(
             "\$INSTANCEADDRESS\$",
-            $instanceObj->getParam($data['instance_name'], 'ns_ip_address'), $str
+            $instanceObj->getParam($data['instance_name'], 'ns_ip_address'),
+            $str
         );
         $obj->XML->writeElement(
             "hau",
