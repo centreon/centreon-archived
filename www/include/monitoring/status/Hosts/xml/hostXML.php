@@ -33,7 +33,6 @@
  *
  */
 
-require_once realpath(__DIR__ . "/../../../../../../config/centreon.config.php");
 require_once realpath(__DIR__ . "/../../../../../../bootstrap.php");
 include_once _CENTREON_PATH_ . "www/class/centreonXMLBGRequest.class.php";
 include_once _CENTREON_PATH_ . "www/class/centreonInstance.class.php";
@@ -57,9 +56,7 @@ $criticality = new CentreonCriticality($obj->DB);
 $instanceObj = new CentreonInstance($obj->DB);
 $media = new CentreonMedia($obj->DB);
 
-if (isset($obj->session_id) && CentreonSession::checkSession($obj->session_id, $obj->DB)) {
-    ;
-} else {
+if (!isset($obj->session_id) || !CentreonSession::checkSession($obj->session_id, $obj->DB)) {
     print "Bad Session ID";
     exit();
 }
@@ -230,10 +227,10 @@ switch ($sort_type) {
         $rq1 .= " ORDER BY h.output " . $order . ",h.name ";
         break;
     case 'criticality_id':
-        $rq1 .= " ORDER BY isnull $order, criticality $order, h.name ";
+        $rq1 .= " ORDER BY isnull " . $order . ", criticality " . $order . ", h.name ";
         break;
     default:
-        $rq1 .= " ORDER BY isnull $order, criticality $order, h.name ";
+        $rq1 .= " ORDER BY isnull " . $order . ", criticality " . $order . ", h.name ";
         break;
 }
 $rq1 .= " LIMIT " . ($num * $limit) . "," . $limit;
@@ -247,10 +244,10 @@ $numRows = $obj->DBC->numberRows();
  * Get criticality ids
  */
 $critRes = $obj->DBC->query(
-    "SELECT value, host_id " .
-    "FROM customvariables " .
-    "WHERE name = 'CRITICALITY_ID' " .
-    "AND service_id IS NULL"
+    "SELECT value, host_id
+    FROM customvariables
+    WHERE name = 'CRITICALITY_ID'
+    AND service_id IS NULL"
 );
 $criticalityUsed = 0;
 $critCache = array();
