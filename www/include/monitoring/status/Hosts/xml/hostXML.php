@@ -73,16 +73,16 @@ $o = filter_var($_GET['o'] ?? "h", FILTER_SANITIZE_STRING);
 $p = filter_var($_GET['p'] ?? 2, FILTER_VALIDATE_INT);
 $num = filter_var($_GET['num'] ?? 0, FILTER_VALIDATE_INT);
 $limit = filter_var($_GET['limit'] ?? 20, FILTER_VALIDATE_INT);
-$instance = filter_var($_GET['instance'] ?? $obj->defaultPoller, FILTER_VALIDATE_INT);
-$hostgroup = filter_var($_GET['hostgroups'] ?? $obj->defaultHostgroups, FILTER_VALIDATE_INT);
 $search = filter_var($_GET['search'] ?? "", FILTER_SANITIZE_STRING);
 $order = isset($_GET['order']) && $_GET['order'] === "ASC"
     ? "ASC"
     : "DESC";
-$dateFormat = filter_var($_GET['date_time_format_status'] ?? "Y/m/d H:i:s", FILTER_SANITIZE_STRING);
 $statusHost = filter_var($_GET['statusHost'] ?? "", FILTER_SANITIZE_STRING);
 $statusFilter = filter_var($_GET['statusFilter'] ?? "", FILTER_SANITIZE_STRING);
 $criticalityValue = filter_var($_GET['criticality'] ?? $obj->defaultCriticality, FILTER_SANITIZE_STRING);
+
+$instance = filter_var($obj->defaultPoller, FILTER_VALIDATE_INT);
+$hostgroup = filter_var($obj->defaultHostgroups, FILTER_VALIDATE_INT);
 
 if (isset($_GET['sort_type']) && $_GET['sort_type'] === "host_name") {
     $sort_type = "name";
