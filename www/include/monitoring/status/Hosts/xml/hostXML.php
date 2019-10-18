@@ -74,7 +74,7 @@ $p = $obj->checkArgument("p", $_GET, "2");
 $num = $obj->checkArgument("num", $_GET, 0);
 $limit = $obj->checkArgument("limit", $_GET, 20);
 $instance = $obj->checkArgument("instance", $_GET, $obj->defaultPoller);
-$hostgroups = $obj->checkArgument("hostgroups", $_GET, $obj->defaultHostgroups);
+$hostgroup = $obj->checkArgument("hostgroups", $_GET, $obj->defaultHostgroups);
 $search = $obj->checkArgument("search", $_GET, "");
 $order = $obj->checkArgument("order", $_GET, "ASC");
 $dateFormat = $obj->checkArgument("date_time_format_status", $_GET, "Y/m/d H:i:s");
@@ -95,154 +95,187 @@ if (isset($_GET['sort_type']) && $_GET['sort_type'] == "host_name") {
         $sort_type = $obj->checkArgument("sort_type", $_GET, "host_name");
     }
 }
-$criticality_id = $obj->checkArgument('criticality', $_GET, $obj->defaultCriticality);
+$criticalityValue = $obj->checkArgument('criticality', $_GET, $obj->defaultCriticality);
 
 /*
  * Backup poller selection
  */
 $obj->setInstanceHistory($instance);
-$obj->setHostGroupsHistory($hostgroups);
-$obj->setCriticality($criticality_id);
+$obj->setHostGroupsHistory($hostgroup);
+$obj->setCriticality($criticalityValue);
 
 /*
  * Get Host status
  */
-$rq1 = " SELECT SQL_CALC_FOUND_ROWS DISTINCT h.state," .
-    " h.acknowledged, " .
-    " h.passive_checks," .
-    " h.active_checks," .
-    " h.notify," .
-    " h.last_state_change," .
-    " h.last_hard_state_change," .
-    " h.output," .
-    " h.last_check, " .
-    " h.address," .
-    " h.name," .
-    " h.alias," .
-    " h.action_url," .
-    " h.notes_url," .
-    " h.notes," .
-    " h.icon_image," .
-    " h.icon_image_alt," .
-    " h.max_check_attempts," .
-    " h.state_type," .
-    " h.check_attempt, " .
-    " h.scheduled_downtime_depth, " .
-    " h.host_id, " .
-    " h.flapping, " .
-    " hph.parent_id as is_parent, " .
-    " i.name as instance_name, " .
-    " cv.value as criticality, " .
-    " cv.value IS NULL as isnull ";
-$rq1 .= " FROM instances i, ";
+$queryValues = [];
+$stmt = " SELECT SQL_CALC_FOUND_ROWS DISTINCT h.state,
+    h.acknowledged,
+    h.passive_checks,
+    h.active_checks,
+    h.notify,
+    h.last_state_change,
+    h.last_hard_state_change,
+    h.output,
+    h.last_check,
+    h.address,
+    h.name,
+    h.alias,
+    h.action_url,
+    h.notes_url,
+    h.notes,
+    h.icon_image,
+    h.icon_image_alt,
+    h.max_check_attempts,
+    h.state_type,
+    h.check_attempt,
+    h.scheduled_downtime_depth,
+    h.host_id,
+    h.flapping,
+    hph.parent_id as is_parent,
+    i.name as instance_name,
+    cv.value as criticality,
+    cv.value IS NULL as isnull
+    FROM instances i, ";
+
+// jointures on tables
+$jointures = " `hosts` h
+    LEFT JOIN hosts_hosts_parents hph
+    ON hph.parent_id = h.host_id
+    LEFT JOIN `customvariables` cv
+    ON (cv.host_id = h.host_id AND cv.service_id IS NULL AND cv.name = 'CRITICALITY_LEVEL') ";
+
+// general result filters
+$whereClauses = " WHERE h.name NOT LIKE '_Module_%'
+    AND h.instance_id = i.instance_id
+    AND h.enabled = 1 ";
+
+/*
+ * adding to the request the ACL and user specific filters
+ */
+
+// ACL calculation
 if (!$obj->is_admin) {
-    $rq1 .= " centreon_acl, ";
-}
-if ($hostgroups) {
-    $rq1 .= " hosts_hostgroups hhg, hostgroups hg, ";
-}
-if ($criticality_id) {
-    $rq1 .= "customvariables cvs, ";
-}
-$rq1 .= " `hosts` h ";
-$rq1 .= " LEFT JOIN hosts_hosts_parents hph ";
-$rq1 .= " ON hph.parent_id = h.host_id ";
-
-$rq1 .= " LEFT JOIN `customvariables` cv ";
-$rq1 .= " ON (cv.host_id = h.host_id AND cv.service_id IS NULL AND cv.name = 'CRITICALITY_LEVEL') ";
-
-$rq1 .= " WHERE h.name NOT LIKE '_Module_%'";
-$rq1 .= " AND h.instance_id = i.instance_id ";
-
-if ($criticality_id) {
-    $rq1 .= " AND h.host_id = cvs.host_id
-              AND cvs.name = 'CRITICALITY_ID'
-              AND cvs.service_id IS NULL
-              AND cvs.value = '" . $obj->DBC->escape($criticality_id) . "' ";
-}
-
-if (!$obj->is_admin) {
-    $rq1 .= " AND h.host_id = centreon_acl.host_id " .
+    $stmt .= " centreon_acl, ";
+    $whereClauses .= " AND h.host_id = centreon_acl.host_id " .
         $obj->access->queryBuilder("AND", "centreon_acl.group_id", $obj->grouplistStr);
 }
-if ($search != "") {
-    $rq1 .= " AND (h.name LIKE '%" . CentreonDB::escape($search) . "%' " .
-        "OR h.alias LIKE '%" . CentreonDB::escape($search) . "%' " .
-        "OR h.address LIKE '%" . CentreonDB::escape($search) . "%') ";
+// chosen hostgroup. currently only one hostgroup is returned by the filter
+if ($hostgroup) {
+    $stmt .= " hosts_hostgroups hhg, hostgroups hg, ";
+    $whereClauses .= " AND h.host_id = hhg.host_id
+        AND hg.hostgroup_id = :hostgroup
+        AND hhg.hostgroup_id = hg.hostgroup_id";
+    $queryValues['hostgroup'] = [
+        \PDO::PARAM_INT => $hostgroup
+    ];
 }
-
+//chosen criticality
+if ($criticalityValue) {
+    $stmt .= "customvariables cvs, ";
+    $whereClauses .= " AND h.host_id = cvs.host_id
+        AND cvs.name = 'CRITICALITY_ID'
+        AND cvs.service_id IS NULL
+        AND cvs.value = :criticalityValue";
+    $queryValues['criticalityValue'] = [
+        \PDO::PARAM_STR => CentreonUtils::escapeSecure($criticalityValue)
+    ];
+}
+// search field
+if ($search !== "") {
+    $whereClauses .= " AND (h.name LIKE :searchField
+        OR h.alias LIKE :searchField
+        OR h.address LIKE :searchField) ";
+    $queryValues['searchField'] = [
+        \PDO::PARAM_STR => '%' . CentreonUtils::escapeSecure($search) . '%'
+    ];
+}
+// chosen state filters
 if ($statusHost == "h_unhandled") {
-    $rq1 .= " AND h.state = 1 ";
-    $rq1 .= " AND h.state_type = '1'";
-    $rq1 .= " AND h.acknowledged = 0";
-    $rq1 .= " AND h.scheduled_downtime_depth = 0";
+    $whereClauses .= " AND h.state = 1
+        AND h.state_type = '1'
+        AND h.acknowledged = 0
+        AND h.scheduled_downtime_depth = 0";
 } elseif ($statusHost == "hpb") {
-    $rq1 .= " AND (h.state != 0 AND h.state != 4) ";
+    $whereClauses .= " AND (h.state != 0 AND h.state != 4) ";
 }
 
 if ($statusFilter == "up") {
-    $rq1 .= " AND h.state = 0 ";
+    $whereClauses .= " AND h.state = 0 ";
 } elseif ($statusFilter == "down") {
-    $rq1 .= " AND h.state = 1 ";
+    $whereClauses .= " AND h.state = 1 ";
 } elseif ($statusFilter == "unreachable") {
-    $rq1 .= " AND h.state = 2 ";
+    $whereClauses .= " AND h.state = 2 ";
 } elseif ($statusFilter == "pending") {
-    $rq1 .= " AND h.state = 4 ";
+    $whereClauses .= " AND h.state = 4 ";
 }
 
-if ($hostgroups) {
-    $rq1 .= " AND h.host_id = hhg.host_id " .
-        "AND hg.hostgroup_id IN (" . $hostgroups . ") " .
-        "AND hhg.hostgroup_id = hg.hostgroup_id";
-}
-
+// chosen poller
 if ($instance != -1 && !empty($instance)) {
-    $rq1 .= " AND h.instance_id = " . $instance;
+    $whereClauses .= " AND h.instance_id = :instance";
+    $queryValues['instance'] = [
+        \PDO::PARAM_INT => $instance
+    ];
 }
-$rq1 .= " AND h.enabled = 1 ";
+
+// adding pagination and order filters
+$orderByClauses = " ORDER BY ";
 switch ($sort_type) {
     case 'name':
-        $rq1 .= " ORDER BY h.name " . $order;
+        $orderByClauses .= "h.name " . $order;
         break;
     case 'current_state':
-        $rq1 .= " ORDER BY h.state " . $order . ",h.name ";
+        $orderByClauses .= "h.state " . $order . ",h.name ";
         break;
     case 'last_state_change':
-        $rq1 .= " ORDER BY h.last_state_change " . $order . ",h.name ";
+        $orderByClauses .= "h.last_state_change " . $order . ",h.name ";
         break;
     case 'last_hard_state_change':
-        $rq1 .= " ORDER BY h.last_hard_state_change " . $order . ",h.name ";
+        $orderByClauses .= "h.last_hard_state_change " . $order . ",h.name ";
         break;
     case 'last_check':
-        $rq1 .= " ORDER BY h.last_check " . $order . ",h.name ";
+        $orderByClauses .= "h.last_check " . $order . ",h.name ";
         break;
     case 'current_check_attempt':
-        $rq1 .= " ORDER BY h.check_attempt " . $order . ",h.name ";
+        $orderByClauses .= "h.check_attempt " . $order . ",h.name ";
         break;
     case 'ip':
         # Not SQL portable
-        $rq1 .= " ORDER BY IFNULL(inet_aton(h.address), h.address) " . $order . ",h.name ";
+        $orderByClauses .= "IFNULL(inet_aton(h.address), h.address) " . $order . ",h.name ";
         break;
     case 'plugin_output':
-        $rq1 .= " ORDER BY h.output " . $order . ",h.name ";
+        $orderByClauses .= "h.output " . $order . ",h.name ";
         break;
     case 'criticality_id':
-        $rq1 .= " ORDER BY isnull " . $order . ", criticality " . $order . ", h.name ";
+        $orderByClauses .= "isnull " . $order . ", criticality " . $order . ", h.name ";
         break;
     default:
-        $rq1 .= " ORDER BY isnull " . $order . ", criticality " . $order . ", h.name ";
+        $orderByClauses .= "isnull " . $order . ", criticality " . $order . ", h.name ";
         break;
 }
-$rq1 .= " LIMIT " . ($num * $limit) . "," . $limit;
+$orderByClauses .= " LIMIT :num, :limit";
+$queryValues['num'] = [
+    \PDO::PARAM_INT => (int)($num * $limit)
+];
+$queryValues['limit'] = [
+    \PDO::PARAM_INT => (int)($limit)
+];
 
-$ct = 0;
-$flag = 0;
-$dbResult = $obj->DBC->query($rq1);
+$dbResult = $obj->DBC->prepare($stmt . $jointures . $whereClauses . $orderByClauses);
+//binding the values
+foreach ($queryValues as $bindName => $bindData) {
+    foreach ($bindData as $bindType => $bindValue) {
+        $dbResult->bindValue($bindName, $bindValue, $bindType);
+        break;
+    }
+}
+$dbResult->execute();
 $numRows = $obj->DBC->numberRows();
 
 /**
  * Get criticality ids
  */
+$ct = 0;
+$flag = 0;
 $critRes = $obj->DBC->query(
     "SELECT value, host_id
     FROM customvariables
