@@ -368,11 +368,13 @@ class CentreonAuth
                 }
             }
         } else {
-            //  Take care before modifying this message pattern as it may break tools such as fail2ban
-            $this->CentreonLog->insertLog(
-                1,
-                "[".$this->source."] [".$_SERVER["REMOTE_ADDR"]."] Authentication failed for '" . $username . "' : not found"
-            );
+            if (($this->debug) || (strlen($username) > 0)) {
+                //  Take care before modifying this message pattern as it may break tools such as fail2ban
+                $this->CentreonLog->insertLog(
+                    1,
+                    "[".$this->source."] [".$_SERVER["REMOTE_ADDR"]."] Authentication failed for '" . $username . "' : not found"
+                );
+            }
             $this->error = _('Your credentials are incorrect.');
         }
     }
