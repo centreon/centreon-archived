@@ -36,18 +36,21 @@ EOF
 git add "www/install/php/Update-${newversion}.php"
 
 # Add release notes.
-cat << EOF > rn.txt
-===================
+cat << EOF > nv.rst
+====================
 Centreon Web $newversion
-===================
+====================
 
 Enhancements
 ------------
 
 Bug Fixes
 ---------
+
 EOF
-cat rn.txt >> "doc/en/release_notes/centreon-$major.$minor.rst"
-cat rn.txt >> "doc/fr/release_notes/centreon-$major.$minor.rst"
+cat nv.rst "doc/en/release_notes/centreon-$major.$minor.rst" > rn.rst
+cp rn.rst "doc/en/release_notes/centreon-$major.$minor.rst"
+cp rn.rst "doc/fr/release_notes/centreon-$major.$minor.rst"
+rm -f nv.rst rn.rst
 git add "doc/en/release_notes/centreon-$major.$minor.rst"
 git add "doc/fr/release_notes/centreon-$major.$minor.rst"
