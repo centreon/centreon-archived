@@ -39,11 +39,11 @@
 header('Content-Type: application/json');
 header('Cache-Control: no-cache');
 
-require_once realpath(dirname(__FILE__) . "/../../../../config/centreon.config.php");
+require_once __DIR__ . "/../../../../config/centreon.config.php";
 require_once _CENTREON_PATH_ . "/www/class/centreonDB.class.php";
 require_once _CENTREON_PATH_ . "/www/class/centreonDowntime.class.php";
 
-$downtimeId = filter_input(INPUT_GET, 'dt_id', FILTER_SANITIZE_NUMBER_INT);
+$downtimeId = filter_input(INPUT_GET, 'dt_id', FILTER_VALIDATE_INT);
 
 if (!empty($downtimeId)) {
     $pearDB = new CentreonDB();
