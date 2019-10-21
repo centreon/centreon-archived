@@ -311,10 +311,10 @@ class CentreonXMLBGRequest {
                 if ($name === 'num' && $tab[$name] < 0) {
                     $tab[$name] = 0;
                 }
-                $value = $tab[$name];
-                return CentreonUtils::escapeSecure($value, CentreonUtils::ESCAPE_INJECTION);
+                $value = htmlspecialchars($tab[$name], ENT_QUOTES, 'utf-8');
+                return CentreonDB::escape($value);
             } else {
-                return CentreonUtils::escapeSecure($defaultValue, CentreonUtils::ESCAPE_INJECTION);
+                return CentreonDB::escape($defaultValue);
             }
         }
     }

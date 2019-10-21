@@ -70,12 +70,12 @@ $obj->getDefaultFilters();
  *  Check Arguments from GET and session
  */
 // integer values from $_GET
-$p = filter_var(isset($_GET['p']) ? $_GET['p'] : 2, FILTER_VALIDATE_INT);
-$num = filter_var(isset($_GET['num']) ? $_GET['num'] : 0, FILTER_VALIDATE_INT);
-$limit = filter_var(isset($_GET['limit']) ? $_GET['limit'] : 20, FILTER_VALIDATE_INT);
+$p = filter_input(INPUT_GET, 'p', FILTER_VALIDATE_INT, array('options' => array('default' => 2)));
+$num = filter_input(INPUT_GET, 'num', FILTER_VALIDATE_INT, array('options' => array('default' => 0)));
+$limit = filter_input(INPUT_GET, 'limit', FILTER_VALIDATE_INT, array('options' => array('default' => 20)));
 
 // use whitelist values instead of the $_GET value
-$order = isset($_GET['order']) && $_GET['order'] === "ASC" ? "ASC" : "DESC";
+$order = isset($_GET['order']) && $_GET['order'] === "DESC" ? "DESC" : "ASC";
 
 // string values from the $_GET sanitized using the checkArguments which call the escapeSecure() method
 $o = $obj->checkArgument("o", $_GET, "h");
@@ -156,6 +156,7 @@ $rq1 .= " `hosts` h
     AND h.instance_id = i.instance_id ";
 
 if ($criticalityValue) {
+    // $criticalityValue has already been sanitized using CentreonDB::escape() in checkArgument()
     $rq1 .= " AND h.host_id = cvs.host_id
         AND cvs.name = 'CRITICALITY_ID'
         AND cvs.service_id IS NULL
@@ -167,6 +168,7 @@ if (!$obj->is_admin) {
         $obj->access->queryBuilder("AND", "centreon_acl.group_id", $obj->grouplistStr);
 }
 if ($search != "") {
+    // $search has already been sanitized using CentreonDB::escape() in checkArgument()
     $rq1 .= " AND (h.name LIKE '%" . $search .
         "%' OR h.alias LIKE '%" . $search .
         "%' OR h.address LIKE '%" . $search . "%') ";
