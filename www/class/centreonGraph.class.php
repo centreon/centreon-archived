@@ -113,6 +113,7 @@ class CentreonGraph
     protected $vname;
     protected $metrics;
     protected $longer;
+    protected $rrdCachedOptions;
     public $onecurve;
     public $checkcurve;
 
@@ -205,6 +206,22 @@ class CentreonGraph
         }
         $DBRESULT->closeCursor();
         unset($opt);
+
+        /* Get RRDCacheD options */
+        $result = $this->DB->query("SELECT config_key, config_value
+            FROM cfg_centreonbroker_info AS cbi
+            INNER JOIN cfg_centreonbroker AS cb ON (cb.config_id = cbi.config_id)
+            INNER JOIN nagios_server AS ns ON (ns.id = cb.ns_nagios_server)
+            WHERE ns.localhost = '1'
+            AND cbi.config_key IN ('rrd_cached_option', 'rrd_cached')"
+        );
+        while ($row = $result->fetch()) {
+            if ($row['config_key'] == 'rrd_cached_option') {
+                $this->rrdCachedOptions['rrd_cached_option'] = $row['config_value'];
+            } elseif ($row['config_key'] == 'rrd_cached') {
+                $this->rrdCachedOptions['rrd_cached'] = $row['config_value'];
+            }
+        }
 
         if (isset($index)) {
             $DBRESULT = $this->DB->query("SELECT `metric_id`
@@ -1780,8 +1797,8 @@ class CentreonGraph
      */
     protected function flushRrdcached($metricsId)
     {
-        if (!isset($this->generalOpt['rrdcached_enable'])
-            || $this->generalOpt['rrdcached_enable'] == 0
+        if (!isset($this->rrdCachedOptions['rrd_cached_option'])
+            || !preg_match('/(unix|tcp)/', $this->rrdCachedOptions['rrd_cached_option'])
         ) {
             return true;
         }
@@ -1791,20 +1808,14 @@ class CentreonGraph
          */
         $errno = 0;
         $errstr = '';
-        if (isset($this->generalOpt['rrdcached_port'])
-            && trim($this->generalOpt['rrdcached_port']) != ''
-        ) {
-            $sock = @fsockopen('127.0.0.1', trim($this->generalOpt['rrdcached_port']), $errno, $errstr);
-            if ($sock === false) {
-                return false;
-            }
-        } elseif (isset($this->generalOpt['rrdcached_unix_path'])
-            && trim($this->generalOpt['rrdcached_unix_path']) != ''
-        ) {
-            $sock = @fsockopen('unix://' . trim($this->generalOpt['rrdcached_unix_path']), $errno, $errstr);
+        if ($this->rrdCachedOptions['rrd_cached_option'] == 'tcp') {
+            $sock = fsockopen('127.0.0.1', trim($this->rrdCachedOptions['rrd_cached']), $errno, $errstr);
+        } elseif ($this->rrdCachedOptions['rrd_cached_option'] == 'unix') {
+            $sock = fsockopen('unix://' . trim($this->rrdCachedOptions['rrd_cached']), $errno, $errstr);
         } else {
             return false;
         }
+
         if (false === $sock) {
             // @todo log the error
             return false;
