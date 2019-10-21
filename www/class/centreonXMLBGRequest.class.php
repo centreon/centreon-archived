@@ -308,13 +308,13 @@ class CentreonXMLBGRequest {
     public function checkArgument($name, $tab, $defaultValue) {
         if (isset($name) && isset($tab)) {
             if (isset($tab[$name])) {
-                if ($name == 'num' && $tab[$name] < 0) {
+                if ($name === 'num' && $tab[$name] < 0) {
                     $tab[$name] = 0;
                 }
-                $value = htmlspecialchars($tab[$name], ENT_QUOTES, 'utf-8');
-                return CentreonDB::escape($value);
+                $value = $tab[$name];
+                return CentreonUtils::escapeSecure($value, CentreonUtils::ESCAPE_INJECTION);
             } else {
-                return CentreonDB::escape($defaultValue);
+                return CentreonUtils::escapeSecure($defaultValue, CentreonUtils::ESCAPE_INJECTION);
             }
         }
     }
