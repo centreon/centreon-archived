@@ -319,7 +319,7 @@ class CentreonAuth
                     $this->CentreonLog->setUID($this->userInfos["contact_id"]);
                     $this->CentreonLog->insertLog(
                         1,
-                        "[".$this->source."] [".$_SERVER["REMOTE_ADDR"]."] Authentication succeeded for '" . $username
+                        "[".$this->source."] [".$_SERVER["REMOTE_ADDR"]."] Authentication succeeded for '" . $username ."'"
                     );
                 } else {
                     //  Take care before modifying this message pattern as it may break tools such as fail2ban
