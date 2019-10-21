@@ -67,41 +67,42 @@ if (!isset($obj->session_id) || !CentreonSession::checkSession($obj->session_id,
 $obj->getDefaultFilters();
 
 /*
- *  Check Arguments from GET
+ *  Check Arguments from GET and session
  */
-$o = $obj->checkArgument("o", $_GET, "h");
-$p = $obj->checkArgument("p", $_GET, "2");
-$num = $obj->checkArgument("num", $_GET, 0);
-$limit = $obj->checkArgument("limit", $_GET, 20);
-$search = $obj->checkArgument("search", $_GET, "");
-$order = isset($_GET['order']) && $_GET['order'] === "ASC"
-    ? "ASC"
-    : "DESC";
+// integer values from $_GET
+$p = filter_var(isset($_GET['p']) ? $_GET['p'] : 2, FILTER_VALIDATE_INT);
+$num = filter_var(isset($_GET['num']) ? $_GET['num'] : 0, FILTER_VALIDATE_INT);
+$limit = filter_var(isset($_GET['limit']) ? $_GET['limit'] : 20, FILTER_VALIDATE_INT);
 
+// use whitelist values instead of the $_GET value
+$order = isset($_GET['order']) && $_GET['order'] === "ASC" ? "ASC" : "DESC";
+
+// string values from the $_GET sanitized using the checkArguments which call the escapeSecure() method
+$o = $obj->checkArgument("o", $_GET, "h");
+$search = $obj->checkArgument("search", $_GET, "");
 $statusHost = $obj->checkArgument("statusHost", $_GET, "");
 $statusFilter = $obj->checkArgument("statusFilter", $_GET, "");
 $criticalityValue = $obj->checkArgument('criticality', $_GET, $obj->defaultCriticality);
 
-$instance = $obj->defaultPoller;
-$hostgroup = $obj->defaultHostgroups;
+// values saved in the session
+$instance = filter_var($obj->defaultPoller, FILTER_VALIDATE_INT);
+$hostgroup = filter_var($obj->defaultHostgroups, FILTER_VALIDATE_INT);
 
 if (isset($_GET['sort_type']) && $_GET['sort_type'] === "host_name") {
     $sort_type = "name";
 } else {
-    if ($o === "hpb" || $o === "h_unhandled") {
+    if ($o === HOSTS_PROBLEM || $o === UNHANDLED_HOSTS_PROBLEM) {
         $sort_type = $obj->checkArgument("sort_type", $_GET, "");
     } else {
         $sort_type = $obj->checkArgument("sort_type", $_GET, "host_name");
     }
 }
 
-/* Store in session the last type of call */
+// Store in session the last type of call
 $_SESSION['monitoring_host_status'] = $statusHost;
 $_SESSION['monitoring_host_status_filter'] = $statusFilter;
 
-/*
- * Backup poller selection
- */
+// Backup poller filters
 $obj->setInstanceHistory($instance);
 $obj->setHostGroupsHistory($hostgroup);
 $obj->setCriticality($criticalityValue);
@@ -158,7 +159,7 @@ if ($criticalityValue) {
     $rq1 .= " AND h.host_id = cvs.host_id
         AND cvs.name = 'CRITICALITY_ID'
         AND cvs.service_id IS NULL
-        AND cvs.value = '" . $obj->DBC->escape($criticalityValue) . "' ";
+        AND cvs.value = '" . $criticalityValue . "' ";
 }
 
 if (!$obj->is_admin) {
@@ -166,27 +167,27 @@ if (!$obj->is_admin) {
         $obj->access->queryBuilder("AND", "centreon_acl.group_id", $obj->grouplistStr);
 }
 if ($search != "") {
-    $rq1 .= " AND (h.name LIKE '%" . CentreonDB::escape($search) .
-        "%' OR h.alias LIKE '%" . CentreonDB::escape($search) .
-        "%' OR h.address LIKE '%" . CentreonDB::escape($search) . "%') ";
+    $rq1 .= " AND (h.name LIKE '%" . $search .
+        "%' OR h.alias LIKE '%" . $search .
+        "%' OR h.address LIKE '%" . $search . "%') ";
 }
 
-if ($statusHost == "h_unhandled") {
+if ($statusHost == UNHANDLED_HOSTS_PROBLEM) {
     $rq1 .= " AND h.state = 1
         AND h.state_type = '1'
         AND h.acknowledged = 0
         AND h.scheduled_downtime_depth = 0";
-} elseif ($statusHost == "hpb") {
+} elseif ($statusHost === HOSTS_PROBLEM) {
      $rq1 .= " AND (h.state != 0 AND h.state != 4)";
 }
 
-if ($statusFilter == "up") {
+if ($statusFilter === "up") {
     $rq1 .= " AND h.state = 0";
-} elseif ($statusFilter == "down") {
+} elseif ($statusFilter === "down") {
     $rq1 .= " AND h.state = 1";
-} elseif ($statusFilter == "unreachable") {
+} elseif ($statusFilter === "unreachable") {
     $rq1 .= " AND h.state = 2";
-} elseif ($statusFilter == "pending") {
+} elseif ($statusFilter === "pending") {
     $rq1 .= " AND h.state = 4";
 }
 
@@ -234,7 +235,7 @@ switch ($sort_type) {
 }
 $rq1 .= " LIMIT " . ($num * $limit) . ", " . $limit;
 
-$DBRESULT = $obj->DBC->query($rq1);
+$dbResult = $obj->DBC->query($rq1);
 $numRows = $obj->DBC->numberRows();
 
 /**
@@ -274,7 +275,7 @@ $obj->XML->writeElement("use_criticality", $criticalityUsed);
 $obj->XML->endElement();
 
 $delimInit = 0;
-while ($data = $DBRESULT->fetchRow()) {
+while ($data = $dbResult->fetchRow()) {
     if ($data["last_state_change"] > 0 && time() > $data["last_state_change"]) {
         $duration = CentreonDuration::toString(time() - $data["last_state_change"]);
     } else {
@@ -437,7 +438,7 @@ while ($data = $DBRESULT->fetchRow()) {
 
     $obj->XML->endElement();
 }
-$DBRESULT->free();
+$dbResult->free();
 
 if (!$ct) {
     $obj->XML->writeElement("infos", "none");
