@@ -83,7 +83,7 @@ class CentreonUserLog
         /*
          * Construct alerte message
          */
-        $string = date("Y-m-d H:i") . "|" . $this->uid . "|$page|$option|$str";
+        $string = date("Y-m-d H:i:s") . "|" . $this->uid . "|$page|$option|$str";
 
         /*
          * Display error on Standard exit
