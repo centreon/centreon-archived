@@ -231,14 +231,14 @@ class CentreonGraphNg
         $this->generalOpt = $stmt->fetchAll(PDO::FETCH_GROUP|PDO::FETCH_UNIQUE|PDO::FETCH_ASSOC);
 
         /* Get RRDCacheD options */
-        $stmt = $this->db->prepare("SELECT config_key, config_value
+        $stmt = $this->db->query("SELECT config_key, config_value
             FROM cfg_centreonbroker_info AS cbi
             INNER JOIN cfg_centreonbroker AS cb ON (cb.config_id = cbi.config_id)
             INNER JOIN nagios_server AS ns ON (ns.id = cb.ns_nagios_server)
             WHERE ns.localhost = '1'
             AND cbi.config_key IN ('rrd_cached_option', 'rrd_cached')"
         );
-        $stmt->execute();
+
         while ($row = $stmt->fetch()) {
             if ($row['config_key'] == 'rrd_cached_option') {
                 $this->rrdCachedOptions['rrd_cached_option'] = $row['config_value'];
