@@ -55,6 +55,10 @@ class CentreonUtils
      * Remove all specific characters defined in the configuration > pollers > engine > admin, illegal characters field
      */
     const ESCAPE_ILLEGAL_CHARS = 4;
+    /**
+     * Remove all tags, convert what remains in html entities and remove semicolon to prevent XSS and SQL injection
+     */
+    const ESCAPE_INJECTION = 8;
 
     /**
      * Defines all self-closing html tags allowed
@@ -277,6 +281,7 @@ class CentreonUtils
      * @param string $targetVersion Version to compare
      * @param string $delimiter Indicates the delimiter parameter for version
      * @param integer $depth Indicates the depth of comparison, if 0 it means "unlimited"
+     * @return integer
      */
     public static function compareVersion($currentVersion, $targetVersion, $delimiter = ".", $depth = 0)
     {
@@ -326,6 +331,7 @@ class CentreonUtils
      * @see CentreonUtils::ESCAPE_ALL_EXCEPT_LINK
      * @see CentreonUtils::ESCAPE_ALL
      * @see CentreonUtils::ESCAPE_ILLEGAL_CHARS
+     * @see CentreonUtils::ESCAPE_INJECTION
      */
     public static function escapeSecure(
         $stringToEscape,
@@ -340,12 +346,22 @@ class CentreonUtils
             case self::ESCAPE_ALL:
                 return self::escapeAll($stringToEscape);
             case self::ESCAPE_ILLEGAL_CHARS:
+                // remove all blacklisted characters listed in the configuration > engine > admin > illegal chars field
                 $pattern = html_entity_decode(
                     $_SESSION['centreon']->Nagioscfg['illegal_object_name_chars'],
                     ENT_QUOTES,
                     "UTF-8"
                 );
                 return str_replace(str_split($pattern), "", $stringToEscape);
+            case self::ESCAPE_INJECTION:
+                // remove all javascript and html tags using sanitize method
+                // convert to html entities all that remains
+                // remove the semicolons to avoid SQL injection
+                $stringToReturn = filter_var(
+                    $stringToEscape,
+                    FILTER_SANITIZE_STRING
+                );
+                return str_replace(";", "", (self::escapeSecure($stringToReturn, self::ESCAPE_ALL)));
         }
     }
 
