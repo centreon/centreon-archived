@@ -102,12 +102,13 @@ class CentreonSession
         $sessionId = str_replace(array('_', '%'), array('', ''), $sessionId);
         $sessionId = htmlentities(trim($sessionId), ENT_QUOTES, "UTF-8");
         /**
-         * @var $result DB_result
+         * @var $query DB_result
          */
-        $result = $db->query(
+        $query = $db->query(
             "SELECT COUNT(*) AS total FROM session WHERE `session_id` = '" . $sessionId . "'"
         );
-        $total = (int) $result->fetchRow(DB_FETCHMODE_ASSOC)['total'];
+        $result = $query->fetchRow(DB_FETCHMODE_ASSOC);
+        $total = (int) $result['total'];
         return ($total > 0) ? 1 : 0;
     }
 
