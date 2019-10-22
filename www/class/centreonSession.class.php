@@ -91,6 +91,7 @@ class CentreonSession
      * @param string $sessionId Session id to check
      * @param CentreonDB $db
      * @return int
+     * @throws PDOException
      */
     public static function checkSession($sessionId, CentreonDB $db)
     {
