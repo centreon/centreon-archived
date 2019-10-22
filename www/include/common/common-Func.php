@@ -1951,6 +1951,13 @@ function getNDOPrefix()
     return $conf_ndo["db_prefix"];
 }
 
+/**
+ * Send a well formatted error.
+ *
+ * @param string $message Message to send
+ * @param int $code HTTP error code
+ * @param string $type Response type (json by default)
+ */
 function sendError(string $message, int $code = 500, string $type = 'json')
 {
     switch ($type) {
@@ -1972,7 +1979,6 @@ function sendError(string $message, int $code = 500, string $type = 'json')
         default:
             header("HTTP/1.0 500 Internal Server Error");
     }
-
     exit();
 }
 
