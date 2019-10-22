@@ -86,7 +86,7 @@ class CentreonSession
         }
     }
 
-    public function checkSession($sessionId, $pearDB)
+    public static function checkSession($sessionId, $pearDB)
     {
         $sessionId = str_replace(array('_', '%'), array('', ''), $sessionId);
         $DBRESULT = $pearDB->query(
