@@ -119,7 +119,7 @@ class CentreonSession
         session_start();
         $sessionId = session_id();
 
-        if ($this->checkSession($sessionId, $pearDB) === 1) {
+        if (self::checkSession($sessionId, $pearDB) === 1) {
             try {
                 /* Update last_reload parameter */
                 $query = 'UPDATE `session` '
