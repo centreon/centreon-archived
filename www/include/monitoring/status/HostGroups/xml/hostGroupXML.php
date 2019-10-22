@@ -1,7 +1,7 @@
 <?php
 /*
- * Copyright 2005-2015 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2019 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -33,7 +33,7 @@
  *
  */
 
-require_once realpath(dirname(__FILE__) . "/../../../../../../config/centreon.config.php");
+require_once realpath(__DIR__ . "/../../../../../../config/centreon.config.php");
 
 include_once _CENTREON_PATH_ . "www/class/centreonUtils.class.php";
 include_once _CENTREON_PATH_ . "www/class/centreonXMLBGRequest.class.php";
@@ -46,9 +46,7 @@ CentreonSession::start();
 $obj = new CentreonXMLBGRequest(session_id(), 1, 1, 0, 1);
 
 
-if (isset($obj->session_id) && CentreonSession::checkSession($obj->session_id, $obj->DB)) {
-    ;
-} else {
+if (!isset($obj->session_id) || !CentreonSession::checkSession($obj->session_id, $obj->DB)) {
     print "Bad Session ID";
     exit();
 }
@@ -63,12 +61,12 @@ $obj->getDefaultFilters();
  */
 $convertTable = array();
 $convertID = array();
-$DBRESULT = $obj->DBC->query("SELECT hostgroup_id, name FROM hostgroups");
-while ($hg = $DBRESULT->fetchRow()) {
+$dbResult = $obj->DBC->query("SELECT hostgroup_id, name FROM hostgroups");
+while ($hg = $dbResult->fetchRow()) {
     $convertTable[$hg["name"]] = $hg["name"];
     $convertID[$hg["name"]] = $hg["hostgroup_id"];
 }
-$DBRESULT->free();
+$dbResult->free();
 
 /*
  *  Check Arguments from GET
@@ -96,7 +94,7 @@ $obj->setHostGroupsHistory($hostgroups);
  */
 $searchStr = "";
 if ($search != "") {
-    $searchStr = " AND hg.name LIKE '%$search%' ";
+    $searchStr = " AND hg.name LIKE '%" . $search . "%' ";
 }
 
 /*
@@ -128,8 +126,8 @@ if ($obj->is_admin) {
             "AND acl.group_id in ($groupStr) " .
             "GROUP BY hg.name, h.state";
 }
-$DBRESULT = $obj->DBC->query($rq1);
-while ($data = $DBRESULT->fetchRow()) {
+$dbResult = $obj->DBC->query($rq1);
+while ($data = $dbResult->fetchRow()) {
     if (!isset($stats[$data["alias"]])) {
         $stats[$data["alias"]] = array(
                 "h" => array(0 => 0, 1 => 0, 2 => 0, 3 => 0),
@@ -137,7 +135,7 @@ while ($data = $DBRESULT->fetchRow()) {
     }
     $stats[$data["alias"]]["h"][$data["state"]] = $data["nb"];
 }
-$DBRESULT->free();
+$dbResult->free();
 
 /*
  * Get Services request
@@ -176,8 +174,8 @@ if ($obj->is_admin) {
             "GROUP BY hg.name, s.state order by tri asc";
 }
 
-$DBRESULT = $obj->DBC->query($rq2);
-while ($data = $DBRESULT->fetchRow()) {
+$dbResult = $obj->DBC->query($rq2);
+while ($data = $dbResult->fetchRow()) {
     if (!isset($stats[$data["alias"]])) {
         $stats[$data["alias"]] = array(
                 "h" => array(0 => 0, 1 => 0, 2 => 0, 3 => 0),
@@ -206,13 +204,20 @@ $ct = 0;
 
 if (isset($stats)) {
     foreach ($stats as $name => $stat) {
-        if (($i < (($num + 1) * $limit) && $i >= (($num) * $limit)) && ((isset($converTable[$name]) && isset($acl[$convertTable[$name]])) || (!isset($acl))) && $name != "meta_hostgroup") {
+        if (($i < (($num + 1) * $limit) && $i >= (($num) * $limit))
+            && ((isset($converTable[$name]) && isset($acl[$convertTable[$name]])) || (!isset($acl)))
+            && $name != "meta_hostgroup"
+        ) {
             $class = $obj->getNextLineClass();
             if (isset($stat["h"]) && count($stat["h"])) {
                 $obj->XML->startElement("l");
                 $obj->XML->writeAttribute("class", $class);
                 $obj->XML->writeElement("o", $ct++);
-                $obj->XML->writeElement("hn", CentreonUtils::escapeSecure($convertTable[$name] . " (" . $name . ")"), false);
+                $obj->XML->writeElement(
+                    "hn",
+                    CentreonUtils::escapeSecure($convertTable[$name] . " (" . $name . ")"),
+                    false
+                );
                 $obj->XML->writeElement("hu", $stat["h"][0]);
                 $obj->XML->writeElement("huc", $obj->colorHost[0]);
                 $obj->XML->writeElement("hd", $stat["h"][1]);
@@ -229,8 +234,14 @@ if (isset($stats)) {
                 $obj->XML->writeElement("skc", $obj->colorService[0]);
                 $obj->XML->writeElement("sp", $stat["s"][4]);
                 $obj->XML->writeElement("spc", $obj->colorService[4]);
-                $obj->XML->writeElement("hgurl", CentreonUtils::escapeSecure("main.php?p=20201&o=svc&hg=" . $convertID[$convertTable[$name]]));
-                $obj->XML->writeElement("hgurlhost", "main.php?p=20202&o=h&hostgroups=" . $convertID[$convertTable[$name]]);
+                $obj->XML->writeElement(
+                    "hgurl",
+                    CentreonUtils::escapeSecure("main.php?p=20201&o=svc&hg=" . $convertID[$convertTable[$name]])
+                );
+                $obj->XML->writeElement(
+                    "hgurlhost",
+                    "main.php?p=20202&o=h&hostgroups=" . $convertID[$convertTable[$name]]
+                );
                 $obj->XML->endElement();
             }
         }
