@@ -48,14 +48,15 @@ session_write_close();
 
 $db = new CentreonDB();
 
-if (!CentreonSession::checkSession(session_id(), $db)) {
-    sendError('bad session id', 401);
+try {
+    if (!CentreonSession::checkSession(session_id(), $db)) {
+        sendError('bad session id', 401);
+    }
+} catch (\Exception $ex) {
+    sendError('Internal error', 500);
 }
 
-$aMacros = (new CentreonHost($db))->ajaxMacroControl($_POST);
-$countMacro = count($aMacros);
-$arrayReturn = array('macros' => $aMacros, 'count' => $countMacro);
-
+$macros = (new CentreonHost($db))->ajaxMacroControl($_POST);
 header('Content-Type: application/json');
-echo json_encode($arrayReturn);
+echo json_encode(array('macros' => $macros, 'count' => count($macros)));
 die;
