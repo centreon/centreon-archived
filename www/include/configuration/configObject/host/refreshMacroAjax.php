@@ -35,6 +35,7 @@
 
 require_once realpath(dirname(__FILE__) . "/../../../../../config/centreon.config.php");
 require_once _CENTREON_PATH_ . '/www/class/centreonDB.class.php';
+require_once _CENTREON_PATH_ . '/www/class/centreonSession.class.php';
 require_once _CENTREON_PATH_ . '/www/include/common/common-Func.php';
 require_once _CENTREON_PATH_ . 'www/class/centreonHost.class.php';
 require_once _CENTREON_PATH_."www/class/centreonCommand.class.php";
@@ -47,16 +48,14 @@ session_write_close();
 
 $db = new CentreonDB();
 
-$hostObj = new CentreonHost($db);
+if (!CentreonSession::checkSession(session_id(), $db)) {
+    sendError('bad session id', 401);
+}
 
-
-$aMacros = $hostObj->ajaxMacroControl($_POST);
-
+$aMacros = (new CentreonHost($db))->ajaxMacroControl($_POST);
 $countMacro = count($aMacros);
-
-
 $arrayReturn = array('macros' => $aMacros, 'count' => $countMacro);
 
+header('Content-Type: application/json');
 echo json_encode($arrayReturn);
-
 die;
