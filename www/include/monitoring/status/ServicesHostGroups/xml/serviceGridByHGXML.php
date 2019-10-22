@@ -64,7 +64,7 @@ $limit = filter_input(INPUT_GET, 'limit', FILTER_VALIDATE_INT, array('options' =
 // use whitelist values instead of the $_GET value
 $order = isset($_GET['order']) && $_GET['order'] === "DESC" ? "DESC" : "ASC";
 
-// string values from the $_GET sanitized using the checkArguments which call CentreonDB::escape() method
+// string values from the $_GET sanitized using the checkArgument() which call CentreonDB::escape() method
 $o = $obj->checkArgument("o", $_GET, "h");
 $search = $obj->checkArgument("search", $_GET, "");
 $sort_type = $obj->checkArgument("sort_type", $_GET, "host_name");
