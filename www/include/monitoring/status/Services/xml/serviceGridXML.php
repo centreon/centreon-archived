@@ -77,7 +77,7 @@ $order = filter_input(
     array(
         'options' => array(
             'default' => "ASC",
-            'regexp' => "/\bDESC\b/"
+            'regexp' => '/^(ASC|DESC)$/'
         )
     )
 );
