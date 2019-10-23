@@ -79,14 +79,16 @@ Centreon storage database schema can be view here :
 RRDCacheD
 *********
 
-RRDCacheD is a process to reduce disk I/O during the update of performance's graphs and status' graphs.
-The RRDCacheD process is loaded by the Centreon Broker module and mutualise I/O disques instead of recording
-one by one the data from the collect.
+RRDCacheD is a process to reduce disk I/O during the update of performance's graphs and status' graphs. The RRDCacheD
+process is loaded by the Centreon Broker module and mutualise I/O disques instead of recording one by one the data from
+the collect.
 
 Installation
 ============
 
-The RRDCacheD process is available in **rrdtool** package and already installed on your server.
+Execute the following command: ::
+
+    # yum install rrdtool-cached
 
 Configuration
 =============
@@ -105,7 +107,6 @@ Edit the **/etc/sysconfig/rrdcached** file and complete information::
 
 Options are following one:
 
-
 +--------+-----------------------------------------------------------------------------------+
 | Option | Description                                                                       |
 +========+===================================================================================+
@@ -123,7 +124,7 @@ Options are following one:
 Creating the service startup file
 *********************************
 
-Create the **/etc/systemd/system/rrdcached.service** file and add lines: ::
+Edit the **/usr/lib/systemd/system/rrdcached.service** file and complete information::
 
     [Unit]
     Description=Data caching daemon for rrdtool
@@ -140,7 +141,7 @@ Create the **/etc/systemd/system/rrdcached.service** file and add lines: ::
     [Install]
     WantedBy=multi-user.target
 
-Create the associated directory: ::
+Execute follwong commands: ::
 
     mkdir -p /var/rrdtool
     useradd rrdcached -d '/var/rrdtool/rrdcached' -G centreon-broker,centreon -m
@@ -181,13 +182,20 @@ Check the status of the process: ::
 Centreon web configuration
 **************************
 
-Go to **Administration > Options > RRDTool** menu, enable process and set unix socket path:
+Go to **Configuration > Pollers > Broker configuration** menu, select the broker inserting data into RRD files then in
+the **Output** tab enable process and set unix socket path:
+
+* Enable RRDCached: unix
+* RRDCacheD listening socket/port: /var/rrdtool/rrdcached/rrdcached.sock
+
+enable process and set unix socket path:
 
 .. image:: /images/faq/rrdcached_config.png
     :align: center
 
 .. warning::
-    Instead of configuration was made into **Administration** you need to generate and export configuration of central server and restart cbd process to apply changes.
+    Instead of configuration was made into **Administration** you need to generate and export configuration of central
+    server and restart cbd process to apply changes.
 
 .. image:: /images/faq/rrd_file_generator.png
     :align: center
@@ -195,7 +203,9 @@ Go to **Administration > Options > RRDTool** menu, enable process and set unix s
 Centreon web interface
 **********************
 
-RRDCacheD don't update performances graphs in real time. If a blank range appears on right of performances graphs it means that cache are not yet written to disk.
+RRDCacheD don't update performances graphs in real time. If a blank range appears on right of performances graphs it
+means that cache are not yet written to disk.
 
 .. warning::
-    If the **RRDCacheD process crash** (in theory because it's a stable process) data will be lost! It is not possible to get data unless rebuild all graphs from Centreon web.
+    If the **RRDCacheD process crash** (in theory because it's a stable process) data will be lost! It is not possible
+    to get data unless rebuild all graphs from Centreon web.

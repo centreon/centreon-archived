@@ -28,7 +28,7 @@ cas où des index sont manquants les requêtes sont plus longues à être exécu
 Synchronisation des index
 *************************
 
-Des fichiers d'index sont générées pour chaque version de Centreon depuis la version `2.4.0``.
+Des fichiers d'index sont générées pour chaque version de Centreon depuis la version ``2.4.0``.
 Ils sont situés dans le répertoire ``data`` normalement situé dans les répertoires ``bin``
 ou ``www``. Il y a un fichier JSON pour chaque base de données:
 
@@ -79,15 +79,16 @@ Le schéma de la base de données Centreon_storage ici :
 RRDCacheD
 *********
 
-RRDCacheD est un processus qui permet de limiter les E/S disque lors de la mise à jour des graphiques
-de performance et/ou des graphiques de statut (fichiers RRDs).
-Pour cela, le processus RRDCacheD est appelé par le module Centreon Broker et mutualise les écritures
-sur disque plutôt que d'enregistrer une à une les données issues de la collecte.
+RRDCacheD est un processus qui permet de limiter les E/S disque lors de la mise à jour des graphiques de performance
+et/ou des graphiques de statut (fichiers RRDs). Pour cela, le processus RRDCacheD est appelé par le module Centreon
+Broker et mutualise les écritures sur disque plutôt que d'enregistrer une à une les données issues de la collecte.
 
 Installation
 ============
 
-Le processus RRDCacheD est disponible dans le paquet **rrdtool** déjà installé sur votre serveur Centreon.
+Exécuter la commande suivante : ::
+
+    # yum install rrdtool-cached
 
 Configuration
 =============
@@ -98,11 +99,12 @@ Options générales
 Éditer le fichier **/etc/sysconfig/rrdcached** et modifier les informations suivantes ::
 
     # Settings for rrdcached
-    OPTIONS="-m 664 -l unix:/var/rrdtool/rrdcached/rrdcached.sock -s rrdcached -b 	/var/rrdtool/rrdcached -w 3600 -z 3600 -f 7200"
+    OPTIONS="-m 664 -l unix:/var/rrdtool/rrdcached/rrdcached.sock -s rrdcached -b /var/rrdtool/rrdcached -w 3600 -z 3600 -f 7200"
     RRDC_USER=rrdcached
 
 .. note::
-    L'ordre des options est très important, si l'option ** -m 664** est placée après l'option **-l unix:/var/rrdtool/rrdcached/rrdcached.sock** alors la socket sera créée avec les mauvais droits.
+    L'ordre des options est très important, si l'option ** -m 664** est placée après l'option
+    **-l unix:/var/rrdtool/rrdcached/rrdcached.sock** alors la socket sera créée avec les mauvais droits.
 
 Concernant les autres options importantes :
 
@@ -126,8 +128,7 @@ Concernant les autres options importantes :
 Création du fichier de démarrage du service
 *******************************************
 
-Créer le fichier **/etc/systemd/system/rrdcached.service** et ajouter les lignes
-suivantes : ::
+Editer le fichier **/usr/lib/systemd/system/rrdcached.service** tel que : ::
 
     [Unit]
     Description=Data caching daemon for rrdtool
@@ -144,7 +145,7 @@ suivantes : ::
     [Install]
     WantedBy=multi-user.target
 
-Créer le répertoire suivant : ::
+Exécuter les actions suivantes : ::
 
     mkdir -p /var/rrdtool
     useradd rrdcached -d '/var/rrdtool/rrdcached' -G centreon-broker,centreon -m
@@ -185,13 +186,18 @@ Contrôler le statut du processus : ::
 Configurer le processus dans l'interface web Centreon
 *****************************************************
 
-Se rendre dans le menu **Administration > Options > RRDTool**, activer l'utilisation du processus et renseigner l'accès au socket **/var/rrdtool/rrdcached/rrdcached.sock** :
+Se rendre dans le menu **Configuration > Pollers > Broker configuration**, éditer le broker insérant les données dans
+les fichiers RRD, sans l'onglet "Output" renseigner les données suivantes :
+
+* Enable RRDCached: unix
+* RRDCacheD listening socket/port: /var/rrdtool/rrdcached/rrdcached.sock
 
 .. image:: /images/faq/rrdcached_config.png
     :align: center
 
 .. warning::
-    Attention, même si la modification a été réalisé dans le menu **Administration**, il est nécessaire d'exporter la configuration et de redémarrer le processus centreon-broker via un export de la configuration du serveur central et un redémarrage du processus cbd.
+    Attention, même si la modification a été réalisé, il est nécessaire d'exporter la configuration et de redémarrer le
+    processus centreon-broker via un export de la configuration du serveur central et un redémarrage du processus cbd.
 
 .. image:: /images/faq/rrd_file_generator.png
     :align: center
@@ -204,4 +210,5 @@ Il est donc possible de voir un petit blanc sur la droite de certains graphiques
 Cela veut dire que les données sont encore dans le cache du processus, cela est normal !
 
 .. warning::
-    Attention, si le **processus crash** pour une raison quelconque (aucune en théorie c'est plutôt stable), les **données** sont **perdues**, donc aucun moyen de les rejouer sauf en reconstruisant les graphiques via centreon-broker.
+    Attention, si le **processus crash** pour une raison quelconque (aucune en théorie c'est plutôt stable), les
+    **données** sont **perdues**, donc aucun moyen de les rejouer sauf en reconstruisant les graphiques via centreon-broker.
