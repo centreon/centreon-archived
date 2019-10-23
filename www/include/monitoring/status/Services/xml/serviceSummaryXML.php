@@ -59,20 +59,35 @@ if (!isset($obj->session_id) || !CentreonSession::checkSession($obj->session_id,
  */
 $obj->getDefaultFilters();
 
-/* **************************************************
- * Check Arguments From GET tab
+/*
+ *  Check Arguments from GET and session
  */
+// integer values from $_GET
+$p = filter_input(INPUT_GET, 'p', FILTER_VALIDATE_INT, array('options' => array('default' => 2)));
+$num = filter_input(INPUT_GET, 'num', FILTER_VALIDATE_INT, array('options' => array('default' => 0)));
+$limit = filter_input(INPUT_GET, 'limit', FILTER_VALIDATE_INT, array('options' => array('default' => 20)));
+
+$order = filter_input(
+    INPUT_GET,
+    'order',
+    FILTER_VALIDATE_REGEXP,
+    array(
+        'options' => array(
+            'default' => "ASC",
+            'regexp' => "/\bDESC\b/"
+        )
+    )
+);
+
+// string values from the $_GET sanitized using the checkArgument() which call CentreonDB::escape() method
 $o = $obj->checkArgument("o", $_GET, "h");
-$p = $obj->checkArgument("p", $_GET, "2");
-$nc = $obj->checkArgument("nc", $_GET, "0");
-$num = $obj->checkArgument("num", $_GET, 0);
-$limit = $obj->checkArgument("limit", $_GET, 20);
-$instance = $obj->checkArgument("instance", $_GET, $obj->defaultPoller);
-$hostgroup = $obj->checkArgument("hostgroups", $_GET, $obj->defaultHostgroups);
 $search = $obj->checkArgument("search", $_GET, "");
 $sort_type = $obj->checkArgument("sort_type", $_GET, "host_name");
-$order = $obj->checkArgument("order", $_GET, "ASC");
-$dateFormat = $obj->checkArgument("date_time_format_status", $_GET, "Y/m/d H:i:s");
+
+// values saved in the session
+$instance = filter_var($obj->defaultPoller, FILTER_VALIDATE_INT);
+$hostgroup = filter_var($obj->defaultHostgroups, FILTER_VALIDATE_INT);
+
 /*
  * Backup poller selection
  */
@@ -141,7 +156,7 @@ if ($hostgroup) {
         AND hg.hostgroup_id = hg2.hostgroup_id ";
 }
 
-# ORDER BY
+// ORDER BY
 switch ($sort_type) {
     case 'current_state':
         $rq1 .= "ORDER BY hosts.state " . $order . ",hosts.name ";
@@ -151,9 +166,8 @@ switch ($sort_type) {
         break;
 }
 
-# LIMIT
+// LIMIT
 $rq1 .= "LIMIT " . ($num * $limit) . "," . $limit . " ";
-
 
 /*
  * Execute request
@@ -222,12 +236,8 @@ if (!$ct) {
 }
 $obj->XML->endElement();
 
-/*
- * Send Header
- */
+// Send Header
 $obj->header();
 
-/*
- * Send XML
- */
+// Send XML
 $obj->XML->output();
