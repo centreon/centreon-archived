@@ -55,8 +55,8 @@ try {
 } catch (\Exception $ex) {
     sendError('Internal error', 500);
 }
-
-$macros = (new CentreonHost($db))->ajaxMacroControl($_POST);
+$centreonHost = new CentreonHost($db);
+$macros = $centreonHost->ajaxMacroControl($_POST);
 header('Content-Type: application/json');
 echo json_encode(array('macros' => $macros, 'count' => count($macros)));
 die;
