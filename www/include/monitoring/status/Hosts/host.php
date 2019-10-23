@@ -37,9 +37,6 @@ if (!isset($centreon)) {
     exit();
 }
 
-/*
- * host status filter whitelist (string $o)
- */
 const HOSTS_PROBLEM = "hpb";
 const UNHANDLED_HOSTS_PROBLEM = "h_unhandled";
 const ALL_HOSTS = "h";
