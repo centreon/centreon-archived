@@ -53,18 +53,35 @@ if (!isset($obj->session_id) || !CentreonSession::checkSession($obj->session_id,
 // Set Default Poller
 $obj->getDefaultFilters();
 
-// Check Arguments From GET tab
+/*
+ *  Check Arguments from GET and session
+ */
+// integer values from $_GET
+$p = filter_input(INPUT_GET, 'p', FILTER_VALIDATE_INT, array('options' => array('default' => 2)));
+$num = filter_input(INPUT_GET, 'num', FILTER_VALIDATE_INT, array('options' => array('default' => 0)));
+$limit = filter_input(INPUT_GET, 'limit', FILTER_VALIDATE_INT, array('options' => array('default' => 20)));
+
+$order = filter_input(
+    INPUT_GET,
+    'order',
+    FILTER_VALIDATE_REGEXP,
+    array(
+        'options' => array(
+            'default' => "ASC",
+            'regexp' => '/^(ASC|DESC)$/'
+        )
+    )
+);
+
+// string values from the $_GET sanitized using the checkArgument() which call CentreonDB::escape() method
 $o = $obj->checkArgument("o", $_GET, "h");
-$p = $obj->checkArgument("p", $_GET, "2");
-$hg = $obj->checkArgument("hg", $_GET, "");
-$num = $obj->checkArgument("num", $_GET, 0);
-$limit = $obj->checkArgument("limit", $_GET, 20);
-$instance = $obj->checkArgument("instance", $_GET, $obj->defaultPoller);
-$hostgroups = $obj->checkArgument("hostgroups", $_GET, $obj->defaultHostgroups);
 $search = $obj->checkArgument("search", $_GET, "");
 $sort_type = $obj->checkArgument("sort_type", $_GET, "host_name");
-$order = $obj->checkArgument("order", $_GET, "ASC");
-$dateFormat = $obj->checkArgument("date_time_format_status", $_GET, "Y/m/d H:i:s");
+
+// values saved in the session
+$instance = filter_var($obj->defaultPoller, FILTER_VALIDATE_INT);
+$hostgroup = filter_var($obj->defaultHostgroups, FILTER_VALIDATE_INT);
+
 $grouplistStr = $obj->access->getAccessGroupsString();
 
 // Get Host status
@@ -103,8 +120,8 @@ if ($o == "svcOVHG_ack_1") {
 if ($search != "") {
     $rq1 .= " AND h.name like '%" . CentreonDB::escape($search) . "%' ";
 }
-if ($hostgroups) {
-    $rq1 .= " AND hg.hostgroup_id IN (" . $hostgroups . ")";
+if ($hostgroup) {
+    $rq1 .= " AND hg.hostgroup_id IN (" . $hostgroup . ")";
 }
 $rq1 .= " AND h.enabled = 1 ";
 $rq1 .= " ORDER BY " . CentreonDB::escape($sort_type) . ", hg.name " . CentreonDB::escape($order) . ", host_name ASC ";
@@ -114,9 +131,9 @@ $tabH = array();
 $tabHG = array();
 $tab_finalH = array();
 
-$DBRESULT = $obj->DBC->query($rq1);
+$dbResult = $obj->DBC->query($rq1);
 $numRows = $obj->DBC->numberRows();
-while ($ndo = $DBRESULT->fetchRow()) {
+while ($ndo = $dbResult->fetchRow()) {
     if (!isset($tab_finalH[$ndo["alias"]])) {
         $tab_finalH[$ndo["alias"]] = array($ndo["host_name"] => array());
     }
@@ -126,7 +143,7 @@ while ($ndo = $DBRESULT->fetchRow()) {
     $tabH[$ndo["host_name"]] = $ndo["id"];
     $tabHG[$ndo["alias"]] = $ndo["hostgroup_id"];
 }
-$DBRESULT->free();
+$dbResult->free();
 
 // Get Services status
 $rq1 =  " SELECT DISTINCT s.service_id, h.name AS host_name, s.description, s.state svcs," .
@@ -161,8 +178,8 @@ $rq1 .= " ORDER BY tri ASC, s.description ASC";
 
 $tabService = array();
 $tabHost = array();
-$DBRESULT = $obj->DBC->query($rq1);
-while ($ndo = $DBRESULT->fetchRow()) {
+$dbResult = $obj->DBC->query($rq1);
+while ($ndo = $dbResult->fetchRow()) {
     if (!isset($tabService[$ndo["host_name"]])) {
         $tabService[$ndo["host_name"]] = array();
     }
@@ -172,7 +189,7 @@ while ($ndo = $DBRESULT->fetchRow()) {
     $tabService[$ndo["host_name"]]["tab_svc"][$ndo["description"]] = $ndo["svcs"];
     $tabHost[$ndo["host_name"]] = $ndo["service_id"];
 }
-$DBRESULT->free();
+$dbResult->free();
 
 // Begin XML Generation
 $obj->XML = new CentreonXML();
