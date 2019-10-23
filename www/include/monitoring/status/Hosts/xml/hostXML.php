@@ -52,6 +52,10 @@ if (!isset($_SESSION['centreon'])) {
 }
 $centreon = $_SESSION['centreon'];
 
+const HOSTS_PROBLEM = "hpb";
+const UNHANDLED_HOSTS_PROBLEM = "h_unhandled";
+const ALL_HOSTS = "h";
+
 $criticality = new CentreonCriticality($obj->DB);
 $instanceObj = new CentreonInstance($obj->DB);
 $media = new CentreonMedia($obj->DB);
@@ -74,10 +78,19 @@ $p = filter_input(INPUT_GET, 'p', FILTER_VALIDATE_INT, array('options' => array(
 $num = filter_input(INPUT_GET, 'num', FILTER_VALIDATE_INT, array('options' => array('default' => 0)));
 $limit = filter_input(INPUT_GET, 'limit', FILTER_VALIDATE_INT, array('options' => array('default' => 20)));
 
-// use whitelist values instead of the $_GET value
-$order = isset($_GET['order']) && $_GET['order'] === "DESC" ? "DESC" : "ASC";
+$order = filter_input(
+    INPUT_GET,
+    'order',
+    FILTER_VALIDATE_REGEXP,
+    array(
+        'options' => array(
+            'default' => "ASC",
+            'regexp' => "/\bDESC\b/"
+        )
+    )
+);
 
-// string values from the $_GET sanitized using the checkArguments which call the escapeSecure() method
+// string values from the $_GET sanitized using the checkArgument() which call CentreonDB::escape() method
 $o = $obj->checkArgument("o", $_GET, "h");
 $search = $obj->checkArgument("search", $_GET, "");
 $statusHost = $obj->checkArgument("statusHost", $_GET, "");
