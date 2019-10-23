@@ -1804,7 +1804,7 @@ function sendError($message, $code = 500, $type = 'json')
         case 'json':
         default:
             header('Content-Type: application/json');
-            echo json_encode(['message' => $message]);
+            echo json_encode(array('message' => $message));
             break;
     }
     switch ($code) {
