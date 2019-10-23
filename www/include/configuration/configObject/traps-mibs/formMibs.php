@@ -115,7 +115,7 @@ if ($form->validate()) {
     $fileObj = $form->getElement('filename');
     $manufacturerId = filter_var($ret['mnftr'], FILTER_VALIDATE_INT);
 
-    if (!$manufacturerId) {
+    if ($manufacturerId === false) {
         $tpl->assign('msg', 'Wrong manufacturer given.');
     } elseif ($fileObj->isUploadedFile()) {
         /*
