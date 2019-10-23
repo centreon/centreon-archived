@@ -57,7 +57,7 @@ if (!isset($obj->session_id) || !CentreonSession::checkSession($obj->session_id,
 $obj->getDefaultFilters();
 
 /*
- * Alias / Name convertion table
+ * Alias / Name conversion table
  */
 $convertTable = array();
 $convertID = array();
@@ -69,25 +69,39 @@ while ($hg = $dbResult->fetchRow()) {
 $dbResult->free();
 
 /*
- *  Check Arguments from GET
+ *  Check Arguments from GET and session
  */
+// integer values from $_GET
+$p = filter_input(INPUT_GET, 'p', FILTER_VALIDATE_INT, array('options' => array('default' => 2)));
+$num = filter_input(INPUT_GET, 'num', FILTER_VALIDATE_INT, array('options' => array('default' => 0)));
+$limit = filter_input(INPUT_GET, 'limit', FILTER_VALIDATE_INT, array('options' => array('default' => 20)));
+$instance = filter_input(INPUT_GET, 'instance', FILTER_VALIDATE_INT, array('options' => array('default' => -1)));
+
+$order = filter_input(
+    INPUT_GET,
+    'order',
+    FILTER_VALIDATE_REGEXP,
+    array(
+        'options' => array(
+            'default' => "ASC",
+            'regexp' => "/\bDESC\b/"
+        )
+    )
+);
+
+// string values from the $_GET sanitized using the checkArgument() which call CentreonDB::escape() method
 $o = $obj->checkArgument("o", $_GET, "h");
-$p = $obj->checkArgument("p", $_GET, "2");
-$num = $obj->checkArgument("num", $_GET, 0);
-$limit = $obj->checkArgument("limit", $_GET, 20);
-$instance = $obj->checkArgument("instance", $_GET, $obj->defaultPoller);
-$hostgroups = $obj->checkArgument("hostgroups", $_GET, $obj->defaultHostgroups);
 $search = $obj->checkArgument("search", $_GET, "");
 $sort_type = $obj->checkArgument("sort_type", $_GET, "host_name");
-$order = $obj->checkArgument("order", $_GET, "ASC");
-$dateFormat = $obj->checkArgument("date_time_format_status", $_GET, "Y/m/d H:i:s");
 
+$hostgroup = $obj->defaultHostgroups;
 $groupStr = $obj->access->getAccessGroupsString();
+
 /*
  * Backup poller selection
  */
 $obj->setInstanceHistory($instance);
-$obj->setHostGroupsHistory($hostgroups);
+$obj->setHostGroupsHistory($hostgroup);
 
 /*
  * Search string
