@@ -62,7 +62,7 @@ $nc = $obj->checkArgument("nc", $_GET, "0");
 $num = $obj->checkArgument("num", $_GET, 0);
 $limit = $obj->checkArgument("limit", $_GET, 20);
 $instance = $obj->checkArgument("instance", $_GET, $obj->defaultPoller);
-$hostgroups = $obj->checkArgument("hostgroups", $_GET, $obj->defaultHostgroups);
+$hostgroup = $obj->checkArgument("hostgroups", $_GET, $obj->defaultHostgroups); // not used
 $hSearch = $obj->checkArgument("host_search", $_GET, "");
 $sgSearch = $obj->checkArgument("sg_search", $_GET, "");
 $sort_type = $obj->checkArgument("sort_type", $_GET, "host_name");
@@ -121,10 +121,10 @@ if ($instance != -1) {
     $query .= " AND h.instance_id = " . (int)$instance . " ";
 }
 
-$query .= "ORDER BY sg.name " . CentreonDB::escape($order) . " "
-    . "LIMIT " . (int)($num * $limit) . "," . (int)$limit;
+$query .= "ORDER BY sg.name " . CentreonDB::escape($order) .
+    " LIMIT " . (int)($num * $limit) . ", " . (int)$limit;
 
-$DBRESULT = $obj->DBC->query($query);
+$dbResult = $obj->DBC->query($query);
 
 $numRows = $obj->DBC->numberRows();
 
@@ -148,7 +148,7 @@ $aTab = array();
 if ($numRows > 0) {
     $sg_search .= "AND (";
     $servicegroups = array();
-    while ($row = $DBRESULT->fetchRow()) {
+    while ($row = $dbResult->fetchRow()) {
         $servicesgroups[$row['servicegroup_id']][] = $row['host_id'];
     }
     $servicegroupsSql1 = array();
@@ -157,8 +157,8 @@ if ($numRows > 0) {
         foreach ($value as $hostId) {
             $hostsSql[] = $hostId;
         }
-        $servicegroupsSql1[] = "(sg.servicegroup_id = " . $key . " AND h.host_id " .
-            "IN (" . implode(',', $hostsSql) . ")) ";
+        $servicegroupsSql1[] = "(sg.servicegroup_id = " . $key . " AND h.host_id
+            IN (" . implode(',', $hostsSql) . ")) ";
     }
     $sg_search .= implode(" OR ", $servicegroupsSql1);
     $sg_search .= ") ";
@@ -179,14 +179,14 @@ if ($numRows > 0) {
         . $obj->access->queryBuilder("AND", "s.service_id", $obj->access->getServicesString("ID", $obj->DBC))
         . " ORDER BY tri ASC";
 
-    $DBRESULT = $obj->DBC->query($query2);
+    $dbResult = $obj->DBC->query($query2);
 
     $ct = 0;
     $sg = "";
     $h = "";
     $flag = 0;
     $count = 0;
-    while ($tab = $DBRESULT->fetchRow()) {
+    while ($tab = $dbResult->fetchRow()) {
         if (!isset($aTab[$tab["sg_name"]])) {
             $aTab[$tab["sg_name"]] = array(
                 'sgn' => CentreonUtils::escapeSecure($tab["sg_name"]),
@@ -209,7 +209,7 @@ if ($numRows > 0) {
                 'hnl' => CentreonUtils::escapeSecure(urlencode($tab["host_name"])),
                 'hid' =>  $tab["host_id"],
                 "hcount" => $count,
-                "hs" =>  _($obj->statusHost[$tab["host_state"]]),
+                "hs" =>  _($obj->statusHost[$tab["host_state"]]), //warning seems to be a duplicate key
                 "hc" => $obj->colorHost[$tab["host_state"]],
                 'service' => array()
             );
