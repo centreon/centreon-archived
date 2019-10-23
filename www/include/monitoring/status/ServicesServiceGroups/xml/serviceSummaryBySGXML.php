@@ -1,7 +1,7 @@
 <?php
 /*
- * Copyright 2005-2015 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2019 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -35,7 +35,7 @@
 
 ini_set("display_errors", "Off");
 
-require_once realpath(dirname(__FILE__) . "/../../../../../../config/centreon.config.php");
+require_once realpath(__DIR__ . "/../../../../../../config/centreon.config.php");
 
 include_once _CENTREON_PATH_ . "www/class/centreonUtils.class.php";
 
@@ -51,7 +51,6 @@ CentreonSession::start(1);
 $obj = new CentreonXMLBGRequest(session_id(), 1, 1, 0, 1);
 $svcObj = new CentreonService($obj->DB);
 
-
 if (!isset($obj->session_id) || !CentreonSession::checkSession($obj->session_id, $obj->DB)) {
     print "Bad Session ID";
     exit();
@@ -62,7 +61,7 @@ if (!isset($obj->session_id) || !CentreonSession::checkSession($obj->session_id,
  */
 $obj->getDefaultFilters();
 
-/* **************************************************
+/*
  * Check Arguments From GET tab
  */
 $o = $obj->checkArgument("o", $_GET, "h");
@@ -83,22 +82,22 @@ $dateFormat = $obj->checkArgument("date_time_format_status", $_GET, "Y/m/d H:i:s
  */
 $obj->setInstanceHistory($instance);
 
-/** **********************************************
+/**
  * Prepare pagination
  */
-
+// Service search
 $s_search = "";
-/* Display service problems */
+// Display service problems
 if ($o == "svcgridSG_pb" || $o == "svcOVSG_pb") {
     $s_search .= " AND s.state != 0 AND s.state != 4 " ;
 }
 
-/* Display acknowledged services */
+// Display acknowledged services
 if ($o == "svcgridSG_ack_1" || $o == "svcOVSG_ack_1") {
     $s_search .= " AND s.acknowledged = '1' ";
 }
 
-/* Display not acknowledged services */
+// Display not acknowledged services
 if ($o == "svcgridSG_ack_0" || $o == "svcOVSG_ack_0") {
     $s_search .= " AND s.state != 0 AND s.state != 4 AND s.acknowledged = 0 " ;
 }
@@ -112,38 +111,36 @@ $query = "SELECT SQL_CALC_FOUND_ROWS DISTINCT sg.servicegroup_id, h.host_id "
     . $obj->access->getACLServicesTableJoin($obj->DBC, "s.service_id")
     . "WHERE 1 = 1  ";
 
-# Servicegroup ACL
+// Servicegroup ACL
 $query .= $obj->access->queryBuilder("AND", "sg.servicegroup_id", $obj->access->getServiceGroupsString("ID"));
 
-/* Servicegroup search */
+// Servicegroup search
 if ($sgSearch != "") {
     $query .= "AND sg.name = '" . $sgSearch . "' ";
 }
 
-/* Host search */
+// Host search
 $h_search = '';
 if ($hSearch != "") {
     $h_search .= "AND h.name like '%" . $hSearch . "%' ";
 }
-$query .= $h_search;
 
-/* Service search */
-$query .= $s_search;
+$query .= $h_search . $s_search;
 
-/* Poller search */
-if ($instance != -1) {
+// Poller search
+if (!empty($instance) && $instance !== -1) {
     $query .= " AND h.instance_id = " . $instance . " ";
 }
 
-$query .= "ORDER BY sg.name " . $order . " "
-    . "LIMIT " . ($num * $limit) . "," . $limit;
+$query .= "ORDER BY sg.name " . $order .
+    " LIMIT " . ($num * $limit) . "," . $limit;
 
 $DBRESULT = $obj->DBC->query($query);
 
 $numRows = $obj->DBC->numberRows();
 
 
-/** ***************************************************
+/**
  * Create XML Flow
  */
 $obj->XML = new CentreonXML();
@@ -163,7 +160,7 @@ $obj->XML->writeElement("sp", $obj->colorService[4]);
 $obj->XML->writeElement("s", "1");
 $obj->XML->endElement();
 
-/* Construct query for servigroups search */
+// Construct query for servicegroups search
 $sg_search = "";
 if ($numRows > 0) {
     $sg_search .= "AND (";
@@ -177,7 +174,8 @@ if ($numRows > 0) {
         foreach ($value as $hostId) {
             $hostsSql[] = $hostId;
         }
-        $servicegroupsSql1[] = "(sg.servicegroup_id = " . $key . " AND h.host_id IN (" . implode(',', $hostsSql) . ")) ";
+        $servicegroupsSql1[] = "(sg.servicegroup_id = " . $key .
+            " AND h.host_id IN (" . implode(',', $hostsSql) . ")) ";
     }
     $sg_search .= implode(" OR ", $servicegroupsSql1);
     $sg_search .= ") ";
@@ -186,15 +184,17 @@ if ($numRows > 0) {
     }
 
     $query2 = "SELECT SQL_CALC_FOUND_ROWS count(s.state) as count_state, sg.name AS sg_name, h.name as host_name, "
-            . "h.state as host_state, h.icon_image, h.host_id, s.state, (case s.state when 0 then 3 when 2 then 0 when 3 then 2 else s.state END) as tri  "
+        . "h.state as host_state, h.icon_image, h.host_id, s.state, "
+        . "(case s.state when 0 then 3 when 2 then 0 when 3 then 2 else s.state END) as tri "
         . "FROM servicegroups sg, services_servicegroups sgm, services s, hosts h "
-        . "WHERE h.host_id = s.host_id AND s.host_id = sgm.host_id AND s.service_id=sgm.service_id AND sg.servicegroup_id=sgm.servicegroup_id "
+        . "WHERE h.host_id = s.host_id AND s.host_id = sgm.host_id "
+        . "AND s.service_id=sgm.service_id AND sg.servicegroup_id=sgm.servicegroup_id "
         . $s_search
         . $sg_search
         . $h_search
         . $obj->access->queryBuilder("AND", "sg.servicegroup_id", $obj->access->getServiceGroupsString("ID"))
         . $obj->access->queryBuilder("AND", "s.service_id", $obj->access->getServicesString("ID", $obj->DBC))
-        . "GROUP BY sg_name,host_name,host_state,icon_image,host_id, s.state order by tri asc ";
+        . " GROUP BY sg_name,host_name,host_state,icon_image,host_id, s.state order by tri asc ";
     
     $DBRESULT = $obj->DBC->query($query2);
 
@@ -249,12 +249,8 @@ if ($numRows > 0) {
 
 $obj->XML->endElement();
 
-/*
- * Send Header
- */
+// Send Header
 $obj->header();
 
-/*
- * Send XML
- */
+// Send XML
 $obj->XML->output();
