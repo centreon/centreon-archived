@@ -192,37 +192,15 @@ class CentreonConfigPoller
         $poller_id = $this->getPollerId($variables);
         $this->testPollerId($poller_id);
 
-        /*
-         * Restart broker
-         */
-        $this->restartCentreonBroker();
-
-        /*
-         * Get Init Script
-         */
-        $result = $this->_DB->query(
-            "SELECT id, engine_reload_command FROM nagios_server WHERE localhost = '1' AND ns_activate = '1'"
-        );
-        $servers = $result->fetch();
-        $result->closeCursor();
-        $engineReloadCommand = (isset($servers['engine_reload_command']))
-            ? $servers['engine_reload_command']
-            : 'service centengine reload';
-        unset($servers);
-
         $result = $this->_DB->query(
             "SELECT * FROM `nagios_server` WHERE `id` = '" . $this->_DB->escape($poller_id) . "'  LIMIT 1"
         );
         $host = $result->fetch();
         $result->closeCursor();
 
-        $msg_restart = "";
-        if (isset($host['localhost']) && $host['localhost'] == 1) {
-            $msg_restart = exec("sudo " . $engineReloadCommand, $stdout, $return_code);
-        } else {
-            exec("echo 'RELOAD:" . $host["id"] . "' >> " . $this->centcore_pipe, $stdout, $return_code);
-            $msg_restart .= _("OK: A reload signal has been sent to '" . $host["name"] . "'");
-        }
+        exec("echo 'RELOAD:" . $host["id"] . "' >> " . $this->centcore_pipe, $stdout, $return_code);
+        exec("echo 'RELOADBROKER:" . $host["id"] . "' >> " . $this->centcore_pipe, $stdout, $return_code);
+        $msg_restart = _("OK: A reload signal has been sent to '" . $host["name"] . "'");
         print $msg_restart . "\n";
         $this->_DB->query(
             "UPDATE `nagios_server` SET `last_restart` = '" . time()
@@ -282,40 +260,15 @@ class CentreonConfigPoller
         $this->testPollerId($variables);
         $poller_id = $this->getPollerId($variables);
 
-        /*
-         * Restart broker
-         */
-        $this->restartCentreonBroker();
-
-        /*
-         * Get Init Script
-         */
-        $result = $this->_DB->query(
-            "SELECT id, engine_restart_command FROM nagios_server WHERE localhost = '1' AND ns_activate = '1'"
-        );
-        $servers = $result->fetch();
-        $result->closeCursor();
-        $engineRestartCommand = (isset($servers["engine_restart_command"]))
-            ? $servers['engine_restart_command']
-            : 'service centengine restart';
-        unset($servers);
-
         $result = $this->_DB->query(
             "SELECT * FROM `nagios_server` WHERE `id` = '" . $this->_DB->escape($poller_id) . "'  LIMIT 1"
         );
         $host = $result->fetch();
         $result->closeCursor();
 
-        if (isset($host['localhost']) && $host['localhost'] == 1) {
-            $msg_restart = exec(
-                escapeshellcmd('sudo ' . $engineRestartCommand),
-                $lines,
-                $return_code
-            );
-        } else {
-            exec("echo 'RESTART:" . $host["id"] . "' >> " . $this->centcore_pipe, $stdout, $return_code);
-            $msg_restart = _("OK: A restart signal has been sent to '" . $host["name"] . "'");
-        }
+        exec("echo 'RESTART:" . $host["id"] . "' >> " . $this->centcore_pipe, $stdout, $return_code);
+        exec("echo 'RELOADBROKER:" . $host["id"] . "' >> " . $this->centcore_pipe, $stdout, $return_code);
+        $msg_restart = _("OK: A restart signal has been sent to '" . $host["name"] . "'");
         print $msg_restart . "\n";
         $this->_DB->query(
             "UPDATE `nagios_server` SET `last_restart` = '" . time()
