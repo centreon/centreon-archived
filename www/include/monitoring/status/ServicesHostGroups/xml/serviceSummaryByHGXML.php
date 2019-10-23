@@ -53,18 +53,35 @@ if (!isset($obj->session_id) || !CentreonSession::checkSession($obj->session_id,
 // Set Default Poller
 $obj->getDefaultFilters();
 
-// Check Arguments From GET tab
+/*
+ *  Check Arguments from GET and session
+ */
+// integer values from $_GET
+$p = filter_input(INPUT_GET, 'p', FILTER_VALIDATE_INT, array('options' => array('default' => 2)));
+$num = filter_input(INPUT_GET, 'num', FILTER_VALIDATE_INT, array('options' => array('default' => 0)));
+$limit = filter_input(INPUT_GET, 'limit', FILTER_VALIDATE_INT, array('options' => array('default' => 20)));
+
+$order = filter_input(
+    INPUT_GET,
+    'order',
+    FILTER_VALIDATE_REGEXP,
+    array(
+        'options' => array(
+            'default' => "ASC",
+            'regexp' => '/^(ASC|DESC)$/'
+        )
+    )
+);
+
+// string values from the $_GET sanitized using the checkArgument() which call CentreonDB::escape() method
 $o = $obj->checkArgument("o", $_GET, "h");
-$p = $obj->checkArgument("p", $_GET, "2");
-$hg = $obj->checkArgument("hg", $_GET, "");
-$num = $obj->checkArgument("num", $_GET, 0);
-$limit = $obj->checkArgument("limit", $_GET, 20);
-$instance = $obj->checkArgument("instance", $_GET, $obj->defaultPoller);
-$hostgroups = $obj->checkArgument("hostgroups", $_GET, $obj->defaultHostgroups);
 $search = $obj->checkArgument("search", $_GET, "");
 $sort_type = $obj->checkArgument("sort_type", $_GET, "alias");
-$order = $obj->checkArgument("order", $_GET, "ASC");
-$dateFormat = $obj->checkArgument("date_time_format_status", $_GET, "Y/m/d H:i:s");
+
+// values saved in the session
+$instance = filter_var($obj->defaultPoller, FILTER_VALIDATE_INT);
+$hostgroup = filter_var($obj->defaultHostgroups, FILTER_VALIDATE_INT);
+
 $grouplistStr = $obj->access->getAccessGroupsString();
 
 
@@ -112,8 +129,8 @@ if ($search != "") {
     $rq1 .= "AND h.name like '%" . CentreonDB::escape($search) . "%' ";
 }
 
-if ($hostgroups) {
-    $rq1 .= "AND hg.hostgroup_id IN (" . $hostgroups . ") ";
+if ($hostgroup) {
+    $rq1 .= "AND hg.hostgroup_id IN (" . $hostgroup . ") ";
 }
 
 $rq1 .= "AND h.enabled = 1 "
@@ -128,7 +145,7 @@ $ct = 0;
 
 $tab_final = array();
 $tabHGUrl = array();
-$DBRESULT = $obj->DBC->query($rq1);
+$dbResult = $obj->DBC->query($rq1);
 $numRows = $obj->DBC->numberRows();
 
 $obj->XML->startElement("i");
@@ -139,7 +156,7 @@ $obj->XML->writeElement("p", $p);
 $obj->XML->writeElement("s", "1");
 $obj->XML->endElement();
 
-while ($ndo = $DBRESULT->fetchRow()) {
+while ($ndo = $dbResult->fetchRow()) {
     if (!isset($tab_final[$ndo["hgname"]])) {
         $tab_final[$ndo["hgname"]] = array();
     }
@@ -187,7 +204,7 @@ while ($ndo = $DBRESULT->fetchRow()) {
     $tab_final[$ndo["hgname"]][$ndo["host_name"]]["hid"] = $ndo["host_id"];
     $tab_final[$ndo["hgname"]][$ndo["host_name"]]["icon"] = $ndo["icon_image"];
 }
-$DBRESULT->free();
+$dbResult->free();
 
 $hg = "";
 $count = 0;
