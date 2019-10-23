@@ -149,10 +149,6 @@ $form->addGroup($tab, 'activate', _("Status"), '&nbsp;');
 $form->setDefaults(array('activate' => '1'));
 $form->addElement('textarea', 'msr_comment', _("Comments"), $attrsTextarea);
 
-$tab = array();
-$form->addGroup($tab, 'action', _("Post Validation"), '&nbsp;');
-$form->setDefaults(array('action' => '1'));
-
 $form->addRule('host_id', _("Compulsory Field"), 'required');
 
 function checkMetric()
