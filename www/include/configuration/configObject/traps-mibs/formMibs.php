@@ -126,7 +126,7 @@ if ($form->validate()) {
         $msg .= "<br />Moving traps in DataBase...";
 
         $command = "@CENTREONTRAPD_BINDIR@/centFillTrapDB -f '" . $values["tmp_name"]
-            . "' -m " . htmlentities($ret["mnftr"], ENT_QUOTES, "UTF-8") . " --severity=info 2>&1";
+            . "' -m " . $manufacturerId . " --severity=info 2>&1";
 
         if ($debug) {
             print($command);
