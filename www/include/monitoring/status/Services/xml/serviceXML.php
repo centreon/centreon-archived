@@ -161,7 +161,7 @@ $graphs = array();
  * Get Service status
  */
 $instance_filter = "";
-if ($instance != -1 && !empty($instance)) {
+if (!empty($instance) && $instance != -1) {
     $instance_filter = " AND h.instance_id = " . $instance . " ";
 }
 
@@ -206,7 +206,7 @@ $request = "SELECT SQL_CALC_FOUND_ROWS DISTINCT h.name, h.alias, h.address, h.ho
     h.passive_checks AS h_passive_checks, h.active_checks AS h_active_checks,
     i.name as instance_name, cv.value as criticality, cv.value IS NULL as isnull
     FROM hosts h, instances i ";
-if (isset($hostgroup) && $hostgroup != 0) {
+if (isset($hostgroups) && $hostgroups != 0) {
     $request .= ", hosts_hostgroups hg, hostgroups hg2";
 }
 if (isset($servicegroups) && $servicegroups != 0) {
@@ -306,7 +306,7 @@ if (!$obj->is_admin) {
 (isset($tabOrder[$sort_type]))
     ? $request .= $tabOrder[$sort_type]
     : $request .= $tabOrder["default"];
-$request .= " LIMIT " . ($num * $limit) . "," . $limit;
+$request .= " LIMIT " . ($num * $limit) . ", " . $limit;
 
 /** * **************************************************
  * Get Pagination Rows
@@ -329,7 +329,7 @@ if ($critRes->numRows()) {
     }
 }
 
-/* * **************************************************
+/*
  * Create Buffer
  */
 $obj->XML->startElement("reponse");
@@ -366,7 +366,7 @@ if (!PEAR::isError($dbResult)) {
         $last_check = " ";
         $duration = " ";
 
-        /* Split the plugin_output */
+        // Split the plugin_output
         $outputLines = explode("\n", $data['plugin_output']);
         $pluginShortOuput = $outputLines[0];
 
@@ -603,7 +603,8 @@ if (!PEAR::isError($dbResult)) {
             $data["action_url"] = str_replace("\$SERVICESTATEID\$", $data["state"], $data["action_url"]);
             $data["action_url"] = str_replace(
                 "\$SERVICESTATE\$",
-                $obj->statusService[$data["state"]], $data["action_url"]
+                $obj->statusService[$data["state"]],
+                $data["action_url"]
             );
             $data["action_url"] = str_replace("\$HOSTNAME\$", $data["name"], $data["action_url"]);
             if (isset($data["alias"]) && $data["alias"]) {
@@ -683,8 +684,7 @@ if (!PEAR::isError($dbResult)) {
             "svc_index",
             (isset($graphs[$data["host_id"]][$data["service_id"]])
                 ? $graphs[$data["host_id"]][$data["service_id"]]
-                : 0
-            )
+                : 0)
         );
         $obj->XML->endElement();
     }
