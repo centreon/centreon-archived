@@ -662,7 +662,7 @@ if (!PEAR::isError($dbResult)) {
          * Get Service Graph index
          */
         if (!isset($graphs[$data["host_id"]]) || !isset($graphs[$data["host_id"]][$data["service_id"]])) {
-            $request2 = "SELECT DISTINCT servce_id, id
+            $request2 = "SELECT DISTINCT service_id, id
                 FROM index_data, metrics
                 WHERE metrics.index_id = index_data.id
                 AND host_id = " . $data["host_id"] .
