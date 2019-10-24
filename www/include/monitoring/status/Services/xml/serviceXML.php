@@ -101,18 +101,6 @@ $p = filter_input(INPUT_GET, 'p', FILTER_VALIDATE_INT, array('options' => array(
 $num = filter_input(INPUT_GET, 'num', FILTER_VALIDATE_INT, array('options' => array('default' => 0)));
 $limit = filter_input(INPUT_GET, 'limit', FILTER_VALIDATE_INT, array('options' => array('default' => 20)));
 $nc = filter_input(INPUT_GET, 'nc', FILTER_VALIDATE_INT, array('options' => array('default' => 0)));
-$search_type_host = filter_input(
-    INPUT_GET,
-    'search_type_host',
-    FILTER_VALIDATE_INT,
-    array('options' => array('default' => 1))
-);
-$search_type_service = filter_input(
-    INPUT_GET,
-    'search_type_service',
-    FILTER_VALIDATE_INT,
-    array('options' => array('default' => 1))
-);
 
 $order = filter_input(
     INPUT_GET,
@@ -129,13 +117,12 @@ $order = filter_input(
 // string values from the $_GET sanitized using the checkArgument() which call CentreonDB::escape() method
 $o = $obj->checkArgument("o", $_GET, "h");
 $search = $obj->checkArgument("search", $_GET, "");
-$search_host = $obj->checkArgument("search_host", $_GET, "");
-$search_output = $obj->checkArgument("search_output", $_GET, "");
-$sort_type = $obj->checkArgument("sort_type", $_GET, "host_name");
-$dateFormat = $obj->checkArgument("date_time_format_status", $_GET, "Y/m/d H:i:s");
-$criticalityValue = $obj->checkArgument('criticality', $_GET, $obj->defaultCriticality);
 $statusService = $obj->checkArgument("statusService", $_GET, "");
 $statusFilter = $obj->checkArgument("statusFilter", $_GET, "");
+$search_host = $obj->checkArgument("search_host", $_GET, "");
+$search_output = $obj->checkArgument("search_output", $_GET, "");
+$dateFormat = "Y/m/d H:i:s";
+$criticalityValue = $obj->checkArgument('criticality', $_GET, $obj->defaultCriticality);
 
 // values saved in the session
 $instance = filter_var($obj->defaultPoller, FILTER_VALIDATE_INT);
@@ -283,14 +270,14 @@ if ($statusFilter == "ok") {
 /**
  * HostGroup Filter
  */
-if (isset($hostgroup) && $hostgroup != 0) {
+if (isset($hostgroup) && $hostgroup !== 0) {
     $request .= " AND hg.hostgroup_id = hg2.hostgroup_id
         AND hg.host_id = h.host_id AND hg.hostgroup_id IN (" . $hostgroup . ") ";
 }
 /**
  * ServiceGroup Filter
  */
-if (isset($servicegroups) && $servicegroups != 0) {
+if (isset($servicegroups) && $servicegroups !== 0) {
     $request .= " AND ssg.servicegroup_id = sg.servicegroup_id
         AND ssg.service_id = s.service_id AND ssg.servicegroup_id IN (" . $servicegroups . ") ";
 }
