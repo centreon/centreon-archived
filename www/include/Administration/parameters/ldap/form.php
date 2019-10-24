@@ -174,7 +174,7 @@ $form->addElement(
     'select',
     'ldap_template',
     _("Template"),
-    array('0' => "", 'Posix' => _("Posix"), 'Active Directory' => _("Active Directory")),
+    array('0' => "", 'Active Directory' => _("Active Directory"), 'Okta' => _("Okta"), 'Posix' => _("Posix")),
     array('id' => 'ldap_template', 'onchange' => 'applyTemplate(this.value);')
 );
 $form->addElement('text', 'user_base_search', _("Search user base DN"), $attrsText);
