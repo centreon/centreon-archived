@@ -216,9 +216,9 @@ class CentreonGraph
             AND cbi.config_key IN ('rrd_cached_option', 'rrd_cached')"
         );
         while ($row = $result->fetch()) {
-            if ($row['config_key'] == 'rrd_cached_option') {
+            if ($row['config_key'] === 'rrd_cached_option') {
                 $this->rrdCachedOptions['rrd_cached_option'] = $row['config_value'];
-            } elseif ($row['config_key'] == 'rrd_cached') {
+            } elseif ($row['config_key'] === 'rrd_cached') {
                 $this->rrdCachedOptions['rrd_cached'] = $row['config_value'];
             }
         }
@@ -1808,9 +1808,9 @@ class CentreonGraph
          */
         $errno = 0;
         $errstr = '';
-        if ($this->rrdCachedOptions['rrd_cached_option'] == 'tcp') {
+        if ($this->rrdCachedOptions['rrd_cached_option'] === 'tcp') {
             $sock = fsockopen('127.0.0.1', trim($this->rrdCachedOptions['rrd_cached']), $errno, $errstr);
-        } elseif ($this->rrdCachedOptions['rrd_cached_option'] == 'unix') {
+        } elseif ($this->rrdCachedOptions['rrd_cached_option'] === 'unix') {
             $sock = fsockopen('unix://' . trim($this->rrdCachedOptions['rrd_cached']), $errno, $errstr);
         } else {
             return false;
