@@ -123,22 +123,9 @@ Options are following one:
 Creating the service startup file
 *********************************
 
-Create the **/etc/systemd/system/rrdcached.service** file and add lines: ::
+Install the init script: ::
 
-    [Unit]
-    Description=Data caching daemon for rrdtool
-    Documentation=man:rrdcached(1)
-    
-    [Service]
-    # If you enable socket-activable rrdcached.socket,
-    # command line socket declarations will be ignored
-    PIDFile=/var/rrdtool/rrdcached/rrdcached.pid
-    EnvironmentFile=/etc/sysconfig/rrdcached
-    ExecStart=/usr/bin/rrdcached $OPTIONS -p /var/rrdtool/rrdcached/rrdcached.pid
-    User=rrdcached
-    
-    [Install]
-    WantedBy=multi-user.target
+    # cp /usr/share/centreon/examples/rrdcached.systemd /usr/lib/systemd/system/rrdcached.service
 
 Create the associated directory: ::
 
