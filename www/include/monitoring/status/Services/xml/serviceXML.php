@@ -123,6 +123,7 @@ $search_host = $obj->checkArgument("search_host", $_GET, "");
 $search_output = $obj->checkArgument("search_output", $_GET, "");
 $dateFormat = "Y/m/d H:i:s";
 $criticalityValue = $obj->checkArgument('criticality', $_GET, $obj->defaultCriticality);
+$sort_type = $obj->checkArgument("sort_type", $_GET, "default");
 
 // values saved in the session
 $instance = filter_var($obj->defaultPoller, FILTER_VALIDATE_INT);
