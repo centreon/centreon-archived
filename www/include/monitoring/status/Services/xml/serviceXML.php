@@ -672,7 +672,8 @@ if (!PEAR::isError($dbResult)) {
             "svc_index",
             (isset($graphs[$data["host_id"]][$data["service_id"]])
                 ? $graphs[$data["host_id"]][$data["service_id"]]
-                : 0)
+                : 0
+            )
         );
         $obj->XML->endElement();
     }
