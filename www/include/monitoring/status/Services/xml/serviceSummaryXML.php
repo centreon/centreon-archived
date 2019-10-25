@@ -143,16 +143,16 @@ if ($o == "svcgrid_ack_1"
 }
 
 if ($search != "") {
-    $rq1 .= "AND hosts.name like '%" . $search . "%' ";
+    $rq1 .= "AND hosts.name like '%" . CentreonDB::escape($search) . "%' ";
 }
 
 if ($instance != -1) {
-    $rq1 .= "AND hosts.instance_id = " . $instance . " ";
+    $rq1 .= "AND hosts.instance_id = " . (int) $instance . " ";
 }
 
 if ($hostgroup) {
     $rq1 .= " AND hosts.host_id = hg.host_id
-        AND hg.hostgroup_id IN (" . $hostgroup . ")
+        AND hg.hostgroup_id IN (" . (int) $hostgroup . ")
         AND hg.hostgroup_id = hg2.hostgroup_id ";
 }
 
@@ -167,7 +167,7 @@ switch ($sort_type) {
 }
 
 // LIMIT
-$rq1 .= "LIMIT " . ($num * $limit) . "," . $limit . " ";
+$rq1 .= "LIMIT " . ((int) $num * (int) $limit) . "," . (int) $limit . " ";
 
 /*
  * Execute request
