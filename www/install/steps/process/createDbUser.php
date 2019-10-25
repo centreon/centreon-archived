@@ -66,7 +66,7 @@ if ($parameters['address'] != "127.0.0.1" && $parameters['address'] != "localhos
     );
     $getIpQuery->execute();
     // The result example (172.17.0.1:38216), use the explode function to remove port
-    $host = explode(":", $getIpQuery->fetchAll(PDO::FETCH_COLUMN)[0])[0];
+    $host = gethostbyaddr(explode(":", $getIpQuery->fetchAll(PDO::FETCH_COLUMN)[0])[0]);
 }
 
 // Compatibility adaptation for mysql 8 with php7.1 before 7.1.16, or php7.2 before 7.2.4.
