@@ -138,8 +138,7 @@ if (!empty($instance) && $instance !== -1) {
     $query .= " AND h.instance_id = " . (int) $instance . " ";
 }
 
-$query .= "ORDER BY sg.name " . $order .
-    " LIMIT " . (int)($num * $limit) . ", " . (int)$limit;
+$query .= "ORDER BY sg.name " . $order . " LIMIT " . ((int) $num * (int) $limit) . ", " . (int) $limit;
 
 $dbResult = $obj->DBC->query($query);
 
