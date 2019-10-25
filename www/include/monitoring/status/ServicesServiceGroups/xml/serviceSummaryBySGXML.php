@@ -117,40 +117,39 @@ if ($o == "svcgridSG_ack_0" || $o == "svcOVSG_ack_0") {
     $s_search .= " AND s.state != 0 AND s.state != 4 AND s.acknowledged = 0 " ;
 }
 
-$query = "SELECT SQL_CALC_FOUND_ROWS DISTINCT sg.servicegroup_id, h.host_id "
-    . "FROM servicegroups sg "
-    . "INNER JOIN services_servicegroups sgm ON sg.servicegroup_id = sgm.servicegroup_id "
-    . "INNER JOIN services s ON s.service_id = sgm.service_id "
-    . "INNER JOIN  hosts h ON sgm.host_id = h.host_id AND h.host_id = s.host_id "
+$query = "SELECT SQL_CALC_FOUND_ROWS DISTINCT sg.servicegroup_id, h.host_id
+    FROM servicegroups sg
+    INNER JOIN services_servicegroups sgm ON sg.servicegroup_id = sgm.servicegroup_id
+    INNER JOIN services s ON s.service_id = sgm.service_id
+    INNER JOIN  hosts h ON sgm.host_id = h.host_id AND h.host_id = s.host_id "
     . $obj->access->getACLHostsTableJoin($obj->DBC, "h.host_id")
-    . $obj->access->getACLServicesTableJoin($obj->DBC, "s.service_id")
-    . "WHERE 1 = 1  ";
+    . $obj->access->getACLServicesTableJoin($obj->DBC, "s.service_id") .
+    " WHERE 1 = 1  ";
 
 // Servicegroup ACL
 $query .= $obj->access->queryBuilder("AND", "sg.servicegroup_id", $obj->access->getServiceGroupsString("ID"));
 
 // Servicegroup search
 if ($sgSearch != "") {
-    $query .= "AND sg.name = '" . $sgSearch . "' ";
+    $query .= "AND sg.name = '" . CentreonDB::escape($sgSearch) . "' ";
 }
 
 // Host search
 $h_search = '';
 if ($hSearch != "") {
-    $h_search .= "AND h.name like '%" . $hSearch . "%' ";
+    $h_search .= "AND h.name like '%" . CentreonDB::escape($hSearch) . "%' ";
 }
 
 $query .= $h_search . $s_search;
 
 // Poller search
 if (!empty($instance) && $instance !== -1) {
-    $query .= " AND h.instance_id = " . $instance . " ";
+    $query .= " AND h.instance_id = " . (int) $instance . " ";
 }
 
-$query .= "ORDER BY sg.name " . $order .
-    " LIMIT " . ($num * $limit) . "," . $limit;
+$query .= "ORDER BY sg.name " . $order . " LIMIT " . ((int) $num * (int) $limit) . "," . (int) $limit;
 
-$DBRESULT = $obj->DBC->query($query);
+$dbResult = $obj->DBC->query($query);
 
 $numRows = $obj->DBC->numberRows();
 
@@ -180,38 +179,38 @@ $sg_search = "";
 if ($numRows > 0) {
     $sg_search .= "AND (";
     $servicegroups = array();
-    while ($row = $DBRESULT->fetchRow()) {
+    while ($row = $dbResult->fetchRow()) {
         $servicesgroups[$row['servicegroup_id']][] = $row['host_id'];
     }
     $servicegroupsSql1 = array();
     foreach ($servicesgroups as $key => $value) {
         $hostsSql = array();
         foreach ($value as $hostId) {
-            $hostsSql[] = $hostId;
+            $hostsSql[] = (int) $hostId;
         }
-        $servicegroupsSql1[] = "(sg.servicegroup_id = " . $key .
+        $servicegroupsSql1[] = "(sg.servicegroup_id = " . (int) $key .
             " AND h.host_id IN (" . implode(',', $hostsSql) . ")) ";
     }
     $sg_search .= implode(" OR ", $servicegroupsSql1);
     $sg_search .= ") ";
     if ($sgSearch != "") {
-        $sg_search .= "AND sg.name = '" . $sgSearch . "' ";
+        $sg_search .= "AND sg.name = '" . CentreonDB::escape($sgSearch) . "' ";
     }
 
-    $query2 = "SELECT SQL_CALC_FOUND_ROWS count(s.state) as count_state, sg.name AS sg_name, h.name as host_name, "
-        . "h.state as host_state, h.icon_image, h.host_id, s.state, "
-        . "(case s.state when 0 then 3 when 2 then 0 when 3 then 2 else s.state END) as tri "
-        . "FROM servicegroups sg, services_servicegroups sgm, services s, hosts h "
-        . "WHERE h.host_id = s.host_id AND s.host_id = sgm.host_id "
-        . "AND s.service_id=sgm.service_id AND sg.servicegroup_id=sgm.servicegroup_id "
+    $query2 = "SELECT SQL_CALC_FOUND_ROWS COUNT(s.state) AS count_state, sg.name AS sg_name, h.name AS host_name,
+        h.state AS host_state, h.icon_image, h.host_id, s.state,
+        (CASE s.state WHEN 0 THEN 3 WHEN 2 THEN 0 WHEN 3 THEN 2 ELSE s.state END) AS tri
+        FROM servicegroups sg, services_servicegroups sgm, services s, hosts h
+        WHERE h.host_id = s.host_id AND s.host_id = sgm.host_id
+        AND s.service_id=sgm.service_id AND sg.servicegroup_id=sgm.servicegroup_id "
         . $s_search
         . $sg_search
         . $h_search
         . $obj->access->queryBuilder("AND", "sg.servicegroup_id", $obj->access->getServiceGroupsString("ID"))
-        . $obj->access->queryBuilder("AND", "s.service_id", $obj->access->getServicesString("ID", $obj->DBC))
-        . " GROUP BY sg_name,host_name,host_state,icon_image,host_id, s.state order by tri asc ";
+        . $obj->access->queryBuilder("AND", "s.service_id", $obj->access->getServicesString("ID", $obj->DBC)) .
+        " GROUP BY sg_name,host_name,host_state,icon_image,host_id, s.state ORDER BY tri ASC";
     
-    $DBRESULT = $obj->DBC->query($query2);
+    $dbResult = $obj->DBC->query($query2);
 
     $states = array(
         0 => 'sk',
@@ -222,7 +221,7 @@ if ($numRows > 0) {
     );
 
     $sg_list = array();
-    while ($tab = $DBRESULT->fetchRow()) {
+    while ($tab = $dbResult->fetchRow()) {
         $sg_list[$tab["sg_name"]][$tab["host_name"]]['host_id'] = $tab['host_id'];
         $sg_list[$tab["sg_name"]][$tab["host_name"]]['icon_image'] = $tab['icon_image'];
         $sg_list[$tab["sg_name"]][$tab["host_name"]]['host_state'] = $tab['host_state'];
