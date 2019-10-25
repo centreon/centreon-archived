@@ -108,7 +108,7 @@ $obj->setHostGroupsHistory($hostgroup);
  */
 $searchStr = "";
 if ($search != "") {
-    $searchStr = " AND hg.name LIKE '%" . $search . "%' ";
+    $searchStr = " AND hg.name LIKE '%" . CentreonDB::escape($search) . "%' ";
 }
 
 /*
@@ -121,7 +121,7 @@ if ($obj->is_admin) {
             "AND hhg.host_id = h.host_id " .
             "AND h.enabled = 1 ";
     if (isset($instance) && $instance > 0) {
-        $rq1 .= "AND h.instance_id = " . $obj->DBC->escape($instance) . " ";
+        $rq1 .= "AND h.instance_id = " . (int) $instance . " ";
     }
     $rq1 .= $searchStr .
             "GROUP BY hg.name, h.state";
@@ -132,12 +132,12 @@ if ($obj->is_admin) {
             "AND hhg.host_id = h.host_id " .
             "AND h.enabled = 1 ";
     if (isset($instance) && $instance > 0) {
-        $rq1 .= "AND h.instance_id = " . $obj->DBC->escape($instance) . " ";
+        $rq1 .= "AND h.instance_id = " . (int) $instance . " ";
     }
     $rq1 .= $searchStr .
             $obj->access->queryBuilder("AND", "hg.name", $obj->access->getHostGroupsString("NAME")) .
             "AND h.host_id = acl.host_id " .
-            "AND acl.group_id in ($groupStr) " .
+            "AND acl.group_id in (" . $groupStr . ") " .
             "GROUP BY hg.name, h.state";
 }
 $dbResult = $obj->DBC->query($rq1);
@@ -164,7 +164,7 @@ if ($obj->is_admin) {
             "AND h.host_id = s.host_id " .
             "AND s.enabled = 1 ";
     if (isset($instance) && $instance > 0) {
-        $rq2 .= "AND h.instance_id = " . $obj->DBC->escape($instance) . " ";
+        $rq2 .= "AND h.instance_id = " . (int) $instance . " ";
     }
     $rq2 .= $searchStr .
             "GROUP BY hg.name, s.state  order by tri asc";
@@ -178,7 +178,7 @@ if ($obj->is_admin) {
             "AND h.host_id = s.host_id " .
             "AND s.enabled = 1 ";
     if (isset($instance) && $instance > 0) {
-        $rq2 .= "AND h.instance_id = " . $obj->DBC->escape($instance) . " ";
+        $rq2 .= "AND h.instance_id = " . (int) $instance . " ";
     }
     $rq2 .= $searchStr .
             $obj->access->queryBuilder("AND", "hg.name", $obj->access->getHostGroupsString("NAME")) .
