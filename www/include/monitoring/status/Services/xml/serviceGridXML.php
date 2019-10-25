@@ -142,7 +142,7 @@ switch ($sort_type) {
         $rq1 .= " ORDER BY hosts.name " . $order;
         break;
 }
-$rq1 .= " LIMIT " . (int) ($num * $limit) . ", " . (int) $limit;
+$rq1 .= " LIMIT " . ((int) $num * (int) $limit) . ", " . (int) $limit;
 
 $DBRESULT = $obj->DBC->query($rq1);
 $numRows = $obj->DBC->numberRows();
