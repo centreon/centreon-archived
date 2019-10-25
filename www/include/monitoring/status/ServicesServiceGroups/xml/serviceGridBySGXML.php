@@ -135,10 +135,10 @@ $query .= $s_search;
 
 // Poller search
 if (!empty($instance) && $instance !== -1) {
-    $query .= " AND h.instance_id = " . (int)$instance . " ";
+    $query .= " AND h.instance_id = " . (int) $instance . " ";
 }
 
-$query .= "ORDER BY sg.name " . CentreonDB::escape($order) .
+$query .= "ORDER BY sg.name " . $order .
     " LIMIT " . (int)($num * $limit) . ", " . (int)$limit;
 
 $dbResult = $obj->DBC->query($query);
@@ -172,23 +172,25 @@ if ($numRows > 0) {
     foreach ($servicesgroups as $key => $value) {
         $hostsSql = array();
         foreach ($value as $hostId) {
-            $hostsSql[] = $hostId;
+            $hostsSql[] = (int) $hostId;
         }
-        $servicegroupsSql1[] = "(sg.servicegroup_id = " . $key . " AND h.host_id
+        $servicegroupsSql1[] = "(sg.servicegroup_id = " . (int) $key . " AND h.host_id
             IN (" . implode(',', $hostsSql) . ")) ";
     }
     $sg_search .= implode(" OR ", $servicegroupsSql1);
     $sg_search .= ") ";
     if ($sgSearch != "") {
-        $sg_search .= "AND sg.name = '" . $sgSearch . "' ";
+        $sg_search .= " AND sg.name = '" . CentreonDB::escape($sgSearch) . "' ";
     }
 
-    $query2 = "SELECT SQL_CALC_FOUND_ROWS DISTINCT sg.name AS sg_name, sg.name AS alias, h.name AS host_name, "
-        . "h.state AS host_state, h.icon_image, h.host_id, s.state, s.description, s.service_id, "
-        . "(CASE s.state WHEN 0 THEN 3 WHEN 2 THEN 0 WHEN 3 THEN 2 ELSE s.state END) AS tri "
-        . "FROM servicegroups sg, services_servicegroups sgm, services s, hosts h "
-        . "WHERE h.host_id = s.host_id AND s.host_id = sgm.host_id AND s.service_id=sgm.service_id AND "
-        . "sg.servicegroup_id=sgm.servicegroup_id "
+    $query2 = "SELECT SQL_CALC_FOUND_ROWS DISTINCT sg.name AS sg_name, sg.name AS alias, h.name AS host_name,
+        h.state AS host_state, h.icon_image, h.host_id, s.state, s.description, s.service_id,
+        (CASE s.state WHEN 0 THEN 3 WHEN 2 THEN 0 WHEN 3 THEN 2 ELSE s.state END) AS tri
+        FROM servicegroups sg, services_servicegroups sgm, services s, hosts h
+        WHERE h.host_id = s.host_id
+        AND s.host_id = sgm.host_id
+        AND s.service_id=sgm.service_id
+        AND sg.servicegroup_id=sgm.servicegroup_id "
         . $s_search
         . $sg_search
         . $h_search
@@ -220,13 +222,12 @@ if ($numRows > 0) {
             }
             $aTab[$tab["sg_name"]]['host'][$tab["host_name"]] = array(
                 'h' => $tab["host_name"],
-                'hs' => $tab["host_state"],
+                'hs' => _($obj->statusHost[$tab["host_state"]]),
                 'hn' => CentreonUtils::escapeSecure($tab["host_name"]),
                 'hico' => $icone,
                 'hnl' => CentreonUtils::escapeSecure(urlencode($tab["host_name"])),
                 'hid' =>  $tab["host_id"],
                 "hcount" => $count,
-                "hs" =>  _($obj->statusHost[$tab["host_state"]]), //warning seems to be a duplicate key
                 "hc" => $obj->colorHost[$tab["host_state"]],
                 'service' => array()
             );
