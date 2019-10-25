@@ -49,6 +49,8 @@ class Host extends AbstractHost
                 $this->stmtHg = $this->backendInstance->db->prepare("SELECT
                     hostgroup_hg_id
                 FROM hostgroup_relation
+                INNER JOIN hostgroup ON hg_id = hostgroup_hg_id
+                AND hg_activate = '1'
                 WHERE host_host_id = :host_id
                 ");
             }
