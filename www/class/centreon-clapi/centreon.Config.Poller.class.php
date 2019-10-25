@@ -481,12 +481,12 @@ class CentreonConfigPoller
             /* Change files owner */
             if ($apacheUser != "") {
                 foreach (glob($Nagioscfg["cfg_dir"] . "/*.cfg") as $file) {
-                    chown($file, $apacheUser);
-                    chgrp($file, $apacheUser);
+                    @chown($file, $apacheUser);
+                    @chgrp($file, $apacheUser);
                 }
                 foreach (glob($Nagioscfg["cfg_dir"] . "/*.DEBUG") as $file) {
-                    chown($file, $apacheUser);
-                    chgrp($file, $apacheUser);
+                    @chown($file, $apacheUser);
+                    @chgrp($file, $apacheUser);
                 }
             } else {
                 print "Please check that files in the followings directory are writable by apache user : "
@@ -530,8 +530,8 @@ class CentreonConfigPoller
                 /* Change files owner */
                 if ($apacheUser != "") {
                     foreach (glob(rtrim($centreonBrokerDirCfg, "/") . "/" . "/*.{xml,cfg}", GLOB_BRACE) as $file) {
-                        chown($file, $apacheUser);
-                        chgrp($file, $apacheUser);
+                        @chown($file, $apacheUser);
+                        @chgrp($file, $apacheUser);
                     }
                 } else {
                     print "Please check that files in the followings directory are writable by apache user : "
