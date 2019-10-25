@@ -100,7 +100,7 @@ $obj->setInstanceHistory($instance);
  * Get Host status
  */
 $rq1 = " SELECT SQL_CALC_FOUND_ROWS DISTINCT hosts.name, hosts.state, hosts.icon_image, hosts.host_id FROM hosts ";
-if ($hostgroups) {
+if ($hostgroup) {
     $rq1 .= ", hosts_hostgroups hg, hostgroups hg2 ";
 }
 if (!$obj->is_admin) {
@@ -122,14 +122,14 @@ if ($o == "svcgrid_ack_1" || $o == "svcOV_ack_1") {
         WHERE s.acknowledged = '1' AND s.enabled = 1)";
 }
 if ($search != "") {
-    $rq1 .= " AND hosts.name like '%" . $search . "%' ";
+    $rq1 .= " AND hosts.name like '%" . CentreonDB::escape($search) . "%' ";
 }
 if ($instance != -1) {
-    $rq1 .= " AND hosts.instance_id = " . $instance;
+    $rq1 .= " AND hosts.instance_id = " . (int) $instance;
 }
-if ($hostgroups) {
+if ($hostgroup) {
     $rq1 .= " AND hosts.host_id = hg.host_id
-        AND hg.hostgroup_id IN (" . $hostgroups . ")
+        AND hg.hostgroup_id IN (" . (int) $hostgroup . ")
         AND hg.hostgroup_id = hg2.hostgroup_id ";
 }
 $rq1 .= " AND hosts.enabled = 1 ";
@@ -142,7 +142,7 @@ switch ($sort_type) {
         $rq1 .= " ORDER BY hosts.name " . $order;
         break;
 }
-$rq1 .= " LIMIT " . ($num * $limit) . ", " . $limit;
+$rq1 .= " LIMIT " . (int) ($num * $limit) . ", " . (int) $limit;
 
 $DBRESULT = $obj->DBC->query($rq1);
 $numRows = $obj->DBC->numberRows();
@@ -178,7 +178,7 @@ $DBRESULT->free();
 /*
  * Get Service status
  */
-$tab_svc = $obj->monObj->getServiceStatus($str, $obj, $o, $instance, $hostgroups);
+$tab_svc = $obj->monObj->getServiceStatus($str, $obj, $o, $instance, $hostgroup);
 if (isset($tab_svc)) {
     foreach ($tab_svc as $host_name => $tab) {
         if (count($tab)) {
