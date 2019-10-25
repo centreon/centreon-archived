@@ -194,7 +194,7 @@ $request = "SELECT SQL_CALC_FOUND_ROWS DISTINCT h.name, h.alias, h.address, h.ho
     h.passive_checks AS h_passive_checks, h.active_checks AS h_active_checks,
     i.name as instance_name, cv.value as criticality, cv.value IS NULL as isnull
     FROM hosts h, instances i ";
-if (isset($hostgroups) && $hostgroups != 0) {
+if (isset($hostgroup) && $hostgroup != 0) {
     $request .= ", hosts_hostgroups hg, hostgroups hg2";
 }
 if (isset($servicegroups) && $servicegroups != 0) {
