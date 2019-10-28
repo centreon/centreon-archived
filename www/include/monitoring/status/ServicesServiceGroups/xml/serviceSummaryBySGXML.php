@@ -80,7 +80,7 @@ $order = filter_input(
     INPUT_GET,
     'order',
     FILTER_VALIDATE_REGEXP,
-    array('options' => array('default' => 'ASC', 'regexp' => '/^(ASC|DESC)$/' ))
+    array('options' => array('default' => 'ASC', 'regexp' => '/^(ASC|DESC)$/'))
 );
 
 /*
