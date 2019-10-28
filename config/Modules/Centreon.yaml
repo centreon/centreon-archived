@@ -32,6 +32,9 @@ services:
         resource: '../../src/Centreon/Application/Controller'
         tags: ['controller.service_arguments']
 
+    Centreon\Infrastructure\Downtime\RestApiDowntime:
+        tags: ['controller.service_arguments']
+
     Centreon\Domain\Contact\Interfaces\ContactRepositoryInterface:
         class: Centreon\Infrastructure\Contact\ContactRepositoryRDB
 

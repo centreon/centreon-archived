@@ -27,6 +27,7 @@ use Centreon\Domain\Downtime\Interfaces\DowntimeServiceInterface;
 use Centreon\Domain\Engine\Interfaces\EngineServiceInterface;
 use Centreon\Domain\Entity\EntityValidator;
 use Centreon\Domain\Monitoring\Interfaces\MonitoringRepositoryInterface;
+use Centreon\Domain\Security\AccessGroup;
 use Centreon\Domain\Security\Interfaces\AccessGroupRepositoryInterface;
 use Centreon\Domain\Service\AbstractCentreonService;
 
@@ -52,6 +53,10 @@ class DowntimeService extends AbstractCentreonService implements DowntimeService
      * @var MonitoringRepositoryInterface
      */
     private $monitoringRepository;
+    /**
+     * @var AccessGroup[]
+     */
+    private $accessGroups;
 
     public function __construct(
         AccessGroupRepositoryInterface $accessGroupRepository,
@@ -77,15 +82,11 @@ class DowntimeService extends AbstractCentreonService implements DowntimeService
         parent::filterByContact($contact);
         $this->engineService->filterByContact($contact);
 
-        $accessGroups = $this->accessGroupRepository->findByContact($contact);
+        $this->accessGroups = $this->accessGroupRepository->findByContact($contact);
 
         $this->monitoringRepository
             ->setContact($this->contact)
-            ->filterByAccessGroups($accessGroups);
-
-        $this->downtimeRepository
-            ->setContact($this->contact)
-            ->filterByAccessGroups($accessGroups);
+            ->filterByAccessGroups($this->accessGroups);
 
         return $this;
     }
@@ -95,7 +96,14 @@ class DowntimeService extends AbstractCentreonService implements DowntimeService
      */
     public function findHostDowntime(): array
     {
-        return $this->downtimeRepository->findHostDowntime();
+        if ($this->contact->isAdmin()) {
+            return $this->downtimeRepository
+                ->forAccessGroups($this->accessGroups)
+                ->findHostDowntimeForAdminUser();
+        } else {
+            return $this->downtimeRepository
+                ->forAccessGroups($this->accessGroups)
+                ->findHostDowntimeForNonAdminUser();
+        }
     }
-
 }

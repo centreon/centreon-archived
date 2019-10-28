@@ -28,25 +28,25 @@ use Centreon\Infrastructure\Downtime\DowntimeRepositoryRDB;
 
 interface DowntimeRepositoryInterface
 {
-
-    /**
-     * @param ContactInterface $contact
-     * @return DowntimeRepositoryInterface
-     */
-    public function setContact(ContactInterface $contact): self;
-
     /**
      * Sets the access groups that will be used to filter downtime.
      *
      * @param AccessGroup[]|null $accessGroups
      * @return self
      */
-    public function filterByAccessGroups(?array $accessGroups): DowntimeRepositoryInterface;
+    public function forAccessGroups(?array $accessGroups): DowntimeRepositoryInterface;
 
     /**
-     * Find downtime of all hosts.
+     * Find downtime of all hosts for non admin user.
      *
      * @return Downtime[]
      */
-    public function findHostDowntime(): array;
+    public function findHostDowntimeForNonAdminUser(): array;
+
+    /**
+     * Find downtime of all hosts for an admin contact.
+     *
+     * @return Downtime[]
+     */
+    public function findHostDowntimeForAdminUser(): array;
 }

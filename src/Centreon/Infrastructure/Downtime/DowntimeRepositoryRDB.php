@@ -22,6 +22,7 @@ declare(strict_types=1);
 namespace Centreon\Infrastructure\Downtime;
 
 use Centreon\Domain\Contact\Interfaces\ContactInterface;
+use Centreon\Domain\Downtime\Downtime;
 use Centreon\Domain\Downtime\Interfaces\DowntimeRepositoryInterface;
 use Centreon\Domain\Security\AccessGroup;
 use Centreon\Infrastructure\DatabaseConnection;
@@ -41,11 +42,6 @@ class DowntimeRepositoryRDB extends AbstractRepositoryDRB implements DowntimeRep
     private $accessGroups;
 
     /**
-     * @var bool Indicates whether the contact is an admin or not
-     */
-    private $isAdmin = false;
-
-    /**
      * @var ContactInterface
      */
     private $contact;
@@ -61,29 +57,9 @@ class DowntimeRepositoryRDB extends AbstractRepositoryDRB implements DowntimeRep
     /**
      * @inheritDoc
      */
-    public function filterByAccessGroups(?array $accessGroups): DowntimeRepositoryInterface
+    public function forAccessGroups(?array $accessGroups): DowntimeRepositoryInterface
     {
         $this->accessGroups = $accessGroups;
-        return $this;
-    }
-
-    /**
-     * @return bool Return TRUE if contact is an admin
-     * @see DowntimeRepositoryInterface::setContact()
-     */
-    private function isAdmin(): bool
-    {
-        return ($this->contact !== null)
-            ? $this->contact->isAdmin()
-            : false;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function setContact(ContactInterface $contact): DowntimeRepositoryInterface
-    {
-        $this->contact = $contact;
         return $this;
     }
 
@@ -92,8 +68,30 @@ class DowntimeRepositoryRDB extends AbstractRepositoryDRB implements DowntimeRep
      */
     private function hasNotEnoughRightsToContinue(): bool
     {
-        return ($this->contact !== null)
-            ? !($this->contact->isAdmin() || count($this->accessGroups) > 0)
-            : count($this->accessGroups) == 0;
+        return count($this->accessGroups) == 0;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function findHostDowntimeForNonAdminUser(): array
+    {
+        if ($this->hasNotEnoughRightsToContinue()) {
+            return [];
+        }
+        return [];
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function findHostDowntimeForAdminUser(): array
+    {
+        if ($this->hasNotEnoughRightsToContinue()) {
+            return [];
+        }
+
+        // TODO: Implement findHostDowntime() method.
+        return [];
     }
 }

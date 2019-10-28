@@ -19,7 +19,7 @@
  */
 declare(strict_types=1);
 
-namespace Centreon\Application\Controller;
+namespace Centreon\Infrastructure\Downtime;
 
 use Centreon\Domain\Downtime\Interfaces\DowntimeServiceInterface;
 use Centreon\Domain\RequestParameters\Interfaces\RequestParametersInterface;
@@ -34,7 +34,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
  *
  * @package Centreon\Application\Controller
  */
-class DowntimeController extends AbstractFOSRestController
+class RestApiDowntime extends AbstractFOSRestController
 {
 
     /**
