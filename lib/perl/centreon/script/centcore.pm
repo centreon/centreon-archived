@@ -1204,6 +1204,11 @@ sub initEngine($$$) {
     }
 }
 
+##################################################
+# Function to reload Centreon Broker
+# Arguments:
+#     $id: int Poller id to reload
+#
 sub reloadBroker($) {
     my $self = shift;
     my $id = $_[0];
@@ -1218,11 +1223,13 @@ sub reloadBroker($) {
             'Init Script : "' . $command . '" ' .
             'on poller "' . $conf->{name} . '" (' . $id . ')'
         );
+
         ($lerror, $stdout) = centreon::common::misc::backtick(
             command => $command,
             logger => $self->{logger},
-            timeout => 120
+            timeout => 10
         );
+
         if (defined($stdout)) {
             foreach my $line (split(/\n/, $stdout)) {
                 $self->{logger}->writeLogDebug("Broker : " . $line);
