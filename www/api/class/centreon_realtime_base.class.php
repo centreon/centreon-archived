@@ -259,10 +259,13 @@ class CentreonRealtimeBase extends CentreonWebService
      */
     public function authorize($action, $user, $isInternal = false)
     {
-        if (parent::authorize($action, $user, $isInternal)) {
+        if (
+            parent::authorize($action, $user, $isInternal)
+            || ($user && $user->hasAccessRestApiRealtime())
+        ) {
             return true;
         }
 
-        return $user->hasAccessRestApiRealtime();
+        return false;
     }
 }
