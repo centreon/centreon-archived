@@ -229,11 +229,14 @@ class CentreonClapi extends CentreonWebService implements CentreonWebServiceDiIn
      */
     public function authorize($action, $user, $isInternal = false)
     {
-        if (parent::authorize($action, $user, $isInternal)) {
+        if (
+            parent::authorize($action, $user, $isInternal)
+            || ($user && $user->hasAccessRestApiConfiguration())
+        ) {
             return true;
         }
 
-        return $user->hasAccessRestApiConfiguration();
+        return false;
     }
 
     /**
