@@ -1,5 +1,4 @@
 <?php
-
 /*
  * Copyright 2005-2019 Centreon
  * Centreon is developed by : Julien Mathis and Romain Le Merlus under
@@ -83,7 +82,7 @@ $ldapUseDns[] = $form->createElement(
     null,
     _("Yes"),
     '1',
-    array('id' => 'ldap_srv_dns_y', 'onclick' => "toggleParams(false, false);")
+    array('id' => 'ldap_srv_dns_y', 'onclick' => "toggleParams(false);")
 );
 $ldapUseDns[] = $form->createElement(
     'radio',
@@ -91,7 +90,7 @@ $ldapUseDns[] = $form->createElement(
     null,
     _("No"),
     '0',
-    array('id' => 'ldap_srv_dns_n', 'onclick' => "toggleParams(true, false);")
+    array('id' => 'ldap_srv_dns_n', 'onclick' => "toggleParams(true);")
 );
 $form->addGroup($ldapUseDns, 'ldap_srv_dns', _("Use service DNS"), '&nbsp;');
 

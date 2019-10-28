@@ -31,62 +31,20 @@
  *
  * For more information : contact@centreon.com
  *
- * SVN : $URL$
- * SVN : $Id$
- *
  */
 ?>
 <script type="text/javascript">
-    function mk_pagination() {
-    }
-    function mk_paginationFF() {
-    }
-    function set_header_title() {
-    }
+    function mk_pagination() {}
+    function mk_paginationFF() {}
+    function set_header_title() {}
 
-    var nextRowId;
-    var counter = '<?php echo $maxHostId;?>';
-    var nbOfInitialRows = '<?php echo $nbOfInitialRows; ?>';
-    var o = '<?php echo $o;?>';
-    var arId = '<?php echo $arId;?>';
-    var templates;
-
-    /*
-     * Transform our div
-     */
-    function transformForm() {
-        var params;
-        var proc;
-        var addrXML;
-        var addrXSL;
-
-        //var params = '?sid=' + sid;
-
-        if (o == 'w' || o == 'ldap') {
-            params = '?arId=' + arId;
-            proc = new Transformation();
-            addrXML = './include/options/oreon/generalOpt/ldap/xml/ldap_host.php' + params;
-            addrXSL = './include/options/oreon/generalOpt/ldap/xsl/ldap_host.xsl';
-            proc.setXml(addrXML);
-            proc.setXslt(addrXSL);
-            proc.transform("dynamicDiv");
-            o = 0;
-        } else {
-            params = '?id=' + counter + '&nbOfInitialRows=' + nbOfInitialRows;
-            proc = new Transformation();
-            addrXML = './include/options/oreon/generalOpt/ldap/xml/additionalRowXml.php' + params;
-            addrXSL = './include/options/oreon/generalOpt/ldap/xsl/additionalRow.xsl';
-            proc.setXml(addrXML);
-            proc.setXslt(addrXSL);
-            proc.transform(nextRowId);
-        }
-    }
+    let ldapTemplates = [];
 
     /*
      * called when the use _dns is to set at no is clicked
      */
-    function toggleParams(checkValue, isInit) {
-        if (checkValue == true) {
+    function toggleParams(checkValue) {
+        if (checkValue === true) {
             jQuery('#ldap_dns_use_ssl').fadeOut({duration: 0});
             jQuery('#ldap_dns_use_tls').fadeOut({duration: 0});
             jQuery('#ldap_dns_use_domain').fadeOut({duration: 0});
@@ -107,79 +65,20 @@
         }
     }
 
-    /**
-     * Display or hide custom options
-     */
-    function toggleCustom(select) {
-        if (typeof(select) == 'undefined' || typeof(select.selectedIndex) == 'undefined') {
-            return null;
-        }
-        value = select.options[select.selectedIndex].value;
-        if (value == 0) {
-            jQuery('#ldap_user_filter').fadeIn({duration: 0});
-            jQuery('#ldap_user_uid_attr').fadeIn({duration: 0});
-            jQuery('#ldap_user_group').fadeIn({duration: 0});
-            jQuery('#ldap_user_name').fadeIn({duration: 0});
-            jQuery('#ldap_user_firstname').fadeIn({duration: 0});
-            jQuery('#ldap_user_lastname').fadeIn({duration: 0});
-            jQuery('#ldap_user_email').fadeIn({duration: 0});
-            jQuery('#ldap_user_pager').fadeIn({duration: 0});
-            jQuery('#ldap_group_filter').fadeIn({duration: 0});
-            jQuery('#ldap_group_gid_attr').fadeIn({duration: 0});
-            jQuery('#ldap_group_member').fadeIn({duration: 0});
-        } else {
-            jQuery('#ldap_user_filter').fadeOut({duration: 0});
-            jQuery('#ldap_user_uid_attr').fadeOut({duration: 0});
-            jQuery('#ldap_user_group').fadeOut({duration: 0});
-            jQuery('#ldap_user_name').fadeOut({duration: 0});
-            jQuery('#ldap_user_firstname').fadeOut({duration: 0});
-            jQuery('#ldap_user_lastname').fadeOut({duration: 0});
-            jQuery('#ldap_user_email').fadeOut({duration: 0});
-            jQuery('#ldap_user_pager').fadeOut({duration: 0});
-            jQuery('#ldap_group_filter').fadeOut({duration: 0});
-            jQuery('#ldap_group_gid_attr').fadeOut({duration: 0});
-            jQuery('#ldap_group_member').fadeOut({duration: 0});
-        }
-    }
-
     /*
      * Initialises advanced parameters
      */
     function initParams() {
         initTemplates();
+        let noDns = false;
         if (document.getElementById('ldap_srv_dns_n')) {
-            var noDns = false;
-            if (document.getElementById('ldap_srv_dns_n').type == 'radio') {
+            if (document.getElementById('ldap_srv_dns_n').type === 'radio') {
                 if (document.getElementById('ldap_srv_dns_n').checked) {
                     noDns = true;
                 }
             }
         }
-        toggleParams(noDns, true);
-    }
-
-    /*
-     * Function is called when the '+' button is pressed
-     */
-    function addNewHost() {
-        nbOfInitialRows++;
-        nextRowId = 'additionalRow_' + nbOfInitialRows;
-        transformForm();
-        counter++;
-    }
-
-    /*
-     * function that is called when the 'x' button is pressed
-     */
-    function removeTr(trId) {
-        if (document.getElementById(trId)) {
-            if (navigator.appName == "Microsoft Internet Explorer") {
-                document.getElementById(trId).innerText = "";
-            } else {
-                document.getElementById(trId).innerHTML = "";
-            }
-            jQuery('#'+trId).fadeOut({duration: 0});
-        }
+        toggleParams(noDns);
     }
 
     /*
@@ -223,10 +122,9 @@
     function applyTemplate(templateValue) {
 
         jQuery('input[type^=text]').each(function (index, el) {
-            key = el.getAttribute('name');
-            var attr = key;
-            if (typeof(ldapTemplates[templateValue]) != 'undefined') {
-                if (typeof(ldapTemplates[templateValue][attr]) != 'undefined') {
+            let attr = el.getAttribute('name');
+            if (typeof(ldapTemplates[templateValue]) !== 'undefined') {
+                if (typeof(ldapTemplates[templateValue][attr]) !== 'undefined') {
                     el.value = ldapTemplates[templateValue][attr];
                 }
             }
