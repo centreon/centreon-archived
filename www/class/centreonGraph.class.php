@@ -216,11 +216,7 @@ class CentreonGraph
             AND cbi.config_key IN ('rrd_cached_option', 'rrd_cached')"
         );
         while ($row = $result->fetch()) {
-            if ($row['config_key'] === 'rrd_cached_option') {
-                $this->rrdCachedOptions['rrd_cached_option'] = $row['config_value'];
-            } elseif ($row['config_key'] === 'rrd_cached') {
-                $this->rrdCachedOptions['rrd_cached'] = $row['config_value'];
-            }
+            $this->rrdCachedOptions[$row['config_key']] = $row['config_value'];
         }
 
         if (isset($index)) {
@@ -1536,7 +1532,7 @@ class CentreonGraph
                 'INSERT INTO `ods_view_details` (rnd_color, index_id, metric_id) '
                 . 'VALUES ("' . $lRndcolor . '", ' . $this->index . ', ' . $metricId  . ')'
             );
-		}
+        }
         return $lRndcolor;
     }
 
@@ -1582,7 +1578,7 @@ class CentreonGraph
             '#ff66ff', '#ff9900', '#ff9933', '#ff9966', '#ff9999', '#ff99cc',
             '#ff99ff', '#ffcc00', '#ffcc33', '#ffcc66', '#ffcc99', '#ffcccc',
             '#ffccff');
-            return $webSafeColors[rand(0,sizeof($webSafeColors)-1)];
+            return $webSafeColors[rand(0, sizeof($webSafeColors)-1)];
     }
 
     /**
@@ -1798,7 +1794,7 @@ class CentreonGraph
     protected function flushRrdcached($metricsId)
     {
         if (!isset($this->rrdCachedOptions['rrd_cached_option'])
-            || !preg_match('/(unix|tcp)/', $this->rrdCachedOptions['rrd_cached_option'])
+            || !in_array($this->rrdCachedOptions['rrd_cached_option'], ['unix', 'tcp'])
         ) {
             return true;
         }

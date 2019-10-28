@@ -135,7 +135,7 @@ class CentreonGraphStatus
     public function flushRrdCached($indexData)
     {
         if (!isset($this->rrdCachedOptions['rrd_cached_option'])
-            || !preg_match('/(unix|tcp)/', $this->rrdCachedOptions['rrd_cached_option'])
+            || !in_array($this->rrdCachedOptions['rrd_cached_option'], ['unix', 'tcp'])
         ) {
             return true;
         }
@@ -222,11 +222,7 @@ class CentreonGraphStatus
 
         $rrdCachedOptions = [];
         while ($row = $result->fetch()) {
-            if ($row['config_key'] === 'rrd_cached_option') {
-                $rrdCachedOptions['rrd_cached_option'] = $row['config_value'];
-            } elseif ($row['config_key'] === 'rrd_cached') {
-                $rrdCachedOptions['rrd_cached'] = $row['config_value'];
-            }
+            $this->rrdCachedOptions[$row['config_key']] = $row['config_value'];
         }
 
         return $rrdCachedOptions;

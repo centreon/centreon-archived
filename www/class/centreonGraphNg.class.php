@@ -240,11 +240,7 @@ class CentreonGraphNg
         );
 
         while ($row = $stmt->fetch()) {
-            if ($row['config_key'] === 'rrd_cached_option') {
-                $this->rrdCachedOptions['rrd_cached_option'] = $row['config_value'];
-            } elseif ($row['config_key'] === 'rrd_cached') {
-                $this->rrdCachedOptions['rrd_cached'] = $row['config_value'];
-            }
+            $this->rrdCachedOptions[$row['config_key']] = $row['config_value'];
         }
     }
     
@@ -1250,7 +1246,7 @@ class CentreonGraphNg
     protected function flushRrdcached($metricsId)
     {
         if (!isset($this->rrdCachedOptions['rrd_cached_option'])
-            || !preg_match('/(unix|tcp)/', $this->rrdCachedOptions['rrd_cached_option'])
+            || !in_array($this->rrdCachedOptions['rrd_cached_option'], ['unix', 'tcp'])
         ) {
             return true;
         }
