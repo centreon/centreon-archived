@@ -121,13 +121,21 @@ $query .= $obj->access->queryBuilder("AND", "sg.servicegroup_id", $obj->access->
 
 // Servicegroup search
 if ($sgSearch != "") {
-    $query .= "AND sg.name = '" . $sgSearch . "' ";
+    $query .= "AND sg.name = :sgSearch ";
+    $queryValues['sgSearch'] = [
+        \PDO::PARAM_STR => $sgSearch
+    ];
 }
 
 // Host search
 $h_search = '';
 if ($hSearch != "") {
-    $h_search .= "AND h.name like '%" . $hSearch . "%' ";
+    $h_search .= " AND h.name LIKE :hSearch ";
+    // as this partial request is used in two queries, we need to bound it two times using two arrays
+    //to avoid unconsistent number of bound variables in the second query
+    $queryValues['hSearch'] = $queryValues2['hSearch'] = [
+        \PDO::PARAM_STR => "%" . $hSearch . "%"
+    ];
 }
 $query .= $h_search;
 
@@ -136,13 +144,27 @@ $query .= $s_search;
 
 // Poller search
 if ($instance != -1) {
-    $query .= " AND h.instance_id = " . $instance . " ";
+    $query .= " AND h.instance_id = :instance ";
+    $queryValues['instance'] = [
+        \PDO::PARAM_INT => $instance
+    ];
 }
 
-$query .= "ORDER BY sg.name " . $order . " LIMIT " . ($num * $limit) . ", " . $limit;
+$query .= "ORDER BY sg.name " . $order . " LIMIT :numLimit, :limit";
+$queryValues['numLimit'] = [
+    \PDO::PARAM_INT => (int) ($num * $limit)
+];
+$queryValues['limit'] = [
+    \PDO::PARAM_INT => (int) $limit
+];
 
-$DBRESULT = $obj->DBC->query($query);
-
+$dbResult = $obj->DBC->prepare($query);
+foreach ($queryValues as $bindId => $bindData) {
+    foreach ($bindData as $bindType => $bindValue) {
+        $dbResult->bindValue($bindId, $bindValue, $bindType);
+    }
+}
+$dbResult->execute();
 $numRows = $obj->DBC->query("SELECT FOUND_ROWS()")->fetchColumn();
 
 /**
@@ -170,7 +192,7 @@ $sg_search = "";
 if ($numRows > 0) {
     $sg_search .= "AND (";
     $servicegroups = array();
-    while ($row = $DBRESULT->fetchRow()) {
+    while ($row = $dbResult->fetch()) {
         $servicesgroups[$row['servicegroup_id']][] = $row['host_id'];
     }
     $servicegroupsSql1 = array();
@@ -185,7 +207,10 @@ if ($numRows > 0) {
     $sg_search .= implode(" OR ", $servicegroupsSql1);
     $sg_search .= ") ";
     if ($sgSearch != "") {
-        $sg_search .= "AND sg.name = '" . $sgSearch . "' ";
+        $sg_search .= "AND sg.name = :sgSearch";
+        $queryValues2['sgSearch'] = [
+            \PDO::PARAM_STR => $sgSearch
+        ];
     }
 
     $query2 = "SELECT SQL_CALC_FOUND_ROWS count(s.state) as count_state,
@@ -204,7 +229,13 @@ if ($numRows > 0) {
         . $obj->access->queryBuilder("AND", "s.service_id", $obj->access->getServicesString("ID", $obj->DBC))
         . " GROUP BY sg_name,host_name,host_state,icon_image,host_id, s.state ORDER BY tri ASC ";
 
-    $DBRESULT = $obj->DBC->query($query2);
+    $dbResult = $obj->DBC->prepare($query2);
+    foreach ($queryValues2 as $bindId => $bindData) {
+        foreach ($bindData as $bindType => $bindValue) {
+            $dbResult->bindValue($bindId, $bindValue, $bindType);
+        }
+    }
+    $dbResult->execute();
 
     $states = array(
         0 => 'sk',
@@ -215,7 +246,7 @@ if ($numRows > 0) {
     );
 
     $sg_list = array();
-    while ($tab = $DBRESULT->fetchRow()) {
+    while ($tab = $dbResult->fetch()) {
         $sg_list[$tab["sg_name"]][$tab["host_name"]]['host_id'] = $tab['host_id'];
         $sg_list[$tab["sg_name"]][$tab["host_name"]]['icon_image'] = $tab['icon_image'];
         $sg_list[$tab["sg_name"]][$tab["host_name"]]['host_state'] = $tab['host_state'];
