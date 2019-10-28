@@ -175,7 +175,7 @@ the **Output** tab enable process and set unix socket path:
 * Enable RRDCached: unix
 * RRDCacheD listening socket/port: /var/rrdtool/rrdcached/rrdcached.sock
 
-enable process and set unix socket path:
+Enable process and set unix socket path:
 
 .. image:: /images/faq/rrdcached_config.png
     :align: center
