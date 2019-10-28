@@ -132,7 +132,7 @@ $h_search = '';
 if ($hSearch != "") {
     $h_search .= " AND h.name LIKE :hSearch ";
     // as this partial request is used in two queries, we need to bound it two times using two arrays
-    //to avoid unconsistent number of bound variables in the second query
+    // to avoid incoherent number of bound variables in the second query
     $queryValues['hSearch'] = $queryValues2['hSearch'] = [
         \PDO::PARAM_STR => "%" . $hSearch . "%"
     ];
@@ -152,10 +152,10 @@ if ($instance != -1) {
 
 $query .= "ORDER BY sg.name " . $order . " LIMIT :numLimit, :limit";
 $queryValues['numLimit'] = [
-    \PDO::PARAM_INT => (int) ($num * $limit)
+    \PDO::PARAM_INT => (int)($num * $limit)
 ];
 $queryValues['limit'] = [
-    \PDO::PARAM_INT => (int) $limit
+    \PDO::PARAM_INT => (int)$limit
 ];
 
 $dbResult = $obj->DBC->prepare($query);
