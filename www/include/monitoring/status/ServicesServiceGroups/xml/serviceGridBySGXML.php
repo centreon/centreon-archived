@@ -43,7 +43,7 @@ include_once _CENTREON_PATH_ . "www/include/common/common-Func.php";
 include_once _CENTREON_PATH_ . "www/class/centreonService.class.php";
 
 // Create XML Request Objects
- CentreonSession::start();
+CentreonSession::start();
 $obj = new CentreonXMLBGRequest($dependencyInjector, session_id(), 1, 1, 0, 1);
 $svcObj = new CentreonService($obj->DB);
 
@@ -68,8 +68,8 @@ $sgSearch = $obj->checkArgument("sg_search", $_GET, "");
 $sort_type = $obj->checkArgument("sort_type", $_GET, "host_name");
 $order = $obj->checkArgument("order", $_GET, "ASC");
 $dateFormat = $obj->checkArgument("date_time_format_status", $_GET, "Y/m/d H:i:s");
-$queryValues = array();
-$queryValues2 = array();
+$queryValues = [];
+$queryValues2 = [];
 
 // Backup poller selection
 $obj->setInstanceHistory($instance);
@@ -128,7 +128,7 @@ $h_search = '';
 if ($hSearch != "") {
     $h_search .= " AND h.name LIKE :hSearch ";
     // as this partial request is used in two queries, we need to bound it two times using two arrays
-    //to avoid unconsistent number of bound variables in the second query
+    // to avoid incoherent number of bound variables in the second query
     $queryValues['hSearch'] = $queryValues2['hSearch'] = [
         \PDO::PARAM_STR => "%" . $hSearch . "%"
     ];
@@ -145,13 +145,12 @@ if ($instance != -1) {
         \PDO::PARAM_INT => $instance
     ];
 }
-$query .= " ORDER BY sg.name " . $order
-    . " LIMIT :numLimit, :limit";
+$query .= " ORDER BY sg.name " . $order . " LIMIT :numLimit, :limit";
 $queryValues['numLimit'] = [
-    \PDO::PARAM_INT => (int) ($num * $limit)
+    \PDO::PARAM_INT => (int)($num * $limit)
 ];
 $queryValues['limit'] = [
-    \PDO::PARAM_INT => (int) $limit
+    \PDO::PARAM_INT => (int)$limit
 ];
 
 $dbResult = $obj->DBC->prepare($query);
@@ -200,8 +199,8 @@ if ($numRows > 0) {
     if ($sgSearch != "") {
         $sg_search .= "AND sg.name = :sgSearch";
         $queryValues2['sgSearch'] = [
-                \PDO::PARAM_STR => $sgSearch
-            ];
+            \PDO::PARAM_STR => $sgSearch
+        ];
     }
 
     $query2 = "SELECT SQL_CALC_FOUND_ROWS DISTINCT sg.name AS sg_name,
@@ -228,7 +227,7 @@ if ($numRows > 0) {
             $obj->access->queryBuilder("AND", "group_id", $obj->access->getAccessGroupsString()) . " " .
             $obj->access->queryBuilder("AND", "sg.servicegroup_id", $obj->access->getServiceGroupsString("ID")) . " ";
     }
-    $query2 .= $sg_search . $h_search . $s_search . " ORDER BY sg.name, tri ASC";
+    $query2 .= $sg_search . $h_search . $s_search . " ORDER BY sg_name, tri ASC";
 
     $dbResult = $obj->DBC->prepare($query2);
     foreach ($queryValues2 as $bindId => $bindData) {
