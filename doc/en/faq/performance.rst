@@ -128,7 +128,7 @@ Replace the default **/usr/lib/systemd/system/rrdcached.service** init script: :
 
     # cp /usr/share/centreon/examples/rrdcached.systemd /usr/lib/systemd/system/rrdcached.service
 
-Execute follwong commands: ::
+Execute following commands: ::
 
     mkdir -p /var/rrdtool
     useradd rrdcached -d '/var/rrdtool/rrdcached' -G centreon-broker,centreon -m
