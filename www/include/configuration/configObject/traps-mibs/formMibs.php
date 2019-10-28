@@ -123,7 +123,7 @@ if ($form->validate()) {
 		 */
         $values = $fileObj->getValue();
         $msg .= str_replace("\n", "<br />", $stdout);
-        $msg .= "<br />Moving traps in DataBase...";
+        $msg .= "<br />Moving traps in database...";
 
         $command = "@CENTREONTRAPD_BINDIR@/centFillTrapDB -f '" . $values["tmp_name"]
             . "' -m " . $manufacturerId . " --severity=info 2>&1";
@@ -134,15 +134,19 @@ if ($form->validate()) {
 
         $stdout = shell_exec($command);
         unlink($values['tmp_name']);
-        $msg .= "<br />" . str_replace("\n", "<br />", $stdout);
-        $msg .= "<br />Generate Traps configuration files from Monitoring Engine configuration form!";
-        if ($msg) {
-            if (strlen($msg) > $max_characters) {
-                $msg = substr($msg, 0, $max_characters) . "..." .
-                    sprintf(_("Message truncated (exceeded %s characters)"), $max_characters);
-            }
-            $tpl->assign('msg', $msg);
+
+        if ($stdout === null) {
+            $msg .= '<br />An error occured during generation.';
+        } else {
+            $msg .= '<br />' . str_replace('\n', '<br />', $stdout)
+                . '<br />Generate Traps configuration files from Monitoring Engine configuration form!';
         }
+
+        if (strlen($msg) > $max_characters) {
+            $msg = substr($msg, 0, $max_characters) . "..." .
+                sprintf(_("Message truncated (exceeded %s characters)"), $max_characters);
+        }
+        $tpl->assign('msg', $msg);
     }
 }
 
