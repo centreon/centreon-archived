@@ -20,7 +20,7 @@ Index
 =====
 
 Les bases de données utilisent des index pour accélérer les requêtes. Dans le cas où des index sont manquants les
-requêtes sont plus longues à être exécutées. 
+requêtes sont plus longues à être exécutées.
 
 .. _synchronizing-indexes:
 
