@@ -137,7 +137,7 @@ Execute following commands: ::
 Groups configuration
 ********************
 
-Create groups using commands::
+Create groups using commands: ::
 
     # usermod -a -G rrdcached centreon-broker
     # usermod -a -G rrdcached apache
