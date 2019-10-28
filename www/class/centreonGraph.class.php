@@ -208,7 +208,8 @@ class CentreonGraph
         unset($opt);
 
         /* Get RRDCacheD options */
-        $result = $this->DB->query("SELECT config_key, config_value
+        $result = $this->DB->query(
+            "SELECT config_key, config_value
             FROM cfg_centreonbroker_info AS cbi
             INNER JOIN cfg_centreonbroker AS cb ON (cb.config_id = cbi.config_id)
             INNER JOIN nagios_server AS ns ON (ns.id = cb.ns_nagios_server)
@@ -1517,9 +1518,11 @@ class CentreonGraph
         if (is_null($this->colorCache)) {
             $this->colorCache = array();
 
-            $DBRESULT = $this->DB->query("SELECT metric_id, rnd_color FROM `ods_view_details` WHERE `index_id` = '" . $this->index . "'");
+            $DBRESULT = $this->DB->query(
+                "SELECT metric_id, rnd_color FROM `ods_view_details` WHERE `index_id` = '" . $this->index . "'"
+            );
             while (($row = $DBRESULT->fetchRow())) {
-                $this->colorCache[$row['metric_id']] = $row['rnd_color']; 
+                $this->colorCache[$row['metric_id']] = $row['rnd_color'];
             }
         }
         

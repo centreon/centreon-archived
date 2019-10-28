@@ -212,7 +212,8 @@ class CentreonGraphStatus
      */
     protected function getRrdCachedOptions()
     {
-        $result = $this->pearDB->query("SELECT config_key, config_value
+        $result = $this->pearDB->query(
+            "SELECT config_key, config_value
             FROM cfg_centreonbroker_info AS cbi
             INNER JOIN cfg_centreonbroker AS cb ON (cb.config_id = cbi.config_id)
             INNER JOIN nagios_server AS ns ON (ns.id = cb.ns_nagios_server)
