@@ -331,6 +331,13 @@ class CentreonHomeCustomview extends CentreonWebService
      */
     public function authorize($action, $user, $isInternal = false)
     {
-        return true;
+        if (
+            parent::authorize($action, $user, $isInternal)
+            || ($user && $user->hasAccessRestApiConfiguration())
+        ) {
+            return true;
+        }
+
+        return false;
     }
 }

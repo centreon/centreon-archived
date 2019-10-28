@@ -843,4 +843,24 @@ class CentreonTopCounter extends CentreonWebService
         }
         return false;
     }
+
+    /**
+     * Authorize to access to the action
+     *
+     * @param string $action The action name
+     * @param array $user The current user
+     * @param boolean $isInternal If the api is call in internal
+     * @return boolean If the has access to the action
+     */
+    public function authorize($action, $user, $isInternal = false)
+    {
+        if (
+            parent::authorize($action, $user, $isInternal)
+            || ($user && $user->hasAccessRestApiRealtime())
+        ) {
+            return true;
+        }
+
+        return false;
+    }
 }

@@ -36,11 +36,27 @@
 ini_set('error_reporting', E_ALL & ~E_NOTICE & ~E_STRICT);
 ini_set('display_errors', 'Off');
 
-require_once dirname(__FILE__) . '/../../bootstrap.php';
-require_once _CENTREON_PATH_ . '/www/class/centreonDB.class.php';
-require_once dirname(__FILE__) . '/class/webService.class.php';
-require_once dirname(__FILE__) . '/exceptions.php';
+require_once __DIR__ . '/../../bootstrap.php';
+require_once __DIR__ . '/../class/centreon.class.php';
+require_once __DIR__ . '/class/webService.class.php';
 
-$pearDB = new CentreonDB;
+$pearDB = $dependencyInjector['configuration_db'];
 
-CentreonWebService::router($dependencyInjector, null, false);
+$user = null;
+// get user information if a token is provided
+if (isset($_SERVER['HTTP_CENTREON_AUTH_TOKEN'])) {
+    try {
+        $res = $pearDB->prepare(
+            "SELECT c.* FROM ws_token w, contact c WHERE c.contact_id = w.contact_id AND token = ?"
+        );
+        $res->execute(array($_SERVER['HTTP_CENTREON_AUTH_TOKEN']));
+        if ($userInfos = $res->fetch()) {
+            $centreon = new Centreon($userInfos);
+            $user = $centreon->user;
+        }
+    } catch (\PDOException $e) {
+        CentreonWebService::sendResult("Database error", 500);
+    }
+}
+
+CentreonWebService::router($dependencyInjector, $user, false);

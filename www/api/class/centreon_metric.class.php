@@ -684,6 +684,13 @@ class CentreonMetric extends CentreonWebService
      */
     public function authorize($action, $user, $isInternal = false)
     {
-        return true;
+        if (
+            parent::authorize($action, $user, $isInternal)
+            || ($user && $user->hasAccessRestApiRealtime())
+        ) {
+            return true;
+        }
+
+        return false;
     }
 }
