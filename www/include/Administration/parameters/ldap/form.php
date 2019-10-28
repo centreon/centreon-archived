@@ -83,7 +83,7 @@ $ldapUseDns[] = HTML_QuickForm::createElement(
     null,
     _("Yes"),
     '1',
-    array('id' => 'ldap_srv_dns_y', 'onclick' => "toggleParams(false, false);")
+    array('id' => 'ldap_srv_dns_y', 'onclick' => "toggleParams(false);")
 );
 $ldapUseDns[] = HTML_QuickForm::createElement(
     'radio',
@@ -91,7 +91,7 @@ $ldapUseDns[] = HTML_QuickForm::createElement(
     null,
     _("No"),
     '0',
-    array('id' => 'ldap_srv_dns_n', 'onclick' => "toggleParams(true, false);")
+    array('id' => 'ldap_srv_dns_n', 'onclick' => "toggleParams(true);")
 );
 $form->addGroup($ldapUseDns, 'ldap_srv_dns', _("Use service DNS"), '&nbsp;');
 
