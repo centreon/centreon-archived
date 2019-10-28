@@ -27,7 +27,7 @@ requêtes sont plus longues à être exécutées.
 Synchronisation des index
 *************************
 
-Des fichiers d'index sont générées pour chaque version de Centreon. Ils sont situés dans le répertoire 
+Des fichiers d'index sont générés pour chaque version de Centreon. Ils sont situés dans le répertoire 
 **/usr/share/centreon/bin/data**. Il y a un fichier JSON pour chaque base de données :
 
 * **centreonIndexes.json** : Index pour la base de données **centreon**
