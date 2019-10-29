@@ -56,18 +56,25 @@ if (!isset($obj->session_id) || !CentreonSession::checkSession($obj->session_id,
 $obj->getDefaultFilters();
 
 // Check Arguments From GET tab
-$o = $obj->checkArgument("o", $_GET, "h");
-$p = $obj->checkArgument("p", $_GET, "2");
-$nc = $obj->checkArgument("nc", $_GET, "0");
-$num = $obj->checkArgument("num", $_GET, 0);
-$limit = $obj->checkArgument("limit", $_GET, 20);
-$instance = $obj->checkArgument("instance", $_GET, $obj->defaultPoller);
-$hostgroups = $obj->checkArgument("hostgroups", $_GET, $obj->defaultHostgroups);
-$hSearch = $obj->checkArgument("host_search", $_GET, "");
-$sgSearch = $obj->checkArgument("sg_search", $_GET, "");
-$sort_type = $obj->checkArgument("sort_type", $_GET, "host_name");
-$order = $obj->checkArgument("order", $_GET, "ASC");
-$dateFormat = $obj->checkArgument("date_time_format_status", $_GET, "Y/m/d H:i:s");
+$o = filter_input(INPUT_GET, 'o', FILTER_SANITIZE_STRING, array('options' => array('default' => 'h')));
+$o = filter_input(INPUT_GET, 'o', FILTER_VALIDATE_INT, array('options' => array('default' => 2)));
+$num = filter_input(INPUT_GET, 'num', FILTER_VALIDATE_INT, array('options' => array('default' => 0)));
+$limit = filter_input(INPUT_GET, 'limit', FILTER_VALIDATE_INT, array('options' => array('default' => 20)));
+$instance = filter_var($obj->defaultPoller ?? -1, FILTER_VALIDATE_INT);
+$hSearch = filter_input(INPUT_GET, 'host_search', FILTER_SANITIZE_STRING, array('options' => array('default' => '')));
+$sgSearch = filter_input(INPUT_GET, 'sg_search', FILTER_SANITIZE_STRING, array('options' => array('default' => '')));
+$sort_type = filter_input(
+    INPUT_GET,
+    'sort_type',
+    FILTER_SANITIZE_STRING,
+    array('options' => array('default' => 'host_name'))
+);
+$order = filter_input(
+    INPUT_GET,
+    'order',
+    FILTER_VALIDATE_REGEXP,
+    array('options' => array('default' => 'ASC', 'regexp' => '/^(ASC|DESC)$/'))
+);
 $queryValues = [];
 $queryValues2 = [];
 
@@ -191,8 +198,8 @@ if ($numRows > 0) {
         foreach ($value as $hostId) {
             $hostsSql[] = $hostId;
         }
-        $servicegroupsSql1[] = "(sg.servicegroup_id = " . $key . " AND h.host_id IN (" .
-            implode(',', $hostsSql) . ")) ";
+        $servicegroupsSql1[] = "(sg.servicegroup_id = " . $key .
+            " AND h.host_id IN (" . implode(',', $hostsSql) . ")) ";
     }
     $sg_search .= implode(" OR ", $servicegroupsSql1);
     $sg_search .= ") ";
