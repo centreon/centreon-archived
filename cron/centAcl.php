@@ -113,23 +113,24 @@ try {
 
     /**
      * Sync ACL with LDAP's contactgroup
-     * If the LDAP is enable and the last check is greater than the update period
+     * If the LDAP is enabled and the last check is greater than the update period
      *
      * @TODO : Synchronize LDAP with contacts data in background to avoid it at login
      */
+    $ldapEnable = $ldapLastUpdate = 0;
     $queryOptions = "SELECT `key`, `value` FROM `options` WHERE `key` IN ('ldap_auth_enable', 'ldap_last_acl_update')";
     $res = $pearDB->query($queryOptions);
     while ($row = $res->fetch()) {
         switch ($row['key']) {
             case 'ldap_auth_enable':
-                $ldap_enable = $row['value'];
+                $ldapEnable = $row['value'];
                 break;
             case 'ldap_last_acl_update':
-                $ldap_last_update = $row['value'];
+                $ldapLastUpdate = $row['value'];
                 break;
         }
     }
-    if ($ldap_enable == 1 && $ldap_last_update < (time() - LDAP_UPDATE_PERIOD)) {
+    if ($ldapEnable == 1 && $ldapLastUpdate < (time() - LDAP_UPDATE_PERIOD)) {
         $cgObj->syncWithLdap();
     }
 
