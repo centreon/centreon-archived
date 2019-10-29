@@ -1,7 +1,7 @@
 <?php
 /*
- * Copyright 2005-2015 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2019 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -96,8 +96,7 @@ try {
     $prepareCreate->execute();
 
     // checking mysql version before trying to alter the password plugin
-    $prepareCheckVersion = $link->prepare($checkMysqlVersion);
-    $prepareCheckVersion->execute();
+    $prepareCheckVersion = $link->query($checkMysqlVersion);
     while ($row = $prepareCheckVersion->fetch()) {
         if (!isset($versionNumber) && $row['Variable_name'] === "version") {
             $versionNumber = $row['version'];
