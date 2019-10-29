@@ -194,10 +194,10 @@ $request = "SELECT SQL_CALC_FOUND_ROWS DISTINCT h.name, h.alias, h.address, h.ho
     h.passive_checks AS h_passive_checks, h.active_checks AS h_active_checks,
     i.name as instance_name, cv.value as criticality, cv.value IS NULL as isnull
     FROM hosts h, instances i ";
-if (isset($hostgroup) && $hostgroup != 0) {
+if (!empty($hostgroup) && $hostgroup !== false) {
     $request .= ", hosts_hostgroups hg, hostgroups hg2";
 }
-if (isset($servicegroups) && $servicegroups != 0) {
+if (!empty($servicegroups) && $servicegroups !== false) {
     $request .= ", services_servicegroups ssg, servicegroups sg";
 }
 if ($criticalityValue) {
@@ -271,14 +271,14 @@ if ($statusFilter == "ok") {
 /**
  * HostGroup Filter
  */
-if (isset($hostgroup) && $hostgroup !== 0) {
+if (!empty($hostgroup) && $hostgroup !== false) {
     $request .= " AND hg.hostgroup_id = hg2.hostgroup_id
         AND hg.host_id = h.host_id AND hg.hostgroup_id IN (" . $hostgroup . ") ";
 }
 /**
  * ServiceGroup Filter
  */
-if (isset($servicegroups) && $servicegroups !== 0) {
+if (!empty($servicegroups) && $servicegroups !== false) {
     $request .= " AND ssg.servicegroup_id = sg.servicegroup_id
         AND ssg.service_id = s.service_id AND ssg.servicegroup_id IN (" . $servicegroups . ") ";
 }
