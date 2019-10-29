@@ -117,7 +117,8 @@ try {
      *
      * @TODO : Synchronize LDAP with contacts data in background to avoid it at login
      */
-    $ldapEnable = $ldapLastUpdate = 0;
+    $ldapEnable = '0';
+    $ldapLastUpdate = 0;
     $queryOptions = "SELECT `key`, `value` FROM `options` WHERE `key` IN ('ldap_auth_enable', 'ldap_last_acl_update')";
     $res = $pearDB->query($queryOptions);
     while ($row = $res->fetch()) {
