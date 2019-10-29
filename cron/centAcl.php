@@ -131,7 +131,7 @@ try {
                 break;
         }
     }
-    if ($ldapEnable == 1 && $ldapLastUpdate < (time() - LDAP_UPDATE_PERIOD)) {
+    if ($ldapEnable === '1' && $ldapLastUpdate < (time() - LDAP_UPDATE_PERIOD)) {
         $cgObj->syncWithLdap();
     }
 
