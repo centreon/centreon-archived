@@ -63,24 +63,30 @@ if (!isset($obj->session_id) || !CentreonSession::checkSession($obj->session_id,
 // Set Default Poller
 $obj->getDefaultFilters();
 
-//  Check Arguments from GET
-$o = $obj->checkArgument("o", $_GET, "h");
-$p = $obj->checkArgument("p", $_GET, "2");
-$num = $obj->checkArgument("num", $_GET, 0);
-$limit = $obj->checkArgument("limit", $_GET, 20);
-$instance = $obj->checkArgument("instance", $_GET, $obj->defaultPoller);
-$hostgroups = $obj->checkArgument("hostgroups", $_GET, $obj->defaultHostgroups);
-$search = $obj->checkArgument("search", $_GET, "");
-$order = $obj->checkArgument("order", $_GET, "ASC");
-$dateFormat = $obj->checkArgument("date_time_format_status", $_GET, "Y/m/d H:i:s");
+// Check Arguments From GET tab
+$o = filter_input(INPUT_GET, 'o', FILTER_SANITIZE_STRING, array('options' => array('default' => 'h')));
+$p = filter_input(INPUT_GET, 'p', FILTER_VALIDATE_INT, array('options' => array('default' => 2)));
+$num = filter_input(INPUT_GET, 'num', FILTER_VALIDATE_INT, array('options' => array('default' => 0)));
+$limit = filter_input(INPUT_GET, 'limit', FILTER_VALIDATE_INT, array('options' => array('default' => 20)));
+$criticality_id = filter_input(
+    INPUT_GET,
+    'criticality',
+    FILTER_VALIDATE_INT,
+    array('options' => array('default' => $obj->defaultCriticality))
+);
+//if instance value is not set, displaying all active pollers linked resources
+$instance = filter_var($obj->defaultPoller ?? -1, FILTER_VALIDATE_INT);
+$hostgroups = filter_var($obj->defaultHostgroups ?? 0, FILTER_VALIDATE_INT);
 
-$statusHost = $obj->checkArgument("statusHost", $_GET, "");
-$statusFilter = $obj->checkArgument("statusFilter", $_GET, "");
-
-// Store in session the last type of call
-$_SESSION['monitoring_host_status'] = $statusHost;
-$_SESSION['monitoring_host_status_filter'] = $statusFilter;
-
+$search = filter_input(INPUT_GET, 'search', FILTER_SANITIZE_STRING, array('options' => array('default' => '')));
+$statusHost = filter_input(INPUT_GET, 'statusHost', FILTER_SANITIZE_STRING, array('options' => array('default' => '')));
+$statusFilter = filter_input(INPUT_GET, 'statusFilter', FILTER_SANITIZE_STRING, array('options' => array('default' => '')));
+$order = filter_input(
+    INPUT_GET,
+    'order',
+    FILTER_VALIDATE_REGEXP,
+    array('options' => array('default' => 'ASC', 'regexp' => '/^(ASC|DESC)$/'))
+);
 if (isset($_GET['sort_type']) && $_GET['sort_type'] == "host_name") {
     $sort_type = "name";
 } else {
@@ -90,7 +96,9 @@ if (isset($_GET['sort_type']) && $_GET['sort_type'] == "host_name") {
         $sort_type = $obj->checkArgument("sort_type", $_GET, "host_name");
     }
 }
-$criticality_id = $obj->checkArgument('criticality', $_GET, $obj->defaultCriticality);
+// Store in session the last type of call
+$_SESSION['monitoring_host_status'] = $statusHost;
+$_SESSION['monitoring_host_status_filter'] = $statusFilter;
 
 // Backup poller selection
 $obj->setInstanceHistory($instance);
