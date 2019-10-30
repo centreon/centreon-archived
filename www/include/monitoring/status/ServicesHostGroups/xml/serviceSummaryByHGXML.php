@@ -1,5 +1,4 @@
 <?php
-
 /*
  * Copyright 2005-2019 Centreon
  * Centreon is developed by : Julien Mathis and Romain Le Merlus under
@@ -34,7 +33,6 @@
  *
  */
 
-require_once realpath(__DIR__ . "/../../../../../../config/centreon.config.php");
 require_once realpath(__DIR__ . "/../../../../../../bootstrap.php");
 include_once _CENTREON_PATH_ . "www/class/centreonUtils.class.php";
 include_once _CENTREON_PATH_ . "www/class/centreonXMLBGRequest.class.php";
@@ -90,7 +88,7 @@ if (!$obj->is_admin) {
 if ($instance != -1) {
     $rq1 .= "AND h.instance_id = :instance ";
     $queryValues[':instance'] = [
-        PDO::PARAM_INT => (int) $instance
+        PDO::PARAM_INT => (int)$instance
     ];
 }
 
@@ -133,10 +131,10 @@ $queryValues[':sort_type'] = [
     PDO::PARAM_STR => $sort_type
 ];
 $queryValues[':numLimit'] = [
-    PDO::PARAM_INT => (int) ($num * $limit)
+    PDO::PARAM_INT => (int)($num * $limit)
 ];
 $queryValues[':limit'] = [
-    PDO::PARAM_INT => (int) $limit
+    PDO::PARAM_INT => (int)$limit
 ];
 
 $DBRESULT = $obj->DBC->prepare($rq1);
