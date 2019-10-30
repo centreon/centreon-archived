@@ -162,7 +162,7 @@ $obj->XML->endElement();
 $ct = 0;
 $tab_final = array();
 $DBRESULT_NDO1 = $obj->DBC->query($rq1);
-while ($ndo = $DBRESULT_NDO1->fetchRow()) {
+while ($ndo = $DBRESULT_NDO1->fetch()) {
     $tab_final[$ndo["name"]]["nb_service_k"] = 0;
     $tab_final[$ndo["name"]]["host_id"] = $ndo["host_id"];
     if ($o != "svcSum_pb" && $o != "svcSum_ack_1" && $o != "svcSum_ack_0") {

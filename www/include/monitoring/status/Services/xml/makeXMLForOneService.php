@@ -132,7 +132,7 @@ $obj->XML->startElement("reponse");
 
 // Request
 $DBRESULT = $obj->DBC->query($rq1);
-if ($data = $DBRESULT->fetchRow()) {
+if ($data = $DBRESULT->fetch()) {
     /* Split the plugin_output */
     $outputLines = preg_split('/<br \/>|<br>|\\\n|\x0A|\x0D\x0A|\n/', $data['output']);
     if (strlen($outputLines[0]) > 100) {

@@ -138,7 +138,7 @@ $obj->XML->endElement();
 
 $tab_final = array();
 $str = "";
-while ($ndo = $DBRESULT->fetchRow()) {
+while ($ndo = $DBRESULT->fetch()) {
     if ($str != "") {
         $str .= ",";
     }

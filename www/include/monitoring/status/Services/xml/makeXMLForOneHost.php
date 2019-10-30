@@ -130,7 +130,7 @@ $DBRESULT = $obj->DBC->query($rq1);
  * Start Buffer
  */
 $obj->XML->startElement("reponse");
-if ($data = $DBRESULT->fetchRow()) {
+if ($data = $DBRESULT->fetch()) {
     // Split the plugin_output
     $outputLines = explode("\n", $data['output']);
     $pluginShortOuput = $outputLines[0];

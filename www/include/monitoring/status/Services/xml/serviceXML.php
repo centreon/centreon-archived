@@ -1,7 +1,7 @@
 <?php
 /*
- * Copyright 2005-2015 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2019 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -33,46 +33,32 @@
  *
  */
 
-/**
- * Require configuration.
- */
-require_once realpath(dirname(__FILE__) . "/../../../../../../config/centreon.config.php");
+// Require configuration.
 require_once realpath(__DIR__ . "/../../../../../../bootstrap.php");
-
 include_once _CENTREON_PATH_ . "www/class/centreonUtils.class.php";
 
-/**
- * Require Sepecific XML / Ajax Class
- */
+// Require Specific XML / Ajax Class
 include_once _CENTREON_PATH_ . "www/class/centreonXMLBGRequest.class.php";
 include_once _CENTREON_PATH_ . "www/class/centreonInstance.class.php";
 include_once _CENTREON_PATH_ . "www/class/centreonCriticality.class.php";
 include_once _CENTREON_PATH_ . "www/class/centreonMedia.class.php";
 
-/**
- * Require commonu Files.
- */
+// Require common Files.
 include_once _CENTREON_PATH_ . "www/include/monitoring/status/Common/common-Func.php";
 include_once _CENTREON_PATH_ . "www/include/common/common-Func.php";
 
-/**
- * Create XML Request Objects
- */
+// Create XML Request Objects
 CentreonSession::start();
 $obj = new CentreonXMLBGRequest($dependencyInjector, session_id(), 1, 1, 0, 1);
 
-/*
- * Get session
- */
+// Get session
 if (isset($_SESSION['centreon'])) {
     $centreon = $_SESSION['centreon'];
 } else {
     exit;
 }
 
-/*
- * Get language
- */
+// Get language
 $locale = $centreon->user->get_lang();
 putenv("LANG=$locale");
 setlocale(LC_ALL, $locale);
@@ -84,19 +70,15 @@ $criticality = new CentreonCriticality($obj->DB);
 $instanceObj = new CentreonInstance($obj->DB);
 $media = new CentreonMedia($obj->DB);
 
-if (isset($obj->session_id) && CentreonSession::checkSession($obj->session_id, $obj->DB)) {
-    ;
-} else {
+if (!isset($obj->session_id) || !CentreonSession::checkSession($obj->session_id, $obj->DB)) {
     print "Bad Session ID";
     exit();
 }
 
-/**
- * Set Default Poller
- */
+// Set Default Poller
 $obj->getDefaultFilters();
 
-/** * *************************************************
+/**
  * Check Arguments From GET tab
  */
 $o = $obj->checkArgument("o", $_GET, "h");
@@ -116,53 +98,25 @@ $dateFormat = $obj->checkArgument("date_time_format_status", $_GET, "Y/m/d H:i:s
 $search_type_host = $obj->checkArgument("search_type_host", $_GET, 1);
 $search_type_service = $obj->checkArgument("search_type_service", $_GET, 1);
 $criticality_id = $obj->checkArgument('criticality', $_GET, $obj->defaultCriticality);
-
 $statusService = $obj->checkArgument("statusService", $_GET, "");
 $statusFilter = $obj->checkArgument("statusFilter", $_GET, "");
 
-CentreonDb::checkInjection($o);
-CentreonDb::checkInjection($p);
-CentreonDb::checkInjection($nc);
-CentreonDb::checkInjection($num);
-CentreonDb::checkInjection($limit);
-CentreonDb::checkInjection($instance);
-CentreonDb::checkInjection($hostgroups);
-CentreonDb::checkInjection($servicegroups);
-CentreonDb::checkInjection($search);
-CentreonDb::checkInjection($search_host);
-CentreonDb::checkInjection($search_output);
-CentreonDb::checkInjection($sort_type);
-CentreonDb::checkInjection($order);
-CentreonDb::checkInjection($dateFormat);
-CentreonDb::checkInjection($search_type_host);
-CentreonDb::checkInjection($search_type_service);
-CentreonDb::checkInjection($criticality_id);
-
-/* Store in session the last type of call */
+// Store in session the last type of call
 $_SESSION['monitoring_service_status'] = $statusService;
 $_SESSION['monitoring_service_status_filter'] = $statusFilter;
 
-
-/** * *************************************************
- * Backup poller selection
- */
+// Backup poller selection
 $obj->setInstanceHistory($instance);
 
-/** * *************************************************
- * Backup criticality id
- */
+// Backup criticality id
 $obj->setCriticality($criticality_id);
 
-/**
- * Graphs Tables
- */
-$graphs = array();
+// Graphs Tables
+$graphs = [];
 
-/** * *************************************************
- * Get Service status
- */
+// Get Service status
 $instance_filter = "";
-if ($instance != -1 && !empty($instance)) {
+if (!empty($instance) && $instance != -1) {
     $instance_filter = " AND h.instance_id = " . $instance . " ";
 }
 
@@ -285,24 +239,19 @@ if ($statusService === 'svc_unhandled' || $statusService === 'svcpb') {
     }
 }
 
-/**
- * HostGroup Filter
- */
+// HostGroup Filter
 if (isset($hostgroups) && $hostgroups != 0) {
     $request .= " AND hg.hostgroup_id = hg2.hostgroup_id "
         . "AND hg.host_id = h.host_id AND hg.hostgroup_id IN (" . $hostgroups . ") ";
 }
-/**
- * ServiceGroup Filter
- */
+
+// ServiceGroup Filter
 if (isset($servicegroups) && $servicegroups != 0) {
     $request .= " AND ssg.servicegroup_id = sg.servicegroup_id "
         . "AND ssg.service_id = s.service_id AND ssg.servicegroup_id IN (" . $servicegroups . ") ";
 }
 
-/**
- * ACL activation
- */
+// ACL activation
 if (!$obj->is_admin) {
     $request .= " AND h.host_id = centreon_acl.host_id "
         . "AND s.service_id = centreon_acl.service_id AND group_id IN (" . $obj->grouplistStr . ") ";
@@ -311,9 +260,7 @@ if (!$obj->is_admin) {
 (isset($tabOrder[$sort_type])) ? $request .= $tabOrder[$sort_type] : $request .= $tabOrder["default"];
 $request .= " LIMIT " . ($num * $limit) . "," . $limit;
 
-/** * **************************************************
- * Get Pagination Rows
- */
+// Get Pagination Rows
 $sqlError = false;
 try {
     $DBRESULT = $obj->DBC->query($request);
@@ -323,9 +270,7 @@ try {
     $numRows = 0;
 }
 
-/**
- * Get criticality ids
- */
+// Get criticality ids
 $critRes = $obj->DBC->query(
     "SELECT value, service_id FROM customvariables WHERE name = 'CRITICALITY_ID' AND service_id IS NOT NULL"
 );
@@ -333,7 +278,7 @@ $criticalityUsed = 0;
 $critCache = array();
 if ($critRes->rowCount()) {
     $criticalityUsed = 1;
-    while ($critRow = $critRes->fetchRow()) {
+    while ($critRow = $critRes->fetch()) {
         $critCache[$critRow['service_id']] = $critRow['value'];
     }
 }
@@ -343,7 +288,7 @@ $isHardStateDurationVisible =
         && ($statusFilter === 'ok' || $statusFilter === 'pending')
     );
 
-/* * **************************************************
+/**
  * Create Buffer
  */
 $obj->XML->startElement("reponse");
@@ -375,13 +320,13 @@ $ct = 0;
 $flag = 0;
 
 if (!$sqlError) {
-    while ($data = $DBRESULT->fetchRow()) {
+    while ($data = $DBRESULT->fetch()) {
         $passive = 0;
         $active = 1;
         $last_check = " ";
         $duration = " ";
 
-        /* Split the plugin_output */
+        // Split the plugin_output
         $outputLines = explode("\n", $data['plugin_output']);
         $pluginShortOuput = $outputLines[0];
 
@@ -684,7 +629,7 @@ if (!$sqlError) {
                 . "AND service_id = " . $data["service_id"] . " "
                 . "AND index_data.hidden = '0' ";
             $DBRESULT2 = $obj->DBC->query($request2);
-            while ($dataG = $DBRESULT2->fetchRow()) {
+            while ($dataG = $DBRESULT2->fetch()) {
                 if (!isset($graphs[$data["host_id"]])) {
                     $graphs[$data["host_id"]] = array();
                 }
@@ -713,12 +658,8 @@ if (!$ct) {
 $obj->XML->writeElement("sid", $obj->session_id);
 $obj->XML->endElement();
 
-/*
- * Send Header
- */
+// Send Header
 $obj->header();
 
-/*
- * Send XML
- */
+// Send XML
 $obj->XML->output();
