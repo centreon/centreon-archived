@@ -62,28 +62,23 @@ $centreonlang->bindLang();
 /*
  * Check Arguments From GET tab
  */
-$svc_id = $obj->checkArgument("svc_id", $_GET, 0);
-$enable = $obj->checkArgument("enable", $_GET, "");
-$disable = $obj->checkArgument("disable", $_GET, "disable");
-$dateFormat = $obj->checkArgument("date_time_format_status", $_GET, "Y/m/d H:i:s");
+$svc_id = filter_input(INPUT_GET, 'svc_id', FILTER_SANITIZE_STRING, array('options' => array('default' => 0)));
 
-$tab = preg_split('/\_/', $svc_id);
-$host_id = filter_var(
-    $tab[0] ?? null,
-    FILTER_VALIDATE_INT
-);
+// splitting the host/service combination
+if (!empty($svc_id)) {
+    $tab = preg_split('/\_/', $svc_id);
+}
 
-$service_id = filter_var(
-    $tab[1] ?? null,
-    FILTER_VALIDATE_INT
-);
+// checking splitted values consistency
+$host_id = filter_var($tab[0] ?? null, FILTER_VALIDATE_INT);
+$service_id = filter_var($tab[1] ?? null, FILTER_VALIDATE_INT);
 
 if ($host_id === false || $service_id === false) {
     print _("Bad service ID");
     exit();
 }
 
-// Get Check if user is not admin
+// Check if the user is admin or not
 $isAdmin = $centreon->user->admin;
 if (!$isAdmin) {
     $userId = $centreon->user->user_id;
