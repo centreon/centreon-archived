@@ -78,28 +78,55 @@ if (!isset($obj->session_id) || !CentreonSession::checkSession($obj->session_id,
 // Set Default Poller
 $obj->getDefaultFilters();
 
-/**
- * Check Arguments From GET tab
- */
-$o = $obj->checkArgument("o", $_GET, "h");
-$p = $obj->checkArgument("p", $_GET, "2");
-$nc = $obj->checkArgument("nc", $_GET, "0");
-$num = $obj->checkArgument("num", $_GET, 0);
-$limit = $obj->checkArgument("limit", $_GET, 20);
-$instance = $obj->checkArgument("instance", $_GET, $obj->defaultPoller);
-$hostgroups = $obj->checkArgument("hostgroups", $_GET, $obj->defaultHostgroups);
-$servicegroups = $obj->checkArgument("servicegroups", $_GET, $obj->defaultServicegroups);
-$search = $obj->checkArgument("search", $_GET, "");
-$search_host = $obj->checkArgument("search_host", $_GET, "");
-$search_output = $obj->checkArgument("search_output", $_GET, "");
-$sort_type = $obj->checkArgument("sort_type", $_GET, "host_name");
-$order = $obj->checkArgument("order", $_GET, "ASC");
-$dateFormat = $obj->checkArgument("date_time_format_status", $_GET, "Y/m/d H:i:s");
-$search_type_host = $obj->checkArgument("search_type_host", $_GET, 1);
-$search_type_service = $obj->checkArgument("search_type_service", $_GET, 1);
-$criticality_id = $obj->checkArgument('criticality', $_GET, $obj->defaultCriticality);
-$statusService = $obj->checkArgument("statusService", $_GET, "");
-$statusFilter = $obj->checkArgument("statusFilter", $_GET, "");
+// Check Arguments From GET tab
+$o = filter_input(INPUT_GET, 'o', FILTER_SANITIZE_STRING, array('options' => array('default' => 'h')));
+$p = filter_input(INPUT_GET, 'p', FILTER_VALIDATE_INT, array('options' => array('default' => 2)));
+$num = filter_input(INPUT_GET, 'num', FILTER_VALIDATE_INT, array('options' => array('default' => 0)));
+$limit = filter_input(INPUT_GET, 'limit', FILTER_VALIDATE_INT, array('options' => array('default' => 20)));
+$nc = filter_input(INPUT_GET, 'criticality', FILTER_VALIDATE_INT, array('options' => array('default' => 0)));
+$criticality_id = filter_input(INPUT_GET, 'nc', FILTER_VALIDATE_INT, array('options' => array('default' => 0)));
+$search = filter_input(INPUT_GET, 'search', FILTER_SANITIZE_STRING, array('options' => array('default' => '')));
+$search_host = filter_input(
+    INPUT_GET,
+    'search_host',
+    FILTER_SANITIZE_STRING,
+    array('options' => array('default' => ''))
+);
+$search_output = filter_input(
+    INPUT_GET,
+    'search_output',
+    FILTER_SANITIZE_STRING,
+    array('options' => array('default' => ''))
+);
+$sort_type = filter_input(
+    INPUT_GET,
+    'sort_type',
+    FILTER_SANITIZE_STRING,
+    array('options' => array('default' => 'host_name'))
+);
+$order = filter_input(
+    INPUT_GET,
+    'order',
+    FILTER_VALIDATE_REGEXP,
+    array('options' => array('default' => 'ASC', 'regexp' => '/^(ASC|DESC)$/'))
+);
+$statusService = filter_input(
+    INPUT_GET,
+    'statusService',
+    FILTER_SANITIZE_STRING,
+    array('options' => array('default' => ''))
+);
+$statusFilter = filter_input(
+    INPUT_GET,
+    'statusFilter',
+    FILTER_SANITIZE_STRING,
+    array('options' => array('default' => ''))
+);
+$dateFormat = "Y/m/d H:i:s";
+//if instance, hostgroup or servicegroup values are not set, displaying each active linked resources
+$instance = filter_var($obj->defaultPoller ?? -1, FILTER_VALIDATE_INT);
+$hostgroups = filter_var($obj->defaultHostgroups ?? 0, FILTER_VALIDATE_INT);
+$servicegroups = filter_var($obj->defaultServicegroups ?? 0, FILTER_VALIDATE_INT);
 
 // Store in session the last type of call
 $_SESSION['monitoring_service_status'] = $statusService;
