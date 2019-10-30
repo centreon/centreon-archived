@@ -33,7 +33,6 @@
  *
  */
 
-require_once realpath(__DIR__ . "/../../../../../../config/centreon.config.php");
 require_once realpath(__DIR__ . "/../../../../../../bootstrap.php");
 include_once _CENTREON_PATH_ . "www/class/centreonXMLBGRequest.class.php";
 include_once _CENTREON_PATH_ . "www/class/centreonInstance.class.php";
@@ -48,30 +47,23 @@ include_once _CENTREON_PATH_ . "www/class/centreonUtils.class.php";
 CentreonSession::start();
 $obj = new CentreonXMLBGRequest($dependencyInjector, session_id(), 1, 1, 0, 1);
 
-if (isset($_SESSION['centreon'])) {
-    $centreon = $_SESSION['centreon'];
-} else {
+if (!isset($_SESSION['centreon'])) {
     exit;
 }
+$centreon = $_SESSION['centreon'];
 $criticality = new CentreonCriticality($obj->DB);
 $instanceObj = new CentreonInstance($obj->DB);
 $media = new CentreonMedia($obj->DB);
 
-if (isset($obj->session_id) && CentreonSession::checkSession($obj->session_id, $obj->DB)) {
-    ;
-} else {
+if (!isset($obj->session_id) || !CentreonSession::checkSession($obj->session_id, $obj->DB)) {
     print "Bad Session ID";
     exit();
 }
 
-/*
- * Set Default Poller
- */
+// Set Default Poller
 $obj->getDefaultFilters();
 
-/*
- *  Check Arguments from GET
- */
+//  Check Arguments from GET
 $o = $obj->checkArgument("o", $_GET, "h");
 $p = $obj->checkArgument("p", $_GET, "2");
 $num = $obj->checkArgument("num", $_GET, 0);
@@ -85,7 +77,7 @@ $dateFormat = $obj->checkArgument("date_time_format_status", $_GET, "Y/m/d H:i:s
 $statusHost = $obj->checkArgument("statusHost", $_GET, "");
 $statusFilter = $obj->checkArgument("statusFilter", $_GET, "");
 
-/* Store in session the last type of call */
+// Store in session the last type of call
 $_SESSION['monitoring_host_status'] = $statusHost;
 $_SESSION['monitoring_host_status_filter'] = $statusFilter;
 
@@ -100,9 +92,7 @@ if (isset($_GET['sort_type']) && $_GET['sort_type'] == "host_name") {
 }
 $criticality_id = $obj->checkArgument('criticality', $_GET, $obj->defaultCriticality);
 
-/*
- * Backup poller selection
- */
+// Backup poller selection
 $obj->setInstanceHistory($instance);
 $obj->setHostGroupsHistory($hostgroups);
 $obj->setCriticality($criticality_id);
