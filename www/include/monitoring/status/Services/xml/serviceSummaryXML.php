@@ -1,7 +1,7 @@
 <?php
 /*
- * Copyright 2005-2015 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2019 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -35,31 +35,23 @@
 
 ini_set("display_errors", "Off");
 
-require_once realpath(dirname(__FILE__) . "/../../../../../../config/centreon.config.php");
 require_once realpath(__DIR__ . "/../../../../../../bootstrap.php");
-
 include_once _CENTREON_PATH_ . "www/class/centreonUtils.class.php";
 include_once _CENTREON_PATH_ . "www/class/centreonXMLBGRequest.class.php";
 include_once _CENTREON_PATH_ . "www/include/monitoring/status/Common/common-Func.php";
 include_once _CENTREON_PATH_ . "www/include/common/common-Func.php";
 
-/*
- * Create XML Request Objects
- */
+// Create XML Request Objects
 CentreonSession::start(1);
 $obj = new CentreonXMLBGRequest($dependencyInjector, session_id(), 1, 1, 0, 1);
 
 
-if (isset($obj->session_id) && CentreonSession::checkSession($obj->session_id, $obj->DB)) {
-    ;
-} else {
+if (!isset($obj->session_id) || !CentreonSession::checkSession($obj->session_id, $obj->DB)) {
     print "Bad Session ID";
     exit();
 }
 
-/*
- * Set Default Poller
- */
+// Set Default Poller
 $obj->getDefaultFilters();
 
 /* **************************************************
@@ -76,20 +68,19 @@ $search = $obj->checkArgument("search", $_GET, "");
 $sort_type = $obj->checkArgument("sort_type", $_GET, "host_name");
 $order = $obj->checkArgument("order", $_GET, "ASC");
 $dateFormat = $obj->checkArgument("date_time_format_status", $_GET, "Y/m/d H:i:s");
-/*
- * Backup poller selection
- */
+
+// Backup poller selection
 $obj->setInstanceHistory($instance);
 
-$service = array();
-$host_status = array();
-$service_status = array();
-$host_services = array();
-$metaService_status = array();
-$tab_host_service = array();
-$tabIcone = array();
+$service = [];
+$host_status = [];
+$service_status = [];
+$host_services = [];
+$metaService_status = [];
+$tab_host_service = [];
+$tabIcone = [];
 
-/** *********************************************
+/**
  * Get status
  */
 $rq1 = "SELECT SQL_CALC_FOUND_ROWS DISTINCT hosts.name, hosts.state, hosts.icon_image, hosts.host_id "
@@ -142,7 +133,7 @@ if ($hostgroups) {
         . "AND hg.hostgroup_id = hg2.hostgroup_id ";
 }
 
-# ORDER BY
+// ORDER BY
 switch ($sort_type) {
     case 'current_state':
         $rq1 .= "ORDER BY hosts.state " . $order . ",hosts.name ";
@@ -152,19 +143,14 @@ switch ($sort_type) {
         break;
 }
 
-# LIMIT
+// LIMIT
 $rq1 .= "LIMIT " . ($num * $limit) . "," . $limit . " ";
 
-
-/*
- * Execute request
- */
+// Execute request
 $DBRESULT = $obj->DBC->query($rq1);
 $numRows = $obj->DBC->numberRows();
 
-/*
- * Info / Pagination
- */
+// Info / Pagination
 $obj->XML->startElement("reponse");
 $obj->XML->startElement("i");
 $obj->XML->writeElement("numrows", $numRows);
@@ -223,12 +209,8 @@ if (!$ct) {
 }
 $obj->XML->endElement();
 
-/*
- * Send Header
- */
+// Send Header
 $obj->header();
 
-/*
- * Send XML
- */
+// Send XML
 $obj->XML->output();
