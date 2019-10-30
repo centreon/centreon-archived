@@ -47,7 +47,7 @@ CentreonSession::start(1);
 $obj = new CentreonXMLBGRequest($dependencyInjector, session_id(), 1, 1, 0, 1);
 $svcObj = new CentreonService($obj->DB);
 
-if (!CentreonSession::checkSession($obj->session_id, $obj->DB)) {
+if (!isset($obj->session_id) || !CentreonSession::checkSession($obj->session_id, $obj->DB)) {
     print "Bad Session ID";
     exit();
 }
