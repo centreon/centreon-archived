@@ -185,8 +185,8 @@ if (!$obj->is_admin) {
     $request .= ", centreon_acl ";
 }
 $request .= ", services s LEFT JOIN customvariables cv ON (s.service_id = cv.service_id
-    AND cv.host_id = s.host_id AND cv.name = 'CRITICALITY_LEVEL') ";
-$request .= " WHERE h.host_id = s.host_id
+    AND cv.host_id = s.host_id AND cv.name = 'CRITICALITY_LEVEL')
+    WHERE h.host_id = s.host_id
     AND s.enabled = 1
     AND h.enabled = 1
     AND h.instance_id = i.instance_id ";
