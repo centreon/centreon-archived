@@ -21,6 +21,9 @@ declare(strict_types=1);
 
 namespace Centreon\Domain\Downtime;
 
+use JMS\Serializer\Annotation as Serializer;
+use Centreon\Domain\Annotation\EntityDescriptor as Desc;
+
 /**
  * Class Downtime
  * @package Centreon\Domain\Downtime
@@ -59,7 +62,7 @@ class Downtime
     private $hostId;
 
     /**
-     * @Serializer\Groups({"dwt_main"})
+     * @Serializer\Groups({"dwt_service"})
      * @Serializer\Type("integer")
      * @var int|null Service id linked to this downtime
      */
@@ -77,7 +80,7 @@ class Downtime
      * @Serializer\Groups({"dwt_main"})
      * @Desc(column="comment_data", modifier="setComment")
      * @Serializer\Type("string")
-     * @var string|null
+     * @var string|null Comments
      */
     private $comment;
 
@@ -89,7 +92,7 @@ class Downtime
 
     /**
      * @Serializer\Groups({"dwt_main"})
-     * @var \DateTime|null Duration of the downtime (in seconds)
+     * @var int|null Duration of the downtime corresponding to endTime - startTime (in seconds)
      */
     private $duration;
 
@@ -114,13 +117,6 @@ class Downtime
      * @var int|null Poller id
      */
     private $pollerId;
-
-    /**
-     * @Serializer\Groups({"dwt_main"})
-     * @Serializer\Type("integer")
-     * @var int|null Internal id
-     */
-    private $internalId;
 
     /**
      * @Serializer\Groups({"dwt_main"})
@@ -277,17 +273,17 @@ class Downtime
     }
 
     /**
-     * @return \DateTime|null
+     * @return int|null
      */
-    public function getDuration(): ?\DateTime
+    public function getDuration(): ?int
     {
         return $this->duration;
     }
 
     /**
-     * @param \DateTime|null $duration
+     * @param int|null $duration
      */
-    public function setDuration(?\DateTime $duration): void
+    public function setDuration(?int $duration): void
     {
         $this->duration = $duration;
     }
@@ -338,22 +334,6 @@ class Downtime
     public function setPollerId(?int $pollerId): void
     {
         $this->pollerId = $pollerId;
-    }
-
-    /**
-     * @return int|null
-     */
-    public function getInternalId(): ?int
-    {
-        return $this->internalId;
-    }
-
-    /**
-     * @param int|null $internalId
-     */
-    public function setInternalId(?int $internalId): void
-    {
-        $this->internalId = $internalId;
     }
 
     /**

@@ -336,6 +336,17 @@ class SqlRequestParametersTranslator
     }
 
     /**
+     * Add a search value
+     *
+     * @param string $key Key
+     * @param array $value Array [type_value => value]
+     */
+    public function addSearchValue(string $key, array $value): void
+    {
+        $this->searchValues[$key] = $value;
+    }
+
+    /**
      * @return array
      */
     public function getSearchValues(): array

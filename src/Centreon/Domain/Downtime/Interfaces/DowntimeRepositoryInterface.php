@@ -37,16 +37,86 @@ interface DowntimeRepositoryInterface
     public function forAccessGroups(?array $accessGroups): DowntimeRepositoryInterface;
 
     /**
-     * Find downtime of all hosts for non admin user.
+     * Find downtime of all hosts **taking into account** the ACLs of user.
      *
      * @return Downtime[]
+     * @throws \Exception
      */
-    public function findHostDowntimeForNonAdminUser(): array;
+    public function findHostDowntimesForNonAdminUser(): array;
 
     /**
-     * Find downtime of all hosts for an admin contact.
+     * Find downtime of all hosts **without taking into account** the ACLs of user.
      *
      * @return Downtime[]
+     * @throws \Exception
      */
-    public function findHostDowntimeForAdminUser(): array;
+    public function findHostDowntimesForAdminUser(): array;
+
+    /**
+     * Find one downtime linked to a host **without taking into account** the ACLs of user.
+     *
+     * @param int $downtimeId Downtime id
+     * @return Downtime|null Return NULL if the downtime has not been found
+     * @throws \Exception
+     */
+    public function findOneDowntimeForAdminUser(int $downtimeId): ?Downtime;
+
+    /**
+     * Find one downtime linked to a host **taking into account** the ACLs of user.
+     *
+     * @param int $downtimeId Downtime id
+     * @return Downtime|null Return NULL if the downtime has not been found
+     * @throws \Exception
+     */
+    public function findOneDowntimeForNonAdminUser(int $downtimeId): ?Downtime;
+
+    /**
+     * Find all downtimes **without taking into account** the ACLs of user.
+     *
+     * @return Downtime[] Return the downtimes found
+     * @throws \Exception
+     */
+    public function findDowntimeForAdminUser(): array;
+
+    /**
+     * Find all downtimes **taking into account** the ACLs of user.
+     *
+     * @return Downtime[] Return the downtimes found
+     * @throws \Exception
+     */
+    public function findDowntimeForNonAdminUser(): array;
+
+    /**
+     * Find all downtimes for a host **taking into account** the ACLs of user.
+     *
+     * @param int $hostId Host id for which we want to find downtimes
+     * @return Downtime[]
+     * @throws \Exception
+     */
+    public function findDowntimesByHostForAdminUser(int $hostId): array;
+
+    /**
+     * Find all downtimes for a host **without taking into account** the ACLs of user.
+     *
+     * @param int $hostId Host id for which we want to find downtimes
+     * @return Downtime[]
+     * @throws \Exception
+     */
+    public function findDowntimesByHostForNonAdminUser(int $hostId): array;
+
+    /**
+     * Find all downtimes of all services **taking into account** the ACLs of user.
+     *
+     * @return Downtime[]
+     * @throws \Exception
+     */
+    public function findServiceDowntimesForNonAdminUser(): array;
+
+    /**
+     * Find all downtimes of all services **without taking into account** the ACLs of user.
+     *
+     * @return Downtime[]
+     * @throws \Exception
+     */
+    public function findServiceDowntimesForAdminUser(): array;
 }

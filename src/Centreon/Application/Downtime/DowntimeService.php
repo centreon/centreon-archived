@@ -19,9 +19,10 @@
  */
 declare(strict_types=1);
 
-namespace Centreon\Domain\Downtime;
+namespace Centreon\Application\Downtime;
 
 use Centreon\Domain\Contact\Contact;
+use Centreon\Domain\Downtime\Downtime;
 use Centreon\Domain\Downtime\Interfaces\DowntimeRepositoryInterface;
 use Centreon\Domain\Downtime\Interfaces\DowntimeServiceInterface;
 use Centreon\Domain\Engine\Interfaces\EngineServiceInterface;
@@ -97,13 +98,69 @@ class DowntimeService extends AbstractCentreonService implements DowntimeService
     public function findHostDowntime(): array
     {
         if ($this->contact->isAdmin()) {
-            return $this->downtimeRepository
-                ->forAccessGroups($this->accessGroups)
-                ->findHostDowntimeForAdminUser();
+            return $this->downtimeRepository->findHostDowntimesForAdminUser();
         } else {
             return $this->downtimeRepository
                 ->forAccessGroups($this->accessGroups)
-                ->findHostDowntimeForNonAdminUser();
+                ->findHostDowntimesForNonAdminUser();
+        }
+    }
+
+    /**
+     * @param int $hostId
+     * @return array
+     * @throws \Exception
+     */
+    public function findDowntimesByHost(int $hostId): array
+    {
+        if ($this->contact->isAdmin()) {
+            return $this->downtimeRepository->findDowntimesByHostForAdminUser($hostId);
+        } else {
+            return $this->downtimeRepository
+                ->forAccessGroups($this->accessGroups)
+                ->findDowntimesByHostForNonAdminUser($hostId);
+        }
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function findServiceDowntime(): array
+    {
+        if ($this->contact->isAdmin()) {
+            return $this->downtimeRepository->findServiceDowntimesForAdminUser();
+        } else {
+            return $this->downtimeRepository
+                ->forAccessGroups($this->accessGroups)
+                ->findServiceDowntimesForNonAdminUser();
+        }
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function findDowntime(): array
+    {
+        if ($this->contact->isAdmin()) {
+            return $this->downtimeRepository->findDowntimeForAdminUser();
+        } else {
+            return $this->downtimeRepository
+                ->forAccessGroups($this->accessGroups)
+                ->findDowntimeForNonAdminUser();
+        }
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function findOneDowntime(int $downtimeId): ?Downtime
+    {
+        if ($this->contact->isAdmin()) {
+            return $this->downtimeRepository->findOneDowntimeForAdminUser($downtimeId);
+        } else {
+            return $this->downtimeRepository
+                ->forAccessGroups($this->accessGroups)
+                ->findOneDowntimeForNonAdminUser($downtimeId);
         }
     }
 }
