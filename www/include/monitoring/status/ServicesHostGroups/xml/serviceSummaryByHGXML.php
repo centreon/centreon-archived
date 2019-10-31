@@ -1,5 +1,4 @@
 <?php
-
 /*
  * Copyright 2005-2019 Centreon
  * Centreon is developed by : Julien Mathis and Romain Le Merlus under
@@ -34,7 +33,6 @@
  *
  */
 
-require_once realpath(__DIR__ . "/../../../../../../config/centreon.config.php");
 require_once realpath(__DIR__ . "/../../../../../../bootstrap.php");
 include_once _CENTREON_PATH_ . "www/class/centreonUtils.class.php";
 include_once _CENTREON_PATH_ . "www/class/centreonXMLBGRequest.class.php";
@@ -54,20 +52,31 @@ if (!isset($obj->session_id) || !CentreonSession::checkSession($obj->session_id,
 $obj->getDefaultFilters();
 
 // Check Arguments From GET tab
-$o = $obj->checkArgument("o", $_GET, "h");
-$p = $obj->checkArgument("p", $_GET, "2");
-$hg = $obj->checkArgument("hg", $_GET, "");
-$num = $obj->checkArgument("num", $_GET, 0);
-$limit = $obj->checkArgument("limit", $_GET, 20);
-$instance = $obj->checkArgument("instance", $_GET, $obj->defaultPoller);
-$hostgroup = $obj->checkArgument("hg_search", $_GET, "");
-$search = $obj->checkArgument("search", $_GET, "");
-$sort_type = $obj->checkArgument("sort_type", $_GET, "alias");
-$order = $obj->checkArgument("order", $_GET, "ASC");
-$dateFormat = $obj->checkArgument("date_time_format_status", $_GET, "Y/m/d H:i:s");
+$o = filter_input(INPUT_GET, 'o', FILTER_SANITIZE_STRING, array('options' => array('default' => 'h')));
+$p = filter_input(INPUT_GET, 'p', FILTER_VALIDATE_INT, array('options' => array('default' => 2)));
+$num = filter_input(INPUT_GET, 'num', FILTER_VALIDATE_INT, array('options' => array('default' => 0)));
+$limit = filter_input(INPUT_GET, 'limit', FILTER_VALIDATE_INT, array('options' => array('default' => 20)));
+//if instance value is not set, displaying all active pollers linked resources
+$instance = filter_var($obj->defaultPoller ?? -1, FILTER_VALIDATE_INT);
+$hostgroup = filter_input(INPUT_GET, 'hg_search', FILTER_SANITIZE_STRING, array('options' => array('default' => '')));
+$search = filter_input(INPUT_GET, 'search', FILTER_SANITIZE_STRING, array('options' => array('default' => '')));
+$sort_type = filter_input(
+    INPUT_GET,
+    'sort_type',
+    FILTER_SANITIZE_STRING,
+    array('options' => array('default' => 'alias'))
+);
+$order = filter_input(
+    INPUT_GET,
+    'order',
+    FILTER_VALIDATE_REGEXP,
+    array('options' => array('default' => 'ASC', 'regexp' => '/^(ASC|DESC)$/'))
+);
 $grouplistStr = $obj->access->getAccessGroupsString();
 
-$queryValues = array();
+//saving bound values
+$queryValues = [];
+
 // Get Host status
 $rq1 = "SELECT SQL_CALC_FOUND_ROWS DISTINCT h.name AS host_name, hg.name AS hgname, hgm.hostgroup_id, h.host_id, " .
     "h.state, h.icon_image FROM hostgroups hg, hosts_hostgroups hgm, hosts h ";
@@ -90,7 +99,7 @@ if (!$obj->is_admin) {
 if ($instance != -1) {
     $rq1 .= "AND h.instance_id = :instance ";
     $queryValues[':instance'] = [
-        PDO::PARAM_INT => (int) $instance
+        PDO::PARAM_INT => (int)$instance
     ];
 }
 
@@ -133,10 +142,10 @@ $queryValues[':sort_type'] = [
     PDO::PARAM_STR => $sort_type
 ];
 $queryValues[':numLimit'] = [
-    PDO::PARAM_INT => (int) ($num * $limit)
+    PDO::PARAM_INT => (int)($num * $limit)
 ];
 $queryValues[':limit'] = [
-    PDO::PARAM_INT => (int) $limit
+    PDO::PARAM_INT => (int)$limit
 ];
 
 $DBRESULT = $obj->DBC->prepare($rq1);
