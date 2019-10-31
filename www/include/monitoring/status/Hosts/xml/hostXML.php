@@ -95,8 +95,12 @@ $o = $obj->checkArgument("o", $_GET, "h");
 $search = $obj->checkArgument("search", $_GET, "");
 $statusHost = $obj->checkArgument("statusHost", $_GET, "");
 $statusFilter = $obj->checkArgument("statusFilter", $_GET, "");
-$criticalityValue = $obj->checkArgument('criticality', $_GET, $obj->defaultCriticality);
-
+$criticalityId = filter_input(
+    INPUT_GET,
+    'criticality',
+    FILTER_VALIDATE_INT,
+    array('options' => array('default' => $obj->defaultCriticality))
+);
 // values saved in the session
 $instance = filter_var($obj->defaultPoller, FILTER_VALIDATE_INT);
 $hostgroup = filter_var($obj->defaultHostgroups, FILTER_VALIDATE_INT);
@@ -118,7 +122,7 @@ $_SESSION['monitoring_host_status_filter'] = $statusFilter;
 // Backup poller filters
 $obj->setInstanceHistory($instance);
 $obj->setHostGroupsHistory($hostgroup);
-$obj->setCriticality($criticalityValue);
+$obj->setCriticality($criticalityId);
 
 /*
  * Get Host status
@@ -157,7 +161,7 @@ if (!$obj->is_admin) {
 if ($hostgroup) {
     $rq1 .= "hosts_hostgroups hhg, hostgroups hg, ";
 }
-if ($criticalityValue) {
+if ($criticalityId) {
     $rq1 .= "customvariables cvs, ";
 }
 $rq1 .= " `hosts` h
@@ -168,12 +172,11 @@ $rq1 .= " `hosts` h
     WHERE h.name NOT LIKE '_Module_%'
     AND h.instance_id = i.instance_id ";
 
-if ($criticalityValue) {
-    // $criticalityValue has already been sanitized using CentreonDB::escape() in checkArgument()
+if ($criticalityId) {
     $rq1 .= " AND h.host_id = cvs.host_id
         AND cvs.name = 'CRITICALITY_ID'
         AND cvs.service_id IS NULL
-        AND cvs.value = '" . $criticalityValue . "' ";
+        AND cvs.value = '" . (int)$criticalityId . "' ";
 }
 
 if (!$obj->is_admin) {

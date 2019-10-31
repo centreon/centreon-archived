@@ -122,7 +122,12 @@ $statusFilter = $obj->checkArgument("statusFilter", $_GET, "");
 $search_host = $obj->checkArgument("search_host", $_GET, "");
 $search_output = $obj->checkArgument("search_output", $_GET, "");
 $dateFormat = "Y/m/d H:i:s";
-$criticalityValue = $obj->checkArgument('criticality', $_GET, $obj->defaultCriticality);
+$criticalityId = filter_input(
+    INPUT_GET,
+    'criticality',
+    FILTER_VALIDATE_INT,
+    array('options' => array('default' => $obj->defaultCriticality))
+);
 $sort_type = $obj->checkArgument("sort_type", $_GET, "default");
 
 // values saved in the session
@@ -140,7 +145,7 @@ $_SESSION['monitoring_service_status_filter'] = $statusFilter;
 $obj->setInstanceHistory($instance);
 
 // Backup criticality id
-$obj->setCriticality($criticalityValue);
+$obj->setCriticality($criticalityId);
 
 // Graphs Tables
 $graphs = array();
@@ -200,7 +205,7 @@ if (!empty($hostgroup) && $hostgroup !== false) {
 if (!empty($servicegroups) && $servicegroups !== false) {
     $request .= ", services_servicegroups ssg, servicegroups sg";
 }
-if ($criticalityValue) {
+if ($criticalityId) {
     $request .= ", customvariables cvs ";
 }
 if (!$obj->is_admin) {
@@ -212,11 +217,11 @@ $request .= ", services s LEFT JOIN customvariables cv ON (s.service_id = cv.ser
     AND s.enabled = 1
     AND h.enabled = 1
     AND h.instance_id = i.instance_id ";
-if ($criticalityValue) {
+if ($criticalityId) {
     $request .= " AND s.service_id = cvs. service_id
         AND cvs.host_id = h.host_id
         AND cvs.name = 'CRITICALITY_ID'
-        AND cvs.value = '" . $obj->DBC->escape($criticalityValue) . "' ";
+        AND cvs.value = '" . (int)$criticalityId . "' ";
 }
 $request .= " AND h.name NOT LIKE '_Module_BAM%' ";
 
