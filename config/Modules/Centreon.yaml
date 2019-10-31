@@ -5,6 +5,7 @@ parameters:
 
 services:
     _defaults:
+        public: false
         autowire: true      # Automatically injects dependencies in your services.
         autoconfigure: true # Automatically registers your services as commands, event subscribers, controller...
 
@@ -28,12 +29,6 @@ services:
 
     # controllers are imported separately to make sure services can be injected
     # as action arguments even if you don't extend any base controller class
-    Centreon\Application\Controller\:
-        resource: '../../src/Centreon/Application/Controller'
-        tags: ['controller.service_arguments']
-
-    Centreon\Infrastructure\Downtime\RestApiDowntime:
-        tags: ['controller.service_arguments']
 
     Centreon\Domain\Contact\Interfaces\ContactRepositoryInterface:
         class: Centreon\Infrastructure\Contact\ContactRepositoryRDB
