@@ -79,49 +79,24 @@ if (!isset($obj->session_id) || !CentreonSession::checkSession($obj->session_id,
 $obj->getDefaultFilters();
 
 // Check Arguments From GET tab
-$o = filter_input(INPUT_GET, 'o', FILTER_SANITIZE_STRING, array('options' => array('default' => 'h')));
-$p = filter_input(INPUT_GET, 'p', FILTER_VALIDATE_INT, array('options' => array('default' => 2)));
-$num = filter_input(INPUT_GET, 'num', FILTER_VALIDATE_INT, array('options' => array('default' => 0)));
-$limit = filter_input(INPUT_GET, 'limit', FILTER_VALIDATE_INT, array('options' => array('default' => 20)));
-$nc = filter_input(INPUT_GET, 'criticality', FILTER_VALIDATE_INT, array('options' => array('default' => 0)));
-$criticality_id = filter_input(INPUT_GET, 'nc', FILTER_VALIDATE_INT, array('options' => array('default' => 0)));
-$search = filter_input(INPUT_GET, 'search', FILTER_SANITIZE_STRING, array('options' => array('default' => '')));
-$search_host = filter_input(
-    INPUT_GET,
-    'search_host',
-    FILTER_SANITIZE_STRING,
-    array('options' => array('default' => ''))
-);
-$search_output = filter_input(
-    INPUT_GET,
-    'search_output',
-    FILTER_SANITIZE_STRING,
-    array('options' => array('default' => ''))
-);
-$sort_type = filter_input(
-    INPUT_GET,
-    'sort_type',
-    FILTER_SANITIZE_STRING,
-    array('options' => array('default' => 'host_name'))
-);
+$o = filter_input(INPUT_GET, 'o', FILTER_SANITIZE_STRING, ['options' => ['default' => 'h']]);
+$p = filter_input(INPUT_GET, 'p', FILTER_VALIDATE_INT, ['options' => ['default' => 2]]);
+$num = filter_input(INPUT_GET, 'num', FILTER_VALIDATE_INT, ['options' => ['default' => 0]]);
+$limit = filter_input(INPUT_GET, 'limit', FILTER_VALIDATE_INT, ['options' => ['default' => 20]]);
+$nc = filter_input(INPUT_GET, 'nc', FILTER_VALIDATE_INT, ['options' => ['default' => 0]]);
+$criticalityId = filter_input(INPUT_GET, 'criticality', FILTER_VALIDATE_INT, ['options' => ['default' => 0]]);
+$serviceToSearch = filter_input(INPUT_GET, 'search', FILTER_SANITIZE_STRING, ['options' => ['default' => '']]);
+$hostToSearch = filter_input(INPUT_GET, 'search_host', FILTER_SANITIZE_STRING, ['options' => ['default' => '']]);
+$outputToSearch = filter_input(INPUT_GET, 'search_output', FILTER_SANITIZE_STRING, ['options' => ['default' => '']]);
+$sortType = filter_input(INPUT_GET, 'sort_type', FILTER_SANITIZE_STRING, ['options' => ['default' => 'host_name']]);
 $order = filter_input(
     INPUT_GET,
     'order',
     FILTER_VALIDATE_REGEXP,
-    array('options' => array('default' => 'ASC', 'regexp' => '/^(ASC|DESC)$/'))
+    ['options' => ['default' => 'ASC', 'regexp' => '/^(ASC|DESC)$/']]
 );
-$statusService = filter_input(
-    INPUT_GET,
-    'statusService',
-    FILTER_SANITIZE_STRING,
-    array('options' => array('default' => ''))
-);
-$statusFilter = filter_input(
-    INPUT_GET,
-    'statusFilter',
-    FILTER_SANITIZE_STRING,
-    array('options' => array('default' => ''))
-);
+$statusService = filter_input(INPUT_GET, 'statusService', FILTER_SANITIZE_STRING, ['options' => ['default' => '']]);
+$statusFilter = filter_input(INPUT_GET, 'statusFilter', FILTER_SANITIZE_STRING, ['options' => ['default' => '']]);
 $dateFormat = "Y/m/d H:i:s";
 //if instance, hostgroup or servicegroup values are not set, displaying each active linked resources
 $instance = filter_var($obj->defaultPoller ?? -1, FILTER_VALIDATE_INT);
@@ -136,35 +111,44 @@ $_SESSION['monitoring_service_status_filter'] = $statusFilter;
 $obj->setInstanceHistory($instance);
 
 // Backup criticality id
-$obj->setCriticality($criticality_id);
+$obj->setCriticality($criticalityId);
+
+// Saving bound values
+$queryValues = [];
 
 // Graphs Tables
 $graphs = [];
 
+
 // Get Service status
 $instance_filter = "";
 if (!empty($instance) && $instance != -1) {
-    $instance_filter = " AND h.instance_id = " . $instance . " ";
+    $instance_filter = " AND h.instance_id = :instance";
+    $queryValues['instance'] = [\PDO::PARAM_INT => $instance];
 }
 
 $searchHost = "";
-if ($search_host) {
-    $searchHost .= " AND (h.name LIKE '%$search_host%' ";
-    $searchHost .= " OR h.alias LIKE '%$search_host%' ";
-    $searchHost .= " OR h.address LIKE '%$search_host%' ) ";
+if ($hostToSearch) {
+    $searchHost .= " AND (h.name LIKE :hostToSearch
+        OR h.alias LIKE :hostToSearch
+        OR h.address LIKE :hostToSearch) ";
+    $queryValues['hostToSearch'] = [\PDO::PARAM_STR => '%' . $hostToSearch . '%'];
 }
 
 $searchService = "";
-if ($search) {
-    $searchService .= " AND (s.description LIKE '%$search%' OR s.display_name LIKE '%$search%')";
+if ($serviceToSearch) {
+    $searchService .= " AND (s.description LIKE :serviceToSearch OR s.display_name LIKE :serviceToSearch) ";
+    $queryValues['serviceToSearch'] = [\PDO::PARAM_STR => '%' . $serviceToSearch . '%'];
+    
 }
 $searchOutput = "";
-if ($search_output) {
-    $searchOutput .= " AND s.output LIKE '%$search_output%' ";
+if ($outputToSearch) {
+    $searchOutput .= " AND s.output LIKE :outputToSearch ";
+    $queryValues['outputToSearch'] = [\PDO::PARAM_STR => '%' . $outputToSearch . '%'];
 }
 
-$tabOrder = array();
-$tabOrder["criticality_id"] = " ORDER BY isnull $order, criticality $order, h.name, s.description ";
+$tabOrder = [];
+$tabOrder["criticality_id"] = " ORDER BY isnull " .$order . ", criticality " . $order . ", h.name, s.description ";
 $tabOrder["host_name"] = " ORDER BY h.name " . $order . ", s.description ";
 $tabOrder["service_description"] = " ORDER BY s.description " . $order . ", h.name";
 $tabOrder["current_state"] = " ORDER BY s.state " . $order . ", h.name, s.description";
@@ -175,42 +159,44 @@ $tabOrder["current_attempt"] = " ORDER BY s.check_attempt " . $order . ", h.name
 $tabOrder["output"] = " ORDER BY s.output " . $order . ", h.name, s.description";
 $tabOrder["default"] = $tabOrder['criticality_id'];
 
-$request = "SELECT SQL_CALC_FOUND_ROWS DISTINCT h.name, h.alias, h.address, h.host_id, s.description, "
-    . "s.service_id, s.notes, s.notes_url, s.action_url, s.max_check_attempts, "
-    . "s.icon_image, s.display_name, s.state, s.output as plugin_output, "
-    . "s.state_type, s.check_attempt as current_attempt, s.last_update as status_update_time, s.last_state_change, "
-    . "s.last_hard_state_change, s.last_check, s.next_check, "
-    . "s.notify, s.acknowledged, s.passive_checks, s.active_checks, s.event_handler_enabled, s.flapping, "
-    . "s.scheduled_downtime_depth, s.flap_detection, h.state as host_state, h.acknowledged AS h_acknowledged, "
-    . "h.scheduled_downtime_depth AS h_scheduled_downtime_depth, "
-    . "h.icon_image AS h_icon_images, h.display_name AS h_display_name, h.action_url AS h_action_url, "
-    . "h.notes_url AS h_notes_url, h.notes AS h_notes, h.address, "
-    . "h.passive_checks AS h_passive_checks, h.active_checks AS h_active_checks, "
-    . "i.name as instance_name, cv.value as criticality, cv.value IS NULL as isnull ";
-$request .= " FROM hosts h, instances i ";
+$request = "SELECT SQL_CALC_FOUND_ROWS DISTINCT h.name, h.alias, h.address, h.host_id, s.description,
+    s.service_id, s.notes, s.notes_url, s.action_url, s.max_check_attempts,
+    s.icon_image, s.display_name, s.state, s.output as plugin_output,
+    s.state_type, s.check_attempt as current_attempt, s.last_update as status_update_time, s.last_state_change,
+    s.last_hard_state_change, s.last_check, s.next_check,
+    s.notify, s.acknowledged, s.passive_checks, s.active_checks, s.event_handler_enabled, s.flapping,
+    s.scheduled_downtime_depth, s.flap_detection, h.state as host_state, h.acknowledged AS h_acknowledged,
+    h.scheduled_downtime_depth AS h_scheduled_downtime_depth,
+    h.icon_image AS h_icon_images, h.display_name AS h_display_name, h.action_url AS h_action_url,
+    h.notes_url AS h_notes_url, h.notes AS h_notes, h.address,
+    h.passive_checks AS h_passive_checks, h.active_checks AS h_active_checks,
+    i.name as instance_name, cv.value as criticality, cv.value IS NULL as isnull
+    FROM hosts h, instances i ";
 if (isset($hostgroups) && $hostgroups != 0) {
     $request .= ", hosts_hostgroups hg, hostgroups hg2";
 }
 if (isset($servicegroups) && $servicegroups != 0) {
     $request .= ", services_servicegroups ssg, servicegroups sg";
 }
-if ($criticality_id) {
+if ($criticalityId) {
     $request .= ", customvariables cvs ";
 }
 if (!$obj->is_admin) {
     $request .= ", centreon_acl ";
 }
-$request .= ", services s LEFT JOIN customvariables cv ON (s.service_id = cv.service_id "
-    . "AND cv.host_id = s.host_id AND cv.name = 'CRITICALITY_LEVEL') ";
+$request .= ", services s LEFT JOIN customvariables cv ON (s.service_id = cv.service_id
+    AND cv.host_id = s.host_id AND cv.name = 'CRITICALITY_LEVEL') ";
 $request .= " WHERE h.host_id = s.host_id
-                AND s.enabled = 1
-                AND h.enabled = 1
-                AND h.instance_id = i.instance_id ";
-if ($criticality_id) {
+    AND s.enabled = 1
+    AND h.enabled = 1
+    AND h.instance_id = i.instance_id ";
+if ($criticalityId) {
     $request .= " AND s.service_id = cvs. service_id
-                  AND cvs.host_id = h.host_id
-                  AND cvs.name = 'CRITICALITY_ID'
-                  AND cvs.value = '" . $obj->DBC->escape($criticality_id) . "' ";
+        AND cvs.host_id = h.host_id
+        AND cvs.name = 'CRITICALITY_ID'
+        AND cvs.value = :criticalityValue";
+    // the variable bounded to criticalityValue must be an integer. But is inserted in a DB's varchar column
+    $queryValues['criticalityValue'] = [\PDO::PARAM_STR => $criticalityId];
 }
 $request .= " AND h.name NOT LIKE '_Module_BAM%' ";
 
@@ -226,10 +212,10 @@ if ($searchOutput) {
 $request .= $instance_filter;
 
 if ($statusService == 'svc_unhandled') {
-    $request .= " AND s.state_type = 1";
-    $request .= " AND s.acknowledged = 0";
-    $request .= " AND s.scheduled_downtime_depth = 0";
-    $request .= " AND h.acknowledged = 0 AND h.scheduled_downtime_depth = 0 ";
+    $request .= " AND s.state_type = 1
+        AND s.acknowledged = 0
+        AND s.scheduled_downtime_depth = 0
+        AND h.acknowledged = 0 AND h.scheduled_downtime_depth = 0 ";
 }
 
 if ($statusService === 'svc_unhandled' || $statusService === 'svcpb') {
@@ -268,29 +254,46 @@ if ($statusService === 'svc_unhandled' || $statusService === 'svcpb') {
 
 // HostGroup Filter
 if (isset($hostgroups) && $hostgroups != 0) {
-    $request .= " AND hg.hostgroup_id = hg2.hostgroup_id "
-        . "AND hg.host_id = h.host_id AND hg.hostgroup_id IN (" . $hostgroups . ") ";
+    $request .= " AND hg.hostgroup_id = hg2.hostgroup_id
+        AND hg.host_id = h.host_id AND hg.hostgroup_id IN (:hostGroup) ";
+    // only one value is returned from the current "select" filter
+    $queryValues['hostGroup'] = [\PDO::PARAM_INT => $hostgroups];
 }
 
 // ServiceGroup Filter
 if (isset($servicegroups) && $servicegroups != 0) {
-    $request .= " AND ssg.servicegroup_id = sg.servicegroup_id "
-        . "AND ssg.service_id = s.service_id AND ssg.servicegroup_id IN (" . $servicegroups . ") ";
+    $request .= " AND ssg.servicegroup_id = sg.servicegroup_id
+        AND ssg.service_id = s.service_id AND ssg.servicegroup_id IN (:serviceGroup) ";
+    // only one value is returned from the current "select" filter
+    $queryValues['serviceGroup'] = [\PDO::PARAM_INT => $servicegroups];
 }
 
 // ACL activation
 if (!$obj->is_admin) {
-    $request .= " AND h.host_id = centreon_acl.host_id "
-        . "AND s.service_id = centreon_acl.service_id AND group_id IN (" . $obj->grouplistStr . ") ";
+    $request .= " AND h.host_id = centreon_acl.host_id
+        AND s.service_id = centreon_acl.service_id AND group_id IN (" . $obj->grouplistStr . ") ";
 }
 
-(isset($tabOrder[$sort_type])) ? $request .= $tabOrder[$sort_type] : $request .= $tabOrder["default"];
-$request .= " LIMIT " . ($num * $limit) . "," . $limit;
+// Sort order by
+$request .= isset($tabOrder[$sortType])
+    ? $tabOrder[$sortType]
+    : $tabOrder["default"];
+
+$request .= " LIMIT :numLimit, :limit";
+$queryValues['numLimit'] = [\PDO::PARAM_INT => ($num * $limit)];
+$queryValues['limit'] = [\PDO::PARAM_INT => $limit];
 
 // Get Pagination Rows
 $sqlError = false;
 try {
-    $DBRESULT = $obj->DBC->query($request);
+    $dbResult = $obj->DBC->prepare($request);
+    foreach ($queryValues as $bindId => $bindData) {
+        foreach ($bindData as $bindType => $bindValue) {
+            $dbResult->bindValue($bindId, $bindValue, $bindType);
+        }
+    }
+    $dbResult->execute();
+
     $numRows = $obj->DBC->numberRows();
 } catch (\PDOException $e) {
     $sqlError = true;
@@ -302,7 +305,7 @@ $critRes = $obj->DBC->query(
     "SELECT value, service_id FROM customvariables WHERE name = 'CRITICALITY_ID' AND service_id IS NOT NULL"
 );
 $criticalityUsed = 0;
-$critCache = array();
+$critCache = [];
 if ($critRes->rowCount()) {
     $criticalityUsed = 1;
     while ($critRow = $critRes->fetch()) {
@@ -347,7 +350,7 @@ $ct = 0;
 $flag = 0;
 
 if (!$sqlError) {
-    while ($data = $DBRESULT->fetch()) {
+    while ($data = $dbResult->fetch()) {
         $passive = 0;
         $active = 1;
         $last_check = " ";
@@ -573,12 +576,7 @@ if (!$sqlError) {
             }
             $obj->XML->writeElement(
                 "snu",
-                CentreonUtils::escapeSecure(
-                    $obj->serviceObj->replaceMacroInString(
-                        $data["service_id"],
-                        $data["notes_url"]
-                    )
-                )
+                CentreonUtils::escapeSecure($obj->serviceObj->replaceMacroInString($data["service_id"], $data["notes_url"]))
             );
         } else {
             $obj->XML->writeElement("snu", 'none');
@@ -609,9 +607,7 @@ if (!$sqlError) {
             }
             $obj->XML->writeElement(
                 "sau",
-                CentreonUtils::escapeSecure(
-                    $obj->serviceObj->replaceMacroInString($data["service_id"], $data["action_url"])
-                )
+                CentreonUtils::escapeSecure($obj->serviceObj->replaceMacroInString($data["service_id"], $data["action_url"]))
             );
         } else {
             $obj->XML->writeElement("sau", 'none');
@@ -649,21 +645,25 @@ if (!$sqlError) {
          * Get Service Graph index
          */
         if (!isset($graphs[$data["host_id"]]) || !isset($graphs[$data["host_id"]][$data["service_id"]])) {
-            $request2 = "SELECT DISTINCT service_id, id "
-                . "FROM index_data, metrics "
-                . "WHERE metrics.index_id = index_data.id "
-                . "AND host_id = " . $data["host_id"] . " "
-                . "AND service_id = " . $data["service_id"] . " "
-                . "AND index_data.hidden = '0' ";
-            $DBRESULT2 = $obj->DBC->query($request2);
-            while ($dataG = $DBRESULT2->fetch()) {
+            $request2 = "SELECT DISTINCT service_id, id
+                FROM index_data, metrics
+                WHERE metrics.index_id = index_data.id
+                AND host_id = :hostId
+                AND service_id = :serviceId
+                AND index_data.hidden = '0'";
+            $dbResult2 = $obj->DBC->prepare($request2);
+            $dbResult2->bindValue(':hostId', $data["host_id"], \PDO::PARAM_INT);
+            $dbResult2->bindValue(':serviceId', $data["service_id"], \PDO::PARAM_INT);
+            $dbResult2->execute();
+
+            while ($dataG = $dbResult2->fetch()) {
                 if (!isset($graphs[$data["host_id"]])) {
-                    $graphs[$data["host_id"]] = array();
+                    $graphs[$data["host_id"]] = [];
                 }
                 $graphs[$data["host_id"]][$dataG["service_id"]] = $dataG["id"];
             }
             if (!isset($graphs[$data["host_id"]])) {
-                $graphs[$data["host_id"]] = array();
+                $graphs[$data["host_id"]] = [];
             }
         }
         $obj->XML->writeElement(
@@ -672,7 +672,7 @@ if (!$sqlError) {
         );
         $obj->XML->endElement();
     }
-    $DBRESULT->closeCursor();
+    $dbResult->closeCursor();
 }
 
 unset($data);
