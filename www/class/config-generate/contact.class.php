@@ -226,20 +226,21 @@ class Contact extends AbstractObject
         if (is_null($this->contacts[$contact_id])) {
             return null;
         }
-        if ($this->checkGenerate($contact_id)) {
-            return $this->contacts[$contact_id]['register'] == 1
-                ? $this->contacts[$contact_id]['contact_name']
-                : $this->contacts[$contact_id]['name'];
-        }
 
         if ($this->contacts[$contact_id]['register'] == 0 && !isset($this->contacts[$contact_id]['name'])) {
             $this->contacts[$contact_id]['name'] = $this->contacts[$contact_id]['contact_name'];
             unset($this->contacts[$contact_id]['contact_name']);
         }
 
-        $this->contacts[$contact_id]['use'] = array();
-        $this->contacts[$contact_id]['use'][] =
-            $this->generateFromContactId($this->contacts[$contact_id]['contact_template_id']);
+        if ($this->checkGenerate($contact_id)) {
+            return $this->contacts[$contact_id]['register'] == 1
+                ? $this->contacts[$contact_id]['contact_name']
+                : $this->contacts[$contact_id]['name'];
+        }
+
+        $this->contacts[$contact_id]['use'] = [
+            $this->generateFromContactId($this->contacts[$contact_id]['contact_template_id'])
+        ];
         $this->getContactNotificationCommands($contact_id, 'host');
         $this->getContactNotificationCommands($contact_id, 'service');
         $period = Timeperiod::getInstance($this->dependencyInjector);
