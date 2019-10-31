@@ -33,9 +33,7 @@
  *
  */
 
-require_once realpath(__DIR__ . "/../../../../../../config/centreon.config.php");
 require_once realpath(__DIR__ . "/../../../../../../bootstrap.php");
-
 include_once _CENTREON_PATH_ . "www/class/centreonUtils.class.php";
 include_once _CENTREON_PATH_ . "www/class/centreonXMLBGRequest.class.php";
 include_once _CENTREON_PATH_ . "www/include/monitoring/status/Common/common-Func.php";
@@ -47,7 +45,7 @@ CentreonSession::start(1);
 $obj = new CentreonXMLBGRequest($dependencyInjector, session_id(), 1, 1, 0, 1);
 $svcObj = new CentreonService($obj->DB);
 
-if (!isset($obj->session_id) && !CentreonSession::checkSession($obj->session_id, $obj->DB)) {
+if (!isset($obj->session_id) || !CentreonSession::checkSession($obj->session_id, $obj->DB)) {
     print "Bad Session ID";
     exit();
 }
@@ -63,20 +61,31 @@ $_SESSION['monitoring_serviceByHg_status_filter'] = $statusFilter;
 $obj->getDefaultFilters();
 
 // Check Arguments From GET tab
-$o = $obj->checkArgument("o", $_GET, "h");
-$p = $obj->checkArgument("p", $_GET, "2");
-$hg = $obj->checkArgument("hg", $_GET, "");
-$num = $obj->checkArgument("num", $_GET, 0);
-$limit = $obj->checkArgument("limit", $_GET, 20);
-$instance = $obj->checkArgument("instance", $_GET, $obj->defaultPoller);
-$hostgroup = $obj->checkArgument("hg_search", $_GET, "");
-$search = $obj->checkArgument("search", $_GET, "");
-$sort_type = $obj->checkArgument("sort_type", $_GET, "host_name");
-$order = $obj->checkArgument("order", $_GET, "ASC");
-$dateFormat = $obj->checkArgument("date_time_format_status", $_GET, "Y/m/d H:i:s");
+$o = filter_input(INPUT_GET, 'o', FILTER_SANITIZE_STRING, array('options' => array('default' => 'h')));
+$p = filter_input(INPUT_GET, 'p', FILTER_VALIDATE_INT, array('options' => array('default' => 2)));
+$num = filter_input(INPUT_GET, 'num', FILTER_VALIDATE_INT, array('options' => array('default' => 0)));
+$limit = filter_input(INPUT_GET, 'limit', FILTER_VALIDATE_INT, array('options' => array('default' => 20)));
+//if instance value is not set, displaying all active pollers linked resources
+$instance = filter_var($obj->defaultPoller ?? -1, FILTER_VALIDATE_INT);
+$hostgroup = filter_input(INPUT_GET, 'hg_search', FILTER_SANITIZE_STRING, array('options' => array('default' => '')));
+$search = filter_input(INPUT_GET, 'search', FILTER_SANITIZE_STRING, array('options' => array('default' => '')));
+$sort_type = filter_input(
+    INPUT_GET,
+    'sort_type',
+    FILTER_SANITIZE_STRING,
+    array('options' => array('default' => 'host_name'))
+);
+$order = filter_input(
+    INPUT_GET,
+    'order',
+    FILTER_VALIDATE_REGEXP,
+    array('options' => array('default' => 'ASC', 'regexp' => '/^(ASC|DESC)$/'))
+);
 $grouplistStr = $obj->access->getAccessGroupsString();
 
-$queryValues = array();
+//saving bound values
+$queryValues = [];
+
 //Get Host status
 $rq1 = "SELECT SQL_CALC_FOUND_ROWS DISTINCT hg.name AS alias, h.host_id id, h.name AS host_name, hgm.hostgroup_id, " .
     "h.state hs, h.icon_image " .
