@@ -1,7 +1,7 @@
 <?php
 /*
- * Copyright 2005-2015 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2019 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -36,71 +36,49 @@
 /**
  * Require Centreon Config file
  */
-require_once realpath(dirname(__FILE__) . "/../../../../../../config/centreon.config.php");
 require_once realpath(__DIR__ . "/../../../../../../bootstrap.php");
-
 include_once $centreon_path . "www/class/centreonUtils.class.php";
 include_once $centreon_path . "www/class/centreonACL.class.php";
-
-/**
- * Include Monitoring Classes
- */
 include_once _CENTREON_PATH_ . "www/class/centreonXMLBGRequest.class.php";
 include_once _CENTREON_PATH_ . "www/class/centreonLang.class.php";
 
-/*
- * Create XML Request Objects
- */
+// Create XML Request Objects
 CentreonSession::start(1);
 $obj = new CentreonXMLBGRequest($dependencyInjector, session_id(), 1, 1, 0, 1);
 
-/**
- * Manage Session
- */
-
+// Manage Session
 $centreon = $_SESSION['centreon'];
 
-/**
- * Check Security
- */
-if (isset($obj->session_id) && CentreonSession::checkSession($obj->session_id, $obj->DB)) {
-    ;
-} else {
+// Check Security
+if (!isset($obj->session_id) || !CentreonSession::checkSession($obj->session_id, $obj->DB)) {
     print _("Bad Session ID");
     exit();
 }
 
-/** **************************************************
- * Enable Lang Object
- */
+// Enable Lang Object
 $centreonlang = new CentreonLang(_CENTREON_PATH_, $centreon);
 $centreonlang->bindLang();
 
-/** **************************************************
+/*
  * Check Arguments From GET tab
  */
-$svc_id = $obj->checkArgument("svc_id", $_GET, 0);
-$enable = $obj->checkArgument("enable", $_GET, "");
-$disable = $obj->checkArgument("disable", $_GET, "disable");
-$dateFormat = $obj->checkArgument("date_time_format_status", $_GET, "Y/m/d H:i:s");
+$svc_id = filter_input(INPUT_GET, 'svc_id', FILTER_SANITIZE_STRING, array('options' => array('default' => 0)));
 
-$tab = preg_split('/\_/', $svc_id);
-$host_id = filter_var(
-    $tab[0] ?? null,
-    FILTER_VALIDATE_INT
-);
+// splitting the host/service combination
+if (!empty($svc_id)) {
+    $tab = preg_split('/\_/', $svc_id);
+}
 
-$service_id = filter_var(
-    $tab[1] ?? null,
-    FILTER_VALIDATE_INT
-);
+// checking splitted values consistency
+$host_id = filter_var($tab[0] ?? null, FILTER_VALIDATE_INT);
+$service_id = filter_var($tab[1] ?? null, FILTER_VALIDATE_INT);
 
 if ($host_id === false || $service_id === false) {
     print _("Bad service ID");
     exit();
 }
 
-// Get Check if user is not admin
+// Check if the user is admin or not
 $isAdmin = $centreon->user->admin;
 if (!$isAdmin) {
     $userId = $centreon->user->user_id;
@@ -111,7 +89,7 @@ if (!$isAdmin) {
     }
 }
 
-/** **************************************************
+/*
  * Get Service status
  */
 $rq1 = "SELECT s.state," .
@@ -144,16 +122,12 @@ $rq1 = "SELECT s.state," .
     " WHERE s.host_id = h.host_id " .
     " AND s.host_id = $host_id AND service_id = $service_id LIMIT 1";
 
-/*
- * Init Buffer
- */
+// Init Buffer
 $obj->XML->startElement("reponse");
 
-/*
- * Request
- */
+// Request
 $DBRESULT = $obj->DBC->query($rq1);
-if ($data = $DBRESULT->fetchRow()) {
+if ($data = $DBRESULT->fetch()) {
     /* Split the plugin_output */
     $outputLines = preg_split('/<br \/>|<br>|\\\n|\x0A|\x0D\x0A|\n/', $data['output']);
     if (strlen($outputLines[0]) > 100) {
@@ -213,9 +187,7 @@ if ($data = $DBRESULT->fetchRow()) {
     $obj->XML->text(CentreonUtils::escapeSecure($pluginShortOuput), 0);
     $obj->XML->endElement();
 
-    /*
-	 * Long Output
-	 */
+    // Long Output
     $obj->XML->writeElement("long_name", _("Extended Status Information"), 0);
     foreach ($longOutput as $val) {
         if ($val != "") {
@@ -262,7 +234,7 @@ if ($data = $DBRESULT->fetchRow()) {
     $obj->XML->writeElement("is_downtime_name", _("In Scheduled Downtime?"), 0);
     $obj->XML->writeElement("ico", $data["icon_image"]);
 
-    /* Last State Info */
+    // Last State Info
     if ($data["state"] == 0) {
         $status = '';
         $status_date = 0;
@@ -301,9 +273,7 @@ if ($data = $DBRESULT->fetchRow()) {
 }
 unset($data);
 
-/*
- * Translations
- */
+// Translations
 $obj->XML->writeElement("tr1", _("Check information"), 0);
 $obj->XML->writeElement("tr2", _("Notification Information"), 0);
 $obj->XML->writeElement("tr3", _("Last Status Change"), 0);
@@ -311,18 +281,11 @@ $obj->XML->writeElement("tr4", _("Extended information"), 0);
 $obj->XML->writeElement("tr5", _("Status Information"), 0);
 $obj->XML->writeElement("tr6", _("Output"), 0);
 
-/*
- * End Buffer
- */
-
+// End Buffer
 $obj->XML->endElement();
 
-/*
- * Send Header
- */
+// Send Header
 $obj->header();
 
-/*
- * Send XML
- */
+// Send XML
 $obj->XML->output();
