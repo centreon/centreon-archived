@@ -154,9 +154,6 @@ $rq1 .= " LIMIT :numLimit, :limit";
 $queryValues['numLimit'] = [\PDO::PARAM_INT => ($num * $limit)];
 $queryValues['limit'] = [\PDO::PARAM_INT => $limit];
 
-var_dump($queryValues);
-exit();
-
 $dbResult = $obj->DBC->prepare($rq1);
 foreach ($queryValues as $bindId => $bindData) {
     foreach ($bindData as $bindType => $bindValue) {
@@ -179,6 +176,14 @@ $obj->XML->endElement();
 $ct = 0;
 $tab_final = [];
 $dbResultNDO1 = $obj->DBC->query($rq1);
+$dbResultNDO1 = $obj->DBC->prepare($rq1);
+foreach ($queryValues as $bindId => $bindData) {
+    foreach ($bindData as $bindType => $bindValue) {
+        $dbResult->bindValue($bindId, $bindValue, $bindType);
+    }
+}
+$dbResultNDO1->execute();
+
 while ($ndo = $dbResultNDO1->fetch()) {
     $tab_final[$ndo["name"]]["nb_service_k"] = 0;
     $tab_final[$ndo["name"]]["host_id"] = $ndo["host_id"];
