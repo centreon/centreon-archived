@@ -62,18 +62,18 @@ $centreonlang->bindLang();
 /*
  * Check Arguments From GET tab
  */
-$svc_id = filter_input(INPUT_GET, 'svc_id', FILTER_SANITIZE_STRING, array('options' => array('default' => 0)));
+$svcId = filter_input(INPUT_GET, 'svc_id', FILTER_SANITIZE_STRING, array('options' => array('default' => 0)));
 
 // splitting the host/service combination
-if (!empty($svc_id)) {
-    $tab = preg_split('/\_/', $svc_id);
+if (!empty($svcId)) {
+    $tab = preg_split('/\_/', $svcId);
 }
 
 // checking splitted values consistency
-$host_id = filter_var($tab[0] ?? null, FILTER_VALIDATE_INT);
-$service_id = filter_var($tab[1] ?? null, FILTER_VALIDATE_INT);
+$hostId = filter_var($tab[0] ?? null, FILTER_VALIDATE_INT);
+$serviceId = filter_var($tab[1] ?? null, FILTER_VALIDATE_INT);
 
-if ($host_id === false || $service_id === false) {
+if ($hostId === false || $serviceId === false) {
     print _("Bad service ID");
     exit();
 }
@@ -83,7 +83,7 @@ $isAdmin = $centreon->user->admin;
 if (!$isAdmin) {
     $userId = $centreon->user->user_id;
     $acl = new CentreonACL($userId, $isAdmin);
-    if (!$acl->checkService($service_id)) {
+    if (!$acl->checkService($serviceId)) {
         print _("You don't have access to this resource");
         exit();
     }
@@ -92,42 +92,43 @@ if (!$isAdmin) {
 /*
  * Get Service status
  */
-$rq1 = "SELECT s.state," .
-    " h.name, " .
-    " s.description," .
-    " s.last_check," .
-    " s.next_check," .
-    " s.last_state_change," .
-    " s.last_notification," .
-    " s.last_hard_state_change," .
-    " s.last_hard_state," .
-    " s.latency," .
-    " s.last_time_ok," .
-    " s.last_time_critical," .
-    " s.last_time_unknown," .
-    " s.last_time_warning," .
-    " s.notification_number," .
-    " s.scheduled_downtime_depth," .
-    " s.output," .
-    " s.notes," .
-    " ROUND(s.percent_state_change) as percent_state_change," .
-    " s.notify," .
-    " s.perfdata," .
-    " s.state_type," .
-    " s.execution_time," .
-    " s.event_handler_enabled, " .
-    " s.icon_image, " .
-    " s.display_name " .
-    " FROM hosts h, services s " .
-    " WHERE s.host_id = h.host_id " .
-    " AND s.host_id = $host_id AND service_id = $service_id LIMIT 1";
+$rq1 = "SELECT s.state,
+    h.name,
+    s.description,
+    s.last_check,
+    s.next_check,
+    s.last_state_change,
+    s.last_notification,
+    s.last_hard_state_change,
+    s.last_hard_state,
+    s.latency,
+    s.last_time_ok,
+    s.last_time_critical,
+    s.last_time_unknown,
+    s.last_time_warning,
+    s.notification_number,
+    s.scheduled_downtime_depth,
+    s.output,
+    s.notes,
+    ROUND(s.percent_state_change) as percent_state_change,
+    s.notify,
+    s.perfdata,
+    s.state_type,
+    s.execution_time,
+    s.event_handler_enabled,
+    s.icon_image,
+    s.display_name
+    FROM hosts h, services s WHERE s.host_id = h.host_id
+    AND s.host_id = :hostId AND service_id = :serviceId LIMIT 1";
+$dbResult = $obj->DBC->prepare($rq1);
+$dbResult->bindValue(':hostId', $hostId, \PDO::PARAM_INT);
+$dbResult->bindValue(':serviceId', $serviceId, \PDO::PARAM_INT);
+$dbResult->execute();
 
 // Init Buffer
 $obj->XML->startElement("reponse");
 
-// Request
-$DBRESULT = $obj->DBC->query($rq1);
-if ($data = $DBRESULT->fetch()) {
+if ($data = $dbResult->fetch()) {
     /* Split the plugin_output */
     $outputLines = preg_split('/<br \/>|<br>|\\\n|\x0A|\x0D\x0A|\n/', $data['output']);
     if (strlen($outputLines[0]) > 100) {
