@@ -750,14 +750,14 @@ try {
             $stmt->bindValue(':aclGroupId', $aclGroupId, \PDO::PARAM_INT);
             $stmt->execute();
         }
-    }
 
-    /**
-     * Include module specific ACL evaluation
-     */
-    $extensionsPaths = getModulesExtensionsPaths($pearDB);
-    foreach ($extensionsPaths as $extensionPath) {
-        require_once $extensionPath . 'centAcl.php';
+        /**
+         * Include module specific ACL evaluation
+         */
+        $extensionsPaths = getModulesExtensionsPaths($pearDB);
+        foreach ($extensionsPaths as $extensionPath) {
+            require_once $extensionPath . 'centAcl.php';
+        }
     }
 
     /**
