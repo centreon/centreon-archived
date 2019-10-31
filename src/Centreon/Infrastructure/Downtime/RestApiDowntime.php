@@ -63,21 +63,49 @@ class RestApiDowntime extends AbstractFOSRestController
      * @Rest\Get(
      *     "/monitoring/hosts/downtimes",
      *     condition="request.attributes.get('version.is_beta') == true",
-     *     name="monitoring.downtime.findHostDowntime")
+     *     name="monitoring.downtime.findHostDowntimes")
      * @param RequestParametersInterface $requestParameters
      * @return View
      * @throws \Exception
      */
-    public function findHostDowntime(RequestParametersInterface $requestParameters): View
+    public function findHostDowntimes(RequestParametersInterface $requestParameters): View
     {
         $hostsDowntime = $this->downtimeService
             ->filterByContact($this->getUser())
-            ->findHostDowntime();
+            ->findHostDowntimes();
 
         $context = (new Context())->setGroups(['dwt_main']);
 
         return $this->view([
             'result' => $hostsDowntime,
+            'meta' => [
+                'pagination' => $requestParameters->toArray()
+            ]
+        ])->setContext($context);
+    }
+
+    /**
+     * Entry point to find the last services downtimes.
+     *
+     * @IsGranted("ROLE_API_REALTIME", message="You are not authorized to access this resource")
+     * @Rest\Get(
+     *     "/monitoring/services/downtimes",
+     *     condition="request.attributes.get('version.is_beta') == true",
+     *     name="monitoring.downtime.findServiceDowntimes")
+     * @param RequestParametersInterface $requestParameters
+     * @return View
+     * @throws \Exception
+     */
+    public function findServiceDowntimes(RequestParametersInterface $requestParameters): View
+    {
+        $servicesDowntimes = $this->downtimeService
+            ->filterByContact($this->getUser())
+            ->findServicesDowntimes();
+
+        $context = (new Context())->setGroups(['dwt_main']);
+
+        return $this->view([
+            'result' => $servicesDowntimes,
             'meta' => [
                 'pagination' => $requestParameters->toArray()
             ]
@@ -92,12 +120,12 @@ class RestApiDowntime extends AbstractFOSRestController
      *     "/monitoring/downtimes/{downtimeId}",
      *     requirements={"downtimeId"="\d+"},
      *     condition="request.attributes.get('version.is_beta') == true",
-     *     name="monitoring.downtime.findOneHostDowntime")
+     *     name="monitoring.downtime.findOneDowntime")
      * @param int $downtimeId Downtime id to find
      * @return View
      * @throws \Exception
      */
-    public function findOneHostDowntime(int $downtimeId): View
+    public function findOneDowntime(int $downtimeId): View
     {
         $hostDowntime = $this->downtimeService
             ->filterByContact($this->getUser())
@@ -123,16 +151,16 @@ class RestApiDowntime extends AbstractFOSRestController
      * @Rest\Get(
      *     "/monitoring/downtimes",
      *     condition="request.attributes.get('version.is_beta') == true",
-     *     name="monitoring.downtime.findDowntime")
+     *     name="monitoring.downtime.findDowntimes")
      * @param RequestParametersInterface $requestParameters
      * @return View
      * @throws \Exception
      */
-    public function findDowntime(RequestParametersInterface $requestParameters): View
+    public function findDowntimes(RequestParametersInterface $requestParameters): View
     {
         $hostsDowntime = $this->downtimeService
             ->filterByContact($this->getUser())
-            ->findDowntime();
+            ->findDowntimes();
 
         $context = (new Context())->setGroups(['dwt_main', 'dwt_service']);
 

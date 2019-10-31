@@ -34,8 +34,9 @@ interface DowntimeServiceInterface extends ContactFilterInterface
      * Find downtime of all hosts.
      *
      * @return Downtime[]
+     * @throws \Exception
      */
-    public function findHostDowntime(): array;
+    public function findHostDowntimes(): array;
 
     /**
      * Find one downtime linked to a host.
@@ -52,13 +53,22 @@ interface DowntimeServiceInterface extends ContactFilterInterface
      * @return Downtime[]
      * @throws \Exception
      */
-    public function findDowntime(): array;
+    public function findDowntimes(): array;
 
     /**
      * Find all downtimes linked to a host.
      *
      * @param int $hostId Host id for which we want to find host
      * @return Downtime[]
+     * @throws \Exception
      */
     public function findDowntimesByHost(int $hostId): array;
+
+    /**
+     * Find downtime of all services.
+     *
+     * @return Downtime[]
+     * @throws \Exception
+     */
+    public function findServicesDowntimes(): array;
 }

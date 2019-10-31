@@ -232,23 +232,23 @@ class DowntimeRepositoryRDB extends AbstractRepositoryDRB implements DowntimeRep
     /**
      * @inheritDoc
      */
-    public function findDowntimeForAdminUser(): array
+    public function findDowntimesForAdminUser(): array
     {
         // Internal call for an admin user
-        return $this->findDowntime(true);
+        return $this->findDowntimes(true);
     }
 
     /**
      * @inheritDoc
      */
-    public function findDowntimeForNonAdminUser(): array
+    public function findDowntimesForNonAdminUser(): array
     {
         if ($this->hasNotEnoughRightsToContinue()) {
             return [];
         }
 
         // Internal call for non admin user
-        return $this->findDowntime(false);
+        return $this->findDowntimes(false);
     }
 
     /**
@@ -256,7 +256,7 @@ class DowntimeRepositoryRDB extends AbstractRepositoryDRB implements DowntimeRep
      * @return array
      * @throws \Exception
      */
-    private function findDowntime(bool $isAdmin): array
+    private function findDowntimes(bool $isAdmin): array
     {
         $serviceConcordanceArray = [
             // Relation for service
@@ -382,23 +382,23 @@ class DowntimeRepositoryRDB extends AbstractRepositoryDRB implements DowntimeRep
     /**
      * @inheritDoc
      */
-    public function findServiceDowntimesForNonAdminUser(): array
+    public function findServicesDowntimesForNonAdminUser(): array
     {
         if ($this->hasNotEnoughRightsToContinue()) {
             return [];
         }
 
         // Internal call for non admin user
-        return $this->findServiceDowntimes(false);
+        return $this->findServicesDowntimes(false);
     }
 
     /**
      * @inheritDoc
      */
-    public function findServiceDowntimesForAdminUser(): array
+    public function findServicesDowntimesForAdminUser(): array
     {
         // Internal call for an admin user
-        return $this->findServiceDowntimes(true);
+        return $this->findServicesDowntimes(true);
     }
 
     /**
@@ -406,12 +406,40 @@ class DowntimeRepositoryRDB extends AbstractRepositoryDRB implements DowntimeRep
      *
      * @param bool $isAdmin $isAdmin Indicates whether user is an admin
      * @return Downtime[]
+     * @throws \Exception
      */
-    private function findServiceDowntimes(bool $isAdmin): array
+    private function findServicesDowntimes(bool $isAdmin): array
     {
-        return ($isAdmin) ? [] : [];
-    }
+        $this->sqlRequestTranslator->setConcordanceArray($this->downtimeConcordanceArray);
 
+        $aclRequest = '';
+
+        if ($isAdmin === false) {
+            $aclRequest =
+                ' INNER JOIN `:dbstg`.`centreon_acl` acl
+                  ON acl.host_id = dwt.host_id
+                  AND acl.service_id = dwt.service_id
+                INNER JOIN `:db`.`acl_groups` acg
+                  ON acg.acl_group_id = acl.group_id
+                  AND acg.acl_group_activate = \'1\'
+                  AND acg.acl_group_id IN ('
+                . $this->accessGroupIdToString($this->accessGroups) . ')';
+        }
+
+        $request =
+            'SELECT SQL_CALC_FOUND_ROWS dwt.*, contact.contact_id AS author_id
+            FROM `:dbstg`.downtimes dwt
+            INNER JOIN `:dbstg`.hosts
+                ON hosts.host_id = dwt.host_id
+            INNER JOIN `:dbstg`.services srv
+                ON srv.service_id = dwt.service_id
+                AND srv.host_id = hosts.host_id
+            INNER JOIN `:db`.`contact`
+                ON contact.contact_alias = dwt.author'
+            . $aclRequest;
+
+        return $this->processRequest($request);
+    }
 
     /**
      * Execute the request and retrieve the downtimes list

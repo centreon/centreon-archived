@@ -76,7 +76,7 @@ interface DowntimeRepositoryInterface
      * @return Downtime[] Return the downtimes found
      * @throws \Exception
      */
-    public function findDowntimeForAdminUser(): array;
+    public function findDowntimesForAdminUser(): array;
 
     /**
      * Find all downtimes **taking into account** the ACLs of user.
@@ -84,7 +84,7 @@ interface DowntimeRepositoryInterface
      * @return Downtime[] Return the downtimes found
      * @throws \Exception
      */
-    public function findDowntimeForNonAdminUser(): array;
+    public function findDowntimesForNonAdminUser(): array;
 
     /**
      * Find all downtimes for a host **taking into account** the ACLs of user.
@@ -110,7 +110,7 @@ interface DowntimeRepositoryInterface
      * @return Downtime[]
      * @throws \Exception
      */
-    public function findServiceDowntimesForNonAdminUser(): array;
+    public function findServicesDowntimesForNonAdminUser(): array;
 
     /**
      * Find all downtimes of all services **without taking into account** the ACLs of user.
@@ -118,5 +118,5 @@ interface DowntimeRepositoryInterface
      * @return Downtime[]
      * @throws \Exception
      */
-    public function findServiceDowntimesForAdminUser(): array;
+    public function findServicesDowntimesForAdminUser(): array;
 }
