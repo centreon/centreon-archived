@@ -119,7 +119,6 @@ $queryValues = [];
 // Graphs Tables
 $graphs = [];
 
-
 // Get Service status
 $instance_filter = "";
 if (!empty($instance) && $instance != -1) {
@@ -139,7 +138,7 @@ $searchService = "";
 if ($serviceToSearch) {
     $searchService .= " AND (s.description LIKE :serviceToSearch OR s.display_name LIKE :serviceToSearch) ";
     $queryValues['serviceToSearch'] = [\PDO::PARAM_STR => '%' . $serviceToSearch . '%'];
-    
+
 }
 $searchOutput = "";
 if ($outputToSearch) {
