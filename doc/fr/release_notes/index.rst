@@ -9,7 +9,6 @@ Please find here the releases notes of the last major versions :
 .. toctree::
     :maxdepth: 1
 
-    centreon-20.04.rst
     centreon-19.10.rst
     centreon-19.04.rst
     centreon-18.10.rst
