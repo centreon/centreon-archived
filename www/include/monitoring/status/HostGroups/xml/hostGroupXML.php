@@ -81,7 +81,6 @@ $order = filter_input(
 
 //saving bound values
 $queryValues = [];
-$queryValues2 = [];
 
 $groupStr = $obj->access->getAccessGroupsString();
 
@@ -92,9 +91,7 @@ $obj->setInstanceHistory($instance);
 $searchStr = "";
 if ($search != "") {
     $searchStr = " AND hg.name LIKE :search ";
-    // as this partial request is used in two queries, we need to bound it two times using two arrays
-    // to avoid incoherent number of bound variables in the second query
-    $queryValues['search'] = $queryValues2['search'] = [
+    $queryValues['search'] = [
         \PDO::PARAM_STR => '%' . $search . '%'
     ];
 }
@@ -166,9 +163,6 @@ if ($obj->is_admin) {
         AND s.enabled = 1 ";
     if (isset($instance) && $instance > 0) {
         $rq2 .= "AND h.instance_id = :instance";
-        $queryValues2['instance'] = [
-            \PDO::PARAM_INT => $instance
-        ];
     }
     $rq2 .= $searchStr .
         "GROUP BY hg.name, s.state ORDER BY tri ASC";
@@ -183,9 +177,6 @@ if ($obj->is_admin) {
         AND s.enabled = 1 ";
     if (isset($instance) && $instance > 0) {
         $rq2 .= "AND h.instance_id = :instance";
-        $queryValues2['instance'] = [
-            \PDO::PARAM_INT => $instance
-        ];
     }
     $rq2 .= $searchStr .
         $obj->access->queryBuilder("AND", "hg.name", $obj->access->getHostGroupsString("NAME")) .
@@ -196,7 +187,7 @@ if ($obj->is_admin) {
 }
 
 $dbResult = $obj->DBC->prepare($rq2);
-foreach ($queryValues2 as $bindId => $bindData) {
+foreach ($queryValues as $bindId => $bindData) {
     foreach ($bindData as $bindType => $bindValue) {
         $dbResult->bindValue($bindId, $bindValue, $bindType);
     }
