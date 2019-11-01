@@ -417,6 +417,7 @@ class CentreonHost extends CentreonObject
             'action_url',
             'activate',
             'active_checks_enabled',
+            'acknowledgement_timeout',
             'address',
             'alias',
             'check_command',
@@ -432,10 +433,14 @@ class CentreonHost extends CentreonObject
             'first_notification_delay',
             'flap_detection_enabled',
             'flap_detection_options',
+            'freshness_threshold',
             'host_high_flap_threshold',
             'host_low_flap_threshold',
+            'host_notification_options',
+            'high_flap_threshold',
             'icon_image',
             'icon_image_alt',
+            'low_flap_threshold',
             'max_check_attempts',
             'name',
             'notes',
@@ -455,7 +460,6 @@ class CentreonHost extends CentreonObject
             'snmp_version',
             'stalking_options',
             'statusmap_image',
-            'host_notification_options',
             'timezone'
         );
         $unknownParam = array();
