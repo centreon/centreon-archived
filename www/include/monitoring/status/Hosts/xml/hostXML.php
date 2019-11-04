@@ -105,6 +105,9 @@ $obj->setInstanceHistory($instance);
 $obj->setHostGroupsHistory($hostgroups);
 $obj->setCriticality($criticalityId);
 
+//saving bound values
+$queryValues = [];
+
 /*
  * Get Host status
  */
@@ -157,7 +160,10 @@ if ($criticalityId) {
     $rq1 .= " AND h.host_id = cvs.host_id
         AND cvs.name = 'CRITICALITY_ID'
         AND cvs.service_id IS NULL
-        AND cvs.value = '" . $obj->DBC->escape($criticalityId) . "' ";
+        AND cvs.value = :criticalityId ";
+    $queryValues['criticalityId'] = [
+        \PDO::PARAM_STR => $criticalityId
+    ];
 }
 
 if (!$obj->is_admin) {
@@ -165,9 +171,12 @@ if (!$obj->is_admin) {
         $obj->access->queryBuilder("AND", "centreon_acl.group_id", $obj->grouplistStr);
 }
 if ($search != "") {
-    $rq1 .= " AND (h.name LIKE '%" . CentreonDB::escape($search) . "%' " .
-        "OR h.alias LIKE '%" . CentreonDB::escape($search) . "%' " .
-        "OR h.address LIKE '%" . CentreonDB::escape($search) . "%') ";
+    $rq1 .= " AND (h.name LIKE :search
+        OR h.alias LIKE :search
+        OR h.address LIKE :search) ";
+    $queryValues['search'] = [
+        \PDO::PARAM_STR => '%' . $search . '%'
+    ];
 }
 
 if ($statusHost == "h_unhandled") {
@@ -191,52 +200,71 @@ if ($statusFilter == "up") {
 
 if ($hostgroups) {
     $rq1 .= " AND h.host_id = hhg.host_id
-        AND hg.hostgroup_id IN (" . $hostgroups . ")
+        AND hg.hostgroup_id IN (:hostgroup)
         AND hhg.hostgroup_id = hg.hostgroup_id";
+    $queryValues['hostgroup'] = [
+        \PDO::PARAM_INT => $hostgroups
+    ];
 }
 
 if ($instance != -1 && !empty($instance)) {
-    $rq1 .= " AND h.instance_id = " . $instance;
+    $rq1 .= " AND h.instance_id = :instance ";
+    $queryValues['instance'] = [
+        \PDO::PARAM_INT => $instance
+    ];
 }
-$rq1 .= " AND h.enabled = 1 ";
+$rq1 .= " AND h.enabled = 1";
 switch ($sort_type) {
     case 'name':
         $rq1 .= " ORDER BY h.name " . $order;
         break;
     case 'current_state':
-        $rq1 .= " ORDER BY h.state " . $order . ",h.name ";
+        $rq1 .= " ORDER BY h.state " . $order . ",h.name";
         break;
     case 'last_state_change':
-        $rq1 .= " ORDER BY h.last_state_change " . $order . ",h.name ";
+        $rq1 .= " ORDER BY h.last_state_change " . $order . ",h.name";
         break;
     case 'last_hard_state_change':
-        $rq1 .= " ORDER BY h.last_hard_state_change " . $order . ",h.name ";
+        $rq1 .= " ORDER BY h.last_hard_state_change " . $order . ",h.name";
         break;
     case 'last_check':
-        $rq1 .= " ORDER BY h.last_check " . $order . ",h.name ";
+        $rq1 .= " ORDER BY h.last_check " . $order . ",h.name";
         break;
     case 'current_check_attempt':
-        $rq1 .= " ORDER BY h.check_attempt " . $order . ",h.name ";
+        $rq1 .= " ORDER BY h.check_attempt " . $order . ",h.name";
         break;
     case 'ip':
         // Not SQL portable
-        $rq1 .= " ORDER BY IFNULL(inet_aton(h.address), h.address) " . $order . ",h.name ";
+        $rq1 .= " ORDER BY IFNULL(inet_aton(h.address), h.address) " . $order . ",h.name";
         break;
     case 'plugin_output':
-        $rq1 .= " ORDER BY h.output " . $order . ",h.name ";
+        $rq1 .= " ORDER BY h.output " . $order . ",h.name";
         break;
     case 'criticality_id':
-        $rq1 .= " ORDER BY ISNULL " . $order . ", criticality " . $order . ", h.name ";
+        $rq1 .= " ORDER BY ISNULL " . $order . ", criticality " . $order . ", h.name";
         break;
     default:
-        $rq1 .= " ORDER BY ISNULL " . $order . ", criticality " . $order . ", h.name ";
+        $rq1 .= " ORDER BY ISNULL " . $order . ", criticality " . $order . ", h.name";
         break;
 }
-$rq1 .= " LIMIT " . ($num * $limit) . "," . $limit;
+$rq1 .= " LIMIT :numLimit, :limit";
+$queryValues['numLimit'] = [
+    \PDO::PARAM_INT => (int)($num * $limit)
+];
+$queryValues['limit'] = [
+    \PDO::PARAM_INT => (int)$limit
+];
+
+$dbResult = $obj->DBC->prepare($rq1);
+foreach ($queryValues as $bindId => $bindData) {
+    foreach ($bindData as $bindType => $bindValue) {
+        $dbResult->bindValue($bindId, $bindValue, $bindType);
+    }
+}
+$dbResult->execute();
 
 $ct = 0;
 $flag = 0;
-$dbResult = $obj->DBC->query($rq1);
 $numRows = $obj->DBC->numberRows();
 
 /**
