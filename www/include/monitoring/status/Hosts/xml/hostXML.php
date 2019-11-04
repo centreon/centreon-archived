@@ -244,7 +244,7 @@ switch ($sort_type) {
         $rq1 .= " ORDER BY ISNULL " . $order . ", criticality " . $order . ", h.name";
         break;
     default:
-        $rq1 .= " ORDER BY ISNULL " . $order . ", criticality " . $order . ", h.name";
+        $rq1 .= " ORDER BY isnull " . $order . ", criticality " . $order . ", h.name";
         break;
 }
 $rq1 .= " LIMIT :numLimit, :limit";
