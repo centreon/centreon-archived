@@ -7,3 +7,6 @@ CREATE TABLE IF NOT EXISTS `rs_poller_relation` (
 
 --new inheritance mode
 INSERT INTO `options` (`key`, `value`) VALUES ('inheritance_mode', '1');
+
+--new updated field of pollers-
+ALTER TABLE `nagios_server` ADD COLUMN `updated` enum('0','1') NOT NULL DEFAULT '0';

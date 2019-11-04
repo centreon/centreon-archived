@@ -774,7 +774,7 @@ function updateServer(int $id, $data): void
  */
 function checkChangeState(int $poller_id, int $last_restart): bool
 {
-    global $pearDBO, $conf_centreon;
+    global $pearDBO, $conf_centreon, $pearDB;
 
     if (!isset($last_restart) || $last_restart == "") {
         return false;
@@ -860,5 +860,19 @@ AND (
 REQUEST;
 
     $dbResult = $pearDBO->query($query);
-    return $dbResult->rowCount() ? true : false;
+    if ($dbResult->rowCount()) {
+        // requires restart if storage db has log information about changes
+        return true;
+    } else {
+        // also requires restart if flag updated is set to true
+        $configStmt = $pearDB->prepare("SELECT updated FROM nagios_server WHERE id = :pollerID LIMIT 1");
+        $configStmt->bindValue(':pollerID', $poller_id, \PDO::PARAM_INT);
+        $configStmt->execute();
+        $row = $configStmt->fetch(\PDO::FETCH_ASSOC);
+        if ($row['updated']) {
+            return true;
+        }
+    }
+
+    return false;
 }
