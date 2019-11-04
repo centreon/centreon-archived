@@ -241,7 +241,6 @@ switch ($sort_type) {
         $rq1 .= " ORDER BY h.output " . $order . ",h.name";
         break;
     case 'criticality_id':
-        $rq1 .= " ORDER BY ISNULL " . $order . ", criticality " . $order . ", h.name";
         break;
     default:
         $rq1 .= " ORDER BY isnull " . $order . ", criticality " . $order . ", h.name";
