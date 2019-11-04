@@ -68,7 +68,7 @@ $o = filter_input(INPUT_GET, 'o', FILTER_SANITIZE_STRING, array('options' => arr
 $p = filter_input(INPUT_GET, 'p', FILTER_VALIDATE_INT, array('options' => array('default' => 2)));
 $num = filter_input(INPUT_GET, 'num', FILTER_VALIDATE_INT, array('options' => array('default' => 0)));
 $limit = filter_input(INPUT_GET, 'limit', FILTER_VALIDATE_INT, array('options' => array('default' => 20)));
-$criticality_id = filter_input(
+$criticalityId = filter_input(
     INPUT_GET,
     'criticality',
     FILTER_VALIDATE_INT,
@@ -80,7 +80,8 @@ $hostgroups = filter_var($obj->defaultHostgroups ?? 0, FILTER_VALIDATE_INT);
 
 $search = filter_input(INPUT_GET, 'search', FILTER_SANITIZE_STRING, array('options' => array('default' => '')));
 $statusHost = filter_input(INPUT_GET, 'statusHost', FILTER_SANITIZE_STRING, array('options' => array('default' => '')));
-$statusFilter = filter_input(INPUT_GET, 'statusFilter', FILTER_SANITIZE_STRING, array('options' => array('default' => '')));
+$statusFilter =
+    filter_input(INPUT_GET, 'statusFilter', FILTER_SANITIZE_STRING, array('options' => array('default' => '')));
 $order = filter_input(
     INPUT_GET,
     'order',
@@ -103,63 +104,61 @@ $_SESSION['monitoring_host_status_filter'] = $statusFilter;
 // Backup poller selection
 $obj->setInstanceHistory($instance);
 $obj->setHostGroupsHistory($hostgroups);
-$obj->setCriticality($criticality_id);
+$obj->setCriticality($criticalityId);
 
 /*
  * Get Host status
  */
-$rq1 = " SELECT SQL_CALC_FOUND_ROWS DISTINCT h.state," .
-    " h.acknowledged, " .
-    " h.passive_checks," .
-    " h.active_checks," .
-    " h.notify," .
-    " h.last_state_change," .
-    " h.last_hard_state_change," .
-    " h.output," .
-    " h.last_check, " .
-    " h.address," .
-    " h.name," .
-    " h.alias," .
-    " h.action_url," .
-    " h.notes_url," .
-    " h.notes," .
-    " h.icon_image," .
-    " h.icon_image_alt," .
-    " h.max_check_attempts," .
-    " h.state_type," .
-    " h.check_attempt, " .
-    " h.scheduled_downtime_depth, " .
-    " h.host_id, " .
-    " h.flapping, " .
-    " hph.parent_id as is_parent, " .
-    " i.name as instance_name, " .
-    " cv.value as criticality, " .
-    " cv.value IS NULL as isnull ";
-$rq1 .= " FROM instances i, ";
+$rq1 = " SELECT SQL_CALC_FOUND_ROWS DISTINCT h.state,
+    h.acknowledged,
+    h.passive_checks,
+    h.active_checks,
+    h.notify,
+    h.last_state_change,
+    h.last_hard_state_change,
+    h.output,
+    h.last_check,
+    h.address,
+    h.name,
+    h.alias,
+    h.action_url,
+    h.notes_url,
+    h.notes,
+    h.icon_image,
+    h.icon_image_alt,
+    h.max_check_attempts,
+    h.state_type,
+    h.check_attempt,
+    h.scheduled_downtime_depth,
+    h.host_id,
+    h.flapping,
+    hph.parent_id AS is_parent,
+    i.name AS instance_name,
+    cv.value AS criticality,
+    cv.value IS NULL AS isnull
+    FROM instances i, ";
 if (!$obj->is_admin) {
     $rq1 .= " centreon_acl, ";
 }
 if ($hostgroups) {
     $rq1 .= " hosts_hostgroups hhg, hostgroups hg, ";
 }
-if ($criticality_id) {
+if ($criticalityId) {
     $rq1 .= "customvariables cvs, ";
 }
-$rq1 .= " `hosts` h ";
-$rq1 .= " LEFT JOIN hosts_hosts_parents hph ";
-$rq1 .= " ON hph.parent_id = h.host_id ";
+$rq1 .= " `hosts` h
+    LEFT JOIN hosts_hosts_parents hph
+    ON hph.parent_id = h.host_id
+    LEFT JOIN `customvariables` cv
+    ON (cv.host_id = h.host_id AND cv.service_id IS NULL AND cv.name = 'CRITICALITY_LEVEL')
+    WHERE h.name NOT LIKE '_Module_%'
+    AND h.instance_id = i.instance_id ";
 
-$rq1 .= " LEFT JOIN `customvariables` cv ";
-$rq1 .= " ON (cv.host_id = h.host_id AND cv.service_id IS NULL AND cv.name = 'CRITICALITY_LEVEL') ";
-
-$rq1 .= " WHERE h.name NOT LIKE '_Module_%'";
-$rq1 .= " AND h.instance_id = i.instance_id ";
-
-if ($criticality_id) {
+if ($criticalityId) {
     $rq1 .= " AND h.host_id = cvs.host_id
-              AND cvs.name = 'CRITICALITY_ID'
-              AND cvs.service_id IS NULL
-              AND cvs.value = '" . $obj->DBC->escape($criticality_id) . "' ";
+        AND cvs.name = 'CRITICALITY_ID'
+        AND cvs.service_id IS NULL
+        AND cvs.value = '" . $obj->DBC->escape($criticalityId) . "' ";
 }
 
 if (!$obj->is_admin) {
@@ -173,10 +172,10 @@ if ($search != "") {
 }
 
 if ($statusHost == "h_unhandled") {
-    $rq1 .= " AND h.state = 1 ";
-    $rq1 .= " AND h.state_type = '1'";
-    $rq1 .= " AND h.acknowledged = 0";
-    $rq1 .= " AND h.scheduled_downtime_depth = 0";
+    $rq1 .= " AND h.state = 1
+        AND h.state_type = '1'
+        AND h.acknowledged = 0
+        AND h.scheduled_downtime_depth = 0";
 } elseif ($statusHost == "hpb") {
     $rq1 .= " AND (h.state != 0 AND h.state != 4) ";
 }
@@ -192,9 +191,9 @@ if ($statusFilter == "up") {
 }
 
 if ($hostgroups) {
-    $rq1 .= " AND h.host_id = hhg.host_id " .
-        "AND hg.hostgroup_id IN (" . $hostgroups . ") " .
-        "AND hhg.hostgroup_id = hg.hostgroup_id";
+    $rq1 .= " AND h.host_id = hhg.host_id
+        AND hg.hostgroup_id IN (" . $hostgroups . ")
+        AND hhg.hostgroup_id = hg.hostgroup_id";
 }
 
 if ($instance != -1 && !empty($instance)) {
@@ -221,17 +220,17 @@ switch ($sort_type) {
         $rq1 .= " ORDER BY h.check_attempt " . $order . ",h.name ";
         break;
     case 'ip':
-        # Not SQL portable
+        // Not SQL portable
         $rq1 .= " ORDER BY IFNULL(inet_aton(h.address), h.address) " . $order . ",h.name ";
         break;
     case 'plugin_output':
         $rq1 .= " ORDER BY h.output " . $order . ",h.name ";
         break;
     case 'criticality_id':
-        $rq1 .= " ORDER BY isnull $order, criticality $order, h.name ";
+        $rq1 .= " ORDER BY ISNULL " . $order . ", criticality " . $order . ", h.name ";
         break;
     default:
-        $rq1 .= " ORDER BY isnull $order, criticality $order, h.name ";
+        $rq1 .= " ORDER BY ISNULL " . $order . ", criticality " . $order . ", h.name ";
         break;
 }
 $rq1 .= " LIMIT " . ($num * $limit) . "," . $limit;
@@ -245,10 +244,10 @@ $numRows = $obj->DBC->numberRows();
  * Get criticality ids
  */
 $critRes = $obj->DBC->query(
-    "SELECT value, host_id " .
-    "FROM customvariables " .
-    "WHERE name = 'CRITICALITY_ID' " .
-    "AND service_id IS NULL"
+    "SELECT value, host_id
+    FROM customvariables
+    WHERE name = 'CRITICALITY_ID'
+    AND service_id IS NULL"
 );
 $criticalityUsed = 0;
 $critCache = array();
@@ -300,10 +299,8 @@ while ($data = $dbResult->fetch()) {
         $class = "line_downtime";
     } elseif ($data["state"] == 1) {
         $data["acknowledged"] == 1 ? $class = "line_ack" : $class = "list_down";
-    } else {
-        if ($data["acknowledged"] == 1) {
-            $class = "line_ack";
-        }
+    } elseif ($data["acknowledged"] == 1) {
+        $class = "line_ack";
     }
 
     $obj->XML->startElement("l");
