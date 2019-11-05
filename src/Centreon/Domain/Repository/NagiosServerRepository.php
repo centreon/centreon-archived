@@ -93,4 +93,16 @@ SQL;
         $stmt = $this->db->prepare($sql);
         $stmt->execute();
     }
+
+    /**
+     * Sets poller as updated (shows that poller needs restarting)
+     * @param int $id id of poller
+     */
+    public function setUpdated(int $id): void
+    {
+        $sql = "UPDATE `nagios_server` SET `updated` = '1' WHERE `id` = :id";
+        $stmt = $this->db->prepare($sql);
+        $stmt->bindParam(':id',$id, \PDO::PARAM_INT);
+        $stmt->execute();
+    }
 }
