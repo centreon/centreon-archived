@@ -147,7 +147,9 @@ function updateContact($contact_id = null)
     $rq .= "contact_js_effects = ";
     isset($ret["contact_js_effects"]) ? $rq .= "'1', ": $rq .= "'0', ";
     $rq .= "contact_autologin_key = ";
-    $rq .= isset($ret["contact_autologin_key"]) ? "'".$pearDB->escape($ret['contact_autologin_key'])."'" : "''";
+    $rq .= !empty($ret["contact_autologin_key"])
+        ? "'" . $pearDB->escape($ret['contact_autologin_key']) . "'"
+        : "NULL ";
     $rq .= "WHERE contact_id = '" . (int)$contact_id . "'";
     $pearDB->query($rq);
     
