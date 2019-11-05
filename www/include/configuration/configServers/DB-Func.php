@@ -776,7 +776,7 @@ function checkChangeState(int $poller_id, int $last_restart): bool
 {
     global $pearDBO, $conf_centreon, $pearDB;
 
-    if (!isset($last_restart) || $last_restart == "") {
+    if (!isset($last_restart) || $last_restart === "") {
         return false;
     }
 

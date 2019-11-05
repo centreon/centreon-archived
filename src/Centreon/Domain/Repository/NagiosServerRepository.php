@@ -102,7 +102,24 @@ SQL;
     {
         $sql = "UPDATE `nagios_server` SET `updated` = '1' WHERE `id` = :id";
         $stmt = $this->db->prepare($sql);
-        $stmt->bindParam(':id',$id, \PDO::PARAM_INT);
+        $stmt->bindParam(':id', $id, \PDO::PARAM_INT);
         $stmt->execute();
+    }
+
+    /**
+     * Get Central Poller
+     * @return int|null
+     */
+    public function getCentral(): ?int
+    {
+        $query = "SELECT id FROM nagios_server WHERE localhost = '1' LIMIT 1";
+        $stmt = $this->db->prepare($query);
+        $stmt->execute();
+
+        if (!$stmt->rowCount()) {
+            return null;
+        }
+
+        return (int)$stmt->fetch()['id'];
     }
 }
