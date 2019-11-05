@@ -122,6 +122,7 @@ class CentreonGraphService extends CentreonGraph
                     "warn" => null
                 );
                 $info['legend'] = str_replace('\\\\', '\\', $metric['metric_legend']);
+                $info['metric_name'] = !empty($metric['ds_name']) ? $metric['ds_name'] : $info['legend'];
 
                 /* Add legend getting data */
                 foreach ($legendDataInfo as $name => $key) {
