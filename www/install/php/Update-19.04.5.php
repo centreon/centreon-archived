@@ -26,6 +26,10 @@ $centreonLog = new CentreonLog();
  * configuration file 50-centreon.ini
  */
 try {
+    $pearDB->query(
+        "UPDATE `contact` SET `contact_autologin_key` = NULL WHERE `contact_autologin_key` =''"
+    );
+
     $stmt = $pearDB->query(
         'SELECT `value` FROM `options` WHERE `key` = "session_expire"'
     );
