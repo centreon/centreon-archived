@@ -1,7 +1,7 @@
 <?php
 /*
- * Copyright 2005-2015 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2019 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -33,7 +33,7 @@
  *
  */
 
-require_once realpath(dirname(__FILE__) . "/../../../../../../config/centreon.config.php");
+require_once realpath(__DIR__ . "/../../../../../../config/centreon.config.php");
 
 include_once _CENTREON_PATH_ . "www/class/centreonUtils.class.php";
 include_once _CENTREON_PATH_ . "www/class/centreonXMLBGRequest.class.php";
@@ -46,9 +46,7 @@ CentreonSession::start();
 $obj = new CentreonXMLBGRequest(session_id(), 1, 1, 0, 1);
 
 
-if (isset($obj->session_id) && CentreonSession::checkSession($obj->session_id, $obj->DB)) {
-    ;
-} else {
+if (!isset($obj->session_id) || !CentreonSession::checkSession($obj->session_id, $obj->DB)) {
     print "Bad Session ID";
     exit();
 }
@@ -59,44 +57,58 @@ if (isset($obj->session_id) && CentreonSession::checkSession($obj->session_id, $
 $obj->getDefaultFilters();
 
 /*
- * Alias / Name convertion table
+ * Alias / Name conversion table
  */
 $convertTable = array();
 $convertID = array();
-$DBRESULT = $obj->DBC->query("SELECT hostgroup_id, name FROM hostgroups");
-while ($hg = $DBRESULT->fetchRow()) {
+$dbResult = $obj->DBC->query("SELECT hostgroup_id, name FROM hostgroups");
+while ($hg = $dbResult->fetchRow()) {
     $convertTable[$hg["name"]] = $hg["name"];
     $convertID[$hg["name"]] = $hg["hostgroup_id"];
 }
-$DBRESULT->free();
+$dbResult->free();
 
 /*
- *  Check Arguments from GET
+ *  Check Arguments from GET and session
  */
+// integer values from $_GET
+$p = filter_input(INPUT_GET, 'p', FILTER_VALIDATE_INT, array('options' => array('default' => 2)));
+$num = filter_input(INPUT_GET, 'num', FILTER_VALIDATE_INT, array('options' => array('default' => 0)));
+$limit = filter_input(INPUT_GET, 'limit', FILTER_VALIDATE_INT, array('options' => array('default' => 20)));
+$instance = filter_input(INPUT_GET, 'instance', FILTER_VALIDATE_INT, array('options' => array('default' => -1)));
+
+$order = filter_input(
+    INPUT_GET,
+    'order',
+    FILTER_VALIDATE_REGEXP,
+    array(
+        'options' => array(
+            'default' => "ASC",
+            'regexp' => '/^(ASC|DESC)$/'
+        )
+    )
+);
+
+// string values from the $_GET sanitized using the checkArgument() which call CentreonDB::escape() method
 $o = $obj->checkArgument("o", $_GET, "h");
-$p = $obj->checkArgument("p", $_GET, "2");
-$num = $obj->checkArgument("num", $_GET, 0);
-$limit = $obj->checkArgument("limit", $_GET, 20);
-$instance = $obj->checkArgument("instance", $_GET, $obj->defaultPoller);
-$hostgroups = $obj->checkArgument("hostgroups", $_GET, $obj->defaultHostgroups);
 $search = $obj->checkArgument("search", $_GET, "");
 $sort_type = $obj->checkArgument("sort_type", $_GET, "host_name");
-$order = $obj->checkArgument("order", $_GET, "ASC");
-$dateFormat = $obj->checkArgument("date_time_format_status", $_GET, "Y/m/d H:i:s");
 
+$hostgroup = $obj->defaultHostgroups;
 $groupStr = $obj->access->getAccessGroupsString();
+
 /*
  * Backup poller selection
  */
 $obj->setInstanceHistory($instance);
-$obj->setHostGroupsHistory($hostgroups);
+$obj->setHostGroupsHistory($hostgroup);
 
 /*
  * Search string
  */
 $searchStr = "";
 if ($search != "") {
-    $searchStr = " AND hg.name LIKE '%$search%' ";
+    $searchStr = " AND hg.name LIKE '%" . CentreonDB::escape($search) . "%' ";
 }
 
 /*
@@ -109,7 +121,7 @@ if ($obj->is_admin) {
             "AND hhg.host_id = h.host_id " .
             "AND h.enabled = 1 ";
     if (isset($instance) && $instance > 0) {
-        $rq1 .= "AND h.instance_id = " . $obj->DBC->escape($instance) . " ";
+        $rq1 .= "AND h.instance_id = " . (int) $instance . " ";
     }
     $rq1 .= $searchStr .
             "GROUP BY hg.name, h.state";
@@ -120,16 +132,16 @@ if ($obj->is_admin) {
             "AND hhg.host_id = h.host_id " .
             "AND h.enabled = 1 ";
     if (isset($instance) && $instance > 0) {
-        $rq1 .= "AND h.instance_id = " . $obj->DBC->escape($instance) . " ";
+        $rq1 .= "AND h.instance_id = " . (int) $instance . " ";
     }
     $rq1 .= $searchStr .
             $obj->access->queryBuilder("AND", "hg.name", $obj->access->getHostGroupsString("NAME")) .
             "AND h.host_id = acl.host_id " .
-            "AND acl.group_id in ($groupStr) " .
+            "AND acl.group_id in (" . $groupStr . ") " .
             "GROUP BY hg.name, h.state";
 }
-$DBRESULT = $obj->DBC->query($rq1);
-while ($data = $DBRESULT->fetchRow()) {
+$dbResult = $obj->DBC->query($rq1);
+while ($data = $dbResult->fetchRow()) {
     if (!isset($stats[$data["alias"]])) {
         $stats[$data["alias"]] = array(
                 "h" => array(0 => 0, 1 => 0, 2 => 0, 3 => 0),
@@ -137,7 +149,7 @@ while ($data = $DBRESULT->fetchRow()) {
     }
     $stats[$data["alias"]]["h"][$data["state"]] = $data["nb"];
 }
-$DBRESULT->free();
+$dbResult->free();
 
 /*
  * Get Services request
@@ -152,7 +164,7 @@ if ($obj->is_admin) {
             "AND h.host_id = s.host_id " .
             "AND s.enabled = 1 ";
     if (isset($instance) && $instance > 0) {
-        $rq2 .= "AND h.instance_id = " . $obj->DBC->escape($instance) . " ";
+        $rq2 .= "AND h.instance_id = " . (int) $instance . " ";
     }
     $rq2 .= $searchStr .
             "GROUP BY hg.name, s.state  order by tri asc";
@@ -166,7 +178,7 @@ if ($obj->is_admin) {
             "AND h.host_id = s.host_id " .
             "AND s.enabled = 1 ";
     if (isset($instance) && $instance > 0) {
-        $rq2 .= "AND h.instance_id = " . $obj->DBC->escape($instance) . " ";
+        $rq2 .= "AND h.instance_id = " . (int) $instance . " ";
     }
     $rq2 .= $searchStr .
             $obj->access->queryBuilder("AND", "hg.name", $obj->access->getHostGroupsString("NAME")) .
@@ -176,8 +188,8 @@ if ($obj->is_admin) {
             "GROUP BY hg.name, s.state order by tri asc";
 }
 
-$DBRESULT = $obj->DBC->query($rq2);
-while ($data = $DBRESULT->fetchRow()) {
+$dbResult = $obj->DBC->query($rq2);
+while ($data = $dbResult->fetchRow()) {
     if (!isset($stats[$data["alias"]])) {
         $stats[$data["alias"]] = array(
                 "h" => array(0 => 0, 1 => 0, 2 => 0, 3 => 0),
@@ -206,13 +218,20 @@ $ct = 0;
 
 if (isset($stats)) {
     foreach ($stats as $name => $stat) {
-        if (($i < (($num + 1) * $limit) && $i >= (($num) * $limit)) && ((isset($converTable[$name]) && isset($acl[$convertTable[$name]])) || (!isset($acl))) && $name != "meta_hostgroup") {
+        if (($i < (($num + 1) * $limit) && $i >= (($num) * $limit))
+            && ((isset($converTable[$name]) && isset($acl[$convertTable[$name]])) || (!isset($acl)))
+            && $name != "meta_hostgroup"
+        ) {
             $class = $obj->getNextLineClass();
             if (isset($stat["h"]) && count($stat["h"])) {
                 $obj->XML->startElement("l");
                 $obj->XML->writeAttribute("class", $class);
                 $obj->XML->writeElement("o", $ct++);
-                $obj->XML->writeElement("hn", CentreonUtils::escapeSecure($convertTable[$name] . " (" . $name . ")"), false);
+                $obj->XML->writeElement(
+                    "hn",
+                    CentreonUtils::escapeSecure($convertTable[$name] . " (" . $name . ")"),
+                    false
+                );
                 $obj->XML->writeElement("hu", $stat["h"][0]);
                 $obj->XML->writeElement("huc", $obj->colorHost[0]);
                 $obj->XML->writeElement("hd", $stat["h"][1]);
@@ -229,8 +248,14 @@ if (isset($stats)) {
                 $obj->XML->writeElement("skc", $obj->colorService[0]);
                 $obj->XML->writeElement("sp", $stat["s"][4]);
                 $obj->XML->writeElement("spc", $obj->colorService[4]);
-                $obj->XML->writeElement("hgurl", CentreonUtils::escapeSecure("main.php?p=20201&o=svc&hg=" . $convertID[$convertTable[$name]]));
-                $obj->XML->writeElement("hgurlhost", "main.php?p=20202&o=h&hostgroups=" . $convertID[$convertTable[$name]]);
+                $obj->XML->writeElement(
+                    "hgurl",
+                    CentreonUtils::escapeSecure("main.php?p=20201&o=svc&hg=" . $convertID[$convertTable[$name]])
+                );
+                $obj->XML->writeElement(
+                    "hgurlhost",
+                    "main.php?p=20202&o=h&hostgroups=" . $convertID[$convertTable[$name]]
+                );
                 $obj->XML->endElement();
             }
         }

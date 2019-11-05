@@ -55,19 +55,36 @@ if (!isset($obj->session_id) || !CentreonSession::checkSession($obj->session_id,
 // Set Default Poller
 $obj->getDefaultFilters();
 
-// Check Arguments From GET tab
+/*
+ *  Check Arguments from GET and session
+ */
+// integer values from $_GET
+$p = filter_input(INPUT_GET, 'p', FILTER_VALIDATE_INT, array('options' => array('default' => 2)));
+$num = filter_input(INPUT_GET, 'num', FILTER_VALIDATE_INT, array('options' => array('default' => 0)));
+$limit = filter_input(INPUT_GET, 'limit', FILTER_VALIDATE_INT, array('options' => array('default' => 20)));
+
+$order = filter_input(
+    INPUT_GET,
+    'order',
+    FILTER_VALIDATE_REGEXP,
+    array(
+        'options' => array(
+            'default' => "ASC",
+            'regexp' => '/^(ASC|DESC)$/'
+        )
+    )
+);
+
+// string values from the $_GET sanitized using the checkArgument() which call CentreonDB::escape() method
 $o = $obj->checkArgument("o", $_GET, "h");
-$p = $obj->checkArgument("p", $_GET, "2");
-$nc = $obj->checkArgument("nc", $_GET, "0");
-$num = $obj->checkArgument("num", $_GET, 0);
-$limit = $obj->checkArgument("limit", $_GET, 20);
-$instance = $obj->checkArgument("instance", $_GET, $obj->defaultPoller);
-$hostgroups = $obj->checkArgument("hostgroups", $_GET, $obj->defaultHostgroups);
 $hSearch = $obj->checkArgument("host_search", $_GET, "");
 $sgSearch = $obj->checkArgument("sg_search", $_GET, "");
 $sort_type = $obj->checkArgument("sort_type", $_GET, "host_name");
-$order = $obj->checkArgument("order", $_GET, "ASC");
-$dateFormat = $obj->checkArgument("date_time_format_status", $_GET, "Y/m/d H:i:s");
+
+// values saved in the session
+$instance = filter_var($obj->defaultPoller, FILTER_VALIDATE_INT);
+$hostgroup = filter_var($obj->defaultHostgroups, FILTER_VALIDATE_INT);
+$dateFormat = "Y/m/d H:i:s";
 
 // Backup poller selection
 $obj->setInstanceHistory($instance);
@@ -117,14 +134,13 @@ $query .= $h_search;
 $query .= $s_search;
 
 // Poller search
-if ($instance != -1) {
-    $query .= " AND h.instance_id = " . (int)$instance . " ";
+if (!empty($instance) && $instance !== -1) {
+    $query .= " AND h.instance_id = " . (int) $instance . " ";
 }
 
-$query .= "ORDER BY sg.name " . CentreonDB::escape($order) . " "
-    . "LIMIT " . (int)($num * $limit) . "," . (int)$limit;
+$query .= "ORDER BY sg.name " . $order . " LIMIT " . ((int) $num * (int) $limit) . ", " . (int) $limit;
 
-$DBRESULT = $obj->DBC->query($query);
+$dbResult = $obj->DBC->query($query);
 
 $numRows = $obj->DBC->numberRows();
 
@@ -148,30 +164,32 @@ $aTab = array();
 if ($numRows > 0) {
     $sg_search .= "AND (";
     $servicegroups = array();
-    while ($row = $DBRESULT->fetchRow()) {
+    while ($row = $dbResult->fetchRow()) {
         $servicesgroups[$row['servicegroup_id']][] = $row['host_id'];
     }
     $servicegroupsSql1 = array();
     foreach ($servicesgroups as $key => $value) {
         $hostsSql = array();
         foreach ($value as $hostId) {
-            $hostsSql[] = $hostId;
+            $hostsSql[] = (int) $hostId;
         }
-        $servicegroupsSql1[] = "(sg.servicegroup_id = " . $key . " AND h.host_id " .
-            "IN (" . implode(',', $hostsSql) . ")) ";
+        $servicegroupsSql1[] = "(sg.servicegroup_id = " . (int) $key . " AND h.host_id
+            IN (" . implode(',', $hostsSql) . ")) ";
     }
     $sg_search .= implode(" OR ", $servicegroupsSql1);
     $sg_search .= ") ";
     if ($sgSearch != "") {
-        $sg_search .= "AND sg.name = '" . $sgSearch . "' ";
+        $sg_search .= " AND sg.name = '" . CentreonDB::escape($sgSearch) . "' ";
     }
 
-    $query2 = "SELECT SQL_CALC_FOUND_ROWS DISTINCT sg.name AS sg_name, sg.name AS alias, h.name AS host_name, "
-        . "h.state AS host_state, h.icon_image, h.host_id, s.state, s.description, s.service_id, "
-        . "(CASE s.state WHEN 0 THEN 3 WHEN 2 THEN 0 WHEN 3 THEN 2 ELSE s.state END) AS tri "
-        . "FROM servicegroups sg, services_servicegroups sgm, services s, hosts h "
-        . "WHERE h.host_id = s.host_id AND s.host_id = sgm.host_id AND s.service_id=sgm.service_id AND "
-        . "sg.servicegroup_id=sgm.servicegroup_id "
+    $query2 = "SELECT SQL_CALC_FOUND_ROWS DISTINCT sg.name AS sg_name, sg.name AS alias, h.name AS host_name,
+        h.state AS host_state, h.icon_image, h.host_id, s.state, s.description, s.service_id,
+        (CASE s.state WHEN 0 THEN 3 WHEN 2 THEN 0 WHEN 3 THEN 2 ELSE s.state END) AS tri
+        FROM servicegroups sg, services_servicegroups sgm, services s, hosts h
+        WHERE h.host_id = s.host_id
+        AND s.host_id = sgm.host_id
+        AND s.service_id=sgm.service_id
+        AND sg.servicegroup_id=sgm.servicegroup_id "
         . $s_search
         . $sg_search
         . $h_search
@@ -179,14 +197,14 @@ if ($numRows > 0) {
         . $obj->access->queryBuilder("AND", "s.service_id", $obj->access->getServicesString("ID", $obj->DBC))
         . " ORDER BY tri ASC";
 
-    $DBRESULT = $obj->DBC->query($query2);
+    $dbResult = $obj->DBC->query($query2);
 
     $ct = 0;
     $sg = "";
     $h = "";
     $flag = 0;
     $count = 0;
-    while ($tab = $DBRESULT->fetchRow()) {
+    while ($tab = $dbResult->fetchRow()) {
         if (!isset($aTab[$tab["sg_name"]])) {
             $aTab[$tab["sg_name"]] = array(
                 'sgn' => CentreonUtils::escapeSecure($tab["sg_name"]),
@@ -203,13 +221,12 @@ if ($numRows > 0) {
             }
             $aTab[$tab["sg_name"]]['host'][$tab["host_name"]] = array(
                 'h' => $tab["host_name"],
-                'hs' => $tab["host_state"],
+                'hs' => _($obj->statusHost[$tab["host_state"]]),
                 'hn' => CentreonUtils::escapeSecure($tab["host_name"]),
                 'hico' => $icone,
                 'hnl' => CentreonUtils::escapeSecure(urlencode($tab["host_name"])),
                 'hid' =>  $tab["host_id"],
                 "hcount" => $count,
-                "hs" =>  _($obj->statusHost[$tab["host_state"]]),
                 "hc" => $obj->colorHost[$tab["host_state"]],
                 'service' => array()
             );

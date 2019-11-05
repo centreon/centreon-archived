@@ -1,7 +1,7 @@
 <?php
 /*
- * Copyright 2005-2015 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2019 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -37,6 +37,13 @@ if (!isset($centreon)) {
     exit();
 }
 
+const HOSTS_PROBLEM = "hpb";
+const UNHANDLED_HOSTS_PROBLEM = "h_unhandled";
+const ALL_HOSTS = "h";
+
+/*
+ * sanitize $_GET parameters
+ */
 $filterParameters = array(
     'sort_types' => FILTER_SANITIZE_STRING,
     'order' => FILTER_SANITIZE_STRING,
@@ -44,8 +51,8 @@ $filterParameters = array(
     'host_search' => FILTER_SANITIZE_STRING,
     'sort_type' => FILTER_SANITIZE_STRING,
     'hostgroups' => FILTER_SANITIZE_STRING,
-    'criticality_id' => FILTER_SANITIZE_NUMBER_INT,
-    'reset_filter' => FILTER_SANITIZE_NUMBER_INT
+    'criticality_id' => FILTER_VALIDATE_INT,
+    'reset_filter' => FILTER_VALIDATE_INT
 );
 
 $myinputsGet = filter_input_array(INPUT_GET, $filterParameters);
@@ -137,7 +144,7 @@ if (!empty($centreon->optGen["global_sort_order"])) {
 }
 
 
-if ($o == "hpb" || $o == "h_unhandled" || empty($o)) {
+if ($o == HOSTS_PROBLEM || $o == UNHANDLED_HOSTS_PROBLEM || empty($o)) {
     if (!isset($filters["sort_type"])) {
         $sort_type = $centreon->optGen["problem_sort_type"];
     } else {
@@ -173,8 +180,8 @@ $tab_class = array("0" => "list_one", "1" => "list_two");
 $rows = 10;
 
 $aStatusHost = array(
-    "h_unhandled" => _("Unhandled Problems"),
-    "hpb" => _("Host Problems"),
+    UNHANDLED_HOSTS_PROBLEM => _("Unhandled Problems"),
+    HOSTS_PROBLEM => _("Host Problems"),
     "h" => _("All")
 );
 
@@ -213,7 +220,13 @@ $sDefaultOrder = "0";
 
 $form = new HTML_QuickForm('select_form', 'GET', "?p=" . $p);
 
-$form->addElement('select', 'statusHost', _('Host Status'), $aStatusHost, array('id' => 'statusHost', 'onChange' => "statusHosts(this.value);"));
+$form->addElement(
+    'select',
+    'statusHost',
+    _('Host Status'),
+    $aStatusHost,
+    array('id' => 'statusHost', 'onChange' => "statusHosts(this.value);")
+);
 
 /* Get default host status by GET */
 if (isset($_GET['o']) && in_array($_GET['o'], array_keys($aStatusHost))) {
@@ -313,12 +326,12 @@ $statusList = array("" => "",
     "down" => _("Down"),
     "unreachable" => _("Unreachable"),
     "pending" => _("Pending"));
-if ($o == "h") {
+if ($o === "h") {
     $keyPrefix = "h";
-} elseif ($o == "hpb") {
+} elseif ($o === HOSTS_PROBLEM) {
     $keyPrefix = "h";
     unset($statusList["up"]);
-} elseif ($o == "h_unhandled") {
+} elseif ($o === UNHANDLED_HOSTS_PROBLEM) {
     $keyPrefix = "h_unhandled";
     unset($statusList["up"]);
     unset($statusList["pending"]);
@@ -329,7 +342,13 @@ if ($o == "h") {
     }
 }
 
-$form->addElement('select', 'statusFilter', _('Status'), $statusList, array('id' => 'statusFilter', 'onChange' => "filterStatus(this.value);"));
+$form->addElement(
+    'select',
+    'statusFilter',
+    _('Status'),
+    $statusList,
+    array('id' => 'statusFilter', 'onChange' => "filterStatus(this.value);")
+);
 if (!isset($_GET['o']) && isset($_SESSION['monitoring_host_status_filter'])) {
     $form->setDefaults(array('statusFilter' => $_SESSION['monitoring_host_status_filter']));
     $sDefaultOrder = "1";
@@ -341,7 +360,13 @@ $critArray = array(0 => "");
 foreach ($crits as $critId => $crit) {
     $critArray[$critId] = $crit['hc_name'] . " ({$crit['level']})";
 }
-$form->addElement('select', 'criticality', _('Severity'), $critArray, array('id' => 'critFilter', 'onChange' => "filterCrit(this.value);"));
+$form->addElement(
+    'select',
+    'criticality',
+    _('Severity'),
+    $critArray,
+    array('id' => 'critFilter', 'onChange' => "filterCrit(this.value);")
+);
 $form->setDefaults(array('criticality' => isset($_SESSION['criticality_id']) ? $_SESSION['criticality_id'] : "0"));
 
 $tpl->assign('limit', $limit);

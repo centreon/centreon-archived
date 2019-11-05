@@ -1,7 +1,7 @@
 <?php
 /*
- * Copyright 2005-2015 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2019 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -37,7 +37,7 @@ ini_set("display_errors", "Off");
 
 $debug = 0;
 
-require_once realpath(dirname(__FILE__) . "/../../../../../../config/centreon.config.php");
+require_once realpath(__DIR__ . "/../../../../../../config/centreon.config.php");
 
 require_once _CENTREON_PATH_ . "www/class/centreonXMLBGRequest.class.php";
 require_once _CENTREON_PATH_ . 'www/class/centreonLang.class.php';
@@ -66,26 +66,26 @@ if (isset($obj->session_id) && CentreonSession::checkSession($obj->session_id, $
     exit();
 }
 
-/* *********************************************
-* Get active poller only
-*/
+/*
+ * Get active poller only
+ */
 $pollerList = "";
 $request = "SELECT name FROM nagios_server WHERE ns_activate = '1'";
-$DBRESULT = $obj->DB->query($request);
-while ($d = $DBRESULT->fetchRow()) {
+$dbResult = $obj->DB->query($request);
+while ($d = $dbResult->fetchRow()) {
     if ($pollerList != "") {
         $pollerList .= ", ";
     }
-    $pollerList .= "'".$d["name"]."'";
+    $pollerList .= "'" . $d["name"] . "'";
 }
 
-$DBRESULT->free();
+$dbResult->free();
 
-/* *********************************************
+/*
  * Get Host stats
  */
-$rq1 =  " SELECT count(DISTINCT name), state " .
-        " FROM hosts ";
+$rq1 =  " SELECT count(DISTINCT name), state
+    FROM hosts ";
 if (!$obj->is_admin) {
     $rq1 .= " , centreon_acl ";
 }
@@ -99,53 +99,55 @@ $rq1 .= " GROUP BY state";
 
 $hostCounter = 0;
 $host_stat = array(0 => 0, 1 => 0, 2 => 0, 3 => 0, 4=> 0);
-$DBRESULT = $obj->DBC->query($rq1);
-while ($data = $DBRESULT->fetchRow()) {
+$dbResult = $obj->DBC->query($rq1);
+while ($data = $dbResult->fetchRow()) {
     $host_stat[$data["state"]] = $data["count(DISTINCT name)"];
     $hostCounter += $host_stat[$data["state"]];
 }
-$DBRESULT->free();
+$dbResult->free();
 
-/* *********************************************
+/*
  * Get Service stats
  */
-$query_svc_status = "SELECT " .
-    "SUM(CASE WHEN s.state = 0 THEN 1 ELSE 0 END) AS OK_TOTAL, " .
-    "SUM(CASE WHEN s.state = 1 THEN 1 ELSE 0 END) AS WARNING_TOTAL, " .
-    "SUM(CASE WHEN s.state = 1 AND (s.acknowledged = '1' OR s.scheduled_downtime_depth = '1') " .
-    "    THEN 1 ELSE 0 END) AS WARNING_ACK_DT, " .
-    "SUM(CASE WHEN s.state = 2 THEN 1 ELSE 0 END) AS CRITICAL_TOTAL, " .
-    "SUM(CASE WHEN s.state = 2 AND (s.acknowledged = '1' OR s.scheduled_downtime_depth = '1') " .
-    "    THEN 1 ELSE 0 END) AS CRITICAL_ACK_DT, " .
-    "SUM(CASE WHEN s.state = 3 THEN 1 ELSE 0 END) AS UNKNOWN_TOTAL, " .
-    "SUM(CASE WHEN s.state = 3 AND (s.acknowledged = '1' OR s.scheduled_downtime_depth = '1') " .
-    "    THEN 1 ELSE 0 END) AS UNKNOWN_ACK_DT, " .
-    "SUM(CASE WHEN s.state = 4 THEN 1 ELSE 0 END) AS PENDING_TOTAL " .
-    "FROM hosts h, services s, instances i " .
-    "WHERE i.deleted = 0 " .
-    "AND h.enabled = 1 " .
-    "AND s.enabled = 1 " .
-    "AND i.instance_id = h.instance_id " .
-    "AND h.host_id = s.host_id " .
-    "AND (h.name NOT LIKE '_Module_%' OR h.name LIKE '_Module_Meta%') ";
+$query_svc_status = "SELECT
+    SUM(CASE WHEN s.state = 0 THEN 1 ELSE 0 END) AS OK_TOTAL,
+    SUM(CASE WHEN s.state = 1 THEN 1 ELSE 0 END) AS WARNING_TOTAL,
+    SUM(CASE WHEN s.state = 1 AND (s.acknowledged = '1' OR s.scheduled_downtime_depth = '1')
+        THEN 1 ELSE 0 END) AS WARNING_ACK_DT,
+    SUM(CASE WHEN s.state = 2 THEN 1 ELSE 0 END) AS CRITICAL_TOTAL,
+    SUM(CASE WHEN s.state = 2 AND (s.acknowledged = '1' OR s.scheduled_downtime_depth = '1')
+        THEN 1 ELSE 0 END) AS CRITICAL_ACK_DT,
+    SUM(CASE WHEN s.state = 3 THEN 1 ELSE 0 END) AS UNKNOWN_TOTAL,
+    SUM(CASE WHEN s.state = 3 AND (s.acknowledged = '1' OR s.scheduled_downtime_depth = '1')
+        THEN 1 ELSE 0 END) AS UNKNOWN_ACK_DT,
+    SUM(CASE WHEN s.state = 4 THEN 1 ELSE 0 END) AS PENDING_TOTAL
+    FROM hosts h, services s, instances i
+    WHERE i.deleted = 0
+    AND h.enabled = 1
+    AND s.enabled = 1
+    AND i.instance_id = h.instance_id
+    AND h.host_id = s.host_id
+    AND (h.name NOT LIKE '_Module_%' OR h.name LIKE '_Module_Meta%') ";
 if (!$obj->is_admin) {
-    $query_svc_status .=  "AND EXISTS (" .
-        "SELECT service_id " .
-        "FROM centreon_acl " .
-        "WHERE centreon_acl.host_id = h.host_id " .
-        "AND centreon_acl.service_id = s.service_id " .
-        "AND centreon_acl.group_id IN (" . $obj->grouplistStr . ")" .
+    $query_svc_status .=  "AND EXISTS (
+        SELECT service_id
+        FROM centreon_acl
+        WHERE centreon_acl.host_id = h.host_id
+        AND centreon_acl.service_id = s.service_id
+        AND centreon_acl.group_id IN (" . $obj->grouplistStr . ")" .
         ") ";
 }
-$DBRESULT = $obj->DBC->query($query_svc_status);
-$svc_stat = array_map("myDecode", $DBRESULT->fetchRow());
-$DBRESULT->free();
+$dbResult = $obj->DBC->query($query_svc_status);
+$svc_stat = array_map("myDecode", $dbResult->fetchRow());
+$dbResult->free();
 
-$serviceCounter = $svc_stat["OK_TOTAL"] + $svc_stat["WARNING_TOTAL"] 
-    + $svc_stat["CRITICAL_TOTAL"] + $svc_stat["UNKNOWN_TOTAL"] 
+$serviceCounter = $svc_stat["OK_TOTAL"]
+    + $svc_stat["WARNING_TOTAL"] 
+    + $svc_stat["CRITICAL_TOTAL"]
+    + $svc_stat["UNKNOWN_TOTAL"] 
     + $svc_stat["PENDING_TOTAL"];
 
-/* ********************************************
+/*
  * Check Poller Status
  */
 $status = 0;
@@ -161,15 +163,15 @@ $inactivInstance = "";
 $pollerInError = "";
 
 if ($pollerList != "") {
-    $request = "SELECT `last_alive` AS last_update, `running`, name, instance_id FROM instances WHERE deleted = 0 
-                AND name IN ($pollerList)";
-    $DBRESULT = $obj->DBC->query($request);
-    while ($data = $DBRESULT->fetchRow()) {
-        /* Get Instance ID */
+    $request = "SELECT `last_alive` AS last_update, `running`, name, instance_id
+        FROM instances WHERE deleted = 0 AND name IN (" . $pollerList . ")";
+    $dbResult = $obj->DBC->query($request);
+    while ($data = $dbResult->fetchRow()) {
+        // Get Instance ID
         if ($pollerList != "") {
             $pollerList .= ", ";
         }
-        $pollerList .= "'".$data["instance_id"]."'";
+        $pollerList .= "'" . $data["instance_id"] . "'";
 
         /*
          * Running
@@ -196,31 +198,33 @@ if ($pollerList != "") {
             if ($inactivInstance != "") {
                 $inactivInstance .= ",";
             }
-            $inactivInstance .= $data["name"]." [".(time() - $data["last_update"])."s / ".($timeUnit * 5)."s]";
+            $inactivInstance .= $data["name"] .
+                " [" . (time() - $data["last_update"]) . "s / " . ($timeUnit * 5) . "s]";
         } elseif ((time() - $data["last_update"] >= $timeUnit * 10)) {
             $activity = 1;
             if ($inactivInstance != "") {
                 $inactivInstance .= ",";
             }
-            $inactivInstance .= $data["name"]." [".(time() - $data["last_update"])."s / ".($timeUnit * 10)."s]";
+            $inactivInstance .= $data["name"] .
+                " [" . (time() - $data["last_update"]) . "s / " . ($timeUnit * 10) . "s]";
         }
     }
 }
-$DBRESULT->free();
+$dbResult->free();
 if ($pollerListInError != '') {
-    $error = "$pollerListInError not running";
+    $error = $pollerListInError . "not running";
 }
 
 if ($pollerList != "") {
-    $request =  " SELECT stat_value, i.instance_id, name " .
-                " FROM `nagios_stats` ns, instances i " .
-                " WHERE ns.stat_label = 'Service Check Latency' " .
-                "	AND ns.stat_key LIKE 'Average' " .
-                "	AND ns.instance_id = i.instance_id" .
-                "	AND i.deleted = 0" .
-                "   AND i.instance_id IN ($pollerList)";
-    $DBRESULT = $obj->DBC->query($request);
-    while ($data = $DBRESULT->fetchRow()) {
+    $request =  " SELECT stat_value, i.instance_id, name
+        FROM `nagios_stats` ns, instances i
+        WHERE ns.stat_label = 'Service Check Latency'
+        AND ns.stat_key LIKE 'Average'
+        AND ns.instance_id = i.instance_id
+        AND i.deleted = 0
+        AND i.instance_id IN (" . $pollerList . ")";
+    $dbResult = $obj->DBC->query($request);
+    while ($data = $dbResult->fetchRow()) {
         if (!$latency && $data["stat_value"] >= 60) {
             $latency = 1;
             $pollersWithLatency[$data['instance_id']] = $data['name'];
@@ -230,21 +234,24 @@ if ($pollerList != "") {
             $pollersWithLatency[$data['instance_id']] = $data['name'];
         }
     }
-    $DBRESULT->free();
+    $dbResult->free();
     unset($data);
 }
 
-/* ********************************************
+/*
  * Error Messages
  */
 if ($status != 0) {
-    $errorPstt = "$error";
+    $errorPstt = $error;
 } else {
     $errorPstt = _("OK: all pollers are running");
 }
 
 if ($latency && count($pollersWithLatency)) {
-        $errorLtc = sprintf(_("Latency detected on %s; check configuration for better optimisation"), implode(',', $pollersWithLatency));
+        $errorLtc = sprintf(
+            _("Latency detected on %s; check configuration for better optimisation"),
+            implode(',', $pollersWithLatency)
+        );
 } else {
         $errorLtc = _("OK: no latency detected on your platform");
 }
@@ -255,7 +262,7 @@ if ($activity != 0) {
     $errorAct = _("OK: all database poller updates are active");
 }
 
-/* *********************************************
+/*
  * Create Buffer
  */
 $obj->XML = new CentreonXML();
