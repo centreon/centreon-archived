@@ -62,7 +62,7 @@ $num = filter_input(INPUT_GET, 'num', FILTER_VALIDATE_INT, array('options' => ar
 $limit = filter_input(INPUT_GET, 'limit', FILTER_VALIDATE_INT, array('options' => array('default' => 20)));
 //if instance value is not set, displaying all active pollers linked resources
 $instance = filter_var($obj->defaultPoller ?? -1, FILTER_VALIDATE_INT);
-$hostgroups = filter_var($obj->defaultPoller ?? 0, FILTER_VALIDATE_INT);
+$hostgroups = filter_var($obj->defaultHostgroups ?? 0, FILTER_VALIDATE_INT);
 $search = filter_input(INPUT_GET, 'search', FILTER_SANITIZE_STRING, array('options' => array('default' => '')));
 $sort_type = filter_input(
     INPUT_GET,
