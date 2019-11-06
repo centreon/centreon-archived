@@ -56,20 +56,15 @@ if (!isset($obj->session_id) || !CentreonSession::checkSession($obj->session_id,
 $obj->getDefaultFilters();
 
 // Check Arguments From GET tab
-$o = filter_input(INPUT_GET, 'o', FILTER_SANITIZE_STRING, array('options' => array('default' => 'h')));
-$p = filter_input(INPUT_GET, 'p', FILTER_VALIDATE_INT, array('options' => array('default' => 2)));
-$num = filter_input(INPUT_GET, 'num', FILTER_VALIDATE_INT, array('options' => array('default' => 0)));
-$limit = filter_input(INPUT_GET, 'limit', FILTER_VALIDATE_INT, array('options' => array('default' => 20)));
+$o = filter_input(INPUT_GET, 'o', FILTER_SANITIZE_STRING, ['options' => ['default' => 'h']]);
+$p = filter_input(INPUT_GET, 'p', FILTER_VALIDATE_INT, ['options' => ['default' => 2]]);
+$num = filter_input(INPUT_GET, 'num', FILTER_VALIDATE_INT, ['options' => ['default' => 0]]);
+$limit = filter_input(INPUT_GET, 'limit', FILTER_VALIDATE_INT, ['options' => ['default' => 20]]);
 //if instance value is not set, displaying all active pollers linked resources
 $instance = filter_var($obj->defaultPoller ?? -1, FILTER_VALIDATE_INT);
-$hSearch = filter_input(INPUT_GET, 'host_search', FILTER_SANITIZE_STRING, array('options' => array('default' => '')));
-$sgSearch = filter_input(INPUT_GET, 'sg_search', FILTER_SANITIZE_STRING, array('options' => array('default' => '')));
-$sort_type = filter_input(
-    INPUT_GET,
-    'sort_type',
-    FILTER_SANITIZE_STRING,
-    array('options' => array('default' => 'host_name'))
-);
+$hSearch = filter_input(INPUT_GET, 'host_search', FILTER_SANITIZE_STRING, ['options' => ['default' => '']]);;
+$sgSearch = filter_input(INPUT_GET, 'sg_search', FILTER_SANITIZE_STRING, ['options' => ['default' => '']]);
+$sort_type = filter_input(INPUT_GET, 'sort_type', FILTER_SANITIZE_STRING, ['options' => ['default' => 'host_name']]);
 $order = isset($_GET['order']) && $_GET['order'] === "DESC" ? "DESC" : "ASC";
 
 //saving bound values
@@ -181,18 +176,18 @@ $obj->XML->writeElement("s", "1");
 $obj->XML->endElement();
 
 // Construct query for servicegroups search
-$aTab = array();
+$aTab = [];
 $sg_search = "";
-$aTab = array();
+$aTab = [];
 if ($numRows > 0) {
     $sg_search .= "AND (";
-    $servicegroups = array();
+    $servicegroups = [];
     while ($row = $dbResult->fetch()) {
         $servicesgroups[$row['servicegroup_id']][] = $row['host_id'];
     }
-    $servicegroupsSql1 = array();
+    $servicegroupsSql1 = [];
     foreach ($servicesgroups as $key => $value) {
-        $hostsSql = array();
+        $hostsSql = [];
         foreach ($value as $hostId) {
             $hostsSql[] = $hostId;
         }
@@ -253,7 +248,7 @@ if ($numRows > 0) {
             $aTab[$tab["sg_name"]] = array(
                 'sgn' => CentreonUtils::escapeSecure($tab["sg_name"]),
                 'o' => $ct,
-                'host' => array()
+                'host' => []
             );
         }
 
@@ -273,7 +268,7 @@ if ($numRows > 0) {
                 'hid' => $tab["host_id"],
                 "hcount" => $count,
                 "hc" => $obj->colorHost[$tab["host_state"]],
-                'service' => array()
+                'service' => []
             );
         }
 

@@ -62,20 +62,15 @@ $obj->getDefaultFilters();
 /*
  * Check Arguments From GET tab
  */
-$o = filter_input(INPUT_GET, 'o', FILTER_SANITIZE_STRING, array('options' => array('default' => 'h')));
-$p = filter_input(INPUT_GET, 'p', FILTER_VALIDATE_INT, array('options' => array('default' => 2)));
-$num = filter_input(INPUT_GET, 'num', FILTER_VALIDATE_INT, array('options' => array('default' => 0)));
-$limit = filter_input(INPUT_GET, 'limit', FILTER_VALIDATE_INT, array('options' => array('default' => 20)));
+$o = filter_input(INPUT_GET, 'o', FILTER_SANITIZE_STRING, ['options' => ['default' => 'h']]);
+$p = filter_input(INPUT_GET, 'p', FILTER_VALIDATE_INT, ['options' => ['default' => 2]]);
+$num = filter_input(INPUT_GET, 'num', FILTER_VALIDATE_INT, ['options' => ['default' => 0]]);
+$limit = filter_input(INPUT_GET, 'limit', FILTER_VALIDATE_INT, ['options' => ['default' => 20]]);
 //if instance value is not set, displaying all active pollers linked resources
 $instance = filter_var($obj->defaultPoller ?? -1, FILTER_VALIDATE_INT);
-$hSearch = filter_input(INPUT_GET, 'host_search', FILTER_SANITIZE_STRING, array('options' => array('default' => '')));
-$sgSearch = filter_input(INPUT_GET, 'sg_search', FILTER_SANITIZE_STRING, array('options' => array('default' => '')));
-$sort_type = filter_input(
-    INPUT_GET,
-    'sort_type',
-    FILTER_SANITIZE_STRING,
-    array('options' => array('default' => 'host_name'))
-);
+$hSearch = filter_input(INPUT_GET, 'host_search', FILTER_SANITIZE_STRING, ['options' => ['default' => '']]);
+$sgSearch = filter_input(INPUT_GET, 'sg_search', FILTER_SANITIZE_STRING, ['options' => ['default' => '']]);
+$sort_type = filter_input(INPUT_GET, 'sort_type', FILTER_SANITIZE_STRING, ['options' => ['default' => 'host_name']]);
 $order = isset($_GET['order']) && $_GET['order'] === "DESC" ? "DESC" : "ASC";
 
 //saving bound values
@@ -190,13 +185,13 @@ $obj->XML->endElement();
 $sg_search = "";
 if ($numRows > 0) {
     $sg_search .= "AND (";
-    $servicegroups = array();
+    $servicegroups = [];
     while ($row = $dbResult->fetch()) {
         $servicesgroups[$row['servicegroup_id']][] = $row['host_id'];
     }
-    $servicegroupsSql1 = array();
+    $servicegroupsSql1 = [];
     foreach ($servicesgroups as $key => $value) {
-        $hostsSql = array();
+        $hostsSql = [];
         foreach ($value as $hostId) {
             $hostsSql[] = $hostId;
         }
@@ -244,7 +239,7 @@ if ($numRows > 0) {
         4 => 'sp'
     );
 
-    $sg_list = array();
+    $sg_list = [];
     while ($tab = $dbResult->fetch()) {
         $sg_list[$tab["sg_name"]][$tab["host_name"]]['host_id'] = $tab['host_id'];
         $sg_list[$tab["sg_name"]][$tab["host_name"]]['icon_image'] = $tab['icon_image'];

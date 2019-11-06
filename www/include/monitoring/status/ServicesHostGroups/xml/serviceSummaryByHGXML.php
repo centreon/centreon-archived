@@ -52,20 +52,15 @@ if (!isset($obj->session_id) || !CentreonSession::checkSession($obj->session_id,
 $obj->getDefaultFilters();
 
 // Check Arguments From GET tab
-$o = filter_input(INPUT_GET, 'o', FILTER_SANITIZE_STRING, array('options' => array('default' => 'h')));
-$p = filter_input(INPUT_GET, 'p', FILTER_VALIDATE_INT, array('options' => array('default' => 2)));
-$num = filter_input(INPUT_GET, 'num', FILTER_VALIDATE_INT, array('options' => array('default' => 0)));
-$limit = filter_input(INPUT_GET, 'limit', FILTER_VALIDATE_INT, array('options' => array('default' => 20)));
+$o = filter_input(INPUT_GET, 'o', FILTER_SANITIZE_STRING, ['options' => ['default' => 'h']]);
+$p = filter_input(INPUT_GET, 'p', FILTER_VALIDATE_INT, ['options' => ['default' => 2]]);
+$num = filter_input(INPUT_GET, 'num', FILTER_VALIDATE_INT, ['options' => ['default' => 0]]);
+$limit = filter_input(INPUT_GET, 'limit', FILTER_VALIDATE_INT, ['options' => ['default' => 20]]);
 //if instance value is not set, displaying all active pollers linked resources
 $instance = filter_var($obj->defaultPoller ?? -1, FILTER_VALIDATE_INT);
-$hostgroup = filter_input(INPUT_GET, 'hg_search', FILTER_SANITIZE_STRING, array('options' => array('default' => '')));
-$search = filter_input(INPUT_GET, 'search', FILTER_SANITIZE_STRING, array('options' => array('default' => '')));
-$sort_type = filter_input(
-    INPUT_GET,
-    'sort_type',
-    FILTER_SANITIZE_STRING,
-    array('options' => array('default' => 'alias'))
-);
+$hostgroup = filter_input(INPUT_GET, 'hg_search', FILTER_SANITIZE_STRING, ['options' => ['default' => '']]);
+$search = filter_input(INPUT_GET, 'search', FILTER_SANITIZE_STRING, ['options' => ['default' => '']]);
+$sort_type = filter_input(INPUT_GET, 'sort_type', FILTER_SANITIZE_STRING, ['options' => ['default' => 'alias']]);
 $order = isset($_GET['order']) && $_GET['order'] === "DESC" ? "DESC" : "ASC";
 
 $grouplistStr = $obj->access->getAccessGroupsString();
@@ -155,8 +150,8 @@ $numRows = $obj->DBC->query("SELECT FOUND_ROWS()")->fetchColumn();
 
 $class = "list_one";
 $ct = 0;
-$tab_final = array();
-$tabHGUrl = array();
+$tab_final = [];
+$tabHGUrl = [];
 
 $obj->XML = new CentreonXML();
 $obj->XML->startElement("reponse");
@@ -170,7 +165,7 @@ $obj->XML->endElement();
 
 while ($ndo = $DBRESULT->fetch()) {
     if (!isset($tab_final[$ndo["hgname"]])) {
-        $tab_final[$ndo["hgname"]] = array();
+        $tab_final[$ndo["hgname"]] = [];
     }
     if (!isset($tab_final[$ndo["hgname"]][$ndo["host_name"]])) {
         $tab_final[$ndo["hgname"]][$ndo["host_name"]] = array("0" => 0, "1" => 0, "2" => 0, "3" => 0, "4" => 0);

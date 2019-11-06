@@ -62,7 +62,7 @@ $centreonlang->bindLang();
 /*
  * Check Arguments From GET tab
  */
-$svcId = filter_input(INPUT_GET, 'svc_id', FILTER_SANITIZE_STRING, array('options' => array('default' => 0)));
+$svcId = filter_input(INPUT_GET, 'svc_id', FILTER_SANITIZE_STRING, ['options' => ['default' => 0]]);
 
 // splitting the host/service combination
 if (!empty($svcId)) {
@@ -136,7 +136,7 @@ if ($data = $dbResult->fetch()) {
     } else {
         $pluginShortOuput = $outputLines[0];
     }
-    $longOutput = array();
+    $longOutput = ;
     if (isset($outputLines[1])) {
         for ($x = 1; isset($outputLines[$x]) && $x < 5; $x++) {
             $longOutput[] = $outputLines[$x];
