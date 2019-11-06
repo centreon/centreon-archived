@@ -62,9 +62,9 @@ $centreonlang->bindLang();
 /*
  * Check Arguments From GET tab
  */
-$host_id = filter_input(INPUT_GET, 'host_id', FILTER_VALIDATE_INT, array('options' => array('default' =>  false)));
+$hostId = filter_input(INPUT_GET, 'host_id', FILTER_VALIDATE_INT, ['options' => ['default' =>  false]]);
 
-if ($host_id === false) {
+if ($hostId === false) {
     print _("Bad host ID");
     exit();
 }
@@ -74,7 +74,7 @@ $isAdmin = $centreon->user->admin;
 if (!$isAdmin) {
     $userId = $centreon->user->user_id;
     $acl = new CentreonACL($userId, $isAdmin);
-    if (!$acl->checkHost($host_id)) {
+    if (!$acl->checkHost($hostId)) {
         print _("You don't have access to this resource");
         exit();
     }
@@ -83,46 +83,45 @@ if (!$isAdmin) {
 /**
  * Get Host status
  */
-$rq1 = " SELECT h.state," .
-    " h.address," .
-    " h.name," .
-    " h.alias," .
-    " i.name AS poller, " .
-    " h.perfdata," .
-    " h.check_attempt," .
-    " h.state_type," .
-    " h.last_check, " .
-    " h.next_check, " .
-    " h.latency," .
-    " h.execution_time," .
-    " h.last_state_change," .
-    " h.last_notification," .
-    " h.next_host_notification," .
-    " h.last_hard_state_change," .
-    " h.last_hard_state," .
-    " h.last_time_up," .
-    " h.last_time_down," .
-    " h.last_time_unreachable," .
-    " h.notification_number," .
-    " h.scheduled_downtime_depth," .
-    " h.output," .
-    " h.notes," .
-    " h.notify," .
-    " h.event_handler_enabled," .
-    " h.icon_image, " .
-    " h.timezone" .
-    " FROM hosts h, instances i " .
-    " WHERE h.host_id = " . $host_id .
-    " AND h.instance_id = i.instance_id " .
-    " LIMIT 1";
-
-$DBRESULT = $obj->DBC->query($rq1);
+$rq1 = "SELECT h.state,
+    h.address,
+    h.name,
+    h.alias,
+    i.name AS poller,
+    h.perfdata,
+    h.check_attempt,
+    h.state_type,
+    h.last_check,
+    h.next_check,
+    h.latency,
+    h.execution_time,
+    h.last_state_change,
+    h.last_notification,
+    h.next_host_notification,
+    h.last_hard_state_change,
+    h.last_hard_state,
+    h.last_time_up,
+    h.last_time_down,
+    h.last_time_unreachable,
+    h.notification_number,
+    h.scheduled_downtime_depth,
+    h.output,
+    h.notes,
+    h.notify,
+    h.event_handler_enabled,
+    h.icon_image,
+    h.timezone
+    FROM hosts h, instances i
+    WHERE h.host_id = :hostId AND h.instance_id = i.instance_id LIMIT 1";
+$dbResult = $obj->DBC->prepare($rq1);
+$dbResult->bindValue(':hostId', $hostId, \PDO::PARAM_INT);
+$dbResult->execute();
 
 /*
  * Start Buffer
  */
 $obj->XML->startElement("reponse");
-if ($data = $DBRESULT->fetch()) {
+if ($data = $dbResult->fetch()) {
     // Split the plugin_output
     $outputLines = explode("\n", $data['output']);
     $pluginShortOuput = $outputLines[0];
@@ -220,7 +219,7 @@ if ($data = $DBRESULT->fetch()) {
 } else {
     $obj->XML->writeElement("infos", "none");
 }
-$DBRESULT->closeCursor();
+$dbResult->closeCursor();
 
 // Translations
 $obj->XML->writeElement("tr1", _("Check information"), 0);

@@ -55,25 +55,20 @@ if (!isset($obj->session_id) || !CentreonSession::checkSession($obj->session_id,
 $obj->getDefaultFilters();
 
 // Check Arguments From GET tab
-$o = filter_input(INPUT_GET, 'o', FILTER_SANITIZE_STRING, array('options' => array('default' => 'h')));
-$p = filter_input(INPUT_GET, 'p', FILTER_VALIDATE_INT, array('options' => array('default' => 2)));
-$num = filter_input(INPUT_GET, 'num', FILTER_VALIDATE_INT, array('options' => array('default' => 0)));
-$limit = filter_input(INPUT_GET, 'limit', FILTER_VALIDATE_INT, array('options' => array('default' => 20)));
+$o = filter_input(INPUT_GET, 'o', FILTER_SANITIZE_STRING, ['options' => ['default' => 'h']]);
+$p = filter_input(INPUT_GET, 'p', FILTER_VALIDATE_INT, ['options' => ['default' => 2]]);
+$num = filter_input(INPUT_GET, 'num', FILTER_VALIDATE_INT, ['options' => ['default' => 0]]);
+$limit = filter_input(INPUT_GET, 'limit', FILTER_VALIDATE_INT, ['options' => ['default' => 20]]);
 //if instance value is not set, displaying all active pollers linked resources
 $instance = filter_var($obj->defaultPoller ?? -1, FILTER_VALIDATE_INT);
 $hostgroups = filter_var($obj->defaultHostgroups ?? 0, FILTER_VALIDATE_INT);
-$search = filter_input(INPUT_GET, 'search', FILTER_SANITIZE_STRING, array('options' => array('default' => '')));
-$sort_type = filter_input(
-    INPUT_GET,
-    'sort_type',
-    FILTER_SANITIZE_STRING,
-    array('options' => array('default' => 'host_name'))
-);
+$search = filter_input(INPUT_GET, 'search', FILTER_SANITIZE_STRING, ['options' => ['default' => '']]);
+$sortType = filter_input(INPUT_GET, 'sort_type', FILTER_SANITIZE_STRING, ['options' => ['default' => 'host_name']]);
 $order = filter_input(
     INPUT_GET,
     'order',
     FILTER_VALIDATE_REGEXP,
-    array('options' => array('default' => 'ASC', 'regexp' => '/^(ASC|DESC)$/'))
+    ['options' => ['default' => 'ASC', 'regexp' => '/^(ASC|DESC)$/']]
 );
 
 // Backup poller selection
@@ -86,12 +81,13 @@ $host_services = [];
 $metaService_status = [];
 $tab_host_service = [];
 $tabIcone = [];
+//saving bound values
+$queryValues = [];
 
 /**
  * Get status
  */
-$rq1 = "SELECT SQL_CALC_FOUND_ROWS DISTINCT hosts.name, hosts.state, hosts.icon_image, hosts.host_id "
-    . "FROM hosts ";
+$rq1 = "SELECT SQL_CALC_FOUND_ROWS DISTINCT hosts.name, hosts.state, hosts.icon_image, hosts.host_id FROM hosts ";
 if ($hostgroups) {
     $rq1 .= ", hosts_hostgroups hg, hostgroups hg2 ";
 }
@@ -100,8 +96,7 @@ if (!$obj->is_admin) {
     $rq1 .= ", centreon_acl ";
 }
 
-$rq1 .= "WHERE hosts.name NOT LIKE '_Module_%' "
-    . "AND hosts.enabled = 1 "
+$rq1 .= "WHERE hosts.name NOT LIKE '_Module_%' AND hosts.enabled = 1 "
     . $obj->access->queryBuilder("AND", "hosts.host_id", "centreon_acl.host_id") . " "
     . $obj->access->queryBuilder("AND", "group_id", $obj->grouplistStr) . " ";
 
@@ -127,21 +122,24 @@ if ($o == "svcgrid_ack_1" || $o == "svcOV_ack_1" || $o == "svcSum_ack_1") {
 }
 
 if ($search != "") {
-    $rq1 .= "AND hosts.name like '%" . $search . "%' ";
+    $rq1 .= "AND hosts.name like :search ";
+    $queryValues['search'] = [\PDO::PARAM_STR => '%' . $search . '%'];
 }
 
 if ($instance != -1) {
-    $rq1 .= "AND hosts.instance_id = " . $instance . " ";
+    $rq1 .= "AND hosts.instance_id = :instance ";
+    $queryValues['instance'] = [\PDO::PARAM_INT => $instance];
 }
 
 if ($hostgroups) {
-    $rq1 .= " AND hosts.host_id = hg.host_id "
-        . "AND hg.hostgroup_id IN (" . $hostgroups . ") "
-        . "AND hg.hostgroup_id = hg2.hostgroup_id ";
+    $rq1 .= " AND hosts.host_id = hg.host_id
+        AND hg.hostgroup_id = :hostGroup
+        AND hg.hostgroup_id = hg2.hostgroup_id ";
+    $queryValues['hostGroup'] = [\PDO::PARAM_INT => $hostgroups];
 }
 
-// ORDER BY
-switch ($sort_type) {
+// Sort order
+switch ($sortType) {
     case 'current_state':
         $rq1 .= "ORDER BY hosts.state " . $order . ",hosts.name ";
         break;
@@ -150,11 +148,19 @@ switch ($sort_type) {
         break;
 }
 
-// LIMIT
-$rq1 .= "LIMIT " . ($num * $limit) . "," . $limit . " ";
+// Limit
+$rq1 .= " LIMIT :numLimit, :limit";
+$queryValues['numLimit'] = [\PDO::PARAM_INT => ($num * $limit)];
+$queryValues['limit'] = [\PDO::PARAM_INT => $limit];
 
-// Execute request
-$DBRESULT = $obj->DBC->query($rq1);
+$dbResult = $obj->DBC->prepare($rq1);
+foreach ($queryValues as $bindId => $bindData) {
+    foreach ($bindData as $bindType => $bindValue) {
+        $dbResult->bindValue($bindId, $bindValue, $bindType);
+    }
+}
+$dbResult->execute();
+
 $numRows = $obj->DBC->numberRows();
 
 // Info / Pagination
@@ -167,9 +173,17 @@ $obj->XML->writeElement("p", $p);
 $obj->XML->endElement();
 
 $ct = 0;
-$tab_final = array();
-$DBRESULT_NDO1 = $obj->DBC->query($rq1);
-while ($ndo = $DBRESULT_NDO1->fetch()) {
+$tab_final = [];
+$dbResultNDO1 = $obj->DBC->query($rq1);
+$dbResultNDO1 = $obj->DBC->prepare($rq1);
+foreach ($queryValues as $bindId => $bindData) {
+    foreach ($bindData as $bindType => $bindValue) {
+        $dbResult->bindValue($bindId, $bindValue, $bindType);
+    }
+}
+$dbResultNDO1->execute();
+
+while ($ndo = $dbResultNDO1->fetch()) {
     $tab_final[$ndo["name"]]["nb_service_k"] = 0;
     $tab_final[$ndo["name"]]["host_id"] = $ndo["host_id"];
     if ($o != "svcSum_pb" && $o != "svcSum_ack_1" && $o != "svcSum_ack_0") {
