@@ -102,17 +102,7 @@ $num = filter_input(INPUT_GET, 'num', FILTER_VALIDATE_INT, array('options' => ar
 $limit = filter_input(INPUT_GET, 'limit', FILTER_VALIDATE_INT, array('options' => array('default' => 20)));
 $nc = filter_input(INPUT_GET, 'nc', FILTER_VALIDATE_INT, array('options' => array('default' => 0)));
 
-$order = filter_input(
-    INPUT_GET,
-    'order',
-    FILTER_VALIDATE_REGEXP,
-    array(
-        'options' => array(
-            'default' => "ASC",
-            'regexp' => '/^(ASC|DESC)$/'
-        )
-    )
-);
+$order = isset($_GET['order']) && $_GET['order'] === "DESC" ? "DESC" : "ASC";
 
 // string values from the $_GET sanitized using the checkArgument() which call CentreonDB::escape() method
 $o = $obj->checkArgument("o", $_GET, "h");
