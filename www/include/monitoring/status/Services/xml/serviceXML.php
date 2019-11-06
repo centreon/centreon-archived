@@ -133,8 +133,8 @@ $searchService = " ";
 if ($serviceToSearch) {
     $searchService = " AND (s.description LIKE :serviceToSearch OR s.display_name LIKE :serviceToSearch) ";
     $queryValues['serviceToSearch'] = [\PDO::PARAM_STR => '%' . $serviceToSearch . '%'];
-
 }
+
 $searchOutput = " ";
 if ($outputToSearch) {
     $searchOutput = " AND s.output LIKE :outputToSearch ";
@@ -592,7 +592,9 @@ if (!$sqlError) {
             }
             $obj->XML->writeElement(
                 "sau",
-                CentreonUtils::escapeSecure($obj->serviceObj->replaceMacroInString($data["service_id"], $data["action_url"]))
+                CentreonUtils::escapeSecure(
+                    $obj->serviceObj->replaceMacroInString($data["service_id"], $data["action_url"])
+                )
             );
         } else {
             $obj->XML->writeElement("sau", 'none');

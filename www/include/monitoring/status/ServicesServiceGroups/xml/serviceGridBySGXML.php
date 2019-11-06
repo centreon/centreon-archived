@@ -62,7 +62,7 @@ $num = filter_input(INPUT_GET, 'num', FILTER_VALIDATE_INT, ['options' => ['defau
 $limit = filter_input(INPUT_GET, 'limit', FILTER_VALIDATE_INT, ['options' => ['default' => 20]]);
 //if instance value is not set, displaying all active pollers linked resources
 $instance = filter_var($obj->defaultPoller ?? -1, FILTER_VALIDATE_INT);
-$hSearch = filter_input(INPUT_GET, 'host_search', FILTER_SANITIZE_STRING, ['options' => ['default' => '']]);;
+$hSearch = filter_input(INPUT_GET, 'host_search', FILTER_SANITIZE_STRING, ['options' => ['default' => '']]);
 $sgSearch = filter_input(INPUT_GET, 'sg_search', FILTER_SANITIZE_STRING, ['options' => ['default' => '']]);
 $sort_type = filter_input(INPUT_GET, 'sort_type', FILTER_SANITIZE_STRING, ['options' => ['default' => 'host_name']]);
 $order = isset($_GET['order']) && $_GET['order'] === "DESC" ? "DESC" : "ASC";
