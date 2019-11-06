@@ -115,29 +115,29 @@ $queryValues = [];
 $graphs = [];
 
 // Get Service status
-$instance_filter = "";
+$instance_filter = " ";
 if (!empty($instance) && $instance != -1) {
     $instance_filter = " AND h.instance_id = :instance";
     $queryValues['instance'] = [\PDO::PARAM_INT => $instance];
 }
 
-$searchHost = "";
+$searchHost = " ";
 if ($hostToSearch) {
-    $searchHost .= " AND (h.name LIKE :hostToSearch
+    $searchHost = " AND (h.name LIKE :hostToSearch
         OR h.alias LIKE :hostToSearch
         OR h.address LIKE :hostToSearch) ";
     $queryValues['hostToSearch'] = [\PDO::PARAM_STR => '%' . $hostToSearch . '%'];
 }
 
-$searchService = "";
+$searchService = " ";
 if ($serviceToSearch) {
-    $searchService .= " AND (s.description LIKE :serviceToSearch OR s.display_name LIKE :serviceToSearch) ";
+    $searchService = " AND (s.description LIKE :serviceToSearch OR s.display_name LIKE :serviceToSearch) ";
     $queryValues['serviceToSearch'] = [\PDO::PARAM_STR => '%' . $serviceToSearch . '%'];
 
 }
-$searchOutput = "";
+$searchOutput = " ";
 if ($outputToSearch) {
-    $searchOutput .= " AND s.output LIKE :outputToSearch ";
+    $searchOutput = " AND s.output LIKE :outputToSearch ";
     $queryValues['outputToSearch'] = [\PDO::PARAM_STR => '%' . $outputToSearch . '%'];
 }
 
@@ -192,18 +192,11 @@ if ($criticalityId) {
     // the variable bounded to criticalityValue must be an integer. But is inserted in a DB's varchar column
     $queryValues['criticalityValue'] = [\PDO::PARAM_STR => $criticalityId];
 }
-$request .= " AND h.name NOT LIKE '_Module_BAM%' ";
-
-if ($searchHost) {
-    $request .= $searchHost;
-}
-if ($searchService) {
-    $request .= $searchService;
-}
-if ($searchOutput) {
-    $request .= $searchOutput;
-}
-$request .= $instance_filter;
+$request .= " AND h.name NOT LIKE '_Module_BAM%' "
+    . $searchHost
+    . $searchService
+    . $searchOutput
+    . $instance_filter;
 
 if ($statusService == 'svc_unhandled') {
     $request .= " AND s.state_type = 1
