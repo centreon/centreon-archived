@@ -81,12 +81,8 @@ $hostgroups = filter_var($obj->defaultHostgroups ?? 0, FILTER_VALIDATE_INT);
 $search = filter_input(INPUT_GET, 'search', FILTER_SANITIZE_STRING, ['options' => ['default' => '']]);
 $statusHost = filter_input(INPUT_GET, 'statusHost', FILTER_SANITIZE_STRING, ['options' => ['default' => '']]);
 $statusFilter = filter_input(INPUT_GET, 'statusFilter', FILTER_SANITIZE_STRING, ['options' => ['default' => '']]);
-$order = filter_input(
-    INPUT_GET,
-    'order',
-    FILTER_VALIDATE_REGEXP,
-    ['options' => ['default' => 'ASC', 'regexp' => '/^(ASC|DESC)$/']]
-);
+$order = isset($_GET['order']) && $_GET['order'] === "DESC" ? "DESC" : "ASC";
+
 if (isset($_GET['sort_type']) && $_GET['sort_type'] == "host_name") {
     $sort_type = "name";
 } else {

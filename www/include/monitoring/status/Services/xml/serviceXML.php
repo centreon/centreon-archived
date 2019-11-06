@@ -89,12 +89,7 @@ $serviceToSearch = filter_input(INPUT_GET, 'search', FILTER_SANITIZE_STRING, ['o
 $hostToSearch = filter_input(INPUT_GET, 'search_host', FILTER_SANITIZE_STRING, ['options' => ['default' => '']]);
 $outputToSearch = filter_input(INPUT_GET, 'search_output', FILTER_SANITIZE_STRING, ['options' => ['default' => '']]);
 $sortType = filter_input(INPUT_GET, 'sort_type', FILTER_SANITIZE_STRING, ['options' => ['default' => 'host_name']]);
-$order = filter_input(
-    INPUT_GET,
-    'order',
-    FILTER_VALIDATE_REGEXP,
-    ['options' => ['default' => 'ASC', 'regexp' => '/^(ASC|DESC)$/']]
-);
+$order = isset($_GET['order']) && $_GET['order'] === "DESC" ? "DESC" : "ASC";
 $statusService = filter_input(INPUT_GET, 'statusService', FILTER_SANITIZE_STRING, ['options' => ['default' => '']]);
 $statusFilter = filter_input(INPUT_GET, 'statusFilter', FILTER_SANITIZE_STRING, ['options' => ['default' => '']]);
 $dateFormat = "Y/m/d H:i:s";

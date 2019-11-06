@@ -65,12 +65,7 @@ $instance = filter_var($obj->defaultPoller ?? -1, FILTER_VALIDATE_INT);
 $hostgroups = filter_var($obj->defaultHostgroups ?? 0, FILTER_VALIDATE_INT);
 $search = filter_input(INPUT_GET, 'search', FILTER_SANITIZE_STRING, ['options' => ['default' => '']]);
 $sortType = filter_input(INPUT_GET, 'sort_type', FILTER_SANITIZE_STRING, ['options' => ['default' => 'host_name']]);
-$order = filter_input(
-    INPUT_GET,
-    'order',
-    FILTER_VALIDATE_REGEXP,
-    ['options' => ['default' => 'ASC', 'regexp' => '/^(ASC|DESC)$/']]
-);
+$order = isset($_GET['order']) && $_GET['order'] === "DESC" ? "DESC" : "ASC";
 
 // Backup poller selection
 $obj->setInstanceHistory($instance);

@@ -72,12 +72,7 @@ $limit = filter_input(INPUT_GET, 'limit', FILTER_VALIDATE_INT, ['options' => ['d
 $instance = filter_var($obj->defaultPoller ?? -1, FILTER_VALIDATE_INT);
 
 $search = filter_input(INPUT_GET, 'search', FILTER_SANITIZE_STRING, ['options' => ['default' => '']]);
-$order = filter_input(
-    INPUT_GET,
-    'order',
-    FILTER_VALIDATE_REGEXP,
-    ['options' => ['default' => 'ASC', 'regexp' => '/^(ASC|DESC)$/']]
-);
+$order = isset($_GET['order']) && $_GET['order'] === "DESC" ? "DESC" : "ASC";
 
 //saving bound values
 $queryValues = [];

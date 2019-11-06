@@ -70,12 +70,7 @@ $sort_type = filter_input(
     FILTER_SANITIZE_STRING,
     array('options' => array('default' => 'host_name'))
 );
-$order = filter_input(
-    INPUT_GET,
-    'order',
-    FILTER_VALIDATE_REGEXP,
-    array('options' => array('default' => 'ASC', 'regexp' => '/^(ASC|DESC)$/'))
-);
+$order = isset($_GET['order']) && $_GET['order'] === "DESC" ? "DESC" : "ASC";
 
 //saving bound values
 $queryValues = [];
