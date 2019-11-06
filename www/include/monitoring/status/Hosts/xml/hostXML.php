@@ -200,7 +200,7 @@ if ($statusFilter == "up") {
 
 if ($hostgroups) {
     $rq1 .= " AND h.host_id = hhg.host_id
-        AND hg.hostgroup_id IN (:hostgroup)
+        AND hg.hostgroup_id IN = :hostgroup
         AND hhg.hostgroup_id = hg.hostgroup_id";
     $queryValues['hostgroup'] = [
         \PDO::PARAM_INT => $hostgroups
