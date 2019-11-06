@@ -261,8 +261,7 @@ if (isset($hostgroups) && $hostgroups != 0) {
 // ServiceGroup Filter
 if (isset($servicegroups) && $servicegroups != 0) {
     $request .= " AND ssg.servicegroup_id = sg.servicegroup_id
-        AND ssg.service_id = s.service_id AND ssg.servicegroup_id IN (:serviceGroup) ";
-    // only one value is returned from the current "select" filter
+        AND ssg.service_id = s.service_id AND ssg.servicegroup_id IN = :serviceGroup ";
     $queryValues['serviceGroup'] = [\PDO::PARAM_INT => $servicegroups];
 }
 
