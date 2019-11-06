@@ -254,8 +254,7 @@ if ($statusService === 'svc_unhandled' || $statusService === 'svcpb') {
 // HostGroup Filter
 if (isset($hostgroups) && $hostgroups != 0) {
     $request .= " AND hg.hostgroup_id = hg2.hostgroup_id
-        AND hg.host_id = h.host_id AND hg.hostgroup_id IN (:hostGroup) ";
-    // only one value is returned from the current "select" filter
+        AND hg.host_id = h.host_id AND hg.hostgroup_id IN = :hostGroup ";
     $queryValues['hostGroup'] = [\PDO::PARAM_INT => $hostgroups];
 }
 

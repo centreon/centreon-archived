@@ -132,10 +132,9 @@ if ($instance != -1) {
 }
 
 if ($hostgroups) {
-    $rq1 .= " AND hosts.host_id = hg.host_id "
-        . "AND hg.hostgroup_id IN (:hostGroup) "
-        . "AND hg.hostgroup_id = hg2.hostgroup_id ";
-    // only one value is returned from the current "select" filter
+    $rq1 .= " AND hosts.host_id = hg.host_id
+        AND hg.hostgroup_id = :hostGroup
+        AND hg.hostgroup_id = hg2.hostgroup_id ";
     $queryValues['hostGroup'] = [\PDO::PARAM_INT => $hostgroups];
 }
 
