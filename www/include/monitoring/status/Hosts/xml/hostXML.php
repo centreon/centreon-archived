@@ -78,17 +78,7 @@ $p = filter_input(INPUT_GET, 'p', FILTER_VALIDATE_INT, array('options' => array(
 $num = filter_input(INPUT_GET, 'num', FILTER_VALIDATE_INT, array('options' => array('default' => 0)));
 $limit = filter_input(INPUT_GET, 'limit', FILTER_VALIDATE_INT, array('options' => array('default' => 20)));
 
-$order = filter_input(
-    INPUT_GET,
-    'order',
-    FILTER_VALIDATE_REGEXP,
-    array(
-        'options' => array(
-            'default' => "ASC",
-            'regexp' => '/^(ASC|DESC)$/'
-        )
-    )
-);
+$order = isset($_GET['order']) && $_GET['order'] === "DESC" ? "DESC" : "ASC";
 
 // string values from the $_GET sanitized using the checkArgument() which call CentreonDB::escape() method
 $o = $obj->checkArgument("o", $_GET, "h");
@@ -350,10 +340,14 @@ while ($data = $dbResult->fetchRow()) {
     $obj->XML->writeElement("ha", $data["acknowledged"]);
     $obj->XML->writeElement("hdtm", $data["scheduled_downtime_depth"]);
     $obj->XML->writeElement(
-        "hdtmXml", "./include/monitoring/downtime/xml/broker/makeXMLForDowntime.php?hid=" . $data['host_id']);
+        "hdtmXml",
+        "./include/monitoring/downtime/xml/broker/makeXMLForDowntime.php?hid=" . $data['host_id']
+    );
     $obj->XML->writeElement("hdtmXsl", "./include/monitoring/downtime/xsl/popupForDowntime.xsl");
     $obj->XML->writeElement(
-        "hackXml", "./include/monitoring/acknowlegement/xml/broker/makeXMLForAck.php?hid=" . $data['host_id']);
+        "hackXml",
+        "./include/monitoring/acknowlegement/xml/broker/makeXMLForAck.php?hid=" . $data['host_id']
+    );
     $obj->XML->writeElement("hackXsl", "./include/monitoring/acknowlegement/xsl/popupForAck.xsl");
     $obj->XML->writeElement("hae", $data["active_checks"]);
     $obj->XML->writeElement("hpe", $data["passive_checks"]);
