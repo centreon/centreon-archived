@@ -136,7 +136,7 @@ if ($data = $dbResult->fetch()) {
     } else {
         $pluginShortOuput = $outputLines[0];
     }
-    $longOutput = ;
+    $longOutput = [];
     if (isset($outputLines[1])) {
         for ($x = 1; isset($outputLines[$x]) && $x < 5; $x++) {
             $longOutput[] = $outputLines[$x];
