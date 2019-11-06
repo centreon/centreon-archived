@@ -50,91 +50,95 @@ if (!isset($obj->session_id) || !CentreonSession::checkSession($obj->session_id,
     exit();
 }
 
-/*
- * Set Default Poller
- */
+// Set Default Poller
 $obj->getDefaultFilters();
 
-/*
- * Alias / Name conversion table
- */
-$convertTable = array();
-$convertID = array();
-$DBRESULT = $obj->DBC->query("SELECT hostgroup_id, name FROM hostgroups");
-while ($hg = $DBRESULT->fetchRow()) {
+// Alias / Name conversion table
+$convertTable = [];
+$convertID = [];
+$dbResult = $obj->DBC->query("SELECT hostgroup_id, name FROM hostgroups");
+while ($hg = $dbResult->fetch()) {
     $convertTable[$hg["name"]] = $hg["name"];
     $convertID[$hg["name"]] = $hg["hostgroup_id"];
 }
-$DBRESULT->closeCursor();
+$dbResult->closeCursor();
 
 // Check Arguments From GET tab
-$o = filter_input(INPUT_GET, 'o', FILTER_SANITIZE_STRING, array('options' => array('default' => 'h')));
-$p = filter_input(INPUT_GET, 'p', FILTER_VALIDATE_INT, array('options' => array('default' => 2)));
-$num = filter_input(INPUT_GET, 'num', FILTER_VALIDATE_INT, array('options' => array('default' => 0)));
-$limit = filter_input(INPUT_GET, 'limit', FILTER_VALIDATE_INT, array('options' => array('default' => 20)));
+$o = filter_input(INPUT_GET, 'o', FILTER_SANITIZE_STRING, ['options' => ['default' => 'h']]);
+$p = filter_input(INPUT_GET, 'p', FILTER_VALIDATE_INT, ['options' => ['default' => 2]]);
+$num = filter_input(INPUT_GET, 'num', FILTER_VALIDATE_INT, ['options' => ['default' => 0]]);
+$limit = filter_input(INPUT_GET, 'limit', FILTER_VALIDATE_INT, ['options' => ['default' => 20]]);
 //if instance value is not set, displaying all active pollers linked resources
 $instance = filter_var($obj->defaultPoller ?? -1, FILTER_VALIDATE_INT);
 
-$search = filter_input(INPUT_GET, 'search', FILTER_SANITIZE_STRING, array('options' => array('default' => '')));
-$sort_type = filter_input(
-    INPUT_GET,
-    'sort_type',
-    FILTER_SANITIZE_STRING,
-    array('options' => array('default' => 'host_name'))
-);
+$search = filter_input(INPUT_GET, 'search', FILTER_SANITIZE_STRING, ['options' => ['default' => '']]);
 $order = filter_input(
     INPUT_GET,
     'order',
     FILTER_VALIDATE_REGEXP,
-    array('options' => array('default' => 'ASC', 'regexp' => '/^(ASC|DESC)$/'))
+    ['options' => ['default' => 'ASC', 'regexp' => '/^(ASC|DESC)$/']]
 );
+
+//saving bound values
+$queryValues = [];
 
 $groupStr = $obj->access->getAccessGroupsString();
 
-/*
- * Backup poller selection
- */
+// Backup poller selection
 $obj->setInstanceHistory($instance);
 
-/*
- * Search string
- */
+// Search string
 $searchStr = "";
 if ($search != "") {
-    $searchStr = " AND hg.name LIKE '%$search%' ";
+    $searchStr = " AND hg.name LIKE :search ";
+    $queryValues['search'] = [
+        \PDO::PARAM_STR => '%' . $search . '%'
+    ];
 }
 
 /*
  * Host state
  */
 if ($obj->is_admin) {
-    $rq1 = "SELECT hg.name as alias, h.state, count(h.host_id) AS nb " .
-        "FROM hosts_hostgroups hhg, hosts h, hostgroups hg " .
-        "WHERE hg.hostgroup_id = hhg.hostgroup_id " .
-        "AND hhg.host_id = h.host_id " .
-        "AND h.enabled = 1 ";
+    $rq1 = "SELECT hg.name as alias, h.state, COUNT(h.host_id) AS nb
+        FROM hosts_hostgroups hhg, hosts h, hostgroups hg
+        WHERE hg.hostgroup_id = hhg.hostgroup_id
+        AND hhg.host_id = h.host_id
+        AND h.enabled = 1 ";
     if (isset($instance) && $instance > 0) {
-        $rq1 .= "AND h.instance_id = " . $obj->DBC->escape($instance) . " ";
+        $rq1 .= "AND h.instance_id = :instance";
+        $queryValues['instance'] = [
+            \PDO::PARAM_INT => $instance
+        ];
     }
-    $rq1 .= $searchStr .
-        "GROUP BY hg.name, h.state";
+    $rq1 .= $searchStr . "GROUP BY hg.name " . $order . ", h.state";
 } else {
-    $rq1 = "SELECT hg.name as alias, h.state, count(DISTINCT h.host_id) AS nb " .
-        "FROM centreon_acl acl, hosts_hostgroups hhg, hosts h, hostgroups hg " .
-        "WHERE hg.hostgroup_id = hhg.hostgroup_id " .
-        "AND hhg.host_id = h.host_id " .
-        "AND h.enabled = 1 ";
+    $rq1 = "SELECT hg.name as alias, h.state, COUNT(DISTINCT h.host_id) AS nb
+        FROM centreon_acl acl, hosts_hostgroups hhg, hosts h, hostgroups hg
+        WHERE hg.hostgroup_id = hhg.hostgroup_id
+        AND hhg.host_id = h.host_id
+        AND h.enabled = 1 ";
     if (isset($instance) && $instance > 0) {
-        $rq1 .= "AND h.instance_id = " . $obj->DBC->escape($instance) . " ";
+        $rq1 .= "AND h.instance_id = :instance";
+        $queryValues['instance'] = [
+            \PDO::PARAM_INT => $instance
+        ];
     }
     $rq1 .= $searchStr .
         $obj->access->queryBuilder("AND", "hg.name", $obj->access->getHostGroupsString("NAME")) .
         "AND h.host_id = acl.host_id " .
-        "AND acl.group_id in ($groupStr) " .
-        "GROUP BY hg.name, h.state";
+        "AND acl.group_id in (" . $groupStr . ") " .
+        "GROUP BY hg.name " . $order . ", h.state";
 }
-$DBRESULT = $obj->DBC->query($rq1);
-while ($data = $DBRESULT->fetchRow()) {
+$dbResult = $obj->DBC->prepare($rq1);
+foreach ($queryValues as $bindId => $bindData) {
+    foreach ($bindData as $bindType => $bindValue) {
+        $dbResult->bindValue($bindId, $bindValue, $bindType);
+    }
+}
+$dbResult->execute();
+
+while ($data = $dbResult->fetch()) {
     if (!isset($stats[$data["alias"]])) {
         $stats[$data["alias"]] = array(
             "h" => array(0 => 0, 1 => 0, 2 => 0, 3 => 0),
@@ -143,47 +147,54 @@ while ($data = $DBRESULT->fetchRow()) {
     }
     $stats[$data["alias"]]["h"][$data["state"]] = $data["nb"];
 }
-$DBRESULT->closeCursor();
+$dbResult->closeCursor();
 
 /*
  * Get Services request
  */
 if ($obj->is_admin) {
-    $rq2 = "SELECT hg.name as alias, s.state, count( s.service_id ) AS nb, "
-        . " (case s.state when 0 then 3 when 2 then 0 when 3 then 2 else s.state END) as tri " .
-        "FROM hosts_hostgroups hhg, hosts h, hostgroups hg, services s " .
-        "WHERE hg.hostgroup_id = hhg.hostgroup_id " .
-        "AND hhg.host_id = h.host_id " .
-        "AND h.enabled = 1 " .
-        "AND h.host_id = s.host_id " .
-        "AND s.enabled = 1 ";
+    $rq2 = "SELECT hg.name AS alias, s.state, COUNT( s.service_id ) AS nb,
+        (CASE s.state WHEN 0 THEN 3 WHEN 2 THEN 0 WHEN 3 THEN 2 ELSE s.state END) AS tri
+        FROM hosts_hostgroups hhg, hosts h, hostgroups hg, services s
+        WHERE hg.hostgroup_id = hhg.hostgroup_id
+        AND hhg.host_id = h.host_id
+        AND h.enabled = 1
+        AND h.host_id = s.host_id
+        AND s.enabled = 1 ";
     if (isset($instance) && $instance > 0) {
-        $rq2 .= "AND h.instance_id = " . $obj->DBC->escape($instance) . " ";
+        $rq2 .= "AND h.instance_id = :instance";
     }
     $rq2 .= $searchStr .
-        "GROUP BY hg.name, s.state  order by tri asc";
+        "GROUP BY hg.name, s.state ORDER BY tri ASC";
 } else {
-    $rq2 = "SELECT hg.name as alias, s.state, count( s.service_id ) AS nb,"
-        . " (case s.state when 0 then 3 when 2 then 0 when 3 then 2 else s.state END) as tri  " .
-        "FROM centreon_acl acl, hosts_hostgroups hhg, hosts h, hostgroups hg, services s " .
-        "WHERE hg.hostgroup_id = hhg.hostgroup_id " .
-        "AND hhg.host_id = h.host_id " .
-        "AND h.enabled = 1 " .
-        "AND h.host_id = s.host_id " .
-        "AND s.enabled = 1 ";
+    $rq2 = "SELECT hg.name as alias, s.state, COUNT( s.service_id ) AS nb,
+        (CASE s.state WHEN 0 THEN 3 WHEN 2 THEN 0 WHEN 3 THEN 2 ELSE s.state END) AS tri
+        FROM centreon_acl acl, hosts_hostgroups hhg, hosts h, hostgroups hg, services s
+        WHERE hg.hostgroup_id = hhg.hostgroup_id
+        AND hhg.host_id = h.host_id
+        AND h.enabled = 1
+        AND h.host_id = s.host_id
+        AND s.enabled = 1 ";
     if (isset($instance) && $instance > 0) {
-        $rq2 .= "AND h.instance_id = " . $obj->DBC->escape($instance) . " ";
+        $rq2 .= "AND h.instance_id = :instance";
     }
     $rq2 .= $searchStr .
         $obj->access->queryBuilder("AND", "hg.name", $obj->access->getHostGroupsString("NAME")) .
         "AND h.host_id = acl.host_id " .
         "AND s.service_id = acl.service_id " .
         "AND acl.group_id IN (" . $groupStr . ") " .
-        "GROUP BY hg.name, s.state order by tri asc";
+        "GROUP BY hg.name, s.state ORDER BY tri ASC";
 }
 
-$DBRESULT = $obj->DBC->query($rq2);
-while ($data = $DBRESULT->fetchRow()) {
+$dbResult = $obj->DBC->prepare($rq2);
+foreach ($queryValues as $bindId => $bindData) {
+    foreach ($bindData as $bindType => $bindValue) {
+        $dbResult->bindValue($bindId, $bindValue, $bindType);
+    }
+}
+$dbResult->execute();
+
+while ($data = $dbResult->fetch()) {
     if (!isset($stats[$data["alias"]])) {
         $stats[$data["alias"]] = array(
             "h" => array(0 => 0, 1 => 0, 2 => 0, 3 => 0),
