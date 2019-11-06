@@ -83,7 +83,7 @@ $groupStr = $obj->access->getAccessGroupsString();
 $obj->setInstanceHistory($instance);
 
 // Search string
-$searchStr = "";
+$searchStr = " ";
 if ($search != "") {
     $searchStr = " AND hg.name LIKE :search ";
     $queryValues['search'] = [
@@ -119,11 +119,10 @@ if ($obj->is_admin) {
             \PDO::PARAM_INT => $instance
         ];
     }
-    $rq1 .= $searchStr .
-        $obj->access->queryBuilder("AND", "hg.name", $obj->access->getHostGroupsString("NAME")) .
-        "AND h.host_id = acl.host_id " .
-        "AND acl.group_id in (" . $groupStr . ") " .
-        "GROUP BY hg.name " . $order . ", h.state";
+    $rq1 .= $searchStr . $obj->access->queryBuilder("AND", "hg.name", $obj->access->getHostGroupsString("NAME")) .
+        "AND h.host_id = acl.host_id
+        AND acl.group_id in (" . $groupStr . ")
+        GROUP BY hg.name " . $order . ", h.state";
 }
 $dbResult = $obj->DBC->prepare($rq1);
 foreach ($queryValues as $bindId => $bindData) {
@@ -159,8 +158,7 @@ if ($obj->is_admin) {
     if (isset($instance) && $instance > 0) {
         $rq2 .= "AND h.instance_id = :instance";
     }
-    $rq2 .= $searchStr .
-        "GROUP BY hg.name, s.state ORDER BY tri ASC";
+    $rq2 .= $searchStr . "GROUP BY hg.name, s.state ORDER BY tri ASC";
 } else {
     $rq2 = "SELECT hg.name as alias, s.state, COUNT( s.service_id ) AS nb,
         (CASE s.state WHEN 0 THEN 3 WHEN 2 THEN 0 WHEN 3 THEN 2 ELSE s.state END) AS tri
@@ -173,12 +171,11 @@ if ($obj->is_admin) {
     if (isset($instance) && $instance > 0) {
         $rq2 .= "AND h.instance_id = :instance";
     }
-    $rq2 .= $searchStr .
-        $obj->access->queryBuilder("AND", "hg.name", $obj->access->getHostGroupsString("NAME")) .
-        "AND h.host_id = acl.host_id " .
-        "AND s.service_id = acl.service_id " .
-        "AND acl.group_id IN (" . $groupStr . ") " .
-        "GROUP BY hg.name, s.state ORDER BY tri ASC";
+    $rq2 .= $searchStr . $obj->access->queryBuilder("AND", "hg.name", $obj->access->getHostGroupsString("NAME")) .
+        "AND h.host_id = acl.host_id
+        AND s.service_id = acl.service_id
+        AND acl.group_id IN (" . $groupStr . ")
+        GROUP BY hg.name, s.state ORDER BY tri ASC";
 }
 
 $dbResult = $obj->DBC->prepare($rq2);
