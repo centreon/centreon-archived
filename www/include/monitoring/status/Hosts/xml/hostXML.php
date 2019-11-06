@@ -340,10 +340,14 @@ while ($data = $dbResult->fetchRow()) {
     $obj->XML->writeElement("ha", $data["acknowledged"]);
     $obj->XML->writeElement("hdtm", $data["scheduled_downtime_depth"]);
     $obj->XML->writeElement(
-        "hdtmXml", "./include/monitoring/downtime/xml/broker/makeXMLForDowntime.php?hid=" . $data['host_id']);
+        "hdtmXml",
+        "./include/monitoring/downtime/xml/broker/makeXMLForDowntime.php?hid=" . $data['host_id']
+    );
     $obj->XML->writeElement("hdtmXsl", "./include/monitoring/downtime/xsl/popupForDowntime.xsl");
     $obj->XML->writeElement(
-        "hackXml", "./include/monitoring/acknowlegement/xml/broker/makeXMLForAck.php?hid=" . $data['host_id']);
+        "hackXml",
+        "./include/monitoring/acknowlegement/xml/broker/makeXMLForAck.php?hid=" . $data['host_id']
+    );
     $obj->XML->writeElement("hackXsl", "./include/monitoring/acknowlegement/xsl/popupForAck.xsl");
     $obj->XML->writeElement("hae", $data["active_checks"]);
     $obj->XML->writeElement("hpe", $data["passive_checks"]);
