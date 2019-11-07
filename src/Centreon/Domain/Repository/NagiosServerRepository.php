@@ -93,4 +93,33 @@ SQL;
         $stmt = $this->db->prepare($sql);
         $stmt->execute();
     }
+
+    /**
+     * Sets poller as updated (shows that poller needs restarting)
+     * @param int $id id of poller
+     */
+    public function setUpdated(int $id): void
+    {
+        $sql = "UPDATE `nagios_server` SET `updated` = '1' WHERE `id` = :id";
+        $stmt = $this->db->prepare($sql);
+        $stmt->bindParam(':id', $id, \PDO::PARAM_INT);
+        $stmt->execute();
+    }
+
+    /**
+     * Get Central Poller
+     * @return int|null
+     */
+    public function getCentral(): ?int
+    {
+        $query = "SELECT id FROM nagios_server WHERE localhost = '1' LIMIT 1";
+        $stmt = $this->db->prepare($query);
+        $stmt->execute();
+
+        if (!$stmt->rowCount()) {
+            return null;
+        }
+
+        return (int)$stmt->fetch()['id'];
+    }
 }
