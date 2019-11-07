@@ -58,6 +58,9 @@ use Centreon\Application\Validation;
 use Symfony\Component\Validator;
 use Symfony\Component\Validator\Constraints;
 use CentreonACL as CACL;
+use Doctrine\Common\Annotations\AnnotationReader;
+use Symfony\Component\Serializer;
+use Symfony\Component\PropertyInfo\Extractor\ReflectionExtractor;
 
 class ServiceProvider implements AutoloadServiceProviderInterface
 {
@@ -86,6 +89,7 @@ class ServiceProvider implements AutoloadServiceProviderInterface
     const CENTREON_VALIDATOR_TRANSLATOR = 'centreon.validator_translator';
     const VALIDATOR = 'validator';
     const VALIDATOR_EXPRESSION = 'validator.expression';
+    const SERIALIZER = 'serializer';
     const CENTREON_ACL = 'centreon.acl';
     const CENTREON_GLOBAL_ACL = 'centreon.global.acl';
 
@@ -261,6 +265,23 @@ class ServiceProvider implements AutoloadServiceProviderInterface
         };
 
         $this->registerValidator($pimple);
+
+        $pimple[static::SERIALIZER] = function (Container $container): Serializer\Serializer {
+            $classMetadataFactory = new Serializer\Mapping\Factory\ClassMetadataFactory(
+                new Serializer\Mapping\Loader\AnnotationLoader(new AnnotationReader())
+            );
+
+            return new Serializer\Serializer([
+                new Serializer\Normalizer\ObjectNormalizer(
+                    $classMetadataFactory,
+                    new Serializer\NameConverter\MetadataAwareNameConverter($classMetadataFactory),
+                    null,
+                    new ReflectionExtractor()
+                ),
+            ], [
+                new Serializer\Encoder\JsonEncoder,
+            ]);
+        };
     }
 
     /**
