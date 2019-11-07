@@ -1,9 +1,9 @@
 '{literal}'
 var columnClass = '{/literal}{$columnClass}{literal}';
-var viewId = '{/literal}{$view_id}{literal}';
-var permission = '{/literal}{$permission}{literal}';
-var ownership = '{/literal}{$ownership}{literal}';
-var idUser = '{/literal}{$userId}{literal}';
+var viewId = Number('{/literal}{$view_id}{literal}');
+var permission = Number('{/literal}{$permission}{literal}');
+var ownership = Number('{/literal}{$ownership}{literal}');
+var idUser = Number('{/literal}{$userId}{literal}');
 var jsonWidgets = JSON.parse('{/literal}{$jsonWidgets}{literal}');
 
 jQuery(function () {
