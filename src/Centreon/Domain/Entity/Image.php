@@ -36,19 +36,26 @@
 
 namespace Centreon\Domain\Entity;
 
+use Symfony\Component\Serializer\Annotation as Serializer;
 use ReflectionClass;
 
 class Image
 {
 
     const TABLE = 'view_img';
+    const MEDIA_DIR = 'img/media/';
+    const SERIALIZER_GROUP_LIST = 'image-list';
 
     /**
+     * @Serializer\SerializedName("id")
+     * @Serializer\Groups({Image::SERIALIZER_GROUP_LIST})
      * @var int
      */
     private $img_id;
 
     /**
+     * @Serializer\SerializedName("name")
+     * @Serializer\Groups({Image::SERIALIZER_GROUP_LIST})
      * @var string
      */
     private $img_name;
@@ -96,9 +103,21 @@ class Image
     }
 
     /**
+     * @Serializer\Groups({Image::SERIALIZER_GROUP_LIST})
+     * @Serializer\SerializedName("preview")
+     * @return string
+     */
+    public function getPreview(): string
+    {
+        return static::MEDIA_DIR
+            . $this->getImageDir()->getDirName()
+            . '/' . $this->getImgPath();
+    }
+
+    /**
      * @return int
      */
-    public function getImgId(): int
+    public function getImgId(): ?int
     {
         return $this->img_id;
     }
@@ -106,15 +125,15 @@ class Image
     /**
      * @param int $img_id
      */
-    public function setImgId(int $img_id): void
+    public function setImgId(int $id): void
     {
-        $this->img_id = $img_id;
+        $this->img_id = $id;
     }
 
     /**
      * @return string
      */
-    public function getImgName(): string
+    public function getImgName(): ?string
     {
         return $this->img_name;
     }
@@ -122,15 +141,15 @@ class Image
     /**
      * @param string $img_name
      */
-    public function setImgName(string $img_name): void
+    public function setImgName(string $name = null): void
     {
-        $this->img_name = $img_name;
+        $this->img_name = $name;
     }
 
     /**
      * @return string
      */
-    public function getImgPath(): string
+    public function getImgPath(): ?string
     {
         return $this->img_path;
     }
@@ -138,15 +157,15 @@ class Image
     /**
      * @param string $img_path
      */
-    public function setImgPath(string $img_path): void
+    public function setImgPath(string $path = null): void
     {
-        $this->img_path = $img_path;
+        $this->img_path = $path;
     }
 
     /**
      * @return string
      */
-    public function getImgComment(): string
+    public function getImgComment(): ?string
     {
         return $this->img_comment;
     }
@@ -154,9 +173,9 @@ class Image
     /**
      * @param string $img_comment
      */
-    public function setImgComment(string $img_comment): void
+    public function setImgComment(string $comment = null): void
     {
-        $this->img_comment = $img_comment;
+        $this->img_comment = $comment;
     }
 
     /**
@@ -170,7 +189,7 @@ class Image
     /**
      * @param ImageDir $imageDir
      */
-    public function setImageDir(ImageDir $imageDir): void
+    public function setImageDir(ImageDir $imageDir = null): void
     {
         $this->imageDir = $imageDir;
     }
@@ -182,32 +201,32 @@ class Image
     /**
      * @param int $dir_id
      */
-    public function setDirId(int $dir_id): void
+    public function setDirId(int $dirId = null): void
     {
-        $this->getImageDir()->setDirId($dir_id);
+        $this->getImageDir()->setDirId($dirId);
     }
 
        /**
      * @param string $dir_name
      */
-    public function setDirName(string $dir_name): void
+    public function setDirName(string $dirName = null): void
     {
-        $this->getImageDir()->setDirName($dir_name);
+        $this->getImageDir()->setDirName($dirName);
     }
 
     /**
      * @param string $dir_alias
      */
-    public function setDirAlias(string $dir_alias): void
+    public function setDirAlias(string $dirAlias = null): void
     {
-        $this->getImageDir()->setDirAlias($dir_alias);
+        $this->getImageDir()->setDirAlias($dirAlias);
     }
 
     /**
      * @param string $dir_comment
      */
-    public function setDirComment(string $dir_comment): void
+    public function setDirComment(string $dirComment = null): void
     {
-        $this->getImageDir()->setDirComment($dir_comment);
+        $this->getImageDir()->setDirComment($dirComment);
     }
 }

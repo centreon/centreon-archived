@@ -36,6 +36,8 @@
 
 namespace CentreonCommand\Domain\Entity;
 
+use Symfony\Component\Serializer\Annotation as Serializer;
+
 /**
  * Command entity
  *
@@ -43,7 +45,7 @@ namespace CentreonCommand\Domain\Entity;
  */
 class Command
 {
-
+    const SERIALIZER_GROUP_LIST = 'command-list';
     const TABLE = 'command';
     const TYPE_NOTIFICATION = 1;
     const TYPE_CHECK = 2;
@@ -51,31 +53,33 @@ class Command
     const TYPE_DISCOVERY = 4;
 
     /**
+     * @Serializer\Groups({Command::SERIALIZER_GROUP_LIST})
      * @var int an identification of entity
      */
     private $id;
 
     /**
+     * @Serializer\Groups({Command::SERIALIZER_GROUP_LIST})
      * @var string
      */
     private $name;
 
-    public function setId(int $id): void
+    public function setId(int $id = null): void
     {
         $this->id = $id;
     }
 
-    public function getId(): string
+    public function getId(): ?string
     {
         return $this->id;
     }
 
-    public function setName(string $name): void
+    public function setName(string $name = null): void
     {
         $this->name = $name;
     }
 
-    public function getName(): string
+    public function getName(): ?string
     {
         return $this->name;
     }
@@ -86,7 +90,7 @@ class Command
      * @param string $name
      * @return int|null
      */
-    public static function getTypeIdFromName(string $name): ?int
+    public static function getTypeIdFromName(string $name = null): ?int
     {
         switch ($name) {
             case 'notification':

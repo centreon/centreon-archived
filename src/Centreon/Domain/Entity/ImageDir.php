@@ -73,58 +73,58 @@ class ImageDir
     }
 
     /**
-     * @param int $dir_id
+     * @param int $dirId
      */
-    public function setDirId(int $dir_id): void
+    public function setDirId(int $dirId): void
     {
-        $this->dir_id = $dir_id;
+        $this->dir_id = $dirId;
     }
 
     /**
      * @return string
      */
-    public function getDirName(): string
+    public function getDirName(): ?string
     {
         return $this->dir_name;
     }
 
     /**
-     * @param string $dir_name
+     * @param string $dirName
      */
-    public function setDirName(string $dir_name): void
+    public function setDirName(string $dirName = null): void
     {
-        $this->dir_name = $dir_name;
+        $this->dir_name = $dirName;
     }
 
     /**
      * @return string
      */
-    public function getDirAlias(): string
+    public function getDirAlias(): ?string
     {
         return $this->dir_alias;
     }
 
     /**
-     * @param string $dir_alias
+     * @param string $dirAlias
      */
-    public function setDirAlias(string $dir_alias): void
+    public function setDirAlias(string $dirAlias = null): void
     {
-        $this->dir_alias = $dir_alias;
+        $this->dir_alias = $dirAlias;
     }
 
     /**
      * @return string
      */
-    public function getDirComment(): string
+    public function getDirComment(): ?string
     {
         return $this->dir_comment;
     }
 
     /**
-     * @param string $dir_comment
+     * @param string $dirComment
      */
-    public function setDirComment(string $dir_comment): void
+    public function setDirComment(string $dirComment = null): void
     {
-        $this->dir_comment = $dir_comment;
+        $this->dir_comment = $dirComment;
     }
 }

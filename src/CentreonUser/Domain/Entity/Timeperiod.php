@@ -37,6 +37,7 @@
 namespace CentreonUser\Domain\Entity;
 
 use Centreon\Infrastructure\CentreonLegacyDB\Mapping;
+use Symfony\Component\Serializer\Annotation as Serializer;
 use PDO;
 
 /**
@@ -46,21 +47,25 @@ use PDO;
  */
 class Timeperiod implements Mapping\MetadataInterface
 {
+    const SERIALIZER_GROUP_LIST = 'timeperiod-list';
 
     const TABLE = 'timeperiod';
     const ENTITY_IDENTIFICATOR_COLUMN = 'tp_id';
 
     /**
+     * @Serializer\Groups({Timeperiod::SERIALIZER_GROUP_LIST})
      * @var int an identification of entity
      */
     private $id;
 
     /**
+     * @Serializer\Groups({Timeperiod::SERIALIZER_GROUP_LIST})
      * @var string
      */
     private $name;
 
     /**
+     * @Serializer\Groups({Timeperiod::SERIALIZER_GROUP_LIST})
      * @var string
      */
     private $alias;
@@ -76,32 +81,32 @@ class Timeperiod implements Mapping\MetadataInterface
             ->add('alias', 'tp_alias', PDO::PARAM_STR);
     }
 
-    public function setId(int $id): void
+    public function setId(int $id = null): void
     {
         $this->id = $id;
     }
 
-    public function getId(): string
+    public function getId(): ?string
     {
         return $this->id;
     }
 
-    public function setName(string $name): void
+    public function setName(string $name = null): void
     {
         $this->name = $name;
     }
 
-    public function getName(): string
+    public function getName(): ?string
     {
         return $this->name;
     }
 
-    public function setAlias(string $alias): void
+    public function setAlias(string $alias = null): void
     {
         $this->alias = $alias;
     }
 
-    public function getAlias(): string
+    public function getAlias(): ?string
     {
         return $this->alias;
     }

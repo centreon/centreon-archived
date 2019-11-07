@@ -37,6 +37,7 @@
 namespace CentreonNotification\Domain\Entity;
 
 use Centreon\Infrastructure\CentreonLegacyDB\Mapping;
+use Symfony\Component\Serializer\Annotation as Serializer;
 use PDO;
 
 /**
@@ -46,6 +47,7 @@ use PDO;
  */
 class Escalation implements Mapping\MetadataInterface
 {
+    const SERIALIZER_GROUP_LIST = 'escalation-list';
 
     /**
      * Use class metadata instead calling of this constant
@@ -57,11 +59,13 @@ class Escalation implements Mapping\MetadataInterface
     const TABLE = 'escalation';
 
     /**
+     * @Serializer\Groups({Escalation::SERIALIZER_GROUP_LIST})
      * @var int an identification of entity
      */
     private $id;
 
     /**
+     * @Serializer\Groups({Escalation::SERIALIZER_GROUP_LIST})
      * @var string escalation name
      */
     private $name;
@@ -76,22 +80,22 @@ class Escalation implements Mapping\MetadataInterface
             ->add('name', 'esc_name', PDO::PARAM_STR);
     }
 
-    public function setId(int $id): void
+    public function setId(int $id = null): void
     {
         $this->id = $id;
     }
 
-    public function getId(): string
+    public function getId(): ?string
     {
         return $this->id;
     }
 
-    public function setName(string $name): void
+    public function setName(string $name = null): void
     {
         $this->name = $name;
     }
 
-    public function getName(): string
+    public function getName(): ?string
     {
         return $this->name;
     }

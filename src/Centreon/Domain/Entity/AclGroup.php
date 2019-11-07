@@ -37,6 +37,7 @@
 namespace Centreon\Domain\Entity;
 
 use Centreon\Infrastructure\CentreonLegacyDB\Mapping;
+use Symfony\Component\Serializer\Annotation as Serializer;
 use PDO;
 
 /**
@@ -46,31 +47,46 @@ use PDO;
  */
 class AclGroup implements Mapping\MetadataInterface
 {
-
+    const SERIALIZER_GROUP_LIST = 'acl-group-list';
     const ENTITY_IDENTIFICATOR_COLUMN = 'acl_group_id';
     const TABLE = 'acl_groups';
 
     /**
+     * @Serializer\Groups({
+     *     AclGroup::SERIALIZER_GROUP_LIST
+     * })
      * @var int an identification of entity
      */
     private $id;
 
     /**
+     * @Serializer\Groups({
+     *     AclGroup::SERIALIZER_GROUP_LIST
+     * })
      * @var string
      */
     private $name;
 
     /**
+     * @Serializer\Groups({
+     *     AclGroup::SERIALIZER_GROUP_LIST
+     * })
      * @var string
      */
     private $alias;
 
     /**
+     * @Serializer\Groups({
+     *     AclGroup::SERIALIZER_GROUP_LIST
+     * })
      * @var bool
      */
     private $changed;
 
     /**
+     * @Serializer\Groups({
+     *     AclGroup::SERIALIZER_GROUP_LIST
+     * })
      * @var bool
      */
     private $activate;
@@ -132,7 +148,7 @@ class AclGroup implements Mapping\MetadataInterface
     /**
      * @param string $alias
      */
-    public function setAlias($alias): void
+    public function setAlias($alias = null): void
     {
         $this->alias = $alias;
     }
@@ -148,7 +164,7 @@ class AclGroup implements Mapping\MetadataInterface
     /**
      * @param bool $changed
      */
-    public function setChanged($changed): void
+    public function setChanged($changed = null): void
     {
         $this->changed = $changed;
     }
@@ -164,7 +180,7 @@ class AclGroup implements Mapping\MetadataInterface
     /**
      * @param bool $activate
      */
-    public function setActivate($activate): void
+    public function setActivate($activate = null): void
     {
         $this->activate = $activate;
     }
