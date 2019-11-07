@@ -34,50 +34,14 @@
  *
  */
 
-namespace Centreon\Application\DataRepresenter;
+namespace Centreon\Application\Serializer;
 
-use JsonSerializable;
-use Centreon\Domain\Entity\Image;
-
-class ImageEntity implements JsonSerializable
+interface SerializerContextInterface
 {
-    const MEDIA_DIR = 'img/media/';
+    const GROUPS = 'groups';
 
     /**
-     * @var Image
+     * @var array
      */
-    private $entity;
-
-    /**
-     * Construct
-     *
-     * @param Image $entity
-     */
-    public function __construct(Image $entity)
-    {
-        $this->entity = $entity;
-    }
-
-    /**
-     * @OA\Schema(
-     *   schema="ImageEntity",
-     *       @OA\Property(property="id", type="integer"),
-     *       @OA\Property(property="name", type="string"),
-     *       @OA\Property(property="preview", type="string"),
-     * )
-     *
-     * JSON serialization of entity
-     *
-     * @return array
-     */
-    public function jsonSerialize()
-    {
-        return [
-            'id' => $this->entity->getImgId(),
-            'name' => $this->entity->getImgName(),
-            'preview' =>  self::MEDIA_DIR
-                . $this->entity->getImageDir()->getDirName()
-                . '/' . $this->entity->getImgPath(),
-        ];
-    }
+    public static function context(): array;
 }
