@@ -1,7 +1,7 @@
 <?php
 /*
- * Copyright 2005-2017 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2019 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -23,7 +23,7 @@
  * permission to link this program with independent modules to produce an executable,
  * regardless of the license terms of these independent modules, and to copy and
  * distribute the resulting executable under terms of Centreon choice, provided that
- * Centreon also meet, for each linked independent module, the terms and conditions
+ * Centreon also meet, for each linked independent module, the terms  and conditions
  * of the license of that module. An independent module is a module which is not
  * derived from this program. If you modify this program, you may extend this
  * exception to your version of the program, but you are not obliged to do so. If you
@@ -31,37 +31,53 @@
  *
  * For more information : contact@centreon.com
  *
+ *
  */
 
-set_include_path(implode(PATH_SEPARATOR, array(
-    realpath(__DIR__ . '/www/class'),
-    realpath(__DIR__ . '/www/lib'),
-    get_include_path()
-)));
+namespace Centreon\Application\DataRepresenter;
 
-// Centreon Autoload
-spl_autoload_register(function ($sClass) {
-    $fileName = $sClass;
-    $fileName{0} = strtolower($fileName{0});
-    $fileNameType1 = __DIR__ . "/www/class/" . $fileName . ".class.php";
-    $fileNameType2 = __DIR__ . "/www/class/" . $fileName . ".php";
+use JsonSerializable;
+use Centreon\Domain\Entity\Image;
 
-    if (file_exists($fileNameType1)) {
-        require_once $fileNameType1;
-    } elseif (file_exists($fileNameType2)) {
-        require_once $fileNameType2;
-    }
-});
-
-function loadDependencyInjector()
+class ImageEntity implements JsonSerializable
 {
-    global $dependencyInjector;
-    return $dependencyInjector;
+    const MEDIA_DIR = 'img/media/';
+
+    /**
+     * @var Image
+     */
+    private $entity;
+
+    /**
+     * Construct
+     *
+     * @param Image $entity
+     */
+    public function __construct(Image $entity)
+    {
+        $this->entity = $entity;
+    }
+
+    /**
+     * @OA\Schema(
+     *   schema="ImageEntity",
+     *       @OA\Property(property="id", type="integer"),
+     *       @OA\Property(property="name", type="string"),
+     *       @OA\Property(property="preview", type="string"),
+     * )
+     *
+     * JSON serialization of entity
+     *
+     * @return array
+     */
+    public function jsonSerialize()
+    {
+        return [
+            'id' => $this->entity->getImgId(),
+            'name' => $this->entity->getImgName(),
+            'preview' =>  self::MEDIA_DIR
+                . $this->entity->getImageDir()->getDirName()
+                . '/' . $this->entity->getImgPath(),
+        ];
+    }
 }
-
-// require composer file
-$loader = require __DIR__ . '/vendor/autoload.php';
-
-Doctrine\Common\Annotations\AnnotationRegistry::registerLoader([$loader, 'loadClass']);
-
-require_once __DIR__ . "/container.php";
