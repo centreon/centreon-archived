@@ -196,7 +196,7 @@ try {
             }
         }
         $DBRESULT = $pearDB->query("UPDATE `nagios_server` SET `last_restart` = '"
-            . time() . "' WHERE `id` = '" . $host["id"] . "'");
+            . time() . "', `updated` = '0' WHERE `id` = '" . $host["id"] . "'");
     }
 
     foreach ($msg_restart as $key => $str) {
