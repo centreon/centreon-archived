@@ -480,18 +480,20 @@ class CentreonServiceTemplate extends CentreonObject
         }
         $macroObj = new \Centreon_Object_Service_Macro_Custom($this->dependencyInjector);
         $macroList = $macroObj->getList(
-            array("svc_macro_name", "svc_macro_value", "description"),
+            array("svc_macro_name", "svc_macro_value", "description", "is_password"),
             -1,
             0,
             null,
             null,
             array("svc_svc_id" => $elements[0]['service_id'])
         );
-        echo "macro name;macro value;description\n";
+        echo "macro name;macro value;description;is_password\n";
         foreach ($macroList as $macro) {
+            $password = !empty($macro['is_password']) ? (int)$macro['is_password'] : 0;
             echo $macro['svc_macro_name'] . $this->delim
-                . $macro['svc_macro_value'] . $this->delim
-                . $macro['description'] . "\n";
+            . $macro['svc_macro_value'] . $this->delim
+            . $macro['description'] . $this->delim
+            . $password . "\n";
         }
     }
 
@@ -509,7 +511,11 @@ class CentreonServiceTemplate extends CentreonObject
             throw new CentreonClapiException(self::MISSINGPARAMETER);
         }
 
-        $params[3] = isset($params[3]) ? $params[3] : null;
+        $serviceDescription = $params[0];
+        $macroName = $params[1];
+        $macroValue = $params[2];
+        $macroDescription = isset($params[3]) ? $params[3] : '';
+        $macroPassword = !empty($params[4]) ? (int)$params[4] : 0;
 
         $elements = $this->object->getList(
             "service_id",
@@ -518,13 +524,13 @@ class CentreonServiceTemplate extends CentreonObject
             null,
             null,
             array(
-                'service_description' => $params[0],
+                'service_description' => $serviceDescription,
                 'service_register' => 0
             ),
             "AND"
         );
         if (!count($elements)) {
-            throw new CentreonClapiException(self::OBJECT_NOT_FOUND . ":" . $params[0]);
+            throw new CentreonClapiException(self::OBJECT_NOT_FOUND . ":" . $serviceDescription);
         }
         $macroObj = new \Centreon_Object_Service_Macro_Custom($this->dependencyInjector);
         $macroList = $macroObj->getList(
@@ -535,7 +541,7 @@ class CentreonServiceTemplate extends CentreonObject
             null,
             array(
                 "svc_svc_id" => $elements[0]['service_id'],
-                "svc_macro_name" => $this->wrapMacro($params[1])
+                "svc_macro_name" => $this->wrapMacro($macroName)
             ),
             "AND"
         );
@@ -543,17 +549,19 @@ class CentreonServiceTemplate extends CentreonObject
             $macroObj->update(
                 $macroList[0][$macroObj->getPrimaryKey()],
                 array(
-                    'svc_macro_value' => $params[2],
-                    'description' => isset($params[3]) ? $params[3] : ''
+                    'svc_macro_value' => $macroValue,
+                    'is_password' => $macroPassword,
+                    'description' => $macroDescription
                 )
             );
         } else {
             $macroObj->insert(
                 array(
                     'svc_svc_id' => $elements[0]['service_id'],
-                    'svc_macro_name' => $this->wrapMacro($params[1]),
-                    'svc_macro_value' => $params[2],
-                    'description' => isset($params[3]) ? $params[3] : ''
+                    'svc_macro_name' => $this->wrapMacro($macroName),
+                    'is_password' => $macroPassword,
+                    'svc_macro_value' => $macroValue,
+                    'description' => $macroDescription
                 )
             );
         }
