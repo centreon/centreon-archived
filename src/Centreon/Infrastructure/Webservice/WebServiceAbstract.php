@@ -37,6 +37,10 @@
 namespace Centreon\Infrastructure\Webservice;
 
 use Pimple\Container;
+use Symfony\Component\Serializer;
+use JsonSerializable;
+use Centreon\Application\DataRepresenter;
+use Centreon\ServiceProvider;
 
 /**
  * @OA\Server(
@@ -134,5 +138,17 @@ abstract class WebServiceAbstract extends \CentreonWebService
         }
 
         return $request;
+    }
+
+    public function getSerializer(): Serializer\Serializer
+    {
+        return $this->di[ServiceProvider::SERIALIZER];
+    }
+
+    public function success($data, array $context = []): JsonSerializable
+    {
+        return new DataRepresenter\Response(
+            $this->getSerializer()->normalize($data, null, $context)
+        );
     }
 }

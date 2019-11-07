@@ -37,102 +37,37 @@
 namespace Centreon\Infrastructure\Webservice;
 
 use Pimple\Container;
+use Pimple\Psr11\ServiceLocator;
+use Symfony\Component\Serializer;
+use Centreon\ServiceProvider;
 
-/**
- * @OA\Server(
- *      url="{protocol}://{host}/centreon/api",
- *      variables={
- *          "protocol": {"enum": {"http", "https"}, "default": "http"},
- *          "host": {"default": "centreon-dev"}
- *      }
- * )
- */
-/**
- * @OA\Info(
- *      title="Centreon Server API",
- *      version="0.1"
- * )
- */
-/**
- * @OA\ExternalDocumentation(
- *      url="https://documentation.centreon.com/docs/centreon/en/18.10/api/api_rest/index.html",
- *      description="Official Centreon documentation about REST API"
- * )
- */
-
-/**
- * @OA\Components(
- *      securitySchemes={
- *          "Session": {
- *              "type": "apiKey",
- *              "in": "cookie",
- *              "name": "centreon",
- *              "description": "This type of authorization is mostly used for needs of Centreon Web UI"
- *          },
- *          "AuthToken": {
- *              "type": "apiKey",
- *              "in": "header",
- *              "name": "HTTP_CENTREON_AUTH_TOKEN",
- *              "description": "For external access to the resources that require authorization"
- *          }
- *      }
- * )
- */
-abstract class WebServiceAbstract extends \CentreonWebService
+trait DependenciesTrait
 {
 
-    /** @var Container */
-    protected $di;
-
-    abstract public static function getName(): string;
-
-    public function getDi(): Container
+    public static function dependencies(): array
     {
-        return $this->di;
+        return [
+            ServiceProvider::SERIALIZER,
+        ];
     }
 
+    /**
+     * Extract services that are in use only
+     *
+     * @param \Pimple\Container $di
+     */
     public function setDi(Container $di)
     {
-        $this->di = $di;
-    }
-
-    public function query(): array
-    {
-        $request = $_GET ?? [];
-
-        return $request;
+        $this->services = new ServiceLocator($di, static::dependencies());
     }
 
     /**
-     * Get body of request as string
+     * Get the Serializer service
      *
-     * @return string
+     * @return \Symfony\Component\Serializer\Serializer
      */
-    public function payloadRaw(): string
+    public function getSerializer(): Serializer\Serializer
     {
-        $content = file_get_contents('php://input');
-
-        return $content ? (string) $content : '';
-    }
-
-    /**
-     * Get body of request as decoded JSON
-     *
-     * @return array
-     */
-    public function payload(): array
-    {
-        $request = [];
-        $content = $this->payloadRaw();
-
-        if ($content) {
-            $request = json_decode($content, true);
-
-            if (json_last_error() !== JSON_ERROR_NONE) {
-                $request = [];
-            }
-        }
-
-        return $request;
+        return $this->services->get(ServiceProvider::SERIALIZER);
     }
 }
