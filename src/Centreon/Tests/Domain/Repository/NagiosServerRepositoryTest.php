@@ -36,7 +36,6 @@
 
 namespace Centreon\Tests\Domain\Repository;
 
-use Centreon\Domain\Entity\NagiosServer;
 use Centreon\Domain\Repository\NagiosServerRepository;
 use PHPUnit\Framework\TestCase;
 use Centreon\Tests\Resource\Traits;
@@ -53,9 +52,7 @@ class NagiosServerRepositoryTest extends TestCase
     {
         $this->checkListOfIdsTrait(
             NagiosServerRepository::class,
-            'checkListOfIds',
-            NagiosServer::TABLE,
-            NagiosServer::ENTITY_IDENTIFICATOR_COLUMN
+            'checkListOfIds'
         );
     }
 }

@@ -37,10 +37,12 @@
 namespace Centreon\Domain\Repository;
 
 use Centreon\Infrastructure\CentreonLegacyDB\ServiceEntityRepository;
-use Centreon\Domain\Entity\NagiosServer;
+use Centreon\Infrastructure\CentreonLegacyDB\Interfaces\PaginationRepositoryInterface;
+use Centreon\Infrastructure\CentreonLegacyDB\StatementCollector;
 use Centreon\Domain\Repository\Traits\CheckListOfIdsTrait;
+use PDO;
 
-class NagiosServerRepository extends ServiceEntityRepository
+class NagiosServerRepository extends ServiceEntityRepository implements PaginationRepositoryInterface
 {
      use CheckListOfIdsTrait;
 
@@ -51,7 +53,82 @@ class NagiosServerRepository extends ServiceEntityRepository
      */
     public function checkListOfIds(array $ids): bool
     {
-        return $this->checkListOfIdsTrait($ids, NagiosServer::TABLE, NagiosServer::ENTITY_IDENTIFICATOR_COLUMN);
+        return $this->checkListOfIdsTrait($ids);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getPaginationList($filters = null, int $limit = null, int $offset = null, $ordering = []): array
+    {
+        $collector = new StatementCollector;
+
+        $sql = 'SELECT SQL_CALC_FOUND_ROWS * '
+            . 'FROM `' . $this->getClassMetadata()->getTableName() . '`';
+
+        if ($filters !== null) {
+            $isWhere = false;
+
+            if (array_key_exists('search', $filters) && $filters['search']) {
+                $sql .= ' WHERE `' . $this->getClassMetadata()->getColumn('name') . '` LIKE :search';
+                $collector->addValue(':search', "%{$filters['search']}%");
+                $isWhere = true;
+            }
+
+            if (array_key_exists('ids', $filters) && is_array($filters['ids'])) {
+                $idsListKey = [];
+
+                foreach ($filters['ids'] as $x => $id) {
+                    $key = ":id{$x}";
+                    $idsListKey[] = $key;
+                    $collector->addValue($key, $id, PDO::PARAM_INT);
+                    unset($x, $id);
+                }
+
+                $sql .= $isWhere ? ' AND' : ' WHERE';
+                $sql .= ' `' . $this->getClassMetadata()->getPrimaryKeyColumn()
+                    . '` IN (' . implode(',', $idsListKey) . ')';
+            }
+        }
+
+        if (!empty($ordering['field'])) {
+            $sql .= ' ORDER BY `' . $this->getClassMetadata()->getColumn($ordering['field']) . '` '
+                . $ordering['order'];
+        } else {
+            $sql .= ' ORDER BY `' . $this->getClassMetadata()->getColumn('name') . '` ASC';
+        }
+
+        if ($limit !== null) {
+            $sql .= ' LIMIT :limit';
+            $collector->addValue(':limit', $limit, PDO::PARAM_INT);
+        }
+
+        if ($offset !== null) {
+            $sql .= ' OFFSET :offset';
+            $collector->addValue(':offset', $offset, PDO::PARAM_INT);
+        }
+
+        $stmt = $this->db->prepare($sql);
+        $collector->bind($stmt);
+        $stmt->execute();
+
+        $result = [];
+
+        if ($stmt->rowCount()) {
+            foreach ($stmt->fetchAll() as $data) {
+                $result[] = $this->getEntityPersister()->load($data);
+            }
+        }
+
+        return $result;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getPaginationListTotal(): int
+    {
+        return $this->db->numberRows();
     }
 
     /**
