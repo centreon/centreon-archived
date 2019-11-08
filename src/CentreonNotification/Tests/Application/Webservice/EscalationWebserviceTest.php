@@ -88,32 +88,6 @@ class EscalationWebserviceTest extends TestCase
         $this->executeTest($method, 'response-list-2.json');
     }
 
-    public function testAuthorize()
-    {
-        (function () {
-            $result = $this->webservice->authorize(null, null, true);
-            $this->assertTrue($result);
-        })();
-
-        (function () {
-            $result = $this->webservice->authorize(null, null);
-            $this->assertFalse($result);
-        })();
-
-        (function () {
-            $user = $this->createMock(\CentreonUser::class);
-            $user
-                ->method('hasAccessRestApiConfiguration')
-                ->will($this->returnCallback(function () {
-                        return true;
-                }))
-            ;
-
-            $result = $this->webservice->authorize(null, $user);
-            $this->assertTrue($result);
-        })();
-    }
-
     public function testGetName()
     {
         $this->assertEquals('centreon_escalation', EscalationWebservice::getName());

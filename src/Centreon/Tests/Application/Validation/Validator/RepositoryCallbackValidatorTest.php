@@ -77,11 +77,11 @@ class RepositoryCallbackValidatorTest extends TestCase
         $this->validator->validate(null, $this->createMock(Constraint::class));
     }
 
-    /**
-     * @ expectedException \Symfony\Component\Validator\Exception\ConstraintDefinitionException
-     */
-    public function testValidateWithUndefinedRepositoryMethod()
-    {
+//    /**
+//     * @ expectedException \Symfony\Component\Validator\Exception\ConstraintDefinitionException
+//     */
+//    public function testValidateWithUndefinedRepositoryMethod()
+//    {
 //        $constraint = $this->createMock(RepositoryCallback::class);
 //        $constraint->repository = Mock\RepositoryMock::class;
 //        $constraint->repoMethod = 'findMissingMethod';
@@ -96,7 +96,7 @@ class RepositoryCallbackValidatorTest extends TestCase
 //            ->addRepositoryMock($constraint->repository, $this->createMock($constraint->repository));
 //
 //        $this->validator->validate($entity, $constraint);
-    }
+//    }
 
     public function testValidate()
     {
