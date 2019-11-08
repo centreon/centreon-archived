@@ -23,7 +23,7 @@
         "adlawson/vfs": "^0.12.1",
         "zircote/swagger-php": "^3.0",
         "symfony/phpunit-bridge": "^4.3",
-        "centreon/centreon-test-lib": "dev-master"
+        "centreon/centreon-test-lib": "dev-BAM-808-ba-read-with-sub-objects"
     },
     "require": {
         "php": ">=7.1.3",
