@@ -373,6 +373,17 @@ default:
       paths: [ "%paths.base%/features/ImagesApi.feature" ]
       contexts: [ ImagesApiContext ]
 
+    api_v1:
+      paths:
+        - "%paths.base%/features/APIv1/AclGroupsApi.feature"
+        - "%paths.base%/features/APIv1/CommandsApi.feature"
+        - "%paths.base%/features/APIv1/ContactGroupsApi.feature"
+        - "%paths.base%/features/APIv1/EscalationsApi.feature"
+        - "%paths.base%/features/APIv1/ImagesApi.feature"
+        - "%paths.base%/features/APIv1/TimeperiodsApi.feature"
+      contexts:
+        - \Centreon\Test\Behat\CentreonAPIContext
+
     api_v2_monitoring:
       paths:
         - "%paths.base%/features/APIv2/Monitoring/HostApi.feature"
