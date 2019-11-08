@@ -109,7 +109,8 @@ class CentreonHost extends CentreonObject
         'u' => 'Unreachable',
         'r' => 'Recovery',
         'f' => 'Flapping',
-        's' => 'Downtime Scheduled'
+        's' => 'Downtime Scheduled',
+        'n' => 'None'
     );
 
     protected $templateIds;
