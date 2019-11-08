@@ -44,6 +44,11 @@ use Centreon\ServiceProvider;
 trait DependenciesTrait
 {
 
+    /**
+     * List of dependencies
+     *
+     * @return array
+     */
     public static function dependencies(): array
     {
         return [
