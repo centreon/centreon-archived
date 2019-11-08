@@ -52,7 +52,7 @@ class ServiceProvider implements AutoloadServiceProviderInterface
     {
         // register Excalaton webservice
         $pimple[\Centreon\ServiceProvider::CENTREON_WEBSERVICE]
-            ->add(Webservice\CentreonEscalationWebservice::class);
+            ->add(Webservice\EscalationWebservice::class);
     }
 
     public static function order(): int

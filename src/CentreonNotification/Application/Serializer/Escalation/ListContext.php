@@ -34,33 +34,30 @@
  *
  */
 
-namespace CentreonNotification\Tests\Application\DataRepresenter;
+namespace CentreonNotification\Application\Serializer\Escalation;
 
-use PHPUnit\Framework\TestCase;
+use Centreon\Application\Serializer\SerializerContextInterface;
 use CentreonNotification\Domain\Entity\Escalation;
-use CentreonNotification\Application\DataRepresenter\EscalationEntity;
 
 /**
- * @group Centreon
- * @group DataRepresenter
+ * @OA\Schema(
+ *   schema="EscalationEntity",
+ *       @OA\Property(property="id", type="integer"),
+ *       @OA\Property(property="name", type="string")
+ * )
  */
-class EscalationEntityTest extends TestCase
+class ListContext implements SerializerContextInterface
 {
 
-    public function testJsonSerialize()
+    /**
+     * {@inheritdoc}
+     */
+    public static function context(): array
     {
-        $entity = new Escalation;
-        $entity->setId(121);
-        $entity->setName('...');
-
-        $value = [
-            'id' => $entity->getId(),
-            'name' => $entity->getName(),
+        return [
+            static::GROUPS => [
+                Escalation::SERIALIZER_GROUP_LIST,
+            ],
         ];
-
-        $dataRepresenter = new EscalationEntity($entity);
-        $result = $dataRepresenter->jsonSerialize();
-
-        $this->assertEquals($value, $result);
     }
 }

@@ -39,14 +39,14 @@ namespace CentreonNotification\Tests\Application\Webservice;
 use PHPUnit\Framework\TestCase;
 use Pimple\Container;
 use Centreon\ServiceProvider;
-use CentreonNotification\Application\Webservice\CentreonEscalationWebservice;
+use CentreonNotification\Application\Webservice\EscalationWebservice;
 use Centreon\Tests\Resource\Mock\CentreonPaginationServiceMock;
 
 /**
  * @group Centreon
  * @group Webservice
  */
-class CentreonEscalationWebserviceTest extends TestCase
+class EscalationWebserviceTest extends TestCase
 {
 
     protected function setUp()
@@ -55,7 +55,7 @@ class CentreonEscalationWebserviceTest extends TestCase
         $container = new Container;
         $container[ServiceProvider::CENTREON_PAGINATION] = new CentreonPaginationServiceMock;
 
-        $this->webservice = $this->createPartialMock(CentreonEscalationWebservice::class, [
+        $this->webservice = $this->createPartialMock(EscalationWebservice::class, [
             'loadDb',
             'loadArguments',
             'loadToken',
@@ -116,7 +116,7 @@ class CentreonEscalationWebserviceTest extends TestCase
 
     public function testGetName()
     {
-        $this->assertEquals('centreon_escalation', CentreonEscalationWebservice::getName());
+        $this->assertEquals('centreon_escalation', EscalationWebservice::getName());
     }
 
     /**
