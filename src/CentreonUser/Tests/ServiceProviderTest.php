@@ -70,7 +70,7 @@ class ServiceProviderTest extends TestCase
     public function testWebservices()
     {
         $checkList = [
-            Webservice\CentreonTimeperiodWebservice::class,
+            Webservice\TimeperiodWebservice::class,
         ];
 
         $this->checkWebservices($checkList);

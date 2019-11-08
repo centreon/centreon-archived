@@ -34,47 +34,31 @@
  *
  */
 
-namespace CentreonUser\Application\DataRepresenter;
+namespace CentreonUser\Application\Serializer\Timeperiod;
 
-use JsonSerializable;
+use Centreon\Application\Serializer\SerializerContextInterface;
 use CentreonUser\Domain\Entity\Timeperiod;
 
-class TimeperiodEntity implements JsonSerializable
+/**
+ * @OA\Schema(
+ *   schema="TimeperiodEntity",
+ *       @OA\Property(property="id", type="integer"),
+ *       @OA\Property(property="name", type="string"),
+ *       @OA\Property(property="alias", type="string")
+ * )
+ */
+class ListContext implements SerializerContextInterface
 {
 
     /**
-     * @var \CentreonUser\Infrastructure\Entity\Timeperiod
+     * {@inheritdoc}
      */
-    private $entity;
-
-    /**
-     * Construct
-     *
-     * @param \CentreonUser\Infrastructure\Entity\Timeperiod $entity
-     */
-    public function __construct(Timeperiod $entity)
-    {
-        $this->entity = $entity;
-    }
-
-    /**
-     * @OA\Schema(
-     *   schema="TimeperiodEntity",
-     *       @OA\Property(property="id", type="integer"),
-     *       @OA\Property(property="name", type="string"),
-     *       @OA\Property(property="alias", type="string")
-     * )
-     *
-     * JSON serialization of entity
-     *
-     * @return array
-     */
-    public function jsonSerialize()
+    public static function context(): array
     {
         return [
-            'id' => $this->entity->getId(),
-            'name' => $this->entity->getName(),
-            'alias' => $this->entity->getAlias(),
+            static::GROUPS => [
+                Timeperiod::SERIALIZER_GROUP_LIST,
+            ],
         ];
     }
 }

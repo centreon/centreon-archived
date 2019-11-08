@@ -36,23 +36,38 @@
 
 namespace CentreonUser\Application\Webservice;
 
-use CentreonRemote\Application\Webservice\CentreonWebServiceAbstract;
-use CentreonUser\Application\DataRepresenter;
+use Centreon\Infrastructure\Webservice;
+use CentreonUser\Application\Serializer;
 use CentreonUser\Domain\Repository;
-use Pimple\Container;
-use Pimple\Psr11\ServiceLocator;
 use Centreon\ServiceProvider;
 
 /**
  * @OA\Tag(name="centreon_timeperiod", description="Resource for authorized access")
  */
-class CentreonTimeperiodWebservice extends CentreonWebServiceAbstract
+class TimeperiodWebservice extends Webservice\WebServiceAbstract implements
+    Webservice\WebserviceAutorizeRestApiInterface
 {
+    use Webservice\DependenciesTrait;
 
     /**
-     * @var \Psr\Container\ContainerInterface
+     * Name of web service object
+     *
+     * @return string
      */
-    protected $services;
+    public static function getName(): string
+    {
+        return 'centreon_timeperiod';
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public static function dependencies(): array
+    {
+        return [
+            ServiceProvider::CENTREON_PAGINATION,
+        ];
+    }
 
     /**
      * @OA\Get(
@@ -155,54 +170,12 @@ class CentreonTimeperiodWebservice extends CentreonWebServiceAbstract
 
         $pagination = $this->services->get(ServiceProvider::CENTREON_PAGINATION);
         $pagination->setRepository(Repository\TimeperiodRepository::class);
-        $pagination->setDataRepresenter(DataRepresenter\TimeperiodEntity::class);
+        $pagination->setContext(Serializer\Timeperiod\ListContext::context());
         $pagination->setFilters($filters);
         $pagination->setLimit($limit);
         $pagination->setOffset($offset);
         $pagination->setOrder($sortField, $sortOrder);
 
         return $pagination->getResponse();
-    }
-
-    /**
-     * Extract services that are in use only
-     *
-     * @param \Pimple\Container $di
-     */
-    public function setDi(Container $di)
-    {
-        $ids = [
-            ServiceProvider::CENTREON_PAGINATION,
-        ];
-
-        $this->services = new ServiceLocator($di, $ids);
-    }
-
-    /**
-     * Authorize to access to the action
-     *
-     * @param string $action The action name
-     * @param \CentreonUser $user The current user
-     * @param boolean $isInternal If the api is call in internal
-     *
-     * @return boolean If the user has access to the action
-     */
-    public function authorize($action, $user, $isInternal = false)
-    {
-        if (parent::authorize($action, $user, $isInternal)) {
-            return true;
-        }
-
-        return $user && $user->hasAccessRestApiConfiguration();
-    }
-
-    /**
-     * Name of web service object
-     *
-     * @return string
-     */
-    public static function getName(): string
-    {
-        return 'centreon_timeperiod';
     }
 }

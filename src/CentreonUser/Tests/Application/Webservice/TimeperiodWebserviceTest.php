@@ -39,14 +39,14 @@ namespace CentreonUser\Tests\Application\Webservice;
 use PHPUnit\Framework\TestCase;
 use Pimple\Container;
 use Centreon\ServiceProvider;
-use CentreonUser\Application\Webservice\CentreonTimeperiodWebservice;
+use CentreonUser\Application\Webservice\TimeperiodWebservice;
 use Centreon\Tests\Resource\Mock\CentreonPaginationServiceMock;
 
 /**
  * @group CentreonUser
  * @group Webservice
  */
-class CentreonTimeperiodWebserviceTest extends TestCase
+class TimeperiodWebserviceTest extends TestCase
 {
 
     protected function setUp()
@@ -55,7 +55,7 @@ class CentreonTimeperiodWebserviceTest extends TestCase
         $container = new Container;
         $container[ServiceProvider::CENTREON_PAGINATION] = new CentreonPaginationServiceMock;
 
-        $this->webservice = $this->createPartialMock(CentreonTimeperiodWebservice::class, [
+        $this->webservice = $this->createPartialMock(TimeperiodWebservice::class, [
             'loadDb',
             'loadArguments',
             'loadToken',
@@ -116,7 +116,7 @@ class CentreonTimeperiodWebserviceTest extends TestCase
 
     public function testGetName()
     {
-        $this->assertEquals('centreon_timeperiod', CentreonTimeperiodWebservice::getName());
+        $this->assertEquals('centreon_timeperiod', TimeperiodWebservice::getName());
     }
 
     /**
