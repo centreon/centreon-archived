@@ -40,8 +40,7 @@ use Centreon\Application\DataRepresenter;
 use Centreon\ServiceProvider;
 use Centreon\Domain\Repository\AclGroupRepository;
 use Centreon\Infrastructure\Webservice;
-use Pimple\Container;
-use Pimple\Psr11\ServiceLocator;
+use Centreon\Application\Serializer;
 
 /**
  * @OA\Tag(name="centreon_acl_group", description="Web Service for ACL Groups")
@@ -49,6 +48,7 @@ use Pimple\Psr11\ServiceLocator;
 class AclGroupWebservice extends Webservice\WebServiceAbstract implements
     Webservice\WebserviceAutorizeRestApiInterface
 {
+    use Webservice\DependenciesTrait;
 
     /**
      * Name of web service object
@@ -58,6 +58,16 @@ class AclGroupWebservice extends Webservice\WebServiceAbstract implements
     public static function getName(): string
     {
         return 'centreon_acl_group';
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public static function dependencies(): array
+    {
+        return [
+            ServiceProvider::CENTREON_PAGINATION,
+        ];
     }
 
     /**
@@ -168,23 +178,11 @@ class AclGroupWebservice extends Webservice\WebServiceAbstract implements
 
         $pagination = $this->services->get(ServiceProvider::CENTREON_PAGINATION);
         $pagination->setRepository(AclGroupRepository::class);
-        $pagination->setDataRepresenter(DataRepresenter\AclGroupEntity::class);
+        $pagination->setContext(Serializer\AclGroup\ListContext::context());
         $pagination->setFilters($filters);
         $pagination->setLimit($limit);
         $pagination->setOffset($offset);
 
         return $pagination->getResponse();
-    }
-
-    /**
-     * Extract services that are in use only
-     *
-     * @param \Pimple\Container $di
-     */
-    public function setDi(Container $di)
-    {
-        $this->services = new ServiceLocator($di, [
-            ServiceProvider::CENTREON_PAGINATION,
-        ]);
     }
 }

@@ -34,62 +34,33 @@
  *
  */
 
-namespace Centreon\Application\Serializer;
+namespace Centreon\Application\Serializer\AclGroup;
 
+use Centreon\Application\Serializer\SerializerContextInterface;
 use Centreon\Domain\Entity\AclGroup;
-use Symfony\Component\Serializer\Normalizer;
 
-class AclGroupNormalizer extends Normalizer\ObjectNormalizer
+/**
+ * @OA\Schema(
+ *   schema="AclGroupEntity",
+ *       @OA\Property(property="id", type="integer"),
+ *       @OA\Property(property="name", type="string"),
+ *       @OA\Property(property="alias", type="string"),
+ *       @OA\Property(property="changed", type="integer"),
+ *       @OA\Property(property="activate", type="string", enum={"0","1","2"})
+ * )
+ */
+class ListContext implements SerializerContextInterface
 {
-    /**
-     * {@inheritdoc}
-     */
-    public function normalize($topic, $format = null, array $context = [])
-    {
-        //  update data to normalize from BV entity
-        $data['id'] = $topic->getId(); // <int>
-
-        // Configuration
-        $data['name'] = $topic->getName(); // <string>
-        $data['alias'] = $topic->getAlias(); // <string>
-        $data['changed'] = $topic->getChanged(); // <bool>
-        $data['activate'] = $topic->getActivate(); // <bool>
-
-        return $data;
-    }
 
     /**
      * {@inheritdoc}
      */
-    public function denormalize($data, $class, $format = null, array $context = [])
+    public static function context(): array
     {
-
-        //translate array data into object
-        $object = new AclGroup();
-
-        // Configuration
-        $object->setId($data['id'] ?? null);
-        $object->setName($data['name'] ?? null);
-        $object->setAlias($data['alias'] ?? null);
-        $object->setChanged($data['changed'] ?? null);
-        $object->setActivate($data['activate'] ?? null);
-
-        return $object;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function supportsNormalization($data, $format = null)
-    {
-        return $data instanceof AclGroup;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function supportsDenormalization($data, $class = null, $format = null)
-    {
-        return $class == AclGroup::class;
+        return [
+            static::GROUPS => [
+                AclGroup::SERIALIZER_GROUP_LIST,
+            ],
+        ];
     }
 }
