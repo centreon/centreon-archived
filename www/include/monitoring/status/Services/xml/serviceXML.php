@@ -561,7 +561,11 @@ if (!$sqlError) {
             }
             $obj->XML->writeElement(
                 "snu",
-                CentreonUtils::escapeSecure($obj->serviceObj->replaceMacroInString($data["service_id"], $data["notes_url"]))
+                CentreonUtils::escapeSecure(
+                    $obj->serviceObj->replaceMacroInString(
+                        $data["service_id"],
+                        $data["notes_url"])
+                )
             );
         } else {
             $obj->XML->writeElement("snu", 'none');
