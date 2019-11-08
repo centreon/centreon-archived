@@ -36,13 +36,11 @@
 
 namespace Centreon\Application\Webservice;
 
-use Centreon\Application\DataRepresenter\ContactGroupEntity;
 use Centreon\Application\DataRepresenter\Response;
 use Centreon\ServiceProvider;
 use Centreon\Domain\Repository\ContactGroupRepository;
 use Centreon\Infrastructure\Webservice;
-use Pimple\Container;
-use Pimple\Psr11\ServiceLocator;
+use Centreon\Application\Serializer;
 
 /**
  * @OA\Tag(name="centreon_contact_groups", description="Web Service for Contact Groups")
@@ -50,6 +48,7 @@ use Pimple\Psr11\ServiceLocator;
 class ContactGroupsWebservice extends Webservice\WebServiceAbstract implements
     Webservice\WebserviceAutorizeRestApiInterface
 {
+    use Webservice\DependenciesTrait;
 
     /**
      * Name of web service object
@@ -59,6 +58,16 @@ class ContactGroupsWebservice extends Webservice\WebServiceAbstract implements
     public static function getName(): string
     {
         return 'centreon_contact_groups';
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public static function dependencies(): array
+    {
+        return [
+            ServiceProvider::CENTREON_PAGINATION,
+        ];
     }
 
     /**
@@ -171,24 +180,12 @@ class ContactGroupsWebservice extends Webservice\WebServiceAbstract implements
 
         $pagination = $this->services->get(ServiceProvider::CENTREON_PAGINATION);
         $pagination->setRepository(ContactGroupRepository::class);
-        $pagination->setDataRepresenter(ContactGroupEntity::class);
+        $pagination->setContext(Serializer\ContactGroup\ListContext::context());
         $pagination->setFilters($filters);
         $pagination->setLimit($limit);
         $pagination->setOffset($offset);
         $pagination->setOrder($sortField, $sortOrder);
 
         return $pagination->getResponse();
-    }
-
-    /**
-     * Extract services that are in use only
-     *
-     * @param \Pimple\Container $di
-     */
-    public function setDi(Container $di)
-    {
-        $this->services = new ServiceLocator($di, [
-            ServiceProvider::CENTREON_PAGINATION,
-        ]);
     }
 }

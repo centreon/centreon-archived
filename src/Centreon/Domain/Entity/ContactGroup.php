@@ -141,9 +141,9 @@ class ContactGroup
     /**
      * @return string
      */
-    public function getCgActivate(): ?string
+    public function getCgActivate(): ?int
     {
-        return $this->cg_activate;
+        return (int)$this->cg_activate;
     }
 
     /**

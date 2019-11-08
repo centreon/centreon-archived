@@ -33,31 +33,32 @@
  *
  *
  */
-namespace Centreon\Tests\Application\DataRepresenter;
 
-use PHPUnit\Framework\TestCase;
+namespace Centreon\Application\Serializer\ContactGroup;
+
+use Centreon\Application\Serializer\SerializerContextInterface;
 use Centreon\Domain\Entity\ContactGroup;
-use Centreon\Application\DataRepresenter\ContactGroupEntity;
 
 /**
- * @group Centreon
- * @group DataRepresenter
+ * @OA\Schema(
+ *   schema="ContactGroup",
+ *       @OA\Property(property="id", type="integer"),
+ *       @OA\Property(property="name", type="string"),
+ *       @OA\Property(property="activate", type="integer")
+ * )
  */
-class ContactGroupEntityTest extends TestCase
+class ListContext implements SerializerContextInterface
 {
-    public function testJsonSerialize()
+
+    /**
+     * {@inheritdoc}
+     */
+    public static function context(): array
     {
-        $entity = new ContactGroup();
-        $entity->setCgId(150);
-        $entity->setCgName('test name');
-        $entity->setCgActivate('true');
-        $value = [
-            'id' => $entity->getCgId(),
-            'name' => $entity->getCgName(),
-            'activate'=> (int)$entity->getCgActivate()
+        return [
+            static::GROUPS => [
+                ContactGroup::SERIALIZER_GROUP_LIST,
+            ],
         ];
-        $dataRepresenter = new ContactGroupEntity($entity);
-        $result = $dataRepresenter->jsonSerialize();
-        $this->assertEquals($value, $result);
     }
 }
