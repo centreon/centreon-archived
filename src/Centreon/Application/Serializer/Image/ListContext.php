@@ -33,36 +33,32 @@
  *
  *
  */
-namespace Centreon\Tests\Application\DataRepresenter;
 
-use Centreon\Domain\Entity\ImageDir;
-use PHPUnit\Framework\TestCase;
+namespace Centreon\Application\Serializer\Image;
+
+use Centreon\Application\Serializer\SerializerContextInterface;
 use Centreon\Domain\Entity\Image;
-use Centreon\Application\DataRepresenter\ImageEntity;
 
 /**
- * @group Centreon
- * @group DataRepresenter
+ * @OA\Schema(
+ *   schema="ImageEntity",
+ *       @OA\Property(property="id", type="integer"),
+ *       @OA\Property(property="name", type="string"),
+ *       @OA\Property(property="preview", type="string"),
+ * )
  */
-class ImageEntityTest extends TestCase
+class ListContext implements SerializerContextInterface
 {
-    public function testJsonSerialize()
+
+    /**
+     * {@inheritdoc}
+     */
+    public static function context(): array
     {
-        $imgDir = new ImageDir();
-        $imgDir->setDirId(1);
-        $imgDir->setDirName('name');
-        $entity = new Image();
-        $entity->setImgId(5);
-        $entity->setImgName('test name');
-        $entity->setImgPath('testPath');
-        $entity->setImageDir($imgDir);
-        $value = [
-            'id' => $entity->getImgId(),
-            'name' => $entity->getImgName(),
-            'preview' => ImageEntity::MEDIA_DIR . $entity->getImageDir()->getDirName() . '/' . $entity->getImgPath()
+        return [
+            static::GROUPS => [
+                Image::SERIALIZER_GROUP_LIST,
+            ],
         ];
-        $dataRepresenter = new ImageEntity($entity);
-        $result = $dataRepresenter->jsonSerialize();
-        $this->assertEquals($value, $result);
     }
 }

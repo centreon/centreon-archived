@@ -37,12 +37,10 @@
 namespace Centreon\Application\Webservice;
 
 use Centreon\Infrastructure\Webservice;
-use Centreon\Application\DataRepresenter\ImageEntity;
 use Centreon\Application\DataRepresenter\Response;
+use Centreon\Application\Serializer;
 use Centreon\Domain\Repository\ImagesRepository;
 use Centreon\ServiceProvider;
-use Pimple\Container;
-use Pimple\Psr11\ServiceLocator;
 
 /**
  * @OA\Tag(name="centreon_images", description="Web Service for Images")
@@ -50,6 +48,7 @@ use Pimple\Psr11\ServiceLocator;
 class ImagesWebservice extends Webservice\WebServiceAbstract implements
     Webservice\WebserviceAutorizeRestApiInterface
 {
+    use Webservice\DependenciesTrait;
 
     /**
      * Name of web service object
@@ -59,6 +58,16 @@ class ImagesWebservice extends Webservice\WebServiceAbstract implements
     public static function getName(): string
     {
         return 'centreon_images';
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public static function dependencies(): array
+    {
+        return [
+            ServiceProvider::CENTREON_PAGINATION,
+        ];
     }
 
     /**
@@ -169,23 +178,11 @@ class ImagesWebservice extends Webservice\WebServiceAbstract implements
 
         $pagination = $this->services->get(ServiceProvider::CENTREON_PAGINATION);
         $pagination->setRepository(ImagesRepository::class);
-        $pagination->setDataRepresenter(ImageEntity::class);
+        $pagination->setContext(Serializer\Image\ListContext::context());
         $pagination->setFilters($filters);
         $pagination->setLimit($limit);
         $pagination->setOffset($offset);
 
         return $pagination->getResponse();
-    }
-
-    /**
-     * Extract services that are in use only
-     *
-     * @param \Pimple\Container $di
-     */
-    public function setDi(Container $di)
-    {
-        $this->services = new ServiceLocator($di, [
-            ServiceProvider::CENTREON_PAGINATION,
-        ]);
     }
 }
