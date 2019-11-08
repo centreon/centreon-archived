@@ -36,24 +36,39 @@
 
 namespace CentreonCommand\Application\Webservice;
 
-use CentreonRemote\Application\Webservice\CentreonWebServiceAbstract;
-use CentreonCommand\Application\DataRepresenter;
+use Centreon\Infrastructure\Webservice;
+use CentreonCommand\Application\Serializer;
 use CentreonCommand\Domain\Repository;
 use CentreonCommand\Domain\Entity\Command;
-use Pimple\Container;
-use Pimple\Psr11\ServiceLocator;
 use Centreon\ServiceProvider;
 
 /**
  * @OA\Tag(name="centreon_command", description="Resource for authorized access")
  */
-class CentreonCommandWebservice extends CentreonWebServiceAbstract
+class CommandWebservice extends Webservice\WebServiceAbstract implements
+    Webservice\WebserviceAutorizeRestApiInterface
 {
+    use Webservice\DependenciesTrait;
 
     /**
-     * @var \Psr\Container\ContainerInterface
+     * Name of web service object
+     *
+     * @return string
      */
-    protected $services;
+    public static function getName(): string
+    {
+        return 'centreon_command';
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public static function dependencies(): array
+    {
+        return [
+            ServiceProvider::CENTREON_PAGINATION,
+        ];
+    }
 
     /**
      * @OA\Get(
@@ -174,53 +189,11 @@ class CentreonCommandWebservice extends CentreonWebServiceAbstract
 
         $pagination = $this->services->get(ServiceProvider::CENTREON_PAGINATION);
         $pagination->setRepository(Repository\CommandRepository::class);
-        $pagination->setDataRepresenter(DataRepresenter\CommandEntity::class);
+        $pagination->setContext(Serializer\Command\ListContext::context());
         $pagination->setFilters($filters);
         $pagination->setLimit($limit);
         $pagination->setOffset($offset);
 
         return $pagination->getResponse();
-    }
-
-    /**
-     * Extract services that are in use only
-     *
-     * @param \Pimple\Container $di
-     */
-    public function setDi(Container $di)
-    {
-        $ids = [
-            ServiceProvider::CENTREON_PAGINATION,
-        ];
-
-        $this->services = new ServiceLocator($di, $ids);
-    }
-
-    /**
-     * Authorize to access to the action
-     *
-     * @param string $action The action name
-     * @param \CentreonUser $user The current user
-     * @param boolean $isInternal If the api is call in internal
-     *
-     * @return boolean If the user has access to the action
-     */
-    public function authorize($action, $user, $isInternal = false)
-    {
-        if (parent::authorize($action, $user, $isInternal)) {
-            return true;
-        }
-
-        return $user && $user->hasAccessRestApiConfiguration();
-    }
-
-    /**
-     * Name of web service object
-     *
-     * @return string
-     */
-    public static function getName(): string
-    {
-        return 'centreon_command';
     }
 }

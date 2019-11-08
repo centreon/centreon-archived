@@ -34,33 +34,30 @@
  *
  */
 
-namespace CentreonCommand\Tests\Application\DataRepresenter;
+namespace CentreonCommand\Application\Serializer\Command;
 
-use PHPUnit\Framework\TestCase;
+use Centreon\Application\Serializer\SerializerContextInterface;
 use CentreonCommand\Domain\Entity\Command;
-use CentreonCommand\Application\DataRepresenter\CommandEntity;
 
 /**
- * @group CentreonCommand
- * @group DataRepresenter
+ * @OA\Schema(
+ *   schema="CommandEntity",
+ *       @OA\Property(property="id", type="integer"),
+ *       @OA\Property(property="name", type="string")
+ * )
  */
-class CommandEntityTest extends TestCase
+class ListContext implements SerializerContextInterface
 {
 
-    public function testJsonSerialize()
+    /**
+     * {@inheritdoc}
+     */
+    public static function context(): array
     {
-        $entity = new Command;
-        $entity->setId(121);
-        $entity->setName('...');
-
-        $value = [
-            'id' => $entity->getId(),
-            'name' => $entity->getName(),
+        return [
+            static::GROUPS => [
+                Command::SERIALIZER_GROUP_LIST,
+            ],
         ];
-
-        $dataRepresenter = new CommandEntity($entity);
-        $result = $dataRepresenter->jsonSerialize();
-
-        $this->assertEquals($value, $result);
     }
 }

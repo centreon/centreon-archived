@@ -39,14 +39,14 @@ namespace CentreonCommand\Tests\Application\Webservice;
 use PHPUnit\Framework\TestCase;
 use Pimple\Container;
 use Centreon\ServiceProvider;
-use CentreonCommand\Application\Webservice\CentreonCommandWebservice;
+use CentreonCommand\Application\Webservice\CommandWebservice;
 use Centreon\Tests\Resource\Mock\CentreonPaginationServiceMock;
 
 /**
  * @group CentreonCommand
  * @group Webservice
  */
-class CentreonCommandWebserviceTest extends TestCase
+class CommandWebserviceTest extends TestCase
 {
 
     protected function setUp()
@@ -55,7 +55,7 @@ class CentreonCommandWebserviceTest extends TestCase
         $container = new Container;
         $container[ServiceProvider::CENTREON_PAGINATION] = new CentreonPaginationServiceMock;
 
-        $this->webservice = $this->createPartialMock(CentreonCommandWebservice::class, [
+        $this->webservice = $this->createPartialMock(CommandWebservice::class, [
             'loadDb',
             'loadArguments',
             'loadToken',
@@ -117,7 +117,7 @@ class CentreonCommandWebserviceTest extends TestCase
 
     public function testGetName()
     {
-        $this->assertEquals('centreon_command', CentreonCommandWebservice::getName());
+        $this->assertEquals('centreon_command', CommandWebservice::getName());
     }
 
     /**

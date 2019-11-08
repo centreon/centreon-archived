@@ -52,7 +52,7 @@ class ServiceProvider implements AutoloadServiceProviderInterface
     {
         // register Command webservice
         $pimple[\Centreon\ServiceProvider::CENTREON_WEBSERVICE]
-            ->add(Webservice\CentreonCommandWebservice::class);
+            ->add(Webservice\CommandWebservice::class);
     }
 
     public static function order(): int
