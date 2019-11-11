@@ -278,6 +278,7 @@ class ServiceProvider implements AutoloadServiceProviderInterface
                     null,
                     new ReflectionExtractor()
                 ),
+                new Serializer\Normalizer\ArrayDenormalizer,
             ], [
                 new Serializer\Encoder\JsonEncoder,
             ]);
