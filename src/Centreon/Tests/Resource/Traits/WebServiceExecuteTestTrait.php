@@ -89,7 +89,7 @@ trait WebServiceExecuteTestTrait
         $this->webservice
             ->method('query')
             ->will($this->returnCallback(function () use ($filters) {
-                    return $filters;
-                }));
+                return $filters;
+            }));
     }
 }
