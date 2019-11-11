@@ -67,13 +67,29 @@ trait WebServiceExecuteTestTrait
      */
     protected function executeTest($method, $controlJsonFile)
     {
-        // get controlled response from file
-        $controlJson = file_get_contents($this->fixturePath . $controlJsonFile);
-
         $result = $this->webservice->{$method}();
-        $this->assertInstanceOf(\JsonSerializable::class, $result);
+        $file = realpath($this->fixturePath . $controlJsonFile);
 
-        $json = json_encode($result);
-        $this->assertEquals($controlJson, $json);
+        $this->assertInstanceOf(\JsonSerializable::class, $result);
+        $this->assertStringEqualsFile(
+            $file,
+            json_encode($result),
+            "Fixture file with path {$file}"
+        );
+    }
+
+    /**
+     * Make query method of the webservice
+     *
+     * @param string $method
+     * @param array $filters
+     */
+    protected function mockQuery(array $filters = [])
+    {
+        $this->webservice
+            ->method('query')
+            ->will($this->returnCallback(function () use ($filters) {
+                    return $filters;
+                }));
     }
 }

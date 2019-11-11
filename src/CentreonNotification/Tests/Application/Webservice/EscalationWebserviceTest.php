@@ -41,6 +41,7 @@ use Pimple\Container;
 use Centreon\ServiceProvider;
 use CentreonNotification\Application\Webservice\EscalationWebservice;
 use Centreon\Tests\Resource\Mock\CentreonPaginationServiceMock;
+use Centreon\Tests\Resource\Traits;
 
 /**
  * @group Centreon
@@ -48,6 +49,10 @@ use Centreon\Tests\Resource\Mock\CentreonPaginationServiceMock;
  */
 class EscalationWebserviceTest extends TestCase
 {
+    use Traits\WebServiceAuthorizeRestApiTrait,
+        Traits\WebServiceExecuteTestTrait;
+
+    const METHOD_GET_LIST = 'getList';
 
     protected function setUp()
     {
@@ -64,51 +69,30 @@ class EscalationWebserviceTest extends TestCase
 
         // load dependencies
         $this->webservice->setDi($container);
+        $this->fixturePath = __DIR__ . '/../../Resource/Fixture/';
     }
 
     public function testGetList()
     {
-        $method = 'getList';
-        $filters = [];
-        $this->webservice
-            ->method('query')
-            ->will($this->returnCallback(function () use (&$filters) {
-                    return $filters;
-            }))
-        ;
-
         // without applied filters
-        $this->executeTest($method, 'response-list-1.json');
+        $this->mockQuery();
+        $this->executeTest(static::METHOD_GET_LIST, 'response-list-1.json');
+    }
 
+    public function testGetList2()
+    {
         // with search, searchByIds, limit, and offset
-        $filters['search'] = 'test';
-        $filters['searchByIds'] = '3,5,7';
-        $filters['limit'] = '1a';
-        $filters['offset'] = '2b';
-        $this->executeTest($method, 'response-list-2.json');
+        $this->mockQuery([
+            'search' => 'test',
+            'searchByIds' => '3,5,7',
+            'limit' => '1a',
+            'offset' => '2b',
+        ]);
+        $this->executeTest(static::METHOD_GET_LIST, 'response-list-2.json');
     }
 
     public function testGetName()
     {
         $this->assertEquals('centreon_escalation', EscalationWebservice::getName());
-    }
-
-    /**
-     * Compare response with control value
-     *
-     * @param string $method
-     * @param string $controlJsonFile
-     */
-    protected function executeTest($method, $controlJsonFile)
-    {
-        // get controlled response from file
-        $path = __DIR__ . '/../../Resource/Fixture/';
-        $controlJson = file_get_contents($path . $controlJsonFile);
-
-        $result = $this->webservice->{$method}();
-        $this->assertInstanceOf(\JsonSerializable::class, $result);
-
-        $json = json_encode($result);
-        $this->assertEquals($controlJson, $json);
     }
 }
