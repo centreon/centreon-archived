@@ -8,15 +8,6 @@ INSERT INTO `widget_parameters_field_type` (`ft_typename`, `is_connector`) VALUE
 ('hostSeverityMulti', 1),
 ('serviceSeverityMulti', 1);
 
--- Remove broker correlation mechanism
-ALTER TABLE `cfg_centreonbroker` DROP COLUMN `correlation_activate`;
-DELETE FROM `cb_field` WHERE
-  `displayname` = 'Correlation file'
-  OR `description` LIKE 'File where correlation%'
-  OR `displayname` = 'Correlation passive';
-DELETE FROM `cb_type` WHERE `type_shortname` = 'correlation';
-
-
 -- Update broker form
 UPDATE `cb_field` SET `fieldname` = 'rrd_cached_option', `displayname` = 'Enable RRDCached', `description` = 'Enable rrdcached option for Centreon, please see Centreon documentation to configure it.', `fieldtype` = 'radio', `external` = NULL
 WHERE `fieldname` = 'path' AND `displayname` = 'Unix socket';
