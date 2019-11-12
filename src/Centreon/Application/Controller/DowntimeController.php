@@ -122,7 +122,7 @@ class DowntimeController extends AbstractFOSRestController
 
         $this->downtimeService->addHostDowntime($downtime, $host);
 
-        if ($withService) {
+        if ($withService === true) {
             $services = $this->monitoringService->findServicesByHost($hostId);
             foreach ($services as $service) {
                 $service->setHost($host);
