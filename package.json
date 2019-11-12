@@ -4,7 +4,8 @@
   "description": "centreon web package",
   "scripts": {
     "build": "webpack --mode production",
-    "build:dev": "webpack --mode development  --config ./webpack.config.dev.js",
+    "build:dev": "webpack --mode development --config ./webpack.config.dev.js",
+    "watch": "webpack --mode=development --config ./webpack.config.dev.js --watch",
     "eslint": "eslint ./www/front_src --ext .js,.jsx",
     "eslint:fix": "npm run eslint -- --fix",
     "test": "jest",
