@@ -34,7 +34,7 @@ class Downtime
     public const TYPE_SERVICE_DOWNTIME = 1;
 
     /**
-     * @Serializer\Groups({"dwt_main"})
+     * @Serializer\Groups({"downtime_main"})
      * @Desc(column="downtime_id", modifier="setId")
      * @Serializer\Type("integer")
      * @var int|null Unique id
@@ -42,34 +42,34 @@ class Downtime
     private $id;
 
     /**
-     * @Serializer\Groups({"dwt_main"})
+     * @Serializer\Groups({"downtime_main"})
      * @var \DateTime|null Creation date
      */
     private $entryTime;
 
     /**
-     * @Serializer\Groups({"dwt_main"})
+     * @Serializer\Groups({"downtime_main"})
      * @Serializer\Type("integer")
      * @var int|null Author id who sent this downtime
      */
     private $authorId;
 
     /**
-     * @Serializer\Groups({"dwt_main"})
+     * @Serializer\Groups({"downtime_main"})
      * @Serializer\Type("integer")
      * @var int|null Host id linked to this downtime
      */
     private $hostId;
 
     /**
-     * @Serializer\Groups({"dwt_service"})
+     * @Serializer\Groups({"downtime_service"})
      * @Serializer\Type("integer")
      * @var int|null Service id linked to this downtime
      */
     private $serviceId;
 
     /**
-     * @Serializer\Groups({"dwt_main"})
+     * @Serializer\Groups({"downtime_main"})
      * @Desc(column="cancelled", modifier="setCancelled")
      * @Serializer\Type("boolean")
      * @var bool Indicates if this downtime have been cancelled
@@ -77,7 +77,7 @@ class Downtime
     private $isCancelled;
 
     /**
-     * @Serializer\Groups({"dwt_main"})
+     * @Serializer\Groups({"downtime_main"})
      * @Desc(column="comment_data", modifier="setComment")
      * @Serializer\Type("string")
      * @var string|null Comments
@@ -85,20 +85,20 @@ class Downtime
     private $comment;
 
     /**
-     * @Serializer\Groups({"dwt_main"})
+     * @Serializer\Groups({"downtime_main"})
      * @var \DateTime|null Date when this downtime have been deleted
      */
     private $deletionTime;
 
     /**
-     * @Serializer\Groups({"dwt_main"})
+     * @Serializer\Groups({"downtime_main"})
      * @Serializer\Type("integer")
      * @var int|null Duration of the downtime corresponding to endTime - startTime (in seconds)
      */
     private $duration;
 
     /**
-     * @Serializer\Groups({"dwt_main"})
+     * @Serializer\Groups({"downtime_main"})
      * @Serializer\Type("DateTime<'Y-m-d\TH:i:sP'>")
      * @var \DateTime|null End date of the downtime
      */
@@ -111,7 +111,7 @@ class Downtime
     private $internalId;
 
     /**
-     * @Serializer\Groups({"dwt_main"})
+     * @Serializer\Groups({"downtime_main"})
      * @Desc(column="fixed", modifier="setFixed")
      * @Serializer\Type("boolean")
      * @var boolean Indicates either the downtime is fixed or not
@@ -119,7 +119,7 @@ class Downtime
     private $isFixed;
 
     /**
-     * @Serializer\Groups({"dwt_main"})
+     * @Serializer\Groups({"downtime_main"})
      * @Desc(column="instance_id", modifier="setPollerId")
      * @Serializer\Type("integer")
      * @var int|null Poller id
@@ -127,26 +127,26 @@ class Downtime
     private $pollerId;
 
     /**
-     * @Serializer\Groups({"dwt_main"})
+     * @Serializer\Groups({"downtime_main"})
      * @Serializer\Type("DateTime<'Y-m-d\TH:i:sP'>")
      * @var \DateTime|null Start date of the downtime
      */
     private $startTime;
 
     /**
-     * @Serializer\Groups({"dwt_main"})
+     * @Serializer\Groups({"downtime_main"})
      * @var \DateTime|null Actual start date of the downtime
      */
     private $actualStartTime;
 
     /**
-     * @Serializer\Groups({"dwt_main"})
+     * @Serializer\Groups({"downtime_main"})
      * @var \DateTime|null Actual end date of the downtime
      */
     private $actualEndTime;
 
     /**
-     * @Serializer\Groups({"dwt_main"})
+     * @Serializer\Groups({"downtime_main"})
      * @Desc(column="started", modifier="setStarted")
      * @Serializer\Type("boolean")
      * @var bool Indicates if this downtime have started

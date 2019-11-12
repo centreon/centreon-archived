@@ -183,16 +183,12 @@ class DowntimeController extends AbstractFOSRestController
             );
             $this->monitoringService->filterByContact($contact);
 
-            $host = $this->monitoringService->findOneHost($hostId);
-            if ($host === null) {
-                return View::create(null, Response::HTTP_NOT_FOUND, []);
-            }
-
             $service = $this->monitoringService->findOneService($hostId, $serviceId);
             if ($service === null) {
                 return View::create(null, Response::HTTP_NOT_FOUND, []);
             }
 
+            $host = $this->monitoringService->findOneHost($hostId);
             $service->setHost($host);
 
             $this->downtimeService
@@ -224,7 +220,7 @@ class DowntimeController extends AbstractFOSRestController
             ->filterByContact($contact)
             ->findHostDowntimes();
 
-        $context = (new Context())->setGroups(['dwt_main']);
+        $context = (new Context())->setGroups(['downtime_main']);
 
         return $this->view([
             'result' => $hostsDowntime,
@@ -256,7 +252,7 @@ class DowntimeController extends AbstractFOSRestController
             ->filterByContact($contact)
             ->findServicesDowntimes();
 
-        $context = (new Context())->setGroups(['dwt_main', 'dwt_service']);
+        $context = (new Context())->setGroups(['downtime_main', 'downtime_service']);
 
         return $this->view([
             'result' => $servicesDowntimes,
@@ -297,7 +293,7 @@ class DowntimeController extends AbstractFOSRestController
                 ->filterByContact($contact)
                 ->findDowntimesByService($hostId, $serviceId);
 
-            $context = (new Context())->setGroups(['dwt_main', 'dwt_service']);
+            $context = (new Context())->setGroups(['downtime_main', 'downtime_service']);
 
             return $this->view([
                 'result' => $downtimesByHost,
@@ -335,7 +331,7 @@ class DowntimeController extends AbstractFOSRestController
 
         if ($downtime !== null) {
             $context = (new Context())
-                ->setGroups(['dwt_main', 'dwt_service'])
+                ->setGroups(['downtime_main', 'downtime_service'])
                 ->enableMaxDepth();
 
             return $this->view($downtime)->setContext($context);
@@ -366,7 +362,7 @@ class DowntimeController extends AbstractFOSRestController
             ->filterByContact($contact)
             ->findDowntimes();
 
-        $context = (new Context())->setGroups(['dwt_main', 'dwt_service']);
+        $context = (new Context())->setGroups(['downtime_main', 'downtime_service']);
 
         return $this->view([
             'result' => $hostsDowntime,
@@ -404,7 +400,7 @@ class DowntimeController extends AbstractFOSRestController
                 ->filterByContact($contact)
                 ->findDowntimesByHost($hostId, $withServices);
 
-            $contextGroups = $withServices ? ['dwt_main', 'dwt_service'] : ['dwt_main'];
+            $contextGroups = $withServices ? ['downtime_main', 'downtime_service'] : ['downtime_main'];
             $context = (new Context())->setGroups($contextGroups)->enableMaxDepth();
 
             return $this->view([
@@ -469,7 +465,6 @@ class DowntimeController extends AbstractFOSRestController
         }
 
         $this->downtimeService->cancelDowntime($downtimeId, $host);
-
         return $this->view();
     }
 }
