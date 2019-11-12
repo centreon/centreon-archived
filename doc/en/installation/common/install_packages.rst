@@ -65,6 +65,8 @@ Run the command::
     # yum install centreon
     # systemctl restart mysql
 
+.. include:: common/sql_strict_mode.rst
+
 Installing a Centreon Central Server without database
 -----------------------------------------------------
 
@@ -74,8 +76,8 @@ Run the command::
 
 .. _dedicateddbms:
 
-Installing MySQL on the dedicated server
-----------------------------------------
+Installing the DBMS on the dedicated server
+-------------------------------------------
 
 Run the commands::
 
@@ -86,11 +88,6 @@ Run the commands::
 .. note::
     **centreon-database** package installs a database server optimized for use with Centreon.
 
-.. note::
-    Centreon **does** support the SQL STRICT mode. For more information about it please check
-    the official `MariaDB documentation <https://mariadb.com/kb/en/library/sql-mode/#strict-mode>`_. Or the official
-     `MySQL documentation <https://dev.mysql.com/doc/refman/8.0/en/sql-mode.html>`_.
-
 Then create a distant **root** account: ::
 
     mysql> CREATE USER 'root'@'IP' IDENTIFIED BY 'PASSWORD';
@@ -100,6 +97,12 @@ Then create a distant **root** account: ::
 .. note::
     Replace **IP** by the public IP address of the Centreon server and **PASSWORD**
     by the **root** password.
+
+.. warning::
+    MySQL >= 8 require a strong password. Please use uppercase, numeric and special characters; or uninstall the
+    validate_password using following command: ::
+        
+        mysql> uninstall plugin validate_password;
 
 .. warning::
     When running a PHP version before 7.1.16, or PHP 7.2 before 7.2.4, set MySQL 8 Server's default password plugin to
@@ -114,6 +117,8 @@ Then create a distant **root** account: ::
         mysql> ALTER USER 'root'@'IP' IDENTIFIED WITH mysql_native_password BY 'PASSWORD';
         mysql> FLUSH PRIVILEGES;
 
+.. include:: common/sql_strict_mode.rst
+
 Once the installation is complete you can delete this account using: ::
         
     mysql> DROP USER 'root'@'IP';
@@ -125,14 +130,21 @@ We recommend using MariaDB for your database because it is open source. Ensure
 the database server is available to complete the installation (locally or no).
 
 It is necessary to modify **LimitNOFILE** limitation. Do not try to set this
-option in **/etc/my.cnf** because it will *not* work.
+option in **/etc/my.cnf** because it will *not* work. Run the commands:
 
-Run the commands::
+**For MariaDB**: ::
 
-   # mkdir -p  /etc/systemd/system/mariadb.service.d/
-   # echo -ne "[Service]\nLimitNOFILE=32000\n" | tee /etc/systemd/system/mariadb.service.d/limits.conf
-   # systemctl daemon-reload
-   # systemctl restart mysql
+    # mkdir -p  /etc/systemd/system/mariadb.service.d/
+    # echo -ne "[Service]\nLimitNOFILE=32000\n" | tee /etc/systemd/system/mariadb.service.d/limits.conf
+    # systemctl daemon-reload
+    # systemctl restart mysql
+
+**For MySQL**: ::
+
+    # mkdir -p  /etc/systemd/system/mysqld.service.d
+    # echo -ne "[Service]\nLimitNOFILE=32000\n" | tee /etc/systemd/system/mysqld.service.d/limits.conf
+    # systemctl daemon-reload
+    # systemctl restart mysqld
 
 Setting the PHP time zone
 -------------------------
@@ -174,11 +186,13 @@ To make services start automatically during system bootup, run these commands on
     # systemctl enable centreon
 
 .. note::
-    If the MySQL/MariaDB database is on a dedicated server, execute this command
+    If the MariaDB database is on a dedicated server, execute this command
     on the database server: ::
-    
+        
         # systemctl enable mysql
-    or
+    
+    or for Mysql: ::
+        
         # systemctl enable mysqld
 
 Concluding the installation
@@ -189,6 +203,6 @@ Before starting the web installation process, you will need to execute the follo
     # systemctl start rh-php72-php-fpm
     # systemctl start httpd24-httpd
     # systemctl start mysqld
-    # systemctl start cbd
+    # systemctl start centreon
     # systemctl start snmpd
     # systemctl start snmptrapd

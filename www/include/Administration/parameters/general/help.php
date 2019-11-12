@@ -37,7 +37,11 @@ $help['tip_select_paginagion_size'] = dgettext('help', 'The number elements load
  * Sessions Properties
  */
 
-$help['tip_sessions_expiration_time'] = dgettext('help', 'Life duration of sessions.');
+$help['tip_sessions_expiration_time'] = dgettext(
+    'help',
+    'Life duration of sessions. The value in minutes cannot be greater than the session.gc_maxlifetime value set ' .
+    'in your php centreon.ini file.'
+);
 
 /**
  * Refresh Properties
@@ -64,6 +68,16 @@ $help['tip_display_template'] = dgettext('help', 'CSS theme.');
 
 $help['tip_sort_problems_by'] = dgettext('help', 'Default sort in monitoring consoles.');
 $help['tip_order_sort_problems'] = dgettext('help', 'Default order in monitoring consoles.');
+
+/**
+ * Notification
+ */
+
+$help['tip_notification_inheritance'] = dgettext(
+    'help',
+    'Notification inheritance for hosts and services. Vertical for the legacy mode, Close for the first valid object '
+    . 'and Cumulative for all valid object.'
+);
 
 /**
  * Authentication properties

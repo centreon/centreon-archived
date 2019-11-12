@@ -106,7 +106,7 @@ class ServiceStatusMenu extends Component {
         })}
       >
         <Link
-          to="/main.php?p=20201&o=svc_critical&search="
+          to="/main.php?p=20201&o=svc_unhandled&statusFilter=critical&search="
           className={classnames(
             styles['wrap-middle-icon'],
             styles.round,
@@ -125,7 +125,7 @@ class ServiceStatusMenu extends Component {
           </span>
         </Link>
         <Link
-          to="/main.php?p=20201&o=svc_warning&search="
+          to="/main.php?p=20201&o=svc_unhandled&statusFilter=warning&search="
           className={classnames(
             styles['wrap-middle-icon'],
             styles.round,
@@ -144,7 +144,7 @@ class ServiceStatusMenu extends Component {
           </span>
         </Link>
         <Link
-          to="/main.php?p=20201&o=svc_unknown&search="
+          to="/main.php?p=20201&o=svc_unhandled&statusFilter=unknown&search="
           className={classnames(
             styles['wrap-middle-icon'],
             styles.round,
@@ -165,7 +165,7 @@ class ServiceStatusMenu extends Component {
           </span>
         </Link>
         <Link
-          to="/main.php?p=20201&o=svc_ok&statusService=svc&search="
+          to="/main.php?p=20201&o=svc&statusFilter=ok&search="
           className={classnames(
             styles['wrap-middle-icon'],
             styles.round,
@@ -208,7 +208,7 @@ class ServiceStatusMenu extends Component {
               >
                 <li className={styles['submenu-item']}>
                   <Link
-                    to="/main.php?p=20201&o=svc&search="
+                    to="/main.php?p=20201&o=svc&statusFilter=&search="
                     className={styles['submenu-item-link']}
                   >
                     <div onClick={this.toggle}>
@@ -217,14 +217,14 @@ class ServiceStatusMenu extends Component {
                         {':'}
                       </span>
                       <span className={styles['submenu-count']}>
-                        {data.total}
+                        {numeral(data.total).format()}
                       </span>
                     </div>
                   </Link>
                 </li>
                 <li className={styles['submenu-item']}>
                   <Link
-                    to="/main.php?p=20201&o=svc_critical&search="
+                    to="/main.php?p=20201&o=svc_unhandled&statusFilter=critical&search="
                     className={styles['submenu-item-link']}
                   >
                     <div onClick={this.toggle}>
@@ -238,16 +238,16 @@ class ServiceStatusMenu extends Component {
                         {':'}
                       </span>
                       <span className={styles['submenu-count']}>
-                        {numeral(data.critical.unhandled).format('0a')}
+                        {numeral(data.critical.unhandled).format()}
                         {'/'}
-                        {numeral(data.critical.total).format('0a')}
+                        {numeral(data.critical.total).format()}
                       </span>
                     </div>
                   </Link>
                 </li>
                 <li className={styles['submenu-item']}>
                   <Link
-                    to="/main.php?p=20201&o=svc_warning&search="
+                    to="/main.php?p=20201&o=svc_unhandled&statusFilter=warning&search="
                     className={styles['submenu-item-link']}
                   >
                     <div onClick={this.toggle}>
@@ -261,16 +261,16 @@ class ServiceStatusMenu extends Component {
                         {':'}
                       </span>
                       <span className={styles['submenu-count']}>
-                        {numeral(data.warning.unhandled).format('0a')}
+                        {numeral(data.warning.unhandled).format()}
                         {'/'}
-                        {numeral(data.warning.total).format('0a')}
+                        {numeral(data.warning.total).format()}
                       </span>
                     </div>
                   </Link>
                 </li>
                 <li className={styles['submenu-item']}>
                   <Link
-                    to="/main.php?p=20201&o=svc_unknown&search="
+                    to="/main.php?p=20201&o=svc_unhandled&statusFilter=unknown&search="
                     className={styles['submenu-item-link']}
                   >
                     <div onClick={this.toggle}>
@@ -284,16 +284,16 @@ class ServiceStatusMenu extends Component {
                         {':'}
                       </span>
                       <span className={styles['submenu-count']}>
-                        {numeral(data.unknown.unhandled).format('0a')}
+                        {numeral(data.unknown.unhandled).format()}
                         {'/'}
-                        {numeral(data.unknown.total).format('0a')}
+                        {numeral(data.unknown.total).format()}
                       </span>
                     </div>
                   </Link>
                 </li>
                 <li className={styles['submenu-item']}>
                   <Link
-                    to="/main.php?p=20201&o=svc_ok&statusService=svc&search="
+                    to="/main.php?p=20201&o=svc&statusFilter=ok&search="
                     className={styles['submenu-item-link']}
                   >
                     <div onClick={this.toggle}>
@@ -307,14 +307,14 @@ class ServiceStatusMenu extends Component {
                         {':'}
                       </span>
                       <span className={styles['submenu-count']}>
-                        {numeral(data.ok).format('0a')}
+                        {numeral(data.ok).format()}
                       </span>
                     </div>
                   </Link>
                 </li>
                 <li className={styles['submenu-item']}>
                   <Link
-                    to="/main.php?p=20201&o=svc_pending&statusService=svc&search="
+                    to="/main.php?p=20201&o=svc&statusFilter=pending&search="
                     className={styles['submenu-item-link']}
                   >
                     <div onClick={this.toggle}>
@@ -328,7 +328,7 @@ class ServiceStatusMenu extends Component {
                         {':'}
                       </span>
                       <span className={styles['submenu-count']}>
-                        {numeral(data.pending).format('0a')}
+                        {numeral(data.pending).format()}
                       </span>
                     </div>
                   </Link>

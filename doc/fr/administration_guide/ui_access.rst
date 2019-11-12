@@ -49,6 +49,10 @@ suivantes :
     </LocationMatch>
     ProxyTimeout 300
 
+    <LocationMatch ^/centreon/api/(latest/|beta/|v[0-9]+/|v[0-9]+\.[0-9]+/)(.*)$>
+      ProxyPassMatch fcgi://127.0.0.1:9042/usr/share/centreon/api/index.php/$1
+    </LocationMatch>
+
     <VirtualHost *:80>
       RewriteEngine On
       RewriteCond %{HTTPS} off
@@ -62,6 +66,19 @@ suivantes :
 
       <Directory "/usr/share/centreon/www">
         DirectoryIndex index.php
+        Options Indexes
+        AllowOverride all
+        Order allow,deny
+        Allow from all
+        Require all granted
+        <IfModule mod_php5.c>
+          php_admin_value engine Off
+        </IfModule>
+
+        AddType text/plain hbs
+      </Directory>
+
+      <Directory "/usr/share/centreon/api">
         Options Indexes
         AllowOverride all
         Order allow,deny

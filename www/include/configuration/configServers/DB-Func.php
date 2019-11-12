@@ -98,6 +98,30 @@ function getAvailableSuffixIds(
 }
 
 /**
+ * Check if Master Remote is selected to use additional Remote Server
+ *
+ * @param array $values the values of Remote Servers selectboxes
+ * @return false only if additional Remote Server selectbox is not empty and Master selectbox is empty
+ */
+function testAdditionalRemoteServer(array $values)
+{
+    # If remote_additional_id select2 is not empty
+    if (isset($values[0])
+        && is_array($values[0])
+        && count($values[0]) >= 1
+    ) {
+        # If Master Remote Server is not empty
+        if (isset($values[1]) && trim($values[1]) != '') {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+/**
  * Check if the name already exist in database
  *
  * @param string $name Name to check
@@ -200,9 +224,30 @@ function deleteServerInDB(array $serverIds): void
 
     foreach (array_keys($serverIds) as $serverId) {
         $result = $pearDB->query(
-            "SELECT name FROM `nagios_server` WHERE `id` = " . $serverId . " LIMIT 1"
+            "SELECT name, ns_ip_address AS ip FROM `nagios_server` WHERE `id` = " . $serverId . " LIMIT 1"
         );
         $row = $result->fetch();
+
+        // Is a Remote Server?
+        $result = $pearDB->query(
+            "SELECT * FROM remote_servers WHERE ip = '" . $row['ip'] . "'"
+        );
+
+        if ($result->numRows() > 0) {
+            // Delete entry from remote_servers
+            $pearDB->query(
+                "DELETE FROM remote_servers WHERE ip = '" . $row['ip'] . "'"
+            );
+            // Delete all relation bewteen this Remote Server and pollers
+            $pearDB->query(
+                "DELETE FROM rs_poller_relation WHERE remote_server_id = '" . $serverId . "'"
+            );
+        } else {
+            // Delete all relation bewteen this poller and Remote Servers
+            $pearDB->query(
+                "DELETE FROM rs_poller_relation WHERE poller_server_id = '" . $serverId . "'"
+            );
+        }
 
         $pearDB->query('DELETE FROM `nagios_server` WHERE id = ' . $serverId);
         $pearDBO->query(
@@ -329,6 +374,34 @@ function duplicateServer(array $server, array $nbrDup): void
 }
 
 /**
+ * Insert additionnal Remote Servers relation
+ *
+ * @global CentreonDB $pearDB DB connector
+ * @param int $id Id of the server
+ * @param array $remotes Id of the additionnal Remote Servers
+ * @throws Exception
+ *
+ * @return void
+ */
+function additionnalRemoteServersByPollerId(int $id, array $remotes = null): void
+{
+    global $pearDB;
+
+    $statement = $pearDB->prepare("DELETE FROM rs_poller_relation WHERE poller_server_id = :id");
+    $statement->bindParam(':id', $id, \PDO::PARAM_INT);
+    $statement->execute();
+
+    if (!is_null($remotes)) {
+        $statement = $pearDB->prepare("INSERT INTO rs_poller_relation VALUES (:remote_id,:poller_id)");
+        foreach ($remotes as $remote) {
+            $statement->bindParam(':remote_id', $remote, \PDO::PARAM_INT);
+            $statement->bindParam(':poller_id', $id, \PDO::PARAM_INT);
+            $statement->execute();
+        }
+    }
+}
+
+/**
  * Insert a new server
  *
  * @param array $data Data of the new server
@@ -345,6 +418,8 @@ function insertServerInDB(array $data): int
         $sName = $data['name'];
     }
     $iIdNagios = $srvObj->insertServerInCfgNagios(-1, $id, $sName);
+
+    additionnalRemoteServersByPollerId($id, $data["remote_additional_id"]);
 
     if (!empty($iIdNagios)) {
         $srvObj->insertBrokerDefaultDirectives($iIdNagios, 'ui');
@@ -676,6 +751,7 @@ function updateServer(int $id, $data): void
     $pearDB->query($rq);
 
     updateRemoteServerInformation($data);
+    additionnalRemoteServersByPollerId($id, $data["remote_additional_id"]);
 
     if (isset($_REQUEST['pollercmd'])) {
         $instanceObj = new CentreonInstance($pearDB);
@@ -698,9 +774,9 @@ function updateServer(int $id, $data): void
  */
 function checkChangeState(int $poller_id, int $last_restart): bool
 {
-    global $pearDBO, $conf_centreon;
+    global $pearDBO, $conf_centreon, $pearDB;
 
-    if (!isset($last_restart) || $last_restart == "") {
+    if (!isset($last_restart) || $last_restart === "") {
         return false;
     }
 
@@ -784,5 +860,19 @@ AND (
 REQUEST;
 
     $dbResult = $pearDBO->query($query);
-    return $dbResult->rowCount() ? true : false;
+    if ($dbResult->rowCount()) {
+        // requires restart if storage db has log information about changes
+        return true;
+    } else {
+        // also requires restart if flag updated is set to true
+        $configStmt = $pearDB->prepare("SELECT updated FROM nagios_server WHERE id = :pollerID LIMIT 1");
+        $configStmt->bindValue(':pollerID', $poller_id, \PDO::PARAM_INT);
+        $configStmt->execute();
+        $row = $configStmt->fetch(\PDO::FETCH_ASSOC);
+        if ($row['updated']) {
+            return true;
+        }
+    }
+
+    return false;
 }

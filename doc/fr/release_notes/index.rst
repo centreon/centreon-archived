@@ -1,28 +1,27 @@
-################
-Notes de version
-################
+#############
+Release notes
+#############
 
-.. warning::
-    **Centreon 19.10 est actuellement en version bêta, n'installez pas cette version sur votre environnement de production !!!**
+You can find in this chapter all changelogs that give you knowledges about the changes integrated into each releases of Centreon Web.
 
-Vous trouverez dans ce chapitre toutes les notes de montée de version vous permettant de connaître la liste des changements intégrés dans chaque version de Centreon Web.
-
-Voici les différentes notes de versions pour les versions majeures :
+Please find here the releases notes of the last major versions :
 
 .. toctree::
     :maxdepth: 1
 
-    centreon-19.10/index.rst
-    centreon-19.04/index.rst
-    centreon-18.10/index.rst
-    centreon-2.8/index.rst
-    centreon-2.7/index.rst
-    centreon-2.6/index.rst
-    centreon-2.5/index.rst
-    centreon-2.4/index.rst
+    centreon-20.04.rst
+    centreon-19.10.rst
+    centreon-19.04.rst
+    centreon-18.10.rst
+    centreon-2.8.rst
+    centreon-2.7.rst
+    centreon-2.6.rst
+    centreon-2.5.rst
+    centreon-2.4.rst
 
-Il est très important lorsque vous souhaitez mettre à jour votre système de vous reporter à cette section afin de connaître les changements de comportement ou les changements majeurs qui ont été opérés sur cette version. Cela vous permettra de connaître l'impact de l'installation de ces versions sur les fonctionnalités que vous utilisez ou sur les développements spécifiques que vous avez intégrés sur votre plateforme (modules, widgets, plugins).
 
-Si vous avez des questions ou besoins de compléments relatifs au contenu des notes, vous pouvez poser vos questions sur notre `github <https://github.com/centreon/centreon>`_.
+It is very important when you update your system to refer to this section in order to learn about behavior changes or major changes that have been made on this version. This will let you know the impact of the installation of these versions on the features you use or the specific developments that you have built on your platform (modules, widgets, plugins).
 
-Afin de régler les problèmes de vue concernant toutes les widgets vous devez vider votre cache.
+If you have any questions relating to the content of the notes, you can ask your questions on our `github <https://github.com/centreon/centreon>`_.
+
+To resolve viewing issues for all widgets, you must clear your cache.

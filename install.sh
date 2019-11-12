@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 #----
 ## @Synopsis	Install Script for Centreon project
 ## @Copyright	Copyright 2008, Guillaume Watteeux
@@ -6,7 +6,7 @@
 ## Centreon Install Script
 ## Use 
 ## <pre>
-## Usage: bash install.sh [OPTION]
+## Usage: sh install.sh [OPTION]
 ## Options:
 ##  -f	Input file with all variables define (use for with template)
 ##  -u	Input file with all variables define for update centreon
@@ -59,7 +59,7 @@ version="18.10.3"
 ## Usage informations for install.sh
 ## @Sdtout	Usage informations
 #----
-function usage() {
+usage() {
 	local program=$0
 	echo -e "$(gettext "Usage: $program -f <file>")"
 	echo -e "  -i\t$(gettext "install centreon")"

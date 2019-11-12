@@ -207,7 +207,6 @@ if (isset($cmd['connector_id']) && is_numeric($cmd['connector_id'])) {
 
 $form->addElement('text', 'command_name', _("Command Name"), $attrsText);
 $form->addElement('text', 'command_example', _("Argument Example"), $attrsText);
-$form->addElement('text', 'command_hostaddress', _("\$HOSTADDRESS\$"), $attrsText);
 $form->addElement('textarea', 'command_line', _("Command Line"), $attrsTextarea);
 $form->addElement('checkbox', 'enable_shell', _("Enable shell"), null, $attrsText);
 
@@ -307,7 +306,6 @@ if ($o == "w") {
 
 $tpl->assign('msg', array("comment" => _("Commands definitions can contain Macros but they have to be valid.")));
 $tpl->assign('cmd_help', _("Plugin Help"));
-$tpl->assign('cmd_play', _("Test the plugin"));
 
 $valid = false;
 if ($form->validate()) {

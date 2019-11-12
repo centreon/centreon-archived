@@ -34,3 +34,8 @@ Enfin, vous pourrez procéder à l'installation de la plate-forme.
    from_packages
    from_VM
    from_sources
+
+Pour tester rapidement Centreon à partir d'un serveur CentOS ou Red Hat en version 7.x, vous pouvez
+exécuter la commande suivante en **root** : ::
+
+    # curl -L https://raw.githubusercontent.com/centreon/centreon/master/unattended.sh | sh

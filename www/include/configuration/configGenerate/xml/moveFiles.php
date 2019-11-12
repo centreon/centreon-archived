@@ -73,25 +73,54 @@ if (!isset($_POST['poller'])) {
 global $generatePhpErrors;
 global $dependencyInjector;
 
-$generatePhpErrors = array();
+$generatePhpErrors = [];
 $pollers = explode(',', $_POST['poller']);
 
 // Add task to export files if there is a remote
-$idBindString = str_repeat('?,', count($pollers));
-$idBindString = rtrim($idBindString, ',');
-$queryRemotes = "SELECT ns.id, ns.ns_ip_address AS ip,
+$pollerParams = [];
+foreach ($pollers as $pollerId) {
+    $pollerParams[':poller_' . $pollerId] = $pollerId;
+}
+$statementRemotes = $pearDB->prepare('
+    SELECT ns.id, ns.ns_ip_address AS ip,
     rs.centreon_path, rs.http_method, rs.http_port, rs.no_check_certificate, rs.no_proxy
     FROM nagios_server AS ns
     JOIN remote_servers AS rs ON rs.ip = ns.ns_ip_address
-    WHERE ns.id IN ({$idBindString})";
-
-$remotesStatement = $pearDB->query($queryRemotes, $pollers);
-$remotesResults = $remotesStatement->fetchAll(PDO::FETCH_ASSOC);
+    WHERE ns.id IN (' . implode(',', array_keys($pollerParams)) . ')
+    UNION
+    SELECT ns1.id, ns1.ns_ip_address AS ip,
+    rs.centreon_path, rs.http_method, rs.http_port, rs.no_check_certificate, rs.no_proxy
+    FROM nagios_server AS ns1
+    JOIN remote_servers AS rs ON rs.ip = ns1.ns_ip_address
+    JOIN nagios_server AS ns2 ON ns1.id = ns2.remote_id
+    WHERE ns2.id IN (' . implode(',', array_keys($pollerParams)) . ')
+    UNION
+    SELECT ns1.id, ns1.ns_ip_address AS ip,
+    rs.centreon_path, rs.http_method, rs.http_port, rs.no_check_certificate, rs.no_proxy
+    FROM nagios_server AS ns1
+    JOIN remote_servers AS rs ON rs.ip = ns1.ns_ip_address
+    JOIN rs_poller_relation AS rspr ON rspr.remote_server_id = ns1.id
+    WHERE rspr.poller_server_id IN (' . implode(',', array_keys($pollerParams)) . ')
+');
+foreach ($pollerParams as $key => $value) {
+    $statementRemotes->bindValue($key, $value, \PDO::PARAM_INT);
+}
+$statementRemotes->execute();
+$remotesResults = $statementRemotes->fetchAll(PDO::FETCH_ASSOC);
 
 if (!empty($remotesResults)) {
     foreach ($remotesResults as $remote) {
-        $queryLinked = "SELECT id FROM nagios_server WHERE remote_id = {$remote['id']}";
-        $linkedStatement = $pearDB->query($queryLinked);
+        $linkedStatement = $pearDB->prepare('
+            SELECT id
+            FROM nagios_server
+            WHERE remote_id = :remote_id
+            UNION
+            SELECT poller_server_id AS id
+            FROM rs_poller_relation
+            WHERE remote_server_id = :remote_id
+        ');
+        $linkedStatement->bindValue(':remote_id', $remote['id'], \PDO::PARAM_INT);
+        $linkedStatement->execute();
         $linkedResults = $linkedStatement->fetchAll(PDO::FETCH_ASSOC);
 
         $exportParams = [

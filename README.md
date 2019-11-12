@@ -34,9 +34,7 @@ on the market; it is absolutely free and Open Souce.
 <h4> Development team </h4>
 
 <a href="https://github.com/kduret"><img src="https://avatars1.githubusercontent.com/u/11978823?s=400&v=4" title="Kévin Duret" width="80" height="80"></a> &nbsp; <a href="https://github.com/danielhalupka"><img src="https://avatars3.githubusercontent.com/u/7901495?s=400&v=4" title="Danijel Halupka" width="80" height="80"></a> &nbsp; <a href="https://github.com/bouda1"><img src="https://avatars1.githubusercontent.com/u/6324413?s=400&v=4 " title="David Boucher" width="80" height="80"></a> &nbsp;
-<a href="https://github.com/miteto"><img src="https://avatars2.githubusercontent.com/u/292643?s=400&v=4" title="Dimitar Kalinov" width="80" height="80"></a> &nbsp;
 <a href="https://github.com/jdelpierre"><img src="https://avatars0.githubusercontent.com/u/12846806?s=400&v=4" title="Jérémy Delpierre" width="80" height="80"></a> &nbsp;
-<a href="https://github.com/NikolaL87"><img src="https://avatars3.githubusercontent.com/u/13216963?s=400&v=4" title="Nikolah Lovic" width="80" height="80"></a> &nbsp;
 <a href="https://github.com/victorvassilev"><img src="https://avatars1.githubusercontent.com/u/19683390?s=400&v=4" title="Victor Vassilev" width="80" height="80"></a> &nbsp;
 <a href="https://github.com/callapa"><img src="https://avatars1.githubusercontent.com/u/1265083?s=400&v=4" title="Laurent Calvet" width="80" height="80"></a> &nbsp;
 <a href="https://github.com/sc979"><img src="https://avatars1.githubusercontent.com/u/34628915?s=400&v=4" title="Stéphane Chapron" width="80" height="80"></a> &nbsp;

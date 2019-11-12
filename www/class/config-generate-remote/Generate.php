@@ -145,8 +145,16 @@ class Generate
     private function getPollersFromRemote(int $remoteId)
     {
         $stmt = $this->backendInstance->db->prepare(
-            "SELECT * FROM nagios_server
-            WHERE remote_id = :remote_id"
+            "SELECT ns1.*
+            FROM nagios_server AS ns1
+            WHERE ns1.remote_id = :remote_id
+            GROUP BY ns1.id
+            UNION
+            SELECT ns2.*
+            FROM nagios_server AS ns2
+            INNER JOIN rs_poller_relation AS rspr ON rspr.poller_server_id = ns2.id
+            AND rspr.remote_server_id = :remote_id
+            GROUP BY ns2.id"
         );
         $stmt->bindParam(':remote_id', $remoteId, PDO::PARAM_INT);
         $stmt->execute();
@@ -204,12 +212,16 @@ class Generate
 
             $this->getPollerFromId($remoteServerId);
             $this->currentPoller['localhost'] = 1;
+            $this->currentPoller['remote_id'] = 'NULL';
+            $this->currentPoller['remote_server_centcore_ssh_proxy'] = 0;
             $this->configPoller($username);
             Relations\NagiosServer::getInstance($this->dependencyInjector)->add($this->currentPoller, $remoteServerId);
 
             $pollers = $this->getPollersFromRemote($remoteServerId);
             foreach ($pollers as $poller) {
                 $poller['localhost'] = 0;
+                $poller['remote_id'] = 'NULL';
+                $poller['remote_server_centcore_ssh_proxy'] = 0;
                 $this->currentPoller = $poller;
                 $this->configPoller($username);
                 Relations\NagiosServer::getInstance($this->dependencyInjector)->add($poller, $poller['id']);
@@ -346,6 +358,7 @@ class Generate
         Relations\HostGroupRelation::getInstance($this->dependencyInjector)->reset();
         Relations\HostServiceRelation::getInstance($this->dependencyInjector)->reset();
         Relations\HostTemplateRelation::getInstance($this->dependencyInjector)->reset();
+        Relations\HostPollerRelation::getInstance($this->dependencyInjector)->reset();
         Relations\MacroHost::getInstance($this->dependencyInjector)->reset();
         Relations\NagiosServer::getInstance($this->dependencyInjector)->reset();
         Relations\ServiceCategoriesRelation::getInstance($this->dependencyInjector)->reset();

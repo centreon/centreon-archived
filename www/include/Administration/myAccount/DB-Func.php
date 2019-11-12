@@ -122,6 +122,10 @@ function updateContact($contact_id = null)
 
     $ret = array();
     $ret = $form->getSubmitValues();
+    // remove illegal chars in data sent by the user
+    $ret['contact_name'] = CentreonUtils::escapeSecure($ret['contact_name'], CentreonUtils::ESCAPE_ILLEGAL_CHARS);
+    $ret['contact_alias'] = CentreonUtils::escapeSecure($ret['contact_alias'], CentreonUtils::ESCAPE_ILLEGAL_CHARS);
+
     $rq = "UPDATE contact SET ";
     $rq .= "contact_name = ";
     isset($ret["contact_name"]) && $ret["contact_name"] != null
@@ -165,9 +169,14 @@ function updateContact($contact_id = null)
     $rq .= "contact_js_effects = ";
     isset($ret["contact_js_effects"]) ? $rq .= "'1', " : $rq .= "'0', ";
     $rq .= "contact_autologin_key = ";
-    $rq .= isset($ret["contact_autologin_key"]) ? "'" . $pearDB->escape($ret['contact_autologin_key']) . "'" : "''";
-    $rq .= "WHERE contact_id = '" . $contact_id . "'";
-    $pearDB->query($rq);
+    $rq .= !empty($ret["contact_autologin_key"])
+        ? "'" . $pearDB->escape($ret['contact_autologin_key']) . "'"
+        : "NULL ";
+    $rq .= "WHERE contact_id = :contactId";
+
+    $stmt = $pearDB->prepare($rq);
+    $stmt->bindValue(':contactId', $contact_id, \PDO::PARAM_INT);
+    $stmt->execute();
 
     /*
 	 * Update user object..

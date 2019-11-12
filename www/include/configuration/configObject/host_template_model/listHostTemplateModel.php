@@ -54,24 +54,35 @@ while ($ehi = $DBRESULT->fetch()) {
 $DBRESULT->closeCursor();
 
 $search = filter_var(
-    $_POST['searchHT'] ?? $_GET['searchHT'] ?? null,
+    $_POST['searchHT'] ?? $_GET['searchHT'] ?? $centreon->historySearch[$url]['search'] ?? '',
     FILTER_SANITIZE_STRING
 );
 
-if (isset($_POST['searchHT']) || isset($_GET['searchHT'])) {
-    //saving filters values
-    $centreon->historySearch[$url] = array();
-    $centreon->historySearch[$url]['search'] = $search;
-} else {
-    //restoring saved values
-    $search = $centreon->historySearch[$url]['search'] ?? null;
+$displayLocked = filter_var(
+    $_POST['displayLocked'] ?? $_GET['displayLocked'] ?? 'off',
+    FILTER_VALIDATE_BOOLEAN
+);
+
+// keep checkbox state if navigating in pagination
+// this trick is mandatory cause unchecked checkboxes do not post any data
+if (($centreon->historyPage[$url] > 0 || $num !== 0) && isset($centreon->historySearch[$url]['displayLocked'])) {
+    $displayLocked = $centreon->historySearch[$url]['displayLocked'];
 }
 
-// Host Template list
+// store filters in session
+$centreon->historySearch[$url] = [
+    'search' => $search,
+    'displayLocked' => $displayLocked
+];
 
+// Locked filter
+$lockedFilter = $displayLocked ? "" : "AND host_locked = 0 ";
+
+// Host Template list
 $rq = "SELECT SQL_CALC_FOUND_ROWS host_id, host_name, host_alias, host_activate, host_template_model_htm_id " .
-    "FROM host" .
-    " WHERE host_register = '0' ";
+    "FROM host " .
+    "WHERE host_register = '0' " .
+    $lockedFilter;
 if ($search) {
     $rq .= "AND (host_name LIKE '%" . CentreonDB::escape($search) . "%' OR host_alias LIKE '%" .
         CentreonDB::escape($search) . "%')";
@@ -252,4 +263,5 @@ $renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 $form->accept($renderer);
 $tpl->assign('form', $renderer->toArray());
 $tpl->assign('searchHT', $search);
+$tpl->assign("displayLocked", $displayLocked);
 $tpl->display("listHostTemplateModel.ihtml");

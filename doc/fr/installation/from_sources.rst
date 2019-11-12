@@ -125,7 +125,7 @@ Des commandes additionnelles sont nécessaires pour configurer correctement
 l'environnement : ::
 
     $ groupadd -g 6000 centreon
-    $ useradd -u 6000 -g centreon -m -r -d /var/lib/centreon -c "Centreon Admin" -s /bin/bash centreon
+    $ useradd -u 6000 -g centreon -m -r -d /var/lib/centreon -c "Centreon Admin" -s /bin/sh centreon
 
 Pour finir, vous devez installer des MIBs SNMP. En raison d'un problème de licence,
 les fichiers MIBs ne sont pas disponibles par défaut sous Debian. Pour les ajouter,
@@ -804,11 +804,14 @@ comme dans l'exemple suivant : ::
 Après avoir sauvegardé le fichier, veuillez redémarrer votre système
 d'exploitation pour prendre en compte les changements.
 
-La timezone par défaut de PHP doit être configurée. Pour cela, allez dans le
-répertoire /etc/php.d et créez un fichier nommé php-timezone.ini contenant
-la ligne suivante : ::
+La timezone par défaut ainsi que des paramètres requis de PHP doivent être configurés. Pour cela, allez dans le
+répertoire /etc/php/7.2/cli/conf.d` ou `/etc/php/7.2/apache2/conf.d et créez un fichier nommé `centreon.ini` contenant
+les lignes suivantes : ::
 
     date.timezone = Europe/Paris
+    max_execution_time = 300
+    session.use_strict_mode = 1
+    session.gc_maxlifetime = 7200
 
 Après avoir sauvegardé le fichier, n'oubliez pas de redémarrer le service
 apache de votre serveur.

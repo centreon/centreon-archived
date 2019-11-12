@@ -224,9 +224,9 @@ Getmacro
 In order to view the custom macro list of a service template, use the **GETMACRO** action::
 
   [root@centreon ~]# ./centreon -u admin -p centreon -o STPL -a getmacro -v "MyTemplate" 
-  macro name;macro value;description
-  $_SERVICETIME$;80;description of macro1
-  $_SERVICEPL$;400;description of macro2
+  macro name;macro value;description;is_password
+  $_SERVICETIME$;80;description of macro1;0
+  $_SERVICEPL$;400;description of macro2;0
 
 
 Setmacro
@@ -235,7 +235,8 @@ Setmacro
 In order to set a macro for a specific service template use the **SETMACRO** action::
 
   [root@centreon ~]# ./centreon -u admin -p centreon -o STPL -a setmacro -v "MyTemplate;time;80" 
-  [root@centreon ~]# ./centreon -u admin -p centreon -o STPL -a setmacro -v "MyTemplate;pl;400" 
+  [root@centreon ~]# ./centreon -u admin -p centreon -o STPL -a setmacro -v "MyTemplate;pl;400;description"
+  [root@centreon ~]# ./centreon -u admin -p centreon -o STPL -a setmacro -v "MyTemplate;password;mypassword;;1"
 
 .. note::
   You need to generate your configuration file and restart monitoring engine in order to apply changes.

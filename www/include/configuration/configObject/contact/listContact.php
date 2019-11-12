@@ -302,7 +302,10 @@ foreach ($contacts as $contact) {
     $elemArr[] = array(
         "MenuClass" => "list_" . $style,
         "RowMenu_select" => $selectedElements->toHtml(),
-        "RowMenu_name" => html_entity_decode($contact["contact_name"], ENT_QUOTES, "UTF-8"),
+        "RowMenu_name" => CentreonUtils::escapeSecure(
+            html_entity_decode($contact["contact_name"], ENT_QUOTES, "UTF-8"),
+            CentreonUtils::ESCAPE_ILLEGAL_CHARS
+        ),
         "RowMenu_ico" => isset($contactTypeIcon[$contact_type]) ? $contactTypeIcon[$contact_type] : "",
         "RowMenu_ico_title" => isset($contactTypeIconTitle[$contact_type])
             ? $contactTypeIconTitle[$contact_type]
@@ -310,7 +313,8 @@ foreach ($contacts as $contact) {
         "RowMenu_type" => $contact_type,
         "RowMenu_link" => "main.php?p=" . $p . "&o=c&contact_id=" . $contact['contact_id'],
         "RowMenu_desc" => CentreonUtils::escapeSecure(
-            html_entity_decode($contact["contact_alias"], ENT_QUOTES, "UTF-8")
+            html_entity_decode($contact["contact_alias"], ENT_QUOTES, "UTF-8"),
+            CentreonUtils::ESCAPE_ILLEGAL_CHARS
         ),
         "RowMenu_email" => $contact["contact_email"],
         "RowMenu_hostNotif" =>

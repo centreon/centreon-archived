@@ -113,6 +113,7 @@ class CentreonGraph
     protected $vname;
     protected $metrics;
     protected $longer;
+    protected $rrdCachedOptions;
     public $onecurve;
     public $checkcurve;
 
@@ -205,6 +206,19 @@ class CentreonGraph
         }
         $DBRESULT->closeCursor();
         unset($opt);
+
+        /* Get RRDCacheD options */
+        $result = $this->DB->query(
+            "SELECT config_key, config_value
+            FROM cfg_centreonbroker_info AS cbi
+            INNER JOIN cfg_centreonbroker AS cb ON (cb.config_id = cbi.config_id)
+            INNER JOIN nagios_server AS ns ON (ns.id = cb.ns_nagios_server)
+            WHERE ns.localhost = '1'
+            AND cbi.config_key IN ('rrd_cached_option', 'rrd_cached')"
+        );
+        while ($row = $result->fetch()) {
+            $this->rrdCachedOptions[$row['config_key']] = $row['config_value'];
+        }
 
         if (isset($index)) {
             $DBRESULT = $this->DB->query("SELECT `metric_id`
@@ -1504,9 +1518,11 @@ class CentreonGraph
         if (is_null($this->colorCache)) {
             $this->colorCache = array();
 
-            $DBRESULT = $this->DB->query("SELECT metric_id, rnd_color FROM `ods_view_details` WHERE `index_id` = '" . $this->index . "'");
+            $DBRESULT = $this->DB->query(
+                "SELECT metric_id, rnd_color FROM `ods_view_details` WHERE `index_id` = '" . $this->index . "'"
+            );
             while (($row = $DBRESULT->fetchRow())) {
-                $this->colorCache[$row['metric_id']] = $row['rnd_color']; 
+                $this->colorCache[$row['metric_id']] = $row['rnd_color'];
             }
         }
         
@@ -1519,7 +1535,7 @@ class CentreonGraph
                 'INSERT INTO `ods_view_details` (rnd_color, index_id, metric_id) '
                 . 'VALUES ("' . $lRndcolor . '", ' . $this->index . ', ' . $metricId  . ')'
             );
-		}
+        }
         return $lRndcolor;
     }
 
@@ -1565,7 +1581,7 @@ class CentreonGraph
             '#ff66ff', '#ff9900', '#ff9933', '#ff9966', '#ff9999', '#ff99cc',
             '#ff99ff', '#ffcc00', '#ffcc33', '#ffcc66', '#ffcc99', '#ffcccc',
             '#ffccff');
-            return $webSafeColors[rand(0,sizeof($webSafeColors)-1)];
+            return $webSafeColors[rand(0, sizeof($webSafeColors)-1)];
     }
 
     /**
@@ -1780,8 +1796,8 @@ class CentreonGraph
      */
     protected function flushRrdcached($metricsId)
     {
-        if (!isset($this->generalOpt['rrdcached_enable'])
-            || $this->generalOpt['rrdcached_enable'] == 0
+        if (!isset($this->rrdCachedOptions['rrd_cached_option'])
+            || !in_array($this->rrdCachedOptions['rrd_cached_option'], ['unix', 'tcp'])
         ) {
             return true;
         }
@@ -1791,20 +1807,14 @@ class CentreonGraph
          */
         $errno = 0;
         $errstr = '';
-        if (isset($this->generalOpt['rrdcached_port'])
-            && trim($this->generalOpt['rrdcached_port']) != ''
-        ) {
-            $sock = @fsockopen('127.0.0.1', trim($this->generalOpt['rrdcached_port']), $errno, $errstr);
-            if ($sock === false) {
-                return false;
-            }
-        } elseif (isset($this->generalOpt['rrdcached_unix_path'])
-            && trim($this->generalOpt['rrdcached_unix_path']) != ''
-        ) {
-            $sock = @fsockopen('unix://' . trim($this->generalOpt['rrdcached_unix_path']), $errno, $errstr);
+        if ($this->rrdCachedOptions['rrd_cached_option'] === 'tcp') {
+            $sock = fsockopen('127.0.0.1', trim($this->rrdCachedOptions['rrd_cached']), $errno, $errstr);
+        } elseif ($this->rrdCachedOptions['rrd_cached_option'] === 'unix') {
+            $sock = fsockopen('unix://' . trim($this->rrdCachedOptions['rrd_cached']), $errno, $errstr);
         } else {
             return false;
         }
+
         if (false === $sock) {
             // @todo log the error
             return false;

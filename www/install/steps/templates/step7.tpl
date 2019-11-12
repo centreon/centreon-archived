@@ -1,4 +1,4 @@
-{t}Currently installing database... please do not interrupt this process.{/t}<br/><br/>
+{t}Currently installing database and generating cache... please do not interrupt this process.{/t}<br/><br/>
 <table cellpadding="0" cellspacing="0" border="0" width="100%" class="StyleDottedHr" align="center">
     <thead>
     <tr>
@@ -38,6 +38,10 @@
         'dbpartitioning': {
             'file': './steps/process/partitionTables.php',
             'label': '{/literal}{t}Partitioning database tables{/t}{literal}'
+        },
+        'generationCache': {
+            'file': './steps/process/generationCache.php',
+            'label': '{/literal}{t}Generating application cache{/t}{literal}'
         }
     };
 
@@ -69,7 +73,9 @@
                 } else if (key == 'baseconf') {
                     nextInstallStep('dbpartitioning');
                 } else if (key == 'dbpartitioning') {
-                    jQuery("#next").show();
+                  nextInstallStep('generationCache');
+                } else if (key == 'generationCache') {
+                  jQuery("#next").show();
                 }
             } else {
                 jQuery("#previous").show();

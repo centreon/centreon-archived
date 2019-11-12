@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright 2005-2017 Centreon
+ * Copyright 2005-2019 Centreon
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -58,15 +58,9 @@ class Upgrader extends Module
         usort($orderedUpgrades, 'version_compare');
         foreach ($orderedUpgrades as $upgradeName) {
             $upgradePath = $upgradesPath . $upgradeName;
-            if (!preg_match('/^(\d+\.\d+\.\d+)/', $upgradeName, $matches) ||
-                !$this->services->get('filesystem')->exists($upgradePath . '/conf.php')) {
+            if (!preg_match('/^(\d+\.\d+\.\d+)/', $upgradeName, $matches)) {
                 continue;
             }
-
-            $configuration = $this->utils->requireConfiguration(
-                $upgradePath . '/conf.php',
-                'upgrade'
-            );
 
             if (version_compare($moduleInstalledInformation["mod_release"], $upgradeName) >= 0) {
                 continue;
@@ -75,10 +69,13 @@ class Upgrader extends Module
             $this->upgradeVersion($upgradeName);
             $moduleInstalledInformation["mod_release"] = $upgradeName;
 
-            $this->upgradePhpFiles($configuration, $upgradePath, true);
-            $this->upgradeSqlFiles($configuration, $upgradePath);
-            $this->upgradePhpFiles($configuration, $upgradePath, false);
+            $this->upgradePhpFiles($upgradePath, true);
+            $this->upgradeSqlFiles($upgradePath);
+            $this->upgradePhpFiles($upgradePath, false);
         }
+
+        // finally, upgrade to current version
+        $this->upgradeVersion($this->moduleConfiguration['mod_release']);
 
         return $this->moduleId;
     }
@@ -108,14 +105,14 @@ class Upgrader extends Module
 
         $sth = $this->services->get('configuration_db')->prepare($query);
 
-        $sth->bindParam(':name', $this->moduleConfiguration['name'], \PDO::PARAM_STR);
-        $sth->bindParam(':rname', $this->moduleConfiguration['rname'], \PDO::PARAM_STR);
-        $sth->bindParam(':is_removeable', $this->moduleConfiguration['is_removeable'], \PDO::PARAM_STR);
-        $sth->bindParam(':infos', $this->moduleConfiguration['infos'], \PDO::PARAM_STR);
-        $sth->bindParam(':author', $this->moduleConfiguration['author'], \PDO::PARAM_STR);
-        $sth->bindParam(':svc_tools', $this->moduleConfiguration['svc_tools'], \PDO::PARAM_STR);
-        $sth->bindParam(':host_tools', $this->moduleConfiguration['host_tools'], \PDO::PARAM_STR);
-        $sth->bindParam(':id', $this->moduleId, \PDO::PARAM_INT);
+        $sth->bindValue(':name', $this->moduleConfiguration['name'], \PDO::PARAM_STR);
+        $sth->bindValue(':rname', $this->moduleConfiguration['rname'], \PDO::PARAM_STR);
+        $sth->bindValue(':is_removeable', $this->moduleConfiguration['is_removeable'], \PDO::PARAM_STR);
+        $sth->bindValue(':infos', $this->moduleConfiguration['infos'], \PDO::PARAM_STR);
+        $sth->bindValue(':author', $this->moduleConfiguration['author'], \PDO::PARAM_STR);
+        $sth->bindValue(':svc_tools', $this->moduleConfiguration['svc_tools'] ?? '0', \PDO::PARAM_STR);
+        $sth->bindValue(':host_tools', $this->moduleConfiguration['host_tools'] ?? '0', \PDO::PARAM_STR);
+        $sth->bindValue(':id', $this->moduleId, \PDO::PARAM_INT);
 
         $sth->execute();
 
@@ -135,8 +132,8 @@ class Upgrader extends Module
 
         $sth = $this->services->get('configuration_db')->prepare($query);
 
-        $sth->bindParam(':mod_release', $version, \PDO::PARAM_STR);
-        $sth->bindParam(':id', $this->moduleId, \PDO::PARAM_INT);
+        $sth->bindValue(':mod_release', $version, \PDO::PARAM_STR);
+        $sth->bindValue(':id', $this->moduleId, \PDO::PARAM_INT);
 
         $sth->execute();
 
@@ -145,11 +142,10 @@ class Upgrader extends Module
 
     /**
      *
-     * @param array $conf
      * @param string $path
      * @return boolean
      */
-    private function upgradeSqlFiles($conf, $path)
+    private function upgradeSqlFiles($path)
     {
         $installed = false;
 
@@ -164,12 +160,11 @@ class Upgrader extends Module
 
     /**
      *
-     * @param array $conf
      * @param string $path
      * @param boolean $pre
      * @return boolean
      */
-    private function upgradePhpFiles($conf, $path, $pre = false)
+    private function upgradePhpFiles($path, $pre = false)
     {
         $installed = false;
 

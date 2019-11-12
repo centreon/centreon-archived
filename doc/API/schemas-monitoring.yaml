@@ -1,0 +1,366 @@
+Monitoring.HostGroup:
+  type: object
+  properties:
+    id:
+      type: integer
+      format: int64
+      description: Unique id of the host group
+    name:
+      type: string
+      description: Name of the host group
+    host:
+      allOf:
+        - $ref: '#/Monitoring.Host_min'
+        - $ref: '#/Monitoring.Host_with_service'
+Monitoring.Host_min:
+  type: object
+  properties:
+    id:
+      type: integer
+      format: int64
+      description: Unique host id
+    alias:
+      type: string
+      description: Host alias
+    display_name:
+      type: string
+      description: Host display name
+    name:
+      type: string
+      description: Host name
+    state:
+      type: integer
+      description: |
+        Host state
+         * `0` - UP
+         * `1` - DOWN
+         * `2` - UNREACHABLE
+         * `4` - PENDING
+Monitoring.Host_full:
+  allOf:
+    - $ref: '#/Monitoring.Host_main'
+    - type: object
+      properties:
+        active_checks:
+          type: boolean
+          description: Indicates whether active checks are enabled for the host
+        check_command:
+          type: string
+          description: Command name used for active checks
+        check_interval:
+          type: number
+          format: float
+          description: Interval between two checks
+        check_period:
+          type: string
+          description: Name of the check period
+        check_type:
+          type: integer
+          description: |
+            Type of the last check
+              * `0` - Active
+              * `1` - Passive
+        last_hard_state:
+          type: string
+          format: date-time
+          description: Date of the last hard state (ISO8601)
+        last_notification:
+          type: string
+          format: date-time
+          description: Date of the last notification (ISO8601)
+        latency:
+          type: string
+          format: float
+          description: >-
+            Time difference between scheduled check time and actual check
+            time
+        next_check:
+          type: string
+          format: date-time
+          description: Scheduled date for the next check (ISO8601)
+        next_host_notification:
+          type: integer
+          description: ...
+        notification_interval:
+          type: number
+          format: float
+          description: Interval of periodic notification or `0` if its off
+        notification_number:
+          type: integer
+          description: Current notification number
+        notify:
+          type: boolean
+          description: Indicates whether notifications of the host are enabled
+        notify_on_down:
+          type: boolean
+          description: >-
+            Indicates whether notifications of the host are enabled when the
+            host is down
+        notify_on_downtime:
+          type: boolean
+          description: >-
+            Indicates whether notifications of the host are enabled when the
+            host is down due to scheduling.
+        notify_on_flapping:
+          type: boolean
+          description: >-
+            Indicates whether notifications of the host are enabled when the
+            host flapping
+        notify_on_recovery:
+          type: boolean
+          description: >-
+            Indicates whether notifications of the host are enabled when the
+            host is recovery
+        notify_on_unreachable:
+          type: boolean
+          description: >-
+            Indicates whether notifications of the host are enabled when the
+            host is unreachable
+Monitoring.Host_main:
+  allOf:
+    - $ref: '#/Monitoring.Host_min'
+    - $ref: '#/Monitoring.Host_with_service'
+    - type: object
+      properties:
+        poller_id:
+          type: integer
+          format: int64
+          description: Unique poller id for which the host is linked
+        acknowledged:
+          type: boolean
+          description: Indicates whether the last status was acknowledged
+        address_ip:
+          type: string
+          format: ipv4
+          description: IP address of the host
+        check_attempt:
+          type: integer
+          description: Number of the current check attempt
+        checked:
+          type: boolean
+          description: Indicates whether the host is checked
+        execution_time:
+          type: number
+          format: float
+          description: Execution time to check the host
+        icon_image:
+          type: string
+          description: File of the icon used to represent this host
+        icon_image_alt:
+          type: string
+          description: Alternative text of the icon representing the host
+        last_check:
+          type: string
+          format: date-time
+          description: Date of last check (ISO8601)
+        last_hard_state_change:
+          type: string
+          format: date-time
+          description: Date of the last hard state change (ISO8601)
+        last_state_change:
+          type: string
+          format: date-time
+          description: Date of the last state change (soft or hard) (ISO8601)
+        last_time_down:
+          type: string
+          format: date-time
+          description: The last time the host was DOWN (ISO8601)
+        last_time_unreachable:
+          type: string
+          format: date-time
+          description: The last time the host was UNREACHABLE (ISO8601)
+        last_time_up:
+          type: string
+          format: date-time
+          description: The last time the host was UP (ISO8601)
+        last_update:
+          type: string
+          format: date-time
+          description: Date of last update (ISO8601)
+        max_check_attempts:
+          type: integer
+          format: int64
+          description: >-
+            Max check attempts for active host check. (before changing the
+            state type to HARD)
+        output:
+          type: string
+          description: Output of the last host check
+        passive_checks:
+          type: boolean
+          description: Indicates whether the check script is passive or not
+        state_type:
+          type: integer
+          description: |
+            State type
+             * `0` - SOFT
+             * `1` - HARD
+        timezone:
+          type: string
+          description: Timezone used for dates
+          example: ':Europe/Paris'
+Monitoring.Host_with_service:
+  type: object
+  properties:
+    services:
+      type: array
+      items:
+        $ref: '#/Monitoring.Service_min'
+Monitoring.ServiceGroup:
+  type: object
+  properties:
+    id:
+      type: integer
+      format: int64
+      description: Unique id of the service group
+    name:
+      type: string
+      description: Name of the service group
+    host:
+      allOf:
+        - $ref: '#/Monitoring.Host_min'
+        - $ref: '#/Monitoring.Host_with_service'
+Monitoring.Service_min:
+  type: object
+  properties:
+    id:
+      type: integer
+      format: int64
+      description: Unique service id
+    description:
+      type: string
+      description: Service description
+    display_name:
+      type: string
+      description: Service display name
+    state:
+      type: integer
+      description: |
+        The current state of the service
+          * `0` - OK
+          * `1` - WARNING
+          * `2` - CRITICAL
+          * `3` - UNKNOWN
+          * `4` - PENDING
+Monitoring.Service_main:
+  allOf:
+    - $ref: '#/Monitoring.Service_min'
+    - type: object
+      properties:
+        check_attempt:
+          type: integer
+          format: int64
+          description: Number of the current check attempt
+        icon_image:
+          type: string
+          description: File name of the icon representing the service
+        icon_image_alt:
+          type: string
+          description: Alternative text of the icon representing the service
+        last_check:
+          type: string
+          format: date-time
+          description: Date of last check (ISO8601)
+        last_state_change:
+          type: string
+          format: date-time
+          description: Date of the last state change (ISO8601)
+        max_check_attempts:
+          type: integer
+          description: Max check attempts
+        output:
+          type: string
+          description: Output of the last service check
+        state_type:
+          type: integer
+          description: |
+            Type of the current state
+              * `0` - SOFT
+              * `1` - HARD
+Monitoring.Service_full:
+  allOf:
+    - $ref: '#/Monitoring.Service_main'
+    - type: object
+      properties:
+        check_command:
+          type: string
+          description: Command name used for active checks
+        check_interval:
+          type: number
+          format: float
+          description: Interval between two scheduled checks of the service
+        check_period:
+          type: string
+          description: Name of the check period
+        check_type:
+          type: integer
+          description: |
+            Type of the last check
+              * `0` - Active
+              * `1` - Passive
+        command_line:
+          type: string
+          description: Command used for active checks
+        execution_time:
+          type: number
+          format: float
+          description: Execution time to check the service
+        is_acknowledged:
+          type: boolean
+          description: Indicates whether the last status was acknowledged
+        is_active_check:
+          type: boolean
+          description: Indicates whether active checks are enabled for the service
+        is_checked:
+          type: boolean
+          description: ...
+        last_hard_state_change:
+          type: string
+          format: date-time
+          description: Date of the last hard state change (ISO8601)
+        last_notification:
+          type: string
+          format: date-time
+          description: Date of the last notification (ISO8601)
+        last_time_critical:
+          type: string
+          format: date-time
+          description: The last time the service was CRITICAL (ISO8601)
+        last_time_ok:
+          type: string
+          format: date-time
+          description: The last time the service was OK (ISO8601)
+        last_time_unknown:
+          type: string
+          format: date-time
+          description: The last time the service was UNKNOWN (ISO8601)
+        last_time_warning:
+          type: string
+          format: date-time
+          description: The last time the service was WARNING (ISO8601)
+        last_update:
+          type: string
+          format: date-time
+          description: Date of the last update (ISO8601)
+        latency:
+          type: number
+          format: float
+          description: >-
+            Time difference between scheduled check time and actual check
+            time
+        next_check:
+          type: string
+          format: date-time
+          description: Scheduled date for the next check (ISO8601)
+        performance_data:
+          type: string
+          description: Performance data of the last check plugin
+        scheduled_downtime_depth:
+          type: integer
+          description: Number of scheduled downtimes the service is currently in
+Monitoring.Service_with_host:
+  type: object
+  properties:
+    hosts:
+      type: object
+      $ref: '#/Monitoring.Host_min'

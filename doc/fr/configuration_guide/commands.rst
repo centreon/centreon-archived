@@ -11,14 +11,20 @@ Il est possible d'exécuter cette commande en précisant des arguments.
 
 Il existe trois types de commandes :
 
-* Les commandes de **vérification** sont utilisées par les ordonnanceurs afin de vérifier le statut d'un hôte ou d'un service.
+* Les commandes de **vérification** sont utilisées par les ordonnanceurs afin de vérifier le statut d'un hôte ou d'un
+ service.
 * Les commandes de **notification** sont utilisées par les ordonnanceurs pour alerter les contacts (via mail, SMS...).
-* Des commandes **diverses** sont utilisées par les modules complémentaires (pour effectuer certaines actions), par l'ordonnanceur pour le traitement des données...
+* Les commandes de **découverte** sont utilisées par les règles de découverte de services.
+* Des commandes **diverses** sont utilisées par les modules complémentaires (pour effectuer certaines actions), par
+ l'ordonnanceur pour le traitement des données...
 
 Toutes les commandes peuvent être configurées au sein du menu **Configuration > Commandes**.
- 
+
 .. image :: /images/guide_utilisateur/configuration/04commandlist.png
-   :align: center 
+   :align: center
+
+.. note::
+   Par défaut, les commandes verrouillées sont masquées. Cocher la case "Eléments verrouillés" pour les afficher toutes.
 
 ********************
 Ajouter une commande
@@ -27,14 +33,14 @@ Ajouter une commande
 Avant d'ajouter une commande :
 
 1.	Sélectionnez dans le menu de gauche le type de commande que vous souhaitez ajouter (Contrôles, Notifications, Divers).
- 
+
 .. image :: /images/guide_utilisateur/configuration/04leftmenu.png
-   :align: center 
- 
+   :align: center
+
 2. Cliquez sur **Ajouter**
- 
+
 .. image :: /images/guide_utilisateur/configuration/04command.png
-   :align: center 
+   :align: center
 
 .. note::
     Les champs de configuration d'une commande sont les mêmes qu'importe le type de commande choisi.

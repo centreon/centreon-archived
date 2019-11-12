@@ -36,6 +36,17 @@ des sauvegardes de l’ensemble des serveurs centraux de votre plate-forme :
 Mise à jour du serveur Centreon Central
 ***************************************
 
+Mise à jour du système d’exploitation
+=====================================
+
+Pensez à mettre à jour votre système d'exploitation via la commande : ::
+
+    # yum update
+
+.. note::
+    Acceptez toutes les clés GPG proposées et pensez a redémarrer votre serveur si une mise à jour du noyau est
+    proposée.
+
 Mise à jour des dépôts
 ======================
 
@@ -88,8 +99,6 @@ suivante : ::
 
 Réalisez les actions suivantes : ::
 
-    # systemctl disable rh-php71-php-fpm
-    # systemctl stop rh-php71-php-fpm
     # systemctl start rh-php72-php-fpm
     # systemctl enable rh-php72-php-fpm
 

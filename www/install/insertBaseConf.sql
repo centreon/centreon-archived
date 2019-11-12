@@ -2,7 +2,7 @@
 -- Insert version
 --
 
-INSERT INTO `informations` (`key` ,`value`) VALUES ('version', '19.10.0-beta.3');
+INSERT INTO `informations` (`key` ,`value`) VALUES ('version', '20.04.0-beta.1');
 
 --
 -- Contenu de la table `contact`
@@ -140,7 +140,8 @@ INSERT INTO `options` (`key`, `value`) VALUES
 ('selectPaginationSize', 60),
 ('display_downtime_chart','0'),
 ('display_comment_chart','0'),
-('centcore_illegal_characters', '`');
+('centcore_illegal_characters', '`'),
+('inheritance_mode', '3');
 
 --
 -- Contenu de la table `giv_components_template`
@@ -876,6 +877,7 @@ INSERT INTO `widget_parameters_field_type` (`ft_typename`, `is_connector`) VALUE
                                            ('pollerMulti', 1),
                                            ('serviceGroupMulti', 1),
                                            ('hostSeverityMulti', 1),
+                                           ('serviceSeverityMulti', 1),
                                            ('integer', 0);
 
 INSERT INTO timezone (`timezone_name`, `timezone_offset`, `timezone_dst_offset`) VALUES

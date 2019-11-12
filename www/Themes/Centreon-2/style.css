@@ -124,6 +124,7 @@ input[type="checkbox"]  {
 .md-checkbox label:before, .md-checkbox label:after {
     content: "";
     position: absolute;
+    box-sizing: border-box;
     left: 0;
     top: 0;
 }
@@ -165,8 +166,8 @@ input[type="checkbox"]  {
 .md-checkbox input[type="checkbox"]:disabled:checked + label:before {
     background: rgba(0, 0, 0, 0.26);
 }
-*, *:before, *:after {
-    box-sizing: border-box;
+.md-checkbox input[type="checkbox"]:disabled:checked + label.md-label-green:before {
+    background: rgb(136, 185, 23);
 }
 
 
@@ -1146,6 +1147,16 @@ div.menuLeft {
     padding: 4px 6px;
 }
 
+.table .FormRowValue.flex-row-wrap {
+    display: flex;
+    flex-flow: row wrap;
+    max-width: 80vw;
+}
+
+.table .FormRowValue.flex-row-wrap .md-checkbox-inline {
+    margin: 2px 10px 2px 0px;
+}
+
 /* ------ END : Popover-----*/
 
 /* ------ START : Tabs -----*/
@@ -1904,7 +1915,7 @@ span.state_badge {
 /* Style for popin */
 .centreon-popin {
     position: absolute;
-    z-index: 1065;
+    z-index: 5050;
     background-color: white;
     padding: 1em 3em 1em 1em;
     border-radius: 4px;
@@ -2779,3 +2790,31 @@ ul.module_list {
   white-space: nowrap;
   margin-right: 10px;
 }
+
+#installationContent .accordion {
+  background-color: #d6d5d5;
+  color: #444;
+  cursor: pointer;
+  padding: 5px;
+  text-align: left;
+  border: none;
+  outline: none;
+  transition: 0.4s;
+}
+
+#contentwrapper div.section {
+  padding: 0 10px;
+}
+
+#contentwrapper > div:not(:nth-child(2)) div.section {
+  display: none;
+  padding: 0 10px;
+  background-color: #d6d5d5;
+  overflow: hidden;
+}
+
+.accordion h1:hover {
+  background-color: #c3c3c3;
+  cursor: pointer;
+}
+

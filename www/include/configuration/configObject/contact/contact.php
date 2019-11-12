@@ -155,7 +155,7 @@ switch ($o) {
         require_once($path . "formContact.php");
         break; #Modify a contact
     case "s":
-        enableContactInDB($contact_id);
+        enableContactInDB($contactId);
         require_once($path . "listContact.php");
         break; #Activate a contact
     case "ms":
@@ -163,7 +163,7 @@ switch ($o) {
         require_once($path . "listContact.php");
         break;
     case "u":
-        disableContactInDB($contact_id);
+        disableContactInDB($contactId);
         require_once($path . "listContact.php");
         break; #Desactivate a contact
     case "mu":

@@ -33,17 +33,15 @@ use HTTP(S) proxy to contact the Centreon Central server.
 This command will enable **Remote Server** mode::
 
     Starting Centreon Remote enable process:
-
-      Limiting Menu Access...Success
-      Limiting Actions...Done
-
-      Notifying Master...Success
-
-      Set 'remote' instance type...Done
-
-      Centreon Remote enabling finished.
+    Limiting Menu Access...               Success
+    Limiting Actions...                   Done
+    Authorizing Master...                 Done
+    Set 'remote' instance type...         Done
+    Notifying Master...
+    Trying host '10.1.2.3'... Success
+    Centreon Remote enabling finished.
 
 Add rights to centreon database user to use **LOAD DATA INFILE** command::
 
-    # mysql -h <database_server_address> -u root -p
-    MariaDB [(none)]> GRANT FILE on *.* to 'centreon'@'<remote_server_ip>';
+    # mysql -u root -p
+    MariaDB [(none)]> GRANT FILE on *.* to 'centreon'@'localhost';

@@ -14,7 +14,7 @@ import { setPollerWizard } from '../../redux/actions/pollerWizardActions';
 
 class PollerStepTwoRoute extends Component {
   state = {
-    pollers: null,
+    pollers: []
   };
 
   links = [
@@ -55,7 +55,7 @@ class PollerStepTwoRoute extends Component {
       .post('', postData)
       .then((response) => {
         setPollerWizard({ submitStatus: response.data.success });
-        if (pollerData.linked_remote) {
+        if (pollerData.linked_remote_master){
           history.push(routeMap.pollerStep3);
         } else {
           history.push(routeMap.pollerList);

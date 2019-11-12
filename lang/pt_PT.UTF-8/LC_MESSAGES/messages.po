@@ -9342,19 +9342,28 @@ msgid "You are not allowed to access this contact"
 msgstr "Você não tem permissão para acessar este contacto"
 
 #: centreon-web/www/include/configuration/configObject/contact/formContact.php:212
-#: centreon-web/www/include/configuration/configObject/contact_template_model/formContactTemplateModel.php:171
 msgid "Add a User"
 msgstr "Adicionar usuário"
 
 #: centreon-web/www/include/configuration/configObject/contact/formContact.php:214
-#: centreon-web/www/include/configuration/configObject/contact_template_model/formContactTemplateModel.php:173
 msgid "Modify a User"
 msgstr "Modificar usuário"
 
 #: centreon-web/www/include/configuration/configObject/contact/formContact.php:216
-#: centreon-web/www/include/configuration/configObject/contact_template_model/formContactTemplateModel.php:175
 msgid "View a User"
 msgstr "Visualizar usuário"
+
+#: centreon-web/www/include/configuration/configObject/contact_template_model/formContactTemplateModel.php:171
+msgid "Add a User Template"
+msgstr "Adicionar um modelo de usuário"
+
+#: centreon-web/www/include/configuration/configObject/contact_template_model/formContactTemplateModel.php:173
+msgid "Modify a User Template"
+msgstr "Modificar um modelo de usuário"
+
+#: centreon-web/www/include/configuration/configObject/contact_template_model/formContactTemplateModel.php:175
+msgid "View a User Template"
+msgstr "Visualizar um modelo de usuário"
 
 #: centreon-web/www/include/configuration/configObject/contact/formContact.php:226
 #: centreon-web/www/include/configuration/configObject/contact_template_model/formContactTemplateModel.php:185
@@ -12726,8 +12735,11 @@ msgid "Server Configuration"
 msgstr "Configuração do Servidor"
 
 #: centreon-web/www/install/react_translation.php:72
-msgid "Attach poller to a server"
-msgstr "Anexar coletor a um servidor"
+msgid "Attach poller to a master remote server"
+msgstr "Anexar coletor a um servidor mestre remoto"
+
+msgid "Attach poller to additional remote servers"
+msgstr "Anexar coletor a servidores remotos adicionais"
 
 #: centreon-web/www/install/react_translation.php:73
 msgid "Advanced: reverse Centreon Broker communication flow"
@@ -13054,8 +13066,8 @@ msgstr "Apelido"
 msgid "Congratulations, you have successfully installed Centreon!"
 msgstr "Parabéns, o Centreon foi instalado com sucesso!"
 
-msgid "Currently installing database... please do not interrupt this process.<br/><br/>"
-msgstr "Efetuando a instalação do banco de dados ... por favor não interrompa este processo.<br/><br/>"
+msgid "Currently installing database and generating cache... please do not interrupt this process.<br/><br/>"
+msgstr "Efetuando a instalação do banco de dados e gerando o cache ... por favor não interrompa este processo.<br/><br/>"
 
 msgid "Configuration database"
 msgstr "Configuração do banco de dados"
@@ -14442,4 +14454,13 @@ msgstr "Processos de Comandos"
 #~ msgstr ""
 
 #~ msgid "Already requested, please wait the CRON execution or for the user to login"
+#~ msgstr ""
+
+msgid "To use additional Remote Servers a Master Remote Server must be selected."
+msgstr "Para usar Remote Server adicionais, um Remote Server mestre deve ser selecionado."
+
+msgid "Attach additional Remote Servers"
+msgstr "Anexar Remote Server adicionais"
+
+#~ msgid "This value needs to be an integer lesser than"
 #~ msgstr ""
