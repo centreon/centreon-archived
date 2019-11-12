@@ -19,27 +19,34 @@
  */
 declare(strict_types=1);
 
-namespace Centreon\Application\Downtime;
+namespace Centreon\Domain\Downtime;
 
 use Centreon\Domain\Contact\Contact;
-use Centreon\Domain\Downtime\Downtime;
 use Centreon\Domain\Downtime\Interfaces\DowntimeRepositoryInterface;
 use Centreon\Domain\Downtime\Interfaces\DowntimeServiceInterface;
 use Centreon\Domain\Engine\Interfaces\EngineServiceInterface;
 use Centreon\Domain\Entity\EntityValidator;
-use Centreon\Domain\Monitoring\Interfaces\MonitoringRepositoryInterface;
+use Centreon\Domain\Exception\EntityNotFoundException;
+use Centreon\Domain\Monitoring\Host;
 use Centreon\Domain\Security\AccessGroup;
 use Centreon\Domain\Security\Interfaces\AccessGroupRepositoryInterface;
 use Centreon\Domain\Service\AbstractCentreonService;
 
+/**
+ * This class is designed to add/delete/find downtimes on hosts and services.
+ *
+ * @package Centreon\Domain\Downtime
+ */
 class DowntimeService extends AbstractCentreonService implements DowntimeServiceInterface
 {
+    public const VALIDATION_GROUPS_ADD_DOWNTIME = ['Default'];
+
     /**
      * @var AccessGroupRepositoryInterface
      */
     private $accessGroupRepository;
     /**
-     * @var EngineServiceInterface All downtime requests except reading use Engine.
+     * @var EngineServiceInterface For all downtimes requests except reading
      */
     private $engineService;
     /**
@@ -51,26 +58,28 @@ class DowntimeService extends AbstractCentreonService implements DowntimeService
      */
     private $downtimeRepository;
     /**
-     * @var MonitoringRepositoryInterface
-     */
-    private $monitoringRepository;
-    /**
-     * @var AccessGroup[]
+     * @var AccessGroup[] Access groups of contact
      */
     private $accessGroups;
 
+    /**
+     * DowntimeService constructor.
+     *
+     * @param AccessGroupRepositoryInterface $accessGroupRepository
+     * @param EngineServiceInterface $engineService
+     * @param EntityValidator $validator
+     * @param DowntimeRepositoryInterface $downtimeRepository
+     */
     public function __construct(
         AccessGroupRepositoryInterface $accessGroupRepository,
         EngineServiceInterface $engineService,
         EntityValidator $validator,
-        DowntimeRepositoryInterface $downtimeRepository,
-        MonitoringRepositoryInterface $monitoringRepository
+        DowntimeRepositoryInterface $downtimeRepository
     ) {
         $this->accessGroupRepository = $accessGroupRepository;
         $this->engineService = $engineService;
         $this->validator = $validator;
         $this->downtimeRepository = $downtimeRepository;
-        $this->monitoringRepository = $monitoringRepository;
     }
 
     /**
@@ -78,18 +87,29 @@ class DowntimeService extends AbstractCentreonService implements DowntimeService
      * @param Contact $contact
      * @return DowntimeServiceInterface
      */
-    public function filterByContact($contact): self
+    public function filterByContact($contact): DowntimeServiceInterface
     {
         parent::filterByContact($contact);
         $this->engineService->filterByContact($contact);
 
         $this->accessGroups = $this->accessGroupRepository->findByContact($contact);
-
-        $this->monitoringRepository
-            ->setContact($this->contact)
-            ->filterByAccessGroups($this->accessGroups);
-
         return $this;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function addHostDowntime(Downtime $downtime, Host $host): void
+    {
+        $this->engineService->addHostDowntime($downtime, $host);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function addServicesDowntime(Downtime $downtime, array $services): void
+    {
+        $this->engineService->addServicesDowntime($downtime, $services);
     }
 
     /**
@@ -121,32 +141,30 @@ class DowntimeService extends AbstractCentreonService implements DowntimeService
     }
 
     /**
-     * @param int $hostId
-     * @return array
-     * @throws \Exception
+     * @inheritDoc
      */
-    public function findDowntimesByHost(int $hostId): array
+    public function findDowntimesByService(int $hostId, int $serviceId): array
     {
         if ($this->contact->isAdmin()) {
-            return $this->downtimeRepository->findDowntimesByHostForAdminUser($hostId);
+            return $this->downtimeRepository->findDowntimesByServiceForAdminUser($hostId, $serviceId);
         } else {
             return $this->downtimeRepository
                 ->forAccessGroups($this->accessGroups)
-                ->findDowntimesByHostForNonAdminUser($hostId);
+                ->findDowntimesByServiceForNonAdminUser($hostId, $serviceId);
         }
     }
 
     /**
      * @inheritDoc
      */
-    public function findServiceDowntime(): array
+    public function findDowntimesByHost(int $hostId, bool $withServices): array
     {
         if ($this->contact->isAdmin()) {
-            return $this->downtimeRepository->findServicesDowntimesForAdminUser();
+            return $this->downtimeRepository->findDowntimesByHostForAdminUser($hostId, $withServices);
         } else {
             return $this->downtimeRepository
                 ->forAccessGroups($this->accessGroups)
-                ->findServicesDowntimesForNonAdminUser();
+                ->findDowntimesByHostForNonAdminUser($hostId, $withServices);
         }
     }
 
@@ -176,5 +194,32 @@ class DowntimeService extends AbstractCentreonService implements DowntimeService
                 ->forAccessGroups($this->accessGroups)
                 ->findOneDowntimeForNonAdminUser($downtimeId);
         }
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function cancelDowntime(int $downtimeId, Host $host): void
+    {
+        $downtime = null;
+        if ($this->contact->isAdmin()) {
+            $downtime = $this->downtimeRepository->findOneDowntimeForAdminUser($downtimeId);
+        } else {
+            $downtime = $this->downtimeRepository
+                ->forAccessGroups($this->accessGroups)
+                ->findOneDowntimeForNonAdminUser($downtimeId);
+        }
+
+        if ($downtime === null) {
+            throw new EntityNotFoundException('Downtime not found');
+        }
+
+        $downtimeType = ($downtime->getServiceId() === null) ? 'host' : 'service';
+
+        if (!is_null($downtime->getDeletionTime())) {
+            throw new DowntimeException('Downtime already cancelled for this ' . $downtimeType);
+        }
+
+        $this->engineService->cancelDowntime($downtime, $host);
     }
 }

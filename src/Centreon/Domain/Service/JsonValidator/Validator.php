@@ -25,6 +25,9 @@ use Centreon\Domain\Service\JsonValidator\Interfaces\JsonValidatorInterface;
 use Centreon\Domain\Service\JsonValidator\Interfaces\ValidatorCacheInterface;
 use JsonSchema\Constraints\Constraint;
 use JsonSchema\Validator as JsonSchemaValidator;
+use phpDocumentor\Reflection\Types\Resource_;
+use Symfony\Component\Config\Resource\FileResource;
+use Symfony\Component\Config\Resource\ResourceInterface;
 use Symfony\Component\Validator\ConstraintViolation;
 use Symfony\Component\Validator\ConstraintViolationList;
 use Symfony\Component\Validator\ConstraintViolationListInterface;
@@ -53,7 +56,7 @@ class Validator implements JsonValidatorInterface
     private $definitions = [];
 
     /**
-     * @var array List of YAML definition files
+     * @var ResourceInterface[] List of YAML definition files
      */
     private $definitionFiles = [];
 
@@ -208,7 +211,7 @@ class Validator implements JsonValidatorInterface
      */
     private function getDefinitionsByFile(string $pathFilename): array
     {
-        $this->definitionFiles[] = $pathFilename;
+        $this->definitionFiles[] = new FileResource($pathFilename);
         if (($yamlData = file_get_contents($pathFilename)) !== false) {
             return Yaml::parse($yamlData);
         }

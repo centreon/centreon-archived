@@ -5,7 +5,6 @@ add_downtime:
     - end_time
     - is_fixed
     - duration
-    - author_id
     - comment
   properties:
     start_time:

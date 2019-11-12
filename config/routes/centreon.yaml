@@ -2,8 +2,3 @@ centreon:
     resource: Centreon/Application/Controller/
     type: annotation
     prefix: /centreon/api/{version}
-
-monitoring.downtime:
-    resource: Centreon/Infrastructure/Downtime/RestApiDowntime.php
-    type: annotation
-    prefix: /centreon/api/{version}

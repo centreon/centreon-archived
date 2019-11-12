@@ -49,6 +49,10 @@ interface ValidatorCacheInterface
 
     /**
      * Indicates whether cache is valid or not.
+     * <br\>**Warning**, with Docker the "filemtime" function returns the start date of
+     * the Container and not the modification date of the file.
+     * So when debug = TRUE, the Cache will not be able to detect the
+     * modifications of the YAML definition files stored in metadata.
      *
      * @return bool Returns TRUE if the cache is valid
      */

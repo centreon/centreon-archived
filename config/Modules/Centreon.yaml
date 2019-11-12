@@ -27,9 +27,16 @@ services:
             - method: setStorageDbName
               arguments: ['%database_dbstg%']
 
-    # controllers are imported separately to make sure services can be injected
-    # as action arguments even if you don't extend any base controller class
+    # JSON Validator
+    Centreon\Domain\Service\JsonValidator\Interfaces\JsonValidatorInterface:
+        class: Centreon\Domain\Service\JsonValidator\Validator
+        arguments: ['%env(_CENTREON_PATH_)%config/json_validator']
 
+    Centreon\Domain\Service\JsonValidator\Interfaces\ValidatorCacheInterface:
+        class: Centreon\Domain\Service\JsonValidator\ValidatorCache
+        arguments: ["%kernel.cache_dir%/JsonValidatorCache", '%kernel.debug%']
+
+    # Contact
     Centreon\Domain\Contact\Interfaces\ContactRepositoryInterface:
         class: Centreon\Infrastructure\Contact\ContactRepositoryRDB
 
@@ -37,6 +44,7 @@ services:
         class: Centreon\Domain\Contact\ContactProvider
         public: true
 
+    # Authentication
     Centreon\Domain\Security\Interfaces\AuthenticationRepositoryInterface:
         class: Centreon\Infrastructure\Security\AuthenticationRepositoryRDB
 
@@ -61,6 +69,10 @@ services:
         calls:
             - method: setSqlRequestTranslator
               arguments: ['@sqlRequestTranslator']
+
+    # Downtime
+    Centreon\Domain\Downtime\Interfaces\DowntimeServiceInterface:
+        class: Centreon\Domain\Downtime\DowntimeService
 
     # Engine
     Centreon\Domain\Engine\Interfaces\EngineRepositoryInterface:

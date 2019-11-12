@@ -21,14 +21,22 @@ declare(strict_types=1);
 
 namespace Centreon\Domain\Downtime\Interfaces;
 
-use Centreon\Domain\Contact\Contact;
-use Centreon\Domain\Contact\Interfaces\ContactFilterInterface;
 use Centreon\Domain\Downtime\Downtime;
-use Centreon\Domain\Downtime\DowntimeService;
-use Centreon\Domain\Service\AbstractCentreonService;
+use Centreon\Domain\Monitoring\Host;
+use Centreon\Domain\Monitoring\Service;
 
-interface DowntimeServiceInterface extends ContactFilterInterface
+interface DowntimeServiceInterface
 {
+    /**
+     * Used to filter requests according to a contact.
+     * If the filter is defined, all requests will use the ACL of the contact
+     * to fetch data.
+     *
+     * @param mixed $contact Contact to use as a ACL filter
+     * @return self
+     * @throws \Exception
+     */
+    public function filterByContact($contact): self;
 
     /**
      * Find downtime of all hosts.
@@ -59,10 +67,11 @@ interface DowntimeServiceInterface extends ContactFilterInterface
      * Find all downtimes linked to a host.
      *
      * @param int $hostId Host id for which we want to find host
+     * @param bool $withServices Display downtimes of host-related services also
      * @return Downtime[]
      * @throws \Exception
      */
-    public function findDowntimesByHost(int $hostId): array;
+    public function findDowntimesByHost(int $hostId, bool $withServices): array;
 
     /**
      * Find downtime of all services.
@@ -71,4 +80,41 @@ interface DowntimeServiceInterface extends ContactFilterInterface
      * @throws \Exception
      */
     public function findServicesDowntimes(): array;
+
+    /**
+     * Find all downtimes for a service (linked to a host).
+     *
+     * @param int $hostId Host id linked to this service
+     * @param int $serviceId Service id for which we want to find downtimes
+     * @return Downtime[]
+     * @throws \Exception
+     */
+    public function findDowntimesByService(int $hostId, int $serviceId): array;
+
+    /**
+     * Add a downtime on a host.
+     *
+     * @param Downtime $downtime Downtime to add
+     * @param Host $host Host for which we want to add the downtime
+     * @throws \Exception
+     */
+    public function addHostDowntime(Downtime $downtime, Host $host): void;
+
+    /**
+     * Add a downtime for each given service.
+     *
+     * @param Downtime $downtime Downtime to add for each service
+     * @param Service[] $services Services list (the host property of each service must to be correctly defined)
+     * @throws \Exception
+     */
+    public function addServicesDowntime(Downtime $downtime, array $services): void;
+
+    /**
+     * Cancel one downtime.
+     *
+     * @param int $downtimeId Downtime id to cancel
+     * @param Host $host Downtime-related host
+     * @throws \Exception
+     */
+    public function cancelDowntime(int $downtimeId, Host $host): void;
 }

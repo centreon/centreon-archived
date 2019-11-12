@@ -22,9 +22,7 @@ declare(strict_types=1);
 namespace Centreon\Domain\Service\JsonValidator;
 
 use Centreon\Domain\Service\JsonValidator\Interfaces\ValidatorCacheInterface;
-use phpDocumentor\Reflection\Types\Boolean;
 use Symfony\Component\Config\ConfigCache;
-use Symfony\Component\Config\Resource\FileResource;
 
 class ValidatorCache implements ValidatorCacheInterface
 {
@@ -41,11 +39,12 @@ class ValidatorCache implements ValidatorCacheInterface
      * ValidatorCache constructor.
      *
      * @param string $cacheFile Name of the cache file
+     * @param bool $isDebug State of the debug mode
      */
-    public function __construct(string $cacheFile)
+    public function __construct(string $cacheFile, bool $isDebug)
     {
         $this->cacheFile = $cacheFile;
-        $this->cache = new ConfigCache($cacheFile, false);
+        $this->cache = new ConfigCache($cacheFile, $isDebug);
     }
 
     /**
@@ -63,7 +62,7 @@ class ValidatorCache implements ValidatorCacheInterface
     {
         $resourceFiles = [];
         foreach ($metadata as $yamlFile) {
-            $resourceFiles[] = new FileResource($yamlFile);
+            $resourceFiles[] = $yamlFile;
         }
         $this->cache->write($data, $metadata);
     }

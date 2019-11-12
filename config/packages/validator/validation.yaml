@@ -47,3 +47,38 @@ Centreon\Domain\Acknowledgement\Acknowledgement:
                 groups: [Default, add_service_ack]
             - NotNull:
                 groups: [add_service_ack]
+
+# Used to validate the Downtime entity
+Centreon\Domain\Downtime\Downtime:
+    properties:
+        startTime:
+            - Type:
+                type: DateTime
+            - NotNull: ~
+        endTime:
+            - Type:
+                type: DateTime
+            - NotNull: ~
+        isFixed:
+            - Type:
+                type: boolean
+        duration:
+            - Type:
+                type: integer
+            - NotNull: ~
+        authorId:
+            - Type:
+                type: integer
+        comment:
+            - Type:
+                type: string
+            - NotNull: ~
+        hostId:
+            - Type:
+                type: integer
+        serviceId:
+            - Type:
+                type: integer
+        pollerId:
+            - Type:
+                type: integer

@@ -92,15 +92,23 @@ class Downtime
 
     /**
      * @Serializer\Groups({"dwt_main"})
+     * @Serializer\Type("integer")
      * @var int|null Duration of the downtime corresponding to endTime - startTime (in seconds)
      */
     private $duration;
 
     /**
      * @Serializer\Groups({"dwt_main"})
+     * @Serializer\Type("DateTime<'Y-m-d\TH:i:sP'>")
      * @var \DateTime|null End date of the downtime
      */
     private $endTime;
+
+    /**
+     * @Serializer\Type("integer")
+     * @var int|null (used to cancel a downtime)
+     */
+    private $internalId;
 
     /**
      * @Serializer\Groups({"dwt_main"})
@@ -120,6 +128,7 @@ class Downtime
 
     /**
      * @Serializer\Groups({"dwt_main"})
+     * @Serializer\Type("DateTime<'Y-m-d\TH:i:sP'>")
      * @var \DateTime|null Start date of the downtime
      */
     private $startTime;
@@ -318,6 +327,22 @@ class Downtime
     public function setFixed(bool $isFixed): void
     {
         $this->isFixed = $isFixed;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getInternalId(): ?int
+    {
+        return $this->internalId;
+    }
+
+    /**
+     * @param int|null $internalId
+     */
+    public function setInternalId(?int $internalId): void
+    {
+        $this->internalId = $internalId;
     }
 
     /**
