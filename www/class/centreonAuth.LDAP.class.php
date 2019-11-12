@@ -219,7 +219,6 @@ class CentreonAuthLDAP
             $userDisplay = str_replace(array(' ', ','), '_', $userDisplay);
             // Delete parenthesis
             $userDisplay = str_replace(array('(', ')'), '', $userDisplay);
-            $userDisplay = $this->pearDB->escape($userDisplay);
 
             //getting user's email
             $userEmail = $this->contactInfos['contact_email'];
