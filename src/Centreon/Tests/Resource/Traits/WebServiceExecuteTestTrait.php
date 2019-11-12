@@ -36,6 +36,10 @@
 
 namespace Centreon\Tests\Resource\Traits;
 
+use Centreon\Tests\Resource\CheckPoint;
+use Symfony\Component\Serializer\Serializer;
+use Centreon\ServiceProvider;
+
 /**
  * Trait with extension methods to test the response from webservice
  *
@@ -79,6 +83,70 @@ trait WebServiceExecuteTestTrait
     }
 
     /**
+     * Mock the repository methods related with the pagination
+     *
+     * @param array $entities
+     * @param \Centreon\Tests\Resource\CheckPoint $checkPoints
+     * @param string $repositoryClass
+     * @param callable $callback
+     */
+    protected function mockRepository(
+        array $entities,
+        CheckPoint $checkPoints,
+        string $repositoryClass,
+        array $expectedArgs = null
+    ) {
+        $methodGetPaginationList = 'getPaginationList';
+        $methodGetPaginationListTotal = 'getPaginationListTotal';
+
+        $checkPoints
+            ->add($methodGetPaginationList)
+            ->add($methodGetPaginationListTotal);
+
+        $this->db
+            ->resetResultSet()
+            ->addRepositoryMock($repositoryClass, (function () use (
+                $entities,
+                $checkPoints,
+                $repositoryClass,
+                $methodGetPaginationList,
+                $methodGetPaginationListTotal,
+                $expectedArgs
+            ) {
+                $repository = $this->createMock($repositoryClass);
+
+                $repository->method($methodGetPaginationList)
+                    ->will($this->returnCallback(function () use (
+                        $entities,
+                        $checkPoints,
+                        $methodGetPaginationList,
+                        $expectedArgs
+                    ) {
+                        $checkPoints->mark($methodGetPaginationList);
+
+                        if ($expectedArgs) {
+                            $this->assertEquals($expectedArgs, func_get_args());
+                        }
+
+                        return $entities;
+                    }));
+
+                $repository->method($methodGetPaginationListTotal)
+                    ->will($this->returnCallback(function () use (
+                        $entities,
+                        $checkPoints,
+                        $methodGetPaginationListTotal
+                    ) {
+                        $checkPoints->mark($methodGetPaginationListTotal);
+
+                        return count($entities);
+                    }));
+
+                return $repository;
+            })());
+    }
+
+    /**
      * Make query method of the webservice
      *
      * @param string $method
@@ -91,5 +159,15 @@ trait WebServiceExecuteTestTrait
             ->will($this->returnCallback(function () use ($filters) {
                 return $filters;
             }));
+    }
+
+    /**
+     * Get the Serializer service from DI
+     *
+     * @return \Symfony\Component\Serializer\Serializer
+     */
+    protected static function getSerializer(): Serializer
+    {
+        return loadDependencyInjector()[ServiceProvider::SERIALIZER];
     }
 }
