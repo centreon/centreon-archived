@@ -34,7 +34,7 @@ Il est possible de définir deux paramètres :
 .. note:: 
     Tous les parents d’un hôte doivent être dans un état non-OK pour que l’hôte lui-même soit considéré comme injoignable. A partir du moment où au moins un chemin d’accès (liaison de dépendance physique) est toujours joignable alors l’ordonnanceur continuera de surveiller cet hôte.
 
-Il n'est pas possible d'établir des liens de parentés entre hôte supervisés par deux collecteurs différents.
+Il n'est pas possible d'établir des liens de parentés entre hôtes supervisés par des collecteurs différents.
 
 .. note::
     Ne cochez pas le filtre de notification "Injoignable" sur les hôtes ainsi que sur les contacts pour ne pas recevoir ce type de notification.
