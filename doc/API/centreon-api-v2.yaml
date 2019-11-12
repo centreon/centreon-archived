@@ -6,6 +6,7 @@ info:
     # New features
     + Added real-time monitoring for hosts and services
     + Added acknowledgement for hosts and services
+    + Added downtimes for hosts and services
     # Information
     All dates are in **ISO 8601** format
     # Authentication
