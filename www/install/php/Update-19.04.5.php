@@ -44,7 +44,7 @@ try {
 } catch (\PDOException $e) {
     $centreonLog->insertLog(
         2,
-        "UPGRADE : 19.04.5 Unable to modify session expiration value"
+        "UPGRADE : 19.04.5 Unable to modify contact autologin key default value"
     );
 }
 
