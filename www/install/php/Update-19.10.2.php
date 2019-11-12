@@ -20,6 +20,7 @@
 include_once __DIR__ . "/../../class/centreonLog.class.php";
 $centreonLog = new CentreonLog();
 
+// fix contact auto login default value when not set
 try {
     $pearDB->query(
         "UPDATE `contact` SET `contact_autologin_key` = NULL WHERE `contact_autologin_key` =''"
@@ -28,5 +29,19 @@ try {
     $centreonLog->insertLog(
         2,
         "UPGRADE : 19.10.2 Unable to set default contact_autologin_key"
+    );
+}
+
+// remove ldap users missing contact name
+// these users have been added using the auto-import ldap feature
+// and will be re-imported at their next login.
+try {
+    $pearDB->query(
+        "DELETE FROM contact WHERE contact_name is NULL"
+    );
+} catch (\PDOException $e) {
+    $centreonLog->insertLog(
+        2,
+        "UPGRADE : 19.10.2 Unable to delete ldap auto-imported users with empty contact_name"
     );
 }
