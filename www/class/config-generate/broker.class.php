@@ -130,12 +130,12 @@ class Broker extends AbstractObjectJSON
             ");
         }
 
-        $watchdog = array();
+        $watchdog = [];
 
         $result = $this->stmt_broker->fetchAll(PDO::FETCH_ASSOC);
         foreach ($result as $row) {
             $this->generate_filename = $row['config_filename'];
-            $object = array();
+            $object = [];
 
             $config_name = $row['config_name'];
             $cache_directory = $row['cache_directory'];
@@ -147,8 +147,8 @@ class Broker extends AbstractObjectJSON
             $object['poller_id'] = (int) $this->engine['id'];
             $object['poller_name'] = $this->engine['name'];
             $object['module_directory'] = (string) $this->engine['broker_modules_path'];
-            $object['log_timestamp'] = $this->castIntoBoolean($row['config_write_timestamp']);
-            $object['log_thread_id'] = $this->castIntoBoolean($row['config_write_thread_id']);
+            $object['log_timestamp'] = filter_var($row['config_write_timestamp'], FILTER_VALIDATE_BOOLEAN);
+            $object['log_thread_id'] = filter_var($row['config_write_thread_id'], FILTER_VALIDATE_BOOLEAN);
             $object['event_queue_max_size'] = (int)$row['event_queue_max_size'];
             $object['command_file'] = (string) $row['command_file'];
             $object['cache_directory'] = (string) $cache_directory;
@@ -424,28 +424,5 @@ class Broker extends AbstractObjectJSON
             throw new InvalidArgumentException('Unrecognized symbol ' . $item);
         }
         return $result;
-    }
-
-    /**
-     * cast broker configuration value to boolean
-     *
-     * @param any $value the value to cast
-     * @return boolean the casted boolean value
-     */
-    private function castIntoBoolean($value): bool
-    {
-        $castedValue = false;
-
-        switch($value) {
-            case 1:
-            case '1':
-            case true:
-            case 'true':
-            case 'yes':
-                $castedValue = true;
-                break;
-        }
-
-        return $castedValue;
     }
 }
