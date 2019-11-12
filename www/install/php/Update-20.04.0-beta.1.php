@@ -85,7 +85,7 @@ try {
 } catch (\PDOException $e) {
     $centreonLog->insertLog(
         2,
-        "UPGRADE : 20.04.0-beta.1 Unable to engine's broker modules configuration from xml format to json format"
+        "UPGRADE : 20.04.0-beta.1 Unable to move engine's broker modules configuration from xml to json format"
     );
     throw new \PDOException($e);
 }
