@@ -56,7 +56,6 @@ $arId = filter_var(
 $form = new HTML_QuickFormCustom('Form', 'post', "?p=" . $p . "&o=" . $o);
 $form->addElement('header', 'title', _("Modify General Options"));
 
-
 /**
  * Ldap info
  */
@@ -147,6 +146,7 @@ $form->addElement(
     $LdapContactTplList,
     array('id' => 'ldap_contact_tmpl')
 );
+$form->addRule('ldap_contact_tmpl', _("Compulsory Field"), 'required');
 
 /**
  * Default contactgroup for imported contact
@@ -162,7 +162,6 @@ $attrContactGroup = array(
     'linkedObject' => 'centreonContactgroup'
 );
 $form->addElement('select2', 'ldap_default_cg', _('Default contactgroup'), array(), $attrContactGroup);
-
 
 $form->addElement('header', 'ldapinfo', _("LDAP Information"));
 $form->addElement('header', 'ldapserver', _('LDAP Servers'));
