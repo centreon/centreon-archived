@@ -924,44 +924,6 @@ class CentreonConfigCentreonBroker
     }
 
     /**
-     * Get the correlation file
-     *
-     * @return mixed false in error or does not set, or string the path file
-     */
-    public function getCorrelationFile()
-    {
-        $query = "SELECT config_id, config_group_id FROM cfg_centreonbroker_info
-            WHERE config_key = 'type' AND config_value = 'correlation'";
-        $error = false;
-        try {
-            $res = $this->db->query($query);
-        } catch (\PDOException $e) {
-            $error = true;
-        }
-        if ($error || $res->rowCount() == 0) {
-            return false;
-        }
-
-        $row = $res->fetchRow();
-        $configId = $row['config_id'];
-        $correlationGroupId = $row['config_group_id'];
-        $query = 'SELECT config_value FROM cfg_centreonbroker_info  WHERE config_key = "file" AND config_id = '
-            . $configId . ' AND config_group_id = ' . $correlationGroupId;
-        $error = false;
-        try {
-            $res = $this->db->query($query);
-        } catch (\PDOException $e) {
-            $error = true;
-        }
-        if ($error || $res->rowCount() == 0) {
-            return false;
-        }
-
-        $row = $res->fetchRow();
-        return $row['config_value'];
-    }
-
-    /**
      * Sort the fields by order display
      *
      * @param array $field1 The first field to sort

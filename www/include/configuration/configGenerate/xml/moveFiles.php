@@ -220,12 +220,6 @@ try {
         'keys' => array('id')
     ));
 
-
-    # Get correlation infos
-    $brokerObj = new CentreonConfigCentreonBroker($pearDB);
-    $correlationPath = $brokerObj->getCorrelationFile();
-    $localId = getLocalhostId();
-
     foreach ($tabs as $tab) {
         if (isset($ret["host"]) && ($ret["host"] == 0 || in_array($tab['id'], $ret["host"]))) {
             $tab_server[$tab["id"]] = array(
@@ -237,21 +231,8 @@ try {
     }
 
     foreach ($tab_server as $host) {
-        # Manage correlation files
-        if (false !== $correlationPath && false !== $localId) {
-            $tmpFilename = $centreonBrokerPath . '/' . $host['id'] . '/correlation_' . $host['id'] . '.xml';
-            $filenameToGenerate = dirname($correlationPath) . '/correlation_' . $host['id'] . '.xml';
-            # Purge file
-            if (file_exists($filenameToGenerate)) {
-                @unlink($filenameToGenerate);
-            }
-            # Copy file
-            if (file_exists($tmpFilename)) {
-                @copy($tmpFilename, $filenameToGenerate);
-            }
-        }
         if (isset($pollers) && ($pollers == 0 || in_array($host['id'], $pollers))) {
-            $listBrokerFile = glob($centreonBrokerPath . $host['id'] . "/*.{xml,cfg,sql}", GLOB_BRACE);
+            $listBrokerFile = glob($centreonBrokerPath . $host['id'] . "/*.{xml,json,cfg,sql}", GLOB_BRACE);
             if (isset($host['localhost']) && $host['localhost'] == 1) {
                 /*
                  * Check if monitoring engine's configuration directory existss
