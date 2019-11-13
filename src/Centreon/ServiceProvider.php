@@ -90,6 +90,7 @@ class ServiceProvider implements AutoloadServiceProviderInterface
     const VALIDATOR = 'validator';
     const VALIDATOR_EXPRESSION = 'validator.expression';
     const SERIALIZER = 'serializer';
+    const SERIALIZER_OBJECT_NORMALIZER = 'serializer.object.normalizer';
     const CENTREON_ACL = 'centreon.acl';
     const CENTREON_GLOBAL_ACL = 'centreon.global.acl';
 
@@ -266,18 +267,22 @@ class ServiceProvider implements AutoloadServiceProviderInterface
 
         $this->registerValidator($pimple);
 
-        $pimple[static::SERIALIZER] = function (Container $container): Serializer\Serializer {
+        $pimple[static::SERIALIZER_OBJECT_NORMALIZER] = function (): Serializer\Normalizer\ObjectNormalizer {
             $classMetadataFactory = new Serializer\Mapping\Factory\ClassMetadataFactory(
                 new Serializer\Mapping\Loader\AnnotationLoader(new AnnotationReader())
             );
 
+            return new Serializer\Normalizer\ObjectNormalizer(
+                $classMetadataFactory,
+                new Serializer\NameConverter\MetadataAwareNameConverter($classMetadataFactory),
+                null,
+                new ReflectionExtractor()
+            );
+        };
+
+        $pimple[static::SERIALIZER] = function ($container): Serializer\Serializer {
             return new Serializer\Serializer([
-                new Serializer\Normalizer\ObjectNormalizer(
-                    $classMetadataFactory,
-                    new Serializer\NameConverter\MetadataAwareNameConverter($classMetadataFactory),
-                    null,
-                    new ReflectionExtractor()
-                ),
+                $container[static::SERIALIZER_OBJECT_NORMALIZER],
                 new Serializer\Normalizer\ArrayDenormalizer,
             ], [
                 new Serializer\Encoder\JsonEncoder,
