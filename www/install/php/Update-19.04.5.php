@@ -65,7 +65,7 @@ try {
 try {
     // finding the data of contacts linked to an LDAP
     $stmt = $this->pearDB->query(
-        "SELECT contact_id, contact_name, contact_ldap_dn from contact where ar_id is NOT NULL"
+        "SELECT contact_id, contact_name, contact_ldap_dn FROM contact WHERE ar_id is NOT NULL"
     );
     while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
         // removing the double slashes if needed and saving the corrected data
