@@ -39,15 +39,16 @@ $loader = require realpath(__DIR__ . '/../../vendor/autoload.php');
 
 Doctrine\Common\Annotations\AnnotationRegistry::registerLoader([$loader, 'loadClass']);
 
-function loadDependencyInjector()
-{
-    global $dependencyInjector;
-    return $dependencyInjector;
-}
-
+global $dependencyInjector;
 $dependencyInjector = new \Pimple\Container;
 $dependencyInjector->register(new Centreon\ServiceProvider);
 
 // Mock DB manager
 $dependencyInjector[Centreon\ServiceProvider::CENTREON_DB_MANAGER] =
     new Centreon\Test\Mock\CentreonDBManagerService;
+
+function loadDependencyInjector()
+{
+    global $dependencyInjector;
+    return $dependencyInjector;
+}
