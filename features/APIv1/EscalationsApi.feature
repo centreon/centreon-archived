@@ -28,6 +28,6 @@ Feature: Check health of the Escalation APIs
             "limit":1
         },
         "entities":[
-            {"id":"1","name":"Escalation 01"}
+            {"id":1,"name":"Escalation 01"}
         ]}
     """
