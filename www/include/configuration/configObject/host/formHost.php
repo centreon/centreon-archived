@@ -354,6 +354,12 @@ $form->addElement('header', 'information', _("General Information"));
 # No possibility to change name and alias, because there's no interest
 if ($o != "mc") {
     $form->addElement('text', 'host_name', _("Name"), $attrsText);
+    $form->registerRule('checkIllegalChars', 'callback', 'checkIllegalChars');
+    $form->addRule(
+        'host_alias',
+        _("This field cannot contain : ") . $_SESSION['centreon']->Nagioscfg['illegal_object_name_chars'],
+        'checkIllegalChars'
+    );
     $form->addElement('text', 'host_alias', _("Alias"), $attrsText);
     $form->addElement(
         'text',

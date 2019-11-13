@@ -94,6 +94,18 @@ function testPollerDep($instanceId)
     return true;
 }
 
+function checkIllegalChars(string $stringToTest): bool
+{
+    $stringToTest = filter_var($stringToTest, FILTER_SANITIZE_STRING);
+
+    foreach (str_split($_SESSION['centreon']->Nagioscfg['illegal_object_name_chars']) as $key => $illegalChars) {
+        if (strpos($stringToTest, $illegalChars) !== false) {
+            return false;
+        }
+    }
+    return true;
+}
+
 /**
  * Quickform rule that checks whether or not reserved macro are used
  *
