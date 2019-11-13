@@ -92,11 +92,12 @@ class Broker extends AbstractObjectJSON
         }
 
         $this->cacheExternalValue = array();
-        $stmt = $this->backend_instance->db->prepare("SELECT
-            CONCAT(cf.fieldname, '_', cttr.cb_tag_id, '_', ctfr.cb_type_id) as name, external FROM cb_field cf, cb_type_field_relation ctfr, cb_tag_type_relation cttr
-                WHERE cf.external IS NOT NULL
-                   AND cf.cb_field_id = ctfr.cb_field_id
-                   AND ctfr.cb_type_id = cttr.cb_type_id
+        $stmt = $this->backend_instance->db->prepare("
+            SELECT CONCAT(cf.fieldname, '_', cttr.cb_tag_id, '_', ctfr.cb_type_id) as name, external
+            FROM cb_field cf, cb_type_field_relation ctfr, cb_tag_type_relation cttr
+            WHERE cf.external IS NOT NULL
+            AND cf.cb_field_id = ctfr.cb_field_id
+            AND ctfr.cb_type_id = cttr.cb_type_id
         ");
         $stmt->execute();
         while (($row = $stmt->fetch(PDO::FETCH_ASSOC))) {
@@ -109,8 +110,8 @@ class Broker extends AbstractObjectJSON
         $this->getExternalValues();
 
         if (is_null($this->stmt_broker)) {
-            $this->stmt_broker = $this->backend_instance->db->prepare("SELECT
-              $this->attributes_select
+            $this->stmt_broker = $this->backend_instance->db->prepare("
+            SELECT $this->attributes_select
             FROM cfg_centreonbroker
             WHERE ns_nagios_server = :poller_id
             AND config_activate = '1'
