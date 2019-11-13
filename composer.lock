@@ -4760,7 +4760,7 @@
         },
         {
             "name": "centreon/centreon-test-lib",
-            "version": "dev-BAM-808-ba-read-with-sub-objects",
+            "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "https://github.com/centreon/centreon-test-lib.git",
