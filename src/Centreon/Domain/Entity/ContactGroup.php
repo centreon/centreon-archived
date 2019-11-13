@@ -91,6 +91,16 @@ class ContactGroup
     private $cg_activate;
 
     /**
+     * Alias of getCgId
+     *
+     * @return int|null
+     */
+    public function getId(): ?int
+    {
+        return $this->getCgId();
+    }
+
+    /**
      * @return int
      */
     public function getCgId(): ?int

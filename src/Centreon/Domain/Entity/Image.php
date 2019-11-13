@@ -103,6 +103,16 @@ class Image
     }
 
     /**
+     * Alias of getImgId
+     *
+     * @return int|null
+     */
+    public function getId(): ?int
+    {
+        return $this->getImgId();
+    }
+
+    /**
      * @Serializer\Groups({Image::SERIALIZER_GROUP_LIST})
      * @Serializer\SerializedName("preview")
      * @return string
