@@ -292,10 +292,10 @@ class WikiApi
             }
 
             // Get next page if exists
-            if (isset($result->{'query-continue'}->allpages->apcontinue)) {
-                $postfields['apfrom'] = $result->{'query-continue'}->allpages->apcontinue;
+            if (isset($result->{'continue'}->apcontinue)) {
+                $postfields['apfrom'] = $result->{'continue'}->apcontinue;
             }
-        } while (isset($result->{'query-continue'}->allpages->apcontinue));
+        } while (isset($result->{'continue'}->apcontinue));
 
         return $pages;
     }
