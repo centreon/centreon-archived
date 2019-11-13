@@ -871,7 +871,7 @@ jQuery(function () {
                 window.location.reload();
             }
           },
-          load: function( event, ui ) {
+          load: function(event, ui) {
               toggleEdit(jQuery('.toggleEdit').hasClass('edit'));
           },
           activate: function( event, ui ) {
