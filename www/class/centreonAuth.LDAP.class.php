@@ -202,7 +202,6 @@ class CentreonAuthLDAP
 
         if ($this->ldap->rebind()) {
             $userDn = $this->ldap->findUserDn($contactAlias);
-            $userDn = $this->pearDB->escape($userDn);
             if (false === $userDn) {
                 $this->CentreonLog->insertLog(3, "LDAP AUTH - Error : No DN for user " . $contactAlias);
                 return false;
