@@ -51,9 +51,7 @@ try {
 // remove LDAP users missing contact name
 // these users have been added using the auto-import LDAP feature and will be re-imported at their next login.
 try {
-    $pearDB->query(
-        "DELETE FROM contact WHERE contact_name is NULL"
-    );
+    $pearDB->query('DELETE FROM contact WHERE contact_name = ""');
 } catch (\PDOException $e) {
     $centreonLog->insertLog(
         2,
@@ -64,17 +62,12 @@ try {
 // correct the DN of manually imported users from an LDAP
 try {
     // finding the data of contacts linked to an LDAP
-    $stmt = $pearDB->query(
-        "SELECT contact_id, contact_name, contact_ldap_dn FROM contact WHERE ar_id is NOT NULL"
-    );
-    $updateDB = $pearDB->prepare(
-        "UPDATE contact SET contact_ldap_dn = :newDn WHERE contact_id = :contactId"
-    );
+    $stmt = $pearDB->query("SELECT contact_id, contact_name, contact_ldap_dn FROM contact WHERE ar_id is NOT NULL");
+    $updateDB = $pearDB->prepare("UPDATE contact SET contact_ldap_dn = :newDn WHERE contact_id = :contactId");
     while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
         // removing the double slashes if needed and saving the corrected data
         if (strpos($row['contact_ldap_dn'], "\\\\")) {
             $newDn = str_replace("\\\\", "\\", $row['contact_ldap_dn']);
-
             $updateDB->bindValue(':newDn', $newDn, \PDO::PARAM_STR);
             $updateDB->bindValue(':contactId', $row['contact_id'], \PDO::PARAM_INT);
             $updateDB->execute();
