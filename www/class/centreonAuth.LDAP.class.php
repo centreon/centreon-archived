@@ -209,12 +209,12 @@ class CentreonAuthLDAP
 
             // remove LDAP users missing contact name
             // these users have been added using the auto-import LDAP feature and will be re-imported at their next login.
-            $this->pearDB->query("DELETE FROM contact WHERE contact_name is NULL");
+            $this->pearDB->query('DELETE FROM contact WHERE contact_name = ""');
 
             // correct the DN of manually imported users from an LDAP
             // finding the data of contacts linked to an LDAP
             $stmt = $this->pearDB->query(
-                "SELECT contact_id, contact_name, contact_ldap_dn FROM contact WHERE ar_id is NOT NULL"
+                'SELECT contact_id, contact_name, contact_ldap_dn FROM contact WHERE ar_id is NOT NULL'
             );
             $updateDB = $this->pearDB->prepare(
                 "UPDATE contact SET contact_ldap_dn = :newDn WHERE contact_id = :contactId"
@@ -231,7 +231,6 @@ class CentreonAuthLDAP
                     $this->CentreonLog->insertLog(3, 'LDAP AUTH - Incorrect DN found and corrected : ' . $newDn);
                 }
             }
-
 
             // Get ldap user information
             $userInfos = $this->ldap->getEntry($userDn);
