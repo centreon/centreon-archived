@@ -227,6 +227,7 @@ class CentreonAuthLDAP
                     $updateDB->bindValue(':newDn', $newDn, \PDO::PARAM_STR);
                     $updateDB->bindValue(':contactId', $row['contact_id'], \PDO::PARAM_INT);
                     $updateDB->execute();
+                    $this->CentreonLog->insertLog(3, 'LDAP AUTH - Corrected the DN of user : ' . $row['contact_name']);
                 }
             }
 
