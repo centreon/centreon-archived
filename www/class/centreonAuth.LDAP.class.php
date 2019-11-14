@@ -227,9 +227,11 @@ class CentreonAuthLDAP
                     $updateDB->bindValue(':newDn', $newDn, \PDO::PARAM_STR);
                     $updateDB->bindValue(':contactId', $row['contact_id'], \PDO::PARAM_INT);
                     $updateDB->execute();
-                    $this->CentreonLog->insertLog(3, 'LDAP AUTH - Corrected the DN of user : ' . $row['contact_name']);
+                    // as the contact_name may not be retrieved using the DN, the log specify the corrected DN
+                    $this->CentreonLog->insertLog(3, 'LDAP AUTH - Incorrect DN found and corrected : ' . $newDn);
                 }
             }
+
 
             // Get ldap user information
             $userInfos = $this->ldap->getEntry($userDn);
