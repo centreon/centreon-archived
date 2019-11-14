@@ -24,7 +24,7 @@ $centreonLog = new CentreonLog();
 // these users have been added using the auto-import ldap feature and will be re-imported at their next login.
 try {
     $pearDB->query(
-        "DELETE FROM contact WHERE contact_name is NULL"
+        'DELETE FROM contact WHERE contact_name = ""'
     );
 } catch (\PDOException $e) {
     $centreonLog->insertLog(
