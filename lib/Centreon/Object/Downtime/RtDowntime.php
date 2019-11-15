@@ -64,7 +64,7 @@ class Centreon_Object_RtDowntime extends Centreon_ObjectRt
             "FROM downtimes d, hosts h " .
             "WHERE d.host_id = h.host_id " .
             "AND d.cancelled = 0 " .
-            "AND service_id IS NULL " .
+            "AND type = 2 " .
             "AND end_time > UNIX_TIMESTAMP(NOW()) " .
             $hostFilter .
             "ORDER BY actual_start_time, name";
@@ -98,6 +98,7 @@ class Centreon_Object_RtDowntime extends Centreon_ObjectRt
             "AND d.host_id = s.host_id " .
             "AND s.host_id = h.host_id " .
             "AND d.cancelled = 0 " .
+            "AND d.type = 1 " .
             "AND end_time > UNIX_TIMESTAMP(NOW()) " .
             $serviceFilter .
             "ORDER BY actual_start_time, h.name, s.description";

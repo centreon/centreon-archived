@@ -711,7 +711,7 @@ class CentreonMetric extends CentreonWebService
     {
         $query = 'SELECT actual_start_time as start, actual_end_time as end ' .
             'FROM downtimes ' .
-            'WHERE host_id = :hostId AND service_id = :serviceId ' .
+            'WHERE type = 1 AND host_id = :hostId AND service_id = :serviceId ' .
             'AND (' .
             '(actual_start_time <= :end AND :end <= actual_end_time) ' .
             'OR (actual_start_time <= :start AND :start <= actual_end_time) ' .
