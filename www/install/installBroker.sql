@@ -45,7 +45,7 @@ CREATE TABLE `comments` (
   `comment_id` int(11) NOT NULL AUTO_INCREMENT,
   `entry_time` int(11) NOT NULL,
   `host_id` int(11) NOT NULL,
-  `service_id` int(11) DEFAULT NULL,
+  `service_id` int(11) NOT NULL,
   `author` varchar(64) DEFAULT NULL,
   `data` text,
   `deletion_time` int(11) DEFAULT NULL,
