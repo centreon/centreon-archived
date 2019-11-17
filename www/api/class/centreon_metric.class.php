@@ -318,6 +318,7 @@ class CentreonMetric extends CentreonWebService
                     'FROM comments ' .
                     'WHERE host_id = :hostId ' .
                     'AND service_id = :serviceId ' .
+                    'AND type = 2 ' .
                     'AND entry_type = 1 ' .
                     'AND deletion_time IS NULL ' .
                     'AND :start < entry_time ' .
