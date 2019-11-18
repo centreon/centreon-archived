@@ -23,9 +23,7 @@
         "adlawson/vfs": "^0.12.1",
         "zircote/swagger-php": "^3.0",
         "symfony/phpunit-bridge": "^4.3",
-        "centreon/centreon-test-lib": "dev-master",
-        "symfony/http-client": "4.3.*",
-        "phpstan/phpstan": "^0.11.19"
+        "centreon/centreon-test-lib": "dev-master"
     },
     "require": {
         "php": ">=7.1.3",
@@ -55,7 +53,6 @@
         "symfony/validator": "4.3.*",
         "symfony/translation": "4.3.*",
         "symfony/expression-language": "4.3.*",
-        "ext-pdo": "*",
         "ext-json": "*",
         "justinrainbow/json-schema": "^5.2"
     },
