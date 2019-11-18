@@ -130,7 +130,6 @@ class DowntimeController extends AbstractFOSRestController
             $this->downtimeService->addServicesDowntime($downtime, $services);
         }
         return $this->view();
-
     }
 
     /**

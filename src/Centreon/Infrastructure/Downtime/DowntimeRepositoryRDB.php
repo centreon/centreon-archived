@@ -589,5 +589,4 @@ class DowntimeRepositoryRDB extends AbstractRepositoryDRB implements DowntimeRep
 
         return $hostDowntimes;
     }
-
 }

@@ -124,19 +124,24 @@ class Validator implements JsonValidatorInterface
 
         $definitionsToUseForValidation = [];
 
-        // First of all, we look for definitions according to the given version.
+        /*
+         * First of all, we look for definitions according to the given version.
+         * otherwise, we look for the default definitions.
+         */
         if (array_key_exists($this->version, $this->definitions)
-            && array_key_exists($modelName, $this->definitions[$this->version])) {
+            && array_key_exists($modelName, $this->definitions[$this->version])
+        ) {
             $definitionsToUseForValidation = $this->definitions[$this->version][$modelName];
-        }
-         // otherwise, we look for the default definitions.
-        elseif (array_key_exists(self::VERSION_DEFAULT, $this->definitions)
-            && array_key_exists($modelName, $this->definitions[self::VERSION_DEFAULT])) {
+        } elseif (array_key_exists(self::VERSION_DEFAULT, $this->definitions)
+            && array_key_exists($modelName, $this->definitions[self::VERSION_DEFAULT])
+        ) {
             $definitionsToUseForValidation = $this->definitions[self::VERSION_DEFAULT][$modelName];
         }
 
         if (empty($definitionsToUseForValidation)) {
-            throw new \Exception('The definition model "' . $modelName. '" to validate the JSON does not exist or is empty');
+            throw new \Exception(
+                'The definition model "' . $modelName. '" to validate the JSON does not exist or is empty'
+            );
         }
         $this->validator->validate(
             $dataToValidate,
@@ -160,7 +165,7 @@ class Validator implements JsonValidatorInterface
             if (is_file($this->validationFilePath)) {
                 $info = pathinfo($this->validationFilePath);
                 if (($info['extension'] ?? '') === 'yaml') {
-                    $this->getDefinitionsByFile ($this->validationFilePath);
+                    $this->getDefinitionsByFile($this->validationFilePath);
                 }
             } elseif (is_dir($this->validationFilePath)) {
                 foreach (new \DirectoryIterator($this->validationFilePath) as $fileInfo) {

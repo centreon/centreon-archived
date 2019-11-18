@@ -361,7 +361,7 @@ class EngineService extends AbstractCentreonService implements EngineServiceInte
         }
 
         $suffix = ($downtime->getServiceId() === null) ? 'HOST' : 'SVC';
-        $preCommand = sprintf('DEL_%s_DOWNTIME;%d',$suffix, $downtime->getInternalId());
+        $preCommand = sprintf('DEL_%s_DOWNTIME;%d', $suffix, $downtime->getInternalId());
         $commandToSend = str_replace(['"', "\n"], ['', '<br/>'], $preCommand);
         $commandFull = $this->createCommandHeader($host->getPollerId()) . $commandToSend;
         $this->engineRepository->sendExternalCommand($commandFull);
