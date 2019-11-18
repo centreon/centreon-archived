@@ -83,7 +83,7 @@ class CentreonEventSubscriber implements EventSubscriberInterface
     const DEFAULT_API_HEADER_NAME = "version";
 
     /**
-     * @var Container
+     * @var ContainerInterface
      */
     private $container;
 
@@ -197,7 +197,9 @@ class CentreonEventSubscriber implements EventSubscriberInterface
                     }
                 }
             }
-            $this->requestParameters->setSearch(json_encode($search));
+            if ($json = json_encode($search)) {
+                $this->requestParameters->setSearch($json);
+            }
         }
 
         /**
