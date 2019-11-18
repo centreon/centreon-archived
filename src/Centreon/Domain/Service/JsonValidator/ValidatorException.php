@@ -19,25 +19,12 @@
  */
 declare(strict_types=1);
 
-namespace Centreon\Domain\Engine\Interfaces;
+namespace Centreon\Domain\Service\JsonValidator;
 
-use Centreon\Domain\Engine\EngineException;
-
-interface EngineRepositoryInterface
+class ValidatorException extends \Exception
 {
-    /**
-     * Adds a command
-     *
-     * @param string $command Command to send
-     * @throws EngineException
-     */
-    public function sendExternalCommand(string $command): void;
-
-    /**
-     * Adds commands
-     *
-     * @param string[] $commands List of commands to send
-     * @throws EngineException
-     */
-    public function sendExternalCommands(array $commands): void;
+    public function __construct($message = "", $code = 0, \Throwable $previous = null)
+    {
+        parent::__construct($message, $code, $previous);
+    }
 }
