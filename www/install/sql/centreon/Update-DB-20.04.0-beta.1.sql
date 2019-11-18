@@ -1,6 +1,3 @@
---new updated field of pollers-
-ALTER TABLE `nagios_server` ADD COLUMN `updated` enum('0','1') NOT NULL DEFAULT '0';
-
 -- Remove broker correlation mechanism
 ALTER TABLE `cfg_centreonbroker` DROP COLUMN `correlation_activate`;
 DELETE FROM `cb_field` WHERE
