@@ -19,7 +19,7 @@
  */
 declare(strict_types=1);
 
-namespace Centreon\Application\Controller;
+namespace Centreon\Application\Controller\Configuration;
 
 use Centreon\Domain\Poller\Interfaces\PollerServiceInterface;
 use Centreon\Domain\RequestParameters\Interfaces\RequestParametersInterface;

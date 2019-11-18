@@ -53,9 +53,9 @@ class Poller
 
     /**
      * @Serializer\Groups({"poller_main"})
-     * @var \DateTime
+     * @var \DateTime|null
      */
-    private $lastRestart = 0;
+    private $lastRestart;
 
     /**
      * @Serializer\Groups({"poller_main"})
@@ -264,9 +264,9 @@ class Poller
     }
 
     /**
-     * @return \DateTime
+     * @return \DateTime|null
      */
-    public function getLastRestart(): \DateTime
+    public function getLastRestart(): ?\DateTime
     {
         return $this->lastRestart;
     }
@@ -275,7 +275,7 @@ class Poller
      * @param \DateTime $lastRestart
      * @return Poller
      */
-    public function setLastRestart(\DateTime $lastRestart): Poller
+    public function setLastRestart(?\DateTime $lastRestart): Poller
     {
         $this->lastRestart = $lastRestart;
         return $this;
