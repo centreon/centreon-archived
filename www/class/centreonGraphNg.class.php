@@ -1077,10 +1077,23 @@ class CentreonGraphNg
                     $metric['prints'][] = array_values($rrdData['meta']['gprints'][$gprintsPos]);
                 }
             }
-            
+
+            $minimum_value = null;
+            $maximum_value = null;
             for ($j = 0; $j < $size; $j++) {
                 $metric['data'][] = $rrdData['data'][$j][$i];
+                if (!is_null($rrdData['data'][$j][$i]) && 
+                    (is_null($minimum_value) || $rrdData['data'][$j][$i] < $minimum_value)) {
+                    $minimum_value = $rrdData['data'][$j][$i];
+                }
+                if (!is_null($rrdData['data'][$j][$i]) && 
+                    (is_null($maximum_value) || $rrdData['data'][$j][$i] > $maximum_value)) {
+                    $maximum_value = $rrdData['data'][$j][$i];
+                }
             }
+            
+            $metric['minimum_value'] = $minimum_value;
+            $metric['maximum_value'] = $maximum_value;
             $i++;
         }
     }
