@@ -168,12 +168,10 @@ class CentreonMetric extends CentreonWebService
             self::sendResult(array());
         }
 
-        $result = array();
-        $result[] = $this->metricsData(
+        return $this->metricsData(
             isset($this->arguments['services']) ? $this->arguments['services'] : '',
             isset($this->arguments['metrics']) ? $this->arguments['metrics'] : ''
         );
-        return $result;
     }
 
     /**
