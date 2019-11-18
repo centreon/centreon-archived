@@ -57,6 +57,16 @@ services:
     Centreon\Domain\RequestParameters\Interfaces\RequestParametersInterface:
         class: Centreon\Domain\RequestParameters\RequestParameters
 
+    # Poller configuration
+    Centreon\Domain\Poller\Interfaces\PollerServiceInterface:
+        class: Centreon\Domain\Poller\PollerService
+
+    Centreon\Domain\Poller\Interfaces\PollerRepositoryInterface:
+        class: Centreon\Infrastructure\Poller\PollerRepositoryRDB
+        calls:
+            - method: setSqlRequestTranslator
+              arguments: ['@sqlRequestTranslator']
+
     # Real time monitoring
     sqlRequestTranslator:
         class: Centreon\Infrastructure\RequestParameters\SqlRequestParametersTranslator
