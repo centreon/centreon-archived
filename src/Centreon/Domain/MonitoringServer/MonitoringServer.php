@@ -28,172 +28,168 @@ class MonitoringServer
 {
     /**
      * @Serializer\Groups({"monitoringserver_main"})
-     * @var int Unique id of the poller
+     * @var int Unique id of server
      */
     private $id;
 
     /**
      * @Serializer\Groups({"monitoringserver_main"})
-     * @var string Poller's name
+     * @var string Name of server
      */
     private $name;
 
     /**
      * @Serializer\Groups({"monitoringserver_main"})
      * @Desc(column="localhost", modifier="setLocalhost")
-     * @var bool
+     * @var bool Indicates whether it's the localhost server
      */
     private $isLocalhost = false;
 
     /**
      * @Serializer\Groups({"monitoringserver_main"})
-     * @var bool
+     * @var bool Indicates whether it's the default server
      */
     private $isDefault = false;
 
     /**
      * @Serializer\Groups({"monitoringserver_main"})
-     * @var \DateTime|null
+     * @var \DateTime|null Date of the last Engine restart request
      */
     private $lastRestart;
 
     /**
      * @Serializer\Groups({"monitoringserver_main"})
      * @Desc(column="ns_ip_address", modifier="setAddress")
-     * @var string|null IP address
+     * @var string|null IP address of server
      */
     private $address;
 
     /**
      * @Serializer\Groups({"monitoringserver_main"})
      * @Desc(column="ns_activate", modifier="setActivate")
-     * @var bool
+     * @var bool Indicates whether the server configuration is activated
      */
     private $isActivate = true;
 
     /**
      * @Serializer\Groups({"monitoringserver_main"})
-     * @var string|null Command to start Engine
+     * @var string|null System start command for Engine
      */
     private $engineStartCommand;
 
     /**
      * @Serializer\Groups({"monitoringserver_main"})
-     * @var string|null Command to stop Engine
+     * @var string|null System stop command for Engine
      */
     private $engineStopCommand;
 
     /**
      * @Serializer\Groups({"monitoringserver_main"})
-     * @var string|null Command to restart Engine
+     * @var string|null System restart command for Engine
      */
     private $engineRestartCommand;
 
     /**
      * @Serializer\Groups({"monitoringserver_main"})
-     * @var string|null Command to reload Engine
+     * @var string|null System reload command for Engine
      */
     private $engineReloadCommand;
 
     /**
      * @Serializer\Groups({"monitoringserver_main"})
-     * @var string|null Full path of the binary Engine
+     * @var string|null Full path of the Engine binary
      */
     private $nagiosBin;
 
     /**
      * @Serializer\Groups({"monitoringserver_main"})
-     * @var string|null Full binary path of the statistics engine
+     * @var string|null Full path of the Engine statistics binary
      */
     private $nagiostatsBin;
 
     /**
-     * @Serializer\Groups({"monitoringserver_main"})
      * @var string|null
      */
     private $nagiosPerfdata;
 
     /**
      * @Serializer\Groups({"monitoringserver_main"})
-     * @var string|null Command to reload Broker
+     * @var string|null System reload command for Broker
      */
     private $brokerReloadCommand;
 
     /**
      * @Serializer\Groups({"monitoringserver_main"})
-     * @var string|null
+     * @var string|null Full path of the Broker configuration
      */
     private $centreonbrokerCfgPath;
 
     /**
      * @Serializer\Groups({"monitoringserver_main"})
-     * @var string|null
+     * @var string|null Full path of the Broker module's libraries
      */
     private $centreonbrokerModulePath;
 
     /**
      * @Serializer\Groups({"monitoringserver_main"})
-     * @var string|null
+     * @var string|null Full path of the Engine connectors
      */
     private $centreonconnectorPath;
 
     /**
      * @Serializer\Groups({"monitoringserver_main"})
-     * @var int SSH port
+     * @var int SSH port SSH port of this server
      */
     private $sshPort;
 
     /**
-     * @Serializer\Groups({"monitoringserver_main"})
      * @var string|null
      */
     private $sshPrivateKey;
 
     /**
      * @Serializer\Groups({"monitoringserver_main"})
-     * @var string|null
+     * @var string|null System name of Centreontrapd daemon
      */
     private $initScriptCentreontrapd;
 
     /**
      * @Serializer\Groups({"monitoringserver_main"})
-     * @var string|null
+     * @var string|null Full path of the Centreontrapd daemon configuration
      */
     private $snmpTrapdPathConf;
 
     /**
-     * @Serializer\Groups({"monitoringserver_main"})
      * @var string|null
      */
     private $engineName;
 
     /**
-     * @Serializer\Groups({"monitoringserver_main"})
      * @var string|null
      */
     private $engineVersion;
 
     /**
      * @Serializer\Groups({"monitoringserver_main"})
-     * @var string|null
+     * @var string|null Full path of the Broker logs
      */
     private $centreonbrokerLogsPath;
 
     /**
      * @Serializer\Groups({"monitoringserver_main"})
-     * @var int|null
+     * @var int|null Unique ID of the master Remote Server linked to the server
      */
     private $remoteId;
 
     /**
      * @Serializer\Groups({"monitoringserver_main"})
-     * @var bool
+     * @var bool Indicates whether Remote Servers are used as SSH proxies
      */
     private $remoteServerCentcoreSshProxy = true;
 
     /**
      * @Serializer\Groups({"monitoringserver_main"})
-     * @var bool
+     * @var bool Indicates whether the monitoring configuration has changed since last restart
      */
     private $isUpdated = false;
 
