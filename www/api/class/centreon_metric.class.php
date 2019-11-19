@@ -925,12 +925,8 @@ class CentreonMetric extends CentreonWebService
         $query = 'SELECT actual_start_time as start, actual_end_time as end ' .
             'FROM downtimes ' .
             'WHERE host_id = :hostId AND service_id = :serviceId ' .
-            'AND (' .
-            '(actual_start_time <= :end AND :end <= actual_end_time) ' .
-            'OR (actual_start_time <= :start AND :start <= actual_end_time) ' .
-            'OR (actual_start_time >= :start AND :end >= actual_end_time) ' .
-            'OR (actual_start_time IS NOT NULL AND actual_end_time IS NULL) ' .
-            ')';
+            'AND ' .
+            'actual_start_time <= :end AND (actual_end_time >= :start OR actual_end_time is NULL)';
         $queryValues['hostId'] = (int)$hostId;
         $queryValues['serviceId'] = (int)$serviceId;
         $queryValues['end'] = (int)$end;
@@ -950,7 +946,7 @@ class CentreonMetric extends CentreonWebService
     {
         $periods = array();
         $stmt = $this->pearDBMonitoring->prepare($query);
-        foreach ($queryValues as $key => $value) {
+        foreach ($queryValues as $key => &$value) {
             $stmt->bindParam(':' . $key, $value, PDO::PARAM_INT);
         }
         $dbResult = $stmt->execute();
