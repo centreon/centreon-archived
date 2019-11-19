@@ -277,7 +277,7 @@ class CentreonMetric extends CentreonWebService
      * Get array builded from arguments
      * 
      * @param string $services List of services (like hostId_serviceId,hostId2_serviceId2,...)
-     * @param string $metrics  List of metrics (like hostId_serviceId_metricId,hostId2_serviceId2_metricId2,...)
+     * @param string $metrics  List of metrics (like metricId,metricId2,...)
      *
      * @return mixed
      */
@@ -331,25 +331,38 @@ class CentreonMetric extends CentreonWebService
         }
 
         if (is_string($metrics) && strlen($metrics) !== 0) {
-            foreach (explode(',', $metrics) as $metric) {
-                list($hostId, $serviceId, $metricId) = explode('_', $metric);
-                if (false === is_numeric($hostId) ||
-                    false === is_numeric($serviceId) ||
-                    false === is_numeric($metricId)
-                ) {
+            $filter = '';
+            $filter_append = '';
+            foreach (explode(',', $metrics) as $metricId) {
+                if (false === is_numeric($metricId)) {
                     continue;
                 }
+                $filter .= $filter_append . $metricId;
+                $filter_append = ',';
+            }
 
-                if (isset($selectedMetrics[$hostId . '_' . $serviceId]) && count($selectedMetrics[$hostId . '_' . $serviceId]) <= 0) {
+            if ($filter === '') {
+                return $selectedMetrics;
+            }
+
+            $results = $this->pearDBMonitoring->query(
+                'SELECT 
+                    metric_id, host_id, service_id
+                 FROM metrics, index_data
+                 WHERE metrics.metric_id IN (' . $filter . ') AND metrics.index_id = index_data.id'
+            );
+
+            foreach ($results as $row) {
+                if (isset($selectedMetrics[$row['host_id'] . '_' . $row['service_id']]) && count($selectedMetrics[$row['host_id'] . '_' . $row['service_id']]) <= 0) {
                     continue;
                 }
-                if (!isset($selectedMetrics[$hostId . '_' . $serviceId])) {
-                    if ($this->checkAcl($hostId, $serviceId, $aclGroups, $isAdmin) <= 0) {
+                if (!isset($selectedMetrics[$row['host_id'] . '_' . $row['service_id']])) {
+                    if ($this->checkAcl($row['host_id'], $row['service_id'], $aclGroups, $isAdmin) <= 0) {
                         continue;
                     }
-                    $selectedMetrics[$hostId . '_' . $serviceId] = array();
+                    $selectedMetrics[$row['host_id'] . '_' . $row['service_id']] = array();
                 }
-                $selectedMetrics[$hostId . '_' . $serviceId][$metricId] = 1;
+                $selectedMetrics[$row['host_id'] . '_' . $row['service_id']][$row['metric_id']] = 1;
             }
         }
 
@@ -360,7 +373,7 @@ class CentreonMetric extends CentreonWebService
      * Get data for metrics (by services and/or metrics)
      *
      * @param string $services List of services (like hostId_serviceId,hostId2_serviceId2,...)
-     * @param string $metrics  List of metrics (like hostId_serviceId_metricId,hostId2_serviceId2_metricId2,...)
+     * @param string $metrics  List of metrics (like metricId,metricId2,...)
      *
      * @return array
      *
