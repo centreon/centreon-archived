@@ -3,23 +3,22 @@ Centreon Web 2.8.30
 ===================
 
 Bug Fixes
----------
+=========
 
 * Macro passwords are not hidden
 
 Security
---------
+========
 
 * No check for authentication
 * Cross-site request forgery
 * Session fixation
-* SQL injection in LDAP page
+* SQL injections
 * RCE flaws
 * Authentication flaw
-* XSS in "My account"
-* SQL injection vulnerability in makeXMLForOneService.php
-* Authenticated RCE through Settings -> Commands -> Miscellaneous
-* Persistent XSS
+* XSS
+* SQL injection vulnerability in multiple pages
+* Discovery of directories
 
 ===================
 Centreon Web 2.8.29
