@@ -2,11 +2,35 @@
 Centreon Web 19.10.2
 ====================
 
-Enhancements
-------------
-
 Bug Fixes
 ---------
+
+* LDAP users using DN with special chars cannot login
+* Select all elements in select2 freeze the screen
+* Non synchronized curves when using rrdcached
+* Missing selection of Okta template for LDAP
+* Trap matches and hostgroups break export in Remote server
+* Recurrent downtimes search bug
+* Unable to hide service template macro with Clapi
+* Macro passwords can be visible
+* Calculation of contact groups too frequent
+* Additional Remote Server config fails
+* Unable to set host notification to None through API
+* Remove unused radio button in meta-service configuration
+
+Security
+--------
+
+* No check for authentication
+* SQL injection
+* RCE flaws
+* Authentication flaw
+
+Documentation
+-------------
+
+* Display release notes per section in upgrade process
+* Update performance FAQ for rrdcached
 
 ====================
 Centreon Web 19.10.1

@@ -286,7 +286,7 @@ class CentreonCustomView
             }
         }
 
-        return $this->currentView;
+        return (int)$this->currentView;
     }
 
     /**

@@ -142,7 +142,7 @@ $request = "(SELECT SQL_CALC_FOUND_ROWS DISTINCT d.internal_id as internal_downt
     "WHERE d.host_id = s.host_id " .
     "AND d.service_id = s.service_id " .
     "AND s.host_id = h.host_id " .
-    "AND d.service_id IS NOT NULL ";
+    "AND d.type = 1 ";
 if (!$view_all) {
     $request .= " AND d.cancelled = 0 ";
 }
@@ -164,7 +164,7 @@ $request .= ") UNION (SELECT DISTINCT d.internal_id as internal_downtime_id, d.e
   d.end_time as scheduled_end_time, d.started as was_started, h.name as host_name,
    '' as service_description " . $extrafields .
     "FROM downtimes d, hosts h " . ($is_admin ? "" : ", centreon_acl acl ") . " " .
-    "WHERE d.host_id = h.host_id AND d.service_id IS NULL ";
+    "WHERE d.host_id = h.host_id AND d.type = 2 ";
 if (!$view_all) {
     $request .= " AND d.cancelled = 0 ";
 }
