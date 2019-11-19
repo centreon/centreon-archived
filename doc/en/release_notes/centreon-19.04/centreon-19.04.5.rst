@@ -5,6 +5,9 @@ Centreon Web 19.04.5
 Bug fixes
 ---------
 
+* LDAP users using DN with special chars cannot login
+* LDAP connection issue
+* Log pagination does not work
 * Unable to add downtime to service group
 * The option to hide auto login has no effect
 * Macro passwords are not hidden
@@ -15,6 +18,7 @@ Bug fixes
 * Double host name display in host detail
 * Improve centreonworker logging in Remote server
 * Metric name are not properly ordered on CSV export
+* Incorrect CSV export of Event Logs
 * Disable the install button when installing modules (last install step)
 * Select all elements in select2 freeze the screen
 * Recurrent downtimes search bug
@@ -23,20 +27,20 @@ Bug fixes
 * Unable to set host notification to none
 * Purge old user actions
 * Remove unused radio button in meta-service configuration
+* Correctly toggle edit when widgets load
+* Add curve label in API
+* Display scrollbar behind popin
 
 Security
 --------
 
 * No check for authentication
-* SQL injection
+* SQL injections
 * Cross-site request forgery
 * Session fixation
 * RCE flaws
 * Authentication flaw
-* Persistent XSS in "My account"
-* SQL injection in makeXMLForOneService.php
-* Authenticated RCE through Settings -> Commands -> Miscellaneous
-* Persistent cross-site scripting
+* XSS
 
 Documentation
 -------------
