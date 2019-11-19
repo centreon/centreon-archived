@@ -19,32 +19,18 @@
  */
 declare(strict_types=1);
 
-namespace Centreon\Domain\Poller;
+namespace Centreon\Domain\MonitoringServer\Interfaces;
 
-use Centreon\Domain\Poller\Interfaces\PollerRepositoryInterface;
-use Centreon\Domain\Poller\Interfaces\PollerServiceInterface;
+use Centreon\Domain\MonitoringServer\MonitoringServer;
 
-class PollerService implements PollerServiceInterface
+interface MonitoringServerServiceInterface
 {
-    /**
-     * @var PollerRepositoryInterface
-     */
-    private $pollerRepository;
 
     /**
-     * PollerService constructor.
-     * @param PollerRepositoryInterface $pollerRepository
+     * Find pollers.
+     *
+     * @return MonitoringServer[]
+     * @throws \Exception
      */
-    public function __construct(PollerRepositoryInterface $pollerRepository)
-    {
-        $this->pollerRepository = $pollerRepository;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function findPollers(): array
-    {
-        return $this->pollerRepository->findPollers();
-    }
+    public function findServers(): array;
 }

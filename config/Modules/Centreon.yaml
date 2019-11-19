@@ -58,11 +58,11 @@ services:
         class: Centreon\Domain\RequestParameters\RequestParameters
 
     # Poller configuration
-    Centreon\Domain\Poller\Interfaces\PollerServiceInterface:
-        class: Centreon\Domain\Poller\PollerService
+    Centreon\Domain\MonitoringServer\Interfaces\MonitoringServerServiceInterface:
+        class: Centreon\Domain\MonitoringServer\MonitoringServerService
 
-    Centreon\Domain\Poller\Interfaces\PollerRepositoryInterface:
-        class: Centreon\Infrastructure\Poller\PollerRepositoryRDB
+    Centreon\Domain\MonitoringServer\Interfaces\MonitoringServerRepositoryInterface:
+        class: Centreon\Infrastructure\MonitoringServer\MonitoringServerRepositoryRDB
         calls:
             - method: setSqlRequestTranslator
               arguments: ['@sqlRequestTranslator']
