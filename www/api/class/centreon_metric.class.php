@@ -156,6 +156,26 @@ class CentreonMetric extends CentreonWebService
     }
 
     /**
+     * Get last metrics value
+     *
+     * @return array
+     */
+    public function getLastMetricsData()
+    {
+        if (false === isset($this->arguments['services']) &&
+            false === isset($this->arguments['metrics'])
+        ) {
+            self::sendResult(array());
+        }
+
+        return $this->lastMetricsData(
+            isset($this->arguments['services']) ? $this->arguments['services'] : '',
+            isset($this->arguments['metrics']) ? $this->arguments['metrics'] : ''
+        );
+    }
+
+
+    /**
      * Get metrics datas for a services, metrics
      *
      * @return array
@@ -367,6 +387,99 @@ class CentreonMetric extends CentreonWebService
         }
 
         return $selectedMetrics;
+    }
+
+    /**
+     * Get last data for metrics (by services and/or metrics)
+     *
+     * @param string $services List of services (like hostId_serviceId,hostId2_serviceId2,...)
+     * @param string $metrics  List of metrics (like metricId,metricId2,...)
+     *
+     * @return array
+     *
+     * @throws Exception
+     * @throws RestBadRequestException
+     * @throws RestForbiddenException
+     * @throws RestNotFoundException
+     */
+    protected function lastMetricsData($services, $metrics)
+    {
+        global $centreon;
+
+        $userId = $centreon->user->user_id;
+        $isAdmin = $centreon->user->admin;
+        $aclGroups = null;
+
+        $query = '';
+        if (is_string($services) && strlen($services) !== 0) {
+            $filterHostIds = '';
+            $filterHostIdsAppend = '';
+            $filterServiceIds = '';
+            $filterServiceIdsAppend = '';
+            foreach (explode(',', $services) as $service) {
+                list($hostId, $serviceId) = explode('_', $service);
+                if (false === is_numeric($hostId) ||
+                    false === is_numeric($serviceId)
+                ) {
+                    continue;
+                }
+                
+                $filterHostIds .= $filterHostIdsAppend . $hostId;
+                $filterServiceIds .= $filterServiceIdsAppend . $serviceId;
+                $filterHostIdsAppend = ',';
+                $filterServiceIdsAppend = ',';
+            }
+
+            if ($filterHostIds !== '') {
+                $query = '
+                    SELECT i.host_id, i.service_id, m.* 
+                    FROM index_data i, metrics m 
+                    WHERE i.host_id IN (' . $filterHostIds . ') AND i.service_id IN (' . $filterServiceIds . ') AND i.id = m.index_id';
+            }
+        }
+
+        if (is_string($metrics) && strlen($metrics) !== 0) {
+            $filterMetricIds = '';
+            $filterMetricAppend = '';
+            foreach (explode(',', $metrics) as $metricId) {
+                if (false === is_numeric($metricId)) {
+                    continue;
+                }
+                $filterMetricIds .= $filterMetricAppend . $metricId;
+                $filterMetricAppend = ',';
+            }
+
+            if ($filterMetricIds !== '') {
+                if ($query !== '') {
+                    $query .= ' UNION ';
+                }
+                $query .= '
+                    SELECT i.host_id, i.service_id, m.*
+                    FROM metrics m, index_data i
+                    WHERE m.metric_id IN (' . $filterMetricIds . ') AND m.index_id = i.id';
+            }
+        }
+
+        if ($subquery === '') {
+            throw new \Exception("No metrics found");
+        }
+
+        /* Get ACL if user is not admin */
+        if (!$isAdmin) {
+            $acl = new CentreonACL($userId, $isAdmin);
+            $aclGroups = $acl->getAccessGroupsString();
+            $query = '
+                SELECT ms.* FROM (' . $query . ') as ms, centreon_acl ca 
+                WHERE EXISTS (
+                    SELECT 1 
+                    FROM centreon_acl ca
+                    WHERE ca.host_id = ms.host_id
+                    AND ca.service_id = ms.service_id
+                    AND ca.group_id IN (' . $aclGroups . '))'; 
+        }
+
+        $res = $this->pearDBMonitoring->query($query);
+        return $res->fetchAll(PDO::FETCH_ASSOC);
     }
 
     /**
