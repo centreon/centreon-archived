@@ -19,177 +19,183 @@
  */
 declare(strict_types=1);
 
-namespace Centreon\Domain\Poller;
+namespace Centreon\Domain\MonitoringServer;
 
 use JMS\Serializer\Annotation as Serializer;
 use Centreon\Domain\Annotation\EntityDescriptor as Desc;
 
-class Poller
+class MonitoringServer
 {
     /**
-     * @Serializer\Groups({"poller_main"})
+     * @Serializer\Groups({"monitoringserver_main"})
      * @var int Unique id of the poller
      */
     private $id;
 
     /**
-     * @Serializer\Groups({"poller_main"})
+     * @Serializer\Groups({"monitoringserver_main"})
      * @var string Poller's name
      */
     private $name;
 
     /**
-     * @Serializer\Groups({"poller_main"})
+     * @Serializer\Groups({"monitoringserver_main"})
      * @Desc(column="localhost", modifier="setLocalhost")
      * @var bool
      */
     private $isLocalhost = false;
 
     /**
-     * @Serializer\Groups({"poller_main"})
+     * @Serializer\Groups({"monitoringserver_main"})
      * @var bool
      */
     private $isDefault = false;
 
     /**
-     * @Serializer\Groups({"poller_main"})
+     * @Serializer\Groups({"monitoringserver_main"})
      * @var \DateTime|null
      */
     private $lastRestart;
 
     /**
-     * @Serializer\Groups({"poller_main"})
+     * @Serializer\Groups({"monitoringserver_main"})
      * @Desc(column="ns_ip_address", modifier="setAddress")
      * @var string|null IP address
      */
     private $address;
 
     /**
-     * @Serializer\Groups({"poller_main"})
+     * @Serializer\Groups({"monitoringserver_main"})
      * @Desc(column="ns_activate", modifier="setActivate")
      * @var bool
      */
     private $isActivate = true;
 
     /**
-     * @Serializer\Groups({"poller_main"})
+     * @Serializer\Groups({"monitoringserver_main"})
      * @var string|null Command to start Engine
      */
     private $engineStartCommand;
 
     /**
-     * @Serializer\Groups({"poller_main"})
+     * @Serializer\Groups({"monitoringserver_main"})
      * @var string|null Command to stop Engine
      */
     private $engineStopCommand;
 
     /**
-     * @Serializer\Groups({"poller_main"})
+     * @Serializer\Groups({"monitoringserver_main"})
      * @var string|null Command to restart Engine
      */
     private $engineRestartCommand;
 
     /**
-     * @Serializer\Groups({"poller_main"})
+     * @Serializer\Groups({"monitoringserver_main"})
      * @var string|null Command to reload Engine
      */
     private $engineReloadCommand;
 
     /**
-     * @Serializer\Groups({"poller_main"})
+     * @Serializer\Groups({"monitoringserver_main"})
      * @var string|null Full path of the binary Engine
      */
     private $nagiosBin;
 
     /**
-     * @Serializer\Groups({"poller_main"})
+     * @Serializer\Groups({"monitoringserver_main"})
      * @var string|null Full binary path of the statistics engine
      */
     private $nagiostatsBin;
 
     /**
-     * @Serializer\Groups({"poller_main"})
+     * @Serializer\Groups({"monitoringserver_main"})
      * @var string|null
      */
     private $nagiosPerfdata;
 
     /**
-     * @Serializer\Groups({"poller_main"})
+     * @Serializer\Groups({"monitoringserver_main"})
      * @var string|null Command to reload Broker
      */
     private $brokerReloadCommand;
 
     /**
-     * @Serializer\Groups({"poller_main"})
+     * @Serializer\Groups({"monitoringserver_main"})
      * @var string|null
      */
     private $centreonbrokerCfgPath;
 
     /**
-     * @Serializer\Groups({"poller_main"})
+     * @Serializer\Groups({"monitoringserver_main"})
      * @var string|null
      */
     private $centreonbrokerModulePath;
 
     /**
-     * @Serializer\Groups({"poller_main"})
+     * @Serializer\Groups({"monitoringserver_main"})
      * @var string|null
      */
     private $centreonconnectorPath;
 
     /**
-     * @Serializer\Groups({"poller_main"})
+     * @Serializer\Groups({"monitoringserver_main"})
      * @var int SSH port
      */
     private $sshPort;
 
     /**
-     * @Serializer\Groups({"poller_main"})
+     * @Serializer\Groups({"monitoringserver_main"})
      * @var string|null
      */
     private $sshPrivateKey;
 
     /**
-     * @Serializer\Groups({"poller_main"})
+     * @Serializer\Groups({"monitoringserver_main"})
      * @var string|null
      */
     private $initScriptCentreontrapd;
 
     /**
-     * @Serializer\Groups({"poller_main"})
+     * @Serializer\Groups({"monitoringserver_main"})
      * @var string|null
      */
     private $snmpTrapdPathConf;
 
     /**
-     * @Serializer\Groups({"poller_main"})
+     * @Serializer\Groups({"monitoringserver_main"})
      * @var string|null
      */
     private $engineName;
 
     /**
-     * @Serializer\Groups({"poller_main"})
+     * @Serializer\Groups({"monitoringserver_main"})
      * @var string|null
      */
     private $engineVersion;
 
     /**
-     * @Serializer\Groups({"poller_main"})
+     * @Serializer\Groups({"monitoringserver_main"})
      * @var string|null
      */
     private $centreonbrokerLogsPath;
 
     /**
-     * @Serializer\Groups({"poller_main"})
+     * @Serializer\Groups({"monitoringserver_main"})
      * @var int|null
      */
     private $remoteId;
 
     /**
-     * @Serializer\Groups({"poller_main"})
+     * @Serializer\Groups({"monitoringserver_main"})
      * @var bool
      */
     private $remoteServerCentcoreSshProxy = true;
+
+    /**
+     * @Serializer\Groups({"monitoringserver_main"})
+     * @var bool
+     */
+    private $isUpdated = false;
 
     /**
      * @return int
@@ -201,9 +207,9 @@ class Poller
 
     /**
      * @param int $id
-     * @return Poller
+     * @return MonitoringServer
      */
-    public function setId(int $id): Poller
+    public function setId(int $id): MonitoringServer
     {
         $this->id = $id;
         return $this;
@@ -219,9 +225,9 @@ class Poller
 
     /**
      * @param string $name
-     * @return Poller
+     * @return MonitoringServer
      */
-    public function setName(string $name): Poller
+    public function setName(string $name): MonitoringServer
     {
         $this->name = $name;
         return $this;
@@ -237,9 +243,9 @@ class Poller
 
     /**
      * @param bool $isLocalhost
-     * @return Poller
+     * @return MonitoringServer
      */
-    public function setLocalhost(bool $isLocalhost): Poller
+    public function setLocalhost(bool $isLocalhost): MonitoringServer
     {
         $this->isLocalhost = $isLocalhost;
         return $this;
@@ -255,9 +261,9 @@ class Poller
 
     /**
      * @param bool $isDefault
-     * @return Poller
+     * @return MonitoringServer
      */
-    public function setIsDefault(bool $isDefault): Poller
+    public function setIsDefault(bool $isDefault): MonitoringServer
     {
         $this->isDefault = $isDefault;
         return $this;
@@ -273,9 +279,9 @@ class Poller
 
     /**
      * @param \DateTime $lastRestart
-     * @return Poller
+     * @return MonitoringServer
      */
-    public function setLastRestart(?\DateTime $lastRestart): Poller
+    public function setLastRestart(?\DateTime $lastRestart): MonitoringServer
     {
         $this->lastRestart = $lastRestart;
         return $this;
@@ -291,9 +297,9 @@ class Poller
 
     /**
      * @param string|null $address
-     * @return Poller
+     * @return MonitoringServer
      */
-    public function setAddress(?string $address): Poller
+    public function setAddress(?string $address): MonitoringServer
     {
         $this->address = $address;
         return $this;
@@ -309,9 +315,9 @@ class Poller
 
     /**
      * @param bool $isActivate
-     * @return Poller
+     * @return MonitoringServer
      */
-    public function setActivate(bool $isActivate): Poller
+    public function setActivate(bool $isActivate): MonitoringServer
     {
         $this->isActivate = $isActivate;
         return $this;
@@ -327,9 +333,9 @@ class Poller
 
     /**
      * @param string|null $engineStartCommand
-     * @return Poller
+     * @return MonitoringServer
      */
-    public function setEngineStartCommand(?string $engineStartCommand): Poller
+    public function setEngineStartCommand(?string $engineStartCommand): MonitoringServer
     {
         $this->engineStartCommand = $engineStartCommand;
         return $this;
@@ -345,9 +351,9 @@ class Poller
 
     /**
      * @param string|null $engineStopCommand
-     * @return Poller
+     * @return MonitoringServer
      */
-    public function setEngineStopCommand(?string $engineStopCommand): Poller
+    public function setEngineStopCommand(?string $engineStopCommand): MonitoringServer
     {
         $this->engineStopCommand = $engineStopCommand;
         return $this;
@@ -363,9 +369,9 @@ class Poller
 
     /**
      * @param string|null $engineRestartCommand
-     * @return Poller
+     * @return MonitoringServer
      */
-    public function setEngineRestartCommand(?string $engineRestartCommand): Poller
+    public function setEngineRestartCommand(?string $engineRestartCommand): MonitoringServer
     {
         $this->engineRestartCommand = $engineRestartCommand;
         return $this;
@@ -381,9 +387,9 @@ class Poller
 
     /**
      * @param string|null $engineReloadCommand
-     * @return Poller
+     * @return MonitoringServer
      */
-    public function setEngineReloadCommand(?string $engineReloadCommand): Poller
+    public function setEngineReloadCommand(?string $engineReloadCommand): MonitoringServer
     {
         $this->engineReloadCommand = $engineReloadCommand;
         return $this;
@@ -399,9 +405,9 @@ class Poller
 
     /**
      * @param string|null $nagiosBin
-     * @return Poller
+     * @return MonitoringServer
      */
-    public function setNagiosBin(?string $nagiosBin): Poller
+    public function setNagiosBin(?string $nagiosBin): MonitoringServer
     {
         $this->nagiosBin = $nagiosBin;
         return $this;
@@ -417,9 +423,9 @@ class Poller
 
     /**
      * @param string|null $nagiostatsBin
-     * @return Poller
+     * @return MonitoringServer
      */
-    public function setNagiostatsBin(?string $nagiostatsBin): Poller
+    public function setNagiostatsBin(?string $nagiostatsBin): MonitoringServer
     {
         $this->nagiostatsBin = $nagiostatsBin;
         return $this;
@@ -435,9 +441,9 @@ class Poller
 
     /**
      * @param string|null $nagiosPerfdata
-     * @return Poller
+     * @return MonitoringServer
      */
-    public function setNagiosPerfdata(?string $nagiosPerfdata): Poller
+    public function setNagiosPerfdata(?string $nagiosPerfdata): MonitoringServer
     {
         $this->nagiosPerfdata = $nagiosPerfdata;
         return $this;
@@ -453,9 +459,9 @@ class Poller
 
     /**
      * @param string|null $brokerReloadCommand
-     * @return Poller
+     * @return MonitoringServer
      */
-    public function setBrokerReloadCommand(?string $brokerReloadCommand): Poller
+    public function setBrokerReloadCommand(?string $brokerReloadCommand): MonitoringServer
     {
         $this->brokerReloadCommand = $brokerReloadCommand;
         return $this;
@@ -471,9 +477,9 @@ class Poller
 
     /**
      * @param string|null $centreonbrokerCfgPath
-     * @return Poller
+     * @return MonitoringServer
      */
-    public function setCentreonbrokerCfgPath(?string $centreonbrokerCfgPath): Poller
+    public function setCentreonbrokerCfgPath(?string $centreonbrokerCfgPath): MonitoringServer
     {
         $this->centreonbrokerCfgPath = $centreonbrokerCfgPath;
         return $this;
@@ -489,9 +495,9 @@ class Poller
 
     /**
      * @param string|null $centreonbrokerModulePath
-     * @return Poller
+     * @return MonitoringServer
      */
-    public function setCentreonbrokerModulePath(?string $centreonbrokerModulePath): Poller
+    public function setCentreonbrokerModulePath(?string $centreonbrokerModulePath): MonitoringServer
     {
         $this->centreonbrokerModulePath = $centreonbrokerModulePath;
         return $this;
@@ -507,9 +513,9 @@ class Poller
 
     /**
      * @param string|null $centreonconnectorPath
-     * @return Poller
+     * @return MonitoringServer
      */
-    public function setCentreonconnectorPath(?string $centreonconnectorPath): Poller
+    public function setCentreonconnectorPath(?string $centreonconnectorPath): MonitoringServer
     {
         $this->centreonconnectorPath = $centreonconnectorPath;
         return $this;
@@ -525,9 +531,9 @@ class Poller
 
     /**
      * @param int $sshPort
-     * @return Poller
+     * @return MonitoringServer
      */
-    public function setSshPort(int $sshPort): Poller
+    public function setSshPort(int $sshPort): MonitoringServer
     {
         $this->sshPort = $sshPort;
         return $this;
@@ -543,9 +549,9 @@ class Poller
 
     /**
      * @param string|null $sshPrivateKey
-     * @return Poller
+     * @return MonitoringServer
      */
-    public function setSshPrivateKey(?string $sshPrivateKey): Poller
+    public function setSshPrivateKey(?string $sshPrivateKey): MonitoringServer
     {
         $this->sshPrivateKey = $sshPrivateKey;
         return $this;
@@ -561,9 +567,9 @@ class Poller
 
     /**
      * @param string|null $initScriptCentreontrapd
-     * @return Poller
+     * @return MonitoringServer
      */
-    public function setInitScriptCentreontrapd(?string $initScriptCentreontrapd): Poller
+    public function setInitScriptCentreontrapd(?string $initScriptCentreontrapd): MonitoringServer
     {
         $this->initScriptCentreontrapd = $initScriptCentreontrapd;
         return $this;
@@ -579,9 +585,9 @@ class Poller
 
     /**
      * @param string|null $snmpTrapdPathConf
-     * @return Poller
+     * @return MonitoringServer
      */
-    public function setSnmpTrapdPathConf(?string $snmpTrapdPathConf): Poller
+    public function setSnmpTrapdPathConf(?string $snmpTrapdPathConf): MonitoringServer
     {
         $this->snmpTrapdPathConf = $snmpTrapdPathConf;
         return $this;
@@ -597,9 +603,9 @@ class Poller
 
     /**
      * @param string|null $engineName
-     * @return Poller
+     * @return MonitoringServer
      */
-    public function setEngineName(?string $engineName): Poller
+    public function setEngineName(?string $engineName): MonitoringServer
     {
         $this->engineName = $engineName;
         return $this;
@@ -615,9 +621,9 @@ class Poller
 
     /**
      * @param string|null $engineVersion
-     * @return Poller
+     * @return MonitoringServer
      */
-    public function setEngineVersion(?string $engineVersion): Poller
+    public function setEngineVersion(?string $engineVersion): MonitoringServer
     {
         $this->engineVersion = $engineVersion;
         return $this;
@@ -633,9 +639,9 @@ class Poller
 
     /**
      * @param string|null $centreonbrokerLogsPath
-     * @return Poller
+     * @return MonitoringServer
      */
-    public function setCentreonbrokerLogsPath(?string $centreonbrokerLogsPath): Poller
+    public function setCentreonbrokerLogsPath(?string $centreonbrokerLogsPath): MonitoringServer
     {
         $this->centreonbrokerLogsPath = $centreonbrokerLogsPath;
         return $this;
@@ -651,9 +657,9 @@ class Poller
 
     /**
      * @param int|null $remoteId
-     * @return Poller
+     * @return MonitoringServer
      */
-    public function setRemoteId(?int $remoteId): Poller
+    public function setRemoteId(?int $remoteId): MonitoringServer
     {
         $this->remoteId = $remoteId;
         return $this;
@@ -669,11 +675,29 @@ class Poller
 
     /**
      * @param bool $remoteServerCentcoreSshProxy
-     * @return Poller
+     * @return MonitoringServer
      */
-    public function setRemoteServerCentcoreSshProxy(bool $remoteServerCentcoreSshProxy): Poller
+    public function setRemoteServerCentcoreSshProxy(bool $remoteServerCentcoreSshProxy): MonitoringServer
     {
         $this->remoteServerCentcoreSshProxy = $remoteServerCentcoreSshProxy;
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isUpdated(): bool
+    {
+        return $this->isUpdated;
+    }
+
+    /**
+     * @param bool $isUpdated
+     * @return MonitoringServer
+     */
+    public function setUpdated(bool $isUpdated): MonitoringServer
+    {
+        $this->isUpdated = $isUpdated;
         return $this;
     }
 }

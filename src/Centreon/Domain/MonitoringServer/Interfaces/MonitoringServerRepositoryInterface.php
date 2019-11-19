@@ -19,18 +19,18 @@
  */
 declare(strict_types=1);
 
-namespace Centreon\Domain\Poller\Interfaces;
+namespace Centreon\Domain\MonitoringServer\Interfaces;
 
-use Centreon\Domain\Poller\Poller;
+use Centreon\Domain\MonitoringServer\MonitoringServer;
 
-interface PollerRepositoryInterface
+interface MonitoringServerRepositoryInterface
 {
 
     /**
-     * Find pollers.
+     * Find monitoring servers.
      *
-     * @return Poller[]
+     * @return MonitoringServer[]
      * @throws \Exception
      */
-    public function findPollers(): array;
+    public function findServers(): array;
 }
