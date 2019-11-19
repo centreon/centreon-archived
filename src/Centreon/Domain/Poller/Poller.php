@@ -239,7 +239,7 @@ class Poller
      * @param bool $isLocalhost
      * @return Poller
      */
-    public function setIsLocalhost(bool $isLocalhost): Poller
+    public function setLocalhost(bool $isLocalhost): Poller
     {
         $this->isLocalhost = $isLocalhost;
         return $this;
@@ -311,7 +311,7 @@ class Poller
      * @param bool $isActivate
      * @return Poller
      */
-    public function setIsActivate(bool $isActivate): Poller
+    public function setActivate(bool $isActivate): Poller
     {
         $this->isActivate = $isActivate;
         return $this;

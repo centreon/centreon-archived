@@ -101,10 +101,17 @@ class PollerRepositoryRDB extends AbstractRepositoryDRB implements PollerReposit
 
         $pollers = [];
         while (false !== ($result = $statement->fetch(\PDO::FETCH_ASSOC))) {
-            $pollers[] = EntityCreator::createEntityByArray(
+            /**
+             * @var Poller $poller
+             */
+            $poller = EntityCreator::createEntityByArray(
                 Poller::class,
                 $result
             );
+            if ((int) $result['last_restart'] === 0) {
+                $poller->setLastRestart(null);
+            }
+            $pollers[] = $poller;
         }
         return $pollers;
     }
