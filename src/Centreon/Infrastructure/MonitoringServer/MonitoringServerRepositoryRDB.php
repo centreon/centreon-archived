@@ -19,17 +19,22 @@
  */
 declare(strict_types=1);
 
-namespace Centreon\Infrastructure\Poller;
+namespace Centreon\Infrastructure\MonitoringServer;
 
 use Centreon\Domain\Entity\EntityCreator;
-use Centreon\Domain\Poller\Interfaces\PollerRepositoryInterface;
-use Centreon\Domain\Poller\Poller;
+use Centreon\Domain\MonitoringServer\Interfaces\MonitoringServerRepositoryInterface;
+use Centreon\Domain\MonitoringServer\MonitoringServer;
 use Centreon\Domain\RequestParameters\RequestParameters;
 use Centreon\Infrastructure\DatabaseConnection;
 use Centreon\Infrastructure\Repository\AbstractRepositoryDRB;
 use Centreon\Infrastructure\RequestParameters\SqlRequestParametersTranslator;
 
-class PollerRepositoryRDB extends AbstractRepositoryDRB implements PollerRepositoryInterface
+/**
+ * This class is designed to manage the repository of the monitoring servers
+ *
+ * @package Centreon\Infrastructure\MonitoringServer
+ */
+class MonitoringServerRepositoryRDB extends AbstractRepositoryDRB implements MonitoringServerRepositoryInterface
 {
 
     /**
@@ -60,7 +65,7 @@ class PollerRepositoryRDB extends AbstractRepositoryDRB implements PollerReposit
     /**
      * @inheritDoc
      */
-    public function findPollers(): array
+    public function findServers(): array
     {
         $this->sqlRequestTranslator->setConcordanceArray([
             'id' => 'id',
@@ -99,20 +104,20 @@ class PollerRepositoryRDB extends AbstractRepositoryDRB implements PollerReposit
             $this->sqlRequestTranslator->getRequestParameters()->setTotal((int) $total);
         }
 
-        $pollers = [];
+        $servers = [];
         while (false !== ($result = $statement->fetch(\PDO::FETCH_ASSOC))) {
             /**
-             * @var Poller $poller
+             * @var MonitoringServer $server
              */
-            $poller = EntityCreator::createEntityByArray(
-                Poller::class,
+            $server = EntityCreator::createEntityByArray(
+                MonitoringServer::class,
                 $result
             );
             if ((int) $result['last_restart'] === 0) {
-                $poller->setLastRestart(null);
+                $server->setLastRestart(null);
             }
-            $pollers[] = $poller;
+            $servers[] = $server;
         }
-        return $pollers;
+        return $servers;
     }
 }

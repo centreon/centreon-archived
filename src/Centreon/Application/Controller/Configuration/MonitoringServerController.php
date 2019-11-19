@@ -19,9 +19,9 @@
  */
 declare(strict_types=1);
 
-namespace Centreon\Application\Controller;
+namespace Centreon\Application\Controller\Configuration;
 
-use Centreon\Domain\Poller\Interfaces\PollerServiceInterface;
+use Centreon\Domain\MonitoringServer\Interfaces\MonitoringServerServiceInterface;
 use Centreon\Domain\RequestParameters\Interfaces\RequestParametersInterface;
 use FOS\RestBundle\Context\Context;
 use FOS\RestBundle\Controller\AbstractFOSRestController;
@@ -34,20 +34,20 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
  *
  * @package Centreon\Application\Controller
  */
-class PollerController extends AbstractFOSRestController
+class MonitoringServerController extends AbstractFOSRestController
 {
     /**
-     * @var PollerServiceInterface
+     * @var MonitoringServerServiceInterface
      */
-    private $pollerService;
+    private $monitoringServerService;
 
     /**
      * PollerController constructor.
-     * @param PollerServiceInterface $pollerService
+     * @param MonitoringServerServiceInterface $monitoringServerService
      */
-    public function __construct(PollerServiceInterface $pollerService)
+    public function __construct(MonitoringServerServiceInterface $monitoringServerService)
     {
-        $this->pollerService = $pollerService;
+        $this->monitoringServerService = $monitoringServerService;
     }
 
     /**
@@ -55,20 +55,20 @@ class PollerController extends AbstractFOSRestController
      *
      * @IsGranted("ROLE_API_CONFIGURATION", message="You are not authorized to access this resource")
      * @Rest\Get(
-     *     "/configuration/pollers",
+     *     "/configuration/monitoring-servers",
      *     condition="request.attributes.get('version.is_beta') == true",
-     *     name="configuration.poller.findPoller")
+     *     name="configuration.monitoring-servers.findServer")
      * @param RequestParametersInterface $requestParameters
      * @return View
      * @throws \Exception
      */
-    public function findPoller(RequestParametersInterface $requestParameters): View
+    public function findServer(RequestParametersInterface $requestParameters): View
     {
-        $pollers = $this->pollerService->findPollers();
-        $context = (new Context())->setGroups(['poller_main']);
+        $server = $this->monitoringServerService->findServers();
+        $context = (new Context())->setGroups(['monitoringserver_main']);
 
         return $this->view([
-            'result' => $pollers,
+            'result' => $server,
             'meta' => [
                 'pagination' => $requestParameters->toArray()
             ]
