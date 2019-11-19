@@ -19,7 +19,7 @@
  */
 declare(strict_types=1);
 
-namespace Centreon\Application\Controller\Configuration;
+namespace Centreon\Application\Controller;
 
 use Centreon\Domain\Poller\Interfaces\PollerServiceInterface;
 use Centreon\Domain\RequestParameters\Interfaces\RequestParametersInterface;
@@ -56,12 +56,13 @@ class PollerController extends AbstractFOSRestController
      * @IsGranted("ROLE_API_CONFIGURATION", message="You are not authorized to access this resource")
      * @Rest\Get(
      *     "/configuration/pollers",
-     *     condition="request.attributes.get('version.is_beta') == true")
+     *     condition="request.attributes.get('version.is_beta') == true",
+     *     name="configuration.poller.findPoller")
      * @param RequestParametersInterface $requestParameters
      * @return View
      * @throws \Exception
      */
-    public function findLastHostAcknowledgement(RequestParametersInterface $requestParameters): View
+    public function findPoller(RequestParametersInterface $requestParameters): View
     {
         $pollers = $this->pollerService->findPollers();
         $context = (new Context())->setGroups(['poller_main']);
