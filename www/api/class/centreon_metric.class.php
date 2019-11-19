@@ -399,7 +399,7 @@ class CentreonMetric extends CentreonWebService
             $result['acknowledge'] = array();
             $result['downtime'] = array();
             list($hostId, $serviceId) = explode('_', array_key_first($selectedMetrics));
-            $result['acknowledge'] = $this->getAcknowlegePeriods($hostId, $serviceId, $this->arguments['start'], $this->arguments['end']);
+            $result['acknowledge'] = $this->getAcknowlegements($hostId, $serviceId, $this->arguments['start'], $this->arguments['end']);
             $result['downtime'] = $this->getDowntimePeriods($hostId, $serviceId, $this->arguments['start'], $this->arguments['end']);
         }
 
@@ -862,6 +862,27 @@ class CentreonMetric extends CentreonWebService
             return null;
         }
         return $element;
+    }
+
+    /**
+     * Get the list of a acknowlegments for a service during a period
+     *
+     * @return array The list of ack
+     */
+    protected function getAcknowlegements($hostId, $serviceId, $start, $end)
+    {
+        $query = 'SELECT entry_time as start, deletion_time as end, author, comment_data ' .
+            'FROM acknowledgements ' .
+            'WHERE host_id = :hostId ' .
+            'AND service_id = :serviceId ' .
+            'AND (entry_time >= :start AND entry_time <= :end)';
+        $stmt = $this->pearDBMonitoring->prepare($query);
+        $stmt->bindParam(':hostId', $hostId, PDO::PARAM_INT);
+        $stmt->bindParam(':serviceId', $serviceId, PDO::PARAM_INT);
+        $stmt->bindParam(':start', $start, PDO::PARAM_INT);
+        $stmt->bindParam(':end', $end, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
     /**
