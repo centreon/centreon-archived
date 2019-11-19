@@ -14,6 +14,7 @@ Bug fixes
 * Better error handling when PNG generation fails
 * Double host name display in host detail
 * Metric name are not properly ordered on CSV export
+* Incorrect CSV export of Event Logs
 * Recurrent downtimes search bug
 * Unable to hide service template macro with Clapi
 * Purge old user actions
@@ -28,10 +29,8 @@ Security
 * Session fixation
 * RCE flaws
 * Authentication flaws
-* Persistent XSS in "My account"
-* SQL injection in makeXMLForOneService.php
-* Authenticated RCE through Settings -> Commands -> Miscellaneous
-* Persistent cross-site scripting
+* XSS
+* SQL injections
 
 Documentation
 -------------
