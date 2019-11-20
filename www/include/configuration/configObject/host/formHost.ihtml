@@ -1,4 +1,5 @@
 {$form.javascript}{$javascript}
+<div id="popin"><p id="msg-wrapper"></p></div>
 <form {$form.attributes}>
     {if $inheritance !="1" }
     <!-- notification inheritance option -->
@@ -685,6 +686,16 @@ function clonerefreshListener(el){
                             jQuery(elem).find("input[id^='macroPassword_']").closest('span').hide();
                     	}
                     });
+                },
+                error: function(jqXHR, data) {
+                    let message = 'Internal error';
+                    if (typeof(jqXHR.responseJSON) === 'object') {
+                        if (typeof(jqXHR.responseJSON.message) !== "undefined") {
+                            message = jqXHR.responseJSON.message;
+                        }
+                    }
+                    jQuery('#msg-wrapper').html('<span class="msg-field error">' + message + '</span>');
+                    jQuery('#popin').centreonPopin("open");
                 }
             });
     }
