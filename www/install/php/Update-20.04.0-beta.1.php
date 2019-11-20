@@ -89,3 +89,24 @@ try {
     );
     throw new \PDOException($e);
 }
+
+
+
+// Change broker sql output form
+
+try {
+    // reorganise existing input form
+    $pearDB->query(
+        "UPDATE cb_type_field_relation AS A INNER JOIN cb_type_field_relation AS B ON A.cb_type_id = B.cb_type_id
+        SET A.`order_display` = 6 
+        WHERE B.`cb_field_id` = (SELECT f.cb_field_id FROM cb_field f WHERE f.fieldname ='buffering_timeout')"
+    );
+
+} catch (\PDOException $e) {
+    $centreonLog->insertLog(
+        2,
+        "UPGRADE : 20.04.0-beta.1 Unable to change sql broker form"
+    );
+    throw new \PDOException($e);
+}
+
