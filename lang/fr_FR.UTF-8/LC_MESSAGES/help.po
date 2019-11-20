@@ -254,6 +254,10 @@ msgstr ""
 "récupérer les directives de reconstruction des graphiques de performance. Par "
 "défaut cette valeur est positionnée à 300s."
 
+#: centreon-web/www/include/configuration/configCentreonBroker/help.php:93
+msgid "Usually cpus/2."
+msgstr "Généralement le nombre de cpus/2."
+
 #: centreon-web/help.php:43
 #: centreon-web/www/include/configuration/configCentreonBroker/help.php:84
 msgid "The maximum queries per transaction before commit."
