@@ -110,8 +110,10 @@ class Contact extends AbstractObject
     private function getContactForServiceCache()
     {
         $stmt = $this->backend_instance->db->prepare("SELECT 
-                    contact_id, service_service_id
-                FROM contact_service_relation
+                    csr.contact_id, service_service_id
+                FROM contact_service_relation csr, contact
+                WHERE csr.contact_id = contact.contact_id
+                    AND contact_activate = '1'
         ");
         $stmt->execute();
         foreach ($stmt->fetchAll(PDO::FETCH_ASSOC) as $value) {
@@ -137,9 +139,11 @@ class Contact extends AbstractObject
 
         if (is_null($this->stmt_contact_service)) {
             $this->stmt_contact_service = $this->backend_instance->db->prepare("SELECT 
-                    contact_id
-                FROM contact_service_relation
-                WHERE service_service_id = :service_id
+                    csr.contact_id
+                FROM contact_service_relation csr, contact
+                WHERE csr.service_service_id = :service_id
+                    AND csr.contact_id = contact.contact_id
+                    AND contact_activate = '1'
             ");
         }
 
