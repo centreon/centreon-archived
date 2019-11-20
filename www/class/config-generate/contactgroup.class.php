@@ -73,8 +73,10 @@ class Contactgroup extends AbstractObject
     private function getCgForServiceCache()
     {
         $stmt = $this->backend_instance->db->prepare("SELECT 
-                    contactgroup_cg_id, service_service_id
-                FROM contactgroup_service_relation
+                    csr.contactgroup_cg_id, service_service_id
+                FROM contactgroup_service_relation csr, contactgroup
+                WHERE csr.contactgroup_cg_id = contactgroup.cg_id
+                    AND cg_activate = '1'
         ");
         $stmt->execute();
         foreach ($stmt->fetchAll(PDO::FETCH_ASSOC) as $value) {
@@ -111,9 +113,11 @@ class Contactgroup extends AbstractObject
 
         if (is_null($this->stmt_cg_service)) {
             $this->stmt_cg_service = $this->backend_instance->db->prepare("SELECT 
-                    contactgroup_cg_id
-                FROM contactgroup_service_relation
-                WHERE service_service_id = :service_id
+                    csr.contactgroup_cg_id
+                FROM contactgroup_service_relation csr, contactgroup
+                WHERE csr.service_service_id = :service_id
+                    AND csr.contactgroup_cg_id = contactgroup.cg_id
+                    AND cg_activate = '1'
             ");
         }
 

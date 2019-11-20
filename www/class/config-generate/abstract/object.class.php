@@ -46,6 +46,7 @@ abstract class AbstractObject
     protected $attributes_array = array();
     protected $attributes_hash = array();
     protected $attributes_default = array();
+    protected $notificationOption = null;
 
     protected $engine = true;
     protected $broker = false;
@@ -92,11 +93,15 @@ abstract class AbstractObject
      */
     public function getInheritanceMode()
     {
-        $stmtNotification = $this->backend_instance->db->query(
-            "SELECT `value` FROM options WHERE `key` = 'inheritance_mode'"
-        );
-        $notificationOption = $stmtNotification->fetch();
-        return (int)$notificationOption['value'];
+        if (is_null($this->notificationOption)) {
+            $stmtNotification = $this->backend_instance->db->query(
+                "SELECT `value` FROM options WHERE `key` = 'inheritance_mode'"
+            );
+            $value = $stmtNotification->fetch();
+            $this->notificationOption = (int)$value['value'];
+        }
+
+        return $this->notificationOption;
     }
 
     private function setHeader()
