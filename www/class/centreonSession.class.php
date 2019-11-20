@@ -86,17 +86,30 @@ class CentreonSession
         }
     }
 
-    public static function checkSession($sessionId, $pearDB)
+    /**
+     * Check user session status
+     *
+     * @param $sessionId string Session id to check
+     * @param $db CentreonDB
+     * @return int Return 1 if the session exists otherwise 0
+     * @throws Exception
+     */
+    public static function checkSession($sessionId, $db)
     {
-        $sessionId = str_replace(array('_', '%'), array('', ''), $sessionId);
-        $DBRESULT = $pearDB->query(
-            "SELECT id FROM session WHERE `session_id` = '" . htmlentities(trim($sessionId), ENT_QUOTES, "UTF-8") . "'"
-        );
-        if ($DBRESULT->numRows()) {
-            return 1;
-        } else {
+        if (empty($sessionId)) {
             return 0;
         }
+        $sessionId = str_replace(array('_', '%'), array('', ''), $sessionId);
+        $sessionId = htmlentities(trim($sessionId), ENT_QUOTES, "UTF-8");
+        /**
+         * @var $query DB_result
+         */
+        $query = $db->query(
+            "SELECT COUNT(*) AS total FROM session WHERE `session_id` = '" . $sessionId . "'"
+        );
+        $result = $query->fetchRow(DB_FETCHMODE_ASSOC);
+        $total = (int) $result['total'];
+        return ($total > 0) ? 1 : 0;
     }
 
     /**
