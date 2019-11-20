@@ -111,18 +111,12 @@ try {
     // add relation
     $pearDB->query(
         "INSERT INTO `cb_type_field_relation` (`cb_type_id`, `cb_field_id`, `is_required`, `order_display`, `jshook_name`, `jshook_arguments`)
-        VALUES ( 
+        VALUES (
             (SELECT `cb_type_id` FROM `cb_type` WHERE `type_shortname` = 'sql'),
             (SELECT `cb_field_id` FROM `cb_field` WHERE `fieldname` = 'connections_count'),
-            0, 7, NULL, NULL
-        );"
+            0, 7, 'countConnections', '{\"target\": \"connections_count\"}'
+        )"
     );
-
-
-
-
-
-
 
 } catch (\PDOException $e) {
     $centreonLog->insertLog(
