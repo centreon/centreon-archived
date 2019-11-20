@@ -617,11 +617,11 @@ class CentreonGraphNg
      *
      * @param int   $hostId
      * @param int   $serviceId
-     * @param mixed $metrics
+     * @param mixed $metricsSelected
      *
      * @return void
      */
-    public function addServiceCustomMetrics($hostId, $serviceId, $metrics)
+    public function addServiceCustomMetrics($hostId, $serviceId, $metricsSelected)
     {
         $indexId = null;
         $stmt = $this->dbCs->prepare(
@@ -641,7 +641,7 @@ class CentreonGraphNg
         foreach ($metrics as $metric) {
             $indexId = $metric['index_id'];
             $this->addIndexId($metric['index_id']);
-            if (isset($metrics[$metric['metric_id']])) {
+            if (isset($metricsSelected[$metric['metric_id']])) {
                 $this->addRealMetric($metric);
             } else {
                 $this->addRealMetric($metric, 1);
