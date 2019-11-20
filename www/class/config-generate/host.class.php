@@ -91,17 +91,6 @@ class Host extends AbstractHost
         foreach ($result as $parent_id) {
             if (isset($this->hosts[$parent_id])) {
                 $host['parents'][] = $this->hosts[$parent_id]['host_name'];
-
-                $correlation_instance = Correlation::getInstance($this->dependencyInjector);
-                if ($correlation_instance->hasCorrelation()) {
-                    $this->generated_parentship[] = array(
-                        '@attributes' => array(
-                            'parent' => $parent_id,
-                            'host' => $host['host_id'],
-                            'instance_id' => $this->backend_instance->getPollerId()
-                        )
-                    );
-                }
             }
         }
     }
@@ -377,7 +366,9 @@ class Host extends AbstractHost
                 $stack2 = array_merge($hosts_tpl[$host_id2]['htpl'], $stack2);
             }
 
-            $hosts_tpl[$host_id]['severity_id_from_below'] = $severity_id;
+            if ($severity_id) {
+                $hosts_tpl[$host_id]['severity_id_from_below'] = $severity_id;
+            }
         }
 
         # For applied on services without severity
