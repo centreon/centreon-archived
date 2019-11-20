@@ -1952,6 +1952,37 @@ function getNDOPrefix()
     return $conf_ndo["db_prefix"];
 }
 
+/**
+ * Send a well formatted error.
+ *
+ * @param string $message Message to send
+ * @param int $code HTTP error code
+ * @param string $type Response type (json by default)
+ */
+function sendError(string $message, int $code = 500, string $type = 'json')
+{
+    switch ($type) {
+        case 'xml':
+            header('Content-Type: text/xml');
+            echo '<message>' . $message . '</message>';
+            break;
+        case 'json':
+        default:
+            header('Content-Type: application/json');
+            echo json_encode(['message' => $message]);
+            break;
+    }
+    switch ($code) {
+        case 401:
+            header("HTTP/1.0 401 Unauthorized");
+            break;
+        case 500:
+        default:
+            header("HTTP/1.0 500 Internal Server Error");
+    }
+    exit();
+}
+
 /* Ajax tests */
 
 function get_error($motif)
