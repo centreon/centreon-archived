@@ -98,9 +98,31 @@ try {
     // reorganise existing input form
     $pearDB->query(
         "UPDATE cb_type_field_relation AS A INNER JOIN cb_type_field_relation AS B ON A.cb_type_id = B.cb_type_id
-        SET A.`order_display` = 6 
+        SET A.`order_display` = 8 
         WHERE B.`cb_field_id` = (SELECT f.cb_field_id FROM cb_field f WHERE f.fieldname ='buffering_timeout')"
     );
+
+    // add new connections_count input
+    $pearDB->query(
+        "INSERT INTO `cb_field` (`fieldname`, `displayname`, `description`, `fieldtype`, `external`) 
+        VALUES ('connections_count', 'Number of connection to the database', 'Usually cpus/2', 'int', NULL)"
+    );
+
+    // add relation
+    $pearDB->query(
+        "INSERT INTO `cb_type_field_relation` (`cb_type_id`, `cb_field_id`, `is_required`, `order_display`, `jshook_name`, `jshook_arguments`)
+        VALUES ( 
+            (SELECT `cb_type_id` FROM `cb_type` WHERE `type_shortname` = 'sql'),
+            (SELECT `cb_field_id` FROM `cb_field` WHERE `fieldname` = 'connections_count'),
+            0, 7, NULL, NULL
+        );"
+    );
+
+
+
+
+
+
 
 } catch (\PDOException $e) {
     $centreonLog->insertLog(
