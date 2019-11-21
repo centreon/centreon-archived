@@ -149,6 +149,7 @@ class Service extends AbstractService
         if (!is_null($service_id_toplevel) && !isset($services_tpl[$service_id_toplevel]['contacts_computed_cache'])) {
             $contacts = array();
             $cg = array();
+            $loop = array();
             while (!is_null($service_id)) {
                 if (isset($loop[$service_id])) {
                     break;
@@ -196,6 +197,7 @@ class Service extends AbstractService
         
         if (!is_null($service_id_toplevel) && !isset($services_tpl[$service_id_toplevel][$attribute . '_computed_cache'])) {
             $services_tpl[$service_id_toplevel][$attribute . '_computed_cache'] = array();
+            $loop = array();
             while (!is_null($service_id)) {
                 if (isset($loop[$service_id])) {
                     break;
@@ -237,6 +239,7 @@ class Service extends AbstractService
         $service_id_toplevel = $service_id;
         $computed_cache = array();
         if (!is_null($service_id_toplevel) && !isset($services_tpl[$service_id_toplevel][$attribute . '_computed_cache'])) {
+            $loop = array();
             while (!is_null($service_id)) {
                 if (isset($loop[$service_id])) {
                     break;

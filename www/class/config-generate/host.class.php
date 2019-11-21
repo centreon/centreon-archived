@@ -142,7 +142,7 @@ class Host extends AbstractHost
         $hosts_tpl = HostTemplate::getInstance($this->dependencyInjector)->hosts;
         foreach ($host['htpl'] as $host_id_toplevel) {
             $stack = array($host_id_toplevel);
-
+            $loop = array();
             if (!isset($hosts_tpl[$host_id_toplevel]['contacts_computed_cache'])) {
                 $contacts = array();
                 $cg = array();
@@ -188,7 +188,7 @@ class Host extends AbstractHost
         $hosts_tpl = HostTemplate::getInstance($this->dependencyInjector)->hosts;
         foreach ($host['htpl'] as $host_id_toplevel) {
             $stack = array($host_id_toplevel);
-
+            $loop = array();
             if (!isset($hosts_tpl[$host_id_toplevel][$attribute . '_computed_cache'])) {
                 $hosts_tpl[$host_id_toplevel][$attribute . '_computed_cache'] = array();
 
@@ -228,11 +228,12 @@ class Host extends AbstractHost
         }
 
         $hosts_tpl = HostTemplate::getInstance($this->dependencyInjector)->hosts;
-        $host_id_toplevel = array_shift($host['htpl']);
-        $stack = array($host_id_toplevel);
+        $host_id_toplevel = isset($host['htpl'][0]) ? $host['htpl'][0] : null;
+        $host_id = $host_id_toplevel;
         $computed_cache = array();
-        if (!isset($hosts_tpl[$host_id_toplevel][$attribute . '_computed_cache'])) {
-            while (($host_id = array_shift($stack))) {
+        if (!is_null($host_id_toplevel) && !isset($hosts_tpl[$host_id_toplevel][$attribute . '_computed_cache'])) {
+            $loop = array();
+            if (!is_null($host_id)) {
                 if (isset($loop[$host_id])) {
                     continue;
                 }
@@ -249,7 +250,7 @@ class Host extends AbstractHost
                     }
                 }
 
-                $stack = array_push($array_push, $hosts_tpl[$host_id]['htpl']);
+                $host_id = isset($hosts_tpl[$host_id]['htpl'][0]) ? $hosts_tpl[$host_id]['htpl'][0] : null;
             }
 
             $hosts_tpl[$host_id_toplevel][$attribute . '_computed_cache'] = array_unique($computed_cache);
