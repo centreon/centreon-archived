@@ -1,8 +1,7 @@
 <?php
-
 /*
- * Copyright 2005-2015 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2019 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -70,13 +69,13 @@ class Contactgroup extends AbstractObject
         $this->cg_cache = $stmt->fetchAll(PDO::FETCH_GROUP | PDO::FETCH_UNIQUE | PDO::FETCH_ASSOC);
     }
 
-    private function getCgForServiceCache()
+    private function getCgForServiceCache(): void
     {
-        $stmt = $this->backend_instance->db->prepare("SELECT 
-                    csr.contactgroup_cg_id, service_service_id
-                FROM contactgroup_service_relation csr, contactgroup
-                WHERE csr.contactgroup_cg_id = contactgroup.cg_id
-                    AND cg_activate = '1'
+        $stmt = $this->backend_instance->db->prepare("
+            SELECT csr.contactgroup_cg_id, service_service_id
+            FROM contactgroup_service_relation csr, contactgroup
+            WHERE csr.contactgroup_cg_id = contactgroup.cg_id
+            AND cg_activate = '1'
         ");
         $stmt->execute();
         foreach ($stmt->fetchAll(PDO::FETCH_ASSOC) as $value) {

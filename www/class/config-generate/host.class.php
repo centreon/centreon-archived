@@ -1,7 +1,7 @@
 <?php
 /*
- * Copyright 2005-2015 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2019 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -135,15 +135,19 @@ class Host extends AbstractHost
         }
     }
 
-    private function manageCumulativeInheritance(&$host)
+    /**
+     * @param array $host
+     * @return array
+     */
+    private function manageCumulativeInheritance(array &$host): array
     {
         $results = array('cg' => array(), 'contact' => array());
 
-        $hosts_tpl = HostTemplate::getInstance($this->dependencyInjector)->hosts;
-        foreach ($host['htpl'] as $host_id_toplevel) {
-            $stack = array($host_id_toplevel);
+       $hostsTpl = HostTemplate::getInstance($this->dependencyInjector)->hosts;
+        foreach ($host['htpl'] as $hostIdTopLevel) {
+            $stack = array($hostIdTopLevel);
             $loop = array();
-            if (!isset($hosts_tpl[$host_id_toplevel]['contacts_computed_cache'])) {
+            if (!isset($hostsTpl[$hostIdTopLevel]['contacts_computed_cache'])) {
                 $contacts = array();
                 $cg = array();
                 while (($host_id = array_shift($stack))) {
@@ -152,26 +156,33 @@ class Host extends AbstractHost
                     }
                     $loop[$host_id] = 1;
                     // if notifications_enabled is disabled. We don't go in branch
-                    if (!is_null($hosts_tpl[$host_id]['notifications_enabled']) && $hosts_tpl[$host_id]['notifications_enabled'] === 0) {
+                    if (!is_null($hostsTpl[$host_id]['notifications_enabled'])
+                        && $hostsTpl[$host_id]['notifications_enabled'] === 0) {
                         continue;
                     }
 
-                    if (count($hosts_tpl[$host_id]['contact_groups_cache']) > 0) {
-                        $cg = array_merge($cg, $hosts_tpl[$host_id]['contact_groups_cache']);
+                    if (count($hostsTpl[$host_id]['contact_groups_cache']) > 0) {
+                        $cg = array_merge($cg, $hostsTpl[$host_id]['contact_groups_cache']);
                     }
-                    if (count($hosts_tpl[$host_id]['contacts_cache']) > 0) {
-                        $contacts = array_merge($contacts, $hosts_tpl[$host_id]['contacts_cache']);
+                    if (count($hostsTpl[$host_id]['contacts_cache']) > 0) {
+                        $contacts = array_merge($contacts, $hostsTpl[$host_id]['contacts_cache']);
                     }
 
-                    $stack = array_merge($hosts_tpl[$host_id]['htpl'], $stack);
+                    $stack = array_merge($hostsTpl[$host_id]['htpl'], $stack);
                 }
 
-                $hosts_tpl[$host_id_toplevel]['contacts_computed_cache'] = array_unique($contacts);
-                $hosts_tpl[$host_id_toplevel]['contact_groups_computed_cache'] = array_unique($cg);
+                $hostsTpl[$hostIdTopLevel]['contacts_computed_cache'] = array_unique($contacts);
+                $hostsTpl[$hostIdTopLevel]['contact_groups_computed_cache'] = array_unique($cg);
             }
 
-            $results['cg'] = array_merge($results['cg'], $hosts_tpl[$host_id_toplevel]['contact_groups_computed_cache']);
-            $results['contact'] = array_merge($results['contact'], $hosts_tpl[$host_id_toplevel]['contacts_computed_cache']);
+            $results['cg'] = array_merge(
+                $results['cg'],
+                $hostsTpl[$hostIdTopLevel]['contact_groups_computed_cache']
+            );
+            $results['contact'] = array_merge(
+                $results['contact'],
+                $hostsTpl[$hostIdTopLevel]['contacts_computed_cache']
+            );
         }
 
         $results['cg'] = array_unique(array_merge($results['cg'], $host['contact_groups_cache']), SORT_NUMERIC);
@@ -179,122 +190,147 @@ class Host extends AbstractHost
         return $results;
     }
 
-    private function manageCloseInheritance(&$host, $attribute)
+    /**
+     * @param array $host
+     * @param string $attribute
+     * @return array
+     */
+    private function manageCloseInheritance(array &$host, string $attribute): array
     {
         if (count($host[$attribute . '_cache']) > 0) {
             return $host[$attribute . '_cache'];
         }
 
-        $hosts_tpl = HostTemplate::getInstance($this->dependencyInjector)->hosts;
-        foreach ($host['htpl'] as $host_id_toplevel) {
-            $stack = array($host_id_toplevel);
+        $hostsTpl = HostTemplate::getInstance($this->dependencyInjector)->hosts;
+        foreach ($host['htpl'] as $hostIdTopLevel) {
+            $stack = array($hostIdTopLevel);
             $loop = array();
-            if (!isset($hosts_tpl[$host_id_toplevel][$attribute . '_computed_cache'])) {
-                $hosts_tpl[$host_id_toplevel][$attribute . '_computed_cache'] = array();
+            if (!isset($hostsTpl[$hostIdTopLevel][$attribute . '_computed_cache'])) {
+                $hostsTpl[$hostIdTopLevel][$attribute . '_computed_cache'] = array();
 
-                while (($host_id = array_shift($stack))) {
-                    if (isset($loop[$host_id])) {
+                while (($hostId = array_shift($stack))) {
+                    if (isset($loop[$hostId])) {
                         continue;
                     }
-                    $loop[$host_id] = 1;
+                    $loop[$hostId] = 1;
 
-                    if (!is_null($hosts_tpl[$host_id]['notifications_enabled']) && $hosts_tpl[$host_id]['notifications_enabled'] === 0) {
+                    if (!is_null($hostsTpl[$hostId]['notifications_enabled'])
+                        && $hostsTpl[$hostId]['notifications_enabled'] === 0) {
                         continue;
                     }
 
-                    if (count($hosts_tpl[$host_id][$attribute . '_cache']) > 0) {
-                        $hosts_tpl[$host_id_toplevel][$attribute . '_computed_cache'] = $hosts_tpl[$host_id][$attribute . '_cache'];
+                    if (count($hostsTpl[$hostId][$attribute . '_cache']) > 0) {
+                        $hostsTpl[$hostIdTopLevel][$attribute . '_computed_cache'] =
+                            $hostsTpl[$hostId][$attribute . '_cache'];
                         break;
                     }
 
-                    $stack = array_merge($hosts_tpl[$host_id]['htpl'], $stack);
+                    $stack = array_merge($hostsTpl[$hostId]['htpl'], $stack);
                 }
             }
 
-            if (count($hosts_tpl[$host_id_toplevel][$attribute . '_computed_cache']) > 0) {
-                return $hosts_tpl[$host_id_toplevel][$attribute . '_computed_cache'];
+            if (count($hostsTpl[$hostIdTopLevel][$attribute . '_computed_cache']) > 0) {
+                return $hostsTpl[$hostIdTopLevel][$attribute . '_computed_cache'];
             }
         }
-
         return array();
     }
 
-    private function manageVerticalInheritance(&$host, $attribute, $attribute_additive)
+    /**
+     * @param array $host
+     * @param string $attribute
+     * @param $attributeAdditive
+     * @return array|int|mixed
+     */
+    private function manageVerticalInheritance(array &$host, string $attribute, $attributeAdditive)
     {
         $results = $host[$attribute . '_cache'];
-        if (count($results) > 0 && 
-            (is_null($host[$attribute_additive]) || $host[$attribute_additive] != 1)) {
+        if (count($results) > 0
+            && (is_null($host[$attributeAdditive]) || $host[$attributeAdditive] != 1)) {
             return $results;
         }
 
-        $hosts_tpl = HostTemplate::getInstance($this->dependencyInjector)->hosts;
-        $host_id_toplevel = isset($host['htpl'][0]) ? $host['htpl'][0] : null;
-        $host_id = $host_id_toplevel;
-        $computed_cache = array();
-        if (!is_null($host_id_toplevel) && !isset($hosts_tpl[$host_id_toplevel][$attribute . '_computed_cache'])) {
+        $hostsTpl = HostTemplate::getInstance($this->dependencyInjector)->hosts;
+        $hostIdTopLevel = isset($host['htpl'][0]) ? $host['htpl'][0] : null;
+        $hostId = $hostIdTopLevel;
+        $computedCache = array();
+        if (!is_null($hostIdTopLevel) && !isset($hostsTpl[$hostIdTopLevel][$attribute . '_computed_cache'])) {
             $loop = array();
-            while (!is_null($host_id)) {
-                if (isset($loop[$host_id])) {
+            while (!is_null($hostId)) {
+                if (isset($loop[$hostId])) {
                     continue;
                 }
-                $loop[$host_id] = 1;
+                $loop[$hostId] = 1;
 
-                if (!is_null($hosts_tpl[$host_id]['notifications_enabled']) && $hosts_tpl[$host_id]['notifications_enabled'] === 0) {
+                if (!is_null($hostsTpl[$hostId]['notifications_enabled'])
+                    && $hostsTpl[$hostId]['notifications_enabled'] === 0) {
                     break;
                 }
 
-                if (count($hosts_tpl[$host_id][$attribute . '_cache']) > 0) {
-                    $computed_cache = array_merge($computed_cache, $hosts_tpl[$host_id][$attribute . '_cache']);
-                    if (is_null($hosts_tpl[$host_id][$attribute_additive]) || $hosts_tpl[$host_id][$attribute_additive] != 1) {
+                if (count($hostsTpl[$hostId][$attribute . '_cache']) > 0) {
+                    $computedCache = array_merge($computedCache, $hostsTpl[$hostId][$attribute . '_cache']);
+                    if (is_null($hostsTpl[$hostId][$attributeAdditive]) || $hostsTpl[$hostId][$attributeAdditive] != 1) {
                         break;
                     }
                 }
-
-                $host_id = isset($hosts_tpl[$host_id]['htpl'][0]) ? $hosts_tpl[$host_id]['htpl'][0] : null;
+                $hostId = isset($hostsTpl[$hostId]['htpl'][0]) ? $hostsTpl[$hostId]['htpl'][0] : null;
             }
-
-            $hosts_tpl[$host_id_toplevel][$attribute . '_computed_cache'] = array_unique($computed_cache);
+            $hostsTpl[$hostIdTopLevel][$attribute . '_computed_cache'] = array_unique($computedCache);
         }
 
-        $results = array_unique(array_merge($results, $hosts_tpl[$host_id_toplevel][$attribute . '_computed_cache']), SORT_NUMERIC);
+        $results = array_unique(
+            array_merge($results, $hostsTpl[$hostIdTopLevel][$attribute . '_computed_cache']),
+            SORT_NUMERIC
+        );
         return $results;
     }
 
-    private function setContactGroups(&$host, $cg)
+    /**
+     * @param array $host
+     * @param $cg
+     */
+    private function setContactGroups(array &$host, $cg) : void
     {
         $cg = Contactgroup::getInstance($this->dependencyInjector);
-        $cg_result = '';
-        $cg_result_append = '';
+        $cgResult = '';
+        $cgResultAppend = '';
         foreach ($cg as $cg_id) {
             $tmp = $cg->generateFromCgId($cg_id);
             if (!is_null($tmp)) {
-                $cg_result .= $cg_result_append . $tmp;
-                $cg_result_append = ',';
+                $cgResult .= $cgResultAppend . $tmp;
+                $cgResultAppend = ',';
             }
         }
-        if ($cg_result != '') {
-            $host['contact_groups'] = $cg_result;
+        if ($cgResult != '') {
+            $host['contact_groups'] = $cgResult;
         }
     }
 
-    private function setContacts(&$host, $contacts)
+    /**
+     * @param $host
+     * @param $contacts
+     */
+    private function setContacts(array &$host, $contacts) : void
     {
         $contact = Contact::getInstance($this->dependencyInjector);
-        $contact_result = '';
-        $contact_result_append = '';
-        foreach ($contacts as $contact_id) {
-            $tmp = $contact->generateFromContactId($contact_id);
+        $contactResult = '';
+        $contactResultAppend = '';
+        foreach ($contacts as $contactId) {
+            $tmp = $contact->generateFromContactId($contactId);
             if (!is_null($tmp)) {
-                $contact_result .= $contact_result_append . $tmp;
-                $contact_result_append = ',';
+                $contactResult .= $contactResultAppend . $tmp;
+                $contactResultAppend = ',';
             }
         }
-        if ($contact_result != '') {
-            $host['contacts'] = $contact_result;
+        if ($contactResult != '') {
+            $host['contacts'] = $contactResult;
         }
     }
 
-    private function manageNotificationInheritance(&$host)
+    /**
+     * @param array $host
+     */
+    private function manageNotificationInheritance(array &$host) : void
     {
         if (!is_null($host['notifications_enabled']) && $host['notifications_enabled'] === 0) {
             return ;

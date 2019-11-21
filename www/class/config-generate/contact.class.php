@@ -1,8 +1,7 @@
 <?php
-
 /*
- * Copyright 2005-2015 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2019 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -107,13 +106,13 @@ class Contact extends AbstractObject
         $this->contacts_cache = $stmt->fetchAll(PDO::FETCH_GROUP | PDO::FETCH_UNIQUE | PDO::FETCH_ASSOC);
     }
 
-    private function getContactForServiceCache()
+    private function getContactForServiceCache() : void
     {
-        $stmt = $this->backend_instance->db->prepare("SELECT 
-                    csr.contact_id, service_service_id
-                FROM contact_service_relation csr, contact
-                WHERE csr.contact_id = contact.contact_id
-                    AND contact_activate = '1'
+        $stmt = $this->backend_instance->db->prepare("
+            SELECT csr.contact_id, service_service_id
+            FROM contact_service_relation csr, contact
+            WHERE csr.contact_id = contact.contact_id
+            AND contact_activate = '1'
         ");
         $stmt->execute();
         foreach ($stmt->fetchAll(PDO::FETCH_ASSOC) as $value) {

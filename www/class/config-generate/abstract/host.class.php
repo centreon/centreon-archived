@@ -206,13 +206,12 @@ abstract class AbstractHost extends AbstractObject
         return 0;
     }
 
-    protected function getHostTemplates(&$host, $generate=1)
+    protected function getHostTemplates(array &$host, $generate=1): void
     {
         if (!isset($host['htpl'])) {
             if (is_null($this->stmt_htpl)) {
                 $this->stmt_htpl = $this->backend_instance->db->prepare("
-                SELECT 
-                    host_tpl_id
+                SELECT host_tpl_id
                 FROM host_template_relation
                 WHERE host_host_id = :host_id
                 ORDER BY `order` ASC
@@ -227,24 +226,26 @@ abstract class AbstractHost extends AbstractObject
             return ;
         }
 
-        $host_template = HostTemplate::getInstance($this->dependencyInjector);
+        $hostTemplate = HostTemplate::getInstance($this->dependencyInjector);
         $host['use'] = array();
-        foreach ($host['htpl'] as $template_id) {
-            $host['use'][] = $host_template->generateFromHostId($template_id);
+        foreach ($host['htpl'] as $templateId) {
+            $host['use'][] = $hostTemplate->generateFromHostId($templateId);
         }
     }
 
-    protected function getContacts(&$host)
+    /**
+     * @param array $host
+     */
+    protected function getContacts(array &$host): void
     {
         if (!isset($host['contacts_cache'])) {
             if (is_null($this->stmt_contact)) {
                 $this->stmt_contact = $this->backend_instance->db->prepare("
-                SELECT 
-                    chr.contact_id
+                SELECT chr.contact_id
                 FROM contact_host_relation chr, contact
                 WHERE host_host_id = :host_id
-                    AND chr.contact_id = contact.contact_id
-                    AND contact.contact_activate = '1'
+                AND chr.contact_id = contact.contact_id
+                AND contact.contact_activate = '1'
                 ");
             }
             $this->stmt_contact->bindParam(':host_id', $host['host_id'], PDO::PARAM_INT);
@@ -253,17 +254,19 @@ abstract class AbstractHost extends AbstractObject
         }
     }
 
-    protected function getContactGroups(&$host)
+    /**
+     * @param array $host
+     */
+    protected function getContactGroups(array &$host): void
     {
         if (!isset($host['contact_groups_cache'])) {
             if (is_null($this->stmt_cg)) {
                 $this->stmt_cg = $this->backend_instance->db->prepare("
-                SELECT 
-                    contactgroup_cg_id
+                SELECT contactgroup_cg_id
                 FROM contactgroup_host_relation, contactgroup
                 WHERE host_host_id = :host_id
-                    AND contactgroup_cg_id = cg_id
-                    AND cg_activate = '1'
+                AND contactgroup_cg_id = cg_id
+                AND cg_activate = '1'
                 ");
             }
             $this->stmt_cg->bindParam(':host_id', $host['host_id'], PDO::PARAM_INT);
