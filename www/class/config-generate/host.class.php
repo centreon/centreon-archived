@@ -233,7 +233,7 @@ class Host extends AbstractHost
         $computed_cache = array();
         if (!is_null($host_id_toplevel) && !isset($hosts_tpl[$host_id_toplevel][$attribute . '_computed_cache'])) {
             $loop = array();
-            if (!is_null($host_id)) {
+            while (!is_null($host_id)) {
                 if (isset($loop[$host_id])) {
                     continue;
                 }
