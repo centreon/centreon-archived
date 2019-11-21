@@ -124,54 +124,61 @@ class Contact extends AbstractObject
         }
     }
 
-    public function getContactForService($service_id)
+    /**
+     * @param int $serviceId
+     * @return array
+     */
+    public function getContactForService(int $serviceId): array
     {
         $this->buildCache();
-
-        # Get from the cache
-        if (isset($this->contacts_service_linked_cache[$service_id])) {
-            return $this->contacts_service_linked_cache[$service_id];
+        // Get from the cache
+        if (isset($this->contacts_service_linked_cache[$serviceId])) {
+            return $this->contacts_service_linked_cache[$serviceId];
         }
         if ($this->done_cache == 1) {
             return array();
         }
 
         if (is_null($this->stmt_contact_service)) {
-            $this->stmt_contact_service = $this->backend_instance->db->prepare("SELECT 
-                    csr.contact_id
+            $this->stmt_contact_service = $this->backend_instance->db->prepare("
+                SELECT csr.contact_id
                 FROM contact_service_relation csr, contact
                 WHERE csr.service_service_id = :service_id
-                    AND csr.contact_id = contact.contact_id
-                    AND contact_activate = '1'
+                AND csr.contact_id = contact.contact_id
+                AND contact_activate = '1'
             ");
         }
 
-        $this->stmt_contact_service->bindParam(':service_id', $service_id, PDO::PARAM_INT);
+        $this->stmt_contact_service->bindParam(':service_id', $serviceId, PDO::PARAM_INT);
         $this->stmt_contact_service->execute();
-        $this->contacts_service_linked_cache[$service_id] = $this->stmt_contact_service->fetchAll(PDO::FETCH_COLUMN);
-        return $this->contacts_service_linked_cache[$service_id];
+        $this->contacts_service_linked_cache[$serviceId] = $this->stmt_contact_service->fetchAll(PDO::FETCH_COLUMN);
+        return $this->contacts_service_linked_cache[$serviceId];
     }
 
-    protected function getContactFromId($contact_id)
+    /**
+     * @param int $contactId
+     * @return int|null
+     */
+    protected function getContactFromId(int $contactId): ?int
     {
         if (is_null($this->stmt_contact)) {
-            $this->stmt_contact = $this->backend_instance->db->prepare("SELECT 
-                    $this->attributes_select
+            $this->stmt_contact = $this->backend_instance->db->prepare("
+                SELECT $this->attributes_select
                 FROM contact
                 WHERE contact_id = :contact_id AND contact_activate = '1'
             ");
         }
-        $this->stmt_contact->bindParam(':contact_id', $contact_id, PDO::PARAM_INT);
+        $this->stmt_contact->bindParam(':contact_id', $contactId, PDO::PARAM_INT);
         $this->stmt_contact->execute();
         $results = $this->stmt_contact->fetchAll(PDO::FETCH_ASSOC);
-        $this->contacts[$contact_id] = array_pop($results);
-        if (is_null($this->contacts[$contact_id])) {
+        $this->contacts[$contactId] = array_pop($results);
+        if (is_null($this->contacts[$contactId])) {
             return 1;
         }
-        $this->contacts[$contact_id]['host_notifications_enabled'] =
-            $this->contacts[$contact_id]['enable_notifications'];
-        $this->contacts[$contact_id]['service_notifications_enabled'] =
-            $this->contacts[$contact_id]['enable_notifications'];
+        $this->contacts[$contactId]['host_notifications_enabled'] =
+            $this->contacts[$contactId]['enable_notifications'];
+        $this->contacts[$contactId]['service_notifications_enabled'] =
+            $this->contacts[$contactId]['enable_notifications'];
     }
 
     protected function getContactNotificationCommands($contact_id, $label)

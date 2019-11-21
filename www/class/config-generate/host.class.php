@@ -287,15 +287,15 @@ class Host extends AbstractHost
 
     /**
      * @param array $host
-     * @param $cg
+     * @param array $cg
      */
-    private function setContactGroups(array &$host, $cg) : void
+    private function setContactGroups(array &$host, array $cg) : void
     {
         $cgInstance = Contactgroup::getInstance($this->dependencyInjector);
         $cgResult = '';
         $cgResultAppend = '';
-        foreach ($cg as $cg_id) {
-            $tmp = $cgInstance->generateFromCgId($cg_id);
+        foreach ($cg as $cgId) {
+            $tmp = $cgInstance->generateFromCgId($cgId);
             if (!is_null($tmp)) {
                 $cgResult .= $cgResultAppend . $tmp;
                 $cgResultAppend = ',';
@@ -307,10 +307,10 @@ class Host extends AbstractHost
     }
 
     /**
-     * @param $host
-     * @param $contacts
+     * @param array $host
+     * @param array $contacts
      */
-    private function setContacts(array &$host, $contacts) : void
+    private function setContacts(array &$host, array $contacts) : void
     {
         $contactInstance = Contact::getInstance($this->dependencyInjector);
         $contactResult = '';
@@ -329,8 +329,10 @@ class Host extends AbstractHost
 
     /**
      * @param array $host
+     * @param int $generate
+     * @return array
      */
-    private function manageNotificationInheritance(array &$host, $generate=1) : array
+    private function manageNotificationInheritance(array &$host, int $generate = 1): array
     {
         $results = array('cg' => array(), 'contact' => array());
 
@@ -339,10 +341,10 @@ class Host extends AbstractHost
         }
 
         $mode = $this->getInheritanceMode();
-        
+
         if ($mode === self::CUMULATIVE_NOTIFICATION) {
             $results = $this->manageCumulativeInheritance($host);
-        } else if ($mode === self::CLOSE_NOTIFICATION) {
+        } elseif ($mode === self::CLOSE_NOTIFICATION) {
             $results['cg'] = $this->manageCloseInheritance($host, 'contact_groups');
             $results['contact'] = $this->manageCloseInheritance($host, 'contacts');
         } else {
@@ -509,8 +511,12 @@ class Host extends AbstractHost
     {
         return $this->generatedHosts;
     }
-    
-    public function getCgAndContacts($hostId)
+
+    /**
+     * @param int $hostId
+     * @return array
+     */
+    public function getCgAndContacts(int $hostId) : array
     {
         $host = $this->getHostById($hostId);
     

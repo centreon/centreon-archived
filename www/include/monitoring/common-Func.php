@@ -92,7 +92,7 @@ function set_user_param($user_id, $pearDB, $key, $value)
  * @param $dependencyInjector
  * @return array
  */
-function getNotifiedInfosForHost($hostId, $dependencyInjector)
+function getNotifiedInfosForHost($hostId, $dependencyInjector) : array
 {
     $results = array('contacts' => array(), 'contactGroups' => array());
     $hostInstance = Host::getInstance($dependencyInjector);
@@ -116,7 +116,7 @@ function getNotifiedInfosForHost($hostId, $dependencyInjector)
  * @param mixed $cg
  * @return array
  */
-function getContactgroups($cg)
+function getContactgroups($cg): array
 {
     global $pearDB;
 
@@ -135,10 +135,10 @@ function getContactgroups($cg)
 /**
  * Get the list of enable contact (id/name)
  *
- * @param $mixed $contacts
+ * @param $contacts
  * @return array
  */
-function getContacts($contacts)
+function getContacts($contacts) : array
 {
     global $pearDB;
 
@@ -163,7 +163,7 @@ function getContacts($contacts)
  * @param $dependencyInjector
  * @return array
  */
-function getNotifiedInfosForService($serviceId, $hostId, $dependencyInjector)
+function getNotifiedInfosForService($serviceId, $hostId, $dependencyInjector) : array
 {
     $results = array('contacts' => array(), 'contactGroups' => array());
 

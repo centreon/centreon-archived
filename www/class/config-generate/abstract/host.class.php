@@ -145,7 +145,12 @@ abstract class AbstractHost extends AbstractObject
     protected $stmt_contact = null;
     protected $stmt_cg = null;
 
-    protected function getHostById($hostId, $hostRegister=1)
+    /**
+     * @param int $hostId
+     * @param int $hostRegister
+     * @return mixed
+     */
+    protected function getHostById(int $hostId, int $hostRegister = 1)
     {
         $stmt = $this->backend_instance->db->prepare("SELECT
               $this->attributes_select
@@ -154,6 +159,7 @@ abstract class AbstractHost extends AbstractObject
             WHERE host.host_id = :host_id
                 AND host.host_activate = '1' AND host.host_register = :host_register");
         $stmt->bindParam(':host_id', $hostId, PDO::PARAM_INT);
+        // host_register is an enum
         $stmt->bindParam(':host_register', $hostRegister, PDO::PARAM_STR);
         $stmt->execute();
         return $stmt->fetch(PDO::FETCH_ASSOC);
@@ -205,7 +211,11 @@ abstract class AbstractHost extends AbstractObject
         return 0;
     }
 
-    protected function getHostTemplates(array &$host, $generate=1): void
+    /**
+     * @param array $host
+     * @param int $generate
+     */
+    protected function getHostTemplates(array &$host, int $generate = 1): void
     {
         if (!isset($host['htpl'])) {
             if (is_null($this->stmt_htpl)) {
