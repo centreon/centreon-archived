@@ -143,7 +143,7 @@ class ServiceTemplate extends AbstractService
         }
     }
 
-    private function getServiceFromId($service_id)
+    public function getServiceFromId($service_id)
     {
         if (is_null($this->stmt_service)) {
             $this->stmt_service = $this->backend_instance->db->prepare(

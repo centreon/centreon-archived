@@ -347,21 +347,22 @@ class Service extends AbstractService
     /**
      * @param $service
      */
-    private function manageNotificationInheritance(array &$service): void
+    private function manageNotificationInheritance(array &$service, $generate=1): array
     {
+        $results = array('cg' => array(), 'contact' => array());
+
         if (!is_null($service['notifications_enabled']) && $service['notifications_enabled'] === 0) {
-            return;
+            return $results;
         }
         if (isset($service['service_use_only_contacts_from_host']) &&
             $service['service_use_only_contacts_from_host'] == 1
         ) {
             $service['contact_groups'] = '';
             $service['contacts'] = '';
-            return;
+            return $results;
         }
 
         $mode = $this->getInheritanceMode();
-        $results = array('cg' => array(), 'contact' => array());
         if ($mode === self::CUMULATIVE_NOTIFICATION) {
             $results = $this->manageCumulativeInheritance($service);
         } elseif ($mode === self::CLOSE_NOTIFICATION) {
@@ -376,8 +377,12 @@ class Service extends AbstractService
             );
         }
 
-        $this->setContacts($service, $results['contact']);
-        $this->setContactGroups($service, $results['cg']);
+        if ($generate == 1) {
+            $this->setContacts($service, $results['contact']);
+            $this->setContactGroups($service, $results['cg']);
+        }
+
+        return $results;
     }
 
     private function getSeverityInServiceChain($service_id_arg)
@@ -552,6 +557,35 @@ class Service extends AbstractService
     public function set_poller($poller_id)
     {
         $this->poller_id = $poller_id;
+    }
+
+    public function getCgAndContacts($serviceId)
+    {
+        $this->getServiceFromId($serviceId);
+        $this->getContactGroups($this->service_cache[$serviceId]);
+        $this->getContacts($this->service_cache[$serviceId]);
+        $serviceTplInstance = ServiceTemplate::getInstance($this->dependencyInjector);
+        
+        $serviceTplId = isset($this->service_cache[$serviceId]['service_template_model_stm_id'])
+            ? $this->service_cache[$serviceId]['service_template_model_stm_id']
+            : null;
+        $loop = array();
+        while (!is_null($serviceTplId)) {
+            if (isset($loop[$serviceTplId])) {
+                break;
+            }
+            $loop[$serviceTplId] = 1;
+
+            $serviceTplInstance->getServiceFromId($serviceTplId);
+            $serviceTplInstance->getContactGroups($serviceTplInstance->service_cache[$serviceTplId]);
+            $serviceTplInstance->getContacts($serviceTplInstance->service_cache[$serviceTplId]);
+
+            $serviceTplId = isset($serviceTplInstance->service_cache[$serviceTplId]['service_template_model_stm_id'])
+                    ? $serviceTplInstance->service_cache[$serviceTplId]['service_template_model_stm_id']
+                    : null;
+        }
+
+        return $this->manageNotificationInheritance($this->service_cache[$serviceId], 0);
     }
 
     public function reset()

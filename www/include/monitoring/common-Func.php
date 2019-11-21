@@ -165,77 +165,26 @@ function getContacts($contacts)
  */
 function getNotifiedInfosForService($serviceId, $hostId, $dependencyInjector)
 {
-    $serviceInfo = array();
     $results = array('contacts' => array(), 'contactGroups' => array());
-    /*$serviceInstance = Service::getInstance($dependencyInjector);
-    $serviceInfo['service_id'] = (int)$serviceId;
 
-    $listServicesContact = $serviceInstance->listServicesWithContacts($serviceInfo);
-    $listServicesContactGroup = $serviceInstance->listServicesWithContactGroups($serviceInfo);
+    $serviceInstance = Service::getInstance($dependencyInjector);
+    $notifications = $serviceInstance->getCgAndContacts($serviceId);
 
-    if ((empty($listServicesContact) && empty($listServicesContactGroup))
-        || $serviceInfo['service_use_only_contacts_from_host']
+    if (((!isset($notifications['cg']) || count($notifications['cg']) == 0) &&
+        (!isset($notifications['contact']) || count($notifications['contact']) == 0)) ||
+        $serviceInstance->getString($serviceId, 'service_use_only_contacts_from_host')
     ) {
         $results = getNotifiedInfosForHost($hostId, $dependencyInjector);
     } else {
-        foreach ($listServicesContact as $service) {
-            $contacts = getContactsForService($service);
-            $results['contacts'] = $results['contacts'] + $contacts;
+        if (isset($notifications['cg']) && count($notifications['cg']) > 0) {
+            $results['contactGroups'] = getContactgroups($notifications['cg']);
         }
-        foreach ($listServicesContactGroup as $service) {
-            $contactGroups = getContactgroupsForService($service);
-            $results['contactGroups'] = $results['contactGroups'] + $contactGroups;
+        if (isset($notifications['contact']) && count($notifications['contact']) > 0) {
+            $results['contacts'] = getContacts($notifications['contact']);
         }
     }
+
     natcasesort($results['contacts']);
-    natcasesort($results['contactGroups']);*/
+    natcasesort($results['contactGroups']);
     return $results;
-}
-
-/**
- * Get the list of enable contact groups (id/name) for a service
- *
- * @param $serviceId
- * @return array
- */
-function getContactgroupsForService($serviceId)
-{
-    global $pearDB;
-    $contactGroups = array();
-    $dbResult = $pearDB->query(
-        'SELECT contactgroup.cg_id, contactgroup.cg_name 
-        FROM contactgroup, contactgroup_service_relation 
-        WHERE contactgroup_service_relation.service_service_id = ' . (int)$serviceId . '
-        AND contactgroup_service_relation.contactgroup_cg_id = contactgroup.cg_id
-        AND contactgroup.cg_activate = "1"'
-    );
-    while (($row = $dbResult->fetch())) {
-        $contactGroups[$row['cg_id']] = $row['cg_name'];
-    }
-    return $contactGroups;
-}
-
-/**
- * Get the list of enable contact (id/name) for a host
- *
- * @param $serviceId
- * @return array
- */
-function getContactsForService($serviceId)
-{
-    global $pearDB;
-    $contacts = array();
-    $dbResult = $pearDB->query(
-        'SELECT contact.contact_id, contact.contact_name 
-        FROM contact, contact_service_relation 
-        WHERE contact_service_relation.service_service_id = ' . (int)$serviceId . '
-        AND contact_service_relation.contact_id = contact.contact_id
-        AND contact.contact_activate = "1" 
-        AND contact.contact_enable_notifications != "0"'
-    );
-    while (($row = $dbResult->fetch())) {
-        $contacts[$row['contact_id']] = $row['contact_name'];
-    }
-
-    return $contacts;
 }
