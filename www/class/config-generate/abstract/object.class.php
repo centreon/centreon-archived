@@ -1,8 +1,7 @@
 <?php
-
 /*
- * Copyright 2005-2015 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2019 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -91,7 +90,7 @@ abstract class AbstractObject
      *
      * @return int
      */
-    public function getInheritanceMode()
+    public function getInheritanceMode() : int
     {
         if (is_null($this->notificationOption)) {
             $stmtNotification = $this->backend_instance->db->query(
@@ -100,7 +99,6 @@ abstract class AbstractObject
             $value = $stmtNotification->fetch();
             $this->notificationOption = (int)$value['value'];
         }
-
         return $this->notificationOption;
     }
 

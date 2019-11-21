@@ -1,7 +1,7 @@
 <?php
 /*
- * Copyright 2005-2015 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2019 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -117,217 +117,263 @@ class Service extends AbstractService
         $this->service_cache[$service_id] = array_pop($results);
     }
 
-    private function getContactsFromHost($host_id, $service_id, $sOnlyContactHost)
+    /**
+     * @param int $hostId
+     * @param int $serviceId
+     * @param int $sOnlyContactHost
+     */
+    private function getContactsFromHost( int $hostId, int $serviceId, int $sOnlyContactHost) : void
     {
         if ($sOnlyContactHost == 1) {
             $host = Host::getInstance($this->dependencyInjector);
-            $this->service_cache[$service_id]['contacts'] = $host->getString($host_id, 'contacts');
-            $this->service_cache[$service_id]['contact_groups'] = $host->getString($host_id, 'contact_groups');
-            $this->service_cache[$service_id]['contact_from_host'] = 1;
+            $this->service_cache[$serviceId]['contacts'] = $host->getString($hostId, 'contacts');
+            $this->service_cache[$serviceId]['contact_groups'] = $host->getString($hostId, 'contact_groups');
+            $this->service_cache[$serviceId]['contact_from_host'] = 1;
         } elseif (
-            empty($this->service_cache[$service_id]['contacts'])
-            && empty($this->service_cache[$service_id]['contact_groups'])
+            empty($this->service_cache[$serviceId]['contacts'])
+            && empty($this->service_cache[$serviceId]['contact_groups'])
         ) {
-            $this->service_cache[$service_id]['contact_from_host'] = 0;
+            $this->service_cache[$serviceId]['contact_from_host'] = 0;
             $host = Host::getInstance($this->dependencyInjector);
-            $this->service_cache[$service_id]['contacts'] = $host->getString($host_id, 'contacts');
-            $this->service_cache[$service_id]['contact_groups'] = $host->getString($host_id, 'contact_groups');
-            $this->service_cache[$service_id]['contact_from_host'] = 1;
+            $this->service_cache[$serviceId]['contacts'] = $host->getString($hostId, 'contacts');
+            $this->service_cache[$serviceId]['contact_groups'] = $host->getString($hostId, 'contact_groups');
+            $this->service_cache[$serviceId]['contact_from_host'] = 1;
         }
     }
 
-    private function manageCumulativeInheritance(&$service)
+    /**
+     * @param $service
+     * @return array
+     */
+    private function manageCumulativeInheritance(array &$service): array
     {
         $results = array('cg' => $service['contact_groups_cache'], 'contact' => $service['contacts_cache']);
 
-        $services_tpl = ServiceTemplate::getInstance($this->dependencyInjector)->service_cache;
-        $service_id = isset($this->service_cache[$service['service_id']]['service_template_model_stm_id'])
+        $servicesTpl = ServiceTemplate::getInstance($this->dependencyInjector)->service_cache;
+        $serviceId = isset($this->service_cache[$service['service_id']]['service_template_model_stm_id'])
             ? $this->service_cache[$service['service_id']]['service_template_model_stm_id']
             : null;
-        $service_id_toplevel = $service_id;
-        
-        if (!is_null($service_id_toplevel) && !isset($services_tpl[$service_id_toplevel]['contacts_computed_cache'])) {
+        $serviceIdTopLevel = $serviceId;
+
+        if (!is_null($serviceIdTopLevel) && !isset($servicesTpl[$serviceIdTopLevel]['contacts_computed_cache'])) {
             $contacts = array();
             $cg = array();
             $loop = array();
-            while (!is_null($service_id)) {
-                if (isset($loop[$service_id])) {
+            while (!is_null($serviceId)) {
+                if (isset($loop[$serviceId])) {
                     break;
                 }
-                $loop[$service_id] = 1;
+                $loop[$serviceId] = 1;
                 // if notifications_enabled is disabled. We don't go in branch
-                if (!is_null($services_tpl[$service_id]['notifications_enabled']) && $services_tpl[$service_id]['notifications_enabled'] === 0) {
+                if (!is_null($servicesTpl[$serviceId]['notifications_enabled'])
+                    && $servicesTpl[$serviceId]['notifications_enabled'] === 0) {
                     break;
                 }
 
-                if (count($services_tpl[$service_id]['contact_groups_cache']) > 0) {
-                    $cg = array_merge($cg, $services_tpl[$service_id]['contact_groups_cache']);
+                if (count($servicesTpl[$serviceId]['contact_groups_cache']) > 0) {
+                    $cg = array_merge($cg, $servicesTpl[$serviceId]['contact_groups_cache']);
                 }
-                if (count($services_tpl[$service_id]['contacts_cache']) > 0) {
-                    $contacts = array_merge($contacts, $services_tpl[$service_id]['contacts_cache']);
+                if (count($servicesTpl[$serviceId]['contacts_cache']) > 0) {
+                    $contacts = array_merge($contacts, $servicesTpl[$serviceId]['contacts_cache']);
                 }
 
-                $service_id = isset($services_tpl[$service_id]['service_template_model_stm_id'])
-                    ? $services_tpl[$service_id]['service_template_model_stm_id']
+                $serviceId = isset($servicesTpl[$serviceId]['service_template_model_stm_id'])
+                    ? $servicesTpl[$serviceId]['service_template_model_stm_id']
                     : null;
             }
 
-            $services_tpl[$service_id_toplevel]['contacts_computed_cache'] = array_unique($contacts);
-            $services_tpl[$service_id_toplevel]['contact_groups_computed_cache'] = array_unique($cg);
+            $servicesTpl[$serviceIdTopLevel]['contacts_computed_cache'] = array_unique($contacts);
+            $servicesTpl[$serviceIdTopLevel]['contact_groups_computed_cache'] = array_unique($cg);
         }
 
-        if (!is_null($service_id_toplevel)) {
-            $results['cg'] = array_unique(array_merge($results['cg'], services_tpl[$service_id_toplevel]['contact_groups_computed_cache']), SORT_NUMERIC);
-            $results['contact'] = array_unique(array_merge($results['contact'], $services_tpl[$service_id_toplevel]['contacts_computed_cache']), SORT_NUMERIC);
+        if (!is_null($serviceIdTopLevel)) {
+            $results['cg'] = array_unique(
+                array_merge($results['cg'],
+                $servicesTpl[$serviceIdTopLevel]['contact_groups_computed_cache']),
+                SORT_NUMERIC
+            );
+            $results['contact'] = array_unique(
+                array_merge($results['contact'],
+                $servicesTpl[$serviceIdTopLevel]['contacts_computed_cache']),
+                SORT_NUMERIC
+            );
         }
         return $results;
     }
 
-    private function manageCloseInheritance(&$service, $attribute)
+    /**
+     * @param array $service
+     * @param string $attribute
+     * @return array
+     */
+    private function manageCloseInheritance(array &$service, string $attribute): array
     {
         if (count($service[$attribute . '_cache']) > 0) {
             return $service[$attribute . '_cache'];
         }
 
-        $services_tpl = ServiceTemplate::getInstance($this->dependencyInjector)->service_cache;
-        $service_id = isset($this->service_cache[$service['service_id']]['service_template_model_stm_id'])
+        $servicesTpl = ServiceTemplate::getInstance($this->dependencyInjector)->service_cache;
+        $serviceId = isset($this->service_cache[$service['service_id']]['service_template_model_stm_id'])
             ? $this->service_cache[$service['service_id']]['service_template_model_stm_id']
             : null;
-        $service_id_toplevel = $service_id;
-        
-        if (!is_null($service_id_toplevel) && !isset($services_tpl[$service_id_toplevel][$attribute . '_computed_cache'])) {
-            $services_tpl[$service_id_toplevel][$attribute . '_computed_cache'] = array();
+        $serviceIdTopLevel = $serviceId;
+
+        if (!is_null($serviceIdTopLevel) && !isset($servicesTpl[$serviceIdTopLevel][$attribute . '_computed_cache'])) {
+            $servicesTpl[$serviceIdTopLevel][$attribute . '_computed_cache'] = array();
             $loop = array();
-            while (!is_null($service_id)) {
-                if (isset($loop[$service_id])) {
+            while (!is_null($serviceId)) {
+                if (isset($loop[$serviceId])) {
                     break;
                 }
-                $loop[$service_id] = 1;
+                $loop[$serviceId] = 1;
                 // if notifications_enabled is disabled. We don't go in branch
-                if (!is_null($services_tpl[$service_id]['notifications_enabled']) && $services_tpl[$service_id]['notifications_enabled'] === 0) {
+                if (!is_null($servicesTpl[$serviceId]['notifications_enabled'])
+                    && $servicesTpl[$serviceId]['notifications_enabled'] === 0) {
                     break;
                 }
 
-                if (count($services_tpl[$service_id][$attribute . '_cache']) > 0) {
-                    $services_tpl[$service_id_toplevel][$attribute . '_computed_cache'] = $services_tpl[$service_id][$attribute . '_cache'];
+                if (count($servicesTpl[$serviceId][$attribute . '_cache']) > 0) {
+                    $servicesTpl[$serviceIdTopLevel][$attribute . '_computed_cache'] =
+                        $servicesTpl[$serviceId][$attribute . '_cache'];
                     break;
                 }
 
-                $service_id = isset($services_tpl[$service_id]['service_template_model_stm_id'])
-                    ? $services_tpl[$service_id]['service_template_model_stm_id']
+                $serviceId = isset($servicesTpl[$serviceId]['service_template_model_stm_id'])
+                    ? $servicesTpl[$serviceId]['service_template_model_stm_id']
                     : null;
             }
-
-            return $services_tpl[$service_id_toplevel][$attribute . '_computed_cache'];
+            return $servicesTpl[$serviceIdTopLevel][$attribute . '_computed_cache'];
         }
-
         return array();
     }
 
-    private function manageVerticalInheritance(&$service, $attribute, $attribute_additive)
+    /**
+     * @param array $service
+     * @param string $attribute
+     * @param $attributeAdditive
+     * @return array|int|mixed
+     */
+    private function manageVerticalInheritance(array &$service, string $attribute, $attributeAdditive)
     {
         $results = $service[$attribute . '_cache'];
-        if (count($results) > 0 && 
-            (is_null($service[$attribute_additive]) || $service[$attribute_additive] != 1)) {
+        if (count($results) > 0 &&
+            (is_null($service[$attributeAdditive]) || $service[$attributeAdditive] != 1)) {
             return $results;
         }
 
-        $services_tpl = ServiceTemplate::getInstance($this->dependencyInjector)->service_cache;
-        $service_id = isset($this->service_cache[$service['service_id']]['service_template_model_stm_id'])
+        $servicesTpl = ServiceTemplate::getInstance($this->dependencyInjector)->service_cache;
+        $serviceId = isset($this->service_cache[$service['service_id']]['service_template_model_stm_id'])
             ? $this->service_cache[$service['service_id']]['service_template_model_stm_id']
             : null;
-        $service_id_toplevel = $service_id;
-        $computed_cache = array();
-        if (!is_null($service_id_toplevel) && !isset($services_tpl[$service_id_toplevel][$attribute . '_computed_cache'])) {
+        $serviceIdTopLevel = $serviceId;
+        $computedCache = array();
+        if (!is_null($serviceIdTopLevel) && !isset($servicesTpl[$serviceIdTopLevel][$attribute . '_computed_cache'])) {
             $loop = array();
-            while (!is_null($service_id)) {
-                if (isset($loop[$service_id])) {
+            while (!is_null($serviceId)) {
+                if (isset($loop[$serviceId])) {
                     break;
                 }
-                $loop[$service_id] = 1;
+                $loop[$serviceId] = 1;
 
-                if (!is_null($services_tpl[$service_id]['notifications_enabled']) && $services_tpl[$service_id]['notifications_enabled'] === 0) {
+                if (!is_null($servicesTpl[$serviceId]['notifications_enabled'])
+                    && $servicesTpl[$serviceId]['notifications_enabled'] === 0) {
                     break;
                 }
 
-                if (count($services_tpl[$service_id][$attribute . '_cache']) > 0) {
-                    $computed_cache = array_merge($computed_cache, $services_tpl[$service_id][$attribute . '_cache']);
-                    if (is_null($services_tpl[$service_id][$attribute_additive]) || $services_tpl[$service_id][$attribute_additive] != 1) {
+                if (count($servicesTpl[$serviceId][$attribute . '_cache']) > 0) {
+                    $computedCache = array_merge($computedCache, $servicesTpl[$serviceId][$attribute . '_cache']);
+                    if (is_null($servicesTpl[$serviceId][$attributeAdditive])
+                        || $servicesTpl[$serviceId][$attributeAdditive] != 1) {
                         break;
                     }
                 }
-
-                $service_id = isset($services_tpl[$service_id]['service_template_model_stm_id'])
-                    ? $services_tpl[$service_id]['service_template_model_stm_id']
+                $serviceId = isset($servicesTpl[$serviceId]['service_template_model_stm_id'])
+                    ? $servicesTpl[$serviceId]['service_template_model_stm_id']
                     : null;
             }
-
-            $services_tpl[$service_id_toplevel][$attribute . '_computed_cache'] = array_unique($computed_cache);
+            $servicesTpl[$serviceIdTopLevel][$attribute . '_computed_cache'] = array_unique($computedCache);
         }
 
-        if (!is_null($service_id_toplevel)) {
-            $results = array_unique(array_merge($results, $services_tpl[$service_id_toplevel][$attribute . '_computed_cache']), SORT_NUMERIC);
+        if (!is_null($serviceIdTopLevel)) {
+            $results = array_unique(
+                array_merge($results, $servicesTpl[$serviceIdTopLevel][$attribute . '_computed_cache']),
+                SORT_NUMERIC);
         }
         return $results;
     }
 
-    private function setContactGroups(&$service, $cg)
+    /**
+     * @param array $service
+     * @param $cg
+     */
+    private function setContactGroups(array &$service, $cg) : void
     {
         $cg = Contactgroup::getInstance($this->dependencyInjector);
-        $cg_result = '';
-        $cg_result_append = '';
-        foreach ($cg as $cg_id) {
-            $tmp = $cg->generateFromCgId($cg_id);
+        $cgResult = '';
+        $cgResultAppend = '';
+        foreach ($cg as $cgId) {
+            $tmp = $cg->generateFromCgId($cgId);
             if (!is_null($tmp)) {
-                $cg_result .= $cg_result_append . $tmp;
-                $cg_result_append = ',';
+                $cgResult .= $cgResultAppend . $tmp;
+                $cgResultAppend = ',';
             }
         }
-        if ($cg_result != '') {
-            $service['contact_groups'] = $cg_result;
+        if ($cgResult != '') {
+            $service['contact_groups'] = $cgResult;
         }
     }
 
-    private function setContacts(&$service, $contacts)
+    /**
+     * @param array $service
+     * @param $contacts
+     */
+    private function setContacts(array &$service, $contacts): void
     {
         $contact = Contact::getInstance($this->dependencyInjector);
-        $contact_result = '';
-        $contact_result_append = '';
-        foreach ($contacts as $contact_id) {
-            $tmp = $contact->generateFromContactId($contact_id);
+        $contactResult = '';
+        $contactResultAppend = '';
+        foreach ($contacts as $contactId) {
+            $tmp = $contact->generateFromContactId($contactId);
             if (!is_null($tmp)) {
-                $contact_result .= $contact_result_append . $tmp;
-                $contact_result_append = ',';
+                $contactResult .= $contactResultAppend . $tmp;
+                $contactResultAppend = ',';
             }
         }
-        if ($contact_result != '') {
-            $service['contacts'] = $contact_result;
+        if ($contactResult != '') {
+            $service['contacts'] = $contactResult;
         }
     }
 
-    private function manageNotificationInheritance(&$service)
+    /**
+     * @param $service
+     */
+    private function manageNotificationInheritance(array &$service): void
     {
         if (!is_null($service['notifications_enabled']) && $service['notifications_enabled'] === 0) {
-            return ;
+            return;
         }
         if (isset($service['service_use_only_contacts_from_host']) &&
             $service['service_use_only_contacts_from_host'] == 1
         ) {
             $service['contact_groups'] = '';
             $service['contacts'] = '';
-            return ;
+            return;
         }
 
         $mode = $this->getInheritanceMode();
         $results = array('cg' => array(), 'contact' => array());
         if ($mode === self::CUMULATIVE_NOTIFICATION) {
             $results = $this->manageCumulativeInheritance($service);
-        } else if ($mode === self::CLOSE_NOTIFICATION) {
+        } elseif ($mode === self::CLOSE_NOTIFICATION) {
             $results['cg'] = $this->manageCloseInheritance($service, 'contact_groups');
             $results['contact'] = $this->manageCloseInheritance($service, 'contacts');
         } else {
             $results['cg'] = $this->manageVerticalInheritance($service, 'contact_groups', 'cg_additive_inheritance');
-            $results['contact'] = $this->manageVerticalInheritance($service, 'contacts', 'contact_additive_inheritance');
+            $results['contact'] = $this->manageVerticalInheritance(
+                $service,
+                'contacts',
+                'contact_additive_inheritance'
+            );
         }
 
         $this->setContacts($service, $results['contact']);
