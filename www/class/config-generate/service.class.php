@@ -308,11 +308,11 @@ class Service extends AbstractService
      */
     private function setContactGroups(array &$service, $cg) : void
     {
-        $cg = Contactgroup::getInstance($this->dependencyInjector);
+        $cgInstance = Contactgroup::getInstance($this->dependencyInjector);
         $cgResult = '';
         $cgResultAppend = '';
         foreach ($cg as $cgId) {
-            $tmp = $cg->generateFromCgId($cgId);
+            $tmp = $cgInstance->generateFromCgId($cgId);
             if (!is_null($tmp)) {
                 $cgResult .= $cgResultAppend . $tmp;
                 $cgResultAppend = ',';
@@ -329,11 +329,11 @@ class Service extends AbstractService
      */
     private function setContacts(array &$service, $contacts): void
     {
-        $contact = Contact::getInstance($this->dependencyInjector);
+        $contactInstance = Contact::getInstance($this->dependencyInjector);
         $contactResult = '';
         $contactResultAppend = '';
         foreach ($contacts as $contactId) {
-            $tmp = $contact->generateFromContactId($contactId);
+            $tmp = $contactInstance->generateFromContactId($contactId);
             if (!is_null($tmp)) {
                 $contactResult .= $contactResultAppend . $tmp;
                 $contactResultAppend = ',';

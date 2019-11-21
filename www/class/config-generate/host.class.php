@@ -291,11 +291,11 @@ class Host extends AbstractHost
      */
     private function setContactGroups(array &$host, $cg) : void
     {
-        $cg = Contactgroup::getInstance($this->dependencyInjector);
+        $cgInstance = Contactgroup::getInstance($this->dependencyInjector);
         $cgResult = '';
         $cgResultAppend = '';
         foreach ($cg as $cg_id) {
-            $tmp = $cg->generateFromCgId($cg_id);
+            $tmp = $cgInstance->generateFromCgId($cg_id);
             if (!is_null($tmp)) {
                 $cgResult .= $cgResultAppend . $tmp;
                 $cgResultAppend = ',';
@@ -312,11 +312,11 @@ class Host extends AbstractHost
      */
     private function setContacts(array &$host, $contacts) : void
     {
-        $contact = Contact::getInstance($this->dependencyInjector);
+        $contactInstance = Contact::getInstance($this->dependencyInjector);
         $contactResult = '';
         $contactResultAppend = '';
         foreach ($contacts as $contactId) {
-            $tmp = $contact->generateFromContactId($contactId);
+            $tmp = $contactInstance->generateFromContactId($contactId);
             if (!is_null($tmp)) {
                 $contactResult .= $contactResultAppend . $tmp;
                 $contactResultAppend = ',';
