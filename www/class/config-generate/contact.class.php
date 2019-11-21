@@ -205,12 +205,11 @@ class Contact extends AbstractObject
         }
     }
 
-    protected function buildCache()
+    protected function buildCache() : void
     {
         if ($this->done_cache == 1) {
-            return 0;
+            return;
         }
-
         $this->getContactCache();
         $this->getContactForServiceCache();
         $this->done_cache = 1;

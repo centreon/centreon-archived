@@ -509,23 +509,16 @@ class Service extends AbstractService
         return $this->generated_services;
     }
 
-    /**
-     * @return int|null
-     */
-    private function buildCache() : ?int
+    private function buildCache() : void
     {
-        if ($this->done_cache == 1 ||
-            ($this->use_cache == 0 && $this->use_cache_poller == 0)
-        ) {
-            return 0;
+        if ($this->done_cache == 1 || ($this->use_cache == 0 && $this->use_cache_poller == 0)) {
+            return;
         }
-
         if ($this->use_cache_poller == 1) {
             $this->getServiceByPollerCache();
         } else {
             $this->getServiceCache();
         }
-
         $this->done_cache = 1;
     }
 

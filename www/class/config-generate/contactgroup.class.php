@@ -87,13 +87,10 @@ class Contactgroup extends AbstractObject
         }
     }
 
-    /**
-     * @return int|null
-     */
-    protected function buildCache() : ?int
+    protected function buildCache() : void
     {
         if ($this->done_cache == 1) {
-            return 0;
+            return;
         }
 
         $this->getCgCache();
