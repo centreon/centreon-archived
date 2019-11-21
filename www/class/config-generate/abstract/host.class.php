@@ -145,17 +145,16 @@ abstract class AbstractHost extends AbstractObject
     protected $stmt_contact = null;
     protected $stmt_cg = null;
 
-    protected function getHostById($hostId, $register=1)
+    protected function getHostById($hostId, $hostRegister=1)
     {
-        # We use host_register = 1 because we don't want _Module_* hosts
         $stmt = $this->backend_instance->db->prepare("SELECT
               $this->attributes_select
             FROM host
                 LEFT JOIN extended_host_information ON extended_host_information.host_host_id = host.host_id
             WHERE host.host_id = :host_id
-                AND host.host_activate = '1' AND host.host_register = ':host_register'");
+                AND host.host_activate = '1' AND host.host_register = :host_register");
         $stmt->bindParam(':host_id', $hostId, PDO::PARAM_INT);
-        $stmt->bindParam(':host_register', $hostId, PDO::PARAM_INT);
+        $stmt->bindParam(':host_register', $hostRegister, PDO::PARAM_STR);
         $stmt->execute();
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }

@@ -330,14 +330,16 @@ class Host extends AbstractHost
     /**
      * @param array $host
      */
-    private function manageNotificationInheritance(array &$host) : void
+    private function manageNotificationInheritance(array &$host, $generate=1) : array
     {
+        $results = array('cg' => array(), 'contact' => array());
+
         if (!is_null($host['notifications_enabled']) && $host['notifications_enabled'] === 0) {
-            return ;
+            return $results;
         }
 
         $mode = $this->getInheritanceMode();
-        $results = array('cg' => array(), 'contact' => array());
+        
         if ($mode === self::CUMULATIVE_NOTIFICATION) {
             $results = $this->manageCumulativeInheritance($host);
         } else if ($mode === self::CLOSE_NOTIFICATION) {
@@ -348,8 +350,12 @@ class Host extends AbstractHost
             $results['contact'] = $this->manageVerticalInheritance($host, 'contacts', 'contact_additive_inheritance');
         }
 
-        $this->setContacts($host, $results['contact']);
-        $this->setContactGroups($host, $results['cg']);
+        if ($generate == 1) {
+            $this->setContacts($host, $results['contact']);
+            $this->setContactGroups($host, $results['cg']);
+        }
+
+        return $results;
     }
 
     public function getSeverityForService($host_id)
@@ -530,7 +536,7 @@ class Host extends AbstractHost
             $stack = array_merge($hostTplInstance->hosts[$hostTplId]['htpl'], $stack);
         }
 
-        
+        return $this->manageNotificationInheritance($host, 0);
     }
 
     public function reset()

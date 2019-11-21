@@ -37,7 +37,6 @@ $configFile = realpath(dirname(__FILE__) . "/../../../config/centreon.config.php
 require_once __DIR__ . '/../../class/config-generate/host.class.php';
 require_once __DIR__ . '/../../class/config-generate/service.class.php';
 
-
 if (!isset($centreon)) {
     exit();
 }
@@ -95,44 +94,37 @@ function set_user_param($user_id, $pearDB, $key, $value)
  */
 function getNotifiedInfosForHost($hostId, $dependencyInjector)
 {
-    $hostInfo = array();
-    $hostInstance = Host::getInstance($dependencyInjector);
     $results = array('contacts' => array(), 'contactGroups' => array());
+    $hostInstance = Host::getInstance($dependencyInjector);
+    $notifications = $hostInstance->getCgAndContacts($hostId);
 
-    $hostInfo['host_id'] = (int)$hostId;
-    $listHostsContact = array_unique($hostInstance->listHostsWithContacts($hostInfo));
-    $listHostsContactGroup = array_unique($hostInstance->listHostsWithContactGroups($hostInfo));
+    if (isset($notifications['cg']) && count($notifications['cg']) > 0) {
+        $results['contactGroups'] = getContactgroups($notifications['cg']);
+    }
+    if (isset($notifications['contact']) && count($notifications['contact']) > 0) {
+        $results['contacts'] = getContacts($notifications['contact']);
+    }
 
-    foreach ($listHostsContact as $host) {
-        $contacts = getContactsForHost($host);
-        $results['contacts'] = $results['contacts'] + $contacts;
-    }
-    foreach ($listHostsContactGroup as $host) {
-        $contactGroups = getContactGroupsForHost($host);
-        $results['contactGroups'] = $results['contactGroups'] + $contactGroups;
-    }
     natcasesort($results['contacts']);
     natcasesort($results['contactGroups']);
     return $results;
 }
 
 /**
- * Get the list of enable contact groups (id/name) for a host
+ * Get the list of enable contact groups (id/name)
  *
- * @param $hostId
+ * @param mixed $cg
  * @return array
  */
-function getContactgroupsForHost($hostId)
+function getContactgroups($cg)
 {
     global $pearDB;
 
     $contactGroups = array();
     $dbResult = $pearDB->query(
-        'SELECT contactgroup.cg_id, contactgroup.cg_name 
-        FROM contactgroup, contactgroup_host_relation 
-        WHERE contactgroup_host_relation.host_host_id = ' . (int)$hostId . '
-        AND contactgroup_host_relation.contactgroup_cg_id = contactgroup.cg_id
-        AND contactgroup.cg_activate = "1"'
+        'SELECT cg_id, cg_name 
+        FROM contactgroup
+        WHERE cg_id IN (' . implode(', ', $cg) . ')'
     );
     while (($row = $dbResult->fetchRow())) {
         $contactGroups[$row['cg_id']] = $row['cg_name'];
@@ -141,28 +133,26 @@ function getContactgroupsForHost($hostId)
 }
 
 /**
- * Get the list of enable contact (id/name) for a host
+ * Get the list of enable contact (id/name)
  *
- * @param $hostId
+ * @param $mixed $contacts
  * @return array
  */
-function getContactsForHost($hostId)
+function getContacts($contacts)
 {
     global $pearDB;
 
-    $contacts = array();
+    $contactsResult = array();
     $dbResult = $pearDB->query(
-        'SELECT contact.contact_id, contact.contact_name 
-        FROM contact, contact_host_relation 
-        WHERE contact_host_relation.host_host_id = ' . (int)$hostId . '
-        AND contact_host_relation.contact_id = contact.contact_id
-        AND contact.contact_activate = "1" 
-        AND contact.contact_enable_notifications != "0"'
+        'SELECT contact_id, contact_name 
+        FROM contact
+        WHERE contact_id IN (' . implode(', ', $contacts) . ')'
     );
-    while (($row = $dbResult->fetch())) {
-        $contacts[$row['contact_id']] = $row['contact_name'];
+    while (($row = $dbResult->fetchRow())) {
+        $contactsResult[$row['contact_id']] = $row['contact_name'];
     }
-    return $contacts;
+
+    return $contactsResult;
 }
 
 /**
@@ -177,7 +167,7 @@ function getNotifiedInfosForService($serviceId, $hostId, $dependencyInjector)
 {
     $serviceInfo = array();
     $results = array('contacts' => array(), 'contactGroups' => array());
-    $serviceInstance = Service::getInstance($dependencyInjector);
+    /*$serviceInstance = Service::getInstance($dependencyInjector);
     $serviceInfo['service_id'] = (int)$serviceId;
 
     $listServicesContact = $serviceInstance->listServicesWithContacts($serviceInfo);
@@ -198,7 +188,7 @@ function getNotifiedInfosForService($serviceId, $hostId, $dependencyInjector)
         }
     }
     natcasesort($results['contacts']);
-    natcasesort($results['contactGroups']);
+    natcasesort($results['contactGroups']);*/
     return $results;
 }
 
