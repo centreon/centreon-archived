@@ -44,12 +44,12 @@ class CentreonWidgetParamsConnectorMetricMulti extends CentreonWidgetParamsSelec
 
     public function getParameters()
     {
-        $path = './include/common/webServices/rest/internal.php?object=centreon_metric&action=listByService';
-        return array(
+        $path = './api/internal.php?object=centreon_metric&action=listByService';
+        return [
             'datasourceOrigin' => 'ajax',
             'availableDatasetRoute' => $path,
             'multiple' => true,
-            'linkedObject' => 'centreonMetrics'
-        );
+            'linkedObject' => 'centreonMetrics',
+        ];
     }
 }
