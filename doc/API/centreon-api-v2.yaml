@@ -314,6 +314,12 @@ paths:
         - $ref: '#/components/parameters/page'
         - $ref: '#/components/parameters/sortBy'
         - $ref: '#/components/parameters/search'
+        - name: show_services
+          in: query
+          description: |
+            Indicates whether we need to display the host-related services downtimes or not (by default: **false**)
+          schema:
+            type: boolean
         - name: host_id
           in: path
           description: ID of host
@@ -337,6 +343,9 @@ paths:
           * start_time
           * contact.id
           * contact.name
+
+        By default, the host-related **services** downtimes are not displayed.
+        To display them, set the URI parameter "show_services" to `true`.
       responses:
         200:
           description: successful operation

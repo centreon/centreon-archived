@@ -151,7 +151,7 @@ class DowntimeRepositoryRDB extends AbstractRepositoryDRB implements DowntimeRep
             FROM `:dbstg`.downtimes dwt
             INNER JOIN `:dbstg`.hosts
                 ON hosts.host_id = dwt.host_id
-                AND dwt.service_id IS NULL
+                AND dwt.service_id = 0
             LEFT JOIN `:db`.`contact`
                 ON contact.contact_alias = dwt.author'
             . $aclRequest;
@@ -387,7 +387,7 @@ class DowntimeRepositoryRDB extends AbstractRepositoryDRB implements DowntimeRep
             INNER JOIN `:dbstg`.hosts
               ON hosts.host_id = dwt.host_id
               AND dwt.host_id = :host_id'
-                . ($withServices ? '' : ' AND dwt.service_id IS NULL')
+                . ($withServices ? '' : ' AND dwt.service_id = 0')
             . $aclRequest;
 
         $this->sqlRequestTranslator->addSearchValue(

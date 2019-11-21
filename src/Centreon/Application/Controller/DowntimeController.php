@@ -101,7 +101,7 @@ class DowntimeController extends AbstractFOSRestController
         }
 
         $postData = json_decode((string) $request->getContent(), true);
-        $withService = $postData['with_services'] ?? false;
+        $showService = $postData['show_services'] ?? false;
         $this->monitoringService->filterByContact($contact);
         $host = $this->monitoringService->findOneHost($hostId);
 
@@ -122,7 +122,7 @@ class DowntimeController extends AbstractFOSRestController
 
         $this->downtimeService->addHostDowntime($downtime, $host);
 
-        if ($withService === true) {
+        if ($showService === true) {
             $services = $this->monitoringService->findServicesByHost($hostId);
             foreach ($services as $service) {
                 $service->setHost($host);
