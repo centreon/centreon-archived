@@ -396,7 +396,6 @@ class Host extends AbstractHost
         $this->hosts = $stmt->fetchAll(PDO::FETCH_GROUP | PDO::FETCH_UNIQUE | PDO::FETCH_ASSOC);
     }
 
-
     public function generateFromHostId(&$host)
     {
         $this->getImages($host);
@@ -467,6 +466,35 @@ class Host extends AbstractHost
     public function getGeneratedHosts()
     {
         return $this->generatedHosts;
+    }
+    
+    public function getCgAndContacts($hostId)
+    {
+        $host = $this->getHostById($hostId);
+    
+        $this->getContacts($host);
+        $this->getContactGroups($host);
+        $this->getHostTemplates($host, 0);
+
+        $hostTplInstance = &HostTemplate::getInstance($this->dependencyInjector);
+
+        $stack = $host['htpl'];
+        $loop = array();
+        while (($hostTplId = array_shift($stack))) {
+            if (isset($loop[$hostTplId])) {
+                continue;
+            }
+            $loop[$hostTplId] = 1;
+
+            $hostTplInstance->addCacheHostTpl($hostTplId);
+            $hostTplInstance->getHostTemplates($hostTplInstance->hosts[$hostTplId], 0);
+            $hostTplInstance->getContactGroups($hostTplInstance->hosts[$hostTplId]);
+            $hostTplInstance->getContacts($hostTplInstance->hosts[$hostTplId]);
+
+            $stack = array_merge($hostTplInstance->hosts[$hostTplId]['htpl'], $stack);
+        }
+
+        
     }
 
     public function reset()

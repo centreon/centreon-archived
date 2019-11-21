@@ -145,6 +145,21 @@ abstract class AbstractHost extends AbstractObject
     protected $stmt_contact = null;
     protected $stmt_cg = null;
 
+    protected function getHostById($hostId, $register=1)
+    {
+        # We use host_register = 1 because we don't want _Module_* hosts
+        $stmt = $this->backend_instance->db->prepare("SELECT
+              $this->attributes_select
+            FROM host
+                LEFT JOIN extended_host_information ON extended_host_information.host_host_id = host.host_id
+            WHERE host.host_id = :host_id
+                AND host.host_activate = '1' AND host.host_register = ':host_register'");
+        $stmt->bindParam(':host_id', $hostId, PDO::PARAM_INT);
+        $stmt->bindParam(':host_register', $hostId, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
     protected function getImages(&$host)
     {
         $media = Media::getInstance($this->dependencyInjector);
@@ -191,7 +206,7 @@ abstract class AbstractHost extends AbstractObject
         return 0;
     }
 
-    protected function getHostTemplates(&$host)
+    protected function getHostTemplates(&$host, $generate=1)
     {
         if (!isset($host['htpl'])) {
             if (is_null($this->stmt_htpl)) {
@@ -206,6 +221,10 @@ abstract class AbstractHost extends AbstractObject
             $this->stmt_htpl->bindParam(':host_id', $host['host_id'], PDO::PARAM_INT);
             $this->stmt_htpl->execute();
             $host['htpl'] = $this->stmt_htpl->fetchAll(PDO::FETCH_COLUMN);
+        }
+
+        if ($generate == 0) {
+            return ;
         }
 
         $host_template = HostTemplate::getInstance($this->dependencyInjector);
