@@ -490,7 +490,7 @@ class CentreonGraphNg
             'virtual' => 0,
         );
 
-        if (isset($tm['ds_data']['ds_invert']) && $tm['ds_data']['ds_invert']) {
+        if (isset($dsData['ds_invert']) && $dsData['ds_invert']) {
             if (!is_null($this->metrics[$metric['metric_id']]['min']) && is_numeric($this->metrics[$metric['metric_id']]['min'])) {
                 $this->metrics[$metric['metric_id']]['min'] = $metric['min'] * -1;
             }
