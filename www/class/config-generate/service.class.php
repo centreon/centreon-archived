@@ -178,7 +178,7 @@ class Service extends AbstractService
                 $loop[$serviceId] = 1;
                 // if notifications_enabled is disabled. We don't go in branch
                 if (!is_null($servicesTpl[$serviceId]['notifications_enabled'])
-                    && $servicesTpl[$serviceId]['notifications_enabled'] === 0) {
+                    && (int)$servicesTpl[$serviceId]['notifications_enabled'] === 0) {
                     break;
                 }
 
@@ -240,7 +240,7 @@ class Service extends AbstractService
                 $loop[$serviceId] = 1;
                 // if notifications_enabled is disabled. We don't go in branch
                 if (!is_null($servicesTpl[$serviceId]['notifications_enabled'])
-                    && $servicesTpl[$serviceId]['notifications_enabled'] === 0) {
+                    && (int)$servicesTpl[$serviceId]['notifications_enabled'] === 0) {
                     break;
                 }
 
@@ -288,7 +288,7 @@ class Service extends AbstractService
                 $loop[$serviceId] = 1;
 
                 if (!is_null($servicesTpl[$serviceId]['notifications_enabled'])
-                    && $servicesTpl[$serviceId]['notifications_enabled'] === 0) {
+                    && (int)$servicesTpl[$serviceId]['notifications_enabled'] === 0) {
                     break;
                 }
 

@@ -157,7 +157,7 @@ class Host extends AbstractHost
                     $loop[$host_id] = 1;
                     // if notifications_enabled is disabled. We don't go in branch
                     if (!is_null($hostsTpl[$host_id]['notifications_enabled'])
-                        && $hostsTpl[$host_id]['notifications_enabled'] === 0) {
+                        && (int)$hostsTpl[$host_id]['notifications_enabled'] === 0) {
                         continue;
                     }
 
@@ -215,7 +215,7 @@ class Host extends AbstractHost
                     $loop[$hostId] = 1;
 
                     if (!is_null($hostsTpl[$hostId]['notifications_enabled'])
-                        && $hostsTpl[$hostId]['notifications_enabled'] === 0) {
+                        && (int)$hostsTpl[$hostId]['notifications_enabled'] === 0) {
                         continue;
                     }
 
@@ -263,7 +263,7 @@ class Host extends AbstractHost
                 $loop[$hostId] = 1;
 
                 if (!is_null($hostsTpl[$hostId]['notifications_enabled'])
-                    && $hostsTpl[$hostId]['notifications_enabled'] === 0) {
+                    && (int)$hostsTpl[$hostId]['notifications_enabled'] === 0) {
                     break;
                 }
 
