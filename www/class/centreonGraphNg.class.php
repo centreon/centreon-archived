@@ -489,7 +489,16 @@ class CentreonGraphNg
             'max' => $metric['max'],
             'virtual' => 0,
         );
-        
+
+        if (isset($tm['ds_data']['ds_invert']) && $tm['ds_data']['ds_invert']) {
+            if (!is_null($this->metrics[$metric['metric_id']]['min']) && is_numeric($this->metrics[$metric['metric_id']]['min'])) {
+                $this->metrics[$metric['metric_id']]['min'] = $metric['min'] * -1;
+            }
+            if (!is_null($this->metrics[$metric['metric_id']]['max']) && is_numeric($this->metrics[$metric['metric_id']]['max'])) {
+                $this->metrics[$metric['metric_id']]['max'] = $metric['max'] * -1;
+            }
+        }
+
         $this->cacheAllMetrics['r:' . $metric["metric_name"]] = $metric["metric_id"];
 
         $dsData = $this->getCurveDsConfig($metric);
