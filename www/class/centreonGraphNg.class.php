@@ -490,15 +490,6 @@ class CentreonGraphNg
             'virtual' => 0,
         );
 
-        if (isset($dsData['ds_invert']) && $dsData['ds_invert']) {
-            if (!is_null($this->metrics[$metric['metric_id']]['min']) && is_numeric($this->metrics[$metric['metric_id']]['min'])) {
-                $this->metrics[$metric['metric_id']]['min'] = $metric['min'] * -1;
-            }
-            if (!is_null($this->metrics[$metric['metric_id']]['max']) && is_numeric($this->metrics[$metric['metric_id']]['max'])) {
-                $this->metrics[$metric['metric_id']]['max'] = $metric['max'] * -1;
-            }
-        }
-
         $this->cacheAllMetrics['r:' . $metric["metric_name"]] = $metric["metric_id"];
 
         $dsData = $this->getCurveDsConfig($metric);
@@ -524,6 +515,15 @@ class CentreonGraphNg
             (isset($dsData["ds_order"]) && $dsData["ds_order"] ? $dsData["ds_order"] : 0);
         
         $this->metrics[$metric['metric_id']]['hidden'] = is_null($hidden) ? 0 : $hidden;
+
+        if (isset($dsData['ds_invert']) && $dsData['ds_invert']) {
+            if (!is_null($this->metrics[$metric['metric_id']]['min']) && is_numeric($this->metrics[$metric['metric_id']]['min'])) {
+                $this->metrics[$metric['metric_id']]['min'] = $metric['min'] * -1;
+            }
+            if (!is_null($this->metrics[$metric['metric_id']]['max']) && is_numeric($this->metrics[$metric['metric_id']]['max'])) {
+                $this->metrics[$metric['metric_id']]['max'] = $metric['max'] * -1;
+            }
+        }
     }
     
     /**
