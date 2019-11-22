@@ -134,7 +134,7 @@ class Service extends AbstractService
      * @param int $serviceId
      * @param int $sOnlyContactHost
      */
-    private function getContactsFromHost( int $hostId, int $serviceId, int $sOnlyContactHost) : void
+    private function getContactsFromHost( int $hostId, int $serviceId, ?int $sOnlyContactHost) : void
     {
         if ($sOnlyContactHost == 1) {
             $host = Host::getInstance($this->dependencyInjector);
@@ -570,7 +570,7 @@ class Service extends AbstractService
         $this->getContactsFromHost(
             $hostId,
             $serviceId,
-            $this->service_cache[$serviceId]['service_use_only_contacts_from_host']
+            (int)$this->service_cache[$serviceId]['service_use_only_contacts_from_host']
         );
 
         $this->getSeverity($hostId, $serviceId);
