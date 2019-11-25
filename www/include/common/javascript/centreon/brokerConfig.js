@@ -149,7 +149,7 @@ var countConnections = {
             var entry = element.name.match('(input|output)(\\[\\d\\])\\[(\\w*)\\]');
             var target = entry[1] + entry[2] + '[' + argument.target + ']';
 
-            if(document.getElementsByName(target)[1].value == '') {
+            if (document.getElementsByName(target)[1].value == '') {
                 document.getElementsByName(target)[1].value = 1;
             }
         }
