@@ -317,9 +317,9 @@ class Service extends AbstractService
 
     /**
      * @param array $service
-     * @param array $cg
+     * @param array|null $cg
      */
-    private function setContactGroups(array &$service, array $cg) : void
+    private function setContactGroups(array &$service, ?array $cg) : void
     {
         $cgInstance = Contactgroup::getInstance($this->dependencyInjector);
         $cgResult = '';
@@ -338,9 +338,9 @@ class Service extends AbstractService
 
     /**
      * @param array $service
-     * @param array $contacts
+     * @param array|null $contacts
      */
-    private function setContacts(array &$service, array $contacts): void
+    private function setContacts(array &$service, ?array $contacts): void
     {
         $contactInstance = Contact::getInstance($this->dependencyInjector);
         $contactResult = '';
@@ -359,8 +359,10 @@ class Service extends AbstractService
 
     /**
      * @param array $service
+     * @param int $generate
+     * @return array
      */
-    private function manageNotificationInheritance(array &$service, $generate=1): array
+    private function manageNotificationInheritance(array &$service, $generate = 1): array
     {
         $results = array('cg' => array(), 'contact' => array());
 
