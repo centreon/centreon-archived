@@ -1915,7 +1915,7 @@ span.state_badge {
 /* Style for popin */
 .centreon-popin {
     position: absolute;
-    z-index: 5050;
+    z-index: 1065;
     background-color: white;
     padding: 1em 3em 1em 1em;
     border-radius: 4px;
