@@ -143,7 +143,7 @@ class Host extends AbstractHost
     {
         $results = array('cg' => array(), 'contact' => array());
 
-       $hostsTpl = HostTemplate::getInstance($this->dependencyInjector)->hosts;
+        $hostsTpl = HostTemplate::getInstance($this->dependencyInjector)->hosts;
         foreach ($host['htpl'] as $hostIdTopLevel) {
             $stack = array($hostIdTopLevel);
             $loop = array();
@@ -249,39 +249,58 @@ class Host extends AbstractHost
             && (is_null($host[$attributeAdditive]) || $host[$attributeAdditive] != 1)) {
             return $results;
         }
-
+        
         $hostsTpl = HostTemplate::getInstance($this->dependencyInjector)->hosts;
-        $hostIdTopLevel = isset($host['htpl'][0]) ? $host['htpl'][0] : null;
-        $hostId = $hostIdTopLevel;
-        $computedCache = array();
-        if (!is_null($hostIdTopLevel) && !isset($hostsTpl[$hostIdTopLevel][$attribute . '_computed_cache'])) {
-            $loop = array();
-            while (!is_null($hostId)) {
-                if (isset($loop[$hostId])) {
-                    continue;
-                }
-                $loop[$hostId] = 1;
-
-                if (!is_null($hostsTpl[$hostId]['notifications_enabled'])
-                    && (int)$hostsTpl[$hostId]['notifications_enabled'] === 0) {
-                    break;
-                }
-
-                if (count($hostsTpl[$hostId][$attribute . '_cache']) > 0) {
-                    $computedCache = array_merge($computedCache, $hostsTpl[$hostId][$attribute . '_cache']);
-                    if (is_null($hostsTpl[$hostId][$attributeAdditive]) || $hostsTpl[$hostId][$attributeAdditive] != 1) {
+        $hostIdCache = null;
+        foreach ($host['htpl'] as $hostIdTopLevel) {
+            $computedCache = array();
+            if (!isset($hostsTpl[$hostIdTopLevel][$attribute . '_computed_cache'])) {
+                $stack = array(array('id' => $hostIdTopLevel, 'level' => 1));
+                $loop = array();
+                $currentLevelCatch = null;
+                while ((list($hostId, $level) = array_shift($stack))) {
+                    if (!is_null($currentLevelCatch) && $currentLevelCatch >= $level) {
                         break;
                     }
+                    if (isset($loop[$hostId])) {
+                        continue;
+                    }
+                    $loop[$hostId] = 1;
+
+                    if (!is_null($hostsTpl[$hostId]['notifications_enabled'])
+                        && (int)$hostsTpl[$hostId]['notifications_enabled'] === 0) {
+                        break;
+                    }
+
+                    if (count($hostsTpl[$hostId][$attribute . '_cache']) > 0) {
+                        $computedCache = array_merge($computedCache, $hostsTpl[$hostId][$attribute . '_cache']);
+                        $currentLevelCatch = $level;
+                        if (is_null($hostsTpl[$hostId][$attributeAdditive]) || $hostsTpl[$hostId][$attributeAdditive] != 1) {
+                            break;
+                        }
+                    }
+
+                    foreach (array_reverse($hostsTpl[$hostId]['htpl']) as $htplId) {
+                        array_unshift($stack, array('id' => $htplId, 'level' => $level + 1));
+                    }
+                    $stack = array_merge($hostsTpl[$hostId]['htpl'], $stack);
                 }
-                $hostId = isset($hostsTpl[$hostId]['htpl'][0]) ? $hostsTpl[$hostId]['htpl'][0] : null;
+
+                $hostsTpl[$hostIdTopLevel][$attribute . '_computed_cache'] = array_unique($computedCache);
             }
-            $hostsTpl[$hostIdTopLevel][$attribute . '_computed_cache'] = array_unique($computedCache);
+
+            if (count($hostsTpl[$hostIdTopLevel][$attribute . '_computed_cache']) > 0) {
+                $hostIdCache = $hostIdTopLevel;
+                break;
+            }
         }
 
-        $results = array_unique(
-            array_merge($results, $hostsTpl[$hostIdTopLevel][$attribute . '_computed_cache']),
-            SORT_NUMERIC
-        );
+        if (!is_null($hostIdCache)) {
+            $results = array_unique(
+                array_merge($results, $hostsTpl[$hostIdCache][$attribute . '_computed_cache']),
+                SORT_NUMERIC
+            );
+        }
         return $results;
     }
 
