@@ -99,7 +99,7 @@ try {
     $pearDB->query(
         "UPDATE cb_type_field_relation AS A INNER JOIN cb_type_field_relation AS B ON A.cb_type_id = B.cb_type_id
         SET A.`order_display` = 8 
-        WHERE B.`cb_field_id` = (SELECT f.cb_field_id FROM cb_field f WHERE f.fieldname ='buffering_timeout')"
+        WHERE B.`cb_field_id` = (SELECT f.cb_field_id FROM cb_field f WHERE f.fieldname = 'buffering_timeout')"
     );
 
     // add new connections_count input
@@ -125,4 +125,3 @@ try {
     );
     throw new \PDOException($e);
 }
-
