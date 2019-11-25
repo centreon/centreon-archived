@@ -535,11 +535,12 @@ class Host extends AbstractHost
             $loop[$hostTplId] = 1;
 
             $hostTplInstance->addCacheHostTpl($hostTplId);
-            $hostTplInstance->getHostTemplates($hostTplInstance->hosts[$hostTplId], 0);
-            $hostTplInstance->getContactGroups($hostTplInstance->hosts[$hostTplId]);
-            $hostTplInstance->getContacts($hostTplInstance->hosts[$hostTplId]);
-
-            $stack = array_merge($hostTplInstance->hosts[$hostTplId]['htpl'], $stack);
+            if (!is_null($hostTplInstance->hosts[$hostTplId])) {
+                $hostTplInstance->getHostTemplates($hostTplInstance->hosts[$hostTplId], 0);
+                $hostTplInstance->getContactGroups($hostTplInstance->hosts[$hostTplId]);
+                $hostTplInstance->getContacts($hostTplInstance->hosts[$hostTplId]);
+                $stack = array_merge($hostTplInstance->hosts[$hostTplId]['htpl'], $stack);
+            }
         }
 
         return $this->manageNotificationInheritance($host, 0);

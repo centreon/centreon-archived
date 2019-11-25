@@ -611,6 +611,9 @@ class Service extends AbstractService
             $loop[$serviceTplId] = 1;
 
             $serviceTplInstance->getServiceFromId($serviceTplId);
+            if (is_null($serviceTplInstance->service_cache[$serviceTplId])) {
+                break;
+            }
             $serviceTplInstance->getContactGroups($serviceTplInstance->service_cache[$serviceTplId]);
             $serviceTplInstance->getContacts($serviceTplInstance->service_cache[$serviceTplId]);
 
