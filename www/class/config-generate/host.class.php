@@ -255,7 +255,7 @@ class Host extends AbstractHost
         foreach ($host['htpl'] as $hostIdTopLevel) {
             $computedCache = array();
             if (!isset($hostsTpl[$hostIdTopLevel][$attribute . '_computed_cache'])) {
-                $stack = array(array('id' => $hostIdTopLevel, 'level' => 1));
+                $stack = array(array($hostIdTopLevel, 1));
                 $loop = array();
                 $currentLevelCatch = null;
                 while ((list($hostId, $level) = array_shift($stack))) {
@@ -269,7 +269,7 @@ class Host extends AbstractHost
 
                     if (!is_null($hostsTpl[$hostId]['notifications_enabled'])
                         && (int)$hostsTpl[$hostId]['notifications_enabled'] === 0) {
-                        break;
+                        continue;
                     }
 
                     if (count($hostsTpl[$hostId][$attribute . '_cache']) > 0) {
@@ -281,9 +281,8 @@ class Host extends AbstractHost
                     }
 
                     foreach (array_reverse($hostsTpl[$hostId]['htpl']) as $htplId) {
-                        array_unshift($stack, array('id' => $htplId, 'level' => $level + 1));
+                        array_unshift($stack, array($htplId, $level + 1));
                     }
-                    $stack = array_merge($hostsTpl[$hostId]['htpl'], $stack);
                 }
 
                 $hostsTpl[$hostIdTopLevel][$attribute . '_computed_cache'] = array_unique($computedCache);
