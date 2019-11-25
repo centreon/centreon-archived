@@ -354,7 +354,7 @@ class Host extends AbstractHost
     {
         $results = array('cg' => array(), 'contact' => array());
 
-        if (!is_null($host['notifications_enabled']) && $host['notifications_enabled'] === 0) {
+        if (!is_null($host['notifications_enabled']) && (int)$host['notifications_enabled'] === 0) {
             return $results;
         }
 

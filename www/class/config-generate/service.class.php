@@ -366,7 +366,7 @@ class Service extends AbstractService
     {
         $results = array('cg' => array(), 'contact' => array());
 
-        if (!is_null($service['notifications_enabled']) && $service['notifications_enabled'] === 0) {
+        if (!is_null($service['notifications_enabled']) && (int)$service['notifications_enabled'] === 0) {
             return $results;
         }
         if (isset($service['service_use_only_contacts_from_host']) &&
