@@ -2,47 +2,67 @@
 Centreon Web 19.10.2
 ====================
 
-Bug Fixes
----------
+Enhancements
+------------
 
-* LDAP users using DN with special chars cannot login
-* LDAP connection issue
-* Select all elements in select2 freeze the screen
-* Non synchronized curves when using rrdcached
-* Missing selection of Okta template for LDAP
-* Trap matches and hostgroups break export in Remote Server
-* Trap export on Remote Server fails
-* Recurrent downtimes search bug
-* Unable to hide service template macro with Clapi
-* Macro passwords can be visible
-* Calculation of contact groups too frequent
-* Additional Remote Server config fails
-* Unable to set host notification to None through API
-* Remove unused radio button in meta-service configuration
-* Contact template notification parameters are not inherited
-* Filter "Name" is emptied out when searching in host configuration
-* Incorrect CSV export in Event Logs
-* Add/List/Cancel downtimes on resources
-* Correctly toggle edit when widgets load
-* Using rrdcached provides non synchronized curves
-* Add curve label in API
-* Poller statistics charts are missing
-* Several trap definitions with same OID will not work
-
-Security
---------
-
-* No check for authentication
-* SQL injections
-* RCE flaws
-* XSS
-* Authentication flaw
+* [API] Return curve metric name (PR/#8055) 
+* [Install] Display complete release note of a Major version (commit 06f714d55c)
+* [Install] Improve last web install step intall button (PR/#7873)
 
 Documentation
 -------------
 
 * Display release notes per section in upgrade process
-* Update performance FAQ for rrdcached
+* Update FAQ to install RRDCacheD on el7 (PR/#8052)
+
+Bug Fixes
+---------
+
+* [API] Add macro password option for service template using CLAPI (PR/#8012)
+* [API] Unable to set host notification to None through the API (PR/#8077)
+* [Charts] Match metric name with metric value (#5959, #7477, PR/#7764)
+* [Charts] Curves in graph not synchronized on display (PR/#8039)
+* [Charts] Fix rrd command line with v1.5 (PR/#7804)
+* [Configuration] fix host name filter history (PR/#8134)
+* [Install] Check mariaDB version before using ALTER USER (PR/#8068)
+* [LDAP] Add missing Okta selector (PR/#8028, 7825)
+* [LDAP] Ldap users using the auto-import cannot login (PR/#8112)
+* [Configuration] Remove unused radio button in meta service configuration (PR/#7992)
+* [Monitoring] Fix recurrent downtimes filter (PR/#7989, #7987)
+* [Notification] Link properly contact with contact template on file generation (PR/#8080)
+* [Remote Server] Export properly trap matching and hostgroups (PR/#8054)
+* [Remote Server] Additional Remote Server config fails (#8104, PR/#8105)
+* [Remote Server] Hostgroup and servicegroup not exported (PR/#8135)
+* [Traps SNMP] Fix traps regression with same oid (PR/#8118)
+* [Traps SNMP] Accept null value for description (PR/#8109)
+* [UI] Fix breacrumb url for parent's levels (PR/#8108)
+* [UI] Correctly toggle edit load and header of widgets (PR/#8114)
+
+Security Fixes
+--------------
+
+* Avoid SQL injections in multiple monitoring pages - CVE-2019-17647 (PR/#8063, PR/#8094)
+* Cross-site scripting (reflected) - Dont' return js (PR/#8095)
+* Do not allow to get all services using downtime ajax file - CVE-2019-17643 (PR/#8022)
+* Do not allow to unhide password macros (PR/#8071)
+* Filter access to api using external entry point - CVE-2019-17646 (PR/#8021)
+* Fix default contact_autologin_key value
+* Fix security on LDAP page - CVE-2019-15300 - (PR/#8008)
+* RCE on mib import from manufacturer input - CVE-2019-15298 (PR/#8023)
+
+Performance
+-----------
+
+* Set LDAP contactgroup synchronization every hour (PR/#8070)
+
+Technical
+---------
+
+* Correct the call of static method (PR/#8026)
+* Improve centreonworker logging (PR/#7712)
+* Optimize select all in select2 component (PR/#7926)
+* Poc new update field pollers (PR/#8093, PR/#8100)
+* Update dependency of centreon-react-components (PR/#8024)
 
 ====================
 Centreon Web 19.10.1
