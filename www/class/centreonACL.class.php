@@ -506,8 +506,9 @@ class CentreonACL
                         // First reading
                         ksort($childrenLvl3);
                         // We keep the tree of the first child
-                        $parentsLvl[$parentLvl1][$parentLvl2] =
-                            array_slice($childrenLvl3, 0, 1, true)[0];
+                        $parentsLvl[$parentLvl1][$parentLvl2] = is_array($childrenLvl3)
+                            ? array_slice($childrenLvl3, 0, 1, true)[0]
+                            : $childrenLvl3;
                         /**
                          * The first child has been processed so we set TRUE
                          * to delete all the following children
