@@ -136,7 +136,7 @@ class Host extends AbstractHost
     }
 
     /**
-     * @param array $host
+     * @param array $host (passing by Reference)
      * @return array
      */
     private function manageCumulativeInheritance(array &$host): array
