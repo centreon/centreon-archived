@@ -150,25 +150,25 @@ class Host extends AbstractHost
             if (!isset($hostsTpl[$hostIdTopLevel]['contacts_computed_cache'])) {
                 $contacts = array();
                 $cg = array();
-                while (($host_id = array_shift($stack))) {
-                    if (isset($loop[$host_id])) {
+                while (($hostId = array_shift($stack))) {
+                    if (isset($loop[$hostId])) {
                         continue;
                     }
-                    $loop[$host_id] = 1;
+                    $loop[$hostId] = 1;
                     // if notifications_enabled is disabled. We don't go in branch
-                    if (!is_null($hostsTpl[$host_id]['notifications_enabled'])
-                        && (int)$hostsTpl[$host_id]['notifications_enabled'] === 0) {
+                    if (!is_null($hostsTpl[$hostId]['notifications_enabled'])
+                        && (int)$hostsTpl[$hostId]['notifications_enabled'] === 0) {
                         continue;
                     }
 
-                    if (count($hostsTpl[$host_id]['contact_groups_cache']) > 0) {
-                        $cg = array_merge($cg, $hostsTpl[$host_id]['contact_groups_cache']);
+                    if (count($hostsTpl[$hostId]['contact_groups_cache']) > 0) {
+                        $cg = array_merge($cg, $hostsTpl[$hostId]['contact_groups_cache']);
                     }
-                    if (count($hostsTpl[$host_id]['contacts_cache']) > 0) {
-                        $contacts = array_merge($contacts, $hostsTpl[$host_id]['contacts_cache']);
+                    if (count($hostsTpl[$hostId]['contacts_cache']) > 0) {
+                        $contacts = array_merge($contacts, $hostsTpl[$hostId]['contacts_cache']);
                     }
 
-                    $stack = array_merge($hostsTpl[$host_id]['htpl'], $stack);
+                    $stack = array_merge($hostsTpl[$hostId]['htpl'], $stack);
                 }
 
                 $hostsTpl[$hostIdTopLevel]['contacts_computed_cache'] = array_unique($contacts);
