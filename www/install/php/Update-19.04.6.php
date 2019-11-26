@@ -28,7 +28,7 @@ try {
 } catch (\PDOException $e) {
     $centreonLog->insertLog(
         2,
-        "UPGRADE : 19.04.5 Unable to delete LDAP auto-imported users with empty contact_name"
+        "UPGRADE : 19.04.6 Unable to delete LDAP auto-imported users with empty contact_name"
     );
 }
 
