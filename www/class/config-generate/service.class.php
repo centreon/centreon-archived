@@ -134,7 +134,7 @@ class Service extends AbstractService
      * @param int $serviceId
      * @param int $sOnlyContactHost
      */
-    private function getContactsFromHost( int $hostId, int $serviceId, ?int $sOnlyContactHost) : void
+    private function getContactsFromHost(int $hostId, int $serviceId, ?int $sOnlyContactHost) : void
     {
         if ($sOnlyContactHost == 1) {
             $host = Host::getInstance($this->dependencyInjector);
@@ -568,12 +568,13 @@ class Service extends AbstractService
 
         $this->manageNotificationInheritance($this->service_cache[$serviceId]);
 
-        # By default in centengine 1.4.15
-        $this->getContactsFromHost(
-            $hostId,
-            $serviceId,
-            (int)$this->service_cache[$serviceId]['service_use_only_contacts_from_host']
-        );
+        if (is_null($service['notifications_enabled']) || (int)$service['notifications_enabled'] !== 0) {
+            $this->getContactsFromHost(
+                $hostId,
+                $serviceId,
+                (int)$this->service_cache[$serviceId]['service_use_only_contacts_from_host']
+            );
+        }
 
         $this->getSeverity($hostId, $serviceId);
         $this->getServiceGroups($serviceId, $hostId, $hostName);

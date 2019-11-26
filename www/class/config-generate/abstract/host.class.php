@@ -150,17 +150,23 @@ abstract class AbstractHost extends AbstractObject
      * @param int $hostRegister
      * @return mixed
      */
-    protected function getHostById(int $hostId, int $hostRegister = 1)
+    protected function getHostById(int $hostId, ?int $hostRegister = 1)
     {
-        $stmt = $this->backend_instance->db->prepare("SELECT
+        $query = "SELECT
               $this->attributes_select
             FROM host
                 LEFT JOIN extended_host_information ON extended_host_information.host_host_id = host.host_id
             WHERE host.host_id = :host_id
-                AND host.host_activate = '1' AND host.host_register = :host_register");
+                AND host.host_activate = '1'";
+        if (!is_null($hostRegister)) {
+            $query .= ' AND host.host_register = :host_register';
+        }
+        $stmt = $this->backend_instance->db->prepare($query);
         $stmt->bindParam(':host_id', $hostId, PDO::PARAM_INT);
-        // host_register is an enum
-        $stmt->bindParam(':host_register', $hostRegister, PDO::PARAM_STR);
+        if (!is_null($hostRegister)) {
+            // host_register is an enum
+            $stmt->bindParam(':host_register', $hostRegister, PDO::PARAM_STR);
+        }
         $stmt->execute();
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }

@@ -536,7 +536,8 @@ class Host extends AbstractHost
      */
     public function getCgAndContacts(int $hostId) : array
     {
-        $host = $this->getHostById($hostId);
+        // we pass null because it can be a meta_host with host_register = '2'
+        $host = $this->getHostById($hostId, null);
     
         $this->getContacts($host);
         $this->getContactGroups($host);
