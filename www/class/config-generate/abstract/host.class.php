@@ -147,7 +147,7 @@ abstract class AbstractHost extends AbstractObject
 
     /**
      * @param int $hostId
-     * @param int $hostRegister
+     * @param int|null $hostRegister
      * @return mixed
      */
     protected function getHostById(int $hostId, ?int $hostRegister = 1)
