@@ -136,7 +136,7 @@ class HostTemplate extends AbstractHost
     {
         // We use host_register = 1 because we don't want _Module_* hosts
         $stmt = $this->backend_instance->db->prepare("
-            SELECT $this->attributes_select
+            SELECT {$this->attributes_select}
             FROM host
                 LEFT JOIN extended_host_information ON extended_host_information.host_host_id = host.host_id
             WHERE host.host_id = :host_id
