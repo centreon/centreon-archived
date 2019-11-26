@@ -249,7 +249,7 @@ abstract class AbstractHost extends AbstractObject
     }
 
     /**
-     * @param array $host
+     * @param array $host (passing by Reference)
      */
     protected function getContacts(array &$host): void
     {
