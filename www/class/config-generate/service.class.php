@@ -260,7 +260,7 @@ class Service extends AbstractService
     }
 
     /**
-     * @param array $service
+     * @param array $service (passing by Reference)
      * @param string $attribute
      * @param $attributeAdditive
      * @return array|int|mixed
