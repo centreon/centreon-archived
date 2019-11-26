@@ -237,7 +237,7 @@ class Host extends AbstractHost
     }
 
     /**
-     * @param array $host
+     * @param array $host (passing by Reference)
      * @param string $attribute
      * @param $attributeAdditive
      * @return array|int|mixed
