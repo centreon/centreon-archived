@@ -138,7 +138,7 @@ class Contactgroup extends AbstractObject
     {
         if (is_null($this->stmt_cg)) {
             $this->stmt_cg = $this->backend_instance->db->prepare("
-                SELECT $this->attributes_select
+                SELECT {$this->attributes_select}
                 FROM contactgroup
                 WHERE cg_id = :cg_id AND cg_activate = '1'
             ");
