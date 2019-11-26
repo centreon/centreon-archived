@@ -346,7 +346,7 @@ class Host extends AbstractHost
     }
 
     /**
-     * @param array $host
+     * @param array $host (passing by Reference)
      * @param int $generate
      * @return array
      */
