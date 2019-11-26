@@ -307,7 +307,7 @@ class Host extends AbstractHost
      * @param array $host (passing by Reference)
      * @param array|null $cg
      */
-    private function setContactGroups(array &$host, ?array $cg) : void
+    private function setContactGroups(array &$host, array $cg = []) : void
     {
         $cgInstance = Contactgroup::getInstance($this->dependencyInjector);
         $cgResult = '';
