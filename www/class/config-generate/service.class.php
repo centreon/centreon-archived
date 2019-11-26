@@ -340,7 +340,7 @@ class Service extends AbstractService
      * @param array $service (passing by Reference)
      * @param array|null $contacts
      */
-    private function setContacts(array &$service, ?array $contacts): void
+    private function setContacts(array &$service, array $contacts = []): void
     {
         $contactInstance = Contact::getInstance($this->dependencyInjector);
         $contactResult = '';
