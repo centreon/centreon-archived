@@ -218,7 +218,7 @@ abstract class AbstractHost extends AbstractObject
     }
 
     /**
-     * @param array $host
+     * @param array $host (passing by Reference)
      * @param int $generate
      */
     protected function getHostTemplates(array &$host, int $generate = 1): void
