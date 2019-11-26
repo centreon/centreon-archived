@@ -154,7 +154,7 @@ class Service extends AbstractService
     }
 
     /**
-     * @param $service
+     * @param $service (passing by Reference)
      * @return array
      */
     private function manageCumulativeInheritance(array &$service): array
