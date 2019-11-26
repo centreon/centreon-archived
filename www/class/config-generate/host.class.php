@@ -304,7 +304,7 @@ class Host extends AbstractHost
     }
 
     /**
-     * @param array $host
+     * @param array $host (passing by Reference)
      * @param array|null $cg
      */
     private function setContactGroups(array &$host, ?array $cg) : void
