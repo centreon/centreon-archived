@@ -153,7 +153,7 @@ abstract class AbstractHost extends AbstractObject
     protected function getHostById(int $hostId, ?int $hostRegister = 1)
     {
         $query = "SELECT
-              $this->attributes_select
+              {$this->attributes_select}
             FROM host
                 LEFT JOIN extended_host_information ON extended_host_information.host_host_id = host.host_id
             WHERE host.host_id = :host_id
