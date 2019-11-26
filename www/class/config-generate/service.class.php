@@ -568,7 +568,7 @@ class Service extends AbstractService
 
         $this->manageNotificationInheritance($this->service_cache[$serviceId]);
 
-        if (is_null($service['notifications_enabled']) || (int)$service['notifications_enabled'] !== 0) {
+        if (is_null($this->service_cache[$serviceId]['notifications_enabled']) || (int)$this->service_cache[$serviceId]['notifications_enabled'] !== 0) {
             $this->getContactsFromHost(
                 $hostId,
                 $serviceId,
