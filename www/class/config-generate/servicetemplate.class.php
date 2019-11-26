@@ -144,7 +144,7 @@ class ServiceTemplate extends AbstractService
     }
 
     /**
-     * @param $serviceId
+     * @param int $serviceId
      */
     public function getServiceFromId(int $serviceId): void
     {
