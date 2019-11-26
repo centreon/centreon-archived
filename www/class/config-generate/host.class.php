@@ -328,7 +328,7 @@ class Host extends AbstractHost
      * @param array $host (passing by Reference)
      * @param array|null $contacts
      */
-    private function setContacts(array &$host, ?array $contacts) : void
+    private function setContacts(array &$host, array $contacts = []) : void
     {
         $contactInstance = Contact::getInstance($this->dependencyInjector);
         $contactResult = '';
