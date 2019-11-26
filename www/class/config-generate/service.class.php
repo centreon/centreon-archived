@@ -358,7 +358,7 @@ class Service extends AbstractService
     }
 
     /**
-     * @param array $service
+     * @param array $service (passing by Reference)
      * @param int $generate
      * @return array
      */
