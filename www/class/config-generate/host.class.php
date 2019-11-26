@@ -350,7 +350,7 @@ class Host extends AbstractHost
      * @param int $generate
      * @return array
      */
-    private function manageNotificationInheritance(array &$host, int $generate = 1): array
+    private function manageNotificationInheritance(array &$host, bool $generate = true): array
     {
         $results = array('cg' => array(), 'contact' => array());
 
@@ -370,7 +370,7 @@ class Host extends AbstractHost
             $results['contact'] = $this->manageVerticalInheritance($host, 'contacts', 'contact_additive_inheritance');
         }
 
-        if ($generate == 1) {
+        if ($generate) {
             $this->setContacts($host, $results['contact']);
             $this->setContactGroups($host, $results['cg']);
         }
@@ -541,7 +541,7 @@ class Host extends AbstractHost
     
         $this->getContacts($host);
         $this->getContactGroups($host);
-        $this->getHostTemplates($host, 0);
+        $this->getHostTemplates($host, false);
 
         $hostTplInstance = &HostTemplate::getInstance($this->dependencyInjector);
 
@@ -555,14 +555,13 @@ class Host extends AbstractHost
 
             $hostTplInstance->addCacheHostTpl($hostTplId);
             if (!is_null($hostTplInstance->hosts[$hostTplId])) {
-                $hostTplInstance->getHostTemplates($hostTplInstance->hosts[$hostTplId], 0);
+                $hostTplInstance->getHostTemplates($hostTplInstance->hosts[$hostTplId], false);
                 $hostTplInstance->getContactGroups($hostTplInstance->hosts[$hostTplId]);
                 $hostTplInstance->getContacts($hostTplInstance->hosts[$hostTplId]);
                 $stack = array_merge($hostTplInstance->hosts[$hostTplId]['htpl'], $stack);
             }
         }
-
-        return $this->manageNotificationInheritance($host, 0);
+        return $this->manageNotificationInheritance($host, false);
     }
 
     public function reset()

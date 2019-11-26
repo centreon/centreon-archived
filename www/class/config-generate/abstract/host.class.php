@@ -218,10 +218,10 @@ abstract class AbstractHost extends AbstractObject
     }
 
     /**
-     * @param array $host (passing by Reference)
-     * @param int $generate
+     * @param array $host
+     * @param bool $generate
      */
-    protected function getHostTemplates(array &$host, int $generate = 1): void
+    protected function getHostTemplates(array &$host, bool $generate = true): void
     {
         if (!isset($host['htpl'])) {
             if (is_null($this->stmt_htpl)) {
@@ -237,8 +237,8 @@ abstract class AbstractHost extends AbstractObject
             $host['htpl'] = $this->stmt_htpl->fetchAll(PDO::FETCH_COLUMN);
         }
 
-        if ($generate == 0) {
-            return ;
+        if (!$generate) {
+            return;
         }
 
         $hostTemplate = HostTemplate::getInstance($this->dependencyInjector);

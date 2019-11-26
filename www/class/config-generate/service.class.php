@@ -358,11 +358,11 @@ class Service extends AbstractService
     }
 
     /**
-     * @param array $service (passing by Reference)
-     * @param int $generate
+     * @param array $service
+     * @param bool $generate
      * @return array
      */
-    private function manageNotificationInheritance(array &$service, $generate = 1): array
+    private function manageNotificationInheritance(array &$service, bool $generate = true): array
     {
         $results = array('cg' => array(), 'contact' => array());
 
@@ -392,7 +392,7 @@ class Service extends AbstractService
             );
         }
 
-        if ($generate == 1) {
+        if ($generate) {
             $this->setContacts($service, $results['contact']);
             $this->setContactGroups($service, $results['cg']);
         }
@@ -401,13 +401,12 @@ class Service extends AbstractService
     }
 
     /**
-     * @param $serviceIdArg
-     * @return int
+     * @param int $serviceIdArg
      */
-    private function getSeverityInServiceChain($serviceIdArg)
+    private function getSeverityInServiceChain(int $serviceIdArg): void
     {
         if (isset($this->service_cache[$serviceIdArg]['severity_id'])) {
-            return 0;
+            return;
         }
 
         $this->service_cache[$serviceIdArg]['severity_id'] = Severity::getInstance($this->dependencyInjector)
@@ -417,7 +416,7 @@ class Service extends AbstractService
         if (!is_null($severity)) {
             $this->service_cache[$serviceIdArg]['macros']['_CRITICALITY_LEVEL'] = $severity['level'];
             $this->service_cache[$serviceIdArg]['macros']['_CRITICALITY_ID'] = $severity['sc_id'];
-            return 0;
+            return;
         }
 
         // Check from service templates
@@ -449,15 +448,14 @@ class Service extends AbstractService
                 : null;
         }
 
-        return 0;
+        return;
     }
 
     /**
      * @param int $hostId
      * @param int $serviceId
-     * @return |null
      */
-    protected function getSeverity(int $hostId, int $serviceId)
+    protected function getSeverity(int $hostId, int $serviceId) : void
     {
         $this->service_cache[$serviceId]['severity_from_host'] = 0;
         $this->getSeverityInServiceChain($serviceId);
@@ -474,7 +472,7 @@ class Service extends AbstractService
                 }
             }
         }
-        return null;
+        return;
     }
 
     private function clean(&$service)
@@ -492,10 +490,10 @@ class Service extends AbstractService
     }
 
     /**
-     * @param $hostId
-     * @param $serviceId
+     * @param int $hostId
+     * @param int $serviceId
      */
-    public function addGeneratedServices($hostId, $serviceId): void
+    public function addGeneratedServices(int $hostId, int $serviceId): void
     {
         if (!isset($this->generated_services[$hostId])) {
             $this->generated_services[$hostId] = array();
@@ -525,13 +523,13 @@ class Service extends AbstractService
     }
 
     /**
-     * @param $hostId
-     * @param $hostName
-     * @param $serviceId
+     * @param int $hostId
+     * @param string $hostName
+     * @param int|null $serviceId
      * @param int $byHg
-     * @return |null
+     * @return mixed|null
      */
-    public function generateFromServiceId($hostId, $hostName, $serviceId, $byHg = 0)
+    public function generateFromServiceId(int $hostId, string $hostName, ?int $serviceId, $byHg = 0)
     {
         if (is_null($serviceId)) {
             return null;
@@ -625,8 +623,7 @@ class Service extends AbstractService
                     ? $serviceTplInstance->service_cache[$serviceTplId]['service_template_model_stm_id']
                     : null;
         }
-
-        return $this->manageNotificationInheritance($this->service_cache[$serviceId], 0);
+        return $this->manageNotificationInheritance($this->service_cache[$serviceId], false);
     }
 
     public function reset()
