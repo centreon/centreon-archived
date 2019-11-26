@@ -179,7 +179,7 @@ abstract class AbstractService extends AbstractObject
     }
 
     /**
-     * @param array $service
+      * @param array $service (passing by Reference)
      */
     protected function getContactGroups(array &$service): void
     {
