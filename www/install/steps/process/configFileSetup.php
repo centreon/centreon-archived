@@ -91,18 +91,19 @@ $gorgonePatterns = [
 ];
 
 $gorgoneReplacements = [
-    "/var/spool/centreon/",
+    "/var/spool/centreon",
     "0.0.0.0",
     8085,
     false,
-    "/etc/snmp/centreon_traps/",
+    "/etc/snmp/centreon_traps",
 ];
 
+$centreonEtcPath = rtrim($configuration['centreon_etc'], '/');
 
 /**
  * centreon.conf.php
  */
-$centreonConfFile = rtrim($configuration['centreon_etc'], '/') . '/centreon.conf.php';
+$centreonConfFile = $centreonEtcPath . '/centreon.conf.php';
 $contents = file_get_contents('../../var/configFileTemplate');
 $contents = preg_replace($patterns, $replacements, $contents);
 file_put_contents($centreonConfFile, $contents);
@@ -110,7 +111,7 @@ file_put_contents($centreonConfFile, $contents);
 /**
  * conf.pm
  */
-$centreonConfPmFile = rtrim($configuration['centreon_etc'], '/') . '/conf.pm';
+$centreonConfPmFile = $centreonEtcPath . '/conf.pm';
 $contents = file_get_contents('../../var/configFilePmTemplate');
 $contents = preg_replace($patterns, $replacements, $contents);
 file_put_contents($centreonConfPmFile, $contents);
@@ -119,7 +120,7 @@ file_put_contents($centreonConfPmFile, $contents);
  * gorgone.yaml
  * configuration file used by the Gorgone module in a full ZMQ mode
  */
-$centreonGorgonedConfFile = rtrim($configuration['centreon_etc'], '/') . '/gorgone.yaml';
+$centreonGorgonedConfFile = $centreonEtcPath . '/gorgone.yaml';
 $contents = file_get_contents('../../var/configFileGorgoneTemplate');
 $contents = preg_replace($patterns, $replacements, $contents);
 $contents = preg_replace($gorgonePatterns, $gorgoneReplacements, $contents);
