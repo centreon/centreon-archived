@@ -37,6 +37,10 @@ require_once dirname(__FILE__) . '/object.class.php';
 
 abstract class AbstractHost extends AbstractObject
 {
+    const TYPE_HOST = 1;
+    const TYPE_TEMPLATE = 0;
+    const TYPE_VIRTUAL_HOST = 2;
+
     protected $attributes_select = '
         host_id,
         command_command_id as check_command_id,
@@ -147,25 +151,25 @@ abstract class AbstractHost extends AbstractObject
 
     /**
      * @param int $hostId
-     * @param int|null $hostRegister
+     * @param int|null $hostType
      * @return mixed
      */
-    protected function getHostById(int $hostId, ?int $hostRegister = 1)
+    protected function getHostById(int $hostId, ?int $hostType = self::TYPE_HOST)
     {
-        $query = "SELECT
-              {$this->attributes_select}
+        $query = "SELECT {$this->attributes_select}
             FROM host
-                LEFT JOIN extended_host_information ON extended_host_information.host_host_id = host.host_id
+            LEFT JOIN extended_host_information
+              ON extended_host_information.host_host_id = host.host_id
             WHERE host.host_id = :host_id
-                AND host.host_activate = '1'";
-        if (!is_null($hostRegister)) {
+              AND host.host_activate = '1'";
+        if (!is_null($hostType)) {
             $query .= ' AND host.host_register = :host_register';
         }
         $stmt = $this->backend_instance->db->prepare($query);
         $stmt->bindParam(':host_id', $hostId, PDO::PARAM_INT);
-        if (!is_null($hostRegister)) {
+        if (!is_null($hostType)) {
             // host_register is an enum
-            $stmt->bindParam(':host_register', $hostRegister, PDO::PARAM_STR);
+            $stmt->bindParam(':host_register', $hostType, PDO::PARAM_STR);
         }
         $stmt->execute();
         return $stmt->fetch(PDO::FETCH_ASSOC);

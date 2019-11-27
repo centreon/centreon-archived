@@ -138,9 +138,10 @@ class HostTemplate extends AbstractHost
         $stmt = $this->backend_instance->db->prepare("
             SELECT {$this->attributes_select}
             FROM host
-                LEFT JOIN extended_host_information ON extended_host_information.host_host_id = host.host_id
+            LEFT JOIN extended_host_information ON extended_host_information.host_host_id = host.host_id
             WHERE host.host_id = :host_id
-                AND host.host_activate = '1' AND host.host_register = '0'");
+                AND host.host_activate = '1'
+                AND host.host_register = '0'");
         $stmt->bindParam(':host_id', $hostId, PDO::PARAM_INT);
         $stmt->execute();
         $row = $stmt->fetch(PDO::FETCH_ASSOC);

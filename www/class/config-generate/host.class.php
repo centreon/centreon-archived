@@ -237,12 +237,12 @@ class Host extends AbstractHost
     }
 
     /**
-     * @param array $host (passing by Reference)
+     * @param array $host
      * @param string $attribute
-     * @param $attributeAdditive
-     * @return array|int|mixed
+     * @param string $attributeAdditive
+     * @return array
      */
-    private function manageVerticalInheritance(array &$host, string $attribute, $attributeAdditive)
+    private function manageVerticalInheritance(array &$host, string $attribute, string $attributeAdditive): array
     {
         $results = $host[$attribute . '_cache'];
         if (count($results) > 0
@@ -304,8 +304,8 @@ class Host extends AbstractHost
     }
 
     /**
-     * @param array $host (passing by Reference)
-     * @param array|null $cg
+     * @param array $host
+     * @param array $cg
      */
     private function setContactGroups(array &$host, array $cg = []) : void
     {
@@ -325,8 +325,8 @@ class Host extends AbstractHost
     }
 
     /**
-     * @param array $host (passing by Reference)
-     * @param array|null $contacts
+     * @param array $host
+     * @param array $contacts
      */
     private function setContacts(array &$host, array $contacts = []) : void
     {
@@ -346,8 +346,8 @@ class Host extends AbstractHost
     }
 
     /**
-     * @param array $host (passing by Reference)
-     * @param int $generate
+     * @param array $host
+     * @param bool $generate
      * @return array
      */
     private function manageNotificationInheritance(array &$host, bool $generate = true): array

@@ -88,11 +88,11 @@ function set_user_param($user_id, $pearDB, $key, $value)
 /**
  * Get the notified contact/contact group of host tree inheritance
  *
- * @param $hostId
- * @param $dependencyInjector
+ * @param int $hostId
+ * @param \Pimple\Container $dependencyInjector
  * @return array
  */
-function getNotifiedInfosForHost($hostId, $dependencyInjector) : array
+function getNotifiedInfosForHost(int $hostId, \Pimple\Container $dependencyInjector) : array
 {
     $results = array('contacts' => array(), 'contactGroups' => array());
     $hostInstance = Host::getInstance($dependencyInjector);
@@ -113,10 +113,10 @@ function getNotifiedInfosForHost($hostId, $dependencyInjector) : array
 /**
  * Get the list of enable contact groups (id/name)
  *
- * @param mixed $cg
+ * @param int[] $cg list contact group id
  * @return array
  */
-function getContactgroups($cg): array
+function getContactgroups(array $cg): array
 {
     global $pearDB;
 
@@ -135,10 +135,10 @@ function getContactgroups($cg): array
 /**
  * Get the list of enable contact (id/name)
  *
- * @param $contacts
+ * @param int[] $contacts list contact id
  * @return array
  */
-function getContacts($contacts) : array
+function getContacts(array $contacts) : array
 {
     global $pearDB;
 
@@ -158,12 +158,12 @@ function getContacts($contacts) : array
 /**
  * Get the notified contact/contact group of service tree inheritance
  *
- * @param $serviceId
- * @param $hostId
- * @param $dependencyInjector
+ * @param int $serviceId
+ * @param int $hostId
+ * @param \Pimple\Container $dependencyInjector
  * @return array
  */
-function getNotifiedInfosForService($serviceId, $hostId, $dependencyInjector) : array
+function getNotifiedInfosForService(int $serviceId, int $hostId, \Pimple\Container $dependencyInjector) : array
 {
     $results = array('contacts' => array(), 'contactGroups' => array());
 

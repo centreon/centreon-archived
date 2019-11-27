@@ -106,6 +106,9 @@ class Contact extends AbstractObject
         $this->contacts_cache = $stmt->fetchAll(PDO::FETCH_GROUP | PDO::FETCH_UNIQUE | PDO::FETCH_ASSOC);
     }
 
+    /**
+     * @see Contact::$contacts_service_linked_cache
+     */
     private function getContactForServiceCache() : void
     {
         $stmt = $this->backend_instance->db->prepare("
@@ -157,9 +160,8 @@ class Contact extends AbstractObject
 
     /**
      * @param int $contactId
-     * @return int|null
      */
-    protected function getContactFromId(int $contactId): ?int
+    protected function getContactFromId(int $contactId): void
     {
         if (is_null($this->stmt_contact)) {
             $this->stmt_contact = $this->backend_instance->db->prepare("
@@ -172,13 +174,12 @@ class Contact extends AbstractObject
         $this->stmt_contact->execute();
         $results = $this->stmt_contact->fetchAll(PDO::FETCH_ASSOC);
         $this->contacts[$contactId] = array_pop($results);
-        if (is_null($this->contacts[$contactId])) {
-            return 1;
+        if ($this->contacts[$contactId] !== null) {
+            $this->contacts[$contactId]['host_notifications_enabled'] =
+                $this->contacts[$contactId]['enable_notifications'];
+            $this->contacts[$contactId]['service_notifications_enabled'] =
+                $this->contacts[$contactId]['enable_notifications'];
         }
-        $this->contacts[$contactId]['host_notifications_enabled'] =
-            $this->contacts[$contactId]['enable_notifications'];
-        $this->contacts[$contactId]['service_notifications_enabled'] =
-            $this->contacts[$contactId]['enable_notifications'];
     }
 
     protected function getContactNotificationCommands($contact_id, $label)
@@ -205,6 +206,10 @@ class Contact extends AbstractObject
         }
     }
 
+    /**
+     * @see Contact::getContactCache()
+     * @see Contact::getContactForServiceCache()
+     */
     protected function buildCache() : void
     {
         if ($this->done_cache == 1) {

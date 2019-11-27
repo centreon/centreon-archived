@@ -69,6 +69,9 @@ class Contactgroup extends AbstractObject
         $this->cg_cache = $stmt->fetchAll(PDO::FETCH_GROUP | PDO::FETCH_UNIQUE | PDO::FETCH_ASSOC);
     }
 
+    /**
+     * @see Contactgroup::$cg_service_linked_cache
+     */
     private function getCgForServiceCache(): void
     {
         $stmt = $this->backend_instance->db->prepare("
@@ -87,6 +90,10 @@ class Contactgroup extends AbstractObject
         }
     }
 
+    /**
+     * @see Contactgroup::getCgCache()
+     * @see Contactgroup::getCgForServiceCache()
+     */
     protected function buildCache() : void
     {
         if ($this->done_cache == 1) {
@@ -132,9 +139,9 @@ class Contactgroup extends AbstractObject
 
     /**
      * @param int $cgId
-     * @return mixed
+     * @return array
      */
-    public function getCgFromId(int $cgId)
+    public function getCgFromId(int $cgId): array
     {
         if (is_null($this->stmt_cg)) {
             $this->stmt_cg = $this->backend_instance->db->prepare("
@@ -153,7 +160,7 @@ class Contactgroup extends AbstractObject
     /**
      * @param int $cgId
      */
-    public function getContactFromCgId(int $cgId)
+    public function getContactFromCgId(int $cgId): void
     {
         if (!isset($this->cg[$cgId]['members_cache'])) {
             if (is_null($this->stmt_contact)) {
@@ -181,9 +188,9 @@ class Contactgroup extends AbstractObject
 
     /**
      * @param int $cgId
-     * @return mixed|null
+     * @return string|null contactgroup_name
      */
-    public function generateFromCgId(int $cgId)
+    public function generateFromCgId(int $cgId): ?string
     {
         if (is_null($cgId)) {
             return null;

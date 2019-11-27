@@ -132,11 +132,11 @@ class Service extends AbstractService
     /**
      * @param int $hostId
      * @param int $serviceId
-     * @param int $sOnlyContactHost
+     * @param bool $isOnlyContactHost
      */
-    private function getContactsFromHost(int $hostId, int $serviceId, ?int $sOnlyContactHost) : void
+    private function getContactsFromHost(int $hostId, int $serviceId, bool $isOnlyContactHost) : void
     {
-        if ($sOnlyContactHost == 1) {
+        if ($isOnlyContactHost) {
             $host = Host::getInstance($this->dependencyInjector);
             $this->service_cache[$serviceId]['contacts'] = $host->getString($hostId, 'contacts');
             $this->service_cache[$serviceId]['contact_groups'] = $host->getString($hostId, 'contact_groups');
@@ -260,12 +260,12 @@ class Service extends AbstractService
     }
 
     /**
-     * @param array $service (passing by Reference)
+     * @param array $service
      * @param string $attribute
-     * @param $attributeAdditive
-     * @return array|int|mixed
+     * @param string $attributeAdditive
+     * @return array
      */
-    private function manageVerticalInheritance(array &$service, string $attribute, $attributeAdditive)
+    private function manageVerticalInheritance(array &$service, string $attribute, string $attributeAdditive): array
     {
         $results = $service[$attribute . '_cache'];
         if (count($results) > 0 &&
@@ -316,8 +316,8 @@ class Service extends AbstractService
     }
 
     /**
-     * @param array $service (passing by Reference)
-     * @param array|null $cg
+     * @param array $service
+     * @param array $cg
      */
     private function setContactGroups(array &$service, array $cg = []) : void
     {
@@ -337,8 +337,8 @@ class Service extends AbstractService
     }
 
     /**
-     * @param array $service (passing by Reference)
-     * @param array|null $contacts
+     * @param array $service
+     * @param array $contacts
      */
     private function setContacts(array &$service, array $contacts = []): void
     {
@@ -472,7 +472,6 @@ class Service extends AbstractService
                 }
             }
         }
-        return;
     }
 
     private function clean(&$service)
@@ -526,10 +525,10 @@ class Service extends AbstractService
      * @param int $hostId
      * @param string $hostName
      * @param int|null $serviceId
-     * @param int $byHg
-     * @return mixed|null
+     * @param int $byHg default 0
+     * @return string|null service description
      */
-    public function generateFromServiceId(int $hostId, string $hostName, ?int $serviceId, $byHg = 0)
+    public function generateFromServiceId(int $hostId, string $hostName, ?int $serviceId, int $byHg = 0): ?string
     {
         if (is_null($serviceId)) {
             return null;
@@ -571,7 +570,7 @@ class Service extends AbstractService
             $this->getContactsFromHost(
                 $hostId,
                 $serviceId,
-                (int)$this->service_cache[$serviceId]['service_use_only_contacts_from_host']
+                $this->service_cache[$serviceId]['service_use_only_contacts_from_host'] == '1'
             );
         }
 
