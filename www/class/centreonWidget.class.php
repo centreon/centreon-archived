@@ -1328,13 +1328,28 @@ class CentreonWidget
 
         // Prevent SQL injection with widget id
         $stmt = $this->db->prepare($query);
-
         $stmt->bindParam(':widgetId', $widgetId, PDO::PARAM_INT);
         $stmt->bindParam(':userId', $this->userId, PDO::PARAM_INT);
 
         $dbResult = $stmt->execute();
         if (!$dbResult) {
             throw new \Exception("An error occured");
+        }
+
+        //if user has no preferences take parent preferences
+        if($this->db->numberRows() === 0){
+            $query = 'SELECT pref.preference_value, param.parameter_code_name ' .
+                'FROM widget_preferences pref, widget_parameters param, widget_views wv ' .
+                'WHERE param.parameter_id = pref.parameter_id ' .
+                'AND pref.widget_view_id = wv.widget_view_id ' .
+                'AND wv.widget_id = :widgetId ';
+            // Prevent SQL injection with widget id
+            $stmt = $this->db->prepare($query);
+            $stmt->bindParam(':widgetId', $widgetId, PDO::PARAM_INT);
+            $dbResult = $stmt->execute();
+            if (!$dbResult) {
+                throw new \Exception("An error occured");
+            }
         }
 
         while ($row = $stmt->fetch()) {
