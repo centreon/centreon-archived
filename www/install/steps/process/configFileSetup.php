@@ -53,6 +53,7 @@ if ($parameters['address']) {
     $host = 'localhost';
 }
 
+// mandatory parameters used by centCore or Gorgone.d in the legacy SSH mode
 $patterns = array(
     '/--ADDRESS--/',
     '/--DBUSER--/',
@@ -79,6 +80,25 @@ $replacements = array(
     $configuration['centreon_varlib']
 );
 
+// specific additional mandatory parameters used by Gorgone.d in a full ZMQ mode
+// these patterns don't replace the original ones
+$gorgonePatterns = [
+    '/--CENTREON_SPOOL--/',
+    '/--HTTPSERVERADDRESS--/',
+    '/--HTTPSERVERPORT--/',
+    '/--SSLMODE--/',
+    '/--CENTREON_TRAPDIR--/',
+];
+
+$gorgoneReplacements = [
+    "/var/spool/centreon/",
+    "0.0.0.0",
+    8085,
+    false,
+    "/etc/snmp/centreon_traps/",
+];
+
+
 /**
  * centreon.conf.php
  */
@@ -94,6 +114,16 @@ $centreonConfPmFile = rtrim($configuration['centreon_etc'], '/') . '/conf.pm';
 $contents = file_get_contents('../../var/configFilePmTemplate');
 $contents = preg_replace($patterns, $replacements, $contents);
 file_put_contents($centreonConfPmFile, $contents);
+
+/**
+ * gorgone.yaml
+ * configuration file used by the Gorgone module in a full ZMQ mode
+ */
+$centreonGorgonedConfFile = rtrim($configuration['centreon_etc'], '/') . '/gorgone.yaml';
+$contents = file_get_contents('../../var/configFileGorgoneTemplate');
+$contents = preg_replace($patterns, $replacements, $contents);
+$contents = preg_replace($gorgonePatterns, $gorgoneReplacements, $contents);
+file_put_contents($centreonGorgonedConfFile, $contents);
 
 $return['result'] = 0;
 echo json_encode($return);
