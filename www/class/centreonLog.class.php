@@ -82,6 +82,7 @@ class CentreonUserLog
     {
         /*
          * Construct alerte message
+         * Take care before modifying this message pattern as it may break tools such as fail2ban
          */
         $string = date("Y-m-d H:i:s") . "|" . $this->uid . "|$page|$option|$str";
 
