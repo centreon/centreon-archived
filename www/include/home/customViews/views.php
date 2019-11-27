@@ -71,12 +71,11 @@ try {
     $template = new Smarty();
     $template = initSmartyTplForPopup($path, $template, "./", _CENTREON_PATH_);
 
-    $columnClass = "";
     $viewId = $viewObj->getCurrentView();
     $permission = $viewObj->checkPermission($viewId) ? 1 : 0;
     $ownership = $viewObj->checkOwnership($viewId) ? 1 : 0;
     $widgets = array();
-    $columnClass = "column_1";
+    $columnClass = "column_0";
     $widgetNumber = 0;
     if ($viewId) {
         $columnClass = $viewObj->getLayout($viewId);
