@@ -143,7 +143,10 @@ class ServiceTemplate extends AbstractService
         }
     }
 
-    private function getServiceFromId($service_id)
+    /**
+     * @param int $serviceId
+     */
+    public function getServiceFromId(int $serviceId): void
     {
         if (is_null($this->stmt_service)) {
             $this->stmt_service = $this->backend_instance->db->prepare(
@@ -154,10 +157,10 @@ class ServiceTemplate extends AbstractService
                 "WHERE service_id = :service_id AND service_activate = '1' "
             );
         }
-        $this->stmt_service->bindParam(':service_id', $service_id, PDO::PARAM_INT);
+        $this->stmt_service->bindParam(':service_id', $serviceId, PDO::PARAM_INT);
         $this->stmt_service->execute();
         $results = $this->stmt_service->fetchAll(PDO::FETCH_ASSOC);
-        $this->service_cache[$service_id] = array_pop($results);
+        $this->service_cache[$serviceId] = array_pop($results);
     }
 
     private function getSeverity($service_id)
