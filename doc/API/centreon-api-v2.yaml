@@ -46,7 +46,7 @@ tags:
   - name: Authentication
   - name: MonitoringServer
     description: |
-      This API allow to:
+      This API allows to:
       * Show the monitoring server configurations
   - name: Downtime
     description: |
