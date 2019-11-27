@@ -421,6 +421,7 @@ class CentreonCustomView
             //other
         } else {
             // if owner consumed = 0 -> delete
+
             if ($this->checkOwnerViewStatus($viewId) == 0) {
                 //if not other shared view consumed, delete all
                 if (!$this->checkOtherShareViewUnlocked($viewId, $this->userId)) {
@@ -441,14 +442,29 @@ class CentreonCustomView
                     if (PEAR::isError($res)) {
                         throw new Exception('Bad Request');
                     }
-
                 }
                 //if owner not delete
             } else {
-                $query = 'UPDATE custom_view_user_relation SET is_consumed = 0 ' .
-                    'WHERE custom_view_id = ? AND user_id = ? ';
+                //Delete widget pref
+                $stmt = $this->db->prepare(
+                    'DELETE FROM widget_preferences 
+                    WHERE user_id = ? 
+                    AND widget_view_id IN (
+                        SELECT widget_view_id FROM widget_views WHERE custom_view_id = ?
+                    )'
+                );
+                $res = $this->db->execute($stmt, array((int)$this->userId, (int)$viewId));
+                if (PEAR::isError($res)) {
+                    throw new Exception('Bad Request');
+                }
 
-                $stmt = $this->db->prepare($query);
+                //reset relation
+                $stmt = $this->db->prepare(
+                    'UPDATE custom_view_user_relation SET is_consumed = 0 
+                    WHERE custom_view_id = ?
+                    AND user_id = ? '
+                );
+
                 $res = $this->db->execute($stmt, array((int)$viewId, (int)$this->userId));
                 if (PEAR::isError($res)) {
                     throw new Exception('Bad Request');
@@ -616,16 +632,36 @@ class CentreonCustomView
                 $isLocked = $row['locked'];
             }
         }
+        //check if an entry is present
+        $stmt = $this->db->prepare(
+            'SELECT custom_view_id, user_id 
+            FROM custom_view_user_relation 
+            WHERE custom_view_id = ? 
+            AND user_id = ?'
+        );
+        $res = $this->db->execute($stmt, array((int)$params['viewLoad'], (int)$this->userId));
 
-        $query = 'INSERT INTO custom_view_user_relation (custom_view_id,user_id,is_owner,locked,is_share) ' .
-            'VALUES (?, ?, 0, ?, 1)';
-
-        $stmt = $this->db->prepare($query);
-        $res = $this->db->execute($stmt, array((int)$params['viewLoad'], (int)$this->userId, (int)$isLocked));
-        if (PEAR::isError($res)) {
-            throw new Exception('Bad Request');
+        if ($res->numRows() === 0) {
+            //if no entry, insert
+            $query = 'INSERT INTO custom_view_user_relation (custom_view_id,user_id,is_owner,locked,is_share) ' .
+                'VALUES (?, ?, 0, ?, 1)';
+            $stmt = $this->db->prepare($query);
+            $res = $this->db->execute($stmt, array((int)$params['viewLoad'], (int)$this->userId, (int)$isLocked));
+            if (PEAR::isError($res)) {
+                throw new Exception('Bad Request');
+            }
+        } else {
+            //else update consumed option
+            $stmt = $this->db->prepare(
+                'UPDATE custom_view_user_relation SET is_consumed = 1 
+                WHERE custom_view_id = ?
+                AND user_id = ? '
+            );
+            $res = $this->db->execute($stmt, array((int)$params['viewLoad'], (int)$this->userId));
+            if (PEAR::isError($res)) {
+                throw new Exception('Bad Request');
+            }
         }
-
         return $params['viewLoad'];
     }
 

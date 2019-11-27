@@ -1303,6 +1303,22 @@ class CentreonWidget
             throw new Exception('Bad Request');
         }
 
+        //if user has no preferences take parent preferences
+        if($res->numRows() === 0){
+            $query = 'SELECT pref.preference_value, param.parameter_code_name ' .
+                'FROM widget_preferences pref, widget_parameters param, widget_views wv ' .
+                'WHERE param.parameter_id = pref.parameter_id ' .
+                'AND pref.widget_view_id = wv.widget_view_id ' .
+                'AND wv.widget_id = ? ';
+            // Prevent SQL injection with widget id
+            $stmt = $this->db->prepare($query);
+            $res = $this->db->execute($stmt, array((int)$widgetId));
+        }
+
+        if (PEAR::isError($res)) {
+            throw new Exception('Bad Request');
+        }
+
         while ($row = $res->fetchRow()) {
             $tab[$row['parameter_code_name']] = $row['preference_value'];
         }
