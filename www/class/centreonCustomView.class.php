@@ -450,7 +450,7 @@ class CentreonCustomView
                         SELECT widget_view_id FROM widget_views WHERE custom_view_id = :viewId
                     )'
                 );
-                $stmt->bindParam(':userId', $this->userId, PDO::PARAM_INT);
+                $stmt->bindParam(':userId', $this->userId, \PDO::PARAM_INT);
                 $stmt->bindParam(':viewId', $viewId, \PDO::PARAM_INT);
                 $dbResult = $stmt->execute();
                 if (!$dbResult) {
