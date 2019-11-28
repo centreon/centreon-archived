@@ -32,6 +32,8 @@ It is possible of define two settings:
 
 * Child hosts: signifies that the host becomes the parent of all the child hosts selected.
 
+It is not possible to have dependencies between hosts from different pollers.
+
 .. note::
    All the parents of a host must be in a Not-OK status for the host itself to be considered impossible to reach. If only one access path is down (physical dependencies link), the scheduler will continue to monitor this host.
 
