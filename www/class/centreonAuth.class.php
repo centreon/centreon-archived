@@ -306,26 +306,24 @@ class CentreonAuth
                 }
             }
 
-            if ($this->userInfos["contact_oreon"]
-                || ($this->userInfos["contact_oreon"] == 0 && $this->source == 'API')
-            ) {
-                /*
-                 * Check password matching
-                 */
-                $this->getCryptFunction();
-                $this->checkPassword($password, $token);
-
-                if ($this->passwdOk == 1) {
+            /*
+             * Check password matching
+             */
+            $this->getCryptFunction();
+            $this->checkPassword($password, $token);
+            if ($this->passwdOk == 1) {
+                if ($this->userInfos["contact_oreon"]
+                    || ($this->userInfos["contact_oreon"] == 0 && $this->source == 'API')
+                ) {
                     $this->CentreonLog->setUID($this->userInfos["contact_id"]);
                     $this->CentreonLog->insertLog(
                         1,
                         "[" . $this->source . "] [" . $_SERVER["REMOTE_ADDR"] . "] Authentication succeeded for '" . $username . "'"
                     );
                 } else {
-                    //  Take care before modifying this message pattern as it may break tools such as fail2ban
                     $this->CentreonLog->insertLog(
                         1,
-                        "[" . $this->source . "] [" . $_SERVER["REMOTE_ADDR"] . "] Authentication failed for '" . $username . "' : password mismatch"
+                        "[" . $this->source . "] [" . $_SERVER["REMOTE_ADDR"] . "] '" . $username . "' is not allowed to reach Centreon"
                     );
                     $this->error = _('Your credentials are incorrect.');
                 }
@@ -333,7 +331,7 @@ class CentreonAuth
                 //  Take care before modifying this message pattern as it may break tools such as fail2ban
                 $this->CentreonLog->insertLog(
                     1,
-                    "[" . $this->source . "] [" . $_SERVER["REMOTE_ADDR"] . "] Authentication failed for '" . $username . "' : not authorized"
+                    "[" . $this->source . "] [" . $_SERVER["REMOTE_ADDR"] . "] Authentication failed for '" . $username . "'"
                 );
                 $this->error = _('Your credentials are incorrect.');
             }

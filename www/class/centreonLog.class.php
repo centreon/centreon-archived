@@ -81,7 +81,7 @@ class CentreonUserLog
     public function insertLog($id, $str, $print = 0, $page = 0, $option = 0)
     {
         /*
-         * Construct alerte message
+         * Construct alert message
          * Take care before modifying this message pattern as it may break tools such as fail2ban
          */
         $string = date("Y-m-d H:i:s") . "|" . $this->uid . "|$page|$option|$str";
