@@ -451,7 +451,7 @@ class CentreonCustomView
                     )'
                 );
                 $stmt->bindParam(':userId', $this->userId, PDO::PARAM_INT);
-                $stmt->bindParam(':viewId', $viewId, PDO::PARAM_INT);
+                $stmt->bindParam(':viewId', $viewId, \PDO::PARAM_INT);
                 $dbResult = $stmt->execute();
                 if (!$dbResult) {
                     throw new \Exception("An error occured");
