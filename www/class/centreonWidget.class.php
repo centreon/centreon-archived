@@ -143,7 +143,7 @@ class CentreonWidget
             throw new \Exception("An error occured");
         }
         while ($row = $stmt->fetch()) {
-            return $row['title'];
+            return htmlentities($row['title'], ENT_QUOTES);
         }
         return null;
     }
@@ -400,11 +400,11 @@ class CentreonWidget
     }
 
     /**
-     * @param $viewId
-     * @return mixed
+     * @param int $viewId
+     * @return array
      * @throws Exception
      */
-    public function getWidgetsFromViewId($viewId)
+    public function getWidgetsFromViewId(int $viewId) : array
     {
         if (!isset($this->widgets[$viewId])) {
             $this->widgets[$viewId] = array();
@@ -423,7 +423,7 @@ class CentreonWidget
                 throw new \Exception("An error occured");
             }
             while ($row = $stmt->fetch()) {
-                $this->widgets[$viewId][$row['widget_id']]['title'] = $row['title'];
+                $this->widgets[$viewId][$row['widget_id']]['title'] = htmlentities($row['title'], ENT_QUOTES);
                 $this->widgets[$viewId][$row['widget_id']]['url'] = $row['url'];
                 $this->widgets[$viewId][$row['widget_id']]['widget_order'] = $row['widget_order'];
                 $this->widgets[$viewId][$row['widget_id']]['widget_id'] = $row['widget_id'];
