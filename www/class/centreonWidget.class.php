@@ -1345,7 +1345,7 @@ class CentreonWidget
                 'AND wv.widget_id = :widgetId ';
             // Prevent SQL injection with widget id
             $stmt = $this->db->prepare($query);
-            $stmt->bindParam(':widgetId', $widgetId, PDO::PARAM_INT);
+            $stmt->bindParam(':widgetId', $widgetId, \PDO::PARAM_INT);
             $dbResult = $stmt->execute();
             if (!$dbResult) {
                 throw new \Exception("An error occured");
