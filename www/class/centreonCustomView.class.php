@@ -445,7 +445,7 @@ class CentreonCustomView
                 }
                 //if owner not delete
             } else {
-                //Delete widget pref
+                // delete widget pref
                 $stmt = $this->db->prepare(
                     'DELETE FROM widget_preferences 
                     WHERE user_id = ? 
