@@ -1313,10 +1313,10 @@ class CentreonWidget
             // Prevent SQL injection with widget id
             $stmt = $this->db->prepare($query);
             $res = $this->db->execute($stmt, array((int)$widgetId));
-        }
-
-        if (PEAR::isError($res)) {
-            throw new Exception('Bad Request');
+            
+            if (PEAR::isError($res)) {
+                throw new Exception('Bad Request');
+            }
         }
 
         while ($row = $res->fetchRow()) {
