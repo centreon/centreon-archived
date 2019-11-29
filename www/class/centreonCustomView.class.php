@@ -458,7 +458,7 @@ class CentreonCustomView
                     throw new Exception('Bad Request');
                 }
 
-                //reset relation
+                // reset relation
                 $stmt = $this->db->prepare(
                     'UPDATE custom_view_user_relation SET is_consumed = 0 
                     WHERE custom_view_id = ?
