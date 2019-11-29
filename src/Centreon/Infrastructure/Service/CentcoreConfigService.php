@@ -4,8 +4,6 @@ namespace Centreon\Infrastructure\Service;
 class CentcoreConfigService
 {
 
-    const CONF_CORE = 'instCentCore.conf';
-    const CONF_PLUGINS = 'instCentPlugins.conf';
     const CONF_WEB = 'instCentWeb.conf';
 
     const MACROS_DELIMITER_TEMPLATE = '@%s@';
@@ -48,11 +46,7 @@ class CentcoreConfigService
 
     private function initMacros(): void
     {
-        $data = array_merge(
-            $this->parseIniFile(_CENTREON_ETC_ . '/' . static::CONF_CORE),
-            $this->parseIniFile(_CENTREON_ETC_ . '/' . static::CONF_PLUGINS),
-            $this->parseIniFile(_CENTREON_ETC_ . '/' . static::CONF_WEB)
-        );
+        $data = $this->parseIniFile(_CENTREON_ETC_ . '/' . static::CONF_WEB);
 
         $this->macros = [
             'centreon_dir' => "{$data['INSTALL_DIR_CENTREON']}/",
