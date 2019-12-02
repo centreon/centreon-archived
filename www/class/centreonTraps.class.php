@@ -406,8 +406,8 @@ class CentreonTraps
             : $rq .= "NULL, ";
 
         $rq .= "`traps_mode` = ";
-        isset($ret['traps_mode']) && $ret['traps_mode'] != null
-            ? $rq .= "'" . $ret['traps_mode'] . "' "
+        isset($ret['traps_mode']['traps_mode']) && $ret['traps_mode']['traps_mode'] != null
+            ? $rq .= "'" . $ret['traps_mode']['traps_mode'] . "' "
             : $rq .= "NULL ";
 
         $rq .= 'WHERE `traps_id` = ' . (int)$traps_id ;
