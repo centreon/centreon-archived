@@ -403,11 +403,11 @@ class CentreonTraps
         $rq .= "`traps_customcode` = ";
         isset($ret["traps_customcode"]) && $ret["traps_customcode"] != null
             ? $rq .= "'" . $ret["traps_customcode"] . "', "
-            : $rq .= "NULL ";
+            : $rq .= "NULL, ";
 
         $rq .= "`traps_mode` = ";
-        isset($ret['traps_mode']['traps_mode']) && $ret['traps_mode']['traps_mode'] != null
-            ? $rq .= "'" . $ret['traps_mode']['traps_mode'] . "' "
+        isset($ret['traps_mode']) && $ret['traps_mode'] != null
+            ? $rq .= "'" . $ret['traps_mode'] . "' "
             : $rq .= "NULL ";
 
         $rq .= 'WHERE `traps_id` = ' . (int)$traps_id ;
