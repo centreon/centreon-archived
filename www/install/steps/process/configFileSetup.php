@@ -93,8 +93,8 @@ $gorgonePatterns = [
 $gorgoneReplacements = [
     "/var/spool/centreon",
     "0.0.0.0",
-    8085,
-    false,
+    "8085",
+    "false",
     "/etc/snmp/centreon_traps",
 ];
 
@@ -120,7 +120,7 @@ file_put_contents($centreonConfPmFile, $contents);
  * gorgone.yaml
  * configuration file used by the Gorgone module in a full ZMQ mode
  */
-$centreonGorgonedConfFile = $centreonEtcPath . '/gorgone.yaml';
+$centreonGorgonedConfFile = $centreonEtcPath . '/gorgoned.yml';
 $contents = file_get_contents('../../var/configFileGorgoneTemplate');
 $contents = preg_replace($patterns, $replacements, $contents);
 $contents = preg_replace($gorgonePatterns, $gorgoneReplacements, $contents);

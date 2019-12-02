@@ -16,14 +16,14 @@ gorgonecore:
   vector: 0123456789012345
 modules:
   - name: httpserver
-    package: gorgone::modules::core::httpserver::hooks
+    package: "gorgone::modules::core::httpserver::hooks"
     enable: true
     address: "--HTTPSERVERADDRESS--"
     port: "--HTTPSERVERPORT--"
-    ssl: "--SSLMODE--"
+    ssl: --SSLMODE--
 
   - name: action
-    package: gorgone::modules::core::action::hooks
+    package: "gorgone::modules::core::action::hooks"
     enable: true
 
   - name: cron
@@ -39,11 +39,11 @@ modules:
         keep_token: true
 
   - name: proxy
-    package: gorgone::modules::core::proxy::hooks
+    package: "gorgone::modules::core::proxy::hooks"
     enable: true
 
   - name: legacycmd
-    package: gorgone::modules::centreon::legacycmd::hooks
+    package: "gorgone::modules::centreon::legacycmd::hooks"
     enable: true
     cmd_file: "--CENTREON_VARLIB--/centcore.cmd"
     cache_dir: "--CENTREON_CACHEDIR--"
@@ -51,7 +51,7 @@ modules:
     remote_dir: "--CENTREON_VARLIB--/remote-data/"
 
   - name: engine
-    package: gorgone::modules::centreon::engine::hooks
+    package: "gorgone::modules::centreon::engine::hooks"
     enable: true
     command_file: "--CENTREON_VARLIB---engine/rw/centengine.cmd"
 
