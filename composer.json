@@ -54,7 +54,8 @@
         "symfony/translation": "4.3.*",
         "symfony/expression-language": "4.3.*",
         "ext-json": "*",
-        "justinrainbow/json-schema": "^5.2"
+        "justinrainbow/json-schema": "^5.2",
+        "ext-pdo": "*"
     },
     "autoload": {
         "psr-4": {
