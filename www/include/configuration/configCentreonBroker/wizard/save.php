@@ -41,7 +41,7 @@ require_once './class/centreonConfigCentreonBroker.php';
 
 $central_module_configuration = array(
     'name' => $wizard->getValue(2, 'prefix_configname') . '-module-master',
-    'filename' => 'central-module.xml',
+    'filename' => 'central-module.json',
     'activate' => array('activate' => 0),
     'activate_watchdog' => array('activate_watchdog' => 0),
     'write_timestamp' => array('write_timestamp' => 1),
@@ -84,7 +84,7 @@ $central_module_configuration = array(
 
 $poller_module_configuration = array(
     'name' => $wizard->getValue(2, 'configname') . '-module',
-    'filename' => 'poller-module.xml',
+    'filename' => 'poller-module.json',
     'activate' => array('activate' => 0),
     'activate_watchdog' => array('activate_watchdog' => 0),
     'write_timestamp' => array('write_timestamp' => 1),
@@ -128,7 +128,7 @@ $poller_module_configuration = array(
 
 $central_broker_configuration = array(
     'name' => $wizard->getValue(2, 'prefix_configname') . '-broker-master',
-    'filename' => 'central-broker.xml',
+    'filename' => 'central-broker.json',
     'activate' => array('activate' => 0),
     'activate_watchdog' => array('activate_watchdog' => 1),
     'write_timestamp' => array('write_timestamp' => 1),
@@ -224,7 +224,7 @@ $central_broker_configuration = array(
 
 $central_rrd_configuration = array(
     'name' => $wizard->getValue(2, 'prefix_configname') . '-rrd-master',
-    'filename' => 'central-rrd.xml',
+    'filename' => 'central-rrd.json',
     'activate' => array('activate' => 0),
     'activate_watchdog' => array('activate_watchdog' => 1),
     'write_timestamp' => array('write_timestamp' => 1),

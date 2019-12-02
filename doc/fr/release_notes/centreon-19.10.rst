@@ -1,12 +1,63 @@
 ====================
-Centreon Web 19.10.2
+Centreon Web 19.10.3
 ====================
-
-Enhancements
-------------
 
 Bug Fixes
 ---------
+
+* [LDAP] Correct double slashes in the saved DN (PR/#8121)
+
+Security Fixes
+--------------
+
+* Fix call of service macros list without authentication - CVE-2019-17645 (PR/#8035)
+* Fix call of host macros list without authentication - CVE-2019-17644 (PR/#8037)
+
+====================
+Centreon Web 19.10.2
+====================
+
+Bug Fixes
+---------
+
+* LDAP users using DN with special chars cannot login
+* LDAP connection issue
+* Select all elements in select2 freeze the screen
+* Non synchronized curves when using rrdcached
+* Missing selection of Okta template for LDAP
+* Trap matches and hostgroups break export in Remote Server
+* Trap export on Remote Server fails
+* Recurrent downtimes search bug
+* Unable to hide service template macro with Clapi
+* Macro passwords can be visible
+* Calculation of contact groups too frequent
+* Additional Remote Server config fails
+* Unable to set host notification to None through API
+* Remove unused radio button in meta-service configuration
+* Contact template notification parameters are not inherited
+* Filter "Name" is emptied out when searching in host configuration
+* Incorrect CSV export in Event Logs
+* Add/List/Cancel downtimes on resources
+* Correctly toggle edit when widgets load
+* Using rrdcached provides non synchronized curves
+* Add curve label in API
+* Poller statistics charts are missing
+* Several trap definitions with same OID will not work
+
+Security
+--------
+
+* No check for authentication
+* SQL injections
+* RCE flaws
+* XSS
+* Authentication flaw
+
+Documentation
+-------------
+
+* Display release notes per section in upgrade process
+* Update performance FAQ for rrdcached
 
 ====================
 Centreon Web 19.10.1

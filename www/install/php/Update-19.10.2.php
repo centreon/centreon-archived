@@ -17,3 +17,18 @@
  * For more information : contact@centreon.com
  *
  */
+include_once __DIR__ . "/../../class/centreonLog.class.php";
+$centreonLog = new CentreonLog();
+
+// fix contact auto login default value when not set
+try {
+    $pearDB->query(
+        "UPDATE `contact` SET `contact_autologin_key` = NULL WHERE `contact_autologin_key` =''"
+    );
+} catch (\PDOException $e) {
+    $centreonLog->insertLog(
+        2,
+        "UPGRADE : 19.10.2 Unable to set default contact_autologin_key"
+    );
+}
+

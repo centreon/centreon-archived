@@ -83,7 +83,7 @@ Parameters that you may change are:
 ======================== ==================================================
 Column	                 Description
 ======================== ==================================================
-filename                 Filename of configuration (.xml extension)
+filename                 Filename of configuration (.json extension)
 
 name	                 Name of configuration
 
@@ -95,8 +95,6 @@ event_queue_max_size     Event queue max size (when number is reached,
 cache_directory          Path for cache files
 
 daemon                   Link this configuration to cbd service (0 or 1)
-
-correlation_activate     Enable correlation (0 or 1)
 ======================== ==================================================
 
 

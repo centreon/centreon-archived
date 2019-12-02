@@ -54,6 +54,7 @@ class CentreonGraphStatus
         $this->endTime = $end;
         $this->statusPath = $this->getStatusPath();
         $this->generalOpt = $this->getOptions();
+        $this->rrdCachedOptions = $this->getRrdCachedOptions();
     }
 
     /**
@@ -133,28 +134,22 @@ class CentreonGraphStatus
      */
     public function flushRrdCached($indexData)
     {
-        if (false === isset($this->generalOpt['rrdcached_enabled']) ||
-            $this->generalOpt['rrdcached_enabled'] == 0
+        if (!isset($this->rrdCachedOptions['rrd_cached_option'])
+            || !in_array($this->rrdCachedOptions['rrd_cached_option'], ['unix', 'tcp'])
         ) {
             return true;
         }
 
         $errno = 0;
         $errstr = '';
-        if (isset($this->general_opt['rrdcached_port'])
-            && trim($this->general_opt['rrdcached_port']) != ''
-        ) {
-            $sock = @fsockopen('127.0.0.1', trim($this->general_opt['rrdcached_port']), $errno, $errstr);
-            if ($sock === false) {
-                return false;
-            }
-        } elseif (isset($this->general_opt['rrdcached_unix_path'])
-            && trim($this->general_opt['rrdcached_unix_path']) != ''
-        ) {
-            $sock = @fsockopen('unix://' . trim($this->general_opt['rrdcached_unix_path']), $errno, $errstr);
+        if ($this->rrdCachedOptions['rrd_cached_option'] === 'tcp') {
+            $sock = fsockopen('127.0.0.1', trim($this->rrdCachedOptions['rrd_cached']), $errno, $errstr);
+        } elseif ($this->rrdCachedOptions['rrd_cached_option'] === 'unix') {
+            $sock = fsockopen('unix://' . trim($this->rrdCachedOptions['rrd_cached']), $errno, $errstr);
         } else {
             return false;
         }
+
         if (false === $sock) {
             return false;
         }
@@ -208,6 +203,30 @@ class CentreonGraphStatus
             $result[$row['key']] = $row['value'];
         }
         return $result;
+    }
+
+    /**
+     * Get the RRDCacheD options of local RRD Broker
+     *
+     * @return array of RRDCacheD options
+     */
+    protected function getRrdCachedOptions()
+    {
+        $result = $this->pearDB->query(
+            "SELECT config_key, config_value
+            FROM cfg_centreonbroker_info AS cbi
+            INNER JOIN cfg_centreonbroker AS cb ON (cb.config_id = cbi.config_id)
+            INNER JOIN nagios_server AS ns ON (ns.id = cb.ns_nagios_server)
+            WHERE ns.localhost = '1'
+            AND cbi.config_key IN ('rrd_cached_option', 'rrd_cached')"
+        );
+
+        $rrdCachedOptions = [];
+        while ($row = $result->fetch()) {
+            $this->rrdCachedOptions[$row['config_key']] = $row['config_value'];
+        }
+
+        return $rrdCachedOptions;
     }
     
     /**

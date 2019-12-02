@@ -1,5 +1,6 @@
 {$form.javascript}
 {$javascript}
+<div id="popin"><p id="msg-wrapper"></p></div>
 <form {$form.attributes}>
     {if $inheritance !="1" }
     <!-- notification inheritance option -->
@@ -472,7 +473,7 @@ jQuery(function() {
         }
         {/literal}{else}{literal}
         if ($passwordCheckbox.is(':checked')) {
-            $passwordCheckbox.parent('span').hide();
+            $passwordCheckbox.closest('span').hide();
         }
         {/literal}{/if}{literal}
 
@@ -590,9 +591,19 @@ jQuery(function() {
 
                 if (jQuery(elem).find("input[id^='macroPassword_']").is(':checked')) {
                     jQuery(elem).find("input[name^='macroValue']").prop('type', 'password');
-                    jQuery(elem).find("input[id^='macroPassword_']").parent('span').hide();
+                    jQuery(elem).find("input[id^='macroPassword_']").closest('span').hide();
                 }
                 });
+        },
+        error: function(jqXHR, data) {
+            let message = 'Internal error';
+            if (typeof(jqXHR.responseJSON) === 'object') {
+               if (typeof(jqXHR.responseJSON.message) !== "undefined") {
+                   message = jqXHR.responseJSON.message;
+               }
+            }
+            jQuery('#msg-wrapper').html('<span class="msg-field error">' + message + '</span>');
+            jQuery('#popin').centreonPopin("open");
         }
     });
     {/literal}{/if}{literal}
