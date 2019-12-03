@@ -1,6 +1,6 @@
 <?php
-/**
- * Copyright 2016 Centreon
+/*
+ * Copyright 2005 - 2019 Centreon (https://www.centreon.com/)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,26 +13,17 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
+ *
+ * For more information : contact@centreon.com
+ *
  */
 
-// mock path constants to redirect to base centreon directory
-$mockedPathConstants = ['_CENTREON_PATH_', '_CENTREON_ETC_', '_CENTREON_LOG_', '_CENTREON_CACHEDIR_'];
-foreach ($mockedPathConstants as $mockedPathConstant) {
-    if (!defined($mockedPathConstant)) {
-        define($mockedPathConstant, realpath(__DIR__ . '/../../') . '/');
-    }
-}
+require dirname(__DIR__) . '/../vendor/autoload.php';
 
-// mock variable constants to redirect to base centreon directory
-$mockedVarConstants = ['hostCentreon', 'hostCentstorage', 'user', 'password', 'db', 'dbcstg', 'port'];
-foreach ($mockedVarConstants as $mockedVarConstant) {
-    if (!defined($mockedVarConstant)) {
-        define($mockedVarConstant, '');
-    }
-}
+$_SERVER['APP_ENV'] = 'dev';
+$_SERVER['APP_DEBUG'] = $_SERVER['APP_DEBUG'] ?? $_ENV['APP_DEBUG'] ?? 'prod' !== $_SERVER['APP_ENV'];
+$_SERVER['APP_DEBUG'] = $_ENV['APP_DEBUG'] =
+    (int) $_SERVER['APP_DEBUG']
+    || filter_var($_SERVER['APP_DEBUG'], FILTER_VALIDATE_BOOLEAN) ? '1' : '0';
 
-// Disable warnings for PEAR.
-error_reporting(E_ALL & ~E_STRICT);
-
-require_once realpath(__DIR__ . '/polyfill.php');
-require_once realpath(__DIR__ . '/../../vendor/autoload.php');
+include_once dirname(__DIR__) . "/../config/centreon.config.php";
