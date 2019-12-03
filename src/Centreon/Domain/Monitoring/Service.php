@@ -94,7 +94,7 @@ class Service
 
     /**
      * @Serializer\Groups({"service_with_host"})
-     * @var Host
+     * @var Host|null
      */
     private $host;
 
@@ -397,18 +397,18 @@ class Service
     }
 
     /**
-     * @return Host
+     * @return Host|null
      */
-    public function getHost(): Host
+    public function getHost(): ?Host
     {
         return $this->host;
     }
 
     /**
-     * @param Host $host
+     * @param Host $host|null
      * @return Service
      */
-    public function setHost(Host $host): Service
+    public function setHost(?Host $host): Service
     {
         $this->host = $host;
         return $this;

@@ -129,25 +129,29 @@ sub get_oids {
     my ($cdb, $ids) = @_;
     my $ref_result;
     
-    my ($dstatus, $sth) = $cdb->query("SELECT name, traps_log, traps_execution_command, traps_reschedule_svc_enable, traps_id, traps_args,
-                                        traps_oid, traps_name, traps_mode, traps_advanced_treatment, traps_advanced_treatment_default, traps_execution_command_enable, traps_submit_result_enable, traps_status,
-                                        traps_timeout, traps_customcode, traps_exec_interval, traps_exec_interval_type,
-                                        traps_routing_mode, traps_routing_value, traps_routing_filter_services,
-                                        traps_exec_method, traps_downtime, traps_output_transform,
-                                        service_categories.level, service_categories.sc_name, service_categories.sc_id
-                                        FROM traps
-                                        LEFT JOIN traps_vendor ON (traps_vendor.id = traps.manufacturer_id)
-                                        LEFT JOIN service_categories ON (service_categories.sc_id = traps.severity_id)
-                                        WHERE traps_id IN (" . join(',', @$ids) . ")");
+    my ($dstatus, $sth) = $cdb->query(
+       "SELECT name, traps_log, traps_execution_command, traps_reschedule_svc_enable, traps_id, traps_args,
+        traps_oid, traps_name, traps_mode, traps_advanced_treatment, traps_advanced_treatment_default, traps_execution_command_enable, traps_submit_result_enable, traps_status,
+        traps_timeout, traps_customcode, traps_exec_interval, traps_exec_interval_type,
+        traps_routing_mode, traps_routing_value, traps_routing_filter_services,
+        traps_exec_method, traps_downtime, traps_output_transform,
+        service_categories.level, service_categories.sc_name, service_categories.sc_id
+        FROM traps
+        LEFT JOIN traps_vendor ON (traps_vendor.id = traps.manufacturer_id)
+        LEFT JOIN service_categories ON (service_categories.sc_id = traps.severity_id)
+        WHERE traps_id IN (" . join(',', @$ids) . ")"
+    );
     return -1 if ($dstatus == -1);
     $ref_result = $sth->fetchall_hashref('traps_id');
     
     foreach (keys %$ref_result) {
         # Get Matching Status Rules
         if (defined($ref_result->{$_}->{traps_advanced_treatment}) && $ref_result->{$_}->{traps_advanced_treatment} == 1) {
-            ($dstatus, $sth) = $cdb->query("SELECT * FROM traps_matching_properties
-                                            LEFT JOIN service_categories ON (service_categories.sc_id = traps_matching_properties.severity_id)
-                                            WHERE trap_id = " . $_ . " ORDER BY tmo_order ASC");
+            ($dstatus, $sth) = $cdb->query(
+                "SELECT * FROM traps_matching_properties
+                 LEFT JOIN service_categories ON (service_categories.sc_id = traps_matching_properties.severity_id)
+                 WHERE trap_id = " . $_ . " ORDER BY tmo_order ASC"
+            );
             return -1 if ($dstatus == -1);
             $ref_result->{$_}->{traps_matching_properties} = [];
             while (my $row = $sth->fetchrow_hashref()) {
@@ -227,11 +231,13 @@ sub get_services {
     my $services_do = {};
     
     ### Get service List for the Host
-    my ($dstatus, $sth) = $cdb->query("SELECT s.service_id, s.service_description, esi.esi_notes FROM host h, host_service_relation hsr, service s LEFT JOIN extended_service_information esi ON s.service_id = esi.service_service_id WHERE 
-                                         h.host_id = " . $host_id . " AND h.host_activate = '1' AND h.host_id = hsr.host_host_id AND hsr.service_service_id = s.service_id AND s.service_activate = '1'
-                                     UNION ALL SELECT s.service_id, s.service_description, esi.esi_notes  FROM 
-                                   host h, host_service_relation hsr, hostgroup_relation hgr, service s LEFT JOIN extended_service_information esi ON s.service_id = esi.service_service_id WHERE h.host_id = " . $host_id . " AND h.host_activate = '1' AND 
-                                   h.host_id = hgr.host_host_id AND hgr.hostgroup_hg_id = hsr.hostgroup_hg_id AND hsr.service_service_id = s.service_id AND s.service_activate = '1'");
+    my ($dstatus, $sth) = $cdb->query(
+        "SELECT s.service_id, s.service_description, esi.esi_notes FROM host h, host_service_relation hsr, service s LEFT JOIN extended_service_information esi ON s.service_id = esi.service_service_id WHERE 
+            h.host_id = " . $host_id . " AND h.host_activate = '1' AND h.host_id = hsr.host_host_id AND hsr.service_service_id = s.service_id AND s.service_activate = '1'
+         UNION ALL SELECT s.service_id, s.service_description, esi.esi_notes  FROM 
+            host h, host_service_relation hsr, hostgroup_relation hgr, service s LEFT JOIN extended_service_information esi ON s.service_id = esi.service_service_id WHERE h.host_id = " . $host_id . " AND h.host_activate = '1' AND 
+            h.host_id = hgr.host_host_id AND hgr.hostgroup_hg_id = hsr.hostgroup_hg_id AND hsr.service_service_id = s.service_id AND s.service_activate = '1'"
+    );
     return -1 if ($dstatus == -1);
     $result = $sth->fetchall_hashref('service_id');
     foreach my $service_id (keys %$result) {
@@ -290,7 +296,7 @@ sub check_downtimes_local_broker {
     
     foreach (@{$result}) {
         if ($$_[1] == 1 || $$_[2] == 1) {
-            $options{logger}->writeLogInfo("Skipping trap: host '$options{host_name}' [id: $options{host_id}] and service '$$_[0]' in downtime");
+            $options{logger}->writeLogInfo("skipping trap: host '$options{host_name}' [id: $options{host_id}] and service '$$_[0]' in downtime");
             delete $options{ref_services}->{$description{$$_[0]}};
         }
     }
@@ -321,13 +327,13 @@ sub check_downtimes {
         my $data = $sth->fetchrow_hashref();
         if (defined($data)) {
             # Go out. Downtime on host.
-            $options{logger}->writeLogInfo("Skipping trap: host '$options{host_name}' [id: $options{host_id}] in downtime");
+            $options{logger}->writeLogInfo("skipping trap: host '$options{host_name}' [id: $options{host_id}] in downtime");
             return 1;
         }
     } else {
         # Check it
         if (defined($ref_result->{host})) {
-            $options{logger}->writeLogInfo("Skipping trap: host '$options{host_name}' [id: $options{host_id}] in downtime");
+            $options{logger}->writeLogInfo("skipping trap: host '$options{host_name}' [id: $options{host_id}] in downtime");
             return 1;
         }
     }
@@ -492,7 +498,7 @@ sub get_cache_oids {
     # oids_cache => ref
     my %args = @_;
 
-    my ($status, $sth) = $args{cdb}->query("SELECT traps_oid, traps_id, traps_mode FROM traps");
+    my ($status, $sth) = $args{cdb}->query('SELECT traps_oid, traps_id, traps_mode FROM traps');
     return -1 if ($status == -1);
     
     ${$args{oids_cache}} = { 0 => {}, 1 => {} };
@@ -502,7 +508,8 @@ sub get_cache_oids {
         shift(@{$rows = $sth->fetchall_arrayref(undef,5000)||[]})
         )
     ) {
-        ${$args{oids_cache}}->{$$row[2]}->{$$row[0]} = $$row[1];
+        ${$args{oids_cache}}->{$row->[2]}->{$row->[0]} = [] if (!defined(${$args{oids_cache}}->{$row->[2]}->{$row->[0]}));
+        push @{${$args{oids_cache}}->{$$row[2]}->{$$row[0]}}, $row->[1];
     }
 
     ${$args{last_cache_time}} = time();
@@ -515,24 +522,26 @@ sub display_unknown_traps {
     $options{logger}->writeLogInfo("Unknown trap");
     if ($options{config}->{unknown_trap_enable} == 1) {
         $options{logger_unknown}->writeLogInfo("Trap received from $options{trap_data}->{var}->[0]: $options{trap_data}->{var}->[3]");
-        my @labels = ('hostname                  ',
-                      'ip address                ',
-                      'uptime                    ',
-                      'trapname / OID            ', 
-                      'ip address from trap agent',
-                      'trap community string     ',
-                      'enterprise                ',
-                      'securityEngineID (not use)', 
-                      'securityName     (not use)',
-                      'contextEngineID  (not use)',
-                      'contextName      (not)    '); 
+        my @labels = (
+            'hostname                  ',
+            'ip address                ',
+            'uptime                    ',
+            'trapname / OID            ', 
+            'ip address from trap agent',
+            'trap community string     ',
+            'enterprise                ',
+            'securityEngineID (not use)', 
+            'securityName     (not use)',
+            'contextEngineID  (not use)',
+            'contextName      (not)    '
+        ); 
         #print out all standard variables
-        for (my $i=0;$i <= $#{$options{trap_data}->{var}};$i++) {
+        for (my $i=0; $i <= $#{$options{trap_data}->{var}}; $i++) {
             $options{logger_unknown}->writeLogInfo("$labels[$i]: " . $options{trap_data}->{var}->[$i]);
         }
 
         #print out all enterprise specific variables
-        for (my $i=0;$i <= $#{$options{trap_data}->{entvar}};$i++) {
+        for (my $i=0; $i <= $#{$options{trap_data}->{entvar}}; $i++) {
             $options{logger_unknown}->writeLogInfo("Ent Value $i (\$" . ($i+1) . "): " . $options{trap_data}->{entvarname}->[$i] . "=" . $options{trap_data}->{entvar}->[$i]);
         }
         $options{logger_unknown}->writeLogInfo("");
@@ -556,24 +565,29 @@ sub check_known_trap {
             return -1;
         }
     }
-    
+
     if (defined(${$args{oids_cache}}->{0}->{$oid2verif})) {
-        return (1, [${$args{oids_cache}}->{0}->{$oid2verif}]);
+        return (1, ${$args{oids_cache}}->{0}->{$oid2verif});
     }
-    
+
     # Regexp
     my @traps_ids = ();
     foreach my $oid (keys %{${$args{oids_cache}}->{1}}) {
         if ($oid2verif =~ m/$oid/) {
-            push @traps_ids, ${$args{oids_cache}}->{1}->{$oid};
+            push @traps_ids, @{${$args{oids_cache}}->{1}->{$oid}};
         }
     }
     if (scalar(@traps_ids) > 0) {
         return (1, \@traps_ids);
     }
 
-    display_unknown_traps(logger => $args{logger}, logger_unknown => $args{logger_unknown}, 
-                          config => $args{config}, trap_data => $args{trap_data});
+    display_unknown_traps(
+        logger => $args{logger},
+        logger_unknown => $args{logger_unknown}, 
+        config => $args{config},
+        trap_data => $args{trap_data}
+    );
+
     return 0;
 }
 

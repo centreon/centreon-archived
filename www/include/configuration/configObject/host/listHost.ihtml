@@ -14,7 +14,7 @@
             <td><h4>{$headerMenu_status}</h4></td>
         </tr>
         <tr>
-            <td><input type='text' name='searchH' value="{$search}"/></td>
+            <td><input type='text' name='searchH' value="{$searchH}"/></td>
             <td>{$form.hostgroup.html}</td>
             <td>{$form.poller.html}</td>
             <td>{$form.template.html}</td>
