@@ -146,13 +146,16 @@ class RemoverTest extends \PHPUnit_Framework_TestCase
         $this->container = null;
     }
 
+    /**
+     * Case where we remove one widget
+     */
     public function testRemove()
     {
         $query = 'DELETE FROM widget_models ' .
             'WHERE directory = :directory ';
         $this->db->addResultSet(
             $query,
-            array()
+            array(1)
         );
         $this->container->registerProvider(new ConfigurationDBProvider($this->db));
 
