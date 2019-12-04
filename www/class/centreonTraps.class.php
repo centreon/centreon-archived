@@ -281,6 +281,7 @@ class CentreonTraps
         }
 
         $ret = $this->form->getSubmitValues();
+        $retValue = array();
 
         $rq = "UPDATE traps SET ";
         $rq .= "`traps_name` = ";
