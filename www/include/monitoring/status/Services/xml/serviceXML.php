@@ -170,12 +170,11 @@ $request = "SELECT SQL_CALC_FOUND_ROWS DISTINCT h.name, h.alias, h.address, h.ho
     h.icon_image AS h_icon_images, h.display_name AS h_display_name, h.action_url AS h_action_url,
     h.notes_url AS h_notes_url, h.notes AS h_notes, h.address,
     h.passive_checks AS h_passive_checks, h.active_checks AS h_active_checks,
-    i.name as instance_name, cv.value as service_criticality, cv.value IS NULL as sc_isnull";
+    i.name as instance_name, cv.value as service_criticality, cv.value IS NULL as sc_isnull,
+    cv2.value as host_criticality, cv2.value IS NULL as hc_isnull";
 
-// if ($hostCriticalityId) {
-    $request .= ", cv2.value as host_criticality, cv2.value IS NULL as hc_isnull";
-// }
 $request .= " FROM hosts h, instances i ";
+
 if (isset($hostgroups) && $hostgroups != 0) {
     $request .= ", hosts_hostgroups hg, hostgroups hg2";
 }
@@ -190,22 +189,22 @@ if (!$obj->is_admin) {
 }
 $request .= ", services s LEFT JOIN customvariables cv ON (s.service_id = cv.service_id
     AND cv.host_id = s.host_id AND cv.name = 'CRITICALITY_LEVEL')";
-// if ($hostCriticalityId) {
-    $request .= " LEFT JOIN customvariables cv2
-        ON (cv2.service_id IS NULL
-        AND cv2.host_id = s.host_id
-        AND cv2.name = 'CRITICALITY_LEVEL')
-        LEFT JOIN customvariables cv3
+$request .= " LEFT JOIN customvariables cv2
+    ON (cv2.service_id IS NULL
+    AND cv2.host_id = s.host_id
+    AND cv2.name = 'CRITICALITY_LEVEL')";
+if ($hostCriticalityId) {
+    $request .= " LEFT JOIN customvariables cv3
         ON (cv3.service_id IS NULL
         AND cv3.host_id = s.host_id
         AND cv3.name = 'CRITICALITY_ID')";
-// }
+}
 $request .= " WHERE h.host_id = s.host_id
     AND s.enabled = 1
     AND h.enabled = 1
     AND h.instance_id = i.instance_id ";
 if ($serviceCriticalityId) {
-    $request .= " AND s.service_id = cvs. service_id
+    $request .= " AND s.service_id = cvs.service_id
         AND cvs.host_id = h.host_id
         AND cvs.name = 'CRITICALITY_ID'
         AND cvs.value = :serviceCriticalityValue";
