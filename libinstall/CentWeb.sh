@@ -147,6 +147,7 @@ mkdir -p $TMP_DIR/final/config
 cp -Rf $TMP_DIR/src/config/partition.d $TMP_DIR/final/config/partition.d
 mv $TMP_DIR/src/config/centreon.config.php.template $TMP_DIR/src/config/centreon.config.php
 cp -f $TMP_DIR/src/bootstrap.php $TMP_DIR/final
+cp -f $TMP_DIR/src/container.php $TMP_DIR/final
 cp -f $TMP_DIR/src/composer.json $TMP_DIR/final
 cp -f $TMP_DIR/src/package.json $TMP_DIR/final
 cp -f $TMP_DIR/src/package-lock.json $TMP_DIR/final
