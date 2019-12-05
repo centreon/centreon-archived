@@ -53,7 +53,9 @@ $filterParameters = array(
     'order' => FILTER_SANITIZE_STRING,
     'monitoring_service_status_filter' => FILTER_SANITIZE_STRING,
     'monitoring_service_status' => FILTER_SANITIZE_STRING,
-    'criticality_id' => FILTER_SANITIZE_NUMBER_INT,
+    // add host criticality to filter parameters and rename the one for services
+    'service_criticality_id' => FILTER_SANITIZE_NUMBER_INT,
+    'host_criticality_id' => FILTER_SANITIZE_NUMBER_INT,
     'reset_filter' => FILTER_SANITIZE_NUMBER_INT
 );
 
@@ -71,7 +73,8 @@ if ($resetFilter) {
     $_SESSION['monitoring_default_servicegroups'] = '';
     $_SESSION['monitoring_default_poller'] = '';
     $_SESSION['monitoring_service_status_filter'] = '';
-    $_SESSION['criticality_id'] = '';
+    $_SESSION['host_criticality_id'] = '';
+    $_SESSION['service_criticality_id'] = '';
 }
 
 if (!isset($o) || empty($o)) {
@@ -440,19 +443,37 @@ $form->addElement(
 $form->setDefaults(['statusService' => $defaultStatusService]);
 
 $criticality = new CentreonCriticality($pearDB);
-$crits = $criticality->getList(null, "level", 'ASC', null, null, true);
-$critArray = array(0 => "");
-foreach ($crits as $critId => $crit) {
-    $critArray[$critId] = $crit['sc_name'] . " ({$crit['level']})";
+
+$serviceCrits = $criticality->getList(null, "level", 'ASC', null, null, true);
+$serviceCritArray = array(0 => "");
+foreach ($serviceCrits as $critId => $crit) {
+    $serviceCritArray[$critId] = $crit['sc_name'] . " ({$crit['level']})";
 }
 $form->addElement(
     'select',
-    'criticality',
-    _('Severity'),
-    $critArray,
-    array('id' => 'critFilter', 'onChange' => "filterCrit(this.value);")
+    'service_criticality',
+    _('Service Severity'),
+    $serviceCritArray,
+    array('id' => 'serviceCritFilter', 'onChange' => "filterServiceCrit(this.value);")
 );
-$form->setDefaults(array('criticality' => isset($_SESSION['criticality_id']) ? $_SESSION['criticality_id'] : "0"));
+$form->setDefaults(array('service_criticality' => isset($_SESSION['service_criticality_id']) ?
+    $_SESSION['service_criticality_id'] : "0"));
+
+// get host criticalities list
+$hostCrits = $criticality->getList(null, 'level', 'ASC', null, null);
+$hostCritArray = array(0 => "");
+foreach ($hostCrits as $critId => $crit) {
+    $hostCritArray[$critId] = $crit['hc_name'] . " ({$crit['level']})";
+}
+$form->addElement(
+    'select',
+    'host_criticality',
+    _('Host Severity'),
+    $hostCritArray,
+    array('id' => 'hostCritFilter', 'onChange' => "filterHostCrit(this.value)")
+);
+$form->setDefaults(array('host_criticality' => isset($_SESSION['host_criticality_id']) ?
+    $_SESSION['host_criticality_id'] : "0"));
 
 $renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 $form->accept($renderer);
@@ -465,8 +486,10 @@ $tpl->assign('poller_listing', $centreon->user->access->checkAction('poller_list
 $tpl->assign('pollerStr', _('Poller'));
 $tpl->assign('hgStr', _('Hostgroup'));
 $tpl->assign('sgStr', _('Servicegroup'));
-$criticality = new CentreonCriticality($pearDB);
-$tpl->assign('criticalityUsed', count($criticality->getList()));
+// count service criticalities
+$tpl->assign('serviceCriticalityUsed', count($serviceCrits));
+// count host criticalities
+$tpl->assign('hostCriticalityUsed', count($hostCrits));
 $tpl->assign('form', $renderer->toArray());
 $tpl->display("service.ihtml");
 
@@ -558,7 +581,12 @@ $tpl->display("service.ihtml");
         initM(_tm, _sid, _o);
     }
 
-    function filterCrit(value) {
+    function filterServiceCrit(value) {
+        window.clearTimeout(_timeoutID);
+        initM(_tm, _sid, _o);
+    }
+
+    function filterHostCrit(value) {
         window.clearTimeout(_timeoutID);
         initM(_tm, _sid, _o);
     }

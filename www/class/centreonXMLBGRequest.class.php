@@ -346,9 +346,18 @@ class CentreonXMLBGRequest
         $_SESSION['monitoring_default_servicegroups'] = sg;
     }
 
-    public function setCriticality($criticality)
+    /**
+     * Set criticality in Session
+     * @param int $criticalityId
+     * @param bool $service
+     */
+    public function setCriticality($criticality, $service = false)
     {
-        $_SESSION['criticality_id'] = $criticality;
+        if ($service === false) {
+            $_SESSION['host_criticality_id'] = $criticality;
+        } else {
+            $_SESSION['service_criticality_id'] = $criticality;
+        }
     }
 
     public function checkArgument($name, $tab, $defaultValue)

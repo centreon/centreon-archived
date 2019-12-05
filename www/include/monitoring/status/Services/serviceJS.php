@@ -57,7 +57,8 @@ if (isset($_GET["acknowledge"])) {
 
     var _addrXML = "./include/monitoring/status/Services/xml/serviceXML.php";
     var _addrXSL = "./include/monitoring/status/Services/xsl/service.xsl";
-    var _criticality_id = 0;
+    var _host_criticality_id = 0;
+    var _service_criticality_id = 0;
 
     <?php include_once "./include/monitoring/status/Common/commonJS.php"; ?>
 
@@ -152,15 +153,26 @@ if (isset($_GET["acknowledge"])) {
             };
             h.style.cursor = "pointer";
 
-            var h = document.getElementById('criticality_id');
+            var h = document.getElementById('service_criticality_id');
             if (h) {
-                h.innerHTML = '<?php echo addslashes("S"); ?>';
-                h.indice = 'criticality_id';
-                h.title = "<?php echo _("Sort by severity"); ?>";
+                h.innerHTML = '<?php echo addslashes("SC"); ?>';
+                h.indice = 'service_criticality_id';
+                h.title = "<?php echo _("Sort by service severity"); ?>";
                 h.onclick = function () {
                     change_type_order(this.indice)
                 };
                 h.style.cursor = "pointer";
+            }
+
+            var h = document.getElementById('host_criticality_id');
+            if (h) {
+                h.innerHTML = '<?php echo addslashes("HC"); ?>';
+                h.indice = 'host_criticality_id';
+                h.title = "<?php echo _("Sort by host severity"); ?>";
+                h.onclick = function () {
+                    change_type_order(this.indice)
+                };
+                h.style.cursor = 'pointer';
             }
 
             var h = document.getElementById('plugin_output');
@@ -219,9 +231,14 @@ if (isset($_GET["acknowledge"])) {
             _search = "";
         }
 
-        if (document.getElementById("critFilter") && document.getElementById("critFilter").value) {
-            _criticality_id = document.getElementById("critFilter").value;
-            viewDebugInfo('service criticality: ' + document.getElementById("critFilter").value);
+        if (document.getElementById("serviceCritFilter") && document.getElementById("serviceCritFilter").value) {
+            _service_criticality_id = document.getElementById("serviceCritFilter").value;
+            viewDebugInfo('service criticality: ' + document.getElementById("serviceCritFilter").value);
+        }
+
+        if (document.getElementById('hostCritFilter') && document.getElementById('hostCritFilter').value) {
+            _host_criticality_id = document.getElementById('hostCritFilter').value;
+            viewDebugInfo('host criticality: ' + document.getElementById('hostCritFilter').value);
         }
 
         if (_first) {
@@ -257,9 +274,9 @@ if (isset($_GET["acknowledge"])) {
             _addrXML + "?" + '&search=' + _search + '&search_host=' + _host_search +
             '&search_output=' + _output_search + '&num=' + _num + '&limit=' + _limit + '&sort_type=' + _sort_type +
             '&order=' + _order + '&date_time_format_status=' + _date_time_format_status + '&o=' + _o + '&p=' + _p +
-            '&host_name=<?php echo $host_name; ?>' + '&nc=' + _nc + '&criticality=' + _criticality_id +
-            '&statusService=' + statusService + '&statusFilter=' + statusFilter +
-            "&sSetOrderInMemory=" + sSetOrderInMemory
+            '&host_name=<?php echo $host_name; ?>' + '&nc=' + _nc + '&service_criticality=' + _service_criticality_id +
+            '&host_criticality=' + _host_criticality_id + '&statusService=' + statusService +
+            '&statusFilter=' + statusFilter + '&sSetOrderInMemory=' + sSetOrderInMemory
         );
         proc.setXslt(_addrXSL);
         if (handleVisibilityChange()) {

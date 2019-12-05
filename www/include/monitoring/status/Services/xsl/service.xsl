@@ -10,10 +10,13 @@
                 <label class="empty-label" for="checkall"></label>
             </div>
         </td>
-        <xsl:if test = "//i/use_criticality = 1">
-            <td class="ListColHeaderCenter" style="white-space:nowrap;width:17px;" id="criticality_id"></td>
+        <xsl:if test = "//i/use_host_criticality = 1">
+            <td class="ListColHeaderCenter" style="white-space:nowrap;width:17px;" id="host_criticality_id"></td>
         </xsl:if>
         <td colspan="2" class="ListColHeaderCenter" style="white-space:nowrap;" id="host_name"></td>
+        <xsl:if test = "//i/use_service_criticality = 1">
+            <td class="ListColHeaderCenter" style="white-space:nowrap;width:17px;" id="service_criticality_id"></td>
+        </xsl:if>
         <td colspan="3" class="ListColHeaderCenter" style="white-space:nowrap;" id="service_description"></td>
         <td class="ListColHeaderCenter" style="white-space:nowrap;" id="current_state"></td>
         <td class="ListColHeaderCenter" style="white-space:nowrap;" id="last_state_change"></td>
@@ -25,7 +28,7 @@
             </xsl:if>
         </xsl:for-each>
         <td class="ListColHeaderCenter" style="white-space:nowrap;" id="last_check"></td>
-        <td class="ListColHeaderCenter" style="white-space:nowrap;" id="current_attempt"></td>                
+        <td class="ListColHeaderCenter" style="white-space:nowrap;" id="current_attempt"></td>
         <td class="ListColHeaderCenter" style="white-space:nowrap;" id="plugin_output"></td>
         <xsl:for-each select="//i">
             <xsl:if test="nc = 1">
@@ -58,16 +61,16 @@
                 </xsl:element>
             </div>
         </td>
-        <xsl:if test = "//i/use_criticality = 1">
+        <xsl:if test = "//i/use_host_criticality = 1">
             <td class="ListColCenter">
-            <xsl:if test = "hci = 1">
+            <xsl:if test = "hhci = 1">
                 <xsl:element name="img">
-                    <xsl:attribute name="src">img/media/<xsl:value-of select="ci"/></xsl:attribute>
+                    <xsl:attribute name="src">img/media/<xsl:value-of select="hci"/></xsl:attribute>
                     <xsl:attribute name="width">16</xsl:attribute>
                     <xsl:attribute name="height">16</xsl:attribute>
-                    <xsl:attribute name="title"><xsl:value-of select='cih'/></xsl:attribute>
+                    <xsl:attribute name="title"><xsl:value-of select='hcih'/></xsl:attribute>
                 </xsl:element>
-            </xsl:if>                
+            </xsl:if>
             </td>
         </xsl:if>
         <td class="ListColLeft" style="white-space:nowrap;">
@@ -185,6 +188,18 @@
                 </xsl:choose>
             </xsl:if>
         </td>
+        <xsl:if test = "//i/use_service_criticality = 1">
+            <td class="ListColCenter">
+            <xsl:if test = "hsci = 1">
+                <xsl:element name="img">
+                    <xsl:attribute name="src">img/media/<xsl:value-of select="sci"/></xsl:attribute>
+                    <xsl:attribute name="width">16</xsl:attribute>
+                    <xsl:attribute name="height">16</xsl:attribute>
+                    <xsl:attribute name="title"><xsl:value-of select='scih'/></xsl:attribute>
+                </xsl:element>
+            </xsl:if>
+            </td>
+        </xsl:if>
         <td class="ListColLeft" style="white-space:nowrap;">
             <xsl:if test="sico != ''">
                 <xsl:element name="img">
@@ -235,14 +250,14 @@
                         </xsl:element>
                 </xsl:element>
             </xsl:if>
-            <xsl:if test="dtm != 0">                    
+            <xsl:if test="dtm != 0">
                 <xsl:element name="a">
                     <xsl:attribute name="class">infobulle</xsl:attribute>
                     <xsl:element name="img">
                         <xsl:attribute name="src">./img/icons/warning.png</xsl:attribute>
                         <xsl:attribute name="class">link_generic_info_volante ico-18</xsl:attribute>
                         <xsl:attribute name="id">dtmspan_<xsl:value-of select="hid"/>_<xsl:value-of select="svc_id"/></xsl:attribute>
-                        <xsl:attribute name="name"><xsl:value-of select="dtmXml"/>|<xsl:value-of select="dtmXsl"/></xsl:attribute>              
+                        <xsl:attribute name="name"><xsl:value-of select="dtmXml"/>|<xsl:value-of select="dtmXsl"/></xsl:attribute>
                     </xsl:element>
                 </xsl:element>
             </xsl:if>
@@ -261,7 +276,7 @@
                     <xsl:element name="img">
                         <xsl:attribute name="src">./img/icons/passive_check.png</xsl:attribute>
                         <xsl:attribute name="class">ico-16</xsl:attribute>
-                        <xsl:attribute name="title">                        
+                        <xsl:attribute name="title">
                             <xsl:value-of select='//i/service_passive_mode'/>
                         </xsl:attribute>
                     </xsl:element>
@@ -270,7 +285,7 @@
                     <xsl:element name="img">
                         <xsl:attribute name="src">./img/icons/never_checked.png</xsl:attribute>
                         <xsl:attribute name="class">ico-16</xsl:attribute>
-                        <xsl:attribute name="title">                            
+                        <xsl:attribute name="title">
                             <xsl:value-of select='//i/service_not_active_not_passive'/>
                         </xsl:attribute>
                     </xsl:element>
@@ -278,7 +293,7 @@
             <xsl:if test="is = 1">
                     <xsl:element name="img">
                         <xsl:attribute name="src">./img/icones/16x16/flapping.gif</xsl:attribute>
-                        <xsl:attribute name="title">                            
+                        <xsl:attribute name="title">
                             <xsl:value-of select='//i/service_flapping'/>
                         </xsl:attribute>
                     </xsl:element>
@@ -287,7 +302,7 @@
                     <xsl:element name="img">
                         <xsl:attribute name="class">ico-18</xsl:attribute>
                         <xsl:attribute name="src">./img/icons/notifications_off.png</xsl:attribute>
-                        <xsl:attribute name="title">                            
+                        <xsl:attribute name="title">
                             <xsl:value-of select='//i/notif_disabled'/>
                         </xsl:attribute>
                     </xsl:element>
@@ -296,12 +311,12 @@
         <td class="ListColRight">
             <xsl:if test="svc_index &gt; 0">
                 <xsl:element name="a">
-                    <xsl:attribute name="href">main.php?p=204&amp;mode=0&amp;svc_id=<xsl:value-of select="hnl"/>;<xsl:value-of select="sdl"/></xsl:attribute>                   
+                    <xsl:attribute name="href">main.php?p=204&amp;mode=0&amp;svc_id=<xsl:value-of select="hnl"/>;<xsl:value-of select="sdl"/></xsl:attribute>
                         <xsl:element name="img">
                             <xsl:attribute name="id"><xsl:value-of select="hid"/>_<xsl:value-of select="svc_id"/></xsl:attribute>
                             <xsl:attribute name="class">graph-volant ico-18</xsl:attribute>
                             <xsl:attribute name="src">./img/icons/chart.png</xsl:attribute>
-                        </xsl:element>                  
+                        </xsl:element>
                 </xsl:element>
             </xsl:if>
         </td>

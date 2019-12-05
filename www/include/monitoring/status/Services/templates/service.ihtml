@@ -8,8 +8,11 @@
     <tr>
         <td><h4>{$statusService}</h4></td>
         <td><h4>{$form.statusFilter.label}</h4></td>
-        {if $criticalityUsed}
-        <td><h4>{$form.criticality.label}</h4></td>
+        {if $hostCriticalityUsed}
+          <td><h4>{$form.host_criticality.label}</h4></td>
+        {/if}
+        {if $serviceCriticalityUsed}
+          <td><h4>{$form.service_criticality.label}</h4></td>
         {/if}
         {if $poller_listing}
         <td><h4>{$pollerStr}</h4></td>
@@ -18,8 +21,11 @@
     <tr>
       <td>{$form.statusService.html}</td>
       <td>{$form.statusFilter.html}</td>
-      {if $criticalityUsed}
-      <td>{$form.criticality.html}</td>
+      {if $hostCriticalityUsed}
+        <td>{$form.host_criticality.html}</td>
+      {/if}
+      {if $serviceCriticalityUsed}
+        <td>{$form.service_criticality.html}</td>
       {/if}
       {if $poller_listing}
       <td><span id="instance_selected"></span></td>
@@ -87,7 +93,7 @@
 {/if}
 <input name='cmd' id='cmd' value='42' type='hidden'>
 <input name='o' value='{$o}' type='hidden'>
-<input type='hidden' id='limit' name='limit' value='{$limit}'>	
+<input type='hidden' id='limit' name='limit' value='{$limit}'>
 {$form.hidden}
 </form>
 <script src="./include/common/javascript/moment-with-locales.js"></script>

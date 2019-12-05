@@ -84,7 +84,8 @@ $p = filter_input(INPUT_GET, 'p', FILTER_VALIDATE_INT, ['options' => ['default' 
 $num = filter_input(INPUT_GET, 'num', FILTER_VALIDATE_INT, ['options' => ['default' => 0]]);
 $limit = filter_input(INPUT_GET, 'limit', FILTER_VALIDATE_INT, ['options' => ['default' => 20]]);
 $nc = filter_input(INPUT_GET, 'nc', FILTER_VALIDATE_INT, ['options' => ['default' => 0]]);
-$criticalityId = filter_input(INPUT_GET, 'criticality', FILTER_VALIDATE_INT, ['options' => ['default' => 0]]);
+$serviceCriticalityId = filter_input(INPUT_GET, 'service_criticality', FILTER_VALIDATE_INT, ['options' => ['default' => 0]]);
+$hostCriticalityId = filter_input(INPUT_GET, 'host_criticality', FILTER_VALIDATE_INT, ['options' => ['default' => 0]]);
 $serviceToSearch = filter_input(INPUT_GET, 'search', FILTER_SANITIZE_STRING, ['options' => ['default' => '']]);
 $hostToSearch = filter_input(INPUT_GET, 'search_host', FILTER_SANITIZE_STRING, ['options' => ['default' => '']]);
 $outputToSearch = filter_input(INPUT_GET, 'search_output', FILTER_SANITIZE_STRING, ['options' => ['default' => '']]);
@@ -105,8 +106,11 @@ $_SESSION['monitoring_service_status_filter'] = $statusFilter;
 // Backup poller selection
 $obj->setInstanceHistory($instance);
 
-// Backup criticality id
-$obj->setCriticality($criticalityId);
+// Backup service criticality id
+$obj->setCriticality($serviceCriticalityId, true);
+
+// Backup host criticality id
+$obj->setCriticality($hostCriticalityId, false);
 
 // Saving bound values
 $queryValues = [];
@@ -141,8 +145,10 @@ if ($outputToSearch) {
     $queryValues['outputToSearch'] = [\PDO::PARAM_STR => '%' . $outputToSearch . '%'];
 }
 
+// TODO: fix order for criticalities
 $tabOrder = [];
-$tabOrder["criticality_id"] = " ORDER BY isnull " .$order . ", criticality " . $order . ", h.name, s.description ";
+$tabOrder["service_criticality_id"] = " ORDER BY sc_isnull " . $order . ", service_criticality " . $order . ", h.name, s.description ";
+$tabOrder["host_criticality_id"] = " ORDER BY hc_isnull " . $order . ", host_criticality " . $order . ", h.name, s.description ";
 $tabOrder["host_name"] = " ORDER BY h.name " . $order . ", s.description ";
 $tabOrder["service_description"] = " ORDER BY s.description " . $order . ", h.name";
 $tabOrder["current_state"] = " ORDER BY s.state " . $order . ", h.name, s.description";
@@ -151,7 +157,7 @@ $tabOrder["last_hard_state_change"] = " ORDER by s.last_hard_state_change " . $o
 $tabOrder["last_check"] = " ORDER BY s.last_check " . $order . ", h.name, s.description";
 $tabOrder["current_attempt"] = " ORDER BY s.check_attempt " . $order . ", h.name, s.description";
 $tabOrder["output"] = " ORDER BY s.output " . $order . ", h.name, s.description";
-$tabOrder["default"] = $tabOrder['criticality_id'];
+$tabOrder["default"] = $tabOrder['service_criticality_id'];
 
 $request = "SELECT SQL_CALC_FOUND_ROWS DISTINCT h.name, h.alias, h.address, h.host_id, s.description,
     s.service_id, s.notes, s.notes_url, s.action_url, s.max_check_attempts,
@@ -164,33 +170,51 @@ $request = "SELECT SQL_CALC_FOUND_ROWS DISTINCT h.name, h.alias, h.address, h.ho
     h.icon_image AS h_icon_images, h.display_name AS h_display_name, h.action_url AS h_action_url,
     h.notes_url AS h_notes_url, h.notes AS h_notes, h.address,
     h.passive_checks AS h_passive_checks, h.active_checks AS h_active_checks,
-    i.name as instance_name, cv.value as criticality, cv.value IS NULL as isnull
-    FROM hosts h, instances i ";
+    i.name as instance_name, cv.value as service_criticality, cv.value IS NULL as sc_isnull";
+
+// if ($hostCriticalityId) {
+    $request .= ", cv2.value as host_criticality, cv2.value IS NULL as hc_isnull";
+// }
+$request .= " FROM hosts h, instances i ";
 if (isset($hostgroups) && $hostgroups != 0) {
     $request .= ", hosts_hostgroups hg, hostgroups hg2";
 }
 if (isset($servicegroups) && $servicegroups != 0) {
     $request .= ", services_servicegroups ssg, servicegroups sg";
 }
-if ($criticalityId) {
+if ($serviceCriticalityId) {
     $request .= ", customvariables cvs ";
 }
 if (!$obj->is_admin) {
     $request .= ", centreon_acl ";
 }
 $request .= ", services s LEFT JOIN customvariables cv ON (s.service_id = cv.service_id
-    AND cv.host_id = s.host_id AND cv.name = 'CRITICALITY_LEVEL')
-    WHERE h.host_id = s.host_id
+    AND cv.host_id = s.host_id AND cv.name = 'CRITICALITY_LEVEL')";
+// if ($hostCriticalityId) {
+    $request .= " LEFT JOIN customvariables cv2
+        ON (cv2.service_id IS NULL
+        AND cv2.host_id = s.host_id
+        AND cv2.name = 'CRITICALITY_LEVEL')
+        LEFT JOIN customvariables cv3
+        ON (cv3.service_id IS NULL
+        AND cv3.host_id = s.host_id
+        AND cv3.name = 'CRITICALITY_ID')";
+// }
+$request .= " WHERE h.host_id = s.host_id
     AND s.enabled = 1
     AND h.enabled = 1
     AND h.instance_id = i.instance_id ";
-if ($criticalityId) {
+if ($serviceCriticalityId) {
     $request .= " AND s.service_id = cvs. service_id
         AND cvs.host_id = h.host_id
         AND cvs.name = 'CRITICALITY_ID'
-        AND cvs.value = :criticalityValue";
+        AND cvs.value = :serviceCriticalityValue";
     // the variable bounded to criticalityValue must be an integer. But is inserted in a DB's varchar column
-    $queryValues['criticalityValue'] = [\PDO::PARAM_STR => $criticalityId];
+    $queryValues['serviceCriticalityValue'] = [\PDO::PARAM_STR => $serviceCriticalityId];
+}
+if ($hostCriticalityId) {
+    $request .= " AND cv3.value = :hostCriticalityValue";
+    $queryValues['hostCriticalityValue'] = [\PDO::PARAM_STR => $hostCriticalityId];
 }
 $request .= " AND h.name NOT LIKE '_Module_BAM%' "
     . $searchHost
@@ -285,16 +309,29 @@ try {
     $numRows = 0;
 }
 
-// Get criticality ids
-$critRes = $obj->DBC->query(
+// Get services criticality ids
+$serviceCritRes = $obj->DBC->query(
     "SELECT value, service_id FROM customvariables WHERE name = 'CRITICALITY_ID' AND service_id IS NOT NULL"
 );
-$criticalityUsed = 0;
-$critCache = [];
-if ($critRes->rowCount()) {
-    $criticalityUsed = 1;
-    while ($critRow = $critRes->fetch()) {
-        $critCache[$critRow['service_id']] = $critRow['value'];
+$serviceCriticalityUsed = 0;
+$serviceCritCache = [];
+if ($serviceCritRes->rowCount()) {
+    $serviceCriticalityUsed = 1;
+    while ($critRow = $serviceCritRes->fetch()) {
+        $serviceCritCache[$critRow['service_id']] = $critRow['value'];
+    }
+}
+
+// Get hosts criticality ids
+$hostCritRes = $obj->DBC->query(
+    "SELECT value, host_id FROM customvariables WHERE name = 'CRITICALITY_ID' AND service_id IS NULL"
+);
+$hostCriticalityUsed = 0;
+$hostCritCache = [];
+if ($hostCritRes->rowCount()) {
+    $hostCriticalityUsed = 1;
+    while ($critRow = $hostCritRes->fetch()) {
+        $hostCritCache[$critRow['host_id']] = $critRow['value'];
     }
 }
 
@@ -326,7 +363,8 @@ $obj->XML->writeElement("service_passive_mode", _("This service is only checked 
 $obj->XML->writeElement("service_not_active_not_passive", _("This service is neither active nor passive"));
 $obj->XML->writeElement("service_flapping", _("This Service is flapping"));
 $obj->XML->writeElement("notif_disabled", _("Notification is disabled"));
-$obj->XML->writeElement("use_criticality", $criticalityUsed);
+$obj->XML->writeElement("use_service_criticality", $serviceCriticalityUsed);
+$obj->XML->writeElement("use_host_criticality", $hostCriticalityUsed);
 $obj->XML->writeElement("use_hard_state_duration", $isHardStateDurationVisible ? 1 : 0);
 $obj->XML->endElement();
 
@@ -486,14 +524,23 @@ if (!$sqlError) {
             $data["current_attempt"] . "/" . $data["max_check_attempts"]
             . " (" . $obj->stateType[$data["state_type"]] . ")"
         );
-        if (isset($data['criticality']) && $data['criticality'] != '' && isset($critCache[$data['service_id']])) {
-            $obj->XML->writeElement("hci", 1); // has criticality
-            $critData = $criticality->getData($critCache[$data['service_id']], true);
-            $obj->XML->writeElement("ci", $media->getFilename($critData['icon_id']));
-            $obj->XML->writeElement("cih", CentreonUtils::escapeSecure($critData['name']));
+        if (isset($data['service_criticality']) && $data['service_criticality'] != '' && isset($serviceCritCache[$data['service_id']])) {
+            $obj->XML->writeElement("hsci", 1); // has service criticality
+            $serviceCritData = $criticality->getData($serviceCritCache[$data['service_id']], true);
+            $obj->XML->writeElement("sci", $media->getFilename($serviceCritData['icon_id']));
+            $obj->XML->writeElement("scih", CentreonUtils::escapeSecure($serviceCritData['name']));
         } else {
-            $obj->XML->writeElement("hci", 0); // has no criticality
+            $obj->XML->writeElement("shci", 0); // has no host criticality
         }
+        if (isset($data['host_criticality']) && $data['host_criticality'] != '' && isset($hostCritCache[$data['host_id']])) {
+            $obj->XML->writeElement("hhci", 1); // has host criticality
+            $hostCritData = $criticality->getData($hostCritCache[$data['host_id']]);
+            $obj->XML->writeElement("hci", $media->getFilename($hostCritData['icon_id']));
+            $obj->XML->writeElement("hcih", CentreonUtils::escapeSecure($hostCritData['name']));
+        } else {
+            $obj->XML->writeElement("hhci", 0); // has no host criticality
+        }
+
         $obj->XML->writeElement("ne", $data["notify"]);
         $obj->XML->writeElement("pa", $data["acknowledged"]);
         $obj->XML->writeElement("pc", $data["passive_checks"]);
