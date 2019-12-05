@@ -46,6 +46,8 @@ use Centreon\Domain\Entity\Image;
  *       @OA\Property(property="name", type="string"),
  *       @OA\Property(property="preview", type="string"),
  * )
+ *
+ * Serialize Image entity for list
  */
 class ListContext implements SerializerContextInterface
 {

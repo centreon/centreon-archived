@@ -36,11 +36,16 @@
 
 namespace Centreon\Application\Serializer;
 
+/**
+ * Context interface for serializes and deserializes data.
+ */
 interface SerializerContextInterface
 {
     const GROUPS = 'groups';
 
     /**
+     * Context data
+     *
      * @var array
      */
     public static function context(): array;

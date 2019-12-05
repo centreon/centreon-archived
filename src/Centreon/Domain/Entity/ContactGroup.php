@@ -38,6 +38,11 @@ namespace Centreon\Domain\Entity;
 
 use Symfony\Component\Serializer\Annotation as Serializer;
 
+/**
+ * ContactGroup entity
+ *
+ * @codeCoverageIgnore
+ */
 class ContactGroup
 {
     const SERIALIZER_GROUP_LIST = 'contact-group-list';
@@ -47,46 +52,46 @@ class ContactGroup
     /**
      * @Serializer\SerializedName("id")
      * @Serializer\Groups({ContactGroup::SERIALIZER_GROUP_LIST})
-     * @var int
+     * @var int|null
      */
     private $cg_id;
 
     /**
      * @Serializer\SerializedName("name")
      * @Serializer\Groups({ContactGroup::SERIALIZER_GROUP_LIST})
-     * @var string
+     * @var string|null
      */
     private $cg_name;
 
     /**
-     * @var string
+     * @var string|null
      */
     private $cg_alias;
 
     /**
-     * @var string
+     * @var string|null
      */
     private $cg_comment;
 
     /**
-     * @var string
+     * @var string|null
      */
     private $cg_type;
 
     /**
-     * @var string
+     * @var string|null
      */
     private $cg_ldap_dn;
 
     /**
-     * @var int
+     * @var int|null
      */
     private $ar_id;
 
     /**
      * @Serializer\SerializedName("activate")
      * @Serializer\Groups({ContactGroup::SERIALIZER_GROUP_LIST})
-     * @var string
+     * @var string|null
      */
     private $cg_activate;
 
@@ -101,7 +106,7 @@ class ContactGroup
     }
 
     /**
-     * @return int
+     * @return int|null
      */
     public function getCgId(): ?int
     {
@@ -109,15 +114,15 @@ class ContactGroup
     }
 
     /**
-     * @param int $cg_id
+     * @param int|null $cgId
      */
-    public function setCgId(int $cg_id = null): void
+    public function setCgId(int $cgId = null): void
     {
-        $this->cg_id = $cg_id;
+        $this->cg_id = $cgId;
     }
 
     /**
-     * @return string
+     * @return string|null
      */
     public function getCgName(): ?string
     {
@@ -125,15 +130,15 @@ class ContactGroup
     }
 
     /**
-     * @param string $cg_name
+     * @param string|null $cgName
      */
-    public function setCgName(string $cg_name = null): void
+    public function setCgName(string $cgName = null): void
     {
-        $this->cg_name = $cg_name;
+        $this->cg_name = $cgName;
     }
 
     /**
-     * @return string
+     * @return string|null
      */
     public function getCgAlias(): ?string
     {
@@ -141,15 +146,15 @@ class ContactGroup
     }
 
     /**
-     * @param string $cg_alias
+     * @param string|null $cgAlias
      */
-    public function setCgAlias(string $cg_alias = null): void
+    public function setCgAlias(string $cgAlias = null): void
     {
-        $this->cg_alias = $cg_alias;
+        $this->cg_alias = $cgAlias;
     }
 
     /**
-     * @return string
+     * @return int|null
      */
     public function getCgActivate(): ?int
     {
@@ -157,11 +162,11 @@ class ContactGroup
     }
 
     /**
-     * @param string $cg_activate
+     * @param string|null $cgActivate
      */
-    public function setCgActivate(string $cg_activate = null): void
+    public function setCgActivate(string $cgActivate = null): void
     {
-        $this->cg_activate = $cg_activate;
+        $this->cg_activate = $cgActivate;
     }
 
     /**
@@ -173,15 +178,15 @@ class ContactGroup
     }
 
     /**
-     * @param string $cg_comment
+     * @param string|null $cgComment
      */
-    public function setCgComment(string $cg_comment = null): void
+    public function setCgComment(string $cgComment = null): void
     {
-        $this->cg_comment = $cg_comment;
+        $this->cg_comment = $cgComment;
     }
 
     /**
-     * @return string
+     * @return string|null
      */
     public function getCgType(): ?string
     {
@@ -189,11 +194,11 @@ class ContactGroup
     }
 
     /**
-     * @param string $cg_type
+     * @param string|null $cgType
      */
-    public function setCgType(string $cg_type = null): void
+    public function setCgType(string $cgType = null): void
     {
-        $this->cg_type = $cg_type;
+        $this->cg_type = $cgType;
     }
 
     /**
@@ -205,15 +210,15 @@ class ContactGroup
     }
 
     /**
-     * @param string $cg_ldap_dn
+     * @param string|null $cgLdapDn
      */
-    public function setCgLdapDn(string $cg_ldap_dn = null): void
+    public function setCgLdapDn(string $cgLdapDn = null): void
     {
-        $this->cg_ldap_dn = $cg_ldap_dn;
+        $this->cg_ldap_dn = $cgLdapDn;
     }
 
     /**
-     * @return int
+     * @return int|null
      */
     public function getArId(): ?int
     {
@@ -221,10 +226,10 @@ class ContactGroup
     }
 
     /**
-     * @param int $ar_id
+     * @param int|null $arId
      */
-    public function setArId(int $ar_id = null): void
+    public function setArId(int $arId = null): void
     {
-        $this->ar_id = $ar_id;
+        $this->ar_id = $arId;
     }
 }

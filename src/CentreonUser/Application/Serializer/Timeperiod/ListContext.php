@@ -46,6 +46,8 @@ use CentreonUser\Domain\Entity\Timeperiod;
  *       @OA\Property(property="name", type="string"),
  *       @OA\Property(property="alias", type="string")
  * )
+ *
+ * Serialize Timeperiod entity for list
  */
 class ListContext implements SerializerContextInterface
 {

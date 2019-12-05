@@ -45,6 +45,8 @@ use CentreonNotification\Domain\Entity\Escalation;
  *       @OA\Property(property="id", type="integer"),
  *       @OA\Property(property="name", type="string")
  * )
+ *
+ * Serialize Escalation entity for list
  */
 class ListContext implements SerializerContextInterface
 {

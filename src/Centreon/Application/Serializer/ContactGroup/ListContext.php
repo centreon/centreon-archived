@@ -46,6 +46,8 @@ use Centreon\Domain\Entity\ContactGroup;
  *       @OA\Property(property="name", type="string"),
  *       @OA\Property(property="activate", type="integer")
  * )
+ *
+ * Serialize ContactGroup entity for list
  */
 class ListContext implements SerializerContextInterface
 {

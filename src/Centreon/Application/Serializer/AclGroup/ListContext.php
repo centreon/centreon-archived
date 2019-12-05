@@ -48,6 +48,8 @@ use Centreon\Domain\Entity\AclGroup;
  *       @OA\Property(property="changed", type="integer"),
  *       @OA\Property(property="activate", type="string", enum={"0","1","2"})
  * )
+ *
+ * Serialize AclGroup entity for list
  */
 class ListContext implements SerializerContextInterface
 {

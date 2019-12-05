@@ -45,6 +45,8 @@ use CentreonCommand\Domain\Entity\Command;
  *       @OA\Property(property="id", type="integer"),
  *       @OA\Property(property="name", type="string")
  * )
+ *
+ * Serialize Command entity for list
  */
 class ListContext implements SerializerContextInterface
 {
