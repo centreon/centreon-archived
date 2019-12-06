@@ -10,3 +10,8 @@ DELETE FROM `cb_type` WHERE `type_shortname` = 'correlation';
 UPDATE topology SET topology_url_opt = '&o=svcOV_pb' WHERE topology_page = 20204;
 UPDATE topology SET topology_url_opt = '&o=svcOVHG_pb' WHERE topology_page = 20209;
 UPDATE topology SET topology_url_opt = '&o=svcOVSG_pb' WHERE topology_page = 20212;
+
+-- Update topology of service grid / by host group / by service group
+ALTER TABLE `nagios_server` ADD `gorgone_communication_type` enum('1','2') NOT NULL DEFAULT '1';
+ALTER TABLE `nagios_server` CHANGE `ssh_port` `gorgone_port`;
+ALTER TABLE `nagios_server` CHANGE `remote_server_centcore_ssh_proxy` `is_proxy`;
