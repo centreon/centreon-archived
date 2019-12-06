@@ -10,7 +10,7 @@ database:
     username: "--DBUSER--"
     password: "--DBPASS--"
 gorgonecore:
-  privkey: "--CENTREON_SPOOL--/.gorgone/privkey.pm"
+  privkey: "--CENTREON_SPOOL--/.gorgone/rsakey.priv.pem"
   pubkey: "--CENTREON_SPOOL--/.gorgone/rsakey.pub.pem"
   cipher: "Cipher::AES"
   keysize: 32
