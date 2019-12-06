@@ -4329,7 +4329,7 @@ msgstr "Ordenar por severidade"
 
 #: centreon-web/www/include/monitoring/status/Services/serviceJS.php:160
 msgid "Sort by service severity"
-msgstr "Ordenar pr severidade do Serviço"
+msgstr "Ordenar por severidade do Serviço"
 
 #: centreon-web/www/include/monitoring/status/Services/serviceJS.php:171
 msgid "Sort by host severity"
