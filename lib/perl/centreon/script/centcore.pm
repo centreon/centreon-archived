@@ -598,6 +598,40 @@ sub initEngine($$){
 }
 
 ##################################################
+# Function to reload Centreon Broker
+# Arguments:
+#     $id: int Poller id to reload
+#
+sub reloadBroker($) {
+    my $self = shift;
+    my $id = $_[0];
+    my ($lerror, $stdout, $conf, $command);
+
+    # Get configuration
+    $conf = $self->getServerConfig($id);
+
+    if ($conf->{localhost} == 1) {
+        $command = "$self->{sudo} $self->{service} cbd reload";
+        $self->{logger}->writeLogInfo(
+            'Init Script : "' . $command . '" ' .
+            'on poller "' . $conf->{name} . '" (' . $id . ')'
+        );
+
+        ($lerror, $stdout) = centreon::common::misc::backtick(
+            command => $command,
+            logger => $self->{logger},
+            timeout => 10
+        );
+
+        if (defined($stdout)) {
+            foreach my $line (split(/\n/, $stdout)) {
+                $self->{logger}->writeLogDebug("Broker : " . $line);
+            }
+        }
+    }
+}
+
+##################################################
 # Function for synchronize SNMP trap configuration
 # 
 sub syncTraps($) {
@@ -784,6 +818,8 @@ sub parseRequest($){
         $self->initEngine($1, "start");
     } elsif ($action =~ /^STOP\:([0-9]*)/){
         $self->initEngine($1, "stop");
+    } elsif ($action =~ /^RELOADBROKER\:([0-9]*)/){
+        $self->reloadBroker($1);
     } elsif ($action =~ /^SENDCFGFILE\:([0-9]*)/){
         $self->sendConfigFile($1);
     } elsif ($action =~ /^TEST\:([0-9]*)/){
