@@ -8756,7 +8756,6 @@ msgstr "Hosts desactivados"
 #: centreon-web/www/include/configuration/configObject/traps/formTraps.php:283
 #: centreon-web/www/include/configuration/configObject/service_categories/listServiceCategories.php:132
 #: centreon-web/www/include/monitoring/status/Hosts/host.php:301
-#: centreon-web/www/include/monitoring/status/Services/service.php:383
 msgid "Severity"
 msgstr "criticidad"
 
@@ -11829,9 +11828,24 @@ msgid "Tries"
 msgstr "intentos"
 
 #: centreon-web/www/include/monitoring/status/Hosts/hostJS.php:130
-#: centreon-web/www/include/monitoring/status/Services/serviceJS.php:143
 msgid "Sort by severity"
 msgstr "Ordenar por criticidad"
+
+#: centreon-web/www/include/monitoring/status/Services/serviceJS.php:160
+msgid "Sort by service severity"
+msgstr "Ordenar por criticidad de servicio"
+
+#: centreon-web/www/include/monitoring/status/Services/serviceJS.php:171
+msgid "Sort by host severity"
+msgstr "Ordenar por criticidad de anfitrión"
+
+#: centreon-web/www/include/monitoring/status/Services/service.php:455
+msgid "Service Severity"
+msgstr "Criticidad de servicio"
+
+#: centreon-web/www/include/monitoring/status/Services/service.php:471
+msgid "Host Severity"
+msgstr "Criticidad de anfitrión"
 
 #: centreon-web/www/include/monitoring/status/Hosts/hostJS.php:136
 #: centreon-web/www/include/monitoring/status/Hosts/host.php:161

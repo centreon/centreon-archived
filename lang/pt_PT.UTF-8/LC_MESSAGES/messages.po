@@ -4308,7 +4308,6 @@ msgid "Pending"
 msgstr "Pendente"
 
 #: centreon-web/www/include/monitoring/status/Hosts/host.php:372
-#: centreon-web/www/include/monitoring/status/Services/service.php:449
 #: centreon-web/www/include/configuration/configObject/service_categories/listServiceCategories.php:146
 #: centreon-web/www/include/configuration/configObject/traps/formTraps.php:289
 #: centreon-web/www/include/configuration/configObject/host_categories/listHostCategories.php:169
@@ -4327,6 +4326,22 @@ msgstr "Duração do Estado Válido"
 #: centreon-web/www/include/monitoring/status/Services/serviceJS.php:159
 msgid "Sort by severity"
 msgstr "Ordenar por severidade"
+
+#: centreon-web/www/include/monitoring/status/Services/serviceJS.php:160
+msgid "Sort by service severity"
+msgstr "Ordenar pr severidade do Serviço"
+
+#: centreon-web/www/include/monitoring/status/Services/serviceJS.php:171
+msgid "Sort by host severity"
+msgstr "Ordenar por severidade do host"
+
+#: centreon-web/www/include/monitoring/status/Services/service.php:455
+msgid "Service Severity"
+msgstr "Severidade do Serviços"
+
+#: centreon-web/www/include/monitoring/status/Services/service.php:471
+msgid "Host Severity"
+msgstr "Severidade do host"
 
 #: centreon-web/www/include/monitoring/status/Hosts/xml/hostXML.php:268
 msgid "Top Priority Hosts"
