@@ -44,8 +44,9 @@ interface SerializerContextInterface
     const GROUPS = 'groups';
 
     /**
-     * Context data
+     * Options that normalizers/encoders have access to
      *
+     * @link https://symfony.com/doc/current/components/serializer.html 
      * @var array
      */
     public static function context(): array;

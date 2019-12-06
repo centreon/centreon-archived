@@ -79,6 +79,9 @@ class ImagesWebserviceTest extends TestCase
         $this->executeTest(static::METHOD_GET_LIST, 'response-list-1.json');
     }
 
+    /**
+     * Test different case of method getList with filters
+     */
     public function testGetList2()
     {
         // with search, searchByIds, limit, and offset

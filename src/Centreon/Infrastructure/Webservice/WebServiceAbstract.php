@@ -140,6 +140,11 @@ abstract class WebServiceAbstract extends \CentreonWebService
         return $request;
     }
 
+    /**
+     * Get the Serializer service
+     *
+     * @return \Symfony\Component\Serializer\Serializer
+     */
     public function getSerializer(): Serializer\Serializer
     {
         return $this->di[ServiceProvider::SERIALIZER];

@@ -81,7 +81,7 @@ class ImageDir
     }
 
     /**
-     * @return string
+     * @return string|null
      */
     public function getDirName(): ?string
     {
@@ -89,7 +89,7 @@ class ImageDir
     }
 
     /**
-     * @param string $dirName
+     * @param string|null $dirName
      */
     public function setDirName(string $dirName = null): void
     {
@@ -97,7 +97,7 @@ class ImageDir
     }
 
     /**
-     * @return string
+     * @return string|null
      */
     public function getDirAlias(): ?string
     {
@@ -105,7 +105,7 @@ class ImageDir
     }
 
     /**
-     * @param string $dirAlias
+     * @param string|null $dirAlias
      */
     public function setDirAlias(string $dirAlias = null): void
     {
@@ -113,7 +113,7 @@ class ImageDir
     }
 
     /**
-     * @return string
+     * @return string|null
      */
     public function getDirComment(): ?string
     {
