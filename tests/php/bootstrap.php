@@ -35,7 +35,6 @@ foreach ($mockedVarConstants as $mockedVarConstant) {
 error_reporting(E_ALL & ~E_STRICT);
 
 require_once realpath(__DIR__ . '/polyfill.php');
-require_once realpath(__DIR__ . '/di.php');
 $loader = require realpath(__DIR__ . '/../../vendor/autoload.php');
 
 Doctrine\Common\Annotations\AnnotationRegistry::registerLoader([$loader, 'loadClass']);
