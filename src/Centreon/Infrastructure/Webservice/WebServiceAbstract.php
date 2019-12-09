@@ -88,18 +88,38 @@ abstract class WebServiceAbstract extends \CentreonWebService
     /** @var Container */
     protected $di;
 
+    /**
+     * Name of the webservice (the value that will be in the object parameter)
+     *
+     * @return string
+     */
     abstract public static function getName(): string;
 
+    /**
+     * Getter for DI container
+     *
+     * @return \Pimple\Container
+     */
     public function getDi(): Container
     {
         return $this->di;
     }
 
+    /**
+     * Setter for DI container
+     *
+     * @param \Pimple\Container $di
+     */
     public function setDi(Container $di)
     {
         $this->di = $di;
     }
 
+    /**
+     * Get URL parameters
+     *
+     * @return array
+     */
     public function query(): array
     {
         $request = $_GET ?? [];
@@ -150,6 +170,13 @@ abstract class WebServiceAbstract extends \CentreonWebService
         return $this->di[ServiceProvider::SERIALIZER];
     }
 
+    /**
+     * Return success response
+     *
+     * @param mixed $data
+     * @param array $context the context for Serializer
+     * @return JsonSerializable
+     */
     public function success($data, array $context = []): JsonSerializable
     {
         return new DataRepresenter\Response(

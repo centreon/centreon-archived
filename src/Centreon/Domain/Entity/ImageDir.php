@@ -121,7 +121,7 @@ class ImageDir
     }
 
     /**
-     * @param string $dirComment
+     * @param string $dirComment|null
      */
     public function setDirComment(string $dirComment = null): void
     {
