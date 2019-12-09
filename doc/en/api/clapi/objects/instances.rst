@@ -13,8 +13,8 @@ Show
 In order to list available instances, use the **SHOW** action::
 
   [root@centreon ~]# ./centreon -u admin -p centreon -o INSTANCE -a show 
-  id;name;localhost;ip address;activate;status;init script;monitoring engine;bin;stats bin;perfdata;ssh port
-  1;Central;1;127.0.0.1;1;0;/etc/init.d/nagios;NAGIOS;/usr/local/nagios/bin/nagios;/usr/local/nagios/bin/nagiostats;/usr/local/nagios/var/service-perfdata;22
+  id;name;localhost;ip address;activate;status;init script;monitoring engine;bin;stats bin;perfdata;gorgone protocol;gorgone port
+  1;Central;1;127.0.0.1;1;0;/etc/init.d/nagios;NAGIOS;/usr/local/nagios/bin/nagios;/usr/local/nagios/bin/nagiostats;/usr/local/nagios/var/service-perfdata;ZMQ;5556
   [...]
 
 
@@ -37,11 +37,17 @@ Status	          *1* if poller is running, *0* otherwise
 
 Init script	  Init script path
 
+Monitoring Engine Engine used on poller: *NAGIOS*, *ICINGA*, *SHINKEN*...
+
 Bin	          Path of the Scheduler binary
 
 Stats Bin	  Path of the Nagios Stats binary
 
-SSH Port	  SSH Port
+Perfdata	  Path of perfdata file
+
+Gorgone protocol 	  Gorgone communication type (ZMG, SSH)
+
+Gorgone Port	  Gorgone Port
 ================= ================================================================
 
 
@@ -50,18 +56,21 @@ Add
 
 In order to add an instance you use the **ADD** action::
 
-  [root@centreon ~]# ./centreon -u admin -p centreon -o INSTANCE -a add -v "Poller test;10.30.2.55;22;NAGIOS" 
+  [root@centreon ~]# ./centreon -u admin -p centreon -o INSTANCE -a add -v "Poller test;10.30.2.55;22;NAGIOS"
 
 Required fields are:
 
 =================== =====================================================
 Column	            Description
 =================== =====================================================
-Name	
+Name
 Address	            IP address of the poller
 
-SSH Port	    SSH port
+Gorgone protocol	Gorgone communication type (ZMG, SSH)
 
+Gorgone Port	    Gorgone port
+
+Monitoring Engine   Engine used on poller: *NAGIOS*, *ICINGA*, *SHINKEN*
 =================== =====================================================
 
 
@@ -70,7 +79,7 @@ Del
 
 If you want to remove an instance, use the **DEL** action. The Name is used for identifying the instance to delete::
 
-  [root@centreon ~]# ./centreon -u admin -p centreon -o INSTANCE -a del -v "Poller test" 
+  [root@centreon ~]# ./centreon -u admin -p centreon -o INSTANCE -a del -v "Poller test"
 
 
 Setparam
@@ -78,7 +87,7 @@ Setparam
 
 If you want to change a specific parameter of an instance, use the **SETPARAM** command. The Name is used for identifying the instance to update::
 
-  [root@centreon ~]# ./centreon -u admin -p centreon -o INSTANCE -a setparam -v "Poller test;ns_ip_address;10.30.2.99" 
+  [root@centreon ~]# ./centreon -u admin -p centreon -o INSTANCE -a setparam -v "Poller test;ns_ip_address;10.30.2.99"
 
 
 Arguments are composed of the following columns:
@@ -119,7 +128,9 @@ nagios_bin                 Path of the Scheduler binary
 
 nagiostats_bin             Path of the Nagios Stats binary
 
-ssh_port                   SSH Port
+gorgone_communication_type Gorgone communication type (ZMG, SSH)
+
+gorgone_port               Gorgone Port
 
 broker_reload_command      Command to reload Centreon Broker process
 
