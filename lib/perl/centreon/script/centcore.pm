@@ -580,9 +580,19 @@ sub initEngine($$){
     }
 
     if (defined($conf->{ns_ip_address}) && $conf->{ns_ip_address}) {
-        # Launch command
-        $cmd = "$self->{ssh} -p $port ". $conf->{ns_ip_address} ." $self->{sudo} $self->{service} ".$conf->{init_script}." ".$options;
-        ($lerror, $stdout) = centreon::common::misc::backtick(command => $cmd, logger => $self->{logger}, timeout => 120);
+        $cmd = '';
+
+        # if the target is the central server, we don't need to use ssh
+        if ($conf->{localhost} == 0) {
+            $cmd = "$self->{ssh} -p $port $conf->{ns_ip_address} ";
+        }
+
+        $cmd .= "$self->{sudo} $self->{service} $conf->{init_script} $options";
+        ($lerror, $stdout) = centreon::common::misc::backtick(
+            command => $cmd,
+            logger => $self->{logger},
+            timeout => 120
+        );
     } else {
         $self->{logger}->writeLogError("Cannot $options Engine for poller $id");
     }
