@@ -41,6 +41,10 @@ modules:
     package: "gorgone::modules::core::proxy::hooks"
     enable: true
 
+  - name: nodes
+    package: "gorgone::modules::centreon::nodes::hooks"
+    enable: true
+
   - name: legacycmd
     package: "gorgone::modules::centreon::legacycmd::hooks"
     enable: true
