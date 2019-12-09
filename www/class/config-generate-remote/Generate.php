@@ -213,7 +213,7 @@ class Generate
             $this->getPollerFromId($remoteServerId);
             $this->currentPoller['localhost'] = 1;
             $this->currentPoller['remote_id'] = 'NULL';
-            $this->currentPoller['remote_server_centcore_ssh_proxy'] = 0;
+            $this->currentPoller['remote_server_use_as_proxy'] = 0;
             $this->configPoller($username);
             Relations\NagiosServer::getInstance($this->dependencyInjector)->add($this->currentPoller, $remoteServerId);
 
@@ -221,7 +221,7 @@ class Generate
             foreach ($pollers as $poller) {
                 $poller['localhost'] = 0;
                 $poller['remote_id'] = 'NULL';
-                $poller['remote_server_centcore_ssh_proxy'] = 0;
+                $poller['remote_server_use_as_proxy'] = 0;
                 $this->currentPoller = $poller;
                 $this->configPoller($username);
                 Relations\NagiosServer::getInstance($this->dependencyInjector)->add($poller, $poller['id']);

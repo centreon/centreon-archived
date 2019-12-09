@@ -823,8 +823,8 @@ function updateServer(int $id, $data): void
         ? $rq .= "remote_id = '" . htmlentities(trim($data["remote_id"]), ENT_QUOTES, "UTF-8") . "',  "
         : $rq .= "remote_id = NULL, ";
     $rq .= "ns_activate = '" . $data["ns_activate"]["ns_activate"] . "', ";
-    $rq .= "remote_server_centcore_ssh_proxy = '"
-        . $data["remote_server_centcore_ssh_proxy"]["remote_server_centcore_ssh_proxy"] . "' ";
+    $rq .= "remote_server_use_as_proxy = '"
+        . $data["remote_server_use_as_proxy"]["remote_server_use_as_proxy"] . "' ";
     $rq .= "WHERE id = '" . $id . "'";
     $pearDB->query($rq);
 
