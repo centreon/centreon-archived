@@ -16,4 +16,4 @@ ALTER TABLE `nagios_server` ADD `gorgone_communication_type` enum('1','2') NOT N
 ALTER TABLE `nagios_server` CHANGE `ssh_port` `gorgone_port` INT(11) NULL;
 ALTER TABLE `nagios_server` CHANGE `remote_server_centcore_ssh_proxy` `remote_server_use_as_proxy` enum('0','1') NOT NULL DEFAULT '1';
 ALTER TABLE `nagios_server` DROP COLUMN `ssh_private_key`;
-
+UPDATE `nagios_server` SET `gorgone_communication_type` = '2';

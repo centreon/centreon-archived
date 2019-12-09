@@ -453,51 +453,53 @@ function insertServer(array $data): int
         "`is_default`, `ns_activate`, `centreonbroker_logs_path`, `remote_id`, `remote_server_use_as_proxy`) ";
     $rq .= "VALUES (";
 
-    if(isset($data["name"]) && $data["name"] != null){
+    if (isset($data["name"]) && $data["name"] != null) {
         $rq .= ':name, ';
         $retValue[':name'] = htmlentities(trim($data["name"]), ENT_QUOTES, "UTF-8");
     } else {
         $rq .= "NULL, ";
     }
-    if(isset($data["localhost"]["localhost"]) && $data["localhost"]["localhost"] != null){
+    if (isset($data["localhost"]["localhost"]) && $data["localhost"]["localhost"] != null) {
         $rq .= ':localhost, ';
         $retValue[':localhost'] = htmlentities($data["localhost"]["localhost"], ENT_QUOTES, "UTF-8");
     } else {
         $rq .= "NULL, ";
     }
-    if(isset($data["ns_ip_address"]) && $data["ns_ip_address"] != null){
+    if (isset($data["ns_ip_address"]) && $data["ns_ip_address"] != null) {
         $rq .= ':ns_ip_address, ';
         $retValue[':ns_ip_address'] = htmlentities(trim($data["ns_ip_address"]), ENT_QUOTES, "UTF-8");
     } else {
         $rq .= "NULL, ";
     }
-    if(isset($data["ns_ip_address"]) && $data["ns_ip_address"] != null){
+    if (isset($data["ns_ip_address"]) && $data["ns_ip_address"] != null) {
         $rq .= ':ns_ip_address, ';
         $retValue[':ns_ip_address'] = htmlentities(trim($data["ns_ip_address"]), ENT_QUOTES, "UTF-8");
     } else {
         $rq .= "NULL, ";
     }
-    if(isset($data["gorgone_communication_type"]) && $data["gorgone_communication_type"] != null){
+    if (isset($data["gorgone_communication_type"]['gorgone_communication_type'])
+        && $data["gorgone_communication_type"]['gorgone_communication_type'] != null) {
         $rq .= ':gorgone_communication_type, ';
-        $retValue[':gorgone_communication_type'] = htmlentities(trim($data["gorgone_communication_type"]), ENT_QUOTES, "UTF-8");
+        $retValue[':gorgone_communication_type'] =
+            htmlentities(trim($data["gorgone_communication_type"]['gorgone_communication_type']), ENT_QUOTES, "UTF-8");
     } else {
         $rq .= "'1', ";
     }
-    if(isset($data["gorgone_port"]) && $data["gorgone_port"] != null){
+    if (isset($data["gorgone_port"]) && $data["gorgone_port"] != null) {
         $rq .= ':gorgone_port, ';
         $retValue[':gorgone_port'] = (int)$data["gorgone_port"];
     } else {
         $rq .= "5556, ";
     }
-    if(isset($data["nagios_bin"]) && $data["nagios_bin"] != null){
+    if (isset($data["nagios_bin"]) && $data["nagios_bin"] != null) {
         $rq .= ':nagios_bin, ';
         $retValue[':nagios_bin'] = htmlentities(trim($data["nagios_bin"]), ENT_QUOTES, "UTF-8");
     } else {
         $rq .= "NULL, ";
     }
-    if(isset($data["nagiostats_bin"]) && $data["nagiostats_bin"] != null){
+    if (isset($data["nagiostats_bin"]) && $data["nagiostats_bin"] != null) {
         $rq .= ':nagiostats_bin, ';
-        $retValue[':nagiostats_bin'] =  htmlentities(trim($data["nagiostats_bin"]), ENT_QUOTES, "UTF-8") ;
+        $retValue[':nagiostats_bin'] = htmlentities(trim($data["nagiostats_bin"]), ENT_QUOTES, "UTF-8");
     } else {
         $rq .= "NULL, ";
     }
@@ -527,7 +529,8 @@ function insertServer(array $data): int
     }
     if (isset($data["init_script_centreontrapd"]) && $data["init_script_centreontrapd"] != null) {
         $rq .= ':init_script_centreontrapd, ';
-        $retValue[':init_script_centreontrapd'] = htmlentities(trim($data["init_script_centreontrapd"]), ENT_QUOTES, "UTF-8");
+        $retValue[':init_script_centreontrapd'] = htmlentities(trim($data["init_script_centreontrapd"]), ENT_QUOTES,
+            "UTF-8");
     } else {
         $rq .= "NULL, ";
     }
@@ -551,13 +554,15 @@ function insertServer(array $data): int
     }
     if (isset($data["centreonbroker_cfg_path"]) && $data["centreonbroker_cfg_path"] != null) {
         $rq .= ':centreonbroker_cfg_path, ';
-        $retValue[':centreonbroker_cfg_path'] = htmlentities(trim($data["centreonbroker_cfg_path"]), ENT_QUOTES, "UTF-8");
+        $retValue[':centreonbroker_cfg_path'] = htmlentities(trim($data["centreonbroker_cfg_path"]), ENT_QUOTES,
+            "UTF-8");
     } else {
         $rq .= "NULL, ";
     }
     if (isset($data["centreonbroker_module_path"]) && $data["centreonbroker_module_path"] != null) {
         $rq .= ':centreonbroker_module_path, ';
-        $retValue[':centreonbroker_module_path'] = htmlentities(trim($data["centreonbroker_module_path"]), ENT_QUOTES, "UTF-8");
+        $retValue[':centreonbroker_module_path'] = htmlentities(trim($data["centreonbroker_module_path"]), ENT_QUOTES,
+            "UTF-8");
     } else {
         $rq .= "NULL, ";
     }
@@ -569,19 +574,20 @@ function insertServer(array $data): int
     }
     if (isset($data["is_default"]["is_default"]) && $data["is_default"]["is_default"] != null) {
         $rq .= ':is_default, ';
-        $retValue[':is_default'] =  htmlentities(trim($data["is_default"]["is_default"]), ENT_QUOTES, "UTF-8");
+        $retValue[':is_default'] = htmlentities(trim($data["is_default"]["is_default"]), ENT_QUOTES, "UTF-8");
     } else {
         $rq .= "NULL, ";
     }
     if (isset($data["ns_activate"]["ns_activate"]) && $data["ns_activate"]["ns_activate"] != 2) {
         $rq .= ':ns_activate, ';
-        $retValue[':ns_activate'] =  $data["ns_activate"]["ns_activate"] ;
+        $retValue[':ns_activate'] = $data["ns_activate"]["ns_activate"];
     } else {
         $rq .= "NULL, ";
     }
     if (isset($data["centreonbroker_logs_path"]) && $data["centreonbroker_logs_path"] != null) {
         $rq .= ':centreonbroker_logs_path, ';
-        $retValue[':centreonbroker_logs_path'] =  htmlentities(trim($data["centreonbroker_logs_path"]), ENT_QUOTES, "UTF-8") ;
+        $retValue[':centreonbroker_logs_path'] = htmlentities(trim($data["centreonbroker_logs_path"]), ENT_QUOTES,
+            "UTF-8");
     } else {
         $rq .= "NULL, ";
     }
@@ -600,11 +606,11 @@ function insertServer(array $data): int
         $rq .= "NULL ";
     }
     $rq .= ")";
-
-    $pearDB->query($rq);
-
-
-
+    $stmt = $pearDB->prepare($rq);
+    foreach ($retValue as $key => $value){
+        $stmt->bindValue($key, $value);
+    }
+    $stmt->execute();
 
     $result = $pearDB->query("SELECT MAX(id) as last_id FROM `nagios_server`");
     $poller = $result->fetch();
@@ -701,12 +707,11 @@ function updateRemoteServerInformation(array $data)
 /**
  * Update a server
  *
- * @param int $id Id of the server
- * @param array $data Data of server
- * @global CentreonDB $pearDB DB connector
- * @global Centreon $centreon
+ * @param int $id
+ * @param array $data
+ * @throws Exception
  */
-function updateServer(int $id, $data): void
+function updateServer(int $id, array $data): void
 {
     global $pearDB, $centreon;
 
@@ -741,10 +746,11 @@ function updateServer(int $id, $data): void
         $rq .= "NULL, ";
     }
     $rq .= "`gorgone_communication_type` = ";
-    if (isset($data["gorgone_communication_type"]) && $data["gorgone_communication_type"] != null) {
+    if (isset($data["gorgone_communication_type"]['gorgone_communication_type'])
+        && $data["gorgone_communication_type"]['gorgone_communication_type'] != null) {
         $rq .= ':gorgone_communication_type, ';
-        $retValue[':gorgone_communication_type'] = htmlentities(trim($data["gorgone_communication_type"]), ENT_QUOTES,
-            "UTF-8");
+        $retValue[':gorgone_communication_type'] =
+            htmlentities(trim($data["gorgone_communication_type"]['gorgone_communication_type']), ENT_QUOTES, "UTF-8");
     } else {
         $rq .= "'1', ";
     }
@@ -887,7 +893,7 @@ function updateServer(int $id, $data): void
     } else {
         $rq .= "'1' ";
     }
-    $rq .= "WHERE id = '" . $id . "'";
+    $rq .= "WHERE id = " . (int)$id;
     $stmt = $pearDB->prepare($rq);
     foreach ($retValue as $key => $value){
         $stmt->bindValue($key, $value);
