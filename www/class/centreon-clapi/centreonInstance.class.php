@@ -107,9 +107,9 @@ class CentreonInstance extends CentreonObject
         $addParams[$this->object->getUniqueLabelField()] = $params[self::ORDER_UNIQUENAME];
         $addParams['ns_ip_address'] = $params[self::ORDER_ADDRESS];
 
-        if (isset(GORGONE_COMMUNICATION[strtoupper($params[self::ORDER_GORGONE_PROTOCOL])])) {
+        if (isset(self::GORGONE_COMMUNICATION[strtoupper($params[self::ORDER_GORGONE_PROTOCOL])])) {
             $addParams['gorgone_communication_type'] =
-                GORGONE_COMMUNICATION[strtoupper($params[self::ORDER_GORGONE_PROTOCOL])];
+                self::GORGONE_COMMUNICATION[strtoupper($params[self::ORDER_GORGONE_PROTOCOL])];
         } else {
             throw new CentreonClapiException('Incorrect connection protocol');
         }
@@ -190,7 +190,7 @@ class CentreonInstance extends CentreonObject
                 $tab["ns_status"] = '-';
             }
             $tab["gorgone_communication_type"] =
-                array_search($tab["gorgone_communication_type"], GORGONE_COMMUNICATION);
+                array_search($tab["gorgone_communication_type"], self::GORGONE_COMMUNICATION);
 
             echo implode($this->delim, $tab) . "\n";
         }
