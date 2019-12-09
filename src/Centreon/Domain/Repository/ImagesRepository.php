@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2005-2019 Centreon
  * Centreon is developed by : Julien Mathis and Romain Le Merlus under
@@ -63,7 +64,7 @@ class ImagesRepository extends ServiceEntityRepository implements PaginationRepo
      */
     public function getPaginationList($filters = null, int $limit = null, int $offset = null, $ordering = []): array
     {
-        $collector = new StatementCollector;
+        $collector = new StatementCollector();
         $sql = 'SELECT * FROM `' . ImageDir::TABLE . '`,`' . ImageDir::JOIN_TABLE . '` vidr,`' . Image::TABLE . '` '
             . 'WHERE `img_id` = `vidr`.`img_img_id` AND `dir_id` = `vidr`.`dir_dir_parent_id`';
 
@@ -118,7 +119,7 @@ class ImagesRepository extends ServiceEntityRepository implements PaginationRepo
             throw new \Exception('Id required to get Icon by ID, none provided');
         }
         $sql = 'SELECT * FROM `' . ImageDir::TABLE . '`,`' . ImageDir::JOIN_TABLE . '` vidr,`' . Image::TABLE
-            . '` WHERE `img_id` = `vidr`.`img_img_id` AND `dir_id` = `vidr`.`dir_dir_parent_id` AND `img_id` ='.$id;
+            . '` WHERE `img_id` = `vidr`.`img_img_id` AND `dir_id` = `vidr`.`dir_dir_parent_id` AND `img_id` =' . $id;
         $stmt = $this->db->prepare($sql);
         $stmt->execute();
         $stmt->setFetchMode(PDO::FETCH_CLASS | PDO::FETCH_PROPS_LATE, Image::class);

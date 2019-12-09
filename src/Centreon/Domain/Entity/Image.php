@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2005-2019 Centreon
  * Centreon is developed by : Julien Mathis and Romain Le Merlus under
@@ -42,9 +43,9 @@ use ReflectionClass;
 class Image
 {
 
-    const TABLE = 'view_img';
-    const MEDIA_DIR = 'img/media/';
-    const SERIALIZER_GROUP_LIST = 'image-list';
+    public const TABLE = 'view_img';
+    public const MEDIA_DIR = 'img/media/';
+    public const SERIALIZER_GROUP_LIST = 'image-list';
 
     /**
      * @Serializer\SerializedName("id")

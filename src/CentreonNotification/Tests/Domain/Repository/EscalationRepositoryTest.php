@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2005-2019 Centreon
  * Centreon is developed by : Julien Mathis and Romain Le Merlus under
@@ -48,14 +49,14 @@ use Centreon\Tests\Resource\Traits;
  */
 class EscalationRepositoryTest extends TestCase
 {
-    use Traits\CheckListOfIdsTrait,
-        Traits\PaginationListTrait;
+    use Traits\CheckListOfIdsTrait;
+    use Traits\PaginationListTrait;
 
     protected $datasets = [];
 
     protected function setUp()
     {
-        $this->db = new CentreonDB;
+        $this->db = new CentreonDB();
         $this->repository = new EscalationRepository($this->db);
         $tableName = $this->repository->getClassMetadata()->getTableName();
 

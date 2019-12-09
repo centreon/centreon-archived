@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2005-2019 Centreon
  * Centreon is developed by : Julien Mathis and Romain Le Merlus under
@@ -47,10 +48,10 @@ use PDO;
  */
 class Timeperiod implements Mapping\MetadataInterface
 {
-    const SERIALIZER_GROUP_LIST = 'timeperiod-list';
+    public const SERIALIZER_GROUP_LIST = 'timeperiod-list';
 
-    const TABLE = 'timeperiod';
-    const ENTITY_IDENTIFICATOR_COLUMN = 'tp_id';
+    public const TABLE = 'timeperiod';
+    public const ENTITY_IDENTIFICATOR_COLUMN = 'tp_id';
 
     /**
      * @Serializer\Groups({Timeperiod::SERIALIZER_GROUP_LIST})

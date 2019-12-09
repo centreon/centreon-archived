@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2005-2019 Centreon
  * Centreon is developed by : Julien Mathis and Romain Le Merlus under
@@ -49,16 +50,16 @@ use Centreon\Tests\Resource\Traits;
  */
 class EscalationWebserviceTest extends TestCase
 {
-    use Traits\WebServiceAuthorizeRestApiTrait,
-        Traits\WebServiceExecuteTestTrait;
+    use Traits\WebServiceAuthorizeRestApiTrait;
+    use Traits\WebServiceExecuteTestTrait;
 
-    const METHOD_GET_LIST = 'getList';
+    protected const METHOD_GET_LIST = 'getList';
 
     protected function setUp()
     {
         // dependencies
-        $container = new Container;
-        $container[ServiceProvider::CENTREON_PAGINATION] = new CentreonPaginationServiceMock;
+        $container = new Container();
+        $container[ServiceProvider::CENTREON_PAGINATION] = new CentreonPaginationServiceMock();
 
         $this->webservice = $this->createPartialMock(EscalationWebservice::class, [
             'loadDb',

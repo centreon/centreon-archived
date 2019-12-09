@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2005-2019 Centreon
  * Centreon is developed by : Julien Mathis and Romain Le Merlus under
@@ -62,9 +63,9 @@ class ContactGroupRepository extends ServiceEntityRepository implements Paginati
      */
     public function getPaginationList($filters = null, int $limit = null, int $offset = null, $ordering = []): array
     {
-        $collector = new StatementCollector;
+        $collector = new StatementCollector();
 
-        $sql = 'SELECT SQL_CALC_FOUND_ROWS * FROM `' .ContactGroup::TABLE . '`';
+        $sql = 'SELECT SQL_CALC_FOUND_ROWS * FROM `' . ContactGroup::TABLE . '`';
 
         $isWhere = false;
         if ($filters !== null) {

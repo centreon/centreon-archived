@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2005-2019 Centreon
  * Centreon is developed by : Julien Mathis and Romain Le Merlus under
@@ -57,7 +58,7 @@ class CommandRepository extends ServiceEntityRepository implements PaginationRep
         $sql = 'SELECT SQL_CALC_FOUND_ROWS `command_id` AS `id`, `command_name` AS `name` '
             . 'FROM `' . Command::TABLE . '`';
 
-        $collector = new StatementCollector;
+        $collector = new StatementCollector();
 
         $sql .= ' WHERE `command_activate` = :active';
         $collector->addValue(':active', true, PDO::PARAM_STR);

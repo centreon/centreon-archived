@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2005-2019 Centreon
  * Centreon is developed by : Julien Mathis and Romain Le Merlus under
@@ -47,7 +48,7 @@ use PDO;
  */
 class Escalation implements Mapping\MetadataInterface
 {
-    const SERIALIZER_GROUP_LIST = 'escalation-list';
+    public const SERIALIZER_GROUP_LIST = 'escalation-list';
 
     /**
      * Use class metadata instead calling of this constant
@@ -56,7 +57,7 @@ class Escalation implements Mapping\MetadataInterface
      * $this->repository->getClassMetadata()->getTableName()
      * </example>
      */
-    const TABLE = 'escalation';
+    public const TABLE = 'escalation';
 
     /**
      * @Serializer\Groups({Escalation::SERIALIZER_GROUP_LIST})

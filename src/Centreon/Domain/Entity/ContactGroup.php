@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2005-2019 Centreon
  * Centreon is developed by : Julien Mathis and Romain Le Merlus under
@@ -45,9 +46,9 @@ use Symfony\Component\Serializer\Annotation as Serializer;
  */
 class ContactGroup
 {
-    const SERIALIZER_GROUP_LIST = 'contact-group-list';
-    const TABLE = 'contactgroup';
-    const ENTITY_IDENTIFICATOR_COLUMN = 'cg_id';
+    public const SERIALIZER_GROUP_LIST = 'contact-group-list';
+    public const TABLE = 'contactgroup';
+    public const ENTITY_IDENTIFICATOR_COLUMN = 'cg_id';
 
     /**
      * @Serializer\SerializedName("id")

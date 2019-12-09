@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2005-2019 Centreon
  * Centreon is developed by : Julien Mathis and Romain Le Merlus under
@@ -41,8 +42,8 @@ namespace Centreon\Domain\Entity;
  */
 class ImageDir
 {
-    const TABLE = 'view_img_dir';
-    const JOIN_TABLE = 'view_img_dir_relation';
+    public const TABLE = 'view_img_dir';
+    public const JOIN_TABLE = 'view_img_dir_relation';
 
     /**
      * @var int

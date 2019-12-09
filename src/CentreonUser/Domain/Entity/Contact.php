@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2005-2019 Centreon
  * Centreon is developed by : Julien Mathis and Romain Le Merlus under
@@ -45,6 +46,6 @@ namespace CentreonUser\Domain\Entity;
 class Contact
 {
 
-    const TABLE = 'contact';
-    const ENTITY_IDENTIFICATOR_COLUMN = 'contact_id';
+    public const TABLE = 'contact';
+    public const ENTITY_IDENTIFICATOR_COLUMN = 'contact_id';
 }

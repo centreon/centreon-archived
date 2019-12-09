@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2005-2019 Centreon
  * Centreon is developed by : Julien Mathis and Romain Le Merlus under
@@ -48,7 +49,6 @@ use CentreonCommand\Application\Webservice;
  */
 class ServiceProviderTest extends TestCase
 {
-
     use WebserviceTrait;
 
     protected $container;
@@ -57,7 +57,7 @@ class ServiceProviderTest extends TestCase
     protected function setUp()
     {
         $this->provider = new ServiceProvider();
-        $this->container = new Container;
+        $this->container = new Container();
 
         $this->setUpWebservice($this->container);
 

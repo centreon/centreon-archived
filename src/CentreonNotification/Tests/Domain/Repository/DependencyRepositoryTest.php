@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2005-2019 Centreon
  * Centreon is developed by : Julien Mathis and Romain Le Merlus under
@@ -62,7 +63,7 @@ class DependencyRepositoryTest extends TestCase
      */
     protected function setUp(): void
     {
-        $this->db = new CentreonDB;
+        $this->db = new CentreonDB();
         $this->repository = new DependencyRepository($this->db);
     }
 

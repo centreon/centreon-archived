@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2005-2019 Centreon
  * Centreon is developed by : Julien Mathis and Romain Le Merlus under
@@ -47,9 +48,9 @@ use PDO;
  */
 class AclGroup implements Mapping\MetadataInterface
 {
-    const SERIALIZER_GROUP_LIST = 'acl-group-list';
-    const ENTITY_IDENTIFICATOR_COLUMN = 'acl_group_id';
-    const TABLE = 'acl_groups';
+    public const SERIALIZER_GROUP_LIST = 'acl-group-list';
+    public const ENTITY_IDENTIFICATOR_COLUMN = 'acl_group_id';
+    public const TABLE = 'acl_groups';
 
     /**
      * @Serializer\Groups({

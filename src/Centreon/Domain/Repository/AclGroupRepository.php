@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2005-2019 Centreon
  * Centreon is developed by : Julien Mathis and Romain Le Merlus under
@@ -45,7 +46,6 @@ use PDO;
 
 class AclGroupRepository extends ServiceEntityRepository implements PaginationRepositoryInterface
 {
-
     use CheckListOfIdsTrait;
 
     /**
@@ -73,7 +73,7 @@ class AclGroupRepository extends ServiceEntityRepository implements PaginationRe
     {
         $sql = 'SELECT SQL_CALC_FOUND_ROWS t.* FROM `' . $this->getClassMetadata()->getTableName() . '` AS `t`';
 
-        $collector = new StatementCollector;
+        $collector = new StatementCollector();
 
         $isWhere = false;
         if ($filters !== null) {

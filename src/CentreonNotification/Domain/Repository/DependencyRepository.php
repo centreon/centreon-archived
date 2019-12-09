@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2005-2019 Centreon
  * Centreon is developed by : Julien Mathis and Romain Le Merlus under
@@ -53,7 +54,7 @@ class DependencyRepository extends ServiceEntityRepository
         $sql = "DELETE FROM `dependency`"
             . " WHERE dep_id = :id";
 
-        $collector = new StatementCollector;
+        $collector = new StatementCollector();
         $collector->addValue(':id', $id);
 
         $stmt = $this->db->prepare($sql);

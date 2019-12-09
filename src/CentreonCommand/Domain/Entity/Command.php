@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2005-2019 Centreon
  * Centreon is developed by : Julien Mathis and Romain Le Merlus under
@@ -45,12 +46,12 @@ use Symfony\Component\Serializer\Annotation as Serializer;
  */
 class Command
 {
-    const SERIALIZER_GROUP_LIST = 'command-list';
-    const TABLE = 'command';
-    const TYPE_NOTIFICATION = 1;
-    const TYPE_CHECK = 2;
-    const TYPE_MISC = 3;
-    const TYPE_DISCOVERY = 4;
+    public const SERIALIZER_GROUP_LIST = 'command-list';
+    public const TABLE = 'command';
+    public const TYPE_NOTIFICATION = 1;
+    public const TYPE_CHECK = 2;
+    public const TYPE_MISC = 3;
+    public const TYPE_DISCOVERY = 4;
 
     /**
      * @Serializer\Groups({Command::SERIALIZER_GROUP_LIST})

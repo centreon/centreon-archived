@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2005-2019 Centreon
  * Centreon is developed by : Julien Mathis and Romain Le Merlus under
@@ -42,7 +43,6 @@ use Centreon\Domain\Repository\Traits\CheckListOfIdsTrait;
 
 class ContactRepository extends ServiceEntityRepository
 {
-
     use CheckListOfIdsTrait;
 
     /**

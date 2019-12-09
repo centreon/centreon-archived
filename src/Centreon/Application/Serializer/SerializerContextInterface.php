@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2005-2019 Centreon
  * Centreon is developed by : Julien Mathis and Romain Le Merlus under
@@ -41,12 +42,12 @@ namespace Centreon\Application\Serializer;
  */
 interface SerializerContextInterface
 {
-    const GROUPS = 'groups';
+    public const GROUPS = 'groups';
 
     /**
      * Options that normalizers/encoders have access to
      *
-     * @link https://symfony.com/doc/current/components/serializer.html 
+     * @link https://symfony.com/doc/current/components/serializer.html
      * @var array
      */
     public static function context(): array;

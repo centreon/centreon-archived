@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2005-2019 Centreon
  * Centreon is developed by : Julien Mathis and Romain Le Merlus under
@@ -53,7 +54,7 @@ class CommandRepositoryTest extends TestCase
 
     protected function setUp()
     {
-        $db = new CentreonDB;
+        $db = new CentreonDB();
         $this->datasets = [
             [
                 'query' => "SELECT SQL_CALC_FOUND_ROWS `command_id` AS `id`, `command_name` AS `name` "

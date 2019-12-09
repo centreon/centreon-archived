@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2005-2019 Centreon
  * Centreon is developed by : Julien Mathis and Romain Le Merlus under
@@ -73,7 +74,7 @@ class EscalationRepository extends ServiceEntityRepository implements Pagination
         $sql = 'SELECT SQL_CALC_FOUND_ROWS `esc_id`, `esc_name` '
             . 'FROM `' . $this->getClassMetadata()->getTableName() . '`';
 
-        $collector = new StatementCollector;
+        $collector = new StatementCollector();
 
         $isWhere = false;
         if ($filters !== null) {
