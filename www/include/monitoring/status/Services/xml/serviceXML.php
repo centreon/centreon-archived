@@ -145,7 +145,6 @@ if ($outputToSearch) {
     $queryValues['outputToSearch'] = [\PDO::PARAM_STR => '%' . $outputToSearch . '%'];
 }
 
-// TODO: fix order for criticalities
 $tabOrder = [];
 $tabOrder["service_criticality_id"] = " ORDER BY sc_isnull " . $order . ", service_criticality " . $order . ", h.name, s.description ";
 $tabOrder["host_criticality_id"] = " ORDER BY hc_isnull " . $order . ", host_criticality " . $order . ", h.name, s.description ";
