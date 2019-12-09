@@ -12,6 +12,8 @@ UPDATE topology SET topology_url_opt = '&o=svcOVHG_pb' WHERE topology_page = 202
 UPDATE topology SET topology_url_opt = '&o=svcOVSG_pb' WHERE topology_page = 20212;
 
 -- Update topology of service grid / by host group / by service group
-ALTER TABLE `nagios_server` ADD `gorgone_communication_type` enum('1','2') NOT NULL DEFAULT '1';
-ALTER TABLE `nagios_server` CHANGE `ssh_port` `gorgone_port`;
-ALTER TABLE `nagios_server` CHANGE `remote_server_centcore_ssh_proxy` `is_proxy`;
+ALTER TABLE `nagios_server` ADD `gorgone_communication_type` enum('1','2') NOT NULL DEFAULT '1' AFTER `centreonconnector_path`;
+ALTER TABLE `nagios_server` CHANGE `ssh_port` `gorgone_port` INT(11) NULL;
+ALTER TABLE `nagios_server` CHANGE `remote_server_centcore_ssh_proxy` `remote_server_use_as_proxy` enum('0','1') NOT NULL DEFAULT '1';
+ALTER TABLE `nagios_server` DROP COLUMN `ssh_private_key`;
+

@@ -450,7 +450,7 @@ function insertServer(array $data): int
         "`init_script_centreontrapd`, `snmp_trapd_path_conf`, " .
         "`nagios_perfdata` , `broker_reload_command`, " .
         "`centreonbroker_cfg_path`, `centreonbroker_module_path`, `centreonconnector_path`, " .
-        "`is_default`, `ns_activate`, `centreonbroker_logs_path`, `remote_id`, `is_proxy`) ";
+        "`is_default`, `ns_activate`, `centreonbroker_logs_path`, `remote_id`, `remote_server_use_as_proxy`) ";
     $rq .= "VALUES (";
 
     if(isset($data["name"]) && $data["name"] != null){
@@ -591,9 +591,11 @@ function insertServer(array $data): int
     } else {
         $rq .= "NULL, ";
     }
-    if (isset($data["is_proxy"]["is_proxy"]) && $data["is_proxy"]["is_proxy"] != null) {
-        $rq .= ':is_proxy ';
-        $retValue[':is_proxy'] = htmlentities($data["is_proxy"]["is_proxy"], ENT_QUOTES, "UTF-8");
+    if (isset($data["remote_server_use_as_proxy"]["remote_server_use_as_proxy"])
+        && $data["remote_server_use_as_proxy"]["remote_server_use_as_proxy"] != null) {
+        $rq .= ':remote_server_use_as_proxy ';
+        $retValue[':remote_server_use_as_proxy'] =
+            htmlentities($data["remote_server_use_as_proxy"]["remote_server_use_as_proxy"], ENT_QUOTES, "UTF-8");
     } else {
         $rq .= "NULL ";
     }
