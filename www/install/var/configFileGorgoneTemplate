@@ -61,7 +61,7 @@ modules:
   - name: broker
     package: "gorgone::modules::centreon::broker::hooks"
     enable: false
-    cache_dir: "--CENTREON_VARLIB--/broker-stats/"
+    cache_dir: "--CENTREON_CACHEDIR--/broker-stats/"
     cron:
       - id: broker_stats
         timespec: "*/2 * * * *"
