@@ -529,8 +529,8 @@ function insertServer(array $data): int
     }
     if (isset($data["init_script_centreontrapd"]) && $data["init_script_centreontrapd"] != null) {
         $rq .= ':init_script_centreontrapd, ';
-        $retValue[':init_script_centreontrapd'] = htmlentities(trim($data["init_script_centreontrapd"]), ENT_QUOTES,
-            "UTF-8");
+        $retValue[':init_script_centreontrapd'] =
+            htmlentities(trim($data["init_script_centreontrapd"]), ENT_QUOTES, "UTF-8");
     } else {
         $rq .= "NULL, ";
     }
@@ -554,15 +554,15 @@ function insertServer(array $data): int
     }
     if (isset($data["centreonbroker_cfg_path"]) && $data["centreonbroker_cfg_path"] != null) {
         $rq .= ':centreonbroker_cfg_path, ';
-        $retValue[':centreonbroker_cfg_path'] = htmlentities(trim($data["centreonbroker_cfg_path"]), ENT_QUOTES,
-            "UTF-8");
+        $retValue[':centreonbroker_cfg_path'] =
+            htmlentities(trim($data["centreonbroker_cfg_path"]), ENT_QUOTES, "UTF-8");
     } else {
         $rq .= "NULL, ";
     }
     if (isset($data["centreonbroker_module_path"]) && $data["centreonbroker_module_path"] != null) {
         $rq .= ':centreonbroker_module_path, ';
-        $retValue[':centreonbroker_module_path'] = htmlentities(trim($data["centreonbroker_module_path"]), ENT_QUOTES,
-            "UTF-8");
+        $retValue[':centreonbroker_module_path'] =
+            htmlentities(trim($data["centreonbroker_module_path"]), ENT_QUOTES, "UTF-8");
     } else {
         $rq .= "NULL, ";
     }
@@ -586,8 +586,8 @@ function insertServer(array $data): int
     }
     if (isset($data["centreonbroker_logs_path"]) && $data["centreonbroker_logs_path"] != null) {
         $rq .= ':centreonbroker_logs_path, ';
-        $retValue[':centreonbroker_logs_path'] = htmlentities(trim($data["centreonbroker_logs_path"]), ENT_QUOTES,
-            "UTF-8");
+        $retValue[':centreonbroker_logs_path'] =
+            htmlentities(trim($data["centreonbroker_logs_path"]), ENT_QUOTES, "UTF-8");
     } else {
         $rq .= "NULL, ";
     }
@@ -607,7 +607,7 @@ function insertServer(array $data): int
     }
     $rq .= ")";
     $stmt = $pearDB->prepare($rq);
-    foreach ($retValue as $key => $value){
+    foreach ($retValue as $key => $value) {
         $stmt->bindValue($key, $value);
     }
     $stmt->execute();
@@ -631,7 +631,7 @@ function insertServer(array $data): int
         $fields
     );
 
-    return (int) $poller["last_id"];
+    return (int)$poller["last_id"];
 }
 
 /**
@@ -878,24 +878,24 @@ function updateServer(int $id, array $data): void
         $rq .= "NULL, ";
     }
     $rq .= "`ns_activate` = ";
-    if (isset($data["ns_activate"]["ns_activate"] ) && $data["ns_activate"]["ns_activate"]  != null) {
+    if (isset($data["ns_activate"]["ns_activate"]) && $data["ns_activate"]["ns_activate"] != null) {
         $rq .= ':ns_activate, ';
-        $retValue[':ns_activate'] = htmlentities(trim($data["ns_activate"]["ns_activate"]) , ENT_QUOTES, "UTF-8");
+        $retValue[':ns_activate'] = htmlentities(trim($data["ns_activate"]["ns_activate"]), ENT_QUOTES, "UTF-8");
     } else {
         $rq .= "'1', ";
     }
     $rq .= "`remote_server_use_as_proxy` = ";
-    if (isset($data["remote_server_use_as_proxy"]["remote_server_use_as_proxy"] )
-        && $data["remote_server_use_as_proxy"]["remote_server_use_as_proxy"]  != null) {
+    if (isset($data["remote_server_use_as_proxy"]["remote_server_use_as_proxy"])
+        && $data["remote_server_use_as_proxy"]["remote_server_use_as_proxy"] != null) {
         $rq .= ':remote_server_use_as_proxy ';
         $retValue[':remote_server_use_as_proxy'] =
-            htmlentities(trim($data["remote_server_use_as_proxy"]["remote_server_use_as_proxy"]) , ENT_QUOTES, "UTF-8");
+            htmlentities(trim($data["remote_server_use_as_proxy"]["remote_server_use_as_proxy"]), ENT_QUOTES, "UTF-8");
     } else {
         $rq .= "'1' ";
     }
     $rq .= "WHERE id = " . (int)$id;
     $stmt = $pearDB->prepare($rq);
-    foreach ($retValue as $key => $value){
+    foreach ($retValue as $key => $value) {
         $stmt->bindValue($key, $value);
     }
     $stmt->execute();
