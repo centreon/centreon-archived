@@ -809,9 +809,6 @@ function updateServer(int $id, $data): void
             "UTF-8"
         ) . "',  "
         : $rq .= "centreonconnector_path = NULL, ";
-    isset($data["ssh_private_key"]) && $data["ssh_private_key"] != null
-        ? $rq .= "ssh_private_key = '" . htmlentities(trim($data["ssh_private_key"]), ENT_QUOTES, "UTF-8") . "',  "
-        : $rq .= "ssh_private_key = NULL, ";
     isset($data["is_default"]) && $data["is_default"] != null
         ? $rq .= "is_default = '" . htmlentities(trim($data["is_default"]["is_default"]), ENT_QUOTES, "UTF-8") . "',  "
         : $rq .= "is_default = NULL, ";
