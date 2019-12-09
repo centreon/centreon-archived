@@ -69,7 +69,7 @@ class NagiosServerRepository extends ServiceEntityRepository implements Paginati
         if ($filters !== null) {
             $isWhere = false;
 
-            if (array_key_exists('search', $filters) && $filters['search']) {
+            if (!empty($filters['search'])) {
                 $sql .= ' WHERE `' . $this->getClassMetadata()->getColumn('name') . '` LIKE :search';
                 $collector->addValue(':search', "%{$filters['search']}%");
                 $isWhere = true;
