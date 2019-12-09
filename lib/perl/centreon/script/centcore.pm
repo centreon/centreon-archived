@@ -834,7 +834,7 @@ sub initEngine($$$){
                 $cmd = "$self->{ssh} -p $port $conf->{ns_ip_address} ";
             }
 
-            $cmd .= "$self->{sudo} $self->{service} $conf->{init_script} $options;
+            $cmd .= "$self->{sudo} $self->{service} $conf->{init_script} $options";
             $self->{logger}->writeLogInfo(
                 'Init Script : "' . $cmd . '" ' .
                 'on poller "' . $conf->{name} . '" (' . $id . ')'
