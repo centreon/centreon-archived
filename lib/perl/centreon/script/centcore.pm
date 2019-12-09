@@ -827,10 +827,13 @@ sub initEngine($$$){
                 'using remote server "' . $remote_server->{name} . '" (' . $remote_server->{id} . ')'
             );
         } else {
-            $cmd = "$self->{ssh} -p $port " . $conf->{ns_ip_address} . " $self->{sudo} $self->{service} "
-                . $conf->{init_script} . " " . $options;
+            $cmd = '';
+            if ($conf->{localhost} == 0) {
+                $cmd = "$self->{ssh} -p $port $conf->{ns_ip_address} ";
+            }
+            $cmd .= "$self->{sudo} $self->{service} " . $conf->{init_script} . " " . $options;
             $self->{logger}->writeLogInfo(
-                'Init Script : "' . $self->{sudo} . ' ' . $self->{service} . ' ' . $conf->{init_script} . ' ' . $options . '" ' .
+                'Init Script : "' . $cmd . '" ' .
                 'on poller "' . $conf->{name} . '" (' . $id . ')'
             );
         }
