@@ -154,9 +154,9 @@ class ContactGroup
     }
 
     /**
-     * @return int|null
+     * @return int
      */
-    public function getCgActivate(): ?int
+    public function getCgActivate(): int
     {
         return (int)$this->cg_activate;
     }
