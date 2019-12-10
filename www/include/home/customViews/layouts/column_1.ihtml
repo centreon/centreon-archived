@@ -15,3 +15,6 @@
 		</div>
 	{/if}
 </div>
+<script type="text/javascript">
+	{include file='./widgetScript.js'}
+</script>
