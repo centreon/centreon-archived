@@ -38,7 +38,7 @@ if (!isset($centreon)) {
 }
 
 const ZMQ = 1;
-const SSL = 2;
+const SSH = 2;
 
 require_once _CENTREON_PATH_ . "www/class/centreon-config/centreonMainCfg.class.php";
 
