@@ -7,6 +7,7 @@ info:
     + Added real-time monitoring for hosts and services
     + Added acknowledgement for hosts and services
     + Added downtimes for hosts and services
+    + Added the list of monitoring server configurations
     # Information
     All dates are in **ISO 8601** format
     # Authentication
@@ -43,6 +44,10 @@ tags:
       * Acknowledge a host or a service
       * Cancel an acknowledgement of host or service
   - name: Authentication
+  - name: MonitoringServer
+    description: |
+      This API allows to:
+      * Show the monitoring server configurations
   - name: Downtime
     description: |
       This API allow to:
@@ -244,6 +249,53 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorApiResponse'
+  /configuration/monitoring-servers:
+    get:
+      tags:
+        - MonitoringServer
+      summary: List all monitoring server configurations
+      description: |
+        List all monitoring server configurations
+
+        The available parameters to **search** / **sort_by** are:
+
+          * id
+          * name
+          * is_localhost
+          * address
+          * is_activate
+      parameters:
+        - $ref: '#/components/parameters/limit'
+        - $ref: '#/components/parameters/page'
+        - $ref: '#/components/parameters/sortBy'
+        - $ref: '#/components/parameters/search'
+      responses:
+          200:
+            description: successful operation
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    result:
+                      type: array
+                      items:
+                        allOf:
+                          - $ref: '#/components/schemas/Configuration.MonitoringServer.main'
+                    meta:
+                      $ref: '#/components/schemas/Meta'
+          403:
+            description: Forbidden
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/ForbiddenApiResponse'
+          500:
+            description: Internal Server Error
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/ErrorApiResponse'
   /monitoring/hosts/downtimes:
     get:
       tags:
@@ -1199,6 +1251,84 @@ components:
         total:
           type: integer
           description: Number of items found
+    Configuration.MonitoringServer.main:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          description: Unique id of server
+        name:
+          type: string
+          description: Name of server
+        address:
+          type: string
+          description: IP address of server
+        is_localhost:
+          type: boolean
+          description: Indicates whether it's the localhost server
+        is_default:
+          type: boolean
+          description: Indicates whether it's the default server
+        ssh_port:
+          type: integer
+          description: SSH port of this server
+          example: 22
+        last_restart:
+          type: string
+          format: date-time
+          description: Date of the last Engine restart request
+        engine_start_command:
+          type: string
+          description: System start command for Engine
+        engine_stop_command:
+          type: string
+          description: System stop command for Engine
+        engine_restart_command:
+          type: string
+          description: System restart command for Engine
+        engine_reload_command:
+          type: string
+          description: System reload command for Engine
+        nagios_bin:
+          type: string
+          description: Full path of the Engine binary
+        nagiostats_bin:
+          type: string
+          description: Full path of the Engine statistics binary
+        broker_reload_command:
+          type: string
+          description: System reload command for Broker
+        centreonbroker_cfg_path:
+          type: string
+          description: Full path of the Broker configuration
+        centreonbroker_module_path:
+          type: string
+          description: Full path of the Broker module's libraries
+        centreonbroker_logs_path:
+          type: string
+          description: Full path of the Broker logs
+        centreonconnector_path:
+          type: string
+          description: Full path of the Engine connectors
+        init_script_centreontrapd:
+          type: string
+          description: System name of Centreontrapd daemon
+        snmp_trapd_path_conf:
+          type: string
+          description: Full path of the Centreontrapd daemon configuration
+        remote_id:
+          type: integer
+          description: Unique ID of the master Remote Server linked to the server
+        remote_server_centcore_ssh_proxy:
+          type: boolean
+          description: Indicates whether Remote Servers are used as SSH proxies
+        is_updated:
+          type: boolean
+          description: Indicates whether the monitoring configuration has changed since last restart
+        is_activate:
+          type: boolean
+          description: Indicates whether the server configuration is activated
     RequestParameters.limit:
       type: integer
       minimum: 1
