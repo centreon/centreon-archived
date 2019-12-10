@@ -330,7 +330,7 @@ if (isset($_GET["o"]) && $_GET["o"] == SERVER_ADD) {
             "centreonbroker_logs_path" => "/var/log/centreon-broker",
             "init_script_centreontrapd" => "centreontrapd",
             "snmp_trapd_path_conf" => "/etc/snmp/centreon_traps/",
-            "is_proxy" => '1'
+            "remote_server_use_as_proxy" => '1'
         ]
     );
 } else {
