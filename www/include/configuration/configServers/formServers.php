@@ -229,7 +229,7 @@ $form->addElement('text', 'nagios_perfdata', _("Perfdata file"), $attrsText2);
 
 $tab = array();
 $tab[] = $form->createElement('radio', 'gorgone_communication_type', null, _("ZMQ"), ZMQ);
-$tab[] = $form->createElement('radio', 'gorgone_communication_type', null, _("SSH"), SSL);
+$tab[] = $form->createElement('radio', 'gorgone_communication_type', null, _("SSH"), SSH);
 $form->addGroup($tab, 'gorgone_communication_type', _("Gorgone connection protocol"), '&nbsp;');
 
 /*
