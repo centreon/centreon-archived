@@ -54,7 +54,7 @@
             <td class="FormRowField"><img class="helpTooltip" name="gorgone_port"> {$form.gorgone_port.label}</td>
             <td class="FormRowValue">{$form.gorgone_port.html}</td>
         </tr>
-		{if $form.is_proxy.label}
+		{if $form.remote_server_use_as_proxy.label}
 		<tr class="list_two">
 		  <td class="FormRowField"><img class="helpTooltip" name="remote_server_use_as_proxy"> {$form.remote_server_use_as_proxy.label}</td>
 		  <td class="FormRowValue">{$form.remote_server_use_as_proxy.html}</td>
