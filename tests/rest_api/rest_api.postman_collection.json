@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "e5dc6137-f53a-4476-a44f-568fd686357d",
+		"_postman_id": "7c42f3c1-3195-44fe-be3b-a72e2e33119a",
 		"name": "Centreon Web Rest API",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -581,7 +581,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"action\": \"setparam\",\n  \"object\": \"instance\",\n  \"values\": \"{{instance_name}};gorgone_port;{{instance_ssh_port}}\"\n}"
+							"raw": "{\n  \"action\": \"setparam\",\n  \"object\": \"instance\",\n  \"values\": \"{{instance_name}};gorgone_port;{{instance_gorgone_port}}\"\n}"
 						},
 						"url": {
 							"raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
