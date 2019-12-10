@@ -221,7 +221,7 @@ if (strcmp($serverType, 'poller') ==  0) {
     $tab = [];
     $tab[] = $form->createElement('radio', 'remote_server_use_as_proxy', null, _("Yes"), '1');
     $tab[] = $form->createElement('radio', 'remote_server_use_as_proxy', null, _("No"), '0');
-    $form->addGroup($tab, 'ish_proxy', _("Use the Remote Server as a proxy"), '&nbsp;');
+    $form->addGroup($tab, 'remote_server_use_as_proxy', _("Use the Remote Server as a proxy"), '&nbsp;');
 }
 $form->addElement('text', 'nagios_bin', _("Monitoring Engine Binary"), $attrsText2);
 $form->addElement('text', 'nagiostats_bin', _("Monitoring Engine Statistics Binary"), $attrsText2);
