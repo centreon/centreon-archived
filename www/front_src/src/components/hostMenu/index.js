@@ -12,7 +12,6 @@ import { connect } from "react-redux";
 const numberFormat = yup
   .number()
   .required()
-  .positive()
   .integer();
 
 const statusSchema = yup.object().shape({
