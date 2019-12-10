@@ -128,7 +128,7 @@ nagios_bin                 Path of the Scheduler binary
 
 nagiostats_bin             Path of the Nagios Stats binary
 
-gorgone_communication_type Gorgone communication type (ZMG, SSH)
+gorgone_communication_type Gorgone communication type (ZMQ, SSH)
 
 gorgone_port               Gorgone Port
 
