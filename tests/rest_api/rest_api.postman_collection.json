@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "48546d3f-b858-4753-9363-c18dc29e7f5e",
+		"_postman_id": "e5dc6137-f53a-4476-a44f-568fd686357d",
 		"name": "Centreon Web Rest API",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -93,7 +93,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"action\": \"add\",\n  \"object\": \"instance\",\n  \"values\": \"test_instance;01.02.3.04;42;nagios\"\n}"
+							"raw": "{\n  \"action\": \"add\",\n  \"object\": \"instance\",\n  \"values\": \"test_instance;01.02.3.04;ZMQ;42;nagios\"\n}"
 						},
 						"url": {
 							"raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
