@@ -66,7 +66,7 @@ Column	            Description
 Name	
 Address	            IP address of the poller
 
-Gorgone protocol	Gorgone communication type (ZMG, SSH)
+Gorgone protocol	Gorgone communication type (ZMQ, SSH)
 
 Gorgone Port	    Gorgone port
 
