@@ -45,7 +45,7 @@ Stats Bin	  Path of the Nagios Stats binary
 
 Perfdata	  Path of perfdata file
 
-Gorgone protocol 	  Gorgone communication type (ZMG, SSH)
+Gorgone protocol 	  Gorgone communication type (ZMQ, SSH)
 
 Gorgone Port	  Gorgone Port
 ================= ================================================================
