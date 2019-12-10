@@ -126,7 +126,7 @@ class Image
     }
 
     /**
-     * @return int
+     * @return int|null
      */
     public function getImgId(): ?int
     {
