@@ -56,7 +56,7 @@
         </tr>
 		{if $form.is_proxy.label}
 		<tr class="list_two">
-		  <td class="FormRowField"><img class="helpTooltip" name="is_proxy"> {$form.is_proxy.label}</td>
+		  <td class="FormRowField"><img class="helpTooltip" name="remote_server_use_as_proxy"> {$form.remote_server_use_as_proxy.label}</td>
 		  <td class="FormRowValue">{$form.is_proxy.html}</td>
 		</tr>
 		{/if}
