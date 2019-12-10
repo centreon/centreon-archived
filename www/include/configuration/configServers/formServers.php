@@ -219,7 +219,7 @@ if (strcmp($serverType, 'poller') ==  0) {
     );
     $form->addElement('select2', 'remote_additional_id', _('Attach additional Remote Servers'), array(), $attrPoller2);
     $tab = [];
-    $tab[] = $form->createElement('radio', 'is_proxy', null, _("Yes"), '1');
+    $tab[] = $form->createElement('radio', 'remote_server_use_as_proxy', null, _("Yes"), '1');
     $tab[] = $form->createElement('radio', 'is_proxy', null, _("No"), '0');
     $form->addGroup($tab, 'ish_proxy', _("Use the Remote Server as a proxy"), '&nbsp;');
 }
