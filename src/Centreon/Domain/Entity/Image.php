@@ -158,7 +158,7 @@ class Image
     }
 
     /**
-     * @return string
+     * @return string|null
      */
     public function getImgPath(): ?string
     {
