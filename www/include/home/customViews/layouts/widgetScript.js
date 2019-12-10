@@ -74,19 +74,19 @@ jQuery(function () {
             var oWidget = jsonWidgets[wId];
             createFrame(
                 oWidget['url'] + '?widgetId=' + oWidget['widget_id'] + '&customViewId=' + viewId,
-                jQuery('#widget_cont_' + oWidget['widget_id']), "widget_" + viewId + "_" + oWidget['widget_id'],
+                jQuery('#widget_cont_' + oWidget['widget_id']),
+                "widget_" + viewId + "_" + oWidget['widget_id'],
                 i
             );
             i++;
-        }
+        });
 
-        jQuery(".ui-icon-wrench").each(function (index, element) {
+        jQuery(".ui-icon-wrench").each(function(index, element) {
             var tmp = jQuery(element).parents('.portlet').attr('name');
             var widgetIndex = tmp.split("portlet_");
             var widgetId = widgetIndex[1];
-            initColorbox(jQuery(element), "./main.php?p=10303&min=1&view_id=" + viewId + "&widget_id=" + widgetId, "70%", "70%");
+            initColorbox(jQuery(element), "./main.php?p=10303&min=1&view_id="+viewId+"&widget_id="+widgetId, "70%", "70%");
         });
-
         jQuery(".ui-icon-refresh").each(function (index, element) {
             var tmp = jQuery(element).parents('.portlet').attr('name');
             var widgetIndex = tmp.split("portlet_");
@@ -95,14 +95,13 @@ jQuery(function () {
                 window.frames["widget_" + viewId + "_" + widgetId].location.reload();
             });
         });
-
         jQuery("span[class='ui-icon ui-icon-trash']").each(function (index, element) {
             var tmp = jQuery(element).parents('.portlet').attr('name')
             var widgetIndex = tmp.split("portlet_");
             var widgetId = widgetIndex[1];
             deleteWidget(element, viewId, widgetId);
         });
-    }
+    };
 
     /**
      * Delete View
@@ -214,3 +213,4 @@ jQuery(function () {
         }
     }
 });
+'{/literal}'
