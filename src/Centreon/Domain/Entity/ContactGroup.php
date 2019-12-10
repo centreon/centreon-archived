@@ -203,7 +203,7 @@ class ContactGroup
     }
 
     /**
-     * @return string
+     * @return string|null
      */
     public function getCgLdapDn(): ?string
     {
