@@ -57,9 +57,7 @@ class HostMenu extends Component {
   getData = () => {
     this.hostsService.get().then(({ data }) => {
       statusSchema.validate(data).then(() => {
-        this.setState({
-          data
-        });
+        this.setState({ data });
       });
     }).catch((error) => {
       if (error.response && error.response.status === 401) {

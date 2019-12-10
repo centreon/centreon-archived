@@ -61,9 +61,7 @@ class ServiceStatusMenu extends Component {
   getData = () => {
     this.servicesStatusService.get().then(({ data }) => {
       statusSchema.validate(data).then(() => {
-        this.setState({
-          data
-        });
+        this.setState({ data });
       });
     }).catch((error) => {
       if (error.response && error.response.status === 401) {
