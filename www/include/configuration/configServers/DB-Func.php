@@ -40,7 +40,7 @@ if (!isset($centreon)) {
 require_once _CENTREON_PATH_ . "www/class/centreon-config/centreonMainCfg.class.php";
 
 const ZMQ = 1;
-const SSL =2;
+const SSH = 2;
 
 /**
  * Retrieve the next available suffixes for this server name from database
