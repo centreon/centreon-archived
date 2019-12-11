@@ -1,36 +1,21 @@
 <?php
+
 /*
- * Copyright 2005-2019 Centreon
- * Centreon is developed by : Julien Mathis and Romain Le Merlus under
- * GPL Licence 2.0.
+ * Copyright 2005 - 2019 Centreon (https://www.centreon.com/)
  *
- * This program is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation ; either version 2 of the License.
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
- * PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
- * You should have received a copy of the GNU General Public License along with
- * this program; if not, see <http://www.gnu.org/licenses>.
- *
- * Linking this program statically or dynamically with other modules is making a
- * combined work based on this program. Thus, the terms and conditions of the GNU
- * General Public License cover the whole combination.
- *
- * As a special exception, the copyright holders of this program give Centreon
- * permission to link this program with independent modules to produce an executable,
- * regardless of the license terms of these independent modules, and to copy and
- * distribute the resulting executable under terms of Centreon choice, provided that
- * Centreon also meet, for each linked independent module, the terms  and conditions
- * of the license of that module. An independent module is a module which is not
- * derived from this program. If you modify this program, you may extend this
- * exception to your version of the program, but you are not obliged to do so. If you
- * do not wish to do so, delete this exception statement from your version.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  *
  * For more information : contact@centreon.com
- *
  *
  */
 
@@ -42,7 +27,7 @@ use PDO;
 
 class NagiosServer implements Mapping\MetadataInterface
 {
-    const SERIALIZER_GROUP_LIST = 'nagios-server-list';
+    public const SERIALIZER_GROUP_LIST = 'nagios-server-list';
 
     /**
      * @Serializer\Groups({NagiosServer::SERIALIZER_GROUP_LIST})
@@ -221,271 +206,460 @@ class NagiosServer implements Mapping\MetadataInterface
             ->add('remoteServerCentcoreSshProxy', 'remote_server_centcore_ssh_proxy');
     }
 
+    /**
+     * @return int|null
+     */
     public function getId(): ?int
     {
         return $this->id;
     }
 
+    /**
+     * @param string|int $id
+     * @return void
+     */
     public function setId($id = null): void
     {
         $this->id = (int)$id;
     }
 
+    /**
+     * @return string|null
+     */
     public function getName(): ?string
     {
         return $this->name;
     }
 
+    /**
+     * @param string $name
+     * @return void
+     */
     public function setName(string $name = null): void
     {
         $this->name = $name;
     }
 
+    /**
+     * @return string|null
+     */
     public function getLocalhost(): ?string
     {
         return $this->localhost;
     }
 
+    /**
+     * @return int|null
+     */
     public function getIsDefault(): ?int
     {
         return $this->isDefault;
     }
 
+    /**
+     * @return int|null
+     */
     public function getLastRestart(): ?int
     {
         return $this->lastRestart;
     }
 
+    /**
+     * @return string|null
+     */
     public function getNsIpAddress(): ?string
     {
         return $this->nsIpAddress;
     }
 
+    /**
+     * @return string|null
+     */
     public function getNsActivate(): ?string
     {
         return $this->nsActivate;
     }
 
+    /**
+     * @return string|null
+     */
     public function getEngineStartCommand(): ?string
     {
         return $this->engineStartCommand;
     }
 
+    /**
+     * @return string|null
+     */
     public function getEngineStopCommand(): ?string
     {
         return $this->engineStopCommand;
     }
 
+    /**
+     * @return string|null
+     */
     public function getEngineRestartCommand(): ?string
     {
         return $this->engineRestartCommand;
     }
 
+    /**
+     * @return string|null
+     */
     public function getEngineReloadCommand(): ?string
     {
         return $this->engineReloadCommand;
     }
 
+    /**
+     * @return string|null
+     */
     public function getNagiosBin(): ?string
     {
         return $this->nagiosBin;
     }
 
+    /**
+     * @return string|null
+     */
     public function getNagiostatsBin(): ?string
     {
         return $this->nagiostatsBin;
     }
 
+    /**
+     * @return string|null
+     */
     public function getNagiosPerfdata(): ?string
     {
         return $this->nagiosPerfdata;
     }
 
+    /**
+     * @return string|null
+     */
     public function getBrokerReloadCommand(): ?string
     {
         return $this->brokerReloadCommand;
     }
 
+    /**
+     * @return string|null
+     */
     public function getCentreonbrokerCfgPath(): ?string
     {
         return $this->centreonbrokerCfgPath;
     }
 
+    /**
+     * @return string|null
+     */
     public function getCentreonbrokerModulePath(): ?string
     {
         return $this->centreonbrokerModulePath;
     }
 
+    /**
+     * @return string|null
+     */
     public function getCentreonconnectorPath(): ?string
     {
         return $this->centreonconnectorPath;
     }
 
+    /**
+     * @return int|null
+     */
     public function getSshPort(): ?int
     {
         return $this->sshPort;
     }
 
+    /**
+     * @return string|null
+     */
     public function getSshPrivateKey(): ?string
     {
         return $this->sshPrivateKey;
     }
 
+    /**
+     * @return string|null
+     */
     public function getInitScriptCentreontrapd(): ?string
     {
         return $this->initScriptCentreontrapd;
     }
 
+    /**
+     * @return string|null
+     */
     public function getSnmpTrapdPathConf(): ?string
     {
         return $this->snmpTrapdPathConf;
     }
 
+    /**
+     * @return string|null
+     */
     public function getEngineName(): ?string
     {
         return $this->engineName;
     }
 
+    /**
+     * @return string|null
+     */
     public function getEngineVersion(): ?string
     {
         return $this->engineVersion;
     }
 
+    /**
+     * @return string|null
+     */
     public function getCentreonbrokerLogsPath(): ?string
     {
         return $this->centreonbrokerLogsPath;
     }
 
+    /**
+     * @return int|null
+     */
     public function getRemoteId(): ?int
     {
         return $this->remoteId;
     }
 
+    /**
+     * @return string|null
+     */
     public function getRemoteServerCentcoreSshProxy(): ?string
     {
         return $this->remoteServerCentcoreSshProxy;
     }
 
+    /**
+     * @param string $localhost
+     * @return void
+     */
     public function setLocalhost(string $localhost = null): void
     {
         $this->localhost = $localhost;
     }
 
+    /**
+     * @param string|int $isDefault
+     * @return void
+     */
     public function setIsDefault($isDefault = null): void
     {
         $this->isDefault = (int)$isDefault;
     }
 
+    /**
+     * @param string|int $lastRestart
+     * @return void
+     */
     public function setLastRestart($lastRestart = null): void
     {
         $this->lastRestart = (int)$lastRestart;
     }
 
+    /**
+     * @param string $nsIpAddress
+     * @return void
+     */
     public function setNsIpAddress(string $nsIpAddress = null): void
     {
         $this->nsIpAddress = $nsIpAddress;
     }
 
+    /**
+     * @param string $nsActivate
+     * @return void
+     */
     public function setNsActivate(string $nsActivate = null): void
     {
         $this->nsActivate = $nsActivate;
     }
 
+    /**
+     * @param string $engineStartCommand
+     * @return void
+     */
     public function setEngineStartCommand(string $engineStartCommand = null): void
     {
         $this->engineStartCommand = $engineStartCommand;
     }
 
+    /**
+     * @param string $engineStopCommand
+     * @return void
+     */
     public function setEngineStopCommand(string $engineStopCommand = null): void
     {
         $this->engineStopCommand = $engineStopCommand;
     }
 
+    /**
+     * @param string $engineRestartCommand
+     * @return void
+     */
     public function setEngineRestartCommand(string $engineRestartCommand = null): void
     {
         $this->engineRestartCommand = $engineRestartCommand;
     }
 
+    /**
+     * @param string $engineReloadCommand
+     * @return void
+     */
     public function setEngineReloadCommand(string $engineReloadCommand = null): void
     {
         $this->engineReloadCommand = $engineReloadCommand;
     }
 
+    /**
+     * @param string $nagiosBin
+     * @return void
+     */
     public function setNagiosBin(string $nagiosBin = null): void
     {
         $this->nagiosBin = $nagiosBin;
     }
 
+    /**
+     * @param string $nagiostatsBin
+     * @return void
+     */
     public function setNagiostatsBin(string $nagiostatsBin = null): void
     {
         $this->nagiostatsBin = $nagiostatsBin;
     }
 
+    /**
+     * @param string $nagiosPerfdata
+     * @return void
+     */
     public function setNagiosPerfdata(string $nagiosPerfdata = null): void
     {
         $this->nagiosPerfdata = $nagiosPerfdata;
     }
 
+    /**
+     * @param string $brokerReloadCommand
+     * @return void
+     */
     public function setBrokerReloadCommand(string $brokerReloadCommand = null): void
     {
         $this->brokerReloadCommand = $brokerReloadCommand;
     }
 
+    /**
+     * @param string $centreonbrokerCfgPath
+     * @return void
+     */
     public function setCentreonbrokerCfgPath(string $centreonbrokerCfgPath = null): void
     {
         $this->centreonbrokerCfgPath = $centreonbrokerCfgPath;
     }
 
+    /**
+     * @param string $centreonbrokerModulePath
+     * @return void
+     */
     public function setCentreonbrokerModulePath(string $centreonbrokerModulePath = null): void
     {
         $this->centreonbrokerModulePath = $centreonbrokerModulePath;
     }
 
+    /**
+     * @param string $centreonconnectorPath
+     * @return void
+     */
     public function setCentreonconnectorPath(string $centreonconnectorPath = null): void
     {
         $this->centreonconnectorPath = $centreonconnectorPath;
     }
 
+    /**
+     * @param string|int $sshPort
+     * @return void
+     */
     public function setSshPort($sshPort = null): void
     {
         $this->sshPort = (int)$sshPort;
     }
 
+    /**
+     * @param string $sshPrivateKey
+     * @return void
+     */
     public function setSshPrivateKey(string $sshPrivateKey = null): void
     {
         $this->sshPrivateKey = $sshPrivateKey;
     }
 
+    /**
+     * @param string $initScriptCentreontrapd
+     * @return void
+     */
     public function setInitScriptCentreontrapd(string $initScriptCentreontrapd = null): void
     {
         $this->initScriptCentreontrapd = $initScriptCentreontrapd;
     }
 
+    /**
+     * @param string $snmpTrapdPathConf
+     * @return void
+     */
     public function setSnmpTrapdPathConf(string $snmpTrapdPathConf = null): void
     {
         $this->snmpTrapdPathConf = $snmpTrapdPathConf;
     }
 
+    /**
+     * @param string $engineName
+     * @return void
+     */
     public function setEngineName(string $engineName = null): void
     {
         $this->engineName = $engineName;
     }
 
+    /**
+     * @param string $engineVersion
+     * @return void
+     */
     public function setEngineVersion(string $engineVersion = null): void
     {
         $this->engineVersion = $engineVersion;
     }
 
+    /**
+     * @param string $centreonbrokerLogsPath
+     * @return void
+     */
     public function setCentreonbrokerLogsPath(string $centreonbrokerLogsPath = null): void
     {
         $this->centreonbrokerLogsPath = $centreonbrokerLogsPath;
     }
 
+    /**
+     * @param string|int $remoteId
+     * @return void
+     */
     public function setRemoteId($remoteId = null): void
     {
         $this->remoteId = (int)$remoteId;
     }
 
+    /**
+     * @param string $remoteServerCentcoreSshProxy
+     * @return void
+     */
     public function setRemoteServerCentcoreSshProxy(string $remoteServerCentcoreSshProxy = null): void
     {
         $this->remoteServerCentcoreSshProxy = $remoteServerCentcoreSshProxy;
