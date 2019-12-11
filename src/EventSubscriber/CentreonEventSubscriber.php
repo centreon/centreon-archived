@@ -154,6 +154,8 @@ class CentreonEventSubscriber implements EventSubscriberInterface
     {
         $query = $request->getRequest()->query->all();
 
+
+
         $limit = (int) ($query[RequestParameters::NAME_FOR_LIMIT] ?? RequestParameters::DEFAULT_LIMIT);
         $this->requestParameters->setLimit($limit);
 
@@ -306,10 +308,16 @@ class CentreonEventSubscriber implements EventSubscriberInterface
          * we create a custom error message.
          * If we don't do that a HTML error will appeared.
          */
-        if ($errorIsBeforeController && $event->getException()->getCode() !== 403) {
-            $errorCode = $event->getException()->getCode() > 0
-                ? $event->getException()->getCode()
-                : Response::HTTP_INTERNAL_SERVER_ERROR;
+        if ($errorIsBeforeController) {
+            if ($event->getException()->getCode() !== 403) {
+                $errorCode = $event->getException()->getCode() > 0
+                    ? $event->getException()->getCode()
+                    : Response::HTTP_INTERNAL_SERVER_ERROR;
+                $statusCode = Response::HTTP_INTERNAL_SERVER_ERROR;
+            } else {
+                $errorCode = $event->getException()->getCode();
+                $statusCode = Response::HTTP_FORBIDDEN;
+            }
 
             // Manage exception outside controllers
             $event->setResponse(
@@ -318,7 +326,7 @@ class CentreonEventSubscriber implements EventSubscriberInterface
                         'code' => $errorCode,
                         'message' => $event->getException()->getMessage()
                     ]),
-                    Response::HTTP_INTERNAL_SERVER_ERROR
+                    $statusCode
                 )
             );
         } elseif (!$errorIsBeforeController) {

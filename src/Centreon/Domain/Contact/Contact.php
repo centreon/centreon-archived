@@ -104,6 +104,11 @@ class Contact implements UserInterface, ContactInterface
     private $roles = [];
 
     /**
+     * @var string[] List of topology names to which the contact can access
+     */
+    private $topologies = [];
+
+    /**
      * @return int
      */
     public function getId(): int
@@ -303,7 +308,7 @@ class Contact implements UserInterface, ContactInterface
      */
     public function getRoles()
     {
-        return $this->roles;
+        return array_merge($this->roles, $this->topologies);
     }
 
     /**
@@ -424,5 +429,17 @@ class Contact implements UserInterface, ContactInterface
     private function removeRole(string $roleName): void
     {
         unset($this->roles[$roleName]);
+    }
+
+    public function addTopology(string $topologyName): void
+    {
+        if (!in_array($topologyName, $this->topologies)) {
+            $this->topologies[] = $topologyName;
+        }
+    }
+
+    public function hasTopology(string $topologyName): bool
+    {
+        return in_array($topologyName, $this->topologies);
     }
 }

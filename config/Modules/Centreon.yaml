@@ -98,3 +98,10 @@ services:
 
     Centreon\Domain\Acknowledgement\Interfaces\AcknowledgementServiceInterface:
         class: Centreon\Domain\Acknowledgement\AcknowledgementService
+
+    # Proxy configuration
+    Centreon\Domain\Proxy\Interfaces\ProxyServiceInterface:
+        class: Centreon\Domain\Proxy\ProxyService
+
+    Centreon\Domain\Proxy\Interfaces\ProxyRepositoryInterface:
+        class: Centreon\Infrastructure\Proxy\ProxyRepositoryRDB
