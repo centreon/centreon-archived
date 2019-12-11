@@ -1,6 +1,6 @@
 '{literal}'
 var columnClass = '{/literal}{$columnClass}{literal}';
-var viewId =  Number('{/literal}{$view_id}{literal}');
+var viewId = Number('{/literal}{$view_id}{literal}');
 var permission = Number('{/literal}{$permission}{literal}');
 var ownership = Number('{/literal}{$ownership}{literal}');
 var idUser = Number('{/literal}{$userId}{literal}');
@@ -81,11 +81,14 @@ jQuery(function () {
             i++;
         });
 
-        jQuery(".ui-icon-wrench").each(function(index, element) {
+        jQuery(".ui-icon-wrench").each(function (index, element) {
             var tmp = jQuery(element).parents('.portlet').attr('name');
             var widgetIndex = tmp.split("portlet_");
             var widgetId = widgetIndex[1];
-            initColorbox(jQuery(element), "./main.php?p=10303&min=1&view_id="+viewId+"&widget_id="+widgetId, "70%", "70%");
+            initColorbox(
+                jQuery(element),
+                "./main.php?p=10303&min=1&view_id=" + viewId + "&widget_id=" + widgetId, "70%", "70%"
+            );
         });
         jQuery(".ui-icon-refresh").each(function (index, element) {
             var tmp = jQuery(element).parents('.portlet').attr('name');
@@ -101,7 +104,8 @@ jQuery(function () {
             var widgetId = widgetIndex[1];
             deleteWidget(element, viewId, widgetId);
         });
-    };
+    }
+    ;
 
     /**
      * Delete View
