@@ -1297,7 +1297,11 @@ class CentreonHost extends CentreonObject
                     echo $this->action . $this->delim
                     . "addparent" . $this->delim
                     . $element[$this->object->getUniqueLabelField()] . $this->delim
-                    . isset($elements[$parentId]) && isset($elements[$parentId][$this->object->getUniqueLabelField()]) ? $elements[$parentId][$this->object->getUniqueLabelField()] : '' . "\n";
+                    . ((isset($elements[$parentId]) && isset($elements[$parentId][$this->object->getUniqueLabelField()]))
+                        ? $elements[$parentId][$this->object->getUniqueLabelField()]
+                        : ''
+                    )
+                    . "\n";
                 }
             }
 
