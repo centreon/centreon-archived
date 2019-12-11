@@ -45,7 +45,7 @@ ini_set('display_errors', 0);
 
 $pearDB = new CentreonDB();
 
-CentreonSession::start(1);
+CentreonSession::start();
 
 if (!isset($_SESSION["centreon"])) {
     CentreonWebService::sendResult("Unauthorized", 401);

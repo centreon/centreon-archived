@@ -51,7 +51,7 @@ class CentreonTopCounter extends CentreonWebService
     /**
      * @var int
      */
-    protected $refreshTime = 15;
+    protected $refreshTime = 60;
 
     protected $hasAccessToTopCounter = false;
 
@@ -553,6 +553,11 @@ class CentreonTopCounter extends CentreonWebService
             throw new \RestUnauthorizedException("You're not authorized to access resource datas");
         }
 
+        if (isset($_SESSION['topCounterHostStatus']) && 
+            (time() - $this->refreshTime) < $_SESSION['topCounterHostStatus']['time']) {
+            return $_SESSION['topCounterHostStatus'];
+        }
+
         $query = 'SELECT
             SUM(CASE WHEN h.state = 0 THEN 1 ELSE 0 END) AS up_total,
             SUM(CASE WHEN h.state = 1 THEN 1 ELSE 0 END) AS down_total,
@@ -595,9 +600,11 @@ class CentreonTopCounter extends CentreonWebService
             'ok' => $row['up_total'],
             'pending' => $row['pending_total'],
             'total' => $row['up_total'] + $row['pending_total'] + $row['down_total'] + $row['unreachable_total'],
-            'refreshTime' => $this->refreshTime
+            'refreshTime' => $this->refreshTime,
+            'time' => time()
         );
 
+        $_SESSION['topCounterHostStatus'] = $result;
         return $result;
     }
 
@@ -610,6 +617,11 @@ class CentreonTopCounter extends CentreonWebService
     {
         if (!$this->hasAccessToTopCounter) {
             throw new \RestUnauthorizedException("You're not authorized to access resource datas");
+        }
+
+        if (isset($_SESSION['topCounterServiceStatus']) && 
+            (time() - $this->refreshTime) < $_SESSION['topCounterServiceStatus']['time']) {
+            return $_SESSION['topCounterServiceStatus'];
         }
 
         $query = 'SELECT
@@ -665,9 +677,11 @@ class CentreonTopCounter extends CentreonWebService
             'pending' => $row['pending_total'],
             'total' => $row['ok_total'] + $row['pending_total'] + $row['critical_total'] + $row['unknown_total'] +
                 $row['warning_total'],
-            'refreshTime' => $this->refreshTime
+            'refreshTime' => $this->refreshTime,
+            'time' => time()
         );
 
+        $_SESSION['topCounterServiceStatus'] = $result;
         return $result;
     }
 
