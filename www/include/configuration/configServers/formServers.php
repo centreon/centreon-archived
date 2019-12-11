@@ -231,14 +231,6 @@ $tab = array();
 $tab[] = $form->createElement('radio', 'gorgone_communication_type', null, _("ZMQ"), ZMQ);
 $tab[] = $form->createElement('radio', 'gorgone_communication_type', null, _("SSH"), SSH);
 $form->addGroup($tab, 'gorgone_communication_type', _("Gorgone connection protocol"), '&nbsp;');
-
-/*
-if ($o != "mc") {
-    $form->setDefaults(array('gorgone_communication_type' => ZMQ));
-}
-*/
-
-
 $form->addElement('text', 'gorgone_port', _("Gorgone connection port"), $attrsText3);
 
 $tab = array();

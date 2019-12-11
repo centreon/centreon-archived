@@ -23,29 +23,29 @@ Columns are the following:
 ================= ================================================================
 Column	          Description
 ================= ================================================================
-ID	          ID
+ID	              ID
 
 Name	          Name
 
-Localhost	  *1* if it is the main poller, *0* otherwise
+Localhost	      *1* if it is the main poller, *0* otherwise
 
-IP Address	  IP address of the poller
+IP Address	      IP address of the poller
 
-Activate	  *1* if poller is enabled, *0* otherwise
+Activate	      *1* if poller is enabled, *0* otherwise
 
 Status	          *1* if poller is running, *0* otherwise
 
-Init script	  Init script path
+Init script	      Init script path
 
 Monitoring Engine Engine used on poller: *NAGIOS*, *ICINGA*, *SHINKEN*...
 
-Bin	          Path of the Scheduler binary
+Bin	              Path of the Scheduler binary
 
-Stats Bin	  Path of the Nagios Stats binary
+Stats Bin	      Path of the Nagios Stats binary
 
-Perfdata	  Path of perfdata file
+Perfdata	      Path of perfdata file
 
-Gorgone protocol 	  Gorgone communication type (ZMQ, SSH)
+Gorgone protocol  Gorgone communication type (ZMQ, SSH)
 
 Gorgone Port	  Gorgone Port
 ================= ================================================================
