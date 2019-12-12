@@ -21,11 +21,9 @@ declare(strict_types=1);
 
 namespace Centreon\Application\Controller;
 
-use Centreon\Domain\Contact\Contact;
 use Centreon\Domain\Entity\EntityValidator;
 use Centreon\Domain\Proxy\Interfaces\ProxyServiceInterface;
 use Centreon\Domain\Proxy\Proxy;
-use Centreon\Domain\Proxy\ProxyService;
 use FOS\RestBundle\Controller\AbstractFOSRestController;
 use FOS\RestBundle\View\View;
 use FOS\RestBundle\Controller\Annotations as Rest;
@@ -47,6 +45,11 @@ class ProxyController extends AbstractFOSRestController
      */
     private $proxyService;
 
+    /**
+     * ProxyController constructor.
+     *
+     * @param ProxyServiceInterface $proxyService
+     */
     public function __construct(ProxyServiceInterface $proxyService)
     {
         $this->proxyService = $proxyService;

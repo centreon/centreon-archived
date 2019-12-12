@@ -23,9 +23,6 @@ namespace Centreon\Infrastructure\Proxy;
 
 use Centreon\Domain\Proxy\Interfaces\ProxyRepositoryInterface;
 use Centreon\Domain\Proxy\Proxy;
-use Centreon\Domain\TaskHandler\Interfaces\TaskHandlerServiceInterface;
-use Centreon\Domain\TaskHandler\TaskHandlerResponse;
-use Centreon\Domain\TaskHandler\TaskHandlerService;
 use Centreon\Infrastructure\DatabaseConnection;
 use Centreon\Infrastructure\Repository\AbstractRepositoryDRB;
 

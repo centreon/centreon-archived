@@ -25,7 +25,6 @@ use Centreon\Domain\Proxy\Proxy;
 
 interface ProxyServiceInterface
 {
-
     /**
      * Update the proxy configuration.
      *

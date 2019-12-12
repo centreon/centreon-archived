@@ -23,17 +23,14 @@ namespace Centreon\Domain\Proxy;
 
 use Centreon\Domain\Proxy\Interfaces\ProxyRepositoryInterface;
 use Centreon\Domain\Proxy\Interfaces\ProxyServiceInterface;
-use phpDocumentor\Reflection\Types\Boolean;
 
 /**
- * This class is designed to manage proxy-related actions such as configuration or testing.
+ * This class is designed to manage proxy-related actions such as configuration.
  *
  * @package Centreon\Domain\Proxy
  */
 class ProxyService implements ProxyServiceInterface
 {
-    const VALIDATION_GROUPS_PROXY = ['proxy'];
-
     /**
      * @var ProxyRepositoryInterface
      */
