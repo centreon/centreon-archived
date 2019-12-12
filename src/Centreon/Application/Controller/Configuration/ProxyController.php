@@ -19,7 +19,7 @@
  */
 declare(strict_types=1);
 
-namespace Centreon\Application\Controller;
+namespace Centreon\Application\Controller\Configuration;
 
 use Centreon\Domain\Entity\EntityValidator;
 use Centreon\Domain\Proxy\Interfaces\ProxyServiceInterface;
@@ -32,11 +32,12 @@ use JMS\Serializer\SerializerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 
 /**
  * This class is design to manage all API REST requests concerning the proxy configuration.
  *
- * @package Centreon\Application\Controller
+ * @package Centreon\Application\Controller\Configuration
  */
 class ProxyController extends AbstractFOSRestController
 {
@@ -92,7 +93,10 @@ class ProxyController extends AbstractFOSRestController
         if (!$this->getUser()->isAdmin() && !$this->isGranted('ROLE_ADMINISTRATION_PARAMETERS_CENTREON_UI')) {
             return $this->view(null, Response::HTTP_FORBIDDEN);
         }
-
+        $data = json_decode((string) $request->getContent(), true);
+        if ($data === null) {
+            throw new HttpException(json_last_error(), 'Invalid json message received');
+        }
         $errors = $entityValidator->validateEntity(
             Proxy::class,
             json_decode((string) $request->getContent(), true),
