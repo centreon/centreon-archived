@@ -71,10 +71,9 @@ try {
     $path = _CENTREON_PATH_ . "www/include/home/customViews/layouts/";
     $template = new Smarty();
     $template = initSmartyTplForPopup($path, $template, "./", _CENTREON_PATH_);
-
     $viewId = $viewObj->getCurrentView();
-    $permission = $viewObj->checkPermission($viewId) ? 1 : 0;
-    $ownership = $viewObj->checkOwnership($viewId) ? 1 : 0;
+    $permission = $viewObj->checkPermission($viewId) ? true : false;
+    $ownership = $viewObj->checkOwnership($viewId) ? true : false;
     $widgets = array();
     $columnClass = "column_0";
     $widgetNumber = 0;
