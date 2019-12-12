@@ -31,7 +31,7 @@ use Centreon\Infrastructure\Repository\AbstractRepositoryDRB;
 
 class ProxyRepositoryRDB extends AbstractRepositoryDRB implements ProxyRepositoryInterface
 {
-    public function __construct (DatabaseConnection $db)
+    public function __construct(DatabaseConnection $db)
     {
         $this->db = $db;
     }
@@ -39,7 +39,7 @@ class ProxyRepositoryRDB extends AbstractRepositoryDRB implements ProxyRepositor
     /**
      * @inheritDoc
      */
-    public function updateProxy (Proxy $proxy): void
+    public function updateProxy(Proxy $proxy): void
     {
         $request =
             'DELETE FROM `:db`.options 
@@ -70,7 +70,7 @@ class ProxyRepositoryRDB extends AbstractRepositoryDRB implements ProxyRepositor
     /**
      * @inheritDoc
      */
-    public function getProxy (): Proxy
+    public function getProxy(): Proxy
     {
         $request = $this->translateDbName(
             'SELECT * FROM `:db`.options WHERE `key` LIKE \'proxy_%\''
@@ -86,7 +86,6 @@ class ProxyRepositoryRDB extends AbstractRepositoryDRB implements ProxyRepositor
             $proxy->setUser($proxyDetails['proxy_user'] ?? null);
             $proxy->setPassword($proxyDetails['proxy_password'] ?? null);
         }
-
         return $proxy;
     }
 }

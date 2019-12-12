@@ -31,7 +31,7 @@ interface ProxyServiceInterface
      *
      * @param Proxy $proxy Proxy details
      */
-    public function updateProxy (Proxy $proxy): void;
+    public function updateProxy(Proxy $proxy): void;
 
     /**
      * Get the proxy configuration.

@@ -47,7 +47,7 @@ class ProxyController extends AbstractFOSRestController
      */
     private $proxyService;
 
-    public function __construct (ProxyServiceInterface $proxyService)
+    public function __construct(ProxyServiceInterface $proxyService)
     {
         $this->proxyService = $proxyService;
     }

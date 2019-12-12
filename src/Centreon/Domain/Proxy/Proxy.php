@@ -57,7 +57,7 @@ class Proxy
     /**
      * @return string|null
      */
-    public function getUrl (): ?string
+    public function getUrl(): ?string
     {
         return $this->url;
     }
@@ -66,7 +66,7 @@ class Proxy
      * @param string|null $url
      * @return Proxy
      */
-    public function setUrl (?string $url): Proxy
+    public function setUrl(?string $url): Proxy
     {
         $this->url = $url;
         return $this;
@@ -75,7 +75,7 @@ class Proxy
     /**
      * @return int|null
      */
-    public function getPort (): ?int
+    public function getPort(): ?int
     {
         return $this->port;
     }
@@ -84,7 +84,7 @@ class Proxy
      * @param int|null $port
      * @return Proxy
      */
-    public function setPort (?int $port): Proxy
+    public function setPort(?int $port): Proxy
     {
         $this->port = $port;
         return $this;
@@ -93,7 +93,7 @@ class Proxy
     /**
      * @return string|null
      */
-    public function getUser (): ?string
+    public function getUser(): ?string
     {
         return $this->user;
     }
@@ -102,7 +102,7 @@ class Proxy
      * @param string|null $user
      * @return Proxy
      */
-    public function setUser (?string $user): Proxy
+    public function setUser(?string $user): Proxy
     {
         $this->user = $user;
         return $this;
@@ -111,7 +111,7 @@ class Proxy
     /**
      * @return string|null
      */
-    public function getPassword (): ?string
+    public function getPassword(): ?string
     {
         return $this->password;
     }
@@ -120,7 +120,7 @@ class Proxy
      * @param string|null $password
      * @return Proxy
      */
-    public function setPassword (?string $password): Proxy
+    public function setPassword(?string $password): Proxy
     {
         $this->password = $password;
         return $this;

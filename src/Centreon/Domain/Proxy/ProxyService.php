@@ -44,7 +44,7 @@ class ProxyService implements ProxyServiceInterface
      *
      * @param ProxyRepositoryInterface $proxyRepository
      */
-    public function __construct (ProxyRepositoryInterface $proxyRepository)
+    public function __construct(ProxyRepositoryInterface $proxyRepository)
     {
         $this->proxyRepository = $proxyRepository;
     }
@@ -52,7 +52,7 @@ class ProxyService implements ProxyServiceInterface
     /**
      * @inheritDoc
      */
-    public function getProxy (): Proxy
+    public function getProxy(): Proxy
     {
         return $this->proxyRepository->getProxy();
     }

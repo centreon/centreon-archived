@@ -201,16 +201,22 @@ final class ContactRepositoryRDB implements ContactRepositoryInterface
                 if (strlen((string) $topologyPage) === 1) {
                     $ruleName = $topologies[$topologyPage]['name'];
                 }
-                if ($lvl2Name !== null) $ruleName .= '_' . $lvl2Name;
-                if ($lvl3Name !== null) $ruleName .= '_' . $lvl3Name;
-                if ($lvl4Name !== null) $ruleName .= '_' . $lvl4Name;
+                if ($lvl2Name !== null) {
+                    $ruleName .= '_' . $lvl2Name;
+                }
+                if ($lvl3Name !== null) {
+                    $ruleName .= '_' . $lvl3Name;
+                }
+                if ($lvl4Name !== null) {
+                    $ruleName .= '_' . $lvl4Name;
+                }
 
                 $ruleName .= ($details['right'] === 2) ? '_R' : '_RW';
 
                 $nameOfTopologiesRules[$originalTopologyPage] = $ruleName;
             }
             foreach ($nameOfTopologiesRules as $page => $name) {
-                if ($name !== null ) {
+                if ($name !== null) {
                     $name = preg_replace(['/\s/', '/\W/'], ['_', ''], $name);
                     $name = strtoupper($name);
                     $contact->addTopology($name);
