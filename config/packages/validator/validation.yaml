@@ -83,7 +83,7 @@ Centreon\Domain\Downtime\Downtime:
             - Type:
                 type: integer
 
-# Used to validate the Downtime entity
+# Used to validate the Proxy entity
 Centreon\Domain\Proxy\Proxy:
     properties:
         url:
