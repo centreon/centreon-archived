@@ -439,6 +439,21 @@ if ($valid) {
             e: '#remote_id'
         }
     });
+
+    //check of gorgone_port type
+    jQuery(function () {
+        jQuery("input[name='gorgone_port']").change(function () {
+            if (isNaN(this.value)) {
+                let msg = "<span id='errMsg'><font style='color: red;'> Need to be a number</font></span>";
+                jQuery(msg).insertAfter(this);
+                jQuery("input[type='submit']").prop('disabled', true);
+            } else {
+                jQuery('#errMsg').remove();
+                jQuery("input[type='submit']").prop('disabled', false);
+            }
+        });
+    });
+
     jQuery(function () {
         jQuery("#remote_id").change(function () {
             var master_remote_id = jQuery("#remote_id").val();
