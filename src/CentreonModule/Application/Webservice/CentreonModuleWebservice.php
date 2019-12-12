@@ -36,7 +36,7 @@
 
 namespace CentreonModule\Application\Webservice;
 
-use CentreonRemote\Application\Webservice\CentreonWebServiceAbstract;
+use Centreon\Infrastructure\Webservice;
 use Centreon\Application\DataRepresenter\Bulk;
 use Centreon\Application\DataRepresenter\Response;
 use CentreonModule\Application\DataRepresenter\ModuleEntity;
@@ -47,7 +47,8 @@ use CentreonModule\ServiceProvider;
 /**
  * @OA\Tag(name="centreon_module", description="Resource for authorized access")
  */
-class CentreonModuleWebservice extends CentreonWebServiceAbstract
+class CentreonModuleWebservice extends Webservice\WebServiceAbstract implements
+    Webservice\WebserviceAutorizeRestApiInterface
 {
 
     /**
@@ -554,24 +555,6 @@ class CentreonModuleWebservice extends CentreonWebServiceAbstract
         $response = new Response($result, $status);
 
         return $response;
-    }
-
-    /**
-     * Authorize to access to the action
-     *
-     * @param string $action The action name
-     * @param \CentreonUser $user The current user
-     * @param boolean $isInternal If the api is call in internal
-     *
-     * @return boolean If the user has access to the action
-     */
-    public function authorize($action, $user, $isInternal = false)
-    {
-        if (parent::authorize($action, $user, $isInternal)) {
-            return true;
-        }
-
-        return $user && $user->hasAccessRestApiConfiguration();
     }
 
     /**
