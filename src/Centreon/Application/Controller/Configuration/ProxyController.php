@@ -67,7 +67,7 @@ class ProxyController extends AbstractFOSRestController
      */
     public function getProxy(): View
     {
-        if (!$this->getUser()->isAdmin() && !$this->isGranted('ROLE_ADMINISTRATION_PARAMETERS_CENTREON_UI')) {
+        if (!$this->getUser()->isAdmin() && !$this->isGranted('ROLE_ADMINISTRATION_PARAMETERS_CENTREON_UI_RW')) {
             return $this->view(null, Response::HTTP_FORBIDDEN);
         }
         return $this->view($this->proxyService->getProxy());
@@ -90,7 +90,7 @@ class ProxyController extends AbstractFOSRestController
         EntityValidator $entityValidator,
         SerializerInterface $serializer
     ): View {
-        if (!$this->getUser()->isAdmin() && !$this->isGranted('ROLE_ADMINISTRATION_PARAMETERS_CENTREON_UI')) {
+        if (!$this->getUser()->isAdmin() && !$this->isGranted('ROLE_ADMINISTRATION_PARAMETERS_CENTREON_UI_RW')) {
             return $this->view(null, Response::HTTP_FORBIDDEN);
         }
         $data = json_decode((string) $request->getContent(), true);

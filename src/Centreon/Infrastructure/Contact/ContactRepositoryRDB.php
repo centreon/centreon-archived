@@ -199,7 +199,7 @@ final class ContactRepositoryRDB implements ContactRepositoryInterface
                     $topologyPage = (int) substr((string) $topologyPage, 0, 1);
                 }
                 if (strlen((string) $topologyPage) === 1) {
-                    $ruleName = $topologies[$topologyPage]['name'];
+                    $ruleName = 'ROLE_' . $topologies[$topologyPage]['name'];
                 }
                 if ($lvl2Name !== null) {
                     $ruleName .= '_' . $lvl2Name;
@@ -275,7 +275,7 @@ final class ContactRepositoryRDB implements ContactRepositoryInterface
             ->setName($contact['contact_name'])
             ->setAlias($contact['contact_alias'])
             ->setEmail($contact['contact_email'])
-            ->setTemplateId($contact['contact_template_id'])
+            ->setTemplateId((int) $contact['contact_template_id'])
             ->setIsActive($contact['contact_activate'] === '1')
             ->setAdmin($contact['contact_admin'] === '1')
             ->setToken($contact['contact_autologin_key'])
