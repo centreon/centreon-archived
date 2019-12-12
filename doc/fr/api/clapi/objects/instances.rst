@@ -56,7 +56,7 @@ Add
 
 In order to add an instance you use the **ADD** action::
 
-  [root@centreon ~]# ./centreon -u admin -p centreon -o INSTANCE -a add -v "Poller test;10.30.2.55;22;NAGIOS" 
+  [root@centreon ~]# ./centreon -u admin -p centreon -o INSTANCE -a add -v "Poller test;10.30.2.55;ZMQ;5556;NAGIOS"
 
 Required fields are:
 
