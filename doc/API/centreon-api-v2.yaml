@@ -8,6 +8,7 @@ info:
     + Added acknowledgement for hosts and services
     + Added downtimes for hosts and services
     + Added the list of monitoring server configurations
+    + Added the proxy configuration
     # Information
     All dates are in **ISO 8601** format
     # Authentication
@@ -48,6 +49,11 @@ tags:
     description: |
       This API allow to:
       * Show the monitoring server configurations
+  - name: Proxy
+    description: |
+      This API allow to:
+      * Show the default proxy configuration of Centreon
+      * Update the default proxy configuration of Centreon
   - name: Downtime
     description: |
       This API allow to:
@@ -296,6 +302,56 @@ paths:
               application/json:
                 schema:
                   $ref: '#/components/schemas/ErrorApiResponse'
+  /configuration/proxy:
+    get:
+      tags:
+        - Proxy
+      summary: Display the default configuration of the Centreon proxy
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Configuration.Proxy'
+        403:
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenApiResponse'
+        500:
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorApiResponse'
+    post:
+      tags:
+        - Proxy
+      summary: Update the default configuration of the Centreon proxy
+      requestBody:
+        description: Proxy configuration
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Configuration.Proxy'
+      responses:
+        204:
+          description: Command sent
+        403:
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenApiResponse'
+        500:
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorApiResponse'
   /monitoring/hosts/downtimes:
     get:
       tags:
@@ -1947,7 +2003,28 @@ components:
         hosts:
           type: object
           $ref: '#/components/schemas/Monitoring.Host_min'
-
+    Configuration.Proxy:
+      type: object
+      required:
+        - url
+        - port
+        - user
+        - password
+      properties:
+        url:
+          type: string
+          description: Url of the proxy
+        port:
+          type: integer
+          description: Port of the proxy
+          minimum: 0
+          maximum: 65535
+        user:
+          type: string
+          description: Login of the proxy
+        password:
+          type: string
+          description: Password of the proxy
   securitySchemes:
     Token:
       description: |
