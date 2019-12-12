@@ -1147,7 +1147,7 @@ class CentreonGraphNg
         $stmt->bindParam(':index_id', $indexId, PDO::PARAM_INT);
         $stmt->bindParam(':metric_id', $metricId, PDO::PARAM_INT);
         $stmt->execute();
-        return $l_rndcolor;
+        return $lRndcolor;
     }
 
     /**
