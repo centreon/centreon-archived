@@ -10,7 +10,8 @@
 
 import React, { Component } from 'react';
 import classnames from 'classnames';
-import numeral from 'numeral';
+import * as yup from 'yup';
+import numeral from "numeral";
 import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { Translate } from 'react-redux-i18n';
@@ -18,6 +19,26 @@ import { connect } from 'react-redux';
 import axios from '../../axios';
 
 import styles from '../header/header.scss';
+
+const numberFormat = yup
+  .number()
+  .required()
+  .integer();
+
+const statusSchema = yup.object().shape({
+  down: yup.object().shape({
+    total: numberFormat,
+    unhandled: numberFormat,
+  }),
+  unreachable: yup.object().shape({
+    total: numberFormat,
+    unhandled: numberFormat,
+  }),
+  ok: numberFormat,
+  pending: numberFormat,
+  total: numberFormat,
+  refreshTime: numberFormat,
+});
 
 class HostMenu extends Component {
   hostsService = axios(
@@ -46,12 +67,12 @@ class HostMenu extends Component {
     this.hostsService
       .get()
       .then(({ data }) => {
-        this.setState({
-          data,
+        statusSchema.validate(data).then(() => {
+          this.setState({ data });
         });
       })
       .catch((error) => {
-        if (error.response.status === 401) {
+        if (error.response && error.response.status === 401) {
           this.setState({
             data: null,
           });

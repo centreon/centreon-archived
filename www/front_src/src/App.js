@@ -77,8 +77,8 @@ class App extends Component {
       axios('internal.php?object=centreon_keepalive&action=keepAlive')
         .get()
         .then(() => this.keepAlive())
-        .catch((error) => {
-          if (error.response.status === 401) {
+        .catch(error => {
+          if (error.response && error.response.status === 401) {
             // redirect to login page
             window.location.href = 'index.php?disconnect=1';
           } else {
