@@ -92,16 +92,18 @@ class ProxyController extends AbstractFOSRestController
 
         $errors = $entityValidator->validateEntity(
             Proxy::class,
-            json_decode($request->getContent(), true),
+            json_decode((string) $request->getContent(), true),
             ['Default'],
             false // We don't allow extra fields
         );
         if ($errors->count() > 0) {
             throw new ValidationFailedException($errors);
         }
-
+        /**
+         * @var Proxy $proxy
+         */
         $proxy = $serializer->deserialize(
-            $request->getContent(),
+            (string)$request->getContent(),
             Proxy::class,
             'json'
         );

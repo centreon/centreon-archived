@@ -265,7 +265,7 @@ final class ContactRepositoryRDB implements ContactRepositoryInterface
     /**
      * Create a contact based on the data.
      *
-     * @param array $contact Array of values representing the contact informations
+     * @param mixed[] $contact Array of values representing the contact information
      * @return Contact Returns a new instance of contact
      */
     private function createContact(array $contact): Contact
