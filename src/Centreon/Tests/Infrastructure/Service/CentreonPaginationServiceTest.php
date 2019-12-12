@@ -44,6 +44,7 @@ use Centreon\Application\DataRepresenter;
 use Centreon\ServiceProvider;
 use Centreon\Tests\Resource\Mock;
 use Centreon\Tests\Resource\Dependency;
+use Symfony\Component\Serializer\Serializer;
 
 class CentreonPaginationServiceTest extends TestCase
 {
@@ -58,6 +59,7 @@ class CentreonPaginationServiceTest extends TestCase
     {
         $this->container = new Container;
         $this->setUpCentreonDbManager($this->container);
+        $this->container[ServiceProvider::SERIALIZER] = $this->createMock(Serializer::class);
 
         $this->service = new CentreonPaginationService(new ContainerWrap($this->container));
     }
@@ -66,6 +68,7 @@ class CentreonPaginationServiceTest extends TestCase
     {
         $this->assertEquals([
             ServiceProvider::CENTREON_DB_MANAGER,
+            ServiceProvider::SERIALIZER,
         ], $this->service::dependencies());
     }
 
