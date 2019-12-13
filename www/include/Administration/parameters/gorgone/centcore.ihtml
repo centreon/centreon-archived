@@ -4,22 +4,22 @@
     <table class="formTable table">
         <tr class="ListHeader">
           <td class="FormHeader" colspan="2">
-            <h3>| {t}Centcore properties{/t}</h3>
+            <h3>| {t}Gorgone properties{/t}</h3>
           </td>
         </tr>
         <tr class="list_lvl_1">
           <td class="ListColLvl1_name" colspan="2">
-            <h4>{t}Centcore Options{/t}</h4>
+            <h4>{t}Gorgone Options{/t}</h4>
           </td>
         </tr>
         <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="tip_enable_broker_stats">&nbsp;{$form.enable_broker_stats.label}</td><td class="FormRowValue">{$form.enable_broker_stats.html}</td></tr>
-        <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_centcore_cmd_timeout">&nbsp;{$form.centcore_cmd_timeout.label}</td><td class="FormRowValue">{$form.centcore_cmd_timeout.html}&nbsp;{t}seconds{/t}</td></tr>
+        <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_gorgone_cmd_timeout">&nbsp;{$form.gorgone_cmd_timeout.label}</td><td class="FormRowValue">{$form.gorgone_cmd_timeout.html}&nbsp;{t}seconds{/t}</td></tr>
         <tr class="list_two">
             <td class="FormRowField">
-                <img class="helpTooltip" name="tip_centcore_illegal_characters">&nbsp;{$form.centcore_illegal_characters.label}
+                <img class="helpTooltip" name="tip_gorgone_illegal_characters">&nbsp;{$form.gorgone_illegal_characters.label}
             </td>
             <td class="FormRowValue">
-                {$form.centcore_illegal_characters.html}
+                {$form.gorgone_illegal_characters.html}
             </td>
         </tr>
     </table>

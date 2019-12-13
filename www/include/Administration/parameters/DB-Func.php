@@ -281,7 +281,7 @@ function updateNagiosConfigData($gopt_id = null)
     $centreon->initOptGen($pearDB);
 }
 
-function updateCentcoreConfigData($db, $form, $centreon)
+function updateGorgoneConfigData($db, $form, $centreon)
 {
     $ret = $form->getSubmitValues();
     updateOption(
@@ -290,17 +290,18 @@ function updateCentcoreConfigData($db, $form, $centreon)
         isset($ret["enable_perfdata_sync"]) && $ret['enable_perfdata_sync'] ? 1 : 0
     );
     updateOption($db, "enable_logs_sync", isset($ret["enable_logs_sync"]) && $ret['enable_logs_sync'] ? 1 : 0);
+
     updateOption($db, "enable_broker_stats", isset($ret["enable_broker_stats"]) && $ret['enable_broker_stats'] ? 1 : 0);
     updateOption(
         $db,
-        "centcore_cmd_timeout",
-        isset($ret["centcore_cmd_timeout"]) && $ret['centcore_cmd_timeout'] ? $ret['centcore_cmd_timeout'] : 0
+        "gorgone_cmd_timeout",
+        isset($ret["gorgone_cmd_timeout"]) && $ret['gorgone_cmd_timeout'] ? $ret['gorgone_cmd_timeout'] : 0
     );
     updateOption(
         $db,
-        "centcore_illegal_characters",
-        isset($ret["centcore_illegal_characters"]) && $ret['centcore_illegal_characters']
-            ? $ret['centcore_illegal_characters']
+        "gorgone_illegal_characters",
+        isset($ret["gorgone_illegal_characters"]) && $ret['gorgone_illegal_characters']
+            ? $ret['gorgone_illegal_characters']
             : ""
     );
     $centreon->initOptGen($db);
