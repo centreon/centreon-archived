@@ -43,14 +43,21 @@
     {/if}
 		<tr class="list_lvl_1">
       <td class="ListColLvl1_name" colspan="2">
-        <h4>{$form.header.SSH_Informations}</h4>
+        <h4>{$form.header.gorgone_Informations}</h4>
       </td>
     </tr>
-		<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="ssh_port"> {$form.ssh_port.label}</td><td class="FormRowValue">{$form.ssh_port.html}</td></tr>
-		{if $form.remote_server_centcore_ssh_proxy.label}
+		<tr class="list_one">
+            <td class="FormRowField"><img class="helpTooltip" name="gorgone_communication_type"> {$form.gorgone_communication_type.label}</td>
+            <td class="FormRowValue">{$form.gorgone_communication_type.html}</td>
+        </tr>
 		<tr class="list_two">
-		  <td class="FormRowField"><img class="helpTooltip" name="remote_server_centcore_ssh_proxy"> {$form.remote_server_centcore_ssh_proxy.label}</td>
-		  <td class="FormRowValue">{$form.remote_server_centcore_ssh_proxy.html}</td>
+            <td class="FormRowField"><img class="helpTooltip" name="gorgone_port"> {$form.gorgone_port.label}</td>
+            <td class="FormRowValue">{$form.gorgone_port.html}</td>
+        </tr>
+		{if $form.remote_server_use_as_proxy.label}
+		<tr class="list_two">
+		  <td class="FormRowField"><img class="helpTooltip" name="remote_server_use_as_proxy"> {$form.remote_server_use_as_proxy.label}</td>
+		  <td class="FormRowValue">{$form.remote_server_use_as_proxy.html}</td>
 		</tr>
 		{/if}
 		<tr class="list_lvl_1">
