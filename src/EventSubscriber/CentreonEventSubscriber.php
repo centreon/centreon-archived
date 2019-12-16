@@ -155,8 +155,6 @@ class CentreonEventSubscriber implements EventSubscriberInterface
     {
         $query = $request->getRequest()->query->all();
 
-
-
         $limit = (int) ($query[RequestParameters::NAME_FOR_LIMIT] ?? RequestParameters::DEFAULT_LIMIT);
         $this->requestParameters->setLimit($limit);
 
