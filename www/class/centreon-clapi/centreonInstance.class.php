@@ -65,7 +65,7 @@ class CentreonInstance extends CentreonObject
         $this->params = [
             'localhost' => '0',
             'ns_activate' => '1',
-            'gorgone_communication_type' => '1',
+            'gorgone_communication_type' => self::GORGONE_COMMUNICATION['ZMQ'],
             'gorgone_port' => '5556',
             'nagios_bin' => '/usr/sbin/centengine',
             'nagiostats_bin' => '/usr/bin/centenginestats',
