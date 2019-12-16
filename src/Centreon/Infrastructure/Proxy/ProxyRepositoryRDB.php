@@ -51,7 +51,7 @@ class ProxyRepositoryRDB extends AbstractRepositoryDRB implements ProxyRepositor
         $prepareStatement = $this->db->prepare($request);
 
         $data = [
-            'proxy_url' =>$proxy->getUrl(),
+            'proxy_url' => $proxy->getUrl(),
             'proxy_port' => $proxy->getPort(),
             'proxy_user' =>$proxy->getUser(),
             'proxy_password' =>$proxy->getPassword()
