@@ -4302,12 +4302,12 @@ msgstr ""
 
 #: centreon-web/www/include/Administration/parameters/api/api.php:62
 #: centreon-web/www/include/Administration/parameters/centcore/centcore.php:60
-msgid "Timeout value for Centcore commands"
-msgstr "Temps maximum d'exécution des commandes centcore"
+msgid "Timeout value for Gorgone commands"
+msgstr "Temps maximum d'exécution des commandes Gorgone"
 
 #: centreon-web/www/include/Administration/parameters/centcore/centcore.php:62
-msgid "Illegal characters for Centcore commands"
-msgstr "Caractères illégaux pour les commandes Centcore"
+msgid "Illegal characters for Gorgone commands"
+msgstr "Caractères illégaux pour les commandes Gorgone"
 
 #: centreon-web/www/include/Administration/parameters/api/api.php:77
 #: centreon-web/www/include/options/accessLists/groupsACL/formGroupConfig.php:175

@@ -14,4 +14,4 @@ UPDATE topology SET topology_url_opt = '&o=svcOVSG_pb' WHERE topology_page = 202
 
 UPDATE options SET `key` = 'gorgone_illegal_characters' WHERE `key` = 'centcore_illegal_characters';
 UPDATE options SET `key` = 'gorgone_cmd_timeout' WHERE `key` = 'centcore_cmd_timeout';
-UPDATE topology SET topology_url_opt = '&o=gorgone' WHERE topology_page = 50117;
+UPDATE topology SET topology_url_opt = '&o=gorgone', topology_name = 'Gorgone' WHERE topology_page = 50117;

@@ -4029,8 +4029,8 @@ msgstr "Habilitar la recuperación de archivos de estadísticas de componentes d
 
 #: centreon-web/www/include/Administration/parameters/api/api.php:62
 #: centreon-web/www/include/Administration/parameters/centcore/centcore.php:60
-msgid "Timeout value for Centcore commands"
-msgstr "Tiempo máximo para ejecutar comandos centcore."
+msgid "Timeout value for Gorgone commands"
+msgstr "Tiempo máximo para ejecutar comandos Gorgone."
 
 #: centreon-web/www/include/Administration/parameters/api/api.php:77
 #: centreon-web/www/include/options/accessLists/groupsACL/formGroupConfig.php:175

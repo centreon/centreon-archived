@@ -86,8 +86,8 @@ switch ($o) {
     case "storage":
         require_once $path . "centstorage/form.php" ;
         break;
-    case "centcore":
-        require_once $path . 'centcore/centcore.php';
+    case "gorgone":
+        require_once $path . 'gorgone/gorgone.php';
         break;
     case "knowledgeBase":
         require_once $path . 'knowledgeBase/formKnowledgeBase.php';
