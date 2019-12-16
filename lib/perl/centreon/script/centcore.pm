@@ -1694,7 +1694,7 @@ sub checkProfile() {
 sub checkDebugFlag {
     my $self = shift;
 
-    my $request = "SELECT value FROM options WHERE `key` IN ('debug_centcore')";
+    my $request = "SELECT value FROM options WHERE `key` IN ('debug_gorgone')";
     my ($status, $sth) =  $self->{centreon_dbc}->query($request);
     return -1 if ($status == -1);
     my $data = $sth->fetchrow_hashref();

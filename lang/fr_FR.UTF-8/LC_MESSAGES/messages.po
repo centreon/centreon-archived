@@ -4871,8 +4871,8 @@ msgid "LDAP User Import debug"
 msgstr "Débogage de l'import d'utilisateurs LDAP"
 
 #: centreon-web/www/include/Administration/parameters/debug/form.php:62
-msgid "Centcore Engine debug"
-msgstr "Débogage Centcore Engine"
+msgid "Centreon Gorgone debug"
+msgstr "Débogage de Centreon Gorgone "
 
 #: centreon-web/www/include/Administration/parameters/debug/form.php:63
 msgid "Centreontrapd debug"

@@ -6206,8 +6206,8 @@ msgid "LDAP User Import debug"
 msgstr "Depuração de importação de usuários LDAP"
 
 #: centreon-web/www/include/Administration/parameters/debug/form.php:62
-msgid "Centcore Engine debug"
-msgstr "Depuração do motor do Centcore"
+msgid "Centreon Gorgone debug"
+msgstr "Depuração do Centreon Gorgone"
 
 #: centreon-web/www/include/Administration/parameters/debug/form.php:63
 msgid "Centreontrapd debug"
