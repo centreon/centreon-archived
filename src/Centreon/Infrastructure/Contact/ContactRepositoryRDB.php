@@ -122,7 +122,10 @@ final class ContactRepositoryRDB implements ContactRepositoryInterface
     }
 
     /**
-     * @param Contact $contact
+     * Find and add all topology rules defined by all menus access defined for this contact.
+     * The purpose is to limit access to the API based on menus access.
+     *
+     * @param Contact $contact Contact for which we want to add the topology rules
      */
     private function addTopologyRules(Contact $contact): void
     {
@@ -219,7 +222,7 @@ final class ContactRepositoryRDB implements ContactRepositoryInterface
                 if ($name !== null) {
                     $name = preg_replace(['/\s/', '/\W/'], ['_', ''], $name);
                     $name = strtoupper($name);
-                    $contact->addTopology($name);
+                    $contact->addTopologyRule($name);
                 }
             }
         }

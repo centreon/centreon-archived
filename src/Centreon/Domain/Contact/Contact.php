@@ -104,9 +104,9 @@ class Contact implements UserInterface, ContactInterface
     private $roles = [];
 
     /**
-     * @var string[] List of topology names to which the contact can access
+     * @var string[] List of names of topology rules to which the contact can access
      */
-    private $topologies = [];
+    private $topologyRulesNames = [];
 
     /**
      * @return int
@@ -308,7 +308,7 @@ class Contact implements UserInterface, ContactInterface
      */
     public function getRoles()
     {
-        return array_merge($this->roles, $this->topologies);
+        return array_merge($this->roles, $this->topologyRulesNames);
     }
 
     /**
@@ -426,20 +426,25 @@ class Contact implements UserInterface, ContactInterface
         }
     }
 
+    /**
+     * Removes an existing roles.
+     *
+     * @param string $roleName Role name to remove
+     */
     private function removeRole(string $roleName): void
     {
         unset($this->roles[$roleName]);
     }
 
-    public function addTopology(string $topologyName): void
+    /**
+     * Added a topology rule.
+     *
+     * @param string $topologyRuleName Topology rule name
+     */
+    public function addTopologyRule(string $topologyRuleName): void
     {
-        if (!in_array($topologyName, $this->topologies)) {
-            $this->topologies[] = $topologyName;
+        if (!in_array($topologyRuleName, $this->topologyRulesNames)) {
+            $this->topologyRulesNames[] = $topologyRuleName;
         }
-    }
-
-    public function hasTopology(string $topologyName): bool
-    {
-        return in_array($topologyName, $this->topologies);
     }
 }
