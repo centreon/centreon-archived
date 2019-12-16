@@ -182,7 +182,10 @@ final class ContactRepositoryRDB implements ContactRepositoryInterface
                 if ($details['right'] === 0 || strlen((string) $topologyPage) < 5) {
                     continue;
                 }
-                $ruleName = $lvl2Name = $lvl3Name = $lvl4Name = null;
+                $ruleName = null;
+                $lvl2Name = null;
+                $lvl3Name = null;
+                $lvl4Name = null;
                 if (strlen((string) $topologyPage) === 7) {
                     $lvl4Name = $topologies[$topologyPage]['name'];
                     $topologyPage = (int) substr((string) $topologyPage, 0, 5);
