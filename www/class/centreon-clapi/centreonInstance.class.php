@@ -138,7 +138,7 @@ class CentreonInstance extends CentreonObject
         }
 
         $objectId = $this->getObjectId($params[self::ORDER_UNIQUENAME]);
-        if($params[1] === 'gorgone_communication_type') {
+        if ($params[1] === 'gorgone_communication_type') {
             $params[2] =  self::GORGONE_COMMUNICATION[$params[2]];
         }
         if ($objectId != 0) {
