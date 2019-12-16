@@ -444,7 +444,7 @@ if ($valid) {
     jQuery(function () {
         jQuery("input[name='gorgone_port']").change(function () {
             if (isNaN(this.value)) {
-                let msg = "<span id='errMsg'><font style='color: red;'> Need to be a number</font></span>";
+                const msg = "<span id='errMsg'><font style='color: red;'> Need to be a number</font></span>";
                 jQuery(msg).insertAfter(this);
                 jQuery("input[type='submit']").prop('disabled', true);
             } else {
