@@ -1,12 +1,87 @@
 ====================
-Centreon Web 19.10.2
+Centreon Web 19.10.4
 ====================
 
-Enhancements
+Documentation
+-------------
+
+* Clearly indicate that dependencies between pollers are not possible
+
+Improvements
 ------------
+
+* [Downtimes] Manage downtimes for host and service (PR/#8110)
 
 Bug Fixes
 ---------
+
+* [Custom Views] Define new custom view error file template (PR/#8141)
+* [Custom Views] Fix double quote in widget title (PR/#8161)
+* [ACL] Remove ACL notice on lvl3 calculation (PR/#8120)
+* [Configuration] Fix performance regression in notification system (PR/#8143)
+* [Remote] Host and service templates are not properly imported (PR/#8147)
+* [Topology] Correct URL options for service pages (PR/#8164)
+
+====================
+Centreon Web 19.10.3
+====================
+
+Bug Fixes
+---------
+
+* [LDAP] Correct double slashes in the saved DN (PR/#8121)
+
+Security Fixes
+--------------
+
+* Fix call of service macros list without authentication - CVE-2019-17645 (PR/#8035)
+* Fix call of host macros list without authentication - CVE-2019-17644 (PR/#8037)
+
+====================
+Centreon Web 19.10.2
+====================
+
+Bug Fixes
+---------
+
+* LDAP users using DN with special chars cannot login
+* LDAP connection issue
+* Select all elements in select2 freeze the screen
+* Non synchronized curves when using rrdcached
+* Missing selection of Okta template for LDAP
+* Trap matches and hostgroups break export in Remote Server
+* Trap export on Remote Server fails
+* Recurrent downtimes search bug
+* Unable to hide service template macro with Clapi
+* Macro passwords can be visible
+* Calculation of contact groups too frequent
+* Additional Remote Server config fails
+* Unable to set host notification to None through API
+* Remove unused radio button in meta-service configuration
+* Contact template notification parameters are not inherited
+* Filter "Name" is emptied out when searching in host configuration
+* Incorrect CSV export in Event Logs
+* Add/List/Cancel downtimes on resources
+* Correctly toggle edit when widgets load
+* Using rrdcached provides non synchronized curves
+* Add curve label in API
+* Poller statistics charts are missing
+* Several trap definitions with same OID will not work
+
+Security
+--------
+
+* No check for authentication
+* SQL injections
+* RCE flaws
+* XSS
+* Authentication flaw
+
+Documentation
+-------------
+
+* Display release notes per section in upgrade process
+* Update performance FAQ for rrdcached
 
 ====================
 Centreon Web 19.10.1

@@ -281,138 +281,220 @@ class CentreonTraps
         }
 
         $ret = $this->form->getSubmitValues();
+        $retValue = array();
 
         $rq = "UPDATE traps SET ";
         $rq .= "`traps_name` = ";
-        isset($ret["traps_name"]) && $ret["traps_name"] != null
-            ? $rq .= "'" . $ret["traps_name"] . "', "
-            : $rq .= "NULL, ";
+        if (isset($ret["traps_name"]) && $ret["traps_name"] != null) {
+            $rq .= ':traps_name, ';
+            $retValue[':traps_name'] = $ret["traps_name"];
+        } else {
+            $rq .= "NULL, ";
+        }
 
         $rq .= "`traps_oid` = ";
-        isset($ret["traps_oid"]) && $ret["traps_oid"] != null
-            ? $rq .= "'" . $ret["traps_oid"] . "', "
-            : $rq .= "NULL, ";
+        if (isset($ret["traps_oid"]) && $ret["traps_oid"] != null) {
+            $rq .= ':traps_oid, ';
+            $retValue[':traps_oid'] = $ret["traps_oid"];
+        } else {
+            $rq .= "NULL, ";
+        }
 
         $rq .= "`traps_args` = ";
-        isset($ret["traps_args"]) && $ret["traps_args"] != null
-            ? $rq .= "'" . $ret["traps_args"] . "', "
-            : $rq .= "NULL, ";
+        if (isset($ret["traps_args"]) && $ret["traps_args"] != null) {
+            $rq .= ':traps_args, ';
+            $retValue[':traps_args'] = $ret["traps_args"];
+        } else {
+            $rq .= "NULL, ";
+        }
 
         $rq .= "`traps_status` = ";
-        isset($ret["traps_status"]) && $ret["traps_status"] != null
-            ? $rq .= "'" . $ret["traps_status"] . "', "
-            : $rq .= "NULL, ";
+        if (isset($ret["traps_status"]) && $ret["traps_status"] != null) {
+            $rq .= ':traps_status, ';
+            $retValue[':traps_status'] = $ret["traps_status"];
+        } else {
+            $rq .= "NULL, ";
+        }
 
         $rq .= "`severity_id` = ";
-        isset($ret["severity"]) && $ret["severity"] != null
-            ? $rq .= (int)$ret["severity"] . ", "
-            : $rq .= "NULL, ";
+        if (isset($ret["severity"]) && $ret["severity"] != null) {
+            $rq .= ':severity, ';
+            $retValue[':severity'] = $ret["severity"];
+        } else {
+            $rq .= "NULL, ";
+        }
 
         $rq .= "`traps_submit_result_enable` = ";
-        isset($ret["traps_submit_result_enable"]) && $ret["traps_submit_result_enable"] != null
-            ? $rq .= "'" . $ret["traps_submit_result_enable"] . "', "
-            : $rq .= "'0', ";
+        if (isset($ret["traps_submit_result_enable"]) && $ret["traps_submit_result_enable"] != null) {
+            $rq .= ':traps_submit_result_enable, ';
+            $retValue[':traps_submit_result_enable'] = $ret["traps_submit_result_enable"];
+        } else {
+            $rq .= "'0', ";
+        }
 
         $rq .= "`traps_reschedule_svc_enable` = ";
-        isset($ret["traps_reschedule_svc_enable"]) && $ret["traps_reschedule_svc_enable"] != null
-            ? $rq .= "'" . $ret["traps_reschedule_svc_enable"] . "', "
-            : $rq .= "'0', ";
+        if (isset($ret["traps_reschedule_svc_enable"]) && $ret["traps_reschedule_svc_enable"] != null) {
+            $rq .= ':traps_reschedule_svc_enable, ';
+            $retValue[':traps_reschedule_svc_enable'] = $ret["traps_reschedule_svc_enable"];
+        } else {
+            $rq .= "'0', ";
+        }
 
         $rq .= "`traps_execution_command` = ";
-        isset($ret["traps_execution_command"]) && $ret["traps_execution_command"] != null
-            ? $rq .= "'" . $ret["traps_execution_command"] . "', "
-            : $rq .= "NULL, ";
+        if (isset($ret["traps_execution_command"]) && $ret["traps_execution_command"] != null) {
+            $rq .= ':traps_execution_command, ';
+            $retValue[':traps_execution_command'] = $ret["traps_execution_command"];
+        } else {
+            $rq .= "NULL, ";
+        }
 
         $rq .= "`traps_execution_command_enable` = ";
-        isset($ret["traps_execution_command_enable"]) && $ret["traps_execution_command_enable"] != null
-            ? $rq .= "'" . $ret["traps_execution_command_enable"] . "', "
-            : $rq .= "'0', ";
+        if (isset($ret["traps_execution_command_enable"]) && $ret["traps_execution_command_enable"] != null) {
+            $rq .= ':traps_execution_command_enable, ';
+            $retValue[':traps_execution_command_enable'] = $ret["traps_execution_command_enable"];
+        } else {
+            $rq .= "'0', ";
+        }
 
         $rq .= "`traps_advanced_treatment` = ";
-        isset($ret["traps_advanced_treatment"]) && $ret["traps_advanced_treatment"] != null
-            ? $rq .= "'" . $ret["traps_advanced_treatment"] . "', "
-            : $rq .= "'0', ";
+        if (isset($ret["traps_advanced_treatment"]) && $ret["traps_advanced_treatment"] != null) {
+            $rq .= ':traps_advanced_treatment, ';
+            $retValue[':traps_advanced_treatment'] = $ret["traps_advanced_treatment"];
+        } else {
+            $rq .= "'0', ";
+        }
 
         $rq .= "`traps_comments` = ";
-        isset($ret["traps_comments"]) && $ret["traps_comments"] != null
-            ? $rq .= "'" . $ret["traps_comments"] . "', "
-            : $rq .= "NULL, ";
+        if (isset($ret["traps_comments"]) && $ret["traps_comments"] != null) {
+            $rq .= ':traps_comments, ';
+            $retValue[':traps_comments'] = $ret["traps_comments"];
+        } else {
+            $rq .= "NULL, ";
+        }
 
         $rq .= "`traps_routing_mode` = ";
-        isset($ret["traps_routing_mode"]) && $ret["traps_routing_mode"] != null
-            ? $rq .= "'" . $ret["traps_routing_mode"] . "', "
-            : $rq .= "'0', ";
+        if (isset($ret["traps_routing_mode"]) && $ret["traps_routing_mode"] != null) {
+            $rq .= ':traps_routing_mode, ';
+            $retValue[':traps_routing_mode'] = $ret["traps_routing_mode"];
+        } else {
+            $rq .= "'0', ";
+        }
 
         $rq .= "`traps_routing_value` = ";
-        isset($ret["traps_routing_value"]) && $ret["traps_routing_value"] != null
-            ? $rq .= "'" . $ret["traps_routing_value"] . "', "
-            : $rq .= "NULL, ";
+        if (isset($ret["traps_routing_value"]) && $ret["traps_routing_value"] != null) {
+            $rq .= ':traps_routing_value, ';
+            $retValue[':traps_routing_value'] = $ret["traps_routing_value"];
+        } else {
+            $rq .= "NULL, ";
+        }
 
         $rq .= "`traps_routing_filter_services` = ";
-        isset($ret["traps_routing_filter_services"]) && $ret["traps_routing_filter_services"] != null
-            ? $rq .= "'" . $ret["traps_routing_filter_services"] . "', "
-            : $rq .= "NULL, ";
+        if (isset($ret["traps_routing_filter_services"]) && $ret["traps_routing_filter_services"] != null) {
+            $rq .= ':traps_routing_filter_services, ';
+            $retValue[':traps_routing_filter_services'] = $ret["traps_routing_filter_services"];
+        } else {
+            $rq .= "NULL, ";
+        }
 
         $rq .= "`manufacturer_id` = ";
-        isset($ret["manufacturer_id"]) && $ret["manufacturer_id"] != null
-            ? $rq .= "'" . $ret["manufacturer_id"] . "', "
-            : $rq .= "NULL, ";
+        if (isset($ret["manufacturer_id"]) && $ret["manufacturer_id"] != null) {
+            $rq .= ':manufacturer_id, ';
+            $retValue[':manufacturer_id'] = $ret["manufacturer_id"];
+        } else {
+            $rq .= "NULL, ";
+        }
 
         $rq .= "`traps_log` = ";
-        isset($ret["traps_log"]) && $ret["traps_log"] != null
-            ? $rq .= "'" . $ret["traps_log"] . "', "
-            : $rq .= "'0', ";
+        if (isset($ret["traps_log"]) && $ret["traps_log"] != null) {
+            $rq .= ':traps_log, ';
+            $retValue[':traps_log'] = $ret["traps_log"];
+        } else {
+            $rq .= "'0', ";
+        }
 
         $rq .= "`traps_exec_interval` = ";
-        isset($ret["traps_exec_interval"]) && $ret["traps_exec_interval"] != null
-            ? $rq .= "'" . $ret["traps_exec_interval"] . "', "
-            : $rq .= "NULL, ";
+        if (isset($ret["traps_exec_interval"]) && $ret["traps_exec_interval"] != null) {
+            $rq .= ':traps_exec_interval, ';
+            $retValue[':traps_exec_interval'] = $ret["traps_exec_interval"];
+        } else {
+            $rq .= "NULL, ";
+        }
 
         $rq .= "`traps_exec_interval_type` = ";
-        isset($ret["traps_exec_interval_type"]["traps_exec_interval_type"])
-        && $ret["traps_exec_interval_type"]["traps_exec_interval_type"] != null
-            ? $rq .= "'" . $ret["traps_exec_interval_type"]["traps_exec_interval_type"] . "', "
-            : $rq .= "'0', ";
+        if (isset($ret["traps_exec_interval_type"]["traps_exec_interval_type"])
+            && $ret["traps_exec_interval_type"]["traps_exec_interval_type"] != null) {
+            $rq .= ':traps_exec_interval_type, ';
+            $retValue[':traps_exec_interval_type'] = $ret["traps_exec_interval_type"]["traps_exec_interval_type"];
+        } else {
+            $rq .= "'0', ";
+        }
 
         $rq .= "`traps_exec_method` = ";
-        isset($ret["traps_exec_method"]["traps_exec_method"])
-        && $ret["traps_exec_method"]["traps_exec_method"] != null
-            ? $rq .= "'" . $ret["traps_exec_method"]["traps_exec_method"] . "', "
-            : $rq .= "'0', ";
+        if (isset($ret["traps_exec_method"]["traps_exec_method"])
+            && $ret["traps_exec_method"]["traps_exec_method"] != null) {
+            $rq .= ':traps_exec_method, ';
+            $retValue[':traps_exec_method'] = $ret["traps_exec_method"]["traps_exec_method"];
+        } else {
+            $rq .= "'0', ";
+        }
 
         $rq .= "`traps_downtime` = ";
-        isset($ret["traps_downtime"]["traps_downtime"]) && $ret["traps_downtime"]["traps_downtime"] != null
-            ? $rq .= "'" . $ret["traps_downtime"]["traps_downtime"] . "', "
-            : $rq .= "'0', ";
+        if (isset($ret["traps_downtime"]["traps_downtime"])
+            && $ret["traps_downtime"]["traps_downtime"] != null) {
+            $rq .= ':traps_downtime, ';
+            $retValue[':traps_downtime'] = $ret["traps_downtime"]["traps_downtime"];
+        } else {
+            $rq .= "'0', ";
+        }
 
         $rq .= "`traps_output_transform` = ";
-        isset($ret["traps_output_transform"]) && $ret["traps_output_transform"] != null
-            ? $rq .= "'" . $ret["traps_output_transform"] . "', "
-            : $rq .= "NULL, ";
+        if (isset($ret["traps_output_transform"]) && $ret["traps_output_transform"] != null) {
+            $rq .= ':traps_output_transform, ';
+            $retValue[':traps_output_transform'] = $ret["traps_output_transform"];
+        } else {
+            $rq .= "NULL, ";
+        }
 
         $rq .= "`traps_advanced_treatment_default` = ";
-        isset($ret["traps_advanced_treatment_default"]) && $ret["traps_advanced_treatment_default"] != null
-            ? $rq .= "'" . $ret["traps_advanced_treatment_default"] . "', "
-            : $rq .= "'0', ";
+        if (isset($ret["traps_advanced_treatment_default"]) && $ret["traps_advanced_treatment_default"] != null) {
+            $rq .= ':traps_advanced_treatment_default, ';
+            $retValue[':traps_advanced_treatment_default'] = $ret["traps_advanced_treatment_default"];
+        } else {
+            $rq .= "'0', ";
+        }
 
         $rq .= "`traps_timeout` = ";
-        isset($ret["traps_timeout"]) && $ret["traps_timeout"] != null
-            ? $rq .= "'" . $ret["traps_timeout"] . "', "
-            : $rq .= "NULL, ";
+        if (isset($ret["traps_timeout"]) && $ret["traps_timeout"] != null) {
+            $rq .= ':traps_timeout, ';
+            $retValue[':traps_timeout'] = $ret["traps_timeout"];
+        } else {
+            $rq .= "NULL, ";
+        }
 
         $rq .= "`traps_customcode` = ";
-        isset($ret["traps_customcode"]) && $ret["traps_customcode"] != null
-            ? $rq .= "'" . $ret["traps_customcode"] . "', "
-            : $rq .= "NULL ";
+        if (isset($ret["traps_customcode"]) && $ret["traps_customcode"] != null) {
+            $rq .= ':traps_customcode, ';
+            $retValue[':traps_customcode'] = $ret["traps_customcode"];
+        } else {
+            $rq .= "NULL, ";
+        }
 
         $rq .= "`traps_mode` = ";
-        isset($ret['traps_mode']['traps_mode']) && $ret['traps_mode']['traps_mode'] != null
-            ? $rq .= "'" . $ret['traps_mode']['traps_mode'] . "' "
-            : $rq .= "NULL ";
+        if (isset($ret['traps_mode']['traps_mode']) && $ret['traps_mode']['traps_mode'] != null) {
+            $rq .= ':traps_mode ';
+            $retValue[':traps_mode'] = $ret['traps_mode']['traps_mode'];
+        } else {
+            $rq .= "NULL ";
+        }
 
-        $rq .= 'WHERE `traps_id` = ' . (int)$traps_id ;
-        $this->db->query($rq);
+        $rq .= 'WHERE `traps_id` = :traps_id ';
+        $retValue[':traps_id'] = (int)$traps_id;
 
+        $stmt = $this->db->prepare($rq);
+        foreach ($retValue as $key => $value){
+            $stmt->bindValue($key, $value);
+        }
+        $stmt->execute();
         $this->setMatchingOptions($traps_id, $_POST);
         $this->setServiceRelations($traps_id);
         $this->setServiceTemplateRelations($traps_id);

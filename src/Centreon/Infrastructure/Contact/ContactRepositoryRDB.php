@@ -198,6 +198,14 @@ final class ContactRepositoryRDB implements ContactRepositoryInterface
             case 'service_disacknowledgement':
                 $contact->addRole(Contact::ROLE_SERVICE_DISACKNOWLEDGEMENT);
                 break;
+            case 'service_schedule_downtime':
+                $contact->addRole(Contact::ROLE_ADD_SERVICE_DOWNTIME);
+                $contact->addRole(Contact::ROLE_CANCEL_SERVICE_DOWNTIME);
+                break;
+            case 'host_schedule_downtime':
+                $contact->addRole(Contact::ROLE_ADD_HOST_DOWNTIME);
+                $contact->addRole(Contact::ROLE_CANCEL_HOST_DOWNTIME);
+                break;
         }
     }
 

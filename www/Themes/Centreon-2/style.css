@@ -1915,7 +1915,7 @@ span.state_badge {
 /* Style for popin */
 .centreon-popin {
     position: absolute;
-    z-index: 5050;
+    z-index: 1065;
     background-color: white;
     padding: 1em 3em 1em 1em;
     border-radius: 4px;
@@ -2818,3 +2818,21 @@ ul.module_list {
   cursor: pointer;
 }
 
+.portlet-header {
+    height: 14px;
+}
+
+.portlet-header input {
+    padding-bottom: 0;
+    padding-top: 0;
+    border: 0;
+    background-color: rgba(239,239,239, 0.8);
+    width: auto;
+    line-height: 13px;
+}
+
+.portlet-header form {
+    padding: 0;
+    margin: 0;
+    line-height: 14px;
+}

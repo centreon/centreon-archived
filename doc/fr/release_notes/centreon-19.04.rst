@@ -1,25 +1,126 @@
 ====================
+Centreon Web 19.04.7
+====================
+
+Documentation
+-------------
+
+* Clearly indicate that dependencies between pollers are not possible
+
+Bug Fixes
+---------
+
+* Define new custom view error file template (PR/#8141)
+* Fix double quote in widget title (PR/#8161)
+* Remove ACL notice on lvl3 calculation (PR/#8120)
+
+====================
+Centreon Web 19.04.6
+====================
+
+Bug Fixes
+---------
+
+* [ACL] Fix calculation of acls on services (PR/#8146)
+* [LDAP] Correct double slashes in the saved DN (PR/#8121)
+* [LDAP] Move LDAP fix upgrade script to next minor (PR/#8153)
+
+Security Fixes
+--------------
+
+* Fix call of service macros list without authentication - CVE-2019-17645 (PR/#8035)
+* Fix call of host macros list without authentication - CVE-2019-17644 (PR/#8037)
+
+====================
+Centreon Web 19.04.5
+====================
+
+Bug fixes
+---------
+
+* LDAP users using DN with special chars cannot login
+* LDAP connection issue
+* Log pagination does not work
+* Unable to add downtime to service group
+* The option to hide auto login has no effect
+* Macro passwords are not hidden
+* Broker form might be lost when saving configuration
+* Be able to open menu entry in a new tab
+* Better error handling when PNG generation fails
+* Fail to upgrade after reloading the process
+* Double host name display in host detail
+* Improve centreonworker logging in Remote server
+* Metric name are not properly ordered on CSV export
+* Incorrect CSV export of Event Logs
+* Disable the install button when installing modules (last install step)
+* Select all elements in select2 freeze the screen
+* Recurrent downtimes search bug
+* Unable to hide service template macro with Clapi
+* Calculation of contact group too frequent
+* Unable to set host notification to none
+* Purge old user actions
+* Remove unused radio button in meta-service configuration
+* Correctly toggle edit when widgets load
+* Add curve label in API
+* Display scrollbar behind popin
+
+Security
+--------
+
+* No check for authentication
+* SQL injections
+* Cross-site request forgery
+* Session fixation
+* RCE flaws
+* Authentication flaw
+* XSS
+
+Documentation
+-------------
+
+* Update performance FAQ for rrdcached
+
+====================
 Centreon Web 19.04.4
 ====================
 
 Enhancements
 ------------
 
+* [Administration] Add the possibility to define the refresh frequency for LDAP settings for users (PR/#7627)
+* [API] Update output of getparam command on host object (PR/#7678)
+* [Configuration] Close tooltip when user clicks somewhere else (PR/#7729)
 
 Bug fixes
 ---------
 
+* [ACL] Add ACL to select meta-services for service performance (#6534, PR/#7736)
+* [Backup] Change backup path of httpd24-httpd (PR/#7577)
+* [Configuration/Administration] Fix filters save with pagination (PR/#7732)
+* [Configuration] Fix meta service generation with special char (#7608, PR/#7705)
+* [Configuration] Trap generation reindexing pollers id (#6205, PR/#6416)
+* [Clapi] Delete services when host template is detached from host (#4371, PR/#7784)
+* [Clapi] Fix import of contactgroup when linked to ldap (PR/#7797)
+* [Centcore] Use correct ssh port (PR/#7677)
+* [Graphs] Issue with export of splitted graphs fixed (PR/#7822)
+* [Menu] translate properly menu entries
+* [Monitoring] Fix pagination display in service monitoring (PR/#7755)
+* [Remote-Server] Check bam installation on remote server is http only (#7626, PR/#7640)
+* [Remote-Server] Fix enableremote parameters parsing and setting (PR/#7711)
+* [System] Compatibility with MySQL v8
+* [UI] Remove chrome password autocomplete in several form (#6283, PR/#7697)
+* [UI] Custom view page is no longer broken with spanish language (PR/#7778)
 
 Documentation
 -------------
 
+* Correct CLAPI Host parameters (PR/#7658)
+* Correct SSH exchange notice (#7620, PR/#7639)
 
-Security fixes
---------------
+Technical
+---------
 
-
-Known issue
------------
+* [Lib] update composer
 
 ====================
 Centreon Web 19.04.3
