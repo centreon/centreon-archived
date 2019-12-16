@@ -96,6 +96,11 @@ function testPollerDep($instanceId)
 
 function checkIllegalChars(string $stringToTest): bool
 {
+    $centreonLog = new CentreonLog();
+
+    $centreonLog->insertLog(2, "tada");
+
+
     $stringToTest = filter_var($stringToTest, FILTER_SANITIZE_STRING);
 
     foreach (str_split($_SESSION['centreon']->Nagioscfg['illegal_object_name_chars']) as $key => $illegalChars) {
