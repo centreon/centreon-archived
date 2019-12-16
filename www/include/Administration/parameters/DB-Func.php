@@ -294,15 +294,13 @@ function updateGorgoneConfigData($db, $form, $centreon)
     updateOption($db, "enable_broker_stats", isset($ret["enable_broker_stats"]) && $ret['enable_broker_stats'] ? 1 : 0);
     updateOption(
         $db,
-        "gorgone_cmd_timeout",
-        isset($ret["gorgone_cmd_timeout"]) && $ret['gorgone_cmd_timeout'] ? $ret['gorgone_cmd_timeout'] : 0
+        'gorgone_cmd_timeout',
+        $ret['gorgone_cmd_timeout'] ?? 0
     );
     updateOption(
         $db,
-        "gorgone_illegal_characters",
-        isset($ret["gorgone_illegal_characters"]) && $ret['gorgone_illegal_characters']
-            ? $ret['gorgone_illegal_characters']
-            : ""
+        'gorgone_illegal_characters',
+        $ret['gorgone_illegal_characters'] ?? ''
     );
     $centreon->initOptGen($db);
 }
