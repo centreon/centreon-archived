@@ -56578,7 +56578,7 @@
 					"response": []
 				},
 				{
-					"name": "Grantrw centcore",
+					"name": "Grantrw gorgone",
 					"event": [
 						{
 							"listen": "test",
@@ -56604,7 +56604,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"action\": \"grantrw\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};0;administration;parameters;centcore\"\n}"
+							"raw": "{\n  \"action\": \"grantrw\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};0;administration;parameters;gorgone\"\n}"
 						},
 						"url": {
 							"raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
@@ -56632,7 +56632,7 @@
 					"response": []
 				},
 				{
-					"name": "Revoke centcore",
+					"name": "Revoke gorgone",
 					"event": [
 						{
 							"listen": "test",
@@ -56658,7 +56658,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};1;administration;parameters;centcore\"\n}"
+							"raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};1;administration;parameters;gorgone\"\n}"
 						},
 						"url": {
 							"raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
