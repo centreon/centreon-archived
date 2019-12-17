@@ -14,7 +14,7 @@ $help['tip_enable_logs_sync'] = dgettext(
 );
 $help['tip_gorgone_cmd_timeout'] = dgettext(
     'help',
-    "Timeout value in seconds. Used for freeing centreon-gorgone when it's stuck"
+    "Timeout value in seconds. Used to make actions calls timeout."
     . " because of blocking pipe files or SSH connections."
 );
 $help['tip_enable_broker_stats'] = dgettext(
