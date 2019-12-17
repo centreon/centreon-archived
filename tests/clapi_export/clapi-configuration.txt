@@ -53,7 +53,7 @@ ACLMENU;GRANTRW;test_access-group;0;Configuration;Pollers;
 ACLMENU;GRANTRW;test_access-group;0;Configuration;Pollers;Resources;
 ACLMENU;GRANTRW;test_access-group;0;Administration;Parameters;Centreon UI;
 ACLMENU;GRANTRW;test_access-group;0;Administration;Parameters;Monitoring;
-ACLMENU;GRANTRW;test_access-group;0;Administration;Parameters;CentCore;
+ACLMENU;GRANTRW;test_access-group;0;Administration;Parameters;Gorgone;
 ACLMENU;GRANTRW;test_access-group;0;Administration;Parameters;My Account;
 ACLMENU;GRANTRW;test_access-group;0;Administration;Parameters;LDAP;
 ACLMENU;GRANTRW;test_access-group;0;Administration;Parameters;RRDTool;
