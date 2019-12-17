@@ -25,7 +25,7 @@ Once the installation is complete, you must integrate this remote poller into th
 
 .. note::
     If your poller is attached to a Remote Server, but you prefer to send externals commands and configuration
-    directly from the Central server to this poller, please disable the **Use the Remote Server as a proxy for SSH**
+    directly from the Central server to this poller, please disable the **Use the Remote Server as a proxy**
     option.
 
 #. Go to the **Configuration > Pollers > Engine configuration** menu.

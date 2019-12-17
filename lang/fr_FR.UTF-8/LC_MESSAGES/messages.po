@@ -2448,6 +2448,14 @@ msgstr "Graphiques"
 msgid "Poller Name"
 msgstr "Nom du collecteur"
 
+#: centreon-web/www/include/configuration/configServers/formServers.php:233
+msgid "Gorgone connection protocol"
+msgstr "Protocole de connexion utilisé par Gorgone"
+
+#: centreon-web/www/include/configuration/configServers/formServers.php:224
+msgid "Use the Remote Server as a proxy"
+msgstr "Utiliser le serveur distant comme proxy"
+
 #: centreon-web/www/install/smarty_translate.php:849
 #: centreon-web/www/include/Administration/parameters/general/form.php:95
 #: centreon-web/www/include/monitoring/status/Services/xml/makeXMLForOneHost.php:191
@@ -11699,8 +11707,8 @@ msgid "Server Information"
 msgstr "Informations sur le serveur"
 
 #: centreon-web/www/include/configuration/configServers/formServers.php:102
-msgid "SSH Information"
-msgstr "Informations SSH"
+msgid "Gorgone Information"
+msgstr "Informations Gorgone"
 
 #: centreon-web/www/include/configuration/configServers/formServers.php:103
 msgid "Monitoring Engine Information"

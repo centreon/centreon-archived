@@ -7825,8 +7825,8 @@ msgid "Server Information"
 msgstr "Informações do servidor"
 
 #: centreon-web/www/include/configuration/configServers/formServers.php:135
-msgid "SSH Information"
-msgstr "Informações SSH"
+msgid "Gorgone Information"
+msgstr "Informações Gorgone"
 
 #: centreon-web/www/include/configuration/configServers/formServers.php:136
 msgid "Monitoring Engine Information"
