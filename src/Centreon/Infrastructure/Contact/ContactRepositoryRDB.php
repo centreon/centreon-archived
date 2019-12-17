@@ -62,7 +62,8 @@ final class ContactRepositoryRDB implements ContactRepositoryInterface
 
         if (($result = $statement->fetch(\PDO::FETCH_ASSOC)) !== false) {
             $contact = $this->createContact($result);
-            $this->findAndAddRules($contact);
+            $this->addActionRules($contact);
+            $this->addTopologyRules($contact);
         }
         return $contact;
     }
@@ -86,7 +87,8 @@ final class ContactRepositoryRDB implements ContactRepositoryInterface
         $contact = null;
         if (($result = $statement->fetch(\PDO::FETCH_ASSOC)) !== false) {
             $contact = $this->createContact($result);
-            $this->findAndAddRules($contact);
+            $this->addActionRules($contact);
+            $this->addTopologyRules($contact);
         }
 
         return $contact;
@@ -112,10 +114,121 @@ final class ContactRepositoryRDB implements ContactRepositoryInterface
         $contact = null;
         if (($result = $statement->fetch(\PDO::FETCH_ASSOC)) !== false) {
             $contact = $this->createContact($result);
-            $this->findAndAddRules($contact);
+            $this->addActionRules($contact);
+            $this->addTopologyRules($contact);
         }
 
         return $contact;
+    }
+
+    /**
+     * Find and add all topology rules defined by all menus access defined for this contact.
+     * The purpose is to limit access to the API based on menus access.
+     *
+     * @param Contact $contact Contact for which we want to add the topology rules
+     */
+    private function addTopologyRules(Contact $contact): void
+    {
+        $request =
+            'SELECT topology.topology_name, topology.topology_page,
+                    topology.topology_parent, access.access_right
+            FROM `:db`.topology 
+            LEFT JOIN (
+                SELECT topology.topology_id, acltr.access_right
+                FROM `:db`.contact contact
+                LEFT JOIN `:db`.contactgroup_contact_relation cgcr
+                    ON cgcr.contact_contact_id = contact.contact_id
+                LEFT JOIN `:db`.acl_group_contactgroups_relations gcgr
+                    ON gcgr.cg_cg_id = cgcr.contactgroup_cg_id
+                LEFT JOIN `:db`.acl_group_contacts_relations gcr
+                    ON gcr.contact_contact_id = contact.contact_id
+                LEFT JOIN `:db`.acl_group_topology_relations agtr
+                    ON agtr.acl_group_id  = gcr.acl_group_id
+                    OR agtr.acl_group_id  = gcgr.acl_group_id
+                LEFT JOIN `:db`.acl_topology_relations acltr
+                    ON acltr.acl_topo_id = agtr.acl_topology_id
+                INNER JOIN `:db`.topology
+                    ON topology.topology_id = acltr.topology_topology_id
+                WHERE contact.contact_id = :contact_id
+                    AND topology.is_react = \'0\'
+                ) AS access
+            ON access.topology_id = topology.topology_id
+            WHERE topology.topology_page IS NOT NULL
+            ORDER BY topology.topology_page';
+
+        $prepare = $this->db->prepare(
+            $this->translateDbName($request)
+        );
+        $prepare->bindValue(':contact_id', $contact->getId(), \PDO::PARAM_INT);
+        $prepare->execute();
+
+
+        $topologies = [];
+        $rightsCounter = 0;
+        while ($row = $prepare->fetch(\PDO::FETCH_ASSOC)) {
+            $topologies[$row['topology_page']] = [
+                'name' => $row['topology_name'],
+                'right' => (int) $row['access_right']
+            ];
+            if ($row['access_right'] !== null) {
+                $rightsCounter++;
+            }
+        }
+
+        $nameOfTopologiesRules = [];
+        if ($rightsCounter > 0) {
+            foreach ($topologies as $topologyPage => $details) {
+                $originalTopologyPage = $topologyPage;
+                if ($details['right'] === 0 || strlen((string) $topologyPage) < 5) {
+                    continue;
+                }
+                $ruleName = null;
+                $lvl2Name = null;
+                $lvl3Name = null;
+                $lvl4Name = null;
+                if (strlen((string) $topologyPage) === 7) {
+                    $lvl4Name = $topologies[$topologyPage]['name'];
+                    $topologyPage = (int) substr((string) $topologyPage, 0, 5);
+
+                    // To avoid create entry for the parent menu
+                    $nameOfTopologiesRules[$topologyPage] = null;
+                }
+                if (strlen((string) $topologyPage) === 5) {
+                    if ($lvl4Name === null && array_key_exists($topologyPage, $nameOfTopologiesRules)) {
+                        continue;
+                    }
+                    $lvl3Name = $topologies[$topologyPage]['name'];
+                    $topologyPage = (int) substr((string) $topologyPage, 0, 3);
+                }
+                if (strlen((string) $topologyPage) === 3) {
+                    $lvl2Name = $topologies[$topologyPage]['name'];
+                    $topologyPage = (int) substr((string) $topologyPage, 0, 1);
+                }
+                if (strlen((string) $topologyPage) === 1) {
+                    $ruleName = 'ROLE_' . $topologies[$topologyPage]['name'];
+                }
+                if ($lvl2Name !== null) {
+                    $ruleName .= '_' . $lvl2Name;
+                }
+                if ($lvl3Name !== null) {
+                    $ruleName .= '_' . $lvl3Name;
+                }
+                if ($lvl4Name !== null) {
+                    $ruleName .= '_' . $lvl4Name;
+                }
+
+                $ruleName .= ($details['right'] === 2) ? '_R' : '_RW';
+
+                $nameOfTopologiesRules[$originalTopologyPage] = $ruleName;
+            }
+            foreach ($nameOfTopologiesRules as $page => $name) {
+                if ($name !== null) {
+                    $name = preg_replace(['/\s/', '/\W/'], ['_', ''], $name);
+                    $name = strtoupper($name);
+                    $contact->addTopologyRule($name);
+                }
+            }
+        }
     }
 
     /**
@@ -123,7 +236,7 @@ final class ContactRepositoryRDB implements ContactRepositoryInterface
      *
      * @param Contact $contact Contact for which we want to find and add all rules
      */
-    private function findAndAddRules(Contact $contact): void
+    private function addActionRules(Contact $contact): void
     {
         $request =
             'SELECT DISTINCT rules.acl_action_name
@@ -151,14 +264,14 @@ final class ContactRepositoryRDB implements ContactRepositoryInterface
         $statement->execute();
 
         while ($result = $statement->fetch(\PDO::FETCH_ASSOC)) {
-            $this->addSpecificRule($contact, $result['acl_action_name']);
+            $this->addActionRule($contact, $result['acl_action_name']);
         }
     }
 
     /**
      * Create a contact based on the data.
      *
-     * @param array $contact Array of values representing the contact informations
+     * @param mixed[] $contact Array of values representing the contact information
      * @return Contact Returns a new instance of contact
      */
     private function createContact(array $contact): Contact
@@ -168,7 +281,7 @@ final class ContactRepositoryRDB implements ContactRepositoryInterface
             ->setName($contact['contact_name'])
             ->setAlias($contact['contact_alias'])
             ->setEmail($contact['contact_email'])
-            ->setTemplateId($contact['contact_template_id'])
+            ->setTemplateId((int) $contact['contact_template_id'])
             ->setIsActive($contact['contact_activate'] === '1')
             ->setAdmin($contact['contact_admin'] === '1')
             ->setToken($contact['contact_autologin_key'])
@@ -178,12 +291,12 @@ final class ContactRepositoryRDB implements ContactRepositoryInterface
     }
 
     /**
-     * Add a specific rule to contact.
+     * Add an action rule to contact.
      *
      * @param Contact $contact Contact for which we want to add rule
      * @param string $ruleName Rule to add
      */
-    private function addSpecificRule(Contact $contact, string $ruleName): void
+    private function addActionRule(Contact $contact, string $ruleName): void
     {
         switch ($ruleName) {
             case 'host_acknowledgement':
