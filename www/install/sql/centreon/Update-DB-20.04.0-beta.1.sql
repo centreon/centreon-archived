@@ -17,3 +17,7 @@ ALTER TABLE `nagios_server` CHANGE `ssh_port` `gorgone_port` INT(11) NULL;
 ALTER TABLE `nagios_server` CHANGE `remote_server_centcore_ssh_proxy` `remote_server_use_as_proxy` enum('0','1') NOT NULL DEFAULT '1';
 ALTER TABLE `nagios_server` DROP COLUMN `ssh_private_key`;
 UPDATE `nagios_server` SET `gorgone_communication_type` = '2';
+UPDATE options SET `key` = 'gorgone_illegal_characters' WHERE `key` = 'centcore_illegal_characters';
+UPDATE options SET `key` = 'gorgone_cmd_timeout' WHERE `key` = 'centcore_cmd_timeout';
+UPDATE topology SET topology_url_opt = '&o=gorgone', topology_name = 'Gorgone' WHERE topology_page = 50117;
+UPDATE options SET `key` = 'debug_gorgone' WHERE `key` = 'debug_centcore';

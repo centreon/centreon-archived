@@ -140,7 +140,7 @@ INSERT INTO `options` (`key`, `value`) VALUES
 ('selectPaginationSize', 60),
 ('display_downtime_chart','0'),
 ('display_comment_chart','0'),
-('centcore_illegal_characters', '`'),
+('gorgone_illegal_characters', '`'),
 ('inheritance_mode', '3');
 
 --

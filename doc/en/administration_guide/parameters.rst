@@ -105,8 +105,8 @@ This part can be used set the operation of the CentCore process.
    :align: center
 
 * **Enable Broker Statistics Collection** field enables the retrieval of statistics from the Centreon Broker by CentCore. This can be a blocking option because the reading of the pipe can be a blocking action
-* **Timeout value for Centcore commands** field can be used to define a timeout for local commands and commands via SSH process.
-* **Illegal characters for Centcore commands** field allows to define characters which will be removed from commands forwarded by the process..
+* **Timeout value for Gorgone commands** field can be used to define a timeout for local commands and commands via SSH process.
+* **Illegal characters for Gorgone commands** field allows to define characters which will be removed from commands forwarded by the process..
 
 .. _ldapconfiguration:
 
@@ -252,5 +252,5 @@ This part can be used to configure the enabling of the logging of activity on Ce
 * **RRDTool debug** box enables logging of the RRDTool graph engine debugging
 * **LDAP User Import debug** box enables logging of debugging of the import of LDAP users
 * **SQL debug** box enables the logging of SQL requests executed by the Centreon interface
-* **Centcore Engine debug** box enables logging of Centcore process debugging
+* **Centreon Gorgone debug** box enables logging of Gorgone process debugging
 * **Centreontrapd debug** box enables logging of the Centreontrapd process debugging

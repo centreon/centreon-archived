@@ -6206,8 +6206,8 @@ msgid "LDAP User Import debug"
 msgstr "Depuração de importação de usuários LDAP"
 
 #: centreon-web/www/include/Administration/parameters/debug/form.php:62
-msgid "Centcore Engine debug"
-msgstr "Depuração do motor do Centcore"
+msgid "Centreon Gorgone debug"
+msgstr "Depuração do Centreon Gorgone"
 
 #: centreon-web/www/include/Administration/parameters/debug/form.php:63
 msgid "Centreontrapd debug"
@@ -6234,8 +6234,8 @@ msgstr "Ativa coleção de statisticas do Broker"
 
 #: centreon-web/www/include/Administration/parameters/centcore/centcore.php:60
 #: centreon-web/www/include/Administration/parameters/api/api.php:60
-msgid "Timeout value for Centcore commands"
-msgstr "Tempo máximo para comandos do Centcore"
+msgid "Timeout value for Gorgone commands"
+msgstr "Tempo máximo para comandos do Gorgone"
 
 #: centreon-web/www/include/Administration/parameters/centcore/centcore.php:61
 #: centreon-web/www/include/Administration/parameters/backup/formBackup.php:107

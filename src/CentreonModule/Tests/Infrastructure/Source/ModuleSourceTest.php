@@ -189,7 +189,7 @@ class ModuleSourceTest extends TestCase
     public function testUpdate()
     {
         try {
-            $this->source->update(static::$moduleNameMissing);
+            $this->assertNull($this->source->update(static::$moduleNameMissing));
         } catch (\Exception $ex) {
             $this->assertEquals(static::$moduleNameMissing, $ex->getMessage());
             $this->assertEquals(1, $ex->getCode()); // check moduleId
