@@ -2,7 +2,7 @@
 $help = array();
 
 /**
- * Centcore Settings
+ * Gorgone Settings
  */
 $help['tip_enable_perfdata_sync'] = dgettext(
     'help',
