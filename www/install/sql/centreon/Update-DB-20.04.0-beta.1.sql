@@ -10,3 +10,6 @@ DELETE FROM `cb_type` WHERE `type_shortname` = 'correlation';
 UPDATE topology SET topology_url_opt = '&o=svcOV_pb' WHERE topology_page = 20204;
 UPDATE topology SET topology_url_opt = '&o=svcOVHG_pb' WHERE topology_page = 20209;
 UPDATE topology SET topology_url_opt = '&o=svcOVSG_pb' WHERE topology_page = 20212;
+
+DELETE FROM `options` WHERE `key` = 'enable_perfdata_sync';
+DELETE FROM `options` WHERE `key` = 'enable_logs_sync';
