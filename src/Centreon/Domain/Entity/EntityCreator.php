@@ -22,6 +22,7 @@ declare(strict_types=1);
 namespace Centreon\Domain\Entity;
 
 use Centreon\Domain\Annotation\EntityDescriptor;
+use Doctrine\Common\Annotations\AnnotationException;
 use Doctrine\Common\Annotations\AnnotationReader;
 use ReflectionClass;
 
@@ -48,12 +49,13 @@ class EntityCreator
      *
      * @param string $className Class name to create
      * @param array $data Data used to fill the new object entity
+     * @param string|null $prefix
      * @return mixed Return an new instance of the class
      * @throws \Exception
      */
-    public static function createEntityByArray(string $className, array $data)
+    public static function createEntityByArray(string $className, array $data, string $prefix = null)
     {
-        return (new self($className))->createByArray($data);
+        return (new self($className))->createByArray($data, $prefix);
     }
 
     /**
@@ -70,10 +72,13 @@ class EntityCreator
      * Create an entity and complete it according to the data array
      *
      * @param array $data Array that contains the data that will be used to complete entity
+     * @param string|null $prefix
      * @return mixed Return an instance of class according to the class name given into constructor
+     * @throws AnnotationException
+     * @throws \ReflectionException
      * @throws \Exception
      */
-    public function createByArray(array $data)
+    public function createByArray(array $data, string $prefix = null)
     {
         if (!class_exists($this->className)) {
             throw new \Exception('The class ' . $this->className . ' does not exist');
@@ -81,6 +86,26 @@ class EntityCreator
         $this->readPublicMethod();
         $this->readAnnotations();
         $objectToSet = new $this->className;
+
+        if (!empty($prefix)) {
+            // If a prefix is defined, we keep only $data for which the keys start
+            // with the prefix
+            $data = array_filter($data, function ($column) use ($prefix) {
+                if (substr($column, 0, strlen($prefix)) === $prefix) {
+                    return true;
+                }
+                return false;
+            }, ARRAY_FILTER_USE_KEY);
+
+            // Next, we remove the prefix
+            $newData = [];
+            foreach ($data as $column => $value) {
+                $column = substr($column, strlen($prefix));
+                $newData[$column] = $value;
+            }
+            $data = $newData;
+        }
+
         foreach ($data as $column => $value) {
             if (array_key_exists($column, $this->entityDescriptors)) {
                 $descriptor = $this->entityDescriptors[$column];
@@ -171,7 +196,7 @@ class EntityCreator
     private function readPublicMethod(): void
     {
         $this->publicMethods = [];
-        $reflectionClass = new \ReflectionClass($this->className);
+        $reflectionClass = new ReflectionClass($this->className);
         foreach ($reflectionClass->getMethods() as $method) {
             if ($method->isPublic()) {
                 $this->publicMethods[$method->getName()] = $method;
@@ -182,8 +207,8 @@ class EntityCreator
     /**
      * Read all specific annotations.
      *
-     * @throws \Doctrine\Common\Annotations\AnnotationException
      * @throws \ReflectionException
+     * @throws AnnotationException
      */
     private function readAnnotations(): void
     {
