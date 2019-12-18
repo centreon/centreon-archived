@@ -6311,8 +6311,12 @@ msgid "Main poller"
 msgstr "Collecteur principal"
 
 #: centreon-web/www/include/configuration/configServers/help.php:7
-msgid "SSH port of the remote poller"
-msgstr "Port SSH du collecteur distant"
+msgid "Gorgone communication protocol (ZMQ or SSH)"
+msgstr "Protocole de communication Gorgone (ZMQ ou SSH)"
+
+#: centreon-web/www/include/configuration/configServers/help.php:8
+msgid "Gorgone port of the remote poller (5556 or 22)"
+msgstr "Port de communication Gorgone (5556 ou 22)"
 
 #: centreon-web/www/include/configuration/configServers/help.php:8
 msgid "Monitoring engine"
@@ -6384,6 +6388,14 @@ msgstr ""
 "la supervision et après le redémarrage du moteur de collecte. NE pas spécifier "
 "de macros ans cette commande car elles ne seraient pas remplacées. Vérifier "
 "que les droits d'exécution sont suffisant pour l'utilisateur \"apache\"."
+
+#: centreon-web/www/include/configuration/configServers/help.php:55
+msgid ""
+"If checked, it won't use the proxy configured in 'Administration > Parameters > Centreon UI' "
+"to connect to the Remote Server."
+msgstr ""
+"Si coché, il n'utilisera pas le proxy configuré dans 'Administration > Paramètres > Centreon UI' "
+"pour se connecter au serveur distant."
 
 #: centreon-web/www/include/configuration/configServers/help.php:22
 msgid "Short description of the poller"

@@ -44,15 +44,6 @@
             "config/routes/annotations.yaml"
         ]
     },
-    "doctrine/cache": {
-        "version": "v1.8.0"
-    },
-    "doctrine/collections": {
-        "version": "v1.6.2"
-    },
-    "doctrine/event-manager": {
-        "version": "v1.0.0"
-    },
     "doctrine/inflector": {
         "version": "v1.3.0"
     },
@@ -61,12 +52,6 @@
     },
     "doctrine/lexer": {
         "version": "1.1.0"
-    },
-    "doctrine/persistence": {
-        "version": "1.1.1"
-    },
-    "doctrine/reflection": {
-        "version": "v1.0.0"
     },
     "friendsofsymfony/rest-bundle": {
         "version": "2.2",
@@ -507,9 +492,6 @@
     },
     "symfony/service-contracts": {
         "version": "v1.1.6"
-    },
-    "symfony/templating": {
-        "version": "v4.3.4"
     },
     "symfony/translation": {
         "version": "3.3",

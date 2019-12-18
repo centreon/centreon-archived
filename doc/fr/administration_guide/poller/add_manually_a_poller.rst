@@ -27,7 +27,7 @@ Une fois l'installation réalisée, il faut intégrer ce collecteur distant dans
 .. note::
     Si votre collecteur est rattaché à un Remote Server, mais que vous souhaitez envoyer directement la configuration
     ainsi que les fichiers de configuration directement depuis le serveur Centreon central vers ce collecteur,
-    désactivez l'option **Use the Remote Server as a proxy for SSH**.
+    désactivez l'option **Use the Remote Server as a proxy**.
 
 #. Rendez-vous dans le menu **Configuration > Collecteur > Configuration du moteur de collecte**
 #. Sélectionnez la configuration qui correspond au dernier poller ajouté

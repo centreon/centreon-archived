@@ -37,6 +37,9 @@ if (!isset($centreon)) {
     exit();
 }
 
+const ZMQ = 1;
+const SSH = 2;
+
 require_once _CENTREON_PATH_ . "www/class/centreon-config/centreonMainCfg.class.php";
 
 $objMain = new CentreonMainCfg();
@@ -170,7 +173,7 @@ if ($o == SERVER_ADD) {
  * Headers
  */
 $form->addElement('header', 'Server_Informations', _("Server Information"));
-$form->addElement('header', 'SSH_Informations', _("SSH Information"));
+$form->addElement('header', 'gorgone_Informations', _("Gorgone Information"));
 $form->addElement('header', 'Nagios_Informations', _("Monitoring Engine Information"));
 $form->addElement('header', 'Misc', _("Miscelleneous"));
 $form->addElement('header', 'Centreontrapd', _("Centreon Trap Collector"));
@@ -216,15 +219,19 @@ if (strcmp($serverType, 'poller') ==  0) {
     );
     $form->addElement('select2', 'remote_additional_id', _('Attach additional Remote Servers'), array(), $attrPoller2);
     $tab = [];
-    $tab[] = $form->createElement('radio', 'remote_server_centcore_ssh_proxy', null, _("Yes"), '1');
-    $tab[] = $form->createElement('radio', 'remote_server_centcore_ssh_proxy', null, _("No"), '0');
-    $form->addGroup($tab, 'remote_server_centcore_ssh_proxy', _("Use the Remote Server as a proxy for SSH"), '&nbsp;');
+    $tab[] = $form->createElement('radio', 'remote_server_use_as_proxy', null, _("Yes"), '1');
+    $tab[] = $form->createElement('radio', 'remote_server_use_as_proxy', null, _("No"), '0');
+    $form->addGroup($tab, 'remote_server_use_as_proxy', _("Use the Remote Server as a proxy"), '&nbsp;');
 }
 $form->addElement('text', 'nagios_bin', _("Monitoring Engine Binary"), $attrsText2);
 $form->addElement('text', 'nagiostats_bin', _("Monitoring Engine Statistics Binary"), $attrsText2);
 $form->addElement('text', 'nagios_perfdata', _("Perfdata file"), $attrsText2);
 
-$form->addElement('text', 'ssh_port', _("SSH port"), $attrsText3);
+$tab = array();
+$tab[] = $form->createElement('radio', 'gorgone_communication_type', null, _("ZMQ"), ZMQ);
+$tab[] = $form->createElement('radio', 'gorgone_communication_type', null, _("SSH"), SSH);
+$form->addGroup($tab, 'gorgone_communication_type', _("Gorgone connection protocol"), '&nbsp;');
+$form->addElement('text', 'gorgone_port', _("Gorgone connection port"), $attrsText3);
 
 $tab = array();
 $tab[] = $form->createElement('radio', 'localhost', null, _("Yes"), '1');
@@ -305,17 +312,17 @@ if (isset($_GET["o"]) && $_GET["o"] == SERVER_ADD) {
             "engine_restart_command" => $monitoring_engines["engine_restart_command"],
             "engine_reload_command" => $monitoring_engines["engine_reload_command"],
             "ns_activate" => '1',
-            "is_default"  =>  '0',
-            "ssh_port"  =>  '22',
-            "ssh_private_key"  =>  '~/.ssh/rsa.id',
-            "nagios_perfdata"  => $monitoring_engines["nagios_perfdata"],
+            "is_default" => '0',
+            "gorgone_communication_type" => ZMQ,
+            "gorgone_port" => 5556,
+            "nagios_perfdata" => $monitoring_engines["nagios_perfdata"],
             "broker_reload_command" => "service cbd reload",
             "centreonbroker_cfg_path" => "/etc/centreon-broker",
             "centreonbroker_module_path" => "/usr/share/centreon/lib/centreon-broker",
             "centreonbroker_logs_path" => "/var/log/centreon-broker",
             "init_script_centreontrapd" => "centreontrapd",
             "snmp_trapd_path_conf" => "/etc/snmp/centreon_traps/",
-            "remote_server_centcore_ssh_proxy" => '1'
+            "remote_server_use_as_proxy" => '1'
         ]
     );
 } else {
@@ -432,6 +439,21 @@ if ($valid) {
             e: '#remote_id'
         }
     });
+
+    //check of gorgone_port type
+    jQuery(function () {
+        jQuery("input[name='gorgone_port']").change(function () {
+            if (isNaN(this.value)) {
+                const msg = "<span id='errMsg'><font style='color: red;'> Need to be a number</font></span>";
+                jQuery(msg).insertAfter(this);
+                jQuery("input[type='submit']").prop('disabled', true);
+            } else {
+                jQuery('#errMsg').remove();
+                jQuery("input[type='submit']").prop('disabled', false);
+            }
+        });
+    });
+
     jQuery(function () {
         jQuery("#remote_id").change(function () {
             var master_remote_id = jQuery("#remote_id").val();

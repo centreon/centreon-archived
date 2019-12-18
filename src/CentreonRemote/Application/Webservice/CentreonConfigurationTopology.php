@@ -80,7 +80,9 @@ class CentreonConfigurationTopology extends CentreonWebServiceAbstract
         }
 
         $topologyID = (int) $_POST['topology_id'];
-        $statement = $this->pearDB->prepare('SELECT `topology_url`, `is_react` FROM `topology` WHERE `topology_id` = :id');
+        $statement = $this->pearDB->prepare(
+            'SELECT `topology_url`, `is_react` FROM `topology` WHERE `topology_id` = :id'
+        );
         $statement->execute([':id' => $topologyID]);
         $result = $statement->fetch();
 

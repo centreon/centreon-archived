@@ -4029,8 +4029,8 @@ msgstr "Habilitar la recuperación de archivos de estadísticas de componentes d
 
 #: centreon-web/www/include/Administration/parameters/api/api.php:62
 #: centreon-web/www/include/Administration/parameters/centcore/centcore.php:60
-msgid "Timeout value for Centcore commands"
-msgstr "Tiempo máximo para ejecutar comandos centcore."
+msgid "Timeout value for Gorgone commands"
+msgstr "Tiempo máximo para ejecutar comandos Gorgone."
 
 #: centreon-web/www/include/Administration/parameters/api/api.php:77
 #: centreon-web/www/include/options/accessLists/groupsACL/formGroupConfig.php:175
@@ -4590,8 +4590,8 @@ msgid "LDAP User Import debug"
 msgstr "Depuración de las importaciones de usuarios LDAP"
 
 #: centreon-web/www/include/Administration/parameters/debug/form.php:62
-msgid "Centcore Engine debug"
-msgstr "Depurando el motor de Centcore"
+msgid "Centreon Gorgone debug"
+msgstr "Depurando de Centreon Gorgone "
 
 #: centreon-web/www/include/Administration/parameters/debug/form.php:63
 msgid "Centreontrapd debug"
@@ -11244,8 +11244,8 @@ msgid "Server Information"
 msgstr "Información del servidor"
 
 #: centreon-web/www/include/configuration/configServers/formServers.php:102
-msgid "SSH Information"
-msgstr "Información SSH"
+msgid "Gorgone Information"
+msgstr "Información Gorgone"
 
 #: centreon-web/www/include/configuration/configServers/formServers.php:103
 msgid "Monitoring Engine Information"

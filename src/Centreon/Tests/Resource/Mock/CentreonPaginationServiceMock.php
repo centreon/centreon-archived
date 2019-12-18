@@ -66,6 +66,7 @@ class CentreonPaginationServiceMock extends CentreonPaginationService
             [
                 'repository' => $this->repository,
                 'dataRepresenter' => $this->dataRepresenter,
+                'context' => $this->context,
                 'limit' => $this->limit,
                 'offset' => $this->offset,
             ],

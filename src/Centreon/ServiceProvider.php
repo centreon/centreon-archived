@@ -1,36 +1,21 @@
 <?php
+
 /*
- * Copyright 2005-2019 Centreon
- * Centreon is developed by : Julien Mathis and Romain Le Merlus under
- * GPL Licence 2.0.
+ * Copyright 2005 - 2019 Centreon (https://www.centreon.com/)
  *
- * This program is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation ; either version 2 of the License.
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
- * PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
- * You should have received a copy of the GNU General Public License along with
- * this program; if not, see <http://www.gnu.org/licenses>.
- *
- * Linking this program statically or dynamically with other modules is making a
- * combined work based on this program. Thus, the terms and conditions of the GNU
- * General Public License cover the whole combination.
- *
- * As a special exception, the copyright holders of this program give Centreon
- * permission to link this program with independent modules to produce an executable,
- * regardless of the license terms of these independent modules, and to copy and
- * distribute the resulting executable under terms of Centreon choice, provided that
- * Centreon also meet, for each linked independent module, the terms  and conditions
- * of the license of that module. An independent module is a module which is not
- * derived from this program. If you modify this program, you may extend this
- * exception to your version of the program, but you are not obliged to do so. If you
- * do not wish to do so, delete this exception statement from your version.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  *
  * For more information : contact@centreon.com
- *
  *
  */
 
@@ -58,41 +43,44 @@ use Centreon\Application\Validation;
 use Symfony\Component\Validator;
 use Symfony\Component\Validator\Constraints;
 use CentreonACL as CACL;
+use Doctrine\Common\Annotations\AnnotationReader;
+use Symfony\Component\Serializer;
+use Symfony\Component\PropertyInfo\Extractor\ReflectionExtractor;
 
 class ServiceProvider implements AutoloadServiceProviderInterface
 {
     //webservices
-    const CENTREON_WEBSERVICE = 'centreon.webservice';
-    const MENU_WEBSERVICE = 'centreon.menu.webservice';
+    public const CENTREON_WEBSERVICE = 'centreon.webservice';
+    public const MENU_WEBSERVICE = 'centreon.menu.webservice';
 
     //services
-    const CENTREON_PAGINATION = 'centreon.pagination';
-    const CENTREON_I18N_SERVICE = 'centreon.i18n_service';
-    const CENTREON_FRONTEND_COMPONENT_SERVICE = 'centreon.frontend_component_service';
-    const CENTREON_BROKER_CONFIGURATION_SERVICE = 'centreon.broker_configuration_service';
+    public const CENTREON_PAGINATION = 'centreon.pagination';
+    public const CENTREON_I18N_SERVICE = 'centreon.i18n_service';
+    public const CENTREON_FRONTEND_COMPONENT_SERVICE = 'centreon.frontend_component_service';
+    public const CENTREON_BROKER_CONFIGURATION_SERVICE = 'centreon.broker_configuration_service';
 
     //repositories
-    const CENTREON_BROKER_REPOSITORY = 'centreon.broker_repository';
-    const CENTREON_BROKER_INFO_REPOSITORY = 'centreon.broker_info_repository';
+    public const CENTREON_BROKER_REPOSITORY = 'centreon.broker_repository';
+    public const CENTREON_BROKER_INFO_REPOSITORY = 'centreon.broker_info_repository';
 
     //managers and infrastructure services
-    const CENTREON_DB_MANAGER = 'centreon.db-manager';
-    const CENTREON_CLAPI = 'centreon.clapi';
-    const UPLOAD_MANGER = 'upload.manager';
-    const CENTREON_EVENT_DISPATCHER = 'centreon.event_dispatcher';
-    const CENTREON_USER = 'centreon.user';
-    const YML_CONFIG = 'yml.config';
-    const CENTREON_VALIDATOR_FACTORY = 'centreon.validator_factory';
-    const CENTREON_VALIDATOR_TRANSLATOR = 'centreon.validator_translator';
-    const VALIDATOR = 'validator';
-    const VALIDATOR_EXPRESSION = 'validator.expression';
-    const CENTREON_ACL = 'centreon.acl';
-    const CENTREON_GLOBAL_ACL = 'centreon.global.acl';
+    public const CENTREON_DB_MANAGER = 'centreon.db-manager';
+    public const CENTREON_CLAPI = 'centreon.clapi';
+    public const UPLOAD_MANGER = 'upload.manager';
+    public const CENTREON_EVENT_DISPATCHER = 'centreon.event_dispatcher';
+    public const CENTREON_USER = 'centreon.user';
+    public const YML_CONFIG = 'yml.config';
+    public const CENTREON_VALIDATOR_FACTORY = 'centreon.validator_factory';
+    public const CENTREON_VALIDATOR_TRANSLATOR = 'centreon.validator_translator';
+    public const VALIDATOR = 'validator';
+    public const VALIDATOR_EXPRESSION = 'validator.expression';
+    public const SERIALIZER = 'serializer';
+    public const SERIALIZER_OBJECT_NORMALIZER = 'serializer.object.normalizer';
+    public const CENTREON_ACL = 'centreon.acl';
+    public const CENTREON_GLOBAL_ACL = 'centreon.global.acl';
 
     /**
-     * Register Centreon services
-     *
-     * @param \Pimple\Container $pimple
+     * {@inheritdoc}
      */
     public function register(Container $pimple): void
     {
@@ -103,7 +91,7 @@ class ServiceProvider implements AutoloadServiceProviderInterface
         };
 
         $pimple[static::CENTREON_WEBSERVICE] = function (Container $container): CentreonWebserviceService {
-            $service = new CentreonWebserviceService;
+            $service = new CentreonWebserviceService();
 
             return $service;
         };
@@ -144,7 +132,7 @@ class ServiceProvider implements AutoloadServiceProviderInterface
         };
 
         $pimple[static::CENTREON_CLAPI] = function (Container $container): CentreonClapiService {
-            $service = new CentreonClapiService;
+            $service = new CentreonClapiService();
 
             return $service;
         };
@@ -183,26 +171,26 @@ class ServiceProvider implements AutoloadServiceProviderInterface
             return $_SESSION['centreon']->user; // @codeCoverageIgnoreEnd
         };
 
-        $pimple['centreon.keygen'] = function (Container $container) : AppKeyGeneratorService {
+        $pimple['centreon.keygen'] = function (): AppKeyGeneratorService {
             $service = new AppKeyGeneratorService();
 
             return $service;
         };
 
-        $pimple[static::CENTREON_ACL] = function (Container $container) : CentreonACL {
+        $pimple[static::CENTREON_ACL] = function (Container $container): CentreonACL {
             $service = new CentreonACL($container);
 
             return $service;
         };
 
 
-        $pimple[static::CENTREON_GLOBAL_ACL] = function (Container $container) : CACL {
+        $pimple[static::CENTREON_GLOBAL_ACL] = function (): CACL {
             $service = new CACL($_SESSION['centreon']->user->user_id, $_SESSION['centreon']->user->admin);
 
             return $service;
         };
 
-        $pimple['centreon.config'] = function (Container $container) : CentcoreConfigService {
+        $pimple['centreon.config'] = function (): CentcoreConfigService {
             $service = new CentcoreConfigService();
 
             return $service;
@@ -248,7 +236,7 @@ class ServiceProvider implements AutoloadServiceProviderInterface
             return $service;
         };
 
-        $pimple[static::CENTREON_EVENT_DISPATCHER] = function (Container $container) : Event\EventDispatcher {
+        $pimple[static::CENTREON_EVENT_DISPATCHER] = function (): Event\EventDispatcher {
             $eventDispatcher = new Event\EventDispatcher();
             $eventDispatcher->setDispatcherLoader(
                 new Event\FileLoader(
@@ -261,6 +249,28 @@ class ServiceProvider implements AutoloadServiceProviderInterface
         };
 
         $this->registerValidator($pimple);
+
+        $pimple[static::SERIALIZER_OBJECT_NORMALIZER] = function (): Serializer\Normalizer\ObjectNormalizer {
+            $classMetadataFactory = new Serializer\Mapping\Factory\ClassMetadataFactory(
+                new Serializer\Mapping\Loader\AnnotationLoader(new AnnotationReader())
+            );
+
+            return new Serializer\Normalizer\ObjectNormalizer(
+                $classMetadataFactory,
+                new Serializer\NameConverter\MetadataAwareNameConverter($classMetadataFactory),
+                null,
+                new ReflectionExtractor()
+            );
+        };
+
+        $pimple[static::SERIALIZER] = function ($container): Serializer\Serializer {
+            return new Serializer\Serializer([
+                $container[static::SERIALIZER_OBJECT_NORMALIZER],
+                new Serializer\Normalizer\ArrayDenormalizer(),
+            ], [
+                new Serializer\Encoder\JsonEncoder(),
+            ]);
+        };
     }
 
     /**
@@ -287,7 +297,7 @@ class ServiceProvider implements AutoloadServiceProviderInterface
 
         $pimple[static::CENTREON_VALIDATOR_TRANSLATOR] =
             function (Container $container): Validation\CentreonValidatorTranslator {
-                return new Validation\CentreonValidatorTranslator;
+                return new Validation\CentreonValidatorTranslator();
             };
 
         $pimple[static::VALIDATOR_EXPRESSION] = function (): Constraints\ExpressionValidator {
@@ -295,6 +305,9 @@ class ServiceProvider implements AutoloadServiceProviderInterface
         };
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public static function order(): int
     {
         return 1;

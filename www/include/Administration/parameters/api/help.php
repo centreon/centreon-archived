@@ -2,12 +2,11 @@
 $help = array();
 
 /**
- * Centcore Settings
+ * Centreon Gorgone Settings
  */
-$help['tip_centcore_cmd_timeout'] = dgettext(
+$help['tip_gorgone_cmd_timeout'] = dgettext(
     'help',
-    "Timeout value in seconds. Used for freeing Centcore when it's stuck because"
-    . " of blocking pipe files or SSH connections."
+    "Timeout value in seconds. Used to make actions calls timeout."
 );
 $help['tip_enable_broker_stats'] = dgettext(
     'help',

@@ -201,11 +201,9 @@ class ExportServiceTest extends TestCase
         $path = "vfs://export";
 
         // missing export path
-        $commitment = new ExportCommitment(null, null, null, null, "{$path}/not-found", [
+        $this->export->import(new ExportCommitment(null, null, null, null, "{$path}/not-found", [
             ConfigurationExporter::class,
-        ]);
-
-        $this->export->import($commitment);
+        ]));
 
         $manifest = '{
     "date": "Tuesday 23rd of July 2019 11:22:19 AM",
@@ -217,11 +215,11 @@ class ExportServiceTest extends TestCase
 
         $this->fs->get('/export/')->add('manifest.json', new File($manifest));
 
-        $commitment = new ExportCommitment(null, null, null, null, $path, [
+        $this->export->import(new ExportCommitment(null, null, null, null, $path, [
             ConfigurationExporter::class,
-        ]);
+        ]));
 
-        $this->export->import($commitment);
+        $this->assertTrue(true);
     }
 
     /**
