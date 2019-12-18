@@ -334,13 +334,7 @@ central.
 
 3. Fichiers manquants dans le répertoire /etc/centreon
 
-Vérifiez que le répertoire **/etc/centreon** contient les fichiers suivants :
-
-* instCentCore.conf
-* instCentPlugins.conf
-* instCentWeb.conf
-
-et que ces fichiers ne sont pas vides, sinon copiez les depuis le serveur Centreon
+Vérifiez que le fichier **/etc/centreon/instCentWeb.conf** n'est pas vide, sinon copiez le depuis le serveur Centreon
 Central.
 
 Purgez la table des tâches d'import : ::

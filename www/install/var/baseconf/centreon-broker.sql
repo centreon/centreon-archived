@@ -153,9 +153,6 @@ INSERT INTO `cfg_centreonbroker_info` (`config_id`, `config_key`, `config_value`
 INSERT INTO `cfg_centreonbroker_info` (`config_id`, `config_key`, `config_value`, `config_group`, `config_group_id`) VALUES (3,'type','ipv4','output',1);
 INSERT INTO `cfg_centreonbroker_info` (`config_id`, `config_key`, `config_value`, `config_group`, `config_group_id`) VALUES (3,'blockId','1_3','output',1);
 
-INSERT INTO `options` (`key`, `value`) VALUES ('enable_perfdata_sync', '0');
-INSERT INTO `options` (`key`, `value`) VALUES ('enable_logs_sync', '0');
-
 UPDATE `nagios_server` SET `centreonbroker_cfg_path` = '@broker_etc@' WHERE `id` = 1;
 UPDATE `nagios_server` SET `centreonbroker_module_path` = '@centreonbroker_lib@' WHERE `id` = 1;
 

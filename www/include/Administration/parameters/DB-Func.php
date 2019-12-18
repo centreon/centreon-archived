@@ -284,13 +284,6 @@ function updateNagiosConfigData($gopt_id = null)
 function updateGorgoneConfigData($db, $form, $centreon)
 {
     $ret = $form->getSubmitValues();
-    updateOption(
-        $db,
-        "enable_perfdata_sync",
-        isset($ret["enable_perfdata_sync"]) && $ret['enable_perfdata_sync'] ? 1 : 0
-    );
-    updateOption($db, "enable_logs_sync", isset($ret["enable_logs_sync"]) && $ret['enable_logs_sync'] ? 1 : 0);
-
     updateOption($db, "enable_broker_stats", isset($ret["enable_broker_stats"]) && $ret['enable_broker_stats'] ? 1 : 0);
     updateOption(
         $db,
