@@ -1315,6 +1315,7 @@ class CentreonHost extends CentreonObject
                     "ehi_action_url",
                     "ehi_icon_image",
                     "ehi_icon_image_alt",
+                    "ehi_vrml_image",
                     "ehi_statusmap_image",
                     "ehi_2d_coords",
                     "ehi_3d_coords"
