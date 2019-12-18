@@ -688,6 +688,8 @@ Parameter                            Description
 
 3d_coords                            3D coordinates (used by statusmap)
 
+geo_coords                           Geo coordinates (used by Centreon MAP)
+
 action_url                           Action URL
 
 activate                             Whether or not host is enabled
@@ -820,6 +822,8 @@ Parameter                            Description
 2d_coords                            2D coordinates (used by statusmap)
 
 3d_coords                            3D coordinates (used by statusmap)
+
+geo_coords                           Geo coordinates (used by Centreon MAP)
 
 action_url                           Action URL
 

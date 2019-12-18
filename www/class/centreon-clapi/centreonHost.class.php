@@ -435,6 +435,7 @@ class CentreonHost extends CentreonObject
             'flap_detection_enabled',
             'flap_detection_options',
             'freshness_threshold',
+            'geo_coords',
             'host_high_flap_threshold',
             'host_low_flap_threshold',
             'host_notification_options',
@@ -501,6 +502,7 @@ class CentreonHost extends CentreonObject
                         case "contact_additive_inheritance":
                         case "cg_additive_inheritance":
                         case "flap_detection_options":
+                        case "geo_coords":
                             break;
                         case "notes":
                         case "notes_url":
