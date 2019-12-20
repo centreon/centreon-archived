@@ -48,7 +48,7 @@ require_once _CENTREON_PATH_."www/include/common/common-Func.php";
 class MetricUtils
 {
     private static $instance = null;
-    
+
     /**
      * Constructor
      *
@@ -57,7 +57,7 @@ class MetricUtils
     private function __construct()
     {
     }
-    
+
     /**
      * Singleton create method
      *
@@ -634,13 +634,13 @@ class CentreonGraphNg
     {
         $indexId = null;
         $stmt = $this->dbCs->prepare(
-            "SELECT 
-                m.index_id, host_id, service_id, metric_id, metric_name, 
+            "SELECT
+                m.index_id, host_id, service_id, metric_id, metric_name,
                 unit_name, min, max, warn, warn_low, crit, crit_low
             FROM metrics AS m, index_data AS i
             WHERE i.host_id = :host_id
                 AND i.service_id = :service_id
-                AND i.id = m.index_id 
+                AND i.id = m.index_id
                 AND m.hidden = '0'"
         );
         $stmt->bindParam(':host_id', $hostId, PDO::PARAM_INT);
@@ -666,7 +666,7 @@ class CentreonGraphNg
         $stmt->bindParam(':index_id', $indexId, PDO::PARAM_INT);
         $stmt->execute();
         $vmetrics = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        
+
         foreach ($vmetrics as $vmetric) {
             $this->addVirtualMetric($vmetric);
         }
@@ -1043,13 +1043,13 @@ class CentreonGraphNg
     /**
      * Parse rrdtool result
      *
-     * @param mixed $rrdData
+     * @param array $rrdData
      *
      * @return void
      */
     private function formatByMetrics($rrdData)
     {
-        $this->graphData['times'] = array();
+        $this->graphData['times'] = [];
 
         $size = (is_array($rrdData['data']) || $rrdData['data'] instanceof \Countable)
             ? count($rrdData['data'])
@@ -1058,17 +1058,17 @@ class CentreonGraphNg
         $gprintsSize = (is_array($rrdData['meta']['gprints']) || $rrdData['meta']['gprints'] instanceof \Countable)
             ? count($rrdData['meta']['gprints'])
             : 0;
-        
+
         for ($i = 0; $i < $size; $i++) {
             $this->graphData['times'][] = $rrdData['data'][$i][0];
         }
-        
-        $i = 1;
+
+        $metricIndex = 1;
         $gprintsPos = 0;
         foreach ($this->graphData['metrics'] as &$metric) {
             $metric['data'] = array();
             $metric['prints'] = array();
-            
+
             $insert = 0;
             if ($metric['virtual'] == 0) {
                 $metricFullname = 'v' . $metric['metric_id'];
@@ -1087,23 +1087,23 @@ class CentreonGraphNg
                 }
             }
 
-            $minimum_value = null;
-            $maximum_value = null;
-            for ($j = 0; $j < $size; $j++) {
-                $metric['data'][] = $rrdData['data'][$j][$i];
-                if (!is_null($rrdData['data'][$j][$i]) && 
-                    (is_null($minimum_value) || $rrdData['data'][$j][$i] < $minimum_value)) {
-                    $minimum_value = $rrdData['data'][$j][$i];
+            $minimumValue = null;
+            $maximumValue = null;
+            for ($dataIndex = 0; $dataIndex < $size; $dataIndex++) {
+                $metric['data'][] = $rrdData['data'][$dataIndex][$metricIndex];
+                if (!is_null($rrdData['data'][$dataIndex][$metricIndex]) &&
+                    (is_null($minimumValue) || $rrdData['data'][$dataIndex][$metricIndex] < $minimumValue)) {
+                    $minimumValue = $rrdData['data'][$dataIndex][$metricIndex];
                 }
-                if (!is_null($rrdData['data'][$j][$i]) && 
-                    (is_null($maximum_value) || $rrdData['data'][$j][$i] > $maximum_value)) {
-                    $maximum_value = $rrdData['data'][$j][$i];
+                if (!is_null($rrdData['data'][$dataIndex][$metricIndex]) &&
+                    (is_null($maximumValue) || $rrdData['data'][$dataIndex][$metricIndex] > $maximumValue)) {
+                    $maximumValue = $rrdData['data'][$dataIndex][$metricIndex];
                 }
             }
-            
-            $metric['minimum_value'] = $minimum_value;
-            $metric['maximum_value'] = $maximum_value;
-            $i++;
+
+            $metric['minimum_value'] = $minimumValue;
+            $metric['maximum_value'] = $maximumValue;
+            $metricIndex++;
         }
     }
 

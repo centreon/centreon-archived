@@ -335,11 +335,13 @@ class CentreonMetric extends CentreonWebService
         if (is_string($metrics) && strlen($metrics) > 0) {
             $filter = '';
             $filterAppend = '';
+            $queryValues = [];
             foreach (explode(',', $metrics) as $metricId) {
                 if (!is_numeric($metricId)) {
                     continue;
                 }
-                $filter .= $filterAppend . $metricId;
+                $filter .= $filterAppend . ' :metric' . $metricId;
+                $queryValues[':metric' . $metricId] = $metricId;
                 $filterAppend = ',';
             }
 
@@ -347,13 +349,20 @@ class CentreonMetric extends CentreonWebService
                 return $selectedMetrics;
             }
 
-            $results = $this->pearDBMonitoring->query(
+
+
+            $stmt = $this->pearDBMonitoring->prepare(
                 'SELECT metric_id, host_id, service_id
                  FROM metrics, index_data
-                 WHERE metrics.metric_id IN (' . $filter . ') AND metrics.index_id = index_data.id'
+                 WHERE metrics.metric_id IN (' . $filter. ')
+                 AND metrics.index_id = index_data.id'
             );
+            foreach ($queryValues as $param => $value) {
+                $stmt->bindValue($param, $value, PDO::PARAM_INT);
+            }
+            $stmt->execute();
 
-            foreach ($results as $row) {
+            while ($row = $stmt->fetch()) {
                 if (isset($selectedMetrics[$row['host_id'] . '_' . $row['service_id']])
                     && count($selectedMetrics[$row['host_id'] . '_' . $row['service_id']]) <= 0
                 ) {
@@ -394,51 +403,47 @@ class CentreonMetric extends CentreonWebService
         $aclGroups = null;
 
         $query = '';
+        $filterHostIds = [];
+        $filterServiceIds = [];
+        $filterMetricIds = [];
+
         if (is_string($services) && strlen($services) > 0) {
-            $filterHostIds = '';
-            $filterHostIdsAppend = '';
-            $filterServiceIds = '';
-            $filterServiceIdsAppend = '';
             foreach (explode(',', $services) as $service) {
                 list($hostId, $serviceId) = explode('_', $service);
-                if (!is_numeric($hostId) || !is_numeric($serviceId)
-                ) {
+                if (!is_numeric($hostId) || !is_numeric($serviceId)) {
                     continue;
                 }
-
-                $filterHostIds .= $filterHostIdsAppend . $hostId;
-                $filterServiceIds .= $filterServiceIdsAppend . $serviceId;
-                $filterHostIdsAppend = ',';
-                $filterServiceIdsAppend = ',';
+                $filterHostIds[':host' . $hostId] = $hostId;
+                $filterServiceIds[':service' . $serviceId] = $serviceId;
             }
 
-            if ($filterHostIds !== '') {
+            if (!empty($filterHostIds) && !empty($filterServiceIds)) {
                 $query = '
                     SELECT i.host_id, i.service_id, m.*
                     FROM index_data i, metrics m
-                    WHERE i.host_id IN (' . $filterHostIds . ') AND i.service_id IN (' . $filterServiceIds . ') AND i.id = m.index_id';
+                    WHERE i.host_id IN (' . implode(',', array_keys($filterHostIds)) . ')
+                    AND i.service_id IN (' . implode(',', array_keys($filterServiceIds)) . ')
+                    AND i.id = m.index_id';
             }
         }
 
         if (is_string($metrics) && strlen($metrics) > 0) {
-            $filterMetricIds = '';
-            $filterMetricAppend = '';
             foreach (explode(',', $metrics) as $metricId) {
                 if (!is_numeric($metricId)) {
                     continue;
                 }
-                $filterMetricIds .= $filterMetricAppend . $metricId;
-                $filterMetricAppend = ',';
+                $filterMetricIds[':metric' . $metricId] = $metricId;
             }
 
-            if ($filterMetricIds !== '') {
+            if (!empty($filterMetricIds)) {
                 if ($query !== '') {
                     $query .= ' UNION ';
                 }
                 $query .= '
                     SELECT i.host_id, i.service_id, m.*
                     FROM metrics m, index_data i
-                    WHERE m.metric_id IN (' . $filterMetricIds . ') AND m.index_id = i.id';
+                    WHERE m.metric_id IN (' . implode(',', array_keys($filterMetricIds)) . ')
+                    AND m.index_id = i.id';
             }
         }
 
@@ -460,8 +465,15 @@ class CentreonMetric extends CentreonWebService
                     AND ca.group_id IN (' . $aclGroups . '))';
         }
 
-        $res = $this->pearDBMonitoring->query($query);
-        return $res->fetchAll(PDO::FETCH_ASSOC);
+        $stmt = $this->pearDBMonitoring->prepare($query);
+        foreach ([$filterHostIds, $filterServiceIds, $filterMetricIds] as $filterParams) {
+            foreach ($filterParams as $param => $value) {
+                $stmt->bindValue($param, $value, PDO::PARAM_INT);
+            }
+        }
+        $stmt->execute();
+
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
     /**

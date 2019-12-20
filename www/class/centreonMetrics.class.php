@@ -39,7 +39,9 @@ class CentreonMetrics
     }
 
     /**
-     * @param array $values
+     * Get metrics information from ids to populat select2
+     *
+     * @param array $values list of metric ids
      * @return array
      */
     public function getObjectForSelect2($values = [])
