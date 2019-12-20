@@ -371,6 +371,13 @@ class CentreonConfigCentreonBroker
                 case 'int':
                     $elementType = 'text';
                     $elementAttr = $this->attrInt;
+                    if ($field['hook_name'] != '') {
+                        $elementAttr = array_merge($elementAttr, array(
+                            'onchange' => $field['hook_name'] . '.onChange(' . $field['hook_arguments'] . ')(this)',
+                            'data-ontab-fn' => $field['hook_name'],
+                            'data-ontab-arg' => $field['hook_arguments']
+                        ));
+                    }
                     break;
                 case 'select':
                     $elementType = 'select';

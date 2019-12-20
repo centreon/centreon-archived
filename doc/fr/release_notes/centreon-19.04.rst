@@ -1,4 +1,37 @@
 ====================
+Centreon Web 19.04.7
+====================
+
+Documentation
+-------------
+
+* Clearly indicate that dependencies between pollers are not possible
+
+Bug Fixes
+---------
+
+* Define new custom view error file template (PR/#8141)
+* Fix double quote in widget title (PR/#8161)
+* Remove ACL notice on lvl3 calculation (PR/#8120)
+
+====================
+Centreon Web 19.04.6
+====================
+
+Bug Fixes
+---------
+
+* [ACL] Fix calculation of acls on services (PR/#8146)
+* [LDAP] Correct double slashes in the saved DN (PR/#8121)
+* [LDAP] Move LDAP fix upgrade script to next minor (PR/#8153)
+
+Security Fixes
+--------------
+
+* Fix call of service macros list without authentication - CVE-2019-17645 (PR/#8035)
+* Fix call of host macros list without authentication - CVE-2019-17644 (PR/#8037)
+
+====================
 Centreon Web 19.04.5
 ====================
 

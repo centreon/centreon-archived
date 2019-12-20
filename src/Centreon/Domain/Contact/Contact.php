@@ -104,6 +104,11 @@ class Contact implements UserInterface, ContactInterface
     private $roles = [];
 
     /**
+     * @var string[] List of names of topology rules to which the contact can access
+     */
+    private $topologyRulesNames = [];
+
+    /**
      * @return int
      */
     public function getId(): int
@@ -303,7 +308,7 @@ class Contact implements UserInterface, ContactInterface
      */
     public function getRoles()
     {
-        return $this->roles;
+        return array_merge($this->roles, $this->topologyRulesNames);
     }
 
     /**
@@ -347,7 +352,7 @@ class Contact implements UserInterface, ContactInterface
      * This is important if, at any given point, sensitive information like
      * the plain-text password is stored on this object.
      */
-    public function eraseCredentials()
+    public function eraseCredentials(): void
     {
         // Nothing to do. But we must to define this method
     }
@@ -421,8 +426,25 @@ class Contact implements UserInterface, ContactInterface
         }
     }
 
+    /**
+     * Removes an existing roles.
+     *
+     * @param string $roleName Role name to remove
+     */
     private function removeRole(string $roleName): void
     {
         unset($this->roles[$roleName]);
+    }
+
+    /**
+     * Added a topology rule.
+     *
+     * @param string $topologyRuleName Topology rule name
+     */
+    public function addTopologyRule(string $topologyRuleName): void
+    {
+        if (!in_array($topologyRuleName, $this->topologyRulesNames)) {
+            $this->topologyRulesNames[] = $topologyRuleName;
+        }
     }
 }

@@ -129,10 +129,31 @@ class HostTemplate extends AbstractHost
         'use'
     );
 
+    /**
+     * @param int $hostId
+     */
+    public function addCacheHostTpl(int $hostId) : void
+    {
+        // We use host_register = 1 because we don't want _Module_* hosts
+        $stmt = $this->backend_instance->db->prepare("
+            SELECT {$this->attributes_select}
+            FROM host
+            LEFT JOIN extended_host_information ON extended_host_information.host_host_id = host.host_id
+            WHERE host.host_id = :host_id
+                AND host.host_activate = '1'
+                AND host.host_register = '0'");
+        $stmt->bindParam(':host_id', $hostId, PDO::PARAM_INT);
+        $stmt->execute();
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        if (isset($row['host_id'])) {
+            $this->hosts[$row['host_id']] = $row;
+        }
+    }
+
     private function getHosts()
     {
-        $stmt = $this->backend_instance->db->prepare("SELECT 
-              $this->attributes_select
+        $stmt = $this->backend_instance->db->prepare("
+            SELECT {$this->attributes_select}
             FROM host 
                 LEFT JOIN extended_host_information ON extended_host_information.host_host_id = host.host_id 
             WHERE  

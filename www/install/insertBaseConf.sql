@@ -553,19 +553,20 @@ INSERT INTO `cb_field` (`cb_field_id`, `fieldname`, `displayname`, `description`
 (44, 'write_metrics', 'Write metrics', 'This can be used to disable graph update and therefore reduce I/O', 'radio', NULL),
 (45, 'write_status', 'Write status', 'This can be used to disable graph update and therefore reduce I/O', 'radio', NULL),
 (46, 'negotiation', 'Enable negotiation', 'Enable negotiation option (use only for version of Centren Broker >= 2.5)', 'radio', NULL),
-(48, "one_peer_retention_mode", "One peer retention", "This allows the retention to work even if the socket is listening", "radio", NULL),
-(49, 'cleanup_check_interval', "Cleanup check interval", "Interval in seconds before delete data from deleted pollers.", 'int', NULL),
-(50, 'instance_timeout', "Instance timeout", "Interval in seconds before change status of resources from a disconnected poller", "int", NULL),
-(51, 'metric_naming', "Metric naming", "How to name entries for metrics. This string supports macros such as $METRIC$, $HOST$, $SERVICE$ and $INSTANCE$", 'text', NULL),
-(52, 'status_naming', "Status naming", "How to name entries for statuses. This string supports macros such as $METRIC$, $HOST$, $SERVICE$ and $INSTANCE$", "text", NULL),
-(63, 'cache', "Cache", "Enable caching", 'radio', NULL),
+(48, 'one_peer_retention_mode', 'One peer retention', 'This allows the retention to work even if the socket is listening', 'radio', NULL),
+(49, 'cleanup_check_interval', 'Cleanup check interval', 'Interval in seconds before delete data from deleted pollers.', 'int', NULL),
+(50, 'instance_timeout', 'Instance timeout', 'Interval in seconds before change status of resources from a disconnected poller', 'int', NULL),
+(51, 'metric_naming', 'Metric naming', 'How to name entries for metrics. This string supports macros such as $METRIC$, $HOST$, $SERVICE$ and $INSTANCE$', 'text', NULL),
+(52, 'status_naming', 'Status naming', 'How to name entries for statuses. This string supports macros such as $METRIC$, $HOST$, $SERVICE$ and $INSTANCE$', 'text', NULL),
+(63, 'cache', 'Cache', 'Enable caching', 'radio', NULL),
 (64, 'storage_db_host', 'Storage DB host', 'IP address or hostname of the database server.', 'text', NULL),
 (65, 'storage_db_user', 'Storage DB user', 'Database user.', 'text', NULL),
 (66, 'storage_db_password', 'Storage DB password', 'Password of database user.', 'password', NULL),
 (67, 'storage_db_name', 'Storage DB name', 'Database name.', 'text', NULL),
 (68, 'storage_db_port', 'Storage DB port', 'Port on which the DB server listens', 'int', NULL),
 (69, 'storage_db_type', 'Storage DB type', 'Target DBMS.', 'select', NULL),
-(74, 'path', 'Path', 'Path of the lua script.', 'text', NULL);
+(74, 'path', 'Path', 'Path of the lua script.', 'text', NULL),
+(75, 'connections_count', 'Number of connection to the database', 'Usually cpus/2', 'int', NULL);
 
 INSERT INTO `cb_fieldgroup` (`cb_fieldgroup_id`, `groupname`, `displayname`, `multiple`, `group_parent_id`) VALUES
 (1, 'filters', '', 0, NULL),
@@ -574,7 +575,7 @@ INSERT INTO `cb_fieldgroup` (`cb_fieldgroup_id`, `groupname`, `displayname`, `mu
 (4, 'lua_parameter', 'lua parameter', 1, NULL);
 
 INSERT INTO `cb_field` (`cb_field_id`, `fieldname`, `displayname`, `description`, `fieldtype`, `external`, `cb_fieldgroup_id`) VALUES
-(47,  "category", "Filter category", "Category filter for flux in output", "multiselect", NULL, 1),
+(47, 'category', 'Filter category', 'Category filter for flux in output', 'multiselect', NULL, 1),
 (53, 'metrics_timeseries', 'Metrics timeseries', 'How to name entries for metrics timeseries. This string supports macros such as $METRIC$, $HOST$, $SERVICE$ and $INSTANCE$', 'text', NULL, NULL),
 (54, 'status_timeseries', 'Status timeseries', 'How to name entries for statuses timeseries. This string supports macros such as $METRIC$, $HOST$, $SERVICE$ and $INSTANCE$', 'text', NULL, NULL),
 (55, 'name', 'Name', 'Name of the column (macros accepted)', 'text', NULL, 2),
@@ -792,9 +793,9 @@ INSERT INTO `cb_type_field_relation` (`cb_type_id`, `cb_field_id`, `is_required`
 (10, 48, 0, 16),
 (16, 49, 0, 18),
 (16, 50, 0, 19),
-(21, 28, 0, 2),
-(21, 31, 0, 2),
-(21, 32, 0, 2),
+(21, 28, 0, 8),
+(21, 31, 0, 8),
+(21, 32, 0, 8),
 (28, 15, 1, 1),
 (28, 7, 1, 2),
 (28, 18, 1, 3),
@@ -840,7 +841,8 @@ INSERT INTO `cb_type_field_relation` (`cb_type_id`, `cb_field_id`, `is_required`
 --
 INSERT INTO `cb_type_field_relation` (`cb_type_id`, `cb_field_id`, `is_required`, `order_display`, `jshook_name`, `jshook_arguments`) VALUES
 (33, 73, 0, 5, 'luaArguments', '{"target": "lua_parameter__value_%d"}'),
-(13, 36, 0, 3, 'rrdArguments', '{"target": "rrd_cached"}');
+(13, 36, 0, 3, 'rrdArguments', '{"target": "rrd_cached"}'),
+(16, 75, 0, 7, 'countConnections', '{"target": "connections_count"}');
 
 --
 -- Contenu de la table `widget_parameters_field_type`

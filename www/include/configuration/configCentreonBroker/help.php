@@ -90,3 +90,4 @@ echo _("It should be enabled to control whether or not Centreon Broker
 echo _("Enable TLS encryption.");
 echo _("This can be used to disable graph update and therefore reduce I/O");
 echo _("This can be used to disable graph update and therefore reduce I/O");
+echo _("Usually cpus/2.");

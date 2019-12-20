@@ -1,8 +1,7 @@
 <?php
-
 /*
- * Copyright 2005-2015 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2019 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -46,6 +45,7 @@ abstract class AbstractObject
     protected $attributes_array = array();
     protected $attributes_hash = array();
     protected $attributes_default = array();
+    protected $notificationOption = null;
 
     protected $engine = true;
     protected $broker = false;
@@ -90,13 +90,16 @@ abstract class AbstractObject
      *
      * @return int
      */
-    public function getInheritanceMode()
+    public function getInheritanceMode() : int
     {
-        $stmtNotification = $this->backend_instance->db->query(
-            "SELECT `value` FROM options WHERE `key` = 'inheritance_mode'"
-        );
-        $notificationOption = $stmtNotification->fetch();
-        return (int)$notificationOption['value'];
+        if (is_null($this->notificationOption)) {
+            $stmtNotification = $this->backend_instance->db->query(
+                "SELECT `value` FROM options WHERE `key` = 'inheritance_mode'"
+            );
+            $value = $stmtNotification->fetch();
+            $this->notificationOption = (int)$value['value'];
+        }
+        return $this->notificationOption;
     }
 
     private function setHeader()

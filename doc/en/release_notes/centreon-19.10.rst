@@ -1,4 +1,43 @@
 ====================
+Centreon Web 19.10.4
+====================
+
+Documentation
+-------------
+
+* Clearly indicate that dependencies between pollers are not possible
+
+Improvements
+------------
+
+* [Downtimes] Manage downtimes for host and service (PR/#8110)
+
+Bug Fixes
+---------
+
+* [Custom Views] Define new custom view error file template (PR/#8141)
+* [Custom Views] Fix double quote in widget title (PR/#8161)
+* [ACL] Remove ACL notice on lvl3 calculation (PR/#8120)
+* [Configuration] Fix performance regression in notification system (PR/#8143)
+* [Remote] Host and service templates are not properly imported (PR/#8147)
+* [Topology] Correct URL options for service pages (PR/#8164)
+
+====================
+Centreon Web 19.10.3
+====================
+
+Bug Fixes
+---------
+
+* [LDAP] Correct double slashes in the saved DN (PR/#8121)
+
+Security Fixes
+--------------
+
+* Fix call of service macros list without authentication - CVE-2019-17645 (PR/#8035)
+* Fix call of host macros list without authentication - CVE-2019-17644 (PR/#8037)
+
+====================
 Centreon Web 19.10.2
 ====================
 
