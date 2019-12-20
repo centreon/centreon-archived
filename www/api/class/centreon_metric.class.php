@@ -162,10 +162,8 @@ class CentreonMetric extends CentreonWebService
      */
     public function getLastMetricsData()
     {
-        if (false === isset($this->arguments['services']) &&
-            false === isset($this->arguments['metrics'])
-        ) {
-            self::sendResult(array());
+        if (!isset($this->arguments['services']) && !isset($this->arguments['metrics'])) {
+            self::sendResult([]);
         }
 
         return $this->lastMetricsData(
@@ -182,10 +180,8 @@ class CentreonMetric extends CentreonWebService
      */
     public function getMetricsData()
     {
-        if (false === isset($this->arguments['services']) &&
-            false === isset($this->arguments['metrics'])
-        ) {
-            self::sendResult(array());
+        if (!isset($this->arguments['services']) && !isset($this->arguments['metrics'])) {
+            self::sendResult([]);
         }
 
         return $this->metricsData(
@@ -201,8 +197,8 @@ class CentreonMetric extends CentreonWebService
      */
     public function getMetricsDataByService()
     {
-        if (false === isset($this->arguments['ids'])) {
-            self::sendResult(array());
+        if (!isset($this->arguments['ids'])) {
+            self::sendResult([]);
         }
 
         /* Get the list of service ID */
