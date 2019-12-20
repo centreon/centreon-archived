@@ -700,7 +700,7 @@ class CentreonMetric extends CentreonWebService
         }
 
         if (!isset($this->arguments['start']) || !is_numeric($this->arguments['start'])
-           || !isset($this->arguments['end']) || is_numeric($this->arguments['end'])
+           || !isset($this->arguments['end']) || !is_numeric($this->arguments['end'])
         ) {
             throw new RestBadRequestException("Bad parameters");
         }
