@@ -177,10 +177,7 @@ if ($o == SERVER_ADD) {
  * Headers
  */
 $form->addElement('header', 'Server_Informations', _("Server Information"));
-// display gorgone fields only if not a central
-if (!$cfg_server['localhost']) {
-    $form->addElement('header', 'gorgone_Informations', _("Gorgone Information"));
-}
+$form->addElement('header', 'gorgone_Informations', _("Gorgone Information"));
 $form->addElement('header', 'Nagios_Informations', _("Monitoring Engine Information"));
 $form->addElement('header', 'Misc', _("Miscelleneous"));
 $form->addElement('header', 'Centreontrapd', _("Centreon Trap Collector"));
@@ -241,8 +238,22 @@ $form->addGroup($tab, 'gorgone_communication_type', _("Gorgone connection protoc
 $form->addElement('text', 'gorgone_port', _("Gorgone connection port"), $attrsText3);
 
 $tab = array();
-$tab[] = $form->createElement('radio', 'localhost', null, _("Yes"), '1');
-$tab[] = $form->createElement('radio', 'localhost', null, _("No"), '0');
+$tab[] = $form->createElement(
+    'radio',
+    'localhost',
+    null,
+    _("Yes"),
+    '1',
+    array('onclick' => "displayGorgoneParam(false);")
+);
+$tab[] = $form->createElement(
+    'radio',
+    'localhost',
+    null,
+    _("No"),
+    '0',
+    array('onclick' => "displayGorgoneParam(true);")
+);
 $form->addGroup($tab, 'localhost', _("Localhost ?"), '&nbsp;');
 
 $tab = array();
@@ -433,6 +444,18 @@ if ($valid) {
 
 ?>
 <script type='text/javascript'>
+    // toggle gorgone port and communication mode fields
+    function displayGorgoneParam(checkValue) {
+        if (checkValue === true) {
+            jQuery('#gorgoneData').fadeIn({duration: 0});
+        } else {
+            jQuery('#gorgoneData').fadeOut({duration: 0});
+        }
+    }
+    // check current gorgone fields visibility
+    displayGorgoneParam(<?= !$cfg_server['localhost'] ? "true" : "false" ?>)
+
+
     jQuery("#remote_additional_id").centreonSelect2({
         select2: {
             ajax: {
@@ -500,4 +523,6 @@ if ($valid) {
             jQuery('#remote_additional_id').trigger('change');
         }
     });
+
+
 </script>
