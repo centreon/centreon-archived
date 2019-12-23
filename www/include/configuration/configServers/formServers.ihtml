@@ -41,6 +41,7 @@
             <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="no_proxy">{$form.no_proxy.label}</td><td class="FormRowValue">{$form.no_proxy.html}</td></tr>
         </tr>
         {/if}
+        {if $form.header.gorgone_Informations.lable}
         <tr class="list_lvl_1">
             <td class="ListColLvl1_name" colspan="2"><h4>{$form.header.gorgone_Informations}</h4></td>
         </tr>
@@ -52,6 +53,7 @@
             <td class="FormRowField"><img class="helpTooltip" name="gorgone_port"> {$form.gorgone_port.label}</td>
             <td class="FormRowValue">{$form.gorgone_port.html}</td>
         </tr>
+        {/if}
         {if $form.remote_server_use_as_proxy.label}
         <tr class="list_two">
             <td class="FormRowField"><img class="helpTooltip" name="remote_server_use_as_proxy"> {$form.remote_server_use_as_proxy.label}</td>
@@ -127,5 +129,6 @@
         {/foreach}
         {literal}}{/literal}{if not $smarty.foreach.engines.last},{/if}
     {/foreach}
+    {literal}}{/literal}
 </script>
 {$helptext}

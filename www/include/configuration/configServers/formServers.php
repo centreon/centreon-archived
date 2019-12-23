@@ -91,11 +91,13 @@ if (($o == SERVER_MODIFY || $o == SERVER_WATCH) && $server_id) {
     }
 
     if ($serverType === "poller") {
-        // Select additionnal Remote Servers
-        $statement = $pearDB->prepare("SELECT remote_server_id, name 
+        // Select additional Remote Servers
+        $statement = $pearDB->prepare(
+            "SELECT remote_server_id, name
             FROM rs_poller_relation AS rspr
             LEFT JOIN nagios_server AS ns ON (rspr.remote_server_id = ns.id)
-            WHERE poller_server_id = :poller_server_id");
+            WHERE poller_server_id = :poller_server_id"
+        );
         $statement->bindParam(':poller_server_id', $cfg_server['id'], \PDO::PARAM_INT);
         $statement->execute();
 
@@ -115,7 +117,7 @@ if (($o == SERVER_MODIFY || $o == SERVER_WATCH) && $server_id) {
  * Preset values of misc commands
  */
 $cdata = CentreonData::getInstance();
-$cmdArray = $instanceObj->getCommandsFromPollerId(isset($server_id) ? $server_id : null);
+$cmdArray = $instanceObj->getCommandsFromPollerId($server_id ?? null);
 $cdata->addJsData('clone-values-pollercmd', htmlspecialchars(
     json_encode($cmdArray),
     ENT_QUOTES
@@ -175,7 +177,10 @@ if ($o == SERVER_ADD) {
  * Headers
  */
 $form->addElement('header', 'Server_Informations', _("Server Information"));
-$form->addElement('header', 'gorgone_Informations', _("Gorgone Information"));
+// display gorgone fields only if not a central
+if (!$cfg_server['localhost']) {
+    $form->addElement('header', 'gorgone_Informations', _("Gorgone Information"));
+}
 $form->addElement('header', 'Nagios_Informations', _("Monitoring Engine Information"));
 $form->addElement('header', 'Misc', _("Miscelleneous"));
 $form->addElement('header', 'Centreontrapd', _("Centreon Trap Collector"));
@@ -229,11 +234,14 @@ $form->addElement('text', 'nagios_bin', _("Monitoring Engine Binary"), $attrsTex
 $form->addElement('text', 'nagiostats_bin', _("Monitoring Engine Statistics Binary"), $attrsText2);
 $form->addElement('text', 'nagios_perfdata', _("Perfdata file"), $attrsText2);
 
-$tab = array();
-$tab[] = $form->createElement('radio', 'gorgone_communication_type', null, _("ZMQ"), ZMQ);
-$tab[] = $form->createElement('radio', 'gorgone_communication_type', null, _("SSH"), SSH);
-$form->addGroup($tab, 'gorgone_communication_type', _("Gorgone connection protocol"), '&nbsp;');
-$form->addElement('text', 'gorgone_port', _("Gorgone connection port"), $attrsText3);
+// display gorgone fields only if not a central
+if (!$cfg_server['localhost']) {
+    $tab = array();
+    $tab[] = $form->createElement('radio', 'gorgone_communication_type', null, _("ZMQ"), ZMQ);
+    $tab[] = $form->createElement('radio', 'gorgone_communication_type', null, _("SSH"), SSH);
+    $form->addGroup($tab, 'gorgone_communication_type', _("Gorgone connection protocol"), '&nbsp;');
+    $form->addElement('text', 'gorgone_port', _("Gorgone connection port"), $attrsText3);
+}
 
 $tab = array();
 $tab[] = $form->createElement('radio', 'localhost', null, _("Yes"), '1');
