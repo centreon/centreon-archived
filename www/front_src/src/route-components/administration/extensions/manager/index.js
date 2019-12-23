@@ -17,7 +17,7 @@ import {
   ExtensionsHolder,
   ExtensionDetailsPopup,
   ExtensionDeletePopup,
-} from '@centreon/react-components';
+} from '@centreon/ui';
 import Hook from '../../../../components/hook';
 
 import axios from '../../../../axios';
