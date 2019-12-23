@@ -240,6 +240,7 @@ class CentreonRtDowntime extends CentreonObject
             'fixed',
             'url',
         );
+        $unknownHost = array();
 
         if (!empty($hostList)) {
             $hostList = array_filter(explode('|', $hostList));
@@ -252,7 +253,6 @@ class CentreonRtDowntime extends CentreonObject
             );
 
             // check if host exist
-            $unknownHost = array();
             $existingHost = array();
             foreach ($hostList as $host) {
                 if ($this->hostObject->getHostID($host) == 0) {
@@ -750,10 +750,16 @@ class CentreonRtDowntime extends CentreonObject
                 $infoDowntime = $this->object->getCurrentDowntime($downtime);
                 if ($infoDowntime) {
                     $hostName = $this->hostObject->getHostName($infoDowntime['host_id']);
-                    if (is_null($infoDowntime['service_id'])) {
-                        $this->externalCmdObj->deleteDowntime('HOST', array($hostName . ';' . $downtime => 'on'));
+                    if (is_null($infoDowntime['service_id']) || $infoDowntime['service_id'] == 0) {
+                        $this->externalCmdObj->deleteDowntime(
+                            'HOST',
+                            array($hostName . ';' . $infoDowntime['internal_id'] => 'on')
+                        );
                     } else {
-                        $this->externalCmdObj->deleteDowntime('SVC', array($hostName . ';' . $downtime => 'on'));
+                        $this->externalCmdObj->deleteDowntime(
+                            'SVC',
+                            array($hostName . ';' . $infoDowntime['internal_id'] => 'on')
+                        );
                     }
                 } else {
                     $unknownDowntime[] = $downtime;
