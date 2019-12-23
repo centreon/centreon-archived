@@ -62,14 +62,14 @@ $nagios = array();
 $selectedAdditionnalRS = null;
 $serverType = "poller";
 if (($o == SERVER_MODIFY || $o == SERVER_WATCH) && $server_id) {
-    $DBRESULT = $pearDB->query("SELECT * FROM `nagios_server` WHERE `id` = '$server_id' LIMIT 1");
-    $cfg_server = array_map("myDecode", $DBRESULT->fetchRow());
-    $DBRESULT->closeCursor();
+    $dbResult = $pearDB->query("SELECT * FROM `nagios_server` WHERE `id` = '$server_id' LIMIT 1");
+    $cfg_server = array_map("myDecode", $dbResult->fetch());
+    $dbResult->closeCursor();
 
     $query = 'SELECT ip FROM remote_servers';
-    $DBRESULT = $pearDB->query($query);
-    $remotesServerIPs = $DBRESULT->fetchAll(PDO::FETCH_COLUMN);
-    $DBRESULT->closeCursor();
+    $dbResult = $pearDB->query($query);
+    $remotesServerIPs = $dbResult->fetchAll(PDO::FETCH_COLUMN);
+    $dbResult->closeCursor();
 
     if ($cfg_server['localhost']) {
         $serverType = "central";
@@ -78,9 +78,11 @@ if (($o == SERVER_MODIFY || $o == SERVER_WATCH) && $server_id) {
     }
 
     if ($serverType === "remote") {
-        $statement = $pearDB->prepare("SELECT http_method, http_port, no_check_certificate, no_proxy
+        $statement = $pearDB->prepare(
+            "SELECT http_method, http_port, no_check_certificate, no_proxy
             FROM `remote_servers`
-            WHERE `ip` = :ns_ip_address LIMIT 1");
+            WHERE `ip` = :ns_ip_address LIMIT 1"
+        );
         $statement->bindParam(':ns_ip_address', $cfg_server['ns_ip_address'], \PDO::PARAM_STR);
         $statement->execute();
 
@@ -124,11 +126,11 @@ $cdata->addJsData('clone-count-pollercmd', count($cmdArray));
  * nagios servers comes from DB
  */
 $nagios_servers = array();
-$DBRESULT = $pearDB->query("SELECT * FROM `nagios_server` ORDER BY name");
-while ($nagios_server = $DBRESULT->fetchRow()) {
+$dbResult = $pearDB->query("SELECT * FROM `nagios_server` ORDER BY name");
+while ($nagios_server = $dbResult->fetch()) {
     $nagios_servers[$nagios_server["id"]] = $nagios_server["name"];
 }
-$DBRESULT->closeCursor();
+$dbResult->closeCursor();
 
 $attrsText = array("size" => "30");
 $attrsText2 = array("size" => "50");
