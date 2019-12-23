@@ -234,14 +234,11 @@ $form->addElement('text', 'nagios_bin', _("Monitoring Engine Binary"), $attrsTex
 $form->addElement('text', 'nagiostats_bin', _("Monitoring Engine Statistics Binary"), $attrsText2);
 $form->addElement('text', 'nagios_perfdata', _("Perfdata file"), $attrsText2);
 
-// display gorgone fields only if not a central
-if (!$cfg_server['localhost']) {
-    $tab = array();
-    $tab[] = $form->createElement('radio', 'gorgone_communication_type', null, _("ZMQ"), ZMQ);
-    $tab[] = $form->createElement('radio', 'gorgone_communication_type', null, _("SSH"), SSH);
-    $form->addGroup($tab, 'gorgone_communication_type', _("Gorgone connection protocol"), '&nbsp;');
-    $form->addElement('text', 'gorgone_port', _("Gorgone connection port"), $attrsText3);
-}
+$tab = array();
+$tab[] = $form->createElement('radio', 'gorgone_communication_type', null, _("ZMQ"), ZMQ);
+$tab[] = $form->createElement('radio', 'gorgone_communication_type', null, _("SSH"), SSH);
+$form->addGroup($tab, 'gorgone_communication_type', _("Gorgone connection protocol"), '&nbsp;');
+$form->addElement('text', 'gorgone_port', _("Gorgone connection port"), $attrsText3);
 
 $tab = array();
 $tab[] = $form->createElement('radio', 'localhost', null, _("Yes"), '1');
