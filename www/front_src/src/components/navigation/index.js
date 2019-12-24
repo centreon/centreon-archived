@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Sidebar } from '@centreon/react-components';
+import { Sidebar } from '@centreon/ui';
 import { connect } from 'react-redux';
 import { menuSelector } from '../../redux/selectors/navigation/menu';
 import { reactRoutesSelector } from '../../redux/selectors/navigation/reactRoutes';
