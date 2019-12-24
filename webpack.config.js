@@ -132,7 +132,7 @@ module.exports = {
         ],
       },
       {
-        test: /@centreon\/react\-components\/lib\/.+\.(bmp|png|jpg|jpeg|gif|svg)$/,
+        test: /@centreon\/ui\/lib\/.+\.(bmp|png|jpg|jpeg|gif|svg)$/,
         use: [
           {
             loader: 'url-loader',
