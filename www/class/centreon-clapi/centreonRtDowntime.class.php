@@ -227,7 +227,7 @@ class CentreonRtDowntime extends CentreonObject
      */
     public function showHost($hostList)
     {
-        $unknownHost = array();
+        $unknownHost = [];
 
         $fields = array(
             'id',
