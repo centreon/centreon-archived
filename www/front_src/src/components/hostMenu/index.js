@@ -201,6 +201,7 @@ class HostMenu extends Component {
               <Link
                 to="/main.php?p=20202&o=h_unreachable&search="
                 className={styles['link']}
+                onClick={this.toggle.bind(this)}
               >
                 <SubmenuItem
                   dotColored="gray"
@@ -211,6 +212,7 @@ class HostMenu extends Component {
               <Link
                 to="/main.php?p=20202&o=h_up&search="
                 className={styles['link']}
+                onClick={this.toggle.bind(this)}
               >
                 <SubmenuItem
                   dotColored="green"
@@ -221,6 +223,7 @@ class HostMenu extends Component {
               <Link
                 to="/main.php?p=20202&o=h_pending&search="
                 className={styles['link']}
+                onClick={this.toggle.bind(this)}
               >
                 <SubmenuItem
                   dotColored="blue"
