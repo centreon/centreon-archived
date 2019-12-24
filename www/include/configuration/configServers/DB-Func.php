@@ -471,12 +471,6 @@ function insertServer(array $data): int
     } else {
         $rq .= "NULL, ";
     }
-    if (isset($data["ns_ip_address"]) && $data["ns_ip_address"] != null) {
-        $rq .= ':ns_ip_address, ';
-        $retValue[':ns_ip_address'] = htmlentities(trim($data["ns_ip_address"]), ENT_QUOTES, "UTF-8");
-    } else {
-        $rq .= "NULL, ";
-    }
     if (isset($data["gorgone_communication_type"]['gorgone_communication_type'])
         && $data["gorgone_communication_type"]['gorgone_communication_type'] != null) {
         $rq .= ':gorgone_communication_type, ';
