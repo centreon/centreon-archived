@@ -15,15 +15,18 @@ import PropTypes from 'prop-types';
 import numeral from 'numeral';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
-import axios from '../../axios';
 
-import SubmenuHeader from '@centreon/ui/Submenu/SubmenuHeader';
-import IconHeader from '@centreon/ui/Icon/IconHeader';
-import IconNumber from '@centreon/ui/Icon/IconNumber';
-import SubmenuItems from '@centreon/ui/Submenu/SubmenuHeader/SubmenuItems';
-import SubmenuItem from '@centreon/ui/Submenu/SubmenuHeader/SubmenuItem';
-import IconToggleSubmenu from '@centreon/ui/Icon/IconToggleSubmenu';
+import {
+  SubmenuHeader,
+  IconHeader,
+  IconNumber,
+  SubmenuItems,
+  SubmenuItem,
+  IconToggleSubmenu,
+} from '@centreon/ui';
+
 import styles from '../header/header.scss';
+import axios from '../../axios';
 
 const numberFormat = yup
   .number()
@@ -51,7 +54,7 @@ const statusSchema = yup.object().shape({
 
 class ServiceStatusMenu extends Component {
   servicesStatusService = axios(
-    'internal.php?object=centreon_topcounter&action=servicesStatus',
+    'internal.php?object=centreon_topcounter&action=servicesStatus'
   );
 
   refreshInterval = null;
@@ -130,19 +133,24 @@ class ServiceStatusMenu extends Component {
     }
 
     return (
-      <div className={styles.wrapper} ref={(service) => (this.service = service)}>
+      <div
+        className={styles.wrapper}
+        ref={(service) => (this.service = service)}
+      >
         <SubmenuHeader submenuType="top" active={toggled}>
           <IconHeader
             iconType="services"
             iconName="services"
-            onClick={this.toggle.bind(this)}
+            onClick={this.toggle}
           />
           <Link
             className={classnames(styles.link, styles['wrap-middle-icon'])}
             to="/main.php?p=20201&o=svc_unhandled&statusFilter=critical&search="
           >
             <IconNumber
-              iconType={`${data.critical.unhandled > 0 ? 'colored' : 'bordered'}`}
+              iconType={`${
+                data.critical.unhandled > 0 ? 'colored' : 'bordered'
+              }`}
               iconColor="red"
               iconNumber={`${numeral(data.critical.unhandled).format('0a')}`}
             />
@@ -164,7 +172,9 @@ class ServiceStatusMenu extends Component {
             to="/main.php?p=20201&o=svc_unhandled&statusFilter=unknown&search="
           >
             <IconNumber
-              iconType={`${data.unknown.unhandled > 0 ? 'colored' : 'bordered'}`}
+              iconType={`${
+                data.unknown.unhandled > 0 ? 'colored' : 'bordered'
+              }`}
               iconColor="gray-light"
               iconNumber={numeral(data.unknown.unhandled).format('0a')}
             />
@@ -183,7 +193,7 @@ class ServiceStatusMenu extends Component {
             iconType="arrow"
             ref={this.setWrapperRef}
             rotate={toggled}
-            onClick={this.toggle.bind(this)}
+            onClick={this.toggle}
           />
           <div
             className={classnames(styles['submenu-toggle'], {
@@ -193,8 +203,8 @@ class ServiceStatusMenu extends Component {
             <SubmenuItems>
               <Link
                 to="/main.php?p=20201&o=svc&statusFilter=&search="
-                className={styles['link']}
-                onClick={this.toggle.bind(this)}
+                className={styles.link}
+                onClick={this.toggle}
               >
                 <SubmenuItem
                   submenuTitle="All Services"
@@ -203,41 +213,47 @@ class ServiceStatusMenu extends Component {
               </Link>
               <Link
                 to="/main.php?p=20201&o=svc_unhandled&statusFilter=critical&search="
-                className={styles['link']}
-                onClick={this.toggle.bind(this)}
+                className={styles.link}
+                onClick={this.toggle}
               >
                 <SubmenuItem
                   dotColored="red"
                   submenuTitle="Critical services"
-                  submenuCount={`${numeral(data.critical.unhandled).format()}/${numeral(data.critical.total).format()}`}
+                  submenuCount={`${numeral(
+                    data.critical.unhandled
+                  ).format()}/${numeral(data.critical.total).format()}`}
                 />
               </Link>
               <Link
                 to="/main.php?p=20201&o=svc_unhandled&statusFilter=warning&search="
-                className={styles['link']}
-                onClick={this.toggle.bind(this)}
+                className={styles.link}
+                onClick={this.toggle}
               >
                 <SubmenuItem
                   dotColored="orange"
                   submenuTitle="Warning services"
-                  submenuCount={`${numeral(data.warning.unhandled).format()}/${numeral(data.warning.total).format()}`}
+                  submenuCount={`${numeral(
+                    data.warning.unhandled
+                  ).format()}/${numeral(data.warning.total).format()}`}
                 />
               </Link>
               <Link
                 to="/main.php?p=20201&o=svc_unhandled&statusFilter=unknown&search="
-                className={styles['link']}
-                onClick={this.toggle.bind(this)}
+                className={styles.link}
+                onClick={this.toggle}
               >
                 <SubmenuItem
                   dotColored="gray"
                   submenuTitle="Unknown services"
-                  submenuCount={`${numeral(data.unknown.unhandled).format()}/${numeral(data.unknown.total).format()}`}
+                  submenuCount={`${numeral(
+                    data.unknown.unhandled
+                  ).format()}/${numeral(data.unknown.total).format()}`}
                 />
               </Link>
               <Link
                 to="/main.php?p=20201&o=svc&statusFilter=ok&search="
-                className={styles['link']}
-                onClick={this.toggle.bind(this)}
+                className={styles.link}
+                onClick={this.toggle}
               >
                 <SubmenuItem
                   dotColored="green"
@@ -247,8 +263,8 @@ class ServiceStatusMenu extends Component {
               </Link>
               <Link
                 to="/main.php?p=20201&o=svc&statusFilter=pending&search="
-                className={styles['link']}
-                onClick={this.toggle.bind(this)}
+                className={styles.link}
+                onClick={this.toggle}
               >
                 <SubmenuItem
                   dotColored="blue"

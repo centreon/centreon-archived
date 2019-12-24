@@ -16,12 +16,15 @@ import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
-import SubmenuHeader from '@centreon/ui/Submenu/SubmenuHeader';
-import IconHeader from '@centreon/ui/Icon/IconHeader';
-import IconNumber from '@centreon/ui/Icon/IconNumber';
-import SubmenuItems from '@centreon/ui/Submenu/SubmenuHeader/SubmenuItems';
-import SubmenuItem from '@centreon/ui/Submenu/SubmenuHeader/SubmenuItem';
-import IconToggleSubmenu from '@centreon/ui/Icon/IconToggleSubmenu';
+import {
+  SubmenuHeader,
+  IconHeader,
+  IconNumber,
+  SubmenuItems,
+  SubmenuItem,
+  IconToggleSubmenu,
+} from '@centreon/ui';
+
 import styles from '../header/header.scss';
 import axios from '../../axios';
 
@@ -47,7 +50,7 @@ const statusSchema = yup.object().shape({
 
 class HostMenu extends Component {
   hostsService = axios(
-    'internal.php?object=centreon_topcounter&action=hosts_status',
+    'internal.php?object=centreon_topcounter&action=hosts_status'
   );
 
   refreshInterval = null;
@@ -128,11 +131,7 @@ class HostMenu extends Component {
     return (
       <div className={styles.wrapper} ref={(host) => (this.host = host)}>
         <SubmenuHeader submenuType="top" active={toggled}>
-          <IconHeader
-            iconType="hosts"
-            iconName="Hosts"
-            onClick={this.toggle.bind(this)}
-          />
+          <IconHeader iconType="hosts" iconName="Hosts" onClick={this.toggle} />
           <Link
             className={classnames(styles.link, styles['wrap-middle-icon'])}
             to="/main.php?p=20202&o=h_down&search="
@@ -169,7 +168,7 @@ class HostMenu extends Component {
             iconType="arrow"
             ref={this.setWrapperRef}
             rotate={toggled}
-            onClick={this.toggle.bind(this)}
+            onClick={this.toggle}
           />
           <div
             className={classnames(styles['submenu-toggle'], {
@@ -180,7 +179,7 @@ class HostMenu extends Component {
               <Link
                 to="/main.php?p=20202&o=h&search="
                 className={styles.link}
-                onClick={this.toggle.bind(this)}
+                onClick={this.toggle}
               >
                 <SubmenuItem
                   submenuTitle="All"
@@ -190,29 +189,33 @@ class HostMenu extends Component {
               <Link
                 to="/main.php?p=20202&o=h_down&search="
                 className={styles.link}
-                onClick={this.toggle.bind(this)}
+                onClick={this.toggle}
               >
                 <SubmenuItem
                   dotColored="red"
                   submenuTitle="Critical"
-                  submenuCount={`${numeral(data.down.unhandled).format("0a")}/${numeral(data.down.total).format("0a")}`}
+                  submenuCount={`${numeral(data.down.unhandled).format(
+                    '0a'
+                  )}/${numeral(data.down.total).format('0a')}`}
                 />
               </Link>
               <Link
                 to="/main.php?p=20202&o=h_unreachable&search="
-                className={styles['link']}
-                onClick={this.toggle.bind(this)}
+                className={styles.link}
+                onClick={this.toggle}
               >
                 <SubmenuItem
                   dotColored="gray"
                   submenuTitle="Unreachable"
-                  submenuCount={`${numeral(data.unreachable.unhandled).format("0a")}/${numeral(data.unreachable.total).format("0a")}`}
+                  submenuCount={`${numeral(data.unreachable.unhandled).format(
+                    '0a'
+                  )}/${numeral(data.unreachable.total).format('0a')}`}
                 />
               </Link>
               <Link
                 to="/main.php?p=20202&o=h_up&search="
-                className={styles['link']}
-                onClick={this.toggle.bind(this)}
+                className={styles.link}
+                onClick={this.toggle}
               >
                 <SubmenuItem
                   dotColored="green"
@@ -222,8 +225,8 @@ class HostMenu extends Component {
               </Link>
               <Link
                 to="/main.php?p=20202&o=h_pending&search="
-                className={styles['link']}
-                onClick={this.toggle.bind(this)}
+                className={styles.link}
+                onClick={this.toggle}
               >
                 <SubmenuItem
                   dotColored="blue"
