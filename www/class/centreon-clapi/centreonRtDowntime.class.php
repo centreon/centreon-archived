@@ -227,6 +227,8 @@ class CentreonRtDowntime extends CentreonObject
      */
     public function showHost($hostList)
     {
+        $unknownHost = [];
+        
         $fields = array(
             'id',
             'host_name',
@@ -240,7 +242,6 @@ class CentreonRtDowntime extends CentreonObject
             'fixed',
             'url',
         );
-        $unknownHost = array();
 
         if (!empty($hostList)) {
             $hostList = array_filter(explode('|', $hostList));
