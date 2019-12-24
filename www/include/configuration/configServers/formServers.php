@@ -452,9 +452,8 @@ if ($valid) {
             jQuery('#gorgoneData').fadeOut({duration: 0});
         }
     }
-    // check current gorgone fields visibility
+    // init current gorgone fields visibility
     displayGorgoneParam(<?= !$cfg_server['localhost'] ? "true" : "false" ?>)
-
 
     jQuery("#remote_additional_id").centreonSelect2({
         select2: {
@@ -523,6 +522,4 @@ if ($valid) {
             jQuery('#remote_additional_id').trigger('change');
         }
     });
-
-
 </script>
