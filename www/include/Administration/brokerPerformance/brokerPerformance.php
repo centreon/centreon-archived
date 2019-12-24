@@ -180,7 +180,7 @@ function parseStatsFile($statfile)
         }
 
         /* Create list of loaded modules */
-        if (preg_match('/module \/.*\/\d+\-(.*)\.so/', $key, $matches)) {
+        if (preg_match('/module\s*\/.*\/\d+\-(.*)\.so/', $key, $matches)) {
             $result['modules'][$matches[1]] = $json_stats[$key]['state'];
         }
     }
@@ -265,7 +265,7 @@ try {
     while ($row = $stmt->fetch()) {
         $statsfile = $row['cache_directory'] . '/' . $row['config_name'] . '-stats.json';
         if ($defaultPoller != $selectedPoller) {
-            $statsfile = _CENTREON_VARLIB_ . '/broker-stats/broker-stats-' . $selectedPoller . '.dat';
+            $statsfile = _CENTREON_CACHEDIR_ . '/broker-stats/' . $selectedPoller . '/' . $row['config_name'] . '.json';
         }
         if (!file_exists($statsfile) || !is_readable($statsfile)) {
             $perf_err[$row['config_name']] = _('Cannot open statistics file');
