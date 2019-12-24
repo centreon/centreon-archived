@@ -62,14 +62,14 @@ $nagios = array();
 $selectedAdditionnalRS = null;
 $serverType = "poller";
 if (($o == SERVER_MODIFY || $o == SERVER_WATCH) && $server_id) {
-    $DBRESULT = $pearDB->query("SELECT * FROM `nagios_server` WHERE `id` = '$server_id' LIMIT 1");
-    $cfg_server = array_map("myDecode", $DBRESULT->fetchRow());
-    $DBRESULT->closeCursor();
+    $dbResult = $pearDB->query("SELECT * FROM `nagios_server` WHERE `id` = '$server_id' LIMIT 1");
+    $cfg_server = array_map("myDecode", $dbResult->fetch());
+    $dbResult->closeCursor();
 
     $query = 'SELECT ip FROM remote_servers';
-    $DBRESULT = $pearDB->query($query);
-    $remotesServerIPs = $DBRESULT->fetchAll(PDO::FETCH_COLUMN);
-    $DBRESULT->closeCursor();
+    $dbResult = $pearDB->query($query);
+    $remotesServerIPs = $dbResult->fetchAll(PDO::FETCH_COLUMN);
+    $dbResult->closeCursor();
 
     if ($cfg_server['localhost']) {
         $serverType = "central";
@@ -78,9 +78,11 @@ if (($o == SERVER_MODIFY || $o == SERVER_WATCH) && $server_id) {
     }
 
     if ($serverType === "remote") {
-        $statement = $pearDB->prepare("SELECT http_method, http_port, no_check_certificate, no_proxy
+        $statement = $pearDB->prepare(
+            "SELECT http_method, http_port, no_check_certificate, no_proxy
             FROM `remote_servers`
-            WHERE `ip` = :ns_ip_address LIMIT 1");
+            WHERE `ip` = :ns_ip_address LIMIT 1"
+        );
         $statement->bindParam(':ns_ip_address', $cfg_server['ns_ip_address'], \PDO::PARAM_STR);
         $statement->execute();
 
@@ -89,11 +91,13 @@ if (($o == SERVER_MODIFY || $o == SERVER_WATCH) && $server_id) {
     }
 
     if ($serverType === "poller") {
-        // Select additionnal Remote Servers
-        $statement = $pearDB->prepare("SELECT remote_server_id, name 
+        // Select additional Remote Servers
+        $statement = $pearDB->prepare(
+            "SELECT remote_server_id, name
             FROM rs_poller_relation AS rspr
             LEFT JOIN nagios_server AS ns ON (rspr.remote_server_id = ns.id)
-            WHERE poller_server_id = :poller_server_id");
+            WHERE poller_server_id = :poller_server_id"
+        );
         $statement->bindParam(':poller_server_id', $cfg_server['id'], \PDO::PARAM_INT);
         $statement->execute();
 
@@ -113,7 +117,7 @@ if (($o == SERVER_MODIFY || $o == SERVER_WATCH) && $server_id) {
  * Preset values of misc commands
  */
 $cdata = CentreonData::getInstance();
-$cmdArray = $instanceObj->getCommandsFromPollerId(isset($server_id) ? $server_id : null);
+$cmdArray = $instanceObj->getCommandsFromPollerId($server_id ?? null);
 $cdata->addJsData('clone-values-pollercmd', htmlspecialchars(
     json_encode($cmdArray),
     ENT_QUOTES
@@ -124,11 +128,11 @@ $cdata->addJsData('clone-count-pollercmd', count($cmdArray));
  * nagios servers comes from DB
  */
 $nagios_servers = array();
-$DBRESULT = $pearDB->query("SELECT * FROM `nagios_server` ORDER BY name");
-while ($nagios_server = $DBRESULT->fetchRow()) {
+$dbResult = $pearDB->query("SELECT * FROM `nagios_server` ORDER BY name");
+while ($nagios_server = $dbResult->fetch()) {
     $nagios_servers[$nagios_server["id"]] = $nagios_server["name"];
 }
-$DBRESULT->closeCursor();
+$dbResult->closeCursor();
 
 $attrsText = array("size" => "30");
 $attrsText2 = array("size" => "50");
@@ -234,8 +238,22 @@ $form->addGroup($tab, 'gorgone_communication_type', _("Gorgone connection protoc
 $form->addElement('text', 'gorgone_port', _("Gorgone connection port"), $attrsText3);
 
 $tab = array();
-$tab[] = $form->createElement('radio', 'localhost', null, _("Yes"), '1');
-$tab[] = $form->createElement('radio', 'localhost', null, _("No"), '0');
+$tab[] = $form->createElement(
+    'radio',
+    'localhost',
+    null,
+    _("Yes"),
+    '1',
+    array('onclick' => "displayGorgoneParam(false);")
+);
+$tab[] = $form->createElement(
+    'radio',
+    'localhost',
+    null,
+    _("No"),
+    '0',
+    array('onclick' => "displayGorgoneParam(true);")
+);
 $form->addGroup($tab, 'localhost', _("Localhost ?"), '&nbsp;');
 
 $tab = array();
@@ -426,6 +444,17 @@ if ($valid) {
 
 ?>
 <script type='text/javascript'>
+    // toggle gorgone port and communication mode fields
+    function displayGorgoneParam(checkValue) {
+        if (checkValue === true) {
+            jQuery('#gorgoneData').fadeIn({duration: 0});
+        } else {
+            jQuery('#gorgoneData').fadeOut({duration: 0});
+        }
+    }
+    // init current gorgone fields visibility
+    displayGorgoneParam(<?= !$cfg_server['localhost'] ? "true" : "false" ?>)
+
     jQuery("#remote_additional_id").centreonSelect2({
         select2: {
             ajax: {
