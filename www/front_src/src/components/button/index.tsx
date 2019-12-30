@@ -7,7 +7,14 @@ import React from 'react';
 import classnames from 'classnames';
 import styles from './button.scss';
 
-export default ({ buttonClass, buttonTitle, disabled, buttonType }) => (
+interface Props {
+  buttonClass: string;
+  buttoTitle: string;
+  disabled: boolean;
+  buttonType: string
+}
+
+export default ({ buttonClass, buttonTitle, disabled, buttonType }: Props) => (
   <button
     className={classnames(
       styles.btn,
