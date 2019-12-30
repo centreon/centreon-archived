@@ -3,8 +3,15 @@ import { connect } from 'react-redux';
 import { Breadcrumb } from '@centreon/ui';
 import breadcrumbsSelector from '../../redux/selectors/navigation/breadcrumbs';
 
-function BreadcrumbWrapper({ breadcrumbs, path, children, ...others }) {
-  const getBreadcrumbPath = useCallback((breadcrumbs, path) => {
+interface Props {
+  breadcrumbs: object;
+  path: string;
+  children: ReactNode;
+  others: object;
+}
+
+function BreadcrumbWrapper({ breadcrumbs, path, children, ...others }: Props) {
+  const getBreadcrumbPath = useCallback((breadcrumbs: object, path: string) => {
     if (breadcrumbs[path]) {
       return breadcrumbs[path];
     }
