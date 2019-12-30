@@ -21,7 +21,9 @@ declare(strict_types=1);
 
 namespace Security;
 
-class Encryption
+use Security\Interfaces\EncryptionInterface;
+
+class Encryption implements EncryptionInterface
 {
     /**
      * @var string First secure key
@@ -34,12 +36,7 @@ class Encryption
     private $secondKey;
 
     /**
-     * Crypt data according to first and second keys.
-     *
-     * @param string $data Data to be encrypted
-     * @see Security::$firstKey
-     * @see Security::$secondKey
-     * @return string Encrypted data
+     * @inheritDoc
      */
     public function crypt(string $data): string
     {
@@ -57,10 +54,7 @@ class Encryption
     }
 
     /**
-     * Decrypt input according to first and second keys.
-     *
-     * @param string $input Data to be decrypted
-     * @return string|null Data decrypted if successful otherwise null
+     * @inheritDoc
      */
     public function decrypt(string $input): ?string
     {
@@ -82,49 +76,37 @@ class Encryption
             return null;
         }
         $data = openssl_decrypt($firstEncrypted, $method, $firstKey, OPENSSL_RAW_DATA, $iv);
-        $secondEncryptedNew = hash_hmac('sha3-512', $firstEncrypted, $secondKey, true);
-
-        if (hash_equals($secondEncrypted, $secondEncryptedNew)) {
-            return $data;
+        if ($data !== false) {
+            $secondEncryptedNew = hash_hmac('sha3-512', $firstEncrypted, $secondKey, true);
+            if (hash_equals($secondEncrypted, $secondEncryptedNew)) {
+                return $data;
+            }
         }
         return null;
     }
 
     /**
-     * Set the second secure key.
-     *
-     * @param string $secondKey
-     * @see Security::$secondKey
-     * @return Encryption
+     * @inheritDoc
      */
-    public function setSecondKey(string $secondKey): self
+    public function setSecondKey(string $secondKey): EncryptionInterface
     {
         $this->secondKey = $secondKey;
         return $this;
     }
 
     /**
-     * Set the first secure key.
-     *
-     * @param string $firstKey
-     * @see Security::$firstKey
-     * @return Encryption
+     * @inheritDoc
      */
-    public function setFirstKey(string $firstKey): self
+    public function setFirstKey(string $firstKey): EncryptionInterface
     {
         $this->firstKey = $firstKey;
         return $this;
     }
 
     /**
-     * Generates a random string.
-     *
-     * Can be use as salt with password.
-     *
-     * @param int $length Length if the generated salt
-     * @return string
+     * @inheritDoc
      */
-    static public function generateString(int $length = 64): string
+    static public function generateRandomString(int $length = 64): string
     {
         return substr(base64_encode(openssl_random_pseudo_bytes($length)), 0, $length);
     }
