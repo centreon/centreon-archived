@@ -16,14 +16,12 @@ import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
-import {
-  SubmenuHeader,
-  IconHeader,
-  IconNumber,
-  SubmenuItems,
-  SubmenuItem,
-  IconToggleSubmenu,
-} from '@centreon/ui';
+import IconHeader from '@centreon/ui/Icon/IconHeader';
+import IconNumber from '@centreon/ui/Icon/IconNumber';
+import IconToggleSubmenu from '@centreon/ui/Icon/IconToggleSubmenu';
+import SubmenuHeader from '@centreon/ui/Submenu/SubmenuHeader';
+import SubmenuItem from '@centreon/ui/Submenu/SubmenuHeader/SubmenuItem';
+import SubmenuItems from '@centreon/ui/Submenu/SubmenuHeader/SubmenuItems';
 
 import styles from '../header/header.scss';
 import axios from '../../axios';
