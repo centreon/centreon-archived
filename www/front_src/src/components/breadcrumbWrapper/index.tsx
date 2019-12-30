@@ -1,6 +1,6 @@
 import React, { useMemo, useCallback, ReactNode } from 'react';
 import { connect } from 'react-redux';
-import { Breadcrumb } from '@centreon/ui';
+import Breadcrumb from '@centreon/ui/Breadcrumb';
 import breadcrumbsSelector from '../../redux/selectors/navigation/breadcrumbs';
 
 interface Props {
@@ -11,7 +11,7 @@ interface Props {
 }
 
 function BreadcrumbWrapper({ breadcrumbs, path, children, ...others }: Props) {
-  const getBreadcrumbPath = useCallback((breadcrumbs: object, path: string) => {
+  const getBreadcrumbPath = useCallback(() => {
     if (breadcrumbs[path]) {
       return breadcrumbs[path];
     }
@@ -24,7 +24,7 @@ function BreadcrumbWrapper({ breadcrumbs, path, children, ...others }: Props) {
     }
 
     return [];
-  });
+  }, [breadcrumbs, path]);
 
   const breadcrumbPath = useMemo(() => getBreadcrumbPath(breadcrumbs, path), [
     breadcrumbs,
