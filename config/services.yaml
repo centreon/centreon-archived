@@ -13,7 +13,7 @@ parameters:
     database_user: "%env(user)%"
     database_password: "%env(password)%"
     centreon_var_lib: "%env(_CENTREON_VARLIB_)%"
-    validation_path: "%env(_CENTREON_PATH_)%config/packages/validator/validation.yaml"
+    validation_path: "%env(_CENTREON_PATH_)%config/packages/validator"
 
 services:
     # Default configuration for services in *this* file

@@ -130,6 +130,7 @@ class EntityValidator
         $violations = new ConstraintViolationList();
         if ($this->hasValidatorFor($entityName)) {
             $assertCollection = $this->getConstraints($entityName, $groups, true);
+
             $violations->addAll(
                 $this->validator->validate(
                     $dataToValidate,
@@ -233,14 +234,20 @@ class EntityValidator
     private function removeDuplicatedViolation(
         ConstraintViolationListInterface $violations
     ): ConstraintViolationListInterface {
-        $violationCodes = [];
         /**
          * @var $violation ConstraintViolationInterface
          */
-        for ($index = 0; $index < count($violations); $index++) {
+        $violationCodes = [];
+        $violationNumber = count($violations);
+        for ($index = 0; $index < $violationNumber; $index++) {
             $violation = $violations[$index];
-            if (!in_array($violation->getCode(), $violationCodes)) {
-                $violationCodes[] = $violation->getCode();
+            if (!array_key_exists($violation->getPropertyPath(), $violationCodes)
+                || (
+                    isset($violationCodes[$violation->getPropertyPath()])
+                    && !in_array($violation->getCode(), $violationCodes[$violation->getPropertyPath()])
+                    )
+            ) {
+                $violationCodes[$violation->getPropertyPath()][] = $violation->getCode();
             } else {
                 $violations->remove($index);
             }
@@ -279,13 +286,13 @@ class EntityValidator
         /**
          * @var $violation ConstraintViolationInterface
          */
-        for ($index = 0; $index < count($violations); $index++) {
-            $violation = $violations[$index];
+        foreach ($violations as $violation) {
             if (!empty($errorMessages)) {
                 $errorMessages .= "\n";
             }
             $propertyName = $violation->getPropertyPath();
             if ($propertyName[0] == '[' && $propertyName[strlen($propertyName) - 1] == ']') {
+                $propertyName = str_replace('][', '.', $propertyName);
                 $propertyName = substr($propertyName, 1, -1);
             }
             $errorMessages .= sprintf(
