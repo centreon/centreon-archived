@@ -1,14 +1,23 @@
 /* eslint-disable jsx-a11y/label-has-for */
-/* eslint-disable react/prop-types */
 /* eslint-disable react/jsx-filename-extension */
+/* eslint-disable react/prop-types */
 
-import React from 'react';
+import React, {ReactNode} from 'react';
 import classnames from 'classnames';
 import styles from '../../styles/partials/form/_form.scss';
 import { prepareInputProps } from './utils';
 import fieldHoc from './hoc';
 
-const RadioField = ({ checked, error, label, info, className, ...rest }) => (
+export interface RadioProps {
+  checked: boolean;
+  error: ReactNode | null;
+  label: string;
+  info: string;
+  className: string;
+  rest: object;
+}
+
+const RadioField = ({ checked, error, label, info, className, ...rest }: Props) => (
   <div
     className={classnames(
       styles['custom-control'],
@@ -19,6 +28,7 @@ const RadioField = ({ checked, error, label, info, className, ...rest }) => (
     <input
       className={styles['form-check-input']}
       type="radio"
+      checked={checked}
       aria-checked={checked}
       info
       {...prepareInputProps(rest)}

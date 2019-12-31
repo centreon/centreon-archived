@@ -14,7 +14,18 @@ import styles from '../../styles/partials/form/_form.scss';
 import fieldHoc from './hoc';
 import { prepareInputProps } from './utils';
 
-const renderOption = (option, key) => {
+interface Props {
+  className: string;
+  defaultOption: Array;
+  error: ReactNode | null;
+  modifiers: Array;
+  options: Array;
+  styleOverride: object;
+  topRightLabel: string;
+  rest: object;
+}
+
+const renderOption = (option: Array | string, key: string) => {
   if (typeof option === 'string') {
     return (
       <option key={key} value={option}>

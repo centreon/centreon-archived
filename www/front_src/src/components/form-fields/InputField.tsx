@@ -13,6 +13,16 @@ import styles from '../../styles/partials/form/_form.scss';
 import fieldHoc from './hoc';
 import { prepareInputProps } from './utils';
 
+interface Props {
+  type: string;
+  label: string;
+  placeholder: string;
+  error: ReactNode | null;
+  topRightLabel: string;
+  modifiers: Array;
+  rest: object;
+}
+
 const InputField = ({
   type,
   label,
@@ -20,9 +30,8 @@ const InputField = ({
   error,
   topRightLabel,
   modifiers,
-  renderMeta,
   ...rest
-}) => {
+}: Props) => {
   return (
     <div
       className={classnames(styles['form-group'], {
@@ -52,7 +61,6 @@ InputField.displayName = 'InputField';
 InputField.defaultProps = {
   className: styles['form-control'],
   modifiers: [],
-  renderMeta: null,
 };
 InputField.propTypes = {
   error: PropTypes.element,

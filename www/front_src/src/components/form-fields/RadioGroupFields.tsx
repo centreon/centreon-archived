@@ -12,14 +12,22 @@ import { I18n } from 'react-redux-i18n';
 import styles from '../../styles/partials/form/_form.scss';
 import FieldMsg from './FieldMsg';
 import RadioField from './RadioField';
+import { Meta } from './hoc';
 
-const getValue = (item) => (item.value ? item.value : item);
+interface Props {
+  options: Array;
+  className: string;
+  label: string;
+  meta: Meta
+}
 
-const getLabel = (item) => (item.label ? item.label : item);
+const getValue = (item: object) => (item.value ? item.value : item);
 
-const getInfo = (item) => (item.info ? item.info : null);
+const getLabel = (item: object) => (item.label ? item.label : item);
 
-const renderOptions = (options, rest) =>
+const getInfo = (item: object) => (item.info ? item.info : null);
+
+const renderOptions = (options: Array<object>, rest: object) =>
   options.map((item, i) => (
     <RadioField
       key={i}

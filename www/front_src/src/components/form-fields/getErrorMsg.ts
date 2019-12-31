@@ -1,4 +1,11 @@
-const getErrorMessage = (error) => {
+export interface ErrorMessage {
+  name: string | null;
+  errorType: string;
+  value: Array | any;
+  message: string;
+}
+
+const getErrorMessage = (error: string | ErrorMessage) => {
   if (typeof error === 'string') return error;
 
   const { name, type: errorType, value, message } = error;
