@@ -5,7 +5,7 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable import/no-extraneous-dependencies */
 
-import React from 'react';
+import React, { ReactNode } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import styles from '../../styles/partials/form/_form.scss';
@@ -13,8 +13,23 @@ import styles from '../../styles/partials/form/_form.scss';
 import fieldHoc from './hoc';
 import { prepareInputProps } from './utils';
 
-const callbackWithValue = (trueValue, falseValue, callback) => (e) =>
-  callback(e.target.checked ? trueValue : falseValue);
+interface Props {
+  checked: boolean;
+  className: string;
+  error: ReactNode;
+  falseValue: boolean;
+  fieldMsg: string;
+  label: string;
+  onBlur: Function;
+  onChange: Function;
+  trueValue: boolean;
+  value: boolean;
+  info: string;
+  rest: object;
+}
+
+const callbackWithValue = (trueValue: boolean, falseValue: boolean, callback: Function) => (e) =>
+  callback(e && e.target && e.target.checked ? trueValue : falseValue);
 
 const CheckboxField = ({
   checked,
@@ -29,7 +44,7 @@ const CheckboxField = ({
   value,
   info,
   ...rest
-}) => (
+}: Props) => (
   <div
     className={classnames(styles['form-group'], {
       [styles['has-danger']]: !!error,
@@ -72,7 +87,6 @@ const CheckboxField = ({
 
 CheckboxField.displayName = 'CheckboxField';
 CheckboxField.propTypes = {
-  id: PropTypes.string.isRequired,
   label: PropTypes.string,
   className: PropTypes.string,
   value: PropTypes.bool,
