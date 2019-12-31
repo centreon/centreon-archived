@@ -12,8 +12,21 @@ import CheckboxField from "../../form-fields/CheckboxField";
 import Select from "react-select";
 import fieldHoc from "../../form-fields/hoc";
 
-class PollerFormStepTwo extends Component {
-  state = {
+interface Props {
+  error: object;
+  handleSubmit: Function;
+  onSubmit: Function;
+  pollers: Array;
+  change: Function;
+}
+
+interface State {
+  selectedMaster: object;
+  selectedAdditionals: Array;
+}
+
+class PollerFormStepTwo extends Component<Props, State> {
+  public state = {
     selectedMaster: null,
     selectedAdditionals: [],
   };
@@ -22,7 +35,7 @@ class PollerFormStepTwo extends Component {
    * Get available additionals remote server
    * ==> all remote servers except selected master
    */
-  getAvailableAdditionals = () => {
+  private getAvailableAdditionals = () => {
     const { pollers } = this.props;
     const { selectedMaster } = this.state;
 
@@ -38,7 +51,7 @@ class PollerFormStepTwo extends Component {
   /**
    * Update selected master in state
    */
-  handleChangeMaster = (event, value) => {
+  private handleChangeMaster = (event, value) => {
     const { change } = this.props;
     const { selectedAdditionals } = this.state;
 
@@ -63,13 +76,13 @@ class PollerFormStepTwo extends Component {
   /**
    * Update selected additionals in state
    */
-  handleChangeAdditionals = (event, values) => {
+  private handleChangeAdditionals = (event, values) => {
     this.setState({
       selectedAdditionals: values
     });
   }
 
-  render() {
+  public render() {
     const { error, handleSubmit, onSubmit, pollers } = this.props;
     const { selectedMaster } = this.state;
 

@@ -24,7 +24,20 @@ import {
   centreonPathValidator,
 } from '../../../helpers/validators';
 
-class RemoteServerFormStepOne extends Component {
+interface Props {
+  change: Function;
+  error: object;
+  handleSubmit: Function;
+  onSubmit: Function;
+  waitList: Array;
+}
+
+interface State {
+  inputTypeManual: boolean;
+  initialized: boolean;
+}
+
+class RemoteServerFormStepOne extends Component<Props, State> {
   state = {
     inputTypeManual: true,
     initialized: false,

@@ -15,8 +15,14 @@ import {
   centralIpAddressValidator,
 } from '../../../helpers/validators';
 
-class PollerFormStepOne extends Component {
-  render() {
+interface Props {
+  error: object;
+  handleSubmit: Function;
+  onSubmit: Function;
+}
+
+class PollerFormStepOne extends Component<Props> {
+  public render() {
     const { error, handleSubmit, onSubmit } = this.props;
 
     return (

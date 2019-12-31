@@ -8,6 +8,17 @@ import { Translate, I18n } from 'react-redux-i18n';
 import styles from '../../../styles/partials/form/_form.scss';
 import fieldHoc from '../../form-fields/hoc';
 
+interface Props {
+  error: object;
+  handleSubmit: Function;
+  onSubmit: Function;
+  pollers: object;
+}
+
+interface State {
+  value: Array;
+}
+
 class RemoteServerFormStepTwo extends Component {
   state = {
     value: [],

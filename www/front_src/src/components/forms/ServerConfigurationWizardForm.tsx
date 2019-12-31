@@ -9,6 +9,12 @@ import styles from '../../styles/partials/form/_form.scss';
 
 import RadioGroupFields from '../form-fields/RadioGroupFields';
 
+interface Props {
+  error: object;
+  handleSubmit: Function;
+  onSubmit: Function;
+}
+
 const configurationTypes = [
   {
     label: 'Add a Centreon Remote Server',
@@ -20,7 +26,7 @@ const configurationTypes = [
   },
 ];
 
-const ServerConfigurationWizardForm = ({ error, handleSubmit, onSubmit }) => (
+const ServerConfigurationWizardForm = ({ error, handleSubmit, onSubmit }: Props) => (
   <div className={classnames(styles['form-wrapper'], styles.small)}>
     <div className={styles['form-inner']}>
       <div className={styles['form-heading']}>
