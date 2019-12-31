@@ -1580,7 +1580,7 @@ div.update_readme,div.update_output {background-color:#FFF;border:1px #AEAEAE so
 
 .ListColFooterRight,.ListColFooterLeft,.ListColFooterCenter {border-top-style:solid;border-top-width:0.1px;}
 
-.ListColNoWrap                          {white-space:normal;}
+.ListColNoWrap                          {white-space:nowrap;}
 .ListColFooter1                         {padding:1px 3px;}
 .ListColFooterLeft, .ListColLeft                {text-align:left;}
 .ListColCenter,.ListColLeft,.ListColRight,.ListColNoWrap    {padding:1px 3px;}
