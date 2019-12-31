@@ -6,7 +6,7 @@ import classnames from 'classnames';
 import styles from './footer.scss';
 
 class Footer extends Component {
-  render() {
+  public render() {
     return (
       <footer className={styles.footer}>
         <div className={styles['footer-wrap']}>

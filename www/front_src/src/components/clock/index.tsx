@@ -30,24 +30,24 @@ const instantiateDate = (tz: string, locale: string, timestamp: number) => {
 };
 
 class Clock extends Component<State> {
-  clockService = axios('internal.php?object=centreon_topcounter&action=clock');
+  private clockService = axios('internal.php?object=centreon_topcounter&action=clock');
 
-  refreshTimeout = null;
+  private refreshTimeout = null;
 
-  state = {
+  public state = {
     data: null,
   };
 
-  componentDidMount() {
+  public componentDidMount() {
     this.getData();
   }
 
-  componentWillUnmount() {
+  public componentWillUnmount() {
     clearTimeout(this.refreshTimeout);
   }
 
   // fetch api to get clock data
-  getData = () => {
+  private getData = () => {
     this.clockService.get().then(({ data }) => {
       this.setState(
         {
@@ -60,14 +60,14 @@ class Clock extends Component<State> {
 
   // refresh clock data every 30 seconds
   // @todo get this interval from backend
-  refreshData = () => {
+  private refreshData = () => {
     clearTimeout(this.refreshTimeout);
     this.refreshTimeout = setTimeout(() => {
       this.getData();
     }, 30000);
   };
 
-  render() {
+  public render() {
     const { data } = this.state;
 
     if (!data) {
