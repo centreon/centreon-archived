@@ -176,7 +176,7 @@ class CentreonMetric extends CentreonWebService
     /**
      * Get metrics data by service or/and metrics
      *
-     * @return array
+     * @return array | null if arguments are not set
      */
     public function getMetricsData()
     {
