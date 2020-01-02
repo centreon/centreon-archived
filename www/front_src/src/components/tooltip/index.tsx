@@ -7,7 +7,14 @@ import { Translate } from 'react-redux-i18n';
 import classnames from 'classnames';
 import styles from './tooltip.scss';
 
-const Tooltip = ({ x, y, label, toggled }) => (
+interface Props {
+  x: number;
+  y: number;
+  label: string;
+  toggled: boolean;
+}
+
+const Tooltip = ({ x, y, label, toggled }: Props) => (
   <div
     className={classnames(styles.tooltip, { [styles.hidden]: !toggled })}
     style={{
@@ -26,7 +33,7 @@ const Tooltip = ({ x, y, label, toggled }) => (
  * label for text that will be shown into the tooltip
  * toogled (bool) to detect if the menu is folded or not - toggled false - menu is folded
  */
-const mapStateToProps = ({ tooltip }) => ({
+const mapStateToProps = ({ tooltip }: Props) => ({
   x: tooltip.x,
   y: tooltip.y,
   label: tooltip.label,
