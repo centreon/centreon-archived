@@ -21,7 +21,7 @@ info:
   license:
     name: Apache 2.0
     url: 'http://www.apache.org/licenses/LICENSE-2.0.html'
-  version: "2.0.0"
+  version: "beta"
 externalDocs:
   description: You can contact us on our community Slack
   url: 'https://centreon.slack.com/messages/CCRGLQSE5'
@@ -50,29 +50,14 @@ servers:
 tags:
   - name: Authentication
     description: "Login and logout endpoints to retrieve authentication token"
-  - name: Monitoring Server
-    description: |
-      This API allow to:
-      * Show the monitoring server configurations
   - name: Proxy
-    description: |
-      This API allow to:
-      * Show the default proxy configuration of Centreon
-      * Update the default proxy configuration of Centreon
+  - name: Monitoring Server
+  - name: Host
+  - name: Service
+  - name: Host Group
+  - name: Service Group
   - name: Acknowledgment
-    description: |
-      This API allow to:
-      * Show the latest acknowledgment for host or service
-      * Acknowledge a host or a service
-      * Cancel an acknowledgment of host or service
   - name: Downtime
-    description: |
-      This API allow to:
-      * Show hosts and services downtimes
-      * Add a downtime on host or service
-      * Cancel a downtime of host or service
-  - name: Monitoring
-    description: "Real-time monitoring of the services and hosts"
 security:
   - Token: []
   - Cookie: []
@@ -83,6 +68,7 @@ paths:
         - Authentication
       summary: "Login"
       description: "Entry point to retrieve an authentication token."
+      security: []
       requestBody:
         description: "Authentication schema"
         content:
@@ -116,16 +102,351 @@ paths:
                 $ref: '#/components/schemas/LogoutAuthenticationResponse'
         '403':
           $ref: '#/components/responses/Forbidden'
+  /configuration/proxy:
+    get:
+      tags:
+        - Proxy
+      summary: "Display the default configuration of the Centreon proxy"
+      responses:
+        '200':
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Configuration.Proxy'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+    post:
+      tags:
+        - Proxy
+      summary: "Update the default configuration of the Centreon proxy"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Configuration.Proxy'
+      responses:
+        '204':
+          description: Command Sent
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /configuration/monitoring-servers:
+    get:
+      tags:
+        - Monitoring Server
+      summary: "List all monitoring servers configurations"
+      description: |
+        List all monitoring servers configurations.
+
+        The available parameters to **search** / **sort_by** are:
+
+          * id
+          * name
+          * is_localhost
+          * address
+          * is_activate
+      parameters:
+        - $ref: '#/components/parameters/Search'
+        - $ref: '#/components/parameters/Limit'
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/SortBy'
+      responses:
+        '200':
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Configuration.MonitoringServerMain'
+                  meta:
+                    $ref: '#/components/schemas/Meta'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /monitoring/hosts:
+    get:
+      tags:
+        - Host
+      summary: "List all hosts"
+      description: |
+        List all the hosts in real-time monitoring.
+
+        The available parameters to **search** / **sort_by** are:
+
+        * host.id
+        * host.name
+        * host.alias
+        * host.address
+        * host.state
+        * poller.id
+        * service.display_name
+        * host_group.id
+      parameters:
+        - $ref: '#/components/parameters/ShowService'
+        - $ref: '#/components/parameters/Search'
+        - $ref: '#/components/parameters/Limit'
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/SortBy'
+      responses:
+        '200':
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Monitoring.HostMain'
+                  meta:
+                    $ref: '#/components/schemas/Meta'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /monitoring/hosts/{host_id}:
+    get:
+      tags:
+        - Host
+      summary: "Get a host"
+      description: "Return a single host with full details and some details about its services."
+      parameters:
+        - $ref: '#/components/parameters/HostId'
+      responses:
+        '200':
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Monitoring.HostFull'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /monitoring/services:
+    get:
+      tags:
+        - Service
+      summary: "List all services"
+      description: |
+        List all the services in real-time monitoring.
+
+        The available parameters to **search** / **sort_by** are:
+
+        * host.id
+        * host.name
+        * host.alias
+        * host.address
+        * host.state
+        * host_group.id
+        * service.display_name
+        * service.description
+        * service.is_acknowledged
+        * service.output
+        * service.state
+        * service_group.id
+        * poller.id
+      parameters:
+        - $ref: '#/components/parameters/Search'
+        - $ref: '#/components/parameters/Limit'
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/SortBy'
+      responses:
+        '200':
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result:
+                    type: array
+                    items:
+                      allOf:
+                        - $ref: '#/components/schemas/Monitoring.ServiceMain'
+                        - $ref: '#/components/schemas/Monitoring.ServiceWithHost'
+                  meta:
+                    $ref: '#/components/schemas/Meta'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /monitoring/hosts/{host_id}/services:
+    get:
+      tags:
+        - Service
+      summary: "List services related to a host"
+      description: |
+        List all services related to a host in real-time monitoring.
+
+        The available parameters to **search** / **sort_by** are:
+
+        * service.id
+        * service.description
+        * service.display_name
+        * service_group.id
+        * service.is_acknowledged
+        * service.state
+      parameters:
+        - $ref: '#/components/parameters/HostId'
+        - $ref: '#/components/parameters/Search'
+        - $ref: '#/components/parameters/Limit'
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/SortBy'
+      responses:
+        '200':
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Monitoring.ServiceMain'
+                  meta:
+                    $ref: '#/components/schemas/Meta'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /monitoring/hosts/{host_id}/services/{service_id}:
+    get:
+      tags:
+        - Service
+      summary: "Get a service"
+      description: "Return a single service with full details."
+      parameters:
+        - $ref: '#/components/parameters/HostId'
+        - $ref: '#/components/parameters/ServiceId'
+      responses:
+        '200':
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Monitoring.ServiceFull'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /monitoring/hostgroups:
+    get:
+      tags:
+        - Host Group
+      summary: "List all host groups"
+      description: |
+        List all the host groups in real-time monitoring.
+
+        The available parameters to **search** / **sort_by** are:
+
+        * host.id
+        * host.name
+        * host.alias
+        * host.address
+        * host.state
+        * poller.id
+        * service.display_name
+        * host_group.id
+      parameters:
+        - $ref: '#/components/parameters/ShowHost'
+        - $ref: '#/components/parameters/ShowService'
+        - $ref: '#/components/parameters/Search'
+        - $ref: '#/components/parameters/Limit'
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/SortBy'
+      responses:
+        '200':
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result:
+                    type: array
+                    items:
+                      allOf:
+                        - $ref: '#/components/schemas/Monitoring.HostGroup'
+                  meta:
+                    $ref: '#/components/schemas/Meta'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /monitoring/servicegroups:
+    get:
+      tags:
+        - Service Group
+      summary: "List all service groups"
+      description: |
+        List all the service groups in real-time monitoring.
+
+        The available parameters to **search** / **sort_by** are:
+
+        * host.id
+        * host.name
+        * host.alias
+        * host.address
+        * host.state
+        * poller.id
+        * service.display_name
+        * service_group.id
+        * service_group.name
+      parameters:
+        - $ref: '#/components/parameters/ShowService'
+        - $ref: '#/components/parameters/ShowHost'
+        - $ref: '#/components/parameters/Search'
+        - $ref: '#/components/parameters/Limit'
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/SortBy'
+      responses:
+        '200':
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result:
+                    type: array
+                    items:
+                      allOf:
+                        - $ref: '#/components/schemas/Monitoring.ServiceGroup'
+                  meta:
+                    $ref: '#/components/schemas/Meta'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
   /acknowledgments/hosts:
     get:
       tags:
         - Acknowledgment
       summary: "List the latest acknowledgment of each host"
       parameters:
-        - $ref: '#/components/parameters/limit'
-        - $ref: '#/components/parameters/page'
-        - $ref: '#/components/parameters/sortBy'
-        - $ref: '#/components/parameters/search'
+        - $ref: '#/components/parameters/Search'
+        - $ref: '#/components/parameters/Limit'
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/SortBy'
       responses:
         '200':
           description: "OK"
@@ -168,14 +489,7 @@ paths:
         - Acknowledgment
       summary: "Cancel an acknowledgment on host"
       parameters:
-        - name: host_id
-          in: path
-          description: "ID of the host for which you want to cancel acknowledgment"
-          required: true
-          schema:
-            type: integer
-            format: int64
-            example: 12
+        - $ref: '#/components/parameters/HostId'
       responses:
         '204':
           description: "Command Sent"
@@ -189,10 +503,10 @@ paths:
         - Acknowledgment
       summary: "List the latest acknowledgment of each service"
       parameters:
-        - $ref: '#/components/parameters/limit'
-        - $ref: '#/components/parameters/page'
-        - $ref: '#/components/parameters/sortBy'
-        - $ref: '#/components/parameters/search'
+        - $ref: '#/components/parameters/Search'
+        - $ref: '#/components/parameters/Limit'
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/SortBy'
       responses:
         '200':
           description: "OK"
@@ -235,382 +549,8 @@ paths:
         - Acknowledgment
       summary: "Cancel an acknowledgment on service"
       parameters:
-        - name: host_id
-          in: path
-          description: "ID of the host linked to the service"
-          required: true
-          schema:
-            type: integer
-            format: int64
-            example: 12
-        - name: service_id
-          in: path
-          description: "ID of the service for which you want to cancel acknowledgment"
-          required: true
-          schema:
-            type: integer
-            format: int64
-            example: 5
-      responses:
-        '204':
-          description: "Command Sent"
-        '403':
-          $ref: '#/components/responses/Forbidden'
-        '500':
-          $ref: '#/components/responses/InternalServerError'
-  /configuration/monitoring-servers:
-    get:
-      tags:
-        - Monitoring Server
-      summary: "List all monitoring server configurations"
-      description: |
-        List all monitoring server configurations
-
-        The available parameters to **search** / **sort_by** are:
-
-          * id
-          * name
-          * is_localhost
-          * address
-          * is_activate
-      parameters:
-        - $ref: '#/components/parameters/limit'
-        - $ref: '#/components/parameters/page'
-        - $ref: '#/components/parameters/sortBy'
-        - $ref: '#/components/parameters/search'
-      responses:
-        '200':
-          description: "OK"
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  result:
-                    type: array
-                    items:
-                      allOf:
-                        - $ref: '#/components/schemas/Configuration.MonitoringServerMain'
-                  meta:
-                    $ref: '#/components/schemas/Meta'
-        '403':
-          $ref: '#/components/responses/Forbidden'
-        '500':
-          $ref: '#/components/responses/InternalServerError'
-  /configuration/proxy:
-    get:
-      tags:
-        - Proxy
-      summary: "Display the default configuration of the Centreon proxy"
-      responses:
-        '200':
-          description: "OK"
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Configuration.Proxy'
-        '403':
-          $ref: '#/components/responses/Forbidden'
-        '500':
-          $ref: '#/components/responses/InternalServerError'
-    post:
-      tags:
-        - Proxy
-      summary: "Update the default configuration of the Centreon proxy"
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/Configuration.Proxy'
-      responses:
-        '204':
-          description: Command Sent
-        '403':
-          $ref: '#/components/responses/Forbidden'
-        '500':
-          $ref: '#/components/responses/InternalServerError'
-  /monitoring/hosts/downtimes:
-    get:
-      tags:
-        - Downtime
-      summary: "List all hosts downtimes"
-      description: |
-        List all downtimes of hosts
-
-        The available parameters to **search** / **sort_by** are:
-
-          * id
-          * entry_time
-          * is_cancelled
-          * comment
-          * deletion_time
-          * duration
-          * end_time
-          * is_fixed
-          * start_time
-          * host.id
-          * host.name
-          * host.alias
-          * host.address
-          * host.display_name
-          * host.state
-          * poller.id
-          * contact.id
-          * contact.name
-      parameters:
-        - $ref: '#/components/parameters/limit'
-        - $ref: '#/components/parameters/page'
-        - $ref: '#/components/parameters/sortBy'
-        - $ref: '#/components/parameters/search'
-      responses:
-        '200':
-          description: "OK"
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  result:
-                    type: array
-                    items:
-                      allOf:
-                        - $ref: '#/components/schemas/Downtime.Host'
-                  meta:
-                    $ref: '#/components/schemas/Meta'
-        '403':
-          $ref: '#/components/responses/Forbidden'
-        '500':
-          $ref: '#/components/responses/InternalServerError'
-  /monitoring/hosts/{host_id}/downtimes:
-    get:
-      tags:
-        - Downtime
-      summary: "List all downtimes of one host"
-      parameters:
-        - $ref: '#/components/parameters/limit'
-        - $ref: '#/components/parameters/page'
-        - $ref: '#/components/parameters/sortBy'
-        - $ref: '#/components/parameters/search'
-        - name: show_services
-          in: query
-          description: |
-            Indicates whether we need to display the host-related services downtimes or not (by default: **false**)
-          schema:
-            type: boolean
-            example: true
-        - name: host_id
-          in: path
-          description: "ID of the host"
-          required: true
-          schema:
-            type: integer
-            format: int64
-            example: 12
-      description: |
-        List all downtimes of one host
-
-        The available parameters to **search** / **sort_by** are:
-
-          * id
-          * entry_time
-          * is_cancelled
-          * comment
-          * deletion_time
-          * duration
-          * end_time
-          * is_fixed
-          * start_time
-          * contact.id
-          * contact.name
-
-        By default, the host-related **services** downtimes are not displayed.
-        To display them, set the URI parameter "show_services" to `true`.
-      responses:
-        '200':
-          description: "OK"
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  result:
-                    type: array
-                    items:
-                      allOf:
-                        - $ref: '#/components/schemas/Downtime.Host'
-                  meta:
-                    $ref: '#/components/schemas/Meta'
-        '403':
-          $ref: '#/components/responses/Forbidden'
-        '500':
-          $ref: '#/components/responses/InternalServerError'
-    post:
-      tags:
-        - Downtime
-      summary: "Add a downtime of one host"
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/Downtime.Host.Add'
-      parameters:
-        - name: host_id
-          in: path
-          description: "ID of the host"
-          required: true
-          schema:
-            type: integer
-            format: int64
-            example: 12
-      responses:
-        '204':
-          description: "Command Sent"
-        '403':
-          $ref: '#/components/responses/Forbidden'
-        '500':
-          $ref: '#/components/responses/InternalServerError'
-  /monitoring/services/downtimes:
-    get:
-      tags:
-        - Downtime
-      summary: "List all services downtimes"
-      parameters:
-        - $ref: '#/components/parameters/limit'
-        - $ref: '#/components/parameters/page'
-        - $ref: '#/components/parameters/sortBy'
-        - $ref: '#/components/parameters/search'
-      description: |
-        List all downtimes of services
-
-        The available parameters to **search** / **sort_by** are:
-
-          * id
-          * entry_time
-          * is_cancelled
-          * comment
-          * deletion_time
-          * duration
-          * end_time
-          * is_fixed
-          * start_time
-          * host.id
-          * host.name
-          * host.alias
-          * host.address
-          * host.display_name
-          * host.state
-          * poller.id
-          * contact.id
-          * contact.name
-      responses:
-        '200':
-          description: "OK"
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  result:
-                    type: array
-                    items:
-                      allOf:
-                        - $ref: '#/components/schemas/Downtime.Service'
-                  meta:
-                    $ref: '#/components/schemas/Meta'
-        '403':
-          $ref: '#/components/responses/Forbidden'
-        '500':
-          $ref: '#/components/responses/InternalServerError'
-  /monitoring/hosts/{host_id}/services/{service_id}/downtimes:
-    get:
-      tags:
-        - Downtime
-      summary: "List all downtimes of one host-related service"
-      parameters:
-        - $ref: '#/components/parameters/limit'
-        - $ref: '#/components/parameters/page'
-        - $ref: '#/components/parameters/sortBy'
-        - $ref: '#/components/parameters/search'
-        - name: host_id
-          in: path
-          description: "ID of the host"
-          required: true
-          schema:
-            type: integer
-            format: int64
-            example: 12
-        - name: service_id
-          in: path
-          description: "ID of the service linked to the host"
-          required: true
-          schema:
-            type: integer
-            format: int64
-            example: 5
-      description: |
-        List all downtimes of one host-related service
-
-        The available parameters to **search** / **sort_by** are:
-
-          * id
-          * entry_time
-          * is_cancelled
-          * comment
-          * deletion_time
-          * duration
-          * end_time
-          * is_fixed
-          * start_time
-          * contact.id
-          * contact.name
-      responses:
-        '200':
-          description: "OK"
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  result:
-                    type: array
-                    items:
-                      allOf:
-                        - $ref: '#/components/schemas/Downtime.Service'
-                  meta:
-                    $ref: '#/components/schemas/Meta'
-        '403':
-          $ref: '#/components/responses/Forbidden'
-        '500':
-          $ref: '#/components/responses/InternalServerError'
-    post:
-      tags:
-        - Downtime
-      summary: "Add a downtime of one host-related service"
-      parameters:
-        - name: host_id
-          in: path
-          description: "ID of the host"
-          required: true
-          schema:
-            type: integer
-            format: int64
-            example: 12
-        - name: service_id
-          in: path
-          description: "ID of the service linked to the host"
-          required: true
-          schema:
-            type: integer
-            format: int64
-            example: 5
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/Downtime.Service.Add'
+        - $ref: '#/components/parameters/HostId'
+        - $ref: '#/components/parameters/ServiceId'
       responses:
         '204':
           description: "Command Sent"
@@ -624,10 +564,10 @@ paths:
         - Downtime
       summary: "List all downtimes"
       parameters:
-        - $ref: '#/components/parameters/limit'
-        - $ref: '#/components/parameters/page'
-        - $ref: '#/components/parameters/sortBy'
-        - $ref: '#/components/parameters/search'
+        - $ref: '#/components/parameters/Search'
+        - $ref: '#/components/parameters/Limit'
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/SortBy'
       description: |
         List all downtimes
 
@@ -675,15 +615,9 @@ paths:
       tags:
         - Downtime
       summary: "Display one downtime"
+      description: "Display one downtime."
       parameters:
-        - name: downtime_id
-          in: path
-          description: "ID of the downtime"
-          required: true
-          schema:
-            type: integer
-            format: int64
-            example: 329
+        - $ref: '#/components/parameters/DowntimeId'
       responses:
         '200':
           description: "OK"
@@ -693,21 +627,190 @@ paths:
                 $ref: '#/components/schemas/Downtime.Service'
         '403':
           $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
         '500':
           $ref: '#/components/responses/InternalServerError'
     delete:
       tags:
         - Downtime
       summary: "Cancel a downtime"
+      description: "Cancel a downtime."
       parameters:
-        - name: downtime_id
-          in: path
-          description: "ID of the downtime"
-          required: true
-          schema:
-            type: integer
-            format: int64
-            example: 329
+        - $ref: '#/components/parameters/DowntimeId'
+      responses:
+        '204':
+          description: "Command Sent"
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /monitoring/hosts/downtimes:
+    get:
+      tags:
+        - Downtime
+      summary: "List all hosts downtimes"
+      description: |
+        List all downtimes of hosts
+
+        The available parameters to **search** / **sort_by** are:
+
+          * id
+          * entry_time
+          * is_cancelled
+          * comment
+          * deletion_time
+          * duration
+          * end_time
+          * is_fixed
+          * start_time
+          * host.id
+          * host.name
+          * host.alias
+          * host.address
+          * host.display_name
+          * host.state
+          * poller.id
+          * contact.id
+          * contact.name
+      parameters:
+        - $ref: '#/components/parameters/Search'
+        - $ref: '#/components/parameters/Limit'
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/SortBy'
+      responses:
+        '200':
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result:
+                    type: array
+                    items:
+                      allOf:
+                        - $ref: '#/components/schemas/Downtime.Host'
+                  meta:
+                    $ref: '#/components/schemas/Meta'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /monitoring/services/downtimes:
+    get:
+      tags:
+        - Downtime
+      summary: "List all services downtimes"
+      parameters:
+        - $ref: '#/components/parameters/Search'
+        - $ref: '#/components/parameters/Limit'
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/SortBy'
+      description: |
+        List all downtimes of services
+
+        The available parameters to **search** / **sort_by** are:
+
+          * id
+          * entry_time
+          * is_cancelled
+          * comment
+          * deletion_time
+          * duration
+          * end_time
+          * is_fixed
+          * start_time
+          * host.id
+          * host.name
+          * host.alias
+          * host.address
+          * host.display_name
+          * host.state
+          * poller.id
+          * contact.id
+          * contact.name
+      responses:
+        '200':
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result:
+                    type: array
+                    items:
+                      allOf:
+                        - $ref: '#/components/schemas/Downtime.Service'
+                  meta:
+                    $ref: '#/components/schemas/Meta'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /monitoring/hosts/{host_id}/downtimes:
+    get:
+      tags:
+        - Downtime
+      summary: "List all downtimes of a host"
+      parameters:
+        - $ref: '#/components/parameters/HostId'
+        - $ref: '#/components/parameters/ShowService'
+        - $ref: '#/components/parameters/Search'
+        - $ref: '#/components/parameters/Limit'
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/SortBy'
+      description: |
+        List all downtimes of a host.
+
+        The available parameters to **search** / **sort_by** are:
+
+          * id
+          * entry_time
+          * is_cancelled
+          * comment
+          * deletion_time
+          * duration
+          * end_time
+          * is_fixed
+          * start_time
+          * contact.id
+          * contact.name
+      responses:
+        '200':
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result:
+                    type: array
+                    items:
+                      allOf:
+                        - $ref: '#/components/schemas/Downtime.Host'
+                  meta:
+                    $ref: '#/components/schemas/Meta'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+    post:
+      tags:
+        - Downtime
+      summary: "Add a downtime on a host"
+      description: "Add a downtime on a host."
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Downtime.Host.Add'
+      parameters:
+        - $ref: '#/components/parameters/HostId'
       responses:
         '204':
           description: "Command Sent"
@@ -715,54 +818,34 @@ paths:
           $ref: '#/components/responses/Forbidden'
         '500':
           $ref: '#/components/responses/InternalServerError'
-  /monitoring/hostgroups:
+  /monitoring/hosts/{host_id}/services/{service_id}/downtimes:
     get:
       tags:
-        - Monitoring
-      summary: "List all services grouped by host groups"
+        - Downtime
+      summary: "List all downtimes of a service"
+      parameters:
+        - $ref: '#/components/parameters/HostId'
+        - $ref: '#/components/parameters/ServiceId'
+        - $ref: '#/components/parameters/Search'
+        - $ref: '#/components/parameters/Limit'
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/SortBy'
       description: |
-        Returns all services grouped by host groups.
+        List all downtimes of a service.
 
         The available parameters to **search** / **sort_by** are:
 
-        * host.id
-        * host.name
-        * host.alias
-        * host.address
-        * host.state
-        * poller.id
-        * service.display_name
-        * host_group.id
-
-        # Information
-        By default, the **hosts** property of hostgroup object is not displayed.
-        To display it, set the URI parameter "show_host" to `true`.
-
-        `/monitoring/hostgroups?show_host=true`
-
-        By default, the **services** property of host object is not displayed.
-        To display it, set the URI parameter "show_service" to `true`.
-
-        `/monitoring/hostgroups?show_service=true`
-      parameters:
-        - $ref: '#/components/parameters/limit'
-        - $ref: '#/components/parameters/page'
-        - $ref: '#/components/parameters/sortBy'
-        - $ref: '#/components/parameters/search'
-        - name: show_service
-          in: query
-          description: |
-            Allows to display services belonging to hosts belonging to requested hostgroups (by default: **false**)
-          schema:
-            type: boolean
-            example: true
-        - name: show_host
-          in: query
-          description: |
-            Allows to display hosts belonging to hostgroups (by default: **false**)
-          schema:
-            type: boolean
-            example: true
+          * id
+          * entry_time
+          * is_cancelled
+          * comment
+          * deletion_time
+          * duration
+          * end_time
+          * is_fixed
+          * start_time
+          * contact.id
+          * contact.name
       responses:
         '200':
           description: "OK"
@@ -775,299 +858,134 @@ paths:
                     type: array
                     items:
                       allOf:
-                        - $ref: '#/components/schemas/Monitoring.HostGroup'
+                        - $ref: '#/components/schemas/Downtime.Service'
                   meta:
                     $ref: '#/components/schemas/Meta'
         '403':
           $ref: '#/components/responses/Forbidden'
         '500':
           $ref: '#/components/responses/InternalServerError'
-  /monitoring/hosts:
-    get:
+    post:
       tags:
-        - Monitoring
-      summary: "List all hosts"
-      description: |
-        Returns all hosts.
-
-        The available parameters to **search** / **sort_by** are:
-
-        * host.id
-        * host.name
-        * host.alias
-        * host.address
-        * host.state
-        * poller.id
-        * service.display_name
-        * host_group.id
-
-        # Information
-        By default, the **services** property of host object is not displayed.
-        To display it, set the URI parameter "show_service" to `true`.
-
-        `/monitoring/hosts?show_service=true`
+        - Downtime
+      summary: "Add a downtime on a service"
+      description: "Add a downtime on a service."
       parameters:
-        - $ref: '#/components/parameters/limit'
-        - $ref: '#/components/parameters/page'
-        - $ref: '#/components/parameters/sortBy'
-        - $ref: '#/components/parameters/search'
-        - name: show_service
-          in: query
-          description: |
-            Allows to display services belonging to hosts (by default: **false**)
-          schema:
-            type: boolean
-            example: true
+        - $ref: '#/components/parameters/HostId'
+        - $ref: '#/components/parameters/ServiceId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Downtime.Service.Add'
       responses:
-        '200':
-          description: "OK"
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  result:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/Monitoring.HostMain'
-                  meta:
-                    $ref: '#/components/schemas/Meta'
-        '403':
-          $ref: '#/components/responses/Forbidden'
-        '500':
-          $ref: '#/components/responses/InternalServerError'
-  /monitoring/hosts/{host_id}:
-    get:
-      tags:
-        - Monitoring
-      summary: "Find host by ID"
-      description: |
-        Retuns a single host with full details and some details about its services
-      parameters:
-        - name: host_id
-          in: path
-          description: "ID of the host"
-          required: true
-          schema:
-            type: integer
-            format: int64
-            example: 12
-      responses:
-        '200':
-          description: "OK"
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Monitoring.HostFull'
-        '403':
-          $ref: '#/components/responses/Forbidden'
-        '404':
-          $ref: '#/components/responses/NotFound'
-        '500':
-          $ref: '#/components/responses/InternalServerError'
-  /monitoring/hosts/{host_id}/services:
-    get:
-      tags:
-        - Monitoring
-      summary: "Find host-related services"
-      description: |
-        Returns all services associated with a host.
-
-        The available parameters to **search** / **sort_by** are:
-
-        * service.id
-        * service.description
-        * service.display_name
-        * service_group.id
-        * service.is_acknowledged
-        * service.state
-      parameters:
-        - name: host_id
-          in: path
-          description: "ID of the host for which we want to get its associated services"
-          required: true
-          schema:
-            type: integer
-            format: int64
-            example: 12
-        - $ref: '#/components/parameters/limit'
-        - $ref: '#/components/parameters/page'
-        - $ref: '#/components/parameters/sortBy'
-        - $ref: '#/components/parameters/search'
-      responses:
-        '200':
-          description: "OK"
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  result:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/Monitoring.ServiceMain'
-                  meta:
-                    $ref: '#/components/schemas/Meta'
-        '403':
-          $ref: '#/components/responses/Forbidden'
-        '404':
-          $ref: '#/components/responses/NotFound'
-        '500':
-          $ref: '#/components/responses/InternalServerError'
-  /monitoring/hosts/{host_id}/services/{service_id}:
-    get:
-      tags:
-        - Monitoring
-      summary: "Find service by ID related to a host"
-      description: "Retuns a single host with full details"
-      parameters:
-        - name: host_id
-          in: path
-          description: "ID of the host to which service is associated"
-          required: true
-          schema:
-            type: integer
-            format: int64
-            example: 12
-        - name: service_id
-          in: path
-          description: "ID of the service"
-          required: true
-          schema:
-            type: integer
-            format: int64
-            example: 5
-      responses:
-        '200':
-          description: "OK"
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Monitoring.ServiceFull'
-        '403':
-          $ref: '#/components/responses/Forbidden'
-        '404':
-          $ref: '#/components/responses/NotFound'
-        '500':
-          $ref: '#/components/responses/InternalServerError'
-  /monitoring/servicegroups:
-    get:
-      tags:
-        - Monitoring
-      summary: "List all services grouped by service groups"
-      description: |
-        Returns all services grouped by service groups.
-
-        The available parameters to **search** / **sort_by** are:
-
-        * host.id
-        * host.name
-        * host.alias
-        * host.address
-        * host.state
-        * poller.id
-        * service.display_name
-        * service_group.id
-        * service_group.name
-
-        # Information
-        By default, the **hosts** property of service group object is not displayed.
-        To display it, set the URI parameter "show_host" to `true`.
-
-        `/monitoring/hostgroups?show_host=true`
-
-        By default, the **services** property of host object is not displayed.
-        To display it, set the URI parameter "show_service" to `true`.
-
-        `/monitoring/hostgroups?show_service=true`
-      parameters:
-        - $ref: '#/components/parameters/limit'
-        - $ref: '#/components/parameters/page'
-        - $ref: '#/components/parameters/sortBy'
-        - $ref: '#/components/parameters/search'
-        - name: show_service
-          in: query
-          description: |
-            Allows to display services belonging to servicegroups (by default: **false**)
-          schema:
-            type: boolean
-            example: true
-        - name: show_host
-          in: query
-          description: |
-            Allows to display hosts related to services belonging to servicegroups (by default: **false**)
-          schema:
-            type: boolean
-            example: true
-      responses:
-        '200':
-          description: "OK"
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  result:
-                    type: array
-                    items:
-                      allOf:
-                        - $ref: '#/components/schemas/Monitoring.ServiceGroup'
-                  meta:
-                    $ref: '#/components/schemas/Meta'
-        '403':
-          $ref: '#/components/responses/Forbidden'
-        '500':
-          $ref: '#/components/responses/InternalServerError'
-  /monitoring/services:
-    get:
-      tags:
-        - Monitoring
-      summary: "List all services"
-      description: |
-        Returns all services.
-
-
-        The available parameters to **search** / **sort_by** are:
-
-        * host.id
-        * host.name
-        * host.alias
-        * host.address
-        * host.state
-        * host_group.id
-        * service.display_name
-        * service.description
-        * service.is_acknowledged
-        * service.output
-        * service.state
-        * service_group.id
-        * poller.id
-      parameters:
-        - $ref: '#/components/parameters/limit'
-        - $ref: '#/components/parameters/page'
-        - $ref: '#/components/parameters/sortBy'
-        - $ref: '#/components/parameters/search'
-      responses:
-        '200':
-          description: "OK"
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  result:
-                    type: array
-                    items:
-                      allOf:
-                        - $ref: '#/components/schemas/Monitoring.ServiceMain'
-                        - $ref: '#/components/schemas/Monitoring.ServiceWithHost'
-                  meta:
-                    $ref: '#/components/schemas/Meta'
+        '204':
+          description: "Command Sent"
         '403':
           $ref: '#/components/responses/Forbidden'
         '500':
           $ref: '#/components/responses/InternalServerError'
 components:
+  securitySchemes:
+    Token:
+      description: |
+        The use of the API requires a security token.
+
+        To retrieve it, you will need to authenticate yourself with your login credentials.
+
+        The token will be deleted if it has not been used for more than one hour.
+      type: apiKey
+      name: X-AUTH-TOKEN
+      in: header
+    Cookie:
+      description: |
+        If you have already connected on the Centreon web application, you can reused the PHPSESSID cookie.
+
+        The cookie will be valid as long as the connection to Centreon is maintained.
+      type: apiKey
+      name: PHPSESSID
+      in: cookie
+  parameters:
+    Search:
+      in: query
+      name: search
+      required: false
+      description: "Retrieve only data matching the defined search value"
+      schema:
+        type: object
+        example: '{"host.name":"Central"}'
+    Limit:
+      in: query
+      name: limit
+      required: false
+      description: "Number of items per pages"
+      schema:
+        type: integer
+        minimum: 1
+        default: 10
+        example: 20
+    Page:
+      in: query
+      name: page
+      required: false
+      description: "Number of the requested page"
+      schema:
+        type: integer
+        minimum: 1
+        default: 1
+        example: 4
+    SortBy:
+      in: query
+      name: sort_by
+      required: false
+      description: "Sort the resulted data by its properties"
+      schema:
+        type: object
+        example: '{"host.name":"ASC"}'
+    ShowHost:
+      in: query
+      name: show_host
+      description: "Allows to display hosts belonging to items"
+      schema:
+        type: boolean
+        default: false
+        example: true
+    ShowService:
+      in: query
+      name: show_service
+      description: "Allows to display services belonging to items"
+      schema:
+        type: boolean
+        default: false
+        example: true
+    HostId:
+      in: path
+      name: host_id
+      description: "ID of the host"
+      required: true
+      schema:
+        type: integer
+        format: int64
+        example: 12
+    ServiceId:
+      in: path
+      name: service_id
+      description: "ID of the service"
+      required: true
+      schema:
+        type: integer
+        format: int64
+        example: 5
+    DowntimeId:
+      in: path
+      name: downtime_id
+      description: "ID of the downtime"
+      required: true
+      schema:
+        type: integer
+        format: int64
+        example: 329
   responses:
     Unauthorized:
       description: "Unauthorized"
@@ -1088,19 +1006,12 @@ components:
               code:
                 type: integer
                 format: int64
-                example: "403"
+                example: 403
               message:
                 type: string
                 example: "You are not authorized to access this resource"
     NotFound:
       description: "Not Found"
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              message:
-                type: string
     InternalServerError:
       description: "Internal Server Error"
       content:
@@ -1115,56 +1026,7 @@ components:
               message:
                 type: string
                 example: "Internal Server Error"
-  parameters:
-    limit:
-      in: query
-      name: limit
-      required: false
-      description: "Max items per pages"
-      schema:
-        $ref: '#/components/schemas/RequestParameters.limit'
-    page:
-      in: query
-      name: page
-      required: false
-      description: "Number of the page requested"
-      schema:
-        $ref: '#/components/schemas/RequestParameters.page'
-    sortBy:
-      in: query
-      name: sort_by
-      required: false
-      description: "Used to sort the request"
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/RequestParameters.sortBy'
-    search:
-      in: query
-      name: search
-      required: false
-      description: "Used to search with specifics parameters"
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/RequestParameters.search'
   schemas:
-    RequestParameters.limit:
-      type: integer
-      minimum: 1
-      example: 10
-    RequestParameters.page:
-      type: integer
-      minimum: 1
-      example: 1
-    RequestParameters.sortBy:
-      type: object
-      example:
-        host.name: ASC
-    RequestParameters.search:
-      type: object
-      example:
-        host.name: localhost
     AuthenticationRequest:
       type: object
       properties:
@@ -1253,11 +1115,11 @@ components:
           example: 2
         name:
           type: string
-          description: "Name of server"
+          description: "Name of the server"
           example: "Central"
         address:
           type: string
-          description: "IP address of server"
+          description: "IP address of the server"
           example: "127.0.0.1"
         is_localhost:
           type: boolean
@@ -1269,7 +1131,7 @@ components:
           example: true
         ssh_port:
           type: integer
-          description: "SSH port of this server"
+          description: "SSH port of the server"
           example: 22
         last_restart:
           type: string
@@ -1980,22 +1842,3 @@ components:
         - port
         - user
         - password
-  securitySchemes:
-    Token:
-      description: |
-        The use of the API requires a security token.
-
-        To retrieve it, you will need to authenticate yourself with your login credentials.
-
-        The token will be deleted if it has not been used for more than one hour.
-      type: apiKey
-      name: X-AUTH-TOKEN
-      in: header
-    Cookie:
-      description: |
-        If you have already connected on the Centreon web application, you can reused the PHPSESSID cookie.
-
-        The cookie will be valid as long as the connection to Centreon is maintained.
-      type: apiKey
-      name: PHPSESSID
-      in: cookie
