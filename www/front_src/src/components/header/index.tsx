@@ -18,12 +18,16 @@ import ServiceStatusMenu from '../serviceStatusMenu';
 
 import axios from '../../axios';
 
-class TopHeader extends Component {
-  refreshIntervalsApi = axios(
+interface Props {
+  setRefreshIntervals: Function;
+}
+
+class TopHeader extends Component<Props> {
+  private refreshIntervalsApi = axios(
     'internal.php?object=centreon_topcounter&action=refreshIntervals',
   );
 
-  getRefreshIntervals = () => {
+  private getRefreshIntervals = () => {
     const { setRefreshIntervals } = this.props;
     this.refreshIntervalsApi
       .get()
@@ -35,11 +39,11 @@ class TopHeader extends Component {
       });
   };
 
-  componentDidMount = () => {
+  public componentDidMount = () => {
     this.getRefreshIntervals();
   };
 
-  render() {
+  public render() {
     return (
       <header className={styles.header}>
         <div className={styles['header-icons']}>
