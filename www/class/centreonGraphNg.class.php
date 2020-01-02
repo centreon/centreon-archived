@@ -248,7 +248,7 @@ class CentreonGraphNg
     }
 
     /**
-     * Tell it will be a multiple services graph
+     * Set if a graph has multiple services
      *
      * @param int $multiple set multiple value
      *
