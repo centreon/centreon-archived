@@ -337,7 +337,7 @@ class CentreonHomeCustomview extends CentreonWebService
         $widgetId = $this->arguments['widgetId'];
         $widgetObj = new CentreonWidget($centreon, $this->pearDB);
 
-        $preferences = $widgetObj->getWidgetPreferences($widgetId);
+       return $widgetObj->getWidgetPreferences($widgetId);
 
         return $preferences;
     }
