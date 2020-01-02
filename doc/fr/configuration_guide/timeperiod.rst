@@ -78,15 +78,4 @@ Par journée exceptionnelle, vous devez définir une plage horaire. Le tableau c
 |     monday -2         |       00:00-24:00       |   Tous les avant derniers lundi du mois toute la journée        |
 +-----------------------+-------------------------+-----------------------------------------------------------------+
 
-Options avancées
-================
-
-Au sein des options avancées, il est possible d'**inclure** ou d'**exclure** des périodes à la définition de l'objet.
-Exemple d'application. Prenons deux périodes temporelles :
-
-* Une période est définie 24 heures sur 24 / 7 jours sur 7 appelée **24x7**
-* Une autre qui regroupe les horaires d'ouvertures du bureau appelée **working_hours**
-
-Pour obtenir les horaires de fermeture du bureau, je n'ai qu'à créer une période temporelle dans laquelle j'inclus la plage **24x7** et pour laquelle j'exclus la plage **working_hours**.
-
 .. |navigate_plus|	image:: /images/navigate_plus.png
