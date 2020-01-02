@@ -1,6 +1,6 @@
 /* eslint-disable import/no-extraneous-dependencies */
 
-import { createStore, applyMiddleware, compose } from 'redux';
+import { createStore, applyMiddleware, compose, Store, CombinedState } from 'redux';
 import { routerMiddleware } from 'connected-react-router';
 import { batchDispatchMiddleware } from 'redux-batched-actions';
 import thunk from 'redux-thunk';
@@ -16,7 +16,7 @@ export const history = createBrowserHistory({
   basename: `/${paths[1] ? paths[1] : ''}`,
 });
 
-const createAppStore = (options, initialState = {}) => {
+const createAppStore = (initialState: object = {}): Store<CombinedState> => {
   const middlewares = [
     routerMiddleware(history),
     thunk,
