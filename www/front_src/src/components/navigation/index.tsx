@@ -16,7 +16,7 @@ interface Props {
   reactRoutes: object;
 }
 
-class Navigation extends Component<PRops> {
+class Navigation extends Component<Props> {
   public componentDidMount = () => {
     const { fetchNavigationData } = this.props;
     fetchNavigationData();
