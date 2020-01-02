@@ -15,7 +15,7 @@ interface Data {
 }
 
 interface State {
-  data: Data
+  data: Data;
 }
 
 const instantiateDate = (tz: string, locale: string, timestamp: number) => {
@@ -30,7 +30,9 @@ const instantiateDate = (tz: string, locale: string, timestamp: number) => {
 };
 
 class Clock extends Component<State> {
-  private clockService = axios('internal.php?object=centreon_topcounter&action=clock');
+  private clockService = axios(
+    'internal.php?object=centreon_topcounter&action=clock',
+  );
 
   private refreshTimeout = null;
 

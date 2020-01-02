@@ -16,7 +16,7 @@ function getUrl(item: object): string {
  * @param {Object} item
  * @return {String|undefined} first url found
  */
-function findFirstUrl(item: object): string|undefined {
+function findFirstUrl(item: object): string | undefined {
   if (item.url) {
     return getUrl(item);
   }
@@ -37,7 +37,7 @@ function findFirstUrl(item: object): string|undefined {
  * @param {Object} item
  * @return {String|undefined} first url found
  */
-function getFirstUrlInChildren(item: object): string|undefined {
+function getFirstUrlInChildren(item: object): string | undefined {
   if (!item.children) {
     return undefined;
   }
@@ -65,7 +65,7 @@ const getNavigationItems = (state: object): Array => state.navigation.items;
 
 const breadcrumbsSelector = createSelector(
   getNavigationItems,
-  (navItems: Array): object|undefined => {
+  (navItems: Array): object | undefined => {
     const breadcrumbs = {};
 
     // build level 1 breadcrumbs

@@ -15,7 +15,7 @@ import globalsReducer from './globalsReducer';
 export interface ReduxState {
   router: Function;
   form: Function;
-  pollerForm: Function
+  pollerForm: Function;
   i18n: Function;
   navigation: Function;
   intervals: Function;
@@ -26,16 +26,17 @@ export interface ReduxState {
   globals: Function;
 }
 
-export default (history) => combineReducers({
-  router: connectRouter(history),
-  form: formReducer,
-  pollerForm: pollerWizardReducer,
-  i18n: i18nReducer,
-  navigation: navigationReducer,
-  intervals: refreshReducer,
-  remoteData: axiosReducer,
-  externalComponents: externalComponentsReducer,
-  tooltip: tooltipReducer,
-  bamConfiguration:bamConfigurationReducer,
-  globals:globalsReducer
-});
+export default (history) =>
+  combineReducers({
+    router: connectRouter(history),
+    form: formReducer,
+    pollerForm: pollerWizardReducer,
+    i18n: i18nReducer,
+    navigation: navigationReducer,
+    intervals: refreshReducer,
+    remoteData: axiosReducer,
+    externalComponents: externalComponentsReducer,
+    tooltip: tooltipReducer,
+    bamConfiguration: bamConfigurationReducer,
+    globals: globalsReducer,
+  });

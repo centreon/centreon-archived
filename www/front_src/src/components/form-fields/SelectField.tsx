@@ -17,7 +17,7 @@ import { prepareInputProps } from './utils';
 interface Props {
   className: string;
   defaultOption: Array;
-  error: ReactNode | null;
+  error: ReactNode | null;
   modifiers: Array;
   options: Array;
   styleOverride: object;

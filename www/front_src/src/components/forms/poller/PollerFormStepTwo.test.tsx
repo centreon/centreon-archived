@@ -1,7 +1,12 @@
 import '@babel/polyfill';
 import React from 'react';
 import configureStore from 'redux-mock-store';
-import { render, fireEvent, queryByAttribute, waitForElement } from '@testing-library/react';
+import {
+  render,
+  fireEvent,
+  queryByAttribute,
+  waitForElement,
+} from '@testing-library/react';
 import { Provider } from 'react-redux';
 import PollerFormStepTwo from './PollerFormStepTwo';
 
@@ -34,11 +39,8 @@ describe('PollerFormStepTwo', () => {
   it('renders', () => {
     const { container } = render(
       <Provider store={store}>
-        <PollerFormStepTwo
-          pollers={TwoPollers}
-          onSubmit={jest.fn()}
-        />
-      </Provider>
+        <PollerFormStepTwo pollers={TwoPollers} onSubmit={jest.fn()} />
+      </Provider>,
     );
 
     expect(container.firstChild).toMatchSnapshot();
@@ -47,11 +49,8 @@ describe('PollerFormStepTwo', () => {
   it('does not display selects if no one remote server exists', () => {
     const { container } = render(
       <Provider store={store}>
-        <PollerFormStepTwo
-          pollers={NoPoller}
-          onSubmit={jest.fn()}
-        />
-      </Provider>
+        <PollerFormStepTwo pollers={NoPoller} onSubmit={jest.fn()} />
+      </Provider>,
     );
 
     expect(queryByName(container, 'linked_remote_master')).toBeNull();
@@ -61,11 +60,8 @@ describe('PollerFormStepTwo', () => {
   it('displays only master select if one remote server exists', () => {
     const { container } = render(
       <Provider store={store}>
-        <PollerFormStepTwo
-          pollers={OnePoller}
-          onSubmit={jest.fn()}
-        />
-      </Provider>
+        <PollerFormStepTwo pollers={OnePoller} onSubmit={jest.fn()} />
+      </Provider>,
     );
 
     expect(queryByName(container, 'linked_remote_master')).toBeInTheDocument();
@@ -75,11 +71,8 @@ describe('PollerFormStepTwo', () => {
   it('displays slaves select if master is selected and several remotes exist', async () => {
     const { container, getByText } = render(
       <Provider store={store}>
-        <PollerFormStepTwo
-          pollers={TwoPollers}
-          onSubmit={jest.fn()}
-        />
-      </Provider>
+        <PollerFormStepTwo pollers={TwoPollers} onSubmit={jest.fn()} />
+      </Provider>,
     );
 
     const masterSelect = queryByName(container, 'linked_remote_master');

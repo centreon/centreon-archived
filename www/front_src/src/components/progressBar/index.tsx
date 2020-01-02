@@ -11,7 +11,7 @@ import { history } from '../../store';
 import styles from './progressbar.scss';
 
 interface Props {
-  links: Array<object>
+  links: Array<object>;
 }
 
 class ProgressBar extends Component<Props> {
@@ -53,7 +53,4 @@ const mapStateToProps = () => ({});
 
 const mapDispatchToProps = {};
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(ProgressBar);
+export default connect(mapStateToProps, mapDispatchToProps)(ProgressBar);

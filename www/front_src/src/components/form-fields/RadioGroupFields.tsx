@@ -18,7 +18,7 @@ interface Props {
   options: Array;
   className: string;
   label: string;
-  meta: Meta
+  meta: Meta;
 }
 
 const getValue = (item: object) => (item.value ? item.value : item);

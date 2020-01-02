@@ -1,5 +1,5 @@
 import * as actions from '../actions/externalComponentsActions';
-import {ReduxState} from '.';
+import { ReduxState } from '.';
 
 interface ExternalComponentsState {
   pages: Array;
@@ -14,7 +14,10 @@ const initialState = {
   fetched: false,
 };
 
-const externalComponentsReducer = (state: ExternalComponentsState = initialState, action: object): ReduxState => {
+const externalComponentsReducer = (
+  state: ExternalComponentsState = initialState,
+  action: object,
+): ReduxState => {
   switch (action.type) {
     case actions.FETCH_EXTERNAL_COMPONENTS_SUCCESS:
       return {

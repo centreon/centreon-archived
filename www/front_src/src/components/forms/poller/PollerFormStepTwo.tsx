@@ -6,11 +6,11 @@
 import React, { Component } from 'react';
 import { Field, reduxForm as connectForm } from 'redux-form';
 import { Translate, I18n } from 'react-redux-i18n';
+import Select from 'react-select';
 import styles from '../../../styles/partials/form/_form.scss';
-import SelectField from "../../form-fields/SelectField";
-import CheckboxField from "../../form-fields/CheckboxField";
-import Select from "react-select";
-import fieldHoc from "../../form-fields/hoc";
+import SelectField from '../../form-fields/SelectField';
+import CheckboxField from '../../form-fields/CheckboxField';
+import fieldHoc from '../../form-fields/hoc';
 
 interface Props {
   error: object;
@@ -46,7 +46,7 @@ class PollerFormStepTwo extends Component<Props, State> {
     });
 
     return availableAdditionals;
-  }
+  };
 
   /**
    * Update selected master in state
@@ -71,16 +71,16 @@ class PollerFormStepTwo extends Component<Props, State> {
       selectedMaster: value,
       selectedAdditionals: filteredAdditionals,
     });
-  }
+  };
 
   /**
    * Update selected additionals in state
    */
   private handleChangeAdditionals = (event, values) => {
     this.setState({
-      selectedAdditionals: values
+      selectedAdditionals: values,
     });
-  }
+  };
 
   public render() {
     const { error, handleSubmit, onSubmit, pollers } = this.props;
@@ -94,8 +94,8 @@ class PollerFormStepTwo extends Component<Props, State> {
           <form autoComplete="off" onSubmit={handleSubmit(onSubmit)}>
             {pollers.length ? (
               <>
-                <h2 className={styles["form-title"]}>
-                  <Translate value="Attach poller to a master remote server"/>
+                <h2 className={styles['form-title']}>
+                  <Translate value="Attach poller to a master remote server" />
                 </h2>
                 <Field
                   name="linked_remote_master"
@@ -104,9 +104,13 @@ class PollerFormStepTwo extends Component<Props, State> {
                     {
                       text: '',
                       value: null,
-                    }
+                    },
                   ].concat(
-                    pollers.map(c => ({ value: c.id, label: c.name, text:c.name }))
+                    pollers.map((c) => ({
+                      value: c.id,
+                      label: c.name,
+                      text: c.name,
+                    })),
                   )}
                   value={selectedMaster}
                   onChange={this.handleChangeMaster}
@@ -115,16 +119,16 @@ class PollerFormStepTwo extends Component<Props, State> {
             ) : null}
             {selectedMaster && pollers.length >= 2 ? (
               <>
-                <h2 className={styles["form-title"]}>
-                  <Translate value="Attach poller to additional remote servers"/>
+                <h2 className={styles['form-title']}>
+                  <Translate value="Attach poller to additional remote servers" />
                 </h2>
-                <div className={styles["form-item"]}>
+                <div className={styles['form-item']}>
                   <Field
                     name="linked_remote_slaves"
                     component={fieldHoc(Select)}
-                    options={availableAdditionals.map(remote => ({
+                    options={availableAdditionals.map((remote) => ({
                       value: remote.id,
-                      label: remote.name
+                      label: remote.name,
                     }))}
                     isMulti
                     onChange={this.handleChangeAdditionals}

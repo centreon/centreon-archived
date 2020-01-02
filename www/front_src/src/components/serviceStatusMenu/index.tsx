@@ -23,7 +23,7 @@ import SubmenuHeader from '@centreon/ui/Submenu/SubmenuHeader';
 import SubmenuItem from '@centreon/ui/Submenu/SubmenuHeader/SubmenuItem';
 import SubmenuItems from '@centreon/ui/Submenu/SubmenuHeader/SubmenuItems';
 
-import { StatusDetails, TopCounterState } from '../hostMenu'
+import { StatusDetails, TopCounterState } from '../hostMenu';
 
 import styles from '../header/header.scss';
 import axios from '../../axios';
@@ -62,10 +62,9 @@ interface Data {
   refreshTime: number;
 }
 
-
 class ServiceStatusMenu extends Component<TopCounterState> {
   servicesStatusService = axios(
-    'internal.php?object=centreon_topcounter&action=servicesStatus'
+    'internal.php?object=centreon_topcounter&action=servicesStatus',
   );
 
   refreshInterval = null;
@@ -231,7 +230,7 @@ class ServiceStatusMenu extends Component<TopCounterState> {
                   dotColored="red"
                   submenuTitle="Critical services"
                   submenuCount={`${numeral(
-                    data.critical.unhandled
+                    data.critical.unhandled,
                   ).format()}/${numeral(data.critical.total).format()}`}
                 />
               </Link>
@@ -244,7 +243,7 @@ class ServiceStatusMenu extends Component<TopCounterState> {
                   dotColored="orange"
                   submenuTitle="Warning services"
                   submenuCount={`${numeral(
-                    data.warning.unhandled
+                    data.warning.unhandled,
                   ).format()}/${numeral(data.warning.total).format()}`}
                 />
               </Link>
@@ -257,7 +256,7 @@ class ServiceStatusMenu extends Component<TopCounterState> {
                   dotColored="gray"
                   submenuTitle="Unknown services"
                   submenuCount={`${numeral(
-                    data.unknown.unhandled
+                    data.unknown.unhandled,
                   ).format()}/${numeral(data.unknown.total).format()}`}
                 />
               </Link>

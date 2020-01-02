@@ -2,7 +2,7 @@
 /* eslint-disable react/jsx-filename-extension */
 /* eslint-disable react/prop-types */
 
-import React, {ReactNode} from 'react';
+import React, { ReactNode } from 'react';
 import classnames from 'classnames';
 import styles from '../../styles/partials/form/_form.scss';
 import { prepareInputProps } from './utils';
@@ -17,7 +17,14 @@ export interface RadioProps {
   rest: object;
 }
 
-const RadioField = ({ checked, error, label, info, className, ...rest }: Props) => (
+const RadioField = ({
+  checked,
+  error,
+  label,
+  info,
+  className,
+  ...rest
+}: Props) => (
   <div
     className={classnames(
       styles['custom-control'],

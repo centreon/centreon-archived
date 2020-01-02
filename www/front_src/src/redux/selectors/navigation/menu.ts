@@ -18,15 +18,12 @@ function filterShowableElements(acc: Array, item: object): Array {
         {
           ...item,
           [parameter]: item[parameter].reduce(filterShowableElements, []),
-        }
+        },
       ];
     }
   }
 
-  return [
-    ...acc,
-    item
-  ];
+  return [...acc, item];
 }
 
 /**
@@ -42,7 +39,7 @@ function removeEmptyGroups(acc: Array, item: object): Array {
       {
         ...item,
         children: item.children.reduce(removeEmptyGroups, []),
-      }
+      },
     ];
   }
 
@@ -52,14 +49,11 @@ function removeEmptyGroups(acc: Array, item: object): Array {
       {
         ...item,
         groups: item.groups.filter(filterNotEmptyGroup),
-      }
+      },
     ];
   }
 
-  return [
-    ...acc,
-    item
-  ];
+  return [...acc, item];
 }
 
 /**
@@ -83,5 +77,6 @@ const getNavigationItems = (state: object): Array => state.navigation.items;
 
 export const menuSelector = createSelector(
   getNavigationItems,
-  (navItems: Array): Array => navItems.reduce(filterShowableElements, []).reduce(removeEmptyGroups, []),
+  (navItems: Array): Array =>
+    navItems.reduce(filterShowableElements, []).reduce(removeEmptyGroups, []),
 );

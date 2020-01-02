@@ -13,7 +13,10 @@ interface Parameters {
 
 // this function allows to import dynamically js and css using systemjs
 // it is compatible with IE, Edge, firefox and chrome
-export function dynamicImport(basename: string, parameters: Parameters): Promise {
+export function dynamicImport(
+  basename: string,
+  parameters: Parameters,
+): Promise {
   return new Promise(async (resolve: Function, _reject: Function) => {
     if (!parameters.js) {
       console.error(new Error('dynamic import should contains js parameter.'));

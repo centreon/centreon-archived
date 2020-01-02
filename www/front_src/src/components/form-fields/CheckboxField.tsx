@@ -28,7 +28,11 @@ interface Props {
   rest: object;
 }
 
-const callbackWithValue = (trueValue: boolean, falseValue: boolean, callback: Function) => (e) =>
+const callbackWithValue = (
+  trueValue: boolean,
+  falseValue: boolean,
+  callback: Function,
+) => (e) =>
   callback(e && e.target && e.target.checked ? trueValue : falseValue);
 
 const CheckboxField = ({

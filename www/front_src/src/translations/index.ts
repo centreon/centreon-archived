@@ -3,8 +3,8 @@ import {
   setLocale,
   syncTranslationWithStore,
 } from 'react-redux-i18n';
+import { Store, CombinedState } from 'redux';
 import axios from '../axios';
-import {Store, CombinedState} from 'redux';
 
 const translationService = axios(
   'internal.php?object=centreon_i18n&action=translation',
@@ -13,7 +13,10 @@ const userService = axios(
   'internal.php?object=centreon_topcounter&action=user',
 );
 
-export default function setTranslations(store: Store<CombinedState>, callback: Function): void {
+export default function setTranslations(
+  store: Store<CombinedState>,
+  callback: Function,
+): void {
   const localePromise = userService.get();
   const translationsPromise = translationService.get();
 

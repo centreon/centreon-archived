@@ -2,7 +2,6 @@
 /* eslint-disable no-alert */
 /* eslint-disable radix */
 
-
 export const getRandomNum = (): number => {
   // between 0 - 1
   let rndNum = Math.random();

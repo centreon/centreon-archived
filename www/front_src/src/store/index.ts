@@ -1,6 +1,12 @@
 /* eslint-disable import/no-extraneous-dependencies */
 
-import { createStore, applyMiddleware, compose, Store, CombinedState } from 'redux';
+import {
+  createStore,
+  applyMiddleware,
+  compose,
+  Store,
+  CombinedState,
+} from 'redux';
 import { routerMiddleware } from 'connected-react-router';
 import { batchDispatchMiddleware } from 'redux-batched-actions';
 import thunk from 'redux-thunk';

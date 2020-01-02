@@ -109,7 +109,12 @@ class ExtensionsRoute extends Component<Props, State> {
     );
   };
 
-  private getEntitiesByKeyAndVersionParam = (param: string, equals: boolean, key: string, callback: Function) => {
+  private getEntitiesByKeyAndVersionParam = (
+    param: string,
+    equals: boolean,
+    key: string,
+    callback: Function,
+  ) => {
     const { extensions } = this.state;
     const resArray = [];
     if (extensions) {
@@ -129,7 +134,11 @@ class ExtensionsRoute extends Component<Props, State> {
     callback(resArray);
   };
 
-  private getAllEntitiesByVersionParam = (param: string, equals: boolean, callback: Function) => {
+  private getAllEntitiesByVersionParam = (
+    param: string,
+    equals: boolean,
+    callback: Function,
+  ) => {
     const { modulesActive, widgetsActive } = this.state;
     if (
       (!modulesActive && !widgetsActive) ||
@@ -178,7 +187,11 @@ class ExtensionsRoute extends Component<Props, State> {
     }
   };
 
-  private runActionOnAllEntities = (entityVersionType, equals: boolean, statusesKey: string) => {
+  private runActionOnAllEntities = (
+    entityVersionType,
+    equals: boolean,
+    statusesKey: string,
+  ) => {
     this.getAllEntitiesByVersionParam(entityVersionType, equals, (ids) => {
       this.setStatusesByIds(ids, statusesKey, () => {
         if (entityVersionType === 'outdated') {
@@ -202,7 +215,11 @@ class ExtensionsRoute extends Component<Props, State> {
     reloadExternalComponents();
   };
 
-  private setStatusesByIds = (ids: Array, statusesKey: string, callback: Function) => {
+  private setStatusesByIds = (
+    ids: Array,
+    statusesKey: string,
+    callback: Function,
+  ) => {
     let statuses = this.state[statusesKey];
     for (const { id } of ids) {
       statuses = {
@@ -253,7 +270,13 @@ class ExtensionsRoute extends Component<Props, State> {
   };
 
   // install/remove extension
-  private runAction = (loadingKey: string, action: string, id: string, type: string, callback: Function) => {
+  private runAction = (
+    loadingKey: string,
+    action: string,
+    id: string,
+    type: string,
+    callback: Function,
+  ) => {
     this.setStatusesByIds([{ id }], loadingKey, () => {
       axios(
         `internal.php?object=centreon_module&action=${action}&id=${id}&type=${type}`,
@@ -431,7 +454,7 @@ class ExtensionsRoute extends Component<Props, State> {
       });
   };
 
-  private versionClicked = () => { };
+  private versionClicked = () => {};
 
   public render() {
     const {
@@ -512,14 +535,14 @@ class ExtensionsRoute extends Component<Props, State> {
           <Button
             label={`${
               installed &&
-                not_installed &&
-                updated &&
-                search.length === 0 &&
-                ((modulesActive && widgetsActive) ||
-                  (!modulesActive && !widgetsActive))
+              not_installed &&
+              updated &&
+              search.length === 0 &&
+              ((modulesActive && widgetsActive) ||
+                (!modulesActive && !widgetsActive))
                 ? 'Update all'
                 : 'Update selection'
-              }`}
+            }`}
             buttonType="regular"
             customClass="mr-2"
             color="orange"
@@ -536,14 +559,14 @@ class ExtensionsRoute extends Component<Props, State> {
           <Button
             label={`${
               installed &&
-                not_installed &&
-                updated &&
-                search.length === 0 &&
-                ((modulesActive && widgetsActive) ||
-                  (!modulesActive && !widgetsActive))
+              not_installed &&
+              updated &&
+              search.length === 0 &&
+              ((modulesActive && widgetsActive) ||
+                (!modulesActive && !widgetsActive))
                 ? 'Install all'
                 : 'Install selection'
-              }`}
+            }`}
             buttonType="regular"
             customClass="mr-2"
             color="green"
@@ -559,36 +582,36 @@ class ExtensionsRoute extends Component<Props, State> {
         {extensions && !nothingShown ? (
           <>
             {extensions.result.module &&
-              (!modulesActive || (modulesActive && widgetsActive)) ? (
-                <ExtensionsHolder
-                  onCardClicked={this.activateExtensionsDetails}
-                  onDelete={this.toggleDeleteModal}
-                  onInstall={this.installById}
-                  onUpdate={this.updateById}
-                  title="Modules"
-                  type="module"
-                  updating={extensionsUpdatingStatus}
-                  installing={extensionsInstallingStatus}
-                  entities={extensions.result.module.entities}
-                />
-              ) : null}
+            (!modulesActive || (modulesActive && widgetsActive)) ? (
+              <ExtensionsHolder
+                onCardClicked={this.activateExtensionsDetails}
+                onDelete={this.toggleDeleteModal}
+                onInstall={this.installById}
+                onUpdate={this.updateById}
+                title="Modules"
+                type="module"
+                updating={extensionsUpdatingStatus}
+                installing={extensionsInstallingStatus}
+                entities={extensions.result.module.entities}
+              />
+            ) : null}
             {extensions.result.widget &&
-              (!widgetsActive || (modulesActive && widgetsActive)) ? (
-                <ExtensionsHolder
-                  onCardClicked={this.activateExtensionsDetails}
-                  onDelete={this.toggleDeleteModal}
-                  onInstall={this.installById}
-                  onUpdate={this.updateById}
-                  titleColor="blue"
-                  hrTitleColor="blue"
-                  hrColor="blue"
-                  title="Widgets"
-                  type="widget"
-                  updating={extensionsUpdatingStatus}
-                  installing={extensionsInstallingStatus}
-                  entities={extensions.result.widget.entities}
-                />
-              ) : null}
+            (!widgetsActive || (modulesActive && widgetsActive)) ? (
+              <ExtensionsHolder
+                onCardClicked={this.activateExtensionsDetails}
+                onDelete={this.toggleDeleteModal}
+                onInstall={this.installById}
+                onUpdate={this.updateById}
+                titleColor="blue"
+                hrTitleColor="blue"
+                hrColor="blue"
+                title="Widgets"
+                type="widget"
+                updating={extensionsUpdatingStatus}
+                installing={extensionsInstallingStatus}
+                entities={extensions.result.widget.entities}
+              />
+            ) : null}
           </>
         ) : null}
 
@@ -622,16 +645,10 @@ const mapDispatchToProps = (dispatch: Function) => {
     reloadNavigation: () => {
       // batch actions to avoid useless multiple rendering
       dispatch(
-        batchActions([
-          fetchNavigationData(),
-          fetchExternalComponents()
-        ]),
+        batchActions([fetchNavigationData(), fetchExternalComponents()]),
       );
     },
   };
 };
 
-export default connect(
-  null,
-  mapDispatchToProps,
-)(ExtensionsRoute);
+export default connect(null, mapDispatchToProps)(ExtensionsRoute);

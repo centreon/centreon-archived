@@ -7,9 +7,16 @@ import classnames from 'classnames';
 import styles from '../../styles/partials/form/_form.scss';
 import { prepareInputProps } from './utils';
 import fieldHoc from './hoc';
-import {RadioProps} from './PreselectedRadioField';
+import { RadioProps } from './PreselectedRadioField';
 
-const RadioField = ({ checked, error, label, info, className, ...rest }: RadioProps) => (
+const RadioField = ({
+  checked,
+  error,
+  label,
+  info,
+  className,
+  ...rest
+}: RadioProps) => (
   <div
     className={classnames(
       styles['custom-control'],

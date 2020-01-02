@@ -85,7 +85,7 @@ class App extends Component<Props, State> {
       axios('internal.php?object=centreon_keepalive&action=keepAlive')
         .get()
         .then(() => this.keepAlive())
-        .catch(error => {
+        .catch((error) => {
           if (error.response && error.response.status === 401) {
             // redirect to login page
             window.location.href = 'index.php?disconnect=1';
@@ -157,7 +157,4 @@ const mapDispatchToProps = (dispatch: Function) => {
   };
 };
 
-export default connect(
-  null,
-  mapDispatchToProps,
-)(App);
+export default connect(null, mapDispatchToProps)(App);

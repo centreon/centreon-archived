@@ -1,7 +1,7 @@
 /* eslint-disable no-restricted-syntax */
 /* eslint-disable no-use-before-define */
 
-import axios, {AxiosResponse} from 'axios';
+import axios, { AxiosResponse } from 'axios';
 import { put, takeEvery, all, fork, take, call } from 'redux-saga/effects';
 import { eventChannel, END, EventChannel } from 'redux-saga';
 import * as actions from '../actions/axiosActions';
@@ -44,7 +44,10 @@ interface Upload {
   url: string;
 }
 
-function upload({ files, url }: Upload, onProgress: Function): Promise<AxiosResponse> {
+function upload(
+  { files, url }: Upload,
+  onProgress: Function,
+): Promise<AxiosResponse> {
   const data = new FormData();
 
   for (const file of files) {
@@ -148,14 +151,14 @@ function* axiosRequest(action: object): void {
       throw new Error('Request type is required!');
     } else {
       let dataBody = null;
-      if(action.requestType === "DELETE"){
-        dataBody = action.data ? { data:action.data } : null
-      }else{
-        dataBody = action.data ? action.data : null
+      if (action.requestType === 'DELETE') {
+        dataBody = action.data ? { data: action.data } : null;
+      } else {
+        dataBody = action.data ? action.data : null;
       }
       const res = yield axios[action.requestType.toLowerCase()](
         action.url,
-        dataBody ? dataBody : null
+        dataBody || null,
       );
 
       const data = yield res.data;

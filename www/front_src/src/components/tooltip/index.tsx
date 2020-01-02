@@ -40,7 +40,4 @@ const mapStateToProps = ({ tooltip }: Props) => ({
   toggled: tooltip.toggled,
 });
 
-export default connect(
-  mapStateToProps,
-  null,
-)(Tooltip);
+export default connect(mapStateToProps, null)(Tooltip);

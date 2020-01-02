@@ -68,7 +68,7 @@ export interface TopCounterState {
 
 class HostMenu extends Component<TopCounterState> {
   private hostsService = axios(
-    'internal.php?object=centreon_topcounter&action=hosts_status'
+    'internal.php?object=centreon_topcounter&action=hosts_status',
   );
 
   private refreshInterval = null;
@@ -213,7 +213,7 @@ class HostMenu extends Component<TopCounterState> {
                   dotColored="red"
                   submenuTitle="Critical"
                   submenuCount={`${numeral(data.down.unhandled).format(
-                    '0a'
+                    '0a',
                   )}/${numeral(data.down.total).format('0a')}`}
                 />
               </Link>
@@ -226,7 +226,7 @@ class HostMenu extends Component<TopCounterState> {
                   dotColored="gray"
                   submenuTitle="Unreachable"
                   submenuCount={`${numeral(data.unreachable.unhandled).format(
-                    '0a'
+                    '0a',
                   )}/${numeral(data.unreachable.total).format('0a')}`}
                 />
               </Link>

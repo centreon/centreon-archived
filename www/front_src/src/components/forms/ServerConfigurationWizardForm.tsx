@@ -26,7 +26,11 @@ const configurationTypes = [
   },
 ];
 
-const ServerConfigurationWizardForm = ({ error, handleSubmit, onSubmit }: Props) => (
+const ServerConfigurationWizardForm = ({
+  error,
+  handleSubmit,
+  onSubmit,
+}: Props) => (
   <div className={classnames(styles['form-wrapper'], styles.small)}>
     <div className={styles['form-inner']}>
       <div className={styles['form-heading']}>
@@ -34,8 +38,7 @@ const ServerConfigurationWizardForm = ({ error, handleSubmit, onSubmit }: Props)
           <Translate value="Server Configuration Wizard" />
         </h2>
         <p className={styles['form-text']}>
-          <Translate value="Choose a server type" />
-          {':'}
+          <Translate value="Choose a server type" />:
         </p>
       </div>
       <form autoComplete="off" onSubmit={handleSubmit(onSubmit)}>

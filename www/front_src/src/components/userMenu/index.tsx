@@ -35,7 +35,9 @@ interface State {
 }
 
 class UserMenu extends Component<Props, State> {
-  private userService = axios('internal.php?object=centreon_topcounter&action=user');
+  private userService = axios(
+    'internal.php?object=centreon_topcounter&action=user',
+  );
 
   private refreshTimeout = null;
 
@@ -218,7 +220,4 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = {};
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(UserMenu);
+export default connect(mapStateToProps, mapDispatchToProps)(UserMenu);

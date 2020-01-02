@@ -313,17 +313,10 @@ const mapStateToProps = (state: object) => ({
 
 const mapDispatchToProps = {};
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(PollerMenu);
+export default connect(mapStateToProps, mapDispatchToProps)(PollerMenu);
 
 PollerMenu.propTypes = {
-  allowedPages: PropTypes.arrayOf(
-    PropTypes.string
-  ).isRequired,
-  refreshTime: PropTypes.oneOfType([
-    PropTypes.number,
-    PropTypes.bool
-  ]).isRequired,
+  allowedPages: PropTypes.arrayOf(PropTypes.string).isRequired,
+  refreshTime: PropTypes.oneOfType([PropTypes.number, PropTypes.bool])
+    .isRequired,
 };

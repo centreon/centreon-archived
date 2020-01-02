@@ -25,7 +25,9 @@ export const centreonPathValidator = (centreonFolder: Array): string => {
     : '';
 };
 
-export const selectRemoteServerValidator = (selectRemoteServer: Array): string =>
+export const selectRemoteServerValidator = (
+  selectRemoteServer: Array,
+): string =>
   !selectRemoteServer || selectRemoteServer.length < 1
     ? 'The field is required'
     : '';
