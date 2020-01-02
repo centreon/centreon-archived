@@ -4,13 +4,13 @@ import axios from 'axios';
 
 const navUrl = './api/internal.php?object=centreon_menu&action=menu';
 
-export function getNavItems(callback) {
+export function getNavItems(callback: Function) {
   axios
     .get(navUrl)
     .then((res) => {
       callback(res);
     })
-    .catch((err) => {
+    .catch((err: Error) => {
       throw err;
     });
 }
