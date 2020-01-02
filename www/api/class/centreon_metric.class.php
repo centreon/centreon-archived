@@ -514,7 +514,7 @@ class CentreonMetric extends CentreonWebService
 
         $result = $graph->getGraph($this->arguments['start'], $this->arguments['end']);
 
-        if ($multipleServices == 0 && count($selectedMetrics) > 0) {
+        if (!$multipleServices && count($selectedMetrics) > 0) {
             /* Get extra information (downtime/acknowledgment) */
             $result['acknowledge'] = array();
             $result['downtime'] = array();
