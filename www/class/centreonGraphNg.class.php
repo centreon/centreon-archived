@@ -1291,7 +1291,7 @@ class CentreonGraphNg
             '#ff99ff', '#ffcc00', '#ffcc33', '#ffcc66', '#ffcc99', '#ffcccc',
             '#ffccff'
         );
-        return $webSafeColors[rand(0, sizeof($webSafeColors)-1)];
+        return $webSafeColors[rand(0, sizeof($webSafeColors) - 1)];
     }
 
     /**
