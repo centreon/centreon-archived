@@ -653,6 +653,7 @@ class CentreonGraphNg
             if (isset($metricsSelected[$metric['metric_id']])) {
                 $this->addRealMetric($metric);
             } else {
+                // this metric will be hidden
                 $this->addRealMetric($metric, 1);
             }
         }
