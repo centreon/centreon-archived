@@ -7,6 +7,10 @@ import { Switch, Route, withRouter } from 'react-router-dom';
 import ReactRouter from '../reactRouter';
 import LegacyRoute from '../../route-components/legacyRoute';
 
+interface Props {
+  history: object;
+}
+
 // main router to handle switch between legacy routes and react pages
 // legacy route has a key to make it fully uncontrolled
 // (https://reactjs.org/blog/2018/06/07/you-probably-dont-need-derived-state.html#recommendation-fully-uncontrolled-component-with-a-key)
@@ -15,7 +19,7 @@ const MainRouter = ({
   history: {
     location: { key },
   },
-}) => (
+}: Props) => (
   <Switch>
     <Route key={`path-${key}`} path="/main.php" exact component={LegacyRoute} />
     <Route path="/" exact render={() => <Redirect to="/main.php" />} />

@@ -13,9 +13,17 @@ import BreadcrumbWrapper from '../breadcrumbWrapper';
 import styles from '../../styles/partials/_content.scss';
 import { allowedPagesSelector } from "../../redux/selectors/navigation/allowedPages";
 
+interface Props {
+  history: object;
+  isNavigationFetched: boolean;
+  fetched: boolean;
+  allowedPages: Array<string>;
+  pages: object;
+}
+
 // class to manage internal react pages
-class ReactRouter extends Component {
-  getLoadableComponents = () => {
+class ReactRouter extends Component<Props> {
+  private getLoadableComponents = () => {
     const { history, isNavigationFetched, allowedPages, pages } = this.props;
     const basename = history.createHref({
       pathname: '/',
@@ -64,7 +72,7 @@ class ReactRouter extends Component {
     return LoadableComponents;
   };
 
-  render() {
+  public render() {
     const { isNavigationFetched, allowedPages, fetched } = this.props;
 
     if (!isNavigationFetched || !fetched) {
@@ -111,7 +119,7 @@ class ReactRouter extends Component {
   }
 }
 
-const mapStateToProps = (state) => ({
+const mapStateToProps = (state: object) => ({
   isNavigationFetched: state.navigation.fetched,
   allowedPages: allowedPagesSelector(state),
   pages: state.externalComponents.pages,
