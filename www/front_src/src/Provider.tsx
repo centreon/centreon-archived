@@ -8,20 +8,24 @@ import setTranslations from './translations';
 
 const store = createStore();
 
-class AppProvider extends Component {
-  state = {
+interface State {
+  translationsLoaded: boolean;
+}
+
+class AppProvider extends Component<State> {
+  public state = {
     translationsLoaded: false,
   };
 
-  componentDidMount = () => {
+  public componentDidMount = () => {
     setTranslations(store, this.finishLoading);
   };
 
-  finishLoading = () => {
+  private finishLoading = () => {
     this.setState({ translationsLoaded: true });
   };
 
-  render() {
+  public render() {
     const { translationsLoaded } = this.state;
 
     return (

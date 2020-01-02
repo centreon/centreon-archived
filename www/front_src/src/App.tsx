@@ -28,15 +28,23 @@ import styles from './App.scss';
 import footerStyles from './components/footer/footer.scss';
 import contentStyles from './styles/partials/_content.scss';
 
-class App extends Component {
-  state = {
+interface Props {
+  fetchExternalsComponents: Function;
+}
+
+interface State {
+  isFullscreenEnabled: boolean;
+}
+
+class App extends Component<Props, State> {
+  public state = {
     isFullscreenEnabled: false,
   };
 
-  keepAliveTimeout = null;
+  private keepAliveTimeout = null;
 
   // check in arguments if min=1
-  getMinArgument = () => {
+  private getMinArgument = () => {
     const { search } = history.location;
     const parsedArguments = queryString.parse(search);
 
@@ -44,7 +52,7 @@ class App extends Component {
   };
 
   // enable fullscreen
-  goFull = () => {
+  private goFull = () => {
     // set fullscreen url parameters
     // this will be used to init iframe src
     window.fullscreenSearch = window.location.search;
@@ -57,7 +65,7 @@ class App extends Component {
   };
 
   // disable fullscreen
-  removeFullscreenParams = () => {
+  private removeFullscreenParams = () => {
     if (history.location.pathname === '/main.php') {
       history.push({
         pathname: '/main.php',
@@ -72,7 +80,7 @@ class App extends Component {
   };
 
   // keep alive (redirect to login page if session is expired)
-  keepAlive = () => {
+  private keepAlive = () => {
     this.keepAliveTimeout = setTimeout(() => {
       axios('internal.php?object=centreon_keepalive&action=keepAlive')
         .get()
@@ -89,7 +97,7 @@ class App extends Component {
     }, 15000);
   };
 
-  componentDidMount() {
+  public componentDidMount() {
     const { fetchExternalComponents } = this.props;
 
     // 2 - fetch external components (pages, hooks...)
@@ -98,7 +106,7 @@ class App extends Component {
     this.keepAlive();
   }
 
-  render() {
+  public render() {
     const min = this.getMinArgument();
 
     return (
@@ -141,7 +149,7 @@ class App extends Component {
   }
 }
 
-const mapDispatchToProps = (dispatch) => {
+const mapDispatchToProps = (dispatch: Function) => {
   return {
     fetchExternalComponents: () => {
       dispatch(fetchExternalComponents());
