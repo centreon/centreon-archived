@@ -10,13 +10,19 @@ import { menuSelector } from '../../redux/selectors/navigation/menu';
 import { reactRoutesSelector } from '../../redux/selectors/navigation/reactRoutes';
 import { fetchNavigationData } from '../../redux/actions/navigationActions';
 
-class Navigation extends Component {
-  componentDidMount = () => {
+interface Props {
+  fetchNavigationData: Function;
+  navigationData: Array;
+  reactRoutes: object;
+}
+
+class Navigation extends Component<PRops> {
+  public componentDidMount = () => {
     const { fetchNavigationData } = this.props;
     fetchNavigationData();
   };
 
-  render() {
+  public render() {
     const { navigationData, reactRoutes } = this.props;
 
     return (
@@ -25,12 +31,12 @@ class Navigation extends Component {
   }
 }
 
-const mapStateToProps = (state) => ({
+const mapStateToProps = (state: object) => ({
   navigationData: menuSelector(state),
   reactRoutes: reactRoutesSelector(state),
 });
 
-const mapDispatchToProps = (dispatch) => {
+const mapDispatchToProps = (dispatch: Function) => {
   return {
     fetchNavigationData: () => {
       dispatch(fetchNavigationData());
