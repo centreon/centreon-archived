@@ -494,7 +494,7 @@ class CentreonMetric extends CentreonWebService
         global $centreon;
 
         $selectedMetrics = $this->manageMetricsDataArguments($services, $metrics);
-        $multipleServices = count(array_keys($selectedMetrics)) > 1 ? 1 : 0;
+        $multipleServices = count(array_keys($selectedMetrics)) > 1 ? true : false;
 
         /* Prepare graph */
         try {
