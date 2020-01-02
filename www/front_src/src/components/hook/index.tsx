@@ -8,8 +8,15 @@ import { withRouter } from 'react-router-dom';
 import { dynamicImport } from '../../helpers/dynamicImport';
 import centreonAxios from '../../axios';
 
+interface Props {
+  history: object;
+  hooks: object;
+  path: string;
+  rest: object;
+}
+
 // class to dynamically import component from modules
-class Hook extends Component {
+class Hook extends Component<Props> {
   getLoadableHooks = () => {
     const { history, hooks, path, ...rest } = this.props;
     const basename = history.createHref({
