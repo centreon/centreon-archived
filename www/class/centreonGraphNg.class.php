@@ -630,7 +630,7 @@ class CentreonGraphNg
      *
      * @return void
      */
-    public function addServiceCustomMetrics($hostId, $serviceId, $metricsSelected)
+    public function addServiceCustomMetrics($hostId, $serviceId, $metricsSelected): void
     {
         $indexId = null;
         $stmt = $this->dbCs->prepare(
