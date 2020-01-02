@@ -1,3 +1,4 @@
+import { ReactNode } from 'react';
 import routeMap from './route-map';
 import PollerStepOne from '../route-components/pollerStep1';
 import PollerStepTwo from '../route-components/pollerStep2';
@@ -9,7 +10,13 @@ import ServerConfigurationWizard from '../route-components/serverConfigurationWi
 import ExtensionsManagerPage from '../route-components/administration/extensions/manager';
 import NotAllowedPage from '../route-components/notAllowedPage';
 
-const reactRoutes = [
+interface ReactRoute {
+  path: string;
+  comp: ReactNode;
+  exact: boolean;
+}
+
+const reactRoutes: Array<ReactRoute> = [
   {
     path: routeMap.pollerStep1,
     comp: PollerStepOne,
