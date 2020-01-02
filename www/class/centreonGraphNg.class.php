@@ -1220,7 +1220,7 @@ class CentreonGraphNg
     public function getOVDColor($indexId, $metricId)
     {
         if (is_null($this->colorCache)) {
-            $this->colorCache = array();
+            $this->colorCache = [];
         }
         if (!isset($this->colorCache[$indexId])) {
             $stmt = $this->db->prepare(
