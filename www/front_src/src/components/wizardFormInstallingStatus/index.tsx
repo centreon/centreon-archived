@@ -7,13 +7,21 @@ import { Translate } from 'react-redux-i18n';
 import styles from '../../styles/partials/form/_form.scss';
 import Loader from '../loader';
 
+interface Props {
+  formTitle: string;
+  statusCreating: object;
+  statusGenerating: object;
+  statusProcessing: object;
+  error: string;
+}
+
 export default ({
   formTitle,
   statusCreating,
   statusGenerating,
   statusProcessing,
   error,
-}) => {
+}: Props) => {
   return (
     <div className={classnames(styles['form-wrapper'], styles.installation)}>
       <div className={styles['form-inner']}>
