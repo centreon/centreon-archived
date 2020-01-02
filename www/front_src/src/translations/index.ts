@@ -4,6 +4,7 @@ import {
   syncTranslationWithStore,
 } from 'react-redux-i18n';
 import axios from '../axios';
+import {Store, CombinedState} from 'redux';
 
 const translationService = axios(
   'internal.php?object=centreon_i18n&action=translation',
@@ -12,12 +13,12 @@ const userService = axios(
   'internal.php?object=centreon_topcounter&action=user',
 );
 
-export default function setTranslations(store, callback) {
+export default function setTranslations(store: Store<CombinedState>, callback: Function): void {
   const localePromise = userService.get();
   const translationsPromise = translationService.get();
 
   Promise.all([localePromise, translationsPromise])
-    .then((response) => {
+    .then((response: Array) => {
       let { locale } = response[0].data;
       locale = locale !== null ? locale.slice(0, 2) : navigator.language;
       const translations = response[1].data;
@@ -26,7 +27,7 @@ export default function setTranslations(store, callback) {
       store.dispatch(setLocale(locale));
       callback();
     })
-    .catch((error) => {
+    .catch((error: Error) => {
       if (error.response && error.response.status === 401) {
         // redirect to login page
         window.location.href = 'index.php?disconnect=1';
