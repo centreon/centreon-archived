@@ -1001,7 +1001,7 @@ class CentreonMetric extends CentreonWebService
      *
      * @return array The list of acknowledgements
      */
-    protected function getAcknowledgements(int $hostId, int $serviceId, int $start, int $end)
+    protected function getAcknowledgements(int $hostId, int $serviceId, int $start, int $end): array
     {
         $query = 'SELECT entry_time as start, deletion_time as end, author, comment_data ' .
             'FROM acknowledgements ' .
