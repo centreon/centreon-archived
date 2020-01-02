@@ -168,7 +168,7 @@ class CentreonMetric extends CentreonWebService
 
         return $this->lastMetricsData(
             $this->arguments['services'] ?? '',
-            isset($this->arguments['metrics']) ? $this->arguments['metrics'] : ''
+            $this->arguments['metrics'] ?? ''
         );
     }
 
