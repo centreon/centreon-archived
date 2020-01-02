@@ -339,7 +339,6 @@ class CentreonHomeCustomview extends CentreonWebService
 
        return $widgetObj->getWidgetPreferences($widgetId);
 
-        return $preferences;
     }
 
     /**
