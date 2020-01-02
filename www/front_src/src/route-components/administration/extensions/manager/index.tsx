@@ -18,11 +18,11 @@ import {
   ExtensionDetailsPopup,
   ExtensionDeletePopup,
 } from '@centreon/ui';
-import Hook from '../../../../components/hook';
+import Hook from '../../../../components/hook/index.tsx';
 
-import axios from '../../../../axios';
-import { fetchNavigationData } from '../../../../redux/actions/navigationActions';
-import { fetchExternalComponents } from '../../../../redux/actions/externalComponentsActions';
+import axios from '../../../../axios/index.ts';
+import { fetchNavigationData } from '../../../../redux/actions/navigationActions.ts';
+import { fetchExternalComponents } from '../../../../redux/actions/externalComponentsActions.ts';
 
 interface Props {
   reloadNavigation: Function;

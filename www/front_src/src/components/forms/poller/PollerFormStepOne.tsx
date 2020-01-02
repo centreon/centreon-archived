@@ -7,13 +7,13 @@ import React, { Component } from 'react';
 import { Field, reduxForm as connectForm } from 'redux-form';
 import { Translate, I18n } from 'react-redux-i18n';
 import styles from '../../../styles/partials/form/_form.scss';
-import InputField from '../../form-fields/InputField';
+import InputField from '../../form-fields/InputField.tsx';
 
 import {
   serverNameValidator,
   serverIpAddressValidator,
   centralIpAddressValidator,
-} from '../../../helpers/validators';
+} from '../../../helpers/validators.ts';
 
 interface Props {
   error: object;

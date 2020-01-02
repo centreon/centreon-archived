@@ -4,9 +4,9 @@
 /* eslint-disable camelcase */
 
 import React, { Component } from 'react';
-import Form from '../../components/forms/ServerConfigurationWizardForm';
-import routeMap from '../../route-maps/route-map';
-import ProgressBar from '../../components/progressBar';
+import Form from '../../components/forms/ServerConfigurationWizardForm.tsx';
+import routeMap from '../../route-maps/route-map.ts';
+import ProgressBar from '../../components/progressBar/index.tsx';
 
 interface Props {
   history: object;

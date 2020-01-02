@@ -7,7 +7,7 @@ import { Field, reduxForm as connectForm } from 'redux-form';
 import { Translate } from 'react-redux-i18n';
 import styles from '../../styles/partials/form/_form.scss';
 
-import RadioGroupFields from '../form-fields/RadioGroupFields';
+import RadioGroupFields from '../form-fields/RadioGroupFields.tsx';
 
 interface Props {
   error: object;
@@ -38,7 +38,9 @@ const ServerConfigurationWizardForm = ({
           <Translate value="Server Configuration Wizard" />
         </h2>
         <p className={styles['form-text']}>
-          <Translate value="Choose a server type" />:
+          <Translate value="Choose a server type" />
+          :
+          <br />
         </p>
       </div>
       <form autoComplete="off" onSubmit={handleSubmit(onSubmit)}>

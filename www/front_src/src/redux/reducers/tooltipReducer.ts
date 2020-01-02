@@ -1,5 +1,4 @@
-import * as actions from '../actions/tooltipActions';
-import { ReduxState } from '.';
+import * as actions from '../actions/tooltipActions.ts';
 
 interface TooltipState {
   toggled: boolean;
@@ -18,7 +17,8 @@ const initialState = {
 const tooltipReducer = (
   state: TooltipState = initialState,
   action: object,
-): ReduxState => {
+): object => {
+  // to be remplaced by ReduxState when when types definition will be included
   const { data } = action;
   switch (action.type) {
     case actions.UPDATE_TOOLTIP:

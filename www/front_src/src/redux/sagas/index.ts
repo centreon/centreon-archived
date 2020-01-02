@@ -1,7 +1,7 @@
 import { all, fork } from 'redux-saga/effects';
 
-import * as axiosSagas from './axios';
-import * as bamSagas from './bam';
+import * as axiosSagas from './axios.ts';
+import * as bamSagas from './bam.ts';
 
 const rootSaga = function* rootSaga() {
   yield all([

@@ -10,9 +10,13 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { I18n } from 'react-redux-i18n';
 import styles from '../../styles/partials/form/_form.scss';
-import FieldMsg from './FieldMsg';
-import RadioField from './RadioField';
-import { Meta } from './hoc';
+import FieldMsg from './FieldMsg.tsx';
+import RadioField from './RadioField.tsx';
+
+interface Meta {
+  touched: boolean;
+  error: ErrorMessage;
+}
 
 interface Props {
   options: Array;

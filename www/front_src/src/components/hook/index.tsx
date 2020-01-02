@@ -5,8 +5,8 @@
 import React, { Component, Suspense } from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
-import { dynamicImport } from '../../helpers/dynamicImport';
-import centreonAxios from '../../axios';
+import { dynamicImport } from '../../helpers/dynamicImport.ts';
+import centreonAxios from '../../axios/index.ts';
 
 interface Props {
   history: object;

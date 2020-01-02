@@ -11,18 +11,17 @@ import { connect } from 'react-redux';
 import { ConnectedRouter } from 'connected-react-router';
 import Fullscreen from 'react-fullscreen-crossbrowser';
 import queryString from 'query-string';
-import { batchActions } from 'redux-batched-actions';
 import { StylesProvider } from '@material-ui/styles';
-import Header from './components/header';
-import { history } from './store';
+import Header from './components/header/index.tsx';
+import { history } from './store/index.ts';
 
-import NavigationComponent from './components/navigation';
-import Tooltip from './components/tooltip';
-import Footer from './components/footer';
-import MainRouter from './components/mainRouter';
-import axios from './axios';
+import NavigationComponent from './components/navigation/index.tsx';
+import Tooltip from './components/tooltip/index.tsx';
+import Footer from './components/footer/index.tsx';
+import MainRouter from './components/mainRouter/index.tsx';
+import axios from './axios/index.ts';
 
-import { fetchExternalComponents } from './redux/actions/externalComponentsActions';
+import { fetchExternalComponents } from './redux/actions/externalComponentsActions.ts';
 
 import styles from './App.scss';
 import footerStyles from './components/footer/footer.scss';
@@ -98,10 +97,8 @@ class App extends Component<Props, State> {
   };
 
   public componentDidMount() {
-    const { fetchExternalComponents } = this.props;
-
     // 2 - fetch external components (pages, hooks...)
-    fetchExternalComponents();
+    this.props.fetchExternalComponents();
 
     this.keepAlive();
   }

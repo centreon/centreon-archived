@@ -6,7 +6,7 @@ import { Field, reduxForm as connectForm } from 'redux-form';
 import Select from 'react-select';
 import { Translate, I18n } from 'react-redux-i18n';
 import styles from '../../../styles/partials/form/_form.scss';
-import fieldHoc from '../../form-fields/hoc';
+import fieldHoc from '../../form-fields/hoc.tsx';
 
 interface Props {
   error: object;

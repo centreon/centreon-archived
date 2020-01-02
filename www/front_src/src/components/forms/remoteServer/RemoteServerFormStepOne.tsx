@@ -10,10 +10,10 @@ import { Field, reduxForm as connectForm } from 'redux-form';
 import classnames from 'classnames';
 import { Translate, I18n } from 'react-redux-i18n';
 import styles from '../../../styles/partials/form/_form.scss';
-import InputField from '../../form-fields/InputField';
-import SelectField from '../../form-fields/SelectField';
-import RadioField from '../../form-fields/PreselectedRadioField';
-import CheckboxField from '../../form-fields/CheckboxField';
+import InputField from '../../form-fields/InputField.tsx';
+import SelectField from '../../form-fields/SelectField.tsx';
+import RadioField from '../../form-fields/PreselectedRadioField.tsx';
+import CheckboxField from '../../form-fields/CheckboxField.tsx';
 
 import {
   serverNameValidator,
@@ -22,7 +22,7 @@ import {
   databaseUserValidator,
   databasePasswordValidator,
   centreonPathValidator,
-} from '../../../helpers/validators';
+} from '../../../helpers/validators.ts';
 
 interface Props {
   change: Function;

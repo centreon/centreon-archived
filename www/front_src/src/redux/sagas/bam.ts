@@ -1,21 +1,7 @@
-import axios from 'axios';
-import {
-  put,
-  takeLatest,
-  takeEvery,
-  all,
-  fork,
-  take,
-  call,
-} from 'redux-saga/effects';
-import * as actions from '../actions/bamConfigurationActions';
-import { BamConfiguation } from '../reducers/bamConfigurationReducer';
+import { put, takeEvery } from 'redux-saga/effects';
+import * as actions from '../actions/bamConfigurationActions.ts';
 
-export function* setBaConfiguration(): void {
-  yield takeEvery(actions.BA_CONFIGURATION_CHANGED, setConfiguration);
-}
-
-function* setConfiguration({ configuration }: BamConfiguation): void {
+function* setConfiguration({ configuration }: object): void {
   try {
     yield put({ type: actions.SET_BA_CONFIGURATION, configuration });
   } catch (err) {
@@ -23,8 +9,8 @@ function* setConfiguration({ configuration }: BamConfiguation): void {
   }
 }
 
-export function* setBaConfigurationErrors(): void {
-  yield takeEvery(actions.BA_CONFIGURATION_ERRORS, setErrors);
+export function* setBaConfiguration(): void {
+  yield takeEvery(actions.BA_CONFIGURATION_CHANGED, setConfiguration);
 }
 
 interface Errors {
@@ -39,8 +25,8 @@ function* setErrors({ errors }: Errors): void {
   }
 }
 
-export function* removeErrorByKey(): void {
-  yield takeEvery(actions.REMOVE_BA_CONFIGURATION_ERROR, removeError);
+export function* setBaConfigurationErrors(): void {
+  yield takeEvery(actions.BA_CONFIGURATION_ERRORS, setErrors);
 }
 
 interface ErrorsWithKey {
@@ -54,4 +40,8 @@ function* removeError({ errors, key }: ErrorsWithKey): void {
   } catch (err) {
     throw err;
   }
+}
+
+export function* removeErrorByKey(): void {
+  yield takeEvery(actions.REMOVE_BA_CONFIGURATION_ERROR, removeError);
 }

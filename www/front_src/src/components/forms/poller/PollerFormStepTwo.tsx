@@ -8,9 +8,9 @@ import { Field, reduxForm as connectForm } from 'redux-form';
 import { Translate, I18n } from 'react-redux-i18n';
 import Select from 'react-select';
 import styles from '../../../styles/partials/form/_form.scss';
-import SelectField from '../../form-fields/SelectField';
-import CheckboxField from '../../form-fields/CheckboxField';
-import fieldHoc from '../../form-fields/hoc';
+import SelectField from '../../form-fields/SelectField.tsx';
+import CheckboxField from '../../form-fields/CheckboxField.tsx';
+import fieldHoc from '../../form-fields/hoc.tsx';
 
 interface Props {
   error: object;
@@ -43,6 +43,7 @@ class PollerFormStepTwo extends Component<Props, State> {
       if (poller.id !== selectedMaster) {
         return true;
       }
+      return false;
     });
 
     return availableAdditionals;
@@ -61,6 +62,7 @@ class PollerFormStepTwo extends Component<Props, State> {
           if (additional.value !== value) {
             return true;
           }
+          return false;
         })
       : [];
 

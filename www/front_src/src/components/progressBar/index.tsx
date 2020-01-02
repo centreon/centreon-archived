@@ -7,7 +7,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import classnames from 'classnames';
-import { history } from '../../store';
+import { history } from '../../store/index.ts';
 import styles from './progressbar.scss';
 
 interface Props {

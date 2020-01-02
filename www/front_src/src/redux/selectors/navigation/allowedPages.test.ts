@@ -1,4 +1,4 @@
-import { allowedPagesSelector } from './allowedPages';
+import allowedPagesSelector from './allowedPages.ts';
 
 describe('allowedPagesSelector', () => {
   it('returns allowed react routes and legacy topology pages', () => {

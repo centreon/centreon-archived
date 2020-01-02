@@ -1,14 +1,9 @@
 import '@babel/polyfill';
 import React from 'react';
 import configureStore from 'redux-mock-store';
-import {
-  render,
-  fireEvent,
-  queryByAttribute,
-  waitForElement,
-} from '@testing-library/react';
+import { render, fireEvent, queryByAttribute } from '@testing-library/react';
 import { Provider } from 'react-redux';
-import PollerFormStepTwo from './PollerFormStepTwo';
+import PollerFormStepTwo from './PollerFormStepTwo.tsx';
 
 const queryByName = queryByAttribute.bind(null, 'name');
 
@@ -69,7 +64,7 @@ describe('PollerFormStepTwo', () => {
   });
 
   it('displays slaves select if master is selected and several remotes exist', async () => {
-    const { container, getByText } = render(
+    const { container } = render(
       <Provider store={store}>
         <PollerFormStepTwo pollers={TwoPollers} onSubmit={jest.fn()} />
       </Provider>,

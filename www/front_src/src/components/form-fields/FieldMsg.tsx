@@ -1,15 +1,15 @@
 /* eslint-disable react/jsx-filename-extension */
 /* eslint-disable react/prop-types */
 
-import React, { ReactNode } from 'react';
+import React from 'react';
 import classnames from 'classnames';
 import styles from '../../styles/partials/form/_form.scss';
 
 interface Props {
   className: string;
-  children: ReactNode;
+  children: any; // to be remplaced by ReactNode when types definition will be included
   isError: boolean;
-  tagName: ReactNode;
+  tagName: any; // to be remplaced by ReactNode when types definition will be included
   restProps: object;
 }
 

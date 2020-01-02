@@ -4,8 +4,8 @@
 
 import React from 'react';
 import { Switch, Route, withRouter } from 'react-router-dom';
-import ReactRouter from '../reactRouter';
-import LegacyRoute from '../../route-components/legacyRoute';
+import ReactRouter from '../reactRouter/index.tsx';
+import LegacyRoute from '../../route-components/legacyRoute/index.tsx';
 
 interface Props {
   history: object;

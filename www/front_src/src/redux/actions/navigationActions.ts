@@ -1,6 +1,6 @@
 /* eslint-disable no-use-before-define */
 /* eslint-disable no-restricted-syntax */
-import axios from '../../axios';
+import axios from '../../axios/index.ts';
 
 export const FETCH_NAVIGATION_BEGIN = 'FETCH_NAVIGATION_BEGIN';
 export const FETCH_NAVIGATION_SUCCESS = 'FETCH_NAVIGATION_SUCCESS';

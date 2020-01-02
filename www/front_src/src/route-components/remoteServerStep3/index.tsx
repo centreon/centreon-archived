@@ -7,11 +7,11 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { I18n } from 'react-redux-i18n';
-import WizardFormInstallingStatus from '../../components/wizardFormInstallingStatus';
-import ProgressBar from '../../components/progressBar';
-import routeMap from '../../route-maps/route-map';
+import WizardFormInstallingStatus from '../../components/wizardFormInstallingStatus/index.tsx';
+import ProgressBar from '../../components/progressBar/index.tsx';
+import routeMap from '../../route-maps/route-map.ts';
 
-import axios from '../../axios';
+import axios from '../../axios/index.ts';
 
 interface Props {
   pollerData: object;

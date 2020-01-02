@@ -7,16 +7,16 @@ import { connect } from 'react-redux';
 import classnames from 'classnames';
 import styles from './header.scss';
 
-import Hook from '../hook';
+import Hook from '../hook/index.tsx';
 
-import { setRefreshIntervals } from '../../redux/actions/refreshActions';
+import { setRefreshIntervals } from '../../redux/actions/refreshActions.ts';
 
-import PollerMenu from '../pollerMenu';
-import UserMenu from '../userMenu';
-import HostMenu from '../hostMenu';
-import ServiceStatusMenu from '../serviceStatusMenu';
+import PollerMenu from '../pollerMenu/index.tsx';
+import UserMenu from '../userMenu/index.tsx';
+import HostMenu from '../hostMenu/index.tsx';
+import ServiceStatusMenu from '../serviceStatusMenu/index.tsx';
 
-import axios from '../../axios';
+import axios from '../../axios/index.ts';
 
 interface Props {
   setRefreshIntervals: Function;

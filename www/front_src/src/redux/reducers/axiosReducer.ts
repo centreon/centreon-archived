@@ -1,5 +1,4 @@
-import * as actions from '../actions/axiosActions';
-import { ReduxState } from '.';
+import * as actions from '../actions/axiosActions.ts';
 
 interface AxiosState {
   fileUploadProgress: object;
@@ -9,10 +8,8 @@ const initialState = {
   fileUploadProgress: {},
 };
 
-const axiosReducer = (
-  state: State = initialState,
-  action: object,
-): ReduxState => {
+const axiosReducer = (state: State = initialState, action: object): object => {
+  // to be remplaced by ReduxState when when types definition will be included
   switch (action.type) {
     case actions.SET_AXIOS_DATA:
       return { ...state, [action.propKey]: action.data };

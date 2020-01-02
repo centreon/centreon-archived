@@ -1,7 +1,6 @@
 /* eslint-disable no-case-declarations */
 
-import * as actions from '../actions/navigationActions';
-import { ReduxState } from '.';
+import * as actions from '../actions/navigationActions.ts';
 
 interface NavigationState {
   fetched: boolean;
@@ -17,7 +16,8 @@ const initialState = {
 const navigationReducer = (
   state: NavigationState = initialState,
   action: object,
-): ReduxState => {
+): object => {
+  // to be remplaced by ReduxState when when types definition will be included
   switch (action.type) {
     case actions.FETCH_NAVIGATION_SUCCESS:
       return {

@@ -1,5 +1,4 @@
-import * as actions from '../actions/externalComponentsActions';
-import { ReduxState } from '.';
+import * as actions from '../actions/externalComponentsActions.ts';
 
 interface ExternalComponentsState {
   pages: Array;
@@ -17,7 +16,8 @@ const initialState = {
 const externalComponentsReducer = (
   state: ExternalComponentsState = initialState,
   action: object,
-): ReduxState => {
+): object => {
+  // to be remplaced by ReduxState when when types definition will be included
   switch (action.type) {
     case actions.FETCH_EXTERNAL_COMPONENTS_SUCCESS:
       return {

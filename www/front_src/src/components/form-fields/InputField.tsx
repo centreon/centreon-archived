@@ -10,14 +10,14 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import styles from '../../styles/partials/form/_form.scss';
-import fieldHoc from './hoc';
-import { prepareInputProps } from './utils';
+import fieldHoc from './hoc.tsx';
+import { prepareInputProps } from './utils.ts';
 
 interface Props {
   type: string;
   label: string;
   placeholder: string;
-  error: ReactNode | null;
+  error: any; // to be remplaced by ReactNode when types definition will be included
   topRightLabel: string;
   modifiers: Array;
   rest: object;

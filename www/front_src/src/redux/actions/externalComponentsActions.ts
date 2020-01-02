@@ -1,6 +1,6 @@
 /* eslint-disable no-use-before-define */
 
-import axios from '../../axios';
+import axios from '../../axios/index.ts';
 
 export const FETCH_EXTERNAL_COMPONENTS_BEGIN =
   'FETCH_EXTERNAL_COMPONENTS_BEGIN';

@@ -11,16 +11,16 @@
 /* eslint-disable no-nested-ternary */
 /* eslint-disable import/no-extraneous-dependencies */
 
-import React, { Component, ReactNode } from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import { Translate, I18n } from 'react-redux-i18n';
 import { Link } from 'react-router-dom';
 
 import { connect } from 'react-redux';
-import axios from '../../axios';
+import axios from '../../axios/index.ts';
 import styles from '../header/header.scss';
-import { allowedPagesSelector } from '../../redux/selectors/navigation/allowedPages';
+import allowedPagesSelector from '../../redux/selectors/navigation/allowedPages.ts';
 
 const POLLER_CONFIGURATION_TOPOLOGY_PAGE = '60901';
 
@@ -85,7 +85,7 @@ const getPollerStatusIcon = (issues: object) => {
 
 interface Props {
   allowedPages: Array<string>;
-  children: ReactNode;
+  children: any; // to be remplaced by ReactNode when types definition will be integrated
 }
 
 interface Data {

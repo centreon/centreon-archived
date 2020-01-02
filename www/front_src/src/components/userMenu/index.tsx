@@ -11,10 +11,10 @@ import classnames from 'classnames';
 import { Translate } from 'react-redux-i18n';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { allowedPagesSelector } from '../../redux/selectors/navigation/allowedPages';
+import allowedPagesSelector from '../../redux/selectors/navigation/allowedPages.ts';
 import styles from '../header/header.scss';
-import Clock from '../clock';
-import axios from '../../axios';
+import Clock from '../clock/index.tsx';
+import axios from '../../axios/index.ts';
 
 const EDIT_PROFILE_TOPOLOGY_PAGE = '50104';
 

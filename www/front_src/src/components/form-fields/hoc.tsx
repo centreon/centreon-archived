@@ -8,12 +8,12 @@
 /* eslint-disable no-plusplus */
 /* eslint-disable import/no-extraneous-dependencies */
 
-import React, { Component, ReactNode } from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import styles from '../../styles/partials/form/_form.scss';
-import getErrorMsg, { ErrorMessage } from './getErrorMsg';
-import FieldMsg from './FieldMsg';
+import getErrorMsg from './getErrorMsg.ts';
+import FieldMsg from './FieldMsg.tsx';
 
 interface Input {
   name: string;
@@ -22,7 +22,7 @@ interface Input {
   value: string | number | boolean;
 }
 
-export interface Meta {
+interface Meta {
   touched: boolean;
   error: ErrorMessage;
 }
@@ -43,7 +43,8 @@ let fid = 0;
 
 const nextId = () => ++fid;
 
-const fieldHoc = (WrapComponent: ReactNode) => {
+const fieldHoc = (WrapComponent: any) => {
+  // to be remplaced by ReactNode when types definition will be included
   class FieldHoc extends Component<Props, State> {
     public constructor(props) {
       super(props);
@@ -83,7 +84,7 @@ const fieldHoc = (WrapComponent: ReactNode) => {
       this.setState({ isFocused: false });
 
       if (onBlur) {
-        return onBlur(value);
+        onBlur(value);
       }
     }
 

@@ -6,13 +6,13 @@
 
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import Form from '../../components/forms/poller/PollerFormStepOne';
-import { setPollerWizard } from '../../redux/actions/pollerWizardActions';
-import ProgressBar from '../../components/progressBar';
-import routeMap from '../../route-maps/route-map';
+import Form from '../../components/forms/poller/PollerFormStepOne.tsx';
+import { setPollerWizard } from '../../redux/actions/pollerWizardActions.ts';
+import ProgressBar from '../../components/progressBar/index.tsx';
+import routeMap from '../../route-maps/route-map.ts';
 
 interface Props {
-  history: object:
+  history: object;
   setPollerWizard: Function;
 }
 
@@ -57,7 +57,4 @@ const mapStateToProps = ({ pollerForm }: object) => ({
 const mapDispatchToProps = {
   setPollerWizard,
 };
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(PollerStepOneRoute);
+export default connect(mapStateToProps, mapDispatchToProps)(PollerStepOneRoute);

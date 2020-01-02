@@ -2,9 +2,9 @@
 
 import React, { Component } from 'react';
 import { Provider } from 'react-redux';
-import App from './App';
-import createStore from './store';
-import setTranslations from './translations';
+import App from './App.tsx';
+import createStore from './store/index.ts';
+import setTranslations from './translations/index.ts';
 
 const store = createStore();
 

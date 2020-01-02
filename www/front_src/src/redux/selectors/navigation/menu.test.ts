@@ -1,4 +1,4 @@
-import { menuSelector } from './menu';
+import menuSelector from './menu.ts';
 
 describe('menuSelector', () => {
   it('returns formatted menu', () => {

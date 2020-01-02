@@ -24,7 +24,7 @@ import SubmenuItem from '@centreon/ui/Submenu/SubmenuHeader/SubmenuItem';
 import SubmenuItems from '@centreon/ui/Submenu/SubmenuHeader/SubmenuItems';
 
 import styles from '../header/header.scss';
-import axios from '../../axios';
+import axios from '../../axios/index.ts';
 
 const numberFormat = yup
   .number()
@@ -46,7 +46,7 @@ const statusSchema = yup.object().shape({
   refreshTime: numberFormat,
 });
 
-export interface StatusDetails {
+interface StatusDetails {
   total: number;
   unhandled: number;
 }
@@ -60,7 +60,7 @@ interface Data {
   refreshTime: number;
 }
 
-export interface TopCounterState {
+interface TopCounterState {
   toggled: boolean;
   data: Data;
   intervalApplied: boolean;

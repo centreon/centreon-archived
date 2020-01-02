@@ -11,7 +11,10 @@ function filterShowableElements(acc: Array, item: object): Array {
     return acc;
   }
 
-  for (const parameter of ['groups', 'children']) {
+  const parameters = ['groups', 'children'];
+
+  for (let i = 0; i < parameters.length; i += 1) {
+    const parameter = parameters[i];
     if (item[parameter]) {
       return [
         ...acc,
@@ -24,6 +27,23 @@ function filterShowableElements(acc: Array, item: object): Array {
   }
 
   return [...acc, item];
+}
+
+/**
+ * check if a group is empty or not
+ * @param {Object} group
+ * @return {Boolean} if the group is empty or not
+ */
+function filterNotEmptyGroup(group: object): boolean {
+  if (group.children) {
+    for (let i = 0; i < group.children.length; i += 1) {
+      if (group.children[i].show === true) {
+        return true;
+      }
+    }
+  }
+
+  return false;
 }
 
 /**
@@ -56,27 +76,12 @@ function removeEmptyGroups(acc: Array, item: object): Array {
   return [...acc, item];
 }
 
-/**
- * check if a group is empty or not
- * @param {Object} group
- * @return {Boolean} if the group is empty or not
- */
-function filterNotEmptyGroup(group: object): boolean {
-  if (group.children) {
-    for (const child of group.children) {
-      if (child.show === true) {
-        return true;
-      }
-    }
-  }
-
-  return false;
-}
-
 const getNavigationItems = (state: object): Array => state.navigation.items;
 
-export const menuSelector = createSelector(
+const menuSelector = createSelector(
   getNavigationItems,
   (navItems: Array): Array =>
     navItems.reduce(filterShowableElements, []).reduce(removeEmptyGroups, []),
 );
+
+export default menuSelector;

@@ -1,10 +1,10 @@
 /* eslint-disable no-restricted-syntax */
 /* eslint-disable no-use-before-define */
 
-import axios, { AxiosResponse } from 'axios';
+import axios from 'axios';
 import { put, takeEvery, all, fork, take, call } from 'redux-saga/effects';
-import { eventChannel, END, EventChannel } from 'redux-saga';
-import * as actions from '../actions/axiosActions';
+import { eventChannel, END } from 'redux-saga';
+import * as actions from '../actions/axiosActions.ts';
 
 export function* getAxiosData(): void {
   yield takeEvery(actions.GET_DATA, axiosRequest);
@@ -44,10 +44,7 @@ interface Upload {
   url: string;
 }
 
-function upload(
-  { files, url }: Upload,
-  onProgress: Function,
-): Promise<AxiosResponse> {
+function upload({ files, url }: Upload, onProgress: Function): Promise {
   const data = new FormData();
 
   for (const file of files) {
@@ -84,7 +81,7 @@ function createUploader(action: object) {
   return [uploadPromise, channel];
 }
 
-function* watchOnProgress(channel: EventChannel): void {
+function* watchOnProgress(channel): void {
   while (true) {
     const data = yield take(channel);
     yield put({ type: actions.FILE_UPLOAD_PROGRESS, data });

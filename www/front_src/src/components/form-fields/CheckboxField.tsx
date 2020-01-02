@@ -5,18 +5,18 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable import/no-extraneous-dependencies */
 
-import React, { ReactNode } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import styles from '../../styles/partials/form/_form.scss';
 
-import fieldHoc from './hoc';
-import { prepareInputProps } from './utils';
+import fieldHoc from './hoc.tsx';
+import { prepareInputProps } from './utils.ts';
 
 interface Props {
   checked: boolean;
   className: string;
-  error: ReactNode;
+  error: any; // to be remplaced by ReactNode when types definition will be included
   falseValue: boolean;
   fieldMsg: string;
   label: string;

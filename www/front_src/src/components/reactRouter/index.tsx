@@ -5,13 +5,13 @@
 import React, { Component, Suspense } from 'react';
 import { connect } from 'react-redux';
 import { Switch, Route, withRouter } from 'react-router-dom';
-import { reactRoutes } from '../../route-maps';
-import { dynamicImport } from '../../helpers/dynamicImport';
-import centreonAxios from '../../axios';
-import NotAllowedPage from '../../route-components/notAllowedPage';
-import BreadcrumbWrapper from '../breadcrumbWrapper';
+import { reactRoutes } from '../../route-maps/index.ts';
+import { dynamicImport } from '../../helpers/dynamicImport.ts';
+import centreonAxios from '../../axios/index.ts';
+import NotAllowedPage from '../../route-components/notAllowedPage/index.tsx';
+import BreadcrumbWrapper from '../breadcrumbWrapper/index.tsx';
 import styles from '../../styles/partials/_content.scss';
-import { allowedPagesSelector } from '../../redux/selectors/navigation/allowedPages';
+import allowedPagesSelector from '../../redux/selectors/navigation/allowedPages.ts';
 
 interface Props {
   history: object;

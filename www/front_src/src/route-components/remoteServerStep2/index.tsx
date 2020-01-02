@@ -7,20 +7,20 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { SubmissionError } from 'redux-form';
-import Form from '../../components/forms/remoteServer/RemoteServerFormStepTwo';
-import routeMap from '../../route-maps/route-map';
-import ProgressBar from '../../components/progressBar';
-import axios from '../../axios';
-import { setPollerWizard } from '../../redux/actions/pollerWizardActions';
+import Form from '../../components/forms/remoteServer/RemoteServerFormStepTwo.tsx';
+import routeMap from '../../route-maps/route-map.ts';
+import ProgressBar from '../../components/progressBar/index.tsx';
+import axios from '../../axios/index.ts';
+import { setPollerWizard } from '../../redux/actions/pollerWizardActions.ts';
 
 interface Props {
-  history: object:
+  history: object;
   setPollerWizard: Function;
   pollerData: object;
 }
 
 interface State {
-  pollers: Array|null;
+  pollers: Array | null;
 }
 
 class RemoteServerStepTwoRoute extends Component<Props, State> {
@@ -111,7 +111,7 @@ class RemoteServerStepTwoRoute extends Component<Props, State> {
 }
 
 interface ReduxState {
-  pollerForm: object
+  pollerForm: object;
 }
 
 const mapStateToProps = ({ pollerForm }: ReduxState) => ({

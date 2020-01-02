@@ -5,9 +5,17 @@
 import React from 'react';
 import classnames from 'classnames';
 import styles from '../../styles/partials/form/_form.scss';
-import { prepareInputProps } from './utils';
-import fieldHoc from './hoc';
-import { RadioProps } from './PreselectedRadioField';
+import { prepareInputProps } from './utils.ts';
+import fieldHoc from './hoc.tsx';
+
+interface RadioProps {
+  checked: boolean;
+  error: any; // to be remplaced by ReactNode when types definition will be included
+  label: string;
+  info: string;
+  className: string;
+  rest: object;
+}
 
 const RadioField = ({
   checked,

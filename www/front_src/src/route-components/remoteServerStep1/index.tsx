@@ -5,20 +5,20 @@
 
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import Form from '../../components/forms/remoteServer/RemoteServerFormStepOne';
-import { setPollerWizard } from '../../redux/actions/pollerWizardActions';
-import ProgressBar from '../../components/progressBar';
-import routeMap from '../../route-maps/route-map';
-import axios from '../../axios';
+import Form from '../../components/forms/remoteServer/RemoteServerFormStepOne.tsx';
+import { setPollerWizard } from '../../redux/actions/pollerWizardActions.ts';
+import ProgressBar from '../../components/progressBar/index.tsx';
+import routeMap from '../../route-maps/route-map.ts';
+import axios from '../../axios/index.ts';
 
 interface Props {
-  history: object:
+  history: object;
   setPollerWizard: Function;
   pollerData: object;
 }
 
 interface State {
-  waitList: Array|null;
+  waitList: Array | null;
 }
 
 class RemoteServerStepOneRoute extends Component<Props, State> {

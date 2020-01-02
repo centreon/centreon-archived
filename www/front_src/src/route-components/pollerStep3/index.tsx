@@ -4,8 +4,8 @@
 import React, { Component } from 'react';
 import { I18n } from 'react-redux-i18n';
 import { connect } from 'react-redux';
-import WizardFormInstallingStatus from '../../components/wizardFormInstallingStatus';
-import ProgressBar from '../../components/progressBar';
+import WizardFormInstallingStatus from '../../components/wizardFormInstallingStatus/index.tsx';
+import ProgressBar from '../../components/progressBar/index.tsx';
 
 interface Props {
   pollerData: object;

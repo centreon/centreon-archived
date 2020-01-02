@@ -23,10 +23,8 @@ import SubmenuHeader from '@centreon/ui/Submenu/SubmenuHeader';
 import SubmenuItem from '@centreon/ui/Submenu/SubmenuHeader/SubmenuItem';
 import SubmenuItems from '@centreon/ui/Submenu/SubmenuHeader/SubmenuItems';
 
-import { StatusDetails, TopCounterState } from '../hostMenu';
-
 import styles from '../header/header.scss';
-import axios from '../../axios';
+import axios from '../../axios/index.ts';
 
 const numberFormat = yup
   .number()
@@ -52,6 +50,11 @@ const statusSchema = yup.object().shape({
   refreshTime: numberFormat,
 });
 
+interface StatusDetails {
+  total: number;
+  unhandled: number;
+}
+
 interface Data {
   critical: StatusDetails;
   warning: StatusDetails;
@@ -60,6 +63,12 @@ interface Data {
   pending: number;
   total: number;
   refreshTime: number;
+}
+
+interface TopCounterState {
+  toggled: boolean;
+  data: Data;
+  intervalApplied: boolean;
 }
 
 class ServiceStatusMenu extends Component<TopCounterState> {

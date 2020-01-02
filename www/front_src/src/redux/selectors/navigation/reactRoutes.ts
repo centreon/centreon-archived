@@ -6,12 +6,13 @@ import { createSelector } from 'reselect';
  * @param {Object} item
  * @return {Array} accumulator of react routes
  */
-function findReactRoutes(acc: Array, item: object): Array {
-  for (const parameter of ['groups', 'children']) {
+function findReactRoutes(accParam: Array, item: object): Array {
+  let acc = accParam;
+  ['groups', 'children'].forEach((parameter) => {
     if (item[parameter]) {
       acc = item[parameter].reduce(findReactRoutes, acc);
     }
-  }
+  });
 
   if (item.is_react === true) {
     acc[item.url] = item.page;
@@ -22,7 +23,9 @@ function findReactRoutes(acc: Array, item: object): Array {
 
 const getNavigationItems = (state: object): Array => state.navigation.items;
 
-export const reactRoutesSelector = createSelector(
+const reactRoutesSelector = createSelector(
   getNavigationItems,
   (navItems: Array): Array => navItems.reduce(findReactRoutes, {}),
 );
+
+export default reactRoutesSelector;

@@ -1,5 +1,5 @@
-import * as actions from '../actions/bamConfigurationActions';
-import { ReduxState } from '.';
+/* eslint-disable camelcase */
+import * as actions from '../actions/bamConfigurationActions.ts';
 
 export interface BamConfiguration {
   id: string;
@@ -82,10 +82,11 @@ const bamConfigurationReducer = (
       };
     case actions.SET_BA_CONFIGURATION_ERRORS:
       return { ...state, errors: { ...state.errors, ...action.errors.errors } };
-    case actions.REMOVE_BA_CONFIGURATION_ERROR:
+    case actions.REMOVE_BA_CONFIGURATION_ERROR: {
       const errors = { ...state.errors, ...action.errors.errors };
       delete errors[action.key];
       return { ...state, errors };
+    }
     case actions.RESET_BA_CONFIGURATION_ERRORS:
       return { ...state, errors: {} };
     default:

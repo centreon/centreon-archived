@@ -1,12 +1,12 @@
-import React, { useMemo, useCallback, ReactNode } from 'react';
+import React, { useMemo, useCallback } from 'react';
 import { connect } from 'react-redux';
 import Breadcrumb from '@centreon/ui/Breadcrumb';
-import breadcrumbsSelector from '../../redux/selectors/navigation/breadcrumbs';
+import breadcrumbsSelector from '../../redux/selectors/navigation/breadcrumbs.ts';
 
 interface Props {
   breadcrumbs: object;
   path: string;
-  children: ReactNode;
+  children: any; // to be remplaced by ReactNode when types definition will be included
   others: object;
 }
 

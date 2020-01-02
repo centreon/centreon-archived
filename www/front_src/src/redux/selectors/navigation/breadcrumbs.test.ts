@@ -1,4 +1,4 @@
-import breadcrumbsSelector from './breadcrumbs';
+import breadcrumbsSelector from './breadcrumbs.ts';
 
 describe('breadcrumbsSelector', () => {
   it('returns formatted breadcrumbs', () => {

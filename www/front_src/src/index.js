@@ -3,7 +3,7 @@
 /* eslint-disable no-multi-assign */
 /* eslint-disable func-names */
 
-import AppProvider from './Provider';
+import AppProvider from './Provider.tsx';
 
 // make an IIFE function to allow "await" usage
 // generate an "external" bundle to embed all needed libraries by external pages and hooks

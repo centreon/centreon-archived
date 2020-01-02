@@ -1,18 +1,17 @@
-import { ReactNode } from 'react';
-import routeMap from './route-map';
-import PollerStepOne from '../route-components/pollerStep1';
-import PollerStepTwo from '../route-components/pollerStep2';
-import PollerStepThree from '../route-components/pollerStep3';
-import RemoteServerStepOne from '../route-components/remoteServerStep1';
-import RemoteServerStepTwo from '../route-components/remoteServerStep2';
-import RemoteServerStepThree from '../route-components/remoteServerStep3';
-import ServerConfigurationWizard from '../route-components/serverConfigurationWizard';
-import ExtensionsManagerPage from '../route-components/administration/extensions/manager';
-import NotAllowedPage from '../route-components/notAllowedPage';
+import routeMap from './route-map.ts';
+import PollerStepOne from '../route-components/pollerStep1/index.tsx';
+import PollerStepTwo from '../route-components/pollerStep2/index.tsx';
+import PollerStepThree from '../route-components/pollerStep3/index.tsx';
+import RemoteServerStepOne from '../route-components/remoteServerStep1/index.tsx';
+import RemoteServerStepTwo from '../route-components/remoteServerStep2/index.tsx';
+import RemoteServerStepThree from '../route-components/remoteServerStep3/index.tsx';
+import ServerConfigurationWizard from '../route-components/serverConfigurationWizard/index.tsx';
+import ExtensionsManagerPage from '../route-components/administration/extensions/manager/index.tsx';
+import NotAllowedPage from '../route-components/notAllowedPage/index.tsx';
 
 interface ReactRoute {
   path: string;
-  comp: ReactNode;
+  comp: any; // to be remplaced by ReactNode when types definition will be included
   exact: boolean;
 }
 

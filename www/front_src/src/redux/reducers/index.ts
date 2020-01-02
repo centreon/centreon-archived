@@ -3,14 +3,14 @@ import { connectRouter } from 'connected-react-router';
 import { reducer as formReducer } from 'redux-form';
 import { i18nReducer } from 'react-redux-i18n';
 
-import pollerWizardReducer from './pollerWizardReducer';
-import navigationReducer from './navigationReducer';
-import refreshReducer from './refreshReducer';
-import axiosReducer from './axiosReducer';
-import externalComponentsReducer from './externalComponentsReducer';
-import tooltipReducer from './tooltipReducer';
-import bamConfigurationReducer from './bamConfigurationReducer';
-import globalsReducer from './globalsReducer';
+import pollerWizardReducer from './pollerWizardReducer.ts';
+import navigationReducer from './navigationReducer.ts';
+import refreshReducer from './refreshReducer.ts';
+import axiosReducer from './axiosReducer.ts';
+import externalComponentsReducer from './externalComponentsReducer.ts';
+import tooltipReducer from './tooltipReducer.ts';
+import bamConfigurationReducer from './bamConfigurationReducer.ts';
+import globalsReducer from './globalsReducer.ts';
 
 export interface ReduxState {
   router: Function;

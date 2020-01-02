@@ -1,4 +1,4 @@
-import { reactRoutesSelector } from './reactRoutes';
+import reactRoutesSelector from './reactRoutes.ts';
 
 describe('reactRoutesSelector', () => {
   it('returns react routes with their topology page', () => {

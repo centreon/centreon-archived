@@ -5,7 +5,7 @@ import React from 'react';
 import classnames from 'classnames';
 import { Translate } from 'react-redux-i18n';
 import styles from '../../styles/partials/form/_form.scss';
-import Loader from '../loader';
+import Loader from '../loader/index.tsx';
 
 interface Props {
   formTitle: string;
