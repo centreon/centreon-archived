@@ -254,7 +254,7 @@ class CentreonGraphNg
      *
      * @return void
      */
-    public function setMultipleServices($multiple=1)
+    public function setMultipleServices($multiple)
     {
         $this->multipleServices = $multiple;
     }
