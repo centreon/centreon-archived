@@ -7,7 +7,7 @@ import loaderStyles from 'loaders.css/loaders.min.css';
 import styles from './loader.scss';
 
 class Loader extends Component {
-  render() {
+  public render() {
     return (
       <div className={styles.loader}>
         <div
