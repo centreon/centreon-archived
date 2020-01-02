@@ -158,7 +158,7 @@ class CentreonMetric extends CentreonWebService
     /**
      * Get last metrics value by services or/and metrics
      *
-     * @return array
+     * @return array | null if arguments are not set
      */
     public function getLastMetricsData()
     {
