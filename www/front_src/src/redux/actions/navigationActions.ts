@@ -7,7 +7,7 @@ export const FETCH_NAVIGATION_SUCCESS = 'FETCH_NAVIGATION_SUCCESS';
 export const FETCH_NAVIGATION_FAILURE = 'FETCH_NAVIGATION_FAILURE';
 
 export const fetchNavigationData = () => {
-  return async (dispatch) => {
+  return async (dispatch: Function) => {
     // Initiate loading state
     dispatch(fetchNavigationBegin());
 
@@ -26,16 +26,16 @@ export const fetchNavigationData = () => {
   };
 };
 
-const fetchNavigationBegin = () => ({
+const fetchNavigationBegin = (): object => ({
   type: FETCH_NAVIGATION_BEGIN,
 });
 
-const fetchNavigationSuccess = (items) => ({
+const fetchNavigationSuccess = (items): object => ({
   type: FETCH_NAVIGATION_SUCCESS,
   items
 });
 
-const fetchNavigationFailure = (error) => ({
+const fetchNavigationFailure = (error): object => ({
   type: FETCH_NAVIGATION_FAILURE,
   error,
 });

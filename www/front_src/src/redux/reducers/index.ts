@@ -12,6 +12,20 @@ import tooltipReducer from './tooltipReducer';
 import bamConfigurationReducer from './bamConfigurationReducer';
 import globalsReducer from './globalsReducer';
 
+export interface ReduxState {
+  router: Function;
+  form: Function;
+  pollerForm: Function
+  i18n: Function;
+  navigation: Function;
+  intervals: Function;
+  remoteData: Function;
+  externalComponents: Function;
+  tooltip: Function;
+  bamConfiguration: Function;
+  globals: Function;
+}
+
 export default (history) => combineReducers({
   router: connectRouter(history),
   form: formReducer,

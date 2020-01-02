@@ -10,7 +10,7 @@ export const FETCH_EXTERNAL_COMPONENTS_FAILURE =
   'FETCH_EXTERNAL_COMPONENTS_FAILURE';
 
 export const fetchExternalComponents = () => {
-  return async (dispatch) => {
+  return async (dispatch: Function) => {
     // Initiate loading state
     dispatch(fetchExternalComponentsBegin());
 
@@ -29,16 +29,16 @@ export const fetchExternalComponents = () => {
   };
 };
 
-const fetchExternalComponentsBegin = () => ({
+const fetchExternalComponentsBegin = (): object => ({
   type: FETCH_EXTERNAL_COMPONENTS_BEGIN,
 });
 
-const fetchExternalComponentsSuccess = (data) => ({
+const fetchExternalComponentsSuccess = (data): object => ({
   type: FETCH_EXTERNAL_COMPONENTS_SUCCESS,
   data,
 });
 
-const fetchExternalComponentsFailure = (error) => ({
+const fetchExternalComponentsFailure = (error): object => ({
   type: FETCH_EXTERNAL_COMPONENTS_FAILURE,
   error,
 });

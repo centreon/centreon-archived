@@ -1,4 +1,39 @@
 import * as actions from "../actions/bamConfigurationActions";
+import {ReduxState} from ".";
+
+export interface BamConfiguration {
+  id: string;
+  activate: boolean;
+  name: string;
+  description: string;
+  icon: string;
+  inherit_kpi_downtimes: boolean;
+  additional_poller: Array;
+  groups: Array;
+  notifications_enabled: boolean;
+  bam_contact: Array;
+  notification_period: number;
+  notification_interval: object;
+  notification_options: Array;
+  level_w: number;
+  level_c: number;
+  reporting_timeperiods: Array;
+  sla_month_percent_warn: number;
+  sla_month_percent_crit: number;
+  sla_month_duration_warn: number;
+  sla_month_duration_crit: number;
+  bam_esc: Array;
+  bam_kpi: Array;
+  event_handler_enabled: boolean;
+  event_handler_command: string;
+  event_handler_args: string;
+  id_reporting_period: number;
+}
+
+interface BamConfigurationState {
+  configuration: BamConfiguration;
+  errors: object;
+}
 
 const initialState = {
     configuration:{
@@ -32,7 +67,7 @@ const initialState = {
     errors:{}
   };
 
-const bamConfigurationReducer = (state = initialState, action) => {
+const bamConfigurationReducer = (state: BamConfigurationState = initialState, action: object): ReduxState => {
   switch (action.type) {
     case actions.SET_BA_CONFIGURATION:
       return { ...state, configuration:{...state.configuration, ...action.configuration.configuration}  };

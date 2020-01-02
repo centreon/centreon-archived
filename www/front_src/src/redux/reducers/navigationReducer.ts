@@ -1,6 +1,12 @@
 /* eslint-disable no-case-declarations */
 
 import * as actions from '../actions/navigationActions';
+import {ReduxState} from '.';
+
+interface NavigationState {
+  fetched: boolean;
+  items: Array;
+}
 
 // by default, no one menu entry is allowed
 const initialState = {
@@ -8,7 +14,7 @@ const initialState = {
     items: [],
 };
 
-const navigationReducer = (state = initialState, action) => {
+const navigationReducer = (state: NavigationState = initialState, action: object): ReduxState => {
   switch (action.type) {
     case actions.FETCH_NAVIGATION_SUCCESS:
       return {

@@ -5,7 +5,7 @@ import { createSelector } from 'reselect';
  * @param {Object} item
  * @return {String} build URL
  */
-function getUrl(item) {
+function getUrl(item: object): string {
   return item.is_react
     ? item.url
     : `/main.php?p=${item.page}${item.options !== null ? item.options : ''}`;
@@ -16,7 +16,7 @@ function getUrl(item) {
  * @param {Object} item
  * @return {String|undefined} first url found
  */
-function findFirstUrl(item) {
+function findFirstUrl(item: object): string|undefined {
   if (item.url) {
     return getUrl(item);
   }
@@ -37,7 +37,7 @@ function findFirstUrl(item) {
  * @param {Object} item
  * @return {String|undefined} first url found
  */
-function getFirstUrlInChildren(item) {
+function getFirstUrlInChildren(item: object): string|undefined {
   if (!item.children) {
     return undefined;
   }
@@ -51,7 +51,7 @@ function getFirstUrlInChildren(item) {
  * @param Object item
  * @return {Object|null} breadcrumb step information
  */
-function getBreadcrumbStep(item) {
+function getBreadcrumbStep(item: object): object {
   const availableUrl = item.url ? getUrl(item) : findFirstUrl(item);
   return availableUrl
     ? {
@@ -61,11 +61,11 @@ function getBreadcrumbStep(item) {
     : null;
 }
 
-const getNavigationItems = (state) => state.navigation.items;
+const getNavigationItems = (state: object): Array => state.navigation.items;
 
 const breadcrumbsSelector = createSelector(
   getNavigationItems,
-  (navItems) => {
+  (navItems: Array): object|undefined => {
     const breadcrumbs = {};
 
     // build level 1 breadcrumbs

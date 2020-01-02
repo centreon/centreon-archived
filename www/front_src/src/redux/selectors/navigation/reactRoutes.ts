@@ -6,7 +6,7 @@ import { createSelector } from 'reselect';
  * @param {Object} item
  * @return {Array} accumulator of react routes
  */
-function findReactRoutes(acc, item) {
+function findReactRoutes(acc: Array, item: object): Array {
   for (const parameter of ['groups', 'children']) {
     if (item[parameter]) {
       acc = item[parameter].reduce(findReactRoutes, acc);
@@ -20,9 +20,9 @@ function findReactRoutes(acc, item) {
   return acc;
 }
 
-const getNavigationItems = (state) => state.navigation.items;
+const getNavigationItems = (state: object): Array => state.navigation.items;
 
 export const reactRoutesSelector = createSelector(
   getNavigationItems,
-  (navItems) => navItems.reduce(findReactRoutes, {}),
+  (navItems: Array): Array => navItems.reduce(findReactRoutes, {}),
 );

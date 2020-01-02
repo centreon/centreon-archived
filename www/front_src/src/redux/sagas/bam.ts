@@ -9,12 +9,13 @@ import {
   take,
   call
 } from "redux-saga/effects";
+import { BamConfiguation } from '../reducers/bamConfigurationReducer'
 
-export function* setBaConfiguration() {
+export function* setBaConfiguration(): void {
   yield takeEvery(actions.BA_CONFIGURATION_CHANGED, setConfiguration);
 }
 
-function* setConfiguration({configuration}) {
+function* setConfiguration({configuration}: BamConfiguation): void {
   try {
     yield put({ type: actions.SET_BA_CONFIGURATION, configuration });
   } catch (err) {
@@ -22,11 +23,15 @@ function* setConfiguration({configuration}) {
   }
 }
 
-export function* setBaConfigurationErrors() {
+export function* setBaConfigurationErrors(): void {
   yield takeEvery(actions.BA_CONFIGURATION_ERRORS, setErrors);
 }
 
-function* setErrors({errors}) {
+interface Errors {
+  errors: object;
+}
+
+function* setErrors({errors}: Errors): void {
   try {
     yield put({ type: actions.SET_BA_CONFIGURATION_ERRORS, errors });
   } catch (err) {
@@ -34,11 +39,16 @@ function* setErrors({errors}) {
   }
 }
 
-export function* removeErrorByKey() {
+export function* removeErrorByKey(): void {
   yield takeEvery(actions.REMOVE_BA_CONFIGURATION_ERROR, removeError);
 }
 
-function* removeError({errors,key}) {
+interface ErrorsWithKey {
+  errors: object;
+  key: string;
+}
+
+function* removeError({errors,key}: ErrorsWithKey): void {
   try {
     yield put({ type: actions.REMOVE_BA_CONFIGURATION_ERROR, errors, key });
   } catch (err) {

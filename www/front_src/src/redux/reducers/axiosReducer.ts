@@ -1,10 +1,15 @@
 import * as actions from '../actions/axiosActions';
+import {ReduxState} from '.';
+
+interface AxiosState {
+  fileUploadProgress: object;
+}
 
 const initialState = {
   fileUploadProgress: {},
 };
 
-const axiosReducer = (state = initialState, action) => {
+const axiosReducer = (state: State = initialState, action: object): ReduxState => {
   switch (action.type) {
     case actions.SET_AXIOS_DATA:
       return { ...state, [action.propKey]: action.data };

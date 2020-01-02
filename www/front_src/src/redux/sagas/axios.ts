@@ -1,36 +1,36 @@
 /* eslint-disable no-restricted-syntax */
 /* eslint-disable no-use-before-define */
 
-import axios from 'axios';
+import axios, {AxiosResponse} from 'axios';
 import { put, takeEvery, all, fork, take, call } from 'redux-saga/effects';
-import { eventChannel, END } from 'redux-saga';
+import { eventChannel, END, EventChannel } from 'redux-saga';
 import * as actions from '../actions/axiosActions';
 
-export function* getAxiosData() {
+export function* getAxiosData(): void {
   yield takeEvery(actions.GET_DATA, axiosRequest);
 }
 
-export function* postAxiosData() {
+export function* postAxiosData(): void {
   yield takeEvery(actions.POST_DATA, axiosRequest);
 }
 
-export function* putAxiosData() {
+export function* putAxiosData(): void {
   yield takeEvery(actions.PUT_DATA, axiosRequest);
 }
 
-export function* deleteAxiosData() {
+export function* deleteAxiosData(): void {
   yield takeEvery(actions.DELETE_DATA, axiosRequest);
 }
 
-export function* uploadAxiosData() {
+export function* uploadAxiosData(): void {
   yield takeEvery(actions.UPLOAD_DATA, uploadRequest);
 }
 
-export function* resetUploadProgress() {
+export function* resetUploadProgress(): void {
   yield takeEvery(actions.RESET_UPLOAD_PROGRESS_DATA, resetProgress);
 }
 
-function* resetProgress(action) {
+function* resetProgress(action: object): void {
   try {
     yield put({ type: actions.FILE_UPLOAD_PROGRESS, data: { reset: true } });
     action.resolve();
@@ -39,7 +39,12 @@ function* resetProgress(action) {
   }
 }
 
-function upload({ files, url }, onProgress) {
+interface Upload {
+  files: Array;
+  url: string;
+}
+
+function upload({ files, url }: Upload, onProgress: Function): Promise<AxiosResponse> {
   const data = new FormData();
 
   for (const file of files) {
@@ -57,14 +62,14 @@ function upload({ files, url }, onProgress) {
   return axios.post(url, data, config);
 }
 
-function createUploader(action) {
+function createUploader(action: object) {
   let emit;
   const channel = eventChannel((emitter) => {
     emit = emitter;
     return () => {};
   });
 
-  const uploadProgressCb = (event) => {
+  const uploadProgressCb = (event: object): Array => {
     const { total, loaded } = event;
     const percentage = Math.round((loaded * 100) / total);
     emit({ [action.fileIndex]: percentage });
@@ -76,14 +81,14 @@ function createUploader(action) {
   return [uploadPromise, channel];
 }
 
-function* watchOnProgress(channel) {
+function* watchOnProgress(channel: EventChannel): void {
   while (true) {
     const data = yield take(channel);
     yield put({ type: actions.FILE_UPLOAD_PROGRESS, data });
   }
 }
 
-function* uploadRequest(action) {
+function* uploadRequest(action: object): void {
   try {
     let data = {
       status: false,
@@ -124,7 +129,7 @@ function* uploadRequest(action) {
   }
 }
 
-function* uploadSource(action) {
+function* uploadSource(action: object): object {
   const [uploadPromise, channel] = yield call(createUploader, action);
   yield fork(watchOnProgress, channel);
 
@@ -137,7 +142,7 @@ function* uploadSource(action) {
   }
 }
 
-function* axiosRequest(action) {
+function* axiosRequest(action: object): void {
   try {
     if (!action.requestType) {
       throw new Error('Request type is required!');
