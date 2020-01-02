@@ -2,7 +2,8 @@
 /* eslint-disable no-alert */
 /* eslint-disable radix */
 
-export const getRandomNum = () => {
+
+export const getRandomNum = (): number => {
   // between 0 - 1
   let rndNum = Math.random();
 
@@ -15,7 +16,7 @@ export const getRandomNum = () => {
   return rndNum;
 };
 
-export const checkPunc = (num) => {
+export const checkPunc = (num: number): boolean => {
   if (
     (num >= 33 && num <= 47) ||
     (num >= 58 && num <= 64) ||
@@ -27,7 +28,7 @@ export const checkPunc = (num) => {
   return false;
 };
 
-export const generatePassword = (what) => {
+export const generatePassword = (what: string): string => {
   if (parseInt(navigator.appVersion) <= 3) {
     alert('Sorry this only works in 4.0+ browsers');
     return true;
