@@ -3,7 +3,6 @@
 /features export-ignore
 /project export-ignore
 /tests export-ignore
-/.babelrc export-ignore
 /.csslintrc export-ignore
 /.eslintignore export-ignore
 /.gitattributes export-ignore
@@ -21,4 +20,3 @@
 /jest.config.js export-ignore
 /phpunit.xml export-ignore
 /sonar-project.properties export-ignore
-/webpack* export-ignore
