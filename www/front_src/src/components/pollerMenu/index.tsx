@@ -11,7 +11,7 @@
 /* eslint-disable no-nested-ternary */
 /* eslint-disable import/no-extraneous-dependencies */
 
-import React, { Component } from 'react';
+import React, { Component, ReactNode } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import { Translate, I18n } from 'react-redux-i18n';
@@ -24,7 +24,7 @@ import { allowedPagesSelector } from '../../redux/selectors/navigation/allowedPa
 
 const POLLER_CONFIGURATION_TOPOLOGY_PAGE = '60901';
 
-const getIssueClass = (issues, key) => {
+const getIssueClass = (issues: object, key: string) => {
   return issues && issues.length !== 0
     ? issues[key]
       ? issues[key].warning
@@ -36,7 +36,7 @@ const getIssueClass = (issues, key) => {
     : 'green';
 };
 
-const getPollerStatusIcon = (issues) => {
+const getPollerStatusIcon = (issues: object) => {
   const databaseClass = getIssueClass(issues, 'database');
 
   const latencyClass = getIssueClass(issues, 'latency');
@@ -83,30 +83,46 @@ const getPollerStatusIcon = (issues) => {
   );
 };
 
-class PollerMenu extends Component {
-  pollerService = axios(
+interface Props {
+  allowedPages: Array<string>;
+  children: ReactNode;
+}
+
+interface Data {
+  total: number;
+  issues: object;
+}
+
+interface State {
+  toggled: boolean;
+  data: Data;
+  intervalApplied: boolean;
+}
+
+class PollerMenu extends Component<Props, State> {
+  private pollerService = axios(
     'internal.php?object=centreon_topcounter&action=pollersListIssues',
   );
 
-  refreshInterval = null;
+  private refreshInterval = null;
 
-  state = {
+  public state = {
     toggled: false,
     data: null,
     intervalApplied: false,
   };
 
-  componentDidMount() {
+  public componentDidMount() {
     window.addEventListener('mousedown', this.handleClick, false);
   }
 
-  componentWillUnmount() {
+  public componentWillUnmount() {
     window.removeEventListener('mousedown', this.handleClick, false);
     clearInterval(this.refreshInterval);
   }
 
   // fetch api to get host data
-  getData = () => {
+  public getData = () => {
     this.pollerService
       .get()
       .then(({ data }) => {
@@ -123,7 +139,7 @@ class PollerMenu extends Component {
       });
   };
 
-  componentWillReceiveProps = (nextProps) => {
+  public componentWillReceiveProps = (nextProps: Props) => {
     const { refreshTime } = nextProps;
     const { intervalApplied } = this.state;
     if (refreshTime && !intervalApplied) {
@@ -138,7 +154,7 @@ class PollerMenu extends Component {
   };
 
   // display/hide detailed poller data
-  toggle = () => {
+  private toggle = () => {
     const { toggled } = this.state;
     this.setState({
       toggled: !toggled,
@@ -146,7 +162,7 @@ class PollerMenu extends Component {
   };
 
   // hide poller detailed data if click outside
-  handleClick = (e) => {
+  private handleClick = (e: MouseEvent) => {
     if (!this.poller || this.poller.contains(e.target)) {
       return;
     }
@@ -155,7 +171,7 @@ class PollerMenu extends Component {
     });
   };
 
-  render() {
+  public render() {
     const { data, toggled } = this.state;
 
     if (!data) {
@@ -288,7 +304,7 @@ class PollerMenu extends Component {
   }
 }
 
-const mapStateToProps = (state) => ({
+const mapStateToProps = (state: object) => ({
   allowedPages: allowedPagesSelector(state),
   refreshTime: state.intervals
     ? parseInt(state.intervals.AjaxTimeReloadStatistic) * 1000
