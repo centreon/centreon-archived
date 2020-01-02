@@ -18,29 +18,45 @@ import axios from '../../axios';
 
 const EDIT_PROFILE_TOPOLOGY_PAGE = '50104';
 
-class UserMenu extends Component {
-  userService = axios('internal.php?object=centreon_topcounter&action=user');
+interface Props {
+  allowedPages: Array<string>;
+}
 
-  refreshTimeout = null;
+interface Data {
+  fullname: string;
+  username: string;
+  autologinkey: string;
+}
 
-  state = {
+interface State {
+  toggled: boolean;
+  copied: boolean;
+  data: Data;
+}
+
+class UserMenu extends Component<Props, State> {
+  private userService = axios('internal.php?object=centreon_topcounter&action=user');
+
+  private refreshTimeout = null;
+
+  public state = {
     toggled: false,
     copied: false,
     data: null,
   };
 
-  componentDidMount() {
+  public componentDidMount() {
     window.addEventListener('mousedown', this.handleClick, false);
     this.getData();
   }
 
-  componentWillUnmount() {
+  public componentWillUnmount() {
     window.removeEventListener('mousedown', this.handleClick, false);
     clearTimeout(this.refreshTimeout);
   }
 
   // fetch api to get user data
-  getData = () => {
+  private getData = () => {
     this.userService
       .get()
       .then(({ data }) => {
@@ -62,14 +78,14 @@ class UserMenu extends Component {
 
   // refresh user data every minutes
   // @todo get this interval from backend
-  refreshData = () => {
+  private refreshData = () => {
     clearTimeout(this.refreshTimeout);
     this.refreshTimeout = setTimeout(() => {
       this.getData();
     }, 60000);
   };
 
-  toggle = () => {
+  private toggle = () => {
     const { toggled } = this.state;
     this.setState({
       toggled: !toggled,
@@ -77,7 +93,7 @@ class UserMenu extends Component {
   };
 
   // copy for autologin link
-  onCopy = () => {
+  private onCopy = () => {
     this.autologinNode.select();
     window.document.execCommand('copy');
     this.setState({
@@ -85,7 +101,7 @@ class UserMenu extends Component {
     });
   };
 
-  handleClick = (e) => {
+  private handleClick = (e: MouseEvent) => {
     if (!this.profile || this.profile.contains(e.target)) {
       return;
     }
@@ -94,7 +110,7 @@ class UserMenu extends Component {
     });
   };
 
-  render() {
+  public render() {
     const { data, toggled, copied } = this.state;
 
     if (!data) {

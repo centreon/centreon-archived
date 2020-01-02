@@ -1,19 +1,19 @@
-/* eslint-disable no-return-assign */
+/* eslint-disable import/no-extraneous-dependencies */
 /* eslint-disable react/no-unused-prop-types */
 /* eslint-disable radix */
 /* eslint-disable react/prop-types */
 /* eslint-disable react/destructuring-assignment */
-/* eslint-disable jsx-a11y/no-static-element-interactions */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
+/* eslint-disable no-return-assign */
+/* eslint-disable jsx-a11y/no-static-element-interactions */
 /* eslint-disable react/jsx-filename-extension */
-/* eslint-disable import/no-extraneous-dependencies */
 
 import React, { Component } from 'react';
 import classnames from 'classnames';
 import * as yup from 'yup';
+import PropTypes from 'prop-types';
 import numeral from 'numeral';
 import { Link } from 'react-router-dom';
-import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
 import IconHeader from '@centreon/ui/Icon/IconHeader';
@@ -22,6 +22,8 @@ import IconToggleSubmenu from '@centreon/ui/Icon/IconToggleSubmenu';
 import SubmenuHeader from '@centreon/ui/Submenu/SubmenuHeader';
 import SubmenuItem from '@centreon/ui/Submenu/SubmenuHeader/SubmenuItem';
 import SubmenuItems from '@centreon/ui/Submenu/SubmenuHeader/SubmenuItems';
+
+import { StatusDetails, TopCounterState } from '../hostMenu'
 
 import styles from '../header/header.scss';
 import axios from '../../axios';
@@ -32,11 +34,15 @@ const numberFormat = yup
   .integer();
 
 const statusSchema = yup.object().shape({
-  down: yup.object().shape({
+  critical: yup.object().shape({
     total: numberFormat,
     unhandled: numberFormat,
   }),
-  unreachable: yup.object().shape({
+  warning: yup.object().shape({
+    total: numberFormat,
+    unhandled: numberFormat,
+  }),
+  unknown: yup.object().shape({
     total: numberFormat,
     unhandled: numberFormat,
   }),
@@ -46,9 +52,20 @@ const statusSchema = yup.object().shape({
   refreshTime: numberFormat,
 });
 
-class HostMenu extends Component {
-  hostsService = axios(
-    'internal.php?object=centreon_topcounter&action=hosts_status'
+interface Data {
+  critical: StatusDetails;
+  warning: StatusDetails;
+  unknown: StatusDetails;
+  ok: number;
+  pending: number;
+  total: number;
+  refreshTime: number;
+}
+
+
+class ServiceStatusMenu extends Component<TopCounterState> {
+  servicesStatusService = axios(
+    'internal.php?object=centreon_topcounter&action=servicesStatus'
   );
 
   refreshInterval = null;
@@ -68,9 +85,9 @@ class HostMenu extends Component {
     clearInterval(this.refreshInterval);
   }
 
-  // fetch api to get host data
+  // fetch api to get service data
   getData = () => {
-    this.hostsService
+    this.servicesStatusService
       .get()
       .then(({ data }) => {
         statusSchema.validate(data).then(() => {
@@ -100,7 +117,7 @@ class HostMenu extends Component {
     }
   };
 
-  // display/hide detailed host data
+  // display/hide detailed service data
   toggle = () => {
     const { toggled } = this.state;
     this.setState({
@@ -108,9 +125,9 @@ class HostMenu extends Component {
     });
   };
 
-  // hide host detailed data if click outside
+  // hide service detailed data if click outside
   handleClick = (e) => {
-    if (!this.host || this.host.contains(e.target)) {
+    if (!this.service || this.service.contains(e.target)) {
       return;
     }
     this.setState({
@@ -121,40 +138,61 @@ class HostMenu extends Component {
   render() {
     const { data, toggled } = this.state;
 
-    // do not display host information until having data
+    // do not display service information until having data
     if (!data) {
       return null;
     }
 
     return (
-      <div className={styles.wrapper} ref={(host) => (this.host = host)}>
+      <div
+        className={styles.wrapper}
+        ref={(service) => (this.service = service)}
+      >
         <SubmenuHeader submenuType="top" active={toggled}>
-          <IconHeader iconType="hosts" iconName="Hosts" onClick={this.toggle} />
+          <IconHeader
+            iconType="services"
+            iconName="services"
+            onClick={this.toggle}
+          />
           <Link
             className={classnames(styles.link, styles['wrap-middle-icon'])}
-            to="/main.php?p=20202&o=h_down&search="
-          >
-            <IconNumber
-              iconType={`${data.down.unhandled > 0 ? 'colored' : 'bordered'}`}
-              iconColor="red"
-              iconNumber={`${numeral(data.down.unhandled).format('0a')}`}
-            />
-          </Link>
-          <Link
-            className={classnames(styles.link, styles['wrap-middle-icon'])}
-            to="/main.php?p=20202&o=h_unreachable&search="
+            to="/main.php?p=20201&o=svc_unhandled&statusFilter=critical&search="
           >
             <IconNumber
               iconType={`${
-                data.unreachable.unhandled > 0 ? 'colored' : 'bordered'
+                data.critical.unhandled > 0 ? 'colored' : 'bordered'
               }`}
-              iconColor="gray-dark"
-              iconNumber={numeral(data.unreachable.unhandled).format('0a')}
+              iconColor="red"
+              iconNumber={`${numeral(data.critical.unhandled).format('0a')}`}
             />
           </Link>
           <Link
             className={classnames(styles.link, styles['wrap-middle-icon'])}
-            to="/main.php?p=20202&o=h_up&search="
+            to="/main.php?p=20201&o=svc_unhandled&statusFilter=warning&search="
+          >
+            <IconNumber
+              iconType={`${
+                data.warning.unhandled > 0 ? 'colored' : 'bordered'
+              }`}
+              iconColor="orange"
+              iconNumber={numeral(data.warning.unhandled).format('0a')}
+            />
+          </Link>
+          <Link
+            className={classnames(styles.link, styles['wrap-middle-icon'])}
+            to="/main.php?p=20201&o=svc_unhandled&statusFilter=unknown&search="
+          >
+            <IconNumber
+              iconType={`${
+                data.unknown.unhandled > 0 ? 'colored' : 'bordered'
+              }`}
+              iconColor="gray-light"
+              iconNumber={numeral(data.unknown.unhandled).format('0a')}
+            />
+          </Link>
+          <Link
+            className={classnames(styles.link, styles['wrap-middle-icon'])}
+            to="/main.php?p=20201&o=svc&statusFilter=ok&search="
           >
             <IconNumber
               iconType={`${data.ok > 0 ? 'colored' : 'bordered'}`}
@@ -175,60 +213,73 @@ class HostMenu extends Component {
           >
             <SubmenuItems>
               <Link
-                to="/main.php?p=20202&o=h&search="
+                to="/main.php?p=20201&o=svc&statusFilter=&search="
                 className={styles.link}
                 onClick={this.toggle}
               >
                 <SubmenuItem
-                  submenuTitle="All"
+                  submenuTitle="All Services"
                   submenuCount={numeral(data.total).format()}
                 />
               </Link>
               <Link
-                to="/main.php?p=20202&o=h_down&search="
+                to="/main.php?p=20201&o=svc_unhandled&statusFilter=critical&search="
                 className={styles.link}
                 onClick={this.toggle}
               >
                 <SubmenuItem
                   dotColored="red"
-                  submenuTitle="Critical"
-                  submenuCount={`${numeral(data.down.unhandled).format(
-                    '0a'
-                  )}/${numeral(data.down.total).format('0a')}`}
+                  submenuTitle="Critical services"
+                  submenuCount={`${numeral(
+                    data.critical.unhandled
+                  ).format()}/${numeral(data.critical.total).format()}`}
                 />
               </Link>
               <Link
-                to="/main.php?p=20202&o=h_unreachable&search="
+                to="/main.php?p=20201&o=svc_unhandled&statusFilter=warning&search="
+                className={styles.link}
+                onClick={this.toggle}
+              >
+                <SubmenuItem
+                  dotColored="orange"
+                  submenuTitle="Warning services"
+                  submenuCount={`${numeral(
+                    data.warning.unhandled
+                  ).format()}/${numeral(data.warning.total).format()}`}
+                />
+              </Link>
+              <Link
+                to="/main.php?p=20201&o=svc_unhandled&statusFilter=unknown&search="
                 className={styles.link}
                 onClick={this.toggle}
               >
                 <SubmenuItem
                   dotColored="gray"
-                  submenuTitle="Unreachable"
-                  submenuCount={`${numeral(data.unreachable.unhandled).format(
-                    '0a'
-                  )}/${numeral(data.unreachable.total).format('0a')}`}
+                  submenuTitle="Unknown services"
+                  submenuCount={`${numeral(
+                    data.unknown.unhandled
+                  ).format()}/${numeral(data.unknown.total).format()}`}
                 />
               </Link>
               <Link
-                to="/main.php?p=20202&o=h_up&search="
+                to="/main.php?p=20201&o=svc&statusFilter=ok&search="
                 className={styles.link}
                 onClick={this.toggle}
               >
                 <SubmenuItem
                   dotColored="green"
-                  submenuTitle="Up"
+                  submenuTitle="Ok services"
                   submenuCount={numeral(data.ok).format()}
                 />
               </Link>
               <Link
-                to="/main.php?p=20202&o=h_pending&search="
+                to="/main.php?p=20201&o=svc&statusFilter=pending&search="
                 className={styles.link}
                 onClick={this.toggle}
               >
                 <SubmenuItem
                   dotColored="blue"
-                  submenuTitle="Pending"
+                  submenuTitle="Pending services"
                   submenuCount={numeral(data.pending).format()}
                 />
               </Link>
@@ -248,9 +299,9 @@ const mapStateToProps = ({ intervals }) => ({
 
 const mapDispatchToProps = {};
 
-export default connect(mapStateToProps, mapDispatchToProps)(HostMenu);
+export default connect(mapStateToProps, mapDispatchToProps)(ServiceStatusMenu);
 
-HostMenu.propTypes = {
+ServiceStatusMenu.propTypes = {
   refreshTime: PropTypes.oneOfType([PropTypes.number, PropTypes.bool])
     .isRequired,
 };
