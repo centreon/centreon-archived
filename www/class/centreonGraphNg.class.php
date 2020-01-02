@@ -1158,7 +1158,7 @@ class CentreonGraphNg
         $this->extraDatas['multiple_services'] = $this->multipleServices;
         $this->graphData = array(
             'global' => $this->extraDatas,
-            'metrics' => array()
+            'metrics' => []
         );
         foreach ($this->metrics as $metric) {
             if ($metric['hidden'] == 1) {
