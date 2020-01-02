@@ -220,7 +220,7 @@ class CentreonGraphNg
         $this->vmetrics = array();
         $this->templateInformations = array();
         $this->extraDatas = array();
-        $this->multipleServices = 0;
+        $this->multipleServices = false;
         
         $stmt = $this->dbCs->prepare("SELECT RRDdatabase_path, RRDdatabase_status_path FROM config");
         $stmt->execute();
