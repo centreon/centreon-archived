@@ -1054,7 +1054,7 @@ class CentreonMetric extends CentreonWebService
      *
      * @return array
      */
-    protected function getDowntimePeriods($hostId, $serviceId, $start, $end)
+    protected function getDowntimePeriods($hostId, $serviceId, $start, $end): array
     {
         $query = 'SELECT actual_start_time as start, actual_end_time as end ' .
             'FROM downtimes ' .
