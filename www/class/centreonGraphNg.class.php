@@ -335,7 +335,7 @@ class CentreonGraphNg
         $dsDataAssociated = null;
         $dsDataRegular = null;
         foreach ($this->componentsDsCache as $dsVal) {
-            $metricPattern = '/^' .  preg_quote($dsVal['ds_name'], '/') . '$/i';
+            $metricPattern = '/^' . str_replace('/', '\/', $dsVal['ds_name']).'$/i';
             $metricPattern = str_replace('*', '.*', $metricPattern);
 
             if (isset($metric['host_id']) && isset($metric['service_id']) &&
@@ -1147,7 +1147,7 @@ class CentreonGraphNg
         $stmt->bindParam(':index_id', $indexId, PDO::PARAM_INT);
         $stmt->bindParam(':metric_id', $metricId, PDO::PARAM_INT);
         $stmt->execute();
-        return $l_rndcolor;
+        return $lRndcolor;
     }
 
     /**

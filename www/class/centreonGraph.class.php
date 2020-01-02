@@ -563,9 +563,9 @@ class CentreonGraph
                     }
                     $ds_data_associated = null;
                     $ds_data_regular = null;
-                    foreach ($components_ds_cache as $ds_val) {
+                    foreach ($components_ds_cache as $dsVal) {
                         /* Prepare pattern for metrics */
-                        $metricPattern = '/^' . preg_quote($ds_val['ds_name'], '/') . '$/i';
+                        $metricPattern = '/^' . str_replace('/', '\/', $dsVal['ds_name']).'$/i';
                         $metricPattern = str_replace('\\*', '.*', $metricPattern);
 
                         # Check associated
