@@ -10,7 +10,11 @@ import classnames from 'classnames';
 import { history } from '../../store';
 import styles from './progressbar.scss';
 
-class ProgressBar extends Component {
+interface Props {
+  links: Array<object>
+}
+
+class ProgressBar extends Component<Props> {
   goToPath = (path) => {
     history.push(path);
   };
