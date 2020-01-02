@@ -7,7 +7,16 @@ import { connect } from 'react-redux';
 import WizardFormInstallingStatus from '../../components/wizardFormInstallingStatus';
 import ProgressBar from '../../components/progressBar';
 
-class PollerStepThreeRoute extends Component {
+interface Props {
+  pollerData: object;
+}
+
+interface State {
+  generateStatus: object;
+  processingStatus: object;
+}
+
+class PollerStepThreeRoute extends Component<Props, State> {
   state = {
     generateStatus: null,
     processingStatus: null,

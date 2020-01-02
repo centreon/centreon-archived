@@ -24,8 +24,32 @@ import axios from '../../../../axios';
 import { fetchNavigationData } from '../../../../redux/actions/navigationActions';
 import { fetchExternalComponents } from '../../../../redux/actions/externalComponentsActions';
 
-class ExtensionsRoute extends Component {
-  state = {
+interface Props {
+  reloadNavigation: Function;
+  reloadExternalComponents: Function;
+}
+
+interface State {
+  extensions: object;
+  widgetsActive: boolean;
+  modulesActive: boolean;
+  modalDetailsActive: boolean;
+  modalDetailsLoading: boolean;
+  modalDetailsType: string;
+  not_installed: boolean;
+  installed: boolean;
+  updated: boolean;
+  search: string;
+  deleteToggled: boolean;
+  deletingEntity: boolean;
+  extensionsUpdatingStatus: object;
+  extensionsInstallingStatus: object;
+  extensionDetails: boolean;
+  filters: object;
+}
+
+class ExtensionsRoute extends Component<Props, State> {
+  public state = {
     extensions: {
       result: {
         module: { entities: [] },
@@ -48,11 +72,11 @@ class ExtensionsRoute extends Component {
     extensionDetails: false,
   };
 
-  componentDidMount = () => {
+  public componentDidMount = () => {
     this.getData();
   };
 
-  onChange = (value, key) => {
+  private onChange = (value: string, key: string) => {
     const { filters } = this.state;
     const additionalValues = {};
     if (typeof this.state[key] !== 'undefined') {
@@ -70,7 +94,7 @@ class ExtensionsRoute extends Component {
     );
   };
 
-  clearFilters = () => {
+  private clearFilters = () => {
     this.setState(
       {
         widgetsActive: true,
@@ -85,7 +109,7 @@ class ExtensionsRoute extends Component {
     );
   };
 
-  getEntitiesByKeyAndVersionParam = (param, equals, key, callback) => {
+  private getEntitiesByKeyAndVersionParam = (param: string, equals: boolean, key: string, callback: Function) => {
     const { extensions } = this.state;
     const resArray = [];
     if (extensions) {
@@ -105,7 +129,7 @@ class ExtensionsRoute extends Component {
     callback(resArray);
   };
 
-  getAllEntitiesByVersionParam = (param, equals, callback) => {
+  private getAllEntitiesByVersionParam = (param: string, equals: boolean, callback: Function) => {
     const { modulesActive, widgetsActive } = this.state;
     if (
       (!modulesActive && !widgetsActive) ||
@@ -154,7 +178,7 @@ class ExtensionsRoute extends Component {
     }
   };
 
-  runActionOnAllEntities = (entityVersionType, equals, statusesKey) => {
+  private runActionOnAllEntities = (entityVersionType, equals: boolean, statusesKey: string) => {
     this.getAllEntitiesByVersionParam(entityVersionType, equals, (ids) => {
       this.setStatusesByIds(ids, statusesKey, () => {
         if (entityVersionType === 'outdated') {
@@ -167,18 +191,18 @@ class ExtensionsRoute extends Component {
   };
 
   // reload menu entries on extensions actions (install/update/delete)
-  reloadNavigation = () => {
+  private reloadNavigation = () => {
     const { reloadNavigation } = this.props;
     reloadNavigation();
   };
 
   // reload external hooks and pages on extensions actions (install/update/delete)
-  reloadExternalComponents = () => {
+  private reloadExternalComponents = () => {
     const { reloadExternalComponents } = this.props;
     reloadExternalComponents();
   };
 
-  setStatusesByIds = (ids, statusesKey, callback) => {
+  private setStatusesByIds = (ids: Array, statusesKey: string, callback: Function) => {
     let statuses = this.state[statusesKey];
     for (const { id } of ids) {
       statuses = {
@@ -194,7 +218,7 @@ class ExtensionsRoute extends Component {
     );
   };
 
-  updateOneByOne = (ids) => {
+  private updateOneByOne = (ids: Array) => {
     if (ids.length > 0) {
       const updatingEntity = ids.shift();
       this.updateById(updatingEntity.id, updatingEntity.type, () => {
@@ -203,7 +227,7 @@ class ExtensionsRoute extends Component {
     }
   };
 
-  installOneByOne = (ids) => {
+  private installOneByOne = (ids: Array) => {
     if (ids.length > 0) {
       const installingEntity = ids.shift();
       this.installById(installingEntity.id, installingEntity.type, () => {
@@ -212,7 +236,7 @@ class ExtensionsRoute extends Component {
     }
   };
 
-  setStatusByKey = (key, id, callback) => {
+  private setStatusByKey = (key: string, id: string, callback: Function) => {
     this.setState(
       {
         [key]: {
@@ -229,7 +253,7 @@ class ExtensionsRoute extends Component {
   };
 
   // install/remove extension
-  runAction = (loadingKey, action, id, type, callback) => {
+  private runAction = (loadingKey: string, action: string, id: string, type: string, callback: Function) => {
     this.setStatusesByIds([{ id }], loadingKey, () => {
       axios(
         `internal.php?object=centreon_module&action=${action}&id=${id}&type=${type}`,
@@ -251,7 +275,7 @@ class ExtensionsRoute extends Component {
     });
   };
 
-  installById = (id, type, callback) => {
+  private installById = (id: string, type: string, callback: Function) => {
     const { modalDetailsActive } = this.state;
     if (modalDetailsActive) {
       this.setState({
@@ -271,7 +295,7 @@ class ExtensionsRoute extends Component {
     }
   };
 
-  updateById = (id, type, callback) => {
+  private updateById = (id: string, type: string, callback: Function) => {
     const { modalDetailsActive } = this.state;
     if (modalDetailsActive) {
       this.setState({
@@ -285,7 +309,7 @@ class ExtensionsRoute extends Component {
     }
   };
 
-  deleteById = (id, type) => {
+  private deleteById = (id: string, type: string) => {
     const { modalDetailsActive } = this.state;
     this.setState(
       {
@@ -312,7 +336,7 @@ class ExtensionsRoute extends Component {
     );
   };
 
-  toggleDeleteModal = (entity, type) => {
+  private toggleDeleteModal = (entity: object, type: string) => {
     const { deleteToggled } = this.state;
     this.setState({
       deletingEntity: entity ? { ...entity, type } : false,
@@ -320,7 +344,7 @@ class ExtensionsRoute extends Component {
     });
   };
 
-  getParsedGETParamsForExtensions = (callback) => {
+  private getParsedGETParamsForExtensions = (callback: Function) => {
     const { installed, not_installed, updated, search } = this.state;
     let params = '';
     const nothingShown = false;
@@ -344,7 +368,7 @@ class ExtensionsRoute extends Component {
     }
   };
 
-  getData = (callback) => {
+  private getData = (callback: Function) => {
     this.getParsedGETParamsForExtensions((params, nothingShown) => {
       this.setState({
         nothingShown,
@@ -368,14 +392,14 @@ class ExtensionsRoute extends Component {
     });
   };
 
-  hideExtensionDetails = () => {
+  private hideExtensionDetails = () => {
     this.setState({
       modalDetailsActive: false,
       modalDetailsLoading: false,
     });
   };
 
-  activateExtensionsDetails = (id, type) => {
+  private activateExtensionsDetails = (id: string, type: string) => {
     this.setState(
       {
         modalDetailsActive: true,
@@ -388,7 +412,7 @@ class ExtensionsRoute extends Component {
     );
   };
 
-  getExtensionDetails = (id, type) => {
+  private getExtensionDetails = (id: string, type: string) => {
     axios(
       `internal.php?object=centreon_module&action=details&type=${type}&id=${id}`,
     )
@@ -407,9 +431,9 @@ class ExtensionsRoute extends Component {
       });
   };
 
-  versionClicked = () => { };
+  private versionClicked = () => { };
 
-  render() {
+  public render() {
     const {
       extensions,
       modulesActive,
@@ -593,7 +617,7 @@ class ExtensionsRoute extends Component {
   }
 }
 
-const mapDispatchToProps = (dispatch) => {
+const mapDispatchToProps = (dispatch: Function) => {
   return {
     reloadNavigation: () => {
       // batch actions to avoid useless multiple rendering

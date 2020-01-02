@@ -13,14 +13,25 @@ import routeMap from '../../route-maps/route-map';
 
 import axios from '../../axios';
 
-class RemoteServerStepThreeRoute extends Component {
-  state = {
+interface Props {
+  pollerData: object;
+  history: object;
+}
+
+interface State {
+  generateStatus: object;
+  processingStatus: object;
+  error: string;
+}
+
+class RemoteServerStepThreeRoute extends Component<Props, State> {
+  public state = {
     generateStatus: null,
     processingStatus: null,
     error: null,
   };
 
-  links = [
+  private links = [
     {
       active: true,
       prevActive: true,
@@ -31,36 +42,36 @@ class RemoteServerStepThreeRoute extends Component {
     { active: true, number: 4 },
   ];
 
-  generationTimeout = null;
+  private generationTimeout = null;
 
-  remainingGenerationTimeout = 30;
+  private remainingGenerationTimeout = 30;
 
-  processingTimeout = null;
+  private processingTimeout = null;
 
-  remainingProcessingTimeout = 30;
+  private remainingProcessingTimeout = 30;
 
   /**
    * axios call to get task status on central server
    */
-  getExportTask = () =>
+  private getExportTask = () =>
     axios('internal.php?object=centreon_task_service&action=getTaskStatus');
 
   /**
    * axios call to get task status on remote server
    */
-  getImportTask = () =>
+  private getImportTask = () =>
     axios(
       'internal.php?object=centreon_task_service&action=getRemoteTaskStatusByParent',
     );
 
-  componentDidMount = () => {
+  public componentDidMount = () => {
     this.setGenerationTimeout();
   };
 
   /**
    * check export files generation step each second (30 tries)
    */
-  setGenerationTimeout = () => {
+  private setGenerationTimeout = () => {
     if (this.remainingGenerationTimeout > 0) {
       this.remainingGenerationTimeout--;
       this.generationTimeout = setTimeout(this.refreshGeneration, 1000);
@@ -76,7 +87,7 @@ class RemoteServerStepThreeRoute extends Component {
   /**
    * check remote server processing step each second (30 tries)
    */
-  setProcessingTimeout = () => {
+  private setProcessingTimeout = () => {
     if (this.remainingProcessingTimeout > 0) {
       this.remainingProcessingTimeout--;
       this.processingTimeout = setTimeout(this.refreshProcession, 1000);
@@ -92,7 +103,7 @@ class RemoteServerStepThreeRoute extends Component {
   /**
    * check files generation on central server
    */
-  refreshGeneration = () => {
+  private refreshGeneration = () => {
     const { taskId } = this.props.pollerData;
 
     this.getExportTask()
@@ -124,7 +135,7 @@ class RemoteServerStepThreeRoute extends Component {
   /**
    * check endpoint on remote server to get import status
    */
-  refreshProcession = () => {
+  private refreshProcession = () => {
     const { history } = this.props;
     const { server_ip, centreon_folder, taskId } = this.props.pollerData;
 
@@ -160,7 +171,7 @@ class RemoteServerStepThreeRoute extends Component {
       });
   };
 
-  render() {
+  public render() {
     const { links } = this;
     const { pollerData } = this.props;
     const { generateStatus, processingStatus, error } = this.state;

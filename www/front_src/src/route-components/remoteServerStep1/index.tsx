@@ -11,8 +11,18 @@ import ProgressBar from '../../components/progressBar';
 import routeMap from '../../route-maps/route-map';
 import axios from '../../axios';
 
-class RemoteServerStepOneRoute extends Component {
-  links = [
+interface Props {
+  history: object:
+  setPollerWizard: Function;
+  pollerData: object;
+}
+
+interface State {
+  waitList: Array|null;
+}
+
+class RemoteServerStepOneRoute extends Component<Props, State> {
+  private links = [
     {
       active: true,
       prevActive: true,
@@ -24,18 +34,18 @@ class RemoteServerStepOneRoute extends Component {
     { active: false, number: 4 },
   ];
 
-  state = {
+  public state = {
     waitList: null,
   };
 
-  wizardFormWaitListApi = axios(
+  private wizardFormWaitListApi = axios(
     'internal.php?object=centreon_configuration_remote&action=getWaitList',
   );
 
-  getWaitList = () => {
+  private getWaitList = () => {
     this.wizardFormWaitListApi
       .post()
-      .then((response) => {
+      .then((response: object) => {
         this.setState({ waitList: response.data });
       })
       .catch(() => {
@@ -43,17 +53,17 @@ class RemoteServerStepOneRoute extends Component {
       });
   };
 
-  componentDidMount = () => {
+  private componentDidMount = () => {
     this.getWaitList();
   };
 
-  handleSubmit = (data) => {
+  private handleSubmit = (data) => {
     const { history, setPollerWizard } = this.props;
     setPollerWizard(data);
     history.push(routeMap.remoteServerStep2);
   };
 
-  render() {
+  public render() {
     const { links } = this;
     const { pollerData } = this.props;
     const { waitList } = this.state;

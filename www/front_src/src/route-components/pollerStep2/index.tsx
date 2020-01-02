@@ -1,84 +1,72 @@
+/* eslint-disable react/jsx-no-bind */
 /* eslint-disable react/jsx-filename-extension */
 /* eslint-disable no-shadow */
 /* eslint-disable react/prop-types */
-/* eslint-disable no-plusplus */
-/* eslint-disable no-underscore-dangle */
 
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { SubmissionError } from 'redux-form';
-import Form from '../../components/forms/remoteServer/RemoteServerFormStepTwo';
-import routeMap from '../../route-maps/route-map';
+import Form from '../../components/forms/poller/PollerFormStepTwo';
 import ProgressBar from '../../components/progressBar';
+import routeMap from '../../route-maps/route-map';
 import axios from '../../axios';
 import { setPollerWizard } from '../../redux/actions/pollerWizardActions';
 
-class RemoteServerStepTwoRoute extends Component {
-  state = {
-    pollers: null,
+interface Props {
+  history: object:
+  setPollerWizard: Function;
+  pollerData: object;
+}
+
+interface State {
+  pollers: Array;
+}
+
+class PollerStepTwoRoute extends Component<Props, State> {
+  public state = {
+    pollers: []
   };
 
-  links = [
+  private links = [
     {
       active: true,
       prevActive: true,
       number: 1,
       path: routeMap.serverConfigurationWizard,
     },
-    {
-      active: true,
-      prevActive: true,
-      number: 2,
-      path: routeMap.remoteServerStep1,
-    },
+    { active: true, prevActive: true, number: 2, path: routeMap.pollerStep1 },
     { active: true, number: 3 },
     { active: false, number: 4 },
   ];
 
-  pollerListApi = axios(
-    'internal.php?object=centreon_configuration_poller&action=list',
+  private pollerListApi = axios(
+    'internal.php?object=centreon_configuration_remote&action=getRemotesList',
   );
 
-  wizardFormApi = axios(
+  private wizardFormApi = axios(
     'internal.php?object=centreon_configuration_remote&action=linkCentreonRemoteServer',
   );
 
-  _spliceOutDefaultPoller = (itemArr) => {
-    for (let i = 0; i < itemArr.items.length; i++) {
-      if (itemArr.items[i].id === '1') itemArr.items.splice(i, 1);
-    }
-    return itemArr;
-  };
-
-  _filterOutDefaultPoller = (itemArr, clbk) => {
-    clbk(this._spliceOutDefaultPoller(itemArr));
-  };
-
-  getPollers = () => {
-    this.pollerListApi.get().then((response) => {
-      this._filterOutDefaultPoller(response.data, (pollers) => {
-        this.setState({ pollers });
-      });
+  private getPollers = () => {
+    this.pollerListApi.post().then((response) => {
+      this.setState({ pollers: response.data });
     });
   };
 
-  componentDidMount = () => {
+  public componentDidMount = () => {
     this.getPollers();
   };
 
-  handleSubmit = (data) => {
+  private handleSubmit = (data: object) => {
     const { history, pollerData, setPollerWizard } = this.props;
     const postData = { ...data, ...pollerData };
-    postData.server_type = 'remote';
+    postData.server_type = 'poller';
     return this.wizardFormApi
       .post('', postData)
       .then((response) => {
-        if (response.data.success && response.data.task_id) {
-          setPollerWizard({
-            submitStatus: response.data.success,
-            taskId: response.data.task_id,
-          });
-          history.push(routeMap.remoteServerStep3);
+        setPollerWizard({ submitStatus: response.data.success });
+        if (pollerData.linked_remote_master){
+          history.push(routeMap.pollerStep3);
         } else {
           history.push(routeMap.pollerList);
         }
@@ -88,13 +76,18 @@ class RemoteServerStepTwoRoute extends Component {
       });
   };
 
-  render() {
+  public render() {
     const { links } = this;
+    const { pollerData } = this.props;
     const { pollers } = this.state;
     return (
       <div>
         <ProgressBar links={links} />
-        <Form pollers={pollers} onSubmit={this.handleSubmit} />
+        <Form
+          pollers={pollers}
+          initialValues={pollerData}
+          onSubmit={this.handleSubmit.bind(this)}
+        />
       </div>
     );
   }
@@ -111,4 +104,4 @@ const mapDispatchToProps = {
 export default connect(
   mapStateToProps,
   mapDispatchToProps,
-)(RemoteServerStepTwoRoute);
+)(PollerStepTwoRoute);

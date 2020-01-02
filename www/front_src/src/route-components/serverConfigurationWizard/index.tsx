@@ -8,15 +8,23 @@ import Form from '../../components/forms/ServerConfigurationWizardForm';
 import routeMap from '../../route-maps/route-map';
 import ProgressBar from '../../components/progressBar';
 
+interface Props {
+  history: object;
+}
+
+interface Submit {
+  server_type: string;
+}
+
 class ServerConfigurationWizardRoute extends Component {
-  links = [
+  private links = [
     { active: true, number: 1, path: routeMap.serverConfigurationWizard },
     { active: false, number: 2 },
     { active: false, number: 3 },
     { active: false, number: 4 },
   ];
 
-  handleSubmit = ({ server_type }) => {
+  private handleSubmit = ({ server_type }: Submit) => {
     const { history } = this.props;
     if (server_type === '1') {
       history.push(routeMap.remoteServerStep1);
@@ -26,7 +34,7 @@ class ServerConfigurationWizardRoute extends Component {
     }
   };
 
-  render() {
+  public render() {
     const { links } = this;
     return (
       <div>

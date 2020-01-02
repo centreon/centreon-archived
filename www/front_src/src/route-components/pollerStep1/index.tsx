@@ -11,8 +11,13 @@ import { setPollerWizard } from '../../redux/actions/pollerWizardActions';
 import ProgressBar from '../../components/progressBar';
 import routeMap from '../../route-maps/route-map';
 
-class PollerStepOneRoute extends Component {
-  links = [
+interface Props {
+  history: object:
+  setPollerWizard: Function;
+}
+
+class PollerStepOneRoute extends Component<Props, State> {
+  private links = [
     {
       active: true,
       prevActive: true,
@@ -24,17 +29,17 @@ class PollerStepOneRoute extends Component {
     { active: false, number: 4 },
   ];
 
-  state = {
+  public state = {
     error: null,
   };
 
-  handleSubmit = (data) => {
+  private handleSubmit = (data: object) => {
     const { history, setPollerWizard } = this.props;
     setPollerWizard(data);
     history.push(routeMap.pollerStep2);
   };
 
-  render() {
+  public render() {
     const { links } = this;
     return (
       <div>
@@ -45,7 +50,7 @@ class PollerStepOneRoute extends Component {
   }
 }
 
-const mapStateToProps = ({ pollerForm }) => ({
+const mapStateToProps = ({ pollerForm }: object) => ({
   pollerData: pollerForm,
 });
 

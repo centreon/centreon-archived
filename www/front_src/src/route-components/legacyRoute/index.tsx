@@ -8,8 +8,17 @@ import styles from '../../components/header/header.scss';
 import loaderStyles from '../../components/loader/loader.scss';
 import Loader from '../../components/loader';
 
-class LegacyRoute extends Component {
-  constructor(props) {
+interface Props {
+  history: object;
+}
+
+interface State {
+  contentHeight: number;
+  loading: boolean;
+}
+
+class LegacyRoute extends Component<Props, State> {
+  public constructor(props: Props) {
     super(props);
 
     this.mainContainer = null;
@@ -21,7 +30,7 @@ class LegacyRoute extends Component {
     };
   }
 
-  handleResize = () => {
+  private handleResize = () => {
     // wait size is the same during 200ms to handle it
     clearTimeout(this.resizeTimeout);
 
@@ -39,7 +48,7 @@ class LegacyRoute extends Component {
     }
   };
 
-  handleHref = (event) => {
+  private handleHref = (event: object) => {
     const { href } = event.detail;
 
     // update route
@@ -47,12 +56,12 @@ class LegacyRoute extends Component {
   };
 
   // handle disconnect event sent by iframe
-  handleDisconnect = (event) => {
+  private handleDisconnect = (event: object) => {
     // update current url to redirect to login page
     window.location.href = event.detail.href;
   };
 
-  componentDidMount() {
+  public componentDidMount() {
     this.mainContainer = window.document.getElementById('fullscreen-wrapper');
 
     // add a listener on global page size
@@ -69,7 +78,7 @@ class LegacyRoute extends Component {
     );
   }
 
-  componentWillUnmount() {
+  public componentWillUnmount() {
     clearTimeout(this.resizeTimeout);
     window.removeEventListener('resize', this.handleResize);
 
@@ -78,7 +87,7 @@ class LegacyRoute extends Component {
     window.removeEventListener('react.href.disconnect', this.handleDisconnect);
   }
 
-  render() {
+  public render() {
     const { contentHeight, loading } = this.state;
     const {
       history: {
