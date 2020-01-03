@@ -569,26 +569,26 @@ class CentreonGraph
                         $metricPattern = str_replace('\\*', '.*', $metricPattern);
 
                         # Check associated
-                        if (($ds_val['host_id'] == $metric['host_id'] || $ds_val['host_id'] == '') &&
-                            ($ds_val['service_id'] == $metric['service_id'] || $ds_val['service_id'] == '') &&
+                        if (($dsVal['host_id'] == $metric['host_id'] || $dsVal['host_id'] == '') &&
+                            ($dsVal['service_id'] == $metric['service_id'] || $dsVal['service_id'] == '') &&
                             preg_match($metricPattern, $metric['metric_name'])
                         ) {
-                            $ds_data_associated = $ds_val;
-                            if ($ds_val['ds_legend'] != '') {
-                                $this->metrics[$metric["metric_id"]]["metric_legend"] = $ds_val['ds_legend'];
+                            $ds_data_associated = $dsVal;
+                            if ($dsVal['ds_legend'] != '') {
+                                $this->metrics[$metric["metric_id"]]["metric_legend"] = $dsVal['ds_legend'];
                             }
                             break;
                         } else {
-                            if (preg_match($metricPattern, $metric['metric_name']) && $ds_val['ds_legend'] != '') {
-                                $this->metrics[$metric["metric_id"]]["metric_legend"] = $ds_val['ds_legend'];
+                            if (preg_match($metricPattern, $metric['metric_name']) && $dsVal['ds_legend'] != '') {
+                                $this->metrics[$metric["metric_id"]]["metric_legend"] = $dsVal['ds_legend'];
                             }
                         }
 
                         /* Check regular */
                         if (is_null($ds_data_regular) &&
-                            preg_match('/^' . preg_quote($ds_val['ds_name'], '/') . '$/i', $metric["metric_name"])
+                            preg_match('/^' . preg_quote($dsVal['ds_name'], '/') . '$/i', $metric["metric_name"])
                         ) {
-                            $ds_data_regular = $ds_val;
+                            $ds_data_regular = $dsVal;
                         }
                     }
 
