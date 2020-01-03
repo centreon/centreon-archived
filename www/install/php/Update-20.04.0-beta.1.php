@@ -119,7 +119,7 @@ try {
 
     $pearDB->commit();
     $centreonLog->insertLog(4, $versionOfTheUpgrade . "Successful update");
-} catch (\PDOException $e) {
+} catch (\Exception $e) {
     $pearDB->rollBack();
     $msg = $errorMessage . " - Error : " . $e->getMessage();
     $centreonLog->insertLog(4, $msg);
