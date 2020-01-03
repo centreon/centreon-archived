@@ -53,7 +53,7 @@ try {
         $statement->bindValue(':value', $fileName, \PDO::PARAM_STR);
         $statement->bindValue(':id', $row['config_id'], \PDO::PARAM_INT);
         // saving error message to be thrown in case of failure
-        $errorMessage = $versionOfTheUpgrade . "Unable to move broker configuration from xml format to json format";
+        $errorMessage = "Unable to move broker configuration from xml format to json format";
     }
 
     /**
@@ -76,27 +76,25 @@ try {
         }
         $statement->bindValue(':value', $fileName, \PDO::PARAM_STR);
         $statement->bindValue(':id', $row['bk_mod_id'], \PDO::PARAM_INT);
-        $errorMessage = $versionOfTheUpgrade .
-            "Unable to move engine's broker modules configuration from xml to json format";
+        $errorMessage = "Unable to move engine's broker modules configuration from xml to json format";
     }
 
     /**
      * Change broker sql output form
      */
     // set common error message on failure
-    $errorMessage = $versionOfTheUpgrade .
-        "Unable to move engine's broker modules configuration from xml to json format";
+    $partialErrorMessage = "Unable to move engine's broker modules configuration from xml to json format";
 
     // reorganise existing input form
     $query = "UPDATE cb_type_field_relation AS A INNER JOIN cb_type_field_relation AS B ON A.cb_type_id = B.cb_type_id
         SET A.`order_display` = 8 
         WHERE B.`cb_field_id` = (SELECT f.cb_field_id FROM cb_field f WHERE f.fieldname = 'buffering_timeout')";
-    $errorMessage = $versionOfTheUpgrade . " - While trying to update 'cb_type_field_relation' table data";
+    $errorMessage = $partialErrorMessage . " - While trying to update 'cb_type_field_relation' table data";
 
     // add new connections_count input
     $query = "INSERT INTO `cb_field` (`fieldname`, `displayname`, `description`, `fieldtype`, `external`) 
         VALUES ('connections_count', 'Number of connection to the database', 'Usually cpus/2', 'int', NULL)";
-    $errorMessage = $versionOfTheUpgrade . " - While trying to insert in 'cb_field' table new values";
+    $errorMessage = $partialErrorMessage . " - While trying to insert in 'cb_field' table new values";
 
     // add relation
     $query = "INSERT INTO `cb_type_field_relation` (
@@ -115,13 +113,13 @@ try {
             'countConnections',
             '{\"target\": \"connections_count\"}'
         )";
-    $errorMessage = $versionOfTheUpgrade . " - While trying to insert in 'cb_type_field_relation' table new values";
+    $errorMessage = $partialErrorMessage . " - While trying to insert in 'cb_type_field_relation' table new values";
 
     $pearDB->commit();
     $centreonLog->insertLog(4, $versionOfTheUpgrade . "Successful update");
 } catch (\Exception $e) {
     $pearDB->rollBack();
-    $msg = $errorMessage . " - Error : " . $e->getMessage();
+    $msg = $versionOfTheUpgrade . $errorMessage . " - Error : " . $e->getMessage();
     $centreonLog->insertLog(4, $msg);
     throw new \Exception ($msg);
 } finally {
