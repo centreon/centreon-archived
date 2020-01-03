@@ -61,7 +61,7 @@ try {
      */
     $result = $pearDB->query(
         "SELECT bk_mod_id, broker_module
-        FROM cfg_nagios_broker_module5"
+        FROM cfg_nagios_broker_module"
     );
 
     $statement = $pearDB->prepare(
@@ -76,6 +76,7 @@ try {
         }
         $statement->bindValue(':value', $fileName, \PDO::PARAM_STR);
         $statement->bindValue(':id', $row['bk_mod_id'], \PDO::PARAM_INT);
+        $statement->execute();
         $errorMessage = "Unable to move engine's broker modules configuration from xml to json format";
     }
 
@@ -86,18 +87,23 @@ try {
     $partialErrorMessage = "Unable to move engine's broker modules configuration from xml to json format";
 
     // reorganise existing input form
-    $query = "UPDATE cb_type_field_relation AS A INNER JOIN cb_type_field_relation AS B ON A.cb_type_id = B.cb_type_id
+    $pearDB->query(
+        "UPDATE cb_type_field_relation AS A INNER JOIN cb_type_field_relation AS B ON A.cb_type_id = B.cb_type_id
         SET A.`order_display` = 8 
-        WHERE B.`cb_field_id` = (SELECT f.cb_field_id FROM cb_field f WHERE f.fieldname = 'buffering_timeout')";
+        WHERE B.`cb_field_id` = (SELECT f.cb_field_id FROM cb_field f WHERE f.fieldname = 'buffering_timeout')"
+    );
     $errorMessage = $partialErrorMessage . " - While trying to update 'cb_type_field_relation' table data";
 
     // add new connections_count input
-    $query = "INSERT INTO `cb_field` (`fieldname`, `displayname`, `description`, `fieldtype`, `external`) 
-        VALUES ('connections_count', 'Number of connection to the database', 'Usually cpus/2', 'int', NULL)";
+    $pearDB->query(
+        "INSERT INTO `cb_field` (`fieldname`, `displayname`, `description`, `fieldtype`, `external`) 
+        VALUES ('connections_count', 'Number of connection to the database', 'Usually cpus/2', 'int', NULL)"
+    );
     $errorMessage = $partialErrorMessage . " - While trying to insert in 'cb_field' table new values";
 
     // add relation
-    $query = "INSERT INTO `cb_type_field_relation` (
+    $pearDB->query(
+        "INSERT INTO `cb_type_field_relation` (
             `cb_type_id`,
             `cb_field_id`,
             `is_required`,
@@ -112,7 +118,8 @@ try {
             7,
             'countConnections',
             '{\"target\": \"connections_count\"}'
-        )";
+        )"
+    );
     $errorMessage = $partialErrorMessage . " - While trying to insert in 'cb_type_field_relation' table new values";
 
     $pearDB->commit();
