@@ -132,7 +132,7 @@ try {
     throw new \Exception ($msg);
 } finally {
     /**
-     * @internal : Queries which doesn't need rollback and won't throw an exception
+     * @internal : Queries which don't need rollback and won't throw an exception
      */
 
     /**
