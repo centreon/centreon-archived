@@ -52,6 +52,7 @@ try {
 
         $statement->bindValue(':value', $fileName, \PDO::PARAM_STR);
         $statement->bindValue(':id', $row['config_id'], \PDO::PARAM_INT);
+        $statement->execute();
         // saving error message to be thrown in case of failure
         $errorMessage = "Unable to move broker configuration from xml format to json format";
     }
