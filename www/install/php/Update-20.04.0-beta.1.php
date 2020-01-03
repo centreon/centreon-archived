@@ -96,7 +96,7 @@ try {
     $query = "UPDATE cb_type_field_relation AS A INNER JOIN cb_type_field_relation AS B ON A.cb_type_id = B.cb_type_id
         SET A.`order_display` = 8 
         WHERE B.`cb_field_id` = (SELECT f.cb_field_id FROM cb_field f WHERE f.fieldname = 'buffering_timeout')";
-    if ($pearDB->query($query) === false) {
+    if (false === $pearDB->query($query)) {
         throw new \PDOException(
             $errorMessage . " - While trying to update 'cb_type_field_relation' table data");
     }
@@ -104,7 +104,7 @@ try {
     // add new connections_count input
     $query = "INSERT INTO `cb_field` (`fieldname`, `displayname`, `description`, `fieldtype`, `external`) 
         VALUES ('connections_count', 'Number of connection to the database', 'Usually cpus/2', 'int', NULL)";
-    if ($pearDB->query($query) === false) {
+    if (false === $pearDB->query($query)) {
         throw new \PDOException(
             $errorMessage . " - While trying to insert in 'cb_field' table new values"
         );
@@ -127,7 +127,7 @@ try {
             'countConnections',
             '{\"target\": \"connections_count\"}'
         )";
-    if ($pearDB->query($query) === false) {
+    if (false === $pearDB->query($query)) {
         throw new \PDOException(
             $errorMessage . " - While trying to insert in 'cb_type_field_relation' table new values"
         );
@@ -136,7 +136,7 @@ try {
     $pearDB->commit();
 } catch (\PDOException $e) {
     $pearDB->rollBack();
-    $centreonLog->insertLog(2, $e->getMessage() . '. Code : ' . $e->getCode());
+    $centreonLog->insertLog(2, $e->getMessage());
     throw $e;
 } finally {
     /**
