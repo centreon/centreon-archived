@@ -81,7 +81,7 @@ try {
         $errorMessage = "Unable to move engine's broker modules configuration from xml to json format";
     }
 
-    /**
+    /*
      * Change broker sql output form
      */
     // set common error message on failure
