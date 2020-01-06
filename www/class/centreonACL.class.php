@@ -1470,8 +1470,7 @@ class CentreonACL
                 . "FROM host h "
                 . "LEFT JOIN host_service_relation hsr on hsr.host_host_id = h.host_id "
                 . "LEFT JOIN service s on hsr.service_service_id = s.service_id "
-                . "WHERE h.host_activate = '1' "
-                . "AND (s.service_activate = '1' OR s.service_id is null) ";
+                . "WHERE h.host_register = '1' ";
             $result = \CentreonDBInstance::getConfInstance()->query($query);
             while ($row = $result->fetchRow()) {
                 if (!is_null($withServiceDescription)) {
