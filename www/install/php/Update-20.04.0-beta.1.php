@@ -32,6 +32,7 @@ try {
     /*
      * Move broker xml files to json format
      */
+    $errorMessage = "Unable to upgrade broker configuration from xml format to json format";
     $result = $pearDB->query(
         "SELECT config_id, config_filename
         FROM cfg_centreonbroker"
@@ -52,14 +53,16 @@ try {
 
         $statement->bindValue(':value', $fileName, \PDO::PARAM_STR);
         $statement->bindValue(':id', $row['config_id'], \PDO::PARAM_INT);
+
         $statement->execute();
         // saving error message to be thrown in case of failure
-        $errorMessage = "Unable to move broker configuration from xml format to json format";
+
     }
 
     /*
      * Move engine module xml files to json format
      */
+    $errorMessage = "Unable to upgrade engine's broker modules configuration from xml to json format";
     $result = $pearDB->query(
         "SELECT bk_mod_id, broker_module
         FROM cfg_nagios_broker_module"
@@ -77,32 +80,33 @@ try {
         }
         $statement->bindValue(':value', $fileName, \PDO::PARAM_STR);
         $statement->bindValue(':id', $row['bk_mod_id'], \PDO::PARAM_INT);
+
         $statement->execute();
-        $errorMessage = "Unable to move engine's broker modules configuration from xml to json format";
     }
 
     /*
      * Change broker sql output form
      */
     // set common error message on failure
-    $partialErrorMessage = "Unable to move engine's broker modules configuration from xml to json format";
+    $partialErrorMessage = $errorMessage;
 
     // reorganise existing input form
+    $errorMessage = $partialErrorMessage . " - While trying to update 'cb_type_field_relation' table data";
     $pearDB->query(
         "UPDATE cb_type_field_relation AS A INNER JOIN cb_type_field_relation AS B ON A.cb_type_id = B.cb_type_id
         SET A.`order_display` = 8 
         WHERE B.`cb_field_id` = (SELECT f.cb_field_id FROM cb_field f WHERE f.fieldname = 'buffering_timeout')"
     );
-    $errorMessage = $partialErrorMessage . " - While trying to update 'cb_type_field_relation' table data";
 
     // add new connections_count input
+    $errorMessage = $partialErrorMessage . " - While trying to insert in 'cb_field' table new values";
     $pearDB->query(
         "INSERT INTO `cb_field` (`fieldname`, `displayname`, `description`, `fieldtype`, `external`) 
         VALUES ('connections_count', 'Number of connection to the database', 'Usually cpus/2', 'int', NULL)"
     );
-    $errorMessage = $partialErrorMessage . " - While trying to insert in 'cb_field' table new values";
 
     // add relation
+    $errorMessage = $partialErrorMessage . " - While trying to insert in 'cb_type_field_relation' table new values";
     $pearDB->query(
         "INSERT INTO `cb_type_field_relation` (
             `cb_type_id`,
@@ -121,28 +125,43 @@ try {
             '{\"target\": \"connections_count\"}'
         )"
     );
-    $errorMessage = $partialErrorMessage . " - While trying to insert in 'cb_type_field_relation' table new values";
 
     $pearDB->commit();
-    $centreonLog->insertLog(4, $versionOfTheUpgrade . "Successful update");
+    $errorMessage = "";
 } catch (\Exception $e) {
     $pearDB->rollBack();
-    $msg = $versionOfTheUpgrade . $errorMessage . " - Error : " . $e->getMessage();
-    $centreonLog->insertLog(4, $msg);
-    throw new \Exception ($msg);
-} finally {
-    /*
-     * @internal : Queries which don't need rollback and won't throw an exception
-     */
+    $centreonLog->insertLog(
+        4,
+        $versionOfTheUpgrade . $errorMessage .
+        " - Code : " . (int)$e->getCode() .
+        " - Error : " . $e->getMessage() .
+        " - Trace : " . $e->getTraceAsString()
+    );
+    throw new \Exception($versionOfTheUpgrade . $errorMessage, (int)$e->getCode(), $e);
+}
 
+/*
+* @internal : Queries which don't need rollback and won't throw an exception
+*/
+try {
     /*
      * replace autologin keys using NULL instead of empty string
      */
-    $query = "UPDATE `contact` SET `contact_autologin_key` = NULL WHERE `contact_autologin_key` =''";
-    if (false === $pearDB->query($query)) {
-        $centreonLog->insertLog(
-            2,
-            $versionOfTheUpgrade . "Unable to set default contact_autologin_key. No error was thrown."
-        );
-    }
+    $pearDB->query("UPDATE `contact` SET `contact_autologin_key` = NULL WHERE `contact_autologin_key` =''");
+} catch (\Exception $e) {
+    $errorMessage = "Unable to set default contact_autologin_key.";
+    $centreonLog->insertLog(
+        4,
+        $versionOfTheUpgrade . $errorMessage .
+        " - Code : " . (int)$e->getCode() .
+        " - Error : " . $e->getMessage() .
+        " - Trace : " . $e->getTraceAsString()
+    );
+}
+
+if (empty($errorMessage)) {
+    $centreonLog->insertLog(
+        4,
+        $versionOfTheUpgrade . " - Successful Update"
+    );
 }
