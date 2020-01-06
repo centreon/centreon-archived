@@ -557,7 +557,7 @@ class CentreonHost extends CentreonObject
                             $ret = $ret[$field];
                             break;
                     }
-                    if ($exportedFields[$paramSearch] == 0) {
+                    if (!isset($exportedFields[$paramSearch])) {
                         $resultString .= $ret . $this->delim;
                         $exportedFields[$paramSearch] = 1;
                     }
