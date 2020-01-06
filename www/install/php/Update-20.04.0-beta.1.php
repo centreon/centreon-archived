@@ -135,7 +135,7 @@ try {
      * @internal : Queries which don't need rollback and won't throw an exception
      */
 
-    /**
+    /*
      * replace autologin keys using NULL instead of empty string
      */
     $query = "UPDATE `contact` SET `contact_autologin_key` = NULL WHERE `contact_autologin_key` =''";
