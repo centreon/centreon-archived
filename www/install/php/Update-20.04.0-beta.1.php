@@ -57,7 +57,7 @@ try {
         $errorMessage = "Unable to move broker configuration from xml format to json format";
     }
 
-    /**
+    /*
      * Move engine module xml files to json format
      */
     $result = $pearDB->query(
