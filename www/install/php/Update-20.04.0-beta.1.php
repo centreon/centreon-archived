@@ -131,7 +131,7 @@ try {
     $centreonLog->insertLog(4, $msg);
     throw new \Exception ($msg);
 } finally {
-    /**
+    /*
      * @internal : Queries which don't need rollback and won't throw an exception
      */
 
