@@ -128,7 +128,7 @@ class HostMenu extends Component {
     }
 
     return (
-      <div className={styles.wrapper} ref={(host) => (this.host = host)}>
+      <div className={`${styles.wrapper} wrap-right-hosts`} ref={(host) => (this.host = host)}>
         <SubmenuHeader submenuType="top" active={toggled}>
           <IconHeader iconType="hosts" iconName="Hosts" onClick={this.toggle} />
           <Link
@@ -138,7 +138,7 @@ class HostMenu extends Component {
             <IconNumber
               iconType={`${data.down.unhandled > 0 ? 'colored' : 'bordered'}`}
               iconColor="red"
-              iconNumber={`${numeral(data.down.unhandled).format('0a')}`}
+              iconNumber={<span id="count-host-down">{numeral(data.down.unhandled).format('0a')}</span>}
             />
           </Link>
           <Link
@@ -150,7 +150,7 @@ class HostMenu extends Component {
                 data.unreachable.unhandled > 0 ? 'colored' : 'bordered'
               }`}
               iconColor="gray-dark"
-              iconNumber={numeral(data.unreachable.unhandled).format('0a')}
+              iconNumber={<span id="count-host-unreachable">{numeral(data.unreachable.unhandled).format('0a')}</span>}
             />
           </Link>
           <Link
@@ -160,7 +160,7 @@ class HostMenu extends Component {
             <IconNumber
               iconType={`${data.ok > 0 ? 'colored' : 'bordered'}`}
               iconColor="green"
-              iconNumber={numeral(data.ok).format('0a')}
+              iconNumber={<span id="count-host-up">{numeral(data.ok).format('0a')}</span>}
             />
           </Link>
           <IconToggleSubmenu

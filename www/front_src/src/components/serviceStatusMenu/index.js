@@ -133,7 +133,7 @@ class ServiceStatusMenu extends Component {
 
     return (
       <div
-        className={styles.wrapper}
+        className={`${styles.wrapper} wrap-right-services`}
         ref={(service) => (this.service = service)}
       >
         <SubmenuHeader submenuType="top" active={toggled}>
@@ -151,7 +151,7 @@ class ServiceStatusMenu extends Component {
                 data.critical.unhandled > 0 ? 'colored' : 'bordered'
               }`}
               iconColor="red"
-              iconNumber={`${numeral(data.critical.unhandled).format('0a')}`}
+              iconNumber={<span id="count-svc-critical">{numeral(data.critical.unhandled).format('0a')}</span>}
             />
           </Link>
           <Link
@@ -163,7 +163,7 @@ class ServiceStatusMenu extends Component {
                 data.warning.unhandled > 0 ? 'colored' : 'bordered'
               }`}
               iconColor="orange"
-              iconNumber={numeral(data.warning.unhandled).format('0a')}
+              iconNumber={<span id="count-svc-warning">{numeral(data.warning.unhandled).format('0a')}</span>}
             />
           </Link>
           <Link
@@ -175,7 +175,7 @@ class ServiceStatusMenu extends Component {
                 data.unknown.unhandled > 0 ? 'colored' : 'bordered'
               }`}
               iconColor="gray-light"
-              iconNumber={numeral(data.unknown.unhandled).format('0a')}
+              iconNumber={<span id="count-svc-unknown">{numeral(data.unknown.unhandled).format('0a')}</span>}
             />
           </Link>
           <Link
@@ -185,7 +185,7 @@ class ServiceStatusMenu extends Component {
             <IconNumber
               iconType={`${data.ok > 0 ? 'colored' : 'bordered'}`}
               iconColor="green"
-              iconNumber={numeral(data.ok).format('0a')}
+              iconNumber={<span id="count-svc-ok">{numeral(data.ok).format('0a')}</span>}
             />
           </Link>
           <IconToggleSubmenu
