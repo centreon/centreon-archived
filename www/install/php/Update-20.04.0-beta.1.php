@@ -29,7 +29,7 @@ $errorMessage = '';
  */
 try {
     $pearDB->beginTransaction();
-    /**
+    /*
      * Move broker xml files to json format
      */
     $result = $pearDB->query(
