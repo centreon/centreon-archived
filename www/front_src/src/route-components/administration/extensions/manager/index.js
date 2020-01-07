@@ -17,7 +17,7 @@ import {
   ExtensionsHolder,
   ExtensionDetailsPopup,
   ExtensionDeletePopup,
-} from '@centreon/react-components';
+} from '@centreon/ui';
 import Hook from '../../../../components/hook';
 
 import axios from '../../../../axios';
@@ -407,7 +407,7 @@ class ExtensionsRoute extends Component {
       });
   };
 
-  versionClicked = () => {};
+  versionClicked = () => { };
 
   render() {
     const {
@@ -488,14 +488,14 @@ class ExtensionsRoute extends Component {
           <Button
             label={`${
               installed &&
-              not_installed &&
-              updated &&
-              search.length === 0 &&
-              ((modulesActive && widgetsActive) ||
-                (!modulesActive && !widgetsActive))
+                not_installed &&
+                updated &&
+                search.length === 0 &&
+                ((modulesActive && widgetsActive) ||
+                  (!modulesActive && !widgetsActive))
                 ? 'Update all'
                 : 'Update selection'
-            }`}
+              }`}
             buttonType="regular"
             customClass="mr-2"
             color="orange"
@@ -512,14 +512,14 @@ class ExtensionsRoute extends Component {
           <Button
             label={`${
               installed &&
-              not_installed &&
-              updated &&
-              search.length === 0 &&
-              ((modulesActive && widgetsActive) ||
-                (!modulesActive && !widgetsActive))
+                not_installed &&
+                updated &&
+                search.length === 0 &&
+                ((modulesActive && widgetsActive) ||
+                  (!modulesActive && !widgetsActive))
                 ? 'Install all'
                 : 'Install selection'
-            }`}
+              }`}
             buttonType="regular"
             customClass="mr-2"
             color="green"
@@ -535,36 +535,36 @@ class ExtensionsRoute extends Component {
         {extensions && !nothingShown ? (
           <>
             {extensions.result.module &&
-            (!modulesActive || (modulesActive && widgetsActive)) ? (
-              <ExtensionsHolder
-                onCardClicked={this.activateExtensionsDetails}
-                onDelete={this.toggleDeleteModal}
-                onInstall={this.installById}
-                onUpdate={this.updateById}
-                title="Modules"
-                type="module"
-                updating={extensionsUpdatingStatus}
-                installing={extensionsInstallingStatus}
-                entities={extensions.result.module.entities}
-              />
-            ) : null}
+              (!modulesActive || (modulesActive && widgetsActive)) ? (
+                <ExtensionsHolder
+                  onCardClicked={this.activateExtensionsDetails}
+                  onDelete={this.toggleDeleteModal}
+                  onInstall={this.installById}
+                  onUpdate={this.updateById}
+                  title="Modules"
+                  type="module"
+                  updating={extensionsUpdatingStatus}
+                  installing={extensionsInstallingStatus}
+                  entities={extensions.result.module.entities}
+                />
+              ) : null}
             {extensions.result.widget &&
-            (!widgetsActive || (modulesActive && widgetsActive)) ? (
-              <ExtensionsHolder
-                onCardClicked={this.activateExtensionsDetails}
-                onDelete={this.toggleDeleteModal}
-                onInstall={this.installById}
-                onUpdate={this.updateById}
-                titleColor="blue"
-                hrTitleColor="blue"
-                hrColor="blue"
-                title="Widgets"
-                type="widget"
-                updating={extensionsUpdatingStatus}
-                installing={extensionsInstallingStatus}
-                entities={extensions.result.widget.entities}
-              />
-            ) : null}
+              (!widgetsActive || (modulesActive && widgetsActive)) ? (
+                <ExtensionsHolder
+                  onCardClicked={this.activateExtensionsDetails}
+                  onDelete={this.toggleDeleteModal}
+                  onInstall={this.installById}
+                  onUpdate={this.updateById}
+                  titleColor="blue"
+                  hrTitleColor="blue"
+                  hrColor="blue"
+                  title="Widgets"
+                  type="widget"
+                  updating={extensionsUpdatingStatus}
+                  installing={extensionsInstallingStatus}
+                  entities={extensions.result.widget.entities}
+                />
+              ) : null}
           </>
         ) : null}
 
