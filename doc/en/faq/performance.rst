@@ -187,12 +187,6 @@ Enable process and set unix socket path:
 .. image:: /images/faq/rrd_file_generator.png
     :align: center
 
-Centreon web interface
-**********************
-
-RRDCacheD don't update performances graphs in real time. If a blank range appears on right of performances graphs it
-means that cache are not yet written to disk.
-
 .. warning::
     If the **RRDCacheD process crash** (in theory because it's a stable process) data will be lost! It is not possible
     to get data unless rebuild all graphs from Centreon web.
