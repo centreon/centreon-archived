@@ -28,6 +28,7 @@ $errorMessage = '';
  * Queries needing exception management and rollback if failing
  */
 try {
+    $pearDB->beginTransaction();
     /*
      * Get user data to generate a new config file for the gorgone daemon module
      */
@@ -149,7 +150,6 @@ try {
         }
     }
 
-    $pearDB->beginTransaction();
     /*
      * Move broker xml files to json format
      */
