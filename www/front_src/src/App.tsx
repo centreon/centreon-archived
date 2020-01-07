@@ -36,7 +36,7 @@ declare global {
 }
 
 interface Props {
-  fetchExternalComponents: Function;
+  fetchExternalComponents: () => void;
 }
 
 interface State {
