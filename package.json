@@ -18,6 +18,7 @@
     "@babel/plugin-transform-arrow-functions": "^7.2.0",
     "@babel/plugin-transform-regenerator": "^7.4.5",
     "@babel/plugin-transform-shorthand-properties": "^7.2.0",
+    "@babel/plugin-proposal-class-properties": "^7.7.4",
     "@babel/polyfill": "^7.4.4",
     "@babel/preset-env": "^7.5.5",
     "@babel/preset-react": "^7.0.0",
@@ -26,6 +27,7 @@
     "@testing-library/react": "^8.0.6",
     "babel-eslint": "^10.0.2",
     "babel-jest": "^24.8.0",
+    "babel-loader": "^8.0.6",
     "clean-webpack-plugin": "^3.0.0",
     "css-loader": "^3.1.0",
     "eslint": "^5.16.0",
@@ -60,7 +62,7 @@
     "webpack-merge": "^4.2.1"
   },
   "dependencies": {
-    "@centreon/react-components": "^19.10.1",
+    "@centreon/ui": "centreon/centreon-ui",
     "@emotion/core": "^10.0.14",
     "@emotion/styled": "^10.0.14",
     "axios": "^0.19.0",
