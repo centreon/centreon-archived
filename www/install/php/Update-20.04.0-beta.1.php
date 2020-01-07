@@ -145,7 +145,7 @@ try {
     /*
      * replace autologin keys using NULL instead of empty string
      */
-    $pearDB->query("UPDATE `contact` SET `contact_autologin_key` = NULL WHERE `contact_autologin_key` =''");
+    $pearDB->query("UPDATE `contact` SET `contact_autologin_key` = NULL WHERE `contact_autologin_key` = ''");
 } catch (\Exception $e) {
     $errorMessage = "Unable to set default contact_autologin_key.";
     $centreonLog->insertLog(
