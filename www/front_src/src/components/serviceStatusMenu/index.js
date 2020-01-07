@@ -206,7 +206,7 @@ class ServiceStatusMenu extends Component {
                 onClick={this.toggle}
               >
                 <SubmenuItem
-                  submenuTitle={I18n.t('All services')}
+                  submenuTitle={I18n.t('All')}
                   submenuCount={numeral(data.total).format()}
                 />
               </Link>
@@ -217,7 +217,7 @@ class ServiceStatusMenu extends Component {
               >
                 <SubmenuItem
                   dotColored="red"
-                  submenuTitle={I18n.t('Critical services')}
+                  submenuTitle={I18n.t('Critical')}
                   submenuCount={`${numeral(
                     data.critical.unhandled,
                   ).format()}/${numeral(data.critical.total).format()}`}
@@ -230,7 +230,7 @@ class ServiceStatusMenu extends Component {
               >
                 <SubmenuItem
                   dotColored="orange"
-                  submenuTitle={I18n.t('Warning services')}
+                  submenuTitle={I18n.t('Warning')}
                   submenuCount={`${numeral(
                     data.warning.unhandled,
                   ).format()}/${numeral(data.warning.total).format()}`}
@@ -243,7 +243,7 @@ class ServiceStatusMenu extends Component {
               >
                 <SubmenuItem
                   dotColored="gray"
-                  submenuTitle={I18n.t('Unknown services')}
+                  submenuTitle={I18n.t('Unknown')}
                   submenuCount={`${numeral(
                     data.unknown.unhandled,
                   ).format()}/${numeral(data.unknown.total).format()}`}
@@ -256,7 +256,7 @@ class ServiceStatusMenu extends Component {
               >
                 <SubmenuItem
                   dotColored="green"
-                  submenuTitle={I18n.t('Ok services')}
+                  submenuTitle={I18n.t('Ok')}
                   submenuCount={numeral(data.ok).format()}
                 />
               </Link>
@@ -267,7 +267,7 @@ class ServiceStatusMenu extends Component {
               >
                 <SubmenuItem
                   dotColored="blue"
-                  submenuTitle={I18n.t('Pending services')}
+                  submenuTitle={I18n.t('Pending')}
                   submenuCount={numeral(data.pending).format()}
                 />
               </Link>
