@@ -15,7 +15,7 @@ import PropTypes from 'prop-types';
 import numeral from 'numeral';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { Translate } from 'react-redux-i18n';
+import { I18n } from 'react-redux-i18n';
 
 import IconHeader from '@centreon/ui/Icon/IconHeader';
 import IconNumber from '@centreon/ui/Icon/IconNumber';
@@ -206,7 +206,7 @@ class ServiceStatusMenu extends Component {
                 onClick={this.toggle}
               >
                 <SubmenuItem
-                  submenuTitle={<Translate value="All Services" />}
+                  submenuTitle={I18n.t('All services')}
                   submenuCount={numeral(data.total).format()}
                 />
               </Link>
@@ -217,7 +217,7 @@ class ServiceStatusMenu extends Component {
               >
                 <SubmenuItem
                   dotColored="red"
-                  submenuTitle={<Translate value="Critical Services" />}
+                  submenuTitle={I18n.t('Critical services')}
                   submenuCount={`${numeral(
                     data.critical.unhandled,
                   ).format()}/${numeral(data.critical.total).format()}`}
@@ -230,7 +230,7 @@ class ServiceStatusMenu extends Component {
               >
                 <SubmenuItem
                   dotColored="orange"
-                  submenuTitle={<Translate value="Warning services" />}
+                  submenuTitle={I18n.t('Warning services')}
                   submenuCount={`${numeral(
                     data.warning.unhandled,
                   ).format()}/${numeral(data.warning.total).format()}`}
@@ -243,7 +243,7 @@ class ServiceStatusMenu extends Component {
               >
                 <SubmenuItem
                   dotColored="gray"
-                  submenuTitle={<Translate value="Unknown services" />}
+                  submenuTitle={I18n.t('Unknown services')}
                   submenuCount={`${numeral(
                     data.unknown.unhandled,
                   ).format()}/${numeral(data.unknown.total).format()}`}
@@ -256,7 +256,7 @@ class ServiceStatusMenu extends Component {
               >
                 <SubmenuItem
                   dotColored="green"
-                  submenuTitle={<Translate value="Ok services" />}
+                  submenuTitle={I18n.t('Ok services')}
                   submenuCount={numeral(data.ok).format()}
                 />
               </Link>
@@ -267,7 +267,7 @@ class ServiceStatusMenu extends Component {
               >
                 <SubmenuItem
                   dotColored="blue"
-                  submenuTitle={<Translate value="Pending services" />}
+                  submenuTitle={I18n.t('Pending services')}
                   submenuCount={numeral(data.pending).format()}
                 />
               </Link>
