@@ -15,7 +15,7 @@ import numeral from 'numeral';
 import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Translate } from 'react-redux-i18n';
+import { I18n } from 'react-redux-i18n';
 
 import IconHeader from '@centreon/ui/Icon/IconHeader';
 import IconNumber from '@centreon/ui/Icon/IconNumber';
@@ -181,7 +181,7 @@ class HostMenu extends Component {
                 onClick={this.toggle}
               >
                 <SubmenuItem
-                  submenuTitle={<Translate value="All" />}
+                  submenuTitle={I18n.t('All')}
                   submenuCount={numeral(data.total).format()}
                 />
               </Link>
@@ -192,7 +192,7 @@ class HostMenu extends Component {
               >
                 <SubmenuItem
                   dotColored="red"
-                  submenuTitle={<Translate value="Critical" />}
+                  submenuTitle={I18n.t('Critical')}
                   submenuCount={`${numeral(data.down.unhandled).format(
                     '0a',
                   )}/${numeral(data.down.total).format('0a')}`}
@@ -205,7 +205,7 @@ class HostMenu extends Component {
               >
                 <SubmenuItem
                   dotColored="gray"
-                  submenuTitle={<Translate value="Unreachable" />}
+                  submenuTitle={I18n.t('Unreachable')}
                   submenuCount={`${numeral(data.unreachable.unhandled).format(
                     '0a',
                   )}/${numeral(data.unreachable.total).format('0a')}`}
@@ -218,7 +218,7 @@ class HostMenu extends Component {
               >
                 <SubmenuItem
                   dotColored="green"
-                  submenuTitle={<Translate value="Up" />}
+                  submenuTitle={I18n.t('Up')}
                   submenuCount={numeral(data.ok).format()}
                 />
               </Link>
@@ -229,7 +229,7 @@ class HostMenu extends Component {
               >
                 <SubmenuItem
                   dotColored="blue"
-                  submenuTitle={<Translate value="Pending" />}
+                  submenuTitle={I18n.t('Pending')}
                   submenuCount={numeral(data.pending).format()}
                 />
               </Link>
