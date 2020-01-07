@@ -25,14 +25,14 @@ $versionOfTheUpgrade = 'UPGRADE - 20.04.0-beta.1 : ';
 $errorMessage = '';
 
 /**
- * @internal : Queries needing exception management and rollback if failing
+ * Queries needing exception management and rollback if failing
  */
 try {
     $pearDB->beginTransaction();
     /*
      * Move broker xml files to json format
      */
-    $errorMessage = "Unable to upgrade broker configuration from xml format to json format";
+    $errorMessage = "Unable to replace broker configuration from xml format to json format";
     $result = $pearDB->query(
         "SELECT config_id, config_filename
         FROM cfg_centreonbroker"
@@ -55,14 +55,12 @@ try {
         $statement->bindValue(':id', $row['config_id'], \PDO::PARAM_INT);
 
         $statement->execute();
-        // saving error message to be thrown in case of failure
-
     }
 
     /*
      * Move engine module xml files to json format
      */
-    $errorMessage = "Unable to upgrade engine's broker modules configuration from xml to json format";
+    $errorMessage = "Unable to replace engine's broker modules configuration from xml to json format";
     $result = $pearDB->query(
         "SELECT bk_mod_id, broker_module
         FROM cfg_nagios_broker_module"
@@ -140,9 +138,9 @@ try {
     throw new \Exception($versionOfTheUpgrade . $errorMessage, (int)$e->getCode(), $e);
 }
 
-/*
-* @internal : Queries which don't need rollback and won't throw an exception
-*/
+/**
+ * Queries which don't need rollback and won't throw an exception
+ */
 try {
     /*
      * replace autologin keys using NULL instead of empty string
