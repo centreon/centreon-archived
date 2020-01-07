@@ -15,6 +15,7 @@ import numeral from 'numeral';
 import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import { Translate } from 'react-redux-i18n';
 
 import IconHeader from '@centreon/ui/Icon/IconHeader';
 import IconNumber from '@centreon/ui/Icon/IconNumber';
@@ -48,7 +49,7 @@ const statusSchema = yup.object().shape({
 
 class HostMenu extends Component {
   hostsService = axios(
-    'internal.php?object=centreon_topcounter&action=hosts_status'
+    'internal.php?object=centreon_topcounter&action=hosts_status',
   );
 
   refreshInterval = null;
@@ -127,7 +128,7 @@ class HostMenu extends Component {
     }
 
     return (
-      <div className={styles.wrapper} ref={(host) => (this.host = host)}>
+      <div className={`${styles.wrapper} wrap-right-hosts`} ref={(host) => (this.host = host)}>
         <SubmenuHeader submenuType="top" active={toggled}>
           <IconHeader iconType="hosts" iconName="Hosts" onClick={this.toggle} />
           <Link
@@ -137,7 +138,7 @@ class HostMenu extends Component {
             <IconNumber
               iconType={`${data.down.unhandled > 0 ? 'colored' : 'bordered'}`}
               iconColor="red"
-              iconNumber={`${numeral(data.down.unhandled).format('0a')}`}
+              iconNumber={<span id="count-host-down">{numeral(data.down.unhandled).format('0a')}</span>}
             />
           </Link>
           <Link
@@ -149,7 +150,7 @@ class HostMenu extends Component {
                 data.unreachable.unhandled > 0 ? 'colored' : 'bordered'
               }`}
               iconColor="gray-dark"
-              iconNumber={numeral(data.unreachable.unhandled).format('0a')}
+              iconNumber={<span id="count-host-unreachable">{numeral(data.unreachable.unhandled).format('0a')}</span>}
             />
           </Link>
           <Link
@@ -159,7 +160,7 @@ class HostMenu extends Component {
             <IconNumber
               iconType={`${data.ok > 0 ? 'colored' : 'bordered'}`}
               iconColor="green"
-              iconNumber={numeral(data.ok).format('0a')}
+              iconNumber={<span id="count-host-up">{numeral(data.ok).format('0a')}</span>}
             />
           </Link>
           <IconToggleSubmenu
@@ -180,7 +181,7 @@ class HostMenu extends Component {
                 onClick={this.toggle}
               >
                 <SubmenuItem
-                  submenuTitle="All"
+                  submenuTitle={<Translate value="All" />}
                   submenuCount={numeral(data.total).format()}
                 />
               </Link>
@@ -191,9 +192,9 @@ class HostMenu extends Component {
               >
                 <SubmenuItem
                   dotColored="red"
-                  submenuTitle="Critical"
+                  submenuTitle={<Translate value="Critical" />}
                   submenuCount={`${numeral(data.down.unhandled).format(
-                    '0a'
+                    '0a',
                   )}/${numeral(data.down.total).format('0a')}`}
                 />
               </Link>
@@ -204,9 +205,9 @@ class HostMenu extends Component {
               >
                 <SubmenuItem
                   dotColored="gray"
-                  submenuTitle="Unreachable"
+                  submenuTitle={<Translate value="Unreachable" />}
                   submenuCount={`${numeral(data.unreachable.unhandled).format(
-                    '0a'
+                    '0a',
                   )}/${numeral(data.unreachable.total).format('0a')}`}
                 />
               </Link>
@@ -217,7 +218,7 @@ class HostMenu extends Component {
               >
                 <SubmenuItem
                   dotColored="green"
-                  submenuTitle="Up"
+                  submenuTitle={<Translate value="Up" />}
                   submenuCount={numeral(data.ok).format()}
                 />
               </Link>
@@ -228,7 +229,7 @@ class HostMenu extends Component {
               >
                 <SubmenuItem
                   dotColored="blue"
-                  submenuTitle="Pending"
+                  submenuTitle={<Translate value="Pending" />}
                   submenuCount={numeral(data.pending).format()}
                 />
               </Link>

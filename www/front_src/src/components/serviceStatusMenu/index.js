@@ -15,6 +15,7 @@ import PropTypes from 'prop-types';
 import numeral from 'numeral';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
+import { Translate } from 'react-redux-i18n';
 
 import IconHeader from '@centreon/ui/Icon/IconHeader';
 import IconNumber from '@centreon/ui/Icon/IconNumber';
@@ -52,7 +53,7 @@ const statusSchema = yup.object().shape({
 
 class ServiceStatusMenu extends Component {
   servicesStatusService = axios(
-    'internal.php?object=centreon_topcounter&action=servicesStatus'
+    'internal.php?object=centreon_topcounter&action=servicesStatus',
   );
 
   refreshInterval = null;
@@ -132,7 +133,7 @@ class ServiceStatusMenu extends Component {
 
     return (
       <div
-        className={styles.wrapper}
+        className={`${styles.wrapper} wrap-right-services`}
         ref={(service) => (this.service = service)}
       >
         <SubmenuHeader submenuType="top" active={toggled}>
@@ -150,7 +151,7 @@ class ServiceStatusMenu extends Component {
                 data.critical.unhandled > 0 ? 'colored' : 'bordered'
               }`}
               iconColor="red"
-              iconNumber={`${numeral(data.critical.unhandled).format('0a')}`}
+              iconNumber={<span id="count-svc-critical">{numeral(data.critical.unhandled).format('0a')}</span>}
             />
           </Link>
           <Link
@@ -162,7 +163,7 @@ class ServiceStatusMenu extends Component {
                 data.warning.unhandled > 0 ? 'colored' : 'bordered'
               }`}
               iconColor="orange"
-              iconNumber={numeral(data.warning.unhandled).format('0a')}
+              iconNumber={<span id="count-svc-warning">{numeral(data.warning.unhandled).format('0a')}</span>}
             />
           </Link>
           <Link
@@ -174,7 +175,7 @@ class ServiceStatusMenu extends Component {
                 data.unknown.unhandled > 0 ? 'colored' : 'bordered'
               }`}
               iconColor="gray-light"
-              iconNumber={numeral(data.unknown.unhandled).format('0a')}
+              iconNumber={<span id="count-svc-unknown">{numeral(data.unknown.unhandled).format('0a')}</span>}
             />
           </Link>
           <Link
@@ -184,7 +185,7 @@ class ServiceStatusMenu extends Component {
             <IconNumber
               iconType={`${data.ok > 0 ? 'colored' : 'bordered'}`}
               iconColor="green"
-              iconNumber={numeral(data.ok).format('0a')}
+              iconNumber={<span id="count-svc-ok">{numeral(data.ok).format('0a')}</span>}
             />
           </Link>
           <IconToggleSubmenu
@@ -205,7 +206,7 @@ class ServiceStatusMenu extends Component {
                 onClick={this.toggle}
               >
                 <SubmenuItem
-                  submenuTitle="All Services"
+                  submenuTitle={<Translate value="All Services" />}
                   submenuCount={numeral(data.total).format()}
                 />
               </Link>
@@ -216,9 +217,9 @@ class ServiceStatusMenu extends Component {
               >
                 <SubmenuItem
                   dotColored="red"
-                  submenuTitle="Critical services"
+                  submenuTitle={<Translate value="Critical Services" />}
                   submenuCount={`${numeral(
-                    data.critical.unhandled
+                    data.critical.unhandled,
                   ).format()}/${numeral(data.critical.total).format()}`}
                 />
               </Link>
@@ -229,9 +230,9 @@ class ServiceStatusMenu extends Component {
               >
                 <SubmenuItem
                   dotColored="orange"
-                  submenuTitle="Warning services"
+                  submenuTitle={<Translate value="Warning services" />}
                   submenuCount={`${numeral(
-                    data.warning.unhandled
+                    data.warning.unhandled,
                   ).format()}/${numeral(data.warning.total).format()}`}
                 />
               </Link>
@@ -242,9 +243,9 @@ class ServiceStatusMenu extends Component {
               >
                 <SubmenuItem
                   dotColored="gray"
-                  submenuTitle="Unknown services"
+                  submenuTitle={<Translate value="Unknown services" />}
                   submenuCount={`${numeral(
-                    data.unknown.unhandled
+                    data.unknown.unhandled,
                   ).format()}/${numeral(data.unknown.total).format()}`}
                 />
               </Link>
@@ -255,7 +256,7 @@ class ServiceStatusMenu extends Component {
               >
                 <SubmenuItem
                   dotColored="green"
-                  submenuTitle="Ok services"
+                  submenuTitle={<Translate value="Ok services" />}
                   submenuCount={numeral(data.ok).format()}
                 />
               </Link>
@@ -266,7 +267,7 @@ class ServiceStatusMenu extends Component {
               >
                 <SubmenuItem
                   dotColored="blue"
-                  submenuTitle="Pending services"
+                  submenuTitle={<Translate value="Pending services" />}
                   submenuCount={numeral(data.pending).format()}
                 />
               </Link>
