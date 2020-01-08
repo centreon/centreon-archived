@@ -407,8 +407,6 @@ class ExtensionsRoute extends Component {
       });
   };
 
-  versionClicked = () => { };
-
   render() {
     const {
       extensions,
@@ -488,14 +486,14 @@ class ExtensionsRoute extends Component {
           <Button
             label={`${
               installed &&
-                not_installed &&
-                updated &&
-                search.length === 0 &&
-                ((modulesActive && widgetsActive) ||
-                  (!modulesActive && !widgetsActive))
+              not_installed &&
+              updated &&
+              search.length === 0 &&
+              ((modulesActive && widgetsActive) ||
+                (!modulesActive && !widgetsActive))
                 ? 'Update all'
                 : 'Update selection'
-              }`}
+            }`}
             buttonType="regular"
             customClass="mr-2"
             color="orange"
@@ -512,14 +510,14 @@ class ExtensionsRoute extends Component {
           <Button
             label={`${
               installed &&
-                not_installed &&
-                updated &&
-                search.length === 0 &&
-                ((modulesActive && widgetsActive) ||
-                  (!modulesActive && !widgetsActive))
+              not_installed &&
+              updated &&
+              search.length === 0 &&
+              ((modulesActive && widgetsActive) ||
+                (!modulesActive && !widgetsActive))
                 ? 'Install all'
                 : 'Install selection'
-              }`}
+            }`}
             buttonType="regular"
             customClass="mr-2"
             color="green"
@@ -535,36 +533,36 @@ class ExtensionsRoute extends Component {
         {extensions && !nothingShown ? (
           <>
             {extensions.result.module &&
-              (!modulesActive || (modulesActive && widgetsActive)) ? (
-                <ExtensionsHolder
-                  onCardClicked={this.activateExtensionsDetails}
-                  onDelete={this.toggleDeleteModal}
-                  onInstall={this.installById}
-                  onUpdate={this.updateById}
-                  title="Modules"
-                  type="module"
-                  updating={extensionsUpdatingStatus}
-                  installing={extensionsInstallingStatus}
-                  entities={extensions.result.module.entities}
-                />
-              ) : null}
+            (!modulesActive || (modulesActive && widgetsActive)) ? (
+              <ExtensionsHolder
+                onCardClicked={this.activateExtensionsDetails}
+                onDelete={this.toggleDeleteModal}
+                onInstall={this.installById}
+                onUpdate={this.updateById}
+                title="Modules"
+                type="module"
+                updating={extensionsUpdatingStatus}
+                installing={extensionsInstallingStatus}
+                entities={extensions.result.module.entities}
+              />
+            ) : null}
             {extensions.result.widget &&
-              (!widgetsActive || (modulesActive && widgetsActive)) ? (
-                <ExtensionsHolder
-                  onCardClicked={this.activateExtensionsDetails}
-                  onDelete={this.toggleDeleteModal}
-                  onInstall={this.installById}
-                  onUpdate={this.updateById}
-                  titleColor="blue"
-                  hrTitleColor="blue"
-                  hrColor="blue"
-                  title="Widgets"
-                  type="widget"
-                  updating={extensionsUpdatingStatus}
-                  installing={extensionsInstallingStatus}
-                  entities={extensions.result.widget.entities}
-                />
-              ) : null}
+            (!widgetsActive || (modulesActive && widgetsActive)) ? (
+              <ExtensionsHolder
+                onCardClicked={this.activateExtensionsDetails}
+                onDelete={this.toggleDeleteModal}
+                onInstall={this.installById}
+                onUpdate={this.updateById}
+                titleColor="blue"
+                hrTitleColor="blue"
+                hrColor="blue"
+                title="Widgets"
+                type="widget"
+                updating={extensionsUpdatingStatus}
+                installing={extensionsInstallingStatus}
+                entities={extensions.result.widget.entities}
+              />
+            ) : null}
           </>
         ) : null}
 
@@ -573,7 +571,6 @@ class ExtensionsRoute extends Component {
             type={modalDetailsType}
             loading={modalDetailsLoading}
             onCloseClicked={this.hideExtensionDetails.bind(this)}
-            onVersionClicked={this.versionClicked}
             onInstallClicked={this.installById}
             onDeleteClicked={this.deleteById}
             onUpdateClicked={this.updateById}
@@ -598,16 +595,10 @@ const mapDispatchToProps = (dispatch) => {
     reloadNavigation: () => {
       // batch actions to avoid useless multiple rendering
       dispatch(
-        batchActions([
-          fetchNavigationData(),
-          fetchExternalComponents()
-        ]),
+        batchActions([fetchNavigationData(), fetchExternalComponents()]),
       );
     },
   };
 };
 
-export default connect(
-  null,
-  mapDispatchToProps,
-)(ExtensionsRoute);
+export default connect(null, mapDispatchToProps)(ExtensionsRoute);
