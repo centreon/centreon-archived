@@ -13,47 +13,38 @@ const reactRoutes = [
   {
     path: routeMap.pollerStep1,
     comp: PollerStepOne,
-    exact: true,
   },
   {
     path: routeMap.pollerStep2,
     comp: PollerStepTwo,
-    exact: true,
   },
   {
     path: routeMap.pollerStep3,
     comp: PollerStepThree,
-    exact: true,
   },
   {
     path: routeMap.remoteServerStep1,
     comp: RemoteServerStepOne,
-    exact: true,
   },
   {
     path: routeMap.remoteServerStep2,
     comp: RemoteServerStepTwo,
-    exact: true,
   },
   {
     path: routeMap.remoteServerStep3,
     comp: RemoteServerStepThree,
-    exact: true,
   },
   {
     path: routeMap.serverConfigurationWizard,
     comp: ServerConfigurationWizard,
-    exact: true,
   },
   {
     path: routeMap.extensionsManagerPage,
     comp: ExtensionsManagerPage,
-    exact: true,
   },
   {
     path: routeMap.notAllowedPage,
     comp: NotAllowedPage,
-    exact: true,
   },
 ];
 
