@@ -5,13 +5,13 @@
 import React, { Component, Suspense } from 'react';
 import { connect } from 'react-redux';
 import { Switch, Route, withRouter } from 'react-router-dom';
-import { reactRoutes } from '../../route-maps';
+import reactRoutes from '../../route-maps';
 import { dynamicImport } from '../../helpers/dynamicImport';
 import centreonAxios from '../../axios';
 import NotAllowedPage from '../../route-components/notAllowedPage';
 import BreadcrumbWrapper from '../breadcrumbWrapper';
 import styles from '../../styles/partials/_content.scss';
-import { allowedPagesSelector } from "../../redux/selectors/navigation/allowedPages";
+import { allowedPagesSelector } from '../../redux/selectors/navigation/allowedPages';
 
 // class to manage internal react pages
 class ReactRouter extends Component {
@@ -47,12 +47,9 @@ class ReactRouter extends Component {
             path={path}
             exact
             render={(renderProps) => (
-              <div className={styles["react-page"]}>
+              <div className={styles['react-page']}>
                 <BreadcrumbWrapper path={path}>
-                  <Page
-                    centreonAxios={centreonAxios}
-                    {...renderProps}
-                  />
+                  <Page centreonAxios={centreonAxios} {...renderProps} />
                 </BreadcrumbWrapper>
               </div>
             )}
@@ -85,9 +82,7 @@ class ReactRouter extends Component {
                 <div className={styles['react-page']}>
                   {allowedPages.includes(path) ? (
                     <BreadcrumbWrapper path={path}>
-                      <Comp
-                        {...renderProps}
-                      />
+                      <Comp {...renderProps} />
                     </BreadcrumbWrapper>
                   ) : (
                     <NotAllowedPage {...renderProps} />
