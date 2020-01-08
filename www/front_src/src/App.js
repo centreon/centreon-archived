@@ -11,7 +11,6 @@ import { connect } from 'react-redux';
 import { ConnectedRouter } from 'connected-react-router';
 import Fullscreen from 'react-fullscreen-crossbrowser';
 import queryString from 'query-string';
-import { batchActions } from 'redux-batched-actions';
 import { StylesProvider } from '@material-ui/styles';
 import Header from './components/header';
 import { history } from './store';
@@ -77,7 +76,7 @@ class App extends Component {
       axios('internal.php?object=centreon_keepalive&action=keepAlive')
         .get()
         .then(() => this.keepAlive())
-        .catch(error => {
+        .catch((error) => {
           if (error.response && error.response.status === 401) {
             // redirect to login page
             window.location.href = 'index.php?disconnect=1';
@@ -149,7 +148,4 @@ const mapDispatchToProps = (dispatch) => {
   };
 };
 
-export default connect(
-  null,
-  mapDispatchToProps,
-)(App);
+export default connect(null, mapDispatchToProps)(App);
