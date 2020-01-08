@@ -154,7 +154,7 @@ class App extends Component<Props, State> {
   }
 }
 
-const mapDispatchToProps = (dispatch: Function): Props => {
+const mapDispatchToProps = (dispatch: () => void): Props => {
   return {
     fetchExternalComponents: (): void => {
       dispatch(fetchExternalComponents());
