@@ -25,16 +25,8 @@ export const centreonPathValidator = (centreonFolder) => {
     : '';
 };
 
-export const selectRemoteServerValidator = (selectRemoteServer) =>
-  !selectRemoteServer || selectRemoteServer.length < 1
-    ? 'The field is required'
-    : '';
-
 export const databaseUserValidator = (databaseUser) =>
   !databaseUser ? 'The field is required' : '';
 
 export const databasePasswordValidator = (databasePassword) =>
   !databasePassword ? 'The field is required' : '';
-
-export const selectDistantPollersValidator = (selectDistantPollers) =>
-  !selectDistantPollers ? 'The field is required' : '';
