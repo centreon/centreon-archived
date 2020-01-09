@@ -3241,8 +3241,8 @@ msgstr "Los archivos SQL se encuentran en %s"
 
 #: centreon-web/www/install/step_upgrade/step4.php:87
 #, php-format
-msgid "Please check the \"upgrade.log\" and the \"sql-error.log\" located in \"%s\" for more details"
-msgstr ""
+#~ msgid "Please check the \"upgrade.log\" and the \"sql-error.log\" located in \"%s\" for more details"
+#~ msgstr ""
 
 #: centreon-web/www/install/step_upgrade/step4.php:72
 msgid "But do not edit the SQL files unless you know what you are doing.Refresh this page when the problem is fixed."
