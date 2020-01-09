@@ -141,6 +141,7 @@ check_result $? "$(gettext "Change right on") $CENTREON_ETC"
 
 ## Copy Web Front Source in final
 log "INFO" "$(gettext "Copy CentWeb and GPL_LIB in temporary final directory")"
+cp -Rf $TMP_DIR/src/api $TMP_DIR/final
 cp -Rf $TMP_DIR/src/www $TMP_DIR/final
 cp -Rf $TMP_DIR/src/GPL_LIB $TMP_DIR/final
 cp -Rf $TMP_DIR/src/config $TMP_DIR/final
@@ -366,6 +367,9 @@ $CHMOD 644 $INSTALL_DIR_CENTREON/www/.htaccess
 
 cp -Rf $TMP_DIR/final/src $INSTALL_DIR_CENTREON/ >> "$LOG_FILE" 2>&1
 $CHOWN -R $WEB_USER:$WEB_GROUP $INSTALL_DIR_CENTREON/src
+
+cp -Rf $TMP_DIR/final/api $INSTALL_DIR_CENTREON/ >> "$LOG_FILE" 2>&1
+$CHOWN -R $WEB_USER:$WEB_GROUP $INSTALL_DIR_CENTREON/api
 
 log "INFO" "$(gettext "Change right for install directory")"
 $CHOWN -R $WEB_USER:$WEB_GROUP $INSTALL_DIR_CENTREON/www/install/
