@@ -76,7 +76,7 @@ $obj->setInstanceHistory($instance);
 
 $_SESSION['monitoring_service_groups'] = $sgSearch;
 
-// Prepare pagination
+// Filter on state
 $s_search = "";
 
 // Display service problems
@@ -104,6 +104,7 @@ if (!$obj->is_admin) {
 
 $query .= "WHERE sgm.servicegroup_id = sg.servicegroup_id
     AND sgm.host_id = h.host_id
+    AND h.host_id = s.host_id
     AND sgm.service_id = s.service_id ";
 
 // filter elements with acl (host, service, servicegroup)
@@ -133,10 +134,7 @@ if ($hSearch != "") {
         \PDO::PARAM_STR => "%" . $hSearch . "%"
     ];
 }
-$query .= $h_search;
-
-// Service search
-$query .= $s_search;
+$query .= $h_search . $s_search;
 
 // Poller search
 if ($instance != -1) {
