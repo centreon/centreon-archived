@@ -1,4 +1,29 @@
 ====================
+Centreon Web 19.10.5
+====================
+
+Bug Fixes
+---------
+
+* [Install] Check MariaDB version before using ALTER USER (PR/#8068)
+* [Install] Update libinstall scripts (PR/#8180, PR/#8188)
+* [Status Details] "Display details" not working when "Summary" selected (PR/#8200)
+* [Traps] Cannot save trap configuration (PR/#8165, PR/#8169)
+* [Clapi] Fix overlapping in clapi export (PR/#8191 fixes #7562)
+* [Clapi] Add parameters for HOST object (PR/#8085)
+* [API] Improve consistency of getparam (PR/#8201)
+* [Custom View] fix display for user with no widget preferences (PR #8159 fixes #7875)
+* [Web] Issue with random blank pages (PR/#8187,#8193)
+* [Web] Search in media page does not work (PR/#8203)
+* [Web] Improve authentication messages in login.log (PR/#7943)
+
+Security
+--------
+
+* [Web] Bump terser-webpack-plugin to 1.4.2 (PR/#8182)
+* [Web] Upgrade handlebars dependencies (PR/#8224)
+
+====================
 Centreon Web 19.10.4
 ====================
 
