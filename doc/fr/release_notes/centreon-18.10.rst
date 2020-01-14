@@ -13,7 +13,7 @@ Bugfix
 Security
 --------
 
-* [Service Discovery] cron should be ran by centreon user (PR #8062 fixes #7921)
+* [Service Discovery] cron should be run by centreon user (PR #8062 fixes #7921)
 * [Web] bump terser-webpack-plugin to 1.4.2
 
 ====================
