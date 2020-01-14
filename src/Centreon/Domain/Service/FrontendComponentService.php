@@ -47,7 +47,7 @@ class FrontendComponentService
      *
      * @return array
      */
-    public static function dependencies() : array
+    public static function dependencies(): array
     {
         return [
             ServiceProvider::CENTREON_LEGACY_MODULE_INFORMATION,
@@ -72,8 +72,12 @@ class FrontendComponentService
      * @param string $regex the regex to match
      * @return array
      */
-    private function getDirContents(string $dir, array &$results = [], string $regex = '/.*/'): array
-    {
+    private function getDirContents(
+        string $dir,
+        array &$results = [],
+        string $regex = '/.*/',
+        bool $recursive = true
+    ): array {
         $files = [];
         if (is_dir($dir)) {
             $files = scandir($dir);
@@ -84,7 +88,7 @@ class FrontendComponentService
             if (!is_dir($path) && preg_match($regex, $path)) {
                 // group files by directory
                 $results[dirname($path)][] = basename($path);
-            } elseif ($value != "." && $value != "..") {
+            } elseif ($recursive && $value != "." && $value != "..") {
                 $this->getDirContents($path, $results, $regex);
             }
         }
@@ -104,6 +108,29 @@ class FrontendComponentService
     }
 
     /**
+     * Get list of chunks found in module directory
+     * Chunks represent common source code between hooks and pages
+     *
+     * @return array the list of chunks
+     */
+    private function getChunksByModuleName(string $moduleName): array
+    {
+        $chunks = [];
+        $modulePath = __DIR__ . '/../../../../www/modules/' . $moduleName. '/static';
+
+        $files = [];
+        $this->getDirContents($modulePath, $files, '/\.js$/', false);
+        foreach ($files as $path => $chunkFiles) {
+            $chunkPath = str_replace(__DIR__ . '/../../../../www', '', $path);
+            foreach ($chunkFiles as $chunkFile) {
+                $chunks[] = $chunkPath . '/' . $chunkFile;
+            }
+        }
+
+        return $chunks;
+    }
+
+    /**
      * Get frontend external hooks
      *
      * @return array The list of hooks (js and css)
@@ -116,6 +143,7 @@ class FrontendComponentService
         $hooks = [];
         foreach (array_keys($installedModules) as $installedModule) {
             $modulePath = __DIR__ . '/../../../../www/modules/' . $installedModule . '/static/hooks';
+            $chunks = $this->getChunksByModuleName($installedModule);
             $files = [];
             $this->getDirContents($modulePath, $files, '/\.(js|css)$/');
             foreach ($files as $path => $hookFiles) {
@@ -127,7 +155,7 @@ class FrontendComponentService
 
                     // add hook parameters (js and css files)
                     $hookParameters = [
-                        'js' => [],
+                        'js' => $chunks,
                         'css' => [],
                     ];
                     foreach ($hookFiles as $hookFile) {
@@ -161,6 +189,7 @@ class FrontendComponentService
         $pages = [];
         foreach (array_keys($installedModules) as $installedModule) {
             $modulePath = __DIR__ . '/../../../../www/modules/' . $installedModule . '/static/pages';
+            $chunks = $this->getChunksByModuleName($installedModule);
             $files = [];
             $this->getDirContents($modulePath, $files, '/\.(js|css)$/');
             foreach ($files as $path => $pageFiles) {
@@ -172,7 +201,7 @@ class FrontendComponentService
 
                     // add page parameters (js and css files)
                     $pageParameters = [
-                        'js' => [],
+                        'js' => $chunks,
                         'css' => [],
                     ];
                     foreach ($pageFiles as $pageFile) {
