@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2005-2019 Centreon
+ * Copyright 2005-2020 Centreon
  * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -90,7 +90,12 @@ $hostToSearch = filter_input(INPUT_GET, 'search_host', FILTER_SANITIZE_STRING, [
 $outputToSearch = filter_input(INPUT_GET, 'search_output', FILTER_SANITIZE_STRING, ['options' => ['default' => '']]);
 $sortType = filter_input(INPUT_GET, 'sort_type', FILTER_SANITIZE_STRING, ['options' => ['default' => 'host_name']]);
 $order = isset($_GET['order']) && $_GET['order'] === "DESC" ? "DESC" : "ASC";
-$statusService = filter_input(INPUT_GET, 'statusService', FILTER_SANITIZE_STRING, ['options' => ['default' => '']]);
+$statusService = filter_input(
+    INPUT_GET,
+    'statusService',
+    FILTER_SANITIZE_STRING,
+    ['options' => ['default' => 'svc_unhandled']]
+);
 $statusFilter = filter_input(INPUT_GET, 'statusFilter', FILTER_SANITIZE_STRING, ['options' => ['default' => '']]);
 $dateFormat = "Y/m/d H:i:s";
 //if instance, hostgroup or servicegroup values are not set, displaying each active linked resources
