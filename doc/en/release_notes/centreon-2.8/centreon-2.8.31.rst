@@ -18,4 +18,4 @@ Security
 
 * Host macro list without authentication - CVE-2019-17644 (PR/#8032)
 * Service macro list without authentication - CVE-2019-17645 (PR/#8036)
-* Service Discovery cron should be ran by centreon user (PR #8062 fixes #7921)
+* Service Discovery cron should be run by centreon user (PR #8062 fixes #7921)
