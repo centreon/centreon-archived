@@ -175,7 +175,6 @@ if (isset($_GET["acknowledge"])) {
         var proc = new Transformation();
         proc.setCallback(function(t){monitoringCallBack(t); proc = null;});
 
-        //this.hg_search =
         proc.setXml(
             _addrXML + "?" + '&search=' + _host_search + '&hg_search=' + this.hg_search + '&num=' + _num +
             '&limit=' + _limit + '&sort_type=' + _sort_type + '&order=' + _order + '&date_time_format_status=' +
