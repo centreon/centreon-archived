@@ -126,12 +126,15 @@ class FrontendComponentService
                     $hookPath = str_replace(__DIR__ . '/../../../../www', '', $path);
 
                     // add hook parameters (js and css files)
-                    $hookParameters = [];
+                    $hookParameters = [
+                        'js' => [],
+                        'css' => [],
+                    ];
                     foreach ($hookFiles as $hookFile) {
                         if (preg_match('/\.js$/', $hookFile)) {
-                            $hookParameters['js'] = $hookPath . '/' . $hookFile;
+                            $hookParameters['js'][] = $hookPath . '/' . $hookFile;
                         } elseif (preg_match('/\.css$/', $hookFile)) {
-                            $hookParameters['css'] = $hookPath . '/' . $hookFile;
+                            $hookParameters['css'][] = $hookPath . '/' . $hookFile;
                         }
                     }
 
@@ -168,12 +171,15 @@ class FrontendComponentService
                     $pagePath = str_replace(__DIR__ . '/../../../../www', '', $path);
 
                     // add page parameters (js and css files)
-                    $pageParameters = [];
+                    $pageParameters = [
+                        'js' => [],
+                        'css' => [],
+                    ];
                     foreach ($pageFiles as $pageFile) {
                         if (preg_match('/\.js$/', $pageFile)) {
-                            $pageParameters['js'] = $pagePath . '/' . $pageFile;
+                            $pageParameters['js'][] = $pagePath . '/' . $pageFile;
                         } elseif (preg_match('/\.css$/', $pageFile)) {
-                            $pageParameters['css'] = $pagePath . '/' . $pageFile;
+                            $pageParameters['css'][] = $pagePath . '/' . $pageFile;
                         }
                     }
 
