@@ -155,8 +155,8 @@ if (isset($_GET["acknowledge"])) {
         if (document.getElementById("select2-hg_search-container") &&
             document.getElementById("select2-hg_search-container").title
         ) {
-            this.hg_search = document.getElementById("select2-hg_search-container").title;
-            viewDebugInfo('search: ' + document.getElementById("select2-hg_search-container").title);
+            this.hg_search = jQuery("#select2-hg_search-container .select2-content").attr("title");
+            viewDebugInfo('search: ' +  this.hg_search);
         }
 
         if (_first) {
@@ -174,6 +174,8 @@ if (isset($_GET["acknowledge"])) {
         _lock = 1;
         var proc = new Transformation();
         proc.setCallback(function(t){monitoringCallBack(t); proc = null;});
+
+        //this.hg_search =
         proc.setXml(
             _addrXML + "?" + '&search=' + _host_search + '&hg_search=' + this.hg_search + '&num=' + _num +
             '&limit=' + _limit + '&sort_type=' + _sort_type + '&order=' + _order + '&date_time_format_status=' +
