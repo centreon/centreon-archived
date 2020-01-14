@@ -604,7 +604,7 @@ class CentreonTopCounter extends CentreonWebService
             'time' => time()
         );
 
-        $_SESSION['topCounterHostStatus'] = $result;
+        CentreonSession::writeSessionClose('topCounterHostStatus', $result);
         return $result;
     }
 
@@ -681,7 +681,7 @@ class CentreonTopCounter extends CentreonWebService
             'time' => time()
         );
 
-        $_SESSION['topCounterServiceStatus'] = $result;
+        CentreonSession::writeSessionClose('topCounterServiceStatus', $result);
         return $result;
     }
 

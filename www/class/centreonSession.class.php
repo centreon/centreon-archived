@@ -68,6 +68,13 @@ class CentreonSession
         session_regenerate_id(true);
     }
 
+    public function writeSessionClose($key, $value)
+    {
+        session_start();
+        $_SESSION[$key] = $value;
+        session_write_close();
+    }
+
     public function s_unset()
     {
         session_unset();
