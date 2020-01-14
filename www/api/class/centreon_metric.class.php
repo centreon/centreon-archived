@@ -258,7 +258,7 @@ class CentreonMetric extends CentreonWebService
      *
      * @return bool if the user is allowed to get service information
      */
-    private function checkAcl($hostId, $serviceId, $aclGroups, $isAdmin = true): bool
+    private function checkAcl($hostId, $serviceId, ?array $aclGroups, $isAdmin = true): bool
     {
         if (!$isAdmin) {
             $query = 'SELECT service_id ' .
