@@ -30,6 +30,127 @@ $errorMessage = '';
 try {
     $pearDB->beginTransaction();
     /*
+     * Get user data to generate a new config file for the gorgone daemon module
+     */
+
+    //set a pattern for values to get from file
+    $patterns = [
+        'instance_mode' => '/--INSTANCEMODE--/',
+        'db_host' => '/--ADDRESS--:--DBPORT--/',
+        'db_user' => '/--DBUSER--/',
+        'db_passwd' => '/--DBPASS--/',
+        'centreon_db' => '/--CONFDB--/',
+        'centstorage_db' => '/--STORAGEDB--/',
+        'VarLib' => '/--CENTREON_VARLIB--/'
+    ];
+
+    //set new mandatory parameters pattern used by gorgone
+    $pattern = [
+        '/--CENTREON_SPOOL--/',
+        '/--CENTREON_TRAPDIR--/',
+        '/--HTTPSERVERADDRESS--/',
+        '/--HTTPSERVERPORT--/',
+        '/--SSLMODE--/'
+    ];
+
+    //set default values for these parameters
+    $userValues = [
+        '/var/spool/centreon',
+        '/etc/snmp/centreon_traps',
+        '0.0.0.0',
+        '8085',
+        'false'
+    ];
+
+    $isACentral = false;
+
+    // get user's centreon cache folder path
+    $fileToOpen = _CENTREON_ETC_ . '/instCentWeb.conf';
+    $errorMessage = 'Missing or empty \'instCentWeb.conf\' file';
+    if (!file_exists($fileToOpen) || 0 === filesize($fileToOpen)) {
+        throw new \InvalidArgumentException($errorMessage);
+    }
+    $file = fopen($fileToOpen, 'r');
+
+    while (!feof($file)) {
+        $line = fgets($file);
+        if (strpos($line, "CENTREON_CACHEDIR") !== false) {
+            $line = explode("=", $line);
+            $pattern[] = '/--CENTREON_CACHEDIR--/';
+            // if no value is found, a default value is required
+            $userValues[] = $line[1] ?? '/var/cache/centreon';
+        }
+    }
+    fclose($file);
+
+    // get user's values from conf.pm
+    $fileToOpen = _CENTREON_ETC_ . '/conf.pm';
+    $errorMessage = 'Missing or empty centreon \'conf.pm\' file';
+    if (!file_exists($fileToOpen) || 0 === filesize($fileToOpen)) {
+        throw new \InvalidArgumentException($errorMessage);
+    }
+    $start = false;
+    $stop = false;
+    $file = fopen($fileToOpen, 'r');
+
+    while (!feof($file) && $stop === false) {
+        // removing indentation and carriage return
+        $line = rtrim(ltrim(fgets($file), " "), ",\n");
+
+        // getting only line in a specific array
+        if (strpos($line, '$centreon_config = {') !== false) {
+            $start = true;
+            continue;
+        } elseif ($start === true
+            && strpos($line, '$instance_mode =') !== false
+        ) {
+            $stop = true;
+            $isACentral = strpos($line, 'central') ? true : false;
+            continue;
+        } elseif ($start === true
+            && strlen($line) > 5
+            && substr($line, 0, 1) !== "#"
+            && strpos($line, ' => ') !== false
+        ) {
+            $line = explode(' => ', $line);
+            if (!isset($line[1])) {
+                continue;
+            }
+
+            list($currentLine, $currentValue) = $line;
+            $currentLine = trim($currentLine, '"');
+            if ($currentLine === 'db_passwd') {
+                $currentValue = trim($currentValue, '\'');
+            } else {
+                $currentValue = trim($currentValue, '"');
+            }
+
+            if (array_key_exists($currentLine, $patterns)) {
+                $pattern[] = $patterns[$currentLine];
+                $userValues[] = $currentValue;
+            }
+        }
+    }
+    fclose($file);
+
+    // checking if the instance is a central and generating the configuration file
+    if ($isACentral === true) {
+        $errorMessage = 'Gorgone template file is missing';
+        if (!file_exists(__DIR__ . '/../var/configFileGorgoneTemplate')) {
+            throw new \InvalidArgumentException($errorMessage);
+        }
+        $content = file_get_contents(__DIR__ . '/../var/configFileGorgoneTemplate');
+        $content = preg_replace($pattern, $userValues, $content);
+        $finalFile = _CENTREON_ETC_ . '/gorgoned.yml';
+        file_put_contents($finalFile, $content);
+
+        $errorMessage = 'Gorgone configuration file is not created properly';
+        if (!file_exists($finalFile) || 0 === filesize($finalFile)) {
+            throw new \InvalidArgumentException($errorMessage);
+        }
+    }
+
+    /*
      * Move broker xml files to json format
      */
     $errorMessage = "Unable to replace broker configuration from xml format to json format";

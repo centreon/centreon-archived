@@ -117,7 +117,7 @@ $contents = preg_replace($patterns, $replacements, $contents);
 file_put_contents($centreonConfPmFile, $contents);
 
 /**
- * gorgone.yaml
+ * gorgoned.yml
  * configuration file used by the Gorgone module in a full ZMQ mode
  */
 $centreonGorgonedConfFile = $centreonEtcPath . '/gorgoned.yml';
