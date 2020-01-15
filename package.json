@@ -23,7 +23,7 @@
     "@babel/preset-env": "^7.5.5",
     "@babel/preset-react": "^7.0.0",
     "@babel/preset-typescript": "^7.7.7",
-    "@centreon/eslint-config-centreon": "^1.2.2",
+    "@centreon/eslint-config-centreon": "centreon/eslint-config-centreon",
     "@testing-library/jest-dom": "^4.0.0",
     "@testing-library/react": "^8.0.6",
     "@typescript-eslint/parser": "2.12.0",
