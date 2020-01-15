@@ -1521,7 +1521,7 @@ class CentreonACL
         return $tab;
     }
 
-    public function getHostServices($pearDBMonitoring, $host_id, $withServiceDescription = null)
+    public function getHostServices($pearDBMonitoring, $host_id)
     {
         $tab = array();
         if ($this->admin) {
