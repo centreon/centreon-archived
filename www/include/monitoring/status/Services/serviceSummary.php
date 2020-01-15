@@ -114,7 +114,7 @@ $aTypeAffichageLevel2 = array(
                 _o = _o + "_" + sel2;
             }
 
-            if (_o == 'svcOV') {
+            if (val == 'svcOV') {
                 _addrXML = "./include/monitoring/status/Services/xml/serviceGridXML.php";
                 _addrXSL = "./include/monitoring/status/Services/xsl/serviceGrid.xsl";
             } else {
