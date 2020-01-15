@@ -48,10 +48,8 @@ $commandName = filter_var(
 );
 
 if ($commandId != null) {
-    /*
-     * Get command information
-     */
-    $sth = $pearDB->prepare("SELECT * FROM `command` WHERE `command_id` = :command_id LIMIT 1");
+    //Get command information
+    $sth = $pearDB->prepare('SELECT * FROM `command` WHERE `command_id` = :command_id LIMIT 1');
     $sth->bindParam(':command_id', $commandId, PDO::PARAM_INT);
     $sth->execute();
     $cmd = $sth->fetch();
@@ -61,22 +59,14 @@ if ($commandId != null) {
     $fullLine = $aCmd[0];
     $aCmd = explode("/", $fullLine);
     $resourceInfo = $aCmd[0];
-    $resourceDef = str_replace('$', '@DOLLAR@', $resourceInfo);
 
-    /*
-     * Match if the first part of the path is a MACRO
-     */
-    if (preg_match("/@DOLLAR@USER([0-9]+)@DOLLAR@/", $resourceDef, $matches)) {
-        /*
-         * Select Resource line
-         */
-        $query = "SELECT `resource_line` FROM `cfg_resource` " .
-            "WHERE `resource_name` = '\$USER" . $matches[1] . "\$' LIMIT 1";
-        $sth = $pearDB->query($query);
-
-        $resource = $sth->fetch();
-        unset($sth);
-
+    $prepare = $pearDB->prepare(
+        'SELECT `resource_line` FROM `cfg_resource` WHERE `resource_name` = :resource LIMIT 1'
+    );
+    $prepare->bindValue(':resource', $resourceInfo, \PDO::PARAM_STR);
+    $prepare->execute();
+    //Match if the first part of the path is a MACRO
+    if ($resource = $prepare->fetch()) {
         $resourcePath = $resource["resource_line"];
         unset($aCmd[0]);
         $command = rtrim($resourcePath, "/") . "#S#" . implode("#S#", $aCmd);
@@ -90,26 +80,10 @@ if ($commandId != null) {
 $command = str_replace("#S#", "/", $command);
 $command = str_replace("#BS#", "\\", $command);
 
-if (strncmp($command, "/usr/lib/nagios/", strlen("/usr/lib/nagios/"))) {
-    if (is_dir("/usr/lib64/nagios/")) {
-        $command = str_replace("/usr/lib/nagios/plugins/", "/usr/lib64/nagios/plugins/", $command);
-        $oreon->optGen["nagios_path_plugins"] = str_replace(
-            "/usr/lib/nagios/plugins/",
-            "/usr/lib64/nagios/plugins/",
-            $oreon->optGen["nagios_path_plugins"]
-        );
-    }
-}
-
 $tab = explode(' ', $command);
-if (strncmp(realpath($tab[0]), $oreon->optGen["nagios_path_plugins"], strlen($oreon->optGen["nagios_path_plugins"]))) {
-    $msg = _('Error: Cannot Execute this command due to a path security problem.');
-    $command = realpath($tab[0]);
-} else {
-    $command = realpath($tab[0]);
-    $stdout = shell_exec(realpath($tab[0]) . " --help");
-    $msg = str_replace("\n", "<br />", $stdout);
-}
+$command = realpath($tab[0]);
+$stdout = shell_exec($command . " --help 2>&1");
+$msg = str_replace("\n", "<br />", $stdout);
 
 $attrsText = array("size" => "25");
 $form = new HTML_QuickFormCustom('Form', 'post', "?p=" . $p);
