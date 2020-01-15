@@ -71,10 +71,11 @@ $dbResult->closeCursor();
 
 //get poller informations
 $query = '
-SELECT `id`, `name`, `gorgone_port`, `ns_ip_address`, `localhost` 
-FROM  `nagios_server` WHERE `id` =' . (int)$_GET['id'];
+SELECT ng.`id`, ng.`name`, ng.`gorgone_port`, ng.`ns_ip_address`, ng.`localhost`, cn.`command_file`
+FROM  `nagios_server` ng, cfg_nagios cn
+WHERE cn.`nagios_id` = ng.`id` 
+AND ng.`id` =' . (int)$_GET['id'];
 
-//$query = 'SELECT * FROM  nagios_server WHERE id =' . (int)$_GET['id'];
 $dbResult = $pearDB->query($query);
 $server = $dbResult->fetch();
 
@@ -82,15 +83,6 @@ if (in_array($server['ns_ip_address'], $remotesServerIPs)) {
     //config for remote
     $config = 'name: gorgoned-' . $server['name'] . '
 description: Configuration for remote server ' . $server['name'] . '
-database:
-  db_centreon:
-    dsn: "mysql:host=localhost:3306;dbname=centreon"
-    username: "centreon"
-    password: "centreon"
-  db_centstorage:
-    dsn: "mysql:host=localhost:3306;dbname=centreon_storage"
-    username: "centreon"
-    password: "centreon"
 gorgonecore:
   id: ' . $server['id'] . '
   external_com_type: tcp
@@ -119,7 +111,7 @@ modules:
   - name: engine
     package: gorgone::modules::centreon::engine::hooks
     enable: true
-    command_file: "/var/lib/centreon-engine/rw/centengine.cmd"
+    command_file: "' . $server['command_file'] . '"
 
 ';
 } else {
@@ -142,7 +134,7 @@ modules:
   - name: engine
     package: gorgone::modules::centreon::engine::hooks
     enable: true
-    command_file: "/var/lib/centreon-engine/rw/centengine.cmd"
+    command_file: "' . $server['command_file'] . '"
 ';
 }
 
