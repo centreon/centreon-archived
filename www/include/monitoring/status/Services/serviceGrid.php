@@ -114,7 +114,11 @@ $tpl->assign("tab_order", $tab_order);
         }
 
         function displayingLevel1(val) {
+            var sel2 = document.getElementById("typeDisplay2").value;
             _o = val;
+            if (sel2 != '') {
+                _o = _o + "_" + sel2;
+            }
             if (_o == 'svcOV') {
                 _addrXML = "./include/monitoring/status/Services/xml/serviceGridXML.php";
                 _addrXSL = "./include/monitoring/status/Services/xsl/serviceGrid.xsl";
