@@ -2092,7 +2092,7 @@ check_broker_user()
 #----
 copyInTempFile()
 {
-	local srclistcp="bin cron config logrotate GPL_LIB lang lib snmptrapd src vendor www libinstall .env bootstrap.php container.php composer.json package.json package-lock.json"
+	local srclistcp="bin cron config logrotate GPL_LIB lang lib snmptrapd src vendor www api libinstall .env bootstrap.php container.php composer.json package.json package-lock.json"
 	# Prepare centreon Plugins
 	echo "$(gettext "Preparing Centreon temporary files")"
 	if [ -d $TMP_DIR ] ; then
