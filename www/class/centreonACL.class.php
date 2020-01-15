@@ -1461,11 +1461,11 @@ class CentreonACL
      *
      * @return array
      */
-    public function getHostsServices($pearDBMonitoring, $withServiceDescription = null)
+    public function getHostsServices($pearDBMonitoring, $withServiceDescription = false)
     {
         $tab = [];
         if ($this->admin) {
-            $req = (!is_null($withServiceDescription)) ? ", s.service_description " : "";
+            $req = $withServiceDescription ? ", s.service_description " : "";
             $query = "SELECT h.host_id, s.service_id " . $req
                 . "FROM host h "
                 . "LEFT JOIN host_service_relation hsr on hsr.host_host_id = h.host_id "
@@ -1473,7 +1473,7 @@ class CentreonACL
                 . "WHERE h.host_register = '1' ";
             $result = \CentreonDBInstance::getConfInstance()->query($query);
             while ($row = $result->fetchRow()) {
-                if (!is_null($withServiceDescription)) {
+                if ($withServiceDescription) {
                     $tab[$row['host_id']][$row['service_id']] = $row['service_description'];
                 } else {
                     $tab[$row['host_id']][$row['service_id']] = 1;
@@ -1481,7 +1481,7 @@ class CentreonACL
             }
             $result->closeCursor();
             // Used By EventLogs page Only
-            if (!is_null($withServiceDescription)) {
+            if ($withServiceDescription) {
                 // Get Services attached to hostgroups
                 $query = "SELECT hgr.host_host_id, s.service_id, s.service_description "
                     . "FROM hostgroup_relation hgr, service s, host_service_relation hsr "
@@ -1494,7 +1494,7 @@ class CentreonACL
                 $result->closeCursor();
             }
         } else {
-            if (!is_null($withServiceDescription)) {
+            if ($withServiceDescription) {
                 $query = "SELECT acl.host_id, acl.service_id, s.description "
                     . "FROM centreon_acl acl "
                     . "LEFT JOIN services s on acl.service_id = s.service_id "
@@ -1509,7 +1509,7 @@ class CentreonACL
 
             $result = $pearDBMonitoring->query($query);
             while ($row = $result->fetchRow()) {
-                if (!is_null($withServiceDescription)) {
+                if ($withServiceDescription) {
                     $tab[$row['host_id']][$row['service_id']] = $row['description'];
                 } else {
                     $tab[$row['host_id']][$row['service_id']] = 1;
