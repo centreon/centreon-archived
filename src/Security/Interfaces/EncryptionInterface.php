@@ -31,7 +31,7 @@ interface EncryptionInterface
      * @param int $length Length of the generated string
      * @return string
      */
-    public static function generateRandomString (int $length = 64): string;
+    public static function generateRandomString(int $length = 64): string;
 
     /**
      * Crypt data according to first and second keys.
