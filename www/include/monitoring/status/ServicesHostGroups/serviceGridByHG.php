@@ -43,18 +43,7 @@ $hgSearch = filter_input(INPUT_GET, 'hg_search', FILTER_SANITIZE_STRING, ['optio
 $search = filter_input(INPUT_GET, 'search', FILTER_SANITIZE_STRING, ['options' => ['default' => '']]);
 $order = isset($_GET['order']) && $_GET['order'] === "DESC" ? "DESC" : "ASC";
 $num = filter_input(INPUT_GET, 'num', FILTER_VALIDATE_INT, ['options' => ['default' => 0]]);
-
-$aTypeAffichageLevel1 = array(
-    "svcOVHG" => _("Details"),
-    "svcSumHG" => _("Summary")
-);
-
-$aTypeAffichageLevel2 = array(
-    "" => _("All"),
-    "pb" => _("Problems"),
-    "ack_1" => _("Acknowledge"),
-    "ack_0" => _("Not Acknowledged"),
-);
+$limit = filter_input(INPUT_GET, 'limit', FILTER_VALIDATE_INT, ['options' => ['default' => 30]]);
 
 // Check search value in Host search field
 $centreon->historySearch[$url] = $search;
@@ -91,7 +80,7 @@ $tpl->assign('hgStr', _('Hostgroup'));
 
 $form = new HTML_QuickFormCustom('select_form', 'GET', "?p=" . $p);
 
-//adding hostgroup's select2 list
+// adding hostgroup's select2 list
 $hostgroupsRoute = './api/internal.php?object=centreon_configuration_hostgroup&action=list';
 $attrHostGroup = array(
     'datasourceOrigin' => 'ajax',
@@ -108,12 +97,25 @@ $form->addElement(
     $attrHostGroup
 );
 
+// display type
+$aTypeAffichageLevel1 = array(
+    "svcOVHG" => _("Details"),
+    "svcSumHG" => _("Summary")
+);
 $form->addElement(
     'select',
     'typeDisplay',
     _('Display'),
     $aTypeAffichageLevel1,
     array('id' => 'typeDisplay', 'onChange' => "displayingLevel1(this.value);")
+);
+
+// status filters
+$aTypeAffichageLevel2 = array(
+    "" => _("All"),
+    "pb" => _("Problems"),
+    "ack_1" => _("Acknowledge"),
+    "ack_0" => _("Not Acknowledged"),
 );
 $form->addElement(
     'select',
