@@ -41,7 +41,7 @@ interface EncryptionInterface
      * @see Security::$secondKey
      * @return string Encrypted data
      */
-    public function crypt (string $data): string;
+    public function crypt(string $data): string;
 
     /**
      * Set the first secure key.
