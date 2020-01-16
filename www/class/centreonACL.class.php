@@ -1455,42 +1455,46 @@ class CentreonACL
     /**
      * Function that returns the pair host/service by ID if $host_id is NULL
      *  Otherwise, it returns all the services of a specific host
+     *
+     * @param CentreonDB $pearDBMonitoring access to centreon_storage database
+     * @param Boolean $withServiceDescription to retrieve description of services
+     *
+     * @return array
      */
-    public function getHostsServices($pearDBMonitoring, $get_service_description = null)
+    public function getHostsServices($pearDBMonitoring, $withServiceDescription = false)
     {
-        $tab = array();
+        $tab = [];
         if ($this->admin) {
-            $req = (!is_null($get_service_description)) ? ", s.service_description " : "";
+            $req = $withServiceDescription ? ", s.service_description " : "";
             $query = "SELECT h.host_id, s.service_id " . $req
                 . "FROM host h "
                 . "LEFT JOIN host_service_relation hsr on hsr.host_host_id = h.host_id "
                 . "LEFT JOIN service s on hsr.service_service_id = s.service_id "
-                . "WHERE h.host_activate = '1' "
-                . "AND (s.service_activate = '1' OR s.service_id is null) ";
-            $DBRESULT = \CentreonDBInstance::getConfInstance()->query($query);
-            while ($row = $DBRESULT->fetchRow()) {
-                if (!is_null($get_service_description)) {
+                . "WHERE h.host_register = '1' ";
+            $result = \CentreonDBInstance::getConfInstance()->query($query);
+            while ($row = $result->fetchRow()) {
+                if ($withServiceDescription) {
                     $tab[$row['host_id']][$row['service_id']] = $row['service_description'];
                 } else {
                     $tab[$row['host_id']][$row['service_id']] = 1;
                 }
             }
-            $DBRESULT->closeCursor();
+            $result->closeCursor();
             // Used By EventLogs page Only
-            if (!is_null($get_service_description)) {
+            if ($withServiceDescription) {
                 // Get Services attached to hostgroups
                 $query = "SELECT hgr.host_host_id, s.service_id, s.service_description "
                     . "FROM hostgroup_relation hgr, service s, host_service_relation hsr "
                     . "WHERE hsr.hostgroup_hg_id = hgr.hostgroup_hg_id "
                     . "AND s.service_id = hsr.service_service_id ";
-                $DBRESULT = \CentreonDBInstance::getConfInstance()->query($query);
-                while ($elem = $DBRESULT->fetchRow()) {
+                $result = \CentreonDBInstance::getConfInstance()->query($query);
+                while ($elem = $result->fetchRow()) {
                     $tab[$elem['host_host_id']][$elem["service_id"]] = $elem["service_description"];
                 }
-                $DBRESULT->closeCursor();
+                $result->closeCursor();
             }
         } else {
-            if (!is_null($get_service_description)) {
+            if ($withServiceDescription) {
                 $query = "SELECT acl.host_id, acl.service_id, s.description "
                     . "FROM centreon_acl acl "
                     . "LEFT JOIN services s on acl.service_id = s.service_id "
@@ -1503,21 +1507,21 @@ class CentreonACL
                     . "GROUP BY host_id, service_id ";
             }
 
-            $DBRESULT = $pearDBMonitoring->query($query);
-            while ($row = $DBRESULT->fetchRow()) {
-                if (!is_null($get_service_description)) {
+            $result = $pearDBMonitoring->query($query);
+            while ($row = $result->fetchRow()) {
+                if ($withServiceDescription) {
                     $tab[$row['host_id']][$row['service_id']] = $row['description'];
                 } else {
                     $tab[$row['host_id']][$row['service_id']] = 1;
                 }
             }
-            $DBRESULT->closeCursor();
+            $result->closeCursor();
         }
 
         return $tab;
     }
 
-    public function getHostServices($pearDBMonitoring, $host_id, $get_service_description = null)
+    public function getHostServices($pearDBMonitoring, $host_id)
     {
         $tab = array();
         if ($this->admin) {
