@@ -196,7 +196,7 @@ class EntityCreator
     private function readPublicMethod(): void
     {
         $this->publicMethods = [];
-        $reflectionClass = new ReflectionClass($this->className);
+        $reflectionClass = new \ReflectionClass($this->className);
         foreach ($reflectionClass->getMethods() as $method) {
             if ($method->isPublic()) {
                 $this->publicMethods[$method->getName()] = $method;
