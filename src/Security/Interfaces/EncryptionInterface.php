@@ -67,5 +67,5 @@ interface EncryptionInterface
      * @param string $input Data to be decrypted
      * @return string|null Data decrypted if successful otherwise null
      */
-    public function decrypt (string $input): ?string;
+    public function decrypt(string $input): ?string;
 }
