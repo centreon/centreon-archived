@@ -50,7 +50,7 @@ interface EncryptionInterface
      * @return EncryptionInterface
      * @see Security::$firstKey
      */
-    public function setFirstKey (string $firstKey): EncryptionInterface;
+    public function setFirstKey(string $firstKey): EncryptionInterface;
 
     /**
      * Set the second secure key.
