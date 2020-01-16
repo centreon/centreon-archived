@@ -59,7 +59,7 @@ interface EncryptionInterface
      * @return EncryptionInterface
      * @see Security::$secondKey
      */
-    public function setSecondKey (string $secondKey): EncryptionInterface;
+    public function setSecondKey(string $secondKey): EncryptionInterface;
 
     /**
      * Decrypt input according to first and second keys.
