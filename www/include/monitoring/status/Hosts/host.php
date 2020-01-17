@@ -62,7 +62,7 @@ if ($resetFilter) {
     $_SESSION['monitoring_default_poller'] = '';
     $_SESSION['monitoring_host_status'] = '';
     $_SESSION['monitoring_host_status_filter'] = '';
-    $_SESSION['criticality_id'] = '';
+    $_SESSION['host_criticality_id'] = '';
 }
 
 foreach ($myinputsGet as $key => $value) {
@@ -110,7 +110,7 @@ if (!empty($filters['hostgroups'])) {
 }
 
 if (!empty($filters['criticality_id'])) {
-    $_SESSION['criticality_id'] = $filters['criticality_id'];
+    $_SESSION['host_criticality_id'] = $filters['criticality_id'];
 }
 
 $problem_sort_type = 'host_name';
@@ -363,7 +363,7 @@ $form->addElement(
     $critArray,
     array('id' => 'critFilter', 'onChange' => "filterCrit(this.value);")
 );
-$form->setDefaults(array('criticality' => isset($_SESSION['criticality_id']) ? $_SESSION['criticality_id'] : "0"));
+$form->setDefaults(array('criticality' => isset($_SESSION['host_criticality_id']) ? $_SESSION['host_criticality_id'] : "0"));
 
 $tpl->assign('limit', $limit);
 $tpl->assign('hostStr', _('Host'));
