@@ -67,9 +67,8 @@ if ($commandId != null) {
     );
     $prepare->bindValue(':resource', $resourceInfo, \PDO::PARAM_STR);
     $prepare->execute();
-    $resource = $prepare->fetch();
     //Match if the first part of the path is a MACRO
-    if ($prepare->rowCount()) {
+    if ($resource = $prepare->fetch()) {
         $resourcePath = $resource["resource_line"];
         unset($aCmd[0]);
         $command = rtrim($resourcePath, "/") . "#S#" . implode("#S#", $aCmd);
