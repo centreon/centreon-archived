@@ -1,6 +1,6 @@
 <?php
 
-namespace Centreon\Domain\Gorgone;
+namespace Centreon\Domain\ConfigurationLoader;
 
 use PHPUnit\Framework\TestCase;
 
