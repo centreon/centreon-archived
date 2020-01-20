@@ -1,6 +1,7 @@
 /* eslint-disable consistent-return */
 /* eslint-disable no-unused-vars */
 /* eslint-disable import/extensions */
+/* eslint-disable @typescript-eslint/explicit-function-return-type */
 
 import '../../../../node_modules/systemjs/dist/s.js'; // IIFE format so it's imported on window
 import '../../../../node_modules/systemjs/dist/extras/use-default.js'; // avoid to check module.default.default
