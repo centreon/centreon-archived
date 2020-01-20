@@ -12606,26 +12606,6 @@ msgstr "Configurar coletores"
 msgid "services"
 msgstr "serviços"
 
-#: centreon-web/www/install/react_translation.php:39
-msgid "Critical services"
-msgstr "Serviços criticos"
-
-#: centreon-web/www/install/react_translation.php:40
-msgid "Warning services"
-msgstr "Serviços em Aviso"
-
-#: centreon-web/www/install/react_translation.php:41
-msgid "Unknown services"
-msgstr "Serviços desconhecidos"
-
-#: centreon-web/www/install/react_translation.php:42
-msgid "Ok services"
-msgstr "Serviços OK"
-
-#: centreon-web/www/install/react_translation.php:43
-msgid "Pending services"
-msgstr "Serviços Pendentes"
-
 #: centreon-web/www/install/react_translation.php:44
 msgid "Edit profile"
 msgstr "Editar perfil"
