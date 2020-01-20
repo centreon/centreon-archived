@@ -633,7 +633,7 @@ class CentreonMetric extends CentreonWebService
             $query = 'SELECT `value` FROM `options` WHERE `key` = "display_comment_chart"';
             $res = $this->pearDB->query($query);
             $row = $res->fetch();
-            if (!is_null($row) && $row['value'] === '1') {
+            if ($row && $row['value'] === '1') {
                 $queryComment = 'SELECT `entry_time`, `author`, `data` ' .
                     'FROM comments ' .
                     'WHERE host_id = :hostId ' .
@@ -757,7 +757,7 @@ class CentreonMetric extends CentreonWebService
         $res = $this->pearDB->query($query);
 
         $row = $res->fetch();
-        if (!is_null($row) && $row['value'] === '1') {
+        if ($row && $row['value'] === '1') {
             $result['acknowledge'] = $this->getAcknowlegePeriods($hostId, $serviceId, $start, $end);
             $result['downtime'] = $this->getDowntimePeriods($hostId, $serviceId, $start, $end);
         }
