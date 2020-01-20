@@ -75,7 +75,7 @@ class ProxyController extends AbstractFOSRestController
 
     /**
      * @IsGranted("ROLE_API_CONFIGURATION", message="You are not authorized to access this resource")
-     * @Rest\Post(
+     * @Rest\Put(
      *     "/configuration/proxy",
      *     condition="request.attributes.get('version.is_beta') == true",
      *     name="configuration.proxy.updateProxy")

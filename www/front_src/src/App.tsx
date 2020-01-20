@@ -6,7 +6,7 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable react/jsx-filename-extension */
 
-import React, { Component } from 'react';
+import React, { Component, ReactNode } from 'react';
 import { connect } from 'react-redux';
 import { ConnectedRouter } from 'connected-react-router';
 import Fullscreen from 'react-fullscreen-crossbrowser';
@@ -27,15 +27,31 @@ import styles from './App.scss';
 import footerStyles from './components/footer/footer.scss';
 import contentStyles from './styles/partials/_content.scss';
 
-class App extends Component {
-  state = {
+// Extends Window interface
+declare global {
+  interface Window {
+    fullscreenSearch: string;
+    fullscreenHash: string;
+  }
+}
+
+interface Props {
+  fetchExternalComponents: () => void;
+}
+
+interface State {
+  isFullscreenEnabled: boolean;
+}
+
+class App extends Component<Props, State> {
+  public state = {
     isFullscreenEnabled: false,
   };
 
-  keepAliveTimeout = null;
+  private keepAliveTimeout: NodeJS.Timeout | null = null;
 
   // check in arguments if min=1
-  getMinArgument = () => {
+  private getMinArgument = (): boolean => {
     const { search } = history.location;
     const parsedArguments = queryString.parse(search);
 
@@ -43,7 +59,7 @@ class App extends Component {
   };
 
   // enable fullscreen
-  goFull = () => {
+  private goFull = (): void => {
     // set fullscreen url parameters
     // this will be used to init iframe src
     window.fullscreenSearch = window.location.search;
@@ -56,7 +72,7 @@ class App extends Component {
   };
 
   // disable fullscreen
-  removeFullscreenParams = () => {
+  private removeFullscreenParams = (): void => {
     if (history.location.pathname === '/main.php') {
       history.push({
         pathname: '/main.php',
@@ -71,7 +87,7 @@ class App extends Component {
   };
 
   // keep alive (redirect to login page if session is expired)
-  keepAlive = () => {
+  private keepAlive = (): void => {
     this.keepAliveTimeout = setTimeout(() => {
       axios('internal.php?object=centreon_keepalive&action=keepAlive')
         .get()
@@ -88,16 +104,14 @@ class App extends Component {
     }, 15000);
   };
 
-  componentDidMount() {
-    const { fetchExternalComponents } = this.props;
-
+  public componentDidMount(): void {
     // 2 - fetch external components (pages, hooks...)
-    fetchExternalComponents();
+    this.props.fetchExternalComponents();
 
     this.keepAlive();
   }
 
-  render() {
+  public render(): ReactNode {
     const min = this.getMinArgument();
 
     return (
@@ -117,9 +131,9 @@ class App extends Component {
                 <Fullscreen
                   enabled={this.state.isFullscreenEnabled}
                   onClose={this.removeFullscreenParams}
-                  onChange={(isFullscreenEnabled) =>
-                    this.setState({ isFullscreenEnabled })
-                  }
+                  onChange={(isFullscreenEnabled): void => {
+                    this.setState({ isFullscreenEnabled });
+                  }}
                 >
                   <div className={styles['main-content']}>
                     <MainRouter />
@@ -140,9 +154,9 @@ class App extends Component {
   }
 }
 
-const mapDispatchToProps = (dispatch) => {
+const mapDispatchToProps = (dispatch: (any) => void): Props => {
   return {
-    fetchExternalComponents: () => {
+    fetchExternalComponents: (): void => {
       dispatch(fetchExternalComponents());
     },
   };

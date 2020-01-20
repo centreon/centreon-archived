@@ -19,7 +19,7 @@ module.exports = {
     umdNamedDefine: true,
   },
   resolve: {
-    extensions: ['.js', '.jsx'],
+    extensions: ['.ts', '.tsx', '.js', '.jsx', '.scss'],
     alias: {
       '@centreon/ui': '@centreon/ui/src',
     },
@@ -81,6 +81,11 @@ module.exports = {
   module: {
     rules: [
       { parser: { system: false } },
+      {
+        test: /\.tsx?$/,
+        exclude: /node_modules/,
+        use: [{ loader: 'awesome-typescript-loader' }],
+      },
       {
         test: /\.jsx?$/,
         include: [
