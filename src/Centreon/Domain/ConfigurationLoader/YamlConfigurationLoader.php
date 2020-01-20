@@ -19,7 +19,7 @@
  */
 declare(strict_types=1);
 
-namespace Centreon\Domain\Gorgone;
+namespace Centreon\Domain\ConfigurationLoader;
 
 use Symfony\Component\Yaml\Tag\TaggedValue;
 use Symfony\Component\Yaml\Yaml;
@@ -38,7 +38,7 @@ class YamlConfigurationLoader
      */
     private $configurationFile;
 
-    public function __construct (string $configurationFile)
+    public function __construct(string $configurationFile)
     {
         $this->configurationFile = $configurationFile;
     }
@@ -68,12 +68,15 @@ class YamlConfigurationLoader
      * @return array Returns the configuration data including other configuration data from the include files
      * @throws \FileNotFoundException
      */
-    private function iterateConfiguration(array $configuration, string $currentDirectory, string $historyLoadedFile): array
-    {
+    private function iterateConfiguration(
+        array $configuration,
+        string $currentDirectory,
+        string $historyLoadedFile
+    ): array {
         foreach ($configuration as $key => $value) {
             if (is_array($value)) {
                 $configuration[$key] = $this->iterateConfiguration($value, $currentDirectory, $historyLoadedFile);
-            } else if ($value instanceof TaggedValue) {
+            } elseif ($value instanceof TaggedValue) {
                 $fileToLoad = $value->getValue();
                 if ($fileToLoad[0] !== DIRECTORY_SEPARATOR) {
                     $fileToLoad = $currentDirectory . '/' . $fileToLoad;
@@ -90,7 +93,6 @@ class YamlConfigurationLoader
                     $loadedFile = explode(':', $historyLoadedFile);
                     throw new \Exception('Loop detected in file ' . array_pop($loadedFile));
                 }
-
             }
         }
         return $configuration;
