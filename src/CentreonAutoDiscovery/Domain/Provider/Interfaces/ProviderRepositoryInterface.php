@@ -15,23 +15,21 @@
  * limitations under the License.
  *
  * For more information : contact@centreon.com
- *
  */
 declare(strict_types=1);
 
-namespace Centreon\Domain\HostConfiguration\Interfaces;
+namespace CentreonAutoDiscovery\Domain\Provider\Interfaces;
 
-use Centreon\Domain\HostConfiguration\Host;
-use Centreon\Domain\Repository\RepositoryException;
+use CentreonAutoDiscovery\Domain\Provider\Provider;
 
-interface HostConfigurationRepositoryInterface
+interface ProviderRepositoryInterface
 {
+
     /**
-     * Add a host
+     * Find all providers.
      *
-     * @param Host $host Host to add
-     * @return int Return the new host id
-     * @throws RepositoryException
+     * @return Provider[]
+     * @throws \Exception
      */
-    public function addHost(Host $host): int;
+    public function findProviders(): array;
 }

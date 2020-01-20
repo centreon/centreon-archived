@@ -19,7 +19,7 @@
  */
 declare(strict_types=1);
 
-namespace Centreon\Infrastructure\Repository;
+namespace Centreon\Domain\Repository;
 
 use Centreon\Domain\Security\AccessGroup;
 use Centreon\Infrastructure\DatabaseConnection;

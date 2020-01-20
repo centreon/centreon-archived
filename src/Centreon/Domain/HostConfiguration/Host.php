@@ -21,7 +21,7 @@ declare(strict_types=1);
 
 namespace Centreon\Domain\HostConfiguration;
 
-class HostConfiguration
+class Host
 {
     /**
      * @var int
@@ -56,7 +56,7 @@ class HostConfiguration
     /**
      * @var bool
      */
-    private $isActivate;
+    private $isActivate = true;
 
     /**
      * @var ExtendedHost|null
@@ -73,9 +73,9 @@ class HostConfiguration
 
     /**
      * @param int $id
-     * @return HostConfiguration
+     * @return Host
      */
-    public function setId(int $id): HostConfiguration
+    public function setId(int $id): Host
     {
         $this->id = $id;
         return $this;
@@ -91,9 +91,9 @@ class HostConfiguration
 
     /**
      * @param string|null $name
-     * @return HostConfiguration
+     * @return Host
      */
-    public function setName(?string $name): HostConfiguration
+    public function setName(?string $name): Host
     {
         $this->name = $name;
         return $this;
@@ -109,9 +109,9 @@ class HostConfiguration
 
     /**
      * @param string|null $alias
-     * @return HostConfiguration
+     * @return Host
      */
-    public function setAlias(?string $alias): HostConfiguration
+    public function setAlias(?string $alias): Host
     {
         $this->alias = $alias;
         return $this;
@@ -127,9 +127,9 @@ class HostConfiguration
 
     /**
      * @param string|null $ipAddress
-     * @return HostConfiguration
+     * @return Host
      */
-    public function setIpAddress(?string $ipAddress): HostConfiguration
+    public function setIpAddress(?string $ipAddress): Host
     {
         $this->ipAddress = $ipAddress;
         return $this;
@@ -145,9 +145,9 @@ class HostConfiguration
 
     /**
      * @param string|null $comment
-     * @return HostConfiguration
+     * @return Host
      */
-    public function setComment(?string $comment): HostConfiguration
+    public function setComment(?string $comment): Host
     {
         $this->comment = $comment;
         return $this;
@@ -163,9 +163,9 @@ class HostConfiguration
 
     /**
      * @param string|null $geoCoords
-     * @return HostConfiguration
+     * @return Host
      */
-    public function setGeoCoords(?string $geoCoords): HostConfiguration
+    public function setGeoCoords(?string $geoCoords): Host
     {
         $this->geoCoords = $geoCoords;
         return $this;
@@ -181,9 +181,9 @@ class HostConfiguration
 
     /**
      * @param bool $isActivate
-     * @return HostConfiguration
+     * @return Host
      */
-    public function setIsActivate(bool $isActivate): HostConfiguration
+    public function setIsActivate(bool $isActivate): Host
     {
         $this->isActivate = $isActivate;
         return $this;
@@ -199,9 +199,9 @@ class HostConfiguration
 
     /**
      * @param ExtendedHost|null $extendedHost
-     * @return HostConfiguration
+     * @return Host
      */
-    public function setExtendedHost(?ExtendedHost $extendedHost): HostConfiguration
+    public function setExtendedHost(?ExtendedHost $extendedHost): Host
     {
         $this->extendedHost = $extendedHost;
         return $this;

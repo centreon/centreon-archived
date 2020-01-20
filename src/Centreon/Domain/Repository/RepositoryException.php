@@ -19,19 +19,14 @@
  */
 declare(strict_types=1);
 
-namespace Centreon\Domain\HostConfiguration\Interfaces;
+namespace Centreon\Domain\Repository;
 
-use Centreon\Domain\HostConfiguration\Host;
-use Centreon\Domain\Repository\RepositoryException;
+use Throwable;
 
-interface HostConfigurationRepositoryInterface
+class RepositoryException extends \Exception
 {
-    /**
-     * Add a host
-     *
-     * @param Host $host Host to add
-     * @return int Return the new host id
-     * @throws RepositoryException
-     */
-    public function addHost(Host $host): int;
+    public function __construct ($message = "", $code = 0, Throwable $previous = null)
+    {
+        parent::__construct($message, $code, $previous);
+    }
 }

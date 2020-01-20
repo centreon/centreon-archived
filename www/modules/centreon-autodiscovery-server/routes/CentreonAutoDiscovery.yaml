@@ -1,0 +1,35 @@
+autodiscovery.mappers.getAvailableMappers:
+  methods: GET
+  path: /centreon/api/{version}/auto-discovery/mappers
+  controller: 'CentreonAutoDiscovery\Application\Controller\MapperController::getAvailableMappers'
+  condition: "request.attributes.get('version') == 2.0"
+
+autodiscovery.mappers.getMappersByJob:
+  methods: GET
+  path: /centreon/api/{version}/auto-discovery/jobs/{jobId}/mappers
+  controller: 'CentreonAutoDiscovery\Application\Controller\MapperController::getMappersByJob'
+  requirements:
+    jobId: '\d+'
+  condition: "request.attributes.get('version') == 2.0"
+
+autodiscovery.mappers.findDiscoveredHostsByJob:
+  methods: GET
+  path: /centreon/api/{version}/auto-discovery/jobs/{jobId}/hosts
+  controller: 'CentreonAutoDiscovery\Application\Controller\MapperController::findDiscoveredHostsByJob'
+  requirements:
+    jobId: '\d+'
+  condition: "request.attributes.get('version') == 2.0"
+
+autodiscovery.mappers.simulateMappersOfDiscoveredHostsByJob:
+  methods: GET
+  path: /centreon/api/{version}/auto-discovery/jobs/{jobId}/hosts/simulate
+  controller: 'CentreonAutoDiscovery\Application\Controller\MapperController::simulateMappersOfDiscoveredHostsByJob'
+  requirements:
+    jobId: '\d+'
+  condition: "request.attributes.get('version') == 2.0"
+
+autodiscovery.providers.findProviders:
+  methods: GET
+  path: /centreon/api/{version}/auto-discovery/providers
+  controller: 'CentreonAutoDiscovery\Application\Controller\ProviderController::findProviders'
+  condition: "request.attributes.get('version') == 2.0"

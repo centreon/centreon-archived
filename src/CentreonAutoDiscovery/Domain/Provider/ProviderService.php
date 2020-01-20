@@ -15,20 +15,32 @@
  * limitations under the License.
  *
  * For more information : contact@centreon.com
- *
  */
 declare(strict_types=1);
 
-namespace Centreon\Infrastructure\HostConfiguration;
+namespace CentreonAutoDiscovery\Domain\Provider;
 
-use Centreon\Domain\HostConfiguration\HostConfiguration;
-use Centreon\Domain\HostConfiguration\Interfaces\HostConfigurationRepositoryInterface;
+use CentreonAutoDiscovery\Domain\Provider\Interfaces\ProviderRepositoryInterface;
+use CentreonAutoDiscovery\Domain\Provider\Interfaces\ProviderServiceInterface;
 
-class HostConfigurationRepositoryRDB implements HostConfigurationRepositoryInterface
+class ProviderService implements ProviderServiceInterface
 {
 
-    public function addHost(HostConfiguration $host): int
+    /**
+     * @var ProviderRepositoryInterface
+     */
+    private $providerRepository;
+
+    public function __construct(ProviderRepositoryInterface $providerRepository)
     {
-        return 1;
+        $this->providerRepository = $providerRepository;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function findProviders(): array
+    {
+        return $this->providerRepository->findProviders();
     }
 }

@@ -19,19 +19,31 @@
  */
 declare(strict_types=1);
 
-namespace Centreon\Domain\HostConfiguration\Interfaces;
+namespace CentreonAutoDiscovery\Infrastructure\Repository;
 
-use Centreon\Domain\HostConfiguration\Host;
-use Centreon\Domain\Repository\RepositoryException;
+use Centreon\Infrastructure\DatabaseConnection;
 
-interface HostConfigurationRepositoryInterface
+class AbstractRepositoryRDB
 {
     /**
-     * Add a host
-     *
-     * @param Host $host Host to add
-     * @return int Return the new host id
-     * @throws RepositoryException
+     * @var DatabaseConnection
      */
-    public function addHost(Host $host): int;
+    protected $db;
+
+    /**
+     * Replace all instances of :dbstg and :db by the real db names.
+     * The table names of the database are defined in the services.yaml
+     * configuration file.
+     *
+     * @param string $request Request to translate
+     * @return string Request translated
+     */
+    protected function translateDbName(string $request): string
+    {
+        return str_replace(
+            array(':dbstg', ':db'),
+            array($this->db->getStorageDbName(), $this->db->getCentreonDbName()),
+            $request
+        );
+    }
 }

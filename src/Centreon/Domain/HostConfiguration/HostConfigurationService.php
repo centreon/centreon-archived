@@ -23,6 +23,8 @@ namespace Centreon\Domain\HostConfiguration;
 
 use Centreon\Domain\HostConfiguration\Interfaces\HostConfigurationRepositoryInterface;
 use Centreon\Domain\HostConfiguration\Interfaces\HostConfigurationServiceInterface;
+use Centreon\Domain\Repository\RepositoryException;
+use phpDocumentor\Reflection\Types\Boolean;
 
 class HostConfigurationService implements HostConfigurationServiceInterface
 {
@@ -30,15 +32,22 @@ class HostConfigurationService implements HostConfigurationServiceInterface
     /**
      * @var HostConfigurationRepositoryInterface
      */
-    private $configurationRepository;
+    private $hostConfigurationRepository;
 
     public function __construct(HostConfigurationRepositoryInterface $configurationRepository)
     {
-        $this->configurationRepository = $configurationRepository;
+        $this->hostConfigurationRepository = $configurationRepository;
     }
 
-    public function addHost(HostConfiguration $host): int
+    /**
+     * @inheritDoc
+     */
+    public function addHost(Host $host): int
     {
-        return $this->configurationRepository->addHost($host);
+        try {
+            return $this->hostConfigurationRepository->addHost($host);
+        } catch (\Exception $ex) {
+            throw new HostConfigurationException('Error while creation of host', 0, $ex);
+        }
     }
 }
