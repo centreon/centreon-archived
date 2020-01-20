@@ -323,7 +323,6 @@ if (!$centreon->user->access->checkAction("host_schedule_downtime")
 
     $data["start_time"] = $centreonGMT->getDate("G:i", time(), $gmt);
     $data["end_time"] = $centreonGMT->getDate("G:i", time() + $defaultDuration, $gmt);
-    $data["end"] = $centreonGMT->getDate("m/d/Y", time() + $defaultDuration, $gmt);
     $data["host_or_hg"] = 1;
     $data["with_services"] = $centreon->optGen['monitoring_dwt_svc'];
 
