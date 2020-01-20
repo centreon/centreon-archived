@@ -40,28 +40,8 @@ require_once _CENTREON_PATH_ . "www/include/common/common-Func.php";
 
 $pearDB = $dependencyInjector['configuration_db'];
 
-
-/*
-name: gorgoned-Poller-ZMQ
-description: Configuration for poller Poller-ZMQ
-                               gorgonecore:
-    id: 2 < id of the poller
-  external_com_type: tcp
-  external_com_path: "*:5556" < gorgone port
-  authorized_clients:
-    - key: cS4B3lZq96qcP4FTMhVMuwAhztqRBQERKyhnEitnTFM < thumbprint of the central or remote server public key (can be multiple)
-  privkey: "/var/spool/centreon/.gorgone/rsakey.priv.pem"
-  pubkey: "/var/spool/centreon/.gorgone/rsakey.pub.pem"
-modules:
-  - name: action
-    package: gorgone::modules::core::action::hooks
-    enable: true
-
-- name: engine
-    package: gorgone::modules::centreon::engine::hooks
-    enable: true
-    command_file: "/var/lib/centreon-engine/rw/centengine.cmd"
-*/
+$tpl = new Smarty();
+$tpl = initSmartyTpl(null, $tpl);
 
 // get remote server ip
 $query = 'SELECT ip FROM remote_servers';
@@ -78,6 +58,8 @@ AND ng.`id` =' . (int)$_GET['id'];
 
 $dbResult = $pearDB->query($query);
 $server = $dbResult->fetch();
+
+$tpl->assign('serverIp', $server['ns_ip_address']);
 
 if (in_array($server['ns_ip_address'], $remotesServerIPs)) {
     //config for remote
@@ -138,13 +120,7 @@ modules:
 ';
 }
 
-
 $args = json_encode($server, JSON_PRETTY_PRINT);
-
-//$args = yaml_emit($server);
-$tpl = new Smarty();
-$tpl = initSmartyTpl(null, $tpl);
-
 
 $tpl->assign('args', $config);
 $tpl->display("popup.ihtml");

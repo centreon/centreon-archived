@@ -1,6 +1,13 @@
 <div>
 	<h3 style="text-align: center;"> Gorgone configuration file :</h3>
     <br>
+	<p style="text-align: center;">
+        <strong>
+            Replace the '/etc/centreon/gorgone.d/10-default.yaml' configuration file on your server {$serverIp}
+            by the following configuration :
+        </strong>
+    </p>
+    <br>
     <pre id='configuration_file' style="overflow-x: auto">{$args}</pre>
     <br>
     <div style="text-align: center;">
