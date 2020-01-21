@@ -6207,8 +6207,8 @@ msgid "LDAP User Import debug"
 msgstr "Depuração de importação de utilizadores LDAP"
 
 #: centreon-web/www/include/Administration/parameters/debug/form.php:62
-msgid "Centcore Engine debug"
-msgstr "Depuração do motor do Centcore"
+msgid "Centreon Gorgone debug"
+msgstr "Depuração do Centreon Gorgone"
 
 #: centreon-web/www/include/Administration/parameters/debug/form.php:63
 msgid "Centreontrapd debug"
@@ -6235,8 +6235,8 @@ msgstr "Ativa coleção de statisticas do Broker"
 
 #: centreon-web/www/include/Administration/parameters/centcore/centcore.php:60
 #: centreon-web/www/include/Administration/parameters/api/api.php:60
-msgid "Timeout value for Centcore commands"
-msgstr "Tempo máximo para comandos do Centcore"
+msgid "Timeout value for Gorgone commands"
+msgstr "Tempo máximo para comandos do Gorgone"
 
 #: centreon-web/www/include/Administration/parameters/centcore/centcore.php:61
 #: centreon-web/www/include/Administration/parameters/backup/formBackup.php:107
@@ -7825,8 +7825,8 @@ msgid "Server Information"
 msgstr "Informações do servidor"
 
 #: centreon-web/www/include/configuration/configServers/formServers.php:135
-msgid "SSH Information"
-msgstr "Informações SSH"
+msgid "Gorgone Information"
+msgstr "Informações Gorgone"
 
 #: centreon-web/www/include/configuration/configServers/formServers.php:136
 msgid "Monitoring Engine Information"
@@ -12007,8 +12007,8 @@ msgstr "Os ficheiros SQL estão localizados em %s"
 
 #: centreon-web/www/install/step_upgrade/step4.php:87
 #, php-format
-msgid "Please check the \"upgrade.log\" and the \"sql-error.log\" located in \"%s\" for more details"
-msgstr ""
+#~ msgid "Please check the \"upgrade.log\" and the \"sql-error.log\" located in \"%s\" for more details"
+#~ msgstr ""
 
 #: centreon-web/www/install/step_upgrade/step4.php:72
 msgid "But do not edit the SQL files unless you know what you are doing.Refresh this page when the problem is fixed."

@@ -2448,6 +2448,14 @@ msgstr "Graphiques"
 msgid "Poller Name"
 msgstr "Nom du collecteur"
 
+#: centreon-web/www/include/configuration/configServers/formServers.php:233
+msgid "Gorgone connection protocol"
+msgstr "Protocole de connexion utilisé par Gorgone"
+
+#: centreon-web/www/include/configuration/configServers/formServers.php:224
+msgid "Use the Remote Server as a proxy"
+msgstr "Utiliser le serveur distant comme proxy"
+
 #: centreon-web/www/install/smarty_translate.php:849
 #: centreon-web/www/include/Administration/parameters/general/form.php:95
 #: centreon-web/www/include/monitoring/status/Services/xml/makeXMLForOneHost.php:191
@@ -4302,12 +4310,12 @@ msgstr ""
 
 #: centreon-web/www/include/Administration/parameters/api/api.php:62
 #: centreon-web/www/include/Administration/parameters/centcore/centcore.php:60
-msgid "Timeout value for Centcore commands"
-msgstr "Temps maximum d'exécution des commandes centcore"
+msgid "Timeout value for Gorgone commands"
+msgstr "Temps maximum d'exécution des commandes Gorgone"
 
 #: centreon-web/www/include/Administration/parameters/centcore/centcore.php:62
-msgid "Illegal characters for Centcore commands"
-msgstr "Caractères illégaux pour les commandes Centcore"
+msgid "Illegal characters for Gorgone commands"
+msgstr "Caractères illégaux pour les commandes Gorgone"
 
 #: centreon-web/www/include/Administration/parameters/api/api.php:77
 #: centreon-web/www/include/options/accessLists/groupsACL/formGroupConfig.php:175
@@ -4871,8 +4879,8 @@ msgid "LDAP User Import debug"
 msgstr "Débogage de l'import d'utilisateurs LDAP"
 
 #: centreon-web/www/include/Administration/parameters/debug/form.php:62
-msgid "Centcore Engine debug"
-msgstr "Débogage Centcore Engine"
+msgid "Centreon Gorgone debug"
+msgstr "Débogage de Centreon Gorgone "
 
 #: centreon-web/www/include/Administration/parameters/debug/form.php:63
 msgid "Centreontrapd debug"
@@ -11699,8 +11707,8 @@ msgid "Server Information"
 msgstr "Informations sur le serveur"
 
 #: centreon-web/www/include/configuration/configServers/formServers.php:102
-msgid "SSH Information"
-msgstr "Informations SSH"
+msgid "Gorgone Information"
+msgstr "Informations Gorgone"
 
 #: centreon-web/www/include/configuration/configServers/formServers.php:103
 msgid "Monitoring Engine Information"

@@ -652,12 +652,6 @@ Poller communication subsystem (Centcore) installation
     CentCore init script installed                             OK
     CentCore default script installed                          OK
 
-    Do you want me to install CentCore run level ?
-    [y/n], default to [n]:
-    > y
-    CentCore Perl lib installed                                OK
-    Create /etc/centreon/instCentCore.conf                     OK
-
 Plugin installation
 -------------------
 

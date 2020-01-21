@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "977609fc-e339-4f33-bddc-7eec145a0f55",
+		"_postman_id": "7c42f3c1-3195-44fe-be3b-a72e2e33119a",
 		"name": "Centreon Web Rest API",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -93,7 +93,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"action\": \"add\",\n  \"object\": \"instance\",\n  \"values\": \"test_instance;01.02.3.04;42;nagios\"\n}"
+							"raw": "{\n  \"action\": \"add\",\n  \"object\": \"instance\",\n  \"values\": \"test_instance;01.02.3.04;ZMQ;42;nagios\"\n}"
 						},
 						"url": {
 							"raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
@@ -499,15 +499,16 @@
 					"response": []
 				},
 				{
-					"name": "Setparam ssh_port",
+					"name": "Setparam gorgone_communication_type",
 					"event": [
 						{
 							"listen": "test",
 							"script": {
-								"type": "text/javascript",
+								"id": "41227555-c39b-4de9-86ca-b035ac49fcde",
 								"exec": [
 									"tests[\"Status code is 200\"] = responseCode.code === 200;"
-								]
+								],
+								"type": "text/javascript"
 							}
 						}
 					],
@@ -525,7 +526,62 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"action\": \"setparam\",\n  \"object\": \"instance\",\n  \"values\": \"{{instance_name}};ssh_port;{{instance_ssh_port}}\"\n}"
+							"raw": "{\n  \"action\": \"setparam\",\n  \"object\": \"instance\",\n  \"values\": \"{{instance_name}};gorgone_communication_type;SSH\"\n}"
+						},
+						"url": {
+							"raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
+							"protocol": "http",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"centreon",
+								"api",
+								"index.php"
+							],
+							"query": [
+								{
+									"key": "action",
+									"value": "action"
+								},
+								{
+									"key": "object",
+									"value": "centreon_clapi"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Setparam gorgone_port",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "19d7769e-2968-4812-9b19-ffe20f567ad8",
+								"exec": [
+									"tests[\"Status code is 200\"] = responseCode.code === 200;"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "centreon-auth-token",
+								"value": "{{token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"action\": \"setparam\",\n  \"object\": \"instance\",\n  \"values\": \"{{instance_name}};gorgone_port;{{instance_gorgone_port}}\"\n}"
 						},
 						"url": {
 							"raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
@@ -666,7 +722,7 @@
 						{
 							"listen": "test",
 							"script": {
-								"type": "text/javascript",
+								"id": "d0d2de22-cc56-427d-ba3e-6fb46dcb5832",
 								"exec": [
 									"var jsonData = JSON.parse(responseBody);",
 									"var instanceData = jsonData.result;",
@@ -686,7 +742,7 @@
 									"            tests[\"Body contains added instance_engine_reload_command\"] = postman.getEnvironmentVariable(\"instance_engine_reload_command\") == instanceData[i]['init script'];",
 									"            tests[\"Body contains added instance_nagios_bin\"] = postman.getEnvironmentVariable(\"instance_nagios_bin\") == instanceData[i].bin;",
 									"            tests[\"Body contains added instance_nagiostats_bin\"] = postman.getEnvironmentVariable(\"instance_nagiostats_bin\") == instanceData[i]['stats bin'];",
-									"            tests[\"Body contains added instance_ssh_port\"] = postman.getEnvironmentVariable(\"instance_ssh_port\") == instanceData[i]['ssh port'];",
+									"            tests[\"Body contains added instance_gorgone_port\"] = postman.getEnvironmentVariable(\"instance_gorgone_port\") == instanceData[i]['gorgone port'];",
 									"            break;",
 									"        }",
 									"        i++;",
@@ -696,7 +752,8 @@
 									"} catch (e) {}",
 									"",
 									"tests[\"Status code is 200\"] = responseCode.code === 200;"
-								]
+								],
+								"type": "text/javascript"
 							}
 						}
 					],
@@ -801,10 +858,11 @@
 						{
 							"listen": "test",
 							"script": {
-								"type": "text/javascript",
+								"id": "100ddbfb-962a-4473-b7cc-2b1343946dfa",
 								"exec": [
 									"tests[\"Status code is 200\"] = responseCode.code === 200;"
-								]
+								],
+								"type": "text/javascript"
 							}
 						}
 					],
@@ -822,7 +880,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"action\": \"add\",\n  \"object\": \"instance\",\n  \"values\": \"{{instance_name2}};01.3.04.65;98;nagios\"\n}"
+							"raw": "{\n  \"action\": \"add\",\n  \"object\": \"instance\",\n  \"values\": \"{{instance_name2}};01.3.04.65;SSH;98;nagios\"\n}"
 						},
 						"url": {
 							"raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
@@ -991,7 +1049,8 @@
 					},
 					"response": []
 				}
-			]
+			],
+			"protocolProfileBehavior": {}
 		},
 		{
 			"name": "01-Configure_Centreon_Engine",
@@ -1466,7 +1525,8 @@
 					},
 					"response": []
 				}
-			]
+			],
+			"protocolProfileBehavior": {}
 		},
 		{
 			"name": "02-Configure_Centreon_Broker",
@@ -12637,7 +12697,8 @@
 					},
 					"response": []
 				}
-			]
+			],
+			"protocolProfileBehavior": {}
 		},
 		{
 			"name": "10-Timeperiods",
@@ -13549,7 +13610,8 @@
 					},
 					"response": []
 				}
-			]
+			],
+			"protocolProfileBehavior": {}
 		},
 		{
 			"name": "11-Commands",
@@ -14138,7 +14200,8 @@
 					"response": []
 				}
 			],
-			"description": "Tests all commands to manage commands."
+			"description": "Tests all commands to manage commands.",
+			"protocolProfileBehavior": {}
 		},
 		{
 			"name": "20-Contacts templates",
@@ -15224,7 +15287,8 @@
 					"response": []
 				}
 			],
-			"description": "Tests all commands to manage contact."
+			"description": "Tests all commands to manage contact.",
+			"protocolProfileBehavior": {}
 		},
 		{
 			"name": "21-Contacts",
@@ -16979,7 +17043,8 @@
 					"response": []
 				}
 			],
-			"description": "Tests all commands to manage contact."
+			"description": "Tests all commands to manage contact.",
+			"protocolProfileBehavior": {}
 		},
 		{
 			"name": "22-Contactgroups",
@@ -17565,7 +17630,8 @@
 					"response": []
 				}
 			],
-			"description": "Tests all commands to manage contact groups."
+			"description": "Tests all commands to manage contact groups.",
+			"protocolProfileBehavior": {}
 		},
 		{
 			"name": "30-Hosts_Templates",
@@ -22070,7 +22136,8 @@
 					},
 					"response": []
 				}
-			]
+			],
+			"protocolProfileBehavior": {}
 		},
 		{
 			"name": "31-Hosts",
@@ -26438,7 +26505,8 @@
 					"response": []
 				}
 			],
-			"description": "Tests all commands to manage hosts"
+			"description": "Tests all commands to manage hosts",
+			"protocolProfileBehavior": {}
 		},
 		{
 			"name": "32-Hostgroups",
@@ -27185,7 +27253,8 @@
 					"response": []
 				}
 			],
-			"description": "Tests all commands to manage host groups."
+			"description": "Tests all commands to manage host groups.",
+			"protocolProfileBehavior": {}
 		},
 		{
 			"name": "33-Hosts_Categories",
@@ -27556,7 +27625,8 @@
 					"response": []
 				}
 			],
-			"description": "Tests all commands to manage host categories."
+			"description": "Tests all commands to manage host categories.",
+			"protocolProfileBehavior": {}
 		},
 		{
 			"name": "40-Services_Templates",
@@ -30901,7 +30971,8 @@
 					"response": []
 				}
 			],
-			"description": "Tests all commands to manage service templates."
+			"description": "Tests all commands to manage service templates.",
+			"protocolProfileBehavior": {}
 		},
 		{
 			"name": "41-Services",
@@ -34682,7 +34753,8 @@
 					"response": []
 				}
 			],
-			"description": "Tests all commands to manage services."
+			"description": "Tests all commands to manage services.",
+			"protocolProfileBehavior": {}
 		},
 		{
 			"name": "42-Service_by_Hostgroups",
@@ -37852,7 +37924,8 @@
 					"response": []
 				}
 			],
-			"description": "Tests all commands to manage services on host group."
+			"description": "Tests all commands to manage services on host group.",
+			"protocolProfileBehavior": {}
 		},
 		{
 			"name": "43-Servicegroups",
@@ -38674,7 +38747,8 @@
 					"response": []
 				}
 			],
-			"description": "Tests all commands to manage service groups."
+			"description": "Tests all commands to manage service groups.",
+			"protocolProfileBehavior": {}
 		},
 		{
 			"name": "44-Services_Categories",
@@ -39278,7 +39352,8 @@
 					"response": []
 				}
 			],
-			"description": "Tests all commands to manage service categories."
+			"description": "Tests all commands to manage service categories.",
+			"protocolProfileBehavior": {}
 		},
 		{
 			"name": "50-Traps_Vendors",
@@ -39626,7 +39701,8 @@
 					"response": []
 				}
 			],
-			"description": "Tests all commands to manage vendors."
+			"description": "Tests all commands to manage vendors.",
+			"protocolProfileBehavior": {}
 		},
 		{
 			"name": "51-Traps_SNMP",
@@ -40710,7 +40786,8 @@
 					"response": []
 				}
 			],
-			"description": "Tests all commands to manage traps."
+			"description": "Tests all commands to manage traps.",
+			"protocolProfileBehavior": {}
 		},
 		{
 			"name": "60-Downtimes",
@@ -42275,7 +42352,8 @@
 					"response": []
 				}
 			],
-			"description": "Tests all commands to manage downtimes."
+			"description": "Tests all commands to manage downtimes.",
+			"protocolProfileBehavior": {}
 		},
 		{
 			"name": "61-Dependencies",
@@ -43087,7 +43165,8 @@
 					"response": []
 				}
 			],
-			"description": "Tests all commands to manage dependencies."
+			"description": "Tests all commands to manage dependencies.",
+			"protocolProfileBehavior": {}
 		},
 		{
 			"name": "70-ACL_Groups",
@@ -44871,7 +44950,8 @@
 					"response": []
 				}
 			],
-			"description": "Tests all commands to manage ACL groups."
+			"description": "Tests all commands to manage ACL groups.",
+			"protocolProfileBehavior": {}
 		},
 		{
 			"name": "71-ACL_Menus",
@@ -56578,7 +56658,7 @@
 					"response": []
 				},
 				{
-					"name": "Grantrw centcore",
+					"name": "Grantrw gorgone",
 					"event": [
 						{
 							"listen": "test",
@@ -56604,7 +56684,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"action\": \"grantrw\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};0;administration;parameters;centcore\"\n}"
+							"raw": "{\n  \"action\": \"grantrw\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};0;administration;parameters;gorgone\"\n}"
 						},
 						"url": {
 							"raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
@@ -56632,7 +56712,7 @@
 					"response": []
 				},
 				{
-					"name": "Revoke centcore",
+					"name": "Revoke gorgone",
 					"event": [
 						{
 							"listen": "test",
@@ -56658,7 +56738,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};1;administration;parameters;centcore\"\n}"
+							"raw": "{\n  \"action\": \"revoke\",\n  \"object\": \"aclmenu\",\n  \"values\": \"{{aclmenu_name}};1;administration;parameters;gorgone\"\n}"
 						},
 						"url": {
 							"raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
@@ -59280,7 +59360,8 @@
 					"response": []
 				}
 			],
-			"description": "Tests all commands to manage ACL menu."
+			"description": "Tests all commands to manage ACL menu.",
+			"protocolProfileBehavior": {}
 		},
 		{
 			"name": "72-ACL_Resources",
@@ -60294,7 +60375,8 @@
 					"response": []
 				}
 			],
-			"description": "Tests all commands to manage Resource ACL."
+			"description": "Tests all commands to manage Resource ACL.",
+			"protocolProfileBehavior": {}
 		},
 		{
 			"name": "74-ACL_Actions",
@@ -64656,7 +64738,8 @@
 					"response": []
 				}
 			],
-			"description": "Tests all commands to manage ACL action."
+			"description": "Tests all commands to manage ACL action.",
+			"protocolProfileBehavior": {}
 		},
 		{
 			"name": "75-ACL_Reload",
@@ -64824,7 +64907,8 @@
 					"response": []
 				}
 			],
-			"description": "Tests all commands to manage ACL."
+			"description": "Tests all commands to manage ACL.",
+			"protocolProfileBehavior": {}
 		},
 		{
 			"name": "80-Administration_General_Settings",
@@ -65976,7 +66060,8 @@
 					"response": []
 				}
 			],
-			"description": "Tests all commands to manage settings."
+			"description": "Tests all commands to manage settings.",
+			"protocolProfileBehavior": {}
 		},
 		{
 			"name": "81-Administration_LDAP_Settings",
@@ -68090,7 +68175,8 @@
 					"response": []
 				}
 			],
-			"description": "Tests all commands to manage LDAP."
+			"description": "Tests all commands to manage LDAP.",
+			"protocolProfileBehavior": {}
 		},
 		{
 			"name": "90-Engine_CFG",
@@ -68494,7 +68580,8 @@
 					"response": []
 				}
 			],
-			"description": "Tests all commands to manage ACL."
+			"description": "Tests all commands to manage ACL.",
+			"protocolProfileBehavior": {}
 		},
 		{
 			"name": "99-Delete",
@@ -71145,7 +71232,9 @@
 					},
 					"response": []
 				}
-			]
+			],
+			"protocolProfileBehavior": {}
 		}
-	]
+	],
+	"protocolProfileBehavior": {}
 }

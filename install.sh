@@ -372,22 +372,6 @@ if [ "$PROCESS_CENTSTORAGE" -eq 1 ] ; then
 	. $INSTALL_DIR/CentStorage.sh
 fi
 
-## Start CentCore install
-if [ "$PROCESS_CENTCORE" -eq 1 ] ; then
-	if [ "$use_upgrade_files" -eq 1 -a -e "$inst_upgrade_dir/instCentCore.conf" ] ; then
-		log "INFO" "$(gettext "Load variables:") $inst_upgrade_dir/instCentCore.conf"
-
-		. $inst_upgrade_dir/instCentCore.conf
-		if [ -n "$NAGIOS_USER" ]; then
-			echo_info "$(gettext "Convert variables for upgrade:")"
-			MONITORINGENGINE_USER=$NAGIOS_USER
-			[ -n "$NAGIOS_GROUP" ] && MONITORINGENGINE_GROUP=$NAGIOS_GROUP
-			[ -n "$NAGIOS_ETC" ] && MONITORINGENGINE_ETC=$NAGIOS_ETC
-		fi
-	fi
-	. $INSTALL_DIR/CentCore.sh
-fi
-
 ## Start CentPlugins install
 if [ "$PROCESS_CENTREON_PLUGINS" -eq 1 ] ; then
 	if [ "$use_upgrade_files" -eq 1 -a -e "$inst_upgrade_dir/instCentPlugins.conf" ] ; then

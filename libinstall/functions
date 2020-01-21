@@ -882,23 +882,6 @@ locate_centstorage_libdir() {
 }
 
 #----
-## Define where is centCore binary directory
-## @Globals	CENTCORE_BINDIR, INSTALL_DIR_CENTREON, DEFAULT_CENTCORE_BINDIR
-#----
-locate_centcore_bindir() {
-	if [ -z "$CENTCORE_BINDIR" ] ; then
-		answer_with_createdir "$(gettext "Where is your CentCore binary directory")" "$INSTALL_DIR_CENTREON/$DEFAULT_CENTCORE_BINDIR" "CENTCORE_BINDIR"
-		echo_success "$(gettext "Path" ) $CENTCORE_BINDIR" "$ok"
-	elif [ ! -d "$CENTCORE_BINDIR" -a "$silent_install" -eq 1 ] ; then
-		mkdir -p $CENTCORE_BINDIR
-		log "INFO" "$(gettext "Create") $CENTCORE_BINDIR"
-	fi
-	CENTCORE_BINDIR=`trim ${CENTCORE_BINDIR%/}`
-	export CENTCORE_BINDIR
-	log "INFO" "CENTCORE_BINDIR: $CENTCORE_BINDIR"
-}
-
-#----
 ## Define where is centPlugins temporary directory
 ## @Globals	CENTPLUGINS_TMP, DEFAULT_CENTPLUGINS_TMP
 #----
@@ -1742,34 +1725,6 @@ createCentStorageInstallConf() {
 	__EOT__
 
 	echo_success "Create $CENTREON_ETC/instCentStorage.conf " "OK"
-	return 0
-}
-
-#---
-## Create a config file for CentCore
-## This file will use for upgrade process
-## @Globals	CENTREON_ETC, INSTALL_DIR_CENTREON, CENTREON_LOG, CENTREON_ETC
-## @Globals	CENTREON_RUNDIR, CENTSTORAGE_RRD, CENTSTORAGE_BINDIR
-## @Globals	NAGIOS_USER, NAGIOS_GROUP, RRD_PERL, CRON_D, INIT_D
-#----
-createCentCoreInstallConf() {
-	${CAT} <<- __EOT__ > $CENTREON_ETC/instCentCore.conf
-	INSTALL_DIR_CENTREON=$INSTALL_DIR_CENTREON
-	CENTREON_ETC=$CENTREON_ETC
-	CENTREON_RUNDIR=$CENTREON_RUNDIR
-	CENTREON_LOG=$CENTREON_LOG
-	CENTREON_VARLIB=$CENTREON_VARLIB
-	CENTREON_CACHEDIR=$CENTREON_CACHEDIR
-	CENTCORE_BINDIR=$CENTCORE_BINDIR
-	BIN_SSH=$BIN_SSH
-	BIN_SCP=$BIN_SCP
-	CENTREON_GROUP=$CENTREON_GROUP
-	CENTREON_USER=$CENTREON_USER
-	RRD_PERL=$RRD_PERL
-	INIT_D=$INIT_D
-	__EOT__
-
-	echo_success "Create $CENTREON_ETC/instCentCore.conf " "OK"
 	return 0
 }
 

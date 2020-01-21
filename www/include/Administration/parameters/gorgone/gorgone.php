@@ -47,19 +47,15 @@ $attrsText = array("size" => "40");
 $attrsText2 = array("size" => "5");
 $attrsAdvSelect = null;
 
-/*
- * Form begin
- */
+// Form begin
 $form = new HTML_QuickFormCustom('Form', 'post', "?p=" . $p);
-$form->addElement('header', 'title', _("Modify Centcore options"));
+$form->addElement('header', 'title', _("Modify Gorgone options"));
 
-/*
- * Centcore Options
- */
+// Gorgone Options
 $form->addElement('checkbox', 'enable_broker_stats', _("Enable Broker Statistics Collection"));
-$form->addElement('text', 'centcore_cmd_timeout', _("Timeout value for Centcore commands"), $attrsText2);
-$form->addRule('centcore_cmd_timeout', _('Must be a number'), 'numeric');
-$form->addElement('text', 'centcore_illegal_characters', _("Illegal characters for Centcore commands"), $attrsText);
+$form->addElement('text', 'gorgone_cmd_timeout', _("Timeout value for Gorgone commands"), $attrsText2);
+$form->addRule('gorgone_cmd_timeout', _('Must be a number'), 'numeric');
+$form->addElement('text', 'gorgone_illegal_characters', _("Illegal characters for Gorgone commands"), $attrsText);
 
 $form->addElement('hidden', 'gopt_id');
 $redirect = $form->addElement('hidden', 'o');
@@ -71,7 +67,7 @@ $form->applyFilter('__ALL__', 'myTrim');
  * Smarty template Init
  */
 $tpl = new Smarty();
-$tpl = initSmartyTpl($path . "/centcore", $tpl);
+$tpl = initSmartyTpl($path . "/gorgone", $tpl);
 
 $form->setDefaults($gopt);
 
@@ -88,10 +84,8 @@ $tpl->assign("helptext", $helptext);
 
 $valid = false;
 if ($form->validate()) {
-    /*
-     * Update in DB
-     */
-    updateCentcoreConfigData($pearDB, $form, $oreon);
+    //Update in DB
+    updateGorgoneConfigData($pearDB, $form, $oreon);
 
     $o = null;
     $valid = true;
@@ -105,7 +99,7 @@ $form->addElement(
     "button",
     "change",
     _("Modify"),
-    array("onClick" => "javascript:window.location.href='?p=" . $p . "&o=centcore'", 'class' => 'btc bt_info')
+    array("onClick" => "javascript:window.location.href='?p=" . $p . "&o=gorgone'", 'class' => 'btc bt_info')
 );
 
 /*
@@ -117,8 +111,8 @@ $renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');
 $form->accept($renderer);
 $tpl->assign('form', $renderer->toArray());
 $tpl->assign('o', $o);
-$tpl->assign("centcore_properties", _("Centcore properties"));
-$tpl->assign("centcore_options", _("Centcore Options"));
+$tpl->assign("gorgone_properties", _("Gorgone properties"));
+$tpl->assign("gorgone_options", _("Gorgone Options"));
 $tpl->assign('valid', $valid);
 
-$tpl->display("centcore.ihtml");
+$tpl->display("gorgone.ihtml");
