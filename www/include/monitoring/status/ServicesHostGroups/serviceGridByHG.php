@@ -143,7 +143,11 @@ $tpl->assign("tab_order", $tab_order);
 
         function displayingLevel1(val) {
             var filterDetails = document.getElementById("typeDisplay2").value;
-            _o = val + "_" + filterDetails;
+            _o = val;
+
+            if (filterDetails !== '') {
+                _o += '_' + filterDetails;
+            }
 
             if (val == 'svcOVHG') {
                 _addrXML = "./include/monitoring/status/ServicesHostGroups/xml/serviceGridByHGXML.php";
@@ -157,7 +161,12 @@ $tpl->assign("tab_order", $tab_order);
 
         function displayingLevel2(val) {
             var sel1 = document.getElementById("typeDisplay").value;
-            _o = sel1 + "_" + val;
+            _o = sel1;
+
+            if (val !== '') {
+                _o += '_' + val;
+            }
+
             monitoring_refresh();
         }
     </script>
