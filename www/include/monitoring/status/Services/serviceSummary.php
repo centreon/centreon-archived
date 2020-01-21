@@ -128,7 +128,7 @@ $aTypeAffichageLevel2 = array(
             var sel1 = document.getElementById("typeDisplay").value;
             _o = sel1;
             if (val != '') {
-                _o = _o + "_" + val;
+                _o += "_" + val;
             }
 
             monitoring_refresh();
