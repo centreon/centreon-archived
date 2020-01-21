@@ -169,7 +169,7 @@ while ($ndo = $dbResult->fetch()) {
     if (!isset($tab_final[$ndo["hgname"]][$ndo["host_name"]])) {
         $tab_final[$ndo["hgname"]][$ndo["host_name"]] = array("0" => 0, "1" => 0, "2" => 0, "3" => 0, "4" => 0);
     }
-    if ($o != "svcSumHG_pb" && $o != "svcSumHG_ack_1" && $o != "svcSumHG_ack_0") {
+    if (substr($o, 0, 8) !== 'svcSumHG') {
         $tab_final[$ndo["hgname"]][$ndo["host_name"]][0] =
             $obj->monObj->getServiceStatusCount($ndo["host_name"], $obj, $o, 0, $obj);
     }
