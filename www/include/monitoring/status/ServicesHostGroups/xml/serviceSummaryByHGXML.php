@@ -92,7 +92,7 @@ if (!$obj->is_admin) {
 
 if ($instance !== -1) {
     $rq1 .= " AND h.instance_id = :instance ";
-    $queryValues[':instance'] = [
+    $queryValues['instance'] = [
         PDO::PARAM_INT => (int)$instance
     ];
 }
@@ -113,14 +113,14 @@ if (substr($o, -3) === '_pb') {
 
 if ($search != "") {
     $rq1 .= " AND h.name LIKE :search";
-    $queryValues[':search'] = [
+    $queryValues['search'] = [
         PDO::PARAM_STR => "%" . $search . "%"
     ];
 }
 
 if ($hostgroup != "") {
     $rq1 .= " AND hg.name LIKE :hgName";
-    $queryValues[':hgName'] = [
+    $queryValues['hgName'] = [
         PDO::PARAM_STR => $hostgroup
     ];
 }
@@ -128,13 +128,13 @@ if ($hostgroup != "") {
 $rq1 .= " AND h.enabled = 1 ORDER BY :sort_type, host_name ";
 ("ASC" != $order) ? $rq1 .= "DESC" : $rq1 .= "ASC";
 $rq1 .= " LIMIT :numLimit, :limit";
-$queryValues[':sort_type'] = [
+$queryValues['sort_type'] = [
     PDO::PARAM_STR => $sort_type
 ];
-$queryValues[':numLimit'] = [
+$queryValues['numLimit'] = [
     PDO::PARAM_INT => (int)($num * $limit)
 ];
-$queryValues[':limit'] = [
+$queryValues['limit'] = [
     PDO::PARAM_INT => (int)$limit
 ];
 
