@@ -422,7 +422,7 @@ if (isset($myinputsGet['o'])) {
     $defaultStatusService = $myinputsGet['o'];
 
     // data sent from topcounter using the URI
-    if ($myinputsGet['o'] === 'svc_ok' && isset($myinputsGet['statusService'])) {
+    if (defaultStatusService === 'svc_ok' && isset($myinputsGet['statusService'])) {
         $defaultStatusFilter = $myinputsGet['statusService'];
     } else {
         $defaultStatusFilter = '';
