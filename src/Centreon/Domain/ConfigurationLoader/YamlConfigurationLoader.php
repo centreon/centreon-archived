@@ -31,7 +31,7 @@ use Symfony\Component\Yaml\Yaml;
  */
 class YamlConfigurationLoader
 {
-    private const INCLUDE_TOKEN = '!include';
+    private const INCLUDE_TOKEN = 'include';
 
     /**
      * @var string Root configuration file
@@ -76,7 +76,7 @@ class YamlConfigurationLoader
         foreach ($configuration as $key => $value) {
             if (is_array($value)) {
                 $configuration[$key] = $this->iterateConfiguration($value, $currentDirectory, $historyLoadedFile);
-            } elseif ($value instanceof TaggedValue) {
+            } elseif ($value instanceof TaggedValue && $value->getTag() === self::INCLUDE_TOKEN) {
                 $fileToLoad = $value->getValue();
                 if ($fileToLoad[0] !== DIRECTORY_SEPARATOR) {
                     $fileToLoad = $currentDirectory . '/' . $fileToLoad;
