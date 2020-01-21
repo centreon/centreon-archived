@@ -111,7 +111,7 @@ $aTypeAffichageLevel2 = array(
             var sel2 = document.getElementById("typeDisplay2").value;
             _o = val;
             if (sel2 != '') {
-                _o = _o + "_" + sel2;
+                _o += "_" + sel2;
             }
 
             if (val == 'svcOV') {
