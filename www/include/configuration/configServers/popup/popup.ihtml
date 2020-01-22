@@ -1,3 +1,7 @@
+<link href="../../../../front_src/src/components/loader/loader.scss" rel="stylesheet/sass" type="text/css">
+<div class="loader">
+</div>
+
 <div>
 	<h3 style="text-align: center;"> Gorgone configuration file :</h3>
     <br>

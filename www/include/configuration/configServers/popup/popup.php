@@ -37,6 +37,7 @@ require_once realpath(__DIR__ . "/../../../../../config/centreon.config.php");
 require_once _CENTREON_PATH_ . 'www/class/centreonDB.class.php';
 require_once _CENTREON_PATH_ . 'bootstrap.php';
 require_once _CENTREON_PATH_ . "www/include/common/common-Func.php";
+require_once _CENTREON_PATH_ . "/www/class/centreonRestHttp.class.php";
 
 $pearDB = $dependencyInjector['configuration_db'];
 
@@ -52,7 +53,7 @@ $dbResult->closeCursor();
 //get poller informations
 $query = '
 SELECT ng.`id`, ng.`name`, ng.`gorgone_port`, ng.`ns_ip_address`, ng.`localhost`, cn.`command_file`
-FROM  `nagios_server` ng, cfg_nagios cn
+FROM  `nagios_server` ng, `cfg_nagios` cn
 WHERE cn.`nagios_id` = ng.`id` 
 AND ng.`id` =' . (int)$_GET['id'];
 
@@ -60,6 +61,37 @@ $dbResult = $pearDB->query($query);
 $server = $dbResult->fetch();
 
 $tpl->assign('serverIp', $server['ns_ip_address']);
+
+$url = 'http://127.0.0.1:8085/api/nodes/' . $_GET['id'] . '/internal/thumbprint';
+var_dump($url);
+try {
+    $curl = new \CentreonRestHttp;
+    $token = $curl->call(
+        $url
+    );
+} catch (\Exception $e) {
+    echo date("Y-m-d H:i:s") . " - ERROR - Error while creating parent task on "
+        . $url . ".\n";
+    echo date("Y-m-d H:i:s") . " - ERROR - Error message: " . $e->getMessage() . "\n";
+}
+
+var_dump($token["token"]);
+sleep(5);
+$url = 'http://127.0.0.1:8085/api/log/'.$token["token"];
+try {
+    $curl = new \CentreonRestHttp;
+    $res = $curl->call(
+        $url
+    );
+} catch (\Exception $e) {
+    echo date("Y-m-d H:i:s") . " - ERROR - Error while creating parent task on "
+        . $url . ".\n";
+    echo date("Y-m-d H:i:s") . " - ERROR - Error message: " . $e->getMessage() . "\n";
+}
+
+
+var_dump($res['data']); exit();
+
 
 if (in_array($server['ns_ip_address'], $remotesServerIPs)) {
     //config for remote
@@ -77,7 +109,11 @@ modules:
   - name: action
     package: gorgone::modules::core::action::hooks
     enable: true
-
+    
+  - name: nodes
+    package: gorgone::modules::core::nodes::hooks
+    enable: true
+    
   - name: proxy
     package: gorgone::modules::core::proxy::hooks
     enable: true

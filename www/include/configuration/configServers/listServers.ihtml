@@ -100,7 +100,7 @@
                     <img src="./img/icons/edit_conf.png" class="ico-16" title="Edit monitoring engine configuration">
                 </a>
                 {/if}
-                {if $elemArr[elem].RowMenu_gorgone_protocol == 2 && $elemArr[elem].RowMenu_type != 'Central'}
+                {if $elemArr[elem].RowMenu_gorgone_protocol == 1 && $elemArr[elem].RowMenu_type != 'Central'}
                 <!-- Link for edit poller monitoring engine configuration -->
                 <span  {literal}onclick="displayPopup('{/literal}{$elemArr[elem].RowMenu_server_id}{literal}'){/literal}" >
                     <img src="./img/icons/redirect.png" class="ico-16" style="cursor: pointer" title="Gorgone configuration">
