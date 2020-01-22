@@ -6,7 +6,6 @@ import { batchDispatchMiddleware } from 'redux-batched-actions';
 import thunk from 'redux-thunk';
 import createSagaMiddleware from 'redux-saga';
 import { createBrowserHistory } from 'history';
-import sagas from '../redux/sagas';
 import createRootReducer from '../redux/reducers';
 
 const sagaMiddleware = createSagaMiddleware();
@@ -32,8 +31,6 @@ const createAppStore = (options, initialState = {}) => {
       window.devToolsExtension ? window.devToolsExtension() : (f) => f,
     ),
   );
-
-  sagaMiddleware.run(sagas);
   return store;
 };
 
