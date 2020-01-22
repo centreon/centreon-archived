@@ -8,22 +8,19 @@ import '../../../../node_modules/systemjs/dist/extras/use-default.js'; // avoid 
 import './extras/global.js'; // fork global.js from systemjs to embed patch for IE (https://github.com/systemjs/systemjs/pull/2035)
 import systemCss from 'systemjs-plugin-css'; // used to import css in <head>
 
-// This function asynchronously imports a chunk from a path passed as parameter
-// Firstly, we check if the chunk is not already imported
-// If not, we import it
-const importChunk = ({ basename, chunk }) => {
+const importModule = ({ basename, file }) => {
   return new Promise(async (resolve, reject) => {
     try {
-      const chunkVector = `$centreonExternalModule$${chunk
+      const fileVector = `$centreonExternalModule$${file
         .replace(/(^\.?\/)|(\.js)/g, '')
         .replace(/\//g, '$')}`;
       // Check if current chunk is not imported
-      if (typeof window[chunkVector] !== 'object') {
-        const module = await window.System.import(basename + chunk);
-        window[chunkVector] = module;
+      if (typeof window[fileVector] !== 'object') {
+        const module = await window.System.import(basename + file);
+        window[fileVector] = module;
       }
       // If chunk is correctly imported, we return his chunk vector object
-      resolve(window[chunkVector]);
+      resolve(window[fileVector]);
     } catch (error) {
       // When something does not going welll, we reject the error
       reject(error);
@@ -31,9 +28,12 @@ const importChunk = ({ basename, chunk }) => {
   });
 };
 
-const importCommonsAndVendor = ({ basename, commonsAndVendor }) => {
-  const promises = commonsAndVendor.map((chunk) => {
-    return importChunk({ basename, chunk });
+// This function asynchronously imports a chunk from a path passed as parameter
+// Firstly, we check if the chunk is not already imported
+// If not, we import it
+const importModules = ({ basename, files }) => {
+  const promises = files.map((file) => {
+    return importModule({ basename, file });
   });
   return Promise.all(promises);
 };
@@ -42,8 +42,8 @@ const importCommonsAndVendor = ({ basename, commonsAndVendor }) => {
 // it is compatible with IE, Edge, firefox and chrome
 export function dynamicImport(basename, parameters) {
   return new Promise(async (resolve, _reject) => {
-    const { js, css } = parameters;
-    if (!js && js.length === 0) {
+    const { js: { commons, chunks, bundle }, css } = parameters;
+    if (!bundle) {
       console.error(new Error('dynamic import should contains js parameter.'));
       return null;
     }
@@ -57,13 +57,20 @@ export function dynamicImport(basename, parameters) {
       // We must import commons and vendor chunks before modules chunk
       // parameters.js is an array that contains in the following order:
       // ['/path/to/commons', '/path/to/vendor', '/path/to/module']
-      await importCommonsAndVendor({
+      await importModules({
         basename,
-        commonsAndVendor: js.slice(0, 2),
+        files: commons,
       });
-      // We must import separetly module object which is a specific module
+
+      // Import specific bundle chunks
+      await importModules({
+        basename,
+        files: chunks,
+      });
+
+      // We must import separately module object which is a specific module
       // that contains our React component
-      const moduleObject = await importChunk({ basename, chunk: js[2] });
+      const moduleObject = await importModule({ basename, file: bundle });
 
       return resolve(moduleObject);
     } catch (error) {
