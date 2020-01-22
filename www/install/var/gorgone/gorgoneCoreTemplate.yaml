@@ -1,20 +1,7 @@
-name: gorgoned-central
-description: Configuration for Central server
-database:
-  db_centreon:
-    dsn: "mysql:host=--ADDRESS--:--DBPORT--;dbname=--CONFDB--"
-    username: "--DBUSER--"
-    password: "--DBPASS--"
-  db_centstorage:
-    dsn: "mysql:host=--ADDRESS--:--DBPORT--;dbname=--STORAGEDB--"
-    username: "--DBUSER--"
-    password: "--DBPASS--"
 gorgonecore:
   privkey: "--CENTREON_SPOOL--/.gorgone/rsakey.priv.pem"
   pubkey: "--CENTREON_SPOOL--/.gorgone/rsakey.pub.pem"
-  cipher: "Cipher::AES"
-  keysize: 32
-  vector: 0123456789012345
+
 modules:
   - name: httpserver
     package: "gorgone::modules::core::httpserver::hooks"
@@ -36,13 +23,14 @@ modules:
   - name: cron
     package: "gorgone::modules::core::cron::hooks"
     enable: true
-
-  - name: proxy
-    package: "gorgone::modules::core::proxy::hooks"
-    enable: true
+    cron: !include cron.d/*.yaml
 
   - name: nodes
     package: "gorgone::modules::centreon::nodes::hooks"
+    enable: true
+
+  - name: proxy
+    package: "gorgone::modules::core::proxy::hooks"
     enable: true
 
   - name: legacycmd
