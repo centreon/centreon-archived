@@ -311,6 +311,26 @@ try {
                 $res1->closeCursor();
             }
 
+            /**
+             * Check for services
+             */
+            $res1 = $pearDB->prepare(
+                "SELECT service_id FROM service
+                WHERE service_register='1'
+                AND service_id NOT IN (SELECT DISTINCT service_id
+                FROM centreon_storage.centreon_acl, acl_res_group_relations
+                WHERE acl_res_id = :aclResId
+                AND group_id = acl_group_id
+                AND service_id IS NOT NULL)"
+            );
+            $res1->bindValue(':aclResId', $row['acl_res_id'], \PDO::PARAM_INT);
+            $res1->execute();
+            if ($res1->rowCount()) {
+                // set acl_resources.changed flag to 1
+                $aclResourcesUpdated = true;
+            }
+            $res1->closeCursor();
+
             // as resources has changed we need to save it in the DB
             if ($aclResourcesUpdated) {
                 $stmt = $pearDB->prepare(
