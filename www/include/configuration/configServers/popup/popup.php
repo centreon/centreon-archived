@@ -51,49 +51,95 @@ $remotesServerIPs = $dbResult->fetchAll(PDO::FETCH_COLUMN);
 $dbResult->closeCursor();
 
 //get poller informations
-$query = '
-SELECT ng.`id`, ng.`name`, ng.`gorgone_port`, ng.`ns_ip_address`, ng.`localhost`, cn.`command_file`
-FROM  `nagios_server` ng, `cfg_nagios` cn
-WHERE cn.`nagios_id` = ng.`id` 
-AND ng.`id` =' . (int)$_GET['id'];
+$query = "
+SELECT ns.`id`, ns.`name`, ns.`gorgone_port`, ns.`ns_ip_address`, ns.`localhost`,ns.remote_id, 
+cn.`command_file`, GROUP_CONCAT( pr.`remote_server_id` ) AS list_remote_server_id , 
+CASE
+    WHEN (ns.localhost = '1') THEN 'central'
+    WHEN (rs.id > '0') THEN 'remote'
+    ELSE 'poller' 
+END  AS poller_type 
+FROM nagios_server AS ns 
+LEFT JOIN remote_servers AS rs ON (rs.ip = ns.ns_ip_address) 
+LEFT JOIN cfg_nagios AS cn ON (cn.`nagios_id` = ns.`id` ) 
+LEFT JOIN rs_poller_relation AS pr ON (pr.`poller_server_id` = ns.`id` ) 
+WHERE ns.ns_activate = '1' 
+AND ns.`id` =" . (int)$_GET['id'];
 
 $dbResult = $pearDB->query($query);
 $server = $dbResult->fetch();
 
 $tpl->assign('serverIp', $server['ns_ip_address']);
-
-$url = 'http://127.0.0.1:8085/api/nodes/' . $_GET['id'] . '/internal/thumbprint';
-var_dump($url);
-try {
-    $curl = new \CentreonRestHttp;
-    $token = $curl->call(
-        $url
-    );
-} catch (\Exception $e) {
-    echo date("Y-m-d H:i:s") . " - ERROR - Error while creating parent task on "
-        . $url . ".\n";
-    echo date("Y-m-d H:i:s") . " - ERROR - Error message: " . $e->getMessage() . "\n";
+if (empty($server['remote_id']) && empty($server['list_remote_server_id'])) {
+    //parent is the central
+    $query = "SELECT `id` FROM nagios_server WHERE ns_activate = '1' AND localhost = '1'";
+    $dbResult = $pearDB->query($query);
+    $parents = $dbResult->fetchAll(\PDO::FETCH_COLUMN);
+} else {
+    $parents = array($server['remote_id']);
+    if (!empty($server['list_remote_server_id'])) {
+        $remote = explode(',', $server['list_remote_server_id']);
+        $parents = array_merge($parents, $remote);
+    }
 }
 
-var_dump($token["token"]);
-sleep(5);
-$url = 'http://127.0.0.1:8085/api/log/'.$token["token"];
-try {
-    $curl = new \CentreonRestHttp;
-    $res = $curl->call(
-        $url
-    );
-} catch (\Exception $e) {
-    echo date("Y-m-d H:i:s") . " - ERROR - Error while creating parent task on "
-        . $url . ".\n";
-    echo date("Y-m-d H:i:s") . " - ERROR - Error message: " . $e->getMessage() . "\n";
+$tokens = array();
+foreach ($parents as $serverId) {
+    $url = 'http://127.0.0.1:8085/api/nodes/' . $serverId . '/internal/thumbprint';
+    try {
+        $curl = new \CentreonRestHttp;
+        $tokens[$serverId] = $curl->call(
+            $url
+        );
+    } catch (\Exception $e) {
+        echo date("Y-m-d H:i:s") . " - ERROR - Error while creating parent task on "
+            . $url . ".\n";
+        echo date("Y-m-d H:i:s") . " - ERROR - Error message: " . $e->getMessage() . "\n";
+    }
 }
 
+$chrono = 60;
+$thumbprintsData = array();
 
-var_dump($res['data']); exit();
+foreach ($tokens as $serverId => $token) {
+    $url = 'http://127.0.0.1:8085/api/nodes/' . $serverId . '/log/' . $token["token"];
+    $error = true;
+    while (($chrono > 0) && $error) {
+        try {
+            $curl = new \CentreonRestHttp;
+            $log = $curl->call(
+                $url
+            );
+            if (!isset($log["error"])) {
+                $thumbprintsData[] = $log;
+                $error = false;
+            }
+        } catch (\Exception $e) {
+            echo date("Y-m-d H:i:s") . " - ERROR - Error while creating parent task on " . $url . ".\n";
+            echo date("Y-m-d H:i:s") . " - ERROR - Error message: " . $e->getMessage() . "\n";
+        }
+        sleep(2);
+        $chrono -= 2;
+    }
+}
 
+$thumbprints = '';
+$dataError = '';
+$gorgoneError = false;
+foreach ($thumbprintsData as $data) {
+    if (json_decode($data["data"][0]["data"])->message == 'ok') {
+        $thumbprints .= '
+    - key: ' . json_decode($data["data"][0]["data"])->data->thumbprint;
+    } else {
+        $gorgoneError = true;
+        $dataError .= '
+    - error : ' . json_decode($data["data"][0]["data"])->message;
+    }
+}
 
-if (in_array($server['ns_ip_address'], $remotesServerIPs)) {
+if (!empty($dataError)) {
+    $config = $dataError;
+} elseif (in_array($server['ns_ip_address'], $remotesServerIPs)) {
     //config for remote
     $config = 'name: gorgoned-' . $server['name'] . '
 description: Configuration for remote server ' . $server['name'] . '
@@ -101,8 +147,7 @@ gorgonecore:
   id: ' . $server['id'] . '
   external_com_type: tcp
   external_com_path: "*:' . $server['gorgone_port'] . '"
-  authorized_clients:
-    - key: cS4B3lZq96qcP4FTMhVMuwAhztqRBQERKyhnEitnTFM 
+  authorized_clients: ' . $thumbprints . '
   privkey: "/var/spool/centreon/.gorgone/rsakey.priv.pem"
   pubkey: "/var/spool/centreon/.gorgone/rsakey.pub.pem"
 modules:
@@ -140,8 +185,7 @@ gorgonecore:
   id: ' . $server['id'] . '
   external_com_type: tcp
   external_com_path: "*:' . $server['gorgone_port'] . '"
-  authorized_clients:
-    - key: cS4B3lZq96qcP4FTMhVMuwAhztqRBQERKyhnEitnTFM 
+  authorized_clients: ' . $thumbprints . '
   privkey: "/var/spool/centreon/.gorgone/rsakey.priv.pem"
   pubkey: "/var/spool/centreon/.gorgone/rsakey.pub.pem"
 modules:
@@ -159,4 +203,5 @@ modules:
 $args = json_encode($server, JSON_PRETTY_PRINT);
 
 $tpl->assign('args', $config);
+$tpl->assign('gorgoneError', $gorgoneError);
 $tpl->display("popup.ihtml");
