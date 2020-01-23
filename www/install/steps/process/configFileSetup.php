@@ -120,12 +120,12 @@ array_push(
 /**
  * configuration file used by the Gorgone daemon module
  */
-$gorgoneDatabaseFile = $centreonEtcPath . '/common.d/10-database.yaml';
+$gorgoneDatabaseFile = $centreonEtcPath . '/config.d/10-database.yaml';
 $contents = file_get_contents('../../var/gorgone/gorgoneDatabaseTemplate.yaml');
 $contents = preg_replace($patterns, $replacements, $contents);
 file_put_contents($gorgoneDatabaseFile, $contents);
 
-$gorgoneCoreFileForCentral = $centreonEtcPath . '/gorgone.d/10-default.yaml';
+$gorgoneCoreFileForCentral = $centreonEtcPath . '/config.d/20-gorgoned.yaml .yaml';
 $contents = file_get_contents('../../var/gorgone/gorgoneCoreTemplate.yaml');
 $contents = preg_replace($patterns, $replacements, $contents);
 file_put_contents($gorgoneCoreFileForCentral, $contents);
