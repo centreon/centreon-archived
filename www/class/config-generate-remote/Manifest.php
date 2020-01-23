@@ -44,8 +44,8 @@ class Manifest extends AbstractObject
             'infile_clauses' => [
                 'fields_clause' => [
                     'terminated_by' => $this->fieldSeparatorInfile,
-                    'enclosed_by' => '',
-                    'escaped_by' => '',
+                    'enclosed_by' => '"',
+                    'escaped_by' => '\\\\',
                 ],
                 'lines_clause' => [
                     'terminated_by' => $this->lineSeparatorInfile,
