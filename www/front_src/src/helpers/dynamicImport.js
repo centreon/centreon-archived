@@ -8,21 +8,26 @@ import '../../../../node_modules/systemjs/dist/extras/use-default.js'; // avoid 
 import './extras/global.js'; // fork global.js from systemjs to embed patch for IE (https://github.com/systemjs/systemjs/pull/2035)
 import systemCss from 'systemjs-plugin-css'; // used to import css in <head>
 
+const getGlobalName = (filename) => {
+  const normalizedFilename = filename
+    .replace(/(^\.?\/)|(\.js)/g, '')
+    .replace(/\//g, '$');
+  return `$centreonExternalModule$${normalizedFilename}`;
+}
+
 const importModule = ({ basename, file }) => {
   return new Promise(async (resolve, reject) => {
     try {
-      const fileVector = `$centreonExternalModule$${file
-        .replace(/(^\.?\/)|(\.js)/g, '')
-        .replace(/\//g, '$')}`;
+      const globalName = getGlobalName(file);
       // Check if current chunk is not imported
-      if (typeof window[fileVector] !== 'object') {
+      if (typeof window[globalName] !== 'object') {
         const module = await window.System.import(basename + file);
-        window[fileVector] = module;
+        window[globalName] = module;
       }
-      // If chunk is correctly imported, we return his chunk vector object
-      resolve(window[fileVector]);
+      // If chunk is correctly imported, we return its chunk vector object
+      resolve(window[globalName]);
     } catch (error) {
-      // When something does not going welll, we reject the error
+      // When something does not going well, we reject the error
       reject(error);
     }
   });
@@ -54,22 +59,19 @@ export function dynamicImport(basename, parameters) {
         await systemCss.fetch({ address: basename + css });
       }
 
-      // We must import commons and vendor chunks before modules chunk
-      // parameters.js is an array that contains in the following order:
-      // ['/path/to/commons', '/path/to/vendor', '/path/to/module']
+      // import commons and vendor chunks
       await importModules({
         basename,
         files: commons,
       });
 
-      // Import specific bundle chunks
+      // import specific bundle chunks
       await importModules({
         basename,
         files: chunks,
       });
 
-      // We must import separately module object which is a specific module
-      // that contains our React component
+      // import bundle itself
       const moduleObject = await importModule({ basename, file: bundle });
 
       return resolve(moduleObject);
