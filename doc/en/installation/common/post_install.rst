@@ -7,23 +7,24 @@ To start the monitoring engine:
 1. From your web interface, go to **Configuration > Pollers**.
 2. Keep the default options and click on **Export configuration**.
 3. Select **Central** poller from the box input **Pollers**.
-4. Uncheck **Generate Configuration Files** and **Run monitoring engine debug (-v)**.
-5. Check **Move Export Files** and **Restart Monitoring Engine** with the **Restart** option selected.
-6. Click on **Export** again.
-7. Log on to the *root* user on your server.
-8. Start Centreon Broker: ::
+4. Click on **Export**.
+5. Uncheck **Generate Configuration Files** and **Run monitoring engine debug (-v)**.
+6. Check **Move Export Files** and **Restart Monitoring Engine** with the **Restart** option selected.
+7. Click on **Export** again.
+8. Log on to the *root* user on your server.
+9. Start Centreon Broker: ::
 
      # systemctl start cbd
 
-9. Start Centreon Engine: ::
+10. Start Centreon Engine: ::
 
      # systemctl start centengine
 
-10. Start centcore: :: 
+11. Start centcore: :: 
 
     # systemctl start centcore
 
-11. Start centreontrapd: ::
+12. Start centreontrapd: ::
 
     # systemctl start centreontrapd
 
