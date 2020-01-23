@@ -125,7 +125,7 @@ $contents = file_get_contents('../../var/gorgone/gorgoneDatabaseTemplate.yaml');
 $contents = preg_replace($patterns, $replacements, $contents);
 file_put_contents($gorgoneDatabaseFile, $contents);
 
-$gorgoneCoreFileForCentral = $centreonEtcPath . '/config.d/20-gorgoned.yaml .yaml';
+$gorgoneCoreFileForCentral = $centreonEtcPath . '/config.d/20-gorgoned.yaml';
 $contents = file_get_contents('../../var/gorgone/gorgoneCoreTemplate.yaml');
 $contents = preg_replace($patterns, $replacements, $contents);
 file_put_contents($gorgoneCoreFileForCentral, $contents);
