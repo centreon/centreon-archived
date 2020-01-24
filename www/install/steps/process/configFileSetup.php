@@ -118,13 +118,16 @@ array_push(
 );
 
 /**
- * configuration file used by the Gorgone daemon module
+ * Database configuration file
  */
 $gorgoneDatabaseFile = $centreonEtcPath . '/config.d/10-database.yaml';
 $contents = file_get_contents('../../var/databaseTemplate.yaml');
 $contents = preg_replace($patterns, $replacements, $contents);
 file_put_contents($gorgoneDatabaseFile, $contents);
 
+/**
+ * Gorgone daemon configuration file for a central
+ */
 $gorgoneCoreFileForCentral = $centreonEtcPath . '/config.d/20-gorgoned.yaml';
 $contents = file_get_contents('../../var/gorgone/gorgoneCoreTemplate.yaml');
 $contents = preg_replace($patterns, $replacements, $contents);
