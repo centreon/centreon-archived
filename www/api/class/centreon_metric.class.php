@@ -38,7 +38,7 @@ require_once _CENTREON_PATH_ . "/www/class/centreonGraphNg.class.php";
 require_once _CENTREON_PATH_ . "/www/class/centreonGraphService.class.php";
 require_once _CENTREON_PATH_ . "/www/class/centreonGraphPoller.class.php";
 require_once _CENTREON_PATH_ . "/www/class/centreonGraphStatus.class.php";
-require_once dirname(__FILE__) . "/webService.class.php";
+require_once __DIR__ . "/webService.class.php";
 
 class CentreonMetric extends CentreonWebService
 {
@@ -155,6 +155,40 @@ class CentreonMetric extends CentreonWebService
         );
     }
 
+    /**
+     * Get last metrics value by services or/and metrics
+     *
+     * @return array | null if arguments are not set
+     */
+    public function getLastMetricsData()
+    {
+        if (!isset($this->arguments['services']) && !isset($this->arguments['metrics'])) {
+            self::sendResult([]);
+        }
+
+        return $this->lastMetricsData(
+            $this->arguments['services'] ?? '',
+            $this->arguments['metrics'] ?? ''
+        );
+    }
+
+
+    /**
+     * Get metrics data by service or/and metrics
+     *
+     * @return array | null if arguments are not set
+     */
+    public function getMetricsData()
+    {
+        if (!isset($this->arguments['services']) && !isset($this->arguments['metrics'])) {
+            self::sendResult([]);
+        }
+
+        return $this->metricsData(
+            $this->arguments['services'] ?? '',
+            $this->arguments['metrics'] ?? ''
+        );
+    }
 
     /**
      * Get metrics datas for a service
@@ -163,13 +197,13 @@ class CentreonMetric extends CentreonWebService
      */
     public function getMetricsDataByService()
     {
-        if (false === isset($this->arguments['ids'])) {
-            self::sendResult(array());
+        if (!isset($this->arguments['ids'])) {
+            self::sendResult([]);
         }
 
         /* Get the list of service ID */
         $ids = explode(',', $this->arguments['ids']);
-        $result = array();
+        $result = [];
 
         if (isset($this->arguments['type']) && $this->arguments['type'] === 'ng') {
             foreach ($ids as $id) {
@@ -215,6 +249,294 @@ class CentreonMetric extends CentreonWebService
     }
 
     /**
+     * Check acl for user
+     *
+     * @param int    $hostId     Host id to check
+     * @param int    $serviceId  Service id to check
+     * @param string $aclGroups  String with user acl groups
+     * @param int    $isAdmin    User is admin or not
+     *
+     * @return bool if the user is allowed to get service information
+     */
+    private function checkAcl($hostId, $serviceId, ?array $aclGroups, $isAdmin = true): bool
+    {
+        if (!$isAdmin) {
+            $query = 'SELECT service_id ' .
+                'FROM centreon_acl ' .
+                'WHERE host_id = :hostId ' .
+                'AND service_id = :serviceId ' .
+                'AND group_id IN (' . $aclGroups . ')';
+
+            $stmt = $this->pearDBMonitoring->prepare($query);
+            $stmt->bindParam(':hostId', $hostId, PDO::PARAM_INT);
+            $stmt->bindParam(':serviceId', $serviceId, PDO::PARAM_INT);
+            $dbResult = $stmt->execute();
+            if (!$dbResult || $stmt->rowCount() === 0) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     * Get array builded from arguments
+     *
+     * @param string $services List of services (like hostId_serviceId,hostId2_serviceId2,...)
+     * @param string $metrics  List of metrics (like metricId,metricId2,...)
+     *
+     * @return mixed
+     */
+    private function manageMetricsDataArguments($services, $metrics)
+    {
+        global $centreon;
+
+        $userId = $centreon->user->user_id;
+        $isAdmin = $centreon->user->admin;
+        $aclGroups = null;
+
+        /* Get ACL if user is not admin */
+        if (!$isAdmin) {
+            $acl = new CentreonACL($userId, $isAdmin);
+            $aclGroups = $acl->getAccessGroupsString();
+        }
+
+        if (!isset($this->arguments['start']) || !is_numeric($this->arguments['start'])
+            || !isset($this->arguments['end']) || !is_numeric($this->arguments['end'])
+        ) {
+            throw new RestBadRequestException("Bad parameters");
+        }
+
+        /*
+         * Format:
+         *    {
+         *      "hostId_serviceId": {}, # no metricsId means: all metrics
+         *      "hostId2_serviceId2: { "metricId": 1, "metricId2": 1 }
+         *    }
+         */
+        $selectedMetrics = [];
+        if (is_string($services) && strlen($services) > 0) {
+            foreach (explode(',', $services) as $service) {
+                list($hostId, $serviceId) = explode('_', $service);
+                if (!is_numeric($hostId) || !is_numeric($serviceId)) {
+                    continue;
+                }
+                if (isset($selectedMetrics[$service])) {
+                    continue;
+                }
+
+                if (!$this->checkAcl($hostId, $serviceId, $aclGroups, $isAdmin)) {
+                    continue;
+                }
+                $selectedMetrics[$service] = [];
+            }
+        }
+
+        if (is_string($metrics) && strlen($metrics) > 0) {
+            $filter = '';
+            $filterAppend = '';
+            $queryValues = [];
+            foreach (explode(',', $metrics) as $metricId) {
+                if (!is_numeric($metricId)) {
+                    continue;
+                }
+                $filter .= $filterAppend . ' :metric' . $metricId;
+                $queryValues[':metric' . $metricId] = $metricId;
+                $filterAppend = ',';
+            }
+
+            if ($filter === '') {
+                return $selectedMetrics;
+            }
+
+
+
+            $stmt = $this->pearDBMonitoring->prepare(
+                'SELECT metric_id, host_id, service_id
+                 FROM metrics, index_data
+                 WHERE metrics.metric_id IN (' . $filter. ')
+                 AND metrics.index_id = index_data.id'
+            );
+            foreach ($queryValues as $param => $value) {
+                $stmt->bindValue($param, $value, PDO::PARAM_INT);
+            }
+            $stmt->execute();
+
+            while ($row = $stmt->fetch()) {
+                if (isset($selectedMetrics[$row['host_id'] . '_' . $row['service_id']])
+                    && count($selectedMetrics[$row['host_id'] . '_' . $row['service_id']]) <= 0
+                ) {
+                    continue;
+                }
+                if (!isset($selectedMetrics[$row['host_id'] . '_' . $row['service_id']])) {
+                    if (!$this->checkAcl($row['host_id'], $row['service_id'], $aclGroups, $isAdmin)) {
+                        continue;
+                    }
+                    $selectedMetrics[$row['host_id'] . '_' . $row['service_id']] = array();
+                }
+                $selectedMetrics[$row['host_id'] . '_' . $row['service_id']][$row['metric_id']] = 1;
+            }
+        }
+
+        return $selectedMetrics;
+    }
+
+    /**
+     * Get last data for metrics (by services and/or metrics)
+     *
+     * @param string $services List of services (like hostId_serviceId,hostId2_serviceId2,...)
+     * @param string $metrics  List of metrics (like metricId,metricId2,...)
+     *
+     * @return array
+     *
+     * @throws Exception
+     * @throws RestBadRequestException
+     * @throws RestForbiddenException
+     * @throws RestNotFoundException
+     */
+    protected function lastMetricsData($services, $metrics)
+    {
+        global $centreon;
+
+        $userId = $centreon->user->user_id;
+        $isAdmin = $centreon->user->admin;
+        $aclGroups = null;
+
+        $query = '';
+        $filterHostIds = [];
+        $filterServiceIds = [];
+        $filterMetricIds = [];
+
+        if (is_string($services) && strlen($services) > 0) {
+            foreach (explode(',', $services) as $service) {
+                list($hostId, $serviceId) = explode('_', $service);
+                if (!is_numeric($hostId) || !is_numeric($serviceId)) {
+                    continue;
+                }
+                $filterHostIds[':host' . $hostId] = $hostId;
+                $filterServiceIds[':service' . $serviceId] = $serviceId;
+            }
+
+            if (!empty($filterHostIds) && !empty($filterServiceIds)) {
+                $query = '
+                    SELECT i.host_id, i.service_id, m.*
+                    FROM index_data i, metrics m
+                    WHERE i.host_id IN (' . implode(',', array_keys($filterHostIds)) . ')
+                    AND i.service_id IN (' . implode(',', array_keys($filterServiceIds)) . ')
+                    AND i.id = m.index_id';
+            }
+        }
+
+        if (is_string($metrics) && strlen($metrics) > 0) {
+            foreach (explode(',', $metrics) as $metricId) {
+                if (!is_numeric($metricId)) {
+                    continue;
+                }
+                $filterMetricIds[':metric' . $metricId] = $metricId;
+            }
+
+            if (!empty($filterMetricIds)) {
+                if ($query !== '') {
+                    $query .= ' UNION ';
+                }
+                $query .= '
+                    SELECT i.host_id, i.service_id, m.*
+                    FROM metrics m, index_data i
+                    WHERE m.metric_id IN (' . implode(',', array_keys($filterMetricIds)) . ')
+                    AND m.index_id = i.id';
+            }
+        }
+
+        if ($query === '') {
+            throw new \Exception("No metrics found");
+        }
+
+        /* Get ACL if user is not admin */
+        if (!$isAdmin) {
+            $acl = new CentreonACL($userId, $isAdmin);
+            $aclGroups = $acl->getAccessGroupsString();
+            $query = '
+                SELECT ms.* FROM (' . $query . ') as ms, centreon_acl ca
+                WHERE EXISTS (
+                    SELECT 1
+                    FROM centreon_acl ca
+                    WHERE ca.host_id = ms.host_id
+                    AND ca.service_id = ms.service_id
+                    AND ca.group_id IN (' . $aclGroups . '))';
+        }
+
+        $stmt = $this->pearDBMonitoring->prepare($query);
+        foreach ([$filterHostIds, $filterServiceIds, $filterMetricIds] as $filterParams) {
+            foreach ($filterParams as $param => $value) {
+                $stmt->bindValue($param, $value, PDO::PARAM_INT);
+            }
+        }
+        $stmt->execute();
+
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    /**
+     * Get data for metrics (by services and/or metrics)
+     *
+     * @param string $services List of services (like hostId_serviceId,hostId2_serviceId2,...)
+     * @param string $metrics  List of metrics (like metricId,metricId2,...)
+     *
+     * @return array
+     *
+     * @throws Exception
+     * @throws RestBadRequestException
+     * @throws RestForbiddenException
+     * @throws RestNotFoundException
+     */
+    protected function metricsData($services, $metrics)
+    {
+        global $centreon;
+
+        $selectedMetrics = $this->manageMetricsDataArguments($services, $metrics);
+        $multipleServices = count(array_keys($selectedMetrics)) > 1 ? true : false;
+
+        /* Prepare graph */
+        try {
+            $graph = new CentreonGraphNg($centreon->user->user_id);
+            $graph->setMultipleServices($multipleServices);
+            foreach ($selectedMetrics as $service => $metrics) {
+                list($hostId, $serviceId) = explode('_', $service);
+                if (count(array_keys($metrics)) <= 0) {
+                    $graph->addServiceMetrics($hostId, $serviceId);
+                } else {
+                    $graph->addServiceCustomMetrics($hostId, $serviceId, $metrics);
+                }
+            }
+        } catch (Exception $e) {
+            throw new RestNotFoundException("Graph not found");
+        }
+
+        $result = $graph->getGraph($this->arguments['start'], $this->arguments['end']);
+
+        if (!$multipleServices && count($selectedMetrics) > 0) {
+            /* Get extra information (downtime/acknowledgment) */
+            $result['acknowledge'] = array();
+            $result['downtime'] = array();
+            list($hostId, $serviceId) = explode('_', array_key_first($selectedMetrics));
+            $result['acknowledge'] = $this->getAcknowledgements(
+                (int)$hostId,
+                (int)$serviceId,
+                (int)$this->arguments['start'],
+                (int)$this->arguments['end']
+            );
+            $result['downtime'] = $this->getDowntimePeriods(
+                (int)$hostId,
+                (int)$serviceId,
+                (int)$this->arguments['start'],
+                (int)$this->arguments['end']
+            );
+        }
+
+        return $result;
+    }
+
+    /**
      * Get the status for a service
      *
      * @return mixed
@@ -237,10 +559,8 @@ class CentreonMetric extends CentreonWebService
         }
 
         /* Validate options */
-        if (false === isset($this->arguments['start']) ||
-            false === is_numeric($this->arguments['start']) ||
-            false === isset($this->arguments['end']) ||
-            false === is_numeric($this->arguments['end'])
+        if (!isset($this->arguments['start']) || !is_numeric($this->arguments['start'])
+            || !isset($this->arguments['end']) || !is_numeric($this->arguments['end'])
         ) {
             throw new RestBadRequestException("Bad parameters");
         }
@@ -292,7 +612,7 @@ class CentreonMetric extends CentreonWebService
                     throw new \Exception("An error occured");
                 }
 
-                if (0 == $stmt->rowCount()) {
+                if ($stmt->rowCount() === 0) {
                     throw new RestForbiddenException("Access denied");
                 }
             }
@@ -313,7 +633,7 @@ class CentreonMetric extends CentreonWebService
             $query = 'SELECT `value` FROM `options` WHERE `key` = "display_comment_chart"';
             $res = $this->pearDB->query($query);
             $row = $res->fetch();
-            if (false === is_null($row) && $row['value'] === '1') {
+            if ($row && $row['value'] === '1') {
                 $queryComment = 'SELECT `entry_time`, `author`, `data` ' .
                     'FROM comments ' .
                     'WHERE host_id = :hostId ' .
@@ -379,10 +699,8 @@ class CentreonMetric extends CentreonWebService
             $aclGroups = $acl->getAccessGroupsString();
         }
 
-        if (false === isset($this->arguments['start']) ||
-            false === is_numeric($this->arguments['start']) ||
-            false === isset($this->arguments['end']) ||
-            false === is_numeric($this->arguments['end'])
+        if (!isset($this->arguments['start']) || !is_numeric($this->arguments['start'])
+           || !isset($this->arguments['end']) || !is_numeric($this->arguments['end'])
         ) {
             throw new RestBadRequestException("Bad parameters");
         }
@@ -412,7 +730,7 @@ class CentreonMetric extends CentreonWebService
             if (!$dbResult) {
                 throw new \Exception("An error occured");
             }
-            if (0 == $stmt->rowCount()) {
+            if ($stmt->rowCount() === 0) {
                 throw new RestForbiddenException("Access denied");
             }
         }
@@ -428,7 +746,7 @@ class CentreonMetric extends CentreonWebService
         } catch (Exception $e) {
             throw new RestNotFoundException("Graph not found");
         }
-        
+
         $result = $graph->getGraph($this->arguments['start'], $this->arguments['end']);
 
         /* Get extra information (downtime/acknowledgment) */
@@ -437,9 +755,9 @@ class CentreonMetric extends CentreonWebService
         $query = 'SELECT `value` FROM `options` WHERE `key` = "display_downtime_chart"';
 
         $res = $this->pearDB->query($query);
-        
+
         $row = $res->fetch();
-        if (false === is_null($row) && $row['value'] === '1') {
+        if ($row && $row['value'] === '1') {
             $result['acknowledge'] = $this->getAcknowlegePeriods($hostId, $serviceId, $start, $end);
             $result['downtime'] = $this->getDowntimePeriods($hostId, $serviceId, $start, $end);
         }
@@ -518,7 +836,7 @@ class CentreonMetric extends CentreonWebService
             if (!$dbResult) {
                 throw new \Exception("An error occured");
             }
-            if (0 == $stmt->rowCount()) {
+            if ($stmt->rowCount() === 0) {
                 throw new RestForbiddenException("Access denied");
             }
         }
@@ -651,7 +969,7 @@ class CentreonMetric extends CentreonWebService
         } catch (\Exception $e) {
             throw new RestNotFoundException("Graph not found");
         }
-        
+
         $result = $graphPollerObject->getGraph($start, $end);
 
         return array($result);
@@ -671,6 +989,32 @@ class CentreonMetric extends CentreonWebService
             return null;
         }
         return $element;
+    }
+
+    /**
+     * Get the list of a acknowlegments for a service during a period
+     *
+     * @param int $hostId the host id
+     * @param int $serviceId the service id
+     * @param int $start the start timestamp
+     * @param int $end the end timestamp
+     *
+     * @return array The list of acknowledgements
+     */
+    protected function getAcknowledgements(int $hostId, int $serviceId, int $start, int $end): array
+    {
+        $query = 'SELECT entry_time as start, deletion_time as end, author, comment_data ' .
+            'FROM acknowledgements ' .
+            'WHERE host_id = :hostId ' .
+            'AND service_id = :serviceId ' .
+            'AND (entry_time >= :start AND entry_time <= :end)';
+        $stmt = $this->pearDBMonitoring->prepare($query);
+        $stmt->bindValue(':hostId', $hostId, PDO::PARAM_INT);
+        $stmt->bindValue(':serviceId', $serviceId, PDO::PARAM_INT);
+        $stmt->bindValue(':start', $start, PDO::PARAM_INT);
+        $stmt->bindValue(':end', $end, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
     /**
@@ -701,24 +1045,22 @@ class CentreonMetric extends CentreonWebService
     }
 
     /**
-     * @param int $hostId
-     * @param int $serviceId
-     * @param int $start
-     * @param int $end
+     * Get list of downtime periods by service
+     *
+     * @param int $hostId the host id
+     * @param int $serviceId the service id
+     * @param int $start the start timestamp
+     * @param int $end the end timestamp
      *
      * @return array
      */
-    protected function getDowntimePeriods($hostId, $serviceId, $start, $end)
+    protected function getDowntimePeriods($hostId, $serviceId, $start, $end): array
     {
         $query = 'SELECT actual_start_time as start, actual_end_time as end ' .
             'FROM downtimes ' .
-            'WHERE type = 1 AND host_id = :hostId AND service_id = :serviceId ' .
-            'AND (' .
-            '(actual_start_time <= :end AND :end <= actual_end_time) ' .
-            'OR (actual_start_time <= :start AND :start <= actual_end_time) ' .
-            'OR (actual_start_time >= :start AND :end >= actual_end_time) ' .
-            'OR (actual_start_time IS NOT NULL AND actual_end_time IS NULL) ' .
-            ')';
+            'WHERE host_id = :hostId AND service_id = :serviceId ' .
+            'AND ' .
+            'actual_start_time <= :end AND (actual_end_time >= :start OR actual_end_time is NULL)';
         $queryValues['hostId'] = (int)$hostId;
         $queryValues['serviceId'] = (int)$serviceId;
         $queryValues['end'] = (int)$end;
@@ -739,14 +1081,14 @@ class CentreonMetric extends CentreonWebService
         $periods = array();
         $stmt = $this->pearDBMonitoring->prepare($query);
         foreach ($queryValues as $key => $value) {
-            $stmt->bindParam(':' . $key, $value, PDO::PARAM_INT);
+            $stmt->bindValue(':' . $key, $value, PDO::PARAM_INT);
         }
         $dbResult = $stmt->execute();
         if (!$dbResult) {
             throw new \Exception("An error occured");
         }
 
-        while ($row = $stmt->fetchRow()) {
+        while ($row = $stmt->fetch()) {
             $period = array(
                 'start' => $row['start'],
                 'end' => $row['end']
