@@ -322,6 +322,25 @@ class CentreonHomeCustomview extends CentreonWebService
     }
 
     /**
+     * Get preferences by widget id
+     *
+     * @return array The widget preferences
+     * @throws \Exception When missing argument
+     */
+    public function getPreferencesByWidgetId()
+    {
+        global $centreon;
+
+        if (!isset($this->arguments['widgetId'])) {
+            throw new \Exception('Missing argument : widgetId');
+        }
+        $widgetId = $this->arguments['widgetId'];
+        $widgetObj = new CentreonWidget($centreon, $this->pearDB);
+
+       return $widgetObj->getWidgetPreferences($widgetId);
+    }
+
+    /**
      * Authorize to access to the action
      *
      * @param string $action The action name
