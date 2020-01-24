@@ -4,8 +4,12 @@ import { createStore, applyMiddleware, compose } from 'redux';
 import { routerMiddleware } from 'connected-react-router';
 import { batchDispatchMiddleware } from 'redux-batched-actions';
 import thunk from 'redux-thunk';
+import createSagaMiddleware from 'redux-saga';
 import { createBrowserHistory } from 'history';
+import sagas from '../redux/sagas';
 import createRootReducer from '../redux/reducers';
+
+const sagaMiddleware = createSagaMiddleware();
 
 const paths = window.location.pathname.split('/');
 export const history = createBrowserHistory({
@@ -17,6 +21,7 @@ const createAppStore = (initialState = {}) => {
     routerMiddleware(history),
     thunk,
     batchDispatchMiddleware,
+    sagaMiddleware,
   ];
 
   const store = createStore(
@@ -28,6 +33,7 @@ const createAppStore = (initialState = {}) => {
     ),
   );
 
+  sagaMiddleware.run(sagas);
   return store;
 };
 
