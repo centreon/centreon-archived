@@ -530,7 +530,7 @@ class ExtensionsRoute extends Component {
           />
           <Hook path="/administration/extensions/manager/button" />
         </Wrapper>
-        {extensions && !nothingShown ? (
+        {extensions.result && !nothingShown ? (
           <>
             {extensions.result.module &&
             (!modulesActive || (modulesActive && widgetsActive)) ? (
