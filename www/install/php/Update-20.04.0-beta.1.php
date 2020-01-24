@@ -134,13 +134,15 @@ try {
     }
     fclose($file);
 
-    // checking if the instance is a central and generating the configuration file
+    // checking if the instance is a central and generating configuration files
     if ($isACentral === true) {
-        if (!file_exists(__DIR__ . '/../var/databaseTemplate.yaml')) {
-            $errorMessage = 'Database configuration template file is missing';
+        // database configuration file
+        $fileTpl = __DIR__ . '/../var/databaseTemplate.yaml';
+        if (!file_exists($fileTpl) || 0 === filesize($fileTpl)) {
+            $errorMessage = 'Database configuration template is empty or missing';
             throw new \InvalidArgumentException($errorMessage);
         }
-        $content = file_get_contents(__DIR__ . '/../var/databaseTemplate.yaml');
+        $content = file_get_contents($fileTpl);
         $content = preg_replace($pattern, $userValues, $content);
         $finalFile = _CENTREON_ETC_ . '/config.d/10-database.yaml';
         file_put_contents($finalFile, $content);
@@ -150,11 +152,13 @@ try {
             throw new \InvalidArgumentException($errorMessage);
         }
 
-        if (!file_exists(__DIR__ . '/../var/databaseTemplate.yaml')) {
-            $errorMessage = 'Gorgone configuration template file is missing';
+        // gorgone configuration file for centreon
+        $fileTpl = __DIR__ . '/../var/gorgone/gorgoneCoreTemplate.yaml';
+        if (!file_exists($fileTpl) || 0 === filesize($fileTpl)) {
+            $errorMessage = 'Gorgone configuration template is empty or missing';
             throw new \InvalidArgumentException($errorMessage);
         }
-        $content = file_get_contents(__DIR__ . '/../var/gorgone/gorgoneCoreTemplate.yaml');
+        $content = file_get_contents($fileTpl);
         $content = preg_replace($pattern, $userValues, $content);
         $finalFile = _CENTREON_ETC_ . '/config.d/20-gorgoned.yaml';
         file_put_contents($finalFile, $content);
