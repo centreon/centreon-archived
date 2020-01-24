@@ -39,34 +39,35 @@ class CentreonMetrics
     }
 
     /**
-     * @param array $values
+     * Get metrics information from ids to populat select2
+     *
+     * @param array $values list of metric ids
      * @return array
      */
-    public function getObjectForSelect2($values = array())
+    public function getObjectForSelect2($values = [])
     {
-        $metrics = array();
-        $filters = '';
+        $metrics = [];
         $listValues = '';
-        $queryValues = array();
+        $queryValues = [];
         if (!empty($values)) {
-            foreach ($values as $k => $v) {
-                $listValues .= ':metric' . $v . ',';
-                $queryValues['metric' . $v] = (int)$v;
+            foreach ($values as $v) {
+                $multiValues = explode(',', $v);
+                foreach ($multiValues as $item) {
+                    $listValues .= ':metric' . $item . ',';
+                    $queryValues['metric' . $item] = (int)$item;
+                }
             }
             $listValues = rtrim($listValues, ',');
-            $filters .= 'm.metric_id IN (' . $listValues . ') AND';
         } else {
-            $filters .= '""';
+            $listValues = '""';
         }
 
-        $queryService = "SELECT SQL_CALC_FOUND_ROWS m.metric_id, CONCAT(h.name,' - ', s.description,"
-            . "' - ',  m.metric_name) AS fullname "
-            . "FROM metrics m, hosts h, services s, index_data i "
-            . "WHERE "
-            . $filters . " "
-            . "i.id = m.index_id AND "
-            . "h.host_id = i.host_id "
-            . "AND   s.service_id = i.service_id "
+
+        $queryService = "SELECT SQL_CALC_FOUND_ROWS m.metric_id, CONCAT(i.host_name,' - ', i.service_description,"
+            . "' - ', m.metric_name) AS fullname "
+            . "FROM metrics m, index_data i "
+            . "WHERE m.metric_id IN (" . $listValues . ") "
+            . "AND i.id = m.index_id "
             . "ORDER BY fullname COLLATE utf8_general_ci";
 
         $stmt = $this->dbo->prepare($queryService);
@@ -78,11 +79,12 @@ class CentreonMetrics
         $stmt->execute();
 
         while ($row = $stmt->fetch()) {
-            $metrics[] = array(
+            $metrics[] = [
                 'id' => $row['metric_id'],
                 'text' => $row['fullname']
-            );
+            ];
         }
+
         return $metrics;
     }
 }
