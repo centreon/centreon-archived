@@ -156,7 +156,7 @@ if (isset($_GET["acknowledge"])) {
             document.getElementById("select2-hg_search-container").title
         ) {
             this.hg_search = jQuery("#select2-hg_search-container .select2-content").attr("title");
-            viewDebugInfo('search: ' +  this.hg_search);
+            viewDebugInfo('hostgroup search: ' +  this.hg_search);
         }
 
         if (_first) {
