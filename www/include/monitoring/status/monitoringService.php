@@ -124,26 +124,12 @@ if ($continue) {
          * View of Service
          */
         case "svc":
-            require_once $svc_path . "service.php";
-            break;
         case "svcpb":
-            require_once $svc_path . "service.php";
-            break;
         case "svc_warning":
-            require_once $svc_path . "service.php";
-            break;
         case "svc_critical":
-            require_once $svc_path . "service.php";
-            break;
         case "svc_unknown":
-            require_once $svc_path . "service.php";
-            break;
         case "svc_ok":
-            require_once $svc_path . "service.php";
-            break;
         case "svc_pending":
-            require_once $svc_path . "service.php";
-            break;
         case "svc_unhandled":
             require_once $svc_path . "service.php";
             break;
@@ -161,8 +147,6 @@ if ($continue) {
             break;
 
         case "svcgrid":
-            require_once $svc_path . "serviceGrid.php";
-            break;
         case "svcOV":
         case "svcOV_pb":
             require_once $svc_path . "serviceGrid.php";
@@ -174,8 +158,6 @@ if ($continue) {
          * View by Service Groups
          */
         case "svcgridSG":
-            require_once $sg_path . "serviceGridBySG.php";
-            break;
         case "svcOVSG":
         case "svcOVSG_pb":
             require_once $sg_path . "serviceGridBySG.php";
@@ -188,8 +170,6 @@ if ($continue) {
          * View By hosts groups
          */
         case "svcgridHG":
-            require_once $hg_path . "serviceGridByHG.php";
-            break;
         case "svcOVHG":
         case "svcOVHG_pb":
             require_once $hg_path . "serviceGridByHG.php";
