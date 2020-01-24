@@ -57,6 +57,8 @@ if ($commandId != null) {
 
     $aCmd = explode(" ", $cmd["command_line"]);
     $fullLine = $aCmd[0];
+    $plugin = array_values(preg_grep('/^\-\-plugin\=(\w+)/i', $aCmd))[0];
+    $mode = array_values(preg_grep('/^\-\-mode\=(\w+)/i', $aCmd))[0];
     $aCmd = explode("/", $fullLine);
     $resourceInfo = $aCmd[0];
 
@@ -81,8 +83,13 @@ $command = str_replace("#S#", "/", $command);
 $command = str_replace("#BS#", "\\", $command);
 
 $tab = explode(' ', $command);
-$command = realpath($tab[0]);
-$stdout = shell_exec($command . " --help 2>&1");
+if (realpath($tab[0])) {
+    $command = realpath($tab[0]) . ' ' . $plugin . ' ' . $mode . ' --help';
+} else {
+    $command = $tab[0] . ' ' . $plugin . ' ' . $mode . ' --help';
+}
+
+$stdout = shell_exec($command . " 2>&1");
 $msg = str_replace("\n", "<br />", $stdout);
 
 $attrsText = array("size" => "25");
@@ -109,7 +116,7 @@ $renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 $form->accept($renderer);
 $tpl->assign('form', $renderer->toArray());
 $tpl->assign('o', $o);
-$tpl->assign('command_line', $command . " --help");
+$tpl->assign('command_line', $command);
 if (isset($msg) && $msg) {
     $tpl->assign('msg', $msg);
 }
