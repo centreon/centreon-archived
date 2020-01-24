@@ -117,7 +117,6 @@ $pathDetails = "./include/monitoring/objectDetails/";
 $svc_path = $path . "Services/";
 $hg_path = $path . "ServicesHostGroups/";
 $sg_path = $path . "ServicesServiceGroups/";
-$meta_path = $path . "Meta/";
 $path_sch = $path . "Scheduling/";
 
 if ($continue) {
@@ -198,12 +197,6 @@ if ($continue) {
             break;
         case "svcSumHG":
             require_once $hg_path . "serviceSummaryByHG.php";
-            break;
-        /*
-         * Meta Services
-         */
-        case "meta":
-            require_once $meta_path . "/metaService.php";
             break;
         /*
          * Scheduling Queue
