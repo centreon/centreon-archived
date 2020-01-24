@@ -35,6 +35,8 @@
 
 require_once _CENTREON_PATH_ . 'bootstrap.php';
 
+const AUTOLOGIN_FIELDS = array('autologin' , 'useralias', 'token');
+
 if (isset($_POST["centreon_token"])
     || (isset($_GET["autologin"]) && $_GET["autologin"]
         && isset($generalOptions["enable_autologin"])
@@ -111,17 +113,22 @@ if (isset($_POST["centreon_token"])
 
         if (!isset($_POST["submit"])) {
             $headerRedirection = "./main.php";
-            $minimize = '';
-            if (isset($_GET["min"]) && $_GET["min"] == '1') {
-                $minimize = '&min=1';
-            }
             if (!empty($_GET["p"])) {
                 $headerRedirection .= "?p=" . $_GET["p"];
-            } else if (isset($centreon->user->default_page) && $centreon->user->default_page != '') {
+                unset($_GET["p"]);
+                foreach ($_GET as $parameter => $value) {
+                    if (!in_array($parameter, AUTOLOGIN_FIELDS)) {
+                        $headerRedirection .= '&' . $parameter . '=' . $value;
+                    }
+                }
+            } elseif (isset($centreon->user->default_page) && $centreon->user->default_page != '') {
                 $headerRedirection .= "?p=" . $centreon->user->default_page;
+                if (isset($_GET["min"]) && $_GET["min"] == '1') {
+                    $headerRedirection .= '&min=1';
+                }
             }
         }
-        header("Location: " . $headerRedirection . $minimize);
+        header("Location: " . $headerRedirection);
         $connect = true;
     } else {
         $connect = false;
