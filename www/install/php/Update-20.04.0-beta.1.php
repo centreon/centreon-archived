@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2005 - 2019 Centreon (https://www.centreon.com/)
+ * Copyright 2005 - 2020 Centreon (https://www.centreon.com/)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,6 +17,7 @@
  * For more information : contact@centreon.com
  *
  */
+
 include_once __DIR__ . "/../../class/centreonLog.class.php";
 $centreonLog = new CentreonLog();
 
@@ -135,17 +136,31 @@ try {
 
     // checking if the instance is a central and generating the configuration file
     if ($isACentral === true) {
-        $errorMessage = 'Gorgone template file is missing';
-        if (!file_exists(__DIR__ . '/../var/configFileGorgoneTemplate')) {
+        if (!file_exists(__DIR__ . '/../var/databaseTemplate.yaml')) {
+            $errorMessage = 'Database configuration template file is missing';
             throw new \InvalidArgumentException($errorMessage);
         }
-        $content = file_get_contents(__DIR__ . '/../var/configFileGorgoneTemplate');
+        $content = file_get_contents(__DIR__ . '/../var/databaseTemplate.yaml');
         $content = preg_replace($pattern, $userValues, $content);
-        $finalFile = _CENTREON_ETC_ . '/gorgoned.yml';
+        $finalFile = _CENTREON_ETC_ . '/config.d/10-database.yaml';
         file_put_contents($finalFile, $content);
 
-        $errorMessage = 'Gorgone configuration file is not created properly';
         if (!file_exists($finalFile) || 0 === filesize($finalFile)) {
+            $errorMessage = 'Database configuration file is not created properly';
+            throw new \InvalidArgumentException($errorMessage);
+        }
+
+        if (!file_exists(__DIR__ . '/../var/databaseTemplate.yaml')) {
+            $errorMessage = 'Gorgone configuration template file is missing';
+            throw new \InvalidArgumentException($errorMessage);
+        }
+        $content = file_get_contents(__DIR__ . '/../var/gorgone/gorgoneCoreTemplate.yaml');
+        $content = preg_replace($pattern, $userValues, $content);
+        $finalFile = _CENTREON_ETC_ . '/config.d/20-gorgoned.yaml';
+        file_put_contents($finalFile, $content);
+
+        if (!file_exists($finalFile) || 0 === filesize($finalFile)) {
+            $errorMessage = 'Gorgone configuration file is not created properly';
             throw new \InvalidArgumentException($errorMessage);
         }
     }
