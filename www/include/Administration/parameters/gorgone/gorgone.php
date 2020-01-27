@@ -57,6 +57,20 @@ $form->addElement('text', 'gorgone_cmd_timeout', _("Timeout value for Gorgone co
 $form->addRule('gorgone_cmd_timeout', _('Must be a number'), 'numeric');
 $form->addElement('text', 'gorgone_illegal_characters', _("Illegal characters for Gorgone commands"), $attrsText);
 
+// API
+$form->addElement('text', 'gorgone_api_address', _("Address of Gorgone API"), $attrsText);
+$form->addElement('text', 'gorgone_api_port', _("Port of Gorgone API"), $attrsText2);
+$form->addRule('gorgone_api_port', _('Must be a number'), 'numeric');
+$form->addElement('text', 'gorgone_api_username', _("Username of Gorgone API"), $attrsText);
+$form->addElement('password', 'gorgone_api_password', _("Password of Gorgone API"), $attrsText);
+$form->addElement(
+    'checkbox',
+    'gorgone_api_ssl',
+    _("Use SSH for Gorgone API"),
+    null
+);
+$form->setDefaults(1);
+
 $form->addElement('hidden', 'gopt_id');
 $redirect = $form->addElement('hidden', 'o');
 $redirect->setValue($o);

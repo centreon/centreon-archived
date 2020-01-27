@@ -295,6 +295,32 @@ function updateGorgoneConfigData($db, $form, $centreon)
         'gorgone_illegal_characters',
         $ret['gorgone_illegal_characters'] ?? ''
     );
+    //API
+    updateOption(
+        $db,
+        'gorgone_api_address',
+        $ret['gorgone_api_address'] ?? '127.0.0.1'
+    );
+    updateOption(
+        $db,
+        'gorgone_api_port',
+        $ret['gorgone_api_port'] ?? '8085'
+    );
+    updateOption(
+        $db,
+        'gorgone_api_username',
+        $ret['gorgone_api_username'] ?? ''
+    );
+    updateOption(
+        $db,
+        'gorgone_api_password',
+        $ret['gorgone_api_password'] ?? ''
+    );
+    updateOption(
+        $db,
+        'gorgone_api_ssl',
+        $ret['gorgone_api_ssl'] ?? '0'
+    );
     $centreon->initOptGen($db);
 }
 

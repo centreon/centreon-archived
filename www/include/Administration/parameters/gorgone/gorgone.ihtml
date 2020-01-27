@@ -22,6 +22,41 @@
                 {$form.gorgone_illegal_characters.html}
             </td>
         </tr>
+        <tr class="list_lvl_1">
+            <td class="ListColLvl1_name" colspan="2">
+                <h4>{t}Gorgone API{/t}</h4>
+            </td>
+        </tr>
+        <tr class="list_one">
+            <td class="FormRowField">
+                <img class="helpTooltip" name="tip_gorgone_api_address">&nbsp;{$form.gorgone_api_address.label}
+            </td>
+            <td class="FormRowValue">{$form.gorgone_api_address.html}&nbsp</td>
+        </tr>
+        <tr class="list_two">
+            <td class="FormRowField">
+                <img class="helpTooltip" name="tip_gorgone_api_port">{$form.gorgone_api_port.label}
+            </td>
+            <td class="FormRowValue">{$form.gorgone_api_port.html}</td>
+        </tr>
+        <tr class="list_one">
+            <td class="FormRowField">
+                <img class="helpTooltip" name="tip_gorgone_api_username">&nbsp;{$form.gorgone_api_username.label}
+            </td>
+            <td class="FormRowValue">{$form.gorgone_api_username.html}</td>
+        </tr>
+        <tr class="list_two">
+            <td class="FormRowField">
+                <img class="helpTooltip" name="tip_gorgone_api_password">{$form.gorgone_api_password.label}
+            </td>
+            <td class="FormRowValue">{$form.gorgone_api_password.html}</td>
+        </tr>
+        <tr class="list_one">
+            <td class="FormRowField">
+                <img class="helpTooltip" name="tip_gorgone_api_ssl">&nbsp;{$form.gorgone_api_ssl.label}
+            </td>
+            <td class="FormRowValue">{$form.gorgone_api_ssl.html}</td>
+        </tr>
     </table>
     {if !$valid}
         <div id="validForm" class="oreonbutton"><p>{$form.submitC.html}&nbsp;&nbsp;&nbsp;{$form.reset.html}</p></div>
