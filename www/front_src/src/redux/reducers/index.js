@@ -9,19 +9,18 @@ import refreshReducer from './refreshReducer';
 import axiosReducer from './axiosReducer';
 import externalComponentsReducer from './externalComponentsReducer';
 import tooltipReducer from './tooltipReducer';
-import bamConfigurationReducer from './bamConfigurationReducer';
 import globalsReducer from './globalsReducer';
 
-export default (history) => combineReducers({
-  router: connectRouter(history),
-  form: formReducer,
-  pollerForm: pollerWizardReducer,
-  i18n: i18nReducer,
-  navigation: navigationReducer,
-  intervals: refreshReducer,
-  remoteData: axiosReducer,
-  externalComponents: externalComponentsReducer,
-  tooltip: tooltipReducer,
-  bamConfiguration:bamConfigurationReducer,
-  globals:globalsReducer
-});
+export default (history) =>
+  combineReducers({
+    router: connectRouter(history),
+    form: formReducer,
+    pollerForm: pollerWizardReducer,
+    i18n: i18nReducer,
+    navigation: navigationReducer,
+    intervals: refreshReducer,
+    remoteData: axiosReducer,
+    externalComponents: externalComponentsReducer,
+    tooltip: tooltipReducer,
+    globals: globalsReducer,
+  });
