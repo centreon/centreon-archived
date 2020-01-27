@@ -133,7 +133,7 @@ var autoRefresh = false;
 // be careful, it seems that it's updated when user logout/login
 const timezone = localStorage.getItem('realTimezone')
     ? localStorage.getItem('realTimezone')
-    : moment.tz.guess();
+    : moment.tz.guess(true);
 
 function initRefresh() {
     var $refresh = jQuery('#chart-refresh');
