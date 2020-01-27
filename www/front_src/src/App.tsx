@@ -118,12 +118,10 @@ class App extends Component<Props, State> {
       <StylesProvider injectFirst>
         <ConnectedRouter history={history}>
           <div className={styles.wrapper}>
-            {!min && <NavigationComponent /> // do not display menu if min=1
-            }
+            {!min && <NavigationComponent />}
             <Tooltip />
             <div id="content" className={contentStyles.content}>
-              {!min && <Header /> // do not display header if min=1
-              }
+              {!min && <Header />}
               <div
                 id="fullscreen-wrapper"
                 className={contentStyles['fullscreen-wrapper']}
@@ -140,8 +138,7 @@ class App extends Component<Props, State> {
                   </div>
                 </Fullscreen>
               </div>
-              {!min && <Footer /> // do not display footer if min=1
-              }
+              {!min && <Footer />}
             </div>
             <span
               className={footerStyles['full-screen']}
