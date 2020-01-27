@@ -1,7 +1,3 @@
-<link href="../../../../front_src/src/components/loader/loader.scss" rel="stylesheet/sass" type="text/css">
-<div class="loader">
-</div>
-
 <div>
 	<h3 style="text-align: center;"> Gorgone configuration file :</h3>
     <br>
@@ -27,6 +23,7 @@
 
 {literal}
 <script type='text/javascript'>
+    jQuery('#loading').hide();
     var clipboard = new Clipboard('.btn-copy', {
         text: function () {
             var command = document.querySelector('#configuration_file').textContent;

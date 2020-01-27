@@ -138,8 +138,14 @@
 {literal}
 <script type='text/javascript'>
     function displayPopup(id) {
-        var popin = jQuery('<div id="config-popin">');
-        var url = './include/configuration/configServers/popup/popup.php?id=' + id;
+        let popin = jQuery(
+            '<div id="config-popin">' +
+                '<div id="loading">' +
+                    '<img src="./img/misc/ajax-loader.gif" />' +
+                '</div>' +
+            '</div>'
+        );
+        let url = './include/configuration/configServers/popup/popup.php?id=' + id;
         popin.centreonPopin({
             url: url,
             open: true,
