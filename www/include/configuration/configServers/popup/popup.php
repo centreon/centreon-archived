@@ -69,6 +69,13 @@ AND ns.`id` =" . (int)$_GET['id'];
 $dbResult = $pearDB->query($query);
 $server = $dbResult->fetch();
 
+//get gorgone api informations
+$gorgoneApi = array();
+$dbResult = $pearDB->query('SELECT * from options WHERE `key` LIKE "gorgone%"');
+while ( $row = $dbResult->fetch()){
+    $gorgoneApi[$row['key']] = $row['value'];
+}
+
 $tpl->assign('serverIp', $server['ns_ip_address']);
 if (empty($server['remote_id']) && empty($server['list_remote_server_id'])) {
     //parent is the central
@@ -85,7 +92,10 @@ if (empty($server['remote_id']) && empty($server['list_remote_server_id'])) {
 
 $tokens = array();
 foreach ($parents as $serverId) {
-    $url = 'http://127.0.0.1:8085/api/nodes/' . $serverId . '/internal/thumbprint';
+
+    $url = $gorgoneApi['gorgone_api_ssl'] == 1 ? 'https' : 'http' . '://' .
+        $gorgoneApi['gorgone_api_address'] . ':' . $gorgoneApi['gorgone_api_port'] .
+        '/api/nodes/' . $serverId . '/internal/thumbprint';
     try {
         $curl = new \CentreonRestHttp;
         $tokens[$serverId] = $curl->call(
@@ -102,7 +112,9 @@ $chrono = 60;
 $thumbprintsData = array();
 
 foreach ($tokens as $serverId => $token) {
-    $url = 'http://127.0.0.1:8085/api/nodes/' . $serverId . '/log/' . $token["token"];
+    $url = $gorgoneApi['gorgone_api_ssl'] == 1 ? 'https' : 'http' . '://' .
+        $gorgoneApi['gorgone_api_address'] . ':' . $gorgoneApi['gorgone_api_port'] .
+        '/api/nodes/' . $serverId . '/log/' . $token["token"];
     $error = true;
     while (($chrono > 0) && $error) {
         try {
