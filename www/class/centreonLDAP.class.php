@@ -508,9 +508,10 @@ class CentreonLDAP
                 return array();
             }
             $entries = ldap_get_entries($this->ds, $result);
-            $nbEntries = !empty($entries[0]['member']['count']) ? $entries[0]['member']['count'] : 0;
+            $member_attribute = $this->groupSearchInfo['member'];
+            $nbEntries = !empty($entries[0][$member_attribute]['count']) ? $entries[0][$member_attribute]['count'] : 0;
             for ($i = 0; $i < $nbEntries; $i++) {
-                $list[] = $entries[0]['member'][$i];
+                $list[] = $entries[0][$member_attribute][$i];
             }
             restore_error_handler();
         }
