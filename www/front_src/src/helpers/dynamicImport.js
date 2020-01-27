@@ -1,3 +1,4 @@
+/* eslint-disable no-async-promise-executor */
 /* eslint-disable consistent-return */
 /* eslint-disable no-unused-vars */
 /* eslint-disable import/extensions */
@@ -28,11 +29,10 @@ export function dynamicImport(basename, parameters) {
         .replace(/\//g, '$')}`;
       if (typeof window[vector] === 'object') {
         return resolve(window[vector]);
-      } else {
-        const module = await(window.System.import(basename + parameters.js));
-        window[vector] = module;
-        return resolve(window[vector]);
       }
+      const module = await window.System.import(basename + parameters.js);
+      window[vector] = module;
+      return resolve(window[vector]);
     } catch (error) {
       console.error(error);
     }

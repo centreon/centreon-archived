@@ -1,3 +1,5 @@
+/* eslint-disable react/jsx-wrap-multilines */
+/* eslint-disable camelcase */
 /* eslint-disable import/no-extraneous-dependencies */
 /* eslint-disable react/no-unused-prop-types */
 /* eslint-disable radix */
@@ -91,7 +93,7 @@ class ServiceStatusMenu extends Component {
       });
   };
 
-  componentWillReceiveProps = (nextProps) => {
+  UNSAFE_componentWillReceiveProps = (nextProps) => {
     const { refreshTime } = nextProps;
     const { intervalApplied } = this.state;
     if (refreshTime && !intervalApplied) {
@@ -151,7 +153,11 @@ class ServiceStatusMenu extends Component {
                 data.critical.unhandled > 0 ? 'colored' : 'bordered'
               }`}
               iconColor="red"
-              iconNumber={<span id="count-svc-critical">{numeral(data.critical.unhandled).format('0a')}</span>}
+              iconNumber={
+                <span id="count-svc-critical">
+                  {numeral(data.critical.unhandled).format('0a')}
+                </span>
+              }
             />
           </Link>
           <Link
@@ -163,7 +169,11 @@ class ServiceStatusMenu extends Component {
                 data.warning.unhandled > 0 ? 'colored' : 'bordered'
               }`}
               iconColor="orange"
-              iconNumber={<span id="count-svc-warning">{numeral(data.warning.unhandled).format('0a')}</span>}
+              iconNumber={
+                <span id="count-svc-warning">
+                  {numeral(data.warning.unhandled).format('0a')}
+                </span>
+              }
             />
           </Link>
           <Link
@@ -175,7 +185,11 @@ class ServiceStatusMenu extends Component {
                 data.unknown.unhandled > 0 ? 'colored' : 'bordered'
               }`}
               iconColor="gray-light"
-              iconNumber={<span id="count-svc-unknown">{numeral(data.unknown.unhandled).format('0a')}</span>}
+              iconNumber={
+                <span id="count-svc-unknown">
+                  {numeral(data.unknown.unhandled).format('0a')}
+                </span>
+              }
             />
           </Link>
           <Link
@@ -185,7 +199,9 @@ class ServiceStatusMenu extends Component {
             <IconNumber
               iconType={`${data.ok > 0 ? 'colored' : 'bordered'}`}
               iconColor="green"
-              iconNumber={<span id="count-svc-ok">{numeral(data.ok).format('0a')}</span>}
+              iconNumber={
+                <span id="count-svc-ok">{numeral(data.ok).format('0a')}</span>
+              }
             />
           </Link>
           <IconToggleSubmenu

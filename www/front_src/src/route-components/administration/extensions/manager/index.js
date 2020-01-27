@@ -27,10 +27,8 @@ import { fetchExternalComponents } from '../../../../redux/actions/externalCompo
 class ExtensionsRoute extends Component {
   state = {
     extensions: {
-      result: {
-        module: { entities: [] },
-        widget: { entities: [] },
-      },
+      module: { entities: [] },
+      widget: { entities: [] },
     },
     widgetsActive: true,
     modulesActive: true,
