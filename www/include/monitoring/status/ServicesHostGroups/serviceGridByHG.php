@@ -115,7 +115,7 @@ $attrHostGroup = array(
 $form->addElement(
     'select2',
     'hg_search',
-    _('Hostgroup List'),
+    '',
     array('id' => 'hg_search'),
     $attrHostGroup
 );
