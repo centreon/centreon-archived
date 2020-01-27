@@ -32,7 +32,7 @@ const fetchNavigationBegin = () => ({
 
 const fetchNavigationSuccess = (items) => ({
   type: FETCH_NAVIGATION_SUCCESS,
-  items
+  items,
 });
 
 const fetchNavigationFailure = (error) => ({
