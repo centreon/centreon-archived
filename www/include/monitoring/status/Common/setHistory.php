@@ -1,7 +1,7 @@
 <?php
 /*
- * Copyright 2005-2015 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2020 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -33,7 +33,7 @@
  *
  */
 
-require_once realpath(dirname(__FILE__) . "/../../../../../config/centreon.config.php");
+require_once realpath(__DIR__ . "/../../../../../config/centreon.config.php");
 
 $path = _CENTREON_PATH_ . "/www";
 require_once("$path/class/centreon.class.php");

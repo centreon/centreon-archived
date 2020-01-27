@@ -1,7 +1,7 @@
 <?php
 /*
- * Copyright 2005-2015 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2020 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -54,7 +54,9 @@ $filterParameters = array(
     'monitoring_service_status_filter' => FILTER_SANITIZE_STRING,
     'monitoring_service_status' => FILTER_SANITIZE_STRING,
     'criticality_id' => FILTER_SANITIZE_NUMBER_INT,
-    'reset_filter' => FILTER_SANITIZE_NUMBER_INT
+    'reset_filter' => FILTER_SANITIZE_NUMBER_INT,
+    'o' => FILTER_SANITIZE_STRING,
+    'statusService' => FILTER_SANITIZE_STRING
 );
 
 $myinputsGet = filter_input_array(INPUT_GET, $filterParameters);
@@ -129,16 +131,12 @@ $GroupListofUser = array();
 $GroupListofUser = $centreon->user->access->getAccessGroups();
 
 $allActions = false;
-/*
- * Get list of actions allowed for user
- */
+// Get list of actions allowed for user
 if (count($GroupListofUser) > 0 && $is_admin == 0) {
     $authorized_actions = array();
     $authorized_actions = $centreon->user->access->getActions();
 } else {
-    /*
-     * if user is admin, or without ACL, he cans perform all actions
-     */
+    // if user is admin, or without ACL, he cans perform all actions
     $allActions = true;
 }
 
@@ -227,14 +225,6 @@ $tpl->assign("mon_status_information", _("Status information"));
 
 $tab_class = array("0" => "list_one", "1" => "list_two");
 $rows = 10;
-
-$sDefaultOrder = "0";
-
-if (!isset($_GET['o'])) {
-    $sSetOrderInMemory = "1";
-} else {
-    $sSetOrderInMemory = "0";
-}
 
 $form = new HTML_QuickFormCustom('select_form', 'GET', "?p=" . $p);
 
@@ -414,12 +404,6 @@ $form->addElement(
     $statusList,
     array('id' => 'statusFilter', 'onChange' => "filterStatus(this.value);")
 );
-if ((!isset($_GET['o']) || empty($_GET['o'])) && isset($_SESSION['monitoring_service_status_filter'])) {
-    $form->setDefaults(array('statusFilter' => $_SESSION['monitoring_service_status_filter']));
-    $sDefaultOrder = "1";
-}
-$defaultStatusFilter = $_GET['statusFilter'] ?? '';
-$defaultStatusService = $_GET['statusService'] ?? 'svc_unhandled';
 
 $form->addElement(
     'select',
@@ -429,15 +413,45 @@ $form->addElement(
     array('id' => 'statusService', 'onChange' => "statusServices(this.value);")
 );
 
-/* Get default service status by GET */
-if (isset($_GET['o']) && in_array($_GET['o'], array_keys($statusService))) {
-    $form->setDefaults(array('statusService' => $_GET['o']));
-    /* Get default service status in SESSION */
-} elseif ((!isset($_GET['o']) || empty($_GET['o'])) && isset($_SESSION['monitoring_service_status'])) {
-    $o = $_SESSION['monitoring_service_status'];
-    $form->setDefaults(array('statusService' => $_SESSION['monitoring_service_status']));
-    $sDefaultOrder = "1";
+$sDefaultOrder = "0";
+
+// Get default service status from REQUEST
+if (isset($myinputsGet['o'])) {
+    $sSetOrderInMemory = "0";
+
+    $defaultStatusService = $myinputsGet['o'];
+
+    // data sent from topcounter using the URI
+    if (defaultStatusService === 'svc_ok' && isset($myinputsGet['statusService'])) {
+        $defaultStatusFilter = $myinputsGet['statusService'];
+    } else {
+        $defaultStatusFilter = '';
+    }
+} else {
+    $sSetOrderInMemory = "1";
+
+    // service status filter
+    $defaultStatusService = $myinputsGet['statusService']
+        ?? $myinputsPost['statusService']
+        ?? $_SESSION['monitoring_service_status']
+        ?? 'svc_unhandled';
+
+    // chosen state filter
+    $defaultStatusFilter = $myinputsGet['statusFilter']
+        ?? $myinputsPost['statusFilter']
+        ?? $_SESSION['monitoring_service_status_filter']
+        ?? '';
+
+    if ($defaultStatusFilter === $_SESSION['monitoring_service_status_filter']) {
+        $sDefaultOrder = "1";
+    }
 }
+
+// saving chosen status
+$_SESSION['monitoring_service_status'] = $defaultStatusService;
+
+$form->setDefaults(array('statusService' => $defaultStatusService));
+$form->setDefaults(array('statusFilter' => $defaultStatusFilter));
 
 $criticality = new CentreonCriticality($pearDB);
 $crits = $criticality->getList(null, "level", 'ASC', null, null, true);
