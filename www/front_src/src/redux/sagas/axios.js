@@ -1,3 +1,4 @@
+/* eslint-disable no-useless-catch */
 /* eslint-disable no-restricted-syntax */
 /* eslint-disable no-use-before-define */
 
@@ -143,14 +144,14 @@ function* axiosRequest(action) {
       throw new Error('Request type is required!');
     } else {
       let dataBody = null;
-      if(action.requestType === "DELETE"){
-        dataBody = action.data ? { data:action.data } : null
-      }else{
-        dataBody = action.data ? action.data : null
+      if (action.requestType === 'DELETE') {
+        dataBody = action.data ? { data: action.data } : null;
+      } else {
+        dataBody = action.data ? action.data : null;
       }
       const res = yield axios[action.requestType.toLowerCase()](
         action.url,
-        dataBody ? dataBody : null
+        dataBody || null,
       );
 
       const data = yield res.data;

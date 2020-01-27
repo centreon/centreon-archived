@@ -1,7 +1,7 @@
 const globalsReducer = (
   state = {
-	  domainPath: "."
-	}
-  ) => state;
-  
-  export default globalsReducer;
+    domainPath: '.',
+  },
+) => state;
+
+export default globalsReducer;

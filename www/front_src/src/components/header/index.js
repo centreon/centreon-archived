@@ -64,7 +64,4 @@ const mapDispatchToProps = {
   setRefreshIntervals,
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(TopHeader);
+export default connect(mapStateToProps, mapDispatchToProps)(TopHeader);
