@@ -21,9 +21,9 @@ declare(strict_types=1);
 
 namespace Centreon\Domain\Gorgone\Command;
 
-use Centreon\Domain\Gorgone\Interfaces\GorgoneCommandInterface;
+use Centreon\Domain\Gorgone\Interfaces\CommandInterface;
 
-Trait BasicCommand
+trait BasicCommand
 {
     /**
      * @var string Token of the command assigned by the Gorgone server.
@@ -47,7 +47,7 @@ Trait BasicCommand
 
     /**
      * @return int
-     * @see GorgoneCommandInterface::getPollerId()
+     * @see CommandInterface::getPollerId()
      */
     public function getPollerId(): int
     {
@@ -56,7 +56,7 @@ Trait BasicCommand
 
     /**
      * @return string
-     * @see GorgoneCommandInterface::getToken()
+     * @see CommandInterface::getToken()
      */
     public function getToken(): string
     {
@@ -65,20 +65,10 @@ Trait BasicCommand
 
     /**
      * @param string $token
-     * @see GorgoneCommandInterface::setToken()
+     * @see CommandInterface::setToken()
      */
     public function setToken(string $token): void
     {
         $this->token = $token;
-    }
-
-    /**
-     * Get the name of the command.
-     *
-     * @return string
-     */
-    public function getName(): string
-    {
-        return self::NAME;
     }
 }

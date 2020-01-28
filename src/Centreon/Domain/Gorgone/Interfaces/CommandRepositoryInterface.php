@@ -21,25 +21,14 @@ declare(strict_types=1);
 
 namespace Centreon\Domain\Gorgone\Interfaces;
 
-interface GorgoneResponseRepositoryInterface
+interface CommandRepositoryInterface
 {
     /**
-     * Returns the response of the command sent.
+     * Send a command to the Gorgone server.
      *
-     * The command must have been sent because we will use the command token to retrieve the message.
-     *
-     * @param GorgoneCommandInterface $command Command sent to the Gorgone server
-     * @return string Response message in JSON format
+     * @param CommandInterface $command Command to send
+     * @return string Returns a token that will be used to retrieve the response
      * @throws \Exception
      */
-    public function getResponse (GorgoneCommandInterface $command): string;
-
-    /**
-     * Defines the function or method that will be executed after the response is received.
-     *
-     * The response message will be passed as a parameter of the function or method.
-     *
-     * @param callable $responseSetter
-     */
-    public function defineResponseSetter (callable $responseSetter): void;
+    public function send(CommandInterface $command): string;
 }

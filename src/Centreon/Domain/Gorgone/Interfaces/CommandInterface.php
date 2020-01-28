@@ -21,7 +21,7 @@ declare(strict_types=1);
 
 namespace Centreon\Domain\Gorgone\Interfaces;
 
-interface GorgoneCommandInterface
+interface CommandInterface
 {
     /**
      * Returns the token assigned by Gorgone for this command.
@@ -59,7 +59,9 @@ interface GorgoneCommandInterface
     public function getPollerId(): int;
 
     /**
-     * @return string Retrieve the internal name of the command
+     * Retrieve the internal name of the command.
+     *
+     * @return string Name of the command
      */
     public function getName(): string;
 }

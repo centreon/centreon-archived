@@ -21,17 +21,17 @@ declare(strict_types=1);
 
 namespace Centreon\Infrastructure\Gorgone;
 
-use Centreon\Domain\Gorgone\Interfaces\GorgoneCommandInterface;
-use Centreon\Domain\Gorgone\Interfaces\GorgoneApiConnectionInterface;
-use Centreon\Domain\Gorgone\Interfaces\GorgoneResponseRepositoryInterface;
-
+use Centreon\Domain\Gorgone\Interfaces\CommandInterface;
+use Centreon\Domain\Gorgone\Interfaces\CommandRepositoryApiInterface;
+use Centreon\Domain\Gorgone\Interfaces\ResponseRepositoryApiInterface;
 use Symfony\Component\HttpClient\CurlHttpClient;
-use Symfony\Component\HttpClient\HttpClient;
+use Symfony\Contracts\HttpClient\HttpClientInterface;
 
-class GorgoneResponseRepositoryAPI implements GorgoneResponseRepositoryInterface, GorgoneApiConnectionInterface
+class ResponseRepositoryAPI implements ResponseRepositoryApiInterface
 {
     /**
-     * @var HttpClient Http client library that will be used to communicate with the Gorgone server through its API.
+     * @var HttpClientInterface Http client library that will be used to
+     * communicate with the Gorgone server through its API.
      */
     private $client;
 
@@ -46,7 +46,7 @@ class GorgoneResponseRepositoryAPI implements GorgoneResponseRepositoryInterface
      */
     private $connectionParameters;
 
-    public function __construct ()
+    public function __construct()
     {
         $this->client = new CurlHttpClient();
     }
@@ -54,14 +54,14 @@ class GorgoneResponseRepositoryAPI implements GorgoneResponseRepositoryInterface
     /**
      * @inheritDoc
      *
-     * @see GorgoneApiConnectionInterface::DEFAULT_CONNECTION_PARAMETERS for default parameters
-     * @see GorgoneResponseRepositoryAPI::$connectionParameters for more explanations
+     * @see CommandRepositoryApiInterface::DEFAULT_CONNECTION_PARAMETERS for default parameters
+     * @see ResponseRepositoryAPI::$connectionParameters for more explanations
      */
     public function defineConnectionParameters(array $connectionParameters): void
     {
         $defaultConnectionsParameters = [
             'gorgone_api_address' => '127.0.0.1',
-            'gorgone_api_port' => 8085,
+            'gorgone_api_port' => '8085',
             'gorgone_api_username' => '',
             'gorgone_api_password' => '',
             'gorgone_api_ssl' => '0',
@@ -79,11 +79,11 @@ class GorgoneResponseRepositoryAPI implements GorgoneResponseRepositoryInterface
     }
 
     /**
-     * @param GorgoneCommandInterface $command
+     * @param CommandInterface $command
      * @return string
      * @throws \Exception
      */
-    public function getResponse(GorgoneCommandInterface $command): string
+    public function getResponse(CommandInterface $command): string
     {
         $isAllowCertificateSelfSigned = $this->connectionParameters['gorgone_api_allow_self_signed'] === '0';
         $options = [
@@ -93,10 +93,9 @@ class GorgoneResponseRepositoryAPI implements GorgoneResponseRepositoryInterface
         ];
         if (!empty($this->connectionParameters['gorgone_api_username'])) {
             $options = array_merge(
-                $options, [
-                    'auth_basic' => $this->connectionParameters['gorgone_api_username'] . ':'
-                        . $this->connectionParameters['gorgone_api_password']
-                ]
+                $options,
+                ['auth_basic' => $this->connectionParameters['gorgone_api_username'] . ':'
+                    . $this->connectionParameters['gorgone_api_password']]
             );
         }
         try {

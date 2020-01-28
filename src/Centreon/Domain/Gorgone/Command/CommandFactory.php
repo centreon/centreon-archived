@@ -1,5 +1,5 @@
 <?php
-/**
+/*
  * Copyright 2005 - 2020 Centreon (https://www.centreon.com/)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,31 +17,32 @@
  * For more information : contact@centreon.com
  *
  */
+declare(strict_types=1);
 
 namespace Centreon\Domain\Gorgone\Command;
 
-use Centreon\Domain\Gorgone\Interfaces\GorgoneCommandInterface;
+use Centreon\Domain\Gorgone\Interfaces\CommandInterface;
 
 class CommandFactory
 {
     /**
-     * @var array GorgoneCommandInterface[]
+     * @var array<CommandInterface> GorgoneCommandInterface[]
      */
     static private $commands = [];
 
     /**
-     * @param GorgoneCommandInterface $command Command to add
+     * @param CommandInterface $command Command to add
      */
-    static public function addCommand(GorgoneCommandInterface $command): void
+    public static function addCommand(CommandInterface $command): void
     {
         static::$commands[$command->getName()] = $command;
     }
 
     /***
      * @param string $commandName Gorgone command name
-     * @return GorgoneCommandInterface
+     * @return CommandInterface
      */
-    static public function create(string $commandName): GorgoneCommandInterface
+    public static function create(string $commandName): CommandInterface
     {
         if (array_key_exists($commandName, static::$commands)) {
             return static::$commands[$commandName];

@@ -21,9 +21,9 @@ declare(strict_types=1);
 
 namespace Centreon\Domain\Gorgone;
 
-use Centreon\Domain\Gorgone\Interfaces\GorgoneResponseInterface;
-use Centreon\Domain\Gorgone\Interfaces\GorgoneResponseRepositoryInterface;
-use Centreon\Domain\Gorgone\Interfaces\GorgoneCommandInterface;
+use Centreon\Domain\Gorgone\Interfaces\ResponseInterface;
+use Centreon\Domain\Gorgone\Interfaces\ResponseRepositoryInterface;
+use Centreon\Domain\Gorgone\Interfaces\CommandInterface;
 
 /**
  * This class is design to represent a response of the Gorgone server and can be used to retrieve all action logs
@@ -31,10 +31,10 @@ use Centreon\Domain\Gorgone\Interfaces\GorgoneCommandInterface;
  *
  * @package Centreon\Domain\Gorgone
  */
-class GorgoneResponse implements GorgoneResponseInterface
+class Response implements ResponseInterface
 {
     /**
-     * @var GorgoneCommandInterface Command sent to the Gorgone server
+     * @var CommandInterface Command sent to the Gorgone server
      */
     private $command;
 
@@ -60,19 +60,19 @@ class GorgoneResponse implements GorgoneResponseInterface
     private $actionLogs = [];
 
     /**
-     * @var GorgoneResponseRepositoryInterface
+     * @var ResponseRepositoryInterface
      */
     static private $staticResponseRepository;
 
     /**
-     * @var GorgoneResponseRepositoryInterface
+     * @var ResponseRepositoryInterface
      */
     private $responseRepository;
 
     /**
-     * @param GorgoneResponseRepositoryInterface $responseRepository
+     * @param ResponseRepositoryInterface $responseRepository
      */
-    static public function setRepository(GorgoneResponseRepositoryInterface $responseRepository): void
+    public static function setRepository(ResponseRepositoryInterface $responseRepository): void
     {
         static::$staticResponseRepository = $responseRepository;
     }
@@ -83,24 +83,27 @@ class GorgoneResponse implements GorgoneResponseInterface
      * The response and associated action logs will be retrieved when calling
      * the getLastActionLog method.
      *
-     * @param GorgoneCommandInterface $command Command sent to the Gorgone server
-     * @return GorgoneResponseInterface
-     * @see GorgoneResponseInterface::getActionLogs()
+     * @param CommandInterface $command Command sent to the Gorgone server
+     * @return ResponseInterface
+     * @see ResponseInterface::getActionLogs()
      */
-    static public function create(GorgoneCommandInterface $command): GorgoneResponseInterface
+    public static function create(CommandInterface $command): ResponseInterface
     {
-        return new GorgoneResponse(self::$staticResponseRepository, $command);
+        return new Response(self::$staticResponseRepository, $command);
     }
 
-    public function __construct (GorgoneResponseRepositoryInterface $responseRepository, GorgoneCommandInterface $command) {
+    public function __construct(
+        ResponseRepositoryInterface $responseRepository,
+        CommandInterface $command
+    ) {
         $this->command = $command;
         $this->responseRepository = $responseRepository;
     }
 
     /**
-     * @return GorgoneCommandInterface|null
+     * @return CommandInterface|null
      */
-    public function getCommand (): ?GorgoneCommandInterface
+    public function getCommand(): ?CommandInterface
     {
         return $this->command;
     }
@@ -108,16 +111,16 @@ class GorgoneResponse implements GorgoneResponseInterface
     /**
      * @return string
      */
-    public function getMessage (): string
+    public function getMessage(): string
     {
         return $this->message;
     }
 
     /**
      * @return ActionLog[]
-     * @see GorgoneResponse::$actionLogs
+     * @see Response::$actionLogs
      */
-    public function getActionLogs (): array
+    public function getActionLogs(): array
     {
         return $this->actionLogs;
     }
@@ -148,18 +151,18 @@ class GorgoneResponse implements GorgoneResponseInterface
 
     /**
      * @inheritDoc
-     * @see GorgoneResponse::$token
+     * @see Response::$token
      */
-    public function getToken (): string
+    public function getToken(): string
     {
         return $this->token;
     }
 
     /**
      * @inheritDoc
-     * @see GorgoneResponse::$error
+     * @see Response::$error
      */
-    public function getError (): ?string
+    public function getError(): ?string
     {
         return $this->error;
     }

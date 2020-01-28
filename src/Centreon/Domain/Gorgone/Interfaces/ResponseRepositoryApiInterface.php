@@ -21,7 +21,7 @@ declare(strict_types=1);
 
 namespace Centreon\Domain\Gorgone\Interfaces;
 
-interface GorgoneApiConnectionInterface
+interface ResponseRepositoryApiInterface extends ResponseRepositoryInterface
 {
     public const DEFAULT_CONNECTION_PARAMETERS = [
         'gorgone_api_address' => '127.0.0.1', // IP address of the Gorgone API server
@@ -36,8 +36,8 @@ interface GorgoneApiConnectionInterface
      *
      * These parameters will be merged with the default connections parameters.
      *
-     * @param array $connectionParameters Connection parameters
-     * @see GorgoneApiConnectionInterface::DEFAULT_CONNECTION_PARAMETERS
+     * @param array<string, string> $connectionParameters Connection parameters
+     * @see ResponseRepositoryApiInterface::DEFAULT_CONNECTION_PARAMETERS
      */
     public function defineConnectionParameters(array $connectionParameters): void;
 }

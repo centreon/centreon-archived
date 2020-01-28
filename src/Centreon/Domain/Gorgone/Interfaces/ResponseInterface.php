@@ -22,21 +22,31 @@ declare(strict_types=1);
 namespace Centreon\Domain\Gorgone\Interfaces;
 
 use Centreon\Domain\Gorgone\ActionLog;
-use Centreon\Domain\Gorgone\GorgoneResponse;
 
 /**
  * This interface is design to represent a response received by the Gorgone server.
  *
  * @package Centreon\Domain\Gorgone\Interfaces
  */
-interface GorgoneResponseInterface
+interface ResponseInterface
 {
     public const STATUS_BEGIN = 0;
     public const STATUS_ERROR = 1;
     public const STATUS_OK = 2;
 
-    public function getCommand (): ?GorgoneCommandInterface;
-    public function getMessage (): string;
+    /**
+     * Return the command of this response.
+     *
+     * @return CommandInterface|null
+     */
+    public function getCommand(): ?CommandInterface;
+
+    /**
+     * Return the message of the response.
+     *
+     * @return string
+     */
+    public function getMessage(): string;
 
     /**
      * Returns all the action logs received by the Gorgone server according to the command sent.
@@ -45,9 +55,9 @@ interface GorgoneResponseInterface
      * GorgoneResponseInterface::STATUS_OK.
      *
      * @return ActionLog[]
-     * @see GorgoneResponseInterface::STATUS_BEGIN for code when action begin
-     * @see GorgoneResponseInterface::STATUS_ERROR for code when there is an error
-     * @see GorgoneResponseInterface::STATUS_OK for code when the last action log has been received and its statut is OK
+     * @see ResponseInterface::STATUS_BEGIN for code when action begin
+     * @see ResponseInterface::STATUS_ERROR for code when there is an error
+     * @see ResponseInterface::STATUS_OK for code when the last action log has been received and its statut is OK
      */
     public function getActionLogs(): array;
 
@@ -73,5 +83,5 @@ interface GorgoneResponseInterface
      *
      * @return string|null
      */
-    public function getError (): ?string;
+    public function getError(): ?string;
 }

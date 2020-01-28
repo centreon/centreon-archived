@@ -20,4 +20,6 @@
 
 namespace Centreon\Domain\Gorgone;
 
-class GorgoneException extends \Exception {}
+class GorgoneException extends \Exception
+{
+}

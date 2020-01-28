@@ -22,9 +22,9 @@ declare(strict_types=1);
 namespace Centreon\Application\Controller;
 
 use Centreon\Domain\Gorgone\Command\Internal\ThumbprintCommand;
-use Centreon\Domain\Gorgone\Interfaces\GorgoneCommandInterface;
-use Centreon\Domain\Gorgone\Interfaces\GorgoneResponseRepositoryInterface;
-use Centreon\Domain\Gorgone\Interfaces\GorgoneServiceInterface;
+use Centreon\Domain\Gorgone\Interfaces\CommandInterface;
+use Centreon\Domain\Gorgone\Interfaces\ResponseRepositoryInterface;
+use Centreon\Domain\Gorgone\Interfaces\ServiceInterface;
 use FOS\RestBundle\Controller\AbstractFOSRestController;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
@@ -37,14 +37,12 @@ use FOS\RestBundle\View\View;
 class GorgoneController extends AbstractFOSRestController
 {
     /**
-     * @var GorgoneServiceInterface
+     * @var ServiceInterface
      */
     private $gorgoneService;
 
-    public function __construct (
-        GorgoneServiceInterface $gorgoneService,
-        GorgoneResponseRepositoryInterface $responseRepository
-    ) {
+    public function __construct(ServiceInterface $gorgoneService)
+    {
         $this->gorgoneService = $gorgoneService;
     }
 
@@ -54,7 +52,6 @@ class GorgoneController extends AbstractFOSRestController
      * @Rest\Get(
      *     "/gorgone/pollers/{pollerId}/commands/{commandName}",
      *     condition="request.attributes.get('version') == 2.0")
-     *
      * @param string $commandName Name of the Gorgone command
      * @param int $pollerId Id of the poller for which this command is intended
      * @return View
@@ -98,9 +95,10 @@ class GorgoneController extends AbstractFOSRestController
      * Check whether the command type exists or not.
      *
      * @param string $commandType Type of the command (ex: thumbprint, ...)
-     * @return GorgoneCommandInterface
+     * @param int $pollerId Id of the poller for which the command is intended
+     * @return CommandInterface
      */
-    private function createFromName(string $commandType, int $pollerId): GorgoneCommandInterface
+    private function createFromName(string $commandType, int $pollerId): CommandInterface
     {
         switch ($commandType) {
             case 'thumbprint':

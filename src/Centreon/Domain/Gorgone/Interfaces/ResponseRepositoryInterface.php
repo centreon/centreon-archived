@@ -21,21 +21,25 @@ declare(strict_types=1);
 
 namespace Centreon\Domain\Gorgone\Interfaces;
 
-use Centreon\Domain\Gorgone\Command\EmptyCommand;
-use Centreon\Domain\Gorgone\GorgoneResponse;
-
-interface GorgoneServiceInterface
+interface ResponseRepositoryInterface
 {
     /**
-     * Send a command to the Gorgone server and retrieve an instance of the
-     * response which allowed to get all action logs.
+     * Returns the response of the command sent.
      *
-     * @param GorgoneCommandInterface $command Command to send
-     * @return GorgoneResponseInterface Returns a response containing the command sent.
+     * The command must have been sent because we will use the command token to retrieve the message.
+     *
+     * @param CommandInterface $command Command sent to the Gorgone server
+     * @return string Response message in JSON format
      * @throws \Exception
-     * @see GorgoneResponseInterface
      */
-    public function send(GorgoneCommandInterface $command): GorgoneResponseInterface;
+    public function getResponse(CommandInterface $command): string;
 
-    public function getResponseFromToken (int $pollerId, string $token): GorgoneResponseInterface;
+    /**
+     * Defines the function or method that will be executed after the response is received.
+     *
+     * The response message will be passed as a parameter of the function or method.
+     *
+     * @param callable $responseSetter
+     */
+    public function defineResponseSetter(callable $responseSetter): void;
 }

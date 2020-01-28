@@ -22,22 +22,21 @@ declare(strict_types=1);
 namespace Centreon\Domain\Gorgone;
 
 use Centreon\Domain\Gorgone\Command\EmptyCommand;
-use Centreon\Domain\Gorgone\Interfaces\GorgoneApiConnectionInterface;
-use Centreon\Domain\Gorgone\Interfaces\GorgoneCommandInterface;
-use Centreon\Domain\Gorgone\Interfaces\GorgoneCommandRepositoryInterface;
-use Centreon\Domain\Gorgone\Interfaces\GorgoneResponseInterface;
-use Centreon\Domain\Gorgone\Interfaces\GorgoneResponseRepositoryInterface;
-use Centreon\Domain\Gorgone\Interfaces\GorgoneServiceInterface;
+use Centreon\Domain\Gorgone\Interfaces\CommandRepositoryApiInterface;
+use Centreon\Domain\Gorgone\Interfaces\CommandInterface;
+use Centreon\Domain\Gorgone\Interfaces\ResponseInterface;
+use Centreon\Domain\Gorgone\Interfaces\ResponseRepositoryApiInterface;
+use Centreon\Domain\Gorgone\Interfaces\ServiceInterface;
 use Centreon\Domain\Option\Interfaces\OptionRepositoryInterface;
 
-class GorgoneService implements GorgoneServiceInterface
+class GorgoneService implements ServiceInterface
 {
     /**
-     * @var GorgoneResponseRepositoryInterface
+     * @var ResponseRepositoryApiInterface
      */
     private $responseRepository;
     /**
-     * @var GorgoneCommandRepositoryInterface
+     * @var CommandRepositoryApiInterface
      */
     private $commandRepository;
     /**
@@ -52,26 +51,26 @@ class GorgoneService implements GorgoneServiceInterface
     private $isInitializedConnection = false;
 
     /**
-     * @param GorgoneResponseRepositoryInterface $responseRepository
-     * @param GorgoneCommandRepositoryInterface $commandRepository
+     * @param ResponseRepositoryApiInterface $responseRepository
+     * @param CommandRepositoryApiInterface $commandRepository
      * @param OptionRepositoryInterface $optionRepository
      */
-    public function __construct (
-        GorgoneResponseRepositoryInterface $responseRepository,
-        GorgoneCommandRepositoryInterface $commandRepository,
+    public function __construct(
+        ResponseRepositoryApiInterface $responseRepository,
+        CommandRepositoryApiInterface $commandRepository,
         OptionRepositoryInterface $optionRepository
     ) {
         $this->responseRepository = $responseRepository;
         $this->commandRepository = $commandRepository;
         $this->optionRepository = $optionRepository;
-        GorgoneResponse::setRepository($responseRepository);
+        Response::setRepository($responseRepository);
     }
 
     /**
      * @inheritDoc
-     * @see GorgoneResponseInterface
+     * @see ResponseInterface
      */
-    public function send(GorgoneCommandInterface $command): GorgoneResponseInterface
+    public function send(CommandInterface $command): ResponseInterface
     {
         if ($this->isInitializedConnection === false) {
             $this->initGorgoneConnection();
@@ -82,26 +81,31 @@ class GorgoneService implements GorgoneServiceInterface
             throw new GorgoneException('Error when connecting to the Gorgon server');
         }
         $command->setToken($responseToken);
-        return GorgoneResponse::create($command);
+        return Response::create($command);
     }
 
-    public function getResponseFromToken(int $pollerId, string $token): GorgoneResponseInterface
+    /**
+     * @param int $pollerId
+     * @param string $token
+     * @return ResponseInterface
+     */
+    public function getResponseFromToken(int $pollerId, string $token): ResponseInterface
     {
         if ($this->isInitializedConnection === false) {
             $this->initGorgoneConnection();
         }
         $emptyCommand = new EmptyCommand($pollerId);
         $emptyCommand->setToken($token);
-        return GorgoneResponse::create($emptyCommand);
+        return Response::create($emptyCommand);
     }
 
     /**
      * Defines the connection parameters for the Gorgone command and response repositories.
      */
-    private function initGorgoneConnection (): void
+    private function initGorgoneConnection(): void
     {
         /**
-         * @see GorgoneApiConnectionInterface::DEFAULT_CONNECTION_PARAMETERS
+         * @see CommandRepositoryApiInterface::DEFAULT_CONNECTION_PARAMETERS
          */
         $connectionDetails = $this->optionRepository->findSelectedOptions([
             'gorgone_api_address',

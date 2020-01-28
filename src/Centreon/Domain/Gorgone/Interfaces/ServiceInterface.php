@@ -21,14 +21,25 @@ declare(strict_types=1);
 
 namespace Centreon\Domain\Gorgone\Interfaces;
 
-interface GorgoneCommandRepositoryInterface
+interface ServiceInterface
 {
     /**
-     * Send a command to the Gorgone server.
+     * Send a command to the Gorgone server and retrieve an instance of the
+     * response which allowed to get all action logs.
      *
-     * @param GorgoneCommandInterface $command Command to send
-     * @return string Returns a token that will be used to retrieve the response
+     * @param CommandInterface $command Command to send
+     * @return ResponseInterface Returns a response containing the command sent.
      * @throws \Exception
+     * @see ResponseInterface
      */
-    public function send(GorgoneCommandInterface $command): string;
+    public function send(CommandInterface $command): ResponseInterface;
+
+    /**
+     * Retrieve the response according to the command token and the poller id.
+     *
+     * @param int $pollerId Id of the poller for which the command was intended
+     * @param string $token Token of the command returned by the Gorgone server
+     * @return ResponseInterface
+     */
+    public function getResponseFromToken(int $pollerId, string $token): ResponseInterface;
 }

@@ -1,5 +1,5 @@
 <?php
-/**
+/*
  * Copyright 2005 - 2020 Centreon (https://www.centreon.com/)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,19 +17,22 @@
  * For more information : contact@centreon.com
  *
  */
+declare(strict_types=1);
 
 namespace Centreon\Domain\Gorgone\Command;
 
-use Centreon\Domain\Gorgone\Interfaces\GorgoneCommandInterface;
+use Centreon\Domain\Gorgone\Interfaces\CommandInterface;
 
-class EmptyCommand implements GorgoneCommandInterface
+class EmptyCommand implements CommandInterface
 {
     use BasicCommand;
+
+    private const NAME = "basic";
 
     /**
      * @inheritDoc
      */
-    public function getUriRequest (): string
+    public function getUriRequest(): string
     {
         return '';
     }
@@ -37,8 +40,16 @@ class EmptyCommand implements GorgoneCommandInterface
     /**
      * @inheritDoc
      */
-    public function getBodyRequest (): string
+    public function getBodyRequest(): string
     {
         return '';
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getName(): string
+    {
+        return self::NAME;
     }
 }

@@ -22,24 +22,24 @@ declare(strict_types=1);
 namespace Centreon\Domain\Gorgone\Command\Internal;
 
 use Centreon\Domain\Gorgone\Command\BasicCommand;
-use Centreon\Domain\Gorgone\Interfaces\GorgoneCommandInterface;
+use Centreon\Domain\Gorgone\Interfaces\CommandInterface;
 
 /**
  * This class is designed to represent a thumbprint command
  *
  * @package Centreon\Domain\Gorgone\Command\Internal
  */
-class ThumbprintCommand implements GorgoneCommandInterface
+class ThumbprintCommand implements CommandInterface
 {
     use BasicCommand;
 
     // Internal name of this command
-    public const NAME = 'internal::thumbprint';
+    private const NAME = 'internal::thumbprint';
 
     /**
      * @inheritDoc
      */
-    public function getUriRequest (): string
+    public function getUriRequest(): string
     {
         return 'nodes/' . $this->pollerId . '/internal/thumbprint';
     }
@@ -47,8 +47,16 @@ class ThumbprintCommand implements GorgoneCommandInterface
     /**
      * @inheritDoc
      */
-    public function getBodyRequest (): string
+    public function getBodyRequest(): string
     {
         return '';
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getName(): string
+    {
+        return self::NAME;
     }
 }
