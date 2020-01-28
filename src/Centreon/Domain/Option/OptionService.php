@@ -39,7 +39,7 @@ class OptionService implements OptionServiceInterface
     /**
      * @param OptionRepositoryInterface $repository
      */
-    public function __construct (OptionRepositoryInterface $repository)
+    public function __construct(OptionRepositoryInterface $repository)
     {
         $this->repository = $repository;
     }

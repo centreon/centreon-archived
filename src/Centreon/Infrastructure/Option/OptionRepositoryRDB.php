@@ -36,7 +36,7 @@ class OptionRepositoryRDB extends AbstractRepositoryDRB implements OptionReposit
     /**
      * @param DatabaseConnection $db
      */
-    public function __construct (DatabaseConnection $db)
+    public function __construct(DatabaseConnection $db)
     {
         $this->db = $db;
     }
@@ -57,7 +57,7 @@ class OptionRepositoryRDB extends AbstractRepositoryDRB implements OptionReposit
 
         $optionsFound = [];
         while (false !== ($option = $statement->fetch(\PDO::FETCH_ASSOC))) {
-            $optionsFound[$option['key']] = $option['value'];
+            $optionsFound[(string) $option['key']] = (string) $option['value'];
         }
         return $optionsFound;
     }
