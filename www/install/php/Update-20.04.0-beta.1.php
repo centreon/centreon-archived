@@ -160,7 +160,7 @@ try {
         }
         $content = file_get_contents($fileTpl);
         $content = preg_replace($pattern, $userValues, $content);
-        $finalFile = _CENTREON_ETC_ . '/../centreon-gorgone/config.d/20-gorgoned.yaml';
+        $finalFile = _CENTREON_ETC_ . '/../centreon-gorgone/config.d/40-gorgoned.yaml';
         if (!file_exists(_CENTREON_ETC_ . '/../centreon-gorgone')) {
             $errorMessage = 'Gorgone configuration folder does not exist. ' .
                 'Please reinstall the centreon-gorgone package and retry';
