@@ -34,8 +34,8 @@ describe('menuSelector', () => {
                         url: 'hiddenEntry.php',
                         options: null,
                       },
-                    ]
-                  }
+                    ],
+                  },
                 ],
                 page: '602',
                 label: 'Services',
@@ -50,7 +50,7 @@ describe('menuSelector', () => {
       },
     };
 
-    let expectedState = [...state.navigation.items];
+    const expectedState = [...state.navigation.items];
     expectedState[0].children[0].groups[0].children.pop(); // remove hidden entry
 
     const menu = menuSelector(state);
