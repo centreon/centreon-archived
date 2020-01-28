@@ -57,7 +57,6 @@ class CommandServiceTest extends TestCase
 
         $commandRepository->expects(self::any())
             ->method('send')
-            //->with($thumbprintCommand)
             ->willReturn($mockToken); // values returned for the all next tests
 
         $responseRepository = $this
