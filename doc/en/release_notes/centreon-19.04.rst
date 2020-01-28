@@ -28,6 +28,7 @@ Security
 * [Service Discovery] cron should be run by centreon user (PR #8062 fixes #7921)
 * [Web] bump terser-webpack-plugin to 1.4.2
 
+====================
 Centreon Web 19.04.7
 ====================
 

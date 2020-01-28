@@ -32,6 +32,7 @@ Security
 * [Web] Bump terser-webpack-plugin to 1.4.2 (PR/#8182)
 * [Web] Upgrade handlebars dependencies (PR/#8224)
 
+====================
 Centreon Web 19.10.4
 ====================
 
