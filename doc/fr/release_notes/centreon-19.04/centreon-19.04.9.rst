@@ -11,3 +11,4 @@ Bugfix
 * [Configuration] Check command --help display won't work (PR #8255 and #8268)
 * [Event Logs] Filter on disabled objects (PR #8238)
 * [Services Grid] Filters not used correctly (PR #8260)
+* [Monitoring] Service status filter is not saved (PR #8256)
