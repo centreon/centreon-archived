@@ -152,7 +152,7 @@ try {
             throw new \InvalidArgumentException($errorMessage);
         }
 
-        // gorgone configuration file for centreon
+        // gorgone configuration file for centreon. Created in the centreon-gorgone folder
         $fileTpl = __DIR__ . '/../var/gorgone/gorgoneCoreTemplate.yaml';
         if (!file_exists($fileTpl) || 0 === filesize($fileTpl)) {
             $errorMessage = 'Gorgone configuration template is empty or missing';
@@ -160,7 +160,12 @@ try {
         }
         $content = file_get_contents($fileTpl);
         $content = preg_replace($pattern, $userValues, $content);
-        $finalFile = _CENTREON_ETC_ . '/config.d/20-gorgoned.yaml';
+        $finalFile = _CENTREON_ETC_ . '/../centreon-gorgone/config.d/20-gorgoned.yaml';
+        if (!file_exists(_CENTREON_ETC_ . '/../centreon-gorgone')) {
+            $errorMessage = 'Gorgone configuration folder does not exist. ' .
+                'Please reinstall the centreon-gorgone package and retry';
+            throw new \InvalidArgumentException($errorMessage);
+        }
         file_put_contents($finalFile, $content);
 
         if (!file_exists($finalFile) || 0 === filesize($finalFile)) {
