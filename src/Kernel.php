@@ -22,6 +22,7 @@ namespace App;
 use Symfony\Bundle\FrameworkBundle\Kernel\MicroKernelTrait;
 use Symfony\Component\Config\Loader\LoaderInterface;
 use Symfony\Component\Config\Resource\FileResource;
+use Symfony\Component\Debug\Debug;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Kernel as BaseKernel;
 use Symfony\Component\Routing\RouteCollectionBuilder;
@@ -29,6 +30,8 @@ use Symfony\Component\Routing\RouteCollectionBuilder;
 class Kernel extends BaseKernel
 {
     use MicroKernelTrait;
+
+    private static $instance;
 
     /**
      * @var string cache path
@@ -41,6 +44,21 @@ class Kernel extends BaseKernel
     private $logDir = '/var/log/centreon/symfony';
 
     private const CONFIG_EXTS = '.{php,xml,yaml,yml}';
+
+    public static function createForWeb(): Kernel
+    {
+        if (static::$instance === null) {
+            include_once '../config/bootstrap.php';
+            if ($_SERVER['APP_DEBUG']) {
+                umask(0000);
+
+                Debug::enable();
+            }
+            static::$instance = new Kernel($_SERVER['APP_ENV'], (bool) $_SERVER['APP_DEBUG']);
+            static::$instance->boot();
+        }
+        return static::$instance;
+    }
 
     public function __construct(string $environment, bool $debug)
     {
