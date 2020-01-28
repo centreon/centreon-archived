@@ -22,45 +22,42 @@ declare(strict_types=1);
 namespace Centreon\Infrastructure\Gorgone;
 
 use Centreon\Domain\Gorgone\Interfaces\CommandInterface;
-use Centreon\Domain\Gorgone\Interfaces\CommandRepositoryApiInterface;
+use Centreon\Domain\Gorgone\Interfaces\CommandRepositoryInterface;
+use Centreon\Domain\Option\Interfaces\OptionServiceInterface;
 use Symfony\Component\HttpClient\CurlHttpClient;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
-class CommandRepositoryAPI implements CommandRepositoryApiInterface
+/**
+ * This class is designed to send commands to the Gorgone server using its API.
+ *
+ * @package Centreon\Infrastructure\Gorgone
+ */
+class CommandRepositoryAPI implements CommandRepositoryInterface
 {
     /**
      * @var HttpClientInterface Http client library that will be used to
      * communicate with the Gorgone server through its API.
      */
     private $client;
+
     /**
      * @var array<string, string> Connection parameters which will be used to initialise
      * the connection with the API of the Gorgone server
      */
     private $connectionParameters;
 
-    public function __construct()
-    {
-        $this->client = new CurlHttpClient();
-    }
+    /**
+     * @var OptionServiceInterface
+     */
+    private $optionService;
 
     /**
-     * @inheritDoc
-     *
-     * @see CommandRepositoryApiInterface::DEFAULT_CONNECTION_PARAMETERS for default parameters
-     * @see ResponseRepositoryAPI::$connectionParameters for more explanations
+     * @param OptionServiceInterface $optionService
      */
-    public function defineConnectionParameters(array $connectionParameters): void
+    public function __construct(OptionServiceInterface $optionService)
     {
-        $defaultConnectionsParameters = [
-            'gorgone_api_address' => '127.0.0.1',
-            'gorgone_api_port' => '8085',
-            'gorgone_api_username' => '',
-            'gorgone_api_password' => '',
-            'gorgone_api_ssl' => '0',
-            'gorgone_api_allow_self_signed' => '0'
-        ];
-        $this->connectionParameters = array_merge($defaultConnectionsParameters, $connectionParameters);
+        $this->client = new CurlHttpClient();
+        $this->optionService = $optionService;
     }
 
     /**
@@ -68,6 +65,20 @@ class CommandRepositoryAPI implements CommandRepositoryApiInterface
      */
     public function send(CommandInterface $command): string
     {
+        // Before to send command we retrieve the connection parameters to communicate with the Gorgone server
+        if (empty($this->connectionParameters)) {
+            $options = $this->optionService->findSelectedOptions([
+                'gorgone_api_address',
+                'gorgone_api_port',
+                'gorgone_api_username',
+                'gorgone_api_password',
+                'gorgone_api_ssl',
+                'gorgone_api_allow_self_signed'
+            ]);
+            foreach ($options as $option) {
+                $this->connectionParameters[$option->getName()] = $option->getValue();
+            }
+        }
         $isAllowCertificateSelfSigned = $this->connectionParameters['gorgone_api_allow_self_signed'] === '0';
         $options = [
             'body' => $command->getBodyRequest(),

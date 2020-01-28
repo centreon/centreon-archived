@@ -21,7 +21,9 @@ declare(strict_types=1);
 
 namespace Centreon\Infrastructure\Option;
 
+use Centreon\Domain\Entity\EntityCreator;
 use Centreon\Domain\Option\Interfaces\OptionRepositoryInterface;
+use Centreon\Domain\Option\Option;
 use Centreon\Infrastructure\DatabaseConnection;
 use Centreon\Infrastructure\Repository\AbstractRepositoryDRB;
 
@@ -34,6 +36,11 @@ use Centreon\Infrastructure\Repository\AbstractRepositoryDRB;
 class OptionRepositoryRDB extends AbstractRepositoryDRB implements OptionRepositoryInterface
 {
     /**
+     * @var Option[]
+     */
+    private $options;
+
+    /**
      * @param DatabaseConnection $db
      */
     public function __construct(DatabaseConnection $db)
@@ -44,21 +51,19 @@ class OptionRepositoryRDB extends AbstractRepositoryDRB implements OptionReposit
     /**
      * @inheritDoc
      */
-    public function findSelectedOptions(array $optionsToFind): array
+    public function findAllOptions(bool $useCache = true): array
     {
-        if (empty($optionsToFind)) {
-            return [];
+        if ($useCache && !empty($this->options)) {
+            return $this->options;
         }
-        $request = $this->translateDbName(
-            'SELECT * FROM `:db`.options WHERE `key` IN (?' . str_repeat(', ?', count($optionsToFind) - 1) . ')'
-        );
-        $statement = $this->db->prepare($request);
-        $statement->execute($optionsToFind);
+        $request = $this->translateDbName('SELECT `key` AS `name`, `value` FROM `:db`.options');
+        if (false !== ($statement = $this->db->query($request))) {
+            $statement->execute();
 
-        $optionsFound = [];
-        while (false !== ($option = $statement->fetch(\PDO::FETCH_ASSOC))) {
-            $optionsFound[(string) $option['key']] = (string) $option['value'];
+            while (false !== ($option = $statement->fetch(\PDO::FETCH_ASSOC))) {
+                $this->options[] = EntityCreator::createEntityByArray(Option::class, $option);
+            }
         }
-        return $optionsFound;
+        return $this->options;
     }
 }

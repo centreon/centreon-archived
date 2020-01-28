@@ -21,17 +21,15 @@ declare(strict_types=1);
 
 namespace Centreon\Domain\Option\Interfaces;
 
+use Centreon\Domain\Option\Option;
+
 interface OptionRepositoryInterface
 {
     /**
-     * Find options using key name.
+     * Find all options.
      *
-     * <code>
-     * $selectedOptions = $optionRepository->findSelectedOptions(['snmp_version', 'session_expire']);
-     * </code>
-     *
-     * @param string[] $optionsToFind Keys of the options to find
-     * @return array<string, string> List of key/value corresponding to the options requested
+     * @param bool $useCache Indicates whether we should use the cache system or not (TRUE by default)
+     * @return Option[] Returns all available options
      */
-    public function findSelectedOptions(array $optionsToFind): array;
+    public function findAllOptions(bool $useCache = true): array;
 }

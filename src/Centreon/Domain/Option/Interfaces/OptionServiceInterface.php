@@ -21,6 +21,8 @@ declare(strict_types=1);
 
 namespace Centreon\Domain\Option\Interfaces;
 
+use Centreon\Domain\Option\Option;
+
 interface OptionServiceInterface
 {
     /**
@@ -31,7 +33,17 @@ interface OptionServiceInterface
      * </code>
      *
      * @param string[] $optionsToFind Keys of the options to find
-     * @return array<string, string> List of key/value corresponding to the options requested
+     * @return Option[] Options list corresponding to the options requested
+     * @throws \Exception
      */
     public function findSelectedOptions(array $optionsToFind): array;
+
+    /**
+     * Find all options.
+     *
+     * @param bool $useCache Indicates whether we should use the cache system or not (TRUE by default)
+     * @return Option[] Returns all available options
+     * @throws \Exception
+     */
+    public function findAllOptions(bool $useCache): array;
 }

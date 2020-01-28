@@ -49,6 +49,21 @@ class OptionService implements OptionServiceInterface
      */
     public function findSelectedOptions(array $optionsToFind): array
     {
-        return $this->repository->findSelectedOptions($optionsToFind);
+        $optionsFound = $this->repository->findAllOptions();
+        $requestedOptions = [];
+        foreach ($optionsFound as $option) {
+            if (in_array($option->getName(), $optionsToFind)) {
+                $requestedOptions[] = $option;
+            }
+        }
+        return $requestedOptions;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function findAllOptions(bool $useCache): array
+    {
+        return $this->repository->findAllOptions($useCache);
     }
 }

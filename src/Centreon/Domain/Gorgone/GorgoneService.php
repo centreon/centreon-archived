@@ -22,21 +22,21 @@ declare(strict_types=1);
 namespace Centreon\Domain\Gorgone;
 
 use Centreon\Domain\Gorgone\Command\EmptyCommand;
-use Centreon\Domain\Gorgone\Interfaces\CommandRepositoryApiInterface;
 use Centreon\Domain\Gorgone\Interfaces\CommandInterface;
+use Centreon\Domain\Gorgone\Interfaces\CommandRepositoryInterface;
 use Centreon\Domain\Gorgone\Interfaces\ResponseInterface;
-use Centreon\Domain\Gorgone\Interfaces\ResponseRepositoryApiInterface;
+use Centreon\Domain\Gorgone\Interfaces\ResponseRepositoryInterface;
 use Centreon\Domain\Gorgone\Interfaces\ServiceInterface;
 use Centreon\Domain\Option\Interfaces\OptionRepositoryInterface;
 
 class GorgoneService implements ServiceInterface
 {
     /**
-     * @var ResponseRepositoryApiInterface
+     * @var ResponseRepositoryInterface
      */
     private $responseRepository;
     /**
-     * @var CommandRepositoryApiInterface
+     * @var CommandRepositoryInterface
      */
     private $commandRepository;
     /**
@@ -45,19 +45,13 @@ class GorgoneService implements ServiceInterface
     private $optionRepository;
 
     /**
-     * @var bool Internal flag which indicates whether the connection
-     * parameters for the Gorgone command and response repositories had been defined
-     */
-    private $isInitializedConnection = false;
-
-    /**
-     * @param ResponseRepositoryApiInterface $responseRepository
-     * @param CommandRepositoryApiInterface $commandRepository
+     * @param ResponseRepositoryInterface $responseRepository
+     * @param CommandRepositoryInterface $commandRepository
      * @param OptionRepositoryInterface $optionRepository
      */
     public function __construct(
-        ResponseRepositoryApiInterface $responseRepository,
-        CommandRepositoryApiInterface $commandRepository,
+        ResponseRepositoryInterface $responseRepository,
+        CommandRepositoryInterface $commandRepository,
         OptionRepositoryInterface $optionRepository
     ) {
         $this->responseRepository = $responseRepository;
@@ -72,9 +66,6 @@ class GorgoneService implements ServiceInterface
      */
     public function send(CommandInterface $command): ResponseInterface
     {
-        if ($this->isInitializedConnection === false) {
-            $this->initGorgoneConnection();
-        }
         try {
             $responseToken = $this->commandRepository->send($command);
         } catch (\Throwable $ex) {
@@ -91,32 +82,8 @@ class GorgoneService implements ServiceInterface
      */
     public function getResponseFromToken(int $pollerId, string $token): ResponseInterface
     {
-        if ($this->isInitializedConnection === false) {
-            $this->initGorgoneConnection();
-        }
         $emptyCommand = new EmptyCommand($pollerId);
         $emptyCommand->setToken($token);
         return Response::create($emptyCommand);
-    }
-
-    /**
-     * Defines the connection parameters for the Gorgone command and response repositories.
-     */
-    private function initGorgoneConnection(): void
-    {
-        /**
-         * @see CommandRepositoryApiInterface::DEFAULT_CONNECTION_PARAMETERS
-         */
-        $connectionDetails = $this->optionRepository->findSelectedOptions([
-            'gorgone_api_address',
-            'gorgone_api_port',
-            'gorgone_api_username',
-            'gorgone_api_password',
-            'gorgone_api_ssl',
-            'gorgone_api_allow_self_signed'
-        ]);
-        $this->commandRepository->defineConnectionParameters($connectionDetails);
-        $this->responseRepository->defineConnectionParameters($connectionDetails);
-        $this->isInitializedConnection = true;
     }
 }
