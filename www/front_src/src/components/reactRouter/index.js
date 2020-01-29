@@ -5,7 +5,7 @@
 import React, { Component, Suspense } from 'react';
 import { connect } from 'react-redux';
 import { Switch, Route, withRouter } from 'react-router-dom';
-import { reactRoutes } from '../../route-maps';
+import reactRoutes from '../../route-maps';
 import { dynamicImport } from '../../helpers/dynamicImport';
 import centreonAxios from '../../axios';
 import NotAllowedPage from '../../route-components/notAllowedPage';

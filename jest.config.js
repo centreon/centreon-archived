@@ -3,7 +3,6 @@ module.exports = {
     '@testing-library/react/cleanup-after-each',
     '@testing-library/jest-dom/extend-expect',
   ],
-  snapshotSerializers: ['jest-emotion'],
   roots: ['<rootDir>/www/front_src/src/'],
   transform: {
     '^.+\\.[jt]sx?$': 'babel-jest',
