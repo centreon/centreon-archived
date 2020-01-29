@@ -37,9 +37,9 @@ interface ServiceInterface
     /**
      * Retrieve the response according to the command token and the poller id.
      *
-     * @param int $pollerId Id of the poller for which the command was intended
+     * @param int $monitoringInstanceId Id of the poller for which the command was intended
      * @param string $token Token of the command returned by the Gorgone server
      * @return ResponseInterface
      */
-    public function getResponseFromToken(int $pollerId, string $token): ResponseInterface;
+    public function getResponseFromToken(int $monitoringInstanceId, string $token): ResponseInterface;
 }

@@ -33,7 +33,7 @@ trait BasicCommand
     /**
      * @var int Poller id
      */
-    private $pollerId;
+    private $monitoringInstanceId;
 
     /**
      * We create a command for a specific poller.
@@ -42,16 +42,16 @@ trait BasicCommand
      */
     public function __construct(int $pollerId)
     {
-        $this->pollerId = $pollerId;
+        $this->monitoringInstanceId = $pollerId;
     }
 
     /**
      * @return int
-     * @see CommandInterface::getPollerId()
+     * @see CommandInterface::getMonitoringInstanceId()
      */
-    public function getPollerId(): int
+    public function getMonitoringInstanceId(): int
     {
-        return $this->pollerId;
+        return $this->monitoringInstanceId;
     }
 
     /**

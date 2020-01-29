@@ -44,12 +44,12 @@ class Response implements ResponseInterface
     private $error;
 
     /**
-     * @var string Message received by the Gorgone server based on the command sent
+     * @var string|null Message received by the Gorgone server based on the command sent
      */
     private $message;
 
     /**
-     * @var string Token assigned by the Gorgone server to this response which must be equal to the
+     * @var string|null Token assigned by the Gorgone server to this response which must be equal to the
      * associated command.
      */
     private $token;
@@ -109,9 +109,9 @@ class Response implements ResponseInterface
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getMessage(): string
+    public function getMessage(): ?string
     {
         return $this->message;
     }
@@ -153,7 +153,7 @@ class Response implements ResponseInterface
      * @inheritDoc
      * @see Response::$token
      */
-    public function getToken(): string
+    public function getToken(): ?string
     {
         return $this->token;
     }

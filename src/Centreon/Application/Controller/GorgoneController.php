@@ -23,7 +23,6 @@ namespace Centreon\Application\Controller;
 
 use Centreon\Domain\Gorgone\Command\Internal\ThumbprintCommand;
 use Centreon\Domain\Gorgone\Interfaces\CommandInterface;
-use Centreon\Domain\Gorgone\Interfaces\ResponseRepositoryInterface;
 use Centreon\Domain\Gorgone\Interfaces\ServiceInterface;
 use FOS\RestBundle\Controller\AbstractFOSRestController;
 use FOS\RestBundle\Controller\Annotations as Rest;
@@ -62,7 +61,9 @@ class GorgoneController extends AbstractFOSRestController
         $command = $this->createFromName($commandName, $pollerId);
         $gorgoneResponse = $this->gorgoneService->send($command);
         return $this->view([
-            'token' => $gorgoneResponse->getCommand()->getToken()
+            'token' => $gorgoneResponse->getCommand() !== null
+                ? $gorgoneResponse->getCommand()->getToken()
+                : null
         ]);
     }
 

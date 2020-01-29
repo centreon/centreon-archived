@@ -41,7 +41,7 @@ class ThumbprintCommand implements CommandInterface
      */
     public function getUriRequest(): string
     {
-        return 'nodes/' . $this->pollerId . '/internal/thumbprint';
+        return 'nodes/' . $this->monitoringInstanceId . '/internal/thumbprint';
     }
 
     /**
@@ -58,5 +58,10 @@ class ThumbprintCommand implements CommandInterface
     public function getName(): string
     {
         return self::NAME;
+    }
+
+    public function getMethod(): string
+    {
+        return self::METHOD_GET;
     }
 }

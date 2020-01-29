@@ -44,9 +44,9 @@ interface ResponseInterface
     /**
      * Return the message of the response.
      *
-     * @return string
+     * @return string|null
      */
-    public function getMessage(): string;
+    public function getMessage(): ?string;
 
     /**
      * Returns all the action logs received by the Gorgone server according to the command sent.
@@ -74,9 +74,9 @@ interface ResponseInterface
     /**
      * Get the token assigned by the Gorgone server to this response.
      *
-     * @return string
+     * @return string|null
      */
-    public function getToken(): string;
+    public function getToken(): ?string;
 
     /**
      * Get the error message of the Gorgone server

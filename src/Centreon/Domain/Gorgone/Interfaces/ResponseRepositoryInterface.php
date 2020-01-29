@@ -33,13 +33,4 @@ interface ResponseRepositoryInterface
      * @throws \Exception
      */
     public function getResponse(CommandInterface $command): string;
-
-    /**
-     * Defines the function or method that will be executed after the response is received.
-     *
-     * The response message will be passed as a parameter of the function or method.
-     *
-     * @param callable $responseSetter
-     */
-    public function defineResponseSetter(callable $responseSetter): void;
 }

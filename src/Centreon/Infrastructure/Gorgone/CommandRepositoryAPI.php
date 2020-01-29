@@ -24,6 +24,7 @@ namespace Centreon\Infrastructure\Gorgone;
 use Centreon\Domain\Gorgone\Interfaces\CommandInterface;
 use Centreon\Domain\Gorgone\Interfaces\CommandRepositoryInterface;
 use Centreon\Domain\Option\Interfaces\OptionServiceInterface;
+use Centreon\Infrastructure\Gorgone\Interfaces\ConfigurationLoaderApiInterface;
 use Symfony\Component\HttpClient\CurlHttpClient;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
@@ -41,23 +42,23 @@ class CommandRepositoryAPI implements CommandRepositoryInterface
     private $client;
 
     /**
-     * @var array<string, string> Connection parameters which will be used to initialise
-     * the connection with the API of the Gorgone server
-     */
-    private $connectionParameters;
-
-    /**
      * @var OptionServiceInterface
      */
     private $optionService;
+    /**
+     * @var ConfigurationLoaderApiInterface
+     */
+    private $configuration;
 
     /**
      * @param OptionServiceInterface $optionService
+     * @param ConfigurationLoaderApiInterface $configuration
      */
-    public function __construct(OptionServiceInterface $optionService)
+    public function __construct(OptionServiceInterface $optionService, ConfigurationLoaderApiInterface $configuration)
     {
         $this->client = new CurlHttpClient();
         $this->optionService = $optionService;
+        $this->configuration = $configuration;
     }
 
     /**
@@ -65,43 +66,29 @@ class CommandRepositoryAPI implements CommandRepositoryInterface
      */
     public function send(CommandInterface $command): string
     {
-        // Before to send command we retrieve the connection parameters to communicate with the Gorgone server
-        if (empty($this->connectionParameters)) {
-            $options = $this->optionService->findSelectedOptions([
-                'gorgone_api_address',
-                'gorgone_api_port',
-                'gorgone_api_username',
-                'gorgone_api_password',
-                'gorgone_api_ssl',
-                'gorgone_api_allow_self_signed'
-            ]);
-            foreach ($options as $option) {
-                $this->connectionParameters[$option->getName()] = $option->getValue();
-            }
-        }
-        $isAllowCertificateSelfSigned = $this->connectionParameters['gorgone_api_allow_self_signed'] === '0';
+        $isCertificateShouldBeVerify = $this->configuration->isSecureConnectionSelfSigned() === false;
         $options = [
             'body' => $command->getBodyRequest(),
-            'timeout' => 2,
-            'verify_peer' => $isAllowCertificateSelfSigned,
-            'verify_host' => $isAllowCertificateSelfSigned,
+            'timeout' => $this->configuration->getCommandTimeout(),
+            'verify_peer' => $isCertificateShouldBeVerify,
+            'verify_host' => $isCertificateShouldBeVerify,
         ];
-        if (!empty($this->connectionParameters['gorgone_api_username'])) {
+        if ($this->configuration->getApiUsername() !== null) {
             $options = array_merge(
                 $options,
-                [ 'auth_basic' => $this->connectionParameters['gorgone_api_username'] . ':'
-                  . $this->connectionParameters['gorgone_api_password']]
+                [ 'auth_basic' => $this->configuration->getApiUsername() . ':'
+                  . $this->configuration->getApiPassword()]
             );
         }
         try {
             $uri = sprintf(
                 '%s://%s:%d/api/%s',
-                (($this->connectionParameters['gorgone_api_ssl'] === '1') ? 'https' : 'http'),
-                $this->connectionParameters['gorgone_api_address'],
-                $this->connectionParameters['gorgone_api_port'],
+                $this->configuration->isApiConnectionSecure() ? 'https' : 'http',
+                $this->configuration->getApiIpAddress(),
+                $this->configuration->getApiPort(),
                 $command->getUriRequest()
             );
-            $response = $this->client->request('GET', $uri, $options);
+            $response = $this->client->request($command->getMethod(), $uri, $options);
             if ($response->getStatusCode() !== 200) {
                 throw new \Exception('Bad request', $response->getStatusCode());
             }

@@ -23,6 +23,12 @@ namespace Centreon\Domain\Gorgone\Interfaces;
 
 interface CommandInterface
 {
+    public const METHOD_GET = 'GET';
+    public const METHOD_POST = 'POST';
+    public const METHOD_PATCH = 'PATCH';
+    public const METHOD_PUT = 'PUT';
+    public const METHOD_DELETE = 'DELETE';
+
     /**
      * Returns the token assigned by Gorgone for this command.
      *
@@ -52,11 +58,11 @@ interface CommandInterface
     public function getBodyRequest(): string;
 
     /**
-     * Returns the poller id for which this command is intended.
+     * Returns the monitoring instance id for which this command is intended.
      *
-     * @return int Poller id
+     * @return int Monitoring instance id
      */
-    public function getPollerId(): int;
+    public function getMonitoringInstanceId(): int;
 
     /**
      * Retrieve the internal name of the command.
@@ -64,4 +70,9 @@ interface CommandInterface
      * @return string Name of the command
      */
     public function getName(): string;
+
+    /**
+     * @return string
+     */
+    public function getMethod(): string;
 }

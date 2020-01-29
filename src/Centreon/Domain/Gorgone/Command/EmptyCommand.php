@@ -52,4 +52,9 @@ class EmptyCommand implements CommandInterface
     {
         return self::NAME;
     }
+
+    public function getMethod(): string
+    {
+        return '';
+    }
 }

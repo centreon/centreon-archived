@@ -22,8 +22,10 @@ declare(strict_types=1);
 namespace Tests\Centreon\Domain\Gorgone;
 
 use Centreon\Domain\Gorgone\Command\Internal\ThumbprintCommand;
+use Centreon\Domain\Gorgone\GorgoneService;
+use Centreon\Domain\Gorgone\Interfaces\CommandRepositoryInterface;
+use Centreon\Domain\Gorgone\Interfaces\ResponseRepositoryInterface;
 use Centreon\Domain\Gorgone\Response;
-use Centreon\Domain\Gorgone\Service;
 use Centreon\Domain\Gorgone\Interfaces\ResponseInterface;
 use Centreon\Domain\Option\Interfaces\OptionRepositoryInterface;
 use Centreon\Infrastructure\Gorgone\CommandRepositoryAPI;
@@ -32,7 +34,7 @@ use PHPUnit\Framework\TestCase;
 
 class CommandServiceTest extends TestCase
 {
-    public function testSendCommand()
+    public function testSendCommand(): void
     {
         $mockThumprint = '6pX4rBssjlEV1YBHwLFRPyfRE_MvdwTKY5wsBq48cRw';
         $mockToken = '86ca0747484d947';
@@ -40,42 +42,32 @@ class CommandServiceTest extends TestCase
         $firstGorgoneResponse = file_get_contents('first_gorgone_response.json');
         $secondGorgoneResponse = file_get_contents('second_gorgone_response.json');
 
-        $optionRepository = $this
-            ->getMockBuilder(OptionRepositoryInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-
-        $optionRepository->expects(self::any())->method('findSelectedOptions')->willReturn([]);
-
         $thumbprintCommand = new ThumbprintCommand(2);
         $commandRepository = $this
-            ->getMockBuilder(CommandRepositoryAPI::class)
+            ->getMockBuilder(CommandRepositoryInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
-
-        $commandRepository->expects(self::any())->method('defineConnectionParameters');
 
         $commandRepository->expects(self::any())
             ->method('send')
             ->willReturn($mockToken); // values returned for the all next tests
 
         $responseRepository = $this
-            ->getMockBuilder(ResponseRepositoryAPI::class)
+            ->getMockBuilder(ResponseRepositoryInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $responseRepository->expects(self::any())->method('defineConnectionparameters');
 
-        $responseRepository->expects($this->at(1))
+        $responseRepository->expects($this->at(0))
             ->method('getResponse')
             ->with($thumbprintCommand)
             ->willReturn($firstGorgoneResponse);
 
-        $responseRepository->expects($this->at(2))
+        $responseRepository->expects($this->at(1))
             ->method('getResponse')
             ->with($thumbprintCommand)
             ->willReturn($secondGorgoneResponse);
 
-        $service = new Service($responseRepository, $commandRepository, $optionRepository);
+        $service = new GorgoneService($responseRepository, $commandRepository);
         Response::setRepository($responseRepository);
 
         /**

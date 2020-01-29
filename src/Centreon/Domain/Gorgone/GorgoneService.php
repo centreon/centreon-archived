@@ -27,7 +27,6 @@ use Centreon\Domain\Gorgone\Interfaces\CommandRepositoryInterface;
 use Centreon\Domain\Gorgone\Interfaces\ResponseInterface;
 use Centreon\Domain\Gorgone\Interfaces\ResponseRepositoryInterface;
 use Centreon\Domain\Gorgone\Interfaces\ServiceInterface;
-use Centreon\Domain\Option\Interfaces\OptionRepositoryInterface;
 
 class GorgoneService implements ServiceInterface
 {
@@ -39,24 +38,17 @@ class GorgoneService implements ServiceInterface
      * @var CommandRepositoryInterface
      */
     private $commandRepository;
-    /**
-     * @var OptionRepositoryInterface
-     */
-    private $optionRepository;
 
     /**
      * @param ResponseRepositoryInterface $responseRepository
      * @param CommandRepositoryInterface $commandRepository
-     * @param OptionRepositoryInterface $optionRepository
      */
     public function __construct(
         ResponseRepositoryInterface $responseRepository,
-        CommandRepositoryInterface $commandRepository,
-        OptionRepositoryInterface $optionRepository
+        CommandRepositoryInterface $commandRepository
     ) {
         $this->responseRepository = $responseRepository;
         $this->commandRepository = $commandRepository;
-        $this->optionRepository = $optionRepository;
         Response::setRepository($responseRepository);
     }
 
@@ -69,20 +61,18 @@ class GorgoneService implements ServiceInterface
         try {
             $responseToken = $this->commandRepository->send($command);
         } catch (\Throwable $ex) {
-            throw new GorgoneException('Error when connecting to the Gorgon server');
+            throw new GorgoneException('Error when connecting to the Gorgone server');
         }
         $command->setToken($responseToken);
         return Response::create($command);
     }
 
     /**
-     * @param int $pollerId
-     * @param string $token
-     * @return ResponseInterface
+     * @inheritDoc
      */
-    public function getResponseFromToken(int $pollerId, string $token): ResponseInterface
+    public function getResponseFromToken(int $monitoringInstanceId, string $token): ResponseInterface
     {
-        $emptyCommand = new EmptyCommand($pollerId);
+        $emptyCommand = new EmptyCommand($monitoringInstanceId);
         $emptyCommand->setToken($token);
         return Response::create($emptyCommand);
     }
