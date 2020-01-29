@@ -405,8 +405,6 @@ class ExtensionsRoute extends Component {
       });
   };
 
-  versionClicked = () => {};
-
   render() {
     const {
       extensions,
@@ -571,7 +569,6 @@ class ExtensionsRoute extends Component {
             type={modalDetailsType}
             loading={modalDetailsLoading}
             onCloseClicked={this.hideExtensionDetails.bind(this)}
-            onVersionClicked={this.versionClicked}
             onInstallClicked={this.installById}
             onDeleteClicked={this.deleteById}
             onUpdateClicked={this.updateById}
