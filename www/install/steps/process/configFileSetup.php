@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2005-2019 Centreon
+ * Copyright 2005-2020 Centreon
  * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -128,7 +128,7 @@ file_put_contents($gorgoneDatabaseFile, $contents);
 /**
  * Gorgone daemon configuration file for a central
  */
-$gorgoneCoreFileForCentral = $centreonEtcPath . '/config.d/20-gorgoned.yaml';
+$gorgoneCoreFileForCentral = $centreonEtcPath . '/../centreon-gorgone/config.d/40-gorgoned.yaml';
 $contents = file_get_contents('../../var/gorgone/gorgoneCoreTemplate.yaml');
 $contents = preg_replace($patterns, $replacements, $contents);
 file_put_contents($gorgoneCoreFileForCentral, $contents);
