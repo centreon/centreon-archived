@@ -20,45 +20,8 @@ module.exports = {
   },
   resolve: {
     extensions: ['.ts', '.tsx', '.js', '.jsx', '.scss'],
-    alias: {
-      '@centreon/ui': '@centreon/ui/src',
-    },
   },
   optimization: {
-    minimizer: [
-      new TerserPlugin({
-        terserOptions: {
-          parse: {
-            ecma: 8,
-          },
-          compress: {
-            ecma: 5,
-            warnings: false,
-            comparisons: false,
-          },
-          mangle: {
-            safari10: true,
-          },
-          output: {
-            ecma: 5,
-            comments: false,
-            ascii_only: true,
-          },
-        },
-        parallel: true,
-        cache: true,
-        sourceMap: true,
-      }),
-      new OptimizeCSSAssetsPlugin({
-        cssProcessorOptions: {
-          parser: safePostCssParser,
-          map: {
-            inline: false,
-            annotation: true,
-          },
-        },
-      }),
-    ],
     splitChunks: {
       chunks: 'all',
     },
@@ -137,7 +100,7 @@ module.exports = {
         ],
       },
       {
-        test: /@centreon\/ui\/lib\/.+\.(bmp|png|jpg|jpeg|gif|svg)$/,
+        test: /@centreon\/ui\/src\/.+\.(bmp|png|jpg|jpeg|gif|svg)$/,
         use: [
           {
             loader: 'url-loader',
