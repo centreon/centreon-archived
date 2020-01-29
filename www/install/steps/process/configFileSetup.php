@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2005-2019 Centreon
+ * Copyright 2005-2020 Centreon
  * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -54,7 +54,7 @@ if ($parameters['address']) {
 }
 
 // mandatory parameters used by centCore or Gorgone.d in the legacy SSH mode
-$patterns = array(
+$patterns = [
     '/--ADDRESS--/',
     '/--DBUSER--/',
     '/--DBPASS--/',
@@ -65,9 +65,9 @@ $patterns = array(
     '/--DBPORT--/',
     '/--INSTANCEMODE--/',
     '/--CENTREON_VARLIB--/'
-);
+];
 
-$replacements = array(
+$replacements = [
     $host,
     $parameters['db_user'],
     $parameters['db_password'],
@@ -78,24 +78,6 @@ $replacements = array(
     $parameters['port'],
     "central",
     $configuration['centreon_varlib']
-);
-
-// specific additional mandatory parameters used by Gorgone.d in a full ZMQ mode
-// these patterns don't replace the original ones
-$gorgonePatterns = [
-    '/--CENTREON_SPOOL--/',
-    '/--HTTPSERVERADDRESS--/',
-    '/--HTTPSERVERPORT--/',
-    '/--SSLMODE--/',
-    '/--CENTREON_TRAPDIR--/',
-];
-
-$gorgoneReplacements = [
-    "/var/spool/centreon",
-    "0.0.0.0",
-    "8085",
-    "false",
-    "/etc/snmp/centreon_traps",
 ];
 
 $centreonEtcPath = rtrim($configuration['centreon_etc'], '/');
@@ -116,15 +98,40 @@ $contents = file_get_contents('../../var/configFilePmTemplate');
 $contents = preg_replace($patterns, $replacements, $contents);
 file_put_contents($centreonConfPmFile, $contents);
 
+// specific additional mandatory parameters used by Gorgone.d in a full ZMQ mode
+array_push(
+    $patterns,
+    '/--CENTREON_SPOOL--/',
+    '/--HTTPSERVERADDRESS--/',
+    '/--HTTPSERVERPORT--/',
+    '/--SSLMODE--/',
+    '/--CENTREON_TRAPDIR--/'
+);
+
+array_push(
+    $replacements,
+    "/var/spool/centreon",
+    "0.0.0.0",
+    "8085",
+    "false",
+    "/etc/snmp/centreon_traps"
+);
+
 /**
- * gorgone.yaml
- * configuration file used by the Gorgone module in a full ZMQ mode
+ * Database configuration file
  */
-$centreonGorgonedConfFile = $centreonEtcPath . '/gorgoned.yml';
-$contents = file_get_contents('../../var/configFileGorgoneTemplate');
+$gorgoneDatabaseFile = $centreonEtcPath . '/config.d/10-database.yaml';
+$contents = file_get_contents('../../var/databaseTemplate.yaml');
 $contents = preg_replace($patterns, $replacements, $contents);
-$contents = preg_replace($gorgonePatterns, $gorgoneReplacements, $contents);
-file_put_contents($centreonGorgonedConfFile, $contents);
+file_put_contents($gorgoneDatabaseFile, $contents);
+
+/**
+ * Gorgone daemon configuration file for a central
+ */
+$gorgoneCoreFileForCentral = $centreonEtcPath . '/../centreon-gorgone/config.d/40-gorgoned.yaml';
+$contents = file_get_contents('../../var/gorgone/gorgoneCoreTemplate.yaml');
+$contents = preg_replace($patterns, $replacements, $contents);
+file_put_contents($gorgoneCoreFileForCentral, $contents);
 
 $return['result'] = 0;
 echo json_encode($return);
