@@ -3,7 +3,7 @@
     <head>
         <title>Centreon - IT & Network Monitoring</title>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-        <meta name="Generator" content="Centreon - Copyright (C) 2005 - 2019 Open Source Matters. All rights reserved." />
+        <meta name="Generator" content="Centreon - Copyright (C) 2005 - 2020 Open Source Matters. All rights reserved." />
         <meta name="robots" content="index, nofollow" />
         <meta http-equiv="refresh" content="840">
         <link href="./Themes/Centreon-2/login.css" rel="stylesheet" type="text/css">
@@ -38,7 +38,7 @@
                 </div>
                 <div class="LoginInvitVersion">
                     <span id="LoginInvitcpy">
-                        &copy; <a href="mailto:contact@centreon.com">Centreon</a> 2005 - 2019
+                        &copy; <a href="mailto:contact@centreon.com">Centreon</a> 2005 - 2020
                     </span>
                     <br>
                     <span>
