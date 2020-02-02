@@ -40,7 +40,7 @@ function* resetProgress(action) {
   }
 }
 
-function upload({ files, url }, onProgress) {
+const upload = ({ files, url }, onProgress) => {
   const data = new FormData();
 
   for (const file of files) {
@@ -56,9 +56,9 @@ function upload({ files, url }, onProgress) {
   };
 
   return axios.post(url, data, config);
-}
+};
 
-function createUploader(action) {
+const createUploader = (action) => {
   let emit;
   const channel = eventChannel((emitter) => {
     emit = emitter;
@@ -75,7 +75,7 @@ function createUploader(action) {
   const uploadPromise = upload(action, uploadProgressCb);
 
   return [uploadPromise, channel];
-}
+};
 
 function* watchOnProgress(channel) {
   while (true) {
