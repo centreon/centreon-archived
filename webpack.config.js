@@ -1,9 +1,6 @@
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
-const TerserPlugin = require('terser-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
-const safePostCssParser = require('postcss-safe-parser');
 const path = require('path');
 
 module.exports = {
@@ -47,7 +44,7 @@ module.exports = {
       {
         test: /\.tsx?$/,
         exclude: /node_modules/,
-        use: [{ loader: 'awesome-typescript-loader' }],
+        use: ['babel-loader', 'awesome-typescript-loader'],
       },
       {
         test: /\.jsx?$/,
@@ -100,19 +97,7 @@ module.exports = {
         ],
       },
       {
-        test: /@centreon\/ui\/src\/.+\.(bmp|png|jpg|jpeg|gif|svg)$/,
-        use: [
-          {
-            loader: 'url-loader',
-            options: {
-              limit: 10000,
-              name: 'static/img/[name].[hash:8].[ext]',
-            },
-          },
-        ],
-      },
-      {
-        test: /img\/.+\.(bmp|png|jpg|jpeg|gif|svg)$/,
+        test: /\.(bmp|png|jpg|jpeg|gif|svg)$/,
         use: [
           {
             loader: 'url-loader',
