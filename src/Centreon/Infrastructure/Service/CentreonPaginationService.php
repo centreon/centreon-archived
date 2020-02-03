@@ -274,13 +274,12 @@ class CentreonPaginationService
      */
     public function getListing(): DataRepresenter\Listing
     {
-        $entities = $this->db
-            ->getRepository($this->repository)
+        $repository = $this->db->getRepository($this->repository);
+
+        $entities = $repository
             ->getPaginationList($this->filters, $this->limit, $this->offset, $this->ordering, $this->extras);
 
-        $total = $this->db
-            ->getRepository($this->repository)
-            ->getPaginationListTotal();
+        $total = $repository->getPaginationListTotal();
 
         // Serialize list of entities
         if ($this->context !== null) {
