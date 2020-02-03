@@ -189,13 +189,6 @@ les fichiers RRD, sans l'onglet "Output" renseigner les données suivantes :
 .. image:: /images/faq/rrd_file_generator.png
     :align: center
 
-Interface web Centreon
-======================
-
-La mise en place de rrdcached fait que les graphiques ne sont plus mis à jours en temps réel.
-Il est donc possible de voir un petit blanc sur la droite de certains graphiques.
-Cela veut dire que les données sont encore dans le cache du processus, cela est normal !
-
 .. warning::
     Attention, si le **processus crash** pour une raison quelconque (aucune en théorie c'est plutôt stable), les
     **données** sont **perdues**, donc aucun moyen de les rejouer sauf en reconstruisant les graphiques via centreon-broker.

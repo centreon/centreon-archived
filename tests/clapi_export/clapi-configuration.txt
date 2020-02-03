@@ -5029,6 +5029,7 @@ HOST;setparam;Centreon-Server;timezone;0
 HOST;setparam;Centreon-Server;host_locked;0
 HOST;setparam;Centreon-Server;host_register;1
 HOST;setparam;Centreon-Server;host_activate;1
+HOST;addparent;Centreon-Server;test_host
 HOST;addtemplate;Centreon-Server;generic-host
 HOST;addtemplate;test_host;my_htpl-test
 STPL;ADD;generic-service;generic-service;

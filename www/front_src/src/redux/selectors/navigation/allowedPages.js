@@ -1,3 +1,5 @@
+/* eslint-disable no-param-reassign */
+/* eslint-disable no-restricted-syntax */
 import { createSelector } from 'reselect';
 
 /**

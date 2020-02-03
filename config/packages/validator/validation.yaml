@@ -82,3 +82,25 @@ Centreon\Domain\Downtime\Downtime:
         pollerId:
             - Type:
                 type: integer
+
+# Used to validate the Proxy entity
+Centreon\Domain\Proxy\Proxy:
+    properties:
+        url:
+            - Type:
+                  type: string
+            - NotNull: ~
+        port:
+            - Type:
+                  type: integer
+            - PositiveOrZero: ~
+            - LessThanOrEqual: 65535
+            - NotNull: ~
+        user:
+            - Type:
+                  type: string
+            - NotNull: ~
+        password:
+            - Type:
+                  type: string
+            - NotNull: ~

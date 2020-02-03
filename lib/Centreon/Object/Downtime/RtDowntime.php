@@ -59,7 +59,7 @@ class Centreon_Object_RtDowntime extends Centreon_ObjectRt
             $hostFilter = "AND h.name IN ('" . implode("','", $hostList) . "') ";
         }
 
-        $query = "SELECT internal_id, name, author, actual_start_time , actual_end_time, " .
+        $query = "SELECT downtime_id, name, author, actual_start_time , actual_end_time, " .
             "start_time, end_time, comment_data, duration, fixed " .
             "FROM downtimes d, hosts h " .
             "WHERE d.host_id = h.host_id " .
@@ -91,7 +91,7 @@ class Centreon_Object_RtDowntime extends Centreon_ObjectRt
             $serviceFilter .= implode(' AND ', $filterTab) . ') ';
         }
 
-        $query = "SELECT d.internal_id, h.name, s.description, author, actual_start_time, actual_end_time, " .
+        $query = "SELECT d.downtime_id, h.name, s.description, author, actual_start_time, actual_end_time, " .
             "start_time, end_time, comment_data, duration, fixed " .
             "FROM downtimes d, hosts h, services s " .
             "WHERE d.service_id = s.service_id " .
@@ -113,7 +113,7 @@ class Centreon_Object_RtDowntime extends Centreon_ObjectRt
     public function getCurrentDowntime($id)
     {
         $query = "SELECT * FROM downtimes WHERE ISNULL(actual_end_time) " .
-            " AND end_time > " . time() . " AND internal_id = " . $id;
+            " AND end_time > " . time() . " AND downtime_id = " . $id;
         return $this->getResult($query, array(), 'fetch');
     }
 }

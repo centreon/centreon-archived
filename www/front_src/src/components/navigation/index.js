@@ -4,11 +4,11 @@
 /* eslint-disable no-shadow */
 
 import React, { Component } from 'react';
-import { Sidebar } from '@centreon/react-components';
+import { Sidebar } from '@centreon/ui';
 import { connect } from 'react-redux';
 import { menuSelector } from '../../redux/selectors/navigation/menu';
 import { reactRoutesSelector } from '../../redux/selectors/navigation/reactRoutes';
-import { fetchNavigationData } from "../../redux/actions/navigationActions";
+import { fetchNavigationData } from '../../redux/actions/navigationActions';
 
 class Navigation extends Component {
   componentDidMount = () => {
@@ -20,10 +20,7 @@ class Navigation extends Component {
     const { navigationData, reactRoutes } = this.props;
 
     return (
-      <Sidebar
-        navigationData={navigationData}
-        reactRoutes={reactRoutes}
-      />
+      <Sidebar navigationData={navigationData} reactRoutes={reactRoutes} />
     );
   }
 }
@@ -44,7 +41,4 @@ const mapDispatchToProps = (dispatch) => {
   };
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(Navigation);
+export default connect(mapStateToProps, mapDispatchToProps)(Navigation);

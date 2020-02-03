@@ -24,7 +24,9 @@ class PollerInteractionService
         global $centreon;
 
         $this->di = $di;
-        $this->db = $di[\Centreon\ServiceProvider::CENTREON_DB_MANAGER]->getAdapter('configuration_db')->getCentreonDBInstance();
+        $this->db = $di[\Centreon\ServiceProvider::CENTREON_DB_MANAGER]
+            ->getAdapter('configuration_db')
+            ->getCentreonDBInstance();
 
         $this->centreon = $centreon;
     }
