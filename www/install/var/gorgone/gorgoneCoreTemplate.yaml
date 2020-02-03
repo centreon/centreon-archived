@@ -1,7 +1,7 @@
 gorgone:
   gorgonecore:
-    privkey: "--CENTREON_SPOOL--/.gorgone/rsakey.priv.pem"
-    pubkey: "--CENTREON_SPOOL--/.gorgone/rsakey.pub.pem"
+    privkey: "--CENTREON_VARLIB---gorgone/.keys/rsakey.priv.pem"
+    pubkey: "--CENTREON_VARLIB---gorgone/.keys/rsakey.pub.pem"
 
   modules:
     - name: httpserver
