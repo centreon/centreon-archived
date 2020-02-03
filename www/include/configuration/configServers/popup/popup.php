@@ -160,8 +160,8 @@ gorgonecore:
   external_com_type: tcp
   external_com_path: "*:' . $server['gorgone_port'] . '"
   authorized_clients: ' . $thumbprints . '
-  privkey: "/var/spool/centreon/.gorgone/rsakey.priv.pem"
-  pubkey: "/var/spool/centreon/.gorgone/rsakey.pub.pem"
+  privkey: "/var/lib/centreon-gorgone/.keys/rsakey.priv.pem"
+  pubkey: "/var/lib/centreon-gorgone/.keys/rsakey.pub.pem"
 modules:
   - name: action
     package: gorgone::modules::core::action::hooks
@@ -198,8 +198,8 @@ gorgonecore:
   external_com_type: tcp
   external_com_path: "*:' . $server['gorgone_port'] . '"
   authorized_clients: ' . $thumbprints . '
-  privkey: "/var/spool/centreon/.gorgone/rsakey.priv.pem"
-  pubkey: "/var/spool/centreon/.gorgone/rsakey.pub.pem"
+  privkey: "/var/lib/centreon-gorgone/.keys/rsakey.priv.pem"
+  pubkey: "/var/lib/centreon-gorgone/.keys/rsakey.pub.pem"
 modules:
   - name: action
     package: gorgone::modules::core::action::hooks
