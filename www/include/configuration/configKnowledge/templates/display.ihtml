@@ -114,7 +114,7 @@
             <td class="ListColCenter">
                 {if $stt == 0}
                 <a name="Create wiki page"
-                   href='./include/configuration/configKnowledge/popup.php?session_id={php}print session_id();{/php}&object=Service_:_{$elem}&type={$selection}'
+                   href='./include/configuration/configKnowledge/popup.php?object=Service_:_{$elem}&type={$selection}'
                    target='_blank'>{t}Create wiki page{/t}</a>
                 &nbsp;&nbsp;&nbsp;{$line}
                 {/if}
@@ -157,15 +157,15 @@
                 {if $stt == 0}
                 {if $selection == 3}
                 <a name="Create wiki page"
-                   href='./include/configuration/configKnowledge/popup.php?session_id={php}print session_id();{/php}&object=Service-Template_:_{$elem}&type={$selection}'
+                   href='./include/configuration/configKnowledge/popup.php?object=Service-Template_:_{$elem}&type={$selection}'
                    target='_blank'>{t}Create wiki page{/t}</a>
                 {elseif $selection == 2}
                 <a name="Create wiki page"
-                   href='./include/configuration/configKnowledge/popup.php?session_id={php}print session_id();{/php}&object=Host-Template_:_{$elem}&type={$selection}'
+                   href='./include/configuration/configKnowledge/popup.php?object=Host-Template_:_{$elem}&type={$selection}'
                    target='_blank'>{t}Create wiki page{/t}</a>
                 {else}
                 <a name="Create wiki page"
-                   href='./include/configuration/configKnowledge/popup.php?session_id={php}print session_id();{/php}&object=Host_:_{$elem}&type={$selection}'
+                   href='./include/configuration/configKnowledge/popup.php?object=Host_:_{$elem}&type={$selection}'
                    target='_blank'>{t}Create wiki page{/t}</a>
                 {/if}
                 {/if}

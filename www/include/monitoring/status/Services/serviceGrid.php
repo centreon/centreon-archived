@@ -103,10 +103,9 @@ $tab_order = array("sort_asc" => "sort_desc", "sort_desc" => "sort_asc");
 $tpl->assign("tab_order", $tab_order);
 ?>
 <script type="text/javascript">
-    _sid = '<?php echo $sid ?>';
     _tm = <?php echo $tM ?>;
     p = <?php echo $p ?>;
-    
+
     function setO(_i) {
         document.forms['form'].elements['cmd'].value = _i;
         document.forms['form'].elements['o1'].selectedIndex = 0;
@@ -115,7 +114,7 @@ $tpl->assign("tab_order", $tab_order);
     function displayingLevel1(val)
     {
        _o = val;
-       if (_o == 'svcOV') { 
+       if (_o == 'svcOV') {
             _addrXML = "./include/monitoring/status/Services/xml/serviceGridXML.php";
             _addrXSL = "./include/monitoring/status/Services/xsl/serviceGrid.xsl";
         } else {

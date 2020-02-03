@@ -1,7 +1,7 @@
 <?php
 /*
- * Copyright 2005-2015 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2020 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -183,7 +183,7 @@ function mainLoopHost() {
     setTimeout("mainLoopHost()", 250);
 }
 
-function initM(_time_reload, _sid, _o ){
+    function initM(_time_reload, _o) {
 
     // INIT Select objects
     construct_selecteList_ndo_instance('instance_selected');
@@ -206,13 +206,13 @@ function initM(_time_reload, _sid, _o ){
         _first = 0;
     }
 
-    _time=<?php echo $time; ?>;
-    if (_on) {
-        goM(_time_reload,_sid,_o);
+        _time =<?php echo $time; ?>;
+        if (_on) {
+            goM(_time_reload, _o);
+        }
     }
-}
 
-function goM(_time_reload, _sid, _o) {
+function goM(_time_reload, _o) {
 
     _lock = 1;
     var proc = new Transformation();
@@ -234,7 +234,7 @@ function goM(_time_reload, _sid, _o) {
     }
 
     _lock = 0;
-    _timeoutID = cycleVisibilityChange('goM("'+ _time_reload +'","'+ _sid +'","'+_o+'")', _time_reload);
+    _timeoutID = cycleVisibilityChange('goM("'+ _time_reload +'","'+_o+'")', _time_reload);
     _time_live = _time_reload;
     _on = 1;
 
@@ -270,7 +270,7 @@ function cmdCallback(cmd) {
             }
         }
 
-        var url = './include/monitoring/external_cmd/popup/popup.php?sid='+ _sid + '&o=' + _o + '&p='+ _p +'&cmd='+ cmd + _getVar;
+        var url = './include/monitoring/external_cmd/popup/popup.php?o=' + _o + '&p='+ _p +'&cmd='+ cmd + _getVar;
 
         var popin = jQuery('<div>');
         popin.centreonPopin({open:true,url:url});

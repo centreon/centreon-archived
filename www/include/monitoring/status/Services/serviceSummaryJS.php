@@ -123,11 +123,10 @@ function mainLoopLocal() {
     setTimeout("mainLoopLocal()", 250);
 }
 
-function initM(_time_reload, _sid, _o )
-{
-    // INIT Select objects
-    construct_selecteList_ndo_instance('instance_selected');
-    construct_HostGroupSelectList('hostgroups_selected');
+    function initM(_time_reload, _o) {
+        // INIT Select objects
+        construct_selecteList_ndo_instance('instance_selected');
+        construct_HostGroupSelectList('hostgroups_selected');
 
     if (document.getElementById("host_search") && document.getElementById("host_search").value) {
         _host_search = document.getElementById("host_search").value;
@@ -141,13 +140,13 @@ function initM(_time_reload, _sid, _o )
         _first = 0;
     }
 
-    _time=<?php echo $time; ?>;
-    if (_on) {
-        goM(_time_reload,_sid,_o);
+        _time =<?php echo $time; ?>;
+        if (_on) {
+            goM(_time_reload, _o);
+        }
     }
-}
 
-function goM(_time_reload, _sid, _o) {
+function goM(_time_reload, _o) {
     _lock = 1;
     var proc = new Transformation();
     proc.setCallback(monitoringCallBack);
@@ -162,7 +161,7 @@ function goM(_time_reload, _sid, _o) {
     }
 
     _lock = 0;
-    _timeoutID = cycleVisibilityChange('goM("'+ _time_reload +'","'+ _sid +'","'+_o+'")', _time_reload);
+    _timeoutID = cycleVisibilityChange('goM("'+ _time_reload +'","'+_o+'")', _time_reload);
     _time_live = _time_reload;
     _on = 1;
     set_header_title();

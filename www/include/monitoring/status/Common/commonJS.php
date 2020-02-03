@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2005-2018 Centreon
+ * Copyright 2005-2020 Centreon
  * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -57,7 +57,6 @@ foreach ($userFeatures as $feature) {
 ?>
 // Dynamique
 var _headerId = '<?= ($headerVersion == 1) ? "header" : "header-react"?>';
-var _sid = '<?php echo $sid?>';
 <?php if (isset($search_type_host)) { ?>
 var _search_type_host = '<?php echo $search_type_host?>';
 <?php } ?>
@@ -130,7 +129,7 @@ document.onmousemove = position;
 /* Reset trim function in order to be compatible with IE */
 if (typeof String.prototype.trim !== 'function') {
     String.prototype.trim = function() {
-        return this.replace(/^\s+|\s+$/g, ''); 
+        return this.replace(/^\s+|\s+$/g, '');
     }
 }
 
@@ -185,7 +184,7 @@ function resetSelectedCheckboxes()
                 }
             }
         });
-        
+
         $$('input[type="checkbox"]').each(function(el) {
         if (typeof(_selectedElem) != "undefined" && _selectedElem[encodeURIComponent(el.id)]) {
             el.checked = true;
@@ -267,7 +266,7 @@ function construct_selecteList_ndo_instance(id){
     /** *************************************
      * Get instance listing
      */
-    
+
 if ($centreon->user->admin || !count($pollerArray)) {
     $instanceQuery = "SELECT instance_id, name FROM `instances` WHERE running = 1 AND deleted = 0 ORDER BY name";
 } else {
@@ -839,7 +838,7 @@ function set_limit(limit)   {
     var xhrM = getXhrC();
     xhrM.open("POST","./include/monitoring/status/Common/setHistory.php",true);
     xhrM.setRequestHeader('Content-Type','application/x-www-form-urlencoded');
-    _var = "sid=<?php echo $sid; ?>&limit="+limit+"&url=<?php echo $url; ?>";
+    _var = "limit="+limit+"&url=<?php echo $url; ?>";
     xhrM.send(_var);
         jQuery('input[name=limit]').val(limit);
 }
@@ -848,7 +847,7 @@ function set_search(search) {
     var xhrM = getXhrC();
     xhrM.open("POST","./include/monitoring/status/Common/setHistory.php",true);
     xhrM.setRequestHeader('Content-Type','application/x-www-form-urlencoded');
-    _var = "sid=<?php echo $sid; ?>&search="+search+"&url=<?php echo $url; ?>";
+    _var = "search="+search+"&url=<?php echo $url; ?>";
     xhrM.send(_var);
 }
 
@@ -856,7 +855,7 @@ function set_search_host(search_host) {
     var xhrM = getXhrC();
     xhrM.open("POST","./include/monitoring/status/Common/setHistory.php",true);
     xhrM.setRequestHeader('Content-Type','application/x-www-form-urlencoded');
-    _var = "sid=<?php echo $sid; ?>&search_host="+search_host+"&url=<?php echo $url; ?>";
+    _var = "search_host="+search_host+"&url=<?php echo $url; ?>";
     xhrM.send(_var);
 }
 
@@ -864,7 +863,7 @@ function set_search_output(search_output) {
     var xhrM = getXhrC();
     xhrM.open("POST","./include/monitoring/status/Common/setHistory.php",true);
     xhrM.setRequestHeader('Content-Type','application/x-www-form-urlencoded');
-    _var = "sid=<?php echo $sid; ?>&search_output="+search_output+"&url=<?php echo $url; ?>";
+    _var = "search_output="+search_output+"&url=<?php echo $url; ?>";
     xhrM.send(_var);
 }
 
@@ -872,7 +871,7 @@ function set_page(page) {
     var xhrM = getXhrC();
     xhrM.open("POST","./include/monitoring/status/Common/setHistory.php",true);
     xhrM.setRequestHeader('Content-Type','application/x-www-form-urlencoded');
-    _var = "sid=<?php echo $sid; ?>&page="+page+"&url=<?php echo $url; ?>";
+    _var = "page="+page+"&url=<?php echo $url; ?>";
     xhrM.send(_var);
 }
 
@@ -884,7 +883,7 @@ var func_displayIMG = function(event) {
     jQuery('.img_volante').css('left', event.pageX + 20);
     jQuery('.img_volante').css('top', (jQuery(window).height() / 2) - (jQuery('.img_volante').height() / 2));
     jQuery('.img_volante').show();
-        
+
     var chartElem = jQuery('<div></div>')
         .addClass('chart')
         .data('graphType', 'service')
@@ -995,7 +994,7 @@ function monitoring_play()  {
     if (typeof(_o) == "undefined") {
         _o = "<?= $o ?>";
     }
-    initM(<?php echo $tM?>, "<?php echo $sid?>", _o);
+    initM(<?php echo $tM?>, _o)
 }
 
 function monitoring_pause() {
@@ -1013,12 +1012,12 @@ function monitoring_refresh()   {
     _on = 1;
 
     window.clearTimeout(_timeoutID);
-    initM(<?php echo $tM?>,"<?php echo $sid?>",_o);
+    initM(<?php echo $tM?>,_o);
     _on = _tmp_on;
     viewDebugInfo('refresh');
 }
 
-function initM(_time_reload, _sid, _o) {
+function initM(_time_reload, _o) {
     construct_selecteList_ndo_instance('instance_selected');
     if (_hostgroup_enable == 1) {
         construct_HostGroupSelectList('hostgroups_selected');
@@ -1035,7 +1034,7 @@ function initM(_time_reload, _sid, _o) {
     _time=<?php echo $time?>;
 
     if (_on) {
-        goM(_time_reload,_sid,_o);
+        goM(_time_reload, _o);
     }
 }
 

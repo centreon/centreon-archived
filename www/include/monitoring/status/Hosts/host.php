@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2005-2019 Centreon
+ * Copyright 2005-2020 Centreon
  * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -387,20 +387,20 @@ $tpl->display("host.ihtml");
     tabSortPb['ordre'] = '<?php echo $problem_sort_order;?>';
 
     var tabSortAll = [];
-    tabSortAll['champ'] = '<?php echo $global_sort_type;?>'; 
+    tabSortAll['champ'] = '<?php echo $global_sort_type;?>';
     tabSortAll['ordre'] = '<?php echo $global_sort_order;?>';
-   
+
     var up = '<?php echo _("Up");?>';
     var down = '<?php echo _("Down");?>';
     var unreachable = '<?php echo _("Unreachable");?>';
     var pending = '<?php echo _("Pending");?>';
-    
+
     var _keyPrefix;
-    
+
     jQuery('#statusHost').change(function() {
         updateSelect();
     });
-    
+
     function updateSelect()
     {
         var oldStatus = jQuery('#statusFilter').val();
@@ -432,12 +432,11 @@ $tpl->display("host.ihtml");
     function preInit()
     {
         _keyPrefix = '<?php echo $keyPrefix; ?>';
-        _sid = '<?php echo $sid ?>';
         _tm = <?php echo $tM ?>;
         _o = '<?php echo $o; ?>';
         _sDefaultOrder = '<?php echo $sDefaultOrder; ?>';
         sSetOrderInMemory = '<?php echo $sSetOrderInMemory; ?>';
-        
+
         if (_sDefaultOrder == "0") {
             if (_o == 'h') {
                 jQuery("#statusHost option[value='h']").prop('selected', true);
@@ -474,17 +473,17 @@ $tpl->display("host.ihtml");
             _o = _keyPrefix;
         }
         window.clearTimeout(_timeoutID);
-        initM(_tm, _sid, _o);
+        initM(_tm, _o);
     }
 
     function filterCrit(value) {
         window.clearTimeout(_timeoutID);
-        initM(_tm, _sid, _o);
+        initM(_tm, _o);
     }
     function statusHosts(value, isInit)
     {
         _o = value;
         window.clearTimeout(_timeoutID);
-        initM(_tm, _sid, _o);
+        initM(_tm, _o);
     }
 </script>
