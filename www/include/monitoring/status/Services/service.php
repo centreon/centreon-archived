@@ -531,7 +531,6 @@ $tpl->display("service.ihtml");
 
     function preInit() {
         _keyPrefix = '<?= $keyPrefix; ?>';
-        _sid = '<?= $sid ?>';
         _tm = <?= $tM ?>;
         _o = '<?= $o; ?>';
         _defaultStatusFilter = '<?= $defaultStatusFilter; ?>';
@@ -574,12 +573,12 @@ $tpl->display("service.ihtml");
             _o = _keyPrefix;
         }
         window.clearTimeout(_timeoutID);
-        initM(_tm, _sid, _o);
+        initM(_tm, _o);
     }
 
     function filterCrit(value) {
         window.clearTimeout(_timeoutID);
-        initM(_tm, _sid, _o);
+        initM(_tm, _o);
     }
 
     function statusServices(value, isInit) {
