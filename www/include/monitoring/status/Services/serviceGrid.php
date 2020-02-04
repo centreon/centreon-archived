@@ -103,7 +103,6 @@ $tab_order = array("sort_asc" => "sort_desc", "sort_desc" => "sort_asc");
 $tpl->assign("tab_order", $tab_order);
 ?>
     <script type="text/javascript">
-        _sid = '<?php echo $sid ?>';
         _tm = <?php echo $tM ?>;
         p = <?php echo $p ?>;
 

@@ -293,7 +293,6 @@ $logs = array();
  * Print infos..
  */
 $buffer->startElement("infos");
-$buffer->writeElement("sid", $sid);
 $buffer->writeElement("opid", $openid);
 $buffer->writeElement("start", $start);
 $buffer->writeElement("end", $end);
