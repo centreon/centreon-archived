@@ -37,6 +37,40 @@ interface AcknowledgementRepositoryInterface
     public function filterByAccessGroups(?array $accessGroups): self;
 
     /**
+     * Find one acknowledgement **without taking into account** the ACLs of user.
+     *
+     * @param int $acknowledgementId Acknowledgement id
+     * @return Acknowledgement|null Return NULL if the acknowledgement has not been found
+     * @throws \Exception
+     */
+    public function findOneAcknowledgementForAdminUser(int $acknowledgementId): ?Acknowledgement;
+
+    /**
+     * Find one acknowledgement **taking into account** the ACLs of user.
+     *
+     * @param int $acknowledgementId Acknowledgement id
+     * @return Acknowledgement|null Return NULL if the acknowledgement has not been found
+     * @throws \Exception
+     */
+    public function findOneAcknowledgementForNonAdminUser(int $acknowledgementId): ?Acknowledgement;
+
+    /**
+     * Find all acknowledgements **without taking into account** the ACLs of user.
+     *
+     * @return Acknowledgement[] Return the acknowledgements found
+     * @throws \Exception
+     */
+    public function findAcknowledgementsForAdminUser(): array;
+
+    /**
+     * Find all acknowledgements **taking into account** the ACLs of user.
+     *
+     * @return Acknowledgement[] Return the acknowledgements found
+     * @throws \Exception
+     */
+    public function findAcknowledgementsForNonAdminUser(): array;
+
+    /**
      * Find the latest acknowledgement of all hosts.
      *
      * @return Acknowledgement[]

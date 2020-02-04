@@ -113,9 +113,16 @@ class Acknowledgement
     /**
      * @Serializer\Groups({"ack_main"})*
      * @Serializer\Type("integer")
-     * @var int State of this acknowledgment
+     * @var int State of this acknowledgement
      */
     private $state;
+
+    /**
+     * @Serializer\Groups({"ack_main"})*
+     * @Serializer\Type("integer")
+     * @var int State of this acknowledgement
+     */
+    private $type;
 
     /**
      * @return int|null
@@ -330,6 +337,24 @@ class Acknowledgement
     public function setState(int $state): Acknowledgement
     {
         $this->state = $state;
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getType(): int
+    {
+        return $this->type;
+    }
+
+    /**
+     * @param int $type
+     * @return Acknowledgement
+     */
+    public function setType(int $type): Acknowledgement
+    {
+        $this->type = $type;
         return $this;
     }
 }

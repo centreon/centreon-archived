@@ -267,7 +267,7 @@ class DowntimeController extends AbstractFOSRestController
      * @IsGranted("ROLE_API_REALTIME", message="You are not authorized to access this resource")
      * @Rest\Get(
      *     "/monitoring/hosts/{hostId}/services/{serviceId}/downtimes",
-     *     requirements={"hostId"="\d+"},
+     *     requirements={"hostId"="\d+", "serviceId"="\d+"},
      *     condition="request.attributes.get('version.is_beta') == true",
      *     name="monitoring.downtime.findDowntimesByService")
      * @param RequestParametersInterface $requestParameters
@@ -455,9 +455,7 @@ class DowntimeController extends AbstractFOSRestController
             $isServiceDowntime = $downtime->getServiceId() !== null;
             $svcCancel = $contact->hasRole(Contact::ROLE_CANCEL_SERVICE_DOWNTIME);
             $hostCancel = $contact->hasRole(Contact::ROLE_CANCEL_HOST_DOWNTIME);
-            if (($isServiceDowntime && !$contact->hasRole(Contact::ROLE_CANCEL_SERVICE_DOWNTIME))
-                || (!$isServiceDowntime && !$contact->hasRole(Contact::ROLE_CANCEL_HOST_DOWNTIME))
-            ) {
+            if (($isServiceDowntime && !$svcCancel) || (!$isServiceDowntime && !$hostCancel)) {
                 return $this->view(null, Response::HTTP_UNAUTHORIZED);
             }
         }

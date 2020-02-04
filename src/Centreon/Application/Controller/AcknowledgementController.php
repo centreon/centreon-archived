@@ -64,22 +64,23 @@ class AcknowledgementController extends AbstractFOSRestController
      *
      * @IsGranted("ROLE_API_REALTIME", message="You are not authorized to access this resource")
      * @Rest\Get(
-     *     "/acknowledgements/hosts",
-     *     condition="request.attributes.get('version.is_beta') == true")
+     *     "/monitoring/hosts/acknowledgements",
+     *     condition="request.attributes.get('version.is_beta') == true",
+     *     name="monitoring.acknowledgement.findLastHostAcknowledgement")
      * @param RequestParametersInterface $requestParameters
      * @return View
      * @throws \Exception
      */
     public function findLastHostAcknowledgement(RequestParametersInterface $requestParameters): View
     {
-        $hostsAcknowledgments = $this->acknowledgementService
+        $hostsAcknowledgements = $this->acknowledgementService
             ->filterByContact($this->getUser())
             ->findLastHostsAcknowledgements();
 
         $context = (new Context())->setGroups(['ack_main']);
 
         return $this->view([
-            'result' => $hostsAcknowledgments,
+            'result' => $hostsAcknowledgements,
             'meta' => [
                 'pagination' => $requestParameters->toArray()
             ]
@@ -91,8 +92,9 @@ class AcknowledgementController extends AbstractFOSRestController
      *
      * @IsGranted("ROLE_API_REALTIME", message="You are not authorized to access this resource")
      * @Rest\Get(
-     *     "/acknowledgements/services",
-     *     condition="request.attributes.get('version.is_beta') == true")
+     *     "/monitoring/services/acknowledgements",
+     *     condition="request.attributes.get('version.is_beta') == true",
+     *     name="monitoring.acknowledgement.findLastServiceAcknowledgement")
      *
      * @param RequestParametersInterface $requestParameters
      * @return View
@@ -100,13 +102,13 @@ class AcknowledgementController extends AbstractFOSRestController
      */
     public function findLastServiceAcknowledgement(RequestParametersInterface $requestParameters): View
     {
-        $servicesAcknowledgments = $this->acknowledgementService
+        $servicesAcknowledgements = $this->acknowledgementService
             ->filterByContact($this->getUser())
             ->findLastServicesAcknowledgements();
         $context = (new Context())->setGroups(['ack_main', 'ack_service']);
 
         return $this->view([
-            'result' => $servicesAcknowledgments,
+            'result' => $servicesAcknowledgements,
             'meta' => [
                 'pagination' => $requestParameters->toArray()
             ]
@@ -118,8 +120,9 @@ class AcknowledgementController extends AbstractFOSRestController
      *
      * @IsGranted("ROLE_API_REALTIME", message="You are not authorized to access this resource")
      * @Rest\Post(
-     *     "/acknowledgements/hosts",
-     *     condition="request.attributes.get('version.is_beta') == true")
+     *     "/monitoring/hosts/acknowledgements",
+     *     condition="request.attributes.get('version.is_beta') == true",
+     *     name="monitoring.acknowledgement.addHostAcknowledgement")
      * @param Request $request
      * @param EntityValidator $entityValidator
      * @param SerializerInterface $serializer
@@ -167,8 +170,10 @@ class AcknowledgementController extends AbstractFOSRestController
      *
      * @IsGranted("ROLE_API_REALTIME", message="You are not authorized to access this resource")
      * @Rest\Delete(
-     *     "/acknowledgements/hosts/{hostId}",
-     *     condition="request.attributes.get('version.is_beta') == true")
+     *     "/monitoring/hosts/{hostId}/acknowledgements",
+     *     requirements={"hostId"="\d+"},
+     *     condition="request.attributes.get('version.is_beta') == true",
+     *     name="monitoring.acknowledgement.disacknowledgeHostAcknowledgement")
      * @param int $hostId Host id for which we want to cancel the acknowledgement
      * @return View
      * @throws \Exception
@@ -190,8 +195,10 @@ class AcknowledgementController extends AbstractFOSRestController
      *
      * @IsGranted("ROLE_API_REALTIME", message="You are not authorized to access this resource")
      * @Rest\Delete(
-     *     "/acknowledgements/hosts/{hostId}/services/{serviceId}",
-     *     condition="request.attributes.get('version.is_beta') == true")
+     *     "/monitoring/hosts/{hostId}/services/{serviceId}/acknowledgements",
+     *     requirements={"hostId"="\d+", "serviceId"="\d+"},
+     *     condition="request.attributes.get('version.is_beta') == true",
+     *     name="monitoring.acknowledgement.disacknowledgeServiceAcknowledgement")
      * @param int $hostId Host id linked to service
      * @param int $serviceId Service Id for which we want to cancel the acknowledgement
      * @return View
@@ -215,8 +222,9 @@ class AcknowledgementController extends AbstractFOSRestController
      *
      * @IsGranted("ROLE_API_REALTIME", message="You are not authorized to access this resource")
      * @Rest\Post(
-     *     "/acknowledgements/services",
-     *     condition="request.attributes.get('version.is_beta') == true")
+     *     "/monitoring/services/acknowledgements",
+     *     condition="request.attributes.get('version.is_beta') == true",
+     *     name="monitoring.acknowledgement.addServiceAcknowledgement")
      * @param Request $request
      * @param EntityValidator $entityValidator
      * @param SerializerInterface $serializer
@@ -255,5 +263,71 @@ class AcknowledgementController extends AbstractFOSRestController
                 ->addServiceAcknowledgement($acknowledgement);
             return $this->view();
         }
+    }
+
+    /**
+     * Entry point to find one acknowledgement.
+     *
+     * @IsGranted("ROLE_API_REALTIME", message="You are not authorized to access this resource")
+     * @Rest\Get(
+     *     "/monitoring/acknowledgements/{acknowledgementId}",
+     *     requirements={"acknowledgementId"="\d+"},
+     *     condition="request.attributes.get('version.is_beta') == true",
+     *     name="monitoring.acknowledgement.findOneAcknowledgement")
+     * @param int $acknowledgementId Acknowledgement id to find
+     * @return View
+     * @throws \Exception
+     */
+    public function findOneAcknowledgement(int $acknowledgementId): View
+    {
+        $contact = $this->getUser();
+        if ($contact === null) {
+            return $this->view(null, Response::HTTP_UNAUTHORIZED);
+        }
+        $acknowledgement = $this->acknowledgementService
+            ->filterByContact($contact)
+            ->findOneAcknowledgement($acknowledgementId);
+
+        if ($acknowledgement !== null) {
+            $context = (new Context())
+                ->setGroups(['ack_main', 'ack_service'])
+                ->enableMaxDepth();
+
+            return $this->view($acknowledgement)->setContext($context);
+        } else {
+            return View::create(null, Response::HTTP_NOT_FOUND, []);
+        }
+    }
+
+    /**
+     * Entry point to find all acknowledgements.
+     *
+     * @IsGranted("ROLE_API_REALTIME", message="You are not authorized to access this resource")
+     * @Rest\Get(
+     *     "/monitoring/acknowledgements",
+     *     condition="request.attributes.get('version.is_beta') == true",
+     *     name="monitoring.acknowledgement.findAcknowledgements")
+     * @param RequestParametersInterface $requestParameters
+     * @return View
+     * @throws \Exception
+     */
+    public function findAcknowledgements(RequestParametersInterface $requestParameters): View
+    {
+        $contact = $this->getUser();
+        if ($contact === null) {
+            return $this->view(null, Response::HTTP_UNAUTHORIZED);
+        }
+        $acknowledgements = $this->acknowledgementService
+            ->filterByContact($contact)
+            ->findAcknowledgements();
+
+        $context = (new Context())->setGroups(['ack_main', 'ack_service']);
+
+        return $this->view([
+            'result' => $acknowledgements,
+            'meta' => [
+                'pagination' => $requestParameters->toArray()
+            ]
+        ])->setContext($context);
     }
 }

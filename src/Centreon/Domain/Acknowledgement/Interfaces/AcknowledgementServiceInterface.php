@@ -32,6 +32,14 @@ use JMS\Serializer\Exception\ValidationFailedException;
 interface AcknowledgementServiceInterface extends ContactFilterInterface
 {
     /**
+     * Find all acknowledgements.
+     *
+     * @return Acknowledgement[]
+     * @throws \Exception
+     */
+    public function findAcknowledgements(): array;
+
+    /**
      * Find all acknowledgements of all hosts.
      *
      * @return Acknowledgement[]
@@ -52,7 +60,7 @@ interface AcknowledgementServiceInterface extends ContactFilterInterface
     /**
      * Adds a host acknowledgement.
      *
-     * @param Acknowledgement $acknowledgement Host acknowledgment to add
+     * @param Acknowledgement $acknowledgement Host acknowledgement to add
      * @throws AcknowledgementException
      * @throws EngineException
      * @throws EntityNotFoundException
@@ -64,7 +72,7 @@ interface AcknowledgementServiceInterface extends ContactFilterInterface
     /**
      * Adds a service acknowledgement.
      *
-     * @param Acknowledgement $acknowledgement Host acknowledgment to add
+     * @param Acknowledgement $acknowledgement Host acknowledgement to add
      * @throws AcknowledgementException
      * @throws EngineException
      * @throws EntityNotFoundException

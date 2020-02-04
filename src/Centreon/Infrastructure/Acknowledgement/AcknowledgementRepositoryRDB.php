@@ -32,7 +32,7 @@ use Centreon\Infrastructure\Repository\AbstractRepositoryDRB;
 use Centreon\Infrastructure\RequestParameters\RequestParametersTranslatorException;
 use Centreon\Infrastructure\RequestParameters\SqlRequestParametersTranslator;
 
-final class AcknowledgmentRepositoryRDB extends AbstractRepositoryDRB implements AcknowledgementRepositoryInterface
+final class AcknowledgementRepositoryRDB extends AbstractRepositoryDRB implements AcknowledgementRepositoryInterface
 {
     /**
      * Define a host acknowledgement (0)
@@ -65,7 +65,17 @@ final class AcknowledgmentRepositoryRDB extends AbstractRepositoryDRB implements
     private $contact;
 
     /**
-     * AcknowledgmentRepositoryRDB constructor.
+     * @var array
+     */
+    private $hostConcordanceArray;
+
+    /**
+     * @var array
+     */
+    private $serviceConcordanceArray;
+
+    /**
+     * AcknowledgementRepositoryRDB constructor.
      *
      * @param DatabaseConnection $db
      * @param SqlRequestParametersTranslator $sqlRequestTranslator
@@ -79,6 +89,27 @@ final class AcknowledgmentRepositoryRDB extends AbstractRepositoryDRB implements
         $this->sqlRequestTranslator
             ->getRequestParameters()
             ->setConcordanceStrictMode(RequestParameters::CONCORDANCE_MODE_STRICT);
+        $this->hostConcordanceArray = [
+            'author_id' => 'contact.contact_id',
+            'comment' => 'ack.comment_data',
+            'entry_time' => 'ack.entry_time',
+            'deletion_time' => 'ack.deletion_time',
+            'host_id' => 'ack.host_id',
+            'id' => 'ack.acknowledgement_id',
+            'is_notify_contacts' => 'ack.notify_contacts',
+            'is_persistent_comment' => 'ack.persistent_comment',
+            'is_sticky' => 'ack.sticky',
+            'poller_id' => 'ack.instance_id',
+            'state' => 'ack.state',
+            'type' => 'ack.type',
+        ];
+        $this->serviceConcordanceArray = array_merge(
+            $this->hostConcordanceArray,
+            [
+                'service_id' => 'ack.service_id',
+                'service.display_name' => 'srv.display_name',
+            ]
+        );
     }
 
     /**
@@ -237,24 +268,11 @@ final class AcknowledgmentRepositoryRDB extends AbstractRepositoryDRB implements
                   AND acg.acl_group_activate = \'1\'
                   AND acg.acl_group_id IN (' . $this->accessGroupIdToString($this->accessGroups) . ') ';
 
-        $concordanceArray = [
-            'author_id' => 'contact.contact_id',
-            'comment' => 'ack.comment_data',
-            'entry_time' => 'ack.entry_time',
-            'deletion_time' => 'ack.deletion_time',
-            'host_id' => 'ack.host_id',
-            'id' => 'ack.acknowledgement_id',
-            'is_notify_contacts' => 'ack.notify_contacts',
-            'is_persistent_comment' => 'ack.persistent_comment',
-            'is_sticky' => 'ack.sticky',
-            'poller_id' => 'ack.instance_id',
-            'state' => 'ack.state'];
-
-        if ($type === self::TYPE_SERVICE_ACKNOWLEDGEMENT) {
-            $concordanceArray['service_id'] = 'ack.service_id';
-        }
-
-        $this->sqlRequestTranslator->setConcordanceArray($concordanceArray);
+        $this->sqlRequestTranslator->setConcordanceArray(
+            $type === self::TYPE_SERVICE_ACKNOWLEDGEMENT
+            ? $this->serviceConcordanceArray
+            : $this->hostConcordanceArray
+        );
 
         $request = 'SELECT ack.*, contact.contact_id AS author_id
             FROM `:dbstg`.acknowledgements ack
@@ -312,6 +330,143 @@ final class AcknowledgmentRepositoryRDB extends AbstractRepositoryDRB implements
         return $acknowledgements;
     }
 
+    /**
+     * @inheritDoc
+     */
+    public function findOneAcknowledgementForAdminUser(int $acknowledgementId): ?Acknowledgement
+    {
+        // Internal call for an admin user
+        return $this->findOneAcknowledgement($acknowledgementId, true);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function findOneAcknowledgementForNonAdminUser(int $acknowledgementId): ?Acknowledgement
+    {
+        if ($this->hasNotEnoughRightsToContinue()) {
+            return null;
+        }
+
+        // Internal call for non admin user
+        return $this->findOneAcknowledgement($acknowledgementId, false);
+    }
+
+    /**
+     * Find one acknowledgement tacking into account or not the ACLs.
+     *
+     * @param int $downtimeId Acknowledgement id
+     * @param bool $isAdmin Indicates whether user is an admin
+     * @return Acknowledgement|null Return NULL if the acknowledgement has not been found
+     * @throws \Exception
+     */
+    private function findOneAcknowledgement(int $acknowledgementId, bool $isAdmin = false): ?Acknowledgement
+    {
+        $aclRequest = '';
+
+        if ($isAdmin === false) {
+            $aclRequest =
+                ' INNER JOIN `:dbstg`.`centreon_acl` acl
+                  ON acl.host_id = dwt.host_id
+                  AND (acl.service_id = dwt.service_id OR acl.service_id IS NULL)
+                INNER JOIN `:db`.`acl_groups` acg
+                  ON acg.acl_group_id = acl.group_id
+                  AND acg.acl_group_activate = \'1\'
+                  AND acg.acl_group_id IN ('
+                . $this->accessGroupIdToString($this->accessGroups) . ')';
+        }
+
+        $request =
+            'SELECT SQL_CALC_FOUND_ROWS DISTINCT ack.*, contact.contact_id AS author_id
+            FROM `:dbstg`.acknowledgements ack
+            LEFT JOIN `:db`.`contact`
+                ON contact.contact_alias = ack.author'
+            . $aclRequest
+            . ' WHERE ack.acknowledgement_id = :acknowledgement_id';
+
+        $request = $this->translateDbName($request);
+
+        $prepare = $this->db->prepare($request);
+        $prepare->bindValue(':acknowledgement_id', $acknowledgementId, \PDO::PARAM_INT);
+        $prepare->execute();
+
+        if (false !== ($row = $prepare->fetch(\PDO::FETCH_ASSOC))) {
+            return EntityCreator::createEntityByArray(
+                Acknowledgement::class,
+                $row
+            );
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function findAcknowledgementsForAdminUser(): array
+    {
+        // Internal call for an admin user
+        return $this->findAcknowledgements(true);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function findAcknowledgementsForNonAdminUser(): array
+    {
+        if ($this->hasNotEnoughRightsToContinue()) {
+            return [];
+        }
+
+        // Internal call for non admin user
+        return $this->findAcknowledgements(false);
+    }
+
+    /**
+     * Find all acknowledgements.
+     *
+     * @param bool $isAdmin Indicates whether user is an admin
+     * @return array
+     * @throws \Exception
+     */
+    private function findAcknowledgements(bool $isAdmin): array
+    {
+        $this->sqlRequestTranslator->setConcordanceArray($this->serviceConcordanceArray);
+
+        $aclRequest = '';
+
+        if ($isAdmin === false) {
+            $aclRequest =
+                ' INNER JOIN `:dbstg`.`centreon_acl` acl
+                  ON acl.host_id = ack.host_id
+                  AND (acl.service_id = ack.service_id OR acl.service_id IS NULL)
+                INNER JOIN `:db`.`acl_groups` acg
+                  ON acg.acl_group_id = acl.group_id
+                  AND acg.acl_group_activate = \'1\'
+                  AND acg.acl_group_id IN ('
+                . $this->accessGroupIdToString($this->accessGroups) . ') ';
+        }
+
+        $request =
+            'SELECT SQL_CALC_FOUND_ROWS DISTINCT ack.*, contact.contact_id AS author_id
+            FROM `:dbstg`.acknowledgements ack
+            LEFT JOIN `:db`.`contact`
+              ON contact.contact_alias = ack.author
+            INNER JOIN `:dbstg`.hosts
+              ON hosts.host_id = ack.host_id
+            LEFT JOIN `:dbstg`.services srv
+              ON srv.service_id = ack.service_id
+              AND srv.host_id = hosts.host_id'
+            . $aclRequest;
+
+        return $this->processRequest($request);
+    }
+
+    /**
+     * Check if the current contact is admin
+     *
+     * @return bool
+     */
     private function isAdmin(): bool
     {
         return ($this->contact !== null)
@@ -336,5 +491,54 @@ final class AcknowledgmentRepositoryRDB extends AbstractRepositoryDRB implements
         return ($this->contact !== null)
             ? !($this->contact->isAdmin() || count($this->accessGroups) > 0)
             : count($this->accessGroups) == 0;
+    }
+
+    /**
+     * Execute the request and retrieve the acknowledgements list
+     *
+     * @param string $request Request to execute
+     * @return Acknowledgement[]
+     * @throws \Exception
+     */
+    private function processRequest(string $request): array
+    {
+        $request = $this->translateDbName($request);
+
+        // Search
+        $searchRequest = $this->sqlRequestTranslator->translateSearchParameterToSql();
+        $request .= !is_null($searchRequest) ? $searchRequest : '';
+
+        // Sort
+        $sortRequest = $this->sqlRequestTranslator->translateSortParameterToSql();
+        $request .= !is_null($sortRequest) ? $sortRequest : ' ORDER BY ack.entry_time DESC';
+
+        // Pagination
+        $request .= $this->sqlRequestTranslator->translatePaginationToSql();
+
+        $statement = $this->db->prepare($request);
+
+        foreach ($this->sqlRequestTranslator->getSearchValues() as $key => $data) {
+            $type = key($data);
+            $value = $data[$type];
+            $statement->bindValue($key, $value, $type);
+        }
+
+        $statement->execute();
+
+        $result = $this->db->query('SELECT FOUND_ROWS()');
+        if ($result !== false && ($total = $result->fetchColumn()) !== false) {
+            $this->sqlRequestTranslator->getRequestParameters()->setTotal((int) $total);
+        }
+
+        $acknowledgements = [];
+
+        while (false !== ($result = $statement->fetch(\PDO::FETCH_ASSOC))) {
+            $acknowledgements[] = EntityCreator::createEntityByArray(
+                Acknowledgement::class,
+                $result
+            );
+        }
+
+        return $acknowledgements;
     }
 }
