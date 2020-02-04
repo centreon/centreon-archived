@@ -44,3 +44,8 @@ secret
 ###< symfony/framework-bundle ###
 /bin/.phpunit/
 /doc/en/_build/
+
+src/Centreon*
+www/modules/centreon-*
+www/widgets
+!www/widgets/require.php
