@@ -51,12 +51,14 @@ if (!isset($obj->session_id) || !CentreonSession::checkSession($obj->session_id,
 // Set Default Poller
 $obj->getDefaultFilters();
 
-// Check Arguments From GET tab
-$o = filter_input(INPUT_GET, 'o', FILTER_SANITIZE_STRING, ['options' => ['default' => 'h']]);
+/*
+ * Check Arguments From GET request
+ */
+$o = filter_input(INPUT_GET, 'o', FILTER_SANITIZE_STRING, ['options' => ['default' => 'svcSumHG_pb']]);
 $p = filter_input(INPUT_GET, 'p', FILTER_VALIDATE_INT, ['options' => ['default' => 2]]);
 $num = filter_input(INPUT_GET, 'num', FILTER_VALIDATE_INT, ['options' => ['default' => 0]]);
-$limit = filter_input(INPUT_GET, 'limit', FILTER_VALIDATE_INT, ['options' => ['default' => 20]]);
-//if instance value is not set, displaying all active pollers linked resources
+$limit = filter_input(INPUT_GET, 'limit', FILTER_VALIDATE_INT, ['options' => ['default' => 30]]);
+//if instance value is not set, displaying all active pollers' linked resources
 $instance = filter_var($obj->defaultPoller ?? -1, FILTER_VALIDATE_INT);
 $hostgroup = filter_input(INPUT_GET, 'hg_search', FILTER_SANITIZE_STRING, ['options' => ['default' => '']]);
 $search = filter_input(INPUT_GET, 'search', FILTER_SANITIZE_STRING, ['options' => ['default' => '']]);
@@ -69,8 +71,9 @@ $grouplistStr = $obj->access->getAccessGroupsString();
 $queryValues = [];
 
 // Get Host status
-$rq1 = "SELECT SQL_CALC_FOUND_ROWS DISTINCT h.name AS host_name, hg.name AS hgname, hgm.hostgroup_id, h.host_id, " .
-    "h.state, h.icon_image FROM hostgroups hg, hosts_hostgroups hgm, hosts h ";
+$rq1 = "SELECT SQL_CALC_FOUND_ROWS DISTINCT
+    h.name AS host_name, hg.name AS hgname, hgm.hostgroup_id, h.host_id, h.state, h.icon_image
+    FROM hostgroups hg, hosts_hostgroups hgm, hosts h ";
 
 if (!$obj->is_admin) {
     $rq1 .= ", centreon_acl ";
@@ -84,44 +87,40 @@ $rq1 .= "WHERE h.host_id = hgm.host_id "
 if (!$obj->is_admin) {
     $rq1 .= $obj->access->queryBuilder("AND", "h.host_id", "centreon_acl.host_id") . " "
         . $obj->access->queryBuilder("AND", "group_id", $grouplistStr) . " "
-        . $obj->access->queryBuilder("AND", "hg.hostgroup_id", $obj->access->getHostGroupsString("ID")) . " ";
+        . $obj->access->queryBuilder("AND", "hg.hostgroup_id", $obj->access->getHostGroupsString("ID"));
 }
 
-if ($instance != -1) {
-    $rq1 .= "AND h.instance_id = :instance ";
-    $queryValues[':instance'] = [
+if ($instance !== -1) {
+    $rq1 .= " AND h.instance_id = :instance ";
+    $queryValues['instance'] = [
         PDO::PARAM_INT => (int)$instance
     ];
 }
 
-if ($o == "svcgridHG_pb" || $o == "svcSumHG_pb") {
+if (substr($o, -3) === '_pb') {
     $rq1 .= " AND h.host_id IN ( "
         . "SELECT s.host_id FROM services s "
         . "WHERE s.state != 0 AND s.state != 4 AND s.enabled = 1) ";
-}
-
-if ($o == "svcSumHG_ack_0") {
-    $rq1 .= "AND h.host_id IN ( "
+} elseif (substr($o, -6) === '_ack_0') {
+    $rq1 .= " AND h.host_id IN ( "
         . "SELECT s.host_id FROM services s "
         . "WHERE s.acknowledged = 0 AND s.state != 0 AND s.state != 4 AND s.enabled = 1) ";
-}
-
-if ($o == "svcSumHG_ack_1") {
-    $rq1 .= "AND h.host_id IN ( "
+} elseif (substr($o, -6) === '_ack_1') {
+    $rq1 .= " AND h.host_id IN ( "
         . "SELECT s.host_id FROM services s "
         . "WHERE s.acknowledged = 1 AND s.state != 0 AND s.state != 4 AND s.enabled = 1) ";
 }
 
 if ($search != "") {
-    $rq1 .= "AND h.name LIKE :search";
-    $queryValues[':search'] = [
+    $rq1 .= " AND h.name LIKE :search";
+    $queryValues['search'] = [
         PDO::PARAM_STR => "%" . $search . "%"
     ];
 }
 
 if ($hostgroup != "") {
     $rq1 .= " AND hg.name LIKE :hgName";
-    $queryValues[':hgName'] = [
+    $queryValues['hgName'] = [
         PDO::PARAM_STR => $hostgroup
     ];
 }
@@ -129,23 +128,23 @@ if ($hostgroup != "") {
 $rq1 .= " AND h.enabled = 1 ORDER BY :sort_type, host_name ";
 ("ASC" != $order) ? $rq1 .= "DESC" : $rq1 .= "ASC";
 $rq1 .= " LIMIT :numLimit, :limit";
-$queryValues[':sort_type'] = [
+$queryValues['sort_type'] = [
     PDO::PARAM_STR => $sort_type
 ];
-$queryValues[':numLimit'] = [
+$queryValues['numLimit'] = [
     PDO::PARAM_INT => (int)($num * $limit)
 ];
-$queryValues[':limit'] = [
+$queryValues['limit'] = [
     PDO::PARAM_INT => (int)$limit
 ];
 
-$DBRESULT = $obj->DBC->prepare($rq1);
+$dbResult = $obj->DBC->prepare($rq1);
 foreach ($queryValues as $bindId => $bindData) {
     foreach ($bindData as $bindType => $bindValue) {
-        $DBRESULT->bindValue($bindId, $bindValue, $bindType);
+        $dbResult->bindValue($bindId, $bindValue, $bindType);
     }
 }
-$DBRESULT->execute();
+$dbResult->execute();
 $numRows = $obj->DBC->query("SELECT FOUND_ROWS()")->fetchColumn();
 
 $class = "list_one";
@@ -163,14 +162,14 @@ $obj->XML->writeElement("p", $p);
 $obj->XML->writeElement("s", "1");
 $obj->XML->endElement();
 
-while ($ndo = $DBRESULT->fetch()) {
+while ($ndo = $dbResult->fetch()) {
     if (!isset($tab_final[$ndo["hgname"]])) {
         $tab_final[$ndo["hgname"]] = [];
     }
     if (!isset($tab_final[$ndo["hgname"]][$ndo["host_name"]])) {
         $tab_final[$ndo["hgname"]][$ndo["host_name"]] = array("0" => 0, "1" => 0, "2" => 0, "3" => 0, "4" => 0);
     }
-    if ($o != "svcSum_pb" && $o != "svcSum_ack_1" && $o != "svcSum_ack_0") {
+    if (strpos('svcSumHG_', $o) !== false) {
         $tab_final[$ndo["hgname"]][$ndo["host_name"]][0] =
             $obj->monObj->getServiceStatusCount($ndo["host_name"], $obj, $o, 0, $obj);
     }
@@ -186,7 +185,7 @@ while ($ndo = $DBRESULT->fetch()) {
     $tab_final[$ndo["hgname"]][$ndo["host_name"]]["hid"] = $ndo["host_id"];
     $tab_final[$ndo["hgname"]][$ndo["host_name"]]["icon"] = $ndo["icon_image"];
 }
-$DBRESULT->closeCursor();
+$dbResult->closeCursor();
 
 $hg = "";
 $count = 0;

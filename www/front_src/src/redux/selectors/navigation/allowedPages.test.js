@@ -33,8 +33,8 @@ describe('allowedPagesSelector', () => {
                         url: '/home/customViews/2',
                         options: null,
                       },
-                    ]
-                  }
+                    ],
+                  },
                 ],
                 page: '103',
                 label: 'Custom Views',
@@ -50,6 +50,11 @@ describe('allowedPagesSelector', () => {
 
     const reactRoutes = allowedPagesSelector(state);
 
-    expect(reactRoutes).toEqual(['10301', '/home/customViews/2', '/home/customViews', '1']);
+    expect(reactRoutes).toEqual([
+      '10301',
+      '/home/customViews/2',
+      '/home/customViews',
+      '1',
+    ]);
   });
 });
