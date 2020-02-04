@@ -39,8 +39,8 @@ class CommandServiceTest extends TestCase
         $mockThumprint = '6pX4rBssjlEV1YBHwLFRPyfRE_MvdwTKY5wsBq48cRw';
         $mockToken = '86ca0747484d947';
 
-        $firstGorgoneResponse = file_get_contents('first_gorgone_response.json');
-        $secondGorgoneResponse = file_get_contents('second_gorgone_response.json');
+        $firstGorgoneResponse = file_get_contents(__DIR__ . '/first_gorgone_response.json');
+        $secondGorgoneResponse = file_get_contents(__DIR__ . '/second_gorgone_response.json');
 
         $thumbprintCommand = new ThumbprintCommand(2);
         $commandRepository = $this
