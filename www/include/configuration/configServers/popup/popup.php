@@ -168,7 +168,7 @@ modules:
     enable: true
     
   - name: nodes
-    package: gorgone::modules::core::nodes::hooks
+    package: gorgone::modules::centreon::nodes::hooks
     enable: true
     
   - name: proxy
