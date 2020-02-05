@@ -1459,10 +1459,10 @@ components:
           type: string
           description: "Resource name"
           example: "Ping"
-        url:
+        details_url:
           type: string
-          description: "Resource url"
-          example: "/configuration/host/12/service/12"
+          description: "Resource url to details page"
+          example: "/monitoring/host/12/service/12"
         parent:
           type: object
           properties:
@@ -1475,10 +1475,10 @@ components:
               type: string
               description: "Parent resource name"
               example: "Central"
-            url:
+            details_url:
               type: string
-              description: "Parent resource url"
-              example: "/configuration/host/12"
+              description: "Parent resource url to details page"
+              example: "/monitoring/host/12"
         status_code:
           type: integer
           description: |
