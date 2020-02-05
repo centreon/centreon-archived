@@ -18,6 +18,7 @@ module.exports = merge(baseConfig, {
     new HtmlWebpackTagsPlugin({
       tags: ['http://localhost:35729/livereload.js'],
       append: true,
+      usePublicPath: false,
     }),
   ],
 });
