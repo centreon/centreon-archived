@@ -44,14 +44,19 @@ try {
       node {
         sh 'setup_centreon_build.sh'
         sh "./centreon-build/jobs/web/${serie}/mon-web-unittest.sh centos7"
-        junit 'ut.xml,jest-test-results.xml'
+        junit 'ut-be.xml,ut-fe.xml'
         if (currentBuild.result == 'UNSTABLE')
           currentBuild.result = 'FAILURE'
         step([
           $class: 'CloverPublisher',
           cloverReportDir: '.',
-          cloverReportFileName: 'coverage.xml'
+          cloverReportFileName: 'coverage-be.xml'
         ])
+        recordIssues(
+          enabledForFailure: true,
+          tools: [checkStyle(pattern: 'codestyle-be.xml'), esLint(pattern: 'codestyle-fe.xml')],
+          referenceJobName: 'centreon-web/master'
+        )
 
         if (env.CHANGE_ID) { // pull request to comment with coding style issues
           ViolationsToGitHub([
@@ -70,14 +75,6 @@ try {
             ]
           ])
         }
-
-        step([
-          $class: 'hudson.plugins.checkstyle.CheckStylePublisher',
-          pattern: 'codestyle.xml',
-          usePreviousBuildAsReference: true,
-          useDeltaValues: true,
-          failedNewAll: '0'
-        ])
 
         if ((env.BUILD == 'RELEASE') || (env.BUILD == 'REFERENCE')) {
           withSonarQubeEnv('SonarQube') {
