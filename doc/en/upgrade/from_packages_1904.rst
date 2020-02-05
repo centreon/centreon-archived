@@ -68,6 +68,9 @@ The PHP timezone should be set. Run the command: ::
 .. note::
     Change **Europe/Paris** to your timezone.
 
+.. warning::
+    Don't forget your php-fpm specific configuration that you may have set in the /etc/opt/rh/rh-php71/php.ini and/or /etc/opt/rh/rh-php71/php-fpm.d/centreon.conf
+
 Run the following commands: ::
 
     # systemctl disable rh-php71-php-fpm

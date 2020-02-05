@@ -1205,6 +1205,40 @@ sub initEngine($$$) {
 }
 
 ##################################################
+# Function to reload Centreon Broker
+# Arguments:
+#     $id: int Poller id to reload
+#
+sub reloadBroker($) {
+    my $self = shift;
+    my $id = $_[0];
+    my ($lerror, $stdout, $conf, $command);
+
+    # Get configuration
+    $conf = $self->getServerConfig($id);
+
+    if ($conf->{localhost} == 1) {
+        $command = "$self->{sudo} $conf->{broker_reload_command}";
+        $self->{logger}->writeLogInfo(
+            'Init Script : "' . $command . '" ' .
+            'on poller "' . $conf->{name} . '" (' . $id . ')'
+        );
+
+        ($lerror, $stdout) = centreon::common::misc::backtick(
+            command => $command,
+            logger => $self->{logger},
+            timeout => 10
+        );
+
+        if (defined($stdout)) {
+            foreach my $line (split(/\n/, $stdout)) {
+                $self->{logger}->writeLogDebug("Broker : " . $line);
+            }
+        }
+    }
+}
+
+##################################################
 # Function to generate Centreon Engine command :
 # Arguments:
 #     $pollerConf: array Poller configuration get in database (nagios_server table)
@@ -1600,6 +1634,8 @@ sub parseRequest($) {
         $self->initEngine($1, "start", $action);
     } elsif ($action =~ /^STOP\:([0-9]*)/){
         $self->initEngine($1, "stop", $action);
+    } elsif ($action =~ /^RELOADBROKER\:([0-9]*)/){
+        $self->reloadBroker($1);
     } elsif ($action =~ /^SENDCFGFILE\:([0-9]*)/){
         $self->sendConfigFile($1);
     } elsif ($action =~ /^SENDEXPORTFILE\:([0-9]*)\:(.*)/){

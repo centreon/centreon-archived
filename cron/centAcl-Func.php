@@ -160,7 +160,7 @@ function getFilteredPollers($host, $resId)
             }
         }
     } else {
-        # If result of query is empty and user have poller restriction, clean host table.
+        // If result of query is empty and user have poller restrictions, clean host table.
         if ($isPollerFilter) {
             $host = array();
         }

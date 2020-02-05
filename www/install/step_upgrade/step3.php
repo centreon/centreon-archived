@@ -66,7 +66,32 @@ $template->display('content.tpl');
     var step3_t;
 
     jQuery(function () {
-        jQuery('#releasenotes').load('RELEASENOTES.html');
+        jQuery('#releasenotes').load('RELEASENOTES.html', function() {
+            /* add accordion class to all div matching centreon-web-* id */
+            jQuery('div[id^="centreon-web-"]').addClass('accordion');
+
+            var acc = document.getElementsByClassName("accordion");
+            var i;
+
+            for (i = 0; i < acc.length; i++) {
+              acc[i].addEventListener("click", function() {
+                /* Toggle between adding and removing the "active" class,
+                to highlight the button that controls the panel */
+                this.classList.toggle("active");
+
+                /* Toggle between hiding and showing the active panel */
+                var panels = this.getElementsByClassName("section");
+                var j;
+                for (j = 0; j < panels.length; j++) {
+                    if (panels[j].style.display === "block") {
+                        panels[j].style.display = "none";
+                    } else {
+                        panels[j].style.display = "block";
+                    }
+                }
+              });
+            }
+        });
         jQuery('#next').attr('disabled', 'disabled');
         timeout_button();
     });

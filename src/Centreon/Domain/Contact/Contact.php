@@ -29,6 +29,14 @@ class Contact implements UserInterface, ContactInterface
 {
     const ROLE_API_CONFIGURATION = 'ROLE_API_CONFIGURATION';
     const ROLE_API_REALTIME = 'ROLE_API_REALTIME';
+    const ROLE_HOST_ACKNOWLEDGEMENT = 'ROLE_HOST_ACKNOWLEDGEMENT';
+    const ROLE_HOST_DISACKNOWLEDGEMENT = 'ROLE_HOST_DISACKNOWLEDGEMENT';
+    const ROLE_SERVICE_ACKNOWLEDGEMENT = 'ROLE_SERVICE_ACKNOWLEDGEMENT';
+    const ROLE_SERVICE_DISACKNOWLEDGEMENT = 'ROLE_SERVICE_DISACKNOWLEDGEMENT';
+    const ROLE_CANCEL_HOST_DOWNTIME = 'ROLE_CANCEL_HOST_DOWNTIME';
+    const ROLE_CANCEL_SERVICE_DOWNTIME = 'ROLE_CANCEL_SERVICE_DOWNTIME';
+    const ROLE_ADD_HOST_DOWNTIME = 'ROLE_ADD_HOST_DOWNTIME';
+    const ROLE_ADD_SERVICE_DOWNTIME = 'ROLE_ADD_SERVICE_DOWNTIME';
 
     /**
      * @var int Id of contact
@@ -94,6 +102,11 @@ class Contact implements UserInterface, ContactInterface
      * @var (Role|string)[]
      */
     private $roles = [];
+
+    /**
+     * @var string[] List of names of topology rules to which the contact can access
+     */
+    private $topologyRulesNames = [];
 
     /**
      * @return int
@@ -295,7 +308,7 @@ class Contact implements UserInterface, ContactInterface
      */
     public function getRoles()
     {
-        return $this->roles;
+        return array_merge($this->roles, $this->topologyRulesNames);
     }
 
     /**
@@ -339,7 +352,7 @@ class Contact implements UserInterface, ContactInterface
      * This is important if, at any given point, sensitive information like
      * the plain-text password is stored on this object.
      */
-    public function eraseCredentials()
+    public function eraseCredentials(): void
     {
         // Nothing to do. But we must to define this method
     }
@@ -406,15 +419,32 @@ class Contact implements UserInterface, ContactInterface
      *
      * @param string $roleName Role name to add
      */
-    private function addRole(string $roleName): void
+    public function addRole(string $roleName): void
     {
         if (!in_array($roleName, $this->roles)) {
             $this->roles[] = $roleName;
         }
     }
 
+    /**
+     * Removes an existing roles.
+     *
+     * @param string $roleName Role name to remove
+     */
     private function removeRole(string $roleName): void
     {
         unset($this->roles[$roleName]);
+    }
+
+    /**
+     * Added a topology rule.
+     *
+     * @param string $topologyRuleName Topology rule name
+     */
+    public function addTopologyRule(string $topologyRuleName): void
+    {
+        if (!in_array($topologyRuleName, $this->topologyRulesNames)) {
+            $this->topologyRulesNames[] = $topologyRuleName;
+        }
     }
 }

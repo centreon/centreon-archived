@@ -50,9 +50,9 @@ class RemoteServerFormStepTwo extends Component {
               component={CheckboxField}
               label="Manage automatically Centreon Broker Configuration of selected poller?"
             /> */}
-            <div className={styles["form-buttons"]}>
-              <button className={styles["button"]} type="submit">
-                <Translate value="Apply"/>
+            <div className={styles['form-buttons']}>
+              <button className={styles.button} type="submit">
+                <Translate value="Apply" />
               </button>
             </div>
             {error ? (

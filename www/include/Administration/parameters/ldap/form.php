@@ -1,5 +1,4 @@
 <?php
-
 /*
  * Copyright 2005-2019 Centreon
  * Centreon is developed by : Julien Mathis and Romain Le Merlus under
@@ -57,7 +56,6 @@ $arId = filter_var(
 $form = new HTML_QuickFormCustom('Form', 'post', "?p=" . $p . "&o=" . $o);
 $form->addElement('header', 'title', _("Modify General Options"));
 
-
 /**
  * Ldap info
  */
@@ -84,7 +82,7 @@ $ldapUseDns[] = $form->createElement(
     null,
     _("Yes"),
     '1',
-    array('id' => 'ldap_srv_dns_y', 'onclick' => "toggleParams(false, false);")
+    array('id' => 'ldap_srv_dns_y', 'onclick' => "toggleParams(false);")
 );
 $ldapUseDns[] = $form->createElement(
     'radio',
@@ -92,7 +90,7 @@ $ldapUseDns[] = $form->createElement(
     null,
     _("No"),
     '0',
-    array('id' => 'ldap_srv_dns_n', 'onclick' => "toggleParams(true, false);")
+    array('id' => 'ldap_srv_dns_n', 'onclick' => "toggleParams(true);")
 );
 $form->addGroup($ldapUseDns, 'ldap_srv_dns', _("Use service DNS"), '&nbsp;');
 
@@ -112,7 +110,7 @@ $ldapAutoScan[] = $form->createElement(
     null,
     _("Yes"),
     '1',
-    array('id' => 'ldap_auto_sync_y', 'onclick' => "toggleParamSync(false, false);")
+    array('id' => 'ldap_auto_sync_y', 'onclick' => "toggleParamSync(false);")
 );
 $ldapAutoScan[] = $form->createElement(
     'radio',
@@ -120,7 +118,7 @@ $ldapAutoScan[] = $form->createElement(
     null,
     _("No"),
     '0',
-    array('id' => 'ldap_auto_sync_n', 'onclick' => "toggleParamSync(true, false);")
+    array('id' => 'ldap_auto_sync_n', 'onclick' => "toggleParamSync(true);")
 );
 $form->addGroup($ldapAutoScan, 'ldap_auto_sync', _("Enable LDAP synchronization on login"), '&nbsp;');
 // default interval before re-scanning the whole LDAP. By default, a duration of one hour is set
@@ -148,6 +146,7 @@ $form->addElement(
     $LdapContactTplList,
     array('id' => 'ldap_contact_tmpl')
 );
+$form->addRule('ldap_contact_tmpl', _("Compulsory Field"), 'required');
 
 /**
  * Default contactgroup for imported contact
@@ -164,7 +163,6 @@ $attrContactGroup = array(
 );
 $form->addElement('select2', 'ldap_default_cg', _('Default contactgroup'), array(), $attrContactGroup);
 
-
 $form->addElement('header', 'ldapinfo', _("LDAP Information"));
 $form->addElement('header', 'ldapserver', _('LDAP Servers'));
 $form->addElement('text', 'bind_dn', _("Bind user"), array("size" => "40", "autocomplete" => "off"));
@@ -174,7 +172,7 @@ $form->addElement(
     'select',
     'ldap_template',
     _("Template"),
-    array('0' => "", 'Posix' => _("Posix"), 'Active Directory' => _("Active Directory")),
+    array('0' => "", 'Active Directory' => _("Active Directory"), 'Okta' => _("Okta"), 'Posix' => _("Posix")),
     array('id' => 'ldap_template', 'onchange' => 'applyTemplate(this.value);')
 );
 $form->addElement('text', 'user_base_search', _("Search user base DN"), $attrsText);

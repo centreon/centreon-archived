@@ -24,7 +24,9 @@ class PollerInteractionService
         global $centreon;
 
         $this->di = $di;
-        $this->db = $di[\Centreon\ServiceProvider::CENTREON_DB_MANAGER]->getAdapter('configuration_db')->getCentreonDBInstance();
+        $this->db = $di[\Centreon\ServiceProvider::CENTREON_DB_MANAGER]
+            ->getAdapter('configuration_db')
+            ->getCentreonDBInstance();
 
         $this->centreon = $centreon;
     }
@@ -82,9 +84,6 @@ class PollerInteractionService
             'keys'       => ['id']
         ]);
 
-        $brokerObj = new \CentreonConfigCentreonBroker($this->db);
-        $correlationPath = $brokerObj->getCorrelationFile();
-
         foreach ($tabs as $tab) {
             if (in_array($tab['id'], $pollerIDs)) {
                 $tabServer[$tab['id']] = [
@@ -96,20 +95,6 @@ class PollerInteractionService
         }
 
         foreach ($tabServer as $host) {
-            if ($correlationPath !== false && $host['localhost'] === '1') {
-                $tmpFilename = $centreonBrokerPath . '/' . $host['id'] . '/correlation_' . $host['id'] . '.xml';
-                $filenameToGenerate = dirname($correlationPath) . '/correlation_' . $host['id'] . '.xml';
-
-                // Delete file
-                if (file_exists($filenameToGenerate)) {
-                    @unlink($filenameToGenerate);
-                }
-                // Copy file
-                if (file_exists($tmpFilename)) {
-                    @copy($tmpFilename, $filenameToGenerate);
-                }
-            }
-
             if (in_array($host['id'], $pollerIDs)) {
                 $listBrokerFile = glob($centreonBrokerPath . $host['id'] . "/*.{xml,cfg,sql}", GLOB_BRACE);
 

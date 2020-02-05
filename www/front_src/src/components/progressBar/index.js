@@ -49,7 +49,4 @@ const mapStateToProps = () => ({});
 
 const mapDispatchToProps = {};
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(ProgressBar);
+export default connect(mapStateToProps, mapDispatchToProps)(ProgressBar);

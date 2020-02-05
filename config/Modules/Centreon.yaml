@@ -5,6 +5,7 @@ parameters:
 
 services:
     _defaults:
+        public: false
         autowire: true      # Automatically injects dependencies in your services.
         autoconfigure: true # Automatically registers your services as commands, event subscribers, controller...
 
@@ -26,12 +27,16 @@ services:
             - method: setStorageDbName
               arguments: ['%database_dbstg%']
 
-    # controllers are imported separately to make sure services can be injected
-    # as action arguments even if you don't extend any base controller class
-    Centreon\Application\Controller\:
-        resource: '../../src/Centreon/Application/Controller'
-        tags: ['controller.service_arguments']
+    # JSON Validator
+    Centreon\Domain\Service\JsonValidator\Interfaces\JsonValidatorInterface:
+        class: Centreon\Domain\Service\JsonValidator\Validator
+        arguments: ['%env(_CENTREON_PATH_)%config/json_validator']
 
+    Centreon\Domain\Service\JsonValidator\Interfaces\ValidatorCacheInterface:
+        class: Centreon\Domain\Service\JsonValidator\ValidatorCache
+        arguments: ["%kernel.cache_dir%/JsonValidatorCache", '%kernel.debug%']
+
+    # Contact
     Centreon\Domain\Contact\Interfaces\ContactRepositoryInterface:
         class: Centreon\Infrastructure\Contact\ContactRepositoryRDB
 
@@ -39,6 +44,7 @@ services:
         class: Centreon\Domain\Contact\ContactProvider
         public: true
 
+    # Authentication
     Centreon\Domain\Security\Interfaces\AuthenticationRepositoryInterface:
         class: Centreon\Infrastructure\Security\AuthenticationRepositoryRDB
 
@@ -50,6 +56,16 @@ services:
 
     Centreon\Domain\RequestParameters\Interfaces\RequestParametersInterface:
         class: Centreon\Domain\RequestParameters\RequestParameters
+
+    # Poller configuration
+    Centreon\Domain\MonitoringServer\Interfaces\MonitoringServerServiceInterface:
+        class: Centreon\Domain\MonitoringServer\MonitoringServerService
+
+    Centreon\Domain\MonitoringServer\Interfaces\MonitoringServerRepositoryInterface:
+        class: Centreon\Infrastructure\MonitoringServer\MonitoringServerRepositoryRDB
+        calls:
+            - method: setSqlRequestTranslator
+              arguments: ['@sqlRequestTranslator']
 
     # Real time monitoring
     sqlRequestTranslator:
@@ -63,6 +79,10 @@ services:
         calls:
             - method: setSqlRequestTranslator
               arguments: ['@sqlRequestTranslator']
+
+    # Downtime
+    Centreon\Domain\Downtime\Interfaces\DowntimeServiceInterface:
+        class: Centreon\Domain\Downtime\DowntimeService
 
     # Engine
     Centreon\Domain\Engine\Interfaces\EngineRepositoryInterface:
@@ -78,3 +98,10 @@ services:
 
     Centreon\Domain\Acknowledgement\Interfaces\AcknowledgementServiceInterface:
         class: Centreon\Domain\Acknowledgement\AcknowledgementService
+
+    # Proxy configuration
+    Centreon\Domain\Proxy\Interfaces\ProxyServiceInterface:
+        class: Centreon\Domain\Proxy\ProxyService
+
+    Centreon\Domain\Proxy\Interfaces\ProxyRepositoryInterface:
+        class: Centreon\Infrastructure\Proxy\ProxyRepositoryRDB

@@ -129,6 +129,12 @@ var source = jQuery('#graph-line').html();
 var templateGraph = Handlebars.compile(source);
 var autoRefresh = false;
 
+// get timezone from localstorage
+// be careful, it seems that it's updated when user logout/login
+const timezone = localStorage.getItem('realTimezone')
+    ? localStorage.getItem('realTimezone')
+    : moment.tz.guess(true);
+
 function initRefresh() {
     var $refresh = jQuery('#chart-refresh');
     $refresh.data('interval', 0);
@@ -190,8 +196,9 @@ function addChart(id, name, times) {
     times.zoom = {
         enabled: true,
         onzoom: function (period) {
-            var start = moment(period[0]);
-            var end = moment(period[1]);
+            const start = moment.tz(period[0], timezone);
+            const end = moment.tz(period[1], timezone);
+
             jQuery('input[name="alternativeDateStartDate"]').val(start.format('YYYY-MM-DD'));
             jQuery('#StartDate').val(start.format(datepickerFormat.toUpperCase()));
             jQuery('#StartTime').val(start.format('HH:mm'));
@@ -365,12 +372,6 @@ jQuery(function () {
         var chartId = $a.parents('.graph').data('graphId');
         var start;
         var end;
-
-        // get timezone from localstorage
-        // be careful, it seems that it's updated when user logout/login
-        var timezone = localStorage.getItem('realTimezone')
-            ? localStorage.getItem('realTimezone')
-            : moment.tz.guess();
 
         /* Get the period */
         if (jQuery('select[name="period"]').val() === '') {

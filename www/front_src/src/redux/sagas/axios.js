@@ -1,3 +1,4 @@
+/* eslint-disable no-useless-catch */
 /* eslint-disable no-restricted-syntax */
 /* eslint-disable no-use-before-define */
 
@@ -39,7 +40,7 @@ function* resetProgress(action) {
   }
 }
 
-function upload({ files, url }, onProgress) {
+const upload = ({ files, url }, onProgress) => {
   const data = new FormData();
 
   for (const file of files) {
@@ -55,9 +56,9 @@ function upload({ files, url }, onProgress) {
   };
 
   return axios.post(url, data, config);
-}
+};
 
-function createUploader(action) {
+const createUploader = (action) => {
   let emit;
   const channel = eventChannel((emitter) => {
     emit = emitter;
@@ -74,7 +75,7 @@ function createUploader(action) {
   const uploadPromise = upload(action, uploadProgressCb);
 
   return [uploadPromise, channel];
-}
+};
 
 function* watchOnProgress(channel) {
   while (true) {
@@ -143,14 +144,14 @@ function* axiosRequest(action) {
       throw new Error('Request type is required!');
     } else {
       let dataBody = null;
-      if(action.requestType === "DELETE"){
-        dataBody = action.data ? { data:action.data } : null
-      }else{
-        dataBody = action.data ? action.data : null
+      if (action.requestType === 'DELETE') {
+        dataBody = action.data ? { data: action.data } : null;
+      } else {
+        dataBody = action.data ? action.data : null;
       }
       const res = yield axios[action.requestType.toLowerCase()](
         action.url,
-        dataBody ? dataBody : null
+        dataBody || null,
       );
 
       const data = yield res.data;

@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-one-expression-per-line */
 /* eslint-disable react/jsx-filename-extension */
 /* eslint-disable react/prop-types */
 
@@ -28,8 +29,7 @@ const ServerConfigurationWizardForm = ({ error, handleSubmit, onSubmit }) => (
           <Translate value="Server Configuration Wizard" />
         </h2>
         <p className={styles['form-text']}>
-          <Translate value="Choose a server type" />
-          {':'}
+          <Translate value="Choose a server type" /> :
         </p>
       </div>
       <form autoComplete="off" onSubmit={handleSubmit(onSubmit)}>

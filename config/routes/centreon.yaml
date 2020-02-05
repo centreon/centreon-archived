@@ -1,4 +1,4 @@
 centreon:
-    resource: ../../src/Centreon/Application/Controller/
+    resource: Centreon/Application/Controller/
     type: annotation
     prefix: /centreon/api/{version}

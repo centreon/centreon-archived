@@ -126,14 +126,14 @@ final class AcknowledgmentRepositoryRDB extends AbstractRepositoryDRB implements
             return null;
         }
 
-        $accessGroupFilter = !empty($this->accessGroups)
-            ? ' INNER JOIN `:dbstg`.`centreon_acl` acl
+        $accessGroupFilter = $this->isAdmin()
+            ? ' '
+            : ' INNER JOIN `:dbstg`.`centreon_acl` acl
                   ON acl.host_id = ack2.host_id
                 INNER JOIN `:db`.`acl_groups` acg
                   ON acg.acl_group_id = acl.group_id
                   AND acg.acl_group_activate = \'1\'
-                  AND acg.acl_group_id IN (' . $this->accessGroupIdToString($this->accessGroups). ') '
-            : ' ';
+                  AND acg.acl_group_id IN (' . $this->accessGroupIdToString($this->accessGroups) . ') ';
 
         $request =
             'SELECT ack.*, contact.contact_id AS author_id
@@ -172,15 +172,15 @@ final class AcknowledgmentRepositoryRDB extends AbstractRepositoryDRB implements
             return null;
         }
 
-        $accessGroupFilter = !empty($this->accessGroups)
-            ? ' INNER JOIN `:dbstg`.`centreon_acl` acl
+        $accessGroupFilter = $this->isAdmin()
+            ? ' '
+            : ' INNER JOIN `:dbstg`.`centreon_acl` acl
                   ON acl.host_id = ack2.host_id
                   AND acl.service_id = ack2.service_id
                 INNER JOIN `:db`.`acl_groups` acg
                   ON acg.acl_group_id = acl.group_id
                   AND acg.acl_group_activate = \'1\'
-                  AND acg.acl_group_id IN (' . $this->accessGroupIdToString($this->accessGroups). ') '
-            : ' ';
+                  AND acg.acl_group_id IN (' . $this->accessGroupIdToString($this->accessGroups) . ') ';
 
         $request =
             'SELECT ack.*, contact.contact_id AS author_id
@@ -227,15 +227,15 @@ final class AcknowledgmentRepositoryRDB extends AbstractRepositoryDRB implements
             return $acknowledgements;
         }
 
-        $accessGroupFilter = !empty($this->accessGroups)
-            ? ' INNER JOIN `:dbstg`.`centreon_acl` acl
+        $accessGroupFilter = $this->isAdmin()
+            ? ' '
+            : ' INNER JOIN `:dbstg`.`centreon_acl` acl
                   ON acl.host_id = ack2.host_id'
                 .  (($type === self::TYPE_SERVICE_ACKNOWLEDGEMENT) ? ' AND acl.service_id = ack2.service_id ' : '')
                 . ' INNER JOIN `:db`.`acl_groups` acg
                   ON acg.acl_group_id = acl.group_id
                   AND acg.acl_group_activate = \'1\'
-                  AND acg.acl_group_id IN (' . $this->accessGroupIdToString($this->accessGroups). ') '
-            : ' ';
+                  AND acg.acl_group_id IN (' . $this->accessGroupIdToString($this->accessGroups) . ') ';
 
         $concordanceArray = [
             'author_id' => 'contact.contact_id',
@@ -256,7 +256,7 @@ final class AcknowledgmentRepositoryRDB extends AbstractRepositoryDRB implements
 
         $this->sqlRequestTranslator->setConcordanceArray($concordanceArray);
 
-        $request = 'SELECT *
+        $request = 'SELECT ack.*, contact.contact_id AS author_id
             FROM `:dbstg`.acknowledgements ack
             INNER JOIN `:db`.contact
                 ON contact.contact_alias = ack.author ';

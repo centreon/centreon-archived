@@ -28,7 +28,7 @@ interface EngineRepositoryInterface
     /**
      * Adds a command
      *
-     * @param string Command to send
+     * @param string $command Command to send
      * @throws EngineException
      */
     public function sendExternalCommand(string $command): void;
@@ -36,7 +36,7 @@ interface EngineRepositoryInterface
     /**
      * Adds commands
      *
-     * @param string[] List of commands to send
+     * @param string[] $commands List of commands to send
      * @throws EngineException
      */
     public function sendExternalCommands(array $commands): void;

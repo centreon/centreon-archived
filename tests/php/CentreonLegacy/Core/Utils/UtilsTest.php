@@ -140,23 +140,6 @@ class UtilsTest extends TestCase
      *
      * @todo the method must be refactored
      */
-    public function testRequireConfigurationWithTypeInstall()
-    {
-//        $configurationFile = 'php://filter/read=string.rot13/resource='.'vfs://tmp/conf.php';
-//
-//        $this->fs->get('/tmp')
-//            ->add('conf.php', new File("<?php\n\$module_conf = ['ok']\n"));
-//
-//        $result = $this->service->requireConfiguration($configurationFile);
-//
-//        $this->assertEquals(['ok'], $result);
-    }
-
-    /**
-     * Unable to find the wrapper "vfs" can't be tested
-     *
-     * @todo the method must be refactored
-     */
     public function testExecutePhpFileWithUnexistsFile()
     {
         $fileName = 'vfs://tmp/conf2.php';

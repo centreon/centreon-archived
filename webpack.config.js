@@ -8,12 +8,9 @@ const path = require('path');
 
 module.exports = {
   context: __dirname,
-  entry: [
-    "@babel/polyfill",
-    "./www/front_src/src/index.js"
-  ],
+  entry: ['@babel/polyfill', './www/front_src/src/index.js'],
   output: {
-    path: path.resolve(__dirname + '/www'),
+    path: path.resolve(`${__dirname}/www`),
     publicPath: './',
     filename: 'static/js/[name].[hash:8].js',
     chunkFilename: 'static/js/[name].[hash:8].chunk.js',
@@ -22,7 +19,10 @@ module.exports = {
     umdNamedDefine: true,
   },
   resolve: {
-    extensions: ['.js', '.jsx'],
+    extensions: ['.ts', '.tsx', '.js', '.jsx', '.scss'],
+    alias: {
+      '@centreon/ui': '@centreon/ui/src',
+    },
   },
   optimization: {
     minimizer: [
@@ -82,27 +82,32 @@ module.exports = {
     rules: [
       { parser: { system: false } },
       {
-        test: /\.jsx?$/,
+        test: /\.tsx?$/,
         exclude: /node_modules/,
-        use: {
-          loader: 'babel-loader',
-          options: {
-            babelrc: true
-          },
-        }
+        use: [{ loader: 'awesome-typescript-loader' }],
+      },
+      {
+        test: /\.jsx?$/,
+        include: [
+          path.resolve('./www/front_src/src'),
+          /@centreon\/ui/,
+          /centreon-ui\/src/,
+          path.resolve('./node_modules/@centreon/ui/src'),
+        ],
+        use: [{ loader: 'babel-loader' }],
       },
       {
         test: /\.(c|sa|sc)ss$/,
         use: [
           MiniCssExtractPlugin.loader,
           {
-            loader: "css-loader",
+            loader: 'css-loader',
             options: {
               modules: {
-                localIdentName: "[local]__[hash:base64:5]",
+                localIdentName: '[local]__[hash:base64:5]',
               },
               sourceMap: true,
-            }
+            },
           },
           {
             loader: 'resolve-url-loader',
@@ -113,42 +118,48 @@ module.exports = {
           {
             loader: 'sass-loader',
             options: {
-              sourceMap: true
-            }
+              sourceMap: true,
+            },
           },
         ],
       },
       {
         test: /fonts\/.+\.(woff(2)?|ttf|eot|svg)(\?v=\d+\.\d+\.\d+)?$/,
-        use: [{
+        use: [
+          {
             loader: 'file-loader',
             options: {
               name: '[name].[ext]',
               outputPath: './static/fonts/',
-              publicPath: '../../static/fonts/'
-            }
-        }]
+              publicPath: '../../static/fonts/',
+            },
+          },
+        ],
       },
       {
-        test: /@centreon\/react\-components\/lib\/.+\.(bmp|png|jpg|jpeg|gif|svg)$/,
-        use: [{
-          loader: 'url-loader',
-          options: {
-            limit: 10000,
-            name: 'static/img/[name].[hash:8].[ext]',
+        test: /@centreon\/ui\/lib\/.+\.(bmp|png|jpg|jpeg|gif|svg)$/,
+        use: [
+          {
+            loader: 'url-loader',
+            options: {
+              limit: 10000,
+              name: 'static/img/[name].[hash:8].[ext]',
+            },
           },
-        }]
+        ],
       },
       {
         test: /img\/.+\.(bmp|png|jpg|jpeg|gif|svg)$/,
-        use: [{
-          loader: 'url-loader',
-          options: {
-            limit: 10000,
-            name: 'static/img/[name].[hash:8].[ext]',
+        use: [
+          {
+            loader: 'url-loader',
+            options: {
+              limit: 10000,
+              name: 'static/img/[name].[hash:8].[ext]',
+            },
           },
-        }]
+        ],
       },
-    ]
+    ],
   },
 };

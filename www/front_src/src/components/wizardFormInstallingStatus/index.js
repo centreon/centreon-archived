@@ -20,8 +20,8 @@ export default ({
         <div className={styles['form-heading']}>
           <h2 className={styles['form-title']}>{formTitle}</h2>
         </div>
-        {!error && <Loader /> // display loader until tasks are finished or error is displayed
-        }
+        {/* display loader until tasks are finished or error is displayed */}
+        {!error && <Loader />}
         <p className={styles['form-text']}>
           <Translate value="Creating Export Task" />
           <span

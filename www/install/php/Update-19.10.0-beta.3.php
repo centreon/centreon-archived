@@ -349,7 +349,7 @@ if ($cache['value']) {
             );
         }
         $pearDB->query(
-            "DELETE FROM options WHERE `key` = 'rrdcached_enable' 
+            "DELETE FROM options WHERE `key` = 'rrdcached_enable'
                 OR `key` = 'rrdcached_port' OR `key` = 'rrdcached_unix_path'"
         );
         $pearDB->commit();

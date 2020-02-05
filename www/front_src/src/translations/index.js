@@ -27,7 +27,7 @@ export default function setTranslations(store, callback) {
       callback();
     })
     .catch((error) => {
-      if (error.response.status === 401) {
+      if (error.response && error.response.status === 401) {
         // redirect to login page
         window.location.href = 'index.php?disconnect=1';
       }
