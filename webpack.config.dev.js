@@ -1,7 +1,7 @@
 const merge = require('webpack-merge');
-const baseConfig = require('./webpack.config');
 const LiveReloadPlugin = require('webpack-livereload-plugin');
 const HtmlWebpackTagsPlugin = require('html-webpack-tags-plugin');
+const baseConfig = require('./webpack.config');
 
 module.exports = merge(baseConfig, {
   devtool: 'inline-source-map',
@@ -10,7 +10,8 @@ module.exports = merge(baseConfig, {
     new LiveReloadPlugin(),
     new HtmlWebpackTagsPlugin({
       tags: ['http://localhost:35729/livereload.js'],
-      append: true
+      append: true,
+      usePublicPath: false,
     }),
   ],
 });
