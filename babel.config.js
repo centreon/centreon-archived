@@ -1,27 +1,34 @@
-module.exports = {
+const commonPresets = ['@babel/preset-typescript', '@babel/preset-react'];
+const configuration = {
   presets: [
-    '@babel/preset-typescript',
-    ['@babel/preset-react'],
+    ...commonPresets,
     [
       '@babel/preset-env',
       {
         modules: false,
-        targets: {
-          esmodules: false,
-        },
       },
     ],
   ],
-  plugins: [
-    '@babel/plugin-syntax-dynamic-import',
-    '@babel/plugin-transform-arrow-functions',
-    '@babel/plugin-transform-destructuring',
-    '@babel/plugin-transform-function-name',
-    '@babel/plugin-transform-parameters',
-    '@babel/plugin-proposal-class-properties',
-    '@babel/plugin-transform-classes',
-    '@babel/plugin-transform-shorthand-properties',
-    '@babel/plugin-transform-regenerator',
-  ],
-  sourceType: 'unambiguous',
+  plugins: ['@babel/proposal-class-properties'],
+};
+
+module.exports = {
+  env: {
+    production: configuration,
+    development: configuration,
+    test: {
+      ...configuration,
+      presets: [
+        ...commonPresets,
+        [
+          '@babel/preset-env',
+          {
+            targets: {
+              node: 'current',
+            },
+          },
+        ],
+      ],
+    },
+  },
 };
