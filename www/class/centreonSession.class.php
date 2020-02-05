@@ -88,21 +88,21 @@ class CentreonSession
     /**
      * Check user session status
      *
-     * @param string $sessionId
-     * @param \CentreonDB $pearDB
+     * @param string $sessionId Session id to check
+     * @param CentreonDB $db
      * @return int
+     * @throws PDOException
      */
-    public static function checkSession($sessionId, CentreonDB $pearDB)
+    public static function checkSession($sessionId, CentreonDB $db)
     {
-        $sessionId = str_replace(array('_', '%'), array('', ''), $sessionId);
-        $DBRESULT = $pearDB->query(
-            "SELECT id FROM session WHERE `session_id` = '" . htmlentities(trim($sessionId), ENT_QUOTES, "UTF-8") . "'"
-        );
-        if ($DBRESULT->rowCount()) {
-            return 1;
-        } else {
+        if (empty($sessionId)) {
             return 0;
         }
+        $prepare = $db->prepare('SELECT COUNT(*) AS total FROM session WHERE `session_id` = :session_id');
+        $prepare->bindValue(':session_id', $sessionId, \PDO::PARAM_STR);
+        $prepare->execute();
+        $total = (int) $prepare->fetch(\PDO::FETCH_ASSOC)['total'];
+        return ($total > 0) ? 1 : 0;
     }
 
     /**
@@ -118,7 +118,7 @@ class CentreonSession
         session_start();
         $sessionId = session_id();
 
-        if ($this->checkSession($sessionId, $pearDB) === 1) {
+        if (self::checkSession($sessionId, $pearDB) === 1) {
             try {
                 /* Update last_reload parameter */
                 $query = 'UPDATE `session` '

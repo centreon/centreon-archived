@@ -38,11 +38,11 @@ describe('BreadcrumbWrapper', () => {
     const { container } = render(
       <Provider store={store}>
         <MemoryRouter>
-          <BreadcrumbWrapper path='/home/customViews'>
+          <BreadcrumbWrapper path="/home/customViews">
             <div>My Page</div>
           </BreadcrumbWrapper>
         </MemoryRouter>
-      </Provider>
+      </Provider>,
     );
 
     expect(container.firstChild).toMatchSnapshot();

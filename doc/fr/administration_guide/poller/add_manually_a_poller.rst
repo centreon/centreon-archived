@@ -46,7 +46,7 @@ Une fois l'installation réalisée, il faut intégrer ce collecteur distant dans
 
    /usr/lib64/centreon-engine/externalcmd.so
 
-   /usr/lib64/nagios/cbmod.so /etc/centreon-broker/poller-module.xml
+   /usr/lib64/nagios/cbmod.so /etc/centreon-broker/poller-module.json
 
 .. image:: /images/guide_utilisateur/configuration/10advanced_configuration/07addpoller_neb.png
    :align: center 
@@ -63,7 +63,7 @@ Il est nécessaire de générer un fichier de configuration pour le broker Centr
 
   * Sélectionnez le **Collecteur**
   * Saisissez le **Nom** de la configuration
-  * Saisissez le **Nom du fichier de configuration** qui doit être identique à celui défini dans la configuration de Centreon Engine, par exemple poller-module.xml
+  * Saisissez le **Nom du fichier de configuration** qui doit être identique à celui défini dans la configuration de Centreon Engine, par exemple poller-module.json
   * Cochez la case **Non** pour la configuration **Link to cbd service**
 
 .. image:: /images/guide_utilisateur/configuration/10advanced_configuration/07_Addbroker.png

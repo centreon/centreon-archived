@@ -75,13 +75,17 @@ class ConfigurationExporter extends ExporterServiceAbstract
         $db->beginTransaction();
 
         try {
+            $truncated = [];
             // allow insert records without foreign key checks
             $db->query('SET FOREIGN_KEY_CHECKS=0;');
 
             $import = $manifest->get("import");
             foreach ($import['data'] as $data) {
-                // truncate table
-                $db->query("TRUNCATE TABLE `" . $data['table'] . "`;");
+                if (!isset($truncated[$data['table']])) {
+                    // truncate table
+                    $db->query("TRUNCATE TABLE `" . $data['table'] . "`;");
+                    $truncated[$data['table']] = 1;
+                }
 
                 // insert data
                 $exportPathFile = $this->getFile($data['filename']);

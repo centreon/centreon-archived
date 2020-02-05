@@ -88,7 +88,7 @@ $time_limit = time() - ($session_expire["value"] * 60);
 $DBRESULT = $pearDB->query("DELETE FROM `session` WHERE `last_reload` < '" . $time_limit . "'");
 
 // drop session if session has been deleted due to expiration
-if (!$centreonSession->checkSession(session_id(), $pearDB)) {
+if (!CentreonSession::checkSession(session_id(), $pearDB)) {
     CentreonSession::stop();
 }
 

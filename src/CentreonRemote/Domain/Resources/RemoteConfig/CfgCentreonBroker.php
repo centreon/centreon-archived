@@ -22,7 +22,7 @@ class CfgCentreonBroker
         return [
             'broker' => [
                 'config_name'            => "{$configName}-broker",
-                'config_filename'        => "{$configName}-broker.xml",
+                'config_filename'        => "{$configName}-broker.json",
                 'config_write_timestamp' => '0',
                 'config_write_thread_id' => '0',
                 'config_activate'        => '1',
@@ -31,12 +31,11 @@ class CfgCentreonBroker
                 'command_file'           => '',
                 'cache_directory'        => '/var/lib/centreon-broker',
                 'stats_activate'         => '1',
-                'correlation_activate'   => '0',
                 'daemon'                 => '1',
             ],
             'module' => [
                 'config_name'            => "{$configName}-module",
-                'config_filename'        => "{$configName}-module.xml",
+                'config_filename'        => "{$configName}-module.json",
                 'config_write_timestamp' => '0',
                 'config_write_thread_id' => '0',
                 'config_activate'        => '1',
@@ -45,12 +44,11 @@ class CfgCentreonBroker
                 'command_file'           => '',
                 'cache_directory'        => '/var/lib/centreon-engine',
                 'stats_activate'         => '1',
-                'correlation_activate'   => '0',
                 'daemon'                 => '0',
             ],
             'rrd' => [
                 'config_name'            => "{$configName}-rrd",
-                'config_filename'        => "{$configName}-rrd.xml",
+                'config_filename'        => "{$configName}-rrd.json",
                 'config_write_timestamp' => '0',
                 'config_write_thread_id' => '0',
                 'config_activate'        => '1',
@@ -59,7 +57,6 @@ class CfgCentreonBroker
                 'command_file'           => '',
                 'cache_directory'        => '/var/lib/centreon-broker',
                 'stats_activate'         => '1',
-                'correlation_activate'   => '0',
                 'daemon'                 => '1',
             ]
         ];

@@ -104,8 +104,10 @@ class CentreonRemoteServer extends CentreonWebServiceAbstract
         }
 
         $createdAt = date('Y-m-d H:i:s');
-        $insertQuery = 'INSERT INTO `remote_servers` (`ip`, `app_key`, `version`, `is_connected`, `created_at`, `http_method`, `http_port`, `no_check_certificate`) ';
-        $insertQuery .= "VALUES (:ip, :app_key, :version, 0, '{$createdAt}', :http_method, :http_port, :no_check_certificate)";
+        $insertQuery = 'INSERT INTO `remote_servers` (`ip`, `app_key`, `version`, `is_connected`, '
+            . '`created_at`, `http_method`, `http_port`, `no_check_certificate`) ';
+        $insertQuery .= "VALUES (:ip, :app_key, :version, 0, '{$createdAt}', "
+        . ":http_method, :http_port, :no_check_certificate)";
 
         $insert = $this->pearDB->prepare($insertQuery);
         $bindings = [

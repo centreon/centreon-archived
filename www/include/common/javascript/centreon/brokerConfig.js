@@ -141,6 +141,36 @@ jQuery(function () {
 });
 
 // Hooks for some fields
+var countConnections = {
+    // Hook on load tab
+    onLoad: function (element, argument) {
+        argument = window.JSON.parse(argument);
+        return function () {
+            var entry = element.name.match('(input|output)(\\[\\d\\])\\[(\\w*)\\]');
+            var target = entry[1] + entry[2] + '[' + argument.target + ']';
+
+            if (document.getElementsByName(target)[1].value == '') {
+                document.getElementsByName(target)[1].value = 1;
+            }
+        }
+    },
+    // Hook on change the target
+    onChange: function (argument) {
+        return function (self) {
+            var entry = self.name.match('(input|output)(\\[\\d\\])\\[(\\w*)\\]');
+            var target = entry[1] + entry[2] + '[' + argument.target + ']';
+            var entryValue = document.getElementsByName(target)[1].value.replace(",", ".");
+
+            if (entryValue == '' || isNaN(entryValue) || entryValue < 1) {
+                document.getElementsByName(target)[1].value = 1;
+            } else {
+                document.getElementsByName(target)[1].value = Math.trunc(entryValue);
+            }
+        }
+    }
+}
+
+// Hooks for some fields
 var rrdArguments = {
     // Hook on load tab
     onLoad: function (element, argument) {

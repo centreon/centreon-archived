@@ -477,28 +477,28 @@ class HTML_QuickForm_select2 extends HTML_QuickForm_select
         $ajaxDefaultDatas = '$request' . $this->getName() . ' = jQuery.ajax({
             url: "' . $this->_defaultDatasetRoute . '",
         });
-        
+
         $request' . $this->getName() . '.success(function (data) {
+            let options = "";
             for (var d = 0; d < data.length; d++) {
                 var item = data[d];
-                
+
                 // Create the DOM option that is pre-selected by default
-                var option = "<option selected=\"selected\" value=\"" + item.id + "\" ";
+                options += "<option selected=\"selected\" value=\"" + item.id + "\" ";
                 if (item.hide === true) {
-                    option += "hidden";
+                    options += "hidden";
                 }
-                option += ">" + item.text + "</option>";
-              
-                // Append it to the select
-                $currentSelect2Object' . $this->getName() . '.append(option);
+                options += ">" + item.text + "</option>";
             }
- 
+            // Append it to the select
+            $currentSelect2Object' . $this->getName() . '.append(options);
+
             // Update the selected options that are displayed
             $currentSelect2Object' . $this->getName() . '.trigger("change",[{origin:\'select2defaultinit\'}]);
         });
 
         $request' . $this->getName() . '.error(function(data) {
-            
+
         });
         ';
 

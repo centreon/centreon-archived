@@ -46,6 +46,7 @@ interface ContactRepositoryInterface
      *
      * @param string $name Username
      * @return Contact|null
+     * @throws \Exception
      */
     public function findByName(string $name): ?Contact;
 

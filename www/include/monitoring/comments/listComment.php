@@ -105,7 +105,7 @@ $rq2 = "SELECT SQL_CALC_FOUND_ROWS c.internal_id, c.entry_time, c.author, c.data
 if (!$is_admin) {
     $rq2 .= ", centreon_acl acl ";
 }
-$rq2 .= "WHERE c.host_id = h.host_id AND c.service_id = s.service_id AND h.host_id = s.host_id ";
+$rq2 .= "WHERE c.type = 2 AND c.host_id = h.host_id AND c.service_id = s.service_id AND h.host_id = s.host_id ";
 $rq2 .= " AND c.expires = '0' AND h.enabled = 1 AND s.enabled = 1 ";
 $rq2 .= " AND (c.deletion_time IS NULL OR c.deletion_time = 0) ";
 if (!$is_admin) {
@@ -127,7 +127,7 @@ $rq2 .= "SELECT c.internal_id, c.entry_time, c.author, c.data, c.persistent, c.h
 if (!$is_admin) {
     $rq2 .= ", centreon_acl acl ";
 }
-$rq2 .= "WHERE c.host_id = h.host_id AND c.service_id IS NULL";
+$rq2 .= "WHERE c.host_id = h.host_id AND c.type = 1";
 $rq2 .= " AND c.expires = '0' AND h.enabled = 1 ";
 $rq2 .= " AND (c.deletion_time IS NULL OR c.deletion_time = 0) ";
 if (!$is_admin) {

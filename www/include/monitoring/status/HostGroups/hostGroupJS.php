@@ -95,7 +95,7 @@ $time = time();
         }
     }
 
-    function goM(_time_reload, _sid, _o) {
+    function goM(_time_reload, _o) {
         _lock = 1;
         var proc = new Transformation();
         var _search = jQuery('input[name="searchHG"]').val();
@@ -108,7 +108,7 @@ $time = time();
             proc.transform("forAjax");
         }
         _lock = 0;
-        _timeoutID = cycleVisibilityChange(function(){goM(_time_reload, _sid, _o)}, _time_reload);
+        _timeoutID = cycleVisibilityChange(function(){goM(_time_reload, _o)}, _time_reload);
         _time_live = _time_reload;
         _on = 1;
         set_header_title();

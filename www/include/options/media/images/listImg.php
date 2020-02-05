@@ -46,11 +46,13 @@ if (isset($_POST['searchM'])) {
         $_POST['searchM'],
         CentreonUtils::ESCAPE_ALL_EXCEPT_LINK
     );
+    $search = $centreon->historySearch[$url];
 } elseif (isset($_GET['searchM'])) {
     $centreon->historySearch[$url] = CentreonUtils::escapeSecure(
         $_GET['searchM'],
         CentreonUtils::ESCAPE_ALL_EXCEPT_LINK
     );
+    $search = $centreon->historySearch[$url];
 } elseif (isset($centreon->historySearch[$url])) {
     $search = $centreon->historySearch[$url];
 }

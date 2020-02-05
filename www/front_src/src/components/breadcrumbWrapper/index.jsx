@@ -1,25 +1,33 @@
+/* eslint-disable no-shadow */
+/* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable react/prop-types */
+
 import React, { useMemo } from 'react';
-import { connect } from "react-redux";
-import { breadcrumbsSelector } from '../../redux/selectors/navigation/breadcrumbs';
-import { Breadcrumb } from '@centreon/react-components';
+import { connect } from 'react-redux';
+import { Breadcrumb } from '@centreon/ui';
+import breadcrumbsSelector from '../../redux/selectors/navigation/breadcrumbs';
 
 function BreadcrumbWrapper({ breadcrumbs, path, children, ...others }) {
-
   const getBreadcrumbPath = (breadcrumbs, path) => {
     if (breadcrumbs[path]) {
       return breadcrumbs[path];
-    } else if (path.includes('/')) {
-      const shorterPath = path.split('/').slice(0, -1).join('/');
+    }
+    if (path.includes('/')) {
+      const shorterPath = path
+        .split('/')
+        .slice(0, -1)
+        .join('/');
       return getBreadcrumbPath(breadcrumbs, shorterPath);
     }
 
     return [];
   };
 
-  const breadcrumbPath = useMemo(
-    () => getBreadcrumbPath(breadcrumbs, path),
-    [breadcrumbs, path]
-  );
+  const breadcrumbPath = useMemo(() => getBreadcrumbPath(breadcrumbs, path), [
+    breadcrumbs,
+    getBreadcrumbPath,
+    path,
+  ]);
 
   return (
     <>

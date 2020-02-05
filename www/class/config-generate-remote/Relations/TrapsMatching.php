@@ -22,6 +22,7 @@ namespace ConfigGenerateRemote\Relations;
 
 use \PDO;
 use ConfigGenerateRemote\Abstracts\AbstractObject;
+use ConfigGenerateRemote\ServiceCategory;
 
 class TrapsMatching extends AbstractObject
 {
@@ -106,7 +107,7 @@ class TrapsMatching extends AbstractObject
                 continue;
             }
             $this->generateObjectInFile($value, $value['tmo_id']);
-            serviceCategory::getInstance($this->dependencyInjector)->generateObject($value['severity_id']);
+            ServiceCategory::getInstance($this->dependencyInjector)->generateObject($value['severity_id']);
         }
     }
 

@@ -35,4 +35,17 @@ foreach ($mockedVarConstants as $mockedVarConstant) {
 error_reporting(E_ALL & ~E_STRICT);
 
 require_once realpath(__DIR__ . '/polyfill.php');
-require_once realpath(__DIR__ . '/../../vendor/autoload.php');
+$loader = require realpath(__DIR__ . '/../../vendor/autoload.php');
+
+Doctrine\Common\Annotations\AnnotationRegistry::registerLoader([$loader, 'loadClass']);
+
+if (!function_exists('loadDependencyInjector')) {
+    // Mock DB manager
+    \Tests\Centreon\DependencyInjector::getInstance()[Centreon\ServiceProvider::CENTREON_DB_MANAGER] =
+        new Centreon\Test\Mock\CentreonDBManagerService;
+
+    function loadDependencyInjector()
+    {
+        return \Tests\Centreon\DependencyInjector::getInstance();
+    }
+}

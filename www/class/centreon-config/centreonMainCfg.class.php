@@ -86,7 +86,7 @@ class CentreonMainCfg
     {
         $this->aDefaultBrokerDirective = array(
             'ui' => '/usr/lib64/centreon-engine/externalcmd.so',
-            'wizard' => '/usr/lib64/nagios/cbmod.so /etc/centreon-broker/poller-module.xml'
+            'wizard' => '/usr/lib64/nagios/cbmod.so /etc/centreon-broker/poller-module.json'
         );
     }
 
