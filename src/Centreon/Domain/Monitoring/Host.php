@@ -312,6 +312,18 @@ class Host
     private $timezone;
 
     /**
+     * @Serializer\Groups({"host_main","host_full"})
+     * @var int|null
+     */
+    private $scheduledDowntimeDepth;
+
+    /**
+     * @Serializer\Groups({"host_main", "host_full"})
+     * @var int
+     */
+    private $criticality;
+
+    /**
      * @return int
      */
     public function getId(): int
@@ -1144,6 +1156,42 @@ class Host
     public function setTimezone(?string $timezone): Host
     {
         $this->timezone = $timezone;
+        return $this;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getScheduledDowntimeDepth(): ?int
+    {
+        return $this->scheduledDowntimeDepth;
+    }
+
+    /**
+     * @param int|null $scheduledDowntimeDepth
+     * @return Host
+     */
+    public function setScheduledDowntimeDepth(?int $scheduledDowntimeDepth): Host
+    {
+        $this->scheduledDowntimeDepth = $scheduledDowntimeDepth;
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getCriticality(): ?int
+    {
+        return $this->criticality;
+    }
+
+    /**
+     * @param int $criticality
+     * @return Host
+     */
+    public function setCriticality(?int $criticality): Host
+    {
+        $this->criticality = $criticality;
         return $this;
     }
 }

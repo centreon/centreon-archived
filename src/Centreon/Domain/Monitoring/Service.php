@@ -842,9 +842,11 @@ class Service
 
     /**
      * @param int $criticality
+     * @return Service
      */
-    public function setCriticality(?int $criticality): void
+    public function setCriticality(?int $criticality): Service
     {
         $this->criticality = $criticality;
+        return $this;
     }
 }
