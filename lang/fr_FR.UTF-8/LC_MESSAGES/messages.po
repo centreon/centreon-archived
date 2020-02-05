@@ -10987,19 +10987,28 @@ msgid "You are not allowed to access this contact"
 msgstr "Vous n'êtes pas autorisé à accéder à ce contact"
 
 #: centreon-web/www/include/configuration/configObject/contact/formContact.php:274
-#: centreon-web/www/include/configuration/configObject/contact_template_model/formContactTemplateModel.php:162
 msgid "Add a User"
 msgstr "Ajouter un utilisateur"
 
 #: centreon-web/www/include/configuration/configObject/contact/formContact.php:276
-#: centreon-web/www/include/configuration/configObject/contact_template_model/formContactTemplateModel.php:164
 msgid "Modify a User"
 msgstr "Modifier un utilisateur"
 
 #: centreon-web/www/include/configuration/configObject/contact/formContact.php:278
-#: centreon-web/www/include/configuration/configObject/contact_template_model/formContactTemplateModel.php:166
 msgid "View a User"
 msgstr "Visualiser un utilisateur"
+
+#: centreon-web/www/include/configuration/configObject/contact_template_model/formContactTemplateModel.php:162
+msgid "Add a User Template"
+msgstr "Ajouter un modèle utilisateur"
+
+#: centreon-web/www/include/configuration/configObject/contact_template_model/formContactTemplateModel.php:164
+msgid "Modify a User Template"
+msgstr "Modifier un modèle utilisateur"
+
+#: centreon-web/www/include/configuration/configObject/contact_template_model/formContactTemplateModel.php:166
+msgid "View a User Template"
+msgstr "Visualiser un modèle utilisateur"
 
 #: centreon-web/www/include/configuration/configObject/contact/formContact.php:288
 #: centreon-web/www/include/configuration/configObject/contact_template_model/formContactTemplateModel.php:176
@@ -14692,21 +14701,6 @@ msgstr "Configurer les collecteurs"
 
 msgid "services"
 msgstr "services"
-
-msgid "Critical services"
-msgstr "Services critiques"
-
-msgid "Warning services"
-msgstr "Services en alertes"
-
-msgid "Unknown services"
-msgstr "Services inconnus"
-
-msgid "Ok services"
-msgstr "Services Ok"
-
-msgid "Pending services"
-msgstr "Services en attente"
 
 msgid "Edit profile"
 msgstr "Editer le profil"

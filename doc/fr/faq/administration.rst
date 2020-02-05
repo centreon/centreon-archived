@@ -72,6 +72,6 @@ Le démon cbd rrd doit être en cours d'exécution :
       Process: 21410 ExecReload=/bin/kill -HUP $MAINPID (code=exited, status=0/SUCCESS)
      Main PID: 9537 (cbwd)
        CGroup: /system.slice/cbd.service
-               ├─9537 /usr/sbin/cbwd /etc/centreon-broker/watchdog.xml
-               ├─9539 /usr/sbin/cbd /etc/centreon-broker/central-rrd.xml
-               └─9540 /usr/sbin/cbd /etc/centreon-broker/central-broker.xml
+               ├─9537 /usr/sbin/cbwd /etc/centreon-broker/watchdog.json
+               ├─9539 /usr/sbin/cbd /etc/centreon-broker/central-rrd.json
+               └─9540 /usr/sbin/cbd /etc/centreon-broker/central-broker.json

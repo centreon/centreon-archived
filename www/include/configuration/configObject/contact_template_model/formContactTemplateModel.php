@@ -183,15 +183,15 @@ $eventData = [
 
 switch ($o) {
     case 'a':
-        $form->addElement('header', 'title', _("Add a User"));
+        $form->addElement('header', 'title', _("Add a User Template"));
         $eventDispatcher->notify($eventContext, EventDispatcher::EVENT_DISPLAY, $eventData);
         break;
     case 'c':
-        $form->addElement('header', 'title', _("Modify a User"));
+        $form->addElement('header', 'title', _("Modify a User Template"));
         $eventDispatcher->notify($eventContext, EventDispatcher::EVENT_READ, $eventData);
         break;
     case 'w':
-        $form->addElement('header', 'title', _("View a User"));
+        $form->addElement('header', 'title', _("View a User Template"));
         $eventDispatcher->notify($eventContext, EventDispatcher::EVENT_READ, $eventData);
         break;
     case 'mc':

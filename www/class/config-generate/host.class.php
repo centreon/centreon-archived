@@ -1,7 +1,7 @@
 <?php
 /*
- * Copyright 2005-2015 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2019 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -38,6 +38,10 @@ require_once dirname(__FILE__) . '/abstract/service.class.php';
 
 class Host extends AbstractHost
 {
+    const VERTICAL_NOTIFICATION = 1;
+    const CLOSE_NOTIFICATION = 2;
+    const CUMULATIVE_NOTIFICATION = 3;
+    
     protected $hosts_by_name = array();
     protected $hosts = null;
     protected $generate_filename = 'hosts.cfg';
@@ -48,7 +52,6 @@ class Host extends AbstractHost
     protected $stmt_service_sg = null;
     protected $generated_parentship = array();
     protected $generatedHosts = array();
-
 
     private function getHostGroups(&$host)
     {
@@ -88,17 +91,6 @@ class Host extends AbstractHost
         foreach ($result as $parent_id) {
             if (isset($this->hosts[$parent_id])) {
                 $host['parents'][] = $this->hosts[$parent_id]['host_name'];
-
-                $correlation_instance = Correlation::getInstance($this->dependencyInjector);
-                if ($correlation_instance->hasCorrelation()) {
-                    $this->generated_parentship[] = array(
-                        '@attributes' => array(
-                            'parent' => $parent_id,
-                            'host' => $host['host_id'],
-                            'instance_id' => $this->backend_instance->getPollerId()
-                        )
-                    );
-                }
             }
         }
     }
@@ -141,6 +133,249 @@ class Host extends AbstractHost
         foreach ($host['services_hg_cache'] as $service_id) {
             $service->generateFromServiceId($host['host_id'], $host['host_name'], $service_id, 1);
         }
+    }
+
+    /**
+     * @param array $host (passing by Reference)
+     * @return array
+     */
+    private function manageCumulativeInheritance(array &$host): array
+    {
+        $results = array('cg' => array(), 'contact' => array());
+
+        $hostsTpl = HostTemplate::getInstance($this->dependencyInjector)->hosts;
+        foreach ($host['htpl'] as $hostIdTopLevel) {
+            $stack = array($hostIdTopLevel);
+            $loop = array();
+            if (!isset($hostsTpl[$hostIdTopLevel]['contacts_computed_cache'])) {
+                $contacts = array();
+                $cg = array();
+                while (($hostId = array_shift($stack))) {
+                    if (isset($loop[$hostId])) {
+                        continue;
+                    }
+                    $loop[$hostId] = 1;
+                    // if notifications_enabled is disabled. We don't go in branch
+                    if (!is_null($hostsTpl[$hostId]['notifications_enabled'])
+                        && (int)$hostsTpl[$hostId]['notifications_enabled'] === 0) {
+                        continue;
+                    }
+
+                    if (count($hostsTpl[$hostId]['contact_groups_cache']) > 0) {
+                        $cg = array_merge($cg, $hostsTpl[$hostId]['contact_groups_cache']);
+                    }
+                    if (count($hostsTpl[$hostId]['contacts_cache']) > 0) {
+                        $contacts = array_merge($contacts, $hostsTpl[$hostId]['contacts_cache']);
+                    }
+
+                    $stack = array_merge($hostsTpl[$hostId]['htpl'], $stack);
+                }
+
+                $hostsTpl[$hostIdTopLevel]['contacts_computed_cache'] = array_unique($contacts);
+                $hostsTpl[$hostIdTopLevel]['contact_groups_computed_cache'] = array_unique($cg);
+            }
+
+            $results['cg'] = array_merge(
+                $results['cg'],
+                $hostsTpl[$hostIdTopLevel]['contact_groups_computed_cache']
+            );
+            $results['contact'] = array_merge(
+                $results['contact'],
+                $hostsTpl[$hostIdTopLevel]['contacts_computed_cache']
+            );
+        }
+
+        $results['cg'] = array_unique(array_merge($results['cg'], $host['contact_groups_cache']), SORT_NUMERIC);
+        $results['contact'] = array_unique(array_merge($results['contact'], $host['contacts_cache']), SORT_NUMERIC);
+        return $results;
+    }
+
+    /**
+     * @param array $host (passing by Reference)
+     * @param string $attribute
+     * @return array
+     */
+    private function manageCloseInheritance(array &$host, string $attribute): array
+    {
+        if (count($host[$attribute . '_cache']) > 0) {
+            return $host[$attribute . '_cache'];
+        }
+
+        $hostsTpl = HostTemplate::getInstance($this->dependencyInjector)->hosts;
+        foreach ($host['htpl'] as $hostIdTopLevel) {
+            $stack = array($hostIdTopLevel);
+            $loop = array();
+            if (!isset($hostsTpl[$hostIdTopLevel][$attribute . '_computed_cache'])) {
+                $hostsTpl[$hostIdTopLevel][$attribute . '_computed_cache'] = array();
+
+                while (($hostId = array_shift($stack))) {
+                    if (isset($loop[$hostId])) {
+                        continue;
+                    }
+                    $loop[$hostId] = 1;
+
+                    if (!is_null($hostsTpl[$hostId]['notifications_enabled'])
+                        && (int)$hostsTpl[$hostId]['notifications_enabled'] === 0) {
+                        continue;
+                    }
+
+                    if (count($hostsTpl[$hostId][$attribute . '_cache']) > 0) {
+                        $hostsTpl[$hostIdTopLevel][$attribute . '_computed_cache'] =
+                            $hostsTpl[$hostId][$attribute . '_cache'];
+                        break;
+                    }
+
+                    $stack = array_merge($hostsTpl[$hostId]['htpl'], $stack);
+                }
+            }
+
+            if (count($hostsTpl[$hostIdTopLevel][$attribute . '_computed_cache']) > 0) {
+                return $hostsTpl[$hostIdTopLevel][$attribute . '_computed_cache'];
+            }
+        }
+        return array();
+    }
+
+    /**
+     * @param array $host
+     * @param string $attribute
+     * @param string $attributeAdditive
+     * @return array
+     */
+    private function manageVerticalInheritance(array &$host, string $attribute, string $attributeAdditive): array
+    {
+        $results = $host[$attribute . '_cache'];
+        if (count($results) > 0
+            && (is_null($host[$attributeAdditive]) || $host[$attributeAdditive] != 1)) {
+            return $results;
+        }
+        
+        $hostsTpl = HostTemplate::getInstance($this->dependencyInjector)->hosts;
+        $hostIdCache = null;
+        foreach ($host['htpl'] as $hostIdTopLevel) {
+            $computedCache = array();
+            if (!isset($hostsTpl[$hostIdTopLevel][$attribute . '_computed_cache'])) {
+                $stack = array(array($hostIdTopLevel, 1));
+                $loop = array();
+                $currentLevelCatch = null;
+                while ((list($hostId, $level) = array_shift($stack))) {
+                    if (!is_null($currentLevelCatch) && $currentLevelCatch >= $level) {
+                        break;
+                    }
+                    if (isset($loop[$hostId])) {
+                        continue;
+                    }
+                    $loop[$hostId] = 1;
+
+                    if (!is_null($hostsTpl[$hostId]['notifications_enabled'])
+                        && (int)$hostsTpl[$hostId]['notifications_enabled'] === 0) {
+                        continue;
+                    }
+
+                    if (count($hostsTpl[$hostId][$attribute . '_cache']) > 0) {
+                        $computedCache = array_merge($computedCache, $hostsTpl[$hostId][$attribute . '_cache']);
+                        $currentLevelCatch = $level;
+                        if (is_null($hostsTpl[$hostId][$attributeAdditive]) || $hostsTpl[$hostId][$attributeAdditive] != 1) {
+                            break;
+                        }
+                    }
+
+                    foreach (array_reverse($hostsTpl[$hostId]['htpl']) as $htplId) {
+                        array_unshift($stack, array($htplId, $level + 1));
+                    }
+                }
+
+                $hostsTpl[$hostIdTopLevel][$attribute . '_computed_cache'] = array_unique($computedCache);
+            }
+
+            if (count($hostsTpl[$hostIdTopLevel][$attribute . '_computed_cache']) > 0) {
+                $hostIdCache = $hostIdTopLevel;
+                break;
+            }
+        }
+
+        if (!is_null($hostIdCache)) {
+            $results = array_unique(
+                array_merge($results, $hostsTpl[$hostIdCache][$attribute . '_computed_cache']),
+                SORT_NUMERIC
+            );
+        }
+        return $results;
+    }
+
+    /**
+     * @param array $host
+     * @param array $cg
+     */
+    private function setContactGroups(array &$host, array $cg = []) : void
+    {
+        $cgInstance = Contactgroup::getInstance($this->dependencyInjector);
+        $cgResult = '';
+        $cgResultAppend = '';
+        foreach ($cg as $cgId) {
+            $tmp = $cgInstance->generateFromCgId($cgId);
+            if (!is_null($tmp)) {
+                $cgResult .= $cgResultAppend . $tmp;
+                $cgResultAppend = ',';
+            }
+        }
+        if ($cgResult != '') {
+            $host['contact_groups'] = $cgResult;
+        }
+    }
+
+    /**
+     * @param array $host
+     * @param array $contacts
+     */
+    private function setContacts(array &$host, array $contacts = []) : void
+    {
+        $contactInstance = Contact::getInstance($this->dependencyInjector);
+        $contactResult = '';
+        $contactResultAppend = '';
+        foreach ($contacts as $contactId) {
+            $tmp = $contactInstance->generateFromContactId($contactId);
+            if (!is_null($tmp)) {
+                $contactResult .= $contactResultAppend . $tmp;
+                $contactResultAppend = ',';
+            }
+        }
+        if ($contactResult != '') {
+            $host['contacts'] = $contactResult;
+        }
+    }
+
+    /**
+     * @param array $host
+     * @param bool $generate
+     * @return array
+     */
+    private function manageNotificationInheritance(array &$host, bool $generate = true): array
+    {
+        $results = array('cg' => array(), 'contact' => array());
+
+        if (!is_null($host['notifications_enabled']) && (int)$host['notifications_enabled'] === 0) {
+            return $results;
+        }
+
+        $mode = $this->getInheritanceMode();
+
+        if ($mode === self::CUMULATIVE_NOTIFICATION) {
+            $results = $this->manageCumulativeInheritance($host);
+        } elseif ($mode === self::CLOSE_NOTIFICATION) {
+            $results['cg'] = $this->manageCloseInheritance($host, 'contact_groups');
+            $results['contact'] = $this->manageCloseInheritance($host, 'contacts');
+        } else {
+            $results['cg'] = $this->manageVerticalInheritance($host, 'contact_groups', 'cg_additive_inheritance');
+            $results['contact'] = $this->manageVerticalInheritance($host, 'contacts', 'contact_additive_inheritance');
+        }
+
+        if ($generate) {
+            $this->setContacts($host, $results['contact']);
+            $this->setContactGroups($host, $results['cg']);
+        }
+
+        return $results;
     }
 
     public function getSeverityForService($host_id)
@@ -194,7 +429,9 @@ class Host extends AbstractHost
                 $stack2 = array_merge($hosts_tpl[$host_id2]['htpl'], $stack2);
             }
 
-            $hosts_tpl[$host_id]['severity_id_from_below'] = $severity_id;
+            if ($severity_id) {
+                $hosts_tpl[$host_id]['severity_id_from_below'] = $severity_id;
+            }
         }
 
         # For applied on services without severity
@@ -221,7 +458,6 @@ class Host extends AbstractHost
         $this->hosts = $stmt->fetchAll(PDO::FETCH_GROUP | PDO::FETCH_UNIQUE | PDO::FETCH_ASSOC);
     }
 
-
     public function generateFromHostId(&$host)
     {
         $this->getImages($host);
@@ -237,6 +473,9 @@ class Host extends AbstractHost
         $this->getHostGroups($host);
         $this->getParents($host);
         $this->getSeverity($host['host_id']);
+        
+        $this->manageNotificationInheritance($host);
+        
         $this->getServices($host);
         $this->getServicesByHg($host);
 
@@ -289,6 +528,40 @@ class Host extends AbstractHost
     public function getGeneratedHosts()
     {
         return $this->generatedHosts;
+    }
+
+    /**
+     * @param int $hostId
+     * @return array
+     */
+    public function getCgAndContacts(int $hostId) : array
+    {
+        // we pass null because it can be a meta_host with host_register = '2'
+        $host = $this->getHostById($hostId, null);
+    
+        $this->getContacts($host);
+        $this->getContactGroups($host);
+        $this->getHostTemplates($host, false);
+
+        $hostTplInstance = &HostTemplate::getInstance($this->dependencyInjector);
+
+        $stack = $host['htpl'];
+        $loop = array();
+        while (($hostTplId = array_shift($stack))) {
+            if (isset($loop[$hostTplId])) {
+                continue;
+            }
+            $loop[$hostTplId] = 1;
+
+            $hostTplInstance->addCacheHostTpl($hostTplId);
+            if (!is_null($hostTplInstance->hosts[$hostTplId])) {
+                $hostTplInstance->getHostTemplates($hostTplInstance->hosts[$hostTplId], false);
+                $hostTplInstance->getContactGroups($hostTplInstance->hosts[$hostTplId]);
+                $hostTplInstance->getContacts($hostTplInstance->hosts[$hostTplId]);
+                $stack = array_merge($hostTplInstance->hosts[$hostTplId]['htpl'], $stack);
+            }
+        }
+        return $this->manageNotificationInheritance($host, false);
     }
 
     public function reset()

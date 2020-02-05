@@ -87,12 +87,12 @@ nagios_name	         Name
 
 instance	 Instance that is linked to centreon-engine.cfg
 
-broker_module	 example: [...] -v "Engine CFG NY;broker_module;/usr/lib64/nagios/cbmod.so /etc/centreon-broker/central-module.xml", 
+broker_module	 example: [...] -v "Engine CFG NY;broker_module;/usr/lib64/nagios/cbmod.so /etc/centreon-broker/central-module.json",
                  you can use a | delimiter for defining multiple broker modules
 
 nagios_activate	 *1* if activated, *0* otherwise
 
-*	         Centreon CLAPI handles pretty much all the options available in a centreon-engine configuration file. 
+*	         Centreon CLAPI handles pretty much all the options available in a centreon-engine configuration file.
                  Because the list is quite long, it is best to refer to the official documentation of Centreon Engine
 ================ =============================================================================================================================
 
@@ -115,7 +115,7 @@ Order	Column description
 ======= =====================================
 
 To add multiple modules in one line, it will put the separator "|" between the name of the modules::
-  [root@centreon ~]# ./centreon -u admin -p centreon -o ENGINECFG -a addbrokermodule -v "Centreon Engine cfg for poller NY;/usr/lib64/centreon-engine/externalcmd.so|/etc/centreon-broker/central-module.xml"
+  [root@centreon ~]# ./centreon -u admin -p centreon -o ENGINECFG -a addbrokermodule -v "Centreon Engine cfg for poller NY;/usr/lib64/centreon-engine/externalcmd.so|/etc/centreon-broker/central-module.json"
 
 
 Delbrokermodule
@@ -136,4 +136,4 @@ Order	Column description
 ======= =====================================
 
 To delete multiple modules in one line, it will put the separator "|" between the name of the modules::
-  [root@centreon ~]# ./centreon -u admin -p centreon -o ENGINECFG -a delbrokermodule -v "Centreon Engine cfg for poller NY;/usr/lib64/centreon-engine/externalcmd.so|/etc/centreon-broker/central-module.xml"
+  [root@centreon ~]# ./centreon -u admin -p centreon -o ENGINECFG -a delbrokermodule -v "Centreon Engine cfg for poller NY;/usr/lib64/centreon-engine/externalcmd.so|/etc/centreon-broker/central-module.json"

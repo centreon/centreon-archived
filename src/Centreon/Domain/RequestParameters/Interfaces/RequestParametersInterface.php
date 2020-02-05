@@ -21,6 +21,8 @@ declare(strict_types=1);
 
 namespace Centreon\Domain\RequestParameters\Interfaces;
 
+use Centreon\Domain\RequestParameters\RequestParameters;
+
 interface RequestParametersInterface
 {
     /**
@@ -135,4 +137,9 @@ interface RequestParametersInterface
      * @throws \Exception
      */
     public function unsetSearchParameter(string $parameterToExtract);
+
+    /**
+     * @return array
+     */
+    public function extractSearchNames(): array;
 }

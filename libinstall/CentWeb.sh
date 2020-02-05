@@ -141,15 +141,17 @@ check_result $? "$(gettext "Change right on") $CENTREON_ETC"
 
 ## Copy Web Front Source in final
 log "INFO" "$(gettext "Copy CentWeb and GPL_LIB in temporary final directory")"
+cp -Rf $TMP_DIR/src/api $TMP_DIR/final
 cp -Rf $TMP_DIR/src/www $TMP_DIR/final
 cp -Rf $TMP_DIR/src/GPL_LIB $TMP_DIR/final
-mkdir -p $TMP_DIR/final/config
-cp -Rf $TMP_DIR/src/config/partition.d $TMP_DIR/final/config/partition.d
+cp -Rf $TMP_DIR/src/config $TMP_DIR/final
 mv $TMP_DIR/src/config/centreon.config.php.template $TMP_DIR/src/config/centreon.config.php
+cp -f $TMP_DIR/src/container.php $TMP_DIR/final
 cp -f $TMP_DIR/src/bootstrap.php $TMP_DIR/final
 cp -f $TMP_DIR/src/composer.json $TMP_DIR/final
 cp -f $TMP_DIR/src/package.json $TMP_DIR/final
 cp -f $TMP_DIR/src/package-lock.json $TMP_DIR/final
+cp -f $TMP_DIR/src/.env $TMP_DIR/final
 cp -Rf $TMP_DIR/src/src $TMP_DIR/final
 
 ## Prepare and copy composer module
@@ -366,6 +368,9 @@ $CHMOD 644 $INSTALL_DIR_CENTREON/www/.htaccess
 cp -Rf $TMP_DIR/final/src $INSTALL_DIR_CENTREON/ >> "$LOG_FILE" 2>&1
 $CHOWN -R $WEB_USER:$WEB_GROUP $INSTALL_DIR_CENTREON/src
 
+cp -Rf $TMP_DIR/final/api $INSTALL_DIR_CENTREON/ >> "$LOG_FILE" 2>&1
+$CHOWN -R $WEB_USER:$WEB_GROUP $INSTALL_DIR_CENTREON/api
+
 log "INFO" "$(gettext "Change right for install directory")"
 $CHOWN -R $WEB_USER:$WEB_GROUP $INSTALL_DIR_CENTREON/www/install/
 check_result $? "$(gettext "Change right for install directory")"
@@ -382,6 +387,12 @@ check_result $? "$(gettext "Change right for install directory")"
 
 cp -f $TMP_DIR/final/bootstrap.php $INSTALL_DIR_CENTREON/bootstrap.php >> "$LOG_FILE" 2>&1
 $CHOWN $WEB_USER:$WEB_GROUP $INSTALL_DIR_CENTREON/bootstrap.php
+
+cp -f $TMP_DIR/final/.env $INSTALL_DIR_CENTREON/.env >> "$LOG_FILE" 2>&1
+$CHOWN $WEB_USER:$WEB_GROUP $INSTALL_DIR_CENTREON/.env
+
+cp -f $TMP_DIR/final/container.php $INSTALL_DIR_CENTREON/container.php >> "$LOG_FILE" 2>&1
+$CHOWN $WEB_USER:$WEB_GROUP $INSTALL_DIR_CENTREON/container.php
 
 cp -Rf $TMP_DIR/final/vendor $INSTALL_DIR_CENTREON/ >> "$LOG_FILE" 2>&1
 $CHOWN -R $WEB_USER:$WEB_GROUP $INSTALL_DIR_CENTREON/vendor
@@ -413,6 +424,9 @@ $INSTALL_DIR/cinstall $cinstall_opts \
 $INSTALL_DIR/cinstall $cinstall_opts \
     -u "$CENTREON_USER" -g "$CENTREON_GROUP" -d 775 \
     $CENTREON_CACHEDIR/config/export >> "$LOG_FILE" 2>&1
+$INSTALL_DIR/cinstall $cinstall_opts \
+    -u "$CENTREON_USER" -g "$CENTREON_GROUP" -d 775 \
+    $CENTREON_CACHEDIR/symfony >> "$LOG_FILE" 2>&1
 
 log "INFO" "$(gettext "Copying GPL_LIB")"
 $INSTALL_DIR/cinstall $cinstall_opts \

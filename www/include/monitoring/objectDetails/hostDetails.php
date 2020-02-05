@@ -164,14 +164,12 @@ if (!$is_admin && !$haveAccess) {
         }
         $DBRESULT->closeCursor();
 
-        /* Get notifications contacts */
-        $retrievedNotificationsInfos = get_notified_infos_for_host($host_id);
+        // Get notifications contacts
+        $retrievedNotificationsInfos = getNotifiedInfosForHost($host_id, $dependencyInjector);
         $contacts = $retrievedNotificationsInfos['contacts'];
         $contactGroups = $retrievedNotificationsInfos['contactGroups'];
 
-        /*
-         * Get services informations on the current Host
-         */
+        //Get services informations on the current Host
         $rq = "SELECT DISTINCT s.state AS current_state," .
             " s.output as plugin_output," .
             " s.check_attempt as current_attempt," .

@@ -497,6 +497,13 @@ function updateGeneralConfigData($gopt_id = null)
     );
     updateOption(
         $pearDB,
+        "inheritance_mode",
+        !empty($ret["inheritance_mode"]["inheritance_mode"])
+            ? (int)$ret["inheritance_mode"]["inheritance_mode"]
+            : 3 //default cumulative inheritance
+    );
+    updateOption(
+        $pearDB,
         "session_expire",
         isset($ret["session_expire"]) && $ret["session_expire"] != null
             ? htmlentities($ret["session_expire"], ENT_QUOTES, "UTF-8"): "NULL"

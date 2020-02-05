@@ -151,6 +151,41 @@ class RequestParameters implements RequestParametersInterface
     }
 
     /**
+     * @inheritDoc
+     */
+    public function extractSearchNames(): array
+    {
+        $notAllowedKeys = [
+            self::AGGREGATE_OPERATOR_AND,
+            self::AGGREGATE_OPERATOR_OR,
+            self::OPERATOR_EQUAL,
+            self::OPERATOR_NOT_EQUAL,
+            self::OPERATOR_LESS_THAN,
+            self::OPERATOR_LESS_THAN_OR_EQUAL,
+            self::OPERATOR_GREATER_THAN,
+            self::OPERATOR_GREATER_THAN_OR_EQUAL,
+            self::OPERATOR_LIKE,
+            self::OPERATOR_NOT_LIKE,
+            self::OPERATOR_IN,
+            self::OPERATOR_NOT_IN
+        ];
+        $names = [];
+        $searchIn = null;
+        $searchIn = function ($data) use (&$searchIn, &$names, $notAllowedKeys) {
+            foreach ($data as $key => $value) {
+                if (!in_array($key, $names) && !in_array($key, $notAllowedKeys)) {
+                    $names[] = $key;
+                }
+                if (is_object($value) || is_array($value)) {
+                    $searchIn((array) $value);
+                }
+            }
+        };
+        $searchIn($this->search);
+        return $names;
+    }
+
+    /**
      * Try to fix the schema in case of bad structure
      *
      * @throws \Exception
@@ -282,7 +317,7 @@ class RequestParameters implements RequestParametersInterface
      */
     public function setSort(string $sortRequest): void
     {
-        $sortRequestToAnalyze = json_decode($sortRequest ?? self::DEFAULT_SEARCH, true);
+        $sortRequestToAnalyze = json_decode($sortRequest ?? self::DEFAULT_SEARCH_OPERATOR, true);
         if (!is_array($sortRequestToAnalyze)) {
             if ($sortRequest[0] != '{') {
                 $this->sort = [$sortRequest => self::DEFAULT_ORDER];

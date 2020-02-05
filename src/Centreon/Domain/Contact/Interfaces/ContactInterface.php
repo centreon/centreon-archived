@@ -41,4 +41,11 @@ interface ContactInterface
      * @return bool
      */
     public function isActive(): bool;
+
+    /**
+     * Contact alias.
+     *
+     * @return string
+     */
+    public function getAlias(): string;
 }

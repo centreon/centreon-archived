@@ -9341,19 +9341,28 @@ msgid "You are not allowed to access this contact"
 msgstr "Você não tem permissão para acessar este contato"
 
 #: centreon-web/www/include/configuration/configObject/contact/formContact.php:212
-#: centreon-web/www/include/configuration/configObject/contact_template_model/formContactTemplateModel.php:171
 msgid "Add a User"
 msgstr "Adicionar usuário"
 
 #: centreon-web/www/include/configuration/configObject/contact/formContact.php:214
-#: centreon-web/www/include/configuration/configObject/contact_template_model/formContactTemplateModel.php:173
 msgid "Modify a User"
 msgstr "Modificar usuário"
 
 #: centreon-web/www/include/configuration/configObject/contact/formContact.php:216
-#: centreon-web/www/include/configuration/configObject/contact_template_model/formContactTemplateModel.php:175
 msgid "View a User"
 msgstr "Visualizar usuário"
+
+#: centreon-web/www/include/configuration/configObject/contact_template_model/formContactTemplateModel.php:171
+msgid "Add a User Template"
+msgstr "Adicionar um modelo de usuário"
+
+#: centreon-web/www/include/configuration/configObject/contact_template_model/formContactTemplateModel.php:173
+msgid "Modify a User Template"
+msgstr "Modificar um modelo de usuário"
+
+#: centreon-web/www/include/configuration/configObject/contact_template_model/formContactTemplateModel.php:175
+msgid "View a User Template"
+msgstr "Visualizar um modelo de usuário"
 
 #: centreon-web/www/include/configuration/configObject/contact/formContact.php:226
 #: centreon-web/www/include/configuration/configObject/contact_template_model/formContactTemplateModel.php:185
@@ -11987,13 +11996,18 @@ msgid "You seem to be having trouble with your upgrade."
 msgstr "Parece que você esta tendo problemas com sua atualização."
 
 #: centreon-web/www/install/step_upgrade/step4.php:70
-msgid "You may refer to the line that causes problem in order to find out more about the issue."
+msgid "You may refer to the line in the specified file in order to correct the issue."
 msgstr "Você deve verificar a linha que esta causando  o problema para poder-mos encontrar uma resolução para este caso."
 
 #: centreon-web/www/install/step_upgrade/step4.php:71
 #, php-format
 msgid "The SQL files are located in %s"
 msgstr "Os arquivos SQL estão localizados em %s"
+
+#: centreon-web/www/install/step_upgrade/step4.php:87
+#, php-format
+msgid "Please check the \"upgrade.log\" and the \"sql-error.log\" located in \"%s\" for more details"
+msgstr ""
 
 #: centreon-web/www/install/step_upgrade/step4.php:72
 msgid "But do not edit the SQL files unless you know what you are doing.Refresh this page when the problem is fixed."
@@ -12591,26 +12605,6 @@ msgstr "Configurar coletores"
 #: centreon-web/www/install/react_translation.php:38
 msgid "services"
 msgstr "serviços"
-
-#: centreon-web/www/install/react_translation.php:39
-msgid "Critical services"
-msgstr "Serviços criticos"
-
-#: centreon-web/www/install/react_translation.php:40
-msgid "Warning services"
-msgstr "Serviços em Aviso"
-
-#: centreon-web/www/install/react_translation.php:41
-msgid "Unknown services"
-msgstr "Serviços desconhecidos"
-
-#: centreon-web/www/install/react_translation.php:42
-msgid "Ok services"
-msgstr "Serviços OK"
-
-#: centreon-web/www/install/react_translation.php:43
-msgid "Pending services"
-msgstr "Serviços Pendentes"
 
 #: centreon-web/www/install/react_translation.php:44
 msgid "Edit profile"

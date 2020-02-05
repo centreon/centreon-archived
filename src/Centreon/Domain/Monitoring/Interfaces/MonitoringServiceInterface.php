@@ -21,37 +21,32 @@ declare(strict_types=1);
 
 namespace Centreon\Domain\Monitoring\Interfaces;
 
-use Centreon\Domain\Contact\Interfaces\ContactInterface;
+use Centreon\Domain\Contact\Interfaces\ContactFilterInterface;
 use Centreon\Domain\Monitoring\Host;
+use Centreon\Domain\Monitoring\HostGroup;
 use Centreon\Domain\Monitoring\Service;
+use Centreon\Domain\Monitoring\ServiceGroup;
 
-interface MonitoringServiceInterface
+interface MonitoringServiceInterface extends ContactFilterInterface
 {
-    /**
-     * Used to filter requests according to a contact.
-     * If the filter is defined, all requests will use the ACL of the contact
-     * to fetch data.
-     *
-     * @param ContactInterface $contact Contact to use as a ACL filter
-     * @return self
-     */
-    public function filterByContact(ContactInterface $contact): MonitoringServiceInterface;
-
     /**
      * Find all hosts.
      *
+     * @param bool $withServices Indicates whether hosts must be completed with their services
      * @return Host[]
      * @throws \Exception
      */
-    public function findHosts(): array;
+    public function findHosts(bool $withServices = false): array;
 
     /**
      * Find all host groups.
      *
-     * @return \HostGroup[]
+     * @param bool $withHosts Indicates whether hosts groups must be completed with their hosts
+     * @param bool $withServices Indicates whether hosts must be completed with their services
+     * @return HostGroup[]
      * @throws \Exception
      */
-    public function findHostGroups(): array;
+    public function findHostGroups(bool $withHosts = false, bool $withServices = false): array;
 
     /**
      * Find a host based on his ID.
@@ -75,10 +70,12 @@ interface MonitoringServiceInterface
     /**
      * Find all service groups.
      *
-     * @return \Servicegroup[]
+     * @param bool $withHosts Indicates whether service groups must be completed with their hosts
+     * @param bool $withServices Indicates whether hosts must be completed with their services
+     * @return ServiceGroup[]
      * @throws \Exception
      */
-    public function findServiceGroups(): array;
+    public function findServiceGroups(bool $withHosts = false, bool $withServices = false): array;
 
     /**
      * Find all services.

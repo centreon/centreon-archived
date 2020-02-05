@@ -36,13 +36,13 @@ class TrapsVendor extends AbstractObject
     /**
      * Add relation
      *
-     * @param integer $id
+     * @param int $id
      * @param string $name
      * @param string $alias
-     * @param string $description
+     * @param string|null $description
      * @return void
      */
-    public function add(int $id, string $name, string $alias, string $description = '')
+    public function add(int $id, string $name, string $alias, ?string $description = '')
     {
         if ($this->checkGenerate($id)) {
             return null;

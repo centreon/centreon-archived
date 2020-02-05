@@ -58,8 +58,7 @@ class Upgrader extends Module
         usort($orderedUpgrades, 'version_compare');
         foreach ($orderedUpgrades as $upgradeName) {
             $upgradePath = $upgradesPath . $upgradeName;
-            if (!preg_match('/^(\d+\.\d+\.\d+)/', $upgradeName, $matches) ||
-                !$this->services->get('filesystem')->exists($upgradePath . '/conf.php')) {
+            if (!preg_match('/^(\d+\.\d+\.\d+)/', $upgradeName, $matches)) {
                 continue;
             }
 
@@ -74,6 +73,9 @@ class Upgrader extends Module
             $this->upgradeSqlFiles($upgradePath);
             $this->upgradePhpFiles($upgradePath, false);
         }
+
+        // finally, upgrade to current version
+        $this->upgradeVersion($this->moduleConfiguration['mod_release']);
 
         return $this->moduleId;
     }
@@ -103,14 +105,14 @@ class Upgrader extends Module
 
         $sth = $this->services->get('configuration_db')->prepare($query);
 
-        $sth->bindParam(':name', $this->moduleConfiguration['name'], \PDO::PARAM_STR);
-        $sth->bindParam(':rname', $this->moduleConfiguration['rname'], \PDO::PARAM_STR);
-        $sth->bindParam(':is_removeable', $this->moduleConfiguration['is_removeable'], \PDO::PARAM_STR);
-        $sth->bindParam(':infos', $this->moduleConfiguration['infos'], \PDO::PARAM_STR);
-        $sth->bindParam(':author', $this->moduleConfiguration['author'], \PDO::PARAM_STR);
-        $sth->bindParam(':svc_tools', $this->moduleConfiguration['svc_tools'], \PDO::PARAM_STR);
-        $sth->bindParam(':host_tools', $this->moduleConfiguration['host_tools'], \PDO::PARAM_STR);
-        $sth->bindParam(':id', $this->moduleId, \PDO::PARAM_INT);
+        $sth->bindValue(':name', $this->moduleConfiguration['name'], \PDO::PARAM_STR);
+        $sth->bindValue(':rname', $this->moduleConfiguration['rname'], \PDO::PARAM_STR);
+        $sth->bindValue(':is_removeable', $this->moduleConfiguration['is_removeable'], \PDO::PARAM_STR);
+        $sth->bindValue(':infos', $this->moduleConfiguration['infos'], \PDO::PARAM_STR);
+        $sth->bindValue(':author', $this->moduleConfiguration['author'], \PDO::PARAM_STR);
+        $sth->bindValue(':svc_tools', $this->moduleConfiguration['svc_tools'] ?? '0', \PDO::PARAM_STR);
+        $sth->bindValue(':host_tools', $this->moduleConfiguration['host_tools'] ?? '0', \PDO::PARAM_STR);
+        $sth->bindValue(':id', $this->moduleId, \PDO::PARAM_INT);
 
         $sth->execute();
 
@@ -130,8 +132,8 @@ class Upgrader extends Module
 
         $sth = $this->services->get('configuration_db')->prepare($query);
 
-        $sth->bindParam(':mod_release', $version, \PDO::PARAM_STR);
-        $sth->bindParam(':id', $this->moduleId, \PDO::PARAM_INT);
+        $sth->bindValue(':mod_release', $version, \PDO::PARAM_STR);
+        $sth->bindValue(':id', $this->moduleId, \PDO::PARAM_INT);
 
         $sth->execute();
 

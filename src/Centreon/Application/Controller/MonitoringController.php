@@ -53,9 +53,10 @@ class MonitoringController extends AbstractFOSRestController
     /**
      * Entry point to get a real time service.
      *
+     * @IsGranted("ROLE_API_REALTIME", message="You are not authorized to access this resource")
      * @Rest\Get(
      *     "/monitoring/hosts/{hostId}/services/{serviceId}",
-     *     condition="request.attributes.get('version') >= 1.0 && request.attributes.get('version.is_beta') == false")
+     *     condition="request.attributes.get('version.is_beta') == true")
      *
      * @param int $serviceId Service id
      * @param int $hostId Host id
@@ -82,10 +83,10 @@ class MonitoringController extends AbstractFOSRestController
     /**
      * Entry point to get all real time services.
      *
-     * @IsGranted("ROLE_USER")
+     * @IsGranted("ROLE_API_REALTIME", message="You are not authorized to access this resource")
      * @Rest\Get(
      *     "/monitoring/services",
-     *     condition="request.attributes.get('version') >= 1.0 && request.attributes.get('version.not_beta')")
+     *     condition="request.attributes.get('version.is_beta') == true")
      *
      * @param RequestParametersInterface $requestParameters Request parameters used to filter the request
      * @return View
@@ -112,10 +113,10 @@ class MonitoringController extends AbstractFOSRestController
     /**
      * Entry point to get all real time services based on a service group
      *
-     * @IsGranted("ROLE_USER")
+     * @IsGranted("ROLE_API_REALTIME", message="You are not authorized to access this resource")
      * @Rest\Get(
      *     "/monitoring/servicegroups",
-     *     condition="request.attributes.get('version') >= 1.0 && request.attributes.get('version.not_beta')")
+     *     condition="request.attributes.get('version.is_beta') == true")
      *
      * @param RequestParametersInterface $requestParameters Request parameters used to filter the request
      * @return View
@@ -123,12 +124,28 @@ class MonitoringController extends AbstractFOSRestController
      */
     public function getServicesByServiceGroups(RequestParametersInterface $requestParameters): View
     {
+        $withHost = $requestParameters->getExtraParameter('show_host') === 'true';
+        $withServices = $requestParameters->getExtraParameter('show_service') === 'true';
+
+        $contexts = ['sg_main'];
+
+        $contextsWithHosts = ['sg_with_host', 'host_min'];
+        $contextsWithService = ['host_with_services', 'service_min'];
+
+        if ($withServices) {
+            $withHost = true;
+            $contexts = array_merge($contexts, $contextsWithService);
+        }
+        if ($withHost) {
+            $contexts = array_merge($contexts, $contextsWithHosts);
+        }
+
         $servicesByServiceGroups = $this->monitoring
             ->filterByContact($this->getUser())
-            ->findServiceGroups();
+            ->findServiceGroups($withHost, $withServices);
 
         $context = (new Context())
-            ->setGroups(['sg_main', 'host_min', 'host_with_services', 'service_min'])
+            ->setGroups($contexts)
             ->enableMaxDepth();
 
         return $this->view(
@@ -142,23 +159,39 @@ class MonitoringController extends AbstractFOSRestController
     /**
      * Entry point to get all real time services based on a host group.
      *
-     * @IsGranted("ROLE_USER")
+     * @IsGranted("ROLE_API_REALTIME", message="You are not authorized to access this resource")
      * @Rest\Get(
      *     "/monitoring/hostgroups",
-     *     condition="request.attributes.get('version') >= 1.0 && request.attributes.get('version.not_beta')")
+     *     condition="request.attributes.get('version.is_beta') == true")
      *
      * @param RequestParametersInterface $requestParameters Request parameters used to filter the request
      * @return View
      * @throws \Exception
      */
-    public function getServicesByHostGroups(RequestParametersInterface $requestParameters)
+    public function getHostGroups(RequestParametersInterface $requestParameters)
     {
+        $withHost = $requestParameters->getExtraParameter('show_host') === 'true';
+        $withServices = $requestParameters->getExtraParameter('show_service') === 'true';
+
+        $contexts = ['hg_main'];
+
+        $contextsWithHosts = ['hg_with_host', 'host_min'];
+        $contextsWithService = ['host_with_services', 'service_min'];
+
+        if ($withServices) {
+            $withHost = true;
+            $contexts = array_merge($contexts, $contextsWithService);
+        }
+        if ($withHost) {
+            $contexts = array_merge($contexts, $contextsWithHosts);
+        }
+
         $hostGroups = $this->monitoring
             ->filterByContact($this->getUser())
-            ->findHostGroups();
+            ->findHostGroups($withHost, $withServices);
 
         $context = (new Context())
-            ->setGroups(['hg_main', 'host_min', 'host_with_services', 'service_min'])
+            ->setGroups($contexts)
             ->enableMaxDepth();
 
         return $this->view(
@@ -172,10 +205,10 @@ class MonitoringController extends AbstractFOSRestController
     /**
      * Entry point to get all real time hosts.
      *
-     * @IsGranted("ROLE_USER")
+     * @IsGranted("ROLE_API_REALTIME", message="You are not authorized to access this resource")
      * @Rest\Get(
      *     "/monitoring/hosts",
-     *     condition="request.attributes.get('version') >= 1.0 && request.attributes.get('version.not_beta')")
+     *     condition="request.attributes.get('version.is_beta') == true")
      *
      * @param RequestParametersInterface $requestParameters Request parameters used to filter the request
      * @return View
@@ -183,13 +216,14 @@ class MonitoringController extends AbstractFOSRestController
      */
     public function getHosts(RequestParametersInterface $requestParameters)
     {
+        $withServices = $requestParameters->getExtraParameter('show_service') === 'true';
         $hosts = $this->monitoring
             ->filterByContact($this->getUser())
-            ->findHosts();
+            ->findHosts($withServices);
 
         $parametersGroup = ['host_main'];
-        $hasServices = $requestParameters->getExtraParameter('show_service') === 'true';
-        if ($hasServices) {
+
+        if ($withServices) {
             $parametersGroup[] = 'host_with_services';
             $parametersGroup[] = 'service_min';
         }
@@ -206,9 +240,11 @@ class MonitoringController extends AbstractFOSRestController
     /**
      * Entry point to get a real time host.
      *
+     * @IsGranted("ROLE_API_REALTIME", message="You are not authorized to access this resource")
      * @Rest\Get(
      *     "/monitoring/hosts/{hostId}",
-     *     condition="request.attributes.get('version') >= 1.0 && request.attributes.get('version.not_beta')")
+     *     requirements={"hostId"="\d+"},
+     *     condition="request.attributes.get('version.is_beta') == true")
      *
      * @param int $hostId Host id
      * @return View
@@ -234,9 +270,10 @@ class MonitoringController extends AbstractFOSRestController
     /**
      * Entry point to get all real time services based on a host.
      *
+     * @IsGranted("ROLE_API_REALTIME", message="You are not authorized to access this resource")
      * @Rest\Get(
      *      "/monitoring/hosts/{hostId}/services",
-     *      condition="request.attributes.get('version') >= 1.0 && request.attributes.get('version.not_beta')")
+     *      condition="request.attributes.get('version.is_beta') == true")
      *
      * @param int $hostId Host id for which we want to get all services
      * @param RequestParametersInterface $requestParameters Request parameters used to filter the request

@@ -34,6 +34,10 @@
  */
 require_once _CENTREON_PATH_ . "www/class/centreonGMT.class.php";
 
+const VERTICAL_NOTIFICATION = 1;
+const CLOSE_NOTIFICATION = 2;
+const CUMULATIVE_NOTIFICATION = 3;
+
 if (!isset($centreon)) {
     exit();
 }
@@ -89,6 +93,34 @@ $form->addRule(
     _("This value needs to be an integer lesser than") . " " . SESSION_DURATION_LIMIT . " min",
     'isSessionDurationValid'
 );
+
+$inheritanceMode = array();
+$inheritanceMode[] = $form->createElement(
+    'radio',
+    'inheritance_mode',
+    null,
+    _("Vertical Inheritance Only"),
+    VERTICAL_NOTIFICATION
+);
+
+$inheritanceMode[] = $form->createElement(
+    'radio',
+    'inheritance_mode',
+    null,
+    _("Closest Value"),
+    CLOSE_NOTIFICATION
+);
+
+$inheritanceMode[] = $form->createElement(
+    'radio',
+    'inheritance_mode',
+    null,
+    _("Cumulative inheritance"),
+    CUMULATIVE_NOTIFICATION
+);
+
+$form->addGroup($inheritanceMode, 'inheritance_mode', _("Contacts & Contact groups method calculation"), '&nbsp;');
+$form->setDefaults(array('inheritance_mode' => CUMULATIVE_NOTIFICATION));
 
 $limit = array(10 => 10, 20 => 20, 30 => 30, 40 => 40, 50 => 50, 60 => 60, 70 => 70, 80 => 80, 90 => 90, 100 => 100);
 $form->addElement('select', 'maxViewMonitoring', _("Limit per page for Monitoring"), $limit);
@@ -237,7 +269,7 @@ $keycloakEnable[] = $form->createElement(
     '',
     array(
         "onchange" => "javascript:confirm("
-            . "'Are you sure you want to change this parameter ? Please read the help before.')",
+            . "'Are you sure you want to change this parameter ? Please read the help before.')"
     )
 );
 $form->addGroup($keycloakEnable, 'keycloak_enable', _("Enable Keycloak authentication"), '&nbsp;&nbsp;');
@@ -320,6 +352,7 @@ $form->addElement(
  */
 $tpl->assign('o', $o);
 $tpl->assign("sorting", _("Sorting"));
+$tpl->assign("notification", _("Notification"));
 $tpl->assign("genOpt_max_page_size", _("Maximum page size"));
 $tpl->assign("genOpt_expiration_properties", _("Sessions Properties"));
 $tpl->assign("time_min", _("minutes"));

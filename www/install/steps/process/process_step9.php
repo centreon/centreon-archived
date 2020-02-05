@@ -54,9 +54,13 @@ try {
     $backupDir = _CENTREON_VARLIB_ . '/installs/'
         . '/install-' . $version . '-' . date('Ymd_His');
     $installDir = realpath(__DIR__ . '/../..');
-    $dependencyInjector['filesystem']->rename($installDir, $backupDir);
+    $dependencyInjector['filesystem']->mirror($installDir, $backupDir);
+    $dependencyInjector['filesystem']->remove($installDir);
     if ($dependencyInjector['filesystem']->exists($installDir)) {
-        throw new \Exception('Cannot move directory from ' . $installDir . ' to ' . $backupDir);
+        throw new \Exception(
+            'Cannot move directory from ' . $installDir . ' to ' . $backupDir
+            . ', please move it manually.'
+        );
     }
     $dependencyInjector['filesystem']->remove($backupDir . '/tmp/admin.json');
     $dependencyInjector['filesystem']->remove($backupDir . '/tmp/database.json');

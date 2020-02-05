@@ -71,6 +71,6 @@ class CentreonKeepalive extends CentreonWebService
      */
     public function authorize($action, $user, $isInternal = false)
     {
-        return true;
+        return $isInternal;
     }
 }

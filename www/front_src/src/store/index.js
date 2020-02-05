@@ -16,12 +16,12 @@ export const history = createBrowserHistory({
   basename: `/${paths[1] ? paths[1] : ''}`,
 });
 
-const createAppStore = (options, initialState = {}) => {
+const createAppStore = (initialState = {}) => {
   const middlewares = [
     routerMiddleware(history),
     thunk,
-    sagaMiddleware,
     batchDispatchMiddleware,
+    sagaMiddleware,
   ];
 
   const store = createStore(

@@ -21,30 +21,26 @@ declare(strict_types=1);
 
 namespace Centreon\Infrastructure\Monitoring;
 
+use Centreon\Domain\Contact\Interfaces\ContactInterface;
 use Centreon\Domain\Monitoring\HostGroup;
 use Centreon\Domain\Monitoring\ServiceGroup;
 use Centreon\Domain\RequestParameters\RequestParameters;
-use Centreon\Infrastructure\Repository\SqlRequestParametersTranslator;
+use Centreon\Infrastructure\Repository\AbstractRepositoryDRB;
 use Centreon\Domain\Security\AccessGroup;
 use Centreon\Domain\Entity\EntityCreator;
 use Centreon\Domain\Monitoring\Host;
 use Centreon\Domain\Monitoring\Service;
 use Centreon\Domain\Monitoring\Interfaces\MonitoringRepositoryInterface;
 use Centreon\Infrastructure\DatabaseConnection;
-use \Exception;
+use Centreon\Infrastructure\RequestParameters\SqlRequestParametersTranslator;
 
 /**
  * Database repository for the real time monitoring of services and host.
  *
  * @package Centreon\Infrastructure\Monitoring
  */
-final class MonitoringRepositoryRDB implements MonitoringRepositoryInterface
+final class MonitoringRepositoryRDB extends AbstractRepositoryDRB implements MonitoringRepositoryInterface
 {
-    /**
-     * @var DatabaseConnection
-     */
-    private $db;
-
     /**
      * @var string Name of the configuration database
      */
@@ -64,6 +60,11 @@ final class MonitoringRepositoryRDB implements MonitoringRepositoryInterface
      * @var SqlRequestParametersTranslator
      */
     private $sqlRequestTranslator;
+
+    /**
+     * @var ContactInterface
+     */
+    private $contact;
 
     /**
      * MonitoringRepositoryRDB constructor.
@@ -106,8 +107,11 @@ final class MonitoringRepositoryRDB implements MonitoringRepositoryInterface
      */
     public function findHosts(): array
     {
-        $requestParameter = $this->sqlRequestTranslator->getRequestParameters();
-        $hasServices = $requestParameter->getExtraParameter('show_service') === 'true';
+        $hosts = [];
+
+        if ($this->hasNotEnoughRightsToContinue()) {
+            return $hosts;
+        }
 
         $this->sqlRequestTranslator->setConcordanceArray([
             'host.id' => 'h.host_id',
@@ -119,14 +123,15 @@ final class MonitoringRepositoryRDB implements MonitoringRepositoryInterface
             'service.display_name' => 'srv.display_name',
             'host_group.id' => 'hg.hostgroup_id']);
 
-        $accessGroupFilter = !is_null($this->accessGroups)
-            ? ' INNER JOIN `:dbstg`.`centreon_acl` acl
+        $accessGroupFilter = $this->isAdmin()
+            ? ''
+            : ' INNER JOIN `:dbstg`.`centreon_acl` acl
                   ON acl.host_id = h.host_id
+                  AND acl.service_id IS NULL
                 INNER JOIN `:db`.`acl_groups` acg
                   ON acg.acl_group_id = acl.group_id
                   AND acg.acl_group_activate = \'1\'
-                  AND acg.acl_group_id IN (' . $this->accessGroupIdToString($this->accessGroups). ') '
-            : ' ';
+                  AND acg.acl_group_id IN (' . $this->accessGroupIdToString($this->accessGroups) . ') ';
 
         $request =
             'SELECT SQL_CALC_FOUND_ROWS DISTINCT 
@@ -170,7 +175,7 @@ final class MonitoringRepositoryRDB implements MonitoringRepositoryInterface
             $statement->bindValue($key, $value, $type);
         }
         if (false === $statement->execute()) {
-            throw new Exception('Bad SQL request');
+            throw new \Exception('Bad SQL request');
         }
 
         $result = $this->db->query('SELECT FOUND_ROWS()');
@@ -178,7 +183,6 @@ final class MonitoringRepositoryRDB implements MonitoringRepositoryInterface
             (int) $result->fetchColumn()
         );
 
-        $hosts = [];
         $hostIds = [];
 
         while (false !== ($result = $statement->fetch(\PDO::FETCH_ASSOC))) {
@@ -189,20 +193,119 @@ final class MonitoringRepositoryRDB implements MonitoringRepositoryInterface
             );
         }
 
-        if ($hasServices && count($hostIds) > 0) {
-            $servicesByHost = $this->findServicesOnMultipleHosts($hostIds);
+        return $hosts;
+    }
 
-            foreach ($servicesByHost as $hostId => $services) {
-                foreach ($hosts as $host) {
-                    if ($host->getId() === $hostId) {
-                        $host->setServices($services);
-                        break;
-                    }
-                }
-            }
+    /**
+     * @inheritDoc
+     */
+    public function findHostsByHostsGroups(array $hostsGroupsIds): array
+    {
+        if ($this->hasNotEnoughRightsToContinue() || empty($hostsGroupsIds)) {
+            return [];
         }
 
-        return $hosts;
+        $accessGroupFilter = $this->isAdmin()
+            ? ' '
+            : ' INNER JOIN `:dbstg`.`centreon_acl` acl
+                  ON acl.host_id = h.host_id
+                  AND acl.service_id IS NULL
+                INNER JOIN `:db`.`acl_groups` acg
+                  ON acg.acl_group_id = acl.group_id
+                  AND acg.acl_group_activate = \'1\'
+                  AND acg.acl_group_id IN (' . $this->accessGroupIdToString($this->accessGroups) . ') ';
+
+        $request =
+            'SELECT SQL_CALC_FOUND_ROWS DISTINCT 
+              hg.hostgroup_id, h.*, i.name AS instance_name,
+              IF (h.display_name LIKE \'_Module_Meta%\', \'Meta\', h.display_name) AS display_name,
+              IF (h.display_name LIKE \'_Module_Meta%\', \'0\', h.state) AS state
+            FROM `:dbstg`.`instances` i
+            INNER JOIN `:dbstg`.`hosts` h
+              ON h.instance_id = i.instance_id
+              AND h.enabled = \'1\'
+              AND h.name NOT LIKE \'_Module_BAM%\''
+            . $accessGroupFilter
+            .' LEFT JOIN `:dbstg`.`services` srv
+              ON srv.host_id = h.host_id
+              AND srv.enabled = \'1\'
+            LEFT JOIN `:dbstg`.`hosts_hostgroups` hg
+              ON hg.host_id = h.host_id
+              AND hg.hostgroup_id IN (' . str_repeat('?,', count($hostsGroupsIds) - 1)
+            . '?) ORDER BY h.name ASC';
+
+        $request = $this->translateDbName($request);
+
+        $statement = $this->db->prepare($request);
+        $statement->execute($hostsGroupsIds);
+
+        $hostsByHostsGroupsId = [];
+
+        while (false !== ($result = $statement->fetch(\PDO::FETCH_ASSOC))) {
+            $hostsByHostsGroupsId[(int) $result['hostgroup_id']][] =
+                EntityCreator::createEntityByArray(
+                    Host::class,
+                    $result
+                );
+        }
+
+        return $hostsByHostsGroupsId;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function findHostsByServiceGroups(array $servicesGroupsIds): array
+    {
+        if ($this->hasNotEnoughRightsToContinue() || empty($servicesGroupsIds)) {
+            return [];
+        }
+
+        $accessGroupFilter = $this->isAdmin()
+            ? ' '
+            : ' INNER JOIN `:dbstg`.`centreon_acl` acl
+                  ON acl.host_id = h.host_id
+                  AND acl.service_id = srv.service_id
+                INNER JOIN `:db`.`acl_groups` acg
+                  ON acg.acl_group_id = acl.group_id
+                  AND acg.acl_group_activate = \'1\'
+                  AND acg.acl_group_id IN (' . $this->accessGroupIdToString($this->accessGroups) . ') ';
+
+        $request =
+            'SELECT SQL_CALC_FOUND_ROWS DISTINCT 
+              ssg.servicegroup_id, h.*, i.name AS instance_name,
+              IF (h.display_name LIKE \'_Module_Meta%\', \'Meta\', h.display_name) AS display_name,
+              IF (h.display_name LIKE \'_Module_Meta%\', \'0\', h.state) AS state
+            FROM `:dbstg`.`instances` i
+            INNER JOIN `:dbstg`.`hosts` h
+              ON h.instance_id = i.instance_id
+              AND h.enabled = \'1\'
+              AND h.name NOT LIKE \'_Module_BAM%\'
+            INNER JOIN `:dbstg`.`services` srv
+              ON srv.host_id = h.host_id
+              AND srv.enabled = \'1\''
+            . $accessGroupFilter
+            . ' LEFT JOIN `:dbstg`.`services_servicegroups` ssg
+              ON ssg.host_id = h.host_id
+              AND ssg.servicegroup_id IN (' . str_repeat('?,', count($servicesGroupsIds) - 1)
+            . '?) ORDER BY h.name ASC';
+
+        $request = $this->translateDbName($request);
+
+        $statement = $this->db->prepare($request);
+        $statement->execute($servicesGroupsIds);
+
+        $hostsByServicesGroupsId = [];
+
+        while (false !== ($result = $statement->fetch(\PDO::FETCH_ASSOC))) {
+            $hostsByServicesGroupsId[(int) $result['servicegroup_id']][] =
+                EntityCreator::createEntityByArray(
+                    Host::class,
+                    $result
+                );
+        }
+
+        return $hostsByServicesGroupsId;
     }
 
     /**
@@ -210,102 +313,91 @@ final class MonitoringRepositoryRDB implements MonitoringRepositoryInterface
      */
     public function findHostGroups(): array
     {
-        $this->sqlRequestTranslator->setConcordanceArray([
+        $hostGroups = [];
+
+        if ($this->hasNotEnoughRightsToContinue()) {
+            return $hostGroups;
+        }
+
+        $hostGroupConcordanceArray = [
+            'id' => 'hg.hostgroup_id',
+            'name' => 'hg.name'
+        ];
+
+        // To allow to find host groups relating to host information
+        $hostConcordanceArray = [
             'host.id' => 'h.host_id',
             'host.name' => 'h.name',
             'host.alias' => 'h.alias',
             'host.address' => 'h.address',
+            'host.display_name' => 'h.display_name',
             'host.state' => 'h.state',
-            'poller.id' => 'h.instance_id',
-            'service.display_name' => 'srv.display_name',
-            'host_group.id' => 'hg.hostgroup_id']);
+            'poller.id' => 'h.instance_id'
+        ];
 
-        $accessGroupFilter = !is_null($this->accessGroups)
-            ? ' INNER JOIN `:dbstg`.`centreon_acl` acl
-                  ON acl.host_id = h.host_id
-                INNER JOIN `:db`.`acl_groups` acg
-                  ON acg.acl_group_id = acl.group_id
-                  AND acg.acl_group_activate = \'1\'
-                  AND acg.acl_group_id IN (' . $this->accessGroupIdToString($this->accessGroups). ') '
-            : ' ';
+        $searchParameters = $this->sqlRequestTranslator->getRequestParameters()->extractSearchNames();
 
-        // First request to count the number of result for pagination
-        $firstRequest =
-            'SELECT SQL_CALC_FOUND_ROWS DISTINCT
-              hg.hostgroup_id
-            FROM `:dbstg`.`hostgroups` hg
-            INNER JOIN `:dbstg`.`hosts_hostgroups` hhg
-              ON hhg.hostgroup_id = hg.hostgroup_id
-            INNER JOIN `:dbstg`.`hosts` h
-              ON h.host_id = hhg.host_id
-              AND h.enabled = \'1\'
-              AND h.name NOT LIKE \'_Module_BAM%\'
-            INNER JOIN `:dbstg`.`instances` i
-              ON i.instance_id = h.instance_id'
-            . $accessGroupFilter
-            . ' LEFT JOIN `:dbstg`.`services` srv
-              ON srv.host_id = h.host_id
-              AND srv.enabled = \'1\'';
-
-        $firstRequest = $this->translateDbName($firstRequest);
-
-        // Search
-        $searchRequest = $this->sqlRequestTranslator->translateSearchParameterToSql();
-        $firstRequest .= !is_null($searchRequest) ? $searchRequest : '';
-
-        // Group
-        $firstRequest .= ' GROUP BY hg.hostgroup_id, hg.name, h.host_id, h.name';
-
-        // Sort
-        $sortRequest = $this->sqlRequestTranslator->translateSortParameterToSql();
-        $firstRequest .= !is_null($sortRequest) ? $sortRequest : ' ORDER BY hg.name ASC';
-
-        // Pagination
-        $firstRequest .= $this->sqlRequestTranslator->translatePaginationToSql();
-
-        $statement = $this->db->prepare($firstRequest);
-
-        foreach ($this->sqlRequestTranslator->getSearchValues() as $key => $data) {
-            $type = key($data);
-            $value = $data[$type];
-            $statement->bindValue($key, $value, $type);
+        $shouldJoinHost = false;
+        if (count(array_intersect($searchParameters, array_keys($hostConcordanceArray))) > 0) {
+            $shouldJoinHost = true;
+            $hostGroupConcordanceArray = array_merge($hostGroupConcordanceArray, $hostConcordanceArray);
         }
-        if (false === $statement->execute()) {
-            throw new Exception('Bad SQL request');
+        $this->sqlRequestTranslator->setConcordanceArray($hostGroupConcordanceArray);
+
+        $sqlExtraParameters = [];
+        $subRequest = '';
+        if (!$this->isAdmin()) {
+            $sqlExtraParameters = [':contact_id' => [\PDO::PARAM_INT => $this->contact->getId()]];
+
+            // Not an admin, we must to filter on contact
+            $subRequest .=
+                ' INNER JOIN `:db`.acl_resources_hg_relations hgr
+                    ON hgr.hg_hg_id = hg.hostgroup_id
+                INNER JOIN `:db`.acl_resources res
+                    ON res.acl_res_id = hgr.acl_res_id
+                    AND res.acl_res_activate = \'1\'
+                INNER JOIN `:db`.acl_res_group_relations rgr
+                    ON rgr.acl_res_id = res.acl_res_id
+                INNER JOIN `:db`.acl_groups grp
+                    ON grp.acl_group_id IN ('
+                . $this->accessGroupIdToString($this->accessGroups)
+                . ') AND grp.acl_group_activate = \'1\'
+                    AND grp.acl_group_id = rgr.acl_group_id
+                LEFT JOIN `:db`.acl_group_contacts_relations gcr
+                    ON gcr.acl_group_id = grp.acl_group_id
+                LEFT JOIN `:db`.acl_group_contactgroups_relations gcgr
+                    ON gcgr.acl_group_id = grp.acl_group_id
+                LEFT JOIN `:db`.contactgroup_contact_relation cgcr
+                    ON cgcr.contactgroup_cg_id = gcgr.cg_cg_id
+                    AND cgcr.contact_contact_id = :contact_id 
+                    OR gcr.contact_contact_id = :contact_id';
         }
 
-        $result = $this->db->query('SELECT FOUND_ROWS()');
-        $this->sqlRequestTranslator->getRequestParameters()->setTotal(
-            (int) $result->fetchColumn()
-        );
+        // This join will only be added if a search parameter corresponding to one of the host parameter
+        if ($shouldJoinHost) {
+            $subRequest .=
+                ' INNER JOIN `:dbstg`.hosts_hostgroups hhg 
+                    ON hhg.hostgroup_id = hg.hostgroup_id
+                INNER JOIN `:dbstg`.hosts h
+                    ON h.host_id = hhg.host_id
+                    AND h.enabled = \'1\'
+                    AND h.name NOT LIKE \'_Module_BAM%\'';
 
-        $request =
-            'SELECT SQL_CALC_FOUND_ROWS DISTINCT
-              hg.hostgroup_id, hg.name AS hostgroup_name,
-              h.host_id, h.name as host_name, h.display_name AS host_display_name,
-              h.state AS host_state, h.alias AS host_alias
-            FROM `:dbstg`.`hostgroups` hg
-            INNER JOIN `:dbstg`.`hosts_hostgroups` hhg
-              ON hhg.hostgroup_id = hg.hostgroup_id
-            INNER JOIN `:dbstg`.`hosts` h
-              ON h.host_id = hhg.host_id
-              AND h.enabled = \'1\'
-              AND h.name NOT LIKE \'_Module_BAM%\'
-            INNER JOIN `:dbstg`.`instances` i
-              ON i.instance_id = h.instance_id'
-            . $accessGroupFilter
-            . ' LEFT JOIN `:dbstg`.`services` srv
-              ON srv.host_id = h.host_id
-              AND srv.enabled = \'1\'';
+            if (!$this->isAdmin()) {
+                $subRequest .=
+                    ' INNER JOIN `:dbstg`.`centreon_acl` acl
+                        ON acl.host_id = h.host_id
+                        AND acl.service_id IS NULL
+                        AND acl.group_id = grp.acl_group_id';
+            }
+        }
 
+        $request ='SELECT SQL_CALC_FOUND_ROWS DISTINCT hg.* FROM `:dbstg`.`hostgroups` hg ' . $subRequest;
         $request = $this->translateDbName($request);
 
         // Search
         $searchRequest = $this->sqlRequestTranslator->translateSearchParameterToSql();
         $request .= !is_null($searchRequest) ? $searchRequest : '';
-
-        // Group
-        $request .= ' GROUP BY hg.hostgroup_id, hg.name, h.host_id, h.name';
 
         // Sort
         $sortRequest = $this->sqlRequestTranslator->translateSortParameterToSql();
@@ -321,49 +413,28 @@ final class MonitoringRepositoryRDB implements MonitoringRepositoryInterface
             $value = $data[$type];
             $statement->bindValue($key, $value, $type);
         }
-        if (false === $statement->execute()) {
-            throw new Exception('Bad SQL request');
-        }
 
-        $hostGroups = [];
-        $hostIds = [];
+        // We bind extra parameters according to access rights
+        foreach ($sqlExtraParameters as $key => $data) {
+            $type = key($data);
+            $value = $data[$type];
+            $statement->bindValue($key, $value, $type);
+        }
+        $statement->execute();
+
+        $result = $this->db->query('SELECT FOUND_ROWS()');
+        $this->sqlRequestTranslator->getRequestParameters()->setTotal(
+            (int) $result->fetchColumn()
+        );
 
         while (false !== ($result = $statement->fetch(\PDO::FETCH_ASSOC))) {
-            $hostGroupId = (int) $result['hostgroup_id'];
-            $host = (new Host())
-                ->setId((int) $result['host_id'])
-                ->setName($result['host_name'])
-                ->setAlias($result['host_alias'])
-                ->setDisplayName($result['host_display_name'])
-                ->setState((int) $result['host_state']);
-
-            if (!in_array($host->getId(), $hostIds)) {
-                $hostIds[] = $host->getId();
-            }
-
-            if (!array_key_exists($hostGroupId, $hostGroups)) {
-                $hostGroups[$hostGroupId] = (new HostGroup())
-                    ->setId($hostGroupId)
-                    ->setName($result['hostgroup_name']);
-            }
-
-            if (!$hostGroups[$hostGroupId]->isHostExists($host->getId())) {
-                $hostGroups[$hostGroupId]->addHost($host);
-            }
+            $hostGroups[] = EntityCreator::createEntityByArray(
+                HostGroup::class,
+                $result
+            );
         }
 
-        if (!empty($hostIds)) {
-            $servicesByHost = $this->findServicesOnMultipleHosts($hostIds);
-            foreach ($hostGroups as $hostGroupId => $hostGroup) {
-                foreach ($hostGroup->getHosts() as $host) {
-                    if (array_key_exists($host->getId(), $servicesByHost)) {
-                        $host->setServices($servicesByHost[$host->getId()]);
-                    }
-                }
-            }
-        }
-
-        return array_values($hostGroups);
+        return $hostGroups;
     }
 
     /**
@@ -371,14 +442,19 @@ final class MonitoringRepositoryRDB implements MonitoringRepositoryInterface
      */
     public function findOneHost(int $hostId): ?Host
     {
-        $accessGroupFilter = !is_null($this->accessGroups)
-            ? ' INNER JOIN `:dbstg`.`centreon_acl` acl
+        if ($this->hasNotEnoughRightsToContinue()) {
+            return null;
+        }
+
+        $accessGroupFilter = $this->isAdmin()
+            ? ' '
+            : ' INNER JOIN `:dbstg`.`centreon_acl` acl
                   ON acl.host_id = h.host_id
+                  AND acl.service_id IS NULL
                 INNER JOIN `:db`.`acl_groups` acg
                   ON acg.acl_group_id = acl.group_id
                   AND acg.acl_group_activate = \'1\'
-                  AND acg.acl_group_id IN (' . $this->accessGroupIdToString($this->accessGroups). ') '
-            : ' ';
+                  AND acg.acl_group_id IN (' . $this->accessGroupIdToString($this->accessGroups) . ') ';
 
         $request =
             'SELECT h.*,
@@ -405,7 +481,7 @@ final class MonitoringRepositoryRDB implements MonitoringRepositoryInterface
                     $row
                 );
 
-                $servicesByHost = $this->findServicesOnMultipleHosts([$hostId]);
+                $servicesByHost = $this->findServicesByHosts([$hostId]);
 
                 $host->setServices(
                     $servicesByHost[$hostId]
@@ -416,7 +492,7 @@ final class MonitoringRepositoryRDB implements MonitoringRepositoryInterface
                 return null;
             }
         } else {
-            throw new Exception('Bad SQL request');
+            throw new \Exception('Bad SQL request');
         }
     }
 
@@ -425,14 +501,19 @@ final class MonitoringRepositoryRDB implements MonitoringRepositoryInterface
      */
     public function findOneService(int $hostId, int $serviceId): ?Service
     {
-        $accessGroupFilter = !is_null($this->accessGroups)
-            ? ' INNER JOIN `:dbstg`.`centreon_acl` acl
+        if ($this->hasNotEnoughRightsToContinue()) {
+            return null;
+        }
+
+        $accessGroupFilter = $this->isAdmin()
+            ? ' '
+            : ' INNER JOIN `:dbstg`.`centreon_acl` acl
                   ON acl.host_id = h.host_id
+                  AND acl.service_id = srv.service_id
                 INNER JOIN `:db`.`acl_groups` acg
                   ON acg.acl_group_id = acl.group_id
                   AND acg.acl_group_activate = \'1\'
-                  AND acg.acl_group_id IN (' . $this->accessGroupIdToString($this->accessGroups). ') '
-            : ' ';
+                  AND acg.acl_group_id IN (' . $this->accessGroupIdToString($this->accessGroups) . ') ';
 
         $request =
             'SELECT DISTINCT srv.*
@@ -440,7 +521,8 @@ final class MonitoringRepositoryRDB implements MonitoringRepositoryInterface
             LEFT JOIN `:dbstg`.hosts h 
               ON h.host_id = srv.host_id'
             . $accessGroupFilter
-            . ' WHERE srv.enabled = 1
+            . ' WHERE srv.enabled = \'1\'
+              AND h.enabled = \'1\'
               AND srv.service_id = :service_id
               AND srv.host_id = :host_id
             GROUP BY srv.service_id';
@@ -461,7 +543,7 @@ final class MonitoringRepositoryRDB implements MonitoringRepositoryInterface
                 return null;
             }
         } else {
-            throw new Exception('Bad SQL request');
+            throw new \Exception('Bad SQL request');
         }
     }
 
@@ -470,6 +552,12 @@ final class MonitoringRepositoryRDB implements MonitoringRepositoryInterface
      */
     public function findServices(): array
     {
+        $services = [];
+
+        if ($this->hasNotEnoughRightsToContinue()) {
+            return $services;
+        }
+
         $this->sqlRequestTranslator->setConcordanceArray([
             'host.id' => 'h.host_id',
             'host.name' => 'h.name',
@@ -486,14 +574,15 @@ final class MonitoringRepositoryRDB implements MonitoringRepositoryInterface
             'service_group.id' => 'ssg.servicegroup_id',
         ]);
 
-        $accessGroupFilter = !is_null($this->accessGroups)
-            ? ' INNER JOIN `:dbstg`.`centreon_acl` acl
-                  ON acl.host_id = h.host_id
+        $accessGroupFilter = $this->isAdmin()
+            ? ' '
+            : ' INNER JOIN `:dbstg`.`centreon_acl` acl
+                  ON acl.host_id = srv.host_id
+                  AND acl.service_id = srv.service_id
                 INNER JOIN `:db`.`acl_groups` acg
                   ON acg.acl_group_id = acl.group_id
                   AND acg.acl_group_activate = \'1\'
-                  AND acg.acl_group_id IN (' . $this->accessGroupIdToString($this->accessGroups). ') '
-            : ' ';
+                  AND acg.acl_group_id IN (' . $this->accessGroupIdToString($this->accessGroups) . ') ';
 
         $request =
             'SELECT SQL_CALC_FOUND_ROWS DISTINCT 
@@ -507,6 +596,7 @@ final class MonitoringRepositoryRDB implements MonitoringRepositoryInterface
               ON h.host_id = srv.host_id
               AND h.name NOT LIKE \'_Module_BAM%\'
               AND h.enabled = \'1\'
+              AND srv.enabled = \'1\'
             INNER JOIN `:dbstg`.instances i
               ON i.instance_id = h.instance_id
             LEFT JOIN :dbstg.hosts_hostgroups hhg
@@ -542,15 +632,13 @@ final class MonitoringRepositoryRDB implements MonitoringRepositoryInterface
             $statement->bindValue($key, $value, $type);
         }
         if (false === $statement->execute()) {
-            throw new Exception('Bad SQL request');
+            throw new \Exception('Bad SQL request');
         }
 
         $result = $this->db->query('SELECT FOUND_ROWS()');
         $this->sqlRequestTranslator->getRequestParameters()->setTotal(
             (int) $result->fetchColumn()
         );
-
-        $services = [];
 
         while (false !== ($result = $statement->fetch(\PDO::FETCH_ASSOC))) {
             $service = EntityCreator::createEntityByArray(
@@ -577,6 +665,12 @@ final class MonitoringRepositoryRDB implements MonitoringRepositoryInterface
      */
     public function findServicesByHost(int $hostId): array
     {
+        $services = [];
+
+        if ($this->hasNotEnoughRightsToContinue()) {
+            return $services;
+        }
+
         $this->sqlRequestTranslator->setConcordanceArray([
             'service.id' => 'srv.service_id',
             'service.description' => 'srv.description',
@@ -586,14 +680,15 @@ final class MonitoringRepositoryRDB implements MonitoringRepositoryInterface
             'service.state' => 'srv.state'
         ]);
 
-        $accessGroupFilter = !is_null($this->accessGroups)
-            ? ' INNER JOIN `:dbstg`.`centreon_acl` acl
-                  ON acl.host_id = h.host_id
+        $accessGroupFilter = $this->isAdmin()
+            ? ' '
+            : ' INNER JOIN `:dbstg`.`centreon_acl` acl
+                  ON acl.host_id = srv.host_id
+                  AND acl.service_id = srv.service_id
                 INNER JOIN `:db`.`acl_groups` acg
                   ON acg.acl_group_id = acl.group_id
                   AND acg.acl_group_activate = \'1\'
-                  AND acg.acl_group_id IN (' . $this->accessGroupIdToString($this->accessGroups). ') '
-            : ' ';
+                  AND acg.acl_group_id IN (' . $this->accessGroupIdToString($this->accessGroups) . ') ';
 
         $request =
             'SELECT SQL_CALC_FOUND_ROWS DISTINCT srv.*
@@ -604,6 +699,7 @@ final class MonitoringRepositoryRDB implements MonitoringRepositoryInterface
               AND h.host_id = :host_id
               AND h.name NOT LIKE \'_Module_BAM%\'
               AND h.enabled = \'1\'
+              AND srv.enabled = \'1\'
             INNER JOIN `:dbstg`.instances i
               ON i.instance_id = h.instance_id
             LEFT JOIN `:dbstg`.services_servicegroups ssg
@@ -635,15 +731,13 @@ final class MonitoringRepositoryRDB implements MonitoringRepositoryInterface
             $statement->bindValue($key, $value, $type);
         }
         if (false === $statement->execute()) {
-            throw new Exception('Bad SQL request');
+            throw new \Exception('Bad SQL request');
         }
 
         $result = $this->db->query('SELECT FOUND_ROWS()');
         $this->sqlRequestTranslator->getRequestParameters()->setTotal(
             (int) $result->fetchColumn()
         );
-
-        $services = [];
 
         while (false !== ($result = $statement->fetch(\PDO::FETCH_ASSOC))) {
             $services[] = EntityCreator::createEntityByArray(
@@ -660,108 +754,113 @@ final class MonitoringRepositoryRDB implements MonitoringRepositoryInterface
      */
     public function findServiceGroups(): array
     {
-        $this->sqlRequestTranslator->setConcordanceArray([
+        $serviceGroups = [];
+
+        if ($this->hasNotEnoughRightsToContinue()) {
+            return $serviceGroups;
+        }
+
+        $hostGroupConcordanceArray = [
+            'id' => 'hg.hostgroup_id',
+            'name' => 'hg.name'
+        ];
+
+        // To allow to find host groups relating to host information
+        $hostConcordanceArray = [
             'host.id' => 'h.host_id',
             'host.name' => 'h.name',
             'host.alias' => 'h.alias',
             'host.address' => 'h.address',
+            'host.display_name' => 'h.display_name',
             'host.state' => 'h.state',
-            'poller.id' => 'h.instance_id',
+            'poller.id' => 'h.instance_id'];
+
+        $serviceConcordanceArray = [
             'service.display_name' => 'srv.display_name',
             'service_group.id' => 'sg.servicegroup_id',
-            'service_group.name' => 'sg.name']);
+            'service_group.name' => 'sg.name'
+        ];
 
-        $accessGroupFilter = !is_null($this->accessGroups)
-            ? ' INNER JOIN `:dbstg`.`centreon_acl` acl
-                  ON acl.host_id = h.host_id
-                INNER JOIN `:db`.`acl_groups` acg
-                  ON acg.acl_group_id = acl.group_id
-                  AND acg.acl_group_activate = \'1\'
-                  AND acg.acl_group_id IN (' . $this->accessGroupIdToString($this->accessGroups). ') '
-            : ' ';
+        $searchParameters = $this->sqlRequestTranslator->getRequestParameters()->extractSearchNames();
 
-        // First request to count the number of result for pagination
-        $firstRequest =
-            'SELECT SQL_CALC_FOUND_ROWS DISTINCT
-              sg.servicegroup_id
-            FROM `:dbstg`.`servicegroups` sg
-            INNER JOIN `:dbstg`.`services_servicegroups` ssg
-              ON ssg.servicegroup_id = sg.servicegroup_id
-            INNER JOIN `:dbstg`.`hosts` h
-              ON h.host_id = ssg.host_id
-              AND h.enabled = \'1\'
-              AND h.name NOT LIKE \'_Module_BAM%\'
-            INNER JOIN `:dbstg`.`instances` i
-              ON i.instance_id = h.instance_id'
-            . $accessGroupFilter
-            . ' LEFT JOIN `:dbstg`.`services` srv
-              ON srv.service_id = ssg.service_id
-              AND srv.host_id = h.host_id
-              AND srv.enabled = \'1\'';
-
-        $firstRequest = $request = $this->translateDbName($firstRequest);
-
-        // Where
-        $searchRequest = $this->sqlRequestTranslator->translateSearchParameterToSql();
-        $firstRequest .= !is_null($searchRequest) ? $searchRequest : '';
-
-        // Group
-        $firstRequest .= ' GROUP BY sg.servicegroup_id, sg.name';
-
-        // Order
-        $sortRequest = $this->sqlRequestTranslator->translateSortParameterToSql();
-        $firstRequest .= !is_null($sortRequest) ? $sortRequest : '';
-
-        // Pagination
-        $firstRequest .= $this->sqlRequestTranslator->translatePaginationToSql();
-
-        $statement = $this->db->prepare($firstRequest);
-
-        foreach ($this->sqlRequestTranslator->getSearchValues() as $key => $data) {
-            $type = key($data);
-            $value = $data[$type];
-            $statement->bindValue($key, $value, $type);
+        $shouldJoinHost = false;
+        if (count(array_intersect($searchParameters, array_keys($hostConcordanceArray))) > 0) {
+            $shouldJoinHost = true;
+            $hostGroupConcordanceArray = array_merge($hostGroupConcordanceArray, $hostConcordanceArray);
         }
 
-        if (false === $statement->execute()) {
-            throw new Exception('Bad SQL request');
+        $shouldJoinService = false;
+        if (count(array_intersect($searchParameters, array_keys($serviceConcordanceArray))) > 0) {
+            $shouldJoinHost = true;
+            $hostGroupConcordanceArray = array_merge($hostGroupConcordanceArray, $serviceConcordanceArray);
+        }
+        $this->sqlRequestTranslator->setConcordanceArray($hostGroupConcordanceArray);
+
+        $sqlExtraParameters = [];
+        $subRequest = '';
+        if (!$this->isAdmin()) {
+            $sqlExtraParameters = [':contact_id' => [\PDO::PARAM_INT => $this->contact->getId()]];
+
+            // Not an admin, we must to filter on contact
+            $subRequest .=
+                ' INNER JOIN `:db`.acl_resources_sg_relations sgr
+                    ON sgr.sg_id = sg.servicegroup_id
+                INNER JOIN `:db`.acl_resources res
+                    ON res.acl_res_id = sgr.acl_res_id
+                    AND res.acl_res_activate = \'1\'
+                INNER JOIN `:db`.acl_res_group_relations rgr
+                    ON rgr.acl_res_id = res.acl_res_id
+                INNER JOIN `:db`.acl_groups grp
+                    ON grp.acl_group_id IN ('
+                . $this->accessGroupIdToString($this->accessGroups)
+                . ') AND grp.acl_group_activate = \'1\'
+                    AND grp.acl_group_id = rgr.acl_group_id
+                LEFT JOIN `:db`.acl_group_contacts_relations gcr
+                    ON gcr.acl_group_id = grp.acl_group_id
+                LEFT JOIN `:db`.acl_group_contactgroups_relations gcgr
+                    ON gcgr.acl_group_id = grp.acl_group_id
+                LEFT JOIN `:db`.contactgroup_contact_relation cgcr
+                    ON cgcr.contactgroup_cg_id = gcgr.cg_cg_id
+                    AND cgcr.contact_contact_id = :contact_id 
+                    OR gcr.contact_contact_id = :contact_id';
         }
 
-        $result = $this->db->query('SELECT FOUND_ROWS()');
-        $this->sqlRequestTranslator->getRequestParameters()->setTotal(
-            (int) $result->fetchColumn()
-        );
+        // This join will only be added if a search parameter corresponding to one of the host parameter
+        if ($shouldJoinHost || $shouldJoinService) {
+            $subRequest .=
+                ' INNER JOIN `:dbstg`.services_servicegroups ssg 
+                    ON ssg.servicegroup_id = sg.servicegroup_id
+                    AND ssg.service_id = srv.service_id
+                INNER JOIN `:dbstg`.hosts h
+                    ON h.host_id = ssg.host_id';
+
+            if ($shouldJoinService) {
+                $subRequest .=
+                    'LEFT JOIN `:dbstg`.`services` srv
+                      ON srv.service_id = ssg.service_id
+                      AND srv.host_id = h.host_id
+                      AND srv.enabled = \'1\'';
+            }
+
+            if (!$this->isAdmin()) {
+                $subRequest .=
+                    ' INNER JOIN `:dbstg`.`centreon_acl` acl
+                        ON acl.host_id = h.host_id
+                        AND acl.service_id = srv.service_id
+                        AND acl.group_id = grp.acl_group_id';
+            }
+        }
 
         $request =
-            'SELECT DISTINCT
-              sg.servicegroup_id, sg.name AS servicegroup_name,
-              h.host_id, h.name AS host_name, h.alias AS host_alias,
-              h.display_name AS host_display_name, h.state AS host_state,
-              GROUP_CONCAT(DISTINCT srv.service_id ORDER BY srv.display_name ASC) AS serviceIds
-            FROM `:dbstg`.`servicegroups` sg
-            INNER JOIN `:dbstg`.`services_servicegroups` ssg
-              ON ssg.servicegroup_id = sg.servicegroup_id
-            LEFT JOIN `centreon_storage`.`services` srv
-              ON srv.service_id = ssg.service_id
-              AND srv.enabled = \'1\'
-            INNER JOIN `:dbstg`.`hosts` h
-              ON h.host_id = srv.host_id
-              AND h.enabled = \'1\'
-              AND h.name NOT LIKE \'_Module_BAM%\'
-            INNER JOIN `:dbstg`.`instances` i
-              ON i.instance_id = h.instance_id'
-            . $accessGroupFilter;
-
+            'SELECT SQL_CALC_FOUND_ROWS DISTINCT sg.* 
+            FROM `:dbstg`.`servicegroups` sg ' . $subRequest;
         $request = $this->translateDbName($request);
 
-        // Where
+        // Search
         $searchRequest = $this->sqlRequestTranslator->translateSearchParameterToSql();
         $request .= !is_null($searchRequest) ? $searchRequest : '';
 
-        // Group
-        $request .= ' GROUP BY sg.servicegroup_id, sg.name, h.host_id, h.name';
-
-        // Order
+        // Sort
         $sortRequest = $this->sqlRequestTranslator->translateSortParameterToSql();
         $request .= !is_null($sortRequest) ? $sortRequest : ' ORDER BY sg.name ASC';
 
@@ -775,85 +874,60 @@ final class MonitoringRepositoryRDB implements MonitoringRepositoryInterface
             $value = $data[$type];
             $statement->bindValue($key, $value, $type);
         }
-        if (false === $statement->execute()) {
-            throw new Exception('Bad SQL request');
-        }
 
-        $serviceGroups = [];
+        // We bind extra parameters according to access rights
+        foreach ($sqlExtraParameters as $key => $data) {
+            $type = key($data);
+            $value = $data[$type];
+            $statement->bindValue($key, $value, $type);
+        }
+        $statement->execute();
+
+        $result = $this->db->query('SELECT FOUND_ROWS()');
+        $this->sqlRequestTranslator->getRequestParameters()->setTotal(
+            (int) $result->fetchColumn()
+        );
 
         while (false !== ($result = $statement->fetch(\PDO::FETCH_ASSOC))) {
-            $serviceGroupId = (int) $result['servicegroup_id'];
-            $host = (new Host())
-                ->setId((int) $result['host_id'])
-                ->setName($result['host_name'])
-                ->setAlias($result['host_alias'])
-                ->setDisplayName($result['host_display_name'])
-                ->setState((int) $result['host_state'])
-                ->setServices(
-                    $this->findCertainServicesByHost(
-                        (int) $result['host_id'],
-                        explode(',', $result['serviceIds'])
-                    )
-                );
-
-            if (!array_key_exists($serviceGroupId, $serviceGroups)) {
-                $serviceGroups[$serviceGroupId] = (new ServiceGroup())
-                    ->setId($serviceGroupId)
-                    ->setName($result['servicegroup_name']);
-            }
-
-            if (!$serviceGroups[$serviceGroupId]->isHostExists($host->getId())) {
-                $serviceGroups[$serviceGroupId]->addHost($host);
-            }
+            $serviceGroups[] = EntityCreator::createEntityByArray(
+                ServiceGroup::class,
+                $result
+            );
         }
 
-        return array_values($serviceGroups);
+        return $serviceGroups;
     }
 
     /**
-     * Formats the access group ids in string. (values are separated by coma)
-     *
-     * @param AccessGroup[] $accessGroups
-     * @return string
+     * @inheritDoc
      */
-    private function accessGroupIdToString(array $accessGroups): string
-    {
-        $ids = [];
-        foreach ($accessGroups as $accessGroup) {
-            $ids[] = $accessGroup->getId();
-        }
-        return implode(',', $ids);
-    }
-
-    /**
-     * Find services according to the host id and service ids given
-     *
-     * @param int $hostId Host id
-     * @param int[] $serviceIds Service Ids
-     * @return Service[]
-     * @throws Exception
-     */
-    private function findCertainServicesByHost(int $hostId, array $serviceIds): array
+    public function findSelectedServicesByHost(int $hostId, array $serviceIds): array
     {
         $services = [];
+
+        if ($this->hasNotEnoughRightsToContinue()) {
+            return $services;
+        }
+
         if (empty($serviceIds)) {
             return $services;
         }
         $serviceIds = array_map(
             function ($serviceId) {
-                return (int) $serviceId;
+                return (int)$serviceId;
             },
             $serviceIds
         );
 
-        $accessGroupFilter = !is_null($this->accessGroups)
-            ? ' INNER JOIN `:dbstg`.`centreon_acl` acl
+        $accessGroupFilter = $this->isAdmin()
+            ? ' '
+            : ' INNER JOIN `:dbstg`.`centreon_acl` acl
                   ON acl.host_id = h.host_id
+                  AND acl.service_id = srv.service_id
                 INNER JOIN `:db`.`acl_groups` acg
                   ON acg.acl_group_id = acl.group_id
                   AND acg.acl_group_activate = \'1\'
-                  AND acg.acl_group_id IN (' . $this->accessGroupIdToString($this->accessGroups). ') '
-            : ' ';
+                  AND acg.acl_group_id IN (' . $this->accessGroupIdToString($this->accessGroups) . ') ';
 
 
         $request =
@@ -875,7 +949,7 @@ final class MonitoringRepositoryRDB implements MonitoringRepositoryInterface
         $statement = $this->db->prepare($request);
 
         if (false === $statement->execute(array_merge([$hostId], $serviceIds))) {
-            throw new Exception('Bad SQL request');
+            throw new \Exception('Bad SQL request');
         }
 
         while (false !== ($result = $statement->fetch(\PDO::FETCH_ASSOC))) {
@@ -889,28 +963,25 @@ final class MonitoringRepositoryRDB implements MonitoringRepositoryInterface
     }
 
     /**
-     * Finds services from a list of hosts.
-     *
-     * @param array $hostIds List of host for which we want to get services
-     * @return array Return a list of services indexed by host
-     * [host_id => Service[], ...]
-     * @throws Exception
+     * @inheritDoc
      */
-    private function findServicesOnMultipleHosts(array $hostIds): array
+    public function findServicesByHosts(array $hostIds): array
     {
         $services = [];
-        if (empty($hostIds)) {
+
+        if ($this->hasNotEnoughRightsToContinue() || empty($hostIds)) {
             return $services;
         }
 
-        $accessGroupFilter = !is_null($this->accessGroups)
-            ? ' INNER JOIN `:dbstg`.`centreon_acl` acl
+        $accessGroupFilter = $this->isAdmin()
+            ? ' '
+            : ' INNER JOIN `:dbstg`.`centreon_acl` acl
                   ON acl.host_id = h.host_id
+                  AND acl.service_id = srv.service_id
                 INNER JOIN `:db`.`acl_groups` acg
                   ON acg.acl_group_id = acl.group_id
                   AND acg.acl_group_activate = \'1\'
-                  AND acg.acl_group_id IN (' . $this->accessGroupIdToString($this->accessGroups). ') '
-            : ' ';
+                  AND acg.acl_group_id IN (' . $this->accessGroupIdToString($this->accessGroups) . ') ';
 
         $request =
             'SELECT DISTINCT 
@@ -932,13 +1003,10 @@ final class MonitoringRepositoryRDB implements MonitoringRepositoryInterface
         $request = $this->translateDbName($request);
 
         $statement = $this->db->prepare($request);
-
-        if (false === $statement->execute($hostIds)) {
-            throw new Exception('Bad SQL request');
-        }
+        $statement->execute($hostIds);
 
         while (false !== ($result = $statement->fetch(\PDO::FETCH_ASSOC))) {
-            $services[(int) $result['host_id']][] = EntityCreator::createEntityByArray(
+            $services[(int)$result['host_id']][] = EntityCreator::createEntityByArray(
                 Service::class,
                 $result
             );
@@ -948,19 +1016,95 @@ final class MonitoringRepositoryRDB implements MonitoringRepositoryInterface
     }
 
     /**
-     * Replace all instances of :dbstg and :db by the real db names.
-     * The table names of the database are defined in the services.yaml
-     * configuration file.
-     *
-     * @param string $request Request to translate
-     * @return string Request translated
+     * @param array $serviceGroups
+     * @return array
+     * @throws \Exception
      */
-    private function translateDbName(string $request): string
+    public function findServicesByServiceGroups(array $serviceGroups): array
     {
-        return str_replace(
-            array(':dbstg', ':db'),
-            array($this->storageDbName, $this->centreonDbName),
-            $request
-        );
+        $servicesByServiceGroupId = [];
+
+        if ($this->hasNotEnoughRightsToContinue() || empty($serviceGroups)) {
+            return $servicesByServiceGroupId;
+        }
+
+        $subRequest = (!$this->isAdmin())
+            ? ' INNER JOIN `:db`.`acl_resources_sg_relations` arsr
+                  ON arsr.sg_id = ssg.servicegroup_id
+                INNER JOIN `:db`.`acl_resources` aclr
+                    ON aclr.acl_res_id = arsr.acl_res_id
+                INNER JOIN `:db`.`acl_res_group_relations` argr
+                    ON argr.acl_res_id = aclr.acl_res_id
+                INNER JOIN `:db`.`acl_groups` acg
+                    ON acg.acl_group_id = argr.acl_group_id
+                    AND acg.acl_group_activate = \'1\' '
+            : ' ';
+
+        $request =
+            'SELECT DISTINCT
+		        ssg.servicegroup_id,
+                srv.service_id, 
+                srv.display_name, 
+                srv.description, 
+                srv.host_id,
+                srv.state
+            FROM `:dbstg`.`services` srv
+            INNER JOIN :dbstg.`hosts` h
+              ON h.host_id = srv.host_id
+              AND h.enabled = \'1\'
+              AND h.name NOT LIKE \'_Module_BAM%\'
+            INNER JOIN `:dbstg`.`services_servicegroups` ssg
+              ON ssg.service_id = srv.service_id
+              AND ssg.host_id = srv.host_id'
+            . $subRequest
+            . 'WHERE ssg.servicegroup_id IN (' . str_repeat('?,', count($serviceGroups) - 1) . '?)
+                AND srv.enabled = 1
+            GROUP by ssg.servicegroup_id, srv.host_id, srv.service_id';
+
+        $request = $this->translateDbName($request);
+
+        $statement = $this->db->prepare($request);
+        $statement->execute($serviceGroups);
+
+        while (false !== ($result = $statement->fetch(\PDO::FETCH_ASSOC))) {
+            $service = EntityCreator::createEntityByArray(
+                Service::class,
+                $result
+            );
+            $host = EntityCreator::createEntityByArray(
+                Host::class,
+                $result
+            );
+            $service->setHost($host);
+            $servicesByServiceGroupId[(int)$result['servicegroup_id']][] = $service;
+        }
+
+        return $servicesByServiceGroupId;
+    }
+
+    private function isAdmin(): bool
+    {
+        return ($this->contact !== null)
+            ? $this->contact->isAdmin()
+            : false;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function setContact(ContactInterface $contact): MonitoringRepositoryInterface
+    {
+        $this->contact = $contact;
+        return $this;
+    }
+
+    /**
+     * @return bool Return FALSE if the contact is an admin or has at least one access group.
+     */
+    private function hasNotEnoughRightsToContinue(): bool
+    {
+        return ($this->contact !== null)
+            ? !($this->contact->isAdmin() || count($this->accessGroups) > 0)
+            : count($this->accessGroups) == 0;
     }
 }

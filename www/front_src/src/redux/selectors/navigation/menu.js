@@ -1,3 +1,4 @@
+/* eslint-disable no-restricted-syntax */
 import { createSelector } from 'reselect';
 
 /**
@@ -18,15 +19,12 @@ function filterShowableElements(acc, item) {
         {
           ...item,
           [parameter]: item[parameter].reduce(filterShowableElements, []),
-        }
+        },
       ];
     }
   }
 
-  return [
-    ...acc,
-    item
-  ];
+  return [...acc, item];
 }
 
 /**
@@ -42,7 +40,7 @@ function removeEmptyGroups(acc, item) {
       {
         ...item,
         children: item.children.reduce(removeEmptyGroups, []),
-      }
+      },
     ];
   }
 
@@ -52,14 +50,11 @@ function removeEmptyGroups(acc, item) {
       {
         ...item,
         groups: item.groups.filter(filterNotEmptyGroup),
-      }
+      },
     ];
   }
 
-  return [
-    ...acc,
-    item
-  ];
+  return [...acc, item];
 }
 
 /**
@@ -81,7 +76,6 @@ function filterNotEmptyGroup(group) {
 
 const getNavigationItems = (state) => state.navigation.items;
 
-export const menuSelector = createSelector(
-  getNavigationItems,
-  (navItems) => navItems.reduce(filterShowableElements, []).reduce(removeEmptyGroups, []),
+export const menuSelector = createSelector(getNavigationItems, (navItems) =>
+  navItems.reduce(filterShowableElements, []).reduce(removeEmptyGroups, []),
 );

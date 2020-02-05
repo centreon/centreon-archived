@@ -1,6 +1,14 @@
 {$form.javascript}
 {$javascript}
+<div id="popin"><p id="msg-wrapper"></p></div>
 <form {$form.attributes}>
+    {if $inheritance !="1" }
+    <!-- notification inheritance option -->
+    <div style='visibility: hidden'>
+        {$form.contact_additive_inheritance.html}
+        {$form.cg_additive_inheritance.html}
+    </div>
+    {/if}
 <div class="headerTabContainer">
     <ul id="mainnav">
         <li class="a" id='c1'><a href="#" onclick="javascript:montre('1');">{t}General Information{/t}</a></li>
@@ -137,10 +145,17 @@
         <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="mc_update"> {$form.mc_mod_cgs.label}</td><td class="FormRowValue">{$form.mc_mod_cgs.html}</td></tr>
         {/if} 
         {if $o == "mc"}
+        {if $inheritance =="1"}
         <tr class="list_one">
-            <td class="FormRowField"><img class="helpTooltip" name="contact_additive_inheritance"> {$form.mc_contact_additive_inheritance.label}</td>
-            <td class="FormRowValue">{$form.mc_contact_additive_inheritance.html}</td>
+            <td class="FormRowField">
+                    <img class="helpTooltip" name="contact_additive_inheritance">
+                    {$form.mc_contact_additive_inheritance.label}
+            </td>
+            <td class="FormRowValue">
+                {$form.mc_contact_additive_inheritance.html}
+            </td>
         </tr>
+        {/if}
         <tr class="list_two">
             <td class="FormRowField"><img class="helpTooltip" name="contact_groups"> {$form.service_cs.label}</td>
             <td class="FormRowValue">{$form.service_cs.html}</td>
@@ -150,16 +165,26 @@
             <td class="FormRowField"><img class="helpTooltip" name="contacts"> {$form.service_cs.label}</td>
             <td class="FormRowValue">{$form.service_cs.html}</td>
         </tr>
-        <tr class="list_two">
-            <td class="FormRowField"></td>
-            <td class="FormRowValue">{$form.contact_additive_inheritance.html} <img class="helpTooltip" name="contact_additive_inheritance"></td>
-        </tr>
+        {if $inheritance =="1"}
+            <tr class="list_two">
+                <td class="FormRowField"></td>
+                <td class="FormRowValue">
+                    {$form.contact_additive_inheritance.html}
+                    <img class="helpTooltip" name="contact_additive_inheritance">
+                </td>
+            </tr>
+        {/if}
         {/if}
         {if $o == "mc"}
-        <tr class="list_one">
-            <td class="FormRowField"><img class="helpTooltip" name="cg_additive_inheritance"> {$form.mc_cg_additive_inheritance.label}</td>
-            <td class="FormRowValue">{$form.mc_cg_additive_inheritance.html}</td>
-        </tr>
+        {if $inheritance =="1" }
+            <tr class="list_one">
+                <td class="FormRowField">
+                    <img class="helpTooltip" name="cg_additive_inheritance">
+                    {$form.mc_cg_additive_inheritance.label}
+                </td>
+                <td class="FormRowValue">{$form.mc_cg_additive_inheritance.html}</td>
+            </tr>
+        {/if}
         <tr class="list_two">
             <td class="FormRowField"><img class="helpTooltip" name="contact_groups"> {$form.service_cgs.label}</td>
             <td class="FormRowValue">{$form.service_cgs.html}</td>
@@ -169,10 +194,15 @@
             <td class="FormRowField"><img class="helpTooltip" name="contact_groups"> {$form.service_cgs.label}</td>
             <td class="FormRowValue">{$form.service_cgs.html}</td>
         </tr>
-        <tr class="list_two">
-            <td class="FormRowField"></td>
-            <td class="FormRowValue">{$form.cg_additive_inheritance.html} <img class="helpTooltip" name="cg_additive_inheritance"></td>
-        </tr>
+        {if $inheritance =="1" }
+            <tr class="list_two">
+                <td class="FormRowField"></td>
+                <td class="FormRowValue">
+                    {$form.cg_additive_inheritance.html}
+                    <img class="helpTooltip" name="cg_additive_inheritance">
+                </td>
+            </tr>
+        {/if}
         {/if}            
         <tr class="list_lvl_1">
             <td class="ListColLvl1_name" colspan="2">
@@ -443,7 +473,7 @@ jQuery(function() {
         }
         {/literal}{else}{literal}
         if ($passwordCheckbox.is(':checked')) {
-            $passwordCheckbox.parent('span').hide();
+            $passwordCheckbox.closest('span').hide();
         }
         {/literal}{/if}{literal}
 
@@ -561,9 +591,19 @@ jQuery(function() {
 
                 if (jQuery(elem).find("input[id^='macroPassword_']").is(':checked')) {
                     jQuery(elem).find("input[name^='macroValue']").prop('type', 'password');
-                    jQuery(elem).find("input[id^='macroPassword_']").parent('span').hide();
+                    jQuery(elem).find("input[id^='macroPassword_']").closest('span').hide();
                 }
                 });
+        },
+        error: function(jqXHR, data) {
+            let message = 'Internal error';
+            if (typeof(jqXHR.responseJSON) === 'object') {
+               if (typeof(jqXHR.responseJSON.message) !== "undefined") {
+                   message = jqXHR.responseJSON.message;
+               }
+            }
+            jQuery('#msg-wrapper').html('<span class="msg-field error">' + message + '</span>');
+            jQuery('#popin').centreonPopin("open");
         }
     });
     {/literal}{/if}{literal}

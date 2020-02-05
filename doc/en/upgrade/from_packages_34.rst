@@ -33,6 +33,16 @@ Be sure that you have fully backed up your environment for the following servers
 Upgrading the Centreon Central Server
 *************************************
 
+Updating the operating system
+=============================
+
+Remember to update your operating system via the command: ::
+
+    # yum update
+
+.. note::
+    Accept all GPG keys and consider rebooting your server if a kernel update is proposed.
+
 Upgrading the repository
 ========================
 

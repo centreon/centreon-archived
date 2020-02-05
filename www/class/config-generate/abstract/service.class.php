@@ -1,7 +1,7 @@
 <?php
 /*
- * Copyright 2005-2015 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2019 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -37,7 +37,7 @@ require_once dirname(__FILE__) . '/object.class.php';
 
 abstract class AbstractService extends AbstractObject
 {
-    # no flap_detection_options attribute
+    // no flap_detection_options attribute
     protected $attributes_select = '
         service_id,
         service_template_model_stm_id,
@@ -167,63 +167,25 @@ abstract class AbstractService extends AbstractObject
         );
     }
 
-    protected function getContacts(&$service)
+    /**
+     * @param array $service (passing by Reference)
+     */
+    protected function getContacts(array &$service): void
     {
-        if (isset($service['service_use_only_contacts_from_host']) &&
-            $service['service_use_only_contacts_from_host'] == 1
-        ) {
-            $service['contacts_cache'] = array();
-            $service['contacts'] = "";
-        } else {
+        if (!isset($service['contacts_cache'])) {
             $contact = Contact::getInstance($this->dependencyInjector);
             $service['contacts_cache'] = $contact->getContactForService($service['service_id']);
-            $contact_result = '';
-            $contact_result_append = '';
-            foreach ($service['contacts_cache'] as $contact_id) {
-                $tmp = $contact->generateFromContactId($contact_id);
-                if (!is_null($tmp)) {
-                    $contact_result .= $contact_result_append . $tmp;
-                    $contact_result_append = ',';
-                }
-            }
-
-            if ($contact_result != '') {
-                $service['contacts'] = $contact_result;
-                if (!is_null($service['contact_additive_inheritance'])
-                    && $service['contact_additive_inheritance'] == 1
-                ) {
-                    $service['contacts'] = '+' . $service['contacts'];
-                }
-            }
         }
     }
 
-    protected function getContactGroups(&$service)
+    /**
+      * @param array $service (passing by Reference)
+     */
+    protected function getContactGroups(array &$service): void
     {
-        if (isset($service['service_use_only_contacts_from_host']) &&
-            $service['service_use_only_contacts_from_host'] == 1
-        ) {
-            $service['contact_groups_cache'] = array();
-            $service['contact_groups'] = "";
-        } else {
+        if (!isset($service['contact_groups_cache'])) {
             $cg = Contactgroup::getInstance($this->dependencyInjector);
             $service['contact_groups_cache'] = $cg->getCgForService($service['service_id']);
-            $cg_result = '';
-            $cg_result_append = '';
-            foreach ($service['contact_groups_cache'] as $cg_id) {
-                $tmp = $cg->generateFromCgId($cg_id);
-                if (!is_null($tmp)) {
-                    $cg_result .= $cg_result_append . $tmp;
-                    $cg_result_append = ',';
-                }
-            }
-
-            if ($cg_result != '') {
-                $service['contact_groups'] = $cg_result;
-                if (!is_null($service['cg_additive_inheritance']) && $service['cg_additive_inheritance'] == 1) {
-                    $service['contact_groups'] = '+' . $service['contact_groups'];
-                }
-            }
         }
     }
 

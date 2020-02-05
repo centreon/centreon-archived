@@ -218,7 +218,7 @@ yes_no_default() {
 	done
 	if [ "$res" = "$yes" ] ; then
 		return 0
-	else 
+	else
 		return 1
 	fi
 }
@@ -1279,15 +1279,33 @@ prepare_apache_config() {
 
     # Prepare apache config
     ${CAT} << __EOT__ > $directory/centreon.apache.conf
+Alias /centreon/api $INSTALL_DIR_CENTREON
 Alias /centreon $INSTALL_DIR_CENTREON/www/
 
-<LocationMatch ^/centreon/(.*\.php(/.*)?)$>
+<LocationMatch ^/centreon/(?!api/latest/|api/beta/|api/v[0-9]+/|api/v[0-9]+\.[0-9]+/)(.*\.php(/.*)?)$>
   ProxyPassMatch fcgi://127.0.0.1:9042${INSTALL_DIR_CENTREON}/www/\$1
+</LocationMatch>
+
+<LocationMatch ^/centreon/api/(latest/|beta/|v[0-9]+/|v[0-9]+\.[0-9]+/)(.*)$>
+  ProxyPassMatch fcgi://127.0.0.1:9042${INSTALL_DIR_CENTREON}/api/index.php/\$1
 </LocationMatch>
 ProxyTimeout 300
 
 <Directory "$INSTALL_DIR_CENTREON/www">
     DirectoryIndex index.php
+    Options Indexes
+    AllowOverride all
+    Order allow,deny
+    Allow from all
+    Require all granted
+    <IfModule mod_php5.c>
+        php_admin_value engine Off
+    </IfModule>
+
+    AddType text/plain hbs
+</Directory>
+
+<Directory "$INSTALL_DIR_CENTREON/api">
     Options Indexes
     AllowOverride all
     Order allow,deny
@@ -2074,7 +2092,7 @@ check_broker_user()
 #----
 copyInTempFile()
 {
-	local srclistcp="bin cron config logrotate GPL_LIB lang lib snmptrapd src vendor www libinstall bootstrap.php composer.json package.json package-lock.json"
+	local srclistcp="bin cron config logrotate GPL_LIB lang lib snmptrapd src vendor www api libinstall .env bootstrap.php container.php composer.json package.json package-lock.json"
 	# Prepare centreon Plugins
 	echo "$(gettext "Preparing Centreon temporary files")"
 	if [ -d $TMP_DIR ] ; then

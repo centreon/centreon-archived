@@ -5,3 +5,5 @@ CREATE TABLE IF NOT EXISTS `rs_poller_relation` (
   KEY `remote_server_id` (`remote_server_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Relation Table For centreon pollers and remote servers';
 
+--new inheritance mode
+INSERT INTO `options` (`key`, `value`) VALUES ('inheritance_mode', '1');

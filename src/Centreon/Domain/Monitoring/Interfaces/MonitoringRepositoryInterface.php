@@ -21,11 +21,14 @@ declare(strict_types=1);
 
 namespace Centreon\Domain\Monitoring\Interfaces;
 
+use Centreon\Domain\Contact\Interfaces\ContactInterface;
+use Centreon\Domain\Entity\EntityCreator;
 use Centreon\Domain\Monitoring\HostGroup;
+use Centreon\Domain\Monitoring\ServiceGroup;
 use Centreon\Domain\Security\AccessGroup;
 use Centreon\Domain\Monitoring\Host;
 use Centreon\Domain\Monitoring\Service;
-use Exception;
+use Centreon\Infrastructure\Monitoring\MonitoringRepositoryRDB;
 
 interface MonitoringRepositoryInterface
 {
@@ -41,15 +44,32 @@ interface MonitoringRepositoryInterface
      * Find all real time hosts according to access group.
      *
      * @return Host[]
-     * @throws Exception
+     * @throws \Exception
      */
     public function findHosts(): array;
+
+    /**
+     * Find the hosts of the hosts groups ids given.
+     *
+     * @param array $hostsGroupsIds List of hosts groups Ids for which we want to retrieve the hosts
+     * @return array [hostGroupId => hostId,...]
+     * @throws \Exception
+     */
+    public function findHostsByHostsGroups(array $hostsGroupsIds): array;
+
+    /**
+     * Find the hosts of the services groups ids given.
+     *
+     * @param array $servicesGroupsIds List of services groups Ids for which we want to retrieve the hosts
+     * @return array [serviceGroupId => hostId,...]
+     * @throws \Exception
+     */
+    public function findHostsByServiceGroups(array $servicesGroupsIds): array;
 
     /**
      * Find all services grouped by host groups
      *
      * @return HostGroup[]
-     * @throws Exception
      */
     public function findHostGroups(): array;
 
@@ -58,7 +78,7 @@ interface MonitoringRepositoryInterface
      *
      * @param int $hostId Id of the host to be found
      * @return Host|null
-     * @throws Exception
+     * @throws \Exception
      */
     public function findOneHost(int $hostId): ?Host;
 
@@ -68,7 +88,7 @@ interface MonitoringRepositoryInterface
      * @param int $hostId Host id of the service
      * @param int $serviceId Service Id
      * @return Service|null
-     * @throws Exception
+     * @throws \Exception
      */
     public function findOneService(int $hostId, int $serviceId): ?Service;
 
@@ -76,7 +96,7 @@ interface MonitoringRepositoryInterface
      * Find all services grouped by service groups
      *
      * @return \Servicegroup[]
-     * @throws Exception
+     * @throws \Exception
      */
     public function findServiceGroups(): array;
 
@@ -84,7 +104,7 @@ interface MonitoringRepositoryInterface
      * Find all real time services according to access group.
      *
      * @return Service[]
-     * @throws Exception
+     * @throws \Exception
      */
     public function findServices(): array;
 
@@ -93,7 +113,39 @@ interface MonitoringRepositoryInterface
      *
      * @param int $hostId Host ID for which we want to find services
      * @return Service[]
-     * @throws Exception
+     * @throws \Exception
      */
     public function findServicesByHost(int $hostId): array;
+
+    /**
+     * Find services according to the host id and service ids given
+     *
+     * @param int $hostId Host id
+     * @param int[] $serviceIds Service Ids
+     * @return Service[]
+     * @throws \Exception
+     */
+    public function findSelectedServicesByHost(int $hostId, array $serviceIds): array;
+
+    /**
+     * Finds services from a list of hosts.
+     *
+     * @param array $hostIds List of host for which we want to get services
+     * @return array Return a list of services indexed by host
+     * [host_id => Service[], ...]
+     */
+    public function findServicesByHosts(array $hostIds): array;
+
+    /**
+     * @param ContactInterface $contact
+     * @return MonitoringRepositoryInterface
+     */
+    public function setContact(ContactInterface $contact): self;
+
+    /**
+     * @param array $serviceGroups
+     * @return array
+     * @throws \Exception
+     */
+    public function findServicesByServiceGroups(array $serviceGroups): array;
 }

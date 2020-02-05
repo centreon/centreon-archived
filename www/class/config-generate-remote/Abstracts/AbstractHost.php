@@ -31,6 +31,7 @@ use ConfigGenerateRemote\TimePeriod;
 use ConfigGenerateRemote\Relations\ContactHostRelation;
 use ConfigGenerateRemote\Relations\ContactGroupHostRelation;
 use ConfigGenerateRemote\Relations\HostTemplateRelation;
+use ConfigGenerateRemote\Relations\HostPollerRelation;
 use ConfigGenerateRemote\Relations\MacroHost;
 
 abstract class AbstractHost extends AbstractObject
@@ -104,6 +105,7 @@ abstract class AbstractHost extends AbstractObject
     protected $stmtHtpl = null;
     protected $stmtContact = null;
     protected $stmtCg = null;
+    protected $stmtPoller = null;
 
     /**
      * Get host extended information
@@ -211,6 +213,29 @@ abstract class AbstractHost extends AbstractObject
                 ->addRelation($host['host_id'], $templateId, $order);
             $order++;
         }
+    }
+
+    /**
+     * Get linked poller
+     *
+     * @param array $host
+     * @return void
+     */
+    protected function getHostPoller(array $host): void
+    {
+        if (is_null($this->stmtPoller)) {
+            $this->stmtPoller = $this->backendInstance->db->prepare(
+                "SELECT nagios_server_id
+                FROM ns_host_relation
+                WHERE host_host_id = :host_id"
+            );
+        }
+        $this->stmtPoller->bindParam(':host_id', $host['host_id'], PDO::PARAM_INT);
+        $this->stmtPoller->execute();
+        $pollerId = $this->stmtPoller->fetchAll(PDO::FETCH_COLUMN);
+
+        HostPollerRelation::getInstance($this->dependencyInjector)
+            ->addRelation($pollerId[0], $host['host_id']);
     }
 
     /**

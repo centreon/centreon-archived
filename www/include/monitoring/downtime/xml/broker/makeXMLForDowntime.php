@@ -95,7 +95,7 @@ if (!$service_id) {
     $query = "SELECT author, actual_start_time , end_time, comment_data, duration, fixed " .
         "FROM downtimes " .
         "WHERE host_id = ? " .
-        "AND service_id IS NULL " .
+        "AND type = 2 " .
         "AND cancelled = 0 " .
         "AND end_time > UNIX_TIMESTAMP(NOW()) " .
         "ORDER BY actual_start_time";
@@ -106,6 +106,7 @@ if (!$service_id) {
         "FROM downtimes " .
         "WHERE host_id = ? " .
         "AND service_id = ? " .
+        "AND type = 1 " .
         "AND cancelled = 0 " .
         "AND end_time > UNIX_TIMESTAMP(NOW()) " .
         "ORDER BY actual_start_time";

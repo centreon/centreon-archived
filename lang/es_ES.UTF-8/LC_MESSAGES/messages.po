@@ -3231,13 +3231,18 @@ msgid "You seem to be having trouble with your upgrade."
 msgstr "Parece que hay un problema con tu actualización."
 
 #: centreon-web/www/install/step_upgrade/step4.php:70
-msgid "You may refer to the line that causes problem in order to find out more about the issue."
+msgid "You may refer to the line in the specified file in order to correct the issue."
 msgstr "Puede consultar la línea que es problemática para obtener más información sobre el incidente."
 
 #: centreon-web/www/install/step_upgrade/step4.php:71
 #, php-format
 msgid "The SQL files are located in %s"
 msgstr "Los archivos SQL se encuentran en %s"
+
+#: centreon-web/www/install/step_upgrade/step4.php:87
+#, php-format
+msgid "Please check the \"upgrade.log\" and the \"sql-error.log\" located in \"%s\" for more details"
+msgstr ""
 
 #: centreon-web/www/install/step_upgrade/step4.php:72
 msgid "But do not edit the SQL files unless you know what you are doing.Refresh this page when the problem is fixed."
@@ -10537,19 +10542,28 @@ msgid "You are not allowed to access this contact"
 msgstr "No estás autorizado para acceder a este contacto."
 
 #: centreon-web/www/include/configuration/configObject/contact/formContact.php:274
-#: centreon-web/www/include/configuration/configObject/contact_template_model/formContactTemplateModel.php:162
 msgid "Add a User"
 msgstr "Agregar un usuario"
 
 #: centreon-web/www/include/configuration/configObject/contact/formContact.php:276
-#: centreon-web/www/include/configuration/configObject/contact_template_model/formContactTemplateModel.php:164
 msgid "Modify a User"
 msgstr "Editar un usuario"
 
 #: centreon-web/www/include/configuration/configObject/contact/formContact.php:278
-#: centreon-web/www/include/configuration/configObject/contact_template_model/formContactTemplateModel.php:166
 msgid "View a User"
 msgstr "Ver un usuario"
+
+#: centreon-web/www/include/configuration/configObject/contact_template_model/formContactTemplateModel.php:162
+msgid "Add a User Template"
+msgstr "Agregar un modelo de usuario"
+
+#: centreon-web/www/include/configuration/configObject/contact_template_model/formContactTemplateModel.php:164
+msgid "Modify a User Template"
+msgstr "Editar un modelo de usuario"
+
+#: centreon-web/www/include/configuration/configObject/contact_template_model/formContactTemplateModel.php:166
+msgid "View a User Template"
+msgstr "Ver un modelo de usuario"
 
 #: centreon-web/www/include/configuration/configObject/contact/formContact.php:288
 #: centreon-web/www/include/configuration/configObject/contact_template_model/formContactTemplateModel.php:176
