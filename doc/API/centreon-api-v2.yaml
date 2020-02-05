@@ -173,6 +173,43 @@ paths:
           $ref: '#/components/responses/Forbidden'
         '500':
           $ref: '#/components/responses/InternalServerError'
+  /monitoring/resources:
+    get:
+      tags:
+        - Host
+        - Service
+        - Resource
+      summary: "List all resources including hosts and services"
+      description: |
+        List all the resources in real-time monitoring : hosts and services.
+
+        The available parameters to **search** / **sort_by** are:
+
+        * host.name
+        * service.description
+      parameters:
+        - $ref: '#/components/parameters/Search'
+        - $ref: '#/components/parameters/Limit'
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/SortBy'
+      responses:
+        '200':
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Monitoring.ResourceMain'
+                  meta:
+                    $ref: '#/components/schemas/Meta'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
   /monitoring/hosts:
     get:
       tags:
@@ -1410,6 +1447,89 @@ components:
               type: integer
               description: "ID of the service on which the downtime is set"
               example : 5
+    Monitoring.ResourceMain:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          description: "ID of the resource"
+          example: 12
+        name:
+          type: string
+          description: "Resource name"
+          example: "Ping"
+        url:
+          type: string
+          description: "Resource url"
+          example: "/configuration/host/12/service/12"
+        parent:
+          type: object
+          properties:
+            id:
+              type: integer
+              format: int64
+              description: "ID of the parent resource"
+              example: 12
+            name:
+              type: string
+              description: "Parent resource name"
+              example: "Central"
+            url:
+              type: string
+              description: "Parent resource url"
+              example: "/configuration/host/12"
+        status_code:
+          type: integer
+          description: |
+            resource status
+             * `0` - UP or OK
+             * `1` - DOWN or WARNING
+             * `2` - UNREACHABLE or CRITICAL
+             * `3` - UNKNOWN
+             * `4` - PENDING
+          example: 0
+        status_name:
+          type: integer
+          description: |
+            resource status
+             * UP
+             * DOWN
+             * UNREACHABLE
+             * PENDING
+             * OK
+             * WARNING
+             * CRITICAL
+             * UNKNOWN
+          example: "UP"
+        impacted_resources_count:
+          type: integer
+          description: "count of impacted resources"
+          example: 4
+        action_url:
+          type: string
+          description: "action URL of the resource"
+          example: http://mediawiki/host/central
+        chart_url:
+          type: string
+          description: "URL of the chart linked to the resource"
+          example: "/monitoring/chart/host/1/service/2"
+        last_status_change:
+          type: string
+          format: date-time
+          description: "Date of the last status change (ISO8601)"
+        tries:
+          type: string
+          description: "Number of check tries"
+          example: "3/3 (H)"
+        last_check:
+          type: string
+          format: date-time
+          description: "Date of the last check (ISO8601)"
+        information:
+          type: string
+          description: "Output of the resource"
+          example: "OK - Ping is ok"
     Monitoring.HostGroup:
       type: object
       properties:
