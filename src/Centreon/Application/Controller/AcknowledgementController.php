@@ -33,7 +33,6 @@ use FOS\RestBundle\View\View;
 use JMS\Serializer\Exception\ValidationFailedException;
 use JMS\Serializer\SerializerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
-use FOS\RestBundle\Controller\Annotations as Rest;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -63,9 +62,7 @@ class AcknowledgementController extends AbstractFOSRestController
      * Entry point to find the last hosts acknowledgements.
      *
      * @IsGranted("ROLE_API_REALTIME", message="You are not authorized to access this resource")
-     * @Rest\Get(
-     *     "/acknowledgements/hosts",
-     *     condition="request.attributes.get('version.is_beta') == true")
+     *
      * @param RequestParametersInterface $requestParameters
      * @return View
      * @throws \Exception
@@ -90,9 +87,6 @@ class AcknowledgementController extends AbstractFOSRestController
      * Entry point to find the last services acknowledgements.
      *
      * @IsGranted("ROLE_API_REALTIME", message="You are not authorized to access this resource")
-     * @Rest\Get(
-     *     "/acknowledgements/services",
-     *     condition="request.attributes.get('version.is_beta') == true")
      *
      * @param RequestParametersInterface $requestParameters
      * @return View
@@ -117,9 +111,7 @@ class AcknowledgementController extends AbstractFOSRestController
      * Entry point to add a host acknowledgement.
      *
      * @IsGranted("ROLE_API_REALTIME", message="You are not authorized to access this resource")
-     * @Rest\Post(
-     *     "/acknowledgements/hosts",
-     *     condition="request.attributes.get('version.is_beta') == true")
+     *
      * @param Request $request
      * @param EntityValidator $entityValidator
      * @param SerializerInterface $serializer
@@ -166,9 +158,7 @@ class AcknowledgementController extends AbstractFOSRestController
      * Entry point to disacknowledge an acknowledgement.
      *
      * @IsGranted("ROLE_API_REALTIME", message="You are not authorized to access this resource")
-     * @Rest\Delete(
-     *     "/acknowledgements/hosts/{hostId}",
-     *     condition="request.attributes.get('version.is_beta') == true")
+     *
      * @param int $hostId Host id for which we want to cancel the acknowledgement
      * @return View
      * @throws \Exception
@@ -189,9 +179,7 @@ class AcknowledgementController extends AbstractFOSRestController
      * Entry point to remove a service acknowledgement.
      *
      * @IsGranted("ROLE_API_REALTIME", message="You are not authorized to access this resource")
-     * @Rest\Delete(
-     *     "/acknowledgements/hosts/{hostId}/services/{serviceId}",
-     *     condition="request.attributes.get('version.is_beta') == true")
+     *
      * @param int $hostId Host id linked to service
      * @param int $serviceId Service Id for which we want to cancel the acknowledgement
      * @return View
@@ -214,9 +202,7 @@ class AcknowledgementController extends AbstractFOSRestController
      * Entry point to add a service acknowledgement.
      *
      * @IsGranted("ROLE_API_REALTIME", message="You are not authorized to access this resource")
-     * @Rest\Post(
-     *     "/acknowledgements/services",
-     *     condition="request.attributes.get('version.is_beta') == true")
+     *
      * @param Request $request
      * @param EntityValidator $entityValidator
      * @param SerializerInterface $serializer

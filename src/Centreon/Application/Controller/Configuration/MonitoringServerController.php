@@ -26,7 +26,6 @@ use Centreon\Domain\RequestParameters\Interfaces\RequestParametersInterface;
 use FOS\RestBundle\Context\Context;
 use FOS\RestBundle\Controller\AbstractFOSRestController;
 use FOS\RestBundle\View\View;
-use FOS\RestBundle\Controller\Annotations as Rest;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
 /**
@@ -54,10 +53,7 @@ class MonitoringServerController extends AbstractFOSRestController
      * Entry point to find the last hosts acknowledgements.
      *
      * @IsGranted("ROLE_API_CONFIGURATION", message="You are not authorized to access this resource")
-     * @Rest\Get(
-     *     "/configuration/monitoring-servers",
-     *     condition="request.attributes.get('version.is_beta') == true",
-     *     name="configuration.monitoring-servers.findServer")
+     *
      * @param RequestParametersInterface $requestParameters
      * @return View
      * @throws \Exception

@@ -29,7 +29,6 @@ use Centreon\Domain\RequestParameters\Interfaces\RequestParametersInterface;
 use Centreon\Domain\Service\JsonValidator\Interfaces\JsonValidatorInterface;
 use FOS\RestBundle\Context\Context;
 use FOS\RestBundle\Controller\AbstractFOSRestController;
-use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
 use JMS\Serializer\Exception\ValidationFailedException;
 use JMS\Serializer\SerializerInterface;
@@ -66,10 +65,7 @@ class DowntimeController extends AbstractFOSRestController
      *  Entry point to add a host downtime
      *
      * @IsGranted("ROLE_API_REALTIME", message="You are not authorized to access this resource")
-     * @Rest\Post(
-     *     "/monitoring/hosts/{hostId}/downtimes",
-     *     condition="request.attributes.get('version.is_beta') == true",
-     *     name="monitoring.downtime.addHostDowntime")
+     *
      * @param Request $request
      * @param JsonValidatorInterface $jsonValidator
      * @param SerializerInterface $serializer
@@ -136,10 +132,7 @@ class DowntimeController extends AbstractFOSRestController
      *  Entry point to add a service downtime
      *
      * @IsGranted("ROLE_API_REALTIME", message="You are not authorized to access this resource")
-     * @Rest\Post(
-     *     "/monitoring/hosts/{hostId}/services/{serviceId}/downtimes",
-     *     condition="request.attributes.get('version.is_beta') == true",
-     *     name="monitoring.downtime.addServiceDowntime")
+     *
      * @param Request $request
      * @param JsonValidatorInterface $jsonValidator
      * @param SerializerInterface $serializer
@@ -201,10 +194,7 @@ class DowntimeController extends AbstractFOSRestController
      * Entry point to find the last hosts downtimes.
      *
      * @IsGranted("ROLE_API_REALTIME", message="You are not authorized to access this resource")
-     * @Rest\Get(
-     *     "/monitoring/hosts/downtimes",
-     *     condition="request.attributes.get('version.is_beta') == true",
-     *     name="monitoring.downtime.findHostDowntimes")
+     *
      * @param RequestParametersInterface $requestParameters
      * @return View
      * @throws \Exception
@@ -233,10 +223,7 @@ class DowntimeController extends AbstractFOSRestController
      * Entry point to find the last services downtimes.
      *
      * @IsGranted("ROLE_API_REALTIME", message="You are not authorized to access this resource")
-     * @Rest\Get(
-     *     "/monitoring/services/downtimes",
-     *     condition="request.attributes.get('version.is_beta') == true",
-     *     name="monitoring.downtime.findServiceDowntimes")
+     *
      * @param RequestParametersInterface $requestParameters
      * @return View
      * @throws \Exception
@@ -265,11 +252,7 @@ class DowntimeController extends AbstractFOSRestController
      * Entry point to find the last downtimes linked to a service.
      *
      * @IsGranted("ROLE_API_REALTIME", message="You are not authorized to access this resource")
-     * @Rest\Get(
-     *     "/monitoring/hosts/{hostId}/services/{serviceId}/downtimes",
-     *     requirements={"hostId"="\d+"},
-     *     condition="request.attributes.get('version.is_beta') == true",
-     *     name="monitoring.downtime.findDowntimesByService")
+     *
      * @param RequestParametersInterface $requestParameters
      * @param int $hostId Host id linked to this service
      * @param int $serviceId Service id for which we want to find downtimes
@@ -309,11 +292,7 @@ class DowntimeController extends AbstractFOSRestController
      * Entry point to find one host downtime.
      *
      * @IsGranted("ROLE_API_REALTIME", message="You are not authorized to access this resource")
-     * @Rest\Get(
-     *     "/monitoring/downtimes/{downtimeId}",
-     *     requirements={"downtimeId"="\d+"},
-     *     condition="request.attributes.get('version.is_beta') == true",
-     *     name="monitoring.downtime.findOneDowntime")
+     *
      * @param int $downtimeId Downtime id to find
      * @return View
      * @throws \Exception
@@ -343,10 +322,7 @@ class DowntimeController extends AbstractFOSRestController
      * Entry point to find the last downtimes.
      *
      * @IsGranted("ROLE_API_REALTIME", message="You are not authorized to access this resource")
-     * @Rest\Get(
-     *     "/monitoring/downtimes",
-     *     condition="request.attributes.get('version.is_beta') == true",
-     *     name="monitoring.downtime.findDowntimes")
+     * 
      * @param RequestParametersInterface $requestParameters
      * @return View
      * @throws \Exception
@@ -375,11 +351,7 @@ class DowntimeController extends AbstractFOSRestController
      * Entry point to find the last downtimes linked to a host.
      *
      * @IsGranted("ROLE_API_REALTIME", message="You are not authorized to access this resource")
-     * @Rest\Get(
-     *     "/monitoring/hosts/{hostId}/downtimes",
-     *     requirements={"hostId"="\d+"},
-     *     condition="request.attributes.get('version.is_beta') == true",
-     *     name="monitoring.downtime.findDowntimesByHost")
+     *
      * @param RequestParametersInterface $requestParameters
      * @param int $hostId Host id for which we want to find downtimes
      * @return View
@@ -417,11 +389,7 @@ class DowntimeController extends AbstractFOSRestController
      * Entry point to cancel one downtime.
      *
      * @IsGranted("ROLE_API_REALTIME", message="You are not authorized to access this resource")
-     * @Rest\Delete(
-     *     "/monitoring/downtimes/{downtimeId}",
-     *     requirements={"downtimeId"="\d+"},
-     *     condition="request.attributes.get('version.is_beta') == true",
-     *     name="monitoring.downtime.cancelOneDowntime")
+     *
      * @param int $downtimeId Downtime id to cancel
      * @return View
      * @throws \Exception

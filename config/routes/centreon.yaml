@@ -1,4 +1,3 @@
 centreon:
-    resource: Centreon/Application/Controller/
-    type: annotation
+    resource: "./*/*.yaml"
     prefix: /centreon/api/{version}

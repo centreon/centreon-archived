@@ -53,7 +53,6 @@ class AuthenticationController extends AbstractFOSRestController
      * annotation Rest\View(populateDefaultVars=false), otherwise it's not
      * necessary).
      *
-     * @Rest\Post("/login")
      * @Rest\View(populateDefaultVars=false)
      *
      * @param Request $request
@@ -92,7 +91,6 @@ class AuthenticationController extends AbstractFOSRestController
     /**
      * Entry point used to delete an existing authentication token.
      *
-     * @Rest\Get("/logout")
      * @Rest\View(populateDefaultVars=false)
      *
      * @param Request $request

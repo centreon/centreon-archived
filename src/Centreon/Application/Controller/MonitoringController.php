@@ -27,7 +27,6 @@ use FOS\RestBundle\Context\Context;
 use FOS\RestBundle\Controller\AbstractFOSRestController;
 use FOS\RestBundle\View\View;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
-use FOS\RestBundle\Controller\Annotations as Rest;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
@@ -52,11 +51,6 @@ class MonitoringController extends AbstractFOSRestController
 
     /**
      * Entry point to get a real time service.
-     *
-     * @IsGranted("ROLE_API_REALTIME", message="You are not authorized to access this resource")
-     * @Rest\Get(
-     *     "/monitoring/hosts/{hostId}/services/{serviceId}",
-     *     condition="request.attributes.get('version.is_beta') == true")
      *
      * @param int $serviceId Service id
      * @param int $hostId Host id
@@ -84,9 +78,6 @@ class MonitoringController extends AbstractFOSRestController
      * Entry point to get all real time services.
      *
      * @IsGranted("ROLE_API_REALTIME", message="You are not authorized to access this resource")
-     * @Rest\Get(
-     *     "/monitoring/services",
-     *     condition="request.attributes.get('version.is_beta') == true")
      *
      * @param RequestParametersInterface $requestParameters Request parameters used to filter the request
      * @return View
@@ -114,9 +105,6 @@ class MonitoringController extends AbstractFOSRestController
      * Entry point to get all real time services based on a service group
      *
      * @IsGranted("ROLE_API_REALTIME", message="You are not authorized to access this resource")
-     * @Rest\Get(
-     *     "/monitoring/servicegroups",
-     *     condition="request.attributes.get('version.is_beta') == true")
      *
      * @param RequestParametersInterface $requestParameters Request parameters used to filter the request
      * @return View
@@ -160,9 +148,6 @@ class MonitoringController extends AbstractFOSRestController
      * Entry point to get all real time services based on a host group.
      *
      * @IsGranted("ROLE_API_REALTIME", message="You are not authorized to access this resource")
-     * @Rest\Get(
-     *     "/monitoring/hostgroups",
-     *     condition="request.attributes.get('version.is_beta') == true")
      *
      * @param RequestParametersInterface $requestParameters Request parameters used to filter the request
      * @return View
@@ -206,9 +191,6 @@ class MonitoringController extends AbstractFOSRestController
      * Entry point to get all real time hosts.
      *
      * @IsGranted("ROLE_API_REALTIME", message="You are not authorized to access this resource")
-     * @Rest\Get(
-     *     "/monitoring/hosts",
-     *     condition="request.attributes.get('version.is_beta') == true")
      *
      * @param RequestParametersInterface $requestParameters Request parameters used to filter the request
      * @return View
@@ -241,10 +223,6 @@ class MonitoringController extends AbstractFOSRestController
      * Entry point to get a real time host.
      *
      * @IsGranted("ROLE_API_REALTIME", message="You are not authorized to access this resource")
-     * @Rest\Get(
-     *     "/monitoring/hosts/{hostId}",
-     *     requirements={"hostId"="\d+"},
-     *     condition="request.attributes.get('version.is_beta') == true")
      *
      * @param int $hostId Host id
      * @return View
@@ -271,9 +249,6 @@ class MonitoringController extends AbstractFOSRestController
      * Entry point to get all real time services based on a host.
      *
      * @IsGranted("ROLE_API_REALTIME", message="You are not authorized to access this resource")
-     * @Rest\Get(
-     *      "/monitoring/hosts/{hostId}/services",
-     *      condition="request.attributes.get('version.is_beta') == true")
      *
      * @param int $hostId Host id for which we want to get all services
      * @param RequestParametersInterface $requestParameters Request parameters used to filter the request

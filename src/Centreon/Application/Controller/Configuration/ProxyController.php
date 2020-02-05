@@ -26,7 +26,6 @@ use Centreon\Domain\Proxy\Interfaces\ProxyServiceInterface;
 use Centreon\Domain\Proxy\Proxy;
 use FOS\RestBundle\Controller\AbstractFOSRestController;
 use FOS\RestBundle\View\View;
-use FOS\RestBundle\Controller\Annotations as Rest;
 use JMS\Serializer\Exception\ValidationFailedException;
 use JMS\Serializer\SerializerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -58,10 +57,7 @@ class ProxyController extends AbstractFOSRestController
 
     /**
      * @IsGranted("ROLE_API_CONFIGURATION", message="You are not authorized to access this resource")
-     * @Rest\Get(
-     *     "/configuration/proxy",
-     *     condition="request.attributes.get('version.is_beta') == true",
-     *     name="configuration.proxy.getProxy")
+     *
      * @return View
      * @throws \Exception
      */
@@ -75,10 +71,7 @@ class ProxyController extends AbstractFOSRestController
 
     /**
      * @IsGranted("ROLE_API_CONFIGURATION", message="You are not authorized to access this resource")
-     * @Rest\Put(
-     *     "/configuration/proxy",
-     *     condition="request.attributes.get('version.is_beta') == true",
-     *     name="configuration.proxy.updateProxy")
+     *
      * @param Request $request
      * @param EntityValidator $entityValidator
      * @param SerializerInterface $serializer
