@@ -319,7 +319,7 @@ class Host
 
     /**
      * @Serializer\Groups({"host_main", "host_full"})
-     * @var int
+     * @var int|null
      */
     private $criticality;
 
@@ -1178,7 +1178,7 @@ class Host
     }
 
     /**
-     * @return int
+     * @return int|null
      */
     public function getCriticality(): ?int
     {
@@ -1186,7 +1186,7 @@ class Host
     }
 
     /**
-     * @param int $criticality
+     * @param int|null $criticality
      * @return Host
      */
     public function setCriticality(?int $criticality): Host
