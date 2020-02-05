@@ -833,7 +833,7 @@ class Service
     }
 
     /**
-     * @return int
+     * @return int|null
      */
     public function getCriticality(): ?int
     {
@@ -841,7 +841,7 @@ class Service
     }
 
     /**
-     * @param int $criticality
+     * @param int|null $criticality
      * @return Service
      */
     public function setCriticality(?int $criticality): Service
