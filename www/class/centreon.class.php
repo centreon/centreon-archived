@@ -50,6 +50,7 @@ class Centreon
 
     public $Nagioscfg;
     public $optGen;
+    public $informations;
     public $redirectTo;
     public $modules;
     public $hooks;
@@ -125,6 +126,11 @@ class Centreon
          * Get general options
          */
         $this->initOptGen();
+
+        /*
+         * Get general informations
+         */
+        $this->initInformations();
 
         /*
          * Grab Modules
@@ -273,6 +279,20 @@ class Centreon
         }
         $DBRESULT = null;
         unset($opt);
+    }
+
+    /**
+     * Store centreon informations in session
+     *
+     * @return void
+     */
+    public function initInformations(): void
+    {
+        $this->informations = [];
+        $result = CentreonDBInstance::getConfInstance()->query("SELECT * FROM `informations`");
+        while ($row = $result->fetch()) {
+            $this->informations[$row["key"]] = $row["value"];
+        }
     }
 
     /**

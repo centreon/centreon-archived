@@ -66,6 +66,8 @@ Exécutez la commande : ::
     # yum install centreon
     # systemctl restart mysql
 
+.. include:: common/sql_strict_mode.rst
+
 Installer un serveur Centreon central sans base de données
 ----------------------------------------------------------
 
@@ -75,8 +77,8 @@ Exécutez la commande : ::
 
 .. _dedicateddbms:
 
-Installer MySQL sur un serveur dédié
-------------------------------------
+Installer le SGBD sur un serveur dédié
+--------------------------------------
 
 Exécutez les commandes : ::
 
@@ -87,12 +89,6 @@ Exécutez les commandes : ::
 .. note::
     le paquet **centreon-database** installe un serveur de base de données optimisé pour l'utilisation avec Centreon.
 
-.. note::
-    Centreon est **compatible** avec le mode STRICT de SQL. Pour plus d'information sur le
-    sujet vous pouvez consulter la `documentation officielle
-    <https://mariadb.com/kb/en/library/sql-mode/#strict-mode>`_ de MariaDB. Ou la `documentation officielle
-    <https://dev.mysql.com/doc/refman/8.0/en/sql-mode.html>`_ de MySQL
-
 Puis créer un utilisateur **root** distant : ::
 
     mysql> CREATE USER 'root'@'IP' IDENTIFIED BY 'PASSWORD';
@@ -102,6 +98,13 @@ Puis créer un utilisateur **root** distant : ::
 .. note::
     Remplacez **IP** par l'adresse IP publique du serveur Centreon et **PASSWORD**
     par le mot de passe de l'utilisateur **root**.
+
+.. warning::
+    MySQL >= 8 requiert un mot de passe fort. Utilisez des lettres minuscules et majuscules ainsi que des caractères
+    numériques et spéciaux; ou désinstallez le plugin **validate_password** de MySQL en utilisant la commande
+    suivantes : ::
+        
+        mysql> uninstall plugin validate_password;
 
 .. warning::
     Si PHP est utilisé dans une version 7.1 antérieure à la version 7.1.16, ou PHP 7.2 antérieure à 7.2.4, le
@@ -118,6 +121,8 @@ Puis créer un utilisateur **root** distant : ::
         mysql> ALTER USER 'root'@'IP' IDENTIFIED WITH mysql_native_password BY 'PASSWORD';
         mysql> FLUSH PRIVILEGES;
 
+.. include:: common/sql_strict_mode.rst
+
 Une fois l'installation terminée vous pouvez supprimer ce compte via la commande : ::
         
     mysql> DROP USER 'root'@'IP';
@@ -128,14 +133,22 @@ Système de gestion de base de données
 La base de données MySQL doit être disponible pour pouvoir continuer l'installation
 (localement ou non). Pour information nous recommandons MariaDB.
 
-Pour les systèmes CentOS / RHEL en version 7, il est nécessaire de modifier
-la limitation **LimitNOFILE**. Changer cette option dans /etc/my.cnf NE
-fonctionnera PAS: ::
+Pour les systèmes CentOS / RHEL en version 7, il est nécessaire de modifier la limitation **LimitNOFILE**. Changer
+cette option dans /etc/my.cnf *ne fonctionnera pas*.
+
+**Pour MariaDB** : ::
 
     # mkdir -p  /etc/systemd/system/mariadb.service.d/
     # echo -ne "[Service]\nLimitNOFILE=32000\n" | tee /etc/systemd/system/mariadb.service.d/limits.conf
     # systemctl daemon-reload
     # systemctl restart mysql
+
+**Pour MySQL** : ::
+
+    # mkdir -p  /etc/systemd/system/mysqld.service.d
+    # echo -ne "[Service]\nLimitNOFILE=32000\n" | tee /etc/systemd/system/mysqld.service.d/limits.conf
+    # systemctl daemon-reload
+    # systemctl restart mysqld
 
 Fuseau horaire PHP
 ------------------
@@ -180,11 +193,13 @@ Lancer les commandes suivantes sur le serveur Central : ::
     # systemctl enable centreon
 
 .. note::
-    Si la base de données MySQL est sur un serveur dédié, lancer la commande
+    Si la base de données MariaDB est sur un serveur dédié, lancer la commande
     d'activation mysql sur ce dernier : ::
-    
+        
         # systemctl enable mysql
-    ou
+    
+    ou pour Mysql : ::
+        
         # systemctl enable mysqld
 
 Terminer l'installation
@@ -196,6 +211,6 @@ doivent être exécutées : ::
     # systemctl start rh-php72-php-fpm
     # systemctl start httpd24-httpd
     # systemctl start mysqld
-    # systemctl start cbd
+    # systemctl start centreon
     # systemctl start snmpd
     # systemctl start snmptrapd

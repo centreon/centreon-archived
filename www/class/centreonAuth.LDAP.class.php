@@ -202,7 +202,6 @@ class CentreonAuthLDAP
 
         if ($this->ldap->rebind()) {
             $userDn = $this->ldap->findUserDn($contactAlias);
-            $userDn = $this->pearDB->escape($userDn);
             if (false === $userDn) {
                 $this->CentreonLog->insertLog(3, "LDAP AUTH - Error : No DN for user " . $contactAlias);
                 return false;
@@ -219,7 +218,6 @@ class CentreonAuthLDAP
             $userDisplay = str_replace(array(' ', ','), '_', $userDisplay);
             // Delete parenthesis
             $userDisplay = str_replace(array('(', ')'), '', $userDisplay);
-            $userDisplay = $this->pearDB->escape($userDisplay);
 
             //getting user's email
             $userEmail = $this->contactInfos['contact_email'];

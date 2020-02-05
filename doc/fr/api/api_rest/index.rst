@@ -688,11 +688,15 @@ Parameter                            Description
 
 3d_coords                            3D coordinates (used by statusmap)
 
+geo_coords                           Geo coordinates (used by Centreon MAP)
+
 action_url                           Action URL
 
 activate                             Whether or not host is enabled
 
 active_checks_enabled                Whether or not active checks are enabled
+
+acknowledgement_timeout              Acknowledgement timeout (in seconds)
 
 address                              Host IP Address
 
@@ -733,8 +737,6 @@ icon_image_alt                       Icon image text
 max_check_attempts                   Maximum number of attempt before a HARD state is declared
 
 name                                 Host name
-
-normal_check_interval                value in minutes
 
 notes                                Notes
 
@@ -819,6 +821,8 @@ Parameter                            Description
 
 3d_coords                            3D coordinates (used by statusmap)
 
+geo_coords                           Geo coordinates (used by Centreon MAP)
+
 action_url                           Action URL
 
 activate                             Whether or not host is enabled
@@ -864,8 +868,6 @@ icon_image_alt                       Icon image text
 max_check_attempts                   Maximum number of attempt before a HARD state is declared
 
 name                                 Host name
-
-normal_check_interval                value in minutes
 
 notes                                Notes
 

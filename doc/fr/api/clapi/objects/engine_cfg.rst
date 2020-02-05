@@ -86,12 +86,12 @@ nagios_name	      Name
 
 instance	 Instance that is linked to engine.cfg
 
-broker_module	 example: [...] -v "Engine CFG 1;broker_module;/usr/lib64/nagios/cbmod.so /etc/centreon-broker/central-module.xml", 
+broker_module	 example: [...] -v "Engine CFG 1;broker_module;/usr/lib64/nagios/cbmod.so /etc/centreon-broker/central-module.json",
                  you can use a | delimiter for defining multiple broker modules
 
 nagios_activate	 *1* if activated, *0* otherwise
 
-*	         Centreon CLAPI handles pretty much all the options available in a Engine configuration file. 
+*	         Centreon CLAPI handles pretty much all the options available in a Engine configuration file.
                  Because the list is quite long, it is best to refer to the official documentation of Engine
 ================ =============================================================================================================================
 
@@ -113,7 +113,7 @@ Order	Column description
 ======= =================================
 
 To add multiple modules in one line, it will put the separator "|" between the name of the modules
-  [root@centreon ~]# ./centreon -u admin -p centreon -o ENGINECFG -a addbrokermodule -v "Engine cfg for poller NY;/usr/lib64/centreon-engine/externalcmd.so|/etc/centreon-broker/central-module.xml"
+  [root@centreon ~]# ./centreon -u admin -p centreon -o ENGINECFG -a addbrokermodule -v "Engine cfg for poller NY;/usr/lib64/centreon-engine/externalcmd.so|/etc/centreon-broker/central-module.json"
 
 Delbrokermodule
 ---------------
@@ -133,4 +133,4 @@ Order	Column description
 ======= =================================
 
 To delete multiple modules in one line, it will put the separator "|" between the name of the modules
-  [root@centreon ~]# ./centreon -u admin -p centreon -o ENGINECFG -a delbrokermodule -v "Engine cfg for poller NY;/usr/lib64/centreon-engine/externalcmd.so|/etc/centreon-broker/central-module.xml"
+  [root@centreon ~]# ./centreon -u admin -p centreon -o ENGINECFG -a delbrokermodule -v "Engine cfg for poller NY;/usr/lib64/centreon-engine/externalcmd.so|/etc/centreon-broker/central-module.json"

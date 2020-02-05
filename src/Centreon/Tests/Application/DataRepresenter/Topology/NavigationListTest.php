@@ -156,6 +156,10 @@ class NavigationListTest extends TestCase
                 'icon' => 'ico04',
             ],
         ]);
-        $result = $dataRepresenter->jsonSerialize();
+
+        $this->assertStringEqualsFile(
+            __DIR__ . '/../../../Resource/Fixture/Topology/navigation-list-01.json',
+            json_encode($dataRepresenter->jsonSerialize())
+        );
     }
 }

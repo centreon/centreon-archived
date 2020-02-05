@@ -45,7 +45,7 @@ Once the installation is complete, you must integrate this remote poller into th
 
    /usr/lib64/centreon-engine/externalcmd.so
 
-   /usr/lib64/nagios/cbmod.so /etc/centreon-broker/poller-module.xml
+   /usr/lib64/nagios/cbmod.so /etc/centreon-broker/poller-module.json
 
 .. image:: /images/user/configuration/10advanced_configuration/07addpoller_neb.png
    :align: center
@@ -62,7 +62,7 @@ You must generate a configuration file for Centreon Broker:
 
   * Select the **Requester**.
   * Set **Name** of the configuration.
-  * Set **Config file name** that must be exactly the same as the one defined in Centreon Engine configuration (for example, **poller-module.xml**).
+  * Set **Config file name** that must be exactly the same as the one defined in Centreon Engine configuration (for example, **poller-module.json**).
   * Check the value **No** for the **Link to cbd service** option.
 
 .. image:: /images/user/configuration/10advanced_configuration/07_Addbroker.png

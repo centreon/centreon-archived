@@ -34,7 +34,7 @@
  *
  */
 
-namespace Centreon\Tests\Application\DataRepresenter;
+namespace Centreon\Tests\Application\Validation\Validator;
 
 use PHPUnit\Framework\TestCase;
 use Centreon\Application\Validation\Validator\UniqueEntityValidator;

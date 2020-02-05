@@ -20,7 +20,8 @@ Please include a short resume of the changes and what is the purpose of PR. Any 
 - [ ] 2.8.x
 - [ ] 18.10.x
 - [ ] 19.04.x
-- [ ] 19.10.x (master)
+- [ ] 19.10.x
+- [ ] 20.04.x (master)
 
 <h2> How this pull request can be tested ? </h2>
 
@@ -42,4 +43,4 @@ Any **relevant details** of the configuration to perform the test should be adde
 
 - [ ] I have made sure that the **unit tests** related to the story are successful.
 - [ ] I have made sure that **unit tests cover 80%** of the code written for the story.
-- [ ] I have made sure that **acceptance tests** related to the story are successful (**local and CI**)
+- [ ] I have made sure that **acceptance tests** related to the story are successful (**local and CI**)

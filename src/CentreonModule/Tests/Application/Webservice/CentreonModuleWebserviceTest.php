@@ -44,9 +44,18 @@ use CentreonModule\Infrastructure\Source\ModuleSource;
 use CentreonModule\Infrastructure\Entity\Module;
 use CentreonModule\Tests\Infrastructure\Source\ModuleSourceTest;
 use CentreonModule\ServiceProvider;
+use Centreon\Tests\Resource\Traits;
 
 class CentreonModuleWebserviceTest extends TestCase
 {
+    use Traits\WebServiceAuthorizeRestApiTrait,
+        Traits\WebServiceExecuteTestTrait;
+
+    const METHOD_GET_LIST = 'getList';
+    const METHOD_GET_DETAILS = 'getDetails';
+    const METHOD_POST_INSTALL = 'postInstall';
+    const METHOD_POST_UPDATE = 'postUpdate';
+    const METHOD_DELETE_REMOVE = 'deleteRemove';
 
     protected function setUp()
     {
@@ -188,169 +197,119 @@ class CentreonModuleWebserviceTest extends TestCase
 
         // load dependencies
         $this->webservice->setDi($container);
+        $this->fixturePath = __DIR__ . '/../../Resource/Fixture/';
     }
 
     public function testGetList()
     {
-        $method = 'getList';
-        $filters = [];
-        $this->webservice
-            ->method('query')
-            ->will($this->returnCallback(function () use (&$filters) {
-                    return $filters;
-            }))
-        ;
-
         // without applied filters
-        $this->executeTest($method, 'response-list-1.json');
+        $this->mockQuery();
+        $this->executeTest(static::METHOD_GET_LIST, 'response-list-1.json');
+    }
 
+    public function testGetList2()
+    {
         // with search, installed, updated, and selected type filter
-        $filters['search'] = 'test';
-        $filters['installed'] = 'true';
-        $filters['updated'] = 'true';
-        $filters['types'] = [ModuleSource::TYPE];
-        $this->executeTest($method, 'response-list-2.json');
+        $this->mockQuery([
+            'search' => 'test',
+            'installed' => 'true',
+            'updated' => 'true',
+            'types' => ModuleSource::TYPE,
+        ]);
+        $this->executeTest(static::METHOD_GET_LIST, 'response-list-2.json');
+    }
 
+    public function testGetList3()
+    {
         // with not installed, not updated and not selected type filter
-        unset($filters['search']);
-        $filters['installed'] = 'false';
-        $filters['updated'] = 'false';
-        $filters['types'] = [];
-        $this->executeTest($method, 'response-list-3.json');
+        $this->mockQuery([
+            'installed' => 'false',
+            'updated' => 'false',
+            'types' => [],
+        ]);
+        $this->executeTest(static::METHOD_GET_LIST, 'response-list-3.json');
+    }
 
+    public function testGetList4()
+    {
         // with wrong values of installed and updated filters
-        unset($filters['types']);
-        $filters['installed'] = 'ture';
-        $filters['updated'] = 'folse';
-        $this->executeTest($method, 'response-list-4.json');
+        $this->mockQuery([
+            'installed' => 'ture',
+            'updated' => 'folse',
+        ]);
+        $this->executeTest(static::METHOD_GET_LIST, 'response-list-4.json');
     }
 
     public function testGetDetails()
     {
-        $method = 'getDetails';
-        $filters = [];
-        $this->webservice
-            ->method('query')
-            ->will($this->returnCallback(function () use (&$filters) {
-                    return $filters;
-            }))
-        ;
-
         // find module by id and type
-        $filters['id'] = ModuleSourceTest::$moduleName;
-        $filters['type'] = ModuleSource::TYPE;
-        $this->executeTest($method, 'response-details-1.json');
+        $this->mockQuery([
+            'id' => ModuleSourceTest::$moduleName,
+            'type' => ModuleSource::TYPE,
+        ]);
+        $this->executeTest(static::METHOD_GET_DETAILS, 'response-details-1.json');
+    }
 
+    public function testGetDetails2()
+    {
         // try to find missing module applied filters
-        $filters['id'] = ModuleSourceTest::$moduleNameMissing;
-        $filters['type'] = ModuleSource::TYPE;
-        $this->executeTest($method, 'response-details-2.json');
+        $this->mockQuery([
+            'id' => ModuleSourceTest::$moduleNameMissing,
+            'type' => ModuleSource::TYPE,
+        ]);
+        $this->executeTest(static::METHOD_GET_DETAILS, 'response-details-2.json');
     }
 
     public function testPostInstall()
     {
-        $method = 'postInstall';
-        $filters = [];
-        $this->webservice
-            ->method('query')
-            ->will($this->returnCallback(function () use (&$filters) {
-                    return $filters;
-            }))
-        ;
+        $this->mockQuery();
+        $this->executeTest(static::METHOD_POST_INSTALL, 'response-install-1.json');
+    }
 
-        $this->executeTest($method, 'response-install-1.json');
-
+    public function testPostInstall2()
+    {
         // find module by id and type
-        $filters['id'] = ModuleSourceTest::$moduleName;
-        $filters['type'] = ModuleSource::TYPE;
-        $this->executeTest($method, 'response-install-2.json');
+        $this->mockQuery([
+            'id' => ModuleSourceTest::$moduleName,
+            'type' => ModuleSource::TYPE,
+        ]);
+        $this->executeTest(static::METHOD_POST_INSTALL, 'response-install-2.json');
     }
 
     public function testPostUpdate()
     {
-        $method = 'postUpdate';
-        $filters = [];
-        $this->webservice
-            ->method('query')
-            ->will($this->returnCallback(function () use (&$filters) {
-                    return $filters;
-            }))
-        ;
+        $this->mockQuery();
+        $this->executeTest(static::METHOD_POST_UPDATE, 'response-update-1.json');
+    }
 
-        $this->executeTest($method, 'response-update-1.json');
-
+    public function testPostUpdate2()
+    {
         // find module by id and type
-        $filters['id'] = ModuleSourceTest::$moduleName;
-        $filters['type'] = ModuleSource::TYPE;
-        $this->executeTest($method, 'response-update-2.json');
+        $this->mockQuery([
+            'id' => ModuleSourceTest::$moduleName,
+            'type' => ModuleSource::TYPE,
+        ]);
+        $this->executeTest(static::METHOD_POST_UPDATE, 'response-update-2.json');
     }
 
     public function testPostRemove()
     {
-        $method = 'deleteRemove';
-        $filters = [];
-        $this->webservice
-            ->method('query')
-            ->will($this->returnCallback(function () use (&$filters) {
-                    return $filters;
-            }))
-        ;
-
-        $this->executeTest($method, 'response-remove-1.json');
-
-        // find module by id and type
-        $filters['id'] = ModuleSourceTest::$moduleName;
-        $filters['type'] = ModuleSource::TYPE;
-        $this->executeTest($method, 'response-remove-2.json');
+        $this->mockQuery();
+        $this->executeTest(static::METHOD_DELETE_REMOVE, 'response-remove-1.json');
     }
 
-    public function testAuthorize()
+    public function testPostRemove2()
     {
-        (function () {
-            $result = $this->webservice->authorize(null, null, true);
-            $this->assertTrue($result);
-        })();
-
-        (function () {
-            $result = $this->webservice->authorize(null, null);
-            $this->assertFalse($result);
-        })();
-
-        (function () {
-            $user = $this->createMock(\CentreonUser::class);
-            $user
-                ->method('hasAccessRestApiConfiguration')
-                ->will($this->returnCallback(function () {
-                        return true;
-                }))
-            ;
-
-            $result = $this->webservice->authorize(null, $user);
-            $this->assertTrue($result);
-        })();
+        // find module by id and type
+        $this->mockQuery([
+            'id' => ModuleSourceTest::$moduleName,
+            'type' => ModuleSource::TYPE,
+        ]);
+        $this->executeTest(static::METHOD_DELETE_REMOVE, 'response-remove-2.json');
     }
 
     public function testGetName()
     {
         $this->assertEquals('centreon_module', CentreonModuleWebservice::getName());
-    }
-
-    /**
-     * Compare response with control value
-     *
-     * @param string $method
-     * @param string $controlJsonFile
-     */
-    protected function executeTest($method, $controlJsonFile)
-    {
-        // get controlled response from file
-        $path = __DIR__ . '/../../Resource/Fixture/';
-        $controlJson = file_get_contents($path . $controlJsonFile);
-
-        $result = $this->webservice->{$method}();
-        $this->assertInstanceOf(\JsonSerializable::class, $result);
-
-        $json = json_encode($result);
-        $this->assertEquals($controlJson, $json);
     }
 }

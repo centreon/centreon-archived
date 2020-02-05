@@ -1,7 +1,7 @@
 <?php
 /*
- * Copyright 2005-2015 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2019 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -37,10 +37,6 @@ require_once dirname(__FILE__) . '/object.class.php';
 
 abstract class AbstractService extends AbstractObject
 {
-    const VERTICAL_NOTIFICATION = 1;
-    // CLOSE_NOTIFICATION = 2
-    const CUMULATIVE_NOTIFICATION = 3;
-
     // no flap_detection_options attribute
     protected $attributes_select = '
         service_id,
@@ -142,7 +138,6 @@ abstract class AbstractService extends AbstractObject
     protected $stmt_macro = null;
     protected $stmt_stpl = null;
     protected $stmt_contact = null;
-    protected $notificationOption = null;
     protected $stmt_service = null;
 
     protected function getImages(&$service)
@@ -173,294 +168,25 @@ abstract class AbstractService extends AbstractObject
     }
 
     /**
-     * Get contacts list for the configuration file by service
-     *
-     * @param array $service
+     * @param array $service (passing by Reference)
      */
     protected function getContacts(array &$service): void
     {
-        // check inheritance host option
-        if (isset($service['service_use_only_contacts_from_host'])
-            && $service['service_use_only_contacts_from_host'] == 1
-        ) {
-            $service['contacts_cache'] = array();
-            $service['contacts'] = "";
-        } else {
-            $contactResult = '';
-            $serviceListing = $this->listServicesWithContacts($service);
-            //check if we have Service link to a contact.
-            if (!empty($serviceListing)) {
-                $contactResult = implode(',', $this->getInheritanceContact(array_unique($serviceListing)));
-            }
-            $service['contacts'] = $contactResult;
+        if (!isset($service['contacts_cache'])) {
+            $contact = Contact::getInstance($this->dependencyInjector);
+            $service['contacts_cache'] = $contact->getContactForService($service['service_id']);
         }
     }
 
     /**
-     * Get the tree of services with contact according to the inheritance notification option
-     *
-     * @param array $service
-     * @return array
+      * @param array $service (passing by Reference)
      */
-    public function listServicesWithContacts(array $service): array
+    protected function getContactGroups(array &$service): void
     {
-        //check notification mode
-        if (is_null($this->notificationOption)) {
-            $this->notificationOption = (int)$this->getInheritanceMode();
+        if (!isset($service['contact_groups_cache'])) {
+            $cg = Contactgroup::getInstance($this->dependencyInjector);
+            $service['contact_groups_cache'] = $cg->getCgForService($service['service_id']);
         }
-        $serviceListing = array();
-        //check cumulative option
-        if (self::CUMULATIVE_NOTIFICATION === $this->notificationOption) {
-            // get all service / template inheritance
-            $this->getCumulativeInheritance((int)$service['service_id'], $serviceListing);
-        } else {
-            // get the first service (template) link to a contact
-            // use for close inheritance mode too
-            $this->getContactCloseInheritance((int)$service['service_id'], $serviceListing);
-            //check vertical inheritance
-            if (!empty($serviceListing) && (self::VERTICAL_NOTIFICATION === $this->notificationOption)) {
-                //use the first template found to start
-                $startService = (int)$serviceListing[0];
-                $serviceListing = array();
-                $this->getContactVerticalInheritance($startService, $serviceListing);
-            }
-        }
-        return $serviceListing;
-    }
-
-    /**
-     * Get the tree of host for vertical notification option on contact
-     *
-     * @param $serviceId
-     * @param array $serviceListing
-     */
-    protected function getContactVerticalInheritance(int $serviceId, &$serviceListing = array()): void
-    {
-        $stmt = $this->backend_instance->db->query(
-            'SELECT service_template_model_stm_id, contact_additive_inheritance, service_notifications_enabled
-            FROM service
-            WHERE `service_activate` = "1" 
-            AND `service_id` = ' . $serviceId
-        );
-        $serviceAdd = $stmt->fetch();
-        if ($serviceAdd['service_notifications_enabled'] != '0') {
-            $serviceListing[] = $serviceId;
-        }
-        if (isset($serviceAdd['service_template_model_stm_id'])
-            && (int)$serviceAdd['contact_additive_inheritance'] === 1
-        ) {
-            $this->getContactVerticalInheritance((int)$serviceAdd['service_template_model_stm_id'], $serviceListing);
-        }
-    }
-
-    /**
-     * Get the tree of services for cumulative notification option
-     *
-     * @param $serviceId
-     * @param array $serviceListing
-     */
-    protected function getCumulativeInheritance(int $serviceId, &$serviceListing = array()): void
-    {
-        $stmt = $this->backend_instance->db->query(
-            'SELECT service_template_model_stm_id, service_notifications_enabled FROM service
-            WHERE `service_activate` = "1" 
-            AND `service_id` = ' . $serviceId
-        );
-        $row = $stmt->fetch();
-
-        if ($row['service_notifications_enabled'] != 0) {
-            $serviceListing[] = $serviceId;
-        }
-        if ($row['service_template_model_stm_id']) {
-            $this->getCumulativeInheritance((int)$row['service_template_model_stm_id'], $serviceListing);
-        }
-    }
-
-    /**
-     * Get the first service who have a valid notifiable contact
-     *
-     * @param $serviceId
-     * @param array $serviceListing
-     */
-    protected function getContactCloseInheritance(int $serviceId, &$serviceListing = array()): void
-    {
-        $stmt = $this->backend_instance->db->query(
-            'SELECT GROUP_CONCAT(contact.`contact_id`) as contact_id, 
- 	            (SELECT service_template_model_stm_id FROM service
-	            WHERE service.`service_activate` = "1"
-                AND service.`service_id` = ' . $serviceId . ' ) as `service_template_model_stm_id` 
-            FROM service, contact, contact_service_relation 
-            WHERE contact_service_relation.`service_service_id` = service.`service_id`
-            AND contact.`contact_id` = contact_service_relation.`contact_id`
-            AND contact.`contact_activate` = "1"
-            AND contact.`contact_enable_notifications` != "0"
-            AND service.`service_notifications_enabled` != "0"
-            AND service.`service_id` = ' . $serviceId
-        );
-        if (($row = $stmt->fetch()) && empty($serviceListing)) {
-            if ($row['contact_id']) {
-                $serviceListing[] = $serviceId;
-            } elseif (!empty($row['service_template_model_stm_id'])) {
-                $this->getContactCloseInheritance((int)$row['service_template_model_stm_id'], $serviceListing);
-            }
-        }
-    }
-
-    /**
-     * Get enable and notifiable contact id/name of a service list
-     *
-     * @param array $service List of service id
-     * @return array
-     */
-    protected function getInheritanceContact(array $service): array
-    {
-        $contact = Contact::getInstance($this->dependencyInjector);
-        $contacts = array();
-        $stmt = $this->backend_instance->db->query(
-            'SELECT c.contact_id , c.contact_name FROM contact c, contact_service_relation cs
-            WHERE cs.service_service_id IN (' . implode(',', $service) . ') AND cs.contact_id = c.contact_id 
-            AND contact_enable_notifications != "0" 
-            AND contact_activate = "1"'
-        );
-        while (($row = $stmt->fetch())) {
-            $contacts[$row['contact_id']] = $contact->generateFromContactId($row['contact_id']);
-        }
-        return $contacts;
-    }
-
-    /**
-     * Get contact groups list for the configuration file by service
-     *
-     * @param array $service
-     */
-    protected function getContactGroups(array &$service):void
-    {
-        // check inheritance host option
-        if (isset($service['service_use_only_contacts_from_host'])
-            && $service['service_use_only_contacts_from_host'] == 1
-        ) {
-            $service['contact_groups_cache'] = array();
-            $service['contact_groups'] = "";
-        } else {
-            $cgResult = '';
-            $serviceListing = $this->listServicesWithContactGroups($service);
-            //check if we have Service link to a contact.
-            if (!empty($serviceListing)) {
-                $cgResult = implode(',', $this->getInheritanceContactGroups(array_unique($serviceListing)));
-            }
-            $service['contact_groups'] = $cgResult;
-        }
-    }
-
-    /**
-     * Get the tree of services with contact group according to the inheritance notification option
-     *
-     * @param array $service
-     * @return array
-     */
-    public function listServicesWithContactGroups(array $service): array
-    {
-        //check notification mode
-        if (is_null($this->notificationOption)) {
-            $this->notificationOption = (int)$this->getInheritanceMode();
-        }
-        //check cumulative option
-        $serviceListing = array();
-        if (self::CUMULATIVE_NOTIFICATION === $this->notificationOption) {
-            // get all service / template inheritance
-            $this->getCumulativeInheritance((int)$service['service_id'], $serviceListing);
-        } else {
-            // get the first service (template) link to a contact
-            // use for close inheritance mode too
-            $this->getContactGroupsCloseInheritance((int)$service['service_id'], $serviceListing);
-            //check vertical inheritance
-            if (!empty($serviceListing) && (self::VERTICAL_NOTIFICATION === $this->notificationOption)) {
-                //use the first template found to start
-                $startService = (int)$serviceListing[0];
-                $serviceListing = array();
-                $this->getContactGroupsVerticalInheritance($startService, $serviceListing);
-            }
-        }
-        return $serviceListing;
-    }
-
-    /**
-     * Get the tree of services for vertical notification option on contact group
-     *
-     * @param $serviceId
-     * @param array $serviceListing
-     */
-    protected function getContactGroupsVerticalInheritance(int $serviceId, &$serviceListing = array()): void
-    {
-        $stmt = $this->backend_instance->db->query(
-            'SELECT service_template_model_stm_id, cg_additive_inheritance, service_notifications_enabled
-            FROM service
-            WHERE `service_activate` = "1"
-            AND `service_id` = ' . $serviceId
-        );
-        $serviceAdd = $stmt->fetch();
-        if ($serviceAdd['service_notifications_enabled'] != 0) {
-            $serviceListing[] = $serviceId;
-        }
-        if (isset($serviceAdd['service_template_model_stm_id'])
-            && (int)$serviceAdd['cg_additive_inheritance'] === 1
-        ) {
-            $this->getContactGroupsVerticalInheritance(
-                (int)$serviceAdd['service_template_model_stm_id'],
-                $serviceListing
-            );
-        }
-    }
-
-    /**
-     * Get the first service who have a valid notifiable contact group
-     *
-     * @param $serviceId
-     * @param array $serviceListing
-     */
-    protected function getContactGroupsCloseInheritance(int $serviceId, &$serviceListing = array()): void
-    {
-        $stmt = $this->backend_instance->db->query(
-            'SELECT GROUP_CONCAT(contactgroup.cg_id) as cg_id, 
-                (SELECT service_template_model_stm_id FROM service
-	            WHERE service.`service_activate` = "1" 
-	            AND service.`service_id` = ' . $serviceId . ' ) as `service_template_model_stm_id` 
-            FROM service, contactgroup, contactgroup_service_relation
-            WHERE contactgroup_service_relation.`service_service_id` = service.`service_id`
-            AND contactgroup.`cg_id` = contactgroup_service_relation.`contactgroup_cg_id`
-            AND contactgroup.`cg_activate` = "1"
-            AND service.`service_notifications_enabled` != "0" 
-            AND service.`service_activate` = "1" 
-            AND service.`service_id` = ' . $serviceId
-        );
-        if (($row = $stmt->fetch()) && empty($serviceListing)) {
-            if ($row['cg_id']) {
-                $serviceListing[] = $serviceId;
-            } elseif (!empty($row['service_template_model_stm_id'])) {
-                $this->getContactGroupsCloseInheritance((int)$row['service_template_model_stm_id'], $serviceListing);
-            }
-        }
-    }
-
-    /**
-     * Get enable contact group id/name of a service list
-     *
-     * @param array $serviceIds List of service id
-     * @return array
-     */
-    protected function getInheritanceContactGroups(array $serviceIds): array
-    {
-        $cg = Contactgroup::getInstance($this->dependencyInjector);
-        $contactGroups = array();
-        $stmt = $this->backend_instance->db->query(
-            'SELECT c.cg_id , c.cg_name FROM contactgroup c, contactgroup_service_relation cs
-            WHERE cs.service_service_id IN (' . implode(',', $serviceIds) . ') AND cs.contactgroup_cg_id = c.cg_id 
-            AND cg_activate = "1"'
-        );
-        while ($row = $stmt->fetch()) {
-            $contactGroups[$row['cg_id']] = $cg->generateFromCgId($row['cg_id']);
-        }
-        return $contactGroups;
     }
 
     protected function findCommandName($service_id, $command_label)

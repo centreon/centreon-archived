@@ -24,6 +24,7 @@ namespace Centreon\Application\Controller;
 use Centreon\Domain\Acknowledgement\Acknowledgement;
 use Centreon\Domain\Acknowledgement\AcknowledgementService;
 use Centreon\Domain\Acknowledgement\Interfaces\AcknowledgementServiceInterface;
+use Centreon\Domain\Contact\Contact;
 use Centreon\Domain\Entity\EntityValidator;
 use Centreon\Domain\RequestParameters\Interfaces\RequestParametersInterface;
 use FOS\RestBundle\Context\Context;
@@ -130,6 +131,13 @@ class AcknowledgementController extends AbstractFOSRestController
         EntityValidator $entityValidator,
         SerializerInterface $serializer
     ): View {
+        /**
+         * @var $contact Contact
+         */
+        $contact = $this->getUser();
+        if (!$contact->isAdmin() && !$contact->hasRole(Contact::ROLE_HOST_ACKNOWLEDGEMENT)) {
+            return $this->view(null, Response::HTTP_UNAUTHORIZED);
+        }
         $errors = $entityValidator->validateEntity(
             Acknowledgement::class,
             json_decode($request->getContent(), true),
@@ -148,7 +156,7 @@ class AcknowledgementController extends AbstractFOSRestController
                 'json'
             );
             $this->acknowledgementService
-                ->filterByContact($this->getUser())
+                ->filterByContact($contact)
                 ->addHostAcknowledgement($acknowledgement);
             return $this->view();
         }
@@ -167,8 +175,12 @@ class AcknowledgementController extends AbstractFOSRestController
      */
     public function disacknowledgeHostAcknowledgement(int $hostId): View
     {
+        $contact = $this->getUser();
+        if (!$contact->isAdmin() && !$contact->hasRole(Contact::ROLE_HOST_DISACKNOWLEDGEMENT)) {
+            return $this->view(null, Response::HTTP_UNAUTHORIZED);
+        }
         $this->acknowledgementService
-            ->filterByContact($this->getUser())
+            ->filterByContact($contact)
             ->disacknowledgeHostAcknowledgement($hostId);
         return $this->view();
     }
@@ -187,8 +199,13 @@ class AcknowledgementController extends AbstractFOSRestController
      */
     public function disacknowledgeServiceAcknowledgement(int $hostId, int $serviceId): View
     {
+        $contact = $this->getUser();
+        if (!$contact->isAdmin() && !$contact->hasRole(Contact::ROLE_SERVICE_DISACKNOWLEDGEMENT)) {
+            return $this->view(null, Response::HTTP_UNAUTHORIZED);
+        }
+
         $this->acknowledgementService
-            ->filterByContact($this->getUser())
+            ->filterByContact($contact)
             ->disacknowledgeServiceAcknowledgement($hostId, $serviceId);
         return $this->view();
     }
@@ -211,6 +228,11 @@ class AcknowledgementController extends AbstractFOSRestController
         EntityValidator $entityValidator,
         SerializerInterface $serializer
     ): View {
+        $contact = $this->getUser();
+        if (!$contact->isAdmin() && !$contact->hasRole(Contact::ROLE_SERVICE_ACKNOWLEDGEMENT)) {
+            return $this->view(null, Response::HTTP_UNAUTHORIZED);
+        }
+
         $errors = $entityValidator->validateEntity(
             Acknowledgement::class,
             json_decode($request->getContent(), true),
@@ -229,7 +251,7 @@ class AcknowledgementController extends AbstractFOSRestController
                 'json'
             );
             $this->acknowledgementService
-                ->filterByContact($this->getUser())
+                ->filterByContact($contact)
                 ->addServiceAcknowledgement($acknowledgement);
             return $this->view();
         }

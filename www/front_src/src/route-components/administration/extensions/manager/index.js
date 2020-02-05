@@ -17,7 +17,7 @@ import {
   ExtensionsHolder,
   ExtensionDetailsPopup,
   ExtensionDeletePopup,
-} from '@centreon/react-components';
+} from '@centreon/ui';
 import Hook from '../../../../components/hook';
 
 import axios from '../../../../axios';
@@ -27,10 +27,8 @@ import { fetchExternalComponents } from '../../../../redux/actions/externalCompo
 class ExtensionsRoute extends Component {
   state = {
     extensions: {
-      result: {
-        module: { entities: [] },
-        widget: { entities: [] },
-      },
+      module: { entities: [] },
+      widget: { entities: [] },
     },
     widgetsActive: true,
     modulesActive: true,
@@ -407,8 +405,6 @@ class ExtensionsRoute extends Component {
       });
   };
 
-  versionClicked = () => {};
-
   render() {
     const {
       extensions,
@@ -532,7 +528,7 @@ class ExtensionsRoute extends Component {
           />
           <Hook path="/administration/extensions/manager/button" />
         </Wrapper>
-        {extensions && !nothingShown ? (
+        {extensions.result && !nothingShown ? (
           <>
             {extensions.result.module &&
             (!modulesActive || (modulesActive && widgetsActive)) ? (
@@ -573,7 +569,6 @@ class ExtensionsRoute extends Component {
             type={modalDetailsType}
             loading={modalDetailsLoading}
             onCloseClicked={this.hideExtensionDetails.bind(this)}
-            onVersionClicked={this.versionClicked}
             onInstallClicked={this.installById}
             onDeleteClicked={this.deleteById}
             onUpdateClicked={this.updateById}
@@ -598,16 +593,10 @@ const mapDispatchToProps = (dispatch) => {
     reloadNavigation: () => {
       // batch actions to avoid useless multiple rendering
       dispatch(
-        batchActions([
-          fetchNavigationData(),
-          fetchExternalComponents()
-        ]),
+        batchActions([fetchNavigationData(), fetchExternalComponents()]),
       );
     },
   };
 };
 
-export default connect(
-  null,
-  mapDispatchToProps,
-)(ExtensionsRoute);
+export default connect(null, mapDispatchToProps)(ExtensionsRoute);

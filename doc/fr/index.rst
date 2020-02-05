@@ -1,9 +1,6 @@
 Bienvenue dans la documentation Centreon !
 ==========================================
 
-.. warning::
-    **Centreon 19.10 est actuellement en version bêta, n'installez pas cette version sur votre environnement de production !!!**
-
 Sommaire :
 
 .. toctree::

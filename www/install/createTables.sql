@@ -421,7 +421,6 @@ CREATE TABLE `cfg_centreonbroker` (
   `command_file` varchar(255),
   `cache_directory` varchar(255),
   `stats_activate` enum('0','1') DEFAULT '1',
-  `correlation_activate` enum('0','1') DEFAULT '0',
   `daemon` TINYINT(1),
   PRIMARY KEY (`config_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -1636,6 +1635,7 @@ CREATE TABLE `nagios_server` (
   `centreonbroker_logs_path` VARCHAR(255),
   `remote_id` int(11) NULL,
   `remote_server_centcore_ssh_proxy` enum('0','1') NOT NULL DEFAULT '1',
+  `updated` enum('1','0') NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   CONSTRAINT `nagios_server_remote_id_id` FOREIGN KEY (`remote_id`) REFERENCES `nagios_server` (`id`) ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;

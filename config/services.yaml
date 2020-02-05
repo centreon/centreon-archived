@@ -18,6 +18,7 @@ parameters:
 services:
     # Default configuration for services in *this* file
     _defaults:
+        public: false
         autowire: true      # Automatically injects dependencies in your services.
         autoconfigure: true # Automatically registers your services as commands, event subscribers, et
 
