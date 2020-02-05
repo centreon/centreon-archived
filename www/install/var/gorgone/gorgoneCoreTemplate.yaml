@@ -40,7 +40,7 @@ gorgone:
       cmd_file: "--CENTREON_VARLIB--/centcore.cmd"
       cache_dir: "--CENTREON_CACHEDIR--"
       cache_dir_trap: "--CENTREON_TRAPDIR--"
-      remote_dir: "--CENTREON_VARLIB--/remote-data/"
+      remote_dir: "--CENTREON_CACHEDIR--/config/remote-data/"
 
     - name: engine
       package: "gorgone::modules::centreon::engine::hooks"
