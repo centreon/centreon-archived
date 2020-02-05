@@ -798,6 +798,16 @@ $help["event_broker_options"] = dgettext(
     "This option controls what (if any) data gets sent to the event broker and, in turn, to any loaded event " .
     "broker module. Centreon relies heavily on the broker and needs this value to be set as -1."
 );
+$help["enable_macros_filter"] = dgettext(
+    "help",
+    "This options is an advanced configuration of engine that enables or not the filtering of macros sent to broker." .
+    "If you don't understand the purpose of enabling this option, please do not enable it."
+);
+$help["macros_filter"] = dgettext(
+    "help",
+    "This field should be filled only if filtering option is enabled. You can define the list of macros that " .
+    "should be sent to Centreon Broker."
+);
 $help["broker_module"] = dgettext(
     "help",
     "This directive is used to specify an event broker module that should by loaded by Monitoring Engine " .

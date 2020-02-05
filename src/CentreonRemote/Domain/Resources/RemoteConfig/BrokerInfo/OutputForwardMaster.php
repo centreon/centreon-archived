@@ -142,6 +142,22 @@ class OutputForwardMaster
                 'config_group_id' => '3',
                 'grp_level'       => '0',
             ],
+            [
+                'config_key'      => 'filters',
+                'config_value'    => '',
+                'config_group'    => 'output',
+                'config_group_id' => '3',
+                'grp_level'       => '0',
+                'subgrp_id'       => '1',
+            ],
+            [
+                'config_key'      => 'category',
+                'config_value'    => 'neb',
+                'config_group'    => 'output',
+                'config_group_id' => '3',
+                'grp_level'       => '1',
+                'parent_grp_id'   => '1',
+            ],
         ];
     }
 }

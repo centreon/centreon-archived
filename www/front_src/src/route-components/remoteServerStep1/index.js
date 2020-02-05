@@ -1,10 +1,15 @@
-import React, { Component } from "react";
-import Form from "../../components/forms/remoteServer/RemoteServerFormStepOne";
-import { setPollerWizard } from "../../redux/actions/pollerWizardActions";
-import ProgressBar from "../../components/progressBar";
-import routeMap from "../../route-maps/route-map";
-import axios from "../../axios";
-import { connect } from "react-redux";
+/* eslint-disable react/jsx-no-bind */
+/* eslint-disable react/jsx-filename-extension */
+/* eslint-disable no-shadow */
+/* eslint-disable react/prop-types */
+
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import Form from '../../components/forms/remoteServer/RemoteServerFormStepOne';
+import { setPollerWizard } from '../../redux/actions/pollerWizardActions';
+import ProgressBar from '../../components/progressBar';
+import routeMap from '../../route-maps/route-map';
+import axios from '../../axios';
 
 class RemoteServerStepOneRoute extends Component {
   links = [
@@ -12,27 +17,28 @@ class RemoteServerStepOneRoute extends Component {
       active: true,
       prevActive: true,
       number: 1,
-      path: routeMap.serverConfigurationWizard
+      path: routeMap.serverConfigurationWizard,
     },
     { active: true, number: 2, path: routeMap.remoteServerStep1 },
     { active: false, number: 3 },
-    { active: false, number: 4 }
+    { active: false, number: 4 },
   ];
 
   state = {
-    waitList: null
+    waitList: null,
   };
+
   wizardFormWaitListApi = axios(
-    "internal.php?object=centreon_configuration_remote&action=getWaitList"
+    'internal.php?object=centreon_configuration_remote&action=getWaitList',
   );
 
   getWaitList = () => {
     this.wizardFormWaitListApi
       .post()
-      .then(response => {
+      .then((response) => {
         this.setState({ waitList: response.data });
       })
-      .catch(err => {
+      .catch(() => {
         this.setState({ waitList: [] });
       });
   };
@@ -41,22 +47,22 @@ class RemoteServerStepOneRoute extends Component {
     this.getWaitList();
   };
 
-  handleSubmit = data => {
+  handleSubmit = (data) => {
     const { history, setPollerWizard } = this.props;
     setPollerWizard(data);
     history.push(routeMap.remoteServerStep2);
   };
 
   render() {
-    const { links } = this,
-          { pollerData } = this.props,
-          { waitList } = this.state;
+    const { links } = this;
+    const { pollerData } = this.props;
+    const { waitList } = this.state;
     return (
       <div>
         <ProgressBar links={links} />
         <Form
           waitList={waitList}
-          initialValues={{...pollerData, centreon_folder:"/centreon/"}}
+          initialValues={{ ...pollerData, centreon_folder: '/centreon/' }}
           onSubmit={this.handleSubmit.bind(this)}
         />
       </div>
@@ -65,13 +71,14 @@ class RemoteServerStepOneRoute extends Component {
 }
 
 const mapStateToProps = ({ pollerForm }) => ({
-  pollerData: pollerForm
+  pollerData: pollerForm,
 });
 
 const mapDispatchToProps = {
-  setPollerWizard
+  setPollerWizard,
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(
-  RemoteServerStepOneRoute
-);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(RemoteServerStepOneRoute);

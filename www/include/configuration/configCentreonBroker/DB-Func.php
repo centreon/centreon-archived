@@ -48,13 +48,13 @@ function testExistence($name = null)
         $id = $form->getSubmitValue('id');
     }
 
-    $DBRESULT = $pearDB->query("SELECT config_name, config_id 
+    $dbResult = $pearDB->query("SELECT config_name, config_id 
                                 FROM `cfg_centreonbroker` 
                                 WHERE `config_name` = '" . htmlentities($name, ENT_QUOTES, "UTF-8") . "'");
-    $ndomod = $DBRESULT->fetchRow();
-    if ($DBRESULT->rowCount() >= 1 && $ndomod["config_id"] == $id) {
+    $ndomod = $dbResult->fetch();
+    if ($dbResult->rowCount() >= 1 && $ndomod["config_id"] == $id) {
         return true;
-    } elseif ($DBRESULT->rowCount() >= 1 && $ndomod["config_id"] != $id) {
+    } elseif ($dbResult->rowCount() >= 1 && $ndomod["config_id"] != $id) {
         return false;
     } else {
         return true;
@@ -137,7 +137,7 @@ function getCentreonBrokerInformation($id)
             "event_queue_max_size" => ''
         );
     }
-    $row = $res->fetchRow();
+    $row = $res->fetch();
     $brokerConf = array(
         "id" => $id,
         "name" => $row['config_name'],
@@ -173,9 +173,9 @@ function multipleCentreonBrokerInDB($ids, $nbrDup)
             event_queue_max_size, cache_directory, daemon "
             . "FROM cfg_centreonbroker "
             . "WHERE config_id = " . $id . " ";
-        $DBRESULT = $pearDB->query($query);
-        $row = $DBRESULT->fetchRow();
-        $DBRESULT->closeCursor();
+        $dbResult = $pearDB->query($query);
+        $row = $dbResult->fetch();
+        $dbResult->closeCursor();
 
         # Prepare values
         $values = array();
@@ -188,11 +188,11 @@ function multipleCentreonBrokerInDB($ids, $nbrDup)
         $query = "SELECT config_key, config_value, config_group, config_group_id "
             . "FROM cfg_centreonbroker_info "
             . "WHERE config_id = " . $id . " ";
-        $DBRESULT = $pearDB->query($query);
+        $dbResult = $pearDB->query($query);
         $values['output'] = array();
         $values['input'] = array();
         $values['logger'] = array();
-        while ($rowOpt = $DBRESULT->fetchRow()) {
+        while ($rowOpt = $dbResult->fetch()) {
             if ($rowOpt['config_key'] == 'filters') {
                 continue;
             } elseif ($rowOpt['config_key'] == 'category') {
@@ -203,7 +203,7 @@ function multipleCentreonBrokerInDB($ids, $nbrDup)
                     $rowOpt['config_value'];
             }
         }
-        $DBRESULT->closeCursor();
+        $dbResult->closeCursor();
 
         # Convert values radio button
         foreach ($values as $group => $groups) {
@@ -238,7 +238,7 @@ function multipleCentreonBrokerInDB($ids, $nbrDup)
                 $newfilename = $j . '_' . $row['config_filename'];
                 $query = "SELECT COUNT(*) as nb FROM cfg_centreonbroker WHERE config_name = '" . $newname . "'";
                 $res = $pearDB->query($query);
-                $rowNb = $res->fetchRow();
+                $rowNb = $res->fetch();
                 if ($rowNb['nb'] == 0) {
                     $nameNOk = false;
                 }

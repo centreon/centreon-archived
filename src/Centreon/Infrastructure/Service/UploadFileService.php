@@ -1,7 +1,7 @@
 <?php
 /*
  * Copyright 2005-2019 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -59,7 +59,7 @@ class UploadFileService
 
     /**
      * Get all files
-     * 
+     *
      * @return array
      */
     public function getFiles(string $fieldName, array $withExtension = null) : array

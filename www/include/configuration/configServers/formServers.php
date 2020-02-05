@@ -1,7 +1,7 @@
 <?php
 /*
- * Copyright 2005-2015 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2019 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -56,6 +56,7 @@ if (!$centreon->user->admin && $server_id && count($serverResult)) {
  * Database retrieve information for Nagios
  */
 $nagios = array();
+$selectedAdditionnalRS = null;
 $serverType = "poller";
 if (($o == SERVER_MODIFY || $o == SERVER_WATCH) && $server_id) {
     $DBRESULT = $pearDB->query("SELECT * FROM `nagios_server` WHERE `id` = '$server_id' LIMIT 1");
@@ -71,6 +72,37 @@ if (($o == SERVER_MODIFY || $o == SERVER_WATCH) && $server_id) {
         $serverType = "central";
     } elseif (in_array($cfg_server['ns_ip_address'], $remotesServerIPs)) {
         $serverType = "remote";
+    }
+
+    if ($serverType === "remote") {
+        $statement = $pearDB->prepare("SELECT http_method, http_port, no_check_certificate, no_proxy
+            FROM `remote_servers`
+            WHERE `ip` = :ns_ip_address LIMIT 1");
+        $statement->bindParam(':ns_ip_address', $cfg_server['ns_ip_address'], \PDO::PARAM_STR);
+        $statement->execute();
+
+        $cfg_server = array_merge($cfg_server, array_map("myDecode", $statement->fetch()));
+        $statement->closeCursor();
+    }
+
+    if ($serverType === "poller") {
+        // Select additionnal Remote Servers
+        $statement = $pearDB->prepare("SELECT remote_server_id, name 
+            FROM rs_poller_relation AS rspr
+            LEFT JOIN nagios_server AS ns ON (rspr.remote_server_id = ns.id)
+            WHERE poller_server_id = :poller_server_id");
+        $statement->bindParam(':poller_server_id', $cfg_server['id'], \PDO::PARAM_INT);
+        $statement->execute();
+
+        if ($statement->numRows() > 0) {
+            while ($row = $statement->fetch()) {
+                $selectedAdditionnalRS[] = array(
+                    'id' => $row['remote_server_id'],
+                    'text' => $row['name'],
+                );
+            }
+        }
+        $statement->closeCursor();
     }
 }
 
@@ -115,6 +147,12 @@ $attrPoller1 = array_merge(
     $attrPollers,
     array('defaultDatasetRoute' => $route)
 );
+$attrPoller2 = array(
+    'datasourceOrigin' => 'ajax',
+    'availableDatasetRoute' => './api/internal.php?object=centreon_configuration_poller&action=list&t=remote',
+    'multiple' => true,
+    'linkedObject' => 'centreonInstance'
+);/*
 
 /*
  * Form begin
@@ -138,14 +176,49 @@ $form->addElement('header', 'Misc', _("Miscelleneous"));
 $form->addElement('header', 'Centreontrapd', _("Centreon Trap Collector"));
 
 /*
+ * form for Remote Server
+ */
+if (strcmp($serverType, 'remote') ==  0) {
+    $form->addElement('header', 'Remote_Configuration', _("Remote Server Configuration"));
+    $aMethod = array(
+        'http' => 'http',
+        'https' => 'https'
+    );
+    $form->addElement('select', 'http_method', _("HTTP Method"), $aMethod);
+    $form->addElement('text', 'http_port', _("HTTP Port"), $attrsText3);
+    $tab = array();
+    $tab[] = $form->createElement('radio', 'no_check_certificate', null, _("Yes"), '1');
+    $tab[] = $form->createElement('radio', 'no_check_certificate', null, _("No"), '0');
+    $form->addGroup($tab, 'no_check_certificate', _("Do not check SSL certificate validation"), '&nbsp;');
+    $tab = array();
+    $tab[] = $form->createElement('radio', 'no_proxy', null, _("Yes"), '1');
+    $tab[] = $form->createElement('radio', 'no_proxy', null, _("No"), '0');
+    $form->addGroup($tab, 'no_proxy', _("Do not use proxy defined in global configuration"), '&nbsp;');
+}
+
+/*
  * Poller Configuration basic information
  */
 $form->addElement('header', 'information', _("Satellite configuration"));
 $form->addElement('text', 'name', _("Poller Name"), $attrsText);
 $form->addElement('text', 'ns_ip_address', _("IP Address"), $attrsText);
-$form->addElement('text', 'init_script', _("Monitoring Engine Init Script"), $attrsText2);
+$form->addElement('text', 'engine_start_command', _("Monitoring Engine start command"), $attrsText2);
+$form->addElement('text', 'engine_stop_command', _("Monitoring Engine stop command"), $attrsText2);
+$form->addElement('text', 'engine_restart_command', _("Monitoring Engine restart command"), $attrsText2);
+$form->addElement('text', 'engine_reload_command', _("Monitoring Engine reload command"), $attrsText2);
 if (strcmp($serverType, 'poller') ==  0) {
-    $form->addElement('select2', 'remote_id', _('Attach to Remote Server'), array(), $attrPoller1);
+    $form->addElement(
+        'select2',
+        'remote_id',
+        _('Attach to Master Remote Server'),
+        array(),
+        $attrPoller1
+    );
+    $form->addElement('select2', 'remote_additional_id', _('Attach additional Remote Servers'), array(), $attrPoller2);
+    $tab = [];
+    $tab[] = $form->createElement('radio', 'remote_server_centcore_ssh_proxy', null, _("Yes"), '1');
+    $tab[] = $form->createElement('radio', 'remote_server_centcore_ssh_proxy', null, _("No"), '0');
+    $form->addGroup($tab, 'remote_server_centcore_ssh_proxy', _("Use the Remote Server as a proxy for SSH"), '&nbsp;');
 }
 $form->addElement('text', 'nagios_bin', _("Monitoring Engine Binary"), $attrsText2);
 $form->addElement('text', 'nagiostats_bin', _("Monitoring Engine Statistics Binary"), $attrsText2);
@@ -153,20 +226,20 @@ $form->addElement('text', 'nagios_perfdata', _("Perfdata file"), $attrsText2);
 
 $form->addElement('text', 'ssh_port', _("SSH port"), $attrsText3);
 
-$Tab = array();
-$Tab[] = $form->createElement('radio', 'localhost', null, _("Yes"), '1');
-$Tab[] = $form->createElement('radio', 'localhost', null, _("No"), '0');
-$form->addGroup($Tab, 'localhost', _("Localhost ?"), '&nbsp;');
+$tab = array();
+$tab[] = $form->createElement('radio', 'localhost', null, _("Yes"), '1');
+$tab[] = $form->createElement('radio', 'localhost', null, _("No"), '0');
+$form->addGroup($tab, 'localhost', _("Localhost ?"), '&nbsp;');
 
-$Tab = array();
-$Tab[] = $form->createElement('radio', 'is_default', null, _("Yes"), '1');
-$Tab[] = $form->createElement('radio', 'is_default', null, _("No"), '0');
-$form->addGroup($Tab, 'is_default', _("Is default poller ?"), '&nbsp;');
+$tab = array();
+$tab[] = $form->createElement('radio', 'is_default', null, _("Yes"), '1');
+$tab[] = $form->createElement('radio', 'is_default', null, _("No"), '0');
+$form->addGroup($tab, 'is_default', _("Is default poller ?"), '&nbsp;');
 
-$Tab = array();
-$Tab[] = $form->createElement('radio', 'ns_activate', null, _("Enabled"), '1');
-$Tab[] = $form->createElement('radio', 'ns_activate', null, _("Disabled"), '0');
-$form->addGroup($Tab, 'ns_activate', _("Status"), '&nbsp;');
+$tab = array();
+$tab[] = $form->createElement('radio', 'ns_activate', null, _("Enabled"), '1');
+$tab[] = $form->createElement('radio', 'ns_activate', null, _("Disabled"), '0');
+$form->addGroup($tab, 'ns_activate', _("Status"), '&nbsp;');
 
 /*
  * Extra commands
@@ -188,6 +261,7 @@ $cloneSetCmd[] = $form->addElement(
  * Centreon Broker
  */
 $form->addElement('header', 'CentreonBroker', _("Centreon Broker"));
+$form->addElement('text', 'broker_reload_command', _("Centreon Broker reload command"), $attrsText2);
 $form->addElement('text', 'centreonbroker_cfg_path', _("Centreon Broker configuration path"), $attrsText2);
 $form->addElement('text', 'centreonbroker_module_path', _("Centreon Broker modules path"), $attrsText2);
 $form->addElement('text', 'centreonbroker_logs_path', _("Centreon Broker logs path"), $attrsText2);
@@ -208,34 +282,41 @@ $form->addElement('text', 'snmp_trapd_path_conf', _('Directory of light database
  * Set Default Values
  */
 if (isset($_GET["o"]) && $_GET["o"] == SERVER_ADD) {
-    $monitoring_engines = array(
+    $monitoring_engines = [
         "nagios_bin" => "/usr/sbin/centengine",
         "nagiostats_bin" => "/usr/sbin/centenginestats",
-        "init_script" => "centengine",
+        "engine_start_command" => "service centengine start",
+        "engine_stop_command" => "service centengine stop",
+        "engine_restart_command" => "service centengine restart",
+        "engine_reload_command" => "service centengine reload",
         "nagios_perfdata" => "/var/log/centreon-engine/service-perfdata"
-    );
+    ];
 
     $form->setDefaults(
-        array(
+        [
             "name" => '',
             "localhost" => '0',
             "ns_ip_address" => "127.0.0.1",
             "description" => "",
             "nagios_bin" => $monitoring_engines["nagios_bin"],
             "nagiostats_bin" => $monitoring_engines["nagiostats_bin"],
-            "monitoring_engine"  => $centreon->optGen["monitoring_engine"] ?? '',
-            "init_script" => $monitoring_engines["init_script"],
+            "engine_start_command" => $monitoring_engines["engine_start_command"],
+            "engine_stop_command" => $monitoring_engines["engine_stop_command"],
+            "engine_restart_command" => $monitoring_engines["engine_restart_command"],
+            "engine_reload_command" => $monitoring_engines["engine_reload_command"],
             "ns_activate" => '1',
             "is_default"  =>  '0',
             "ssh_port"  =>  '22',
             "ssh_private_key"  =>  '~/.ssh/rsa.id',
             "nagios_perfdata"  => $monitoring_engines["nagios_perfdata"],
+            "broker_reload_command" => "service cbd reload",
             "centreonbroker_cfg_path" => "/etc/centreon-broker",
             "centreonbroker_module_path" => "/usr/share/centreon/lib/centreon-broker",
             "centreonbroker_logs_path" => "/var/log/centreon-broker",
             "init_script_centreontrapd" => "centreontrapd",
-            "snmp_trapd_path_conf" => "/etc/snmp/centreon_traps/"
-        )
+            "snmp_trapd_path_conf" => "/etc/snmp/centreon_traps/",
+            "remote_server_centcore_ssh_proxy" => '1'
+        ]
     );
 } else {
     if (isset($cfg_server)) {
@@ -250,8 +331,14 @@ $redirect->setValue($o);
  * Form Rules
  */
 $form->registerRule('exist', 'callback', 'testExistence');
+$form->registerRule('testAdditionalRemoteServer', 'callback', 'testAdditionalRemoteServer');
 $form->addRule('name', _("Name is already in use"), 'exist');
 $form->addRule('name', _("The name of the poller is mandatory"), 'required');
+$form->addRule(
+    array('remote_additional_id', 'remote_id'),
+    _('To use additional Remote Servers a Master Remote Server must be selected.'),
+    'testAdditionalRemoteServer'
+);
 
 $form->setRequiredNote("<font style='color: red;'>*</font>&nbsp;" . _("Required fields"));
 
@@ -329,3 +416,59 @@ if ($valid) {
     $tpl->assign("helptext", $helptext);
     $tpl->display("formServers.ihtml");
 }
+
+?>
+<script type='text/javascript'>
+    jQuery("#remote_additional_id").centreonSelect2({
+        select2: {
+            ajax: {
+                url: './api/internal.php?object=centreon_configuration_poller&action=list&t=remote',
+                cache: false
+            },
+            multiple: true,
+        },
+        allowClear: true,
+        additionnalFilters: {
+            e: '#remote_id'
+        }
+    });
+    jQuery(function () {
+        jQuery("#remote_id").change(function () {
+            var master_remote_id = jQuery("#remote_id").val();
+            var remote_additional_id = jQuery("#remote_additional_id").val();
+
+            jQuery.ajax({
+                url: "./api/internal.php?object=centreon_configuration_poller&action=list&t=remote&e="
+                    + master_remote_id,
+                type: "GET",
+                dataType: "json",
+                success: function (json) {
+                    jQuery('#remote_additional_id').val('');
+                    json.items.forEach(function (elem) {
+                        jQuery('#remote_additional_id').empty();
+                        if (jQuery.inArray(elem.id, remote_additional_id) != -1
+                          && elem.id != master_remote_id && elem.id) {
+                            jQuery('#remote_additional_id').append(
+                                '<option value="' + elem.id + '" selected>' + elem.text + '</option>'
+                            );
+                        }
+                    });
+                    jQuery('#remote_additional_id').trigger('change');
+                }
+            });
+        });
+
+        var initAdditionnalRS = '<?php echo json_encode($selectedAdditionnalRS); ?>';
+        var pollers = JSON.parse(initAdditionnalRS);
+        if (pollers) {
+            for (var i = 0; i < pollers.length; i++) {
+                if (pollers[i].text != null) {
+                    jQuery('#remote_additional_id').append(
+                        '<option value="' + pollers[i].id + '" selected>' + pollers[i].text + '</option>'
+                    );
+                }
+            }
+            jQuery('#remote_additional_id').trigger('change');
+        }
+    });
+</script>

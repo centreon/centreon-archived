@@ -528,7 +528,7 @@ function submitShareView()
     lockedUsergroups: lockedUsergroups.filter(function (elem) {return elem !== '';}),
     unlockedUsergroups: unlockedUsergroups.filter(function (elem) {return elem !== '';}),
     action: 'share',
-    centeon_token: jQuery("#formShareView").find('input[name="centreon_token"]').val(),
+    centreon_token: jQuery("#formShareView").find('input[name="centreon_token"]').val(),
   };
 
   jQuery.ajax({
@@ -577,13 +577,14 @@ function toggleEdit(show) {
   if (show === false) {
     $el.removeClass('edit');
     jQuery('#actionBar').hide();
+
     jQuery('.portlet-header').each(function(index) {
       var widgetTitle = jQuery(this).find('.widgetTitle').text().trim();
-      if (widgetTitle == 'Click to edit' || widgetTitle == '') {
-        jQuery(this).hide();
-      } else {
-        jQuery(this).find('.ui-icon').hide();
+      if (widgetTitle == 'Click to edit') {
+            jQuery(this).find('.widgetTitle').hide();
       }
+      jQuery(this).find('.ui-icon-wrench').hide();
+      jQuery(this).find('.ui-icon-trash').hide();
     });
     $el.find('img').attr('src','./img/icons/edit_mode.png');
   } else if (show === true) {
@@ -591,7 +592,9 @@ function toggleEdit(show) {
       $el.addClass('edit');
     jQuery('.portlet-header').each(function() {
         jQuery(this).show();
-        jQuery(this).find('.ui-icon').show();
+        jQuery(this).find('.widgetTitle').show();
+        jQuery(this).find('.ui-icon-wrench').show();
+        jQuery(this).find('.ui-icon-trash').show();
     });
     $el.find('img').attr('src','./img/icons/no_edit_mode.png');
   }
@@ -671,7 +674,6 @@ function removeUsergroupFromView(usergroup_id) {
 
 jQuery(function () {
   jQuery('#tabs').tabs();
-  toggleEdit(defaultShow);
 
   /* Initialize buttons */
   jQuery('.addView').button({icon: "ui-icon-plus"}).on('click', function () {
@@ -868,6 +870,9 @@ jQuery(function () {
             if (tabLoops > 60 && $(event.target).tabs('option', 'active') == defaultPosition) {
                 window.location.reload();
             }
+          },
+          load: function(event, ui) {
+              toggleEdit(jQuery('.toggleEdit').hasClass('edit'));
           },
           activate: function( event, ui ) {
             tabLoops++;

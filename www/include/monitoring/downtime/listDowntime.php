@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2005-2015 Centreon
+ * Copyright 2005-2019 Centreon
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -76,24 +76,12 @@ if (isset($_POST['SearchB'])) {
     isset($_GET["view_downtime_cycle"]) ? $view_downtime_cycle = 1 : $view_downtime_cycle = 0;
     $centreon->historySearch[$url]["view_downtime_cycle"] = $view_downtime_cycle;
 } else {
-    if (isset($centreon->historySearch[$url]['search_service'])) {
-        $search_service = $centreon->historySearch[$url]['search_service'];
-    }
-    if (isset($centreon->historySearch[$url]["search_host"])) {
-        $host_name = $centreon->historySearch[$url]["search_host"];
-    }
-    if (isset($centreon->historySearch[$url]["search_output"])) {
-        $search_output = $centreon->historySearch[$url]["search_output"];
-    }
-    if (isset($centreon->historySearch[$url]["search_author"])) {
-        $search_author = $centreon->historySearch[$url]["search_author"];
-    }
-    if (isset($centreon->historySearch[$url]["view_all"])) {
-        $view_all = $centreon->historySearch[$url]["view_all"];
-    }
-    if (isset($centreon->historySearch[$url]["view_downtime_cycle"])) {
-        $view_downtime_cycle = $centreon->historySearch[$url]["view_downtime_cycle"];
-    }
+    $search_service = $centreon->historySearch[$url]['search_service'] ?? null;
+    $host_name = $centreon->historySearch[$url]["search_host"] ?? null;
+    $search_output = $centreon->historySearch[$url]["search_output"] ?? null;
+    $search_author = $centreon->historySearch[$url]["search_author"] ?? null;
+    $view_all = $centreon->historySearch[$url]["view_all"] ?? 0;
+    $view_downtime_cycle = $centreon->historySearch[$url]["view_downtime_cycle"] ?? 0;
 }
 
 /*
@@ -102,7 +90,7 @@ if (isset($_POST['SearchB'])) {
 $centreonGMT = new CentreonGMT($pearDB);
 $centreonGMT->getMyGMTFromSession(session_id(), $pearDB);
 
-include_once("./class/centreonDB.class.php");
+include_once "./class/centreonDB.class.php";
 
 /*
  * Smarty template Init
@@ -114,9 +102,14 @@ $form = new HTML_QuickFormCustom('select_form', 'GET', "?p=" . $p);
 
 $tab_downtime_svc = array();
 
-/*
- * Service Downtimes
- */
+
+$attrBtnSuccess = array(
+    "class" => "btc bt_success",
+    "onClick" => "window.history.replaceState('', '', '?p=" . $p . "');"
+);
+$form->addElement('submit', 'SearchB', _("Search"), $attrBtnSuccess);
+
+//Service Downtimes
 if ($view_all == 1) {
     $downtimeTable = "downtimehistory";
     $extrafields = ", actual_end_time, cancelled as was_cancelled ";
@@ -149,7 +142,7 @@ $request = "(SELECT SQL_CALC_FOUND_ROWS DISTINCT d.internal_id as internal_downt
     "WHERE d.host_id = s.host_id " .
     "AND d.service_id = s.service_id " .
     "AND s.host_id = h.host_id " .
-    "AND d.service_id IS NOT NULL ";
+    "AND d.type = 1 ";
 if (!$view_all) {
     $request .= " AND d.cancelled = 0 ";
 }
@@ -171,7 +164,7 @@ $request .= ") UNION (SELECT DISTINCT d.internal_id as internal_downtime_id, d.e
   d.end_time as scheduled_end_time, d.started as was_started, h.name as host_name,
    '' as service_description " . $extrafields .
     "FROM downtimes d, hosts h " . ($is_admin ? "" : ", centreon_acl acl ") . " " .
-    "WHERE d.host_id = h.host_id AND d.service_id IS NULL ";
+    "WHERE d.host_id = h.host_id AND d.type = 2 ";
 if (!$view_all) {
     $request .= " AND d.cancelled = 0 ";
 }
@@ -290,7 +283,7 @@ $tpl->assign('search_host', $host_name);
 $tpl->assign("search_service", $search_service);
 $tpl->assign('view_all', $view_all);
 $tpl->assign('view_downtime_cycle', $view_downtime_cycle);
-$tpl->assign('search_author', $search_author);
+$tpl->assign('search_author', $search_author ?? '');
 
 /* Send Form */
 $renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);

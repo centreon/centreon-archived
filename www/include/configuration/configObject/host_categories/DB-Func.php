@@ -63,13 +63,13 @@ function testHostCategorieExistence($name = null)
         $id = $form->getSubmitValue('hc_id');
     }
     $query = "SELECT hc_name, hc_id FROM hostcategories WHERE hc_name = '" . CentreonDB::escape($name) . "'";
-    $DBRESULT = $pearDB->query($query);
-    $hc = $DBRESULT->fetchRow();
+    $dbResult = $pearDB->query($query);
+    $hc = $dbResult->fetch();
     # Modif case
-    if ($DBRESULT->rowCount() >= 1 && $hc["hc_id"] == $id) {
+    if ($dbResult->rowCount() >= 1 && $hc["hc_id"] == $id) {
         return true;
     } # Duplicate entry
-    elseif ($DBRESULT->rowCount() >= 1 && $hc["hc_id"] != $id) {
+    elseif ($dbResult->rowCount() >= 1 && $hc["hc_id"] != $id) {
         return false;
     } else {
         return true;
@@ -99,8 +99,8 @@ function enableHostCategoriesInDB($hc_id = null, $hc_arr = array())
 
     foreach ($hc_arr as $key => $value) {
         $pearDB->query("UPDATE hostcategories SET hc_activate = '1' WHERE hc_id = '" . $key . "'");
-        $DBRESULT2 = $pearDB->query("SELECT hc_name FROM `hostcategories` WHERE `hc_id` = '" . $key . "' LIMIT 1");
-        $row = $DBRESULT2->fetchRow();
+        $dbResult2 = $pearDB->query("SELECT hc_name FROM `hostcategories` WHERE `hc_id` = '" . $key . "' LIMIT 1");
+        $row = $dbResult2->fetch();
         $centreon->CentreonLogAction->insertLog("hostcategories", $key, $row['hc_name'], "enable");
     }
 }
@@ -117,8 +117,8 @@ function disableHostCategoriesInDB($hc_id = null, $hc_arr = array())
     }
     foreach ($hc_arr as $key => $value) {
         $pearDB->query("UPDATE hostcategories SET hc_activate = '0' WHERE hc_id = '" . $key . "'");
-        $DBRESULT2 = $pearDB->query("SELECT hc_name FROM `hostcategories` WHERE `hc_id` = '" . $key . "' LIMIT 1");
-        $row = $DBRESULT2->fetchRow();
+        $dbResult2 = $pearDB->query("SELECT hc_name FROM `hostcategories` WHERE `hc_id` = '" . $key . "' LIMIT 1");
+        $row = $dbResult2->fetch();
         $centreon->CentreonLogAction->insertLog("hostcategories", $key, $row['hc_name'], "disable");
     }
 }
@@ -128,8 +128,8 @@ function deleteHostCategoriesInDB($hostcategoriess = array())
     global $pearDB, $centreon;
 
     foreach ($hostcategoriess as $key => $value) {
-        $DBRESULT3 = $pearDB->query("SELECT hc_name FROM `hostcategories` WHERE `hc_id` = '" . $key . "' LIMIT 1");
-        $row = $DBRESULT3->fetchRow();
+        $dbResult3 = $pearDB->query("SELECT hc_name FROM `hostcategories` WHERE `hc_id` = '" . $key . "' LIMIT 1");
+        $row = $dbResult3->fetch();
         $pearDB->query("DELETE FROM hostcategories WHERE hc_id = '" . $key . "'");
         $centreon->CentreonLogAction->insertLog("hostcategories", $key, $row['hc_name'], "d");
     }
@@ -142,9 +142,9 @@ function multipleHostCategoriesInDB($hostcategories = array(), $nbrDup = array()
 
     $hcAcl = array();
     foreach ($hostcategories as $key => $value) {
-        $DBRESULT = $pearDB->query("SELECT * FROM hostcategories WHERE hc_id = '" . $key . "' LIMIT 1");
-        $row = $DBRESULT->fetchRow();
-        $row["hc_id"] = '';
+        $dbResult = $pearDB->query("SELECT * FROM hostcategories WHERE hc_id = '" . $key . "' LIMIT 1");
+        $row = $dbResult->fetch();
+        $row["hc_id"] = null;
         for ($i = 1; $i <= $nbrDup[$key]; $i++) {
             $val = null;
             $rq = null;
@@ -165,16 +165,16 @@ function multipleHostCategoriesInDB($hostcategories = array(), $nbrDup = array()
             if (testHostCategorieExistence($hc_name)) {
                 $val ? $rq = "INSERT INTO hostcategories VALUES (" . $val . ")" : $rq = null;
                 $pearDB->query($rq);
-                $DBRESULT = $pearDB->query("SELECT MAX(hc_id) FROM hostcategories");
-                $maxId = $DBRESULT->fetchRow();
+                $dbResult = $pearDB->query("SELECT MAX(hc_id) FROM hostcategories");
+                $maxId = $dbResult->fetch();
                 if (isset($maxId["MAX(hc_id)"]) && !$level) {
                     $hcAcl[$maxId["MAX(hc_id)"]] = $key;
                     $query = "SELECT DISTINCT hgr.host_host_id FROM hostcategories_relation hgr " .
                         "WHERE hgr.hostcategories_hc_id = '" . $key . "'";
-                    $DBRESULT = $pearDB->query($query);
+                    $dbResult = $pearDB->query($query);
                     $fields["hc_hosts"] = "";
-                    while ($host = $DBRESULT->fetchRow()) {
-                        $query = "INSERT INTO hostcategories_relation VALUES ('', '" . $maxId["MAX(hc_id)"] .
+                    while ($host = $dbResult->fetch()) {
+                        $query = "INSERT INTO hostcategories_relation VALUES ('" . $maxId["MAX(hc_id)"] .
                             "', '" . $host["host_host_id"] . "')";
                         $pearDB->query($query);
                         $fields["hc_hosts"] .= $host["host_host_id"] . ",";
@@ -248,8 +248,8 @@ function insertHostCategories($ret = array())
     $rq .= ")";
 
     $pearDB->query($rq);
-    $DBRESULT = $pearDB->query("SELECT MAX(hc_id) FROM hostcategories");
-    $hc_id = $DBRESULT->fetchRow();
+    $dbResult = $pearDB->query("SELECT MAX(hc_id) FROM hostcategories");
+    $hc_id = $dbResult->fetch();
 
     /* Prepare value for changelog */
     $fields = CentreonLogAction::prepareChanges($ret);
@@ -328,11 +328,11 @@ function updateHostCategoriesHosts($hc_id, $ret = array())
 	 */
     $hostsOLD = array();
     $query = "SELECT host_host_id FROM hostcategories_relation WHERE hostcategories_hc_id = '" . $hc_id . "'";
-    $DBRESULT = $pearDB->query($query);
-    while ($host = $DBRESULT->fetchRow()) {
+    $dbResult = $pearDB->query($query);
+    while ($host = $dbResult->fetch()) {
         $hostsOLD[$host["host_host_id"]] = $host["host_host_id"];
     }
-    $DBRESULT->closeCursor();
+    $dbResult->closeCursor();
 
     // delete all previous relations before reinsert new relations
     $pearDB->query("DELETE FROM hostcategories_relation WHERE hostcategories_hc_id = '" . $hc_id . "'");

@@ -1,18 +1,57 @@
-import React, { Component } from "react";
-import classnames from 'classnames';
-import styles from '../header/header.scss';
-import numeral from "numeral";
-import {Link} from 'react-router-dom';
-import PropTypes from 'prop-types';
-import {Translate} from 'react-redux-i18n';
-import axios from "../../axios";
+/* eslint-disable react/jsx-wrap-multilines */
+/* eslint-disable camelcase */
+/* eslint-disable no-return-assign */
+/* eslint-disable react/no-unused-prop-types */
+/* eslint-disable radix */
+/* eslint-disable react/prop-types */
+/* eslint-disable react/destructuring-assignment */
+/* eslint-disable jsx-a11y/no-static-element-interactions */
+/* eslint-disable jsx-a11y/click-events-have-key-events */
+/* eslint-disable react/jsx-filename-extension */
+/* eslint-disable import/no-extraneous-dependencies */
 
-import { connect } from "react-redux";
+import React, { Component } from 'react';
+import classnames from 'classnames';
+import * as yup from 'yup';
+import numeral from 'numeral';
+import { Link } from 'react-router-dom';
+import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
+import { I18n } from 'react-redux-i18n';
+
+import IconHeader from '@centreon/ui/Icon/IconHeader';
+import IconNumber from '@centreon/ui/Icon/IconNumber';
+import IconToggleSubmenu from '@centreon/ui/Icon/IconToggleSubmenu';
+import SubmenuHeader from '@centreon/ui/Submenu/SubmenuHeader';
+import SubmenuItem from '@centreon/ui/Submenu/SubmenuHeader/SubmenuItem';
+import SubmenuItems from '@centreon/ui/Submenu/SubmenuHeader/SubmenuItems';
+
+import styles from '../header/header.scss';
+import axios from '../../axios';
+
+const numberFormat = yup
+  .number()
+  .required()
+  .integer();
+
+const statusSchema = yup.object().shape({
+  down: yup.object().shape({
+    total: numberFormat,
+    unhandled: numberFormat,
+  }),
+  unreachable: yup.object().shape({
+    total: numberFormat,
+    unhandled: numberFormat,
+  }),
+  ok: numberFormat,
+  pending: numberFormat,
+  total: numberFormat,
+  refreshTime: numberFormat,
+});
 
 class HostMenu extends Component {
-
   hostsService = axios(
-    "internal.php?object=centreon_topcounter&action=hosts_status"
+    'internal.php?object=centreon_topcounter&action=hosts_status',
   );
 
   refreshInterval = null;
@@ -20,52 +59,55 @@ class HostMenu extends Component {
   state = {
     toggled: false,
     data: null,
-    intervalApplied: false
+    intervalApplied: false,
   };
 
-  UNSAFE_componentWillMount() {
+  componentDidMount() {
     window.addEventListener('mousedown', this.handleClick, false);
-  };
+  }
 
   componentWillUnmount() {
     window.removeEventListener('mousedown', this.handleClick, false);
     clearInterval(this.refreshInterval);
-  };
+  }
 
   // fetch api to get host data
   getData = () => {
-    this.hostsService.get().then(({data}) => {
-      this.setState({
-        data
-      });
-    }).catch((error) => {
-      if (error.response.status == 401){
-        this.setState({
-          data: null
+    this.hostsService
+      .get()
+      .then(({ data }) => {
+        statusSchema.validate(data).then(() => {
+          this.setState({ data });
         });
-      }
-    });
-  }
+      })
+      .catch((error) => {
+        if (error.response && error.response.status === 401) {
+          this.setState({
+            data: null,
+          });
+        }
+      });
+  };
 
-  componentWillReceiveProps = (nextProps) => {
-    const {refreshTime} = nextProps;
-    const {intervalApplied} = this.state;
-    if(refreshTime && !intervalApplied){
+  UNSAFE_componentWillReceiveProps = (nextProps) => {
+    const { refreshTime } = nextProps;
+    const { intervalApplied } = this.state;
+    if (refreshTime && !intervalApplied) {
       this.getData();
       this.refreshInterval = setInterval(() => {
         this.getData();
       }, refreshTime);
       this.setState({
-        intervalApplied:true
-      })
+        intervalApplied: true,
+      });
     }
-  }
+  };
 
   // display/hide detailed host data
   toggle = () => {
     const { toggled } = this.state;
     this.setState({
-      toggled: !toggled
+      toggled: !toggled,
     });
   };
 
@@ -75,7 +117,7 @@ class HostMenu extends Component {
       return;
     }
     this.setState({
-      toggled: false
+      toggled: false,
     });
   };
 
@@ -84,107 +126,140 @@ class HostMenu extends Component {
 
     // do not display host information until having data
     if (!data) {
-      return null
+      return null;
     }
 
     return (
-      <div className={classnames(styles["wrap-right-hosts"], {[styles["submenu-active"]]: toggled})}>
-        <Link to={"/main.php?p=20202&o=h_down&search="} className={classnames(styles["wrap-middle-icon"], styles["round"], styles["round-small"], {[styles[data.down.unhandled > 0 ? "red" : "red-bordered"]]: true})}>
-          <span className={styles["number"]}>
-            <span id="count-host-down">{numeral(data.down.unhandled).format("0a")}</span>
-          </span>
-        </Link>
-        <Link to={"/main.php?p=20202&o=h_unreachable&search="} className={classnames(styles["wrap-middle-icon"], styles["round"], styles["round-small"], {[styles[data.unreachable.unhandled > 0 ? "gray-dark" : "gray-dark-bordered"]]: true})}>
-          <span className={styles["number"]}>
-            <span id="count-host-unreachable">{numeral(data.unreachable.unhandled).format("0a")}</span>
-          </span>
-        </Link>
-        <Link to={"/main.php?p=20202&o=h_up&search="} className={classnames(styles["wrap-middle-icon"], styles["round"], styles["round-small"], {[styles[data.ok > 0 ? "green" : "green-bordered"]]: true})}>
-          <span className={styles["number"]}>
-            <span id="count-host-up">{numeral(data.ok).format("0a")}</span>
-          </span>
-        </Link>
-        <div ref={host => this.host = host}>
-          <span className={classnames(styles["wrap-right-icon"], styles["hosts"])} onClick={this.toggle.bind(this)}>
-            <span className={classnames(styles["iconmoon"], styles["icon-hosts"])}>
-              {data.pending > 0 ? <span className={styles["custom-icon"]} /> : null}
-            </span>
-            <span className={styles["wrap-right-icon__name"]}><Translate value="Hosts"/></span>
-          </span>
-          <span className={styles["toggle-submenu-arrow"]} onClick={this.toggle.bind(this)} >{this.props.children}</span>
-          <div className={classnames(styles["submenu"], styles["host"])}>
-            <div className={styles["submenu-inner"]}>
-              <ul className={classnames(styles["submenu-items"], styles["list-unstyled"])}>
-                <li className={styles["submenu-item"]}>
-                  <Link
-                    to={"/main.php?p=20202&o=h&search="}
-                    className={styles["submenu-item-link"]}
-                  >
-                    <div onClick={this.toggle}>
-                      <Translate value="All"/>
-                      <span className={styles["submenu-count"]}>{numeral(data.total).format("0a")}</span>
-                    </div>
-                  </Link>
-                </li>
-                <li className={styles["submenu-item"]}>
-                  <Link
-                    to={"/main.php?p=20202&o=h_down&search="}
-                    className={styles["submenu-item-link"]}
-                  >
-                    <div onClick={this.toggle}>
-                      <span className={classnames(styles["dot-colored"], styles["red"])}><Translate value="Down"/></span>
-                      <span className={styles["submenu-count"]}>
-                        {numeral(data.down.unhandled).format("0a")}/{numeral(data.down.total).format("0a")}
-                      </span>
-                    </div>
-                  </Link>
-                </li>
-                <li className={styles["submenu-item"]}>
-                  <Link
-                    to={"/main.php?p=20202&o=h_unreachable&search="}
-                    className={styles["submenu-item-link"]}
-                  >
-                    <div onClick={this.toggle}>
-                      <span className={classnames(styles["dot-colored"], styles["gray"])}><Translate value="Unreachable"/></span>
-                      <span className={styles["submenu-count"]}>
-                        {numeral(data.unreachable.unhandled).format("0a")}/{numeral(data.unreachable.total).format("0a")}
-                      </span>
-                    </div>
-                  </Link>
-                </li>
-                <li className={styles["submenu-item"]}>
-                  <Link
-                    to={"/main.php?p=20202&o=h_up&search="}
-                    className={styles["submenu-item-link"]}
-                  >
-                    <div onClick={this.toggle}>
-                      <span className={classnames(styles["dot-colored"], styles["green"])}><Translate value="Up"/></span>
-                      <span className={styles["submenu-count"]}>{numeral(data.ok).format("0a")}</span>
-                    </div>
-                  </Link>
-                </li>
-                <li className={styles["submenu-item"]}>
-                  <Link
-                    to={"/main.php?p=20202&o=h_pending&search="}
-                    className={styles["submenu-item-link"]}
-                  >
-                    <div onClick={this.toggle}>
-                      <span className={classnames(styles["dot-colored"], styles["blue"])}><Translate value="Pending"/></span>
-                      <span className={styles["submenu-count"]}>{numeral(data.pending).format("0a")}</span>
-                    </div>
-                  </Link>
-                </li>
-              </ul>
-            </div>
+      <div
+        className={`${styles.wrapper} wrap-right-hosts`}
+        ref={(host) => (this.host = host)}
+      >
+        <SubmenuHeader submenuType="top" active={toggled}>
+          <IconHeader iconType="hosts" iconName="Hosts" onClick={this.toggle} />
+          <Link
+            className={classnames(styles.link, styles['wrap-middle-icon'])}
+            to="/main.php?p=20202&o=h_down&search="
+          >
+            <IconNumber
+              iconType={`${data.down.unhandled > 0 ? 'colored' : 'bordered'}`}
+              iconColor="red"
+              iconNumber={
+                <span id="count-host-down">
+                  {numeral(data.down.unhandled).format('0a')}
+                </span>
+              }
+            />
+          </Link>
+          <Link
+            className={classnames(styles.link, styles['wrap-middle-icon'])}
+            to="/main.php?p=20202&o=h_unreachable&search="
+          >
+            <IconNumber
+              iconType={`${
+                data.unreachable.unhandled > 0 ? 'colored' : 'bordered'
+              }`}
+              iconColor="gray-dark"
+              iconNumber={
+                <span id="count-host-unreachable">
+                  {numeral(data.unreachable.unhandled).format('0a')}
+                </span>
+              }
+            />
+          </Link>
+          <Link
+            className={classnames(styles.link, styles['wrap-middle-icon'])}
+            to="/main.php?p=20202&o=h_up&search="
+          >
+            <IconNumber
+              iconType={`${data.ok > 0 ? 'colored' : 'bordered'}`}
+              iconColor="green"
+              iconNumber={
+                <span id="count-host-up">{numeral(data.ok).format('0a')}</span>
+              }
+            />
+          </Link>
+          <IconToggleSubmenu
+            iconType="arrow"
+            ref={this.setWrapperRef}
+            rotate={toggled}
+            onClick={this.toggle}
+          />
+          <div
+            className={classnames(styles['submenu-toggle'], {
+              [styles['submenu-toggle-active']]: toggled,
+            })}
+          >
+            <SubmenuItems>
+              <Link
+                to="/main.php?p=20202&o=h&search="
+                className={styles.link}
+                onClick={this.toggle}
+              >
+                <SubmenuItem
+                  submenuTitle={I18n.t('All')}
+                  submenuCount={numeral(data.total).format()}
+                />
+              </Link>
+              <Link
+                to="/main.php?p=20202&o=h_down&search="
+                className={styles.link}
+                onClick={this.toggle}
+              >
+                <SubmenuItem
+                  dotColored="red"
+                  submenuTitle={I18n.t('Critical')}
+                  submenuCount={`${numeral(data.down.unhandled).format(
+                    '0a',
+                  )}/${numeral(data.down.total).format('0a')}`}
+                />
+              </Link>
+              <Link
+                to="/main.php?p=20202&o=h_unreachable&search="
+                className={styles.link}
+                onClick={this.toggle}
+              >
+                <SubmenuItem
+                  dotColored="gray"
+                  submenuTitle={I18n.t('Unreachable')}
+                  submenuCount={`${numeral(data.unreachable.unhandled).format(
+                    '0a',
+                  )}/${numeral(data.unreachable.total).format('0a')}`}
+                />
+              </Link>
+              <Link
+                to="/main.php?p=20202&o=h_up&search="
+                className={styles.link}
+                onClick={this.toggle}
+              >
+                <SubmenuItem
+                  dotColored="green"
+                  submenuTitle={I18n.t('Up')}
+                  submenuCount={numeral(data.ok).format()}
+                />
+              </Link>
+              <Link
+                to="/main.php?p=20202&o=h_pending&search="
+                className={styles.link}
+                onClick={this.toggle}
+              >
+                <SubmenuItem
+                  dotColored="blue"
+                  submenuTitle={I18n.t('Pending')}
+                  submenuCount={numeral(data.pending).format()}
+                />
+              </Link>
+            </SubmenuItems>
           </div>
-        </div>
+        </SubmenuHeader>
       </div>
-    )
+    );
   }
 }
 
 const mapStateToProps = ({ intervals }) => ({
-  refreshTime: intervals ? parseInt(intervals.AjaxTimeReloadMonitoring)*1000 : false
+  refreshTime: intervals
+    ? parseInt(intervals.AjaxTimeReloadMonitoring) * 1000
+    : false,
 });
 
 const mapDispatchToProps = {};
@@ -192,5 +267,6 @@ const mapDispatchToProps = {};
 export default connect(mapStateToProps, mapDispatchToProps)(HostMenu);
 
 HostMenu.propTypes = {
-  children: PropTypes.element.isRequired,
+  refreshTime: PropTypes.oneOfType([PropTypes.number, PropTypes.bool])
+    .isRequired,
 };

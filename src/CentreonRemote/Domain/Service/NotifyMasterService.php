@@ -62,11 +62,13 @@ class NotifyMasterService
 
     /**
      * Ping the master IP requesting to be slave for it.
-     * @param string $ip
+     * @param string $ip The IP address of the master
+     * @param boolean $noCheckCertificate To do not check SLL CA on master
+     * @param array $data The information for the master how to contact the remote
      * @return array
      * @throws \ErrorException
      */
-    public function pingMaster($ip)
+    public function pingMaster($ip, $data, $noCheckCertificate = false, $noProxy = false)
     {
 
         $url = "{$ip}/centreon/api/external.php?object=centreon_remote_server&action=addToWaitList";
@@ -85,7 +87,17 @@ class NotifyMasterService
             $curlData = [
                 'app_key' => $applicationKey->getValue(),
                 'version' => $version->getValue(),
+                'http_method' => $data['remoteHttpMethod'] ?? 'http',
+                'http_port' => $data['remoteHttpPort'] ?? '',
+                'no_check_certificate' => $data['remoteNoCheckCertificate'] ?? 0,
             ];
+
+            if ($noCheckCertificate) {
+                $this->getCurl()->setOpt(CURLOPT_SSL_VERIFYPEER, false);
+            }
+            if ($noProxy) {
+                $this->getCurl()->setOpt(CURLOPT_PROXY, false);
+            }
 
             $this->getCurl()->post($url, $curlData);
 

@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright 2016 Centreon
+ * Copyright 2016-2019 Centreon
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,9 +22,8 @@ use Centreon\Test\Mock\CentreonDB;
 use Centreon\Test\Mock\DependencyInjector\ServiceContainer;
 use Centreon\Test\Mock\DependencyInjector\ConfigurationDBProvider;
 use Centreon\Test\Mock\DependencyInjector\FilesystemProvider;
-use Centreon\Test\Mock\DependencyInjector\FinderProvider;
 
-class InstallerTest extends \PHPUnit_Framework_TestCase
+class InstallerTest extends \PHPUnit\Framework\TestCase
 {
     private $container;
     private $db;
@@ -44,9 +43,6 @@ class InstallerTest extends \PHPUnit_Framework_TestCase
             'is_removeable' => 1,
             'infos' => 'my module for unit test',
             'author' => 'unit test',
-            'lang_files' => 0,
-            'sql_files' => 1,
-            'php_files' => 1,
             'svc_tools' => null,
             'host_tools' => null
         );
@@ -82,10 +78,10 @@ class InstallerTest extends \PHPUnit_Framework_TestCase
         $this->container->registerProvider(new FilesystemProvider($filesystem));
 
         $query = 'INSERT INTO modules_informations ' .
-            '(`name` , `rname` , `mod_release` , `is_removeable` , `infos` , `author` , `lang_files`, ' .
-            '`sql_files`, `php_files`, `svc_tools`, `host_tools`)' .
-            'VALUES ( :name , :rname , :mod_release , :is_removeable , :infos , :author , :lang_files , ' .
-            ':sql_files , :php_files , :svc_tools , :host_tools )';
+            '(`name` , `rname` , `mod_release` , `is_removeable` , `infos` , `author` , ' .
+            '`svc_tools`, `host_tools`)' .
+            'VALUES ( :name , :rname , :mod_release , :is_removeable , :infos , :author , ' .
+            ':svc_tools , :host_tools )';
         $this->db->addResultSet(
             $query,
             array()

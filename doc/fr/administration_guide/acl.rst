@@ -34,7 +34,7 @@ Groupes d'accès
 
 Pour ajouter un groupe d'accès :
 
-#. Rendez-vous dans le menu **Administration** ==> **ACL**
+#. Rendez-vous dans le menu **Administration > ACL**
 #. Cliquez sur **Ajouter**
 
 .. image :: /images/guide_exploitation/baccess_group.png
@@ -66,7 +66,7 @@ Les filtres d'accès aux ressources permettent de limiter la visualisation des o
 
 Pour ajouter un filtre d'accès aux ressources :
 
-#. Rendez-vous dans le menu **Administration** ==> **ACL**
+#. Rendez-vous dans le menu **Administration > ACL**
 #. Dans le menu de gauche, cliquez sur **Gestion des accès aux ressources**
 #. Cliquez sur **Ajouter**
 
@@ -124,16 +124,16 @@ Les filtres d'accès au menu permettent de limiter l'accès aux différents menu
 Les menus sont hiérarchisés de la manière suivante :
 
 * Les menus de niveau 1 (Accueil, Supervision, Vues, ...)
-* Les menus de niveau 2 (Supervision ==> Hôtes, Supervision ==> Services, ...)
-* Les menus contextuels de niveau 3 (Supervision ==> Services ==> Par hôtes / détails)
-* Les menus contextuels de niveau 4 (Supervision ==> Services ==> Par hôtes / détails ==> Problems)
+* Les menus de niveau 2 (Supervision > Hôtes, Supervision > Services, ...)
+* Les menus contextuels de niveau 3 (Supervision > Services > Par hôtes / détails)
+* Les menus contextuels de niveau 4 (Supervision > Services > Par hôtes / détails > Problems)
 
 .. note::
     Pour accéder à un niveau de menu 'n-1', l'utilisateur doit avoir accès au menu de niveau 'n' sinon ce dernier ne pourra pas visualiser le menu au travers de l'interface. Dans le cas contraire, l'utilisateur devra accéder directement à la page concernée via un lien direct (autologin, ...).
 
 Pour ajouter un filtre d'accès aux menus :
 
-#. Rendez-vous dans le menu **Administration** ==> **ACL**
+#. Rendez-vous dans le menu **Administration > ACL**
 #. Dans le menu de gauche, cliquez sur **Gestion des accès aux menus**
 #. Cliquez sur **Ajouter**
 
@@ -147,7 +147,7 @@ Pour ajouter un filtre d'accès aux menus :
 * Le champ **Commentaires** donne des indications sur le filtre
 
 .. warning::
-    Lors de la définition de l'accès aux menus **Configuration** ==> **Hôtes** et **Configuration** ==> **Service**, il est possible de donner accès en lecture seule aux différents objets ou en lecture/écriture.
+    Lors de la définition de l'accès aux menus **Configuration > Hôtes** et **Configuration > Service**, il est possible de donner accès en lecture seule aux différents objets ou en lecture/écriture.
 
 .. note::
     A chaque ajout de nouveau module Centreon possédant une interface web accessible au travers d'un nouveau menu, ce dernier devra être ajouté dans les groupes d'accès au menu afin que les utilisateurs puissent y accéder le cas échéant.
@@ -160,7 +160,7 @@ Les filtres sur les actions permettent de limiter l'accès aux actions réalisab
 
 Pour ajouter un filtre d'accès aux actions :
 
-#. Rendez-vous dans le menu **Administration** ==> **ACL**
+#. Rendez-vous dans le menu **Administration > ACL**
 #. Dans le menu de gauche, cliquez sur **Gestion des accès sur les actions**
 #. Cliquez sur **Ajouter**
 
@@ -181,8 +181,8 @@ Le tableau ci-dessous décrit les fonctionnalités générales d'accès :
 | Afficher les statistiques des          | Affiche les statistiques des collecteurs en haut à droite             |
 | collecteurs dans le bandeau            | (voir la case **Etat des collecteurs**)                               |
 +----------------------------------------+-----------------------------------------------------------------------+
-| Afficher la liste des                  | Affiche la liste des collecteurs dans **Supervision** ==> **Hôtes**   |
-| collecteurs                            | ou **Supervision** ==> **Services**                                   |
+| Afficher la liste des                  | Affiche la liste des collecteurs dans **Supervision > Hôtes**         |
+| collecteurs                            | ou **Supervision > Services**                                         |
 +----------------------------------------+-----------------------------------------------------------------------+
 
 Le tableau ci-dessous décrit les fonctionnalités de génération de la configuration :
@@ -209,8 +209,8 @@ Le tableau ci-dessous décrit l'ensemble des actions qui peuvent être autorisé
 | Afficher les statistiques des          | Affiche les statistiques des collecteurs en haut à droite             |
 | collecteurs dans le bandeau            | (voir la case **Etat des collecteurs**)                               |
 +----------------------------------------+-----------------------------------------------------------------------+
-| Afficher la liste des                  | Affiche la liste des collecteurs dans **Supervision** ==> **Hôtes**   |
-| collecteurs                            | ou **Supervision** ==> **Services**                                   |
+| Afficher la liste des                  | Affiche la liste des collecteurs dans **Supervision > Hôtes**         |
+| collecteurs                            | ou **Supervision > Services**                                         |
 +----------------------------------------+-----------------------------------------------------------------------+
 | Arrêter l'ordonnanceur                 | Autoriser l'arrêt de l'ordonnanceur                                   |
 +----------------------------------------+-----------------------------------------------------------------------+
@@ -340,7 +340,7 @@ Recalculer les ACLs
 
 Il est possible de recalculer manuellement les ACLs :
 
-#. Rendez-vous dans le menu **Administration** ==> **ACL**
+#. Rendez-vous dans le menu **Administration > ACL**
 #. Dans le menu de gauche, cliquez sur **Recharger les ACL**
 #. Sélectionnez le ou les utilisateurs pour lesquels vous souhaitez recharger les ACL
 #. Dans le menu **Plus d'actions**, cliquez sur **Recharger les ACL**

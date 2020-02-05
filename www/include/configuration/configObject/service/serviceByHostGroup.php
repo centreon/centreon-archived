@@ -82,7 +82,7 @@ if ($ret['topology_page'] != "" && $p != $ret['topology_page']) {
 }
 
 $acl = $centreon->user->access;
-$acldbname = $acl->getNameDBAcl();
+$aclDbName = $acl->getNameDBAcl();
 
 switch ($o) {
     case "a":

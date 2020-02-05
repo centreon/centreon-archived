@@ -22,7 +22,7 @@ use \Centreon\Test\Mock\CentreonDB;
 use Centreon\Test\Mock\DependencyInjector\ServiceContainer;
 use Centreon\Test\Mock\DependencyInjector\ConfigurationDBProvider;
 
-class InstallerTest extends \PHPUnit_Framework_TestCase
+class InstallerTest extends \PHPUnit\Framework\TestCase
 {
     private $container;
     private $db;

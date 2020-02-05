@@ -65,7 +65,7 @@ To display help use the command::
 
 To run the script please use the following command::
 
-  $ perl nagios_reader_to_centreon_clapi.pl --config /usr/local/nagios/etc/nagios.cfg > /tmp/centreon_clapi_import_commands.txt
+  $ perl nagios_reader_to_centreon_clapi.pl --config /usr/local/nagios/etc/ > /tmp/centreon_clapi_import_commands.txt
 
 Export the file /tmp/centreon_clapi_import_commands.txt on your Centreon server.
 

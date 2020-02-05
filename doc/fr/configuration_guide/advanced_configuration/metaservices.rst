@@ -42,7 +42,7 @@ Configuration
 
 Pour ajouter un méta-service :
 
-#. Rendez-vous dans le menu **Configuration** ==> **Services**
+#. Rendez-vous dans le menu **Configuration > Services**
 #. Dans le menu de gauche, cliquez sur **Méta-services**
 #. Cliquez sur **Ajouter**
 

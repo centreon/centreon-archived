@@ -55,17 +55,22 @@ Migrating a server from the Centreon Poller Display to Remote Server
 This command will enable **Remote Server** mode::
 
     Starting Centreon Remote enable process:
-      
+
       Limiting Menu Access...Success
       Limiting Actions...Done
-      
+
       Notifying Master...Success
 
       Set 'remote' instance type...Done
 
       Centreon Remote enabling finished.
 
-6. Exchange the SSH key. If you do not have a private SSH key for the Centreon user on the central server: ::
+6. Add rights to centreon database user to use **LOAD DATA INFILE** command::
+
+    # mysql -h <database_server_address> -u root -p
+    MariaDB [(none)]> GRANT FILE on *.* to 'centreon'@'<remote_server_ip>';
+
+7. Exchange the SSH key. If you do not have a private SSH key for the Centreon user on the central server: ::
 
     # su - centreon
     $ ssh-keygen -t rsa
@@ -75,7 +80,7 @@ Copy this key to the new server: ::
     # su - centreon
     $ ssh-copy-id -i .ssh/id_rsa.pub centreon@IP_POLLER
 
-7. **On the Centreon Central server**, edit all pollers and attach them to the
+8. **On the Centreon Central server**, edit all pollers and attach them to the
    **Remote Server** using the selection list.
 
 .. note::

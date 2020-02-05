@@ -5,6 +5,8 @@
 .wrapper {
   display: flex;
   align-items: stretch;
+  height: 100%;
+  overflow: hidden;
 }
 
 .main-content {
@@ -24,6 +26,11 @@
 }
 
 .fullscreen-wrapper {
-  flex-grow: 1;
   overflow: hidden;
+  flex-grow: 1;
+}
+
+.react-page {
+  overflow: auto;
+  height: calc(100vh - 82px);
 }

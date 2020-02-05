@@ -3,10 +3,7 @@
 namespace CentreonRemote\Application\Webservice;
 
 use CentreonRemote\Application\Validator\WizardConfigurationRequestValidator;
-use CentreonRemote\Domain\Service\ConfigurationWizard\LinkedPollerConfigurationService;
 use Centreon\Domain\Entity\Task;
-use CentreonRemote\Domain\Service\ConfigurationWizard\PollerConfigurationRequestBridge;
-use CentreonRemote\Domain\Service\ConfigurationWizard\ServerConnectionConfigurationService;
 use CentreonRemote\Domain\Value\ServerWizardIdentity;
 
 /**
@@ -75,6 +72,55 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
     }
 
     /**
+     * @OA\Get(
+     *   path="/internal.php?object=centreon_configuration_remote&action=list",
+     *   description="Get list with connected remotes",
+     *   tags={"centreon_configuration_remote"},
+     *   security={{"Session": {}}},
+     *   @OA\Parameter(
+     *       in="query",
+     *       name="object",
+     *       @OA\Schema(
+     *          type="string",
+     *          enum={"centreon_configuration_remote"},
+     *          default="centreon_configuration_remote"
+     *       ),
+     *       description="the name of the API object class",
+     *       required=true
+     *   ),
+     *   @OA\Parameter(
+     *       in="query",
+     *       name="action",
+     *       @OA\Schema(
+     *          type="string",
+     *          enum={"getRemotesList"},
+     *          default="getRemotesList"
+     *       ),
+     *       description="the name of the action in the API class",
+     *       required=true
+     *   ),
+     *   @OA\Response(
+     *       response=200,
+     *       description="JSON with the IPs of connected remotes",
+     *       @OA\JsonContent(
+     *          @OA\Property(property="id", type="string"),
+     *          @OA\Property(property="ip", type="string"),
+     *          @OA\Property(property="name", type="string")
+     *       )
+     *   )
+     * )
+     *
+     * Get list with connected remotes
+     *
+     * @return array
+     * @example [['id' => 'poller id', 'ip' => 'poller ip address', 'name' => 'poller name']]
+     */
+    public function getList(): array
+    {
+        return $this->postGetRemotesList();
+    }
+
+    /**
      * @OA\Post(
      *   path="/internal.php?object=centreon_configuration_remote&action=getRemotesList",
      *   description="Get list with connected remotes",
@@ -116,7 +162,7 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
      * Get list with connected remotes
      *
      * @return array
-     * @example ['id' => 'poller id', 'ip' => 'poller ip address', 'name' => 'poller name']
+     * @example [['id' => 'poller id', 'ip' => 'poller ip address', 'name' => 'poller name']]
      */
     public function postGetRemotesList(): array
     {
@@ -216,9 +262,14 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
      *              description="pollers to link with the new remote"
      *          ),
      *          @OA\Property(
-     *              property="linked_remote",
+     *              property="linked_remote_master",
      *              type="string",
      *              description="remote to manage the new poller"
+     *          ),
+     *          @OA\Property(
+     *              property="linked_remote_slaves",
+     *              type="string",
+     *              description="additional remotes which receive data from the new poller"
      *          )
      *       )
      *   ),
@@ -247,6 +298,9 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
 
         $openBrokerFlow = isset($this->arguments['open_broker_flow']) && $this->arguments['open_broker_flow'] === true;
         $centreonPath = $this->arguments['centreon_folder'] ?? '/centreon/';
+        $noCheckCertificate = isset($this->arguments['no_check_certificate'])
+            && $this->arguments['no_check_certificate'] === true;
+        $noProxy = isset($this->arguments['no_proxy']) && $this->arguments['no_proxy'] === true;
         $serverWizardIdentity = new ServerWizardIdentity;
         $isRemoteConnection = $serverWizardIdentity->requestConfigurationIsRemote();
         $configurationServiceName = $isRemoteConnection ?
@@ -256,31 +310,50 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
         // validate form fields
         WizardConfigurationRequestValidator::validate();
 
-        /** @var $pollerConfigurationService LinkedPollerConfigurationService */
         $pollerConfigurationService = $this->getDi()['centreon_remote.poller_config_service'];
-        /** @var $serverConfigurationService ServerConnectionConfigurationService */
         $serverConfigurationService = $this->getDi()[$configurationServiceName];
-        /** @var $pollerConfigurationBridge PollerConfigurationRequestBridge */
         $pollerConfigurationBridge = $this->getDi()['centreon_remote.poller_config_bridge'];
 
-        $serverIP = $this->arguments['server_ip'];
+        // extract HTTP method and port from form or database if registered
+        $httpMethod = "";
+        $httpPort = "";
+        $serverIP = parse_url($this->arguments['server_ip'], PHP_URL_HOST) ?: $this->arguments['server_ip'];
         $serverName = substr($this->arguments['server_name'], 0, 40);
+
+        $dbAdapter = $this->getDi()['centreon.db-manager']->getAdapter('configuration_db');
+        $sql = 'SELECT * FROM `remote_servers` WHERE `ip` = ?';
+        $dbAdapter->query($sql, [$serverIP]);
+        $hasIpInTable = (bool) $dbAdapter->count();
+
+        if (!$hasIpInTable) {
+            $httpMethod = parse_url($this->arguments['server_ip'], PHP_URL_SCHEME) ?: 'http';
+            $httpPort = parse_url($this->arguments['server_ip'], PHP_URL_PORT) ?: '';
+        } else {
+            $result = $dbAdapter->results();
+            $remoteData = reset($result);
+            $httpMethod = $remoteData->http_method;
+            $httpPort = $remoteData->http_port;
+        }
 
         $serverConfigurationService->setCentralIp($this->arguments['centreon_central_ip']);
         $serverConfigurationService->setServerIp($serverIP);
         $serverConfigurationService->setName($serverName);
         $serverConfigurationService->setOnePeerRetention($openBrokerFlow);
 
-        $pollerConfigurationService->setOnePeerRetention($openBrokerFlow);
-
         // set linked pollers
         $pollerConfigurationBridge->collectDataFromRequest();
+        // set additional Remote Servers
+        $pollerConfigurationBridge->collectDataFromAdditionalRemoteServers();
 
         // if it's a remote server, set database connection information and check if bam is installed
         if ($isRemoteConnection) {
             $serverConfigurationService->setDbUser($this->arguments['db_user']);
             $serverConfigurationService->setDbPassword($this->arguments['db_password']);
-            if ($serverWizardIdentity->checkBamOnRemoteServer($serverIP, $centreonPath)) {
+            if ($serverWizardIdentity->checkBamOnRemoteServer(
+                $httpMethod . '://' . $serverIP . ':' . $httpPort . '/' . trim($centreonPath, '/'),
+                $noCheckCertificate,
+                $noProxy
+            )) {
                 $serverConfigurationService->shouldInsertBamBrokers();
             }
         }
@@ -308,6 +381,10 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
                 'server' => $remoteServer->getId(),
                 'remote_ip' => $remoteServer->getIp(),
                 'centreon_path' => $centreonPath,
+                'http_method' => $httpMethod,
+                'http_port' => $httpPort,
+                'no_check_certificate' => $noCheckCertificate,
+                'no_proxy' => $noProxy,
                 'pollers' => []
             ];
 
@@ -325,7 +402,14 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
             $taskId = $this->createExportTask($params);
 
             // add server to the list of remote servers in database (table remote_servers)
-            $this->addServerToListOfRemotes($serverIP, $centreonPath);
+            $this->addServerToListOfRemotes(
+                $serverIP,
+                $centreonPath,
+                $httpMethod,
+                $httpPort,
+                $noCheckCertificate,
+                $noProxy
+            );
             $this->setCentreonInstanceAsCentral();
 
         // if it is poller wizard and poller is linked to another poller/remote server (instead of central)
@@ -333,6 +417,9 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
             $pollers = [$pollerConfigurationBridge->getPollerFromId($serverId)];
             $parentPoller = $pollerConfigurationBridge->getLinkedPollersSelectedForUpdate()[0];
             $pollerConfigurationService->linkPollersToParentPoller($pollers, $parentPoller);
+            // add broker output to forward data to additionnal remote server and link in db
+            $additionalRemotes = $pollerConfigurationBridge->getAdditionalRemoteServers();
+            $pollerConfigurationService->linkPollerToAdditionalRemoteServers($pollers[0], $additionalRemotes);
         }
 
         return ['success' => true, 'task_id' => $taskId];
@@ -359,10 +446,21 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
     /**
      * Add server ip in table of remote servers
      *
-     * @param $serverIP
+     * @param string $serverIP the IP of the server
+     * @param string $centreonPath the path to access to Centreon
+     * @param string $httpMethod the method to access to server (HTTP/HTTPS)
+     * @param string $httpPort the port to access to the server
+     * @param boolean $noCheckCertificate to do not check SSL CA
+     * @param boolean $noProxy to do not use configured proxy
      */
-    private function addServerToListOfRemotes($serverIP, $centreonPath)
-    {
+    private function addServerToListOfRemotes(
+        $serverIP,
+        $centreonPath,
+        $httpMethod,
+        $httpPort,
+        $noCheckCertificate,
+        $noProxy
+    ) {
         $dbAdapter = $this->getDi()[\Centreon\ServiceProvider::CENTREON_DB_MANAGER]->getAdapter('configuration_db');
         $date = date('Y-m-d H:i:s');
 
@@ -371,19 +469,24 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
         $hasIpInTable = (bool) $dbAdapter->count();
 
         if ($hasIpInTable) {
-            $sql = 'UPDATE `remote_servers` SET `is_connected` = ?, `connected_at` = ?, `centreon_path` = ? ' .
+            $sql = 'UPDATE `remote_servers` SET `is_connected` = ?, `connected_at` = ?, `centreon_path` = ?, ' .
+                '`no_check_certificate` = ?, `no_proxy` = ? ' .
                 'WHERE `ip` = ?';
-            $data = ['1', $date, $centreonPath, $serverIP];
+            $data = ['1', $date, $centreonPath, ($noCheckCertificate ?: 0), ($noProxy ?: 0), $serverIP];
             $dbAdapter->query($sql, $data);
         } else {
             $data = [
-                'ip'            => $serverIP,
-                'app_key'       => '',
-                'version'       => '',
-                'is_connected'  => '1',
-                'created_at'    => $date,
-                'connected_at'  => $date,
-                'centreon_path' => $centreonPath,
+                'ip'                   => $serverIP,
+                'app_key'              => '',
+                'version'              => '',
+                'is_connected'         => '1',
+                'created_at'           => $date,
+                'connected_at'         => $date,
+                'centreon_path'        => $centreonPath,
+                'http_method'          => $httpMethod,
+                'http_port'            => $httpPort ?: null,
+                'no_check_certificate' => $noCheckCertificate ?: 0,
+                'no_proxy'             => $noProxy ?: 0
             ];
             $dbAdapter->insert('remote_servers', $data);
         }

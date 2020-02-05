@@ -50,6 +50,7 @@ class Centreon
 
     public $Nagioscfg;
     public $optGen;
+    public $informations;
     public $redirectTo;
     public $modules;
     public $hooks;
@@ -127,6 +128,11 @@ class Centreon
         $this->initOptGen();
 
         /*
+         * Get general informations
+         */
+        $this->initInformations();
+
+        /*
          * Grab Modules
          */
         $this->creatModuleList();
@@ -165,15 +171,13 @@ class Centreon
     public function creatModuleList()
     {
         $this->modules = array();
-        $query = "SELECT `name`, `sql_files`, `lang_files`, `php_files` FROM `modules_informations`";
+        $query = "SELECT `name` FROM `modules_informations`";
         $dbResult = CentreonDBInstance::getConfInstance()->query($query);
         while ($result = $dbResult->fetch()) {
             $this->modules[$result["name"]] = array(
                 "name" => $result["name"],
                 "gen" => false,
                 "restart" => false,
-                "sql" => $result["sql_files"],
-                "lang" => $result["lang_files"],
                 "license" => false
             );
 
@@ -254,8 +258,8 @@ class Centreon
          */
         $DBRESULT = CentreonDBInstance::getConfInstance()->query("SELECT * FROM cfg_nagios, nagios_server
                                     WHERE nagios_server.id = cfg_nagios.nagios_server_id
-                                    AND nagios_server.localhost = '1' 
-                                    ORDER BY cfg_nagios.nagios_activate 
+                                    AND nagios_server.localhost = '1'
+                                    ORDER BY cfg_nagios.nagios_activate
                                     DESC LIMIT 1");
         $this->Nagioscfg = $DBRESULT->fetch();
         $DBRESULT = null;
@@ -275,6 +279,20 @@ class Centreon
         }
         $DBRESULT = null;
         unset($opt);
+    }
+
+    /**
+     * Store centreon informations in session
+     *
+     * @return void
+     */
+    public function initInformations(): void
+    {
+        $this->informations = [];
+        $result = CentreonDBInstance::getConfInstance()->query("SELECT * FROM `informations`");
+        while ($row = $result->fetch()) {
+            $this->informations[$row["key"]] = $row["value"];
+        }
     }
 
     /**

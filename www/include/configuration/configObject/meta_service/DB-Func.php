@@ -50,13 +50,13 @@ function testExistence($name = null)
         $id = $form->getSubmitValue('meta_id');
     }
     $query = "SELECT meta_id FROM meta_service WHERE meta_name = '" . htmlentities($name, ENT_QUOTES, "UTF-8") . "'";
-    $DBRESULT = $pearDB->query($query);
-    $meta = $DBRESULT->fetchRow();
+    $dbResult = $pearDB->query($query);
+    $meta = $dbResult->fetch();
     #Modif case
-    if ($DBRESULT->rowCount() >= 1 && $meta["meta_id"] == $id) {
+    if ($dbResult->rowCount() >= 1 && $meta["meta_id"] == $id) {
         return true;
     } #Duplicate entry
-    elseif ($DBRESULT->rowCount() >= 1 && $meta["meta_id"] != $id) {
+    elseif ($dbResult->rowCount() >= 1 && $meta["meta_id"] != $id) {
         return false;
     } else {
         return true;
@@ -124,9 +124,9 @@ function multipleMetaServiceInDB($metas = array(), $nbrDup = array())
     foreach ($metas as $key => $value) {
         global $pearDB;
         # Get all information about it
-        $DBRESULT = $pearDB->query("SELECT * FROM meta_service WHERE meta_id = '" . $key . "' LIMIT 1");
-        $row = $DBRESULT->fetchRow();
-        $row["meta_id"] = '';
+        $dbResult = $pearDB->query("SELECT * FROM meta_service WHERE meta_id = '" . $key . "' LIMIT 1");
+        $row = $dbResult->fetch();
+        $row["meta_id"] = null;
         # Loop on the number of MetaService we want to duplicate
         for ($i = 1; $i <= $nbrDup[$key]; $i++) {
             $val = null;
@@ -140,32 +140,32 @@ function multipleMetaServiceInDB($metas = array(), $nbrDup = array())
             if (testExistence($meta_name)) {
                 $val ? $rq = "INSERT INTO meta_service VALUES (" . $val . ")" : $rq = null;
                 $pearDB->query($rq);
-                $DBRESULT = $pearDB->query("SELECT MAX(meta_id) FROM meta_service");
-                $maxId = $DBRESULT->fetchRow();
+                $dbResult = $pearDB->query("SELECT MAX(meta_id) FROM meta_service");
+                $maxId = $dbResult->fetch();
                 if (isset($maxId["MAX(meta_id)"])) {
                     $metaObj = new CentreonMeta($pearDB);
                     $metaObj->insertVirtualService($maxId["MAX(meta_id)"], $meta_name);
                     /* Duplicate contacts */
                     $query = "SELECT DISTINCT contact_id FROM meta_contact WHERE meta_id = '" . $key . "'";
-                    $DBRESULT = $pearDB->query($query);
-                    while ($Contact = $DBRESULT->fetchRow()) {
+                    $dbResult = $pearDB->query($query);
+                    while ($Contact = $dbResult->fetch()) {
                         $query = "INSERT INTO meta_contact VALUES ('" .
                             $maxId["MAX(meta_id)"] . "', '" . $Contact["contact_id"] . "')";
                         $pearDB->query($query);
                     }
                     /* Duplicate contactgroups */
                     $query = "SELECT DISTINCT cg_cg_id FROM meta_contactgroup_relation WHERE meta_id = '" . $key . "'";
-                    $DBRESULT = $pearDB->query($query);
+                    $dbResult = $pearDB->query($query);
 
-                    while ($Cg = $DBRESULT->fetchRow()) {
+                    while ($Cg = $dbResult->fetch()) {
                         $query = "INSERT INTO meta_contactgroup_relation " .
-                            "VALUES ('', '" . $maxId["MAX(meta_id)"] . "', '" . $Cg["cg_cg_id"] . "')";
+                            "VALUES ('" . $maxId["MAX(meta_id)"] . "', '" . $Cg["cg_cg_id"] . "')";
                         $pearDB->query($query);
                     }
-                    $DBRESULT = $pearDB->query("SELECT * FROM meta_service_relation WHERE meta_id = '" . $key . "'");
-                    while ($metric = $DBRESULT->fetchRow()) {
+                    $dbResult = $pearDB->query("SELECT * FROM meta_service_relation WHERE meta_id = '" . $key . "'");
+                    while ($metric = $dbResult->fetch()) {
                         $val = null;
-                        $metric["msr_id"] = '';
+                        $metric["msr_id"] = null;
                         foreach ($metric as $key2 => $value2) {
                             $key2 == "meta_id" ? $value2 = $maxId["MAX(meta_id)"] : null;
                             $val
@@ -204,9 +204,9 @@ function multipleMetricInDB($metrics = array(), $nbrDup = array())
     foreach ($metrics as $key => $value) {
         global $pearDB;
         # Get all information about it
-        $DBRESULT = $pearDB->query("SELECT * FROM meta_service_relation WHERE msr_id = '" . $key . "' LIMIT 1");
-        $row = $DBRESULT->fetchRow();
-        $row["msr_id"] = '';
+        $dbResult = $pearDB->query("SELECT * FROM meta_service_relation WHERE msr_id = '" . $key . "' LIMIT 1");
+        $row = $dbResult->fetch();
+        $row["msr_id"] = null;
         # Loop on the number of Metric we want to duplicate
         for ($i = 1; $i <= $nbrDup[$key]; $i++) {
             $val = null;
@@ -217,7 +217,7 @@ function multipleMetricInDB($metrics = array(), $nbrDup = array())
                     : $val .= ($value2 != null ? ("'" . $value2 . "'") : "NULL");
             }
             $val ? $rq = "INSERT INTO meta_service_relation VALUES (" . $val . ")" : $rq = null;
-            $DBRESULT = $pearDB->query($rq);
+            $dbResult = $pearDB->query($rq);
         }
     }
 }
@@ -310,8 +310,8 @@ function insertMetaService($ret = array())
         : $rq .= "NULL";
     $rq .= ")";
     $pearDB->query($rq);
-    $DBRESULT = $pearDB->query("SELECT MAX(meta_id) FROM meta_service");
-    $meta_id = $DBRESULT->fetchRow();
+    $dbResult = $pearDB->query("SELECT MAX(meta_id) FROM meta_service");
+    $meta_id = $dbResult->fetch();
 
     /* Prepare value for changelog */
     $fields = CentreonLogAction::prepareChanges($ret);
@@ -410,7 +410,7 @@ function updateMetaService($meta_id = null)
     $fields = CentreonLogAction::prepareChanges($ret);
     $centreon->CentreonLogAction->insertLog("meta", $meta_id, CentreonDB::escape($ret["meta_name"]), "c", $fields);
 
-    $DBRESULT = $pearDB->query($rq);
+    $dbResult = $pearDB->query($rq);
 
     $metaObj = new CentreonMeta($pearDB);
     $metaObj->insertVirtualService($meta_id, CentreonDB::escape($ret["meta_name"]));
@@ -452,7 +452,7 @@ function updateMetaServiceContactGroup($meta_id = null)
     global $pearDB;
     $rq = "DELETE FROM meta_contactgroup_relation ";
     $rq .= "WHERE meta_id = '" . $meta_id . "'";
-    $DBRESULT = $pearDB->query($rq);
+    $dbResult = $pearDB->query($rq);
 
     $ret = array();
     $ret = CentreonUtils::mergeWithInitialValues($form, 'ms_cgs');
@@ -470,7 +470,7 @@ function updateMetaServiceContactGroup($meta_id = null)
         $rq .= "(meta_id, cg_cg_id) ";
         $rq .= "VALUES ";
         $rq .= "('" . $meta_id . "', '" . $ret[$i] . "')";
-        $DBRESULT = $pearDB->query($rq);
+        $dbResult = $pearDB->query($rq);
     }
 }
 
@@ -510,9 +510,9 @@ function insertMetric($ret = array())
         ? $rq .= "'" . $ret["activate"]["activate"] . "'"
         : $rq .= "NULL";
     $rq .= ")";
-    $DBRESULT = $pearDB->query($rq);
-    $DBRESULT = $pearDB->query("SELECT MAX(msr_id) FROM meta_service_relation");
-    $msr_id = $DBRESULT->fetchRow();
+    $dbResult = $pearDB->query($rq);
+    $dbResult = $pearDB->query("SELECT MAX(msr_id) FROM meta_service_relation");
+    $msr_id = $dbResult->fetch();
     return ($msr_id["MAX(msr_id)"]);
 }
 

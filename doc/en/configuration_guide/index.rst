@@ -7,7 +7,7 @@ This chapter will allow you to know all the configuration mechanisms of your sup
 Do forget to think about setting up a global strategy of the configuration in order to make able to have global actions configurations. For that, mechanisms are in place in Centreon to simplify your life such as :ref:`guest models and services <hosttemplates>`.
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 1
 
    actions
    hosts

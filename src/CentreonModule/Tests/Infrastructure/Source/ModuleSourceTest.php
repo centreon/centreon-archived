@@ -65,9 +65,6 @@ class ModuleSourceTest extends TestCase
         'infos' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent id ante neque.',
         'is_removeable' => '1',
         'author' => 'Centreon',
-        'lang_files' => '0',
-        'sql_files' => '1',
-        'php_files' => '0',
         'stability' => 'alpha',
         'last_update' => '2001-01-01',
         'release_note' => 'http://localhost',
@@ -132,7 +129,7 @@ class ModuleSourceTest extends TestCase
                     $result = 'vfs://modules/';
 
                     return $result;
-                }))
+            }))
         ;
         $this->source
             ->method('getModuleConf')
@@ -142,7 +139,7 @@ class ModuleSourceTest extends TestCase
                     ];
 
                     return $result;
-                }))
+            }))
         ;
     }
 
@@ -192,7 +189,7 @@ class ModuleSourceTest extends TestCase
     public function testUpdate()
     {
         try {
-            $this->source->update(static::$moduleNameMissing);
+            $this->assertNull($this->source->update(static::$moduleNameMissing));
         } catch (\Exception $ex) {
             $this->assertEquals(static::$moduleNameMissing, $ex->getMessage());
             $this->assertEquals(1, $ex->getCode()); // check moduleId
@@ -235,7 +232,7 @@ class ModuleSourceTest extends TestCase
 //    {
 //        $moduleSource = new ModuleSource($this->containerWrap);
 //        $result = $this->invokeMethod($moduleSource, 'getModuleConf', [static::getConfFilePath()]);
-//        //'php://filter/read=string.rot13/resource=' . 
+//        //'php://filter/read=string.rot13/resource=' .
 //    }
 
     public static function getConfFilePath(): string

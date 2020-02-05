@@ -13,6 +13,8 @@
   &-wrapper {
     position: relative;
     max-width: 320px;
+    max-height: 590px;
+    overflow-y: auto;
     margin-top: 30px;
     margin: 0 auto;
     border: 1px solid #cdcdcd;
@@ -85,6 +87,9 @@
     font-size: 12px;
     font-family: $primary-font-light;
     color: $lightblue-centreon-primary;
+  }
+  &-item {
+    padding-bottom: 15px;
   }
   &-text {
     font-size: 12px;

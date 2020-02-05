@@ -32,7 +32,7 @@ Configuration
 
 Pour ajouter un temps d'arrêt récurrent :
 
-#. Rendez-vous dans le menu **Supervision** ==> **Temps d'arrêt**
+#. Rendez-vous dans le menu **Supervision > Temps d'arrêt**
 #. Dans le menu de gauche, cliquez sur **Temps d'arrêt récurrent**
 #. Cliquez sur **Ajouter**
 

@@ -1,7 +1,7 @@
 <?php
 /*
  * Copyright 2005-2019 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -53,6 +53,7 @@ class EventDispatcher
     public const EVENT_READ    = 8;
     public const EVENT_DISPLAY = 16;
     public const EVENT_DUPLICATE = 32;
+    public const EVENT_SYNCHRONIZE = 64;
 
     /**
      * @var array List a values returned by callable function defined in the

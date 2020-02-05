@@ -73,29 +73,64 @@ if (!isset($_POST['poller'])) {
 global $generatePhpErrors;
 global $dependencyInjector;
 
-$generatePhpErrors = array();
+$generatePhpErrors = [];
 $pollers = explode(',', $_POST['poller']);
 
 // Add task to export files if there is a remote
-$idBindString = str_repeat('?,', count($pollers));
-$idBindString = rtrim($idBindString, ',');
-$queryRemotes = "SELECT ns.id, ns.ns_ip_address as ip, rs.centreon_path FROM nagios_server as ns
-    JOIN remote_servers as rs ON rs.ip = ns.ns_ip_address
-    WHERE ns.id IN({$idBindString})";
-
-$remotesStatement = $pearDB->query($queryRemotes, $pollers);
-$remotesResults = $remotesStatement->fetchAll(PDO::FETCH_ASSOC);
+$pollerParams = [];
+foreach ($pollers as $pollerId) {
+    $pollerParams[':poller_' . $pollerId] = $pollerId;
+}
+$statementRemotes = $pearDB->prepare('
+    SELECT ns.id, ns.ns_ip_address AS ip,
+    rs.centreon_path, rs.http_method, rs.http_port, rs.no_check_certificate, rs.no_proxy
+    FROM nagios_server AS ns
+    JOIN remote_servers AS rs ON rs.ip = ns.ns_ip_address
+    WHERE ns.id IN (' . implode(',', array_keys($pollerParams)) . ')
+    UNION
+    SELECT ns1.id, ns1.ns_ip_address AS ip,
+    rs.centreon_path, rs.http_method, rs.http_port, rs.no_check_certificate, rs.no_proxy
+    FROM nagios_server AS ns1
+    JOIN remote_servers AS rs ON rs.ip = ns1.ns_ip_address
+    JOIN nagios_server AS ns2 ON ns1.id = ns2.remote_id
+    WHERE ns2.id IN (' . implode(',', array_keys($pollerParams)) . ')
+    UNION
+    SELECT ns1.id, ns1.ns_ip_address AS ip,
+    rs.centreon_path, rs.http_method, rs.http_port, rs.no_check_certificate, rs.no_proxy
+    FROM nagios_server AS ns1
+    JOIN remote_servers AS rs ON rs.ip = ns1.ns_ip_address
+    JOIN rs_poller_relation AS rspr ON rspr.remote_server_id = ns1.id
+    WHERE rspr.poller_server_id IN (' . implode(',', array_keys($pollerParams)) . ')
+');
+foreach ($pollerParams as $key => $value) {
+    $statementRemotes->bindValue($key, $value, \PDO::PARAM_INT);
+}
+$statementRemotes->execute();
+$remotesResults = $statementRemotes->fetchAll(PDO::FETCH_ASSOC);
 
 if (!empty($remotesResults)) {
     foreach ($remotesResults as $remote) {
-        $queryLinked = "SELECT id FROM nagios_server WHERE remote_id = {$remote['id']}";
-        $linkedStatement = $pearDB->query($queryLinked);
+        $linkedStatement = $pearDB->prepare('
+            SELECT id
+            FROM nagios_server
+            WHERE remote_id = :remote_id
+            UNION
+            SELECT poller_server_id AS id
+            FROM rs_poller_relation
+            WHERE remote_server_id = :remote_id
+        ');
+        $linkedStatement->bindValue(':remote_id', $remote['id'], \PDO::PARAM_INT);
+        $linkedStatement->execute();
         $linkedResults = $linkedStatement->fetchAll(PDO::FETCH_ASSOC);
 
         $exportParams = [
-            'server'        => $remote['id'],
-            'remote_ip'     => $remote['ip'],
+            'server' => $remote['id'],
+            'remote_ip' => $remote['ip'],
             'centreon_path' => $remote['centreon_path'],
+            'http_method' => $remote['http_method'],
+            'http_port' => $remote['http_port'] ?: null,
+            'no_check_certificate' => $remote['no_check_certificate'],
+            'no_proxy' => $remote['no_proxy'],
             'pollers' => []
         ];
 
@@ -141,8 +176,8 @@ try {
     $ret['host'] = $pollers;
 
     chdir(_CENTREON_PATH_ . "www");
-    $nagiosCFGPath = _CENTREON_PATH_ . "/filesGeneration/engine/";
-    $centreonBrokerPath = _CENTREON_PATH_ . "/filesGeneration/broker/";
+    $nagiosCFGPath = _CENTREON_CACHEDIR_ . "/config/engine/";
+    $centreonBrokerPath = _CENTREON_CACHEDIR_ . "/config/broker/";
 
     $centreon = $_SESSION['centreon'];
     $centreon = $centreon;
@@ -185,12 +220,6 @@ try {
         'keys' => array('id')
     ));
 
-
-    # Get correlation infos
-    $brokerObj = new CentreonConfigCentreonBroker($pearDB);
-    $correlationPath = $brokerObj->getCorrelationFile();
-    $localId = getLocalhostId();
-
     foreach ($tabs as $tab) {
         if (isset($ret["host"]) && ($ret["host"] == 0 || in_array($tab['id'], $ret["host"]))) {
             $tab_server[$tab["id"]] = array(
@@ -202,21 +231,8 @@ try {
     }
 
     foreach ($tab_server as $host) {
-        # Manage correlation files
-        if (false !== $correlationPath && false !== $localId) {
-            $tmpFilename = $centreonBrokerPath . '/' . $host['id'] . '/correlation_' . $host['id'] . '.xml';
-            $filenameToGenerate = dirname($correlationPath) . '/correlation_' . $host['id'] . '.xml';
-            # Purge file
-            if (file_exists($filenameToGenerate)) {
-                @unlink($filenameToGenerate);
-            }
-            # Copy file
-            if (file_exists($tmpFilename)) {
-                @copy($tmpFilename, $filenameToGenerate);
-            }
-        }
         if (isset($pollers) && ($pollers == 0 || in_array($host['id'], $pollers))) {
-            $listBrokerFile = glob($centreonBrokerPath . $host['id'] . "/*.{xml,cfg,sql}", GLOB_BRACE);
+            $listBrokerFile = glob($centreonBrokerPath . $host['id'] . "/*.{xml,json,cfg,sql}", GLOB_BRACE);
             if (isset($host['localhost']) && $host['localhost'] == 1) {
                 /*
                  * Check if monitoring engine's configuration directory existss

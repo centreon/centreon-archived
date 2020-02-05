@@ -31,7 +31,3 @@ INSERT INTO `topology` (`topology_name`, `topology_url`, `readonly`, `is_react`,
 -- Remove old Extensions Page menus
 DELETE FROM `topology` WHERE (`topology_page` = '50701');
 DELETE FROM `topology` WHERE (`topology_page` = '50703');
-
--- New configuration options for Centreon Engine
-ALTER TABLE `cfg_nagios` ADD COLUMN `enable_macros_filter` ENUM('0', '1') DEFAULT '0';
-ALTER TABLE `cfg_nagios` ADD COLUMN `macros_filter` TEXT DEFAULT '';

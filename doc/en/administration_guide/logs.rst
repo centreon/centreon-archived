@@ -70,9 +70,9 @@ The table below defines the columns of the changes table:
 |                      | - After: Indicates the new value                          |
 +----------------------+-----------------------------------------------------------+
 
-=============
+*************
 Configuration
-=============
+*************
 
 To enable user audit logs, go to **Administration > Parameters > Options** and
 check the **Enable/Disable audit logs** option:

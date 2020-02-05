@@ -1,22 +1,27 @@
-import React, { Component, Suspense } from "react";
-import { connect } from "react-redux";
+/* eslint-disable react/jsx-filename-extension */
+/* eslint-disable react/prop-types */
+/* eslint-disable no-shadow */
+
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import classnames from 'classnames';
 import styles from './header.scss';
 
-import Hook from "../hook";
+import Hook from '../hook';
 
 import { setRefreshIntervals } from '../../redux/actions/refreshActions';
 
-import PollerMenu from "../pollerMenu";
-import UserMenu from "../userMenu";
-import HostMenu from "../hostMenu";
-import ServiceStatusMenu from "../serviceStatusMenu";
+import PollerMenu from '../pollerMenu';
+import UserMenu from '../userMenu';
+import HostMenu from '../hostMenu';
+import ServiceStatusMenu from '../serviceStatusMenu';
 
-import axios from "../../axios";
+import axios from '../../axios';
 
 class TopHeader extends Component {
-
-  refreshIntervalsApi = axios("internal.php?object=centreon_topcounter&action=refreshIntervals");
+  refreshIntervalsApi = axios(
+    'internal.php?object=centreon_topcounter&action=refreshIntervals',
+  );
 
   getRefreshIntervals = () => {
     const { setRefreshIntervals } = this.props;
@@ -28,23 +33,21 @@ class TopHeader extends Component {
       .catch((err) => {
         console.log(err);
       });
-  }
+  };
 
-  UNSAFE_componentWillMount = () => {
-    this.getRefreshIntervals()
-  }
+  componentDidMount = () => {
+    this.getRefreshIntervals();
+  };
 
   render() {
     return (
-      <header className={styles["header"]}>
-        <div className={styles["header-icons"]}>
-          <div className={classnames(styles["wrap"], styles["wrap-left"])}>
+      <header className={styles.header}>
+        <div className={styles['header-icons']}>
+          <div className={classnames(styles.wrap, styles['wrap-left'])}>
             <PollerMenu />
           </div>
-          <div className={classnames(styles["wrap"], styles["wrap-right"])}>
-            <Hook
-              path="/header/topCounter"
-            />
+          <div className={classnames(styles.wrap, styles['wrap-right'])}>
+            <Hook path="/header/topCounter" />
             <HostMenu />
             <ServiceStatusMenu />
             <UserMenu />
@@ -52,13 +55,13 @@ class TopHeader extends Component {
         </div>
       </header>
     );
-  };
+  }
 }
 
 const mapStateToProps = () => ({});
 
 const mapDispatchToProps = {
-  setRefreshIntervals
+  setRefreshIntervals,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(TopHeader);

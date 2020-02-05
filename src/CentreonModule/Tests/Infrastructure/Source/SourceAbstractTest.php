@@ -62,7 +62,7 @@ class SourceAbstractTest extends TestCase
             ->method('initInfo')
             ->will($this->returnCallback(function () {
                     $this->assertTrue(true);
-                }))
+            }))
         ;
 
         $this->source
@@ -76,7 +76,7 @@ class SourceAbstractTest extends TestCase
                     $entity->setUpdated(false);
 
                     return $entity;
-                }))
+            }))
         ;
 
         $this->source->installer = function ($id) {

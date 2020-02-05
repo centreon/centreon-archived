@@ -1,3 +1,7 @@
+********************************
+Initialisation de la supervision
+********************************
+
 Pour démarrer l'ordonnanceur de supervision :
 
 1. Sur l'interface web, rendez-vous dans le menu **Configuration > Collecteurs**
@@ -35,62 +39,19 @@ Lancer les commandes suivantes sur le serveur Central : ::
     # systemctl enable centengine
     # systemctl enable centreon
 
-L'interface web de Centreon est composée de plusieurs menus, chaque menu a une fonction bien précise :
+************************************
+Installer les extensions disponibles
+************************************
 
-.. image :: /images/guide_utilisateur/amenu.png
-   :align: center
-
-* Le menu **Accueil** permet d'accéder au premier écran d'accueil après s'être
-  connecté. Il résume l'état général de la supervision. Votre espace de travail
-  peut être vide pour l'instant. Une fois que vous avez configuré les widgets
-  personnalisables, vous verrez les données et les graphiques en fonction de votre
-  personnalisation.
-* Le menu **Supervision** regroupe l'état de tous les éléments supervisés en temps réel et en différé au travers de la visualisation des logs
-* Le menu **Vues** permet de visualiser et de configurer les graphiques de performances pour chaque élément du système d'informations
-* Le menu **Rapports** permet de visualiser de manière intuitive (via des diagrammes) l'évolution de la supervision sur une période donnée
-* Le menu **Configuration** permet de configurer l'ensemble des éléments supervisés ainsi que l'infrastructure de supervision
-* Le menu **Administration** permet de configurer l'interface web Centreon ainsi que de visualiser l'état général des serveurs
-
-***************************************
-Configurez votre supervision facilement
-***************************************
-
-En lui-même Centreon est un excellent outil de supervision et peut être
-configuré pour correspondre exactement à vos besoins. Cependant vous
-trouverez peut-être utile d'utiliser Centreon IMP pour vous aider à
-configurer rapidement votre supervision. Centreon IMP vous fournit des
-Plugin Packs qui sont des paquets contenant des modèles de configuration
-qui réduisent drastiquement le temps nécessaire pour superviser la
-plupart des services de votre réseau.
-
-Centreon IMP nécessite les composants techniques Centreon License
-Manager et Centreon Plugin Pack Manager pour fonctionner.
-
-Si vous n'avez pas installé les modules durant l'instalaltion de Centreon,
-Rendez-vous au menu **Administration > Extensions > Modules**.
-
-Clicquez sur le bouton **Install/Upgrade all** et validez l'action :
-
-.. image:: /_static/images/installation/install_imp_1.png
-   :align: center
-
-Une fois l'instalaltion terminée, cliquez sur **Back**.
-Les modules sont maintenant installés :
+Rendez-vous au menu **Administration > Extensions > Manager**.
+Clicquez sur le bouton **Installall** :
 
 .. image:: /_static/images/installation/install_imp_2.png
    :align: center
 
-Vous pouvez maintenant vous rendre au menu **Configuration > Extensions
--> Plugin Packs**. Vous y trouverez vos six premiers Plugin Packs
-gratuits pour vous aider à démarrer. Cinq Plugin Packs supplémentaires
-sont débloqués après vous être inscrit et plus de 300 sont disponibles
-si vous souscrivez à l'offre IMP (plus d'informations sur
-`notre site web <https://www.centreon.com>`_).
+****************
+Démarrage rapide
+****************
 
-.. image:: /_static/images/installation/install_imp_3.png
-   :align: center
-
-Configurez :ref:`le proxy<impproxy>` pour connecter votre serveur
-Centreon à internet, puis rendez-vous au chapitre
-:ref:`démarrage rapide<quickstart>` pour mettre en place votre première
-supervision.
+Rendez vous au chapitre :ref:`démarrage rapide<quickstart>` pour mettre en place
+votre première supervision.

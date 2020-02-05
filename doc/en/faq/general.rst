@@ -68,14 +68,14 @@ of CentOS.
 
 Yes, you may apply a migration procedure to migrate your Centreon from a version
 based on CentOS 6 to Centreon 18.10.
-:ref:`Please see this chapter.<upgradecentreon1810>`
+:ref:`Please see this chapter.<upgradecentreon1904>`
 
 **What is the difference between updating and migrating a Centreon Server?**
 
 If your platform is already based on CentOS 7, a simple software update is enough
 to upgrade it to Centreon 18.10. If your platform is still based on CentOS 6, a
 migration procedure is required to upgrade it to 18.10.
-:ref:`Please see this chapter.<upgradecentreon1810>`
+:ref:`Please see this chapter.<upgradecentreon1904>`
 
 **Where can I find the procedure to update my Centreon Server?**
 
@@ -83,7 +83,7 @@ migration procedure is required to upgrade it to 18.10.
 
 **Where can I find the procedure to migrate my Centreon Server?**
 
-:ref:`Please see this chapter.<upgradecentreon1810>`
+:ref:`Please see this chapter.<upgradecentreon1904>`
 
 **When migrating from CentOS 6 to CentOS 7, should I migrate the Centreon Pollers
 at the same time as the Central Server?**

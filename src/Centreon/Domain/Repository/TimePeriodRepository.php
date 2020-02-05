@@ -60,8 +60,11 @@ SQL;
      * @param int[] $serviceTemplateChain
      * @return array
      */
-    public function getChainByPoller(array $pollerIds, array $hostTemplateChain = null, array $serviceTemplateChain = null): array
-    {
+    public function getChainByPoller(
+        array $pollerIds,
+        array $hostTemplateChain = null,
+        array $serviceTemplateChain = null
+    ): array {
         // prevent SQL exception
         if (!$pollerIds) {
             return [];

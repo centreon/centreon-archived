@@ -292,6 +292,7 @@ function validateFeature(name, version, enabled) {
       'click',
       function(e) {
         var href = jQuery(this).attr('href');
+        var isReact = jQuery(this).attr('isreact');
         var isHandled = jQuery(this).is('[onload]') ||
           jQuery(this).is('[onclick]') ||
           (href.match(/^javascript:/) !== null)
@@ -323,6 +324,9 @@ function validateFeature(name, version, enabled) {
           } else {
             window.open(href);
           }
+        } else if (isReact) {
+            e.preventDefault();
+            window.parent.location.href = href;
         }
       }
     );

@@ -9,7 +9,12 @@
 	</table>
 	<table class="ListTable">
 		<tr class="ListHeader">
-			<td class="ListColHeaderPicker"><input type="checkbox" name="checkall" onclick="checkUncheckAll(this);"/></td>
+            <td class="ListColHeaderPicker">
+                <div class="md-checkbox md-checkbox-inline">
+                    <input type="checkbox" id="checkall" name="checkall" onclick="checkUncheckAll(this);"/>
+                    <label class="empty-label" for="checkall"></label>
+                </div>
+            </td>
 			<td class="ListColHeaderLeft">{ $wi_user }</td>
 			<td class="ListColHeaderCenter">{ $distant_location }</td>			
 			<td class="ListColHeaderCenter">{ $wi_where }</td>			

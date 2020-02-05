@@ -2,106 +2,32 @@
 Extensions
 ==========
 
-*******
-Modules
-*******
+The extensions can be used to add additional functionalities to Centreon.
+It is possible to install extensions using the YUM utility or source files (\*.tar.gz).
 
-The modules can be used to add additional functionalities to Centreon.
-It is possible to install modules using the YUM utility or source files (\*.tar.gz).
+There are 3 kinds of extensions:
 
-There are 3 kinds of modules:
+* **Community**, under license GPL v2, developed by the Centreon community
+* **Core**, under license GPL v2, developed by the Centreon team
+* **Proprietary**, subject to a license, developed by `Centreon <http://www.centreon.com>`_
 
-* **Community** modules, under license GPL v2, developed by the Centreon community
-* **Core** modules, under license GPL v2, developed by the Centreon team
-* **Proprietary** modules, subject to a license, developed by `Centreon <http://www.centreon.com>`_
+To install an exentsion:
 
-To install a module:
+1. Install the extensions from the associated documentation.
+2. Go into the **Administration > Extensions > Manager** menu.
 
-1. Install the module from the associated documentation (most often in the directory: **/usr/share/centreon/www/modules** on the central server)
-2. Go into the menu: **Administration > Extensions > Modules**
-
-.. image :: /images/guide_exploitation/cextensions.png
+.. image:: /_static/images/installation/install_imp_1.png
    :align: center
 
-Vous have two choices:
+To install all extensions, click on **Install all**:
 
-* Click on the |install| icon to start installation of one module,
-* Click on **Install/Update all** button to install all modules.
-
-The table below summarizes the columns of the page:
-
-+-------------------------+------------------------------------------------------------------------------------------------------------+
-|   Column                |  Description                                                                                               |
-+=========================+============================================================================================================+
-| Name                    | Contains module name                                                                                       |
-+-------------------------+------------------------------------------------------------------------------------------------------------+
-| Real name               | Contains module complete name                                                                              |
-+-------------------------+------------------------------------------------------------------------------------------------------------+
-| Informations            | Contains information about the module                                                                      |
-+-------------------------+------------------------------------------------------------------------------------------------------------+
-| Release                 | Indicates the module version                                                                               |
-+-------------------------+------------------------------------------------------------------------------------------------------------+
-| Author                  | Indicates the module author                                                                                |
-+-------------------------+------------------------------------------------------------------------------------------------------------+
-| Expiration date         | Indicates license expiration date                                                                          |
-+-------------------------+------------------------------------------------------------------------------------------------------------+
-| Installed               | Indicates if the module is installed or not                                                                |
-+-------------------------+------------------------------------------------------------------------------------------------------------+
-| Status                  | Indicates the module status : installed, installed but without license, unknown etc.                       |
-+-------------------------+------------------------------------------------------------------------------------------------------------+
-| Actions                 | Serves to perform actions on a module :                                                                    |
-|                         |                                                                                                            |
-|                         | To install a module, click on |install|                                                                    |
-|                         |                                                                                                            |
-|                         | To configure a module, click on |configure|                                                                |
-|                         |                                                                                                            |
-|                         | To delete a module, click on |delete|, and then confirm the deletion                                       |
-|                         |                                                                                                            |
-|                         | To update a module, click on |update| and then follow the process                                          |
-+-------------------------+------------------------------------------------------------------------------------------------------------+
-
-*******
-Widgets
-*******
-
-Widgets enable us to construct customized views, dealt with in the chapter covering :ref:`widgets <leswidgets>`.
-
-To install a widget:
-
-#. Install the widget from the associated documentation (most commonly in the directory entitled: **/usr/share/centreon/www/widgets** on the central server)
-#. Go into the menu: **Administration > Extensions > Widgets**
-
-.. image :: /images/guide_exploitation/cwidgets.png
+.. image:: /_static/images/installation/install_imp_2.png
    :align: center
 
-Vous have two choices:
+You can also update all extensions by clicking **Update all**, or
+manage extension by extension.
 
-* Click on the |install| icon to start installation of one widget,
-* Click on **Install/Update all** button to install all widgets.
+By clicking on the extension, you can access to the description:
 
-The table below summarizes the columns of the page:
-
-+-------------------------+------------------------------------------------------------------------------------------------------------+
-|   Column                |  Description                                                                                               |
-+=========================+============================================================================================================+
-| Title                   | Contains widget name                                                                                       |
-+-------------------------+------------------------------------------------------------------------------------------------------------+
-| Description             | Contains information about the widget                                                                      |
-+-------------------------+------------------------------------------------------------------------------------------------------------+
-| Version                 | Indicates widget version                                                                                   |
-+-------------------------+------------------------------------------------------------------------------------------------------------+
-| Author                  | Indicates widget author                                                                                    |
-+-------------------------+------------------------------------------------------------------------------------------------------------+
-| Actions                 | Serves to perform actions on a widget:                                                                     |
-|                         |                                                                                                            |
-|                         | To install a widget, click on |install|                                                                    |
-|                         |                                                                                                            |
-|                         | To delete a widget, click on |delete|,  and then confirm the deletion                                      |
-|                         |                                                                                                            |
-|                         | To update a widget, click on |update| and then follow the process                                          |
-+-------------------------+------------------------------------------------------------------------------------------------------------+
-
-.. |install|    image:: /images/guide_exploitation/generate_conf.png
-.. |delete|    image:: /images/guide_exploitation/delete.png
-.. |configure|    image:: /images/guide_exploitation/wrench.gif
-.. |update|    image:: /images/guide_exploitation/upgrade.png
+.. image:: /_static/images/installation/extension_popin.png
+   :align: center

@@ -53,19 +53,22 @@ if (isset($_POST['limit']) && $_POST['limit']) {
 } else {
     if (($p >= 200 && $p < 300) || ($p >= 20000 && $p < 30000)) {
         $dbResult = $pearDB->query("SELECT * FROM `options` WHERE `key` = 'maxViewMonitoring'");
-        $gopt = $dbResult->fetch();
-        $limit = myDecode($gopt['value']);
     } else {
         $dbResult = $pearDB->query("SELECT * FROM `options` WHERE `key` = 'maxViewConfiguration'");
-        $gopt = $dbResult->fetch();
-        $limit = myDecode($gopt['value']);
+    }
+    $gopt = $dbResult->fetch();
+    if ((int)$gopt['value']) {
+        $limit = (int)$gopt['value'];
+    } else {
+        $limit = 30;
     }
 }
 
 $_SESSION[$sessionLimitKey] = $limit;
 
 // Setting the pagination filter
-if (isset($_POST['num']) && isset($_POST['search'])
+if (isset($_POST['num'])
+    && isset($_POST['search'])
     || (isset($centreon->historyLastUrl) && $centreon->historyLastUrl !== $url)
 ) {
     // Checking if the current page and the last displayed page are the same and resetting the filters

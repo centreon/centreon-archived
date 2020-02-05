@@ -57,10 +57,9 @@ if ((int)$stat['value'] != 1 && (int)$aVersion[2] === 0) {
 
 $title = _('Upgrade finished');
 
-$centreon_path = realpath(dirname(__FILE__) . '/../../../');
-if (false === is_dir($centreon_path . '/installDir')) {
-    $contents .= '<br>Warning : The installation directory cannot be move. Please create the directory '
-        . $centreon_path . '/installDir and give it the rigths to apache user to write.';
+if (false === is_dir(_CENTREON_VARLIB_ . '/installs')) {
+    $contents .= '<br>Warning : The installation directory cannot be moved. Please create the directory '
+        . _CENTREON_VARLIB_ . '/installs and give apache user write permissions.';
     $moveable = false;
 } else {
     $moveable = true;
@@ -76,13 +75,17 @@ if ($stat === false) {
                         <tbody>
                         <tr>
                             <td class=\'formValue\'>
-                                <input value=\'1\' name=\'send_statistics\' type="checkbox" checked/>
+                                <div class=\'md-checkbox md-checkbox-inline\' style=\'display:none;\'>
+                                    <input id=\'send_statistics\' value=\'1\' name=\'send_statistics\' type=\'checkbox\' checked=\'checked\'/>
+                                    <label class=\'empty-label\' for=\'send_statistics\'></label>
+                                </div>
                             </td>
                             <td class=\'formlabel\'>
-                                <p style="text-align:justify">I agree to participate to the Centreon Customer Experience
-                                    Improvement Program whereby anonymous information about the usage of this server
-                                    may be sent to Centreon. This information will solely be used to improve the
-                                    software user experience. I will be able to opt-out at anytime.
+                                <p style="text-align:justify">Centreon uses a telemetry system and a Centreon Customer Experience
+                                Improvement Program whereby anonymous information about the usage of this server
+                                may be sent to Centreon. This information will solely be used to improve the
+                                software user experience. You will be able to opt-out at any time about CEIP program
+                                through administration menu.
                                     Refer to
                                     <a target="_blank" style="text-decoration: underline" 
                                     href="http://ceip.centreon.com/">ceip.centreon.com</a>

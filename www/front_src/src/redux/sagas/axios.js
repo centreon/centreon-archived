@@ -1,14 +1,11 @@
-import axios from "axios";
-import * as actions from "../actions/axiosActions";
-import {
-  put,
-  takeEvery,
-  all,
-  fork,
-  take,
-  call
-} from "redux-saga/effects";
-import { eventChannel, END } from "redux-saga";
+/* eslint-disable no-useless-catch */
+/* eslint-disable no-restricted-syntax */
+/* eslint-disable no-use-before-define */
+
+import axios from 'axios';
+import { put, takeEvery, all, fork, take, call } from 'redux-saga/effects';
+import { eventChannel, END } from 'redux-saga';
+import * as actions from '../actions/axiosActions';
 
 export function* getAxiosData() {
   yield takeEvery(actions.GET_DATA, axiosRequest);
@@ -43,32 +40,32 @@ function* resetProgress(action) {
   }
 }
 
-function upload({ files, url }, onProgress) {
+const upload = ({ files, url }, onProgress) => {
   const data = new FormData();
 
-  for (let file of files) {
-    data.append("file[]", file);
+  for (const file of files) {
+    data.append('file[]', file);
   }
 
   const config = {
     onUploadProgress: onProgress,
     withCredentials: true,
     headers: {
-      "Content-Type": "multipart/form-data"
-    }
+      'Content-Type': 'multipart/form-data',
+    },
   };
 
   return axios.post(url, data, config);
-}
+};
 
-function createUploader(action) {
+const createUploader = (action) => {
   let emit;
-  const channel = eventChannel(emitter => {
+  const channel = eventChannel((emitter) => {
     emit = emitter;
     return () => {};
   });
 
-  const uploadProgressCb = event => {
+  const uploadProgressCb = (event) => {
     const { total, loaded } = event;
     const percentage = Math.round((loaded * 100) / total);
     emit({ [action.fileIndex]: percentage });
@@ -78,7 +75,7 @@ function createUploader(action) {
   const uploadPromise = upload(action, uploadProgressCb);
 
   return [uploadPromise, channel];
-}
+};
 
 function* watchOnProgress(channel) {
   while (true) {
@@ -93,23 +90,23 @@ function* uploadRequest(action) {
       status: false,
       result: {
         errors: [],
-        successed: []
-      }
+        successed: [],
+      },
     };
     const responses = yield all(
       action.files.map((file, idx) =>
-        call(uploadSource, { ...action, files: [file], fileIndex: idx })
-      )
+        call(uploadSource, { ...action, files: [file], fileIndex: idx }),
+      ),
     );
 
-    for (let response of responses) {
+    for (const response of responses) {
       if (response.result.errors) {
         data = {
           status: true,
           result: {
             ...data.result,
-            errors: [...data.result.errors, ...response.result.errors]
-          }
+            errors: [...data.result.errors, ...response.result.errors],
+          },
         };
       }
       if (response.result.successed) {
@@ -117,8 +114,8 @@ function* uploadRequest(action) {
           status: true,
           result: {
             ...data.result,
-            successed: [...data.result.successed, ...response.result.successed]
-          }
+            successed: [...data.result.successed, ...response.result.successed],
+          },
         };
       }
     }
@@ -144,23 +141,29 @@ function* uploadSource(action) {
 function* axiosRequest(action) {
   try {
     if (!action.requestType) {
-      throw new Error("Request type is required!");
+      throw new Error('Request type is required!');
     } else {
+      let dataBody = null;
+      if (action.requestType === 'DELETE') {
+        dataBody = action.data ? { data: action.data } : null;
+      } else {
+        dataBody = action.data ? action.data : null;
+      }
       const res = yield axios[action.requestType.toLowerCase()](
         action.url,
-        action.data ? action.data : null
+        dataBody || null,
       );
 
       const data = yield res.data;
 
       const { propKey } = action;
       if (propKey) {
-        yield put({ type: actions.SET_AXIOS_DATA, data, propKey: propKey });
+        yield put({ type: actions.SET_AXIOS_DATA, data, propKey });
       }
       if (data) {
         action.resolve(data);
       } else {
-        action.reject("No data in response");
+        action.reject('No data in response');
       }
     }
   } catch (err) {

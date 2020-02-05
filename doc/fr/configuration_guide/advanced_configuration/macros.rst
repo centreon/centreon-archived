@@ -78,7 +78,7 @@ Par défaut, la macro $USER1$ est créée et sa valeur est la suivante : /usr/li
 
 Pour ajouter une macro de ressources :
 
-* Rendez-vous dans le menu **Configuration** ==> **Moteurs de supervision**
+* Rendez-vous dans le menu **Configuration > Moteurs de supervision**
 * Cliquez sur **Ajouter**
 
 .. image :: /images/guide_utilisateur/configuration/10advanced_configuration/01macrosressources.png

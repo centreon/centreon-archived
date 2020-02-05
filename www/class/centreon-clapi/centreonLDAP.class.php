@@ -49,6 +49,7 @@ require_once "Centreon/Object/Ldap/ServerLdap.php";
 class CentreonLDAP extends CentreonObject
 {
     protected $db;
+    protected $baseParams;
     const NB_ADD_PARAM = 2;
     const AR_NOT_EXIST = "LDAP configuration ID not found";
 
@@ -215,14 +216,13 @@ class CentreonLDAP extends CentreonObject
         if (!$this->isUnique($name)) {
             throw new CentreonClapiException(self::NAMEALREADYINUSE . ' (' . $name . ')');
         }
-        $this->db->query(
-            "INSERT INTO auth_ressource (ar_name, ar_description, ar_enable) VALUES (:name, :description, :status)",
-            array(
-                ':name' => $name,
-                ':description' => $description,
-                ':status' => '1'
-            )
+        $stmt = $this->db->prepare(
+            "INSERT INTO auth_ressource (ar_name, ar_description, ar_enable, ar_type)
+            VALUES (:arName, :description, '1', '')"
         );
+        $stmt->bindValue(':arName', $name, \PDO::PARAM_STR);
+        $stmt->bindValue(':description', $description, \PDO::PARAM_STR);
+        $stmt->execute();
     }
 
     /**

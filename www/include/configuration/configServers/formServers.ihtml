@@ -20,40 +20,60 @@
       </td>
     </tr>
 		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="name"> {$form.name.label}</td><td class="FormRowValue">{$form.name.html}</td></tr>
-    <tr class="list_lvl_1">
-      <td class="ListColLvl1_name" colspan="2">
-        <h4>{$genOpt_nagios_version}</h4>
-      </td>
-    </tr>
 		<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="ns_ip_address"> {$form.ns_ip_address.label}</td><td class="FormRowValue">{$form.ns_ip_address.html}</td></tr>
 		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="localhost"> {$form.localhost.label}</td><td class="FormRowValue">{$form.localhost.html}</td></tr>
 		<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="is_default"> {$form.is_default.label}</td><td class="FormRowValue">{$form.is_default.html}</td></tr>
 		{if $form.remote_id.label}
 		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="remote_id"> {$form.remote_id.label}</td><td class="FormRowValue">{$form.remote_id.html}</td></tr>
+        <tr class="list_tow">
+            <td class="FormRowField"><img class="helpTooltip" name="remote_additional_id"> {$form.remote_additional_id.label}</td>
+            <td class="FormRowValue">{$form.remote_additional_id.html}</td>
+        </tr>
 		{/if}
+    {if $form.header.Remote_Configuration.label}
+    <tr class="list_lvl_1">
+      <td class="ListColLvl1_name" colspan="2">
+          <h4>{$form.header.Remote_Configuration}</h4>
+      </td>
+      <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="http_method">{$form.http_method.label}</td><td class="FormRowValue">{$form.http_method.html}</td></tr>
+      <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="http_port">{$form.http_port.label}</td><td class="FormRowValue">{$form.http_port.html}</td></tr>
+      <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="no_check_certificate">{$form.no_check_certificate.label}</td><td class="FormRowValue">{$form.no_check_certificate.html}</td></tr>
+      <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="no_proxy">{$form.no_proxy.label}</td><td class="FormRowValue">{$form.no_proxy.html}</td></tr>
+    </tr>
+    {/if}
 		<tr class="list_lvl_1">
       <td class="ListColLvl1_name" colspan="2">
         <h4>{$form.header.SSH_Informations}</h4>
       </td>
     </tr>
 		<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="ssh_port"> {$form.ssh_port.label}</td><td class="FormRowValue">{$form.ssh_port.html}</td></tr>
+		{if $form.remote_server_centcore_ssh_proxy.label}
+		<tr class="list_two">
+		  <td class="FormRowField"><img class="helpTooltip" name="remote_server_centcore_ssh_proxy"> {$form.remote_server_centcore_ssh_proxy.label}</td>
+		  <td class="FormRowValue">{$form.remote_server_centcore_ssh_proxy.html}</td>
+		</tr>
+		{/if}
 		<tr class="list_lvl_1">
       <td class="ListColLvl1_name" colspan="2">
         <h4>{$form.header.Nagios_Informations}</h4>
       </td>
     </tr>
-		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="init_script"> {$form.init_script.label}</td><td class="FormRowValue">{$form.init_script.html}</td></tr>
-		<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="nagios_bin"> {$form.nagios_bin.label}</td><td class="FormRowValue">{$form.nagios_bin.html}</td></tr>
-		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="nagiostats_bin"> {$form.nagiostats_bin.label}</td><td class="FormRowValue">{$form.nagiostats_bin.html}</td></tr>
-		<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="nagios_perfdata"> {$form.nagios_perfdata.label}</td><td class="FormRowValue">{$form.nagios_perfdata.html}</td></tr>
-		<tr class="list_lvl_1">
+    <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="engine_start_command"> {$form.engine_start_command.label}</td><td class="FormRowValue">{$form.engine_start_command.html}</td></tr>
+    <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="engine_stop_command"> {$form.engine_stop_command.label}</td><td class="FormRowValue">{$form.engine_stop_command.html}</td></tr>
+    <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="engine_restart_command"> {$form.engine_restart_command.label}</td><td class="FormRowValue">{$form.engine_restart_command.html}</td></tr>
+    <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="engine_reload_command"> {$form.engine_reload_command.label}</td><td class="FormRowValue">{$form.engine_reload_command.html}</td></tr>
+    <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="nagios_bin"> {$form.nagios_bin.label}</td><td class="FormRowValue">{$form.nagios_bin.html}</td></tr>
+    <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="nagiostats_bin"> {$form.nagiostats_bin.label}</td><td class="FormRowValue">{$form.nagiostats_bin.html}</td></tr>
+    <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="nagios_perfdata"> {$form.nagios_perfdata.label}</td><td class="FormRowValue">{$form.nagios_perfdata.html}</td></tr>
+    <tr class="list_lvl_1">
       <td class="ListColLvl1_name" colspan="2">
         <h4>{$form.header.CentreonBroker}</h4>
       </td>
     </tr>
-		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="centreonbroker_cfg_path"> {$form.centreonbroker_cfg_path.label}</td><td class="FormRowValue">{$form.centreonbroker_cfg_path.html}</td></tr>
-		<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="centreonbroker_module_path"> {$form.centreonbroker_module_path.label}</td><td class="FormRowValue">{$form.centreonbroker_module_path.html}</td></tr>
-         <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="centreonbroker_logs_path"> {$form.centreonbroker_logs_path.label}</td><td class="FormRowValue">{$form.centreonbroker_logs_path.html}</td></tr>
+    <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="broker_reload_command"> {$form.broker_reload_command.label}</td><td class="FormRowValue">{$form.broker_reload_command.html}</td></tr>
+    <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="centreonbroker_cfg_path"> {$form.centreonbroker_cfg_path.label}</td><td class="FormRowValue">{$form.centreonbroker_cfg_path.html}</td></tr>
+    <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="centreonbroker_module_path"> {$form.centreonbroker_module_path.label}</td><td class="FormRowValue">{$form.centreonbroker_module_path.html}</td></tr>
+    <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="centreonbroker_logs_path"> {$form.centreonbroker_logs_path.label}</td><td class="FormRowValue">{$form.centreonbroker_logs_path.html}</td></tr>
     <tr class="list_lvl_1">
       <td class="ListColLvl1_name" colspan="2">
         <h4>{$form.header.CentreonConnector}</h4>
@@ -105,21 +125,5 @@ var engines = {literal}{{/literal}
   {literal}}{/literal}{if not $smarty.foreach.engines.last},{/if}
 
 {/foreach}
-{literal}};
-
-function update_engine_values(e) {
-    var ename = jQuery(this).attr("value");
-
-    jQuery.each(engines[ename], function(key, value) {
-        if (key == "name") {
-            return;
-        }
-        jQuery("input[name=" + key + "]").attr("value", value);
-    });
-}{/literal}
-{if $o == "a"}{literal}
-jQuery(document).ready(function() {
-    jQuery("select[name=monitoring_engine]").change(update_engine_values);
-});{/literal}{/if}
 </script>
 {$helptext}

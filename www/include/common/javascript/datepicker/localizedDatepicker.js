@@ -1,5 +1,5 @@
 /*
-* Copyright 2005-2018 Centreon
+* Copyright 2005-2019 Centreon
 * Centreon is developed by : Julien Mathis and Romain Le Merlus under
 * GPL Licence 2.0.
 *
@@ -111,5 +111,51 @@ function setUserFormat() {
                 }
             }
         });
+    }
+}
+
+function turnOnEvents() {
+    $(".datepicker").first().on('change', function (e) {
+        updateEndTime();
+    });
+    $(".timepicker").first().on('change', function (e) {
+        updateEndTime();
+    });
+    $(".datepicker").last().on('change', function (e) {
+        updateStartTime();
+    });
+    $(".timepicker").last().on('change', function (e) {
+        updateStartTime();
+    });
+}
+
+function turnOffEvents() {
+    $(".datepicker").off('change');
+    $(".timepicker").off('change');
+}
+
+function updateEndTime() {
+    var start = new Date($(".datepicker").first().val() + ' ' +  $(".timepicker").first().val());
+    var end = new Date($(".datepicker").last().val() + ' ' +  $(".timepicker").last().val());
+    if (start > end) {
+        turnOffEvents();
+        var e = new Date();
+        e.setTime(start.getTime() + 7200000); //microseconds
+        $(".datepicker").last().datepicker("setDate", e);
+        $(".timepicker").last().timepicker("setTime", e.getHours() + ':' + e.getMinutes());
+        turnOnEvents();
+    }
+}
+
+function updateStartTime() {
+    var start = new Date($(".datepicker").first().val() + ' ' +  $(".timepicker").first().val());
+    var end = new Date($(".datepicker").last().val() + ' ' +  $(".timepicker").last().val());
+    if (start > end) {
+        turnOffEvents();
+        var e = new Date();
+        e.setTime(end.getTime() - 7200000); //microseconds
+        $(".datepicker").first().datepicker("setDate", e);
+        $(".timepicker").first().timepicker("setTime", e.getHours() + ':' + e.getMinutes());
+        turnOnEvents();
     }
 }

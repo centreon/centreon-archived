@@ -52,12 +52,12 @@ $searchS = filter_var(
 );
 
 $template = filter_var(
-    $_POST['template'] ?? $_GET['template'] ?? null,
-    FILTER_SANITIZE_STRING
+    $_POST['template'] ?? $_GET['template'] ?? 0,
+    FILTER_VALIDATE_INT
 );
 
 $status = filter_var(
-    $_POST["status"] ?? $_GET["status"] ?? -1,
+    $_POST["status"] ?? $_GET["status"] ?? 0,
     FILTER_VALIDATE_INT
 );
 
@@ -73,35 +73,15 @@ if (isset($_POST['Search']) || isset($_GET ['Search'])) {
     $searchHG = $centreon->historySearch[$url]['hostgroups'] ?? null;
     $searchS = $centreon->historySearch[$url]["search"] ?? null;
     $template = $centreon->historySearch[$url]["template"] ?? null;
-    $status = $centreon->historySearch[$url]["status"] ?? -1;
+    $status = $centreon->historySearch[$url]["status"] ?? 0;
 }
-
-/*
- * Get Service Template List
- */
-$tplService = array();
-$templateFilter = "<option value='0'></option>";
-$dbResult = $pearDB->query(
-    "SELECT service_id, service_description, service_alias FROM service " .
-    "WHERE service_register = '0' AND service_activate = '1' ORDER BY service_description"
-);
-while ($tpl = $dbResult->fetch()) {
-    $tplService[$tpl["service_id"]] = $tpl["service_alias"];
-    $templateFilter .= "<option value='" . $tpl["service_id"] . "'" .
-        (($tpl["service_id"] == $template) ? " selected" : "") . ">" . $tpl["service_description"] . "</option>";
-}
-$dbResult->closeCursor();
 
 //Status Filter
-$statusFilter = "<option value=''" . (($status == -1) ? " selected" : "") . "> </option>";
-$statusFilter .= "<option value='1'" . (($status == 1) ? " selected" : "") . ">" . _("Enabled") . "</option>";
-$statusFilter .= "<option value='0'" .
-    (($status == 0 && $status != '') ? " selected" : "") . ">" . _("Disabled") . "</option>";
-
+$statusFilter = array(1 => _("Disabled"), 2 => _("Enabled"));
 $sqlFilterCase = "";
-if ($status == 1) {
+if ($status == 2) {
     $sqlFilterCase = " AND sv.service_activate = '1' ";
-} elseif ($status == 0 && $status != "") {
+} elseif ($status == 1) {
     $sqlFilterCase = " AND sv.service_activate = '0' ";
 }
 
@@ -113,11 +93,11 @@ $tmp2 = null;
 $searchHG = $pearDB->escape($searchHG);
 $searchS = $pearDB->escape($searchS);
 
-$aclfrom = "";
+$aclFrom = "";
 $aclCond = "";
 $distinct = "";
 if (!$centreon->user->admin) {
-    $aclfrom = ", $acldbname.centreon_acl acl ";
+    $aclFrom = ", $aclDbName.centreon_acl acl ";
     $aclCond = " AND sv.service_id = acl.service_id
                  AND acl.group_id IN (" . $acl->getAccessGroupsString() . ") ";
     $distinct = " DISTINCT ";
@@ -135,7 +115,7 @@ if ($searchS != "" || $searchHG != "") {
         $dbResult = $pearDB->query(
             "SELECT " . $distinct . " hostgroup_hg_id, sv.service_id, sv.service_description, " .
             "service_template_model_stm_id " .
-            "FROM service sv, host_service_relation hsr " . $aclfrom .
+            "FROM service sv, host_service_relation hsr " . $aclFrom .
             " WHERE sv.service_register = '1' " . $sqlFilterCase .
             " AND hsr.service_service_id = sv.service_id " . $aclCond .
             " AND hsr.host_host_id IS NULL" .
@@ -153,7 +133,7 @@ if ($searchS != "" || $searchHG != "") {
         $dbResult = $pearDB->query(
             "SELECT " . $distinct . " hostgroup_hg_id, sv.service_id, sv.service_description, " .
             "service_template_model_stm_id " .
-            "FROM service sv, host_service_relation hsr, hostgroup hg " . $aclfrom .
+            "FROM service sv, host_service_relation hsr, hostgroup hg " . $aclFrom .
             "WHERE sv.service_register = '1' " . $sqlFilterCase .
             " AND hsr.service_service_id = sv.service_id " . $aclCond .
             " AND hsr.host_host_id IS NULL " .
@@ -169,7 +149,7 @@ if ($searchS != "" || $searchHG != "") {
         $dbResult = $pearDB->query(
             "SELECT " . $distinct . " hostgroup_hg_id, sv.service_id, sv.service_description, " .
             "service_template_model_stm_id " .
-            "FROM service sv, host_service_relation hsr, hostgroup hg " . $aclfrom .
+            "FROM service sv, host_service_relation hsr, hostgroup hg " . $aclFrom .
             "WHERE sv.service_register = '1' " . $sqlFilterCase .
             " AND hsr.service_service_id = sv.service_id " . $aclCond .
             " AND hsr.host_host_id IS NULL " .
@@ -185,7 +165,7 @@ if ($searchS != "" || $searchHG != "") {
     }
 } else {
     $dbResult = $pearDB->query(
-        "SELECT " . $distinct . " sv.service_description FROM service sv, host_service_relation hsr " . $aclfrom .
+        "SELECT " . $distinct . " sv.service_description FROM service sv, host_service_relation hsr " . $aclFrom .
         "WHERE service_register = '1' " . $sqlFilterCase . $templateStr .
         " AND hsr.service_service_id = sv.service_id AND hsr.host_host_id IS NULL " . $aclCond
     );
@@ -224,7 +204,7 @@ if ($searchS || $searchHG) {
     $query = "SELECT $distinct @nbr:=(SELECT COUNT(*) FROM host_service_relation " .
         "WHERE service_service_id = sv.service_id GROUP BY sv.service_id ) AS nbr, sv.service_id, " .
         "sv.service_description, sv.service_activate, sv.service_template_model_stm_id, hg.hg_id, hg.hg_name " .
-        "FROM service sv, hostgroup hg, host_service_relation hsr $aclfrom " .
+        "FROM service sv, hostgroup hg, host_service_relation hsr $aclFrom " .
         "WHERE sv.service_register = '1' $sqlFilterCase AND sv.service_id IN (" . ($tmp ? $tmp : 'NULL') .
         ") AND hsr.hostgroup_hg_id IN (" . ($tmp2 ? $tmp2 : 'NULL') . ") " .
         ((isset($template) && $template) ? " AND service_template_model_stm_id = '$template' " : "") .
@@ -234,7 +214,7 @@ if ($searchS || $searchHG) {
     $query = "SELECT $distinct @nbr:=(SELECT COUNT(*) FROM host_service_relation " .
         "WHERE service_service_id = sv.service_id GROUP BY sv.service_id ) AS nbr, sv.service_id, " .
         "sv.service_description, sv.service_activate, sv.service_template_model_stm_id, hg.hg_id, hg.hg_name " .
-        "FROM service sv, hostgroup hg, host_service_relation hsr $aclfrom " .
+        "FROM service sv, hostgroup hg, host_service_relation hsr $aclFrom " .
         "WHERE sv.service_register = '1' $sqlFilterCase " .
         ((isset($template) && $template) ? " AND service_template_model_stm_id = '$template' " : "") .
         " AND hsr.service_service_id = sv.service_id AND hg.hg_id = hsr.hostgroup_hg_id " . $aclCond .
@@ -247,8 +227,34 @@ $form = new HTML_QuickFormCustom('select_form', 'POST', "?p=" . $p);
 // Different style between each lines
 $style = "one";
 
-// Fill a tab with a multidimensional Array we put in $tpl
+//select2 Service template
+$route = './api/internal.php?object=centreon_configuration_servicetemplate&action=list';
+$attrServicetemplates = array(
+    'datasourceOrigin' => 'ajax',
+    'availableDatasetRoute' => $route,
+    'multiple' => false,
+    'defaultDataset' => $template,
+    'linkedObject' => 'centreonServicetemplates'
+);
+$form->addElement('select2', 'template', "", array(), $attrServicetemplates);
+//select2 Service Status
+$attrServiceStatus = null;
+if ($status) {
+    $statusDefault = array($statusFilter[$status] => $status);
+    $attrServiceStatus = array(
+        'defaultDataset' => $statusDefault
+    );
+}
+$form->addElement('select2', 'status', "", $statusFilter, $attrServiceStatus);
 
+$attrBtnSuccess = array(
+    "class" => "btc bt_success",
+    "onClick" => "window.history.replaceState('', '', '?p=" . $p . "');"
+);
+$form->addElement('submit', 'Search', _("Search"), $attrBtnSuccess);
+
+
+// Fill a tab with a multidimensional Array we put in $tpl
 $interval_length = $centreon->optGen['interval_length'];
 
 $elemArr = array();
@@ -268,9 +274,9 @@ for ($i = 0; $service = $dbResult->fetch(); $i++) {
     } else {
         $moptions .= "<a href='main.php?p=" . $p . "&service_id=" . $service['service_id'] . "&o=s&limit=" . $limit .
             "&num=" . $num . "&search=" . $search . "&template=" . $template . "&status=" . $status .
-            "'><img src='img/icons/enabled.png' class='ico-14 margin_right' border='0' alt='" . _("Enabled") . "'></a>";
+            "'><img src='img/icons/enabled.png' class='ico-14 margin_right' border='0' alt='" . _("Enabled") . "'>";
     }
-    $moptions .= "&nbsp;";
+    $moptions .= "</a>&nbsp;";
     $moptions .= "<input onKeypress=\"if(event.keyCode > 31 && (event.keyCode < 45 || event.keyCode > 57)) " .
         "event.returnValue = false; if(event.which > 31 && (event.which < 45 || event.which > 57)) " .
         "return false;\" onKeyUp=\"syncInputField(this.name, this.value);\" maxlength=\"3\" size=\"3\" value='1' " .
@@ -469,8 +475,6 @@ if (isset($searchS) && $searchS) {
 }
 $tpl->assign("hostgroupsFilter", $searchHG);
 $tpl->assign("searchS", $searchS);
-$tpl->assign("templateFilter", $templateFilter);
-$tpl->assign("statusFilter", $statusFilter);
 
 // Apply a template definition
 $renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
@@ -480,5 +484,4 @@ $tpl->assign('HostGroups', _("HostGroups"));
 $tpl->assign('Services', _("Services"));
 $tpl->assign('ServiceTemplates', _("Templates"));
 $tpl->assign('ServiceStatus', _("Status"));
-$tpl->assign('Search', _("Search"));
 $tpl->display("listService.ihtml");

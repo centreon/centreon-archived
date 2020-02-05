@@ -89,7 +89,7 @@ class CentreonModuleServiceTest extends TestCase
                 ->method('getList')
                 ->will($this->returnCallback(function () use ($type) {
                         return [$type];
-                    }))
+                }))
             ;
             $sources[$type]
                 ->method('getDetail')
@@ -102,7 +102,7 @@ class CentreonModuleServiceTest extends TestCase
                         $entity->setUpdated(false);
 
                         return $entity;
-                    }))
+                }))
             ;
             $sources[$type]
                 ->method('install')
@@ -116,7 +116,7 @@ class CentreonModuleServiceTest extends TestCase
                         $entity->setUpdated(false);
 
                         return $entity;
-                    }))
+                }))
             ;
             $sources[$type]
                 ->method('update')
@@ -130,15 +130,15 @@ class CentreonModuleServiceTest extends TestCase
                         $entity->setUpdated(false);
 
                         return $entity;
-                    }))
+                }))
             ;
             $sources[$type]
                 ->method('remove')
                 ->will($this->returnCallback(function ($id) use ($type) {
-                        if ($id === ModuleSourceTest::$moduleName) {
-                            throw new \Exception('Removed');
-                        }
-                    }))
+                    if ($id === ModuleSourceTest::$moduleName) {
+                        throw new \Exception('Removed');
+                    }
+                }))
             ;
         }
 
@@ -297,7 +297,7 @@ class CentreonModuleServiceTest extends TestCase
                     $entity->setUpdated(true);
 
                     return $entity;
-                })(),
+            })(),
             (function () {
                     $entity = new Module;
                     $entity->setName('A');
@@ -305,7 +305,7 @@ class CentreonModuleServiceTest extends TestCase
                     $entity->setUpdated(true);
 
                     return $entity;
-                })(),
+            })(),
             (function () {
                     $entity = new Module;
                     $entity->setName('B');
@@ -313,7 +313,7 @@ class CentreonModuleServiceTest extends TestCase
                     $entity->setUpdated(false);
 
                     return $entity;
-                })(),
+            })(),
             (function () {
                     $entity = new Module;
                     $entity->setName('C');
@@ -321,7 +321,7 @@ class CentreonModuleServiceTest extends TestCase
                     $entity->setUpdated(false);
 
                     return $entity;
-                })(),
+            })(),
             (function () {
                     $entity = new Module;
                     $entity->setName('D');
@@ -329,7 +329,7 @@ class CentreonModuleServiceTest extends TestCase
                     $entity->setUpdated(false);
 
                     return $entity;
-                })(),
+            })(),
             (function () {
                     $entity = new Module;
                     $entity->setName('F');
@@ -337,7 +337,7 @@ class CentreonModuleServiceTest extends TestCase
                     $entity->setUpdated(false);
 
                     return $entity;
-                })(),
+            })(),
         ];
         $list = $this->invokeMethod($service, 'sortList', [$list]);
 

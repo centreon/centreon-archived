@@ -20,9 +20,11 @@ in the next 30 days, the ticket will be automaticaly closed.
 Please describe your issue in English.
 -->
 
-<h1>BUG REPORT INFORMATION </h1>
+# BUG REPORT INFORMATION
 
-<h3> Prerequisites </h3>
+### Prerequisites
+
+> The opened issue, must be code related. GitHub is not meant for support. Feel free to check the CONTRIBUTING section for more details.
 
 ***Versions***
 
@@ -43,13 +45,22 @@ $ dpkg -l | grep centreon
 
 *CentOS, Debian ...*
 
+***Browser used***
+
+- [ ] Google Chrome
+- [ ] Firefox
+- [ ] Internet Explorer IE11
+- [ ] Safari
+
+Version: --
+
 ***Additional environment details (AWS, VirtualBox, physical, etc.):***
 
-<h3> Description </h3>
+### Description
 
 -- Describe the encountered issue --
 
-<h3> Steps to Reproduce </h3>
+### Steps to Reproduce
 
 Please describe precisely the steps to reproduce the encountered issue.
 
@@ -57,8 +68,31 @@ Please describe precisely the steps to reproduce the encountered issue.
 2. I reached the Custom View
 3. And so on...
 
-<h3> Describe the received result </h3>
+### Describe the received result
 
-<h3> Describe the expected result </h3>
+### Describe the expected result
 
-<h3> Additional relevant information (e.g. frequency, ...) </h3>
+### Logs
+
+**PHP error logs**
+
+```
+tail -f /var/opt/rh/rh-php71/log/php-fpm/centreon-error.log
+```
+**centreon-engine logs (*if needed*)**
+
+```
+tail -f /var/log/centreon-engine/centengine.log
+```
+**centreon-broker logs (*if needed*)**
+
+```
+tail -f /var/log/centreon-broker/central-broker-master.log
+```
+**centcore logs (*if needed*)**
+
+```
+tail -f /var/log/centreon/centcore.log
+```
+
+### Additional relevant information (e.g. frequency, ...)

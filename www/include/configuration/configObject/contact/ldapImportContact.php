@@ -114,15 +114,28 @@ if ($o == "li") {
 
 $valid = false;
 if ($form->validate()) {
-    if (isset($_POST["contact_select"]["select"])) {
-        if ($form->getSubmitValue("submitA")) {
-            insertLdapContactInDB($_POST["contact_select"]);
+    if (isset($_POST["contact_select"]["select"]) && $form->getSubmitValue("submitA")) {
+        // extracting the chosen contacts Id from the POST
+        $selectedUsers = $_POST["contact_select"]['select'];
+        unset($_POST["contact_select"]['select']);
+
+        // removing the useless data sent
+        $arrayToReturn = array();
+        foreach ($_POST["contact_select"] as $key => $subKey) {
+            $arrayToReturn[$key] = array_intersect_key($_POST["contact_select"][$key], $selectedUsers);
         }
+
+        // restoring the filtered $_POST['contact_select']['select'] as it's needed in some DB-Func.php functions
+        $arrayToReturn['select'] = $selectedUsers;
+        $_POST['contact_select'] = $arrayToReturn;
+        unset($selectedUsers);
+        unset($arrayToReturn);
+
+        insertLdapContactInDB($_POST["contact_select"]);
     }
     $form->freeze();
     $valid = true;
 }
-
 
 if ($valid) {
     require_once($path . "listContact.php");

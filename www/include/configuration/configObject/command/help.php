@@ -55,7 +55,6 @@ $help["enable_shell"] = dgettext(
     "If you are using Monitoring Engine this option cannot be disabled. Note that commands that require shell " .
     "are slowing down the poller server."
 );
-
 $help["arg_example"] = dgettext(
     "help",
     "The argument example defined here will be displayed together with the command selection and help in " .

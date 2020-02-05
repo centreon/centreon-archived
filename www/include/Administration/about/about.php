@@ -72,23 +72,19 @@ $release = $DBRESULT->fetchRow();
                         <p>Colin Gagnaire</p>
                         <p>Danijel Halupka</p>
                         <p>David Boucher</p>
-                        <p>Edyta Skibinska</p>
                         <p>Etienne Gautier</p>
-                        <p>Guillaume Baldo</p>
                         <p>Jérémy Delpierre</p>
+                        <p>Jiliang Wang</p>
                         <p>Kevin Duret</p>
                         <p>Laurent Calvet</p>
                         <p>Laurent Pinsivy</p>
                         <p>Loïc Laurent</p>
-                        <p>Marko Kovac</p>
                         <p>Matthieu Kermagoret</p>
                         <p>Maximilien Bersoult</p>
-                        <p>Nikola Lovic</p>
                         <p>Quentin Garnier</p>
-                        <p>Rabaa Ridene</p>
                         <p>Stéphane Chapron</p>
+                        <p>Sylvestre Gallon</p>
                         <p>Valentin Hristov</p>
-                        <p>Ventsislav Radev</p>
                         <p>Victor Vassilev</p>
                     </td>
                     <td></td>

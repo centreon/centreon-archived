@@ -54,7 +54,7 @@ Configuration
 
 This part covers the configuration of centreon-backup.
 
-#. Go into the menu: **Administration** ==> **Parameters** ==> **Backup**
+#. Go into the menu: **Administration > Parameters > Backup**
 
 The following window is displayed:
 
@@ -197,7 +197,7 @@ Graphs rebuild
 ==============
 
 Once your monitoring platform is restored and all is doing well, you can rebuild RRD files in order to restore all performance graphs.
-To rebuild performance graphics, go to the menu **Administration -> Options -> Centstorage -> Manage**.
+To rebuild performance graphics, go to the menu **Administration > Options > Centstorage > Manage**.
 On this page, you must select all the services and click "Rebuild RRD Database".
 
 **Your server is now restored.**

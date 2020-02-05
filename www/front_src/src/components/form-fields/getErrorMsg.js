@@ -1,5 +1,5 @@
-const getErrorMessage = error => {
-  if (typeof error === "string") return error;
+const getErrorMessage = (error) => {
+  if (typeof error === 'string') return error;
 
   const { name, type: errorType, value, message } = error;
 
@@ -8,30 +8,30 @@ const getErrorMessage = error => {
   }
 
   switch (errorType) {
-    case "required":
-      return `${name || "This field"} is required`;
-    case "email":
-      return "Please enter a valid email address";
-    case "maxLength":
+    case 'required':
+      return `${name || 'This field'} is required`;
+    case 'email':
+      return 'Please enter a valid email address';
+    case 'maxLength':
       if (Array.isArray(value)) {
-        return `${name || "Field"} must have at most ${error.maxLength} items`;
-      } else {
-        return `${name || "Field"} must be at most ${
-          error.maxLength
-        } characters long`;
+        return `${name || 'Field'} must have at most ${error.maxLength} items`;
       }
-    case "minLength":
+      return `${name || 'Field'} must be at most ${
+        error.maxLength
+      } characters long`;
+
+    case 'minLength':
       if (Array.isArray(value)) {
-        return `${name || "Field"} must have at least ${error.minLength} items`;
-      } else {
-        return `${name || "Field"} must be at least ${
-          error.minLength
-        } characters long`;
+        return `${name || 'Field'} must have at least ${error.minLength} items`;
       }
-    case "invalidDate":
-      return `${name || "Field"} is not valid`;
+      return `${name || 'Field'} must be at least ${
+        error.minLength
+      } characters long`;
+
+    case 'invalidDate':
+      return `${name || 'Field'} is not valid`;
     default:
-      return `${name || "Field"} is invalid. Reason: ${error.reason}`;
+      return `${name || 'Field'} is invalid. Reason: ${error.reason}`;
   }
 };
 

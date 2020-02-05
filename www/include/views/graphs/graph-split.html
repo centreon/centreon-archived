@@ -1,4 +1,3 @@
-<link href="./include/common/javascript/jquery/tourbus/jquery-tourbus.min.css" type="text/css" rel="stylesheet">
 <script language='javascript' src='./include/common/javascript/tool.js'></script>
 <div id="div1" style="position:relative;">
     <form {$form.attributes}>
@@ -12,11 +11,8 @@
               <td><h4>{t}To{/t}</h4></td>
             </tr>
             <tr>
-
                 <td>{$form.period.html}</td>
-
                 <td>{$form.StartDate.html} {$form.StartTime.html} {$form.alternativeDateStartDate.html}</td>
-
                 <td>{$form.EndDate.html} {$form.EndTime.html} {$form.alternativeDateEndDate.html}</td>
             </tr>
         </table>
@@ -196,6 +192,12 @@ function displayNav(end) {
 jQuery(function () {
     var datepickerFormat; //localized user chosen format
 
+    // get timezone from localstorage
+    // be careful, it seems that it's updated when user logout/login
+    var timezone = localStorage.getItem('realTimezone')
+        ? localStorage.getItem('realTimezone')
+        : moment.tz.guess();
+
     initRefresh();
 
     if ("undefined" == typeof(datepickerFormat)) {
@@ -208,8 +210,8 @@ jQuery(function () {
         urlPost = window.location.href;
         var postStart = /start=([^&]+)/.exec(urlPost)[1];
         var postEnd = /end=([^&]+)/.exec(urlPost)[1];
-        var startObj = moment.unix(postStart);
-        var endObj = moment.unix(postEnd);
+        var startObj = moment.unix(postStart).tz(timezone);
+        var endObj = moment.unix(postEnd).tz(timezone);
 
         /* setting the dates from the POST */
         jQuery('input[name=alternativeDateStartDate]').val(startObj.format('YYYY-MM-DD')); //hidden field
@@ -243,10 +245,23 @@ jQuery(function () {
         var metricId = info[2];
         var start;
         var end;
+
+        // get timezone from localstorage
+        // be careful, it seems that it's updated when user logout/login
+        var timezone = localStorage.getItem('realTimezone')
+            ? localStorage.getItem('realTimezone')
+            : moment.tz.guess();
+
         /* Get the period */
         if (jQuery('select[name="period"]').val() === '') {
-            start = moment(jQuery('input[name="alternativeDateStartDate"]').val() + ' ' + jQuery('#StartTime').val());
-            end = moment(jQuery('input[name="alternativeDateEndDate"]').val() + ' ' + jQuery('#EndTime').val());
+            start = moment.tz(
+                jQuery('input[name="alternativeDateStartDate"]').val() + ' ' + jQuery('#StartTime').val(),
+                timezone
+            );
+            end = moment.tz(
+                jQuery('input[name="alternativeDateEndDate"]').val() + ' ' + jQuery('#EndTime').val(),
+                timezone
+            );
             duration = moment.duration(end.diff(start));
         } else {
             parseInterval = jQuery('select[name="period"]').val().match(/(\d+)([a-z]+)/i);
@@ -254,8 +269,8 @@ jQuery(function () {
                 parseInt(parseInterval[1], 10),
                 parseInterval[2]
             );
-            start = moment();
-            end = moment();
+            start = moment().tz(timezone);
+            end = moment().tz(timezone);
             start.subtract(parseInterval[1], parseInterval[2]);
         }
 

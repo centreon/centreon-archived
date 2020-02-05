@@ -20,6 +20,15 @@ Une fois l'installation réalisée, il faut intégrer ce collecteur distant dans
 .. image:: /images/guide_utilisateur/configuration/10advanced_configuration/07addpoller.png
    :align: center
 
+.. note::
+    Si votre collecteur est rattaché à un Remote Server, choisissez ce dernier dans la liste **Attach to Remote
+    Server**.
+
+.. note::
+    Si votre collecteur est rattaché à un Remote Server, mais que vous souhaitez envoyer directement la configuration
+    ainsi que les fichiers de configuration directement depuis le serveur Centreon central vers ce collecteur,
+    désactivez l'option **Use the Remote Server as a proxy for SSH**.
+
 #. Rendez-vous dans le menu **Configuration > Collecteur > Configuration du moteur de collecte**
 #. Sélectionnez la configuration qui correspond au dernier poller ajouté
 #. Modifiez les paramètres suivants, puis sauvegardez :
@@ -37,7 +46,7 @@ Une fois l'installation réalisée, il faut intégrer ce collecteur distant dans
 
    /usr/lib64/centreon-engine/externalcmd.so
 
-   /usr/lib64/nagios/cbmod.so /etc/centreon-broker/poller-module.xml
+   /usr/lib64/nagios/cbmod.so /etc/centreon-broker/poller-module.json
 
 .. image:: /images/guide_utilisateur/configuration/10advanced_configuration/07addpoller_neb.png
    :align: center 
@@ -54,7 +63,7 @@ Il est nécessaire de générer un fichier de configuration pour le broker Centr
 
   * Sélectionnez le **Collecteur**
   * Saisissez le **Nom** de la configuration
-  * Saisissez le **Nom du fichier de configuration** qui doit être identique à celui défini dans la configuration de Centreon Engine, par exemple poller-module.xml
+  * Saisissez le **Nom du fichier de configuration** qui doit être identique à celui défini dans la configuration de Centreon Engine, par exemple poller-module.json
   * Cochez la case **Non** pour la configuration **Link to cbd service**
 
 .. image:: /images/guide_utilisateur/configuration/10advanced_configuration/07_Addbroker.png

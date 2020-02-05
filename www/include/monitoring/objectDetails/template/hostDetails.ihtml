@@ -44,7 +44,7 @@
                                     {foreach item=hs from=$hosts_services}
                                     <tr class="{$hs.line_class}">
                                         <td class="ListColLeft ListColNoWrap ColPopup" style='white-space:nowrap'>
-                                            <a href="./main.php?p=20201&o=svcd&host_name={$hs.host_name}&service_description={$hs.service_description}">{$hs.service_description}</a>
+                                            <a href="./main.php?p=20201&o=svcd&host_name={$hs.hnl}&service_description={$hs.sdl}">{$hs.service_description}</a>
                                         </td>
                                         <td>
                                             {if $hs.svc_index > 0}
@@ -378,7 +378,7 @@
                 {if ($lcaTopo.60101 || $admin == 1) && !$isRemote}
                 <tr class='list_two'>
                     <td class="ListColLeft ColPopup">
-                        <a href='./main.php?p=60101&host_id={$host_id}&o=c'>{$lnk_host_config} {$host_data.host_name}</a>
+                        <a href='./main.php?p=60101&host_id={$host_id}&o=c'>{$lnk_host_config}</a>
                     </td>
                 </tr>
                 {/if}
@@ -392,7 +392,7 @@
                 {if $lcaTopo.20301 || $admin == 1}
                 <tr class='list_two'>
                     <td class="ListColLeft ColPopup">
-                        <a href='./main.php?p=20201&o=svc&host_search={$host_data.host_name}&statusService=svc'>{$lnk_all_services}</a>
+                        <a href='./main.php?p=20201&o=svc&host_search={$host_data.host_name}&statusService=svc&statusFilter='>{$lnk_all_services}</a>
                     </td>
                 </tr>
                 {/if}

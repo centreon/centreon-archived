@@ -47,14 +47,13 @@ Format de la sauvegarde :
 * yyyy-mm-dd-Monitoring-Engine.tar.gz (fichiers de configuration centreon-engine)
 * yyyy-mm-dd-Central.tar.gz (autres fichiers de configuration)
 
-
 *************
 Configuration
 *************
 
 Ce chapitre décrit la configuration de centreon-backup.
 
-#. Se rendre dans le menu: **Administration** ==> **Paramètres** ==> **Backup**
+#. Se rendre dans le menu: **Administration > Paramètres > Backup**
 
 La fenêtre suivante est affichée:
 
@@ -206,7 +205,7 @@ Reconstruction des graphiques
 
 Une fois que vous avez restauré votre plate-forme de supervision et que tout est en ordre, il faudra reconstruire les fichiers RRD afin de retrouver tous vos "anciens" graphiques de performance.
 
-Pour reconstruire les graphiques de performance, il faudra vous rendre dans le menu **Administration -> Options -> Centstorage -> Manage**.
+Pour reconstruire les graphiques de performance, il faudra vous rendre dans le menu **Administration > Options > Centstorage > Manage**.
 Sur cette page, il faudra sélectionner tous les services et cliquer sur **Rebuild RRD Database**.
 
 **Le serveur central est maintenant restauré.**

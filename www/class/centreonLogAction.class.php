@@ -71,7 +71,7 @@ class CentreonLogAction
                 CentreonDB::escape($logId) . "')";
             $append = ", ";
         }
-        $DBRESULT = $pearDBO->query($query);
+        $pearDBO->query($query);
     }
 
     /*
@@ -84,7 +84,7 @@ class CentreonLogAction
 
         // Check if audit log option is activated
         $optLogs = $pearDBO->query("SELECT audit_log_option FROM `config`");
-        $auditLog = $optLogs->fetchRow();
+        $auditLog = $optLogs->fetch();
 
         if (($auditLog) && ($auditLog['audit_log_option'] == '1')) {
             $str_query = "INSERT INTO `log_action`
@@ -95,7 +95,7 @@ class CentreonLogAction
             $pearDBO->query($str_query);
 
             $DBRESULT2 = $pearDBO->query("SELECT MAX(action_log_id) FROM `log_action`");
-            $logId = $DBRESULT2->fetchRow();
+            $logId = $DBRESULT2->fetch();
             if ($fields) {
                 $this->insertFieldsNameValue($logId["MAX(action_log_id)"], $fields);
             }
@@ -156,7 +156,7 @@ class CentreonLogAction
     }
 
     /*
-     *  returns list of modifications
+     *  returns list of host for this service
      */
     public function getHostId($service_id)
     {

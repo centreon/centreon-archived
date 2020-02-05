@@ -69,7 +69,7 @@
                             <xsl:element name="a">
                                 <xsl:attribute name="class">margin_right</xsl:attribute>
                                 <xsl:attribute name="href">
-                                    <xsl:value-of select="hgurl"/>&amp;o=svc_critical</xsl:attribute>
+                                    <xsl:value-of select="hgurl"/>&amp;o=svc&amp;statusFilter=critical</xsl:attribute>
                                 <span>
                                     <xsl:attribute name="class">
                                         state_badge <xsl:value-of select="scc"/>
@@ -82,7 +82,7 @@
                             <xsl:element name="a">
                                 <xsl:attribute name="class">margin_right</xsl:attribute>
                                 <xsl:attribute name="href">
-                                    <xsl:value-of select="hgurl"/>&amp;o=svc_warning</xsl:attribute>
+                                    <xsl:value-of select="hgurl"/>&amp;o=svc&amp;statusFilter=warning</xsl:attribute>
                                 <span>
                                     <xsl:attribute name="class">
                                         state_badge <xsl:value-of select="swc"/>
@@ -95,7 +95,7 @@
                             <xsl:element name="a">
                                 <xsl:attribute name="class">margin_right</xsl:attribute>
                                 <xsl:attribute name="href">
-                                    <xsl:value-of select="hgurl"/>&amp;o=svc_unknown</xsl:attribute>
+                                    <xsl:value-of select="hgurl"/>&amp;o=svc&amp;statusFilter=unknown</xsl:attribute>
                                 <span>
                                     <xsl:attribute name="class">
                                         state_badge <xsl:value-of select="suc"/>
@@ -108,7 +108,7 @@
                             <xsl:element name="a">
                                 <xsl:attribute name="class">margin_right</xsl:attribute>
                                 <xsl:attribute name="href">
-                                    <xsl:value-of select="hgurl"/>&amp;o=svc_ok</xsl:attribute>
+                                    <xsl:value-of select="hgurl"/>&amp;o=svc&amp;statusFilter=ok</xsl:attribute>
                                 <span>
                                     <xsl:attribute name="class">
                                         state_badge <xsl:value-of select="skc"/>
@@ -121,7 +121,7 @@
                             <xsl:element name="a">
                                 <xsl:attribute name="class">margin_right</xsl:attribute>
                                 <xsl:attribute name="href">
-                                    <xsl:value-of select="hgurl"/>&amp;o=svc_pending</xsl:attribute>
+                                    <xsl:value-of select="hgurl"/>&amp;o=svc&amp;statusFilter=pending</xsl:attribute>
                                 <span>
                                     <xsl:attribute name="class">
                                         state_badge <xsl:value-of select="spc"/>

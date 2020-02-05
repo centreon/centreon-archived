@@ -2,21 +2,22 @@ import * as actions from '../actions/tooltipActions';
 
 const initialState = {
   toggled: false,
-  label: "",
+  label: '',
   x: 0,
-  y: 0
-}
+  y: 0,
+};
 
 const tooltipReducer = (state = initialState, action) => {
-  const {data} = action;
-  switch(action.type){
+  const { data } = action;
+  switch (action.type) {
     case actions.UPDATE_TOOLTIP:
       return {
-        ...state, ...data
+        ...state,
+        ...data,
       };
     default:
-      return state
-    }
-}
+      return state;
+  }
+};
 
 export default tooltipReducer;

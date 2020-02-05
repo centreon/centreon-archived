@@ -156,14 +156,18 @@ class CentreonTaskService extends CentreonWebServiceAbstract
             throw new \RestBadRequestException('Missing arguments');
         }
 
-        $result = $this->getDi()['centreon.taskservice']
-            ->getRemoteStatusByParent(
-                $this->arguments['parent_id'],
-                $this->arguments['server_ip'],
-                $this->arguments['centreon_folder']
-            );
+        try {
+            $result = $this->getDi()['centreon.taskservice']
+                ->getRemoteStatusByParent(
+                    $this->arguments['parent_id'],
+                    $this->arguments['server_ip'],
+                    $this->arguments['centreon_folder']
+                );
 
-        return ['success' => true, 'status' => $result];
+            return ['success' => true, 'status' => $result];
+        } catch (\Exception $e) {
+            return ['success' => false, 'status' => $e->getMessage()];
+        }
     }
 
     /**
@@ -257,7 +261,8 @@ class CentreonTaskService extends CentreonWebServiceAbstract
         /*
          * make sure only authorized master can create task
          */
-        $authorizedMaster = $this->getDi()[\Centreon\ServiceProvider::CENTREON_DB_MANAGER]->getRepository(InformationsRepository::class)
+        $authorizedMaster = $this->getDi()[\Centreon\ServiceProvider::CENTREON_DB_MANAGER]
+            ->getRepository(InformationsRepository::class)
             ->getOneByKey('authorizedMaster');
         $authorizedMasterTab = explode(',', $authorizedMaster->getValue());
 

@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright 2005-2015 Centreon
+ * Copyright 2005-2019 Centreon
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -99,11 +99,15 @@ class CentreonHostcategories
         $listValues = '';
         $queryValues = array();
         if (!empty($values)) {
-            foreach ($values as $k => $v) {
-                $listValues .= ':hc' . $v . ',';
-                $queryValues['hc' . $v] = (int)$v;
+            foreach ($values as $v) {
+                // As it happens that $v could be like "X,Y" when two hostgroups are selected, we added a second foreach
+                $multiValues = explode(',', $v);
+                foreach ($multiValues as $item) {
+                    $listValues .= ':sc' . $item . ', ';
+                    $queryValues['sc' . $item] = (int) $item;
+                }
             }
-            $listValues = rtrim($listValues, ',');
+            $listValues = rtrim($listValues, ', ');
         } else {
             $listValues .= '""';
         }

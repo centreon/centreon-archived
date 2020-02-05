@@ -51,6 +51,11 @@ class CentreonUtils
      * Convert all html tags into HTML entities
      */
     const ESCAPE_ALL = 2;
+    /**
+     * Remove all specific characters defined in the configuration > pollers > engine > admin, illegal characters field
+     */
+    const ESCAPE_ILLEGAL_CHARS = 4;
+
 
     /**
      * Defines all self-closing html tags allowed
@@ -323,6 +328,7 @@ class CentreonUtils
      * @see CentreonUtils::ESCAPE_LEGACY_METHOD
      * @see CentreonUtils::ESCAPE_ALL_EXCEPT_LINK
      * @see CentreonUtils::ESCAPE_ALL
+     * @see CentreonUtils::ESCAPE_ILLEGAL_CHARS
      */
     public static function escapeSecure(
         $stringToEscape,
@@ -330,11 +336,19 @@ class CentreonUtils
     ) {
         switch ($escapeMethod) {
             case self::ESCAPE_LEGACY_METHOD:
-                return preg_replace("/<script.*?\/script>/s", "", $stringToEscape);
+                // Remove script and input tags by default
+                return preg_replace(array("/<script.*?\/script>/si", "/<input[^>]+\>/si"), "", $stringToEscape);
             case self::ESCAPE_ALL_EXCEPT_LINK:
                 return self::escapeAllExceptLink($stringToEscape);
             case self::ESCAPE_ALL:
                 return self::escapeAll($stringToEscape);
+            case self::ESCAPE_ILLEGAL_CHARS:
+                $pattern = html_entity_decode(
+                    $_SESSION['centreon']->Nagioscfg['illegal_object_name_chars'],
+                    ENT_QUOTES,
+                    "UTF-8"
+                );
+                return str_replace(str_split($pattern), "", $stringToEscape);
         }
     }
     

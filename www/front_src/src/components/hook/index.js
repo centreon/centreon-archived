@@ -1,57 +1,51 @@
-import React, { Component, Suspense } from "react";
-import { connect } from "react-redux";
-import { dynamicImport } from "../../utils/dynamicImport";
-import centreonAxios from "../../axios";
-import centreonConfig from "../../config";
+/* eslint-disable react/jsx-filename-extension */
+/* eslint-disable no-restricted-syntax */
+/* eslint-disable react/prop-types */
+
+import React, { Component, Suspense } from 'react';
+import { connect } from 'react-redux';
+import { withRouter } from 'react-router-dom';
+import { dynamicImport } from '../../helpers/dynamicImport';
+import centreonAxios from '../../axios';
 
 // class to dynamically import component from modules
 class Hook extends Component {
+  getLoadableHooks = () => {
+    const { history, hooks, path, ...rest } = this.props;
+    const basename = history.createHref({
+      pathname: '/',
+      search: '',
+      hash: '',
+    });
 
-  state = {
-    LoadableComponents: []
-  };
-
-  // get hooks from redux and convert these in react components
-  getLoadableComponents = () => {
-    const { hooks, path } = this.props;
-
-    let LoadableComponents = [];
+    const LoadableHooks = [];
     for (const [hook, parameters] of Object.entries(hooks)) {
       if (hook === path) {
-        for (const parameter of parameters) {
-          LoadableComponents.push(
-            React.lazy(
-              () => dynamicImport(parameter)
-            )
-          );
-        }
+        const LoadableHook = React.lazy(() =>
+          dynamicImport(basename, parameters),
+        );
+        LoadableHooks.push(
+          <LoadableHook
+            key={`hook_${parameters.js}`}
+            centreonAxios={centreonAxios}
+            {...rest}
+          />,
+        );
       }
     }
 
-    return LoadableComponents;
-  }
-
-  render() {
-    const { path, hooks, ...props } = this.props;
-    const LoadableComponents = this.getLoadableComponents();
-
-    return (
-      <Suspense fallback="">
-        {LoadableComponents.map(LoadableComponent => (
-          <LoadableComponent
-            centreonConfig={centreonConfig}
-            centreonAxios={centreonAxios}
-            {...props}
-          />
-        ))}
-      </Suspense>
-    );
+    return LoadableHooks;
   };
 
+  render() {
+    const LoadableHooks = this.getLoadableHooks();
+
+    return <Suspense fallback={null}>{LoadableHooks}</Suspense>;
+  }
 }
 
 const mapStateToProps = ({ externalComponents }) => ({
-  hooks: externalComponents.hooks
+  hooks: externalComponents.hooks,
 });
 
-export default connect(mapStateToProps)(Hook);
+export default connect(mapStateToProps)(withRouter(Hook));

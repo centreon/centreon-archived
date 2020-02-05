@@ -52,7 +52,7 @@ function testActionExistence($name = null)
     $query = "SELECT acl_action_id, acl_action_name FROM acl_actions " .
         "WHERE acl_action_name = '" . htmlentities($name, ENT_QUOTES, "UTF-8") . "'";
     $dbResult = $pearDB->query($query);
-    $action = $dbResult->fetchRow();
+    $action = $dbResult->fetch();
     #Modif case
     if ($dbResult->rowCount() >= 1 && $action["acl_action_id"] == $id) {
         return true;
@@ -83,7 +83,7 @@ function enableActionInDB($acl_action_id = null, $actions = array())
         $pearDB->query("UPDATE acl_actions SET acl_action_activate = '1' WHERE acl_action_id = '" . $key . "'");
         $query = "SELECT acl_action_name FROM `acl_actions` WHERE acl_action_id = '" . (int)$key . "' LIMIT 1";
         $dbResult = $pearDB->query($query);
-        $row = $dbResult->fetchRow();
+        $row = $dbResult->fetch();
         $centreon->CentreonLogAction->insertLog("action access", $key, $row['acl_action_name'], "enable");
     }
 }
@@ -105,9 +105,9 @@ function disableActionInDB($acl_action_id = null, $actions = array())
 
     foreach ($actions as $key => $value) {
         $pearDB->query("UPDATE acl_actions SET acl_action_activate = '0' WHERE acl_action_id = '" . $key . "'");
-        $query = "SELECT acl_action_name FROM `acl_actions` WHERE acl_action_id = '" . intval($key) . "' LIMIT 1";
+        $query = "SELECT acl_action_name FROM `acl_actions` WHERE acl_action_id = '" . (int)$key . "' LIMIT 1";
         $dbResult = $pearDB->query($query);
-        $row = $dbResult->fetchRow();
+        $row = $dbResult->fetch();
         $centreon->CentreonLogAction->insertLog("action access", $key, $row['acl_action_name'], "disable");
     }
 }
@@ -122,9 +122,9 @@ function deleteActionInDB($actions = array())
     global $pearDB, $centreon;
 
     foreach ($actions as $key => $value) {
-        $query = "SELECT acl_action_name FROM `acl_actions` WHERE acl_action_id = '" . intval($key) . "' LIMIT 1";
+        $query = "SELECT acl_action_name FROM `acl_actions` WHERE acl_action_id = '" . (int)$key . "' LIMIT 1";
         $dbResult = $pearDB->query($query);
-        $row = $dbResult->fetchRow();
+        $row = $dbResult->fetch();
         $pearDB->query("DELETE FROM acl_actions WHERE acl_action_id = '" . $key . "'");
         $pearDB->query("DELETE FROM acl_actions_rules WHERE acl_action_rule_id = '" . $key . "'");
         $pearDB->query("DELETE FROM acl_group_actions_relations WHERE acl_action_id = '" . $key . "'");
@@ -144,7 +144,7 @@ function multipleActionInDB($actions = array(), $nbrDup = array())
 
     foreach ($actions as $key => $value) {
         $dbResult = $pearDB->query("SELECT * FROM acl_actions WHERE acl_action_id = '" . $key . "' LIMIT 1");
-        $row = $dbResult->fetchRow();
+        $row = $dbResult->fetch();
         $row["acl_action_id"] = '';
 
         for ($i = 1; $i <= $nbrDup[$key]; $i++) {
@@ -164,14 +164,14 @@ function multipleActionInDB($actions = array(), $nbrDup = array())
                 $val ? $rq = "INSERT INTO acl_actions VALUES (" . $val . ")" : $rq = null;
                 $pearDB->query($rq);
                 $dbResult = $pearDB->query("SELECT MAX(acl_action_id) FROM acl_actions");
-                $maxId = $dbResult->fetchRow();
+                $maxId = $dbResult->fetch();
                 $dbResult->closeCursor();
                 if (isset($maxId["MAX(acl_action_id)"])) {
                     $query = "SELECT DISTINCT acl_group_id,acl_action_id FROM acl_group_actions_relations " .
                         " WHERE acl_action_id = '" . $key . "'";
                     $dbResult = $pearDB->query($query);
-                    while ($cct = $dbResult->fetchRow()) {
-                        $query = "INSERT INTO acl_group_actions_relations VALUES ('', '" .
+                    while ($cct = $dbResult->fetch()) {
+                        $query = "INSERT INTO acl_group_actions_relations VALUES ('" .
                             $maxId["MAX(acl_action_id)"] . "', '" . $cct["acl_group_id"] . "')";
                         $pearDB->query($query);
                     }
@@ -180,8 +180,8 @@ function multipleActionInDB($actions = array(), $nbrDup = array())
                     $query = "SELECT acl_action_rule_id,acl_action_name FROM acl_actions_rules " .
                         "WHERE acl_action_rule_id = '" . $key . "'";
                     $dbResult = $pearDB->query($query);
-                    while ($acl = $dbResult->fetchRow()) {
-                        $query = "INSERT INTO acl_actions_rules VALUES ('', '" . $maxId["MAX(acl_action_id)"] .
+                    while ($acl = $dbResult->fetch()) {
+                        $query = "INSERT INTO acl_actions_rules VALUES (NULL, '" . $maxId["MAX(acl_action_id)"] .
                             "', '" . $acl["acl_action_name"] . "')";
                         $pearDB->query($query);
                     }
@@ -239,8 +239,8 @@ function insertAction($ret)
         htmlentities($ret["acl_action_description"], ENT_QUOTES, "UTF-8") . "', '" .
         htmlentities((isset($ret["acl_action_activate"]) ? $ret["acl_action_activate"]["acl_action_activate"] : ''), ENT_QUOTES, "UTF-8") . "')";
     $pearDB->query($rq);
-    $DBRESULT = $pearDB->query("SELECT MAX(acl_action_id) FROM acl_actions");
-    $cg_id = $DBRESULT->fetchRow();
+    $dbResult = $pearDB->query("SELECT MAX(acl_action_id) FROM acl_actions");
+    $cg_id = $dbResult->fetch();
     return ($cg_id["MAX(acl_action_id)"]);
 }
 
@@ -299,14 +299,14 @@ function updateGroupActions($acl_action_id, $ret = array())
     global $form, $pearDB;
 
     $rq = "DELETE FROM acl_group_actions_relations WHERE acl_action_id = '" . $acl_action_id . "'";
-    $DBRESULT = $pearDB->query($rq);
+    $dbResult = $pearDB->query($rq);
     if (isset($_POST["acl_groups"])) {
         foreach ($_POST["acl_groups"] as $id) {
             $rq = "INSERT INTO acl_group_actions_relations ";
             $rq .= "(acl_group_id, acl_action_id) ";
             $rq .= "VALUES ";
             $rq .= "('" . $id . "', '" . $acl_action_id . "')";
-            $DBRESULT = $pearDB->query($rq);
+            $dbResult = $pearDB->query($rq);
         }
     }
 }
@@ -326,7 +326,7 @@ function updateRulesActions($acl_action_id, $ret = array())
     }
 
     $rq = "DELETE FROM acl_actions_rules WHERE acl_action_rule_id = '" . $acl_action_id . "'";
-    $DBRESULT = $pearDB->query($rq);
+    $dbResult = $pearDB->query($rq);
 
     $actions = array();
     $actions = listActions();
@@ -337,7 +337,7 @@ function updateRulesActions($acl_action_id, $ret = array())
             $rq .= "(acl_action_rule_id, acl_action_name) ";
             $rq .= "VALUES ";
             $rq .= "('" . $acl_action_id . "', '" . $action . "')";
-            $DBRESULT = $pearDB->query($rq);
+            $dbResult = $pearDB->query($rq);
         }
     }
 }

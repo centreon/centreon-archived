@@ -70,7 +70,7 @@ $n = count($tab_nagios_server);
  * Display all server options
  */
 if ($n > 1) {
-    $tab_nagios_server = array_merge(array(0 => _("All Pollers")), $tab_nagios_server);
+    $tab_nagios_server = array(0 => _("All Pollers")) + $tab_nagios_server;
 }
 
 /*

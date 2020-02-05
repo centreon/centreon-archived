@@ -262,7 +262,7 @@ class CentreonHostCategory extends CentreonSeverityAbstract
             array("host_name"),
             -1,
             0,
-            $hcFieldName,
+            $hcFieldName . ', host_name',
             'ASC',
             $filters,
             'AND'

@@ -4,29 +4,33 @@
 Programme CEIP
 ==============
 
-Rejoignez le programme CEIP d’amélioration de l’expérience utilisateur Centreon.
+Rejoignez le programme d’amélioration de l’expérience utilisateur Centreon.
 
-******************************************************************
-Programme CEIP d’amélioration de l’expérience utilisateur Centreon
-******************************************************************
+*************************************************************
+Programme d’amélioration de l’expérience utilisateur Centreon
+*************************************************************
 
-Centreon s'efforce en permanence de comprendre et d'anticiper les besoins de
-ses clients afin de fournir des produits et des solutions de qualité. Le
-programme d'amélioration de l'expérience client, appelé Centreon Customer
-Experience Improvement Program en anglais ou CEIP, bénéficiera aux clients en
-nous permettant de comprendre comment vous utilisez notre logiciel; ceci afin
-que nous puissions vous fournir une amélioration continue de votre expérience
-logicielle Centreon. Le programme est volontaire et anonyme. Les clients qui
-choisissent de participer acceptent de partager :
+Centreon s'efforce en permanence de comprendre et d'anticiper les besoins de ses clients afin de fournir des produits
+et des solutions de qualité. Le programme d'amélioration de l'expérience client, appelé Centreon Customer Experience
+Improvement Program en anglais ou CEIP, bénéficiera à nos utilisateurs en nous permettant de comprendre comment vous
+utilisez notre logiciel; ceci afin que nous puissions vous fournir une amélioration continue de votre expérience
+logicielle Centreon. Le programme CEIP comprend deux composantes :
 
-* Informations telles que la version du système d'exploitation du serveur principal Centreon de la plate-forme, ainsi que le nom et la version du SGBD
-* Informations sur les produits Centreon, telles que le nombre de serveurs et le numéro de version des composants installés sur le serveur principal de Centreon (modules et widgets)
-* Informations sur la configuration Centreon tels que le nombre d'hôtes, de services, de groupes d'hôtes et les services, ainsi que l'usage des modules et widgets
+* Une télémétrie simple,
+* Des statistiques avancées sur l'usage de la suite logicielle Centreon.
+
+La télémétrie collecte anonymement et automatiquement les données suivantes :
+
+* Informations telles que la version du système d'exploitation du serveur principal Centreon de la plate-forme, ainsi
+  que le nom et la version du SGBD
+* Informations sur les produits Centreon, telles que le nombre de serveurs et le numéro de version des composants
+  installés sur le serveur principal de Centreon (modules et widgets)
+* Informations sur la configuration Centreon tels que le nombre d'hôtes, de services, de groupes d'hôtes et les
+  services, ainsi que l'usage des modules et widgets
 * Le fuseau horaire du serveur Centreon
 
-Au cours du processus d'installation ou de mise à jour, il vous sera demandé de
-participer au programme d'amélioration. Gardez la case cochée pour rejoindre le
-programme d'amélioration.
+Les statistiques avancées portent sur l'usage des composants additionnels tels que l'usage des widgets dans les vues
+personnalisées, la gestion des slots pour Centreon DSM, l'usage des Plugin Packs déployés, etc.
 
 **********************************
 Questions fréquemment posées (FAQ)
@@ -35,10 +39,10 @@ Questions fréquemment posées (FAQ)
 Quels sont les paramètres de configuration possibles du programme CEIP ?
 ========================================================================
 
-La participation au programme est activée par défaut. Cependant cette option
-peut être modifiée dans l'interface Web. Les options sont :
+La participation au programme est activée par défaut. Cependant l'envoi des statistiques avancées peut être
+configurée dans l'interface Web. Les options sont :
 
-* Activée
+* Activé
 * Désactivé
 
 Les utilisateurs peuvent modifier l’option du menu **Administration > Paramètres

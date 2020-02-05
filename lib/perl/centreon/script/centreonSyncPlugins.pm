@@ -71,12 +71,12 @@ sub run {
     }
     my $path_plugins = $data->{value};
     
-    ($status, $sth) = $cdb->query("SELECT `id`, `ns_ip_address` FROM `nagios_server` WHERE `ns_activate` = '1' AND `localhost` = '0'");
+    ($status, $sth) = $cdb->query("SELECT `id`, `ns_ip_address`, `ssh_port` FROM `nagios_server` WHERE `ns_activate` = '1' AND `localhost` = '0'");
     die("Error SQL Quit") if ($status == -1);
     while ((my $data = $sth->fetchrow_hashref())) {
-		my $ls = `$self->{ssh} -q $data->{'ns_ip_address'} ls -l $path_plugins/ 2>> /dev/null | wc -l`;
+		my $ls = `$self->{ssh} -q -p $data->{'ssh_port'} $data->{'ns_ip_address'} ls -l $path_plugins/ 2>> /dev/null | wc -l`;
         if ($ls > 1) {
-            `$self->{rsync} -prc $path_plugins/* $data->{'ns_ip_address'}:$path_plugins/`;
+            `$self->{rsync} -e "ssh -o port=$data->{'ssh_port'}" -prc $path_plugins/* $data->{'ns_ip_address'}:$path_plugins/`;
         } else {
             $self->{logger}->writeLogError("Directory not present on remote server : " . $data->{'ns_ip_address'});
         }

@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2005-2018 Centreon
+ * Copyright 2005-2019 Centreon
  * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -83,15 +83,10 @@ if (isset($_GET["openid"])) {
     $openid = $_GET["openid"];
 }
 
-if (isset($_GET["id"])) {
-    $id = $_GET["id"];
-} else {
-    $id = 1;
-}
-
-if (isset($_POST["id"])) {
-    $id = $_POST["id"];
-}
+$id = filter_var(
+    $_GET['id'] ?? $_POST['id'] ?? 1,
+    FILTER_VALIDATE_INT
+);
 
 $serviceGrpArray = array();
 $pollerArray = array();
@@ -399,7 +394,7 @@ if ($engine == 'false') {
 <script>
 
     /*
-     * Selecting choosen Host, Service, HG and/or SG
+     * Selecting chosen Host, Service, HG and/or SG
      */
     function apply_period() {
         var openid = getArgsForHost();
@@ -557,16 +552,25 @@ if ($engine == 'false') {
                 jQuery("input[name=alternativeDateEndDate]").val("");
                 jQuery("#EndDate").val("");
                 jQuery("#EndTime").val("");
-            } else if (jQuery("input[name=alternativeDateStartDate]").val() != "" &&
-                jQuery("input[name=alternativeDateEndDate]").val() != "" &&
-                document.FormPeriod.StartTime.value != "" &&
-                document.FormPeriod.EndTime.value != ""
-            ) {
+            } else {
                 period = '';
-                StartDate = jQuery("input[name=alternativeDateStartDate]").val();
-                EndDate = jQuery("input[name=alternativeDateEndDate]").val();
-                StartTime = document.FormPeriod.StartTime.value;
-                EndTime = document.FormPeriod.EndTime.value;
+                StartTime = '00:00';
+                EndTime = '24:00';
+
+                if (jQuery("input[name=alternativeDateStartDate]").val() != "" &&
+                    jQuery("input[name=alternativeDateEndDate]").val() != ""
+                ) {
+                    StartDate = jQuery("input[name=alternativeDateStartDate]").val();
+                    EndDate = jQuery("input[name=alternativeDateEndDate]").val();
+                }
+
+                if (document.FormPeriod.StartTime.value != "") {
+                    StartTime = document.FormPeriod.StartTime.value;
+                }
+
+                if (document.FormPeriod.EndTime.value != "") {
+                    EndTime = document.FormPeriod.EndTime.value;
+                }
             }
         }
     }
@@ -626,13 +630,13 @@ if ($engine == 'false') {
                         '&num=' + _num + '&error=' + _error + '&alert=' + _alert + '&notification=' + _notification +
                         '&search_H=' + _search_H + '&search_S=' + _search_S + '&period=' + period +
                         '&StartDate=' + StartDate + '&EndDate=' + EndDate + '&StartTime=' + StartTime +
-                        '&EndTime=' + EndTime + '&limit=' + _limit + '&id=' + openid +
+                        '&EndTime=' + EndTime + '&limit=' + _limit + '&id=' + openid
                         <?php
                         if (isset($search) && $search) {
-                            print "&search_host=" . $search;
+                            print " + &search_host=" . $search;
                         }
                         if (isset($search_service) && $search_service) {
-                            print "&search_service=" . $search_service;
+                            print " + &search_service=" . $search_service;
                         }
                         ?> +'&export=1';
                 } else if (type == 'XML') {
@@ -841,7 +845,7 @@ if ($engine == 'false') {
                             if (jQuery.inArray(elem.id, host_value) === -1) {
                                 var existingOptions = jQuery("#host_filter").find('option');
                                 var existFlag = false;
-                                existingOptions.forEach(function (el) {
+                                existingOptions.each(function (el) {
                                     if (jQuery(this).val() == elem.id) {
                                         existFlag = true;
                                     }
@@ -877,7 +881,7 @@ if ($engine == 'false') {
                             if (jQuery.inArray(elem.id, service_value) === -1) {
                                 var existingOptions = jQuery("#service_filter option");
                                 var existFlag = false;
-                                existingOptions.forEach(function () {
+                                existingOptions.each(function () {
                                     if (jQuery(this).val() == elem.id) {
                                         existFlag = true;
                                     }

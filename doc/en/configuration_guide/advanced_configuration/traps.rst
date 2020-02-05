@@ -147,8 +147,6 @@ Here is an example of possible configuration of the file **/etc/centreon/centreo
         date_format => "",
         time_format => "",
         date_time_format => "",
-        # Internal OID cache from database
-        cache_unknown_traps_enable => 1,
         # Time in seconds before cache reload
         cache_unknown_traps_retention => 600,
         # 0 = central, 1 = poller
@@ -256,6 +254,7 @@ It is also possible to create definitions of SNMP traps manually:
       :align: center
 
 * The field **Trap name** defines the name of the trap.
+* The field **Mode** defines how to check the trap **OID** received.
 * The field **OID** defines the Root OID to be received for this trap to be considered as received.
 * The field **Vendor name** defines the name of the manufacturer to which the trap to be selected in the drop-down list belongs.
 * The field **Output message** of contains the message to be displayed in the event of reception of a trap containing the OID configured above.

@@ -3,7 +3,7 @@
     <head>
         <title>Centreon - IT & Network Monitoring</title>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-        <meta name="Generator" content="Centreon - Copyright (C) 2005 - 2019 Open Source Matters. All rights reserved." />
+        <meta name="Generator" content="Centreon - Copyright (C) 2005 - 2020 Open Source Matters. All rights reserved." />
         <meta name="robots" content="index, nofollow" />
         <meta http-equiv="refresh" content="840">
         <link href="./Themes/Centreon-2/login.css" rel="stylesheet" type="text/css">
@@ -23,6 +23,7 @@
                 </div>
                 <div class="logintab">
                     <table id="logintab1" style="text-align:center;" align="center">
+                       {if $keycloakEnabled == 0 || ($keycloakEnabled == 1 && $keycloakMode == 1)}
                        <tr>
                             <td align='right'>{$form.useralias.label}</td>
                             <td>{$form.useralias.html}</td>
@@ -34,11 +35,15 @@
                         <tr>
                             <td colspan="2" align='center'>{$form.submitLogin.html}</td>
                         </tr>
+                        {/if}
+                        {if $keycloakEnabled == 1}
+                            <td colspan="2" align='center'><a href="?force=1"><input class="btc bt_info" name="submitLogin" value="Connect with Keycloak" type="button"/></a></td>
+                        {/if}
                     </table>
                 </div>
                 <div class="LoginInvitVersion">
                     <span id="LoginInvitcpy">
-                        &copy; <a href="mailto:contact@centreon.com">Centreon</a> 2005 - 2019
+                        &copy; <a href="mailto:contact@centreon.com">Centreon</a> 2005 - 2020
                     </span>
                     <br>
                     <span>

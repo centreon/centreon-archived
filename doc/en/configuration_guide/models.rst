@@ -62,12 +62,15 @@ Configuration
 
 To add a host template:
 
-#. Go into the menu: **Configuration** ==> **Hosts**
+#. Go into the menu: **Configuration > Hosts**
 #. In the left menu, click on **Templates**
 #. Click on **Add**
 
 .. note::
    Refer to the chapter covering configuration of :ref:`hosts<hostconfiguration>` to configure a template because the form is identical.
+
+.. note::
+   By default, locked host templates are hidden. Check the "Locked elements" box to list all templates.
 
 ******************
 Services Templates
@@ -86,12 +89,15 @@ Configuration
 
 To add a Service Template:
 
-#. Go into the menu: **Configuration** ==> **Services**
+#. Go into the menu: **Configuration > Services**
 #. In the left menu, click on **Templates**
 #. Click on **Add**
 
 .. note::
    Refer to the chapter covering configuration of :ref:`services<serviceconfiguration>` to configure a template because the form is identical.
+
+.. note::
+   By default, locked service templates are hidden. Check the "Locked elements" box to list all templates.
 
 *************
 Best practice
@@ -141,7 +147,7 @@ Configuration
 
 To add a contact template:
 
-1. Go into the menu: **Configuration** ==> **Users**
+1. Go into the menu: **Configuration > Users**
 2. In the left menu, click on **Contact Templates**
 3. Click on **Add**
 

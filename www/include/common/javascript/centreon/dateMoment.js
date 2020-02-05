@@ -1,6 +1,6 @@
 /*
- * Copyright 2005-2018 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2019 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -33,14 +33,14 @@
  */
 
 
-// use of moment() to format dates for each occurence
+// use of moment() to format dates for each occurrence
 function formatDateMoment() {
     // get locale and GMT preferences from localStorage
     var userTimezone = localStorage.getItem('realTimezone');
     var userLocale = localStorage.getItem('locale');
     moment.locale(userLocale);
 
-    //creating a collection of occurences
+    //creating a collection of occurrences
     jQuery(".isTimestamp").each(function (index, element) {
         var myElement = jQuery(element);
 
@@ -51,8 +51,12 @@ function formatDateMoment() {
         if (!isNaN(currentDate)) {
             if (myElement.hasClass("isTime")) {
                 myElement.text(moment(currentDate).tz(userTimezone).format('LTS'));
+            } else if (myElement.hasClass("isShortTime")) {
+                myElement.text(moment(currentDate).tz(userTimezone).format('LT'));
             } else if (myElement.hasClass("isDate")) {
                 myElement.text(moment(currentDate).tz(userTimezone).format('LL'));
+            }else if (myElement.hasClass("isShortDate")) {
+                myElement.text(moment(currentDate).tz(userTimezone).format('LLL'));
             } else {
                 myElement.text(moment(currentDate).tz(userTimezone).format('LL LTS'));
             }

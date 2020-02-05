@@ -132,7 +132,7 @@ class CentreonExternalCommand
             if ($this->debug) {
                 print "COMMAND BEFORE SEND: $str_remote";
             }
-            $result = file_put_contents($varlib . '/centcore.cmd', $str_remote, FILE_APPEND);
+            $result = file_put_contents($varlib . '/centcore/' . microtime(true) . '-externalcommand.cmd', $str_remote, FILE_APPEND);
             $return_remote = ($result !== false) ? 0 : 1;
         }
 

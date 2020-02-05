@@ -8,6 +8,7 @@ Liste des problèmes rencontrés :
 * :ref:`J'ai supprimé mon Remote Server et je ne peux plus le recréer avec l'assistant<deleteremoteserver>`.
 * :ref:`Une erreur s'affiche lorsque je clique sur la page de détails d'un hôte ou d'un service<nolongerexists>`.
 * :ref:`Aucune action utilisateur ne semble être prise en compte dans l'interface temps réel<noaction>`.
+
 .. _notrunning:
 
 Mon Remote Server et/ou ses collecteurs rattachés ne sont pas en cours d'exécution sur le serveur Centreon central

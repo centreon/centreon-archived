@@ -38,142 +38,161 @@ require_once $centreon_path . "www/class/centreonHost.class.php";
 /**
  * Hide value of custom macros defined as password
  *
- * @param string $command_name The name of the command
- * @param int    $host_id      The ID of the host
- * @param int    $service_id   The ID of the service
+ * @param string $commandName The name of the command
+ * @param int    $hostId      The ID of the host
+ * @param int    $serviceId   The ID of the service
  *
  * @return string
  */
-function hidePasswordInCommand($command_name, $host_id, $service_id)
+function hidePasswordInCommand($commandName, $hostId, $serviceId)
 {
     global $pearDB;
 
-    if (!isset($command_name) && !isset($service_id)) {
+    if (!isset($commandName) && !isset($serviceId)) {
         return 1;
     }
 
     $pearDBStorage = new CentreonDB('centstorage');
 
-    /* Get command line with macro */
-    $query_command_line = "SELECT command_line FROM command WHERE command_name = '" .
-    $pearDB->escape($command_name) . "'";
-    $res = $pearDB->query($query_command_line);
-    $row = $res->fetchRow();
-    $command_line_with_macro = $row['command_line'];
+    // Get command line with macro
+    $sth = $pearDB->prepare("SELECT command_line FROM command WHERE command_name = :command_name");
+    $sth->bindParam(':command_name', $commandName, PDO::PARAM_STR);
+    $sth->execute();
+    $row = $sth->fetchRow();
+    $commandLineWithMacros = $row['command_line'];
 
-    /* Get executed command lines */
-    $query_command_name = "SELECT host_id, check_command, command_line "
-        . "FROM services "
-        . "WHERE host_id = '" . $host_id . "' "
-        . "AND service_id = '" . $service_id . "'";
-    $res = $pearDBStorage->query($query_command_name);
-    $row = $res->fetchRow();
-    $executed_check_command = $row['command_line'];
+    // Get executed command lines
+    $sth = $pearDBStorage->prepare("SELECT host_id, check_command, command_line
+        FROM services
+        WHERE host_id = :host_id
+        AND service_id = :service_id");
+    $sth->bindParam(':host_id', $hostId, PDO::PARAM_INT);
+    $sth->bindParam(':service_id', $serviceId, PDO::PARAM_INT);
+    $sth->execute();
+    $row = $sth->fetchRow();
+    $commandLineExecuted = $row['command_line'];
 
-    /* Get list of templates */
-    $arrtSvcTpl = getListTemplates($pearDB, $service_id);
-    $arrSvcTplID = array($service_id);
+    // Get list of templates
+    $arrtSvcTpl = getListTemplates($pearDB, $serviceId);
+    $arrSvcTplID = array($serviceId);
     foreach ($arrtSvcTpl as $svc) {
         $arrSvcTplID[] = $svc['service_id'];
     }
 
-    /* Get list of custom macros from services and templates */
-    $query_custom_macro_svc = "SELECT svc_macro_name "
+    // Get list of custom macros from services and templates
+    $query = "SELECT svc_macro_name "
         . "FROM on_demand_macro_service "
         . "WHERE is_password = 1 "
-        . "AND svc_svc_id IN ('" . implode('\', \'', $arrSvcTplID) . "')";
-    $res = $pearDB->query($query_custom_macro_svc);
-
-    $arrMacroPassword = array();
-    while ($row = $res->fetchRow()) {
-        $arrMacroPassword = array_merge(
-            $arrMacroPassword,
-            array($row['svc_macro_name'])
-        );
-        $executed_check_command = getOptionName(
-            $command_line_with_macro,
-            $executed_check_command,
-            $row['svc_macro_name']
-        );
-    }
-
-    /* Get custom macros from hosts and templates */
-    $query_custom_macro_host = "SELECT host_macro_name "
-        . "FROM on_demand_macro_host "
-        . "WHERE is_password = 1 "
-        . "AND host_host_id IN ('" . implode('\', \'', getHostsTemplates($host_id)) . "')";
-    $res = $pearDB->query($query_custom_macro_host);
-
-    while ($row = $res->fetchRow()) {
-        $arrMacroPassword = array_merge(
-            $arrMacroPassword,
-            array($row['host_macro_name'])
-        );
-        $executed_check_command = getOptionName(
-            $command_line_with_macro,
-            $executed_check_command,
-            $row['host_macro_name']
-        );
-    }
-
-    return $executed_check_command;
-}
-
-/**
- * Get the name of the option in the command line corresponding
- * to the custom macro password type
- *
- * @param string $command_with_macro Configuration command line
- * @param string $executed_command   Executed command line
- * @param string $macro              The custom macro password type
- *
- * @return string
- */
-function getOptionName($command_with_macro, $executed_command, $macro)
-{
-    $macro = str_replace('$', '\$', $macro);
-    $pattern = "/(\-\-?[a-zA-Z0-9\-\_]+=?\W+?)\'?" . $macro . "\'?/";
-    if (preg_match($pattern, $command_with_macro, $matches)) {
-        for ($i = 1; $i < count($matches); $i++) {
-            /* Prepare pattern */
-            $pattern = $matches[$i];
-            $pattern = str_replace('/', '\/', $pattern);
-            $pattern = str_replace('-', '\-', $pattern);
-            $pattern = str_replace('.', '\.', $pattern);
-            $pattern = "/(.*\s)?" . $pattern . "\'?([\\x21-\\x7E]+)\'?(\s.*)?/";
-             /* Replace value of custom macro password type
-                in executed command line */
-            $executed_command = preg_replace($pattern, "\$1" . $matches[$i] . "***\$3", $executed_command);
+        . "AND svc_svc_id IN (";
+    for ($i = 0; $i < count($arrSvcTplID); $i++) {
+        if ($i === 0) {
+            $query .= ':svc_id' . $i;
+        } else {
+            $query .= ', :svc_id' . $i;
         }
     }
+    $query .= ")";
+    $sth = $pearDB->prepare($query);
+    for ($i = 0; $i < count($arrSvcTplID); $i++) {
+        $sth->bindParam(':svc_id' . $i, $arrSvcTplID[$i], PDO::PARAM_INT);
+    }
+    $sth->execute();
 
-    return $executed_command;
+    $arrServiceMacroPassword = array();
+    while ($row = $sth->fetchRow()) {
+        $arrServiceMacroPassword = array_merge(
+            $arrServiceMacroPassword,
+            array($row['svc_macro_name'])
+        );
+    }
+
+    // Get custom macros from hosts and templates
+    $arrHostTplID = getHostsTemplates($hostId);
+    $query = "SELECT host_macro_name "
+        . "FROM on_demand_macro_host "
+        . "WHERE is_password = 1 "
+        . "AND host_host_id IN (";
+    for ($i = 0; $i < count($arrHostTplID); $i++) {
+        if ($i === 0) {
+            $query .= ':host_id' . $i;
+        } else {
+            $query .= ', :host_id' . $i;
+        }
+    }
+    $query .= ")";
+    $sth = $pearDB->prepare($query);
+    for ($i = 0; $i < count($arrHostTplID); $i++) {
+        $sth->bindParam(':host_id' . $i, $arrHostTplID[$i], PDO::PARAM_INT);
+    }
+    $sth->execute();
+
+    $arrHostMacroPassword = array();
+    while ($row = $sth->fetchRow()) {
+        $arrHostMacroPassword = array_merge(
+            $arrHostMacroPassword,
+            array($row['host_macro_name'])
+        );
+    }
+
+    $command = '';
+    $patternMacro = '';
+    $aCommandLineWithMacros = explode(' ', $commandLineWithMacros);
+    $aCommandLineExecuted = explode(' ', $commandLineExecuted);
+    $arrMacroPassword = array_merge($arrServiceMacroPassword, $arrHostMacroPassword);
+    $patternMacro = implode('|', $arrMacroPassword);
+    $patternMacro = str_replace('$', '\\$', $patternMacro);
+
+    if (count($arrMacroPassword) && preg_match('/(' . $patternMacro . ')/', $commandLineWithMacros)) {
+        if (count($aCommandLineWithMacros) == count($aCommandLineExecuted)) {
+            for ($i = 0; $i < count($aCommandLineWithMacros); $i++) {
+                if (preg_match_all('/(' . $patternMacro . ')/', $aCommandLineWithMacros[$i], $matches)) {
+                    $pattern = $aCommandLineWithMacros[$i];
+                    foreach ($matches as $match) {
+                        if ($arrMacroPassword[$match[0]]) {
+                            $pattern = preg_replace($match, $pattern);
+                        }
+                    }
+                    $command .= ' ' . preg_replace('/\$_(HOST|SERVICE)[a-zA-Z0-9_-]+\$/', '***', $pattern);
+                } else {
+                    $command .= ' ' . $aCommandLineExecuted[$i];
+                }
+            }
+            return preg_replace('/^ /', '', $command);
+        } else {
+            return _('Unable to hide passwords in command');
+        }
+    } else {
+        return $commandLineExecuted;
+    }
 }
 
 /**
  * Get the list of hosttemplate ID of an host
  *
- * @param int $host_id The ID of the host
+ * @param int $hostId The ID of the host
  *
  * @return array
  */
-function getHostsTemplates($host_id)
+function getHostsTemplates($hostId)
 {
-    $pearDBCentreon = new CentreonDB();
+    global $pearDB;
 
-    $query = "SELECT host_tpl_id FROM host_template_relation "
-        . "WHERE host_host_id = '" . $host_id . "'";
-    $res = $pearDBCentreon->query($query);
-    if ($res->numRows() == 0) {
-        return array($host_id);
+    $sth = $pearDB->prepare("SELECT host_tpl_id
+        FROM host_template_relation
+        WHERE host_host_id = :host_id");
+    $sth->bindParam(':host_id', $hostId, PDO::PARAM_INT);
+    $sth->execute();
+
+    if ($sth->numRows() == 0) {
+        return array($hostId);
     } else {
         $arrHostTpl = array();
-        while ($row = $res->fetchRow()) {
+        while ($row = $sth->fetchRow()) {
             $arrHostTpl = array_merge(
                 $arrHostTpl,
                 getHostsTemplates($row['host_tpl_id'])
             );
-            $arrHostTpl = array_merge($arrHostTpl, array($host_id));
+            $arrHostTpl = array_merge($arrHostTpl, array($hostId));
         }
         return $arrHostTpl;
     }

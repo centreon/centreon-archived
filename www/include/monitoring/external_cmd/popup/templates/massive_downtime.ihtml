@@ -65,5 +65,6 @@
     initDatepicker("datepicker", "mm/dd/yy", "0");
 
     jQuery(".timepicker").timepicker();
+    turnOnEvents();
 </script>
 {/literal}

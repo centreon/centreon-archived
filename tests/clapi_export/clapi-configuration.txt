@@ -99,33 +99,41 @@ INSTANCE;setparam;Central;localhost;1
 INSTANCE;setparam;Central;is_default;0
 INSTANCE;setparam;Central;ns_activate;1
 INSTANCE;setparam;Central;ns_status;0
-INSTANCE;setparam;Central;init_script;centengine
-INSTANCE;setparam;Central;init_system;systemv
-INSTANCE;setparam;Central;monitoring_engine;CENGINE
+INSTANCE;setparam;Central;engine_start_command;service centengine start
+INSTANCE;setparam;Central;engine_stop_command;service centengine stop
+INSTANCE;setparam;Central;engine_restart_command;service centengine restart
+INSTANCE;setparam;Central;engine_reload_command;service centengine reload
 INSTANCE;setparam;Central;nagios_bin;/usr/sbin/centengine
 INSTANCE;setparam;Central;nagiostats_bin;/usr/sbin/centenginestats
 INSTANCE;setparam;Central;nagios_perfdata;/var/log/centreon-engine/service-perfdata
+INSTANCE;setparam;Central;broker_reload_command;service cbd reload
 INSTANCE;setparam;Central;centreonbroker_cfg_path;/etc/centreon-broker
 INSTANCE;setparam;Central;centreonbroker_module_path;/usr/share/centreon/lib/centreon-broker
 INSTANCE;setparam;Central;centreonconnector_path;/usr/lib64/centreon-connector
 INSTANCE;setparam;Central;init_script_centreontrapd;centreontrapd
 INSTANCE;setparam;Central;snmp_trapd_path_conf;/etc/snmp/centreon_traps/
+INSTANCE;setparam;Central;remote_server_centcore_ssh_proxy;1
+INSTANCE;setparam;Central;updated;0
 INSTANCE;ADD;test_poller;127.0.0.1;22
 INSTANCE;setparam;test_poller;localhost;0
 INSTANCE;setparam;test_poller;is_default;0
 INSTANCE;setparam;test_poller;ns_activate;0
 INSTANCE;setparam;test_poller;ns_status;0
-INSTANCE;setparam;test_poller;init_script;centengine
-INSTANCE;setparam;test_poller;init_system;systemv
-INSTANCE;setparam;test_poller;monitoring_engine;CENGINE
+INSTANCE;setparam;test_poller;engine_start_command;service centengine start
+INSTANCE;setparam;test_poller;engine_stop_command;service centengine stop
+INSTANCE;setparam;test_poller;engine_restart_command;service centengine restart
+INSTANCE;setparam;test_poller;engine_reload_command;service centengine reload
 INSTANCE;setparam;test_poller;nagios_bin;/usr/sbin/centengine
 INSTANCE;setparam;test_poller;nagiostats_bin;/usr/sbin/centenginestats
 INSTANCE;setparam;test_poller;nagios_perfdata;/var/log/centreon-engine/service-perfdata
+INSTANCE;setparam;test_poller;broker_reload_command;service cbd reload
 INSTANCE;setparam;test_poller;centreonbroker_cfg_path;/etc/centreon-broker
 INSTANCE;setparam;test_poller;centreonbroker_module_path;/usr/share/centreon/lib/centreon-broker
 INSTANCE;setparam;test_poller;centreonconnector_path;/usr/lib64/centreon-connector
 INSTANCE;setparam;test_poller;init_script_centreontrapd;centreontrapd
 INSTANCE;setparam;test_poller;snmp_trapd_path_conf;/etc/snmp/centreon_traps/
+INSTANCE;setparam;test_poller;remote_server_centcore_ssh_proxy;1
+INSTANCE;setparam;test_poller;updated;0
 TP;ADD;24x7;Always
 TP;setparam;24x7;tp_sunday;00:00-24:00
 TP;setparam;24x7;tp_monday;00:00-24:00
@@ -425,10 +433,9 @@ RESOURCECFG;setparam;2;activate;1
 RESOURCECFG;ADD;$USER1$;/usr/lib64/nagios/plugins;Central;Nagios Plugins Path
 RESOURCECFG;setparam;1;activate;1
 CENTBROKERCFG;ADD;central-broker-master;Central
-CENTBROKERCFG;SETPARAM;central-broker-master;filename;central-broker.xml
+CENTBROKERCFG;SETPARAM;central-broker-master;filename;central-broker.json
 CENTBROKERCFG;SETPARAM;central-broker-master;cache_directory;/var/lib/centreon-broker
 CENTBROKERCFG;SETPARAM;central-broker-master;stats_activate;1
-CENTBROKERCFG;SETPARAM;central-broker-master;correlation_activate;0
 CENTBROKERCFG;SETPARAM;central-broker-master;daemon;1
 CENTBROKERCFG;ADDINPUT;central-broker-master;central-broker-master-input;ipv4
 CENTBROKERCFG;SETINPUT;central-broker-master;1;type;ipv4
@@ -484,10 +491,9 @@ CENTBROKERCFG;SETOUTPUT;central-broker-master;3;db_password;centreon
 CENTBROKERCFG;SETOUTPUT;central-broker-master;3;db_name;centreon_storage
 CENTBROKERCFG;SETOUTPUT;central-broker-master;3;check_replication;no
 CENTBROKERCFG;ADD;central-module-master;Central
-CENTBROKERCFG;SETPARAM;central-module-master;filename;central-module.xml
+CENTBROKERCFG;SETPARAM;central-module-master;filename;central-module.json
 CENTBROKERCFG;SETPARAM;central-module-master;cache_directory;/var/lib/centreon-engine
 CENTBROKERCFG;SETPARAM;central-module-master;stats_activate;1
-CENTBROKERCFG;SETPARAM;central-module-master;correlation_activate;0
 CENTBROKERCFG;SETPARAM;central-module-master;daemon;0
 CENTBROKERCFG;ADDLOGGER;central-module-master;/var/log/centreon-broker/central-module-master.log;file
 CENTBROKERCFG;SETLOGGER;central-module-master;1;type;file
@@ -508,10 +514,9 @@ CENTBROKERCFG;SETOUTPUT;central-module-master;1;protocol;bbdo
 CENTBROKERCFG;SETOUTPUT;central-module-master;1;tls;no
 CENTBROKERCFG;SETOUTPUT;central-module-master;1;compression;no
 CENTBROKERCFG;ADD;central-rrd-master;Central
-CENTBROKERCFG;SETPARAM;central-rrd-master;filename;central-rrd.xml
+CENTBROKERCFG;SETPARAM;central-rrd-master;filename;central-rrd.json
 CENTBROKERCFG;SETPARAM;central-rrd-master;cache_directory;/var/lib/centreon-broker
 CENTBROKERCFG;SETPARAM;central-rrd-master;stats_activate;1
-CENTBROKERCFG;SETPARAM;central-rrd-master;correlation_activate;0
 CENTBROKERCFG;SETPARAM;central-rrd-master;daemon;1
 CENTBROKERCFG;ADDINPUT;central-rrd-master;central-rrd-master-input;ipv4
 CENTBROKERCFG;SETINPUT;central-rrd-master;1;type;ipv4
@@ -623,7 +628,7 @@ ENGINECFG;setparam;Centreon Engine Central;debug_verbosity;2
 ENGINECFG;setparam;Centreon Engine Central;cfg_file;centengine.cfg
 ENGINECFG;setparam;Centreon Engine Central;log_pid;1
 ENGINECFG;setparam;Centreon Engine Central;enable_macros_filter;0
-ENGINECFG;setparam;Centreon Engine Central;broker_module;/usr/lib64/centreon-engine/externalcmd.so|/usr/lib64/nagios/cbmod.so /etc/centreon-broker/central-module.xml
+ENGINECFG;setparam;Centreon Engine Central;broker_module;/usr/lib64/centreon-engine/externalcmd.so|/usr/lib64/nagios/cbmod.so /etc/centreon-broker/central-module.json
 ENGINECFG;ADD;Centreon Engine Central_1;test_poller;Centreon Engine
 ENGINECFG;setparam;Centreon Engine Central_1;log_file;/var/log/centreon-engine/centengine.log
 ENGINECFG;setparam;Centreon Engine Central_1;cfg_dir;/etc/centreon-engine
@@ -684,6 +689,7 @@ ENGINECFG;setparam;Centreon Engine Central_1;process_performance_data;0
 ENGINECFG;setparam;Centreon Engine Central_1;host_perfdata_file_mode;2
 ENGINECFG;setparam;Centreon Engine Central_1;service_perfdata_file_mode;2
 ENGINECFG;setparam;Centreon Engine Central_1;check_for_orphaned_services;0
+ENGINECFG;setparam;Centreon Engine Central_1;check_for_orphaned_hosts;0
 ENGINECFG;setparam;Centreon Engine Central_1;check_service_freshness;1
 ENGINECFG;setparam;Centreon Engine Central_1;check_host_freshness;2
 ENGINECFG;setparam;Centreon Engine Central_1;date_format;euro
@@ -707,8 +713,8 @@ ENGINECFG;setparam;Centreon Engine Central_1;debug_verbosity;2
 ENGINECFG;setparam;Centreon Engine Central_1;cfg_file;centengine.cfg
 ENGINECFG;setparam;Centreon Engine Central_1;log_pid;1
 ENGINECFG;setparam;Centreon Engine Central_1;enable_macros_filter;0
-ENGINECFG;setparam;Centreon Engine Central_1;broker_module;/usr/lib64/centreon-engine/externalcmd.so|/usr/lib64/nagios/cbmod.so /etc/centreon-broker/central-module.xml
-CONTACTTPL;ADD;contact_template;contact_template;;md5__d41d8cd98f00b204e9800998ecf8427e;0;;;local
+ENGINECFG;setparam;Centreon Engine Central_1;broker_module;/usr/lib64/centreon-engine/externalcmd.so|/usr/lib64/nagios/cbmod.so /etc/centreon-broker/central-module.json
+CONTACTTPL;ADD;contact_template;contact_template;;md5__d41d8cd98f00b204e9800998ecf8427e;0;1;;local
 CONTACTTPL;setparam;contact_template;hostnotifopt;n
 CONTACTTPL;setparam;contact_template;servicenotifopt;n
 CONTACTTPL;setparam;contact_template;contact_js_effects;0
@@ -718,7 +724,9 @@ CONTACTTPL;setparam;contact_template;reach_api_rt;0
 CONTACTTPL;setparam;contact_template;contact_enable_notifications;2
 CONTACTTPL;setparam;contact_template;contact_type_msg;txt
 CONTACTTPL;setparam;contact_template;contact_activate;1
-CONTACTTPL;ADD;test_name;test_contact-template;;md5__b0e52a1510c9012ebae9e9dc1ae0c46e;;;;local
+CONTACTTPL;setparam;contact_template;contact_ldap_last_sync;0
+CONTACTTPL;setparam;contact_template;contact_ldap_required_sync;0
+CONTACTTPL;ADD;test_name;test_contact-template;;md5__b0e52a1510c9012ebae9e9dc1ae0c46e;0;1;;local
 CONTACTTPL;setparam;test_contact-template;hostnotifopt;n
 CONTACTTPL;setparam;test_contact-template;servicenotifopt;n
 CONTACTTPL;setparam;test_contact-template;contact_js_effects;0
@@ -728,6 +736,8 @@ CONTACTTPL;setparam;test_contact-template;reach_api_rt;0
 CONTACTTPL;setparam;test_contact-template;contact_enable_notifications;0
 CONTACTTPL;setparam;test_contact-template;contact_type_msg;txt
 CONTACTTPL;setparam;test_contact-template;contact_activate;1
+CONTACTTPL;setparam;test_contact-template;contact_ldap_last_sync;0
+CONTACTTPL;setparam;test_contact-template;contact_ldap_required_sync;0
 LDAP;ADD;openldap;openldap;
 LDAP;SETPARAM;openldap;enable;1;
 LDAP;ADDSERVER;openldap;openldap;389;0;0;
@@ -792,6 +802,8 @@ CONTACT;setparam;admin;reach_api_rt;0
 CONTACT;setparam;admin;contact_enable_notifications;1
 CONTACT;setparam;admin;contact_type_msg;txt
 CONTACT;setparam;admin;contact_activate;1
+CONTACT;setparam;admin;contact_ldap_last_sync;0
+CONTACT;setparam;admin;contact_ldap_required_sync;0
 CONTACT;setparam;admin;hostnotifcmd;host-notify-by-email
 CONTACT;setparam;admin;svcnotifcmd;service-notify-by-email
 CONTACT;ADD;Guest;guest;guest@localhost;md5__d41d8cd98f00b204e9800998ecf8427e;0;0;en_US;local
@@ -806,6 +818,8 @@ CONTACT;setparam;guest;reach_api_rt;0
 CONTACT;setparam;guest;contact_enable_notifications;2
 CONTACT;setparam;guest;contact_type_msg;txt
 CONTACT;setparam;guest;contact_activate;0
+CONTACT;setparam;guest;contact_ldap_last_sync;0
+CONTACT;setparam;guest;contact_ldap_required_sync;0
 CONTACT;setparam;guest;hostnotifcmd;host-notify-by-email
 CONTACT;setparam;guest;svcnotifcmd;service-notify-by-email
 CONTACT;ADD;Jean-Pierre;jeanpierre;Jean-Pierre@hotmail.fr;md5__d41d8cd98f00b204e9800998ecf8427e;0;1;browser;local
@@ -818,6 +832,8 @@ CONTACT;setparam;jeanpierre;reach_api_rt;0
 CONTACT;setparam;jeanpierre;contact_enable_notifications;2
 CONTACT;setparam;jeanpierre;contact_type_msg;txt
 CONTACT;setparam;jeanpierre;contact_activate;1
+CONTACT;setparam;jeanpierre;contact_ldap_last_sync;0
+CONTACT;setparam;jeanpierre;contact_ldap_required_sync;0
 CONTACT;ADD;test_contact;test_contact;test@localhost;md5__b0e52a1510c9012ebae9e9dc1ae0c46e;0;0;en_US;local
 CONTACT;setparam;test_contact;hostnotifopt;n
 CONTACT;setparam;test_contact;servicenotifopt;n
@@ -828,6 +844,8 @@ CONTACT;setparam;test_contact;reach_api_rt;0
 CONTACT;setparam;test_contact;contact_enable_notifications;0
 CONTACT;setparam;test_contact;contact_type_msg;txt
 CONTACT;setparam;test_contact;contact_activate;1
+CONTACT;setparam;test_contact;contact_ldap_last_sync;0
+CONTACT;setparam;test_contact;contact_ldap_required_sync;0
 CONTACT;ADD;User;user;user@localhost;md5__d41d8cd98f00b204e9800998ecf8427e;0;0;en_US;local
 CONTACT;setparam;user;hostnotifperiod;24x7
 CONTACT;setparam;user;svcnotifperiod;24x7
@@ -840,11 +858,14 @@ CONTACT;setparam;user;reach_api_rt;0
 CONTACT;setparam;user;contact_enable_notifications;2
 CONTACT;setparam;user;contact_type_msg;txt
 CONTACT;setparam;user;contact_activate;0
+CONTACT;setparam;user;contact_ldap_last_sync;0
+CONTACT;setparam;user;contact_ldap_required_sync;0
 CONTACT;setparam;user;hostnotifcmd;host-notify-by-email
 CONTACT;setparam;user;svcnotifcmd;service-notify-by-email
 TRAP;ADD;adDiagCancelled;.1.3.6.1.4.1.674.10893.1.1.200.0.537
 TRAP;setparam;adDiagCancelled;traps_name;adDiagCancelled
 TRAP;setparam;adDiagCancelled;traps_oid;.1.3.6.1.4.1.674.10893.1.1.200.0.537
+TRAP;setparam;adDiagCancelled;traps_mode;0
 TRAP;setparam;adDiagCancelled;traps_args;Array Manager Event: Array Disk diagnostics cancelled:
 TRAP;setparam;adDiagCancelled;traps_status;1
 TRAP;setparam;adDiagCancelled;vendor;Dell
@@ -862,6 +883,7 @@ TRAP;setparam;adDiagCancelled;traps_comments;%s, %s diagnostics cancelled.<br/>V
 TRAP;ADD;adDiagCompleted;.1.3.6.1.4.1.674.10893.1.1.200.0.555
 TRAP;setparam;adDiagCompleted;traps_name;adDiagCompleted
 TRAP;setparam;adDiagCompleted;traps_oid;.1.3.6.1.4.1.674.10893.1.1.200.0.555
+TRAP;setparam;adDiagCompleted;traps_mode;0
 TRAP;setparam;adDiagCompleted;traps_args;Array Manager Event: Array Disk diagnostics completed:
 TRAP;setparam;adDiagCompleted;traps_status;0
 TRAP;setparam;adDiagCompleted;vendor;Dell
@@ -879,6 +901,7 @@ TRAP;setparam;adDiagCompleted;traps_comments;%s, %s diagnostics completed.<br/>V
 TRAP;ADD;adDiagFailed;.1.3.6.1.4.1.674.10893.1.1.200.0.546
 TRAP;setparam;adDiagFailed;traps_name;adDiagFailed
 TRAP;setparam;adDiagFailed;traps_oid;.1.3.6.1.4.1.674.10893.1.1.200.0.546
+TRAP;setparam;adDiagFailed;traps_mode;0
 TRAP;setparam;adDiagFailed;traps_args;Array Manager Event: Array Disk diagnostics failed:
 TRAP;setparam;adDiagFailed;traps_status;3
 TRAP;setparam;adDiagFailed;vendor;Dell
@@ -896,6 +919,7 @@ TRAP;setparam;adDiagFailed;traps_comments;%s, %s diagnostics failed.<br/>Variabl
 TRAP;ADD;adDiagStarted;.1.3.6.1.4.1.674.10893.1.1.200.0.528
 TRAP;setparam;adDiagStarted;traps_name;adDiagStarted
 TRAP;setparam;adDiagStarted;traps_oid;.1.3.6.1.4.1.674.10893.1.1.200.0.528
+TRAP;setparam;adDiagStarted;traps_mode;0
 TRAP;setparam;adDiagStarted;traps_args;Array Manager Event: Array Disk diagnostics started:
 TRAP;setparam;adDiagStarted;traps_status;1
 TRAP;setparam;adDiagStarted;vendor;Dell
@@ -913,6 +937,7 @@ TRAP;setparam;adDiagStarted;traps_comments;%s, %s diagnostics started.<br/>Varia
 TRAP;ADD;adFormatCancelled;.1.3.6.1.4.1.674.10893.1.1.200.0.531
 TRAP;setparam;adFormatCancelled;traps_name;adFormatCancelled
 TRAP;setparam;adFormatCancelled;traps_oid;.1.3.6.1.4.1.674.10893.1.1.200.0.531
+TRAP;setparam;adFormatCancelled;traps_mode;0
 TRAP;setparam;adFormatCancelled;traps_args;Array Manager Event: Array Disk format cancelled:
 TRAP;setparam;adFormatCancelled;traps_status;1
 TRAP;setparam;adFormatCancelled;vendor;Dell
@@ -930,6 +955,7 @@ TRAP;setparam;adFormatCancelled;traps_comments;%s, %s format cancelled.<br/>Vari
 TRAP;ADD;adFormatCompleted;.1.3.6.1.4.1.674.10893.1.1.200.0.549
 TRAP;setparam;adFormatCompleted;traps_name;adFormatCompleted
 TRAP;setparam;adFormatCompleted;traps_oid;.1.3.6.1.4.1.674.10893.1.1.200.0.549
+TRAP;setparam;adFormatCompleted;traps_mode;0
 TRAP;setparam;adFormatCompleted;traps_args;Array Manager Event: Array Disk format completed:
 TRAP;setparam;adFormatCompleted;traps_status;0
 TRAP;setparam;adFormatCompleted;vendor;Dell
@@ -947,6 +973,7 @@ TRAP;setparam;adFormatCompleted;traps_comments;%s, %s format completed.<br/>Vari
 TRAP;ADD;adFormatFailed;.1.3.6.1.4.1.674.10893.1.1.200.0.540
 TRAP;setparam;adFormatFailed;traps_name;adFormatFailed
 TRAP;setparam;adFormatFailed;traps_oid;.1.3.6.1.4.1.674.10893.1.1.200.0.540
+TRAP;setparam;adFormatFailed;traps_mode;0
 TRAP;setparam;adFormatFailed;traps_args;Array Manager Event: Array Disk format failed:
 TRAP;setparam;adFormatFailed;traps_status;3
 TRAP;setparam;adFormatFailed;vendor;Dell
@@ -964,6 +991,7 @@ TRAP;setparam;adFormatFailed;traps_comments;%s, %s format failed.<br/>Variables:
 TRAP;ADD;adFormatStarted;.1.3.6.1.4.1.674.10893.1.1.200.0.522
 TRAP;setparam;adFormatStarted;traps_name;adFormatStarted
 TRAP;setparam;adFormatStarted;traps_oid;.1.3.6.1.4.1.674.10893.1.1.200.0.522
+TRAP;setparam;adFormatStarted;traps_mode;0
 TRAP;setparam;adFormatStarted;traps_args;Array Manager Event: Array Disk format started:
 TRAP;setparam;adFormatStarted;traps_status;1
 TRAP;setparam;adFormatStarted;vendor;Dell
@@ -981,6 +1009,7 @@ TRAP;setparam;adFormatStarted;traps_comments;%s, %s format started.<br/>Variable
 TRAP;ADD;adInitializeCancelled;.1.3.6.1.4.1.674.10893.1.1.200.0.533
 TRAP;setparam;adInitializeCancelled;traps_name;adInitializeCancelled
 TRAP;setparam;adInitializeCancelled;traps_oid;.1.3.6.1.4.1.674.10893.1.1.200.0.533
+TRAP;setparam;adInitializeCancelled;traps_mode;0
 TRAP;setparam;adInitializeCancelled;traps_args;Array Manager Event: Array Disk initialize cancelled:
 TRAP;setparam;adInitializeCancelled;traps_status;1
 TRAP;setparam;adInitializeCancelled;vendor;Dell
@@ -998,6 +1027,7 @@ TRAP;setparam;adInitializeCancelled;traps_comments;%s, %s initialize cancelled.<
 TRAP;ADD;adInitializeCompleted;.1.3.6.1.4.1.674.10893.1.1.200.0.551
 TRAP;setparam;adInitializeCompleted;traps_name;adInitializeCompleted
 TRAP;setparam;adInitializeCompleted;traps_oid;.1.3.6.1.4.1.674.10893.1.1.200.0.551
+TRAP;setparam;adInitializeCompleted;traps_mode;0
 TRAP;setparam;adInitializeCompleted;traps_args;Array Manager Event: Array Disk initialize completed:
 TRAP;setparam;adInitializeCompleted;traps_status;0
 TRAP;setparam;adInitializeCompleted;vendor;Dell
@@ -1015,6 +1045,7 @@ TRAP;setparam;adInitializeCompleted;traps_comments;%s, %s initialize completed.<
 TRAP;ADD;adInitializeFailed;.1.3.6.1.4.1.674.10893.1.1.200.0.542
 TRAP;setparam;adInitializeFailed;traps_name;adInitializeFailed
 TRAP;setparam;adInitializeFailed;traps_oid;.1.3.6.1.4.1.674.10893.1.1.200.0.542
+TRAP;setparam;adInitializeFailed;traps_mode;0
 TRAP;setparam;adInitializeFailed;traps_args;Array Manager Event: Array Disk initialize failed:
 TRAP;setparam;adInitializeFailed;traps_status;3
 TRAP;setparam;adInitializeFailed;vendor;Dell
@@ -1032,6 +1063,7 @@ TRAP;setparam;adInitializeFailed;traps_comments;%s, %s initialize failed.<br/>Va
 TRAP;ADD;adInitializeStarted;.1.3.6.1.4.1.674.10893.1.1.200.0.524
 TRAP;setparam;adInitializeStarted;traps_name;adInitializeStarted
 TRAP;setparam;adInitializeStarted;traps_oid;.1.3.6.1.4.1.674.10893.1.1.200.0.524
+TRAP;setparam;adInitializeStarted;traps_mode;0
 TRAP;setparam;adInitializeStarted;traps_args;Array Manager Event: Array Disk initialize started:
 TRAP;setparam;adInitializeStarted;traps_status;1
 TRAP;setparam;adInitializeStarted;vendor;Dell
@@ -1049,6 +1081,7 @@ TRAP;setparam;adInitializeStarted;traps_comments;%s, %s initialize started.<br/>
 TRAP;ADD;adRebuildCancelled;.1.3.6.1.4.1.674.10893.1.1.200.0.536
 TRAP;setparam;adRebuildCancelled;traps_name;adRebuildCancelled
 TRAP;setparam;adRebuildCancelled;traps_oid;.1.3.6.1.4.1.674.10893.1.1.200.0.536
+TRAP;setparam;adRebuildCancelled;traps_mode;0
 TRAP;setparam;adRebuildCancelled;traps_args;Array Manager Event: Array Disk rebuild cancelled:
 TRAP;setparam;adRebuildCancelled;traps_status;1
 TRAP;setparam;adRebuildCancelled;vendor;Dell
@@ -1066,6 +1099,7 @@ TRAP;setparam;adRebuildCancelled;traps_comments;%s, %s rebuild cancelled.<br/>Va
 TRAP;ADD;adRebuildCompleted;.1.3.6.1.4.1.674.10893.1.1.200.0.554
 TRAP;setparam;adRebuildCompleted;traps_name;adRebuildCompleted
 TRAP;setparam;adRebuildCompleted;traps_oid;.1.3.6.1.4.1.674.10893.1.1.200.0.554
+TRAP;setparam;adRebuildCompleted;traps_mode;0
 TRAP;setparam;adRebuildCompleted;traps_args;Array Manager Event: Array Disk rebuild completed:
 TRAP;setparam;adRebuildCompleted;traps_status;0
 TRAP;setparam;adRebuildCompleted;vendor;Dell
@@ -1083,6 +1117,7 @@ TRAP;setparam;adRebuildCompleted;traps_comments;%s, %s rebuild completed.<br/>Va
 TRAP;ADD;adRebuildFailed;.1.3.6.1.4.1.674.10893.1.1.200.0.545
 TRAP;setparam;adRebuildFailed;traps_name;adRebuildFailed
 TRAP;setparam;adRebuildFailed;traps_oid;.1.3.6.1.4.1.674.10893.1.1.200.0.545
+TRAP;setparam;adRebuildFailed;traps_mode;0
 TRAP;setparam;adRebuildFailed;traps_args;Array Manager Event: Array Disk rebuild failed:
 TRAP;setparam;adRebuildFailed;traps_status;3
 TRAP;setparam;adRebuildFailed;vendor;Dell
@@ -1100,6 +1135,7 @@ TRAP;setparam;adRebuildFailed;traps_comments;%s, %s rebuild failed.<br/>Variable
 TRAP;ADD;adRebuildStarted;.1.3.6.1.4.1.674.10893.1.1.200.0.527
 TRAP;setparam;adRebuildStarted;traps_name;adRebuildStarted
 TRAP;setparam;adRebuildStarted;traps_oid;.1.3.6.1.4.1.674.10893.1.1.200.0.527
+TRAP;setparam;adRebuildStarted;traps_mode;0
 TRAP;setparam;adRebuildStarted;traps_args;Array Manager Event: Array Disk rebuild started:
 TRAP;setparam;adRebuildStarted;traps_status;1
 TRAP;setparam;adRebuildStarted;vendor;Dell
@@ -1117,6 +1153,7 @@ TRAP;setparam;adRebuildStarted;traps_comments;%s, %s rebuild started.<br/>Variab
 TRAP;ADD;alertACPowerCordFailure;.1.3.6.1.4.1.674.10892.1.0.1504
 TRAP;setparam;alertACPowerCordFailure;traps_name;alertACPowerCordFailure
 TRAP;setparam;alertACPowerCordFailure;traps_oid;.1.3.6.1.4.1.674.10892.1.0.1504
+TRAP;setparam;alertACPowerCordFailure;traps_mode;0
 TRAP;setparam;alertACPowerCordFailure;traps_args;Server AC Cord Failure: $3
 TRAP;setparam;alertACPowerCordFailure;traps_status;2
 TRAP;setparam;alertACPowerCordFailure;vendor;Dell
@@ -1134,6 +1171,7 @@ TRAP;setparam;alertACPowerCordFailure;traps_comments;AC power cord has lost powe
 TRAP;ADD;alertACPowerCordNoPowerNonRedundant;.1.3.6.1.4.1.674.10892.1.0.1501
 TRAP;setparam;alertACPowerCordNoPowerNonRedundant;traps_name;alertACPowerCordNoPowerNonRedundant
 TRAP;setparam;alertACPowerCordNoPowerNonRedundant;traps_oid;.1.3.6.1.4.1.674.10892.1.0.1501
+TRAP;setparam;alertACPowerCordNoPowerNonRedundant;traps_mode;0
 TRAP;setparam;alertACPowerCordNoPowerNonRedundant;traps_args;Server AC Cord No Power Non-redundant: $3
 TRAP;setparam;alertACPowerCordNoPowerNonRedundant;traps_status;0
 TRAP;setparam;alertACPowerCordNoPowerNonRedundant;vendor;Dell
@@ -1151,6 +1189,7 @@ TRAP;setparam;alertACPowerCordNoPowerNonRedundant;traps_comments;AC power cord d
 TRAP;ADD;alertACPowerCordNormal;.1.3.6.1.4.1.674.10892.1.0.1502
 TRAP;setparam;alertACPowerCordNormal;traps_name;alertACPowerCordNormal
 TRAP;setparam;alertACPowerCordNormal;traps_oid;.1.3.6.1.4.1.674.10892.1.0.1502
+TRAP;setparam;alertACPowerCordNormal;traps_mode;0
 TRAP;setparam;alertACPowerCordNormal;traps_args;Server AC Cord Normal: $3
 TRAP;setparam;alertACPowerCordNormal;traps_status;0
 TRAP;setparam;alertACPowerCordNormal;vendor;Dell
@@ -1168,6 +1207,7 @@ TRAP;setparam;alertACPowerCordNormal;traps_comments;AC power cord has regained p
 TRAP;ADD;alertAmperageProbeFailure;.1.3.6.1.4.1.674.10892.1.0.1204
 TRAP;setparam;alertAmperageProbeFailure;traps_name;alertAmperageProbeFailure
 TRAP;setparam;alertAmperageProbeFailure;traps_oid;.1.3.6.1.4.1.674.10892.1.0.1204
+TRAP;setparam;alertAmperageProbeFailure;traps_mode;0
 TRAP;setparam;alertAmperageProbeFailure;traps_args;Server Amperage Failure: $3
 TRAP;setparam;alertAmperageProbeFailure;traps_status;2
 TRAP;setparam;alertAmperageProbeFailure;vendor;Dell
@@ -1185,6 +1225,7 @@ TRAP;setparam;alertAmperageProbeFailure;traps_comments;Amperage probe has detect
 TRAP;ADD;alertAmperageProbeNonRecoverable;.1.3.6.1.4.1.674.10892.1.0.1205
 TRAP;setparam;alertAmperageProbeNonRecoverable;traps_name;alertAmperageProbeNonRecoverable
 TRAP;setparam;alertAmperageProbeNonRecoverable;traps_oid;.1.3.6.1.4.1.674.10892.1.0.1205
+TRAP;setparam;alertAmperageProbeNonRecoverable;traps_mode;0
 TRAP;setparam;alertAmperageProbeNonRecoverable;traps_args;Server Amperage Non-recoverable: $3
 TRAP;setparam;alertAmperageProbeNonRecoverable;traps_status;2
 TRAP;setparam;alertAmperageProbeNonRecoverable;vendor;Dell
@@ -1202,6 +1243,7 @@ TRAP;setparam;alertAmperageProbeNonRecoverable;traps_comments;Amperage probe has
 TRAP;ADD;alertAmperageProbeNormal;.1.3.6.1.4.1.674.10892.1.0.1202
 TRAP;setparam;alertAmperageProbeNormal;traps_name;alertAmperageProbeNormal
 TRAP;setparam;alertAmperageProbeNormal;traps_oid;.1.3.6.1.4.1.674.10892.1.0.1202
+TRAP;setparam;alertAmperageProbeNormal;traps_mode;0
 TRAP;setparam;alertAmperageProbeNormal;traps_args;Server Amperage Normal: $3
 TRAP;setparam;alertAmperageProbeNormal;traps_status;0
 TRAP;setparam;alertAmperageProbeNormal;vendor;Dell
@@ -1219,6 +1261,7 @@ TRAP;setparam;alertAmperageProbeNormal;traps_comments;Amperage probe has returne
 TRAP;ADD;alertAmperageProbeWarning;.1.3.6.1.4.1.674.10892.1.0.1203
 TRAP;setparam;alertAmperageProbeWarning;traps_name;alertAmperageProbeWarning
 TRAP;setparam;alertAmperageProbeWarning;traps_oid;.1.3.6.1.4.1.674.10892.1.0.1203
+TRAP;setparam;alertAmperageProbeWarning;traps_mode;0
 TRAP;setparam;alertAmperageProbeWarning;traps_args;Server Amperage Warning: $3
 TRAP;setparam;alertAmperageProbeWarning;traps_status;1
 TRAP;setparam;alertAmperageProbeWarning;vendor;Dell
@@ -1236,6 +1279,7 @@ TRAP;setparam;alertAmperageProbeWarning;traps_comments;Amperage probe has detect
 TRAP;ADD;alertAutomaticSystemRecovery;.1.3.6.1.4.1.674.10892.1.0.1006
 TRAP;setparam;alertAutomaticSystemRecovery;traps_name;alertAutomaticSystemRecovery
 TRAP;setparam;alertAutomaticSystemRecovery;traps_oid;.1.3.6.1.4.1.674.10892.1.0.1006
+TRAP;setparam;alertAutomaticSystemRecovery;traps_mode;0
 TRAP;setparam;alertAutomaticSystemRecovery;traps_args;Server Automatic System Recovery: $3
 TRAP;setparam;alertAutomaticSystemRecovery;traps_status;2
 TRAP;setparam;alertAutomaticSystemRecovery;vendor;Dell
@@ -1253,6 +1297,7 @@ TRAP;setparam;alertAutomaticSystemRecovery;traps_comments;Automatic system recov
 TRAP;ADD;alertBatteryFailure;.1.3.6.1.4.1.674.10892.1.0.1704
 TRAP;setparam;alertBatteryFailure;traps_name;alertBatteryFailure
 TRAP;setparam;alertBatteryFailure;traps_oid;.1.3.6.1.4.1.674.10892.1.0.1704
+TRAP;setparam;alertBatteryFailure;traps_mode;0
 TRAP;setparam;alertBatteryFailure;traps_args;Server Battery Failure: $3
 TRAP;setparam;alertBatteryFailure;traps_status;2
 TRAP;setparam;alertBatteryFailure;vendor;Dell
@@ -1270,6 +1315,7 @@ TRAP;setparam;alertBatteryFailure;traps_comments;Battery has detected a failure.
 TRAP;ADD;alertBatteryNormal;.1.3.6.1.4.1.674.10892.1.0.1702
 TRAP;setparam;alertBatteryNormal;traps_name;alertBatteryNormal
 TRAP;setparam;alertBatteryNormal;traps_oid;.1.3.6.1.4.1.674.10892.1.0.1702
+TRAP;setparam;alertBatteryNormal;traps_mode;0
 TRAP;setparam;alertBatteryNormal;traps_args;Server Battery Normal: $3
 TRAP;setparam;alertBatteryNormal;traps_status;0
 TRAP;setparam;alertBatteryNormal;vendor;Dell
@@ -1287,6 +1333,7 @@ TRAP;setparam;alertBatteryNormal;traps_comments;Battery has returned to normal.<
 TRAP;ADD;alertBatteryWarning;.1.3.6.1.4.1.674.10892.1.0.1703
 TRAP;setparam;alertBatteryWarning;traps_name;alertBatteryWarning
 TRAP;setparam;alertBatteryWarning;traps_oid;.1.3.6.1.4.1.674.10892.1.0.1703
+TRAP;setparam;alertBatteryWarning;traps_mode;0
 TRAP;setparam;alertBatteryWarning;traps_args;Server Battery Warning: $3
 TRAP;setparam;alertBatteryWarning;traps_status;1
 TRAP;setparam;alertBatteryWarning;vendor;Dell
@@ -1304,6 +1351,7 @@ TRAP;setparam;alertBatteryWarning;traps_comments;Battery has detected a warning.
 TRAP;ADD;alertChassisIntrusionDetected;.1.3.6.1.4.1.674.10892.1.0.1254
 TRAP;setparam;alertChassisIntrusionDetected;traps_name;alertChassisIntrusionDetected
 TRAP;setparam;alertChassisIntrusionDetected;traps_oid;.1.3.6.1.4.1.674.10892.1.0.1254
+TRAP;setparam;alertChassisIntrusionDetected;traps_mode;0
 TRAP;setparam;alertChassisIntrusionDetected;traps_args;Server Chassis Intrusion Detected: $3
 TRAP;setparam;alertChassisIntrusionDetected;traps_status;2
 TRAP;setparam;alertChassisIntrusionDetected;vendor;Dell
@@ -1321,6 +1369,7 @@ TRAP;setparam;alertChassisIntrusionDetected;traps_comments;Chassis intrusion has
 TRAP;ADD;alertChassisIntrusionNormal;.1.3.6.1.4.1.674.10892.1.0.1252
 TRAP;setparam;alertChassisIntrusionNormal;traps_name;alertChassisIntrusionNormal
 TRAP;setparam;alertChassisIntrusionNormal;traps_oid;.1.3.6.1.4.1.674.10892.1.0.1252
+TRAP;setparam;alertChassisIntrusionNormal;traps_mode;0
 TRAP;setparam;alertChassisIntrusionNormal;traps_args;Server Chassis Intrusion Normal: $3
 TRAP;setparam;alertChassisIntrusionNormal;traps_status;0
 TRAP;setparam;alertChassisIntrusionNormal;vendor;Dell
@@ -1338,6 +1387,7 @@ TRAP;setparam;alertChassisIntrusionNormal;traps_comments;Chassis intrusion has r
 TRAP;ADD;alertCoolingDeviceFailure;.1.3.6.1.4.1.674.10892.1.0.1104
 TRAP;setparam;alertCoolingDeviceFailure;traps_name;alertCoolingDeviceFailure
 TRAP;setparam;alertCoolingDeviceFailure;traps_oid;.1.3.6.1.4.1.674.10892.1.0.1104
+TRAP;setparam;alertCoolingDeviceFailure;traps_mode;0
 TRAP;setparam;alertCoolingDeviceFailure;traps_args;Server Cooling Device Failure: $3
 TRAP;setparam;alertCoolingDeviceFailure;traps_status;2
 TRAP;setparam;alertCoolingDeviceFailure;vendor;Dell
@@ -1355,6 +1405,7 @@ TRAP;setparam;alertCoolingDeviceFailure;traps_comments;Cooling device sensor has
 TRAP;ADD;alertCoolingDeviceNonRecoverable;.1.3.6.1.4.1.674.10892.1.0.1105
 TRAP;setparam;alertCoolingDeviceNonRecoverable;traps_name;alertCoolingDeviceNonRecoverable
 TRAP;setparam;alertCoolingDeviceNonRecoverable;traps_oid;.1.3.6.1.4.1.674.10892.1.0.1105
+TRAP;setparam;alertCoolingDeviceNonRecoverable;traps_mode;0
 TRAP;setparam;alertCoolingDeviceNonRecoverable;traps_args;Server Cooling Device Non-recoverable: $3
 TRAP;setparam;alertCoolingDeviceNonRecoverable;traps_status;2
 TRAP;setparam;alertCoolingDeviceNonRecoverable;vendor;Dell
@@ -1372,6 +1423,7 @@ TRAP;setparam;alertCoolingDeviceNonRecoverable;traps_comments;Cooling device sen
 TRAP;ADD;alertCoolingDeviceNormal;.1.3.6.1.4.1.674.10892.1.0.1102
 TRAP;setparam;alertCoolingDeviceNormal;traps_name;alertCoolingDeviceNormal
 TRAP;setparam;alertCoolingDeviceNormal;traps_oid;.1.3.6.1.4.1.674.10892.1.0.1102
+TRAP;setparam;alertCoolingDeviceNormal;traps_mode;0
 TRAP;setparam;alertCoolingDeviceNormal;traps_args;Server Cooling Device Normal: $3
 TRAP;setparam;alertCoolingDeviceNormal;traps_status;0
 TRAP;setparam;alertCoolingDeviceNormal;vendor;Dell
@@ -1389,6 +1441,7 @@ TRAP;setparam;alertCoolingDeviceNormal;traps_comments;Cooling device sensor has 
 TRAP;ADD;alertCoolingDeviceWarning;.1.3.6.1.4.1.674.10892.1.0.1103
 TRAP;setparam;alertCoolingDeviceWarning;traps_name;alertCoolingDeviceWarning
 TRAP;setparam;alertCoolingDeviceWarning;traps_oid;.1.3.6.1.4.1.674.10892.1.0.1103
+TRAP;setparam;alertCoolingDeviceWarning;traps_mode;0
 TRAP;setparam;alertCoolingDeviceWarning;traps_args;Server Cooling Device Warning: $3
 TRAP;setparam;alertCoolingDeviceWarning;traps_status;1
 TRAP;setparam;alertCoolingDeviceWarning;vendor;Dell
@@ -1406,6 +1459,7 @@ TRAP;setparam;alertCoolingDeviceWarning;traps_comments;Cooling device sensor has
 TRAP;ADD;alertFanEnclosureExtendedRemoval;.1.3.6.1.4.1.674.10892.1.0.1454
 TRAP;setparam;alertFanEnclosureExtendedRemoval;traps_name;alertFanEnclosureExtendedRemoval
 TRAP;setparam;alertFanEnclosureExtendedRemoval;traps_oid;.1.3.6.1.4.1.674.10892.1.0.1454
+TRAP;setparam;alertFanEnclosureExtendedRemoval;traps_mode;0
 TRAP;setparam;alertFanEnclosureExtendedRemoval;traps_args;Server Fan Enclosure Extended Removal: $3
 TRAP;setparam;alertFanEnclosureExtendedRemoval;traps_status;2
 TRAP;setparam;alertFanEnclosureExtendedRemoval;vendor;Dell
@@ -1423,6 +1477,7 @@ TRAP;setparam;alertFanEnclosureExtendedRemoval;traps_comments;Fan enclosure has 
 TRAP;ADD;alertFanEnclosureInsertion;.1.3.6.1.4.1.674.10892.1.0.1452
 TRAP;setparam;alertFanEnclosureInsertion;traps_name;alertFanEnclosureInsertion
 TRAP;setparam;alertFanEnclosureInsertion;traps_oid;.1.3.6.1.4.1.674.10892.1.0.1452
+TRAP;setparam;alertFanEnclosureInsertion;traps_mode;0
 TRAP;setparam;alertFanEnclosureInsertion;traps_args;Server Fan Enclosure Insertion: $3
 TRAP;setparam;alertFanEnclosureInsertion;traps_status;0
 TRAP;setparam;alertFanEnclosureInsertion;vendor;Dell
@@ -1440,6 +1495,7 @@ TRAP;setparam;alertFanEnclosureInsertion;traps_comments;Fan enclosure has been i
 TRAP;ADD;alertFanEnclosureRemoval;.1.3.6.1.4.1.674.10892.1.0.1453
 TRAP;setparam;alertFanEnclosureRemoval;traps_name;alertFanEnclosureRemoval
 TRAP;setparam;alertFanEnclosureRemoval;traps_oid;.1.3.6.1.4.1.674.10892.1.0.1453
+TRAP;setparam;alertFanEnclosureRemoval;traps_mode;0
 TRAP;setparam;alertFanEnclosureRemoval;traps_args;Server Fan Enclosure Removal: $3
 TRAP;setparam;alertFanEnclosureRemoval;traps_status;1
 TRAP;setparam;alertFanEnclosureRemoval;vendor;Dell
@@ -1457,6 +1513,7 @@ TRAP;setparam;alertFanEnclosureRemoval;traps_comments;Fan enclosure has been rem
 TRAP;ADD;alertLogNormal;.1.3.6.1.4.1.674.10892.1.0.1552
 TRAP;setparam;alertLogNormal;traps_name;alertLogNormal
 TRAP;setparam;alertLogNormal;traps_oid;.1.3.6.1.4.1.674.10892.1.0.1552
+TRAP;setparam;alertLogNormal;traps_mode;0
 TRAP;setparam;alertLogNormal;traps_args;Server Log Normal: $3
 TRAP;setparam;alertLogNormal;traps_status;0
 TRAP;setparam;alertLogNormal;vendor;Dell
@@ -1474,6 +1531,7 @@ TRAP;setparam;alertLogNormal;traps_comments;Log size returned to a normal level.
 TRAP;ADD;alertLogWarning;.1.3.6.1.4.1.674.10892.1.0.1553
 TRAP;setparam;alertLogWarning;traps_name;alertLogWarning
 TRAP;setparam;alertLogWarning;traps_oid;.1.3.6.1.4.1.674.10892.1.0.1553
+TRAP;setparam;alertLogWarning;traps_mode;0
 TRAP;setparam;alertLogWarning;traps_args;Server Log Warning: $3
 TRAP;setparam;alertLogWarning;traps_status;1
 TRAP;setparam;alertLogWarning;vendor;Dell
@@ -1491,6 +1549,7 @@ TRAP;setparam;alertLogWarning;traps_comments;Log size is near or at capacity.<br
 TRAP;ADD;alertMemoryDeviceFailure;.1.3.6.1.4.1.674.10892.1.0.1404
 TRAP;setparam;alertMemoryDeviceFailure;traps_name;alertMemoryDeviceFailure
 TRAP;setparam;alertMemoryDeviceFailure;traps_oid;.1.3.6.1.4.1.674.10892.1.0.1404
+TRAP;setparam;alertMemoryDeviceFailure;traps_mode;0
 TRAP;setparam;alertMemoryDeviceFailure;traps_args;Server Memory ECC Count Failure: $3
 TRAP;setparam;alertMemoryDeviceFailure;traps_status;2
 TRAP;setparam;alertMemoryDeviceFailure;vendor;Dell
@@ -1508,6 +1567,7 @@ TRAP;setparam;alertMemoryDeviceFailure;traps_comments;Memory device ECC correcta
 TRAP;ADD;alertMemoryDeviceNonRecoverable;.1.3.6.1.4.1.674.10892.1.0.1405
 TRAP;setparam;alertMemoryDeviceNonRecoverable;traps_name;alertMemoryDeviceNonRecoverable
 TRAP;setparam;alertMemoryDeviceNonRecoverable;traps_oid;.1.3.6.1.4.1.674.10892.1.0.1405
+TRAP;setparam;alertMemoryDeviceNonRecoverable;traps_mode;0
 TRAP;setparam;alertMemoryDeviceNonRecoverable;traps_args;Server Memory ECC Count Non-recoverable: $3
 TRAP;setparam;alertMemoryDeviceNonRecoverable;traps_status;2
 TRAP;setparam;alertMemoryDeviceNonRecoverable;vendor;Dell
@@ -1525,6 +1585,7 @@ TRAP;setparam;alertMemoryDeviceNonRecoverable;traps_comments;Memory device ECC c
 TRAP;ADD;alertMemoryDeviceWarning;.1.3.6.1.4.1.674.10892.1.0.1403
 TRAP;setparam;alertMemoryDeviceWarning;traps_name;alertMemoryDeviceWarning
 TRAP;setparam;alertMemoryDeviceWarning;traps_oid;.1.3.6.1.4.1.674.10892.1.0.1403
+TRAP;setparam;alertMemoryDeviceWarning;traps_mode;0
 TRAP;setparam;alertMemoryDeviceWarning;traps_args;Server Memory ECC Count Warning: $3
 TRAP;setparam;alertMemoryDeviceWarning;traps_status;1
 TRAP;setparam;alertMemoryDeviceWarning;vendor;Dell
@@ -1542,6 +1603,7 @@ TRAP;setparam;alertMemoryDeviceWarning;traps_comments;Memory device ECC correcta
 TRAP;ADD;alertPowerSupplyFailure;.1.3.6.1.4.1.674.10892.1.0.1354
 TRAP;setparam;alertPowerSupplyFailure;traps_name;alertPowerSupplyFailure
 TRAP;setparam;alertPowerSupplyFailure;traps_oid;.1.3.6.1.4.1.674.10892.1.0.1354
+TRAP;setparam;alertPowerSupplyFailure;traps_mode;0
 TRAP;setparam;alertPowerSupplyFailure;traps_args;Server Power Supply Failure: $3
 TRAP;setparam;alertPowerSupplyFailure;traps_status;2
 TRAP;setparam;alertPowerSupplyFailure;vendor;Dell
@@ -1559,6 +1621,7 @@ TRAP;setparam;alertPowerSupplyFailure;traps_comments;Power supply has failed.<br
 TRAP;ADD;alertPowerSupplyNormal;.1.3.6.1.4.1.674.10892.1.0.1352
 TRAP;setparam;alertPowerSupplyNormal;traps_name;alertPowerSupplyNormal
 TRAP;setparam;alertPowerSupplyNormal;traps_oid;.1.3.6.1.4.1.674.10892.1.0.1352
+TRAP;setparam;alertPowerSupplyNormal;traps_mode;0
 TRAP;setparam;alertPowerSupplyNormal;traps_args;Server Power Supply Normal: $3
 TRAP;setparam;alertPowerSupplyNormal;traps_status;0
 TRAP;setparam;alertPowerSupplyNormal;vendor;Dell
@@ -1576,6 +1639,7 @@ TRAP;setparam;alertPowerSupplyNormal;traps_comments;Power supply has returned to
 TRAP;ADD;alertRedundancyDegraded;.1.3.6.1.4.1.674.10892.1.0.1305
 TRAP;setparam;alertRedundancyDegraded;traps_name;alertRedundancyDegraded
 TRAP;setparam;alertRedundancyDegraded;traps_oid;.1.3.6.1.4.1.674.10892.1.0.1305
+TRAP;setparam;alertRedundancyDegraded;traps_mode;0
 TRAP;setparam;alertRedundancyDegraded;traps_args;Server Redundancy Degraded: $3
 TRAP;setparam;alertRedundancyDegraded;traps_status;1
 TRAP;setparam;alertRedundancyDegraded;vendor;Dell
@@ -1593,6 +1657,7 @@ TRAP;setparam;alertRedundancyDegraded;traps_comments;Redundancy has been degrade
 TRAP;ADD;alertRedundancyLost;.1.3.6.1.4.1.674.10892.1.0.1306
 TRAP;setparam;alertRedundancyLost;traps_name;alertRedundancyLost
 TRAP;setparam;alertRedundancyLost;traps_oid;.1.3.6.1.4.1.674.10892.1.0.1306
+TRAP;setparam;alertRedundancyLost;traps_mode;0
 TRAP;setparam;alertRedundancyLost;traps_args;Server Redundancy Lost: $3
 TRAP;setparam;alertRedundancyLost;traps_status;2
 TRAP;setparam;alertRedundancyLost;vendor;Dell
@@ -1610,6 +1675,7 @@ TRAP;setparam;alertRedundancyLost;traps_comments;Redundancy has been lost.<br/>-
 TRAP;ADD;alertRedundancyNormal;.1.3.6.1.4.1.674.10892.1.0.1304
 TRAP;setparam;alertRedundancyNormal;traps_name;alertRedundancyNormal
 TRAP;setparam;alertRedundancyNormal;traps_oid;.1.3.6.1.4.1.674.10892.1.0.1304
+TRAP;setparam;alertRedundancyNormal;traps_mode;0
 TRAP;setparam;alertRedundancyNormal;traps_args;Server Redundancy Normal: $3
 TRAP;setparam;alertRedundancyNormal;traps_status;0
 TRAP;setparam;alertRedundancyNormal;vendor;Dell
@@ -1627,6 +1693,7 @@ TRAP;setparam;alertRedundancyNormal;traps_comments;Redundancy has returned to no
 TRAP;ADD;alertSystemUp;.1.3.6.1.4.1.674.10892.1.0.1001
 TRAP;setparam;alertSystemUp;traps_name;alertSystemUp
 TRAP;setparam;alertSystemUp;traps_oid;.1.3.6.1.4.1.674.10892.1.0.1001
+TRAP;setparam;alertSystemUp;traps_mode;0
 TRAP;setparam;alertSystemUp;traps_args;Server Administrator Startup Complete: $3
 TRAP;setparam;alertSystemUp;traps_status;0
 TRAP;setparam;alertSystemUp;vendor;Dell
@@ -1644,6 +1711,7 @@ TRAP;setparam;alertSystemUp;traps_comments;Server Administrator has completed it
 TRAP;ADD;alertTemperatureProbeFailure;.1.3.6.1.4.1.674.10892.1.0.1054
 TRAP;setparam;alertTemperatureProbeFailure;traps_name;alertTemperatureProbeFailure
 TRAP;setparam;alertTemperatureProbeFailure;traps_oid;.1.3.6.1.4.1.674.10892.1.0.1054
+TRAP;setparam;alertTemperatureProbeFailure;traps_mode;0
 TRAP;setparam;alertTemperatureProbeFailure;traps_args;Server Temperature Failure: $3
 TRAP;setparam;alertTemperatureProbeFailure;traps_status;2
 TRAP;setparam;alertTemperatureProbeFailure;vendor;Dell
@@ -1661,6 +1729,7 @@ TRAP;setparam;alertTemperatureProbeFailure;traps_comments;Temperature probe has 
 TRAP;ADD;alertTemperatureProbeNonRecoverable;.1.3.6.1.4.1.674.10892.1.0.1055
 TRAP;setparam;alertTemperatureProbeNonRecoverable;traps_name;alertTemperatureProbeNonRecoverable
 TRAP;setparam;alertTemperatureProbeNonRecoverable;traps_oid;.1.3.6.1.4.1.674.10892.1.0.1055
+TRAP;setparam;alertTemperatureProbeNonRecoverable;traps_mode;0
 TRAP;setparam;alertTemperatureProbeNonRecoverable;traps_args;Server Temperature Non-recoverable: $3
 TRAP;setparam;alertTemperatureProbeNonRecoverable;traps_status;2
 TRAP;setparam;alertTemperatureProbeNonRecoverable;vendor;Dell
@@ -1678,6 +1747,7 @@ TRAP;setparam;alertTemperatureProbeNonRecoverable;traps_comments;Temperature pro
 TRAP;ADD;alertTemperatureProbeNormal;.1.3.6.1.4.1.674.10892.1.0.1052
 TRAP;setparam;alertTemperatureProbeNormal;traps_name;alertTemperatureProbeNormal
 TRAP;setparam;alertTemperatureProbeNormal;traps_oid;.1.3.6.1.4.1.674.10892.1.0.1052
+TRAP;setparam;alertTemperatureProbeNormal;traps_mode;0
 TRAP;setparam;alertTemperatureProbeNormal;traps_args;Server Temperature Normal: $3
 TRAP;setparam;alertTemperatureProbeNormal;traps_status;0
 TRAP;setparam;alertTemperatureProbeNormal;vendor;Dell
@@ -1695,6 +1765,7 @@ TRAP;setparam;alertTemperatureProbeNormal;traps_comments;Temperature probe has r
 TRAP;ADD;alertTemperatureProbeWarning;.1.3.6.1.4.1.674.10892.1.0.1053
 TRAP;setparam;alertTemperatureProbeWarning;traps_name;alertTemperatureProbeWarning
 TRAP;setparam;alertTemperatureProbeWarning;traps_oid;.1.3.6.1.4.1.674.10892.1.0.1053
+TRAP;setparam;alertTemperatureProbeWarning;traps_mode;0
 TRAP;setparam;alertTemperatureProbeWarning;traps_args;Server Temperature Warning: $3
 TRAP;setparam;alertTemperatureProbeWarning;traps_status;1
 TRAP;setparam;alertTemperatureProbeWarning;vendor;Dell
@@ -1712,6 +1783,7 @@ TRAP;setparam;alertTemperatureProbeWarning;traps_comments;Temperature probe has 
 TRAP;ADD;alertThermalShutdown;.1.3.6.1.4.1.674.10892.1.0.1004
 TRAP;setparam;alertThermalShutdown;traps_name;alertThermalShutdown
 TRAP;setparam;alertThermalShutdown;traps_oid;.1.3.6.1.4.1.674.10892.1.0.1004
+TRAP;setparam;alertThermalShutdown;traps_mode;0
 TRAP;setparam;alertThermalShutdown;traps_args;Server Thermal Shutdown: $3
 TRAP;setparam;alertThermalShutdown;traps_status;2
 TRAP;setparam;alertThermalShutdown;vendor;Dell
@@ -1729,6 +1801,7 @@ TRAP;setparam;alertThermalShutdown;traps_comments;Thermal shutdown protection ha
 TRAP;ADD;alertVoltageProbeFailure;.1.3.6.1.4.1.674.10892.1.0.1154
 TRAP;setparam;alertVoltageProbeFailure;traps_name;alertVoltageProbeFailure
 TRAP;setparam;alertVoltageProbeFailure;traps_oid;.1.3.6.1.4.1.674.10892.1.0.1154
+TRAP;setparam;alertVoltageProbeFailure;traps_mode;0
 TRAP;setparam;alertVoltageProbeFailure;traps_args;Server Voltage Failure: $3
 TRAP;setparam;alertVoltageProbeFailure;traps_status;2
 TRAP;setparam;alertVoltageProbeFailure;vendor;Dell
@@ -1746,6 +1819,7 @@ TRAP;setparam;alertVoltageProbeFailure;traps_comments;Voltage probe has detected
 TRAP;ADD;alertVoltageProbeNonRecoverable;.1.3.6.1.4.1.674.10892.1.0.1155
 TRAP;setparam;alertVoltageProbeNonRecoverable;traps_name;alertVoltageProbeNonRecoverable
 TRAP;setparam;alertVoltageProbeNonRecoverable;traps_oid;.1.3.6.1.4.1.674.10892.1.0.1155
+TRAP;setparam;alertVoltageProbeNonRecoverable;traps_mode;0
 TRAP;setparam;alertVoltageProbeNonRecoverable;traps_args;Server Voltage Non-recoverable: $3
 TRAP;setparam;alertVoltageProbeNonRecoverable;traps_status;2
 TRAP;setparam;alertVoltageProbeNonRecoverable;vendor;Dell
@@ -1763,6 +1837,7 @@ TRAP;setparam;alertVoltageProbeNonRecoverable;traps_comments;Voltage probe has d
 TRAP;ADD;alertVoltageProbeNormal;.1.3.6.1.4.1.674.10892.1.0.1152
 TRAP;setparam;alertVoltageProbeNormal;traps_name;alertVoltageProbeNormal
 TRAP;setparam;alertVoltageProbeNormal;traps_oid;.1.3.6.1.4.1.674.10892.1.0.1152
+TRAP;setparam;alertVoltageProbeNormal;traps_mode;0
 TRAP;setparam;alertVoltageProbeNormal;traps_args;Server Voltage Normal: $3
 TRAP;setparam;alertVoltageProbeNormal;traps_status;0
 TRAP;setparam;alertVoltageProbeNormal;vendor;Dell
@@ -1780,6 +1855,7 @@ TRAP;setparam;alertVoltageProbeNormal;traps_comments;Voltage probe has returned 
 TRAP;ADD;alertVoltageProbeWarning;.1.3.6.1.4.1.674.10892.1.0.1153
 TRAP;setparam;alertVoltageProbeWarning;traps_name;alertVoltageProbeWarning
 TRAP;setparam;alertVoltageProbeWarning;traps_oid;.1.3.6.1.4.1.674.10892.1.0.1153
+TRAP;setparam;alertVoltageProbeWarning;traps_mode;0
 TRAP;setparam;alertVoltageProbeWarning;traps_args;Server Voltage Warning: $3
 TRAP;setparam;alertVoltageProbeWarning;traps_status;1
 TRAP;setparam;alertVoltageProbeWarning;vendor;Dell
@@ -1797,6 +1873,7 @@ TRAP;setparam;alertVoltageProbeWarning;traps_comments;Voltage probe has detected
 TRAP;ADD;brDatabaseFull;.1.3.6.1.4.1.43.0.65
 TRAP;setparam;brDatabaseFull;traps_name;brDatabaseFull
 TRAP;setparam;brDatabaseFull;traps_oid;.1.3.6.1.4.1.43.0.65
+TRAP;setparam;brDatabaseFull;traps_mode;0
 TRAP;setparam;brDatabaseFull;traps_args;This trap indicates that either the Filtering  $*
 TRAP;setparam;brDatabaseFull;traps_status;0
 TRAP;setparam;brDatabaseFull;vendor;3com
@@ -1814,6 +1891,7 @@ TRAP;setparam;brDatabaseFull;traps_comments;This trap indicates that either the 
 TRAP;ADD;ccmCLIRunningConfigChanged;.1.3.6.1.4.1.9.9.43.2.0.2
 TRAP;setparam;ccmCLIRunningConfigChanged;traps_name;ccmCLIRunningConfigChanged
 TRAP;setparam;ccmCLIRunningConfigChanged;traps_oid;.1.3.6.1.4.1.9.9.43.2.0.2
+TRAP;setparam;ccmCLIRunningConfigChanged;traps_mode;0
 TRAP;setparam;ccmCLIRunningConfigChanged;traps_args;This notification indicates that the running $*
 TRAP;setparam;ccmCLIRunningConfigChanged;traps_status;0
 TRAP;setparam;ccmCLIRunningConfigChanged;vendor;Cisco
@@ -1831,6 +1909,7 @@ TRAP;setparam;ccmCLIRunningConfigChanged;traps_comments;This notification indica
 TRAP;ADD;ccmCTIDRolledOver;.1.3.6.1.4.1.9.9.43.2.0.3
 TRAP;setparam;ccmCTIDRolledOver;traps_name;ccmCTIDRolledOver
 TRAP;setparam;ccmCTIDRolledOver;traps_oid;.1.3.6.1.4.1.9.9.43.2.0.3
+TRAP;setparam;ccmCTIDRolledOver;traps_mode;0
 TRAP;setparam;ccmCTIDRolledOver;traps_args;This notification indicates that the Config Change Tracking $*
 TRAP;setparam;ccmCTIDRolledOver;traps_status;0
 TRAP;setparam;ccmCTIDRolledOver;vendor;Cisco
@@ -1848,6 +1927,7 @@ TRAP;setparam;ccmCTIDRolledOver;traps_comments;This notification indicates that 
 TRAP;ADD;ciscoConfigManEvent;.1.3.6.1.4.1.9.9.43.2.0.1
 TRAP;setparam;ciscoConfigManEvent;traps_name;ciscoConfigManEvent
 TRAP;setparam;ciscoConfigManEvent;traps_oid;.1.3.6.1.4.1.9.9.43.2.0.1
+TRAP;setparam;ciscoConfigManEvent;traps_mode;0
 TRAP;setparam;ciscoConfigManEvent;traps_args;Notification of a configuration management event as $*
 TRAP;setparam;ciscoConfigManEvent;traps_status;0
 TRAP;setparam;ciscoConfigManEvent;vendor;Cisco
@@ -1865,6 +1945,7 @@ TRAP;setparam;ciscoConfigManEvent;traps_comments;Notification of a configuration
 TRAP;ADD;coldStart;.1.3.6.1.6.3.1.1.5.1
 TRAP;setparam;coldStart;traps_name;coldStart
 TRAP;setparam;coldStart;traps_oid;.1.3.6.1.6.3.1.1.5.1
+TRAP;setparam;coldStart;traps_mode;0
 TRAP;setparam;coldStart;traps_args;SNMP is restarting
 TRAP;setparam;coldStart;traps_status;1
 TRAP;setparam;coldStart;vendor;Generic
@@ -1882,6 +1963,7 @@ TRAP;setparam;coldStart;traps_comments;A coldStart(0) trap signifies that the se
 TRAP;ADD;dmtfAlert309;.1.3.6.1.4.1.674.10890.1.0.309
 TRAP;setparam;dmtfAlert309;traps_name;dmtfAlert309
 TRAP;setparam;dmtfAlert309;traps_oid;.1.3.6.1.4.1.674.10890.1.0.309
+TRAP;setparam;dmtfAlert309;traps_mode;0
 TRAP;setparam;dmtfAlert309;traps_args;DMI BASEBRDD Alert Event: Event Data: ($3 on $1)
 TRAP;setparam;dmtfAlert309;traps_status;2
 TRAP;setparam;dmtfAlert309;vendor;Dell
@@ -1899,6 +1981,7 @@ TRAP;setparam;dmtfAlert309;traps_comments;Current sensor warning returned to nor
 TRAP;ADD;dmtfAlert310;.1.3.6.1.4.1.674.10890.1.0.310
 TRAP;setparam;dmtfAlert310;traps_name;dmtfAlert310
 TRAP;setparam;dmtfAlert310;traps_oid;.1.3.6.1.4.1.674.10890.1.0.310
+TRAP;setparam;dmtfAlert310;traps_mode;0
 TRAP;setparam;dmtfAlert310;traps_args;DMI BASEBRDD Alert Event: Event Data: ($3 on $1)
 TRAP;setparam;dmtfAlert310;traps_status;2
 TRAP;setparam;dmtfAlert310;vendor;Dell
@@ -1916,6 +1999,7 @@ TRAP;setparam;dmtfAlert310;traps_comments;Power supply lost redundancy detected<
 TRAP;ADD;dmtfAlert311;.1.3.6.1.4.1.674.10890.1.0.311
 TRAP;setparam;dmtfAlert311;traps_name;dmtfAlert311
 TRAP;setparam;dmtfAlert311;traps_oid;.1.3.6.1.4.1.674.10890.1.0.311
+TRAP;setparam;dmtfAlert311;traps_mode;0
 TRAP;setparam;dmtfAlert311;traps_args;DMI BASEBRDD Alert Event: Event Data: ($3 on $1)
 TRAP;setparam;dmtfAlert311;traps_status;2
 TRAP;setparam;dmtfAlert311;vendor;Dell
@@ -1933,6 +2017,7 @@ TRAP;setparam;dmtfAlert311;traps_comments;Power supply regained redundancy<br/>-
 TRAP;ADD;dmtfAlert312;.1.3.6.1.4.1.674.10890.1.0.312
 TRAP;setparam;dmtfAlert312;traps_name;dmtfAlert312
 TRAP;setparam;dmtfAlert312;traps_oid;.1.3.6.1.4.1.674.10890.1.0.312
+TRAP;setparam;dmtfAlert312;traps_mode;0
 TRAP;setparam;dmtfAlert312;traps_args;DMI BASEBRDD Alert Event: Event Data: ($3 on $1)
 TRAP;setparam;dmtfAlert312;traps_status;2
 TRAP;setparam;dmtfAlert312;vendor;Dell
@@ -1950,6 +2035,7 @@ TRAP;setparam;dmtfAlert312;traps_comments;Power supply degraded redundancy detec
 TRAP;ADD;dmtfAlert313;.1.3.6.1.4.1.674.10890.1.0.313
 TRAP;setparam;dmtfAlert313;traps_name;dmtfAlert313
 TRAP;setparam;dmtfAlert313;traps_oid;.1.3.6.1.4.1.674.10890.1.0.313
+TRAP;setparam;dmtfAlert313;traps_mode;0
 TRAP;setparam;dmtfAlert313;traps_args;DMI BASEBRDD Alert Event: Event Data: ($3 on $1)
 TRAP;setparam;dmtfAlert313;traps_status;2
 TRAP;setparam;dmtfAlert313;vendor;Dell
@@ -1967,6 +2053,7 @@ TRAP;setparam;dmtfAlert313;traps_comments;Power supply degraded redundancy retur
 TRAP;ADD;dmtfAlert314;.1.3.6.1.4.1.674.10890.1.0.314
 TRAP;setparam;dmtfAlert314;traps_name;dmtfAlert314
 TRAP;setparam;dmtfAlert314;traps_oid;.1.3.6.1.4.1.674.10890.1.0.314
+TRAP;setparam;dmtfAlert314;traps_mode;0
 TRAP;setparam;dmtfAlert314;traps_args;DMI BASEBRDD Alert Event: Event Data: ($3 on $1)
 TRAP;setparam;dmtfAlert314;traps_status;2
 TRAP;setparam;dmtfAlert314;vendor;Dell
@@ -1984,6 +2071,7 @@ TRAP;setparam;dmtfAlert314;traps_comments;Power supply failure detected<br/>--NM
 TRAP;ADD;dmtfAlert315;.1.3.6.1.4.1.674.10890.1.0.315
 TRAP;setparam;dmtfAlert315;traps_name;dmtfAlert315
 TRAP;setparam;dmtfAlert315;traps_oid;.1.3.6.1.4.1.674.10890.1.0.315
+TRAP;setparam;dmtfAlert315;traps_mode;0
 TRAP;setparam;dmtfAlert315;traps_args;DMI BASEBRDD Alert Event: Event Data: ($3 on $1)
 TRAP;setparam;dmtfAlert315;traps_status;2
 TRAP;setparam;dmtfAlert315;vendor;Dell
@@ -2001,6 +2089,7 @@ TRAP;setparam;dmtfAlert315;traps_comments;Power supply failure returned to norma
 TRAP;ADD;dmtfAlert320;.1.3.6.1.4.1.674.10890.1.0.320
 TRAP;setparam;dmtfAlert320;traps_name;dmtfAlert320
 TRAP;setparam;dmtfAlert320;traps_oid;.1.3.6.1.4.1.674.10890.1.0.320
+TRAP;setparam;dmtfAlert320;traps_mode;0
 TRAP;setparam;dmtfAlert320;traps_args;DMI BASEBRDD Alert Event: Event Data: ($3 on $1)
 TRAP;setparam;dmtfAlert320;traps_status;2
 TRAP;setparam;dmtfAlert320;vendor;Dell
@@ -2018,6 +2107,7 @@ TRAP;setparam;dmtfAlert320;traps_comments;Chassis intrusion detected<br/>--NMS t
 TRAP;ADD;dmtfAlert321;.1.3.6.1.4.1.674.10890.1.0.321
 TRAP;setparam;dmtfAlert321;traps_name;dmtfAlert321
 TRAP;setparam;dmtfAlert321;traps_oid;.1.3.6.1.4.1.674.10890.1.0.321
+TRAP;setparam;dmtfAlert321;traps_mode;0
 TRAP;setparam;dmtfAlert321;traps_args;DMI BASEBRDD Alert Event: Event Data: ($3 on $1)
 TRAP;setparam;dmtfAlert321;traps_status;2
 TRAP;setparam;dmtfAlert321;vendor;Dell
@@ -2035,6 +2125,7 @@ TRAP;setparam;dmtfAlert321;traps_comments;Chassis intrusion returned to normal<b
 TRAP;ADD;dmtfAlert323;.1.3.6.1.4.1.674.10890.1.0.323
 TRAP;setparam;dmtfAlert323;traps_name;dmtfAlert323
 TRAP;setparam;dmtfAlert323;traps_oid;.1.3.6.1.4.1.674.10890.1.0.323
+TRAP;setparam;dmtfAlert323;traps_mode;0
 TRAP;setparam;dmtfAlert323;traps_args;DMI BASEBRDD Alert Event: Event Data: ($3 on $1)
 TRAP;setparam;dmtfAlert323;traps_status;2
 TRAP;setparam;dmtfAlert323;vendor;Dell
@@ -2052,6 +2143,7 @@ TRAP;setparam;dmtfAlert323;traps_comments;Memory ECC fault detected<br/>--NMS tr
 TRAP;ADD;dmtfAlert325;.1.3.6.1.4.1.674.10890.1.0.325
 TRAP;setparam;dmtfAlert325;traps_name;dmtfAlert325
 TRAP;setparam;dmtfAlert325;traps_oid;.1.3.6.1.4.1.674.10890.1.0.325
+TRAP;setparam;dmtfAlert325;traps_mode;0
 TRAP;setparam;dmtfAlert325;traps_args;DMI BASEBRDD Alert Event: Event Data: ($3 on $1)
 TRAP;setparam;dmtfAlert325;traps_status;2
 TRAP;setparam;dmtfAlert325;vendor;Dell
@@ -2069,6 +2161,7 @@ TRAP;setparam;dmtfAlert325;traps_comments;Lost connection to storage system<br/>
 TRAP;ADD;dmtfAlert326;.1.3.6.1.4.1.674.10890.1.0.326
 TRAP;setparam;dmtfAlert326;traps_name;dmtfAlert326
 TRAP;setparam;dmtfAlert326;traps_oid;.1.3.6.1.4.1.674.10890.1.0.326
+TRAP;setparam;dmtfAlert326;traps_mode;0
 TRAP;setparam;dmtfAlert326;traps_args;DMI BASEBRDD Alert Event: Event Data: ($3 on $1)
 TRAP;setparam;dmtfAlert326;traps_status;2
 TRAP;setparam;dmtfAlert326;vendor;Dell
@@ -2086,6 +2179,7 @@ TRAP;setparam;dmtfAlert326;traps_comments;Established connection to storage syst
 TRAP;ADD;dmtfAlert327;.1.3.6.1.4.1.674.10890.1.0.327
 TRAP;setparam;dmtfAlert327;traps_name;dmtfAlert327
 TRAP;setparam;dmtfAlert327;traps_oid;.1.3.6.1.4.1.674.10890.1.0.327
+TRAP;setparam;dmtfAlert327;traps_mode;0
 TRAP;setparam;dmtfAlert327;traps_args;DMI BASEBRDD Alert Event: Event Data: ($3 on $1)
 TRAP;setparam;dmtfAlert327;traps_status;2
 TRAP;setparam;dmtfAlert327;vendor;Dell
@@ -2103,6 +2197,7 @@ TRAP;setparam;dmtfAlert327;traps_comments;Reestablished connection to storage sy
 TRAP;ADD;dmtfAlert330;.1.3.6.1.4.1.674.10890.1.0.330
 TRAP;setparam;dmtfAlert330;traps_name;dmtfAlert330
 TRAP;setparam;dmtfAlert330;traps_oid;.1.3.6.1.4.1.674.10890.1.0.330
+TRAP;setparam;dmtfAlert330;traps_mode;0
 TRAP;setparam;dmtfAlert330;traps_args;DMI BASEBRDD Alert Event: Event Data: ($3 on $1)
 TRAP;setparam;dmtfAlert330;traps_status;2
 TRAP;setparam;dmtfAlert330;vendor;Dell
@@ -2120,6 +2215,7 @@ TRAP;setparam;dmtfAlert330;traps_comments;System Up<br/>--NMS trap annotation<br
 TRAP;ADD;eventGenericTrap;.1.3.6.1.4.1.43.0.82
 TRAP;setparam;eventGenericTrap;traps_name;eventGenericTrap
 TRAP;setparam;eventGenericTrap;traps_oid;.1.3.6.1.4.1.43.0.82
+TRAP;setparam;eventGenericTrap;traps_mode;0
 TRAP;setparam;eventGenericTrap;traps_args;This trap is sent to management stations when an internal  $*
 TRAP;setparam;eventGenericTrap;traps_status;0
 TRAP;setparam;eventGenericTrap;vendor;3com
@@ -2137,6 +2233,7 @@ TRAP;setparam;eventGenericTrap;traps_comments;This trap is sent to management st
 TRAP;ADD;failoverEvent;.1.3.6.1.4.1.4413.1.2.3.0.1
 TRAP;setparam;failoverEvent;traps_name;failoverEvent
 TRAP;setparam;failoverEvent;traps_oid;.1.3.6.1.4.1.4413.1.2.3.0.1
+TRAP;setparam;failoverEvent;traps_mode;0
 TRAP;setparam;failoverEvent;traps_args;$*
 TRAP;setparam;failoverEvent;traps_status;0
 TRAP;setparam;failoverEvent;vendor;Dell
@@ -2154,6 +2251,7 @@ TRAP;setparam;failoverEvent;traps_comments;<br/>This trap is generated to indica
 TRAP;ADD;linkDown;.1.3.6.1.6.3.1.1.5.3
 TRAP;setparam;linkDown;traps_name;linkDown
 TRAP;setparam;linkDown;traps_oid;.1.3.6.1.6.3.1.1.5.3
+TRAP;setparam;linkDown;traps_mode;0
 TRAP;setparam;linkDown;traps_args;Link down on interface $2. State: $4.
 TRAP;setparam;linkDown;traps_status;2
 TRAP;setparam;linkDown;vendor;Generic
@@ -2171,6 +2269,7 @@ TRAP;setparam;linkDown;traps_comments;A linkDown(2) trap signifies that the send
 TRAP;ADD;linkUp;.1.3.6.1.6.3.1.1.5.4
 TRAP;setparam;linkUp;traps_name;linkUp
 TRAP;setparam;linkUp;traps_oid;.1.3.6.1.6.3.1.1.5.4
+TRAP;setparam;linkUp;traps_mode;0
 TRAP;setparam;linkUp;traps_args;Link up on interface $2. State: $4.
 TRAP;setparam;linkUp;traps_status;0
 TRAP;setparam;linkUp;vendor;Generic
@@ -2188,6 +2287,7 @@ TRAP;setparam;linkUp;traps_comments;A linkUp(3) trap signifies that the sending 
 TRAP;ADD;ospfVirtIfTxRetransmit;.1.3.6.1.4.1.11.0.14
 TRAP;setparam;ospfVirtIfTxRetransmit;traps_name;ospfVirtIfTxRetransmit
 TRAP;setparam;ospfVirtIfTxRetransmit;traps_oid;.1.3.6.1.4.1.11.0.14
+TRAP;setparam;ospfVirtIfTxRetransmit;traps_mode;0
 TRAP;setparam;ospfVirtIfTxRetransmit;traps_args;An ospfTxRetransmit  trap  signifies  than  an $*
 TRAP;setparam;ospfVirtIfTxRetransmit;traps_status;0
 TRAP;setparam;ospfVirtIfTxRetransmit;vendor;HP
@@ -2205,6 +2305,7 @@ TRAP;setparam;ospfVirtIfTxRetransmit;traps_comments;An ospfTxRetransmit  trap  s
 TRAP;ADD;perc2SmartConfigChange;.1.3.6.1.4.1.674.10893.1.1.200.0.586
 TRAP;setparam;perc2SmartConfigChange;traps_name;perc2SmartConfigChange
 TRAP;setparam;perc2SmartConfigChange;traps_oid;.1.3.6.1.4.1.674.10893.1.1.200.0.586
+TRAP;setparam;perc2SmartConfigChange;traps_mode;0
 TRAP;setparam;perc2SmartConfigChange;traps_args;Array Manager Event: Smart Config Change:
 TRAP;setparam;perc2SmartConfigChange;traps_status;1
 TRAP;setparam;perc2SmartConfigChange;vendor;Dell
@@ -2222,6 +2323,7 @@ TRAP;setparam;perc2SmartConfigChange;traps_comments;%s SMART configuration chang
 TRAP;ADD;perc2SmartFPTExceeded;.1.3.6.1.4.1.674.10893.1.1.200.0.585
 TRAP;setparam;perc2SmartFPTExceeded;traps_name;perc2SmartFPTExceeded
 TRAP;setparam;perc2SmartFPTExceeded;traps_oid;.1.3.6.1.4.1.674.10893.1.1.200.0.585
+TRAP;setparam;perc2SmartFPTExceeded;traps_mode;0
 TRAP;setparam;perc2SmartFPTExceeded;traps_args;Array Manager Event: Smart FPT Exceeded:
 TRAP;setparam;perc2SmartFPTExceeded;traps_status;0
 TRAP;setparam;perc2SmartFPTExceeded;vendor;Dell
@@ -2239,6 +2341,7 @@ TRAP;setparam;perc2SmartFPTExceeded;traps_comments;%s SMART:FPT EXCEEDED on %s.<
 TRAP;ADD;perc2SmartFPTExceededTest;.1.3.6.1.4.1.674.10893.1.1.200.0.590
 TRAP;setparam;perc2SmartFPTExceededTest;traps_name;perc2SmartFPTExceededTest
 TRAP;setparam;perc2SmartFPTExceededTest;traps_oid;.1.3.6.1.4.1.674.10893.1.1.200.0.590
+TRAP;setparam;perc2SmartFPTExceededTest;traps_mode;0
 TRAP;setparam;perc2SmartFPTExceededTest;traps_args;    Internal Controller has encountered Strong-ARM processor specific error$1
 TRAP;setparam;perc2SmartFPTExceededTest;traps_status;1
 TRAP;setparam;perc2SmartFPTExceededTest;vendor;Dell
@@ -2256,6 +2359,7 @@ TRAP;setparam;perc2SmartFPTExceededTest;traps_comments;Internal Controller has e
 TRAP;ADD;perc2SmartWarning;.1.3.6.1.4.1.674.10893.1.1.200.0.587
 TRAP;setparam;perc2SmartWarning;traps_name;perc2SmartWarning
 TRAP;setparam;perc2SmartWarning;traps_oid;.1.3.6.1.4.1.674.10893.1.1.200.0.587
+TRAP;setparam;perc2SmartWarning;traps_mode;0
 TRAP;setparam;perc2SmartWarning;traps_args;Array Manager Event: Smart Warning:
 TRAP;setparam;perc2SmartWarning;traps_status;1
 TRAP;setparam;perc2SmartWarning;vendor;Dell
@@ -2273,6 +2377,7 @@ TRAP;setparam;perc2SmartWarning;traps_comments;%s SMART Warning on %s.<br/>Varia
 TRAP;ADD;perc2SmartWarningDegraded;.1.3.6.1.4.1.674.10893.1.1.200.0.589
 TRAP;setparam;perc2SmartWarningDegraded;traps_name;perc2SmartWarningDegraded
 TRAP;setparam;perc2SmartWarningDegraded;traps_oid;.1.3.6.1.4.1.674.10893.1.1.200.0.589
+TRAP;setparam;perc2SmartWarningDegraded;traps_mode;0
 TRAP;setparam;perc2SmartWarningDegraded;traps_args;Array Manager Event: Smart warning degraded:
 TRAP;setparam;perc2SmartWarningDegraded;traps_status;1
 TRAP;setparam;perc2SmartWarningDegraded;vendor;Dell
@@ -2290,6 +2395,7 @@ TRAP;setparam;perc2SmartWarningDegraded;traps_comments;%s SMART warning degraded
 TRAP;ADD;perc2SmartWarningTemp;.1.3.6.1.4.1.674.10893.1.1.200.0.588
 TRAP;setparam;perc2SmartWarningTemp;traps_name;perc2SmartWarningTemp
 TRAP;setparam;perc2SmartWarningTemp;traps_oid;.1.3.6.1.4.1.674.10893.1.1.200.0.588
+TRAP;setparam;perc2SmartWarningTemp;traps_mode;0
 TRAP;setparam;perc2SmartWarningTemp;traps_args;Array Manager Event: Smart warning temperature:
 TRAP;setparam;perc2SmartWarningTemp;traps_status;1
 TRAP;setparam;perc2SmartWarningTemp;vendor;Dell
@@ -2307,6 +2413,7 @@ TRAP;setparam;perc2SmartWarningTemp;traps_comments;%s SMART Warning temperature 
 TRAP;ADD;percPredictiveFailure;.1.3.6.1.4.1.674.10893.1.1.200.0.570
 TRAP;setparam;percPredictiveFailure;traps_name;percPredictiveFailure
 TRAP;setparam;percPredictiveFailure;traps_oid;.1.3.6.1.4.1.674.10893.1.1.200.0.570
+TRAP;setparam;percPredictiveFailure;traps_mode;0
 TRAP;setparam;percPredictiveFailure;traps_args;Array Manager Event: Predictive Failure reported:
 TRAP;setparam;percPredictiveFailure;traps_status;1
 TRAP;setparam;percPredictiveFailure;vendor;Dell
@@ -2324,6 +2431,7 @@ TRAP;setparam;percPredictiveFailure;traps_comments;%s, %s reported predictive fa
 TRAP;ADD;percSCSISenseData;.1.3.6.1.4.1.674.10893.1.1.200.0.571
 TRAP;setparam;percSCSISenseData;traps_name;percSCSISenseData
 TRAP;setparam;percSCSISenseData;traps_oid;.1.3.6.1.4.1.674.10893.1.1.200.0.571
+TRAP;setparam;percSCSISenseData;traps_mode;0
 TRAP;setparam;percSCSISenseData;traps_args;Array Manager Event: SCSI sense data:
 TRAP;setparam;percSCSISenseData;traps_status;1
 TRAP;setparam;percSCSISenseData;vendor;Dell
@@ -2341,6 +2449,7 @@ TRAP;setparam;percSCSISenseData;traps_comments;%s, %s SCSI sense failure.<br/>Va
 TRAP;ADD;remPollFailureTrap;.1.3.6.1.4.1.43.0.75
 TRAP;setparam;remPollFailureTrap;traps_name;remPollFailureTrap
 TRAP;setparam;remPollFailureTrap;traps_oid;.1.3.6.1.4.1.43.0.75
+TRAP;setparam;remPollFailureTrap;traps_mode;0
 TRAP;setparam;remPollFailureTrap;traps_args;This trap is generated by the EventTable (if the eventEntry  $*
 TRAP;setparam;remPollFailureTrap;traps_status;0
 TRAP;setparam;remPollFailureTrap;vendor;3com
@@ -2358,6 +2467,7 @@ TRAP;setparam;remPollFailureTrap;traps_comments;This trap is generated by the Ev
 TRAP;ADD;remPollSuccessTrap;.1.3.6.1.4.1.43.0.74
 TRAP;setparam;remPollSuccessTrap;traps_name;remPollSuccessTrap
 TRAP;setparam;remPollSuccessTrap;traps_oid;.1.3.6.1.4.1.43.0.74
+TRAP;setparam;remPollSuccessTrap;traps_mode;0
 TRAP;setparam;remPollSuccessTrap;traps_args;This trap is generated by the EventTable (if the eventEntry  $*
 TRAP;setparam;remPollSuccessTrap;traps_status;0
 TRAP;setparam;remPollSuccessTrap;vendor;3com
@@ -2375,6 +2485,7 @@ TRAP;setparam;remPollSuccessTrap;traps_comments;This trap is generated by the Ev
 TRAP;ADD;secureAddressLearned;.1.3.6.1.4.1.43.0.71
 TRAP;setparam;secureAddressLearned;traps_name;secureAddressLearned
 TRAP;setparam;secureAddressLearned;traps_oid;.1.3.6.1.4.1.43.0.71
+TRAP;setparam;secureAddressLearned;traps_mode;0
 TRAP;setparam;secureAddressLearned;traps_args;This trap is sent when a new station has been learned. The  $*
 TRAP;setparam;secureAddressLearned;traps_status;0
 TRAP;setparam;secureAddressLearned;vendor;3com
@@ -2392,6 +2503,7 @@ TRAP;setparam;secureAddressLearned;traps_comments;This trap is sent when a new s
 TRAP;ADD;secureAddressLearned2;.1.3.6.1.4.1.43.0.85
 TRAP;setparam;secureAddressLearned2;traps_name;secureAddressLearned2
 TRAP;setparam;secureAddressLearned2;traps_oid;.1.3.6.1.4.1.43.0.85
+TRAP;setparam;secureAddressLearned2;traps_mode;0
 TRAP;setparam;secureAddressLearned2;traps_args;This trap is sent when a new station has been learned. $*
 TRAP;setparam;secureAddressLearned2;traps_status;0
 TRAP;setparam;secureAddressLearned2;vendor;3com
@@ -2409,6 +2521,7 @@ TRAP;setparam;secureAddressLearned2;traps_comments;This trap is sent when a new 
 TRAP;ADD;secureViolation2;.1.3.6.1.4.1.43.0.78
 TRAP;setparam;secureViolation2;traps_name;secureViolation2
 TRAP;setparam;secureViolation2;traps_oid;.1.3.6.1.4.1.43.0.78
+TRAP;setparam;secureViolation2;traps_mode;0
 TRAP;setparam;secureViolation2;traps_args;This trap is sent whenever a security violation has occurred.  $*
 TRAP;setparam;secureViolation2;traps_status;0
 TRAP;setparam;secureViolation2;vendor;3com
@@ -2426,6 +2539,7 @@ TRAP;setparam;secureViolation2;traps_comments;This trap is sent whenever a secur
 TRAP;ADD;secureViolation3;.1.3.6.1.4.1.43.0.86
 TRAP;setparam;secureViolation3;traps_name;secureViolation3
 TRAP;setparam;secureViolation3;traps_oid;.1.3.6.1.4.1.43.0.86
+TRAP;setparam;secureViolation3;traps_mode;0
 TRAP;setparam;secureViolation3;traps_args;This trap is sent whenever a security violation has  $*
 TRAP;setparam;secureViolation3;traps_status;0
 TRAP;setparam;secureViolation3;vendor;3com
@@ -2443,6 +2557,7 @@ TRAP;setparam;secureViolation3;traps_comments;This trap is sent whenever a secur
 TRAP;ADD;secureViolation4;.1.3.6.1.4.1.43.0.88
 TRAP;setparam;secureViolation4;traps_name;secureViolation4
 TRAP;setparam;secureViolation4;traps_oid;.1.3.6.1.4.1.43.0.88
+TRAP;setparam;secureViolation4;traps_mode;0
 TRAP;setparam;secureViolation4;traps_args;This trap is sent whenever a security violation has  $*
 TRAP;setparam;secureViolation4;traps_status;0
 TRAP;setparam;secureViolation4;vendor;3com
@@ -2460,6 +2575,7 @@ TRAP;setparam;secureViolation4;traps_comments;This trap is sent whenever a secur
 TRAP;ADD;snOspfIfAuthFailure;.1.3.6.1.4.1.11.0.9
 TRAP;setparam;snOspfIfAuthFailure;traps_name;snOspfIfAuthFailure
 TRAP;setparam;snOspfIfAuthFailure;traps_oid;.1.3.6.1.4.1.11.0.9
+TRAP;setparam;snOspfIfAuthFailure;traps_mode;0
 TRAP;setparam;snOspfIfAuthFailure;traps_args;An ospfIfAuthFailure  trap  signifies  that  a $*
 TRAP;setparam;snOspfIfAuthFailure;traps_status;0
 TRAP;setparam;snOspfIfAuthFailure;vendor;HP
@@ -2477,6 +2593,7 @@ TRAP;setparam;snOspfIfAuthFailure;traps_comments;An ospfIfAuthFailure  trap  sig
 TRAP;ADD;snOspfIfConfigError;.1.3.6.1.4.1.11.0.7
 TRAP;setparam;snOspfIfConfigError;traps_name;snOspfIfConfigError
 TRAP;setparam;snOspfIfConfigError;traps_oid;.1.3.6.1.4.1.11.0.7
+TRAP;setparam;snOspfIfConfigError;traps_mode;0
 TRAP;setparam;snOspfIfConfigError;traps_args;An ospfIfConfigError  trap  signifies  that  a $*
 TRAP;setparam;snOspfIfConfigError;traps_status;0
 TRAP;setparam;snOspfIfConfigError;vendor;HP
@@ -2494,6 +2611,7 @@ TRAP;setparam;snOspfIfConfigError;traps_comments;An ospfIfConfigError  trap  sig
 TRAP;ADD;snOspfIfRxBadPacket;.1.3.6.1.4.1.11.0.11
 TRAP;setparam;snOspfIfRxBadPacket;traps_name;snOspfIfRxBadPacket
 TRAP;setparam;snOspfIfRxBadPacket;traps_oid;.1.3.6.1.4.1.11.0.11
+TRAP;setparam;snOspfIfRxBadPacket;traps_mode;0
 TRAP;setparam;snOspfIfRxBadPacket;traps_args;An ospfIfRxBadPacket trap  signifies  that  an $*
 TRAP;setparam;snOspfIfRxBadPacket;traps_status;0
 TRAP;setparam;snOspfIfRxBadPacket;vendor;HP
@@ -2511,6 +2629,7 @@ TRAP;setparam;snOspfIfRxBadPacket;traps_comments;An ospfIfRxBadPacket trap  sign
 TRAP;ADD;snOspfLsdbApproachingOverflow;.1.3.6.1.4.1.11.0.18
 TRAP;setparam;snOspfLsdbApproachingOverflow;traps_name;snOspfLsdbApproachingOverflow
 TRAP;setparam;snOspfLsdbApproachingOverflow;traps_oid;.1.3.6.1.4.1.11.0.18
+TRAP;setparam;snOspfLsdbApproachingOverflow;traps_mode;0
 TRAP;setparam;snOspfLsdbApproachingOverflow;traps_args;An ospfLsdbApproachingOverflow trap  signifies $*
 TRAP;setparam;snOspfLsdbApproachingOverflow;traps_status;0
 TRAP;setparam;snOspfLsdbApproachingOverflow;vendor;HP
@@ -2528,6 +2647,7 @@ TRAP;setparam;snOspfLsdbApproachingOverflow;traps_comments;An ospfLsdbApproachin
 TRAP;ADD;snOspfLsdbOverflow;.1.3.6.1.4.1.11.0.17
 TRAP;setparam;snOspfLsdbOverflow;traps_name;snOspfLsdbOverflow
 TRAP;setparam;snOspfLsdbOverflow;traps_oid;.1.3.6.1.4.1.11.0.17
+TRAP;setparam;snOspfLsdbOverflow;traps_mode;0
 TRAP;setparam;snOspfLsdbOverflow;traps_args;An ospfLsdbOverflow trap  signifies  that  the $*
 TRAP;setparam;snOspfLsdbOverflow;traps_status;0
 TRAP;setparam;snOspfLsdbOverflow;vendor;HP
@@ -2545,6 +2665,7 @@ TRAP;setparam;snOspfLsdbOverflow;traps_comments;An ospfLsdbOverflow trap  signif
 TRAP;ADD;snOspfMaxAgeLsa;.1.3.6.1.4.1.11.0.16
 TRAP;setparam;snOspfMaxAgeLsa;traps_name;snOspfMaxAgeLsa
 TRAP;setparam;snOspfMaxAgeLsa;traps_oid;.1.3.6.1.4.1.11.0.16
+TRAP;setparam;snOspfMaxAgeLsa;traps_mode;0
 TRAP;setparam;snOspfMaxAgeLsa;traps_args;An ospfMaxAgeLsa trap signifies  that  one  of $*
 TRAP;setparam;snOspfMaxAgeLsa;traps_status;0
 TRAP;setparam;snOspfMaxAgeLsa;vendor;HP
@@ -2562,6 +2683,7 @@ TRAP;setparam;snOspfMaxAgeLsa;traps_comments;An ospfMaxAgeLsa trap signifies  th
 TRAP;ADD;snOspfNbrStateChange;.1.3.6.1.4.1.11.0.5
 TRAP;setparam;snOspfNbrStateChange;traps_name;snOspfNbrStateChange
 TRAP;setparam;snOspfNbrStateChange;traps_oid;.1.3.6.1.4.1.11.0.5
+TRAP;setparam;snOspfNbrStateChange;traps_mode;0
 TRAP;setparam;snOspfNbrStateChange;traps_args;An  ospfNbrStateChange  trap  signifies   that $*
 TRAP;setparam;snOspfNbrStateChange;traps_status;0
 TRAP;setparam;snOspfNbrStateChange;vendor;HP
@@ -2579,6 +2701,7 @@ TRAP;setparam;snOspfNbrStateChange;traps_comments;An  ospfNbrStateChange  trap  
 TRAP;ADD;snOspfOriginateLsa;.1.3.6.1.4.1.11.0.15
 TRAP;setparam;snOspfOriginateLsa;traps_name;snOspfOriginateLsa
 TRAP;setparam;snOspfOriginateLsa;traps_oid;.1.3.6.1.4.1.11.0.15
+TRAP;setparam;snOspfOriginateLsa;traps_mode;0
 TRAP;setparam;snOspfOriginateLsa;traps_args;An ospfOriginateLsa trap signifies that a  new $*
 TRAP;setparam;snOspfOriginateLsa;traps_status;0
 TRAP;setparam;snOspfOriginateLsa;vendor;HP
@@ -2596,6 +2719,7 @@ TRAP;setparam;snOspfOriginateLsa;traps_comments;An ospfOriginateLsa trap signifi
 TRAP;ADD;snOspfTxRetransmit;.1.3.6.1.4.1.11.0.13
 TRAP;setparam;snOspfTxRetransmit;traps_name;snOspfTxRetransmit
 TRAP;setparam;snOspfTxRetransmit;traps_oid;.1.3.6.1.4.1.11.0.13
+TRAP;setparam;snOspfTxRetransmit;traps_mode;0
 TRAP;setparam;snOspfTxRetransmit;traps_args;An ospfTxRetransmit  trap  signifies  than  an $*
 TRAP;setparam;snOspfTxRetransmit;traps_status;0
 TRAP;setparam;snOspfTxRetransmit;vendor;HP
@@ -2613,6 +2737,7 @@ TRAP;setparam;snOspfTxRetransmit;traps_comments;An ospfTxRetransmit  trap  signi
 TRAP;ADD;snOspfVirtIfAuthFailure;.1.3.6.1.4.1.11.0.10
 TRAP;setparam;snOspfVirtIfAuthFailure;traps_name;snOspfVirtIfAuthFailure
 TRAP;setparam;snOspfVirtIfAuthFailure;traps_oid;.1.3.6.1.4.1.11.0.10
+TRAP;setparam;snOspfVirtIfAuthFailure;traps_mode;0
 TRAP;setparam;snOspfVirtIfAuthFailure;traps_args;An ospfVirtIfAuthFailure trap signifies that a $*
 TRAP;setparam;snOspfVirtIfAuthFailure;traps_status;0
 TRAP;setparam;snOspfVirtIfAuthFailure;vendor;HP
@@ -2630,6 +2755,7 @@ TRAP;setparam;snOspfVirtIfAuthFailure;traps_comments;An ospfVirtIfAuthFailure tr
 TRAP;ADD;snOspfVirtIfConfigError;.1.3.6.1.4.1.11.0.8
 TRAP;setparam;snOspfVirtIfConfigError;traps_name;snOspfVirtIfConfigError
 TRAP;setparam;snOspfVirtIfConfigError;traps_oid;.1.3.6.1.4.1.11.0.8
+TRAP;setparam;snOspfVirtIfConfigError;traps_mode;0
 TRAP;setparam;snOspfVirtIfConfigError;traps_args;An ospfConfigError trap signifies that a pack- $*
 TRAP;setparam;snOspfVirtIfConfigError;traps_status;0
 TRAP;setparam;snOspfVirtIfConfigError;vendor;HP
@@ -2647,6 +2773,7 @@ TRAP;setparam;snOspfVirtIfConfigError;traps_comments;An ospfConfigError trap sig
 TRAP;ADD;snOspfVirtIfRxBadPacket;.1.3.6.1.4.1.11.0.12
 TRAP;setparam;snOspfVirtIfRxBadPacket;traps_name;snOspfVirtIfRxBadPacket
 TRAP;setparam;snOspfVirtIfRxBadPacket;traps_oid;.1.3.6.1.4.1.11.0.12
+TRAP;setparam;snOspfVirtIfRxBadPacket;traps_mode;0
 TRAP;setparam;snOspfVirtIfRxBadPacket;traps_args;An ospfRxBadPacket trap signifies that an OSPF $*
 TRAP;setparam;snOspfVirtIfRxBadPacket;traps_status;0
 TRAP;setparam;snOspfVirtIfRxBadPacket;vendor;HP
@@ -2664,6 +2791,7 @@ TRAP;setparam;snOspfVirtIfRxBadPacket;traps_comments;An ospfRxBadPacket trap sig
 TRAP;ADD;snOspfVirtNbrStateChange;.1.3.6.1.4.1.11.0.6
 TRAP;setparam;snOspfVirtNbrStateChange;traps_name;snOspfVirtNbrStateChange
 TRAP;setparam;snOspfVirtNbrStateChange;traps_oid;.1.3.6.1.4.1.11.0.6
+TRAP;setparam;snOspfVirtNbrStateChange;traps_mode;0
 TRAP;setparam;snOspfVirtNbrStateChange;traps_args;An ospfIfStateChange trap signifies that there $*
 TRAP;setparam;snOspfVirtNbrStateChange;traps_status;0
 TRAP;setparam;snOspfVirtNbrStateChange;vendor;HP
@@ -2681,6 +2809,7 @@ TRAP;setparam;snOspfVirtNbrStateChange;traps_comments;An ospfIfStateChange trap 
 TRAP;ADD;snTrapAccessListDeny;.1.3.6.1.4.1.11.0.37
 TRAP;setparam;snTrapAccessListDeny;traps_name;snTrapAccessListDeny
 TRAP;setparam;snTrapAccessListDeny;traps_oid;.1.3.6.1.4.1.11.0.37
+TRAP;setparam;snTrapAccessListDeny;traps_mode;0
 TRAP;setparam;snTrapAccessListDeny;traps_args;The SNMP trap that is generated when a packet was denied $*
 TRAP;setparam;snTrapAccessListDeny;traps_status;0
 TRAP;setparam;snTrapAccessListDeny;vendor;HP
@@ -2698,6 +2827,7 @@ TRAP;setparam;snTrapAccessListDeny;traps_comments;The SNMP trap that is generate
 TRAP;ADD;snTrapChasFanFailed;.1.3.6.1.4.1.11.0.31
 TRAP;setparam;snTrapChasFanFailed;traps_name;snTrapChasFanFailed
 TRAP;setparam;snTrapChasFanFailed;traps_oid;.1.3.6.1.4.1.11.0.31
+TRAP;setparam;snTrapChasFanFailed;traps_mode;0
 TRAP;setparam;snTrapChasFanFailed;traps_args;The SNMP trap that is generated when a fan fails $*
 TRAP;setparam;snTrapChasFanFailed;traps_status;0
 TRAP;setparam;snTrapChasFanFailed;vendor;HP
@@ -2715,6 +2845,7 @@ TRAP;setparam;snTrapChasFanFailed;traps_comments;The SNMP trap that is generated
 TRAP;ADD;snTrapChasPwrSupply;.1.3.6.1.4.1.11.0.1
 TRAP;setparam;snTrapChasPwrSupply;traps_name;snTrapChasPwrSupply
 TRAP;setparam;snTrapChasPwrSupply;traps_oid;.1.3.6.1.4.1.11.0.1
+TRAP;setparam;snTrapChasPwrSupply;traps_mode;0
 TRAP;setparam;snTrapChasPwrSupply;traps_args;The SNMP trap that is generated when a power supply fails $*
 TRAP;setparam;snTrapChasPwrSupply;traps_status;0
 TRAP;setparam;snTrapChasPwrSupply;vendor;HP
@@ -2732,6 +2863,7 @@ TRAP;setparam;snTrapChasPwrSupply;traps_comments;The SNMP trap that is generated
 TRAP;ADD;snTrapChasPwrSupplyFailed;.1.3.6.1.4.1.11.0.30
 TRAP;setparam;snTrapChasPwrSupplyFailed;traps_name;snTrapChasPwrSupplyFailed
 TRAP;setparam;snTrapChasPwrSupplyFailed;traps_oid;.1.3.6.1.4.1.11.0.30
+TRAP;setparam;snTrapChasPwrSupplyFailed;traps_mode;0
 TRAP;setparam;snTrapChasPwrSupplyFailed;traps_args;The SNMP trap that is generated when a power supply fails $*
 TRAP;setparam;snTrapChasPwrSupplyFailed;traps_status;0
 TRAP;setparam;snTrapChasPwrSupplyFailed;vendor;HP
@@ -2749,6 +2881,7 @@ TRAP;setparam;snTrapChasPwrSupplyFailed;traps_comments;The SNMP trap that is gen
 TRAP;ADD;snTrapFsrpIfStateChange;.1.3.6.1.4.1.11.0.33
 TRAP;setparam;snTrapFsrpIfStateChange;traps_name;snTrapFsrpIfStateChange
 TRAP;setparam;snTrapFsrpIfStateChange;traps_oid;.1.3.6.1.4.1.11.0.33
+TRAP;setparam;snTrapFsrpIfStateChange;traps_mode;0
 TRAP;setparam;snTrapFsrpIfStateChange;traps_args;The SNMP trap that is generated when a FSRP routing device $*
 TRAP;setparam;snTrapFsrpIfStateChange;traps_status;0
 TRAP;setparam;snTrapFsrpIfStateChange;vendor;HP
@@ -2766,6 +2899,7 @@ TRAP;setparam;snTrapFsrpIfStateChange;traps_comments;The SNMP trap that is gener
 TRAP;ADD;snTrapL4BecomeActive;.1.3.6.1.4.1.11.0.27
 TRAP;setparam;snTrapL4BecomeActive;traps_name;snTrapL4BecomeActive
 TRAP;setparam;snTrapL4BecomeActive;traps_oid;.1.3.6.1.4.1.11.0.27
+TRAP;setparam;snTrapL4BecomeActive;traps_mode;0
 TRAP;setparam;snTrapL4BecomeActive;traps_args;The SNMP trap that is generated when the server load $*
 TRAP;setparam;snTrapL4BecomeActive;traps_status;0
 TRAP;setparam;snTrapL4BecomeActive;vendor;HP
@@ -2783,6 +2917,7 @@ TRAP;setparam;snTrapL4BecomeActive;traps_comments;The SNMP trap that is generate
 TRAP;ADD;snTrapL4BecomeStandby;.1.3.6.1.4.1.11.0.26
 TRAP;setparam;snTrapL4BecomeStandby;traps_name;snTrapL4BecomeStandby
 TRAP;setparam;snTrapL4BecomeStandby;traps_oid;.1.3.6.1.4.1.11.0.26
+TRAP;setparam;snTrapL4BecomeStandby;traps_mode;0
 TRAP;setparam;snTrapL4BecomeStandby;traps_args;The SNMP trap that is generated when the server load $*
 TRAP;setparam;snTrapL4BecomeStandby;traps_status;0
 TRAP;setparam;snTrapL4BecomeStandby;vendor;HP
@@ -2800,6 +2935,7 @@ TRAP;setparam;snTrapL4BecomeStandby;traps_comments;The SNMP trap that is generat
 TRAP;ADD;snTrapL4GslbHealthCheckIpDown;.1.3.6.1.4.1.11.0.44
 TRAP;setparam;snTrapL4GslbHealthCheckIpDown;traps_name;snTrapL4GslbHealthCheckIpDown
 TRAP;setparam;snTrapL4GslbHealthCheckIpDown;traps_oid;.1.3.6.1.4.1.11.0.44
+TRAP;setparam;snTrapL4GslbHealthCheckIpDown;traps_mode;0
 TRAP;setparam;snTrapL4GslbHealthCheckIpDown;traps_args;The SNMP trap that is generated when GSLB health check for an address transitions $*
 TRAP;setparam;snTrapL4GslbHealthCheckIpDown;traps_status;0
 TRAP;setparam;snTrapL4GslbHealthCheckIpDown;vendor;HP
@@ -2817,6 +2953,7 @@ TRAP;setparam;snTrapL4GslbHealthCheckIpDown;traps_comments;The SNMP trap that is
 TRAP;ADD;snTrapL4GslbHealthCheckIpPortDown;.1.3.6.1.4.1.11.0.46
 TRAP;setparam;snTrapL4GslbHealthCheckIpPortDown;traps_name;snTrapL4GslbHealthCheckIpPortDown
 TRAP;setparam;snTrapL4GslbHealthCheckIpPortDown;traps_oid;.1.3.6.1.4.1.11.0.46
+TRAP;setparam;snTrapL4GslbHealthCheckIpPortDown;traps_mode;0
 TRAP;setparam;snTrapL4GslbHealthCheckIpPortDown;traps_args;The SNMP trap that is generated when a given port for a health check address is down. $*
 TRAP;setparam;snTrapL4GslbHealthCheckIpPortDown;traps_status;0
 TRAP;setparam;snTrapL4GslbHealthCheckIpPortDown;vendor;HP
@@ -2834,6 +2971,7 @@ TRAP;setparam;snTrapL4GslbHealthCheckIpPortDown;traps_comments;The SNMP trap tha
 TRAP;ADD;snTrapL4GslbHealthCheckIpPortUp;.1.3.6.1.4.1.11.0.45
 TRAP;setparam;snTrapL4GslbHealthCheckIpPortUp;traps_name;snTrapL4GslbHealthCheckIpPortUp
 TRAP;setparam;snTrapL4GslbHealthCheckIpPortUp;traps_oid;.1.3.6.1.4.1.11.0.45
+TRAP;setparam;snTrapL4GslbHealthCheckIpPortUp;traps_mode;0
 TRAP;setparam;snTrapL4GslbHealthCheckIpPortUp;traps_args;The SNMP trap that is generated when a given port for a health check address is up. $*
 TRAP;setparam;snTrapL4GslbHealthCheckIpPortUp;traps_status;0
 TRAP;setparam;snTrapL4GslbHealthCheckIpPortUp;vendor;HP
@@ -2851,6 +2989,7 @@ TRAP;setparam;snTrapL4GslbHealthCheckIpPortUp;traps_comments;The SNMP trap that 
 TRAP;ADD;snTrapL4GslbHealthCheckIpUp;.1.3.6.1.4.1.11.0.43
 TRAP;setparam;snTrapL4GslbHealthCheckIpUp;traps_name;snTrapL4GslbHealthCheckIpUp
 TRAP;setparam;snTrapL4GslbHealthCheckIpUp;traps_oid;.1.3.6.1.4.1.11.0.43
+TRAP;setparam;snTrapL4GslbHealthCheckIpUp;traps_mode;0
 TRAP;setparam;snTrapL4GslbHealthCheckIpUp;traps_args;The SNMP trap that is generated when GSLB health check for an address transitions $*
 TRAP;setparam;snTrapL4GslbHealthCheckIpUp;traps_status;0
 TRAP;setparam;snTrapL4GslbHealthCheckIpUp;vendor;HP
@@ -2868,6 +3007,7 @@ TRAP;setparam;snTrapL4GslbHealthCheckIpUp;traps_comments;The SNMP trap that is g
 TRAP;ADD;snTrapL4GslbRemoteControllerDown;.1.3.6.1.4.1.11.0.42
 TRAP;setparam;snTrapL4GslbRemoteControllerDown;traps_name;snTrapL4GslbRemoteControllerDown
 TRAP;setparam;snTrapL4GslbRemoteControllerDown;traps_oid;.1.3.6.1.4.1.11.0.42
+TRAP;setparam;snTrapL4GslbRemoteControllerDown;traps_mode;0
 TRAP;setparam;snTrapL4GslbRemoteControllerDown;traps_args;The SNMP trap that is generated when the connection to the GSLB SI is down. $*
 TRAP;setparam;snTrapL4GslbRemoteControllerDown;traps_status;0
 TRAP;setparam;snTrapL4GslbRemoteControllerDown;vendor;HP
@@ -2885,6 +3025,7 @@ TRAP;setparam;snTrapL4GslbRemoteControllerDown;traps_comments;The SNMP trap that
 TRAP;ADD;snTrapL4GslbRemoteControllerUp;.1.3.6.1.4.1.11.0.41
 TRAP;setparam;snTrapL4GslbRemoteControllerUp;traps_name;snTrapL4GslbRemoteControllerUp
 TRAP;setparam;snTrapL4GslbRemoteControllerUp;traps_oid;.1.3.6.1.4.1.11.0.41
+TRAP;setparam;snTrapL4GslbRemoteControllerUp;traps_mode;0
 TRAP;setparam;snTrapL4GslbRemoteControllerUp;traps_args;The SNMP trap that is generated when the connection to the GSLB SI is established. $*
 TRAP;setparam;snTrapL4GslbRemoteControllerUp;traps_status;0
 TRAP;setparam;snTrapL4GslbRemoteControllerUp;vendor;HP
@@ -2902,6 +3043,7 @@ TRAP;setparam;snTrapL4GslbRemoteControllerUp;traps_comments;The SNMP trap that i
 TRAP;ADD;snTrapL4GslbRemoteDown;.1.3.6.1.4.1.11.0.40
 TRAP;setparam;snTrapL4GslbRemoteDown;traps_name;snTrapL4GslbRemoteDown
 TRAP;setparam;snTrapL4GslbRemoteDown;traps_oid;.1.3.6.1.4.1.11.0.40
+TRAP;setparam;snTrapL4GslbRemoteDown;traps_mode;0
 TRAP;setparam;snTrapL4GslbRemoteDown;traps_args;The SNMP trap that is generated when the connection to the remote SI is down. $*
 TRAP;setparam;snTrapL4GslbRemoteDown;traps_status;0
 TRAP;setparam;snTrapL4GslbRemoteDown;vendor;HP
@@ -2919,6 +3061,7 @@ TRAP;setparam;snTrapL4GslbRemoteDown;traps_comments;The SNMP trap that is genera
 TRAP;ADD;snTrapL4GslbRemoteUp;.1.3.6.1.4.1.11.0.39
 TRAP;setparam;snTrapL4GslbRemoteUp;traps_name;snTrapL4GslbRemoteUp
 TRAP;setparam;snTrapL4GslbRemoteUp;traps_oid;.1.3.6.1.4.1.11.0.39
+TRAP;setparam;snTrapL4GslbRemoteUp;traps_mode;0
 TRAP;setparam;snTrapL4GslbRemoteUp;traps_args;The SNMP trap that is generated when the connection to the remote SI is established. $*
 TRAP;setparam;snTrapL4GslbRemoteUp;traps_status;0
 TRAP;setparam;snTrapL4GslbRemoteUp;vendor;HP
@@ -2936,6 +3079,7 @@ TRAP;setparam;snTrapL4GslbRemoteUp;traps_comments;The SNMP trap that is generate
 TRAP;ADD;snTrapL4MaxSessionLimitReached;.1.3.6.1.4.1.11.0.19
 TRAP;setparam;snTrapL4MaxSessionLimitReached;traps_name;snTrapL4MaxSessionLimitReached
 TRAP;setparam;snTrapL4MaxSessionLimitReached;traps_oid;.1.3.6.1.4.1.11.0.19
+TRAP;setparam;snTrapL4MaxSessionLimitReached;traps_mode;0
 TRAP;setparam;snTrapL4MaxSessionLimitReached;traps_args;The SNMP trap that is generated when the maximum number $*
 TRAP;setparam;snTrapL4MaxSessionLimitReached;traps_status;0
 TRAP;setparam;snTrapL4MaxSessionLimitReached;vendor;HP
@@ -2953,6 +3097,7 @@ TRAP;setparam;snTrapL4MaxSessionLimitReached;traps_comments;The SNMP trap that i
 TRAP;ADD;snTrapL4RealServerDown;.1.3.6.1.4.1.11.0.22
 TRAP;setparam;snTrapL4RealServerDown;traps_name;snTrapL4RealServerDown
 TRAP;setparam;snTrapL4RealServerDown;traps_oid;.1.3.6.1.4.1.11.0.22
+TRAP;setparam;snTrapL4RealServerDown;traps_mode;0
 TRAP;setparam;snTrapL4RealServerDown;traps_args;The SNMP trap that is generated when the load balancing $*
 TRAP;setparam;snTrapL4RealServerDown;traps_status;0
 TRAP;setparam;snTrapL4RealServerDown;vendor;HP
@@ -2970,6 +3115,7 @@ TRAP;setparam;snTrapL4RealServerDown;traps_comments;The SNMP trap that is genera
 TRAP;ADD;snTrapL4RealServerMaxConnectionLimitReached;.1.3.6.1.4.1.11.0.25
 TRAP;setparam;snTrapL4RealServerMaxConnectionLimitReached;traps_name;snTrapL4RealServerMaxConnectionLimitReached
 TRAP;setparam;snTrapL4RealServerMaxConnectionLimitReached;traps_oid;.1.3.6.1.4.1.11.0.25
+TRAP;setparam;snTrapL4RealServerMaxConnectionLimitReached;traps_mode;0
 TRAP;setparam;snTrapL4RealServerMaxConnectionLimitReached;traps_args;The SNMP trap that is generated when the real server reaches $*
 TRAP;setparam;snTrapL4RealServerMaxConnectionLimitReached;traps_status;0
 TRAP;setparam;snTrapL4RealServerMaxConnectionLimitReached;vendor;HP
@@ -2987,6 +3133,7 @@ TRAP;setparam;snTrapL4RealServerMaxConnectionLimitReached;traps_comments;The SNM
 TRAP;ADD;snTrapL4RealServerPortDown;.1.3.6.1.4.1.11.0.24
 TRAP;setparam;snTrapL4RealServerPortDown;traps_name;snTrapL4RealServerPortDown
 TRAP;setparam;snTrapL4RealServerPortDown;traps_oid;.1.3.6.1.4.1.11.0.24
+TRAP;setparam;snTrapL4RealServerPortDown;traps_mode;0
 TRAP;setparam;snTrapL4RealServerPortDown;traps_args;The SNMP trap that is generated when the load balancing $*
 TRAP;setparam;snTrapL4RealServerPortDown;traps_status;0
 TRAP;setparam;snTrapL4RealServerPortDown;vendor;HP
@@ -3004,6 +3151,7 @@ TRAP;setparam;snTrapL4RealServerPortDown;traps_comments;The SNMP trap that is ge
 TRAP;ADD;snTrapL4RealServerPortUp;.1.3.6.1.4.1.11.0.23
 TRAP;setparam;snTrapL4RealServerPortUp;traps_name;snTrapL4RealServerPortUp
 TRAP;setparam;snTrapL4RealServerPortUp;traps_oid;.1.3.6.1.4.1.11.0.23
+TRAP;setparam;snTrapL4RealServerPortUp;traps_mode;0
 TRAP;setparam;snTrapL4RealServerPortUp;traps_args;The SNMP trap that is generated when the load balancing $*
 TRAP;setparam;snTrapL4RealServerPortUp;traps_status;0
 TRAP;setparam;snTrapL4RealServerPortUp;vendor;HP
@@ -3021,6 +3169,7 @@ TRAP;setparam;snTrapL4RealServerPortUp;traps_comments;The SNMP trap that is gene
 TRAP;ADD;snTrapL4RealServerUp;.1.3.6.1.4.1.11.0.21
 TRAP;setparam;snTrapL4RealServerUp;traps_name;snTrapL4RealServerUp
 TRAP;setparam;snTrapL4RealServerUp;traps_oid;.1.3.6.1.4.1.11.0.21
+TRAP;setparam;snTrapL4RealServerUp;traps_mode;0
 TRAP;setparam;snTrapL4RealServerUp;traps_args;The SNMP trap that is generated when the load balancing $*
 TRAP;setparam;snTrapL4RealServerUp;traps_status;0
 TRAP;setparam;snTrapL4RealServerUp;vendor;HP
@@ -3038,6 +3187,7 @@ TRAP;setparam;snTrapL4RealServerUp;traps_comments;The SNMP trap that is generate
 TRAP;ADD;snTrapL4TcpSynLimitReached;.1.3.6.1.4.1.11.0.20
 TRAP;setparam;snTrapL4TcpSynLimitReached;traps_name;snTrapL4TcpSynLimitReached
 TRAP;setparam;snTrapL4TcpSynLimitReached;traps_oid;.1.3.6.1.4.1.11.0.20
+TRAP;setparam;snTrapL4TcpSynLimitReached;traps_mode;0
 TRAP;setparam;snTrapL4TcpSynLimitReached;traps_args;The SNMP trap that is generated when the number of TCP $*
 TRAP;setparam;snTrapL4TcpSynLimitReached;traps_status;0
 TRAP;setparam;snTrapL4TcpSynLimitReached;vendor;HP
@@ -3055,6 +3205,7 @@ TRAP;setparam;snTrapL4TcpSynLimitReached;traps_comments;The SNMP trap that is ge
 TRAP;ADD;snTrapLockedAddressViolation;.1.3.6.1.4.1.11.0.2
 TRAP;setparam;snTrapLockedAddressViolation;traps_name;snTrapLockedAddressViolation
 TRAP;setparam;snTrapLockedAddressViolation;traps_oid;.1.3.6.1.4.1.11.0.2
+TRAP;setparam;snTrapLockedAddressViolation;traps_mode;0
 TRAP;setparam;snTrapLockedAddressViolation;traps_args;The SNMP trap that is generated when more source MAC addresses $*
 TRAP;setparam;snTrapLockedAddressViolation;traps_status;0
 TRAP;setparam;snTrapLockedAddressViolation;vendor;HP
@@ -3072,6 +3223,7 @@ TRAP;setparam;snTrapLockedAddressViolation;traps_comments;The SNMP trap that is 
 TRAP;ADD;snTrapLockedAddressViolation2;.1.3.6.1.4.1.11.0.32
 TRAP;setparam;snTrapLockedAddressViolation2;traps_name;snTrapLockedAddressViolation2
 TRAP;setparam;snTrapLockedAddressViolation2;traps_oid;.1.3.6.1.4.1.11.0.32
+TRAP;setparam;snTrapLockedAddressViolation2;traps_mode;0
 TRAP;setparam;snTrapLockedAddressViolation2;traps_args;The SNMP trap that is generated when more source MAC addresses $*
 TRAP;setparam;snTrapLockedAddressViolation2;traps_status;0
 TRAP;setparam;snTrapLockedAddressViolation2;vendor;HP
@@ -3089,6 +3241,7 @@ TRAP;setparam;snTrapLockedAddressViolation2;traps_comments;The SNMP trap that is
 TRAP;ADD;snTrapMacFilterDeny;.1.3.6.1.4.1.11.0.38
 TRAP;setparam;snTrapMacFilterDeny;traps_name;snTrapMacFilterDeny
 TRAP;setparam;snTrapMacFilterDeny;traps_oid;.1.3.6.1.4.1.11.0.38
+TRAP;setparam;snTrapMacFilterDeny;traps_mode;0
 TRAP;setparam;snTrapMacFilterDeny;traps_args;The SNMP trap that is generated when a packet was denied $*
 TRAP;setparam;snTrapMacFilterDeny;traps_status;0
 TRAP;setparam;snTrapMacFilterDeny;vendor;HP
@@ -3106,6 +3259,7 @@ TRAP;setparam;snTrapMacFilterDeny;traps_comments;The SNMP trap that is generated
 TRAP;ADD;snTrapMgmtModuleRedunStateChange;.1.3.6.1.4.1.11.0.35
 TRAP;setparam;snTrapMgmtModuleRedunStateChange;traps_name;snTrapMgmtModuleRedunStateChange
 TRAP;setparam;snTrapMgmtModuleRedunStateChange;traps_oid;.1.3.6.1.4.1.11.0.35
+TRAP;setparam;snTrapMgmtModuleRedunStateChange;traps_mode;0
 TRAP;setparam;snTrapMgmtModuleRedunStateChange;traps_args;The SNMP trap that is generated when the management module $*
 TRAP;setparam;snTrapMgmtModuleRedunStateChange;traps_status;0
 TRAP;setparam;snTrapMgmtModuleRedunStateChange;vendor;HP
@@ -3123,6 +3277,7 @@ TRAP;setparam;snTrapMgmtModuleRedunStateChange;traps_comments;The SNMP trap that
 TRAP;ADD;snTrapModuleInserted;.1.3.6.1.4.1.11.0.28
 TRAP;setparam;snTrapModuleInserted;traps_name;snTrapModuleInserted
 TRAP;setparam;snTrapModuleInserted;traps_oid;.1.3.6.1.4.1.11.0.28
+TRAP;setparam;snTrapModuleInserted;traps_mode;0
 TRAP;setparam;snTrapModuleInserted;traps_args;The SNMP trap that is generated when a module was inserted $*
 TRAP;setparam;snTrapModuleInserted;traps_status;0
 TRAP;setparam;snTrapModuleInserted;vendor;HP
@@ -3140,6 +3295,7 @@ TRAP;setparam;snTrapModuleInserted;traps_comments;The SNMP trap that is generate
 TRAP;ADD;snTrapModuleRemoved;.1.3.6.1.4.1.11.0.29
 TRAP;setparam;snTrapModuleRemoved;traps_name;snTrapModuleRemoved
 TRAP;setparam;snTrapModuleRemoved;traps_oid;.1.3.6.1.4.1.11.0.29
+TRAP;setparam;snTrapModuleRemoved;traps_mode;0
 TRAP;setparam;snTrapModuleRemoved;traps_args;The SNMP trap that is generated when a module was removed $*
 TRAP;setparam;snTrapModuleRemoved;traps_status;0
 TRAP;setparam;snTrapModuleRemoved;vendor;HP
@@ -3157,6 +3313,7 @@ TRAP;setparam;snTrapModuleRemoved;traps_comments;The SNMP trap that is generated
 TRAP;ADD;snTrapOspfIfStateChange;.1.3.6.1.4.1.11.0.3
 TRAP;setparam;snTrapOspfIfStateChange;traps_name;snTrapOspfIfStateChange
 TRAP;setparam;snTrapOspfIfStateChange;traps_oid;.1.3.6.1.4.1.11.0.3
+TRAP;setparam;snTrapOspfIfStateChange;traps_mode;0
 TRAP;setparam;snTrapOspfIfStateChange;traps_args;An ospfIfStateChange trap signifies that there $*
 TRAP;setparam;snTrapOspfIfStateChange;traps_status;0
 TRAP;setparam;snTrapOspfIfStateChange;vendor;HP
@@ -3174,6 +3331,7 @@ TRAP;setparam;snTrapOspfIfStateChange;traps_comments;An ospfIfStateChange trap s
 TRAP;ADD;snTrapOspfVirtIfStateChange;.1.3.6.1.4.1.11.0.4
 TRAP;setparam;snTrapOspfVirtIfStateChange;traps_name;snTrapOspfVirtIfStateChange
 TRAP;setparam;snTrapOspfVirtIfStateChange;traps_oid;.1.3.6.1.4.1.11.0.4
+TRAP;setparam;snTrapOspfVirtIfStateChange;traps_mode;0
 TRAP;setparam;snTrapOspfVirtIfStateChange;traps_args;An ospfIfStateChange trap signifies that there $*
 TRAP;setparam;snTrapOspfVirtIfStateChange;traps_status;0
 TRAP;setparam;snTrapOspfVirtIfStateChange;vendor;HP
@@ -3191,6 +3349,7 @@ TRAP;setparam;snTrapOspfVirtIfStateChange;traps_comments;An ospfIfStateChange tr
 TRAP;ADD;snTrapTemperatureWarning;.1.3.6.1.4.1.11.0.36
 TRAP;setparam;snTrapTemperatureWarning;traps_name;snTrapTemperatureWarning
 TRAP;setparam;snTrapTemperatureWarning;traps_oid;.1.3.6.1.4.1.11.0.36
+TRAP;setparam;snTrapTemperatureWarning;traps_mode;0
 TRAP;setparam;snTrapTemperatureWarning;traps_args;The SNMP trap that is generated when the actual temperature $*
 TRAP;setparam;snTrapTemperatureWarning;traps_status;0
 TRAP;setparam;snTrapTemperatureWarning;vendor;HP
@@ -3208,6 +3367,7 @@ TRAP;setparam;snTrapTemperatureWarning;traps_comments;The SNMP trap that is gene
 TRAP;ADD;snTrapVrrpIfStateChange;.1.3.6.1.4.1.11.0.34
 TRAP;setparam;snTrapVrrpIfStateChange;traps_name;snTrapVrrpIfStateChange
 TRAP;setparam;snTrapVrrpIfStateChange;traps_oid;.1.3.6.1.4.1.11.0.34
+TRAP;setparam;snTrapVrrpIfStateChange;traps_mode;0
 TRAP;setparam;snTrapVrrpIfStateChange;traps_args;The SNMP trap that is generated when a VRRP routing device $*
 TRAP;setparam;snTrapVrrpIfStateChange;traps_status;0
 TRAP;setparam;snTrapVrrpIfStateChange;vendor;HP
@@ -3225,6 +3385,7 @@ TRAP;setparam;snTrapVrrpIfStateChange;traps_comments;The SNMP trap that is gener
 TRAP;ADD;tapeAlertTrap262;.1.3.6.1.4.1.11.2.3.9.7.1.0.262
 TRAP;setparam;tapeAlertTrap262;traps_name;tapeAlertTrap262
 TRAP;setparam;tapeAlertTrap262;traps_oid;.1.3.6.1.4.1.11.2.3.9.7.1.0.262
+TRAP;setparam;tapeAlertTrap262;traps_mode;0
 TRAP;setparam;tapeAlertTrap262;traps_args;HP TapeAlert #262: Hba$1:Channel$2:ScsiID$3 Library Predicted to Fail - Call Helpline
 TRAP;setparam;tapeAlertTrap262;traps_status;1
 TRAP;setparam;tapeAlertTrap262;vendor;HP
@@ -3242,6 +3403,7 @@ TRAP;setparam;tapeAlertTrap262;traps_comments;A hardware failure of the library 
 TRAP;ADD;tapeAlertTrap264;.1.3.6.1.4.1.11.2.3.9.7.1.0.264
 TRAP;setparam;tapeAlertTrap264;traps_name;tapeAlertTrap264
 TRAP;setparam;tapeAlertTrap264;traps_oid;.1.3.6.1.4.1.11.2.3.9.7.1.0.264
+TRAP;setparam;tapeAlertTrap264;traps_mode;0
 TRAP;setparam;tapeAlertTrap264;traps_args;HP TapeAlert #264: Hba$1:Channel$2:ScsiID$3 Library Humidity Specification Exceeded
 TRAP;setparam;tapeAlertTrap264;traps_status;2
 TRAP;setparam;tapeAlertTrap264;vendor;HP
@@ -3259,6 +3421,7 @@ TRAP;setparam;tapeAlertTrap264;traps_comments;General environmental conditions i
 TRAP;ADD;tapeAlertTrap266;.1.3.6.1.4.1.11.2.3.9.7.1.0.266
 TRAP;setparam;tapeAlertTrap266;traps_name;tapeAlertTrap266
 TRAP;setparam;tapeAlertTrap266;traps_oid;.1.3.6.1.4.1.11.2.3.9.7.1.0.266
+TRAP;setparam;tapeAlertTrap266;traps_mode;0
 TRAP;setparam;tapeAlertTrap266;traps_args;HP TapeAlert #266: Hba$1:Channel$2:ScsiID$3 Library Voltage Specification Exceeded
 TRAP;setparam;tapeAlertTrap266;traps_status;2
 TRAP;setparam;tapeAlertTrap266;vendor;HP
@@ -3276,6 +3439,7 @@ TRAP;setparam;tapeAlertTrap266;traps_comments;he voltage supply to the library e
 TRAP;ADD;tapeAlertTrap267;.1.3.6.1.4.1.11.2.3.9.7.1.0.267
 TRAP;setparam;tapeAlertTrap267;traps_name;tapeAlertTrap267
 TRAP;setparam;tapeAlertTrap267;traps_oid;.1.3.6.1.4.1.11.2.3.9.7.1.0.267
+TRAP;setparam;tapeAlertTrap267;traps_mode;0
 TRAP;setparam;tapeAlertTrap267;traps_args;HP TapeAlert #267: Hba$1:Channel$2:ScsiID$3 Library Detects Stray Tape In Drive
 TRAP;setparam;tapeAlertTrap267;traps_status;2
 TRAP;setparam;tapeAlertTrap267;vendor;HP
@@ -3293,6 +3457,7 @@ TRAP;setparam;tapeAlertTrap267;traps_comments;A cartridge has been left in a dri
 TRAP;ADD;tapeAlertTrap268;.1.3.6.1.4.1.11.2.3.9.7.1.0.268
 TRAP;setparam;tapeAlertTrap268;traps_name;tapeAlertTrap268
 TRAP;setparam;tapeAlertTrap268;traps_oid;.1.3.6.1.4.1.11.2.3.9.7.1.0.268
+TRAP;setparam;tapeAlertTrap268;traps_mode;0
 TRAP;setparam;tapeAlertTrap268;traps_args;HP TapeAlert #268: Hba$1:Channel$2:ScsiID$3 Library Has Problems Picking Cartridge from Slot
 TRAP;setparam;tapeAlertTrap268;traps_status;1
 TRAP;setparam;tapeAlertTrap268;vendor;HP
@@ -3310,6 +3475,7 @@ TRAP;setparam;tapeAlertTrap268;traps_comments;There is a potential problem with 
 TRAP;ADD;tapeAlertTrap269;.1.3.6.1.4.1.11.2.3.9.7.1.0.269
 TRAP;setparam;tapeAlertTrap269;traps_name;tapeAlertTrap269
 TRAP;setparam;tapeAlertTrap269;traps_oid;.1.3.6.1.4.1.11.2.3.9.7.1.0.269
+TRAP;setparam;tapeAlertTrap269;traps_mode;0
 TRAP;setparam;tapeAlertTrap269;traps_args;HP TapeAlert #269: Hba$1:Channel$2:ScsiID$3 Library Has Problems Placing Cartridge into Slot
 TRAP;setparam;tapeAlertTrap269;traps_status;1
 TRAP;setparam;tapeAlertTrap269;vendor;HP
@@ -3327,6 +3493,7 @@ TRAP;setparam;tapeAlertTrap269;traps_comments;There is a potential problem with 
 TRAP;ADD;tapeAlertTrap270;.1.3.6.1.4.1.11.2.3.9.7.1.0.270
 TRAP;setparam;tapeAlertTrap270;traps_name;tapeAlertTrap270
 TRAP;setparam;tapeAlertTrap270;traps_oid;.1.3.6.1.4.1.11.2.3.9.7.1.0.270
+TRAP;setparam;tapeAlertTrap270;traps_mode;0
 TRAP;setparam;tapeAlertTrap270;traps_args;HP TapeAlert #270: Hba$1:Channel$2:ScsiID$3 Library Has Problems Loading Cartridge into Drive
 TRAP;setparam;tapeAlertTrap270;traps_status;1
 TRAP;setparam;tapeAlertTrap270;vendor;HP
@@ -3344,6 +3511,7 @@ TRAP;setparam;tapeAlertTrap270;traps_comments;There is a potential problem with 
 TRAP;ADD;tapeAlertTrap271;.1.3.6.1.4.1.11.2.3.9.7.1.0.271
 TRAP;setparam;tapeAlertTrap271;traps_name;tapeAlertTrap271
 TRAP;setparam;tapeAlertTrap271;traps_oid;.1.3.6.1.4.1.11.2.3.9.7.1.0.271
+TRAP;setparam;tapeAlertTrap271;traps_mode;0
 TRAP;setparam;tapeAlertTrap271;traps_args;HP TapeAlert #271: Hba$1:Channel$2:ScsiID$3 Library Door is Open
 TRAP;setparam;tapeAlertTrap271;traps_status;2
 TRAP;setparam;tapeAlertTrap271;vendor;HP
@@ -3361,6 +3529,7 @@ TRAP;setparam;tapeAlertTrap271;traps_comments;The operation has failed because t
 TRAP;ADD;tapeAlertTrap272;.1.3.6.1.4.1.11.2.3.9.7.1.0.272
 TRAP;setparam;tapeAlertTrap272;traps_name;tapeAlertTrap272
 TRAP;setparam;tapeAlertTrap272;traps_oid;.1.3.6.1.4.1.11.2.3.9.7.1.0.272
+TRAP;setparam;tapeAlertTrap272;traps_mode;0
 TRAP;setparam;tapeAlertTrap272;traps_args;HP TapeAlert #272: Hba$1:Channel$2:ScsiID$3 Library Has Mechanical Fault with Mailslot
 TRAP;setparam;tapeAlertTrap272;traps_status;2
 TRAP;setparam;tapeAlertTrap272;vendor;HP
@@ -3378,6 +3547,7 @@ TRAP;setparam;tapeAlertTrap272;traps_comments;There is a mechanical problem with
 TRAP;ADD;tapeAlertTrap273;.1.3.6.1.4.1.11.2.3.9.7.1.0.273
 TRAP;setparam;tapeAlertTrap273;traps_name;tapeAlertTrap273
 TRAP;setparam;tapeAlertTrap273;traps_oid;.1.3.6.1.4.1.11.2.3.9.7.1.0.273
+TRAP;setparam;tapeAlertTrap273;traps_mode;0
 TRAP;setparam;tapeAlertTrap273;traps_args;HP TapeAlert #273: Hba$1:Channel$2:ScsiID$3 Library Cannot Operate Without Magazine
 TRAP;setparam;tapeAlertTrap273;traps_status;2
 TRAP;setparam;tapeAlertTrap273;vendor;HP
@@ -3395,6 +3565,7 @@ TRAP;setparam;tapeAlertTrap273;traps_comments;The library cannot operate without
 TRAP;ADD;tapeAlertTrap274;.1.3.6.1.4.1.11.2.3.9.7.1.0.274
 TRAP;setparam;tapeAlertTrap274;traps_name;tapeAlertTrap274
 TRAP;setparam;tapeAlertTrap274;traps_oid;.1.3.6.1.4.1.11.2.3.9.7.1.0.274
+TRAP;setparam;tapeAlertTrap274;traps_mode;0
 TRAP;setparam;tapeAlertTrap274;traps_args;HP TapeAlert #274: Hba$1:Channel$2:ScsiID$3 Library Security Has Been Compromised
 TRAP;setparam;tapeAlertTrap274;traps_status;1
 TRAP;setparam;tapeAlertTrap274;vendor;HP
@@ -3412,6 +3583,7 @@ TRAP;setparam;tapeAlertTrap274;traps_comments;Library security has been compromi
 TRAP;ADD;tapeAlertTrap275;.1.3.6.1.4.1.11.2.3.9.7.1.0.275
 TRAP;setparam;tapeAlertTrap275;traps_name;tapeAlertTrap275
 TRAP;setparam;tapeAlertTrap275;traps_oid;.1.3.6.1.4.1.11.2.3.9.7.1.0.275
+TRAP;setparam;tapeAlertTrap275;traps_mode;0
 TRAP;setparam;tapeAlertTrap275;traps_args;HP TapeAlert #275: Hba$1:Channel$2:ScsiID$3 Library Security Mode Changed
 TRAP;setparam;tapeAlertTrap275;traps_status;0
 TRAP;setparam;tapeAlertTrap275;vendor;HP
@@ -3429,6 +3601,7 @@ TRAP;setparam;tapeAlertTrap275;traps_comments;The security mode of the library h
 TRAP;ADD;tapeAlertTrap276;.1.3.6.1.4.1.11.2.3.9.7.1.0.276
 TRAP;setparam;tapeAlertTrap276;traps_name;tapeAlertTrap276
 TRAP;setparam;tapeAlertTrap276;traps_oid;.1.3.6.1.4.1.11.2.3.9.7.1.0.276
+TRAP;setparam;tapeAlertTrap276;traps_mode;0
 TRAP;setparam;tapeAlertTrap276;traps_args;HP TapeAlert #276: Hba$1:Channel$2:ScsiID$3 Library Manually Turned Offline
 TRAP;setparam;tapeAlertTrap276;traps_status;0
 TRAP;setparam;tapeAlertTrap276;vendor;HP
@@ -3446,6 +3619,7 @@ TRAP;setparam;tapeAlertTrap276;traps_comments;The library has been manually turn
 TRAP;ADD;tapeAlertTrap277;.1.3.6.1.4.1.11.2.3.9.7.1.0.277
 TRAP;setparam;tapeAlertTrap277;traps_name;tapeAlertTrap277
 TRAP;setparam;tapeAlertTrap277;traps_oid;.1.3.6.1.4.1.11.2.3.9.7.1.0.277
+TRAP;setparam;tapeAlertTrap277;traps_mode;0
 TRAP;setparam;tapeAlertTrap277;traps_args;HP TapeAlert #277: Hba$1:Channel$2:ScsiID$3 Library Drive Turned Offline
 TRAP;setparam;tapeAlertTrap277;traps_status;0
 TRAP;setparam;tapeAlertTrap277;vendor;HP
@@ -3463,6 +3637,7 @@ TRAP;setparam;tapeAlertTrap277;traps_comments;A drive inside the library has bee
 TRAP;ADD;tapeAlertTrap278;.1.3.6.1.4.1.11.2.3.9.7.1.0.278
 TRAP;setparam;tapeAlertTrap278;traps_name;tapeAlertTrap278
 TRAP;setparam;tapeAlertTrap278;traps_oid;.1.3.6.1.4.1.11.2.3.9.7.1.0.278
+TRAP;setparam;tapeAlertTrap278;traps_mode;0
 TRAP;setparam;tapeAlertTrap278;traps_args;HP TapeAlert #278: Hba$1:Channel$2:ScsiID$3 Library Has Problems Reading Barcode Labels
 TRAP;setparam;tapeAlertTrap278;traps_status;1
 TRAP;setparam;tapeAlertTrap278;vendor;HP
@@ -3480,6 +3655,7 @@ TRAP;setparam;tapeAlertTrap278;traps_comments;There is a potential problem with 
 TRAP;ADD;tapeAlertTrap279;.1.3.6.1.4.1.11.2.3.9.7.1.0.279
 TRAP;setparam;tapeAlertTrap279;traps_name;tapeAlertTrap279
 TRAP;setparam;tapeAlertTrap279;traps_oid;.1.3.6.1.4.1.11.2.3.9.7.1.0.279
+TRAP;setparam;tapeAlertTrap279;traps_mode;0
 TRAP;setparam;tapeAlertTrap279;traps_args;HP TapeAlert #279: Hba$1:Channel$2:ScsiID$3 Library Inventory is Inconsistent
 TRAP;setparam;tapeAlertTrap279;traps_status;2
 TRAP;setparam;tapeAlertTrap279;vendor;HP
@@ -3497,6 +3673,7 @@ TRAP;setparam;tapeAlertTrap279;traps_comments;The library has detected a inconsi
 TRAP;ADD;tapeAlertTrap280;.1.3.6.1.4.1.11.2.3.9.7.1.0.280
 TRAP;setparam;tapeAlertTrap280;traps_name;tapeAlertTrap280
 TRAP;setparam;tapeAlertTrap280;traps_oid;.1.3.6.1.4.1.11.2.3.9.7.1.0.280
+TRAP;setparam;tapeAlertTrap280;traps_mode;0
 TRAP;setparam;tapeAlertTrap280;traps_args;HP TapeAlert #280: Hba$1:Channel$2:ScsiID$3 Invalid Library Operation Attempted
 TRAP;setparam;tapeAlertTrap280;traps_status;1
 TRAP;setparam;tapeAlertTrap280;vendor;HP
@@ -3514,6 +3691,7 @@ TRAP;setparam;tapeAlertTrap280;traps_comments;A library operation has been attem
 TRAP;ADD;tapeAlertTrap29;.1.3.6.1.4.1.11.2.3.9.7.1.0.29
 TRAP;setparam;tapeAlertTrap29;traps_name;tapeAlertTrap29
 TRAP;setparam;tapeAlertTrap29;traps_oid;.1.3.6.1.4.1.11.2.3.9.7.1.0.29
+TRAP;setparam;tapeAlertTrap29;traps_mode;0
 TRAP;setparam;tapeAlertTrap29;traps_args;HP TapeAlert #29: Hba$1:Channel$2:ScsiID$3 Tape Device Requires Preventative Maintenance
 TRAP;setparam;tapeAlertTrap29;traps_status;1
 TRAP;setparam;tapeAlertTrap29;vendor;HP
@@ -3531,6 +3709,7 @@ TRAP;setparam;tapeAlertTrap29;traps_comments;Preventive maintenance of the tape 
 TRAP;ADD;tapeAlertTrap3;.1.3.6.1.4.1.11.2.3.9.7.1.0.3
 TRAP;setparam;tapeAlertTrap3;traps_name;tapeAlertTrap3
 TRAP;setparam;tapeAlertTrap3;traps_oid;.1.3.6.1.4.1.11.2.3.9.7.1.0.3
+TRAP;setparam;tapeAlertTrap3;traps_mode;0
 TRAP;setparam;tapeAlertTrap3;traps_args;HP TapeAlert #3: Hba$1:Channel$2:ScsiID$3 Tape Device Has Detected Read or Write Data Error
 TRAP;setparam;tapeAlertTrap3;traps_status;1
 TRAP;setparam;tapeAlertTrap3;vendor;HP
@@ -3548,6 +3727,7 @@ TRAP;setparam;tapeAlertTrap3;traps_comments;The operation has stopped because an
 TRAP;ADD;tapeAlertTrap30;.1.3.6.1.4.1.11.2.3.9.7.1.0.30
 TRAP;setparam;tapeAlertTrap30;traps_name;tapeAlertTrap30
 TRAP;setparam;tapeAlertTrap30;traps_oid;.1.3.6.1.4.1.11.2.3.9.7.1.0.30
+TRAP;setparam;tapeAlertTrap30;traps_mode;0
 TRAP;setparam;tapeAlertTrap30;traps_args;HP TapeAlert #30: Hba$1:Channel$2:ScsiID$3 Tape Device Has Hardware Fault - Reset Drive
 TRAP;setparam;tapeAlertTrap30;traps_status;2
 TRAP;setparam;tapeAlertTrap30;vendor;HP
@@ -3565,6 +3745,7 @@ TRAP;setparam;tapeAlertTrap30;traps_comments;The tape drive has a hardware fault
 TRAP;ADD;tapeAlertTrap31;.1.3.6.1.4.1.11.2.3.9.7.1.0.31
 TRAP;setparam;tapeAlertTrap31;traps_name;tapeAlertTrap31
 TRAP;setparam;tapeAlertTrap31;traps_oid;.1.3.6.1.4.1.11.2.3.9.7.1.0.31
+TRAP;setparam;tapeAlertTrap31;traps_mode;0
 TRAP;setparam;tapeAlertTrap31;traps_args;HP TapeAlert #31: Hba$1:Channel$2:ScsiID$3 Tape Device Has Hardware Fault - Call Helpline
 TRAP;setparam;tapeAlertTrap31;traps_status;2
 TRAP;setparam;tapeAlertTrap31;vendor;HP
@@ -3582,6 +3763,7 @@ TRAP;setparam;tapeAlertTrap31;traps_comments;The tape drive has a hardware fault
 TRAP;ADD;tapeAlertTrap32;.1.3.6.1.4.1.11.2.3.9.7.1.0.32
 TRAP;setparam;tapeAlertTrap32;traps_name;tapeAlertTrap32
 TRAP;setparam;tapeAlertTrap32;traps_oid;.1.3.6.1.4.1.11.2.3.9.7.1.0.32
+TRAP;setparam;tapeAlertTrap32;traps_mode;0
 TRAP;setparam;tapeAlertTrap32;traps_args;HP TapeAlert #32: Hba$1:Channel$2:ScsiID$3 Tape Device Has Host Interface Fault
 TRAP;setparam;tapeAlertTrap32;traps_status;1
 TRAP;setparam;tapeAlertTrap32;vendor;HP
@@ -3599,6 +3781,7 @@ TRAP;setparam;tapeAlertTrap32;traps_comments;The tape drive has a problem with t
 TRAP;ADD;tapeAlertTrap33;.1.3.6.1.4.1.11.2.3.9.7.1.0.33
 TRAP;setparam;tapeAlertTrap33;traps_name;tapeAlertTrap33
 TRAP;setparam;tapeAlertTrap33;traps_oid;.1.3.6.1.4.1.11.2.3.9.7.1.0.33
+TRAP;setparam;tapeAlertTrap33;traps_mode;0
 TRAP;setparam;tapeAlertTrap33;traps_args;HP TapeAlert #33: Hba$1:Channel$2:ScsiID$3 Tape Device Has Eject Media Request
 TRAP;setparam;tapeAlertTrap33;traps_status;2
 TRAP;setparam;tapeAlertTrap33;vendor;HP
@@ -3616,6 +3799,7 @@ TRAP;setparam;tapeAlertTrap33;traps_comments;The operation has failed:<br/>1. Ej
 TRAP;ADD;tapeAlertTrap34;.1.3.6.1.4.1.11.2.3.9.7.1.0.34
 TRAP;setparam;tapeAlertTrap34;traps_name;tapeAlertTrap34
 TRAP;setparam;tapeAlertTrap34;traps_oid;.1.3.6.1.4.1.11.2.3.9.7.1.0.34
+TRAP;setparam;tapeAlertTrap34;traps_mode;0
 TRAP;setparam;tapeAlertTrap34;traps_args;HP TapeAlert #34: Hba$1:Channel$2:ScsiID$3 Tape Device Has Firmware Download Fault
 TRAP;setparam;tapeAlertTrap34;traps_status;1
 TRAP;setparam;tapeAlertTrap34;vendor;HP
@@ -3633,6 +3817,7 @@ TRAP;setparam;tapeAlertTrap34;traps_comments;The firmware download has failed be
 TRAP;ADD;tapeAlertTrap35;.1.3.6.1.4.1.11.2.3.9.7.1.0.35
 TRAP;setparam;tapeAlertTrap35;traps_name;tapeAlertTrap35
 TRAP;setparam;tapeAlertTrap35;traps_oid;.1.3.6.1.4.1.11.2.3.9.7.1.0.35
+TRAP;setparam;tapeAlertTrap35;traps_mode;0
 TRAP;setparam;tapeAlertTrap35;traps_args;HP TapeAlert #35: Hba$1:Channel$2:ScsiID$3 Tape Device Humidity Specification Exceeded
 TRAP;setparam;tapeAlertTrap35;traps_status;1
 TRAP;setparam;tapeAlertTrap35;vendor;HP
@@ -3650,6 +3835,7 @@ TRAP;setparam;tapeAlertTrap35;traps_comments;Environmental conditions inside the
 TRAP;ADD;tapeAlertTrap36;.1.3.6.1.4.1.11.2.3.9.7.1.0.36
 TRAP;setparam;tapeAlertTrap36;traps_name;tapeAlertTrap36
 TRAP;setparam;tapeAlertTrap36;traps_oid;.1.3.6.1.4.1.11.2.3.9.7.1.0.36
+TRAP;setparam;tapeAlertTrap36;traps_mode;0
 TRAP;setparam;tapeAlertTrap36;traps_args;HP TapeAlert #36: Hba$1:Channel$2:ScsiID$3 Tape Device Temperature Specification Exceeded
 TRAP;setparam;tapeAlertTrap36;traps_status;1
 TRAP;setparam;tapeAlertTrap36;vendor;HP
@@ -3667,6 +3853,7 @@ TRAP;setparam;tapeAlertTrap36;traps_comments;Environmental conditions inside the
 TRAP;ADD;tapeAlertTrap37;.1.3.6.1.4.1.11.2.3.9.7.1.0.37
 TRAP;setparam;tapeAlertTrap37;traps_name;tapeAlertTrap37
 TRAP;setparam;tapeAlertTrap37;traps_oid;.1.3.6.1.4.1.11.2.3.9.7.1.0.37
+TRAP;setparam;tapeAlertTrap37;traps_mode;0
 TRAP;setparam;tapeAlertTrap37;traps_args;HP TapeAlert #37: Hba$1:Channel$2:ScsiID$3 Tape Device Voltage Specification Exceeded
 TRAP;setparam;tapeAlertTrap37;traps_status;1
 TRAP;setparam;tapeAlertTrap37;vendor;HP
@@ -3684,6 +3871,7 @@ TRAP;setparam;tapeAlertTrap37;traps_comments;The voltage supply to the tape driv
 TRAP;ADD;tapeAlertTrap38;.1.3.6.1.4.1.11.2.3.9.7.1.0.38
 TRAP;setparam;tapeAlertTrap38;traps_name;tapeAlertTrap38
 TRAP;setparam;tapeAlertTrap38;traps_oid;.1.3.6.1.4.1.11.2.3.9.7.1.0.38
+TRAP;setparam;tapeAlertTrap38;traps_mode;0
 TRAP;setparam;tapeAlertTrap38;traps_args;HP TapeAlert #38: Hba$1:Channel$2:ScsiID$3 Tape Device Predicted to Fail - Call Helpline
 TRAP;setparam;tapeAlertTrap38;traps_status;2
 TRAP;setparam;tapeAlertTrap38;vendor;HP
@@ -3701,6 +3889,7 @@ TRAP;setparam;tapeAlertTrap38;traps_comments;A hardware failure of the tape driv
 TRAP;ADD;tapeAlertTrap39;.1.3.6.1.4.1.11.2.3.9.7.1.0.39
 TRAP;setparam;tapeAlertTrap39;traps_name;tapeAlertTrap39
 TRAP;setparam;tapeAlertTrap39;traps_oid;.1.3.6.1.4.1.11.2.3.9.7.1.0.39
+TRAP;setparam;tapeAlertTrap39;traps_mode;0
 TRAP;setparam;tapeAlertTrap39;traps_args;HP TapeAlert #39: Hba$1:Channel$2:ScsiID$3 Tape Device May Have Hardware Fault - Run Diagnostics
 TRAP;setparam;tapeAlertTrap39;traps_status;1
 TRAP;setparam;tapeAlertTrap39;vendor;HP
@@ -3718,6 +3907,7 @@ TRAP;setparam;tapeAlertTrap39;traps_comments;The tape drive may have a hardware 
 TRAP;ADD;tapeAlertTrap4;.1.3.6.1.4.1.11.2.3.9.7.1.0.4
 TRAP;setparam;tapeAlertTrap4;traps_name;tapeAlertTrap4
 TRAP;setparam;tapeAlertTrap4;traps_oid;.1.3.6.1.4.1.11.2.3.9.7.1.0.4
+TRAP;setparam;tapeAlertTrap4;traps_mode;0
 TRAP;setparam;tapeAlertTrap4;traps_args;HP TapeAlert #4: Hba$1:Channel$2:ScsiID$3 Tape Device Has Detected Faulty Media [$4]
 TRAP;setparam;tapeAlertTrap4;traps_status;2
 TRAP;setparam;tapeAlertTrap4;vendor;HP
@@ -3735,6 +3925,7 @@ TRAP;setparam;tapeAlertTrap4;traps_comments;Your data is at risk:<br/>1. Copy an
 TRAP;ADD;tapeAlertTrap40;.1.3.6.1.4.1.11.2.3.9.7.1.0.40
 TRAP;setparam;tapeAlertTrap40;traps_name;tapeAlertTrap40
 TRAP;setparam;tapeAlertTrap40;traps_oid;.1.3.6.1.4.1.11.2.3.9.7.1.0.40
+TRAP;setparam;tapeAlertTrap40;traps_mode;0
 TRAP;setparam;tapeAlertTrap40;traps_args;HP TapeAlert #40: Hba$1:Channel$2:ScsiID$3 Tape Device Has Autoloader Communications Fault
 TRAP;setparam;tapeAlertTrap40;traps_status;2
 TRAP;setparam;tapeAlertTrap40;vendor;HP
@@ -3752,6 +3943,7 @@ TRAP;setparam;tapeAlertTrap40;traps_comments;The changer mechanism is having dif
 TRAP;ADD;tapeAlertTrap41;.1.3.6.1.4.1.11.2.3.9.7.1.0.41
 TRAP;setparam;tapeAlertTrap41;traps_name;tapeAlertTrap41
 TRAP;setparam;tapeAlertTrap41;traps_oid;.1.3.6.1.4.1.11.2.3.9.7.1.0.41
+TRAP;setparam;tapeAlertTrap41;traps_mode;0
 TRAP;setparam;tapeAlertTrap41;traps_args;HP TapeAlert #41: Hba$1:Channel$2:ScsiID$3 Tape Device Detects Stray Tape In Autoloader
 TRAP;setparam;tapeAlertTrap41;traps_status;2
 TRAP;setparam;tapeAlertTrap41;vendor;HP
@@ -3769,6 +3961,7 @@ TRAP;setparam;tapeAlertTrap41;traps_comments;A tape has been left in the autoloa
 TRAP;ADD;tapeAlertTrap42;.1.3.6.1.4.1.11.2.3.9.7.1.0.42
 TRAP;setparam;tapeAlertTrap42;traps_name;tapeAlertTrap42
 TRAP;setparam;tapeAlertTrap42;traps_oid;.1.3.6.1.4.1.11.2.3.9.7.1.0.42
+TRAP;setparam;tapeAlertTrap42;traps_mode;0
 TRAP;setparam;tapeAlertTrap42;traps_args;HP TapeAlert #42: Hba$1:Channel$2:ScsiID$3 Tape Device Has Autoloader Mechanism Fault
 TRAP;setparam;tapeAlertTrap42;traps_status;1
 TRAP;setparam;tapeAlertTrap42;vendor;HP
@@ -3786,6 +3979,7 @@ TRAP;setparam;tapeAlertTrap42;traps_comments;There is a problem with the autoloa
 TRAP;ADD;tapeAlertTrap43;.1.3.6.1.4.1.11.2.3.9.7.1.0.43
 TRAP;setparam;tapeAlertTrap43;traps_name;tapeAlertTrap43
 TRAP;setparam;tapeAlertTrap43;traps_oid;.1.3.6.1.4.1.11.2.3.9.7.1.0.43
+TRAP;setparam;tapeAlertTrap43;traps_mode;0
 TRAP;setparam;tapeAlertTrap43;traps_args;HP TapeAlert #43: Hba$1:Channel$2:ScsiID$3 Tape Device Has Autoloader Door Open
 TRAP;setparam;tapeAlertTrap43;traps_status;2
 TRAP;setparam;tapeAlertTrap43;vendor;HP
@@ -3803,6 +3997,7 @@ TRAP;setparam;tapeAlertTrap43;traps_comments;The operation has failed because th
 TRAP;ADD;tapeAlertTrap44;.1.3.6.1.4.1.11.2.3.9.7.1.0.44
 TRAP;setparam;tapeAlertTrap44;traps_name;tapeAlertTrap44
 TRAP;setparam;tapeAlertTrap44;traps_oid;.1.3.6.1.4.1.11.2.3.9.7.1.0.44
+TRAP;setparam;tapeAlertTrap44;traps_mode;0
 TRAP;setparam;tapeAlertTrap44;traps_args;HP TapeAlert #44: Hba$1:Channel$2:ScsiID$3 Autoloader Has Hardware Fault - Call Helpline
 TRAP;setparam;tapeAlertTrap44;traps_status;2
 TRAP;setparam;tapeAlertTrap44;vendor;HP
@@ -3820,6 +4015,7 @@ TRAP;setparam;tapeAlertTrap44;traps_comments;The autoloader has a hardware fault
 TRAP;ADD;tapeAlertTrap45;.1.3.6.1.4.1.11.2.3.9.7.1.0.45
 TRAP;setparam;tapeAlertTrap45;traps_name;tapeAlertTrap45
 TRAP;setparam;tapeAlertTrap45;traps_oid;.1.3.6.1.4.1.11.2.3.9.7.1.0.45
+TRAP;setparam;tapeAlertTrap45;traps_mode;0
 TRAP;setparam;tapeAlertTrap45;traps_args;HP TapeAlert #45: Hba$1:Channel$2:ScsiID$3 Autoloader Cannot Operate Without Magazine
 TRAP;setparam;tapeAlertTrap45;traps_status;2
 TRAP;setparam;tapeAlertTrap45;vendor;HP
@@ -3837,6 +4033,7 @@ TRAP;setparam;tapeAlertTrap45;traps_comments;The autoloader cannot operate witho
 TRAP;ADD;tapeAlertTrap46;.1.3.6.1.4.1.11.2.3.9.7.1.0.46
 TRAP;setparam;tapeAlertTrap46;traps_name;tapeAlertTrap46
 TRAP;setparam;tapeAlertTrap46;traps_oid;.1.3.6.1.4.1.11.2.3.9.7.1.0.46
+TRAP;setparam;tapeAlertTrap46;traps_mode;0
 TRAP;setparam;tapeAlertTrap46;traps_args;HP TapeAlert #46: Hba$1:Channel$2:ScsiID$3 Autoloader Predicted to Fail - Call Helpline
 TRAP;setparam;tapeAlertTrap46;traps_status;1
 TRAP;setparam;tapeAlertTrap46;vendor;HP
@@ -3854,6 +4051,7 @@ TRAP;setparam;tapeAlertTrap46;traps_comments;A hardware failure of the changer m
 TRAP;ADD;tapeAlertTrap5;.1.3.6.1.4.1.11.2.3.9.7.1.0.5
 TRAP;setparam;tapeAlertTrap5;traps_name;tapeAlertTrap5
 TRAP;setparam;tapeAlertTrap5;traps_oid;.1.3.6.1.4.1.11.2.3.9.7.1.0.5
+TRAP;setparam;tapeAlertTrap5;traps_mode;0
 TRAP;setparam;tapeAlertTrap5;traps_args;HP TapeAlert #5: Hba$1:Channel$2:ScsiID$3 Tape Device May Have Read Fault - Call Helpline
 TRAP;setparam;tapeAlertTrap5;traps_status;2
 TRAP;setparam;tapeAlertTrap5;vendor;HP
@@ -3871,6 +4069,7 @@ TRAP;setparam;tapeAlertTrap5;traps_comments;The tape is damaged or the drive is 
 TRAP;ADD;tapeAlertTrap6;.1.3.6.1.4.1.11.2.3.9.7.1.0.6
 TRAP;setparam;tapeAlertTrap6;traps_name;tapeAlertTrap6
 TRAP;setparam;tapeAlertTrap6;traps_oid;.1.3.6.1.4.1.11.2.3.9.7.1.0.6
+TRAP;setparam;tapeAlertTrap6;traps_mode;0
 TRAP;setparam;tapeAlertTrap6;traps_args;HP TapeAlert #6: Hba$1:Channel$2:ScsiID$3 Tape Device May Have Write Fault - Call Helpline
 TRAP;setparam;tapeAlertTrap6;traps_status;2
 TRAP;setparam;tapeAlertTrap6;vendor;HP
@@ -3888,6 +4087,7 @@ TRAP;setparam;tapeAlertTrap6;traps_comments;The tape is from a faulty batch or t
 TRAP;ADD;tapeAlertTrap7;.1.3.6.1.4.1.11.2.3.9.7.1.0.7
 TRAP;setparam;tapeAlertTrap7;traps_name;tapeAlertTrap7
 TRAP;setparam;tapeAlertTrap7;traps_oid;.1.3.6.1.4.1.11.2.3.9.7.1.0.7
+TRAP;setparam;tapeAlertTrap7;traps_mode;0
 TRAP;setparam;tapeAlertTrap7;traps_args;HP TapeAlert #7: Hba$1:Channel$2:ScsiID$3 Tape Device Has Detected Worn Out Media [$4]
 TRAP;setparam;tapeAlertTrap7;traps_status;1
 TRAP;setparam;tapeAlertTrap7;vendor;HP
@@ -3905,6 +4105,7 @@ TRAP;setparam;tapeAlertTrap7;traps_comments;The tape cartridge has reached the e
 TRAP;ADD;tapeAlertTrap8;.1.3.6.1.4.1.11.2.3.9.7.1.0.8
 TRAP;setparam;tapeAlertTrap8;traps_name;tapeAlertTrap8
 TRAP;setparam;tapeAlertTrap8;traps_oid;.1.3.6.1.4.1.11.2.3.9.7.1.0.8
+TRAP;setparam;tapeAlertTrap8;traps_mode;0
 TRAP;setparam;tapeAlertTrap8;traps_args;HP TapeAlert #8: Hba$1:Channel$2:ScsiID$3 Media Loaded In Tape Device Is Not Data Grade
 TRAP;setparam;tapeAlertTrap8;traps_status;1
 TRAP;setparam;tapeAlertTrap8;vendor;HP
@@ -3922,6 +4123,7 @@ TRAP;setparam;tapeAlertTrap8;traps_comments;The tape cartridge is not data-grade
 TRAP;ADD;tapeAlertTrap9;.1.3.6.1.4.1.11.2.3.9.7.1.0.9
 TRAP;setparam;tapeAlertTrap9;traps_name;tapeAlertTrap9
 TRAP;setparam;tapeAlertTrap9;traps_oid;.1.3.6.1.4.1.11.2.3.9.7.1.0.9
+TRAP;setparam;tapeAlertTrap9;traps_mode;0
 TRAP;setparam;tapeAlertTrap9;traps_args;HP TapeAlert #9: Hba$1:Channel$2:ScsiID$3 Tape Device Attempted Backup to Write-Protected Tape
 TRAP;setparam;tapeAlertTrap9;traps_status;2
 TRAP;setparam;tapeAlertTrap9;vendor;HP
@@ -3939,6 +4141,7 @@ TRAP;setparam;tapeAlertTrap9;traps_comments;You are trying to write to a write-p
 TRAP;ADD;trapNoPrinterAttached;.1.3.6.1.4.1.683.6.0.3
 TRAP;setparam;trapNoPrinterAttached;traps_name;trapNoPrinterAttached
 TRAP;setparam;trapNoPrinterAttached;traps_oid;.1.3.6.1.4.1.683.6.0.3
+TRAP;setparam;trapNoPrinterAttached;traps_mode;0
 TRAP;setparam;trapNoPrinterAttached;traps_args;No Printer Attached: Port $1 - No Printer Attached
 TRAP;setparam;trapNoPrinterAttached;traps_status;0
 TRAP;setparam;trapNoPrinterAttached;vendor;Zebra
@@ -3956,6 +4159,7 @@ TRAP;setparam;trapNoPrinterAttached;traps_comments;No printer is attached to the
 TRAP;ADD;trapPrinterDoorOpen;.1.3.6.1.4.1.683.6.0.7
 TRAP;setparam;trapPrinterDoorOpen;traps_name;trapPrinterDoorOpen
 TRAP;setparam;trapPrinterDoorOpen;traps_oid;.1.3.6.1.4.1.683.6.0.7
+TRAP;setparam;trapPrinterDoorOpen;traps_mode;0
 TRAP;setparam;trapPrinterDoorOpen;traps_args;Printer Door Open: Port $1 - Printer Door Open
 TRAP;setparam;trapPrinterDoorOpen;traps_status;0
 TRAP;setparam;trapPrinterDoorOpen;vendor;Zebra
@@ -3973,6 +4177,7 @@ TRAP;setparam;trapPrinterDoorOpen;traps_comments;The printer door is open.<br/>V
 TRAP;ADD;trapPrinterError;.1.3.6.1.4.1.683.6.0.16
 TRAP;setparam;trapPrinterError;traps_name;trapPrinterError
 TRAP;setparam;trapPrinterError;traps_oid;.1.3.6.1.4.1.683.6.0.16
+TRAP;setparam;trapPrinterError;traps_mode;0
 TRAP;setparam;trapPrinterError;traps_args;General Printer Error: Port $1 - Printer Error
 TRAP;setparam;trapPrinterError;traps_status;1
 TRAP;setparam;trapPrinterError;vendor;Zebra
@@ -3990,6 +4195,7 @@ TRAP;setparam;trapPrinterError;traps_comments;General printer error.<br/>Variabl
 TRAP;ADD;trapPrinterOffline;.1.3.6.1.4.1.683.6.0.2
 TRAP;setparam;trapPrinterOffline;traps_name;trapPrinterOffline
 TRAP;setparam;trapPrinterOffline;traps_oid;.1.3.6.1.4.1.683.6.0.2
+TRAP;setparam;trapPrinterOffline;traps_mode;0
 TRAP;setparam;trapPrinterOffline;traps_args;Printer Off-Line: Port $1 is Off-Line
 TRAP;setparam;trapPrinterOffline;traps_status;0
 TRAP;setparam;trapPrinterOffline;vendor;Zebra
@@ -4007,6 +4213,7 @@ TRAP;setparam;trapPrinterOffline;traps_comments;The printer is off-line.<br/>Var
 TRAP;ADD;trapPrinterOnline;.1.3.6.1.4.1.683.6.0.1
 TRAP;setparam;trapPrinterOnline;traps_name;trapPrinterOnline
 TRAP;setparam;trapPrinterOnline;traps_oid;.1.3.6.1.4.1.683.6.0.1
+TRAP;setparam;trapPrinterOnline;traps_mode;0
 TRAP;setparam;trapPrinterOnline;traps_args;Printer On-Line: Port $1 is On-Line
 TRAP;setparam;trapPrinterOnline;traps_status;0
 TRAP;setparam;trapPrinterOnline;vendor;Zebra
@@ -4024,6 +4231,7 @@ TRAP;setparam;trapPrinterOnline;traps_comments;The printer is on-line.  This tra
 TRAP;ADD;trapPrinterPaperJam;.1.3.6.1.4.1.683.6.0.6
 TRAP;setparam;trapPrinterPaperJam;traps_name;trapPrinterPaperJam
 TRAP;setparam;trapPrinterPaperJam;traps_oid;.1.3.6.1.4.1.683.6.0.6
+TRAP;setparam;trapPrinterPaperJam;traps_mode;0
 TRAP;setparam;trapPrinterPaperJam;traps_args;Paper Jam: Port $1 - Paper Jam
 TRAP;setparam;trapPrinterPaperJam;traps_status;2
 TRAP;setparam;trapPrinterPaperJam;vendor;Zebra
@@ -4041,6 +4249,7 @@ TRAP;setparam;trapPrinterPaperJam;traps_comments;The printer has a paper jam.<br
 TRAP;ADD;trapPrinterPaperOut;.1.3.6.1.4.1.683.6.0.5
 TRAP;setparam;trapPrinterPaperOut;traps_name;trapPrinterPaperOut
 TRAP;setparam;trapPrinterPaperOut;traps_oid;.1.3.6.1.4.1.683.6.0.5
+TRAP;setparam;trapPrinterPaperOut;traps_mode;0
 TRAP;setparam;trapPrinterPaperOut;traps_args;Printer Out of Paper: Port $1 - Out of Paper
 TRAP;setparam;trapPrinterPaperOut;traps_status;1
 TRAP;setparam;trapPrinterPaperOut;vendor;Zebra
@@ -4058,6 +4267,7 @@ TRAP;setparam;trapPrinterPaperOut;traps_comments;The printer is out of paper.<br
 TRAP;ADD;trapPrinterTonerLow;.1.3.6.1.4.1.683.6.0.4
 TRAP;setparam;trapPrinterTonerLow;traps_name;trapPrinterTonerLow
 TRAP;setparam;trapPrinterTonerLow;traps_oid;.1.3.6.1.4.1.683.6.0.4
+TRAP;setparam;trapPrinterTonerLow;traps_mode;0
 TRAP;setparam;trapPrinterTonerLow;traps_args;Toner Low: Port $1 - Toner Low
 TRAP;setparam;trapPrinterTonerLow;traps_status;1
 TRAP;setparam;trapPrinterTonerLow;vendor;Zebra
@@ -4075,6 +4285,7 @@ TRAP;setparam;trapPrinterTonerLow;traps_comments;The printer toner is low.<br/>V
 TRAP;ADD;unitDeparture;.1.3.6.1.4.1.43.0.89
 TRAP;setparam;unitDeparture;traps_name;unitDeparture
 TRAP;setparam;unitDeparture;traps_oid;.1.3.6.1.4.1.43.0.89
+TRAP;setparam;unitDeparture;traps_mode;0
 TRAP;setparam;unitDeparture;traps_args;This trap is raised by the lowest numbered unit in a stack when $*
 TRAP;setparam;unitDeparture;traps_status;0
 TRAP;setparam;unitDeparture;vendor;3com
@@ -4092,6 +4303,7 @@ TRAP;setparam;unitDeparture;traps_comments;This trap is raised by the lowest num
 TRAP;ADD;vdFailedRedundancy;.1.3.6.1.4.1.674.10893.1.1.200.0.510
 TRAP;setparam;vdFailedRedundancy;traps_name;vdFailedRedundancy
 TRAP;setparam;vdFailedRedundancy;traps_oid;.1.3.6.1.4.1.674.10893.1.1.200.0.510
+TRAP;setparam;vdFailedRedundancy;traps_mode;0
 TRAP;setparam;vdFailedRedundancy;traps_args;Array Manager Event: Virtual Disk failed redundancy:
 TRAP;setparam;vdFailedRedundancy;traps_status;1
 TRAP;setparam;vdFailedRedundancy;vendor;Dell
@@ -4109,6 +4321,7 @@ TRAP;setparam;vdFailedRedundancy;traps_comments;%s, virtual disk (%s) is no long
 TRAP;ADD;vdFormatCancelled;.1.3.6.1.4.1.674.10893.1.1.200.0.530
 TRAP;setparam;vdFormatCancelled;traps_name;vdFormatCancelled
 TRAP;setparam;vdFormatCancelled;traps_oid;.1.3.6.1.4.1.674.10893.1.1.200.0.530
+TRAP;setparam;vdFormatCancelled;traps_mode;0
 TRAP;setparam;vdFormatCancelled;traps_args;Array Manager Event: Virtual Disk format cancelled:
 TRAP;setparam;vdFormatCancelled;traps_status;1
 TRAP;setparam;vdFormatCancelled;vendor;Dell
@@ -4126,6 +4339,7 @@ TRAP;setparam;vdFormatCancelled;traps_comments;%s, virtual disk (%s) format canc
 TRAP;ADD;vdFormatCompleted;.1.3.6.1.4.1.674.10893.1.1.200.0.548
 TRAP;setparam;vdFormatCompleted;traps_name;vdFormatCompleted
 TRAP;setparam;vdFormatCompleted;traps_oid;.1.3.6.1.4.1.674.10893.1.1.200.0.548
+TRAP;setparam;vdFormatCompleted;traps_mode;0
 TRAP;setparam;vdFormatCompleted;traps_args;Array Manager Event: Virtual Disk format completed:
 TRAP;setparam;vdFormatCompleted;traps_status;0
 TRAP;setparam;vdFormatCompleted;vendor;Dell
@@ -4143,6 +4357,7 @@ TRAP;setparam;vdFormatCompleted;traps_comments;%s, virtual disk (%s) format comp
 TRAP;ADD;vdFormatFailed;.1.3.6.1.4.1.674.10893.1.1.200.0.539
 TRAP;setparam;vdFormatFailed;traps_name;vdFormatFailed
 TRAP;setparam;vdFormatFailed;traps_oid;.1.3.6.1.4.1.674.10893.1.1.200.0.539
+TRAP;setparam;vdFormatFailed;traps_mode;0
 TRAP;setparam;vdFormatFailed;traps_args;Array Manager Event: Virtual Disk format failed:
 TRAP;setparam;vdFormatFailed;traps_status;3
 TRAP;setparam;vdFormatFailed;vendor;Dell
@@ -4160,6 +4375,7 @@ TRAP;setparam;vdFormatFailed;traps_comments;%s, virtual disk (%s) format failed.
 TRAP;ADD;vdFormatStarted;.1.3.6.1.4.1.674.10893.1.1.200.0.521
 TRAP;setparam;vdFormatStarted;traps_name;vdFormatStarted
 TRAP;setparam;vdFormatStarted;traps_oid;.1.3.6.1.4.1.674.10893.1.1.200.0.521
+TRAP;setparam;vdFormatStarted;traps_mode;0
 TRAP;setparam;vdFormatStarted;traps_args;Array Manager Event: Virtual Disk format started:
 TRAP;setparam;vdFormatStarted;traps_status;1
 TRAP;setparam;vdFormatStarted;vendor;Dell
@@ -4177,6 +4393,7 @@ TRAP;setparam;vdFormatStarted;traps_comments;%s, virtual disk (%s) format starte
 TRAP;ADD;vdInitializeCancelled;.1.3.6.1.4.1.674.10893.1.1.200.0.532
 TRAP;setparam;vdInitializeCancelled;traps_name;vdInitializeCancelled
 TRAP;setparam;vdInitializeCancelled;traps_oid;.1.3.6.1.4.1.674.10893.1.1.200.0.532
+TRAP;setparam;vdInitializeCancelled;traps_mode;0
 TRAP;setparam;vdInitializeCancelled;traps_args;Array Manager Event: Virtual Disk initialization cancelled:
 TRAP;setparam;vdInitializeCancelled;traps_status;1
 TRAP;setparam;vdInitializeCancelled;vendor;Dell
@@ -4194,6 +4411,7 @@ TRAP;setparam;vdInitializeCancelled;traps_comments;%s, virtual disk (%s) initial
 TRAP;ADD;vdInitializeCompleted;.1.3.6.1.4.1.674.10893.1.1.200.0.550
 TRAP;setparam;vdInitializeCompleted;traps_name;vdInitializeCompleted
 TRAP;setparam;vdInitializeCompleted;traps_oid;.1.3.6.1.4.1.674.10893.1.1.200.0.550
+TRAP;setparam;vdInitializeCompleted;traps_mode;0
 TRAP;setparam;vdInitializeCompleted;traps_args;Array Manager Event: Virtual Disk initialization completed:
 TRAP;setparam;vdInitializeCompleted;traps_status;0
 TRAP;setparam;vdInitializeCompleted;vendor;Dell
@@ -4211,6 +4429,7 @@ TRAP;setparam;vdInitializeCompleted;traps_comments;%s, virtual disk (%s) initial
 TRAP;ADD;vdInitializeFailed;.1.3.6.1.4.1.674.10893.1.1.200.0.541
 TRAP;setparam;vdInitializeFailed;traps_name;vdInitializeFailed
 TRAP;setparam;vdInitializeFailed;traps_oid;.1.3.6.1.4.1.674.10893.1.1.200.0.541
+TRAP;setparam;vdInitializeFailed;traps_mode;0
 TRAP;setparam;vdInitializeFailed;traps_args;Array Manager Event: Virtual Disk initialization Failed:
 TRAP;setparam;vdInitializeFailed;traps_status;3
 TRAP;setparam;vdInitializeFailed;vendor;Dell
@@ -4228,6 +4447,7 @@ TRAP;setparam;vdInitializeFailed;traps_comments;%s, virtual disk (%s) initializa
 TRAP;ADD;vdInitializeStarted;.1.3.6.1.4.1.674.10893.1.1.200.0.523
 TRAP;setparam;vdInitializeStarted;traps_name;vdInitializeStarted
 TRAP;setparam;vdInitializeStarted;traps_oid;.1.3.6.1.4.1.674.10893.1.1.200.0.523
+TRAP;setparam;vdInitializeStarted;traps_mode;0
 TRAP;setparam;vdInitializeStarted;traps_args;Array Manager Event: Virtual Disk initialization started:
 TRAP;setparam;vdInitializeStarted;traps_status;0
 TRAP;setparam;vdInitializeStarted;vendor;Dell
@@ -4245,6 +4465,7 @@ TRAP;setparam;vdInitializeStarted;traps_comments;%s, virtual disk (%s) initializ
 TRAP;ADD;vdRebuildCancelled;.1.3.6.1.4.1.674.10893.1.1.200.0.535
 TRAP;setparam;vdRebuildCancelled;traps_name;vdRebuildCancelled
 TRAP;setparam;vdRebuildCancelled;traps_oid;.1.3.6.1.4.1.674.10893.1.1.200.0.535
+TRAP;setparam;vdRebuildCancelled;traps_mode;0
 TRAP;setparam;vdRebuildCancelled;traps_args;Array Manager Event: Virtual Disk rebuild cancelled:
 TRAP;setparam;vdRebuildCancelled;traps_status;1
 TRAP;setparam;vdRebuildCancelled;vendor;Dell
@@ -4262,6 +4483,7 @@ TRAP;setparam;vdRebuildCancelled;traps_comments;%s, virtual disk (%s) rebuild ca
 TRAP;ADD;vdRebuildCompleted;.1.3.6.1.4.1.674.10893.1.1.200.0.553
 TRAP;setparam;vdRebuildCompleted;traps_name;vdRebuildCompleted
 TRAP;setparam;vdRebuildCompleted;traps_oid;.1.3.6.1.4.1.674.10893.1.1.200.0.553
+TRAP;setparam;vdRebuildCompleted;traps_mode;0
 TRAP;setparam;vdRebuildCompleted;traps_args;Array Manager Event: Virtual Disk rebuild completed:
 TRAP;setparam;vdRebuildCompleted;traps_status;0
 TRAP;setparam;vdRebuildCompleted;vendor;Dell
@@ -4279,6 +4501,7 @@ TRAP;setparam;vdRebuildCompleted;traps_comments;%s, virtual disk (%s) rebuild co
 TRAP;ADD;vdRebuildFailed;.1.3.6.1.4.1.674.10893.1.1.200.0.544
 TRAP;setparam;vdRebuildFailed;traps_name;vdRebuildFailed
 TRAP;setparam;vdRebuildFailed;traps_oid;.1.3.6.1.4.1.674.10893.1.1.200.0.544
+TRAP;setparam;vdRebuildFailed;traps_mode;0
 TRAP;setparam;vdRebuildFailed;traps_args;Array Manager Event: Virtual Disk rebuild failed:
 TRAP;setparam;vdRebuildFailed;traps_status;3
 TRAP;setparam;vdRebuildFailed;vendor;Dell
@@ -4296,6 +4519,7 @@ TRAP;setparam;vdRebuildFailed;traps_comments;%s, virtual disk (%s) rebuild faile
 TRAP;ADD;vdRebuildStarted;.1.3.6.1.4.1.674.10893.1.1.200.0.526
 TRAP;setparam;vdRebuildStarted;traps_name;vdRebuildStarted
 TRAP;setparam;vdRebuildStarted;traps_oid;.1.3.6.1.4.1.674.10893.1.1.200.0.526
+TRAP;setparam;vdRebuildStarted;traps_mode;0
 TRAP;setparam;vdRebuildStarted;traps_args;Array Manager Event: Virtual Disk rebuild started:
 TRAP;setparam;vdRebuildStarted;traps_status;1
 TRAP;setparam;vdRebuildStarted;vendor;Dell
@@ -4313,6 +4537,7 @@ TRAP;setparam;vdRebuildStarted;traps_comments;%s, virtual disk (%s) rebuild star
 TRAP;ADD;vdReconfigCancelled;.1.3.6.1.4.1.674.10893.1.1.200.0.534
 TRAP;setparam;vdReconfigCancelled;traps_name;vdReconfigCancelled
 TRAP;setparam;vdReconfigCancelled;traps_oid;.1.3.6.1.4.1.674.10893.1.1.200.0.534
+TRAP;setparam;vdReconfigCancelled;traps_mode;0
 TRAP;setparam;vdReconfigCancelled;traps_args;Array Manager Event: Virtual Disk Reconfiguration cancelled:
 TRAP;setparam;vdReconfigCancelled;traps_status;1
 TRAP;setparam;vdReconfigCancelled;vendor;Dell
@@ -4330,6 +4555,7 @@ TRAP;setparam;vdReconfigCancelled;traps_comments;%s, virtual disk (%s) reconfigu
 TRAP;ADD;vdReconfigCompleted;.1.3.6.1.4.1.674.10893.1.1.200.0.552
 TRAP;setparam;vdReconfigCompleted;traps_name;vdReconfigCompleted
 TRAP;setparam;vdReconfigCompleted;traps_oid;.1.3.6.1.4.1.674.10893.1.1.200.0.552
+TRAP;setparam;vdReconfigCompleted;traps_mode;0
 TRAP;setparam;vdReconfigCompleted;traps_args;Array Manager Event: Virtual Disk Reconfiguration completed:
 TRAP;setparam;vdReconfigCompleted;traps_status;1
 TRAP;setparam;vdReconfigCompleted;vendor;Dell
@@ -4347,6 +4573,7 @@ TRAP;setparam;vdReconfigCompleted;traps_comments;%s, virtual disk (%s) reconfigu
 TRAP;ADD;vdReconfigFailed;.1.3.6.1.4.1.674.10893.1.1.200.0.543
 TRAP;setparam;vdReconfigFailed;traps_name;vdReconfigFailed
 TRAP;setparam;vdReconfigFailed;traps_oid;.1.3.6.1.4.1.674.10893.1.1.200.0.543
+TRAP;setparam;vdReconfigFailed;traps_mode;0
 TRAP;setparam;vdReconfigFailed;traps_args;Array Manager Event: Virtual Disk Reconfiguration failed:
 TRAP;setparam;vdReconfigFailed;traps_status;3
 TRAP;setparam;vdReconfigFailed;vendor;Dell
@@ -4364,6 +4591,7 @@ TRAP;setparam;vdReconfigFailed;traps_comments;%s, virtual disk (%s) reconfigurat
 TRAP;ADD;vdReconfigStarted;.1.3.6.1.4.1.674.10893.1.1.200.0.525
 TRAP;setparam;vdReconfigStarted;traps_name;vdReconfigStarted
 TRAP;setparam;vdReconfigStarted;traps_oid;.1.3.6.1.4.1.674.10893.1.1.200.0.525
+TRAP;setparam;vdReconfigStarted;traps_mode;0
 TRAP;setparam;vdReconfigStarted;traps_args;Array Manager Event: Virtual Disk Reconfiguration started:
 TRAP;setparam;vdReconfigStarted;traps_status;1
 TRAP;setparam;vdReconfigStarted;vendor;Dell
@@ -4381,6 +4609,7 @@ TRAP;setparam;vdReconfigStarted;traps_comments;%s, virtual disk (%s) reconfigura
 TRAP;ADD;virtualDiskConfigChanged;.1.3.6.1.4.1.674.10893.1.1.200.0.507
 TRAP;setparam;virtualDiskConfigChanged;traps_name;virtualDiskConfigChanged
 TRAP;setparam;virtualDiskConfigChanged;traps_oid;.1.3.6.1.4.1.674.10893.1.1.200.0.507
+TRAP;setparam;virtualDiskConfigChanged;traps_mode;0
 TRAP;setparam;virtualDiskConfigChanged;traps_args;Array Manager Event: Virtual Disk created:
 TRAP;setparam;virtualDiskConfigChanged;traps_status;0
 TRAP;setparam;virtualDiskConfigChanged;vendor;Dell
@@ -4398,6 +4627,7 @@ TRAP;setparam;virtualDiskConfigChanged;traps_comments;%s, virtual disk (%s) conf
 TRAP;ADD;virtualDiskCreated;.1.3.6.1.4.1.674.10893.1.1.200.0.505
 TRAP;setparam;virtualDiskCreated;traps_name;virtualDiskCreated
 TRAP;setparam;virtualDiskCreated;traps_oid;.1.3.6.1.4.1.674.10893.1.1.200.0.505
+TRAP;setparam;virtualDiskCreated;traps_mode;0
 TRAP;setparam;virtualDiskCreated;traps_args;Array Manager Event: Virtual Disk created:
 TRAP;setparam;virtualDiskCreated;traps_status;0
 TRAP;setparam;virtualDiskCreated;vendor;Dell
@@ -4415,6 +4645,7 @@ TRAP;setparam;virtualDiskCreated;traps_comments;%s, virtual disk (%s) created.<b
 TRAP;ADD;virtualDiskDegraded;.1.3.6.1.4.1.674.10893.1.1.200.0.509
 TRAP;setparam;virtualDiskDegraded;traps_name;virtualDiskDegraded
 TRAP;setparam;virtualDiskDegraded;traps_oid;.1.3.6.1.4.1.674.10893.1.1.200.0.509
+TRAP;setparam;virtualDiskDegraded;traps_mode;0
 TRAP;setparam;virtualDiskDegraded;traps_args;Array Manager Event: Virtual Disk degraded:
 TRAP;setparam;virtualDiskDegraded;traps_status;1
 TRAP;setparam;virtualDiskDegraded;vendor;Dell
@@ -4432,6 +4663,7 @@ TRAP;setparam;virtualDiskDegraded;traps_comments;%s, virtual disk (%s) degraded.
 TRAP;ADD;virtualDiskDeleted;.1.3.6.1.4.1.674.10893.1.1.200.0.506
 TRAP;setparam;virtualDiskDeleted;traps_name;virtualDiskDeleted
 TRAP;setparam;virtualDiskDeleted;traps_oid;.1.3.6.1.4.1.674.10893.1.1.200.0.506
+TRAP;setparam;virtualDiskDeleted;traps_mode;0
 TRAP;setparam;virtualDiskDeleted;traps_args;Array Manager Event: Virtual Disk deleted:
 TRAP;setparam;virtualDiskDeleted;traps_status;1
 TRAP;setparam;virtualDiskDeleted;vendor;Dell
@@ -4449,6 +4681,7 @@ TRAP;setparam;virtualDiskDeleted;traps_comments;%s, virtual disk (%s) deleted.<b
 TRAP;ADD;virtualDiskFailed;.1.3.6.1.4.1.674.10893.1.1.200.0.508
 TRAP;setparam;virtualDiskFailed;traps_name;virtualDiskFailed
 TRAP;setparam;virtualDiskFailed;traps_oid;.1.3.6.1.4.1.674.10893.1.1.200.0.508
+TRAP;setparam;virtualDiskFailed;traps_mode;0
 TRAP;setparam;virtualDiskFailed;traps_args;Array Manager Event: Virtual Disk failed:
 TRAP;setparam;virtualDiskFailed;traps_status;3
 TRAP;setparam;virtualDiskFailed;vendor;Dell
@@ -4466,6 +4699,7 @@ TRAP;setparam;virtualDiskFailed;traps_comments;%s, virtual disk (%s) failed.<br/
 TRAP;ADD;warmStart;.1.3.6.1.6.3.1.1.5.2
 TRAP;setparam;warmStart;traps_name;warmStart
 TRAP;setparam;warmStart;traps_oid;.1.3.6.1.6.3.1.1.5.2
+TRAP;setparam;warmStart;traps_mode;0
 TRAP;setparam;warmStart;traps_args;SNMP is reinitializing
 TRAP;setparam;warmStart;traps_status;0
 TRAP;setparam;warmStart;vendor;Generic
@@ -4795,6 +5029,7 @@ HOST;setparam;Centreon-Server;timezone;0
 HOST;setparam;Centreon-Server;host_locked;0
 HOST;setparam;Centreon-Server;host_register;1
 HOST;setparam;Centreon-Server;host_activate;1
+HOST;addparent;Centreon-Server;test_host
 HOST;addtemplate;Centreon-Server;generic-host
 HOST;addtemplate;test_host;my_htpl-test
 STPL;ADD;generic-service;generic-service;
@@ -5448,3 +5683,4 @@ ACLGROUP;SETACTION;ALL;Simple User;
 ACLGROUP;SETRESOURCE;ALL;All Resources;
 ACLGROUP;SETCONTACT;ALL;test_contact;
 ACLGROUP;SETCONTACTGROUP;ALL;Guest|test_contact-group;
+

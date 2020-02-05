@@ -25,6 +25,5 @@ There's a cron job that updates hosts, services and hosts/services
 templates configuration.
 
 For example, if you create a page in the wiki using the usual pattern
-(ex: ``Host:Centreon-Server`` or ``Service:Centreon-Server Disk-/``),
-
-It will add the link to the page in the **URL** field of object's extended information.
+(ex: ``Host:Centreon-Server`` or ``Service:Centreon-Server Disk-/``), the cron will add the link to the page in the
+**URL** field of object's extended information.

@@ -15,7 +15,7 @@ Host Groups
 
 To add  a host group:
 
-#. Go to the menu: **Configuration** ==> **Hosts**
+#. Go to the menu: **Configuration > Hosts**
 #. In the left menu, click on **Host Groups**
 #. Click on **Add**
 
@@ -29,7 +29,7 @@ To add  a host group:
 * The **Action URL** field defined a URL normally use to give information on actions on the hostgroup (maintenance, etc.).
 * The **Icon** field indicates the icon to be use for the host group.
 * The **Map Icon** is the icon use for mapping.
-* The **RRD retention** field is expressed in days, it serves to define the duration of retention of the services belonging to this hostgroup in the RRD database. It will be the default duration defined in the menu: “ **Administration** ==> **Options** ==> **CentStorage** ” if this value is not defined.
+* The **RRD retention** field is expressed in days, it serves to define the duration of retention of the services belonging to this hostgroup in the RRD database. It will be the default duration defined in the menu: “ **Administration > Options > CentStorage** ” if this value is not defined.
 * The **Status** and **Comments** fields allow to enable or disable the host group and to make comments on it.
 
 .. _servicegroups:
@@ -40,7 +40,7 @@ Service Groups
 
 To add a service group:
 
-#. Go into the menu: **Configuration** ==> **Services**
+#. Go into the menu: **Configuration > Services**
 #. In the left menu, click on **Service Groups**
 #. Click on **Add**
 
@@ -61,7 +61,7 @@ Contact Groups
 
 To add a group of contacts:
 
-#. Go into the menu: **Configuration** ==> **Users**
+#. Go into the menu: **Configuration > Users**
 #. In the left menu, click on **Contact Groups**
 #. Click on **Add**
 

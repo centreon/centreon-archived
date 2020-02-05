@@ -1,14 +1,19 @@
-import React, { Component } from "react";
-import Form from "../../components/forms/ServerConfigurationWizardForm";
-import routeMap from "../../route-maps/route-map";
-import ProgressBar from "../../components/progressBar";
+/* eslint-disable react/jsx-no-bind */
+/* eslint-disable react/jsx-filename-extension */
+/* eslint-disable react/prop-types */
+/* eslint-disable camelcase */
+
+import React, { Component } from 'react';
+import Form from '../../components/forms/ServerConfigurationWizardForm';
+import routeMap from '../../route-maps/route-map';
+import ProgressBar from '../../components/progressBar';
 
 class ServerConfigurationWizardRoute extends Component {
   links = [
     { active: true, number: 1, path: routeMap.serverConfigurationWizard },
     { active: false, number: 2 },
     { active: false, number: 3 },
-    { active: false, number: 4 }
+    { active: false, number: 4 },
   ];
 
   handleSubmit = ({ server_type }) => {

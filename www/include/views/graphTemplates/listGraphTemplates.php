@@ -88,13 +88,16 @@ $tpl->assign("headerMenu_options", _("Options"));
 
 #List
 $form = new HTML_QuickFormCustom('select_form', 'POST', "?p=" . $p);
-/*
- * Different style between each lines
- */
+//Different style between each lines
 $style = "one";
-/*
- * Fill a tab with a mutlidimensionnal Array we put in $tpl
- */
+
+$attrBtnSuccess = array(
+    "class" => "btc bt_success",
+    "onClick" => "window.history.replaceState('', '', '?p=" . $p . "');"
+);
+$form->addElement('submit', 'Search', _("Search"), $attrBtnSuccess);
+
+//Fill a tab with a mutlidimensionnal Array we put in $tpl
 $elemArr = array();
 for ($i = 0; $graph = $stmt->fetch(); $i++) {
     $selectedElements = $form->addElement('checkbox', "select[" . $graph['graph_id'] . "]");

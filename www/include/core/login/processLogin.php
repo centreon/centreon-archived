@@ -1,7 +1,7 @@
 <?php
 /*
- * Copyright 2005-2015 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2019 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -35,16 +35,18 @@
 
 require_once _CENTREON_PATH_ . 'bootstrap.php';
 
+const AUTOLOGIN_FIELDS = array('autologin' , 'useralias', 'token');
+
 if (isset($_POST["centreon_token"])
-    || (isset($_GET["autologin"]) &&
-        $_GET["autologin"] &&
-        isset($generalOptions["enable_autologin"]) &&
-        $generalOptions["enable_autologin"])
-    || (isset($_POST["autologin"]) &&
-        $_POST["autologin"] &&
-        isset($generalOptions["enable_autologin"]) &&
-        $generalOptions["enable_autologin"])
-    || (!isset($generalOptions['sso_enable']) || $generalOptions['sso_enable'] == 1)) {
+    || (isset($_GET["autologin"]) && $_GET["autologin"]
+        && isset($generalOptions["enable_autologin"])
+        && $generalOptions["enable_autologin"])
+    || (isset($_POST["autologin"]) && $_POST["autologin"]
+        && isset($generalOptions["enable_autologin"])
+        && $generalOptions["enable_autologin"])
+    || (!isset($generalOptions['sso_enable']) || $generalOptions['sso_enable'] == 1)
+    || (!isset($generalOptions['keycloak_enable']) || $generalOptions['keycloak_enable'] == 1)
+) {
     /*
      * Init log class
      */
@@ -53,7 +55,7 @@ if (isset($_POST["centreon_token"])
     if (isset($_POST['p'])) {
         $_GET["p"] = $_POST["p"];
     }
-        
+
     if (isset($_POST['min'])) {
         $_GET["min"] = $_POST["min"];
     }
@@ -97,30 +99,36 @@ if (isset($_POST["centreon_token"])
     );
     if ($centreonAuth->passwdOk == 1) {
         $centreon = new Centreon($centreonAuth->userInfos);
+        // security fix - regenerate the sid after the login to prevent session fixation
+        session_regenerate_id(true);
         $_SESSION["centreon"] = $centreon;
-
+        // saving session data in the DB
         $query = "INSERT INTO `session` (`session_id` , `user_id` , `current_page` , `last_reload`, `ip_address`) " .
             "VALUES (?, ?, ?, ?, ?)";
-        $DBRESULT = $pearDB->prepare($query);
+        $dbResult = $pearDB->prepare($query);
         $pearDB->execute(
-            $DBRESULT,
+            $dbResult,
             array(session_id(), $centreon->user->user_id, '1', time(), $_SERVER["REMOTE_ADDR"])
         );
+
         if (!isset($_POST["submit"])) {
-            $minimize = '';
-            if (isset($_GET["min"]) && $_GET["min"] == '1') {
-                $minimize = '&min=1';
+            $headerRedirection = "./main.php";
+            if (!empty($_GET["p"])) {
+                $headerRedirection .= "?p=" . $_GET["p"];
+                unset($_GET["p"]);
+                foreach ($_GET as $parameter => $value) {
+                    if (!in_array($parameter, AUTOLOGIN_FIELDS)) {
+                        $headerRedirection .= '&' . $parameter . '=' . $value;
+                    }
+                }
+            } elseif (isset($centreon->user->default_page) && $centreon->user->default_page != '') {
+                $headerRedirection .= "?p=" . $centreon->user->default_page;
+                if (isset($_GET["min"]) && $_GET["min"] == '1') {
+                    $headerRedirection .= '&min=1';
+                }
             }
-            if (isset($_GET["p"]) && $_GET["p"] != '') {
-                header('Location: ./main.php?p=' . $_GET["p"] . $minimize);
-            } else if (isset($centreon->user->default_page) && $centreon->user->default_page != '') {
-                header('Location: ./main.php?p=' . $centreon->user->default_page . $minimize);
-            } else {
-                header('Location: ./main.php');
-            }
-        } else {
-            header("Location: ./main.php");
         }
+        header("Location: " . $headerRedirection);
         $connect = true;
     } else {
         $connect = false;

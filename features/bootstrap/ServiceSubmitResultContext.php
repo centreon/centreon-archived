@@ -60,6 +60,7 @@ class ServiceSubmitResultContext extends CentreonContext
      */
     public function iSubmitSomeResultToThisService()
     {
+
         $this->submitServiceResult($this->hostname, $this->hostservice, 2, $this->checkoutput);
     }
 
@@ -68,13 +69,21 @@ class ServiceSubmitResultContext extends CentreonContext
      */
     public function theValuesAreSetAsWantedInMonitoringStatusDetailsPage()
     {
-        $this->page = new MonitoringServicesPage($this);
-        $result = $this->page->getPropertyFromAHostAndService(
-            $this->hostname,
-            $this->hostservice,
-            'status_information'
-        );
-        if ($result != $this->checkoutput) {
+        try {
+            $this->spin(
+                function ($context) {
+                    $this->page = new MonitoringServicesPage($this);
+                    $result = $this->page->getPropertyFromAHostAndService(
+                        $this->hostname,
+                        $this->hostservice,
+                        'status_information'
+                    );
+                    return ($result == $this->checkoutput);
+                },
+                "The result submitted is not set as wanted",
+                15
+            );
+        } catch (\Exception $e) {
             throw new Exception('The result submitted is not set as wanted');
         }
     }

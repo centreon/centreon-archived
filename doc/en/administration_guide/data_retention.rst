@@ -37,6 +37,7 @@ Setting the retention time limits the size of the database:
 * **Retention duration for performance data in RRDTool databases**: graphs performance data, by default **180 days**.
 * **Retention duration for downtimes**: downtimes data, unlimited by default (0 day).
 * **Retention duration for comments**: comments data, unlimited by default (0 day).
+* **Retention duration for audit logs**: audit logs data, unlimited by default (0 day).
 
 .. note::
     It is possible not to save performance data to the MySQL database if you are

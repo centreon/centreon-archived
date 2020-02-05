@@ -29,8 +29,9 @@
                 </td>
             </tr>
             <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="trapname"> {$form.traps_name.label}</td><td class="FormRowValue">{$form.traps_name.html}</td></tr>
-            <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="oid"> {$form.traps_oid.label}</td><td class="FormRowValue">{$form.traps_oid.html}</td></tr>
-            <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="vendor"> {$form.manufacturer_id.label}</td><td class="FormRowValue">{$form.manufacturer_id.html}</td></tr>
+            <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="mode"> {$form.traps_mode.label}</td><td class="FormRowValue">{$form.traps_mode.html}</td></tr>
+            <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="oid"> {$form.traps_oid.label}</td><td class="FormRowValue">{$form.traps_oid.html}</td></tr>
+            <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="vendor"> {$form.manufacturer_id.label}</td><td class="FormRowValue">{$form.manufacturer_id.html}</td></tr>
             <tr class="list_lvl_1">
                 <td class="ListColLvl1_name" colspan="2">
                     <h4>{$subtitle0}</h4>

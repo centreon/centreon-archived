@@ -10,14 +10,14 @@ Be aware that your feature request might not be taken into account for future de
 Please describe your feature request in English.
 -->
 
-<h3> Feature explanation </h3>
+### Feature explanation
 
 A short explanation of the wanted feature
 
-<h3> What is the value of the wanted feature ?</h3>
+### What is the value of the wanted feature ?
 
 A short explanation of what could be the value of the wanted feature.
 
-<h3> Additional information </h3>
+### Additional information
 
 Dedicated section to add any information to make your case(*screenshots*, ...)

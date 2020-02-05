@@ -141,14 +141,40 @@ class TaskService
      */
     public function getRemoteStatusByParent(int $parentId, string $serverIp, string $centreonFolder)
     {
-        $result = $this->centreonRestHttp->call(
-            'http://' . $serverIp . '/' . $centreonFolder
-                . '/api/external.php?object=centreon_task_service&action=getTaskStatusByParent',
-            'POST',
-            ['parent_id' => $parentId]
-        );
+        $query = "SELECT params FROM task WHERE id = '" . $parentId  . "'";
 
-        return isset($result['status']) ? $result['status'] : null;
+        try {
+            $remoteDataResult = $this->getDbManager()->getAdapter('configuration_db')->query($query)->results();
+            $result = unserialize($remoteDataResult[0]->params);
+
+            $httpMethod = $result['params']['http_method'];
+            $httpPort = $result['params']['http_port'];
+            $noCheckCertificate = $result['params']['no_check_certificate'];
+            $noProxy = $result['params']['no_proxy'];
+
+            $url = "";
+            if (parse_url($serverIp, PHP_URL_SCHEME)) {
+                $url = $serverIp;
+            } else {
+                $url = ($httpMethod ?? 'http') . '://' . $serverIp . ($httpPort ? ':' . $httpPort : '');
+            }
+            $url .= '/' . $centreonFolder
+                . '/api/external.php?object=centreon_task_service&action=getTaskStatusByParent';
+
+            $result = $this->centreonRestHttp->call(
+                $url,
+                'POST',
+                ['parent_id' => $parentId],
+                null,
+                false,
+                $noCheckCertificate,
+                $noProxy
+            );
+
+            return isset($result['status']) ? $result['status'] : null;
+        } catch (\Exception $e) {
+            return $e->getMessage();
+        }
     }
 
     /**
@@ -159,8 +185,10 @@ class TaskService
      */
     public function getStatusByParent(int $parentId)
     {
-        $task = $this->getDbManager()->getAdapter('configuration_db')->getRepository(TaskRepository::class)
+        $task = $this->getDbManager()->getAdapter('configuration_db')
+            ->getRepository(TaskRepository::class)
             ->findOneByParentId($parentId);
+
         return $task ? $task->getStatus() : null;
     }
 
@@ -174,12 +202,19 @@ class TaskService
      */
     public function updateStatus(string $taskId, string $status)
     {
-        $task = $this->getDbManager()->getAdapter('configuration_db')->getRepository(TaskRepository::class)->findOneById($taskId);
+        $task = $this->getDbManager()
+            ->getAdapter('configuration_db')
+            ->getRepository(TaskRepository::class)
+            ->findOneById($taskId);
+
         if (!in_array($status, $task->getStatuses())) {
             return false;
         }
 
-        $result = $this->getDbManager()->getAdapter('configuration_db')->getRepository(TaskRepository::class)->updateStatus($status, $taskId);
+        $result = $this->getDbManager()
+            ->getAdapter('configuration_db')
+            ->getRepository(TaskRepository::class)
+            ->updateStatus($status, $taskId);
         return $result;
     }
 }

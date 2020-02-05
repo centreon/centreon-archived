@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "f57638e2-9bbf-40b9-924e-28fe8ebf95ec",
+		"_postman_id": "977609fc-e339-4f33-bddc-7eec145a0f55",
 		"name": "Centreon Web Rest API",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -310,114 +310,6 @@
 						"body": {
 							"mode": "raw",
 							"raw": "{\n  \"action\": \"setparam\",\n  \"object\": \"instance\",\n  \"values\": \"{{instance_name}};ns_activate;{{instance_activate}}\"\n}"
-						},
-						"url": {
-							"raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
-							"protocol": "http",
-							"host": [
-								"{{url}}"
-							],
-							"path": [
-								"centreon",
-								"api",
-								"index.php"
-							],
-							"query": [
-								{
-									"key": "action",
-									"value": "action"
-								},
-								{
-									"key": "object",
-									"value": "centreon_clapi"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Setparam init_script",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"type": "text/javascript",
-								"exec": [
-									"tests[\"Status code is 200\"] = responseCode.code === 200;"
-								]
-							}
-						}
-					],
-					"request": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json"
-							},
-							{
-								"key": "centreon-auth-token",
-								"value": "{{token}}"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n  \"action\": \"setparam\",\n  \"object\": \"instance\",\n  \"values\": \"{{instance_name}};init_script;{{instance_init_script}}\"\n}"
-						},
-						"url": {
-							"raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
-							"protocol": "http",
-							"host": [
-								"{{url}}"
-							],
-							"path": [
-								"centreon",
-								"api",
-								"index.php"
-							],
-							"query": [
-								{
-									"key": "action",
-									"value": "action"
-								},
-								{
-									"key": "object",
-									"value": "centreon_clapi"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Setparam monitoring_engine",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"type": "text/javascript",
-								"exec": [
-									"tests[\"Status code is 200\"] = responseCode.code === 200;"
-								]
-							}
-						}
-					],
-					"request": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json"
-							},
-							{
-								"key": "centreon-auth-token",
-								"value": "{{token}}"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n  \"action\": \"setparam\",\n  \"object\": \"instance\",\n  \"values\": \"{{instance_name}};monitoring_engine;{{instance_monitoring_engine}}\"\n}"
 						},
 						"url": {
 							"raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
@@ -788,7 +680,10 @@
 									"            tests[\"Body contains added instance_localhost\"] = postman.getEnvironmentVariable(\"instance_localhost\") == instanceData[i].localhost;",
 									"            tests[\"Body contains added instance_address\"] = postman.getEnvironmentVariable(\"instance_address\") == instanceData[i]['ip address'];",
 									"            tests[\"Body contains added instance_activate\"] = postman.getEnvironmentVariable(\"instance_activate\") == instanceData[i].activate;",
-									"            tests[\"Body contains added instance_init_script\"] = postman.getEnvironmentVariable(\"instance_init_script\") == instanceData[i]['init script'];",
+									"            tests[\"Body contains added instance_engine_start_command\"] = postman.getEnvironmentVariable(\"instance_engine_start_command\") == instanceData[i]['init script'];",
+									"            tests[\"Body contains added instance_engine_stop_command\"] = postman.getEnvironmentVariable(\"instance_engine_stop_command\") == instanceData[i]['init script'];",
+									"            tests[\"Body contains added instance_engine_restart_command\"] = postman.getEnvironmentVariable(\"instance_engine_restart_command\") == instanceData[i]['init script'];",
+									"            tests[\"Body contains added instance_engine_reload_command\"] = postman.getEnvironmentVariable(\"instance_engine_reload_command\") == instanceData[i]['init script'];",
 									"            tests[\"Body contains added instance_nagios_bin\"] = postman.getEnvironmentVariable(\"instance_nagios_bin\") == instanceData[i].bin;",
 									"            tests[\"Body contains added instance_nagiostats_bin\"] = postman.getEnvironmentVariable(\"instance_nagiostats_bin\") == instanceData[i]['stats bin'];",
 									"            tests[\"Body contains added instance_ssh_port\"] = postman.getEnvironmentVariable(\"instance_ssh_port\") == instanceData[i]['ssh port'];",
@@ -2054,60 +1949,6 @@
 						"body": {
 							"mode": "raw",
 							"raw": "{\n  \"action\": \"setparam\",\n  \"object\": \"centbrokercfg\",\n  \"values\": \"{{broker_name}};stats_activate;{{broker_stats_activate}}\"\n}"
-						},
-						"url": {
-							"raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
-							"protocol": "http",
-							"host": [
-								"{{url}}"
-							],
-							"path": [
-								"centreon",
-								"api",
-								"index.php"
-							],
-							"query": [
-								{
-									"key": "action",
-									"value": "action"
-								},
-								{
-									"key": "object",
-									"value": "centreon_clapi"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Setparam correlation_activate",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"type": "text/javascript",
-								"exec": [
-									"tests[\"Status code is 200\"] = responseCode.code === 200;"
-								]
-							}
-						}
-					],
-					"request": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json"
-							},
-							{
-								"key": "centreon-auth-token",
-								"value": "{{token}}"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n  \"action\": \"setparam\",\n  \"object\": \"centbrokercfg\",\n  \"values\": \"{{broker_name}};correlation_activate;{{broker_correlation_activate}}\"\n}"
 						},
 						"url": {
 							"raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
@@ -10124,114 +9965,6 @@
 						"body": {
 							"mode": "raw",
 							"raw": "{\n  \"action\": \"setoutput\",\n  \"object\": \"centbrokercfg\",\n  \"values\": \"{{broker_name}};{{output_rrd_id}};retry_interval;{{output_retry_interval}}\"\n}"
-						},
-						"url": {
-							"raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
-							"protocol": "http",
-							"host": [
-								"{{url}}"
-							],
-							"path": [
-								"centreon",
-								"api",
-								"index.php"
-							],
-							"query": [
-								{
-									"key": "action",
-									"value": "action"
-								},
-								{
-									"key": "object",
-									"value": "centreon_clapi"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Setoutput port",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"type": "text/javascript",
-								"exec": [
-									"tests[\"Status code is 200\"] = responseCode.code === 200;"
-								]
-							}
-						}
-					],
-					"request": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json"
-							},
-							{
-								"key": "centreon-auth-token",
-								"value": "{{token}}"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n  \"action\": \"setoutput\",\n  \"object\": \"centbrokercfg\",\n  \"values\": \"{{broker_name}};{{output_rrd_id}};port;{{output_port}}\"\n}"
-						},
-						"url": {
-							"raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
-							"protocol": "http",
-							"host": [
-								"{{url}}"
-							],
-							"path": [
-								"centreon",
-								"api",
-								"index.php"
-							],
-							"query": [
-								{
-									"key": "action",
-									"value": "action"
-								},
-								{
-									"key": "object",
-									"value": "centreon_clapi"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Setoutput path",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"type": "text/javascript",
-								"exec": [
-									"tests[\"Status code is 200\"] = responseCode.code === 200;"
-								]
-							}
-						}
-					],
-					"request": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json"
-							},
-							{
-								"key": "centreon-auth-token",
-								"value": "{{token}}"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n  \"action\": \"setoutput\",\n  \"object\": \"centbrokercfg\",\n  \"values\": \"{{broker_name}};{{output_rrd_id}};path;{{output_path}}\"\n}"
 						},
 						"url": {
 							"raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
@@ -19969,10 +19702,11 @@
 						{
 							"listen": "test",
 							"script": {
-								"type": "text/javascript",
+								"id": "042a5d7e-922d-438f-84d5-49a417ae9f5e",
 								"exec": [
 									"tests[\"Status code is 200\"] = responseCode.code === 200;"
-								]
+								],
+								"type": "text/javascript"
 							}
 						}
 					],
@@ -19990,7 +19724,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"action\":\"setparam\",\n  \"object\":\"htpl\",\n  \"values\": \"{{htpl_name}};process_perf_data;{{command_name}}\"\n}"
+							"raw": "{\n  \"action\":\"setparam\",\n  \"object\":\"htpl\",\n  \"values\": \"{{htpl_name}};process_perf_data;2\"\n}"
 						},
 						"url": {
 							"raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
@@ -24419,10 +24153,11 @@
 						{
 							"listen": "test",
 							"script": {
-								"type": "text/javascript",
+								"id": "898cfe6e-beb3-4e4c-a970-f07be37745df",
 								"exec": [
 									"tests[\"Status code is 200\"] = responseCode.code === 200;"
-								]
+								],
+								"type": "text/javascript"
 							}
 						}
 					],
@@ -24440,7 +24175,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"action\":\"setparam\",\n  \"object\":\"host\",\n  \"values\": \"{{host_name}};process_perf_data;{{command_name}}\"\n}"
+							"raw": "{\n  \"action\":\"setparam\",\n  \"object\":\"host\",\n  \"values\": \"{{host_name}};process_perf_data;2\"\n}"
 						},
 						"url": {
 							"raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
@@ -65149,60 +64884,6 @@
 					"response": []
 				},
 				{
-					"name": "Setparam broker_correlator_script",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"type": "text/javascript",
-								"exec": [
-									"tests[\"Status code is 200\"] = responseCode.code === 200;"
-								]
-							}
-						}
-					],
-					"request": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json"
-							},
-							{
-								"key": "centreon-auth-token",
-								"value": "{{token}}"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n  \"action\": \"setparam\",\n  \"object\": \"settings\",\n  \"values\": \"broker_correlator_script;{{broker_correlator_script}}\"\n}"
-						},
-						"url": {
-							"raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
-							"protocol": "http",
-							"host": [
-								"{{url}}"
-							],
-							"path": [
-								"centreon",
-								"api",
-								"index.php"
-							],
-							"query": [
-								{
-									"key": "action",
-									"value": "action"
-								},
-								{
-									"key": "object",
-									"value": "centreon_clapi"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
 					"name": "Setparam centstorage",
 					"event": [
 						{
@@ -66192,9 +65873,6 @@
 									"        {",
 									"            case \"broker\":",
 									"                tests[\"Body contains the correct setting broker\"] = postman.getEnvironmentVariable(\"broker_value\") == exceptionData[i].value;",
-									"                break;",
-									"            case \"broker_correlator_script\":",
-									"                tests[\"Body contains the correct setting broker_correlator_script\"] = postman.getEnvironmentVariable(\"broker_correlator_script\") == exceptionData[i].value;",
 									"                break;",
 									"            case \"debug_auth\":",
 									"                tests[\"Body contains the correct setting debug_auth\"] = postman.getEnvironmentVariable(\"enable_debug_auth\") == exceptionData[i].value;",

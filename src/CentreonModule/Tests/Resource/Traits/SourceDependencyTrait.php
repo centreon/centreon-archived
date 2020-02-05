@@ -57,7 +57,7 @@ trait SourceDependencyTrait
             ->disableOriginalConstructor()
             ->getMock();
 
-        $container[ServiceProvider::CENTREON_LEGACY_MODULE_LICENSE]->method('getLicenseExpiration')->willReturn('N/A');
+        $container[ServiceProvider::CENTREON_LEGACY_MODULE_LICENSE]->method('getLicenseExpiration')->willReturn(null);
 
         $container[ServiceProvider::CENTREON_LEGACY_MODULE_INSTALLER] = function (Container $container) {
             return function ($moduleName) {
@@ -88,10 +88,10 @@ trait SourceDependencyTrait
                 $service
                     ->method('remove')
                     ->will($this->returnCallback(function () use ($moduleName, $moduleId) {
-                            if ($moduleName !== ModuleSourceTest::$moduleName) {
-                                throw new \Exception($moduleName, (int) $moduleId);
-                            }
-                        }))
+                        if ($moduleName !== ModuleSourceTest::$moduleName) {
+                            throw new \Exception($moduleName, (int) $moduleId);
+                        }
+                    }))
                 ;
 
                 return $service;

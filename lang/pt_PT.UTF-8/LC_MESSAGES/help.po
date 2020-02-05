@@ -163,16 +163,16 @@ msgid "Target DBMS."
 msgstr "Tipo de base de dados."
 
 #: centreon-web/help.php:39
-msgid "The TCP port used to communicate with rrdcached. This is a global option, go to Administration > Options > RRDTool to modify it."
-msgstr ""
-"Porta de conexão para se comunicar com o processo RRDCacheD. \n"
-"Esta opção é definida globalmente no menu \"Administração> Opções> RRDTool\"."
+#~ msgid "The TCP port used to communicate with rrdcached. This is a global option, go to Administration > Options > RRDTool to modify it."
+#~ msgstr ""
+#~ "Porta de conexão para se comunicar com o processo RRDCacheD. \n"
+#~ "Esta opção é definida globalmente no menu \"Administração> Opções> RRDTool\"."
 
 #: centreon-web/help.php:40
-msgid "The Unix socket used to communicate with rrdcached. This is a global option, go to Administration > Options > RRDTool to modify it."
-msgstr ""
-"Caminho do soquete Unix para se comunicar com o processo RRDCacheD. \n"
-"Esta opção é definida globalmente no menu \"Administração> Opções> RRDTool\"."
+#~ msgid "The Unix socket used to communicate with rrdcached. This is a global option, go to Administration > Options > RRDTool to modify it."
+#~ msgstr ""
+#~ "Caminho do soquete Unix para se comunicar com o processo RRDCacheD. \n"
+#~ "Esta opção é definida globalmente no menu \"Administração> Opções> RRDTool\"."
 
 #: centreon-web/help.php:41
 msgid "The higher the buffer size is, the best compression. This however increase data streaming latency. Use with caution."
@@ -621,8 +621,10 @@ msgid "The number elements loaded in async select."
 msgstr "O número de elementos carregados por padrão nas listas de seleção."
 
 #: centreon-web/www/include/Administration/parameters/general/help.php:29
-msgid "Life duration of sessions."
-msgstr "Tempo de expiração em minutos de sessões de utilizadors conectados ao Centreon."
+#~ msgid "Life duration of sessions. The value in minutes cannot be greater than the session.gc_maxlifetime value "
+#~ "set in your php centreon.ini file."
+#~ msgstr "Tempo de expiração em minutos de sessões de utilizadors conectados ao Centreon."
+
 
 #: centreon-web/www/include/Administration/parameters/general/help.php:35
 msgid "Refresh interval."
@@ -679,15 +681,32 @@ msgstr ""
 msgid "Authentication can be solely based on SSO or it can work with both SSO and local authentication systems."
 msgstr "A autenticação pode ser baseada somente no SSO ou pode funcionar tanto com o SSO quanto com um sistema de autenticação local."
 
-#: centreon-web/www/include/Administration/parameters/general/help.php:84
-msgid "IP/DNS of trusted clients. Use coma as delimiter in case of multiple clients."
-msgstr ""
-"Clientes confiáveis ​​de IP / DNS. \n"
-"Use vírgulas como separador para vários clientes"
+msgid "Enable login with Keycloak."
+msgstr "Ativa autenticação com Keycloak"
 
-#: centreon-web/www/include/Administration/parameters/general/help.php:88
+msgid "Authentication can be solely based on Keycloak or it can work with both Keycloak and local authentication systems."
+msgstr "A autenticação pode ser baseada exclusivamente no Keycloak ou pode funcionar com os sistemas de autenticação Keycloak e local."
+
+msgid "IP/DNS of trusted clients. Use coma as delimiter in case of multiple clients."
+msgstr "IP/DNS de clientes de confiança. Use virgula para delimitar em caso de multiplos clientes."
+
 msgid "IP/DNS of blacklist clients. Use coma as delimiter in case of multiple clients."
-msgstr "IP/DNS de clientes da lista negra. Use vírgula como delimitador no caso de vários clientes."
+msgstr "IP/DNS de clientes bloqueados. Use virgula para delimitar em caso de multiplos clientes."
+
+msgid "Your Keycloak server url (with \"/auth\")."
+msgstr "Seu endereço do servidor Keycloak (com \"/auth\")."
+
+msgid "Your Keycloak redirect url (this server)."
+msgstr "Seu endereço de redirecionamento Keycloak (este servidor)."
+
+msgid "Your Keycloak Realm name."
+msgstr "Seu nome de Dominio Keycloak"
+
+msgid "Your Keycloak client ID."
+msgstr "Sua identificação de cliente kaycloak"
+
+msgid "Your Keycloak client secret."
+msgstr "Seu segredo de cliente Keycloak"
 
 #: centreon-web/www/include/Administration/parameters/general/help.php:92
 msgid "The header variable that will be used as login. i.e: $_SERVER['HTTP_AUTH_USER']"
@@ -767,8 +786,12 @@ msgid "Init script for broker daemon."
 msgstr "Script de inicialização do broker."
 
 #: centreon-web/www/include/Administration/parameters/engine/help.php:35
-msgid "Mailer binary with complete path."
-msgstr "Caminho completo do executável de envio de emails."
+msgid ""
+"Mailer binary with complete path. This define the @MAILER@ macro used in "
+"notification commands."
+msgstr ""
+"Caminho completo do executável de envio de emails. Isso define a macro @MAILER@ usado nos "
+"comandos de notificação."
 
 #: centreon-web/www/include/Administration/parameters/engine/help.php:43
 msgid "Maximum number of hosts to show in the Tactical Overview page."
@@ -907,20 +930,6 @@ msgstr "Estilo de fonte de marcas d'água."
 #: centreon-web/www/include/Administration/parameters/rrdtool/help.php:43
 msgid "Font size of watermarks."
 msgstr "Tamanho da fonte das marcas d'água."
-
-#: centreon-web/www/include/Administration/parameters/rrdtool/help.php:50
-msgid "Enable the rrdcached for Centreon. This option is valid only with Centreon Broker"
-msgstr ""
-"Ative o RRDCached para o Centreon. \n"
-"Essa opção é usada apenas com o Centreon Broker."
-
-#: centreon-web/www/include/Administration/parameters/rrdtool/help.php:52
-msgid "Port for communicating with rrdcached"
-msgstr "Porta de comunicação com RRDCached"
-
-#: centreon-web/www/include/Administration/parameters/rrdtool/help.php:55
-msgid "The absolute path to unix socket for communicating with rrdcached"
-msgstr "O caminho do soquete Unix para se comunicar com o RRDCached"
 
 #: centreon-web/www/include/options/accessLists/resourcesACL/help.php:8
 msgid "Name of resource rule."
@@ -2898,17 +2907,21 @@ msgstr ""
 
 #: centreon-web/www/include/configuration/configObject/host/help.php:37
 msgid ""
-"Define the number of \"time units\" to wait before sending out the first problem notification when this host enters a non-UP state. With the default time unit of 60s, this number will mean multiples of 1 minute. If you set this value to 0, monitoring engine will "
-"start sending out notifications immediately."
+"Define the number of \"time units\" to wait before sending out the first problem notification when this "
+"host enters a non-UP state. "
+"With the default time unit of 60s, this number will mean multiples of 1 minute. "
+"If you set this value to 0, monitoring engine will start sending out notifications immediately."
 msgstr ""
 "Define o número de unidades de tempo a decorrer antes de enviar a primeira notificação de um problema no host, resultando em um estado não OK. \n"
 "Com a unidade padrão de 60s, esse número será um múltiplo de 1 minuto. \n"
 "Se esse valor for 0, o planejador enviará uma notificação assim que o problema aparecer."
 
-#: centreon-web/www/include/configuration/configObject/host/help.php:38 centreon-web/www/include/configuration/configObject/service/help.php:70
+#: centreon-web/www/include/configuration/configObject/host/help.php:38
 msgid ""
-"Define the number of \"time units\" to wait before sending out the recovery notification when this host enters a non-UP state. The default time unit is 0 (this number will mean multiples of 1 minute). If you set this value to 0, monitoring engine will start sending "
-"out notifications immediately."
+"Define the number of \"time units\" to wait before sending out the recovery notification when this "
+"host enters an UP state. "
+"With the default time unit of 60s, this number will mean multiples of 1 minute. "
+"If you set this value to 0, monitoring engine will start sending out notifications immediately."
 msgstr ""
 "Define o número de \"unidades de tempo\" que devem decorrer antes de enviar a primeira notificação sobre recuperação devido a um estado de problema. \n"
 "Com a unidade padrão de 60s, esse número significará um múltiplo de 1 minuto. \n"
@@ -4126,21 +4139,21 @@ msgstr ""
 "Este processo é normalmente feito pelo Centreon e a modificação desta opção deve ser feita conscientemente."
 
 #: centreon-web/www/include/configuration/configCentreonBroker/help.php:75
-msgid ""
-"The Unix socket used to communicate with rrdcached.\n"
-" This is a global option, go to Administration > Options > RRDTool to modify it."
-msgstr ""
-"Caminho do soquete Unix para se comunicar com o processo RRDCacheD. \n"
-"Esta opção é definida globalmente no menu \"Administração> Opções> RRDTool\"."
+#~ msgid ""
+#~ "The Unix socket used to communicate with rrdcached.\n"
+#~ " This is a global option, go to Administration > Options > RRDTool to modify it."
+#~ msgstr ""
+#~ "Caminho do soquete Unix para se comunicar com o processo RRDCacheD. \n"
+#~ "Esta opção é definida globalmente no menu \"Administração> Opções> RRDTool\"."
 
 #: centreon-web/www/include/configuration/configCentreonBroker/help.php:79
-msgid ""
-"The TCP port used to communicate with rrdcached.\n"
-" This is a global option, go to Administration > Options > RRDTool to modify it."
-msgstr ""
-"Porta de conexão para se comunicar com o processo RRDCacheD.\n"
-" \n"
-"Esta opção é definida globalmente no menu \"Administração> Opções> RRDTool\"."
+#~ msgid ""
+#~ "The TCP port used to communicate with rrdcached.\n"
+#~ " This is a global option, go to Administration > Options > RRDTool to modify it."
+#~ msgstr ""
+#~ "Porta de conexão para se comunicar com o processo RRDCacheD.\n"
+#~ " \n"
+#~ "Esta opção é definida globalmente no menu \"Administração> Opções> RRDTool\"."
 
 #: centreon-web/www/include/configuration/configCentreonBroker/help.php:90
 msgid ""
@@ -4273,8 +4286,8 @@ msgid "Select the poller you would like to interact with."
 msgstr "Selecione um coletor com o qual você deseja interagir."
 
 #: centreon-web/www/include/configuration/configGenerate/help.php:4
-msgid "Generates configuration files and stores them in centreon/filesGeneration directory."
-msgstr "Gera ficheiros de configuração e os armazena no diretório centreon/filesGeneration."
+msgid "Generates configuration files and stores them in cache directory."
+msgstr "Gera ficheiros de configuração e os armazena no diretório cache."
 
 #: centreon-web/www/include/configuration/configGenerate/help.php:5
 msgid "Runs the scheduler debug mode."
@@ -4291,6 +4304,22 @@ msgstr "Método de atualização de configuração: Reiniciar, Recarregar ou Com
 #: centreon-web/www/include/configuration/configGenerate/help.php:8
 msgid "Run the commands that are defined in the poller configuration page (Configuration > Centreon > Poller > Post-Restart command)."
 msgstr "Executa o comando definido na configuração do coletor (Configuração> Centreon> Poller> comando Post-Restart)."
+
+msgid ""
+"What kind of method is needed to reach the Remote Server, HTTP or HTTPS?"
+msgstr ""
+
+msgid ""
+"On which TCP port is listening the Remote Server?"
+msgstr ""
+
+msgid ""
+"If checked, it won't check the validity of the SSL certificate of the Remote Server."
+msgstr ""
+
+msgid "If checked, it won't  use the proxy configured in "
+"'Administration > Parameters > Centreon UI' to connect to the Remote Server."
+msgstr ""
 
 #~ msgid "SNMP global community."
 #~ msgstr "Comunidade SNMP global usada por padrão."
@@ -4757,3 +4786,19 @@ msgstr "Executa o comando definido na configuração do coletor (Configuração>
 
 #~ msgid "Choose the Nagios server instance this configuration is defined for."
 #~ msgstr "Selecione a instância do servidor Nagios para o qual esta configuração está definida."
+
+#: /www/include/Administration/parameters/ldap/help.po
+#~ msgid "This field is used to specify the interval, in hours, between two LDAP data synchronization. By default 1 hour."
+#~msgstr ""
+
+#: /www/include/Administration/parameters/ldap/help.po
+#~ msgid "If enabled, a user LDAP synchronization will be performed on login to update contact's data and calculate new Centreon ACLs."
+#~ "we'll check if modifications have been applied to its account."
+#~ msgstr ""
+
+#: centreon-web/www/include/configuration/configServers/help.php:7
+#~ msgid "Master Remote Server to which this server will be attached"
+#~ msgstr ""
+
+#~ msgid "Additional Remote Server to which this server will be attached"
+#~ msgstr ""

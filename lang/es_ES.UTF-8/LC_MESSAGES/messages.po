@@ -286,12 +286,7 @@ msgid "Graph"
 msgstr "Grafico"
 
 #: centreon-web/www/class/centreonXMLBGRequest.class.php:177 centreon-web/www/install/centreon_broker_translation.php:48
-#: centreon-web/www/include/Administration/parameters/ldap/form.php:69
-#: centreon-web/www/include/Administration/parameters/ldap/form.php:73
-#: centreon-web/www/include/Administration/parameters/ldap/form.php:77
-#: centreon-web/www/include/Administration/parameters/ldap/form.php:92
-#: centreon-web/www/include/Administration/parameters/ldap/form.php:99
-#: centreon-web/www/include/Administration/parameters/ldap/form.php:102
+#: centreon-web/www/include/Administration/parameters/ldap/form.php
 #: centreon-web/www/include/Administration/parameters/backup/formBackup.php:73
 #: centreon-web/www/include/Administration/parameters/backup/formBackup.php:124
 #: centreon-web/www/include/Administration/parameters/rrdtool/form.php:122
@@ -428,12 +423,7 @@ msgid "No"
 msgstr "No"
 
 #: centreon-web/www/class/centreonXMLBGRequest.class.php:177 centreon-web/www/install/centreon_broker_translation.php:49
-#: centreon-web/www/include/Administration/parameters/ldap/form.php:68
-#: centreon-web/www/include/Administration/parameters/ldap/form.php:72
-#: centreon-web/www/include/Administration/parameters/ldap/form.php:76
-#: centreon-web/www/include/Administration/parameters/ldap/form.php:84
-#: centreon-web/www/include/Administration/parameters/ldap/form.php:98
-#: centreon-web/www/include/Administration/parameters/ldap/form.php:101
+#: centreon-web/www/include/Administration/parameters/ldap/form.php
 #: centreon-web/www/include/Administration/parameters/backup/formBackup.php:72
 #: centreon-web/www/include/Administration/parameters/backup/formBackup.php:123
 #: centreon-web/www/include/Administration/parameters/rrdtool/form.php:121
@@ -1296,8 +1286,7 @@ msgstr "aplicar"
 
 #: centreon-web/www/install/smarty_translate.php:159 centreon-web/www/include/home/customViews/views.php:115
 msgid "Deleting this view might impact other users. Are you sure you want to do it?"
-msgstr ""
-"Eliminar esta vista podría afectar a otros usuarios. \n"
+msgstr "Eliminar esta vista podría afectar a otros usuarios.\\n"
 "¿Estás seguro de que quieres hacer eso?"
 
 #: centreon-web/www/install/smarty_translate.php:162 centreon-web/www/include/Administration/performance/viewData.php:303
@@ -1412,6 +1401,7 @@ msgstr "¿Configurar esta vista como la predeterminada?"
 #: centreon-web/www/include/Administration/parameters/ldap/form.php:245
 #: centreon-web/www/include/Administration/parameters/knowledgeBase/formKnowledgeBase.php:90
 #: centreon-web/www/include/Administration/parameters/debug/form.php:89
+#: centreon-web/www/include/Administration/parameters/centstorage/form.php:135
 #: centreon-web/www/include/Administration/parameters/centstorage/form.php:145
 #: centreon-web/www/include/Administration/parameters/backup/formBackup.php:139
 #: centreon-web/www/include/Administration/parameters/css/form.php:134
@@ -1953,6 +1943,7 @@ msgstr "Modelo de servicio"
 
 #: centreon-web/www/install/smarty_translate.php:615
 #: centreon-web/www/include/Administration/configChangelog/viewLogs.php:322
+#: centreon-web/www/include/Administration/configChangelog/viewLogs.php:327
 #: centreon-web/www/include/configuration/configObject/contact/displayNotification.php:108
 #: centreon-web/www/include/configuration/configObject/contactgroup/displayNotification.php:103
 #: centreon-web/www/include/eventLogs/xml/data.php:743 centreon-web/www/include/eventLogs/export/data.php:117
@@ -2622,8 +2613,8 @@ msgid "Installation"
 msgstr "Instalación"
 
 #: centreon-web/www/install/steps/step7.php:45
-msgid "Currently installing database... please do not interrupt this process.<br/><br/>"
-msgstr "Instalando las bases de datos ... no interrumpa el proceso. <br/> <br/>"
+msgid "Currently installing database and generating cache... please do not interrupt this process.<br/><br/>"
+msgstr "Instalando las bases de datos y generando el caché... no interrumpa el proceso. <br/> <br/>"
 
 #: centreon-web/www/install/steps/step7.php:50 centreon-web/www/install/step_upgrade/step4.php:61
 msgid "Step"
@@ -3240,13 +3231,18 @@ msgid "You seem to be having trouble with your upgrade."
 msgstr "Parece que hay un problema con tu actualización."
 
 #: centreon-web/www/install/step_upgrade/step4.php:70
-msgid "You may refer to the line that causes problem in order to find out more about the issue."
+msgid "You may refer to the line in the specified file in order to correct the issue."
 msgstr "Puede consultar la línea que es problemática para obtener más información sobre el incidente."
 
 #: centreon-web/www/install/step_upgrade/step4.php:71
 #, php-format
 msgid "The SQL files are located in %s"
 msgstr "Los archivos SQL se encuentran en %s"
+
+#: centreon-web/www/install/step_upgrade/step4.php:87
+#, php-format
+msgid "Please check the \"upgrade.log\" and the \"sql-error.log\" located in \"%s\" for more details"
+msgstr ""
 
 #: centreon-web/www/install/step_upgrade/step4.php:72
 msgid "But do not edit the SQL files unless you know what you are doing.Refresh this page when the problem is fixed."
@@ -4965,11 +4961,35 @@ msgstr "Mostrar tiempos de parada y reconocimientos en ghraphics"
 
 #: centreon-web/www/include/Administration/parameters/general/form.php:173
 msgid "Display comment on chart"
-msgstr "Ver comentarios en la tabla"
+msgstr "Mostrar comentario en gráfico"
 
 #: centreon-web/www/include/Administration/parameters/general/form.php:189
 msgid "Enable SSO authentication"
 msgstr "Habilitar autenticación SSO"
+
+msgid "Are you sure you want to change this parameter? Please read the help before."
+msgstr "¿Seguro que quieres cambiar este parámetro? Por favor, lea la ayuda primero."
+
+msgid "Keycloak trusted client addresses"
+msgstr "Direcciones de confianza de SSO Keycloak"
+
+msgid "Keycloak blacklist client addresses"
+msgstr "Direcciones de clientes de cerraduras Keycloak"
+
+msgid "Keycloak Server Url"
+msgstr "URL de servidor Keycloak"
+
+msgid "Keycloak Redirect Url"
+msgstr "Dirección de redireccionamiento de Centreon a Keycloak"
+
+msgid "Keycloak Client Realm"
+msgstr "Dominio cliente Keycloak"
+
+msgid "Keycloak Client ID"
+msgstr "Identificación de cliente Keycloak"
+
+msgid "Keycloak Client Secret"
+msgstr "Secreto de cliente Keycloak"
 
 #: centreon-web/www/include/Administration/parameters/general/form.php:192
 msgid "SSO only"
@@ -5400,8 +5420,7 @@ msgstr ""
 
 #: centreon-web/www/include/home/customViews/views.php:114
 msgid "Deleting this widget might impact users with whom you are sharing this view. Are you sure you want to do it?"
-msgstr ""
-"La eliminación de este widget podría afectar a los usuarios con los que comparte esta vista. \n"
+msgstr "La eliminación de este widget podría afectar a los usuarios con los que comparte esta vista.\\n"
 "¿Estás seguro de que quieres hacer eso?"
 
 #: centreon-web/www/include/home/customViews/views.php:116
@@ -10523,19 +10542,28 @@ msgid "You are not allowed to access this contact"
 msgstr "No estás autorizado para acceder a este contacto."
 
 #: centreon-web/www/include/configuration/configObject/contact/formContact.php:274
-#: centreon-web/www/include/configuration/configObject/contact_template_model/formContactTemplateModel.php:162
 msgid "Add a User"
 msgstr "Agregar un usuario"
 
 #: centreon-web/www/include/configuration/configObject/contact/formContact.php:276
-#: centreon-web/www/include/configuration/configObject/contact_template_model/formContactTemplateModel.php:164
 msgid "Modify a User"
 msgstr "Editar un usuario"
 
 #: centreon-web/www/include/configuration/configObject/contact/formContact.php:278
-#: centreon-web/www/include/configuration/configObject/contact_template_model/formContactTemplateModel.php:166
 msgid "View a User"
 msgstr "Ver un usuario"
+
+#: centreon-web/www/include/configuration/configObject/contact_template_model/formContactTemplateModel.php:162
+msgid "Add a User Template"
+msgstr "Agregar un modelo de usuario"
+
+#: centreon-web/www/include/configuration/configObject/contact_template_model/formContactTemplateModel.php:164
+msgid "Modify a User Template"
+msgstr "Editar un modelo de usuario"
+
+#: centreon-web/www/include/configuration/configObject/contact_template_model/formContactTemplateModel.php:166
+msgid "View a User Template"
+msgstr "Ver un modelo de usuario"
 
 #: centreon-web/www/include/configuration/configObject/contact/formContact.php:288
 #: centreon-web/www/include/configuration/configObject/contact_template_model/formContactTemplateModel.php:176
@@ -14180,3 +14208,90 @@ msgstr "cubo de basura"
 
 #~ msgid "Process Commands"
 #~ msgstr "Controles de proceso"
+
+#: centreon-web/www/include/Administration/parameters/ldap/form.php
+#~ msgid "Default contactgroup"
+#~ msgstr ""
+
+#: centreon-web/www/include/Administration/parameters/ldap/form.php
+#~ msgid "Synchronization Options"
+#~ msgstr ""
+
+#: centreon-web/www/include/Administration/parameters/ldap/form.php
+#~ msgid "LDAP synchronization interval (in hours)"
+#~ msgstr ""
+
+#: centreon-web/www/include/Administration/parameters/rrdtool/form.php
+#~ msgid "Enable LDAP synchronization on login"
+#~ msgstr ""
+
+#: centreon-web/www/include/Administration/parameters/ldap/form.php
+#~ msgid "An integer with a minimum value of 1 is required"
+#~ msgstr ""
+
+#~ msgid "Contacts with the 'Reach Centreon Front-end' option enabled"
+#~ msgstr ""
+
+#~ msgid "Refresh"
+#~ msgstr ""
+
+#~ msgid "To manually request a LDAP synchronization of a contact"
+#~ msgstr ""
+
+#~ msgid "The chosen contact(s) will be disconnected. Do you confirm the LDAP synchronization request ?"
+#~ msgstr ""
+
+#: centreon/www/include/configuration/configObject/contact/listContact.php
+#~ msgid "If the contact is connected, all his instances will be closed. Are you sure you want to request a "
+#~ "data synchronization at the next login of this Contact ?"
+#~ msgstr ""
+
+#: centreon/www/include/options/session/connected_user.php
+#~ msgid "All this contact sessions will be closed. Are you sure you want to request a synchronization at the next "
+#~ "login of this Contact ?"
+#~ msgstr ""
+
+#~ msgid "Refresh LDAP"
+#~ msgstr ""
+
+#~ msgid "Logout user"
+#~ msgstr ""
+
+#~ msgid "Synchronize LDAP"
+#~ msgstr ""
+
+#~ msgid "Error : unable to read or update the contact data in the DB"
+#~ msgstr ""
+
+#~ msgid "Last LDAP sync"
+#~ msgstr ""
+
+#~ msgid "No LDAP configuration enabled !"
+#~ msgstr ""
+
+#~ msgid "Resync data requested."
+#~ msgstr ""
+
+#~ msgid "This user isn't linked to a LDAP"
+#~ msgstr ""
+
+#~ msgid "Manually request to synchronize this contact with his LDAP"
+#~ msgstr ""
+
+#~ msgid "Already requested, please wait the CRON execution or for the user to login"
+#~ msgstr ""
+
+msgid "To use additional Remote Servers a Master Remote Server must be selected."
+msgstr "Para usar Remote Server adicionales, se debe seleccionar un Remote Server maestro."
+
+msgid "Attach additional Remote Servers"
+msgstr "Adjunte Remote Servers adicionales"
+
+#~ msgid "Attach poller to a master remote server"
+#~ msgstr ""
+
+#~ msgid "Attach poller to additional remote servers"
+#~ msgstr ""
+
+#~ msgid "This value needs to be an integer lesser than"
+#~ msgstr ""

@@ -125,7 +125,7 @@ class WidgetSourceTest extends TestCase
                     $result = 'vfs://widgets/';
 
                     return $result;
-                }))
+            }))
         ;
     }
 

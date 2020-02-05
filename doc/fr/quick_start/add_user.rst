@@ -6,7 +6,7 @@ Un utilisateur Centreon est à la fois un contact qui recevra les alertes issues
 de la supervision et une personne qui pourra se connecter à l'interface web
 Centreon.
 
-Premièrement vous devez vous :ref:`connectez<centreon_login>` à l'interface
+Premièrement vous devez vous :ref:`connecter<centreon_login>` à l'interface
 web Centreon avec un compte administrateur ou un compte disposant des droits
 d'accès pour gérer les objets.
 
@@ -59,7 +59,7 @@ Accès à l'interface web Centreon
 Pour se connecter à l'interface Centreon saisir les paramètres suivants :
 
 * Autoriser l'accès via le champ **Reach Centreon Front-end**
-* Définir son mot de passe (**Password**) et le confirmer (**Confirm Password**)
+* Définir votre mot de passe (**Password**) et le confirmer (**Confirm Password**)
 * Définir votre fuseau horaire via le champ **Timezone / Location**
 * Définir si votre compte est administrateur de la plate-forme (**Admin**) ou un simple utilisateur
 

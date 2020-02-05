@@ -2,7 +2,7 @@
 $help = array();
 
 /*
- * LDAP Informations
+ * LDAP Information
  */
 $help['ar_name'] = dgettext('help', 'Name of configuration');
 $help['ar_description'] = dgettext('help', 'Short description of configuration');
@@ -59,3 +59,12 @@ $help['user_email'] = dgettext('help', 'The user email<br/>In Centreon : Email')
 $help['user_pager'] = dgettext('help', 'The user pager<br/>In Centreon : Pager');
 $help['group_name'] = dgettext('help', 'The group name<br/>In Centreon : Contact Group Name');
 $help['group_member'] = dgettext('help', 'The LDAP attribute for relation between group and user');
+$help['ldap_sync_interval'] = dgettext(
+    'help',
+    'This field is used to specify the interval, in hours, between two LDAP data synchronization. By default 1 hour.'
+);
+$help['ldap_auto_sync'] = dgettext(
+    'help',
+    "If enabled, a user LDAP synchronization will be performed on login to update contact's data and calculate " .
+    "new Centreon ACLs."
+);

@@ -14,8 +14,6 @@ In order to list editable settings, use the **SHOW** action::
 
   [root@centreon ~]# ./centreon -u admin -p centreon -o SETTINGS -a show
   parameter;value
-  broker;ndo
-  broker_correlator_script;
   centstorage;1
   debug_auth;0
   debug_ldap_import;0
@@ -58,11 +56,6 @@ Parameters that you may change are:
 =========================== ===================================================== ================================================
 Column                      Description                                           Possible values and examples
 =========================== ===================================================== ================================================
-broker                      Broker engine                                         'broker' for Centreon Broker
-
-broker_correlator_script    This parameter is misleading (subject to changes)     i.e: cbd
-                            Refers to the Centreon Broker init script
-
 centstorage                 Enable/disable CentStorage                            Enable: '1', Disable: '0'
 
 debug_auth                  Enable/disable authentication debug                   Enable: '1', Disable: '0'

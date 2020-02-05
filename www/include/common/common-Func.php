@@ -161,36 +161,37 @@ function tidySearchKey($search, $advanced_search)
 
 #
 
+/**
+ * Allows to load Smarty's configuration in relation to a path
+ *
+ * @param {string} [$path=null] Path to the default template directory
+ * @param {object} [$tpl=null] A Smarty instance
+ * @param {string} [$subDir=null] A subdirectory of path
+ *
+ * @return {empty|object} A Smarty instance with configuration parameters
+ */
 function initSmartyTpl($path = null, $tpl = null, $subDir = null)
 {
     if (!$tpl) {
         return;
     }
     $tpl->template_dir = $path . $subDir;
-    $tpl->compile_dir = "../GPL_LIB/SmartyCache/compile";
-    $tpl->config_dir = "../GPL_LIB/SmartyCache/config";
-    $tpl->cache_dir = "../GPL_LIB/SmartyCache/cache";
-    $tpl->plugins_dir[] = "../GPL_LIB/smarty-plugins";
+    $tpl->compile_dir = __DIR__ . "/../../../GPL_LIB/SmartyCache/compile";
+    $tpl->config_dir = __DIR__ . "/../../../GPL_LIB/SmartyCache/config";
+    $tpl->cache_dir = __DIR__ . "/../../../GPL_LIB/SmartyCache/cache";
+    $tpl->plugins_dir[] = __DIR__ . "/../../../GPL_LIB/smarty-plugins";
     $tpl->caching = 0;
     $tpl->compile_check = true;
     $tpl->force_compile = true;
     return $tpl;
 }
 
-function initSmartyTplForPopup($path = null, $tpl = null, $subDir = null, $centreon_path = null)
+/**
+ * This function is mainly used in widgets
+ */
+function initSmartyTplForPopup($path = null, $tpl = null, $subDir = null, $centreonPath = null)
 {
-    if (!$tpl) {
-        return;
-    }
-    $tpl->template_dir = $path . $subDir;
-    $tpl->compile_dir = _CENTREON_PATH_ . "/GPL_LIB/SmartyCache/compile";
-    $tpl->config_dir = _CENTREON_PATH_ . "/GPL_LIB/SmartyCache/config";
-    $tpl->cache_dir = _CENTREON_PATH_ . "/GPL_LIB/SmartyCache/cache";
-    $tpl->plugins_dir[] = _CENTREON_PATH_ . "/GPL_LIB/smarty-plugins";
-    $tpl->caching = 0;
-    $tpl->compile_check = true;
-    $tpl->force_compile = true;
-    return $tpl;
+    return initSmartyTpl($path, $tpl, $subDir);
 }
 
 /*
@@ -1951,6 +1952,37 @@ function getNDOPrefix()
     return $conf_ndo["db_prefix"];
 }
 
+/**
+ * Send a well formatted error.
+ *
+ * @param string $message Message to send
+ * @param int $code HTTP error code
+ * @param string $type Response type (json by default)
+ */
+function sendError(string $message, int $code = 500, string $type = 'json')
+{
+    switch ($type) {
+        case 'xml':
+            header('Content-Type: text/xml');
+            echo '<message>' . $message . '</message>';
+            break;
+        case 'json':
+        default:
+            header('Content-Type: application/json');
+            echo json_encode(['message' => $message]);
+            break;
+    }
+    switch ($code) {
+        case 401:
+            header("HTTP/1.0 401 Unauthorized");
+            break;
+        case 500:
+        default:
+            header("HTTP/1.0 500 Internal Server Error");
+    }
+    exit();
+}
+
 /* Ajax tests */
 
 function get_error($motif)
@@ -2120,18 +2152,16 @@ function getListTemplates($pearDB, $svcId, $alreadyProcessed = array())
         return $svcTmpl;
     } else {
         $alreadyProcessed[] = $svcId;
-
-        $query = "SELECT * FROM service WHERE service_id = " . intval($svcId);
+        $query = "SELECT * FROM service WHERE service_id = " . (int)$svcId;
         $stmt = $pearDB->query($query);
-        if ($stmt->rowCount()) {
-            $row = $stmt->fetchRow();
+        if ($row = $stmt->fetch()) {
             if ($row['service_template_model_stm_id'] !== null) {
                 $svcTmpl = array_merge(
                     $svcTmpl,
                     getListTemplates($pearDB, $row['service_template_model_stm_id'], $alreadyProcessed)
                 );
-                $svcTmpl[] = $row;
             }
+            $svcTmpl[] = $row;
         }
         return $svcTmpl;
     }

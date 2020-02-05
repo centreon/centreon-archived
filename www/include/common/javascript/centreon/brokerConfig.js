@@ -62,7 +62,6 @@ function clonifyTableFields(attributeName,displayName){
             //table1.prepend(control);
             firstPosition.after(newdiv);
         }
-
     }
 
     // Finaly, we make each group of fields clonable (if not alreadyProcessed)
@@ -141,9 +140,71 @@ jQuery(function () {
    });
 });
 
-/* Hooks for some fields */
+// Hooks for some fields
+var countConnections = {
+    // Hook on load tab
+    onLoad: function (element, argument) {
+        argument = window.JSON.parse(argument);
+        return function () {
+            var entry = element.name.match('(input|output)(\\[\\d\\])\\[(\\w*)\\]');
+            var target = entry[1] + entry[2] + '[' + argument.target + ']';
+
+            if (document.getElementsByName(target)[1].value == '') {
+                document.getElementsByName(target)[1].value = 1;
+            }
+        }
+    },
+    // Hook on change the target
+    onChange: function (argument) {
+        return function (self) {
+            var entry = self.name.match('(input|output)(\\[\\d\\])\\[(\\w*)\\]');
+            var target = entry[1] + entry[2] + '[' + argument.target + ']';
+            var entryValue = document.getElementsByName(target)[1].value.replace(",", ".");
+
+            if (entryValue == '' || isNaN(entryValue) || entryValue < 1) {
+                document.getElementsByName(target)[1].value = 1;
+            } else {
+                document.getElementsByName(target)[1].value = Math.trunc(entryValue);
+            }
+        }
+    }
+}
+
+// Hooks for some fields
+var rrdArguments = {
+    // Hook on load tab
+    onLoad: function (element, argument) {
+        argument = window.JSON.parse(argument);
+        return function () {
+            var entry = element.name.match('(input|output)(\\[\\d\\])\\[(\\w*)\\]');
+            var option = entry.input;
+            var target = entry[1] + entry[2] + '[' + argument.target + ']';
+
+            if (document.querySelector('input[name="' + option + '"]:checked').value === 'disable') {
+                document.getElementsByName(target)[1].disabled = true;
+            }
+        }
+    },
+    // Hook on change the target
+    onChange: function (argument) {
+        return function (self) {
+            var entry = self.name.match('(input|output)(\\[\\d\\])\\[(\\w*)\\]');
+            var option = entry.input;
+            var target = entry[1] + entry[2] + '[' + argument.target + ']';
+
+            if (document.querySelector('input[name="' + option + '"]:checked').value === 'disable') {
+                document.getElementsByName(target)[1].value = '';
+                document.getElementsByName(target)[1].disabled = true;
+            } else {
+                document.getElementsByName(target)[1].disabled = false;
+            }
+        }
+    }
+}
+
+// Hooks for some fields
 var luaArguments = {
-    /* Hook on load tab */
+    // Hook on load tab
     onLoad: function (element, argument) {
         argument = window.JSON.parse(argument);
         return function () {
@@ -155,7 +216,7 @@ var luaArguments = {
             luaArguments.changeInput(type, target)
         }
     },
-    /* Hook on change the target */
+    // Hook on change the target
     onChange: function (argument) {
         return function (self) {
             var entry = self.name.match('(input|output)(\\[\\d\\])\\[(\\w*)\\]');
@@ -166,9 +227,9 @@ var luaArguments = {
             luaArguments.changeInput(type,target)
         }
     },
-    /* Internal function for apply the input change */
+    // Internal function for apply the input change
     changeInput: function (type, name) {
-        /* Get all attributes */
+        // Get all attributes
         var attrs = {};
         name = '[name="' + name + '"]:input';
         jQuery.each(jQuery(name)[0].attributes, function (idx, attr) {
@@ -180,7 +241,7 @@ var luaArguments = {
         var $elParent = jQuery(name).parent();
         var value = jQuery(name).val();
         jQuery(name).remove();
-        /* Find the good input for the type by default text => string */
+        // Find the good input for the type by default text => string
         if (type === 'number') {
             var newEl = jQuery('<input />')
                 .attr(attrs)

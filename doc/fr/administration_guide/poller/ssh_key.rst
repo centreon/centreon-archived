@@ -13,10 +13,8 @@ l’utilisateur **centreon** : ::
     $ ssh-keygen -t rsa
 
 .. note::
-    Appuyez sur la touche *entrée* quand il vous est demandé de saisir un
-    fichier pour enregistrer la clé. Laissez le mot de passe vide si vous le
-    souhaitez. Cependant, ce n'est pas recommandé. Vous obtiendrez une empreinte
-    digitale de clé et une image randomart.
+    Appuyez sur la touche *entrée* quand il vous sera demandé de saisir un fichier pour enregistrer la clé.
+    **Laissez le mot de passe vide**. Vous recevrez une empreinte digitale de clé et une image randomart.
 
 Générez un mot de passe sur le nouveau serveur pour l'utilisateur
 **centreon** : ::

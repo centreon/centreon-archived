@@ -1539,6 +1539,10 @@ msgstr "Configurer cette vue comme celle par défaut ?"
 #: centreon-web/www/include/Administration/parameters/ldap/form.php:245
 #: centreon-web/www/include/Administration/parameters/knowledgeBase/formKnowledgeBase.php:90
 #: centreon-web/www/include/Administration/parameters/debug/form.php:89
+#: centreon-web/www/include/Administration/parameters/debug/form.php:134
+msgid "Retention duration for audit logs"
+msgstr "Durée de rétention pour les logs d'actions"
+
 #: centreon-web/www/include/Administration/parameters/centstorage/form.php:145
 #: centreon-web/www/include/Administration/parameters/backup/formBackup.php:139
 #: centreon-web/www/include/Administration/parameters/css/form.php:134
@@ -2108,6 +2112,10 @@ msgstr "Modèle de service"
 
 #: centreon-web/www/install/smarty_translate.php:615
 #: centreon-web/www/include/Administration/configChangelog/viewLogs.php:322
+#: centreon-web/www/include/Administration/configChangelog/viewLogs.php:327
+msgid "looks like a CLAPI action"
+msgstr "Probablement une action réalisée par CLAPI"
+
 #: centreon-web/www/include/configuration/configObject/contact/displayNotification.php:108
 #: centreon-web/www/include/configuration/configObject/contactgroup/displayNotification.php:103
 #: centreon-web/www/include/eventLogs/xml/data.php:743
@@ -2839,12 +2847,9 @@ msgid "Installation"
 msgstr "Installation"
 
 #: centreon-web/www/install/steps/step7.php:45
-msgid ""
-"Currently installing database... please do not interrupt this process.<br/"
-"><br/>"
-msgstr ""
-"Installation des bases de données en cours... ne pas interrompre le "
-"processus.<br/><br/>"
+msgid "Currently installing database and generating cache... please do not interrupt this process."
+msgstr "Installation en cours de la base de données et génération du cache... "
+"ne pas interrompre le processus.<br/><br/>"
 
 #: centreon-web/www/install/steps/step7.php:50
 #: centreon-web/www/install/step_upgrade/step4.php:61
@@ -5238,6 +5243,30 @@ msgstr "Afficher les temps d'arrêts et acquittements sur les ghraphiques"
 msgid "Display comment on chart"
 msgstr "Afficher les commentaires sur le graphique"
 
+msgid "Are you sure you want to change this parameter? Please read the help before."
+msgstr "Êtes-vous sûr de vouloir changer ce paramètre ? Veuillez lire l'aide avant."
+
+msgid "Keycloak trusted client addresses"
+msgstr "Adresses des clients de confiance SSO Keycloak"
+
+msgid "Keycloak blacklist client addresses"
+msgstr "Adresses des clients de bloqués Keycloak"
+
+msgid "Keycloak Server Url"
+msgstr "URL du serveur Keycloak"
+
+msgid "Keycloak Redirect Url"
+msgstr "Adresse de redirection vers Centreon depuis Keycloak"
+
+msgid "Keycloak Client Realm"
+msgstr "Royaume client Keycloak"
+
+msgid "Keycloak Client ID"
+msgstr "Identifiant client Keycloak"
+
+msgid "Keycloak Client Secret"
+msgstr "Secret client Keycloak"
+
 #: centreon-web/www/include/Administration/parameters/general/form.php:189
 msgid "Enable SSO authentication"
 msgstr "Activer l'authentification SSO"
@@ -5524,6 +5553,79 @@ msgstr "Propriétés de RRDTool"
 #: centreon-web/www/include/Administration/parameters/rrdtool/form.php:226
 msgid "RRDTool Configuration"
 msgstr "Configuration de RRDTool"
+
+#: centreon-web/www/include/Administration/parameters/ldap/form.php
+msgid "Synchronization Options"
+msgstr "Options de Synchronisation"
+
+msgid "An integer with a minimum value of 1 is required"
+msgstr "Un entier supérieur à 1 est requis"
+
+#: centreon-web/www/include/Administration/parameters/ldap/form.php
+msgid "Default contactgroup"
+msgstr "Groupe de contacts par défaut"
+
+#: centreon-web/www/include/Administration/parameters/ldap/form.php
+msgid "LDAP synchronization interval (in hours)"
+msgstr "Intervalle (en heures), entre les synchronisations LDAP"
+
+#: centreon-web/www/include/Administration/parameters/ldap/form.php
+msgid "Enable LDAP synchronization on login"
+msgstr "Synchronisation LDAP lors du login"
+
+msgid "Contacts with the 'Reach Centreon Front-end' option enabled"
+msgstr "Contacts autorisés à se connecter à l'interface web"
+
+msgid "Refresh"
+msgstr "Actualiser"
+
+msgid "To manually request a LDAP synchronization of a contact"
+msgstr "Demande de synchronisation LDAP du contact"
+
+msgid "This user isn't linked to a LDAP"
+msgstr "Ce contact n'est lié à aucun LDAP"
+
+msgid "Manually request to synchronize this contact with his LDAP"
+msgstr "Demande de synchronisation LDAP du contact"
+
+msgid "Already requested, please wait the CRON execution or for the user to login"
+msgstr "Demande enregistrée, merci d'attendre la prochaine exécution du CRON ou connexion du contact"
+
+msgid "The chosen contact(s) will be disconnected. Do you confirm the LDAP synchronization request ?"
+msgstr "Les contacts sélectionnés vont être déconnectés. Confirmez-vous la demande de synchronisation LDAP ?"
+
+# centreon/www/include/configuration/configObject/contact/listContact.php
+msgid "If the contact is connected, all his instances will be closed. Are you sure you want to request a "
+"data synchronization at the next login of this Contact ?"
+msgstr "Si ce contact est connecté, toutes ses instances seront supprimées. "
+"Êtes-vous sûr de vouloir que ce contact synchronise ses données LDAP lors de sa prochaine connexion ?"
+
+#centreon/www/include/options/session/connected_user.php
+msgid "All this contact sessions will be closed. Are you sure you want to request a synchronization at the next "
+"login of this Contact ?"
+msgstr "Toutes les sessions de ce contact seront supprimées. Êtes-vous sûr de vouloir que ce contact exécute une"
+"synchronisation lors de sa prochaine connexion ?"
+
+msgid "Synchronize LDAP"
+msgstr "Synchroniser avec le LDAP"
+
+msgid "No LDAP configuration enabled !"
+msgstr "Aucune configuration LDAP active !"
+
+msgid "Resync data requested."
+msgstr "Mise à jour des données demandée."
+
+msgid "Error : unable to read or update the contact data in the DB"
+msgstr "Erreur : impossible de lire ou de mettre à jour les données en DB"
+
+msgid "Last LDAP sync"
+msgstr "Dernière synchro LDAP"
+
+msgid "Refresh LDAP"
+msgstr "Actualiser LDAP"
+
+msgid "Logout user"
+msgstr "Déconnecter le contact"
 
 #: centreon-web/www/include/Administration/configChangelog/viewLogs.php:127
 #: centreon-web/www/include/Administration/configChangelog/viewLogs.php:134
@@ -9347,6 +9449,10 @@ msgstr "Par OID"
 msgid "By OID and Host"
 msgstr "Par OID et hôte"
 
+#: centreon-web/www/include/configuration/configObject/traps/formTraps.php
+msgid "By OID, Host and Service"
+msgstr "Par OID, hôte et service"
+
 #: centreon-web/www/include/configuration/configObject/traps/formTraps.php:325
 msgid "Execution type"
 msgstr "Type d'exécution"
@@ -10881,19 +10987,28 @@ msgid "You are not allowed to access this contact"
 msgstr "Vous n'êtes pas autorisé à accéder à ce contact"
 
 #: centreon-web/www/include/configuration/configObject/contact/formContact.php:274
-#: centreon-web/www/include/configuration/configObject/contact_template_model/formContactTemplateModel.php:162
 msgid "Add a User"
 msgstr "Ajouter un utilisateur"
 
 #: centreon-web/www/include/configuration/configObject/contact/formContact.php:276
-#: centreon-web/www/include/configuration/configObject/contact_template_model/formContactTemplateModel.php:164
 msgid "Modify a User"
 msgstr "Modifier un utilisateur"
 
 #: centreon-web/www/include/configuration/configObject/contact/formContact.php:278
-#: centreon-web/www/include/configuration/configObject/contact_template_model/formContactTemplateModel.php:166
 msgid "View a User"
 msgstr "Visualiser un utilisateur"
+
+#: centreon-web/www/include/configuration/configObject/contact_template_model/formContactTemplateModel.php:162
+msgid "Add a User Template"
+msgstr "Ajouter un modèle utilisateur"
+
+#: centreon-web/www/include/configuration/configObject/contact_template_model/formContactTemplateModel.php:164
+msgid "Modify a User Template"
+msgstr "Modifier un modèle utilisateur"
+
+#: centreon-web/www/include/configuration/configObject/contact_template_model/formContactTemplateModel.php:166
+msgid "View a User Template"
+msgstr "Visualiser un modèle utilisateur"
 
 #: centreon-web/www/include/configuration/configObject/contact/formContact.php:288
 #: centreon-web/www/include/configuration/configObject/contact_template_model/formContactTemplateModel.php:176
@@ -14587,21 +14702,6 @@ msgstr "Configurer les collecteurs"
 msgid "services"
 msgstr "services"
 
-msgid "Critical services"
-msgstr "Services critiques"
-
-msgid "Warning services"
-msgstr "Services en alertes"
-
-msgid "Unknown services"
-msgstr "Services inconnus"
-
-msgid "Ok services"
-msgstr "Services Ok"
-
-msgid "Pending services"
-msgstr "Services en attente"
-
 msgid "Edit profile"
 msgstr "Editer le profil"
 
@@ -14686,8 +14786,11 @@ msgstr "en tant que"
 msgid "Server Configuration"
 msgstr "Configuration du Serveur"
 
-msgid "Attach poller to a server"
-msgstr "Attacher un collecteur à un serveur"
+msgid "Attach poller to a master remote server"
+msgstr "Attacher un collecteur à un remote server"
+
+msgid "Attach poller to additional remote servers"
+msgstr "Attacher un collecteur à des remote servers additionels"
 
 msgid "Advanced: reverse Centreon Broker communication flow"
 msgstr "Avancé: inversé le flux de communication du broker Centreon"
@@ -14721,3 +14824,15 @@ msgstr "Filtrer par groupe de services"
 
 msgid "Chart"
 msgstr "Graphiques"
+
+msgid "To use additional Remote Servers a Master Remote Server must be selected."
+msgstr "Un Remote Server principal doit être sélectionné, avant d'utiliser des Remote Server additionnels."
+
+msgid "Attach additional Remote Servers"
+msgstr "Ajouter des Remote Server additonnels"
+
+msgid "Locked elements"
+msgstr "Eléments verrouillés"
+
+msgid "This value needs to be an integer lesser than"
+msgstr "Cette valeur doit être un entier inférieur à"

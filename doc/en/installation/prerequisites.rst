@@ -23,8 +23,8 @@ Centreon offers an ISO file including CentOS v7 and all the required packages.
 If you prefer to use **Red Hat OS** you must install **version v7**
 and use the RPMs available from our repositories.
 
-Alternatively, you can use another GNU/Linux operating system,
-but this will require installing the platform from source files and therefore be more complex.
+Open Source users, without Support contract, can use another GNU/Linux operating system.
+This will require installing the platform from source files and therefore be more complex.
 
 .. note::
     Only 64-bit operating systems (x86_64) are supported.
@@ -37,9 +37,9 @@ DBMS
 +----------+------------+
 | Software | Version    |
 +==========+============+
-| MariaDB  | >= 10.1.29 |
+| MariaDB  | = 10.2.x   |
 +----------+------------+
-| MySQL    | >= 5.6.16  |
+| MySQL    | = 5.6.x    |
 +----------+------------+
 
 Software dependencies
@@ -58,7 +58,7 @@ The following table describes the software dependencies:
 +----------+------------------+
 | openssl  | >= 1.0.1k        |
 +----------+------------------+
-| PHP      | 7.1 & 7.2        |
+| PHP      | 7.2              |
 +----------+------------------+
 | Qt       | >= 4.7.4         |
 +----------+------------------+
@@ -227,7 +227,7 @@ Description of software and linked users:
 +=================+==================+=================+=======================+
 | Apache          | httpd24-httpd    | apache          | automatic start       |
 +-----------------+------------------+-----------------+-----------------------+
-| PHP-FPM         | rh-php71-php-fpm | apache          | automatic start       |
+| PHP-FPM         | rh-php72-php-fpm | apache          | automatic start       |
 +-----------------+------------------+-----------------+-----------------------+
 | MySQL (MariaDB) | mysqld (mysql)   | mysql           | automatic start       |
 +-----------------+------------------+-----------------+-----------------------+

@@ -1,0 +1,106 @@
+Centreon\Domain\Acknowledgement\Acknowledgement:
+    properties:
+        authorId:
+            - Type:
+                type: integer
+            - NotNull: ~
+        comment:
+            - Type:
+                type: string
+                groups: [Default, add_host_ack, add_service_ack]
+            - NotNull:
+                  groups: [Default, add_host_ack, add_service_ack]
+        entryTime:
+            - Type:
+                type: integer
+        hostId:
+            - Type:
+                type: integer
+                groups: [Default, add_host_ack, add_service_ack]
+            - NotNull:
+                groups: [Default, add_host_ack, add_service_ack]
+        pollerId:
+            - Type:
+                type: integer
+            - NotNull: ~
+        isNotifyContacts:
+            - Type:
+                type: boolean
+                groups: [Default, add_host_ack, add_service_ack]
+            - NotNull:
+                groups: [Default, add_host_ack, add_service_ack]
+        isPersistentComment:
+            - Type:
+                type: boolean
+                groups: [Default, add_host_ack, add_service_ack]
+            - NotNull:
+                groups: [Default, add_host_ack, add_service_ack]
+        isSticky:
+            - Type:
+                type: boolean
+                groups: [Default, add_host_ack, add_service_ack]
+            - NotNull:
+                groups: [Default, add_host_ack, add_service_ack]
+        serviceId:
+            - Type:
+                type: integer
+                groups: [Default, add_service_ack]
+            - NotNull:
+                groups: [add_service_ack]
+
+# Used to validate the Downtime entity
+Centreon\Domain\Downtime\Downtime:
+    properties:
+        startTime:
+            - Type:
+                type: DateTime
+            - NotNull: ~
+        endTime:
+            - Type:
+                type: DateTime
+            - NotNull: ~
+        isFixed:
+            - Type:
+                type: boolean
+        duration:
+            - Type:
+                type: integer
+            - NotNull: ~
+        authorId:
+            - Type:
+                type: integer
+        comment:
+            - Type:
+                type: string
+            - NotNull: ~
+        hostId:
+            - Type:
+                type: integer
+        serviceId:
+            - Type:
+                type: integer
+        pollerId:
+            - Type:
+                type: integer
+
+# Used to validate the Proxy entity
+Centreon\Domain\Proxy\Proxy:
+    properties:
+        url:
+            - Type:
+                  type: string
+            - NotNull: ~
+        port:
+            - Type:
+                  type: integer
+            - PositiveOrZero: ~
+            - LessThanOrEqual: 65535
+            - NotNull: ~
+        user:
+            - Type:
+                  type: string
+            - NotNull: ~
+        password:
+            - Type:
+                  type: string
+            - NotNull: ~

@@ -94,7 +94,7 @@ function hasVirtualNameNeverUsed($vmetricName = null, $indexId = null)
         print "DB Error : " . $e->getMessage();
     }
     
-    $vmetric = $prepareVirtualM->fetchRow();
+    $vmetric = $prepareVirtualM->fetch();
     $numberOfVirtualMetric = $prepareVirtualM->rowCount();
     $prepareVirtualM->closeCursor();
 
@@ -112,7 +112,7 @@ function hasVirtualNameNeverUsed($vmetricName = null, $indexId = null)
         print "DB Error : " . $e->getMessage();
     }
     
-    $metric = $prepareMetric->fetchRow();
+    $metric = $prepareMetric->fetch();
     $numberOfVirtualMetric += $prepareMetric->rowCount();
     $prepareMetric->closeCursor();
     
@@ -170,7 +170,7 @@ function multipleVirtualMetricInDB($vmetrics = array(), $nbrDup = array())
             print "DB Error : " . $e->getMessage();
         }
         
-        $vmConfiguration = $prepareStatement->fetchRow();
+        $vmConfiguration = $prepareStatement->fetch();
         $vmConfiguration["vmetric_id"] = '';
         
         for ($newIndex= 1; $newIndex <= $nbrDup[$vmetricId]; $newIndex++) {
@@ -286,9 +286,9 @@ function insertVirtualMetric()
         $debug_path = realpath($centreon->optGen["debug_path"]);
         error_log("[" . date("d/m/Y H:s") . "] VIRTUAL METRIC : $rq \n", 3, $debug_path . "/rrdtool.log");
     }
-    $DBRESULT = $pearDB->query($rq);
-    $DBRESULT = $pearDB->query("SELECT MAX(vmetric_id) FROM virtual_metrics");
-    $vmetric_id = $DBRESULT->fetchRow();
+    $dbResult = $pearDB->query($rq);
+    $dbResult = $pearDB->query("SELECT MAX(vmetric_id) FROM virtual_metrics");
+    $vmetric_id = $dbResult->fetch();
     $vmetric_id = $vmetric_id["MAX(vmetric_id)"];
     return $vmetric_id;
 }
@@ -351,7 +351,7 @@ function updateVirtualMetric($vmetric_id = null)
         : $rq .= "NULL, ";
     $rq .= "vmetric_activate = NULL, ck_state = NULL ";
     $rq .= "WHERE vmetric_id = '" . $vmetric_id . "'";
-    $DBRESULT = $pearDB->query($rq);
+    $dbResult = $pearDB->query($rq);
 
     if (!enableVirtualMetricInDB($vmetric_id)) {
         disableVirtualMetricInDB($vmetric_id, 1);
@@ -385,13 +385,13 @@ function &disableVirtualMetric($v_id = null, $force = 0)
     $l_where = ($force == 0) ? " AND `vmetric_activate` = '1'" : "";
     $l_pqy = $pearDB->query("SELECT index_id, vmetric_name FROM `virtual_metrics` WHERE `vmetric_id`='$v_id'$l_where;");
     if ($l_pqy->rowCount() == 1) {
-        $vmetric = $l_pqy->fetchRow();
+        $vmetric = $l_pqy->fetch();
         $l_pqy->closeCursor();
         $query = "SELECT vmetric_id FROM `virtual_metrics` WHERE `index_id`='" . $vmetric["index_id"] .
             "' AND `vmetric_activate` = '1' " .
             "AND `rpn_function` REGEXP '(^|,)" . str_replace($repA, $repB, $vmetric["vmetric_name"]) . "(,|$)';";
         $l_pqy = $pearDB->query($query);
-        while ($d_vmetric = $l_pqy->fetchRow()) {
+        while ($d_vmetric = $l_pqy->fetch()) {
             $lv_dis = disableVirtualMetric($d_vmetric["vmetric_id"]);
             if (is_array($lv_dis)) {
                 foreach ($lv_dis as $pkey => $vm) {
@@ -444,7 +444,7 @@ function enableVirtualMetric($v_id, $v_name = null, $index_id = null)
         "WHERE $l_where AND (vmetric_activate = '0' OR vmetric_activate IS NULL);";
     $l_pqy = $pearDB->query($query);
     if ($l_pqy->rowCount() == 1) {
-        $p_vmetric = $l_pqy->fetchRow();
+        $p_vmetric = $l_pqy->fetch();
         $l_mlist = preg_split("/\,/", $p_vmetric["rpn_function"]);
         foreach ($l_mlist as $l_mnane) {
             $lv_ena = enableVirtualMetric(null, $l_mnane, $p_vmetric["index_id"]);

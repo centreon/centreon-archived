@@ -1,0 +1,4 @@
+centreon:
+    resource: Centreon/Application/Controller/
+    type: annotation
+    prefix: /centreon/api/{version}

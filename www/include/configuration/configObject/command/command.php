@@ -95,14 +95,8 @@ if ($min) {
              */
             require_once($path."minHelpCommand.php");
             break;
-        case "p":
-            /*
-             * Test the plugin
-             */
-            require_once($path."minPlayCommand.php");
-            break;
         default:
-            require_once($path."minCommand.php");
+            require_once($path."minHelpCommand.php");
             break;
     }
 } else {

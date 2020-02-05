@@ -41,14 +41,22 @@ include_once("./class/centreonUtils.class.php");
 
 include("./include/common/autoNumLimit.php");
 
-/* Search clause */
-$search = '';
+//initializing filters values
+$search = filter_var(
+    $_POST["searchDT"] ?? $_GET["searchDT"] ?? '',
+    FILTER_SANITIZE_STRING
+);
 
-if (isset($_POST['searchDT']) && $_POST['searchDT']) {
-    $search = $_POST['searchDT'];
-    $downtime->setSearch($search);
+if ($_POST["Search"]) {
+    //saving chosen filters values
+    $centreon->historySearch[$url] = array();
+    $centreon->historySearch[$url]["search"] = $search;
+} else {
+    //restoring saved values
+    $search = $centreon->historySearch[$url]['search'] ?? '';
 }
 
+$downtime->setSearch($search);
 /*
  *  Smarty template Init
  */
@@ -82,6 +90,12 @@ $form = new HTML_QuickFormCustom('select_form', 'POST', "?p=" . $p);
  * Different style between each lines
  */
 $style = "one";
+
+$attrBtnSuccess = array(
+    "class" => "btc bt_success",
+    "onClick" => "window.history.replaceState('', '', '?p=" . $p . "');"
+);
+$form->addElement('submit', 'Search', _("Search"), $attrBtnSuccess);
 
 /*
  * Fill a tab with a mutlidimensionnal Array we put in $tpl

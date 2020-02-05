@@ -60,17 +60,21 @@ class CentreonInstance extends CentreonObject
     {
         parent::__construct($dependencyInjector);
         $this->object = new \Centreon_Object_Instance($dependencyInjector);
-        $this->params = array(
+        $this->params = [
             'localhost' => '0',
             'ns_activate' => '1',
             'ssh_port' => '22',
             'nagios_bin' => '/usr/sbin/centengine',
             'nagiostats_bin' => '/usr/bin/centenginestats',
-            'init_script' => 'centengine',
+            'engine_start_command' => 'service centengine start',
+            'engine_stop_command' => 'service centengine stop',
+            'engine_restart_command' => 'service centengine restart',
+            'engine_reload_command' => 'service centengine reload',
+            'broker_reload_command' => 'service cbd reload',
             'centreonbroker_cfg_path' => '/etc/centreon-broker',
             'centreonbroker_module_path' => '/usr/share/centreon/lib/centreon-broker',
             'centreonconnector_path' => '/usr/lib64/centreon-connector'
-        );
+        ];
         $this->insertParams = array('name', 'ns_ip_address', 'ssh_port');
         $this->exportExcludedParams = array_merge(
             $this->insertParams,
@@ -145,18 +149,20 @@ class CentreonInstance extends CentreonObject
 
         $pollerState = $this->centreonConfigPoller->getPollerState();
 
-        $params = array(
+        $params = [
             'id',
             'name',
             'localhost',
             'ns_ip_address',
             'ns_activate',
             'ns_status',
-            'init_script',
+            'engine_restart_command',
+            'engine_reload_command',
+            'broker_reload_command',
             'nagios_bin',
             'nagiostats_bin',
             'ssh_port'
-        );
+        ];
         $paramString = str_replace("_", " ", implode($this->delim, $params));
         $paramString = str_replace("ns ", "", $paramString);
         $paramString = str_replace("nagios ", "", $paramString);

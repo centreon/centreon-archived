@@ -63,6 +63,9 @@ $trap = array();
 $initialValues = array();
 $hServices = array();
 
+$cdata = CentreonData::getInstance();
+$preexecArray = array();
+$mrulesArray = array();
 if (($o == TRAP_MODIFY || $o == TRAP_WATCH) && is_int($trapsId)) {
     $DBRESULT = $pearDB->query("SELECT * FROM traps WHERE traps_id = '$trapsId' LIMIT 1");
     # Set base value
@@ -70,28 +73,27 @@ if (($o == TRAP_MODIFY || $o == TRAP_WATCH) && is_int($trapsId)) {
     $trap['severity'] = $trap['severity_id'];
     $DBRESULT->closeCursor();
 
-    $cdata = CentreonData::getInstance();
-
-    /*
-     * Preset values of preexec commands
-     */
     $preexecArray = $trapObj->getPreexecFromTrapId($trapsId);
-    $cdata->addJsData('clone-values-preexec', htmlspecialchars(
-        json_encode($preexecArray),
-        ENT_QUOTES
-    ));
-    $cdata->addJsData('clone-count-preexec', count($preexecArray));
-
-    /*
-     * Preset values of matching rules
-     */
     $mrulesArray = $trapObj->getMatchingRulesFromTrapId($trapsId);
-    $cdata->addJsData('clone-values-matchingrules', htmlspecialchars(
-        json_encode($mrulesArray),
-        ENT_QUOTES
-    ));
-    $cdata->addJsData('clone-count-matchingrules', count($mrulesArray));
 }
+
+/*
+* Preset values of preexec commands
+*/
+$cdata->addJsData('clone-values-preexec', htmlspecialchars(
+    json_encode($preexecArray),
+    ENT_QUOTES
+));
+$cdata->addJsData('clone-count-preexec', count($preexecArray));
+
+/*
+* Preset values of matching rules
+*/
+$cdata->addJsData('clone-values-matchingrules', htmlspecialchars(
+    json_encode($mrulesArray),
+    ENT_QUOTES
+));
+$cdata->addJsData('clone-count-matchingrules', count($mrulesArray));
 
 $attrsText = array("size" => "50");
 $attrsLongText = array("size" => "120");
@@ -150,6 +152,11 @@ $attrManufacturer1 = array_merge(
 );
 $form->addElement('select2', 'manufacturer_id', _("Vendor Name"), array(), $attrManufacturer1);
 $form->addElement('textarea', 'traps_comments', _("Comments"), $attrsTextarea);
+
+$traps_mode[] = $form->createElement('radio', 'traps_mode', null, _("Unique"), '0');
+$traps_mode[] = $form->createElement('radio', 'traps_mode', null, _("Regexp"), '1');
+$form->addGroup($traps_mode, 'traps_mode', _("Mode"), '&nbsp;');
+$form->setDefaults(array('traps_mode' => '0'));
 
 /**
  * Generic fields
@@ -338,16 +345,26 @@ $excecution_type[] = $form->createElement(
     _("By OID and Host"),
     '2'
 );
+$excecution_type[] = $form->createElement(
+    'radio',
+    'traps_exec_interval_type',
+    null,
+    _("By OID, Host and Service"),
+    '3'
+);
 $form->addGroup($excecution_type, 'traps_exec_interval_type', _("Execution type"), '&nbsp;');
+$form->setDefaults(array('traps_exec_interval_type' => '0'));
 
 $excecution_method[] = $form->createElement('radio', 'traps_exec_method', null, _("Parallel"), '0');
 $excecution_method[] = $form->createElement('radio', 'traps_exec_method', null, _("Sequential"), '1');
 $form->addGroup($excecution_method, 'traps_exec_method', _("Execution method"), '&nbsp;');
+$form->setDefaults(array('traps_exec_method' => '0'));
 
 $downtime[] = $form->createElement('radio', 'traps_downtime', null, _("None"), '0');
 $downtime[] = $form->createElement('radio', 'traps_downtime', null, _("Real-Time"), '1');
 $downtime[] = $form->createElement('radio', 'traps_downtime', null, _("History"), '2');
 $form->addGroup($downtime, 'traps_downtime', _("Check Downtime"), '&nbsp;');
+$form->setDefaults(array('traps_downtime' => '0'));
 
 /*
  * Pre exec

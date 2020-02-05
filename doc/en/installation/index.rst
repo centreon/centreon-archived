@@ -21,7 +21,7 @@ the type of architecture that should be set up for your needs.
 Finally, you can install the platform.
 
 .. toctree::
-    :maxdepth: 2
+    :maxdepth: 1
 
     prerequisites
     architecture/index
@@ -30,3 +30,7 @@ Finally, you can install the platform.
     from_packages
     from_VM
     from_sources
+
+To quickly test Centreon from a CentOS or Red Hat 7.x, you can run the following command as **root**: ::
+
+    # curl -L https://raw.githubusercontent.com/centreon/centreon/master/unattended.sh | sh

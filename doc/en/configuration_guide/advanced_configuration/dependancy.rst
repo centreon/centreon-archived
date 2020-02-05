@@ -24,13 +24,15 @@ Physical dependencies
  
 Physical dependencies consist of taking into account physical links between equipment. This link can only be defined for objects of the “Host” type.
 
-The configuration of a physical dependencies takes place in the **Relations** tab of a configuration sheet of a host (**Configuration ==> Hosts ==> Add**).
+The configuration of a physical dependencies takes place in the **Relations** tab of a configuration sheet of a host (**Configuration > Hosts > Add**).
 
 It is possible of define two settings:
 
 * Parent hosts: signifies that the hosts selected are parents of this host (situated upstream). If all the parent hosts selected become unavailable or impossible to reach the host itself will be considered by the scheduler as impossible to reach.
 
 * Child hosts: signifies that the host becomes the parent of all the child hosts selected.
+
+It is not possible to have dependencies between hosts from different pollers.
 
 .. note::
    All the parents of a host must be in a Not-OK status for the host itself to be considered impossible to reach. If only one access path is down (physical dependencies link), the scheduler will continue to monitor this host.
@@ -47,7 +49,7 @@ Hosts
 
 To configure a logical dependencies:
 
-1. Go into the menu: **Configuration ==> Notifications**
+1. Go into the menu: **Configuration > Notifications**
 2. In the left menu, under the title: **Dependencies**, click on **Hosts**
 3. Click on **Add**
  
@@ -70,7 +72,7 @@ Services
 
 To add a dependencies at the services level:
 
-1. Go into the menu: **Configuration ==> Notifications**
+1. Go into the menu: **Configuration > Notifications**
 2. In the left menu, under the title: **Dependencies**, click on **Services**
 3. Click on **Add**
  
@@ -94,7 +96,7 @@ Host groups
 
 To add a dependencies at the host groups level:
 
-1. Go into the menu: **Configuration ==> Notifications**
+1. Go into the menu: **Configuration > Notifications**
 2. In the left menu, under the title: **Dependencies**, click on **Host Groups**
 3. Click on **Add**
 
@@ -116,7 +118,7 @@ Service groups
 
 To add a dependencies at the service groups level:
 
-1. Go into the menu: **Configuration ==> Notifications**
+1. Go into the menu: **Configuration > Notifications**
 2. In the left menu, under the title: **Dependencies**, click on **Service Groups**
 3. Click on **Add**
 
@@ -138,7 +140,7 @@ Meta-services
 
 To add a dependencies at the meta-services level:
 
-1. Go into the menu: **Configuration ==> Notifications**
+1. Go into the menu: **Configuration > Notifications**
 2. In the left menu, under the title: **Dependencies**, click on **Meta Services**
 3. Click on **Add**
 

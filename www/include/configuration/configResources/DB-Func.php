@@ -160,9 +160,9 @@ function multipleResourceInDB($resourceIds = array(), $nbrDup = array())
 
     foreach (array_keys($resourceIds) as $resourceId) {
         if (is_int($resourceId)) {
-            $DBRESULT = $pearDB->query("SELECT * FROM cfg_resource WHERE resource_id = $resourceId LIMIT 1");
-            $resourceConfigurations = $DBRESULT->fetchRow();
-            $resourceConfigurations["resource_id"] = '';
+            $dbResult = $pearDB->query("SELECT * FROM cfg_resource WHERE resource_id = $resourceId LIMIT 1");
+            $resourceConfigurations = $dbResult->fetch();
+            $resourceConfigurations["resource_id"] = null;
             for ($newIndex = 1; $newIndex <= $nbrDup[$resourceId]; $newIndex++) {
                 $val = null;
                 $resourceName = null;
@@ -309,8 +309,8 @@ function insertResource($ret = array())
         : $rq .= "NULL";
     $rq .= ")";
     $pearDB->query($rq);
-    $DBRESULT = $pearDB->query("SELECT MAX(resource_id) FROM cfg_resource");
-    $resource_id = $DBRESULT->fetchRow();
+    $dbResult = $pearDB->query("SELECT MAX(resource_id) FROM cfg_resource");
+    $resource_id = $dbResult->fetch();
 
     /* Prepare value for changelog */
     $fields = CentreonLogAction::prepareChanges($ret);
@@ -357,10 +357,10 @@ function getLinkedPollerList($resource_id)
     $query = "SELECT ns.name, ns.id FROM cfg_resource_instance_relations nsr, cfg_resource r, nagios_server ns " .
         "WHERE nsr.resource_id = r.resource_id AND nsr.instance_id = ns.id AND nsr.resource_id = '" .
         $resource_id . "'";
-    $DBRESULT = $pearDB->query($query);
-    while ($data = $DBRESULT->fetchRow()) {
+    $dbResult = $pearDB->query($query);
+    while ($data = $dbResult->fetch()) {
         $str .= "<a href='main.php?p=60901&o=c&server_id=" . $data["id"] . "'>" . $data["name"] . "</a> ";
     }
-    unset($DBRESULT);
+    unset($dbResult);
     return $str;
 }

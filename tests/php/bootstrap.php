@@ -16,7 +16,7 @@
  */
 
 // mock path constants to redirect to base centreon directory
-$mockedPathConstants = ['_CENTREON_PATH_', '_CENTREON_ETC_', '_CENTREON_LOG_'];
+$mockedPathConstants = ['_CENTREON_PATH_', '_CENTREON_ETC_', '_CENTREON_LOG_', '_CENTREON_CACHEDIR_'];
 foreach ($mockedPathConstants as $mockedPathConstant) {
     if (!defined($mockedPathConstant)) {
         define($mockedPathConstant, realpath(__DIR__ . '/../../') . '/');
@@ -35,4 +35,17 @@ foreach ($mockedVarConstants as $mockedVarConstant) {
 error_reporting(E_ALL & ~E_STRICT);
 
 require_once realpath(__DIR__ . '/polyfill.php');
-require_once realpath(__DIR__ . '/../../vendor/autoload.php');
+$loader = require realpath(__DIR__ . '/../../vendor/autoload.php');
+
+Doctrine\Common\Annotations\AnnotationRegistry::registerLoader([$loader, 'loadClass']);
+
+if (!function_exists('loadDependencyInjector')) {
+    // Mock DB manager
+    \Tests\Centreon\DependencyInjector::getInstance()[Centreon\ServiceProvider::CENTREON_DB_MANAGER] =
+        new Centreon\Test\Mock\CentreonDBManagerService;
+
+    function loadDependencyInjector()
+    {
+        return \Tests\Centreon\DependencyInjector::getInstance();
+    }
+}

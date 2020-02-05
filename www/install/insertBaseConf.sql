@@ -2,7 +2,7 @@
 -- Insert version
 --
 
-INSERT INTO `informations` (`key` ,`value`) VALUES ('version', '19.04.0');
+INSERT INTO `informations` (`key` ,`value`) VALUES ('version', '20.04.0-beta.1');
 
 --
 -- Contenu de la table `contact`
@@ -39,9 +39,9 @@ INSERT INTO `contactgroup` (`cg_id`, `cg_name`, `cg_alias`, `cg_comment`, `cg_ac
 -- Contenu de la table `contactgroup_contact_relation`
 --
 
-INSERT INTO `contactgroup_contact_relation` (`cgr_id`, `contact_contact_id`, `contactgroup_cg_id`) VALUES(76, 17, 3);
-INSERT INTO `contactgroup_contact_relation` (`cgr_id`, `contact_contact_id`, `contactgroup_cg_id`) VALUES(77, 1, 5);
-INSERT INTO `contactgroup_contact_relation` (`cgr_id`, `contact_contact_id`, `contactgroup_cg_id`) VALUES(78, 18, 3);
+INSERT INTO `contactgroup_contact_relation` (`contact_contact_id`, `contactgroup_cg_id`) VALUES(17, 3);
+INSERT INTO `contactgroup_contact_relation` (`contact_contact_id`, `contactgroup_cg_id`) VALUES(1, 5);
+INSERT INTO `contactgroup_contact_relation` (`contact_contact_id`, `contactgroup_cg_id`) VALUES(18, 3);
 
 --
 -- Contenu de la table `service_categories`
@@ -140,26 +140,58 @@ INSERT INTO `options` (`key`, `value`) VALUES
 ('selectPaginationSize', 60),
 ('display_downtime_chart','0'),
 ('display_comment_chart','0'),
-('centcore_illegal_characters', '`');
+('centcore_illegal_characters', '`'),
+('inheritance_mode', '3');
 
 --
 -- Contenu de la table `giv_components_template`
 --
 
-INSERT INTO `giv_components_template` (`compo_id`, `name`, `ds_order`, `ds_name`, `ds_color_line`, `ds_color_line_mode`, `ds_color_area`, `ds_filled`, `ds_max`, `ds_min`, `ds_average`, `ds_last`, `ds_tickness`, `ds_transparency`, `ds_invert`, `default_tpl1`, `comment`) VALUES(1, 'Default', 1, 'Default', '', '1', '#FFFFFF', '0', '1', '1', '1', '1', 1, NULL, NULL, '1', NULL);
-INSERT INTO `giv_components_template` (`compo_id`, `name`, `ds_order`, `ds_name`, `ds_color_line`, `ds_color_area`, `ds_filled`, `ds_max`, `ds_min`, `ds_average`, `ds_last`, `ds_tickness`, `ds_transparency`, `ds_invert`, `default_tpl1`, `comment`) VALUES(2, 'Ok', NULL, 'ok', '#1EE045', '#1EE045', '1', NULL, NULL, '1', NULL, 1, '95', NULL, NULL, NULL);
-INSERT INTO `giv_components_template` (`compo_id`, `name`, `ds_order`, `ds_name`, `ds_color_line`, `ds_color_area`, `ds_filled`, `ds_max`, `ds_min`, `ds_average`, `ds_last`, `ds_tickness`, `ds_transparency`, `ds_invert`, `default_tpl1`, `comment`) VALUES(3, 'Ping', 1, 'Ping', '#1EE045', '#1EE045', '0', '1', '0', '1', '0', 1, '75', '0', '0', NULL);
-INSERT INTO `giv_components_template` (`compo_id`, `name`, `ds_order`, `ds_name`, `ds_color_line`, `ds_color_area`, `ds_filled`, `ds_max`, `ds_min`, `ds_average`, `ds_last`, `ds_tickness`, `ds_transparency`, `ds_invert`, `default_tpl1`, `comment`) VALUES(4, 'Total', NULL, 'total', '#F33E0B', '#FFFFFF', NULL, NULL, NULL, '1', '1', 1, NULL, NULL, NULL, NULL);
-INSERT INTO `giv_components_template` (`compo_id`, `name`, `ds_order`, `ds_name`, `ds_color_line`, `ds_color_area`, `ds_filled`, `ds_max`, `ds_min`, `ds_average`, `ds_last`, `ds_tickness`, `ds_transparency`, `ds_invert`, `default_tpl1`, `comment`) VALUES(5, 'Used', NULL, 'used', '#2B28D7', '#050AF9', '1', NULL, NULL, '1', '1', 1, '80', NULL, NULL, NULL);
-INSERT INTO `giv_components_template` (`compo_id`, `name`, `ds_order`, `ds_name`, `ds_color_line`, `ds_color_area`, `ds_filled`, `ds_max`, `ds_min`, `ds_average`, `ds_last`, `ds_tickness`, `ds_transparency`, `ds_invert`, `default_tpl1`, `comment`) VALUES(6, 'CPU', NULL, 'cpu', '#FF0000', '#FFFFFF', NULL, '1', '1', '1', '1', 1, NULL, NULL, NULL, NULL);
-INSERT INTO `giv_components_template` (`compo_id`, `name`, `ds_order`, `ds_name`, `ds_color_line`, `ds_color_area`, `ds_filled`, `ds_max`, `ds_min`, `ds_average`, `ds_last`, `ds_tickness`, `ds_transparency`, `ds_invert`, `default_tpl1`, `comment`) VALUES(7, 'UPTIME', 1, 'UPTIME', '#FF0000', '#FF0000', '1', '1', '1', '1', '0', 1, NULL, '0', '0', NULL);
-INSERT INTO `giv_components_template` (`compo_id`, `name`, `ds_order`, `ds_name`, `ds_color_line`, `ds_color_area`, `ds_filled`, `ds_max`, `ds_min`, `ds_average`, `ds_last`, `ds_tickness`, `ds_transparency`, `ds_invert`, `default_tpl1`, `comment`) VALUES(8, 'Traffic_In', NULL, 'traffic_in', '#FF0000', '#FF0000', '1', '1', NULL, '1', NULL, 1, '75', '1', NULL, NULL);
-INSERT INTO `giv_components_template` (`compo_id`, `name`, `ds_order`, `ds_name`, `ds_color_line`, `ds_color_area`, `ds_filled`, `ds_max`, `ds_min`, `ds_average`, `ds_last`, `ds_tickness`, `ds_transparency`, `ds_invert`, `default_tpl1`, `comment`) VALUES(9, 'Traffic_Out', NULL, 'traffic_out', '#1EE045', '#1EE045', '1', '1', NULL, '1', '1', 1, '75', NULL, NULL, NULL);
-INSERT INTO `giv_components_template` (`compo_id`, `name`, `ds_order`, `ds_name`, `ds_color_line`, `ds_color_area`, `ds_filled`, `ds_max`, `ds_min`, `ds_average`, `ds_last`, `ds_tickness`, `ds_transparency`, `ds_invert`, `default_tpl1`, `comment`) VALUES(10, 'load_1', NULL, 'load1', '#F3D30B', '#F3D30B', NULL, NULL, NULL, '1', NULL, 1, '75', NULL, NULL, NULL);
-INSERT INTO `giv_components_template` (`compo_id`, `name`, `ds_order`, `ds_name`, `ds_color_line`, `ds_color_area`, `ds_filled`, `ds_max`, `ds_min`, `ds_average`, `ds_last`, `ds_tickness`, `ds_transparency`, `ds_invert`, `default_tpl1`, `comment`) VALUES(11, 'load_5', NULL, 'load5', '#E97B15', '#E97B15', NULL, NULL, NULL, '1', NULL, 1, '75', NULL, NULL, NULL);
-INSERT INTO `giv_components_template` (`compo_id`, `name`, `ds_order`, `ds_name`, `ds_color_line`, `ds_color_area`, `ds_filled`, `ds_max`, `ds_min`, `ds_average`, `ds_last`, `ds_tickness`, `ds_transparency`, `ds_invert`, `default_tpl1`, `comment`) VALUES(12, 'load_15', NULL, 'load15', '#F11F0D', '#F11F0D', NULL, NULL, NULL, '1', NULL, 1, '75', NULL, NULL, NULL);
-INSERT INTO `giv_components_template` (`compo_id`, `name`, `ds_order`, `ds_name`, `ds_color_line`, `ds_color_area`, `ds_filled`, `ds_max`, `ds_min`, `ds_average`, `ds_last`, `ds_tickness`, `ds_transparency`, `ds_invert`, `default_tpl1`, `comment`) VALUES(13, 'Time', NULL, 'time', '#1AA8E4', '#08C6F6', '1', '1', NULL, NULL, '1', 1, '80', NULL, NULL, NULL);
-INSERT INTO `giv_components_template` (`compo_id`, `name`, `ds_order`, `ds_name`, `ds_color_line`, `ds_color_area`, `ds_filled`, `ds_max`, `ds_min`, `ds_average`, `ds_last`, `ds_tickness`, `ds_transparency`, `ds_invert`, `default_tpl1`, `comment`) VALUES(14, 'Size', NULL, 'size', '#F33E0B', '#F30B51', NULL, NULL, NULL, '1', '1', 1, '70', NULL, NULL, NULL);
+INSERT INTO `giv_components_template` (`compo_id`, `name`, `ds_order`, `ds_hidecurve`, `ds_name`, `ds_color_line`, `ds_color_line_mode`, `ds_color_area`, `ds_color_area_warn`, `ds_color_area_crit`, `ds_filled`, `ds_max`, `ds_min`, `ds_minmax_int`, `ds_average`, `ds_last`, `ds_total`, `ds_tickness`, `ds_transparency`, `ds_invert`, `ds_legend`, `ds_jumpline`, `ds_stack`, `default_tpl1`, `comment`) VALUES(1, 'Default', 1, NULL, 'Default', NULL, '1', '#FFFFFF', NULL, NULL, NULL, '1', '1', NULL, '1', '1', NULL, 1, '10', NULL, 'Default', '0', NULL, '1', NULL);
+INSERT INTO `giv_components_template` (`compo_id`, `name`, `ds_order`, `ds_hidecurve`, `ds_name`, `ds_color_line`, `ds_color_line_mode`, `ds_color_area`, `ds_color_area_warn`, `ds_color_area_crit`, `ds_filled`, `ds_max`, `ds_min`, `ds_minmax_int`, `ds_average`, `ds_last`, `ds_total`, `ds_tickness`, `ds_transparency`, `ds_invert`, `ds_legend`, `ds_jumpline`, `ds_stack`, `default_tpl1`, `comment`) VALUES(2, 'Ping-pl', 1, NULL, 'pl', '#F30B23', '0', '#F30B23', NULL, NULL, '1', '1', NULL, NULL, '1', NULL, NULL, 1, '80', NULL, 'Packet Loss', '0', NULL, NULL, NULL);
+INSERT INTO `giv_components_template` (`compo_id`, `name`, `ds_order`, `ds_hidecurve`, `ds_name`, `ds_color_line`, `ds_color_line_mode`, `ds_color_area`, `ds_color_area_warn`, `ds_color_area_crit`, `ds_filled`, `ds_max`, `ds_min`, `ds_minmax_int`, `ds_average`, `ds_last`, `ds_total`, `ds_tickness`, `ds_transparency`, `ds_invert`, `ds_legend`, `ds_jumpline`, `ds_stack`, `default_tpl1`, `comment`) VALUES(3, 'Storage-used', 1, NULL, 'used', '#2B28D7', '0', '#2B28D7', NULL, NULL, '1', NULL, NULL, NULL, '1', '1', NULL, 1, '80', NULL, 'Usage', '0', '1', NULL, NULL);
+INSERT INTO `giv_components_template` (`compo_id`, `name`, `ds_order`, `ds_hidecurve`, `ds_name`, `ds_color_line`, `ds_color_line_mode`, `ds_color_area`, `ds_color_area_warn`, `ds_color_area_crit`, `ds_filled`, `ds_max`, `ds_min`, `ds_minmax_int`, `ds_average`, `ds_last`, `ds_total`, `ds_tickness`, `ds_transparency`, `ds_invert`, `ds_legend`, `ds_jumpline`, `ds_stack`, `default_tpl1`, `comment`) VALUES(4, 'Cpu-total_cpu_avg', 1, NULL, 'total_cpu_avg', '#4C65B2', '0', '#4C65B2', NULL, NULL, NULL, '1', '1', NULL, '1', '1', NULL, 1, '80', NULL, 'Average Cpu Usage', '0', NULL, NULL, NULL);
+INSERT INTO `giv_components_template` (`compo_id`, `name`, `ds_order`, `ds_hidecurve`, `ds_name`, `ds_color_line`, `ds_color_line_mode`, `ds_color_area`, `ds_color_area_warn`, `ds_color_area_crit`, `ds_filled`, `ds_max`, `ds_min`, `ds_minmax_int`, `ds_average`, `ds_last`, `ds_total`, `ds_tickness`, `ds_transparency`, `ds_invert`, `ds_legend`, `ds_jumpline`, `ds_stack`, `default_tpl1`, `comment`) VALUES(5, 'Uptime', 1, NULL, 'uptime', '#FF0000', '0', '#FF0000', NULL, NULL, '1', NULL, NULL, NULL, NULL, '1', NULL, 1, '80', NULL, 'Uptime', '0', NULL, NULL, NULL);
+INSERT INTO `giv_components_template` (`compo_id`, `name`, `ds_order`, `ds_hidecurve`, `ds_name`, `ds_color_line`, `ds_color_line_mode`, `ds_color_area`, `ds_color_area_warn`, `ds_color_area_crit`, `ds_filled`, `ds_max`, `ds_min`, `ds_minmax_int`, `ds_average`, `ds_last`, `ds_total`, `ds_tickness`, `ds_transparency`, `ds_invert`, `ds_legend`, `ds_jumpline`, `ds_stack`, `default_tpl1`, `comment`) VALUES(6, 'Interface-traffic_in', 1, NULL, 'traffic_in', '#FF0000', '0', '#FF0000', NULL, NULL, '1', '1', NULL, NULL, '1', '1', NULL, 1, '80', '1', 'Inbound Traffic', '0', NULL, NULL, NULL);
+INSERT INTO `giv_components_template` (`compo_id`, `name`, `ds_order`, `ds_hidecurve`, `ds_name`, `ds_color_line`, `ds_color_line_mode`, `ds_color_area`, `ds_color_area_warn`, `ds_color_area_crit`, `ds_filled`, `ds_max`, `ds_min`, `ds_minmax_int`, `ds_average`, `ds_last`, `ds_total`, `ds_tickness`, `ds_transparency`, `ds_invert`, `ds_legend`, `ds_jumpline`, `ds_stack`, `default_tpl1`, `comment`) VALUES(7, 'Interface-traffic_out', 1, NULL, 'traffic_out', '#1EE045', '0', '#1EE045', NULL, NULL, '1', '1', NULL, NULL, '1', '1', NULL, 1, '80', NULL, 'Outbound Traffic', '0', NULL, NULL, NULL);
+INSERT INTO `giv_components_template` (`compo_id`, `name`, `ds_order`, `ds_hidecurve`, `ds_name`, `ds_color_line`, `ds_color_line_mode`, `ds_color_area`, `ds_color_area_warn`, `ds_color_area_crit`, `ds_filled`, `ds_max`, `ds_min`, `ds_minmax_int`, `ds_average`, `ds_last`, `ds_total`, `ds_tickness`, `ds_transparency`, `ds_invert`, `ds_legend`, `ds_jumpline`, `ds_stack`, `default_tpl1`, `comment`) VALUES(8, 'Load-load1', 3, NULL, 'load1', '#F3D30B', '0', '#F3D30B', NULL, NULL, '1', NULL, NULL, NULL, '1', NULL, NULL, 1, '80', NULL, 'Average Load Last Minute', '0', NULL, NULL, NULL);
+INSERT INTO `giv_components_template` (`compo_id`, `name`, `ds_order`, `ds_hidecurve`, `ds_name`, `ds_color_line`, `ds_color_line_mode`, `ds_color_area`, `ds_color_area_warn`, `ds_color_area_crit`, `ds_filled`, `ds_max`, `ds_min`, `ds_minmax_int`, `ds_average`, `ds_last`, `ds_total`, `ds_tickness`, `ds_transparency`, `ds_invert`, `ds_legend`, `ds_jumpline`, `ds_stack`, `default_tpl1`, `comment`) VALUES(9, 'Load-load5', 2, NULL, 'load5', '#E97B15', '0', '#E97B15', NULL, NULL, '1', NULL, NULL, NULL, '1', NULL, NULL, 1, '80', NULL, 'Average Load Last 5 Minutes', '0', NULL, NULL, NULL);
+INSERT INTO `giv_components_template` (`compo_id`, `name`, `ds_order`, `ds_hidecurve`, `ds_name`, `ds_color_line`, `ds_color_line_mode`, `ds_color_area`, `ds_color_area_warn`, `ds_color_area_crit`, `ds_filled`, `ds_max`, `ds_min`, `ds_minmax_int`, `ds_average`, `ds_last`, `ds_total`, `ds_tickness`, `ds_transparency`, `ds_invert`, `ds_legend`, `ds_jumpline`, `ds_stack`, `default_tpl1`, `comment`) VALUES(10, 'Load-load15', 1, NULL, 'load15', '#F11F0D', '0', '#F11F0D', NULL, NULL, '1', NULL, NULL, NULL, '1', NULL, NULL, 1, '80', NULL, 'Average Load Last 15 Minutes', '0', NULL, NULL, NULL);
+INSERT INTO `giv_components_template` (`compo_id`, `name`, `ds_order`, `ds_hidecurve`, `ds_name`, `ds_color_line`, `ds_color_line_mode`, `ds_color_area`, `ds_color_area_warn`, `ds_color_area_crit`, `ds_filled`, `ds_max`, `ds_min`, `ds_minmax_int`, `ds_average`, `ds_last`, `ds_total`, `ds_tickness`, `ds_transparency`, `ds_invert`, `ds_legend`, `ds_jumpline`, `ds_stack`, `default_tpl1`, `comment`) VALUES(11, 'BA_Level', 1, NULL, 'BA_Level', '#597f00', '0', '#88b917', NULL, NULL, '1', '1', '1', NULL, '1', '1', NULL, 1, '50', NULL, 'BA Health Level', '0', NULL, NULL, NULL);
+INSERT INTO `giv_components_template` (`compo_id`, `name`, `ds_order`, `ds_hidecurve`, `ds_name`, `ds_color_line`, `ds_color_line_mode`, `ds_color_area`, `ds_color_area_warn`, `ds_color_area_crit`, `ds_filled`, `ds_max`, `ds_min`, `ds_minmax_int`, `ds_average`, `ds_last`, `ds_total`, `ds_tickness`, `ds_transparency`, `ds_invert`, `ds_legend`, `ds_jumpline`, `ds_stack`, `default_tpl1`, `comment`) VALUES(12, 'Cpu-Detailed-idle', 11, NULL, 'idle', '#60D8FF', '0', '#60D8FF', NULL, NULL, '1', '1', '1', NULL, '1', '1', NULL, 1, '80', NULL, 'Idle', '0', '1', NULL, NULL);
+INSERT INTO `giv_components_template` (`compo_id`, `name`, `ds_order`, `ds_hidecurve`, `ds_name`, `ds_color_line`, `ds_color_line_mode`, `ds_color_area`, `ds_color_area_warn`, `ds_color_area_crit`, `ds_filled`, `ds_max`, `ds_min`, `ds_minmax_int`, `ds_average`, `ds_last`, `ds_total`, `ds_tickness`, `ds_transparency`, `ds_invert`, `ds_legend`, `ds_jumpline`, `ds_stack`, `default_tpl1`, `comment`) VALUES(13, 'Cpu-Detailed-system', 8, NULL, 'system', '#F3D30B', '0', '#F3D30B', NULL, NULL, '1', '1', '1', NULL, '1', '1', NULL, 1, '80', NULL, 'System', '0', '1', NULL, NULL);
+INSERT INTO `giv_components_template` (`compo_id`, `name`, `ds_order`, `ds_hidecurve`, `ds_name`, `ds_color_line`, `ds_color_line_mode`, `ds_color_area`, `ds_color_area_warn`, `ds_color_area_crit`, `ds_filled`, `ds_max`, `ds_min`, `ds_minmax_int`, `ds_average`, `ds_last`, `ds_total`, `ds_tickness`, `ds_transparency`, `ds_invert`, `ds_legend`, `ds_jumpline`, `ds_stack`, `default_tpl1`, `comment`) VALUES(14, 'Cpu-Detailed-user', 9, NULL, 'user', '#01FD9D', '0', '#01FD9D', NULL, NULL, '1', '1', '1', NULL, '1', '1', NULL, 1, '80', NULL, 'User', '0', '1', NULL, NULL);
+INSERT INTO `giv_components_template` (`compo_id`, `name`, `ds_order`, `ds_hidecurve`, `ds_name`, `ds_color_line`, `ds_color_line_mode`, `ds_color_area`, `ds_color_area_warn`, `ds_color_area_crit`, `ds_filled`, `ds_max`, `ds_min`, `ds_minmax_int`, `ds_average`, `ds_last`, `ds_total`, `ds_tickness`, `ds_transparency`, `ds_invert`, `ds_legend`, `ds_jumpline`, `ds_stack`, `default_tpl1`, `comment`) VALUES(15, 'Cpu-Detailed-wait', 10, NULL, 'wait', '#FA0417', '0', '#FA0417', NULL, NULL, '1', '1', '1', NULL, '1', '1', NULL, 1, '80', NULL, 'Wait', '0', '1', NULL, NULL);
+INSERT INTO `giv_components_template` (`compo_id`, `name`, `ds_order`, `ds_hidecurve`, `ds_name`, `ds_color_line`, `ds_color_line_mode`, `ds_color_area`, `ds_color_area_warn`, `ds_color_area_crit`, `ds_filled`, `ds_max`, `ds_min`, `ds_minmax_int`, `ds_average`, `ds_last`, `ds_total`, `ds_tickness`, `ds_transparency`, `ds_invert`, `ds_legend`, `ds_jumpline`, `ds_stack`, `default_tpl1`, `comment`) VALUES(16, 'Cpu-Detailed-nice', 4, NULL, 'nice', '#B740BE', '0', '#B740BE', NULL, NULL, '1', '1', '1', NULL, '1', '1', NULL, 1, '80', NULL, 'Nice', '0', '1', NULL, NULL);
+INSERT INTO `giv_components_template` (`compo_id`, `name`, `ds_order`, `ds_hidecurve`, `ds_name`, `ds_color_line`, `ds_color_line_mode`, `ds_color_area`, `ds_color_area_warn`, `ds_color_area_crit`, `ds_filled`, `ds_max`, `ds_min`, `ds_minmax_int`, `ds_average`, `ds_last`, `ds_total`, `ds_tickness`, `ds_transparency`, `ds_invert`, `ds_legend`, `ds_jumpline`, `ds_stack`, `default_tpl1`, `comment`) VALUES(17, 'Cpu-Detailed-guestnice', 5, NULL, 'guestnice', '#5972A6', '0', '#5972A6', NULL, NULL, '1', '1', '1', NULL, '1', '1', NULL, 1, '80', NULL, 'Guest Nice', '0', '1', NULL, NULL);
+INSERT INTO `giv_components_template` (`compo_id`, `name`, `ds_order`, `ds_hidecurve`, `ds_name`, `ds_color_line`, `ds_color_line_mode`, `ds_color_area`, `ds_color_area_warn`, `ds_color_area_crit`, `ds_filled`, `ds_max`, `ds_min`, `ds_minmax_int`, `ds_average`, `ds_last`, `ds_total`, `ds_tickness`, `ds_transparency`, `ds_invert`, `ds_legend`, `ds_jumpline`, `ds_stack`, `default_tpl1`, `comment`) VALUES(18, 'Cpu-Detailed-guest', 6, NULL, 'guest', '#ADC23C', '0', '#ADC23C', NULL, NULL, '1', '1', '1', NULL, '1', '1', NULL, 1, '80', NULL, 'Guest', '0', '1', NULL, NULL);
+INSERT INTO `giv_components_template` (`compo_id`, `name`, `ds_order`, `ds_hidecurve`, `ds_name`, `ds_color_line`, `ds_color_line_mode`, `ds_color_area`, `ds_color_area_warn`, `ds_color_area_crit`, `ds_filled`, `ds_max`, `ds_min`, `ds_minmax_int`, `ds_average`, `ds_last`, `ds_total`, `ds_tickness`, `ds_transparency`, `ds_invert`, `ds_legend`, `ds_jumpline`, `ds_stack`, `default_tpl1`, `comment`) VALUES(19, 'Cpu-Detailed-interrupt', 7, NULL, 'interrupt', '#F9A105', '0', '#F9A105', NULL, NULL, '1', '1', '1', NULL, '1', '1', NULL, 1, '80', NULL, 'Interrupt', '0', '1', NULL, NULL);
+INSERT INTO `giv_components_template` (`compo_id`, `name`, `ds_order`, `ds_hidecurve`, `ds_name`, `ds_color_line`, `ds_color_line_mode`, `ds_color_area`, `ds_color_area_warn`, `ds_color_area_crit`, `ds_filled`, `ds_max`, `ds_min`, `ds_minmax_int`, `ds_average`, `ds_last`, `ds_total`, `ds_tickness`, `ds_transparency`, `ds_invert`, `ds_legend`, `ds_jumpline`, `ds_stack`, `default_tpl1`, `comment`) VALUES(20, 'Cpu-Detailed-kernel', 3, NULL, 'kernel', '#29A21F', '0', '#29A21F', NULL, NULL, '1', '1', '1', NULL, '1', '1', NULL, 1, '80', NULL, 'Kernel', '0', '1', NULL, NULL);
+INSERT INTO `giv_components_template` (`compo_id`, `name`, `ds_order`, `ds_hidecurve`, `ds_name`, `ds_color_line`, `ds_color_line_mode`, `ds_color_area`, `ds_color_area_warn`, `ds_color_area_crit`, `ds_filled`, `ds_max`, `ds_min`, `ds_minmax_int`, `ds_average`, `ds_last`, `ds_total`, `ds_tickness`, `ds_transparency`, `ds_invert`, `ds_legend`, `ds_jumpline`, `ds_stack`, `default_tpl1`, `comment`) VALUES(21, 'Cpu-Detailed-softirq', 2, NULL, 'softirq', '#B7474E', '0', '#B7474E', NULL, NULL, '1', '1', '1', NULL, '1', '1', NULL, 1, '80', NULL, 'Software Interrupt', '0', '1', NULL, NULL);
+INSERT INTO `giv_components_template` (`compo_id`, `name`, `ds_order`, `ds_hidecurve`, `ds_name`, `ds_color_line`, `ds_color_line_mode`, `ds_color_area`, `ds_color_area_warn`, `ds_color_area_crit`, `ds_filled`, `ds_max`, `ds_min`, `ds_minmax_int`, `ds_average`, `ds_last`, `ds_total`, `ds_tickness`, `ds_transparency`, `ds_invert`, `ds_legend`, `ds_jumpline`, `ds_stack`, `default_tpl1`, `comment`) VALUES(22, 'Cpu-Detailed-steal', 1, NULL, 'steal', '#6911EE', '0', '#6911EE', NULL, NULL, '1', '1', '1', NULL, '1', '1', NULL, 1, '80', NULL, 'Steal', '0', '1', NULL, NULL);
+INSERT INTO `giv_components_template` (`compo_id`, `name`, `ds_order`, `ds_hidecurve`, `ds_name`, `ds_color_line`, `ds_color_line_mode`, `ds_color_area`, `ds_color_area_warn`, `ds_color_area_crit`, `ds_filled`, `ds_max`, `ds_min`, `ds_minmax_int`, `ds_average`, `ds_last`, `ds_total`, `ds_tickness`, `ds_transparency`, `ds_invert`, `ds_legend`, `ds_jumpline`, `ds_stack`, `default_tpl1`, `comment`) VALUES(23, 'Ping-rta', 1, NULL, 'rta', '#29AFEE', '0', '#29AFEE', NULL, NULL, '1', NULL, NULL, NULL, '1', '1', NULL, 1, '80', NULL, 'Round-Trip Average Time', '0', NULL, NULL, NULL);
+INSERT INTO `giv_components_template` (`compo_id`, `name`, `ds_order`, `ds_hidecurve`, `ds_name`, `ds_color_line`, `ds_color_line_mode`, `ds_color_area`, `ds_color_area_warn`, `ds_color_area_crit`, `ds_filled`, `ds_max`, `ds_min`, `ds_minmax_int`, `ds_average`, `ds_last`, `ds_total`, `ds_tickness`, `ds_transparency`, `ds_invert`, `ds_legend`, `ds_jumpline`, `ds_stack`, `default_tpl1`, `comment`) VALUES(24, 'Ping-rtmax', 2, NULL, 'rtmax', '#525256', '0', '#525256', NULL, NULL, NULL, '1', NULL, NULL, NULL, '1', NULL, 2, '80', NULL, 'Round-Trip Maximum Time', '0', NULL, NULL, NULL);
+INSERT INTO `giv_components_template` (`compo_id`, `name`, `ds_order`, `ds_hidecurve`, `ds_name`, `ds_color_line`, `ds_color_line_mode`, `ds_color_area`, `ds_color_area_warn`, `ds_color_area_crit`, `ds_filled`, `ds_max`, `ds_min`, `ds_minmax_int`, `ds_average`, `ds_last`, `ds_total`, `ds_tickness`, `ds_transparency`, `ds_invert`, `ds_legend`, `ds_jumpline`, `ds_stack`, `default_tpl1`, `comment`) VALUES(25, 'Ping-rtmin', 2, NULL, 'rtmin', '#191777', '0', '#191777', NULL, NULL, NULL, NULL, '1', NULL, NULL, '1', NULL, 2, '80', NULL, 'Round-Trip Minimum Time', '0', NULL, NULL, NULL);
+INSERT INTO `giv_components_template` (`compo_id`, `name`, `ds_order`, `ds_hidecurve`, `ds_name`, `ds_color_line`, `ds_color_line_mode`, `ds_color_area`, `ds_color_area_warn`, `ds_color_area_crit`, `ds_filled`, `ds_max`, `ds_min`, `ds_minmax_int`, `ds_average`, `ds_last`, `ds_total`, `ds_tickness`, `ds_transparency`, `ds_invert`, `ds_legend`, `ds_jumpline`, `ds_stack`, `default_tpl1`, `comment`) VALUES(26, 'Time', 1, NULL, 'time', '#29AFEE', '0', '#29AFEE', NULL, NULL, '1', NULL, NULL, NULL, '1', '1', NULL, 1, '80', NULL, 'Time', '0', NULL, NULL, NULL);
+INSERT INTO `giv_components_template` (`compo_id`, `name`, `ds_order`, `ds_hidecurve`, `ds_name`, `ds_color_line`, `ds_color_line_mode`, `ds_color_area`, `ds_color_area_warn`, `ds_color_area_crit`, `ds_filled`, `ds_max`, `ds_min`, `ds_minmax_int`, `ds_average`, `ds_last`, `ds_total`, `ds_tickness`, `ds_transparency`, `ds_invert`, `ds_legend`, `ds_jumpline`, `ds_stack`, `default_tpl1`, `comment`) VALUES(27, 'Process-nbproc', 1, NULL, 'nbproc', '#525256', '0', '#525256', NULL, NULL, NULL, '1', '1', NULL, NULL, '1', NULL, 2, '80', NULL, 'Number of Processes', '0', NULL, NULL, NULL);
+INSERT INTO `giv_components_template` (`compo_id`, `name`, `ds_order`, `ds_hidecurve`, `ds_name`, `ds_color_line`, `ds_color_line_mode`, `ds_color_area`, `ds_color_area_warn`, `ds_color_area_crit`, `ds_filled`, `ds_max`, `ds_min`, `ds_minmax_int`, `ds_average`, `ds_last`, `ds_total`, `ds_tickness`, `ds_transparency`, `ds_invert`, `ds_legend`, `ds_jumpline`, `ds_stack`, `default_tpl1`, `comment`) VALUES(28, 'Memory-buffer', 2, NULL, 'buffer', '#7B7C84', '0', '#7B7C84', NULL, NULL, '1', NULL, NULL, NULL, '1', '1', NULL, 1, '80', NULL, 'Buffer', '0', '1', NULL, NULL);
+INSERT INTO `giv_components_template` (`compo_id`, `name`, `ds_order`, `ds_hidecurve`, `ds_name`, `ds_color_line`, `ds_color_line_mode`, `ds_color_area`, `ds_color_area_warn`, `ds_color_area_crit`, `ds_filled`, `ds_max`, `ds_min`, `ds_minmax_int`, `ds_average`, `ds_last`, `ds_total`, `ds_tickness`, `ds_transparency`, `ds_invert`, `ds_legend`, `ds_jumpline`, `ds_stack`, `default_tpl1`, `comment`) VALUES(29, 'Memory-cached', 3, NULL, 'cached', '#35B7C9', '0', '#35B7C9', NULL, NULL, '1', NULL, NULL, NULL, '1', '1', NULL, 1, '80', NULL, 'Cached', '0', '1', NULL, NULL);
+INSERT INTO `giv_components_template` (`compo_id`, `name`, `ds_order`, `ds_hidecurve`, `ds_name`, `ds_color_line`, `ds_color_line_mode`, `ds_color_area`, `ds_color_area_warn`, `ds_color_area_crit`, `ds_filled`, `ds_max`, `ds_min`, `ds_minmax_int`, `ds_average`, `ds_last`, `ds_total`, `ds_tickness`, `ds_transparency`, `ds_invert`, `ds_legend`, `ds_jumpline`, `ds_stack`, `default_tpl1`, `comment`) VALUES(30, 'Interface-packets_discard_in', 1, NULL, 'packets_discard_in', '#6F9669', '0', '#6F9669', NULL, NULL, '1', '1', NULL, NULL, '1', '1', NULL, 1, '80', '1', 'Inbound Packets Discard', '0', NULL, NULL, NULL);
+INSERT INTO `giv_components_template` (`compo_id`, `name`, `ds_order`, `ds_hidecurve`, `ds_name`, `ds_color_line`, `ds_color_line_mode`, `ds_color_area`, `ds_color_area_warn`, `ds_color_area_crit`, `ds_filled`, `ds_max`, `ds_min`, `ds_minmax_int`, `ds_average`, `ds_last`, `ds_total`, `ds_tickness`, `ds_transparency`, `ds_invert`, `ds_legend`, `ds_jumpline`, `ds_stack`, `default_tpl1`, `comment`) VALUES(31, 'Interface-packets_error_in', 1, NULL, 'packets_error_in', '#B940BE', '0', '#B940BE', NULL, NULL, '1', '1', NULL, NULL, '1', '1', NULL, 1, '80', '1', 'Inbound Packets Error', '0', NULL, NULL, NULL);
+INSERT INTO `giv_components_template` (`compo_id`, `name`, `ds_order`, `ds_hidecurve`, `ds_name`, `ds_color_line`, `ds_color_line_mode`, `ds_color_area`, `ds_color_area_warn`, `ds_color_area_crit`, `ds_filled`, `ds_max`, `ds_min`, `ds_minmax_int`, `ds_average`, `ds_last`, `ds_total`, `ds_tickness`, `ds_transparency`, `ds_invert`, `ds_legend`, `ds_jumpline`, `ds_stack`, `default_tpl1`, `comment`) VALUES(32, 'Interface-packets_discard_out', 1, NULL, 'packets_discard_out', '#2D53B2', '0', '#2D53B2', NULL, NULL, '1', '1', NULL, NULL, '1', '1', NULL, 1, '80', '1', 'Outbound Packets Discard', '0', NULL, NULL, NULL);
+INSERT INTO `giv_components_template` (`compo_id`, `name`, `ds_order`, `ds_hidecurve`, `ds_name`, `ds_color_line`, `ds_color_line_mode`, `ds_color_area`, `ds_color_area_warn`, `ds_color_area_crit`, `ds_filled`, `ds_max`, `ds_min`, `ds_minmax_int`, `ds_average`, `ds_last`, `ds_total`, `ds_tickness`, `ds_transparency`, `ds_invert`, `ds_legend`, `ds_jumpline`, `ds_stack`, `default_tpl1`, `comment`) VALUES(33, 'Interface-packets_error_out', 1, NULL, 'packets_error_out', '#C26F3D', '0', '#C26F3D', NULL, NULL, '1', '1', NULL, NULL, '1', '1', NULL, 1, '80', '1', 'Outbound Packets Error', '0', NULL, NULL, NULL);
+INSERT INTO `giv_components_template` (`compo_id`, `name`, `ds_order`, `ds_hidecurve`, `ds_name`, `ds_color_line`, `ds_color_line_mode`, `ds_color_area`, `ds_color_area_warn`, `ds_color_area_crit`, `ds_filled`, `ds_max`, `ds_min`, `ds_minmax_int`, `ds_average`, `ds_last`, `ds_total`, `ds_tickness`, `ds_transparency`, `ds_invert`, `ds_legend`, `ds_jumpline`, `ds_stack`, `default_tpl1`, `comment`) VALUES(34, 'Storage-provisioned', 1, NULL, 'provisioned', '#659A69', '0', '#659A69', NULL, NULL, '1', NULL, NULL, NULL, '1', '1', NULL, 1, '80', NULL, 'Provisioned', '0', NULL, NULL, NULL);
+INSERT INTO `giv_components_template` (`compo_id`, `name`, `ds_order`, `ds_hidecurve`, `ds_name`, `ds_color_line`, `ds_color_line_mode`, `ds_color_area`, `ds_color_area_warn`, `ds_color_area_crit`, `ds_filled`, `ds_max`, `ds_min`, `ds_minmax_int`, `ds_average`, `ds_last`, `ds_total`, `ds_tickness`, `ds_transparency`, `ds_invert`, `ds_legend`, `ds_jumpline`, `ds_stack`, `default_tpl1`, `comment`) VALUES(35, 'Disk-riops', 1, NULL, 'riops', '#0684F8', '0', '#0684F8', NULL, NULL, '1', NULL, NULL, NULL, '1', '1', NULL, 1, '80', NULL, 'Read IOPS', '0', NULL, NULL, NULL);
+INSERT INTO `giv_components_template` (`compo_id`, `name`, `ds_order`, `ds_hidecurve`, `ds_name`, `ds_color_line`, `ds_color_line_mode`, `ds_color_area`, `ds_color_area_warn`, `ds_color_area_crit`, `ds_filled`, `ds_max`, `ds_min`, `ds_minmax_int`, `ds_average`, `ds_last`, `ds_total`, `ds_tickness`, `ds_transparency`, `ds_invert`, `ds_legend`, `ds_jumpline`, `ds_stack`, `default_tpl1`, `comment`) VALUES(36, 'Disk-wiops', 1, NULL, 'wiops', '#EE1169', '0', '#EE1169', NULL, NULL, '1', NULL, NULL, NULL, '1', '1', NULL, 1, '80', NULL, 'Write IOPS', '0', NULL, NULL, NULL);
+INSERT INTO `giv_components_template` (`compo_id`, `name`, `ds_order`, `ds_hidecurve`, `ds_name`, `ds_color_line`, `ds_color_line_mode`, `ds_color_area`, `ds_color_area_warn`, `ds_color_area_crit`, `ds_filled`, `ds_max`, `ds_min`, `ds_minmax_int`, `ds_average`, `ds_last`, `ds_total`, `ds_tickness`, `ds_transparency`, `ds_invert`, `ds_legend`, `ds_jumpline`, `ds_stack`, `default_tpl1`, `comment`) VALUES(37, 'VM-Count-poweredoff', 2, NULL, 'poweredoff', '#F30B5A', '0', '#F30B5A', NULL, NULL, '1', '1', '1', '1', '1', '1', NULL, 1, '80', NULL, 'Powered Off', '0', NULL, NULL, NULL);
+INSERT INTO `giv_components_template` (`compo_id`, `name`, `ds_order`, `ds_hidecurve`, `ds_name`, `ds_color_line`, `ds_color_line_mode`, `ds_color_area`, `ds_color_area_warn`, `ds_color_area_crit`, `ds_filled`, `ds_max`, `ds_min`, `ds_minmax_int`, `ds_average`, `ds_last`, `ds_total`, `ds_tickness`, `ds_transparency`, `ds_invert`, `ds_legend`, `ds_jumpline`, `ds_stack`, `default_tpl1`, `comment`) VALUES(38, 'VM-Count-poweredon', 1, NULL, 'poweredon', '#11EE5C', '0', '#11EE5C', NULL, NULL, '1', '1', '1', '1', '1', '1', NULL, 1, '80', NULL, 'Powered On', '0', NULL, NULL, NULL);
+INSERT INTO `giv_components_template` (`compo_id`, `name`, `ds_order`, `ds_hidecurve`, `ds_name`, `ds_color_line`, `ds_color_line_mode`, `ds_color_area`, `ds_color_area_warn`, `ds_color_area_crit`, `ds_filled`, `ds_max`, `ds_min`, `ds_minmax_int`, `ds_average`, `ds_last`, `ds_total`, `ds_tickness`, `ds_transparency`, `ds_invert`, `ds_legend`, `ds_jumpline`, `ds_stack`, `default_tpl1`, `comment`) VALUES(39, 'VM-Count-suspended', 3, NULL, 'suspended', '#62635E', '0', '#62635E', NULL, NULL, '1', '1', '1', '1', '1', '1', NULL, 1, '80', NULL, 'Suspended', '0', NULL, NULL, NULL);
+INSERT INTO `giv_components_template` (`compo_id`, `name`, `ds_order`, `ds_hidecurve`, `ds_name`, `ds_color_line`, `ds_color_line_mode`, `ds_color_area`, `ds_color_area_warn`, `ds_color_area_crit`, `ds_filled`, `ds_max`, `ds_min`, `ds_minmax_int`, `ds_average`, `ds_last`, `ds_total`, `ds_tickness`, `ds_transparency`, `ds_invert`, `ds_legend`, `ds_jumpline`, `ds_stack`, `default_tpl1`, `comment`) VALUES(40, 'Esx-alarm_critical', 1, NULL, 'alarm_critical', '#D52941', '0', '#D52941', NULL, NULL, '1', '1', '1', '1', NULL, '1', NULL, 1, '80', NULL, 'Critical Alarms', '0', NULL, NULL, NULL);
+INSERT INTO `giv_components_template` (`compo_id`, `name`, `ds_order`, `ds_hidecurve`, `ds_name`, `ds_color_line`, `ds_color_line_mode`, `ds_color_area`, `ds_color_area_warn`, `ds_color_area_crit`, `ds_filled`, `ds_max`, `ds_min`, `ds_minmax_int`, `ds_average`, `ds_last`, `ds_total`, `ds_tickness`, `ds_transparency`, `ds_invert`, `ds_legend`, `ds_jumpline`, `ds_stack`, `default_tpl1`, `comment`) VALUES(41, 'Esx-alarm_warning', 1, NULL, 'alarm_warning', '#E7BD17', '0', '#E7BD17', NULL, NULL, '1', '1', '1', '1', NULL, '1', NULL, 1, '80', NULL, 'Warning Alarms', '0', NULL, NULL, NULL);
+INSERT INTO `giv_components_template` (`compo_id`, `name`, `ds_order`, `ds_hidecurve`, `ds_name`, `ds_color_line`, `ds_color_line_mode`, `ds_color_area`, `ds_color_area_warn`, `ds_color_area_crit`, `ds_filled`, `ds_max`, `ds_min`, `ds_minmax_int`, `ds_average`, `ds_last`, `ds_total`, `ds_tickness`, `ds_transparency`, `ds_invert`, `ds_legend`, `ds_jumpline`, `ds_stack`, `default_tpl1`, `comment`) VALUES(42, 'Cpu-cpu_total', 1, NULL, 'cpu_total', '#4C65B2', '0', '#4C65B2', NULL, NULL, '1', '1', '1', NULL, '1', '1', NULL, 1, '80', NULL, 'Average Cpu Usage', '0', NULL, NULL, NULL);
+INSERT INTO `giv_components_template` (`compo_id`, `name`, `ds_order`, `ds_hidecurve`, `ds_name`, `ds_color_line`, `ds_color_line_mode`, `ds_color_area`, `ds_color_area_warn`, `ds_color_area_crit`, `ds_filled`, `ds_max`, `ds_min`, `ds_minmax_int`, `ds_average`, `ds_last`, `ds_total`, `ds_tickness`, `ds_transparency`, `ds_invert`, `ds_legend`, `ds_jumpline`, `ds_stack`, `default_tpl1`, `comment`) VALUES(43, 'Cpu-cpu_total_MHz', 2, NULL, 'cpu_total_MHz', '#FC7DEA', '0', '#FC7DEA', NULL, NULL, '1', '1', '1', NULL, '1', '1', NULL, 1, '80', NULL, 'Average Cpu Usage (MHz)', '0', NULL, NULL, NULL);
+INSERT INTO `giv_components_template` (`compo_id`, `name`, `ds_order`, `ds_hidecurve`, `ds_name`, `ds_color_line`, `ds_color_line_mode`, `ds_color_area`, `ds_color_area_warn`, `ds_color_area_crit`, `ds_filled`, `ds_max`, `ds_min`, `ds_minmax_int`, `ds_average`, `ds_last`, `ds_total`, `ds_tickness`, `ds_transparency`, `ds_invert`, `ds_legend`, `ds_jumpline`, `ds_stack`, `default_tpl1`, `comment`) VALUES(45, 'Esx-swap_in', 1, NULL, 'swap_in', '#FF0000', '0', '#FF0000', NULL, NULL, '1', '1', NULL, NULL, '1', '1', NULL, 1, '80', '1', 'Swap In', '0', NULL, NULL, NULL);
+INSERT INTO `giv_components_template` (`compo_id`, `name`, `ds_order`, `ds_hidecurve`, `ds_name`, `ds_color_line`, `ds_color_line_mode`, `ds_color_area`, `ds_color_area_warn`, `ds_color_area_crit`, `ds_filled`, `ds_max`, `ds_min`, `ds_minmax_int`, `ds_average`, `ds_last`, `ds_total`, `ds_tickness`, `ds_transparency`, `ds_invert`, `ds_legend`, `ds_jumpline`, `ds_stack`, `default_tpl1`, `comment`) VALUES(46, 'Esx-swap_out', 1, NULL, 'swap_out', '#1EE045', '0', '#1EE045', NULL, NULL, '1', '1', NULL, NULL, '1', '1', NULL, 1, '80', NULL, 'Swap Out', '0', NULL, NULL, NULL);
 
 --
 -- Contenu de la table `giv_graphs_template`
@@ -470,7 +502,6 @@ INSERT INTO `cb_type` (`cb_type_id`, `type_name`, `type_shortname`, `cb_module_i
 (29, 'Database configuration writer', 'db_cfg_writer', 17),
 (30, 'Storage - Graphite', 'graphite', 18),
 (31, 'Storage - InfluxDB', 'influxdb', 19),
-(32, 'Correlation', 'correlation', 20),
 (33, 'Stream connector', 'lua', 21);
 
 --
@@ -506,15 +537,13 @@ INSERT INTO `cb_field` (`cb_field_id`, `fieldname`, `displayname`, `description`
 (26, 'compression_level', 'Compression level', 'Ranges from 0 (no compression) to 9 (best compression). Default is -1 (zlib compression)', 'int', NULL),
 (27, 'compression_buffer', 'Compression buffer size', 'The higher the buffer size is, the best compression. This however increase data streaming latency. Use with caution.', 'int', NULL),
 (28, 'failover', 'Failover name', 'Name of the input or output object that will act as failover.', 'text', NULL),
-(29, 'file', 'Correlation file', 'Path to the correlation file which holds host, services, dependencies and parenting definitions.', 'text', NULL),
-(30, 'retention', 'Retention file', 'File where correlation state will be stored during correlation engine restart', 'text', NULL),
 (31, 'retry_interval', 'Retry interval', 'Time in seconds to wait between each connection attempt.', 'int', NULL),
 (32, 'buffering_timeout', 'Buffering timeout', 'Time in seconds to wait before launching failover.', 'int', NULL),
 (33, 'fifo', 'File for Centreon Broker statistics', 'File where Centreon Broker statistics will be stored', 'text', NULL),
 (34, 'queries_per_transaction', 'Maximum queries per transaction', 'The maximum queries per transaction before commit.', 'int', NULL),
 (35, 'read_timeout', 'Transaction commit timeout', 'The transaction timeout before running commit.', 'int', NULL),
-(36, 'path', 'Unix socket', 'The Unix socket used to communicate with rrdcached. This is a global option, go to Administration > Options > RRDTool to modify it.', 'text', 'T=options:C=value:CK=key:K=rrdcached_unix_path'),
-(37, 'port', 'TCP port', 'The TCP port used to communicate with rrdcached. This is a global option, go to Administration > Options > RRDTool to modify it.', 'int', 'T=options:C=value:CK=key:K=rrdcached_port'),
+(36, 'rrd_cached_option', 'Enable RRDCached', 'Enable rrdcached option for Centreon, please see Centreon documentation to configure it.', 'radio', NULL),
+(37, 'rrd_cached', 'RRDCacheD listening socket/port', 'The absolute path to unix socket or TCP port for communicating with rrdcached daemon.', 'text', NULL),
 (38, 'max_size', 'Max file size in bytes', 'The maximum size of log file.', 'int', NULL),
 (39, 'check_replication', 'Replication enabled', 'When enabled, the broker engine will check whether or not the replication is up to date before attempting to update data.', 'radio', NULL),
 (40, 'rebuild_check_interval', 'Rebuild check interval in seconds', 'The interval between check if some metrics must be rebuild. The default value is 300s', 'int', NULL),
@@ -524,20 +553,20 @@ INSERT INTO `cb_field` (`cb_field_id`, `fieldname`, `displayname`, `description`
 (44, 'write_metrics', 'Write metrics', 'This can be used to disable graph update and therefore reduce I/O', 'radio', NULL),
 (45, 'write_status', 'Write status', 'This can be used to disable graph update and therefore reduce I/O', 'radio', NULL),
 (46, 'negotiation', 'Enable negotiation', 'Enable negotiation option (use only for version of Centren Broker >= 2.5)', 'radio', NULL),
-(48, "one_peer_retention_mode", "One peer retention", "This allows the retention to work even if the socket is listening", "radio", NULL),
-(49, 'cleanup_check_interval', "Cleanup check interval", "Interval in seconds before delete data from deleted pollers.", 'int', NULL),
-(50, 'instance_timeout', "Instance timeout", "Interval in seconds before change status of resources from a disconnected poller", "int", NULL),
-(51, 'metric_naming', "Metric naming", "How to name entries for metrics. This string supports macros such as $METRIC$, $HOST$, $SERVICE$ and $INSTANCE$", 'text', NULL),
-(52, 'status_naming', "Status naming", "How to name entries for statuses. This string supports macros such as $METRIC$, $HOST$, $SERVICE$ and $INSTANCE$", "text", NULL),
-(63, 'cache', "Cache", "Enable caching", 'radio', NULL),
+(48, 'one_peer_retention_mode', 'One peer retention', 'This allows the retention to work even if the socket is listening', 'radio', NULL),
+(49, 'cleanup_check_interval', 'Cleanup check interval', 'Interval in seconds before delete data from deleted pollers.', 'int', NULL),
+(50, 'instance_timeout', 'Instance timeout', 'Interval in seconds before change status of resources from a disconnected poller', 'int', NULL),
+(51, 'metric_naming', 'Metric naming', 'How to name entries for metrics. This string supports macros such as $METRIC$, $HOST$, $SERVICE$ and $INSTANCE$', 'text', NULL),
+(52, 'status_naming', 'Status naming', 'How to name entries for statuses. This string supports macros such as $METRIC$, $HOST$, $SERVICE$ and $INSTANCE$', 'text', NULL),
+(63, 'cache', 'Cache', 'Enable caching', 'radio', NULL),
 (64, 'storage_db_host', 'Storage DB host', 'IP address or hostname of the database server.', 'text', NULL),
 (65, 'storage_db_user', 'Storage DB user', 'Database user.', 'text', NULL),
 (66, 'storage_db_password', 'Storage DB password', 'Password of database user.', 'password', NULL),
 (67, 'storage_db_name', 'Storage DB name', 'Database name.', 'text', NULL),
 (68, 'storage_db_port', 'Storage DB port', 'Port on which the DB server listens', 'int', NULL),
 (69, 'storage_db_type', 'Storage DB type', 'Target DBMS.', 'select', NULL),
-(70, 'passive', 'Correlation passive', 'The passive mode is for the secondary Centreon Broker.', 'radio', NULL),
-(74, 'path', 'Path', 'Path of the lua script.', 'text', NULL);
+(74, 'path', 'Path', 'Path of the lua script.', 'text', NULL),
+(75, 'connections_count', 'Number of connection to the database', 'Usually cpus/2', 'int', NULL);
 
 INSERT INTO `cb_fieldgroup` (`cb_fieldgroup_id`, `groupname`, `displayname`, `multiple`, `group_parent_id`) VALUES
 (1, 'filters', '', 0, NULL),
@@ -546,7 +575,7 @@ INSERT INTO `cb_fieldgroup` (`cb_fieldgroup_id`, `groupname`, `displayname`, `mu
 (4, 'lua_parameter', 'lua parameter', 1, NULL);
 
 INSERT INTO `cb_field` (`cb_field_id`, `fieldname`, `displayname`, `description`, `fieldtype`, `external`, `cb_fieldgroup_id`) VALUES
-(47,  "category", "Filter category", "Category filter for flux in output", "multiselect", NULL, 1),
+(47, 'category', 'Filter category', 'Category filter for flux in output', 'multiselect', NULL, 1),
 (53, 'metrics_timeseries', 'Metrics timeseries', 'How to name entries for metrics timeseries. This string supports macros such as $METRIC$, $HOST$, $SERVICE$ and $INSTANCE$', 'text', NULL, NULL),
 (54, 'status_timeseries', 'Status timeseries', 'How to name entries for statuses timeseries. This string supports macros such as $METRIC$, $HOST$, $SERVICE$ and $INSTANCE$', 'text', NULL, NULL),
 (55, 'name', 'Name', 'Name of the column (macros accepted)', 'text', NULL, 2),
@@ -588,8 +617,8 @@ INSERT INTO `cb_list` (`cb_list_id`, `cb_field_id`, `default_value`) VALUES
 (9, 61, 'string'),
 (10, 62, 'false'),
 (1, 63, 'yes'),
-(1, 70, 'no'),
-(11, 73, 'string');
+(11, 73, 'string'),
+(12, 36, 'disable');
 
 --
 -- Contenu de la table `cb_list_values`
@@ -627,7 +656,10 @@ INSERT INTO `cb_list_values` (`cb_list_id`, `value_name`, `value_value`) VALUES
 (10, 'False', 'false'),
 (11, 'String', 'string'),
 (11, 'Number', 'number'),
-(11, 'Password', 'password');
+(11, 'Password', 'password'),
+(12, 'Disable', 'disable'),
+(12, 'TCP Port', 'tcp'),
+(12, 'UNIX Socket', 'unix');
 
 --
 -- Contenu de la table `cb_module_relation`
@@ -668,7 +700,6 @@ INSERT INTO `cb_tag_type_relation` (`cb_tag_id`, `cb_type_id`, `cb_type_uniq`) V
 (1, 29, 1),
 (1, 30, 0),
 (1, 31, 0),
-(1, 32, 1),
 (1, 33, 0);
 
 --
@@ -695,8 +726,7 @@ INSERT INTO `cb_type_field_relation` (`cb_type_id`, `cb_field_id`, `is_required`
 (11, 11, 1, 1),
 (11, 12, 1, 2),
 (11, 41, 0, 3),
-(13, 36, 0, 4),
-(13, 37, 0, 3),
+(13, 37, 0, 4),
 (13, 13, 1, 1),
 (13, 14, 1, 2),
 (14, 7, 1, 4),
@@ -763,9 +793,9 @@ INSERT INTO `cb_type_field_relation` (`cb_type_id`, `cb_field_id`, `is_required`
 (10, 48, 0, 16),
 (16, 49, 0, 18),
 (16, 50, 0, 19),
-(21, 28, 0, 2),
-(21, 31, 0, 2),
-(21, 32, 0, 2),
+(21, 28, 0, 8),
+(21, 31, 0, 8),
+(21, 32, 0, 8),
 (28, 15, 1, 1),
 (28, 7, 1, 2),
 (28, 18, 1, 3),
@@ -801,8 +831,6 @@ INSERT INTO `cb_type_field_relation` (`cb_type_id`, `cb_field_id`, `is_required`
 (31, 60, 0, 14),
 (31, 61, 0, 15),
 (31, 62, 0, 16),
-(32, 29, 1, 1),
-(32, 70, 0, 2),
 (33, 74, 1, 1),
 (33, 47, 0, 2),
 (33, 72, 0, 3),
@@ -812,7 +840,9 @@ INSERT INTO `cb_type_field_relation` (`cb_type_id`, `cb_field_id`, `is_required`
 -- Contenu de la table `cb_type_field_relation`
 --
 INSERT INTO `cb_type_field_relation` (`cb_type_id`, `cb_field_id`, `is_required`, `order_display`, `jshook_name`, `jshook_arguments`) VALUES
-(33, 73, 0, 5, 'luaArguments', '{"target": "lua_parameter__value_%d"}');
+(33, 73, 0, 5, 'luaArguments', '{"target": "lua_parameter__value_%d"}'),
+(13, 36, 0, 3, 'rrdArguments', '{"target": "rrd_cached"}'),
+(16, 75, 0, 7, 'countConnections', '{"target": "connections_count"}');
 
 --
 -- Contenu de la table `widget_parameters_field_type`
@@ -848,6 +878,8 @@ INSERT INTO `widget_parameters_field_type` (`ft_typename`, `is_connector`) VALUE
                                            ('serviceMulti', 1),
                                            ('pollerMulti', 1),
                                            ('serviceGroupMulti', 1),
+                                           ('hostSeverityMulti', 1),
+                                           ('serviceSeverityMulti', 1),
                                            ('integer', 0);
 
 INSERT INTO timezone (`timezone_name`, `timezone_offset`, `timezone_dst_offset`) VALUES

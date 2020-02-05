@@ -57,14 +57,9 @@ $dbResult->closeCursor();
 
 $hostgroups = null;
 
-$status = filter_var(
-    $_POST["status"] ?? $_GET["status"] ?? -1,
-    FILTER_VALIDATE_INT
-);
-
 $template = filter_var(
-    $_POST['template'] ?? $_GET['template'] ?? null,
-    FILTER_SANITIZE_STRING
+    $_POST['template'] ?? $_GET['template'] ?? 0,
+    FILTER_VALIDATE_INT
 );
 
 $searchH = filter_var(
@@ -77,22 +72,27 @@ $searchS = filter_var(
     FILTER_SANITIZE_STRING
 );
 
+$status = filter_var(
+    $_POST["status"] ?? $_GET["status"] ?? 0,
+    FILTER_VALIDATE_INT
+);
+
 if (isset($_POST['search']) || isset($_GET['search'])) {
     //saving filters values
     $centreon->historySearch[$url] = array();
     $centreon->historySearch[$url]["template"] = $template;
-    $centreon->historySearch[$url]["status"] = $status;
     $centreon->historySearch[$url]["searchH"] = $searchH;
     $centreon->historySearch[$url]["searchS"] = $searchS;
     $hostStatus = isset($_POST["statusHostFilter"]) ? 1 : 0;
     $centreon->historySearch[$url]["hostStatus"] = $hostStatus;
+    $centreon->historySearch[$url]["status"] = $status;
 } else {
     //restoring saved values
-    $template = $centreon->historySearch[$url]['template'] ?? null;
-    $status = $centreon->historySearch[$url]["status"] ?? -1;
+    $template = $centreon->historySearch[$url]['template'] ?? 0;
     $searchH = $centreon->historySearch[$url]["searchH"] ?? null;
     $searchS = $centreon->historySearch[$url]["searchS"] ?? null;
     $hostStatus = $centreon->historySearch[$url]["hostStatus"] ?? 0;
+    $status = $centreon->historySearch[$url]["status"] ?? 0;
 }
 
 $searchH_SQL = '';
@@ -116,32 +116,12 @@ if ($hostStatus == 1) {
     $sqlFilterCase2 = "";
 }
 
-// Get Service Template List
-$tplService = array();
-$templateFilter = "<option value='0'></option>";
-$dbResult = $pearDB->query(
-    "SELECT service_id, service_description, service_alias FROM service " .
-    "WHERE service_register = '0' AND service_activate = '1' ORDER BY service_description"
-);
-while ($tpl = $dbResult->fetch()) {
-    $tplService[$tpl["service_id"]] = $tpl["service_alias"];
-    $templateFilter .= "<option value='" . $tpl["service_id"] . "'" .
-        (($tpl["service_id"] == $template) ? " selected" : "") . ">" . $tpl["service_description"] . "</option>";
-}
-$dbResult->closeCursor();
-
 // Status Filter
-$statusFilter = "<option value=''" .
-    (($status == -1) ? " selected" : "") . "> </option>";
-$statusFilter .= "<option value='1'" .
-    (($status == 1) ? " selected" : "") . ">" . _("Enabled") . "</option>";
-$statusFilter .= "<option value='0'" .
-    (($status == 0 && $status != '') ? " selected" : "") . ">" . _("Disabled") . "</option>";
-
+$statusFilter = array(1 => _("Disabled"), 2 => _("Enabled"));
 $sqlFilterCase = "";
-if ($status == 1) {
+if ($status == 2) {
     $sqlFilterCase = " AND sv.service_activate = '1' ";
-} elseif ($status == 0 && $status != "") {
+} elseif ($status == 1) {
     $sqlFilterCase = " AND sv.service_activate = '0' ";
 }
 
@@ -230,6 +210,35 @@ $form = new HTML_QuickFormCustom('select_form', 'POST', "?p=" . $p);
 
 // Different style between each lines
 $style = "one";
+
+
+//select2 Service template
+$route = './api/internal.php?object=centreon_configuration_servicetemplate&action=list';
+$attrServicetemplates = array(
+    'datasourceOrigin' => 'ajax',
+    'availableDatasetRoute' => $route,
+    'multiple' => false,
+    'defaultDataset' => $template,
+    'linkedObject' => 'centreonServicetemplates'
+);
+$form->addElement('select2', 'template', "", array(), $attrServicetemplates);
+
+//select2 Service Status
+$attrServiceStatus = null;
+if ($status) {
+    $statusDefault = array($statusFilter[$status] => $status);
+    $attrServiceStatus = array(
+        'defaultDataset' => $statusDefault
+    );
+}
+$form->addElement('select2', 'status', "", $statusFilter, $attrServiceStatus);
+
+
+$attrBtnSuccess = array(
+    "class" => "btc bt_success",
+    "onClick" => "window.history.replaceState('', '', '?p=" . $p . "');"
+);
+$form->addElement('submit', 'Search', _("Search"), $attrBtnSuccess);
 
 // Fill a tab with a multidimensional Array we put in $tpl
 $elemArr = array();
@@ -370,11 +379,11 @@ $tpl->assign(
 
 // Toolbar select
 ?>
-<script type="text/javascript">
-    function setO(_i) {
-        document.forms['form'].elements['o'].value = _i;
-    }
-</script>
+    <script type="text/javascript">
+        function setO(_i) {
+            document.forms['form'].elements['o'].value = _i;
+        }
+    </script>
 <?php
 foreach (array('o1', 'o2') as $option) {
     $attrs1 = array(
@@ -430,9 +439,7 @@ if (isset($searchS) && $searchS) {
 $tpl->assign("searchH", $searchH);
 $tpl->assign("searchS", $searchS);
 $tpl->assign("hostgroupsFilter", $hostgroupsFilter);
-$tpl->assign("templateFilter", $templateFilter);
 $tpl->assign("statusHostFilter", $statusHostFilter);
-$tpl->assign("statusFilter", $statusFilter);
 $tpl->assign("hostStatusChecked", $hostStatusChecked);
 
 $renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
@@ -443,5 +450,4 @@ $tpl->assign('ServiceTemplates', _("Templates"));
 $tpl->assign('ServiceStatus', _("Status"));
 $tpl->assign('HostStatus', _("Disabled hosts"));
 $tpl->assign('Services', _("Services"));
-$tpl->assign('Search', _("Search"));
 $tpl->display("listService.ihtml");

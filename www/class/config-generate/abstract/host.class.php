@@ -37,6 +37,10 @@ require_once dirname(__FILE__) . '/object.class.php';
 
 abstract class AbstractHost extends AbstractObject
 {
+    const TYPE_HOST = 1;
+    const TYPE_TEMPLATE = 0;
+    const TYPE_VIRTUAL_HOST = 2;
+
     protected $attributes_select = '
         host_id,
         command_command_id as check_command_id,
@@ -145,6 +149,32 @@ abstract class AbstractHost extends AbstractObject
     protected $stmt_contact = null;
     protected $stmt_cg = null;
 
+    /**
+     * @param int $hostId
+     * @param int|null $hostType
+     * @return mixed
+     */
+    protected function getHostById(int $hostId, ?int $hostType = self::TYPE_HOST)
+    {
+        $query = "SELECT {$this->attributes_select}
+            FROM host
+            LEFT JOIN extended_host_information
+              ON extended_host_information.host_host_id = host.host_id
+            WHERE host.host_id = :host_id
+              AND host.host_activate = '1'";
+        if (!is_null($hostType)) {
+            $query .= ' AND host.host_register = :host_register';
+        }
+        $stmt = $this->backend_instance->db->prepare($query);
+        $stmt->bindParam(':host_id', $hostId, PDO::PARAM_INT);
+        if (!is_null($hostType)) {
+            // host_register is an enum
+            $stmt->bindParam(':host_register', $hostType, PDO::PARAM_STR);
+        }
+        $stmt->execute();
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
     protected function getImages(&$host)
     {
         $media = Media::getInstance($this->dependencyInjector);
@@ -191,12 +221,16 @@ abstract class AbstractHost extends AbstractObject
         return 0;
     }
 
-    protected function getHostTemplates(&$host)
+    /**
+     * @param array $host
+     * @param bool $generate
+     */
+    protected function getHostTemplates(array &$host, bool $generate = true): void
     {
         if (!isset($host['htpl'])) {
             if (is_null($this->stmt_htpl)) {
-                $this->stmt_htpl = $this->backend_instance->db->prepare("SELECT 
-                    host_tpl_id
+                $this->stmt_htpl = $this->backend_instance->db->prepare("
+                SELECT host_tpl_id
                 FROM host_template_relation
                 WHERE host_host_id = :host_id
                 ORDER BY `order` ASC
@@ -207,78 +241,56 @@ abstract class AbstractHost extends AbstractObject
             $host['htpl'] = $this->stmt_htpl->fetchAll(PDO::FETCH_COLUMN);
         }
 
-        $host_template = HostTemplate::getInstance($this->dependencyInjector);
+        if (!$generate) {
+            return;
+        }
+
+        $hostTemplate = HostTemplate::getInstance($this->dependencyInjector);
         $host['use'] = array();
-        foreach ($host['htpl'] as $template_id) {
-            $host['use'][] = $host_template->generateFromHostId($template_id);
+        foreach ($host['htpl'] as $templateId) {
+            $host['use'][] = $hostTemplate->generateFromHostId($templateId);
         }
     }
 
-    protected function getContacts(&$host)
+    /**
+     * @param array $host (passing by Reference)
+     */
+    protected function getContacts(array &$host): void
     {
         if (!isset($host['contacts_cache'])) {
             if (is_null($this->stmt_contact)) {
-                $this->stmt_contact = $this->backend_instance->db->prepare("SELECT 
-                    contact_id
-                FROM contact_host_relation
+                $this->stmt_contact = $this->backend_instance->db->prepare("
+                SELECT chr.contact_id
+                FROM contact_host_relation chr, contact
                 WHERE host_host_id = :host_id
+                AND chr.contact_id = contact.contact_id
+                AND contact.contact_activate = '1'
                 ");
             }
             $this->stmt_contact->bindParam(':host_id', $host['host_id'], PDO::PARAM_INT);
             $this->stmt_contact->execute();
             $host['contacts_cache'] = $this->stmt_contact->fetchAll(PDO::FETCH_COLUMN);
         }
-
-        $contact = Contact::getInstance($this->dependencyInjector);
-        $contact_result = '';
-        $contact_result_append = '';
-        foreach ($host['contacts_cache'] as $contact_id) {
-            $tmp = $contact->generateFromContactId($contact_id);
-            if (!is_null($tmp)) {
-                $contact_result .= $contact_result_append . $tmp;
-                $contact_result_append = ',';
-            }
-        }
-
-        if ($contact_result != '') {
-            $host['contacts'] = $contact_result;
-            if (!is_null($host['contact_additive_inheritance']) && $host['contact_additive_inheritance'] == 1) {
-                $host['contacts'] = '+' . $host['contacts'];
-            }
-        }
     }
 
-    protected function getContactGroups(&$host)
+    /**
+      * @param array $host (passing by Reference)
+     */
+    protected function getContactGroups(array &$host): void
     {
         if (!isset($host['contact_groups_cache'])) {
             if (is_null($this->stmt_cg)) {
-                $this->stmt_cg = $this->backend_instance->db->prepare("SELECT 
-                    contactgroup_cg_id
-                FROM contactgroup_host_relation
+                $this->stmt_cg = $this->backend_instance->db->prepare("
+                SELECT contactgroup_cg_id
+                FROM contactgroup_host_relation, contactgroup
                 WHERE host_host_id = :host_id
+                AND contactgroup_cg_id = cg_id
+                AND cg_activate = '1'
                 ");
             }
             $this->stmt_cg->bindParam(':host_id', $host['host_id'], PDO::PARAM_INT);
             $this->stmt_cg->execute();
             $host['contact_groups_cache'] = $this->stmt_cg->fetchAll(PDO::FETCH_COLUMN);
-        }
-
-        $cg = Contactgroup::getInstance($this->dependencyInjector);
-        $cg_result = '';
-        $cg_result_append = '';
-        foreach ($host['contact_groups_cache'] as $cg_id) {
-            $tmp = $cg->generateFromCgId($cg_id);
-            if (!is_null($tmp)) {
-                $cg_result .= $cg_result_append . $tmp;
-                $cg_result_append = ',';
-            }
-        }
-
-        if ($cg_result != '') {
-            $host['contact_groups'] = $cg_result;
-            if (!is_null($host['cg_additive_inheritance']) && $host['cg_additive_inheritance'] == 1) {
-                $host['contact_groups'] = '+' . $host['contact_groups'];
-            }
         }
     }
 

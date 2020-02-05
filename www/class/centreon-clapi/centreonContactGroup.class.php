@@ -126,7 +126,7 @@ class CentreonContactGroup extends CentreonObject
 
         $objectId = $this->getObjectId($params[self::ORDER_UNIQUENAME]);
         if ($objectId != 0) {
-            if (!preg_match("/^cg_/", $params[1])) {
+            if (!preg_match("/^cg_/", $params[1]) && $params[1] !== 'ar_id') {
                 $params[1] = "cg_" . $params[1];
             }
             $updateParams = array($params[1] => $params[2]);
@@ -234,7 +234,7 @@ class CentreonContactGroup extends CentreonObject
             array($cFieldName, "contact_id"),
             -1,
             0,
-            $cgFieldName,
+            $cgFieldName . ', contact_alias',
             'ASC',
             $filters,
             'AND'

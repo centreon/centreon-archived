@@ -1,8 +1,6 @@
 Bienvenue dans la documentation Centreon !
 ==========================================
 
-Centreon est un logiciel open source qui vous permet de superviser l'ensemble des éléments de votre système d'informations.
-
 Sommaire :
 
 .. toctree::
@@ -20,7 +18,6 @@ Sommaire :
    migration/index
    ceip
    faq/index
-   howto/index
    developper/index
    api/index
 

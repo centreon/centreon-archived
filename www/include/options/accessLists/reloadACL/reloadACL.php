@@ -1,7 +1,7 @@
 <?php
 /*
- * Copyright 2005-2015 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2019 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -44,7 +44,7 @@ require_once "./class/centreonMsg.class.php";
 
 if (isset($_GET["o"]) && $_GET["o"] == "r") {
     $sid = session_id();
-    $pearDB->query("UPDATE session SET update_acl = '1' WHERE session_id = '".$pearDB->escape($sid)."'");
+    $pearDB->query("UPDATE session SET update_acl = '1' WHERE session_id = '" . $pearDB->escape($sid) . "'");
     $pearDB->query("UPDATE acl_resources SET changed = '1'");
     $msg = new CentreonMsg();
     $msg->setTextStyle("bold");
@@ -55,30 +55,36 @@ if (isset($_GET["o"]) && $_GET["o"] == "r") {
     isset($_GET["select"]) ? $sel = $_GET["select"] : $sel = null;
     isset($_POST["select"]) ? $sel = $_POST["select"] : $sel;
 
-    $pearDB->query("UPDATE acl_resources SET changed = '1'");
-    $query = "UPDATE session SET update_acl = '1' WHERE user_id IN (";
-    $i = 0;
-    if (isset($sel)) {
-        foreach ($sel as $key => $val) {
-            if ($i) {
-                $query .= ", ";
+    $pearDB->beginTransaction();
+    try {
+        $pearDB->query("UPDATE acl_resources SET changed = '1'");
+        $query = "UPDATE session SET update_acl = '1' WHERE user_id IN (";
+        $i = 0;
+        if (isset($sel)) {
+            foreach ($sel as $key => $val) {
+                if ($i) {
+                    $query .= ", ";
+                }
+                $query .= "'".$key."'";
+                $i++;
             }
-            $query .= "'".$key."'";
-            $i++;
         }
-    }
-    if (!$i) {
-        $query .= "'')";
-    } else {
-        $query .= ")";
-    }
+        if (!$i) {
+            $query .= "'')";
+        } else {
+            $query .= ")";
+        }
+        $pearDB->query($query);
+        $pearDB->commit();
 
-    $pearDB->query($query);
-    $msg = new CentreonMsg();
-    $msg->setTextStyle("bold");
-    $msg->setText(_("ACL reloaded"));
-    $msg->setTimeOut("3");
-    passthru(_CENTREON_PATH_ . "/cron/centAcl.php");
+        $msg = new CentreonMsg();
+        $msg->setTextStyle("bold");
+        $msg->setText(_("ACL reloaded"));
+        $msg->setTimeOut("3");
+        passthru(_CENTREON_PATH_ . "/cron/centAcl.php");
+    } catch (\PDOException $e) {
+        $pearDB->rollBack();
+    }
 }
 
 # Smarty template Init
@@ -88,11 +94,16 @@ $tpl = initSmartyTpl($path, $tpl);
 $res = $pearDB->query("SELECT DISTINCT * FROM session");
 $session_data = array();
 $cpt = 0;
-$form = new HTML_QuickFormCustom('select_form', 'POST', "?p=".$p);
+$form = new HTML_QuickFormCustom('select_form', 'POST', "?p=" . $p);
 
-while ($r = $res->fetchRow()) {
-    $resUser = $pearDB->query("SELECT contact_name, contact_admin FROM contact WHERE contact_id = '".$r["user_id"]."'");
-    $rU = $resUser->fetchRow();
+while ($r = $res->fetch()) {
+    $resUser = $pearDB->prepare(
+        "SELECT contact_name, contact_admin FROM contact
+        WHERE contact_id = :contactId"
+    );
+    $resUser->bindValue(':contactId', $r['user_id'], \PDO::PARAM_INT);
+    $resUser->execute();
+    $rU = $resUser->fetch();
     if ($rU["contact_admin"] != "1") {
         $session_data[$cpt] = array();
         if ($cpt % 2) {
@@ -103,14 +114,21 @@ while ($r = $res->fetchRow()) {
         $session_data[$cpt]["user_id"] = $r["user_id"];
         $session_data[$cpt]["user_alias"] = $rU["contact_name"];
         $session_data[$cpt]["admin"] = $rU["contact_admin"];
-        
-        $resCP = $pearDB->query("SELECT topology_name, topology_page, topology_url_opt FROM topology WHERE topology_page = '".$r["current_page"]."'");
-        $rCP = $resCP->fetchRow();
+
+        $resCP = $pearDB->prepare(
+            "SELECT topology_name, topology_page, topology_url_opt FROM topology
+            WHERE topology_page = :topologyPage"
+        );
+        $resCP->bindValue(':topologyPage', $r["current_page"], \PDO::PARAM_INT);
+        $resCP->execute();
+        $rCP = $resCP->fetch();
         $session_data[$cpt]["ip_address"] = $r["ip_address"];
-        $session_data[$cpt]["current_page"] = $r["current_page"].$rCP["topology_url_opt"];
+        $session_data[$cpt]["current_page"] = $r["current_page"] . $rCP["topology_url_opt"];
         $session_data[$cpt]["topology_name"] = _($rCP["topology_name"]);
-        $session_data[$cpt]["actions"] = "<a href='./main.php?p=$p&o=r'><img src='./img/icones/16x16/refresh.gif' border='0' alt='"._("Reload ACL")."' title='"._("Reload ACL")."'></a>";
-        $selectedElements = $form->addElement('checkbox', "select[".$r['user_id']."]");
+        $session_data[$cpt]["actions"] = "<a href='./main.php?p=" . $p . "&o=r'>" .
+            "<img src='./img/icons/refresh.png' border='0' alt='" . _("Reload ACL") . "' " .
+            "title='" . _("Reload ACL") . "'></a>";
+        $selectedElements = $form->addElement('checkbox', "select[" . $r['user_id'] . "]");
         $session_data[$cpt]["checkbox"] = $selectedElements->toHtml();
         $cpt++;
     }
@@ -133,9 +151,10 @@ function setO(_i) {
 <?php
 foreach (array('o1', 'o2') as $option) {
     $attrs = array(
-            'onchange'=>"javascript: " .
-                "if (this.form.elements['".$option."'].selectedIndex == 1) {" .
-                " 	setO(this.form.elements['".$option."'].value); submit();} this.form.elements['".$option."'].selectedIndex = 0");
+        'onchange'=>"javascript: " .
+            "if (this.form.elements['" . $option . "'].selectedIndex == 1) " .
+            "{setO(this.form.elements['" . $option . "'].value); submit();} " .
+            "this.form.elements['" . $option . "'].selectedIndex = 0");
     $form->addElement('select', $option, null, array(null=>_("More actions..."), "u"=>_("Reload ACL")), $attrs);
     $o1 = $form->getElement($option);
     $o1->setValue(null);

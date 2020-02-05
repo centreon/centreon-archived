@@ -92,7 +92,7 @@ nécessaires.
 Chaque jour, un script lancé par un cron réalise la création des tables
 manquantes ou celles en avance : ::
 
-    0 4 * * * centreon /opt/rh/rh-php71/root/bin/php /usr/share/centreon/cron/centreon-partitioning.php >> /var/log/centreon/centreon-partitioning.log 2>&1
+    0 4 * * * centreon /opt/rh/rh-php72/root/bin/php /usr/share/centreon/cron/centreon-partitioning.php >> /var/log/centreon/centreon-partitioning.log 2>&1
 
 Exemple de fichier de partitionnement **partitioning-data_bin.xml** : ::
 
@@ -136,7 +136,7 @@ Des vérifications doivent être faites avant :
 La migration de la table est effectuée en utilisant l’option **-m** et en
 précisant le nom de la table à migrer : ::
 
-    # /opt/rh/rh-php71/root/bin/php /usr/share/centreon/bin/centreon-partitioning.php -m data_bin
+    # /opt/rh/rh-php72/root/bin/php /usr/share/centreon/bin/centreon-partitioning.php -m data_bin
 
 Si la migration de la table est ok l’ancienne table peut être supprimée avec
 la commande suivante : ::

@@ -17,12 +17,14 @@ réaliser une sauvegarde.
     <migratefrompollerdisplay>`.
 
 .. warning::
-   Le processus de mise à jour ne peut démarrer qu'à partir des versions **2.4.0**
+   Le processus de mise à jour ne peut démarrer qu'à partir des versions **2.8.0**
    et ultérieures. Si vous avez une version précédente, veuillez d'abord mettre à
-   jour vers une version intermédiaire comme la *2.8.x*.
+   jour vers la dernière version *2.8.x*.
 
 .. toctree::
     :maxdepth: 2
 
-    from_packages
+    from_packages_1904
+    from_packages_1810
+    from_packages_34
     from_sources

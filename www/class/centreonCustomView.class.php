@@ -1,7 +1,7 @@
 <?php
 /**
- * Copyright 2005-2015 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2019 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -286,7 +286,7 @@ class CentreonCustomView
             }
         }
 
-        return $this->currentView;
+        return (int)$this->currentView;
     }
 
     /**
@@ -442,14 +442,37 @@ class CentreonCustomView
                 }
                 //if owner not delete
             } else {
-                $query = 'UPDATE custom_view_user_relation SET is_consumed = 0 ' .
-                    'WHERE custom_view_id = :viewId AND user_id = :userId ';
-                $stmt = $this->db->prepare($query);
-                $stmt->bindParam(':userId', $this->userId, PDO::PARAM_INT);
-                $stmt->bindParam(':viewId', $viewId, PDO::PARAM_INT);
-                $dbResult = $stmt->execute();
-                if (!$dbResult) {
-                    throw new \Exception("An error occured");
+                // delete widget pref
+                try {
+                    $stmt = $this->db->prepare(
+                        'DELETE FROM widget_preferences 
+                        WHERE user_id = :userId 
+                        AND widget_view_id IN (
+                            SELECT widget_view_id FROM widget_views WHERE custom_view_id = :viewId
+                        )'
+                    );
+                    $stmt->bindParam(':userId', $this->userId, \PDO::PARAM_INT);
+                    $stmt->bindParam(':viewId', $viewId, \PDO::PARAM_INT);
+                    $stmt->execute();
+                } catch (\PDOException $e) {
+                    throw new Exception(
+                        "Error: cannot delete widget preferences , " . $e->getMessage() . "\n"
+                    );
+                }
+
+                //reset relation
+                try {
+                    $stmt = $this->db->prepare(
+                        'UPDATE custom_view_user_relation SET is_consumed = 0 ' .
+                        'WHERE custom_view_id = :viewId AND user_id = :userId '
+                    );
+                    $stmt->bindParam(':userId', $this->userId, PDO::PARAM_INT);
+                    $stmt->bindParam(':viewId', $viewId, PDO::PARAM_INT);
+                    $stmt->execute();
+                } catch (\PDOException $e) {
+                    throw new Exception(
+                        "Error: cannot reset widget preferences , " . $e->getMessage() . "\n"
+                    );
                 }
             }
         }
@@ -640,9 +663,60 @@ class CentreonCustomView
         if (!$dbResult) {
             throw new \Exception("An error occured");
         }
+        
+        //if the view is being added for the first time, we make sure that the widget parameters are going to be set
+        if (!$update) {
+            $this->addPublicViewWidgetParams($params['viewLoad'], $this->userId);
+        }
+        
         return $params['viewLoad'];
     }
 
+    /**
+    * @param $viewId
+    * @param $userId
+    * @throws Exception
+    */
+    public function addPublicViewWidgetParams($viewId, $userId)
+    {
+        //get all widget parameters from the view that is being added
+        if (!empty($userId)) {
+            $stmt = $this->db->prepare(
+                'SELECT * FROM widget_views wv ' .
+                'LEFT JOIN widget_preferences wp ON wp.widget_view_id = wv.widget_view_id ' .
+                'LEFT JOIN custom_view_user_relation cvur ON cvur.custom_view_id = wv.custom_view_id ' .
+                'WHERE cvur.custom_view_id = :viewId AND cvur.is_owner = 1 AND cvur.user_id = wp.user_id'
+            );
+            $stmt->bindParam(':viewId', $viewId, PDO::PARAM_INT);
+            $dbResult = $stmt->execute();
+            if (!$dbResult) {
+                throw new \Exception(
+                    "An error occurred when retrieving user's Id : " . $userId .
+                    " parameters of the widgets from the view: Id = " . $viewId
+                );
+            }
+
+            //add every widget parameters for the current user
+            while ($row = $stmt->fetch()) {
+                $stmt2 = $this->db->prepare(
+                    'INSERT INTO widget_preferences ' .
+                    'VALUES (:widgetViewId, :parameterId, :preferenceValue, :userId)'
+                );
+                $stmt2->bindParam(':widgetViewId', $row['widget_view_id'], PDO::PARAM_INT);
+                $stmt2->bindParam(':parameterId', $row['parameter_id'], PDO::PARAM_INT);
+                $stmt2->bindParam(':preferenceValue', $row['preference_value'], PDO::PARAM_STR);
+                $stmt2->bindParam(':userId', $userId, PDO::PARAM_INT);
+
+                $dbResult2 = $stmt2->execute();
+                if (!$dbResult2) {
+                    throw new \Exception(
+                        "An error occurred when adding user's Id : " . $userId .
+                        " parameters to the widgets from the view: Id = " . $viewId
+                    );
+                }
+            }
+        }
+    }
 
     /**
      * @param $params
@@ -674,11 +748,12 @@ class CentreonCustomView
             }
 
             // select user already share
-            $query = 'SELECT user_id FROM custom_view_user_relation ' .
+            $stmt = $this->db->prepare(
+                'SELECT user_id FROM custom_view_user_relation ' .
                 'WHERE custom_view_id = :viewId ' .
                 'AND user_id <> :userId ' .
-                'AND usergroup_id IS NULL ';
-            $stmt = $this->db->prepare($query);
+                'AND usergroup_id IS NULL '
+            );
             $stmt->bindParam(':viewId', $params['custom_view_id'], PDO::PARAM_INT);
             $stmt->bindParam(':userId', $userId, PDO::PARAM_INT);
             $dbResult = $stmt->execute();
@@ -693,10 +768,11 @@ class CentreonCustomView
             // check if the view is share at a new user
             foreach ($sharedUsers as $sharedUserId => $locked) {
                 if (isset($oldSharedUsers[$sharedUserId])) {
-                    $query = 'UPDATE custom_view_user_relation SET is_share = 1, locked = :isLocked ' .
+                    $stmt = $this->db->prepare(
+                        'UPDATE custom_view_user_relation SET is_share = 1, locked = :isLocked ' .
                         'WHERE user_id = :userId ' .
-                        'AND custom_view_id = :viewId';
-                    $stmt = $this->db->prepare($query);
+                        'AND custom_view_id = :viewId'
+                    );
                     $stmt->bindParam(':isLocked', $locked, PDO::PARAM_INT);
                     $stmt->bindParam(':userId', $sharedUserId, PDO::PARAM_INT);
                     $stmt->bindParam(':viewId', $params['custom_view_id'], PDO::PARAM_INT);
@@ -706,10 +782,11 @@ class CentreonCustomView
                     }
                     unset($oldSharedUsers[$sharedUserId]);
                 } else {
-                    $query = 'INSERT INTO custom_view_user_relation ' .
+                    $stmt = $this->db->prepare(
+                        'INSERT INTO custom_view_user_relation ' .
                         '(custom_view_id, user_id, locked, is_consumed, is_share ) ' .
-                        'VALUES ( :viewId, :sharedUser, :isLocked, 0, 1) ';
-                    $stmt = $this->db->prepare($query);
+                        'VALUES ( :viewId, :sharedUser, :isLocked, 0, 1) '
+                    );
                     $stmt->bindParam(':viewId', $params['custom_view_id'], PDO::PARAM_INT);
                     $stmt->bindParam(':sharedUser', $sharedUserId, PDO::PARAM_INT);
                     $stmt->bindParam(':isLocked', $locked, PDO::PARAM_INT);
@@ -736,24 +813,26 @@ class CentreonCustomView
             }
 
             // delete widget preferences for old user
-            $query = 'DELETE FROM widget_preferences ' .
+            $stmt = $this->db->prepare(
+                'DELETE FROM widget_preferences ' .
                 'WHERE widget_view_id IN (SELECT wv.widget_view_id FROM widget_views wv ' .
                 'WHERE wv.custom_view_id = ? ) ' .
-                'AND user_id IN (' . $userIdKey . ') ';
-            $stmt = $this->db->prepare($query);
+                'AND user_id IN (' . $userIdKey . ') '
+            );
             $dbResult = $stmt->execute($queryValue);
             if (!$dbResult) {
                 throw new \Exception($stmt->errorInfo());
             }
 
             // delete view / user relation
-            $query = 'DELETE FROM custom_view_user_relation ' .
+            $stmt = $this->db->prepare(
+                'DELETE FROM custom_view_user_relation ' .
                 'WHERE custom_view_id = ? ' .
-                'AND user_id IN (' . $userIdKey . ') ';
-            $stmt = $this->db->prepare($query);
+                'AND user_id IN (' . $userIdKey . ') '
+            );
             $dbResult = $stmt->execute($queryValue);
             if (!$dbResult) {
-                throw new \Exception("An error occured");
+                throw new \Exception("An error occurred");
             }
 
             ////////////////////////////

@@ -35,8 +35,9 @@ Le paramétrage de la durée de rétention permet de limiter la taille de la bas
 * **Retention duration for logs** : durée de rétention du journal d'activité des moteurs de collecte, par défaut **31 jours**.
 * **Retention duration for performance data in MySQL database** : durée de rétention des données de performance en base de données, par défaut **365 jours**
 * **Retention duration for performance data in RRDTool databases** : durée de rétention des données de performance pour les graphiques de performance, par défaut **180 jours**.
-* **Retention duration for downtimes** : durée de rétention des données des temps d'arrêts, par défaut illimité (0 jour).
-* **Retention duration for comments** : durée de rétention des commentaires, par défaut illimité (0 jour).
+* **Retention duration for downtimes** : durée de rétention des données des temps d'arrêts, par défaut illimitée (0 jour).
+* **Retention duration for comments** : durée de rétention des commentaires, par défaut illimitée (0 jour).
+* **Retention duration for audit logs** : durée de rétention des logs d'audit, par défaut illimitée (0 jour).
 
 .. note::
     Il est possible de ne pas sauvegarder les données de performance en base

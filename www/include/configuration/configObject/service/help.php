@@ -161,13 +161,15 @@ $help["notification_options"] = dgettext(
 $help["first_notification_delay"] = dgettext(
     "help",
     "Define the number of \"time units\" to wait before sending out the first problem notification when this " .
-    "service enters a non-OK state. With the default time unit of 60s, this number will mean multiples of 1 minute. " .
+    "service enters a non-OK state. " .
+    "With the default time unit of 60s, this number will mean multiples of 1 minute. " .
     "If you set this value to 0, monitoring engine will start sending out notifications immediately."
 );
 $help["recovery_notification_delay"] = dgettext(
     "help",
     "Define the number of \"time units\" to wait before sending out the recovery notification when this " .
-    "service enters an OK state. The default time unit is 0 (this number will mean multiples of 1 minute). " .
+    "service enters an OK state. " .
+    "With the default time unit of 60s, this number will mean multiples of 1 minute. " .
     "If you set this value to 0, monitoring engine will start sending out notifications immediately."
 );
 $help['use_only_contacts_from_host'] = dgettext(

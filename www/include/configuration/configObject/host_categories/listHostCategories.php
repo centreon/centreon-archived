@@ -40,10 +40,7 @@ if (!isset($centreon)) {
 require_once "./class/centreonUtils.class.php";
 include "./include/common/autoNumLimit.php";
 
-/*
- * Search
- */
-
+//Search
 $SearchTool = null;
 $search = filter_var(
     $_POST['searchH'] ?? $_GET['searchH'] ?? null,
@@ -102,6 +99,12 @@ $tpl->assign("headerMenu_options", _("Options"));
 $form = new HTML_QuickFormCustom('select_form', 'POST', "?p=" . $p);
 // Different style between each lines
 $style = "one";
+
+$attrBtnSuccess = array(
+    "class" => "btc bt_success",
+    "onClick" => "window.history.replaceState('', '', '?p=" . $p . "');"
+);
+$form->addElement('submit', 'Search', _("Search"), $attrBtnSuccess);
 
 // Fill a tab with a multidimensional Array we put in $tpl
 $elemArr = array();

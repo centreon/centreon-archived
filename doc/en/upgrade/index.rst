@@ -16,11 +16,13 @@ to make a backup your system.
     refer to :ref:`migration procedure <migratefrompollerdisplay>`.
 
 .. warning::
-   The upgrade process can start only from versions **2.4.0** and later. If you have
-   an earlier version, please update to an intermediate version like *2.8.x* first.
+   The upgrade process can start only from versions **2.8.0** and later. If you have
+   an earlier version, please update to the latest *2.8.x* version first.
 
 .. toctree::
     :maxdepth: 2
 
-    from_packages
+    from_packages_1904
+    from_packages_1810
+    from_packages_34
     from_sources

@@ -14,7 +14,7 @@
             <td><input type='text' name='searchO' value="{$searchO}" /></td>
             <td><input type='text' name='searchU' value="{$searchU}" /></td>
             <td><select name='otype'>{$obj_type}</select></td>
-            <td><input type='submit' class="btc bt_success" name='SearchB' value='{$Search}' /></td>
+            <td>{$form.SearchB.html}</td>
         </tr>
     </tbody>
 </table>
@@ -22,13 +22,13 @@
     <tr class="ToolbarTR">
         <td style='width:30%;'><input name="p" value="{$p}" type="hidden">&nbsp;</td>
         {php}
-           include('./include/common/pagination.php');
+           include './include/common/pagination.php';
         {/php}
     </tr>
 </table>
 <table class="ListTable">
     <tr class="ListHeader">
-        <td class="ListColHeaderCenter" style='width:120px'>{t}Date{/t}</td>
+        <td class="ListColHeaderCenter" style='width:180px'>{t}Date{/t}</td>
         <td class="ListColHeaderCenter" style="white-space:nowrap;">{t}Modificaton type{/t}</td>
         <td class="ListColHeaderCenter" style="white-space:nowrap;">{t}Objects{/t}</td>
         <td class="ListColHeaderCenter" style="white-space:nowrap;">{t}Object Name{/t}</td>

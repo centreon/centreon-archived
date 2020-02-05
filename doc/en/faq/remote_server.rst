@@ -8,6 +8,7 @@ List of known issues:
 * :ref:`I deleted my Remote Server and cannot recreate it with the wizard<deleteremoteserver>`.
 * :ref:`An error is displayed when I click on the details page of a host or a service<nolongerexists>`.
 * :ref:`Actions in the real-time user interface are not taken into account<noaction>`.
+
 .. _notrunning:
 
 My Remote Server and / or attached Pollers are not running on the central Centreon server

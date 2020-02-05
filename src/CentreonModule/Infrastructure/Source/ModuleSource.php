@@ -183,7 +183,7 @@ class ModuleSource extends SourceAbstract
         $entity->setVersion($info['mod_release']);
         $entity->setDescription($info['infos']);
         $entity->setKeywords($entity->getId());
-        $entity->setLicense($this->processLicense($this->license->getLicenseExpiration($entity->getId()), $info));
+        $entity->setLicense($this->processLicense($entity->getId(), $info));
 
         if (array_key_exists('stability', $info) && $info['stability']) {
             $entity->setStability($info['stability']);
@@ -237,17 +237,22 @@ class ModuleSource extends SourceAbstract
     }
 
     /**
-     * Process license return correct string based on license required or not
-     * @param string $license
-     * @param array $info
-     * @return string
+     * Process license check and return license information
+     * @param string $moduleId the module id (slug)
+     * @param array $info the info of the module from conf.php
+     * @return array the license information (required, expiration_date)
      */
-    protected function processLicense(string $license, array $info) : string
+    protected function processLicense(string $moduleId, array $info) : array
     {
-        if ($license === "N/A"){
-            $license = (!empty($info['require_license']) && $info['require_license'] === true)
-                ? _('License Required')
-                : $license;
+        $license = [
+            'required' => false
+        ];
+
+        if (!empty($info['require_license']) && $info['require_license'] === true) {
+            $license = [
+                'required' => true,
+                'expiration_date' => $this->license->getLicenseExpiration($moduleId)
+            ];
         }
 
         return $license;

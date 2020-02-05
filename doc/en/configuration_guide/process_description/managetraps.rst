@@ -29,7 +29,7 @@ Eg. :
 In the MIB file shown above, there are four dependencies required to import the MIB: SNMPv2-SMI, SNMPv2-TC, SNMPv2-CONF, SNMP-FRAMEWORK-MIB.
 Once the import is complete, it is necessary to modify the definition of the trap to change its default status:
 
-#. Go into the menu **Configuration** ==> **SNMP Traps**
+#. Go into the menu **Configuration > SNMP Traps**
 #. Click on the trap you want to modify.
 
 Depending on the associated trap message, change the default status of the service. In case the status of the service depends on the received message, use the advanced matching mode.
@@ -39,7 +39,7 @@ Create a passive service template
 
 To facilitate the configuration of services using SNMP traps, it is more convenient to create a passive service template. In this way, when creating a service there will be more than inherit the service from this model and link the trap or SNMP traps linked to this service.
 
-#. Go in the menu **Configuration** ==> **Services**
+#. Go in the menu **Configuration > Services**
 #. In the left menu click on **Templates**
 #. Click on **Add**
 
@@ -226,6 +226,8 @@ To do this, perform the following steps:
 +-----------------------------------+--------------------------------------------+
 | Trap Name                         | Trap name                                  |
 +-----------------------------------+--------------------------------------------+
+| Mode                              | Unique                                     |
++-----------------------------------+--------------------------------------------+
 | OID                               | OID of the trap                            |
 +-----------------------------------+--------------------------------------------+
 | Default Status                    | Trap default status                        |
@@ -355,7 +357,7 @@ CentCore
 ========
 
 CentCore daemon must be running to forward information from Centreontrapd to the monitoring engine as an external command.
-Enable the debug mode via **Administration** ==> **Options** ==> **Debug** menu and restart process.
+Enable the debug mode via **Administration > Options > Debug** menu and restart process.
 
 .. note::
     You can edit debug severity level in **/etc/sysconfig/centcore** file.

@@ -119,6 +119,10 @@ Cette partie permet de paramétrer le fonctionnement du processus CentCore.
 LDAP
 ****
 
+.. note::
+    Si vous souhaitez implémenter une authentification SSO, suivez cette :ref:`procédure <sso>`.
+    Vous pouvez également utiliser le SSO Keycloak en suivant cette :ref:`procédure <keycloak>`.
+
 Cette partie permet de configurer la connexion au(x) annuaire(s) LDAP.
 
 Pour ajouter un nouvel annuaire :
@@ -127,7 +131,7 @@ Pour ajouter un nouvel annuaire :
 #. Dans le menu de gauche, cliquez sur **LDAP**
 #. Cliquez sur **Ajouter**
 
-.. image :: /images/guide_exploitation/eldap.png
+.. image:: /images/guide_exploitation/eldap.png
    :align: center
 
 * Les champs **Nom de la configuration** et **Description** définissent le nom et la description du serveur LDAP
@@ -145,6 +149,29 @@ Pour ajouter un nouvel annuaire :
 * Le champ **Utiliser le service DNS** indique s'il faut utiliser le serveur DNS pour résoudre l'adresse IP de l'annuaire LDAP
 * Le champ **LDAP servers** permet d'ajouter un ou plusieurs annuaires LDAP vers lequel Centreon va se connecter.
 
+.. image:: /images/guide_exploitation/eldap2.png
+    :align: center
+
+* Lorsque l'option **Synchronisation LDAP lors du login** est activée, une mise à jour des données de l'utilisateur provenant du LDAP sera effectuée lors de sa connection et ses ACL seront re-calculées.
+* Le champ **Intervalle (en heures), entre les synchronisations LDAP** est affiché si la précedente option est activée. Il permet de spécifier une durée minimale entre deux synchronisation avec le LDAP.
+
+.. note::
+   Les données provenant du LDAP ne seront mises à jour que lorsque cet intervalle sera écoulé. Une synchronisation manuelle est possible sur les pages **Administration > Sessions** et **Configuration > Utilisateurs > Contacts / Utilisateurs**.
+
+   L'intervalle est exprimé en heures. Par défaut, ce champs est initié avec la plus basse valeur possible : 1 heure.
+
+.. note::
+   Nous sauvegardons en DB, un timestamp comme date de référence et c'est le CRON CentAcl qui le met à jour.
+
+   Cette référence temporelle permet de calculer la prochaine synchronisation avec le LDAP.
+
+   Si vous modifiez l'un de ces deux champs, la base temporelle sera réinitialisée à l'heure de la sauvegarde du formulaire.
+
+   Cette reférence temporelle n'est pas affectée par les modifications apportées sur les autres champs du formulaire.
+
+.. image:: /images/guide_exploitation/eldap3.png
+    :align: center
+
 Le tableau ci-dessous résume les différents paramètres à insérer pour ajouter un serveur LDAP :
 
 +-------------------------+------------------------------------------------------------------------------------------------------------+
@@ -159,27 +186,32 @@ Le tableau ci-dessous résume les différents paramètres à insérer pour ajout
 | TLS                     | Indique si le protocole TLS est utilisé pour la connexion au serveur                                       |
 +-------------------------+------------------------------------------------------------------------------------------------------------+
 
+.. image:: /images/guide_exploitation/eldap4.png
+    :align: center
+
 * Les champs **Utilisateur du domaine** et **Mot de passe** définissent le nom d'utilisateur et le mot de passe pour se connecter au serveur LDAP
 * Le champ **Version du protocole** indique la version du protocole à utiliser pour se connecter
-* La liste **Modèle** permet de préconfigurer les filtres de recherches des utilisateurs sur l'annuaire LDAP. Ces filtres permettant de proposer par défaut une recherche sur un annuaire de type MS AD ou de type Posix.
+* La liste **Modèle** permet de préconfigurer les filtres de recherches des utilisateurs sur l'annuaire LDAP.
+  Ces filtres permettent de proposer par défaut une recherche sur un annuaire de type MS Active Directory, Okta ou de type Posix.
 
 .. note::
     Avant tout import, vérifiez les paramètres par défaut proposés. Si vous n'avez sélectionné aucun modèle, vous devez définir manuellement les filtres de recherches en complétant les champs.
 
+.. note::
+    Il est possible d'utiliser l'annuaire **Okta** avec le `plugin SWA <https://help.okta.com/en/prod/Content/Topics/Apps/Apps_Configure_Template_App.htm>`_:
+    
+    * le champ **Utilisateur du domaine** est du type **uid=<USER>,dc=<ORGANIZATION>,dc=okta,dc=com**
+    * et le champ **Base de recherche de groupe DN** du type **ou=<OU>,dc=<ORGANIZATION>,dc=okta,dc=com**
 
 Sous CentOS 7, on peut définir de ne pas vérifier le certificat serveur avec la procédure suivante:
 
-Ajouter la ligne suivante dans le fichier "/etc/openldap/ldap.conf":
-
-::
+Ajouter la ligne suivante dans le fichier "/etc/openldap/ldap.conf": ::
 
   TLS_REQCERT never
 
-Puis redémarrez le serveur Apache :
+Puis redémarrez le serveur Apache : ::
 
-::
-
-  systemctl restart httpd24-httpd
+  # systemctl restart httpd24-httpd
 
 *******
 RRDTool
@@ -211,7 +243,7 @@ Cette partie permet de configurer l'activation de la journalisation de l'activit
 #. Rendez-vous dans le menu **Administration > Paramétres**
 #. Dans le menu de gauche, cliquez sur **Débogage**
 
-.. image :: /images/guide_exploitation/edebug.png
+.. image:: /images/guide_exploitation/edebug.png
    :align: center
 
 * Le champ **Répertoire d'enregistrement des journaux** définir le chemin où seront enregistrés les journaux d'évènements

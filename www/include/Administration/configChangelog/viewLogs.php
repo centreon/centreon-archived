@@ -1,7 +1,7 @@
 <?php
 /*
- * Copyright 2005-2015 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2019 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -37,7 +37,7 @@ if (!isset($centreon)) {
     exit();
 }
 
-require_once("./include/common/autoNumLimit.php");
+require_once "./include/common/autoNumLimit.php";
 
 /**
  * Search a contact by username or alias
@@ -52,12 +52,12 @@ function searchUserName($username)
     
     $contactIds = [];
     $prepareContact = $pearDB->prepare(
-        "SELECT contact_id FROM contact "
-        . "WHERE contact_name LIKE :contact_name "
-        . "OR contact_alias LIKE :contact_alias"
+        "SELECT contact_id FROM contact " .
+        "WHERE contact_name LIKE :contact_name " .
+        "OR contact_alias LIKE :contact_alias"
     );
-    $prepareContact->bindValue(':contact_name', "%$username%", \PDO::PARAM_STR);
-    $prepareContact->bindValue(':contact_alias', "%$username%", \PDO::PARAM_STR);
+    $prepareContact->bindValue(':contact_name', "%" . $username . "%", \PDO::PARAM_STR);
+    $prepareContact->bindValue(':contact_alias', "%" . $username . "%", \PDO::PARAM_STR);
     if ($prepareContact->execute()) {
         while ($contact = $prepareContact->fetch(\PDO::FETCH_ASSOC)) {
             $contactIds[] = (int) $contact['contact_id'];
@@ -75,7 +75,7 @@ $path = "./include/Administration/configChangelog/";
  * PHP functions
  */
 require_once "./include/common/common-Func.php";
-require_once("./class/centreonDB.class.php");
+require_once "./class/centreonDB.class.php";
 
 /*
  * Connect to Centstorage Database
@@ -83,12 +83,11 @@ require_once("./class/centreonDB.class.php");
 $pearDBO = new CentreonDB("centstorage");
 
 $contactList = array();
-$DBRES = $pearDB->query(
+$dbResult = $pearDB->query(
     "SELECT contact_id, contact_name, contact_alias FROM contact"
 );
-while ($row = $DBRES->fetchRow()) {
-    $contactList[$row["contact_id"]] =
-        $row["contact_name"] . " (" . $row["contact_alias"] . ")";
+while ($row = $dbResult->fetch()) {
+    $contactList[$row["contact_id"]] = $row["contact_name"] . " (" . $row["contact_alias"] . ")";
 }
 
 $searchO = null;
@@ -130,6 +129,12 @@ $otype = (int) $otype;
 
 //Init QuickForm
 $form = new HTML_QuickFormCustom('select_form', 'POST', "?p=" . $p);
+
+$attrBtnSuccess = array(
+    "class" => "btc bt_success",
+    "onClick" => "window.history.replaceState('', '', '?p=" . $p . "');"
+);
+$form->addElement('submit', 'SearchB', _("Search"), $attrBtnSuccess);
 
 //Init Smarty
 $tpl = initSmartyTpl($path, new Smarty());
@@ -178,15 +183,15 @@ $tpl->assign("obj_type", $options);
 $logQuery = "SELECT SQL_CALC_FOUND_ROWS object_id, object_type, object_name, "
     . "action_log_date, action_type, log_contact_id, action_log_id "
     . "FROM log_action";
-$query = $logQuery;
+
+$valuesToBind = [];
 if (!empty($searchO) || !empty($searchU) || $otype != 0) {
     $logQuery .= ' WHERE ';
     $hasMultipleSubRequest = false;
     
-    $valuesToBind = [];
     if (!empty($searchO)) {
         $logQuery .= "object_name LIKE :object_name ";
-        $valuesToBind[':object_name'] = "%$searchO%";
+        $valuesToBind[':object_name'] = "%" . $searchO . "%";
         $hasMultipleSubRequest = true;
     }
     if (!empty($searchU)) {
@@ -208,19 +213,16 @@ if (!empty($searchO) || !empty($searchU) || $otype != 0) {
         $valuesToBind[':object_type'] = $objects_type_tab[$otype];
     }
 }
-$logQuery .= " ORDER BY action_log_date DESC LIMIT :from, :nbr_element";
+$logQuery .= " ORDER BY action_log_date DESC LIMIT :from, :nbrElement";
 $prepareSelect = $pearDBO->prepare($logQuery);
 foreach ($valuesToBind as $label => $value) {
     $prepareSelect->bindValue($label, $value, \PDO::PARAM_STR);
 }
 $prepareSelect->bindValue(':from', $num * $limit, \PDO::PARAM_INT);
-$prepareSelect->bindValue(':nbr_element', $limit, \PDO::PARAM_INT);
-
-$rows = 0;
-
-include("./include/common/checkPagination.php");
+$prepareSelect->bindValue(':nbrElement', $limit, \PDO::PARAM_INT);
 
 $elemArray = array();
+$rows = 0;
 if ($prepareSelect->execute()) {
     $rows = $pearDBO->query("SELECT FOUND_ROWS()")->fetchColumn();
     while ($res = $prepareSelect->fetch(\PDO::FETCH_ASSOC)) {
@@ -322,6 +324,27 @@ if ($prepareSelect->execute()) {
                         "hostgroups" => $hostgroups,
                         "badge" => $badge[$tabAction[$res['action_type']]]
                     );
+                } else {
+                    if (empty($contactList[$res['log_contact_id']])) {
+                        $author = _("unknown");
+                    } else {
+                        $author = $contactList[$res['log_contact_id']];
+                    }
+
+                    // as the relation may have been deleted since the event,
+                    // some relations can't be found for this service, while events have been saved for it in the DB
+                    $elemArray[] = array(
+                        "date" => $res['action_log_date'],
+                        "type" => $res['object_type'],
+                        "object_name" => $objectName,
+                        "action_log_id" => $res['action_log_id'],
+                        "object_id" => $res['object_id'],
+                        "modification_type" => $tabAction[$res['action_type']],
+                        "author" => $author,
+                        "change" => $tabAction[$res['action_type']],
+                        "host" => "<i>Linked resource has changed</i>",
+                        "badge" => $badge[$tabAction[$res['action_type']]]
+                    );
                 }
                 unset($host_name);
                 unset($hg_name);
@@ -343,6 +366,7 @@ if ($prepareSelect->execute()) {
         }
     }
 }
+include "./include/common/checkPagination.php";
 
 
 /*
@@ -369,7 +393,6 @@ $tpl->assign('contact', _("Contact"));
  */
 $tpl->assign('limit', $limit);
 $tpl->assign('rows', $rows);
-
 $tpl->assign('p', $p);
 $tpl->assign('elemArray', $elemArray);
 

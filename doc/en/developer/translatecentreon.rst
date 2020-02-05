@@ -1,3 +1,5 @@
+.. _howtotranslate:
+
 =========================
 How to translate Centreon
 =========================
@@ -28,7 +30,7 @@ on your server.
 
 Execute the following command::
 
-    $ bash make-translation.sh
+    $ sh make-translation.sh
 
 At the end of execution, two files are available:
 
@@ -98,7 +100,7 @@ So translation could be modified with every new release.
 
 To maintain translation up-to-date follow this steps::
 
-    $ bash make-translation.sh
+    $ sh make-translation.sh
 
 At the end of execution, two files up-to-date are available:
 

@@ -24,7 +24,8 @@ paquets nécessaires à l'installation.
 Si vous préférez utiliser **Red Hat OS** vous devez installer une **version 7**
 du système puis y installer les rpms disponible dans nos dépôts de téléchargement.
 
-Enfin, vous pouvez utiliser une autre distribution GNU/Linux mais l'installation de la plate-forme
+Les utilisateurs Open Source, sans contrat de support, peuvent utiliser une autre distribution GNU/Linux.
+L'installation de la plate-forme sera plus complexe à partir des fichiers sources de chaque composant.
 sera plus complexe à partir des fichiers sources de chaque composant.
 
 .. note::
@@ -38,9 +39,9 @@ SGBD
 +----------+------------+
 | Logiciel | Version    |
 +==========+============+
-| MariaDB  | >= 10.1.29 |
+| MariaDB  | = 10.2.x   |
 +----------+------------+
-| MySQL    | >= 5.6.16  |
+| MySQL    | = 5.6.x    |
 +----------+------------+
 
 Dépendances logicielles
@@ -59,7 +60,7 @@ Le tableau suivant décrit les dépendances logicielles :
 +----------+------------------+
 | openssl  | >= 1.0.1k        |
 +----------+------------------+
-| PHP      | 7.1 & 7.2        |
+| PHP      | 7.2              |
 +----------+------------------+
 | Qt       | >= 4.7.4         |
 +----------+------------------+
@@ -233,7 +234,7 @@ Description des logiciels et utilisateurs liés :
 +=================+==================+=================+=======================+
 | Apache          | httpd24-httpd    | apache          | démarrage automatique |
 +-----------------+------------------+-----------------+-----------------------+
-| PHP-FPM         | rh-php71-php-fpm | apache          | démarrage automatique |
+| PHP-FPM         | rh-php72-php-fpm | apache          | démarrage automatique |
 +-----------------+------------------+-----------------+-----------------------+
 | MySQL (MariaDB) | mysqld (mysql)   | mysql           | démarrage automatique |
 +-----------------+------------------+-----------------+-----------------------+

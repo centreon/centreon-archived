@@ -1,7 +1,7 @@
-import * as actions from "../actions/axiosActions";
+import * as actions from '../actions/axiosActions';
 
 const initialState = {
-  fileUploadProgress: {}
+  fileUploadProgress: {},
 };
 
 const axiosReducer = (state = initialState, action) => {
@@ -12,17 +12,17 @@ const axiosReducer = (state = initialState, action) => {
       if (action.data.reset) {
         return {
           ...state,
-          fileUploadProgress: {}
-        };
-      } else {
-        return {
-          ...state,
-          fileUploadProgress: {
-            ...state.fileUploadProgress,
-            ...action.data
-          }
+          fileUploadProgress: {},
         };
       }
+      return {
+        ...state,
+        fileUploadProgress: {
+          ...state.fileUploadProgress,
+          ...action.data,
+        },
+      };
+
     default:
       return state;
   }

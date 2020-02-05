@@ -1,7 +1,7 @@
 <?php
 /*
- * Copyright 2005-2018 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2019 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -55,7 +55,6 @@ echo _("Database username");
 echo _("Database password");
 echo _("Centreon Central IP address, as seen by this server");
 echo _("Centreon Web Folder on Remote");
-echo _("Select a Remote Server");
 echo _("Select Pending Remote Links");
 echo _("Select IP");
 echo _("Select pollers to be attached to this new Remote Server");
@@ -69,9 +68,12 @@ echo _("Add server with wizard");
 echo _("Select linked Remote Server");
 echo _("as");
 echo _("Server Configuration");
-echo _("Attach poller to a server");
+echo _("Attach poller to a master remote server");
+echo _("Attach poller to additional remote servers");
 echo _("Advanced: reverse Centreon Broker communication flow");
 echo _("%s is not valid.");
 echo _("You need to send '%s' in the request.");
 echo _("Some database poller updates are not active; check your configuration");
 echo _("Latency detected, check configuration for better optimization");
+echo _("Do not check SSL certificate validation");
+echo _("Do not use configured proxy to connect to this server");

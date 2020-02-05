@@ -32,18 +32,30 @@ class ServerWizardIdentity
     /**
      * check if bam is installed on remote server
      *
-     * @param string $ip ip address of the remote server
-     * @param string $centreonPath centreon web path on remote server
+     * @param string $centreonUrl URL of Centreon of the remote server
+     * @param bool $noCheckCertificate do not check peer SSL certificat
+     * @param bool $noProxy don't use configured proxy
      * @return bool if bam is installed on remote server
      */
-    public function checkBamOnRemoteServer(string $ip, string $centreonPath): bool
-    {
-        $centreonPath = trim($centreonPath, '/');
-        $url = "{$ip}/{$centreonPath}/api/external.php?object=centreon_modules_webservice&action=getBamModuleInfo";
+    public function checkBamOnRemoteServer(
+        string $centreonUrl,
+        bool $noCheckCertificate = false,
+        bool $noProxy = false
+    ): bool {
+        $centreonUrl .= "/api/external.php?object=centreon_modules_webservice&action=getBamModuleInfo";
 
         try {
             $curl = new Curl;
-            $curl->post($url);
+
+            if ($noCheckCertificate) {
+                $curl->setOpt(CURLOPT_SSL_VERIFYPEER, false);
+            }
+
+            if ($noProxy) {
+                $curl->setOpt(CURLOPT_PROXY, false);
+            }
+
+            $curl->post($centreonUrl);
 
             if ($curl->error) {
                 return false;

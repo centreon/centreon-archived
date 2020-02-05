@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/bin/sh
 
 #----
 ## @Synopsis	This file contains functions to be used by Centreon install scripts
@@ -46,7 +46,7 @@ SETCOLOR_NORMAL="\\033[0;39m"
 ## @Stdout	info message
 ## @Globals	LOG_FILE
 #----
-function echo_info() {
+echo_info() {
     echo -e "${1}${MOVE_TO_COL}${SETCOLOR_INFO}${2}${SETCOLOR_NORMAL}"
     echo -e "$1 : $2" >> $LOG_FILE
 }
@@ -56,7 +56,7 @@ function echo_info() {
 ## @param	string to trim
 ## @return	string
 #----
-function trim() {
+trim() {
     echo "$1" | sed 's/^[ \t]*\(.*\)[ \t]*$/\1/'
 }
 
@@ -68,7 +68,7 @@ function trim() {
 ## @Stdout	success message
 ## @Globals	LOG_FILE
 #----
-function echo_success() {
+echo_success() {
     echo -e "${1}${MOVE_TO_COL}${SETCOLOR_SUCCESS}${2}${SETCOLOR_NORMAL}"
     echo -e "$1 : $2" >> $LOG_FILE
 }
@@ -81,7 +81,7 @@ function echo_success() {
 ## @Stdout	failure message
 ## @Globals	LOG_FILE
 #----
-function echo_failure() {
+echo_failure() {
     echo -e "${1}${MOVE_TO_COL}${SETCOLOR_FAILURE}${2}${SETCOLOR_NORMAL}"
     echo -e "$1 : $2" >> $LOG_FILE
 }
@@ -94,7 +94,7 @@ function echo_failure() {
 ## @Stdout	passed message
 ## @Globals	LOG_FILE
 #----
-function echo_passed() {
+echo_passed() {
     echo -e "${1}${MOVE_TO_COL}${SETCOLOR_WARNING}${2}${SETCOLOR_NORMAL}"
     echo -e "$1 : $2" >> $LOG_FILE
 }
@@ -107,7 +107,7 @@ function echo_passed() {
 ## @Stdout	warning message
 ## @Globals	LOG_FILE
 #----
-function echo_warning() {
+echo_warning() {
     echo -e "${1}${MOVE_TO_COL}${SETCOLOR_WARNING}${2}${SETCOLOR_NORMAL}"
     echo -e "$1 : $2" >> $LOG_FILE
 }
@@ -118,7 +118,7 @@ function echo_warning() {
 ## @param	message
 ## @Globals	LOG_FILE
 #----
-function log() {
+log() {
 	local program="$0"
 	local type="$1"
 	shift
@@ -135,7 +135,7 @@ function log() {
 ## @return 1	not found
 ## @Globals	PATH
 #----
-function pathfind() {
+pathfind() {
 	OLDIFS="$IFS"
 	IFS=:
 	for p in $PATH; do
@@ -156,7 +156,7 @@ function pathfind() {
 ## @return 1	not found
 ## @Globals	PATH
 #----
-function pathfind_ret() {
+pathfind_ret() {
 	local bin=$1
 	local var_ref=$2
 	local OLDIFS="$IFS"
@@ -179,7 +179,7 @@ function pathfind_ret() {
 ## @return 1	problem with one variable
 ## @Globals	GREP, CAT, SED, CHMOD, CHOWN
 #----
-function define_specific_binary_vars() {
+define_specific_binary_vars() {
 	local vars_bin="GREP CAT SED CHMOD CHOWN"
 	local var_bin_tolower=""
 	for var_bin in $vars_bin ; do
@@ -206,7 +206,7 @@ function define_specific_binary_vars() {
 ## @return 0 	yes
 ## @return 1 	no
 #----
-function yes_no_default() {
+yes_no_default() {
 	local message=$1
 	local default=${2:-$no}
 	local res="not_define"
@@ -218,7 +218,7 @@ function yes_no_default() {
 	done
 	if [ "$res" = "$yes" ] ; then
 		return 0
-	else 
+	else
 		return 1
 	fi
 }
@@ -226,7 +226,7 @@ function yes_no_default() {
 #----
 ## print a message, simple answer to the question
 #----
-function answer() {
+answer() {
 	local message=$1
 	local default=$2
 	local var_ref=$3
@@ -253,7 +253,7 @@ function answer() {
 ## @param	global variable to set a result
 ## @return 0	end
 #----
-function answer_with_testdir() {
+answer_with_testdir() {
 	local message=$1
 	local default=$2
 	local var_ref=$3
@@ -287,7 +287,7 @@ function answer_with_testdir() {
 ## @param	global variable to set a result
 ## @return 0	end
 #----
-function answer_with_createdir() {
+answer_with_createdir() {
 	local message=$1
 	local default=$2
 	local var_ref=$3
@@ -331,7 +331,7 @@ function answer_with_createdir() {
 ## @param       global variable to set a result
 ## @return 0    end
 #----
-function answer_with_createfile() {
+answer_with_createfile() {
         local message=$1
         local default=$2
         local var_ref=$3
@@ -375,7 +375,7 @@ function answer_with_createfile() {
 ## @param	global variable to set a result
 ## @return 0	end
 #----
-function answer_with_testfile() {
+answer_with_testfile() {
 	local message=$1
 	local default=$2
 	local var_ref=$3
@@ -403,7 +403,7 @@ function answer_with_testfile() {
 ## @param	global variable to set a result
 ## @return 0	end
 #----
-function answer_with_creategroup() {
+answer_with_creategroup() {
 	local message=$1
 	local default=$2
 	local var_ref=$3
@@ -445,7 +445,7 @@ function answer_with_creategroup() {
 ## @param	global variable to set a result
 ## @return 0	end
 #----
-function answer_with_createuser() {
+answer_with_createuser() {
 	local message=$1
 	local default=$2
 	local var_ref=$3
@@ -490,7 +490,7 @@ function answer_with_createuser() {
 ## @param	global variable to set a result
 ## @return 0	end
 #----
-function answer_with_testuser()
+answer_with_testuser()
 {
 	local message=$1
 	local default=$2
@@ -522,7 +522,7 @@ function answer_with_testuser()
 ## @return 0 	file exist
 ## @return 1 	file does not exist
 #----
-function testfile_clean() {
+testfile_clean() {
 	local file="$1"
 	local var="$2"
 	[ -z "$file" ] && return 1
@@ -541,7 +541,7 @@ function testfile_clean() {
 ## @return 0 directory exist
 ## @return 1 directory does not exist
 #----
-function testdir_clean() {
+testdir_clean() {
 	local dir="$1"
 	local var="$2"
 	[ -z "$dir" ] && return 1
@@ -553,7 +553,7 @@ function testdir_clean() {
 	fi
 }
 
-function dir_test_create() {
+dir_test_create() {
 	local dirname="$1"
 	if [ ! -d "$1" ] ; then
 		mkdir -p "$dirname"
@@ -567,17 +567,17 @@ function dir_test_create() {
 	return 0
 }
 
-function user_test() {
+user_test() {
 	grep "^$1:" /etc/passwd &>/dev/null
 	return $?
 }
 
-function user_create() {
+user_create() {
 	local username="$1"
 	local groupname="$2"
 	local description="$3"
 	local home="$4"
-	useradd -r -c "$description" -s "$(which bash)" -d "$home" -g "$groupname" "$username"
+	useradd -r -c "$description" -s "/bin/sh" -d "$home" -g "$groupname" "$username"
 	if [ $? -ne 0 ]; then
 		echo_failure "$(gettext "Could not create user") $username" "$fail"
 		return 1
@@ -587,12 +587,12 @@ function user_create() {
 	return 0
 }
 
-function group_test() {
+group_test() {
 	grep "^$1:" /etc/group &>/dev/null
 	return $?
 }
 
-function group_create() {
+group_create() {
 	local groupname="$1"
 	groupadd -r "$groupname"
 	if [ $? -ne 0 ] ; then
@@ -609,7 +609,7 @@ function group_create() {
 ## in last version of this script, you have been a possibility to create if not exist. now is not possible. You will create manualy.
 ## @Globals     PLUGIN_DIR, DEFAULT_PLUGIN_DIR
 #----
-function locate_plugindir() {
+locate_plugindir() {
         testdir_clean "$PLUGIN_DIR" "PLUGIN_DIR"
         if [ -z "$PLUGIN_DIR" ] ; then
                 answer "$(gettext "Where is your monitoring plugins (libexec) directory ?")" "$DEFAULT_PLUGIN_DIR" "PLUGIN_DIR"
@@ -628,7 +628,7 @@ function locate_plugindir() {
 ## It's possible to add most of directory.
 ## @Globals	INIT.D, DEFAULT_INIT_D
 #----
-function locate_init_d() {
+locate_init_d() {
 	testdir_clean "$INIT_D" "INIT_D"
 	if [ -z "$INIT_D" ] ; then
 		if [ -d "/etc/init.d" ] ; then
@@ -650,7 +650,7 @@ function locate_init_d() {
 ## Define where is centreon plugins directory
 ## @Globals     CENTREON_PLUGINS, DEFAULT_CENTREON_PLUGINS
 #----
-function locate_centreon_plugins() {
+locate_centreon_plugins() {
     testdir_clean "$CENTREON_PLUGINS" "CENTREON_PLUGINS"
     if [ -z "$CENTREON_PLUGINS" ] ; then
         answer "$(gettext "Where is your centreon plugins directory ?")" "$DEFAULT_CENTREON_PLUGINS" "CENTREON_PLUGINS"
@@ -662,7 +662,7 @@ function locate_centreon_plugins() {
 }
 
 
-function locate_monitoringengine_etc()
+locate_monitoringengine_etc()
 {
 	if [ -z "$MONITORINGENGINE_ETC" ]; then
 		answer_with_testdir "$(gettext "What is the Monitoring engine configuration directory ?") [$DEFAULT_MONITORINGENGINE_ETC]" "$DEFAULT_MONITORINGENGINE_ETC" "MONITORINGENGINE_ETC"
@@ -672,7 +672,7 @@ function locate_monitoringengine_etc()
 	log "INFO" "MONITORINGENGINE_ETC: $MONITORINGENGINE_ETC"
 }
 
-function locate_monitoringengine_log()
+locate_monitoringengine_log()
 {
 	if [ -z "$MONITORINGENGINE_LOG" ]; then
 		answer_with_testdir "$(gettext "What is the Monitoring engine log directory ?") [$DEFAULT_MONITORINGENGINE_LOG]" "$DEFAULT_MONITORINGENGINE_LOG" "MONITORINGENGINE_LOG"
@@ -682,7 +682,7 @@ function locate_monitoringengine_log()
 	log "INFO" "MONITORINGENGINE_LOG: $MONITORINGENGINE_LOG"
 }
 
-function locate_broker_etc()
+locate_broker_etc()
 {
 	if [ -z "$BROKER_ETC" ]; then
 		answer_with_testdir "$(gettext "Where is the configuration directory for broker module ?") [$DEFAULT_BROKER_ETC]" "$DEFAULT_BROKER_ETC" "BROKER_ETC"
@@ -692,21 +692,11 @@ function locate_broker_etc()
 	log "INFO" "BROKER_ETC: $BROKER_ETC"
 }
 
-function locate_broker_init_script()
-{
-	if [ -z "cbd" ]; then
-		answer_with_testfile "$(gettext "Where is the init script for broker module daemon ?") [$DEFAULT_BROKER_INIT_SCRIPT]" "$DEFAULT_BROKER_INIT_SCRIPT" "BROKER_INIT_SCRIPT"
-	fi
-	BROKER_INIT_SCRIPT=`trim ${BROKER_INIT_SCRIPT}`
-	export BROKER_INIT_SCRIPT
-	log "INFO" "BROKER_INIT_SCRIPT: cbd"
-}
-
 #----
 ## Define where is Centreon log directory
 ## @Globals	CENTREON_LOG, DEFAULT_CENTREON_LOG
 #----
-function locate_centreon_logdir() {
+locate_centreon_logdir() {
 	if [ -n "$CENTREON_LOG" ] ; then
 		dir_test_create "$CENTREON_LOG"
 		if [ $? -ne 0 ] ; then
@@ -726,7 +716,7 @@ function locate_centreon_logdir() {
 ## Define where is Centreon etc (config) directory
 ## @Globals	CENTREON_ETC, DEFAULT_CENTREON_ETC
 #----
-function locate_centreon_etcdir() {
+locate_centreon_etcdir() {
 	if [ -n "$CENTREON_ETC" ] ; then
 		dir_test_create "$CENTREON_ETC"
 		if [ $? -ne 0 ] ; then
@@ -747,7 +737,7 @@ function locate_centreon_etcdir() {
 ## CENTREON_BINDIR is the bin directory inside centreon directory
 ## @Globals	INSTALL_DIR_CENTREON
 #----
-function locate_centreon_bindir() {
+locate_centreon_bindir() {
     CENTREON_BINDIR="$INSTALL_DIR_CENTREON/bin"
 	export CENTREON_BINDIR
 	log "INFO" "CENTREON_BINDIR: $CENTREON_BINDIR"
@@ -757,7 +747,7 @@ function locate_centreon_bindir() {
 ## Define where is centreon install directory
 ## @Globals	INSTALL_DIR_CENTREON, DEFAULT_INSTALL_DIR_CENTREON
 #----
-function locate_centreon_installdir() {
+locate_centreon_installdir() {
 	if [ -n "$INSTALL_DIR_CENTREON" ] ; then
 		dir_test_create "$INSTALL_DIR_CENTREON"
 		if [ $? -ne 0 ] ; then
@@ -776,20 +766,29 @@ function locate_centreon_installdir() {
 #----
 ## Define where is Centreon generation directory
 ## Generation directory is use for a temporary config (same as INSTALL_DIR).
-## filesUpload and filesGeneration directories
-## @Globals	CENTREON_GENDIR, DEFAULT_CENTREON_GENDIR
+## @Globals	CENTREON_CACHEDIR, DEFAULT_CENTREON_CACHEDIR
 #----
-function locate_centreon_generationdir() {
-	CENTREON_GENDIR="$INSTALL_DIR_CENTREON"
-	export CENTREON_GENDIR
-	log "INFO" "CENTREON_GENDIR: $CENTREON_GENDIR"
+locate_centreon_generationdir() {
+	if [ -n "$CENTREON_CACHEDIR" ] ; then
+		dir_test_create "$CENTREON_CACHEDIR"
+		if [ $? -ne 0 ] ; then
+			CENTREON_CACHEDIR=""
+		fi
+	fi
+	if [ -z "$CENTREON_CACHEDIR" ] ; then
+		answer_with_createdir "$(gettext "Where is your Centreon cache directory?")" "$DEFAULT_CENTREON_CACHEDIR" "CENTREON_CACHEDIR"
+		echo_success "$(gettext "Path" ) $CENTREON_CACHEDIR" "$ok"
+	fi
+	CENTREON_CACHEDIR=`trim ${CENTREON_CACHEDIR%/}`
+	export CENTREON_CACHEDIR
+	log "INFO" "CENTREON_CACHEDIR: $CENTREON_CACHEDIR"
 }
 
 #----
 ## Define where is Centreon run directory (for .run file)
 ## @Globals	CENTREON_RUNDIR, DEFAULT_CENTREON_RUNDIR
 #----
-function locate_centreon_rundir() {
+locate_centreon_rundir() {
 	if [ -n "$CENTREON_RUNDIR" ] ; then
 		dir_test_create "$CENTREON_RUNDIR"
 		if [ $? -ne 0 ] ; then
@@ -809,7 +808,7 @@ function locate_centreon_rundir() {
 ## Define where is Centreon variable library directory
 ## @Globals	CENTREON_VARLIB, DEFAULT_CENTREON_VARLIB
 #----
-function locate_centreon_varlib() {
+locate_centreon_varlib() {
 	if [ -n "$CENTREON_VARLIB" ] ; then
 		dir_test_create "$CENTREON_VARLIB"
 		if [ $? -ne 0 ] ; then
@@ -821,6 +820,9 @@ function locate_centreon_varlib() {
 		echo_success "$(gettext "Path" ) $CENTREON_VARLIB" "$ok"
 	fi
 	CENTREON_VARLIB=`trim ${CENTREON_VARLIB%/}`
+	if [ ! -d "$CENTREON_VARLIB/installs" ] ; then
+		mkdir -p "$CENTREON_VARLIB/installs"
+	fi
 	export CENTREON_VARLIB
 	log "INFO" "CENTREON_VARLIB: $CENTREON_VARLIB"
 }
@@ -829,7 +831,7 @@ function locate_centreon_varlib() {
 ## Define where centStorage store a RRD file
 ## @Globals	CENTSTORAGE_RRD, DEFAULT_CENTSTORAGE_RRD
 #----
-function locate_centstorage_rrddir() {
+locate_centstorage_rrddir() {
 	if [ -n "$CENTSTORAGE_RRD" ] ; then
 		dir_test_create "$CENTSTORAGE_RRD"
 		if [ $? -ne 0 ] ; then
@@ -849,7 +851,7 @@ function locate_centstorage_rrddir() {
 ## Define where is centStorage binary directory
 ## @Globals	CENTSTORAGE_BINDIR, INSTALL_DIR_CENTREON, DEFAULT_CENTSTORAGE_BINDIR
 #----
-function locate_centstorage_bindir() {
+locate_centstorage_bindir() {
 	if [ -z "$CENTSTORAGE_BINDIR" ] ; then
 		answer_with_createdir "$(gettext "Where is your CentStorage binary directory")" "$INSTALL_DIR_CENTREON/$DEFAULT_CENTSTORAGE_BINDIR" "CENTSTORAGE_BINDIR"
 		echo_success "$(gettext "Path" ) $CENTSTORAGE_BINDIR" "$ok"
@@ -866,7 +868,7 @@ function locate_centstorage_bindir() {
 ## Define where is centStorage library directory
 ## @Globals	CENTSTORAGE_LIBDIR, INSTALL_DIR_CENTREON, DEFAULT_CENTSTORAGE_LIBDIR
 #----
-function locate_centstorage_libdir() {
+locate_centstorage_libdir() {
 	if [ -z "$CENTSTORAGE_LIBDIR" ] ; then
 		answer_with_createdir "$(gettext "Where is your CentStorage library directory")" "$INSTALL_DIR_CENTREON/$DEFAULT_CENTSTORAGE_LIBDIR" "CENTSTORAGE_LIBDIR"
 		echo_success "$(gettext "Path" ) $CENTSTORAGE_LIBDIR" "$ok"
@@ -883,7 +885,7 @@ function locate_centstorage_libdir() {
 ## Define where is centCore binary directory
 ## @Globals	CENTCORE_BINDIR, INSTALL_DIR_CENTREON, DEFAULT_CENTCORE_BINDIR
 #----
-function locate_centcore_bindir() {
+locate_centcore_bindir() {
 	if [ -z "$CENTCORE_BINDIR" ] ; then
 		answer_with_createdir "$(gettext "Where is your CentCore binary directory")" "$INSTALL_DIR_CENTREON/$DEFAULT_CENTCORE_BINDIR" "CENTCORE_BINDIR"
 		echo_success "$(gettext "Path" ) $CENTCORE_BINDIR" "$ok"
@@ -900,7 +902,7 @@ function locate_centcore_bindir() {
 ## Define where is centPlugins temporary directory
 ## @Globals	CENTPLUGINS_TMP, DEFAULT_CENTPLUGINS_TMP
 #----
-function locate_centplugins_tmpdir() {
+locate_centplugins_tmpdir() {
 	if [ -n "$CENTPLUGINS_TMP" ] ; then
 		dir_test_create "$CENTPLUGINS_TMP"
 		if [ $? -ne 0 ] ; then
@@ -922,7 +924,7 @@ function locate_centplugins_tmpdir() {
 ## Define where is SNMP etc (config) directory
 ## @Globals	SNMP_ETC, DEFAULT_SNMP_ETC
 #----
-function locate_snmp_etcdir() {
+locate_snmp_etcdir() {
 	testdir_clean "$SNMP_ETC" "SNMP_ETC"
 	if [ -z "$SNMP_ETC" ] ; then
 		answer_with_testdir "$(gettext "Where is your SNMP configuration directory")" "$DEFAULT_SNMP_ETC" "SNMP_ETC"
@@ -937,7 +939,7 @@ function locate_snmp_etcdir() {
 ## Define where is CENTREONTRAPD binary directory
 ## @Globals	CENTREONTRAPD_BINDIR, DEFAULT_CENTREONTRAPD_BINDIR
 #----
-function locate_centreontrapd_bindir() {
+locate_centreontrapd_bindir() {
 	if [ -z "$CENTREONTRAPD_BINDIR" ] ; then
 		answer_with_createdir "$(gettext "Where is your CentreonTrapd binaries directory")" "$DEFAULT_CENTREON_BINDIR" "CENTREONTRAPD_BINDIR"
 		echo_success "$CENTREONTRAPD_BINDIR" "$ok"
@@ -951,7 +953,7 @@ function locate_centreontrapd_bindir() {
 ## Define where is Sudo file
 ## @Globals	SUDO_FILE, DEFAULT_SUDO_FILE
 #----
-function locate_sudo() {
+locate_sudo() {
 	if [ -z "$SUDO_FILE" ] ; then
 		answer_with_createfile "$(gettext "Where is sudo configuration file")" "$DEFAULT_SUDO_FILE" "SUDO_FILE"
 		echo_success "$SUDO_FILE" "$ok"
@@ -966,7 +968,7 @@ function locate_sudo() {
 ## find rrdtool in PATH
 ## @Globals	BIN_RRDTOOL, DEFAULT_BIN_RRDTOOL
 #----
-function locate_rrdtool() {
+locate_rrdtool() {
 	testfile_clean "$BIN_RRDTOOL" "BIN_RRDTOOL"
 	if [ -z "$BIN_RRDTOOL" ] ; then
 		pathfind_ret "rrdtool" "BIN_RRDTOOL"
@@ -987,7 +989,7 @@ function locate_rrdtool() {
 ## find perl in PATH
 ## @Globals	BIN_PERL, DEFAULT_BIN_PERL
 #----
-function locate_perl() {
+locate_perl() {
 	testfile_clean "$BIN_PERL" "BIN_PERL"
 	if [ -z "$BIN_PERL" ] ; then
 		pathfind_ret "perl" "BIN_PERL"
@@ -1008,7 +1010,7 @@ function locate_perl() {
 ## find mail in PATH
 ## @Globals	BIN_MAIL, DEFAULT_BIN_MAIL
 #----
-function locate_mail() {
+locate_mail() {
 	testfile_clean "$BIN_MAIL" "BIN_MAIL"
 	if [ -z "$BIN_MAIL" ] ; then
 		pathfind_ret "mail" "BIN_MAIL"
@@ -1029,7 +1031,7 @@ function locate_mail() {
 ## find php, php5 in PATH
 ## @Globals	PHP_BIN, DEFAULT_PHP_BIN
 #----
-function locate_php_bin() {
+locate_php_bin() {
 	testfile_clean "$PHP_BIN" "PHP_BIN"
 	if [ -z "$PHP_BIN" ] ; then
 		answer_with_testfile "$(gettext "Where is your php binary ? ")" "$DEFAULT_PHP_BIN" "PHP_BIN"
@@ -1044,7 +1046,7 @@ function locate_php_bin() {
 ## Define where is php-pear (PEAR.php)
 ## @Globals	PEAR_PATH, DEFAULT_PEAR_PATH
 #----
-function locate_pear() {
+locate_pear() {
 	testdir_clean "$PEAR_PATH" "PEAR_PATH"
 	if [ -z "$PEAR_PATH" ] ; then
 		answer_with_testfile "$(gettext "Where is PEAR [PEAR.php] ")" "$DEFAULT_PEAR_PATH/PEAR.php" "PEAR_PATH"
@@ -1060,7 +1062,7 @@ function locate_pear() {
 ## Define where is your cron.d directory
 ## @Globals	CRON_D, DEFAULT_CRON_D
 #----
-function locate_cron_d() {
+locate_cron_d() {
 	testdir_clean "$CRON_D" "CRON_D"
 	if [ -z "$CRON_D" ] ; then
 		if [ -d "/etc/cron.d" ] ; then
@@ -1080,7 +1082,7 @@ function locate_cron_d() {
 ## Define where is your logrotate.d directory
 ## @Globals	LOGROTATE_D, DEFAULT_LOGROTATE_D
 #----
-function locate_logrotate_d() {
+locate_logrotate_d() {
 	testdir_clean "$LOGROTATE_D" "LOGROTATE_D"
 	if [ -z "$LOGROTATE_D" ] ; then
 		if [ -d "/etc/logrotate.d" ] ; then
@@ -1100,7 +1102,7 @@ function locate_logrotate_d() {
 ## Check php version which should be greater than the minimum version required
 ## @Globals	PHP_BIN, PHP_MIN_VERSION
 #----
-function check_php_version() {
+check_php_version() {
     log "INFO" "check php version"
     local php_version=$($PHP_BIN --version | head -n 1 | cut -d " " -f 2 | cut -c 1,3)
     if [ "$php_version" -lt "$PHP_MIN_VERSION" ] ; then
@@ -1116,7 +1118,7 @@ function check_php_version() {
 ## Check if composer dependencies are installed (vendor directory)
 ## @Globals	INSTALL_DIR_CENTREON
 #----
-function check_composer_dependencies() {
+check_composer_dependencies() {
     if [ -d "$BASE_DIR/vendor" ] ; then
         echo_success "$(gettext "Composer dependencies are installed")" "$ok"
         return 0
@@ -1130,8 +1132,8 @@ function check_composer_dependencies() {
 ## Check if composer dependencies are installed (vendor directory)
 ## @Globals	INSTALL_DIR_CENTREON
 #----
-function check_frontend_application() {
-    if [ -d "$BASE_DIR/www/template" ] ; then
+check_frontend_application() {
+    if [ -d "$BASE_DIR/www/static" ] ; then
         echo_success "$(gettext "Frontend application is built")" "$ok"
         return 0
     else
@@ -1146,7 +1148,7 @@ function check_frontend_application() {
 ## @return 0	True
 ## @return 1	False
 #----
-function is_single() {
+is_single() {
 	local var="$1"
 
 	local count=0
@@ -1170,7 +1172,7 @@ function is_single() {
 ## @param	apache config directory
 ## @Globals	line, DIR_APACHE_CONF, LOG_FILE, silent_install
 #----
-function configureApache() {
+configureApache() {
 	echo -e "\n$line"
 	echo -e "\t$(gettext "Configure Apache server")"
 	echo -e "$line"
@@ -1180,42 +1182,42 @@ function configureApache() {
 	# Generate a apache config in directory
 	prepare_apache_config "$dir_conf"
 
-	if [ "$silent_install" -ne 1 ] ; then
-		if [ -e $DIR_APACHE_CONF/centreon.conf ] ; then
-			echo "$(gettext "Finding Apache Centreon configuration file")"
-			echo_success "'$DIR_APACHE_CONF/centreon.conf' :" "$ok"
-			yes_no_default "$(gettext "Do you want to update Centreon Apache sub configuration file ?")"
-                        if [ "$?" -eq 0 ] ; then
-                            write_config="1"
-                            cp -f $DIR_APACHE_CONF/centreon.conf $DIR_APACHE_CONF/centreon.conf-bak >> $LOG_FILE 2>&1
-                            echo_info "$(gettext "Backup Centreon Apache configuration completed")"
-                        fi
-		else
-			yes_no_default "$(gettext "Do you want to add Centreon Apache sub configuration file ?")"
-			[ "$?" -eq 0 ] && write_config="1"
-		fi
-	else
-		write_config="1"
-    	fi
-	if [ "$write_config" -eq 1 ] ; then
-                if [ "$upgrade" -eq 1 ] ; then
-                    cp -f $dir_conf/centreon.apache.conf $DIR_APACHE_CONF/centreon.conf.new >> $LOG_FILE 2>&1
-                else
-                    cp -f $dir_conf/centreon.apache.conf $DIR_APACHE_CONF/centreon.conf >> $LOG_FILE 2>&1
-                fi
-		echo_success "$(gettext "Create") '$DIR_APACHE_CONF/centreon.conf'" "$ok"
-		echo_success "$(gettext "Configuring Apache")" "$ok"
-		# After finishing the configuration ->
-		# reload apache ! (if admin wants :p)
-		if [ "${APACHE_RELOAD:-0}" -eq 0 ] ; then
-			yes_no_default "$(gettext "Do you want to reload your Apache ?")"
-			[ $? -eq 0 ] && reload_service_apache
-		elif [ "${APACHE_RELOAD:-0}" -eq 1 ] ; then
-			reload_service_apache
-		fi
-	else
-		echo_info "$(gettext "Please config Apache with this example"):\n $dir_conf/centreon.apache.conf"
-	fi
+    if [ "$silent_install" -ne 1 ] ; then
+        if [ -e $DIR_APACHE_CONF/centreon.conf ] ; then
+            echo "$(gettext "Finding Apache Centreon configuration file")"
+            echo_success "'$DIR_APACHE_CONF/centreon.conf' :" "$ok"
+            yes_no_default "$(gettext "Do you want to update Centreon Apache sub configuration file ?")"
+            if [ "$?" -eq 0 ] ; then
+                write_config="1"
+                cp -f $DIR_APACHE_CONF/centreon.conf $DIR_APACHE_CONF/centreon.conf-bak >> $LOG_FILE 2>&1
+                echo_info "$(gettext "Backup Centreon Apache configuration completed")"
+            fi
+        else
+            yes_no_default "$(gettext "Do you want to add Centreon Apache sub configuration file ?")"
+            [ "$?" -eq 0 ] && write_config="1"
+        fi
+    else
+        write_config="1"
+    fi
+    if [ "$write_config" -eq 1 ] ; then
+        if [ "$upgrade" -eq 1 ] ; then
+            cp -f $dir_conf/centreon.apache.conf $DIR_APACHE_CONF/centreon.conf.new >> $LOG_FILE 2>&1
+        else
+            cp -f $dir_conf/centreon.apache.conf $DIR_APACHE_CONF/centreon.conf >> $LOG_FILE 2>&1
+        fi
+        echo_success "$(gettext "Create") '$DIR_APACHE_CONF/centreon.conf'" "$ok"
+        echo_success "$(gettext "Configuring Apache")" "$ok"
+        # After finishing the configuration ->
+        # reload apache ! (if admin wants :p)
+        if [ "${APACHE_RELOAD:-0}" -eq 0 ] ; then
+            yes_no_default "$(gettext "Do you want to reload your Apache ?")"
+            [ $? -eq 0 ] && reload_service_apache
+        elif [ "${APACHE_RELOAD:-0}" -eq 1 ] ; then
+            reload_service_apache
+        fi
+    else
+        echo_info "$(gettext "Please config Apache with this example"):\n $dir_conf/centreon.apache.conf"
+    fi
 }
 
 #----
@@ -1223,7 +1225,7 @@ function configureApache() {
 ## @return 0 	Apache reload OK
 ## @return 1	Apache reload FAIL
 #----
-function reload_service_apache() {
+reload_service_apache() {
 	local service=""
 	log "INFO" "$(gettext "Reloading Apache...")"
 	if [ -x /etc/init.d/apache ] ; then
@@ -1231,14 +1233,12 @@ function reload_service_apache() {
 	elif [ -x /etc/init.d/httpd ] ; then
 		service="httpd"
 	elif [ -x /bin/systemctl ] ; then
-	    local count_service=$(/bin/systemctl list-units | grep httpd | wc -l)
-	    if [ "$count_service" -gt "0" ] ; then
+	    if [ $(/bin/systemctl list-units | grep httpd24-httpd | wc -l) -gt "0" ] ; then
+	        service="httpd24-httpd"
+        elif [ $(/bin/systemctl list-units | grep httpd | wc -l) -gt "0" ] ; then
 	        service="httpd"
-        else
-            count_service=$(/bin/systemctl list-units | grep apache2 | wc -l)
-            if [ "$count_service" -gt "0" ] ; then
-                service="apache2"
-            fi
+        elif [ $(/bin/systemctl list-units | grep apache2 | wc -l) -gt "0" ] ; then
+            service="apache2"
 	    fi
 	elif [ -x /etc/init.d/apache2 ] ; then
 		service="apache2"
@@ -1271,7 +1271,7 @@ function reload_service_apache() {
 ## @return 0	create file ok
 ## @return 1	create file fail
 #----
-function prepare_apache_config() {
+prepare_apache_config() {
 	local directory="$1"
 
 	# if INSTALL_DIR_CENTREON not found, ask:
@@ -1279,15 +1279,33 @@ function prepare_apache_config() {
 
     # Prepare apache config
     ${CAT} << __EOT__ > $directory/centreon.apache.conf
+Alias /centreon/api $INSTALL_DIR_CENTREON
 Alias /centreon $INSTALL_DIR_CENTREON/www/
 
-<LocationMatch ^/centreon/(.*\.php(/.*)?)$>
+<LocationMatch ^/centreon/(?!api/latest/|api/beta/|api/v[0-9]+/|api/v[0-9]+\.[0-9]+/)(.*\.php(/.*)?)$>
   ProxyPassMatch fcgi://127.0.0.1:9042${INSTALL_DIR_CENTREON}/www/\$1
+</LocationMatch>
+
+<LocationMatch ^/centreon/api/(latest/|beta/|v[0-9]+/|v[0-9]+\.[0-9]+/)(.*)$>
+  ProxyPassMatch fcgi://127.0.0.1:9042${INSTALL_DIR_CENTREON}/api/index.php/\$1
 </LocationMatch>
 ProxyTimeout 300
 
 <Directory "$INSTALL_DIR_CENTREON/www">
     DirectoryIndex index.php
+    Options Indexes
+    AllowOverride all
+    Order allow,deny
+    Allow from all
+    Require all granted
+    <IfModule mod_php5.c>
+        php_admin_value engine Off
+    </IfModule>
+
+    AddType text/plain hbs
+</Directory>
+
+<Directory "$INSTALL_DIR_CENTREON/api">
     Options Indexes
     AllowOverride all
     Order allow,deny
@@ -1316,17 +1334,21 @@ __EOT__
 ## Check PHP FPM configuration directory
 ## @Globals	DIR_PHP_FPM_CONF
 #----
-function check_php_fpm_directory() {
-	if [ -z "$DIR_PHP_FPM_CONF" ] ; then
-		if [ -d /etc/php/7.1/fpm/pool.d ]; then
-			DIR_PHP_FPM_CONF="/etc/php/7.1/fpm/pool.d"
-		elif [ -d /etc/opt/rh/rh-php71/php-fpm.d ] ; then
-			DIR_PHP_FPM_CONF="/etc/opt/rh/rh-php71/php-fpm.d"
-		else
-			echo_passed "$(gettext "PHP FPM config directory not found")" "$critical"
-			answer_with_testdir "$(gettext "Where is your PHP FPM conf.d directory")" "NO_DEFAULT" "DIR_PHP_FPM_CONF"
-		fi
-	fi
+check_php_fpm_directory() {
+    if [ -z "$DIR_PHP_FPM_CONF" ] ; then
+        if [ -d /etc/php/7.2/fpm/pool.d ]; then
+            DIR_PHP_FPM_CONF="/etc/php/7.2/fpm/pool.d"
+        elif [ -d /etc/opt/rh/rh-php72/php-fpm.d ] ; then
+            DIR_PHP_FPM_CONF="/etc/opt/rh/rh-php72/php-fpm.d"
+        elif [ -d /etc/php/7.1/fpm/pool.d ]; then
+            DIR_PHP_FPM_CONF="/etc/php/7.1/fpm/pool.d"
+        elif [ -d /etc/opt/rh/rh-php71/php-fpm.d ] ; then
+            DIR_PHP_FPM_CONF="/etc/opt/rh/rh-php71/php-fpm.d"
+        else
+            echo_passed "$(gettext "PHP FPM config directory not found")" "$critical"
+            answer_with_testdir "$(gettext "Where is your PHP FPM conf.d directory")" "NO_DEFAULT" "DIR_PHP_FPM_CONF"
+        fi
+    fi
 	DIR_PHP_FPM_CONF=${DIR_PHP_FPM_CONF%/}
 	export DIR_PHP_FPM_CONF
 	log "INFO" "DIR_PHP_FPM_CONF: $DIR_PHP_FPM_CONF"
@@ -1338,7 +1360,7 @@ function check_php_fpm_directory() {
 ## Configure PHP FPM
 ## @Globals	silent_install, DIR_PHP_FPM_CONF, PHP_FPM_RELOAD
 #----
-function configure_php_fpm() {
+configure_php_fpm() {
     echo -e "\n$line"
 	echo -e "\t$(gettext "Configure PHP FPM service")"
 	echo -e "$line"
@@ -1392,7 +1414,7 @@ function configure_php_fpm() {
 ## Create configuration file of PHP FPM
 ## @Globals	INSTALL_DIR_CENTREON
 #----
-function prepare_php_fpm_config() {
+prepare_php_fpm_config() {
 	local directory="$1"
 
 	# if INSTALL_DIR_CENTREON not found, ask:
@@ -1428,7 +1450,7 @@ __EOT__
 #----
 ## Reload PHP FPM service
 #----
-function reload_service_php_fpm() {
+reload_service_php_fpm() {
     local service_reloaded=0
 	log "INFO" "$(gettext "Reloading PHP FPM...")"
 	if [ -x /bin/systemctl ] ; then
@@ -1459,19 +1481,16 @@ function reload_service_php_fpm() {
 ## @param	directory to generate a centreon.sudo file
 ## @return 0	create file ok
 ## @return 1	create file fail
-## @Globals	MONITORINGENGINE_BINARY, INIT_D, WEB_USER, MONITORINGENGINE_INIT_SCRIPT
+## @Globals	MONITORINGENGINE_BINARY, INIT_D, WEB_USER
 #----
-function prepare_sudo_config() {
+prepare_sudo_config() {
 	local directory="$1"
 
-    	locate_sudo
-	# Find Monitoring Engine Init Script
-	answer "$(gettext "What is the Monitoring engine init.d script ?") [$DEFAULT_MONITORINGENGINE_INIT_SCRIPT]" "$DEFAULT_MONITORINGENGINE_INIT_SCRIPT" "MONITORINGENGINE_INIT_SCRIPT"
+    locate_sudo
 	# find nagios binary if not define
 	[ -z "$MONITORINGENGINE_BINARY" ] && answer_with_testfile "$(gettext "What is the Monitoring engine binary ?") [$DEFAULT_MONITORINGENGINE_BINARY]" "$DEFAULT_MONITORINGENGINE_BINARY" "MONITORINGENGINE_BINARY"
 	[ -z "$MONITORINGENGINE_ETC" ] && locate_monitoringengine_etc
 	[ -z "$BROKER_ETC" ] && locate_broker_etc
-	[ -z "cbd" ] && locate_broker_init_script
 	[ -z "$SERVICE_BINARY" ] && answer_with_testfile "$(gettext "Where is your service command binary ?")" "$(which service)" "SERVICE_BINARY"
 	# Prepare sudo.conf
 
@@ -1518,7 +1537,7 @@ __EOT__
 ## @return 0	no problem in sudo file
 ## @return 1	possible problem in sudo file
 #----
-function is_suspect_conf_sudo() {
+is_suspect_conf_sudo() {
 	local sudo_file="$1"
 	${GREP} -e "^Defaults.*requiretty$" $sudo_file >> $LOG_FILE 2>&1
 	if [ "$?" -eq 0 ] ; then
@@ -1538,7 +1557,7 @@ function is_suspect_conf_sudo() {
 ## @Globals	SUDO_FILE, line
 ## @return 0	end
 #----
-function configureSUDO() {
+configureSUDO() {
 	echo -e "\n$line"
 	echo -e "\t$(gettext "Configure Sudo")"
 	echo -e "$line"
@@ -1587,11 +1606,11 @@ function configureSUDO() {
 #----
 ## Create a config file for Web post install
 ## @Globals	line, INSTALL_DIR_CENTREON, CENTREON_ETC,
-## @Globals	MONITORINGENGINE_BINARY, MONITORINGENGINE_INIT_SCRIPT
+## @Globals	MONITORINGENGINE_BINARY
 ## @Globals	BIN_RRDTOOL, WEB_USER, WEB_GROUP,
 ## @Globals	CENTREON_USER, BIN_MAIL
 #----
-function createConfFile() {
+createConfFile() {
 	echo -e "\n$line"
 	echo -e "\t\t$(gettext "Centreon Post Install")"
 	echo -e "$line"
@@ -1632,11 +1651,9 @@ function createConfFile() {
 \$conf_centreon['broker_user'] = "$BROKER_USER";
 \$conf_centreon['broker_group'] = "$BROKER_GROUP";
 \$conf_centreon['broker_etc'] = "$BROKER_ETC";
-\$conf_centreon['broker_init_script'] = "cbd";
 \$conf_centreon['monitoring_user'] = "$MONITORINGENGINE_USER";
 \$conf_centreon['monitoring_group'] = "$MONITORINGENGINE_GROUP";
 \$conf_centreon['monitoring_etc'] = "$MONITORINGENGINE_ETC";
-\$conf_centreon['monitoring_init_script'] = "centengine";
 \$conf_centreon['monitoring_binary'] = "$MONITORINGENGINE_BINARY";
 \$conf_centreon['monitoring_varlog'] = "$MONITORINGENGINE_LOG";
 \$conf_centreon['plugin_dir'] = "$PLUGIN_DIR";
@@ -1660,9 +1677,9 @@ __EOT__
 ## @Globals	NAGIOS_PLUGIN, NAGIOS_IMG, NAGIOS_BINARY, NAGIOSTATS_BINARY,
 ## @Globals	NAGIOS_VAR, RRD_PERL, SUDO_FILE, WEB_USER, WEB_GROUP,
 ## @Globals	NAGIOS_GROUP, BIN_RRDTOOL, BIN_MAIL, PEAR_PATH, CENTREON_LOG,
-## @Globals	CENTREON_ETC, CENTREON_GENDIR, CRON_D, NDOMOD_BINARY
+## @Globals	CENTREON_ETC, CENTREON_CACHEDIR, CRON_D, NDOMOD_BINARY
 #----
-function createCentreonInstallConf() {
+createCentreonInstallConf() {
 	${CAT} <<- __EOT__ > $CENTREON_ETC/instCentWeb.conf
 	INSTALL_DIR_CENTREON=$INSTALL_DIR_CENTREON
 	RRD_PERL=$RRD_PERL
@@ -1675,7 +1692,7 @@ function createCentreonInstallConf() {
 	CENTREON_LOG=$CENTREON_LOG
 	CENTREON_ETC=$CENTREON_ETC
 	CENTREON_BINDIR=$CENTREON_BINDIR
-	CENTREON_GENDIR=$CENTREON_GENDIR
+	CENTREON_CACHEDIR=$CENTREON_CACHEDIR
 	CENTREON_VARLIB=$CENTREON_VARLIB
 	CENTREON_GROUP=$CENTREON_GROUP
 	CENTREON_USER=$CENTREON_USER
@@ -1687,9 +1704,7 @@ function createCentreonInstallConf() {
 	CENTPLUGINSTRAPS_BINDIR=$CENTPLUGINSTRAPS_BINDIR
 	BROKER_ETC=$BROKER_ETC
 	BROKER_USER=$BROKER_USER
-	BROKER_INIT_SCRIPT=cbd
 	MONITORINGENGINE_ETC=$MONITORINGENGINE_ETC
-	MONITORINGENGINE_INIT_SCRIPT=centengine
 	MONITORINGENGINE_BINARY=$MONITORINGENGINE_BINARY
 	MONITORINGENGINE_LOG=$MONITORINGENGINE_LOG
 	MONITORINGENGINE_USER=$MONITORINGENGINE_USER
@@ -1708,13 +1723,13 @@ function createCentreonInstallConf() {
 ## @Globals	CENTREON_RUNDIR, CENTSTORAGE_RRD, CENTSTORAGE_BINDIR
 ## @Globals	NAGIOS_USER, NAGIOS_GROUP, RRD_PERL, CRON_D, INIT_D
 #----
-function createCentStorageInstallConf() {
+createCentStorageInstallConf() {
 	${CAT} <<- __EOT__ > $CENTREON_ETC/instCentStorage.conf
 	INSTALL_DIR_CENTREON=$INSTALL_DIR_CENTREON
 	CENTREON_LOG=$CENTREON_LOG
 	CENTREON_ETC=$CENTREON_ETC
 	CENTREON_RUNDIR=$CENTREON_RUNDIR
-	CENTREON_GENDIR=$CENTREON_GENDIR
+	CENTREON_CACHEDIR=$CENTREON_CACHEDIR
 	CENTREON_VARLIB=$CENTREON_VARLIB
 	RRD_PERL=$RRD_PERL
 	NAGIOS_VAR=$NAGIOS_VAR
@@ -1737,14 +1752,14 @@ function createCentStorageInstallConf() {
 ## @Globals	CENTREON_RUNDIR, CENTSTORAGE_RRD, CENTSTORAGE_BINDIR
 ## @Globals	NAGIOS_USER, NAGIOS_GROUP, RRD_PERL, CRON_D, INIT_D
 #----
-function createCentCoreInstallConf() {
+createCentCoreInstallConf() {
 	${CAT} <<- __EOT__ > $CENTREON_ETC/instCentCore.conf
 	INSTALL_DIR_CENTREON=$INSTALL_DIR_CENTREON
 	CENTREON_ETC=$CENTREON_ETC
 	CENTREON_RUNDIR=$CENTREON_RUNDIR
 	CENTREON_LOG=$CENTREON_LOG
 	CENTREON_VARLIB=$CENTREON_VARLIB
-	CENTREON_GENDIR=$CENTREON_GENDIR
+	CENTREON_CACHEDIR=$CENTREON_CACHEDIR
 	CENTCORE_BINDIR=$CENTCORE_BINDIR
 	BIN_SSH=$BIN_SSH
 	BIN_SCP=$BIN_SCP
@@ -1765,7 +1780,7 @@ function createCentCoreInstallConf() {
 ## @Globals	RRD_PERL, CENTPLUGINS_TMP, NAGIOS_USER, NAGIOS_GROUP, INIT_D
 ## @Globals	SNMP_ETC, SNMPTT_BINDIR, CENTPLUGINSTRAPS_BINDIR, WEB_USER
 #----
-function createCentPluginsInstallConf() {
+createCentPluginsInstallConf() {
 	${CAT} <<- __EOT__ > $CENTREON_ETC/instCentPlugins.conf
 	# Use in CentPlugins.sh
 	PLUGIN_DIR=$PLUGIN_DIR
@@ -1796,7 +1811,7 @@ function createCentPluginsInstallConf() {
 ## @Globals	RRD_PERL, CENTPLUGINS_TMP, NAGIOS_USER, NAGIOS_GROUP, INIT_D
 ## @Globals	SNMP_ETC, SNMPTT_BINDIR, CENTPLUGINSTRAPS_BINDIR, WEB_USER
 #----
-function createCentPluginsForTrapdInstallConf() {
+createCentPluginsForTrapdInstallConf() {
 	${CAT} <<- __EOT__ >>  $CENTREON_ETC/instCentPlugins.conf
 	# Use in CentPluginsTraps.sh
 	SNMP_ETC=$SNMP_ETC
@@ -1819,50 +1834,53 @@ function createCentPluginsForTrapdInstallConf() {
 ## @return 0
 ## @Globals	DIR_APACHE, DIR_APACHE_CONF, APACHE_CONF
 #----
-function check_httpd_directory()
+check_httpd_directory()
 {
-	if [ -z "$DIR_APACHE" -o -z "$DIR_APACHE_CONF" ] ; then
-		if [ -d /etc/apache/conf ]; then
-			DIR_APACHE="/etc/apache/conf"
-			DIR_APACHE_CONF="/etc/apache/conf.d"
-		elif [ -d /usr/local/apache2/conf ] ; then
-			DIR_APACHE="/usr/local/apache2/conf"
-			DIR_APACHE_CONF="/usr/local/apache2/conf"
-		elif [ -d /etc/apache2 ] ; then
-			DIR_APACHE="/etc/apache2"
-			DIR_APACHE_CONF="/etc/apache2/conf-available"
-			if [ -d '/etc/apache2/conf-avaible' ]; then
-				DIR_APACHE_CONF="/etc/apache2/conf-available"
-			elif [ -d '/etc/apache2/conf.d' ]; then
-				DIR_APACHE_CONF="/etc/apache2/conf.d"
-			fi
-			if [ ! -d "$DIR_APACHE_CONF" ] ; then
-				mkdir "$DIR_APACHE_CONF"
-				echo_success "$(gettext "Created Apache configuration directory")" "$ok"
-			fi
-			if [ -d '/etc/apache2/conf-enabled' -a -x "$(type -p a2enconf 2>/dev/null)" ] ; then
-				echo_success "$(gettext "Enable Apache configuration")" "$ok"
-				a2enconf centreon.conf
-			fi
-		elif [ -d /etc/httpd/conf ] ; then
-			DIR_APACHE="/etc/httpd/conf"
-			DIR_APACHE_CONF="/etc/httpd/conf.d"
-		elif [ -d /usr/local/etc/apache ] ; then
-			DIR_APACHE="/usr/local/etc/apache"
-			DIR_APACHE_CONF="/usr/local/etc/apache/Includes"
-		elif [ -d /usr/local/etc/apache2 ] ; then
-			DIR_APACHE="/usr/local/etc/apache2"
-			DIR_APACHE_CONF="/usr/local/etc/apache2/Includes"
-		elif [ -d /usr/local/etc/apache22 ] ; then
-			# add for freeBSD 7 with apache2.2
-			DIR_APACHE="/usr/local/etc/apache22"
-			DIR_APACHE_CONF="/usr/local/etc/apache22/Includes"
-		else
-			echo_passed "$(gettext "Apache config directoty not found")" "$critical"
-			answer_with_testdir "$(gettext "Where is your Apache etc directory")" "NO_DEFAULT" "DIR_APACHE"
-			answer_with_testdir "$(gettext "Where is your Apache conf.d directory")" "NO_DEFAULT" "DIR_APACHE_CONF"
-		fi
-	fi
+    if [ -z "$DIR_APACHE" -o -z "$DIR_APACHE_CONF" ] ; then
+        if [ -d /opt/rh/httpd24/root/etc/httpd/conf ] ; then
+            DIR_APACHE="/opt/rh/httpd24/root/etc/httpd/conf"
+            DIR_APACHE_CONF="/opt/rh/httpd24/root/etc/httpd/conf.d"
+        elif [ -d /etc/apache/conf ] ; then
+            DIR_APACHE="/etc/apache/conf"
+            DIR_APACHE_CONF="/etc/apache/conf.d"
+        elif [ -d /usr/local/apache2/conf ] ; then
+            DIR_APACHE="/usr/local/apache2/conf"
+            DIR_APACHE_CONF="/usr/local/apache2/conf"
+        elif [ -d /etc/apache2 ] ; then
+            DIR_APACHE="/etc/apache2"
+            DIR_APACHE_CONF="/etc/apache2/conf-available"
+            if [ -d '/etc/apache2/conf-avaible' ] ; then
+                DIR_APACHE_CONF="/etc/apache2/conf-available"
+            elif [ -d '/etc/apache2/conf.d' ] ; then
+                DIR_APACHE_CONF="/etc/apache2/conf.d"
+            fi
+            if [ ! -d "$DIR_APACHE_CONF" ] ; then
+                mkdir "$DIR_APACHE_CONF"
+                echo_success "$(gettext "Created Apache configuration directory")" "$ok"
+            fi
+            if [ -d '/etc/apache2/conf-enabled' -a -x "$(type -p a2enconf 2>/dev/null)" ] ; then
+                echo_success "$(gettext "Enable Apache configuration")" "$ok"
+                a2enconf centreon.conf
+            fi
+        elif [ -d /etc/httpd/conf ] ; then
+            DIR_APACHE="/etc/httpd/conf"
+            DIR_APACHE_CONF="/etc/httpd/conf.d"
+        elif [ -d /usr/local/etc/apache ] ; then
+            DIR_APACHE="/usr/local/etc/apache"
+            DIR_APACHE_CONF="/usr/local/etc/apache/Includes"
+        elif [ -d /usr/local/etc/apache2 ] ; then
+            DIR_APACHE="/usr/local/etc/apache2"
+            DIR_APACHE_CONF="/usr/local/etc/apache2/Includes"
+        elif [ -d /usr/local/etc/apache22 ] ; then
+            # add for freeBSD 7 with apache2.2
+            DIR_APACHE="/usr/local/etc/apache22"
+            DIR_APACHE_CONF="/usr/local/etc/apache22/Includes"
+        else
+            echo_passed "$(gettext "Apache config directoty not found")" "$critical"
+            answer_with_testdir "$(gettext "Where is your Apache etc directory")" "NO_DEFAULT" "DIR_APACHE"
+            answer_with_testdir "$(gettext "Where is your Apache conf.d directory")" "NO_DEFAULT" "DIR_APACHE_CONF"
+        fi
+    fi
 	DIR_APACHE=${DIR_APACHE%/}
 	export DIR_APACHE
 	DIR_APACHE_CONF=${DIR_APACHE_CONF%/}
@@ -1894,7 +1912,7 @@ function check_httpd_directory()
 ## Find Apache user
 ## @Globals	WEB_USER, DIR_APACHE, APACHE_CONF
 #----
-function check_user_apache()
+check_user_apache()
 {
 	# init WEB_USER if not define
 	WEB_USER="$WEB_USER"
@@ -1948,7 +1966,7 @@ function check_user_apache()
 ## Find Apache group
 ## @Globals	WEB_GROUP, DIR_APACHE, APACHE_CONF
 #----
-function check_group_apache()
+check_group_apache()
 {
 	# init WEB_GROUP if not define
 	WEB_GROUP="$WEB_GROUP"
@@ -1998,7 +2016,7 @@ function check_group_apache()
 ## Ask for centreon user
 ## @Globals	CENTREON_USER, DEFAULT_CENTREON_USER
 #----
-function check_centreon_user()
+check_centreon_user()
 {
 	local groups="$CENTREON_GROUP"
 	local description="Centreon Web user"
@@ -2023,7 +2041,7 @@ function check_centreon_user()
 ## Ask for centreon user, and create it if not exists
 ## @Globals	CENTREON_GROUP, DEFAULT_CENTREON_GROUP
 #----
-function check_centreon_group()
+check_centreon_group()
 {
 	if [ -n "$CENTREON_GROUP" ] ; then
 		group_test "$CENTREON_GROUP"
@@ -2045,7 +2063,7 @@ function check_centreon_group()
 ## Ask for Centreon Engine user.
 ## @Globals	MONITORINGENGINE_USER
 #----
-function check_engine_user()
+check_engine_user()
 {
 	if [ -z "${MONITORINGENGINE_USER}" ]; then
 		answer_with_testuser "$(gettext "What is the Monitoring engine user ?") [$DEFAULT_MONITORINGENGINE_USER]" "$DEFAULT_MONITORINGENGINE_USER" "MONITORINGENGINE_USER"
@@ -2058,7 +2076,7 @@ function check_engine_user()
 ## Ask for Centreon Broker user.
 ## @Globals	BROKER_USER
 #----
-function check_broker_user()
+check_broker_user()
 {
 	if [ -z "${BROKER_USER}" ]; then
 		answer_with_testuser "$(gettext "What is the Broker user ?") [$DEFAULT_BROKER_USER]" "$DEFAULT_BROKER_USER" "BROKER_USER"
@@ -2072,9 +2090,9 @@ function check_broker_user()
 ## Copy Source directory and prepare work and final
 ## @Globals	TMP_DIR
 #----
-function copyInTempFile()
+copyInTempFile()
 {
-	local srclistcp="bin cron config logrotate GPL_LIB lang lib snmptrapd src vendor www libinstall bootstrap.php composer.json package.json package-lock.json"
+	local srclistcp="bin cron config logrotate GPL_LIB lang lib snmptrapd src vendor www api libinstall .env bootstrap.php container.php composer.json package.json package-lock.json"
 	# Prepare centreon Plugins
 	echo "$(gettext "Preparing Centreon temporary files")"
 	if [ -d $TMP_DIR ] ; then
@@ -2097,7 +2115,7 @@ function copyInTempFile()
 ## @return	return code of php script
 ## @Globals	PHP_BIN, INSTALL_DIR
 #----
-function check_pear_module() {
+check_pear_module() {
 	local module_list=$1
 	echo -e "$(gettext "Check PEAR modules")"
 	$PHP_BIN $INSTALL_DIR/check_pear.php check $module_list
@@ -2110,7 +2128,7 @@ function check_pear_module() {
 ## @return	return code of php script
 ## @Globals	PHP_BIN, INSTALL_DIR
 #----
-function install_pear_module() {
+install_pear_module() {
 	local module_list=$1
 	echo -e "$(gettext "Installing PEAR modules")"
 	$PHP_BIN $INSTALL_DIR/check_pear.php install $module_list
@@ -2123,7 +2141,7 @@ function install_pear_module() {
 ## @return	return code of php script
 ## @Globals	PHP_BIN, INSTALL_DIR
 #----
-function upgrade_pear_module() {
+upgrade_pear_module() {
 	local module_list=$1
 	echo -e "$(gettext "Upgrading PEAR modules")"
 	$PHP_BIN $INSTALL_DIR/check_pear.php upgrade $module_list
@@ -2138,7 +2156,7 @@ function upgrade_pear_module() {
 ## @return 0	install service ok
 ## @return 1	install service fail
 #----
-function install_init_service() {
+install_init_service() {
 	# how to find methode to install in rc.d directory a correct link ?
 	# debian	update-rc.d
 	# redhat	chkconfig
@@ -2175,7 +2193,7 @@ function install_init_service() {
 ## @return 0	OS found
 ## @return 1	OS not found
 #----
-function find_OS() {
+find_OS() {
 	local distrib=$1
 	local dist_found=""
 	local system=""
@@ -2236,7 +2254,7 @@ function find_OS() {
 ##      - restore inital rigth
 ##      - ...
 #----
-function clean_and_exit() {
+clean_and_exit() {
   local trap_sig=${1:-0}
   if [ $trap_sig -eq 0 ] ; then
     echo -e "$(gettext "\nTrap interrupt, Centreon'll exit now and clean install")"
@@ -2258,7 +2276,7 @@ function clean_and_exit() {
 ## @return 1	No Space left
 ## @Globals	TMP_DIR
 #----
-function check_tmp_disk_space() {
+check_tmp_disk_space() {
 	local min_space="35584"
 	local free_space=""
 	local tmp_dir=""
@@ -2282,7 +2300,7 @@ function check_tmp_disk_space() {
 ## @return 1	don't remove (abort by user)
 ## @Globals	TMP_DIR, yes
 #----
-function purge_centreon_tmp_dir() {
+purge_centreon_tmp_dir() {
 	local silent="$1"
 	local not_clean="1"
 	local rc="0"
@@ -2314,7 +2332,7 @@ function purge_centreon_tmp_dir() {
 ## @param	0/1 to active a question to clean sudo (not by default)
 ## @Globals	TMP_DIR, LOG_FILE
 #----
-function clean_sudo() {
+clean_sudo() {
 	local RC="1"
 	local sudo_old="$1"
 	local validate="${2:-0}"
@@ -2355,7 +2373,7 @@ function clean_sudo() {
 ## @param	variable where define a list of file (temporaty file)
 ## @Globals	LOG_FILE, TMP_DIR
 #----
-function find_macros_in_dir() {
+find_macros_in_dir() {
 	local macro="$1"
 	local src_dir="$2"
 	local sub_dir="$3"
@@ -2382,7 +2400,7 @@ function find_macros_in_dir() {
 ## @param	return code to check
 ## @param	message to print
 #----
-function check_result() {
+check_result() {
 	local code=$1
 	shift
 	local message=$@
@@ -2403,7 +2421,7 @@ function check_result() {
 ## @return 0 	 end
 ## @return 1 	 fail
 #----
-function add_group() {
+add_group() {
 	local user=$1
 	local group=$2
 	if [ -z "$user" -o -z "$group" ]; then
@@ -2423,7 +2441,7 @@ function add_group() {
 ## @return 1	fail
 ## @return 0	end
 #----
-function get_primary_group() {
+get_primary_group() {
 	local user=$1
 	local var_ref=$2
 	local group_name=$(id -ng "$user" 2>/dev/null)
@@ -2434,7 +2452,7 @@ function get_primary_group() {
 	return 0
 }
 
-function check_rrd_right() {
+check_rrd_right() {
 	if [ -d "${CENTSTORAGE_RRD}" ]; then
 		${CHOWN} -R ${CENTREON_USER}:${CENTREON_GROUP} "${CENTSTORAGE_RRD}"
 		${CHMOD} -R g+w "${CENTSTORAGE_RRD}"

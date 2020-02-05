@@ -85,7 +85,6 @@ class CentreonSettings extends CentreonObject
             'interval_length' => array('format' => self::ISNUM),
             'enable_gmt' => array('values' => array('0', '1')),
             'nagios_path_img' => array('format' => self::ISSTRING),
-            'broker_correlator_script' => array('format' => self::ISSTRING),
         );
     }
 
